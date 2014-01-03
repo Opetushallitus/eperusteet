@@ -1,0 +1,43 @@
+<div class="panel panel-default">
+    <div class="panel-heading">{{'haku-hakuehdot'|translate}}<span class="btn btn-default btn-sm pull-right" style="margin-top: -5px" ng-click="tyhjenna()" translate>palauta</span></div>
+  <form class="panel-body">        
+    <div  class="form-group col-xs-6">
+      <label for="tutkinnon-nimi" translate>haku-nimi</label>
+      <input id="tutkinnon-nimi" type="text" class="form-control" placeholder="{{'haku-tutkinnon-nimi-placeholder'| translate}}" ng-model="query" ng-change="hakuMuuttui()">
+    </div>
+    <div class="clearfix"></div>
+    <div class="form-group col-xs-6">
+      <label for="haku-ala" translate>haku-ala</label>
+      <select id="haku-ala" ng-model="koulutusala" class="form-control" ng-change="hakuMuuttui()">
+        <option value="" translate>haku-kaikki-alat</option>
+        <option ng-repeat="(koodi, nimi) in koulutusalakoodit" value="{{koodi}}" ng-selected="koulutusala === koodi">{{nimi| translate}}</option>
+      </select>
+    </div>
+    <div class="form-group col-xs-6" ng-show="konteksti !== kontekstit[0]">
+      <label for="haku-tyyppi" translate>haku-tyyppi</label>
+      <select id="haku-tyyppi" ng-model="tutkintotyyppi" class="form-control" ng-change="hakuMuuttui()">
+        <option value="" translate>haku-kaikki-tutkinnot</option>
+        <option ng-repeat="(koodi, nimi) in tutkintotyypit" value="{{koodi}}" ng-selected="tutkintotyyppi === koodi">{{nimi| translate}}</option>
+      </select>
+    </div>
+  </form>
+</div>
+<div>
+  <p>{{'haku-tulosten-määrä'| translate}} {{kokonaismaara}}</p>
+</div>
+<div>
+  <ul class="list-unstyled">
+    <li  ng-repeat="peruste in perusteet.data">
+      <a ng-href="#/selaus/{{konteksti}}/{{peruste.id}}"><span ng-bind-html="korosta(valitseKieli(peruste.nimi))"></span>, {{peruste.koulutusala.koodi| koulutusalakoodiFilter:koulutusalakoodit | translate}}</a>
+    </li>
+  </ul>
+  <ul class="pagination">
+    <li ng-class="{disabled:nykyinenSivu === 0}">
+      <a ng-click="edellinenSivu()"><span class="glyphicon glyphicon-backward"></span></a>
+    </li>
+    <li ng-class="{active : nykyinenSivu === sivu}" data-ng-repeat="sivu in sivut"><a ng-click="haePerusteet(sivu)">{{$index + 1}}</a></li>
+    <li ng-class="{disabled: nykyinenSivu + 1 >= sivuja}">
+      <a ng-click="seuraavaSivu()"><span class="glyphicon glyphicon-forward"></span></a>
+    </li>
+  </ul>
+</div>

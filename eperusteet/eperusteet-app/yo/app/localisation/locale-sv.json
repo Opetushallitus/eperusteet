@@ -1,0 +1,55 @@
+{
+    "lisää": "[Lisää]",
+    "poista": "[Poista]",
+    "edellinen-sivu": "[<< Edellinen]",
+    "seuraava-sivu": "[Seuraava >>]",
+    "takaisin": "[Takaisin]",
+    "suosikki": "[Lisää suosikiksi]",
+    "suosikit-otsikko": "[Suosikit]",
+    "palauta" : "[Palauta]",
+    
+    "haku-otsikko": "[Perusteen haku]",
+    "haku-ala": "[Ala]",
+    "haku-tyyppi": "[Tyyppi]",
+    "haku-nimi": "[Nimi]",
+    "haku-kaikki-alat": "[Kaikki koulutusalat]",
+    "haku-kaikki-tutkinnot": "[Kaikki tutkinnot]",
+    "haku-tutkinnon-nimi-placeholder": "[Tutkinnon nimi]",
+    "haku-tulosten-määrä": "[Löydettyjen perusteiden määrä:]",
+    "haku-lisaa-suosikkeja" : "[Näytä kaikki]",
+    "haku-piilota-suosikkeja" : "[Piilota]",
+    "haku-kieli": "[Kieli]",
+    "haku-hakuehdot" : "[Hakuehdot]",
+    
+    "navi-esiopetus": "[Esiopetus]",
+    "navi-perusopetus": "[Perusopetus]",
+    "navi-lukiokoulutus": "[Lukiokoulutus]",
+    "navi-ammatillinen-peruskoulutus": "[Ammatillinen peruskoulutus]",
+    "navi-ammatillinen-aikuiskoulutus": "[Ammatillinen aikuiskoulutus]",
+           
+    "muokkaus-uusi-kappale-placeholder": "[Uusi kappale]",
+    "muokkaus-kommentit": "[Kommentit]",
+    "muokkaus-uusi-kommentti-placeholder": "[Uusi kommentti]",
+    
+    "koulutusalakoodi-1": "[Tekniikan ja liikenteen ala]",
+    "koulutusalakoodi-2": "[Kulttuuriala]",
+    "koulutusalakoodi-3": "[Luonnonvara- ja ympäristöala]",
+    "koulutusalakoodi-4": "[Yhteiskuntatieteiden, liiketalouden ja hallinnon ala]",
+    "koulutusalakoodi-5": "[Humanistinen ja kasvatusala]",
+    "koulutusalakoodi-6": "[Matkailu-, ravitsemis- ja talousala]",
+    "koulutusalakoodi-7": "[Sosiaali-, terveys- ja liikunta-ala]",
+    "koulutusalakoodi-8": "[Luonnontieteiden ala]",
+    
+    "tutkintotyyppikoodi-1": "[perustutkinto]",
+    "tutkintotyyppikoodi-2": "[ammattitutkinto]",
+    "tutkintotyyppikoodi-3": "[erikoisammattitutkinto]",
+
+    "kielen-vaihto": "[Vaihda kieli]",
+    "suomi": "Suomi",
+    "ruotsi": "Svenska",
+    
+    "tutkintokoodi": "[Tutkintokoodi]",
+    "koulutusalakoodi": "[Koulutusalakoodi]"
+    
+}
+
