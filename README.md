@@ -47,14 +47,3 @@ Web-sovelluksen (app) osalta maven käyttää yeoman-maven-pluginia joka tarvits
 
 Windows-kehittäjät huom! ko. plugin yrittää ajaa npm, bower, ja grunt -komentoja jotka Windowsissa ovat komentosarjatiedostoja (esim. npm.cmd). Näiden pitää olla polussa, lisäksi vastaava shell-skripti ilman lopuketta kannattaa muuttaa vaikka .sh päätteiseksi, muuten maven-pluginin suoritus päättyy virheeseen.
 
-Tekninen dokumentaatio
-----------------------
-<https://confluence.oph.ware.fi/confluence/display/TD/ePerusteet>
-
-CI
---
-<http://pulpetti.hard.ware.fi:8085/bamboo/>
-
-Testiympäristö
---------------
-(TBD)
