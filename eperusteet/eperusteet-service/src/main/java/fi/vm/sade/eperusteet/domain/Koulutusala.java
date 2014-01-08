@@ -47,11 +47,7 @@ public class Koulutusala implements Serializable {
     
     private String koodi;
     
-//    @OneToMany
-//    @JoinColumn(name="koulutusala_id")
-//    private List<Opintoala> opintoalat;
-    
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "koulutusala_opintoala", 
             joinColumns = @JoinColumn(name = "koulutusala_id"), 
             inverseJoinColumns = @JoinColumn(name = "opintoala_id"))
