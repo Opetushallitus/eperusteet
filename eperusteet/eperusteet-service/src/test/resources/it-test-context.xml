@@ -29,7 +29,7 @@
     </property>
   </bean>
   
-  <context:component-scan base-package="fi.vm.sade.eperusteet.proto.service"/>
+  <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>
   <tx:annotation-driven/>
     
   <bean id="dataSource"
@@ -41,7 +41,7 @@
   <bean id="entityManager" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
     <property name="persistenceUnitName" value="eperusteet"/>
     <property name="dataSource" ref="dataSource"/>
-    <property name="packagesToScan" value="fi.vm.sade.eperusteet.proto.domain"/>
+    <property name="packagesToScan" value="fi.vm.sade.eperusteet.domain"/>
     <property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider"/>
     <property name="jpaPropertyMap">
       <map>
@@ -59,6 +59,6 @@
     <property name="entityManagerFactory" ref="entityManager"/>
   </bean>
     
-  <jpa:repositories base-package="fi.vm.sade.eperusteet.proto.repository" />
+  <jpa:repositories base-package="fi.vm.sade.eperusteet.repository" />
         
 </beans>

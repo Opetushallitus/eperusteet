@@ -29,7 +29,7 @@
     </property>
   </bean>
 
-  <context:component-scan base-package="fi.vm.sade.eperusteet.proto.service"/>
+  <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>
   <tx:annotation-driven/>
     
   <bean id="dataSource"
@@ -43,7 +43,7 @@
   <bean id="entityManager" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="dbinit">
     <property name="persistenceUnitName" value="eperusteet"/>
     <property name="dataSource" ref="dataSource"/>
-    <property name="packagesToScan" value="fi.vm.sade.eperusteet.proto.domain"/>
+    <property name="packagesToScan" value="fi.vm.sade.eperusteet.domain"/>
     <property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider"/>
     <property name="jpaPropertyMap">
       <map>
@@ -63,7 +63,7 @@
     <property name="dataSource" ref="dataSource"/>
   </bean>
     
-  <bean id="dbinit" class="fi.vm.sade.eperusteet.proto.service.test.DbInitializer" depends-on="flyway" init-method="initDb">
+  <bean id="dbinit" class="fi.vm.sade.eperusteet.service.test.DbInitializer" depends-on="flyway" init-method="initDb">
       
   </bean>
     
@@ -71,6 +71,6 @@
     <property name="entityManagerFactory" ref="entityManager"/>
   </bean>
     
-  <jpa:repositories base-package="fi.vm.sade.eperusteet.proto.repository" />
+  <jpa:repositories base-package="fi.vm.sade.eperusteet.repository" />
         
 </beans>

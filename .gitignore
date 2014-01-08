@@ -1,0 +1,9 @@
+/tools/perusteImporter/nbproject/private/
+/tools/perusteImporter/dist/
+/tools/perusteImporter/build/
+target
+*~
+
+/tools/opintoalaImporter/nbproject/private/
+/tools/opintoalaImporter/build/
+/tools/opintoalaImporter/dist/

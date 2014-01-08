@@ -21,6 +21,7 @@
     <jackson.version>2.3.1</jackson.version>
     <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
     <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
+    <buildhelper.skipAttach>true</buildhelper.skipAttach>
   </properties>  
   <dependencies>
     <dependency>
@@ -239,6 +240,12 @@
             <eperusteet.ittestdb.password>${eperusteet.ittestdb.password}</eperusteet.ittestdb.password>
             <eperusteet.ittestdb.jdbcurl>${eperusteet.ittestdb.jdbcurl}</eperusteet.ittestdb.jdbcurl>
           </systemPropertyVariables>
+          <excludes>
+            <exclude>**/service/test/*.java</exclude>            
+          </excludes>
+          <includes>
+            <include>**/*IT.java</include>
+          </includes>
         </configuration>
       </plugin>
       <plugin>
