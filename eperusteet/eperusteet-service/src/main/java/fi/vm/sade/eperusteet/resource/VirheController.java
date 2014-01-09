@@ -33,11 +33,11 @@ public class VirheController {
     @RequestMapping(value = "/WEB-INF/virhe")
     @ResponseBody
     public Map<String, Object> handle(HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<>();                        
+        Map<String, Object> map = new HashMap<>();
         map.put("koodi", request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE));
         Object e = request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
-        if ( e instanceof Throwable ) {
-            map.put("syy", ((Throwable)e).getLocalizedMessage());
+        if (e instanceof Throwable) {
+            map.put("syy", ((Throwable) e).getLocalizedMessage());
         } else {
             map.put("syy", request.getAttribute(RequestDispatcher.ERROR_MESSAGE));
         }

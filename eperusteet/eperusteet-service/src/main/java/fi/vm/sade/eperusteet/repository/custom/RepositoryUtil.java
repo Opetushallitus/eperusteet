@@ -19,9 +19,12 @@ package fi.vm.sade.eperusteet.repository.custom;
  *
  * @author jhyoty
  */
-public class RepositoryUtil {
+public final class RepositoryUtil {
 
-    //TODO:
+    private RepositoryUtil() {
+        //apuluokka
+    }
+
     public static final char ESCAPE_CHAR = '\\';
 
     public static String kuten(String teksti) {

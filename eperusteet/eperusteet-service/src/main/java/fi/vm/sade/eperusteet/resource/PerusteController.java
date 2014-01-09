@@ -67,7 +67,7 @@ public class PerusteController {
             @PathVariable("id") final Long viiteId,
             @RequestParam(value = "ennen", required = false) Long ennen, @RequestBody PerusteenOsaViite viite) {
 
-        return new ResponseEntity<>(service.lisääViite(viiteId, ennen, viite), HttpStatus.CREATED);
+        return new ResponseEntity<>(service.addViite(viiteId, ennen, viite), HttpStatus.CREATED);
     }
 
 }

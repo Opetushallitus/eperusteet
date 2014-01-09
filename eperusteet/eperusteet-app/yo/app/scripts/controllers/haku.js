@@ -20,8 +20,8 @@ angular.module('eperusteApp')
     $scope.koulutusalat = Koulutusalat.query();
     $scope.opintoalat = [];
     $scope.valittuOpintoala = Haku.hakuParametrit.opintoala;
-    
-    
+
+
     $scope.tutkintotyypit = {
       1: 'tutkintotyyppikoodi-1',
       2: 'tutkintotyyppikoodi-2',
@@ -85,7 +85,7 @@ angular.module('eperusteApp')
         $scope.tutkintotyyppi = '';
       }
     };
-    
+
     if ($routeParams.konteksti && $scope.kontekstit.indexOf($routeParams.konteksti.toLowerCase()) !== -1) {
       $scope.konteksti = $routeParams.konteksti;
       alustaTutkintotyyppi();
@@ -155,14 +155,14 @@ angular.module('eperusteApp')
       $scope.tyhjenna();
       $scope.haePerusteet(0);
     });
-       
+
     $scope.koulutusalaMuuttui = function() {
       if ($scope.koulutusala !== '') {
-        $scope.opintoalat = $scope.koulutusalat[parseInt($scope.koulutusala) -1].opintoalat;        
+        $scope.opintoalat = $scope.koulutusalat[parseInt($scope.koulutusala, 10) - 1].opintoalat;
       } else {
         $scope.opintoalat = [];
       }
-      
+
       $scope.hakuMuuttui();
-    }
+    };
   });
