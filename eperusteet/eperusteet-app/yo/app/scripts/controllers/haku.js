@@ -17,8 +17,16 @@ angular.module('eperusteApp')
     $scope.tutkintotyyppi = Haku.hakuParametrit.tyyppi;
     $scope.kontekstit = YleinenData.kontekstit;
     $scope.kieli = YleinenData.kieli;
-    $scope.koulutusalat = Koulutusalat.query();
-    $scope.opintoalat = [];
+    
+    $scope.koulutusalat = [];
+    Koulutusalat.query(
+      function(vastaus) {
+        $scope.koulutusalat = vastaus;
+        $scope.koulutusalaMuuttui();
+      }
+    );
+    
+
     $scope.valittuOpintoala = Haku.hakuParametrit.opintoala;
 
 
@@ -77,10 +85,12 @@ angular.module('eperusteApp')
       37: 'opintoalakoodi-37',
       38: 'opintoalakoodi-38'
     };
-    var alustaTutkintotyyppi = function() {
+    var alustaKonteksti = function() {
       // Jos ollaan ammatillisen peruskoulutuksen kontekstissa, niin tutkintotyypiksi asetetaan perustutkinto
+      // ja tyhjennetään opintoalan valinta
       if ($scope.konteksti === $scope.kontekstit[0]) {
         $scope.tutkintotyyppi = 1;
+        $scope.valittuOpintoala = '';
       } else {
         $scope.tutkintotyyppi = '';
       }
@@ -88,7 +98,7 @@ angular.module('eperusteApp')
 
     if ($routeParams.konteksti && $scope.kontekstit.indexOf($routeParams.konteksti.toLowerCase()) !== -1) {
       $scope.konteksti = $routeParams.konteksti;
-      alustaTutkintotyyppi();
+      alustaKonteksti();
     } else {
       $location.path('/selaus/ammatillinenperuskoulutus');
     }
@@ -97,7 +107,7 @@ angular.module('eperusteApp')
       $scope.query = null;
       $scope.koulutusala = '';
       $scope.valittuOpintoala = '';
-      alustaTutkintotyyppi();
+      alustaKonteksti();
       $scope.nykyinenSivu = 0;
       $scope.haePerusteet(0);
     };
@@ -162,7 +172,7 @@ angular.module('eperusteApp')
       } else {
         $scope.opintoalat = [];
       }
-
+      $scope.valittuOpintoala = '';
       $scope.hakuMuuttui();
     };
   });
