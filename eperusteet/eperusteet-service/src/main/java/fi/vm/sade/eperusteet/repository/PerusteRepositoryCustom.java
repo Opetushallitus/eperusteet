@@ -29,6 +29,6 @@ import org.springframework.data.repository.NoRepositoryBean;
 @NoRepositoryBean
 public interface PerusteRepositoryCustom {
 
-    Page<Peruste> findBy(Kieli kieli, String nimi, List<String> ala, List<String> tyyppi, Pageable page);
+    Page<Peruste> findBy(Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, Pageable page, List<String> opintoala);
     Peruste findById(Long id);
 }
