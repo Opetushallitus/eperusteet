@@ -15,6 +15,8 @@
  */
 package fi.vm.sade.eperusteet.repository.custom;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutusala_;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
@@ -31,9 +33,11 @@ import java.util.List;
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Predicate;
@@ -71,13 +75,13 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
     public Page<Peruste> findBy(Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, Pageable page, List<String> opintoala) {
 
         TypedQuery<Long> countQuery = getCountQuery(kieli, nimi, koulutusala, tyyppi, opintoala);
-        TypedQuery<Peruste> query = getQuery(kieli, nimi, koulutusala, tyyppi, opintoala);
+        TypedQuery<Tuple> query = getQuery(kieli, nimi, koulutusala, tyyppi, opintoala);
         if (page != null) {
             query.setFirstResult(page.getOffset());
             query.setMaxResults(page.getPageSize());
         }
 
-        return new PageImpl<>(query.getResultList(), page, countQuery.getSingleResult());
+        return new PageImpl<>(Lists.transform(query.getResultList(), EXTRACT_PERUSTE), page, countQuery.getSingleResult());
     }
 
     @Override
@@ -91,16 +95,16 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         return p;
     }
 
-    private TypedQuery<Peruste> getQuery(Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, List<String> opintoala) {
+    private TypedQuery<Tuple> getQuery(Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, List<String> opintoala) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Peruste> query = cb.createQuery(Peruste.class);
+        CriteriaQuery<Tuple> query = cb.createTupleQuery();
         Root<Peruste> root = query.from(Peruste.class);
         Join<TekstiPalanen, LokalisoituTeksti> teksti = root.join(Peruste_.nimi).join(TekstiPalanen_.teksti);
         Predicate pred = buildPredicate(root, teksti, cb, kieli, nimi, koulutusala, tyyppi, opintoala);
-        // TODO: distinct oikeasti halutaan, mutta se aiheuttaa karvaisuutta kyselyyn
-//        query.distinct(true);
-        query.select(root).where(pred).orderBy(cb.asc(cb.lower(teksti.get(LokalisoituTeksti_.teksti))));
+        query.distinct(true);
+        final Expression<String> n = cb.lower(teksti.get(LokalisoituTeksti_.teksti));
+        query.multiselect(root, n).where(pred).orderBy(cb.asc(n));
         return em.createQuery(query);
     }
 
@@ -128,11 +132,18 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         if (tyyppi != null && !tyyppi.isEmpty()) {
             pred = cb.and(pred, root.get(Peruste_.tutkintokoodi).in(tyyppi));
         }
-        if (opintoalat != null && !opintoalat.isEmpty() ) {
+        if (opintoalat != null && !opintoalat.isEmpty()) {
             ListJoin<Peruste, Opintoala> ala = root.join(Peruste_.opintoalat);
             pred = cb.and(pred, ala.get(Opintoala_.koodi).in(opintoalat));
         }
         return pred;
     }
+
+    private static final Function<Tuple, Peruste> EXTRACT_PERUSTE = new Function<Tuple, Peruste>() {
+        @Override
+        public Peruste apply(Tuple f) {
+            return f.get(0, Peruste.class);
+        }
+    };
 
 }
