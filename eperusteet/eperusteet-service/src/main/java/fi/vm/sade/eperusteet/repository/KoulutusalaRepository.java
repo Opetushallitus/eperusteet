@@ -13,22 +13,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import java.util.List;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.NoRepositoryBean;
+import fi.vm.sade.eperusteet.domain.Koulutusala;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
- * @author jhyoty
+ * @author jussini
  */
-@NoRepositoryBean
-public interface PerusteRepositoryCustom {
-
-    Page<Peruste> findBy(Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, Pageable page, List<String> opintoala);
-    Peruste findById(Long id);
+@Repository
+public interface KoulutusalaRepository extends JpaRepository<Koulutusala, Long>{
+        
 }

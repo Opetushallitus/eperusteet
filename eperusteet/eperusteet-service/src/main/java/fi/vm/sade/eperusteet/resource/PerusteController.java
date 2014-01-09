@@ -37,12 +37,13 @@ public class PerusteController {
             @RequestParam(value = "nimi", required = false) String nimi,
             @RequestParam(value = "ala", required = false) List<String> ala,
             @RequestParam(value = "tyyppi", required = false) List<String> tyyppi,
-            @RequestParam(value = "kieli", required = false, defaultValue = "fi") String kieli
+            @RequestParam(value = "kieli", required = false, defaultValue = "fi") String kieli,
+            @RequestParam(value = "opintoala", required = false) List<String> opintoala
     ) {
         PageRequest p = new PageRequest(sivu, Math.min(sivukoko, 100));
         Page<Peruste> r;
 
-        r = service.findBy(p, nimi, ala, tyyppi, kieli);
+        r = service.findBy(p, nimi, ala, tyyppi, kieli, opintoala);
 
         return new ResponseEntity<>(r,
                                     ResponseHeaders.cacheHeaders(7, TimeUnit.MINUTES),
