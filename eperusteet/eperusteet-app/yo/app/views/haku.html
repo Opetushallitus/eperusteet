@@ -22,7 +22,7 @@
     </div>
     <div class="form-group col-xs-6" ng-show="konteksti !== kontekstit[0] && koulutusala !== ''">
       <label for="haku-opintoala" translate>haku-opintoala</label>
-      <select id="haku-opintoala" ng-model="opintoala" class="form-control" ng-change="hakuMuuttui()">
+      <select id="haku-opintoala" ng-model="valittuOpintoala" class="form-control" ng-change="hakuMuuttui()">
         <option value="" translate>haku-kaikki-opintoalat</option>
         <option ng-repeat="ala in opintoalat" value="{{ala.koodi}}" ng-selected="opintoala === ala.koodi">{{'opintoalakoodi-'+ala.koodi| translate}}</option>
       </select>
