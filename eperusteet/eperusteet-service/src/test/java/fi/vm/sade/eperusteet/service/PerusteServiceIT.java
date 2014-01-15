@@ -15,14 +15,10 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
-import java.util.Collections;
+import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import static org.junit.Assert.*;
@@ -47,21 +43,18 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     private PerusteRepository repo;
     @PersistenceContext
     private EntityManager em;
-
+ 
     public PerusteServiceIT() {
     }
 
     @Before
     public void setUp() {
-        Peruste p = new Peruste();
-        p.setNimi(new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "Nimi"))));
-        repo.save(p);
-        em.flush();
+        repo.saveAndFlush(TestUtils.createPeruste());
     }
 
     @Test
     @Rollback(true)
-    public void testGet() {
+    public void testGetAll() {
         Page<Peruste> perusteet = perusteService.getAll(new PageRequest(0, 10), "fi");
         assertEquals(perusteet.getTotalElements(), 1);
     }

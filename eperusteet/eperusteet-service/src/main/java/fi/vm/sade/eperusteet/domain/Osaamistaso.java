@@ -13,45 +13,51 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 package fi.vm.sade.eperusteet.domain;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import java.io.Serializable;
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Immutable;
 
 /**
  *
- * @author jhyoty
+ * @author teele1
  */
 @Entity
-@Table(name = "tutkinnonosa")
-@JsonTypeName("tutkinnonosa")
-public class TutkinnonOsa extends PerusteenOsa implements Serializable {
-
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@Immutable
+@Table(name = "osaamistaso")
+public class Osaamistaso implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
+    @Id
+    private Long id;
+    
     @ManyToOne
-    private TekstiPalanen tavoitteet;
+    private TekstiPalanen otsikko;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private Arviointi arviointi;
-
-    public TekstiPalanen getTavoitteet() {
-        return tavoitteet;
+    public Long getId() {
+        return id;
     }
 
-    public void setTavoitteet(TekstiPalanen tavoitteet) {
-        this.tavoitteet = tavoitteet;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Arviointi getArviointi() {
-        return arviointi;
+    public TekstiPalanen getOtsikko() {
+        return otsikko;
     }
 
-    public void setArviointi(Arviointi arviointi) {
-        this.arviointi = arviointi;
+    public void setOtsikko(TekstiPalanen otsikko) {
+        this.otsikko = otsikko;
     }
 
 }
