@@ -20,7 +20,6 @@ import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.test.AbstractDbIntegrationTest;
 import java.util.Collections;
 import javax.persistence.EntityManager;
