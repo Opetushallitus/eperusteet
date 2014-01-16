@@ -28,6 +28,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
+import javax.persistence.Table;
 
 /**
  * Perusteen rakenneosanen. Muodostaa puun jonka solmut osoittavat perusteeseen kuuluviin perusteen osiin
@@ -35,6 +36,7 @@ import javax.persistence.OrderColumn;
  * @author jhyoty
  */
 @Entity
+@Table(name = "perusteenosaviite")
 public class PerusteenOsaViite implements Serializable {
 
     @Id
