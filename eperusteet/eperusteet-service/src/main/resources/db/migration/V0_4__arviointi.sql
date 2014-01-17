@@ -56,7 +56,9 @@
 
     create table kriteeri_tekstipalanen (
         kriteeri_id int8 not null,
-        tekstipalanen_id int8 not null
+        tekstipalanen_id int8 not null,
+        tekstialueet_ORDER int4 not null,
+        primary key (kriteeri_id, tekstialueet_ORDER)
     );
 
     create table osaamistaso (
