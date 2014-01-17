@@ -16,10 +16,10 @@
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import javax.persistence.Cacheable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -50,21 +50,21 @@ public class TekstiPalanen implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
     @Immutable
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<LokalisoituTeksti> teksti;
+    private Set<LokalisoituTeksti> teksti;
 
     protected TekstiPalanen() {
     }
 
     public TekstiPalanen(Map<Kieli, LokalisoituTeksti> tekstit) {
-        teksti = new ArrayList<>(tekstit.values());
+        teksti = new HashSet<>(tekstit.values());
     }
 
     public Long getId() {
         return id;
     }
 
-    public List<LokalisoituTeksti> getTeksti() {
-        return Collections.unmodifiableList(teksti);
+    public Set<LokalisoituTeksti> getTeksti() {
+        return Collections.unmodifiableSet(teksti);
     }
 
 }
