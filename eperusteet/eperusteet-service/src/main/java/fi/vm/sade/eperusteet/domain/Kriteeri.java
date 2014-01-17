@@ -28,6 +28,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
 /**
@@ -47,6 +48,7 @@ public class Kriteeri implements Serializable {
     private Osaamistaso Osaamistaso;
     
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @OrderColumn
     @JoinTable(name = "kriteeri_tekstipalanen", 
             joinColumns = @JoinColumn(name = "kriteeri_id"), 
             inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))

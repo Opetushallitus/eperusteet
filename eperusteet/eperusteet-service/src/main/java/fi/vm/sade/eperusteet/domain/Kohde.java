@@ -17,7 +17,7 @@
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -51,7 +51,7 @@ public class Kohde implements Serializable {
     private Arviointiasteikko Arviointiasteikko;
     
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    private List<Kriteeri> kriteerit;
+    private Set<Kriteeri> kriteerit;
     
     public Long getId() {
         return id;
@@ -77,11 +77,11 @@ public class Kohde implements Serializable {
         this.Arviointiasteikko = Arviointiasteikko;
     }
 
-    public List<Kriteeri> getKriteerit() {
+    public Set<Kriteeri> getKriteerit() {
         return kriteerit;
     }
 
-    public void setKriteerit(List<Kriteeri> kriteerit) {
+    public void setKriteerit(Set<Kriteeri> kriteerit) {
         this.kriteerit = kriteerit;
     }
     

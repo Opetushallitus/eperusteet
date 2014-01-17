@@ -19,6 +19,7 @@ package fi.vm.sade.eperusteet.domain;
 import java.io.Serializable;
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -41,7 +42,7 @@ public class Osaamistaso implements Serializable {
     @Id
     private Long id;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private TekstiPalanen otsikko;
 
     public Long getId() {

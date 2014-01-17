@@ -25,12 +25,9 @@ import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import org.hibernate.Hibernate;
-import org.junit.Assert;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -46,8 +43,6 @@ public abstract class TestUtils {
     }
 
     public static Arviointi createArviointi(Arviointiasteikko arviointiasteikko) {
-        checkIfPersisted(arviointiasteikko);
-        
         Arviointi arviointi = new Arviointi();
         arviointi.setLisatiedot(new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "lisätieto"))));
 
@@ -60,7 +55,7 @@ public abstract class TestUtils {
         kohde.setArviointiasteikko(arviointiasteikko);
         kohdealue.setKohteet(Collections.singletonList(kohde));
 
-        List<Kriteeri> kriteerit = new ArrayList<>();
+        Set<Kriteeri> kriteerit = new HashSet<>();
         for (Osaamistaso osaamistaso : arviointiasteikko.getOsaamistasot()) {
             Kriteeri kriteeri = new Kriteeri();
             kriteeri.setOsaamistaso(osaamistaso);
@@ -71,17 +66,5 @@ public abstract class TestUtils {
         kohde.setKriteerit(kriteerit);
 
         return arviointi;
-    }
-    
-    private static void checkIfPersisted(Object object) {
-        Assert.assertTrue(Hibernate.isInitialized(object));
-            
-//        for(Method method : object.getClass().getMethods()) {
-//            if("getId".equals(method.getName())) {
-//                method.
-//                Hibernate.
-//            }
-//        }
-//        object.getClass().getMethods()
     }
 }
