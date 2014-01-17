@@ -36,8 +36,8 @@ import javax.persistence.Table;
  * @author teele1
  */
 @Entity
-@Table(name = "kohdealue")
-public class Kohdealue implements Serializable {
+@Table(name = "arvioinninkohdealue")
+public class ArvioinninKohdealue implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @Id
@@ -48,11 +48,11 @@ public class Kohdealue implements Serializable {
     private TekstiPalanen otsikko;
     
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "kohdealue_kohde",
-            joinColumns = @JoinColumn(name = "kohdealue_id"),
-            inverseJoinColumns = @JoinColumn(name = "kohde_id"))
+    @JoinTable(name = "arvioinninkohdealue_arvioinninkohde",
+            joinColumns = @JoinColumn(name = "arvioinninkohdealue_id"),
+            inverseJoinColumns = @JoinColumn(name = "arvioinninkohde_id"))
     @OrderColumn
-    private List<Kohde> kohteet;
+    private List<ArvioinninKohde> arvioinninKohteet;
 
     public Long getId() {
         return id;
@@ -70,12 +70,12 @@ public class Kohdealue implements Serializable {
         this.otsikko = otsikko;
     }
 
-    public List<Kohde> getKohteet() {
-        return kohteet;
+    public List<ArvioinninKohde> getArvioinninKohteet() {
+        return arvioinninKohteet;
     }
 
-    public void setKohteet(List<Kohde> kohteet) {
-        this.kohteet = kohteet;
+    public void setArvioinninKohteet(List<ArvioinninKohde> arvioinninKohteet) {
+        this.arvioinninKohteet = arvioinninKohteet;
     }
     
 }

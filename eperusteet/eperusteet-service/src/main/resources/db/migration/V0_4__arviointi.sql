@@ -4,11 +4,11 @@
         primary key (id)
     );
 
-    create table arviointi_kohdealue (
+    create table arviointi_arvioinninkohdealue (
         arviointi_id int8 not null,
-        kohdealue_id int8 not null,
-        kohdealueet_ORDER int4 not null,
-        primary key (arviointi_id, kohdealueet_ORDER)
+        arvioinninkohdealue_id int8 not null,
+        arvioinninKohdealueet_ORDER int4 not null,
+        primary key (arviointi_id, arvioinninKohdealueet_ORDER)
     );
 
     create table arviointiasteikko (
@@ -23,42 +23,43 @@
         primary key (arviointiasteikko_id, osaamistasot_ORDER)
     );
 
-    create table kohde (
+    create table arvioinninkohde (
         id int8 not null,
         Arviointiasteikko_id int8,
         otsikko_id int8,
         primary key (id)
     );
 
-    create table kohde_kriteeri (
-        kohde_id int8 not null,
-        kriteerit_id int8 not null
+    create table arvioinninkohde_osaamistasonkriteeri (
+        arvioinninkohde_id int8 not null,
+        osaamistasonKriteerit_id int8 not null,
+        primary key (arvioinninkohde_id, osaamistasonKriteerit_id)
     );
 
-    create table kohdealue (
+    create table arvioinninkohdealue (
         id int8 not null,
         otsikko_id int8,
         primary key (id)
     );
 
-    create table kohdealue_kohde (
-        kohdealue_id int8 not null,
-        kohde_id int8 not null,
-        kohteet_ORDER int4 not null,
-        primary key (kohdealue_id, kohteet_ORDER)
+    create table arvioinninkohdealue_arvioinninkohde (
+        arvioinninkohdealue_id int8 not null,
+        arvioinninkohde_id int8 not null,
+        arvioinninKohteet_ORDER int4 not null,
+        primary key (arvioinninkohdealue_id, arvioinninKohteet_ORDER)
     );
 
-    create table kriteeri (
+    create table osaamistasonkriteeri (
         id int8 not null,
         Osaamistaso_id int8,
         primary key (id)
     );
 
-    create table kriteeri_tekstipalanen (
-        kriteeri_id int8 not null,
+    create table osaamistasonkriteeri_tekstipalanen (
+        osaamistasonkriteeri_id int8 not null,
         tekstipalanen_id int8 not null,
-        tekstialueet_ORDER int4 not null,
-        primary key (kriteeri_id, tekstialueet_ORDER)
+        kriteerit_ORDER int4 not null,
+        primary key (osaamistasonkriteeri_id, kriteerit_ORDER)
     );
 
     create table osaamistaso (
@@ -69,30 +70,30 @@
 
     alter table tutkinnonosa add column arviointi_id int8;
 
-    alter table arviointi_kohdealue 
-        add constraint UK_arviointi_kohdealue unique (kohdealue_id);
+    alter table arviointi_arvioinninkohdealue 
+        add constraint UK_arviointi_arvioinninkohdealue unique (arvioinninkohdealue_id);
 
     alter table arviointiasteikko_osaamistaso 
         add constraint UK_arviointiasteikko_osaamistaso unique (osaamistasot_id);
 
-    alter table kohde_kriteeri 
-        add constraint UK_kohde_kriteeri unique (kriteerit_id);
+    alter table arvioinninkohde_osaamistasonkriteeri 
+        add constraint UK_arvioinninkohde_osaamistasonkriteeri unique (osaamistasonKriteerit_id);
 
-    alter table kohdealue_kohde 
-        add constraint UK_kohdealue_kohde unique (kohde_id);
+    alter table arvioinninkohdealue_arvioinninkohde 
+        add constraint UK_arvioinninkohdealue_arvioinninkohde unique (arvioinninkohde_id);
 
     alter table arviointi 
         add constraint FK_arviointi_tekstipalanen
         foreign key (lisatiedot_id) 
         references tekstipalanen;
 
-    alter table arviointi_kohdealue 
-        add constraint FK_arviointi_kohdealue_kohdealue
-        foreign key (kohdealue_id) 
-        references kohdealue;
+    alter table arviointi_arvioinninkohdealue 
+        add constraint FK_arviointi_arvioinninkohdealue_arvioinninkohdealue
+        foreign key (arvioinninkohdealue_id) 
+        references arvioinninkohdealue;
 
-    alter table arviointi_kohdealue 
-        add constraint FK_arviointi_kohdealue_arviointi 
+    alter table arviointi_arvioinninkohdealue 
+        add constraint FK_arviointi_arvioinninkohdealue_arviointi 
         foreign key (arviointi_id) 
         references arviointi;
 
@@ -106,55 +107,55 @@
         foreign key (arviointiasteikko_id) 
         references arviointiasteikko;
 
-    alter table kohde 
-        add constraint FK_kohde_arviointiasteikko 
+    alter table arvioinninkohde 
+        add constraint FK_arvioinninkohde_arviointiasteikko 
         foreign key (Arviointiasteikko_id) 
         references arviointiasteikko;
 
-    alter table kohde 
-        add constraint FK_kohde_tekstipalanen 
+    alter table arvioinninkohde 
+        add constraint FK_arvioinninkohde_tekstipalanen 
         foreign key (otsikko_id) 
         references tekstipalanen;
 
-    alter table kohde_kriteeri 
-        add constraint FK_kohde_kriteeri_kriteeri 
-        foreign key (kriteerit_id) 
-        references kriteeri;
+    alter table arvioinninkohde_osaamistasonkriteeri 
+        add constraint FK_arvioinninkohde_osaamistasonkriteeri_osaamistasonkriteeri 
+        foreign key (osaamistasonKriteerit_id) 
+        references osaamistasonkriteeri;
 
-    alter table kohde_kriteeri 
-        add constraint FK_kohde_kriteeri_kohde 
-        foreign key (kohde_id) 
-        references kohde;
+    alter table arvioinninkohde_osaamistasonkriteeri 
+        add constraint FK_arvioinninkohde_osaamistasonkriteeri_arvioinninkohde 
+        foreign key (arvioinninkohde_id) 
+        references arvioinninkohde;
 
-    alter table kohdealue 
-        add constraint FK_kohdealue_tekstipalanen 
+    alter table arvioinninkohdealue 
+        add constraint FK_arvioinninkohdealue_tekstipalanen 
         foreign key (otsikko_id) 
         references tekstipalanen;
 
-    alter table kohdealue_kohde 
-        add constraint FK_kohdealue_kohde_kohde 
-        foreign key (kohde_id) 
-        references kohde;
+    alter table arvioinninkohdealue_arvioinninkohde 
+        add constraint FK_arvioinninkohdealue_arvioinninkohde_arvioinninkohde 
+        foreign key (arvioinninkohde_id) 
+        references arvioinninkohde;
 
-    alter table kohdealue_kohde 
-        add constraint FK_kohdealue_kohde_kohdealue 
-        foreign key (kohdealue_id) 
-        references kohdealue;
+    alter table arvioinninkohdealue_arvioinninkohde 
+        add constraint FK_arvioinninkohdealue_arvioinninkohde_arvioinninkohdealue 
+        foreign key (arvioinninkohdealue_id) 
+        references arvioinninkohdealue;
 
-    alter table kriteeri 
-        add constraint FK_kriteeri_osaamistaso 
+    alter table osaamistasonkriteeri 
+        add constraint FK_osaamistasonkriteeri_osaamistaso 
         foreign key (Osaamistaso_id) 
         references osaamistaso;
 
-    alter table kriteeri_tekstipalanen 
-        add constraint FK_kriteeri_tekstipalanen_tekstipalanen 
+    alter table osaamistasonkriteeri_tekstipalanen 
+        add constraint FK_osaamistasonkriteeri_tekstipalanen_tekstipalanen 
         foreign key (tekstipalanen_id) 
         references tekstipalanen;
 
-    alter table kriteeri_tekstipalanen 
-        add constraint FK_kriteeri_tekstipalanen_kriteeri 
-        foreign key (kriteeri_id) 
-        references kriteeri;
+    alter table osaamistasonkriteeri_tekstipalanen 
+        add constraint FK_osaamistasonkriteeri_tekstipalanen_osaamistasonkriteeri 
+        foreign key (osaamistasonkriteeri_id) 
+        references osaamistasonkriteeri;
 
     alter table osaamistaso 
         add constraint FK_osaamistaso_tekstipalanen 

@@ -95,8 +95,8 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         
         Assert.assertNotNull(tutkinnonOsa.getArviointi());
         Assert.assertEquals(
-                tutkinnonOsa.getArviointi().getKohdealueet().get(0).getKohteet().get(0).getArviointiasteikko().getOsaamistasot().size(),
-                tutkinnonOsa.getArviointi().getKohdealueet().get(0).getKohteet().get(0).getKriteerit().size());
+                tutkinnonOsa.getArviointi().getArvioinninKohdealueet().get(0).getArvioinninKohteet().get(0).getArviointiasteikko().getOsaamistasot().size(),
+                tutkinnonOsa.getArviointi().getArvioinninKohdealueet().get(0).getArvioinninKohteet().get(0).getOsaamistasonKriteerit().size());
     }
     
 }

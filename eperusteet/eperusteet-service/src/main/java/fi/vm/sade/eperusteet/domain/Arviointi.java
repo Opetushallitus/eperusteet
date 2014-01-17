@@ -49,11 +49,11 @@ public class Arviointi implements Serializable {
     private TekstiPalanen lisatiedot;
     
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "arviointi_kohdealue", 
+    @JoinTable(name = "arviointi_arvioinninkohdealue", 
             joinColumns = @JoinColumn(name = "arviointi_id"),  
-            inverseJoinColumns = @JoinColumn(name = "kohdealue_id"))
+            inverseJoinColumns = @JoinColumn(name = "arvioinninkohdealue_id"))
     @OrderColumn
-    private List<Kohdealue> kohdealueet;
+    private List<ArvioinninKohdealue> arvioinninKohdealueet;
 
     public Long getId() {
         return id;
@@ -71,12 +71,12 @@ public class Arviointi implements Serializable {
         this.lisatiedot = lisatiedot;
     }
 
-    public List<Kohdealue> getKohdealueet() {
-        return kohdealueet;
+    public List<ArvioinninKohdealue> getArvioinninKohdealueet() {
+        return arvioinninKohdealueet;
     }
 
-    public void setKohdealueet(List<Kohdealue> kohdealueet) {
-        this.kohdealueet = kohdealueet;
+    public void setArvioinninKohdealueet(List<ArvioinninKohdealue> arvioinninKohdealueet) {
+        this.arvioinninKohdealueet = arvioinninKohdealueet;
     }
     
 }

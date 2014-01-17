@@ -36,23 +36,23 @@ import javax.persistence.Table;
  * @author teele1
  */
 @Entity
-@Table(name = "kriteeri")
-public class Kriteeri implements Serializable {
+@Table(name = "osaamistasonkriteeri")
+public class OsaamistasonKriteeri implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Osaamistaso Osaamistaso;
     
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @OrderColumn
-    @JoinTable(name = "kriteeri_tekstipalanen", 
-            joinColumns = @JoinColumn(name = "kriteeri_id"), 
+    @JoinTable(name = "osaamistasonkriteeri_tekstipalanen", 
+            joinColumns = @JoinColumn(name = "osaamistasonkriteeri_id"), 
             inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))
-    private List<TekstiPalanen> tekstialueet;
+    private List<TekstiPalanen> kriteerit;
 
     public Long getId() {
         return id;
@@ -70,12 +70,12 @@ public class Kriteeri implements Serializable {
         this.Osaamistaso = Osaamistaso;
     }
 
-    public List<TekstiPalanen> getTekstialueet() {
-        return tekstialueet;
+    public List<TekstiPalanen> getKriteerit() {
+        return kriteerit;
     }
 
-    public void setTekstialueet(List<TekstiPalanen> tekstialueet) {
-        this.tekstialueet = tekstialueet;
+    public void setKriteerit(List<TekstiPalanen> kriteerit) {
+        this.kriteerit = kriteerit;
     }
 
 }

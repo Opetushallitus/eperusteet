@@ -34,8 +34,8 @@ import javax.validation.constraints.NotNull;
  * @author teele1
  */
 @Entity
-@Table(name = "kohde")
-public class Kohde implements Serializable {
+@Table(name = "arvioinninkohde")
+public class ArvioinninKohde implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
@@ -51,7 +51,7 @@ public class Kohde implements Serializable {
     private Arviointiasteikko Arviointiasteikko;
     
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    private Set<Kriteeri> kriteerit;
+    private Set<OsaamistasonKriteeri> osaamistasonKriteerit;
     
     public Long getId() {
         return id;
@@ -77,12 +77,12 @@ public class Kohde implements Serializable {
         this.Arviointiasteikko = Arviointiasteikko;
     }
 
-    public Set<Kriteeri> getKriteerit() {
-        return kriteerit;
+    public Set<OsaamistasonKriteeri> getOsaamistasonKriteerit() {
+        return osaamistasonKriteerit;
     }
 
-    public void setKriteerit(Set<Kriteeri> kriteerit) {
-        this.kriteerit = kriteerit;
+    public void setOsaamistasonKriteerit(Set<OsaamistasonKriteeri> osaamistasonKriteerit) {
+        this.osaamistasonKriteerit = osaamistasonKriteerit;
     }
     
 }
