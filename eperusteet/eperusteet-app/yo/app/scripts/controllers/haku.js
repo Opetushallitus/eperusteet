@@ -17,7 +17,7 @@ angular.module('eperusteApp')
     $scope.tutkintotyyppi = Haku.hakuParametrit.tyyppi;
     $scope.kontekstit = YleinenData.kontekstit;
     $scope.kieli = YleinenData.kieli;
-    
+
     $scope.koulutusalat = [];
     Koulutusalat.query(
       function(vastaus) {
@@ -25,7 +25,7 @@ angular.module('eperusteApp')
         $scope.koulutusalaMuuttui();
       }
     );
-    
+
 
     $scope.valittuOpintoala = Haku.hakuParametrit.opintoala;
 
@@ -128,10 +128,10 @@ angular.module('eperusteApp')
         opintoala: $scope.valittuOpintoala,
         sivukoko: $scope.sivukoko,
         tyyppi: $scope.tutkintotyyppi,
-        kieli: YleinenData.kieli
+        kieli: YleinenData.kieli,
+        siirtyma: $scope.siirtymaAjalla
       };
       Perusteet.query(Haku.hakuParametrit, hakuVastaus, function(virhe) {
-
         if (virhe.status === 404) {
           hakuVastaus(virhe.data);
         }

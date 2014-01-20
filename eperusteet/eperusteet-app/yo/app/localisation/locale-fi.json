@@ -7,13 +7,14 @@
     "suosikki": "Lisää suosikiksi",
     "suosikit-otsikko": "Suosikit",
     "palauta" : "Palauta",
-    
+
     "haku-otsikko": "Perusteen haku",
     "haku-koulutusala": "Koulutusala",
     "haku-tyyppi": "Tyyppi",
     "haku-nimi": "Nimi",
     "haku-kaikki-alat": "Kaikki koulutusalat",
     "haku-kaikki-tutkinnot": "Kaikki tutkinnot",
+    "haku-näytä-siirtymäajalla-olevat": "Näytä siirtymäajalla olevat",
     "haku-tutkinnon-nimi-placeholder": "Tutkinnon nimi",
     "haku-tulosten-määrä": "Löydettyjen perusteiden määrä:",
     "haku-lisaa-suosikkeja" : "Näytä kaikki",
@@ -22,17 +23,17 @@
     "haku-hakuehdot" : "Hakuehdot",
     "haku-opintoala" : "Opintoala",
     "haku-kaikki-opintoalat" : "Kaikki opintoalat",
-    
+
     "navi-esiopetus": "Esiopetus",
     "navi-perusopetus": "Perusopetus",
     "navi-lukiokoulutus": "Lukiokoulutus",
     "navi-ammatillinen-peruskoulutus": "Ammatillinen peruskoulutus",
     "navi-ammatillinen-aikuiskoulutus": "Ammatillinen aikuiskoulutus",
-           
+
     "muokkaus-uusi-kappale-placeholder": "Uusi kappale",
     "muokkaus-kommentit": "Kommentit",
     "muokkaus-uusi-kommentti-placeholder": "Uusi kommentti",
-    
+
     "koulutusalakoodi-1": "Tekniikan ja liikenteen ala",
     "koulutusalakoodi-2": "Kulttuuriala",
     "koulutusalakoodi-3": "Luonnonvara- ja ympäristöala",
@@ -41,11 +42,11 @@
     "koulutusalakoodi-6": "Matkailu-, ravitsemis- ja talousala",
     "koulutusalakoodi-7": "Sosiaali-, terveys- ja liikunta-ala",
     "koulutusalakoodi-8": "Luonnontieteiden ala",
-    
+
     "tutkintotyyppikoodi-1": "perustutkinto",
     "tutkintotyyppikoodi-2": "ammattitutkinto",
     "tutkintotyyppikoodi-3": "erikoisammattitutkinto",
-    
+
     "opintoalakoodi-1": "Kielitieteet",
     "opintoalakoodi-2": "Muu humanistinen ja kasvatusala",
     "opintoalakoodi-3": "Opetus- ja kasvatustyö",
@@ -88,7 +89,7 @@
     "kielen-vaihto": "Vaihda kieli",
     "suomi": "Suomi",
     "ruotsi": "Svenska",
-    
+
     "tutkintokoodi": "Tutkintokoodi",
     "koulutusalakoodi": "Koulutusalakoodi"
 }
