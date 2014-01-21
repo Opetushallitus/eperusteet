@@ -1,74 +1,74 @@
     create table arviointi (
-        id int8 not null,
-        lisatiedot_id int8,
+        id bigint not null,
+        lisatiedot_id bigint,
         primary key (id)
     );
 
     create table arviointi_arvioinninkohdealue (
-        arviointi_id int8 not null,
-        arvioinninkohdealue_id int8 not null,
-        arvioinninKohdealueet_ORDER int4 not null,
+        arviointi_id bigint not null,
+        arvioinninkohdealue_id bigint not null,
+        arvioinninKohdealueet_ORDER integer not null,
         primary key (arviointi_id, arvioinninKohdealueet_ORDER)
     );
 
     create table arviointiasteikko (
-        id int8 not null,
+        id bigint not null,
         primary key (id)
     );
 
     create table arviointiasteikko_osaamistaso (
-        arviointiasteikko_id int8 not null,
-        osaamistasot_id int8 not null,
-        osaamistasot_ORDER int4 not null,
+        arviointiasteikko_id bigint not null,
+        osaamistasot_id bigint not null,
+        osaamistasot_ORDER integer not null,
         primary key (arviointiasteikko_id, osaamistasot_ORDER)
     );
 
     create table arvioinninkohde (
-        id int8 not null,
-        Arviointiasteikko_id int8,
-        otsikko_id int8,
+        id bigint not null,
+        Arviointiasteikko_id bigint,
+        otsikko_id bigint,
         primary key (id)
     );
 
     create table arvioinninkohde_osaamistasonkriteeri (
-        arvioinninkohde_id int8 not null,
-        osaamistasonKriteerit_id int8 not null,
+        arvioinninkohde_id bigint not null,
+        osaamistasonKriteerit_id bigint not null,
         primary key (arvioinninkohde_id, osaamistasonKriteerit_id)
     );
 
     create table arvioinninkohdealue (
-        id int8 not null,
-        otsikko_id int8,
+        id bigint not null,
+        otsikko_id bigint,
         primary key (id)
     );
 
     create table arvioinninkohdealue_arvioinninkohde (
-        arvioinninkohdealue_id int8 not null,
-        arvioinninkohde_id int8 not null,
-        arvioinninKohteet_ORDER int4 not null,
+        arvioinninkohdealue_id bigint not null,
+        arvioinninkohde_id bigint not null,
+        arvioinninKohteet_ORDER integer not null,
         primary key (arvioinninkohdealue_id, arvioinninKohteet_ORDER)
     );
 
     create table osaamistasonkriteeri (
-        id int8 not null,
-        Osaamistaso_id int8,
+        id bigint not null,
+        Osaamistaso_id bigint,
         primary key (id)
     );
 
     create table osaamistasonkriteeri_tekstipalanen (
-        osaamistasonkriteeri_id int8 not null,
-        tekstipalanen_id int8 not null,
-        kriteerit_ORDER int4 not null,
+        osaamistasonkriteeri_id bigint not null,
+        tekstipalanen_id bigint not null,
+        kriteerit_ORDER integer not null,
         primary key (osaamistasonkriteeri_id, kriteerit_ORDER)
     );
 
     create table osaamistaso (
-        id int8 not null,
-        otsikko_id int8,
+        id bigint not null,
+        otsikko_id bigint,
         primary key (id)
     );
 
-    alter table tutkinnonosa add column arviointi_id int8;
+    alter table tutkinnonosa add column arviointi_id bigint;
 
     alter table arviointi_arvioinninkohdealue 
         add constraint UK_arviointi_arvioinninkohdealue unique (arvioinninkohdealue_id);
