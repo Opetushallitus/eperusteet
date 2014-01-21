@@ -1,6 +1,6 @@
 CREATE TABLE id_table (id bigint);
 
-// -------------------------------------------------------------- //
+/* -------------------------------------------------------------- */
 
 insert into arviointiasteikko values (1);
 
@@ -14,7 +14,7 @@ insert into arviointiasteikko_osaamistaso(arviointiasteikko_id, osaamistasot_id,
 
 delete from id_table;
 
-// -------------------------------------------------------------- //
+/* -------------------------------------------------------------- */
 
 insert into arviointiasteikko values (2);
 
@@ -48,7 +48,7 @@ insert into arviointiasteikko_osaamistaso(arviointiasteikko_id, osaamistasot_id,
 
 delete from id_table;
 
-// -------------------------------------------------------------- //
+/* -------------------------------------------------------------- */
 
 insert into arviointiasteikko values (3);
 
