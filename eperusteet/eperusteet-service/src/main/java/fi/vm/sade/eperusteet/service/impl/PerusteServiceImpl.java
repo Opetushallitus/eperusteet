@@ -15,8 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-
 /**
  *
  * @author jhyoty
@@ -25,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PerusteServiceImpl implements PerusteService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceImpl.class);
-    
+
     @Autowired
     PerusteRepository perusteet;
 
@@ -34,12 +32,12 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Override
     public Page<Peruste> getAll(PageRequest page, String kieli) {
-        return findBy(page, null, null, null, kieli);
+        return findBy(page, null, null, null, kieli, null);
     }
 
     @Override
-    public Page<Peruste> findBy(PageRequest page, String nimi, List<String> ala, List<String> tyyppi, String kieli) {
-       return perusteet.findBy(Kieli.of(kieli), nimi, ala, tyyppi, page);
+    public Page<Peruste> findBy(PageRequest page, String nimi, List<String> koulutusala, List<String> tyyppi, String kieli, List<String> opintoala) {
+        return perusteet.findBy(Kieli.of(kieli), nimi, koulutusala, tyyppi, page, opintoala);
     }
 
     @Override
@@ -54,7 +52,7 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Override
     @Transactional
-    public PerusteenOsaViite lisääViite(final Long parentId, final Long seuraavaViite, PerusteenOsaViite viite) {
+    public PerusteenOsaViite addViite(final Long parentId, final Long seuraavaViite, PerusteenOsaViite viite) {
         LOG.info("ennen = " + seuraavaViite);
         PerusteenOsaViite v = viitteet.findOne(parentId);
         viite.setVanhempi(v);

@@ -37,12 +37,13 @@ public class PerusteController {
             @RequestParam(value = "nimi", required = false) String nimi,
             @RequestParam(value = "ala", required = false) List<String> ala,
             @RequestParam(value = "tyyppi", required = false) List<String> tyyppi,
-            @RequestParam(value = "kieli", required = false, defaultValue = "fi") String kieli
+            @RequestParam(value = "kieli", required = false, defaultValue = "fi") String kieli,
+            @RequestParam(value = "opintoala", required = false) List<String> opintoala
     ) {
         PageRequest p = new PageRequest(sivu, Math.min(sivukoko, 100));
         Page<Peruste> r;
 
-        r = service.findBy(p, nimi, ala, tyyppi, kieli);
+        r = service.findBy(p, nimi, ala, tyyppi, kieli, opintoala);
 
         return new ResponseEntity<>(r,
                                     ResponseHeaders.cacheHeaders(7, TimeUnit.MINUTES),
@@ -66,7 +67,7 @@ public class PerusteController {
             @PathVariable("id") final Long viiteId,
             @RequestParam(value = "ennen", required = false) Long ennen, @RequestBody PerusteenOsaViite viite) {
 
-        return new ResponseEntity<>(service.lisääViite(viiteId, ennen, viite), HttpStatus.CREATED);
+        return new ResponseEntity<>(service.addViite(viiteId, ennen, viite), HttpStatus.CREATED);
     }
 
 }

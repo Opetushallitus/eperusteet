@@ -6,6 +6,7 @@ angular.module('eperusteApp')
       nimi: null,
       ala: '',
       tyyppi: '',
-      kieli: 'fi'
+      kieli: 'fi',
+      opintoala: ''
     };
   });

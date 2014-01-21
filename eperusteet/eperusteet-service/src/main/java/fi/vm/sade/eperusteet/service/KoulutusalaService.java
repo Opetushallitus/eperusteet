@@ -13,36 +13,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.domain;
+
+package fi.vm.sade.eperusteet.service;
+
+import fi.vm.sade.eperusteet.domain.Koulutusala;
+import java.util.List;
 
 /**
  *
- * @author jhyoty
+ * @author jussini
  */
-public enum Kieli {
-
-    FI("fi"),
-    SV("sv"),
-    EN("en");
-
-    private final String koodi;
-
-    private Kieli(String koodi) {
-        this.koodi = koodi;
-    }
-
-    @Override
-    public String toString() {
-        return koodi;
-    }
-
-    public static Kieli of(String koodi) {
-        for (Kieli k : values()) {
-            if (k.koodi.equalsIgnoreCase(koodi)) {
-                return k;
-            }
-        }
-        throw new IllegalArgumentException(koodi + " ei ole kelvollinen kielikoodi");
-    }
-
+public interface KoulutusalaService {
+     Koulutusala get(final Long id);
+     List<Koulutusala> getAll();          
 }

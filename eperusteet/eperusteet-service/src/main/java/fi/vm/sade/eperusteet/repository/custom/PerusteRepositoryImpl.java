@@ -15,10 +15,14 @@
  */
 package fi.vm.sade.eperusteet.repository.custom;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutusala_;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti_;
+import fi.vm.sade.eperusteet.domain.Opintoala;
+import fi.vm.sade.eperusteet.domain.Opintoala_;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Peruste_;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
@@ -29,10 +33,13 @@ import java.util.List;
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.annotations.QueryHints;
@@ -58,22 +65,23 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
      *
      * @param kieli {@link Kieli}. Ei voi olla null
      * @param nimi Perusteen nimi. Voi olla null.
-     * @param ala Lista koulutusalakoodeja. Voi olla null.
+     * @param koulutusala Lista koulutusalakoodeja. Voi olla null.
      * @param tyyppi Lista perusteen tyyppejä. Voi olla null.
      * @param page Sivutusmääritys.
+     * @param opintoala Lista opintoalakoodeja. Voi olla null.
      * @return Yhden hakusivun verran vastauksia
      */
     @Override
-    public Page<Peruste> findBy(Kieli kieli, String nimi, List<String> ala, List<String> tyyppi, Pageable page) {
+    public Page<Peruste> findBy(Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, Pageable page, List<String> opintoala) {
 
-        TypedQuery<Long> countQuery = getCountQuery(kieli, nimi, ala, tyyppi);
-        TypedQuery<Peruste> query = getQuery(kieli, nimi, ala, tyyppi);
+        TypedQuery<Long> countQuery = getCountQuery(kieli, nimi, koulutusala, tyyppi, opintoala);
+        TypedQuery<Tuple> query = getQuery(kieli, nimi, koulutusala, tyyppi, opintoala);
         if (page != null) {
             query.setFirstResult(page.getOffset());
             query.setMaxResults(page.getPageSize());
         }
 
-        return new PageImpl<>(query.getResultList(), page, countQuery.getSingleResult());
+        return new PageImpl<>(Lists.transform(query.getResultList(), EXTRACT_PERUSTE), page, countQuery.getSingleResult());
     }
 
     @Override
@@ -87,44 +95,55 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         return p;
     }
 
-    private TypedQuery<Peruste> getQuery(Kieli kieli, String nimi, List<String> ala, List<String> tyyppi) {
+    private TypedQuery<Tuple> getQuery(Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, List<String> opintoala) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Peruste> query = cb.createQuery(Peruste.class);
+        CriteriaQuery<Tuple> query = cb.createTupleQuery();
         Root<Peruste> root = query.from(Peruste.class);
         Join<TekstiPalanen, LokalisoituTeksti> teksti = root.join(Peruste_.nimi).join(TekstiPalanen_.teksti);
-        Predicate pred = buildPredicate(root, teksti, cb, kieli, nimi, ala, tyyppi);
-        query.select(root).where(pred).orderBy(cb.asc(cb.lower(teksti.get(LokalisoituTeksti_.teksti))));
-
+        Predicate pred = buildPredicate(root, teksti, cb, kieli, nimi, koulutusala, tyyppi, opintoala);
+        query.distinct(true);
+        final Expression<String> n = cb.lower(teksti.get(LokalisoituTeksti_.teksti));
+        query.multiselect(root, n).where(pred).orderBy(cb.asc(n));
         return em.createQuery(query);
     }
 
-    private TypedQuery<Long> getCountQuery(Kieli kieli, String nimi, List<String> ala, List<String> tyyppi) {
+    private TypedQuery<Long> getCountQuery(Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, List<String> opintoala) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
         Root<Peruste> root = query.from(Peruste.class);
         Join<TekstiPalanen, LokalisoituTeksti> teksti = root.join(Peruste_.nimi).join(TekstiPalanen_.teksti);
-        Predicate pred = buildPredicate(root, teksti, cb, kieli, nimi, ala, tyyppi);
-        query.select(cb.count(root)).where(pred);
+        Predicate pred = buildPredicate(root, teksti, cb, kieli, nimi, koulutusala, tyyppi, opintoala);
+        query.select(cb.countDistinct(root)).where(pred);
         return em.createQuery(query);
     }
 
     private Predicate buildPredicate(
-            Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb,
-            Kieli kieli, String nimi, List<String> ala, List<String> tyyppi) {
+            Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, List<String> opintoalat) {
 
         Predicate pred = cb.equal(teksti.get(LokalisoituTeksti_.kieli), kieli);
         if (nimi != null) {
             pred = cb.and(pred, cb.like(cb.lower(teksti.get(LokalisoituTeksti_.teksti)), cb.literal(RepositoryUtil.kuten(nimi))));
         }
-        if (ala != null && !ala.isEmpty()) {
-            pred = cb.and(pred, root.get(Peruste_.koulutusala).get(Koulutusala_.koodi).in(ala));
+        if (koulutusala != null && !koulutusala.isEmpty()) {
+            pred = cb.and(pred, root.get(Peruste_.koulutusala).get(Koulutusala_.koodi).in(koulutusala));
         }
         if (tyyppi != null && !tyyppi.isEmpty()) {
             pred = cb.and(pred, root.get(Peruste_.tutkintokoodi).in(tyyppi));
         }
+        if (opintoalat != null && !opintoalat.isEmpty()) {
+            ListJoin<Peruste, Opintoala> ala = root.join(Peruste_.opintoalat);
+            pred = cb.and(pred, ala.get(Opintoala_.koodi).in(opintoalat));
+        }
         return pred;
     }
+
+    private static final Function<Tuple, Peruste> EXTRACT_PERUSTE = new Function<Tuple, Peruste>() {
+        @Override
+        public Peruste apply(Tuple f) {
+            return f.get(0, Peruste.class);
+        }
+    };
 
 }
