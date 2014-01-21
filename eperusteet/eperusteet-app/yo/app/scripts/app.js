@@ -76,8 +76,9 @@ angular.module('eperusteApp', ['ngRoute', 'ngSanitize', 'ngResource', 'pascalpre
     $httpProvider.interceptors.push(function($rootScope, $q) {
       return {
         'response': function(response) {
-          var uudelleenohjausStatuskoodit = [403, 500];
+          var uudelleenohjausStatuskoodit = [401, 403, 500];
           if (_.indexOf(uudelleenohjausStatuskoodit, response.status) !== -1) {
+            // TODO: ota käyttöön poistamalla kommentista
             // $rootScope.$emit('event:uudelleenohjattava', response.status);
           }
           return response || $q.when(response);
