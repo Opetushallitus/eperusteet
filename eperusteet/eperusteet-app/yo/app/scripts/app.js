@@ -44,10 +44,6 @@ angular.module('eperusteApp', ['ngRoute', 'ngSanitize', 'ngResource', 'pascalpre
         templateUrl: 'views/muokkaus.html',
         controller: 'MuokkausCtrl'
       })
-      .when('/leikkikentta', {
-        templateUrl: 'views/leikkikentta.html',
-        controller: 'LeikkikenttaCtrl'
-      })
       .when('/selaus/:konteksti', {
         templateUrl: 'views/haku.html',
         controller: 'HakuCtrl'
