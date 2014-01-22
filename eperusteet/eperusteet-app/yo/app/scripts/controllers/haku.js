@@ -35,56 +35,7 @@ angular.module('eperusteApp')
       2: 'tutkintotyyppikoodi-2',
       3: 'tutkintotyyppikoodi-3'
     };
-    $scope.koulutusalakoodit = {
-      1: 'koulutusalakoodi-1',
-      2: 'koulutusalakoodi-2',
-      3: 'koulutusalakoodi-3',
-      4: 'koulutusalakoodi-4',
-      5: 'koulutusalakoodi-5',
-      6: 'koulutusalakoodi-6',
-      7: 'koulutusalakoodi-7',
-      8: 'koulutusalakoodi-8'
-    };
-    $scope.opintoalakoodit = {
-      1: 'opintoalakoodi-1',
-      2: 'opintoalakoodi-2',
-      3: 'opintoalakoodi-3',
-      4: 'opintoalakoodi-4',
-      5: 'opintoalakoodi-5',
-      6: 'opintoalakoodi-6',
-      7: 'opintoalakoodi-7',
-      8: 'opintoalakoodi-8',
-      9: 'opintoalakoodi-9',
-      10: 'opintoalakoodi-10',
-      11: 'opintoalakoodi-11',
-      12: 'opintoalakoodi-12',
-      13: 'opintoalakoodi-13',
-      14: 'opintoalakoodi-14',
-      15: 'opintoalakoodi-15',
-      16: 'opintoalakoodi-16',
-      17: 'opintoalakoodi-17',
-      18: 'opintoalakoodi-18',
-      19: 'opintoalakoodi-19',
-      20: 'opintoalakoodi-20',
-      21: 'opintoalakoodi-21',
-      22: 'opintoalakoodi-22',
-      23: 'opintoalakoodi-23',
-      24: 'opintoalakoodi-24',
-      25: 'opintoalakoodi-25',
-      26: 'opintoalakoodi-26',
-      27: 'opintoalakoodi-27',
-      28: 'opintoalakoodi-28',
-      29: 'opintoalakoodi-29',
-      30: 'opintoalakoodi-30',
-      31: 'opintoalakoodi-31',
-      32: 'opintoalakoodi-32',
-      33: 'opintoalakoodi-33',
-      34: 'opintoalakoodi-34',
-      35: 'opintoalakoodi-35',
-      36: 'opintoalakoodi-36',
-      37: 'opintoalakoodi-37',
-      38: 'opintoalakoodi-38'
-    };
+
     var alustaKonteksti = function() {
       // Jos ollaan ammatillisen peruskoulutuksen kontekstissa, niin tutkintotyypiksi asetetaan perustutkinto
       // ja tyhjennetään opintoalan valinta

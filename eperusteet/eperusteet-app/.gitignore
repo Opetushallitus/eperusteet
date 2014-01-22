@@ -1,5 +1,5 @@
 target/
 *.swp
-
+npm-debug.log
 
 
