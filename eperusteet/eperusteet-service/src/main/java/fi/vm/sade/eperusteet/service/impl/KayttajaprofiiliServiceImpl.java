@@ -25,6 +25,8 @@ import fi.vm.sade.eperusteet.service.util.DtoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,12 +51,14 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
     @Override
     @Transactional(readOnly = true)
     public KayttajaProfiiliDto get(final Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        LOG.info(auth.getName());
         return mapper.map(kayttajaprofiiliRepo.findOneEager(id), KayttajaProfiiliDto.class);
     }
 
     @Override
     @Transactional
-    public KayttajaProfiiliDto addSuosikki(final Long id, final Long perusteId) {
+    public KayttajaProfiiliDto addSuosikki(final Long id, final Long perusteId) {     
         LOG.info("addSuosikki " + perusteId);
 
         Kayttajaprofiili kayttajaprofiili = kayttajaprofiiliRepo.findOneEager(id);
