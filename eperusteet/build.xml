@@ -4,7 +4,7 @@
     <target name="deploy-to-remote-tomcat">
 <!--
 deploy to luokka shell command:
-#ant -f build.eperusteet.xml -Dtomcat-host=luokka -Dtomcat-port=8308
+#ant -f build.eperusteet.xml -Dtomcat-host=luokka -Dtomcat-port=8422
 -->
                 <property name="oph.name" value="eperusteet"/>
                 <property name="pom.version" value="1.0-SNAPSHOT"/>
