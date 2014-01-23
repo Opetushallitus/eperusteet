@@ -1,6 +1,6 @@
 'use strict';
+/*global _*/
 
-var once = 0;
 
 angular.module('eperusteApp', ['ngRoute', 'ngSanitize', 'ngResource', 'pascalprecht.translate', 'ui.bootstrap'])
   .constant('SERVICE_LOC','/eperusteet-service/api')
@@ -89,7 +89,9 @@ angular.module('eperusteApp', ['ngRoute', 'ngSanitize', 'ngResource', 'pascalpre
     var onAvattuna = false;
 
     $rootScope.$on('event:uudelleenohjattava', function(event, status) {
-      if (onAvattuna) return;
+      if (onAvattuna) {
+        return;
+      }
       onAvattuna = true;
 
       var uudelleenohjausModaali = $modal.open({
