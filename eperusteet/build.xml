@@ -38,11 +38,11 @@ deploy to luokka shell command:
                 <scp todir="tomcat@${tomcat-host}:${tomcat.home}/webapps/"
                keyfile="${ssh.keyfile}" passphrase="${ssh.keypass}" >
                
-                               <fileset dir="artifacts/eperusteet/eperusteet-app/target" >
+                               <fileset dir="artifacts/eperusteet-app/target" >
                                        <include name="eperusteet-app-1.0-SNAPSHOT.war"/>
                                </fileset>
                         
-                                <fileset dir="artifacts/eperusteet/eperusteet-service/target" >
+                                <fileset dir="artifacts/eperusteet-service/target" >
                                        <include name="eperusteet-service.war"/>
                                </fileset>
 
