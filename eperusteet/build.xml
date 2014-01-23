@@ -38,7 +38,7 @@ deploy to luokka shell command:
                 <scp todir="tomcat@${tomcat-host}:${tomcat.home}/webapps/"
                keyfile="${ssh.keyfile}" passphrase="${ssh.keypass}" >
                
-                               <fileset dir="artifacts/eperusteet-app-1.0-SNAPSHOT/target" >
+                               <fileset dir="artifacts/eperusteet-app/target" >
                                        <include name="eperusteet-app-1.0-SNAPSHOT.war"/>
                                </fileset>
                         
@@ -51,10 +51,10 @@ deploy to luokka shell command:
                 <echo>unzip files to wepabbs -directory...</echo>
         <sshexec command="cd ${tomcat.home}/webapps
 ls -la
-mkdir eperusteet-app-1.0-SNAPSHOT;
+mkdir eperusteet-app;
 mkdir eperusteet-service;
 
-unzip -qo -dperusteet-app-1.0-SNAPSHOT eperusteet-app-1.0-SNAPSHOT.war;
+unzip -qo -dperusteet-app eperusteet-app-1.0-SNAPSHOT.war;
 unzip -qo -deperusteet-service eperusteet-service.war;
 rm -rf *.war;"
                 host="${tomcat-host}" username="tomcat" keyfile="${ssh.keyfile}"
@@ -73,12 +73,12 @@ rm -rf *.war;"
                                 
                 <echo>Wait for service http-url</echo>
                 <waitfor maxwait="10000" checkevery="500" >
-                        <http url="http://${tomcat-host}/eperusteet-app-1.0-SNAPSHOT"/>
+                        <http url="http://${tomcat-host}/eperusteet-app"/>
                 </waitfor>
                 <fail message="App did not come up. Check your log files, fix and try again. Good Luck :-).">
                         <condition>
                                 <not>
-                                        <http url="http://${tomcat-host}/eperusteet-app-1.0-SNAPSHOT" />
+                                        <http url="http://${tomcat-host}/eperusteet-app" />
                                 </not>
                         </condition>
                 </fail>
