@@ -46,6 +46,111 @@ angular.module('eperusteApp')
       {teksti: 'Määräykset optio 4', valittu: false},
       {teksti: 'Määräykset optio 5', valittu: false}
     ];
+    
+    /********* TESTIDATAA UI PROTOILUUN ******************************/
+    $scope.arvioinninKohdeAlueet = [
+      {
+        otsikko: 'Työprosessin hallinta',
+        arvioinninKohteet: [{
+            otsikko: 'Suunnitelmallinen työskentely',
+            osaamistasonKriteerit: [
+              {
+                kriteeri: 'Opiskelija tai tutkinnon suorittaja suunnittelee työnsä etukäteen',
+                osaamistaso: {
+                  id: 3,
+                  otsikko: 'Hyvä H2'
+                }
+              },
+              {
+                kriteeri: 'Opiskelija tai tutkinnon suorittaja toimii vähäisellä suunnittelulla',
+                osaamistaso: {
+                  id: 2,
+                  otsikko: 'Tyydyttävä T1'
+                }
+              },
+              {
+                kriteeri: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut laoreet lorem non.',
+                osaamistaso: {
+                  id: 2,
+                  otsikko: 'Tyydyttävä T1'
+                }
+              },
+              {
+                kriteeri: 'Opiskelija tai tutkinnon suorittaja suunnittelee työnsä yhteistyössä asiakkaan kanssa',
+                osaamistaso: {
+                  id: 4,
+                  otsikko: 'Kiitettävä K3'
+                }
+              }
+            ]
+          },
+          {
+            otsikko: 'Työvaiheiden hallinta',
+            osaamistasonKriteerit: [
+              {
+                kriteeri: 'Opiskelija tai tutkinnon suorittaja valitsee itsenäisesti työhön tarvittavia laitteita',
+                osaamistaso: {
+                  id: 3,
+                  otsikko: 'Hyvä H2'
+                }
+              },
+              {
+                kriteeri: 'Opiskelija tai tutkinnon suorittaja valitsee ohjatusti työhön tarvittavia laitteita',
+                osaamistaso: {
+                  id: 2,
+                  otsikko: 'Tyydyttävä T1'
+                }
+              },
+              {
+                kriteeri: 'Opiskelija tai tutkinnon suorittaja valitsee työhön tarvittavia laitteita ongelman ratkaisua ja luovuutta osoittaen',
+                osaamistaso: {
+                  id: 4,
+                  otsikko: 'Kiitettävä K3'
+                }
+              },
+              {
+                kriteeri: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut laoreet lorem non.',
+                osaamistaso: {
+                  id: 4,
+                  otsikko: 'Kiitettävä K3'
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        otsikko: 'Työmenetelmien, välineiden ja materiaalin hallinta',
+        arvioinninKohteet: [{
+            otsikko: 'Mittaukset ja työvälineet',
+            osaamistasonKriteerit: [
+              {
+                kriteeri: 'Opiskelija tai tutkinnon suorittaja osaa suorittaa mittauksia ja ohjeistettuna säätää mittalaitteita tarpeiden mukaisesti',
+                osaamistaso: {
+                  id: 3,
+                  otsikko: 'Hyvä H2'
+                }
+              },
+              {
+                kriteeri: 'Opiskelija tai tutkinnon suorittaja osaa suorittaa mittauksia ohjeiden mukaisesti',
+                osaamistaso: {
+                  id: 2,
+                  otsikko: 'Tyydyttävä T1'
+                }
+              },
+              {
+                kriteeri: 'Opiskelija tai tutkinnon suorittaja osaa suorittaa mittauksia, jotka vaativat mittareiden asetuksien muuttamista',
+                osaamistaso: {
+                  id: 4,
+                  otsikko: 'Kiitettävä K3'
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ];
+    /********* TESTIDATA LOPPUU *********************************************/
 
 
     var hakuAloitettuKäsittelijä = function() {
