@@ -35,7 +35,7 @@
 <div>
   <ul class="list-unstyled">
     <li  ng-repeat="peruste in perusteet.data">
-      <a ng-href="#/selaus/{{konteksti}}/{{peruste.id}}"><span ng-bind-html="korosta(valitseKieli(peruste.nimi))"></span>, {{peruste.koulutusala.koodi| koulutusalakoodiFilter:koulutusalakoodit | translate}}</a>
+      <a ng-href="#/selaus/{{konteksti}}/{{peruste.id}}"><span ng-bind-html="korosta(valitseKieli(peruste.nimi))"></span>, {{'koulutusalakoodi-' + peruste.koulutusala.koodi| translate}}</a>
     </li>
   </ul>
   <ul class="pagination">
