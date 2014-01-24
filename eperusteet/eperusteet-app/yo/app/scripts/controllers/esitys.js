@@ -150,6 +150,28 @@ angular.module('eperusteApp')
         ]
       }
     ];
+    
+    $scope.arviointiasteikko =  [
+      {
+          id : 2,
+          otsikko : {
+            sv : '[Tyydyttävä T1]',
+            fi : 'Tyydyttävä T1'
+          }
+        }, {
+          id : 3,
+          otsikko : {
+            fi : 'Hyvä H2',
+            sv : '[Hyvä H2]'
+          }
+        }, {
+          id : 4,
+          otsikko : {
+            fi : 'Kiitettävä K3',
+            sv : '[Kiitettävä K3]'
+          }
+        }
+      ];
     /********* TESTIDATA LOPPUU *********************************************/
 
 
