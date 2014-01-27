@@ -1,6 +1,6 @@
 /*
- * Copyright Gofore Oy. 
- * http://www.gofore.com/ 
+ * Copyright Gofore Oy.
+ * http://www.gofore.com/
  */
 package fi.vm.sade.eperusteet.domain;
 
@@ -36,19 +36,22 @@ public class Peruste implements Serializable {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private TekstiPalanen nimi;
     private String tutkintokoodi;
-    
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "koulutusala_id")
     private Koulutusala koulutusala;
-    
+
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "peruste_opintoala", 
-            joinColumns = @JoinColumn(name = "peruste_id"), 
+    @JoinTable(name = "peruste_opintoala",
+            joinColumns = @JoinColumn(name = "peruste_id"),
             inverseJoinColumns = @JoinColumn(name = "opintoala_id"))
     private List<Opintoala> opintoalat;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date paivays;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date siirtyma;
 
     @OneToOne(fetch = FetchType.LAZY)
     private PerusteenOsaViite rakenne;
@@ -92,13 +95,21 @@ public class Peruste implements Serializable {
     public void setOpintoalat(List<Opintoala> opintoalat) {
         this.opintoalat = opintoalat;
     }
-    
+
     public Date getPaivays() {
         return paivays;
     }
 
     public void setPaivays(Date paivays) {
         this.paivays = paivays;
+    }
+
+    public Date getSiirtyma() {
+        return siirtyma;
+    }
+
+    public void setSiirtyma(Date siirtyma) {
+        this.siirtyma = siirtyma;
     }
 
     public PerusteenOsaViite getRakenne() {

@@ -34,6 +34,7 @@ public class PerusteController {
     public ResponseEntity<Page<Peruste>> getAll(
             @RequestParam(value = "sivu", required = false, defaultValue = "0") int sivu,
             @RequestParam(value = "sivukoko", required = false, defaultValue = "25") int sivukoko,
+            @RequestParam(value = "siirtyma", required = false) boolean siirtyma,
             @RequestParam(value = "nimi", required = false) String nimi,
             @RequestParam(value = "ala", required = false) List<String> ala,
             @RequestParam(value = "tyyppi", required = false) List<String> tyyppi,
@@ -42,8 +43,9 @@ public class PerusteController {
     ) {
         PageRequest p = new PageRequest(sivu, Math.min(sivukoko, 100));
         Page<Peruste> r;
+        System.out.println("wat");
 
-        r = service.findBy(p, nimi, ala, tyyppi, kieli, opintoala);
+        r = service.findBy(p, nimi, ala, tyyppi, kieli, opintoala, siirtyma);
 
         return new ResponseEntity<>(r,
                                     ResponseHeaders.cacheHeaders(7, TimeUnit.MINUTES),

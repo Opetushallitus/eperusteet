@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.repository.custom;
 
+import java.util.Date;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.Kieli;
@@ -69,13 +70,14 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
      * @param tyyppi Lista perusteen tyyppejä. Voi olla null.
      * @param page Sivutusmääritys.
      * @param opintoala Lista opintoalakoodeja. Voi olla null.
+     * @param siirtyma Näyttää myös siirtymäajalla olevat.
      * @return Yhden hakusivun verran vastauksia
      */
     @Override
-    public Page<Peruste> findBy(Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, Pageable page, List<String> opintoala) {
+    public Page<Peruste> findBy(Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, Pageable page, List<String> opintoala, boolean siirtyma) {
 
-        TypedQuery<Long> countQuery = getCountQuery(kieli, nimi, koulutusala, tyyppi, opintoala);
-        TypedQuery<Tuple> query = getQuery(kieli, nimi, koulutusala, tyyppi, opintoala);
+        TypedQuery<Long> countQuery = getCountQuery(kieli, nimi, koulutusala, tyyppi, opintoala, siirtyma);
+        TypedQuery<Tuple> query = getQuery(kieli, nimi, koulutusala, tyyppi, opintoala, siirtyma);
         if (page != null) {
             query.setFirstResult(page.getOffset());
             query.setMaxResults(page.getPageSize());
@@ -95,32 +97,32 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         return p;
     }
 
-    private TypedQuery<Tuple> getQuery(Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, List<String> opintoala) {
+    private TypedQuery<Tuple> getQuery(Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, List<String> opintoala, boolean siirtyma) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Tuple> query = cb.createTupleQuery();
         Root<Peruste> root = query.from(Peruste.class);
         Join<TekstiPalanen, LokalisoituTeksti> teksti = root.join(Peruste_.nimi).join(TekstiPalanen_.teksti);
-        Predicate pred = buildPredicate(root, teksti, cb, kieli, nimi, koulutusala, tyyppi, opintoala);
+        Predicate pred = buildPredicate(root, teksti, cb, kieli, nimi, koulutusala, tyyppi, opintoala, siirtyma);
         query.distinct(true);
         final Expression<String> n = cb.lower(teksti.get(LokalisoituTeksti_.teksti));
         query.multiselect(root, n).where(pred).orderBy(cb.asc(n));
         return em.createQuery(query);
     }
 
-    private TypedQuery<Long> getCountQuery(Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, List<String> opintoala) {
+    private TypedQuery<Long> getCountQuery(Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, List<String> opintoala, boolean siirtyma) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
         Root<Peruste> root = query.from(Peruste.class);
         Join<TekstiPalanen, LokalisoituTeksti> teksti = root.join(Peruste_.nimi).join(TekstiPalanen_.teksti);
-        Predicate pred = buildPredicate(root, teksti, cb, kieli, nimi, koulutusala, tyyppi, opintoala);
+        Predicate pred = buildPredicate(root, teksti, cb, kieli, nimi, koulutusala, tyyppi, opintoala, siirtyma);
         query.select(cb.countDistinct(root)).where(pred);
         return em.createQuery(query);
     }
 
     private Predicate buildPredicate(
-            Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, List<String> opintoalat) {
+            Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, List<String> opintoalat, boolean siirtyma) {
 
         Predicate pred = cb.equal(teksti.get(LokalisoituTeksti_.kieli), kieli);
         if (nimi != null) {
@@ -135,6 +137,11 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         if (opintoalat != null && !opintoalat.isEmpty()) {
             ListJoin<Peruste, Opintoala> ala = root.join(Peruste_.opintoalat);
             pred = cb.and(pred, ala.get(Opintoala_.koodi).in(opintoalat));
+        }
+        if (!siirtyma) {
+            Expression<Date> rsiirtyma = root.get(Peruste_.siirtyma);
+            pred = cb.and(pred, cb.or(cb.isNull(rsiirtyma),
+                                      cb.greaterThan(rsiirtyma, cb.currentDate())));
         }
         return pred;
     }

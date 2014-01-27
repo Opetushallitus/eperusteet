@@ -1,6 +1,6 @@
 <div class="panel panel-default">
     <div class="panel-heading">{{'haku-hakuehdot'|translate}}<span class="btn btn-default btn-sm pull-right" style="margin-top: -5px" ng-click="tyhjenna()" translate>palauta</span></div>
-  <form class="panel-body">        
+  <form class="panel-body">
     <div  class="form-group col-xs-6">
       <label for="tutkinnon-nimi" translate>haku-nimi</label>
       <input id="tutkinnon-nimi" type="text" class="form-control" placeholder="{{'haku-tutkinnon-nimi-placeholder'| translate}}" ng-model="query" ng-change="hakuMuuttui()">
@@ -26,6 +26,10 @@
         <option value="" translate>haku-kaikki-opintoalat</option>
         <option ng-repeat="ala in opintoalat" value="{{ala.koodi}}" ng-selected="opintoala === ala.koodi">{{'opintoalakoodi-'+ala.koodi| translate}}</option>
       </select>
+    </div>
+    <div class="clearfix"></div>
+    <div class="form-group col-xs-12">
+      <input type="checkbox" ng-model="siirtymaAjalla" ng-change="hakuMuuttui()"> {{ 'haku-näytä-siirtymäajalla-olevat' | translate }}</input>
     </div>
   </form>
 </div>

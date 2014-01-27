@@ -79,10 +79,10 @@ angular.module('eperusteApp')
         opintoala: $scope.valittuOpintoala,
         sivukoko: $scope.sivukoko,
         tyyppi: $scope.tutkintotyyppi,
-        kieli: YleinenData.kieli
+        kieli: YleinenData.kieli,
+        siirtyma: $scope.siirtymaAjalla
       };
       Perusteet.query(Haku.hakuParametrit, hakuVastaus, function(virhe) {
-
         if (virhe.status === 404) {
           hakuVastaus(virhe.data);
         }
