@@ -61,5 +61,6 @@
         </configuration>
       </plugin>
     </plugins>
+    <finalName>eperusteet-app</finalName>
   </build>
 </project>
