@@ -58,30 +58,7 @@ European Union Public Licence for more details.
       Päiväys: {{perusteValinta.paivays|date:'dd.MM.yyyy HH:mm:ss'}} <br>
     </p>
     
-    <div class="panel panel-default" ng-repeat="kohdealue in arvioinninKohdeAlueet">
-      <div class="panel-heading">
-          <h3 class="panel-title">{{kohdealue.otsikko}}</h3></div>
-      <div class="panel-body">
-          <accordion close-others="false">
-              <accordion-group heading="{{arvioinninkohde.otsikko}}" ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet">
-                  <div ng-repeat="aste in arviointiasteikko">
-                      <div class="col-md-4">
-                          {{aste.otsikko.fi}}
-                      </div>
-                      <div class="col-md-8">
-                          <div ng-repeat="osaamistasonKriteeri in arvioinninkohde.osaamistasonKriteerit | filter:{osaamistaso.id: aste.id}">
-                              <ul>
-                                  <li>
-                                      {{osaamistasonKriteeri.kriteeri}}
-                                  </li>
-                              </ul>
-                          </div>
-                  </div>
-                  </div>
-               </accordion-group>
-          </accordion>
-      </div>
-  </div>
+
     
     <h2 id="{{perusteValinta.rakenne.perusteenOsa.id}}">{{perusteValinta.rakenne.perusteenOsa.otsikko.fi}}</h2>
     <p ng-bind-html="perusteValinta.rakenne.perusteenOsa.teksti.fi"></p>
