@@ -49,7 +49,8 @@ deploy to luokka shell command:
                 </scp>
 
                 <echo>unzip files to wepabbs -directory...</echo>
-        <sshexec command="cd ${tomcat.home}/webapps
+        <sshexec command="mkdir -p ${tomcat.home}/webapps
+cd ${tomcat.home}/webapps
 ls -la
 mkdir eperusteet-app;
 mkdir eperusteet-service;
