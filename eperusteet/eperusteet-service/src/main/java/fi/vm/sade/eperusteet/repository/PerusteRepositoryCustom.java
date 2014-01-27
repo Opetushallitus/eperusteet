@@ -17,8 +17,10 @@ package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import java.util.List;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -29,6 +31,6 @@ import org.springframework.data.repository.NoRepositoryBean;
 @NoRepositoryBean
 public interface PerusteRepositoryCustom {
 
-    Page<Peruste> findBy(Kieli kieli, String nimi, List<String> koulutusala, List<String> tyyppi, Pageable page, List<String> opintoala, boolean siirtyma);
+    Page<Peruste> findBy(Kieli kieli, PageRequest page, PerusteQuery pquery);
     Peruste findById(Long id);
 }

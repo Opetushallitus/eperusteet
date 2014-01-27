@@ -7,6 +7,7 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +22,7 @@ public interface PerusteService {
 
     Page<Peruste> getAll(PageRequest page, String kieli);
 
-    Page<Peruste> findBy(PageRequest page, String nimi, List<String> koulutusala, List<String> tyyppi, String kieli, List<String> opintoala, boolean siirtyma);
+    Page<Peruste> findBy(PageRequest page, PerusteQuery pquery);
 
     PerusteenOsaViite addViite(final Long parentId, final Long seuraavaViite, PerusteenOsaViite viite);
 }

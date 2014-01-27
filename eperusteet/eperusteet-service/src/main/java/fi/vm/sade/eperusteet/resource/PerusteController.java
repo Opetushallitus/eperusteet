@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.resource;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
@@ -31,22 +32,9 @@ public class PerusteController {
 
     @RequestMapping(method = GET)
     @ResponseBody
-    public ResponseEntity<Page<Peruste>> getAll(
-            @RequestParam(value = "sivu", required = false, defaultValue = "0") int sivu,
-            @RequestParam(value = "sivukoko", required = false, defaultValue = "25") int sivukoko,
-            @RequestParam(value = "siirtyma", required = false) boolean siirtyma,
-            @RequestParam(value = "nimi", required = false) String nimi,
-            @RequestParam(value = "ala", required = false) List<String> ala,
-            @RequestParam(value = "tyyppi", required = false) List<String> tyyppi,
-            @RequestParam(value = "kieli", required = false, defaultValue = "fi") String kieli,
-            @RequestParam(value = "opintoala", required = false) List<String> opintoala
-    ) {
-        PageRequest p = new PageRequest(sivu, Math.min(sivukoko, 100));
-        Page<Peruste> r;
-        System.out.println("wat");
-
-        r = service.findBy(p, nimi, ala, tyyppi, kieli, opintoala, siirtyma);
-
+    public ResponseEntity<Page<Peruste>> getAll(PerusteQuery pquery) {
+        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
+        Page<Peruste> r = service.findBy(p, pquery);
         return new ResponseEntity<>(r,
                                     ResponseHeaders.cacheHeaders(7, TimeUnit.MINUTES),
                                     r.hasContent() ? HttpStatus.OK : HttpStatus.NOT_FOUND);

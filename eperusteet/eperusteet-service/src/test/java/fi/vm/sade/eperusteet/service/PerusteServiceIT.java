@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
@@ -47,7 +48,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     private PerusteRepository repo;
     @PersistenceContext
     private EntityManager em;
- 
+
     public PerusteServiceIT() {
     }
 
@@ -78,9 +79,11 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testFindBy() {
-        Page<Peruste> perusteet = perusteService.findBy(new PageRequest(0, 10),
-                null, null, null, Kieli.FI.toString(), null, true);
+        PerusteQuery pquery = new PerusteQuery();
+        pquery.setSiirtyma(true);
+        Page<Peruste> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
         List<Peruste> sisältö = perusteet.getContent();
+        System.out.println(perusteet.getTotalElements());
         assertEquals(perusteet.getTotalElements(), 3);
     }
 

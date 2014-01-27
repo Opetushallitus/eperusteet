@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -32,12 +33,12 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Override
     public Page<Peruste> getAll(PageRequest page, String kieli) {
-        return findBy(page, null, null, null, kieli, null, false);
+        return findBy(page, new PerusteQuery());
     }
 
     @Override
-    public Page<Peruste> findBy(PageRequest page, String nimi, List<String> koulutusala, List<String> tyyppi, String kieli, List<String> opintoala, boolean siirtyma) {
-        return perusteet.findBy(Kieli.of(kieli), nimi, koulutusala, tyyppi, page, opintoala, siirtyma);
+    public Page<Peruste> findBy(PageRequest page, PerusteQuery pquery) {
+        return perusteet.findBy(Kieli.of(pquery.getKieli()), page, pquery);
     }
 
     @Override
