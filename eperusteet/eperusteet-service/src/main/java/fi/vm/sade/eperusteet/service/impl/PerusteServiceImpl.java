@@ -32,12 +32,12 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Override
     public Page<Peruste> getAll(PageRequest page, String kieli) {
-        return findBy(page, null, null, null, kieli, null);
+        return findBy(page, null, null, null, kieli, null, false);
     }
 
     @Override
-    public Page<Peruste> findBy(PageRequest page, String nimi, List<String> koulutusala, List<String> tyyppi, String kieli, List<String> opintoala) {
-        return perusteet.findBy(Kieli.of(kieli), nimi, koulutusala, tyyppi, page, opintoala);
+    public Page<Peruste> findBy(PageRequest page, String nimi, List<String> koulutusala, List<String> tyyppi, String kieli, List<String> opintoala, boolean siirtyma) {
+        return perusteet.findBy(Kieli.of(kieli), nimi, koulutusala, tyyppi, page, opintoala, siirtyma);
     }
 
     @Override

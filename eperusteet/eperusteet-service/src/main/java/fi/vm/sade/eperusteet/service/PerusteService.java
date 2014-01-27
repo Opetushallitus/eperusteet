@@ -1,6 +1,6 @@
 /*
  * Here comes the text of your license
- * Each line should be prefixed with  * 
+ * Each line should be prefixed with  *
  */
 
 package fi.vm.sade.eperusteet.service;
@@ -21,7 +21,7 @@ public interface PerusteService {
 
     Page<Peruste> getAll(PageRequest page, String kieli);
 
-    Page<Peruste> findBy(PageRequest page, String nimi, List<String> koulutusala, List<String> tyyppi, String kieli, List<String> opintoala);
+    Page<Peruste> findBy(PageRequest page, String nimi, List<String> koulutusala, List<String> tyyppi, String kieli, List<String> opintoala, boolean siirtyma);
 
     PerusteenOsaViite addViite(final Long parentId, final Long seuraavaViite, PerusteenOsaViite viite);
 }

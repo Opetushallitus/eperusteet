@@ -22,7 +22,10 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import static org.junit.Assert.*;
@@ -54,16 +57,37 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     @Before
     public void setUp() {
         Peruste p = new Peruste();
-        p.setNimi(new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "Nimi"))));
+        p.setNimi(new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "Nimi1"))));
+        p.setSiirtyma(new GregorianCalendar(2000, Calendar.MARCH, 12).getTime());
         repo.save(p);
+
+        p = new Peruste();
+        p.setNimi(new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "Nimi2"))));
+        p.setSiirtyma(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
+        repo.save(p);
+
+        p = new Peruste();
+        p.setNimi(new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "Nimi3"))));
+        repo.save(p);
+
         em.flush();
     }
 
     @Test
     @Rollback(true)
-    public void testGet() {
-        Page<Peruste> perusteet = perusteService.getAll(new PageRequest(0, 10), "fi");
-        assertEquals(perusteet.getTotalElements(), 1);
+    public void testGetAll() {
+        Page<Peruste> perusteet = perusteService.getAll(new PageRequest(0, 10), Kieli.FI.toString());
+        List<Peruste> sisältö = perusteet.getContent();
+        assertEquals(perusteet.getTotalElements(), 2);
+    }
+
+    @Test
+    @Rollback(true)
+    public void testFindBy() {
+        Page<Peruste> perusteet = perusteService.findBy(new PageRequest(0, 10),
+                null, null, null, Kieli.FI.toString(), null, true);
+        List<Peruste> sisältö = perusteet.getContent();
+        assertEquals(perusteet.getTotalElements(), 3);
     }
 
 }

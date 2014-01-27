@@ -82,4 +82,3 @@ ALTER TABLE ONLY peruste
     ADD CONSTRAINT fk_peruste_koulutusala FOREIGN KEY (koulutusala_id) REFERENCES koulutusala(id);
 
 --UPDATE peruste p SET koulutusala_id = (SELECT id from koulutusala WHERE koodi = p.koulutusalakoodi) WHERE p.koulutusalakoodi is not NULL;
-

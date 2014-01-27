@@ -1,0 +1,1 @@
+ALTER TABLE ONLY peruste ADD COLUMN siirtyma timestamp without time zone;
