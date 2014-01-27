@@ -32,8 +32,7 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Override
     public Page<Peruste> getAll(PageRequest page, String kieli) {
-        // FIXME: muuta siirtymä falseksi kun siirtymät saavat jotain arvoja tulevaisuudessa
-        return findBy(page, null, null, null, kieli, null, true);
+        return findBy(page, null, null, null, kieli, null, false);
     }
 
     @Override
