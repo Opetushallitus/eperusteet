@@ -38,7 +38,7 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Override
     public Page<Peruste> findBy(PageRequest page, PerusteQuery pquery) {
-        return perusteet.findBy(Kieli.of(pquery.getKieli()), page, pquery);
+        return perusteet.findBy(page, pquery);
     }
 
     @Override

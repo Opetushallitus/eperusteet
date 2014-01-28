@@ -76,10 +76,10 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
      * @return Yhden hakusivun verran vastauksia
      */
     @Override
-    public Page<Peruste> findBy(Kieli kieli, PageRequest page, PerusteQuery pquery) {
+    public Page<Peruste> findBy(PageRequest page, PerusteQuery pquery) {
 
-        TypedQuery<Long> countQuery = getCountQuery(kieli, pquery);
-        TypedQuery<Tuple> query = getQuery(kieli, pquery);
+        TypedQuery<Long> countQuery = getCountQuery(pquery);
+        TypedQuery<Tuple> query = getQuery(pquery);
         if (page != null) {
             query.setFirstResult(page.getOffset());
             query.setMaxResults(page.getPageSize());
@@ -99,32 +99,34 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         return p;
     }
 
-    private TypedQuery<Tuple> getQuery(Kieli kieli, PerusteQuery pquery) {
+    private TypedQuery<Tuple> getQuery(PerusteQuery pquery) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Tuple> query = cb.createTupleQuery();
         Root<Peruste> root = query.from(Peruste.class);
         Join<TekstiPalanen, LokalisoituTeksti> teksti = root.join(Peruste_.nimi).join(TekstiPalanen_.teksti);
-        Predicate pred = buildPredicate(root, teksti, cb, kieli, pquery);
+        Predicate pred = buildPredicate(root, teksti, cb, pquery);
         query.distinct(true);
         final Expression<String> n = cb.lower(teksti.get(LokalisoituTeksti_.teksti));
         query.multiselect(root, n).where(pred).orderBy(cb.asc(n));
         return em.createQuery(query);
     }
 
-    private TypedQuery<Long> getCountQuery(Kieli kieli, PerusteQuery pquery) {
+    private TypedQuery<Long> getCountQuery(PerusteQuery pquery) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
         Root<Peruste> root = query.from(Peruste.class);
         Join<TekstiPalanen, LokalisoituTeksti> teksti = root.join(Peruste_.nimi).join(TekstiPalanen_.teksti);
-        Predicate pred = buildPredicate(root, teksti, cb, kieli, pquery);
+        Predicate pred = buildPredicate(root, teksti, cb, pquery);
         query.select(cb.countDistinct(root)).where(pred);
         return em.createQuery(query);
     }
 
     private Predicate buildPredicate(
-            Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, Kieli kieli, PerusteQuery pquery) {
+            Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, PerusteQuery pquery) {
+
+        Kieli kieli = Kieli.of(pquery.getKieli());
 
         Predicate pred = cb.equal(teksti.get(LokalisoituTeksti_.kieli), kieli);
         if (pquery.getNimi() != null) {
