@@ -27,6 +27,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class KoulutusalaDto {
-    String koodi;
-    List<String> opintoalat;
+    private String koodi;
+    private List<String> opintoalat;
 }
