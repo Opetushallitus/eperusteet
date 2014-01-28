@@ -47,7 +47,7 @@ public class Koulutusala implements Serializable {
     
     private String koodi;
     
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "koulutusala_opintoala", 
             joinColumns = @JoinColumn(name = "koulutusala_id"), 
             inverseJoinColumns = @JoinColumn(name = "opintoala_id"))
@@ -79,7 +79,7 @@ public class Koulutusala implements Serializable {
     
     @Override
     public String toString() {
-        return "fi.vm.sade.eperusteet.domain.Koulutusala[ id=" + id + " ]";
+        return koodi;
     }
     
 }

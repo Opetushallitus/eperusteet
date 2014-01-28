@@ -17,7 +17,7 @@
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.domain.Kayttajaprofiili;
-import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import org.slf4j.Logger;
@@ -68,7 +68,7 @@ public class KayttajaprofiiliController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         
-        Peruste peruste = perusteService.get(perusteId);
+        PerusteDto peruste = perusteService.get(perusteId);
         if (peruste == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

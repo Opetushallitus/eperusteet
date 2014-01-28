@@ -1,10 +1,9 @@
 package fi.vm.sade.eperusteet.resource;
 
-import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +31,9 @@ public class PerusteController {
 
     @RequestMapping(method = GET)
     @ResponseBody
-    public ResponseEntity<Page<Peruste>> getAll(PerusteQuery pquery) {
+    public ResponseEntity<Page<PerusteDto>> getAll(PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
-        Page<Peruste> r = service.findBy(p, pquery);
+        Page<PerusteDto> r = service.findBy(p, pquery);
         return new ResponseEntity<>(r,
                                     ResponseHeaders.cacheHeaders(7, TimeUnit.MINUTES),
                                     r.hasContent() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
@@ -42,8 +41,8 @@ public class PerusteController {
 
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
-    public ResponseEntity<Peruste> get(@PathVariable("id") final long id) {
-        Peruste t = service.get(id);
+    public ResponseEntity<PerusteDto> get(@PathVariable("id") final long id) {
+        PerusteDto t = service.get(id);
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
