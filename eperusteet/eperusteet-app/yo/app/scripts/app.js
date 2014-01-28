@@ -1,6 +1,4 @@
 'use strict';
-/*global _*/
-
 
 angular.module('eperusteApp', ['ngRoute', 'ngSanitize', 'ngResource', 'pascalprecht.translate', 'ui.bootstrap'])
   .constant('SERVICE_LOC','/eperusteet-service/api')
@@ -62,32 +60,31 @@ angular.module('eperusteApp', ['ngRoute', 'ngSanitize', 'ngResource', 'pascalpre
         redirectTo: '/selaus/ammatillinenperuskoulutus'
       });
   })
-  .config(function($translateProvider, $httpProvider) {
+  .config(function($translateProvider) {
       $translateProvider.useStaticFilesLoader({
         prefix: 'localisation/locale-',
         suffix: '.json'
       });
       $translateProvider.preferredLanguage('fi');
-
-      // Asetetaan oma interceptor kuuntelemaan palvelinkutsuja
-      $httpProvider.interceptors.push('palvelinHakuInterceptor');
   })
   .config(function($httpProvider) {
-    $httpProvider.interceptors.push(function($rootScope, $q) {
-      return {
-        'response': function(response) {
-          var uudelleenohjausStatuskoodit = [401, 403, 500];
-          if (_.indexOf(uudelleenohjausStatuskoodit, response.status) !== -1) {
-            // TODO: ota käyttöön poistamalla kommentista
-            // $rootScope.$emit('event:uudelleenohjattava', response.status);
-          }
-          return response || $q.when(response);
-        },
-        'responseError': function(err) {
-          return $q.reject(err);
-        }
-      };
-    });
+    // Asetetaan oma interceptor kuuntelemaan palvelinkutsuja
+    $httpProvider.interceptors.push('palvelinHakuInterceptor');
+//    $httpProvider.interceptors.push(function($rootScope, $q) {
+//      return {
+//        'response': function(response) {
+//          var uudelleenohjausStatuskoodit = [401, 403, 500];
+//          if (_.indexOf(uudelleenohjausStatuskoodit, response.status) !== -1) {
+//            // TODO: ota käyttöön poistamalla kommentista
+//            // $rootScope.$emit('event:uudelleenohjattava', response.status);
+//          }
+//          return response || $q.when(response);
+//        },
+//        'responseError': function(err) {
+//          return $q.reject(err);
+//        }
+//      };
+//    });
   })
   .run(function($rootScope, $modal, $location) {
     var onAvattuna = false;
