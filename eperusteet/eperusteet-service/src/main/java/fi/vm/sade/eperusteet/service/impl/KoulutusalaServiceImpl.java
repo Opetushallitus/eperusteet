@@ -17,8 +17,10 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Koulutusala;
+import fi.vm.sade.eperusteet.dto.KoulutusalaDto;
 import fi.vm.sade.eperusteet.repository.KoulutusalaRepository;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
+import fi.vm.sade.eperusteet.service.util.DtoMapper;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,21 +38,26 @@ public class KoulutusalaServiceImpl implements KoulutusalaService{
     private static final Logger LOG = LoggerFactory.getLogger(KoulutusalaServiceImpl.class);
     
     @Autowired
-    KoulutusalaRepository repository;
+    private KoulutusalaRepository repository;
+
+    @Autowired
+    private DtoMapper mapper;
 
     @Override
-    public Koulutusala get(Long id) {
+    @Transactional(readOnly = true)
+    public KoulutusalaDto get(Long id) {
         Koulutusala k = repository.findOne(id);
         if (k == null) {
             LOG.warn("Koulutusalaa {} ei löytynyt", id);
         }        
-        return k;        
+        return mapper.map(k, KoulutusalaDto.class);
     }
 
     @Override
-    public List<Koulutusala> getAll() {
+    @Transactional(readOnly = true)
+    public List<KoulutusalaDto> getAll() {
         List<Koulutusala> klist = repository.findAll();
-        return klist;
+        return mapper.mapAsList(klist,KoulutusalaDto.class);
     }
 
 

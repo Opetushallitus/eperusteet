@@ -2,13 +2,11 @@
  * Here comes the text of your license
  * Each line should be prefixed with  *
  */
-
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
-import java.util.List;
+import fi.vm.sade.eperusteet.dto.PerusteDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -18,11 +16,11 @@ import org.springframework.data.domain.PageRequest;
  */
 public interface PerusteService {
 
-    Peruste get(final Long id);
+    PerusteDto get(final Long id);
 
-    Page<Peruste> getAll(PageRequest page, String kieli);
+    Page<PerusteDto> getAll(PageRequest page, String kieli);
 
-    Page<Peruste> findBy(PageRequest page, PerusteQuery pquery);
+    Page<PerusteDto> findBy(PageRequest page, PerusteQuery pquery);
 
     PerusteenOsaViite addViite(final Long parentId, final Long seuraavaViite, PerusteenOsaViite viite);
 }

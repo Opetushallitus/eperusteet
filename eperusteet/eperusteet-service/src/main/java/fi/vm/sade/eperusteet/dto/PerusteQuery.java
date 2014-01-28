@@ -13,11 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.dto;
-import fi.vm.sade.eperusteet.domain.Kieli;
+
 import java.util.List;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,13 +23,16 @@ import lombok.Setter;
  *
  * @author nkala
  */
+@Getter
+@Setter
 public class PerusteQuery {
-    @Getter @Setter private int sivu = 0;
-    @Getter @Setter private int sivukoko= 25;
-    @Getter @Setter private boolean siirtyma = false;
-    @Getter @Setter private String nimi;
-    @Getter @Setter private List<String> ala;
-    @Getter @Setter private List<String> tyyppi;
-    @Getter @Setter private String kieli = "fi";
-    @Getter @Setter private List<String> opintoala;
+
+    private int sivu = 0;
+    private int sivukoko = 25;
+    private boolean siirtyma = false;
+    private String nimi;
+    private List<String> ala;
+    private List<String> tyyppi;
+    private String kieli = "fi";
+    private List<String> opintoala;
 }

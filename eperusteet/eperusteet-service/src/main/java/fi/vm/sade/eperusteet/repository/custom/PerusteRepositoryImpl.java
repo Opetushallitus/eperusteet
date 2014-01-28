@@ -84,7 +84,6 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             query.setFirstResult(page.getOffset());
             query.setMaxResults(page.getPageSize());
         }
-
         return new PageImpl<>(Lists.transform(query.getResultList(), EXTRACT_PERUSTE), page, countQuery.getSingleResult());
     }
 
@@ -92,6 +91,7 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
     public Peruste findById(Long id) {
         EntityGraph<Peruste> eg = em.createEntityGraph(Peruste.class);
         eg.addSubgraph(Peruste_.rakenne);
+        eg.addSubgraph(Peruste_.opintoalat);
         HashMap<String, Object> props = new HashMap<>();
         props.put(QueryHints.FETCHGRAPH, eg);
         Peruste p = em.find(Peruste.class, id, props);

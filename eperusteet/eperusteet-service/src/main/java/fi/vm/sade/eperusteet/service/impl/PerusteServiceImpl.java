@@ -1,13 +1,14 @@
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.PageDto;
+import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.PerusteService;
-import java.util.List;
+import fi.vm.sade.eperusteet.service.util.DtoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,24 +32,26 @@ public class PerusteServiceImpl implements PerusteService {
     @Autowired
     PerusteenOsaViiteRepository viitteet;
 
+    @Autowired
+    DtoMapper mapper;
+
     @Override
-    public Page<Peruste> getAll(PageRequest page, String kieli) {
+    public Page<PerusteDto> getAll(PageRequest page, String kieli) {
         return findBy(page, new PerusteQuery());
     }
 
     @Override
-    public Page<Peruste> findBy(PageRequest page, PerusteQuery pquery) {
-        return perusteet.findBy(page, pquery);
+    @Transactional(readOnly = true)
+    public Page<PerusteDto> findBy(PageRequest page, PerusteQuery pquery) {
+        Page<Peruste> result = perusteet.findBy(page, pquery);
+        return new PageDto<>(result, PerusteDto.class, page, mapper);
     }
 
     @Override
-    @Transactional
-    public Peruste get(final Long id) {
+    @Transactional(readOnly = true)
+    public PerusteDto get(final Long id) {
         Peruste p = perusteet.findById(id);
-//        if (p != null && p.getRakenne() != null) {
-//            p.getRakenne().getPerusteenOsa();
-//        }
-        return p;
+        return mapper.map(p, PerusteDto.class);
     }
 
     @Override

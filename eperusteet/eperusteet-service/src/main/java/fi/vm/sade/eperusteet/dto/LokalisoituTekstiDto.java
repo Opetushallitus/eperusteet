@@ -13,17 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+package fi.vm.sade.eperusteet.dto;
 
-package fi.vm.sade.eperusteet.service;
-
-import fi.vm.sade.eperusteet.dto.KoulutusalaDto;
-import java.util.List;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import java.util.HashMap;
 
 /**
  *
- * @author jussini
+ * @author jhyoty
  */
-public interface KoulutusalaService {
-     KoulutusalaDto get(final Long id);
-     List<KoulutusalaDto> getAll();
+public class LokalisoituTekstiDto extends HashMap<Kieli, String> {
+
 }

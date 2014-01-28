@@ -18,12 +18,12 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import static org.junit.Assert.*;
@@ -71,8 +71,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testGetAll() {
-        Page<Peruste> perusteet = perusteService.getAll(new PageRequest(0, 10), Kieli.FI.toString());
-        List<Peruste> sisältö = perusteet.getContent();
+        Page<PerusteDto> perusteet = perusteService.getAll(new PageRequest(0, 10), Kieli.FI.toString());
         assertEquals(perusteet.getTotalElements(), 2);
     }
 
@@ -81,9 +80,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     public void testFindBy() {
         PerusteQuery pquery = new PerusteQuery();
         pquery.setSiirtyma(true);
-        Page<Peruste> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
-        List<Peruste> sisältö = perusteet.getContent();
-        System.out.println(perusteet.getTotalElements());
+        Page<PerusteDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
         assertEquals(perusteet.getTotalElements(), 3);
     }
 

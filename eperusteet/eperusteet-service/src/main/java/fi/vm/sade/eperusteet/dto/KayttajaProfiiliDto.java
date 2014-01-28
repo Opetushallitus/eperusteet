@@ -14,16 +14,19 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service;
+package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.dto.KoulutusalaDto;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
- * @author jussini
+ * @author jhyoty
  */
-public interface KoulutusalaService {
-     KoulutusalaDto get(final Long id);
-     List<KoulutusalaDto> getAll();
+@Getter
+@Setter
+public class KayttajaProfiiliDto {
+    private long id;
+    private List<PerusteDto> suosikit;
 }

@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
@@ -35,11 +34,11 @@ import org.hibernate.annotations.Immutable;
 @Immutable
 @Table(name = "opintoala")
 public class Opintoala implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
     @Id
     private Long id;
-    
+
     private String koodi;
 
     public Long getId() {
@@ -58,10 +57,9 @@ public class Opintoala implements Serializable {
         this.koodi = koodi;
     }
 
-
     @Override
     public String toString() {
-        return "fi.vm.sade.eperusteet.domain.Opintoala[ id=" + id + " ]";
+        return koodi;
     }
-    
+
 }

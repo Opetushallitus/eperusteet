@@ -15,6 +15,8 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 /**
  *
  * @author jhyoty
@@ -31,11 +33,13 @@ public enum Kieli {
         this.koodi = koodi;
     }
 
+
     @Override
     public String toString() {
         return koodi;
     }
 
+    @JsonCreator
     public static Kieli of(String koodi) {
         for (Kieli k : values()) {
             if (k.koodi.equalsIgnoreCase(koodi)) {
