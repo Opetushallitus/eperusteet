@@ -57,6 +57,9 @@ European Union Public Licence for more details.
       {{'koulutusalakoodi'|translate}}: {{perusteValinta.koulutusalakoodi}} <br>
       Päiväys: {{perusteValinta.paivays|date:'dd.MM.yyyy HH:mm:ss'}} <br>
     </p>
+    
+
+    
     <h2 id="{{perusteValinta.rakenne.perusteenOsa.id}}">{{perusteValinta.rakenne.perusteenOsa.otsikko.fi}}</h2>
     <p ng-bind-html="perusteValinta.rakenne.perusteenOsa.teksti.fi"></p>
     <div ng-repeat="lapsi in perusteValinta.rakenne.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>

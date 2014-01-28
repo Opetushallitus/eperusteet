@@ -46,8 +46,7 @@ angular.module('eperusteApp')
       {teksti: 'Määräykset optio 4', valittu: false},
       {teksti: 'Määräykset optio 5', valittu: false}
     ];
-
-
+    
     var hakuAloitettuKäsittelijä = function() {
       $scope.hakuMenossa = true;
     };

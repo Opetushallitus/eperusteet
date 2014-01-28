@@ -54,6 +54,10 @@ angular.module('eperusteApp', ['ngRoute', 'ngSanitize', 'ngResource', 'pascalpre
         //Estää sisällysluettelossa navigoinnin lataamasta sivua uudelleen
         reloadOnSearch: false
       })
+      .when('/selaus/:konteksti/:perusteId/tutkinnonosa/:tutkinnonOsaId', {
+        templateUrl: 'views/tutkinnonosa.html',
+        controller: 'TutkinnonosaCtrl'
+      })
       .otherwise({
         redirectTo: '/selaus/ammatillinenperuskoulutus'
       });
