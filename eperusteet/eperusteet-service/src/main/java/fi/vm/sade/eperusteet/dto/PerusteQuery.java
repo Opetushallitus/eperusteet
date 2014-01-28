@@ -17,83 +17,21 @@
 package fi.vm.sade.eperusteet.dto;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author nkala
  */
 public class PerusteQuery {
-    private int sivu = 0;
-    private int sivukoko= 25;
-    private boolean siirtyma = false;
-    private String nimi;
-    private List<String> ala;
-    private List<String> tyyppi;
-    private String kieli = "fi";
-    private List<String> opintoala;
-
-    public int getSivu() {
-        return sivu;
-    }
-
-    public int getSivukoko() {
-        return sivukoko;
-    }
-
-    public boolean getSiirtyma() {
-        return siirtyma;
-    }
-
-    public String getNimi() {
-        return nimi;
-    }
-
-    public List<String> getKoulutusalat() {
-        return ala;
-    }
-
-    public List<String> getTyyppi() {
-        return tyyppi;
-    }
-
-    public String getKieli() {
-        return kieli;
-    }
-
-    public List<String> getOpintoalat() {
-        return opintoala;
-    }
-
-    public void setSivu(int sivu) {
-        this.sivu = sivu;
-    }
-
-    public void setSivukoko(int sivukoko) {
-        this.sivukoko = sivukoko;
-    }
-
-    public void setSiirtyma(boolean siirtyma) {
-        this.siirtyma = siirtyma;
-    }
-
-    public void setNimi(String nimi) {
-        this.nimi = nimi;
-    }
-
-    public void setKoulutusala(List<String> ala) {
-        this.ala = ala;
-    }
-
-    public void setTyyppi(List<String> tyyppi) {
-        this.tyyppi = tyyppi;
-    }
-
-    public void setKieli(String kieli) {
-        this.kieli = kieli;
-    }
-
-    public void setOpintoala(List<String> opintoala) {
-        this.opintoala = opintoala;
-    }
-
+    @Getter @Setter private int sivu = 0;
+    @Getter @Setter private int sivukoko= 25;
+    @Getter @Setter private boolean siirtyma = false;
+    @Getter @Setter private String nimi;
+    @Getter @Setter private List<String> ala;
+    @Getter @Setter private List<String> tyyppi;
+    @Getter @Setter private String kieli = "fi";
+    @Getter @Setter private List<String> opintoala;
 }

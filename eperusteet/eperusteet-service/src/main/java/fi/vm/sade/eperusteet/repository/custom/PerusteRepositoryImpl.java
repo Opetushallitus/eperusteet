@@ -132,17 +132,17 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         if (pquery.getNimi() != null) {
             pred = cb.and(pred, cb.like(cb.lower(teksti.get(LokalisoituTeksti_.teksti)), cb.literal(RepositoryUtil.kuten(pquery.getNimi()))));
         }
-        if (pquery.getKoulutusalat() != null && !pquery.getKoulutusalat().isEmpty()) {
-            pred = cb.and(pred, root.get(Peruste_.koulutusala).get(Koulutusala_.koodi).in(pquery.getKoulutusalat()));
+        if (pquery.getAla() != null && !pquery.getAla().isEmpty()) {
+            pred = cb.and(pred, root.get(Peruste_.koulutusala).get(Koulutusala_.koodi).in(pquery.getAla()));
         }
         if (pquery.getTyyppi() != null && !pquery.getTyyppi().isEmpty()) {
             pred = cb.and(pred, root.get(Peruste_.tutkintokoodi).in(pquery.getTyyppi()));
         }
-        if (pquery.getOpintoalat() != null && !pquery.getOpintoalat().isEmpty()) {
+        if (pquery.getOpintoala() != null && !pquery.getOpintoala().isEmpty()) {
             ListJoin<Peruste, Opintoala> ala = root.join(Peruste_.opintoalat);
-            pred = cb.and(pred, ala.get(Opintoala_.koodi).in(pquery.getOpintoalat()));
+            pred = cb.and(pred, ala.get(Opintoala_.koodi).in(pquery.getOpintoala()));
         }
-        if (!pquery.getSiirtyma()) {
+        if (!pquery.isSiirtyma()) {
             Expression<Date> rsiirtyma = root.get(Peruste_.siirtyma);
             pred = cb.and(pred, cb.or(cb.isNull(rsiirtyma),
                                       cb.greaterThan(rsiirtyma, cb.currentDate())));
