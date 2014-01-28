@@ -22,8 +22,14 @@
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
         <buildhelper.skipAttach>true</buildhelper.skipAttach>
-    </properties>  
+    </properties>
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.12.4</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -214,15 +220,15 @@
                 <configuration>
                     <path>/eperusteet-service</path>
                     <contextFile>${basedir}/src/test/config/context.xml</contextFile>
-                    <webapps> 
-                        <webapp> 
-                            <groupId>${project.groupId}</groupId> 
-                            <artifactId>eperusteet-app</artifactId> 
-                            <version>${project.version}</version> 
-                            <type>war</type>    
+                    <webapps>
+                        <webapp>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>eperusteet-app</artifactId>
+                            <version>${project.version}</version>
+                            <type>war</type>
                             <asWebapp>true</asWebapp>
-                        </webapp> 
-                    </webapps> 
+                        </webapp>
+                    </webapps>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -242,7 +248,7 @@
                         <eperusteet.ittestdb.jdbcurl>${eperusteet.ittestdb.jdbcurl}</eperusteet.ittestdb.jdbcurl>
                     </systemPropertyVariables>
                     <excludes>
-                        <exclude>**/service/test/*.java</exclude>            
+                        <exclude>**/service/test/*.java</exclude>
                     </excludes>
                     <includes>
                         <include>**/*IT.java</include>
@@ -257,7 +263,7 @@
                         <exclude>**/service/test/*.java</exclude>
                     </excludes>
                 </configuration>
-            </plugin>  
+            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
@@ -291,5 +297,5 @@
             </plugins>
         </pluginManagement>
         <finalName>eperusteet-service</finalName>
-    </build> 
+    </build>
 </project>
