@@ -16,38 +16,45 @@
 
 package fi.vm.sade.eperusteet.service.util;
 
+import java.util.List;
+
 /**
  *
  * @author jhyoty
  */
 public interface DtoMapper {
 
-       /**
-     * Create and return a new instance of type D mapped with the properties of
-     * <code>sourceObject</code>.
-     *
-     * @param sourceObject
-     *            the object to map from
-     * @param destinationClass
-     *            the type of the new object to return
-     * @return a new instance of type D mapped with the properties of
-     *         <code>sourceObject</code>
+    /**
+     * Muuntaa lähdeobjektin kohdeluokaksi
+     * @param <S> lähdeobjectin tyyppi
+     * @param <D> kohdeobjectin tyyppi
+     * @param sourceObject lähdeobjecti
+     * @param destinationClass type token
+     * @return uusi objekti tyyppiä S
      */
     <S, D> D map(S sourceObject, Class<D> destinationClass);
 
     /**
-     * Maps the properties of <code>sourceObject</code> onto
-     * <code>destinationObject</code>.
-     *
-     * @param sourceObject
-     *            the object from which to read the properties
-     * @param destinationObject
-     *            the object onto which the properties should be mapped
+     * Muuntaa lähdeobjektin kohdeobjektiin
+     * @param <S> lähdeobjectin tyyppi
+     * @param <D> kohdeobjectin tyyppi
+     * @param sourceObject lähdeobjecti
+     * @param destinationObject kohdeobjekti
      */
     <S, D> void map(S sourceObject, D destinationObject);
 
     /**
-     * Return the underlying mapper implementation
+     * muuntaa Iterablen listaksi jonka elementin tyyppi on D
+     * @param <S> lähdekokoelman tyyppi
+     * @param <D> kohdelistan elementin tyyppi
+     * @param source lähdekokoelma
+     * @param destinationClass kohdelistan elementin "type token"
+     * @return uusi lista jonka elementit ovat tyyppiä D
+     */
+    <S,D> List<D> mapAsList(Iterable<S> source, Class<D> destinationClass);
+
+    /**
+     * Palauttaa mapper-toteutuksen
      * @param <M>
      * @param mapperClass
      * @return mapper implementation.

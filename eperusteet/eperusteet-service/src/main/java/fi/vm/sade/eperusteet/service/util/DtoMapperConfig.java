@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.service.util;
 
 import fi.vm.sade.eperusteet.dto.TekstiPalanenConverter;
+import java.util.List;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.context.annotation.Bean;
@@ -52,6 +53,11 @@ public class DtoMapperConfig {
         @Override
         public <S, D> void map(S sourceObject, D destinationObject) {
             mapper.map(sourceObject, destinationObject);
+        }
+
+        @Override
+        public <S, D> List<D> mapAsList(Iterable<S> source, Class<D> destinationClass) {
+            return mapper.mapAsList(source, destinationClass);
         }
 
         @Override

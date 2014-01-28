@@ -24,7 +24,7 @@
       <label for="haku-opintoala" translate>haku-opintoala</label>
       <select id="haku-opintoala" ng-model="valittuOpintoala" class="form-control" ng-change="hakuMuuttui()">
         <option value="" translate>haku-kaikki-opintoalat</option>
-        <option ng-repeat="ala in opintoalat" value="{{ala.koodi}}" ng-selected="opintoala === ala.koodi">{{'opintoalakoodi-'+ala.koodi| translate}}</option>
+        <option ng-repeat="ala in opintoalat" value="{{ala}}" ng-selected="opintoala === ala">{{'opintoalakoodi-'+ala | translate}}</option>
       </select>
     </div>
     <div class="clearfix"></div>
@@ -39,7 +39,7 @@
 <div>
   <ul class="list-unstyled">
     <li  ng-repeat="peruste in perusteet.data">
-      <a ng-href="#/selaus/{{konteksti}}/{{peruste.id}}"><span ng-bind-html="korosta(valitseKieli(peruste.nimi))"></span>, {{'koulutusalakoodi-' + peruste.koulutusala.koodi| translate}}</a>
+      <a ng-href="#/selaus/{{konteksti}}/{{peruste.id}}"><span ng-bind-html="korosta(valitseKieli(peruste.nimi))"></span>, {{'koulutusalakoodi-' + peruste.koulutusala | translate}}</a>
     </li>
   </ul>
   <ul class="pagination">

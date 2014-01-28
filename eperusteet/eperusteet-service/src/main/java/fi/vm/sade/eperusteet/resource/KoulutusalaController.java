@@ -16,40 +16,37 @@
 
 package fi.vm.sade.eperusteet.resource;
 
-import fi.vm.sade.eperusteet.domain.Koulutusala;
+import fi.vm.sade.eperusteet.dto.KoulutusalaDto;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  * @author jussini
  */
-@Controller
-@RequestMapping("/api/koulutusala")
+@RestController
+@RequestMapping("/api/koulutusalat")
 public class KoulutusalaController {
         
     @Autowired
     private KoulutusalaService service;
     
     @RequestMapping(method = GET)
-    @ResponseBody
-    public List<Koulutusala> getAll() {
-        List<Koulutusala> klist = service.getAll();
+    public List<KoulutusalaDto> getAll() {
+        List<KoulutusalaDto> klist = service.getAll();
         return klist;       
     }
    
     @RequestMapping(value = "/{id}", method = GET)
-    @ResponseBody
-    public ResponseEntity<Koulutusala> get(@PathVariable("id") final Long id) {               
-        Koulutusala k = service.get(id);
+    public ResponseEntity<KoulutusalaDto> get(@PathVariable("id") final Long id) {
+        KoulutusalaDto k = service.get(id);
         if (k == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
