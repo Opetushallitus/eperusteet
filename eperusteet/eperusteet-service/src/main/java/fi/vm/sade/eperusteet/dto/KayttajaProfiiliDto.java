@@ -13,19 +13,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.dto.KayttajaProfiiliDto;
+package fi.vm.sade.eperusteet.dto;
+
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
- * @author harrik
+ * @author jhyoty
  */
-public interface KayttajaprofiiliService {
-
-    KayttajaProfiiliDto get(final Long id);
-
-    KayttajaProfiiliDto addSuosikki(final Long id, final Long perusteId);
-
-    KayttajaProfiiliDto deleteSuosikki(final Long id, final Long perusteId) throws IllegalArgumentException;
+@Getter
+@Setter
+public class KayttajaProfiiliDto {
+    private long id;
+    private List<PerusteDto> suosikit;
 }

@@ -13,14 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Kayttajaprofiili;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.dto.KayttajaProfiiliDto;
 import fi.vm.sade.eperusteet.repository.KayttajaprofiiliRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
+import fi.vm.sade.eperusteet.service.util.DtoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,52 +34,52 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
+
     private static final Logger LOG = LoggerFactory.getLogger(KayttajaprofiiliServiceImpl.class);
-    
+
     @Autowired
     KayttajaprofiiliRepository kayttajaprofiiliRepo;
-    
+
     @Autowired
     PerusteRepository perusteRepo;
-    
-    @Override
-    @Transactional
-    public Kayttajaprofiili get(final Long id) {
-        LOG.info("get " + kayttajaprofiiliRepo);
 
-        Kayttajaprofiili k = kayttajaprofiiliRepo.findOneEager(id);
-        
-        return k;
+    @Autowired
+    DtoMapper mapper;
+
+    @Override
+    @Transactional(readOnly = true)
+    public KayttajaProfiiliDto get(final Long id) {
+        return mapper.map(kayttajaprofiiliRepo.findOneEager(id), KayttajaProfiiliDto.class);
     }
 
     @Override
     @Transactional
-    public Kayttajaprofiili addSuosikki(final Long id, final Long perusteId) {
+    public KayttajaProfiiliDto addSuosikki(final Long id, final Long perusteId) {
         LOG.info("addSuosikki " + perusteId);
-        
+
         Kayttajaprofiili kayttajaprofiili = kayttajaprofiiliRepo.findOneEager(id);
         Peruste peruste = perusteRepo.findOne(perusteId);
-        
+
         if (!kayttajaprofiili.getSuosikit().contains(peruste)) {
             kayttajaprofiili.getSuosikit().add(peruste);
         }
-        
-        return kayttajaprofiili;
+
+        return mapper.map(kayttajaprofiili, KayttajaProfiiliDto.class);
     }
 
     @Override
     @Transactional
-    public Kayttajaprofiili deleteSuosikki(Long id, Long perusteId) throws IllegalArgumentException {
+    public KayttajaProfiiliDto deleteSuosikki(Long id, Long perusteId) throws IllegalArgumentException {
         LOG.info("deleteSuosikki " + perusteId);
-        
+
         Kayttajaprofiili kayttajaprofiili = kayttajaprofiiliRepo.findOneEager(id);
         if (kayttajaprofiili == null) {
             throw new IllegalArgumentException("Käyttäjäprofilia ei ole olemassa.");
         }
         Peruste peruste = perusteRepo.findOne(perusteId);
-        
+
         kayttajaprofiili.getSuosikit().remove(peruste);
-        
-        return kayttajaprofiili;
+
+        return mapper.map(kayttajaprofiili, KayttajaProfiiliDto.class);
     }
 }

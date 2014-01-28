@@ -13,10 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.resource;
 
-import fi.vm.sade.eperusteet.domain.Kayttajaprofiili;
+import fi.vm.sade.eperusteet.dto.KayttajaProfiiliDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -40,52 +39,49 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/api/kayttajaprofiili")
 public class KayttajaprofiiliController {
+
     private static final Logger LOG = LoggerFactory.getLogger(KayttajaprofiiliController.class);
-    
+
     @Autowired
     private KayttajaprofiiliService service;
-    
+
     @Autowired
     private PerusteService perusteService;
-    
+
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
-    public ResponseEntity<Kayttajaprofiili> get(@PathVariable("id") final Long id) {
-        Kayttajaprofiili k = service.get(1L);
+    public ResponseEntity<KayttajaProfiiliDto> get(@PathVariable("id") final Long id) {
+        KayttajaProfiiliDto k = service.get(1L);
         if (k == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(k, HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/{id}/suosikki/{perusteId}", method = POST)
     @ResponseBody
-    public ResponseEntity<Kayttajaprofiili> addSuosikki(@PathVariable("id") final Long id, @PathVariable("perusteId") final Long perusteId) {
+    public ResponseEntity<KayttajaProfiiliDto> addSuosikki(@PathVariable("id") final Long id, @PathVariable("perusteId") final Long perusteId) {
         LOG.info("addSuosikki {}", id);
 
-        Kayttajaprofiili k = service.get(id);
+        KayttajaProfiiliDto k = service.get(id);
         if (k == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        
+
         PerusteDto peruste = perusteService.get(perusteId);
         if (peruste == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        
+
         k = service.addSuosikki(id, perusteId);
-                
-        return new ResponseEntity<>(k,HttpStatus.OK);
+
+        return new ResponseEntity<>(k, HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/{id}/suosikki/{perusteId}", method = DELETE)
     @ResponseBody
-    public ResponseEntity<Kayttajaprofiili> delete(@PathVariable("id") final Long id, @PathVariable("perusteId") final Long perusteId) {
-        LOG.info("suosikki delete {}", id);
-        
-        Kayttajaprofiili k = service.deleteSuosikki(id, perusteId);
-
-        
-        return new ResponseEntity<>(k,HttpStatus.OK);
+    public ResponseEntity<KayttajaProfiiliDto> delete(@PathVariable("id") final Long id, @PathVariable("perusteId") final Long perusteId) {
+        KayttajaProfiiliDto k = service.deleteSuosikki(id, perusteId);
+        return new ResponseEntity<>(k, HttpStatus.OK);
     }
 }
