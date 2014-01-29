@@ -15,7 +15,13 @@
  */
 package fi.vm.sade.eperusteet.service.util;
 
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.TekstiPalanenConverter;
+import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import java.util.List;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
@@ -34,6 +40,19 @@ public class DtoMapperConfig {
         DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
             .build();
         factory.getConverterFactory().registerConverter(TekstiPalanenConverter.TO_MAP);
+
+        factory.classMap(PerusteenOsaDto.class, PerusteenOsa.class)
+            .byDefault()
+            .register();
+        factory.classMap(TutkinnonOsaDto.class, TutkinnonOsa.class)
+            .use(PerusteenOsaDto.class, PerusteenOsa.class)
+            .byDefault()
+            .register();
+        factory.classMap(TekstiKappaleDto.class, TekstiKappale.class)
+            .use(PerusteenOsaDto.class, PerusteenOsa.class)
+            .byDefault()
+            .register();
+
         return new DtoMapperImpl(factory.getMapperFacade());
     }
 

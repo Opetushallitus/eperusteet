@@ -13,18 +13,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Arviointi;
-import fi.vm.sade.eperusteet.domain.Arviointiasteikko;
+import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.dto.ArviointiDto;
+import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.repository.ArviointiRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.Collections;
@@ -44,16 +46,18 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
-    
+
     @Autowired
     private PerusteenOsaService perusteenOsaService;
+    @Autowired
+    private PerusteenOsaRepository perusteenOsaRepository;
     @Autowired
     private ArviointiRepository arviointiRepository;
     @PersistenceContext
     private EntityManager em;
-    
+
     private Arviointi persistedArviointi;
-    
+
     @Before
     public void setUp() {
         TekstiPalanen osaamistasoOtsikko = new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "otsikko")));
@@ -62,41 +66,36 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         Osaamistaso osaamistaso = new Osaamistaso();
         osaamistaso.setId(1L);
         osaamistaso.setOtsikko(osaamistasoOtsikko);
-        
+
         em.persist(osaamistaso);
-        
-        Arviointiasteikko arviointiasteikko = new Arviointiasteikko();
+
+        ArviointiAsteikko arviointiasteikko = new ArviointiAsteikko();
         arviointiasteikko.setId(1L);
         arviointiasteikko.setOsaamistasot(Collections.singletonList(osaamistaso));
-        
+
         em.persist(arviointiasteikko);
         em.flush();
-        
+
         persistedArviointi = arviointiRepository.saveAndFlush(TestUtils.createArviointi(arviointiasteikko));
     }
-    
+
     @Test
     @Rollback(true)
     public void testSaveWithArviointi() {
         TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
         tutkinnonOsa.setArviointi(persistedArviointi);
-        perusteenOsaService.add(tutkinnonOsa);
-        
+        perusteenOsaRepository.save(tutkinnonOsa);
         em.flush();
-        
-        List<PerusteenOsa> perusteenOsat = perusteenOsaService.getAll();
-        
+
+        List<PerusteenOsaDto> perusteenOsat = perusteenOsaService.getAll();
+
         Assert.assertNotNull(perusteenOsat);
         Assert.assertEquals(1, perusteenOsat.size());
-        
-        Assert.assertTrue(TutkinnonOsa.class.isInstance(perusteenOsat.get(0)));
-        
-        tutkinnonOsa = (TutkinnonOsa) perusteenOsat.get(0);
-        
+
+        Assert.assertTrue(TutkinnonOsaDto.class.isInstance(perusteenOsat.get(0)));
+        TutkinnonOsaDto to = (TutkinnonOsaDto) perusteenOsat.get(0);
+        ArviointiDto arviointi = to.getArviointi();
         Assert.assertNotNull(tutkinnonOsa.getArviointi());
-        Assert.assertEquals(
-                tutkinnonOsa.getArviointi().getArvioinninKohdealueet().get(0).getArvioinninKohteet().get(0).getArviointiasteikko().getOsaamistasot().size(),
-                tutkinnonOsa.getArviointi().getArvioinninKohdealueet().get(0).getArvioinninKohteet().get(0).getOsaamistasonKriteerit().size());
     }
-    
+
 }

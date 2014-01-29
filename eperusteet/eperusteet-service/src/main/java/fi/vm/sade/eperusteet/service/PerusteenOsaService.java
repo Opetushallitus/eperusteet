@@ -1,7 +1,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import java.util.List;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 
 /**
  *
@@ -9,14 +9,14 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsa;
  */
 public interface PerusteenOsaService {
 
-    PerusteenOsa add(PerusteenOsa perusteenOsa);
+    PerusteenOsaDto add(PerusteenOsaDto perusteenOsaDto);
 
     void delete(final Long id);
 
-    PerusteenOsa get(final Long id);
+    PerusteenOsaDto get(final Long id);
 
-    List<PerusteenOsa> getAll();
+    List<PerusteenOsaDto> getAll();
 
-    PerusteenOsa update(final Long id, PerusteenOsa perusteenOsa);
+    PerusteenOsaDto update(final Long id, PerusteenOsaDto perusteenOsa);
 
 }

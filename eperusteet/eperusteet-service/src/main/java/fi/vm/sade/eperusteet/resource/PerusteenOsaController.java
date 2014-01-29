@@ -2,7 +2,7 @@ package fi.vm.sade.eperusteet.resource;
 
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,16 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Controller
+@RestController
 @RequestMapping("/api/perusteenosat")
 public class PerusteenOsaController {
 
@@ -29,16 +28,14 @@ public class PerusteenOsaController {
     private PerusteenOsaService service;
 
     @RequestMapping(method = GET)
-    @ResponseBody
-    public List<? extends PerusteenOsa> getAll() {
+    public List<? extends PerusteenOsaDto> getAll() {
         LOG.info("FINDALL");
         return service.getAll();
     }
 
     @RequestMapping(value = "/{id}", method = GET)
-    @ResponseBody
-    public ResponseEntity<PerusteenOsa> get(@PathVariable("id") final Long id) {
-        PerusteenOsa t = service.get(id);
+    public ResponseEntity<PerusteenOsaDto> get(@PathVariable("id") final Long id) {
+        PerusteenOsaDto t = service.get(id);
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -47,8 +44,7 @@ public class PerusteenOsaController {
 
     @RequestMapping(method = POST)
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
-    public ResponseEntity<PerusteenOsa> add(@RequestBody PerusteenOsa perusteenOsa, UriComponentsBuilder ucb, HttpServletRequest req) {
+    public ResponseEntity<PerusteenOsaDto> add(@RequestBody PerusteenOsaDto perusteenOsa, UriComponentsBuilder ucb, HttpServletRequest req) {
         perusteenOsa.setId(null);
         service.add(perusteenOsa);
         HttpHeaders headers = new HttpHeaders();
@@ -57,12 +53,10 @@ public class PerusteenOsaController {
     }
 
     @RequestMapping(value = "/{id}", method = POST)
-    @ResponseBody
-    public PerusteenOsa update(@PathVariable("id") final Long id, @RequestBody PerusteenOsa perusteenOsa) {
+    public PerusteenOsaDto update(@PathVariable("id") final Long id, @RequestBody PerusteenOsaDto perusteenOsa) {
         LOG.info("save {}", perusteenOsa);
         perusteenOsa.setId(id);
-        service.update(id, perusteenOsa);
-        return perusteenOsa;
+        return service.update(id, perusteenOsa);
     }
 
     @RequestMapping(value = "/{id}", method = DELETE, consumes = "*/*")

@@ -61,4 +61,9 @@ public class Osaamistaso implements Serializable {
         this.otsikko = otsikko;
     }
 
+    @Override
+    public String toString() {
+        return ""+id;
+    }
+    
 }
