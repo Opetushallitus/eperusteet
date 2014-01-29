@@ -1,11 +1,11 @@
 <div class="panel panel-default">
-    <div class="panel-heading">{{'haku-hakuehdot'|translate}}<span class="btn btn-default btn-sm pull-right" style="margin-top: -5px" ng-click="tyhjenna()" translate>palauta</span></div>
+  <div class="panel-heading">{{'haku-hakuehdot'|translate}}<span class="btn btn-default btn-sm pull-right" style="margin-top: -5px" ng-click="tyhjenna()" translate>palauta</span></div>
   <form class="panel-body">
     <div  class="form-group col-xs-6">
       <label for="tutkinnon-nimi" translate>haku-nimi</label>
       <input id="tutkinnon-nimi" type="text" class="form-control" placeholder="{{'haku-tutkinnon-nimi-placeholder'| translate}}" ng-model="query" ng-change="hakuMuuttui()">
     </div>
-   <div class="form-group col-xs-6" ng-show="konteksti !== kontekstit[0]">
+    <div class="form-group col-xs-6" ng-show="konteksti !== kontekstit[0]">
       <label for="haku-tyyppi" translate>haku-tyyppi</label>
       <select id="haku-tyyppi" ng-model="tutkintotyyppi" class="form-control" ng-change="hakuMuuttui()">
         <option value="" translate>haku-kaikki-tutkinnot</option>
@@ -17,14 +17,14 @@
       <label for="haku-ala" translate>haku-koulutusala</label>
       <select id="haku-ala" ng-model="koulutusala" class="form-control" ng-change="koulutusalaMuuttui()">
         <option value="" translate>haku-kaikki-alat</option>
-        <option ng-repeat="ala in koulutusalat" value="{{ala.koodi}}" ng-selected="koulutusala === ala.koodi">{{'koulutusalakoodi-'+ala.koodi| translate}}</option>
+        <option ng-repeat="ala in koulutusalat" value="{{ala.koodi}}" ng-selected="koulutusala === ala.koodi">{{'koulutusalakoodi-' + ala.koodi| translate}}</option>
       </select>
     </div>
     <div class="form-group col-xs-6" ng-show="konteksti !== kontekstit[0] && koulutusala !== ''">
       <label for="haku-opintoala" translate>haku-opintoala</label>
       <select id="haku-opintoala" ng-model="valittuOpintoala" class="form-control" ng-change="hakuMuuttui()">
         <option value="" translate>haku-kaikki-opintoalat</option>
-        <option ng-repeat="ala in opintoalat" value="{{ala}}" ng-selected="opintoala === ala">{{'opintoalakoodi-'+ala | translate}}</option>
+        <option ng-repeat="ala in opintoalat" value="{{ala}}" ng-selected="opintoala === ala">{{'opintoalakoodi-' + ala| translate}}</option>
       </select>
     </div>
     <div class="clearfix"></div>
@@ -37,11 +37,20 @@
   <p>{{'haku-tulosten-määrä'| translate}} {{kokonaismaara}}</p>
 </div>
 <div>
-  <ul class="list-unstyled">
-    <li  ng-repeat="peruste in perusteet.data">
-      <a ng-href="#/selaus/{{konteksti}}/{{peruste.id}}"><span ng-bind-html="korosta(valitseKieli(peruste.nimi))"></span>, {{'koulutusalakoodi-' + peruste.koulutusala | translate}}</a>
-    </li>
-  </ul>
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th translate>haku-nimi</th><th translate>haku-koulutusala</th><th translate>haku-voimaantulopvm</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="peruste in perusteet.data">
+        <td><a ng-href="#/selaus/{{konteksti}}/{{peruste.id}}"><span ng-bind-html="korosta(valitseKieli(peruste.nimi))"></span></a></td>
+        <td>{{'koulutusalakoodi-' + peruste.koulutusala| translate}}</td>
+        <td>{{peruste.paivays|date:'dd.MM.yyyy'}}</td>
+      </tr>
+    </tbody>
+  </table>
   <ul class="pagination">
     <li ng-class="{disabled:nykyinenSivu === 0}">
       <a ng-click="edellinenSivu()"><span class="glyphicon glyphicon-backward"></span></a>

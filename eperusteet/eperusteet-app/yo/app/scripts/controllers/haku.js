@@ -9,7 +9,7 @@ angular.module('eperusteApp')
     // Viive, joka odotetaan, ennen kuin haku nimi muutoksesta lähtee serverille.
     var hakuViive = 300; //ms
     $scope.nykyinenSivu = Haku.hakuParametrit.sivu;
-    $scope.sivukoko = 25; //$window.innerHeight > 500 ? 25 : 15;
+    $scope.sivukoko = 20; //$window.innerHeight > 500 ? 25 : 15;
     $scope.sivuja = 1;
     $scope.kokonaismaara = 0;
     $scope.query = Haku.hakuParametrit.nimi;
