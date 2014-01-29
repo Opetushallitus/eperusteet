@@ -15,6 +15,8 @@ angular.module('eperusteApp')
     $scope.tutkinnonOsa = {};
     $scope.arviointi = {};
     $scope.arviointiasteikot = {};
+    $scope.kontekstit = YleinenData.kontekstit;
+
 
     if ($routeParams.konteksti && $scope.kontekstit.indexOf($routeParams.konteksti.toLowerCase()) !== -1) {
       $scope.konteksti = $routeParams.konteksti;
@@ -22,24 +24,22 @@ angular.module('eperusteApp')
       $location.path('/selaus/ammatillinenperuskoulutus');
     }
 
-    // navigaatiopolkua varten
     if ($routeParams.perusteId) {
       $scope.perusteId = $routeParams.perusteId;
       Perusteet.get({perusteenId: $routeParams.perusteId}, function(peruste) {
         $scope.peruste = peruste;
-      }, function(/*virhe*/) {
-        //TODO
+
+      }, function(virhe) {
+        console.log(virhe.status);
       });
     }
 
     PerusteenOsat.get({osanId: $routeParams.tutkinnonOsaId}, function(tulos) {
-
         if (tulos.arviointi !== undefined) {
           $scope.arviointi = tulos.arviointi;
           $scope.tutkinnonOsa = tulos;
           YleinenData.haeArviointiasteikot();
         }
-
     }, function(virhe) {
       console.log(virhe.status);
       if (virhe.status === 404) {
