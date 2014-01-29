@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
@@ -30,6 +29,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -38,44 +39,27 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "osaamistasonkriteeri")
 public class OsaamistasonKriteeri implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
+    @Setter
     private Long id;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
-    private Osaamistaso Osaamistaso;
-    
+    @Getter
+    @Setter
+    private Osaamistaso osaamistaso;
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @OrderColumn
-    @JoinTable(name = "osaamistasonkriteeri_tekstipalanen", 
-            joinColumns = @JoinColumn(name = "osaamistasonkriteeri_id"), 
-            inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))
+    @JoinTable(name = "osaamistasonkriteeri_tekstipalanen",
+               joinColumns = @JoinColumn(name = "osaamistasonkriteeri_id"),
+               inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))
+    @Getter
+    @Setter
     private List<TekstiPalanen> kriteerit;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Osaamistaso getOsaamistaso() {
-        return Osaamistaso;
-    }
-
-    public void setOsaamistaso(Osaamistaso Osaamistaso) {
-        this.Osaamistaso = Osaamistaso;
-    }
-
-    public List<TekstiPalanen> getKriteerit() {
-        return kriteerit;
-    }
-
-    public void setKriteerit(List<TekstiPalanen> kriteerit) {
-        this.kriteerit = kriteerit;
-    }
 
 }

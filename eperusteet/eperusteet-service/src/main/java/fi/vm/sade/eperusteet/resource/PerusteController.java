@@ -31,12 +31,9 @@ public class PerusteController {
 
     @RequestMapping(method = GET)
     @ResponseBody
-    public ResponseEntity<Page<PerusteDto>> getAll(PerusteQuery pquery) {
+    public Page<PerusteDto> getAll(PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
-        Page<PerusteDto> r = service.findBy(p, pquery);
-        return new ResponseEntity<>(r,
-                                    ResponseHeaders.cacheHeaders(7, TimeUnit.MINUTES),
-                                    r.hasContent() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+        return service.findBy(p, pquery);
     }
 
     @RequestMapping(value = "/{id}", method = GET)

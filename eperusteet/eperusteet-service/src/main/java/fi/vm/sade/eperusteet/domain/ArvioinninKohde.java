@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
@@ -28,6 +27,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -36,53 +37,27 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "arvioinninkohde")
 public class ArvioinninKohde implements Serializable {
-    
-    private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
+    @Setter
     private Long id;
-    
+
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @Getter
+    @Setter
     private TekstiPalanen otsikko;
-    
+
     @ManyToOne(fetch = FetchType.EAGER)
     @NotNull
-    private Arviointiasteikko Arviointiasteikko;
-    
+    @Getter
+    @Setter
+    private ArviointiAsteikko arviointiAsteikko;
+
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @Getter
+    @Setter
     private Set<OsaamistasonKriteeri> osaamistasonKriteerit;
-    
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public TekstiPalanen getOtsikko() {
-        return otsikko;
-    }
-
-    public void setOtsikko(TekstiPalanen otsikko) {
-        this.otsikko = otsikko;
-    }
-
-    public Arviointiasteikko getArviointiasteikko() {
-        return Arviointiasteikko;
-    }
-
-    public void setArviointiasteikko(Arviointiasteikko Arviointiasteikko) {
-        this.Arviointiasteikko = Arviointiasteikko;
-    }
-
-    public Set<OsaamistasonKriteeri> getOsaamistasonKriteerit() {
-        return osaamistasonKriteerit;
-    }
-
-    public void setOsaamistasonKriteerit(Set<OsaamistasonKriteeri> osaamistasonKriteerit) {
-        this.osaamistasonKriteerit = osaamistasonKriteerit;
-    }
-    
 }

@@ -16,7 +16,7 @@
 package fi.vm.sade.eperusteet.service.test.util;
 
 import fi.vm.sade.eperusteet.domain.Arviointi;
-import fi.vm.sade.eperusteet.domain.Arviointiasteikko;
+import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.ArvioinninKohdealue;
@@ -42,7 +42,7 @@ public abstract class TestUtils {
         return p;
     }
 
-    public static Arviointi createArviointi(Arviointiasteikko arviointiasteikko) {
+    public static Arviointi createArviointi(ArviointiAsteikko arviointiasteikko) {
         Arviointi arviointi = new Arviointi();
         arviointi.setLisatiedot(new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "lisätieto"))));
 
@@ -52,7 +52,7 @@ public abstract class TestUtils {
 
         ArvioinninKohde arvioinninKohde = new ArvioinninKohde();
         arvioinninKohde.setOtsikko(new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "otsikko"))));
-        arvioinninKohde.setArviointiasteikko(arviointiasteikko);
+        arvioinninKohde.setArviointiAsteikko(arviointiasteikko);
         arvioinninKohdealue.setArvioinninKohteet(Collections.singletonList(arvioinninKohde));
 
         Set<OsaamistasonKriteeri> kriteerit = new HashSet<>();
