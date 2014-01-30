@@ -1,6 +1,6 @@
 .tree {
     min-height:20px;
-    padding:19px;
+    padding:0;;
     margin-bottom:20px;
     background-color:#fbfbfb;
     border:1px solid #999;
@@ -36,7 +36,7 @@
     top:25px;
     width:25px
 }
-.tree li span {
+.tree li span, .tree li .textbox {
     -moz-border-radius:5px;
     -webkit-border-radius:5px;
     border:1px solid #999;
