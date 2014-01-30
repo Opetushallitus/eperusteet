@@ -1,8 +1,9 @@
 <ol class="breadcrumb">
   <li><a ng-href="#/selaus/{{konteksti}}">{{'haku-hakuehdot'|translate}}</a></li>
   <li><a ng-href="#/selaus/{{konteksti}}/{{perusteId}}">{{valitseKieli(peruste.nimi)}}</a></li>
-  <li class="active">{{'navipolku-tutkinnonOsa' | translate}}</li>
+  <li class="active">{{valitseKieli(tutkinnonOsa.otsikko)}}</li>
 </ol>
+<h2>{{valitseKieli(tutkinnonOsa.otsikko)}} </h2>
 <div class="panel panel-default" ng-repeat="kohdealue in arviointi.arvioinninKohdealueet">
     <div class="panel-heading">
         <h3 class="panel-title">{{valitseKieli(kohdealue.otsikko)}}</h3></div>
