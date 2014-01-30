@@ -2,10 +2,11 @@
 
 angular.module('eperusteApp')
   .controller('TutkinnonosaCtrl', function ($scope, $routeParams, $location,
-    YleinenData, PerusteenOsat, Arviointi) {
+    YleinenData, PerusteenOsat) {
     
     $scope.kontekstit = YleinenData.kontekstit;
     $scope.arviointi = {};
+    $scope.arviointiasteikot = {};
   
     if ($routeParams.konteksti && $scope.kontekstit.indexOf($routeParams.konteksti.toLowerCase()) !== -1) {
       $scope.konteksti = $routeParams.konteksti;
@@ -14,24 +15,21 @@ angular.module('eperusteApp')
     }
     
     PerusteenOsat.get({osanId: $routeParams.tutkinnonOsaId}, function(tulos) {
-      
-      console.log('Success1');
 
         if (tulos.arviointi !== undefined) {
-          
-          Arviointi.get({arviointiId: tulos.arviointi['fi.vm.sade.eperusteet.domain.Arviointi']}, function(tulos) {
-            $scope.arviointi = tulos;
-
-          }, function(virhe) {
-            console.log(virhe.status);
-          });
+          $scope.arviointi = tulos.arviointi;
+          YleinenData.haeArviointiasteikot();
         }
- 
+
     }, function(virhe) {
       console.log(virhe.status);
       if (virhe.status === 404) {
         //virhe.data
       }
+    });
+
+    $scope.$on('arviointiasteikot', function() {
+      $scope.arviointiasteikot = YleinenData.arviointiasteikot;
     });
   
     $scope.valitseKieli = function(nimi) {

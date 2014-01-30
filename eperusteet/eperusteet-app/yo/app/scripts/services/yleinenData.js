@@ -1,7 +1,10 @@
 'use strict';
+/*global _*/
+
 
 angular.module('eperusteApp')
-  .service('YleinenData', ['$translate', function YleinenData($translate) {
+  .service('YleinenData', ['$translate', 'Arviointiasteikot', '$rootScope', function YleinenData($translate, Arviointiasteikot, $rootScope) {
+      
       this.kontekstit = [
         'ammatillinenperuskoulutus',
         'ammatillinenaikuiskoulutus'
@@ -13,6 +16,25 @@ angular.module('eperusteApp')
       };
 
       this.kieli = 'fi';
+      
+      this.arviointiasteikot = undefined;
+      
+      this.haeArviointiasteikot = function() {
+        if (this.arviointiasteikot === undefined) {
+          var self = this;
+          Arviointiasteikot.query({}, function(tulos) {
+           
+            self.arviointiasteikot = _.indexBy(tulos, 'id');
+            $rootScope.$broadcast('arviointiasteikot');
+           
+          }, function(/*virhe*/) {
+            // TODO
+          });
+          
+        } else {
+          $rootScope.$broadcast('arviointiasteikot');
+        }
+      };
 
       this.lisääKontekstitPerusteisiin = function(perusteet) {
         if (perusteet) {
