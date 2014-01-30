@@ -81,6 +81,31 @@ European Union Public Licence for more details.
     <p ng-bind-html="perusteValinta.rakenne.perusteenOsa.teksti.fi"></p>
     <div ng-repeat="lapsi in perusteValinta.rakenne.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
 
+    <script type="text/ng-template" id='lehtirenderer.html'>
+        {{data.otsikko}}
+    </script>
+    
+    
+    <script type="text/ng-template"  id="tree_item_renderer.html">   
+    <span ng-show="data.tyyppi === 'yksi'">Yksi seuraavista</span>
+    <span ng-show="data.tyyppi !== 'yksi' && data.osat.length > 0">{{data.otsikko}}</span>
+    <a ng-show="!data.osat.length">{{data.otsikko}}, {{data.laajuus}}</a>
+        <ul>
+            <li ng-repeat="data in data.osat" ng-include="'tree_item_renderer.html'"></li>
+        </ul>
+    </script>
+    
+    <div class="tree">
+        <ul>
+            <li>
+                <span>{{rakenne.otsikko}}, {{rakenne.laajuus}}</span>
+                <ul>
+                    <li ng-repeat="data in rakenne.osat" ng-include="'tree_item_renderer.html'"></li>
+                </ul>                
+            </li>
+        </ul>
+    </div>
+    
     <div class="tree">
         <ul>
             <li>

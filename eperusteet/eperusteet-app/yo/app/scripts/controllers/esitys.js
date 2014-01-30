@@ -137,5 +137,118 @@ angular.module('eperusteApp')
       $scope.$broadcast('optiotMuuttuneet');
     });
 
+    /****************************************
+     * 
+     * Kovakoodattu rakenne-esitys, plsremove!!     
+     * 
+     * 
+     **************************************/
+    $scope.rakenne = {
+      otsikko: 'Tieto- ja tietoliikennealan perustutkinto',
+      laajuus: '120 ov',
+      osat: [
+        {
+          otsikko: 'Ammatilliset tutkinnon osat',
+          kuvaus: 'Tutkinnon osiin sisältyy työssäoppimista vähintään 20 ov, yrittäjyyttä vähintään 5 ov ja opinnäyte vähintään 2 ov',
+          laajuus: '90 ov',
+          osat: [
+            {
+              otsikko: 'Kaikille pakolliset tutkinnon osat',
+              osat: [
+                {
+                  otsikko: 'Elektroniikan ja ICT:n perustehtävät',
+                  laajuus: '30 ov',
+                  tutkinnonosa: 1
+                }
+              ]
+            },
+            {
+              tyyppi: 'yksi',
+              osat: [
+                {
+                  otsikko: 'Tieto- ja tietoliikennetekniikan koulutusohjelma, elektroniikka-asentaja',
+                  osat: [
+                    {
+                      otsikko: 'Ammattielektroniikka',
+                      laajuus: '20 ov',
+                      tutkinnonosa: 1
+                    },
+                    {
+                      tyyppi: 'yksi',
+                      osat: [
+                        {
+                          otsikko: 'Sulautetut sovellukset ja projektityöt',
+                          laajuus: '20 ov',
+                          tutkinnonosa: 1
+                        },
+                        {
+                          otsikko: 'Elektroniikkatuotanto',
+                          laajuus: '20 ov',
+                          tutkinnonosa: 1
+                        },
+                      ]
+                    }
+                  ]
+                },
+                {
+                  otsikko: 'Tieto- ja tietoliikennetekniikan koulutusohjelma, ICT-asentaja',
+                  osat: [
+                    {
+                      otsikko: 'Tietokone- ja tietoliikenneasennukset',
+                      laajuus: '20 ov',
+                      tutkinnonosa: 1
+                    },
+                    {
+                      tyyppi: 'yksi',
+                      osat: [
+                        {
+                          otsikko: 'Palvelinjärjestelmät ja projektityöt',
+                          laajuus: '20 ov',
+                          tutkinnonosa: 1
+                        },
+                        {
+                          otsikko: 'Tietoliikennelaiteasennukset ja kaapelointi',
+                          laajuus: '20 ov',
+                          tutkinnonosa: 1
+                        },
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              otsikko: 'Seuraavista kohdista tutkinnon osia yhteensä 20ov',
+              osat: [
+                {
+                  otsikko: 'Kaikille valinnaiset tutkinnon osat',
+                  laajuus: '10-20 ov',
+                  osat: [
+                    
+                  ]
+                },
+                {
+                  otsikko: 'Muut valinnaiset tutkinnon osat ammatillisessa peruskoulutuksessa',
+                  laajuus: '0-10 ov',
+                  osat: [
+                    
+                  ]
+                }
+              ]
+            }
+          ]
+                     
+        },
+        {
+          otsikko: 'Ammattitaitoa täydentävät tutkinnon osat ammatillisessa peruskoulutuksessa (yhteiset opinnot)',
+          laajuus: '20 ov'
+        },
+        {
+          otsikko: 'Vapaasti valittavat tutkinnon osat ammatillisessa peruskoulutuksessa',
+          laajuus: '10 ov'
+        },
+        
+      ]
+    };
 
   });
