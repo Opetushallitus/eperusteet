@@ -1,17 +1,15 @@
-
-
 <div class="panel panel-default" ng-repeat="kohdealue in arviointi.arvioinninKohdealueet">
     <div class="panel-heading">
         <h3 class="panel-title">{{valitseKieli(kohdealue.otsikko)}}</h3></div>
     <div class="panel-body">
         <accordion close-others="false">
             <accordion-group heading="{{valitseKieli(arvioinninkohde.otsikko)}}" ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet">
-                <div ng-repeat="taso in arvioinninkohde.arviointiasteikko.osaamistasot">
+                <div ng-repeat="taso in arviointiasteikot[arvioinninkohde.arviointiAsteikko].osaamistasot">
                     <div class="col-md-4">
                         {{valitseKieli(taso.otsikko)}}
                     </div>
                     <div class="col-md-8">
-                        <div ng-repeat="osaamistasonKriteeri in arvioinninkohde.osaamistasonKriteerit| filter:{osaamistaso.id: taso.id}">
+                        <div ng-repeat="osaamistasonKriteeri in arvioinninkohde.osaamistasonKriteerit| filter:{osaamistaso: taso.id}">
                             <ul>
                                 <li ng-repeat="kriteeri in osaamistasonKriteeri.kriteerit">
                                     {{valitseKieli(kriteeri)}}
