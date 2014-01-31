@@ -1,6 +1,13 @@
 'use strict';
 
 angular.module('eperusteApp')
+  .config(function($routeProvider) {
+    $routeProvider
+      .when('/muokkaus', {
+        templateUrl: 'views/muokkaus.html',
+        controller: 'MuokkausCtrl'
+      });
+  })
   .controller('MuokkausCtrl', function($scope, $sce, PerusteenOsat) {
 
     $scope.comments = [];

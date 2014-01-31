@@ -1,6 +1,13 @@
 'use strict';
 
 angular.module('eperusteApp')
+  .config(function($routeProvider) {
+    $routeProvider
+      .when('/selaus/:konteksti/:perusteId/tutkinnonosa/:tutkinnonOsaId', {
+        templateUrl: 'views/tutkinnonosa.html',
+        controller: 'TutkinnonosaCtrl'
+      });
+  })
   .controller('TutkinnonosaCtrl', function ($scope, $routeParams, $location,
     YleinenData, PerusteenOsat, Perusteet) {
 

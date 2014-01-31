@@ -2,6 +2,13 @@
 /*global _*/
 
 angular.module('eperusteApp')
+  .config(function($routeProvider) {
+    $routeProvider
+      .when('/selaus/:konteksti', {
+        templateUrl: 'views/haku.html',
+        controller: 'HakuCtrl'
+      });
+  })
   .controller('HakuCtrl', function($scope, $window, $routeParams, $location, Perusteet,
     Haku, YleinenData, Koulutusalat) {
 

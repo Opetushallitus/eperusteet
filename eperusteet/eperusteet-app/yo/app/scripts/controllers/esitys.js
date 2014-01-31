@@ -1,6 +1,15 @@
 'use strict';
 
 angular.module('eperusteApp')
+  .config(function($routeProvider) {
+    $routeProvider
+      .when('/selaus/:konteksti/:perusteId', {
+        templateUrl: 'views/esitys.html',
+        controller: 'EsitysCtrl',
+        //Estää sisällysluettelossa navigoinnin lataamasta sivua uudelleen
+        reloadOnSearch: false
+      });
+  })
   .controller('EsitysCtrl', function($q, $scope, $location, $anchorScroll, $routeParams,
     Kayttajaprofiilit, Suosikit, Perusteet, Suosikitbroadcast, YleinenData, palvelinhaunIlmoitusKanava) {
 
@@ -46,7 +55,7 @@ angular.module('eperusteApp')
       {teksti: 'Määräykset optio 4', valittu: false},
       {teksti: 'Määräykset optio 5', valittu: false}
     ];
-    
+
     var hakuAloitettuKäsittelijä = function() {
       $scope.hakuMenossa = true;
     };

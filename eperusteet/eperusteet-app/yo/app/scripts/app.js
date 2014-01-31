@@ -38,26 +38,7 @@ angular.module('eperusteApp', ['ngRoute', 'ngSanitize', 'ngResource', 'pascalpre
   })
   .config(function($routeProvider, $sceProvider) {
     $sceProvider.enabled(true);
-    $routeProvider
-      .when('/muokkaus', {
-        templateUrl: 'views/muokkaus.html',
-        controller: 'MuokkausCtrl'
-      })
-      .when('/selaus/:konteksti', {
-        templateUrl: 'views/haku.html',
-        controller: 'HakuCtrl'
-      })
-      .when('/selaus/:konteksti/:perusteId', {
-        templateUrl: 'views/esitys.html',
-        controller: 'EsitysCtrl',
-        //Estää sisällysluettelossa navigoinnin lataamasta sivua uudelleen
-        reloadOnSearch: false
-      })
-      .when('/selaus/:konteksti/:perusteId/tutkinnonosa/:tutkinnonOsaId', {
-        templateUrl: 'views/tutkinnonosa.html',
-        controller: 'TutkinnonosaCtrl'
-      })
-      .otherwise({
+    $routeProvider.otherwise({
         redirectTo: '/selaus/ammatillinenperuskoulutus'
       });
   })
