@@ -1,4 +1,5 @@
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .controller('SuosikitCtrl', function($scope, Kayttajaprofiilit, YleinenData, Suosikitbroadcast) {
@@ -22,12 +23,12 @@ angular.module('eperusteApp')
 
         if ($scope.naytetaanKaikkiSuosikit) {
           $scope.suosikkiNapinTeksti = piilotaSuosikitTeksti;
-          $scope.suosikkiRaja = $scope.suosikit.length;
+          $scope.suosikkiRaja = _.size($scope.suosikit);
         } else {
           $scope.suosikkiNapinTeksti = naytaKaikkiTeksti;
         }
 
-        if ($scope.suosikit.length > $scope.suppeaSuosikkiMaara) {
+        if (_.size($scope.suosikit) > $scope.suppeaSuosikkiMaara) {
           $scope.naytaSuosikkiNappi = true;
         } else {
           $scope.naytaSuosikkiNappi = false;
@@ -53,7 +54,7 @@ angular.module('eperusteApp')
       $scope.naytetaanKaikkiSuosikit = !$scope.naytetaanKaikkiSuosikit;
 
       if ($scope.naytetaanKaikkiSuosikit) {
-        $scope.suosikkiRaja = $scope.suosikit.length;
+        $scope.suosikkiRaja = _.size($scope.suosikit);
         $scope.suosikkiNapinTeksti = piilotaSuosikitTeksti;
 
       } else {
