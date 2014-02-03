@@ -4,18 +4,25 @@ angular.module('eperusteApp')
   .directive('tree', function() {
 
     function link(scope) {
-    
+
         scope.getNodeType = function(node) {
-            if (node.tyyppi === 'yksi')
+            if (node.tyyppi === 'yksi') {
                 return 'YKSI';
-            if ('osat' in node && node.osat.length > 0)
+            }
+            if (node.tyyppi ===  'selite') {
+                return 'SELITE';
+            }
+            if ('osat' in node && node.osat.length > 0) {
                 return 'KOOSTE';
+
+            }
             return 'LEHTI';
         };
 
         scope.isInnerNode = function(node) {
-            return _.contains(['YKSI', 'KOOSTE'], scope.getNodeType(node));
+            return _.contains(['YKSI', 'KOOSTE', 'SELITE'], scope.getNodeType(node));
         };
+
 
         scope.solmunOtsikkoteksti = function(node) {
             if (scope.getNodeType(node) === 'YKSI') {
@@ -28,12 +35,15 @@ angular.module('eperusteApp')
         };
 
         scope.nodeCollapsed = function(node) {
-            if (scope.isExplicitCollapsed(node))
+            if (scope.isExplicitCollapsed(node)) {
                 return true;
-            if (scope.isExplicitExpanded(node))
+            }
+            if (scope.isExplicitExpanded(node)) {
                 return false;
-            if (scope.getDefaultExpanded(node))
+            }
+            if (scope.getDefaultExpanded(node)) {
                 return false;
+            }
             return true;
         };
 
@@ -43,7 +53,7 @@ angular.module('eperusteApp')
             } else {
                 el.collapsed = true;
             }
-            event.stopPropagation();
+            $event.stopPropagation();
         };
 
         scope.glyphiconStyle = function(node) {
@@ -117,7 +127,7 @@ angular.module('eperusteApp')
       restrict: 'E',
       transclude: false,
       scope: {
-        rakenne: '='        
+        rakenne: '='
       },
       link: link
     };
