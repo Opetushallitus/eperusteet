@@ -143,6 +143,105 @@ angular.module('eperusteApp')
      * 
      * 
      **************************************/
+    $scope.getNodeType = function(node) {
+       if (node.tyyppi === 'yksi') return 'YKSI';
+       if ('osat' in node && node.osat.length > 0) return 'KOOSTE';
+       return 'LEHTI';
+    };
+    $scope.isInnerNode = function(node) {
+        return _.contains(['YKSI', 'KOOSTE'], $scope.getNodeType(node));
+    };
+    
+    $scope.solmunOtsikkoteksti = function (node) {
+        if ($scope.getNodeType(node) === 'YKSI') {
+            return 'Jokin seuraavista';
+        } 
+        if ('laajuus' in node) {
+            return node.otsikko + ', ' + node.laajuus;
+        }
+        return node.otsikko;
+    };
+    
+    $scope.nodeCollapsed = function(node) {
+        if ($scope.isExplicitCollapsed(node)) return true;
+        if ($scope.isExplicitExpanded(node)) return false;
+        if ($scope.getDefaultExpanded(node)) return false;
+        return true;
+    };
+    
+    $scope.onNodeClick = function(el, $event) {
+        if ($scope.nodeCollapsed(el)) {
+            el.collapsed = false;
+        } else {
+            el.collapsed = true;
+        }
+        $event.stopPropagation();
+    };
+    
+    $scope.glyphiconStyle = function(node) {
+        var styles = ['glyphicon'];
+        if ($scope.nodeCollapsed(node)) {
+            styles.push('glyphicon-plus');
+        } else {
+            styles.push('glyphicon-minus');
+        }
+        return styles;
+    };
+    
+    $scope.getDefaultExpanded = function(node, depth) {
+        if (depth < 2) {
+            return true;
+        }
+        // jos solmu on valintasolmu ja sillä on vain lehtilapsia, avataan se
+        if ($scope.getNodeType(node) === 'YKSI' && 
+                (_.every(node.osat, function(n) {
+                    return $scope.getNodeType(n) === 'LEHTI';}
+                ))) {            
+            return true;
+        }        
+        return false;        
+    };
+    
+    $scope.getDefaultExpandStyle = function(node, depth) {
+        if ($scope.getDefaultExpanded(node, depth)) {
+            return 'default_expanded';
+        }
+        return 'default_collapsed';        
+    };
+    
+    $scope.isExplicitCollapsed = function(node) {
+        return node.collapsed === true;
+    };
+    
+    $scope.isExplicitExpanded = function(node) {
+        return node.collapsed === false;
+    };
+    
+    $scope.getExplicitExpandStyle = function(node) {
+        if (node.collapsed === false) {
+            return 'explicit_expanded';
+        } 
+        if (node.collapsed === true) { 
+            return 'explicit_collapsed';
+        }
+        
+        return '';
+    };
+    
+    $scope.getNodeStyles = function(node, depth) {
+        var styles = [];
+        if ($scope.isInnerNode(node)) {
+            styles.push('parent_li');
+        }
+        var eclass = $scope.getExplicitExpandStyle(node);
+        if (eclass === '' ) {
+            styles.push($scope.getDefaultExpandStyle(node, depth));
+        } else {
+            styles.push(eclass);
+        }
+        return styles;
+    };
+    
     $scope.rakenne = {
       otsikko: 'Tieto- ja tietoliikennealan perustutkinto',
       laajuus: '120 ov',
@@ -185,7 +284,7 @@ angular.module('eperusteApp')
                           otsikko: 'Elektroniikkatuotanto',
                           laajuus: '20 ov',
                           tutkinnonosa: 1
-                        },
+                        }
                       ]
                     }
                   ]
@@ -224,14 +323,60 @@ angular.module('eperusteApp')
                   otsikko: 'Kaikille valinnaiset tutkinnon osat',
                   laajuus: '10-20 ov',
                   osat: [
-                    
+                      {
+                          otsikko: 'Huoltopalvelut',
+                          laajuus: '10 ov'
+                      },
+                      {
+                          otsikko: 'Valvonta ja ilmoitusjärjestelmäasennukset',
+                          laajuus: '10 ov'
+                      },
+                      {
+                          otsikko: 'Kodin elektroniikka ja asennukset',
+                          laajuus: '10 ov'
+                      },
+                      {
+                          otsikko: 'RF-työt',
+                          laajuus: '10 ov'
+                      },
+                      {
+                          otsikko: 'Sähköasennukset',
+                          laajuus: '10 ov',
+                      },
+                      {
+                          otsikko: 'Tutkinnon osa ammatillisesta perustutkinnosta',
+                          laajuus: '0-20 ov'
+                      },
+                      {
+                          otsikko: 'Tutkinnon osa ammattitutkinnosta'
+                      },
+                      {
+                          otsikko: 'Tutkinnon osa erikoisammattitutkinnosta'
+                      },
+                      {
+                          otsikko: 'Paikallisesti tarjottava tutkinnon osa',
+                          laajuus: '0-20 ov'
+                      }
                   ]
                 },
                 {
                   otsikko: 'Muut valinnaiset tutkinnon osat ammatillisessa peruskoulutuksessa',
                   laajuus: '0-10 ov',
                   osat: [
-                    
+                      {
+                          otsikko: 'Yrittäjyys',
+                          laajuus: '10 ov'
+                      },
+                      {
+                          otsikko: 'Työpaikkaohjaajaksi valmentautuminen',
+                          laajuus: '2 ov'
+                      },
+                      {
+                          otsikko: 'Ammattitaitoa täydentävät tutkinnon osat (yhteiset opinnot)'
+                      },
+                      {
+                          otsikko: 'Lukio-opinnot'
+                      }
                   ]
                 }
               ]

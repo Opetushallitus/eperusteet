@@ -60,10 +60,12 @@
     color:#000
 }
 
-.initial_collapse ul li {
+.default_collapsed>ul>li,
+.explicit_collapsed>ul>li {
     display: none;
 }
 
-.initial_expand ul li {
+.default_expanded>ul>li,
+.explicit_expanded>ul>li {
     display: list-item;    
 }
