@@ -46,7 +46,7 @@ angular.module('eperusteApp')
       {teksti: 'Määräykset optio 4', valittu: false},
       {teksti: 'Määräykset optio 5', valittu: false}
     ];
-    
+
     var hakuAloitettuKäsittelijä = function() {
       $scope.hakuMenossa = true;
     };
@@ -138,10 +138,10 @@ angular.module('eperusteApp')
     });
 
     /****************************************
-     * 
+     *
      * Kovakoodattu rakenne-esitys, plsremovewhenfit!!
-     * 
-     **************************************/    
+     *
+     **************************************/
     $scope.rakenne = {
       otsikko: 'Tieto- ja tietoliikennealan perustutkinto',
       laajuus: '120 ov',
@@ -282,17 +282,138 @@ angular.module('eperusteApp')
               ]
             }
           ]
-                     
+
         },
         {
           otsikko: 'Ammattitaitoa täydentävät tutkinnon osat ammatillisessa peruskoulutuksessa (yhteiset opinnot)',
-          laajuus: '20 ov'          
+          laajuus: '20 ov',
+          osat: [
+            {
+              tyyppi: 'selite',
+              otsikko: ['Opetuskieleltään ruotsinkielisessä koulutuksessa toisen kotimaisen kielen opintojen laajuus on 2 ov, jolloin pakollisten ammattitaitoa täydentävien tutkinnon osien laajuus on 17 ov ja valinnaisten 3 ov.', 'Liikunnan pakollisten opintojen laajuus on 1 ov ja terveystiedon pakollisten opintojen laajuus on 1 ov. Koulutuksen järjestäjä voi päättää liikunnan ja terveystiedon pakollisten opintojen jakamisesta poikkea- valla tavalla kuitenkin siten, että niiden yhteislaajuus on kaksi opintoviikkoa.']
+            },
+            {
+              otsikko: 'Pakolliset tutkinnon osat',
+              osat: [
+                {
+                  otsikko: 'Äidinkieli',
+                  laajuus: '4 ov'
+                },
+                {
+                  otsikko: 'Toinen kotimainen kieli',
+                  tyyppi: 'yksi',
+                  osat: [
+                    {
+                      otsikko: 'Toinen kotimainen kieli ruotsi',
+                      laajuus: '1ov'
+                    },
+                    {
+                      otsikko: 'Toinen kotimainen kieli suomi',
+                      laajuus: '2ov'
+                    }
+                  ]
+                },
+                {
+                  otsikko: 'Vieras kieli',
+                  laajuus: '2 ov'
+                },
+                {
+                  otsikko: 'Matematiikka',
+                  laajuus: '3 ov'
+                },
+                {
+                  otsikko: 'Fysiikka ja kemia',
+                  laajuus: '2 ov'
+                },
+                {
+                  otsikko: 'Yhteiskunta-, yritys- ja työelämätieto',
+                  laajuus: '1 ov'
+                },
+                {
+                  otsikko: 'Liikunta',
+                  laajuus: '1 ov'
+                },
+                {
+                  otsikko: 'Terveystieto',
+                  laajuus: '1 ov'
+                },
+                {
+                  otsikko: 'Taide ja kulttuuri',
+                  laajuus: '1 ov'
+                }
+              ]
+            },
+            {
+              otsikko: 'Valinnaiset tutkinnon osat',
+              osat: [
+                {
+                  otsikko: 'Äidinkieli',
+                  laajuus: '0-4 ov'
+                },
+                {
+                  otsikko: 'Vieras kieli',
+                  laajuus: '0-4 ov'
+                },
+                {
+                  otsikko: 'Matematiikka',
+                  laajuus: '0-4 ov'
+                },
+                {
+                  otsikko: 'Fysiikka ja kemia',
+                  laajuus: '0-4 ov'
+                },
+                {
+                  otsikko: 'Yhteiskunta-, yritys- ja työelämätieto',
+                  laajuus: '0-4 ov'
+                },
+                {
+                  otsikko: 'Liikunta',
+                  laajuus: '0-4 ov'
+                },
+                {
+                  otsikko: 'Terveystieto',
+                  laajuus: '0-4 ov'
+                },
+                {
+                  otsikko: 'Taide ja kulttuuri',
+                  laajuus: '0-4 ov'
+                },
+                {
+                  otsikko: 'Ympäristötieto',
+                  laajuus: '0-4 ov'
+                },
+                {
+                  otsikko: 'Tieto- ja viestintätekniikka',
+                  laajuus: '0-4 ov'
+                },
+                {
+                  otsikko: 'Etiikka',
+                  laajuus: '0-4 ov'
+                },
+                {
+                  otsikko: 'Kulttuurien tuntemus',
+                  laajuus: '0-4 ov'
+                },
+                {
+                  otsikko: 'Psykologia',
+                  laajuus: '0-4 ov'
+                },
+                {
+                  otsikko: 'Yritystoiminta',
+                  laajuus: '0-4 ov'
+                }
+              ]
+            }
+          ]
+
+
+
         },
         {
           otsikko: 'Vapaasti valittavat tutkinnon osat ammatillisessa peruskoulutuksessa',
           laajuus: '10 ov'
         },
-        
+
       ]
     };
 
