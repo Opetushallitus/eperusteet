@@ -386,7 +386,7 @@ angular.module('eperusteApp')
         },
         {
           otsikko: 'Ammattitaitoa täydentävät tutkinnon osat ammatillisessa peruskoulutuksessa (yhteiset opinnot)',
-          laajuus: '20 ov'
+          laajuus: '20 ov'          
         },
         {
           otsikko: 'Vapaasti valittavat tutkinnon osat ammatillisessa peruskoulutuksessa',

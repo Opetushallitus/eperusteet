@@ -1,0 +1,19 @@
+
+<script type="text/ng-template"  id="tree_item_renderer.html">   
+    <span ng-if="isInnerNode(data)"><i ng-class="glyphiconStyle(data)"></i> {{solmunOtsikkoteksti(data)}}</span>
+    <a ng-if="!isInnerNode(data)">{{solmunOtsikkoteksti(data)}}</a>
+    <ul>
+        <li ng-click="onNodeClick(data, $event)" ng_class="getNodeStyles(data)" ng-repeat="data in data.osat" ng-include="'tree_item_renderer.html'"></li>
+    </ul>
+</script>
+    
+<div class="tree">
+    <ul>
+        <li ng-class="getNodeStyles(rakenne, 0)">
+            <span>{{solmunOtsikkoteksti(rakenne)}}</span>
+            <ul>
+                <li ng-click="onNodeClick(data, $event)" ng_class="getNodeStyles(data, 1)" ng-repeat="data in rakenne.osat" ng-include="'tree_item_renderer.html'"></li>
+            </ul>                
+        </li>
+    </ul>
+</div>

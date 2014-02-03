@@ -25,23 +25,6 @@ European Union Public Licence for more details.
       <div ng-repeat="lapsi in lapsi.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
     </script>
     
-    <script>
-        $(function () {
-    $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
-    $('.tree li.parent_li > span').on('click', function (e) {
-        var children = $(this).parent('li.parent_li').find(' > ul > li');
-        if (children.is(":visible")) {
-            children.hide('fast');
-            $(this).attr('title', 'Expand this branch').find(' > i').addClass('glyphicon-plus').removeClass('glyphicon-minus');
-        } else {
-            children.show('fast');
-            $(this).attr('title', 'Collapse this branch').find(' > i').addClass('glyphicon-minus').removeClass('glyphicon-plus');
-        }
-        e.stopPropagation();
-    });
-});
-    </script>
-
     <div class="panel panel-default">
       <div class="panel-heading">Voit käyttää alla olevia työkaluja rajataksesi näytettävää sisältöä valitusta perusteesta.<a class="btn btn-default btn-sm pull-right" style="margin-top: -5px" href="#/selaus" translate>takaisin</a></div>
       <div class="panel-body">
@@ -85,26 +68,8 @@ European Union Public Licence for more details.
         {{data.otsikko}}
     </script>
     
-    
-    <script type="text/ng-template"  id="tree_item_renderer.html">   
-    <span ng-if="isInnerNode(data)"><i ng-class="glyphiconStyle(data)"></i> {{solmunOtsikkoteksti(data)}}</span>
-    <a ng-if="!isInnerNode(data)">{{solmunOtsikkoteksti(data)}}</a>
-    <ul>
-        <li ng-click="onNodeClick(data, $event)" ng_class="getNodeStyles(data)" ng-repeat="data in data.osat" ng-include="'tree_item_renderer.html'"></li>
-    </ul>
-    </script>
-    
-    <div class="tree">
-        <ul>
-            <li ng-class="getNodeStyles(rakenne, 0)">
-                <span>{{rakenne.otsikko}}, {{rakenne.laajuus}}</span>
-                <ul>
-                    <li ng-click="onNodeClick(data, $event)" ng_class="getNodeStyles(data, 1)" ng-repeat="data in rakenne.osat" ng-include="'tree_item_renderer.html'"></li>
-                </ul>                
-            </li>
-        </ul>
-    </div>
-    
+    <tree rakenne="rakenne"></tree>
+        
     <div class="tree">
         <ul>
             <li>
