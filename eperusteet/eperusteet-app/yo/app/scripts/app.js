@@ -1,7 +1,14 @@
 'use strict';
 /* global _ */
 
-angular.module('eperusteApp', ['ngRoute', 'ngSanitize', 'ngResource', 'ngAnimate', 'pascalprecht.translate', 'ui.bootstrap'])
+angular.module('eperusteApp', [
+    'ngRoute',
+    'ngSanitize',
+    'ngResource',
+    'ngAnimate',
+    'pascalprecht.translate',
+    'ui.bootstrap',
+  ])
   .constant('SERVICE_LOC','/eperusteet-service/api')
   .factory('palvelinHakuInterceptor', function($injector, palvelinhaunIlmoitusKanava) {
     var http;
@@ -36,12 +43,12 @@ angular.module('eperusteApp', ['ngRoute', 'ngSanitize', 'ngResource', 'ngAnimate
       }
     };
   })
-  .config(function($routeProvider, $sceProvider) {
-    $sceProvider.enabled(true);
-    $routeProvider.otherwise({
-        redirectTo: '/selaus/ammatillinenperuskoulutus'
-      });
-  })
+  // .config(function($routeProvider, $sceProvider) {
+  //   $sceProvider.enabled(true);
+  //   $routeProvider.otherwise({
+  //       redirectTo: '/selaus/ammatillinenperuskoulutus'
+  //     });
+  // })
   .config(function($translateProvider) {
       $translateProvider.useStaticFilesLoader({
         prefix: 'localisation/locale-',
