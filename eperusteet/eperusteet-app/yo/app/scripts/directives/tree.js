@@ -22,7 +22,6 @@ angular.module('eperusteApp')
             return _.contains(['YKSI', 'KOOSTE', 'SELITE'], scope.getNodeType(node));
         };
 
-
         scope.solmunOtsikkoteksti = function(node) {
             if (scope.getNodeType(node) === 'YKSI') {
                 return 'Jokin seuraavista';
@@ -33,21 +32,21 @@ angular.module('eperusteApp')
             return node.otsikko;
         };
 
-        scope.nodeCollapsed = function(node) {
+        scope.nodeCollapsed = function(node, depth) {
             if (scope.isExplicitCollapsed(node)) {
                 return true;
             }
             if (scope.isExplicitExpanded(node)) {
                 return false;
             }
-            if (scope.getDefaultExpanded(node)) {
+            if (scope.getDefaultExpanded(node, depth)) {
                 return false;
             }
             return true;
         };
 
-        scope.onNodeClick = function(el, $event) {
-            if (scope.nodeCollapsed(el)) {
+        scope.onNodeClick = function(el, depth, $event) {
+            if (scope.nodeCollapsed(el, depth)) {
                 el.collapsed = false;
             } else {
                 el.collapsed = true;
@@ -55,9 +54,9 @@ angular.module('eperusteApp')
             $event.stopPropagation();
         };
 
-        scope.glyphiconStyle = function(node) {
+        scope.glyphiconStyle = function(node, depth) {
             var styles = ['glyphicon'];
-            if (scope.nodeCollapsed(node)) {
+            if (scope.nodeCollapsed(node, depth)) {
                 styles.push('glyphicon-plus');
             } else {
                 styles.push('glyphicon-minus');
