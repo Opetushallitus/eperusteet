@@ -36,6 +36,9 @@
     top:25px;
     width:25px
 }
+.tree .last_li::after {
+    top:30px;
+}
 .tree li span, .tree li .textbox {
     -moz-border-radius:5px;
     -webkit-border-radius:5px;

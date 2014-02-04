@@ -6,7 +6,7 @@
     <span ng-click="onNodeClick(data, depth, $event)" ng-if="isInnerNode(data) && getNodeType(data) != 'SELITE'"><i ng-class="glyphiconStyle(data, depth)"></i> {{solmunOtsikkoteksti(data)}}</span>
     <a ng-if="!isInnerNode(data)" ng-href="#/{{baseurl}}/1">{{solmunOtsikkoteksti(data)}}</a>
     <ul>
-        <li ng_class="getNodeStyles(data, depth)" ng-repeat="data in data.osat" ng-include="'tree_item_renderer.html'" ng-init="depth=depth+1"></li>
+        <li ng_class="getNodeStyles(data, depth, $last)" ng-repeat="data in data.osat" ng-include="'tree_item_renderer.html'" ng-init="depth=depth+1"></li>
     </ul>
 </script>
     
@@ -15,7 +15,7 @@
         <li ng-class="getNodeStyles(rakenne, 0)">
             <span>{{solmunOtsikkoteksti(rakenne)}}</span>
             <ul>
-                <li ng_class="getNodeStyles(data, 1)" ng-repeat="data in rakenne.osat" ng-include="'tree_item_renderer.html'" ng-init="depth=1"></li>
+                <li ng_class="getNodeStyles(data, 1, $last)" ng-repeat="data in rakenne.osat" ng-include="'tree_item_renderer.html'" ng-init="depth=1"></li>
             </ul>                
         </li>
     </ul>

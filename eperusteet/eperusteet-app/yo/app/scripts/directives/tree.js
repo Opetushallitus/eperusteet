@@ -105,7 +105,7 @@ angular.module('eperusteApp')
             return '';
         };
 
-        scope.getNodeStyles = function(node, depth) {
+        scope.getNodeStyles = function(node, depth, last) {
             var styles = [];
             if (scope.isInnerNode(node)) {
                 styles.push('parent_li');
@@ -115,6 +115,9 @@ angular.module('eperusteApp')
                 styles.push(scope.getDefaultExpandStyle(node, depth));
             } else {
                 styles.push(eclass);
+            }
+            if (last) {
+              styles.push('last_li');
             }
             return styles;
         };
