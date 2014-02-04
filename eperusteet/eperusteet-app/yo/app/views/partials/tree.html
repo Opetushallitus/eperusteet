@@ -4,7 +4,7 @@
         <p  ng-repeat="selite in data.otsikko">{{selite}}</p>
     </div>    
     <span ng-click="onNodeClick(data, $event)" ng-if="isInnerNode(data) && getNodeType(data) != 'SELITE'"><i ng-class="glyphiconStyle(data)"></i> {{solmunOtsikkoteksti(data)}}</span>
-    <a ng-if="!isInnerNode(data)">{{solmunOtsikkoteksti(data)}}</a>
+    <a ng-if="!isInnerNode(data)" ng-href="#/{{baseurl}}/1">{{solmunOtsikkoteksti(data)}}</a>
     <ul>
         <li ng_class="getNodeStyles(data)" ng-repeat="data in data.osat" ng-include="'tree_item_renderer.html'"></li>
     </ul>

@@ -14,7 +14,6 @@ angular.module('eperusteApp')
             }
             if ('osat' in node && node.osat.length > 0) {
                 return 'KOOSTE';
-
             }
             return 'LEHTI';
         };
@@ -124,10 +123,11 @@ angular.module('eperusteApp')
 
     return {
       templateUrl: 'views/partials/tree.html',
-      restrict: 'E',
+      restrict: 'AE',
       transclude: false,
       scope: {
-        rakenne: '='
+        rakenne: '=',
+        baseurl: '@'
       },
       link: link
     };
