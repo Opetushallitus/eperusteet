@@ -36,6 +36,7 @@
     top:25px;
     width:25px
 }
+
 .tree li span, .tree li .textbox {
     -moz-border-radius:5px;
     -webkit-border-radius:5px;
@@ -52,7 +53,7 @@
     border:0
 }
 .tree li:last-child::before {
-    height:30px
+    height:25px
 }
 .tree li.parent_li>span:hover, .tree li.parent_li>span:hover+ul li span {
     background:#eee;
@@ -60,10 +61,3 @@
     color:#000
 }
 
-.initial_collapse ul li {
-    display: none;
-}
-
-.initial_expand ul li {
-    display: list-item;    
-}

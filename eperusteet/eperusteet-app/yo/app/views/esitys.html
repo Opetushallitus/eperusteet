@@ -25,23 +25,6 @@ European Union Public Licence for more details.
       <div ng-repeat="lapsi in lapsi.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
     </script>
     
-    <script>
-        $(function () {
-    $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
-    $('.tree li.parent_li > span').on('click', function (e) {
-        var children = $(this).parent('li.parent_li').find(' > ul > li');
-        if (children.is(":visible")) {
-            children.hide('fast');
-            $(this).attr('title', 'Expand this branch').find(' > i').addClass('glyphicon-plus').removeClass('glyphicon-minus');
-        } else {
-            children.show('fast');
-            $(this).attr('title', 'Collapse this branch').find(' > i').addClass('glyphicon-minus').removeClass('glyphicon-plus');
-        }
-        e.stopPropagation();
-    });
-});
-    </script>
-
     <div class="panel panel-default">
       <div class="panel-heading">Voit käyttää alla olevia työkaluja rajataksesi näytettävää sisältöä valitusta perusteesta.<a class="btn btn-default btn-sm pull-right" style="margin-top: -5px" href="#/selaus" translate>takaisin</a></div>
       <div class="panel-body">
@@ -81,157 +64,13 @@ European Union Public Licence for more details.
     <p ng-bind-html="perusteValinta.rakenne.perusteenOsa.teksti.fi"></p>
     <div ng-repeat="lapsi in perusteValinta.rakenne.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
 
-    <div class="tree">
-        <ul>
-            <li>
-                <span><i class="glyphicon glyphicon-minus"></i>Tieto- ja tietoliikennealan perustutkinto, 120 ov</span>
-                <ul>
-                    <li>
-                        <span><i class="glyphicon glyphicon-minus"></i>Ammatilliset tutkinnon osat, 90ov<br/>Tutkinnon osiin sisältyy työssäoppimista vähintään 20 ov, yrittäjyyttä vähintään 5 ov ja
-                            opinnäyte vähintään 2 ov</span>
-                        <ul>
-                            <li class="initial_collapse">
-                                <span><i class="glyphicon glyphicon-plus"></i>Kaikille pakolliset tutkinnon osat</span>
-                                <ul>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Elektroniikan ja ICT:n perustehtävät, 30 ov</a></li>
-                                </ul>
-                            </li>
-                            <li class="initial_collapse">
-                                <span><i class="glyphicon glyphicon-plus"></i>Yksi seuraavista</span>
-                                <ul>
-                                    <li>
-                                        <span><i class="glyphicon glyphicon-plus"></i>Tieto- ja tietoliikennetekniikan koulutusohjelma, elektroniikka-asentaja</span>
-                                        <ul>
-                                            <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Ammattielektroniikka, 20 ov</a></li>
-                                            <li class="initial_expand">
-                                                <span><i class="glyphicon glyphicon-minus"></i>Yksi seuraavista</span>
-                                                <ul>
-                                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Sulautetut sovellukset ja projektityöt, 20 ov</a></li>
-                                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Elektroniikkatuotanto, 20 ov</a></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <span><i class="glyphicon glyphicon-plus"></i>Tieto- ja tietoliikennetekniikan koulutusohjelma, ICT-asentaja</span>
-                                        <ul>
-                                            <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Tietokone- ja tietoliikenneasennukset, 20 ov</a></li>
-                                            <li class="initial_expand">
-                                                <span><i class="glyphicon glyphicon-minus"></i>Yksi seuraavista</span>
-                                                <ul>
-                                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Palvelinjärjestelmät ja projektityöt, 20 ov</a></li>
-                                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Tietoliikennelaiteasennukset ja kaapelointi, 20 ov</a></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
+    <script type="text/ng-template" id='lehtirenderer.html'>
+        {{data.otsikko}}
+    </script>
 
-                            <li class="initial_collapse">
-                                <span><i class="glyphicon glyphicon-plus"></i>Seuraavista kohdista tutkinnon osia yhteensä 20ov</span>
-                                <ul>
-                                    <li>
-                                        <span><i class="glyphicon glyphicon-plus"></i>Kaikille valinnaiset tutkinnon osat, 10–20 ov</span>
-                                        <ul>
-                                            <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Huoltopalvelut, 10 ov</a></li>
-                                            <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Valvonta ja ilmoitusjärjestelmäasennukset, 10 ov</a></li>
-                                            <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Kodin elektroniikka ja asennukset, 10 ov</a></li>
-                                            <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">RF-työt, 10 ov</a></li>
-                                            <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Sähköasennukset, 10ov</a></li>
-                                            <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Tutkinnon osa ammatillisesta perustutkinnosta (0–20 ov)</a></li>
-                                            <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">utkinnon osa ammattitutkinnosta</a></li>
-                                            <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Tutkinnon osa erikoisammattitutkinnosta</a></li>
-                                            <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Paikallisesti tarjottava tutkinnon osa (0–20 ov)</a></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <span><i class="glyphicon glyphicon-plus"></i>Muut valinnaiset tutkinnon osat ammatillisessa peruskoulutuksessa, 0–10 ov</span>
-                                        <ul>
-                                            <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Yrittäjyys, 10 ov</a></li>
-                                            <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Työpaikkaohjaajaksi valmentautuminen, 2 ov</a></li>
-                                            <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Ammattitaitoa täydentävät tutkinnon osat (yhteiset opinnot)</a></li>
-                                            <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Lukio-opinnot</a></li>
-                                        </ul>
-                                    </li>                                
-                                </ul>
-                            </li>
-
-                        </ul>
-                    </li>
-
-                    <li class="initial_collapse">
-                        <span><i class="glyphicon glyphicon-plus"></i>Ammattitaitoa täydentävät tutkinnon osat ammatillisessa peruskoulutuksessa (yhteiset opinnot), 20 ov</span>                    
-                        <ul>
-                            <li>
-                                <div class="textbox">
-                                <p>
-                                    Opetuskieleltään ruotsinkielisessä koulutuksessa toisen kotimaisen kielen opintojen laajuus on 2 ov,
-                                    jolloin pakollisten ammattitaitoa täydentävien tutkinnon osien laajuus on 17 ov ja valinnaisten 3 ov.
-                                </p>
-                                <p>
-                                    Liikunnan pakollisten opintojen laajuus on 1 ov ja terveystiedon pakollisten opintojen laajuus on 1 ov.
-                                    Koulutuksen järjestäjä voi päättää liikunnan ja terveystiedon pakollisten opintojen jakamisesta poikkea-
-                                    valla tavalla kuitenkin siten, että niiden yhteislaajuus on kaksi opintoviikkoa.
-                                </p>
-                                </div>
-                            </li>
-
-                            <li class="initial_expand">
-                                <span><i class="glyphicon glyphicon-plus"></i>Pakolliset tutkinnon osat</span>
-                                <ul>
-                                    <li>Äidinkieli, 4ov</li>
-                                    <li><span>Toinen kotimainen kieli</span>
-                                        <ul>
-                                            <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Toinen kotimainen kieli ruotsi, 1ov</a></li>
-                                            <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Toinen kotimainen kieli suomi, 2ov</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Vieras kieli, 2ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Matematiikka, 3pv</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Fysiikka ja kemia, 2ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Yhteiskunta-, yritys- ja työelämätieto, 1ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Liikunta, 1ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Terveystieto, 1ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Taide ja kulttuuri, 1ov</a></li>
-                                </ul>
-                            </li>
-                            
-                            <li>
-                                <span><i class="glyphicon glyphicon-plus"></i>Valinnaiset tutkinnon osat</span>
-                                <ul>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Äidinkieli, 0-4ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Toinen kotimainen kieli 0-4ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Vieras kieli, 0-4ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Matematiikka, 0-4ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Fysiikka ja kemia, 0-4ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Yhteiskunta-, yritys- ja työelämätieto, 0-4ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Liikunta, 0-4ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Terveystieto, 0-4ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Taide ja kulttuuri, 0-4ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Ympäristötieto, 0-4ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Tieto- ja viestintätekniikka, 0-4ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Etiikka, 0-4ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Kulttuurien tuntemus, 0-4ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Psykologia, 0-4ov</a></li>
-                                    <li><a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Yritystoiminta, 0-4ov</a></li>
-
-                                </ul>
-                            </li>
-                            
-                        </ul>
-                    </li>
-
-                    <li>
-                        <a ng-href="#/selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa/1">Vapaasti valittavat tutkinnon osat ammatillisessa peruskoulutuksessa, 10 ov</a>
-                    </li>
-
-                </ul>
-            </li>        
-        </ul>
-    </div>
-
-
+    <!-- Tutkinnon rakenne puuesityksenä -->
+    <div tree rakenne="rakenne" baseurl="selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa"></div>
+           
   </div>
   <optio-modal modalid="modalMaaraykset" optiot="maarayksetOptiot"></optio-modal>
   <optio-modal modalid="modalArviointi" optiot="arviointiOptiot" ></optio-modal>
