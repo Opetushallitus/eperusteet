@@ -5,3 +5,7 @@
 	<li ng-class="{ active: isActive('/selaus/ammatillinenperuskoulutus')}"><a href="#/selaus/ammatillinenperuskoulutus">{{'navi-ammatillinen-peruskoulutus'|translate}}</a></li>
 	<li ng-class="{ active: isActive('/selaus/ammatillinenaikuiskoulutus')}"><a href="#/selaus/ammatillinenaikuiskoulutus">{{'navi-ammatillinen-aikuiskoulutus'|translate}}</a></li>
 </ul>
+
+<ol class="breadcrumb">
+    <li ng-repeat="navigaatiopolku in navigaatiopolut.getKaikki()"><a href="#{{navigaatiopolku.polku}}" ng-hide="$last">{{navigaatiopolku.navigaationimi}}</a><span ng-show="$last">{{navigaatiopolku.navigaationimi}}</span></li>
+</ol>

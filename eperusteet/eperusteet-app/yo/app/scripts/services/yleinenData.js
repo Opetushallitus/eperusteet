@@ -10,11 +10,8 @@ angular.module('eperusteApp')
         'ammatillinenaikuiskoulutus'
       ];
       
-      this.navigaatiopolku = [];
-      
-      this.luoNavigaatiopolku = function (navigaatioData) {
-        
-      };
+
+      this.navigaatiopolkuElementit = [];
  
       this.kielet = {
         'suomi': 'fi',

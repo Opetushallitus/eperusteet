@@ -6,12 +6,14 @@ angular.module('eperusteApp')
       .when('/selaus/:konteksti/:perusteId', {
         templateUrl: 'views/esitys.html',
         controller: 'EsitysCtrl',
+        navigaationimiId: 'peruste',
         //Estää sisällysluettelossa navigoinnin lataamasta sivua uudelleen
         reloadOnSearch: false
       });
   })
-  .controller('EsitysCtrl', function($q, $scope, $location, $anchorScroll, $routeParams,
-    Kayttajaprofiilit, Suosikit, Perusteet, Suosikitbroadcast, YleinenData, palvelinhaunIlmoitusKanava) {
+  .controller('EsitysCtrl', function($q, $scope, $rootScope, $location, $anchorScroll,
+    $routeParams, Kayttajaprofiilit, Suosikit, Perusteet, Suosikitbroadcast,
+    YleinenData, palvelinhaunIlmoitusKanava) {
 
     $scope.perusteValinta = {};
     $scope.syvyys = 2;
@@ -89,6 +91,8 @@ angular.module('eperusteApp')
       var peruste = vastaus[0];
       if (peruste.id) {
         $scope.perusteValinta = peruste;
+        YleinenData.navigaatiopolkuElementit.peruste = peruste.nimi;
+        $rootScope.$broadcast('paivitaNavigaatiopolku');
       } else {
         // perustetta ei löytynyt, virhesivu.
       }

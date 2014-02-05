@@ -6,11 +6,12 @@ angular.module('eperusteApp')
     $routeProvider
       .when('/selaus/:konteksti', {
         templateUrl: 'views/haku.html',
-        controller: 'HakuCtrl'
+        controller: 'HakuCtrl',
+        navigaationimi: 'Hakuehdot'
       });
   })
-  .controller('HakuCtrl', function($scope, $window, $routeParams, $location, Perusteet,
-    Haku, YleinenData, Koulutusalat) {
+  .controller('HakuCtrl', function($scope, $rootScope, $window, $routeParams, $location,
+    Perusteet, Haku, YleinenData, Koulutusalat) {
 
     var pat = '';
     // Viive, joka odotetaan, ennen kuin haku nimi muutoksesta lähtee serverille.
@@ -57,6 +58,7 @@ angular.module('eperusteApp')
     if ($routeParams.konteksti && $scope.kontekstit.indexOf($routeParams.konteksti.toLowerCase()) !== -1) {
       $scope.konteksti = $routeParams.konteksti;
       alustaKonteksti();
+      $rootScope.$broadcast('paivitaNavigaatiopolku');
     } else {
       $location.path('/selaus/ammatillinenperuskoulutus');
     }

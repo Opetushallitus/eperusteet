@@ -5,7 +5,8 @@ angular.module('eperusteApp')
     $routeProvider
       .when('/muokkaus', {
         templateUrl: 'views/muokkaus.html',
-        controller: 'MuokkausCtrl'
+        controller: 'MuokkausCtrl',
+        navigaationimi: 'Muokkaus'
       });
   })
   .controller('MuokkausCtrl', function($scope, $sce, PerusteenOsat) {
