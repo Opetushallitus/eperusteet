@@ -6,12 +6,14 @@ angular.module('eperusteApp')
       .when('/selaus/:konteksti/:perusteId', {
         templateUrl: 'views/esitys.html',
         controller: 'EsitysCtrl',
+        navigaationimiId: 'peruste',
         //Estää sisällysluettelossa navigoinnin lataamasta sivua uudelleen
         reloadOnSearch: false
       });
   })
-  .controller('EsitysCtrl', function($q, $scope, $location, $anchorScroll, $routeParams,
-    Kayttajaprofiilit, Suosikit, Perusteet, Suosikitbroadcast, YleinenData, palvelinhaunIlmoitusKanava) {
+  .controller('EsitysCtrl', function($q, $scope, $rootScope, $location, $anchorScroll,
+    $routeParams, Kayttajaprofiilit, Suosikit, Perusteet, Suosikitbroadcast,
+    YleinenData, palvelinhaunIlmoitusKanava) {
 
     $scope.perusteValinta = {};
     $scope.syvyys = 2;
@@ -76,19 +78,21 @@ angular.module('eperusteApp')
 
     var perusteHakuPromise = (function() {
       if ($routeParams.perusteId) {
-        return Perusteet.get({perusteenId: $routeParams.perusteId});
+        return Perusteet.get({perusteenId: $routeParams.perusteId}).$promise;
       } else {
-        return undefined;
+        return $q.reject();
       }
     }());
 
-    var kayttajaProfiiliPromise = Kayttajaprofiilit.get({id: 1});
+    var kayttajaProfiiliPromise = Kayttajaprofiilit.get({id: 1}).$promise;
 
-    $q.all([perusteHakuPromise.$promise, kayttajaProfiiliPromise.$promise]).then(function(vastaus) {
+    $q.all([perusteHakuPromise, kayttajaProfiiliPromise]).then(function(vastaus) {
 
       var peruste = vastaus[0];
       if (peruste.id) {
         $scope.perusteValinta = peruste;
+        YleinenData.navigaatiopolkuElementit.peruste = peruste.nimi;
+        $rootScope.$broadcast('paivitaNavigaatiopolku');
       } else {
         // perustetta ei löytynyt, virhesivu.
       }

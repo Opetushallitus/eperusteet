@@ -7,7 +7,8 @@ angular.module('eperusteApp')
       transclude: false
     };
   })
-  .controller('NaviCtrl', function($scope, $location) {
+  .controller('NaviCtrl', function($scope, $location, navigaatiopolku) {
+    $scope.navigaatiopolut = navigaatiopolku;
     $scope.isActive = function(viewLocation) {
       return $location.path().substring(0, viewLocation.length) === viewLocation;
     };
