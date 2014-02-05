@@ -92,9 +92,6 @@ angular.module('eperusteApp')
             if (scope.isInnerNode(node)) {
                 styles.push('parent_li');
             }
-            if (last) {
-              styles.push('last_li');
-            }
             return styles;
         };
     }
