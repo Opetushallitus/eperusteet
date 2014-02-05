@@ -79,13 +79,6 @@ angular.module('eperusteApp')
             return false;
         };
 
-        scope.getDefaultExpandStyle = function(node, depth) {
-            if (scope.getDefaultExpanded(node, depth)) {
-                return 'default_expanded';
-            }
-            return 'default_collapsed';
-        };
-
         scope.isExplicitCollapsed = function(node) {
             return node.collapsed === true;
         };
@@ -94,27 +87,10 @@ angular.module('eperusteApp')
             return node.collapsed === false;
         };
 
-        scope.getExplicitExpandStyle = function(node) {
-            if (node.collapsed === false) {
-                return 'explicit_expanded';
-            }
-            if (node.collapsed === true) {
-                return 'explicit_collapsed';
-            }
-
-            return '';
-        };
-
         scope.getNodeStyles = function(node, depth, last) {
             var styles = [];
             if (scope.isInnerNode(node)) {
                 styles.push('parent_li');
-            }
-            var eclass = scope.getExplicitExpandStyle(node);
-            if (eclass === '') {
-                styles.push(scope.getDefaultExpandStyle(node, depth));
-            } else {
-                styles.push(eclass);
             }
             if (last) {
               styles.push('last_li');

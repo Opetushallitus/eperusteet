@@ -63,12 +63,3 @@
     color:#000
 }
 
-.default_collapsed>ul>li,
-.explicit_collapsed>ul>li {
-    display: none;
-}
-
-.default_expanded>ul>li,
-.explicit_expanded>ul>li {
-    display: list-item;    
-}
