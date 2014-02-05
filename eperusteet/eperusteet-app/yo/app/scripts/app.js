@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('eperusteApp', ['ngRoute', 'ngSanitize', 'ngResource', 'pascalprecht.translate', 'ui.bootstrap'])
+angular.module('eperusteApp', ['ngRoute', 'ngSanitize', 'ngResource', 'ngAnimate', 'pascalprecht.translate', 'ui.bootstrap'])
   .constant('SERVICE_LOC','/eperusteet-service/api')
   .factory('palvelinHakuInterceptor', function($injector, palvelinhaunIlmoitusKanava) {
     var http;

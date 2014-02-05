@@ -106,4 +106,30 @@ angular.module('eperusteApp')
       },
       link: link
     };
-  });
+  })
+  .animation('.tree-branch', function() {
+  return {
+    beforeAddClass : function(element, className, done) {
+      if(className === 'ng-hide') {
+        jQuery(element).slideUp('fast', done);
+      }
+      else {
+        done();
+      }
+    },
+    beforeRemoveClass : function(element, className, done) {
+      if(className === 'ng-hide') {
+        element.css('display', 'none');
+      }
+      done();
+    },
+    removeClass :  function(element, className, done) {
+      if(className === 'ng-hide') {
+        jQuery(element).slideDown('fast', done);
+      }
+      else {
+        done();
+      }
+    }
+  };
+});
