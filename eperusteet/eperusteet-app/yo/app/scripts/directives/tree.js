@@ -1,5 +1,6 @@
 'use strict';
 /*global _*/
+/*global jQuery*/
 angular.module('eperusteApp')
   .directive('tree', function() {
 
@@ -87,7 +88,7 @@ angular.module('eperusteApp')
             return node.collapsed === false;
         };
 
-        scope.getNodeStyles = function(node, depth, last) {
+        scope.getNodeStyles = function(node) {
             var styles = [];
             if (scope.isInnerNode(node)) {
                 styles.push('parent_li');
