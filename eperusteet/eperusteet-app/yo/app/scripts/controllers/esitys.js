@@ -78,15 +78,15 @@ angular.module('eperusteApp')
 
     var perusteHakuPromise = (function() {
       if ($routeParams.perusteId) {
-        return Perusteet.get({perusteenId: $routeParams.perusteId});
+        return Perusteet.get({perusteenId: $routeParams.perusteId}).$promise;
       } else {
-        return undefined;
+        return $q.reject();
       }
     }());
 
-    var kayttajaProfiiliPromise = Kayttajaprofiilit.get({id: 1});
+    var kayttajaProfiiliPromise = Kayttajaprofiilit.get({id: 1}).$promise;
 
-    $q.all([perusteHakuPromise.$promise, kayttajaProfiiliPromise.$promise]).then(function(vastaus) {
+    $q.all([perusteHakuPromise, kayttajaProfiiliPromise]).then(function(vastaus) {
 
       var peruste = vastaus[0];
       if (peruste.id) {

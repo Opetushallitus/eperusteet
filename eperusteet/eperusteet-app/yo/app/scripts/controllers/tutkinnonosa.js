@@ -28,21 +28,21 @@ angular.module('eperusteApp')
   
     var perusteHakuPromise = (function() {
       if ($routeParams.perusteId) {
-        return Perusteet.get({perusteenId: $routeParams.perusteId});
+        return Perusteet.get({perusteenId: $routeParams.perusteId}).$promise;
       } else {
-        return undefined;
+        return $q.reject();
       }
     }());
     
     var tutkinnonOsaHakuPromise = (function() {
       if ($routeParams.tutkinnonOsaId) {
-        return PerusteenOsat.get({osanId: $routeParams.tutkinnonOsaId});
+        return PerusteenOsat.get({osanId: $routeParams.tutkinnonOsaId}).$promise;
       } else {
-        return undefined;
+        return $q.reject();
       }
     }());
     
-    $q.all([perusteHakuPromise.$promise, tutkinnonOsaHakuPromise.$promise]).then(function(vastaus) {
+    $q.all([perusteHakuPromise, tutkinnonOsaHakuPromise]).then(function(vastaus) {
 
       var peruste = vastaus[0];
 
