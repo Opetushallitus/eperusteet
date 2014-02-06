@@ -34,6 +34,12 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     @ManyToOne
     private TekstiPalanen tavoitteet;
+    
+    @ManyToOne
+    private TekstiPalanen ammattitaitovaatimukset;
+    
+    @ManyToOne
+    private TekstiPalanen ammattitaidonOsoittamistavat;
 
     @OneToOne(fetch = FetchType.LAZY)
     private Arviointi arviointi;
@@ -44,6 +50,22 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     public void setTavoitteet(TekstiPalanen tavoitteet) {
         this.tavoitteet = tavoitteet;
+    }
+
+    public TekstiPalanen getAmmattitaitovaatimukset() {
+        return ammattitaitovaatimukset;
+    }
+
+    public void setAmmattitaitovaatimukset(TekstiPalanen ammattitaitovaatimukset) {
+        this.ammattitaitovaatimukset = ammattitaitovaatimukset;
+    }
+
+    public TekstiPalanen getAmmattitaidonOsoittamistavat() {
+        return ammattitaidonOsoittamistavat;
+    }
+
+    public void setAmmattitaidonOsoittamistavat(TekstiPalanen ammattitaidonOsoittamistavat) {
+        this.ammattitaidonOsoittamistavat = ammattitaidonOsoittamistavat;
     }
 
     public Arviointi getArviointi() {
