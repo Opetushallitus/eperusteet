@@ -41,7 +41,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @ManyToOne
     private TekstiPalanen ammattitaidonOsoittamistavat;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Arviointi arviointi;
 
     public TekstiPalanen getTavoitteet() {
