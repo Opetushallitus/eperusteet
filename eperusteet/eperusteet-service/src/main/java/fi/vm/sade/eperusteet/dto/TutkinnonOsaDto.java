@@ -29,5 +29,7 @@ import lombok.Setter;
 public class TutkinnonOsaDto extends PerusteenOsaDto {
     private List<LokalisoituTekstiDto> tavoitteet;
     private ArviointiDto arviointi;
+    private LokalisoituTekstiDto ammattitaitovaatimukset;
+    private LokalisoituTekstiDto ammattitaidonOsoittamistavat;
 
 }

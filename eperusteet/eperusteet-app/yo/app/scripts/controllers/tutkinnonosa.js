@@ -10,14 +10,20 @@ angular.module('eperusteApp')
         navigaationimiId: 'tutkinnonOsa'
       });
   })
-  .controller('TutkinnonosaCtrl', function ($q, $scope, $routeParams, $location,
-    YleinenData, PerusteenOsat, Perusteet, $rootScope) {
+  .controller('TutkinnonosaCtrl', function ($q, $scope, $rootScope, $routeParams, $location,
+    YleinenData, PerusteenOsat, Perusteet, palvelinhaunIlmoitusKanava) {
 
     $scope.kontekstit = YleinenData.kontekstit;
     $scope.tutkinnonOsa = {};
-    $scope.arviointi = {};
+    //$scope.arviointi = {};
     $scope.arviointiasteikot = {};
     $scope.kontekstit = YleinenData.kontekstit;
+    var avausTyyli = 'glyphicon glyphicon-plus pointer';
+    var sulkemisTyyli = 'glyphicon glyphicon-minus pointer';
+    $scope.ammattitaitovaatimusTyyli = avausTyyli;
+    $scope.ammattitaitovaatimuksetSuljettu = true;
+    $scope.ammattitaidonOsoittamistavatTyyli = avausTyyli;
+    $scope.ammattitaidonOsoittamistavatSuljettu = true;
 
 
     if ($routeParams.konteksti && $scope.kontekstit.indexOf($routeParams.konteksti.toLowerCase()) !== -1) {
@@ -49,14 +55,10 @@ angular.module('eperusteApp')
       $scope.peruste = peruste;
       YleinenData.navigaatiopolkuElementit.peruste = peruste.nimi;
 
-
       var tutkinnonOsa = vastaus[1];
       $scope.tutkinnonOsa = tutkinnonOsa;
-      if (tutkinnonOsa.arviointi !== undefined) {
-        $scope.arviointi = tutkinnonOsa.arviointi;
-        YleinenData.haeArviointiasteikot();
-        YleinenData.navigaatiopolkuElementit.tutkinnonOsa = {'fi': 'testi', 'sv': '[testi]'};
-      }
+      YleinenData.haeArviointiasteikot();
+      YleinenData.navigaatiopolkuElementit.tutkinnonOsa = tutkinnonOsa.otsikko;
 
       // Data haettu, päivitetään navigaatiopolku
       $rootScope.$broadcast('paivitaNavigaatiopolku');
@@ -71,8 +73,36 @@ angular.module('eperusteApp')
       $scope.arviointiasteikot = YleinenData.arviointiasteikot;
     });
 
+    $scope.vaihdaAmmattitaitovaatimusNakyvyys = function() {
+      $scope.ammattitaitovaatimuksetSuljettu = !$scope.ammattitaitovaatimuksetSuljettu;
+      if ($scope.ammattitaitovaatimuksetSuljettu) {
+        $scope.ammattitaitovaatimusTyyli = avausTyyli;
+      } else {
+        $scope.ammattitaitovaatimusTyyli = sulkemisTyyli;
+      }
+    };
+    
+    $scope.vaihdaAmmattitaidonOsoittamistavatNakyvyys = function() {
+      $scope.ammattitaidonOsoittamistavatSuljettu = !$scope.ammattitaidonOsoittamistavatSuljettu;
+      if ($scope.ammattitaidonOsoittamistavatSuljettu) {
+        $scope.ammattitaidonOsoittamistavatTyyli = avausTyyli;
+      } else {
+        $scope.ammattitaidonOsoittamistavatTyyli = sulkemisTyyli;
+      }
+    };
+
     $scope.valitseKieli = function(nimi) {
       return YleinenData.valitseKieli(nimi);
     };
+    
+    var hakuAloitettuKäsittelijä = function() {
+      $scope.hakuMenossa = true;
+    };
+
+    var hakuLopetettuKäsittelijä = function() {
+      $scope.hakuMenossa = false;
+    };
+    palvelinhaunIlmoitusKanava.kunHakuAloitettu($scope, hakuAloitettuKäsittelijä);
+    palvelinhaunIlmoitusKanava.kunHakuLopetettu($scope, hakuLopetettuKäsittelijä);
 
   });
