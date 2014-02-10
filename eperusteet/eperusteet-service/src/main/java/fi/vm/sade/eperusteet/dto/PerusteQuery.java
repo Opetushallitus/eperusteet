@@ -31,7 +31,7 @@ public class PerusteQuery {
     private int sivukoko = 25;
     private boolean siirtyma = false;
     private String nimi;
-    private List<String> ala;
+    private List<String> koulutusala;
     private List<String> tyyppi;
     private String kieli = "fi";
     private List<String> opintoala;

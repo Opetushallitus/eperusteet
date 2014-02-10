@@ -132,8 +132,8 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         if (pquery.getNimi() != null) {
             pred = cb.and(pred, cb.like(cb.lower(teksti.get(LokalisoituTeksti_.teksti)), cb.literal(RepositoryUtil.kuten(pquery.getNimi()))));
         }
-        if (pquery.getAla() != null && !pquery.getAla().isEmpty()) {
-            pred = cb.and(pred, root.get(Peruste_.koulutusala).get(Koulutusala_.koodi).in(pquery.getAla()));
+        if (pquery.getKoulutusala() != null && !pquery.getKoulutusala().isEmpty()) {
+            pred = cb.and(pred, root.get(Peruste_.koulutusala).get(Koulutusala_.koodi).in(pquery.getKoulutusala()));
         }
         if (pquery.getTyyppi() != null && !pquery.getTyyppi().isEmpty()) {
             pred = cb.and(pred, root.get(Peruste_.tutkintokoodi).in(pquery.getTyyppi()));

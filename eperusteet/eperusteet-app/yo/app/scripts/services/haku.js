@@ -4,9 +4,10 @@ angular.module('eperusteApp')
   .service('Haku', function Haku() {
     this.hakuParametrit = {
       nimi: null,
-      ala: '',
+      koulutusala: '',
       tyyppi: '',
       kieli: 'fi',
-      opintoala: ''
+      opintoala: '',
+      siirtyma: 'false'
     };
   });

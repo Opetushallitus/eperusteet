@@ -31,6 +31,10 @@ body {
     cursor: pointer;
 }
 
+.alleviivaus:hover {
+    text-decoration:underline;
+}
+
 .raita {
     background-color: #f9f9f9;
 }
