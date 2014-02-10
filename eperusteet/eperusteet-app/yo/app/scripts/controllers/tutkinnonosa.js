@@ -20,10 +20,12 @@ angular.module('eperusteApp')
     $scope.kontekstit = YleinenData.kontekstit;
     var avausTyyli = 'glyphicon glyphicon-plus pointer';
     var sulkemisTyyli = 'glyphicon glyphicon-minus pointer';
-    $scope.ammattitaitovaatimusTyyli = avausTyyli;
-    $scope.ammattitaitovaatimuksetSuljettu = true;
+    $scope.ammattitaitovaatimusTyyli = sulkemisTyyli;
+    $scope.ammattitaitovaatimuksetSuljettu = false;
     $scope.ammattitaidonOsoittamistavatTyyli = avausTyyli;
     $scope.ammattitaidonOsoittamistavatSuljettu = true;
+    $scope.arviointiTyyli = avausTyyli;
+    $scope.arviointiSuljettu = true;
 
 
     if ($routeParams.konteksti && $scope.kontekstit.indexOf($routeParams.konteksti.toLowerCase()) !== -1) {
@@ -88,6 +90,15 @@ angular.module('eperusteApp')
         $scope.ammattitaidonOsoittamistavatTyyli = avausTyyli;
       } else {
         $scope.ammattitaidonOsoittamistavatTyyli = sulkemisTyyli;
+      }
+    };
+    
+    $scope.vaihdaArviointiNakyvyys = function() {
+      $scope.arviointiSuljettu = !$scope.arviointiSuljettu;
+      if ($scope.arviointiSuljettu) {
+        $scope.arviointiTyyli = avausTyyli;
+      } else {
+        $scope.arviointiTyyli = sulkemisTyyli;
       }
     };
 
