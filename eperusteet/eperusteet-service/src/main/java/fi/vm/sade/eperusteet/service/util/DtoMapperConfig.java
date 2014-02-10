@@ -39,7 +39,7 @@ public class DtoMapperConfig {
     public DtoMapper dtoMapper() {
         DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
             .build();
-        factory.getConverterFactory().registerConverter(TekstiPalanenConverter.TO_MAP);
+        factory.getConverterFactory().registerConverter(new TekstiPalanenConverter());
 
         factory.classMap(PerusteenOsaDto.class, PerusteenOsa.class)
             .byDefault()

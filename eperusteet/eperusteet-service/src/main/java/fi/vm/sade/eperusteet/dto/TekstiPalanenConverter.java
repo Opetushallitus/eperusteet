@@ -15,27 +15,40 @@
  */
 package fi.vm.sade.eperusteet.dto;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import ma.glasnost.orika.Converter;
-import ma.glasnost.orika.CustomConverter;
+import java.util.HashMap;
+import java.util.Map;
+import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
 
 /**
  *
  * @author jhyoty
  */
-public class TekstiPalanenConverter {
+public class TekstiPalanenConverter extends BidirectionalConverter<TekstiPalanen, LokalisoituTekstiDto> {
 
-    public static final Converter<TekstiPalanen, LokalisoituTekstiDto> TO_MAP = new CustomConverter<TekstiPalanen, LokalisoituTekstiDto>() {
-
-        @Override
-        public LokalisoituTekstiDto convert(TekstiPalanen s, Type<? extends LokalisoituTekstiDto> type) {
-            LokalisoituTekstiDto teksti = new LokalisoituTekstiDto();
-            for (LokalisoituTeksti t : s.getTeksti()) {
-                teksti.put(t.getKieli(), t.getTeksti());
-            }
-            return teksti;
+    @Override
+    public LokalisoituTekstiDto convertTo(TekstiPalanen tekstiPalanen, Type<LokalisoituTekstiDto> type) {
+        LokalisoituTekstiDto dto = new LokalisoituTekstiDto();
+        
+        for(LokalisoituTeksti teksti : tekstiPalanen.getTeksti()) {
+            dto.put(teksti.getKieli(), teksti.getTeksti());
         }
-    };
+        
+        return dto;
+    }
+
+    @Override
+    public TekstiPalanen convertFrom(LokalisoituTekstiDto dto, Type<TekstiPalanen> type) {
+        
+        Map<Kieli, LokalisoituTeksti> tekstit = new HashMap<>();
+        
+        for(Kieli kieli : dto.keySet()) {
+            tekstit.put(kieli, new LokalisoituTeksti(kieli, dto.get(kieli)));
+        }
+        
+        return new TekstiPalanen(tekstit);
+    }
 }

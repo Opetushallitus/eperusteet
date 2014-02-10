@@ -1,9 +1,15 @@
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
+import fi.vm.sade.eperusteet.service.util.DtoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +32,7 @@ public class PerusteenOsaController {
     
     @Autowired
     private PerusteenOsaService service;
-
+    
     @RequestMapping(method = GET)
     public List<? extends PerusteenOsaDto> getAll() {
         LOG.info("FINDALL");
@@ -42,14 +48,20 @@ public class PerusteenOsaController {
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
-    @RequestMapping(method = POST)
+    @RequestMapping(method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PerusteenOsaDto> add(@RequestBody PerusteenOsaDto perusteenOsa, UriComponentsBuilder ucb, HttpServletRequest req) {
-        perusteenOsa.setId(null);
-        service.add(perusteenOsa);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucb.path("/perusteenosat/{id}").buildAndExpand(perusteenOsa.getId()).toUri());
-        return new ResponseEntity<>(perusteenOsa, headers, HttpStatus.CREATED);
+    public ResponseEntity<TutkinnonOsaDto> add(@RequestBody TutkinnonOsaDto tutkinnonOsaDto, UriComponentsBuilder ucb) {
+        LOG.info("add {}", tutkinnonOsaDto);
+        tutkinnonOsaDto = service.add(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+        return new ResponseEntity<>(tutkinnonOsaDto, buildHeadersFor(tutkinnonOsaDto.getId(), ucb), HttpStatus.CREATED);
+    }
+    
+    @RequestMapping(method = POST, params = PerusteenOsaMappings.IS_TEKSTIKAPPALE_PARAM)
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<TekstiKappaleDto> add(@RequestBody TekstiKappaleDto tekstikappaleDto, UriComponentsBuilder ucb) {
+        LOG.info("add {}", tekstikappaleDto);
+        tekstikappaleDto = service.add(tekstikappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
+        return new ResponseEntity<>(tekstikappaleDto, buildHeadersFor(tekstikappaleDto.getId(), ucb), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = POST)
@@ -65,5 +77,15 @@ public class PerusteenOsaController {
         LOG.info("delete {}", id);
         service.delete(id);
     }
+    
+    @RequestMapping(value = "/tyypit", method = GET)
+    public List<String> getPerusteenOsaTypes() {
+        return PerusteenOsaMappings.getPerusteenOsaTypes();
+    }
 
+    private HttpHeaders buildHeadersFor(Long id, UriComponentsBuilder ucb) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(ucb.path("/perusteenosat/{id}").buildAndExpand(id).toUri());
+        return headers;
+    }
 }

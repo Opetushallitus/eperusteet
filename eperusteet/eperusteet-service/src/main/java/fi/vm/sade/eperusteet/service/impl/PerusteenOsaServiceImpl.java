@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import java.util.List;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
@@ -22,25 +23,31 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     private static final Logger LOG = LoggerFactory.getLogger(PerusteenOsaServiceImpl.class);
     
     @Autowired
-    private PerusteenOsaRepository perusteenOsat;
+    private PerusteenOsaRepository perusteenOsaRepo;
     
     @Autowired
     private DtoMapper mapper;
 
     @Override
     public List<PerusteenOsaDto> getAll() {
-        return mapper.mapAsList(perusteenOsat.findAll(), PerusteenOsaDto.class);
+        return mapper.mapAsList(perusteenOsaRepo.findAll(), PerusteenOsaDto.class);
     }
 
     @Override
     public PerusteenOsaDto get(final Long id) {
-        return mapper.map(perusteenOsat.findOne(id), PerusteenOsaDto.class);
+        return mapper.map(perusteenOsaRepo.findOne(id), PerusteenOsaDto.class);
     }
-
+    
     @Override
     @Transactional(readOnly = false)
-    public PerusteenOsaDto add(PerusteenOsaDto perusteenOsa) {
-        return null;
+    public <T extends PerusteenOsaDto, D extends PerusteenOsa> T add(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
+        LOG.debug("map dto to entity");
+        D perusteenOsa = mapper.map(perusteenOsaDto, entityClass);
+        
+        LOG.debug("Save entity to db");
+        perusteenOsa = perusteenOsaRepo.save(perusteenOsa);
+
+        return mapper.map(perusteenOsa, dtoClass);
     }
 
     @Override
@@ -53,7 +60,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Transactional(readOnly = false)
     public void delete(final Long id) {
         LOG.info("delete" + id);
-        perusteenOsat.delete(id);
+        perusteenOsaRepo.delete(id);
     }
 
 }
