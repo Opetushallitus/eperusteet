@@ -88,7 +88,7 @@
                 <goal>verify</goal>
               </goals>
             </execution>
-          </executions>     
+          </executions>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -199,9 +199,9 @@
               <artifactId>tomcat-embed-logging-log4j</artifactId>
               <version>${tomcat.version}</version>
             </dependency>
-          </dependencies>          
+          </dependencies>
         </plugin>
       </plugins>
-    </pluginManagement>       
+    </pluginManagement>
   </build>
 </project>

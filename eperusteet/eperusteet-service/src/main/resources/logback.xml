@@ -6,10 +6,11 @@
     </encoder>
   </appender> 
 
-  <logger name="org.hibernate.type" value="trace"/> 
-  <logger name="org.hibernate" level="warn"/>
+  <logger name="org.hibernate" level="error"/>
   <logger name="fi.vm.sade" level="debug"/>
-  
+  <logger name="org.hibernate.tool.hbm2ddl" level="off"/>
+  <logger name="org.springframework" level="warn"/>
+
   <root level="info">
     <appender-ref ref="console"/>
   </root>

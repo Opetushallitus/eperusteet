@@ -46,7 +46,7 @@
     <property name="jpaPropertyMap">
       <map>
         <entry key="hibernate.hbm2ddl.auto" value="create"/>
-        <entry key="hibernate.show_sql" value="true"/>
+        <entry key="hibernate.show_sql" value="${hibernate.show_sql:false}"/>
         <entry key="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
         <entry key="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE"/>
         <entry key="hibernate.cache.use_second_level_cache" value="true"/>
