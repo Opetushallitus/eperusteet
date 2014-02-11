@@ -38,7 +38,7 @@ import org.hibernate.annotations.Immutable;
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Immutable
 @Table(name = "arviointiasteikko")
-public class ArviointiAsteikko implements Serializable {
+public class ArviointiAsteikko implements Serializable, CachedEntity {
     private static final long serialVersionUID = 1L;
     
     @Id
@@ -64,12 +64,5 @@ public class ArviointiAsteikko implements Serializable {
     public void setOsaamistasot(List<Osaamistaso> osaamistasot) {
         this.osaamistasot = osaamistasot;
     }
-
-    @Override
-    public String toString() {
-        return ""+id;
-    }
-
-
 
 }

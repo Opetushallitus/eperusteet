@@ -18,11 +18,14 @@ package fi.vm.sade.eperusteet.service.util;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.dto.CachedEntityConverter;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.TekstiPalanenConverter;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.context.annotation.Bean;
@@ -35,11 +38,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DtoMapperConfig {
 
+    @PersistenceContext
+    private EntityManager em;
+    
     @Bean
     public DtoMapper dtoMapper() {
         DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
             .build();
         factory.getConverterFactory().registerConverter(new TekstiPalanenConverter());
+        factory.getConverterFactory().registerConverter(new CachedEntityConverter(em));
 
         factory.classMap(PerusteenOsaDto.class, PerusteenOsa.class)
             .byDefault()

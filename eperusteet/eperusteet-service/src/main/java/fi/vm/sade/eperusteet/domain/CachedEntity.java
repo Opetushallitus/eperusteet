@@ -14,20 +14,13 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
-
-import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
+package fi.vm.sade.eperusteet.domain;
 
 /**
  *
- * @author jhyoty
+ * @author teele1
  */
-@Getter
-@Setter
-public class ArvioinninKohdeDto {
-    private LokalisoituTekstiDto otsikko;
-    private Long arviointiAsteikko;
-    private Set<OsaamistasonKriteeriDto> osaamistasonKriteerit;
+public interface CachedEntity {
+    
+    
 }
