@@ -31,9 +31,9 @@ public class PerusteController {
 
     @RequestMapping(method = GET)
     @ResponseBody
-    public Page<PerusteDto> getAll(PerusteQuery pquery) {
+    public ResponseEntity<Page<PerusteDto>> getAll(PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
-        return service.findBy(p, pquery);
+        return new ResponseEntity<>(service.findBy(p, pquery), ResponseHeaders.cacheHeaders(1, TimeUnit.MINUTES), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = GET)
@@ -49,9 +49,9 @@ public class PerusteController {
     @RequestMapping(value = "/{perusteId}/osat/{id}/lapset", method = POST)
     @ResponseBody
     public ResponseEntity<PerusteenOsaViite> lisääViite(
-            @PathVariable("perusteId") final Long perusteId,
-            @PathVariable("id") final Long viiteId,
-            @RequestParam(value = "ennen", required = false) Long ennen, @RequestBody PerusteenOsaViite viite) {
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long viiteId,
+        @RequestParam(value = "ennen", required = false) Long ennen, @RequestBody PerusteenOsaViite viite) {
 
         return new ResponseEntity<>(service.addViite(viiteId, ennen, viite), HttpStatus.CREATED);
     }
