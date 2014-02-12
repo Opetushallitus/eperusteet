@@ -40,6 +40,7 @@ public class KoulutusalaController {
     private KoulutusalaService service;
     
     @RequestMapping(method = GET)
+    @ResponseBody
     public List<KoulutusalaDto> getAll() {
         List<KoulutusalaDto> klist = service.getAll();
         return klist;       
