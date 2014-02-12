@@ -14,15 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@RestController
+@Controller
 @RequestMapping("/api/perusteenosat")
 public class PerusteenOsaController {
 
@@ -32,12 +33,14 @@ public class PerusteenOsaController {
     private PerusteenOsaService service;
     
     @RequestMapping(method = GET)
+    @ResponseBody
     public List<? extends PerusteenOsaDto> getAll() {
         LOG.info("FINDALL");
         return service.getAll();
     }
 
     @RequestMapping(value = "/{id}", method = GET)
+    @ResponseBody
     public ResponseEntity<PerusteenOsaDto> get(@PathVariable("id") final Long id) {
         PerusteenOsaDto t = service.get(id);
         if (t == null) {
@@ -48,6 +51,7 @@ public class PerusteenOsaController {
 
     @RequestMapping(method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
     @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
     public ResponseEntity<TutkinnonOsaDto> add(@RequestBody TutkinnonOsaDto tutkinnonOsaDto, UriComponentsBuilder ucb) {
         LOG.info("add {}", tutkinnonOsaDto);
         tutkinnonOsaDto = service.add(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
@@ -56,6 +60,7 @@ public class PerusteenOsaController {
     
     @RequestMapping(method = POST, params = PerusteenOsaMappings.IS_TEKSTIKAPPALE_PARAM)
     @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
     public ResponseEntity<TekstiKappaleDto> add(@RequestBody TekstiKappaleDto tekstikappaleDto, UriComponentsBuilder ucb) {
         LOG.info("add {}", tekstikappaleDto);
         tekstikappaleDto = service.add(tekstikappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
@@ -63,6 +68,7 @@ public class PerusteenOsaController {
     }
 
     @RequestMapping(value = "/{id}", method = POST)
+    @ResponseBody
     public PerusteenOsaDto update(@PathVariable("id") final Long id, @RequestBody PerusteenOsaDto perusteenOsa) {
         LOG.info("save {}", perusteenOsa);
         perusteenOsa.setId(id);
@@ -71,12 +77,14 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/{id}", method = DELETE, consumes = "*/*")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
     public void delete(@PathVariable final Long id) {
         LOG.info("delete {}", id);
         service.delete(id);
     }
     
     @RequestMapping(value = "/tyypit", method = GET)
+    @ResponseBody
     public List<String> getPerusteenOsaTypes() {
         return PerusteenOsaMappings.getPerusteenOsaTypes();
     }
