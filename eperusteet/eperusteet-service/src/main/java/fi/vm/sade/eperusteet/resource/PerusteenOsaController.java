@@ -10,15 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@RestController
+@Controller
 @RequestMapping("/api/perusteenosat")
 public class PerusteenOsaController {
 
@@ -28,12 +29,14 @@ public class PerusteenOsaController {
     private PerusteenOsaService service;
 
     @RequestMapping(method = GET)
+    @ResponseBody
     public List<? extends PerusteenOsaDto> getAll() {
         LOG.info("FINDALL");
         return service.getAll();
     }
 
     @RequestMapping(value = "/{id}", method = GET)
+    @ResponseBody
     public ResponseEntity<PerusteenOsaDto> get(@PathVariable("id") final Long id) {
         PerusteenOsaDto t = service.get(id);
         if (t == null) {
@@ -44,6 +47,7 @@ public class PerusteenOsaController {
 
     @RequestMapping(method = POST)
     @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
     public ResponseEntity<PerusteenOsaDto> add(@RequestBody PerusteenOsaDto perusteenOsa, UriComponentsBuilder ucb, HttpServletRequest req) {
         perusteenOsa.setId(null);
         service.add(perusteenOsa);
@@ -53,6 +57,7 @@ public class PerusteenOsaController {
     }
 
     @RequestMapping(value = "/{id}", method = POST)
+    @ResponseBody
     public PerusteenOsaDto update(@PathVariable("id") final Long id, @RequestBody PerusteenOsaDto perusteenOsa) {
         LOG.info("save {}", perusteenOsa);
         perusteenOsa.setId(id);
@@ -61,6 +66,7 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/{id}", method = DELETE, consumes = "*/*")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
     public void delete(@PathVariable final Long id) {
         LOG.info("delete {}", id);
         service.delete(id);
