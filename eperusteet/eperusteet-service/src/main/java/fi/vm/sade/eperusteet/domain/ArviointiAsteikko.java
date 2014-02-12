@@ -49,6 +49,7 @@ public class ArviointiAsteikko implements Serializable, CachedEntity {
     @Immutable
     private List<Osaamistaso> osaamistasot;
 
+    @Override
     public Long getId() {
         return id;
     }

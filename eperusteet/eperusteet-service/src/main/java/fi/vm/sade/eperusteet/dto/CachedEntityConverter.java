@@ -17,13 +17,11 @@
 package fi.vm.sade.eperusteet.dto;
 
 import fi.vm.sade.eperusteet.domain.CachedEntity;
-import java.lang.reflect.InvocationTargetException;
 import javax.persistence.EntityManager;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 
 /**
  *
@@ -46,12 +44,7 @@ public class CachedEntityConverter extends BidirectionalConverter<CachedEntity, 
 
     @Override
     public Long convertTo(CachedEntity s, Type<Long> type) {
-        try {
-            return (Long) BeanUtils.getPropertyDescriptor(s.getClass(), "id").getReadMethod().invoke(s);
-        }catch (InvocationTargetException | IllegalAccessException ex) {
-            LOG.error(CachedEntityConverter.class.getName(), ex);
-            return null;
-        }
+        return s.getId();
     }
 
     @Override
