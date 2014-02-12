@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.validation.ValidKohteenKriteerit;
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -36,6 +37,7 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "arvioinninkohde")
+@ValidKohteenKriteerit
 public class ArvioinninKohde implements Serializable {
 
     @Id

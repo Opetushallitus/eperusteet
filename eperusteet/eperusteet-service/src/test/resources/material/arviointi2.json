@@ -1,0 +1,48 @@
+{
+  "lisatiedot" : {
+    "fi" : "Taulukkoon on koottu arvioinnin kohteet sekä arviointikriteerit kolmelle eri osaamisen tasolle. Ammatillisessa peruskoulutuksessa arvioinnin kohteet ovat samalla tutkinnon osan keskeinen sisältö.",
+    "sv" : "[Taulukkoon on koottu arvioinnin kohteet sekä arviointikriteerit kolmelle eri osaamisen tasolle. Ammatillisessa peruskoulutuksessa arvioinnin kohteet ovat samalla tutkinnon osan keskeinen sisältö.]"
+  },
+  "arvioinninKohdealueet" : [ {
+    "otsikko" : {
+      "fi" : "Työprosessin hallinta",
+      "sv" : "[Työprosessin hallinta]"
+    },
+    "arvioinninKohteet" : [ {
+      "otsikko" : {
+        "fi" : "Oman työn suunnittelu",
+        "sv" : "[Oman työn suunnittelu]"
+      },
+      "arviointiAsteikko" : "arviointiasteikko_2",
+      "osaamistasonKriteerit" : [ {
+        "osaamistaso" : "osaamistaso_2",
+        "kriteerit" : [ {
+          "fi" : "Opiskelija tai tutkinnon suorittaja suunnittelee työnsä etukäteen",
+          "sv" : "[Opiskelija tai tutkinnon suorittaja suunnittelee työnsä etukäteen]"
+        } ]
+      }, {
+        "osaamistaso" : "osaamistaso_1",
+        "kriteerit" : [ {
+          "fi" : "Opiskelija tai tutkinnon suorittaja suunnittelee työnsä etukäteen (lisätty)",
+          "sv" : "[Opiskelija tai tutkinnon suorittaja suunnittelee työnsä etukäteen (lisätty)]"
+        } ]
+      } ]
+    }, {
+      "otsikko" : {
+        "fi" : "Työn lopputulokset",
+        "sv" : "[Työn lopputulokset]"
+      },
+      "arviointiAsteikko" : "arviointiasteikko_1",
+      "osaamistasonKriteerit" : [ {
+        "osaamistaso" : "osaamistaso_1",
+        "kriteerit" : [ {
+          "fi" : "Opiskelija tai tutkinnon suorittaja valmistaa työn ohjeistuksen mukaisesti",
+          "sv" : "[Opiskelija tai tutkinnon suorittaja valmistaa työn ohjeistuksen mukaisesti]"
+        }, {
+          "fi" : "Opiskelija tai tutkinnon suorittaja valmistaa teknisesi ja visuaalisesti käyttökelpoisen tuotoksen.",
+          "sv" : "[Opiskelija tai tutkinnon suorittaja valmistaa teknisesi ja visuaalisesti käyttökelpoisen tuotoksen.]"
+        } ]
+      } ]
+    } ]
+  } ]
+}
