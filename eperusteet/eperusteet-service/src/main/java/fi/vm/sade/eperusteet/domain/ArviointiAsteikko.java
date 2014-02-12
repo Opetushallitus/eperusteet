@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.dto.EntityReference;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Cacheable;
@@ -49,7 +50,6 @@ public class ArviointiAsteikko implements Serializable, CachedEntity {
     @Immutable
     private List<Osaamistaso> osaamistasot;
 
-    @Override
     public Long getId() {
         return id;
     }
@@ -66,4 +66,8 @@ public class ArviointiAsteikko implements Serializable, CachedEntity {
         this.osaamistasot = osaamistasot;
     }
 
+    @Override
+    public EntityReference<?> getReference() {
+        return new EntityReference<>(id, ArviointiAsteikko.class);
+    }
 }

@@ -14,15 +14,23 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.domain;
+package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.dto.EntityReference;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import java.io.IOException;
 
 /**
  *
  * @author teele1
  */
-public interface CachedEntity {
+public class EntityReferenceSerializer extends JsonSerializer<EntityReference>{
+
+    @Override
+    public void serialize(EntityReference value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+        jgen.writeString(value.getEntityClass().getSimpleName() + "_" + value.getId().toString());
+    }
     
-    <E extends CachedEntity> EntityReference<E> getReference();
 }

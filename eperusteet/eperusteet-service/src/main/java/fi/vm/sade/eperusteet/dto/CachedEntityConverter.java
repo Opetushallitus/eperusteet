@@ -20,16 +20,13 @@ import fi.vm.sade.eperusteet.domain.CachedEntity;
 import javax.persistence.EntityManager;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author teele1
  */
-public class CachedEntityConverter extends BidirectionalConverter<CachedEntity, Long>{
+public class CachedEntityConverter extends BidirectionalConverter<CachedEntity, EntityReference>{
 
-    private static final Logger LOG = LoggerFactory.getLogger(CachedEntityConverter.class);
     private final EntityManager em;
     
     public CachedEntityConverter(EntityManager em) {
@@ -37,19 +34,18 @@ public class CachedEntityConverter extends BidirectionalConverter<CachedEntity, 
     }
     
     @Override
-    public boolean canConvert(Type<?> sourceType, Type<?> destinationType) {       
-        return (this.sourceType.isAssignableFrom(sourceType) && this.destinationType.equals(destinationType))
-                || (this.sourceType.isAssignableFrom(destinationType) && this.destinationType.equals(sourceType));
+    public boolean canConvert(Type<?> sourceType, Type<?> destinationType) {
+        return(this.sourceType.isAssignableFrom(sourceType) && this.destinationType.isAssignableFrom(destinationType))
+                || (this.sourceType.isAssignableFrom(destinationType) && this.destinationType.isAssignableFrom(sourceType));
     }
 
     @Override
-    public Long convertTo(CachedEntity s, Type<Long> type) {
-        return s.getId();
+    public EntityReference convertTo(CachedEntity s, Type<EntityReference> type) {
+        return s.getReference();
     }
 
     @Override
-    public CachedEntity convertFrom(Long id, Type<CachedEntity> type) {
-        return em.getReference(type.getRawType(), id);
-        
+    public CachedEntity convertFrom(EntityReference reference, Type<CachedEntity> type) {
+        return (CachedEntity) em.getReference(reference.getEntityClass(), reference.getId());
     }
 }

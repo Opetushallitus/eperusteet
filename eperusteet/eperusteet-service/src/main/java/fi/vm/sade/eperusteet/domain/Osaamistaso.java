@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.dto.EntityReference;
 import java.io.Serializable;
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
@@ -36,7 +37,7 @@ import org.hibernate.annotations.Immutable;
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Immutable
 @Table(name = "osaamistaso")
-public class Osaamistaso implements Serializable {
+public class Osaamistaso implements Serializable, CachedEntity {
     private static final long serialVersionUID = 1L;
     
     @Id
@@ -64,6 +65,11 @@ public class Osaamistaso implements Serializable {
     @Override
     public String toString() {
         return ""+id;
+    }
+
+    @Override
+    public EntityReference<?> getReference() {
+        return new EntityReference<>(id, Osaamistaso.class);
     }
     
 }

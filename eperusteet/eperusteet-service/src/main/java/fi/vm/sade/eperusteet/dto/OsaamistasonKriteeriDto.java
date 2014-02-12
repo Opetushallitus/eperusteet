@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto;
 
+import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OsaamistasonKriteeriDto {
-    private String osaamistaso;
+    private EntityReference<Osaamistaso> osaamistaso;
     private List<LokalisoituTekstiDto> kriteerit;
 }

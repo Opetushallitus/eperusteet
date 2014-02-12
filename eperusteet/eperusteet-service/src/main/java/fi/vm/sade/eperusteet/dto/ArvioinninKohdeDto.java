@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto;
 
+import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,6 @@ import lombok.Setter;
 @Setter
 public class ArvioinninKohdeDto {
     private LokalisoituTekstiDto otsikko;
-    private Long arviointiAsteikko;
+    private EntityReference<ArviointiAsteikko> arviointiAsteikko;
     private Set<OsaamistasonKriteeriDto> osaamistasonKriteerit;
 }

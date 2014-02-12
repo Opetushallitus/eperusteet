@@ -14,15 +14,29 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.domain;
+package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.dto.EntityReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.Getter;
 
 /**
  *
  * @author teele1
+ * @param <E>
  */
-public interface CachedEntity {
+@JsonSerialize(using = EntityReferenceSerializer.class)
+@JsonDeserialize(using = EntityReferenceDeserializer.class)
+public class EntityReference<E> {
     
-    <E extends CachedEntity> EntityReference<E> getReference();
+    @Getter
+    private final Long id;
+    
+    @Getter
+    private final Class<E> entityClass;
+    
+    public EntityReference(Long id, Class<E> entityClass) {
+        this.id = id;
+        this.entityClass = entityClass;
+    }
 }

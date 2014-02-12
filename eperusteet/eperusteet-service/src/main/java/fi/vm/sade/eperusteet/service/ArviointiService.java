@@ -14,15 +14,19 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.domain;
+package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.dto.EntityReference;
+import fi.vm.sade.eperusteet.dto.ArviointiDto;
+import java.util.List;
 
 /**
  *
  * @author teele1
  */
-public interface CachedEntity {
+public interface ArviointiService {
     
-    <E extends CachedEntity> EntityReference<E> getReference();
+    List<ArviointiDto> findAll();
+    ArviointiDto findById(Long id);
+    ArviointiDto add(ArviointiDto arviointiDto);
+    
 }
