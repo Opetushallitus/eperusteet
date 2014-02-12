@@ -29,6 +29,7 @@
                 <prop key="cas_mode">front</prop>
                 <prop key="cas_key">eperusteet-service</prop>
                 <prop key="cas_service">${cas.service.eperusteet-service:''}</prop>
+                <prop key="cas_callback_url">${cas.callback.eperusteet-service:''}</prop>
                 <prop key="spring_security_default_access">permitAll</prop>
             </util:properties>
         </property>
