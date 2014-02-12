@@ -46,6 +46,6 @@ public class CachedEntityConverter extends BidirectionalConverter<CachedEntity, 
 
     @Override
     public CachedEntity convertFrom(EntityReference reference, Type<CachedEntity> type) {
-        return (CachedEntity) em.getReference(reference.getEntityClass(), reference.getId());
+        return em.getReference(type.getRawType(), Long.valueOf(reference.getId()));
     }
 }

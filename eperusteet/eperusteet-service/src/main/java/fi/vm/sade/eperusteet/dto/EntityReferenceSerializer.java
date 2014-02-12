@@ -30,7 +30,7 @@ public class EntityReferenceSerializer extends JsonSerializer<EntityReference>{
 
     @Override
     public void serialize(EntityReference value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
-        jgen.writeString(value.getEntityClass().getSimpleName() + "_" + value.getId().toString());
+        jgen.writeString(value.getEntityClass() + "_" + value.getId());
     }
     
 }

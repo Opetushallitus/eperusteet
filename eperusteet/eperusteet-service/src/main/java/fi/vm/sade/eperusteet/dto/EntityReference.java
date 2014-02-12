@@ -30,12 +30,17 @@ import lombok.Getter;
 public class EntityReference<E> {
     
     @Getter
-    private final Long id;
+    private final String id;
     
     @Getter
-    private final Class<E> entityClass;
+    private final String entityClass;
     
     public EntityReference(Long id, Class<E> entityClass) {
+        this.id = id.toString();
+        this.entityClass = entityClass.getSimpleName().toLowerCase();
+    }
+    
+    public EntityReference(String id, String entityClass) {
         this.id = id;
         this.entityClass = entityClass;
     }

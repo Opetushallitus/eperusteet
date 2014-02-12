@@ -33,11 +33,7 @@ public class EntityReferenceDeserializer extends JsonDeserializer<EntityReferenc
         
         String[] fields = jp.getText().split("_");
         
-        try {
-            return new EntityReference(Long.valueOf(fields[1]), Class.forName("fi.vm.sade.eperusteet.domain." + fields[0]));
-        } catch (ClassNotFoundException ex) {
-            throw new IOException(ex);
-        }
+        return new EntityReference(fields[1], fields[0]);
     }
     
 }
