@@ -25,6 +25,7 @@ import fi.vm.sade.eperusteet.service.util.DtoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,7 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
 
     @Override
     @Transactional(readOnly = true)
+    @PreAuthorize("isAuthenticated()")
     public KayttajaProfiiliDto get(final Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         LOG.info(auth.getName());
@@ -58,6 +60,7 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
 
     @Override
     @Transactional
+    @PreAuthorize("isAuthenticated()")
     public KayttajaProfiiliDto addSuosikki(final Long id, final Long perusteId) {     
         LOG.info("addSuosikki " + perusteId);
 
@@ -73,6 +76,7 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
 
     @Override
     @Transactional
+    @PreAuthorize("isAuthenticated()")
     public KayttajaProfiiliDto deleteSuosikki(Long id, Long perusteId) throws IllegalArgumentException {
         LOG.info("deleteSuosikki " + perusteId);
 
