@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.service.util;
+package fi.vm.sade.eperusteet.service.mapping;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
@@ -21,7 +21,6 @@ import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.CachedEntityConverter;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
-import fi.vm.sade.eperusteet.dto.TekstiPalanenConverter;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -42,6 +41,7 @@ public class DtoMapperConfig {
     private EntityManager em;
     
     @Bean
+    @Dto
     public DtoMapper dtoMapper() {
         DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
             .build();
@@ -63,33 +63,4 @@ public class DtoMapperConfig {
         return new DtoMapperImpl(factory.getMapperFacade());
     }
 
-    public static class DtoMapperImpl implements DtoMapper {
-
-        private final MapperFacade mapper;
-
-        public DtoMapperImpl(MapperFacade mapper) {
-            this.mapper = mapper;
-        }
-
-        @Override
-        public <S, D> D map(S sourceObject, Class<D> destinationClass) {
-            return mapper.map(sourceObject, destinationClass);
-        }
-
-        @Override
-        public <S, D> void map(S sourceObject, D destinationObject) {
-            mapper.map(sourceObject, destinationObject);
-        }
-
-        @Override
-        public <S, D> List<D> mapAsList(Iterable<S> source, Class<D> destinationClass) {
-            return mapper.mapAsList(source, destinationClass);
-        }
-
-        @Override
-        public <M> M unwrap(Class<M> mapperClass) {
-            return mapperClass.cast(mapper);
-        }
-
-    }
 }

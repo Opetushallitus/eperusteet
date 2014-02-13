@@ -14,7 +14,7 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service.util;
+package fi.vm.sade.eperusteet.service.mapping;
 
 import java.util.List;
 

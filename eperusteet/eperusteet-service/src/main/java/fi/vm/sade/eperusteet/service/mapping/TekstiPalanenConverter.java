@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.service.mapping;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import java.util.HashMap;
 import java.util.Map;
 import ma.glasnost.orika.converter.BidirectionalConverter;
+import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
 import ma.glasnost.orika.metadata.Type;
 
 /**

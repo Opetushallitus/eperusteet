@@ -8,7 +8,8 @@ import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.PerusteService;
-import fi.vm.sade.eperusteet.service.util.DtoMapper;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,8 @@ public class PerusteServiceImpl implements PerusteService {
     PerusteenOsaViiteRepository viitteet;
 
     @Autowired
-    DtoMapper mapper;
+    @Dto
+    private DtoMapper mapper;
 
     @Override
     public Page<PerusteDto> getAll(PageRequest page, String kieli) {
