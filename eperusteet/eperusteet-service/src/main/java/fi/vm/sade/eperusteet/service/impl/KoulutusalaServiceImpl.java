@@ -20,7 +20,8 @@ import fi.vm.sade.eperusteet.domain.Koulutusala;
 import fi.vm.sade.eperusteet.dto.KoulutusalaDto;
 import fi.vm.sade.eperusteet.repository.KoulutusalaRepository;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
-import fi.vm.sade.eperusteet.service.util.DtoMapper;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,7 @@ public class KoulutusalaServiceImpl implements KoulutusalaService{
     private KoulutusalaRepository repository;
 
     @Autowired
+    @Koodisto
     private DtoMapper mapper;
 
     @Override

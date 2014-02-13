@@ -14,20 +14,21 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.service.mapping;
 
-import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  *
- * @author jhyoty
+ * @author harrik
  */
-@Getter
-@Setter
-public class KoulutusalaDto {
-    private String koodi;
-    private LokalisoituTekstiDto nimi;
-    private List<String> opintoalat;
+@Target({ElementType.METHOD, ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+@Qualifier
+public @interface Dto {
+
 }

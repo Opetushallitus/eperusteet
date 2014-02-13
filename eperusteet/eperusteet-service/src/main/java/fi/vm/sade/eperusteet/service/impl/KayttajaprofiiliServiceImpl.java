@@ -21,7 +21,8 @@ import fi.vm.sade.eperusteet.dto.KayttajaProfiiliDto;
 import fi.vm.sade.eperusteet.repository.KayttajaprofiiliRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
-import fi.vm.sade.eperusteet.service.util.DtoMapper;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,8 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
     PerusteRepository perusteRepo;
 
     @Autowired
-    DtoMapper mapper;
+    @Dto
+    private DtoMapper mapper;
 
     @Override
     @Transactional(readOnly = true)

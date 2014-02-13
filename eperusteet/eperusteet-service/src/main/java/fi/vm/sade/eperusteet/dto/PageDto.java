@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.dto;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import fi.vm.sade.eperusteet.service.util.DtoMapper;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.ArrayList;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
