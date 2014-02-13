@@ -23,7 +23,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  */
 @Configuration
 @EnableWebMvc
-@EnableCaching
+//@EnableCaching
 public class MvcConfiguration extends WebMvcConfigurerAdapter {
 
     @Autowired
