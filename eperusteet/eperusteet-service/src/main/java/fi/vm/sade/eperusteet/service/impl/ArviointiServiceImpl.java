@@ -20,7 +20,8 @@ import fi.vm.sade.eperusteet.domain.Arviointi;
 import fi.vm.sade.eperusteet.dto.ArviointiDto;
 import fi.vm.sade.eperusteet.repository.ArviointiRepository;
 import fi.vm.sade.eperusteet.service.ArviointiService;
-import fi.vm.sade.eperusteet.service.util.DtoMapper;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ public class ArviointiServiceImpl implements ArviointiService{
     private ArviointiRepository arviointiRepository;
     
     @Autowired
+    @Dto
     private DtoMapper dtoMapper;
     
     @Override
