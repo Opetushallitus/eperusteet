@@ -1,0 +1,14 @@
+<!-- FIXME: Lokalisaatio -->
+<div>
+  <input class="hidden" id="fileDirectiveSelectInput" type="file">
+  <div class="input-group">
+    <div class="input-group-addon"><span class="glyphicon glyphicon-file"></span></div>
+    <input type="text" class="form-control" value="{{ file.name }}" readonly>
+    <div ng-show="file" class="input-group-btn">
+      <button id="reloadFile" type="button" class="no-round btn btn-default"><span id="reloadFile" class="glyphicon glyphicon-refresh"></span></button>
+    </div>
+    <div class="input-group-btn">
+      <button id="addFile" type="button" class="btn btn-primary">Lataa Excel</button>
+    </div>
+  </div>
+</div>

@@ -24,7 +24,7 @@ body {
 .ellipsis-no-wrap{
     text-overflow: ellipsis;
     overflow: hidden;
-    white-space: nowrap; 
+    white-space: nowrap;
 }
 
 .pointer {
@@ -37,4 +37,8 @@ body {
 
 .raita {
     background-color: #f9f9f9;
+}
+
+.no-round {
+  border-radius: 0px;
 }

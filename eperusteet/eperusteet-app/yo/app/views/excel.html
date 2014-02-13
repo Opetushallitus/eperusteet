@@ -1,3 +1,61 @@
+<!-- FIXME: lokalisaatio -->
+
 <div>
-  <file-select on-select="onFileSelect" on-progress="onProgress" read-type="binary"></file-select>
+  <file-select id="fileselect-button" before-select="clearSelect" on-select="onFileSelect" on-progress="onProgress" read-type="binary"></file-select>
+
+  <div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
+    <div class="alert alert-warning" ng-show="warnings.length > 0">
+      Tiedostossa oli huomion arvoisia ongelmia, mutta voit halutessasi yrittää jatkaa.
+    </div>
+    <div class="alert alert-success" ng-show="warnings.length === 0">
+      <h3>Tiedostosta ei löytynyt virheitä!</h3>
+    </div>
+  </div>
+
+  <!-- virheet -->
+  <div ng-show="errors.length > 0">
+    <div class="alert alert-danger">
+      Antamassasi tiedostossa oli virheitä, jotka estävät tiedoston lukemisen eteenpäin. Korjaa seuraavat virheet ja lähetä tiedosto uudestaan.
+    </div>
+    <h3>Virheet</h3>
+    <table class="table table-striped">
+      <tr>
+        <th>Solu</th>
+        <th>Odotettu arvo</th>
+        <th>Antamasi tiedoston arvo</th>
+      </tr>
+      <tr ng-repeat="error in errors" class="danger">
+        <td>{{ error.cell }}</td>
+        <td>{{ error.expected }}</td>
+        <td>{{ error.actual }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- varoitukset -->
+  <div ng-show="warnings.length > 0">
+    <h3>Varoitukset</h3>
+    <table class="table table-striped">
+      <tr>
+        <th>Solu</th>
+        <th>Ongelma</th>
+      </tr>
+      <tr ng-repeat="warning in warnings" class="warning">
+        <td>{{ warning.cell }}</td>
+        <td>{{ warning.warning }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
+    <button ng-click="tallennaOsaperusteet()" class="btn btn-success">
+      <span class="glyphicon glyphicon-cloud-upload"></span>
+      Tallenna
+    </button>
+    <button ng-click="editoiOsaperusteita()" class="btn btn-warning">
+      <span class="glyphicon glyphicon-wrench"></span>
+      Muokkaa
+    </button>
+  </div>
+
 </div>

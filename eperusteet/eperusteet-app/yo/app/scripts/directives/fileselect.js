@@ -1,5 +1,6 @@
 'use strict';
 /* global _ */
+/* global $ */
 
 angular.module('eperusteApp')
   .service('fileReader', function($q) {
@@ -28,29 +29,48 @@ angular.module('eperusteApp')
   })
   .directive('fileSelect', function(fileReader) {
     return {
-      template: '<div>' +
-                '  <input id="fileDirectiveSelectInput" type="file">' +
-                '  <div ng-show="scope.err.length > 0" class="error">{{ err }}</div>' +
-                '</div>',
+      templateUrl: '/views/partials/fileselect.html',
       restrict: 'E',
       link: function($scope, el, attrs) {
-        el.bind('change', function(e) {
+        function loadFile(file) {
+          if (!file) {
+            return;
+          }
+
+          var isRunning = true;
+          var beforeSelect = $scope.$eval(attrs.beforeSelect);
           var onSelect = $scope.$eval(attrs.onSelect);
-          var onProgress = $scope.$eval(attrs.onProgress);
+
+          $scope.$apply(function() {
+            // Puhdistaa tiedostokentän
+            var doc = document.getElementById('fileDirectiveSelectInput');
+            doc.outerHTML = doc.outerHTML;
+            $scope.file = file;
+          });
 
           if (_.isFunction(onSelect)) {
-            var promise = fileReader.readFile(e.target.files[0], attrs.readType);
+            beforeSelect();
+            var promise = fileReader.readFile(file, attrs.readType);
             promise.then(function(file) {
               onSelect(null, file);
             }, function(err) {
-              console.log(err);
               onSelect(err, null);
-            }, function(notify) {
-              if (_.isFunction(onProgress)) {
-                onProgress(notify);
-              }
+            }, function() {
+              isRunning = false;
             });
           }
+        }
+
+        el.bind('click', function(e) {
+          if (e.target.id === 'reloadFile') {
+            loadFile($scope.file);
+          } else if (e.target.id === 'addFile') {
+            $('#fileDirectiveSelectInput', el).click();
+          }
+        });
+
+        el.bind('change', function(e) {
+          loadFile(e.target.files[0]);
         });
       }
     };
