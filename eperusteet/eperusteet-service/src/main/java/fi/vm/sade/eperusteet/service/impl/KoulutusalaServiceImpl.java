@@ -13,31 +13,37 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Koulutusala;
+import fi.vm.sade.eperusteet.dto.KoodistoKoulutusalaDto;
 import fi.vm.sade.eperusteet.dto.KoulutusalaDto;
 import fi.vm.sade.eperusteet.repository.KoulutusalaRepository;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
+import java.util.Arrays;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 /**
  *
  * @author jussini
  */
 @Service
-public class KoulutusalaServiceImpl implements KoulutusalaService{
+public class KoulutusalaServiceImpl implements KoulutusalaService {
 
     private static final Logger LOG = LoggerFactory.getLogger(KoulutusalaServiceImpl.class);
-    
+
+    private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
+    private static final String KOULUTUSALA_URI = "koulutusalaoph2002";
+
     @Autowired
     private KoulutusalaRepository repository;
 
@@ -51,17 +57,20 @@ public class KoulutusalaServiceImpl implements KoulutusalaService{
         Koulutusala k = repository.findOne(id);
         if (k == null) {
             LOG.warn("Koulutusalaa {} ei löytynyt", id);
-        }        
+        }
+
         return mapper.map(k, KoulutusalaDto.class);
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Cacheable("koulutusalat")
     public List<KoulutusalaDto> getAll() {
-        List<Koulutusala> klist = repository.findAll();
-        return mapper.mapAsList(klist,KoulutusalaDto.class);
+        //List<Koulutusala> klist = repository.findAll();
+
+        RestTemplate restTemplate = new RestTemplate();
+        KoodistoKoulutusalaDto[] koulutusalat = restTemplate.getForObject(KOODISTO_REST_URL + KOULUTUSALA_URI + "/koodi/", KoodistoKoulutusalaDto[].class);
+
+        return mapper.mapAsList(Arrays.asList(koulutusalat), KoulutusalaDto.class);
     }
 
-
-          
 }
