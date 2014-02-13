@@ -27,10 +27,10 @@ import javax.validation.ConstraintValidatorContext;
  *
  * @author teele1
  */
-public class ValidKohteenKriteeritValidator implements ConstraintValidator<ValidKohteenKriteerit, ArvioinninKohde>{
+public class ValidArvioinninKohdeValidator implements ConstraintValidator<ValidArvioinninKohde, ArvioinninKohde>{
 
     @Override
-    public void initialize(ValidKohteenKriteerit constraintAnnotation) {
+    public void initialize(ValidArvioinninKohde constraintAnnotation) {
     }
 
     @Override

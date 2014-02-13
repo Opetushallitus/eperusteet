@@ -31,9 +31,9 @@ import javax.validation.Payload;
  */
 @Target({TYPE, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = ValidKohteenKriteeritValidator.class)
+@Constraint(validatedBy = ValidArvioinninKohdeValidator.class)
 @Documented
-public @interface ValidKohteenKriteerit {
+public @interface ValidArvioinninKohde {
     
     String message() default "Arvioinnin kohteella tulee olla arviointiasteikko ja kaikki "
             + "kohteen kriteerit tulee sitoa näihin arviointiasteikon osaamistasoihin.";
