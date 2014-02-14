@@ -1,4 +1,5 @@
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .config(function($routeProvider) {
@@ -109,7 +110,7 @@ angular.module('eperusteApp')
 
 
     $scope.onSuosikki = function() {
-      for (var i = 0; i < $scope.suosikkiLista.length; i++) {
+      for (var i = 0; i < _.size($scope.suosikkiLista); i++) {
         if ($scope.suosikkiLista[i].id === $scope.perusteValinta.id) {
           return suosikkiTyyli;
         }
