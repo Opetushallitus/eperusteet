@@ -62,18 +62,13 @@ public class KayttajaprofiiliController {
     @ResponseBody
     public ResponseEntity<KayttajaProfiiliDto> addSuosikki(@PathVariable("perusteId") final Long perusteId) {
         LOG.info("addSuosikki {}", perusteId);
-
-        KayttajaProfiiliDto k = service.get();
-        if (k == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
+        
         PerusteDto peruste = perusteService.get(perusteId);
         if (peruste == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        k = service.addSuosikki(perusteId);
+        KayttajaProfiiliDto k = service.addSuosikki(perusteId);
 
         return new ResponseEntity<>(k, HttpStatus.OK);
     }

@@ -126,7 +126,7 @@ angular.module('eperusteApp')
     $scope.asetaSuosikiksi = function() {
       if ($scope.suosikkiTyyli === eiSuosikkiTyyli) {
 
-        Suosikit.save({id: 1, suosikkiId: $scope.perusteValinta.id}, {}, function(vastaus) {
+        Suosikit.save({suosikkiId: $scope.perusteValinta.id}, {}, function(vastaus) {
           $scope.suosikkiLista = vastaus.suosikit;
           $scope.suosikkiTyyli = $scope.onSuosikki();
           Suosikitbroadcast.suosikitMuuttuivat();
@@ -134,7 +134,7 @@ angular.module('eperusteApp')
 
       } else {
 
-        Suosikit.delete({id: 1, suosikkiId: $scope.perusteValinta.id}, {}, function(vastaus) {
+        Suosikit.delete({suosikkiId: $scope.perusteValinta.id}, {}, function(vastaus) {
           $scope.suosikkiLista = vastaus.suosikit;
           $scope.suosikkiTyyli = $scope.onSuosikki();
           Suosikitbroadcast.suosikitMuuttuivat();
