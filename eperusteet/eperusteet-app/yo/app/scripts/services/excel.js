@@ -152,6 +152,7 @@ angular.module('eperusteApp')
       osaperuste.osaamisala = {};
       osaperuste.ammattitaitovaatimukset = {};
       osaperuste.opintoluokitus = opintoluokitus;
+      osaperuste.tavoitteet = '';
 
       osaperuste.nimi.fi = suodataTekstipala(nimi);
       osaperuste.osaamisala.fi = suodataTekstipala(osaamisala);
