@@ -85,7 +85,7 @@ angular.module('eperusteApp')
       }
     }());
 
-    var kayttajaProfiiliPromise = Kayttajaprofiilit.get({id: 1}).$promise;
+    var kayttajaProfiiliPromise = Kayttajaprofiilit.get({}).$promise;
 
     $q.all([perusteHakuPromise, kayttajaProfiiliPromise]).then(function(vastaus) {
 
