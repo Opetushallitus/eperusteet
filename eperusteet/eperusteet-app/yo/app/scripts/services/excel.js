@@ -152,7 +152,8 @@ angular.module('eperusteApp')
       osaperuste.osaamisala = {};
       osaperuste.ammattitaitovaatimukset = {};
       osaperuste.opintoluokitus = opintoluokitus;
-      osaperuste.tavoitteet = '';
+      osaperuste.tavoitteet = {};
+      osaperuste.tavoitteet.fi = '';
 
       osaperuste.nimi.fi = suodataTekstipala(nimi);
       osaperuste.osaamisala.fi = suodataTekstipala(osaamisala);
@@ -183,9 +184,11 @@ angular.module('eperusteApp')
           }
         });
 
-        osaperuste.ammattitaidonOsoittamistavat = '';
+        osaperuste.ammattitaidonOsoittamistavat = {};
+        osaperuste.ammattitaidonOsoittamistavat.fi = '';
         osaperuste.arviointi = {};
-        osaperuste.arviointi.lisatiedot = '';
+        osaperuste.arviointi.lisatiedot = {};
+        osaperuste.arviointi.lisatiedot.fi = '';
         osaperuste.arviointi.arvioinninKohdealueet = [];
 
         var nextAnchor = index < anchors.length - 1 ? anchors[index + 1] : height;
@@ -195,7 +198,7 @@ angular.module('eperusteApp')
           // Osaperusteiden kerääminen
           var cell = data['AF' + j];
           if (cell && cell.v) {
-            osaperuste.ammattitaidonOsoittamistavat += '<p>' + suodataTekstipala(cell.v) + '</p>';
+            osaperuste.ammattitaidonOsoittamistavat.fi += '<p>' + suodataTekstipala(cell.v) + '</p>';
           }
 
           // ArvioinninKohdealueiden lisääminen
@@ -234,15 +237,16 @@ angular.module('eperusteApp')
           if (kriteeri && kriteeri.v) {
             if (!_.isEmpty(arvioinninKohdealue.arvioinninKohteet)) {
               var okt = _.last(arvioinninKohdealue.arvioinninKohteet).osaamistasonKriteerit;
-              okt.push({
-                  osaamistaso: 'osaamistaso_1',
-                  kriteerit: []
-              });
+              if (_.isEmpty(okt)) {
+                okt.push({
+                    osaamistaso: 'osaamistaso_1',
+                    kriteerit: []
+                });
+              }
               _.last(okt).kriteerit.push({
                   fi: suodataTekstipala(kriteeri.v)
               });
             } else {
-              console.log('virhe');
               varoitukset.push(constructWarning('AC' + j, osaperuste.nimi, 'Arvioinnin kohdetta ei löytynyt'));
             }
           }
