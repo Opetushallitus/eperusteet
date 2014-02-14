@@ -30,5 +30,5 @@ public abstract class PerusteenOsaDto {
     private Long id;
     private Date luotu;
     private Date muokattu;
-    private LokalisoituTekstiDto otsikko;
+    private LokalisoituTekstiDto nimi;
 }

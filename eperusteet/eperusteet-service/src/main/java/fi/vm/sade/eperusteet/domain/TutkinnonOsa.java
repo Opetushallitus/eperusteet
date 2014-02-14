@@ -17,10 +17,11 @@ package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import java.io.Serializable;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -32,16 +33,22 @@ import javax.persistence.Table;
 @JsonTypeName("tutkinnonosa")
 public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private TekstiPalanen tavoitteet;
     
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private TekstiPalanen ammattitaitovaatimukset;
     
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private TekstiPalanen ammattitaidonOsoittamistavat;
+    
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private TekstiPalanen osaamisala;
+    
+    @Column
+    private Long opintoluokitus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Arviointi arviointi;
 
     public TekstiPalanen getTavoitteet() {
@@ -66,6 +73,22 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     public void setAmmattitaidonOsoittamistavat(TekstiPalanen ammattitaidonOsoittamistavat) {
         this.ammattitaidonOsoittamistavat = ammattitaidonOsoittamistavat;
+    }
+    
+    public TekstiPalanen getOsaamisala() {
+        return osaamisala;
+    }
+    
+    public void setOsaamisala(TekstiPalanen osaamisala) {
+        this.osaamisala = osaamisala;
+    }
+    
+    public Long getOpintoluokitus() {
+        return opintoluokitus;
+    }
+    
+    public void setOpintoluokitus(Long opintoluokitus) {
+        this.opintoluokitus = opintoluokitus;
     }
 
     public Arviointi getArviointi() {

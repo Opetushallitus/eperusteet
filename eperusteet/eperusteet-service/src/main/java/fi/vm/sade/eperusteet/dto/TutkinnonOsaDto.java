@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.dto;
 
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,9 +26,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TutkinnonOsaDto extends PerusteenOsaDto {
-    private List<LokalisoituTekstiDto> tavoitteet;
+    private LokalisoituTekstiDto tavoitteet;
     private ArviointiDto arviointi;
     private LokalisoituTekstiDto ammattitaitovaatimukset;
     private LokalisoituTekstiDto ammattitaidonOsoittamistavat;
-
+    private Long opintoluokitus;
+    private LokalisoituTekstiDto osaamisala;
 }

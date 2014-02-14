@@ -56,7 +56,7 @@ public abstract class PerusteenOsa implements Serializable {
     private Date muokattu;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private TekstiPalanen otsikko;
+    private TekstiPalanen nimi;
 
     public Long getId() {
         return id;
@@ -82,12 +82,12 @@ public abstract class PerusteenOsa implements Serializable {
         this.muokattu = muokattu;
     }
 
-    public TekstiPalanen getOtsikko() {
-        return otsikko;
+    public TekstiPalanen getNimi() {
+        return nimi;
     }
 
-    public void setOtsikko(TekstiPalanen otsikko) {
-        this.otsikko = otsikko;
+    public void setNimi(TekstiPalanen nimi) {
+        this.nimi = nimi;
     }
     
     @PrePersist
