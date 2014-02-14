@@ -4,7 +4,7 @@
     <encoder>
       <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
     </encoder>
-  </appender> 
+  </appender>
 
   <logger name="org.hibernate" level="error"/>
   <logger name="fi.vm.sade" level="debug"/>

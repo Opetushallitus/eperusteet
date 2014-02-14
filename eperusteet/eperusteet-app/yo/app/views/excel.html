@@ -38,10 +38,12 @@
     <table class="table table-striped">
       <tr>
         <th>Solu</th>
+        <th>Nimi</th>
         <th>Ongelma</th>
       </tr>
       <tr ng-repeat="warning in warnings" class="warning">
         <td>{{ warning.cell }}</td>
+        <td>{{ warning.name }}</td>
         <td>{{ warning.warning }}</td>
       </tr>
     </table>
@@ -56,6 +58,24 @@
       <span class="glyphicon glyphicon-wrench"></span>
       Muokkaa
     </button>
+  </div>
+
+  <div class="alert alert-danger" ng-show="uploadErrors.length > 0">
+      Seuraavia osaperusteita ei pystytty tallentamaan onnistuneesti:
+      <table class="table table-striped">
+        <tr>
+          <th>Osatutkinto</th>
+          <th>Syy</th>
+        </tr>
+        <tr ng-repeat="error in uploadErrors" class="danger">
+          <td>{{ error.name }}</td>
+          <td>{{ error.message }}</td>
+        </tr>
+      </table>
+  </div>
+
+  <div class="alert alert-success" ng-show="uploadSuccess">
+    Tiedostot ladattiin onnistuneesti!
   </div>
 
 </div>

@@ -16,6 +16,8 @@ angular.module('eperusteApp')
     $scope.warnings = [];
     $scope.filename = '';
     $scope.lukeeTiedostoa = true;
+    $scope.uploadErrors = [];
+    $scope.uploadSuccess = false;
 
     $scope.clearSelect = function() {
       $scope.$apply(function() {
@@ -23,6 +25,9 @@ angular.module('eperusteApp')
         $scope.errors = [];
         $scope.warnings = [];
         $scope.lukeeTiedostoa = true;
+        $scope.lukeeTiedostoa = true;
+        $scope.uploadErrors = [];
+        $scope.uploadSuccess = false;
       });
     };
 
@@ -30,7 +35,27 @@ angular.module('eperusteApp')
     };
 
     $scope.tallennaOsaperusteet = function() {
-      console.log($scope.osaperusteet);
+      var doneSuccess = _.after(_.size($scope.osaperusteet), function() {
+        $scope.uploadSuccess = true;
+      });
+      _.forEach($scope.osaperusteet, function(op) {
+
+        var saveop = ExcelService.saveOsaperuste({
+          arvioinninKohdealueet: _.clone(op.arvioinninKohdealueet),
+          lisatiedot: {
+            fi: 'testi'
+          }
+        });
+
+        saveop.success(function(re, status) {
+          doneSuccess();
+        }).error(function(err) {
+          $scope.uploadErrors.push({
+            name: op.nimi,
+            message: err.syy
+          });
+        });
+      });
     };
 
     $scope.onFileSelect = function(err, file) {

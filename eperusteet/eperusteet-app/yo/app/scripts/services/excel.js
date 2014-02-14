@@ -17,7 +17,7 @@ function tableHeaderMap() {
 }
 
 angular.module('eperusteApp')
-  .service('ExcelService', function($q) {
+  .service('ExcelService', function($q, $http, SERVICE_LOC) {
     // FIXME: Voisi olla backendissä
     var osaperusteHeaders = {
       A1: 'Tutkinnon nimi',
@@ -78,10 +78,13 @@ angular.module('eperusteApp')
       return next();
     }
 
-    function constructWarning(cellnro, warning) {
+    function constructWarning(cellnro, name, warning, severe) {
+      severe = severe || false;
       return {
         cell: cellnro,
-        warning: warning
+        name: name,
+        warning: warning,
+        severe: severe
       };
     }
 
@@ -133,7 +136,13 @@ angular.module('eperusteApp')
     }
 
     function suodataTekstipala(teksti) {
-      return teksti;
+      if (!teksti) {
+        return teksti;
+      }
+      var suodatettu = teksti;
+      suodatettu = suodatettu.replace(/&.{0,5};/g, ' ');
+      suodatettu = suodatettu.replace('•', '');
+      return suodatettu;
     }
 
     function readOsaperusteet(data) {
@@ -141,25 +150,26 @@ angular.module('eperusteApp')
       var anchors = getOsaAnchors(data);
       var osaperusteet = [];
       var varoitukset = [];
+      var virheet = [];
 
       _.each(anchors, function(anchor, index) {
         var osaperuste = {};
-        osaperuste.luku = data['T' + anchor].v;
+        osaperuste.luku = suodataTekstipala(data['T' + anchor].v);
         osaperuste.opintoluokitus = data['U' + anchor].v;
-        osaperuste.nimi = data['V' + anchor].v;
+        osaperuste.nimi = suodataTekstipala(data['V' + anchor].v);
         // osaperuste.pakollinen = cleanString(data['W' + anchor].v) === 'pakollinen' ? true : false; // FIXME: Ei tarpeellinen ehkä tässä
-        osaperuste.osaamisala = data['X' + anchor].v;
-        osaperuste.ammattitaitovaatimuskuvaus = data['Y' + anchor].v;
+        osaperuste.osaamisala = suodataTekstipala(data['X' + anchor].v);
+        osaperuste.ammattitaitovaatimuskuvaus = suodataTekstipala(data['Y' + anchor].v);
 
         // FIXME: lokalisoi
         _.forEach(osaperuste, function(value, key) {
           var warning = false;
           if (!value) {
-            if (key === 'luku') { warning = constructWarning('T' + anchor, 'Lukua ei ole määritetty.'); }
-            else if (key === 'opintoluokitus') { warning = constructWarning('U' + anchor, 'Opintoluokitusta ei ole määritetty.'); }
-            else if (key === 'nimi') { warning = constructWarning('V' + anchor, 'Nimeä ei ole määritetty.'); }
-            else if (key === 'osaamisala') { warning = constructWarning('X' + anchor, 'Osaamisalaa ei ole määritetty.'); }
-            else if (key === 'ammattitaitovaatimuskuvaus') { warning = constructWarning('Y' + anchor, 'Ammattitaitovaatimuksen kuvausta ei ole määritetty.'); }
+            if (key === 'nimi') { warning = constructWarning('V' + anchor, '-', 'Osaperusteen nimeä ei ole määritetty.', true); }
+            else if (key === 'luku') { warning = constructWarning('T' + anchor, osaperuste.nimi, 'Lukua ei ole määritetty.'); }
+            else if (key === 'opintoluokitus') { warning = constructWarning('U' + anchor, osaperuste.nimi, 'Opintoluokitusta ei ole määritetty.'); }
+            else if (key === 'osaamisala') { warning = constructWarning('X' + anchor, osaperuste.nimi, 'Osaamisalaa ei ole määritetty.'); }
+            else if (key === 'ammattitaitovaatimuskuvaus') { warning = constructWarning('Y' + anchor, osaperuste.nimi, 'Kuvausta ei ole määritetty.'); }
           }
           if (warning !== false) {
             varoitukset.push(warning);
@@ -186,8 +196,10 @@ angular.module('eperusteApp')
               osaperuste.arvioinninKohdealueet.push(_.clone(arvioinninKohdealue));
             }
             arvioinninKohdealue = {};
-            arvioinninKohdealue.otsikko = suodataTekstipala(cell.v);
-            arvioinninKohdealue.osaamistasonKriteerit = [];
+            arvioinninKohdealue.arvioinninKohteet = [];
+            arvioinninKohdealue.otsikko = {
+              fi: suodataTekstipala(cell.v)
+            };
           }
 
           // Uuden ammattitaitovaatimuksen lisääminen
@@ -197,21 +209,31 @@ angular.module('eperusteApp')
           // Uuden kohteen lisäys ammattitaitovaatimukseen
           if (kohde && kohde.v) {
             if (!_.isEmpty(arvioinninKohdealue)) {
-              arvioinninKohdealue.osaamistasonKriteerit.push({
-                  otsikko: suodataTekstipala(kohde.v),
-                  kriteerit: []
+              arvioinninKohdealue.arvioinninKohteet.push({
+                  otsikko: {
+                    fi: suodataTekstipala(kohde.v)
+                  },
+                  arviointiAsteikko: 'arviointiasteikko_1',
+                  osaamistasonKriteerit: []
               });
             } else {
-              varoitukset.push(constructWarning('AC' + j, 'Solulle ei löytynyt arvioinninKohdealueta.'));
+              varoitukset.push(constructWarning('AC' + j, '', 'Arvioinnin kohdealuetta ei löytynyt'));
             }
           }
 
           // Uuden kriteerin lisääminen kohteeseen
           if (kriteeri && kriteeri.v) {
-            if (!_.isEmpty(arvioinninKohdealue.osaamistasonKriteerit)) {
-              _.last(arvioinninKohdealue.osaamistasonKriteerit).kriteerit.push(suodataTekstipala(kriteeri.v));
+            if (!_.isEmpty(arvioinninKohdealue.arvioinninKohteet)) {
+              var okt = _.last(arvioinninKohdealue.arvioinninKohteet).osaamistasonKriteerit;
+              okt.push({
+                  osaamistaso: 'osaamistaso_1',
+                  kriteerit: []
+              });
+              _.last(okt).kriteerit.push({
+                  fi: suodataTekstipala(kriteeri.v)
+              });
             } else {
-              varoitukset.push(constructWarning('AC' + j, 'Solulle ei löytynyt Arvioinnin kohdetta.'));
+              varoitukset.push(constructWarning('AC' + j, osaperuste.nimi, 'Arvioinnin kohdetta ei löytynyt'));
             }
           }
         });
@@ -221,7 +243,8 @@ angular.module('eperusteApp')
 
       return {
         osaperusteet: osaperusteet,
-        varoitukset: varoitukset
+        varoitukset: varoitukset,
+        virheet: virheet
       };
     }
 
@@ -250,7 +273,12 @@ angular.module('eperusteApp')
       return toJson(XLSX.read(file, { type: 'binary' }));
     }
 
+    function saveOsaperuste(osaperuste) {
+      return $http.post(SERVICE_LOC + '/arvioinnit', _.clone(osaperuste));
+    }
+
     return {
-      parseXLSXToOsaperuste: parseXLSXToOsaperuste
+      parseXLSXToOsaperuste: parseXLSXToOsaperuste,
+      saveOsaperuste: saveOsaperuste
     };
   });
