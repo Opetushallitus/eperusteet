@@ -33,6 +33,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
@@ -57,7 +58,13 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(ExceptionHandlingConfig.class);
     
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleAllExceptions(Exception e, WebRequest request) {
+    public ResponseEntity<Object> handleAllExceptions(Exception e, WebRequest request) throws Exception{
+        
+        // Spring Security autentikoi käyttäjän service-kerroksessa ja heittää AccessDeniedException-poikkeuksen, jos käyttäjä ei ole kirjautunut, tai
+        // hänellä ei ole oikeuksia kyseisiin resursseihin. Tätä poikkeusta ei saa ottaa kiinni, vaan se pitää heittää eteenpäin, jotta SS osaa tehdä
+        // tarvittavat toimenpiteet käyttäjän autentikoimiseen.
+        if(e instanceof AccessDeniedException) throw e;
+        
         return handleExceptionInternal(e, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
     
