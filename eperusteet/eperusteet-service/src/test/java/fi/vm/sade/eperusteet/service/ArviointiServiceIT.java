@@ -29,10 +29,12 @@ import fi.vm.sade.eperusteet.dto.ArviointiDto;
 import fi.vm.sade.eperusteet.resource.config.EPerusteetMappingModule;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.ConstraintViolationException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -85,6 +87,29 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
         arviointiasteikko.setOsaamistasot(Collections.singletonList(osaamistaso));
 
         em.persist(arviointiasteikko);
+        
+        TekstiPalanen osaamistasoOtsikko2 = new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "otsikko 2")));
+        em.persist(osaamistasoOtsikko2);
+        TekstiPalanen osaamistasoOtsikko3 = new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "otsikko 2")));
+        em.persist(osaamistasoOtsikko3);
+
+        osaamistaso = new Osaamistaso();
+        osaamistaso.setId(2L);
+        osaamistaso.setOtsikko(osaamistasoOtsikko2);
+        
+        em.persist(osaamistaso);
+        
+        Osaamistaso osaamistaso2 = new Osaamistaso();
+        osaamistaso2.setId(3L);
+        osaamistaso2.setOtsikko(osaamistasoOtsikko3);
+
+        em.persist(osaamistaso2);
+
+        arviointiasteikko = new ArviointiAsteikko();
+        arviointiasteikko.setId(2L);
+        arviointiasteikko.setOsaamistasot(Arrays.asList(osaamistaso, osaamistaso2));
+
+        em.persist(arviointiasteikko);
         em.flush();
     }
     
@@ -102,5 +127,14 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
         
         Assert.assertNotNull(dtos);
         Assert.assertEquals(1, dtos.size());
+    }
+    
+    @Test(expected = ConstraintViolationException.class)
+    @Rollback(true)
+    public void testSaveInvalidArviointiFromJson() throws IOException {
+        Resource resource = new ClassPathResource("material/arviointi2.json");
+        ArviointiDto dto = objectMapper.readValue(resource.getFile(), ArviointiDto.class);
+        
+        arviointiService.add(dto);
     }
 }
