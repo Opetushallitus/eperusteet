@@ -1,8 +1,34 @@
-<div class="modal-header">
-  <h2 ng-if="status === 500">Tapahtui odottamaton virhe</h2>
-  <h3 ng-if="status === 403">Käyttöoikeutesi eivät riitä</h3>
-<div class="modal-body">
+<div ng-if="status === 500">
+  <div class="modal-header">
+    <h2>Tapahtui odottamaton virhe</h2>
+  </div>
+  <div class="modal-body">
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">OK</button>
+  </div>
 </div>
-<div class="modal-footer">
-  <button class="btn btn-primary" ng-click="ok()">OK</button>
+
+<div ng-if="status === 403">
+  <div class="modal-header">
+    <h3>Käyttöoikeutesi eivät riitä</h3>
+  </div>
+  <div class="modal-body">
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">OK</button>
+  </div>
 </div>
+
+<div ng-if="status === 412">
+  <div class="modal-header">
+    <h3>Et ole kirjautuneena järjestelmään</h3>
+  </div>
+  <div class="modal-body">
+    Sessiosi on vanhentunut ja sinut uudelleenohjataan autentikointiin.
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">OK</button>
+  </div>
+</div>
+
