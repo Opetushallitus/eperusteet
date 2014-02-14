@@ -43,7 +43,7 @@
       </tr>
       <tr ng-repeat="warning in warnings" class="warning">
         <td>{{ warning.cell }}</td>
-        <td>{{ warning.name }}</td>
+        <td>{{ warning.name.fi }}</td>
         <td>{{ warning.warning }}</td>
       </tr>
     </table>
@@ -68,7 +68,7 @@
           <th>Syy</th>
         </tr>
         <tr ng-repeat="error in uploadErrors" class="danger">
-          <td>{{ error.name }}</td>
+          <td>{{ error.name.fi }}</td>
           <td>{{ error.message }}</td>
         </tr>
       </table>

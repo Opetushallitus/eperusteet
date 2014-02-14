@@ -39,15 +39,8 @@ angular.module('eperusteApp')
         $scope.uploadSuccess = true;
       });
       _.forEach($scope.osaperusteet, function(op) {
-
-        var saveop = ExcelService.saveOsaperuste({
-          arvioinninKohdealueet: _.clone(op.arvioinninKohdealueet),
-          lisatiedot: {
-            fi: 'testi'
-          }
-        });
-
-        saveop.success(function(re, status) {
+        var saveop = ExcelService.saveOsaperuste(_.clone(op));
+        saveop.success(function() {
           doneSuccess();
         }).error(function(err) {
           $scope.uploadErrors.push({

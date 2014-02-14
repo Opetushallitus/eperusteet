@@ -137,12 +137,27 @@ angular.module('eperusteApp')
 
     function suodataTekstipala(teksti) {
       if (!teksti) {
-        return teksti;
+        return '';
       }
       var suodatettu = teksti;
       suodatettu = suodatettu.replace(/&.{0,5};/g, ' ');
       suodatettu = suodatettu.replace('•', '');
       return suodatettu;
+    }
+
+    function uusiOsaperuste(nimi, opintoluokitus, osaamisala, ammattitaitovaatimukset) {
+      var osaperuste = {};
+
+      osaperuste.nimi = {};
+      osaperuste.osaamisala = {};
+      osaperuste.ammattitaitovaatimukset = {};
+      osaperuste.opintoluokitus = opintoluokitus;
+
+      osaperuste.nimi.fi = suodataTekstipala(nimi);
+      osaperuste.osaamisala.fi = suodataTekstipala(osaamisala);
+      osaperuste.ammattitaitovaatimukset.fi = suodataTekstipala(ammattitaitovaatimukset);
+
+      return osaperuste;
     }
 
     function readOsaperusteet(data) {
@@ -153,31 +168,24 @@ angular.module('eperusteApp')
       var virheet = [];
 
       _.each(anchors, function(anchor, index) {
-        var osaperuste = {};
-        osaperuste.luku = suodataTekstipala(data['T' + anchor].v);
-        osaperuste.opintoluokitus = data['U' + anchor].v;
-        osaperuste.nimi = suodataTekstipala(data['V' + anchor].v);
-        // osaperuste.pakollinen = cleanString(data['W' + anchor].v) === 'pakollinen' ? true : false; // FIXME: Ei tarpeellinen ehkä tässä
-        osaperuste.osaamisala = suodataTekstipala(data['X' + anchor].v);
-        osaperuste.ammattitaitovaatimuskuvaus = suodataTekstipala(data['Y' + anchor].v);
+        var osaperuste = uusiOsaperuste(data['V' + anchor].v, data['U' + anchor].v, data['X' + anchor].v, data['Y' + anchor].v);
 
         // FIXME: lokalisoi
         _.forEach(osaperuste, function(value, key) {
           var warning = false;
-          if (!value) {
-            if (key === 'nimi') { warning = constructWarning('V' + anchor, '-', 'Osaperusteen nimeä ei ole määritetty.', true); }
-            else if (key === 'luku') { warning = constructWarning('T' + anchor, osaperuste.nimi, 'Lukua ei ole määritetty.'); }
-            else if (key === 'opintoluokitus') { warning = constructWarning('U' + anchor, osaperuste.nimi, 'Opintoluokitusta ei ole määritetty.'); }
-            else if (key === 'osaamisala') { warning = constructWarning('X' + anchor, osaperuste.nimi, 'Osaamisalaa ei ole määritetty.'); }
-            else if (key === 'ammattitaitovaatimuskuvaus') { warning = constructWarning('Y' + anchor, osaperuste.nimi, 'Kuvausta ei ole määritetty.'); }
-          }
+          if (!value.fi && key === 'nimi') { warning = constructWarning('V' + anchor, '-', 'Osaperusteen nimeä ei ole määritetty.', true); }
+          else if (!value.fi && key === 'osaamisala') { warning = constructWarning('X' + anchor, osaperuste.nimi, 'Osaamisalaa ei ole määritetty.'); }
+          else if (!value.fi && key === 'ammattitaitovaatimukset') { warning = constructWarning('Y' + anchor, osaperuste.nimi, 'Ammattitaitovaatimuksien kuvausta ei ole määritetty.'); }
+          else if (!value && key === 'opintoluokitus') { warning = constructWarning('U' + anchor, osaperuste.nimi, 'Opintoluokitusta ei ole määritetty.'); }
           if (warning !== false) {
             varoitukset.push(warning);
           }
         });
 
-        osaperuste.osoittamistavat = [];
-        osaperuste.arvioinninKohdealueet = [];
+        osaperuste.ammattitaidonOsoittamistavat = '';
+        osaperuste.arviointi = {};
+        osaperuste.arviointi.lisatiedot = '';
+        osaperuste.arviointi.arvioinninKohdealueet = [];
 
         var nextAnchor = index < anchors.length - 1 ? anchors[index + 1] : height;
         var arvioinninKohdealue = {};
@@ -186,14 +194,14 @@ angular.module('eperusteApp')
           // Osaperusteiden kerääminen
           var cell = data['AF' + j];
           if (cell && cell.v) {
-            osaperuste.osoittamistavat.push(cell.v);
+            osaperuste.ammattitaidonOsoittamistavat += '<p>' + suodataTekstipala(cell.v) + '</p>';
           }
 
-          // ArvioinninKohdealueten lisääminen
+          // ArvioinninKohdealueiden lisääminen
           cell = data['AA' + j];
           if (cell && cell.v) {
             if (!_.isEmpty(arvioinninKohdealue)) {
-              osaperuste.arvioinninKohdealueet.push(_.clone(arvioinninKohdealue));
+              osaperuste.arviointi.arvioinninKohdealueet.push(_.clone(arvioinninKohdealue));
             }
             arvioinninKohdealue = {};
             arvioinninKohdealue.arvioinninKohteet = [];
@@ -233,6 +241,7 @@ angular.module('eperusteApp')
                   fi: suodataTekstipala(kriteeri.v)
               });
             } else {
+              console.log('virhe');
               varoitukset.push(constructWarning('AC' + j, osaperuste.nimi, 'Arvioinnin kohdetta ei löytynyt'));
             }
           }
@@ -274,7 +283,9 @@ angular.module('eperusteApp')
     }
 
     function saveOsaperuste(osaperuste) {
-      return $http.post(SERVICE_LOC + '/arvioinnit', _.clone(osaperuste));
+      return $http.post(SERVICE_LOC + '/perusteenosat',
+        _.clone(osaperuste),
+        { params: { tyyppi: 'perusteen-osat-tutkinnon-osa' } });
     }
 
     return {
