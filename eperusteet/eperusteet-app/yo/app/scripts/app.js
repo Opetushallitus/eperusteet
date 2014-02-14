@@ -10,7 +10,7 @@ angular.module('eperusteApp', [
     'ui.bootstrap',
   ])
   .constant('SERVICE_LOC','/eperusteet-service/api')
-  .factory('palvelinHakuInterceptor', function($injector, palvelinhaunIlmoitusKanava) {
+  .factory('palvelinHakuInterceptor', function($injector, $q, palvelinhaunIlmoitusKanava) {
     var http;
     return {
       'request': function(config) {
@@ -39,7 +39,7 @@ angular.module('eperusteApp', [
           // Lähetetään ilmoitus, että haut ovat päättyneet.
           palvelinhaunIlmoitusKanava.hakuLopetettu();
         }
-        return rejection;
+        return $q.reject(rejection);
       }
     };
   })
