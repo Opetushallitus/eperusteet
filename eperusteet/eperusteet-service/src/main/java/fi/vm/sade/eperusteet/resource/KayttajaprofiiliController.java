@@ -48,22 +48,22 @@ public class KayttajaprofiiliController {
     @Autowired
     private PerusteService perusteService;
 
-    @RequestMapping(value = "/{id}", method = GET)
+    @RequestMapping(value = "", method = GET)
     @ResponseBody
-    public ResponseEntity<KayttajaProfiiliDto> get(@PathVariable("id") final Long id) {
-        KayttajaProfiiliDto k = service.get(1L);
+    public ResponseEntity<KayttajaProfiiliDto> get() {
+        KayttajaProfiiliDto k = service.get();
         if (k == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(k, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}/suosikki/{perusteId}", method = POST)
+    @RequestMapping(value = "/suosikki/{perusteId}", method = POST)
     @ResponseBody
-    public ResponseEntity<KayttajaProfiiliDto> addSuosikki(@PathVariable("id") final Long id, @PathVariable("perusteId") final Long perusteId) {
-        LOG.info("addSuosikki {}", id);
+    public ResponseEntity<KayttajaProfiiliDto> addSuosikki(@PathVariable("perusteId") final Long perusteId) {
+        LOG.info("addSuosikki {}", perusteId);
 
-        KayttajaProfiiliDto k = service.get(id);
+        KayttajaProfiiliDto k = service.get();
         if (k == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -73,15 +73,15 @@ public class KayttajaprofiiliController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        k = service.addSuosikki(id, perusteId);
+        k = service.addSuosikki(perusteId);
 
         return new ResponseEntity<>(k, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}/suosikki/{perusteId}", method = DELETE)
+    @RequestMapping(value = "/suosikki/{perusteId}", method = DELETE)
     @ResponseBody
-    public ResponseEntity<KayttajaProfiiliDto> delete(@PathVariable("id") final Long id, @PathVariable("perusteId") final Long perusteId) {
-        KayttajaProfiiliDto k = service.deleteSuosikki(id, perusteId);
+    public ResponseEntity<KayttajaProfiiliDto> delete(@PathVariable("perusteId") final Long perusteId) {
+        KayttajaProfiiliDto k = service.deleteSuosikki(perusteId);
         return new ResponseEntity<>(k, HttpStatus.OK);
     }
 }

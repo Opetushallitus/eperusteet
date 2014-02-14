@@ -23,9 +23,9 @@ import fi.vm.sade.eperusteet.dto.KayttajaProfiiliDto;
  */
 public interface KayttajaprofiiliService {
 
-    KayttajaProfiiliDto get(final Long id);
+    KayttajaProfiiliDto get();
 
-    KayttajaProfiiliDto addSuosikki(final Long id, final Long perusteId);
+    KayttajaProfiiliDto addSuosikki(final Long perusteId);
 
-    KayttajaProfiiliDto deleteSuosikki(final Long id, final Long perusteId) throws IllegalArgumentException;
+    KayttajaProfiiliDto deleteSuosikki(final Long perusteId) throws IllegalArgumentException;
 }

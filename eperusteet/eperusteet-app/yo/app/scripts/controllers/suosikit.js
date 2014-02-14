@@ -16,7 +16,7 @@ angular.module('eperusteApp')
 
 
     var paivitaSuosikit = function() {
-      Kayttajaprofiilit.get({id: 1}, function(vastaus) {
+      Kayttajaprofiilit.get({}, function(vastaus) {
 
         YleinenData.lisääKontekstitPerusteisiin(vastaus.suosikit);
         $scope.suosikit = vastaus.suosikit;

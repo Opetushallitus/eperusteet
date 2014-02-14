@@ -41,6 +41,8 @@ public class Kayttajaprofiili implements Serializable {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
+    private String oid;
 
     @ManyToMany
     @OrderColumn(name = "suosikki_order")
@@ -64,6 +66,14 @@ public class Kayttajaprofiili implements Serializable {
         this.id = id;
     }
 
+    public String getOid() {
+        return oid;
+    }
+
+    public void setOid(String oid) {
+        this.oid = oid;
+    }
+    
     public List<Peruste> getSuosikit() {
         return suosikit;
     }
