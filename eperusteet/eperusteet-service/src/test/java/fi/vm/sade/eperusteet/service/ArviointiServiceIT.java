@@ -18,6 +18,9 @@ package fi.vm.sade.eperusteet.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.cfg.MapperConfig;
+import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
@@ -26,6 +29,7 @@ import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.ArviointiDto;
+import fi.vm.sade.eperusteet.dto.EntityReference;
 import fi.vm.sade.eperusteet.resource.config.EPerusteetMappingModule;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import java.io.IOException;
@@ -63,6 +67,30 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
     public ArviointiServiceIT() {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setPrettyPrint(true);
+        converter.getObjectMapper().setPropertyNamingStrategy(new PropertyNamingStrategy() {
+            
+            @Override
+            public String nameForGetterMethod(MapperConfig<?> config, AnnotatedMethod method,
+            String defaultName)
+            {
+                return tryToconvertFromMethodName(method, defaultName);
+            }
+            
+            @Override
+            public String nameForSetterMethod(MapperConfig<?> config, AnnotatedMethod method,
+            String defaultName)
+            {
+                return tryToconvertFromMethodName(method, defaultName);
+            }
+            
+            private String tryToconvertFromMethodName(AnnotatedMethod annotatedMethod, String defaultName) {
+                if((annotatedMethod.getParameterCount() == 1 && EntityReference.class.isAssignableFrom(annotatedMethod.getParameter(0).getRawType()))
+                        || EntityReference.class.isAssignableFrom(annotatedMethod.getRawReturnType())) {
+                    defaultName = '_' + defaultName;
+                }
+                return defaultName;
+            }
+        });
         converter.getObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
         converter.getObjectMapper().registerModule(new JodaModule());
         converter.getObjectMapper().registerModule(new EPerusteetMappingModule());
@@ -134,7 +162,6 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
     public void testSaveInvalidArviointiFromJson() throws IOException {
         Resource resource = new ClassPathResource("material/arviointi2.json");
         ArviointiDto dto = objectMapper.readValue(resource.getFile(), ArviointiDto.class);
-        
         arviointiService.add(dto);
     }
 }

@@ -13,7 +13,7 @@
         "fi" : "Oman työn suunnittelu",
         "sv" : "[Oman työn suunnittelu]"
       },
-      "_arviointiasteikko" : "1",
+      "_arviointiAsteikko" : "1",
       "osaamistasonKriteerit" : [ {
         "_osaamistaso" : "1",
         "kriteerit" : [ {
@@ -26,7 +26,7 @@
         "fi" : "Työn lopputulokset",
         "sv" : "[Työn lopputulokset]"
       },
-      "_arviointiasteikko" : "1",
+      "_arviointiAsteikko" : "1",
       "osaamistasonKriteerit" : [ {
         "_osaamistaso" : "1",
         "kriteerit" : [ {
