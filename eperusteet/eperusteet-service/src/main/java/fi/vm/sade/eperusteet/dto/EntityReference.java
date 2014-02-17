@@ -16,32 +16,29 @@
 
 package fi.vm.sade.eperusteet.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 
 /**
  *
  * @author teele1
- * @param <E>
  */
-@JsonSerialize(using = EntityReferenceSerializer.class)
-@JsonDeserialize(using = EntityReferenceDeserializer.class)
-public class EntityReference<E> {
+//@JsonSerialize(using = EntityReferenceSerializer.class)
+//@JsonDeserialize(using = EntityReferenceDeserializer.class)
+public class EntityReference {
     
     @Getter
     private final String id;
     
-    @Getter
-    private final String entityClass;
-    
-    public EntityReference(Long id, Class<E> entityClass) {
+    public EntityReference(Long id) {
         this.id = id.toString();
-        this.entityClass = entityClass.getSimpleName().toLowerCase();
     }
     
-    public EntityReference(String id, String entityClass) {
+    public EntityReference(String id) {
         this.id = id;
-        this.entityClass = entityClass;
+    }
+    
+    @Override
+    public String toString() {
+        return id;
     }
 }

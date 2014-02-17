@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +29,7 @@ import lombok.Setter;
 @Setter
 public class ArvioinninKohdeDto {
     private LokalisoituTekstiDto otsikko;
-    private EntityReference<ArviointiAsteikko> arviointiAsteikko;
+    @JsonProperty("_arviointiasteikko")
+    private EntityReference arviointiAsteikko;
     private Set<OsaamistasonKriteeriDto> osaamistasonKriteerit;
 }

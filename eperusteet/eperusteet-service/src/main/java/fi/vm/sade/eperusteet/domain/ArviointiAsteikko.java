@@ -67,7 +67,7 @@ public class ArviointiAsteikko implements Serializable, CachedEntity {
     }
 
     @Override
-    public EntityReference<?> getReference() {
-        return new EntityReference<>(id, ArviointiAsteikko.class);
+    public EntityReference getReference() {
+        return new EntityReference(id);
     }
 }

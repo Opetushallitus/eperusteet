@@ -68,8 +68,8 @@ public class Osaamistaso implements Serializable, CachedEntity {
     }
 
     @Override
-    public EntityReference<?> getReference() {
-        return new EntityReference<>(id, Osaamistaso.class);
+    public EntityReference getReference() {
+        return new EntityReference(id);
     }
     
 }

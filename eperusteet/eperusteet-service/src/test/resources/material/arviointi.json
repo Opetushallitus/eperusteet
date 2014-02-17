@@ -13,9 +13,9 @@
         "fi" : "Oman työn suunnittelu",
         "sv" : "[Oman työn suunnittelu]"
       },
-      "arviointiAsteikko" : "arviointiasteikko_1",
+      "_arviointiasteikko" : "1",
       "osaamistasonKriteerit" : [ {
-        "osaamistaso" : "osaamistaso_1",
+        "_osaamistaso" : "1",
         "kriteerit" : [ {
           "fi" : "Opiskelija tai tutkinnon suorittaja suunnittelee työnsä etukäteen",
           "sv" : "[Opiskelija tai tutkinnon suorittaja suunnittelee työnsä etukäteen]"
@@ -26,9 +26,9 @@
         "fi" : "Työn lopputulokset",
         "sv" : "[Työn lopputulokset]"
       },
-      "arviointiAsteikko" : "arviointiasteikko_1",
+      "_arviointiasteikko" : "1",
       "osaamistasonKriteerit" : [ {
-        "osaamistaso" : "osaamistaso_1",
+        "_osaamistaso" : "1",
         "kriteerit" : [ {
           "fi" : "Opiskelija tai tutkinnon suorittaja valmistaa työn ohjeistuksen mukaisesti",
           "sv" : "[Opiskelija tai tutkinnon suorittaja valmistaa työn ohjeistuksen mukaisesti]"
