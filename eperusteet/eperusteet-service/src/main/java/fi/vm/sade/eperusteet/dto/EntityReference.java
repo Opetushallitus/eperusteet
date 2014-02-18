@@ -16,20 +16,17 @@
 
 package fi.vm.sade.eperusteet.dto;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  *
  * @author teele1
  */
-//@JsonSerialize(using = EntityReferenceSerializer.class)
-//@JsonDeserialize(using = EntityReferenceDeserializer.class)
 public class EntityReference {
     
-    @Getter
     private final String id;
-    
-    public EntityReference(Long id) {
+
+	public EntityReference(Long id) {
         this.id = id.toString();
     }
     
@@ -37,8 +34,8 @@ public class EntityReference {
         this.id = id;
     }
     
-    @Override
-    public String toString() {
-        return id;
-    }
+    @JsonValue
+    public String getId() {
+		return id;
+	}
 }
