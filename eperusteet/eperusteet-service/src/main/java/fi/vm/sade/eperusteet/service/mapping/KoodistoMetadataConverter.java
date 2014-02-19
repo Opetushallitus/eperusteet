@@ -17,9 +17,11 @@
 package fi.vm.sade.eperusteet.service.mapping;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import ma.glasnost.orika.Converter;
 import ma.glasnost.orika.CustomConverter;
@@ -40,7 +42,25 @@ public class KoodistoMetadataConverter {
             for (KoodistoMetadataDto metadata : s) {
                 nimi.put(Kieli.of(metadata.getKieli()), metadata.getNimi());
             }
+
             return new LokalisoituTekstiDto(null, nimi);
+
+        }
+    };
+    
+    public static final Converter<KoodistoMetadataDto[], TekstiPalanen> TO_TEKSTIPALANEN = new CustomConverter<KoodistoMetadataDto[], TekstiPalanen>() {
+
+        @Override
+        public TekstiPalanen convert(KoodistoMetadataDto[] s, Type<? extends TekstiPalanen> type) {
+            
+            Map <Kieli, String> tekstit = new HashMap<>();
+            for (KoodistoMetadataDto metadata : s) {
+                tekstit.put(Kieli.of(metadata.getKieli()),  metadata.getNimi());
+            }
+            
+            TekstiPalanen nimi = new TekstiPalanen(tekstit);
+            return nimi;
+
         }
     };
     

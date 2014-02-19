@@ -14,21 +14,23 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.repository;
+package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.domain.Kayttajaprofiili;
-import fi.vm.sade.eperusteet.domain.Koulutusala;
-import java.util.List;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
- * @author jussini
+ * @author harrik
  */
-@Repository
-public interface KoulutusalaRepository extends JpaRepository<Koulutusala, Long>{
-    @Query("SELECT k FROM Koulutusala k  WHERE k.koodi = ?1")
-    List<Koulutusala> findWithKoodi(String koodi);
+@Getter
+@Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class KoodistoKoodiDto {
+    private String koodiUri;
+    private String versio;
+    private KoodistoMetadataDto[] metadata;
+    private KoodistoDto koodisto;
+    private String voimassaAlkuPvm;
 }

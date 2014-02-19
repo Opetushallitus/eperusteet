@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.resource;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -54,6 +55,13 @@ public class PerusteController {
         @RequestParam(value = "ennen", required = false) Long ennen, @RequestBody PerusteenOsaViite viite) {
 
         return new ResponseEntity<>(service.addViite(viiteId, ennen, viite), HttpStatus.CREATED);
+    }
+    
+    @RequestMapping(value = "/lammitys", method = GET)
+    @ResponseBody
+    public ResponseEntity<String> lammitys() {
+        
+        return new ResponseEntity<>(service.lammitys(), HttpStatus.OK);
     }
 
 }
