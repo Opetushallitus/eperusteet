@@ -16,11 +16,11 @@
 
 package fi.vm.sade.eperusteet.resource.config;
 
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
@@ -41,12 +41,15 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.UnsatisfiedServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
+
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 /**
  *
@@ -122,10 +125,17 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
                     + ((UnrecognizedPropertyException) ex).getPropertyName() + "\"");
         }else if(ex instanceof ConstraintViolationException) {
             List<String> reasons = new ArrayList<>();
-            for(ConstraintViolation constraintViolation : ((ConstraintViolationException) ex).getConstraintViolations()) {
+            for(ConstraintViolation<?> constraintViolation : ((ConstraintViolationException) ex).getConstraintViolations()) {
                 reasons.add(constraintViolation.getMessage());
             }
             map.put("syy", reasons);
+        }else if(ex instanceof UnsatisfiedServletRequestParameterException) {
+        	StringBuilder builder = new StringBuilder().append("Pyynnöstä puuttui parametrit \"");
+        	for(String violation : ((UnsatisfiedServletRequestParameterException) ex).getParamConditions()) {
+        		builder.append(violation).append(' ');
+        	}
+        	builder.append("\"");
+            map.put("syy", builder.toString());
         }else {
             LOG.error("Creating common error response for exception", ex);
             map.put("syy", "Sovelluspalvelimessa tapahtui odottamaton virhe");

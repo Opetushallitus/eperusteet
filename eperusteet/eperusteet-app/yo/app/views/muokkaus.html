@@ -5,7 +5,7 @@
 <div class="row">
   <div class="col-md-3">
     <ul class="nav nav-pills nav-stacked">
-      <li ng-repeat="topic in topics"><a href="" ng-click="selectTopic(topic)" ng-bind="topic.otsikko.fi"></a></li>
+      <li ng-repeat="topic in topics"><a href="" ng-click="selectTopic(topic)" ng-bind="topic.nimi.fi"></a></li>
     </ul>
     <form class="navbar-form" ng-submit="addTopic()">
       <div class="form-group">
@@ -16,9 +16,17 @@
     </form>
   </div>
   <div class="col-md-9">
-    <h1 ng-model="thing.otsikko.fi" ng-bind-html="thing.otsikko.fi" ckeditor contenteditable="true"></h1>
-    <div id='thing.body' ng-bind-html="trustedThing" ng-model="thing.teksti.fi" contenteditable="true" ckeditor>
+    <h1 ng-model="thing.nimi.fi" ng-bind-html="thing.nimi.fi" ckeditor contenteditable="true"></h1>
+    <div id='thing.body' ng-bind-html="trustedThing" ng-model="thing.teksti.fi" ckeditor contenteditable="true">
     </div>
     <button class="btn btn-default" ng-click="deleteTopic()" translate>poista</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+  <button ng-click="laatikkoOnKiinni = !laatikkoOnKiinni" class="btn btn-default">Vaihda</button>
+    <div class="well no-transition" collapse="laatikkoOnKiinni">
+      <h1>Nyt se on auki</h1>
+    </div>
   </div>
 </div>

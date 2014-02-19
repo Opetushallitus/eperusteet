@@ -54,7 +54,7 @@ public class PerusteenOsaController {
     @ResponseBody
     public ResponseEntity<TutkinnonOsaDto> add(@RequestBody TutkinnonOsaDto tutkinnonOsaDto, UriComponentsBuilder ucb) {
         LOG.info("add {}", tutkinnonOsaDto);
-        tutkinnonOsaDto = service.add(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+        tutkinnonOsaDto = service.save(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
         return new ResponseEntity<>(tutkinnonOsaDto, buildHeadersFor(tutkinnonOsaDto.getId(), ucb), HttpStatus.CREATED);
     }
     
@@ -63,16 +63,16 @@ public class PerusteenOsaController {
     @ResponseBody
     public ResponseEntity<TekstiKappaleDto> add(@RequestBody TekstiKappaleDto tekstikappaleDto, UriComponentsBuilder ucb) {
         LOG.info("add {}", tekstikappaleDto);
-        tekstikappaleDto = service.add(tekstikappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
+        tekstikappaleDto = service.save(tekstikappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
         return new ResponseEntity<>(tekstikappaleDto, buildHeadersFor(tekstikappaleDto.getId(), ucb), HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/{id}", method = POST)
+    @RequestMapping(value = "/{id}", method = POST, params = PerusteenOsaMappings.IS_TEKSTIKAPPALE_PARAM)
     @ResponseBody
-    public PerusteenOsaDto update(@PathVariable("id") final Long id, @RequestBody PerusteenOsaDto perusteenOsa) {
-        LOG.info("save {}", perusteenOsa);
-        perusteenOsa.setId(id);
-        return service.update(id, perusteenOsa);
+    public TekstiKappaleDto update(@PathVariable("id") final Long id, @RequestBody TekstiKappaleDto tekstiKappaleDto) {
+        LOG.info("update {}", tekstiKappaleDto);
+        tekstiKappaleDto.setId(id);
+        return service.save(tekstiKappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
     }
 
     @RequestMapping(value = "/{id}", method = DELETE, consumes = "*/*")

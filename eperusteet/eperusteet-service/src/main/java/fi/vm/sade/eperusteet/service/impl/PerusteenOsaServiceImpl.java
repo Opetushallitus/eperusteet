@@ -1,12 +1,15 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+
 import java.util.List;
+
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +45,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     
     @Override
     @Transactional(readOnly = false)
-    public <T extends PerusteenOsaDto, D extends PerusteenOsa> T add(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
+    public <T extends PerusteenOsaDto, D extends PerusteenOsa> T save(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
         LOG.debug("map dto to entity");
         D perusteenOsa = mapper.map(perusteenOsaDto, entityClass);
         
@@ -50,12 +53,6 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         perusteenOsa = perusteenOsaRepo.save(perusteenOsa);
 
         return mapper.map(perusteenOsa, dtoClass);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public PerusteenOsaDto update(final Long id, PerusteenOsaDto osa) {
-        return null;
     }
 
     @Override

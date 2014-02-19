@@ -11,13 +11,28 @@ angular.module('eperusteApp')
   })
   .controller('MuokkausCtrl', function($scope, $sce, PerusteenOsat) {
 
+    var fetchAllTopics = function(scope, service, sce) {
+      var allPerusteenOsat = [];
+      scope.topics = [];
+      allPerusteenOsat = service.query(function() {
+        angular.forEach(allPerusteenOsat, function(osa) {
+          if(osa.nimi && osa.teksti) {
+            scope.topics.push(osa);
+            if(scope.topics.length < 2) {
+              scope.thing = osa;
+              scope.trustedThing = sce.trustAsHtml($scope.thing.teksti.fi);
+            }
+          }
+        }, scope.topics);
+      });
+    };
+
+    $scope.laatikkoOnKiinni = true;
+    
     $scope.comments = [];
 
-    $scope.topics = PerusteenOsat.query(function() {
-      $scope.thing = $scope.topics[0];
-      $scope.trustedThing = $sce.trustAsHtml($scope.thing.teksti.fi);
-    });
-
+    fetchAllTopics($scope, PerusteenOsat, $sce);
+    
     $scope.selectTopic = function(topic) {
       console.log(topic);
       $scope.thing = topic;
@@ -28,18 +43,16 @@ angular.module('eperusteApp')
 
     $scope.deleteTopic = function() {
       $scope.thing.$delete(function() {
-        PerusteenOsat.query(function(result) {
-          $scope.topics = result;
-          $scope.thing = $scope.topics[0];
-          $scope.trustedThing = $sce.trustAsHtml($scope.thing.teksti.fi);
-        });
+        fetchAllTopics($scope, PerusteenOsat, $sce);
       });
     };
 
     $scope.addTopic = function() {
       PerusteenOsat.save({
-        tyyppi : 'tekstiosa',
-        otsikko: {fi : $scope.topicText },
+        tyyppi: "perusteen-osat-tekstikappale"
+      },
+      {
+        nimi: {fi : $scope.topicText },
         teksti : {fi : '<p>Uusi kappale</p>' }
       }, function(t) {
         $scope.topics.push(t);
@@ -54,6 +67,6 @@ angular.module('eperusteApp')
 
     $scope.$on('edited', function() {
       console.log('EDITED!');
-      $scope.thing.$save();
+      $scope.thing.$save({tyyppi: "perusteen-osat-tekstikappale"});
     });
   });
