@@ -7,7 +7,7 @@
     <div ng-class="ammattitaitovaatimusTyyli" style="font-size: 1.4em; left: 10px; top: 0px;" ng-click="vaihdaAmmattitaitovaatimusNakyvyys()"></div>
 
     <div collapse="ammattitaitovaatimuksetSuljettu">
-        <div class="well well-sm" ng-bind-html="valitseKieli(tutkinnonOsa.ammattitaitovaatimukset)"></div>
+        <div ng-bind-html="valitseKieli(tutkinnonOsa.ammattitaitovaatimukset)"></div>
     </div>
 
     <div></div>
@@ -15,19 +15,19 @@
     <h3 style="display: inline;" class="pointer alleviivaus" translate ng-click="vaihdaArviointiNakyvyys()">tutkinnonosa-arviointi</h3>
     <span ng-class="arviointiTyyli" style="font-size: 1.4em; left: 10px; top: 0px;" ng-click="vaihdaArviointiNakyvyys()"></span>
     <div collapse="arviointiSuljettu">
-        <div class="panel panel-default" ng-repeat="kohdealue in tutkinnonOsa.arviointi.arvioinninKohdealueet">
+        <div class="panel panel-default panel-small" ng-repeat="kohdealue in tutkinnonOsa.arviointi.arvioinninKohdealueet">
             <div class="panel-heading">
                 <h3 class="panel-title">{{valitseKieli(kohdealue.otsikko)}}</h3></div>
             <div class="panel-body">
                 <accordion close-others="false">
-                    <accordion-group heading="{{valitseKieli(arvioinninkohde.otsikko)}}" ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet" n>
-                        <div ng-repeat="taso in arviointiasteikot[arvioinninkohde.arviointiAsteikko].osaamistasot" ng-class-odd="'raita'">
+                    <accordion-group heading="{{valitseKieli(arvioinninkohde.otsikko)}}" ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet">
+                        <div ng-repeat="taso in arviointiasteikot[arvioinninkohde._arviointiAsteikko].osaamistasot" ng-class-odd="'raita'">
                             <div class="row">
                                 <div class="col-md-3">
                                     {{valitseKieli(taso.otsikko)}}
                                 </div>
                                 <div class="col-md-9">
-                                    <div ng-repeat="osaamistasonKriteeri in arvioinninkohde.osaamistasonKriteerit| filter:{osaamistaso: taso.id}">
+                                    <div ng-repeat="osaamistasonKriteeri in arvioinninkohde.osaamistasonKriteerit| filter:{_osaamistaso: taso.id}">
                                         <ul>
                                             <li ng-repeat="kriteeri in osaamistasonKriteeri.kriteerit">
                                                 {{valitseKieli(kriteeri)}}
@@ -42,7 +42,7 @@
             </div>
         </div>
     </div>
-    
+
     <div></div>
 
     <h3 style="display: inline" class="pointer alleviivaus" ng-click="vaihdaAmmattitaidonOsoittamistavatNakyvyys()" translate>tutkinnonosa-ammattitaidonOsoittamistavat</h3>
