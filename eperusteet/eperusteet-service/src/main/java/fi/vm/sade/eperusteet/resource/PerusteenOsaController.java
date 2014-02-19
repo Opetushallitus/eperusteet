@@ -74,6 +74,14 @@ public class PerusteenOsaController {
         tekstiKappaleDto.setId(id);
         return service.save(tekstiKappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
     }
+    
+    @RequestMapping(value = "/{id}", method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
+    @ResponseBody
+    public TutkinnonOsaDto update(@PathVariable("id") final Long id, @RequestBody TutkinnonOsaDto tutkinnonOsaDto) {
+        LOG.info("update {}", tutkinnonOsaDto);
+        tutkinnonOsaDto.setId(id);
+        return service.save(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+    }
 
     @RequestMapping(value = "/{id}", method = DELETE, consumes = "*/*")
     @ResponseStatus(HttpStatus.NO_CONTENT)

@@ -46,12 +46,8 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     @Transactional(readOnly = false)
     public <T extends PerusteenOsaDto, D extends PerusteenOsa> T save(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
-        LOG.debug("map dto to entity");
         D perusteenOsa = mapper.map(perusteenOsaDto, entityClass);
-        
-        LOG.debug("Save entity to db");
         perusteenOsa = perusteenOsaRepo.save(perusteenOsa);
-
         return mapper.map(perusteenOsa, dtoClass);
     }
 

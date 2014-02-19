@@ -3,30 +3,59 @@
   <div id="ck-toolbar-bottom"></div>
 </div>
 <div class="row">
-  <div class="col-md-3">
-    <ul class="nav nav-pills nav-stacked">
-      <li ng-repeat="topic in topics"><a href="" ng-click="selectTopic(topic)" ng-bind="topic.nimi.fi"></a></li>
-    </ul>
-    <form class="navbar-form" ng-submit="addTopic()">
-      <div class="form-group">
-        <input class="form-control" type="text" ng-model="topicText" 
-        placeholder="{{'muokkaus-uusi-kappale-placeholder' | translate}}">
-      </div>
-      <button class="btn btn-primary" type="submit" translate>lisää</button>
-    </form>
-  </div>
-  <div class="col-md-9">
-    <h1 ng-model="thing.nimi.fi" ng-bind-html="thing.nimi.fi" ckeditor contenteditable="true"></h1>
-    <div id='thing.body' ng-bind-html="trustedThing" ng-model="thing.teksti.fi" ckeditor contenteditable="true">
-    </div>
-    <button class="btn btn-default" ng-click="deleteTopic()" translate>poista</button>
-  </div>
+  
 </div>
 <div class="row">
   <div class="col-md-12">
-  <button ng-click="laatikkoOnKiinni = !laatikkoOnKiinni" class="btn btn-default">Vaihda</button>
-    <div class="well no-transition" collapse="laatikkoOnKiinni">
-      <h1>Nyt se on auki</h1>
+    <div class="btn-group">
+      <button type="button" class="btn btn-primary" ng-model="valittuTyyppi" btn-radio="osienTyypit[0]" ng-click="haeTekstikappaleet()">{{osienTyypit[0]}}</button>
+      <button type="button" class="btn btn-primary" ng-model="valittuTyyppi" btn-radio="osienTyypit[1]" ng-click="haeTutkinnonOsat()">{{osienTyypit[1]}}</button>
+    </div>
+  </div>
+</div>
+<div class="row no-transition well" collapse="valittuTyyppi !== osienTyypit[0]">
+  <div class="col-md-12">
+    <div class="col-md-3">
+      <ul class="nav nav-pills nav-stacked">
+        <li ng-repeat="topic in topics"><a href="" ng-click="selectTopic(topic)" ng-bind="topic.nimi.fi"></a></li>
+      </ul>
+      <form class="navbar-form" ng-submit="addTopic()">
+        <div class="form-group">
+          <input class="form-control" type="text" ng-model="topicText" 
+          placeholder="{{'muokkaus-uusi-kappale-placeholder' | translate}}">
+        </div>
+        <button class="btn btn-primary" type="submit" translate>lisää</button>
+      </form>
+    </div>
+    <div class="col-md-9">
+      <h1 ng-model="thing.nimi.fi" ng-bind-html="thing.nimi.fi" ckeditor contenteditable="true"></h1>
+      <div id='thing.body' ng-bind-html="trustedThing" ng-model="thing.teksti.fi" ckeditor contenteditable="true">
+      </div>
+      <button class="btn btn-default" ng-click="deleteTopic()" translate>poista</button>
+    </div>
+  </div>
+</div>
+<div class="row no-transition well" collapse="valittuTyyppi !== osienTyypit[1]">
+  <div class="col-md-12">
+    <div class="col-md-3">
+      <ul class="nav nav-pills nav-stacked">
+        <li ng-repeat="currentTutkinnonOsa in tutkinnonOsat">
+          <a href="" ng-href="" ng-click="selectTutkinnonOsa(currentTutkinnonOsa)" ng-bind-html="currentTutkinnonOsa.nimi.fi"></a>
+        </li>
+      </ul>
+      <form class="navbar-form" ng-submit="addTutkinnonOsa()">
+        <div class="form-group">
+          <input class="form-control" type="text" ng-model="tutkinnonOsanNimi" placeholder="{{'muokkaus-uusi-tutkinnon-osa-nimi-placeholder' | translate}}">
+          <input class="form-control" type="number" ng-model="tutkinnonOsanOpintoluokitus" placeholder="{{'muokkaus-uusi-tutkinnon-osa-opintoluokitus-placeholder' | translate}}">
+        </div>
+        <button class="btn btn-primary" type="submit" translate>Lisää</button>
+    </form>
+    </div>
+    <div class="col-md-9">
+      <h1 ng-model="tutkinnonOsa.nimi.fi" ng-bind-html="tutkinnonOsa.nimi.fi" ckeditor contenteditable="true"></h1>
+      <div><strong>Opintoluokitus: </strong>{{tutkinnonOsa.opintoluokitus}}</div>
+      <strong translate>Tavoitteet: </strong><div ng-model="tutkinnonOsa.tavoitteet.fi" ng-bind-html="trustedTutkinnonOsanTavoitteet" ckeditor contenteditable="true"></div>
+      <strong translate>Ammattitaitovaatimukset: </strong><div ng-model="tutkinnonOsa.ammattitaitovaatimukset.fi" ng-bind-html="trustedTutkinnonOsanAmmattitaitovaatimukset" ckeditor contenteditable="true"></div>
     </div>
   </div>
 </div>
