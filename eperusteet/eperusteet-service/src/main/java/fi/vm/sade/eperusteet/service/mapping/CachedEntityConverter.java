@@ -14,24 +14,25 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.service.mapping;
 
 import fi.vm.sade.eperusteet.domain.CachedEntity;
+import fi.vm.sade.eperusteet.dto.EntityReference;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author teele1
  */
+@Component
 public class CachedEntityConverter extends BidirectionalConverter<CachedEntity, EntityReference>{
 
-    private final EntityManager em;
-    
-    public CachedEntityConverter(EntityManager em) {
-        this.em = em;
-    }
+    @PersistenceContext
+    private EntityManager em;
     
     @Override
     public boolean canConvert(Type<?> sourceType, Type<?> destinationType) {

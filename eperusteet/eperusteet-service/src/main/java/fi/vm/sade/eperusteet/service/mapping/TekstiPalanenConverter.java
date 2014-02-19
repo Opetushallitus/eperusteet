@@ -16,40 +16,51 @@
 package fi.vm.sade.eperusteet.service.mapping;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import java.util.HashMap;
-import java.util.Map;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.repository.TekstiPalanenRepository;
+import java.util.Map;
 import ma.glasnost.orika.metadata.Type;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author jhyoty
  */
+@Component
 public class TekstiPalanenConverter extends BidirectionalConverter<TekstiPalanen, LokalisoituTekstiDto> {
+
+    @Autowired
+    private TekstiPalanenRepository repository;
 
     @Override
     public LokalisoituTekstiDto convertTo(TekstiPalanen tekstiPalanen, Type<LokalisoituTekstiDto> type) {
-        LokalisoituTekstiDto dto = new LokalisoituTekstiDto();
-        
-        for(LokalisoituTeksti teksti : tekstiPalanen.getTeksti()) {
-            dto.put(teksti.getKieli(), teksti.getTeksti());
-        }
-        
-        return dto;
+        return new LokalisoituTekstiDto(tekstiPalanen.getId(), tekstiPalanen.getTeksti());
     }
 
     @Override
     public TekstiPalanen convertFrom(LokalisoituTekstiDto dto, Type<TekstiPalanen> type) {
-        
-        Map<Kieli, LokalisoituTeksti> tekstit = new HashMap<>();
-        
-        for(Kieli kieli : dto.keySet()) {
-            tekstit.put(kieli, new LokalisoituTeksti(kieli, dto.get(kieli)));
+
+        if (dto.getId() != null) {
+            /*
+            Jos id on mukana, yritä yhdistää olemassa olevaan tekstipalaseen
+            Koska tekstipalanen on muuttumaton ja cachetettu, niin oletustapaus on että
+            tekstipalanen on jo cachessa (luettu aikaisemmin) ja tietokantahaku vältetään.
+            Huom! vihamielinen/virheellinen client voisi keksiä id:n aiheuttaen turhia tietokantahakuja.
+            */
+            TekstiPalanen current = repository.findOne(dto.getId());
+            if (current != null) {
+                Map<Kieli, String> teksti = current.getTeksti();
+                teksti.putAll(dto.getTekstit());
+                TekstiPalanen tekstiPalanen = new TekstiPalanen(teksti);
+                if ( tekstiPalanen.equals(current) ) {
+                    return current;
+                }
+                return tekstiPalanen;
+            }
         }
-        
-        return new TekstiPalanen(tekstit);
+        return new TekstiPalanen(dto.getTekstit());
     }
 }

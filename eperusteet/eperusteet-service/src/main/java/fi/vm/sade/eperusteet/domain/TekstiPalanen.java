@@ -16,9 +16,10 @@
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
-import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Cacheable;
 import javax.persistence.ElementCollection;
@@ -42,7 +43,7 @@ import org.hibernate.annotations.Immutable;
 @Immutable
 @Table(name = "tekstipalanen")
 public class TekstiPalanen implements Serializable {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -55,16 +56,45 @@ public class TekstiPalanen implements Serializable {
     protected TekstiPalanen() {
     }
 
-    public TekstiPalanen(Map<Kieli, LokalisoituTeksti> tekstit) {
-        teksti = new HashSet<>(tekstit.values());
+    public TekstiPalanen(Map<Kieli, String> tekstit) {
+        teksti = new HashSet<>(tekstit.size());
+        for ( Map.Entry<Kieli, String> e : tekstit.entrySet() ) {
+            teksti.add(new LokalisoituTeksti(e.getKey(), e.getValue()));
+        }
     }
 
     public Long getId() {
         return id;
     }
 
-    public Set<LokalisoituTeksti> getTeksti() {
-        return Collections.unmodifiableSet(teksti);
+    public Map<Kieli,String> getTeksti() {
+        EnumMap<Kieli,String> map = new EnumMap<>(Kieli.class);
+        for ( LokalisoituTeksti t : teksti ) {
+            map.put(t.getKieli(), t.getTeksti());
+        }
+        return map;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.teksti);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof TekstiPalanen) {
+            final TekstiPalanen other = (TekstiPalanen) obj;
+            return Objects.equals(this.teksti, other.teksti);
+        }
+        return false;
     }
 
 }

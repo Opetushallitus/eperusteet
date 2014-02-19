@@ -25,7 +25,6 @@ import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.ArviointiDto;
@@ -101,7 +100,7 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
     
     @Before
     public void setUp() {
-        TekstiPalanen osaamistasoOtsikko = new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "otsikko")));
+        TekstiPalanen osaamistasoOtsikko = new TekstiPalanen(Collections.singletonMap(Kieli.FI, "otsikko"));
         em.persist(osaamistasoOtsikko);
 
         Osaamistaso osaamistaso = new Osaamistaso();
@@ -116,9 +115,9 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
 
         em.persist(arviointiasteikko);
         
-        TekstiPalanen osaamistasoOtsikko2 = new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "otsikko 2")));
+        TekstiPalanen osaamistasoOtsikko2 = new TekstiPalanen(Collections.singletonMap(Kieli.FI, "otsikko 2"));
         em.persist(osaamistasoOtsikko2);
-        TekstiPalanen osaamistasoOtsikko3 = new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "otsikko 2")));
+        TekstiPalanen osaamistasoOtsikko3 = new TekstiPalanen(Collections.singletonMap(Kieli.FI, "otsikko 2"));
         em.persist(osaamistasoOtsikko3);
 
         osaamistaso = new Osaamistaso();

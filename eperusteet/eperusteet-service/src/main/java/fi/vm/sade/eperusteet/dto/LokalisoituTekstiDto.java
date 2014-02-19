@@ -15,13 +15,57 @@
  */
 package fi.vm.sade.eperusteet.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Map;
+import javax.validation.constraints.NotNull;
+import lombok.Getter;
 
 /**
  *
  * @author jhyoty
  */
-public class LokalisoituTekstiDto extends HashMap<Kieli, String> {
+public class LokalisoituTekstiDto {
+
+    @Getter
+    private final Long id;
+    @Getter
+    private final Map<Kieli, String> tekstit;
+
+    public LokalisoituTekstiDto(Long id, Map<Kieli, String> values) {
+        this.id = id;
+        this.tekstit = new EnumMap<>(values);
+    }
+
+    @JsonCreator
+    public LokalisoituTekstiDto(@NotNull Map<String, String> values) {
+        Long tmpId = null;
+        EnumMap<Kieli, String> tmpValues = new EnumMap<>(Kieli.class);
+        for (Map.Entry<String, String> entry : values.entrySet()) {
+            if ("_id".equals(entry.getKey())) {
+                tmpId = Long.valueOf(entry.getValue());
+            } else {
+                Kieli k = Kieli.of(entry.getKey());
+                tmpValues.put(k, entry.getValue());
+            }
+        }
+        this.id = tmpId;
+        this.tekstit = tmpValues;
+    }
+
+    @JsonValue
+    public Map<String, String> asMap() {
+        HashMap<String, String> map = new HashMap<>();
+        if (id != null) {
+            map.put("_id", id.toString());
+        }
+        for (Map.Entry<Kieli, String> e : tekstit.entrySet()) {
+            map.put(e.getKey().toString(), e.getValue());
+        }
+        return map;
+    }
 
 }
