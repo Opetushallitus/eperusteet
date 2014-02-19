@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,6 +26,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@JsonTypeName("tekstiosa")
 public class TekstiKappaleDto extends PerusteenOsaDto {
     private LokalisoituTekstiDto teksti;
 }

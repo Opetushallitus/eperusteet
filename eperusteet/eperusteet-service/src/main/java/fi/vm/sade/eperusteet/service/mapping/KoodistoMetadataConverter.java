@@ -19,6 +19,8 @@ package fi.vm.sade.eperusteet.service.mapping;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
+import java.util.EnumMap;
+import java.util.Map;
 import ma.glasnost.orika.Converter;
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.metadata.Type;
@@ -34,11 +36,11 @@ public class KoodistoMetadataConverter {
         @Override
         public LokalisoituTekstiDto convert(KoodistoMetadataDto[] s, Type<? extends LokalisoituTekstiDto> type) {
             
-            LokalisoituTekstiDto nimi = new LokalisoituTekstiDto();
+            Map<Kieli, String> nimi = new EnumMap<>(Kieli.class);
             for (KoodistoMetadataDto metadata : s) {
                 nimi.put(Kieli.of(metadata.getKieli()), metadata.getNimi());
             }
-            return nimi;
+            return new LokalisoituTekstiDto(null, nimi);
         }
     };
     

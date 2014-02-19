@@ -21,7 +21,6 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
-import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
@@ -37,21 +36,21 @@ public abstract class TestUtils {
 
     public static Peruste createPeruste() {
         Peruste p = new Peruste();
-        p.setNimi(new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "Nimi"))));
+        p.setNimi(tekstiPalanenOf(Kieli.FI, "Nimi"));
 
         return p;
     }
 
     public static Arviointi createArviointi(ArviointiAsteikko arviointiasteikko) {
         Arviointi arviointi = new Arviointi();
-        arviointi.setLisatiedot(new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "lisätieto"))));
+        arviointi.setLisatiedot(tekstiPalanenOf(Kieli.FI, "lisätieto"));
 
         ArvioinninKohdealue arvioinninKohdealue = new ArvioinninKohdealue();
-        arvioinninKohdealue.setOtsikko(new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "otsikko"))));
+        arvioinninKohdealue.setOtsikko(tekstiPalanenOf(Kieli.FI, "otsikko"));
         arviointi.setArvioinninKohdealueet(Collections.singletonList(arvioinninKohdealue));
 
         ArvioinninKohde arvioinninKohde = new ArvioinninKohde();
-        arvioinninKohde.setOtsikko(new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "otsikko"))));
+        arvioinninKohde.setOtsikko(tekstiPalanenOf(Kieli.FI, "otsikko"));
         arvioinninKohde.setArviointiAsteikko(arviointiasteikko);
         arvioinninKohdealue.setArvioinninKohteet(Collections.singletonList(arvioinninKohde));
 
@@ -59,12 +58,15 @@ public abstract class TestUtils {
         for (Osaamistaso osaamistaso : arviointiasteikko.getOsaamistasot()) {
             OsaamistasonKriteeri osaamistasonKriteeri = new OsaamistasonKriteeri();
             osaamistasonKriteeri.setOsaamistaso(osaamistaso);
-            osaamistasonKriteeri.setKriteerit(Collections.singletonList(
-                    new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "tekstialue")))));
+            osaamistasonKriteeri.setKriteerit(Collections.singletonList(tekstiPalanenOf(Kieli.FI, "tekstialue")));
             kriteerit.add(osaamistasonKriteeri);
         }
         arvioinninKohde.setOsaamistasonKriteerit(kriteerit);
 
         return arviointi;
+    }
+
+    public static TekstiPalanen tekstiPalanenOf(Kieli k, String teksti) {
+        return new TekstiPalanen(Collections.singletonMap(k, teksti));
     }
 }

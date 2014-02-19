@@ -13,31 +13,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.domain;
 
-import java.io.Serializable;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+package fi.vm.sade.eperusteet.repository;
+
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
- * @author jhyoty
+ * @author hyoty
  */
-@Entity
-@Table(name = "tekstikappale")
-public class TekstiKappale extends PerusteenOsa implements Serializable {
-
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private TekstiPalanen teksti;
-
-    public TekstiPalanen getTeksti() {
-        return teksti;
-    }
-
-    public void setTeksti(TekstiPalanen teksti) {
-        this.teksti = teksti;
-    }
-    
+@Repository
+public interface TekstiPalanenRepository extends JpaRepository<TekstiPalanen, Long>{
+        
 }
