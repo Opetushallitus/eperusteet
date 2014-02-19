@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.dto;
 
 import java.util.Date;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +27,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+//@JsonTypeInfo(include = JsonTypeInfo.As.PROPERTY, use = JsonTypeInfo.Id.NAME, property = "tyyppi")
+//@JsonSubTypes({@JsonSubTypes.Type(TekstiKappaleDto.class), @JsonSubTypes.Type(TutkinnonOsaDto.class)})
 public abstract class PerusteenOsaDto {
+    @NotNull
     private Long id;
     private Date luotu;
     private Date muokattu;

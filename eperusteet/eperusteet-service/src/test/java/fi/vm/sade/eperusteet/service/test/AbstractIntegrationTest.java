@@ -13,19 +13,29 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service.test;
 
+import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Perusluokka service-tason integraatiotesteille joita ajetaan muistinvaraista kantaa vasten.
+ *
  * @author jhyoty
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/it-test-context.xml")
 public class AbstractIntegrationTest {
 
+    @Before
+    public void setUpSecurityContext() {
+        SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+        ctx.setAuthentication(new UsernamePasswordAuthenticationToken("test","test"));
+        SecurityContextHolder.setContext(ctx);
+    }
 }

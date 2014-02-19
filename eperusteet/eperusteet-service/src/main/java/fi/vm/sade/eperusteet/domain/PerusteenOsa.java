@@ -16,12 +16,8 @@
 
 package fi.vm.sade.eperusteet.domain;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.io.Serializable;
-import java.util.Date;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,9 +25,9 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.Table;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
  *
@@ -39,23 +35,16 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@JsonTypeInfo(include = JsonTypeInfo.As.PROPERTY, use = JsonTypeInfo.Id.NAME, property = "tyyppi")
-@JsonSubTypes({@JsonSubTypes.Type(TekstiKappale.class), @JsonSubTypes.Type(TutkinnonOsa.class)})
-public abstract class PerusteenOsa implements Serializable {
+@Audited
+@Table(name="perusteenosa")
+public abstract class PerusteenOsa extends AbstractAuditedEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date luotu;
-
-    @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date muokattu;
-
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen nimi;
 
     public Long getId() {
@@ -66,22 +55,6 @@ public abstract class PerusteenOsa implements Serializable {
         this.id = id;
     }
 
-    public Date getLuotu() {
-        return luotu;
-    }
-
-    public void setLuotu(Date luotu) {
-        this.luotu = luotu;
-    }
-
-    public Date getMuokattu() {
-        return muokattu;
-    }
-
-    public void setMuokattu(Date muokattu) {
-        this.muokattu = muokattu;
-    }
-
     public TekstiPalanen getNimi() {
         return nimi;
     }
@@ -90,10 +63,4 @@ public abstract class PerusteenOsa implements Serializable {
         this.nimi = nimi;
     }
     
-    @PrePersist
-    private void prePersist() {
-        luotu = new Date();
-        muokattu = luotu;
-    }
-
 }

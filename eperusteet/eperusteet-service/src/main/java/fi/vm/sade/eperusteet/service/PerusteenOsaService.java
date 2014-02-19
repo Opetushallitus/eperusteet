@@ -20,5 +20,4 @@ public interface PerusteenOsaService {
     PerusteenOsaDto getByKoodi(final Long id);
 
     List<PerusteenOsaDto> getAll();
-
 }

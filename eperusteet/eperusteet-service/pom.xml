@@ -11,11 +11,11 @@
     <packaging>war</packaging>
     <name>eperusteet-service</name>
     <properties>
-        <hibernate.version>4.3.1.Final</hibernate.version>
+        <hibernate.version>4.3.4.Final</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>3.2.7.RELEASE</spring.version>
-        <spring.security.version>3.1.4.RELEASE</spring.security.version>
-        <spring.data.jpa.version>1.4.3.RELEASE</spring.data.jpa.version>
+        <spring.version>3.2.8.RELEASE</spring.version>
+        <spring.security.version>3.1.5.RELEASE</spring.security.version>
+        <spring.data.jpa.version>1.4.4.RELEASE</spring.data.jpa.version>
         <logback.version>1.0.13</logback.version>
         <postgresql.version>9.3-1100-jdbc41</postgresql.version>
         <jackson.version>2.3.1</jackson.version>
@@ -141,7 +141,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.0.2.Final</version>
+            <version>5.1.0.Final</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -156,6 +156,11 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-envers</artifactId>
             <version>${hibernate.version}</version>
         </dependency>
         <dependency>
@@ -344,12 +349,15 @@
                         </execution>
                     </executions>
                     <configuration>
+                        <envers>true</envers>
+                        <type>CREATE</type>
                         <target>SCRIPT</target>
                         <driverClassName>org.postgresql.Driver</driverClassName>
-                        <hibernateDialect>org.hibernate.dialect.PostgreSQLDialect</hibernateDialect>
+                        <hibernateDialect>org.hibernate.dialect.PostgreSQL9Dialect</hibernateDialect>
                         <url></url>
                         <username></username>
                         <password></password>
+                        <hibernateProperties>src/test/config/hibernate.properties</hibernateProperties>
                     </configuration>
                     <dependencies>
                         <dependency>

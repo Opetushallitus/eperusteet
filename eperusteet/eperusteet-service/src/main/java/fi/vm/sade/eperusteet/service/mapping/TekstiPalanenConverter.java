@@ -22,6 +22,8 @@ import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.TekstiPalanenRepository;
 import java.util.Map;
 import ma.glasnost.orika.metadata.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +34,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class TekstiPalanenConverter extends BidirectionalConverter<TekstiPalanen, LokalisoituTekstiDto> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TekstiPalanenConverter.class);
+    
     @Autowired
     private TekstiPalanenRepository repository;
 

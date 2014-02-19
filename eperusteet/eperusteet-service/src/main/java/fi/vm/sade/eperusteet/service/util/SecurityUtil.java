@@ -14,18 +14,23 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.service.util;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.security.Principal;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  *
  * @author jhyoty
  */
-@Getter
-@Setter
-//@JsonTypeName("tekstiosa")
-public class TekstiKappaleDto extends PerusteenOsaDto {
-    private LokalisoituTekstiDto teksti;
+public final class SecurityUtil {
+
+    private SecurityUtil() {
+        //helper class
+    }
+
+    public static Principal getAuthenticatedPrincipal() {
+        return SecurityContextHolder.getContext().getAuthentication();
+    }
+
 }
