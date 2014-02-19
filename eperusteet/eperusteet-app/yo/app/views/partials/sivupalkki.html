@@ -26,7 +26,7 @@ European Union Public Licence for more details.
         <ul class="list-unstyled">
             <li class="ellipsis-no-wrap" ng-repeat="suosikki in suosikit| limitTo:suosikkiRaja" ><a title="{{valitseKieli(suosikki.nimi)}}" ng-href="#/selaus/{{suosikki.konteksti}}/{{suosikki.id}}">{{valitseKieli(suosikki.nimi)}}</a></li>
         </ul>
-        <button class="btn btn-default btn-xs pull-right" ng-show="naytaSuosikkiNappi" ng-click="muutaSuosikkiMaara()">{{suosikkiNapinTeksti| translate}}</button>
+        <button class="btn btn-default btn-xs pull-right" ng-show="naytaSuosikkiNappi" ng-click="muutaSuosikkiMaara()" translate="suosikki-nayta-kaikki">Näytä kaikki</button>
       </div>
     </div>
     <div class="panel panel-default">
@@ -43,6 +43,6 @@ European Union Public Licence for more details.
       <div class="panel-body">
         Stuff here...
       </div>
-    </div>  
+    </div>
   </div>
 </div>
