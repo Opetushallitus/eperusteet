@@ -251,27 +251,24 @@ angular.module('eperusteApp')
           var kohde = data[kentat[7] + j];
 
           // Uuden kohdealueen lisäys ammattitaitovaatimukseen
-          if (!_.isEmpty(arvioinninKohdealue)) {
-            var viimeinenKohde = _.last(arvioinninKohdealue.arvioinninKohteet);
-            if (viimeinenKohde && viimeinenKohde._arviointiAsteikko === '2') {
-              viimeinenKohde.osaamistasonKriteerit = [{
-                  _osaamistaso: '2',
-                  kriteerit: tyydyttavat
-              }, {
-                _osaamistaso: '3',
-                kriteerit: hyvat
-              }, {
-                _osaamistaso: '4',
-                kriteerit: kiitettavat
-              }];
-              tyydyttavat = [];
-              hyvat = [];
-              kiitettavat = [];
-            }
-          }
-
           if (kohde && kohde.v) {
             if (!_.isEmpty(arvioinninKohdealue)) {
+              var viimeinenKohde = _.last(arvioinninKohdealue.arvioinninKohteet);
+              if (viimeinenKohde && viimeinenKohde._arviointiAsteikko === '2') {
+                viimeinenKohde.osaamistasonKriteerit = [{
+                    _osaamistaso: '2',
+                    kriteerit: tyydyttavat
+                }, {
+                  _osaamistaso: '3',
+                  kriteerit: hyvat
+                }, {
+                  _osaamistaso: '4',
+                  kriteerit: kiitettavat
+                }];
+                tyydyttavat = [];
+                hyvat = [];
+                kiitettavat = [];
+              }
               arvioinninKohdealue.arvioinninKohteet.push({
                   otsikko: {
                     fi: suodataTekstipala(kohde.v)
@@ -313,7 +310,11 @@ angular.module('eperusteApp')
               kiitettavat.push({ fi: filtteroituKentta(11) });
             }
           } else {
-            varoitukset.push(rakennaVaroitus(kentat[8] + j, osaperuste.nimi, 'Arvioinnin kohdetta ei löytynyt'));
+            if (arviointiasteikko === '1') {
+              varoitukset.push(rakennaVaroitus(kentat[8] + j, osaperuste.nimi, 'Arvioinnin kohdetta ei löytynyt'));
+            } else if (arviointiasteikko === '2') {
+              varoitukset.push(rakennaVaroitus(kentat[9] + j + ', ' + kentat[10] + j + ', ' + kentat[11] + j, osaperuste.nimi, 'Arvioinnin kohdetta ei löytynyt'));
+            }
           }
         });
 

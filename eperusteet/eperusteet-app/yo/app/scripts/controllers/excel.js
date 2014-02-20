@@ -54,10 +54,8 @@ angular.module('eperusteApp')
           doneSuccess();
         }).error(function(err) {
           if (err) {
-            $scope.uploadErrors.push({
-                name: ot.nimi,
-                message: err.syy
-            });
+            ot.syy = err.syy;
+            ot.ladattu = 1;
           }
         });
       });
@@ -74,7 +72,7 @@ angular.module('eperusteApp')
         promise.then(function(resolve) {
           $scope.warnings = resolve.varoitukset;
           $scope.osatutkinnot = _.map(resolve.osaperusteet, function(ot) {
-            return _.merge(ot, { ladattu: -1, koodi: '' });
+            return _.merge(ot, { ladattu: -1, koodi: '', syy: '' });
           });
           $scope.lukeeTiedostoa = false;
         }, function(errors) {

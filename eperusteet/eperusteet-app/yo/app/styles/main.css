@@ -54,4 +54,7 @@ body {
   -ms-transition: height 0.001s;
   -o-transition: height 0.001s;
   transition: height 0.001s;
+
+.glyphtila {
+  width: 32px;
 }
