@@ -16,10 +16,13 @@
 
 package fi.vm.sade.eperusteet.service.mapping;
 
+import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.KoodistoKoulutusalaDto;
+import fi.vm.sade.eperusteet.dto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.KoulutusalaDto;
+import fi.vm.sade.eperusteet.dto.OpintoalaDto;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -51,7 +54,13 @@ public class KoodistoMapperConfig {
                 .fieldMap("metadata", "nimi").converter("metadataToTekstipalanenConverter").add()
                 .byDefault()
                 .register();
-
+        
+        factory.classMap(KoodistoKoodiDto.class, OpintoalaDto.class)
+                .field("koodiUri", "koodi")
+                .fieldMap("metadata", "nimi").converter("metadataConverter").add()
+                .byDefault()
+                .register();
+        
         return new DtoMapperImpl(factory.getMapperFacade());
     }
     

@@ -16,8 +16,10 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Koulutusala;
+import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.KoodistoKoulutusalaDto;
 import fi.vm.sade.eperusteet.dto.KoulutusalaDto;
+import fi.vm.sade.eperusteet.dto.OpintoalaDto;
 import fi.vm.sade.eperusteet.repository.KoulutusalaRepository;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -43,6 +45,7 @@ public class KoulutusalaServiceImpl implements KoulutusalaService {
 
     private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
     private static final String KOULUTUSALA_URI = "koulutusalaoph2002";
+    private static final String OPINTOALA_URI = "opintoalaoph2002";
 
     @Autowired
     private KoulutusalaRepository repository;
@@ -69,8 +72,31 @@ public class KoulutusalaServiceImpl implements KoulutusalaService {
 
         RestTemplate restTemplate = new RestTemplate();
         KoodistoKoulutusalaDto[] koulutusalat = restTemplate.getForObject(KOODISTO_REST_URL + KOULUTUSALA_URI + "/koodi/", KoodistoKoulutusalaDto[].class);
+        KoodistoKoodiDto[] opintoalat = restTemplate.getForObject(KOODISTO_REST_URL + OPINTOALA_URI + "/koodi/", KoodistoKoodiDto[].class);
 
-        return mapper.mapAsList(Arrays.asList(koulutusalat), KoulutusalaDto.class);
+        List<KoulutusalaDto> koulutusalatDtos = mapper.mapAsList(Arrays.asList(koulutusalat), KoulutusalaDto.class);
+        List<OpintoalaDto> opintoalaDtos = mapper.mapAsList(Arrays.asList(opintoalat), OpintoalaDto.class);
+        
+        for (KoulutusalaDto koulutusalaDto : koulutusalatDtos) {
+            koulutusalaDto.setOpintoalat(opintoalaDtos);
+        }
+        
+        return koulutusalatDtos;
+    }
+
+    @Override
+    @Transactional()
+    public void koulutusalaLammitys() {
+        RestTemplate restTemplate = new RestTemplate();
+        KoodistoKoodiDto[] koulutusalat = restTemplate.getForObject(KOODISTO_REST_URL + KOULUTUSALA_URI + "/koodi", KoodistoKoodiDto[].class);
+        Koulutusala koulutusalaEntity;
+        for (KoodistoKoodiDto koulutusala : koulutusalat) {
+            koulutusalaEntity = new Koulutusala();
+            koulutusalaEntity.setKoodi(koulutusala.getKoodiUri());
+            if (repository.findOneByKoodi(koulutusala.getKoodiUri()) == null) {
+                repository.save(koulutusalaEntity);
+            }
+        }
     }
 
 }

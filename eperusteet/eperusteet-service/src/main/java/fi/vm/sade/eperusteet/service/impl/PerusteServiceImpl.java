@@ -12,6 +12,8 @@ import fi.vm.sade.eperusteet.repository.KoulutusalaRepository;
 import fi.vm.sade.eperusteet.repository.OpintoalaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
+import fi.vm.sade.eperusteet.service.KoulutusalaService;
+import fi.vm.sade.eperusteet.service.OpintoalaService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -35,30 +37,28 @@ import org.springframework.web.client.RestTemplate;
 public class PerusteServiceImpl implements PerusteService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceImpl.class);
-    
     private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json";
     private static final String KOODISTO_RELAATIO_YLA = "/relaatio/sisaltyy-ylakoodit";
     private static final String KOODISTO_RELAATIO_ALA = "/relaatio/sisaltyy-alakoodit";
-    private static final String KOULUTUSTYYPPI_PERUSKOULUTUS_URI = "/koulutustyyppi_1";
+    private static final String KOULUTUSTYYPPI_AMMATILLINEN_PERUSKOULUTUS_URI = "/koulutustyyppi_1";
     private static final String KOULUTUSALA_KOODISTOURI = "/koulutusalaoph2002";
     private static final String OPINTOALA_KOODISTOURI = "/opintoalaoph2002";
 
     @Autowired
     PerusteRepository perusteet;
-    
     @Autowired
     KoulutusalaRepository koulutusalatRepo;
-    
     @Autowired
     OpintoalaRepository opintoalatRepo;
-
     @Autowired
     PerusteenOsaViiteRepository viitteet;
-
+    @Autowired
+    KoulutusalaService koulutusalaService;
+    @Autowired
+    OpintoalaService opintoalaService;
     @Autowired
     @Dto
     private DtoMapper mapper;
-    
     @Autowired
     @Koodisto
     private DtoMapper koodistoMapper;
@@ -106,56 +106,36 @@ public class PerusteServiceImpl implements PerusteService {
     @Override
     @Transactional
     public String lammitys() {
-        
+
+        // Lämmitetään myös koulutusalat ja opintoalat järjestelmään
+        koulutusalaService.koulutusalaLammitys();
+        opintoalaService.opintoalaLammitys();
+
         RestTemplate restTemplate = new RestTemplate();
-        
-        //------------ KOULUTUSALAT ------------------------------//
-        KoodistoKoodiDto[] koulutusalat = restTemplate.getForObject(KOODISTO_REST_URL + KOULUTUSALA_KOODISTOURI + "/koodi", KoodistoKoodiDto[].class);
-        Koulutusala koulutusalaEntity;
-        for (KoodistoKoodiDto koulutusala : koulutusalat) {
-            koulutusalaEntity = new Koulutusala();
-            koulutusalaEntity.setKoodi(koulutusala.getKoodiUri());
-            if (koulutusalatRepo.findWithKoodi(KOODISTO_REST_URL).size() < 1) {
-                koulutusalatRepo.save(koulutusalaEntity);
-            }
-        }
-        
-        //------------ OPINTOALAT ------------------------------//
-        KoodistoKoodiDto[] opintoalat = restTemplate.getForObject(KOODISTO_REST_URL + OPINTOALA_KOODISTOURI + "/koodi", KoodistoKoodiDto[].class);
-        Opintoala opintoalaEntity;
-        for (KoodistoKoodiDto opintoala : opintoalat) {
-            opintoalaEntity = new Opintoala();
-            opintoalaEntity.setKoodi(opintoala.getKoodiUri());
-            if (opintoalatRepo.findWithKoodi(opintoala.getKoodiUri()).size() < 1) {
-                opintoalatRepo.save(opintoalaEntity);
-            }
-        }
-        
-        //------------ PERUSTEET ---------------------------------//
         List<Peruste> perusteEntityt = new ArrayList<>();
-        KoodistoKoodiDto[] tutkinnot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_YLA + KOULUTUSTYYPPI_PERUSKOULUTUS_URI, KoodistoKoodiDto[].class);
-        System.out.println("Tutkinnot koko: " + tutkinnot.length);
+        KoodistoKoodiDto[] tutkinnot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_YLA + KOULUTUSTYYPPI_AMMATILLINEN_PERUSKOULUTUS_URI, KoodistoKoodiDto[].class);
         
         Peruste peruste;
         KoodistoKoodiDto[] koulutusAlakoodit;
+        int i = 0;
         for (KoodistoKoodiDto tutkinto : tutkinnot) {
                 
-            if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus")) {
+            if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus") && (perusteet.findOneByKoodiUri(tutkinto.getKoodiUri()) == null) ) {
                 peruste = koodistoMapper.map(tutkinto, Peruste.class);
                 
+                // Haetaan joka tutkinnolle alakoodit ja lisätään tarvittavat tiedot peruste entityyn
                 koulutusAlakoodit = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + "/" +tutkinto.getKoodiUri(), KoodistoKoodiDto[].class);
                 peruste.setTutkintokoodi(parseTutkintotyyppi(koulutusAlakoodit));
                 peruste.setKoulutusala(parseKoulutusala(koulutusAlakoodit));
                 peruste.setOpintoalat(parseOpintoalat(koulutusAlakoodit));
                 
-                perusteEntityt.add(peruste);     
+                perusteEntityt.add(peruste);
+                LOG.info(++i + " perustetta tallennettu.");
             }
         }
-
         perusteet.save(perusteEntityt);
         
         return "Perusteet tallennettu";
-
     }
 
     private String parseTutkintotyyppi(KoodistoKoodiDto[] koulutusAlakoodit) {
@@ -173,13 +153,7 @@ public class PerusteServiceImpl implements PerusteService {
         Koulutusala koulutusala = null;
         for (KoodistoKoodiDto koulutusAlakoodi : koulutusAlakoodit) {    
             if (koulutusAlakoodi.getKoodisto().getKoodistoUri().equals("koulutusalaoph2002")) {
-                //koulutusala.setKoodi(koulutusAlakoodi.getKoodiUri());
-                List<Koulutusala> alat = koulutusalatRepo.findWithKoodi(koulutusAlakoodi.getKoodiUri());
-                if (alat != null && alat.size() > 0) {
-                    koulutusala = alat.get(0);
-                } else {
-                    koulutusala = null;
-                }
+                koulutusala = koulutusalatRepo.findOneByKoodi(koulutusAlakoodi.getKoodiUri());
                 break;
             }
         }   
@@ -191,13 +165,10 @@ public class PerusteServiceImpl implements PerusteService {
         Opintoala opintoala;
         for (KoodistoKoodiDto koulutusAlakoodi : koulutusAlakoodit) {    
             if (koulutusAlakoodi.getKoodisto().getKoodistoUri().equals("opintoalaoph2002")) {
-                
-                List<Opintoala> alat = opintoalatRepo.findWithKoodi(koulutusAlakoodi.getKoodiUri());
-                if (alat != null && alat.size() > 0) {
-                    opintoala = alat.get(0);
+                opintoala = opintoalatRepo.findOneByKoodi(koulutusAlakoodi.getKoodiUri());
+                if (opintoala != null) {
                     opintoalat.add(opintoala);
-                } 
-
+                }
             }
         }
         return opintoalat;    

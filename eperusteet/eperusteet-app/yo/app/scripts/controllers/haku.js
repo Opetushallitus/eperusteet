@@ -132,7 +132,8 @@ angular.module('eperusteApp')
     $scope.koulutusalaMuuttui = function() {
 
       if ($scope.koulutusala !== '') {
-        $scope.opintoalat = $scope.koulutusalat[parseInt($scope.koulutusala, 10) - 1].opintoalat;
+       //$scope.opintoalat = $scope.koulutusalat[parseInt($scope.koulutusala, 10) - 1].opintoalat;
+        $scope.opintoalat = _.findWhere($scope.koulutusalat, {koodi: $scope.koulutusala}).opintoalat;
       } else {
         $scope.opintoalat = [];
       }

@@ -14,18 +14,12 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.repository;
-
-import fi.vm.sade.eperusteet.domain.Opintoala;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+package fi.vm.sade.eperusteet.service;
 
 /**
  *
  * @author harrik
  */
-@Repository
-public interface OpintoalaRepository extends JpaRepository<Opintoala, Long> {
-    
-    Opintoala findOneByKoodi(String koodi);
+public interface OpintoalaService {
+    void opintoalaLammitys();
 }

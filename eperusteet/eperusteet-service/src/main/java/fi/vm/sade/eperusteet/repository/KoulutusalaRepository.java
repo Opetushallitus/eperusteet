@@ -16,11 +16,8 @@
 
 package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.domain.Kayttajaprofiili;
 import fi.vm.sade.eperusteet.domain.Koulutusala;
-import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -29,6 +26,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface KoulutusalaRepository extends JpaRepository<Koulutusala, Long>{
-    @Query("SELECT k FROM Koulutusala k  WHERE k.koodi = ?1")
-    List<Koulutusala> findWithKoodi(String koodi);
+
+    Koulutusala findOneByKoodi(String koodi);
 }
