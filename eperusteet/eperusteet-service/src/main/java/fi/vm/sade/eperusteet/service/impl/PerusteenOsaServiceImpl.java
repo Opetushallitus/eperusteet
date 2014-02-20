@@ -1,20 +1,20 @@
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-
 import java.util.List;
-
-import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
-import fi.vm.sade.eperusteet.service.PerusteenOsaService;
-import fi.vm.sade.eperusteet.service.mapping.Dto;
-import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.repository.ArviointiRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
+import fi.vm.sade.eperusteet.service.PerusteenOsaService;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 
 /**
  *
@@ -28,6 +28,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepo;
+    
+    @Autowired
+    private ArviointiRepository arviointiRepository;
     
     @Autowired
     @Dto
@@ -57,5 +60,4 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         LOG.info("delete" + id);
         perusteenOsaRepo.delete(id);
     }
-
 }

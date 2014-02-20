@@ -82,7 +82,7 @@ public class PerusteenOsaController {
         tutkinnonOsaDto.setId(id);
         return service.save(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
     }
-
+   
     @RequestMapping(value = "/{id}", method = DELETE, consumes = "*/*")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody

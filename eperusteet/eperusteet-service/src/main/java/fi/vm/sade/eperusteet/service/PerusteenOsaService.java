@@ -1,7 +1,8 @@
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import java.util.List;
+
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 
 /**

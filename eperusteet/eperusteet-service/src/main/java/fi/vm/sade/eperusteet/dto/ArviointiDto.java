@@ -27,6 +27,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ArviointiDto {
+	private Long id;
     private LokalisoituTekstiDto lisatiedot;
     private List<ArvioinninKohdealueDto> arvioinninKohdealueet;
 }
