@@ -108,6 +108,12 @@ angular.module('eperusteApp')
         muokkausUtils.fetchAllTopics($scope, PerusteenOsat, $sce);
       });
     };
+    
+    $scope.deleteTutkinnonOsa = function() {
+      $scope.tutkinnonOsa.$delete(function() {
+        muokkausUtils.fetchAllTutkinnonOsat($scope, PerusteenOsat, $sce);
+      });
+    };
 
     $scope.addTopic = function() {
       PerusteenOsat.saveTekstikappale({

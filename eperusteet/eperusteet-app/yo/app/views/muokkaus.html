@@ -16,8 +16,8 @@
 <div class="row">
   <div class="col-md-12">
     <div class="btn-group">
-      <button type="button" class="btn btn-primary" ng-model="valittuTyyppi" btn-radio="osienTyypit[0]" ng-click="haeTekstikappaleet()">{{osienTyypit[0]}}</button>
-      <button type="button" class="btn btn-primary" ng-model="valittuTyyppi" btn-radio="osienTyypit[1]" ng-click="haeTutkinnonOsat()">{{osienTyypit[1]}}</button>
+      <button type="button" class="btn btn-primary" ng-model="valittuTyyppi" btn-radio="osienTyypit[0]" ng-click="haeTekstikappaleet()">{{osienTyypit[0] | translate}}</button>
+      <button type="button" class="btn btn-primary" ng-model="valittuTyyppi" btn-radio="osienTyypit[1]" ng-click="haeTutkinnonOsat()">{{osienTyypit[1] | translate}}</button>
     </div>
   </div>
 </div>
@@ -56,7 +56,7 @@
           <input class="form-control" type="text" ng-model="tutkinnonOsanNimi" placeholder="{{'muokkaus-uusi-tutkinnon-osa-nimi-placeholder' | translate}}">
           <input class="form-control" type="number" ng-model="tutkinnonOsanOpintoluokitus" placeholder="{{'muokkaus-uusi-tutkinnon-osa-opintoluokitus-placeholder' | translate}}">
         </div>
-        <button class="btn btn-primary" type="submit" translate>Lisää</button>
+        <button class="btn btn-primary" type="submit" translate>lisää</button>
     </form>
     </div>
     <div class="col-md-9">
@@ -64,6 +64,7 @@
       <div><strong>Opintoluokitus: </strong>{{tutkinnonOsa.opintoluokitus}}</div>
       <strong translate>Tavoitteet: </strong><div ng-model="tutkinnonOsa.tavoitteet.fi" ng-bind-html="trustedTutkinnonOsanTavoitteet" ckeditor contenteditable="true"></div>
       <strong translate>Ammattitaitovaatimukset: </strong><div ng-model="tutkinnonOsa.ammattitaitovaatimukset.fi" ng-bind-html="trustedTutkinnonOsanAmmattitaitovaatimukset" ckeditor contenteditable="true"></div>
+      <button class="btn btn-default" ng-click="deleteTutkinnonOsa()" translate>poista</button>
       <div class="row">
         <div class="col-md-9">
           <div class="list-group max-height-list">
