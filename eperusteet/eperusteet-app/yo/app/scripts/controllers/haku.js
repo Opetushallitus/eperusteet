@@ -27,19 +27,34 @@ angular.module('eperusteApp')
     $scope.valittuOpintoala = Haku.hakuParametrit.opintoala;
     $scope.kontekstit = YleinenData.kontekstit;
     $scope.kieli = YleinenData.kieli;
+    $scope.koulutusalatMap;
     
 
     $scope.koulutusalat = [];
-    Koulutusalat.query(
-      function(vastaus) {
+    $scope.koulutusalatPromise = Koulutusalat.query(
+      
+    ).$promise;
+  
+    $scope.koulutusalatPromise.then(function(vastaus) {
         $scope.koulutusalat = vastaus;
+        //$scope.koulutusalatMap = $scope.muunnaKoulutusalat(vastaus);
+        $scope.koulutusalatMap = _.zipObject(_.pluck(vastaus, 'koodi'), _.map(vastaus, function(e) {
+          return {
+            nimi: e.nimi
+          };
+        }));
+        
         // Jotta valittu opintoala säilyisi sivulle palatessa otetaan se talteen
         // ennen kuin kutsutaan koulutusalaMuuttui metodia.
         var opintoalaTemp = $scope.valittuOpintoala;
         $scope.koulutusalaMuuttui();
         $scope.valittuOpintoala = opintoalaTemp;
-      }
-    );
+        
+        // haetaan perusteet vasta kun on koulutusalat haettu jotta hakulistauksen koulutusalakoodeille saadaan nimi.
+        // Ruma hackki poistetaan, kun koulutusalaservice käytössä.
+        $scope.haePerusteet($scope.nykyinenSivu);
+        
+      });
 
     $scope.tutkintotyypit = {
       1: 'tutkintotyyppikoodi-1',
@@ -123,7 +138,9 @@ angular.module('eperusteApp')
     $scope.valitseKieli = function(nimi) {
       return YleinenData.valitseKieli(nimi);
     };
-    $scope.haePerusteet($scope.nykyinenSivu);
+    
+    //$scope.haePerusteet($scope.nykyinenSivu);
+    
     $scope.$on('kieliVaihtui', function() {
       $scope.tyhjenna();
       $scope.haePerusteet(0);
@@ -140,4 +157,5 @@ angular.module('eperusteApp')
       $scope.valittuOpintoala = '';
       $scope.hakuMuuttui();
     };
+    
   });

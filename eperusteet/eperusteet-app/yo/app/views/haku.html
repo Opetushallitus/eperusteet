@@ -47,7 +47,7 @@
     <tbody>
       <tr ng-repeat="peruste in perusteet.data">
         <td><a ng-href="#/selaus/{{konteksti}}/{{peruste.id}}"><span ng-bind-html="korosta(valitseKieli(peruste.nimi))"></span></a></td>
-        <td>{{'koulutusalakoodi-' + peruste.koulutusala| translate}}</td>
+        <td>{{valitseKieli(koulutusalatMap[peruste.koulutusala].nimi)}}</td>
         <td>{{peruste.paivays|date:'dd.MM.yyyy'}}</td>
       </tr>
     </tbody>

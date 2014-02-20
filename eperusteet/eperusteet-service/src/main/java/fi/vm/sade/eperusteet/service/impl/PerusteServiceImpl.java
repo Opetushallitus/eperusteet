@@ -41,8 +41,6 @@ public class PerusteServiceImpl implements PerusteService {
     private static final String KOODISTO_RELAATIO_YLA = "/relaatio/sisaltyy-ylakoodit";
     private static final String KOODISTO_RELAATIO_ALA = "/relaatio/sisaltyy-alakoodit";
     private static final String KOULUTUSTYYPPI_AMMATILLINEN_PERUSKOULUTUS_URI = "/koulutustyyppi_1";
-    private static final String KOULUTUSALA_KOODISTOURI = "/koulutusalaoph2002";
-    private static final String OPINTOALA_KOODISTOURI = "/opintoalaoph2002";
 
     @Autowired
     PerusteRepository perusteet;
