@@ -42,3 +42,8 @@ body {
 .no-round {
   border-radius: 0px;
 }
+
+.osatutkintoid {
+  width: 80px;
+  height: 26px;
+}

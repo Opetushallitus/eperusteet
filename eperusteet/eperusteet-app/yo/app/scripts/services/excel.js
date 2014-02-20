@@ -5,7 +5,6 @@
 angular.module('eperusteApp')
   .service('ExcelService', function($q, $http, SERVICE_LOC) {
     // FIXME: Voisi olla backendissä
-
     var osatutkintoMap = {
       parsittavatKentat: {
         1: 'nimi',
@@ -36,7 +35,7 @@ angular.module('eperusteApp')
           12: 'Z',
         },
         asetukset: {
-          arviointiasteikko: 1
+          arviointiasteikko: '1'
         },
         otsikot: {
           AA1: 'Ammattitaitovaatimus',
@@ -52,7 +51,7 @@ angular.module('eperusteApp')
       },
       perustutkinto: {
         asetukset: {
-          arviointiasteikko: 3
+          arviointiasteikko: '2'
         },
         kentat: {
           1: 'AK',
@@ -146,11 +145,11 @@ angular.module('eperusteApp')
       return sheet['!ref'].replace(/^.+:/, '').replace(/[^0-9]/g, '');
     }
 
-    function getOsaAnchors(data) {
+    function getOsaAnchors(data, tyyppi) {
       var height = sheetHeight(data);
       var anchors = [];
       for (var i = 2; i < height; i++) {
-        var celldata = data['T' + i];
+        var celldata = data[osatutkintoMap[tyyppi].kentat[1] + i];
         if (celldata && celldata.v) {
           anchors.push(i);
         }
@@ -180,19 +179,26 @@ angular.module('eperusteApp')
 
     function readOsaperusteet(data, tyyppi) {
       var height = sheetHeight(data);
-      var anchors = getOsaAnchors(data);
+      var anchors = getOsaAnchors(data, tyyppi);
       var osaperusteet = [];
       var varoitukset = [];
       var virheet = [];
       var kentat = osatutkintoMap[tyyppi].kentat;
       var arviointiasteikko = osatutkintoMap[tyyppi].asetukset.arviointiasteikko;
+      var tyydyttavat = [];
+      var hyvat = [];
+      var kiitettavat = [];
 
       _.each(anchors, function(anchor, index) {
         var osaperuste = {};
         _.forEach(_.pick(osatutkintoMap.parsittavatKentat, osatutkintoMap.info), function(value, key) {
           var solu = kentat[key] + anchor;
-          var arvo = parseInt(data[solu].v);
-          osaperuste[value] = _.isNaN(arvo) ? data[solu].v : arvo;
+          var arvo = '';
+          if (data[solu]) {
+            var numero = parseInt(data[solu].v);
+            arvo = _.isNaN(numero) ? data[solu].v : numero;
+          }
+          osaperuste[value] = arvo;
 
           var warning = false;
           if (!value && key === 'nimi') {
@@ -244,37 +250,33 @@ angular.module('eperusteApp')
           // Uuden ammattitaitovaatimuksen lisääminen
           var kohde = data[kentat[7] + j];
 
-          // Uuden kohteen lisäys ammattitaitovaatimukseen
+          // Uuden kohdealueen lisäys ammattitaitovaatimukseen
+          if (!_.isEmpty(arvioinninKohdealue)) {
+            var viimeinenKohde = _.last(arvioinninKohdealue.arvioinninKohteet);
+            if (viimeinenKohde && viimeinenKohde._arviointiAsteikko === '2') {
+              viimeinenKohde.osaamistasonKriteerit = [{
+                  _osaamistaso: '2',
+                  kriteerit: tyydyttavat
+              }, {
+                _osaamistaso: '3',
+                kriteerit: hyvat
+              }, {
+                _osaamistaso: '4',
+                kriteerit: kiitettavat
+              }];
+              tyydyttavat = [];
+              hyvat = [];
+              kiitettavat = [];
+            }
+          }
+
           if (kohde && kohde.v) {
             if (!_.isEmpty(arvioinninKohdealue)) {
-              var viimeinenKohde = _.last(arvioinninKohdealue.arvioinninKohteet);
-              if (viimeinenKohde && viimeinenKohde.arviointiAsteikko === 3) {
-                var tyydyttavat = [];
-                var hyvat = [];
-                var kiitettavat = [];
-                _.forEach(viimeinenKohde.osaamistasonKriteerit, function(obj) {
-                  var key = parseInt(_.keys(obj)[0]);
-                  var value = _.values(obj)[0];
-                  if (key === 1) { tyydyttavat.push(value); }
-                  else if (key === 2) { hyvat.push(value); }
-                  else if (key === 3) { kiitettavat.push(value); }
-                });
-                viimeinenKohde.osaamistasonKriteerit = [{
-                  osaamistaso: 1,
-                  kriteerit: tyydyttavat
-                }, {
-                  osaamistaso: 2,
-                  kriteerit: hyvat
-                }, {
-                  osaamistaso: 3,
-                  kriteerit: kiitettavat
-                }];
-              }
               arvioinninKohdealue.arvioinninKohteet.push({
                   otsikko: {
                     fi: suodataTekstipala(kohde.v)
                   },
-                  arviointiAsteikko: arviointiasteikko,
+                  _arviointiAsteikko: arviointiasteikko,
                   osaamistasonKriteerit: []
               });
             } else {
@@ -290,14 +292,14 @@ angular.module('eperusteApp')
           // Kriteereiden parsiminen kohteille
           if (!_.isEmpty(arvioinninKohdealue.arvioinninKohteet)) {
             var okt = _.last(arvioinninKohdealue.arvioinninKohteet).osaamistasonKriteerit;
-            if (arviointiasteikko === 1) {
+            if (arviointiasteikko === '1') {
               var kriteeri = data[kentat[8] + j];
 
               // Uuden kriteerin lisääminen kohteeseen
               if (kriteeri && kriteeri.v) {
                 if (_.isEmpty(okt)) {
                   okt.push({
-                      osaamistaso: 1,
+                      _osaamistaso: '1',
                       kriteerit: []
                   });
                 }
@@ -306,9 +308,9 @@ angular.module('eperusteApp')
                 });
               }
             } else {
-              okt.push({ 1: { fi: filtteroituKentta(9) } });
-              okt.push({ 2: { fi: filtteroituKentta(10) } });
-              okt.push({ 3: { fi: filtteroituKentta(11) } });
+              tyydyttavat.push({ fi: filtteroituKentta(9) });
+              hyvat.push({ fi: filtteroituKentta(10) });
+              kiitettavat.push({ fi: filtteroituKentta(11) });
             }
           } else {
             varoitukset.push(rakennaVaroitus(kentat[8] + j, osaperuste.nimi, 'Arvioinnin kohdetta ei löytynyt'));

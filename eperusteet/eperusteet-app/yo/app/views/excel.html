@@ -8,13 +8,8 @@
     <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'perustutkinto'">Perustutkinto</button>
   </div>
 
-  <div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
-    <div class="alert alert-warning" ng-show="warnings.length > 0">
-      Tiedostossa oli huomion arvoisia ongelmia, mutta voit halutessasi yrittää jatkaa.
-    </div>
-    <div class="alert alert-success" ng-show="warnings.length === 0">
-      <h3>Tiedostosta ei löytynyt virheitä!</h3>
-    </div>
+  <div class="alert alert-warning" ng-show="warnings.length > 0">
+    Tiedostossa oli huomion arvoisia ongelmia, mutta voit halutessasi yrittää jatkaa.
   </div>
 
   <!-- virheet -->
@@ -55,18 +50,45 @@
   </div>
 
   <div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
-    <button ng-click="tallennaOsaperusteet()" class="btn btn-success">
+    <h3>Osatutkinnot</h3>
+    <table class="table table-striped">
+      <tr>
+        <th>Koodi</th>
+        <th>Nimi</th>
+        <th>Tila</th>
+        <th></th>
+      </tr>
+      <tr ng-repeat="ot in osatutkinnot">
+        <td class="osatutkintoid">
+          <input class="form-control osatutkintoid" type="text" ng-model="ot.koodi" />
+        </td>
+        <td>{{ ot.nimi.fi }}</td>
+        <td>
+          <span ng-show="ot.ladattu === 0" class="glyphicon glyphicon-ok"></span>
+          <span ng-show="ot.ladattu === 1" class="glyphicon glyphicon-remove"></span>
+        </td>
+        <td class="text-right">
+          <div class="btn-group">
+            <button type="button" class="btn btn-default btn-xs">Muokkaa</button>
+            <button type="button" class="btn btn-default btn-xs" ng-click="poistaOsatutkinto(ot)">
+              <span class="glyphicon glyphicon-remove"></span>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
+    <button ng-click="tallennaOsatutkinnot()" class="btn btn-success">
       <span class="glyphicon glyphicon-cloud-upload"></span>
       Tallenna
     </button>
-    <button ng-click="editoiOsaperusteita()" class="btn btn-warning">
-      <span class="glyphicon glyphicon-wrench"></span>
-      Muokkaa
-    </button>
   </div>
 
+  <!-- Tallennusvirheet -->
   <div class="alert alert-danger" ng-show="uploadErrors.length > 0">
-      Seuraavia osaperusteita ei pystytty tallentamaan onnistuneesti:
+      Seuraavia osatutkintoja ei pystytty tallentamaan onnistuneesti:
       <table class="table table-striped">
         <tr>
           <th>Osatutkinto</th>
@@ -77,10 +99,6 @@
           <td>{{ error.message }}</td>
         </tr>
       </table>
-  </div>
-
-  <div class="alert alert-success" ng-show="uploadSuccess">
-    Tiedostot ladattiin onnistuneesti!
   </div>
 
 </div>

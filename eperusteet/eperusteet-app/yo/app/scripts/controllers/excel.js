@@ -10,7 +10,7 @@ angular.module('eperusteApp')
       });
   })
   .controller('ExcelCtrl', function($scope, ExcelService) {
-    $scope.osaperusteet = [];
+    $scope.osatutkinnot = [];
     $scope.vaihe = [];
     $scope.errors = [];
     $scope.warnings = [];
@@ -32,22 +32,33 @@ angular.module('eperusteApp')
       });
     };
 
-    $scope.editoiOsaperusteita = function() {
+    $scope.editoiOsatutkintoa = function() {
     };
 
-    $scope.tallennaOsaperusteet = function() {
-      var doneSuccess = _.after(_.size($scope.osaperusteet), function() {
+    $scope.poistaOsatutkinto = function(ot) {
+      _.remove($scope.osatutkinnot, ot);
+    };
+
+    $scope.tallennaOsatutkinnot = function() {
+      var doneSuccess = _.after(_.size($scope.osatutkinnot), function() {
         $scope.uploadSuccess = true;
       });
-      _.forEach($scope.osaperusteet, function(op) {
-        var saveop = ExcelService.saveOsaperuste(_.clone(op));
+      _($scope.osatutkinnot).filter(function(ot) {
+        return ot.ladattu !== 0;
+      }).forEach(function(ot) {
+        var cop = _.omit(_.clone(ot), 'ladattu');
+        var saveop = ExcelService.saveOsaperuste(cop);
+        console.log(cop);
         saveop.success(function() {
+          ot.ladattu = 0;
           doneSuccess();
         }).error(function(err) {
-          $scope.uploadErrors.push({
-            name: op.nimi,
-            message: err.syy
-          });
+          if (err) {
+            $scope.uploadErrors.push({
+                name: ot.nimi,
+                message: err.syy
+            });
+          }
         });
       });
     };
@@ -62,7 +73,9 @@ angular.module('eperusteApp')
         var promise = ExcelService.parseXLSXToOsaperuste(file, $scope.tutkinnonTyyppi);
         promise.then(function(resolve) {
           $scope.warnings = resolve.varoitukset;
-          $scope.osaperusteet = resolve.osaperusteet;
+          $scope.osatutkinnot = _.map(resolve.osaperusteet, function(ot) {
+            return _.merge(ot, { ladattu: -1, koodi: '' });
+          });
           $scope.lukeeTiedostoa = false;
         }, function(errors) {
           $scope.errors = errors;
