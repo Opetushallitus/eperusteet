@@ -27,7 +27,7 @@ angular.module('eperusteApp')
     $scope.valittuOpintoala = Haku.hakuParametrit.opintoala;
     $scope.kontekstit = YleinenData.kontekstit;
     $scope.kieli = YleinenData.kieli;
-    $scope.koulutusalatMap;
+    $scope.koulutusalatMap = {};
     
 
     $scope.koulutusalat = [];
