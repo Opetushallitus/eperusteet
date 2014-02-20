@@ -61,9 +61,9 @@
     </div>
     <div class="col-md-9">
       <h1 ng-model="tutkinnonOsa.nimi.fi" ng-bind-html="tutkinnonOsa.nimi.fi" ckeditor contenteditable="true"></h1>
-      <div><strong>Opintoluokitus: </strong>{{tutkinnonOsa.opintoluokitus}}</div>
-      <strong translate>Tavoitteet: </strong><div ng-model="tutkinnonOsa.tavoitteet.fi" ng-bind-html="trustedTutkinnonOsanTavoitteet" ckeditor contenteditable="true"></div>
-      <strong translate>Ammattitaitovaatimukset: </strong><div ng-model="tutkinnonOsa.ammattitaitovaatimukset.fi" ng-bind-html="trustedTutkinnonOsanAmmattitaitovaatimukset" ckeditor contenteditable="true"></div>
+      <div><strong><span translate>opintoluokitus</span>:&nbsp;</strong>{{tutkinnonOsa.opintoluokitus}}</div>
+      <strong><span translate>tavoitteet</span>:&nbsp;</strong><div ng-model="tutkinnonOsa.tavoitteet.fi" ng-bind-html="trustedTutkinnonOsanTavoitteet" ckeditor contenteditable="true"></div>
+      <strong><span translate>ammattitaitovaatimukset</span>:&nbsp;</strong><div ng-model="tutkinnonOsa.ammattitaitovaatimukset.fi" ng-bind-html="trustedTutkinnonOsanAmmattitaitovaatimukset" ckeditor contenteditable="true"></div>
       <button class="btn btn-default" ng-click="deleteTutkinnonOsa()" translate>poista</button>
       <div class="row">
         <div class="col-md-9">
@@ -72,7 +72,7 @@
           </div>
         </div>
         <div class="col-md-3">
-          <span><strong translate>Arvointi:&nbsp;</strong>{{tutkinnonOsa.arviointi.id}}</span>
+          <span><strong><span translate>arvointi</span>:&nbsp;</strong>{{tutkinnonOsa.arviointi.id}}</span>
         </div>
       </div>
     </div>

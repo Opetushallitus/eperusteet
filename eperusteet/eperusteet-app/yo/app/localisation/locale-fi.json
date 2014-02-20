@@ -97,6 +97,17 @@
 
     "tutkintokoodi": "Tutkintokoodi",
     "koulutusalakoodi": "Koulutusalakoodi",
-
-    "navipolku-tutkinnonOsa": "Tutkinnon osa"
+    "navipolku-tutkinnonOsa": "Tutkinnon osa",
+    
+    "perusteen-osat-tekstikappale": "Tekstikappale",
+    "perusteen-osat-tutkinnon-osa": "Tutkinnon osa",
+    
+    "muokkaus-uusi-kappale-placeholder": "Kappaleen nimi",
+    "muokkaus-uusi-tutkinnon-osa-nimi-placeholder": "Tutkinnon nimi",
+    "muokkaus-uusi-tutkinnon-osa-opintoluokitus-placeholder": "Opintoluokitus",
+    
+    "opintoluokitus": "Opintoluokitus",
+    "tavoitteet": "Tavoitteet",
+    "ammattitaitovaatimukset": "Ammattitaitovaatimukset",
+    "arvointi": "Arviointi"
 }
