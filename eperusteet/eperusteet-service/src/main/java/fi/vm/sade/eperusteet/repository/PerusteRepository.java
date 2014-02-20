@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PerusteRepository extends JpaRepository<Peruste, Long>, PerusteRepositoryCustom {
-
+    Peruste findOneByKoodiUri(String koodiUri);
 }

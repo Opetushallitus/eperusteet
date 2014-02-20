@@ -14,20 +14,18 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.repository;
 
-import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
+import fi.vm.sade.eperusteet.domain.Opintoala;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
- * @author jhyoty
+ * @author harrik
  */
-@Getter
-@Setter
-public class KoulutusalaDto {
-    private String koodi;
-    private LokalisoituTekstiDto nimi;
-    private List<OpintoalaDto> opintoalat;
+@Repository
+public interface OpintoalaRepository extends JpaRepository<Opintoala, Long> {
+    
+    Opintoala findOneByKoodi(String koodi);
 }

@@ -17,14 +17,14 @@
       <label for="haku-ala" translate>haku-koulutusala</label>
       <select id="haku-ala" ng-model="koulutusala" class="form-control" ng-change="koulutusalaMuuttui()">
         <option value="" translate>haku-kaikki-alat</option>
-        <option ng-repeat="ala in koulutusalat" value="{{ala.koodi}}" ng-selected="koulutusala === ala.koodi">{{'koulutusalakoodi-' + ala.koodi| translate}}</option>
+        <option ng-repeat="ala in koulutusalat" value="{{ala.koodi}}" ng-selected="koulutusala.koodi === ala.koodi">{{valitseKieli(ala.nimi)}}</option>
       </select>
     </div>
     <div class="form-group col-xs-6" ng-show="konteksti !== kontekstit[0] && koulutusala !== ''">
       <label for="haku-opintoala" translate>haku-opintoala</label>
       <select id="haku-opintoala" ng-model="valittuOpintoala" class="form-control" ng-change="hakuMuuttui()">
         <option value="" translate>haku-kaikki-opintoalat</option>
-        <option ng-repeat="ala in opintoalat" value="{{ala}}" ng-selected="valittuOpintoala === ala">{{'opintoalakoodi-' + ala| translate}}</option>
+        <option ng-repeat="ala in opintoalat" value="{{ala.koodi}}" ng-selected="valittuOpintoala.koodi === ala.koodi">{{valitseKieli(ala.nimi)}}</option>
       </select>
     </div>
     <div class="clearfix"></div>
@@ -47,7 +47,7 @@
     <tbody>
       <tr ng-repeat="peruste in perusteet.data">
         <td><a ng-href="#/selaus/{{konteksti}}/{{peruste.id}}"><span ng-bind-html="korosta(valitseKieli(peruste.nimi))"></span></a></td>
-        <td>{{'koulutusalakoodi-' + peruste.koulutusala| translate}}</td>
+        <td>{{valitseKieli(koulutusalatMap[peruste.koulutusala].nimi)}}</td>
         <td>{{peruste.paivays|date:'dd.MM.yyyy'}}</td>
       </tr>
     </tbody>

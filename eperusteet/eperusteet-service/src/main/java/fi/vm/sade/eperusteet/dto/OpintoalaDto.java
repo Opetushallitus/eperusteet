@@ -16,18 +16,16 @@
 
 package fi.vm.sade.eperusteet.dto;
 
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author jhyoty
+ * @author harrik
  */
 @Getter
 @Setter
-public class KoulutusalaDto {
-    private String koodi;
-    private LokalisoituTekstiDto nimi;
-    private List<OpintoalaDto> opintoalat;
+public class OpintoalaDto {
+    String koodi;
+    LokalisoituTekstiDto nimi;
 }
