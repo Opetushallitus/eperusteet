@@ -22,7 +22,7 @@ muokkausUtils = {
     }
     scope.trustedTutkinnonOsanTavoitteet = sce.trustAsHtml(scope.tutkinnonOsa.tavoitteet.fi);
     scope.trustedTutkinnonOsanAmmattitaitovaatimukset = sce.trustAsHtml(scope.tutkinnonOsa.ammattitaitovaatimukset.fi);
-    
+
     muokkausUtils.updateArvioinnit(scope);
   },
   fetchAllTopics: function(scope, service, sce) {
@@ -56,9 +56,9 @@ muokkausUtils = {
   },
   updateArvioinnit: function(scope) {
     scope.arvioinnit = [];
-    
+
     angular.forEach(scope.kaikkiArvioinnit, function(arviointi) {
-      if(scope.tutkinnonOsa.arviointi == null || arviointi.id !== scope.tutkinnonOsa.arviointi.id) {
+      if(scope.tutkinnonOsa.arviointi === null || arviointi.id !== scope.tutkinnonOsa.arviointi.id) {
         scope.arvioinnit.push(arviointi);
       }
     });
@@ -75,13 +75,13 @@ angular.module('eperusteApp')
       });
   })
   .controller('MuokkausCtrl', function($scope, $sce, PerusteenOsat, Arviointi) {
-    
+
     $scope.osienTyypit = ['perusteen-osat-tekstikappale', 'perusteen-osat-tutkinnon-osa'];
-    
+
     $scope.kaikkiArvioinnit = Arviointi.query();
-    
+
     $scope.comments = [];
-    
+
     $scope.valittuTyyppi = '';
 
     $scope.haeTekstikappaleet = function() {
@@ -90,7 +90,7 @@ angular.module('eperusteApp')
     $scope.haeTutkinnonOsat = function() {
       muokkausUtils.fetchAllTutkinnonOsat($scope, PerusteenOsat, $sce);
     };
-    
+
     $scope.selectTopic = function(topic) {
       console.log(topic);
       $scope.thing = topic;
@@ -98,7 +98,7 @@ angular.module('eperusteApp')
         $scope.trustedThing = $sce.trustAsHtml($scope.thing.teksti.fi);
       });
     };
-    
+
     $scope.selectTutkinnonOsa = function(currentTutkinnonOsa) {
       muokkausUtils.setTutkinnonOsaForModification($scope, currentTutkinnonOsa, $sce);
     };
@@ -108,7 +108,7 @@ angular.module('eperusteApp')
         muokkausUtils.fetchAllTopics($scope, PerusteenOsat, $sce);
       });
     };
-    
+
     $scope.deleteTutkinnonOsa = function() {
       $scope.tutkinnonOsa.$delete(function() {
         muokkausUtils.fetchAllTutkinnonOsat($scope, PerusteenOsat, $sce);
@@ -124,7 +124,7 @@ angular.module('eperusteApp')
       });
       $scope.topicText = '';
     };
-    
+
     $scope.addTutkinnonOsa = function() {
       PerusteenOsat.saveTutkinnonOsa({
         nimi: {fi: $scope.tutkinnonOsanNimi},
@@ -139,13 +139,13 @@ angular.module('eperusteApp')
       $scope.comments.push($scope.commentText);
       $scope.commentText = '';
     };
-    
+
     $scope.addArviointi = function(arviointi) {
       console.log('Lisätään arviointi #' + arviointi.id);
-      
+
       $scope.tutkinnonOsa.arviointi = arviointi;
       $scope.tutkinnonOsa.$saveTutkinnonOsa();
-      
+
       muokkausUtils.updateArvioinnit($scope);
     };
 
@@ -156,7 +156,7 @@ angular.module('eperusteApp')
       }
       if($scope.valittuTyyppi === 'perusteen-osat-tutkinnon-osa') {
         console.log($scope.tutkinnonOsa);
-        
+
         if($scope.tutkinnonOsa.nimi.fi === '&nbsp;') {
           $scope.tutkinnonOsa.nimi.fi = '';
         }

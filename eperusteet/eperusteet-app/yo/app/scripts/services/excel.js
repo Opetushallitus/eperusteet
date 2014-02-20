@@ -194,7 +194,7 @@ angular.module('eperusteApp')
           var solu = kentat[key] + anchor;
           var arvo = '';
           if (data[solu]) {
-            var numero = parseInt(data[solu].v);
+            var numero = parseInt(data[solu].v, 10);
             arvo = _.isNaN(numero) ? data[solu].v : numero;
           }
           osaperuste[value] = arvo;
