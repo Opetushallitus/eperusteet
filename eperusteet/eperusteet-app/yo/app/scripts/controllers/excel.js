@@ -46,11 +46,12 @@ angular.module('eperusteApp')
       _($scope.osatutkinnot).filter(function(ot) {
         return ot.ladattu !== 0;
       }).forEach(function(ot) {
-        var cop = _.omit(_.clone(ot), 'ladattu');
+        var cop = _.omit(_.clone(ot), 'ladattu', 'syy');
         var saveop = ExcelService.saveOsaperuste(cop);
-        console.log(cop);
-        saveop.success(function() {
+        saveop.success(function(re) {
           ot.ladattu = 0;
+          ot.id = re.id;
+          ot.koodi = re.koodi;
           doneSuccess();
         }).error(function(err) {
           if (err) {
@@ -72,7 +73,11 @@ angular.module('eperusteApp')
         promise.then(function(resolve) {
           $scope.warnings = resolve.varoitukset;
           $scope.osatutkinnot = _.map(resolve.osaperusteet, function(ot) {
-            return _.merge(ot, { ladattu: -1, koodi: '', syy: '' });
+            return _.merge(ot, {
+                ladattu: -1,
+                koodi: '',
+                syy: ''
+            });
           });
           $scope.lukeeTiedostoa = false;
         }, function(errors) {

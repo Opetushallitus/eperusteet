@@ -4,7 +4,6 @@
 
 angular.module('eperusteApp')
   .service('ExcelService', function($q, $http, SERVICE_LOC) {
-    // FIXME: Voisi olla backendissä
     var osatutkintoMap = {
       parsittavatKentat: {
         1: 'nimi',

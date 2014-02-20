@@ -58,9 +58,8 @@
         <th>Nimi</th>
         <th></th>
       </tr>
-      <tr ng-repeat="ot in osatutkinnot" title="{{ ot.syy }}">
+      <tr ng-repeat="ot in osatutkinnot" title="{{ ot.syy }}" ng-show="ot.ladattu !== 0">
         <td class="glyphtila">
-          <span ng-show="ot.ladattu === 0" class="glyphicon glyphicon-ok"></span>
           <span ng-show="ot.ladattu === 1" class="glyphicon glyphicon-remove"></span>
         </td>
         <td class="osatutkintoid">
@@ -69,12 +68,19 @@
         <td>{{ ot.nimi.fi }}</td>
         <td class="text-right">
           <div class="btn-group">
-            <button type="button" class="btn btn-default btn-xs">Muokkaa</button>
             <button type="button" class="btn btn-default btn-xs" ng-click="poistaOsatutkinto(ot)">
               <span class="glyphicon glyphicon-remove"></span>
             </button>
           </div>
         </td>
+      </tr>
+      <tr ng-repeat="ot in osatutkinnot" ng-show="ot.ladattu === 0" class="success">
+        <td class="glyphtila">
+          <span class="glyphicon glyphicon-ok"></span>
+        </td>
+        <td class="osatutkintoid">{{ ot.koodi }}</td>
+        <td><a target="_blank" href="#/selaus/ammatillinenperuskoulutus/1/tutkinnonosa/{{ ot.id }}">{{ ot.nimi.fi }}</a></td>
+        <td class="text-right"></td>
       </tr>
     </table>
   </div>
