@@ -18,6 +18,7 @@ angular.module('eperusteApp')
     $scope.lukeeTiedostoa = true;
     $scope.uploadErrors = [];
     $scope.uploadSuccess = false;
+    $scope.tutkinnonTyyppi = 'perustutkinto';
 
     $scope.clearSelect = function() {
       $scope.$apply(function() {
@@ -58,7 +59,7 @@ angular.module('eperusteApp')
       if (err || !file) {
         // TODO: Hoida virhetilanteet
       } else {
-        var promise = ExcelService.parseXLSXToOsaperuste(file);
+        var promise = ExcelService.parseXLSXToOsaperuste(file, $scope.tutkinnonTyyppi);
         promise.then(function(resolve) {
           $scope.warnings = resolve.varoitukset;
           $scope.osaperusteet = resolve.osaperusteet;

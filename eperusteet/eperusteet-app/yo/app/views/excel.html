@@ -2,6 +2,11 @@
 
 <div>
   <file-select id="fileselect-button" before-select="clearSelect" on-select="onFileSelect" on-progress="onProgress" read-type="binary"></file-select>
+  <div class="btn-group">
+    <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'ammattitutkinto'">Ammattitutkinto</button>
+    <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'erikoisammattitutkinto'">Erikoisammattitutkinto</button>
+    <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'perustutkinto'">Perustutkinto</button>
+  </div>
 
   <div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
     <div class="alert alert-warning" ng-show="warnings.length > 0">
