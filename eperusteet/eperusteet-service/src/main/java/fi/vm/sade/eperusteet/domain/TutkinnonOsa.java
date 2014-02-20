@@ -47,6 +47,9 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     
     @Column
     private Long opintoluokitus;
+    
+    @Column
+    private Long koodi;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Arviointi arviointi;
@@ -91,7 +94,15 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         this.opintoluokitus = opintoluokitus;
     }
 
-    public Arviointi getArviointi() {
+    public Long getKoodi() {
+		return koodi;
+	}
+
+	public void setKoodi(Long koodi) {
+		this.koodi = koodi;
+	}
+
+	public Arviointi getArviointi() {
         return arviointi;
     }
 

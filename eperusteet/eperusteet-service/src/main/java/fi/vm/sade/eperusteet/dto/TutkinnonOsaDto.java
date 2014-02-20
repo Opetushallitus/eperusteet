@@ -31,5 +31,6 @@ public class TutkinnonOsaDto extends PerusteenOsaDto {
     private LokalisoituTekstiDto ammattitaitovaatimukset;
     private LokalisoituTekstiDto ammattitaidonOsoittamistavat;
     private Long opintoluokitus;
+    private Long koodi;
     private LokalisoituTekstiDto osaamisala;
 }
