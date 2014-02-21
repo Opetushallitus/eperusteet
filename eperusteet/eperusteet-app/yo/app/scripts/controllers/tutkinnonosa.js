@@ -33,7 +33,7 @@ angular.module('eperusteApp')
     } else {
       $location.path('/selaus/ammatillinenperuskoulutus');
     }
-  
+
     var perusteHakuPromise = (function() {
       if ($routeParams.perusteId) {
         return Perusteet.get({perusteenId: $routeParams.perusteId}).$promise;
@@ -41,7 +41,7 @@ angular.module('eperusteApp')
         return $q.reject();
       }
     }());
-    
+
     var tutkinnonOsaHakuPromise = (function() {
       if ($routeParams.tutkinnonOsaId) {
         return PerusteenOsat.get({osanId: $routeParams.tutkinnonOsaId}).$promise;
@@ -49,7 +49,7 @@ angular.module('eperusteApp')
         return $q.reject();
       }
     }());
-    
+
     $q.all([perusteHakuPromise, tutkinnonOsaHakuPromise]).then(function(vastaus) {
 
       var peruste = vastaus[0];
@@ -83,7 +83,7 @@ angular.module('eperusteApp')
         $scope.ammattitaitovaatimusTyyli = sulkemisTyyli;
       }
     };
-    
+
     $scope.vaihdaAmmattitaidonOsoittamistavatNakyvyys = function() {
       $scope.ammattitaidonOsoittamistavatSuljettu = !$scope.ammattitaidonOsoittamistavatSuljettu;
       if ($scope.ammattitaidonOsoittamistavatSuljettu) {
@@ -92,7 +92,7 @@ angular.module('eperusteApp')
         $scope.ammattitaidonOsoittamistavatTyyli = sulkemisTyyli;
       }
     };
-    
+
     $scope.vaihdaArviointiNakyvyys = function() {
       $scope.arviointiSuljettu = !$scope.arviointiSuljettu;
       if ($scope.arviointiSuljettu) {
@@ -105,7 +105,7 @@ angular.module('eperusteApp')
     $scope.valitseKieli = function(nimi) {
       return YleinenData.valitseKieli(nimi);
     };
-    
+
     var hakuAloitettuKäsittelijä = function() {
       $scope.hakuMenossa = true;
     };

@@ -103,7 +103,7 @@ angular.module('eperusteApp')
       $scope.suosikkiTyyli = $scope.onSuosikki();
 
 
-    }, function(/*virhe*/) {
+    }, function() {
       //Virhe tapahtui, esim. perustetta ei löytynyt. Virhesivu.
       $location.path('/selaus/' + $scope.konteksti);
     });
