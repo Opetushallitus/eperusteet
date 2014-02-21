@@ -87,9 +87,7 @@ angular.module('eperusteApp')
 
     var kayttajaProfiiliPromise = Kayttajaprofiilit.get({}).$promise;
 
-    $q.all([perusteHakuPromise, kayttajaProfiiliPromise]).then(function(vastaus) {
-
-      var peruste = vastaus[0];
+    perusteHakuPromise.then(function(peruste) {
       if (peruste.id) {
         $scope.perusteValinta = peruste;
         YleinenData.navigaatiopolkuElementit.peruste = peruste.nimi;
@@ -97,17 +95,20 @@ angular.module('eperusteApp')
       } else {
         // perustetta ei löytynyt, virhesivu.
       }
-
-      var profiili = vastaus[1];
-      $scope.suosikkiLista = profiili.suosikit;
-      $scope.suosikkiTyyli = $scope.onSuosikki();
-
-
-    }, function() {
+    }, function(error) {
+      console.log(error);
       //Virhe tapahtui, esim. perustetta ei löytynyt. Virhesivu.
       $location.path('/selaus/' + $scope.konteksti);
     });
-
+    
+    kayttajaProfiiliPromise.then(function(profiili) {
+      $scope.suosikkiLista = profiili.suosikit;
+      $scope.suosikkiTyyli = $scope.onSuosikki();
+    }, function() {
+      console.log('profiilia ei löytynyt');
+      $scope.suosikkiLista = [];
+      $scope.suosikkiTyyli = $scope.onSuosikki();
+    });
 
     $scope.onSuosikki = function() {
       for (var i = 0; i < _.size($scope.suosikkiLista); i++) {

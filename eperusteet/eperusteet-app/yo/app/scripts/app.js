@@ -39,8 +39,7 @@ angular.module('eperusteApp', [
           // Lähetetään ilmoitus, että haut ovat päättyneet.
           palvelinhaunIlmoitusKanava.hakuLopetettu();
         }
-        // return $q.reject(rejection);
-        return rejection;
+         return $q.reject(rejection);
       }
     };
   })
