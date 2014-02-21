@@ -14,7 +14,7 @@
     "angular-translate-loader-static-files": "~2.0.0",
     "lodash": "~2.4.0",
     "angular-ui-bootstrap-bower": "~0.10.0",
-    "angular-animate": "1.2.13"
+    "angular-animate": "1.2.13",
     "ng-file-upload": "~1.2.6",
     "js-xlsx": "SheetJS/js-xlsx#~0.5.0",
     "angular-spinner": "~0.3.1"
