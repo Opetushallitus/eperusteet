@@ -18,7 +18,7 @@ angular.module('eperusteApp')
     $scope.lukeeTiedostoa = true;
     $scope.uploadErrors = [];
     $scope.uploadSuccess = false;
-    $scope.tutkinnonTyyppi = 'perustutkinto';
+    $scope.tutkinnonTyyppi = 'ammattitutkinto';
 
     $scope.clearSelect = function() {
       $scope.$apply(function() {

@@ -4,6 +4,38 @@
 
 angular.module('eperusteApp')
   .service('ExcelService', function($q, $http, SERVICE_LOC) {
+    var tutkintoMap = {
+      parsittavatKentat: {
+        1: 'id',
+        2: 'nimi',
+        3: 'tutkintokoodi',
+        4: 'koulutusala',
+        5: 'opintoalat',
+        6: 'paivays',
+      },
+      perustutkinto: {
+        kentat: {
+          1: 'A',
+          2: 'B',
+          3: 'C',
+          4: 'D',
+          5: 'E',
+          6: 'F',
+        }
+      },
+      ammattitutkinto: {
+        kentat: {
+          1: 'A',
+          2: 'B',
+          3: 'C',
+          4: 'D',
+          5: 'E',
+          6: 'F',
+        }
+      }
+    };
+    tutkintoMap.lokalisointi = _.without(_.keys(tutkintoMap.parsittavatKentat), '2', '3');
+
     var osatutkintoMap = {
       parsittavatKentat: {
         1: 'nimi',
@@ -163,23 +195,65 @@ angular.module('eperusteApp')
       var suodatettu = teksti;
       suodatettu = suodatettu.replace(/&.{0,5};/g, ' ');
       suodatettu = suodatettu.replace('•', '');
+      for (var i = 0; i < suodatettu.length; ++i) {
+        var c = suodatettu[i];
+        var ci = c.charCodeAt(0);
+        if (ci < 32 && ci > 255) {
+          suodatettu[i] = ' ';
+        }
+      }
       return suodatettu;
     }
 
-    function fify(obj, ids) {
+    function fify(obj, ids, kentat) {
+      var newobj = {};
       _.forEach(ids, function(id) {
-        var field = [osatutkintoMap.parsittavatKentat[id]];
+        var field = [kentat[id]];
         var value = obj[field];
-        obj[field] = {};
-        obj[field].fi = suodataTekstipala(value);
+        newobj[field] = {};
+        newobj[field].fi = suodataTekstipala(value);
       });
-      return obj;
+      return newobj;
+    }
+
+    function readPerusteet(data, tyyppi) {
+      var height = sheetHeight(data);
+      var kentat = tutkintoMap[tyyppi].kentat;
+      var peruste = {};
+
+      _.forEach(tutkintoMap.parsittavatKentat, function(value, key) {
+        peruste[value] = [];
+        for (var i = 2; i < height; ++i) {
+          var solu = kentat[key] + i;
+          var arvo = data[solu];
+          if (arvo && arvo.v) {
+            var suodatettu = suodataTekstipala(arvo.v);
+            peruste[value].push(suodatettu);
+          }
+        }
+      });
+
+      _.forEach(peruste, function(value, key) {
+        if (_.isEmpty(value)) {
+          peruste[key] = '';
+        } else if (_.size(value) === 1) {
+          peruste[key] = value[0];
+        } else {
+          peruste[key] = _(value).map(function(e) {
+            return '<p>' + e +'</p>';
+          }).reduce(function(acc, next) {
+            return acc + next;
+          });
+        }
+      });
+
+      peruste = fify(peruste, tutkintoMap.lokalisointi, tutkintoMap.parsittavatKentat);
+      return peruste;
     }
 
     function readOsaperusteet(data, tyyppi) {
       var height = sheetHeight(data);
-      var anchors = getOsaAnchors(data, tyyppi);
-      var osaperusteet = [];
+      var anchors = getOsaAnchors(data, tyyppi); var osaperusteet = [];
       var varoitukset = [];
       var virheet = [];
       var kentat = osatutkintoMap[tyyppi].kentat;
@@ -214,7 +288,7 @@ angular.module('eperusteApp')
           }
         });
 
-        osaperuste = fify(osaperuste, osatutkintoMap.lokalisointi);
+        osaperuste = fify(osaperuste, osatutkintoMap.lokalisointi, osatutkintoMap.parsittavatKentat);
 
         osaperuste.ammattitaidonOsoittamistavat = {};
         osaperuste.ammattitaidonOsoittamistavat.fi = '';
@@ -346,7 +420,10 @@ angular.module('eperusteApp')
         if (err.length > 0) {
           deferred.reject(err);
         } else {
-          deferred.resolve(readOsaperusteet(sheet, tyyppi));
+          var perusteet = readPerusteet(sheet, tyyppi);
+          console.log(perusteet);
+          var osaperusteet = {}; // readOsaperusteet(sheet, tyyppi);
+          deferred.resolve(osaperusteet);
         }
       }
       return deferred.promise;
