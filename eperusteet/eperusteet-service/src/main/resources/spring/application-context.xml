@@ -9,7 +9,7 @@
        xmlns:jee="http://www.springframework.org/schema/jee"
        xmlns:util="http://www.springframework.org/schema/util"
        xmlns:security="http://www.springframework.org/schema/security"
-       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
@@ -18,23 +18,23 @@
        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
-       http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+       http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.1.xsd">
 
     <context:property-placeholder
         location="classpath:eperusteet-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/eperusteet-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
         ignore-resource-not-found="true"
         properties-ref="defaultProps"/>
     
-    <cache:annotation-driven />
+    <ehcache:annotation-driven />
     
-    <bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
-        <property name="caches">
-            <set>
-                <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="koulutusalat"/>
-            </set>
-        </property>
+    <ehcache:config cache-manager="cacheManager">
+        <ehcache:evict-expired-elements interval="60" />
+    </ehcache:config>
+ 
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation"  value="/WEB-INF/classes/ehcache.xml"/>
     </bean>
-
+    
     <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="properties">
             <util:properties local-override="true">
