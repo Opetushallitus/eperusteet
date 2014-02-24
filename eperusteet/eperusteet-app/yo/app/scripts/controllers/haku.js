@@ -7,11 +7,12 @@ angular.module('eperusteApp')
       .when('/selaus/:konteksti', {
         templateUrl: 'views/haku.html',
         controller: 'HakuCtrl',
-        navigaationimi: 'Hakuehdot'
+        navigaationimi: 'Hakuehdot',
+        resolve: {'koulutusalaService': 'Koulutusalat'}
       });
   })
   .controller('HakuCtrl', function($scope, $rootScope, $window, $routeParams, $location,
-    Perusteet, Haku, YleinenData, Koulutusalat) {
+    Perusteet, Haku, YleinenData, koulutusalaService) {
 
     var pat = '';
     // Viive, joka odotetaan, ennen kuin haku nimi muutoksesta lähtee serverille.
@@ -27,34 +28,7 @@ angular.module('eperusteApp')
     $scope.valittuOpintoala = Haku.hakuParametrit.opintoala;
     $scope.kontekstit = YleinenData.kontekstit;
     $scope.kieli = YleinenData.kieli;
-    $scope.koulutusalatMap = {};
-    
-
-    $scope.koulutusalat = [];
-    $scope.koulutusalatPromise = Koulutusalat.query(
-      
-    ).$promise;
-  
-    $scope.koulutusalatPromise.then(function(vastaus) {
-        $scope.koulutusalat = vastaus;
-        //$scope.koulutusalatMap = $scope.muunnaKoulutusalat(vastaus);
-        $scope.koulutusalatMap = _.zipObject(_.pluck(vastaus, 'koodi'), _.map(vastaus, function(e) {
-          return {
-            nimi: e.nimi
-          };
-        }));
-        
-        // Jotta valittu opintoala säilyisi sivulle palatessa otetaan se talteen
-        // ennen kuin kutsutaan koulutusalaMuuttui metodia.
-        var opintoalaTemp = $scope.valittuOpintoala;
-        $scope.koulutusalaMuuttui();
-        $scope.valittuOpintoala = opintoalaTemp;
-        
-        // haetaan perusteet vasta kun on koulutusalat haettu jotta hakulistauksen koulutusalakoodeille saadaan nimi.
-        // Ruma hackki poistetaan, kun koulutusalaservice käytössä.
-        $scope.haePerusteet($scope.nykyinenSivu);
-        
-      });
+    $scope.koulutusalat = koulutusalaService.haeKoulutusalat();
 
     $scope.tutkintotyypit = {
       1: 'tutkintotyyppikoodi-1',
@@ -158,5 +132,15 @@ angular.module('eperusteApp')
       $scope.valittuOpintoala = '';
       $scope.hakuMuuttui();
     };
+    
+    $scope.koulutusalaNimi = function(koodi) {
+      return koulutusalaService.haeKoulutusalaNimi(koodi);
+    };
+    
+    
+    
+    var opintoalaTemp = $scope.valittuOpintoala;
+    $scope.koulutusalaMuuttui();
+    $scope.valittuOpintoala = opintoalaTemp;
     
   });

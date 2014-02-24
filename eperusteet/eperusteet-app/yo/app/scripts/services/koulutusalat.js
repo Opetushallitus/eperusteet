@@ -1,53 +1,33 @@
 'use strict';
+/*global _*/
 
 angular.module('eperusteApp')
-  /*.service('Koulutusalat', [ '$resource',  function Koulutusalat ($resource) {
-      
-      var koulutusalatResource = $resource('/eperusteet-service/api' + '/koulutusalat/:koulutusalaId', {koulutusalaId: '@id'}, {'query': {method: 'GET', isArray: true}});
-      this.koulutusalatMap;
-      this.koulutusalat;
-      
+  .service('Koulutusalat', ['$resource', function Koulutusalat($resource) {
+
+      var koulutusalatResource = $resource('/eperusteet-service/api' + '/koulutusalat/:koulutusalaId',
+        {koulutusalaId: '@id'}, {'query': {method: 'GET', isArray: true, cache: true}});
+      this.koulutusalatMap = {};
+      this.koulutusalat = [];
       var self = this;
-      
-      var muunnaKoulutusalat = function(vastaus) {
-        var muunnos = [];
-        for (var i = 0; i < vastaus.length; i++) {
-         // console.log('Koodi ' + vastaus[i].koodi);
-          muunnos[vastaus[i].koodi] =
-            {
-              nimi: vastaus[i].nimi,
-              opintoalat: vastaus[i].opintoalat
-            };
-        }
-        return muunnos;
-      };
-      
-      koulutusalatResource.query( function(vastaus) {
-        console.log("koulutusalat haettu BE");
-        self.koulutusalatMap = muunnaKoulutusalat(vastaus);
-        self.koulutusalat = vastaus;
-      });
-      
-      
-      this.haeKoulutusalat = function () {
-        console.log('haeKoulutusalat ' + self.koulutusalat);
+
+      var koulutusalaPromise = koulutusalatResource.query().$promise;
+
+      this.haeKoulutusalat = function() {
         return self.koulutusalat;
       };
-      
-      this.haeKoulutusala = function(koodi) {
+
+      this.haeKoulutusalaNimi = function(koodi) {
         return self.koulutusalatMap[koodi];
       };
-  
-    }
-    
-  ]);*/
 
+      return koulutusalaPromise.then(function(vastaus) {
+        self.koulutusalatMap = _.zipObject(_.pluck(vastaus, 'koodi'), _.map(vastaus, function(e) {
+          return {
+            nimi: e.nimi
+          };
+        }));
+        self.koulutusalat = vastaus;
+        return self;
+      });
 
-  .factory('Koulutusalat', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/koulutusalat/:koulutusalaId',
-      {
-        koulutusalaId: '@id'
-      }, {'query': {method: 'GET', isArray: true, cache: true}});
-  });
-  
-
+    }]);
