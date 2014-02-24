@@ -1,0 +1,13 @@
+<div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
+  <h2>{{ peruste.nimi.fi }} ({{ peruste.tutkintokoodi }})</h2>
+
+  <div ng-repeat="pr in peruste.tekstikentat">
+    <h3>{{ pr.nimi.fi }}</h3>
+    <div class="well">{{ pr.teksti.fi }}</div>
+  </div>
+
+  <button ng-click="tallennaPeruste()" class="btn btn-success">
+    <span class="glyphicon glyphicon-cloud-upload"></span>
+    Tallenna
+  </button>
+</div>

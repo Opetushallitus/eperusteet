@@ -5,5 +5,7 @@ angular.module('eperusteApp')
     return $resource(SERVICE_LOC + '/perusteet/:perusteenId',
       {
         perusteenId: '@id'
-      }, {'query': {method: 'GET', isArray: false}});
+      }, {
+        query: {method: 'GET', isArray: false}
+      });
   });

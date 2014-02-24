@@ -3,38 +3,87 @@
 /* global XLSX */
 
 angular.module('eperusteApp')
-  .service('ExcelService', function($q, $http, SERVICE_LOC) {
+  .service('ExcelService', function($q) {
+
+    // Tutkintojen/perusteiden parsiminen
     var tutkintoMap = {
+      // Lopullisen backendille lähetettävän perusteen rakenne
       parsittavatKentat: {
-        1: 'id',
-        2: 'nimi',
-        3: 'tutkintokoodi',
-        4: 'koulutusala',
-        5: 'opintoalat',
-        6: 'paivays',
+        1: 'nimi',
+        2: 'tutkintokoodi',
+        // 4: 'koulutusala',
+        // 5: 'opintoalat',
+        // 6: 'paivays',
       },
+      // Perustutkintoon liittyvät tiedot
       perustutkinto: {
+        // Parsittavan kentän ja solun suhde
         kentat: {
           1: 'A',
           2: 'B',
-          3: 'C',
-          4: 'D',
-          5: 'E',
-          6: 'F',
-        }
+        },
+        tekstikentat: [
+          'D',
+          'E',
+          'F',
+          'G',
+          'H',
+          'I',
+          'J',
+          'K',
+          'L',
+          'M',
+          'N',
+          'O',
+          'P',
+          'Q',
+          'R',
+          'S',
+          'T',
+          'U',
+          'V',
+          'W',
+          'X',
+          'Y',
+          'Z',
+          'AA',
+          'AB',
+          'AC',
+          'AD',
+          'AE',
+          'AF',
+          'AG',
+          'AH',
+        ]
       },
       ammattitutkinto: {
         kentat: {
           1: 'A',
           2: 'B',
-          3: 'C',
-          4: 'D',
-          5: 'E',
-          6: 'F',
-        }
+        },
+        // Tekstikappaleet/perusteen osat
+        tekstikentat: [
+          'D',
+          'E',
+          'F',
+          'G',
+          'H',
+          'I',
+          'J',
+          'K',
+          'L',
+          'M',
+          'N',
+          'O',
+          'P',
+          'Q',
+          'R',
+          'S',
+        ]
       }
     };
-    tutkintoMap.lokalisointi = _.without(_.keys(tutkintoMap.parsittavatKentat), '2', '3');
+    // Kentät jotka pitää lokalisoida (laittaa oliossa fi:n alle)
+    tutkintoMap.lokalisointi = [1];
 
     var osatutkintoMap = {
       parsittavatKentat: {
@@ -50,6 +99,14 @@ angular.module('eperusteApp')
         10: 'hyvä',
         11: 'kiitettävä',
         12: 'erillispätevyys',
+      },
+      virheet: {
+        1: 'Osaperusteen nimeä ei ole määritetty'
+      },
+      varoitukset: {
+        2: 'Ammattitaitovaatimuksien kuvausta ei ole määritetty.',
+        3: 'Opintoluokitusta ei ole määritetty.',
+        4: 'Osaamisalaa ei ole määritetty.'
       },
       info: [1, 2, 3, 4],
       lokalisointi: [1, 2, 4],
@@ -191,10 +248,12 @@ angular.module('eperusteApp')
     function suodataTekstipala(teksti) {
       if (!teksti) {
         return '';
+      } else if (!_.isString(teksti)) {
+        return teksti;
       }
+
       var suodatettu = teksti;
       suodatettu = suodatettu.replace(/&.{0,5};/g, ' ');
-      suodatettu = suodatettu.replace('•', '');
       for (var i = 0; i < suodatettu.length; ++i) {
         var c = suodatettu[i];
         var ci = c.charCodeAt(0);
@@ -206,7 +265,7 @@ angular.module('eperusteApp')
     }
 
     function fify(obj, ids, kentat) {
-      var newobj = {};
+      var newobj = _.clone(obj);
       _.forEach(ids, function(id) {
         var field = [kentat[id]];
         var value = obj[field];
@@ -228,32 +287,42 @@ angular.module('eperusteApp')
           var arvo = data[solu];
           if (arvo && arvo.v) {
             var suodatettu = suodataTekstipala(arvo.v);
-            peruste[value].push(suodatettu);
+            peruste[value] = suodatettu;
           }
         }
       });
 
-      _.forEach(peruste, function(value, key) {
-        if (_.isEmpty(value)) {
-          peruste[key] = '';
-        } else if (_.size(value) === 1) {
-          peruste[key] = value[0];
-        } else {
-          peruste[key] = _(value).map(function(e) {
-            return '<p>' + e +'</p>';
-          }).reduce(function(acc, next) {
-            return acc + next;
-          });
+      peruste = fify(peruste, tutkintoMap.lokalisointi, tutkintoMap.parsittavatKentat);
+
+      peruste.tekstikentat = [];
+      _.forEach(tutkintoMap[tyyppi].tekstikentat, function(col) {
+        var otsikko = data[col + 1];
+
+        if (otsikko && otsikko.v) {
+          var tekstikentta = {
+            nimi: {
+              fi: suodataTekstipala(otsikko.v)
+            },
+            teksti: {
+              fi: ''
+            }
+          };
+          for (var i = 2; i < height; ++i) {
+            var solu = data[col + i];
+            if (solu && solu.v) {
+              tekstikentta.teksti.fi += '<p>' + suodataTekstipala(solu.v) + '</p>';
+            }
+          }
+          peruste.tekstikentat.push(tekstikentta);
         }
       });
-
-      peruste = fify(peruste, tutkintoMap.lokalisointi, tutkintoMap.parsittavatKentat);
       return peruste;
     }
 
     function readOsaperusteet(data, tyyppi) {
       var height = sheetHeight(data);
-      var anchors = getOsaAnchors(data, tyyppi); var osaperusteet = [];
+      var anchors = getOsaAnchors(data, tyyppi);
+      var osaperusteet = [];
       var varoitukset = [];
       var virheet = [];
       var kentat = osatutkintoMap[tyyppi].kentat;
@@ -273,18 +342,15 @@ angular.module('eperusteApp')
           }
           osaperuste[value] = arvo;
 
-          var warning = false;
-          if (!value && key === 'nimi') {
-            warning = rakennaVaroitus(solu, '-', 'Osaperusteen nimeä ei ole määritetty.', true);
-          } else if (!value && key === 'osaamisala') {
-            warning = rakennaVaroitus(solu, osaperuste.nimi, 'Osaamisalaa ei ole määritetty.');
-          } else if (!value && key === 'ammattitaitovaatimukset') {
-            warning = rakennaVaroitus(solu, osaperuste.nimi, 'Ammattitaitovaatimuksien kuvausta ei ole määritetty.');
-          } else if (!value && key === 'opintoluokitus') {
-            warning = rakennaVaroitus(solu, osaperuste.nimi, 'Opintoluokitusta ei ole määritetty.');
-          }
-          if (warning !== false) {
-            varoitukset.push(warning);
+          var virhe = osatutkintoMap.virheet[key];
+          var varoitus = osatutkintoMap.varoitukset[key];
+          if (!arvo || !value) {
+            var nimi = suodataTekstipala(osaperuste.nimi);
+            if (virhe) {
+              virheet.push(rakennaVaroitus(solu, nimi, virhe, true));
+            } else if (varoitus) {
+              varoitukset.push(rakennaVaroitus(solu, nimi, varoitus));
+            }
           }
         });
 
@@ -420,10 +486,10 @@ angular.module('eperusteApp')
         if (err.length > 0) {
           deferred.reject(err);
         } else {
-          var perusteet = readPerusteet(sheet, tyyppi);
-          console.log(perusteet);
-          var osaperusteet = {}; // readOsaperusteet(sheet, tyyppi);
-          deferred.resolve(osaperusteet);
+          deferred.resolve({
+            peruste: readPerusteet(sheet, tyyppi),
+            osatutkinnot: readOsaperusteet(sheet, tyyppi)
+          });
         }
       }
       return deferred.promise;
@@ -433,14 +499,7 @@ angular.module('eperusteApp')
       return toJson(XLSX.read(file, { type: 'binary' }), tyyppi);
     }
 
-    function saveOsaperuste(osaperuste) {
-      return $http.post(SERVICE_LOC + '/perusteenosat',
-        _.clone(osaperuste),
-        { params: { tyyppi: 'perusteen-osat-tutkinnon-osa' } });
-    }
-
     return {
-      parseXLSXToOsaperuste: parseXLSXToOsaperuste,
-      saveOsaperuste: saveOsaperuste
+      parseXLSXToOsaperuste: parseXLSXToOsaperuste
     };
   });

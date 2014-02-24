@@ -1,5 +1,3 @@
-<!-- FIXME: lokalisaatio -->
-
 <div>
   <file-select id="fileselect-button" before-select="clearSelect" on-select="onFileSelect" on-progress="onProgress" read-type="binary"></file-select>
   <div class="btn-group">
@@ -8,8 +6,9 @@
     <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'perustutkinto'">Perustutkinto</button>
   </div>
 
-  <div class="alert alert-warning" ng-show="warnings.length > 0">
-    Tiedostossa oli huomion arvoisia ongelmia, mutta voit halutessasi yrittää jatkaa.
+  <div class="btn-group">
+    <button type="button" class="btn btn-default" ng-model="parsinnanTyyppi" btn-radio="'peruste'">Peruste</button>
+    <button type="button" class="btn btn-default" ng-model="parsinnanTyyppi" btn-radio="'tutkinnonosa'">Tutkinnon osa</button>
   </div>
 
   <!-- virheet -->
@@ -17,7 +16,9 @@
     <div class="alert alert-danger">
       Antamassasi tiedostossa oli virheitä, jotka estävät tiedoston lukemisen eteenpäin. Korjaa seuraavat virheet ja lähetä tiedosto uudestaan.
     </div>
-    <h3>Virheet</h3>
+    <h3>
+      Virheet
+    </h3>
     <table class="table table-striped">
       <tr>
         <th>Solu</th>
@@ -32,79 +33,33 @@
     </table>
   </div>
 
-  <!-- varoitukset -->
   <div ng-show="warnings.length > 0">
-    <h3>Varoitukset</h3>
-    <table class="table table-striped">
-      <tr>
-        <th>Solu</th>
-        <th>Osatutkinto</th>
-        <th>Ongelma</th>
-      </tr>
-      <tr ng-repeat="warning in warnings" class="warning">
-        <td>{{ warning.cell }}</td>
-        <td>{{ warning.name.fi }}</td>
-        <td>{{ warning.warning }}</td>
-      </tr>
-    </table>
-  </div>
+    <div class="alert alert-warning">
+      Tiedostossa oli huomion arvoisia ongelmia, mutta voit halutessasi yrittää jatkaa.
+      <a href="" ng-click="naytaVirheet = !naytaVirheet">
+        <h3>Varoitukset
+          <span ng-show="!naytaVirheet" class="glyphicon glyphicon-chevron-down"></span>
+          <span ng-show="naytaVirheet" class="glyphicon glyphicon-chevron-up"></span>
+        </h3>
+      </a>
+    </div>
 
-  <div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
-    <h3>Osatutkinnot ({{ osatutkinnot.length }}kpl)</h3>
-    <table class="table table-striped">
-      <tr>
-        <th>Tila</th>
-        <th>Koodi</th>
-        <th>Nimi</th>
-        <th></th>
-      </tr>
-      <tr ng-repeat="ot in osatutkinnot" title="{{ ot.syy }}" ng-show="ot.ladattu !== 0">
-        <td class="glyphtila">
-          <span ng-show="ot.ladattu === 1" class="glyphicon glyphicon-remove"></span>
-        </td>
-        <td class="osatutkintoid">
-          <input class="form-control osatutkintoid" type="text" ng-model="ot.koodi" />
-        </td>
-        <td>{{ ot.nimi.fi }}</td>
-        <td class="text-right">
-          <div class="btn-group">
-            <button type="button" class="btn btn-default btn-xs" ng-click="poistaOsatutkinto(ot)">
-              <span class="glyphicon glyphicon-remove"></span>
-            </button>
-          </div>
-        </td>
-      </tr>
-      <tr ng-repeat="ot in osatutkinnot" ng-show="ot.ladattu === 0" class="success">
-        <td class="glyphtila">
-          <span class="glyphicon glyphicon-ok"></span>
-        </td>
-        <td class="osatutkintoid">{{ ot.koodi }}</td>
-        <td><a target="_blank" href="#/selaus/ammatillinenperuskoulutus/1/tutkinnonosa/{{ ot.id }}">{{ ot.nimi.fi }}</a></td>
-        <td class="text-right"></td>
-      </tr>
-    </table>
-  </div>
-
-  <div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
-    <button ng-click="tallennaOsatutkinnot()" class="btn btn-success">
-      <span class="glyphicon glyphicon-cloud-upload"></span>
-      Tallenna
-    </button>
-  </div>
-
-  <!-- Tallennusvirheet -->
-  <div class="alert alert-danger" ng-show="uploadErrors.length > 0">
-      Seuraavia osatutkintoja ei pystytty tallentamaan onnistuneesti:
+    <div class="bg-warning" ng-show="naytaVirheet">
       <table class="table table-striped">
         <tr>
-          <th>Osatutkinto</th>
-          <th>Syy</th>
+          <th>Solu</th>
+          <th>Tutkinnon osa</th>
+          <th>Ongelma</th>
         </tr>
-        <tr ng-repeat="error in uploadErrors" class="danger">
-          <td>{{ error.name.fi }}</td>
-          <td>{{ error.message }}</td>
+        <tr ng-repeat="warning in warnings" class="warning">
+          <td>{{ warning.cell }}</td>
+          <td>{{ warning.name }}</td>
+          <td>{{ warning.warning }}</td>
         </tr>
       </table>
+    </div>
   </div>
 
+  <div ng-if="parsinnanTyyppi === 'tutkinnonosa'" ng-include src="'views/partials/excelOsaperuste.html'"></div>
+  <div ng-if="parsinnanTyyppi !== 'tutkinnonosa'" ng-include src="'views/partials/excelPeruste.html'"></div>
 </div>
