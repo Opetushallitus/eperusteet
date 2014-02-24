@@ -66,7 +66,8 @@ angular.module('eperusteApp')
       // Jos ollaan ammatillisen peruskoulutuksen kontekstissa, niin tutkintotyypiksi asetetaan perustutkinto
       // ja tyhjennetään opintoalan valinta
       if ($scope.konteksti === $scope.kontekstit[0]) {
-        $scope.tutkintotyyppi = 1;
+        //$scope.tutkintotyyppi = 1;
+        $scope.tutkintotyyppi = 'tutkintotyyppi_02';
         $scope.valittuOpintoala = '';
       } else {
         $scope.tutkintotyyppi = '';
