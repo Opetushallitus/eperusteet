@@ -25,7 +25,6 @@ import fi.vm.sade.eperusteet.dto.EntityReference;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -42,7 +41,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  */
 @Configuration
 @EnableWebMvc
-@EnableCaching
 public class MvcConfiguration extends WebMvcConfigurerAdapter {
 
     @Autowired

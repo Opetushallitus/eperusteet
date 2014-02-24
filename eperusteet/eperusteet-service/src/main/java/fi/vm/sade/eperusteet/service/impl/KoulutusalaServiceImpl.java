@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.googlecode.ehcache.annotations.Cacheable;
 import fi.vm.sade.eperusteet.domain.Koulutusala;
 import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.KoodistoKoulutusalaDto;
@@ -29,7 +30,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -66,7 +66,7 @@ public class KoulutusalaServiceImpl implements KoulutusalaService {
     }
 
     @Override
-    @Cacheable("koulutusalat")
+    @Cacheable(cacheName = "koulutusalat")
     public List<KoulutusalaDto> getAll() {
         //List<Koulutusala> klist = repository.findAll();
 
