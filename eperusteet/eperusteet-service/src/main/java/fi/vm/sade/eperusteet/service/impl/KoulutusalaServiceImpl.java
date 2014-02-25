@@ -44,8 +44,9 @@ public class KoulutusalaServiceImpl implements KoulutusalaService {
     private static final Logger LOG = LoggerFactory.getLogger(KoulutusalaServiceImpl.class);
 
     private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
+    private static final String KOODISTO_RELAATIO_ALA = "relaatio/sisaltyy-alakoodit/";
     private static final String KOULUTUSALA_URI = "koulutusalaoph2002";
-    private static final String OPINTOALA_URI = "opintoalaoph2002";
+    //private static final String OPINTOALA_URI = "opintoalaoph2002";
 
     @Autowired
     private KoulutusalaRepository repository;
@@ -68,17 +69,13 @@ public class KoulutusalaServiceImpl implements KoulutusalaService {
     @Override
     @Cacheable(cacheName = "koulutusalat")
     public List<KoulutusalaDto> getAll() {
-        //List<Koulutusala> klist = repository.findAll();
-
         RestTemplate restTemplate = new RestTemplate();
-        KoodistoKoulutusalaDto[] koulutusalat = restTemplate.getForObject(KOODISTO_REST_URL + KOULUTUSALA_URI + "/koodi/", KoodistoKoulutusalaDto[].class);
-        KoodistoKoodiDto[] opintoalat = restTemplate.getForObject(KOODISTO_REST_URL + OPINTOALA_URI + "/koodi/", KoodistoKoodiDto[].class);
-
+        KoodistoKoodiDto[] koulutusalat = restTemplate.getForObject(KOODISTO_REST_URL + KOULUTUSALA_URI + "/koodi/", KoodistoKoodiDto[].class);
         List<KoulutusalaDto> koulutusalatDtos = mapper.mapAsList(Arrays.asList(koulutusalat), KoulutusalaDto.class);
-        List<OpintoalaDto> opintoalaDtos = mapper.mapAsList(Arrays.asList(opintoalat), OpintoalaDto.class);
         
         for (KoulutusalaDto koulutusalaDto : koulutusalatDtos) {
-            koulutusalaDto.setOpintoalat(opintoalaDtos);
+            KoodistoKoodiDto[] opintoalat = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + koulutusalaDto.getKoodi(), KoodistoKoodiDto[].class);
+            koulutusalaDto.setOpintoalat(mapper.mapAsList(Arrays.asList(opintoalat), OpintoalaDto.class));
         }
         
         return koulutusalatDtos;

@@ -43,7 +43,7 @@ public class KoodistoMapperConfig {
         factory.getConverterFactory().registerConverter("metadataToTekstipalanenConverter", KoodistoMetadataConverter.TO_TEKSTIPALANEN);
         factory.getConverterFactory().registerConverter("koodistoPaivaysConverter", KoodistoConverter.TO_DATE);
 
-        factory.classMap(KoodistoKoulutusalaDto.class, KoulutusalaDto.class)
+        factory.classMap(KoodistoKoodiDto.class, KoulutusalaDto.class)
                 .field("koodiUri", "koodi")
                 .fieldMap("metadata", "nimi").converter("metadataConverter").add()
                 .byDefault()

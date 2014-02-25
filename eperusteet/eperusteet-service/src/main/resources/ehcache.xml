@@ -284,5 +284,9 @@
     diskExpiryThreadIntervalSeconds="120"
     memoryStoreEvictionPolicy="LRU"
   />
-  <cache name="koulutusalat" maxElementsInMemory="10" eternal="true" overflowToDisk="false" />
+  <cache name="koulutusalat"
+         maxElementsInMemory="10" 
+         eternal="false"
+         timeToLiveSeconds="86400"
+         overflowToDisk="false" />
 </ehcache>

@@ -74,7 +74,7 @@ angular.module('eperusteApp')
       pat = new RegExp('(' + $scope.query + ')', 'i');
     };
     $scope.haePerusteet = function(sivu) {
-      console.log('haku muuttui');
+
       Haku.hakuParametrit = {
         sivu: sivu,
         nimi: $scope.query,
@@ -126,7 +126,6 @@ angular.module('eperusteApp')
     $scope.koulutusalaMuuttui = function() {
 
       if ($scope.koulutusala !== '') {
-       //$scope.opintoalat = $scope.koulutusalat[parseInt($scope.koulutusala, 10) - 1].opintoalat;
         $scope.opintoalat = _.findWhere($scope.koulutusalat, {koodi: $scope.koulutusala}).opintoalat;
       } else {
         $scope.opintoalat = [];
