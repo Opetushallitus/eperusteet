@@ -41,7 +41,7 @@ angular.module('eperusteApp')
       // ja tyhjennetään opintoalan valinta
       if ($scope.konteksti === $scope.kontekstit[0]) {
         //$scope.tutkintotyyppi = 1;
-        $scope.tutkintotyyppi = 'tutkintotyyppi_02';
+        $scope.tutkintotyyppi = 'koulutustyyppi_1';
         $scope.valittuOpintoala = '';
       } else {
         $scope.tutkintotyyppi = '';
@@ -74,6 +74,7 @@ angular.module('eperusteApp')
       pat = new RegExp('(' + $scope.query + ')', 'i');
     };
     $scope.haePerusteet = function(sivu) {
+      console.log('haku muuttui');
       Haku.hakuParametrit = {
         sivu: sivu,
         nimi: $scope.query,
@@ -94,6 +95,7 @@ angular.module('eperusteApp')
       return Math.max($scope.sivuja, 1);
     };
     $scope.hakuMuuttui = _.debounce(_.bind($scope.haePerusteet, $scope, 0), hakuViive, {'leading': false});
+    
     $scope.edellinenSivu = function() {
       if ($scope.nykyinenSivu > 0) {
         $scope.haePerusteet($scope.nykyinenSivu - 1);

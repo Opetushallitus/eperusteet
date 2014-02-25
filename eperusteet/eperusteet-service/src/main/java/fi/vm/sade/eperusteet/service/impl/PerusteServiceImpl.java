@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +38,10 @@ import org.springframework.web.client.RestTemplate;
 public class PerusteServiceImpl implements PerusteService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceImpl.class);
-    private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json";
-    private static final String KOODISTO_RELAATIO_YLA = "/relaatio/sisaltyy-ylakoodit";
-    private static final String KOODISTO_RELAATIO_ALA = "/relaatio/sisaltyy-alakoodit";
-    private static final String KOULUTUSTYYPPI_AMMATILLINEN_PERUSKOULUTUS_URI = "/koulutustyyppi_1";
+    private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
+    private static final String KOODISTO_RELAATIO_YLA = "relaatio/sisaltyy-ylakoodit/";
+    private static final String KOODISTO_RELAATIO_ALA = "relaatio/sisaltyy-alakoodit/";
+    private static final String[] KOULUTUSTYYPPI_URIT = {"koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"};
 
     @Autowired
     PerusteRepository perusteet;
@@ -111,24 +112,28 @@ public class PerusteServiceImpl implements PerusteService {
 
         RestTemplate restTemplate = new RestTemplate();
         List<Peruste> perusteEntityt = new ArrayList<>();
-        KoodistoKoodiDto[] tutkinnot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_YLA + KOULUTUSTYYPPI_AMMATILLINEN_PERUSKOULUTUS_URI, KoodistoKoodiDto[].class);
-        
-        Peruste peruste;
-        KoodistoKoodiDto[] koulutusAlakoodit;
-        int i = 0;
-        for (KoodistoKoodiDto tutkinto : tutkinnot) {
-                
-            if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus") && (perusteet.findOneByKoodiUri(tutkinto.getKoodiUri()) == null) ) {
-                peruste = koodistoMapper.map(tutkinto, Peruste.class);
-                
-                // Haetaan joka tutkinnolle alakoodit ja lisätään tarvittavat tiedot peruste entityyn
-                koulutusAlakoodit = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + "/" +tutkinto.getKoodiUri(), KoodistoKoodiDto[].class);
-                peruste.setTutkintokoodi(parseTutkintotyyppi(koulutusAlakoodit));
-                peruste.setKoulutusala(parseKoulutusala(koulutusAlakoodit));
-                peruste.setOpintoalat(parseOpintoalat(koulutusAlakoodit));
-                
-                perusteEntityt.add(peruste);
-                LOG.info(++i + " perustetta tallennettu.");
+        KoodistoKoodiDto[] tutkinnot;
+
+        for (String koulutustyyppiUri : KOULUTUSTYYPPI_URIT) {
+            tutkinnot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_YLA + koulutustyyppiUri, KoodistoKoodiDto[].class);
+
+            Peruste peruste;
+            KoodistoKoodiDto[] koulutusAlakoodit;
+            int i = 0;
+            for (KoodistoKoodiDto tutkinto : tutkinnot) {
+
+                if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus") && (perusteet.findOneByKoodiUri(tutkinto.getKoodiUri()) == null)) {
+                    peruste = koodistoMapper.map(tutkinto, Peruste.class);
+
+                    // Haetaan joka tutkinnolle alakoodit ja lisätään tarvittavat tiedot peruste entityyn
+                    koulutusAlakoodit = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + "/" + tutkinto.getKoodiUri(), KoodistoKoodiDto[].class);
+                    peruste.setTutkintokoodi(koulutustyyppiUri);
+                    peruste.setKoulutusala(parseKoulutusala(koulutusAlakoodit));
+                    peruste.setOpintoalat(parseOpintoalat(koulutusAlakoodit));
+
+                    perusteEntityt.add(peruste);
+                    LOG.info(++i + " perustetta tallennettu.");
+                }
             }
         }
         perusteet.save(perusteEntityt);
