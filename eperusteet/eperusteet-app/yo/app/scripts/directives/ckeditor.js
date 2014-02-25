@@ -35,7 +35,10 @@ angular.module('eperusteApp')
 
         editor.on('focus', function() {
           console.log('focus');
-          $('#toolbar').show();
+          if(element.attr('contenteditable') === 'true') {
+            console.log('set toolbar -> show');
+            $('#toolbar').show();
+          }
 //          var h = $('#ck-toolbar-top').height();
 //          console.log(h);
 //          $('body').css('padding-top', h);
