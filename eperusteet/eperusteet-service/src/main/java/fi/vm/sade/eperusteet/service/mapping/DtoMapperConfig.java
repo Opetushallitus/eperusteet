@@ -16,9 +16,11 @@
 package fi.vm.sade.eperusteet.service.mapping;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import ma.glasnost.orika.impl.DefaultMapperFactory;

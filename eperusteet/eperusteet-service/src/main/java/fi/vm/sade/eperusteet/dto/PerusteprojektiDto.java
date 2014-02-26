@@ -13,27 +13,25 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.dto.PerusteQuery;
-import fi.vm.sade.eperusteet.dto.PerusteDto;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+package fi.vm.sade.eperusteet.dto;
+
+import java.io.Serializable;
+import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author harrik
  */
-public interface PerusteService {
-
-    PerusteDto get(final Long id);
-
-    Page<PerusteDto> getAll(PageRequest page, String kieli);
-
-    Page<PerusteDto> findBy(PageRequest page, PerusteQuery pquery);
-
-    PerusteenOsaViite addViite(final Long parentId, final Long seuraavaViite, PerusteenOsaViite viite);
-
-    public String lammitys();
+@Getter
+@Setter
+public class PerusteprojektiDto implements Serializable {    
+    private Long id;
+    private String nimi;
+    private PerusteDto peruste;   
+    private String diaarinumero;
+    private Date paatosPvm;
+    private String tehtavaluokka;    
 }
