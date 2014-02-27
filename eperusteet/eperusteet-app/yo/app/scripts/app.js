@@ -10,6 +10,7 @@ angular.module('eperusteApp', [
     'ui.bootstrap',
   ])
   .constant('SERVICE_LOC','/eperusteet-service/api')
+  .constant('SPINNER_WAIT', 0)
   .factory('palvelinHakuInterceptor', function($injector, $q, palvelinhaunIlmoitusKanava) {
     var http;
     return {
@@ -43,12 +44,12 @@ angular.module('eperusteApp', [
       }
     };
   })
-  // .config(function($routeProvider, $sceProvider) {
-  //   $sceProvider.enabled(true);
-  //   $routeProvider.otherwise({
-  //       redirectTo: '/selaus/ammatillinenperuskoulutus'
-  //     });
-  // })
+  .config(function($routeProvider, $sceProvider) {
+    $sceProvider.enabled(true);
+    $routeProvider.otherwise({
+        redirectTo: '/selaus/ammatillinenperuskoulutus'
+      });
+  })
   .config(function($translateProvider) {
       $translateProvider.useStaticFilesLoader({
         prefix: 'localisation/locale-',
@@ -56,6 +57,25 @@ angular.module('eperusteApp', [
       });
       $translateProvider.preferredLanguage('fi');
   })
+  .config(function($httpProvider) {
+    $httpProvider.interceptors.push(['$rootScope', '$q', 'SpinnerService', function($rootScope, $q, Spinner) {
+      return {
+        request: function(request) {
+          Spinner.enable();
+          return request;
+        },
+        response: function(response) {
+          Spinner.disable();
+          return response || $q.when(response);
+        },
+        responseError: function(error) {
+          Spinner.disable();
+          return $q.reject(error);
+        }
+      };
+    }]);
+  })
+  // Uudelleenohjaus autentikointiin ja palvelinvirheiden ilmoitukset
   .config(function($httpProvider) {
     // Asetetaan oma interceptor kuuntelemaan palvelinkutsuja
     $httpProvider.interceptors.push('palvelinHakuInterceptor');

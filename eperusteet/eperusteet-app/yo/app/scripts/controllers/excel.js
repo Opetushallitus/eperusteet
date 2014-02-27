@@ -9,7 +9,7 @@ angular.module('eperusteApp')
         controller: 'ExcelCtrl'
       });
   })
-  .controller('ExcelCtrl', function($scope, ExcelService, PerusteenOsat) {
+  .controller('ExcelCtrl', function($scope, ExcelService, PerusteenOsat, SpinnerService) {
     $scope.osatutkinnot = [];
     $scope.vaihe = [];
     $scope.errors = [];
