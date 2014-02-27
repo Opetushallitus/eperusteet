@@ -7,6 +7,7 @@ angular.module('eperusteApp')
 
     function enableSpinner() {
       ++pyynnot;
+      $rootScope.$emit('event:spinner_on');
       _.delay(function() {
         if (pyynnot > 0) {
           $rootScope.$emit('event:spinner_on');
@@ -27,19 +28,17 @@ angular.module('eperusteApp')
       isSpinning: function() { return pyynnot > 0; }
     };
   })
-  .directive('spinner', function($rootScope, SpinnerService) {
+  .directive('spinner', function($rootScope) {
     return {
-      template: '{{ isSpinning }}',
+      template: '<div id="global-spinner" ng-show="isSpinning">' +
+                '  SPINNER' +
+                '</div>',
       restrict: 'E',
       link: function($scope) {
         $scope.isSpinning = false;
 
         function spin(state) {
           $scope.isSpinning = state;
-          setTimeout(function() {
-              $scope.$apply(function() {
-            });
-          }, 1);
         }
 
         $rootScope.$on('event:spinner_on', function() {
