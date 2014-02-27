@@ -98,8 +98,21 @@
 
     "tutkintokoodi": "[Tutkintokoodi]",
     "koulutusalakoodi": "[Koulutusalakoodi]",
-
     "navipolku-tutkinnonOsa": "[Tutkinnon osa]",
+    
+    "muokkaus": "[Muokkaus]",
+    "muokkaus-tutkinnon-osa": "[Tutkinnon osa]",
+    "muokkaus-tutkinnon-osan-otsikko": "[Otsikko]",
+    "muokkaus-tutkinnon-osan-tavoitteet": "[Tavoitteet]",
+    "muokkaus-tutkinnon-osan-ammattitaitovaatimukset": "[Ammattitaitovaatimukset]",
+    "muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat": "[Ammattitaidon osoittamistavat]",
+    "muokkaus-tutkinnon-osan-osaamisala": "[Osaamisala]",
+    
+    "muokkaus-otsikko-placeholder": "Kirjoita tähän otsikko",
+    "muokkaus-tavoitteet-placeholder": "Tavoitteita...",
+    "muokkaus-ammattitaitovaatimukset-placeholder": "Tässä listataan ammattitaitovaatimuksia",
+    "muokkaus-ammattitaidon-osoittamistavat-placeholder": "Ammattitaidon osoittamistapoja...",
+    "muokkaus-osaamisala-placeholder": "Kirjoita tähän osaamisala",
     
     "perusteen-osat-tekstikappale": "[Tekstikappale]",
     "perusteen-osat-tutkinnon-osa": "[Tutkinnon osa]",

@@ -17,40 +17,48 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .factory('Editointikontrollit', function() {
-    var editingCallback = null;
+  .factory('Editointikontrollit', function($rootScope) {
+    var scope = $rootScope.$new(true);
+    scope.editingCallback = null;
+    
     return {
       startEditing: function() {
-        if(editingCallback) {
-          editingCallback.edit();
+        if(scope.editingCallback) {
+          scope.editingCallback.edit();
         }
       },
       saveEditing: function() {
-        if(editingCallback) {
-          editingCallback.save();
+        if(scope.editingCallback) {
+          scope.editingCallback.save();
         }
       },
       cancelEditing: function() {
-        if(editingCallback) {
-          editingCallback.cancel();
+        if(scope.editingCallback) {
+          scope.editingCallback.cancel();
         }
       },
-      registerEditingCallback: function(callback) {
-        if(!callback || !callback.edit || !callback.save || !callback.cancel) {
+      registerCallback: function(callback) {
+        if(!callback 
+            || !callback.edit || !angular.isFunction(callback.edit) 
+            || !callback.save || !angular.isFunction(callback.save)
+            || !callback.cancel || !angular.isFunction(callback.cancel)) {
           console.error('callback-function invalid');
           throw 'editCallback-function invalid';
         }
-        editingCallback = callback;
+        scope.editingCallback = callback;
       },
-      unregisterEditingCallback: function() {
-        editingCallback = null;
+      unregisterCallback: function() {
+        scope.editingCallback = null;
       },
       editingEnabled: function() {
-        if(editingCallback) {
+        if(scope.editingCallback) {
           return true;
         } else {
           return false;
         }
+      },
+      registerCallbackListener: function(callbackListener) {
+        scope.$watch('editingCallback', callbackListener);
       }
     };
 });

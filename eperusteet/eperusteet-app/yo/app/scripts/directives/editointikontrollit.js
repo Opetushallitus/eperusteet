@@ -25,42 +25,38 @@ angular.module('eperusteApp')
   .controller('EditointiCtrl', function($scope, $rootScope, Editointikontrollit) {
     
     $scope.hideControls = true;
-    function setEditControls(scope) {
+    function setEditControls() {
       if(Editointikontrollit.editingEnabled()) {
-        console.log('Set editointi-viesti');
-        scope.hideControls = false;
+        $scope.hideControls = false;
       } else {
-        console.log('No editing');
-        scope.hideControls = true;
+        $scope.hideControls = true;
         $scope.editStarted = false;
       }
     }
     
-    setEditControls($scope);
+    setEditControls();
     
     $rootScope.$on('$locationChangeSuccess', function() {
       console.log('location changed so disable editing controls');
-      Editointikontrollit.unregisterEditingCallback();
-      setEditControls($scope);
+      Editointikontrollit.unregisterCallback();
+      setEditControls();
     });
     
-    $rootScope.$on('editCallbackChanged', function() {
-      console.log('edit callback changed');
-      setEditControls($scope);
-    });
+    Editointikontrollit.registerCallbackListener(setEditControls);
     
     $scope.start = function() {
       $scope.editStarted = true;
+      $rootScope.$broadcast('enableEditing');
       Editointikontrollit.startEditing();
     };
     $scope.save = function() {
-      console.log('save');
       $scope.editStarted = false;
+      $rootScope.$broadcast('disableEditing');
       Editointikontrollit.saveEditing();
     };
     $scope.cancel = function() {
-      console.log('cancel');
       $scope.editStarted = false;
+      $rootScope.$broadcast('disableEditing');
       Editointikontrollit.cancelEditing();
     };
   });

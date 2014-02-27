@@ -30,6 +30,7 @@
       <div class="row">
         <div class="col-md-12">
           <eperuste-navi ng-controller="NaviCtrl"></eperuste-navi>
+          <editointikontrollit ng-controller="EditointiCtrl"></editointikontrollit>
           <div class="row">
             <div class="col-md-9" ng-view=""></div>
             <div class="col-md-3" ng-include src="'views/partials/sivupalkki.html'"></div>
@@ -52,6 +53,7 @@
     <script src="bower_components/lodash/dist/lodash.js"></script>
     <script src="bower_components/js-xlsx/jszip.js"></script>
     <script src="bower_components/js-xlsx/xlsx.js"></script>
+    <script src="bower_components/ngstorage/ngstorage.js"></script>
     <!-- endbuild -->
 
     <script src="components/ckeditor/ckeditor.js"></script>
@@ -89,6 +91,12 @@
     <script src="scripts/controllers/tutkinnonosa.js"></script>
     <script src="scripts/services/arviointi.js"></script>
     <script src="scripts/services/navigaatiopolku.js"></script>
+    <script src="scripts/controllers/leikkikentta.js"></script>
+    <script src="scripts/controllers/leikkikentta2.js"></script>
+    <script src="scripts/directives/editointikontrollit.js"></script>
+    <script src="scripts/services/editointikontrollit.js"></script>
+    <script src="scripts/controllers/muokkaus2.js"></script>
+    <script src="scripts/directives/muokkaus/tutkinnonosa.js"></script>
     <!-- endbuild -->
   </body>
 </html>
