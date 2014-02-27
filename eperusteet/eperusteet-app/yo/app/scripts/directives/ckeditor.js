@@ -15,28 +15,25 @@ angular.module('eperusteApp')
         
         if(element.attr('editor-placeholder')) {
           console.log('Placeholder: ' + element.attr('editor-placeholder'));
-//          try {
-            $translate(element.attr('editor-placeholder')).then(function(value) {
-              placeholderText = value;
-            },
-            // Error callback
-            function() {
-              placeholderText = element.attr('editor-placeholder');
-            });
-//          } catch(e) {
-//            
-//          }  
+          $translate(element.attr('editor-placeholder')).then(function(value) {
+            placeholderText = value;
+            console.log(placeholderText);
+          },
+          function() {
+            placeholderText = element.attr('editor-placeholder');
+          });
+//          placeholderText = $translate(element.attr('editor-placeholder'));
         }
         console.log(placeholderText);
 
-        console.log('CKEDIOR!!');
+        console.log('CKEDITOR!!');
         var editor = CKEDITOR.instances[attrs.id];
         if (editor) {
           console.log('editor exist');
           return;
         }
         console.log('creating editor...');
-
+        console.log('editing enable: ' + editingEnabled);
         editor = CKEDITOR.inline(element[0], {
           toolbar: 'Basic',
           removePlugins: 'resize,elementspath',
@@ -89,7 +86,7 @@ angular.module('eperusteApp')
         });
 
         editor.on('blur', function() {
-          console.log('blur');          
+          console.log('blur');
           //element.attr('contenteditable','false');
           if (editor.checkDirty()) {
             var data = editor.getData();
@@ -112,19 +109,23 @@ angular.module('eperusteApp')
           console.log('render: ' + ctrl.$viewValue);
           console.log(editor);
           if (editor) {
-            if(angular.isString(ctrl.$viewValue) && ctrl.$viewValue.length === 0) {
+            if(!angular.isString(ctrl.$viewValue) || ctrl.$viewValue.length === 0) {
+              console.log('render placeholder to editor');
+              console.log(placeholderText);
               element.addClass('has-placeholder');
               editor.setData(placeholderText);
             } else {
+              console.log('render view value to editor');
               editor.setData(ctrl.$viewValue);
             }
-            
           }
+          console.log(editor);
         };
 
         // load init value from DOM
         ctrl.$render();
         //element.click(ev);
+        
       }
     };
   });
