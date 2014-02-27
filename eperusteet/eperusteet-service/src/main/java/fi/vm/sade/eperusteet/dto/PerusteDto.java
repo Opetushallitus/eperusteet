@@ -24,5 +24,5 @@ public class PerusteDto implements Serializable {
     private String koulutusala;
     private List<String> opintoalat;
     private Date paivays;
-
+    private Date siirtyma;
 }

@@ -1,14 +1,23 @@
 <div>
-  <file-select id="fileselect-button" before-select="clearSelect" on-select="onFileSelect" on-progress="onProgress" read-type="binary"></file-select>
-  <div class="btn-group">
-    <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'ammattitutkinto'">Ammattitutkinto</button>
-    <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'erikoisammattitutkinto'">Erikoisammattitutkinto</button>
-    <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'perustutkinto'">Perustutkinto</button>
-  </div>
-
-  <div class="btn-group">
-    <button type="button" class="btn btn-default" ng-model="parsinnanTyyppi" btn-radio="'peruste'">Peruste</button>
-    <button type="button" class="btn btn-default" ng-model="parsinnanTyyppi" btn-radio="'tutkinnonosa'">Tutkinnon osa</button>
+  <h2>Tuo Excel</h2>
+  <div class="panel panel-default">
+    <div class="clearfix"></div>
+    <form class="panel-body">
+      <div class="clearfix"></div>
+      <div class="form-group col-xs-6">
+        <label>Tutkinnon tyyppi</label>
+        <div class="btn-group">
+          <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'ammattitutkinto'">Ammattitutkinto</button>
+          <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'erikoisammattitutkinto'">Erikoisammattitutkinto</button>
+          <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'perustutkinto'">Perustutkinto</button>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+      <div class="form-group col-xs-12">
+        <label>Tiedosto (.xslx -formaatissa)</label>
+        <file-select id="fileselect-button" flabel="Lataa" before-select="clearSelect" on-select="onFileSelect" on-progress="onProgress" read-type="binary"></file-select>
+      </div>
+    </form>
   </div>
 
   <!-- virheet -->
@@ -60,6 +69,12 @@
     </div>
   </div>
 
-  <div ng-if="parsinnanTyyppi === 'tutkinnonosa'" ng-include src="'views/partials/excelOsaperuste.html'"></div>
-  <div ng-if="parsinnanTyyppi !== 'tutkinnonosa'" ng-include src="'views/partials/excelPeruste.html'"></div>
+  <tabset justified="true" ng-show="!lukeeTiedostoa && !alussa && errors.length === 0">
+    <tab heading="Tekstikappaleet">
+      <div ng-include src="'views/partials/excelPeruste.html'"></div>
+    </tab>
+    <tab heading="Tutkinnon osat">
+      <div ng-include src="'views/partials/excelOsaperuste.html'"></div>
+    </tab>
+  </tabset>
 </div>

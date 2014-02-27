@@ -42,10 +42,19 @@ angular.module('eperusteApp')
     };
 
     $scope.tallennaPeruste = function(peruste) {
-      PerusteenOsat.saveTutkinnonOsa(peruste).success(function() {
+      var doneSuccess = _.after(_.size(peruste.tekstikentat), function() {
         $scope.uploadSuccess = true;
-      }).error(function(err) {
-        $scope.uploadErrors = err.syy;
+      });
+      _(peruste.tekstikentat).filter(function(tk) {
+        return tk.ladattu !== 0;
+      }).forEach(function(tk) {
+        PerusteenOsat.saveTekstikappale(_.omit(tk, 'uploadErrors', 'syy', 'ladattu'), function(re) {
+          tk.ladattu = true;
+          tk.id = re.id;
+          doneSuccess();
+        }, function(err) {
+          tk.syy = err.data.syy;
+        });
       });
     };
 
@@ -82,6 +91,12 @@ angular.module('eperusteApp')
         promise.then(function(resolve) {
           $scope.warnings = resolve.osatutkinnot.varoitukset;
           $scope.peruste = resolve.peruste;
+          $scope.peruste.tekstikentat = _.map($scope.peruste.tekstikentat, function(tk) {
+            return _.merge(tk, {
+                ladattu: -1,
+                syy: ''
+            });
+          });
           $scope.osatutkinnot = _.map(resolve.osatutkinnot.osaperusteet, function(ot) {
             return _.merge(ot, {
                 ladattu: -1,

@@ -3,10 +3,18 @@
 
   <div ng-repeat="pr in peruste.tekstikentat">
     <h3>{{ pr.nimi.fi }}</h3>
-    <div class="well">{{ pr.teksti.fi }}</div>
+    <div class="well">
+      <div class="alert alert-danger" ng-show="pr.syy !== ''">
+        {{ pr.syy }}
+      </div>
+      <div class="alert alert-success" ng-show="pr.syy === '' && pr.id">
+        Tekstikappale tallennettiin onnistuneesti (<b>id</b>: {{ pr.id }})
+      </div>
+      {{ pr.teksti.fi }}
+    </div>
   </div>
 
-  <button ng-click="tallennaPeruste()" class="btn btn-success">
+  <button ng-click="tallennaPeruste(peruste)" class="btn btn-success">
     <span class="glyphicon glyphicon-cloud-upload"></span>
     Tallenna
   </button>

@@ -1,5 +1,5 @@
 <div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
-  <h3>Osatutkinnot ({{ osatutkinnot.length }}kpl)</h3>
+  <h3>Tutkinnon osat ({{ osatutkinnot.length }}kpl)</h3>
   <table class="table table-striped">
     <tr>
       <th>Tila</th>
@@ -43,7 +43,7 @@
 
 <!-- Tallennusvirheet -->
 <div class="alert alert-danger" ng-show="uploadErrors.length > 0">
-  Seuraavia osatutkintoja ei pystytty tallentamaan onnistuneesti:
+  Seuraavia tutkinnon osia ei pystytty tallentamaan onnistuneesti:
   <table class="table table-striped">
     <tr>
       <th>Osatutkinto</th>
