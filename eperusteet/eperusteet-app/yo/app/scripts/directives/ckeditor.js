@@ -2,7 +2,7 @@
 /*global CKEDITOR,$*/
 
 angular.module('eperusteApp')
-  .directive('ckeditor', function($translate) {
+  .directive('ckeditor', function($translate, $q) {
     CKEDITOR.disableAutoInline = true;
 
     return {
@@ -13,18 +13,21 @@ angular.module('eperusteApp')
         var editingEnabled = (element.attr('editing-enabled') || 'true') === 'true';
         element.attr('contenteditable', 'true');
         
-        if(element.attr('editor-placeholder')) {
-          console.log('Placeholder: ' + element.attr('editor-placeholder'));
-          $translate(element.attr('editor-placeholder')).then(function(value) {
-            placeholderText = value;
-            console.log(placeholderText);
-          },
-          function() {
-            placeholderText = element.attr('editor-placeholder');
-          });
-//          placeholderText = $translate(element.attr('editor-placeholder'));
+        function getPlaceholderPromise() {
+          var deferred = $q.defer();
+          if(element.attr('editor-placeholder')) {
+            console.log('Placeholder: ' + element.attr('editor-placeholder'));
+            $translate(element.attr('editor-placeholder')).then(function(value) {
+              deferred.resolve(value);
+            },
+            function() {
+              deferred.resolve(element.attr('editor-placeholder'));
+            });
+          } else {
+            deferred.resolve();
+          }
+          return deferred.promise;
         }
-        console.log(placeholderText);
 
         console.log('CKEDITOR!!');
         var editor = CKEDITOR.instances[attrs.id];
@@ -49,6 +52,13 @@ angular.module('eperusteApp')
 
         console.log('attaching events');
 
+        scope.$on('kieliVaihtui', function() {
+          getPlaceholderPromise().then(function(resolvedPlaceholder) {
+            placeholderText = resolvedPlaceholder;
+            ctrl.$render();
+          });
+        });
+        
         scope.$on('enableEditing', function() {
           editingEnabled = true;
           editor.setReadOnly(!editingEnabled);
@@ -109,21 +119,25 @@ angular.module('eperusteApp')
           console.log('render: ' + ctrl.$viewValue);
           console.log(editor);
           if (editor) {
-            if(!angular.isString(ctrl.$viewValue) || ctrl.$viewValue.length === 0) {
+            if(angular.isString(ctrl.$viewValue) && ctrl.$viewValue.length === 0 && placeholderText) {
               console.log('render placeholder to editor');
               console.log(placeholderText);
               element.addClass('has-placeholder');
               editor.setData(placeholderText);
             } else {
-              console.log('render view value to editor');
               editor.setData(ctrl.$viewValue);
             }
           }
           console.log(editor);
         };
 
-        // load init value from DOM
-        ctrl.$render();
+        getPlaceholderPromise().then(function(resolvedPlaceholder) {
+          placeholderText = resolvedPlaceholder;
+          
+          // load init value from DOM
+          ctrl.$render();
+        });
+        
         //element.click(ev);
         
       }

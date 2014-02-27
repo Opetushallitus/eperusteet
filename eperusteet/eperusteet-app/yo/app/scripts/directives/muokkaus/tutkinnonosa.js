@@ -26,26 +26,34 @@ angular.module('eperusteApp')
       },
       controller: function($scope, $location, Editointikontrollit, PerusteenOsat) {
         
+        $scope.panelType = 'panel-default';
+        
         function setupTutkinnonOsa(osa) {
           $scope.editableTutkinnonOsa = angular.copy(osa);
           
           Editointikontrollit.registerCallback({
             edit: function() {
               console.log('tutkinnon osa - edit');
+              $scope.editClass = 'editing';
+              $scope.panelType = 'panel-info';
             },
             save: function() {
+              $scope.editClass = '';
+              $scope.panelType = 'panel-default';
               //TODO: Validate tutkinnon osa
               console.log('validate tutkinnon osa');
               if($scope.editableTutkinnonOsa.id) {
                 $scope.editableTutkinnonOsa.$saveTutkinnonOsa();  
               } else {
                 PerusteenOsat.saveTutkinnonOsa($scope.editableTutkinnonOsa).$promise.then(function(response) {
-                  $location.path('/muokkaus2/tutkinnonosa/' + response.id);
+                  $location.path('/muokkaus/tutkinnonosa/' + response.id);
                 });
               }
               $scope.tutkinnonOsa = angular.copy($scope.editableTutkinnonOsa);
             },
             cancel: function() {
+              $scope.editClass = '';
+              $scope.panelType = 'panel-default';
               console.log('tutkinnon osa - cancel');
               $scope.editableTutkinnonOsa = angular.copy($scope.tutkinnonOsa);
             }

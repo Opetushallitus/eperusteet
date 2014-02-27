@@ -38,10 +38,13 @@ angular.module('eperusteApp')
         }
       },
       registerCallback: function(callback) {
-        if(!callback 
-            || !callback.edit || !angular.isFunction(callback.edit) 
-            || !callback.save || !angular.isFunction(callback.save)
-            || !callback.cancel || !angular.isFunction(callback.cancel)) {
+        if(!callback ||
+            !callback.edit ||
+            !angular.isFunction(callback.edit) ||
+            !callback.save ||
+            !angular.isFunction(callback.save) ||
+            !callback.cancel ||
+            !angular.isFunction(callback.cancel)) {
           console.error('callback-function invalid');
           throw 'editCallback-function invalid';
         }

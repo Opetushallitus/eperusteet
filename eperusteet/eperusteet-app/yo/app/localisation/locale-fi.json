@@ -106,12 +106,16 @@
     "muokkaus-tutkinnon-osan-ammattitaitovaatimukset": "Ammattitaitovaatimukset",
     "muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat": "Ammattitaidon osoittamistavat",
     "muokkaus-tutkinnon-osan-osaamisala": "Osaamisala",
+    "muokkaus-tekstikappale": "Tekstikappale",
+    "muokkaus-tekstikappaleen-otsikko": "Otsikko",
+    "muokkaus-tekstikappaleen-teksti": "Teksti",
     
     "muokkaus-otsikko-placeholder": "Kirjoita tähän otsikko",
     "muokkaus-tavoitteet-placeholder": "Tavoitteita...",
     "muokkaus-ammattitaitovaatimukset-placeholder": "Tässä listataan ammattitaitovaatimuksia",
     "muokkaus-ammattitaidon-osoittamistavat-placeholder": "Ammattitaidon osoittamistapoja...",
     "muokkaus-osaamisala-placeholder": "Kirjoita tähän osaamisala",
+    "muokkaus-teksti-placeholder": "Tähän tulee leipäteksti",
     
     "perusteen-osat-tekstikappale": "Tekstikappale",
     "perusteen-osat-tutkinnon-osa": "Tutkinnon osa",

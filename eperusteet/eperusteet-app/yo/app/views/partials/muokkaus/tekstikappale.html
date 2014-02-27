@@ -1,0 +1,31 @@
+<!--
+Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+
+This program is free software: Licensed under the EUPL, Version 1.1 or - as
+soon as they will be approved by the European Commission - subsequent versions
+of the EUPL (the "Licence");
+
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+European Union Public Licence for more details.
+-->
+
+<div class="panel" ng-class="panelType">
+  <div class="panel-heading">
+    <h3 class="panel-title"><span translate>muokkaus</span> - <span translate>muokkaus-tekstikappale</span></h3>
+  </div>
+  <ul class="list-group muokkaus">
+      <li class="list-group-item" ng-class="editClass">
+        <h4 class="list-group-item-heading" translate>muokkaus-tekstikappaleen-otsikko</h4>
+        <p class="list-group-item-text" ng-model="editableTekstikappale.nimi.fi" ckeditor editing-enabled="false" editor-placeholder="muokkaus-otsikko-placeholder"></p>
+      </li>
+      <li class="list-group-item">
+        <h4 class="list-group-item-heading" translate>muokkaus-tekstikappaleen-teksti</h4>
+        <p class="list-group-item-text" ng-model="editableTekstikappale.teksti.fi" ckeditor editing-enabled="false" editor-placeholder="muokkaus-teksti-placeholder"></p>
+      </li>
+    </ul>
+</div>

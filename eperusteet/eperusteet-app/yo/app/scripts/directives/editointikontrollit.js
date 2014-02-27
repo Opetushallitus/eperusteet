@@ -24,6 +24,7 @@ angular.module('eperusteApp')
   })
   .controller('EditointiCtrl', function($scope, $rootScope, Editointikontrollit) {
     
+    $scope.buttonClass = 'btn-default';
     $scope.hideControls = true;
     function setEditControls() {
       if(Editointikontrollit.editingEnabled()) {
@@ -45,16 +46,22 @@ angular.module('eperusteApp')
     Editointikontrollit.registerCallbackListener(setEditControls);
     
     $scope.start = function() {
+      $scope.editClass = 'editing';
+      $scope.buttonClass = 'btn-info';
       $scope.editStarted = true;
       $rootScope.$broadcast('enableEditing');
       Editointikontrollit.startEditing();
     };
     $scope.save = function() {
+      $scope.editClass = '';
+      $scope.buttonClass = 'btn-default';
       $scope.editStarted = false;
       $rootScope.$broadcast('disableEditing');
       Editointikontrollit.saveEditing();
     };
     $scope.cancel = function() {
+      $scope.editClass = '';
+      $scope.buttonClass = 'btn-default';
       $scope.editStarted = false;
       $rootScope.$broadcast('disableEditing');
       Editointikontrollit.cancelEditing();
