@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Cacheable;
@@ -27,6 +28,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -41,7 +43,7 @@ import org.hibernate.annotations.Immutable;
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Immutable
 @Table(name = "koulutusala")
-public class Koulutusala implements Serializable {
+public class Koulutusala implements Koodistokoodi, Serializable {
     
     private static final long serialVersionUID = 1L;
     @Id
@@ -64,10 +66,12 @@ public class Koulutusala implements Serializable {
         this.id = id;
     }
 
+    @Override
     public String getKoodi() {
         return koodi;
     }
 
+    @Override
     public void setKoodi(String koodi) {
         this.koodi = koodi;
     }

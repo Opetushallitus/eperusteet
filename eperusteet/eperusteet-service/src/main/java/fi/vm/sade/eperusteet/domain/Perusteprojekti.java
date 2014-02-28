@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -42,7 +43,7 @@ public class Perusteprojekti implements Serializable {
     
     private String nimi;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade={CascadeType.MERGE, CascadeType.PERSIST})
     private Peruste peruste;
     
     private String diaarinumero;

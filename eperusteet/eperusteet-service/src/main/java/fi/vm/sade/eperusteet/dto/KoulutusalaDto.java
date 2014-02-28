@@ -29,5 +29,5 @@ import lombok.Setter;
 public class KoulutusalaDto {
     private String koodi;
     private LokalisoituTekstiDto nimi;
-    private List<OpintoalaDto> opintoalat;
+    private List<OpintoalaDto> opintoalat;   
 }

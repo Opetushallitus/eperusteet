@@ -16,12 +16,16 @@
 
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.Opintoala;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.repository.KoulutusalaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +35,9 @@ import org.springframework.transaction.annotation.Transactional;
  * @author harrik
  */
 @Service
-public class PerusteprojektiServiceImpl implements PerusteprojektiService{
+public class PerusteprojektiServiceImpl implements PerusteprojektiService {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(PerusteprojektiServiceImpl.class);
 
     @Autowired
     @Dto
@@ -39,11 +45,26 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService{
     
     @Autowired
     private PerusteprojektiRepository repository;
+    
+    @Autowired
+    private KoulutusalaRepository koulutusalaRepo;
         
     @Override
     @Transactional(readOnly = false)
     public PerusteprojektiDto save(PerusteprojektiDto perusteprojektiDto) {
+
+        
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
+        
+        LOG.info("Perusteprojektin nimi: " + perusteprojekti.getNimi());
+        LOG.info("Koulutusala koodi: " + perusteprojekti.getPeruste().getKoulutusala().getKoodi());
+        LOG.info("Koulutusala id: " + perusteprojekti.getPeruste().getKoulutusala().getId());
+        /*for(Opintoala opintoala : perusteprojekti.getPeruste().getOpintoalat()) {
+            LOG.info("Opintoala koodi: " + opintoala.getId());
+        }*/
+        
+        
+        
         perusteprojekti = repository.save(perusteprojekti);
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
     }
