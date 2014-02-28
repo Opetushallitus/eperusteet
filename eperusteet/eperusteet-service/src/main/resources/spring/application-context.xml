@@ -32,7 +32,7 @@
     </ehcache:config>
  
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation"  value="/WEB-INF/classes/ehcache.xml"/>
+        <property name="configLocation"  value="classpath:ehcache.xml"/>
     </bean>
     
     <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
