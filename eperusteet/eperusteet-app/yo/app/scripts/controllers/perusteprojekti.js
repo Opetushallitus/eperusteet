@@ -9,6 +9,6 @@ angular.module('eperusteApp')
         navigaationimi: 'Perusteprojekti'
       });
   })
-  .controller('PerusteprojektiCtrl', function ($scope) {
-    
+  .controller('PerusteprojektiCtrl', function ($scope, $rootScope) {
+    $rootScope.$broadcast('paivitaNavigaatiopolku');
   });
