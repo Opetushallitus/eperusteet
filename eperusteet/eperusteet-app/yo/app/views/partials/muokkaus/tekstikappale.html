@@ -23,7 +23,7 @@ European Union Public Licence for more details.
         <h4 class="list-group-item-heading" translate>muokkaus-tekstikappaleen-otsikko</h4>
         <p class="list-group-item-text" ng-model="editableTekstikappale.nimi.fi" ckeditor editing-enabled="false" editor-placeholder="muokkaus-otsikko-placeholder"></p>
       </li>
-      <li class="list-group-item">
+      <li class="list-group-item" ng-class="editClass">
         <h4 class="list-group-item-heading" translate>muokkaus-tekstikappaleen-teksti</h4>
         <p class="list-group-item-text" ng-model="editableTekstikappale.teksti.fi" ckeditor editing-enabled="false" editor-placeholder="muokkaus-teksti-placeholder"></p>
       </li>
