@@ -100,8 +100,9 @@
     "navipolku-tutkinnonOsa": "Tutkinnon osa",
     
     "muokkaus": "Muokkaus",
-    "muokkaus-tutkinnon-osa": "Tutkinnon osa",
-    "muokkaus-tutkinnon-osan-otsikko": "Otsikko",
+    "muokkaus-tutkinnon-osa": "Muokkaa tutkinnon osaa",
+    "luonti-tutkinnon-osa": "Luo uusi tutkinnon osa",
+    "muokkaus-tutkinnon-osan-nimi": "Nimi",
     "muokkaus-tutkinnon-osan-tavoitteet": "Tavoitteet",
     "muokkaus-tutkinnon-osan-ammattitaitovaatimukset": "Ammattitaitovaatimukset",
     "muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat": "Ammattitaidon osoittamistavat",

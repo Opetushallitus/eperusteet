@@ -24,12 +24,14 @@ angular.module('eperusteApp')
       scope: {
         tutkinnonOsa: '=tutkinnonOsa'
       },
-      controller: function($scope, $location, Editointikontrollit, PerusteenOsat) {
+      controller: function($scope, $location, Editointikontrollit, PerusteenOsat, $compile) {
         
         $scope.panelType = 'panel-default';
         
         function setupTutkinnonOsa(osa) {
           $scope.editableTutkinnonOsa = angular.copy(osa);
+          
+          $scope.tutkinnonOsanMuokkausOtsikko = $scope.editableTutkinnonOsa.id ? "muokkaus-tutkinnon-osa" : "luonti-tutkinnon-osa";
           
           Editointikontrollit.registerCallback({
             edit: function() {
@@ -59,6 +61,12 @@ angular.module('eperusteApp')
             }
           });
         }
+        
+//        function setupEditTutkinnonOsaHtml() {
+//          if($scope.editableTutkinnonOsa.nimi) {
+//            
+//          }
+//        }
         
         if($scope.tutkinnonOsa) {
           $scope.tutkinnonOsa.$promise.then(function(response) {
@@ -91,6 +99,7 @@ angular.module('eperusteApp')
             }
           };
           setupTutkinnonOsa($scope.tutkinnonOsa);
+//          setupEditTutkinnonOsaHtml();
         }
       }
     };

@@ -44,5 +44,5 @@ angular.module('eperusteApp')
     }
     var el = $compile(muokkausDirective)($scope);
     
-    angular.element('.muokkaus-elementti-placeholder').replaceWith(el);
+    angular.element('#muokkaus-elementti-placeholder').replaceWith(el);
   });

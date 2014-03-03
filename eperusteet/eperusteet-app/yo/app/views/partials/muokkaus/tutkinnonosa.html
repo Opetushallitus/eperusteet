@@ -16,11 +16,11 @@ European Union Public Licence for more details.
 
 <div class="panel" ng-class="panelType">
   <div class="panel-heading">
-    <h3 class="panel-title"><span translate>muokkaus</span> - <span translate>muokkaus-tutkinnon-osa</span></h3>
+    <h3 class="panel-title">{{tutkinnonOsanMuokkausOtsikko | translate}}</h3>
   </div>
   <ul class="list-group muokkaus">
       <li class="list-group-item" ng-class="editClass">
-        <h4 class="list-group-item-heading" translate>muokkaus-tutkinnon-osan-otsikko</h4>
+        <h4 class="list-group-item-heading" translate>muokkaus-tutkinnon-osan-nimi</h4>
         <p class="list-group-item-text" ng-model="editableTutkinnonOsa.nimi.fi" ckeditor editing-enabled="false" editor-placeholder="muokkaus-otsikko-placeholder"></p>
       </li>
       <li class="list-group-item" ng-class="editClass">
@@ -38,6 +38,10 @@ European Union Public Licence for more details.
       <li class="list-group-item" ng-class="editClass">
         <h4 class="list-group-item-heading" translate>muokkaus-tutkinnon-osan-osaamisala</h4>
         <p class="list-group-item-text" ng-model="editableTutkinnonOsa.osaamisala.fi" ckeditor editing-enabled="false" editor-placeholder="muokkaus-osaamisala-placeholder"></p>
+      </li>
+      <li class="list-group-item" ng-class="editClass">
+        <h4 class="list-group-item-heading" translate>muokkaus-tutkinnon-osan-koodi</h4>
+        <input type="number" ng-model="editableTutkinnonOsa.koodi"/>
       </li>
     </ul>
 </div>
