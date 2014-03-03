@@ -9,7 +9,7 @@ angular.module('eperusteApp')
         controller: 'ExcelCtrl'
       });
   })
-  .controller('ExcelCtrl', function($scope, ExcelService, PerusteenOsat) {
+  .controller('ExcelCtrl', function($scope, ExcelService, PerusteenOsat, TutkinnonOsanValidointi) {
     $scope.osatutkinnot = [];
     $scope.vaihe = [];
     $scope.errors = [];
@@ -66,16 +66,20 @@ angular.module('eperusteApp')
         return ot.ladattu !== 0;
       }).forEach(function(ot) {
         var cop = _.omit(_.clone(ot), 'ladattu', 'syy');
-        PerusteenOsat.saveTutkinnonOsa(cop, function(re) {
-          ot.ladattu = 0;
-          ot.id = re.id;
-          ot.koodi = re.koodi;
-          doneSuccess();
-        }, function(err) {
-          if (err) {
-            ot.syy = err.syy;
-            ot.ladattu = 1;
-          }
+        TutkinnonOsanValidointi.validoi(cop).then(function() {
+          PerusteenOsat.saveTutkinnonOsa(cop, function(re) {
+            ot.ladattu = 0;
+            ot.id = re.id;
+            ot.koodi = re.koodi;
+            doneSuccess();
+          }, function(err) {
+            if (err) {
+              ot.syy = err.syy;
+              ot.ladattu = 1;
+            }
+          });
+        }, function(virheet) {
+          console.log(virheet);
         });
       });
     };

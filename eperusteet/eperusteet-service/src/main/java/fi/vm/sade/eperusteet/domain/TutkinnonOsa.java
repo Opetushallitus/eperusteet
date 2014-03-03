@@ -77,32 +77,32 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     public void setAmmattitaidonOsoittamistavat(TekstiPalanen ammattitaidonOsoittamistavat) {
         this.ammattitaidonOsoittamistavat = ammattitaidonOsoittamistavat;
     }
-    
+
     public TekstiPalanen getOsaamisala() {
         return osaamisala;
     }
-    
+
     public void setOsaamisala(TekstiPalanen osaamisala) {
         this.osaamisala = osaamisala;
     }
-    
+
     public Long getOpintoluokitus() {
         return opintoluokitus;
     }
-    
+
     public void setOpintoluokitus(Long opintoluokitus) {
         this.opintoluokitus = opintoluokitus;
     }
 
     public Long getKoodi() {
-		return koodi;
-	}
+	return koodi;
+    }
 
-	public void setKoodi(Long koodi) {
-		this.koodi = koodi;
-	}
+    public void setKoodi(Long koodi) {
+        this.koodi = koodi;
+    }
 
-	public Arviointi getArviointi() {
+    public Arviointi getArviointi() {
         return arviointi;
     }
 
