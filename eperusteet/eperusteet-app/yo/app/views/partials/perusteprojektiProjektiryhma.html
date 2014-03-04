@@ -14,13 +14,13 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
-<form class="form-horizontal" name='perusteprojektiForm' role="form" ng-submit="tallennaPerusteprojekti()" novalidate>
-    <tabset>
-        <tab ng-repeat="tab in tabs" heading="{{tab.otsikko}}" active="tab.active" disabled="tab.disabled">
-            <div style="margin-top: 20px;">
-                <ng-include  src="tab.url"></ng-include>
+<div ng-controller="ProjektiryhmaCtrl">
+    <div ng-form="projektiryhmaForm">
+        <div class="form-group">
+            <label for="projektipaallikko" class="col-sm-3">Projektipäällikkö</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" id="projektipaallikko" ng-model='projekti.paallikko' placeholder="Nimeä projektipäällikkö">
             </div>
-        </tab>
-    </tabset>
-    <button type="submit" id="submit" class="btn btn-default" ng-disabled="perusteprojektiForm.$invalid"  translate>tallenna-perusteprojekti-nappi</button>
-</form>
+        </div>
+    </div>
+</div>

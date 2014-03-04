@@ -45,28 +45,15 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     
     @Autowired
     private PerusteprojektiRepository repository;
-    
-    @Autowired
-    private KoulutusalaRepository koulutusalaRepo;
         
     @Override
     @Transactional(readOnly = false)
     public PerusteprojektiDto save(PerusteprojektiDto perusteprojektiDto) {
-
         
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
-        
-        LOG.info("Perusteprojektin nimi: " + perusteprojekti.getNimi());
-        LOG.info("Koulutusala koodi: " + perusteprojekti.getPeruste().getKoulutusala().getKoodi());
-        LOG.info("Koulutusala id: " + perusteprojekti.getPeruste().getKoulutusala().getId());
-        /*for(Opintoala opintoala : perusteprojekti.getPeruste().getOpintoalat()) {
-            LOG.info("Opintoala koodi: " + opintoala.getId());
-        }*/
-        
-        
-        
         perusteprojekti = repository.save(perusteprojekti);
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
+        
     }
     
 }

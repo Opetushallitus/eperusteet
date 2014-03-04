@@ -1,18 +1,18 @@
 'use strict';
 
-describe('Service: Perusteprojekti', function () {
+describe('Service: PerusteprojektiResource', function () {
 
   // load the service's module
   beforeEach(module('eperusteApp'));
 
   // instantiate service
-  var Perusteprojekti;
-  beforeEach(inject(function (_Perusteprojekti_) {
-    Perusteprojekti = _Perusteprojekti_;
+  var PerusteprojektiResource;
+  beforeEach(inject(function (_PerusteprojektiResource_) {
+    PerusteprojektiResource = _PerusteprojektiResource_;
   }));
 
   it('should do something', function () {
-    expect(!!Perusteprojekti).toBe(true);
+    expect(!!PerusteprojektiResource).toBe(true);
   });
 
 });
