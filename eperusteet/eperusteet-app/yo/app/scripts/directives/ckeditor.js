@@ -2,27 +2,28 @@
 /*global CKEDITOR,$*/
 
 angular.module('eperusteApp')
-  .directive('ckeditor', function($translate, $q) {
+  .run(function() {
     CKEDITOR.disableAutoInline = true;
-
+  })
+  .directive('ckeditor', function($translate, $q) {
     return {
       restrict: 'A',
       require: 'ngModel',
+      scope: {},
       link: function(scope, element, attrs, ctrl) {
         var placeholderText = null;
         var editingEnabled = (element.attr('editing-enabled') || 'true') === 'true';
         element.attr('contenteditable', 'true');
-        
         function getPlaceholderPromise() {
           var deferred = $q.defer();
-          if(element.attr('editor-placeholder')) {
+          if (element.attr('editor-placeholder')) {
             console.log('Placeholder: ' + element.attr('editor-placeholder'));
             $translate(element.attr('editor-placeholder')).then(function(value) {
               deferred.resolve(value);
             },
-            function() {
-              deferred.resolve(element.attr('editor-placeholder'));
-            });
+              function() {
+                deferred.resolve(element.attr('editor-placeholder'));
+              });
           } else {
             deferred.resolve();
           }
@@ -39,7 +40,7 @@ angular.module('eperusteApp')
         console.log('editing enable: ' + editingEnabled);
         editor = CKEDITOR.inline(element[0], {
           toolbar: 'Basic',
-          removePlugins: 'resize,elementspath',
+          removePlugins: 'resize,elementspath,scayt,wsc',
           extraPlugins: 'divarea,sharedspace',
           extraAllowedContent: '*[contenteditable]',
           language: 'fi',
@@ -58,42 +59,42 @@ angular.module('eperusteApp')
             ctrl.$render();
           });
         });
-        
+
         scope.$on('enableEditing', function() {
           editingEnabled = true;
           editor.setReadOnly(!editingEnabled);
           console.log('enable editing');
         });
-        
+
         scope.$on('disableEditing', function() {
           editingEnabled = false;
           editor.setReadOnly(!editingEnabled);
           console.log('disable editing');
         });
-        
+
+        scope.$on('$destroy', function() {
+          if (editor) {
+            editor.destroy(false);
+          }
+        });
+
         editor.on('focus', function() {
           console.log('focus');
-          if(editingEnabled) {
+          if (editingEnabled) {
             element.removeClass('has-placeholder');
             console.log('set toolbar -> show');
             $('#toolbar').show();
-            if(editor.getData() === placeholderText) {
+            if (editor.getData() === placeholderText) {
               editor.setData('');
             }
           }
-//          var h = $('#ck-toolbar-top').height();
-//          console.log(h);
-//          $('body').css('padding-top', h);
-          //element.attr('contenteditable','false');
         });
 
-        editor.on('change', function() {
-          console.log('pasteState');
-        });
+        //editor.on('change', function() {
+        //});
 
-        editor.on('instanceReady', function() {
-          console.log('ready');
-        });
+        //editor.on('instanceReady', function() {
+        //});
 
         editor.on('blur', function() {
           console.log('blur');
@@ -104,7 +105,7 @@ angular.module('eperusteApp')
               ctrl.$setViewValue(data);
               scope.$broadcast('edited');
             });
-            if(!data) {
+            if (!data) {
               element.addClass('has-placeholder');
               editor.setData(placeholderText);
             }
@@ -119,7 +120,7 @@ angular.module('eperusteApp')
           console.log('render: ' + ctrl.$viewValue);
           console.log(editor);
           if (editor) {
-            if(angular.isString(ctrl.$viewValue) && ctrl.$viewValue.length === 0 && placeholderText) {
+            if (angular.isString(ctrl.$viewValue) && ctrl.$viewValue.length === 0 && placeholderText) {
               console.log('render placeholder to editor');
               console.log(placeholderText);
               element.addClass('has-placeholder');
@@ -133,13 +134,10 @@ angular.module('eperusteApp')
 
         getPlaceholderPromise().then(function(resolvedPlaceholder) {
           placeholderText = resolvedPlaceholder;
-          
           // load init value from DOM
           ctrl.$render();
         });
-        
-        //element.click(ev);
-        
+
       }
     };
   });

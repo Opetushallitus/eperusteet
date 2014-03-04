@@ -22,7 +22,7 @@ module.exports = function(config) {
       'app/bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
       'app/bower_components/angular-ui-bootstrap-bower/ui-bootstrap.js',
       'app/bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js',
-      'app/components/ckeditor/ckeditor.js',
+      'app/bower_components/ckeditor/ckeditor.js',
       'app/bower_components/lodash/dist/lodash.js',
       'app/scripts/*.js',
       'app/scripts/**/*.js',
