@@ -2,33 +2,28 @@
 /*global CKEDITOR,$*/
 
 angular.module('eperusteApp')
-  .directive('ckeditor', function($translate, $q) {
+  .directive('ckeditor', function($q, $filter, $rootScope) {
     CKEDITOR.disableAutoInline = true;
 
     return {
       restrict: 'A',
       require: 'ngModel',
+      scope: {
+        editorPlaceholder: '@?'
+      },
       link: function(scope, element, attrs, ctrl) {
         var placeholderText = null;
         var editingEnabled = (element.attr('editing-enabled') || 'true') === 'true';
         element.attr('contenteditable', 'true');
         
-        function getPlaceholderPromise() {
-          var deferred = $q.defer();
-          if(element.attr('editor-placeholder')) {
-            console.log('Placeholder: ' + element.attr('editor-placeholder'));
-            $translate(element.attr('editor-placeholder')).then(function(value) {
-              deferred.resolve(value);
-            },
-            function() {
-              deferred.resolve(element.attr('editor-placeholder'));
-            });
+        function getPlaceholder() {
+          if(scope.editorPlaceholder) {
+            return $filter('translate')(scope.editorPlaceholder);
           } else {
-            deferred.resolve();
+            return "";
           }
-          return deferred.promise;
         }
-
+        
         console.log('CKEDITOR!!');
         var editor = CKEDITOR.instances[attrs.id];
         if (editor) {
@@ -52,11 +47,10 @@ angular.module('eperusteApp')
 
         console.log('attaching events');
 
-        scope.$on('kieliVaihtui', function() {
-          getPlaceholderPromise().then(function(resolvedPlaceholder) {
-            placeholderText = resolvedPlaceholder;
-            ctrl.$render();
-          });
+        $rootScope.$on('$translateChangeSuccess', function() {
+          console.log('kieli vaihtui');
+          placeholderText = getPlaceholder();
+          ctrl.$render();
         });
         
         scope.$on('enableEditing', function() {
@@ -131,12 +125,15 @@ angular.module('eperusteApp')
           console.log(editor);
         };
 
-        getPlaceholderPromise().then(function(resolvedPlaceholder) {
-          placeholderText = resolvedPlaceholder;
-          
-          // load init value from DOM
-          ctrl.$render();
-        });
+//        getPlaceholderPromise().then(function(resolvedPlaceholder) {
+//          placeholderText = resolvedPlaceholder;
+//          
+//          // load init value from DOM
+//          ctrl.$render();
+//        });
+        
+        placeholderText = getPlaceholder();
+        ctrl.$render();
         
         //element.click(ev);
         

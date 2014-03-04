@@ -18,32 +18,8 @@ European Union Public Licence for more details.
   <div class="panel-heading">
     <h3 class="panel-title">{{tutkinnonOsanMuokkausOtsikko | translate}}</h3>
   </div>
-  <ul class="list-group muokkaus">
-      <li class="list-group-item" ng-class="editClass">
-        <h4 class="list-group-item-heading" translate>muokkaus-tutkinnon-osan-nimi</h4>
-        <p class="list-group-item-text" ng-model="editableTutkinnonOsa.nimi.fi" ckeditor editing-enabled="false" editor-placeholder="muokkaus-otsikko-placeholder"></p>
-      </li>
-      <li class="list-group-item" ng-class="editClass">
-        <h4 class="list-group-item-heading" translate>muokkaus-tutkinnon-osan-tavoitteet</h4>
-        <p class="list-group-item-text" ng-model="editableTutkinnonOsa.tavoitteet.fi" ckeditor editing-enabled="false" editor-placeholder="muokkaus-tavoitteet-placeholder"></p>
-      </li>
-      <li class="list-group-item" ng-class="editClass">
-        <h4 class="list-group-item-heading" translate>muokkaus-tutkinnon-osan-ammattitaitovaatimukset</h4>
-        <p class="list-group-item-text" ng-model="editableTutkinnonOsa.ammattitaitovaatimukset.fi" ckeditor editing-enabled="false" editor-placeholder="muokkaus-ammattitaitovaatimukset-placeholder"></p>
-      </li>
-      <li class="list-group-item" ng-class="editClass">
-        <h4 class="list-group-item-heading" translate>muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat</h4>
-        <p class="list-group-item-text" ng-model="editableTutkinnonOsa.ammattitaidonOsoittamistavat.fi" ckeditor editing-enabled="false" editor-placeholder="muokkaus-ammattitaidon-osoittamistavat-placeholder"></p>
-      </li>
-      <li class="list-group-item" ng-class="editClass">
-        <h4 class="list-group-item-heading" translate>muokkaus-tutkinnon-osan-osaamisala</h4>
-        <p class="list-group-item-text" ng-model="editableTutkinnonOsa.osaamisala.fi" ckeditor editing-enabled="false" editor-placeholder="muokkaus-osaamisala-placeholder"></p>
-      </li>
-      <li class="list-group-item" ng-class="editClass">
-        <h4 class="list-group-item-heading" translate>muokkaus-tutkinnon-osan-koodi</h4>
-        <input type="number" ng-model="editableTutkinnonOsa.koodi"/>
-      </li>
-    </ul>
+  <ul id="muokkaus-sisaltoalue" class="list-group muokkaus">
+  </ul>
 </div>
 
 

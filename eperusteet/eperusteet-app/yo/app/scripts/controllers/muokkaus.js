@@ -26,6 +26,7 @@ angular.module('eperusteApp')
       });
   })
   .controller('MuokkausCtrl', function($scope, $routeParams, PerusteenOsat, $location, $compile) {
+    
     console.log('setup muokkaus');
     $scope.tyyppi = $routeParams.perusteenOsanTyyppi;
     

@@ -15,6 +15,7 @@
 */
 
 'use strict';
+/*global _*/
 
 angular.module('eperusteApp')
   .directive('muokkausTutkinnonosa', function() {
@@ -27,6 +28,20 @@ angular.module('eperusteApp')
       controller: function($scope, $location, Editointikontrollit, PerusteenOsat, $compile) {
         
         $scope.panelType = 'panel-default';
+        
+        function hasNested(obj, path, delimiter) {
+          var propertyNames = path.split(delimiter);
+          
+          function innerHasNested(obj, names) {
+            if(_.has(obj, names[0])) {
+              return names.length > 1 ? innerHasNested(obj[names[0]], names.splice(1, names.length)) : true;
+            } else {
+              return false;
+            }
+          };
+          
+          return innerHasNested(obj, propertyNames);
+        }
         
         function setupTutkinnonOsa(osa) {
           $scope.editableTutkinnonOsa = angular.copy(osa);
@@ -62,45 +77,100 @@ angular.module('eperusteApp')
           });
         }
         
-//        function setupEditTutkinnonOsaHtml() {
-//          if($scope.editableTutkinnonOsa.nimi) {
-//            
-//          }
-//        }
+        function setupEditTutkinnonOsaHtml(fields) {
+          console.log('EDIT HTML');
+          console.log(document.getElementById('muokkaus-sisaltoalue'));
+          var listElement = angular.element('<ul></ul>').addClass('list-group').addClass('muokkaus');
+          angular.forEach(fields, function(field) {
+            console.log(field);
+            var el = 
+              angular.element('<li></li>')
+              .attr('muokkauskentta-raamit', '')
+              .attr('otsikko', field.header);
+            if(hasNested($scope, field.path, '.')) {
+              el = $compile(el.append(
+                  angular.element('<inline-muokkauskentta></inline-muokkauskentta>')
+                  .attr('editable-field', field.path)
+                  .attr('placeholder', field.placeholder)))($scope);
+            } else {
+              el = $compile(el.append(
+                  angular.element('<input></input>').addClass('form-control')
+                  .attr('ng-model', field.path)
+                  .attr('placeholder','{{\'' + field.placeholder + '\' | translate}}')))($scope);
+            }
+            console.log(el);
+            console.log(angular.element('#muokkaus-sisaltoalue'));
+            listElement.append(el);
+          });
+          angular.element(document.getElementById('muokkaus-sisaltoalue')).replaceWith(listElement);          
+        }
+        
+        var visibleFields = 
+          new Array({
+                       path: 'editableTutkinnonOsa.nimi.fi', 
+                       placeholder: 'muokkaus-otsikko-placeholder',
+                       header: 'muokkaus-tutkinnon-osan-nimi'
+                     },{
+                       path: 'editableTutkinnonOsa.tavoitteet.fi', 
+                       placeholder: 'muokkaus-tavoitteet-placeholder',
+                       header: 'muokkaus-tutkinnon-osan-tavoitteet'
+                     },{
+                       path: 'editableTutkinnonOsa.ammattitaitovaatimukset.fi', 
+                       placeholder: 'muokkaus-ammattitaitovaatimukset-placeholder',
+                       header: 'muokkaus-tutkinnon-osan-ammattitaitovaatimukset'
+                     },{
+                       path: 'editableTutkinnonOsa.ammattitaidonOsoittamistavat.fi', 
+                       placeholder: 'muokkaus-ammattitaidon-osoittamistavat-placeholder',
+                       header: 'muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat'
+                     },{
+                       path: 'editableTutkinnonOsa.osaamisala.fi', 
+                       placeholder: 'muokkaus-osaamisala-placeholder',
+                       header: 'muokkaus-tutkinnon-osan-osaamisala'
+                     },{
+                       path: 'editableTutkinnonOsa.koodi', 
+                       placeholder: 'muokkaus-koodi-placeholder',
+                       header: 'muokkaus-tutkinnon-osan-koodi'
+                     });
         
         if($scope.tutkinnonOsa) {
           $scope.tutkinnonOsa.$promise.then(function(response) {
             setupTutkinnonOsa(response);
+            setupEditTutkinnonOsaHtml(visibleFields);
           });
         } else {
-          $scope.tutkinnonOsa = {
-            nimi: {
-              fi: '',
-              sv: ''
-            },
-            tavoitteet: {
-              fi: '',
-              sv: ''
-            },
-            arviointi: null,
-            ammattitaitovaatimukset: {
-              fi: '',
-              sv: ''
-            },
-            ammattitaidonOsoittamistavat: {
-              fi: '',
-              sv: ''
-            },
-            opintoluokitus: null,
-            koodi: null,
-            osaamisala: {
-              fi: '',
-              sv: ''
-            }
-          };
+          $scope.tutkinnonOsa = {};
           setupTutkinnonOsa($scope.tutkinnonOsa);
-//          setupEditTutkinnonOsaHtml();
+          setupEditTutkinnonOsaHtml(visibleFields);
         }
+        
+      }
+    };
+  })
+  .directive('muokkauskenttaRaamit', function() {
+    return {
+      template:
+        '<h4 class="list-group-item-heading" translate>{{otsikko}}</h4>' +
+        '<span ng-transclude></span>',
+      restrict: 'A',
+      transclude: true,
+      scope: {
+        otsikko: "@"
+      },
+      link: function(scope, element, attrs) {
+        element.addClass('list-group-item ');
+        element.attr('ng-class', '');
+      }
+    };
+  })
+  .directive('inlineMuokkauskentta', function() {
+    return {
+      template: '<p class="list-group-item-text" ng-model="editableField" ckeditor editing-enabled="false" editor-placeholder="{{placeholder}}"></p>',
+      restrict: 'E',
+      scope: {
+        editableField: '=',
+        placeholder: '@?',
+        testikentta: '='
       }
     };
   });
+
