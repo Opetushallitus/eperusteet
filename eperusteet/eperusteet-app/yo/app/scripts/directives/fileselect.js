@@ -29,7 +29,7 @@ angular.module('eperusteApp')
   })
   .directive('fileSelect', function(fileReader) {
     return {
-      templateUrl: '/views/partials/fileselect.html',
+      templateUrl: 'views/partials/fileselect.html',
       restrict: 'E',
       link: function($scope, el, attrs) {
         $scope.flabel = attrs.flabel || 'Lataa';
