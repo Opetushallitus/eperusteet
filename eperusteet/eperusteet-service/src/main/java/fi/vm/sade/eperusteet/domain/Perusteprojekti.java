@@ -16,48 +16,43 @@
 
 package fi.vm.sade.eperusteet.domain;
 
-import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.Cacheable;
+import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Immutable;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
  * @author harrik
  */
 @Entity
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-@Immutable
-@Table(name = "koulutusala")
-public class Koulutusala implements Koodistokoodi, Serializable {
-    
+@Table(name = "perusteprojekti")
+public class Perusteprojekti implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    private String koodi;
-    
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "koulutusala_opintoala", 
-            joinColumns = @JoinColumn(name = "koulutusala_id"), 
-            inverseJoinColumns = @JoinColumn(name = "opintoala_id"))
-    private List<Opintoala> opintoalat;
+    private String nimi;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade={CascadeType.MERGE, CascadeType.PERSIST})
+    private Peruste peruste;
+    
+    private String diaarinumero;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date paatosPvm;
+    
+    private String tehtavaluokka;
+    
     public Long getId() {
         return id;
     }
@@ -66,27 +61,46 @@ public class Koulutusala implements Koodistokoodi, Serializable {
         this.id = id;
     }
 
-    @Override
-    public String getKoodi() {
-        return koodi;
+    public String getNimi() {
+        return nimi;
     }
 
-    @Override
-    public void setKoodi(String koodi) {
-        this.koodi = koodi;
+    public void setNimi(String nimi) {
+        this.nimi = nimi;
     }
 
-    public List<Opintoala> getOpintoalat() {
-        return opintoalat;
+    public Peruste getPeruste() {
+        return peruste;
     }
 
-    public void setOpintoalat(List<Opintoala> opintoalat) {
-        this.opintoalat = opintoalat;
+    public void setPeruste(Peruste peruste) {
+        this.peruste = peruste;
     }
+
+    public String getDiaarinumero() {
+        return diaarinumero;
+    }
+
+    public void setDiaarinumero(String diaarinumero) {
+        this.diaarinumero = diaarinumero;
+    }
+
+    public Date getPaatosPvm() {
+        return paatosPvm;
+    }
+
+    public void setPaatosPvm(Date paatosPvm) {
+        this.paatosPvm = paatosPvm;
+    }
+
+    public String getTehtavaluokka() {
+        return tehtavaluokka;
+    }
+
+    public void setTehtavaluokka(String tehtavaluokka) {
+        this.tehtavaluokka = tehtavaluokka;
+    }
+
     
-    @Override
-    public String toString() {
-        return koodi;
-    }
-    
+        
 }

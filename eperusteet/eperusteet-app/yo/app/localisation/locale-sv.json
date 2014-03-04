@@ -128,6 +128,15 @@
     "opintoluokitus": "[Opintoluokitus]",
     "tavoitteet": "[Tavoitteet]",
     "ammattitaitovaatimukset": "[Ammattitaitovaatimukset]",
-    "arvointi": "[Arviointi]"
+    "arvointi": "[Arviointi]",
+    
+    "projektin-nimi-label": "[Projektin nimi]",
+    "anna-projektin-nimi-placeholder": "[Anna projektin nimi]",
+    "diaarinumero-label": "[Diaarinumero]",
+    "anna-diaarinumero-placeholder": "[Anna diaarinumero]",
+    "tallenna-perusteprojekti-nappi": "[Tallenna]",
+    "valitse-tehtäväluokka": "[Valitse tehtäväluokka]",
+    "tehtäväluokka-label": "Tehtäväluokka",
+    "anna-päätöspäivämäärä": "Anna päätöspäivämäärä"
 }
 

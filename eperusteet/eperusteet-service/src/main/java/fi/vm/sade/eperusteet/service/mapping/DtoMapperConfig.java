@@ -15,9 +15,11 @@
  */
 package fi.vm.sade.eperusteet.service.mapping;
 
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
@@ -35,24 +37,32 @@ public class DtoMapperConfig {
     @Bean
     @Dto
     public DtoMapper dtoMapper(
-        TekstiPalanenConverter tekstiPalanenConverter,
-        CachedEntityConverter cachedEntityConverter) {
+            TekstiPalanenConverter tekstiPalanenConverter,
+            CachedEntityConverter cachedEntityConverter,
+            KoodistokoodiConverter koodistokoodiConverter) {
         DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
-            .build();
+                .build();
         factory.getConverterFactory().registerConverter(tekstiPalanenConverter);
         factory.getConverterFactory().registerConverter(cachedEntityConverter);
+        factory.getConverterFactory().registerConverter("koodistokoodiConverter", koodistokoodiConverter);
 
         factory.classMap(PerusteenOsaDto.class, PerusteenOsa.class)
-            .byDefault()
-            .register();
+                .byDefault()
+                .register();
         factory.classMap(TutkinnonOsaDto.class, TutkinnonOsa.class)
-            .use(PerusteenOsaDto.class, PerusteenOsa.class)
-            .byDefault()
-            .register();
+                .use(PerusteenOsaDto.class, PerusteenOsa.class)
+                .byDefault()
+                .register();
         factory.classMap(TekstiKappaleDto.class, TekstiKappale.class)
-            .use(PerusteenOsaDto.class, PerusteenOsa.class)
-            .byDefault()
-            .register();
+                .use(PerusteenOsaDto.class, PerusteenOsa.class)
+                .byDefault()
+                .register();
+        factory.classMap(PerusteDto.class, Peruste.class)
+                .fieldMap("koulutusala", "koulutusala").converter("koodistokoodiConverter").add()
+                .fieldMap("opintoalat{}", "opintoalat{}").converter("koodistokoodiConverter").add()
+                .byDefault()
+                .register();
+
 
         return new DtoMapperImpl(factory.getMapperFacade());
     }

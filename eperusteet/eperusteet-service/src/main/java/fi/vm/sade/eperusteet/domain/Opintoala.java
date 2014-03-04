@@ -35,7 +35,7 @@ import org.hibernate.annotations.Immutable;
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Immutable
 @Table(name = "opintoala")
-public class Opintoala implements Serializable {
+public class Opintoala implements Serializable, Koodistokoodi {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -52,10 +52,12 @@ public class Opintoala implements Serializable {
         this.id = id;
     }
 
+    @Override
     public String getKoodi() {
         return koodi;
     }
 
+    @Override
     public void setKoodi(String koodi) {
         this.koodi = koodi;
     }

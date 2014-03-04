@@ -13,28 +13,25 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 package fi.vm.sade.eperusteet.dto;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serializable;
+import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
- * @author teele1
+ * @author harrik
  */
-public class EntityReference {
-
-    private final String id;
-
-    public EntityReference(Long id) {
-        this.id = id.toString();
-    }
-
-    public EntityReference(String id) {
-        this.id = id;
-    }
-
-    @JsonValue
-    public String getId() {
-        return id;
-    }
+@Getter
+@Setter
+public class PerusteprojektiDto implements Serializable {    
+    private Long id;
+    private String nimi;
+    private PerusteDto peruste;   
+    private String diaarinumero;
+    private Date paatosPvm;
+    private String tehtavaluokka;    
 }

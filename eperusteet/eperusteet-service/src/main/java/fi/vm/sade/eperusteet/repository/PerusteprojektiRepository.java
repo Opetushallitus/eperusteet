@@ -13,28 +13,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.dto;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+package fi.vm.sade.eperusteet.repository;
+
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
- * @author teele1
+ * @author harrik
  */
-public class EntityReference {
-
-    private final String id;
-
-    public EntityReference(Long id) {
-        this.id = id.toString();
-    }
-
-    public EntityReference(String id) {
-        this.id = id;
-    }
-
-    @JsonValue
-    public String getId() {
-        return id;
-    }
+@Repository
+public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti, Long>{
+    
 }
