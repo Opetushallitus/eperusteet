@@ -18,7 +18,10 @@ European Union Public Licence for more details.
   <div class="panel-heading">
     <h3 class="panel-title">{{tutkinnonOsanMuokkausOtsikko | translate}}</h3>
   </div>
-  <ul id="muokkaus-sisaltoalue" class="list-group muokkaus">
+  <ul class="list-group muokkaus">
+    <li ng-repeat="field in visibleFields" muokkauskentta-raamit otsikko="{{field.header}}">
+      <muokattava-kentta field-info="field" tutkinnon-osa="editableTutkinnonOsa" tutkinnon-osa-ready="tutkinnonOsaReady"></muokattava-kentta>
+    </li>
   </ul>
 </div>
 

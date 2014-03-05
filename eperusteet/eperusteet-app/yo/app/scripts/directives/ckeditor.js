@@ -111,18 +111,14 @@ angular.module('eperusteApp')
 
         ctrl.$render = function() {
           console.log('render: ' + ctrl.$viewValue);
-          console.log(editor);
           if (editor) {
             if(angular.isString(ctrl.$viewValue) && ctrl.$viewValue.length === 0 && placeholderText) {
-              console.log('render placeholder to editor');
-              console.log(placeholderText);
               element.addClass('has-placeholder');
               editor.setData(placeholderText);
             } else {
               editor.setData(ctrl.$viewValue);
             }
           }
-          console.log(editor);
         };
 
 //        getPlaceholderPromise().then(function(resolvedPlaceholder) {
