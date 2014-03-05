@@ -79,4 +79,5 @@ public class KayttajaprofiiliController {
         KayttajaProfiiliDto k = service.deleteSuosikki(perusteId);
         return new ResponseEntity<>(k, HttpStatus.OK);
     }
+    
 }

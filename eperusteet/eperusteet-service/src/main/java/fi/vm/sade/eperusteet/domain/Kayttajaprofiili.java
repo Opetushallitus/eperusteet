@@ -27,6 +27,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -40,8 +42,12 @@ public class Kayttajaprofiili implements Serializable {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
+    @Setter
     private Long id;
     
+    @Getter
+    @Setter
     private String oid;
 
     @ManyToMany
@@ -49,37 +55,24 @@ public class Kayttajaprofiili implements Serializable {
     @JoinTable(name = "kayttajaprofiili_peruste", 
             joinColumns = @JoinColumn(name = "kayttajaprofiili_id"), 
             inverseJoinColumns = @JoinColumn(name = "peruste_id"))
+    @Getter
+    @Setter
     private List<Peruste> suosikit;
+    
+    @ManyToMany
+    @OrderColumn(name = "projekti_order")
+    @JoinTable(name = "kayttajaprofiili_perusteprojekti", 
+            joinColumns = @JoinColumn(name = "kayttajaprofiili_id"), 
+            inverseJoinColumns = @JoinColumn(name = "perusteprojekti_id"))
+    @Getter
+    @Setter
+    private List<Perusteprojekti> perusteprojektit;
 
     public Kayttajaprofiili() {
     }
 
     public Kayttajaprofiili(Long id) {
         this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getOid() {
-        return oid;
-    }
-
-    public void setOid(String oid) {
-        this.oid = oid;
-    }
-    
-    public List<Peruste> getSuosikit() {
-        return suosikit;
-    }
-
-    public void setSuosikit(List<Peruste> suosikit) {
-        this.suosikit = suosikit;
     }
 
     @Override

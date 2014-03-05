@@ -28,6 +28,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface KayttajaprofiiliRepository extends JpaRepository<Kayttajaprofiili, Long>{
     
-    @Query("SELECT k FROM Kayttajaprofiili k LEFT JOIN FETCH k.suosikit WHERE k.oid = ?1")
+    @Query("SELECT k FROM Kayttajaprofiili k LEFT JOIN FETCH k.suosikit LEFT JOIN FETCH k.perusteprojektit WHERE k.oid = ?1")
     Kayttajaprofiili findOneEager(String oid);
 }

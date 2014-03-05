@@ -19,6 +19,8 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
+import fi.vm.sade.eperusteet.service.KoulutusalaService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -45,6 +47,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Autowired
     private PerusteprojektiRepository repository;
     
+    @Autowired
+    private KayttajaprofiiliService kayttajaprofiiliService;
+    
     @Override
     @Transactional(readOnly = true)
     public PerusteprojektiDto get(Long id) {
@@ -58,6 +63,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
         perusteprojekti = repository.save(perusteprojekti);
+        
+        kayttajaprofiiliService.addPerusteprojekti(perusteprojekti.getId());
+        
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
         
     } 
