@@ -3,7 +3,12 @@
 
 angular.module('eperusteApp')
   .factory('PerusteprojektiResource', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteprojekti');
+    return $resource(SERVICE_LOC + '/perusteprojektit/:id', {
+      id: '@id'
+    },
+      {
+        update: {method: 'PUT', isArray: false}
+      });
   }).service('PerusteProjektiService', function() {
     
     var pp = {};
@@ -17,6 +22,10 @@ angular.module('eperusteApp')
       return _.clone(pp);
     }
     
+    function clean () {
+      pp = {};
+    }
+    
     function watcher(scope, kentta) {
       scope.$watchCollection(kentta, function(temp) {
         save(temp);
@@ -27,6 +36,7 @@ angular.module('eperusteApp')
     return {
       save: save,
       get: get,
-      watcher: watcher
+      watcher: watcher,
+      clean: clean
     };
   });

@@ -19,20 +19,20 @@ European Union Public Licence for more details.
         <div class="form-group">
             <label for="projektinNimi" class="col-sm-3">{{'projektin-nimi-label'| translate}}</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="projektinNimi" ng-model='projekti.projektinNimi' placeholder="{{'anna-projektin-nimi-placeholder'| translate}}" required>
+                <input type="text" class="form-control" id="projektinNimi" ng-model='projekti.nimi' placeholder="{{'anna-projektin-nimi-placeholder'| translate}}" ng-maxlength="255" ng-required="true" >
             </div>
         </div>
         <div class="form-group">
             <label for="diaarinumero" class="col-sm-3">{{'diaarinumero-label'| translate}}</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="diaarinumero" ng-model='projekti.diaarinumero' placeholder="{{'anna-diaarinumero-placeholder'| translate}}" required>
+                <input type="text" class="form-control" id="diaarinumero" ng-model='projekti.diaarinumero' placeholder="{{'anna-diaarinumero-placeholder'| translate}}" ng-required="true">
             </div>
         </div>
         <div class="form-group">
             <label for="paatospvm" class="col-sm-3">{{'päätöspvm-label'| translate}}</label>
             <div class="col-sm-9">
                 <span class="input-group">
-                    <input type="text" id="paatospvm" class="form-control" datepicker-popup="{{format}}" ng-model="projekti.paatosPvm" placeholder="{{'anna-päätöspäivämäärä' | translate}}" ng-required="true" is-open="kalenteriAuki" datepicker-options="dateOptions" show-button-bar="false" />
+                    <input type="text" id="paatospvm" class="form-control" datepicker-popup="{{format}}" ng-model="projekti.paatosPvm" placeholder="{{'anna-päätöspäivämäärä' | translate}}" is-open="kalenteriAuki" datepicker-options="dateOptions" show-button-bar="false" />
                     <span class="input-group-btn">
                         <button class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                     </span>
@@ -42,7 +42,7 @@ European Union Public Licence for more details.
         <div class="form-group">
             <label for="tehtavaluokka" class="col-sm-3">{{'tehtäväluokka-label'| translate}}</label>
             <div class="col-md-9">
-                <select id="tehtavaluokka" ng-model="projekti.tehtavaluokka" class="form-control" required>
+                <select id="tehtavaluokka" ng-model="projekti.tehtavaluokka" class="form-control">
                     <option value="" disabled selected translate>valitse-tehtäväluokka</option>
                     <option ng-repeat="tehtavaluokka in tehtavaluokat" value="{{tehtavaluokka.nimi}}" ng-selected="valittuTehtavaluokka.nimi === tehtavaluokka.nimi">{{tehtavaluokka.nimi}}</option>
                 </select>

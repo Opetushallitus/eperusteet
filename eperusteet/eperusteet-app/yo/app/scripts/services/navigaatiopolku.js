@@ -23,7 +23,7 @@ angular.module('eperusteApp')
         };
 
         if (pathElements[0] === '') {
-          pathElements.splice(0,1);
+          pathElements.splice(0, 1);
         }
 
         angular.forEach(pathElements, function(el) {
@@ -31,14 +31,17 @@ angular.module('eperusteApp')
           var route = getRoute(path);
 
           if (routes[route] && routes[route].navigaationimi) {
-            
+
             navigaatiopolut.push({navigaationimi: routes[route].navigaationimi, polku: path});
-            
+
           } else if (routes[route] && routes[route].navigaationimiId) {
             
-            YleinenData.valitseKieli(YleinenData.navigaatiopolkuElementit[routes[route].navigaationimiId]);
-            navigaatiopolut.push({navigaationimi: YleinenData.valitseKieli(YleinenData.navigaatiopolkuElementit[routes[route].navigaationimiId]), polku: path});
-            
+            if (YleinenData.valitseKieli(YleinenData.navigaatiopolkuElementit[routes[route].navigaationimiId]) !== '') {
+              navigaatiopolut.push({navigaationimi: YleinenData.valitseKieli(YleinenData.navigaatiopolkuElementit[routes[route].navigaationimiId]), polku: path});
+            } else {
+              navigaatiopolut.push({navigaationimi: YleinenData.navigaatiopolkuElementit[routes[route].navigaationimiId], polku: path});
+            }
+
           }
         });
       };
