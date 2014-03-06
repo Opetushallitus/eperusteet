@@ -54,30 +54,8 @@ public class KoodistokoodiConverter extends BidirectionalConverter<Koodistokoodi
         if (klass == Koulutusala.class) {
             return koulutusalaRepo.findOneByKoodi(d);
         } else if (klass == Opintoala.class) {
-            LOG.info("KoodistokoodiConverter opintoalaa muunnettu");
             return opintoalaRepo.findOneByKoodi(d);
         }
         return null;
     }
-
-   /* @Override
-    public Koodistokoodi convert(String s, Type<? extends Koodistokoodi> type) {
-        
-        LOG.info("KoodistokoodiConverter kutsuttu luokalla: " + type.getRawType());
-        
-        if (type.getRawType() == Koulutusala.class) {
-            return koulutusalaRepo.findOneByKoodi(s);
-        } else if (type.getRawType() == Opintoala.class) {
-            LOG.info("KoodistokoodiConverter opintoalaa muunnettu");
-            return opintoalaRepo.findOneByKoodi(s);
-        }
-        return null;
-    }*/
-
-    
-
-
-
-
-
 }

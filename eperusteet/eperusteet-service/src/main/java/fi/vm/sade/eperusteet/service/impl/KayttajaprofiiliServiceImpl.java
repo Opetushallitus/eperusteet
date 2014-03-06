@@ -17,9 +17,11 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Kayttajaprofiili;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.dto.KayttajaProfiiliDto;
 import fi.vm.sade.eperusteet.repository.KayttajaprofiiliRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -47,6 +49,9 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
 
     @Autowired
     PerusteRepository perusteRepo;
+    
+    @Autowired
+    PerusteprojektiRepository perusteprojektiRepo;
 
     @Autowired
     @Dto
@@ -100,6 +105,32 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
         if (kayttajaprofiili != null) { 
             Peruste peruste = perusteRepo.findOne(perusteId);
             kayttajaprofiili.getSuosikit().remove(peruste);
+        }
+
+        return mapper.map(kayttajaprofiili, KayttajaProfiiliDto.class);
+    }
+    
+    
+    @Override
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
+    public KayttajaProfiiliDto addPerusteprojekti(final Long perusteprojektiId) {     
+        LOG.info("addPerusteprojekti " + perusteprojektiId);
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String oid = auth.getName();
+        Kayttajaprofiili kayttajaprofiili = kayttajaprofiiliRepo.findOneEager(oid);
+        Perusteprojekti perusteprojekti = perusteprojektiRepo.findOne(perusteprojektiId);
+
+        if (kayttajaprofiili == null) {
+            kayttajaprofiili = new Kayttajaprofiili();
+            kayttajaprofiili.setOid(oid);
+            kayttajaprofiili.setSuosikit(new ArrayList<Peruste>());
+            kayttajaprofiiliRepo.save(kayttajaprofiili);
+        }
+        
+        if (!kayttajaprofiili.getPerusteprojektit().contains(perusteprojekti)) {
+            kayttajaprofiili.getPerusteprojektit().add(perusteprojekti);
         }
 
         return mapper.map(kayttajaprofiili, KayttajaProfiiliDto.class);

@@ -10,7 +10,7 @@ angular.module('eperusteApp')
       ];
 
 
-      this.navigaatiopolkuElementit = [];
+      this.navigaatiopolkuElementit = {};
 
       this.kielet = {
         'suomi': 'fi',

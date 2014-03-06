@@ -29,4 +29,5 @@ import lombok.Setter;
 public class KayttajaProfiiliDto {
     private long id;
     private List<PerusteDto> suosikit;
+    private List<PerusteprojektiDto> perusteprojektit;
 }

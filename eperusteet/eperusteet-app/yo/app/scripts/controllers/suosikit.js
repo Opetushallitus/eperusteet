@@ -5,12 +5,14 @@ angular.module('eperusteApp')
   .controller('SuosikitCtrl', function($scope, Kayttajaprofiilit, YleinenData, Suosikitbroadcast) {
 
     $scope.suosikit = {};
-    $scope.suppeaSuosikkiMaara = 5;
-    $scope.suosikkiRaja = $scope.suppeaSuosikkiMaara;
+    $scope.suppeaMaara = 5;
+    $scope.suosikkiRaja = $scope.suppeaMaara;
+    $scope.projektitRaja = $scope.suppeaMaara;
     $scope.lisaaSuosikkeja = false;
     $scope.naytetaanKaikkiSuosikit = false;
-    var naytaKaikkiTeksti = 'haku-lisaa-suosikkeja';
-    var piilotaSuosikitTeksti = 'haku-piilota-suosikkeja';
+    $scope.naytetaanKaikkiProjektit = false;
+    var naytaKaikkiTeksti = 'sivupalkki-näytä-kaikki';
+    var piilotaTeksti = 'sivupalkki-piilota';
     $scope.kielet = YleinenData.kielet;
     $scope.kieli = YleinenData.kieli;
 
@@ -22,13 +24,13 @@ angular.module('eperusteApp')
         $scope.suosikit = vastaus.suosikit;
 
         if ($scope.naytetaanKaikkiSuosikit) {
-          $scope.suosikkiNapinTeksti = piilotaSuosikitTeksti;
+          $scope.suosikkiNapinTeksti = piilotaTeksti;
           $scope.suosikkiRaja = _.size($scope.suosikit);
         } else {
           $scope.suosikkiNapinTeksti = naytaKaikkiTeksti;
         }
 
-        if (_.size($scope.suosikit) > $scope.suppeaSuosikkiMaara) {
+        if (_.size($scope.suosikit) > $scope.suppeaMaara) {
           $scope.naytaSuosikkiNappi = true;
         } else {
           $scope.naytaSuosikkiNappi = false;
@@ -37,7 +39,7 @@ angular.module('eperusteApp')
     };
 
     paivitaSuosikit();
-
+    
     $scope.vaihdaKieli = function(kielikoodi) {
       console.log('Vaihdakieli: ' + kielikoodi);
       $scope.kieli = kielikoodi;
@@ -55,14 +57,14 @@ angular.module('eperusteApp')
 
       if ($scope.naytetaanKaikkiSuosikit) {
         $scope.suosikkiRaja = _.size($scope.suosikit);
-        $scope.suosikkiNapinTeksti = piilotaSuosikitTeksti;
+        $scope.suosikkiNapinTeksti = piilotaTeksti;
 
       } else {
-        $scope.suosikkiRaja = $scope.suppeaSuosikkiMaara;
+        $scope.suosikkiRaja = $scope.suppeaMaara;
         $scope.suosikkiNapinTeksti = naytaKaikkiTeksti;
       }
     };
-
+    
     $scope.$on('suosikitMuuttuivat', function() {
       paivitaSuosikit();
     });

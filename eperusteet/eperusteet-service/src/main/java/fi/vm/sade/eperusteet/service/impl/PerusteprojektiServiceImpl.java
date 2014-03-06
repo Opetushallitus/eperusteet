@@ -16,14 +16,15 @@
 
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.Opintoala;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
-import fi.vm.sade.eperusteet.repository.KoulutusalaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
+import fi.vm.sade.eperusteet.service.KoulutusalaService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import javax.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,16 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     
     @Autowired
     private PerusteprojektiRepository repository;
+    
+    @Autowired
+    private KayttajaprofiiliService kayttajaprofiiliService;
+    
+    @Override
+    @Transactional(readOnly = true)
+    public PerusteprojektiDto get(Long id) {
+        Perusteprojekti p = repository.findOne(id);
+        return mapper.map(p, PerusteprojektiDto.class);
+    }
         
     @Override
     @Transactional(readOnly = false)
@@ -52,8 +63,22 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
         perusteprojekti = repository.save(perusteprojekti);
+        
+        kayttajaprofiiliService.addPerusteprojekti(perusteprojekti.getId());
+        
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
         
+    } 
+
+    @Override
+    public PerusteprojektiDto update(Long id, PerusteprojektiDto perusteprojektiDto) {
+        if (!repository.exists(id)) {
+            throw new EntityNotFoundException("Objektia ei löytynyt id:llä: " + id);
+        }
+        
+        perusteprojektiDto.setId(id);
+        Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
+        perusteprojekti = repository.save(perusteprojekti);
+        return mapper.map(perusteprojekti, PerusteprojektiDto.class);
     }
-    
 }

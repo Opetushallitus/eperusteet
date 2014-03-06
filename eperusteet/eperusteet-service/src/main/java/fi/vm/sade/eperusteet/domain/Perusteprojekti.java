@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
@@ -28,7 +27,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
+import javax.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 /**
  *
  * @author harrik
@@ -39,68 +40,31 @@ public class Perusteprojekti implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
+    @Setter
     private Long id;
     
+    @Getter
+    @Setter
+    @NotNull(message="Nimi ei voi olla tyhjä")
     private String nimi;
 
     @OneToOne(fetch = FetchType.LAZY, cascade={CascadeType.MERGE, CascadeType.PERSIST})
+    @Getter
+    @Setter
     private Peruste peruste;
     
+    @Getter
+    @Setter
+    @NotNull(message="Diaarinumero ei voi olla tyhjä")
     private String diaarinumero;
     
     @Temporal(TemporalType.TIMESTAMP)
+    @Getter
+    @Setter
     private Date paatosPvm;
     
-    private String tehtavaluokka;
-    
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNimi() {
-        return nimi;
-    }
-
-    public void setNimi(String nimi) {
-        this.nimi = nimi;
-    }
-
-    public Peruste getPeruste() {
-        return peruste;
-    }
-
-    public void setPeruste(Peruste peruste) {
-        this.peruste = peruste;
-    }
-
-    public String getDiaarinumero() {
-        return diaarinumero;
-    }
-
-    public void setDiaarinumero(String diaarinumero) {
-        this.diaarinumero = diaarinumero;
-    }
-
-    public Date getPaatosPvm() {
-        return paatosPvm;
-    }
-
-    public void setPaatosPvm(Date paatosPvm) {
-        this.paatosPvm = paatosPvm;
-    }
-
-    public String getTehtavaluokka() {
-        return tehtavaluokka;
-    }
-
-    public void setTehtavaluokka(String tehtavaluokka) {
-        this.tehtavaluokka = tehtavaluokka;
-    }
-
-    
-        
+    @Getter
+    @Setter
+    private String tehtavaluokka;         
 }

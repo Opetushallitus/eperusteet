@@ -23,5 +23,10 @@ import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
  * @author harrik
  */
 public interface PerusteprojektiService {
+    
+    PerusteprojektiDto get(final Long id);
+    
     PerusteprojektiDto save(PerusteprojektiDto perusteprojektiDto);
+    
+    PerusteprojektiDto update(final Long id, PerusteprojektiDto perusteprojektiDto);
 }
