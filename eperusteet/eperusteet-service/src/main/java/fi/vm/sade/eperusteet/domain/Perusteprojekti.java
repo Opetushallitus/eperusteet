@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -64,7 +65,27 @@ public class Perusteprojekti implements Serializable {
     @Setter
     private Date paatosPvm;
     
+    @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
-    private String tehtavaluokka;         
+    @Column(name="toimikausi_alku")
+    private Date toimikausiAlku;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Getter
+    @Setter
+    @Column(name="toimikausi_loppu")
+    private Date toimikausiLoppu;
+    
+    @Getter
+    @Setter
+    private String tehtavaluokka;
+    
+    @Getter
+    @Setter
+    private String tehtava;
+    
+    @Getter
+    @Setter
+    private String yhteistyotaho;
 }

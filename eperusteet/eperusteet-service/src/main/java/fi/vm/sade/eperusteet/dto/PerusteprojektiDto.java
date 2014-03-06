@@ -33,5 +33,9 @@ public class PerusteprojektiDto implements Serializable {
     private PerusteDto peruste;   
     private String diaarinumero;
     private Date paatosPvm;
-    private String tehtavaluokka;    
+    private Date toimikausiAlku;
+    private Date toimikausiLoppu;
+    private String tehtavaluokka;
+    private String tehtava;
+    private String yhteistyotaho;
 }
