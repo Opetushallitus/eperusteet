@@ -35,7 +35,7 @@ angular.module('eperusteApp')
     
     function perusteprojektiLuotu() {
       $rootScope.$broadcast('perusteprojektiLuotu');
-    };
+    }
     
     return {
       save: save,
