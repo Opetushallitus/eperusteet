@@ -9,7 +9,7 @@ angular.module('eperusteApp')
       {
         update: {method: 'PUT', isArray: false}
       });
-  }).service('PerusteProjektiService', function() {
+  }).service('PerusteProjektiService', function($rootScope) {
     
     var pp = {};
     
@@ -33,10 +33,15 @@ angular.module('eperusteApp')
       });
     }
     
+    function perusteprojektiLuotu() {
+      $rootScope.$broadcast('perusteprojektiLuotu');
+    };
+    
     return {
       save: save,
       get: get,
       watcher: watcher,
-      clean: clean
+      clean: clean,
+      perusteprojektiLuotu: perusteprojektiLuotu
     };
   });

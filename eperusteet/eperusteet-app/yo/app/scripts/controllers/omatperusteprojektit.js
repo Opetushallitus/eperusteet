@@ -43,4 +43,8 @@ angular.module('eperusteApp')
         $scope.projektitNapinTeksti = naytaKaikkiTeksti;
       }
     };
+    
+    $scope.$on('perusteprojektiLuotu', function() {
+      paivitaOmatProjektit();
+    });
   });

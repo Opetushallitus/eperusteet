@@ -16,11 +16,12 @@ European Union Public Licence for more details.
 -->
 <div class="row">
     <div class="col-xs-12">
+        <div ng-controller="SuosikitCtrl">
         <label for="kielen-vaihto" translate>kielen-vaihto</label>
         <div id="kielen-vaihto" class="btn-group">
             <button ng-repeat="(nimi, koodi) in kielet" ng-click="vaihdaKieli(koodi)" type="button" class="btn btn-default" ng-class="{ 'active' : koodi === kieli }">{{nimi|translate}}</button>
         </div>
-        <div ng-controller="SuosikitCtrl">
+        
             <div class="panel panel-default">
                 <div class="panel-heading" translate>suosikit-otsikko</div>
                 <div class="panel-body">
@@ -33,7 +34,10 @@ European Union Public Licence for more details.
         </div>
         <div ng-controller="OmatperusteprojektitCtrl">
             <div class="panel panel-default">
-                <div class="panel-heading" translate>perusteprojektit-otsikko</div>
+                <div class="panel-heading" >{{'perusteprojektit-otsikko' | translate}}
+                    <!--span class="btn btn-default btn-xs pull-right" ng-click="uusiProjekti()">Uusi projekti</span-->
+                    <span><a class="btn btn-default btn-xs pull-right" title="{{'uusi-projekti' | translate}}" ng-href="#/perusteprojekti" translate>uusi-projekti</a></span>
+                </div>
                 <div class="panel-body">
                     <ul class="list-unstyled">
                         <li class="ellipsis-no-wrap" ng-repeat="projekti in projektit| limitTo:projektitRaja" ><a title="{{projekti.nimi}}" ng-href="#/perusteprojekti/{{projekti.id}}">{{projekti.nimi}}</a></li>

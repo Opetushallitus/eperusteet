@@ -65,6 +65,7 @@ angular.module('eperusteApp')
       PerusteprojektiResource.save(projekti,
         function(vastaus) {
           $location.path(perusteprojektiPolku + vastaus.id);
+          PerusteProjektiService.perusteprojektiLuotu();
         }, function(virhe) {
         console.log('virhe: ', virhe);
       });
