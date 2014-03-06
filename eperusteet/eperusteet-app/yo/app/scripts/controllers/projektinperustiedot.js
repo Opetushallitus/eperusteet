@@ -32,6 +32,6 @@ angular.module('eperusteApp')
     'starting-day': 1
   };
 
-  $scope.format = 'dd-MMMM-yyyy';
+  $scope.format = 'd.M.yyyy';
 });
 

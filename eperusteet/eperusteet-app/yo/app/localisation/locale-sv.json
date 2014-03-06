@@ -136,9 +136,10 @@
     "anna-projektin-nimi-placeholder": "[Anna projektin nimi]",
     "diaarinumero-label": "[Diaarinumero]",
     "anna-diaarinumero-placeholder": "[Anna diaarinumero]",
+    "päätöspvm-label": "[Päätöspäivämäärä]",
     "tallenna-perusteprojekti-nappi": "[Tallenna]",
     "valitse-tehtäväluokka": "[Valitse tehtäväluokka]",
-    "tehtäväluokka-label": "Tehtäväluokka",
-    "anna-päätöspäivämäärä": "Anna päätöspäivämäärä"
+    "tehtäväluokka-label": "[Tehtäväluokka]",
+    "anna-päätöspäivämäärä": "[Anna päätöspäivämäärä]"
 }
 
