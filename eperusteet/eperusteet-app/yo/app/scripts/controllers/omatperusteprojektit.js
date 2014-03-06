@@ -22,24 +22,24 @@ angular.module('eperusteApp')
         }
 
         if (_.size($scope.projektit) > $scope.suppeaMaara) {
-          $scope.naytaProjektiNappi = true;
+          $scope.naytaProjektitNappi = true;
         } else {
-          $scope.naytaProjektiNappi = false;
+          $scope.naytaProjektitNappi = false;
         }
       });
     };
     
     paivitaOmatProjektit();
     
-    $scope.muutaProjektiMaara = function() {
+    $scope.muutaProjektienMaara = function() {
       $scope.naytetaanKaikkiProjektit = !$scope.naytetaanKaikkiProjektit;
 
       if ($scope.naytetaanKaikkiProjektit) {
-        $scope.projektiRaja = _.size($scope.projektit);
+        $scope.projektitRaja = _.size($scope.projektit);
         $scope.projektitNapinTeksti = piilotaTeksti;
 
       } else {
-        $scope.projektiRaja = $scope.suppeaMaara;
+        $scope.projektitRaja = $scope.suppeaMaara;
         $scope.projektitNapinTeksti = naytaKaikkiTeksti;
       }
     };
