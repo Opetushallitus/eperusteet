@@ -349,6 +349,9 @@ angular.module('eperusteApp')
     };
     
     this.nestedSet = function(obj, path, delimiter, value) {
+      if(!this.nestedHas(obj, path, delimiter)) {
+        return;
+      }
       var propertyNames = path.split(delimiter);
       
       innerNestedSet(obj, propertyNames, value);
