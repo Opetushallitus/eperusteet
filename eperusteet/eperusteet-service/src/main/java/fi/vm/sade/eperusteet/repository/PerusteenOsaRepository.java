@@ -10,5 +10,4 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PerusteenOsaRepository extends JpaRepository<PerusteenOsa, Long> {
-   
 }
