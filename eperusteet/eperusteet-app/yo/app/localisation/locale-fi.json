@@ -7,6 +7,11 @@
     "suosikki": "Lisää suosikiksi",
     "suosikit-otsikko": "Suosikit",
     "palauta" : "Palauta",
+    "peru": "Peru",
+    "tyyppi": "Tyyppi",
+    "koodi": "Koodi",
+    "rajaa-tuloksia": "Rajaa...",
+    "nimi": "Nimi",
 
     "haku-otsikko": "Perusteen haku",
     "haku-koulutusala": "Koulutusala",
@@ -24,6 +29,7 @@
     "haku-hakuehdot" : "Hakuehdot",
     "haku-opintoala" : "Opintoala",
     "haku-kaikki-opintoalat" : "Kaikki opintoalat",
+    "hae-koodi-koodistosta": "Hae koodistosta",
 
     "navi-esiopetus": "Esiopetus",
     "navi-perusopetus": "Perusopetus",
@@ -98,7 +104,9 @@
     "tutkintokoodi": "Tutkintokoodi",
     "koulutusalakoodi": "Koulutusalakoodi",
     "navipolku-tutkinnonOsa": "Tutkinnon osa",
-    
+
+    "haetaan-tutkinnon-osia": "Haetaan tutkinnon osia...",
+
     "muokkaus": "Muokkaus",
     "muokkaus-tutkinnon-osa": "Muokkaa tutkinnon osaa",
     "luonti-tutkinnon-osa": "Luo uusi tutkinnon osa",
@@ -110,21 +118,21 @@
     "muokkaus-tekstikappale": "Tekstikappale",
     "muokkaus-tekstikappaleen-otsikko": "Otsikko",
     "muokkaus-tekstikappaleen-teksti": "Teksti",
-    
+
     "muokkaus-otsikko-placeholder": "Kirjoita tähän otsikko",
     "muokkaus-tavoitteet-placeholder": "Tavoitteita...",
     "muokkaus-ammattitaitovaatimukset-placeholder": "Tässä listataan ammattitaitovaatimuksia",
     "muokkaus-ammattitaidon-osoittamistavat-placeholder": "Ammattitaidon osoittamistapoja...",
     "muokkaus-osaamisala-placeholder": "Kirjoita tähän osaamisala",
     "muokkaus-teksti-placeholder": "Tähän tulee leipäteksti",
-    
+
     "perusteen-osat-tekstikappale": "Tekstikappale",
     "perusteen-osat-tutkinnon-osa": "Tutkinnon osa",
-    
+
     "muokkaus-uusi-kappale-placeholder": "Kappaleen nimi",
     "muokkaus-uusi-tutkinnon-osa-nimi-placeholder": "Tutkinnon nimi",
     "muokkaus-uusi-tutkinnon-osa-opintoluokitus-placeholder": "Opintoluokitus",
-    
+
     "opintoluokitus": "Opintoluokitus",
     "tavoitteet": "Tavoitteet",
     "ammattitaitovaatimukset": "Ammattitaitovaatimukset",
