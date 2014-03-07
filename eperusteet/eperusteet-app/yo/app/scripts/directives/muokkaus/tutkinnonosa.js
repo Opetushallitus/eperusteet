@@ -25,7 +25,7 @@ angular.module('eperusteApp')
       scope: {
         tutkinnonOsa: '=tutkinnonOsa'
       },
-      controller: function($scope, $location, Editointikontrollit, PerusteenOsat, $compile, $q, $route) {
+      controller: function($scope, $location, Editointikontrollit, PerusteenOsat, $compile, $q, $route, tutkinnonosaUtils) {
         
         $scope.panelType = 'panel-default';
         
@@ -64,84 +64,128 @@ angular.module('eperusteApp')
             }
           });
         }
-             
+        
+        var tutkinnonOsaReadyPromise;
         if($scope.tutkinnonOsa) {
-          $scope.tutkinnonOsaReady = $scope.tutkinnonOsa.$promise.then(function(response) {
+          tutkinnonOsaReadyPromise = $scope.tutkinnonOsa.$promise.then(function(response) {
             setupTutkinnonOsa(response);
             return $scope.editableTutkinnonOsa;
           });
         } else {
           var objectReadyDefer = $q.defer();
-          $scope.tutkinnonOsaReady = objectReadyDefer.promise;
+          tutkinnonOsaReadyPromise = objectReadyDefer.promise;
           $scope.tutkinnonOsa = {};
           setupTutkinnonOsa($scope.tutkinnonOsa);
           objectReadyDefer.resolve($scope.editableTutkinnonOsa);
         }
         
-        
-        
-        $scope.visibleFields = 
+        var allFields = 
           new Array({
-                       path: 'nimi.fi', 
-                       placeholder: 'muokkaus-otsikko-placeholder',
-                       header: 'muokkaus-tutkinnon-osan-nimi',
-                       type: 'text-input'
-                     },{
-                       path: 'tavoitteet.fi', 
-                       placeholder: 'muokkaus-tavoitteet-placeholder',
-                       header: 'muokkaus-tutkinnon-osan-tavoitteet',
-                       type: 'text-area.default-closed'
-                     },{
-                       path: 'ammattitaitovaatimukset.fi', 
-                       placeholder: 'muokkaus-ammattitaitovaatimukset-placeholder',
-                       header: 'muokkaus-tutkinnon-osan-ammattitaitovaatimukset',
-                       type: 'text-area.default-closed'
-                     },{
-                       path: 'ammattitaidonOsoittamistavat.fi', 
-                       placeholder: 'muokkaus-ammattitaidon-osoittamistavat-placeholder',
-                       header: 'muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat',
-                       type: 'text-input.default-closed'
-                     },{
-                       path: 'osaamisala.fi', 
-                       placeholder: 'muokkaus-osaamisala-placeholder',
-                       header: 'muokkaus-tutkinnon-osan-osaamisala',
-                       type: 'text-input.default-closed'
-                     },{
-                       path: 'arviointi',
-                       header: 'muokkaus-tutkinnon-osan-arviointi',
-                       type: 'arviointi.default-closed'
-                     },{
-                       path: 'koodi', 
-                       placeholder: 'muokkaus-koodi-placeholder',
-                       header: 'muokkaus-tutkinnon-osan-koodi',
-                       type: 'text-input.default-closed'
-                     });
+             path: 'nimi.fi', 
+             placeholder: 'muokkaus-otsikko-placeholder',
+             header: 'muokkaus-tutkinnon-osan-nimi',
+             type: 'text-input',
+             mandatory: true
+           },{
+             path: 'tavoitteet.fi', 
+             placeholder: 'muokkaus-tavoitteet-placeholder',
+             header: 'muokkaus-tutkinnon-osan-tavoitteet',
+             type: 'text-area',
+             defaultClosed: true
+           },{
+             path: 'ammattitaitovaatimukset.fi', 
+             placeholder: 'muokkaus-ammattitaitovaatimukset-placeholder',
+             header: 'muokkaus-tutkinnon-osan-ammattitaitovaatimukset',
+             type: 'text-area',
+             defaultClosed: true
+           },{
+             path: 'ammattitaidonOsoittamistavat.fi', 
+             placeholder: 'muokkaus-ammattitaidon-osoittamistavat-placeholder',
+             header: 'muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat',
+             type: 'text-input',
+             defaultClosed: true
+           },{
+             path: 'osaamisala.fi', 
+             placeholder: 'muokkaus-osaamisala-placeholder',
+             header: 'muokkaus-tutkinnon-osan-osaamisala',
+             type: 'text-input',
+             defaultClosed: true
+           },{
+             path: 'arviointi',
+             header: 'muokkaus-tutkinnon-osan-arviointi',
+             type: 'arviointi',
+             defaultClosed: true,
+             mandatory: true
+           },{
+             path: 'koodi', 
+             placeholder: 'muokkaus-koodi-placeholder',
+             header: 'muokkaus-tutkinnon-osan-koodi',
+             type: 'text-input',
+             defaultClosed: true
+           });
+        
+        $scope.tutkinnonOsaReady = tutkinnonOsaReadyPromise.then(function(tutkinnonOsa) {
+          console.log(tutkinnonOsa);
+          $scope.visibleFields = _.filter(allFields, function(field) {
+            console.log(tutkinnonOsa);
+            console.log(tutkinnonosaUtils.nestedGet(tutkinnonOsa, field.path, '.'));
+            console.log(field.path);
+            return field.mandatory || tutkinnonosaUtils.hasValue(tutkinnonOsa, field.path);
+          });
+          $scope.hiddenFields = _.difference(allFields, $scope.visibleFields);
+          return tutkinnonOsa;
+        });
+        
+        $scope.removeField = function(fieldToRemove) {
+          console.log('remove field:');
+          console.log(fieldToRemove);
+          
+          _.remove($scope.visibleFields, fieldToRemove);
+          $scope.hiddenFields.push(fieldToRemove);
+        };
+        
+        $scope.addFieldToVisible = function(field) {
+          _.remove($scope.hiddenFields, field);
+          $scope.visibleFields.push(field);
+        };
       }
     };
   })
   .directive('muokkauskenttaRaamit', function() {
     return {
       template:
-        '<h4 class="list-group-item-heading" translate>{{otsikko}}</h4>' +
-        '<span ng-transclude></span>',
+        '<h4 class="list-group-item-heading" >{{otsikko | translate}}&nbsp;&nbsp;' +
+        '<span class="glyphicon glyphicon-plus" ng-show="canCollapse && collapsed" ng-click="collapsed = false"></span>' +
+        '<span class="glyphicon glyphicon-minus" ng-show="canCollapse && !collapsed" ng-click="collapsed = true"></span></h4>' +
+        '<div collapse="collapsed" ng-transclude></div>',
       restrict: 'A',
       transclude: true,
       scope: {
         otsikko: "@"
+          
       },
       link: function(scope, element, attrs) {
         element.addClass('list-group-item ');
         element.attr('ng-class', '');
+                
+        if(attrs.kiinniOletuksena) {
+          scope.canCollapse = true;
+          scope.collapsed = attrs.kiinniOletuksena;
+        } else {
+          scope.canCollapse = false;
+          scope.collapsed = false;
+        }
       }
     };
   })
-  .directive('muokattavaKentta', function($compile, $rootScope) {
+  .directive('muokattavaKentta', function($compile, $rootScope, tutkinnonosaUtils) {
     return {
       restrict: 'E',
       replace: true,
       scope: {
         field: '=fieldInfo',
-        objectReady: '=tutkinnonOsaReady'
+        objectReady: '=tutkinnonOsaReady',
+        removeField: '&?'
       },
       link: function(scope, element, attrs) {
         
@@ -149,30 +193,26 @@ angular.module('eperusteApp')
         
         scope.objectReady.then(function(value) {
           scope.object = value;
-          if(typeParams.length > 1 && typeParams[1] === 'default-closed') {
+          if(!scope.field.mandatory) {
             var contentFrame = angular.element('<vaihtoehtoisen-kentan-raami></vaihtoehtoisen-kentan-raami>')
             .attr('osion-nimi', scope.field.header)
-            .attr('oletuksena-auki', hasValue(scope.object, scope.field.path) ? 'true' : 'false')
             .append(getElementContent(typeParams[0]));
             
-            scope.avaaOsio = function() {
-              console.log('avataan');
-            };
             scope.suljeOsio = function() {
               console.log('suljetaan ja poistetaan sisältö');
-              var collapseElement = contentFrame.children().first();
               
-              if(angular.isString(nestedGet(scope.object, scope.field.path, '.'))) {
-                nestedSet(scope.object, scope.field.path, '.', '');
+              if(angular.isString(tutkinnonosaUtils.nestedGet(scope.object, scope.field.path, '.'))) {
+                tutkinnonosaUtils.nestedSet(scope.object, scope.field.path, '.', '');
               } else {
-                nestedSet(scope.object, scope.field.path, '.', null);
+                tutkinnonosaUtils.nestedSet(scope.object, scope.field.path, '.', null);
               }
               
-              collapseElement.empty().append(getElementContent(typeParams[0]));
-              $compile(collapseElement.contents())(scope);
+              if(!scope.mandatory) {
+                scope.removeField({fieldToRemove: scope.field});
+              }
             };
             
-            contentFrame.attr('avaa-osio', 'avaaOsio()').attr('sulje-osio', 'suljeOsio()');
+            contentFrame.attr('sulje-osio', 'suljeOsio()');
             
             populateElementContent(contentFrame);
           } else {
@@ -182,13 +222,13 @@ angular.module('eperusteApp')
         
         function getElementContent(elementType) {
           if(elementType === 'text-input') {
-            if(hasValue(scope.object, scope.field.path)) {
+            if(tutkinnonosaUtils.hasValue(scope.object, scope.field.path)) {
               return addEditorAttributesFor(angular.element('<p></p>'));
             }
             return addInputAttributesFor(angular.element('<input></input>').attr('editointi-kontrolli', ''));
           }
           else if(elementType === 'text-area') {
-            if(hasValue(scope.object, scope.field.path)) {
+            if(tutkinnonosaUtils.hasValue(scope.object, scope.field.path)) {
               return addEditorAttributesFor(angular.element('<p></p>'));
             }
             return addInputAttributesFor(angular.element('<textarea></textarea>').attr('editointi-kontrolli', ''));
@@ -222,97 +262,20 @@ angular.module('eperusteApp')
           element.append(content);
           $compile(element.contents())(scope);
         }
-        
-        function hasValue(obj, path) {
-          if (nestedHas(obj, path, '.')) {
-            if (angular.isString(nestedGet(obj, path, '.')) && nestedGet(obj, path, '.').length > 0) {
-              return true;
-            } else if(!angular.isUndefined(nestedGet(obj, path, '.')) && nestedGet(obj, path, '.') !== null) {
-              return true;
-            } else {
-              return false;
-            }
-          } else {
-            return false;
-          }
-        }
-        
-        function nestedHas(obj, path, delimiter) {
-          var propertyNames = path.split(delimiter);
-          
-          return innerNestedHas(obj, propertyNames);
-          
-          function innerNestedHas(obj, names) {
-            if(_.has(obj, names[0])) {
-              return names.length > 1 ? innerNestedHas(obj[names[0]], names.splice(1, names.length)) : true;
-            } else {
-              return false;
-            }
-          };
-        }
-        
-        function nestedGet(obj, path, delimiter) {
-          var propertyNames = path.split(delimiter);
-          
-          return innerNestedGet(obj, propertyNames);
-          
-          function innerNestedGet(obj, names) {
-            if(names.length > 1) {
-              return innerNestedGet(obj[names[0]], names.splice(1, names.length));
-            } else {
-              return obj[names[0]];
-            }
-          }
-        }
-        
-        function nestedSet(obj, path, delimiter, value) {
-          var propertyNames = path.split(delimiter);
-          
-          innerNestedSet(obj, propertyNames, value);
-          
-          function innerNestedSet(obj, names, newValue) {
-            if(names.length > 1) {
-              innerNestedSet(obj[names[0]], names.splice(1, names.length), newValue);
-            }  else {
-              obj[names[0]] = newValue;
-            }
-          }
-        }
-        
-        function nestedOmit(obj, path, delimiter) {
-          var propertyNames = path.split(delimiter);
-          
-          return innerNestedOmit(obj, propertyNames);
-          
-          function innerNestedOmit(obj, names) {
-            if(names.length > 1) {
-              obj[names[0]] = innerNestedOmit(obj[names[0]], names.splice(1, names.length));
-              return obj;
-            } else {
-              return _.omit(obj, names[0]);
-            }
-          }
-        }
       }
     };
   })
   .directive('vaihtoehtoisenKentanRaami', function($rootScope) {
     return {
       template:
-        '<div ng-show="osioAuki" ng-transclude></div>' +
-        '<button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-hide="osioAuki" ng-click="avaaOsio(); osioAuki = true;">{{\'lisaa\' | translate}}&nbsp;{{osionNimi | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-plus"></span></button>' +
-        '<button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-show="osioAuki" ng-click="osioAuki = false; suljeOsio();">{{\'poista\' | translate}}&nbsp;{{osionNimi | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-minus"></span></button>',
+        '<div ng-transclude></div>' +
+        '<button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-click="suljeOsio()">{{\'poista\' | translate}}&nbsp;{{osionNimi | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-minus"></span></button>',
       restrict: 'E',
       transclude: true,
       scope: {
         osionNimi: "@",
-        avaaOsio: "&",
         suljeOsio: "&",
-        oletuksenaAuki: "@"
       },
-      link: function(scope, element, attrs) {
-        scope.osioAuki = scope.oletuksenaAuki === 'true';
-      }
     };
   })
   .directive('editointiKontrolli', function($rootScope, Editointikontrollit) {
@@ -332,6 +295,85 @@ angular.module('eperusteApp')
         $rootScope.$on('disableEditing', function() {
           element.attr('disabled', 'disabled');
         });
+      }
+    };
+  })
+  .service('tutkinnonosaUtils', function() {
+    this.hasValue = function(obj, path) {
+      if (this.nestedHas(obj, path, '.')) {
+        if (angular.isString(this.nestedGet(obj, path, '.'))) {
+          if(this.nestedGet(obj, path, '.').length > 0) {
+            return true;
+          } else {
+            return false;
+          }
+        } else if(!angular.isUndefined(this.nestedGet(obj, path, '.')) && this.nestedGet(obj, path, '.') !== null) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    };
+    
+    this.nestedHas = function(obj, path, delimiter) {
+      var propertyNames = path.split(delimiter);
+      
+      return innerNestedHas(obj, propertyNames);
+      
+      function innerNestedHas(obj, names) {
+        if(_.has(obj, names[0])) {
+          return names.length > 1 ? innerNestedHas(obj[names[0]], names.splice(1, names.length)) : true;
+        } else {
+          return false;
+        }
+      };
+    };
+    
+    this.nestedGet = function(obj, path, delimiter) {
+      if(!this.nestedHas(obj, path, delimiter)) {
+        return undefined;
+      }
+      var propertyNames = path.split(delimiter);
+      
+      return innerNestedGet(obj, propertyNames);
+      
+      function innerNestedGet(obj, names) {
+        if(names.length > 1) {
+          return innerNestedGet(obj[names[0]], names.splice(1, names.length));
+        } else {
+          return obj[names[0]];
+        }
+      }
+    };
+    
+    this.nestedSet = function(obj, path, delimiter, value) {
+      var propertyNames = path.split(delimiter);
+      
+      innerNestedSet(obj, propertyNames, value);
+      
+      function innerNestedSet(obj, names, newValue) {
+        if(names.length > 1) {
+          innerNestedSet(obj[names[0]], names.splice(1, names.length), newValue);
+        }  else {
+          obj[names[0]] = newValue;
+        }
+      }
+    };
+    
+    this.nestedOmit = function(obj, path, delimiter) {
+      var propertyNames = path.split(delimiter);
+      
+      return innerNestedOmit(obj, propertyNames);
+      
+      function innerNestedOmit(obj, names) {
+        if(names.length > 1) {
+          obj[names[0]] = innerNestedOmit(obj[names[0]], names.splice(1, names.length));
+          return obj;
+        } else {
+          return _.omit(obj, names[0]);
+        }
       }
     };
   });

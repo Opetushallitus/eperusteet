@@ -1,0 +1,73 @@
+<!--
+Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+
+This program is free software: Licensed under the EUPL, Version 1.1 or - as
+soon as they will be approved by the European Commission - subsequent versions
+of the EUPL (the "Licence");
+
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+European Union Public Licence for more details.
+-->
+
+<div class="panel panel-default panel-small" ng-repeat="kohdealue in arviointi.arvioinninKohdealueet">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{valitseKieli(kohdealue.otsikko)}}</h3>
+  </div>
+  <div class="panel-body">
+    <accordion close-others="false">
+      <accordion-group heading="{{valitseKieli(arvioinninkohde.otsikko)}}" ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet">
+        <div ng-repeat="taso in arviointiasteikot[arvioinninkohde._arviointiAsteikko].osaamistasot" ng-class-odd="'raita'">
+          <div class="row">
+            <div class="col-md-3">
+              {{valitseKieli(taso.otsikko)}}
+            </div>
+            <div class="col-md-9">
+              <div ng-repeat="osaamistasonKriteeri in arvioinninkohde.osaamistasonKriteerit| filter:{_osaamistaso: taso.id}">
+                <ul>
+                  <li ng-repeat="kriteeri in osaamistasonKriteeri.kriteerit">
+                    {{valitseKieli(kriteeri)}}
+                  </li>
+                </ul>
+                <div class="panel panel-default" ng-show="editAllowed">
+                  <div class="panel-body">
+                    <input editointi-kontrolli ng-show="uudenKriteerinTiedot.showInput" type="text" ng-model="uudenKriteerinTiedot.teksti" 
+                      on-enter="addNewKriteeri(osaamistasonKriteeri, uudenKriteerinTiedot)" 
+                      placeholder="arviointi-muokkaus-uusi-kriteeri-placeholder"/>
+                    <button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-show="!uudenKriteerinTiedot.showInput" 
+                      ng-click="uudenKriteerinTiedot.showInput = true">{{'arviointi-muokkaus-uusi-kriteeri' | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </accordion-group>
+    </accordion>
+    <div class="panel panel-default" ng-show="editAllowed">
+      <div class="panel-body">
+        <div ng-show="uudenKohteenTiedot.showInputArea">
+          <input editointi-kontrolli type="text" ng-model="uudenKohteenTiedot.nimi" placeholder="arviointi-muokkaus-uusi-kohde-placeholder"/><br/>
+          <label translate>arviointiasteikon-valinta</label><br/>
+          <input editointi-kontrolli type="radio" ng-model="$parent.uudenKohteenTiedot.arviointiasteikko" ng-repeat-start="arviointiasteikko in arviointiasteikot" ng-value="arviointiasteikko" />
+          <span ng-repeat="osaamistaso in arviointiasteikko.osaamistasot">{{valitseKieli(osaamistaso.otsikko)}}{{$index + 1 !== arviointiasteikko.osaamistasot.length ? '&nbsp;/&nbsp;': ''}}</span>
+          <br ng-repeat-end/>
+          <button editointi-kontrolli ng-disabled="!(uudenKohteenTiedot.nimi && uudenKohteenTiedot.arviointiasteikko)" ng-click="addNewKohde(kohdealue, uudenKohteenTiedot);">ok</button>
+        </div>
+        <button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-show="!uudenKohteenTiedot.showInputArea" 
+          ng-click="uudenKohteenTiedot.showInputArea = true">{{'arviointi-muokkaus-uusi-kohde' | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="panel panel-default" ng-show="editAllowed">
+  <div class="panel-body">
+    <input editointi-kontrolli ng-show="showNewKohdealueInput" type="text" ng-model="uudenKohdealueenNimi" on-enter="addNewKohdealue()" placeholder="arviointi-muokkaus-uusi-kohdealue-placeholder"/>
+    <button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-show="!showNewKohdealueInput" 
+      ng-click="showNewKohdealueInput = !showNewKohdealueInput">{{'arviointi-muokkaus-uusi-kohdealue' | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
+  </div>
+</div>

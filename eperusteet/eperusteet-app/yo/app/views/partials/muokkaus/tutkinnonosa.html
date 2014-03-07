@@ -19,10 +19,18 @@ European Union Public Licence for more details.
     <h3 class="panel-title">{{tutkinnonOsanMuokkausOtsikko | translate}}</h3>
   </div>
   <ul class="list-group muokkaus">
-    <li ng-repeat="field in visibleFields" muokkauskentta-raamit otsikko="{{field.header}}">
-      <muokattava-kentta field-info="field" tutkinnon-osa="editableTutkinnonOsa" tutkinnon-osa-ready="tutkinnonOsaReady"></muokattava-kentta>
+    <li ng-repeat="field in visibleFields" muokkauskentta-raamit otsikko="{{field.header}}" kiinni-oletuksena="{{field.defaultClosed}}">
+      <muokattava-kentta field-info="field" tutkinnon-osa="editableTutkinnonOsa" tutkinnon-osa-ready="tutkinnonOsaReady" remove-field="removeField(fieldToRemove)"></muokattava-kentta>
     </li>
   </ul>
+  <div class="panel-footer">
+    <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle">{{'lisaa-osio' | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
+    <ul class="dropdown-menu">
+    <li ng-repeat="field in hiddenFields">
+      <a ng-click="addFieldToVisible(field)" translate>{{field.header}}</a>
+    </li>
+  </ul>
+  </div>
 </div>
 
 
