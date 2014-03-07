@@ -1,13 +1,13 @@
 /*
 * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
-* 
+*
 * This program is free software: Licensed under the EUPL, Version 1.1 or - as
 * soon as they will be approved by the European Commission - subsequent versions
 * of the EUPL (the "Licence");
-* 
+*
 * You may not use this work except in compliance with the Licence.
 * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -26,14 +26,18 @@ angular.module('eperusteApp')
         tutkinnonOsa: '=tutkinnonOsa'
       },
       controller: function($scope, $location, Editointikontrollit, PerusteenOsat, $compile, $q, $route, tutkinnonosaUtils) {
-        
+        $scope.editableTutkinnonOsa = {};
         $scope.panelType = 'panel-default';
-        
+
+        $scope.tuoKoodi = function(koodi) {
+          $scope.editableTutkinnonOsa.koodi = koodi;
+        };
+
         function setupTutkinnonOsa(osa) {
           $scope.editableTutkinnonOsa = angular.copy(osa);
-          
+
           $scope.tutkinnonOsanMuokkausOtsikko = $scope.editableTutkinnonOsa.id ? "muokkaus-tutkinnon-osa" : "luonti-tutkinnon-osa";
-          
+
           Editointikontrollit.registerCallback({
             edit: function() {
               console.log('tutkinnon osa - edit');
@@ -64,8 +68,9 @@ angular.module('eperusteApp')
             }
           });
         }
-        
+
         var tutkinnonOsaReadyPromise;
+
         if($scope.tutkinnonOsa) {
           tutkinnonOsaReadyPromise = $scope.tutkinnonOsa.$promise.then(function(response) {
             setupTutkinnonOsa(response);
@@ -78,34 +83,34 @@ angular.module('eperusteApp')
           setupTutkinnonOsa($scope.tutkinnonOsa);
           objectReadyDefer.resolve($scope.editableTutkinnonOsa);
         }
-        
-        var allFields = 
+
+        var allFields =
           new Array({
-             path: 'nimi.fi', 
+             path: 'nimi.fi',
              placeholder: 'muokkaus-otsikko-placeholder',
              header: 'muokkaus-tutkinnon-osan-nimi',
              type: 'text-input',
              mandatory: true
            },{
-             path: 'tavoitteet.fi', 
+             path: 'tavoitteet.fi',
              placeholder: 'muokkaus-tavoitteet-placeholder',
              header: 'muokkaus-tutkinnon-osan-tavoitteet',
              type: 'text-area',
              defaultClosed: true
            },{
-             path: 'ammattitaitovaatimukset.fi', 
+             path: 'ammattitaitovaatimukset.fi',
              placeholder: 'muokkaus-ammattitaitovaatimukset-placeholder',
              header: 'muokkaus-tutkinnon-osan-ammattitaitovaatimukset',
              type: 'text-area',
              defaultClosed: true
            },{
-             path: 'ammattitaidonOsoittamistavat.fi', 
+             path: 'ammattitaidonOsoittamistavat.fi',
              placeholder: 'muokkaus-ammattitaidon-osoittamistavat-placeholder',
              header: 'muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat',
              type: 'text-input',
              defaultClosed: true
            },{
-             path: 'osaamisala.fi', 
+             path: 'osaamisala.fi',
              placeholder: 'muokkaus-osaamisala-placeholder',
              header: 'muokkaus-tutkinnon-osan-osaamisala',
              type: 'text-input',
@@ -117,13 +122,13 @@ angular.module('eperusteApp')
              defaultClosed: true,
              mandatory: true
            },{
-             path: 'koodi', 
+             path: 'koodi',
              placeholder: 'muokkaus-koodi-placeholder',
              header: 'muokkaus-tutkinnon-osan-koodi',
              type: 'text-input',
              defaultClosed: true
            });
-        
+
         $scope.tutkinnonOsaReady = tutkinnonOsaReadyPromise.then(function(tutkinnonOsa) {
           console.log(tutkinnonOsa);
           $scope.visibleFields = _.filter(allFields, function(field) {
@@ -135,15 +140,15 @@ angular.module('eperusteApp')
           $scope.hiddenFields = _.difference(allFields, $scope.visibleFields);
           return tutkinnonOsa;
         });
-        
+
         $scope.removeField = function(fieldToRemove) {
           console.log('remove field:');
           console.log(fieldToRemove);
-          
+
           _.remove($scope.visibleFields, fieldToRemove);
           $scope.hiddenFields.push(fieldToRemove);
         };
-        
+
         $scope.addFieldToVisible = function(field) {
           _.remove($scope.hiddenFields, field);
           $scope.visibleFields.push(field);
@@ -161,13 +166,12 @@ angular.module('eperusteApp')
       restrict: 'A',
       transclude: true,
       scope: {
-        otsikko: "@"
-          
+        otsikko: '@'
       },
       link: function(scope, element, attrs) {
         element.addClass('list-group-item ');
         element.attr('ng-class', '');
-                
+
         if(attrs.kiinniOletuksena) {
           scope.canCollapse = true;
           scope.collapsed = attrs.kiinniOletuksena;
@@ -188,38 +192,38 @@ angular.module('eperusteApp')
         removeField: '&?'
       },
       link: function(scope, element, attrs) {
-        
+
         var typeParams = scope.field.type.split('.');
-        
+
         scope.objectReady.then(function(value) {
           scope.object = value;
           if(!scope.field.mandatory) {
             var contentFrame = angular.element('<vaihtoehtoisen-kentan-raami></vaihtoehtoisen-kentan-raami>')
             .attr('osion-nimi', scope.field.header)
             .append(getElementContent(typeParams[0]));
-            
+
             scope.suljeOsio = function() {
               console.log('suljetaan ja poistetaan sisältö');
-              
+
               if(angular.isString(tutkinnonosaUtils.nestedGet(scope.object, scope.field.path, '.'))) {
                 tutkinnonosaUtils.nestedSet(scope.object, scope.field.path, '.', '');
               } else {
                 tutkinnonosaUtils.nestedSet(scope.object, scope.field.path, '.', null);
               }
-              
+
               if(!scope.mandatory) {
                 scope.removeField({fieldToRemove: scope.field});
               }
             };
-            
+
             contentFrame.attr('sulje-osio', 'suljeOsio()');
-            
+
             populateElementContent(contentFrame);
           } else {
             populateElementContent(getElementContent(typeParams[0]));
           }
         });
-        
+
         function getElementContent(elementType) {
           if(elementType === 'text-input') {
             if(tutkinnonosaUtils.hasValue(scope.object, scope.field.path)) {
@@ -235,7 +239,7 @@ angular.module('eperusteApp')
           } else if(elementType === 'arviointi') {
             return angular.element('<arviointi></arviointi>').attr('arviointi', 'object.' + scope.field.path).attr('editointi-sallittu', 'true');
           }
-          
+
           function addEditorAttributesFor(element) {
             return element
             .addClass('list-group-item-text')
@@ -244,7 +248,7 @@ angular.module('eperusteApp')
             .attr('editing-enabled', 'false')
             .attr('editor-placeholder', scope.field.placeholder);
           }
-          
+
           function addInputAttributesFor(element) {
             return element
             .addClass('form-control')
@@ -252,12 +256,12 @@ angular.module('eperusteApp')
             .attr('placeholder','{{\'' + scope.field.placeholder + '\' | translate}}');
           }
         }
-        
+
         function replaceElementContent(content) {
           element.empty();
           populateElementContent(content);
         }
-        
+
         function populateElementContent(content) {
           element.append(content);
           $compile(element.contents())(scope);
@@ -273,8 +277,8 @@ angular.module('eperusteApp')
       restrict: 'E',
       transclude: true,
       scope: {
-        osionNimi: "@",
-        suljeOsio: "&",
+        osionNimi: '@',
+        suljeOsio: '&',
       },
     };
   })
@@ -285,12 +289,12 @@ angular.module('eperusteApp')
         if(!Editointikontrollit.editMode) {
           element.attr('disabled', 'disabled');
         }
-        
+
         $rootScope.$on('enableEditing', function() {
           if(!element.attr('ng-disabled') || !scope.$eval(element.attr('ng-disabled'))) {
             element.removeAttr('disabled');
           }
-          
+
         });
         $rootScope.$on('disableEditing', function() {
           element.attr('disabled', 'disabled');
@@ -316,29 +320,29 @@ angular.module('eperusteApp')
         return false;
       }
     };
-    
+
     this.nestedHas = function(obj, path, delimiter) {
       var propertyNames = path.split(delimiter);
-      
+
       return innerNestedHas(obj, propertyNames);
-      
+
       function innerNestedHas(obj, names) {
         if(_.has(obj, names[0])) {
           return names.length > 1 ? innerNestedHas(obj[names[0]], names.splice(1, names.length)) : true;
         } else {
           return false;
         }
-      };
+      }
     };
-    
+
     this.nestedGet = function(obj, path, delimiter) {
       if(!this.nestedHas(obj, path, delimiter)) {
         return undefined;
       }
       var propertyNames = path.split(delimiter);
-      
+
       return innerNestedGet(obj, propertyNames);
-      
+
       function innerNestedGet(obj, names) {
         if(names.length > 1) {
           return innerNestedGet(obj[names[0]], names.splice(1, names.length));
@@ -347,12 +351,12 @@ angular.module('eperusteApp')
         }
       }
     };
-    
+
     this.nestedSet = function(obj, path, delimiter, value) {
       var propertyNames = path.split(delimiter);
-      
+
       innerNestedSet(obj, propertyNames, value);
-      
+
       function innerNestedSet(obj, names, newValue) {
         if(names.length > 1) {
           innerNestedSet(obj[names[0]], names.splice(1, names.length), newValue);
@@ -361,12 +365,12 @@ angular.module('eperusteApp')
         }
       }
     };
-    
+
     this.nestedOmit = function(obj, path, delimiter) {
       var propertyNames = path.split(delimiter);
-      
+
       return innerNestedOmit(obj, propertyNames);
-      
+
       function innerNestedOmit(obj, names) {
         if(names.length > 1) {
           obj[names[0]] = innerNestedOmit(obj[names[0]], names.splice(1, names.length));
@@ -377,4 +381,3 @@ angular.module('eperusteApp')
       }
     };
   });
-

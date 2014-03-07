@@ -13,8 +13,13 @@ angular.module('eperusteApp')
       });
   })
   .service('TutkinnonOsanValidointi', function($q, PerusteenOsat) {
-    function validoi(/*tutkinnonOsa*/) {
-      var virheet = {};
+    function validoi(tutkinnonOsa) {
+      var virheet = [];
+      _.forEach(['nimi'], function(f) {
+        if (!tutkinnonOsa[f] || tutkinnonOsa[f] === '') {
+          virheet.push({ 'koodi-virhe-4': f});
+        }
+      });
       return virheet;
     }
 
@@ -22,18 +27,23 @@ angular.module('eperusteApp')
       validoi: function(tutkinnonOsa) {
         var deferred = $q.defer();
 
-        PerusteenOsat.byKoodi({ osanId: tutkinnonOsa.koodi }, function(re) {
-          console.log('Jo oleva:', re);
-          deferred.reject();
-          return deferred.promise;
-        }, function(/*error*/) {
-          var virheet = validoi(tutkinnonOsa);
-          if (virheet !== {}) {
-            deferred.reject(virheet);
-          } else {
-            deferred.resolve();
-          }
-        });
+        if (!tutkinnonOsa.koodi || tutkinnonOsa.koodi === '') {
+          deferred.reject('koodi-virhe-2');
+        } else if (_.isNaN(tutkinnonOsa.koodi)) {
+          deferred.reject('koodi-virhe-3');
+        } else {
+          PerusteenOsat.byKoodi({ osanId: tutkinnonOsa.koodi }, function() {
+            deferred.reject('koodi-virhe-1');
+          }, function() {
+            var virheet = validoi(tutkinnonOsa);
+            if (_.isEmpty(virheet)) {
+              deferred.resolve();
+            } else {
+              deferred.reject(virheet);
+            }
+          });
+        }
+        return deferred.promise;
       }
     };
   });

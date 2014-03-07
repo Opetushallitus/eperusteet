@@ -29,8 +29,13 @@ European Union Public Licence for more details.
     <li ng-repeat="field in hiddenFields">
       <a ng-click="addFieldToVisible(field)" translate>{{field.header}}</a>
     </li>
+    <li class="list-group-item" ng-class="editClass">
+      <h4 class="list-group-item-heading" translate>muokkaus-tutkinnon-osan-koodi</h4>
+      <div class="input-group">
+        <input class="form-control" ng-model="editableTutkinnonOsa.koodi" type="text">
+        <koodisto-select class="input-group-btn" valmis="tuoKoodi" />
+      </div>
+    </li>
   </ul>
   </div>
 </div>
-
-
