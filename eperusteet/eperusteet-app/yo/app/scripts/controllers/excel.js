@@ -23,15 +23,14 @@ angular.module('eperusteApp')
     $scope.parsinnanTyyppi = 'peruste';
 
     $scope.clearSelect = function() {
-      $scope.$apply(function() {
-        $scope.vaihe = [];
-        $scope.errors = [];
-        $scope.warnings = [];
-        $scope.lukeeTiedostoa = true;
-        $scope.lukeeTiedostoa = true;
-        $scope.uploadErrors = [];
-        $scope.uploadSuccess = false;
-      });
+      $scope.osatutkinnot = [];
+      $scope.vaihe = [];
+      $scope.errors = [];
+      $scope.warnings = [];
+      $scope.lukeeTiedostoa = true;
+      $scope.lukeeTiedostoa = true;
+      $scope.uploadErrors = [];
+      $scope.uploadSuccess = false;
     };
 
     $scope.editoiOsatutkintoa = function() {
@@ -74,12 +73,13 @@ angular.module('eperusteApp')
             doneSuccess();
           }, function(err) {
             if (err) {
-              ot.syy = err.syy;
+              ot.syy = err.data.syy;
               ot.ladattu = 1;
             }
           });
-        }, function(virheet) {
-          console.log(virheet);
+        }, function(virhe) {
+          ot.syy = virhe;
+          ot.ladattu = 1;
         });
       });
     };
@@ -87,6 +87,7 @@ angular.module('eperusteApp')
     $scope.onFileSelect = function(err, file) {
       $scope.lukeeTiedostoa = true;
       $scope.alussa = false;
+      $scope.osatutkinnot = [];
 
       if (err || !file) {
         // TODO: Hoida virhetilanteet

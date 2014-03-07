@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.service.impl;
 import com.googlecode.ehcache.annotations.Cacheable;
 import fi.vm.sade.eperusteet.domain.Koulutusala;
 import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.KoodistoKoulutusalaDto;
 import fi.vm.sade.eperusteet.dto.KoulutusalaDto;
 import fi.vm.sade.eperusteet.dto.OpintoalaDto;
 import fi.vm.sade.eperusteet.repository.KoulutusalaRepository;
@@ -65,7 +64,7 @@ public class KoulutusalaServiceImpl implements KoulutusalaService {
 
         return mapper.map(k, KoulutusalaDto.class);
     }
-
+    
     @Override
     @Cacheable(cacheName = "koulutusalat")
     public List<KoulutusalaDto> getAll() {
@@ -77,7 +76,7 @@ public class KoulutusalaServiceImpl implements KoulutusalaService {
             KoodistoKoodiDto[] opintoalat = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + koulutusalaDto.getKoodi(), KoodistoKoodiDto[].class);
             koulutusalaDto.setOpintoalat(mapper.mapAsList(Arrays.asList(opintoalat), OpintoalaDto.class));
         }
-        
+
         return koulutusalatDtos;
     }
 

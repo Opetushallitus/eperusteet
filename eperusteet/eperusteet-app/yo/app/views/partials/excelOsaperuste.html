@@ -9,7 +9,12 @@
     </tr>
     <tr ng-repeat="ot in osatutkinnot" title="{{ ot.syy }}" ng-show="ot.ladattu !== 0">
       <td class="glyphtila">
-        <span ng-show="ot.ladattu === 1" class="glyphicon glyphicon-remove"></span>
+        <span ng-show="ot.ladattu === 1">
+          <a href="" popover="{{ ot.syy }}" popover-placement="right" popover-title="Virhe">
+            <span class="glyphicon glyphicon-remove"></span>
+          </a>
+        </span>
+        <span ng-hide="ot.ladattu === 1" class="glyphicon glyphicon-minus"></span>
       </td>
       <td class="osatutkintoid">
         <input class="form-control osatutkintoid" type="text" ng-model="ot.koodi" />
