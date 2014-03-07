@@ -1,5 +1,4 @@
 'use strict';
-/* global _ */
 
 angular.module('eperusteApp')
   .factory('PerusteenOsat', function($resource, SERVICE_LOC) {
@@ -14,7 +13,7 @@ angular.module('eperusteApp')
       });
   })
   .service('TutkinnonOsanValidointi', function($q, PerusteenOsat) {
-    function validoi(tutkinnonOsa) {
+    function validoi(/*tutkinnonOsa*/) {
       var virheet = {};
       return virheet;
     }
@@ -27,7 +26,7 @@ angular.module('eperusteApp')
           console.log('Jo oleva:', re);
           deferred.reject();
           return deferred.promise;
-        }, function(error) {
+        }, function(/*error*/) {
           var virheet = validoi(tutkinnonOsa);
           if (virheet !== {}) {
             deferred.reject(virheet);
