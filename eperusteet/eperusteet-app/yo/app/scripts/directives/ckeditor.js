@@ -20,7 +20,7 @@ angular.module('eperusteApp')
           if(scope.editorPlaceholder) {
             return $filter('translate')(scope.editorPlaceholder);
           } else {
-            return "";
+            return '';
           }
         }
         

@@ -20,21 +20,25 @@ angular.module('eperusteApp')
   .factory('Editointikontrollit', function($rootScope) {
     var scope = $rootScope.$new(true);
     scope.editingCallback = null;
+    this.editMode = false;
     
     return {
       startEditing: function() {
         if(scope.editingCallback) {
           scope.editingCallback.edit();
+          this.editMode = true;
         }
       },
       saveEditing: function() {
         if(scope.editingCallback) {
           scope.editingCallback.save();
+          this.editMode = false;
         }
       },
       cancelEditing: function() {
         if(scope.editingCallback) {
           scope.editingCallback.cancel();
+          this.editMode = false;
         }
       },
       registerCallback: function(callback) {
@@ -52,6 +56,7 @@ angular.module('eperusteApp')
       },
       unregisterCallback: function() {
         scope.editingCallback = null;
+        this.editMode = false;
       },
       editingEnabled: function() {
         if(scope.editingCallback) {

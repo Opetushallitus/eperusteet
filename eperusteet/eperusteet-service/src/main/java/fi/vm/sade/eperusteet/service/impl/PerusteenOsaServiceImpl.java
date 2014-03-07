@@ -53,7 +53,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         perusteenOsa = perusteenOsaRepo.save(perusteenOsa);
         return mapper.map(perusteenOsa, dtoClass);
     }
-
+  
     @Override
     @Transactional(readOnly = false)
     public void delete(final Long id) {

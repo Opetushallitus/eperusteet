@@ -47,7 +47,6 @@ angular.module('eperusteApp')
               console.log('validate tutkinnon osa');
               if($scope.editableTutkinnonOsa.id) {
                 $scope.editableTutkinnonOsa.$saveTutkinnonOsa({}, function() {
-                  console.log('MORO');
                   $route.reload();
                 });
               } else {
@@ -108,6 +107,10 @@ angular.module('eperusteApp')
                        header: 'muokkaus-tutkinnon-osan-osaamisala',
                        type: 'text-input.default-closed'
                      },{
+                       path: 'arviointi',
+                       header: 'muokkaus-tutkinnon-osan-arviointi',
+                       type: 'arviointi.default-closed'
+                     },{
                        path: 'koodi', 
                        placeholder: 'muokkaus-koodi-placeholder',
                        header: 'muokkaus-tutkinnon-osan-koodi',
@@ -132,7 +135,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('muokattavaKentta', function($compile) {
+  .directive('muokattavaKentta', function($compile, $rootScope) {
     return {
       restrict: 'E',
       replace: true,
@@ -141,6 +144,7 @@ angular.module('eperusteApp')
         objectReady: '=tutkinnonOsaReady'
       },
       link: function(scope, element, attrs) {
+        
         var typeParams = scope.field.type.split('.');
         
         scope.objectReady.then(function(value) {
@@ -158,12 +162,14 @@ angular.module('eperusteApp')
               console.log('suljetaan ja poistetaan sisältö');
               var collapseElement = contentFrame.children().first();
               
-              scope.object = nestedOmit(scope.object, scope.field.path, '.');
+              if(angular.isString(nestedGet(scope.object, scope.field.path, '.'))) {
+                nestedSet(scope.object, scope.field.path, '.', '');
+              } else {
+                nestedSet(scope.object, scope.field.path, '.', null);
+              }
               
               collapseElement.empty().append(getElementContent(typeParams[0]));
               $compile(collapseElement.contents())(scope);
-     
-              
             };
             
             contentFrame.attr('avaa-osio', 'avaaOsio()').attr('sulje-osio', 'suljeOsio()');
@@ -179,13 +185,15 @@ angular.module('eperusteApp')
             if(hasValue(scope.object, scope.field.path)) {
               return addEditorAttributesFor(angular.element('<p></p>'));
             }
-            return addInputAttributesFor(angular.element('<input></input>'));
+            return addInputAttributesFor(angular.element('<input></input>').attr('editointi-kontrolli', ''));
           }
           else if(elementType === 'text-area') {
             if(hasValue(scope.object, scope.field.path)) {
               return addEditorAttributesFor(angular.element('<p></p>'));
             }
-            return addInputAttributesFor(angular.element('<textarea></textarea>'));
+            return addInputAttributesFor(angular.element('<textarea></textarea>').attr('editointi-kontrolli', ''));
+          } else if(elementType === 'arviointi') {
+            return angular.element('<arviointi></arviointi>').attr('arviointi', 'object.' + scope.field.path).attr('editointi-sallittu', 'true');
           }
           
           function addEditorAttributesFor(element) {
@@ -194,7 +202,7 @@ angular.module('eperusteApp')
             .attr('ng-model', 'object.' + scope.field.path)
             .attr('ckeditor', '')
             .attr('editing-enabled', 'false')
-            .attr('editor-placeholder', '{{' + scope.field.placeholder + '}}');
+            .attr('editor-placeholder', scope.field.placeholder);
           }
           
           function addInputAttributesFor(element) {
@@ -216,8 +224,14 @@ angular.module('eperusteApp')
         }
         
         function hasValue(obj, path) {
-          if (nestedHas(obj, path, '.') && angular.isString(nestedGet(obj, path, '.')) && nestedGet(obj, path, '.').length > 0) {
-            return true;
+          if (nestedHas(obj, path, '.')) {
+            if (angular.isString(nestedGet(obj, path, '.')) && nestedGet(obj, path, '.').length > 0) {
+              return true;
+            } else if(!angular.isUndefined(nestedGet(obj, path, '.')) && nestedGet(obj, path, '.') !== null) {
+              return true;
+            } else {
+              return false;
+            }
           } else {
             return false;
           }
@@ -282,12 +296,12 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('vaihtoehtoisenKentanRaami', function($compile) {
+  .directive('vaihtoehtoisenKentanRaami', function($rootScope) {
     return {
       template:
         '<div ng-show="osioAuki" ng-transclude></div>' +
-        '<button type="button" class="btn btn-default btn-xs" ng-hide="osioAuki" ng-click="avaaOsio(); osioAuki = true;">{{\'lisaa\' | translate}}&nbsp;{{osionNimi | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-plus"></span></button>' +
-        '<button type="button" class="btn btn-default btn-xs" ng-show="osioAuki" ng-click="osioAuki = false; suljeOsio();">{{\'poista\' | translate}}&nbsp;{{osionNimi | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-minus"></span></button>',
+        '<button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-hide="osioAuki" ng-click="avaaOsio(); osioAuki = true;">{{\'lisaa\' | translate}}&nbsp;{{osionNimi | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-plus"></span></button>' +
+        '<button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-show="osioAuki" ng-click="osioAuki = false; suljeOsio();">{{\'poista\' | translate}}&nbsp;{{osionNimi | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-minus"></span></button>',
       restrict: 'E',
       transclude: true,
       scope: {
@@ -298,6 +312,26 @@ angular.module('eperusteApp')
       },
       link: function(scope, element, attrs) {
         scope.osioAuki = scope.oletuksenaAuki === 'true';
+      }
+    };
+  })
+  .directive('editointiKontrolli', function($rootScope, Editointikontrollit) {
+    return {
+      restrict: 'A',
+      link: function(scope, element, attrs) {
+        if(!Editointikontrollit.editMode) {
+          element.attr('disabled', 'disabled');
+        }
+        
+        $rootScope.$on('enableEditing', function() {
+          if(!element.attr('ng-disabled') || !scope.$eval(element.attr('ng-disabled'))) {
+            element.removeAttr('disabled');
+          }
+          
+        });
+        $rootScope.$on('disableEditing', function() {
+          element.attr('disabled', 'disabled');
+        });
       }
     };
   });

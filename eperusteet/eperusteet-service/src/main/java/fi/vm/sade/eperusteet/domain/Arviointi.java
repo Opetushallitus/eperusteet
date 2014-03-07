@@ -48,7 +48,7 @@ public class Arviointi implements Serializable {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private TekstiPalanen lisatiedot;
     
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "arviointi_arvioinninkohdealue", 
             joinColumns = @JoinColumn(name = "arviointi_id"),  
             inverseJoinColumns = @JoinColumn(name = "arvioinninkohdealue_id"))

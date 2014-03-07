@@ -40,7 +40,9 @@ import lombok.Setter;
 @ValidArvioinninKohde
 public class ArvioinninKohde implements Serializable {
 
-    @Id
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
     @Setter
@@ -57,7 +59,7 @@ public class ArvioinninKohde implements Serializable {
     @Setter
     private ArviointiAsteikko arviointiAsteikko;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter
     @Setter
     private Set<OsaamistasonKriteeri> osaamistasonKriteerit;

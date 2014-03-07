@@ -33,7 +33,9 @@ import javax.persistence.Table;
 @JsonTypeName("tutkinnonosa")
 public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private static final long serialVersionUID = 1L;
+
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private TekstiPalanen tavoitteet;
     
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
