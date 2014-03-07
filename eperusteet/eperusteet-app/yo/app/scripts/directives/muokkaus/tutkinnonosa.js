@@ -125,8 +125,8 @@ angular.module('eperusteApp')
              path: 'koodi',
              placeholder: 'muokkaus-koodi-placeholder',
              header: 'muokkaus-tutkinnon-osan-koodi',
-             type: 'text-input',
-             defaultClosed: true
+             type: 'koodisto-select',
+             defaultClosed: false
            });
 
         $scope.tutkinnonOsaReady = tutkinnonOsaReadyPromise.then(function(tutkinnonOsa) {
@@ -238,6 +238,8 @@ angular.module('eperusteApp')
             return addInputAttributesFor(angular.element('<textarea></textarea>').attr('editointi-kontrolli', ''));
           } else if(elementType === 'arviointi') {
             return angular.element('<arviointi></arviointi>').attr('arviointi', 'object.' + scope.field.path).attr('editointi-sallittu', 'true');
+          } else if (elementType === 'koodisto') {
+            return angular.element('<koodisto-select></koodisto-select>').attr('valmis', 'object.' + scope.field.path).attr('editointi-sallittu', 'true');
           }
 
           function addEditorAttributesFor(element) {

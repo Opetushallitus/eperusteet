@@ -19,6 +19,13 @@ European Union Public Licence for more details.
     <h3 class="panel-title">{{tutkinnonOsanMuokkausOtsikko | translate}}</h3>
   </div>
   <ul class="list-group muokkaus">
+    <li class="list-group-item">
+      <h4 class="list-group-item-heading">Koodi</h4>
+      <div class="input-group">
+        <input class="form-control" ng-model="editableTutkinnonOsa.koodi" type="text">
+        <koodisto-select class="input-group-btn" valmis="tuoKoodi" />
+      </div>
+    </li>
     <li ng-repeat="field in visibleFields" muokkauskentta-raamit otsikko="{{field.header}}" kiinni-oletuksena="{{field.defaultClosed}}">
       <muokattava-kentta field-info="field" tutkinnon-osa="editableTutkinnonOsa" tutkinnon-osa-ready="tutkinnonOsaReady" remove-field="removeField(fieldToRemove)"></muokattava-kentta>
     </li>
@@ -31,10 +38,6 @@ European Union Public Licence for more details.
     </li>
     <li class="list-group-item" ng-class="editClass">
       <h4 class="list-group-item-heading" translate>muokkaus-tutkinnon-osan-koodi</h4>
-      <div class="input-group">
-        <input class="form-control" ng-model="editableTutkinnonOsa.koodi" type="text">
-        <koodisto-select class="input-group-btn" valmis="tuoKoodi" />
-      </div>
     </li>
   </ul>
   </div>
