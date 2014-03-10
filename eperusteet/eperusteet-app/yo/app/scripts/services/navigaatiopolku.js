@@ -13,7 +13,6 @@ angular.module('eperusteApp')
         navigaatiopolut = [];
         var pathElements = $location.path().split('/'),
           path = '';
-        console.log(pathElements);
 
         var getRoute = function(route) {
           angular.forEach($route.current.params, function(value, key) {

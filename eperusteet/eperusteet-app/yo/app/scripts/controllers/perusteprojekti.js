@@ -26,7 +26,6 @@ angular.module('eperusteApp')
   $scope.$watch('projekti.nimi', function(temp) {
     YleinenData.navigaatiopolkuElementit.projektiId = temp;
     $rootScope.$broadcast('paivitaNavigaatiopolku');
-    console.log('projekti.nimi', temp);
   });
 
   $scope.tabs = [
@@ -45,7 +44,6 @@ angular.module('eperusteApp')
   }
 
   $scope.tallennaPerusteprojekti = function() {
-    console.log('tallenna projekti');
     var projekti = PerusteProjektiService.get();
 
     if (projekti.id) {
