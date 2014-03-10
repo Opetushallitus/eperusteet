@@ -21,13 +21,6 @@ angular.module('eperusteApp')
   };
   
   $scope.showWeeks = true;
-  $scope.toggleWeeks = function() {
-    $scope.showWeeks = !$scope.showWeeks;
-  };
-
-  $scope.clear = function() {
-    $scope.dt = null;
-  };
 
   $scope.open = function($event) {
     $event.preventDefault();

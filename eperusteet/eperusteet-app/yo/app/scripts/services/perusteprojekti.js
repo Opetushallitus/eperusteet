@@ -29,7 +29,6 @@ angular.module('eperusteApp')
     function watcher(scope, kentta) {
       scope.$watchCollection(kentta, function(temp) {
         save(temp);
-        console.log('projekti', get());
       });
     }
     

@@ -132,20 +132,22 @@
     "arvointi": "Arviointi",
     
     "projektin-nimi-label": "Projektin nimi",
-    "anna-projektin-nimi-placeholder": "Anna projektin nimi",
+    "anna-projektin-nimi-placeholder": "Syötä projektin nimi",
     "diaarinumero-label": "Diaarinumero",
-    "anna-diaarinumero-placeholder": "Anna diaarinumero",
+    "anna-diaarinumero-placeholder": "Syötä diaarinumero",
     "päätöspvm-label": "Päätöspäivämäärä",
     "tallenna-perusteprojekti-nappi": "Tallenna",
     "valitse-tehtäväluokka": "Valitse tehtäväluokka",
     "tehtäväluokka-label": "Tehtäväluokka",
-    "anna-päätöspäivämäärä": "Anna päätöspäivämäärä",
+    "anna-päätöspäivämäärä": "Syötä päätöspäivämäärä",
     "toimikausi-alku-label": "Toimikauden aloitus",
-    "anna-toimikausi_alku": "Anna toimikauden aloituspäivämäärä",
+    "anna-toimikausi_alku": "Syötä toimikauden aloituspäivämäärä",
     "toimikausi-loppu-label": "Toimikauden päättyminen",
-    "anna-toimikausi_loppu": "Anna toimikauden päättymispäivämäärä",
+    "anna-toimikausi_loppu": "Syötä toimikauden päättymispäivämäärä",
     "tahdella-pakolliset": "Tähdellä(*) merkityt kentät ovat pakollisia",
     "aloitus-ennen-lopetusta": "Toimikauden aloituspäivämäärän täytyy olla ennen päättymisajankohtaa.",
     "lopetus-aloituksen-jälkeen": "Toimikauden päättymispäivämäärä täytyy olla aloitusajankohdan jälkeen.",
-    "kelvoton-pvm": "Kelvoton päivämäärä"
+    "kelvoton-pvm": "Kelvoton päivämäärä",
+    "yhteistyotaho-label": "Yhteistyötaho",
+    "anna-yhteistyotaho-placeholder": "Syötä yhteistyötaho"
 }
