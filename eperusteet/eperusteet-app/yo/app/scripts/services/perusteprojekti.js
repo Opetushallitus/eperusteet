@@ -7,7 +7,7 @@ angular.module('eperusteApp')
       id: '@id'
     },
       {
-        update: {method: 'PUT', isArray: false}
+        update: {method: 'POST', isArray: false}
       });
   }).service('PerusteProjektiService', function($rootScope) {
     

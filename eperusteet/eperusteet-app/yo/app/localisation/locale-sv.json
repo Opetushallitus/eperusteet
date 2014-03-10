@@ -136,9 +136,18 @@
     "anna-projektin-nimi-placeholder": "[Anna projektin nimi]",
     "diaarinumero-label": "[Diaarinumero]",
     "anna-diaarinumero-placeholder": "[Anna diaarinumero]",
+    "päätöspvm-label": "[Päätöspäivämäärä]",
     "tallenna-perusteprojekti-nappi": "[Tallenna]",
     "valitse-tehtäväluokka": "[Valitse tehtäväluokka]",
-    "tehtäväluokka-label": "Tehtäväluokka",
-    "anna-päätöspäivämäärä": "Anna päätöspäivämäärä"
+    "tehtäväluokka-label": "[Tehtäväluokka]",
+    "anna-päätöspäivämäärä": "[Anna päätöspäivämäärä]",
+    "toimikausi-alku-label": "[Toimikauden aloitus]",
+    "anna-toimikausi_alku": "[Anna toimikauden aloituspäivämäärä]",
+    "toimikausi-loppu-label": "[Toimikauden päättyminen]",
+    "anna-toimikausi_loppu": "[Anna toimikauden päättymispäivämäärä]",
+    "tahdella-pakolliset": "[Tähdellä(*) merkityt kentät ovat pakollisia]",
+    "aloitus-ennen-lopetusta": "[Toimikauden aloituspäivämäärän täytyy olla ennen päättymisajankohtaa.]",
+    "lopetus-aloituksen-jälkeen": "[Toimikauden päättymispäivämäärä täytyy olla aloitusajankohdan jälkeen.]",
+    "kelvoton-pvm": "[Kelvoton päivämäärä]"
 }
 

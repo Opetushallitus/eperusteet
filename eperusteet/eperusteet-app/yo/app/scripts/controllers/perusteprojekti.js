@@ -34,13 +34,6 @@ angular.module('eperusteApp')
     {otsikko: 'Projektiryhmä', url: '/views/partials/perusteprojektiProjektiryhma.html'}
   ];
 
-  $scope.tehtavaluokat = [
-    { nimi: 'Tehtäväluokka-1'},
-    { nimi: 'Tehtäväluokka-2'},
-    { nimi: 'Tehtäväluokka-3'},
-    { nimi: 'Tehtäväluokka-4'}
-  ];
-  
   if ($routeParams.id) {
     $scope.projekti.id = $routeParams.id;
     PerusteprojektiResource.get($scope.projekti, function(vastaus) {
@@ -52,6 +45,7 @@ angular.module('eperusteApp')
   }
 
   $scope.tallennaPerusteprojekti = function() {
+    console.log('tallenna projekti');
     var projekti = PerusteProjektiService.get();
 
     if (projekti.id) {

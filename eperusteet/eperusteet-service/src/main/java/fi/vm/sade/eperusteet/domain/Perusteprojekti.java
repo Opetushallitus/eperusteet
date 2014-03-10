@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.validation.ValidateDateRange;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.CascadeType;
@@ -37,6 +38,7 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "perusteprojekti")
+@ValidateDateRange(start="toimikausiAlku", end="toimikausiLoppu")
 public class Perusteprojekti implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
