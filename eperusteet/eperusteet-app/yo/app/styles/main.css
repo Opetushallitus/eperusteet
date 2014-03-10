@@ -93,3 +93,7 @@ body {
 	background: #F2FBFC;
 	border-color: #BCE8F1;
 }
+
+.clickable {
+	cursor: pointer;
+}

@@ -1,4 +1,5 @@
 'use strict';
+/*global _*/
 
 angular.module('eperusteApp')
   .factory('PerusteenOsat', function($resource, SERVICE_LOC) {

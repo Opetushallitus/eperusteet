@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .directive('arviointi', function(YleinenData) {
+  .directive('arviointi', function(YleinenData, Editointikontrollit) {
     return {
       templateUrl: 'views/partials/arviointi.html',
       restrict: 'E',
@@ -113,6 +113,20 @@ angular.module('eperusteApp')
         
         scope.valitseKieli = function(nimi) {
           return YleinenData.valitseKieli(nimi);
+        };
+        
+        scope.removeItem = function(item, list) {
+          console.log('poistetaan');
+          _.remove(list, item);
+        };
+        
+        scope.showRemoveButton = function() {
+          return scope.editAllowed && Editointikontrollit.editMode;
+        };
+        
+        scope.checkboxClick = function($event) {
+          console.log('TESTI');
+          $event.stopPropagation();
         };
       }
     };

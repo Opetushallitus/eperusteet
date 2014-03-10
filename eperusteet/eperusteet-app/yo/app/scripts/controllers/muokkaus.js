@@ -46,4 +46,86 @@ angular.module('eperusteApp')
     var el = $compile(muokkausDirective)($scope);
     
     angular.element('#muokkaus-elementti-placeholder').replaceWith(el);
+  })
+  .service('MuokkausUtils', function() {
+    this.hasValue = function(obj, path) {
+      if (this.nestedHas(obj, path, '.')) {
+        if (angular.isString(this.nestedGet(obj, path, '.'))) {
+          if(this.nestedGet(obj, path, '.').length > 0) {
+            return true;
+          } else {
+            return false;
+          }
+        } else if(!angular.isUndefined(this.nestedGet(obj, path, '.')) && this.nestedGet(obj, path, '.') !== null) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    };
+
+    this.nestedHas = function(obj, path, delimiter) {
+      var propertyNames = path.split(delimiter);
+
+      return innerNestedHas(obj, propertyNames);
+
+      function innerNestedHas(obj, names) {
+        if(_.has(obj, names[0])) {
+          return names.length > 1 ? innerNestedHas(obj[names[0]], names.splice(1, names.length)) : true;
+        } else {
+          return false;
+        }
+      }
+    };
+
+    this.nestedGet = function(obj, path, delimiter) {
+      if(!this.nestedHas(obj, path, delimiter)) {
+        return undefined;
+      }
+      var propertyNames = path.split(delimiter);
+
+      return innerNestedGet(obj, propertyNames);
+
+      function innerNestedGet(obj, names) {
+        if(names.length > 1) {
+          return innerNestedGet(obj[names[0]], names.splice(1, names.length));
+        } else {
+          return obj[names[0]];
+        }
+      }
+    };
+
+    this.nestedSet = function(obj, path, delimiter, value) {
+      var propertyNames = path.split(delimiter);
+
+      innerNestedSet(obj, propertyNames, value);
+
+      function innerNestedSet(obj, names, newValue) {
+        if(names.length > 1) {
+          if(!_.has(obj, names[0])) {
+            obj[names[0]] = {};
+          }
+          innerNestedSet(obj[names[0]], names.splice(1, names.length), newValue);
+        }  else {
+          obj[names[0]] = newValue;
+        }
+      }
+    };
+
+    this.nestedOmit = function(obj, path, delimiter) {
+      var propertyNames = path.split(delimiter);
+
+      return innerNestedOmit(obj, propertyNames);
+
+      function innerNestedOmit(obj, names) {
+        if(names.length > 1) {
+          obj[names[0]] = innerNestedOmit(obj[names[0]], names.splice(1, names.length));
+          return obj;
+        } else {
+          return _.omit(obj, names[0]);
+        }
+      }
+    };
   });
