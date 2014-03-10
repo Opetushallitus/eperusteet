@@ -60,7 +60,7 @@ angular.module('eperusteApp')
   })
   .directive('koodistoSelect', function($modal) {
     return {
-      template: '<button class="form-control" type="text" ng-click="activate()">Hae koodistosta</button>',
+      template: '<button class="btn btn-default" type="text" ng-click="activate()">Hae koodistosta</button>',
       restrict: 'E',
       link: function($scope, el, attrs) {
         var valmis = $scope.$eval(attrs.valmis);
