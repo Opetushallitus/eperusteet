@@ -140,6 +140,14 @@
     "tallenna-perusteprojekti-nappi": "[Tallenna]",
     "valitse-tehtäväluokka": "[Valitse tehtäväluokka]",
     "tehtäväluokka-label": "[Tehtäväluokka]",
-    "anna-päätöspäivämäärä": "[Anna päätöspäivämäärä]"
+    "anna-päätöspäivämäärä": "[Anna päätöspäivämäärä]",
+    "toimikausi-alku-label": "[Toimikauden aloitus]",
+    "anna-toimikausi_alku": "[Anna toimikauden aloituspäivämäärä]",
+    "toimikausi-loppu-label": "[Toimikauden päättyminen]",
+    "anna-toimikausi_loppu": "[Anna toimikauden päättymispäivämäärä]",
+    "tahdella-pakolliset": "[Tähdellä(*) merkityt kentät ovat pakollisia]",
+    "aloitus-ennen-lopetusta": "[Toimikauden aloituspäivämäärän täytyy olla ennen päättymisajankohtaa.]",
+    "lopetus-aloituksen-jälkeen": "[Toimikauden päättymispäivämäärä täytyy olla aloitusajankohdan jälkeen.]",
+    "kelvoton-pvm": "[Kelvoton päivämäärä]"
 }
 

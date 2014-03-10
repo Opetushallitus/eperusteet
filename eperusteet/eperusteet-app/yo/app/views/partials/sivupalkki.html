@@ -40,7 +40,7 @@ European Union Public Licence for more details.
                 </div>
                 <div class="panel-body">
                     <ul class="list-unstyled">
-                        <li class="ellipsis-no-wrap" ng-repeat="projekti in projektit| limitTo:projektitRaja" ><a title="{{projekti.nimi}}" ng-href="#/perusteprojekti/{{projekti.id}}">{{projekti.nimi}}</a></li>
+                        <li class="ellipsis-no-wrap" ng-repeat="projekti in projektit| limitTo:projektitRaja" ><a title="{{projekti.nimi}}" ng-href="#/perusteprojekti/{{projekti.id}}">{{projekti.diaarinumero}}: {{projekti.nimi}}</a></li>
                     </ul>
                     <button class="btn btn-default btn-xs pull-right" ng-show="naytaProjektitNappi" ng-click="muutaProjektienMaara()">{{projektitNapinTeksti| translate}}</button>
                 </div>
