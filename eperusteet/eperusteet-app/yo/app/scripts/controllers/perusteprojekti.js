@@ -6,7 +6,7 @@ angular.module('eperusteApp')
       .when('/perusteprojekti', {
         templateUrl: 'views/perusteprojekti.html',
         controller: 'PerusteprojektiCtrl',
-        navigaationimi: 'Perusteprojekti'
+        navigaationimi: 'navi-perusteprojekti'
       })
       .when('/perusteprojekti/:id', {
         templateUrl: 'views/perusteprojekti.html',
