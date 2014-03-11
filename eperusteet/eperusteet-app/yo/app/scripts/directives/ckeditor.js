@@ -2,8 +2,10 @@
 /*global CKEDITOR,$,_*/
 
 angular.module('eperusteApp')
-  .directive('ckeditor', function($q, $filter, $rootScope) {
+  .run(function() {
     CKEDITOR.disableAutoInline = true;
+  })
+  .directive('ckeditor', function($q, $filter, $rootScope) {
     return {
       restrict: 'A',
       require: 'ngModel',
