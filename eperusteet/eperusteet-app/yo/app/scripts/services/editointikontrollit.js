@@ -17,28 +17,36 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .factory('Editointikontrollit', function($rootScope) {
+  .factory('Editointikontrollit', function($rootScope, $q) {
     var scope = $rootScope.$new(true);
     scope.editingCallback = null;
-    this.editMode = false;
+    scope.editMode = false;
+    
+    scope.editModeDefer = $q.defer();
     
     return {
       startEditing: function() {
         if(scope.editingCallback) {
           scope.editingCallback.edit();
-          this.editMode = true;
+          scope.editMode = true;
+          scope.editModeDefer = $q.defer();
+          scope.editModeDefer.resolve(scope.editMode);
         }
       },
       saveEditing: function() {
         if(scope.editingCallback) {
           scope.editingCallback.save();
-          this.editMode = false;
+          scope.editMode = false;
+          scope.editModeDefer = $q.defer();
+          scope.editModeDefer.resolve(scope.editMode);
         }
       },
       cancelEditing: function() {
         if(scope.editingCallback) {
           scope.editingCallback.cancel();
-          this.editMode = false;
+          scope.editMode = false;
+          scope.editModeDefer = $q.defer();
+          scope.editModeDefer.resolve(scope.editMode);
         }
       },
       registerCallback: function(callback) {
@@ -53,10 +61,13 @@ angular.module('eperusteApp')
           throw 'editCallback-function invalid';
         }
         scope.editingCallback = callback;
+        scope.editModeDefer.resolve(scope.editMode);
       },
       unregisterCallback: function() {
         scope.editingCallback = null;
-        this.editMode = false;
+        scope.editMode = false;
+        scope.editModeDefer = $q.defer();
+        scope.editModeDefer.resolve(scope.editMode);
       },
       editingEnabled: function() {
         if(scope.editingCallback) {
@@ -67,6 +78,9 @@ angular.module('eperusteApp')
       },
       registerCallbackListener: function(callbackListener) {
         scope.$watch('editingCallback', callbackListener);
+      },
+      getEditModePromise: function() {
+        return scope.editModeDefer.promise;
       }
     };
 });

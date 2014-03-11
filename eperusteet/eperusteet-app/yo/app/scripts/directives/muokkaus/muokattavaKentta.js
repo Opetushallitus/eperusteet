@@ -186,9 +186,12 @@ angular.module('eperusteApp')
     return {
       restrict: 'A',
       link: function(scope, element, attrs) {
-        if(!Editointikontrollit.editMode) {
-          element.attr('disabled', 'disabled');
-        }
+        
+        Editointikontrollit.getEditModePromise().then(function(editMode) {
+          if(!editMode) {
+            element.attr('disabled', 'disabled');
+          }
+        });
 
         $rootScope.$on('enableEditing', function() {
           if(!element.attr('ng-disabled') || !scope.$eval(element.attr('ng-disabled'))) {
