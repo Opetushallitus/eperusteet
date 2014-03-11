@@ -7,6 +7,11 @@
     "suosikki": "Lisää suosikiksi",
     "suosikit-otsikko": "Suosikit",
     "palauta" : "Palauta",
+    "peru": "Peru",
+    "tyyppi": "Tyyppi",
+    "koodi": "Koodi",
+    "rajaa-tuloksia": "Rajaa...",
+    "nimi": "Nimi",
 
     "haku-otsikko": "Perusteen haku",
     "haku-koulutusala": "Koulutusala",
@@ -24,6 +29,7 @@
     "haku-hakuehdot" : "Hakuehdot",
     "haku-opintoala" : "Opintoala",
     "haku-kaikki-opintoalat" : "Kaikki opintoalat",
+    "hae-koodi-koodistosta": "Hae koodistosta",
 
     "navi-esiopetus": "Esiopetus",
     "navi-perusopetus": "Perusopetus",
@@ -98,10 +104,13 @@
     "tutkintokoodi": "Tutkintokoodi",
     "koulutusalakoodi": "Koulutusalakoodi",
     "navipolku-tutkinnonOsa": "Tutkinnon osa",
-    
+
+    "haetaan-tutkinnon-osia": "Haetaan tutkinnon osia...",
+
     "muokkaus": "Muokkaus",
     "muokkaus-tutkinnon-osa": "Muokkaa tutkinnon osaa",
     "luonti-tutkinnon-osa": "Luo uusi tutkinnon osa",
+
     "muokkaus-tutkinnon-osan-nimi-header": "Nimi",
     "muokkaus-tutkinnon-osan-nimi-placeholder": "Kirjoita tähän otsikko",
     "muokkaus-tutkinnon-osan-koodi-header": "Koodi",
