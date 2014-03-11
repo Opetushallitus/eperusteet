@@ -27,7 +27,6 @@ angular.module('eperusteApp')
         editAllowed: '@?editointiSallittu'
       },
       link: function(scope) {
-        console.log('setup arviointi');
         scope.editAllowed = scope.editAllowed || 'false';
         
         scope.arviointiasteikot = YleinenData.arviointiasteikot || {};
@@ -70,10 +69,6 @@ angular.module('eperusteApp')
             kohdealue.arvioinninKohteet = [];
           }
           
-          console.log(uudenKohteenTiedot.nimi);
-          console.log(uudenKohteenTiedot.arviointiasteikko);
-          console.log(uudenKohteenTiedot.showInputArea);
-          
           // TODO: Add localization
           var kohde = {
               otsikko: {
@@ -84,16 +79,12 @@ angular.module('eperusteApp')
           };
           
           angular.forEach(uudenKohteenTiedot.arviointiasteikko.osaamistasot, function(taso) {
-            console.log('push:');
-            console.log(taso);
             kohde.osaamistasonKriteerit.push({
                 _osaamistaso: taso.id
             });
           });
-          console.log(kohde);
           
           kohdealue.arvioinninKohteet.push(kohde);
-          console.log(kohdealue);
           uudenKohteenTiedot.nimi = null;
           uudenKohteenTiedot.arviointiasteikko = null;
           
@@ -104,9 +95,7 @@ angular.module('eperusteApp')
           if(osaamistasonKriteeri.kriteerit === undefined || osaamistasonKriteeri.kriteerit === null) {
             osaamistasonKriteeri.kriteerit = [];
           }
-          
-          console.log('uusi kriteeri');
-          
+                    
           osaamistasonKriteeri.kriteerit.push({fi: uudenKriteerinTiedot.teksti});
           uudenKriteerinTiedot.teksti = null;
           uudenKriteerinTiedot.showInput = false;
@@ -117,17 +106,11 @@ angular.module('eperusteApp')
         };
         
         scope.removeItem = function(item, list) {
-          console.log('poistetaan');
           _.remove(list, item);
         };
         
         scope.showRemoveButton = function() {
           return scope.editAllowed && Editointikontrollit.editMode;
-        };
-        
-        scope.checkboxClick = function($event) {
-          console.log('TESTI');
-          $event.stopPropagation();
         };
       }
     };
