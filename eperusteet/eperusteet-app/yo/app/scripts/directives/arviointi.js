@@ -37,17 +37,17 @@ angular.module('eperusteApp')
         scope.$on('arviointiasteikot', function() {
           scope.arviointiasteikot = YleinenData.arviointiasteikot;
         });
-        
+                
         scope.addNewKohdealue = function() {
-          if(scope.uudenKohdealueenNimi === undefined || scope.uudenKohdealueenNimi === null || (angular.isString(scope.uudenKohdealueenNimi) && scope.uudenKohdealueenNimi.length === 0)) {
+          if(angular.isUndefined(scope.uudenKohdealueenNimi) || scope.uudenKohdealueenNimi === null || (angular.isString(scope.uudenKohdealueenNimi) && _.isEmpty(scope.uudenKohdealueenNimi))) {
             return;
           }
           
-          if(scope.arviointi === undefined || scope.arviointi === null) {
+          if(angular.isUndefined(scope.arviointi) || scope.arviointi === null) {
             scope.arviointi = {};
           }
           
-          if(scope.arviointi.arvioinninKohdealueet === undefined || scope.arviointi.arvioinninKohdealueet === null) {
+          if(angular.isUndefined(scope.arviointi.arvioinninKohdealueet) || scope.arviointi.arvioinninKohdealueet === null) {
             scope.arviointi.arvioinninKohdealueet = [];
           }
           
@@ -65,7 +65,7 @@ angular.module('eperusteApp')
         };
         
         scope.addNewKohde = function(kohdealue, uudenKohteenTiedot) {
-          if(kohdealue.arvioinninKohteet === undefined || kohdealue.arvioinninKohteet === null) {
+          if(angular.isUndefined(kohdealue.arvioinninKohteet) || kohdealue.arvioinninKohteet === null) {
             kohdealue.arvioinninKohteet = [];
           }
           

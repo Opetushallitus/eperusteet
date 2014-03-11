@@ -114,7 +114,7 @@ angular.module('eperusteApp')
           else if(elementType === 'arviointi') {
             element = 
             angular.element('<arviointi></arviointi>')
-            .attr('arviointi', 'ng-model', 'object.' + scope.field.path)
+            .attr('arviointi', 'object.' + scope.field.path)
             .attr('editointi-sallittu', 'true');
           } 
           
