@@ -11,11 +11,12 @@ angular.module('eperusteApp')
     $scope.lisaaSuosikkeja = false;
     $scope.naytetaanKaikkiSuosikit = false;
     $scope.naytetaanKaikkiProjektit = false;
-    var naytaKaikkiTeksti = 'sivupalkki-näytä-kaikki';
-    var piilotaTeksti = 'sivupalkki-piilota';
+    $scope.suosikkiNapinTeksti = '';
     $scope.kielet = YleinenData.kielet;
     $scope.kieli = YleinenData.kieli;
 
+    var naytaKaikkiTeksti = 'sivupalkki-näytä-kaikki';
+    var piilotaTeksti = 'sivupalkki-piilota';
 
     var paivitaSuosikit = function() {
       Kayttajaprofiilit.get({}, function(vastaus) {
@@ -39,7 +40,7 @@ angular.module('eperusteApp')
     };
 
     paivitaSuosikit();
-    
+
     $scope.vaihdaKieli = function(kielikoodi) {
       console.log('Vaihdakieli: ' + kielikoodi);
       $scope.kieli = kielikoodi;
@@ -64,7 +65,7 @@ angular.module('eperusteApp')
         $scope.suosikkiNapinTeksti = naytaKaikkiTeksti;
       }
     };
-    
+
     $scope.$on('suosikitMuuttuivat', function() {
       paivitaSuosikit();
     });

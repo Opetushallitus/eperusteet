@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -41,8 +42,15 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
-    public ResponseEntity<PerusteenOsaDto> get(@PathVariable("id") final Long id) {
-        PerusteenOsaDto t = service.get(id);
+    public ResponseEntity<PerusteenOsaDto> get(@PathVariable("id") final Long id,
+            @RequestParam(value="koodi", required=false, defaultValue="false") final Boolean koodi) {
+        LOG.debug(koodi.toString());
+        PerusteenOsaDto t = null;
+        if (koodi) {
+            t = service.getByKoodi(id);
+        } else {
+            t = service.get(id);
+        }
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

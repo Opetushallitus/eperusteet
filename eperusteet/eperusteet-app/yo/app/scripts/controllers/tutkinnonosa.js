@@ -16,7 +16,7 @@ angular.module('eperusteApp')
     $scope.kontekstit = YleinenData.kontekstit;
     $scope.tutkinnonOsa = {};
     //$scope.arviointi = {};
-    $scope.arviointiasteikot = {};
+//    $scope.arviointiasteikot = {};
     $scope.kontekstit = YleinenData.kontekstit;
     var avausTyyli = 'glyphicon glyphicon-plus pointer';
     var sulkemisTyyli = 'glyphicon glyphicon-minus pointer';
@@ -71,9 +71,9 @@ angular.module('eperusteApp')
       $location.path('/selaus/' + $scope.konteksti);
     });
 
-    $scope.$on('arviointiasteikot', function() {
-      $scope.arviointiasteikot = YleinenData.arviointiasteikot;
-    });
+//    $scope.$on('arviointiasteikot', function() {
+//      $scope.arviointiasteikot = YleinenData.arviointiasteikot;
+//    });
 
     $scope.vaihdaAmmattitaitovaatimusNakyvyys = function() {
       $scope.ammattitaitovaatimuksetSuljettu = !$scope.ammattitaitovaatimuksetSuljettu;

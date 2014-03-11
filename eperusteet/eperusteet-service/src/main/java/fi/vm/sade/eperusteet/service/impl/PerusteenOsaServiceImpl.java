@@ -12,6 +12,7 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.repository.ArviointiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
+import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -25,13 +26,16 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteenOsaServiceImpl.class);
-    
+
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepo;
-    
+
+    @Autowired
+    private TutkinnonOsaRepository tutkinnonOsaRepo;
+
     @Autowired
     private ArviointiRepository arviointiRepository;
-    
+
     @Autowired
     @Dto
     private DtoMapper mapper;
@@ -45,7 +49,12 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     public PerusteenOsaDto get(final Long id) {
         return mapper.map(perusteenOsaRepo.findOne(id), PerusteenOsaDto.class);
     }
-    
+
+    @Override
+    public PerusteenOsaDto getByKoodi(final Long id) {
+        return mapper.map(tutkinnonOsaRepo.findOneByKoodi(id), PerusteenOsaDto.class);
+    }
+
     @Override
     @Transactional(readOnly = false)
     public <T extends PerusteenOsaDto, D extends PerusteenOsa> T save(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
@@ -53,7 +62,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         perusteenOsa = perusteenOsaRepo.save(perusteenOsa);
         return mapper.map(perusteenOsa, dtoClass);
     }
-
+  
     @Override
     @Transactional(readOnly = false)
     public void delete(final Long id) {

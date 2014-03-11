@@ -289,4 +289,9 @@
          eternal="false"
          timeToLiveSeconds="86400"
          overflowToDisk="false" />
+  <cache name="koodistot"
+         maxElementsInMemory="4" 
+         eternal="false"
+         timeToLiveSeconds="86400"
+         overflowToDisk="false" />
 </ehcache>

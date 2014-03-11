@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <h2 translate>hae-koodi-koodistosta</h2>
+</div>
+
+<div class="modal-body">
+  <label translate>tyyppi</label>
+  <select class="form-control" ng-model="tyyppi">
+    <option ng-repeat="kv in koodistoVaihtoehdot">{{ kv | translate }}</option>
+  </select>
+  <div ng-if="tyyppi === 'tutkinnonosat'">
+    <label translate>koodi</label>
+    <input ng-hide="lataa" ng-change="haku(syote, kieli)" type="text" ng-model="syote" class="form-control" placeholder="{{ 'rajaa-tuloksia' | translate }}" />
+    <input ng-show="lataa" class="form-control" value="{{ 'haetaan-tutkinnon-osia' | translate }}" disabled />
+  </div>
+
+  <table ng-hide="lataa" class="table table-striped" ng-model="kieli">
+    <tr>
+      <th translate>koodi</th>
+      <th translate>nimi</th>
+    </tr>
+    <tr ng-repeat="l in loydetyt | limitTo: 10">
+      <td><a href="" ng-click="ok(l.koodi)">{{ l.koodi }}</a></td>
+      <td>{{ l.nimi[kieli] }}</td>
+    </tr>
+  </table>
+  <div class="btn-group col-md-6 col-md-offset-3">
+    <button type="button" class="btn btn-default" ng-model="kieli" btn-radio="'fi'">{{ 'suomi' | translate }}</button>
+    <button type="button" class="btn btn-default" ng-model="kieli" btn-radio="'se'">{{ 'ruotsi' | translate }}</button>
+    <button type="button" class="btn btn-default" ng-model="kieli" btn-radio="'en'">{{ 'englanti' | translate }}</button>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-danger" ng-click="peruuta()" translate>peru</button>
+</div>

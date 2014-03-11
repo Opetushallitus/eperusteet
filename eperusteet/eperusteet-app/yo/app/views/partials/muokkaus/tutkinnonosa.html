@@ -16,30 +16,19 @@ European Union Public Licence for more details.
 
 <div class="panel" ng-class="panelType">
   <div class="panel-heading">
-    <h3 class="panel-title"><span translate>muokkaus</span> - <span translate>muokkaus-tutkinnon-osa</span></h3>
+    <h3 class="panel-title">{{tutkinnonOsanMuokkausOtsikko | translate}}</h3>
   </div>
   <ul class="list-group muokkaus">
-      <li class="list-group-item" ng-class="editClass">
-        <h4 class="list-group-item-heading" translate>muokkaus-tutkinnon-osan-otsikko</h4>
-        <p class="list-group-item-text" ng-model="editableTutkinnonOsa.nimi.fi" ckeditor editing-enabled="false" editor-placeholder="muokkaus-otsikko-placeholder"></p>
-      </li>
-      <li class="list-group-item" ng-class="editClass">
-        <h4 class="list-group-item-heading" translate>muokkaus-tutkinnon-osan-tavoitteet</h4>
-        <p class="list-group-item-text" ng-model="editableTutkinnonOsa.tavoitteet.fi" ckeditor editing-enabled="false" editor-placeholder="muokkaus-tavoitteet-placeholder"></p>
-      </li>
-      <li class="list-group-item" ng-class="editClass">
-        <h4 class="list-group-item-heading" translate>muokkaus-tutkinnon-osan-ammattitaitovaatimukset</h4>
-        <p class="list-group-item-text" ng-model="editableTutkinnonOsa.ammattitaitovaatimukset.fi" ckeditor editing-enabled="false" editor-placeholder="muokkaus-ammattitaitovaatimukset-placeholder"></p>
-      </li>
-      <li class="list-group-item" ng-class="editClass">
-        <h4 class="list-group-item-heading" translate>muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat</h4>
-        <p class="list-group-item-text" ng-model="editableTutkinnonOsa.ammattitaidonOsoittamistavat.fi" ckeditor editing-enabled="false" editor-placeholder="muokkaus-ammattitaidon-osoittamistavat-placeholder"></p>
-      </li>
-      <li class="list-group-item" ng-class="editClass">
-        <h4 class="list-group-item-heading" translate>muokkaus-tutkinnon-osan-osaamisala</h4>
-        <p class="list-group-item-text" ng-model="editableTutkinnonOsa.osaamisala.fi" ckeditor editing-enabled="false" editor-placeholder="muokkaus-osaamisala-placeholder"></p>
+    <li ng-repeat="field in visibleFields" muokkauskentta-raamit otsikko="{{field.localeKey}}" kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}">
+      <muokattava-kentta field-info="field" tutkinnon-osa="editableTutkinnonOsa" tutkinnon-osa-ready="tutkinnonOsaReady" remove-field="removeField(fieldToRemove)"></muokattava-kentta>
+    </li>
+  </ul>
+  <div class="panel-footer">
+    <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle">{{'muokkaus-lisaa-osio' | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
+    <ul class="dropdown-menu">
+      <li ng-repeat="field in hiddenFields">
+        <a ng-click="addFieldToVisible(field)" translate>muokkaus-{{field.localeKey}}-header</a>
       </li>
     </ul>
+  </div>
 </div>
-
-

@@ -9,7 +9,7 @@ angular.module('eperusteApp')
         controller: 'ExcelCtrl'
       });
   })
-  .controller('ExcelCtrl', function($scope, ExcelService, PerusteenOsat) {
+  .controller('ExcelCtrl', function($scope, ExcelService, PerusteenOsat, TutkinnonOsanValidointi) {
     $scope.osatutkinnot = [];
     $scope.vaihe = [];
     $scope.errors = [];
@@ -23,15 +23,14 @@ angular.module('eperusteApp')
     $scope.parsinnanTyyppi = 'peruste';
 
     $scope.clearSelect = function() {
-      $scope.$apply(function() {
-        $scope.vaihe = [];
-        $scope.errors = [];
-        $scope.warnings = [];
-        $scope.lukeeTiedostoa = true;
-        $scope.lukeeTiedostoa = true;
-        $scope.uploadErrors = [];
-        $scope.uploadSuccess = false;
-      });
+      $scope.osatutkinnot = [];
+      $scope.vaihe = [];
+      $scope.errors = [];
+      $scope.warnings = [];
+      $scope.lukeeTiedostoa = true;
+      $scope.lukeeTiedostoa = true;
+      $scope.uploadErrors = [];
+      $scope.uploadSuccess = false;
     };
 
     $scope.editoiOsatutkintoa = function() {
@@ -66,16 +65,21 @@ angular.module('eperusteApp')
         return ot.ladattu !== 0;
       }).forEach(function(ot) {
         var cop = _.omit(_.clone(ot), 'ladattu', 'syy');
-        PerusteenOsat.saveTutkinnonOsa(cop, function(re) {
-          ot.ladattu = 0;
-          ot.id = re.id;
-          ot.koodi = re.koodi;
-          doneSuccess();
-        }, function(err) {
-          if (err) {
-            ot.syy = err.syy;
-            ot.ladattu = 1;
-          }
+        TutkinnonOsanValidointi.validoi(cop).then(function() {
+          PerusteenOsat.saveTutkinnonOsa(cop, function(re) {
+            ot.ladattu = 0;
+            ot.id = re.id;
+            ot.koodi = re.koodi;
+            doneSuccess();
+          }, function(err) {
+            if (err) {
+              ot.syy = err.data.syy;
+              ot.ladattu = 1;
+            }
+          });
+        }, function(virhe) {
+          ot.syy = virhe;
+          ot.ladattu = 1;
         });
       });
     };
@@ -83,6 +87,7 @@ angular.module('eperusteApp')
     $scope.onFileSelect = function(err, file) {
       $scope.lukeeTiedostoa = true;
       $scope.alussa = false;
+      $scope.osatutkinnot = [];
 
       if (err || !file) {
         // TODO: Hoida virhetilanteet

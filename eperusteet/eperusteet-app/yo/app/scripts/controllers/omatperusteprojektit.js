@@ -7,6 +7,8 @@ angular.module('eperusteApp')
     $scope.suppeaMaara = 5;
     $scope.projektitRaja = $scope.suppeaMaara;
     $scope.naytetaanKaikkiProjektit = false;
+    $scope.projektitNapinTeksti = '';
+
     var naytaKaikkiTeksti = 'sivupalkki-näytä-kaikki';
     var piilotaTeksti = 'sivupalkki-piilota';
 
@@ -14,7 +16,7 @@ angular.module('eperusteApp')
       Kayttajaprofiilit.get({}, function(vastaus) {
 
         $scope.projektit = vastaus.perusteprojektit;
-        
+
         if ($scope.naytetaanKaikkiSuosikit) {
           $scope.projektitNapinTeksti = piilotaTeksti;
           $scope.projektitRaja = _.size($scope.projektit);
@@ -29,9 +31,9 @@ angular.module('eperusteApp')
         }
       });
     };
-    
+
     paivitaOmatProjektit();
-    
+
     $scope.muutaProjektienMaara = function() {
       $scope.naytetaanKaikkiProjektit = !$scope.naytetaanKaikkiProjektit;
 
@@ -44,7 +46,7 @@ angular.module('eperusteApp')
         $scope.projektitNapinTeksti = naytaKaikkiTeksti;
       }
     };
-    
+
     $scope.$on('perusteprojektiLuotu', function() {
       paivitaOmatProjektit();
     });
