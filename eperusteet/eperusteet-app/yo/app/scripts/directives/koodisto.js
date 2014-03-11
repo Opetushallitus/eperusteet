@@ -13,7 +13,8 @@ angular.module('eperusteApp')
         taydennykset = _.map(re.data, function(kv) {
           var nimi = {
             fi: '',
-            se: ''
+            se: '',
+            en: ''
           };
           _.forEach(kv.metadata, function(obj) {
             nimi[obj.kieli.toLowerCase()] = obj.nimi;
@@ -21,19 +22,21 @@ angular.module('eperusteApp')
           return {
             koodi: kv.koodiUri,
             nimi: nimi,
-            haku: _.reduce(nimi, function(result, v) {
-              return result + v;
-            }).toLowerCase()
+            haku: _.map(nimi, function(v, k) {
+              var n = {};
+              n[k] = v.toLowerCase();
+              return n;
+            })
           };
         });
         cb();
       });
     }
 
-    function filtteri(haku) {
+    function filtteri(haku, kieli) {
       haku = haku.toLowerCase();
       var res = _.filter(taydennykset, function(t) {
-        return t.koodi.indexOf(haku) !== -1 || t.haku.indexOf(haku) !== -1;
+        return t.koodi.indexOf(haku) !== -1 || t.nimi[kieli].indexOf(haku) !== -1;
       });
       return res;
     }
@@ -44,11 +47,13 @@ angular.module('eperusteApp')
       vaihtoehdot: _.clone(koodistoVaihtoehdot)
     };
   })
-  .controller('KoodistoModalCtrl', function($scope, $modalInstance, Koodisto) {
+  .controller('KoodistoModalCtrl', function($scope, $modalInstance, $translate, Koodisto) {
     $scope.koodistoVaihtoehdot = Koodisto.vaihtoehdot;
     $scope.tyyppi = _.first($scope.koodistoVaihtoehdot);
-    $scope.haku = function(rajaus) { $scope.loydetyt = Koodisto.filtteri(rajaus); };
+    $scope.haku = function(rajaus, kieli) { $scope.loydetyt = Koodisto.filtteri(rajaus, kieli); };
     $scope.lataa = true;
+    $scope.syote = '';
+    $scope.kieli = 'fi';
 
     Koodisto.hae($scope.tyyppi, function() {
       $scope.lataa = false;
@@ -60,11 +65,11 @@ angular.module('eperusteApp')
   })
   .directive('koodistoSelect', function($modal) {
     return {
-      template: '<button class="btn btn-default" type="text" ng-click="activate()" editointi-kontrolli>Hae koodistosta</button>',
+      template: '<button class="btn btn-default" type="text" ng-click="activate()" editointi-kontrolli>{{ "hae-koodi-koodistosta" | translate }}</button>',
       restrict: 'E',
       link: function($scope, el, attrs) {
         var valmis = $scope.$eval(attrs.valmis);
-        var tyyppi = attrs.tyyppi;
+        // var tyyppi = attrs.tyyppi;
 
         if (!valmis) {
           console.log('koodisto-select: valmis-callback puuttuu');
@@ -76,7 +81,6 @@ angular.module('eperusteApp')
             templateUrl: 'views/modals/koodistoModal.html',
             controller: 'KoodistoModalCtrl'
           }).result.then(function(koodi) {
-            console.log('koodi:', koodi);
             valmis(koodi);
           }, function() {});
         };
