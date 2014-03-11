@@ -47,17 +47,19 @@ angular.module('eperusteApp')
       vaihtoehdot: _.clone(koodistoVaihtoehdot)
     };
   })
-  .controller('KoodistoModalCtrl', function($scope, $modalInstance, $translate, Koodisto, tyyppi) {
+  .controller('KoodistoModalCtrl', function($scope, $modalInstance, $translate, $timeout, Koodisto, tyyppi) {
     $scope.koodistoVaihtoehdot = Koodisto.vaihtoehdot;
     $scope.tyyppi = tyyppi;
+    $scope.loydetyt = [];
     $scope.haku = function(rajaus, kieli) { $scope.loydetyt = Koodisto.filtteri(rajaus, kieli); };
     $scope.lataa = true;
     $scope.syote = '';
     $scope.kieli = 'fi';
+    var testi = _.range(1, 30);
 
     Koodisto.hae($scope.tyyppi, function() {
       $scope.lataa = false;
-      $scope.haku('');
+      $scope.haku('', $scope.kieli);
     });
 
     $scope.ok = function(koodi) { $modalInstance.close(koodi); };
