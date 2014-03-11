@@ -45,7 +45,7 @@ public class KoodistoServiceImpl implements KoodistoService {
     private DtoMapper mapper;
     
     @Override
-//    @Cacheable(cacheName = "koodistot")
+    @Cacheable(cacheName = "koodistot")
     public List<KoodistoKoodiDto> getAll(String koodisto) {
         RestTemplate restTemplate = new RestTemplate();
         String url = KOODISTO_API + koodisto + "/koodi/";
