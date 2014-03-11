@@ -42,13 +42,11 @@ angular.module('eperusteApp')
     paivitaSuosikit();
 
     $scope.vaihdaKieli = function(kielikoodi) {
-      console.log('Vaihdakieli: ' + kielikoodi);
       $scope.kieli = kielikoodi;
       YleinenData.vaihdaKieli(kielikoodi);
-      Suosikitbroadcast.kieliVaihtui();
     };
 
-    // Alustetaan UI alku hetken kielivalinnalla
+    // Alustetaan UI alkuhetken kielivalinnalla
     $scope.vaihdaKieli(YleinenData.kieli);
 
     $scope.valitseKieli = YleinenData.valitseKieli;

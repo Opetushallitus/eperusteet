@@ -7,7 +7,7 @@ angular.module('eperusteApp', [
     'ngResource',
     'ngAnimate',
     'pascalprecht.translate',
-    'ui.bootstrap',
+    'ui.bootstrap'
   ])
   .constant('SERVICE_LOC','/eperusteet-service/api')
   .constant('SPINNER_WAIT', 0)
@@ -50,12 +50,13 @@ angular.module('eperusteApp', [
         redirectTo: '/selaus/ammatillinenperuskoulutus'
       });
   })
-  .config(function($translateProvider) {
+  .config(function($translateProvider, $injector) {
       $translateProvider.useStaticFilesLoader({
         prefix: 'localisation/locale-',
         suffix: '.json'
       });
       $translateProvider.preferredLanguage('fi');
+      
   })
   .config(function($httpProvider) {
     $httpProvider.interceptors.push(['$rootScope', '$q', 'SpinnerService', function($rootScope, $q, Spinner) {

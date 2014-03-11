@@ -7,7 +7,7 @@ angular.module('eperusteApp')
       .when('/selaus/:konteksti', {
         templateUrl: 'views/haku.html',
         controller: 'HakuCtrl',
-        navigaationimi: 'Hakuehdot',
+        navigaationimi: 'navi-hakuehdot',
         resolve: {'koulutusalaService': 'Koulutusalat'}
       });
   })
@@ -118,7 +118,7 @@ angular.module('eperusteApp')
     
     //$scope.haePerusteet($scope.nykyinenSivu);
     
-    $scope.$on('kieliVaihtui', function() {
+    $scope.$on('$translateChangeSuccess', function() {
       $scope.tyhjenna();
       $scope.haePerusteet(0);
     });

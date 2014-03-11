@@ -14,9 +14,5 @@ angular.module('eperusteApp')
       $rootScope.$broadcast('suosikitMuuttuivat');
     };
 
-    suosikitbroadcast.kieliVaihtui = function() {
-      $rootScope.$broadcast('kieliVaihtui');
-    };
-
     return suosikitbroadcast;
   });
