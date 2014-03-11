@@ -46,7 +46,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('muokattavaKentta', function($compile, $rootScope, MuokkausUtils, YleinenData) {
+  .directive('muokattavaKentta', function($compile, $rootScope, MuokkausUtils, YleinenData, Editointikontrollit, $q) {
     return {
       restrict: 'E',
       replace: true,
@@ -59,8 +59,10 @@ angular.module('eperusteApp')
 
         var typeParams = scope.field.type.split('.');
 
-        scope.objectReady.then(function(value) {
-          scope.object = value;
+        $q.all({object: scope.objectReady, editMode: Editointikontrollit.getEditModePromise()}).then(function(values) {
+          scope.object = values.object;
+          scope.editMode = values.editMode;
+          
           if(!scope.field.mandatory) {
             var contentFrame = angular.element('<vaihtoehtoisen-kentan-raami></vaihtoehtoisen-kentan-raami>')
             .attr('osion-nimi', scope.field.header)
@@ -72,7 +74,7 @@ angular.module('eperusteApp')
               if(angular.isString(MuokkausUtils.nestedGet(scope.object, scope.field.path, '.'))) {
                 MuokkausUtils.nestedSet(scope.object, scope.field.path, '.', '');
               } else {
-                MuokkausUtils.nestedSet(scope.object, scope.field.path, '.', null);
+                MuokkausUtils.nestedSet(scope.object, scope.field.path, '.', undefined);
               }
 
               if(!scope.mandatory) {
@@ -145,7 +147,7 @@ angular.module('eperusteApp')
             .addClass('list-group-item-text')
             .attr('ng-model', 'object.' + scope.field.path)
             .attr('ckeditor', '')
-            .attr('editing-enabled', 'false')
+            .attr('editing-enabled', '{{editMode}}')
             .attr('editor-placeholder', 'muokkaus-' + scope.field.localeKey + '-placeholder');
           }
 
@@ -207,6 +209,7 @@ angular.module('eperusteApp')
   })
   .directive('localized', function($rootScope, YleinenData)  {
     return {
+      priority: 5,
       restrict: 'A',
       require: 'ngModel',
       link: function(scope, element, attrs, ngModelCtrl) {

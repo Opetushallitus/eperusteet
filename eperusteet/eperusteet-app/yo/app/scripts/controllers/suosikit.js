@@ -2,7 +2,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('SuosikitCtrl', function($scope, Kayttajaprofiilit, YleinenData) {
+  .controller('SuosikitCtrl', function($scope, Kayttajaprofiilit, YleinenData, $rootScope) {
 
     $scope.suosikit = {};
     $scope.suppeaMaara = 5;
@@ -42,6 +42,7 @@ angular.module('eperusteApp')
     paivitaSuosikit();
 
     $scope.vaihdaKieli = function(kielikoodi) {
+      $rootScope.$broadcast('notifyCKEditor');
       $scope.kieli = kielikoodi;
       YleinenData.vaihdaKieli(kielikoodi);
     };
