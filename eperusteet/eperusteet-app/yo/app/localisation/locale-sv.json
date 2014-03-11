@@ -102,8 +102,8 @@
 
     "tutkintokoodi": "[Tutkintokoodi]",
     "koulutusalakoodi": "[Koulutusalakoodi]",
-    "navipolku-tutkinnonOsa": "[Tutkinnon osa]",
-    
+    "tutkinnonOsa": "[Tutkinnon osa]",
+
     "muokkaus": "[Muokkaus]",
     "muokkaus-tutkinnon-osa": "[Tutkinnon osa]",
     "muokkaus-tutkinnon-osan-otsikko": "[Otsikko]",
@@ -114,26 +114,26 @@
     "muokkaus-tekstikappale": "[Tekstikappale]",
     "muokkaus-tekstikappaleen-otsikko": "[Otsikko]",
     "muokkaus-tekstikappaleen-teksti": "[Teksti]",
-    
+
     "muokkaus-otsikko-placeholder": "[Kirjoita tähän otsikko]",
     "muokkaus-tavoitteet-placeholder": "[Tavoitteita...]",
     "muokkaus-ammattitaitovaatimukset-placeholder": "[Tässä listataan ammattitaitovaatimuksia]",
     "muokkaus-ammattitaidon-osoittamistavat-placeholder": "[Ammattitaidon osoittamistapoja...]",
     "muokkaus-osaamisala-placeholder": "[Kirjoita tähän osaamisala]",
     "muokkaus-teksti-placeholder": "[Tähän tulee leipäteksti]",
-    
+
     "perusteen-osat-tekstikappale": "[Tekstikappale]",
     "perusteen-osat-tutkinnon-osa": "[Tutkinnon osa]",
-    
+
     "muokkaus-uusi-kappale-placeholder": "[Kappaleen nimi]",
     "muokkaus-uusi-tutkinnon-osa-nimi-placeholder": "[Tutkinnon nimi]",
     "muokkaus-uusi-tutkinnon-osa-opintoluokitus-placeholder": "[Opintoluokitus]",
-    
+
     "opintoluokitus": "[Opintoluokitus]",
     "tavoitteet": "[Tavoitteet]",
     "ammattitaitovaatimukset": "[Ammattitaitovaatimukset]",
     "arvointi": "[Arviointi]",
-    
+
     "projektin-nimi-label": "[Projektin nimi]",
     "anna-projektin-nimi-placeholder": "[Syötä projektin nimi]",
     "diaarinumero-label": "[Diaarinumero]",

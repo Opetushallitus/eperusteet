@@ -12,6 +12,7 @@
     "koodi": "Koodi",
     "rajaa-tuloksia": "Rajaa...",
     "nimi": "Nimi",
+    "kieli": "Kieli",
 
     "perusteprojektit-otsikko": "Omat perusteprojektit",
     "uusi-projekti": "Uusi projekti",
@@ -108,7 +109,9 @@
 
     "tutkintokoodi": "Tutkintokoodi",
     "koulutusalakoodi": "Koulutusalakoodi",
-    "navipolku-tutkinnonOsa": "Tutkinnon osa",
+    "tutkinnonosa": "Tutkinnon osa",
+    "tutkinnonosat": "Tutkinnon osat",
+    "koulutus": "Koulutus",
 
     "haetaan-tutkinnon-osia": "Haetaan tutkinnon osia...",
 

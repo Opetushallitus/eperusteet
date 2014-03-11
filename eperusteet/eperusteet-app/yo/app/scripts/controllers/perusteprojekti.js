@@ -15,14 +15,18 @@ angular.module('eperusteApp')
       });
   }).controller('PerusteprojektiCtrl', function($scope, $rootScope, $location, $routeParams,
     PerusteprojektiResource, PerusteProjektiService, YleinenData) {
-  
+
+    $scope.koodistoHaku = function(koodi) {
+      console.log(koodi);
+    };
+
   $scope.projekti = {};
   var perusteprojektiPolku = 'perusteprojekti/';
-  
+
   $rootScope.$broadcast('paivitaNavigaatiopolku');
   PerusteProjektiService.clean();
   PerusteProjektiService.watcher($scope, 'projekti');
-  
+
   $scope.$watch('projekti.nimi', function(temp) {
     YleinenData.navigaatiopolkuElementit.projektiId = temp;
     $rootScope.$broadcast('paivitaNavigaatiopolku');
@@ -63,8 +67,8 @@ angular.module('eperusteApp')
       });
     }
   };
-  
-  
+
+
   $scope.paivitaNavigaatiopolku = function (nimi) {
         YleinenData.navigaatiopolkuElementit.projektiId = nimi;
         $rootScope.$broadcast('paivitaNavigaatiopolku');

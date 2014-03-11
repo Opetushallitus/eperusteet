@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -37,13 +37,13 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class KoodistoServiceImpl implements KoodistoService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KoulutusalaServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KoodistoServiceImpl.class);
     private static final String KOODISTO_API = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
 
     @Autowired
     @Koodisto
     private DtoMapper mapper;
-    
+
     @Override
     @Cacheable(cacheName = "koodistot")
     public List<KoodistoKoodiDto> getAll(String koodisto) {
@@ -53,30 +53,31 @@ public class KoodistoServiceImpl implements KoodistoService {
         List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(koodistot), KoodistoKoodiDto.class);
         return koodistoDtot;
     }
-    
+
     @Override
     public KoodistoKoodiDto get(String koodisto, String koodi) {
         RestTemplate restTemplate = new RestTemplate();
         String url = KOODISTO_API + koodisto + "/koodi/" + koodi;
+        LOG.debug(url);
         KoodistoKoodiDto re = restTemplate.getForObject(url, KoodistoKoodiDto.class);
         return re;
     }
-   
+
     @Override
     public List<KoodistoKoodiDto> filterBy(String koodisto, String koodi) {
         List<KoodistoKoodiDto> filter = getAll(koodisto);
         List<KoodistoKoodiDto> tulos = new ArrayList<>();
-        
+
         for (KoodistoKoodiDto x : filter) {
             Boolean nimessa = false;
-            
+
             for (KoodistoMetadataDto y : x.getMetadata()) {
                 if (y.getNimi().toLowerCase().contains(koodi.toLowerCase())) {
                     nimessa = true;
                     break;
                 }
             }
-            
+
             if (x.getKoodiUri().contains(koodi) || nimessa)
                 tulos.add(x);
         }

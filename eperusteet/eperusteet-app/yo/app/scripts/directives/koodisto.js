@@ -4,7 +4,7 @@
 angular.module('eperusteApp')
   .service('Koodisto', function($http, SERVICE_LOC) {
     var taydennykset = [];
-    var koodistoVaihtoehdot = ['tutkinnonosat'];
+    var koodistoVaihtoehdot = ['tutkinnonosat', 'koulutus'];
     var nykyinenKoodisto = _.first(koodistoVaihtoehdot);
 
     function hae(koodisto, cb) {
@@ -47,9 +47,9 @@ angular.module('eperusteApp')
       vaihtoehdot: _.clone(koodistoVaihtoehdot)
     };
   })
-  .controller('KoodistoModalCtrl', function($scope, $modalInstance, $translate, Koodisto) {
+  .controller('KoodistoModalCtrl', function($scope, $modalInstance, $translate, Koodisto, tyyppi) {
     $scope.koodistoVaihtoehdot = Koodisto.vaihtoehdot;
-    $scope.tyyppi = _.first($scope.koodistoVaihtoehdot);
+    $scope.tyyppi = tyyppi;
     $scope.haku = function(rajaus, kieli) { $scope.loydetyt = Koodisto.filtteri(rajaus, kieli); };
     $scope.lataa = true;
     $scope.syote = '';
@@ -63,23 +63,27 @@ angular.module('eperusteApp')
     $scope.ok = function(koodi) { $modalInstance.close(koodi); };
     $scope.peruuta = function() { $modalInstance.dismiss(); };
   })
-  .directive('koodistoSelect', function($modal) {
+  .directive('koodistoSelect', function($modal, Koodisto) {
     return {
-      template: '<button class="btn btn-default" type="text" ng-click="activate()" editointi-kontrolli>{{ "hae-koodi-koodistosta" | translate }}</button>',
+      template: '<button class="btn btn-default" type="text" ng-click="activate()">{{ "hae-koodi-koodistosta" | translate }}</button>',
       restrict: 'E',
       link: function($scope, el, attrs) {
         var valmis = $scope.$eval(attrs.valmis);
-        // var tyyppi = attrs.tyyppi;
+        var tyyppi = attrs.tyyppi || 'tutkinnonosat';
 
         if (!valmis) {
           console.log('koodisto-select: valmis-callback puuttuu');
+          return;
+        } else if (_.indexOf(Koodisto.vaihtoehdot, tyyppi) === -1) {
+          console.log('koodisto-select:', tyyppi, 'ei vastaa mitään mitään vaihtoehtoa:', Koodisto.vaihtoehdot);
           return;
         }
 
         $scope.activate = function() {
           $modal.open({
             templateUrl: 'views/modals/koodistoModal.html',
-            controller: 'KoodistoModalCtrl'
+            controller: 'KoodistoModalCtrl',
+            resolve: { tyyppi: function() { return tyyppi; } }
           }).result.then(function(koodi) {
             valmis(koodi);
           }, function() {});

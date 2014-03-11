@@ -52,7 +52,7 @@ public class KoodistoController {
                 ? service.getAll(koodisto)
                 : service.filterBy(koodisto, haku), HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/{koodisto}/{koodi}", method = GET)
     @ResponseBody
     public ResponseEntity<KoodistoKoodiDto> yksi(
