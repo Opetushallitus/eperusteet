@@ -2,7 +2,7 @@
 
 
 angular.module('eperusteApp')
-  .factory('navigaatiopolku', 
+  .factory('navigaatiopolku',
     function($rootScope, $location, $route, YleinenData, $translate,$q) {
 
       var navigaatiopolut = [],
@@ -39,8 +39,8 @@ angular.module('eperusteApp')
             var p = t.then(function(nimi) {
               return {navigaationimi: nimi, polku: pathTmp};
             });
-            polku.push(p);            
-          } else if (routes[route] && routes[route].navigaationimiId) {  
+            polku.push(p);
+          } else if (routes[route] && routes[route].navigaationimiId) {
             if (YleinenData.valitseKieli(YleinenData.navigaatiopolkuElementit[routes[route].navigaationimiId]) !== '') {
               polku.push($q.when({navigaationimi: YleinenData.valitseKieli(YleinenData.navigaatiopolkuElementit[routes[route].navigaationimiId]), polku: path}));
             } else {

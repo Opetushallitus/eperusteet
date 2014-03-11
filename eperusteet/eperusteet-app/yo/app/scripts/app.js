@@ -50,7 +50,7 @@ angular.module('eperusteApp', [
         redirectTo: '/selaus/ammatillinenperuskoulutus'
       });
   })
-  .config(function($translateProvider, $injector) {
+  .config(function($translateProvider) {
       $translateProvider.useStaticFilesLoader({
         prefix: 'localisation/locale-',
         suffix: '.json'

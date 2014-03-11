@@ -2,7 +2,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('SuosikitCtrl', function($scope, Kayttajaprofiilit, YleinenData, Suosikitbroadcast) {
+  .controller('SuosikitCtrl', function($scope, Kayttajaprofiilit, YleinenData) {
 
     $scope.suosikit = {};
     $scope.suppeaMaara = 5;
