@@ -312,6 +312,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <systemPropertyVariables>
+                        <eperusteet.ittestdb.user>${eperusteet.ittestdb.user}</eperusteet.ittestdb.user>
+                        <eperusteet.ittestdb.password>${eperusteet.ittestdb.password}</eperusteet.ittestdb.password>
+                        <eperusteet.ittestdb.jdbcurl>${eperusteet.ittestdb.jdbcurl}</eperusteet.ittestdb.jdbcurl>
+                    </systemPropertyVariables>
                     <excludes>
                         <exclude>**/service/test/*.java</exclude>
                     </excludes>

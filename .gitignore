@@ -12,3 +12,4 @@ target
 **/.settings
 **/.classpath
 **/rebel.xml
+/eperusteet/eperusteet-service/nbactions-oph.xml
