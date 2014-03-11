@@ -25,6 +25,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+//@JsonTypeName("tutkinnonosa")
 public class TutkinnonOsaDto extends PerusteenOsaDto {
     private LokalisoituTekstiDto tavoitteet;
     private ArviointiDto arviointi;

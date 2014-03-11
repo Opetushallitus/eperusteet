@@ -23,6 +23,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
  *
@@ -31,29 +33,33 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tutkinnonosa")
 @JsonTypeName("tutkinnonosa")
+@Audited
 public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen tavoitteet;
-    
+
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen ammattitaitovaatimukset;
-    
+
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen ammattitaidonOsoittamistavat;
-    
+
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen osaamisala;
-    
+
     @Column
     private Long opintoluokitus;
-    
+
     @Column
     private Long koodi;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Arviointi arviointi;
 
     public TekstiPalanen getTavoitteet() {
@@ -97,7 +103,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     }
 
     public Long getKoodi() {
-	return koodi;
+        return koodi;
     }
 
     public void setKoodi(Long koodi) {

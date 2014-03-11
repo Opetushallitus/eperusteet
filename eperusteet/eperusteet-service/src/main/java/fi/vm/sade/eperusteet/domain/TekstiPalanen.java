@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Cacheable;
+import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -50,6 +51,7 @@ public class TekstiPalanen implements Serializable {
 
     @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
     @Immutable
+    @CollectionTable(name = "tekstipalanen_teksti")
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<LokalisoituTeksti> teksti;
 

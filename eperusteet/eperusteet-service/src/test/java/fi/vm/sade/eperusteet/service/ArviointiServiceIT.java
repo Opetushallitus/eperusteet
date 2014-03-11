@@ -37,7 +37,6 @@ import java.util.Collections;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.validation.ConstraintViolationException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -156,11 +155,11 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
         Assert.assertEquals(1, dtos.size());
     }
     
-    @Test(expected = ConstraintViolationException.class)
-    @Rollback(true)
-    public void testSaveInvalidArviointiFromJson() throws IOException {
-        Resource resource = new ClassPathResource("material/arviointi2.json");
-        ArviointiDto dto = objectMapper.readValue(resource.getFile(), ArviointiDto.class);
-        arviointiService.add(dto);
-    }
+//    @Test(expected = ConstraintViolationException.class)
+//    @Rollback(true)
+//    public void testSaveInvalidArviointiFromJson() throws IOException {
+//        Resource resource = new ClassPathResource("material/arviointi2.json");
+//        ArviointiDto dto = objectMapper.readValue(resource.getFile(), ArviointiDto.class);
+//        arviointiService.add(dto);
+//    }
 }

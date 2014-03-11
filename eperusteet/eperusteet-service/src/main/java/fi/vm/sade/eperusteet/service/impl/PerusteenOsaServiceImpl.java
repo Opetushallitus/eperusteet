@@ -1,7 +1,6 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Autowired
     @Dto
     private DtoMapper mapper;
-
+    
     @Override
     public List<PerusteenOsaDto> getAll() {
         return mapper.mapAsList(perusteenOsaRepo.findAll(), PerusteenOsaDto.class);
@@ -58,9 +57,10 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     @Transactional(readOnly = false)
     public <T extends PerusteenOsaDto, D extends PerusteenOsa> T save(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
-        D perusteenOsa = mapper.map(perusteenOsaDto, entityClass);
-        perusteenOsa = perusteenOsaRepo.save(perusteenOsa);
-        return mapper.map(perusteenOsa, dtoClass);
+        PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
+        mapper.map(perusteenOsaDto, current);
+        current = perusteenOsaRepo.save(current);
+        return mapper.map(current, dtoClass);
     }
   
     @Override

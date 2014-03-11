@@ -20,6 +20,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
  *
@@ -27,9 +29,11 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "tekstikappale")
+@Audited
 public class TekstiKappale extends PerusteenOsa implements Serializable {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen teksti;
 
     public TekstiPalanen getTeksti() {

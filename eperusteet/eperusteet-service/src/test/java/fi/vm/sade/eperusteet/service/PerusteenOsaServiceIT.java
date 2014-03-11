@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Arviointi;
+import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
@@ -55,7 +55,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     @PersistenceContext
     private EntityManager em;
 
-    private Arviointi persistedArviointi;
+    private ArviointiAsteikko arviointiasteikko;
 
     @Before
     public void setUp() {
@@ -70,22 +70,20 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
 
         ArviointiAsteikko arviointiasteikko = new ArviointiAsteikko();
         arviointiasteikko.setId(1L);
-        arviointiasteikko.setOsaamistasot(Collections.singletonList(osaamistaso));
+        arviointiasteikko.setOsaamistasot(Lists.newArrayList(osaamistaso));
 
         em.persist(arviointiasteikko);
+        this.arviointiasteikko = arviointiasteikko;
         em.flush();
-
-        persistedArviointi = arviointiRepository.saveAndFlush(TestUtils.createArviointi(arviointiasteikko));
     }
 
     @Test
     @Rollback(true)
     public void testSaveWithArviointi() {
         TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
-        tutkinnonOsa.setArviointi(persistedArviointi);
-        perusteenOsaRepository.save(tutkinnonOsa);
-        em.flush();
-
+        tutkinnonOsa.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "Nimi"));
+        tutkinnonOsa.setArviointi(TestUtils.createArviointi(arviointiasteikko));
+        tutkinnonOsa = (TutkinnonOsa) perusteenOsaRepository.saveAndFlush(tutkinnonOsa);
         List<PerusteenOsaDto> perusteenOsat = perusteenOsaService.getAll();
 
         Assert.assertNotNull(perusteenOsat);
