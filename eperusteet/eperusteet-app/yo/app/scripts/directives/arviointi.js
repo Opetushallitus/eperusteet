@@ -15,6 +15,7 @@
 */
 
 'use strict';
+/*global _*/
 
 angular.module('eperusteApp')
   .directive('arviointi', function(YleinenData, Editointikontrollit) {

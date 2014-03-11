@@ -15,6 +15,7 @@
 */
 
 'use strict';
+/*global _*/
 
 angular.module('eperusteApp')
   .config(function($routeProvider) {
@@ -67,10 +68,7 @@ angular.module('eperusteApp')
     };
 
     this.nestedHas = function(obj, path, delimiter) {
-      var propertyNames = path.split(delimiter);
-
-      return innerNestedHas(obj, propertyNames);
-
+      
       function innerNestedHas(obj, names) {
         if(_.has(obj, names[0])) {
           return names.length > 1 ? innerNestedHas(obj[names[0]], names.splice(1, names.length)) : true;
@@ -78,16 +76,14 @@ angular.module('eperusteApp')
           return false;
         }
       }
+      
+      var propertyNames = path.split(delimiter);
+
+      return innerNestedHas(obj, propertyNames);
     };
 
     this.nestedGet = function(obj, path, delimiter) {
-      if(!this.nestedHas(obj, path, delimiter)) {
-        return undefined;
-      }
-      var propertyNames = path.split(delimiter);
-
-      return innerNestedGet(obj, propertyNames);
-
+      
       function innerNestedGet(obj, names) {
         if(names.length > 1) {
           return innerNestedGet(obj[names[0]], names.splice(1, names.length));
@@ -95,13 +91,17 @@ angular.module('eperusteApp')
           return obj[names[0]];
         }
       }
+      
+      if(!this.nestedHas(obj, path, delimiter)) {
+        return undefined;
+      }
+      var propertyNames = path.split(delimiter);
+
+      return innerNestedGet(obj, propertyNames);
     };
 
     this.nestedSet = function(obj, path, delimiter, value) {
-      var propertyNames = path.split(delimiter);
-
-      innerNestedSet(obj, propertyNames, value);
-
+      
       function innerNestedSet(obj, names, newValue) {
         if(names.length > 1) {
           if(!_.has(obj, names[0])) {
@@ -112,13 +112,14 @@ angular.module('eperusteApp')
           obj[names[0]] = newValue;
         }
       }
+      
+      var propertyNames = path.split(delimiter);
+
+      innerNestedSet(obj, propertyNames, value);
     };
 
     this.nestedOmit = function(obj, path, delimiter) {
-      var propertyNames = path.split(delimiter);
-
-      return innerNestedOmit(obj, propertyNames);
-
+      
       function innerNestedOmit(obj, names) {
         if(names.length > 1) {
           obj[names[0]] = innerNestedOmit(obj[names[0]], names.splice(1, names.length));
@@ -127,5 +128,9 @@ angular.module('eperusteApp')
           return _.omit(obj, names[0]);
         }
       }
+      
+      var propertyNames = path.split(delimiter);
+
+      return innerNestedOmit(obj, propertyNames);
     };
   });

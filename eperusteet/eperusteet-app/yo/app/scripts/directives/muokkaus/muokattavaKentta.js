@@ -21,14 +21,15 @@ angular.module('eperusteApp')
   .directive('muokkauskenttaRaamit', function() {
     return {
       template:
-        '<h4 class="list-group-item-heading" >{{otsikko | translate}}&nbsp;&nbsp;' +
+        '<h4 ng-hide="piilotaOtsikko" class="list-group-item-heading" >{{otsikko | translate}}&nbsp;&nbsp;' +
         '<span class="glyphicon glyphicon-plus" ng-show="canCollapse && collapsed" ng-click="collapsed = false"></span>' +
         '<span class="glyphicon glyphicon-minus" ng-show="canCollapse && !collapsed" ng-click="collapsed = true"></span></h4>' +
         '<div collapse="collapsed" ng-transclude></div>',
       restrict: 'A',
       transclude: true,
       scope: {
-        localeKey: '@otsikko'
+        localeKey: '@otsikko',
+        piilotaOtsikko: '@?'
       },
       link: function(scope, element, attrs) {
         scope.otsikko = 'muokkaus-' + scope.localeKey + '-header';
@@ -45,7 +46,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('muokattavaKentta', function($compile, $rootScope, MuokkausUtils) {
+  .directive('muokattavaKentta', function($compile, $rootScope, MuokkausUtils, YleinenData) {
     return {
       restrict: 'E',
       replace: true,
@@ -88,24 +89,40 @@ angular.module('eperusteApp')
         });
 
         function getElementContent(elementType) {
-          if(elementType === 'text-input') {
-            if(MuokkausUtils.hasValue(scope.object, scope.field.path)) {
-              return addEditorAttributesFor(angular.element('<p></p>'));
-            }
-            return addInputAttributesFor(angular.element('<input></input>').attr('editointi-kontrolli', ''));
+          
+          var element = null;
+          if(elementType === 'editor-header') {
+            element = addEditorAttributesFor(angular.element('<h3></h3>'));
           }
-          else if(elementType === 'text-area') {
-            if(MuokkausUtils.hasValue(scope.object, scope.field.path)) {
-              return addEditorAttributesFor(angular.element('<p></p>'));
-            }
-            return addInputAttributesFor(angular.element('<textarea></textarea>').attr('editointi-kontrolli', ''));
-          } else if(elementType === 'arviointi') {
-            return angular.element('<arviointi></arviointi>').attr('arviointi', 'object.' + scope.field.path).attr('editointi-sallittu', 'true');
-          } else if (elementType === 'koodisto-select') {
+          
+          else if(elementType === 'text-input') {
+            element = addInputAttributesFor(angular.element('<input></input>').attr('editointi-kontrolli', ''));
+          }
+          
+          else if(elementType === 'input-area') {
+            element = addInputAttributesFor(angular.element('<textarea></textarea>').attr('editointi-kontrolli', ''));
+          }
+          
+          else if(elementType === 'editor-text') {
+            element = addEditorAttributesFor(angular.element('<p></p>'));
+          }
+          
+          else if(elementType === 'editor-area') {
+            element = addEditorAttributesFor(angular.element('<div></div>'));
+          } 
+          
+          else if(elementType === 'arviointi') {
+            element = 
+            angular.element('<arviointi></arviointi>')
+            .attr('arviointi', 'ng-model', 'object.' + scope.field.path)
+            .attr('editointi-sallittu', 'true');
+          } 
+          
+          else if (elementType === 'koodisto-select') {
             scope.tuoKoodi = function(koodi) {
               MuokkausUtils.nestedSet(scope.object, scope.field.path, ',', koodi);
             };
-            return angular.element('<div></div>').addClass('input-group')
+            element = angular.element('<div></div>').addClass('input-group')
             .append(
                 angular.element('<input/>')
                 .addClass('form-control')
@@ -117,6 +134,11 @@ angular.module('eperusteApp')
                 .addClass('input-group-btn')
                 .attr('valmis', 'tuoKoodi'));
           }
+          
+          if(element !== null && scope.field.localized) {
+            element.attr('localized', '');
+          }
+          return element;
 
           function addEditorAttributesFor(element) {
             return element
@@ -176,6 +198,38 @@ angular.module('eperusteApp')
         });
         $rootScope.$on('disableEditing', function() {
           element.attr('disabled', 'disabled');
+        });
+      }
+    };
+  })
+  .directive('localized', function($rootScope, YleinenData)  {
+    return {
+      restrict: 'A',
+      require: 'ngModel',
+      link: function(scope, element, attrs, ngModelCtrl) {
+        
+        ngModelCtrl.$formatters.push(function(modelValue) {
+          if(angular.isUndefined(modelValue)) return;
+          return modelValue[YleinenData.kieli];
+        });
+        
+        ngModelCtrl.$parsers.push(function(viewValue) {
+          var localizedModelValue = ngModelCtrl.$modelValue;
+          
+          if(angular.isUndefined(localizedModelValue)) {
+            localizedModelValue = {};
+          }
+          localizedModelValue[YleinenData.kieli] = viewValue;
+          return localizedModelValue;
+        });
+        
+        $rootScope.$on('kieliVaihtui', function() {
+          if(!angular.isUndefined(ngModelCtrl.$modelValue) && !_.isEmpty(ngModelCtrl.$modelValue[YleinenData.kieli])) {
+            ngModelCtrl.$setViewValue(ngModelCtrl.$modelValue[YleinenData.kieli]);
+          } else {
+            ngModelCtrl.$setViewValue('');
+          }
+          ngModelCtrl.$render();
         });
       }
     };

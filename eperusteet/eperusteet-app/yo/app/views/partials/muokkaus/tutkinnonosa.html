@@ -19,7 +19,7 @@ European Union Public Licence for more details.
     <h3 class="panel-title">{{tutkinnonOsanMuokkausOtsikko | translate}}</h3>
   </div>
   <ul class="list-group muokkaus">
-    <li ng-repeat="field in visibleFields" muokkauskentta-raamit otsikko="{{field.localeKey}}" kiinni-oletuksena="{{field.defaultClosed}}">
+    <li ng-repeat="field in visibleFields" muokkauskentta-raamit otsikko="{{field.localeKey}}" kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}">
       <muokattava-kentta field-info="field" tutkinnon-osa="editableTutkinnonOsa" tutkinnon-osa-ready="tutkinnonOsaReady" remove-field="removeField(fieldToRemove)"></muokattava-kentta>
     </li>
   </ul>

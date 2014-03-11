@@ -1,5 +1,5 @@
 'use strict';
-/*global CKEDITOR,$*/
+/*global CKEDITOR,$,_*/
 
 angular.module('eperusteApp')
   .directive('ckeditor', function($q, $filter, $rootScope) {
@@ -14,6 +14,9 @@ angular.module('eperusteApp')
       link: function(scope, element, attrs, ctrl) {
         var placeholderText = null;
         var editingEnabled = (element.attr('editing-enabled') || 'true') === 'true';
+        if(editingEnabled) {
+          element.addClass('edit-mode');
+        }
         element.attr('contenteditable', 'true');
         
         function getPlaceholder() {
@@ -30,8 +33,7 @@ angular.module('eperusteApp')
           console.log('editor exist');
           return;
         }
-        console.log('creating editor...');
-        console.log('editing enable: ' + editingEnabled);
+        
         editor = CKEDITOR.inline(element[0], {
           toolbar: 'Basic',
           removePlugins: 'resize,elementspath',
@@ -45,10 +47,8 @@ angular.module('eperusteApp')
           readOnly: !editingEnabled
         });
 
-        console.log('attaching events');
-
         $rootScope.$on('$translateChangeSuccess', function() {
-          console.log('kieli vaihtui');
+          console.log('translate change finished');
           placeholderText = getPlaceholder();
           ctrl.$render();
         });
@@ -56,29 +56,24 @@ angular.module('eperusteApp')
         scope.$on('enableEditing', function() {
           editingEnabled = true;
           editor.setReadOnly(!editingEnabled);
-          console.log('enable editing');
+          element.addClass('edit-mode');
         });
         
         scope.$on('disableEditing', function() {
           editingEnabled = false;
           editor.setReadOnly(!editingEnabled);
-          console.log('disable editing');
+          element.removeClass('edit-mode');
         });
         
         editor.on('focus', function() {
           console.log('focus');
           if(editingEnabled) {
             element.removeClass('has-placeholder');
-            console.log('set toolbar -> show');
             $('#toolbar').show();
-            if(editor.getData() === placeholderText) {
+            if(_.isEmpty(ctrl.$viewValue)) {
               editor.setData('');
             }
           }
-//          var h = $('#ck-toolbar-top').height();
-//          console.log(h);
-//          $('body').css('padding-top', h);
-          //element.attr('contenteditable','false');
         });
 
         editor.on('change', function() {
@@ -98,7 +93,7 @@ angular.module('eperusteApp')
               ctrl.$setViewValue(data);
               scope.$broadcast('edited');
             });
-            if(!data) {
+            if(_.isEmpty(data)) {
               element.addClass('has-placeholder');
               editor.setData(placeholderText);
             }
@@ -112,21 +107,15 @@ angular.module('eperusteApp')
         ctrl.$render = function() {
           console.log('render: ' + ctrl.$viewValue);
           if (editor) {
-            if(angular.isString(ctrl.$viewValue) && ctrl.$viewValue.length === 0 && placeholderText) {
+            if(_.isString(ctrl.$viewValue) && _.isEmpty(ctrl.$viewValue) && placeholderText) {
               element.addClass('has-placeholder');
               editor.setData(placeholderText);
             } else {
+              element.removeClass('has-placeholder');
               editor.setData(ctrl.$viewValue);
             }
           }
         };
-
-//        getPlaceholderPromise().then(function(resolvedPlaceholder) {
-//          placeholderText = resolvedPlaceholder;
-//          
-//          // load init value from DOM
-//          ctrl.$render();
-//        });
         
         placeholderText = getPlaceholder();
         ctrl.$render();

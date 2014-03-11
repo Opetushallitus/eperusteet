@@ -29,9 +29,11 @@ angular.module('eperusteApp')
         
         var allFields =
           new Array({
-             path: 'nimi.fi',
+             path: 'nimi',
+             hideHeader: true,
              localeKey: 'tutkinnon-osan-nimi',
-             type: 'text-input',
+             type: 'editor-header',
+             localized: true,
              mandatory: true
            },{
              path: 'koodi',
@@ -39,24 +41,28 @@ angular.module('eperusteApp')
              type: 'koodisto-select',
              mandatory: true
            },{
-             path: 'tavoitteet.fi',
+             path: 'tavoitteet',
              localeKey: 'tutkinnon-osan-tavoitteet',
-             type: 'text-area',
+             type: 'editor-area',
+             localized: true,
              defaultClosed: true
            },{
-             path: 'ammattitaitovaatimukset.fi',
+             path: 'ammattitaitovaatimukset',
              localeKey: 'tutkinnon-osan-ammattitaitovaatimukset',
-             type: 'text-area',
+             type: 'editor-area',
+             localized: true,
              defaultClosed: true
            },{
-             path: 'ammattitaidonOsoittamistavat.fi',
+             path: 'ammattitaidonOsoittamistavat',
              localeKey: 'tutkinnon-osan-ammattitaidon-osoittamistavat',
-             type: 'text-input',
+             type: 'editor-text',
+             localized: true,
              defaultClosed: true
            },{
-             path: 'osaamisala.fi',
+             path: 'osaamisala',
              localeKey: 'tutkinnon-osan-osaamisala',
-             type: 'text-input',
+             type: 'editor-text',
+             localized: true,
              defaultClosed: true
            },{
              path: 'arviointi',
