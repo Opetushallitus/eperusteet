@@ -46,6 +46,8 @@
   <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>
   <tx:annotation-driven/>
 
+  <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
   <bean id="dataSource"
         class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" destroy-method="close">
     <property name="driverClassName" value="org.postgresql.Driver"/>
@@ -67,6 +69,7 @@
         <entry key="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE"/>
         <entry key="hibernate.cache.use_second_level_cache" value="true"/>
         <entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
+        <entry key="javax.persistence.validation.factory" value-ref="validator" />
       </map>
     </property>
   </bean>

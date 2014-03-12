@@ -35,6 +35,8 @@
         <property name="configLocation"  value="classpath:ehcache.xml"/>
     </bean>
 
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
     <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="properties">
             <util:properties local-override="true">
@@ -68,6 +70,7 @@
                 <entry key="hibernate.cache.use_second_level_cache" value="${hibernate.cache.use_second_level_cache:true}"/>
                 <entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
                 <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.ValidityAuditStrategy"/>
+                <entry key="javax.persistence.validation.factory" value-ref="validator" />
             </map>
         </property>
     </bean>
