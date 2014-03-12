@@ -55,7 +55,6 @@ angular.module('eperusteApp')
     $scope.lataa = true;
     $scope.syote = '';
     $scope.kieli = 'fi';
-    var testi = _.range(1, 30);
 
     Koodisto.hae($scope.tyyppi, function() {
       $scope.lataa = false;
