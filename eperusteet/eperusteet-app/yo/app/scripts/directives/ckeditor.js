@@ -99,6 +99,7 @@ angular.module('eperusteApp')
             var data = editor.getData();
             ctrl.$setViewValue(data);
           }
+          $('#toolbar').hide();
         });
 
         editor.on('blur', function() {
@@ -120,7 +121,6 @@ angular.module('eperusteApp')
             }
           }
           $('#toolbar').hide();
-          $('body').css('padding-top', 0);
         });
         
         // model -> view

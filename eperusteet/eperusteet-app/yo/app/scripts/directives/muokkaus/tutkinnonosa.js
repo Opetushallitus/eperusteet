@@ -25,7 +25,7 @@ angular.module('eperusteApp')
       scope: {
         tutkinnonOsa: '=tutkinnonOsa'
       },
-      controller: function($scope, $location, Editointikontrollit, PerusteenOsat, $compile, $q, $route, MuokkausUtils) {
+      controller: function($scope, $location, $q, MuokkausUtils, Editointikontrollit, PerusteenOsat) {
         
         var allFields =
           new Array({
@@ -91,10 +91,9 @@ angular.module('eperusteApp')
               $scope.panelType = 'panel-default';
               //TODO: Validate tutkinnon osa
               console.log('validate tutkinnon osa');
+              
               if($scope.editableTutkinnonOsa.id) {
-                $scope.editableTutkinnonOsa.$saveTutkinnonOsa({}, function() {
-                  $route.reload();
-                });
+                $scope.editableTutkinnonOsa.$saveTutkinnonOsa();
               } else {
                 PerusteenOsat.saveTutkinnonOsa($scope.editableTutkinnonOsa).$promise.then(function(response) {
                   $location.path('/muokkaus/tutkinnonosa/' + response.id);
@@ -106,7 +105,13 @@ angular.module('eperusteApp')
               $scope.editClass = '';
               $scope.panelType = 'panel-default';
               console.log('tutkinnon osa - cancel');
+              
               $scope.editableTutkinnonOsa = angular.copy($scope.tutkinnonOsa);
+              var tutkinnonOsaDefer = $q.defer();
+              $scope.tutkinnonOsaReady = tutkinnonOsaDefer.promise;
+              
+              splitFields($scope.editableTutkinnonOsa);
+              tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
             }
           });
         }
@@ -127,21 +132,11 @@ angular.module('eperusteApp')
         }
 
         $scope.tutkinnonOsaReady = tutkinnonOsaReadyPromise.then(function(tutkinnonOsa) {
-          console.log(tutkinnonOsa);
-          $scope.visibleFields = _.filter(allFields, function(field) {
-            console.log(tutkinnonOsa);
-            console.log(MuokkausUtils.nestedGet(tutkinnonOsa, field.path, '.'));
-            console.log(field.path);
-            return field.mandatory || MuokkausUtils.hasValue(tutkinnonOsa, field.path);
-          });
-          $scope.hiddenFields = _.difference(allFields, $scope.visibleFields);
+          splitFields(tutkinnonOsa);
           return tutkinnonOsa;
         });
 
         $scope.removeField = function(fieldToRemove) {
-          console.log('remove field:');
-          console.log(fieldToRemove);
-
           _.remove($scope.visibleFields, fieldToRemove);
           $scope.hiddenFields.push(fieldToRemove);
         };
@@ -150,6 +145,13 @@ angular.module('eperusteApp')
           _.remove($scope.hiddenFields, field);
           $scope.visibleFields.push(field);
         };
+        
+        function splitFields(tutkinnonOsa) {
+          $scope.visibleFields = _.filter(allFields, function(field) {
+            return field.mandatory || MuokkausUtils.hasValue(tutkinnonOsa, field.path);
+          });
+          $scope.hiddenFields = _.difference(allFields, $scope.visibleFields);
+        }
       }
     };
   });

@@ -65,6 +65,7 @@ angular.module('eperusteApp')
       $scope.buttonClass = 'btn-default';
       $scope.editStarted = false;
       $rootScope.$broadcast('disableEditing');
+      $rootScope.$broadcast('notifyCKEditor');
       Editointikontrollit.cancelEditing();
     };
   });

@@ -57,6 +57,12 @@ angular.module('eperusteApp')
       },
       link: function(scope, element, attrs) {
 
+        scope.$watch('objectReady', function(newObjectReadyPromise) {
+          newObjectReadyPromise.then(function(newObject) {
+            scope.object = newObject;
+          });
+        });
+        
         var typeParams = scope.field.type.split('.');
 
         $q.all({object: scope.objectReady, editMode: Editointikontrollit.getEditModePromise()}).then(function(values) {
