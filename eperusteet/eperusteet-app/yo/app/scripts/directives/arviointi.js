@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .directive('arviointi', function(YleinenData, Editointikontrollit) {
+  .directive('arviointi', function(YleinenData) {
     return {
       templateUrl: 'views/partials/arviointi.html',
       restrict: 'E',
@@ -28,6 +28,7 @@ angular.module('eperusteApp')
       },
       link: function(scope) {
         scope.editAllowed = scope.editAllowed || 'false';
+        scope.editEnabled = false;
         
         scope.arviointiasteikot = YleinenData.arviointiasteikot || {};
         scope.showNewKohdealueInput = false;
@@ -39,9 +40,11 @@ angular.module('eperusteApp')
         });
                 
         scope.addNewKohdealue = function() {
+          console.log('add new kohdealue');
           if(angular.isUndefined(scope.uudenKohdealueenNimi) || scope.uudenKohdealueenNimi === null || (angular.isString(scope.uudenKohdealueenNimi) && _.isEmpty(scope.uudenKohdealueenNimi))) {
             return;
           }
+          console.log(scope.uudenKohdealueenNimi);
           
           if(angular.isUndefined(scope.arviointi) || scope.arviointi === null) {
             scope.arviointi = {};
@@ -107,10 +110,6 @@ angular.module('eperusteApp')
         
         scope.removeItem = function(item, list) {
           _.remove(list, item);
-        };
-        
-        scope.showRemoveButton = function() {
-          return scope.editAllowed && Editointikontrollit.editMode;
         };
       }
     };

@@ -18,7 +18,7 @@ European Union Public Licence for more details.
   <div class="panel-heading">
     <h3 class="panel-title">
       {{valitseKieli(kohdealue.otsikko)}}
-      <span ng-click="removeItem(kohdealue, $parent.arviointi.arvioinninKohdealueet)" ng-show="showRemoveButton()" class="glyphicon glyphicon-remove clickable pull-right"></span>
+      <span ng-click="removeItem(kohdealue, $parent.arviointi.arvioinninKohdealueet)" ng-if="editAllowed" editointi-kontrolli class="glyphicon glyphicon-remove clickable pull-right"></span>
     </h3>
   </div>
   <div class="panel-body">
@@ -26,7 +26,7 @@ European Union Public Licence for more details.
       <accordion-group heading="{{valitseKieli(arvioinninkohde.otsikko)}}" ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet">
         <accordion-heading>
           {{valitseKieli(arvioinninkohde.otsikko)}}
-          <span ng-click="removeItem(arvioinninkohde, $parent.kohdealue.arvioinninKohteet)" ng-show="showRemoveButton()" class="glyphicon glyphicon-remove clickable pull-right"></span>
+          <span ng-click="removeItem(arvioinninkohde, $parent.kohdealue.arvioinninKohteet)" ng-if="editAllowed" editointi-kontrolli class="glyphicon glyphicon-remove clickable pull-right"></span>
         </accordion-heading>
         <div ng-repeat="taso in arviointiasteikot[arvioinninkohde._arviointiAsteikko].osaamistasot" ng-class-odd="'raita'">
           <div class="row">
@@ -38,7 +38,7 @@ European Union Public Licence for more details.
                 <ul>
                   <li ng-repeat="kriteeri in osaamistasonKriteeri.kriteerit">
                     {{valitseKieli(kriteeri)}}
-                    <span ng-click="removeItem(kriteeri, $parent.osaamistasonKriteeri.kriteerit)" ng-show="showRemoveButton()" class="glyphicon glyphicon-remove clickable pull-right"></span>
+                    <span ng-click="removeItem(kriteeri, $parent.osaamistasonKriteeri.kriteerit)" ng-if="editAllowed" editointi-kontrolli class="glyphicon glyphicon-remove clickable pull-right"></span>
                   </li>
                 </ul>
                 <div class="panel panel-default" ng-show="editAllowed">

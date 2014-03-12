@@ -190,29 +190,6 @@ angular.module('eperusteApp')
       },
     };
   })
-  .directive('editointiKontrolli', function($rootScope, Editointikontrollit) {
-    return {
-      restrict: 'A',
-      link: function(scope, element, attrs) {
-        
-        Editointikontrollit.getEditModePromise().then(function(editMode) {
-          if(!editMode) {
-            element.attr('disabled', 'disabled');
-          }
-        });
-
-        $rootScope.$on('enableEditing', function() {
-          if(!element.attr('ng-disabled') || !scope.$eval(element.attr('ng-disabled'))) {
-            element.removeAttr('disabled');
-          }
-
-        });
-        $rootScope.$on('disableEditing', function() {
-          element.attr('disabled', 'disabled');
-        });
-      }
-    };
-  })
   .directive('localized', function($rootScope, YleinenData)  {
     return {
       priority: 5,
