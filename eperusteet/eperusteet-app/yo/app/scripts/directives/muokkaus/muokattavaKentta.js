@@ -235,12 +235,14 @@ angular.module('eperusteApp')
           return localizedModelValue;
         });
         
-        $rootScope.$on('kieliVaihtui', function() {
+        $rootScope.$on('$translateChangeSuccess', function() {
+          console.log(YleinenData.kieli);
           if(!angular.isUndefined(ngModelCtrl.$modelValue) && !_.isEmpty(ngModelCtrl.$modelValue[YleinenData.kieli])) {
             ngModelCtrl.$setViewValue(ngModelCtrl.$modelValue[YleinenData.kieli]);
           } else {
             ngModelCtrl.$setViewValue('');
           }
+          console.log(ngModelCtrl);
           ngModelCtrl.$render();
         });
       }

@@ -64,8 +64,8 @@ angular.module('eperusteApp')
           if (this.kielet.hasOwnProperty(avain)) {
             if (this.kielet[avain] === kielikoodi) {
               löytyi = true;
-              $translate.use(kielikoodi);
               this.kieli = kielikoodi;
+              $translate.use(kielikoodi);
               break;
             }
           }

@@ -94,6 +94,7 @@ angular.module('eperusteApp')
         
         var dataSavedOnNotification = false;
         $rootScope.$on('notifyCKEditor', function() {
+          console.log('notifyCKEditor');
           if(editor.checkDirty()) {
             dataSavedOnNotification = true;
             var data = editor.getData();
