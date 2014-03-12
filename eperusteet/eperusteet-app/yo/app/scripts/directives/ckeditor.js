@@ -141,8 +141,6 @@ angular.module('eperusteApp')
 
         placeholderText = getPlaceholder();
         ctrl.$render();
-
-        //element.click(ev);
       }
     };
   });

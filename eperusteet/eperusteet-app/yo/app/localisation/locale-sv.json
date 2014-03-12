@@ -105,30 +105,34 @@
     "tutkinnonOsa": "[Tutkinnon osa]",
 
     "muokkaus": "[Muokkaus]",
-    "muokkaus-tutkinnon-osa": "[Tutkinnon osa]",
-    "muokkaus-tutkinnon-osan-otsikko": "[Otsikko]",
-    "muokkaus-tutkinnon-osan-tavoitteet": "[Tavoitteet]",
-    "muokkaus-tutkinnon-osan-ammattitaitovaatimukset": "[Ammattitaitovaatimukset]",
-    "muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat": "[Ammattitaidon osoittamistavat]",
-    "muokkaus-tutkinnon-osan-osaamisala": "[Osaamisala]",
-    "muokkaus-tekstikappale": "[Tekstikappale]",
-    "muokkaus-tekstikappaleen-otsikko": "[Otsikko]",
-    "muokkaus-tekstikappaleen-teksti": "[Teksti]",
+    "muokkaus-tutkinnon-osa": "[Muokkaa tutkinnon osaa]",
+    "luonti-tutkinnon-osa": "[Luo uusi tutkinnon osa]",
 
-    "muokkaus-otsikko-placeholder": "[Kirjoita tähän otsikko]",
-    "muokkaus-tavoitteet-placeholder": "[Tavoitteita...]",
-    "muokkaus-ammattitaitovaatimukset-placeholder": "[Tässä listataan ammattitaitovaatimuksia]",
-    "muokkaus-ammattitaidon-osoittamistavat-placeholder": "[Ammattitaidon osoittamistapoja...]",
-    "muokkaus-osaamisala-placeholder": "[Kirjoita tähän osaamisala]",
-    "muokkaus-teksti-placeholder": "[Tähän tulee leipäteksti]",
+    "muokkaus-tutkinnon-osan-nimi-header": "[Nimi]",
+    "muokkaus-tutkinnon-osan-nimi-placeholder": "[Kirjoita tähän otsikko]",
+    "muokkaus-tutkinnon-osan-koodi-header": "[Koodi]",
+    "muokkaus-tutkinnon-osan-koodi-placeholder": "[Tutkinnon osan koodi]",
+    "muokkaus-tutkinnon-osan-tavoitteet-header": "[Tavoitteet]",
+    "muokkaus-tutkinnon-osan-tavoitteet-placeholder": "[Kirjoita tähän tutkinnon osan tavoitteet]",
+    "muokkaus-tutkinnon-osan-ammattitaitovaatimukset-header": "[Ammattitaitovaatimukset]",
+    "muokkaus-tutkinnon-osan-ammattitaitovaatimukset-placeholder": "[Listaa tähän tutkinnon osan ammattitaitovaatimukset]",
+    "muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat-header": "[Ammattitaidon osoittamistavat]",
+    "muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat-placeholder": "[Listaa tähän ammattitaidon osoittamistavat]",
+    "muokkaus-tutkinnon-osan-osaamisala-header": "[Osaamisala]",
+    "muokkaus-tutkinnon-osan-osaamisala-placeholder": "[Kirjoita tähän tutkinnon osan osaamisala]",
+    "muokkaus-tutkinnon-osan-arviointi-header": "[Arviointi]",
 
-    "perusteen-osat-tekstikappale": "[Tekstikappale]",
-    "perusteen-osat-tutkinnon-osa": "[Tutkinnon osa]",
+    "arviointi-uusi-kohdealue": "[Uusi kohdealue]",
+    "arviointi-uusi-kohdealue-placeholder": "[Kohdealueen nimi]",
+    "arviointi-uusi-kohde": "[Uusi kohde]",
+    "arviointi-uusi-kohde-placeholder": "[Kohteen nimi]",
+    "arviointi-uusi-kriteeri": "[Uusi kriteeri]",
+    "arviointi-uusi-kriteeri-placeholder": "[Kriteerin teksti]",
+    "arviointi-asteikon-valinta": "[Valitse arviointiasteikko]",
 
-    "muokkaus-uusi-kappale-placeholder": "[Kappaleen nimi]",
-    "muokkaus-uusi-tutkinnon-osa-nimi-placeholder": "[Tutkinnon nimi]",
-    "muokkaus-uusi-tutkinnon-osa-opintoluokitus-placeholder": "[Opintoluokitus]",
-
+    "muokkaus-lisaa-osio": "[Lisää osio]",
+    "muokkaus-tutkinnon-osa-tallennettu": "[Tutkinnon osa tallennettu onnistuneesti.]",
+    
     "opintoluokitus": "[Opintoluokitus]",
     "tavoitteet": "[Tavoitteet]",
     "ammattitaitovaatimukset": "[Ammattitaitovaatimukset]",
@@ -152,6 +156,9 @@
     "lopetus-aloituksen-jälkeen": "[Toimikauden päättymispäivämäärä täytyy olla aloitusajankohdan jälkeen.]",
     "kelvoton-pvm": "[Kelvoton päivämäärä]",
     "yhteistyotaho-label": "[Yhteistyötaho]",
-    "anna-yhteistyotaho-placeholder": "[Syötä yhteistyötaho]"
+    "anna-yhteistyotaho-placeholder": "[Syötä yhteistyötaho]",
+    
+    "ok": "[OK]",
+    "tallennettu": "[Tallennettu]"
 }
 

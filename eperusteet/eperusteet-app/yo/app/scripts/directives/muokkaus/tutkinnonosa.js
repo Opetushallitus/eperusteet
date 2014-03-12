@@ -25,7 +25,7 @@ angular.module('eperusteApp')
       scope: {
         tutkinnonOsa: '=tutkinnonOsa'
       },
-      controller: function($scope, $location, $q, MuokkausUtils, Editointikontrollit, PerusteenOsat) {
+      controller: function($scope, $location, $q, $modal, MuokkausUtils, Editointikontrollit, PerusteenOsat) {
         
         var allFields =
           new Array({
@@ -94,9 +94,12 @@ angular.module('eperusteApp')
               
               if($scope.editableTutkinnonOsa.id) {
                 $scope.editableTutkinnonOsa.$saveTutkinnonOsa();
+                openNotificationDialog();
               } else {
                 PerusteenOsat.saveTutkinnonOsa($scope.editableTutkinnonOsa).$promise.then(function(response) {
-                  $location.path('/muokkaus/tutkinnonosa/' + response.id);
+                  openNotificationDialog().result.then(function() {
+                    $location.path('/muokkaus/tutkinnonosa/' + response.id);
+                  });
                 });
               }
               $scope.tutkinnonOsa = angular.copy($scope.editableTutkinnonOsa);
@@ -114,6 +117,21 @@ angular.module('eperusteApp')
               tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
             }
           });
+          
+          function openNotificationDialog() {
+            return $modal.open({
+              templateUrl: 'views/modals/ilmoitusdialogi.html',
+              controller: 'IlmoitusdialogiCtrl',
+              resolve: {
+                sisalto: function() {
+                  return {
+                    otsikko: 'tallennettu',
+                    ilmoitus: 'muokkaus-tutkinnon-osa-tallennettu'
+                  };
+                }
+              }
+            });
+          }
         }
 
         var tutkinnonOsaReadyPromise;

@@ -142,6 +142,7 @@
     "arviointi-asteikon-valinta": "Valitse arviointiasteikko",
 
     "muokkaus-lisaa-osio": "Lisää osio",
+    "muokkaus-tutkinnon-osa-tallennettu": "Tutkinnon osa tallennettu onnistuneesti.",
 
     "opintoluokitus": "Opintoluokitus",
     "tavoitteet": "Tavoitteet",
@@ -168,5 +169,6 @@
     "yhteistyotaho-label": "Yhteistyötaho",
     "anna-yhteistyotaho-placeholder": "Syötä yhteistyötaho",
 
-    "ok": "OK"
+    "ok": "OK",
+    "tallennettu": "Tallennettu"
 }
