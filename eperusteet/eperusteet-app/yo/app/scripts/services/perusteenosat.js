@@ -8,7 +8,7 @@ angular.module('eperusteApp')
         osanId: '@id'
       },
       {
-        byKoodi: { method: 'GET', params: { koodi: true } },
+        byKoodiUri: { method: 'GET', params: { koodi: true } },
         saveTekstikappale: {method:'POST', params:{tyyppi:'perusteen-osat-tekstikappale'}},
         saveTutkinnonOsa: {method:'POST', params:{tyyppi:'perusteen-osat-tutkinnon-osa'}}
       });
@@ -28,12 +28,12 @@ angular.module('eperusteApp')
       validoi: function(tutkinnonOsa) {
         var deferred = $q.defer();
 
-        if (!tutkinnonOsa.koodi || tutkinnonOsa.koodi === '') {
+        if (!tutkinnonOsa.koodiUri || tutkinnonOsa.koodiUri === '') {
           deferred.reject('koodi-virhe-2');
-        } else if (_.isNaN(tutkinnonOsa.koodi)) {
+        } else if (_.isNaN(tutkinnonOsa.koodiUri)) {
           deferred.reject('koodi-virhe-3');
         } else {
-          PerusteenOsat.byKoodi({ osanId: tutkinnonOsa.koodi }, function() {
+          PerusteenOsat.byKoodiUri({ osanId: tutkinnonOsa.koodiUri }, function() {
             deferred.reject('koodi-virhe-1');
           }, function() {
             var virheet = validoi(tutkinnonOsa);

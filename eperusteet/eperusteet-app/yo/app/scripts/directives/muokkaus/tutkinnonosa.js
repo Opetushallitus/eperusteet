@@ -36,7 +36,7 @@ angular.module('eperusteApp')
              localized: true,
              mandatory: true
            },{
-             path: 'koodi',
+             path: 'koodiUri',
              localeKey: 'tutkinnon-osan-koodi',
              type: 'koodisto-select',
              mandatory: true

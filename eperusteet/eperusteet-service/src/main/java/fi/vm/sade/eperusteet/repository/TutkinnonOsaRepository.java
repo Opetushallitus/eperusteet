@@ -26,5 +26,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface TutkinnonOsaRepository extends JpaRepository<TutkinnonOsa, Long> {
-    TutkinnonOsa findOneByKoodi(Long koodi);
+    TutkinnonOsa findOneByKoodiUri(String koodiUri);
 }

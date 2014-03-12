@@ -66,7 +66,7 @@ angular.module('eperusteApp')
   })
   .directive('koodistoSelect', function($modal, Koodisto) {
     return {
-      template: '<button class="btn btn-default" type="text" ng-click="activate()">{{ "hae-koodi-koodistosta" | translate }}</button>',
+      template: '<button class="btn btn-default" type="text" ng-click="activate()" editointi-kontrolli>{{ "hae-koodi-koodistosta" | translate }}</button>',
       restrict: 'E',
       link: function($scope, el, attrs) {
         var valmis = $scope.$eval(attrs.valmis);

@@ -50,17 +50,25 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     }
 
     @Override
-    public PerusteenOsaDto getByKoodi(final Long id) {
-        return mapper.map(tutkinnonOsaRepo.findOneByKoodi(id), PerusteenOsaDto.class);
+    public PerusteenOsaDto getByKoodiUri(final String koodiUri) {
+        return mapper.map(tutkinnonOsaRepo.findOneByKoodiUri(koodiUri), PerusteenOsaDto.class);
     }
 
     @Override
     @Transactional(readOnly = false)
-    public <T extends PerusteenOsaDto, D extends PerusteenOsa> T save(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
-        PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
+    public <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
+    	PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
         mapper.map(perusteenOsaDto, current);
         current = perusteenOsaRepo.save(current);
         return mapper.map(current, dtoClass);
+    }
+    
+    @Override
+    @Transactional(readOnly = false)
+    public <T extends PerusteenOsaDto, D extends PerusteenOsa> T save(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
+        D perusteenOsa = mapper.map(perusteenOsaDto, entityClass);
+        perusteenOsa = perusteenOsaRepo.save(perusteenOsa);
+        return mapper.map(perusteenOsa, dtoClass);
     }
   
     @Override

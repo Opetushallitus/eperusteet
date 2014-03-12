@@ -1,13 +1,11 @@
 package fi.vm.sade.eperusteet.resource;
 
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
-import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 import java.util.List;
-import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
-import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
-import fi.vm.sade.eperusteet.service.PerusteenOsaService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +15,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import static org.springframework.web.bind.annotation.RequestMethod.*;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
+import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 
 @Controller
 @RequestMapping("/api/perusteenosat")
@@ -42,17 +46,22 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
-    public ResponseEntity<PerusteenOsaDto> get(@PathVariable("id") final Long id,
-            @RequestParam(value="koodi", required=false, defaultValue="false") final Boolean koodi) {
-        LOG.debug(koodi.toString());
-        PerusteenOsaDto t = null;
-        if (koodi) {
-            t = service.getByKoodi(id);
-        } else {
-            t = service.get(id);
-        }
+    public ResponseEntity<PerusteenOsaDto> get(@PathVariable("id") final Long id) {
+        LOG.info("get {}", id);
+    	PerusteenOsaDto t = service.get(id);
         if (t == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/{koodiUri}", method = GET, params = "koodi=true")
+    @ResponseBody
+    public ResponseEntity<PerusteenOsaDto> get(@PathVariable("koodiUri") final String koodiUri) {
+    	LOG.info("get by koodi {}", koodiUri);
+    	PerusteenOsaDto t = service.getByKoodiUri(koodiUri);
+        if (t == null) {
+        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
@@ -80,7 +89,7 @@ public class PerusteenOsaController {
     public TekstiKappaleDto update(@PathVariable("id") final Long id, @RequestBody TekstiKappaleDto tekstiKappaleDto) {
         LOG.info("update {}", tekstiKappaleDto);
         tekstiKappaleDto.setId(id);
-        return service.save(tekstiKappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
+        return service.update(tekstiKappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
     }
     
     @RequestMapping(value = "/{id}", method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
@@ -88,7 +97,7 @@ public class PerusteenOsaController {
     public TutkinnonOsaDto update(@PathVariable("id") final Long id, @RequestBody TutkinnonOsaDto tutkinnonOsaDto) {
         LOG.info("update {}", tutkinnonOsaDto);
         tutkinnonOsaDto.setId(id);
-        return service.save(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+        return service.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
     }
    
     @RequestMapping(value = "/{id}", method = DELETE, consumes = "*/*")
