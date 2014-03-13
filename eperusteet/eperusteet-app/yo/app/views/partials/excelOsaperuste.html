@@ -1,10 +1,10 @@
 <div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
-  <h3>Tutkinnon osat ({{ osatutkinnot.length }}kpl)</h3>
+  <h3>{{ 'tutkinnonosat' | translate }} ({{ osatutkinnot.length }}kpl)</h3>
   <table class="table table-striped">
     <tr>
-      <th>Tila</th>
-      <th>Koodi</th>
-      <th>Nimi</th>
+      <th translate>tila</th>
+      <th translate>koodi</th>
+      <th translate>nimi</th>
       <th></th>
     </tr>
     <tr ng-repeat="ot in osatutkinnot" title="{{ ot.syy }}" ng-show="ot.ladattu !== 0">
@@ -51,8 +51,8 @@
   Seuraavia tutkinnon osia ei pystytty tallentamaan onnistuneesti:
   <table class="table table-striped">
     <tr>
-      <th>Osatutkinto</th>
-      <th>Syy</th>
+      <th translate>tutkinnonosa</th>
+      <th translate>syy</th>
     </tr>
     <tr ng-repeat="error in uploadErrors" class="danger">
       <td>{{ error.name.fi }}</td>
