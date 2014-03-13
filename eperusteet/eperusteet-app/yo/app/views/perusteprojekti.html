@@ -14,15 +14,13 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
-<koodisto-select valmis="koodistoHaku" tyyppi="koulutus"></koodisto-select>
-
-<form class="form-horizontal" name="perusteprojektiForm" role="form" ng-submit="tallennaPerusteprojekti()" novalidate>
+<form class="form-horizontal" name="perusteprojektiForm" role="form" novalidate>
     <tabset>
-        <tab ng-repeat="tab in tabs" heading="{{tab.otsikko}}" active="tab.active" disabled="tab.disabled">
+        <tab ng-repeat="tab in tabs" heading="{{tab.otsikko | translate}}" active="tab.active" disabled="tab.disabled">
             <div style="margin-top: 20px;">
                 <ng-include  src="tab.url"></ng-include>
             </div>
         </tab>
     </tabset>
-    <button type="submit" id="submit" class="btn btn-default" ng-disabled="perusteprojektiForm.$invalid"  translate>tallenna-perusteprojekti-nappi</button>
+    <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-default" ng-disabled="perusteprojektiForm.$invalid"  translate>tallenna-perusteprojekti-nappi</button>
 </form>

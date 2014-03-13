@@ -21,7 +21,7 @@ angular.module('eperusteApp')
   };
   
   $scope.showWeeks = true;
-
+  
   $scope.open = function($event) {
     $event.preventDefault();
     $event.stopPropagation();

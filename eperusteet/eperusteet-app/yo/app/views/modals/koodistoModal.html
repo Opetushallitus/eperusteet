@@ -25,7 +25,7 @@
       <th translate>nimi</th>
     </tr>
     <tr ng-repeat="l in loydetyt | limitTo: 10">
-      <td><a href="" ng-click="ok(l.koodi)">{{ l.koodi }}</a></td>
+      <td><a href="" ng-click="ok(l)">{{ l.koodi }}</a></td>
       <td>{{ l.nimi[kieli] }}</td>
     </tr>
   </table>

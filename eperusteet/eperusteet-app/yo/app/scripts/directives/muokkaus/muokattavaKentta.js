@@ -127,8 +127,8 @@ angular.module('eperusteApp')
           } 
           
           else if (elementType === 'koodisto-select') {
-            scope.tuoKoodi = function(koodi) {
-              MuokkausUtils.nestedSet(scope.object, scope.field.path, ',', koodi);
+            scope.tuoKoodi = function(koodisto) {
+              MuokkausUtils.nestedSet(scope.object, scope.field.path, ',', koodisto.koodi);
             };
             element = angular.element('<div></div>').addClass('input-group')
             .append(

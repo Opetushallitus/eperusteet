@@ -33,7 +33,7 @@ angular.module('eperusteApp')
           var route = getRoute(path);
           
           if (routes[route] && routes[route].navigaationimi) {
-            console.log(YleinenData.kieli);
+            
             var t = $translate(routes[route].navigaationimi);
             var pathTmp = path;
             var p = t.then(function(nimi) {
@@ -50,7 +50,6 @@ angular.module('eperusteApp')
           
         });
         $q.all(polku).then(function(values) {
-          console.log(values);
           navigaatiopolut = values;
         });
       };
