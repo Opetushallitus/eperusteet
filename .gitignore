@@ -13,3 +13,6 @@ target
 **/.classpath
 **/rebel.xml
 /eperusteet/eperusteet-service/nbactions-oph.xml
+
+npm-debug.log
+
