@@ -9,7 +9,7 @@ angular.module('eperusteApp')
         controller: 'ExcelCtrl'
       });
   })
-  .controller('ExcelCtrl', function($scope, ExcelService, PerusteenOsat, TutkinnonOsanValidointi) {
+  .controller('ExcelCtrl', function($scope, ExcelService, PerusteenOsat, TutkinnonOsanValidointi, Koodisto) {
     $scope.osatutkinnot = [];
     $scope.vaihe = [];
     $scope.errors = [];
@@ -40,6 +40,12 @@ angular.module('eperusteApp')
       _.remove($scope.osatutkinnot, ot);
     };
 
+    $scope.liitaKoodiOT = function(ot) {
+      Koodisto.modaali(function(koodi) {
+        ot.koodiUri = koodi;
+      }, { tyyppi: function() { return 'tutkinnonosat'; } })();
+    };
+
     $scope.tallennaPeruste = function(peruste) {
       var doneSuccess = _.after(_.size(peruste.tekstikentat), function() { $scope.uploadSuccess = true; });
       _(peruste.tekstikentat).filter(function(tk) {
@@ -66,7 +72,6 @@ angular.module('eperusteApp')
             ot.ladattu = 0;
             ot.id = re.id;
             ot.koodiUri = re.koodi;
-            console.log(ot, re);
             doneSuccess();
           }, function(err) {
             if (err) {

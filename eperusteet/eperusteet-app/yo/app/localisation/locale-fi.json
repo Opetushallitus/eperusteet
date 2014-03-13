@@ -124,6 +124,11 @@
     "tekstikappaleet": "Tekstikappaleet",
     "koulutus": "Koulutus",
 
+    "koodi-virhe-1": "Koodia ei ole asetettu.",
+    "koodi-virhe-2": "Käyttämälläsi koodilla löytyi jo tutkinnon osa.",
+    "koodi-virhe-3": "Seuraavat kentät ovat vaadittuja: ",
+    "tutkinnonosa-save-fail": "Seuraavia tutkinnon osia ei pystytty tallentamaan onnistuneesti:",
+
     "haetaan-tutkinnon-osia": "Haetaan tutkinnon osia...",
 
     "muokkaus": "Muokkaus",

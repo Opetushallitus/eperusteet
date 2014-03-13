@@ -16,11 +16,15 @@ angular.module('eperusteApp')
   .service('TutkinnonOsanValidointi', function($q, PerusteenOsat) {
     function validoi(tutkinnonOsa) {
       var virheet = [];
-      _.forEach(['nimi'], function(f) {
+      var kentat = ['nimi'];
+      _.forEach(kentat, function(f) {
         if (!tutkinnonOsa[f] || tutkinnonOsa[f] === '') {
-          virheet.push({ 'koodi-virhe-4': f});
+          virheet.push(f);
         }
       });
+      if (!_.isEmpty(virheet)) {
+        virheet.unshift('koodi-virhe-3');
+      }
       return virheet;
     }
 
@@ -29,12 +33,10 @@ angular.module('eperusteApp')
         var deferred = $q.defer();
 
         if (!tutkinnonOsa.koodiUri || tutkinnonOsa.koodiUri === '') {
-          deferred.reject('koodi-virhe-2');
-        } else if (_.isNaN(tutkinnonOsa.koodiUri)) {
-          deferred.reject('koodi-virhe-3');
+          deferred.reject(['koodi-virhe-1']);
         } else {
           PerusteenOsat.byKoodiUri({ osanId: tutkinnonOsa.koodiUri }, function() {
-            deferred.reject('koodi-virhe-1');
+            deferred.reject(['koodi-virhe-2']);
           }, function() {
             var virheet = validoi(tutkinnonOsa);
             if (_.isEmpty(virheet)) {

@@ -50,7 +50,7 @@ body {
 }
 
 .osatutkintoid {
-  width: 80px;
+  width: 140px;
   height: 26px;
 }
 
@@ -66,7 +66,7 @@ body {
   width: 32px;
 }
 
-.has-placeholder.cke_editable, 
+.has-placeholder.cke_editable,
 .has-placeholder span.tekstikentta {
   font-style: italic;
   color: #aaa;
