@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -59,7 +60,7 @@ public class Peruste implements Serializable {
     @JoinTable(name = "peruste_opintoala",
             joinColumns = @JoinColumn(name = "peruste_id"),
             inverseJoinColumns = @JoinColumn(name = "opintoala_id"))
-    private List<Opintoala> opintoalat;
+    private Set<Opintoala> opintoalat;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date paivays;
@@ -110,11 +111,11 @@ public class Peruste implements Serializable {
         this.koulutusala = koulutusala;
     }
 
-    public List<Opintoala> getOpintoalat() {
+    public Set<Opintoala> getOpintoalat() {
         return opintoalat;
     }
 
-    public void setOpintoalat(List<Opintoala> opintoalat) {
+    public void setOpintoalat(Set<Opintoala> opintoalat) {
         this.opintoalat = opintoalat;
     }
 

@@ -139,7 +139,7 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             pred = cb.and(pred, root.get(Peruste_.tutkintokoodi).in(pquery.getTyyppi()));
         }
         if (pquery.getOpintoala() != null && !pquery.getOpintoala().isEmpty()) {
-            ListJoin<Peruste, Opintoala> ala = root.join(Peruste_.opintoalat);
+            Join<Peruste, Opintoala> ala = root.join(Peruste_.opintoalat);
             pred = cb.and(pred, ala.get(Opintoala_.koodi).in(pquery.getOpintoala()));
         }
         if (!pquery.isSiirtyma()) {

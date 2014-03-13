@@ -2,7 +2,8 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('Koodisto', function($http, $modal, SERVICE_LOC) {
+  .service('Koodisto', function($http, $modal, SERVICE_LOC, $resource) {
+
     var taydennykset = [];
     var koodistoVaihtoehdot = ['tutkinnonosat', 'koulutus'];
     var nykyinenKoodisto = _.first(koodistoVaihtoehdot);
@@ -10,13 +11,28 @@ angular.module('eperusteApp')
     function hae(koodisto, cb) {
       if (!_.isEmpty(taydennykset) && koodisto === nykyinenKoodisto) { cb(); return; }
       $http.get(SERVICE_LOC + '/koodisto/' + koodisto).then(function(re) {
-        taydennykset = _(re.data).map(function(kv) {
+        taydennykset = koodistoMapping(re.data);
+        cb();
+      });
+    }
+    
+    function haeAlarelaatiot(koodi, cb) {
+      var resource = $resource(SERVICE_LOC + '/koodisto/relaatio/sisaltyy-alakoodit/:koodi');
+      resource.query({koodi: koodi}, function (vastaus) {
+        var relaatiot = koodistoMapping(vastaus);
+        cb(relaatiot);
+      });
+    }
+    
+    function koodistoMapping(koodistoData) {
+      return _.map(koodistoData, function(kd) {
+
           var nimi = {
             fi: '',
             sv: '',
             en: ''
           };
-          _.forEach(kv.metadata, function(obj) {
+          _.forEach(kd.metadata, function(obj) {
             nimi[obj.kieli.toLowerCase()] = obj.nimi;
           });
 
@@ -24,13 +40,15 @@ angular.module('eperusteApp')
             return result + v;
           }).toLowerCase();
           return {
-            koodi: kv.koodiUri,
+            koodi: kd.koodiUri,
             nimi: nimi,
+            koodisto: kd.koodisto,
             haku: haku
           };
         }).value();
-        cb();
-      });
+        //cb();
+    //  });
+
     }
 
     function filtteri(haku) {
@@ -54,7 +72,8 @@ angular.module('eperusteApp')
       hae: hae,
       filtteri: filtteri,
       vaihtoehdot: _.clone(koodistoVaihtoehdot),
-      modaali: modaali
+      modaali: modaali,
+      haeAlarelaatiot: haeAlarelaatiot
     };
   })
   .controller('KoodistoModalCtrl', function($scope, $modalInstance, $translate, $timeout, Koodisto, tyyppi) {

@@ -44,7 +44,7 @@ European Union Public Licence for more details.
             <label for="opintoala" class="col-sm-3" translate>haku-opintoala</label>
             <div class="col-sm-9">
                 <input ng-show="projekti.peruste.opintoalat.length < 1" type="text" class="form-control" id="opintoala"  placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
-                <input ng-repeat="opintoala in projekti.peruste.opintoalat | limitTo:1" type="text" class="form-control" id="opintoala" value="{{valitseKieli(opintoalaNimi(opintoala).nimi)}}" placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
+                <input ng-repeat="opintoala in projekti.peruste.opintoalat" type="text" class="form-control" id="opintoala" value="{{valitseKieli(opintoalaNimi(opintoala).nimi)}}" placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
             </div>
         </div>
     </div>
