@@ -19,7 +19,7 @@ angular.module('eperusteApp')
       });
   }).controller('PerusteprojektiCtrl', function($scope, $rootScope, $location, $routeParams,
     PerusteprojektiResource, PerusteProjektiService, YleinenData, koulutusalaService, opintoalaService) {
-      
+
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
 
@@ -33,8 +33,8 @@ angular.module('eperusteApp')
     $scope.projekti.peruste.opintoalat = [];
   };
   $scope.alustaProjekti();
-  
-  
+
+
   var perusteprojektiPolku = 'perusteprojekti/';
 
   $rootScope.$broadcast('paivitaNavigaatiopolku');
@@ -47,9 +47,9 @@ angular.module('eperusteApp')
   });
 
   $scope.tabs = [
-    {otsikko: 'projekti-perustiedot', url: '/views/partials/perusteprojektiPerustiedot.html'},
-    {otsikko: 'projekti-projektiryhmä', url: '/views/partials/perusteprojektiProjektiryhma.html'},
-    {otsikko: 'projekti-peruste', url: '/views/partials/perusteprojektiPeruste.html'}
+    {otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojektiPerustiedot.html'},
+    {otsikko: 'projekti-projektiryhmä', url: 'views/partials/perusteprojektiProjektiryhma.html'},
+    {otsikko: 'projekti-peruste', url: 'views/partials/perusteprojektiPeruste.html'}
   ];
 
   if ($routeParams.id) {
