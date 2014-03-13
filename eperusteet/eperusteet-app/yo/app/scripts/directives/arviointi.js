@@ -54,12 +54,10 @@ angular.module('eperusteApp')
             scope.arviointi.arvioinninKohdealueet = [];
           }
           
-       // TODO: Add localization
           var kohdealue = {
-              otsikko: {
-                fi: scope.uudenKohdealueenNimi
-              }
+              otsikko: {}
           };
+          kohdealue.otsikko[YleinenData.kieli] = scope.uudenKohdealueenNimi;
           
           scope.arviointi.arvioinninKohdealueet.push(kohdealue);
           
@@ -72,14 +70,12 @@ angular.module('eperusteApp')
             kohdealue.arvioinninKohteet = [];
           }
           
-          // TODO: Add localization
           var kohde = {
-              otsikko: {
-                fi: uudenKohteenTiedot.nimi
-                },
+              otsikko: {},
               _arviointiAsteikko: uudenKohteenTiedot.arviointiasteikko.id,
               osaamistasonKriteerit: []
           };
+          kohde.otsikko[YleinenData.kieli] = uudenKohteenTiedot.nimi;
           
           angular.forEach(uudenKohteenTiedot.arviointiasteikko.osaamistasot, function(taso) {
             kohde.osaamistasonKriteerit.push({
@@ -98,8 +94,11 @@ angular.module('eperusteApp')
           if(osaamistasonKriteeri.kriteerit === undefined || osaamistasonKriteeri.kriteerit === null) {
             osaamistasonKriteeri.kriteerit = [];
           }
-                    
-          osaamistasonKriteeri.kriteerit.push({fi: uudenKriteerinTiedot.teksti});
+          
+          var newKriteeri = {};
+          newKriteeri[YleinenData.kieli] = uudenKriteerinTiedot.teksti;
+          
+          osaamistasonKriteeri.kriteerit.push(newKriteeri);
           uudenKriteerinTiedot.teksti = null;
           uudenKriteerinTiedot.showInput = false;
         };
@@ -130,13 +129,7 @@ angular.module('eperusteApp')
   })
   .directive('arvioinninTekstikentta', function(YleinenData, $filter) {
     return {
-      template: 
-      '<span class="tekstikentta" ng-hide="editContent">{{valitseKieli(teksti)}}</span>' +
-      '<span ng-show="editAllowed">' +
-        '<input class="form-control" ng-show="editContent" ng-model="teksti" localized editointi-kontrolli ng-click="blockEvent($event)" ng-blur="editContent = false;" on-enter="editContent = false;"/>' +
-        '<span ng-click="removeItem(sisalto, sisaltoalue)" ng-show="!editContent" editointi-kontrolli class="glyphicon glyphicon-remove clickable pull-right badge"> </span>' +
-        '<span ng-click="switchEditMode(true, $event)" ng-show="!editContent" editointi-kontrolli class="glyphicon glyphicon-pencil clickable pull-right badge"> </span>' +
-      '</span>',
+      templateUrl: 'views/partials/arvioinninTekstikentta.html',
       restrict: 'E',
       scope: {
         sisalto: '=',
@@ -144,7 +137,7 @@ angular.module('eperusteApp')
         editAllowed: '=',
         sisaltoteksti: '=?'
       },
-      link: function(scope, element, attrs) {
+      link: function(scope, element) {
         scope.editContent = false;
         scope.teksti = !scope.sisaltoteksti ? scope.sisalto : scope.sisaltoteksti;
         
@@ -171,7 +164,7 @@ angular.module('eperusteApp')
         
         scope.blockEvent = function($event) {
           $event.stopPropagation();
-        }
+        };
       }
     };
   });
