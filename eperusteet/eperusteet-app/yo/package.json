@@ -29,7 +29,7 @@
     "time-grunt": "~0.1.0",
     "karma-ng-html2js-preprocessor": "~0.1.0",
     "karma-ng-scenario": "~0.1.0",
-    "grunt-karma": "~0.6.2",
+    "grunt-karma": "0.8.0",
     "grunt-connect-proxy": "~0.1.6"
   },
   "engines": {

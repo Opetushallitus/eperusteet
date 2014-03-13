@@ -41,9 +41,7 @@ angular.module('eperusteApp')
     };
 
     $scope.tallennaPeruste = function(peruste) {
-      var doneSuccess = _.after(_.size(peruste.tekstikentat), function() {
-        $scope.uploadSuccess = true;
-      });
+      var doneSuccess = _.after(_.size(peruste.tekstikentat), function() { $scope.uploadSuccess = true; });
       _(peruste.tekstikentat).filter(function(tk) {
         return tk.ladattu !== 0;
       }).forEach(function(tk) {
@@ -58,9 +56,7 @@ angular.module('eperusteApp')
     };
 
     $scope.tallennaOsatutkinnot = function() {
-      var doneSuccess = _.after(_.size($scope.osatutkinnot), function() {
-        $scope.uploadSuccess = true;
-      });
+      var doneSuccess = _.after(_.size($scope.osatutkinnot), function() { $scope.uploadSuccess = true; });
       _($scope.osatutkinnot).filter(function(ot) {
         return ot.ladattu !== 0;
       }).forEach(function(ot) {
@@ -69,7 +65,8 @@ angular.module('eperusteApp')
           PerusteenOsat.saveTutkinnonOsa(cop, function(re) {
             ot.ladattu = 0;
             ot.id = re.id;
-            ot.koodi = re.koodi;
+            ot.koodiUri = re.koodi;
+            console.log(ot, re);
             doneSuccess();
           }, function(err) {
             if (err) {
@@ -105,7 +102,7 @@ angular.module('eperusteApp')
           $scope.osatutkinnot = _.map(resolve.osatutkinnot.osaperusteet, function(ot) {
             return _.merge(ot, {
                 ladattu: -1,
-                koodi: '',
+                koodiUri: '',
                 syy: ''
             });
           });

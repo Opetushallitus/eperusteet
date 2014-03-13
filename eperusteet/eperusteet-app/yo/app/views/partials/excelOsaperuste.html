@@ -17,7 +17,7 @@
         <span ng-hide="ot.ladattu === 1" class="glyphicon glyphicon-minus"></span>
       </td>
       <td class="osatutkintoid">
-        <input class="form-control osatutkintoid" type="text" ng-model="ot.koodi" />
+        <input class="form-control osatutkintoid" type="text" ng-model="ot.koodiUri" />
       </td>
       <td>{{ ot.nimi.fi }}</td>
       <td class="text-right">
@@ -32,8 +32,8 @@
       <td class="glyphtila">
         <span class="glyphicon glyphicon-ok"></span>
       </td>
-      <td class="osatutkintoid">{{ ot.koodi }}</td>
-      <td><a target="_blank" href="#/selaus/ammatillinenperuskoulutus/1/tutkinnonosa/{{ ot.id }}">{{ ot.nimi.fi }}</a></td>
+      <td class="osatutkintoid">{{ ot.koodiUri }}</td>
+      <td><a target="_blank" href="#/muokkaus/tutkinnonosa/{{ ot.id }}">{{ ot.nimi.fi }}</a></td>
       <td class="text-right"></td>
     </tr>
   </table>
