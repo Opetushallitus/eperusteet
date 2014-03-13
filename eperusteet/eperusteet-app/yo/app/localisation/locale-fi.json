@@ -13,6 +13,9 @@
     "rajaa-tuloksia": "Rajaa...",
     "nimi": "Nimi",
     "kieli": "Kieli",
+    "ok": "OK",
+    "tallennettu": "Tallennettu",
+    "tyhjä": "Tyhjä",
 
     "perusteprojektit-otsikko": "Omat perusteprojektit",
     "uusi-projekti": "Uusi projekti",
@@ -167,8 +170,5 @@
     "lopetus-aloituksen-jälkeen": "Toimikauden päättymispäivämäärä täytyy olla aloitusajankohdan jälkeen.",
     "kelvoton-pvm": "Kelvoton päivämäärä",
     "yhteistyotaho-label": "Yhteistyötaho",
-    "anna-yhteistyotaho-placeholder": "Syötä yhteistyötaho",
-
-    "ok": "OK",
-    "tallennettu": "Tallennettu"
+    "anna-yhteistyotaho-placeholder": "Syötä yhteistyötaho"
 }

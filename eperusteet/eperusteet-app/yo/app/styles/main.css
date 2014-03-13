@@ -35,8 +35,14 @@ body {
     text-decoration:underline;
 }
 
-.raita {
+.raita,
+.raita .list-group-item,
+.raita .panel-footer {
     background-color: #f9f9f9;
+}
+
+.ei-raitaa .panel-footer {
+  background-color: #fff;
 }
 
 .no-round {
@@ -60,7 +66,8 @@ body {
   width: 32px;
 }
 
-.has-placeholder.cke_editable {
+.has-placeholder.cke_editable, 
+.has-placeholder span.tekstikentta {
   font-style: italic;
   color: #aaa;
 }

@@ -9,6 +9,9 @@
     "palauta" : "[Palauta]",
     "perusteprojektit-otsikko": "[Omat perusteprojektit]",
     "uusi-projekti": "[Uusi projekti]",
+    "ok": "[OK]",
+    "tallennettu": "[Tallennettu]",
+    "tyhjä": "[Tyhjä]",
 
     "haku-otsikko": "[Perusteen haku]",
     "haku-koulutusala": "[Koulutusala]",
@@ -156,9 +159,6 @@
     "lopetus-aloituksen-jälkeen": "[Toimikauden päättymispäivämäärä täytyy olla aloitusajankohdan jälkeen.]",
     "kelvoton-pvm": "[Kelvoton päivämäärä]",
     "yhteistyotaho-label": "[Yhteistyötaho]",
-    "anna-yhteistyotaho-placeholder": "[Syötä yhteistyötaho]",
-    
-    "ok": "[OK]",
-    "tallennettu": "[Tallennettu]"
+    "anna-yhteistyotaho-placeholder": "[Syötä yhteistyötaho]"
 }
 

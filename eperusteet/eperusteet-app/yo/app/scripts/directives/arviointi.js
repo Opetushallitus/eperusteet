@@ -118,6 +118,7 @@ angular.module('eperusteApp')
     return function (scope, element, attrs) {
       element.bind('keydown keypress', function (event) {
         if(event.which === 13) {
+          console.log('enter');
           scope.$apply(function (){
             scope.$eval(attrs.onEnter);
           });
@@ -125,5 +126,52 @@ angular.module('eperusteApp')
           event.preventDefault();
         }
       });
+    };
+  })
+  .directive('arvioinninTekstikentta', function(YleinenData, $filter) {
+    return {
+      template: 
+      '<span class="tekstikentta" ng-hide="editContent">{{valitseKieli(teksti)}}</span>' +
+      '<span ng-show="editAllowed">' +
+        '<input class="form-control" ng-show="editContent" ng-model="teksti" localized editointi-kontrolli ng-click="blockEvent($event)" ng-blur="editContent = false;" on-enter="editContent = false;"/>' +
+        '<span ng-click="removeItem(sisalto, sisaltoalue)" ng-show="!editContent" editointi-kontrolli class="glyphicon glyphicon-remove clickable pull-right badge"> </span>' +
+        '<span ng-click="switchEditMode(true, $event)" ng-show="!editContent" editointi-kontrolli class="glyphicon glyphicon-pencil clickable pull-right badge"> </span>' +
+      '</span>',
+      restrict: 'E',
+      scope: {
+        sisalto: '=',
+        sisaltoalue: '=',
+        editAllowed: '=',
+        sisaltoteksti: '=?'
+      },
+      link: function(scope, element, attrs) {
+        scope.editContent = false;
+        scope.teksti = !scope.sisaltoteksti ? scope.sisalto : scope.sisaltoteksti;
+        
+        scope.valitseKieli = function(teksti) {
+          var lokalisoituTeksti = YleinenData.valitseKieli(teksti);
+          
+          if(angular.isUndefined(lokalisoituTeksti) || _.isEmpty(lokalisoituTeksti)) {
+            element.addClass('has-placeholder');
+            return $filter('translate')('tyhjä');
+          } else {
+            element.removeClass('has-placeholder');
+            return lokalisoituTeksti;
+          }
+        };
+        
+        scope.removeItem = function(item, list) {
+          _.remove(list, item);
+        };
+        
+        scope.switchEditMode = function(mode, $event) {
+          scope.editContent = mode;
+          $event.stopPropagation();
+        };
+        
+        scope.blockEvent = function($event) {
+          $event.stopPropagation();
+        }
+      }
     };
   });

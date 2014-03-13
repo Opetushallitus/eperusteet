@@ -19,7 +19,7 @@ angular.module('eperusteApp')
   .directive('editointiKontrolli', function($rootScope, Editointikontrollit) {
     return {
       restrict: 'A',
-      link: function(scope, element, attrs) {
+      link: function(scope, element) {
         
         Editointikontrollit.getEditModePromise().then(function(editMode) {
           if(!editMode) {

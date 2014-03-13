@@ -17,38 +17,33 @@ European Union Public Licence for more details.
 <div class="panel panel-default panel-small" ng-repeat="kohdealue in arviointi.arvioinninKohdealueet">
   <div class="panel-heading">
     <h3 class="panel-title">
-      {{valitseKieli(kohdealue.otsikko)}}
-      <span ng-click="removeItem(kohdealue, $parent.arviointi.arvioinninKohdealueet)" ng-if="editAllowed" editointi-kontrolli class="glyphicon glyphicon-remove clickable pull-right"></span>
+      <arvioinnin-tekstikentta sisalto="kohdealue" sisaltoteksti="kohdealue.otsikko" sisaltoalue="$parent.arviointi.arvioinninKohdealueet" edit-allowed="editAllowed"/>
     </h3>
   </div>
   <div class="panel-body">
     <accordion close-others="false">
       <accordion-group heading="{{valitseKieli(arvioinninkohde.otsikko)}}" ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet">
         <accordion-heading>
-          {{valitseKieli(arvioinninkohde.otsikko)}}
-          <span ng-click="removeItem(arvioinninkohde, $parent.kohdealue.arvioinninKohteet)" ng-if="editAllowed" editointi-kontrolli class="glyphicon glyphicon-remove clickable pull-right"></span>
+          <arvioinnin-tekstikentta sisalto="arvioinninkohde" sisaltoteksti="arvioinninkohde.otsikko" sisaltoalue="$parent.kohdealue.arvioinninKohteet" edit-allowed="editAllowed"/>
         </accordion-heading>
-        <div ng-repeat="taso in arviointiasteikot[arvioinninkohde._arviointiAsteikko].osaamistasot" ng-class-odd="'raita'">
+        <div ng-repeat="taso in arviointiasteikot[arvioinninkohde._arviointiAsteikko].osaamistasot" ng-class-odd="'raita'" ng-class-even="'ei-raitaa'">
           <div class="row">
             <div class="col-md-3">
               {{valitseKieli(taso.otsikko)}}
             </div>
             <div class="col-md-9">
-              <div ng-repeat="osaamistasonKriteeri in arvioinninkohde.osaamistasonKriteerit | filter:{_osaamistaso: taso.id}">
-                <ul>
-                  <li ng-repeat="kriteeri in osaamistasonKriteeri.kriteerit">
-                    {{valitseKieli(kriteeri)}}
-                    <span ng-click="removeItem(kriteeri, $parent.osaamistasonKriteeri.kriteerit)" ng-if="editAllowed" editointi-kontrolli class="glyphicon glyphicon-remove clickable pull-right"></span>
+              <div class="panel" ng-repeat="osaamistasonKriteeri in arvioinninkohde.osaamistasonKriteerit | filter:{_osaamistaso: taso.id}">
+                <ul class="list-group">
+                  <li class="list-group-item" ng-repeat="kriteeri in osaamistasonKriteeri.kriteerit">
+                    <arvioinnin-tekstikentta sisalto="kriteeri" sisaltoalue="$parent.osaamistasonKriteeri.kriteerit" edit-allowed="editAllowed"/>
                   </li>
                 </ul>
-                <div class="panel panel-default" ng-show="editAllowed">
-                  <div class="panel-body">
-                    <input editointi-kontrolli class="form-control" ng-show="uudenKriteerinTiedot.showInput" type="text" ng-model="uudenKriteerinTiedot.teksti" 
-                      on-enter="addNewKriteeri(osaamistasonKriteeri, uudenKriteerinTiedot)" 
-                      placeholder="{{'arviointi-uusi-kriteeri-placeholder' | translate}}"/>
-                    <button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-show="!uudenKriteerinTiedot.showInput" 
-                      ng-click="uudenKriteerinTiedot.showInput = true">{{'arviointi-uusi-kriteeri' | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
-                  </div>
+                <div class="panel-footer" ng-show="editAllowed">
+                  <input editointi-kontrolli class="form-control" ng-show="uudenKriteerinTiedot.showInput" type="text" ng-model="uudenKriteerinTiedot.teksti" 
+                    on-enter="addNewKriteeri(osaamistasonKriteeri, uudenKriteerinTiedot)" 
+                    placeholder="{{'arviointi-uusi-kriteeri-placeholder' | translate}}"/>
+                  <button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-show="!uudenKriteerinTiedot.showInput" 
+                    ng-click="uudenKriteerinTiedot.showInput = true">{{'arviointi-uusi-kriteeri' | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
                 </div>
               </div>
             </div>
