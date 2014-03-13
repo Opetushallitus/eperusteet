@@ -170,5 +170,18 @@
     "lopetus-aloituksen-jälkeen": "Toimikauden päättymispäivämäärä täytyy olla aloitusajankohdan jälkeen.",
     "kelvoton-pvm": "Kelvoton päivämäärä",
     "yhteistyotaho-label": "Yhteistyötaho",
-    "anna-yhteistyotaho-placeholder": "Syötä yhteistyötaho"
+    "anna-yhteistyotaho-placeholder": "Syötä yhteistyötaho",
+    
+    "projektipäällikkö": "Projektipäällikkö",
+    
+    "perusteen-nimi": "Perusteen nimi",
+    "anna-perusteen-nimi": "Syötä perusteen nimi",
+
+    "ok": "OK",
+    
+    "projekti-perustiedot": "Perustiedot",
+    "projekti-projektiryhmä": "Projektiryhmä",
+    "projekti-peruste": "Perusteen tiedot",
+    "valitse-peruste": "Valitse peruste",
+    "perusteen-koodi": "Perusteen koodi"
 }

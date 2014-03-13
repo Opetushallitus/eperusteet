@@ -6,21 +6,35 @@ angular.module('eperusteApp')
       .when('/perusteprojekti', {
         templateUrl: 'views/perusteprojekti.html',
         controller: 'PerusteprojektiCtrl',
-        navigaationimi: 'navi-perusteprojekti'
+        navigaationimi: 'navi-perusteprojekti',
+        resolve: {'koulutusalaService': 'Koulutusalat',
+                  'opintoalaService': 'Opintoalat'}
       })
       .when('/perusteprojekti/:id', {
         templateUrl: 'views/perusteprojekti.html',
         controller: 'PerusteprojektiCtrl',
-        navigaationimiId: 'projektiId'
+        navigaationimiId: 'projektiId',
+        resolve: {'koulutusalaService': 'Koulutusalat',
+                  'opintoalaService': 'Opintoalat'}
       });
   }).controller('PerusteprojektiCtrl', function($scope, $rootScope, $location, $routeParams,
-    PerusteprojektiResource, PerusteProjektiService, YleinenData) {
+    PerusteprojektiResource, PerusteProjektiService, YleinenData, koulutusalaService, opintoalaService) {
+      
+    $scope.Koulutusalat = koulutusalaService;
+    $scope.Opintoalat = opintoalaService;
 
     $scope.koodistoHaku = function(koodi) {
       console.log(koodi);
     };
 
-  $scope.projekti = {};
+  $scope.alustaProjekti = function() {
+    $scope.projekti = {};
+    $scope.projekti.peruste = {};
+    $scope.projekti.peruste.opintoalat = [];
+  };
+  $scope.alustaProjekti();
+  
+  
   var perusteprojektiPolku = 'perusteprojekti/';
 
   $rootScope.$broadcast('paivitaNavigaatiopolku');
@@ -33,8 +47,9 @@ angular.module('eperusteApp')
   });
 
   $scope.tabs = [
-    {otsikko: 'Perustiedot', url: '/views/partials/perusteprojektiPerustiedot.html'},
-    {otsikko: 'Projektiryhmä', url: '/views/partials/perusteprojektiProjektiryhma.html'}
+    {otsikko: 'projekti-perustiedot', url: '/views/partials/perusteprojektiPerustiedot.html'},
+    {otsikko: 'projekti-projektiryhmä', url: '/views/partials/perusteprojektiProjektiryhma.html'},
+    {otsikko: 'projekti-peruste', url: '/views/partials/perusteprojektiPeruste.html'}
   ];
 
   if ($routeParams.id) {

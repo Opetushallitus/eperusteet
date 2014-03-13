@@ -14,16 +14,33 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service;
+package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.dto.OpintoalaDto;
+import fi.vm.sade.eperusteet.service.OpintoalaService;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
  * @author harrik
  */
-public interface OpintoalaService {
-    void opintoalaLammitys();
-    List<OpintoalaDto> getAll();
+@Controller
+@RequestMapping("/api/opintoalat")
+public class OpintoalaController {
+    
+    @Autowired
+    private OpintoalaService service;
+    
+    @RequestMapping(method = GET)
+    @ResponseBody
+    public List<OpintoalaDto> getAll() {
+        List<OpintoalaDto> olist = service.getAll();
+        return olist;       
+    }
+    
 }

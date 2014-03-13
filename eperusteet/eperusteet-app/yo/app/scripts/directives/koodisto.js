@@ -13,7 +13,7 @@ angular.module('eperusteApp')
         taydennykset = _.map(re.data, function(kv) {
           var nimi = {
             fi: '',
-            se: '',
+            sv: '',
             en: ''
           };
           _.forEach(kv.metadata, function(obj) {
@@ -29,6 +29,7 @@ angular.module('eperusteApp')
             })
           };
         });
+        console.log('täydennykset', taydennykset);
         cb();
       });
     }
@@ -51,7 +52,7 @@ angular.module('eperusteApp')
     $scope.koodistoVaihtoehdot = Koodisto.vaihtoehdot;
     $scope.tyyppi = tyyppi;
     $scope.loydetyt = [];
-    $scope.haku = function(rajaus, kieli) { $scope.loydetyt = Koodisto.filtteri(rajaus, kieli); };
+    $scope.haku = function(rajaus, kieli) { $scope.loydetyt = Koodisto.filtteri(rajaus, kieli);};
     $scope.lataa = true;
     $scope.syote = '';
     $scope.kieli = 'fi';

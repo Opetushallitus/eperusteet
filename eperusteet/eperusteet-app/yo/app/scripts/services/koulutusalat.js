@@ -2,9 +2,9 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .service('Koulutusalat', ['$resource', function Koulutusalat($resource) {
+  .service('Koulutusalat', function Koulutusalat($resource, SERVICE_LOC) {
 
-      var koulutusalatResource = $resource('/eperusteet-service/api' + '/koulutusalat/:koulutusalaId',
+      var koulutusalatResource = $resource(SERVICE_LOC + '/koulutusalat/:koulutusalaId',
         {koulutusalaId: '@id'}, {'query': {method: 'GET', isArray: true, cache: true}});
       this.koulutusalatMap = {};
       this.koulutusalat = [];
@@ -21,6 +21,7 @@ angular.module('eperusteApp')
       };
 
       return koulutusalaPromise.then(function(vastaus) {
+        
         self.koulutusalatMap = _.zipObject(_.pluck(vastaus, 'koodi'), _.map(vastaus, function(e) {
           return {
             nimi: e.nimi
@@ -30,4 +31,4 @@ angular.module('eperusteApp')
         return self;
       });
 
-    }]);
+    });

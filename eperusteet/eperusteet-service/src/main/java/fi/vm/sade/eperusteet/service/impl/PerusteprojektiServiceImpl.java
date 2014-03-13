@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.Opintoala;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
@@ -54,6 +55,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional(readOnly = true)
     public PerusteprojektiDto get(Long id) {
         Perusteprojekti p = repository.findOne(id);
+        LOG.info("Perusteprojekti opintoalat");
+        for (Opintoala opintoala: p.getPeruste().getOpintoalat()) {
+            LOG.info("opintoala" + opintoala.getKoodi());
+        }
         return mapper.map(p, PerusteprojektiDto.class);
     }
         
