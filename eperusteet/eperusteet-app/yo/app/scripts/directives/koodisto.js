@@ -10,7 +10,7 @@ angular.module('eperusteApp')
     function hae(koodisto, cb) {
       if (!_.isEmpty(taydennykset) && koodisto === nykyinenKoodisto) { cb(); return; }
       $http.get(SERVICE_LOC + '/koodisto/' + koodisto).then(function(re) {
-        taydennykset = _.map(re.data, function(kv) {
+        taydennykset = _(re.data).map(function(kv) {
           var nimi = {
             fi: '',
             sv: '',
@@ -19,27 +19,23 @@ angular.module('eperusteApp')
           _.forEach(kv.metadata, function(obj) {
             nimi[obj.kieli.toLowerCase()] = obj.nimi;
           });
+
+          var haku = _.reduce(_.values(nimi), function(result, v) {
+            return result + v;
+          }).toLowerCase();
           return {
             koodi: kv.koodiUri,
             nimi: nimi,
-            haku: _.map(nimi, function(v, k) {
-              var n = {};
-              n[k] = v.toLowerCase();
-              return n;
-            })
+            haku: haku
           };
-        });
-        console.log('täydennykset', taydennykset);
+        }).value();
         cb();
       });
     }
 
-    function filtteri(haku, kieli) {
+    function filtteri(haku) {
       haku = haku.toLowerCase();
-      var res = _.filter(taydennykset, function(t) {
-        return t.koodi.indexOf(haku) !== -1 || t.nimi[kieli].indexOf(haku) !== -1;
-      });
-      return res;
+      return _.filter(taydennykset, function(t) { return t.koodi.indexOf(haku) !== -1 || t.haku.indexOf(haku) !== -1; });
     }
 
     function modaali(successCb, resolve, failureCb) {
@@ -78,7 +74,7 @@ angular.module('eperusteApp')
     $scope.ok = function(koodi) { $modalInstance.close(koodi); };
     $scope.peruuta = function() { $modalInstance.dismiss(); };
   })
-  .directive('koodistoSelect', function(Koodisto, $modal) {
+  .directive('koodistoSelect', function(Koodisto) {
     return {
       template: '<button class="btn btn-default" type="text" ng-click="activate()" editointi-kontrolli>{{ "hae-koodi-koodistosta" | translate }}</button>',
       restrict: 'E',
