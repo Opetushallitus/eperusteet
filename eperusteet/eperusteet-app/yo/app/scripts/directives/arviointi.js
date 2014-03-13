@@ -137,7 +137,7 @@ angular.module('eperusteApp')
         editAllowed: '=',
         sisaltoteksti: '=?'
       },
-      link: function(scope, element, attrs) {
+      link: function(scope, element) {
         scope.editContent = false;
         scope.teksti = !scope.sisaltoteksti ? scope.sisalto : scope.sisaltoteksti;
         
