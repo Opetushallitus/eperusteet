@@ -90,6 +90,13 @@ angular.module('eperusteApp')
           uudenKohteenTiedot.showInputArea = false;
         };
         
+        scope.closeNewKohde = function(uudenKohteenTiedot) {
+          uudenKohteenTiedot.nimi = null;
+          uudenKohteenTiedot.arviointiasteikko = null;
+          
+          uudenKohteenTiedot.showInputArea = false;
+        };
+        
         scope.addNewKriteeri = function(osaamistasonKriteeri, uudenKriteerinTiedot) {
           if(osaamistasonKriteeri.kriteerit === undefined || osaamistasonKriteeri.kriteerit === null) {
             osaamistasonKriteeri.kriteerit = [];
@@ -135,7 +142,8 @@ angular.module('eperusteApp')
         sisalto: '=',
         sisaltoalue: '=',
         editAllowed: '=',
-        sisaltoteksti: '=?'
+        sisaltoteksti: '=?',
+        clickable: '@?'
       },
       link: function(scope, element) {
         scope.editContent = false;

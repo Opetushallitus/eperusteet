@@ -22,8 +22,8 @@ angular.module('eperusteApp')
     return {
       template:
         '<h4 ng-hide="piilotaOtsikko" class="list-group-item-heading" >{{otsikko | translate}}&nbsp;&nbsp;' +
-        '<span class="glyphicon glyphicon-plus" ng-show="canCollapse && collapsed" ng-click="collapsed = false"></span>' +
-        '<span class="glyphicon glyphicon-minus" ng-show="canCollapse && !collapsed" ng-click="collapsed = true"></span></h4>' +
+        '<span class="glyphicon glyphicon-plus clickable" ng-show="canCollapse && collapsed" ng-click="collapsed = false"></span>' +
+        '<span class="glyphicon glyphicon-minus clickable" ng-show="canCollapse && !collapsed" ng-click="collapsed = true"></span></h4>' +
         '<div collapse="collapsed" ng-transclude></div>',
       restrict: 'A',
       transclude: true,
