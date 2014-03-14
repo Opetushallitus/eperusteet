@@ -38,8 +38,26 @@ angular.module('eperusteApp')
           return;
         }
 
+        var toolbarLayout;
+        if(element.is('div')) {
+          toolbarLayout = [
+                           { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+                           { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
+                           '/',
+                           { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
+                           { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar' ] },
+                           { name: 'styles', items : [ 'Format' ] },
+                           { name: 'tools', items : [ 'About' ] }
+                         ];
+        } else {
+          toolbarLayout = [
+                           { name: 'clipboard', items : [ 'Cut','Copy','-','Undo','Redo' ] },
+                           { name: 'tools', items : [ 'About' ] }
+                         ];
+        }
+        
         editor = CKEDITOR.inline(element[0], {
-          toolbar: 'Basic',
+          toolbar: toolbarLayout,
           removePlugins: 'resize,elementspath,scayt,wsc',
           extraPlugins: 'divarea,sharedspace',
           extraAllowedContent: '*[contenteditable]',
@@ -50,6 +68,15 @@ angular.module('eperusteApp')
           },
           readOnly: !editingEnabled
         });
+        
+        // poistetaan enterin käyttö, jos kyseessä on yhden rivin syöttö
+        if(!element.is('div')) {
+          editor.on('key', function(event) {
+            if(event.data.keyCode === 13) {
+              event.cancel();
+            }
+          });
+        }
 
         $rootScope.$on('$translateChangeSuccess', function() {
           placeholderText = getPlaceholder();
@@ -85,13 +112,6 @@ angular.module('eperusteApp')
           }
         });
 
-//        editor.on('change', function() {
-//          editor.
-//        });
-
-        //editor.on('instanceReady', function() {
-        //});
-        
         var dataSavedOnNotification = false;
         $rootScope.$on('notifyCKEditor', function() {
           console.log('notifyCKEditor');
@@ -109,7 +129,6 @@ angular.module('eperusteApp')
             dataSavedOnNotification = false;
             return;
           }
-          //element.attr('contenteditable','false');
           if (editor.checkDirty()) {
             var data = editor.getData();
             scope.$apply(function() {
