@@ -37,12 +37,15 @@ angular.module('eperusteApp')
         $location.path('/selaus/ammatillinenperuskoulutus');
       });
     }
-    
+        
     var muokkausDirective = null;
     if($routeParams.perusteenOsanTyyppi === 'tekstikappale') {
       muokkausDirective = angular.element('<muokkaus-tekstikappale tekstikappale="objekti"></muokkaus-tekstikappale>');
     } else if($routeParams.perusteenOsanTyyppi === 'tutkinnonosa') {
       muokkausDirective = angular.element('<muokkaus-tutkinnonosa tutkinnon-osa="objekti"></muokkaus-tutkinnonosa>');
+    } else {
+      console.log('invalid perusteen osan tyyppi');
+      $location.path('/selaus/ammatillinenperuskoulutus');
     }
     var el = $compile(muokkausDirective)($scope);
     

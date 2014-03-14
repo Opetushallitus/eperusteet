@@ -20,14 +20,14 @@
 angular.module('eperusteApp')
   .directive('muokkausTutkinnonosa', function() {
     return {
-      templateUrl: 'views/partials/muokkaus/tutkinnonosa.html',
+      template: '<kenttalistaus object-promise="tutkinnonOsaPromise" fields="fields">{{tutkinnonOsanMuokkausOtsikko | translate}}</kenttalistaus>',
       restrict: 'E',
       scope: {
-        tutkinnonOsa: '=tutkinnonOsa'
+        tutkinnonOsa: '='
       },
-      controller: function($scope, $location, $q, $modal, MuokkausUtils, Editointikontrollit, PerusteenOsat) {
+      controller: function($scope, $location, $q, $modal, Editointikontrollit, PerusteenOsat) {
         
-        var allFields =
+        $scope.fields =
           new Array({
              path: 'nimi',
              hideHeader: true,
@@ -73,7 +73,6 @@ angular.module('eperusteApp')
            });
         
         $scope.editableTutkinnonOsa = {};
-        $scope.panelType = 'panel-default';
 
         function setupTutkinnonOsa(osa) {
           $scope.editableTutkinnonOsa = angular.copy(osa);
@@ -83,12 +82,8 @@ angular.module('eperusteApp')
           Editointikontrollit.registerCallback({
             edit: function() {
               console.log('tutkinnon osa - edit');
-              $scope.editClass = 'editing';
-              $scope.panelType = 'panel-info';
             },
             save: function() {
-              $scope.editClass = '';
-              $scope.panelType = 'panel-default';
               //TODO: Validate tutkinnon osa
               console.log('validate tutkinnon osa');
               
@@ -105,15 +100,12 @@ angular.module('eperusteApp')
               $scope.tutkinnonOsa = angular.copy($scope.editableTutkinnonOsa);
             },
             cancel: function() {
-              $scope.editClass = '';
-              $scope.panelType = 'panel-default';
               console.log('tutkinnon osa - cancel');
               
               $scope.editableTutkinnonOsa = angular.copy($scope.tutkinnonOsa);
               var tutkinnonOsaDefer = $q.defer();
-              $scope.tutkinnonOsaReady = tutkinnonOsaDefer.promise;
+              $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
               
-              splitFields($scope.editableTutkinnonOsa);
               tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
             }
           });
@@ -134,41 +126,17 @@ angular.module('eperusteApp')
           }
         }
 
-        var tutkinnonOsaReadyPromise;
-
         if($scope.tutkinnonOsa) {
-          tutkinnonOsaReadyPromise = $scope.tutkinnonOsa.$promise.then(function(response) {
+          $scope.tutkinnonOsaPromise = $scope.tutkinnonOsa.$promise.then(function(response) {
             setupTutkinnonOsa(response);
             return $scope.editableTutkinnonOsa;
           });
         } else {
           var objectReadyDefer = $q.defer();
-          tutkinnonOsaReadyPromise = objectReadyDefer.promise;
+          $scope.tutkinnonOsaPromise = objectReadyDefer.promise;
           $scope.tutkinnonOsa = {};
           setupTutkinnonOsa($scope.tutkinnonOsa);
           objectReadyDefer.resolve($scope.editableTutkinnonOsa);
-        }
-
-        $scope.tutkinnonOsaReady = tutkinnonOsaReadyPromise.then(function(tutkinnonOsa) {
-          splitFields(tutkinnonOsa);
-          return tutkinnonOsa;
-        });
-
-        $scope.removeField = function(fieldToRemove) {
-          _.remove($scope.visibleFields, fieldToRemove);
-          $scope.hiddenFields.push(fieldToRemove);
-        };
-
-        $scope.addFieldToVisible = function(field) {
-          _.remove($scope.hiddenFields, field);
-          $scope.visibleFields.push(field);
-        };
-        
-        function splitFields(tutkinnonOsa) {
-          $scope.visibleFields = _.filter(allFields, function(field) {
-            return field.mandatory || MuokkausUtils.hasValue(tutkinnonOsa, field.path);
-          });
-          $scope.hiddenFields = _.difference(allFields, $scope.visibleFields);
         }
       }
     };

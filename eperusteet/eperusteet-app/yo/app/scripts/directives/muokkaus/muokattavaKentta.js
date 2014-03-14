@@ -52,7 +52,7 @@ angular.module('eperusteApp')
       replace: true,
       scope: {
         field: '=fieldInfo',
-        objectReady: '=tutkinnonOsaReady',
+        objectReady: '=objectPromise',
         removeField: '&?'
       },
       link: function(scope, element, attrs) {
