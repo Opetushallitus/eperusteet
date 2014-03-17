@@ -50,7 +50,7 @@ body {
 }
 
 .osatutkintoid {
-  width: 80px;
+  width: 140px;
   height: 26px;
 }
 
@@ -66,7 +66,7 @@ body {
   width: 32px;
 }
 
-.has-placeholder.cke_editable, 
+.has-placeholder.cke_editable,
 .has-placeholder span.tekstikentta {
   font-style: italic;
   color: #aaa;
@@ -87,18 +87,8 @@ body {
   padding: 3px 4px;
 }
 
-.absolute-position-top-right.editing {
-  background: #F2FBFC;
-  border-color: #BCE8F1;
-}
-
 .list-group.muokkaus .list-group-item-heading {
   color: #777;
-}
-
-.list-group.muokkaus .list-group-item.editing {
-  background: #F2FBFC;
-  border-color: #BCE8F1;
 }
 
 .clickable {
@@ -122,6 +112,19 @@ body {
 
 .edit-mode:focus {
   border-color: #66AFE9;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(102, 175, 233, 0.6);
-    outline: 0 none;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(102, 175, 233, 0.6);
+  outline: 0 none;
+}
+.panel.kriteeri {
+  border: 0;
+  -webkit-box-shadow: 0 0 0 0;
+  -moz-box-shadow: 0 0 0 0;
+  -ms-box-shadow: 0 0 0 0;
+  -o-box-shadow: 0 0 0 0;
+  box-shadow: 0 0 0 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0;
 }

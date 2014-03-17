@@ -2,7 +2,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('Koodisto', function($http, SERVICE_LOC) {
+  .service('Koodisto', function($http, $modal, SERVICE_LOC) {
     var taydennykset = [];
     var koodistoVaihtoehdot = ['tutkinnonosat', 'koulutus'];
     var nykyinenKoodisto = _.first(koodistoVaihtoehdot);
@@ -10,48 +10,58 @@ angular.module('eperusteApp')
     function hae(koodisto, cb) {
       if (!_.isEmpty(taydennykset) && koodisto === nykyinenKoodisto) { cb(); return; }
       $http.get(SERVICE_LOC + '/koodisto/' + koodisto).then(function(re) {
-        taydennykset = _.map(re.data, function(kv) {
+        taydennykset = _(re.data).map(function(kv) {
           var nimi = {
             fi: '',
-            se: '',
+            sv: '',
             en: ''
           };
           _.forEach(kv.metadata, function(obj) {
             nimi[obj.kieli.toLowerCase()] = obj.nimi;
           });
+
+          var haku = _.reduce(_.values(nimi), function(result, v) {
+            return result + v;
+          }).toLowerCase();
           return {
             koodi: kv.koodiUri,
             nimi: nimi,
-            haku: _.map(nimi, function(v, k) {
-              var n = {};
-              n[k] = v.toLowerCase();
-              return n;
-            })
+            haku: haku
           };
-        });
+        }).value();
         cb();
       });
     }
 
-    function filtteri(haku, kieli) {
+    function filtteri(haku) {
       haku = haku.toLowerCase();
-      var res = _.filter(taydennykset, function(t) {
-        return t.koodi.indexOf(haku) !== -1 || t.nimi[kieli].indexOf(haku) !== -1;
-      });
-      return res;
+      return _.filter(taydennykset, function(t) { return t.koodi.indexOf(haku) !== -1 || t.haku.indexOf(haku) !== -1; });
+    }
+
+    function modaali(successCb, resolve, failureCb) {
+      return function() {
+        resolve = resolve || {};
+        failureCb = failureCb || function() {};
+        $modal.open({
+          templateUrl: 'views/modals/koodistoModal.html',
+          controller: 'KoodistoModalCtrl',
+          resolve: resolve
+        }).result.then(successCb, failureCb);
+      };
     }
 
     return {
       hae: hae,
       filtteri: filtteri,
-      vaihtoehdot: _.clone(koodistoVaihtoehdot)
+      vaihtoehdot: _.clone(koodistoVaihtoehdot),
+      modaali: modaali
     };
   })
   .controller('KoodistoModalCtrl', function($scope, $modalInstance, $translate, $timeout, Koodisto, tyyppi) {
     $scope.koodistoVaihtoehdot = Koodisto.vaihtoehdot;
     $scope.tyyppi = tyyppi;
     $scope.loydetyt = [];
-    $scope.haku = function(rajaus, kieli) { $scope.loydetyt = Koodisto.filtteri(rajaus, kieli); };
+    $scope.haku = function(rajaus, kieli) { $scope.loydetyt = Koodisto.filtteri(rajaus, kieli);};
     $scope.lataa = true;
     $scope.syote = '';
     $scope.kieli = 'fi';
@@ -64,7 +74,7 @@ angular.module('eperusteApp')
     $scope.ok = function(koodi) { $modalInstance.close(koodi); };
     $scope.peruuta = function() { $modalInstance.dismiss(); };
   })
-  .directive('koodistoSelect', function($modal, Koodisto) {
+  .directive('koodistoSelect', function(Koodisto) {
     return {
       template: '<button class="btn btn-default" type="text" ng-click="activate()" editointi-kontrolli>{{ "hae-koodi-koodistosta" | translate }}</button>',
       restrict: 'E',
@@ -79,16 +89,7 @@ angular.module('eperusteApp')
           console.log('koodisto-select:', tyyppi, 'ei vastaa mitään mitään vaihtoehtoa:', Koodisto.vaihtoehdot);
           return;
         }
-
-        $scope.activate = function() {
-          $modal.open({
-            templateUrl: 'views/modals/koodistoModal.html',
-            controller: 'KoodistoModalCtrl',
-            resolve: { tyyppi: function() { return tyyppi; } }
-          }).result.then(function(koodi) {
-            valmis(koodi);
-          }, function() {});
-        };
+        $scope.activate = Koodisto.modaali(function(koodi) { valmis(koodi); }, { tyyppi: function() { return tyyppi; } });
       }
     };
   });

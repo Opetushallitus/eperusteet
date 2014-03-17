@@ -1,16 +1,17 @@
 <div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
   <h2>{{ peruste.nimi.fi }} ({{ peruste.tutkintokoodi }})</h2>
 
-  <div ng-repeat="pr in peruste.tekstikentat">
-    <h3>{{ pr.nimi.fi }}</h3>
+  <div ng-repeat="tk in peruste.tekstikentat">
+    <h3 ng-hide="tk.id">{{ tk.nimi.fi }} (<a href="" ng-click="poistaTekstikentta(tk)">Poista</a>)</h3>
+    <h3 ng-show="tk.id"><a target="_blank" href="#/muokkaus/tekstikappale/{{ tk.id }}">{{ tk.nimi.fi }}</a></h3>
     <div class="well">
-      <div class="alert alert-danger" ng-show="pr.syy !== ''">
-        {{ pr.syy }}
+      <div class="alert alert-danger" ng-show="tk.syy !== ''">
+        {{ tk.syy }}
       </div>
-      <div class="alert alert-success" ng-show="pr.syy === '' && pr.id">
-        Tekstikappale tallennettiin onnistuneesti (<b>id</b>: {{ pr.id }})
+      <div class="alert alert-success" ng-show="tk.syy === '' && tk.id">
+        Tekstikappale tallennettiin onnistuneesti (<b>id</b>: {{ tk.id }})
       </div>
-      {{ pr.teksti.fi }}
+      {{ tk.teksti.fi }}
     </div>
   </div>
 

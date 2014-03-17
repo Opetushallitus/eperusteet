@@ -39,6 +39,8 @@ public class KoodistoServiceImpl implements KoodistoService {
 
     private static final Logger LOG = LoggerFactory.getLogger(KoodistoServiceImpl.class);
     private static final String KOODISTO_API = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
+    private static final String YLARELAATIO = "relaatio/sisaltyy-ylakoodit/";
+    private static final String ALARELAATIO = "relaatio/sisaltyy-alakoodit/";
 
     @Autowired
     @Koodisto
@@ -82,5 +84,14 @@ public class KoodistoServiceImpl implements KoodistoService {
                 tulos.add(x);
         }
         return tulos;
+    }
+
+    @Override
+    public List<KoodistoKoodiDto> getAlarelaatio(String koodi) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = KOODISTO_API + ALARELAATIO + koodi;
+        KoodistoKoodiDto[] koodistot = restTemplate.getForObject(url, KoodistoKoodiDto[].class);
+        List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(koodistot), KoodistoKoodiDto.class);
+        return koodistoDtot;
     }
 }

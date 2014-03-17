@@ -40,11 +40,9 @@ angular.module('eperusteApp')
         });
                 
         scope.addNewKohdealue = function() {
-          console.log('add new kohdealue');
           if(angular.isUndefined(scope.uudenKohdealueenNimi) || scope.uudenKohdealueenNimi === null || (angular.isString(scope.uudenKohdealueenNimi) && _.isEmpty(scope.uudenKohdealueenNimi))) {
             return;
           }
-          console.log(scope.uudenKohdealueenNimi);
           
           if(angular.isUndefined(scope.arviointi) || scope.arviointi === null) {
             scope.arviointi = {};
@@ -90,6 +88,13 @@ angular.module('eperusteApp')
           uudenKohteenTiedot.showInputArea = false;
         };
         
+        scope.closeNewKohde = function(uudenKohteenTiedot) {
+          uudenKohteenTiedot.nimi = null;
+          uudenKohteenTiedot.arviointiasteikko = null;
+          
+          uudenKohteenTiedot.showInputArea = false;
+        };
+        
         scope.addNewKriteeri = function(osaamistasonKriteeri, uudenKriteerinTiedot) {
           if(osaamistasonKriteeri.kriteerit === undefined || osaamistasonKriteeri.kriteerit === null) {
             osaamistasonKriteeri.kriteerit = [];
@@ -117,12 +122,22 @@ angular.module('eperusteApp')
     return function (scope, element, attrs) {
       element.bind('keydown keypress', function (event) {
         if(event.which === 13) {
-          console.log('enter');
           scope.$apply(function (){
             scope.$eval(attrs.onEnter);
           });
   
           event.preventDefault();
+        }
+      });
+    };
+  })
+  .directive('focusMe', function($timeout) {
+    return function(scope, element, attrs) {
+      scope.$watch(attrs.focusMe, function(value) {
+        if(value === true) {
+          $timeout(function() {
+            element[0].focus();
+          }, 200);
         }
       });
     };
@@ -135,7 +150,8 @@ angular.module('eperusteApp')
         sisalto: '=',
         sisaltoalue: '=',
         editAllowed: '=',
-        sisaltoteksti: '=?'
+        sisaltoteksti: '=?',
+        clickable: '@?'
       },
       link: function(scope, element) {
         scope.editContent = false;

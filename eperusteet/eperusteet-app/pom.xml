@@ -52,6 +52,9 @@
               <directory>yo/dist</directory>
             </fileset>
             <fileset>
+              <directory>yo/node_modules</directory>
+            </fileset>
+            <fileset>
               <directory>yo/.tmp</directory>
             </fileset>
             <fileset>

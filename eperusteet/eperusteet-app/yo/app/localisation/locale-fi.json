@@ -1,21 +1,28 @@
 {
-    "lisää": "Lisää",
-    "poista": "Poista",
     "edellinen-sivu": "<< Edellinen",
-    "seuraava-sivu": "Seuraava >>",
-    "takaisin": "Takaisin",
-    "suosikki": "Lisää suosikiksi",
-    "suosikit-otsikko": "Suosikit",
+    "kieli": "Kieli",
+    "koodi": "Koodi",
+    "lisää": "Lisää",
+    "nimi": "Nimi",
+    "ok": "OK",
     "palauta" : "Palauta",
     "peru": "Peru",
-    "tyyppi": "Tyyppi",
-    "koodi": "Koodi",
+    "poista": "Poista",
     "rajaa-tuloksia": "Rajaa...",
-    "nimi": "Nimi",
-    "kieli": "Kieli",
-    "ok": "OK",
+    "seuraava-sivu": "Seuraava >>",
+    "suosikit-otsikko": "Suosikit",
+    "suosikki": "Lisää suosikiksi",
+    "takaisin": "Takaisin",
     "tallennettu": "Tallennettu",
+    "tiedosto": "Tiedosto",
+    "tila": "Tila",
     "tyhjä": "Tyhjä",
+    "tyyppi": "Tyyppi",
+    "lataa": "Lataa",
+
+    "ammattitutkinto": "Ammattitutkinto",
+    "erikoisammattitutkinto": "Erikoisammattitutkinto",
+    "perustutkinto": "Perustutkinto",
 
     "perusteprojektit-otsikko": "Omat perusteprojektit",
     "uusi-projekti": "Uusi projekti",
@@ -114,13 +121,21 @@
     "koulutusalakoodi": "Koulutusalakoodi",
     "tutkinnonosa": "Tutkinnon osa",
     "tutkinnonosat": "Tutkinnon osat",
+    "tekstikappaleet": "Tekstikappaleet",
     "koulutus": "Koulutus",
+
+    "koodi-virhe-1": "Koodia ei ole asetettu.",
+    "koodi-virhe-2": "Käyttämälläsi koodilla löytyi jo tutkinnon osa.",
+    "koodi-virhe-3": "Seuraavat kentät ovat vaadittuja: ",
+    "tutkinnonosa-save-fail": "Seuraavia tutkinnon osia ei pystytty tallentamaan onnistuneesti:",
 
     "haetaan-tutkinnon-osia": "Haetaan tutkinnon osia...",
 
     "muokkaus": "Muokkaus",
     "muokkaus-tutkinnon-osa": "Muokkaa tutkinnon osaa",
+    "muokkaus-tekstikappale": "Muokkaa tekstikappaletta",
     "luonti-tutkinnon-osa": "Luo uusi tutkinnon osa",
+    "luonti-tekstikappale": "Luo uusi tekstikappale",
 
     "muokkaus-tutkinnon-osan-nimi-header": "Nimi",
     "muokkaus-tutkinnon-osan-nimi-placeholder": "Kirjoita tähän otsikko",
@@ -135,6 +150,11 @@
     "muokkaus-tutkinnon-osan-osaamisala-header": "Osaamisala",
     "muokkaus-tutkinnon-osan-osaamisala-placeholder": "Kirjoita tähän tutkinnon osan osaamisala",
     "muokkaus-tutkinnon-osan-arviointi-header": "Arviointi",
+    
+    "muokkaus-teksikappaleen-nimi-header": "Nimi",
+    "muokkaus-teksikappaleen-nimi-placeholder": "Kirjoita tähän otsikko",
+    "muokkaus-tekstikappaleen-teksti-header": "Teksti",
+    "muokkaus-tekstikappaleen-teksti-placeholder": "Kirjoita tähän kappaleen teksti",
 
     "arviointi-uusi-kohdealue": "Uusi kohdealue",
     "arviointi-uusi-kohdealue-placeholder": "Kohdealueen nimi",
@@ -146,11 +166,15 @@
 
     "muokkaus-lisaa-osio": "Lisää osio",
     "muokkaus-tutkinnon-osa-tallennettu": "Tutkinnon osa tallennettu onnistuneesti.",
+    "muokkaus-tekstikappale-tallennettu": "Tekstikappale tallennenttu onnistuneesti.",
 
     "opintoluokitus": "Opintoluokitus",
     "tavoitteet": "Tavoitteet",
     "ammattitaitovaatimukset": "Ammattitaitovaatimukset",
     "arvointi": "Arviointi",
+
+    "tuo-excel": "Tuo Excel",
+    "tutkinnon-tyyppi": "Tutkinnon tyyppi",
 
     "projektin-nimi-label": "Projektin nimi",
     "anna-projektin-nimi-placeholder": "Syötä projektin nimi",
@@ -170,5 +194,18 @@
     "lopetus-aloituksen-jälkeen": "Toimikauden päättymispäivämäärä täytyy olla aloitusajankohdan jälkeen.",
     "kelvoton-pvm": "Kelvoton päivämäärä",
     "yhteistyotaho-label": "Yhteistyötaho",
-    "anna-yhteistyotaho-placeholder": "Syötä yhteistyötaho"
+    "anna-yhteistyotaho-placeholder": "Syötä yhteistyötaho",
+    
+    "projektipäällikkö": "Projektipäällikkö",
+    
+    "perusteen-nimi": "Perusteen nimi",
+    "anna-perusteen-nimi": "Syötä perusteen nimi",
+
+    "ok": "OK",
+    
+    "projekti-perustiedot": "Perustiedot",
+    "projekti-projektiryhmä": "Projektiryhmä",
+    "projekti-peruste": "Perusteen tiedot",
+    "valitse-peruste": "Valitse peruste",
+    "perusteen-koodi": "Perusteen koodi"
 }

@@ -19,63 +19,91 @@
 angular.module('eperusteApp')
   .directive('muokkausTekstikappale', function() {
     return {
-      templateUrl: 'views/partials/muokkaus/tekstikappale.html',
+      template: '<kenttalistaus object-promise="tekstikappalePromise" fields="fields">{{tekstikappaleenMuokkausOtsikko | translate}}</kenttalistaus>',
       restrict: 'E',
       scope: {
         tekstikappale: '='
       },
-      controller: function($scope, $location, Editointikontrollit, PerusteenOsat) {
+      controller: function($scope, $location, $q, $modal, Editointikontrollit, PerusteenOsat) {
         
-        $scope.panelType = 'panel-default';
+        $scope.fields =
+          new Array({
+             path: 'nimi',
+             hideHeader: true,
+             localeKey: 'teksikappaleen-nimi',
+             type: 'editor-header',
+             localized: true,
+             mandatory: true
+           },{
+             path: 'teksti',
+             localeKey: 'tekstikappaleen-teksti',
+             type: 'editor-area',
+             localized: true,
+             mandatory: true
+           });
         
         function setupTekstikappale(kappale) {
           $scope.editableTekstikappale = angular.copy(kappale);
           
+          $scope.tekstikappaleenMuokkausOtsikko = $scope.editableTekstikappale.id ? "muokkaus-tekstikappale" : "luonti-tekstikappale";
+          
           Editointikontrollit.registerCallback({
             edit: function() {
               console.log('tutkinnon osa - edit');
-              $scope.editClass = 'editing';
-              $scope.panelType = 'panel-info';
             },
             save: function() {
-              $scope.editClass = '';
-              $scope.panelType = 'panel-default';
               //TODO: Validate tutkinnon osa
               console.log('validate tekstikappale');
               if($scope.editableTekstikappale.id) {
                 $scope.editableTekstikappale.$saveTekstikappale();  
+                openNotificationDialog();
               } else {
                 PerusteenOsat.saveTekstikappale($scope.editableTekstikappale).$promise.then(function(response) {
-                  $location.path('/muokkaus/tekstikappale/' + response.id);
+                  openNotificationDialog().result.then(function() {
+                    $location.path('/muokkaus/tekstikappale/' + response.id);
+                  });
                 });
               }
               $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
             },
             cancel: function() {
-              $scope.editClass = '';
-              $scope.panelType = 'panel-default';
               console.log('tutkinnon osa - cancel');
+              
               $scope.editableTekstikappale = angular.copy($scope.tekstikappale);
+              var tekstikappaleDefer = $q.defer();
+              $scope.tekstikappalePromise = tekstikappaleDefer.promise;
+              
+              tekstikappaleDefer.resolve($scope.editableTekstikappale);
+            }
+          });
+        }
+        
+        function openNotificationDialog() {
+          return $modal.open({
+            templateUrl: 'views/modals/ilmoitusdialogi.html',
+            controller: 'IlmoitusdialogiCtrl',
+            resolve: {
+              sisalto: function() {
+                return {
+                  otsikko: 'tallennettu',
+                  ilmoitus: 'muokkaus-tekstikappale-tallennettu'
+                };
+              }
             }
           });
         }
         
         if($scope.tekstikappale) {
-          $scope.tekstikappale.$promise.then(function(response) {
+          $scope.tekstikappalePromise = $scope.tekstikappale.$promise.then(function(response) {
             setupTekstikappale(response);
+            return $scope.editableTekstikappale;
           });
         } else {
-          $scope.tekstikappale = {
-              nimi: {
-                fi: '',
-                sv: ''
-              },
-              teksti: {
-                fi: '',
-                sv: ''
-              }
-          };
+          var objectReadyDefer = $q.defer();
+          $scope.tekstikappalePromise = objectReadyDefer.promise;
+          $scope.tekstikappale = {};
           setupTekstikappale($scope.tekstikappale);
+          objectReadyDefer.resolve($scope.editableTekstikappale);
         }
       }
     };

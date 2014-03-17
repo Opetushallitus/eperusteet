@@ -22,8 +22,8 @@ angular.module('eperusteApp')
     return {
       template:
         '<h4 ng-hide="piilotaOtsikko" class="list-group-item-heading" >{{otsikko | translate}}&nbsp;&nbsp;' +
-        '<span class="glyphicon glyphicon-plus" ng-show="canCollapse && collapsed" ng-click="collapsed = false"></span>' +
-        '<span class="glyphicon glyphicon-minus" ng-show="canCollapse && !collapsed" ng-click="collapsed = true"></span></h4>' +
+        '<span class="glyphicon glyphicon-plus clickable" ng-show="canCollapse && collapsed" ng-click="collapsed = false"></span>' +
+        '<span class="glyphicon glyphicon-minus clickable" ng-show="canCollapse && !collapsed" ng-click="collapsed = true"></span></h4>' +
         '<div collapse="collapsed" ng-transclude></div>',
       restrict: 'A',
       transclude: true,
@@ -52,7 +52,7 @@ angular.module('eperusteApp')
       replace: true,
       scope: {
         field: '=fieldInfo',
-        objectReady: '=tutkinnonOsaReady',
+        objectReady: '=objectPromise',
         removeField: '&?'
       },
       link: function(scope, element, attrs) {
@@ -127,8 +127,8 @@ angular.module('eperusteApp')
           } 
           
           else if (elementType === 'koodisto-select') {
-            scope.tuoKoodi = function(koodi) {
-              MuokkausUtils.nestedSet(scope.object, scope.field.path, ',', koodi);
+            scope.tuoKoodi = function(koodisto) {
+              MuokkausUtils.nestedSet(scope.object, scope.field.path, ',', koodisto.koodi);
             };
             element = angular.element('<div></div>').addClass('input-group')
             .append(

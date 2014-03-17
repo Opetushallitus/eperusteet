@@ -1,25 +1,34 @@
 <div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
-  <h3>Tutkinnon osat ({{ osatutkinnot.length }}kpl)</h3>
+  <h3>{{ 'tutkinnonosat' | translate }} ({{ osatutkinnot.length }}kpl)</h3>
   <table class="table table-striped">
     <tr>
-      <th>Tila</th>
-      <th>Koodi</th>
-      <th>Nimi</th>
+      <th translate>tila</th>
+      <th translate>koodi</th>
+      <th translate>nimi</th>
       <th></th>
     </tr>
-    <tr ng-repeat="ot in osatutkinnot" title="{{ ot.syy }}" ng-show="ot.ladattu !== 0">
+    <tr ng-repeat="ot in osatutkinnot" ng-show="ot.ladattu !== 0">
       <td class="glyphtila">
         <span ng-show="ot.ladattu === 1">
-          <a href="" popover="{{ ot.syy }}" popover-placement="right" popover-title="Virhe">
-            <span class="glyphicon glyphicon-remove"></span>
-          </a>
+          <span class="glyphicon glyphicon-remove"></span>
         </span>
         <span ng-hide="ot.ladattu === 1" class="glyphicon glyphicon-minus"></span>
       </td>
       <td class="osatutkintoid">
-        <input class="form-control osatutkintoid" type="text" ng-model="ot.koodi" />
+        <div class="input-group input-group-sm">
+          <input class="form-control osatutkintoid" type="text" ng-model="ot.koodiUri" />
+          <span class="input-group-btn">
+            <button ng-click="liitaKoodiOT(ot)" class="btn btn-default btn-sm">Hae</button>
+          </span>
+        </div>
       </td>
-      <td>{{ ot.nimi.fi }}</td>
+      <td>
+        {{ ot.nimi.fi }}
+        <br>
+        <div ng-show="ot.syy !== ''" class="alert alert-danger">
+          <span ng-repeat="syy in ot.syy">{{ syy | translate }} </span>
+        </div>
+      </td>
       <td class="text-right">
         <div class="btn-group">
           <button type="button" class="btn btn-default btn-xs" ng-click="poistaOsatutkinto(ot)">
@@ -32,8 +41,10 @@
       <td class="glyphtila">
         <span class="glyphicon glyphicon-ok"></span>
       </td>
-      <td class="osatutkintoid">{{ ot.koodi }}</td>
-      <td><a target="_blank" href="#/selaus/ammatillinenperuskoulutus/1/tutkinnonosa/{{ ot.id }}">{{ ot.nimi.fi }}</a></td>
+      <td class="osatutkintoid">{{ ot.koodiUri }}</td>
+      <td>
+        <a target="_blank" href="#/muokkaus/tutkinnonosa/{{ ot.id }}">{{ ot.nimi.fi }}</a>
+      </td>
       <td class="text-right"></td>
     </tr>
   </table>
@@ -48,11 +59,11 @@
 
 <!-- Tallennusvirheet -->
 <div class="alert alert-danger" ng-show="uploadErrors.length > 0">
-  Seuraavia tutkinnon osia ei pystytty tallentamaan onnistuneesti:
+  {{ 'tutkinnonosa-save-fail' | translate }}
   <table class="table table-striped">
     <tr>
-      <th>Osatutkinto</th>
-      <th>Syy</th>
+      <th translate>tutkinnonosa</th>
+      <th translate>syy</th>
     </tr>
     <tr ng-repeat="error in uploadErrors" class="danger">
       <td>{{ error.name.fi }}</td>

@@ -109,7 +109,9 @@
 
     "muokkaus": "[Muokkaus]",
     "muokkaus-tutkinnon-osa": "[Muokkaa tutkinnon osaa]",
+    "muokkaus-tekstikappale": "[Muokkaa tekstikappaletta]",
     "luonti-tutkinnon-osa": "[Luo uusi tutkinnon osa]",
+    "luonti-tekstikappale": "[Luo uusi tekstikappale]",
 
     "muokkaus-tutkinnon-osan-nimi-header": "[Nimi]",
     "muokkaus-tutkinnon-osan-nimi-placeholder": "[Kirjoita tähän otsikko]",
@@ -124,6 +126,11 @@
     "muokkaus-tutkinnon-osan-osaamisala-header": "[Osaamisala]",
     "muokkaus-tutkinnon-osan-osaamisala-placeholder": "[Kirjoita tähän tutkinnon osan osaamisala]",
     "muokkaus-tutkinnon-osan-arviointi-header": "[Arviointi]",
+    
+    "muokkaus-teksikappaleen-nimi-header": "[Nimi]",
+    "muokkaus-teksikappaleen-nimi-placeholder": "[Kirjoita tähän otsikko]",
+    "muokkaus-tekstikappaleen-teksti-header": "[Teksti]",
+    "muokkaus-tekstikappaleen-teksti-placeholder": "[Kirjoita tähän kappaleen teksti]",
 
     "arviointi-uusi-kohdealue": "[Uusi kohdealue]",
     "arviointi-uusi-kohdealue-placeholder": "[Kohdealueen nimi]",
@@ -135,6 +142,7 @@
 
     "muokkaus-lisaa-osio": "[Lisää osio]",
     "muokkaus-tutkinnon-osa-tallennettu": "[Tutkinnon osa tallennettu onnistuneesti.]",
+    "muokkaus-tekstikappale-tallennettu": "[Tekstikappale tallennenttu onnistuneesti.]",
     
     "opintoluokitus": "[Opintoluokitus]",
     "tavoitteet": "[Tavoitteet]",
@@ -159,6 +167,19 @@
     "lopetus-aloituksen-jälkeen": "[Toimikauden päättymispäivämäärä täytyy olla aloitusajankohdan jälkeen.]",
     "kelvoton-pvm": "[Kelvoton päivämäärä]",
     "yhteistyotaho-label": "[Yhteistyötaho]",
-    "anna-yhteistyotaho-placeholder": "[Syötä yhteistyötaho]"
+    "anna-yhteistyotaho-placeholder": "[Syötä yhteistyötaho]",
+    
+    "projektipäällikkö": "[Projektipäällikkö]",
+    
+    "perusteen-nimi": "[Perusteen nimi]",
+    "anna-perusteen-nimi": "[Syötä perusteen nimi]",
+    
+    "ok": "[OK]",
+    
+    "projekti-perustiedot": "[Perustiedot]",
+    "projekti-projektiryhmä": "[Projektiryhmä]",
+    "projekti-peruste": "[Perusteen tiedot]",
+    "valitse-peruste": "[Valitse peruste]",
+    "perusteen-koodi": "[Perusteen koodi]"
 }
 

@@ -23,6 +23,7 @@ module.exports = function(config) {
       'app/bower_components/angular-ui-utils/ui-utils.js',
       'app/bower_components/angular-ui-bootstrap-bower/ui-bootstrap.js',
       'app/bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js',
+      'app/bower_components/angular-ui-utils/ui-utils.js',
       'app/bower_components/ckeditor/ckeditor.js',
       'app/bower_components/lodash/dist/lodash.js',
       'app/scripts/*.js',

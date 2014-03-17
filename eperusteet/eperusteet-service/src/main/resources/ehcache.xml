@@ -294,4 +294,9 @@
          eternal="false"
          timeToLiveSeconds="86400"
          overflowToDisk="false" />
+  <cache name="opintoalat"
+         maxElementsInMemory="10" 
+         eternal="false"
+         timeToLiveSeconds="86400"
+         overflowToDisk="false" />
 </ehcache>

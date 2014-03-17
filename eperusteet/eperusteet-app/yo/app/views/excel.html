@@ -1,22 +1,22 @@
 <div>
-  <h2>Tuo Excel</h2>
+  <h2 translate>tuo-excel</h2>
   <div class="panel panel-default">
     <div class="clearfix"></div>
     <form class="panel-body">
       <div class="clearfix"></div>
       <div class="form-group col-xs-6">
-        <label>Tutkinnon tyyppi</label>
+        <label translate>tutkinnon-tyyppi</label>
         <div class="clearfix"></div>
         <div class="btn-group">
-          <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'ammattitutkinto'">Ammattitutkinto</button>
-          <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'erikoisammattitutkinto'">Erikoisammattitutkinto</button>
-          <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'perustutkinto'">Perustutkinto</button>
+          <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'ammattitutkinto'">{{ 'ammattitutkinto' | translate }}</button>
+          <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'erikoisammattitutkinto'">{{ 'erikoisammattitutkinto' | translate }}</button>
+          <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'perustutkinto'">{{ 'perustutkinto' | translate }}</button>
         </div>
       </div>
       <div class="clearfix"></div>
       <div class="form-group col-xs-12">
-        <label>Tiedosto (.xslx -formaatissa)</label>
-        <file-select id="fileselect-button" flabel="Lataa" before-select="clearSelect" on-select="onFileSelect" on-progress="onProgress" read-type="binary"></file-select>
+        <label>{{ 'tiedosto' | translate }} (.xslx)</label>
+        <file-select id="fileselect-button" flabel="lataa" before-select="clearSelect" on-select="onFileSelect" on-progress="onProgress" read-type="binary"></file-select>
       </div>
     </form>
   </div>
@@ -71,10 +71,10 @@
   </div>
 
   <tabset justified="true" ng-show="!lukeeTiedostoa && !alussa && errors.length === 0">
-    <tab heading="Tekstikappaleet">
+    <tab heading="{{ 'tekstikappaleet' | translate }}">
       <div ng-include src="'views/partials/excelPeruste.html'"></div>
     </tab>
-    <tab heading="Tutkinnon osat">
+    <tab heading="{{ 'tutkinnonosat' | translate }}">
       <div ng-include src="'views/partials/excelOsaperuste.html'"></div>
     </tab>
   </tabset>

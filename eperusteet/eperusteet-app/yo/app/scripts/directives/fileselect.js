@@ -32,7 +32,7 @@ angular.module('eperusteApp')
       templateUrl: 'views/partials/fileselect.html',
       restrict: 'E',
       link: function($scope, el, attrs) {
-        $scope.flabel = attrs.flabel || 'Lataa';
+        $scope.flabel = attrs.flabel || 'lataa';
         function loadFile(file) {
           if (!file) {
             return;
