@@ -9,6 +9,7 @@ angular.module('eperusteApp')
     //$scope.projekti = PerusteProjektiService.get();
     
     $scope.koodistoHaku = function(koodisto) {
+      console.log('koodisto', koodisto);
       
       $scope.projekti.peruste.nimi = koodisto.nimi;
       $scope.projekti.peruste.koodi = koodisto.koodi;

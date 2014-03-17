@@ -18,6 +18,7 @@ angular.module('eperusteApp')
     
     function haeAlarelaatiot(koodi, cb) {
       var resource = $resource(SERVICE_LOC + '/koodisto/relaatio/sisaltyy-alakoodit/:koodi');
+      console.log('koodi', koodi);
       resource.query({koodi: koodi}, function (vastaus) {
         var relaatiot = koodistoMapping(vastaus);
         cb(relaatiot);
@@ -25,7 +26,7 @@ angular.module('eperusteApp')
     }
     
     function koodistoMapping(koodistoData) {
-      return _.map(koodistoData, function(kd) {
+      return _(koodistoData).map(function(kd) {
 
           var nimi = {
             fi: '',
