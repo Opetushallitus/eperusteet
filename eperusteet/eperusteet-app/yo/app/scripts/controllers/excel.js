@@ -61,6 +61,10 @@ angular.module('eperusteApp')
       });
     };
 
+    $scope.poistaTekstikentta = function(tekstikentta) {
+      _.remove($scope.peruste.tekstikentat, tekstikentta);
+    };
+
     $scope.tallennaOsatutkinnot = function() {
       var doneSuccess = _.after(_.size($scope.osatutkinnot), function() { $scope.uploadSuccess = true; });
       _($scope.osatutkinnot).filter(function(ot) {
