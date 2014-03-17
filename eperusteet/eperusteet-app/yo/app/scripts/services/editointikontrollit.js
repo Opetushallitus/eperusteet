@@ -67,7 +67,6 @@ angular.module('eperusteApp')
         scope.editingCallback = null;
         scope.editMode = false;
         scope.editModeDefer = $q.defer();
-        scope.editModeDefer.resolve(scope.editMode);
       },
       editingEnabled: function() {
         if(scope.editingCallback) {
