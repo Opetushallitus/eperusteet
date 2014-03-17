@@ -3,32 +3,18 @@
 
 angular.module('eperusteApp')
   .controller('ProjektinPerusteCtrl', function($scope, PerusteProjektiService,
-      YleinenData, Projektinperuste) {
+      YleinenData, Koodisto) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
     //$scope.projekti = PerusteProjektiService.get();
     
     $scope.koodistoHaku = function(koodisto) {
+      console.log('koodisto', koodisto);
       
       $scope.projekti.peruste.nimi = koodisto.nimi;
       $scope.projekti.peruste.koodi = koodisto.koodi;
       
-      Projektinperuste.query({koodi: $scope.projekti.peruste.koodi}, function (vastaus) {
-        var relaatiot = _.map(vastaus, function(kv) {
-          var nimi = {
-            fi: '',
-            sv: '',
-            en: ''
-          };
-          _.forEach(kv.metadata, function(obj) {
-            nimi[obj.kieli.toLowerCase()] = obj.nimi;
-          });
-          return {
-            koodi: kv.koodiUri,
-            nimi: nimi,
-            koodisto: kv.koodisto
-          };
-        });
+      Koodisto.haeAlarelaatiot($scope.projekti.peruste.koodi, function (relaatiot) {
         
         _.forEach(relaatiot, function(rel) {
           switch (rel.koodisto.koodistoUri) {
@@ -40,8 +26,8 @@ angular.module('eperusteApp')
               break;
           }
         });
-        console.log('relaatio', relaatiot);
       });
+ 
     };
 
     $scope.valitseKieli = function(teksti) {

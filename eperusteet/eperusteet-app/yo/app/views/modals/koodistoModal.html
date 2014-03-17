@@ -5,13 +5,6 @@
 <div class="modal-body">
   <div class="panel panel-default">
     <div class="panel-body">
-      <label translate>kieli</label>
-      <div class="clearfix"></div>
-      <div class="btn-group">
-        <button type="button" class="btn btn-default" ng-model="kieli" btn-radio="'fi'">{{ 'suomi' | translate }}</button>
-        <button type="button" class="btn btn-default" ng-model="kieli" btn-radio="'se'">{{ 'ruotsi' | translate }}</button>
-        <button type="button" class="btn btn-default" ng-model="kieli" btn-radio="'en'">{{ 'englanti' | translate }}</button>
-      </div>
       <div class="clearfix"></div>
       <label translate>koodi</label>
       <input ng-hide="lataa" ng-change="haku(syote, kieli)" type="text" ng-model="syote" class="form-control" placeholder="{{ 'rajaa-tuloksia' | translate }}" />
@@ -25,7 +18,7 @@
       <th translate>nimi</th>
     </tr>
     <tr ng-repeat="l in loydetyt | limitTo: 10">
-      <td><a href="" ng-click="ok(l.koodi)">{{ l.koodi }}</a></td>
+      <td><a href="" ng-click="ok(l)">{{ l.koodi }}</a></td>
       <td>{{ l.nimi[kieli] }}</td>
     </tr>
   </table>
