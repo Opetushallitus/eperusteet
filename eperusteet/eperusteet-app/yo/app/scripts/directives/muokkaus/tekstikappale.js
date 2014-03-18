@@ -33,13 +33,15 @@ angular.module('eperusteApp')
              localeKey: 'teksikappaleen-nimi',
              type: 'editor-header',
              localized: true,
-             mandatory: true
+             mandatory: true,
+             order: 1
            },{
              path: 'teksti',
              localeKey: 'tekstikappaleen-teksti',
              type: 'editor-area',
              localized: true,
-             mandatory: true
+             mandatory: true,
+             order: 2
            });
         
         function setupTekstikappale(kappale) {

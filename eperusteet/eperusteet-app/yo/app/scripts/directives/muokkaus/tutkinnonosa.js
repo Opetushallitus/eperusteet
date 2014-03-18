@@ -34,42 +34,49 @@ angular.module('eperusteApp')
              localeKey: 'tutkinnon-osan-nimi',
              type: 'editor-header',
              localized: true,
-             mandatory: true
+             mandatory: true,
+             order: 1
            },{
              path: 'koodiUri',
              localeKey: 'tutkinnon-osan-koodi',
              type: 'koodisto-select',
-             mandatory: true
+             mandatory: true,
+             order: 2
            },{
              path: 'tavoitteet',
              localeKey: 'tutkinnon-osan-tavoitteet',
              type: 'editor-area',
              localized: true,
-             defaultClosed: true
+             defaultClosed: true,
+             order: 3
            },{
              path: 'ammattitaitovaatimukset',
              localeKey: 'tutkinnon-osan-ammattitaitovaatimukset',
              type: 'editor-area',
              localized: true,
-             defaultClosed: true
+             defaultClosed: true,
+             order: 4
            },{
              path: 'ammattitaidonOsoittamistavat',
              localeKey: 'tutkinnon-osan-ammattitaidon-osoittamistavat',
              type: 'editor-text',
              localized: true,
-             defaultClosed: true
+             defaultClosed: true,
+             order: 5
            },{
              path: 'osaamisala',
              localeKey: 'tutkinnon-osan-osaamisala',
              type: 'editor-text',
              localized: true,
-             defaultClosed: true
+             defaultClosed: true,
+             order: 6
            },{
              path: 'arviointi',
              localeKey: 'tutkinnon-osan-arviointi',
              type: 'arviointi',
              defaultClosed: true,
-             mandatory: true
+             mandatory: true,
+             order: 7
            });
         
         $scope.editableTutkinnonOsa = {};

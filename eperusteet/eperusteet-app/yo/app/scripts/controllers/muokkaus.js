@@ -28,7 +28,6 @@ angular.module('eperusteApp')
   })
   .controller('MuokkausCtrl', function($scope, $routeParams, PerusteenOsat, $location, $compile) {
     
-    console.log('setup muokkaus');
     $scope.tyyppi = $routeParams.perusteenOsanTyyppi;
     
     if($routeParams.id) {
@@ -36,6 +35,8 @@ angular.module('eperusteApp')
         console.log('unable to find perusteen osa #' + $routeParams.id);
         $location.path('/selaus/ammatillinenperuskoulutus');
       });
+    } else {
+      $scope.objekti = null;
     }
         
     var muokkausDirective = null;

@@ -131,13 +131,26 @@ angular.module('eperusteApp')
       });
     };
   })
+  .directive('onEsc', function() {
+    return function(scope, element, attrs) {
+      element.bind('keydown keypress', function (event) {
+        if(event.which === 27) {
+          scope.$apply(function (){
+            scope.$eval(attrs.onEsc);
+          });
+  
+          event.preventDefault();
+        }
+      });
+    };
+  })
   .directive('focusMe', function($timeout) {
     return function(scope, element, attrs) {
       scope.$watch(attrs.focusMe, function(value) {
         if(value === true) {
           $timeout(function() {
             element[0].focus();
-          }, 200);
+          }, 100);
         }
       });
     };
@@ -173,6 +186,22 @@ angular.module('eperusteApp')
           _.remove(list, item);
         };
         
+        scope.moveUp = function(item, list, $event) {
+          var index = _.indexOf(list, item);
+          list[index] = null;
+          list[index] = list[index-1];
+          list[index-1] = item;
+          $event.stopPropagation();
+        };
+        
+        scope.moveDown = function(item, list, $event) {
+          var index = _.indexOf(list, item);
+          list[index] = null;
+          list[index] = list[index+1];
+          list[index+1] = item;
+          $event.stopPropagation();
+        };
+       
         scope.switchEditMode = function(mode, $event) {
           scope.editContent = mode;
           $event.stopPropagation();

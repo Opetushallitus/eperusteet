@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +78,10 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional(readOnly = true)
     public PerusteDto get(final Long id) {
         Peruste p = perusteet.findById(id);
+        LOG.info("PerusteServiceImpl peruste haettu: ");
+        for (Opintoala o : p.getOpintoalat()) {
+           LOG.info("PerusteServiceImpl perusteen opintoala: " + o.getKoodi());
+        }
         return mapper.map(p, PerusteDto.class);
     }
 
@@ -128,7 +133,7 @@ public class PerusteServiceImpl implements PerusteService {
                     koulutusAlakoodit = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + "/" + tutkinto.getKoodiUri(), KoodistoKoodiDto[].class);
                     peruste.setTutkintokoodi(koulutustyyppiUri);
                     peruste.setKoulutusala(parseKoulutusala(koulutusAlakoodit));
-                    peruste.setOpintoalat(parseOpintoalat(koulutusAlakoodit));
+                    peruste.setOpintoalat(new HashSet<Opintoala>(parseOpintoalat(koulutusAlakoodit)));
 
                     perusteEntityt.add(peruste);
                     LOG.info(++i + " perustetta tallennettu.");
