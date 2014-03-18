@@ -41,7 +41,7 @@ European Union Public Licence for more details.
                 <div class="panel-footer" ng-if="editAllowed">
                   <input focus-me="uudenKriteerinTiedot.showInput" editointi-kontrolli class="form-control" ng-show="uudenKriteerinTiedot.showInput" type="text" 
                     ng-model="uudenKriteerinTiedot.teksti" on-enter="addNewKriteeri($parent.osaamistasonKriteeri, uudenKriteerinTiedot)" 
-                    placeholder="{{'arviointi-uusi-kriteeri-placeholder' | translate}}"/>
+                    on-esc="uudenKriteerinTiedot.showInput = false; uudenKriteerinTiedot.teksti = null;" placeholder="{{'arviointi-uusi-kriteeri-placeholder' | translate}}"/>
                   <button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-show="!uudenKriteerinTiedot.showInput" 
                     ng-click="uudenKriteerinTiedot.showInput = true">{{'arviointi-uusi-kriteeri' | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
                 </div>
@@ -71,7 +71,7 @@ European Union Public Licence for more details.
 <div class="panel panel-default" ng-if="editAllowed">
   <div class="panel-body">
     <input editointi-kontrolli class="form-control" ng-show="$parent.showNewKohdealueInput" type="text" ng-model="$parent.uudenKohdealueenNimi" on-enter="$parent.addNewKohdealue()"
-    focus-me="$parent.showNewKohdealueInput" placeholder="{{'arviointi-uusi-kohdealue-placeholder' | translate}}"/>
+      on-esc="$parent.showNewKohdealueInput = false; $parent.uudenKohdealueenNimi = null;" focus-me="$parent.showNewKohdealueInput" placeholder="{{'arviointi-uusi-kohdealue-placeholder' | translate}}"/>
     <button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-show="!$parent.showNewKohdealueInput" 
       ng-click="$parent.showNewKohdealueInput = true">{{'arviointi-uusi-kohdealue' | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
   </div>

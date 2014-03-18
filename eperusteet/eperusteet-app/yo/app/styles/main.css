@@ -95,6 +95,20 @@ body {
   cursor: pointer;
 }
 
+.clickable.badge:hover {
+  -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+  -ms-box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+  -o-box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+  -webkit-transition: background-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  -moz-transition: background-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  -ms-transition: background-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  -o-transition: background-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  transition: background-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  background-color: #555;
+}
+
 .edit-mode {
   background: white;
   padding: 4px 12px;
