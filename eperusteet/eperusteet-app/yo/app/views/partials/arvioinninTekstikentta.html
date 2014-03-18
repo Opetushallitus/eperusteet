@@ -22,7 +22,14 @@ European Union Public Licence for more details.
     ng-click="$parent.blockEvent($event)"
     ng-blur="$parent.editContent = false;"
     on-enter="$parent.editContent = false;"
+    focus-me="$parent.editContent"
     localized editointi-kontrolli/>
-  <span ng-click="$parent.removeItem(sisalto, sisaltoalue)" ng-show="!$parent.editContent" editointi-kontrolli class="glyphicon glyphicon-remove clickable pull-right badge"> </span>
-  <span ng-click="$parent.switchEditMode(true, $event)" ng-show="!$parent.editContent" editointi-kontrolli class="glyphicon glyphicon-pencil clickable pull-right badge"> </span>
+  <span ng-click="$parent.removeItem(sisalto, sisaltoalue)" ng-show="!$parent.editContent" 
+    editointi-kontrolli class="glyphicon glyphicon-remove clickable pull-right badge"> </span>
+  <span ng-click="$parent.switchEditMode(true, $event)" ng-show="!$parent.editContent"
+    editointi-kontrolli class="glyphicon glyphicon-pencil clickable pull-right badge"> </span>
+  <span ng-click="$parent.moveDown(sisalto, sisaltoalue, $event)" ng-show="!$parent.editContent && $parent.$parent.$index !== sisaltoalue.length-1" 
+    editointi-kontrolli class="glyphicon glyphicon-arrow-down clickable pull-right badge"> </span>
+  <span ng-click="$parent.moveUp(sisalto, sisaltoalue, $event)" ng-show="!$parent.editContent && $parent.$parent.$index !== 0" 
+    editointi-kontrolli class="glyphicon glyphicon-arrow-up clickable pull-right badge"> </span>
 </span>

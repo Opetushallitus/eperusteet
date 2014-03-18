@@ -19,7 +19,7 @@ angular.module('eperusteApp')
   .directive('editointiKontrolli', function($rootScope, Editointikontrollit) {
     return {
       restrict: 'A',
-      link: function(scope, element) {
+      link: function(scope, element, attrs) {
         
         Editointikontrollit.getEditModePromise().then(function(editMode) {
           if(!editMode) {
@@ -38,18 +38,26 @@ angular.module('eperusteApp')
           if(element.is('input, textarea, button')) {
             element.attr('disabled', 'disabled');
           } else {
-            element.hide();
+            if(attrs.ngShow || attrs.ngHide) {
+              element.addClass('ng-hide');
+            } else {
+              element.hide();
+            }
           }
         }
         
         function showOrEnableElement() {
           if(element.is('input, textarea, button')) {
-            if(!element.attr('ng-disabled') || !scope.$eval(element.attr('ng-disabled'))) {
+            if(!attrs.ngDisabled || !scope.$eval(attrs.ngDisabled)) {
               element.removeAttr('disabled');
             }
           } else {
-            if((!element.attr('ng-show') || scope.$eval(element.attr('ng-show'))) && (!element.attr('ng-hide') || !scope.$eval(element.attr('ng-hide')))) {
-              element.show();
+            if((!attrs.ngShow || scope.$eval(attrs.ngShow)) && (!attrs.ngHide || !scope.$eval(attrs.ngHide))) {
+              if(attrs.ngShow || attrs.ngHide) {
+                element.removeClass('ng-hide');
+              } else {
+                element.show();
+              }
             }
           }
         }
