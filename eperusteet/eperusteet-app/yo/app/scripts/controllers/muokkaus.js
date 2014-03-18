@@ -35,6 +35,8 @@ angular.module('eperusteApp')
         console.log('unable to find perusteen osa #' + $routeParams.id);
         $location.path('/selaus/ammatillinenperuskoulutus');
       });
+    } else {
+      $scope.objekti = null;
     }
         
     var muokkausDirective = null;
