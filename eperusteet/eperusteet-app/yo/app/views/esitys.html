@@ -14,18 +14,18 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
-<div  ng-app="eperusteApp" ng-controller="EsitysCtrl" class="row">
+<div class="row">
   <!-- Perusteteksti -->
   <!--lataus-elementti></lataus-elementti-->
   <!--div class="col-md-12" ng-hide="hakuMenossa"-->
   <div class="col-md-12">
-    
+
     <script type="text/ng-template"  id="lapset_renderer.html">
       <esitys-otsikko id="{{lapsi.perusteenOsa.id}}">{{lapsi.perusteenOsa.otsikko['fi']}}</esitys-otsikko>
       <div ng-bind-html="lapsi.perusteenOsa.teksti.fi"></div>
       <div ng-repeat="lapsi in lapsi.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
     </script>
-    
+
     <div class="panel panel-default">
       <div class="panel-heading">Voit käyttää alla olevia työkaluja rajataksesi näytettävää sisältöä valitusta perusteesta.<!--a class="btn btn-default btn-sm pull-right" style="margin-top: -5px" href="#/selaus" translate>takaisin</a--></div>
       <div class="panel-body">
@@ -45,11 +45,11 @@ European Union Public Licence for more details.
           <button class="btn btn-sm btn-link" data-toggle="modal" data-target="#modalTerveydentila">Terveydentilavaatimukset ammatillisessa peruskoulutuksessa</button>
           <optio-lista class="pull-right" optiot="terveydentilaOptiot"></optio-lista>
         </div>
-      </div>            
+      </div>
     </div>
 
     <div align="left" >
-      <span ng-class="suosikkiTyyli" style="font-size: 2em; top: 10px" ng-click="asetaSuosikiksi()" title="aseta suosikiksi"></span>      
+      <span ng-class="suosikkiTyyli" style="font-size: 2em; top: 10px" ng-click="asetaSuosikiksi()" title="aseta suosikiksi"></span>
     </div>
     <h1>{{valitseKieli(perusteValinta.nimi)}} </h1>
 
@@ -58,8 +58,8 @@ European Union Public Licence for more details.
       {{'koulutusalakoodi'|translate}}: {{perusteValinta.koulutusalakoodi}} <br>
       Päiväys: {{perusteValinta.paivays|date:'dd.MM.yyyy HH:mm:ss'}} <br>
     </p>
-    
-        
+
+
     <h2 id="{{perusteValinta.rakenne.perusteenOsa.id}}">{{perusteValinta.rakenne.perusteenOsa.otsikko.fi}}</h2>
     <p ng-bind-html="perusteValinta.rakenne.perusteenOsa.teksti.fi"></p>
     <div ng-repeat="lapsi in perusteValinta.rakenne.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
@@ -69,14 +69,14 @@ European Union Public Licence for more details.
     </script>
 
     <!-- Tutkinnon rakenne puuesityksenä -->
-    <div tree rakenne="rakenne" baseurl="selaus/{{konteksti}}/{{perusteValinta.id}}/tutkinnonosa"></div>
-           
+    <div tree rakenne="rakenne" baseurl="esitys/{{ konteksti }}/{{ perusteValinta.id }}/tutkinnonosa"></div>
+
   </div>
   <optio-modal modalid="modalMaaraykset" optiot="maarayksetOptiot"></optio-modal>
   <optio-modal modalid="modalArviointi" optiot="arviointiOptiot" ></optio-modal>
   <optio-modal modalid="modalTodistukset" optiot="todistuksetOptiot" ></optio-modal>
   <optio-modal modalid="modalTerveydentila" optiot="terveydentilaOptiot" ></optio-modal>
-  
+
   <!-- Sisällysluettelo -->
 
   <!--script type="text/ng-template"  id="sisallysluettelo_renderer.html">

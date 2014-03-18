@@ -21,7 +21,7 @@ angular.module('eperusteApp')
       };
 
       return koulutusalaPromise.then(function(vastaus) {
-        
+
         self.koulutusalatMap = _.zipObject(_.pluck(vastaus, 'koodi'), _.map(vastaus, function(e) {
           return {
             nimi: e.nimi

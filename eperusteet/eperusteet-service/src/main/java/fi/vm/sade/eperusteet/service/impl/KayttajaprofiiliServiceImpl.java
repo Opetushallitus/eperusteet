@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -49,7 +49,7 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
 
     @Autowired
     PerusteRepository perusteRepo;
-    
+
     @Autowired
     PerusteprojektiRepository perusteprojektiRepo;
 
@@ -62,16 +62,16 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
     @PreAuthorize("isAuthenticated()")
     public KayttajaProfiiliDto get() {
         LOG.info("Kayttajaprofiili get()");
-        
+
         String oid = SecurityContextHolder.getContext().getAuthentication().getName();
-                      
+
         return mapper.map(kayttajaprofiiliRepo.findOneEager(oid), KayttajaProfiiliDto.class);
     }
 
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    public KayttajaProfiiliDto addSuosikki(final Long perusteId) {     
+    public KayttajaProfiiliDto addSuosikki(final Long perusteId) {
         LOG.info("addSuosikki " + perusteId);
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -85,7 +85,7 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
             kayttajaprofiili.setSuosikit(new ArrayList<Peruste>());
             kayttajaprofiiliRepo.save(kayttajaprofiili);
         }
-        
+
         if (!kayttajaprofiili.getSuosikit().contains(peruste)) {
             kayttajaprofiili.getSuosikit().add(peruste);
         }
@@ -101,20 +101,20 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
 
         String oid = SecurityContextHolder.getContext().getAuthentication().getName();
         Kayttajaprofiili kayttajaprofiili = kayttajaprofiiliRepo.findOneEager(oid);
-        
-        if (kayttajaprofiili != null) { 
+
+        if (kayttajaprofiili != null) {
             Peruste peruste = perusteRepo.findOne(perusteId);
             kayttajaprofiili.getSuosikit().remove(peruste);
         }
 
         return mapper.map(kayttajaprofiili, KayttajaProfiiliDto.class);
     }
-    
-    
+
+
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    public KayttajaProfiiliDto addPerusteprojekti(final Long perusteprojektiId) {     
+    public KayttajaProfiiliDto addPerusteprojekti(final Long perusteprojektiId) {
         LOG.info("addPerusteprojekti " + perusteprojektiId);
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -126,9 +126,11 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
             kayttajaprofiili = new Kayttajaprofiili();
             kayttajaprofiili.setOid(oid);
             kayttajaprofiili.setSuosikit(new ArrayList<Peruste>());
-            kayttajaprofiiliRepo.save(kayttajaprofiili);
+            kayttajaprofiili.setPerusteprojektit(new ArrayList<Perusteprojekti>());
+            kayttajaprofiili = kayttajaprofiiliRepo.save(kayttajaprofiili);
         }
-        
+
+
         if (!kayttajaprofiili.getPerusteprojektit().contains(perusteprojekti)) {
             kayttajaprofiili.getPerusteprojektit().add(perusteprojekti);
         }

@@ -2,8 +2,8 @@
 	<li><a>{{'navi-esiopetus'|translate}}</a></li>
 	<li><a>{{'navi-perusopetus'|translate}}</a></li>
 	<li><a>{{'navi-lukiokoulutus'|translate}}</a></li>
-	<li ng-class="{ active: isActive('/selaus/ammatillinenperuskoulutus')}"><a href="#/selaus/ammatillinenperuskoulutus">{{'navi-ammatillinen-peruskoulutus'|translate}}</a></li>
-	<li ng-class="{ active: isActive('/selaus/ammatillinenaikuiskoulutus')}"><a href="#/selaus/ammatillinenaikuiskoulutus">{{'navi-ammatillinen-aikuiskoulutus'|translate}}</a></li>
+	<li ng-class="{ active: isActive('/selaus/ammatillinenperuskoulutus')}"><a ui-sref="selaus.konteksti({ konteksti: 'ammatillinenperuskoulutus' })">{{'navi-ammatillinen-peruskoulutus'|translate}}</a></li>
+	<li ng-class="{ active: isActive('/selaus/ammatillinenaikuiskoulutus')}"><a ui-sref="selaus.konteksti({ konteksti: 'ammatillinenaikuiskoulutus' })">{{'navi-ammatillinen-aikuiskoulutus'|translate}}</a></li>
 </ul>
 
 <ol class="breadcrumb">

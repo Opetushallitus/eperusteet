@@ -26,23 +26,24 @@
     <![endif]-->
     <!-- endbuild  -->
     <!-- Add your site or application content here -->
-    <div id="app-container" style="width:100%;max-width: 100%; padding: 0 30px; min-width: 360px" ui-router>
+    <div id="app-container" style="width:100%;max-width: 100%; padding: 0 30px; min-width: 360px">
       <div class="row">
         <div class="col-md-12">
           <eperuste-navi ng-controller="NaviCtrl"></eperuste-navi>
           <editointikontrollit ng-controller="EditointiCtrl"></editointikontrollit>
           <div class="row">
-            <div class="col-md-9" ng-view=""></div>
-            <div class="col-md-3" ng-include src="'views/partials/sivupalkki.html'"></div>
+            <div class="col-md-9" ui-view></div>
+            <div class="col-md-3" ng-include="'views/partials/sivupalkki.html'"></div>
           </div>
         </div>
       </div>
       <spinner></spinner>
     </div>
-    <!-- build:js scripts/components.js -->
 
+    <!-- build:js scripts/components.js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-translate/angular-translate.js"></script>
@@ -55,7 +56,6 @@
     <script src="bower_components/js-xlsx/xlsx.js"></script>
     <script src="bower_components/angular-i18n/angular-locale_fi-fi.js"></script>
     <script src="bower_components/momentjs/moment.js"></script>
-    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <!-- endbuild -->
 
     <script src="bower_components/ckeditor/ckeditor.js"></script>

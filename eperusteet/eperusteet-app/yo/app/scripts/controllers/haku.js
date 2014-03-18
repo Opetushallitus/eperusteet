@@ -2,17 +2,25 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .config(function($routeProvider) {
-    $routeProvider
-      .when('/selaus/:konteksti', {
+  .config(function($stateProvider) {
+    $stateProvider
+      .state('selaus', {
+        url: '/selaus',
+        template: '<div ui-view></div>',
+        // controller: 'HakuCtrl',
+        // navigaationimi: 'navi-hakuehdot',
+        // resolve: {'koulutusalaService': 'Koulutusalat'}
+      })
+      .state('selaus.konteksti', {
+        url: '/:konteksti',
         templateUrl: 'views/haku.html',
         controller: 'HakuCtrl',
         navigaationimi: 'navi-hakuehdot',
         resolve: {'koulutusalaService': 'Koulutusalat'}
       });
   })
-  .controller('HakuCtrl', function($scope, $rootScope, $window, $routeParams, $location,
-    Perusteet, Haku, YleinenData, koulutusalaService) {
+  .controller('HakuCtrl', function($scope, $rootScope, $window, $state, $stateParams,
+      Perusteet, Haku, YleinenData, koulutusalaService) {
 
     var pat = '';
     // Viive, joka odotetaan, ennen kuin haku nimi muutoksesta lähtee serverille.
@@ -26,6 +34,7 @@ angular.module('eperusteApp')
     $scope.tutkintotyyppi = Haku.hakuParametrit.tyyppi;
     $scope.siirtymaAjalla = Haku.hakuParametrit.siirtyma;
     $scope.valittuOpintoala = Haku.hakuParametrit.opintoala;
+    $scope.konteksti = $stateParams.konteksti;
     $scope.kontekstit = YleinenData.kontekstit;
     $scope.kieli = YleinenData.kieli;
     $scope.koulutusalat = koulutusalaService.haeKoulutusalat();
@@ -48,12 +57,12 @@ angular.module('eperusteApp')
       }
     };
 
-    if ($routeParams.konteksti && $scope.kontekstit.indexOf($routeParams.konteksti.toLowerCase()) !== -1) {
-      $scope.konteksti = $routeParams.konteksti;
+    if ($stateParams.konteksti && $scope.kontekstit.indexOf($stateParams.konteksti.toLowerCase()) !== -1) {
+      $scope.konteksti = $stateParams.konteksti;
       alustaKonteksti();
       $rootScope.$broadcast('paivitaNavigaatiopolku');
     } else {
-      $location.path('/selaus/ammatillinenperuskoulutus');
+      $state.go('selaus.konteksti', { konteksti: 'ammatillinenperuskoulutus' });
     }
 
     $scope.tyhjenna = function() {
@@ -95,7 +104,7 @@ angular.module('eperusteApp')
       return Math.max($scope.sivuja, 1);
     };
     $scope.hakuMuuttui = _.debounce(_.bind($scope.haePerusteet, $scope, 0), hakuViive, {'leading': false});
-    
+
     $scope.edellinenSivu = function() {
       if ($scope.nykyinenSivu > 0) {
         $scope.haePerusteet($scope.nykyinenSivu - 1);
@@ -115,9 +124,9 @@ angular.module('eperusteApp')
     $scope.valitseKieli = function(nimi) {
       return YleinenData.valitseKieli(nimi);
     };
-    
+
     //$scope.haePerusteet($scope.nykyinenSivu);
-    
+
     $scope.$on('$translateChangeSuccess', function() {
       $scope.tyhjenna();
       $scope.haePerusteet(0);
@@ -133,15 +142,12 @@ angular.module('eperusteApp')
       $scope.valittuOpintoala = '';
       $scope.hakuMuuttui();
     };
-    
+
     $scope.koulutusalaNimi = function(koodi) {
       return koulutusalaService.haeKoulutusalaNimi(koodi);
     };
-    
-    
-    
+
     var opintoalaTemp = $scope.valittuOpintoala;
     $scope.koulutusalaMuuttui();
     $scope.valittuOpintoala = opintoalaTemp;
-    
   });

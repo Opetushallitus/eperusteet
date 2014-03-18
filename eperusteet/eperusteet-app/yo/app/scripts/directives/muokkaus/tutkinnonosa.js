@@ -25,8 +25,8 @@ angular.module('eperusteApp')
       scope: {
         tutkinnonOsa: '='
       },
-      controller: function($scope, $location, $q, $modal, Editointikontrollit, PerusteenOsat) {
-        
+      controller: function($scope, $state, $q, $modal, Editointikontrollit, PerusteenOsat) {
+
         $scope.fields =
           new Array({
              path: 'nimi',
@@ -78,7 +78,7 @@ angular.module('eperusteApp')
              mandatory: true,
              order: 7
            });
-        
+
         $scope.editableTutkinnonOsa = {};
 
         function setupTutkinnonOsa(osa) {
@@ -93,14 +93,14 @@ angular.module('eperusteApp')
             save: function() {
               //TODO: Validate tutkinnon osa
               console.log('validate tutkinnon osa');
-              
+
               if($scope.editableTutkinnonOsa.id) {
                 $scope.editableTutkinnonOsa.$saveTutkinnonOsa();
                 openNotificationDialog();
               } else {
                 PerusteenOsat.saveTutkinnonOsa($scope.editableTutkinnonOsa).$promise.then(function(response) {
                   openNotificationDialog().result.then(function() {
-                    $location.path('/muokkaus/tutkinnonosa/' + response.id);
+                    $state.go('muokkaus.tutkinnonosa', { id: response.id });
                   });
                 });
               }
@@ -108,15 +108,15 @@ angular.module('eperusteApp')
             },
             cancel: function() {
               console.log('tutkinnon osa - cancel');
-              
+
               $scope.editableTutkinnonOsa = angular.copy($scope.tutkinnonOsa);
               var tutkinnonOsaDefer = $q.defer();
               $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
-              
+
               tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
             }
           });
-          
+
           function openNotificationDialog() {
             return $modal.open({
               templateUrl: 'views/modals/ilmoitusdialogi.html',

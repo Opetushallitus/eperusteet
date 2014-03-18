@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -37,19 +37,19 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class PerusteprojektiServiceImpl implements PerusteprojektiService {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(PerusteprojektiServiceImpl.class);
 
     @Autowired
     @Dto
     private DtoMapper mapper;
-    
+
     @Autowired
     private PerusteprojektiRepository repository;
-    
+
     @Autowired
     private KayttajaprofiiliService kayttajaprofiiliService;
-    
+
     @Override
     @Transactional(readOnly = true)
     public PerusteprojektiDto get(Long id) {
@@ -60,26 +60,23 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
         return mapper.map(p, PerusteprojektiDto.class);
     }
-        
+
     @Override
     @Transactional(readOnly = false)
     public PerusteprojektiDto save(PerusteprojektiDto perusteprojektiDto) {
-        
+
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
         perusteprojekti = repository.save(perusteprojekti);
-        
         kayttajaprofiiliService.addPerusteprojekti(perusteprojekti.getId());
-        
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
-        
-    } 
+    }
 
     @Override
     public PerusteprojektiDto update(Long id, PerusteprojektiDto perusteprojektiDto) {
         if (!repository.exists(id)) {
             throw new EntityNotFoundException("Objektia ei löytynyt id:llä: " + id);
         }
-        
+
         perusteprojektiDto.setId(id);
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
         perusteprojekti = repository.save(perusteprojekti);

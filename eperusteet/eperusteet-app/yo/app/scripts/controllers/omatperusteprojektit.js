@@ -47,7 +47,7 @@ angular.module('eperusteApp')
       }
     };
 
-    $scope.$on('perusteprojektiLuotu', function() {
+    $scope.$on('update:perusteprojekti', function() {
       paivitaOmatProjektit();
     });
   });
