@@ -78,10 +78,6 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional(readOnly = true)
     public PerusteDto get(final Long id) {
         Peruste p = perusteet.findById(id);
-        LOG.info("PerusteServiceImpl peruste haettu: ");
-        for (Opintoala o : p.getOpintoalat()) {
-           LOG.info("PerusteServiceImpl perusteen opintoala: " + o.getKoodi());
-        }
         return mapper.map(p, PerusteDto.class);
     }
 

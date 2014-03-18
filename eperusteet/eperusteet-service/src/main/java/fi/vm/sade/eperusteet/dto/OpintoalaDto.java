@@ -26,6 +26,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OpintoalaDto {
-    String koodi;
-    LokalisoituTekstiDto nimi;
+    private String koodi;
+    private LokalisoituTekstiDto nimi;
 }

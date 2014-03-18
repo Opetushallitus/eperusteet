@@ -4,9 +4,6 @@ angular.module('eperusteApp')
   .controller('ProjektinperustiedotCtrl', function($scope, PerusteProjektiService) {
   PerusteProjektiService.watcher($scope, 'projekti');
 
-  //$scope.projekti = {};
-  //PerusteProjektiService.watcher($scope, 'projekti');
-
   $scope.tehtavaluokat = [
     { nimi: 'Tehtäväluokka-1'},
     { nimi: 'Tehtäväluokka-2'},

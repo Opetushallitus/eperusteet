@@ -1,4 +1,5 @@
 'use strict';
+/*global _*/
 
 angular.module('eperusteApp')
   .config(function($routeProvider) {
@@ -30,10 +31,10 @@ angular.module('eperusteApp')
   $scope.alustaProjekti = function() {
     $scope.projekti = {};
     $scope.projekti.peruste = {};
+    $scope.projekti.peruste.nimi = {};
     $scope.projekti.peruste.opintoalat = [];
   };
   $scope.alustaProjekti();
-
 
   var perusteprojektiPolku = 'perusteprojekti/';
 
@@ -55,7 +56,8 @@ angular.module('eperusteApp')
   if ($routeParams.id) {
     $scope.projekti.id = $routeParams.id;
     PerusteprojektiResource.get($scope.projekti, function(vastaus) {
-      $scope.projekti = vastaus;
+      $scope.alustaProjekti();
+      $scope.projekti = _.merge($scope.projekti, vastaus);
     }, function(virhe) {
       console.log('virhe', virhe);
       $location.path(perusteprojektiPolku);
@@ -64,7 +66,7 @@ angular.module('eperusteApp')
 
   $scope.tallennaPerusteprojekti = function() {
     var projekti = PerusteProjektiService.get();
-
+    
     if (projekti.id) {
       PerusteprojektiResource.update(projekti,
         function(vastaus) {
@@ -83,10 +85,8 @@ angular.module('eperusteApp')
     }
   };
 
-
   $scope.paivitaNavigaatiopolku = function (nimi) {
         YleinenData.navigaatiopolkuElementit.projektiId = nimi;
         $rootScope.$broadcast('paivitaNavigaatiopolku');
   };
-
 });

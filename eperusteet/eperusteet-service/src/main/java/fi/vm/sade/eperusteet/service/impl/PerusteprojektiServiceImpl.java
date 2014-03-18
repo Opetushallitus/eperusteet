@@ -13,10 +13,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.Opintoala;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
@@ -54,24 +52,16 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional(readOnly = true)
     public PerusteprojektiDto get(Long id) {
         Perusteprojekti p = repository.findOne(id);
-        LOG.info("Perusteprojekti opintoalat");
-        for (Opintoala opintoala: p.getPeruste().getOpintoalat()) {
-            LOG.info("opintoala" + opintoala.getKoodi());
-        }
         return mapper.map(p, PerusteprojektiDto.class);
     }
         
     @Override
     @Transactional(readOnly = false)
     public PerusteprojektiDto save(PerusteprojektiDto perusteprojektiDto) {
-        
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
         perusteprojekti = repository.save(perusteprojekti);
-        
         kayttajaprofiiliService.addPerusteprojekti(perusteprojekti.getId());
-        
-        return mapper.map(perusteprojekti, PerusteprojektiDto.class);
-        
+        return mapper.map(perusteprojekti, PerusteprojektiDto.class);   
     } 
 
     @Override
@@ -79,7 +69,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (!repository.exists(id)) {
             throw new EntityNotFoundException("Objektia ei löytynyt id:llä: " + id);
         }
-        
         perusteprojektiDto.setId(id);
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
         perusteprojekti = repository.save(perusteprojekti);

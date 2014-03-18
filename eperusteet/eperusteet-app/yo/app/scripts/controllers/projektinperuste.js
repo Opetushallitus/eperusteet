@@ -6,16 +6,13 @@ angular.module('eperusteApp')
       YleinenData, Koodisto) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
-    //$scope.projekti = PerusteProjektiService.get();
-    
     $scope.koodistoHaku = function(koodisto) {
-      console.log('koodisto', koodisto);
-      
       $scope.projekti.peruste.nimi = koodisto.nimi;
       $scope.projekti.peruste.koodi = koodisto.koodi;
       
       Koodisto.haeAlarelaatiot($scope.projekti.peruste.koodi, function (relaatiot) {
-        
+        $scope.projekti.peruste.opintoalat.length = 0;
+        $scope.projekti.peruste.koulutusala = {};
         _.forEach(relaatiot, function(rel) {
           switch (rel.koodisto.koodistoUri) {
             case 'koulutusalaoph2002':
@@ -27,7 +24,6 @@ angular.module('eperusteApp')
           }
         });
       });
- 
     };
 
     $scope.valitseKieli = function(teksti) {

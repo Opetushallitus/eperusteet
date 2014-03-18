@@ -15,7 +15,7 @@ angular.module('eperusteApp')
     
     function save (obj) {
       obj=obj||{};
-      pp = _.merge(pp, obj);
+      pp = _.merge(_.clone(pp), _.clone(obj));
     }
     
     function get () {
@@ -27,9 +27,9 @@ angular.module('eperusteApp')
     }
     
     function watcher(scope, kentta) {
-      scope.$watchCollection(kentta, function(temp) {
+      scope.$watch(kentta, function(temp) {
         save(temp);
-      });
+      }, true);
     }
     
     function perusteprojektiLuotu() {

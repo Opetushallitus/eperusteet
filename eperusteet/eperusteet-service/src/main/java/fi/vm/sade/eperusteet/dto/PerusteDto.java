@@ -6,7 +6,6 @@ package fi.vm.sade.eperusteet.dto;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
