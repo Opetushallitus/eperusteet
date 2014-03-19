@@ -2,9 +2,10 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .config(function($routeProvider) {
-    $routeProvider
-      .when('/excel', {
+  .config(function($stateProvider) {
+    $stateProvider
+      .state('excel', {
+        url: '/excel',
         templateUrl: 'views/excel.html',
         controller: 'ExcelCtrl'
       });

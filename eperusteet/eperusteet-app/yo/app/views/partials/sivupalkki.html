@@ -21,12 +21,11 @@ European Union Public Licence for more details.
         <div id="kielen-vaihto" class="btn-group">
             <button ng-repeat="(nimi, koodi) in kielet" ng-click="vaihdaKieli(koodi)" type="button" class="btn btn-default" ng-class="{ 'active' : koodi === kieli }">{{nimi|translate}}</button>
         </div>
-        
             <div class="panel panel-default">
                 <div class="panel-heading" translate>suosikit-otsikko</div>
                 <div class="panel-body">
                     <ul class="list-unstyled">
-                        <li class="ellipsis-no-wrap" ng-repeat="suosikki in suosikit| limitTo:suosikkiRaja" ><a title="{{valitseKieli(suosikki.nimi)}}" ng-href="#/selaus/{{suosikki.konteksti}}/{{suosikki.id}}">{{valitseKieli(suosikki.nimi)}}</a></li>
+                      <li class="ellipsis-no-wrap" ng-repeat="suosikki in suosikit| limitTo:suosikkiRaja" ><a title="{{valitseKieli(suosikki.nimi)}}" ui-sref="esitys.peruste({ id: suosikki.id, konteksti: suosikki.konteksti})">{{valitseKieli(suosikki.nimi)}}</a></li>
                     </ul>
                     <button class="btn btn-default btn-xs pull-right" ng-show="naytaSuosikkiNappi" ng-click="muutaSuosikkiMaara()">{{suosikkiNapinTeksti| translate}}</button>
                 </div>
@@ -35,12 +34,11 @@ European Union Public Licence for more details.
         <div ng-controller="OmatperusteprojektitCtrl">
             <div class="panel panel-default">
                 <div class="panel-heading" >{{'perusteprojektit-otsikko' | translate}}
-                    <!--span class="btn btn-default btn-xs pull-right" ng-click="uusiProjekti()">Uusi projekti</span-->
-                    <span><a class="btn btn-default btn-xs pull-right" title="{{'uusi-projekti' | translate}}" ng-href="#/perusteprojekti" translate>uusi-projekti</a></span>
+                    <a class="btn btn-default btn-xs pull-right" title="{{'uusi-projekti' | translate}}" ui-sref="perusteprojekti.editoi({ id: 'uusi' })" translate>uusi-projekti</a>
                 </div>
                 <div class="panel-body">
                     <ul class="list-unstyled">
-                        <li class="ellipsis-no-wrap" ng-repeat="projekti in projektit| limitTo:projektitRaja" ><a title="{{projekti.nimi}}" ng-href="#/perusteprojekti/{{projekti.id}}">{{projekti.diaarinumero}}: {{projekti.nimi}}</a></li>
+                        <li class="ellipsis-no-wrap" ng-repeat="projekti in projektit| limitTo:projektitRaja" ><a title="{{projekti.nimi}}" ui-sref="perusteprojekti.editoi({ id: projekti.id })">{{projekti.diaarinumero}}: {{projekti.nimi}}</a></li>
                     </ul>
                     <button class="btn btn-default btn-xs pull-right" ng-show="naytaProjektitNappi" ng-click="muutaProjektienMaara()">{{projektitNapinTeksti| translate}}</button>
                 </div>

@@ -4,7 +4,7 @@
     <div class="clearfix"></div>
     <form class="panel-body">
       <div class="clearfix"></div>
-      <div class="form-group col-xs-6">
+      <div class="form-group col-xs-12">
         <label translate>tutkinnon-tyyppi</label>
         <div class="clearfix"></div>
         <div class="btn-group">
@@ -13,8 +13,8 @@
           <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'perustutkinto'">{{ 'perustutkinto' | translate }}</button>
         </div>
       </div>
-      <div class="clearfix"></div>
       <div class="form-group col-xs-12">
+        <div class="clearfix"></div>
         <label>{{ 'tiedosto' | translate }} (.xslx)</label>
         <file-select id="fileselect-button" flabel="lataa" before-select="clearSelect" on-select="onFileSelect" on-progress="onProgress" read-type="binary"></file-select>
       </div>

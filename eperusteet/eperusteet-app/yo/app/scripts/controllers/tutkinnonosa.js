@@ -2,15 +2,16 @@
 
 
 angular.module('eperusteApp')
-  .config(function($routeProvider) {
-    $routeProvider
-      .when('/selaus/:konteksti/:perusteId/tutkinnonosa/:tutkinnonOsaId', {
-        templateUrl: 'views/tutkinnonosa.html',
-        controller: 'TutkinnonosaCtrl',
-        navigaationimiId: 'tutkinnonOsa'
-      });
+  .config(function($stateProvider) {
+    // $stateProvider
+    //   .state('haku.tutkinnonosa', {
+    //     url: '/:perusteId/tutkinnonosa/:tutkinnonOsaId',
+    //     templateUrl: 'views/tutkinnonosa.html',
+    //     controller: 'TutkinnonosaCtrl',
+    //     navigaationimiId: 'tutkinnonOsa'
+    //   });
   })
-  .controller('TutkinnonosaCtrl', function ($q, $scope, $rootScope, $routeParams, $location,
+  .controller('TutkinnonosaCtrl', function ($q, $scope, $rootScope, $stateParams, $state,
     YleinenData, PerusteenOsat, Perusteet, palvelinhaunIlmoitusKanava) {
 
     $scope.kontekstit = YleinenData.kontekstit;
@@ -28,23 +29,23 @@ angular.module('eperusteApp')
     $scope.arviointiSuljettu = true;
 
 
-    if ($routeParams.konteksti && $scope.kontekstit.indexOf($routeParams.konteksti.toLowerCase()) !== -1) {
-      $scope.konteksti = $routeParams.konteksti;
+    if ($stateParams.konteksti && $scope.kontekstit.indexOf($stateParams.konteksti.toLowerCase()) !== -1) {
+      $scope.konteksti = $stateParams.konteksti;
     } else {
-      $location.path('/selaus/ammatillinenperuskoulutus');
+      $state.go('selaus.konteksti', { konteksti: 'ammatillinenperuskoulutus' });
     }
 
     var perusteHakuPromise = (function() {
-      if ($routeParams.perusteId) {
-        return Perusteet.get({perusteenId: $routeParams.perusteId}).$promise;
+      if ($stateParams.perusteId) {
+        return Perusteet.get({perusteenId: $stateParams.perusteId}).$promise;
       } else {
         return $q.reject();
       }
     }());
 
     var tutkinnonOsaHakuPromise = (function() {
-      if ($routeParams.tutkinnonOsaId) {
-        return PerusteenOsat.get({osanId: $routeParams.tutkinnonOsaId}).$promise;
+      if ($stateParams.tutkinnonOsaId) {
+        return PerusteenOsat.get({osanId: $stateParams.tutkinnonOsaId}).$promise;
       } else {
         return $q.reject();
       }
@@ -68,7 +69,7 @@ angular.module('eperusteApp')
     }, function(virhe) {
       console.log('VIRHE: ' + virhe.status);
       //Virhe tapahtui, esim. perustetta ei löytynyt. Virhesivu.
-      $location.path('/selaus/' + $scope.konteksti);
+      $state.go('selaus.konteksti', { konteksti: 'ammatillinenperuskoulutus' });
     });
 
 //    $scope.$on('arviointiasteikot', function() {

@@ -4,11 +4,12 @@
 angular.module('eperusteApp', [
     'ngRoute',
     'ngSanitize',
+    'ui.router',
     'ngResource',
     'ngAnimate',
     'pascalprecht.translate',
     'ui.bootstrap',
-    'ui.utils'
+    'ui.utils',
   ])
   .constant('SERVICE_LOC','/eperusteet-service/api')
   .constant('SPINNER_WAIT', 0)
@@ -45,11 +46,9 @@ angular.module('eperusteApp', [
       }
     };
   })
-  .config(function($routeProvider, $sceProvider) {
-    $sceProvider.enabled(true);
-    $routeProvider.otherwise({
-        redirectTo: '/selaus/ammatillinenperuskoulutus'
-      });
+  .config(function($urlRouterProvider, $sceProvider) {
+    // $sceProvider.enabled(true);
+    // $urlRouterProvider.otherwise('/selaus/ammatillinenperuskoulutus');
   })
   .config(function($translateProvider) {
       $translateProvider.useStaticFilesLoader({

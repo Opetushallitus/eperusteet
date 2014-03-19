@@ -2,20 +2,26 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .config(function($routeProvider) {
-    $routeProvider
-      .when('/selaus/:konteksti/:perusteId', {
-        templateUrl: 'views/esitys.html',
+  .config(function($stateProvider) {
+    $stateProvider
+      .state('esitys', {
+        url: '/esitys',
+        template: '<div ui-view></div>',
+      })
+      .state('esitys.peruste', {
+        url: '/:konteksti/:id',
+        templateUrl: '/views/esitys.html',
         controller: 'EsitysCtrl',
-        navigaationimiId: 'peruste',
+        // navigaationimiId: 'peruste',
         //Estää sisällysluettelossa navigoinnin lataamasta sivua uudelleen
-        reloadOnSearch: false
+        // reloadOnSearch: false
       });
   })
   .controller('EsitysCtrl', function($q, $scope, $rootScope, $location, $anchorScroll,
-    $routeParams, Kayttajaprofiilit, Suosikit, Perusteet, Suosikitbroadcast,
+    $stateParams, Kayttajaprofiilit, Suosikit, Perusteet, Suosikitbroadcast,
     YleinenData, palvelinhaunIlmoitusKanava) {
 
+    $scope.konteksti = $stateParams.konteksti;
     $scope.perusteValinta = {};
     $scope.syvyys = 2;
     $scope.suosikkiLista = {};
@@ -23,7 +29,6 @@ angular.module('eperusteApp')
     var eiSuosikkiTyyli = 'glyphicon glyphicon-star-empty pointer';
     var suosikkiTyyli = 'glyphicon glyphicon-star pointer';
     $scope.suosikkiTyyli = eiSuosikkiTyyli;
-    $scope.kontekstit = YleinenData.kontekstit;
 
     $scope.terveydentilaOptiot = [
       {teksti: 'Kaikki', valittu: true},
@@ -69,24 +74,15 @@ angular.module('eperusteApp')
     palvelinhaunIlmoitusKanava.kunHakuAloitettu($scope, hakuAloitettuKäsittelijä);
     palvelinhaunIlmoitusKanava.kunHakuLopetettu($scope, hakuLopetettuKäsittelijä);
 
-
-
-    if ($routeParams.konteksti && $scope.kontekstit.indexOf($routeParams.konteksti.toLowerCase()) !== -1) {
-      $scope.konteksti = $routeParams.konteksti;
-    } else {
-      $location.path('/selaus/ammatillinenperuskoulutus');
-    }
-
     var perusteHakuPromise = (function() {
-      if ($routeParams.perusteId) {
-        return Perusteet.get({perusteenId: $routeParams.perusteId}).$promise;
+      if ($stateParams.id) {
+        return Perusteet.get({perusteenId: $stateParams.id}).$promise;
       } else {
         return $q.reject();
       }
     }());
 
     var kayttajaProfiiliPromise = Kayttajaprofiilit.get({}).$promise;
-
     perusteHakuPromise.then(function(peruste) {
       if (peruste.id) {
         $scope.perusteValinta = peruste;
@@ -97,10 +93,11 @@ angular.module('eperusteApp')
       }
     }, function(error) {
       console.log(error);
+      // TODO
       //Virhe tapahtui, esim. perustetta ei löytynyt. Virhesivu.
-      $location.path('/selaus/' + $scope.konteksti);
+      // $location.path('/selaus/' + $scope.konteksti);
     });
-    
+
     kayttajaProfiiliPromise.then(function(profiili) {
       $scope.suosikkiLista = profiili.suosikit;
       $scope.suosikkiTyyli = $scope.onSuosikki();
@@ -117,11 +114,6 @@ angular.module('eperusteApp')
         }
       }
       return eiSuosikkiTyyli;
-    };
-
-    $scope.vierity = function(id) {
-      $location.hash(id);
-      $anchorScroll();
     };
 
     $scope.asetaSuosikiksi = function() {
@@ -141,7 +133,6 @@ angular.module('eperusteApp')
           Suosikitbroadcast.suosikitMuuttuivat();
         });
       }
-
     };
 
     $scope.valitseKieli = function(teksti) {

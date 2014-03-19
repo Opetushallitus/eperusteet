@@ -1,13 +1,18 @@
 'use strict';
-
+/* global _ */
 
 angular.module('eperusteApp')
   .factory('navigaatiopolku',
-    function($rootScope, $location, $route, YleinenData, $translate,$q) {
+    function($rootScope, $location, $state, YleinenData, $translate,$q) {
 
       var navigaatiopolut = [],
         navigaatiopolkuService = {},
-        routes = $route.routes;
+        routes = [];
+
+      // routes = _($state.get())
+      //           .filter(function(o) { return !o.abstract; })
+      //           .map(function(o) { return o.url; })
+      //           .value();
 
       var luoNavigaatiopolku = function() {
         navigaatiopolut = [];
@@ -15,7 +20,7 @@ angular.module('eperusteApp')
           path = '';
 
         var getRoute = function(route) {
-          angular.forEach($route.current.params, function(value, key) {
+          angular.forEach($state.current.params, function(value, key) {
             route = route.replace(value, ':' + key);
           });
           return route;
@@ -25,15 +30,14 @@ angular.module('eperusteApp')
           pathElements.splice(0, 1);
         }
 
-
         var polku = [];
-        
+
         angular.forEach(pathElements, function(el) {
           path += path === '/' ? el : '/' + el;
           var route = getRoute(path);
-          
+
           if (routes[route] && routes[route].navigaationimi) {
-            
+
             var t = $translate(routes[route].navigaationimi);
             var pathTmp = path;
             var p = t.then(function(nimi) {
@@ -47,7 +51,6 @@ angular.module('eperusteApp')
               polku.push($q.when({navigaationimi: YleinenData.navigaatiopolkuElementit[routes[route].navigaationimiId], polku: path}));
             }
           }
-          
         });
         $q.all(polku).then(function(values) {
           navigaatiopolut = values;
@@ -58,7 +61,7 @@ angular.module('eperusteApp')
       $rootScope.$on('paivitaNavigaatiopolku', function() {
         luoNavigaatiopolku();
       });
-      
+
       $rootScope.$on('$translateChangeSuccess', function () {
         luoNavigaatiopolku();
       });
@@ -72,5 +75,4 @@ angular.module('eperusteApp')
       };
 
       return navigaatiopolkuService;
-    }
-    );
+  });

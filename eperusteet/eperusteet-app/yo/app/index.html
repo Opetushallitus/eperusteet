@@ -32,23 +32,24 @@
           <eperuste-navi ng-controller="NaviCtrl"></eperuste-navi>
           <editointikontrollit ng-controller="EditointiCtrl"></editointikontrollit>
           <div class="row">
-            <div class="col-md-9" ng-view=""></div>
-            <div class="col-md-3" ng-include src="'views/partials/sivupalkki.html'"></div>
+            <div class="col-md-9" ui-view></div>
+            <div class="col-md-3" ng-include="'views/partials/sivupalkki.html'"></div>
           </div>
         </div>
       </div>
       <spinner></spinner>
     </div>
+
     <!-- build:js scripts/components.js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-translate/angular-translate.js"></script>
     <script src="bower_components/angular-animate/angular-animate.js"></script>
     <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
-    <script src="components/bootstrap/js/bootstrap.js"></script>
     <script src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/angular-ui-utils/ui-utils.js"></script>
     <script src="bower_components/lodash/dist/lodash.js"></script>
