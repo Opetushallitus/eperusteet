@@ -22,6 +22,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.audit.Revision;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
@@ -53,6 +54,14 @@ public class PerusteenOsaController {
         	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/{id}/revisions", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<Revision>> getRevisions(@PathVariable("id") final Long id) {
+    	LOG.debug("get revisions");
+    	List<Revision> revisions = service.getRevisions(id);
+    	return revisions == null ? new ResponseEntity<List<Revision>>(HttpStatus.NOT_FOUND) : new ResponseEntity<List<Revision>>(revisions, HttpStatus.OK);
     }
     
     @RequestMapping(value = "/{koodiUri}", method = GET, params = "koodi=true")

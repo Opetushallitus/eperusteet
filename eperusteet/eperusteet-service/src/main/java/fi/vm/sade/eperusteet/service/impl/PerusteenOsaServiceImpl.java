@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.audit.Revision;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.repository.ArviointiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
@@ -77,4 +79,10 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         LOG.info("delete" + id);
         perusteenOsaRepo.delete(id);
     }
+
+	@Override
+	@Transactional
+	public List<Revision> getRevisions(Long id) {
+		return perusteenOsaRepo.getRevisions(id);
+	}
 }

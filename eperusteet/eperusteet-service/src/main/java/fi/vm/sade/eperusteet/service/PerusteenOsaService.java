@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.service;
 import java.util.List;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.audit.Revision;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 
 /**
@@ -22,4 +23,6 @@ public interface PerusteenOsaService {
     PerusteenOsaDto getByKoodiUri(final String koodiUri);
 
     List<PerusteenOsaDto> getAll();
+
+	public List<Revision> getRevisions(Long id);
 }

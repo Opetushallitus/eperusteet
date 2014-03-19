@@ -16,14 +16,14 @@
 
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
-import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collections;
 import java.util.Date;
-import static org.junit.Assert.*;
+import java.util.List;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,15 +31,26 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.DirtiesContext;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.audit.Revision;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
+import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+
 /**
  *
  * @author jhyoty
  */
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+//@TransactionConfiguration
 public class AuditedEntityTestIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
+    
+    @Autowired
+    private PerusteenOsaService perusteenOsaService;
 
     @Test
     public void testAuditing() {
@@ -78,11 +89,28 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         assertTrue(teksti2.getMuokattu().after(luotu));
         assertTrue(teksti2.getMuokattu().after(luotu));
     }
+    
+    @Test
+    public void testAuditRevisions() {
+        
+        TekstiKappale teksti = new TekstiKappale();
+        teksti.setNimi(new TekstiPalanen(Collections.singletonMap(Kieli.FI, "Nimi")));
+        teksti.setTeksti(new TekstiPalanen(Collections.singletonMap(Kieli.FI, "Teksti")));
+        teksti = perusteenOsaRepository.save(teksti);
+        
+        teksti.getNimi().getTeksti().put(Kieli.FI, "nimi, muokattu");
+        teksti = perusteenOsaRepository.save(teksti);
+        
+        List<Revision> revisions = perusteenOsaService.getRevisions(teksti.getId());
+    	
+    	assertNotNull(revisions);
+        assertEquals(1, revisions.size());
+        
+    }
 
     private void setUpSecurityContext(String username) {
         SecurityContext ctx = SecurityContextHolder.createEmptyContext();
         ctx.setAuthentication(new UsernamePasswordAuthenticationToken(username,"test"));
         SecurityContextHolder.setContext(ctx);
     }
-
 }
