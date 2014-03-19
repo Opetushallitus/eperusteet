@@ -5,6 +5,7 @@ angular.module('eperusteApp')
     $stateProvider
       .state('perusteprojekti', {
         url: '/perusteprojekti',
+        navigaationimi: 'navi-perusteprojekti',
         template: '<div ui-view></div>',
       })
       .state('perusteprojekti.editoi', {

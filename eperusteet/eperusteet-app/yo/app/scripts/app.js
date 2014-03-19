@@ -2,6 +2,7 @@
 /* global _ */
 
 angular.module('eperusteApp', [
+    'ngRoute',
     'ngSanitize',
     'ui.router',
     'ngResource',

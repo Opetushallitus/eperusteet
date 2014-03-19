@@ -116,11 +116,6 @@ angular.module('eperusteApp')
       return eiSuosikkiTyyli;
     };
 
-    $scope.vierity = function(id) {
-      $location.hash(id);
-      $anchorScroll();
-    };
-
     $scope.asetaSuosikiksi = function() {
       if ($scope.suosikkiTyyli === eiSuosikkiTyyli) {
 
