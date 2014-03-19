@@ -47,8 +47,8 @@ angular.module('eperusteApp', [
     };
   })
   .config(function($urlRouterProvider, $sceProvider) {
-    // $sceProvider.enabled(true);
-    // $urlRouterProvider.otherwise('/selaus/ammatillinenperuskoulutus');
+    $sceProvider.enabled(true);
+    $urlRouterProvider.otherwise('/selaus/ammatillinenperuskoulutus');
   })
   .config(function($translateProvider) {
       $translateProvider.useStaticFilesLoader({

@@ -3,13 +3,13 @@
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {
-    // $stateProvider
-    //   .state('haku.tutkinnonosa', {
-    //     url: '/:perusteId/tutkinnonosa/:tutkinnonOsaId',
-    //     templateUrl: 'views/tutkinnonosa.html',
-    //     controller: 'TutkinnonosaCtrl',
-    //     navigaationimiId: 'tutkinnonOsa'
-    //   });
+    $stateProvider
+      .state('haku.tutkinnonosa', {
+        url: '/:perusteId/tutkinnonosa/:tutkinnonOsaId',
+        templateUrl: 'views/tutkinnonosa.html',
+        controller: 'TutkinnonosaCtrl',
+        navigaationimiId: 'tutkinnonOsa'
+      });
   })
   .controller('TutkinnonosaCtrl', function ($q, $scope, $rootScope, $stateParams, $state,
     YleinenData, PerusteenOsat, Perusteet, palvelinhaunIlmoitusKanava) {
