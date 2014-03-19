@@ -16,11 +16,9 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import com.googlecode.ehcache.annotations.Cacheable;
-import fi.vm.sade.eperusteet.domain.Koulutusala;
 import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.KoulutusalaDto;
 import fi.vm.sade.eperusteet.dto.OpintoalaDto;
-import fi.vm.sade.eperusteet.repository.KoulutusalaRepository;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
@@ -30,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -48,13 +45,10 @@ public class KoulutusalaServiceImpl implements KoulutusalaService {
     //private static final String OPINTOALA_URI = "opintoalaoph2002";
 
     @Autowired
-    private KoulutusalaRepository repository;
-
-    @Autowired
     @Koodisto
     private DtoMapper mapper;
 
-    @Override
+    /*@Override
     @Transactional(readOnly = true)
     public KoulutusalaDto get(Long id) {
         Koulutusala k = repository.findOne(id);
@@ -63,7 +57,7 @@ public class KoulutusalaServiceImpl implements KoulutusalaService {
         }
 
         return mapper.map(k, KoulutusalaDto.class);
-    }
+    }*/
     
     @Override
     @Cacheable(cacheName = "koulutusalat")
@@ -80,7 +74,7 @@ public class KoulutusalaServiceImpl implements KoulutusalaService {
         return koulutusalatDtos;
     }
 
-    @Override
+    /*@Override
     @Transactional()
     public void koulutusalaLammitys() {
         RestTemplate restTemplate = new RestTemplate();
@@ -93,6 +87,6 @@ public class KoulutusalaServiceImpl implements KoulutusalaService {
                 repository.save(koulutusalaEntity);
             }
         }
-    }
+    }*/
 
 }

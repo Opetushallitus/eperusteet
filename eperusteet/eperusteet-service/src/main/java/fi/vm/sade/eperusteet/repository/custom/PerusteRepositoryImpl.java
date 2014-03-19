@@ -19,11 +19,10 @@ import java.util.Date;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Koulutusala_;
+import fi.vm.sade.eperusteet.domain.Koulutus;
+import fi.vm.sade.eperusteet.domain.Koulutus_;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti_;
-import fi.vm.sade.eperusteet.domain.Opintoala;
-import fi.vm.sade.eperusteet.domain.Opintoala_;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Peruste_;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
@@ -31,7 +30,6 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen_;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
 import java.util.HashMap;
-import java.util.List;
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -41,7 +39,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.annotations.QueryHints;
@@ -50,7 +47,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 /**
  *
@@ -91,7 +87,7 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
     public Peruste findById(Long id) {
         EntityGraph<Peruste> eg = em.createEntityGraph(Peruste.class);
         eg.addSubgraph(Peruste_.rakenne);
-        eg.addSubgraph(Peruste_.opintoalat);
+        eg.addSubgraph(Peruste_.koulutukset);
         HashMap<String, Object> props = new HashMap<>();
         props.put(QueryHints.FETCHGRAPH, eg);
         Peruste p = em.find(Peruste.class, id, props);
@@ -133,14 +129,15 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             pred = cb.and(pred, cb.like(cb.lower(teksti.get(LokalisoituTeksti_.teksti)), cb.literal(RepositoryUtil.kuten(pquery.getNimi()))));
         }
         if (pquery.getKoulutusala() != null && !pquery.getKoulutusala().isEmpty()) {
-            pred = cb.and(pred, root.get(Peruste_.koulutusala).get(Koulutusala_.koodi).in(pquery.getKoulutusala()));
+            Join<Peruste, Koulutus> ala = root.join(Peruste_.koulutukset);
+            pred = cb.and(pred, ala.get(Koulutus_.koulutusalaKoodi).in(pquery.getKoulutusala()));
         }
         if (pquery.getTyyppi() != null && !pquery.getTyyppi().isEmpty()) {
             pred = cb.and(pred, root.get(Peruste_.tutkintokoodi).in(pquery.getTyyppi()));
         }
         if (pquery.getOpintoala() != null && !pquery.getOpintoala().isEmpty()) {
-            Join<Peruste, Opintoala> ala = root.join(Peruste_.opintoalat);
-            pred = cb.and(pred, ala.get(Opintoala_.koodi).in(pquery.getOpintoala()));
+            Join<Peruste, Koulutus> ala = root.join(Peruste_.koulutukset);
+            pred = cb.and(pred, ala.get(Koulutus_.opintoalaKoodi).in(pquery.getOpintoala()));
         }
         if (!pquery.isSiirtyma()) {
             Expression<Date> rsiirtyma = root.get(Peruste_.siirtyma);

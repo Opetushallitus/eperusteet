@@ -47,7 +47,7 @@ public class KoodistoMapperConfig {
                 .register();
         
         factory.classMap(KoodistoKoodiDto.class, Peruste.class)
-                .fieldMap("voimassaAlkuPvm", "paivays").converter("koodistoPaivaysConverter").add()
+                //.fieldMap("voimassaAlkuPvm", "paivays").converter("koodistoPaivaysConverter").add()
                 .fieldMap("metadata", "nimi").converter("metadataToTekstipalanenConverter").add()
                 .byDefault()
                 .register();

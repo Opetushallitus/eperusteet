@@ -13,58 +13,45 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
-import javax.persistence.Cacheable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Immutable;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author harrik
  */
 @Entity
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-@Immutable
-@Table(name = "opintoala")
-public class Opintoala implements Serializable, Koodistokoodi {
-
+@Table(name = "koulutus")
+public class Koulutus implements Serializable{
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
+    @Setter
     private Long id;
-
-    private String koodi;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Override
-    public String getKoodi() {
-        return koodi;
-    }
-
-    @Override
-    public void setKoodi(String koodi) {
-        this.koodi = koodi;
-    }
-
-    @Override
-    public String toString() {
-        return koodi;
-    }
-
+    
+    @Column(name = "koulutus_koodi")
+    @Getter
+    @Setter
+    private String koulutusKoodi;
+    
+    @Column(name = "koulutusala_koodi")
+    @Getter
+    @Setter
+    private String koulutusalaKoodi;
+    
+    @Column(name = "opintoala_koodi")
+    @Getter
+    @Setter
+    private String opintoalaKoodi;
 }

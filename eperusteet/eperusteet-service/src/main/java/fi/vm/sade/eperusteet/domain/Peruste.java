@@ -17,7 +17,6 @@ package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -33,6 +32,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -44,103 +45,44 @@ public class Peruste implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
+    @Setter
     private Long id;
     
+    @Getter
+    @Setter
     private String koodiUri;
     
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Getter
+    @Setter
     private TekstiPalanen nimi;
+    
+    @Getter
+    @Setter
     private String tutkintokoodi;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "koulutusala_id")
-    private Koulutusala koulutusala;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "peruste_opintoala",
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinTable(name = "peruste_koulutus",
             joinColumns = @JoinColumn(name = "peruste_id"),
-            inverseJoinColumns = @JoinColumn(name = "opintoala_id"))
-    private Set<Opintoala> opintoalat;
+            inverseJoinColumns = @JoinColumn(name = "koulutus_id"))
+    @Getter
+    @Setter
+    private Set<Koulutus> koulutukset;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Getter
+    @Setter
     private Date paivays;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Getter
+    @Setter
     private Date siirtyma;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @Getter
+    @Setter
     private PerusteenOsaViite rakenne;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getKoodiUri() {
-        return koodiUri;
-    }
-
-    public void setKoodiUri(String koodiUri) {
-        this.koodiUri = koodiUri;
-    }
-
-    public TekstiPalanen getNimi() {
-        return nimi;
-    }
-
-    public void setNimi(TekstiPalanen nimi) {
-        this.nimi = nimi;
-    }
-
-    public String getTutkintokoodi() {
-        return tutkintokoodi;
-    }
-
-    public void setTutkintokoodi(String tutkintokoodi) {
-        this.tutkintokoodi = tutkintokoodi;
-    }
-
-    public Koulutusala getKoulutusala() {
-        return koulutusala;
-    }
-
-    public void setKoulutusala(Koulutusala koulutusala) {
-        this.koulutusala = koulutusala;
-    }
-
-    public Set<Opintoala> getOpintoalat() {
-        return opintoalat;
-    }
-
-    public void setOpintoalat(Set<Opintoala> opintoalat) {
-        this.opintoalat = opintoalat;
-    }
-
-    public Date getPaivays() {
-        return paivays;
-    }
-
-    public void setPaivays(Date paivays) {
-        this.paivays = paivays;
-    }
-
-    public Date getSiirtyma() {
-        return siirtyma;
-    }
-
-    public void setSiirtyma(Date siirtyma) {
-        this.siirtyma = siirtyma;
-    }
-
-    public PerusteenOsaViite getRakenne() {
-        return rakenne;
-    }
-
-    public void setRakenne(PerusteenOsaViite juuriViite) {
-        this.rakenne = juuriViite;
-    }
 
 }

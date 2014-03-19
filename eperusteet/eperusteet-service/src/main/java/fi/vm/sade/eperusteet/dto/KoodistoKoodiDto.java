@@ -32,5 +32,4 @@ public class KoodistoKoodiDto {
     private String versio;
     private KoodistoMetadataDto[] metadata;
     private KoodistoDto koodisto;
-    private String voimassaAlkuPvm;
 }
