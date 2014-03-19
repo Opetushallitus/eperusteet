@@ -58,10 +58,20 @@ public class PerusteenOsaController {
     
     @RequestMapping(value = "/{id}/revisions", method = GET)
     @ResponseBody
-    public ResponseEntity<List<Revision>> getRevisions(@PathVariable("id") final Long id) {
+    public List<Revision> getRevisions(@PathVariable("id") final Long id) {
     	LOG.debug("get revisions");
-    	List<Revision> revisions = service.getRevisions(id);
-    	return revisions == null ? new ResponseEntity<List<Revision>>(HttpStatus.NOT_FOUND) : new ResponseEntity<List<Revision>>(revisions, HttpStatus.OK);
+    	return service.getRevisions(id);
+    }
+    
+    @RequestMapping(value = "/{id}/revisions/{revisionId}", method = GET)
+    @ResponseBody
+    public ResponseEntity<PerusteenOsaDto> getRevision(@PathVariable("id") final Long id, @PathVariable("revisionId") final Integer revisionId) {
+    	LOG.debug("get #{} revision #{}", id, revisionId);
+    	PerusteenOsaDto t = service.getRevision(id, revisionId);
+        if (t == null) {
+        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(t, HttpStatus.OK);
     }
     
     @RequestMapping(value = "/{koodiUri}", method = GET, params = "koodi=true")

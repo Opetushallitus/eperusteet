@@ -25,4 +25,6 @@ public interface PerusteenOsaService {
     List<PerusteenOsaDto> getAll();
 
 	public List<Revision> getRevisions(Long id);
+	
+	public PerusteenOsaDto getRevision(final Long id, final Integer revisionId);
 }

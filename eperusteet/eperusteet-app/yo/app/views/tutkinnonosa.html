@@ -1,28 +1,37 @@
- <lataus-elementti></lataus-elementti>
-
-<div ng-hide="hakuMenossa">
-    <h1>{{valitseKieli(tutkinnonOsa.otsikko)}}</h1>
-
-    <h3 style="display: inline;" class="pointer alleviivaus" translate ng-click="vaihdaAmmattitaitovaatimusNakyvyys()">tutkinnonosa-ammattitaitovaatimukset</h3>
-    <div ng-class="ammattitaitovaatimusTyyli" style="font-size: 1.4em; left: 10px; top: 0px;" ng-click="vaihdaAmmattitaitovaatimusNakyvyys()"></div>
-
-    <div collapse="ammattitaitovaatimuksetSuljettu">
-        <div ng-bind-html="valitseKieli(tutkinnonOsa.ammattitaitovaatimukset)"></div>
-    </div>
-
-    <div></div>
-    <h3 style="display: inline;" class="pointer alleviivaus" translate ng-click="vaihdaArviointiNakyvyys()">tutkinnonosa-arviointi</h3>
-    <span ng-class="arviointiTyyli" style="font-size: 1.4em; left: 10px; top: 0px;" ng-click="vaihdaArviointiNakyvyys()"></span>
-    <div collapse="arviointiSuljettu">
-      <arviointi arviointi="tutkinnonOsa.arviointi"></arviointi>
-    </div>
-
-    <div></div>
-
-    <h3 style="display: inline" class="pointer alleviivaus" ng-click="vaihdaAmmattitaidonOsoittamistavatNakyvyys()" translate>tutkinnonosa-ammattitaidonOsoittamistavat</h3>
-    <span ng-class="ammattitaidonOsoittamistavatTyyli" style="font-size: 1.4em; left: 10px; top: 0px;" ng-click="vaihdaAmmattitaidonOsoittamistavatNakyvyys()"></span>
-
-    <div collapse="ammattitaidonOsoittamistavatSuljettu">
-        <div class="well well-sm" ng-bind-html="valitseKieli(tutkinnonOsa.ammattitaidonOsoittamistavat)"></div>
-    </div>
+<div>
+  <h1>
+    {{valitseKieli(tutkinnonOsa.nimi)}}
+    <small ng-show="revisionId !== null">rev: {{revisionId}}</small>
+    <span class="pull-right dropdown">
+      <button class="btn btn-default btn-sm dropdown-toggle" ng-click="haeRevisiot()">Versiohistoria</button>
+      <ul class="dropdown-menu">
+        <li ng-repeat="revisio in revisiotiedot | orderBy:'-date'">
+          <a ng-click="getRevision(revisio.number)">{{revisio.date | date:'d.M.yyyy klo. H:mm:ss'}}</a>
+        </li>
+      </ul>
+    </span>
+  </h1>
+  
+  <h3 style="display: inline;" class="pointer alleviivaus" translate ng-click="vaihdaAmmattitaitovaatimusNakyvyys()">tutkinnonosa-ammattitaitovaatimukset</h3>
+  <div ng-class="ammattitaitovaatimusTyyli" style="font-size: 1.4em; left: 10px; top: 0px;" ng-click="vaihdaAmmattitaitovaatimusNakyvyys()"></div>
+  
+  <div collapse="ammattitaitovaatimuksetSuljettu">
+      <div ng-bind-html="valitseKieli(tutkinnonOsa.ammattitaitovaatimukset)"></div>
+  </div>
+  
+  <div></div>
+  <h3 style="display: inline;" class="pointer alleviivaus" translate ng-click="vaihdaArviointiNakyvyys()">tutkinnonosa-arviointi</h3>
+  <span ng-class="arviointiTyyli" style="font-size: 1.4em; left: 10px; top: 0px;" ng-click="vaihdaArviointiNakyvyys()"></span>
+  <div collapse="arviointiSuljettu">
+    <arviointi arviointi="tutkinnonOsa.arviointi"></arviointi>
+  </div>
+  
+  <div></div>
+  
+  <h3 style="display: inline" class="pointer alleviivaus" ng-click="vaihdaAmmattitaidonOsoittamistavatNakyvyys()" translate>tutkinnonosa-ammattitaidonOsoittamistavat</h3>
+  <span ng-class="ammattitaidonOsoittamistavatTyyli" style="font-size: 1.4em; left: 10px; top: 0px;" ng-click="vaihdaAmmattitaidonOsoittamistavatNakyvyys()"></span>
+  
+  <div collapse="ammattitaidonOsoittamistavatSuljettu">
+      <div class="well well-sm" ng-bind-html="valitseKieli(tutkinnonOsa.ammattitaidonOsoittamistavat)"></div>
+  </div>
 </div>

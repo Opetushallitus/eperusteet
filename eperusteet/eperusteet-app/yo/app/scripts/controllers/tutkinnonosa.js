@@ -1,6 +1,5 @@
 'use strict';
 
-
 angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
@@ -27,6 +26,9 @@ angular.module('eperusteApp')
     $scope.arviointiTyyli = avausTyyli;
     $scope.arviointiSuljettu = true;
 
+    $scope.revisiotiedot = null;
+    $scope.revisionId = null;
+
     var perusteHakuPromise = (function() {
       if ($stateParams.perusteenId) {
         return Perusteet.get({perusteenId: $stateParams.perusteenId}).$promise;
@@ -42,16 +44,46 @@ angular.module('eperusteApp')
         return $q.reject();
       }
     }());
-
+    
     $q.all([perusteHakuPromise, tutkinnonOsaHakuPromise]).then(function(vastaus) {
       $scope.peruste = vastaus[0];
       Navigaatiopolku.asetaElementit({ peruste: $scope.peruste.nimi });
 
       $scope.tutkinnonOsa = vastaus[1];
       Navigaatiopolku.asetaElementit({ tutkinnonOsaId: $scope.tutkinnonOsa.nimi });
-    }, function() {
-      console.err('virhe ladattaessa tutkinnon osan esityssivua.');
+      
+      // Data haettu, päivitetään navigaatiopolku
+      $rootScope.$broadcast('paivitaNavigaatiopolku');
+
+    }, function(virhe) {
+      console.log('VIRHE: ' + virhe.status);
+      //Virhe tapahtui, esim. perustetta ei löytynyt. Virhesivu.
+      $state.go('selaus.konteksti', { konteksti: 'ammatillinenperuskoulutus' });
     });
+    
+    $scope.haeRevisiot = function() {
+      if($scope.revisiotiedot === null) {
+        console.log('fetch revisions');
+        $scope.revisiotiedot = PerusteenOsat.revisions({osanId: $scope.tutkinnonOsa.id});
+      }
+    };
+    
+    $scope.getRevision = function(revisioId) {
+      PerusteenOsat.getRevision({osanId: $scope.tutkinnonOsa.id, revisionId: revisioId}).$promise.then(function(response) {
+        console.log(response);
+        $scope.tutkinnonOsa = response;
+        
+        if(revisioId === _.chain($scope.revisiotiedot).sortBy('date').last().value().number) {
+          $scope.revisionId = null;
+        } else {
+          console.log('set revision id');
+          $scope.revisionId = revisioId;
+        }
+        
+      }, function(error) {
+        console.log(error);
+      });
+    };
 
     $scope.vaihdaAmmattitaitovaatimusNakyvyys = function() {
       $scope.ammattitaitovaatimuksetSuljettu = !$scope.ammattitaitovaatimuksetSuljettu;

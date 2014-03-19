@@ -12,11 +12,11 @@ public class Revision implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Long id;
+	private Integer number;
 	private Date date;
 	
-	public Revision(Long id, Date date) {
-		this.id = id;
+	public Revision(Integer number, Date date) {
+		this.number = number;
 		this.date = date;
 	}
 }

@@ -85,4 +85,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 	public List<Revision> getRevisions(Long id) {
 		return perusteenOsaRepo.getRevisions(id);
 	}
+
+	@Override
+	public PerusteenOsaDto getRevision(Long id, Integer revisionId) {
+		return mapper.map(perusteenOsaRepo.findRevision(id, revisionId), PerusteenOsaDto.class);
+	}
 }

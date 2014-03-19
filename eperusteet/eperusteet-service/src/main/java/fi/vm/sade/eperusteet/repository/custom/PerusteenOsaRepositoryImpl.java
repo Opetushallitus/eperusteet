@@ -30,9 +30,14 @@ public class PerusteenOsaRepositoryImpl implements PerusteenOsaRepositoryCustom 
 		
 		List<Revision> revisions = new ArrayList<>();
 		for(Number number : revisionNumbers) {
-			revisions.add(new Revision(number.longValue(), auditReader.getRevisionDate(number)));
+			revisions.add(new Revision(number.intValue(), auditReader.getRevisionDate(number)));
 		}
 		return revisions;
+	}
+
+	@Override
+	public PerusteenOsa findRevision(Long perusteenOsaId, Integer revisionId) {
+		return AuditReaderFactory.get(entityManager).find(PerusteenOsa.class, perusteenOsaId, revisionId);
 	}
 
 }

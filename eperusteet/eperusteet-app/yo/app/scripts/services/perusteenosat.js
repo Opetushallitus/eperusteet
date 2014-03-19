@@ -10,7 +10,9 @@ angular.module('eperusteApp')
       {
         byKoodiUri: { method: 'GET', params: { koodi: true } },
         saveTekstikappale: {method:'POST', params:{tyyppi:'perusteen-osat-tekstikappale'}},
-        saveTutkinnonOsa: {method:'POST', params:{tyyppi:'perusteen-osat-tutkinnon-osa'}}
+        saveTutkinnonOsa: {method:'POST', params:{tyyppi:'perusteen-osat-tutkinnon-osa'}},
+        revisions: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/revisions'},
+        getRevision: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/:osanId/revisions/:revisionId'}
       });
   })
   .service('TutkinnonOsanValidointi', function($q, PerusteenOsat) {
