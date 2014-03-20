@@ -74,7 +74,6 @@ angular.module('eperusteApp')
       $scope.haePerusteet(0);
     };
     var hakuVastaus = function(vastaus) {
-      console.log('haku', vastaus);
       $scope.perusteet = vastaus;
       $scope.nykyinenSivu = $scope.perusteet.sivu;
       $scope.sivukoko = $scope.perusteet.sivukoko;
