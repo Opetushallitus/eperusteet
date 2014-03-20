@@ -25,7 +25,7 @@ European Union Public Licence for more details.
                 <div class="panel-heading" translate>suosikit-otsikko</div>
                 <div class="panel-body">
                     <ul class="list-unstyled">
-                      <li class="ellipsis-no-wrap" ng-repeat="suosikki in suosikit| limitTo:suosikkiRaja" ><a title="{{valitseKieli(suosikki.nimi)}}" ng-href="{{ suosikki.url }}">{{valitseKieli(suosikki.nimi)}}</a></li>
+                      <li class="ellipsis-no-wrap" ng-repeat="suosikki in suosikit| limitTo:suosikkiRaja" ><a title="{{valitseKieli(suosikki.nimi)}}" ng-click="resetNavi()" ng-href="{{ suosikki.url }}">{{valitseKieli(suosikki.nimi)}}</a></li>
                     </ul>
                     <button class="btn btn-default btn-xs pull-right" ng-show="naytaSuosikkiNappi" ng-click="muutaSuosikkiMaara()">{{suosikkiNapinTeksti| translate}}</button>
                 </div>

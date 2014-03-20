@@ -28,30 +28,32 @@ angular.module('eperusteApp')
         url: '/:perusteenOsanTyyppi',
         templateUrl: 'views/muokkaus.html',
         controller: 'MuokkausCtrl',
-        // navigaationimi: 'PerusteenOsanMuokkaus'
+        naviBase: ['muokkaus', ':perusteenOsanTyyppi']
       })
       .state('muokkaus.vanha', {
-        url: '/:perusteenOsanTyyppi/:id',
+        url: '/:perusteenOsanTyyppi/:perusteenId',
         templateUrl: 'views/muokkaus.html',
+        naviBase: ['muokkaus', ':perusteenOsanTyyppi', ':perusteenId'],
         controller: 'MuokkausCtrl',
-        // navigaationimi: 'PerusteenOsanMuokkaus'
       });
   })
-  .controller('MuokkausCtrl', function($scope, $stateParams, PerusteenOsat, $state, $compile) {
+  .controller('MuokkausCtrl', function($scope, $stateParams, PerusteenOsat, $state, $compile, Navigaatiopolku) {
     $scope.tyyppi = $stateParams.perusteenOsanTyyppi;
     $scope.objekti = null;
 
-    if ($stateParams.id) {
-      $scope.objekti = PerusteenOsat.get({ osanId: $stateParams.id }, function(){}, function() {
-        console.log('unable to find perusteen osa #' + $stateParams.id);
+    if ($stateParams.perusteenId) {
+      $scope.objekti = PerusteenOsat.get({ osanId: $stateParams.perusteenId }, function(re) {
+        Navigaatiopolku.asetaElementit({ perusteenId: re.nimi });
+      }, function() {
+        console.log('unable to find perusteen osa #' + $stateParams.perusteenId);
         $state.go('selaus.konteksti', { konteksti: 'ammatillinenperuskoulutus' });
       });
     }
 
     var muokkausDirective = null;
-    if($stateParams.perusteenOsanTyyppi === 'tekstikappale') {
+    if ($stateParams.perusteenOsanTyyppi === 'tekstikappale') {
       muokkausDirective = angular.element('<muokkaus-tekstikappale tekstikappale="objekti"></muokkaus-tekstikappale>');
-    } else if($stateParams.perusteenOsanTyyppi === 'tutkinnonosa') {
+    } else if ($stateParams.perusteenOsanTyyppi === 'tutkinnonosa') {
       muokkausDirective = angular.element('<muokkaus-tutkinnonosa tutkinnon-osa="objekti"></muokkaus-tutkinnonosa>');
     } else {
       console.log('invalid perusteen osan tyyppi');

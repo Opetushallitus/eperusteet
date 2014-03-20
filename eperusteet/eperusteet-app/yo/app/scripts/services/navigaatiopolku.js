@@ -3,8 +3,8 @@
 
 angular.module('eperusteApp')
   .service('Navigaatiopolku', function($rootScope, $state) {
-    var naviPolku = [];
     var naviElementit = {};
+    var naviPolku = [];
     $rootScope.naviBase = [];
     $rootScope.naviRest = [];
 
@@ -58,6 +58,12 @@ angular.module('eperusteApp')
     this.asetaElementit = function(elements) {
       naviElementit = _.merge(_.clone(naviElementit), elements);
       paivitaNavigaatio();
+    };
+
+    this.clear = function() {
+      naviPolku = [];
+      $rootScope.naviBase = [];
+      $rootScope.naviRest = [];
     };
 
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams) {

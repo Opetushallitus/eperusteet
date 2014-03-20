@@ -2,7 +2,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('SuosikitCtrl', function($scope, Kayttajaprofiilit, YleinenData, $rootScope, $state) {
+  .controller('SuosikitCtrl', function($scope, Kayttajaprofiilit, YleinenData, $rootScope, $state, Navigaatiopolku) {
 
     $scope.suosikit = {};
     $scope.suppeaMaara = 5;
@@ -17,6 +17,8 @@ angular.module('eperusteApp')
 
     var naytaKaikkiTeksti = 'sivupalkki-näytä-kaikki';
     var piilotaTeksti = 'sivupalkki-piilota';
+
+    $scope.resetNavi = Navigaatiopolku.clear;
 
     var paivitaSuosikit = function() {
       Kayttajaprofiilit.get({}, function(vastaus) {

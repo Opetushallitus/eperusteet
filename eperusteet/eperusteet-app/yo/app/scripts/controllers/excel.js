@@ -7,7 +7,8 @@ angular.module('eperusteApp')
       .state('excel', {
         url: '/excel',
         templateUrl: 'views/excel.html',
-        controller: 'ExcelCtrl'
+        controller: 'ExcelCtrl',
+        naviBase: ['tuo-excel'],
       });
   })
   .controller('ExcelCtrl', function($scope, ExcelService, PerusteenOsat, TutkinnonOsanValidointi, Koodisto) {
