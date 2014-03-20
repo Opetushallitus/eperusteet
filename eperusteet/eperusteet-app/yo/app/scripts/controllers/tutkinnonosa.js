@@ -4,8 +4,8 @@
 angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
-      .state('haku.tutkinnonosa', {
-        url: '/:perusteId/tutkinnonosa/:tutkinnonOsaId',
+      .state('esitys.tutkinnonosa', {
+        url: '/:perusteenId/tutkinnonosa/:tutkinnonOsaId',
         templateUrl: 'views/tutkinnonosa.html',
         controller: 'TutkinnonosaCtrl',
         navigaationimiId: 'tutkinnonOsa'
@@ -14,11 +14,9 @@ angular.module('eperusteApp')
   .controller('TutkinnonosaCtrl', function ($q, $scope, $rootScope, $stateParams, $state,
     YleinenData, PerusteenOsat, Perusteet, palvelinhaunIlmoitusKanava) {
 
-    $scope.kontekstit = YleinenData.kontekstit;
     $scope.tutkinnonOsa = {};
     //$scope.arviointi = {};
 //    $scope.arviointiasteikot = {};
-    $scope.kontekstit = YleinenData.kontekstit;
     var avausTyyli = 'glyphicon glyphicon-plus pointer';
     var sulkemisTyyli = 'glyphicon glyphicon-minus pointer';
     $scope.ammattitaitovaatimusTyyli = sulkemisTyyli;
@@ -28,16 +26,9 @@ angular.module('eperusteApp')
     $scope.arviointiTyyli = avausTyyli;
     $scope.arviointiSuljettu = true;
 
-
-    if ($stateParams.konteksti && $scope.kontekstit.indexOf($stateParams.konteksti.toLowerCase()) !== -1) {
-      $scope.konteksti = $stateParams.konteksti;
-    } else {
-      $state.go('selaus.konteksti', { konteksti: 'ammatillinenperuskoulutus' });
-    }
-
     var perusteHakuPromise = (function() {
-      if ($stateParams.perusteId) {
-        return Perusteet.get({perusteenId: $stateParams.perusteId}).$promise;
+      if ($stateParams.perusteenId) {
+        return Perusteet.get({perusteenId: $stateParams.perusteeId}).$promise;
       } else {
         return $q.reject();
       }
@@ -52,7 +43,7 @@ angular.module('eperusteApp')
     }());
 
     $q.all([perusteHakuPromise, tutkinnonOsaHakuPromise]).then(function(vastaus) {
-
+      console.log(vastaus);
       var peruste = vastaus[0];
 
       $scope.peruste = peruste;
@@ -66,10 +57,7 @@ angular.module('eperusteApp')
       // Data haettu, päivitetään navigaatiopolku
       $rootScope.$broadcast('paivitaNavigaatiopolku');
 
-    }, function(virhe) {
-      console.log('VIRHE: ' + virhe.status);
-      //Virhe tapahtui, esim. perustetta ei löytynyt. Virhesivu.
-      $state.go('selaus.konteksti', { konteksti: 'ammatillinenperuskoulutus' });
+    }, function() {
     });
 
 //    $scope.$on('arviointiasteikot', function() {

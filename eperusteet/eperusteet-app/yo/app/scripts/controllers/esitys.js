@@ -9,7 +9,7 @@ angular.module('eperusteApp')
         template: '<div ui-view></div>',
       })
       .state('esitys.peruste', {
-        url: '/:konteksti/:id',
+        url: '/:perusteenId',
         templateUrl: '/views/esitys.html',
         controller: 'EsitysCtrl',
         // navigaationimiId: 'peruste',
@@ -20,6 +20,8 @@ angular.module('eperusteApp')
   .controller('EsitysCtrl', function($q, $scope, $rootScope, $location, $anchorScroll,
     $stateParams, Kayttajaprofiilit, Suosikit, Perusteet, Suosikitbroadcast,
     YleinenData, palvelinhaunIlmoitusKanava) {
+
+    console.log('esitys');
 
     $scope.konteksti = $stateParams.konteksti;
     $scope.perusteValinta = {};
@@ -75,8 +77,8 @@ angular.module('eperusteApp')
     palvelinhaunIlmoitusKanava.kunHakuLopetettu($scope, hakuLopetettuKäsittelijä);
 
     var perusteHakuPromise = (function() {
-      if ($stateParams.id) {
-        return Perusteet.get({perusteenId: $stateParams.id}).$promise;
+      if ($stateParams.perusteenId) {
+        return Perusteet.get({perusteenId: $stateParams.perusteenId}).$promise;
       } else {
         return $q.reject();
       }
