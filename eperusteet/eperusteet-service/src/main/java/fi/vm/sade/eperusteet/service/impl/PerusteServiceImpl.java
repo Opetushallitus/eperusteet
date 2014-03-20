@@ -4,9 +4,9 @@ import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PageDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
+import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
@@ -15,6 +15,9 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import org.slf4j.Logger;
@@ -82,8 +85,8 @@ public class PerusteServiceImpl implements PerusteService {
         int i = 0;
         if (seuraavaViite != null) {
             for (PerusteenOsaViite o : v.getLapset()) {
-                if (o.getId().equals(seuraavaViite)) {
-                    break;
+                if (o.getId().equals(seuraavaViite)) { 
+                   break;
                 }
                 i++;
             }
@@ -102,28 +105,31 @@ public class PerusteServiceImpl implements PerusteService {
         List<Peruste> perusteEntityt = new ArrayList<>();
         KoodistoKoodiDto[] tutkinnot;
 
+        int i = 0;
         for (String koulutustyyppiUri : KOULUTUSTYYPPI_URIT) {
             tutkinnot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_YLA + koulutustyyppiUri, KoodistoKoodiDto[].class);
 
             Peruste peruste;
             KoodistoKoodiDto[] koulutusAlarelaatiot;
-            int i = 0;
+            
             for (KoodistoKoodiDto tutkinto : tutkinnot) {
 
                 if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus") && (perusteet.findOneByKoodiUri(tutkinto.getKoodiUri()) == null)) {
                     peruste = koodistoMapper.map(tutkinto, Peruste.class);
                     peruste.setTutkintokoodi(koulutustyyppiUri);
+                    peruste.setPaivays(new GregorianCalendar(3000, 0, 1).getTime());
                     peruste.setKoulutukset(new HashSet<Koulutus>());
                     Koulutus koulutus = new Koulutus();
-                    koulutus.setKoulutusKoodi(tutkinto.getKoodiUri());
+                    koulutus.setKoulutuskoodi(tutkinto.getKoodiUri());
                     // Haetaan joka tutkinnolle alarelaatiot ja lisätään tarvittavat tiedot peruste entityyn
                     koulutusAlarelaatiot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + "/" + tutkinto.getKoodiUri(), KoodistoKoodiDto[].class);
-                    koulutus.setKoulutusalaKoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, KOULUTUSALALUOKITUS));
-                    koulutus.setOpintoalaKoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, OPINTOALALUOKITUS));
+                    koulutus.setKoulutusalakoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, KOULUTUSALALUOKITUS));
+                    koulutus.setOpintoalakoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, OPINTOALALUOKITUS));
                     peruste.getKoulutukset().add(koulutus);
-                    
+
                     perusteEntityt.add(peruste);
-                    LOG.info(++i + " perustetta tallennettu.");
+
+                    LOG.info(++i + " perustetta lisätty.");
                 }
             }
         }

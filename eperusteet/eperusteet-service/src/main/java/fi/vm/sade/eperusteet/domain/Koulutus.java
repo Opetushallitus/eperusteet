@@ -43,15 +43,15 @@ public class Koulutus implements Serializable{
     @Column(name = "koulutus_koodi")
     @Getter
     @Setter
-    private String koulutusKoodi;
+    private String koulutuskoodi;
     
     @Column(name = "koulutusala_koodi")
     @Getter
     @Setter
-    private String koulutusalaKoodi;
+    private String koulutusalakoodi;
     
     @Column(name = "opintoala_koodi")
     @Getter
     @Setter
-    private String opintoalaKoodi;
+    private String opintoalakoodi;
 }

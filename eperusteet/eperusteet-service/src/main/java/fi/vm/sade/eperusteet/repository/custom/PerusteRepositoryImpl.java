@@ -130,14 +130,14 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         }
         if (pquery.getKoulutusala() != null && !pquery.getKoulutusala().isEmpty()) {
             Join<Peruste, Koulutus> ala = root.join(Peruste_.koulutukset);
-            pred = cb.and(pred, ala.get(Koulutus_.koulutusalaKoodi).in(pquery.getKoulutusala()));
+            pred = cb.and(pred, ala.get(Koulutus_.koulutusalakoodi).in(pquery.getKoulutusala()));
         }
         if (pquery.getTyyppi() != null && !pquery.getTyyppi().isEmpty()) {
             pred = cb.and(pred, root.get(Peruste_.tutkintokoodi).in(pquery.getTyyppi()));
         }
         if (pquery.getOpintoala() != null && !pquery.getOpintoala().isEmpty()) {
             Join<Peruste, Koulutus> ala = root.join(Peruste_.koulutukset);
-            pred = cb.and(pred, ala.get(Koulutus_.opintoalaKoodi).in(pquery.getOpintoala()));
+            pred = cb.and(pred, ala.get(Koulutus_.opintoalakoodi).in(pquery.getOpintoala()));
         }
         if (!pquery.isSiirtyma()) {
             Expression<Date> rsiirtyma = root.get(Peruste_.siirtyma);

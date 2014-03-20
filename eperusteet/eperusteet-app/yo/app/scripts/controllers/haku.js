@@ -40,9 +40,9 @@ angular.module('eperusteApp')
     $scope.koulutusalat = koulutusalaService.haeKoulutusalat();
 
     $scope.tutkintotyypit = {
-      1: 'tutkintotyyppikoodi-1',
-      2: 'tutkintotyyppikoodi-2',
-      3: 'tutkintotyyppikoodi-3'
+      'koulutustyyppi_1': 'tutkintotyyppikoodi-1',
+      'koulutustyyppi_11': 'tutkintotyyppikoodi-2',
+      'koulutustyyppi_12': 'tutkintotyyppikoodi-3'
     };
 
     var alustaKonteksti = function() {
@@ -74,6 +74,7 @@ angular.module('eperusteApp')
       $scope.haePerusteet(0);
     };
     var hakuVastaus = function(vastaus) {
+      console.log('haku', vastaus);
       $scope.perusteet = vastaus;
       $scope.nykyinenSivu = $scope.perusteet.sivu;
       $scope.sivukoko = $scope.perusteet.sivukoko;
