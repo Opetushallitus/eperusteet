@@ -1,77 +1,76 @@
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
-  .factory('navigaatiopolku',
-    function($rootScope, $location, $state, YleinenData, $translate,$q) {
+  .service('Navigaatiopolku', function($rootScope, $state) {
+    var naviPolku = [];
+    var naviElementit = {};
+    $rootScope.naviBase = [];
+    $rootScope.naviRest = [];
 
-      var navigaatiopolut = [],
-        navigaatiopolkuService = {},
-        routes = [];
+    function navigaatioMap(toState, toParams) {
+      var defcon = _.merge({
+        append: false
+      }, toState.naviConfig);
 
-      // routes = _($state.get())
-      //           .filter(function(o) { return !o.abstract; })
-      //           .map(function(o) { return o.url; })
-      //           .value();
-
-      var luoNavigaatiopolku = function() {
-        navigaatiopolut = [];
-        var pathElements = $location.path().split('/'),
-          path = '';
-
-        var getRoute = function(route) {
-          angular.forEach($state.current.params, function(value, key) {
-            route = route.replace(value, ':' + key);
-          });
-          return route;
-        };
-
-        if (pathElements[0] === '') {
-          pathElements.splice(0, 1);
+      function relink(link) {
+        var nlink = link;
+        if (_.first(link) === ':') {
+          var kentta = link.substr(1);
+          nlink = naviElementit[kentta] ? naviElementit[kentta] : toParams[kentta];
         }
+        return {
+          url: $state.href(toState.name, toParams),
+          kentta: link,
+          arvo: nlink
+        };
+      }
 
-        var polku = [];
+      if (toState.naviBase) {
+        $rootScope.naviBase = _.map(toState.naviBase, relink);
+      }
 
-        angular.forEach(pathElements, function(el) {
-          path += path === '/' ? el : '/' + el;
-          var route = getRoute(path);
+      var rest = [];
+      if (toState.naviRest) {
+        rest = _.map(toState.naviRest, relink);
+      }
 
-          if (routes[route] && routes[route].navigaationimi) {
+      $rootScope.naviRest = defcon.append ? $rootScope.naviRest.concat(rest) : rest;
+    }
 
-            var t = $translate(routes[route].navigaationimi);
-            var pathTmp = path;
-            var p = t.then(function(nimi) {
-              return {navigaationimi: nimi, polku: pathTmp};
-            });
-            polku.push(p);
-          } else if (routes[route] && routes[route].navigaationimiId) {
-            if (YleinenData.valitseKieli(YleinenData.navigaatiopolkuElementit[routes[route].navigaationimiId]) !== '') {
-              polku.push($q.when({navigaationimi: YleinenData.valitseKieli(YleinenData.navigaatiopolkuElementit[routes[route].navigaationimiId]), polku: path}));
-            } else {
-              polku.push($q.when({navigaationimi: YleinenData.navigaatiopolkuElementit[routes[route].navigaationimiId], polku: path}));
-            }
-          }
+    function paivitaNavigaatio() {
+      function paivita(l) {
+        var nl = naviElementit[l.kentta.substr(1)];
+        if (nl) {
+          l.arvo = nl;
+        }
+      }
+      _.forEach($rootScope.naviBase, paivita);
+      _.forEach($rootScope.naviRest, paivita);
+      naviPolku = _.filter($rootScope.naviBase.concat($rootScope.naviRest), function(link) { return !_.isEmpty(link); });
+      $rootScope.$emit('naviUpdate');
+    }
+
+    this.haeNavipolku = function() {
+      return _.clone(naviPolku);
+    };
+
+    this.asetaElementit = function(elements) {
+      naviElementit = _.merge(_.clone(naviElementit), elements);
+      paivitaNavigaatio();
+    };
+
+    $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams) {
+      if (_.isEmpty($rootScope.naviBase) && _.isEmpty($rootScope.naviRest)) {
+        var state = _.first($state.$current.self.name.split('.'));
+        $rootScope.naviBase.push({
+          arvo: state,
+          kentta: state,
+          url: $state.href(state)
         });
-        $q.all(polku).then(function(values) {
-          navigaatiopolut = values;
-        });
-      };
-
-      // Luodaan uusi navigaatiopolku, kun saadaan päivityssanoma.
-      $rootScope.$on('paivitaNavigaatiopolku', function() {
-        luoNavigaatiopolku();
-      });
-
-      $rootScope.$on('$translateChangeSuccess', function () {
-        luoNavigaatiopolku();
-      });
-
-      navigaatiopolkuService.getKaikki = function() {
-        return navigaatiopolut;
-      };
-
-      navigaatiopolkuService.getEnsimmainen = function() {
-        return navigaatiopolut[0] || {};
-      };
-
-      return navigaatiopolkuService;
+      }
+      navigaatioMap(toState, toParams);
+      paivitaNavigaatio();
+    });
+    return this;
   });

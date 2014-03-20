@@ -2,7 +2,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('SuosikitCtrl', function($scope, Kayttajaprofiilit, YleinenData, $rootScope) {
+  .controller('SuosikitCtrl', function($scope, Kayttajaprofiilit, YleinenData, $rootScope, $state) {
 
     $scope.suosikit = {};
     $scope.suppeaMaara = 5;
@@ -22,7 +22,10 @@ angular.module('eperusteApp')
       Kayttajaprofiilit.get({}, function(vastaus) {
 
         YleinenData.lisääKontekstitPerusteisiin(vastaus.suosikit);
-        $scope.suosikit = vastaus.suosikit;
+        $scope.suosikit = _.map(vastaus.suosikit, function(s) {
+          s.url = $state.href('esitys.peruste', { perusteenId: s.id });
+          return s;
+        });
 
         if ($scope.naytetaanKaikkiSuosikit) {
           $scope.suosikkiNapinTeksti = piilotaTeksti;

@@ -9,16 +9,17 @@ angular.module('eperusteApp')
         template: '<div ui-view></div>',
       })
       .state('perusteprojekti.editoi', {
-        url: '/:id',
+        url: '/:perusteProjektiId',
         templateUrl: 'views/perusteprojekti.html',
         controller: 'PerusteprojektiCtrl',
+        naviBase: ['perusteprojekti', ':perusteProjektiId'],
         navigaationimiId: 'projektiId',
         resolve: {'koulutusalaService': 'Koulutusalat',
                   'opintoalaService': 'Opintoalat'}
       });
   })
   .controller('PerusteprojektiCtrl', function($scope, $rootScope, $state, $stateParams,
-    PerusteprojektiResource, PerusteProjektiService, YleinenData, koulutusalaService, opintoalaService) {
+    PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, koulutusalaService, opintoalaService) {
 
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
@@ -27,39 +28,32 @@ angular.module('eperusteApp')
     $scope.projekti.peruste.nimi = {};
     $scope.projekti.peruste.opintoalat = [];
 
-    $scope.$watch('projekti.nimi', function(temp) {
-      YleinenData.navigaatiopolkuElementit.projektiId = temp;
-      $rootScope.$broadcast('paivitaNavigaatiopolku');
-    });
-
     $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojektiPerustiedot.html'},
                    {otsikko: 'projekti-projektiryhmä', url: 'views/partials/perusteprojektiProjektiryhma.html'},
                    {otsikko: 'projekti-peruste', url: 'views/partials/perusteprojektiPeruste.html'}];
 
-    if ($stateParams.id !== 'uusi') {
-      $scope.projekti.id = $stateParams.id;
-      PerusteprojektiResource.get($scope.projekti, function(vastaus) {
+    if ($stateParams.perusteProjektiId !== 'uusi') {
+      $scope.projekti.perusteProjektiId = $stateParams.perusteProjektiId;
+      PerusteprojektiResource.get({ id: $stateParams.perusteProjektiId }, function(vastaus) {
         $scope.projekti = vastaus;
+        Navigaatiopolku.asetaElementit({ perusteProjektiId: vastaus.nimi });
       });
+    } else {
+        Navigaatiopolku.asetaElementit({ perusteProjektiId: 'uusi' });
     }
 
     $scope.tallennaPerusteprojekti = function() {
       var projekti = PerusteProjektiService.get();
 
-      if (projekti.id) {
+      if (projekti.perusteProjektiId) {
         PerusteprojektiResource.update(projekti, function() {
           PerusteProjektiService.update();
         });
       } else {
         PerusteprojektiResource.save(projekti, function(vastaus) {
           PerusteProjektiService.update();
-          $state.go('perusteprojekti.editoi', { id: vastaus.id });
+          $state.go('perusteprojekti.editoi', { id: vastaus.perusteProjektiId });
         });
       }
-    };
-
-    $scope.paivitaNavigaatiopolku = function (nimi) {
-      YleinenData.navigaatiopolkuElementit.projektiId = nimi;
-      $rootScope.$broadcast('paivitaNavigaatiopolku');
     };
   });

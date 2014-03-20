@@ -8,15 +8,16 @@ angular.module('eperusteApp')
         url: '/:perusteenId/tutkinnonosa/:tutkinnonOsaId',
         templateUrl: 'views/tutkinnonosa.html',
         controller: 'TutkinnonosaCtrl',
-        navigaationimiId: 'tutkinnonOsa'
+        naviRest: [':tutkinnonOsaId'],
+        naviConfig: {
+          append: true,
+        }
       });
   })
   .controller('TutkinnonosaCtrl', function ($q, $scope, $rootScope, $stateParams, $state,
-    YleinenData, PerusteenOsat, Perusteet, palvelinhaunIlmoitusKanava) {
+    YleinenData, Navigaatiopolku, PerusteenOsat, Perusteet, palvelinhaunIlmoitusKanava) {
 
     $scope.tutkinnonOsa = {};
-    //$scope.arviointi = {};
-//    $scope.arviointiasteikot = {};
     var avausTyyli = 'glyphicon glyphicon-plus pointer';
     var sulkemisTyyli = 'glyphicon glyphicon-minus pointer';
     $scope.ammattitaitovaatimusTyyli = sulkemisTyyli;
@@ -43,26 +44,14 @@ angular.module('eperusteApp')
     }());
 
     $q.all([perusteHakuPromise, tutkinnonOsaHakuPromise]).then(function(vastaus) {
-      console.log(vastaus);
-      var peruste = vastaus[0];
+      $scope.peruste = vastaus[0];
+      Navigaatiopolku.navigaatiopolkuElementit.peruste = $scope.peruste.nimi;
 
-      $scope.peruste = peruste;
-      YleinenData.navigaatiopolkuElementit.peruste = peruste.nimi;
-
-      var tutkinnonOsa = vastaus[1];
-      $scope.tutkinnonOsa = tutkinnonOsa;
-      YleinenData.haeArviointiasteikot();
-      YleinenData.navigaatiopolkuElementit.tutkinnonOsa = tutkinnonOsa.otsikko;
-
-      // Data haettu, päivitetään navigaatiopolku
-      $rootScope.$broadcast('paivitaNavigaatiopolku');
-
+      $scope.tutkinnonOsa = vastaus[1];
+      Navigaatiopolku.asetaElementit({ tutkinnonOsaId: $scope.tutkinnonOsa.nimi });
+      Navigaatiopolku.haeArviointiasteikot();
     }, function() {
     });
-
-//    $scope.$on('arviointiasteikot', function() {
-//      $scope.arviointiasteikot = YleinenData.arviointiasteikot;
-//    });
 
     $scope.vaihdaAmmattitaitovaatimusNakyvyys = function() {
       $scope.ammattitaitovaatimuksetSuljettu = !$scope.ammattitaitovaatimuksetSuljettu;
@@ -104,5 +93,4 @@ angular.module('eperusteApp')
     };
     palvelinhaunIlmoitusKanava.kunHakuAloitettu($scope, hakuAloitettuKäsittelijä);
     palvelinhaunIlmoitusKanava.kunHakuLopetettu($scope, hakuLopetettuKäsittelijä);
-
   });

@@ -4,13 +4,14 @@
 angular.module('eperusteApp')
   .service('YleinenData', function YleinenData($translate, Arviointiasteikot, $rootScope) {
 
+    this.kontekstit = ['ammatillinenperuskoulutus',
+                       'ammatillinenaikuiskoulutus'];
+
+    $rootScope.
       this.kontekstit = [
         'ammatillinenperuskoulutus',
         'ammatillinenaikuiskoulutus'
       ];
-
-
-      this.navigaatiopolkuElementit = {};
 
       this.kielet = {
         'suomi': 'fi',

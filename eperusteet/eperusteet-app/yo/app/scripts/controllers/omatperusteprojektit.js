@@ -2,7 +2,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('OmatperusteprojektitCtrl', function ($scope, Kayttajaprofiilit) {
+  .controller('OmatperusteprojektitCtrl', function ($scope, $state, Kayttajaprofiilit) {
     $scope.projektit = {};
     $scope.suppeaMaara = 5;
     $scope.projektitRaja = $scope.suppeaMaara;
@@ -15,7 +15,9 @@ angular.module('eperusteApp')
     var paivitaOmatProjektit = function() {
       Kayttajaprofiilit.get({}, function(vastaus) {
 
-        $scope.projektit = vastaus.perusteprojektit;
+        $scope.projektit = _.forEach(vastaus.perusteprojektit, function(pp) {
+          pp.url = $state.href('perusteprojekti.editoi', { perusteProjektiId: pp.id });
+        });
 
         if ($scope.naytetaanKaikkiSuosikit) {
           $scope.projektitNapinTeksti = piilotaTeksti;

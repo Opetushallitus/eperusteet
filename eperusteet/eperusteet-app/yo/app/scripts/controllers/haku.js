@@ -15,6 +15,7 @@ angular.module('eperusteApp')
         url: '/:konteksti',
         templateUrl: 'views/haku.html',
         controller: 'HakuCtrl',
+        naviBase: ['haku', ':konteksti'],
         navigaationimi: 'navi-hakuehdot',
         resolve: {'koulutusalaService': 'Koulutusalat'}
       });

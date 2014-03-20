@@ -5,24 +5,22 @@ angular.module('eperusteApp')
   .factory('PerusteprojektiResource', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteprojektit/:id', {
       id: '@id'
-    },
-      {
-        update: {method: 'POST', isArray: false}
-      });
+    }, {
+      update: {method: 'POST', isArray: false}
+    });
   }).service('PerusteProjektiService', function($rootScope) {
-
     var pp = {};
 
-    function save (obj) {
-      obj=obj||{};
+    function save(obj) {
+      obj = obj || {};
       pp = _.merge(_.clone(pp), _.clone(obj));
     }
 
-    function get () {
+    function get() {
       return _.clone(pp);
     }
 
-    function clean () {
+    function clean() {
       pp = {};
     }
 
