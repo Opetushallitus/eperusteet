@@ -46,8 +46,7 @@
     </thead>
     <tbody>
       <tr ng-repeat="peruste in perusteet.data">
-        <!-- <td><a ng&#45;href="#/selaus/{{konteksti}}/{{peruste.id}}"><span ng&#45;bind&#45;html="korosta(valitseKieli(peruste.nimi))"></span></a></td> -->
-        <td><a ui-sref="esitys.peruste({ id: peruste.id, konteksti: konteksti })"><span ng-bind-html="korosta(valitseKieli(peruste.nimi))"></span></a></td>
+        <td><a ui-sref="esitys.peruste({ perusteenId: peruste.id })"><span ng-bind-html="korosta(valitseKieli(peruste.nimi))"></span></a></td>
         <td>{{valitseKieli(koulutusalaNimi(peruste.koulutusala).nimi)}}</td>
         <td>{{peruste.paivays|date:'dd.MM.yyyy'}}</td>
       </tr>

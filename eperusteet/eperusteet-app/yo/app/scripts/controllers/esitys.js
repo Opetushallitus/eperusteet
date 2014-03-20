@@ -21,8 +21,6 @@ angular.module('eperusteApp')
     $stateParams, Kayttajaprofiilit, Suosikit, Perusteet, Suosikitbroadcast,
     YleinenData, palvelinhaunIlmoitusKanava) {
 
-    console.log('esitys');
-
     $scope.konteksti = $stateParams.konteksti;
     $scope.perusteValinta = {};
     $scope.syvyys = 2;
