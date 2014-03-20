@@ -24,7 +24,7 @@ import java.util.List;
  * @author jussini
  */
 public interface KoulutusalaService {
-     KoulutusalaDto get(final Long id);
+     //KoulutusalaDto get(final Long id);
      List<KoulutusalaDto> getAll();
-     void koulutusalaLammitys();
+     //void koulutusalaLammitys();
 }

@@ -22,8 +22,7 @@ public class PerusteDto implements Serializable {
     private String koodi;
     private LokalisoituTekstiDto nimi;
     private String tutkintokoodi;
-    private String koulutusala;
-    private Set<String> opintoalat;
+    private Set<KoulutusDto> koulutukset;
     private Date paivays;
     private Date siirtyma;
 }

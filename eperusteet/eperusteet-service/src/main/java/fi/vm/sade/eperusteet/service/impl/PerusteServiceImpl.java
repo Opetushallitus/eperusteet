@@ -1,24 +1,23 @@
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.Koulutusala;
-import fi.vm.sade.eperusteet.domain.Opintoala;
+import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PageDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
-import fi.vm.sade.eperusteet.repository.KoulutusalaRepository;
-import fi.vm.sade.eperusteet.repository.OpintoalaRepository;
+import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
-import fi.vm.sade.eperusteet.service.OpintoalaService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import org.slf4j.Logger;
@@ -42,19 +41,15 @@ public class PerusteServiceImpl implements PerusteService {
     private static final String KOODISTO_RELAATIO_YLA = "relaatio/sisaltyy-ylakoodit/";
     private static final String KOODISTO_RELAATIO_ALA = "relaatio/sisaltyy-alakoodit/";
     private static final String[] KOULUTUSTYYPPI_URIT = {"koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"};
+    private static final String KOULUTUSALALUOKITUS = "koulutusalaoph2002";
+    private static final String OPINTOALALUOKITUS = "opintoalaoph2002";
 
     @Autowired
     PerusteRepository perusteet;
     @Autowired
-    KoulutusalaRepository koulutusalatRepo;
-    @Autowired
-    OpintoalaRepository opintoalatRepo;
-    @Autowired
     PerusteenOsaViiteRepository viitteet;
     @Autowired
     KoulutusalaService koulutusalaService;
-    @Autowired
-    OpintoalaService opintoalaService;
     @Autowired
     @Dto
     private DtoMapper mapper;
@@ -90,8 +85,8 @@ public class PerusteServiceImpl implements PerusteService {
         int i = 0;
         if (seuraavaViite != null) {
             for (PerusteenOsaViite o : v.getLapset()) {
-                if (o.getId().equals(seuraavaViite)) {
-                    break;
+                if (o.getId().equals(seuraavaViite)) { 
+                   break;
                 }
                 i++;
             }
@@ -106,33 +101,35 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional
     public String lammitys() {
 
-        // Lämmitetään myös koulutusalat ja opintoalat järjestelmään
-        koulutusalaService.koulutusalaLammitys();
-        opintoalaService.opintoalaLammitys();
-
         RestTemplate restTemplate = new RestTemplate();
         List<Peruste> perusteEntityt = new ArrayList<>();
         KoodistoKoodiDto[] tutkinnot;
 
+        int i = 0;
         for (String koulutustyyppiUri : KOULUTUSTYYPPI_URIT) {
             tutkinnot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_YLA + koulutustyyppiUri, KoodistoKoodiDto[].class);
 
             Peruste peruste;
-            KoodistoKoodiDto[] koulutusAlakoodit;
-            int i = 0;
+            KoodistoKoodiDto[] koulutusAlarelaatiot;
+            
             for (KoodistoKoodiDto tutkinto : tutkinnot) {
 
                 if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus") && (perusteet.findOneByKoodiUri(tutkinto.getKoodiUri()) == null)) {
                     peruste = koodistoMapper.map(tutkinto, Peruste.class);
-
-                    // Haetaan joka tutkinnolle alakoodit ja lisätään tarvittavat tiedot peruste entityyn
-                    koulutusAlakoodit = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + "/" + tutkinto.getKoodiUri(), KoodistoKoodiDto[].class);
                     peruste.setTutkintokoodi(koulutustyyppiUri);
-                    peruste.setKoulutusala(parseKoulutusala(koulutusAlakoodit));
-                    peruste.setOpintoalat(new HashSet<Opintoala>(parseOpintoalat(koulutusAlakoodit)));
+                    peruste.setPaivays(new GregorianCalendar(3000, 0, 1).getTime());
+                    peruste.setKoulutukset(new HashSet<Koulutus>());
+                    Koulutus koulutus = new Koulutus();
+                    koulutus.setKoulutuskoodi(tutkinto.getKoodiUri());
+                    // Haetaan joka tutkinnolle alarelaatiot ja lisätään tarvittavat tiedot peruste entityyn
+                    koulutusAlarelaatiot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + "/" + tutkinto.getKoodiUri(), KoodistoKoodiDto[].class);
+                    koulutus.setKoulutusalakoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, KOULUTUSALALUOKITUS));
+                    koulutus.setOpintoalakoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, OPINTOALALUOKITUS));
+                    peruste.getKoulutukset().add(koulutus);
 
                     perusteEntityt.add(peruste);
-                    LOG.info(++i + " perustetta tallennettu.");
+
+                    LOG.info(++i + " perustetta lisätty.");
                 }
             }
         }
@@ -141,39 +138,14 @@ public class PerusteServiceImpl implements PerusteService {
         return "Perusteet tallennettu";
     }
 
-    private String parseTutkintotyyppi(KoodistoKoodiDto[] koulutusAlakoodit) {
-        String tutkintotyyppi = "";
-        for (KoodistoKoodiDto koulutusAlakoodi : koulutusAlakoodit) {    
-            if (koulutusAlakoodi.getKoodisto().getKoodistoUri().equals("tutkintotyyppi")) {
-                tutkintotyyppi = koulutusAlakoodi.getKoodiUri();
-                break;
-            }
-        }
-        return tutkintotyyppi;
-    }
-
-    private Koulutusala parseKoulutusala(KoodistoKoodiDto[] koulutusAlakoodit) {
-        Koulutusala koulutusala = null;
-        for (KoodistoKoodiDto koulutusAlakoodi : koulutusAlakoodit) {    
-            if (koulutusAlakoodi.getKoodisto().getKoodistoUri().equals("koulutusalaoph2002")) {
-                koulutusala = koulutusalatRepo.findOneByKoodi(koulutusAlakoodi.getKoodiUri());
+    private String parseAlarelaatiokoodi(KoodistoKoodiDto[] koulutusAlarelaatiot, String relaatio) {
+        String koulutusAlarelaatiokoodi = null;
+        for (KoodistoKoodiDto koulutusAlarelaatio : koulutusAlarelaatiot) {    
+            if (koulutusAlarelaatio.getKoodisto().getKoodistoUri().equals(relaatio)) {
+                koulutusAlarelaatiokoodi = koulutusAlarelaatio.getKoodiUri();
                 break;
             }
         }   
-        return koulutusala;
-    }
-
-    private List<Opintoala> parseOpintoalat(KoodistoKoodiDto[] koulutusAlakoodit) {
-        List<Opintoala> opintoalat = new ArrayList<>();
-        Opintoala opintoala;
-        for (KoodistoKoodiDto koulutusAlakoodi : koulutusAlakoodit) {    
-            if (koulutusAlakoodi.getKoodisto().getKoodistoUri().equals("opintoalaoph2002")) {
-                opintoala = opintoalatRepo.findOneByKoodi(koulutusAlakoodi.getKoodiUri());
-                if (opintoala != null) {
-                    opintoalat.add(opintoala);
-                }
-            }
-        }
-        return opintoalat;    
+        return koulutusAlarelaatiokoodi;
     }
 }

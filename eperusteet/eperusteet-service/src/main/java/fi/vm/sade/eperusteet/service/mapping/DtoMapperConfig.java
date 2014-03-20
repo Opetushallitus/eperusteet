@@ -59,8 +59,6 @@ public class DtoMapperConfig {
                 .register();
         factory.classMap(PerusteDto.class, Peruste.class)
                 .field("koodi", "koodiUri")
-                .fieldMap("koulutusala", "koulutusala").converter("koodistokoodiConverter").add()
-                .fieldMap("opintoalat{}", "opintoalat{}").converter("koodistokoodiConverter").add()
                 .byDefault()
                 .register();
 

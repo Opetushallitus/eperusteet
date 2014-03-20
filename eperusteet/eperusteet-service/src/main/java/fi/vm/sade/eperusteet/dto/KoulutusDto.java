@@ -14,16 +14,19 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service;
+package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.dto.OpintoalaDto;
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author harrik
  */
-public interface OpintoalaService {
-    void opintoalaLammitys();
-    List<OpintoalaDto> getAll();
+@Getter
+@Setter
+public class KoulutusDto {
+    private String koulutuskoodi;
+    private String koulutusalakoodi;
+    private String opintoalakoodi;
 }
