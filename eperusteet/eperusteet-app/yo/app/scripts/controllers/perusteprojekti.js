@@ -26,14 +26,15 @@ angular.module('eperusteApp')
     $scope.projekti = {};
     $scope.projekti.peruste = {};
     $scope.projekti.peruste.nimi = {};
-    $scope.projekti.peruste.opintoalat = [];
+    $scope.projekti.peruste.koulutukset = [];
+    $scope.projekti.peruste.koulutukset.push({koulutuskoodi: {}, koulutusalakoodi: {}, opintoalakoodi: {}});
 
     $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojektiPerustiedot.html'},
                    {otsikko: 'projekti-projektiryhmä', url: 'views/partials/perusteprojektiProjektiryhma.html'},
                    {otsikko: 'projekti-peruste', url: 'views/partials/perusteprojektiPeruste.html'}];
 
     if ($stateParams.perusteProjektiId !== 'uusi') {
-      $scope.projekti.perusteProjektiId = $stateParams.perusteProjektiId;
+      $scope.projekti.id = $stateParams.perusteProjektiId;
       PerusteprojektiResource.get({ id: $stateParams.perusteProjektiId }, function(vastaus) {
         $scope.projekti = vastaus;
         Navigaatiopolku.asetaElementit({ perusteProjektiId: vastaus.nimi });
@@ -45,14 +46,19 @@ angular.module('eperusteApp')
     $scope.tallennaPerusteprojekti = function() {
       var projekti = PerusteProjektiService.get();
 
-      if (projekti.perusteProjektiId) {
+      console.log('tallenna projekti', projekti);
+      if (projekti.id) {
+        console.log('vanha peruste');
         PerusteprojektiResource.update(projekti, function() {
           PerusteProjektiService.update();
         });
       } else {
+        console.log('uusi peruste');
         PerusteprojektiResource.save(projekti, function(vastaus) {
           PerusteProjektiService.update();
           $state.go('perusteprojekti.editoi', { id: vastaus.perusteProjektiId });
+        }, function(virhe) {
+          console.log('virhe', virhe);
         });
       }
     };

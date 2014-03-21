@@ -62,7 +62,7 @@ public class Peruste implements Serializable {
     @Setter
     private String tutkintokoodi;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "peruste_koulutus",
             joinColumns = @JoinColumn(name = "peruste_id"),
             inverseJoinColumns = @JoinColumn(name = "koulutus_id"))

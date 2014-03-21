@@ -37,14 +37,14 @@ European Union Public Licence for more details.
         <div class="form-group">
             <label for="koulutusala" class="col-sm-3" translate>haku-koulutusala</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="koulutusala" value="{{valitseKieli(koulutusalaNimi(projekti.peruste.koulutusala).nimi)}}" placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
+                <input type="text" class="form-control" id="koulutusala" value="{{valitseKieli(koulutusalaNimi(projekti.peruste.koulutukset[0].koulutusalakoodi).nimi)}}" placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
             </div>
         </div>
         <div class="form-group">
             <label for="opintoala" class="col-sm-3" translate>haku-opintoala</label>
             <div class="col-sm-9">
-                <input ng-show="projekti.peruste.opintoalat.length < 1" type="text" class="form-control" id="opintoala"  placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
-                <input ng-repeat="opintoala in projekti.peruste.opintoalat" type="text" class="form-control" id="opintoala" value="{{valitseKieli(opintoalaNimi(opintoala).nimi)}}" placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
+                <!--input ng-show="projekti.peruste.opintoalat.length < 1" type="text" class="form-control" id="opintoala"  placeholder="{{'valitse-peruste' | translate}}" readonly="true"/-->
+                <input type="text" class="form-control" id="opintoala" value="{{valitseKieli(opintoalaNimi(projekti.peruste.koulutukset[0].opintoalakoodi).nimi)}}" placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
             </div>
         </div>
     </div>
