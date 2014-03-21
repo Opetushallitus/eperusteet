@@ -19,7 +19,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fi.vm.sade.eperusteet.dto.EntityReference;
 import java.util.List;
@@ -101,7 +100,6 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
         converter.getObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
         converter.getObjectMapper().registerModule(new JodaModule());
         converter.getObjectMapper().registerModule(new EPerusteetMappingModule());
-        converter.getObjectMapper().registerModule(new Hibernate4Module().enable(Hibernate4Module.Feature.SERIALIZE_IDENTIFIER_FOR_LAZY_NOT_LOADED_OBJECTS));
         return converter;
     }
 
