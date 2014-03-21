@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.audit.Revision;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.repository.ArviointiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
@@ -81,7 +83,6 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     }
 
 	@Override
-	@Transactional
 	public List<Revision> getRevisions(Long id) {
 		return perusteenOsaRepo.getRevisions(id);
 	}
@@ -89,5 +90,11 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 	@Override
 	public PerusteenOsaDto getRevision(Long id, Integer revisionId) {
 		return mapper.map(perusteenOsaRepo.findRevision(id, revisionId), PerusteenOsaDto.class);
+	}
+	
+	@Override
+	public List<Revision> getNestedRevisions(TutkinnonOsaDto tutkinnonOsaDto) {
+		TutkinnonOsa tutkinnonOsa = mapper.map(tutkinnonOsaDto, TutkinnonOsa.class);
+		return perusteenOsaRepo.getNestedRevisions(tutkinnonOsa);
 	}
 }

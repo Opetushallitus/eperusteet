@@ -59,7 +59,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     private String koodiUri;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED, withModifiedFlag = true)
     private Arviointi arviointi;
 
     public TekstiPalanen getTavoitteet() {

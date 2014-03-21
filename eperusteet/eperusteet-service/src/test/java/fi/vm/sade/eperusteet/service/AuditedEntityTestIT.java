@@ -25,6 +25,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -34,8 +36,13 @@ import org.springframework.test.annotation.DirtiesContext;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.audit.Revision;
+import fi.vm.sade.eperusteet.dto.ArviointiDto;
+import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
+import fi.vm.sade.eperusteet.repository.custom.PerusteenOsaRepositoryImpl;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 
 /**
@@ -43,12 +50,13 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
  * @author jhyoty
  */
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-//@TransactionConfiguration
 public class AuditedEntityTestIT extends AbstractIntegrationTest {
+	
+	@SuppressWarnings("unused")
+	private static final Logger LOG = LoggerFactory.getLogger(PerusteenOsaRepositoryImpl.class);
 
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
-    
     @Autowired
     private PerusteenOsaService perusteenOsaService;
 
@@ -106,6 +114,44 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
     	assertNotNull(revisions);
         assertEquals(1, revisions.size());
         
+    }
+    
+    @Test
+    public void testTutkinnonOsaRevisions() {
+    	TutkinnonOsaDto tutkinnonOsaDto = new TutkinnonOsaDto();
+    	tutkinnonOsaDto.setNimi(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Nimi")));
+    	tutkinnonOsaDto = perusteenOsaService.save(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+    	
+    	tutkinnonOsaDto.setArviointi(new ArviointiDto());
+    	tutkinnonOsaDto.getArviointi().setLisatiedot(new LokalisoituTekstiDto(Collections.singletonMap("fi", "lisätiedot")));
+    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+    	
+    	tutkinnonOsaDto.getArviointi().setLisatiedot(new LokalisoituTekstiDto(Collections.singletonMap("fi", "lisätiedot, muokattu")));
+    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+    	
+    	tutkinnonOsaDto.setAmmattitaitovaatimukset(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Ammattitaitovaatimukset")));
+    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+    	
+    	List<Revision> tutkinnonOsaRevisions = perusteenOsaService.getNestedRevisions(tutkinnonOsaDto);
+    	
+    	assertNotNull(tutkinnonOsaRevisions);
+        assertEquals(4, tutkinnonOsaRevisions.size());
+        
+        tutkinnonOsaDto = (TutkinnonOsaDto) perusteenOsaService.getRevision(tutkinnonOsaDto.getId(), 3);
+        assertNotNull(tutkinnonOsaDto);
+        assertNotNull(tutkinnonOsaDto.getArviointi());
+        assertNotNull(tutkinnonOsaDto.getArviointi().getLisatiedot());
+        assertNotNull(tutkinnonOsaDto.getArviointi().getLisatiedot().getTekstit());
+        assertEquals("lisätiedot, muokattu", tutkinnonOsaDto.getArviointi().getLisatiedot().getTekstit().get(Kieli.FI));
+        LOG.debug(tutkinnonOsaDto.getArviointi().getLisatiedot().getTekstit().get(Kieli.FI));
+        
+        tutkinnonOsaDto = (TutkinnonOsaDto) perusteenOsaService.getRevision(tutkinnonOsaDto.getId(), 2);
+        assertNotNull(tutkinnonOsaDto);
+        assertNotNull(tutkinnonOsaDto.getArviointi());
+        assertNotNull(tutkinnonOsaDto.getArviointi().getLisatiedot());
+        assertNotNull(tutkinnonOsaDto.getArviointi().getLisatiedot().getTekstit());
+        assertEquals("lisätiedot", tutkinnonOsaDto.getArviointi().getLisatiedot().getTekstit().get(Kieli.FI));
+        LOG.debug(tutkinnonOsaDto.getArviointi().getLisatiedot().getTekstit().get(Kieli.FI));
     }
 
     private void setUpSecurityContext(String username) {
