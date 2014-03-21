@@ -18,17 +18,11 @@ angular.module('eperusteApp')
     YleinenData, Navigaatiopolku, PerusteenOsat, Perusteet, palvelinhaunIlmoitusKanava) {
 
     $scope.tutkinnonOsa = {};
-    var avausTyyli = 'glyphicon glyphicon-plus pointer';
-    var sulkemisTyyli = 'glyphicon glyphicon-minus pointer';
-    $scope.ammattitaitovaatimusTyyli = sulkemisTyyli;
-    $scope.ammattitaitovaatimuksetSuljettu = false;
-    $scope.ammattitaidonOsoittamistavatTyyli = avausTyyli;
-    $scope.ammattitaidonOsoittamistavatSuljettu = true;
-    $scope.arviointiTyyli = avausTyyli;
-    $scope.arviointiSuljettu = true;
+    
+    $scope.ammattitaitovaatimusNakyy = true;
 
     $scope.revisiotiedot = null;
-    $scope.revisionId = null;
+    $scope.revisio = null;
 
     var perusteHakuPromise = (function() {
       if ($stateParams.perusteenId) {
@@ -69,16 +63,16 @@ angular.module('eperusteApp')
       }
     };
     
-    $scope.getRevision = function(revisioId) {
-      PerusteenOsat.getRevision({osanId: $scope.tutkinnonOsa.id, revisionId: revisioId}).$promise.then(function(response) {
+    $scope.getRevision = function(revisio) {
+      PerusteenOsat.getRevision({osanId: $scope.tutkinnonOsa.id, revisionId: revisio.number}).$promise.then(function(response) {
         console.log(response);
         $scope.tutkinnonOsa = response;
         
-        if(revisioId === _.chain($scope.revisiotiedot).sortBy('date').last().value().number) {
-          $scope.revisionId = null;
+        if(revisio.number === _.chain($scope.revisiotiedot).sortBy('date').last().value().number) {
+          $scope.revisio = null;
         } else {
           console.log('set revision id');
-          $scope.revisionId = revisioId;
+          $scope.revisio = revisio;
         }
         
       }, function(error) {
@@ -86,35 +80,13 @@ angular.module('eperusteApp')
       });
     };
 
-    $scope.vaihdaAmmattitaitovaatimusNakyvyys = function() {
-      $scope.ammattitaitovaatimuksetSuljettu = !$scope.ammattitaitovaatimuksetSuljettu;
-      if ($scope.ammattitaitovaatimuksetSuljettu) {
-        $scope.ammattitaitovaatimusTyyli = avausTyyli;
-      } else {
-        $scope.ammattitaitovaatimusTyyli = sulkemisTyyli;
-      }
-    };
-
-    $scope.vaihdaAmmattitaidonOsoittamistavatNakyvyys = function() {
-      $scope.ammattitaidonOsoittamistavatSuljettu = !$scope.ammattitaidonOsoittamistavatSuljettu;
-      if ($scope.ammattitaidonOsoittamistavatSuljettu) {
-        $scope.ammattitaidonOsoittamistavatTyyli = avausTyyli;
-      } else {
-        $scope.ammattitaidonOsoittamistavatTyyli = sulkemisTyyli;
-      }
-    };
-
-    $scope.vaihdaArviointiNakyvyys = function() {
-      $scope.arviointiSuljettu = !$scope.arviointiSuljettu;
-      if ($scope.arviointiSuljettu) {
-        $scope.arviointiTyyli = avausTyyli;
-      } else {
-        $scope.arviointiTyyli = sulkemisTyyli;
-      }
-    };
-
     $scope.valitseKieli = function(nimi) {
       return YleinenData.valitseKieli(nimi);
+    };
+    
+    $scope.alert = function() {
+      console.log('moro');
+      console.log($scope.tavoitteetNakyy);
     };
 
     var hakuAloitettuKäsittelijä = function() {

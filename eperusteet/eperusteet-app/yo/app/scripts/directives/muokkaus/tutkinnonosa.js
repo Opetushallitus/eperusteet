@@ -100,7 +100,7 @@ angular.module('eperusteApp')
               } else {
                 PerusteenOsat.saveTutkinnonOsa($scope.editableTutkinnonOsa).$promise.then(function(response) {
                   openNotificationDialog().result.then(function() {
-                    $state.go('muokkaus.tutkinnonosa', { id: response.id });
+                    $state.go('muokkaus.vanha', { id: response.id, perusteenOsanTyyppi: 'tutkinnonosa' });
                   });
                 });
               }

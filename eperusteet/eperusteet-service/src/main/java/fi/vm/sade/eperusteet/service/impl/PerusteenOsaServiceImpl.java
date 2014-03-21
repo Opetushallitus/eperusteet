@@ -84,6 +84,10 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
 	@Override
 	public List<Revision> getRevisions(Long id) {
+		PerusteenOsa perusteenOsa = perusteenOsaRepo.findOne(id);
+		if(perusteenOsa instanceof TutkinnonOsa) {
+			return perusteenOsaRepo.getNestedRevisions((TutkinnonOsa) perusteenOsa);
+		}
 		return perusteenOsaRepo.getRevisions(id);
 	}
 
