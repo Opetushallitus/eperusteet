@@ -7,19 +7,24 @@ angular.module('eperusteApp')
     PerusteProjektiService.watcher($scope, 'projekti');
 
     $scope.koodistoHaku = function(koodisto) {
+      
+      console.log('projekti', $scope.projekti);
+      
       $scope.projekti.peruste.nimi = koodisto.nimi;
       $scope.projekti.peruste.koodi = koodisto.koodi;
+      $scope.projekti.peruste.koulutukset[0].koulutuskoodi = koodisto.koodi;
       
       Koodisto.haeAlarelaatiot($scope.projekti.peruste.koodi, function (relaatiot) {
-        $scope.projekti.peruste.opintoalat.length = 0;
-        $scope.projekti.peruste.koulutusala = {};
+        $scope.projekti.peruste.koulutukset[0].opintoalakoodi = {};
+        $scope.projekti.peruste.koulutukset[0].koulutusalakoodi = {};
+        
         _.forEach(relaatiot, function(rel) {
           switch (rel.koodisto.koodistoUri) {
             case 'koulutusalaoph2002':
-              $scope.projekti.peruste.koulutusala = rel.koodi;
+              $scope.projekti.peruste.koulutukset[0].koulutusalakoodi = rel.koodi;
               break;
             case 'opintoalaoph2002':
-              $scope.projekti.peruste.opintoalat.push(rel.koodi);
+              $scope.projekti.peruste.koulutukset[0].opintoalakoodi = rel.koodi;
               break;
           }
         });
