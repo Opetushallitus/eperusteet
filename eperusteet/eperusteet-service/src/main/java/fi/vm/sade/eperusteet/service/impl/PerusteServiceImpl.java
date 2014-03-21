@@ -15,11 +15,12 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,12 @@ public class PerusteServiceImpl implements PerusteService {
     private static final String[] KOULUTUSTYYPPI_URIT = {"koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"};
     private static final String KOULUTUSALALUOKITUS = "koulutusalaoph2002";
     private static final String OPINTOALALUOKITUS = "opintoalaoph2002";
-
+    
+    private static final List<String> ERIKOISTAPAUKSET = new ArrayList<>(Arrays.asList(new String[]{"koulutus_357802", "koulutus_327110", "koulutus_354803", "koulutus_324111", "koulutus_354710",
+            "koulutus_324125", "koulutus_357709", "koulutus_327124", "koulutus_355904", "koulutus_324129", "koulutus_358903", "koulutus_327127",
+            "koulutus_355412", "koulutus_324126", "koulutus_355413", "koulutus_324127", "koulutus_358412", "koulutus_327126", "koulutus_354708",
+            "koulutus_324123", "koulutus_357707", "koulutus_327122"}));
+  
     @Autowired
     PerusteRepository perusteet;
     @Autowired
@@ -104,6 +110,9 @@ public class PerusteServiceImpl implements PerusteService {
         RestTemplate restTemplate = new RestTemplate();
         List<Peruste> perusteEntityt = new ArrayList<>();
         KoodistoKoodiDto[] tutkinnot;
+        
+        Map<String, String> erikoistapausMap = new HashMap<>();
+        erikoistapausMap = alustaErikoistapausMap();        
 
         int i = 0;
         for (String koulutustyyppiUri : KOULUTUSTYYPPI_URIT) {
@@ -115,10 +124,15 @@ public class PerusteServiceImpl implements PerusteService {
             for (KoodistoKoodiDto tutkinto : tutkinnot) {
 
                 if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus") && (perusteet.findOneByKoodiUri(tutkinto.getKoodiUri()) == null)) {
-                    peruste = koodistoMapper.map(tutkinto, Peruste.class);
-                    peruste.setTutkintokoodi(koulutustyyppiUri);
-                    peruste.setPaivays(new GregorianCalendar(3000, 0, 1).getTime());
-                    peruste.setKoulutukset(new HashSet<Koulutus>());
+                                        
+                    peruste = haeErikoistapaus(tutkinto.getKoodiUri(), perusteEntityt, erikoistapausMap);
+                    if (peruste == null) {
+                        peruste = koodistoMapper.map(tutkinto, Peruste.class);
+                        peruste.setTutkintokoodi(koulutustyyppiUri);
+                        peruste.setPaivays(new GregorianCalendar(3000, 0, 1).getTime());
+                        peruste.setKoulutukset(new HashSet<Koulutus>());
+                    }
+                    
                     Koulutus koulutus = new Koulutus();
                     koulutus.setKoulutuskoodi(tutkinto.getKoodiUri());
                     // Haetaan joka tutkinnolle alarelaatiot ja lisätään tarvittavat tiedot peruste entityyn
@@ -127,8 +141,10 @@ public class PerusteServiceImpl implements PerusteService {
                     koulutus.setOpintoalakoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, OPINTOALALUOKITUS));
                     peruste.getKoulutukset().add(koulutus);
 
-                    perusteEntityt.add(peruste);
-
+                    if (!perusteEntityt.contains(peruste)) {
+                        perusteEntityt.add(peruste);
+                    }
+                    
                     LOG.info(++i + " perustetta lisätty.");
                 }
             }
@@ -147,5 +163,29 @@ public class PerusteServiceImpl implements PerusteService {
             }
         }   
         return koulutusAlarelaatiokoodi;
+    }
+    
+    private Peruste haeErikoistapaus(String koodiUri, List<Peruste> perusteEntityt, Map<String,String> erikoistapausMap) {
+        Peruste peruste = null;
+        if (ERIKOISTAPAUKSET.contains(koodiUri)) {
+            for (Peruste perusteEntity : perusteEntityt) {
+                if (perusteEntity.getKoodiUri().equals(erikoistapausMap.get(koodiUri))) {
+                    peruste = perusteEntity;
+                    break;
+                }
+            }            
+        }
+        return peruste;
+    }
+
+    private Map<String, String> alustaErikoistapausMap() {
+        Map<String, String> erikoistapausMap = new HashMap<>();
+        
+        for (int i = 0; i < ERIKOISTAPAUKSET.size(); i++) {
+            String vastaarvo = i%2==0 ? ERIKOISTAPAUKSET.get(i+1) : ERIKOISTAPAUKSET.get(i-1);
+            erikoistapausMap.put(ERIKOISTAPAUKSET.get(i), vastaarvo);
+        }
+        return erikoistapausMap;
+        
     }
 }
