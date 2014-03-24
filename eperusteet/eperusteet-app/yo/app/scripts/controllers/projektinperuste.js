@@ -7,9 +7,7 @@ angular.module('eperusteApp')
     PerusteProjektiService.watcher($scope, 'projekti');
 
     $scope.koodistoHaku = function(koodisto) {
-      
-      console.log('projekti', $scope.projekti);
-      
+
       $scope.projekti.peruste.nimi = koodisto.nimi;
       $scope.projekti.peruste.koodi = koodisto.koodi;
       $scope.projekti.peruste.koulutukset[0].koulutuskoodi = koodisto.koodi;
