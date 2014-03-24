@@ -29,7 +29,7 @@ angular.module('eperusteApp')
 
     var perusteHakuPromise = (function() {
       if ($stateParams.perusteenId) {
-        return Perusteet.get({perusteenId: $stateParams.perusteeId}).$promise;
+        return Perusteet.get({perusteenId: $stateParams.perusteenId}).$promise;
       } else {
         return $q.reject();
       }
@@ -45,12 +45,12 @@ angular.module('eperusteApp')
 
     $q.all([perusteHakuPromise, tutkinnonOsaHakuPromise]).then(function(vastaus) {
       $scope.peruste = vastaus[0];
-      Navigaatiopolku.navigaatiopolkuElementit.peruste = $scope.peruste.nimi;
+      Navigaatiopolku.asetaElementit({ peruste: $scope.peruste.nimi });
 
       $scope.tutkinnonOsa = vastaus[1];
       Navigaatiopolku.asetaElementit({ tutkinnonOsaId: $scope.tutkinnonOsa.nimi });
-      Navigaatiopolku.haeArviointiasteikot();
     }, function() {
+      console.err('virhe ladattaessa tutkinnon osan esityssivua.');
     });
 
     $scope.vaihdaAmmattitaitovaatimusNakyvyys = function() {
