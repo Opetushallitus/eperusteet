@@ -1,13 +1,12 @@
 <ul class="nav nav-tabs">
-	<li><a>{{'esiopetus'|translate}}</a></li>
-	<li><a>{{'perusopetus'|translate}}</a></li>
-	<li><a>{{'lukiokoulutus'|translate}}</a></li>
-	<li ng-class="{ active: isActive('/selaus/ammatillinenperuskoulutus')}"><a ui-sref="selaus.konteksti({ konteksti: 'ammatillinenperuskoulutus' })">{{'ammatillinenperuskoulutus'|translate}}</a></li>
-	<li ng-class="{ active: isActive('/selaus/ammatillinenaikuiskoulutus')}"><a ui-sref="selaus.konteksti({ konteksti: 'ammatillinenaikuiskoulutus' })">{{'ammatillinenaikuiskoulutus'|translate}}</a></li>
+  <li ui-sref-active="active"><a>{{'esiopetus'|translate}}</a></li>
+  <li ui-sref-active="active"><a>{{'perusopetus'|translate}}</a></li>
+  <li ui-sref-active="active"><a>{{'lukiokoulutus'|translate}}</a></li>
+  <li ui-sref-active="active"><a ui-sref="selaus.ammatillinenperuskoulutus">{{'ammatillinenperuskoulutus'|translate}}</a></li>
+  <li ui-sref-active="active"><a ui-sref="selaus.ammatillinenaikuiskoulutus">{{'ammatillinenaikuiskoulutus'|translate}}</a></li>
 </ul>
 
 <ol class="breadcrumb">
-    <!-- <li ng&#45;repeat="navigaatiopolku in navigaatiopolut"><a href="#{{navigaatiopolku.polku}}" ng&#45;hide="$last">{{navigaatiopolku.navigaationimi}}</a><span ng&#45;show="$last">{{navigaatiopolku.navigaationimi}}</span></li> -->
     <li ng-repeat="np in navigaatiopolku">
       <a ng-hide="$last" ng-href="{{ np.url }}">{{ np.arvo | translate }}</a>
       <span ng-show="$last">{{ np.arvo | translate }}</span>

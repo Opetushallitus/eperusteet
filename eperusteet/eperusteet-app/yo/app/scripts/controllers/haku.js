@@ -7,22 +7,54 @@ angular.module('eperusteApp')
       .state('selaus', {
         url: '/selaus',
         template: '<div ui-view></div>',
-        // controller: 'HakuCtrl',
-        // navigaationimi: 'navi-hakuehdot',
-        // resolve: {'koulutusalaService': 'Koulutusalat'}
       })
-      .state('selaus.konteksti', {
-        url: '/:konteksti',
+      .state('selaus.ammatillinenperuskoulutus', {
+        url: '/ammatillinenperuskoulutus',
         templateUrl: 'views/haku.html',
-        controller: 'HakuCtrl',
-        naviBase: ['haku', ':konteksti'],
+        controller: 'HakuAmmatillinenPerusCtrl',
+        naviBase: ['haku', 'ammatillinenperuskoulutus'],
+        navigaationimi: 'navi-hakuehdot',
+        resolve: {'koulutusalaService': 'Koulutusalat'}
+      })
+      .state('selaus.ammatillinenaikuiskoulutus', {
+        url: '/ammatillinenaikuiskoulutus',
+        templateUrl: 'views/haku.html',
+        controller: 'HakuAmmatillinenAikuisCtrl',
+        naviBase: ['haku', 'ammatillinenaikuiskoulutus'],
         navigaationimi: 'navi-hakuehdot',
         resolve: {'koulutusalaService': 'Koulutusalat'}
       });
   })
-  .controller('HakuCtrl', function($scope, $rootScope, $window, $state, $stateParams,
-      Perusteet, Haku, YleinenData, koulutusalaService) {
-
+  .controller('HakuAmmatillinenAikuisCtrl', function($scope, $rootScope, $window, $state,
+      Perusteet, Haku, YleinenData, koulutusalaService, $controller) {
+    angular.extend(this, $controller('HakuCtrl', {
+      $scope: $scope,
+      $rootScope: $rootScope,
+      $window: $window,
+      $state: $state,
+      Perusteet: Perusteet,
+      Haku: Haku,
+      YleinenData: YleinenData,
+      koulutusalaService: koulutusalaService,
+      konteksti: 'ammatillinenaikuiskoulutus'
+    }));
+  })
+  .controller('HakuAmmatillinenPerusCtrl', function($scope, $rootScope, $window, $state,
+      Perusteet, Haku, YleinenData, koulutusalaService, $controller) {
+    angular.extend(this, $controller('HakuCtrl', {
+      $scope: $scope,
+      $rootScope: $rootScope,
+      $window: $window,
+      $state: $state,
+      Perusteet: Perusteet,
+      Haku: Haku,
+      YleinenData: YleinenData,
+      koulutusalaService: koulutusalaService,
+      konteksti: 'ammatillinenperuskoulutus'
+    }));
+  })
+  .controller('HakuCtrl', function($scope, $rootScope, $window, $state,
+    Perusteet, Haku, YleinenData, koulutusalaService, konteksti) {
     var pat = '';
     // Viive, joka odotetaan, ennen kuin haku nimi muutoksesta lähtee serverille.
     var hakuViive = 300; //ms
@@ -35,7 +67,7 @@ angular.module('eperusteApp')
     $scope.tutkintotyyppi = Haku.hakuParametrit.tyyppi;
     $scope.siirtymaAjalla = Haku.hakuParametrit.siirtyma;
     $scope.valittuOpintoala = Haku.hakuParametrit.opintoala;
-    $scope.konteksti = $stateParams.konteksti;
+    $scope.konteksti = konteksti;
     $scope.kontekstit = YleinenData.kontekstit;
     $scope.kieli = YleinenData.kieli;
     $scope.koulutusalat = koulutusalaService.haeKoulutusalat();
@@ -58,13 +90,8 @@ angular.module('eperusteApp')
       }
     };
 
-    if ($stateParams.konteksti && $scope.kontekstit.indexOf($stateParams.konteksti.toLowerCase()) !== -1) {
-      $scope.konteksti = $stateParams.konteksti;
-      alustaKonteksti();
-      $rootScope.$broadcast('paivitaNavigaatiopolku');
-    } else {
-      $state.go('selaus.konteksti', { konteksti: 'ammatillinenperuskoulutus' });
-    }
+    alustaKonteksti();
+    // TODO Päivitä navipolku
 
     $scope.tyhjenna = function() {
       $scope.query = null;
