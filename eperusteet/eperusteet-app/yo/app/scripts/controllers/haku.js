@@ -14,44 +14,16 @@ angular.module('eperusteApp')
         controller: 'HakuAmmatillinenPerusCtrl',
         naviBase: ['haku', 'ammatillinenperuskoulutus'],
         navigaationimi: 'navi-hakuehdot',
-        resolve: {'koulutusalaService': 'Koulutusalat'}
+        resolve: {'koulutusalaService': 'Koulutusalat', konteksti: function() { return 'ammatillinenperuskoulutus'; }}
       })
       .state('selaus.ammatillinenaikuiskoulutus', {
         url: '/ammatillinenaikuiskoulutus',
         templateUrl: 'views/haku.html',
-        controller: 'HakuAmmatillinenAikuisCtrl',
+        controller: 'HakuCtrl',
         naviBase: ['haku', 'ammatillinenaikuiskoulutus'],
         navigaationimi: 'navi-hakuehdot',
-        resolve: {'koulutusalaService': 'Koulutusalat'}
+        resolve: {'koulutusalaService': 'Koulutusalat', konteksti: function() { return 'ammatillinenaikuiskoulutus'; }}
       });
-  })
-  .controller('HakuAmmatillinenAikuisCtrl', function($scope, $rootScope, $window, $state,
-      Perusteet, Haku, YleinenData, koulutusalaService, $controller) {
-    angular.extend(this, $controller('HakuCtrl', {
-      $scope: $scope,
-      $rootScope: $rootScope,
-      $window: $window,
-      $state: $state,
-      Perusteet: Perusteet,
-      Haku: Haku,
-      YleinenData: YleinenData,
-      koulutusalaService: koulutusalaService,
-      konteksti: 'ammatillinenaikuiskoulutus'
-    }));
-  })
-  .controller('HakuAmmatillinenPerusCtrl', function($scope, $rootScope, $window, $state,
-      Perusteet, Haku, YleinenData, koulutusalaService, $controller) {
-    angular.extend(this, $controller('HakuCtrl', {
-      $scope: $scope,
-      $rootScope: $rootScope,
-      $window: $window,
-      $state: $state,
-      Perusteet: Perusteet,
-      Haku: Haku,
-      YleinenData: YleinenData,
-      koulutusalaService: koulutusalaService,
-      konteksti: 'ammatillinenperuskoulutus'
-    }));
   })
   .controller('HakuCtrl', function($scope, $rootScope, $window, $state,
     Perusteet, Haku, YleinenData, koulutusalaService, konteksti) {
