@@ -11,9 +11,8 @@ angular.module('eperusteApp')
       .state('selaus.ammatillinenperuskoulutus', {
         url: '/ammatillinenperuskoulutus',
         templateUrl: 'views/haku.html',
-        controller: 'HakuAmmatillinenPerusCtrl',
+        controller: 'HakuCtrl',
         naviBase: ['haku', 'ammatillinenperuskoulutus'],
-        navigaationimi: 'navi-hakuehdot',
         resolve: {'koulutusalaService': 'Koulutusalat', konteksti: function() { return 'ammatillinenperuskoulutus'; }}
       })
       .state('selaus.ammatillinenaikuiskoulutus', {
@@ -21,7 +20,6 @@ angular.module('eperusteApp')
         templateUrl: 'views/haku.html',
         controller: 'HakuCtrl',
         naviBase: ['haku', 'ammatillinenaikuiskoulutus'],
-        navigaationimi: 'navi-hakuehdot',
         resolve: {'koulutusalaService': 'Koulutusalat', konteksti: function() { return 'ammatillinenaikuiskoulutus'; }}
       });
   })
