@@ -21,6 +21,9 @@ angular.module('eperusteApp')
       this.kieli = 'fi';
 
       this.arviointiasteikot = undefined;
+      
+      this.dateFormatDatepicker = 'd.M.yyyy';
+      this.dateFormatMomentJS = 'D.M.YYYY';
 
       this.haeArviointiasteikot = function() {
         if (this.arviointiasteikot === undefined) {
