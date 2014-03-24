@@ -37,12 +37,11 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
-import fi.vm.sade.eperusteet.domain.audit.Revision;
 import fi.vm.sade.eperusteet.dto.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
-import fi.vm.sade.eperusteet.repository.custom.PerusteenOsaRepositoryImpl;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 
 /**
@@ -52,8 +51,7 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AuditedEntityTestIT extends AbstractIntegrationTest {
 	
-	@SuppressWarnings("unused")
-	private static final Logger LOG = LoggerFactory.getLogger(PerusteenOsaRepositoryImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AuditedEntityTestIT.class);
 
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
@@ -132,7 +130,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
     	tutkinnonOsaDto.setAmmattitaitovaatimukset(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Ammattitaitovaatimukset")));
     	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
     	
-    	List<Revision> tutkinnonOsaRevisions = perusteenOsaService.getNestedRevisions(tutkinnonOsaDto);
+    	List<Revision> tutkinnonOsaRevisions = perusteenOsaService.getRevisions(tutkinnonOsaDto.getId());
     	
     	assertNotNull(tutkinnonOsaRevisions);
         assertEquals(4, tutkinnonOsaRevisions.size());

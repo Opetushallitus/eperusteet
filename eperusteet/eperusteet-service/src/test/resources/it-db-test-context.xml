@@ -88,6 +88,6 @@
     <property name="entityManagerFactory" ref="entityManager"/>
   </bean>
 
-  <jpa:repositories base-package="fi.vm.sade.eperusteet.repository" />
+  <jpa:repositories base-package="fi.vm.sade.eperusteet.repository" factory-class="fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepositoryFactoryBean" />
 
 </beans>

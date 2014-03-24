@@ -11,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.repository.ArviointiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
@@ -35,9 +33,6 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Autowired
     private TutkinnonOsaRepository tutkinnonOsaRepo;
-
-    @Autowired
-    private ArviointiRepository arviointiRepository;
 
     @Autowired
     @Dto
@@ -85,9 +80,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 	@Override
 	public List<Revision> getRevisions(Long id) {
 		PerusteenOsa perusteenOsa = perusteenOsaRepo.findOne(id);
-//		if(perusteenOsa instanceof TutkinnonOsa) {
-//			return perusteenOsaRepo.getNestedRevisions((TutkinnonOsa) perusteenOsa);
-//		}
+		if(perusteenOsa instanceof TutkinnonOsa) {
+			return tutkinnonOsaRepo.getRevisions(id, "arviointi");
+		}
 		return perusteenOsaRepo.getRevisions(id);
 	}
 
@@ -95,10 +90,4 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 	public PerusteenOsaDto getRevision(Long id, Integer revisionId) {
 		return mapper.map(perusteenOsaRepo.findRevision(id, revisionId), PerusteenOsaDto.class);
 	}
-	
-//	@Override
-//	public List<Revision> getNestedRevisions(TutkinnonOsaDto tutkinnonOsaDto) {
-//		TutkinnonOsa tutkinnonOsa = mapper.map(tutkinnonOsaDto, TutkinnonOsa.class);
-//		return perusteenOsaRepo.getNestedRevisions(tutkinnonOsa);
-//	}
 }

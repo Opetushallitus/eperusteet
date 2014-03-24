@@ -4,7 +4,6 @@ import java.util.List;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 
 /**
@@ -28,6 +27,4 @@ public interface PerusteenOsaService {
 	public List<Revision> getRevisions(Long id);
 	
 	public PerusteenOsaDto getRevision(final Long id, final Integer revisionId);
-	
-//	public List<Revision> getNestedRevisions(TutkinnonOsaDto tutkinnonOsaDto);
 }
