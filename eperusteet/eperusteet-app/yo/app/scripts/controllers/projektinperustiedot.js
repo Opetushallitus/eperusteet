@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .controller('ProjektinperustiedotCtrl', function($scope, PerusteProjektiService) {
+  .controller('ProjektinperustiedotCtrl', function($scope, PerusteProjektiService, YleinenData) {
   PerusteProjektiService.watcher($scope, 'projekti');
 
   $scope.tehtavaluokat = [
@@ -38,6 +38,6 @@ angular.module('eperusteApp')
     'starting-day': 1
   };
 
-  $scope.format = 'd.M.yyyy';
+  $scope.format = YleinenData.dateFormatDatepicker;
 });
 
