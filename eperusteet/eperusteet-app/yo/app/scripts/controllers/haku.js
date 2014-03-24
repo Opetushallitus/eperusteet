@@ -6,20 +6,20 @@ angular.module('eperusteApp')
     $stateProvider
       .state('selaus', {
         url: '/selaus',
-        template: '<div ui-view></div>',
+        template: '<div ui-view></div>'
       })
       .state('selaus.ammatillinenperuskoulutus', {
         url: '/ammatillinenperuskoulutus',
         templateUrl: 'views/haku.html',
         controller: 'HakuCtrl',
-        naviBase: ['haku', 'ammatillinenperuskoulutus'],
+        naviBase: ['haku', 'ammatillinen-peruskoulutus'],
         resolve: {'koulutusalaService': 'Koulutusalat', konteksti: function() { return 'ammatillinenperuskoulutus'; }}
       })
       .state('selaus.ammatillinenaikuiskoulutus', {
         url: '/ammatillinenaikuiskoulutus',
         templateUrl: 'views/haku.html',
         controller: 'HakuCtrl',
-        naviBase: ['haku', 'ammatillinenaikuiskoulutus'],
+        naviBase: ['haku', 'ammatillinen-aikuiskoulutus'],
         resolve: {'koulutusalaService': 'Koulutusalat', konteksti: function() { return 'ammatillinenaikuiskoulutus'; }}
       });
   })
@@ -41,6 +41,10 @@ angular.module('eperusteApp')
     $scope.kontekstit = YleinenData.kontekstit;
     $scope.kieli = YleinenData.kieli;
     $scope.koulutusalat = koulutusalaService.haeKoulutusalat();
+    
+    console.log('koulutusala', _.clone($scope.koulutusala));
+    console.log('valittuOpintoala', _.clone($scope.valittuOpintoala));
+    console.log('tyyppi', _.clone($scope.tutkintotyyppi));
 
     $scope.tutkintotyypit = {
       'koulutustyyppi_1': 'tutkintotyyppikoodi-1',
@@ -52,7 +56,6 @@ angular.module('eperusteApp')
       // Jos ollaan ammatillisen peruskoulutuksen kontekstissa, niin tutkintotyypiksi asetetaan perustutkinto
       // ja tyhjennetään opintoalan valinta
       if ($scope.konteksti === $scope.kontekstit[0]) {
-        //$scope.tutkintotyyppi = 1;
         $scope.tutkintotyyppi = 'koulutustyyppi_1';
         $scope.valittuOpintoala = '';
       } else {
@@ -67,6 +70,7 @@ angular.module('eperusteApp')
       $scope.query = null;
       $scope.koulutusala = '';
       $scope.valittuOpintoala = '';
+      $scope.siirtymaAjalla = null;
       alustaKonteksti();
       $scope.nykyinenSivu = 0;
       $scope.haePerusteet(0);
@@ -125,9 +129,9 @@ angular.module('eperusteApp')
 
     //$scope.haePerusteet($scope.nykyinenSivu);
 
-    $scope.$on('$translateChangeSuccess', function() {
+    $rootScope.$on('$translateChangeSuccess', function() {
+      console.log('translate');
       $scope.tyhjenna();
-      $scope.haePerusteet(0);
     });
 
     $scope.koulutusalaMuuttui = function() {
