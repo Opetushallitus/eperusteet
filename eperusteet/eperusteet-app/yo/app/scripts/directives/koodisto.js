@@ -3,10 +3,10 @@
 
 angular.module('eperusteApp')
   .service('Koodisto', function($http, $modal, SERVICE_LOC, $resource) {
-
     var taydennykset = [];
     var koodistoVaihtoehdot = ['tutkinnonosat', 'koulutus'];
     var nykyinenKoodisto = _.first(koodistoVaihtoehdot);
+    var lisaFiltteri = function() { return true; };
 
     function hae(koodisto, cb) {
       if (!_.isEmpty(taydennykset) && koodisto === nykyinenKoodisto) { cb(); return; }
@@ -15,7 +15,7 @@ angular.module('eperusteApp')
         cb();
       });
     }
-    
+
     function haeAlarelaatiot(koodi, cb) {
       var resource = $resource(SERVICE_LOC + '/koodisto/relaatio/sisaltyy-alakoodit/:koodi');
       console.log('koodi', koodi);
@@ -24,48 +24,47 @@ angular.module('eperusteApp')
         cb(relaatiot);
       });
     }
-    
+
     function koodistoMapping(koodistoData) {
       return _(koodistoData).map(function(kd) {
+        var nimi = {
+          fi: '',
+          sv: '',
+          en: ''
+        };
+        _.forEach(kd.metadata, function(obj) {
+          nimi[obj.kieli.toLowerCase()] = obj.nimi;
+        });
 
-          var nimi = {
-            fi: '',
-            sv: '',
-            en: ''
-          };
-          _.forEach(kd.metadata, function(obj) {
-            nimi[obj.kieli.toLowerCase()] = obj.nimi;
-          });
-
-          var haku = _.reduce(_.values(nimi), function(result, v) {
-            return result + v;
-          }).toLowerCase();
-          return {
-            koodi: kd.koodiUri,
-            nimi: nimi,
-            koodisto: kd.koodisto,
-            haku: haku
-          };
-        }).value();
-        //cb();
-    //  });
-
+        var haku = _.reduce(_.values(nimi), function(result, v) {
+          return result + v;
+        }).toLowerCase();
+        return {
+          koodi: kd.koodiUri,
+          nimi: nimi,
+          koodisto: kd.koodisto,
+          haku: haku
+        };
+      }).value();
     }
 
     function filtteri(haku) {
       haku = haku.toLowerCase();
-      return _.filter(taydennykset, function(t) { return t.koodi.indexOf(haku) !== -1 || t.haku.indexOf(haku) !== -1; });
+      return _.filter(taydennykset, function(t) { return (t.koodi.indexOf(haku) !== -1 || t.haku.indexOf(haku) !== -1) && lisaFiltteri(t); });
     }
 
-    function modaali(successCb, resolve, failureCb) {
+    function modaali(successCb, resolve, failureCb, lisaf) {
+      if (filtteri) {
+        lisaFiltteri = lisaf;
+      }
+
       return function() {
         resolve = resolve || {};
         failureCb = failureCb || function() {};
         $modal.open({
           templateUrl: 'views/modals/koodistoModal.html',
           controller: 'KoodistoModalCtrl',
-          resolve: resolve
-        }).result.then(successCb, failureCb);
+          resolve: resolve }).result.then(successCb, failureCb);
       };
     }
 
@@ -100,6 +99,7 @@ angular.module('eperusteApp')
       restrict: 'E',
       link: function($scope, el, attrs) {
         var valmis = $scope.$eval(attrs.valmis);
+        var filtteri = $scope.$eval(attrs.filtteri);
         var tyyppi = attrs.tyyppi || 'tutkinnonosat';
 
         if (!valmis) {
@@ -109,7 +109,7 @@ angular.module('eperusteApp')
           console.log('koodisto-select:', tyyppi, 'ei vastaa mitään mitään vaihtoehtoa:', Koodisto.vaihtoehdot);
           return;
         }
-        $scope.activate = Koodisto.modaali(function(koodi) { valmis(koodi); }, { tyyppi: function() { return tyyppi; } });
+        $scope.activate = Koodisto.modaali(function(koodi) { valmis(koodi); }, { tyyppi: function() { return tyyppi; } }, function(){}, filtteri);
       }
     };
   });
