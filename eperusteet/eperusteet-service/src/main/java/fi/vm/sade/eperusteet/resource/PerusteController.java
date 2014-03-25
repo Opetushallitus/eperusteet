@@ -1,11 +1,10 @@
 package fi.vm.sade.eperusteet.resource;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.dto.PerusteDto;
-import fi.vm.sade.eperusteet.service.PerusteService;
-import fi.vm.sade.eperusteet.dto.PerusteQuery;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +17,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import static org.springframework.web.bind.annotation.RequestMethod.*;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.dto.AbstractNodeDto;
+import fi.vm.sade.eperusteet.dto.PerusteDto;
+import fi.vm.sade.eperusteet.dto.PerusteQuery;
+import fi.vm.sade.eperusteet.resource.util.RakenneUtil;
+import fi.vm.sade.eperusteet.service.PerusteService;
 
 @Controller
 @RequestMapping("/api/perusteet")
 public class PerusteController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteController.class);
+    @SuppressWarnings("unused")
+	private static final Logger LOG = LoggerFactory.getLogger(PerusteController.class);
 
     @Autowired
     private PerusteService service;
@@ -45,6 +51,16 @@ public class PerusteController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(t, ResponseHeaders.cacheHeaders(1, TimeUnit.SECONDS), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/{id}/rakenne", method = GET)
+    @ResponseBody
+    public ResponseEntity<AbstractNodeDto> getRakenne(@PathVariable("id") final Long id) {
+    	AbstractNodeDto rakenne = RakenneUtil.getStaticRakenne();
+        if (rakenne == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(rakenne, ResponseHeaders.cacheHeaders(1, TimeUnit.SECONDS), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{perusteId}/osat/{id}/lapset", method = POST)
