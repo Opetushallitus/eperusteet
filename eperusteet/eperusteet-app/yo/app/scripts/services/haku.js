@@ -1,13 +1,18 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .service('Haku', function Haku() {
+  .service('Haku', function Haku(YleinenData) {
+
+    
     this.hakuParametrit = {
-      nimi: null,
+      nimi: '',
       koulutusala: '',
       tyyppi: '',
-      kieli: 'fi',
+      kieli: YleinenData.kieli,
       opintoala: '',
-      siirtyma: 'false'
+      siirtyma: false,
+      sivu: 0,
+      sivukoko: 20,
+      tutkintotyypit: _.zipObject(YleinenData.kontekstit, [])
     };
   });

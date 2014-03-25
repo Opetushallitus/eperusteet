@@ -28,23 +28,13 @@ angular.module('eperusteApp')
     var pat = '';
     // Viive, joka odotetaan, ennen kuin haku nimi muutoksesta lähtee serverille.
     var hakuViive = 300; //ms
-    $scope.nykyinenSivu = Haku.hakuParametrit.sivu;
-    $scope.sivukoko = 20; //$window.innerHeight > 500 ? 25 : 15;
+    $scope.nykyinenSivu = 0;
     $scope.sivuja = 1;
     $scope.kokonaismaara = 0;
-    $scope.query = Haku.hakuParametrit.nimi;
-    $scope.koulutusala = Haku.hakuParametrit.koulutusala;
-    $scope.tutkintotyyppi = Haku.hakuParametrit.tyyppi;
-    $scope.siirtymaAjalla = Haku.hakuParametrit.siirtyma;
-    $scope.valittuOpintoala = Haku.hakuParametrit.opintoala;
     $scope.konteksti = konteksti;
     $scope.kontekstit = YleinenData.kontekstit;
-    $scope.kieli = YleinenData.kieli;
-    $scope.koulutusalat = koulutusalaService.haeKoulutusalat();
-    
-    console.log('koulutusala', _.clone($scope.koulutusala));
-    console.log('valittuOpintoala', _.clone($scope.valittuOpintoala));
-    console.log('tyyppi', _.clone($scope.tutkintotyyppi));
+    $scope.koulutusalat = koulutusalaService.haeKoulutusalat(); 
+    $scope.hakuParametrit = Haku.hakuParametrit;
 
     $scope.tutkintotyypit = {
       'koulutustyyppi_1': 'tutkintotyyppikoodi-1',
@@ -56,10 +46,10 @@ angular.module('eperusteApp')
       // Jos ollaan ammatillisen peruskoulutuksen kontekstissa, niin tutkintotyypiksi asetetaan perustutkinto
       // ja tyhjennetään opintoalan valinta
       if ($scope.konteksti === $scope.kontekstit[0]) {
-        $scope.tutkintotyyppi = 'koulutustyyppi_1';
-        $scope.valittuOpintoala = '';
+        $scope.hakuParametrit.tutkintotyypit[konteksti] = 'koulutustyyppi_1';
+        $scope.hakuParametrit.opintoala = '';
       } else {
-        $scope.tutkintotyyppi = '';
+        //$scope.hakuParametrit.tutkintotyypit[$scope.konteksti] = Haku.hakuParametrit.tutkintotyypit[$scope.konteksti];
       }
     };
 
@@ -76,9 +66,10 @@ angular.module('eperusteApp')
       $scope.haePerusteet(0);
     };
     var hakuVastaus = function(vastaus) {
+      console.log('vastaus', vastaus);
       $scope.perusteet = vastaus;
       $scope.nykyinenSivu = $scope.perusteet.sivu;
-      $scope.sivukoko = $scope.perusteet.sivukoko;
+      $scope.hakuParametrit.sivukoko = $scope.perusteet.sivukoko;
       $scope.sivuja = $scope.perusteet.sivuja;
       $scope.kokonaismaara = $scope.perusteet.kokonaismäärä;
       $scope.sivut = _.range(0, $scope.perusteet.sivuja);
@@ -86,16 +77,10 @@ angular.module('eperusteApp')
     };
     $scope.haePerusteet = function(sivu) {
 
-      Haku.hakuParametrit = {
-        sivu: sivu,
-        nimi: $scope.query,
-        koulutusala: $scope.koulutusala,
-        opintoala: $scope.valittuOpintoala,
-        sivukoko: $scope.sivukoko,
-        tyyppi: $scope.tutkintotyyppi,
-        kieli: YleinenData.kieli,
-        siirtyma: $scope.siirtymaAjalla
-      };
+      $scope.hakuParametrit.sivu = sivu;
+      $scope.hakuParametrit.tyyppi = $scope.hakuParametrit.tutkintotyypit[$scope.konteksti];
+      Haku.hakuParametrit = $scope.hakuParametrit;
+      
       Perusteet.query(Haku.hakuParametrit, hakuVastaus, function(virhe) {
         if (virhe.status === 404) {
           hakuVastaus(virhe.data);
@@ -118,7 +103,7 @@ angular.module('eperusteApp')
       }
     };
     $scope.korosta = function(otsikko) {
-      if ($scope.query === null || $scope.query.length < 3) {
+      if ($scope.hakuParametrit.nimi === null || $scope.hakuParametrit.nimi.length < 3) {
         return otsikko;
       }
       return otsikko.replace(pat, '<b>$1</b>');
@@ -136,12 +121,12 @@ angular.module('eperusteApp')
 
     $scope.koulutusalaMuuttui = function() {
 
-      if ($scope.koulutusala !== '') {
-        $scope.opintoalat = _.findWhere($scope.koulutusalat, {koodi: $scope.koulutusala}).opintoalat;
+      if ($scope.hakuParametrit.koulutusala !== '') {
+        $scope.opintoalat = _.findWhere($scope.koulutusalat, {koodi: $scope.hakuParametrit.koulutusala}).opintoalat;
       } else {
         $scope.opintoalat = [];
       }
-      $scope.valittuOpintoala = '';
+      $scope.hakuParametrit.opintoala = '';
       $scope.hakuMuuttui();
     };
 
@@ -151,5 +136,5 @@ angular.module('eperusteApp')
 
     var opintoalaTemp = $scope.valittuOpintoala;
     $scope.koulutusalaMuuttui();
-    $scope.valittuOpintoala = opintoalaTemp;
+    $scope.hakuParametrit.opintoala = opintoalaTemp;
   });
