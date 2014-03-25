@@ -31,6 +31,10 @@ angular.module('eperusteApp')
     var suosikkiTyyli = 'glyphicon glyphicon-star pointer';
     $scope.suosikkiTyyli = eiSuosikkiTyyli;
 
+    $scope.tallennaRakenne = function(rakenne) {
+      console.log(rakenne);
+    };
+
     $scope.terveydentilaOptiot = [
       {teksti: 'Kaikki', valittu: true},
       {teksti: 'Terveydentila optio 1', valittu: false},
@@ -143,16 +147,10 @@ angular.module('eperusteApp')
       $scope.$broadcast('optiotMuuttuneet');
     });
 
-    /****************************************
-     *
-     * Kovakoodattu rakenne-esitys, plsremovewhenfit!!
-     *
-     **************************************/
     $scope.rakenne = {
       otsikko: 'Tieto- ja tietoliikennealan perustutkinto',
       laajuus: '120 ov',
-      osat: [
-        {
+      osat: [{
           otsikko: 'Ammatilliset tutkinnon osat',
           kuvaus: 'Tutkinnon osiin sisältyy työssäoppimista vähintään 20 ov, yrittäjyyttä vähintään 5 ov ja opinnäyte vähintään 2 ov',
           laajuus: '90 ov',

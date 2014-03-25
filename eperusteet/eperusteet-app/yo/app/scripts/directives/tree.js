@@ -1,136 +1,85 @@
 'use strict';
 /*global _*/
-/*global jQuery*/
+
 angular.module('eperusteApp')
-  .directive('tree', function() {
+  .directive('tree', function($compile) {
+    function swap(container, from, to) {
+      if (from >= 0 && to >= 0 && from < _.size(container) && to < _.size(container)) {
+        var temp = container[to];
+        container[to] = container[from];
+        container[from] = temp;
+      }
+    }
 
-    function link(scope) {
+    function generoiMallista(rakenne) {
+      if (rakenne.tyyppi === 'selite') {
+        return '<span>' + rakenne.otsikko[0] + ' ';
+      }
+      return '<span><span translate>' + 'puu-tyyppi-' + rakenne.tyyppi + '</span> ';
+    }
 
-        scope.getNodeType = function(node) {
-            if (node.tyyppi === 'yksi') {
-                return 'YKSI';
-            }
-            if (node.tyyppi ===  'selite') {
-                return 'SELITE';
-            }
-            if ('osat' in node && node.osat.length > 0) {
-                return 'KOOSTE';
-            }
-            return 'LEHTI';
-        };
-
-        scope.isInnerNode = function(node) {
-            return _.contains(['YKSI', 'KOOSTE', 'SELITE'], scope.getNodeType(node));
-        };
-
-        scope.solmunOtsikkoteksti = function(node) {
-            if (scope.getNodeType(node) === 'YKSI') {
-                return 'Jokin seuraavista';
-            }
-            if ('laajuus' in node) {
-                return node.otsikko + ', ' + node.laajuus;
-            }
-            return node.otsikko;
-        };
-
-        scope.nodeCollapsed = function(node, depth) {
-            if (scope.isExplicitCollapsed(node)) {
-                return true;
-            }
-            if (scope.isExplicitExpanded(node)) {
-                return false;
-            }
-            if (scope.getDefaultExpanded(node, depth)) {
-                return false;
-            }
-            return true;
-        };
-
-        scope.onNodeClick = function(el, depth, $event) {
-            if (scope.nodeCollapsed(el, depth)) {
-                el.collapsed = false;
-            } else {
-                el.collapsed = true;
-            }
-            $event.stopPropagation();
-        };
-
-        scope.glyphiconStyle = function(node, depth) {
-            var styles = ['glyphicon'];
-            if (scope.nodeCollapsed(node, depth)) {
-                styles.push('glyphicon-plus');
-            } else {
-                styles.push('glyphicon-minus');
-            }
-            return styles;
-        };
-
-        scope.getDefaultExpanded = function(node, depth) {
-            if (depth < 2) {
-                return true;
-            }
-            // jos solmu on valintasolmu ja sillä on vain lehtilapsia, avataan se
-            if (scope.getNodeType(node) === 'YKSI' &&
-                    (_.every(node.osat, function(n) {
-                        return scope.getNodeType(n) === 'LEHTI';
-                    }
-                    ))) {
-                return true;
-            }
-            return false;
-        };
-
-        scope.isExplicitCollapsed = function(node) {
-            return node.collapsed === true;
-        };
-
-        scope.isExplicitExpanded = function(node) {
-            return node.collapsed === false;
-        };
-
-        scope.getNodeStyles = function(node) {
-            var styles = [];
-            if (scope.isInnerNode(node)) {
-                styles.push('parent_li');
-            }
-            return styles;
-        };
+    function kaikilleRakenteille(osat, f) {
+      if (!osat || !f) {
+        return;
+      }
+      _.forEach(osat, function(r) {
+        r = f(r);
+        if (r.osat) {
+          kaikilleRakenteille(r.osat);
+        }
+      });
     }
 
     return {
-      templateUrl: 'views/partials/tree.html',
       restrict: 'AE',
       transclude: false,
+      terminal: true,
       scope: {
         rakenne: '=',
-        baseurl: '@'
+        vanhempi: '='
       },
-      link: link
+      link: function(scope, el, attrs) {
+        scope.poista = function(i, a) { _.remove(a.osat, i); };
+        scope.alas = function(i, a) {
+          var index = a.osat.indexOf(i);
+          swap(a.osat, index, index + 1);
+        };
+        scope.ylos = function(i, a) {
+          var index = a.osat.indexOf(i);
+          swap(a.osat, index, index - 1);
+        };
+
+        var kentta = '';
+        if (scope.rakenne.tyyppi) {
+          kentta = generoiMallista(scope.rakenne);
+        } else {
+          kentta = '<span>{{ rakenne.otsikko }} ';
+        }
+
+        kentta +=
+          '<a href="" ng-click="ylos(rakenne, vanhempi)"><span class="glyphicon glyphicon-chevron-up"></span></a>' +
+          '<a href="" ng-click="alas(rakenne, vanhempi)"><span class="glyphicon glyphicon-chevron-down"></span></a>' +
+          '<a href="" ng-click="poista(rakenne, vanhempi)"><span class="glyphicon glyphicon-remove"></span></a>';
+
+        var template = '';
+        if (scope.rakenne && _.isArray(scope.rakenne.osat)) {
+          template =
+            '<div class="panel panel-default">' +
+            '<div class="panel-heading">' +
+            kentta +
+            '</div>' +
+            '<div ng-if="!osa.collapse" class="panel-body">' +
+            '<div ng-repeat="osa in rakenne.osat"><tree rakenne="osa" vanhempi="rakenne"></tree></div>' +
+            '</div>' +
+            '</div>' +
+            '';
+        } else {
+          template = kentta;
+        }
+
+        var templateElement = angular.element(template);
+        $compile(templateElement)(scope);
+        el.replaceWith(templateElement);
+      }
     };
-  })
-  .animation('.tree-branch', function() {
-  return {
-    beforeAddClass : function(element, className, done) {
-      if(className === 'ng-hide') {
-        jQuery(element).slideUp('fast', done);
-      }
-      else {
-        done();
-      }
-    },
-    beforeRemoveClass : function(element, className, done) {
-      if(className === 'ng-hide') {
-        element.css('display', 'none');
-      }
-      done();
-    },
-    removeClass :  function(element, className, done) {
-      if(className === 'ng-hide') {
-        jQuery(element).slideDown('fast', done);
-      }
-      else {
-        done();
-      }
-    }
-  };
-});
+  });

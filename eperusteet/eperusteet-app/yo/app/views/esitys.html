@@ -69,7 +69,8 @@ European Union Public Licence for more details.
     </script>
 
     <!-- Tutkinnon rakenne puuesityksenä -->
-    <div tree rakenne="rakenne" baseurl="esitys/{{ perusteValinta.id }}/tutkinnonosa"></div>
+    <tree rakenne="rakenne"></tree>
+    <button ng-click="tallennaRakenne(rakenne)">Tallenna</button>
 
   </div>
   <optio-modal modalid="modalMaaraykset" optiot="maarayksetOptiot"></optio-modal>
