@@ -33,7 +33,7 @@ angular.module('eperusteApp')
     $scope.kokonaismaara = 0;
     $scope.konteksti = konteksti;
     $scope.kontekstit = YleinenData.kontekstit;
-    $scope.koulutusalat = koulutusalaService.haeKoulutusalat(); 
+    $scope.koulutusalat = koulutusalaService.haeKoulutusalat();
     $scope.hakuParametrit = Haku.hakuParametrit;
 
     $scope.tutkintotyypit = {

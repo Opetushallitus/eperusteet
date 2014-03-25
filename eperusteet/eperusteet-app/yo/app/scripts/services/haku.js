@@ -1,4 +1,5 @@
 'use strict';
+/*global _*/
 
 angular.module('eperusteApp')
   .service('Haku', function Haku(YleinenData) {
