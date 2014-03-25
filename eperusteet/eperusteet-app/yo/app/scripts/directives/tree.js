@@ -53,7 +53,7 @@ angular.module('eperusteApp')
         if (scope.rakenne.tyyppi) {
           kentta = generoiMallista(scope.rakenne);
         } else {
-          kentta = '<span>{{ rakenne.otsikko }} ';
+          kentta = '<span>{{ rakenne.otsikko.fi }} ';
         }
 
         kentta +=

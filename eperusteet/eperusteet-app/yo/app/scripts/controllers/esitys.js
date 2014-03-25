@@ -148,277 +148,53 @@ angular.module('eperusteApp')
     });
 
     $scope.rakenne = {
-      otsikko: 'Tieto- ja tietoliikennealan perustutkinto',
-      laajuus: '120 ov',
+      otsikko: {
+        fi: 'Joku perustutkinto'
+      },
+      laajuus: {
+        tyyppi: 'ov',
+        maara: 120
+      },
       osat: [{
-          otsikko: 'Ammatilliset tutkinnon osat',
-          kuvaus: 'Tutkinnon osiin sisältyy työssäoppimista vähintään 20 ov, yrittäjyyttä vähintään 5 ov ja opinnäyte vähintään 2 ov',
-          laajuus: '90 ov',
-          osat: [
-            {
-              otsikko: 'Kaikille pakolliset tutkinnon osat',
-              osat: [
-                {
-                  otsikko: 'Elektroniikan ja ICT:n perustehtävät',
-                  laajuus: '30 ov',
-                  tutkinnonosa: 1
-                }
-              ]
-            },
-            {
-              tyyppi: 'yksi',
-              osat: [
-                {
-                  otsikko: 'Tieto- ja tietoliikennetekniikan koulutusohjelma, elektroniikka-asentaja',
-                  osat: [
-                    {
-                      otsikko: 'Ammattielektroniikka',
-                      laajuus: '20 ov',
-                      tutkinnonosa: 1
-                    },
-                    {
-                      tyyppi: 'yksi',
-                      osat: [
-                        {
-                          otsikko: 'Sulautetut sovellukset ja projektityöt',
-                          laajuus: '20 ov',
-                          tutkinnonosa: 1
-                        },
-                        {
-                          otsikko: 'Elektroniikkatuotanto',
-                          laajuus: '20 ov',
-                          tutkinnonosa: 1
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  otsikko: 'Tieto- ja tietoliikennetekniikan koulutusohjelma, ICT-asentaja',
-                  osat: [
-                    {
-                      otsikko: 'Tietokone- ja tietoliikenneasennukset',
-                      laajuus: '20 ov',
-                      tutkinnonosa: 1
-                    },
-                    {
-                      tyyppi: 'yksi',
-                      osat: [
-                        {
-                          otsikko: 'Palvelinjärjestelmät ja projektityöt',
-                          laajuus: '20 ov',
-                          tutkinnonosa: 1
-                        },
-                        {
-                          otsikko: 'Tietoliikennelaiteasennukset ja kaapelointi',
-                          laajuus: '20 ov',
-                          tutkinnonosa: 1
-                        },
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              otsikko: 'Seuraavista kohdista tutkinnon osia yhteensä 20ov',
-              osat: [
-                {
-                  otsikko: 'Kaikille valinnaiset tutkinnon osat',
-                  laajuus: '10-20 ov',
-                  osat: [
-                      {
-                          otsikko: 'Huoltopalvelut',
-                          laajuus: '10 ov'
-                      },
-                      {
-                          otsikko: 'Valvonta ja ilmoitusjärjestelmäasennukset',
-                          laajuus: '10 ov'
-                      },
-                      {
-                          otsikko: 'Kodin elektroniikka ja asennukset',
-                          laajuus: '10 ov'
-                      },
-                      {
-                          otsikko: 'RF-työt',
-                          laajuus: '10 ov'
-                      },
-                      {
-                          otsikko: 'Sähköasennukset',
-                          laajuus: '10 ov',
-                      },
-                      {
-                          otsikko: 'Tutkinnon osa ammatillisesta perustutkinnosta',
-                          laajuus: '0-20 ov'
-                      },
-                      {
-                          otsikko: 'Tutkinnon osa ammattitutkinnosta'
-                      },
-                      {
-                          otsikko: 'Tutkinnon osa erikoisammattitutkinnosta'
-                      },
-                      {
-                          otsikko: 'Paikallisesti tarjottava tutkinnon osa',
-                          laajuus: '0-20 ov'
-                      }
-                  ]
-                },
-                {
-                  otsikko: 'Muut valinnaiset tutkinnon osat ammatillisessa peruskoulutuksessa',
-                  laajuus: '0-10 ov',
-                  osat: [
-                      {
-                          otsikko: 'Yrittäjyys',
-                          laajuus: '10 ov'
-                      },
-                      {
-                          otsikko: 'Työpaikkaohjaajaksi valmentautuminen',
-                          laajuus: '2 ov'
-                      },
-                      {
-                          otsikko: 'Ammattitaitoa täydentävät tutkinnon osat (yhteiset opinnot)'
-                      },
-                      {
-                          otsikko: 'Lukio-opinnot'
-                      }
-                  ]
-                }
-              ]
-            }
-          ]
-
+        otsikko: {
+          fi: 'Jotkut tutkinnon osat'
         },
-        {
-          otsikko: 'Ammattitaitoa täydentävät tutkinnon osat ammatillisessa peruskoulutuksessa (yhteiset opinnot)',
-          laajuus: '20 ov',
-          osat: [
-            {
-              tyyppi: 'selite',
-              otsikko: ['Opetuskieleltään ruotsinkielisessä koulutuksessa toisen kotimaisen kielen opintojen laajuus on 2 ov, jolloin pakollisten ammattitaitoa täydentävien tutkinnon osien laajuus on 17 ov ja valinnaisten 3 ov.', 'Liikunnan pakollisten opintojen laajuus on 1 ov ja terveystiedon pakollisten opintojen laajuus on 1 ov. Koulutuksen järjestäjä voi päättää liikunnan ja terveystiedon pakollisten opintojen jakamisesta poikkea- valla tavalla kuitenkin siten, että niiden yhteislaajuus on kaksi opintoviikkoa.']
-            },
-            {
-              otsikko: 'Pakolliset tutkinnon osat',
-              osat: [
-                {
-                  otsikko: 'Äidinkieli',
-                  laajuus: '4 ov'
-                },
-                {
-                  otsikko: 'Toinen kotimainen kieli',
-                  tyyppi: 'yksi',
-                  osat: [
-                    {
-                      otsikko: 'Toinen kotimainen kieli ruotsi',
-                      laajuus: '1ov'
-                    },
-                    {
-                      otsikko: 'Toinen kotimainen kieli suomi',
-                      laajuus: '2ov'
-                    }
-                  ]
-                },
-                {
-                  otsikko: 'Vieras kieli',
-                  laajuus: '2 ov'
-                },
-                {
-                  otsikko: 'Matematiikka',
-                  laajuus: '3 ov'
-                },
-                {
-                  otsikko: 'Fysiikka ja kemia',
-                  laajuus: '2 ov'
-                },
-                {
-                  otsikko: 'Yhteiskunta-, yritys- ja työelämätieto',
-                  laajuus: '1 ov'
-                },
-                {
-                  otsikko: 'Liikunta',
-                  laajuus: '1 ov'
-                },
-                {
-                  otsikko: 'Terveystieto',
-                  laajuus: '1 ov'
-                },
-                {
-                  otsikko: 'Taide ja kulttuuri',
-                  laajuus: '1 ov'
-                }
-              ]
-            },
-            {
-              otsikko: 'Valinnaiset tutkinnon osat',
-              osat: [
-                {
-                  otsikko: 'Äidinkieli',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Vieras kieli',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Matematiikka',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Fysiikka ja kemia',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Yhteiskunta-, yritys- ja työelämätieto',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Liikunta',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Terveystieto',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Taide ja kulttuuri',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Ympäristötieto',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Tieto- ja viestintätekniikka',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Etiikka',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Kulttuurien tuntemus',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Psykologia',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Yritystoiminta',
-                  laajuus: '0-4 ov'
-                }
-              ]
-            }
-          ]
-
-
-
+        laajuus: {
+          tyyppi: 'ov',
+          maara: 90
         },
-        {
-          otsikko: 'Vapaasti valittavat tutkinnon osat ammatillisessa peruskoulutuksessa',
-          laajuus: '10 ov'
-        },
-
-      ]
+        osat: [{
+          otsikko: {
+            fi: 'Perus elektroniikka'
+          },
+          laajuus: {
+            tyyppi: 'ov',
+            maara: 30
+          },
+          tutkinnonosa: 1
+        }, {
+          tyyppi: 'yksi',
+          rajoite: 'laajuus',
+          osat: [{
+            otsikko: {
+              fi: 'Sulautetut sovellukset ja projektityöt',
+            },
+            laajuus: {
+              tyyppi: 'ov',
+              maara: 20
+            },
+            tutkinnonosa: 2
+          }, {
+            otsikko: {
+              fi: 'Elektroniikkatuotanto'
+            },
+            laajuus: {
+              tyyppi: 'ov',
+              maara: 20
+            },
+            tutkinnonosa: 3
+          }]
+        }]
+      }]
     };
-
   });
