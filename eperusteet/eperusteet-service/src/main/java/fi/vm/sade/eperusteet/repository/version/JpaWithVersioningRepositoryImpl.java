@@ -77,17 +77,17 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
 
 		Set<Revision> revisionSet = new HashSet<>();
 
-		List<Object[]> tutkinnonOsaRevisions = (List<Object[]>) auditReader.createQuery()
+		List<Object[]> entityRevisions = (List<Object[]>) auditReader.createQuery()
 				.forRevisionsOfEntity(entityInformation.getJavaType(), false, true)
 				.addOrder(AuditEntity.revisionProperty("timestamp").asc())
 				.add(AuditEntity.id().eq(id))
 				.getResultList();
 
-		LOG.debug("Perus tutkinnon osa -revisiot");
-		printListWithArrays(tutkinnonOsaRevisions);
-		addRevisionsToSet(revisionSet, tutkinnonOsaRevisions);
+		LOG.debug(entityInformation.getJavaType().getSimpleName() + "-revisiot");
+		printListWithArrays(entityRevisions);
+		addRevisionsToSet(revisionSet, entityRevisions);
 
-		if (tutkinnonOsaRevisions != null && tutkinnonOsaRevisions.size() > 0) {
+		if (entityRevisions != null && entityRevisions.size() > 0) {
 			for (String childPath : childPaths) {
 				LOG.debug("current path: {}", childPath);
 				if (childPath.split(".").length > 1) {
@@ -99,16 +99,16 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
 						.addProjection(AuditEntity.revisionNumber())
 						.addProjection(AuditEntity.property(childPath + "_id"))
 						.addOrder(AuditEntity.revisionProperty("timestamp").asc())
-						.add(AuditEntity.revisionNumber().ge(getRevisionEntity(tutkinnonOsaRevisions.get(0)).getId()))
+						.add(AuditEntity.revisionNumber().ge(getRevisionEntity(entityRevisions.get(0)).getId()))
 						.add(AuditEntity.property(childPath).hasChanged());
 				
-				 if (RevisionType.DEL.equals(tutkinnonOsaRevisions.get(tutkinnonOsaRevisions.size() - 1)[2])) {
-					 childIdChangedQuery.add(AuditEntity.revisionNumber().lt(getRevisionEntity(tutkinnonOsaRevisions.get(tutkinnonOsaRevisions.size() - 1)).getId()));
+				 if (RevisionType.DEL.equals(entityRevisions.get(entityRevisions.size() - 1)[2])) {
+					 childIdChangedQuery.add(AuditEntity.revisionNumber().lt(getRevisionEntity(entityRevisions.get(entityRevisions.size() - 1)).getId()));
 				 }
 				
-				 List<Object[]> revisionsWhereArviointiIdChanged = childIdChangedQuery.getResultList();
+				 List<Object[]> revisionsWhereChildIdChanged = childIdChangedQuery.getResultList();
 				 
-				 printListWithArrays(revisionsWhereArviointiIdChanged);
+				 printListWithArrays(revisionsWhereChildIdChanged);
 				 
 				 LOG.debug("entity type: {}", entityInformation.getJavaType());
 				 LOG.debug("property type: {}", BeanUtils.findPropertyType(childPath, entityInformation.getJavaType()));
@@ -118,7 +118,7 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
 					
 				 AuditDisjunction disjunction = AuditEntity.disjunction();
 					
-				 ListIterator<Object[]> listIterator = revisionsWhereArviointiIdChanged.listIterator();
+				 ListIterator<Object[]> listIterator = revisionsWhereChildIdChanged.listIterator();
 				 while (listIterator.hasNext()) {
 					 Object[] currentRevision = listIterator.next();
 					
@@ -128,7 +128,7 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
 					
 					 if (listIterator.hasNext()) {
 						 Object[] nextRevision =
-						 revisionsWhereArviointiIdChanged.get(listIterator.nextIndex());
+						 revisionsWhereChildIdChanged.get(listIterator.nextIndex());
 						 conjunction.add(AuditEntity.revisionNumber().lt((Number)
 						 nextRevision[0]));
 					 }
