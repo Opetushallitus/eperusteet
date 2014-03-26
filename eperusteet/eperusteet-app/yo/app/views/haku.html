@@ -3,33 +3,33 @@
   <form class="panel-body">
     <div  class="form-group col-xs-6">
       <label for="tutkinnon-nimi" translate>haku-nimi</label>
-      <input id="tutkinnon-nimi" type="text" class="form-control" placeholder="{{'haku-tutkinnon-nimi-placeholder'| translate}}" ng-model="hakuParametrit.nimi" ng-change="hakuMuuttui()">
+      <input id="tutkinnon-nimi" type="text" class="form-control" placeholder="{{'haku-tutkinnon-nimi-placeholder'| translate}}" ng-model="hakuparametrit.nimi" ng-change="hakuMuuttui()">
     </div>
-    <div class="form-group col-xs-6" ng-show="konteksti !== kontekstit[0]">
+    <div class="form-group col-xs-6" ng-hide="piilotaTutkintotyyppi()">
       <label for="haku-tyyppi" translate>haku-tyyppi</label>
-      <select id="haku-tyyppi" ng-model="hakuParametrit.tutkintotyypit[konteksti]" class="form-control" ng-change="hakuMuuttui()">
+      <select id="haku-tyyppi" ng-model="hakuparametrit.tyyppi" class="form-control" ng-change="hakuMuuttui()">
         <option value="" translate>haku-kaikki-tutkinnot</option>
-        <option ng-repeat="(koodi, nimi) in tutkintotyypit" value="{{koodi}}" ng-selected="hakuParametrit.tutkintotyypit[konteksti] === koodi">{{nimi| translate}}</option>
+        <option ng-repeat="(koodi, nimi) in tutkintotyypit" value="{{koodi}}" ng-selected="hakuparametrit.tyyppi === koodi">{{nimi| translate}}</option>
       </select>
     </div>
     <div class="clearfix"></div>
     <div class="form-group col-xs-6">
       <label for="haku-ala" translate>haku-koulutusala</label>
-      <select id="haku-ala" ng-model="hakuParametrit.koulutusala" class="form-control" ng-change="koulutusalaMuuttui()">
+      <select id="haku-ala" ng-model="hakuparametrit.koulutusala" class="form-control" ng-change="koulutusalaMuuttui()">
         <option value="" translate>haku-kaikki-alat</option>
-        <option ng-repeat="ala in koulutusalat" value="{{ala.koodi}}" ng-selected="hakuParametrit.koulutusala === ala.koodi">{{valitseKieli(ala.nimi)}}</option>
+        <option ng-repeat="ala in koulutusalat" value="{{ala.koodi}}" ng-selected="hakuparametrit.koulutusala === ala.koodi">{{valitseKieli(ala.nimi)}}</option>
       </select>
     </div>
-    <div class="form-group col-xs-6" ng-show="konteksti !== kontekstit[0] && hakuParametrit.koulutusala !== ''">
+    <div class="form-group col-xs-6" ng-show="konteksti !== kontekstit[0] && hakuparametrit.koulutusala !== ''">
       <label for="haku-opintoala" translate>haku-opintoala</label>
-      <select id="haku-opintoala" ng-model="hakuParametrit.opintoala" class="form-control" ng-change="hakuMuuttui()">
+      <select id="haku-opintoala" ng-model="hakuparametrit.opintoala" class="form-control" ng-change="hakuMuuttui()">
         <option value="" translate>haku-kaikki-opintoalat</option>
-        <option ng-repeat="ala in opintoalat" value="{{ala.koodi}}" ng-selected="hakuParametrit.opintoala === ala.koodi">{{valitseKieli(ala.nimi)}}</option>
+        <option ng-repeat="ala in opintoalat" value="{{ala.koodi}}" ng-selected="hakuparametrit.opintoala === ala.koodi">{{valitseKieli(ala.nimi)}}</option>
       </select>
     </div>
     <div class="clearfix"></div>
     <div class="form-group col-xs-12">
-        <label style="display: inline"><input type="checkbox" ng-model="hakuParametrit.siirtyma" ng-change="hakuMuuttui()"> {{ 'haku-näytä-siirtymäajalla-olevat' | translate }}</label>
+        <label style="display: inline"><input type="checkbox" ng-model="hakuparametrit.siirtyma" ng-change="hakuMuuttui()"> {{ 'haku-näytä-siirtymäajalla-olevat' | translate }}</label>
         <button class="btn btn-default btn-sm pull-right" ng-click="tyhjenna()" translate>palauta</button>
     </div>
   </form>

@@ -62,13 +62,9 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
     /**
      * Etsi Peruste määritellyillä hakuehdoilla (sivutettu kysely)
      *
-     * @param kieli {@link Kieli}. Ei voi olla null
-     * @param nimi Perusteen nimi. Voi olla null.
-     * @param koulutusala Lista koulutusalakoodeja. Voi olla null.
-     * @param tyyppi Lista perusteen tyyppejä. Voi olla null.
-     * @param page Sivutusmääritys.
-     * @param opintoala Lista opintoalakoodeja. Voi olla null.
-     * @param siirtyma Näyttää myös siirtymäajalla olevat.
+     * @param page sivumääritys
+     * @param pquery hakuparametrit
+     * 
      * @return Yhden hakusivun verran vastauksia
      */
     @Override
@@ -86,12 +82,10 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
     @Override
     public Peruste findById(Long id) {
         EntityGraph<Peruste> eg = em.createEntityGraph(Peruste.class);
-        eg.addSubgraph(Peruste_.rakenne);
         eg.addSubgraph(Peruste_.koulutukset);
         HashMap<String, Object> props = new HashMap<>();
         props.put(QueryHints.FETCHGRAPH, eg);
         Peruste p = em.find(Peruste.class, id, props);
-        //p.getRakenne().getPerusteenOsa().getOtsikko();
         return p;
     }
 
