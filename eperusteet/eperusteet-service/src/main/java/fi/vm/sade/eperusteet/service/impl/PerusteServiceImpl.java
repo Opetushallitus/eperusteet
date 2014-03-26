@@ -3,17 +3,19 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.dto.AbstractRakenneosaDto;
 import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.PageDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
+import fi.vm.sade.eperusteet.repository.AbstractRakenteenOsaRepository;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
@@ -21,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +56,7 @@ public class PerusteServiceImpl implements PerusteService {
     @Autowired
     PerusteRepository perusteet;
     @Autowired
-    PerusteenOsaViiteRepository viitteet;
+    AbstractRakenteenOsaRepository rakenteenOsaRepository;
     @Autowired
     KoulutusalaService koulutusalaService;
     @Autowired
@@ -86,21 +89,22 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional
     public PerusteenOsaViite addViite(final Long parentId, final Long seuraavaViite, PerusteenOsaViite viite) {
         LOG.info("ennen = " + seuraavaViite);
-        PerusteenOsaViite v = viitteet.findOne(parentId);
-        viite.setVanhempi(v);
-        int i = 0;
-        if (seuraavaViite != null) {
-            for (PerusteenOsaViite o : v.getLapset()) {
-                if (o.getId().equals(seuraavaViite)) { 
-                   break;
-                }
-                i++;
-            }
-        } else {
-            v.getLapset().size();
-        }
-        v.getLapset().add(i, viite);
-        return viitteet.save(viite);
+        throw new RuntimeException("not implemented yet!");
+//        PerusteenOsaViite v = viitteet.findOne(parentId);
+//        viite.setVanhempi(v);
+//        int i = 0;
+//        if (seuraavaViite != null) {
+//            for (PerusteenOsaViite o : v.getLapset()) {
+//                if (o.getId().equals(seuraavaViite)) { 
+//                   break;
+//                }
+//                i++;
+//            }
+//        } else {
+//            v.getLapset().size();
+//        }
+//        v.getLapset().add(i, viite);
+//        return viitteet.save(viite);
     }
 
     @Override
@@ -188,4 +192,5 @@ public class PerusteServiceImpl implements PerusteService {
         return erikoistapausMap;
         
     }
+
 }

@@ -3,52 +3,52 @@ package fi.vm.sade.eperusteet.resource.util;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import fi.vm.sade.eperusteet.dto.AbstractNodeDto;
-import fi.vm.sade.eperusteet.dto.CompositeNodeDto;
+import fi.vm.sade.eperusteet.dto.AbstractRakenneosaDto;
 import fi.vm.sade.eperusteet.dto.EntityReference;
-import fi.vm.sade.eperusteet.dto.LeafNodeDto;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.RakenteenHaaraDto;
+import fi.vm.sade.eperusteet.dto.RakenteenLehtiDto;
 import fi.vm.sade.eperusteet.dto.SaannostoDto;
 
 public final class RakenneUtil {
 
-	public static CompositeNodeDto getStaticRakenne() {
-		CompositeNodeDto parent = new CompositeNodeDto();
+	public static RakenteenHaaraDto getStaticRakenneDto() {
+		RakenteenHaaraDto parent = new RakenteenHaaraDto();
 		parent.setOtsikko(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Joku perustutkinto")));
 		parent.setSaannot(new SaannostoDto("laajuus", "120", "ov"));
-		parent.setOsat(new ArrayList<AbstractNodeDto>());
+		parent.setOsat(new ArrayList<AbstractRakenneosaDto>());
 		
-		CompositeNodeDto firstChild = new CompositeNodeDto();
+		RakenteenHaaraDto firstChild = new RakenteenHaaraDto();
 		firstChild.setOtsikko(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Jotkut tutkinnon osat")));
 		firstChild.setSaannot(new SaannostoDto("laajuus", "90", "ov"));
-		firstChild.setOsat(new ArrayList<AbstractNodeDto>());
+		firstChild.setOsat(new ArrayList<AbstractRakenneosaDto>());
 		
 		parent.getOsat().add(firstChild);
 		
-		LeafNodeDto tutkinnonOsa = new LeafNodeDto();
+		RakenteenLehtiDto tutkinnonOsa = new RakenteenLehtiDto();
 		tutkinnonOsa.setOtsikko(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Perus elektroniikka")));
 		tutkinnonOsa.setSaannot(new SaannostoDto("laajuus", "30", "ov"));
-		tutkinnonOsa.setTutkinnonOsa(new EntityReference(1L));
+		tutkinnonOsa.setPerusteenOsa(new EntityReference(1L));
 		
 		firstChild.getOsat().add(tutkinnonOsa);
 		
-		CompositeNodeDto secondChild = new CompositeNodeDto();
+		RakenteenHaaraDto secondChild = new RakenteenHaaraDto();
 		secondChild.setSaannot(new SaannostoDto("valitse yksi", null, null));
-		secondChild.setOsat(new ArrayList<AbstractNodeDto>());
+		secondChild.setOsat(new ArrayList<AbstractRakenneosaDto>());
 		
 		firstChild.getOsat().add(secondChild);
 		
-		tutkinnonOsa = new LeafNodeDto();
+		tutkinnonOsa = new RakenteenLehtiDto();
 		tutkinnonOsa.setOtsikko(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Sulautetut sovellukset ja projektityöt")));
 		tutkinnonOsa.setSaannot(new SaannostoDto("laajuus", "20", "ov"));
-		tutkinnonOsa.setTutkinnonOsa(new EntityReference(2L));
+		tutkinnonOsa.setPerusteenOsa(new EntityReference(2L));
 		
 		secondChild.getOsat().add(tutkinnonOsa);
 		
-		tutkinnonOsa = new LeafNodeDto();
+		tutkinnonOsa = new RakenteenLehtiDto();
 		tutkinnonOsa.setOtsikko(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Elektroniikkatuotanto")));
 		tutkinnonOsa.setSaannot(new SaannostoDto("laajuus", "20", "ov"));
-		tutkinnonOsa.setTutkinnonOsa(new EntityReference(3L));
+		tutkinnonOsa.setPerusteenOsa(new EntityReference(3L));
 		
 		secondChild.getOsat().add(tutkinnonOsa);
 		

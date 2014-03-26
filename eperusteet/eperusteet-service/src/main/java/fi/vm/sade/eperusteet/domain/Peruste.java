@@ -43,7 +43,9 @@ import lombok.Setter;
 @Table(name = "peruste")
 public class Peruste implements Serializable {
 
-    @Id
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
     @Setter
@@ -83,6 +85,6 @@ public class Peruste implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     @Getter
     @Setter
-    private PerusteenOsaViite rakenne;
+    private AbstractRakenneosa rakenne;
 
 }

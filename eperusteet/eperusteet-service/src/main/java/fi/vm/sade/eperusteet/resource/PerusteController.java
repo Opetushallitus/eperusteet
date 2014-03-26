@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.dto.AbstractNodeDto;
+import fi.vm.sade.eperusteet.dto.AbstractRakenneosaDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.resource.util.RakenneUtil;
@@ -55,12 +55,18 @@ public class PerusteController {
     
     @RequestMapping(value = "/{id}/rakenne", method = GET)
     @ResponseBody
-    public ResponseEntity<AbstractNodeDto> getRakenne(@PathVariable("id") final Long id) {
-    	AbstractNodeDto rakenne = RakenneUtil.getStaticRakenne();
+    public ResponseEntity<AbstractRakenneosaDto> getRakenne(@PathVariable("id") final Long id) {
+    	AbstractRakenneosaDto rakenne = RakenneUtil.getStaticRakenneDto();
         if (rakenne == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(rakenne, ResponseHeaders.cacheHeaders(1, TimeUnit.SECONDS), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/{id}/rakenne", method = POST)
+    @ResponseBody
+    public ResponseEntity<AbstractRakenneosaDto> addViite(@PathVariable("id") final Long id, @RequestBody AbstractRakenneosaDto rakenneosa) {
+    	return null;
     }
 
     @RequestMapping(value = "/{perusteId}/osat/{id}/lapset", method = POST)
