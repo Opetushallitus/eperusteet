@@ -79,10 +79,13 @@ public class Peruste implements Serializable {
     @Getter
     @Setter
     private Date siirtyma;
-
-    @OneToOne(fetch = FetchType.LAZY)
+    
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "peruste_suoritustapa",
+            joinColumns = @JoinColumn(name = "peruste_id"),
+            inverseJoinColumns = @JoinColumn(name = "suoritustapa_id"))
     @Getter
     @Setter
-    private PerusteenOsaViite rakenne;
+    private Set<Suoritustapa> suoritustavat;
 
 }
