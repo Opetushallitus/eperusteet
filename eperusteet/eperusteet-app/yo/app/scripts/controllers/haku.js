@@ -106,7 +106,7 @@ angular.module('eperusteApp')
       }
       $scope.hakuMuuttui();
     };
-    $scope.koulutusalaMuuttui(); 
+    $scope.koulutusalaMuuttui();
 
     $scope.koulutusalaNimi = function(koodi) {
       return koulutusalaService.haeKoulutusalaNimi(koodi);
