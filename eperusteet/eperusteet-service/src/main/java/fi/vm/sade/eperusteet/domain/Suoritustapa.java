@@ -17,7 +17,6 @@
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;

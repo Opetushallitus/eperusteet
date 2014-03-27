@@ -3,6 +3,8 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.PageDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
@@ -21,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,54 +106,45 @@ public class PerusteServiceImpl implements PerusteService {
         return viitteet.save(viite);
     }
 
+    /**
+     * Lämmittää tyhjään järjestelmään koodistosta löytyvät koulutukset.
+     * @return 
+     */
     @Override
     @Transactional
     public String lammitys() {
 
         RestTemplate restTemplate = new RestTemplate();
         List<Peruste> perusteEntityt = new ArrayList<>();
-        KoodistoKoodiDto[] tutkinnot;
-        
-        Map<String, String> erikoistapausMap = new HashMap<>();
-        erikoistapausMap = alustaErikoistapausMap();        
+        KoodistoKoodiDto[] tutkinnot;  
+        Map<String, String> erikoistapausMap = alustaErikoistapausMap();        
 
         int i = 0;
         for (String koulutustyyppiUri : KOULUTUSTYYPPI_URIT) {
             tutkinnot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_YLA + koulutustyyppiUri, KoodistoKoodiDto[].class);
-
             Peruste peruste;
-            KoodistoKoodiDto[] koulutusAlarelaatiot;
             
             for (KoodistoKoodiDto tutkinto : tutkinnot) {
-
-                if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus") && (perusteet.findOneByKoodiUri(tutkinto.getKoodiUri()) == null)) {
-                                        
+                if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus") && (perusteet.findOneByKoodiUri(tutkinto.getKoodiUri()) == null)) {                                 
+                    // Haetaan erikoistapausperusteet, jotka kuvaavat kahden eri koulutusalan tutkinnot
                     peruste = haeErikoistapaus(tutkinto.getKoodiUri(), perusteEntityt, erikoistapausMap);
                     if (peruste == null) {
                         peruste = koodistoMapper.map(tutkinto, Peruste.class);
                         peruste.setTutkintokoodi(koulutustyyppiUri);
                         peruste.setPaivays(new GregorianCalendar(3000, 0, 1).getTime());
                         peruste.setKoulutukset(new HashSet<Koulutus>());
+                        peruste.setSuoritustavat(luoSuoritustavat(koulutustyyppiUri));
                     }
+                    peruste.getKoulutukset().add(luoKoulutus(tutkinto.getKoodiUri()));
                     
-                    Koulutus koulutus = new Koulutus();
-                    koulutus.setKoulutuskoodi(tutkinto.getKoodiUri());
-                    // Haetaan joka tutkinnolle alarelaatiot ja lisätään tarvittavat tiedot peruste entityyn
-                    koulutusAlarelaatiot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + "/" + tutkinto.getKoodiUri(), KoodistoKoodiDto[].class);
-                    koulutus.setKoulutusalakoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, KOULUTUSALALUOKITUS));
-                    koulutus.setOpintoalakoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, OPINTOALALUOKITUS));
-                    peruste.getKoulutukset().add(koulutus);
-
                     if (!perusteEntityt.contains(peruste)) {
                         perusteEntityt.add(peruste);
                     }
-                    
                     LOG.info(++i + " perustetta lisätty.");
                 }
             }
         }
         perusteet.save(perusteEntityt);
-        
         return "Perusteet tallennettu";
     }
 
@@ -177,6 +171,24 @@ public class PerusteServiceImpl implements PerusteService {
         }
         return peruste;
     }
+    
+    /**
+     * 
+     * @param koodiUri luotavan koulutuksen koodisto koodiUri
+     * @return luotu koulutus entity
+     */
+    private Koulutus luoKoulutus(String koodiUri) {
+        Koulutus koulutus = new Koulutus();
+        KoodistoKoodiDto[] koulutusAlarelaatiot;
+        RestTemplate restTemplate = new RestTemplate();
+        
+        koulutus.setKoulutuskoodi(koodiUri);
+        // Haetaan joka tutkinnolle alarelaatiot ja lisätään tarvittavat tiedot peruste entityyn
+        koulutusAlarelaatiot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + "/" + koodiUri, KoodistoKoodiDto[].class);
+        koulutus.setKoulutusalakoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, KOULUTUSALALUOKITUS));
+        koulutus.setOpintoalakoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, OPINTOALALUOKITUS));
+        return koulutus;
+    }
 
     private Map<String, String> alustaErikoistapausMap() {
         Map<String, String> erikoistapausMap = new HashMap<>();
@@ -187,5 +199,25 @@ public class PerusteServiceImpl implements PerusteService {
         }
         return erikoistapausMap;
         
+    }
+
+    /**
+     * 
+     * @param koulutustyyppiUri
+     * @return palauttaa mahdolliset tutkinnon suoritustavat
+     */
+    private Set<Suoritustapa> luoSuoritustavat(String koulutustyyppiUri) {
+        Set<Suoritustapa> suoritustavat = new HashSet<>();
+        
+        Suoritustapa suoritustapa = new Suoritustapa();
+        suoritustapa.setSuoritustapakoodi(Suoritustapakoodi.NAYTTO);
+        suoritustavat.add(suoritustapa);
+        
+        if (koulutustyyppiUri.equals(KOULUTUSTYYPPI_URIT[0])) {
+            suoritustapa = new Suoritustapa();
+            suoritustapa.setSuoritustapakoodi(Suoritustapakoodi.OPS);
+            suoritustavat.add(suoritustapa);
+        }
+        return suoritustavat;
     }
 }
