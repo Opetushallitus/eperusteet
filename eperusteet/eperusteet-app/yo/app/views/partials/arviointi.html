@@ -18,7 +18,7 @@ European Union Public Licence for more details.
   <button class="btn btn-default" editointi-kontrolli ng-click="asetaMuokkausmoodi('taulukko')">Muokkaa taulukkona</button>
 </div>
 <div ng-show="showArviointiteksti()">
-  <div ng-if="editAllowed" ckeditor localized ng-model="arviointi.lisatiedot" editor-placeholder="arviointi-lisatiedot-placeholder" editing-enabled="editAllowed"></div>
+  <div ng-if="editAllowed" ckeditor localized ng-model="arviointi.lisatiedot" editor-placeholder="arviointi-lisatiedot-placeholder" editing-enabled="editAllowed" layout="simplified"></div>
   <div ng-if="!editAllowed" class="well well-sm" ng-bind-html="valitseKieli(arviointi.lisatiedot)"></div>
 </div>
 <div ng-show="showArviointitaulukko()">

@@ -5,7 +5,32 @@ angular.module('eperusteApp')
   .run(function() {
     CKEDITOR.disableAutoInline = true;
   })
-  .directive('ckeditor', function($q, $filter, $rootScope) {
+  .constant('editorLayouts', {
+    minimal: 
+      [
+        { name: 'clipboard', items : [ 'Cut','Copy','-','Undo','Redo' ] },
+        { name: 'tools', items : [ 'About' ] }
+      ],
+    simplified: 
+      [
+        { name: 'clipboard', items : [ 'Cut','Copy','Paste','-','Undo','Redo' ] },
+        { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
+        { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent'] },
+        { name: 'styles', items : [ 'Format' ] },
+        { name: 'tools', items : [ 'About' ] }
+      ],
+    normal: 
+      [
+        { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+        { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
+        '/',
+        { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
+        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar' ] },
+        { name: 'styles', items : [ 'Format' ] },
+        { name: 'tools', items : [ 'About' ] }
+      ]
+  })
+  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts) {
     return {
       priority: 10,
       restrict: 'A',
@@ -39,21 +64,14 @@ angular.module('eperusteApp')
         }
 
         var toolbarLayout;
-        if(element.is('div')) {
-          toolbarLayout = [
-                           { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-                           { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
-                           '/',
-                           { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
-                           { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar' ] },
-                           { name: 'styles', items : [ 'Format' ] },
-                           { name: 'tools', items : [ 'About' ] }
-                         ];
+        if(!_.isEmpty(attrs.layout) && !_.isEmpty(editorLayouts[attrs.layout])) {
+          toolbarLayout = editorLayouts[attrs.layout];
         } else {
-          toolbarLayout = [
-                           { name: 'clipboard', items : [ 'Cut','Copy','-','Undo','Redo' ] },
-                           { name: 'tools', items : [ 'About' ] }
-                         ];
+          if(element.is('div')) {
+            toolbarLayout = editorLayouts.normal;
+          } else {
+            toolbarLayout = editorLayouts.minimal;
+          }
         }
         
         editor = CKEDITOR.inline(element[0], {
