@@ -142,6 +142,9 @@
     "arviointi-uusi-kriteeri": "[Uusi kriteeri]",
     "arviointi-uusi-kriteeri-placeholder": "[Kriteerin teksti]",
     "arviointi-asteikon-valinta": "[Valitse arviointiasteikko]",
+    
+    "arviointi-muokkaa-tekstikenttänä": "[Muokkaa tekstikenttänä]",
+    "arviointi-muokkaa-taulukkona": "[Muokkaa taulukkona]",
 
     "muokkaus-lisaa-osio": "[Lisää osio]",
     "muokkaus-tutkinnon-osa-tallennettu": "[Tutkinnon osa tallennettu onnistuneesti.]",
@@ -176,8 +179,6 @@
     
     "perusteen-nimi": "[Perusteen nimi]",
     "anna-perusteen-nimi": "[Syötä perusteen nimi]",
-    
-    "ok": "[OK]",
     
     "projekti-perustiedot": "[Perustiedot]",
     "projekti-projektiryhmä": "[Projektiryhmä]",

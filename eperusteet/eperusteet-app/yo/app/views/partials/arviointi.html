@@ -14,8 +14,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 <div class="btn-group" ng-show="naytaMuokkausmoodinValitsin()">
-  <button class="btn btn-default" editointi-kontrolli ng-click="asetaMuokkausmoodi('tekstikentta')">Muokkaa tekstikenttänä</button>
-  <button class="btn btn-default" editointi-kontrolli ng-click="asetaMuokkausmoodi('taulukko')">Muokkaa taulukkona</button>
+  <button class="btn btn-default" editointi-kontrolli ng-click="asetaMuokkausmoodi('tekstikentta')" translate>arviointi-muokkaa-tekstikenttänä</button>
+  <button class="btn btn-default" editointi-kontrolli ng-click="asetaMuokkausmoodi('taulukko')" translate>arviointi-muokkaa-taulukkona</button>
 </div>
 <div ng-show="showArviointiteksti()">
   <div ng-if="editAllowed" ckeditor localized ng-model="arviointi.lisatiedot" editor-placeholder="arviointi-lisatiedot-placeholder" editing-enabled="editAllowed" layout="simplified"></div>
