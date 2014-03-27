@@ -21,8 +21,8 @@ CREATE TABLE peruste_suoritustapa (
 
 ALTER TABLE suoritustapa
     ADD COLUMN peruste_id bigint;
-insert into suoritustapa(id, suoritustapakoodi, peruste_id) select nextval('hibernate_sequence') as id, 'ops' as suoritustapakoodi, p.id from peruste p where p.tutkintokoodi='koulutustyyppi_1';
-insert into suoritustapa(id, suoritustapakoodi, peruste_id) select nextval('hibernate_sequence') as id, 'naytto' as suoritustapakoodi, p.id from peruste p;
+insert into suoritustapa(id, suoritustapakoodi, peruste_id) select nextval('hibernate_sequence') as id, 'OPS' as suoritustapakoodi, p.id from peruste p where p.tutkintokoodi='koulutustyyppi_1';
+insert into suoritustapa(id, suoritustapakoodi, peruste_id) select nextval('hibernate_sequence') as id, 'NAYTTO' as suoritustapakoodi, p.id from peruste p;
 insert into peruste_suoritustapa(peruste_id, suoritustapa_id) select s.peruste_id, s.id from suoritustapa s;
 ALTER TABLE ONLY suoritustapa
     DROP IF EXISTS peruste_id;
