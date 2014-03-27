@@ -115,6 +115,31 @@ angular.module('eperusteApp')
         scope.removeItem = function(item, list) {
           _.remove(list, item);
         };
+        
+        var currentMoodi;
+        
+        scope.showArviointitaulukko = function() {
+          return currentMoodi === 'taulukko' || (!_.isEmpty(scope.arviointi) && (_.isEmpty(scope.arviointi.lisatiedot) && !_.isEmpty(scope.arviointi.arvioinninKohdealueet)));
+        };
+        
+        scope.showArviointiteksti = function() {
+          return currentMoodi === 'tekstikentta' || (!_.isEmpty(scope.arviointi) && (!_.isEmpty(scope.arviointi.lisatiedot) && _.isEmpty(scope.arviointi.arvioinninKohdealueet)));
+        };
+        
+        scope.naytaMuokkausmoodinValitsin = function() {
+          return scope.editAllowed && angular.isUndefined(currentMoodi) && (_.isEmpty(scope.arviointi) || (_.isEmpty(scope.arviointi.lisatiedot) && _.isEmpty(scope.arviointi.arvioinninKohdealueet)));
+        };
+        
+        scope.asetaMuokkausmoodi = function(moodi) {
+          currentMoodi = moodi;
+          if(scope.arviointi === undefined) {
+            scope.arviointi = {};
+          }
+        };
+        
+        scope.valitseKieli = function(teksti) {
+          return YleinenData.valitseKieli(teksti);
+        };
       }
     };
   })
