@@ -53,7 +53,7 @@ angular.module('eperusteApp')
     }, function(virhe) {
       console.log('VIRHE: ' + virhe.status);
       //Virhe tapahtui, esim. perustetta ei löytynyt. Virhesivu.
-      $state.go('selaus.konteksti', { konteksti: 'ammatillinenperuskoulutus' });
+      $state.go('selaus.ammatillinenperuskoulutus');
     });
     
     $scope.haeRevisiot = function() {
