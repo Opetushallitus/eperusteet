@@ -6,12 +6,12 @@ angular.module('eperusteApp')
     CKEDITOR.disableAutoInline = true;
   })
   .constant('editorLayouts', {
-    minimal: 
+    minimal:
       [
         { name: 'clipboard', items : [ 'Cut','Copy','-','Undo','Redo' ] },
         { name: 'tools', items : [ 'About' ] }
       ],
-    simplified: 
+    simplified:
       [
         { name: 'clipboard', items : [ 'Cut','Copy','Paste','-','Undo','Redo' ] },
         { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
@@ -19,7 +19,7 @@ angular.module('eperusteApp')
         { name: 'styles', items : [ 'Format' ] },
         { name: 'tools', items : [ 'About' ] }
       ],
-    normal: 
+    normal:
       [
         { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
         { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
