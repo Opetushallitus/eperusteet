@@ -19,7 +19,7 @@ angular.module('eperusteApp')
       });
   })
   .controller('EsitysCtrl', function($q, $scope, $stateParams, $state,
-    Kayttajaprofiilit, Suosikit, Perusteet, Suoritustapa, Suosikitbroadcast, YleinenData, 
+    Kayttajaprofiilit, Suosikit, Perusteet, Suoritustapa, Suosikitbroadcast, YleinenData,
     Navigaatiopolku, palvelinhaunIlmoitusKanava) {
 
     $scope.konteksti = $stateParams.konteksti;
@@ -70,7 +70,7 @@ angular.module('eperusteApp')
         $scope.peruste.rakenne = vastaus;
         console.log($scope.peruste);
       }, function (virhe) {
-          console.log('suoritustapasisältöä ei löytynyt');
+          console.log('suoritustapasisältöä ei löytynyt', virhe);
         });
     };
 
