@@ -8,4 +8,7 @@ angular.module('eperusteApp')
       }, {
         query: {method: 'GET', isArray: false}
       });
+  })
+  .factory('Suoritustapa', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustapa/:suoritustapa');
   });

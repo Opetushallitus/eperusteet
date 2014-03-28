@@ -25,4 +25,5 @@ public class PerusteDto implements Serializable {
     private Set<KoulutusDto> koulutukset;
     private Date paivays;
     private Date siirtyma;
+    private Set<SuoritustapaDto> suoritustavat;
 }

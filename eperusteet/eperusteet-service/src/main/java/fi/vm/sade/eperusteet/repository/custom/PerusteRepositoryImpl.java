@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.repository.custom;
 
-import java.util.Date;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.Kieli;
@@ -25,10 +24,14 @@ import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti_;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Peruste_;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.Suoritustapa_;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen_;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
+import java.util.Date;
 import java.util.HashMap;
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
@@ -83,6 +86,7 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
     public Peruste findById(Long id) {
         EntityGraph<Peruste> eg = em.createEntityGraph(Peruste.class);
         eg.addSubgraph(Peruste_.koulutukset);
+        eg.addSubgraph(Peruste_.suoritustavat);
         HashMap<String, Object> props = new HashMap<>();
         props.put(QueryHints.FETCHGRAPH, eg);
         Peruste p = em.find(Peruste.class, id, props);
@@ -117,10 +121,15 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, PerusteQuery pquery) {
 
         Kieli kieli = Kieli.of(pquery.getKieli());
-
+        
         Predicate pred = cb.equal(teksti.get(LokalisoituTeksti_.kieli), kieli);
         if (pquery.getNimi() != null) {
             pred = cb.and(pred, cb.like(cb.lower(teksti.get(LokalisoituTeksti_.teksti)), cb.literal(RepositoryUtil.kuten(pquery.getNimi()))));
+        }
+        if (pquery.getSuoritustapa()!= null) {
+            Suoritustapakoodi suoritustapakoodi = Suoritustapakoodi.of(pquery.getSuoritustapa());
+            Join<Peruste, Suoritustapa> suoritustapa = root.join(Peruste_.suoritustavat);
+            pred = cb.and(pred, cb.equal(suoritustapa.get(Suoritustapa_.suoritustapakoodi), suoritustapakoodi));
         }
         if (pquery.getKoulutusala() != null && !pquery.getKoulutusala().isEmpty()) {
             Join<Peruste, Koulutus> ala = root.join(Peruste_.koulutukset);

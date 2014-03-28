@@ -56,4 +56,5 @@ public class Suoritustapa implements Serializable {
     @Setter
     @JoinColumn(name = "sisalto_perusteenosaviite_id")
     private PerusteenOsaViite sisalto;
+
 }
