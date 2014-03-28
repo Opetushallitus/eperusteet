@@ -19,8 +19,11 @@ package fi.vm.sade.eperusteet.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 @Getter
 @Setter
+@JsonDeserialize(using = PerusteenRakenneosaDeserializer.class)
 public abstract class AbstractRakenneosaDto {
 
 	private LokalisoituTekstiDto otsikko;
