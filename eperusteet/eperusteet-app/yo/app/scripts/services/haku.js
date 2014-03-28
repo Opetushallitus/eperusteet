@@ -28,7 +28,8 @@ angular.module('eperusteApp')
         opintoala: '',
         siirtyma: false,
         sivu: 0,
-        sivukoko: 20
+        sivukoko: 20,
+        suoritustapa: 'ops'
       },
       'selaus.ammatillinenaikuiskoulutus': {
         nimi: '',
@@ -38,7 +39,8 @@ angular.module('eperusteApp')
         opintoala: '',
         siirtyma: false,
         sivu: 0,
-        sivukoko: 20
+        sivukoko: 20,
+        suoritustapa: 'naytto'
       }
     };
     

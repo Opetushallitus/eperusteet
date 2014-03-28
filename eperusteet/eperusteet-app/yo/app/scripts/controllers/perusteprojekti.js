@@ -1,12 +1,14 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .config(function($stateProvider) {
+  .config(function($stateProvider, $urlRouterProvider) {
+    $urlRouterProvider.when('/perusteprojekti', '/perusteprojekti/uusi');
+    $urlRouterProvider.when('/perusteprojekti/', '/perusteprojekti/uusi');
     $stateProvider
       .state('perusteprojekti', {
         url: '/perusteprojekti',
         navigaationimi: 'navi-perusteprojekti',
-        template: '<div ui-view></div>',
+        template: '<div ui-view></div>'
       })
       .state('perusteprojekti.editoi', {
         url: '/:perusteProjektiId',
@@ -32,6 +34,7 @@ angular.module('eperusteApp')
                    {otsikko: 'projekti-projektiryhmä', url: 'views/partials/perusteprojektiProjektiryhma.html'},
                    {otsikko: 'projekti-peruste', url: 'views/partials/perusteprojektiPeruste.html'}];
 
+    console.log('$stateparams', $stateParams);
     if ($stateParams.perusteProjektiId !== 'uusi') {
       $scope.projekti.id = $stateParams.perusteProjektiId;
       PerusteprojektiResource.get({ id: $stateParams.perusteProjektiId }, function(vastaus) {

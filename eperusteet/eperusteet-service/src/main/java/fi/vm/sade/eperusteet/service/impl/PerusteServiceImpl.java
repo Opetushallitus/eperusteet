@@ -9,6 +9,7 @@ import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.PageDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
@@ -104,6 +105,12 @@ public class PerusteServiceImpl implements PerusteService {
         }
         v.getLapset().add(i, viite);
         return viitteet.save(viite);
+    }
+    
+    @Override
+    public PerusteenosaViiteDto getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi) {
+        PerusteenOsaViite entity = perusteet.findByIdAndSuoritustapakoodi(perusteId, suoritustapakoodi);
+        return mapper.map(entity, PerusteenosaViiteDto.class);
     }
 
     /**
@@ -220,4 +227,5 @@ public class PerusteServiceImpl implements PerusteService {
         }
         return suoritustavat;
     }
+
 }
