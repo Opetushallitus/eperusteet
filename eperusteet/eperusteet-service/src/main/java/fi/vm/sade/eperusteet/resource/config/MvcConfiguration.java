@@ -75,7 +75,9 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
         converter.setPrettyPrint(true);
         converter.getObjectMapper().setPropertyNamingStrategy(new PropertyNamingStrategy() {
             
-            @Override
+			private static final long serialVersionUID = 1L;
+
+			@Override
             public String nameForGetterMethod(MapperConfig<?> config, AnnotatedMethod method,
             String defaultName)
             {

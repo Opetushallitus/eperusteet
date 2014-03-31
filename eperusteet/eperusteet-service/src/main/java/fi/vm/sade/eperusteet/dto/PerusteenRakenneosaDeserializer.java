@@ -69,7 +69,7 @@ public class PerusteenRakenneosaDeserializer extends JsonDeserializer<AbstractRa
 		Map<String, BeanPropertyDefinition> definitionMap = new HashMap<>();
 		List<BeanPropertyDefinition> propertyDefinitions = ctxt.getConfig().introspect(ctxt.constructType(beanClass)).findProperties();
 		for (BeanPropertyDefinition def : propertyDefinitions) {
-			LOG.debug("name: {}, full name: {}, setter: {}", def.getName(), def.getFullName(), def.getSetter());
+			LOG.debug("name: {}, setter: {}", def.getName(), def.getSetter());
 			definitionMap.put(def.getName(), def);
 		}
 

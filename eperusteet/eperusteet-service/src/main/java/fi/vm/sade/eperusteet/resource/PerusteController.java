@@ -30,7 +30,6 @@ import fi.vm.sade.eperusteet.service.PerusteService;
 @RequestMapping("/api/perusteet")
 public class PerusteController {
 
-    @SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(PerusteController.class);
 
     @Autowired
@@ -65,8 +64,9 @@ public class PerusteController {
     
     @RequestMapping(value = "/{id}/rakenne", method = POST)
     @ResponseBody
-    public ResponseEntity<AbstractRakenneosaDto> addViite(@PathVariable("id") final Long id, @RequestBody AbstractRakenneosaDto rakenneosa) {
-    	return null;
+    public ResponseEntity<AbstractRakenneosaDto> addPerusteenRakenne(@PathVariable("id") final Long id, @RequestBody AbstractRakenneosaDto rakenneosa) {
+    	LOG.debug("perusteen rakenne: {}", rakenneosa);
+    	return new ResponseEntity<AbstractRakenneosaDto>(rakenneosa, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{perusteId}/osat/{id}/lapset", method = POST)
