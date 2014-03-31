@@ -13,19 +13,18 @@ angular.module('eperusteApp')
         templateUrl: '/views/esitys.html',
         controller: 'EsitysCtrl',
         naviRest: [':perusteenId']
-        // navigaationimiId: 'peruste',
-        //Estää sisällysluettelossa navigoinnin lataamasta sivua uudelleen
-        // reloadOnSearch: false
       });
   })
   .controller('EsitysCtrl', function($q, $scope, $rootScope, $location, $anchorScroll,
     $stateParams, Kayttajaprofiilit, Suosikit, Perusteet, Suosikitbroadcast,
-    YleinenData, Navigaatiopolku, palvelinhaunIlmoitusKanava) {
+    YleinenData, Navigaatiopolku, palvelinhaunIlmoitusKanava, PerusteRakenteet) {
 
     $scope.konteksti = $stateParams.konteksti;
     $scope.perusteValinta = {};
     $scope.syvyys = 2;
     $scope.suosikkiLista = {};
+    $scope.rakenne = PerusteRakenteet.get({ perusteenId: $stateParams.perusteenId });
+
     //$scope.suosikkiPeruste = true;
     var eiSuosikkiTyyli = 'glyphicon glyphicon-star-empty pointer';
     var suosikkiTyyli = 'glyphicon glyphicon-star pointer';
@@ -139,62 +138,7 @@ angular.module('eperusteApp')
       }
     };
 
-    $scope.valitseKieli = function(teksti) {
-      return YleinenData.valitseKieli(teksti);
-    };
-
     $scope.$on('optioPoistettu', function() {
       $scope.$broadcast('optiotMuuttuneet');
     });
-
-    $scope.rakenne = {
-      otsikko: {
-        fi: 'Joku perustutkinto'
-      },
-      laajuus: {
-        tyyppi: 'ov',
-        maara: 120
-      },
-      osat: [{
-        otsikko: {
-          fi: 'Jotkut tutkinnon osat'
-        },
-        laajuus: {
-          tyyppi: 'ov',
-          maara: 90
-        },
-        osat: [{
-          otsikko: {
-            fi: 'Perus elektroniikka'
-          },
-          laajuus: {
-            tyyppi: 'ov',
-            maara: 30
-          },
-          tutkinnonosa: 1
-        }, {
-          tyyppi: 'yksi',
-          rajoite: 'laajuus',
-          osat: [{
-            otsikko: {
-              fi: 'Sulautetut sovellukset ja projektityöt',
-            },
-            laajuus: {
-              tyyppi: 'ov',
-              maara: 20
-            },
-            tutkinnonosa: 2
-          }, {
-            otsikko: {
-              fi: 'Elektroniikkatuotanto'
-            },
-            laajuus: {
-              tyyppi: 'ov',
-              maara: 20
-            },
-            tutkinnonosa: 3
-          }]
-        }]
-      }]
-    };
   });

@@ -64,7 +64,8 @@ angular.module('eperusteApp')
         $modal.open({
           templateUrl: 'views/modals/koodistoModal.html',
           controller: 'KoodistoModalCtrl',
-          resolve: resolve }).result.then(successCb, failureCb);
+          resolve: resolve
+        }).result.then(successCb, failureCb);
       };
     }
 

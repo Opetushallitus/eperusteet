@@ -69,7 +69,8 @@ European Union Public Licence for more details.
     </script>
 
     <!-- Tutkinnon rakenne puuesityksenä -->
-    <tree rakenne="rakenne"></tree>
+    <tree ng-if="rakenne.$resolved" rakenne="rakenne"></tree>
+    <br>
     <button ng-click="tallennaRakenne(rakenne)">Tallenna</button>
 
   </div>
