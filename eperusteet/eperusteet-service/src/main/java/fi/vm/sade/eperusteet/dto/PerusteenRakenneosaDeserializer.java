@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.dto;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,13 +36,24 @@ public class PerusteenRakenneosaDeserializer extends JsonDeserializer<AbstractRa
 				LOG.debug("token: {}", jp.getCurrentToken());
 				String propKey = jp.getCurrentName();
 				LOG.debug("prop name: {}", propKey);
-				if (jp.getCurrentToken().isStructStart()) {
+				if (jp.getCurrentToken().isStructStart() || jp.getCurrentToken().isScalarValue()) {
 					if (!definitionMap.containsKey(propKey)) {
 						definitionMap = getPropertyDefinitionsFor(RakenteenHaaraDto.class, ctxt);
 						isLeaf = Boolean.FALSE;
 					}
 					LOG.debug("field class: {}", definitionMap.get(propKey).getField().getRawType());
-					Object prop = mapper.readValue(jp, definitionMap.get(propKey).getField().getRawType());
+					Object prop = null;
+										
+					if(List.class.equals(definitionMap.get(propKey).getField().getRawType())) {
+						
+						List<AbstractRakenneosaDto> dtos = new ArrayList<>();
+						while(jp.nextToken() != JsonToken.END_ARRAY) {
+							dtos.add(mapper.readValue(jp, AbstractRakenneosaDto.class));
+						}
+						prop = dtos;
+					} else {
+						prop = mapper.readValue(jp, definitionMap.get(propKey).getField().getRawType());
+					}
 					LOG.debug("found prop: {}", prop);
 					props.put(propKey, prop);
 
