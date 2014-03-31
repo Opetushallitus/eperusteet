@@ -22,4 +22,6 @@ public interface PerusteenOsaService {
     PerusteenOsaDto getByKoodiUri(final String koodiUri);
 
     List<PerusteenOsaDto> getAll();
+    
+    List<PerusteenOsaDto> getAllWithName(final String name);
 }

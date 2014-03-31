@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import com.google.common.collect.Lists;
+
 import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
@@ -26,12 +27,16 @@ import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.repository.ArviointiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
+import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+
 import java.util.Collections;
 import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,6 +57,8 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     private PerusteenOsaRepository perusteenOsaRepository;
     @Autowired
     private ArviointiRepository arviointiRepository;
+    @Autowired
+    private TutkinnonOsaRepository tutkinnonOsaRepository;
     @PersistenceContext
     private EntityManager em;
 
@@ -93,6 +100,28 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         TutkinnonOsaDto to = (TutkinnonOsaDto) perusteenOsat.get(0);
         ArviointiDto arviointi = to.getArviointi();
         Assert.assertNotNull(tutkinnonOsa.getArviointi());
+    }
+    
+    @Test
+    @Rollback(true)
+    public void testFindTutkinnonOsaByName() {
+    	TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
+    	tutkinnonOsa.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "Nimi"));
+    	tutkinnonOsa = tutkinnonOsaRepository.saveAndFlush(tutkinnonOsa);
+    	
+    	tutkinnonOsa = new TutkinnonOsa();
+    	tutkinnonOsa.setNimi(TestUtils.tekstiPalanenOf(Kieli.SV, "Namnet"));
+    	tutkinnonOsa = tutkinnonOsaRepository.saveAndFlush(tutkinnonOsa);
+    	
+    	List<TutkinnonOsa> tutkinnonOsat = tutkinnonOsaRepository.findByNimiTekstiTekstiContainingIgnoreCase("nim");
+    	
+    	Assert.assertNotNull(tutkinnonOsat);
+    	Assert.assertEquals(1, tutkinnonOsat.size());
+    	
+    	tutkinnonOsat = tutkinnonOsaRepository.findByNimiTekstiTekstiContainingIgnoreCase("nAm");
+    	
+    	Assert.assertNotNull(tutkinnonOsat);
+    	Assert.assertEquals(1, tutkinnonOsat.size());
     }
 
 }

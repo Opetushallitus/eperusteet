@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,4 +78,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         LOG.info("delete" + id);
         perusteenOsaRepo.delete(id);
     }
+
+	@Override
+	public List<PerusteenOsaDto> getAllWithName(String name) {
+		return mapper.mapAsList(tutkinnonOsaRepo.findByNimiTekstiTekstiContainingIgnoreCase(name), PerusteenOsaDto.class);
+	}
 }

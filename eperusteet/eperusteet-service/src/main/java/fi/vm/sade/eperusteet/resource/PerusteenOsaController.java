@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -43,6 +44,13 @@ public class PerusteenOsaController {
         LOG.info("FINDALL");
         return service.getAll();
     }
+    
+    @RequestMapping(method = GET, params = "nimi")
+    @ResponseBody
+    public List<? extends PerusteenOsaDto> getAllWithName(@RequestParam("nimi") final String name) {
+    	LOG.debug("find with nimi: {}", name);
+    	return service.getAllWithName(name);
+    }
 
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
@@ -65,6 +73,8 @@ public class PerusteenOsaController {
         }
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
+    
+    
 
     @RequestMapping(method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
     @ResponseStatus(HttpStatus.CREATED)
