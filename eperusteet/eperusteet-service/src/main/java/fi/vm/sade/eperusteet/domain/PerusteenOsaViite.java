@@ -36,7 +36,7 @@ import lombok.Setter;
  * 
  */
 @Entity
-public class PerusteenOsaViite /*extends AbstractRakenneOsa*/ {
+public class PerusteenOsaViite {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -62,13 +62,12 @@ public class PerusteController {
         return new ResponseEntity<>(rakenne, ResponseHeaders.cacheHeaders(1, TimeUnit.SECONDS), HttpStatus.OK);
     }
     
-//    @RequestMapping(value = "/{id}/rakenne", method = POST)
-//    @ResponseBody
-//    public ResponseEntity<AbstractRakenneosaDto> addPerusteenRakenne(@PathVariable("id") final Long id, @RequestBody AbstractRakenneosaDto rakenneosa) {
-//    	LOG.debug("perusteen rakenne: {}", rakenneosa);
-////    	return new ResponseEntity<>(rakenneosa,HttpStatus.CREATED);
-//    	return new ResponseEntity<AbstractRakenneosaDto>(service.saveRakenne(rakenneosa), HttpStatus.CREATED);
-//    }
+    @RequestMapping(value = "/{id}/rakenne", method = POST)
+    @ResponseBody
+    public ResponseEntity<AbstractRakenneosaDto> addPerusteenRakenne(@PathVariable("id") final Long id, @RequestBody AbstractRakenneosaDto rakenneosa) {
+    	LOG.debug("perusteen rakenne: {}", rakenneosa);
+    	return new ResponseEntity<>(rakenneosa, HttpStatus.CREATED);
+    }
 
     @RequestMapping(value = "/{perusteId}/osat/{id}/lapset", method = POST)
     @ResponseBody

@@ -1,22 +1,5 @@
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.AbstractRakenneosa;
-import fi.vm.sade.eperusteet.domain.Koulutus;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.dto.AbstractRakenneosaDto;
-import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.PageDto;
-import fi.vm.sade.eperusteet.dto.PerusteDto;
-import fi.vm.sade.eperusteet.dto.PerusteQuery;
-import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
-import fi.vm.sade.eperusteet.service.KoulutusalaService;
-import fi.vm.sade.eperusteet.service.PerusteService;
-import fi.vm.sade.eperusteet.service.mapping.Dto;
-import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import fi.vm.sade.eperusteet.service.mapping.Koodisto;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
@@ -33,6 +16,21 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+
+import fi.vm.sade.eperusteet.domain.Koulutus;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.PageDto;
+import fi.vm.sade.eperusteet.dto.PerusteDto;
+import fi.vm.sade.eperusteet.dto.PerusteQuery;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
+import fi.vm.sade.eperusteet.service.KoulutusalaService;
+import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 
 /**
  *
@@ -159,14 +157,6 @@ public class PerusteServiceImpl implements PerusteService {
         return "Perusteet tallennettu";
     }
     
-//	@Override
-//	@Transactional(readOnly = false)
-//	public AbstractRakenneosaDto saveRakenne(AbstractRakenneosaDto dto) {
-//		AbstractRakenneosa rakenne = mapper.map(dto, AbstractRakenneosa.class);
-//		rakenteenOsaRepository.save(rakenne);
-//		return mapper.map(rakenne, AbstractRakenneosaDto.class);
-//	}
-
     private String parseAlarelaatiokoodi(KoodistoKoodiDto[] koulutusAlarelaatiot, String relaatio) {
         String koulutusAlarelaatiokoodi = null;
         for (KoodistoKoodiDto koulutusAlarelaatio : koulutusAlarelaatiot) {    
