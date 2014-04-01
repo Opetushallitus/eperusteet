@@ -24,6 +24,8 @@ angular.module('eperusteApp')
     
     scope.editModeDefer = $q.defer();
     
+    this.lastModified = null;
+    
     return {
       startEditing: function() {
         if(scope.editingCallback) {
