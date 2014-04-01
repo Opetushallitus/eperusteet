@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,6 +32,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,7 +46,9 @@ import lombok.Setter;
 @Table(name = "peruste")
 public class Peruste implements Serializable {
 
-    @Id
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
     @Setter
@@ -52,6 +58,7 @@ public class Peruste implements Serializable {
     @Setter
     private String koodiUri;
     
+    @ValidHtml(whitelist = WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter
     @Setter

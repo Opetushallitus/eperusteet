@@ -57,7 +57,7 @@ public class OsaamistasonKriteeri implements Serializable {
     @Setter
     private Osaamistaso osaamistaso;
 
-//    @ValidHtml(whitelist = WhitelistType.MINIMAL)
+    @ValidHtml(whitelist = WhitelistType.MINIMAL)
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @OrderColumn
     @JoinTable(name = "osaamistasonkriteeri_tekstipalanen",

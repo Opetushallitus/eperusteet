@@ -15,7 +15,7 @@ import org.jsoup.safety.Whitelist;
 
 @Target({ FIELD, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = ValidHtmlValidator.class)
+@Constraint(validatedBy = {ValidHtmlValidator.class, ValidHtmlCollectionValidator.class})
 @Documented
 public @interface ValidHtml {
 
