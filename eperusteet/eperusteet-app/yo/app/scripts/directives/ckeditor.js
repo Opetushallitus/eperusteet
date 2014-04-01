@@ -14,7 +14,7 @@ angular.module('eperusteApp')
     simplified:
       [
         { name: 'clipboard', items : [ 'Cut','Copy','Paste','-','Undo','Redo' ] },
-        { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
+        { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
         { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent'] },
         { name: 'styles', items : [ 'Format' ] },
         { name: 'tools', items : [ 'About' ] }
@@ -22,7 +22,7 @@ angular.module('eperusteApp')
     normal:
       [
         { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-        { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
+        { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
         '/',
         { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
         { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar' ] },

@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,6 +30,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -53,6 +57,7 @@ public class OsaamistasonKriteeri implements Serializable {
     @Setter
     private Osaamistaso osaamistaso;
 
+//    @ValidHtml(whitelist = WhitelistType.MINIMAL)
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @OrderColumn
     @JoinTable(name = "osaamistasonkriteeri_tekstipalanen",

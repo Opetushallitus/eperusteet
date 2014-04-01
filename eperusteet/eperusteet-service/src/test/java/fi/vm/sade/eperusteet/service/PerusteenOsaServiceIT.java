@@ -15,29 +15,36 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import com.google.common.collect.Lists;
-import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Osaamistaso;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
-import fi.vm.sade.eperusteet.dto.ArviointiDto;
-import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.repository.ArviointiRepository;
-import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
-import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
-import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.Collections;
 import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.ConstraintViolationException;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.collect.Lists;
+
+import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Osaamistaso;
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.repository.ArviointiRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
+import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 
 /**
  *
@@ -91,8 +98,16 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
 
         Assert.assertTrue(TutkinnonOsaDto.class.isInstance(perusteenOsat.get(0)));
         TutkinnonOsaDto to = (TutkinnonOsaDto) perusteenOsat.get(0);
-        ArviointiDto arviointi = to.getArviointi();
+        to.getArviointi();
         Assert.assertNotNull(tutkinnonOsa.getArviointi());
     }
 
+    @Test(expected = ConstraintViolationException.class)
+    @Rollback(true)
+    public void testWithInvalidHtml() {
+    	TekstiKappaleDto dto = new TekstiKappaleDto();
+    	dto.setNimi(new LokalisoituTekstiDto(Collections.singletonMap("fi", "<i>otsikko</i>")));
+    	
+    	perusteenOsaService.save(dto, TekstiKappaleDto.class, TekstiKappale.class);
+    }
 }

@@ -16,13 +16,18 @@
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+
 import java.io.Serializable;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -36,18 +41,24 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Audited
 public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private static final long serialVersionUID = 1L;
+
+	@ValidHtml
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen tavoitteet;
 
+	@ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen ammattitaitovaatimukset;
 
+	@ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen ammattitaidonOsoittamistavat;
 
+	@ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen osaamisala;

@@ -22,6 +22,7 @@
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
         <buildhelper.skipAttach>true</buildhelper.skipAttach>
+        <jsoup.version>1.7.2</jsoup.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -260,6 +261,11 @@
             <artifactId>tomcat-jasper-el</artifactId>
             <version>${tomcat.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>${jsoup.version}</version>
         </dependency>
     </dependencies>
     <build>

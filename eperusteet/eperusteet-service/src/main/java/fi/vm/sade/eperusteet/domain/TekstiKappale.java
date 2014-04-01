@@ -16,12 +16,16 @@
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 
 /**
  *
@@ -32,6 +36,9 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Audited
 public class TekstiKappale extends PerusteenOsa implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
+	@ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen teksti;
