@@ -16,13 +16,18 @@
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+
+import fi.vm.sade.eperusteet.dto.EntityReference;
+
 import java.io.Serializable;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -36,7 +41,9 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Audited
 public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private static final long serialVersionUID = 1L;
+
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen tavoitteet;
 
@@ -61,6 +68,11 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Arviointi arviointi;
+    
+	@Override
+	public EntityReference getReference() {
+		return new EntityReference(getId());
+	}
 
     public TekstiPalanen getTavoitteet() {
         return tavoitteet;

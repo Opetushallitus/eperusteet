@@ -85,6 +85,6 @@ public class Peruste implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     @Getter
     @Setter
-    private AbstractRakenneosa rakenne;
+    private PerusteenOsaViite rakenne;
 
 }

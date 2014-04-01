@@ -27,7 +27,7 @@ import javax.persistence.OrderColumn;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
+//@Entity
 public class Rakennehaara extends AbstractRakenneosa {
 	
 	private static final long serialVersionUID = 1L;

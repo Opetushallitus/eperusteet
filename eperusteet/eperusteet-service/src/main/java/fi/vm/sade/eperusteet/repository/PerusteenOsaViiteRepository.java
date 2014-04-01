@@ -19,13 +19,13 @@ package fi.vm.sade.eperusteet.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import fi.vm.sade.eperusteet.domain.AbstractRakenneosa;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 
 /**
  *
  * @author jhyoty
  */
 @Repository
-public interface AbstractRakenteenOsaRepository extends JpaRepository<AbstractRakenneosa, Long> {
+public interface PerusteenOsaViiteRepository extends JpaRepository<PerusteenOsaViite, Long> {
 
 }

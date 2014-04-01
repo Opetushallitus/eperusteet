@@ -37,9 +37,11 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Audited
 @Table(name="perusteenosa")
-public abstract class PerusteenOsa extends AbstractAuditedEntity implements Serializable {
+public abstract class PerusteenOsa extends AbstractAuditedEntity implements Serializable, CachedEntity {
 
-    @Id
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 

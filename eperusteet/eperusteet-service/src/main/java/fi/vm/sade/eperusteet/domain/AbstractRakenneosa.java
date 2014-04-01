@@ -30,9 +30,9 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@Table(name = "perusteenosaviite")
+//@Entity
+//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+//@Table(name = "perusteenosaviite")
 public abstract class AbstractRakenneosa implements Serializable {
 
 	private static final long serialVersionUID = 1L;

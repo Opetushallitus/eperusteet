@@ -16,8 +16,10 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.dto.AbstractRakenneosaDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -36,4 +38,6 @@ public interface PerusteService {
     PerusteenOsaViite addViite(final Long parentId, final Long seuraavaViite, PerusteenOsaViite viite);
 
     public String lammitys();
+
+//	AbstractRakenneosaDto saveRakenne(AbstractRakenneosaDto rakenneosa);
 }

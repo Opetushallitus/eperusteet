@@ -15,15 +15,22 @@
  */
 package fi.vm.sade.eperusteet.service.mapping;
 
+import fi.vm.sade.eperusteet.domain.AbstractRakenneosa;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.Rakennehaara;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.dto.AbstractRakenneosaDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.RakenteenHaaraDto;
+import fi.vm.sade.eperusteet.dto.RakenteenLehtiDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -61,7 +68,18 @@ public class DtoMapperConfig {
                 .field("koodi", "koodiUri")
                 .byDefault()
                 .register();
-
+//        factory.classMap(AbstractRakenneosaDto.class, AbstractRakenneosa.class)
+//        		.byDefault()
+//        		.register();
+//        factory.classMap(RakenteenHaaraDto.class, Rakennehaara.class)
+//		        .use(AbstractRakenneosaDto.class, AbstractRakenneosa.class)
+//		        .field("osat", "lapset")
+//		        .byDefault()
+//		        .register();
+//		factory.classMap(RakenteenLehtiDto.class, PerusteenOsaViite.class)
+//		        .use(AbstractRakenneosaDto.class, AbstractRakenneosa.class)
+//		        .byDefault()
+//		        .register();
 
         return new DtoMapperImpl(factory.getMapperFacade());
     }

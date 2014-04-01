@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.AbstractRakenneosa;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
@@ -9,7 +10,7 @@ import fi.vm.sade.eperusteet.dto.PageDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.repository.AbstractRakenteenOsaRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -56,7 +57,7 @@ public class PerusteServiceImpl implements PerusteService {
     @Autowired
     PerusteRepository perusteet;
     @Autowired
-    AbstractRakenteenOsaRepository rakenteenOsaRepository;
+    PerusteenOsaViiteRepository rakenteenOsaRepository;
     @Autowired
     KoulutusalaService koulutusalaService;
     @Autowired
@@ -157,6 +158,14 @@ public class PerusteServiceImpl implements PerusteService {
         
         return "Perusteet tallennettu";
     }
+    
+//	@Override
+//	@Transactional(readOnly = false)
+//	public AbstractRakenneosaDto saveRakenne(AbstractRakenneosaDto dto) {
+//		AbstractRakenneosa rakenne = mapper.map(dto, AbstractRakenneosa.class);
+//		rakenteenOsaRepository.save(rakenne);
+//		return mapper.map(rakenne, AbstractRakenneosaDto.class);
+//	}
 
     private String parseAlarelaatiokoodi(KoodistoKoodiDto[] koulutusAlarelaatiot, String relaatio) {
         String koulutusAlarelaatiokoodi = null;
@@ -192,5 +201,4 @@ public class PerusteServiceImpl implements PerusteService {
         return erikoistapausMap;
         
     }
-
 }

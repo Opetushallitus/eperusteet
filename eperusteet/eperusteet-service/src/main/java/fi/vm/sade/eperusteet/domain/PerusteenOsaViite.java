@@ -15,9 +15,17 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,13 +36,27 @@ import lombok.Setter;
  * 
  */
 @Entity
-public class PerusteenOsaViite extends AbstractRakenneosa {
-
-	private static final long serialVersionUID = 1L;
+public class PerusteenOsaViite /*extends AbstractRakenneOsa*/ {
+	
+	@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+	@Getter
+	@Setter
+    private Long id;
+	
+	@ManyToOne
+	@Getter
+	@Setter
+	private PerusteenOsaViite vanhempi;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@Getter
 	@Setter
     private PerusteenOsa perusteenOsa;
     
+	@OneToMany(mappedBy = "vanhempi", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OrderColumn
+    @Getter
+	@Setter
+    private List<PerusteenOsaViite> lapset;
 }
