@@ -12,6 +12,10 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'app/bower_components/jquery/dist/jquery.js',
+      'app/bower_components/jquery-ui/ui/jquery.ui.core.js',
+      'app/bower_components/jquery-ui/ui/jquery.ui.widget.js',
+      'app/bower_components/jquery-ui/ui/jquery.ui.mouse.js',
+      'app/bower_components/jquery-ui/ui/jquery.ui.sortable.js',
       'app/bower_components/angular/angular.js',
       'app/bower_components/angular-route/angular-route.js',
       'app/bower_components/angular-sanitize/angular-sanitize.js',
@@ -24,6 +28,7 @@ module.exports = function(config) {
       'app/bower_components/angular-ui-bootstrap-bower/ui-bootstrap.js',
       'app/bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js',
       'app/bower_components/angular-ui-utils/ui-utils.js',
+      'app/bower_components/angular-ui-sortable/sortable.js',
       'app/bower_components/ckeditor/ckeditor.js',
       'app/bower_components/lodash/dist/lodash.js',
       'app/scripts/*.js',

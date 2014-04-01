@@ -10,6 +10,7 @@ angular.module('eperusteApp', [
     'pascalprecht.translate',
     'ui.bootstrap',
     'ui.utils',
+    'ui.sortable'
   ])
   .constant('SERVICE_LOC','/eperusteet-service/api')
   .constant('SPINNER_WAIT', 0)
