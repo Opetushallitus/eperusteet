@@ -128,7 +128,7 @@ angular.module('eperusteApp')
               tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
             }
           });
-
+          
           function openNotificationDialog() {
             return $modal.open({
               templateUrl: 'views/modals/ilmoitusdialogi.html',

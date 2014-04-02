@@ -25,6 +25,7 @@ angular.module('eperusteApp')
     scope.editModeDefer = $q.defer();
     
     this.lastModified = null;
+    var additionalCallbacks = {save: [], start: [], cancel: []};
     
     return {
       startEditing: function() {
@@ -38,6 +39,12 @@ angular.module('eperusteApp')
       saveEditing: function() {
         if(scope.editingCallback) {
           scope.editingCallback.save();
+          angular.forEach(additionalCallbacks.save, function(callback) {
+            // Kutsutaan kaikkia callback listenereitä ja annetaan parametrina
+            // viimeisin muutettu objecti ja tieto siitä, onko editointikontrollit ylipäätänsä
+            // pääällä
+            callback(self.lastModified, scope.editingCallback !== null);
+          });
           scope.editMode = false;
           scope.editModeDefer = $q.defer();
           scope.editModeDefer.resolve(scope.editMode);
@@ -64,11 +71,22 @@ angular.module('eperusteApp')
         }
         scope.editingCallback = callback;
         scope.editModeDefer.resolve(scope.editMode);
+        
+//        scope.$watch('editingCallback', function() {
+//          angular.forEach(callbackListeners, function(listener) {
+//            // Kutsutaan kaikkia callback listenereitä ja annetaan parametrina
+//            // viimeisin muutettu objecti ja tieto siitä, onko editointikontrollit ylipäätänsä
+//            // pääällä
+//            listener(self.lastModified, scope.editingCallback !== null);
+//          });
+//        });
       },
       unregisterCallback: function() {
         scope.editingCallback = null;
         scope.editMode = false;
         scope.editModeDefer = $q.defer();
+        
+        additionalCallbacks = {save: [], start: [], cancel: []};
       },
       editingEnabled: function() {
         if(scope.editingCallback) {
@@ -79,9 +97,13 @@ angular.module('eperusteApp')
       },
       registerCallbackListener: function(callbackListener) {
         scope.$watch('editingCallback', callbackListener);
+//        callbackListeners.push(callbackListener);
       },
       getEditModePromise: function() {
         return scope.editModeDefer.promise;
+      },
+      registerAdditionalSaveCallback: function(callback) {
+        additionalCallbacks.save.push(callback);
       }
     };
 });
