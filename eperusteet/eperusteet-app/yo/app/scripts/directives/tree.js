@@ -203,6 +203,11 @@ angular.module('eperusteApp')
           swap(a.osat, index, index - 1);
         };
 
+        scope.sortableOptions = {
+          placeholder: 'group-placeholder',
+          connectWith: '.tree-group'
+        };
+
         scope.lisaaNode = function(node, tyyppi) {
           if (tyyppi === 0) {
             return;
@@ -243,7 +248,7 @@ angular.module('eperusteApp')
         if (scope.rakenne && _.isArray(scope.rakenne.osat)) {
           template =
             '<div class="panel panel-default">' +
-            '  <div class="panel-heading">' +
+            '  <div class="panel-heading grab-cursor">' +
             kentta +
             '  </div>' +
             '  <div ng-show="!rakenne.collapsed" class="panel-body">';
@@ -253,7 +258,11 @@ angular.module('eperusteApp')
           }
 
           template +=
-            '    <div ng-repeat="osa in rakenne.osat"><tree rakenne="osa" vanhempi="rakenne"></tree></div>' +
+            '<div ng-repeat="osa in rakenne.osat">' +
+            '  <div ui-sortable="sortableOptions" class="tree-group" ng-model="rakenne.osat">' +
+            '    <tree rakenne="osa" vanhempi="rakenne"></tree>' +
+            '  </div>' +
+            '</div>' +
             '<div class="dropdown">' +
             '  <a ng-hide="lisaaUusi" href="" class="dropdown-toggle">Lisää...</a>' +
             '  <ul class="dropdown-menu">' +

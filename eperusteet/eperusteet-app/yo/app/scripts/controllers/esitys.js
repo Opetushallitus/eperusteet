@@ -15,9 +15,9 @@ angular.module('eperusteApp')
         naviRest: [':perusteenId']
       });
   })
-  .controller('EsitysCtrl', function($q, $scope $stateParams, Kayttajaprofiilit, Suosikit,
-      Perusteet, Suosikitbroadcast, Suoritustapa, Perusteet, Suosikitbroadcast, YleinenData,
-      Navigaatiopolku, palvelinhaunIlmoitusKanava, PerusteRakenteet, TreeCache) {
+  .controller('EsitysCtrl', function($q, $scope, $stateParams, Kayttajaprofiilit, Suosikit,
+      Perusteet, Suosikitbroadcast, Suoritustapa, YleinenData, Navigaatiopolku,
+      palvelinhaunIlmoitusKanava, PerusteRakenteet, TreeCache) {
 
     $scope.konteksti = $stateParams.konteksti;
     $scope.peruste = {};
