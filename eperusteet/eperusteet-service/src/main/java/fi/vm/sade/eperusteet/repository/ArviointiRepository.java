@@ -16,15 +16,16 @@
 
 package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.domain.Arviointi;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import fi.vm.sade.eperusteet.domain.Arviointi;
+import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 
 /**
  *
  * @author teele1
  */
 @Repository
-public interface ArviointiRepository extends JpaRepository<Arviointi, Long> {
+public interface ArviointiRepository extends JpaWithVersioningRepository<Arviointi, Long> {
     
 }

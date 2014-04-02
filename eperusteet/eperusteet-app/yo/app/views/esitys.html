@@ -21,7 +21,7 @@ European Union Public Licence for more details.
   <div class="col-md-12">
 
     <script type="text/ng-template"  id="lapset_renderer.html">
-      <esitys-otsikko id="{{lapsi.perusteenOsa.id}}">{{lapsi.perusteenOsa.otsikko['fi']}}</esitys-otsikko>
+      <esitys-otsikko id="{{lapsi.perusteenOsa.id}}">{{lapsi.perusteenOsa.nimi['fi']}}</esitys-otsikko>
       <div ng-bind-html="lapsi.perusteenOsa.teksti.fi"></div>
       <div ng-repeat="lapsi in lapsi.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
     </script>
@@ -48,21 +48,34 @@ European Union Public Licence for more details.
       </div>
     </div>
 
-    <div align="left" >
-      <span ng-class="suosikkiTyyli" style="font-size: 2em; top: 10px" ng-click="asetaSuosikiksi()" title="aseta suosikiksi"></span>
+    <div class="row">
+        <div class="col-md-6">
+        <div align="left">
+            <span ng-class="suosikkiTyyli" style="font-size: 2em;" ng-click="asetaSuosikiksi()" title="aseta suosikiksi"></span>
+        </div>
+        </div>
+        <div class="col-md-6">
+            <div align="right">
+                <div id="suoritustavat-vaihto" class="btn-group" ng-show="peruste.suoritustavat.length > 1">
+                <button ng-click="vaihdaSuoritustapa('ops')" type="button" class="btn btn-default" ng-class="{ 'active' : suoritustapa === 'ops' }" translate>opetussuunnitelma</button>
+                <button ng-click="vaihdaSuoritustapa('naytto')" type="button" class="btn btn-default" ng-class="{ 'active' : suoritustapa === 'naytto' }" translate>nayttotutkinto</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <h1>{{valitseKieli(perusteValinta.nimi)}} </h1>
+
+    <h1>{{valitseKieli(peruste.nimi)}} </h1>
 
     <p>
-      {{'tutkintokoodi'|translate}}: {{perusteValinta.tutkintokoodi}} <br>
-      {{'koulutusalakoodi'|translate}}: {{perusteValinta.koulutusalakoodi}} <br>
-      Päiväys: {{perusteValinta.paivays|date:'dd.MM.yyyy HH:mm:ss'}} <br>
+      {{'tutkintokoodi'|translate}}: {{peruste.tutkintokoodi}} <br>
+      {{'koulutusalakoodi'|translate}}: {{peruste.koulutusalakoodi}} <br>
+      Päiväys: {{peruste.paivays|date:'dd.MM.yyyy HH:mm:ss'}} <br>
     </p>
 
 
-    <h2 id="{{perusteValinta.rakenne.perusteenOsa.id}}">{{perusteValinta.rakenne.perusteenOsa.otsikko.fi}}</h2>
-    <p ng-bind-html="perusteValinta.rakenne.perusteenOsa.teksti.fi"></p>
-    <div ng-repeat="lapsi in perusteValinta.rakenne.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
+    <h2 id="{{peruste.rakenne.perusteenOsa.id}}">{{peruste.rakenne.perusteenOsa.nimi.fi}}</h2>
+    <p ng-bind-html="peruste.rakenne.perusteenOsa.teksti.fi"></p>
+    <div ng-repeat="lapsi in peruste.rakenne.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
 
     <script type="text/ng-template" id='lehtirenderer.html'>
         {{data.otsikko}}
@@ -90,9 +103,9 @@ European Union Public Licence for more details.
 
   <!--div class="col-md-3">
       <ol class="affix">
-          <li><a ng-click="vierity(perusteValinta.rakenne.perusteenOsa.id)">{{perusteValinta.rakenne.perusteenOsa.otsikko.fi}}</a>
+          <li><a ng-click="vierity(peruste.rakenne.perusteenOsa.id)">{{peruste.rakenne.perusteenOsa.otsikko.fi}}</a>
               <ol>
-                  <li ng-repeat="lapsi in perusteValinta.rakenne.lapset" ng-include="'sisallysluettelo_renderer.html'"></li>
+                  <li ng-repeat="lapsi in peruste.rakenne.lapset" ng-include="'sisallysluettelo_renderer.html'"></li>
               </ol>
           </li>
       </ol>

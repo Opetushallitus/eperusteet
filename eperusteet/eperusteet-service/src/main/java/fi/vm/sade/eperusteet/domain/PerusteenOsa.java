@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,8 +27,12 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 
 /**
  *
@@ -45,6 +50,7 @@ public abstract class PerusteenOsa extends AbstractAuditedEntity implements Seri
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+	@ValidHtml(whitelist=WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen nimi;

@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 
@@ -57,6 +58,24 @@ public class PerusteenOsaController {
     public ResponseEntity<PerusteenOsaDto> get(@PathVariable("id") final Long id) {
         LOG.info("get {}", id);
     	PerusteenOsaDto t = service.get(id);
+        if (t == null) {
+        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/{id}/revisions", method = GET)
+    @ResponseBody
+    public List<Revision> getRevisions(@PathVariable("id") final Long id) {
+    	LOG.debug("get revisions");
+    	return service.getRevisions(id);
+    }
+    
+    @RequestMapping(value = "/{id}/revisions/{revisionId}", method = GET)
+    @ResponseBody
+    public ResponseEntity<PerusteenOsaDto> getRevision(@PathVariable("id") final Long id, @PathVariable("revisionId") final Integer revisionId) {
+    	LOG.debug("get #{} revision #{}", id, revisionId);
+    	PerusteenOsaDto t = service.getRevision(id, revisionId);
         if (t == null) {
         	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

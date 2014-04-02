@@ -9,10 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.repository.ArviointiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -34,12 +35,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     private TutkinnonOsaRepository tutkinnonOsaRepo;
 
     @Autowired
-    private ArviointiRepository arviointiRepository;
-
-    @Autowired
     @Dto
     private DtoMapper mapper;
-    
+
     @Override
     public List<PerusteenOsaDto> getAll() {
         return mapper.mapAsList(perusteenOsaRepo.findAll(), PerusteenOsaDto.class);
@@ -63,7 +61,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         current = perusteenOsaRepo.save(current);
         return mapper.map(current, dtoClass);
     }
-    
+
     @Override
     @Transactional(readOnly = false)
     public <T extends PerusteenOsaDto, D extends PerusteenOsa> T save(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
@@ -71,7 +69,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         perusteenOsa = perusteenOsaRepo.save(perusteenOsa);
         return mapper.map(perusteenOsa, dtoClass);
     }
-  
+
     @Override
     @Transactional(readOnly = false)
     public void delete(final Long id) {
@@ -82,5 +80,18 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 	@Override
 	public List<PerusteenOsaDto> getAllWithName(String name) {
 		return mapper.mapAsList(tutkinnonOsaRepo.findByNimiTekstiTekstiContainingIgnoreCase(name), PerusteenOsaDto.class);
+	}
+
+	public List<Revision> getRevisions(Long id) {
+		PerusteenOsa perusteenOsa = perusteenOsaRepo.findOne(id);
+		if(perusteenOsa instanceof TutkinnonOsa) {
+			return tutkinnonOsaRepo.getRevisions(id, "arviointi");
+		}
+		return perusteenOsaRepo.getRevisions(id);
+	}
+
+	@Override
+	public PerusteenOsaDto getRevision(Long id, Integer revisionId) {
+		return mapper.map(perusteenOsaRepo.findRevision(id, revisionId), PerusteenOsaDto.class);
 	}
 }

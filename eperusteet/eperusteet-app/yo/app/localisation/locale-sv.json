@@ -31,13 +31,13 @@
     "haku-opintoala" : "[Opintoala]",
     "haku-kaikki-opintoalat" : "[Kaikki opintoalat]",
 
-    "navi-esiopetus": "[Esiopetus]",
-    "navi-perusopetus": "[Perusopetus]",
-    "navi-lukiokoulutus": "[Lukiokoulutus]",
-    "navi-ammatillinen-peruskoulutus": "[Ammatillinen peruskoulutus]",
-    "navi-ammatillinen-aikuiskoulutus": "[Ammatillinen aikuiskoulutus]",
-    "navi-hakuehdot": "[Hakuehdot]",
-    "navi-perusteprojekti": "[Perusteprojekti]",
+    "esiopetus": "[Esiopetus]",
+    "perusopetus": "[Perusopetus]",
+    "lukiokoulutus": "[Lukiokoulutus]",
+    "ammatillinen-peruskoulutus": "[Ammatillinen peruskoulutus]",
+    "ammatillinen-aikuiskoulutus": "[Ammatillinen aikuiskoulutus]",
+    "hakuehdot": "[Hakuehdot]",
+    "perusteprojekti": "[Perusteprojekti]",
 
     "muokkaus-uusi-kappale-placeholder": "[Uusi kappale]",
     "muokkaus-kommentit": "[Kommentit]",
@@ -46,6 +46,8 @@
     "tutkinnonosa-arviointi": "[Arviointi]",
     "tutkinnonosa-ammattitaitovaatimukset": "[Ammattitaitovaatimukset]",
     "tutkinnonosa-ammattitaidonOsoittamistavat": "[Ammattitaidon osoittamistavat]",
+    "tutkinnonosa-tavoitteet": "[Tavoitteet]",
+    "tutkinnonosa-osaamisala": "[Osaamisala]",
 
     "koulutusalakoodi-1": "[Tekniikan ja liikenteen ala]",
     "koulutusalakoodi-2": "[Kulttuuriala]",
@@ -132,6 +134,7 @@
     "muokkaus-tekstikappaleen-teksti-header": "[Teksti]",
     "muokkaus-tekstikappaleen-teksti-placeholder": "[Kirjoita tähän kappaleen teksti]",
 
+    "arviointi-lisatiedot-placeholder": "[Arvioinnin sanallinen selitys tähän]",
     "arviointi-uusi-kohdealue": "[Uusi kohdealue]",
     "arviointi-uusi-kohdealue-placeholder": "[Kohdealueen nimi]",
     "arviointi-uusi-kohde": "[Uusi kohde]",
@@ -139,6 +142,9 @@
     "arviointi-uusi-kriteeri": "[Uusi kriteeri]",
     "arviointi-uusi-kriteeri-placeholder": "[Kriteerin teksti]",
     "arviointi-asteikon-valinta": "[Valitse arviointiasteikko]",
+    
+    "arviointi-muokkaa-tekstikenttänä": "[Muokkaa tekstikenttänä]",
+    "arviointi-muokkaa-taulukkona": "[Muokkaa taulukkona]",
 
     "muokkaus-lisaa-osio": "[Lisää osio]",
     "muokkaus-tutkinnon-osa-tallennettu": "[Tutkinnon osa tallennettu onnistuneesti.]",
@@ -173,8 +179,6 @@
     
     "perusteen-nimi": "[Perusteen nimi]",
     "anna-perusteen-nimi": "[Syötä perusteen nimi]",
-    
-    "ok": "[OK]",
     
     "projekti-perustiedot": "[Perustiedot]",
     "projekti-projektiryhmä": "[Projektiryhmä]",

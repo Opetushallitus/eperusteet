@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,13 +32,20 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+
 /**
  *
  * @author teele1
  */
 @Entity
 @Table(name = "arviointi")
-public class Arviointi implements Serializable {
+@Audited
+public class Arviointi extends AbstractAuditedEntity implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
@@ -45,7 +53,9 @@ public class Arviointi implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
+    @ValidHtml(whitelist = WhitelistType.SIMPLIFIED)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen lisatiedot;
     
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -53,6 +63,7 @@ public class Arviointi implements Serializable {
             joinColumns = @JoinColumn(name = "arviointi_id"),  
             inverseJoinColumns = @JoinColumn(name = "arvioinninkohdealue_id"))
     @OrderColumn
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private List<ArvioinninKohdealue> arvioinninKohdealueet;
 
     public Long getId() {

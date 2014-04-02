@@ -50,8 +50,8 @@
     "esiopetus": "Esiopetus",
     "perusopetus": "Perusopetus",
     "lukiokoulutus": "Lukiokoulutus",
-    "ammatillinenperuskoulutus": "Ammatillinen peruskoulutus",
-    "ammatillinenaikuiskoulutus": "Ammatillinen aikuiskoulutus",
+    "ammatillinen-peruskoulutus": "Ammatillinen peruskoulutus",
+    "ammatillinen-aikuiskoulutus": "Ammatillinen aikuiskoulutus",
     "hakuehdot": "Hakuehdot",
     "perusteprojekti": "Perusteprojekti",
 
@@ -62,6 +62,8 @@
     "tutkinnonosa-arviointi": "Arviointi",
     "tutkinnonosa-ammattitaitovaatimukset": "Ammattitaitovaatimukset",
     "tutkinnonosa-ammattitaidonOsoittamistavat": "Ammattitaidon osoittamistavat",
+    "tutkinnonosa-tavoitteet": "Tavoitteet",
+    "tutkinnonosa-osaamisala": "Osaamisala",
 
     "koulutusalakoodi-1": "Tekniikan ja liikenteen ala",
     "koulutusalakoodi-2": "Kulttuuriala",
@@ -160,6 +162,7 @@
     "muokkaus-tekstikappaleen-teksti-header": "Teksti",
     "muokkaus-tekstikappaleen-teksti-placeholder": "Kirjoita tähän kappaleen teksti",
 
+    "arviointi-lisatiedot-placeholder": "Arvioinnin sanallinen selitys tähän",
     "arviointi-uusi-kohdealue": "Uusi kohdealue",
     "arviointi-uusi-kohdealue-placeholder": "Kohdealueen nimi",
     "arviointi-uusi-kohde": "Uusi kohde",
@@ -167,6 +170,9 @@
     "arviointi-uusi-kriteeri": "Uusi kriteeri",
     "arviointi-uusi-kriteeri-placeholder": "Kriteerin teksti",
     "arviointi-asteikon-valinta": "Valitse arviointiasteikko",
+
+    "arviointi-muokkaa-tekstikenttänä": "Muokkaa tekstikenttänä",
+    "arviointi-muokkaa-taulukkona": "Muokkaa taulukkona",
 
     "muokkaus-lisaa-osio": "Lisää osio",
     "muokkaus-tutkinnon-osa-tallennettu": "Tutkinnon osa tallennettu onnistuneesti.",
@@ -211,5 +217,8 @@
     "projekti-projektiryhmä": "Projektiryhmä",
     "projekti-peruste": "Perusteen tiedot",
     "valitse-peruste": "Valitse peruste",
-    "perusteen-koodi": "Perusteen koodi"
+    "perusteen-koodi": "Perusteen koodi",
+
+    "opetussuunnitelma": "Opetussuunnitelma",
+    "nayttotutkinto": "Näyttötutkinto"
 }

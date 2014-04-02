@@ -2,7 +2,13 @@ package fi.vm.sade.eperusteet.resource;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
-
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.PerusteDto;
+import fi.vm.sade.eperusteet.dto.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
+import fi.vm.sade.eperusteet.dto.SuoritustapaDto;
+import fi.vm.sade.eperusteet.service.PerusteService;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -16,6 +22,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
+>>>>>>> develop
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -51,7 +59,7 @@ public class PerusteController {
         }
         return new ResponseEntity<>(t, ResponseHeaders.cacheHeaders(1, TimeUnit.SECONDS), HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/{id}/rakenne", method = GET)
     @ResponseBody
     public ResponseEntity<AbstractRakenneosaDto> getRakenne(@PathVariable("id") final Long id) {
@@ -61,7 +69,7 @@ public class PerusteController {
         }
         return new ResponseEntity<>(rakenne, ResponseHeaders.cacheHeaders(1, TimeUnit.SECONDS), HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/{id}/rakenne", method = POST)
     @ResponseBody
     public ResponseEntity<AbstractRakenneosaDto> addPerusteenRakenne(@PathVariable("id") final Long id, @RequestBody AbstractRakenneosaDto rakenneosa) {
@@ -78,11 +86,25 @@ public class PerusteController {
 
         return new ResponseEntity<>(service.addViite(viiteId, ennen, viite), HttpStatus.CREATED);
     }
-    
+
+    @RequestMapping(value = "/{perusteId}/suoritustapa/{suoritustapakoodi}", method = GET)
+    @ResponseBody
+    public ResponseEntity<PerusteenosaViiteDto> getSuoritustapaSisalto (
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+
+        PerusteenosaViiteDto dto = service.getSuoritustapaSisalto(perusteId, Suoritustapakoodi.of(suoritustapakoodi));
+        if (dto == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/lammitys", method = GET)
     @ResponseBody
     public ResponseEntity<String> lammitys() {
-        
+
         return new ResponseEntity<>(service.lammitys(), HttpStatus.OK);
     }
 

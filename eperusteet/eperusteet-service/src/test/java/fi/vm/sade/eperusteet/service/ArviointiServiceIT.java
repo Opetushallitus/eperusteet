@@ -16,27 +16,15 @@
 
 package fi.vm.sade.eperusteet.service;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.cfg.MapperConfig;
-import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
-import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Osaamistaso;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.dto.ArviointiDto;
-import fi.vm.sade.eperusteet.dto.EntityReference;
-import fi.vm.sade.eperusteet.resource.config.EPerusteetMappingModule;
-import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.ConstraintViolationException;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +34,23 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.cfg.MapperConfig;
+import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
+
+import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Osaamistaso;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.dto.ArviointiDto;
+import fi.vm.sade.eperusteet.dto.EntityReference;
+import fi.vm.sade.eperusteet.resource.config.EPerusteetMappingModule;
+import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 
 /**
  *
@@ -142,7 +147,7 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testSaveArviointiFromJson() throws IOException {
-        Resource resource = new ClassPathResource("material/arviointi.json");
+        Resource resource = new ClassPathResource("material/valid_arviointi.json");
         ArviointiDto dto = objectMapper.readValue(resource.getFile(), ArviointiDto.class);
         
         arviointiService.add(dto);
@@ -155,11 +160,19 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
         Assert.assertEquals(1, dtos.size());
     }
     
-//    @Test(expected = ConstraintViolationException.class)
-//    @Rollback(true)
-//    public void testSaveInvalidArviointiFromJson() throws IOException {
-//        Resource resource = new ClassPathResource("material/arviointi2.json");
-//        ArviointiDto dto = objectMapper.readValue(resource.getFile(), ArviointiDto.class);
-//        arviointiService.add(dto);
-//    }
+    @Test(expected = ConstraintViolationException.class)
+    @Rollback(true)
+    public void testSaveInvalidArviointiFromJson() throws IOException {
+        Resource resource = new ClassPathResource("material/invalid_arviointi.json");
+        ArviointiDto dto = objectMapper.readValue(resource.getFile(), ArviointiDto.class);
+        arviointiService.add(dto);
+    }
+    
+    @Test(expected = ConstraintViolationException.class)
+    @Rollback(true)
+    public void testSaveInvalidArviointi2FromJson() throws IOException {
+        Resource resource = new ClassPathResource("material/invalid_arviointi2.json");
+        ArviointiDto dto = objectMapper.readValue(resource.getFile(), ArviointiDto.class);
+        arviointiService.add(dto);
+    }
 }

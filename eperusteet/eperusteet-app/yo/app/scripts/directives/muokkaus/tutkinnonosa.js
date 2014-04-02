@@ -98,9 +98,8 @@ angular.module('eperusteApp')
                 $scope.editableTutkinnonOsa.$saveTutkinnonOsa().then(function (response) {
                   $scope.editableTutkinnonOsa = angular.copy(response);
                   $scope.tutkinnonOsa = angular.copy(response);
-                  
                   Editointikontrollit.lastModified = response;
-                  
+
                   openNotificationDialog().result.then(function() {
                     var tutkinnonOsaDefer = $q.defer();
                     $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
@@ -110,15 +109,14 @@ angular.module('eperusteApp')
                 });
               } else {
                 PerusteenOsat.saveTutkinnonOsa($scope.editableTutkinnonOsa).$promise.then(function(response) {
-                  
+
                   Editointikontrollit.lastModified = response;
-                  
+
                   openNotificationDialog().result.then(function() {
-                    $state.go('muokkaus.tutkinnonosa', { id: response.id });
+                    $state.go('muokkaus.vanha', { perusteenId: response.id, perusteenOsanTyyppi: 'tutkinnonosa' });
                   });
                 });
               }
-              $scope.tutkinnonOsa = angular.copy($scope.editableTutkinnonOsa);
             },
             cancel: function() {
               console.log('tutkinnon osa - cancel');

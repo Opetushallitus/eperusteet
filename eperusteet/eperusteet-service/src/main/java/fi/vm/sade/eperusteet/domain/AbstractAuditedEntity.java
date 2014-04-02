@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * @author jhyoty
  */
 @MappedSuperclass
-public class AbstractAuditedEntity implements Serializable {
+public abstract class AbstractAuditedEntity implements Serializable {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractAuditedEntity.class);
     
     @Audited

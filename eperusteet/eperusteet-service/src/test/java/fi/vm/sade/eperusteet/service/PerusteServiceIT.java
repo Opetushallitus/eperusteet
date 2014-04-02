@@ -15,18 +15,14 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.dto.PerusteQuery;
-import fi.vm.sade.eperusteet.dto.PerusteDto;
-import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
-import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+import static org.junit.Assert.assertEquals;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +30,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.PerusteDto;
+import fi.vm.sade.eperusteet.dto.PerusteQuery;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+import java.util.HashSet;
 
 /**
  * Yksinkertainen integraatiotesti muistinvaraista kantaa vasten.
@@ -48,7 +55,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     private PerusteRepository repo;
     @PersistenceContext
     private EntityManager em;
-
+    
     public PerusteServiceIT() {
     }
 
@@ -83,5 +90,4 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         Page<PerusteDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
         assertEquals(perusteet.getTotalElements(), 3);
     }
-
 }

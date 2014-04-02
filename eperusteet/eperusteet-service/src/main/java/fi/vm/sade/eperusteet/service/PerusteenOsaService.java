@@ -4,17 +4,18 @@ import java.util.List;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 
 /**
  *
  * @author jhyoty
  */
 public interface PerusteenOsaService {
-    
+
 	public <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass);
-	
+
     <T extends PerusteenOsaDto, D extends PerusteenOsa> T save(T perusteenOsaDto, Class<T> dtoClass, Class<D> destinationClass);
-   
+
     void delete(final Long id);
 
     PerusteenOsaDto get(final Long id);
@@ -22,6 +23,10 @@ public interface PerusteenOsaService {
     PerusteenOsaDto getByKoodiUri(final String koodiUri);
 
     List<PerusteenOsaDto> getAll();
-    
+
     List<PerusteenOsaDto> getAllWithName(final String name);
+
+    public List<Revision> getRevisions(Long id);
+
+    public PerusteenOsaDto getRevision(final Long id, final Integer revisionId);
 }

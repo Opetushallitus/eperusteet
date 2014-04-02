@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -28,10 +29,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -55,6 +58,7 @@ public class Peruste implements Serializable {
     @Setter
     private String koodiUri;
     
+    @ValidHtml(whitelist = WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter
     @Setter
@@ -81,10 +85,13 @@ public class Peruste implements Serializable {
     @Getter
     @Setter
     private Date siirtyma;
-
-    @OneToOne(fetch = FetchType.LAZY)
+    
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "peruste_suoritustapa",
+            joinColumns = @JoinColumn(name = "peruste_id"),
+            inverseJoinColumns = @JoinColumn(name = "suoritustapa_id"))
     @Getter
     @Setter
-    private PerusteenOsaViite rakenne;
+    private Set<Suoritustapa> suoritustavat;
 
 }

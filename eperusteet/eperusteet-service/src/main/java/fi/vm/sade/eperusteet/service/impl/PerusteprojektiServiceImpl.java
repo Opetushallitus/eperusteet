@@ -93,22 +93,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         
         if (projekti != null && projekti.getPeruste() != null && projekti.getPeruste().getKoulutukset() != null) {
             for (Koulutus koulutus : projekti.getPeruste().getKoulutukset()) {
-                LOG.info("Etsittävä koulutuskoodi" + koulutus.getKoulutuskoodi());
                 koulutusTemp = koulutusRepository.findOneByKoulutuskoodi(koulutus.getKoulutuskoodi());
                 if (koulutusTemp != null) {
-                    LOG.info("löydetty koulutuskoodi" + koulutusTemp.getKoulutuskoodi());
                     koulutukset.add(koulutusTemp);
                 } else {
-                    LOG.info("syötetty koulutuskoodi" + koulutus.getKoulutuskoodi());
-                    LOG.info("syötetty koulutusalakoodi" + koulutus.getKoulutusalakoodi());
-                    LOG.info("syötetty opintoalakoodi" + koulutus.getOpintoalakoodi());
                     koulutukset.add(koulutus);
                 }
             }
             projekti.getPeruste().setKoulutukset(koulutukset);
-            for (Koulutus koulutus : projekti.getPeruste().getKoulutukset()) {
-                LOG.info("Koulutus koulutuskoodi: " + koulutus.getKoulutuskoodi());
-            }
         }
         return projekti;
     }

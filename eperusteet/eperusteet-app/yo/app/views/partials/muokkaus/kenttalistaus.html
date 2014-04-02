@@ -24,11 +24,13 @@ European Union Public Licence for more details.
     </li>
   </ul>
   <div class="panel-footer" ng-hide="isEmpty(hiddenFields)">
-    <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle">{{'muokkaus-lisaa-osio' | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
-    <ul class="dropdown-menu">
-      <li ng-repeat="field in hiddenFields | orderBy:'order'">
-        <a ng-click="addFieldToVisible(field)" translate>muokkaus-{{field.localeKey}}-header</a>
-      </li>
-    </ul>
+    <div class="dropdown">
+      <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle">{{'muokkaus-lisaa-osio' | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
+      <ul class="dropdown-menu">
+        <li ng-repeat="field in hiddenFields | orderBy:'order'">
+          <a ng-click="addFieldToVisible(field)" translate>muokkaus-{{field.localeKey}}-header</a>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>

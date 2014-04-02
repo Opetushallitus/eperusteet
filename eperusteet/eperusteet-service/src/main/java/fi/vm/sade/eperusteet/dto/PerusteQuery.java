@@ -35,4 +35,5 @@ public class PerusteQuery {
     private List<String> tyyppi;
     private String kieli = "fi";
     private List<String> opintoala;
+    private String suoritustapa;
 }
