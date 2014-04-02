@@ -31,9 +31,9 @@ angular.module('eperusteApp')
         naviBase: ['muokkaus', ':perusteenOsanTyyppi']
       })
       .state('muokkaus.vanha', {
-        url: '/:perusteenOsanTyyppi/:perusteenId',
+        url: '/:perusteenOsanTyyppi/:perusteenOsanId',
         templateUrl: 'views/muokkaus.html',
-        naviBase: ['muokkaus', ':perusteenOsanTyyppi', ':perusteenId'],
+        naviBase: ['muokkaus', ':perusteenOsanTyyppi', ':perusteenOsanId'],
         controller: 'MuokkausCtrl',
       });
   })
@@ -41,11 +41,11 @@ angular.module('eperusteApp')
     $scope.tyyppi = $stateParams.perusteenOsanTyyppi;
     $scope.objekti = null;
 
-    if ($stateParams.perusteenId) {
-      $scope.objekti = PerusteenOsat.get({ osanId: $stateParams.perusteenId }, function(re) {
-        Navigaatiopolku.asetaElementit({ perusteenId: re.nimi });
+    if ($stateParams.perusteenOsanId) {
+      $scope.objekti = PerusteenOsat.get({ osanId: $stateParams.perusteenOsanId }, function(re) {
+        Navigaatiopolku.asetaElementit({ perusteenOsanId: re.nimi });
       }, function() {
-        console.log('unable to find perusteen osa #' + $stateParams.perusteenId);
+        console.log('unable to find perusteen osa #' + $stateParams.perusteenOsanId);
         $state.go('selaus.konteksti', { konteksti: 'ammatillinenperuskoulutus' });
       });
     }

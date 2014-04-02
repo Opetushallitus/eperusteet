@@ -13,7 +13,6 @@ angular.module('eperusteApp')
         if (id) {
           puu = _.clone(rakenne);
           puuId = id;
-          console.log('tallennettu id:', puuId);
         }
       },
       puhdista: function() {
@@ -22,7 +21,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('tree', function($compile, TutkinnonOsanTuonti) {
+  .directive('tree', function($compile, $state, TutkinnonOsanTuonti) {
     function swap(container, from, to) {
       if (container && from >= 0 && to >= 0 && from < _.size(container) && to < _.size(container)) {
         var temp = container[to];
@@ -64,11 +63,16 @@ angular.module('eperusteApp')
       return '<span>' + otsikko + ' </span>';
     }
 
-    function generoiOptiot() {
+    function generoiOptiot(rakenne) {
+      var url = '';
+      if (rakenne._perusteenOsa) {
+        url = $state.href('muokkaus.vanha', { perusteenOsanId: rakenne._perusteenOsa, perusteenOsanTyyppi: 'tutkinnonosa' });
+      }
       return '<span ng-show="naytaTyokalut">' +
         '<a href="" ng-click="ylos(rakenne, vanhempi)"><span class="glyphicon glyphicon-chevron-up"></a>' +
         '<a href="" ng-click="alas(rakenne, vanhempi)"><span class="glyphicon glyphicon-chevron-down"></a>' +
-        '<a href="" ng-click="muokkaa(rakenne, vanhempi)"><span class="glyphicon glyphicon-pencil"></a>' +
+        '<a ng-if="!rakenne._perusteenOsa" href="" ng-click="muokkaa(rakenne, vanhempi)"><span class="glyphicon glyphicon-pencil"></a>' +
+        '<a ng-if="rakenne._perusteenOsa" ng-href="' + url + '"><span class="glyphicon glyphicon-pencil"></a>' +
         '<a href="" ng-click="poista(rakenne, vanhempi)"><span class="glyphicon glyphicon-remove"></a>' +
         '</span>';
     }
@@ -149,42 +153,45 @@ angular.module('eperusteApp')
       return ryhma;
     }
 
-    function kaikilleRakenteille(osat, f) {
-      if (!osat || !f) {
-        return;
-      }
-      _.forEach(osat, function(r) {
-        r = f(r);
-        if (r.osat) {
-          kaikilleRakenteille(r.osat);
-        }
-      });
-    }
-
     return {
       restrict: 'AE',
       transclude: false,
       terminal: true,
       scope: {
         rakenne: '=',
+        uusiTutkinnonOsa: '=',
         vanhempi: '='
       },
-      link: function(scope, el, attrs) {
+      link: function(scope, el) {
         scope.lisaaUusi = 0;
+        scope.lisataanUuttaPerusteenOsaa = false;
+
+        function liitaUusiTutkinnonOsa(osa) {
+          scope.rakenne.osat.push({
+            otsikko: { fi: 'Uusi' },
+            kuvaus: { fi: '' },
+            _perusteenOsa: 1337,
+            saannot: {
+              maara: 10,
+              yksikko: 'ov',
+              tyyppi: 'laajuus',
+              pakollinen: false
+            }
+          });
+        }
 
         scope.tuoTutkinnonOsa = TutkinnonOsanTuonti.modaali(function(osa) {
-          console.log(osa);
-          var uusi = {};
-          uusi.otsikko = osa.nimi;
-          uusi.kuvaus = { fi: '' };
-          uusi._perusteenOsa = osa.id;
-          uusi.saannot = {
-            maara: 10,
-            yksikko: 'ov',
-            tyyppi: 'laajuus',
-            pakollinen: false
-          };
-          scope.rakenne.osat.push(uusi);
+          scope.rakenne.osat.push({
+            otsikko: osa.nimi,
+            kuvaus: { fi: '' },
+            _perusteenOsa: osa.id,
+            saannot: {
+              maara: 10,
+              yksikko: 'ov',
+              tyyppi: 'laajuus',
+              pakollinen: false
+            }
+          });
         });
 
         scope.poista = function(i, a) { _.remove(a.osat, i); };
@@ -205,8 +212,13 @@ angular.module('eperusteApp')
 
         scope.sortableOptions = {
           placeholder: 'group-placeholder',
-          connectWith: '.tree-group'
+          connectWith: '.tree-group',
+          delay: 400,
+          opacity: 0.7,
+          revert: true,
         };
+
+        scope.liitaUusiTutkinnonOsa = liitaUusiTutkinnonOsa;
 
         scope.lisaaNode = function(node, tyyppi) {
           if (tyyppi === 0) {
@@ -241,10 +253,11 @@ angular.module('eperusteApp')
 
         var kentta = generoiPiilotusPainike();
         kentta += generoiOtsikko(scope.rakenne);
-        kentta += generoiOptiot();
+        kentta += generoiOptiot(scope.rakenne);
         kentta = '<div ng-mouseenter="naytaTyokalut = true" ng-mouseleave="naytaTyokalut = false">' + kentta + '</div>';
 
         var template = '';
+
         if (scope.rakenne && _.isArray(scope.rakenne.osat)) {
           template =
             '<div class="panel panel-default">' +
@@ -259,14 +272,15 @@ angular.module('eperusteApp')
 
           template +=
             '<div ng-repeat="osa in rakenne.osat">' +
-            '  <div ui-sortable="sortableOptions" class="tree-group" ng-model="rakenne.osat">' +
-            '    <tree rakenne="osa" vanhempi="rakenne"></tree>' +
+            '  <div ng-if="true" ui-sortable="sortableOptions" class="tree-group" ng-model="rakenne.osat">' +
+            '    <tree rakenne="osa" vanhempi="rakenne" uusi-tutkinnon-osa="uusiTutkinnonOsa"></tree>' +
             '  </div>' +
+            '  <tree ng-if="false" rakenne="osa" vanhempi="rakenne" uusi-tutkinnon-osa="uusiTutkinnonOsa"></tree>' +
             '</div>' +
             '<div class="dropdown">' +
-            '  <a ng-hide="lisaaUusi" href="" class="dropdown-toggle">Lisää...</a>' +
+            '  <a ng-hide="lisaaUusi" href="" class="dropdown-toggle"><span class="glyphicon glyphicon-plus"></span> Lisää</a>' +
             '  <ul class="dropdown-menu">' +
-            '    <li><a href="" ng-click="lisaaUusi = 1">Uusi tutkinnon osa</a></li>' +
+            '    <li><a href="" ng-click="uusiTutkinnonOsa(liitaUusiTutkinnonOsa)">Uusi tutkinnon osa</a></li>' +
             '    <li><a href="" ng-click="tuoTutkinnonOsa()">Hae tutkinnon osa</a></li>' +
             '    <li><a href="" ng-click="lisaaUusi = 2">Ryhmä</a></li>' +
             '  </ul>' +
@@ -282,6 +296,46 @@ angular.module('eperusteApp')
         var templateElement = angular.element(template);
         $compile(templateElement)(scope);
         el.replaceWith(templateElement);
+      }
+    };
+  })
+  .directive('treeWrapper', function(Editointikontrollit) {
+    function kaikilleRakenteille(rakenne, f) {
+      if (!rakenne || !f) { return; }
+      _.forEach(rakenne, function(r) {
+        kaikilleRakenteille(r.osat, f);
+        f(r);
+      });
+    }
+
+    return {
+      restrict: 'AE',
+      transclude: true,
+      terminal: true,
+      templateUrl: 'views/partials/tree.html',
+      scope: {
+        rakenne: '=',
+        voiLiikuttaa: '=',
+        ajaKaikille: '=',
+      },
+      link: function(scope) {
+        scope.lisataanUuttaOsaa = false;
+        scope.uusiOsa = null;
+        scope.suljePolut = function() {
+          scope.rakenne.collapsed = true;
+          kaikilleRakenteille(scope.rakenne.osat, function(osa) {
+            osa.collapsed = true;
+          });
+        };
+
+        Editointikontrollit.registerAdditionalSaveCallback(function() {
+          scope.lisataanUuttaOsaa = false;
+        });
+
+        scope.uusiTutkinnonOsa = function(cb) {
+          scope.lisataanUuttaOsaa = true;
+          cb();
+        };
       }
     };
   });

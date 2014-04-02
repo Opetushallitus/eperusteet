@@ -1,0 +1,7 @@
+<div ng-if="lisataanUuttaOsaa">
+  <muokkaus-tutkinnonosa tutkinnon-osa="uusiOsa"></muokkaus-tutkinnonosa>
+</div>
+<div ng-if="!lisataanUuttaOsaa">
+  <button class="btn btn-default" ng-click="suljePolut()">Sulje kaikki polut</button>
+  <tree ng-if="rakenne.$resolved" rakenne="rakenne" uusi-tutkinnon-osa="uusiTutkinnonOsa"></tree>
+</div>

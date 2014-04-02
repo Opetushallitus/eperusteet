@@ -113,7 +113,8 @@ angular.module('eperusteApp')
                   Editointikontrollit.lastModified = response;
 
                   openNotificationDialog().result.then(function() {
-                    $state.go('muokkaus.vanha', { perusteenId: response.id, perusteenOsanTyyppi: 'tutkinnonosa' });
+                    // FIXME: Tämä kontrollerin puolelle ettei se häiritse direktiivin käyttämistä muissa konteksteissa
+                    // $state.go('muokkaus.vanha', { perusteenId: response.id, perusteenOsanTyyppi: 'tutkinnonosa' });
                   });
                 });
               }
@@ -128,7 +129,7 @@ angular.module('eperusteApp')
               tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
             }
           });
-          
+
           function openNotificationDialog() {
             return $modal.open({
               templateUrl: 'views/modals/ilmoitusdialogi.html',

@@ -82,9 +82,9 @@ European Union Public Licence for more details.
     </script>
 
     <!-- Tutkinnon rakenne puuesityksenä -->
-    <tree ng-if="rakenne.$resolved" rakenne="rakenne"></tree>
+    <tree-wrapper ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
     <br>
-    <button ng-click="tallennaRakenne(rakenne)">Tallenna</button>
+    <button class="btn btn-primary" ng-click="tallennaRakenne(rakenne)">Tallenna</button>
 
   </div>
   <optio-modal modalid="modalMaaraykset" optiot="maarayksetOptiot"></optio-modal>
