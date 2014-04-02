@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
@@ -56,8 +55,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     @Transactional(readOnly = false)
     public <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
-    	PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
-        mapper.map(perusteenOsaDto, current);
+        PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
+        PerusteenOsa updated = mapper.map(perusteenOsaDto, current.getClass());
+        current.mergeState(updated);
         current = perusteenOsaRepo.save(current);
         return mapper.map(current, dtoClass);
     }
@@ -82,16 +82,14 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 		return mapper.mapAsList(tutkinnonOsaRepo.findByNimiTekstiTekstiContainingIgnoreCase(name), PerusteenOsaDto.class);
 	}
 
-	public List<Revision> getRevisions(Long id) {
-		PerusteenOsa perusteenOsa = perusteenOsaRepo.findOne(id);
-		if(perusteenOsa instanceof TutkinnonOsa) {
-			return tutkinnonOsaRepo.getRevisions(id, "arviointi");
-		}
-		return perusteenOsaRepo.getRevisions(id);
-	}
+    @Override
+    public List<Revision> getRevisions(Long id) {
+        PerusteenOsa perusteenOsa = perusteenOsaRepo.findOne(id);
+        return perusteenOsaRepo.getRevisions(id);
+    }
 
-	@Override
-	public PerusteenOsaDto getRevision(Long id, Integer revisionId) {
-		return mapper.map(perusteenOsaRepo.findRevision(id, revisionId), PerusteenOsaDto.class);
-	}
+    @Override
+    public PerusteenOsaDto getRevision(Long id, Integer revisionId) {
+        return mapper.map(perusteenOsaRepo.findRevision(id, revisionId), PerusteenOsaDto.class);
+    }
 }

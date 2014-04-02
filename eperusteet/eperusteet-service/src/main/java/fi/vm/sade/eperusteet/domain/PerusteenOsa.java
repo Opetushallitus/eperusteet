@@ -42,7 +42,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Audited
 @Table(name="perusteenosa")
-public abstract class PerusteenOsa extends AbstractAuditedEntity implements Serializable, ReferenceableEntity {
+public abstract class PerusteenOsa extends AbstractAuditedEntity implements Serializable, Mergeable<PerusteenOsa>, ReferenceableEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -69,6 +69,14 @@ public abstract class PerusteenOsa extends AbstractAuditedEntity implements Seri
 
     public void setNimi(TekstiPalanen nimi) {
         this.nimi = nimi;
+    }
+
+    @Override
+    public void mergeState(PerusteenOsa updated) {
+        if ( getId() == null || !getId().equals(updated.getId()) ) {
+            throw new IllegalArgumentException("Vain kahden saman entiteetin tilan voi yhdistää");
+        }
+        this.nimi = updated.getNimi();
     }
     
 }

@@ -13,12 +13,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,12 +33,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
-
-import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 
 /**
  *
@@ -45,49 +45,58 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 @Entity
 @Table(name = "arviointi")
 @Audited
-public class Arviointi extends AbstractAuditedEntity implements Serializable {
-    
+public class Arviointi implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
     private Long id;
-    
+
     @ValidHtml(whitelist = WhitelistType.SIMPLIFIED)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @Getter
+    @Setter
     private TekstiPalanen lisatiedot;
-    
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "arviointi_arvioinninkohdealue", 
-            joinColumns = @JoinColumn(name = "arviointi_id"),  
-            inverseJoinColumns = @JoinColumn(name = "arvioinninkohdealue_id"))
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JoinTable(name = "arviointi_arvioinninkohdealue",
+               joinColumns = @JoinColumn(name = "arviointi_id"),
+               inverseJoinColumns = @JoinColumn(name = "arvioinninkohdealue_id"))
     @OrderColumn
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private List<ArvioinninKohdealue> arvioinninKohdealueet;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public TekstiPalanen getLisatiedot() {
-        return lisatiedot;
-    }
-
-    public void setLisatiedot(TekstiPalanen lisatiedot) {
-        this.lisatiedot = lisatiedot;
-    }
-
-    public List<ArvioinninKohdealue> getArvioinninKohdealueet() {
-        return arvioinninKohdealueet;
-    }
+    @Getter
+    private List<ArvioinninKohdealue> arvioinninKohdealueet = new ArrayList<>();
 
     public void setArvioinninKohdealueet(List<ArvioinninKohdealue> arvioinninKohdealueet) {
-        this.arvioinninKohdealueet = arvioinninKohdealueet;
+        this.arvioinninKohdealueet.clear();
+        if (arvioinninKohdealueet != null) {
+            this.arvioinninKohdealueet.addAll(arvioinninKohdealueet);
+        }
     }
-    
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + Objects.hashCode(this.lisatiedot);
+        hash = 67 * hash + Objects.hashCode(this.arvioinninKohdealueet);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof Arviointi) {
+            final Arviointi other = (Arviointi) obj;
+            if (!Objects.equals(this.lisatiedot, other.lisatiedot)) {
+                return false;
+            }
+            return Objects.equals(this.arvioinninKohdealueet, other.arvioinninKohdealueet);
+        }
+        return false;
+    }
+
 }

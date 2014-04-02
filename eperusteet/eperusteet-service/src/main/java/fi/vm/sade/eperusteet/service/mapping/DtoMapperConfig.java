@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.Suosikki;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -31,6 +32,7 @@ import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
+import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,6 +55,7 @@ public class DtoMapperConfig {
         factory.getConverterFactory().registerConverter(tekstiPalanenConverter);
         factory.getConverterFactory().registerConverter(cachedEntityConverter);
         factory.getConverterFactory().registerConverter("koodistokoodiConverter", koodistokoodiConverter);
+        factory.getConverterFactory().registerConverter(new PassThroughConverter(TekstiPalanen.class));
 
         factory.classMap(PerusteenOsaDto.class, PerusteenOsa.class)
                 .byDefault()
@@ -91,11 +94,5 @@ public class DtoMapperConfig {
 
         return new DtoMapperImpl(factory.getMapperFacade());
     }
-
-//    @Bean
-//    @Scope(proxyMode = ScopedProxyMode.INTERFACES, value = "request")
-//    public EntityReferenceResolver resolver() {
-//        return new TutkinnonOsaViiteResolverImpl();
-//    }
 
 }

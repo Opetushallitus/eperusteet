@@ -16,19 +16,16 @@
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-
 import fi.vm.sade.eperusteet.dto.EntityReference;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-
 import java.io.Serializable;
-
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -70,8 +67,8 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @Column
     private String koodiUri;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @Audited(withModifiedFlag = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    //Hibernate bug: orphanRemoval ei toimi jos fetchMode = Lazy
     private Arviointi arviointi;
 
 	@Override
@@ -120,19 +117,39 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     }
 
     public String getKoodiUri() {
-		return koodiUri;
-	}
+        return koodiUri;
+    }
 
-	public void setKoodiUri(String koodiUri) {
-		this.koodiUri = koodiUri;
-	}
+    public void setKoodiUri(String koodiUri) {
+        this.koodiUri = koodiUri;
+    }
 
-	public Arviointi getArviointi() {
+    public Arviointi getArviointi() {
         return arviointi;
     }
 
     public void setArviointi(Arviointi arviointi) {
-        this.arviointi = arviointi;
+        if (!Objects.equals(this.arviointi, arviointi)) {
+            this.arviointi = arviointi;
+        }
+    }
+
+    @Override
+    public void mergeState(PerusteenOsa perusteenOsa) {
+        super.mergeState(perusteenOsa);
+        if (perusteenOsa instanceof TutkinnonOsa) {
+            TutkinnonOsa other = (TutkinnonOsa) perusteenOsa;
+            this.setArviointi(other.getArviointi());
+            this.setAmmattitaitovaatimukset(other.getAmmattitaitovaatimukset());
+            this.setAmmattitaidonOsoittamistavat(other.getAmmattitaidonOsoittamistavat());
+            this.setTavoitteet(other.getTavoitteet());
+            this.setKoodiUri(other.getKoodiUri());
+            this.setOpintoluokitus(other.getOpintoluokitus());
+            this.setOsaamisala(other.getOsaamisala());
+        } else {
+            throw new IllegalArgumentException("Oletettiin " + this.getClass().getSimpleName() + ", oli "
+                + perusteenOsa.getClass().getSimpleName());
+        }
     }
 
 }

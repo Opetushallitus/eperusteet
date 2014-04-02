@@ -33,8 +33,12 @@ import javax.persistence.Table;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+import java.util.ArrayList;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
  *
@@ -42,6 +46,7 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "osaamistasonkriteeri")
+@Audited
 public class OsaamistasonKriteeri implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -55,6 +60,7 @@ public class OsaamistasonKriteeri implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @Getter
     @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Osaamistaso osaamistaso;
 
     @ValidHtml(whitelist = WhitelistType.MINIMAL)
@@ -64,7 +70,34 @@ public class OsaamistasonKriteeri implements Serializable {
                joinColumns = @JoinColumn(name = "osaamistasonkriteeri_id"),
                inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))
     @Getter
-    @Setter
-    private List<TekstiPalanen> kriteerit;
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private List<TekstiPalanen> kriteerit = new ArrayList<>();
+
+    public void setKriteerit(List<TekstiPalanen> kriteerit) {
+        this.kriteerit.clear();
+        if ( kriteerit != null ) {
+            this.kriteerit.addAll(kriteerit);
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 29 * hash + Objects.hashCode(this.osaamistaso);
+        hash = 29 * hash + Objects.hashCode(this.kriteerit);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof OsaamistasonKriteeri) {
+            final OsaamistasonKriteeri other = (OsaamistasonKriteeri) obj;
+            if (!Objects.equals(this.osaamistaso, other.osaamistaso)) {
+                return false;
+            }
+            return Objects.equals(this.kriteerit, other.kriteerit);
+        }
+        return false;
+    }
 
 }

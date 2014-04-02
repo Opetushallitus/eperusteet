@@ -37,12 +37,14 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.dto.ArvioinninKohdealueDto;
 import fi.vm.sade.eperusteet.dto.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import java.util.ArrayList;
 
 /**
  *
@@ -122,9 +124,14 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
 
     	tutkinnonOsaDto.setArviointi(new ArviointiDto());
     	tutkinnonOsaDto.getArviointi().setLisatiedot(new LokalisoituTekstiDto(Collections.singletonMap("fi", "lisätiedot")));
+        tutkinnonOsaDto.getArviointi().setArvioinninKohdealueet(new ArrayList<ArvioinninKohdealueDto>());
+        ArvioinninKohdealueDto ke = new ArvioinninKohdealueDto();
+        ke.setOtsikko(new LokalisoituTekstiDto(Collections.singletonMap("fi", "kohdealue")));
+        tutkinnonOsaDto.getArviointi().getArvioinninKohdealueet().add(ke);
     	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
 
     	tutkinnonOsaDto.getArviointi().setLisatiedot(new LokalisoituTekstiDto(Collections.singletonMap("fi", "lisätiedot, muokattu")));
+        tutkinnonOsaDto.getArviointi().getArvioinninKohdealueet().get(0).setOtsikko(new LokalisoituTekstiDto(Collections.singletonMap("fi", "kohdealue, muokattu")));
     	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
 
     	tutkinnonOsaDto.setAmmattitaitovaatimukset(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Ammattitaitovaatimukset")));

@@ -20,6 +20,8 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -35,6 +37,8 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
  *
@@ -43,31 +47,64 @@ import lombok.Setter;
 @Entity
 @Table(name = "arvioinninkohde")
 @ValidArvioinninKohde
+@Audited
 public class ArvioinninKohde implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
     @Setter
     private Long id;
 
-	@ValidHtml(whitelist = WhitelistType.MINIMAL)
+    @ValidHtml(whitelist = WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @Getter
     @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen otsikko;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @NotNull
     @Getter
     @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private ArviointiAsteikko arviointiAsteikko;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
     @Getter
-    @Setter
-    private Set<OsaamistasonKriteeri> osaamistasonKriteerit;
+    private Set<OsaamistasonKriteeri> osaamistasonKriteerit = new HashSet<>();
+
+    public void setOsaamistasonKriteerit(Set<OsaamistasonKriteeri> osaamistasonKriteerit) {
+        this.osaamistasonKriteerit.clear();
+        if ( osaamistasonKriteerit != null ) {
+            this.osaamistasonKriteerit.addAll(osaamistasonKriteerit);
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 41 * hash + Objects.hashCode(this.otsikko);
+        hash = 41 * hash + Objects.hashCode(this.arviointiAsteikko);
+        hash = 41 * hash + Objects.hashCode(this.osaamistasonKriteerit);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ArvioinninKohde) {
+            final ArvioinninKohde other = (ArvioinninKohde) obj;
+            if (!Objects.equals(this.otsikko, other.otsikko)) {
+                return false;
+            }
+            if (!Objects.equals(this.arviointiAsteikko, other.arviointiAsteikko)) {
+                return false;
+            }
+            return Objects.equals(this.osaamistasonKriteerit, other.osaamistasonKriteerit);
+        }
+        return false;
+    }
 
 }
