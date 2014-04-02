@@ -17,12 +17,27 @@ angular.module('eperusteApp')
       modaali: modaali
     };
   })
-  .controller('TuoTutkinnonOsaCtrl', function($scope, $modalInstance) {
+  .controller('TuoTutkinnonOsaCtrl', function(PerusteenOsat, $scope, $modalInstance) {
     $scope.vaihe = 0;
+    $scope.haku = {};
+    $scope.tulokset = [];
+    $scope.tulos = {};
 
-    $scope.jatka = function() {
+    $scope.valitse = function(tutkinnonosa) {
+      $modalInstance.close(_.clone(tutkinnonosa));
+    };
+
+    $scope.jatka = function(par) {
+      var old = $scope.vaihe;
       if ($scope.vaihe < 2) {
         $scope.vaihe += 1;
+      }
+      if ($scope.vaihe === 1 && old === 0) {
+        PerusteenOsat.query({ nimi: $scope.haku.str }, function(re) {
+          $scope.tulokset = re;
+        });
+      } else if ($scope.vaihe === 2 && old === 1) {
+        $scope.tulos = par;
       }
     };
 
@@ -32,6 +47,5 @@ angular.module('eperusteApp')
       }
     };
 
-    $scope.ok = function(data) { $modalInstance.close(data); };
     $scope.peruuta = function() { $modalInstance.dismiss(); };
   });

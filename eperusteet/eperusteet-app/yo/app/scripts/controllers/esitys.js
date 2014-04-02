@@ -17,13 +17,15 @@ angular.module('eperusteApp')
   })
   .controller('EsitysCtrl', function($q, $scope, $rootScope, $location, $anchorScroll,
     $stateParams, Kayttajaprofiilit, Suosikit, Perusteet, Suosikitbroadcast,
-    YleinenData, Navigaatiopolku, palvelinhaunIlmoitusKanava, PerusteRakenteet) {
+    YleinenData, Navigaatiopolku, palvelinhaunIlmoitusKanava, PerusteRakenteet, TreeCache) {
 
     $scope.konteksti = $stateParams.konteksti;
     $scope.perusteValinta = {};
     $scope.syvyys = 2;
     $scope.suosikkiLista = {};
-    $scope.rakenne = PerusteRakenteet.get({ perusteenId: $stateParams.perusteenId });
+    $scope.rakenne = TreeCache.nykyinen() !== $stateParams.perusteenId
+                       ? PerusteRakenteet.get({ perusteenId: $stateParams.perusteenId })
+                       : TreeCache.hae();
 
     //$scope.suosikkiPeruste = true;
     var eiSuosikkiTyyli = 'glyphicon glyphicon-star-empty pointer';
@@ -31,7 +33,7 @@ angular.module('eperusteApp')
     $scope.suosikkiTyyli = eiSuosikkiTyyli;
 
     $scope.tallennaRakenne = function(rakenne) {
-      console.log(rakenne);
+      TreeCache.tallenna(rakenne, $stateParams.perusteenId);
     };
 
     $scope.terveydentilaOptiot = [

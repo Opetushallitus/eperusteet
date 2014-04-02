@@ -6,8 +6,7 @@ angular.module('eperusteApp')
     return $resource(SERVICE_LOC + '/perusteenosat/:osanId',
       {
         osanId: '@id'
-      },
-      {
+      }, {
         byKoodiUri: { method: 'GET', params: { koodi: true } },
         saveTekstikappale: {method:'POST', params:{tyyppi:'perusteen-osat-tekstikappale'}},
         saveTutkinnonOsa: {method:'POST', params:{tyyppi:'perusteen-osat-tutkinnon-osa'}}

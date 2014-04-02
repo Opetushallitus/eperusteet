@@ -2,6 +2,26 @@
 /*global _*/
 
 angular.module('eperusteApp')
+  .service('TreeCache', function() {
+    var puuId = -1;
+    var puu = {};
+
+    return {
+      nykyinen: function() { return puuId; },
+      hae: function() { console.log('haetaan'); return _.clone(puu); },
+      tallenna: function(rakenne, id) {
+        if (id) {
+          puu = _.clone(rakenne);
+          puuId = id;
+          console.log('tallennettu id:', puuId);
+        }
+      },
+      puhdista: function() {
+        puuId = -1;
+        puu = {};
+      }
+    };
+  })
   .directive('tree', function($compile, TutkinnonOsanTuonti) {
     function swap(container, from, to) {
       if (container && from >= 0 && to >= 0 && from < _.size(container) && to < _.size(container)) {
@@ -12,7 +32,7 @@ angular.module('eperusteApp')
     }
 
     function generoiPiilotusPainike() {
-      return '<a ng-if="rakenne.osat" href="" ng-click="rakenne.collapsed = !rakenne.collapsed">' +
+      return '<a ng-show="!rakenne._perusteenOsa" href="" ng-click="rakenne.collapsed = !rakenne.collapsed">' +
         '<span ng-hide="rakenne.collapsed" class="glyphicon glyphicon-collapse-down"></span>' +
         '<span ng-show="rakenne.collapsed" class="glyphicon glyphicon-collapse-up"></span>' +
         '</a> ';
@@ -48,6 +68,7 @@ angular.module('eperusteApp')
       return '<span ng-show="naytaTyokalut">' +
         '<a href="" ng-click="ylos(rakenne, vanhempi)"><span class="glyphicon glyphicon-chevron-up"></a>' +
         '<a href="" ng-click="alas(rakenne, vanhempi)"><span class="glyphicon glyphicon-chevron-down"></a>' +
+        '<a href="" ng-click="muokkaa(rakenne, vanhempi)"><span class="glyphicon glyphicon-pencil"></a>' +
         '<a href="" ng-click="poista(rakenne, vanhempi)"><span class="glyphicon glyphicon-remove"></a>' +
         '</span>';
     }
@@ -84,7 +105,7 @@ angular.module('eperusteApp')
         '    </div>' +
         '  </div>' +
         '  <div class="panel-footer">' +
-        '    <button class="btn btn-primary btn-xs" ng-click="lisaaNode(uusi); lisaaUusi = 0">Lisää</button>' +
+        '    <button class="btn btn-primary btn-xs" ng-click="lisaaNode(uusi, lisaaUusi); lisaaUusi = 0">Lisää</button>' +
         '    <button class="btn btn-danger btn-xs" ng-click="lisaaUusi = 0">Peru</button>' +
         '  </div>' +
         '</div>';
@@ -152,6 +173,18 @@ angular.module('eperusteApp')
         scope.lisaaUusi = 0;
 
         scope.tuoTutkinnonOsa = TutkinnonOsanTuonti.modaali(function(osa) {
+          console.log(osa);
+          var uusi = {};
+          uusi.otsikko = osa.nimi;
+          uusi.kuvaus = { fi: '' };
+          uusi._perusteenOsa = osa.id;
+          uusi.saannot = {
+            maara: 10,
+            yksikko: 'ov',
+            tyyppi: 'laajuus',
+            pakollinen: false
+          };
+          scope.rakenne.osat.push(uusi);
         });
 
         scope.poista = function(i, a) { _.remove(a.osat, i); };
@@ -179,14 +212,14 @@ angular.module('eperusteApp')
 
           if (tyyppi === 1) {
             uusi.otsikko = { fi: node.nimi };
-            uusi._tutkinto = { fi: node.kuvaus };
+            uusi.kuvaus = { fi: node.kuvaus };
+            uusi._perusteenOsa = 1;
             uusi.saannot = {
               maara: node.laajuus,
               yksikko: 'ov',
               tyyppi: 'laajuus',
               pakollinen: node.pakollinen
             };
-            uusi.osat = [];
           } else if (tyyppi === 2) {
             uusi.otsikko = { fi: node.nimi };
             uusi.kuvaus = { fi: node.kuvaus };
@@ -213,7 +246,7 @@ angular.module('eperusteApp')
             '  <div class="panel-heading">' +
             kentta +
             '  </div>' +
-            '  <div ng-if="!rakenne.collapsed" class="panel-body">';
+            '  <div ng-show="!rakenne.collapsed" class="panel-body">';
 
           if (scope.rakenne.kuvaus) {
             template += '<div>' + scope.rakenne.kuvaus.fi + '</div><br>';

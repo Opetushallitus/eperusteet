@@ -2,56 +2,59 @@
 <div class="modal-header">
   <h1>Hae tutkinnon osa</h1>
   <h2 ng-show="vaihe === 0">Haku</h2>
-  <h2 ng-show="vaihe === 1">Hakutulokset</h2>
+  <h2 ng-show="vaihe === 1">Hakutulokset haulle: {{ thaku }}</h2>
   <h2 ng-show="vaihe === 2">Osan valinta</h2>
 </div>
 
 <div ng-show="vaihe === 0" class="modal-body">
   <label>Tutkinnon osan nimellä tai koodilla</label>
-  <input class="form-control" type="text"></input>
+  <input ng-model="haku.str" class="form-control" type="text" placeholder="Kirjoita tähän haku"></input>
 </div>
 
 <div class="modal-body">
-  <div ng-if="vaihe === 1">
+  <div ng-show="vaihe === 1">
     <table class="table">
       <tr>
         <th>Tutkinnon osa</th>
       </tr>
-      <tr>
-        <td><a href="" ng-click="">Tulos 1</a></td>
-      </tr>
-      <tr>
-        <td><a href="" ng-click="">Tulos 2</a></td>
-      </tr>
-      <tr>
-        <td><a href="" ng-click="">Tulos 3</a></td>
+      <tr ng-repeat="tulos in tulokset">
+        <td><a href="" ng-click="jatka(tulos)">{{ tulos.nimi.fi }}</a></td>
       </tr>
     </table>
   </div>
-  <div ng-if="vaihe === 2">
+  <div ng-show="vaihe === 2">
     <div class="col-sm-12">
-      <label class="col-sm-3">Nimi</label>
-      <div class="col-sm-9">Joku tutkinnon osa</div>
+      <label class="col-sm-4">Nimi</label>
+      <div class="col-sm-8">{{ tulos.nimi.fi }}</div>
     </div>
     <div class="clearfix"></div>
     <div class="col-sm-12">
-      <label class="col-sm-3">Koodi</label>
-      <div class="col-sm-9">123456</div>
+      <label class="col-sm-4">Tutkinto</label>
+      <div class="col-sm-8">{{ tulos.tutkinto.fi || '-' }}</div>
     </div>
     <div class="clearfix"></div>
     <div class="col-sm-12">
-      <label class="col-sm-3">Tutkinto</label>
-      <div class="col-sm-9">Joku tutkinto</div>
+      <label class="col-sm-4">Koodi</label>
+      <div class="col-sm-8">{{ tulos.koodiUri || '-' }}</div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="col-sm-12">
+      <label class="col-sm-4">Luotu</label>
+      <div class="col-sm-8">{{ tulos.luotu | date }}</div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="col-sm-12">
+      <label class="col-sm-4">Viimeksi muokattu</label>
+      <div class="col-sm-8">{{ tulos.muokattu | date }}</div>
     </div>
   </div>
   <div class="clearfix"></div>
 </div>
 
 <div class="modal-footer">
-  <button ng-show="vaihe === 0" class="btn btn-warning" disabled translate>Takaisin</button>
-  <button ng-hide="vaihe === 0" class="btn btn-warning" ng-click="takaisin()" translate>Takaisin</button>
-  <button ng-show="vaihe === 2" class="btn btn-primary" disabled translate>Jatka</button>
-  <button ng-hide="vaihe === 2" class="btn btn-primary" ng-click="jatka()" translate>Jatka</button>
-  <button class="btn btn-danger" ng-click="peruuta()" translate>peru</button>
+  <button ng-hide="vaihe === 0" class="btn" ng-click="takaisin()" translate>Takaisin</button>
+  <button ng-show="vaihe === 2" class="btn btn-primary" ng-click="valitse(tulos)" translate>Valitse</button>
+  <button ng-show="vaihe === 0" class="btn" ng-click="jatka($scope.thaku)" translate>Jatka</button>
+  <button class="btn" ng-click="peruuta()" translate>peru</button>
 </div>
 </div>
