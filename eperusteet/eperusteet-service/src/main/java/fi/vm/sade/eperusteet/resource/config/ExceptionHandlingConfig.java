@@ -95,6 +95,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
         Map<String, Object> map = new HashMap<>();
         map.put("koodi", status.value());
+        LOG.debug("Virhe", ex);
         
         if(ex instanceof BindException) {
             map.put("syy", "Virhe datan kytkemisessä.");
