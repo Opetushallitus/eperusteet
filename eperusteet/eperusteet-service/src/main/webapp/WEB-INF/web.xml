@@ -43,9 +43,11 @@
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
+    <!--
     <error-page>
         <location>/WEB-INF/virhe</location>
     </error-page>
+    -->
     <resource-ref>
         <description>ePeruseet datasource</description>
         <res-ref-name>jdbc/eperusteet</res-ref-name>
