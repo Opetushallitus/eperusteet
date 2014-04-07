@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto;
 
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,5 +27,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SuoritustapaDto {
-    private String suoritustapakoodi;
+    private Suoritustapakoodi suoritustapakoodi;
 }
