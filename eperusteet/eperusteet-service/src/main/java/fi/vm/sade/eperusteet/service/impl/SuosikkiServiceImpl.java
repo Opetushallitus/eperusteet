@@ -13,20 +13,34 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.dto.KayttajaProfiiliDto;
+package fi.vm.sade.eperusteet.service.impl;
+
 import fi.vm.sade.eperusteet.dto.SuosikkiDto;
+import fi.vm.sade.eperusteet.repository.SuosikkiRepository;
+import fi.vm.sade.eperusteet.service.SuosikkiService;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author harrik
  */
-public interface KayttajaprofiiliService {
+@Service
+public class SuosikkiServiceImpl implements SuosikkiService {
+    
+    @Autowired
+    @Dto
+    private DtoMapper mapper;
+    
+    @Autowired
+    SuosikkiRepository suosikki;
 
-    KayttajaProfiiliDto get();
-    //KayttajaProfiiliDto addSuosikki(final Long perusteId);
-    KayttajaProfiiliDto addSuosikki(final SuosikkiDto suosikkiDto);
-    KayttajaProfiiliDto deleteSuosikki(final Long suosikkiId) throws IllegalArgumentException;
-    KayttajaProfiiliDto addPerusteprojekti(final Long perusteprojektiId);
+    @Override
+    public SuosikkiDto get(Long suosikkiId) {
+        return mapper.map(suosikki.findOne(suosikkiId), SuosikkiDto.class);
+    }
+    
 }

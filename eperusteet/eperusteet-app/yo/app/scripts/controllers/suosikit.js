@@ -25,10 +25,15 @@ angular.module('eperusteApp')
 
         YleinenData.lisääKontekstitPerusteisiin(vastaus.suosikit);
         $scope.suosikit = _.map(vastaus.suosikit, function(s) {
-          s.url = $state.href('esitys.peruste', { perusteenId: s.id });
+          if (s.perusteId && s.suoritustapakoodi) {
+            console.log('perusteenId', s.perusteId);
+            console.log('suoritustapakoodi', s.suoritustapakoodi);
+            s.url = $state.href('esitys.peruste', { perusteenId: s.perusteId, suoritustapa: s.suoritustapakoodi });
+          }
           return s;
         });
 
+        console.log('suosikit', $scope.suosikit);
         if ($scope.naytetaanKaikkiSuosikit) {
           $scope.suosikkiNapinTeksti = piilotaTeksti;
           $scope.suosikkiRaja = _.size($scope.suosikit);

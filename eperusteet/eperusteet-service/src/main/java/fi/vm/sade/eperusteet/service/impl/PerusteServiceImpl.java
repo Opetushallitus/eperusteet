@@ -85,6 +85,13 @@ public class PerusteServiceImpl implements PerusteService {
         Peruste p = perusteet.findById(id);
         return mapper.map(p, PerusteDto.class);
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public PerusteDto getByIdAndSuoritustapa(final Long id, Suoritustapakoodi suoritustapakoodi) {
+        Peruste p = perusteet.findPerusteByIdAndSuoritustapakoodi(id, suoritustapakoodi);
+        return mapper.map(p, PerusteDto.class);
+    }
 
     @Override
     @Transactional

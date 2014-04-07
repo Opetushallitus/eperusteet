@@ -30,4 +30,5 @@ public interface KayttajaprofiiliRepository extends JpaRepository<Kayttajaprofii
     
     @Query("SELECT k FROM Kayttajaprofiili k LEFT JOIN FETCH k.suosikit LEFT JOIN FETCH k.perusteprojektit WHERE k.oid = ?1")
     Kayttajaprofiili findOneEager(String oid);
+    Kayttajaprofiili findOneByOid(String oid);
 }

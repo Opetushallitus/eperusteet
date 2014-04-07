@@ -28,6 +28,6 @@ import lombok.Setter;
 @Setter
 public class KayttajaProfiiliDto {
     private long id;
-    private List<PerusteDto> suosikit;
+    private List<SuosikkiDto> suosikit;
     private List<PerusteprojektiDto> perusteprojektit;
 }

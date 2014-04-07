@@ -13,21 +13,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,12 +34,10 @@ import lombok.Setter;
  * @author harrik
  */
 @Entity
-@Table(name = "kayttajaprofiili")
-public class Kayttajaprofiili implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@Table(name = "suosikki")
+public class Suosikki implements Serializable {
+    
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
     @Setter
@@ -50,28 +45,19 @@ public class Kayttajaprofiili implements Serializable {
     
     @Getter
     @Setter
-    private String oid;
-
-    @OrderColumn(name = "suosikki_order")
-    @OneToMany(mappedBy = "kayttajaprofiili", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne
+    @JoinColumn(name = "kayttajaprofiili_id")
+    private Kayttajaprofiili kayttajaprofiili;
+      
     @Getter
     @Setter
-    private List<Suosikki> suosikit;
+    @ManyToOne
+    @JoinColumn(name = "peruste_id")
+    private Peruste peruste;
     
-    @ManyToMany
-    @OrderColumn(name = "projekti_order")
-    @JoinTable(name = "kayttajaprofiili_perusteprojekti", 
-            joinColumns = @JoinColumn(name = "kayttajaprofiili_id"), 
-            inverseJoinColumns = @JoinColumn(name = "perusteprojekti_id"))
     @Getter
     @Setter
-    private List<Perusteprojekti> perusteprojektit;
-
-    public Kayttajaprofiili() {
-    }
-
-    public Kayttajaprofiili(Long id) {
-        this.id = id;
-    }
-
+    @Enumerated(EnumType.STRING)
+    private Suoritustapakoodi suoritustapakoodi;
+    
 }
