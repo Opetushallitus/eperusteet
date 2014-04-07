@@ -13,20 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.dto.KayttajaProfiiliDto;
 import fi.vm.sade.eperusteet.dto.SuosikkiDto;
 
 /**
  *
  * @author harrik
  */
-public interface KayttajaprofiiliService {
-
-    KayttajaProfiiliDto get();
-    //KayttajaProfiiliDto addSuosikki(final Long perusteId);
-    KayttajaProfiiliDto addSuosikki(final SuosikkiDto suosikkiDto);
-    KayttajaProfiiliDto deleteSuosikki(final Long suosikkiId) throws IllegalArgumentException;
-    KayttajaProfiiliDto addPerusteprojekti(final Long perusteprojektiId);
+public interface SuosikkiService {
+    public SuosikkiDto get(final Long suosikkiId);
 }

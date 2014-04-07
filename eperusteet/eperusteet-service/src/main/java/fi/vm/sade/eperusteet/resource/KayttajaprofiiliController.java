@@ -17,8 +17,10 @@ package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.dto.KayttajaProfiiliDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
+import fi.vm.sade.eperusteet.dto.SuosikkiDto;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.SuosikkiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -47,6 +50,11 @@ public class KayttajaprofiiliController {
 
     @Autowired
     private PerusteService perusteService;
+    
+    @Autowired
+    private SuosikkiService suosikkiService;
+    
+    
 
     @RequestMapping(value = "", method = GET)
     @ResponseBody
@@ -57,26 +65,28 @@ public class KayttajaprofiiliController {
         }
         return new ResponseEntity<>(k, HttpStatus.OK);
     }
-
-    @RequestMapping(value = "/suosikki/{perusteId}", method = POST)
+    
+    @RequestMapping(value = "/suosikki", method = POST, consumes="application/json")
     @ResponseBody
-    public ResponseEntity<KayttajaProfiiliDto> addSuosikki(@PathVariable("perusteId") final Long perusteId) {
-        LOG.info("addSuosikki {}", perusteId);
-        
-        PerusteDto peruste = perusteService.get(perusteId);
+    public ResponseEntity<KayttajaProfiiliDto> addSuosikki(@RequestBody SuosikkiDto suosikkiDto) {
+        LOG.info("addSuosikki {}", suosikkiDto.getPerusteId());
+
+        PerusteDto peruste = perusteService.getByIdAndSuoritustapa(suosikkiDto.getPerusteId(), suosikkiDto.getSuoritustapakoodi());
         if (peruste == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        KayttajaProfiiliDto k = service.addSuosikki(perusteId);
-
-        return new ResponseEntity<>(k, HttpStatus.OK);
+        KayttajaProfiiliDto profiiliDto = service.addSuosikki(suosikkiDto);
+        return new ResponseEntity<>(profiiliDto, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/suosikki/{perusteId}", method = DELETE)
+    @RequestMapping(value = "/suosikki/{suosikkiId}", method = DELETE)
     @ResponseBody
-    public ResponseEntity<KayttajaProfiiliDto> delete(@PathVariable("perusteId") final Long perusteId) {
-        KayttajaProfiiliDto k = service.deleteSuosikki(perusteId);
+    public ResponseEntity<KayttajaProfiiliDto> delete(@PathVariable("suosikkiId") final Long suosikkiId) {
+        SuosikkiDto suosikki = suosikkiService.get(suosikkiId);
+        if (suosikki == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        KayttajaProfiiliDto k = service.deleteSuosikki(suosikkiId);
         return new ResponseEntity<>(k, HttpStatus.OK);
     }
     

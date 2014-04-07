@@ -30,6 +30,7 @@ angular.module('eperusteApp')
     var suosikkiTyyli = 'glyphicon glyphicon-star pointer';
     $scope.suosikkiTyyli = eiSuosikkiTyyli;
     $scope.suoritustapa = $stateParams.suoritustapa;
+    var suosikkiId = null;
     
     var perusteHakuPromise = (function() {
       if ($stateParams.perusteenId) {
@@ -75,26 +76,29 @@ angular.module('eperusteApp')
     };
 
     $scope.onSuosikki = function() {
+      console.log('suosikkiLista', $scope.suosikkiLista);
+      console.log('peruste.id', $scope.peruste.id);
       for (var i = 0; i < _.size($scope.suosikkiLista); i++) {
-        if ($scope.suosikkiLista[i].id === $scope.peruste.id) {
+        if ($scope.suosikkiLista[i].perusteId === $scope.peruste.id && $scope.suosikkiLista[i].suoritustapakoodi === $scope.suoritustapa) {
+          suosikkiId = $scope.suosikkiLista[i].id;
           return suosikkiTyyli;
         }
       }
+      suosikkiId = null;
       return eiSuosikkiTyyli;
     };
 
     $scope.asetaSuosikiksi = function() {
       if ($scope.suosikkiTyyli === eiSuosikkiTyyli) {
 
-        Suosikit.save({suosikkiId: $scope.peruste.id}, {}, function(vastaus) {
+        Suosikit.save({}, {perusteId: $scope.peruste.id, suoritustapakoodi: $scope.suoritustapa}, function(vastaus) {
           $scope.suosikkiLista = vastaus.suosikit;
           $scope.suosikkiTyyli = $scope.onSuosikki();
           Suosikitbroadcast.suosikitMuuttuivat();
         });
 
       } else {
-
-        Suosikit.delete({suosikkiId: $scope.peruste.id}, {}, function(vastaus) {
+        Suosikit.delete({suosikkiId: suosikkiId}, {}, function(vastaus) {
           $scope.suosikkiLista = vastaus.suosikit;
           $scope.suosikkiTyyli = $scope.onSuosikki();
           Suosikitbroadcast.suosikitMuuttuivat();

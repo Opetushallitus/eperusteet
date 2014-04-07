@@ -17,10 +17,12 @@ package fi.vm.sade.eperusteet.service.mapping;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.Suosikki;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.SuosikkiDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
@@ -59,6 +61,11 @@ public class DtoMapperConfig {
                 .register();
         factory.classMap(PerusteDto.class, Peruste.class)
                 .field("koodi", "koodiUri")
+                .byDefault()
+                .register();
+        factory.classMap(SuosikkiDto.class, Suosikki.class)
+                .fieldBToA("peruste.id", "perusteId")
+                .fieldBToA("peruste.nimi", "nimi")
                 .byDefault()
                 .register();
 

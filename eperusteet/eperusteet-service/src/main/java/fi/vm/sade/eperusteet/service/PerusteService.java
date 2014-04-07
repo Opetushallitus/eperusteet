@@ -30,6 +30,8 @@ import org.springframework.data.domain.PageRequest;
 public interface PerusteService {
 
     PerusteDto get(final Long id);
+    
+    PerusteDto getByIdAndSuoritustapa(final Long id, Suoritustapakoodi suoritustapakoodi);
 
     Page<PerusteDto> getAll(PageRequest page, String kieli);
 

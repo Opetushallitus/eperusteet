@@ -18,10 +18,13 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.Kayttajaprofiili;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import fi.vm.sade.eperusteet.domain.Suosikki;
 import fi.vm.sade.eperusteet.dto.KayttajaProfiiliDto;
+import fi.vm.sade.eperusteet.dto.SuosikkiDto;
 import fi.vm.sade.eperusteet.repository.KayttajaprofiiliRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.repository.SuosikkiRepository;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -46,13 +49,12 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
 
     @Autowired
     KayttajaprofiiliRepository kayttajaprofiiliRepo;
-
     @Autowired
     PerusteRepository perusteRepo;
-
+    @Autowired
+    SuosikkiRepository suosikkiRepo;
     @Autowired
     PerusteprojektiRepository perusteprojektiRepo;
-
     @Autowired
     @Dto
     private DtoMapper mapper;
@@ -67,44 +69,48 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
 
         return mapper.map(kayttajaprofiiliRepo.findOneEager(oid), KayttajaProfiiliDto.class);
     }
-
+    
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    public KayttajaProfiiliDto addSuosikki(final Long perusteId) {
-        LOG.info("addSuosikki " + perusteId);
+    public KayttajaProfiiliDto addSuosikki(final SuosikkiDto suosikkiDto) {
+        LOG.info("addSuosikki " + suosikkiDto);
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String oid = auth.getName();
-        Kayttajaprofiili kayttajaprofiili = kayttajaprofiiliRepo.findOneEager(oid);
-        Peruste peruste = perusteRepo.findOne(perusteId);
+        Kayttajaprofiili kayttajaprofiili = kayttajaprofiiliRepo.findOneByOid(oid);
 
         if (kayttajaprofiili == null) {
             kayttajaprofiili = new Kayttajaprofiili();
             kayttajaprofiili.setOid(oid);
-            kayttajaprofiili.setSuosikit(new ArrayList<Peruste>());
-            kayttajaprofiiliRepo.save(kayttajaprofiili);
+            kayttajaprofiili.setSuosikit(new ArrayList<Suosikki>());
+            kayttajaprofiili = kayttajaprofiiliRepo.save(kayttajaprofiili);
         }
+        
+        Suosikki suosikki = new Suosikki();
+        suosikki.setKayttajaprofiili(kayttajaprofiili);
+        Peruste peruste = perusteRepo.findById(suosikkiDto.getPerusteId());
+        suosikki.setPeruste(peruste);
+        suosikki.setSuoritustapakoodi(suosikkiDto.getSuoritustapakoodi());
+        suosikki = suosikkiRepo.save(suosikki);
+        kayttajaprofiili.getSuosikit().add(suosikki);
 
-        if (!kayttajaprofiili.getSuosikit().contains(peruste)) {
-            kayttajaprofiili.getSuosikit().add(peruste);
-        }
-
+        
         return mapper.map(kayttajaprofiili, KayttajaProfiiliDto.class);
     }
 
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    public KayttajaProfiiliDto deleteSuosikki(Long perusteId) throws IllegalArgumentException {
-        LOG.info("deleteSuosikki " + perusteId);
+    public KayttajaProfiiliDto deleteSuosikki(Long suosikkiId) throws IllegalArgumentException {
+        LOG.info("deleteSuosikki " + suosikkiId);
 
         String oid = SecurityContextHolder.getContext().getAuthentication().getName();
         Kayttajaprofiili kayttajaprofiili = kayttajaprofiiliRepo.findOneEager(oid);
 
         if (kayttajaprofiili != null) {
-            Peruste peruste = perusteRepo.findOne(perusteId);
-            kayttajaprofiili.getSuosikit().remove(peruste);
+            Suosikki suosikki = suosikkiRepo.findOne(suosikkiId);
+            kayttajaprofiili.getSuosikit().remove(suosikki);
         }
 
         return mapper.map(kayttajaprofiili, KayttajaProfiiliDto.class);
@@ -125,7 +131,7 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
         if (kayttajaprofiili == null) {
             kayttajaprofiili = new Kayttajaprofiili();
             kayttajaprofiili.setOid(oid);
-            kayttajaprofiili.setSuosikit(new ArrayList<Peruste>());
+            kayttajaprofiili.setSuosikit(new ArrayList<Suosikki>());
             kayttajaprofiili.setPerusteprojektit(new ArrayList<Perusteprojekti>());
             kayttajaprofiili = kayttajaprofiiliRepo.save(kayttajaprofiili);
         }
