@@ -214,8 +214,8 @@ angular.module('eperusteApp')
           placeholder: 'group-placeholder',
           connectWith: '.tree-group',
           delay: 400,
-          opacity: 0.7,
-          revert: true,
+          tolerance: 'pointer',
+          cursorAt: { top : 2, left: 2 }
         };
 
         scope.liitaUusiTutkinnonOsa = liitaUusiTutkinnonOsa;
@@ -260,31 +260,31 @@ angular.module('eperusteApp')
 
         if (scope.rakenne && _.isArray(scope.rakenne.osat)) {
           template =
-            '<div class="panel panel-default">' +
-            '  <div class="panel-heading grab-cursor">' +
+            '<div>' +
+            '<div grab-cursor>' +
             kentta +
-            '  </div>' +
-            '  <div ng-show="!rakenne.collapsed" class="panel-body">';
+            '</div>' +
+            '<div ng-show="!rakenne.collapsed">';
 
           if (scope.rakenne.kuvaus) {
-            template += '<div>' + scope.rakenne.kuvaus.fi + '</div><br>';
+            template += '<div>' + scope.rakenne.kuvaus.fi + '</div>';
           }
 
           template +=
-            '<div ng-repeat="osa in rakenne.osat">' +
-            '  <div ng-if="true" ui-sortable="sortableOptions" class="tree-group" ng-model="rakenne.osat">' +
+            '<ul ng-if="true" ui-sortable="sortableOptions" class="tree-group" ng-model="rakenne.osat">' +
+            '  <li class="item" ng-repeat="osa in rakenne.osat">' +
             '    <tree rakenne="osa" vanhempi="rakenne" uusi-tutkinnon-osa="uusiTutkinnonOsa"></tree>' +
-            '  </div>' +
-            '  <tree ng-if="false" rakenne="osa" vanhempi="rakenne" uusi-tutkinnon-osa="uusiTutkinnonOsa"></tree>' +
-            '</div>' +
-            '<div class="dropdown">' +
-            '  <a ng-hide="lisaaUusi" href="" class="dropdown-toggle"><span class="glyphicon glyphicon-plus"></span> Lisää</a>' +
+            '  </li>' +
+            '</ul>' +
+            '<ul>' +
+            '  <li class="dropdown"><a ng-hide="lisaaUusi" href="" class="dropdown-toggle"><span class="glyphicon glyphicon-plus"></span> Lisää</a>' +
             '  <ul class="dropdown-menu">' +
             '    <li><a href="" ng-click="uusiTutkinnonOsa(liitaUusiTutkinnonOsa)">Uusi tutkinnon osa</a></li>' +
             '    <li><a href="" ng-click="tuoTutkinnonOsa()">Hae tutkinnon osa</a></li>' +
             '    <li><a href="" ng-click="lisaaUusi = 2">Ryhmä</a></li>' +
             '  </ul>' +
-            '</div>' +
+            '  </li>' +
+            '</ul>' +
             '' +
             generoiUusiValitsin() +
             '  </div>' +

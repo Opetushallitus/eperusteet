@@ -58,6 +58,10 @@
     padding:3px 8px;
     text-decoration:none
 }
+.tree li span.glyphicon {
+    border: medium none;
+}
+
 .tree li.parent_li>span {
     cursor:pointer
 }
