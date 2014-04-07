@@ -46,9 +46,9 @@ import lombok.Setter;
 @Table(name = "peruste")
 public class Peruste implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
     @Setter

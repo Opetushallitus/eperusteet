@@ -10,6 +10,7 @@ import fi.vm.sade.eperusteet.dto.PageDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
+import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
@@ -56,6 +57,8 @@ public class PerusteServiceImpl implements PerusteService {
   
     @Autowired
     PerusteRepository perusteet;
+    @Autowired
+    KoulutusRepository koulutusRepo;
     @Autowired
     PerusteenOsaViiteRepository viitteet;
     @Autowired
@@ -139,7 +142,8 @@ public class PerusteServiceImpl implements PerusteService {
             Peruste peruste;
             
             for (KoodistoKoodiDto tutkinto : tutkinnot) {
-                if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus") && (perusteet.findOneByKoodiUri(tutkinto.getKoodiUri()) == null)) {                                 
+                LOG.info("koodiUri: " + tutkinto.getKoodiUri());
+                if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus") && (koulutusRepo.findOneByKoulutuskoodi(tutkinto.getKoodiUri()) == null)) {                                 
                     // Haetaan erikoistapausperusteet, jotka kuvaavat kahden eri koulutusalan tutkinnot
                     peruste = haeErikoistapaus(tutkinto.getKoodiUri(), perusteEntityt, erikoistapausMap);
                     if (peruste == null) {
