@@ -38,6 +38,9 @@ public class MuodostumisSaantoDto {
             this.yksikko = yksikko;
         }
 
+        public Laajuus() {
+        }
+
     }
 
     @Getter
@@ -50,6 +53,10 @@ public class MuodostumisSaantoDto {
         public Koko(Integer minimi, Integer maksimi) {
             this.minimi = minimi;
             this.maksimi = maksimi;
+        }
+
+        public Koko() {
+            
         }
     }
 }

@@ -15,12 +15,12 @@
  */
 package fi.vm.sade.eperusteet.resource.config;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fi.vm.sade.eperusteet.dto.EntityReference;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,9 +99,10 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
                 return defaultName;
             }
         });
-        converter.getObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
         converter.getObjectMapper().registerModule(new JodaModule());
-        converter.getObjectMapper().registerModule(new EPerusteetMappingModule());
+        EPerusteetMappingModule module = new EPerusteetMappingModule();
+        module.addDeserializer(AbstractRakenneOsaDto.class, new AbstractRakenneOsaDeserializer());
+        converter.getObjectMapper().registerModule(module);
         return converter;
     }
 

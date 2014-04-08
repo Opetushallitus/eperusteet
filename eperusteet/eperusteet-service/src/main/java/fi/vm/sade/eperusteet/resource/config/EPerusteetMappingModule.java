@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.resource.config;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import java.util.List;
 import org.springframework.data.domain.Page;
 
@@ -34,8 +33,7 @@ public class EPerusteetMappingModule extends SimpleModule {
 
     @Override
     public void setupModule(SetupContext context) {
-        super.setupModule(context);
-        addDeserializer(AbstractRakenneOsaDto.class, new AbstractRakenneOsaDeserializer());
+        super.setupModule(context);        
         context.setMixInAnnotations(Page.class, PageMixin.class);
     }
 

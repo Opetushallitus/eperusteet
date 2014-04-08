@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
+import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.MuodostumisSaantoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import java.util.List;
@@ -25,8 +26,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RakenneModuuliDto extends AbstractRakenneOsaDto{
-
+public class RakenneModuuliDto extends AbstractRakenneOsaDto {
+	private LokalisoituTekstiDto otsikko;
+	private LokalisoituTekstiDto kuvaus;
     private MuodostumisSaantoDto muodostumisSaanto;
 	private List<AbstractRakenneOsaDto> osat;
 }

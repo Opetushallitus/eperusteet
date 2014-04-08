@@ -19,12 +19,8 @@ package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 import lombok.Getter;
 import lombok.Setter;
 
-import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
 
 @Getter
 @Setter
 public abstract class AbstractRakenneOsaDto {
-    private Long id;
-	private LokalisoituTekstiDto otsikko;
-	private LokalisoituTekstiDto kuvaus;
 }

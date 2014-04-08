@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonRakenneDto;
@@ -55,21 +54,21 @@ public class PerusteController {
         return new ResponseEntity<>(t, ResponseHeaders.cacheHeaders(1, TimeUnit.SECONDS), HttpStatus.OK);
     }
 
+    //XXX
+    private static TutkinnonRakenneDto rakenne_ = RakenneUtil.getStaticRakenneDto();
+
     @RequestMapping(value = "/{id}/rakenne", method = GET)
     @ResponseBody
     public ResponseEntity<TutkinnonRakenneDto> getRakenne(@PathVariable("id") final Long id) {
-    	TutkinnonRakenneDto rakenne = RakenneUtil.getStaticRakenneDto();
-        if (rakenne == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(rakenne, ResponseHeaders.cacheHeaders(1, TimeUnit.SECONDS), HttpStatus.OK);
+        return new ResponseEntity<>(rakenne_, ResponseHeaders.cacheHeaders(1, TimeUnit.SECONDS), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/rakenne", method = POST)
     @ResponseBody
-    public ResponseEntity<AbstractRakenneOsaDto> addPerusteenRakenne(@PathVariable("id") final Long id, @RequestBody AbstractRakenneOsaDto rakenneosa) {
-    	LOG.debug("perusteen rakenne: {}", rakenneosa);
-    	return new ResponseEntity<>(rakenneosa, HttpStatus.CREATED);
+    public synchronized ResponseEntity<TutkinnonRakenneDto> addPerusteenRakenne(@PathVariable("id") final Long id, @RequestBody TutkinnonRakenneDto rakenne) {
+    	LOG.debug("perusteen rakenne: {}", rakenne);
+        rakenne_ = rakenne;
+    	return new ResponseEntity<>(rakenne, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{perusteId}/osat/{id}/lapset", method = POST)
