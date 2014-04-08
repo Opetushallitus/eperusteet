@@ -1,0 +1,19 @@
+<div class="container">
+   <div class="row">
+ <h1>Opetussuunnitelmien ja tutkintojen perusteet</h1>
+      <div class="col-md-8">
+      <div class="row main-nav">
+        <div class="col-md-12 nav"><div><h3 class="text-center">Esiopetus</h3></div></div>
+        <div class="col-md-12 nav"><div id="perusopetus"><h3 class="text-center">Perusopetus</h3></div></div>
+        <div class="col-md-12 nav"><div><h3 class="text-center">Lukiokoulutus</h3></div></div>
+        <a ui-sref="selaus.ammatillinenperuskoulutus">
+            <div class="col-md-12 nav"><div id="am-perus"><h3 class="text-center">{{'ammatillinen-peruskoulutus'|translate}}</h3></div></div>
+        </a>
+        <a ui-sref="selaus.ammatillinenaikuiskoulutus">
+        <div class="col-md-12 nav"><div id="am-aikuis"><h3 class="text-center">{{'ammatillinen-aikuiskoulutus'|translate}}</h3></div></div>
+        </a>
+      </div>
+    </div>
+    <div class="col-md-4" ng-include="'views/partials/sivupalkki.html'"></div>
+  </div>
+</div>

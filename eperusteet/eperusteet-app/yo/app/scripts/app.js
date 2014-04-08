@@ -49,7 +49,7 @@ angular.module('eperusteApp', [
   })
   .config(function($urlRouterProvider, $sceProvider) {
     $sceProvider.enabled(true);
-    $urlRouterProvider.otherwise('/selaus/ammatillinenperuskoulutus');
+    $urlRouterProvider.otherwise('/');
   })
   .config(function($translateProvider) {
       $translateProvider.useStaticFilesLoader({

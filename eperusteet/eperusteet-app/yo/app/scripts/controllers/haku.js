@@ -94,9 +94,9 @@ angular.module('eperusteApp')
       return YleinenData.valitseKieli(nimi);
     };
 
-    $rootScope.$on('$translateChangeSuccess', function() {
+    /*$rootScope.$on('$translateChangeSuccess', function() {
       $scope.tyhjenna();
-    });
+    });*/
 
     $scope.koulutusalaMuuttui = function() {
       if ($scope.hakuparametrit.koulutusala !== '') {

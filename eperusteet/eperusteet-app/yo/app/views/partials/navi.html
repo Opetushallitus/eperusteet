@@ -1,12 +1,8 @@
-<ul class="nav nav-tabs">
-  <li ui-sref-active="active"><a>{{'esiopetus'|translate}}</a></li>
-  <li ui-sref-active="active"><a>{{'perusopetus'|translate}}</a></li>
-  <li ui-sref-active="active"><a>{{'lukiokoulutus'|translate}}</a></li>
-  <li ui-sref-active="active"><a ui-sref="selaus.ammatillinenperuskoulutus">{{'ammatillinen-peruskoulutus'|translate}}</a></li>
-  <li ui-sref-active="active"><a ui-sref="selaus.ammatillinenaikuiskoulutus">{{'ammatillinen-aikuiskoulutus'|translate}}</a></li>
-</ul>
-
 <ol class="breadcrumb">
+    <li>
+        <a ui-sref="aloitussivu">{{'ePerusteet-koti' | translate}}</a>
+    </li> 
+       
     <li ng-repeat="np in navigaatiopolku">
       <a ng-hide="$last" ng-href="{{ np.url }}">{{ np.arvo | translate }}</a>
       <span ng-show="$last">{{ np.arvo | translate }}</span>

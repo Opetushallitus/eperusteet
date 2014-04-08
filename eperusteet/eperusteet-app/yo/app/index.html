@@ -33,8 +33,7 @@
           <eperuste-navi ng-controller="NaviCtrl"></eperuste-navi>
           <editointikontrollit ng-controller="EditointiCtrl"></editointikontrollit>
           <div class="row">
-            <div class="col-md-9" ui-view></div>
-            <div class="col-md-3" ng-include="'views/partials/sivupalkki.html'"></div>
+            <div class="col-md-12" ui-view></div>
           </div>
         </div>
       </div>
@@ -120,6 +119,7 @@
     <script src="scripts/services/opintoalat.js"></script>
     <script src="scripts/directives/muokkaus/kenttalistaus.js"></script>
     <script src="scripts/directives/dateformatter.js"></script>
+    <script src="scripts/controllers/aloitussivu.js"></script>
     <!-- endbuild -->
   </body>
 </html>
