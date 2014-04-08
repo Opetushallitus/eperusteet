@@ -12,6 +12,7 @@
     "ok": "[OK]",
     "tallennettu": "[Tallennettu]",
     "tyhjä": "[Tyhjä]",
+    "haku": "[Haku]",
 
     "haku-otsikko": "[Perusteen haku]",
     "haku-koulutusala": "[Koulutusala]",
@@ -184,6 +185,11 @@
     "projekti-projektiryhmä": "[Projektiryhmä]",
     "projekti-peruste": "[Perusteen tiedot]",
     "valitse-peruste": "[Valitse peruste]",
-    "perusteen-koodi": "[Perusteen koodi]"
+    "perusteen-koodi": "[Perusteen koodi]",
+    
+    "opetussuunnitelma": "[Opetussuunnitelma]",
+    "nayttotutkinto": "[Näyttötutkinto]",
+    
+    "ePerusteet-koti": "[ePerusteet]"
 }
 

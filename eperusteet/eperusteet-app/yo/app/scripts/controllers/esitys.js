@@ -13,9 +13,6 @@ angular.module('eperusteApp')
         templateUrl: '/views/esitys.html',
         controller: 'EsitysCtrl',
         naviRest: [':perusteenId']
-        // navigaationimiId: 'peruste',
-        //Estää sisällysluettelossa navigoinnin lataamasta sivua uudelleen
-        // reloadOnSearch: false
       });
   })
   .controller('EsitysCtrl', function($q, $scope, $stateParams, $state,
@@ -32,6 +29,7 @@ angular.module('eperusteApp')
     $scope.suoritustapa = $stateParams.suoritustapa;
     var suosikkiId = null;
     
+    
     var perusteHakuPromise = (function() {
       if ($stateParams.perusteenId) {
         return Perusteet.get({perusteenId: $stateParams.perusteenId}).$promise;
@@ -41,9 +39,11 @@ angular.module('eperusteApp')
     }());
 
     var kayttajaProfiiliPromise = Kayttajaprofiilit.get({}).$promise;
+    
     perusteHakuPromise.then(function(peruste) {
       if (peruste.id) {
         $scope.peruste = peruste;
+        console.log('peruste', peruste);
         Navigaatiopolku.asetaElementit({ perusteenId: peruste.nimi });
         haeSuoritustapaSisalto(peruste.id);
       } else {
