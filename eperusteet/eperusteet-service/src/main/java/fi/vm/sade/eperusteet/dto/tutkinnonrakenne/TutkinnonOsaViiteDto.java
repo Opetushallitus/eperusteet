@@ -14,14 +14,20 @@
 * European Union Public Licence for more details.
 */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.dto.EntityReference;
+import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class RakenteenLehtiDto extends AbstractRakenneosaDto {
+public class TutkinnonOsaViiteDto {
 
-	private EntityReference perusteenOsa;
+    private Integer laajuus;
+    private LaajuusYksikko yksikko;
+    private LokalisoituTekstiDto nimi;
+	private EntityReference tutkinnonOsa;
 }

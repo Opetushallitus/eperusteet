@@ -1,5 +1,8 @@
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.resource.config;
 
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,14 +20,15 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 
-public class PerusteenRakenneosaDeserializer extends JsonDeserializer<AbstractRakenneosaDto> {
+public class AbstractRakenneOsaDeserializer extends JsonDeserializer<AbstractRakenneOsaDto> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PerusteenRakenneosaDeserializer.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractRakenneOsaDeserializer.class);
 
 	@Override
-	public AbstractRakenneosaDto deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-		Map<String, BeanPropertyDefinition> definitionMap = getPropertyDefinitionsFor(RakenteenLehtiDto.class, ctxt);
+	public AbstractRakenneOsaDto deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+		Map<String, BeanPropertyDefinition> definitionMap = getPropertyDefinitionsFor(TutkinnonOsaViiteDto.class, ctxt);
 		ObjectMapper mapper = (ObjectMapper) jp.getCodec();
 		LOG.debug("start parsing");
 
@@ -38,7 +42,7 @@ public class PerusteenRakenneosaDeserializer extends JsonDeserializer<AbstractRa
 				LOG.debug("prop name: {}", propKey);
 				if (jp.getCurrentToken().isStructStart() || jp.getCurrentToken().isScalarValue()) {
 					if (!definitionMap.containsKey(propKey)) {
-						definitionMap = getPropertyDefinitionsFor(RakenteenHaaraDto.class, ctxt);
+						definitionMap = getPropertyDefinitionsFor(RakenneModuuliDto.class, ctxt);
 						isLeaf = Boolean.FALSE;
 					}
 					LOG.debug("field class: {}", definitionMap.get(propKey).getField().getRawType());
@@ -46,9 +50,9 @@ public class PerusteenRakenneosaDeserializer extends JsonDeserializer<AbstractRa
 										
 					if(List.class.equals(definitionMap.get(propKey).getField().getRawType())) {
 						
-						List<AbstractRakenneosaDto> dtos = new ArrayList<>();
+						List<AbstractRakenneOsaDto> dtos = new ArrayList<>();
 						while(jp.nextToken() != JsonToken.END_ARRAY) {
-							dtos.add(mapper.readValue(jp, AbstractRakenneosaDto.class));
+							dtos.add(mapper.readValue(jp, AbstractRakenneOsaDto.class));
 						}
 						prop = dtos;
 					} else {
@@ -59,12 +63,12 @@ public class PerusteenRakenneosaDeserializer extends JsonDeserializer<AbstractRa
 
 				}
 			}
-			AbstractRakenneosaDto completeDto = null;
+			AbstractRakenneOsaDto completeDto = null;
 			if (Boolean.TRUE.equals(isLeaf)) {
-				completeDto = new RakenteenLehtiDto();
+				completeDto = new RakenneOsaDto();
 
 			} else if (Boolean.FALSE.equals(isLeaf)) {
-				completeDto = new RakenteenHaaraDto();
+				completeDto = new RakenneModuuliDto();
 			}
 
 			for (Entry<String, Object> entry : props.entrySet()) {

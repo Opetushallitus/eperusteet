@@ -15,15 +15,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.dto.AbstractRakenneosaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonRakenneDto;
 import fi.vm.sade.eperusteet.resource.util.RakenneUtil;
 import fi.vm.sade.eperusteet.service.PerusteService;
 
@@ -55,8 +57,8 @@ public class PerusteController {
 
     @RequestMapping(value = "/{id}/rakenne", method = GET)
     @ResponseBody
-    public ResponseEntity<AbstractRakenneosaDto> getRakenne(@PathVariable("id") final Long id) {
-    	AbstractRakenneosaDto rakenne = RakenneUtil.getStaticRakenneDto();
+    public ResponseEntity<TutkinnonRakenneDto> getRakenne(@PathVariable("id") final Long id) {
+    	TutkinnonRakenneDto rakenne = RakenneUtil.getStaticRakenneDto();
         if (rakenne == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -65,7 +67,7 @@ public class PerusteController {
 
     @RequestMapping(value = "/{id}/rakenne", method = POST)
     @ResponseBody
-    public ResponseEntity<AbstractRakenneosaDto> addPerusteenRakenne(@PathVariable("id") final Long id, @RequestBody AbstractRakenneosaDto rakenneosa) {
+    public ResponseEntity<AbstractRakenneOsaDto> addPerusteenRakenne(@PathVariable("id") final Long id, @RequestBody AbstractRakenneOsaDto rakenneosa) {
     	LOG.debug("perusteen rakenne: {}", rakenneosa);
     	return new ResponseEntity<>(rakenneosa, HttpStatus.CREATED);
     }
