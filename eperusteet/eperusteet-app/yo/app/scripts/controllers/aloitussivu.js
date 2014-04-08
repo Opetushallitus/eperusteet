@@ -8,6 +8,4 @@ angular.module('eperusteApp')
         naviBase: [],
         templateUrl: 'views/aloitussivu.html'
       });
-  })
-  .controller('AloitussivuCtrl', function ($scope) {
   });
