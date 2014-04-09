@@ -1,3 +1,7 @@
+.tree-group {
+  min-height: 16px;
+}
+
 .group-placeholder {
   background: #555;
   padding: 4px;

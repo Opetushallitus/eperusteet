@@ -49,9 +49,9 @@ angular.module('eperusteApp')
           }
         }
       }
-    };
+    }
 
-    function generoiOtsikko(rakenne, tutkinnonOsat) {
+    function generoiOtsikko() {
       var tosa = 'tutkinnonOsat[rakenne._tutkinnonOsa]';
       var otsikko = '' +
         '<span ng-if="rakenne._tutkinnonOsa">{{ ' + tosa + '.nimi.fi }} {{' + tosa + '.laajuus }}ov</span>' +
@@ -149,9 +149,9 @@ angular.module('eperusteApp')
           });
         };
 
-        scope.$watchCollection('rakenne', function(uusirakenne) {
+        scope.$watch('rakenne', function(uusirakenne) {
           validoiRyhma(uusirakenne, scope.tutkinnonOsat);
-        });
+        }, true);
 
         scope.sortableOptions = {
           placeholder: 'group-placeholder',
@@ -170,7 +170,7 @@ angular.module('eperusteApp')
           '  <a ng-hide="rakenne.$collapsed" href="" ng-click="rakenne.$collapsed = !rakenne.$collapsed"><span class="glyphicon glyphicon-chevron-down"></span></a>' +
           '  <a ng-show="rakenne.$collapsed" href="" ng-click="rakenne.$collapsed = !rakenne.$collapsed"><span class="glyphicon glyphicon-chevron-up"></span></a>' +
           '</span> ' +
-          '<span class="tree-item" ng-click="rakenne.$laajenna = !rakenne.$laajenna">' + generoiOtsikko(scope.rakenne, scope.tutkinnonOsat) + '</span>' +
+          '<span class="tree-item" ng-click="rakenne.$laajenna = !rakenne.$laajenna">' + generoiOtsikko() + '</span>' +
           '<span ng-show="rakenne.$naytaMuokkaa" ng-if="!rakenne._tutkinnonOsa" class="pull-right">' +
           '  <a href="" ng-click="ryhmaModaali(rakenne, vanhempi)"><span class="glyphicon glyphicon-pencil"></span> Muokkaa</a>' +
           '</span>' +
