@@ -16,7 +16,7 @@ public interface PerusteRepository extends JpaRepository<Peruste, Long>, Peruste
     Peruste findOneByKoodiUri(String koodiUri);
 
     @Query("SELECT s.sisalto FROM Suoritustapa s, Peruste p LEFT JOIN p.suoritustavat s WHERE p.id = ?1 AND s.suoritustapakoodi = ?2")
-    PerusteenOsaViite findByIdAndSuoritustapakoodi(Long id, Suoritustapakoodi suoritustapakoodi);
+    PerusteenOsaViite findSisaltoByIdAndSuoritustapakoodi(Long id, Suoritustapakoodi suoritustapakoodi);
     
     @Query("SELECT p FROM Suoritustapa s, Peruste p LEFT JOIN p.suoritustavat s WHERE p.id = ?1 AND s.suoritustapakoodi = ?2")
     Peruste findPerusteByIdAndSuoritustapakoodi(Long id, Suoritustapakoodi suoritustapakoodi);

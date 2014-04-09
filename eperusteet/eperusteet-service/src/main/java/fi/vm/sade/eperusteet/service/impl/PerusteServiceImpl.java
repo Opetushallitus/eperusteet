@@ -119,7 +119,7 @@ public class PerusteServiceImpl implements PerusteService {
     
     @Override
     public PerusteenosaViiteDto getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi) {
-        PerusteenOsaViite entity = perusteet.findByIdAndSuoritustapakoodi(perusteId, suoritustapakoodi);
+        PerusteenOsaViite entity = perusteet.findSisaltoByIdAndSuoritustapakoodi(perusteId, suoritustapakoodi);
         return mapper.map(entity, PerusteenosaViiteDto.class);
     }
 

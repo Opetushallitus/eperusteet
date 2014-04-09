@@ -62,7 +62,7 @@ angular.module('eperusteApp')
               } else {
                 PerusteenOsat.saveTekstikappale($scope.editableTekstikappale).$promise.then(function(response) {
                   openNotificationDialog().result.then(function() {
-                    $state.go('muokkaus.tekstikappale', { id: response.id });
+                    $state.go('muokkaus.vanha', { perusteenOsanTyyppi: 'tekstikappale', perusteenId: response.id });
                   });
                 });
               }

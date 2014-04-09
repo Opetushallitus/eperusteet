@@ -34,7 +34,7 @@ angular.module('eperusteApp')
         url: '/:perusteenOsanTyyppi/:perusteenId',
         templateUrl: 'views/muokkaus.html',
         naviBase: ['muokkaus', ':perusteenOsanTyyppi', ':perusteenId'],
-        controller: 'MuokkausCtrl',
+        controller: 'MuokkausCtrl'
       });
   })
   .controller('MuokkausCtrl', function($scope, $stateParams, PerusteenOsat, $state, $compile, Navigaatiopolku) {
@@ -46,7 +46,7 @@ angular.module('eperusteApp')
         Navigaatiopolku.asetaElementit({ perusteenId: re.nimi });
       }, function() {
         console.log('unable to find perusteen osa #' + $stateParams.perusteenId);
-        $state.go('selaus.konteksti', { konteksti: 'ammatillinenperuskoulutus' });
+        $state.go('aloitussivu');
       });
     }
 
@@ -57,7 +57,7 @@ angular.module('eperusteApp')
       muokkausDirective = angular.element('<muokkaus-tutkinnonosa tutkinnon-osa="objekti"></muokkaus-tutkinnonosa>');
     } else {
       console.log('invalid perusteen osan tyyppi');
-      $state.go('selaus.konteksti', { konteksti: 'ammatillinenperuskoulutus' });
+      $state.go('aloitussivu');
     }
     var el = $compile(muokkausDirective)($scope);
 
