@@ -26,27 +26,27 @@ European Union Public Licence for more details.
       <div ng-repeat="lapsi in lapsi.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
     </script>
 
-    <div class="panel panel-default">
-      <div class="panel-heading">Voit käyttää alla olevia työkaluja rajataksesi näytettävää sisältöä valitusta perusteesta.<!--a class="btn btn-default btn-sm pull-right" style="margin-top: -5px" href="#/selaus" translate>takaisin</a--></div>
-      <div class="panel-body">
-        <div class="clearfix">
-          <button class="btn btn-sm btn-link" data-toggle="modal" data-target="#modalMaaraykset">Tutkinnon järjestelmästä ohjaavat määräykset ja ohjeet</button>
-          <optio-lista class="pull-right" optiot="maarayksetOptiot"></optio-lista>
-        </div>
-        <div class="clearfix">
-          <button class="btn btn-sm btn-link" data-toggle="modal" data-target="#modalArviointi">Opiskelijan arviointi ammatillisessa peruskoulutuksessa</button>
-          <optio-lista class="pull-right" optiot="arviointiOptiot"></optio-lista>
-        </div>
-        <div class="clearfix">
-          <button class="btn btn-sm btn-link" data-toggle="modal" data-target="#modalTodistukset">Todistukset</button>
-          <optio-lista class="pull-right" optiot="todistuksetOptiot"></optio-lista>
-        </div>
-        <div class="clearfix">
-          <button class="btn btn-sm btn-link" data-toggle="modal" data-target="#modalTerveydentila">Terveydentilavaatimukset ammatillisessa peruskoulutuksessa</button>
-          <optio-lista class="pull-right" optiot="terveydentilaOptiot"></optio-lista>
-        </div>
-      </div>
-    </div>
+    <!-- <div class="panel panel&#45;default"> -->
+    <!--   <div class="panel&#45;heading">Voit käyttää alla olevia työkaluja rajataksesi näytettävää sisältöä valitusta perusteesta.<!&#45;&#45;a class="btn btn&#45;default btn&#45;sm pull&#45;right" style="margin&#45;top: &#45;5px" href="#/selaus" translate>takaisin</a&#45;&#45;></div> -->
+    <!--   <div class="panel&#45;body"> -->
+    <!--     <div class="clearfix"> -->
+    <!--       <button class="btn btn&#45;sm btn&#45;link" data&#45;toggle="modal" data&#45;target="#modalMaaraykset">Tutkinnon järjestelmästä ohjaavat määräykset ja ohjeet</button> -->
+    <!--       <optio&#45;lista class="pull&#45;right" optiot="maarayksetOptiot"></optio&#45;lista> -->
+    <!--     </div> -->
+    <!--     <div class="clearfix"> -->
+    <!--       <button class="btn btn&#45;sm btn&#45;link" data&#45;toggle="modal" data&#45;target="#modalArviointi">Opiskelijan arviointi ammatillisessa peruskoulutuksessa</button> -->
+    <!--       <optio&#45;lista class="pull&#45;right" optiot="arviointiOptiot"></optio&#45;lista> -->
+    <!--     </div> -->
+    <!--     <div class="clearfix"> -->
+    <!--       <button class="btn btn&#45;sm btn&#45;link" data&#45;toggle="modal" data&#45;target="#modalTodistukset">Todistukset</button> -->
+    <!--       <optio&#45;lista class="pull&#45;right" optiot="todistuksetOptiot"></optio&#45;lista> -->
+    <!--     </div> -->
+    <!--     <div class="clearfix"> -->
+    <!--       <button class="btn btn&#45;sm btn&#45;link" data&#45;toggle="modal" data&#45;target="#modalTerveydentila">Terveydentilavaatimukset ammatillisessa peruskoulutuksessa</button> -->
+    <!--       <optio&#45;lista class="pull&#45;right" optiot="terveydentilaOptiot"></optio&#45;lista> -->
+    <!--     </div> -->
+    <!--   </div> -->
+    <!-- </div> -->
 
     <div class="row">
         <div class="col-md-6">
@@ -82,8 +82,10 @@ European Union Public Licence for more details.
     </script>
 
     <!-- Tutkinnon rakenne puuesityksenä -->
-    <tree-wrapper ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
-    <br>
+    <div>
+      <tree-wrapper ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
+    </div>
+    <div class="clearfix"></div>
     <button class="btn btn-primary" ng-click="tallennaRakenne(rakenne)">Tallenna</button>
 
   </div>

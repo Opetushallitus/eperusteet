@@ -23,9 +23,16 @@ angular.module('eperusteApp')
     $scope.peruste = {};
     $scope.syvyys = 2;
     $scope.suosikkiLista = {};
-    $scope.rakenne = TreeCache.nykyinen() !== $stateParams.perusteenId
-                       ? PerusteRakenteet.get({ perusteenId: $stateParams.perusteenId })
-                       : TreeCache.hae();
+
+    $scope.rakenne = {};
+    if (TreeCache.nykyinen() !== $stateParams.perusteenId) {
+      PerusteRakenteet.get({ perusteenId: $stateParams.perusteenId }, function(re) {
+        $scope.rakenne = re;
+        $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck($scope.rakenne.tutkinnonOsat, '_tutkinnonOsa'), $scope.rakenne.tutkinnonOsat);
+      });
+    } else {
+      TreeCache.hae();
+    }
 
     $scope.tallennaRakenne = function(rakenne) {
       TreeCache.tallenna(rakenne, $stateParams.perusteenId);
@@ -75,8 +82,8 @@ angular.module('eperusteApp')
         $scope.peruste.rakenne = vastaus;
         console.log($scope.peruste);
       }, function (virhe) {
-          console.log('suoritustapasisältöä ei löytynyt', virhe);
-        });
+          // console.log('suoritustapasisältöä ei löytynyt', virhe);
+      });
     };
 
     $scope.onSuosikki = function() {

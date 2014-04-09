@@ -42,7 +42,6 @@ public final class RakenneUtil {
         osat.add(tutkinnonOsa);
         RakenneOsaDto r = new RakenneOsaDto();
         r.setTutkinnonOsa(tutkinnonOsa.getTutkinnonOsa());
-		firstChild.getOsat().add(new RakenneOsaDto());
 
 		RakenneModuuliDto secondChild = new RakenneModuuliDto();
 		secondChild.setMuodostumisSaanto(new MuodostumisSaantoDto(new MuodostumisSaantoDto.Koko(1, 2)));
