@@ -29,9 +29,6 @@ angular.module('eperusteApp')
     $scope.suoritustapa = $stateParams.suoritustapa;
     var suosikkiId = null;
     $scope.suodatin = {};
-    $scope.valitutSuodattimet = [{'_id':'1', 'fi': 'testi suodatin'}];
-    $scope.testi = {};
-    $scope.testi.valittu = false;
     
     
     var perusteHakuPromise = (function() {
@@ -71,23 +68,14 @@ angular.module('eperusteApp')
     
     var haeSuoritustapaSisalto = function (id) {
       Suoritustapa.get({perusteenId: id, suoritustapa: $scope.suoritustapa}, function(vastaus) {
-        console.log('suoritustapa vastaus', vastaus);
         $scope.peruste.rakenne = vastaus;
-        console.log($scope.peruste);
-        
-        console.log('lapset', vastaus.lapset);
-        console.log('pluck nimi', _.pluck(_.pluck(vastaus.lapset, 'perusteenOsa'), 'nimi'));
-        $scope.suodatin.otsikot = _.pluck(_.pluck(vastaus.lapset, 'perusteenOsa'), 'nimi');
-        console.log('suodatin otsikot', $scope.suodatin.otsikot );
-        
+        $scope.suodatin.otsikot = _.pluck(_.pluck(vastaus.lapset, 'perusteenOsa'), 'nimi');   
       }, function (virhe) {
           console.log('suoritustapasisältöä ei löytynyt', virhe);
         });
     };
 
     $scope.onSuosikki = function() {
-      console.log('suosikkiLista', $scope.suosikkiLista);
-      console.log('peruste.id', $scope.peruste.id);
       for (var i = 0; i < _.size($scope.suosikkiLista); i++) {
         if ($scope.suosikkiLista[i].perusteId === $scope.peruste.id && $scope.suosikkiLista[i].suoritustapakoodi === $scope.suoritustapa) {
           suosikkiId = $scope.suosikkiLista[i].id;
@@ -128,15 +116,8 @@ angular.module('eperusteApp')
     };
     
     $scope.onkoSuodatettu = function (id) {
-      
-      console.log('onkoSuodatettu valittu', _.filter($scope.suodatin.otsikot, 'valittu'));
-      var valitutSuodattimet = _.filter($scope.suodatin.otsikot, 'valittu');
-      console.log('valitutSuodattimet', valitutSuodattimet);
-      
-      console.log('return', valitutSuodattimet.length === 0 || _.isObject(_.find(valitutSuodattimet, function(suodatin) {return suodatin._id === id;})));
-      
+      var valitutSuodattimet = _.filter($scope.suodatin.otsikot, 'valittu');      
       return valitutSuodattimet.length === 0 || _.isObject(_.find(valitutSuodattimet, function(suodatin) {return suodatin._id === id;}));
-
     };
 
     $scope.valitseKieli = function(teksti) {
