@@ -18,10 +18,10 @@ insert into lapsetOrder values (0);
 
 /*----- Luodaan peruste --------------*/
 insert into tekstipalanen(id) select id from idTeksti;
-insert into tekstipalanen_teksti(tekstipalanen_id, kieli, teksti) select id, 'FI' as kieli, 'Tekstikappaletesti perustutkinto 10' as teksti from idTeksti;
-insert into tekstipalanen_teksti(tekstipalanen_id, kieli, teksti) select id, 'SV' as kieli, '[Tekstikappaletesti perustutkinto]' as teksti from idTeksti;
+insert into tekstipalanen_teksti(tekstipalanen_id, kieli, teksti) select id, 'FI' as kieli, 'Yleinen sisältö perustutkinto' as teksti from idTeksti;
+insert into tekstipalanen_teksti(tekstipalanen_id, kieli, teksti) select id, 'SV' as kieli, '[Yleinen sisältö perustutkinto]' as teksti from idTeksti;
 insert into koulutus(id, koulutus_koodi, koulutusala_koodi, opintoala_koodi) select id.id, nextval('hibernate_sequence'), 'koulutusalaoph2002_2', 'opintoalaoph2002_202' from koulutusId as id;
-insert into peruste(nimi_id, tutkintokoodi, paivays, id, siirtyma, koodiuri) select idT.id, 'koulutustyyppi_1', current_timestamp, id.id, current_timestamp, 'koodiUri' from idTeksti as idT, perusteId as id;
+insert into peruste(nimi_id, tutkintokoodi, paivays, id, siirtyma, koodiuri) select idT.id, 'koulutustyyppi_1', current_timestamp, id.id, null, 'koodiUri' from idTeksti as idT, perusteId as id;
 insert into peruste_koulutus(peruste_id, koulutus_id) select perusteId.id, koulutusId.id from perusteId, koulutusId;
 insert into perusteenosaviite(id, perusteenosa_id, vanhempi_id, lapset_order) select id.id, null, null, null from suoritustapasisaltoId as id, perusteenosaId;
 insert into suoritustapa(id, suoritustapakoodi, sisalto_perusteenosaviite_id) select id.id, 'OPS', suoritustapasisaltoId.id from suoritustapaId as id, suoritustapasisaltoId;

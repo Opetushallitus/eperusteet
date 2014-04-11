@@ -28,6 +28,10 @@ angular.module('eperusteApp')
     $scope.suosikkiTyyli = eiSuosikkiTyyli;
     $scope.suoritustapa = $stateParams.suoritustapa;
     var suosikkiId = null;
+    $scope.suodatin = {};
+    $scope.valitutSuodattimet = [{'_id':'1', 'fi': 'testi suodatin'}];
+    $scope.testi = {};
+    $scope.testi.valittu = false;
     
     
     var perusteHakuPromise = (function() {
@@ -70,6 +74,12 @@ angular.module('eperusteApp')
         console.log('suoritustapa vastaus', vastaus);
         $scope.peruste.rakenne = vastaus;
         console.log($scope.peruste);
+        
+        console.log('lapset', vastaus.lapset);
+        console.log('pluck nimi', _.pluck(_.pluck(vastaus.lapset, 'perusteenOsa'), 'nimi'));
+        $scope.suodatin.otsikot = _.pluck(_.pluck(vastaus.lapset, 'perusteenOsa'), 'nimi');
+        console.log('suodatin otsikot', $scope.suodatin.otsikot );
+        
       }, function (virhe) {
           console.log('suoritustapasisältöä ei löytynyt', virhe);
         });
@@ -105,6 +115,29 @@ angular.module('eperusteApp')
         });
       }
     };
+    
+    $scope.suodatinValittu = function(suodatinId) {
+      var suodatinTmp = _.find($scope.suodatin.otsikot, function(suodatin) {
+        return suodatin._id === suodatinId;
+      });
+      suodatinTmp.valittu = true;      
+    };
+    
+    $scope.poistaSuodatin = function (suodatin) {
+      suodatin.valittu = false;
+    };
+    
+    $scope.onkoSuodatettu = function (id) {
+      
+      console.log('onkoSuodatettu valittu', _.filter($scope.suodatin.otsikot, 'valittu'));
+      var valitutSuodattimet = _.filter($scope.suodatin.otsikot, 'valittu');
+      console.log('valitutSuodattimet', valitutSuodattimet);
+      
+      console.log('return', valitutSuodattimet.length === 0 || _.isObject(_.find(valitutSuodattimet, function(suodatin) {return suodatin._id === id;})));
+      
+      return valitutSuodattimet.length === 0 || _.isObject(_.find(valitutSuodattimet, function(suodatin) {return suodatin._id === id;}));
+
+    };
 
     $scope.valitseKieli = function(teksti) {
       return YleinenData.valitseKieli(teksti);
@@ -129,40 +162,6 @@ angular.module('eperusteApp')
     palvelinhaunIlmoitusKanava.kunHakuAloitettu($scope, hakuAloitettuKäsittelijä);
     palvelinhaunIlmoitusKanava.kunHakuLopetettu($scope, hakuLopetettuKäsittelijä);
     
-    $scope.terveydentilaOptiot = [
-      {teksti: 'Kaikki', valittu: true},
-      {teksti: 'Terveydentila optio 1', valittu: false},
-      {teksti: 'Terveydentila optio 2', valittu: false},
-      {teksti: 'Terveydentila optio 3', valittu: false},
-      {teksti: 'Terveydentila optio 4', valittu: false}
-    ];
-
-    $scope.todistuksetOptiot = [
-      {teksti: 'Kaikki', valittu: true},
-      {teksti: 'Todistukset optio 1', valittu: false},
-      {teksti: 'Todistukset optio 2', valittu: false},
-      {teksti: 'Todistukset optio 3', valittu: false}
-    ];
-
-    $scope.arviointiOptiot = [
-      {teksti: 'Kaikki', valittu: true},
-      {teksti: 'Oppilaan arviointi oppiaineessa', valittu: false},
-      {teksti: 'Oppiaineen hyvän edistymisen kuvaus', valittu: false},
-      {teksti: 'Oppiaineen hyvän osaamisen kuvaus', valittu: false},
-      {teksti: 'Oppiaineen päätösarvioinnin kriteerit arvosanalle 8', valittu: false},
-      {teksti: 'Todistukset', valittu: false},
-      {teksti: 'Erityisen tutkinnon suoritusten arviointi ja muutokset', valittu: false}
-    ];
-
-    $scope.maarayksetOptiot = [
-      {teksti: 'Kaikki', valittu: true},
-      {teksti: 'Määräykset optio 1', valittu: false},
-      {teksti: 'Määräykset optio 2', valittu: false},
-      {teksti: 'Määräykset optio 3', valittu: false},
-      {teksti: 'Määräykset optio 4', valittu: false},
-      {teksti: 'Määräykset optio 5', valittu: false}
-    ];
-
     /****************************************
      *
      * Kovakoodattu rakenne-esitys, plsremovewhenfit!!

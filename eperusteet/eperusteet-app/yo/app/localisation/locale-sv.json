@@ -190,6 +190,9 @@
     "opetussuunnitelma": "[Opetussuunnitelma]",
     "nayttotutkinto": "[Näyttötutkinto]",
     
-    "ePerusteet-koti": "[ePerusteet]"
+    "ePerusteet-koti": "[ePerusteet]",
+    
+    "suodattimet": "[Suodattimet]",
+    "valitse-suodatin": "Valitse suodatin"
 }
 

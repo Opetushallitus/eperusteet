@@ -18,36 +18,31 @@ European Union Public Licence for more details.
   <!-- Perusteteksti -->
   <!--lataus-elementti></lataus-elementti-->
   <!--div class="col-md-12" ng-hide="hakuMenossa"-->
-  <div class="col-md-12">
+  <!--div class="col-md-4" ng-include="'views/partials/suodattimet.html'"></div-->
+  <div class="col-md-4">
+      <div class="panel panel-default">
+          <div class="panel-heading" translate>suodattimet</div>
+          <div class="panel-body">
+              <ul>
+                  <li ng-show="suodatin.valittu" ng-repeat="suodatin in suodatin.otsikot">{{valitseKieli(suodatin)}}<span class="pull-right glyphicon glyphicon-remove pointer" ng-click="poistaSuodatin(suodatin)"></span></li>
+              </ul>
+              <select id="suodatin-tyyppi" ng-model="suodatinId" class="form-control" ng-change="suodatinValittu(suodatinId)">
+                  <option value="" disabled selected translate>valitse-suodatin</option>
+                  <option ng-repeat="otsikko in suodatin.otsikot" value="{{otsikko._id}}" ng-hide="otsikko.valittu">{{valitseKieli(otsikko)}}</option>         
+              </select>
+          </div>
+      </div>
+  </div>
+  <div class="col-md-8">
 
     <script type="text/ng-template"  id="lapset_renderer.html">
-      <esitys-otsikko id="{{lapsi.perusteenOsa.id}}">{{lapsi.perusteenOsa.nimi['fi']}}</esitys-otsikko>
-      <div ng-bind-html="lapsi.perusteenOsa.teksti.fi"></div>
-      <div ng-repeat="lapsi in lapsi.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
-    </script>
-
-    <div class="panel panel-default">
-      <div class="panel-heading">Voit käyttää alla olevia työkaluja rajataksesi näytettävää sisältöä valitusta perusteesta.<!--a class="btn btn-default btn-sm pull-right" style="margin-top: -5px" href="#/selaus" translate>takaisin</a--></div>
-      <div class="panel-body">
-        <div class="clearfix">
-          <button class="btn btn-sm btn-link" data-toggle="modal" data-target="#modalMaaraykset">Tutkinnon järjestelmästä ohjaavat määräykset ja ohjeet</button>
-          <optio-lista class="pull-right" optiot="maarayksetOptiot"></optio-lista>
-        </div>
-        <div class="clearfix">
-          <button class="btn btn-sm btn-link" data-toggle="modal" data-target="#modalArviointi">Opiskelijan arviointi ammatillisessa peruskoulutuksessa</button>
-          <optio-lista class="pull-right" optiot="arviointiOptiot"></optio-lista>
-        </div>
-        <div class="clearfix">
-          <button class="btn btn-sm btn-link" data-toggle="modal" data-target="#modalTodistukset">Todistukset</button>
-          <optio-lista class="pull-right" optiot="todistuksetOptiot"></optio-lista>
-        </div>
-        <div class="clearfix">
-          <button class="btn btn-sm btn-link" data-toggle="modal" data-target="#modalTerveydentila">Terveydentilavaatimukset ammatillisessa peruskoulutuksessa</button>
-          <optio-lista class="pull-right" optiot="terveydentilaOptiot"></optio-lista>
-        </div>
+      <div ng-show="onkoSuodatettu(lapsi.perusteenOsa.nimi._id)">  
+          <esitys-otsikko id="{{lapsi.perusteenOsa.id}}">{{lapsi.perusteenOsa.nimi['fi']}}</esitys-otsikko>
+          <div ng-bind-html="lapsi.perusteenOsa.teksti.fi"></div>
+          <div ng-repeat="lapsi in lapsi.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
       </div>
-    </div>
-
+    </script>
+    
     <div class="row">
         <div class="col-md-6">
         <div align="left">
@@ -85,27 +80,5 @@ European Union Public Licence for more details.
     <div tree rakenne="rakenne" baseurl="esitys/{{ peruste.id }}/tutkinnonosa"></div>
 
   </div>
-  <optio-modal modalid="modalMaaraykset" optiot="maarayksetOptiot"></optio-modal>
-  <optio-modal modalid="modalArviointi" optiot="arviointiOptiot" ></optio-modal>
-  <optio-modal modalid="modalTodistukset" optiot="todistuksetOptiot" ></optio-modal>
-  <optio-modal modalid="modalTerveydentila" optiot="terveydentilaOptiot" ></optio-modal>
 
-  <!-- Sisällysluettelo -->
-
-  <!--script type="text/ng-template"  id="sisallysluettelo_renderer.html">
-      <a ng-click="vierity(lapsi.perusteenOsa.id)">{{lapsi.perusteenOsa.otsikko.fi}}</a>
-      <ol>
-      <li ng-repeat="lapsi in lapsi.lapset" ng-include="'sisallysluettelo_renderer.html'"></li>
-      </ol>
-  </script-->
-
-  <!--div class="col-md-3">
-      <ol class="affix">
-          <li><a ng-click="vierity(peruste.rakenne.perusteenOsa.id)">{{peruste.rakenne.perusteenOsa.otsikko.fi}}</a>
-              <ol>
-                  <li ng-repeat="lapsi in peruste.rakenne.lapset" ng-include="'sisallysluettelo_renderer.html'"></li>
-              </ol>
-          </li>
-      </ol>
-  </div-->
 </div>
