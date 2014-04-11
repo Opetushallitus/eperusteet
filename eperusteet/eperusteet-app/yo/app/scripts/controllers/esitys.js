@@ -109,6 +109,8 @@ angular.module('eperusteApp')
         return suodatin._id === suodatinId;
       });
       suodatinTmp.valittu = true;
+      
+      $scope.suodatinId = '';
     };
     
     $scope.poistaSuodatin = function (suodatin) {
