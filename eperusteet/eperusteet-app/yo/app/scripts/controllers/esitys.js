@@ -69,7 +69,7 @@ angular.module('eperusteApp')
     var haeSuoritustapaSisalto = function (id) {
       Suoritustapa.get({perusteenId: id, suoritustapa: $scope.suoritustapa}, function(vastaus) {
         $scope.peruste.rakenne = vastaus;
-        $scope.suodatin.otsikot = _.pluck(_.pluck(vastaus.lapset, 'perusteenOsa'), 'nimi');   
+        $scope.suodatin.otsikot = _.pluck(_.pluck(vastaus.lapset, 'perusteenOsa'), 'nimi');
       }, function (virhe) {
           console.log('suoritustapasisältöä ei löytynyt', virhe);
         });
@@ -108,7 +108,7 @@ angular.module('eperusteApp')
       var suodatinTmp = _.find($scope.suodatin.otsikot, function(suodatin) {
         return suodatin._id === suodatinId;
       });
-      suodatinTmp.valittu = true;      
+      suodatinTmp.valittu = true;
     };
     
     $scope.poistaSuodatin = function (suodatin) {
@@ -116,7 +116,7 @@ angular.module('eperusteApp')
     };
     
     $scope.onkoSuodatettu = function (id) {
-      var valitutSuodattimet = _.filter($scope.suodatin.otsikot, 'valittu');      
+      var valitutSuodattimet = _.filter($scope.suodatin.otsikot, 'valittu');
       return valitutSuodattimet.length === 0 || _.isObject(_.find(valitutSuodattimet, function(suodatin) {return suodatin._id === id;}));
     };
 
