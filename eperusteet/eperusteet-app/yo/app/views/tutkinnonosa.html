@@ -1,59 +1,43 @@
 <div>
   <div class="page-header">
-    <h1>
-      {{valitseKieli(tutkinnonOsa.nimi)}}
-      <small ng-show="revisio !== null">rev: {{revisio.number}}&nbsp;<small>{{revisio.date | date:'d.M.yyyy klo. H:mm:ss'}}</small></small>
-      <span class="pull-right dropdown">
+      <h1>{{'tutkinnon-muodostuminen' | translate}}</h1>
+  </div>
+  <div id="otsikkotiedot">
+      <h2>{{'tutkinnonosa' | translate}}</h2>
+      <span class="revisio" ng-show="revisio !== null">rev: {{revisio.number}} {{revisio.date | date:'d.M.yyyy klo H:mm:ss'}}</span>
+      <span class="tutkinnon-osa-koodi">{{tutkinnonOsa.koodiUri}}</span>
+      <div class="pull-right dropdown">
+        <button class="btn btn-default btn-sm" ng-click="siirryMuokkaustilaan()">{{'muokkaus' | translate}}</button>
         <button class="btn btn-default btn-sm dropdown-toggle" ng-click="haeRevisiot()">Versiohistoria</button>
         <ul class="dropdown-menu">
           <li ng-repeat="revisio in revisiotiedot | orderBy:'-date'">
             <a ng-click="getRevision(revisio)">{{revisio.date | date:'d.M.yyyy klo. H:mm:ss'}}</a>
           </li>
         </ul>
-      </span>
-    </h1>
-    <small style="color: #999;">{{tutkinnonOsa.koodiUri}}</small>
+      </div>
+      <table>
+          <tr><th>{{'tutkinnonosa-nimi' | translate}}</th><td>{{valitseKieli(tutkinnonOsa.nimi)}}</td></tr>
+          <tr><th>{{'tutkinnonosa-laajuus' | translate}}</th><td><!-- TODO: laajuus? --></td></tr>
+      </table>
   </div>
-  
-  <h3 style="display: inline;" class="pointer alleviivaus" ng-click="tavoitteetNakyy = !tavoitteetNakyy">{{'tutkinnonosa-tavoitteet' | translate}}</h3>
-  <div class="pointer glyphicon" ng-class="{'glyphicon-plus': !tavoitteetNakyy, 'glyphicon-minus': tavoitteetNakyy}" style="font-size: 1.4em; left: 10px; top: 0px;" ng-click="tavoitteetNakyy = !tavoitteetNakyy"></div>
-  
-  <div collapse="!tavoitteetNakyy">
-      <div class="well well-sm" ng-bind-html="valitseKieli(tutkinnonOsa.tavoitteet)"></div>
-  </div>
-  
-  <div></div>
-  
-  <h3 style="display: inline;" class="pointer alleviivaus" ng-click="ammattitaitovaatimusNakyy = !ammattitaitovaatimusNakyy">{{'tutkinnonosa-ammattitaitovaatimukset' | translate}}</h3>
-  <div class="pointer glyphicon" ng-class="{'glyphicon-plus': !ammattitaitovaatimusNakyy, 'glyphicon-minus': ammattitaitovaatimusNakyy}" style="font-size: 1.4em; left: 10px; top: 0px;" ng-click="ammattitaitovaatimusNakyy = !ammattitaitovaatimusNakyy"></div>
-  
-  <div collapse="!ammattitaitovaatimusNakyy">
-      <div class="well well-sm" ng-bind-html="valitseKieli(tutkinnonOsa.ammattitaitovaatimukset)"></div>
-  </div>
-  
-  <div></div>
-  
-  <h3 style="display: inline;" class="pointer alleviivaus" ng-click="arviointiNakyy = !arviointiNakyy">{{'tutkinnonosa-arviointi' | translate}}</h3>
-  <span class="pointer glyphicon" ng-class="{'glyphicon-plus': !arviointiNakyy, 'glyphicon-minus': arviointiNakyy}" style="font-size: 1.4em; left: 10px; top: 0px;" ng-click="arviointiNakyy = !arviointiNakyy"></span>
-  <div collapse="!arviointiNakyy">
-    <arviointi arviointi="tutkinnonOsa.arviointi"></arviointi>
-  </div>
-  
-  <div></div>
-  
-  <h3 style="display: inline" class="pointer alleviivaus" ng-click="ammattitaidonOsoittamistavatNakyy = !ammattitaidonOsoittamistavatNakyy">{{'tutkinnonosa-ammattitaidonOsoittamistavat' | translate}}</h3>
-  <span class="pointer glyphicon" ng-class="{'glyphicon-plus': !ammattitaidonOsoittamistavatNakyy, 'glyphicon-minus': ammattitaidonOsoittamistavatNakyy}" style="font-size: 1.4em; left: 10px; top: 0px;" ng-click="ammattitaidonOsoittamistavatNakyy = !ammattitaidonOsoittamistavatNakyy"></span>
-  
-  <div collapse="!ammattitaidonOsoittamistavatNakyy">
-      <div class="well well-sm" ng-bind-html="valitseKieli(tutkinnonOsa.ammattitaidonOsoittamistavat)"></div>
-  </div>
-  
-  <div></div>
-  
-  <h3 style="display: inline;" class="pointer alleviivaus" ng-click="osaamisalaNakyy = !osaamisalaNakyy">{{'tutkinnonosa-osaamisala' | translate}}</h3>
-  <div class="pointer glyphicon" ng-class="{'glyphicon-plus': !osaamisalaNakyy, 'glyphicon-minus': osaamisalaNakyy}" style="font-size: 1.4em; left: 10px; top: 0px;" ng-click="osaamisalaNakyy = !osaamisalaNakyy"></div>
-  
-  <div collapse="!osaamisalaNakyy">
-      <div class="well well-sm" ng-bind-html="valitseKieli(tutkinnonOsa.osaamisala)"></div>
+
+  <div id="tutkinnon-osa-tiedot">
+    <div ng-repeat="osio in [
+          'tavoitteet',
+          'ammattitaitovaatimukset',
+          'arviointi',
+          'ammattitaidonOsoittamistavat',
+          'osaamisala'
+    ]">
+      <div class="osio-otsikko" ng-click="nakyvilla[osio] = !nakyvilla[osio]">
+          <span class="glyphicon" ng-class="{'glyphicon-chevron-down': !nakyvilla[osio], 'glyphicon-chevron-up': nakyvilla[osio]}"></span>
+          <span>{{'tutkinnonosa-'+osio | translate}}</span>
+      </div>
+
+      <div collapse="!nakyvilla[osio]" ng-switch on="osio">
+        <div ng-switch-default class="well well-sm" ng-bind-html="valitseKieli(tutkinnonOsa[osio])"></div>
+        <arviointi ng-switch-when="arviointi" arviointi="tutkinnonOsa.arviointi"></arviointi>
+      </div>
+    </div>
   </div>
 </div>

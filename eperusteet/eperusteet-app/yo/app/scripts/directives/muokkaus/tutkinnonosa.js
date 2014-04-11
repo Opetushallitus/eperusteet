@@ -123,6 +123,9 @@ angular.module('eperusteApp')
               tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
             }
           });
+          // Siirry suoraan muokkaustilaan.
+          // TODO: parempi API editointikontrolleihin
+          angular.element('.edit-controls').scope().start();
 
           function openNotificationDialog() {
             return $modal.open({

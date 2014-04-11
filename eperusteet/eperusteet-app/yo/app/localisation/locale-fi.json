@@ -121,6 +121,9 @@
     "suomi": "Suomi",
     "ruotsi": "Svenska",
 
+    "tutkinnon-muodostuminen": "Tutkinnon muodostuminen",
+    "tutkinnonosa-nimi": "Nimi",
+    "tutkinnonosa-laajuus": "Laajuus",
     "tutkintokoodi": "Tutkintokoodi",
     "koulutusalakoodi": "Koulutusalakoodi",
     "tutkinnonosa": "Tutkinnon osa",
@@ -171,6 +174,7 @@
     
     "arviointi-muokkaa-tekstikenttänä": "Muokkaa tekstikenttänä",
     "arviointi-muokkaa-taulukkona": "Muokkaa taulukkona",
+    "arviointi-kohdealueet": "Arvioinnin kohdealueet",
 
     "muokkaus-lisaa-osio": "Lisää osio",
     "muokkaus-tutkinnon-osa-tallennettu": "Tutkinnon osa tallennettu onnistuneesti.",

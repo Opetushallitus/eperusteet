@@ -18,8 +18,8 @@ angular.module('eperusteApp')
     YleinenData, Navigaatiopolku, PerusteenOsat, Perusteet, palvelinhaunIlmoitusKanava) {
 
     $scope.tutkinnonOsa = {};
-    
-    $scope.ammattitaitovaatimusNakyy = true;
+
+    $scope.nakyvilla = {ammattitaitovaatimukset: true};
 
     $scope.revisiotiedot = null;
     $scope.revisio = null;
@@ -39,14 +39,14 @@ angular.module('eperusteApp')
         return $q.reject();
       }
     }());
-    
+
     $q.all([perusteHakuPromise, tutkinnonOsaHakuPromise]).then(function(vastaus) {
       $scope.peruste = vastaus[0];
       Navigaatiopolku.asetaElementit({ peruste: $scope.peruste.nimi });
 
       $scope.tutkinnonOsa = vastaus[1];
       Navigaatiopolku.asetaElementit({ tutkinnonOsaId: $scope.tutkinnonOsa.nimi });
-      
+
       // Data haettu, päivitetään navigaatiopolku
       $rootScope.$broadcast('paivitaNavigaatiopolku');
 
@@ -55,26 +55,33 @@ angular.module('eperusteApp')
       //Virhe tapahtui, esim. perustetta ei löytynyt. Virhesivu.
       $state.go('selaus.ammatillinenperuskoulutus');
     });
-    
+
+    $scope.siirryMuokkaustilaan = function() {
+      $state.go('muokkaus.vanha', {
+        perusteenOsanTyyppi: 'tutkinnonosa',
+        perusteenId: $stateParams.tutkinnonOsaId
+      });
+    };
+
     $scope.haeRevisiot = function() {
       if($scope.revisiotiedot === null) {
         console.log('fetch revisions');
         $scope.revisiotiedot = PerusteenOsat.revisions({osanId: $scope.tutkinnonOsa.id});
       }
     };
-    
+
     $scope.getRevision = function(revisio) {
       PerusteenOsat.getRevision({osanId: $scope.tutkinnonOsa.id, revisionId: revisio.number}).$promise.then(function(response) {
         console.log(response);
         $scope.tutkinnonOsa = response;
-        
+
         if(revisio.number === _.chain($scope.revisiotiedot).sortBy('date').last().value().number) {
           $scope.revisio = null;
         } else {
           console.log('set revision id');
           $scope.revisio = revisio;
         }
-        
+
       }, function(error) {
         console.log(error);
       });
@@ -82,11 +89,6 @@ angular.module('eperusteApp')
 
     $scope.valitseKieli = function(nimi) {
       return YleinenData.valitseKieli(nimi);
-    };
-    
-    $scope.alert = function() {
-      console.log('moro');
-      console.log($scope.tavoitteetNakyy);
     };
 
     var hakuAloitettuKäsittelijä = function() {
