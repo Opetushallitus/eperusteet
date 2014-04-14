@@ -22,7 +22,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('tree', function($compile, $state, $modal) {
+  .directive('tree', function($compile, $state, $modal, $timeout) {
     function validoiRyhma(rakenne, tutkinnonOsat) {
       if (!rakenne) return;
 
@@ -35,8 +35,7 @@ angular.module('eperusteApp')
           var msl = rakenne.muodostumisSaanto.laajuus;
           if (msl.minimi) {
             var summa = _(rakenne.osat)
-              .filter(function(osa) { return osa._tutkinnonOsa; })
-              .map(function(osa) { return tutkinnonOsat[osa._tutkinnonOsa].laajuus; })
+              .map(function(osa) { return osa.$laajuus; })
               .reduce(function(sum, newval) { return sum + newval; });
             if (summa < msl.minimi) {
               rakenne.$virhe = 'muodostumis-rakenne-validointi-1';
@@ -51,9 +50,25 @@ angular.module('eperusteApp')
           }
         }
 
-        if (_.size(rakenne.osat) !== _(rakenne.osat).uniq('_tutkinnonOsa').size()) {
+        var tosat = _(rakenne.osat).filter(function(osa) { return osa._tutkinnonOsa; }).value();
+        if (_.size(tosat) !== _(tosat).uniq('_tutkinnonOsa').size()) {
             rakenne.$virhe = 'muodostumis-rakenne-validointi-3';
         }
+      }
+    }
+
+    function laskeLaajuudet(rakenne, tutkinnonOsat) {
+      if (!rakenne) { return; }
+      if (rakenne._tutkinnonOsa) {
+        rakenne.$laajuus = tutkinnonOsat[rakenne._tutkinnonOsa].laajuus;
+      } else if (rakenne.osat) {
+        rakenne.$laajuus = 0;
+        _.forEach(rakenne.osat, function(osa) {
+          laskeLaajuudet(osa, tutkinnonOsat);
+          rakenne.$laajuus += osa.$laajuus || 0;
+        });
+      } else {
+        console.log('jokin meni pieleen');
       }
     }
 
@@ -156,6 +171,7 @@ angular.module('eperusteApp')
         };
 
         scope.$watch('rakenne', function(uusirakenne) {
+          laskeLaajuudet(scope.rakenne, scope.tutkinnonOsat);
           validoiRyhma(uusirakenne, scope.tutkinnonOsat);
         }, true);
 

@@ -83,7 +83,7 @@ European Union Public Licence for more details.
 
     <!-- Tutkinnon rakenne puuesityksenä -->
     <div>
-      <tree-wrapper ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
+      <tree-wrapper muokkaus="true" ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
     </div>
     <div class="clearfix"></div>
     <button class="btn btn-primary" ng-click="tallennaRakenne(rakenne)">Tallenna</button>
