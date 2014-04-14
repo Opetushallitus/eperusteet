@@ -10,7 +10,7 @@ angular.module('eperusteApp')
       })
       .state('esitys.peruste', {
         url: '/:perusteenId/:suoritustapa',
-        templateUrl: '/views/esitys.html',
+        templateUrl: 'views/esitys.html',
         controller: 'EsitysCtrl',
         naviRest: [':perusteenId']
       });
@@ -29,8 +29,8 @@ angular.module('eperusteApp')
     $scope.suoritustapa = $stateParams.suoritustapa;
     var suosikkiId = null;
     $scope.suodatin = {};
-    
-    
+
+
     var perusteHakuPromise = (function() {
       if ($stateParams.perusteenId) {
         return Perusteet.get({perusteenId: $stateParams.perusteenId}).$promise;
@@ -40,7 +40,7 @@ angular.module('eperusteApp')
     }());
 
     var kayttajaProfiiliPromise = Kayttajaprofiilit.get({}).$promise;
-    
+
     perusteHakuPromise.then(function(peruste) {
       if (peruste.id) {
         $scope.peruste = peruste;
@@ -65,7 +65,7 @@ angular.module('eperusteApp')
       $scope.suosikkiLista = [];
       $scope.suosikkiTyyli = $scope.onSuosikki();
     });
-    
+
     var haeSuoritustapaSisalto = function (id) {
       Suoritustapa.get({perusteenId: id, suoritustapa: $scope.suoritustapa}, function(vastaus) {
         $scope.peruste.rakenne = vastaus;
@@ -103,20 +103,20 @@ angular.module('eperusteApp')
         });
       }
     };
-    
+
     $scope.suodatinValittu = function(suodatinId) {
       var suodatinTmp = _.find($scope.suodatin.otsikot, function(suodatin) {
         return suodatin._id === suodatinId;
       });
       suodatinTmp.valittu = true;
-      
+
       $scope.suodatinId = '';
     };
-    
+
     $scope.poistaSuodatin = function (suodatin) {
       suodatin.valittu = false;
     };
-    
+
     $scope.onkoSuodatettu = function (id) {
       var valitutSuodattimet = _.filter($scope.suodatin.otsikot, 'valittu');
       return valitutSuodattimet.length === 0 || _.isObject(_.find(valitutSuodattimet, function(suodatin) {return suodatin._id === id;}));
@@ -129,11 +129,11 @@ angular.module('eperusteApp')
     $scope.$on('optioPoistettu', function() {
       $scope.$broadcast('optiotMuuttuneet');
     });
-    
+
     $scope.vaihdaSuoritustapa = function(suoritustapa) {
       $state.go('esitys.peruste', {perusteenId: $stateParams.perusteenId, suoritustapa: suoritustapa});
     };
-        
+
 
     var hakuAloitettuKäsittelijä = function() {
       $scope.hakuMenossa = true;
@@ -144,7 +144,7 @@ angular.module('eperusteApp')
     };
     palvelinhaunIlmoitusKanava.kunHakuAloitettu($scope, hakuAloitettuKäsittelijä);
     palvelinhaunIlmoitusKanava.kunHakuLopetettu($scope, hakuLopetettuKäsittelijä);
-    
+
     /****************************************
      *
      * Kovakoodattu rakenne-esitys, plsremovewhenfit!!
