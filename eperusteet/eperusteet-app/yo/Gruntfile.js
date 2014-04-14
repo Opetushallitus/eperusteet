@@ -36,9 +36,13 @@ module.exports = function(grunt) {
   grunt.initConfig({
     yeoman: yeomanConfig,
     watch: {
+      css: {
+        files: ['<%= yeoman.app %>/styles/{,*/}*.scss'],
+        tasks: ['sass'],
+      },
       styles: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
-        tasks: ['copy:styles', 'autoprefixer']
+        tasks: ['copy:styles', 'copy:fonts', 'autoprefixer']
       },
       livereload: {
         options: {
@@ -272,6 +276,11 @@ module.exports = function(grunt) {
           src: [
             'generated/*'
           ]
+        }, {
+          expand: true,
+          cwd: '<%= yeoman.app %>/components/bootstrap-sass/fonts/bootstrap',
+          dest: '<%= yeoman.dist %>/styles/fonts',
+          src: '*.{eot,svg,ttf,woff}'
         }]
       },
       styles: {
@@ -279,6 +288,12 @@ module.exports = function(grunt) {
         cwd: '<%= yeoman.app %>/styles',
         dest: '.tmp/styles/',
         src: '{,*/}*.css'
+      },
+      fonts: {
+        expand: true,
+        cwd: '<%= yeoman.app %>/components/bootstrap-sass/fonts/bootstrap',
+        dest: '.tmp/styles/fonts/',
+        src: '*.{eot,svg,ttf,woff}'
       }
     },
     concurrent: {
@@ -289,6 +304,7 @@ module.exports = function(grunt) {
         'copy:styles'
       ],
       dist: [
+        'sass',
         'copy:styles',
         'imagemin',
         'svgmin',
@@ -324,6 +340,11 @@ module.exports = function(grunt) {
           ]
         }
       }
+    },
+    sass: {
+      files: {
+        '<%= yeoman.app %>/styles/eperusteet.css': '<%= yeoman.app %>/styles/eperusteet.scss'
+      }
     }
   });
 
@@ -335,6 +356,8 @@ module.exports = function(grunt) {
     grunt.task.run([
       'clean:server',
       'concurrent:server',
+      'sass',
+      'copy:fonts',
       'autoprefixer',
       'configureProxies',
       'connect:livereload',

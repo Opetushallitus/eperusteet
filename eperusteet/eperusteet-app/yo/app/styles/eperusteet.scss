@@ -1,0 +1,8 @@
+$icon-font-path: 'fonts/';
+@import "../components/bootstrap-sass/stylesheets/bootstrap/bootstrap";
+@import "vendor/virkailija";
+
+@import "modules/main";
+@import "modules/spinner";
+@import "modules/tree";
+@import "modules/tutkinnonosa";

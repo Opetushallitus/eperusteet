@@ -1,0 +1,31 @@
+#otsikkotiedot table {
+  margin-top: 1.5em;
+  margin-bottom: 2em;
+  th, td {
+    padding-right: 1em;
+  }
+}
+
+.revisio {
+
+}
+
+.tutkinnon-osa-koodi {
+  color: #999;
+}
+
+.osio-otsikko {
+  padding-top: 0.7em;
+  cursor: pointer;
+  font-size: 120%;
+  color: #0C566E;
+}
+
+#tutkinnon-osa-tiedot {
+  .well, .panel, .panel-heading {
+    border-radius: 0;
+  }
+  .well, .panel {
+    margin-left: 20px;
+  }
+}
