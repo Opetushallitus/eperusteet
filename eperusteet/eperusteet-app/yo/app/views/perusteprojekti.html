@@ -14,13 +14,89 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
-<form class="form-horizontal" name="perusteprojektiForm" role="form" novalidate>
-    <tabset>
-        <tab ng-repeat="tab in tabs" heading="{{tab.otsikko | translate}}" active="tab.active" disabled="tab.disabled">
-            <div style="margin-top: 20px;">
-                <ng-include  src="tab.url"></ng-include>
+<div class="container project-header">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>{{ valitseKieli(projekti.peruste.nimi) || "perusteprojekti-perustenimi-placeholder" | translate }}</h2>
+            <p>Koulutusala: {{valitseKieli(koulutusalaNimi(projekti.peruste.koulutukset[0].koulutusalakoodi).nimi) || "perusteprojekti-koulutusala-placeholder" | translate}}</p>
+            <!--p>voimassaoloaika kumoamistiedot siirtymäajat</p-->
+        </div>
+        <div class="col-md-4 tools">
+            <button type="button" class="btn btn-default btn-sm" ui-sref="perusteprojektiTiedot.editoi({ perusteProjektiId: projekti.id })">
+                <span class="glyphicon glyphicon-info-sign"></span> 
+                Projektin tiedot
+            </button>
+            <button type="button" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-user"></span> 
+                Projektiryhmä
+            </button>
+        </div>
+    </div>
+</div>
+<hr class="divider">
+<div ui-view></div>
+
+
+<div class="container">
+    <div class="main-content" id="main">
+        <div class="row">
+            <div class="toggle-view">
+                <button type="button" class="btn btn-default" id="avaa-kaikki"><span class="glyphicon glyphicon-chevron-down"></span>Avaa kaikki</button>
+                <button type="button" class="btn btn-default" id="sulje-kaikki"><span class="glyphicon glyphicon-chevron-up"></span>Sulje kaikki</button>
+                <div class="view-type pull-right">
+                    <!--h5>Näkymävalinta</h5-->
+                    Näkymävalinta
+                    <button type="button" class="btn btn-default btn-sm active set-row"><span class="glyphicon glyphicon-align-justify"></span></button>
+                    <button type="button" class="btn btn-default btn-sm set-column"><span class="glyphicon glyphicon glyphicon-th-large"></span></button>
+                </div>
             </div>
-        </tab>
-    </tabset>
-    <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-default" ng-disabled="perusteprojektiForm.$invalid"  translate>tallenna-perusteprojekti-nappi</button>
-</form>
+        </div>
+        <div style="border-bottom: 1px solid #ADADAD; padding-bottom: 7px;"></div>
+        <div class="row">
+            <div class="tutkinto">
+                <h2 class="section-title">Tutkintokohtaiset osat</h2>
+                <div class="list-element">
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                    <h3>Käsi- ja taideteollisuusalan perustutkinnon tavoitteet</h3>
+                    <a class="next" ui-sref="muokkaus.uusi({ perusteenOsanTyyppi: 'tekstikappale'})">Muokkaa<span class="glyphicon glyphicon-chevron-right"></span></a>
+                </div>
+                <div class="list-element">
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                    <h3>Tutkinnon muodostuminen</h3>
+                    <!--h5 id="tutkinnon-muodostuminen" class="next">Muokkaa<span class="glyphicon glyphicon-chevron-right"></span></h5-->
+                    <a class="next">Muokkaa<span class="glyphicon glyphicon-chevron-right"></span></a>
+                </div>
+                <div class="list-element">
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                    <h3>Liiteosa</h3>
+                    <a class="next">Muokkaa<span class="glyphicon glyphicon-chevron-right"></span></a>
+                </div>
+            </div>
+            <div class="yleiset">
+                <h2 class="section-title">Yleiset osat</h2>
+                <div class="list-element">
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                    <h3>Perustutkinnon perusteiden toimeenpano ammatillisessa peruskoulutuksessa</h3>
+                    <h5 class="next">Näytä<span class="glyphicon glyphicon-chevron-right"></span></h5>
+                </div>      
+                <div class="list-element">
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                    <h3>Perustutkinnon suorittaminen näyttötutkintona</h3>
+                    <h5 class="next">Näytä<span class="glyphicon glyphicon-chevron-right"></span></h5>
+                </div>
+                <div class="list-element">
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                    <h3>Opiskelijan arviointi ammatillisessa peruskoulutuksessa</h3>
+                    <h5 class="next">Näytä<span class="glyphicon glyphicon-chevron-right"></span></h5>
+                </div>
+                <div class="list-element">
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                    <h3>Muut määräykset ammatillisessa peruskoulutuksessa</h3>
+                    <h5 class="next">Näytä<span class="glyphicon glyphicon-chevron-right"></span></h5>
+                </div>
+            </div>
+            <div>
+            </div>
+        </div>
+    </div>
+</div>

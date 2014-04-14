@@ -22,7 +22,7 @@ angular.module('eperusteApp')
     $stateProvider
       .state('muokkaus', {
         url: '/muokkaus',
-        template: '<div ui-view></div>',
+        template: '<div ui-view></div>'
       })
       .state('muokkaus.uusi', {
         url: '/:perusteenOsanTyyppi',

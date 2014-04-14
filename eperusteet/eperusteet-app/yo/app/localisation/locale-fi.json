@@ -225,5 +225,8 @@
     "ePerusteet-koti": "ePerusteet",
     
     "suodattimet": "Suodattimet",
-    "valitse-suodatin": "Valitse suodatin"
+    "valitse-suodatin": "Valitse suodatin",
+    
+    "perusteprojekti-perustenimi-placeholder": "<Anna perusteen nimi>",
+    "perusteprojekti-koulutusala-placeholder": "<Anna koulutusala>"
 }

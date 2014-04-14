@@ -17,6 +17,7 @@ angular.module('eperusteApp')
       };
 
       this.haeKoulutusalaNimi = function(koodi) {
+        console.log('moro', koulutusalaPromise.$resolved);
         return self.koulutusalatMap[koodi];
       };
 

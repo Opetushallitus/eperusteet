@@ -6,35 +6,7 @@ describe('Controller: PerusteprojektiCtrl', function () {
   beforeEach(module('eperusteApp'));
 
   var PerusteprojektiCtrl,
-    scope,
-    koulutusalaService, 
-    opintoalaService;
-    
-  // Mock koulutusalaService
-  beforeEach(module(function($provide) {
-    koulutusalaService = {
-      haeKoulutusalat: function() {
-        return [];
-      },
-      haeKoulutusalaNimi: function(koodi) {
-        return {};
-      }
-    };
-    $provide.value('koulutusalaService', koulutusalaService);
-  }));
-  
-  // Mock koulutusalaService
-  beforeEach(module(function($provide) {
-    opintoalaService = {
-      haeOpintoalat: function() {
-        return [];
-      },
-      haeOpintoalaNimi: function(koodi) {
-        return {};
-      }
-    };
-    $provide.value('opintoalaService', opintoalaService);
-  }));
+    scope;
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope) {

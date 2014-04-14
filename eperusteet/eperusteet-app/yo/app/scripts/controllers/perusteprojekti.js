@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.when('/perusteprojekti', '/perusteprojekti/uusi');
     $urlRouterProvider.when('/perusteprojekti/', '/perusteprojekti/uusi');
     $stateProvider
@@ -16,48 +16,36 @@ angular.module('eperusteApp')
         controller: 'PerusteprojektiCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
         navigaationimiId: 'projektiId',
-        resolve: {'koulutusalaService': 'Koulutusalat',
-                  'opintoalaService': 'Opintoalat'}
+        resolve: {'koulutusalaService': 'Koulutusalat'}
       });
-  })
-  .controller('PerusteprojektiCtrl', function($scope, $rootScope, $state, $stateParams,
-    PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, koulutusalaService, opintoalaService) {
-
-    $scope.Koulutusalat = koulutusalaService;
-    $scope.Opintoalat = opintoalaService;
-    $scope.projekti = {};
-    $scope.projekti.peruste = {};
-    $scope.projekti.peruste.nimi = {};
-    $scope.projekti.peruste.koulutukset = [];
-
-    $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojektiPerustiedot.html'},
-                   {otsikko: 'projekti-projektiryhmä', url: 'views/partials/perusteprojektiProjektiryhma.html'},
-                   {otsikko: 'projekti-peruste', url: 'views/partials/perusteprojektiPeruste.html'}];
-
+    })
+  .controller('PerusteprojektiCtrl', function ($scope, $stateParams, Navigaatiopolku,
+   PerusteprojektiResource, PerusteProjektiService, YleinenData, koulutusalaService) {
+     PerusteProjektiService.watcher($scope, 'projekti');
+     
+     $scope.projekti = {};
+     //$scope.projekti = PerusteProjektiService.get();
+     console.log('projekti', $scope.projekti);
+    
     console.log('$stateparams', $stateParams);
     if ($stateParams.perusteProjektiId !== 'uusi') {
       $scope.projekti.id = $stateParams.perusteProjektiId;
       PerusteprojektiResource.get({ id: $stateParams.perusteProjektiId }, function(vastaus) {
         $scope.projekti = vastaus;
         Navigaatiopolku.asetaElementit({ perusteProjektiId: vastaus.nimi });
+      }, function(virhe) {
+        console.log('virhe', virhe);
       });
     } else {
         Navigaatiopolku.asetaElementit({ perusteProjektiId: 'uusi' });
     }
-
-    $scope.tallennaPerusteprojekti = function() {
-      var projekti = PerusteProjektiService.get();
-      if (projekti.id) {
-        PerusteprojektiResource.update(projekti, function() {
-          PerusteProjektiService.update();
-        });
-      } else {
-        PerusteprojektiResource.save(projekti, function(vastaus) {
-          PerusteProjektiService.update();
-          $state.go('perusteprojekti.editoi', { perusteProjektiId: vastaus.id });
-        }, function(virhe) {
-          console.log('virhe', virhe);
-        });
-      }
+    
+    $scope.valitseKieli = function(nimi) {
+      return YleinenData.valitseKieli(nimi);
     };
+    
+    $scope.koulutusalaNimi = function(koodi) {
+      return koulutusalaService.haeKoulutusalaNimi(koodi);
+    };
+    
   });
