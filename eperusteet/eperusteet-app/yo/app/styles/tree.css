@@ -20,12 +20,11 @@
 
 .skratchpadlist {
   width: 240px;
-  height: 400px;
+  height: 402px;
   background-color: #ffffff;
   float: right;
-  border: 1px solid #999;
+  border: 1px solid #cccccc;
   border-radius: 4px;
-  box-shadow: 3px 3px 6px #555;
 }
 
 .skratchpadlist h3 {
@@ -50,7 +49,7 @@
 .skratchpad-item {
   list-style-type:none;
   margin: 5px;
-  border: 1px solid #999;
+  border: 1px solid #cccccc;
   border-radius: 3px;
   padding: 2px;
   background-color: #eeeeee;
@@ -58,7 +57,7 @@
 }
 
 .skratchpad-item-virhe {
-  border: 1px solid #ab8c91;
+  border: 1px solid #cccccc;
   background-color: #f2dede;
 }
 
@@ -98,14 +97,14 @@
     right:auto
 }
 .tree li::before {
-    border-left:1px solid #999;
+    border-left:1px solid #06526c;
     bottom:50px;
     height:100%;
     top:0;
     width:1px
 }
 .tree li::after {
-    border-top:1px solid #999;
+    border-top:1px solid #06526c;
     height:20px;
     top:25px;
     width:25px
@@ -116,7 +115,7 @@
 }
 
 .tree .virhe {
-  border: 1px solid #ab8c91;
+  border: 1px solid #cccccc;
   border-top: 0px;
   margin: 0px;
   width: 480px;
@@ -125,7 +124,7 @@
 }
 
 .tree .beef {
-  border: 1px solid #999;
+  border: 1px solid #cccccc;
   border-top: 0px;
   margin: 0px;
   width: 480px;
@@ -143,12 +142,32 @@
 .tree .bubble, .tree li .textbox {
   width: 480px;
   min-height: 32px;
-  border: 1px solid #999;
+  border: 1px solid #cccccc;
   /* display:inline-block; */
   background-color: #f9f9f9;
   padding: 7px 8px;
   text-decoration: none;
 }
+
+.bubble-osa {
+  width: 480px;
+  min-height: 32px;
+  border: 1px solid #cccccc;
+  /* display:inline-block; */
+  background-color: #fefefe;
+  padding: 5px 8px;
+  text-decoration: none;
+}
+
+.tree-presentation hr {
+  display: block;
+  height: 0px;
+  border-top: 1px solid #06526c;
+  margin: 0px;
+  margin-bottom: 10px;
+  padding: 0px;
+}
+
 .tree li span.glyphicon {
     border: medium none;
 }
