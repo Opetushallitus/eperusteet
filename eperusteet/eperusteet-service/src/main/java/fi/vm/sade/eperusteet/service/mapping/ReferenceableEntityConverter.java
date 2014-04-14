@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.service.mapping;
 
-import fi.vm.sade.eperusteet.domain.CachedEntity;
+import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.dto.EntityReference;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
  * @author teele1
  */
 @Component
-public class CachedEntityConverter extends BidirectionalConverter<CachedEntity, EntityReference>{
+public class ReferenceableEntityConverter extends BidirectionalConverter<ReferenceableEntity, EntityReference>{
 
     @PersistenceContext
     private EntityManager em;
@@ -41,12 +41,12 @@ public class CachedEntityConverter extends BidirectionalConverter<CachedEntity, 
     }
 
     @Override
-    public EntityReference convertTo(CachedEntity s, Type<EntityReference> type) {
+    public EntityReference convertTo(ReferenceableEntity s, Type<EntityReference> type) {
         return s.getReference();
     }
 
     @Override
-    public CachedEntity convertFrom(EntityReference reference, Type<CachedEntity> type) {
+    public ReferenceableEntity convertFrom(EntityReference reference, Type<ReferenceableEntity> type) {
         return em.getReference(type.getRawType(), Long.valueOf(reference.getId()));
     }
 }

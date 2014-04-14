@@ -36,7 +36,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;

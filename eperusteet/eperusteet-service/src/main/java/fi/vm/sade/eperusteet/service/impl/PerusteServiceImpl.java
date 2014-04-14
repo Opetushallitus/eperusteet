@@ -1,9 +1,32 @@
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+import fi.vm.sade.eperusteet.domain.Koulutus;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.dto.EntityReference;
+import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.PageDto;
+import fi.vm.sade.eperusteet.dto.PerusteDto;
+import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
-
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonRakenneDto;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
+import fi.vm.sade.eperusteet.service.KoulutusalaService;
+import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
@@ -11,8 +34,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
 import java.util.Set;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,21 +45,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-
-import fi.vm.sade.eperusteet.domain.Koulutus;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.PageDto;
-import fi.vm.sade.eperusteet.dto.PerusteDto;
-import fi.vm.sade.eperusteet.dto.PerusteQuery;
-import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
-import fi.vm.sade.eperusteet.service.KoulutusalaService;
-import fi.vm.sade.eperusteet.service.PerusteService;
-import fi.vm.sade.eperusteet.service.mapping.Dto;
-import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 
 /**
  *
@@ -52,10 +61,13 @@ public class PerusteServiceImpl implements PerusteService {
     private static final String KOULUTUSALALUOKITUS = "koulutusalaoph2002";
     private static final String OPINTOALALUOKITUS = "opintoalaoph2002";
 
-    private static final List<String> ERIKOISTAPAUKSET = new ArrayList<>(Arrays.asList(new String[]{"koulutus_357802", "koulutus_327110", "koulutus_354803", "koulutus_324111", "koulutus_354710",
-            "koulutus_324125", "koulutus_357709", "koulutus_327124", "koulutus_355904", "koulutus_324129", "koulutus_358903", "koulutus_327127",
-            "koulutus_355412", "koulutus_324126", "koulutus_355413", "koulutus_324127", "koulutus_358412", "koulutus_327126", "koulutus_354708",
-            "koulutus_324123", "koulutus_357707", "koulutus_327122"}));
+    private static final List<String> ERIKOISTAPAUKSET = new ArrayList<>(Arrays.asList(new String[]{"koulutus_357802",
+        "koulutus_327110", "koulutus_354803", "koulutus_324111", "koulutus_354710",
+        "koulutus_324125", "koulutus_357709", "koulutus_327124", "koulutus_355904", "koulutus_324129", "koulutus_358903",
+        "koulutus_327127",
+        "koulutus_355412", "koulutus_324126", "koulutus_355413", "koulutus_324127", "koulutus_358412", "koulutus_327126",
+        "koulutus_354708",
+        "koulutus_324123", "koulutus_357707", "koulutus_327122"}));
 
     @Autowired
     PerusteRepository perusteet;
@@ -69,6 +81,8 @@ public class PerusteServiceImpl implements PerusteService {
     @Autowired
     @Koodisto
     private DtoMapper koodistoMapper;
+    @PersistenceContext
+    private EntityManager em;
 
     @Override
     public Page<PerusteDto> getAll(PageRequest page, String kieli) {
@@ -119,6 +133,7 @@ public class PerusteServiceImpl implements PerusteService {
 
     /**
      * Lämmittää tyhjään järjestelmään koodistosta löytyvät koulutukset.
+     *
      * @return
      */
     @Override
@@ -136,7 +151,8 @@ public class PerusteServiceImpl implements PerusteService {
             Peruste peruste;
 
             for (KoodistoKoodiDto tutkinto : tutkinnot) {
-                if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus") && (perusteet.findOneByKoodiUri(tutkinto.getKoodiUri()) == null)) {
+                if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus")
+                    && (perusteet.findOneByKoodiUri(tutkinto.getKoodiUri()) == null)) {
                     // Haetaan erikoistapausperusteet, jotka kuvaavat kahden eri koulutusalan tutkinnot
                     peruste = haeErikoistapaus(tutkinto.getKoodiUri(), perusteEntityt, erikoistapausMap);
                     if (peruste == null) {
@@ -159,6 +175,52 @@ public class PerusteServiceImpl implements PerusteService {
         return "Perusteet tallennettu";
     }
 
+    @Override
+    @Transactional
+    public TutkinnonRakenneDto getTutkinnonRakenne(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
+        Peruste peruste = perusteet.findOne(perusteid);
+        Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+        return new TutkinnonRakenneDto(
+            mapper.mapAsList(suoritustapa.getTutkinnonOsat(), TutkinnonOsaViiteDto.class),
+            mapper.map(suoritustapa.getRakenne(), RakenneModuuliDto.class));
+    }
+    
+    @Override
+    @Transactional
+    public TutkinnonRakenneDto updateTutkinnonRakenne(Long perusteid, Suoritustapakoodi suoritustapakoodi, TutkinnonRakenneDto rakenne) {
+        final Peruste peruste = perusteet.findOne(perusteid);
+        if (peruste == null) {
+            throw new IllegalArgumentException("Perustetta ei ole olemassa");
+        }
+        final Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+        if (suoritustapa == null) {
+            throw new IllegalArgumentException("Perusteella " + peruste + " + ei ole suoritustapaa " + suoritustapakoodi);
+        }
+
+        Set<TutkinnonOsaViite> osat = new HashSet<>();
+        for (TutkinnonOsaViite v : mapper.mapAsList(rakenne.getTutkinnonOsat(), TutkinnonOsaViite.class)) {
+            osat.add(v);
+        }
+        
+        suoritustapa.setTutkinnonOsat(osat);
+        for ( TutkinnonOsaViite v : suoritustapa.getTutkinnonOsat() ) {
+            em.persist(v);
+        }
+        
+        final Map<EntityReference, TutkinnonOsaViite> uniqueIndex = Maps.uniqueIndex(suoritustapa.getTutkinnonOsat(), IndexFunction.INSTANCE);
+        rakenne.getRakenne().visit(new VisitorImpl(uniqueIndex));
+        RakenneModuuli moduuli = mapper.map(rakenne.getRakenne(), RakenneModuuli.class);
+
+        em.persist(moduuli);
+
+        if (suoritustapa.getRakenne() != null) {
+            em.remove(suoritustapa.getRakenne());
+        }
+        suoritustapa.setRakenne(moduuli);
+
+        return getTutkinnonRakenne(perusteid, suoritustapakoodi);
+    }
+
     private String parseAlarelaatiokoodi(KoodistoKoodiDto[] koulutusAlarelaatiot, String relaatio) {
         String koulutusAlarelaatiokoodi = null;
         for (KoodistoKoodiDto koulutusAlarelaatio : koulutusAlarelaatiot) {
@@ -170,7 +232,7 @@ public class PerusteServiceImpl implements PerusteService {
         return koulutusAlarelaatiokoodi;
     }
 
-    private Peruste haeErikoistapaus(String koodiUri, List<Peruste> perusteEntityt, Map<String,String> erikoistapausMap) {
+    private Peruste haeErikoistapaus(String koodiUri, List<Peruste> perusteEntityt, Map<String, String> erikoistapausMap) {
         Peruste peruste = null;
         if (ERIKOISTAPAUKSET.contains(koodiUri)) {
             for (Peruste perusteEntity : perusteEntityt) {
@@ -205,7 +267,7 @@ public class PerusteServiceImpl implements PerusteService {
         Map<String, String> erikoistapausMap = new HashMap<>();
 
         for (int i = 0; i < ERIKOISTAPAUKSET.size(); i++) {
-            String vastaarvo = i%2==0 ? ERIKOISTAPAUKSET.get(i+1) : ERIKOISTAPAUKSET.get(i-1);
+            String vastaarvo = i % 2 == 0 ? ERIKOISTAPAUKSET.get(i + 1) : ERIKOISTAPAUKSET.get(i - 1);
             erikoistapausMap.put(ERIKOISTAPAUKSET.get(i), vastaarvo);
         }
         return erikoistapausMap;
@@ -230,6 +292,33 @@ public class PerusteServiceImpl implements PerusteService {
             suoritustavat.add(suoritustapa);
         }
         return suoritustavat;
+    }
+
+    private enum IndexFunction implements Function<TutkinnonOsaViite, EntityReference> {
+
+        INSTANCE;
+
+        @Override
+        public EntityReference apply(TutkinnonOsaViite input) {
+            return input.getTutkinnonOsa().getReference();
+        }
+    }
+
+    private static class VisitorImpl implements AbstractRakenneOsaDto.Visitor {
+
+        private final Map<EntityReference, TutkinnonOsaViite> uniqueIndex;
+
+        public VisitorImpl(Map<EntityReference, TutkinnonOsaViite> uniqueIndex) {
+            this.uniqueIndex = uniqueIndex;
+        }
+
+        @Override
+        public void visit(AbstractRakenneOsaDto dto) {
+            if (dto instanceof RakenneOsaDto) {
+                RakenneOsaDto r = (RakenneOsaDto) dto;
+                r.setTutkinnonOsaViite(uniqueIndex.get(r.getTutkinnonOsa()).getReference());
+            }
+        }
     }
 
 }

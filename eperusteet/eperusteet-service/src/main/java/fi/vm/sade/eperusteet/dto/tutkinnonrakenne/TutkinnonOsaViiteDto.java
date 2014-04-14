@@ -28,6 +28,7 @@ public class TutkinnonOsaViiteDto {
 
     private Integer laajuus;
     private LaajuusYksikko yksikko;
+    private Integer jarjestys;
     private LokalisoituTekstiDto nimi;
 	private EntityReference tutkinnonOsa;
 }

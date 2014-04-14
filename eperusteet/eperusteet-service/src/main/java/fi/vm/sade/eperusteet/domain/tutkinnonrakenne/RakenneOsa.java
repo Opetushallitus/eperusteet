@@ -13,11 +13,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
-import java.util.List;
+package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
+
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
 
 /**
  *
@@ -25,22 +30,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class TutkinnonRakenneDto {
-
-    private List<TutkinnonOsaViiteDto> tutkinnonOsat;
-    private RakenneModuuliDto rakenne;
-
-    public TutkinnonRakenneDto() {
-    }
-
-    /**
-     *
-     * @param tutkinnonOsat
-     * @param rakenne
-     */
-    public TutkinnonRakenneDto(List<TutkinnonOsaViiteDto> tutkinnonOsat, RakenneModuuliDto rakenne) {
-        this.rakenne = rakenne;
-        this.tutkinnonOsat = tutkinnonOsat;
-    }
-
+@Entity
+@DiscriminatorValue("RO")
+@Audited
+public class RakenneOsa extends AbstractRakenneOsa {
+    private boolean pakollinen;
+    @JoinColumn(name = "rakenneosa_tutkinnonosaviite")
+    @ManyToOne
+    private TutkinnonOsaViite tutkinnonOsaViite;
 }

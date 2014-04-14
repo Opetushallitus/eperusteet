@@ -16,7 +16,12 @@
 
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -25,6 +30,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -56,5 +62,25 @@ public class Suoritustapa implements Serializable {
     @Setter
     @JoinColumn(name = "sisalto_perusteenosaviite_id")
     private PerusteenOsaViite sisalto;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @Getter
+    @Setter
+    @JoinColumn(name = "tutkinnon_rakenne_id")
+    private RakenneModuuli rakenne;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "suoritustapa")
+    @Getter
+    private Set<TutkinnonOsaViite> tutkinnonOsat = new HashSet<>();
+
+    public void setTutkinnonOsat(Set<TutkinnonOsaViite> osat) {
+
+        for ( TutkinnonOsaViite  v  : osat ) {
+            v.setSuoritustapa(this);
+        }
+        
+        tutkinnonOsat.retainAll(osat);
+        tutkinnonOsat.addAll(osat);
+    }
 
 }

@@ -39,7 +39,7 @@ import org.hibernate.annotations.Immutable;
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Immutable
 @Table(name = "arviointiasteikko")
-public class ArviointiAsteikko implements Serializable, CachedEntity {
+public class ArviointiAsteikko implements Serializable, ReferenceableEntity {
     private static final long serialVersionUID = 1L;
     
     @Id

@@ -15,10 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.dto.PerusteDto;
-import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonRakenneDto;
 
 /**
  *
@@ -43,5 +41,10 @@ public interface PerusteService {
 
     PerusteenosaViiteDto getSuoritustapaSisalto(final Long perusteId, final Suoritustapakoodi suoritustapakoodi);
 
-    public String lammitys();
+    String lammitys();
+
+    TutkinnonRakenneDto getTutkinnonRakenne(final Long perusteId, final Suoritustapakoodi suoritustapa);
+
+    TutkinnonRakenneDto updateTutkinnonRakenne(final Long perusteId, final Suoritustapakoodi suoritustapa, final TutkinnonRakenneDto rakenne);
+
 }

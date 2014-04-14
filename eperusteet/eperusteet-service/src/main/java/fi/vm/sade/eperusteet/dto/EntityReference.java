@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.dto;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.util.Objects;
 
 /**
  *
@@ -37,4 +38,26 @@ public class EntityReference {
     public String getId() {
         return id;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 41 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof EntityReference) {
+            final EntityReference other = (EntityReference) obj;
+            if (Objects.equals(this.id, other.id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

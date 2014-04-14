@@ -11,8 +11,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonRakenneDto;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public final class RakenneUtil {
 
@@ -20,16 +19,16 @@ public final class RakenneUtil {
         TutkinnonRakenneDto rakenne = new TutkinnonRakenneDto();
 		RakenneModuuliDto parent = new RakenneModuuliDto();
         rakenne.setRakenne(parent);
-        Set<TutkinnonOsaViiteDto> osat = new HashSet<>();
+        List<TutkinnonOsaViiteDto> osat = new ArrayList<>();
         rakenne.setTutkinnonOsat(osat);
 
-		parent.setOtsikko(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Joku perustutkinto")));
+		parent.setNimi(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Joku perustutkinto")));
 		parent.setKuvaus(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Opiskellaan jotain jotain perustutkintoa varten.")));
 		parent.setMuodostumisSaanto(new MuodostumisSaantoDto(new MuodostumisSaantoDto.Laajuus(120, 120, LaajuusYksikko.OPINTOVIIKKO)));
 		parent.setOsat(new ArrayList<AbstractRakenneOsaDto>());
 
 		RakenneModuuliDto firstChild = new RakenneModuuliDto();
-		firstChild.setOtsikko(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Jotkut tutkinnon osat")));
+		firstChild.setNimi(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Jotkut tutkinnon osat")));
 		firstChild.setMuodostumisSaanto(new MuodostumisSaantoDto(new MuodostumisSaantoDto.Laajuus(120, 120, LaajuusYksikko.OPINTOVIIKKO)));
 		firstChild.setOsat(new ArrayList<AbstractRakenneOsaDto>());
 		parent.getOsat().add(firstChild);

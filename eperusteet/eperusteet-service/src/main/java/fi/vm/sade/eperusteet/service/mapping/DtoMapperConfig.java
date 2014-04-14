@@ -15,19 +15,23 @@
  */
 package fi.vm.sade.eperusteet.service.mapping;
 
-import ma.glasnost.orika.impl.DefaultMapperFactory;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  *
@@ -40,7 +44,7 @@ public class DtoMapperConfig {
     @Dto
     public DtoMapper dtoMapper(
             TekstiPalanenConverter tekstiPalanenConverter,
-            CachedEntityConverter cachedEntityConverter,
+            ReferenceableEntityConverter cachedEntityConverter,
             KoodistokoodiConverter koodistokoodiConverter) {
         DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
                 .build();
@@ -64,7 +68,27 @@ public class DtoMapperConfig {
                 .byDefault()
                 .register();
 
+        factory.classMap(AbstractRakenneOsaDto.class, AbstractRakenneOsa.class)
+                .byDefault()
+                .register();
+        factory.classMap(RakenneModuuliDto.class, RakenneModuuli.class)
+                .use(AbstractRakenneOsaDto.class, AbstractRakenneOsa.class)
+                .byDefault()
+                .register();
+        factory.classMap(RakenneOsaDto.class, RakenneOsa.class)
+                .use(AbstractRakenneOsaDto.class, AbstractRakenneOsa.class)
+                .fieldBToA("tutkinnonOsaViite.tutkinnonOsa", "tutkinnonOsa")
+                .fieldAToB("tutkinnonOsaViite", "tutkinnonOsaViite")
+                .byDefault()
+                .register();
+
         return new DtoMapperImpl(factory.getMapperFacade());
     }
+
+//    @Bean
+//    @Scope(proxyMode = ScopedProxyMode.INTERFACES, value = "request")
+//    public EntityReferenceResolver resolver() {
+//        return new TutkinnonOsaViiteResolverImpl();
+//    }
 
 }

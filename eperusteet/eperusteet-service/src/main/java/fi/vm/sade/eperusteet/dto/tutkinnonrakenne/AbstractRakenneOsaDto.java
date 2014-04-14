@@ -23,4 +23,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class AbstractRakenneOsaDto {
+
+    public abstract void visit(Visitor visitor);
+
+    public interface Visitor {
+        void visit(AbstractRakenneOsaDto dto);
+    }
 }

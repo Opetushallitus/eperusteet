@@ -57,9 +57,10 @@ public class PerusteController {
     //XXX
     private static TutkinnonRakenneDto rakenne_ = RakenneUtil.getStaticRakenneDto();
 
-    @RequestMapping(value = "/{id}/rakenne", method = GET)
+    @RequestMapping(value = "/{id}/suoritustapa/{suoritustapakoodi}/rakenne", method = GET)
     @ResponseBody
-    public ResponseEntity<TutkinnonRakenneDto> getRakenne(@PathVariable("id") final Long id) {
+    public ResponseEntity<TutkinnonRakenneDto> getRakenne(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        
         return new ResponseEntity<>(rakenne_, ResponseHeaders.cacheHeaders(1, TimeUnit.SECONDS), HttpStatus.OK);
     }
 
@@ -68,6 +69,7 @@ public class PerusteController {
     public synchronized ResponseEntity<TutkinnonRakenneDto> addPerusteenRakenne(@PathVariable("id") final Long id, @RequestBody TutkinnonRakenneDto rakenne) {
     	LOG.debug("perusteen rakenne: {}", rakenne);
         rakenne_ = rakenne;
+        service.updateTutkinnonRakenne(id, Suoritustapakoodi.OPS, rakenne);
     	return new ResponseEntity<>(rakenne, HttpStatus.CREATED);
     }
 

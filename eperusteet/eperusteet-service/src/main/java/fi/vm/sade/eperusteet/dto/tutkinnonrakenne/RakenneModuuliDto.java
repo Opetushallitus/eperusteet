@@ -27,8 +27,18 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RakenneModuuliDto extends AbstractRakenneOsaDto {
-	private LokalisoituTekstiDto otsikko;
+	private LokalisoituTekstiDto nimi;
 	private LokalisoituTekstiDto kuvaus;
     private MuodostumisSaantoDto muodostumisSaanto;
 	private List<AbstractRakenneOsaDto> osat;
+
+    @Override
+    public void visit(Visitor visitor) {
+        visitor.visit(this);
+        for ( AbstractRakenneOsaDto dto : osat ) {
+            visitor.visit(dto);
+        }
+    }
+
+
 }

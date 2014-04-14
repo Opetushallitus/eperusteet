@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fi.vm.sade.eperusteet.dto.EntityReference;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,4 +30,11 @@ import lombok.Setter;
 public class RakenneOsaDto extends AbstractRakenneOsaDto {
     private boolean pakollinen;
     private EntityReference tutkinnonOsa;
+    @JsonIgnore
+    private EntityReference tutkinnonOsaViite;
+
+    @Override
+    public void visit(Visitor visitor) {
+        visitor.visit(this);
+    }
 }

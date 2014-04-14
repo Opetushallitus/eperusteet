@@ -15,10 +15,11 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,12 +30,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -87,11 +86,21 @@ public class Peruste implements Serializable {
     private Date siirtyma;
     
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @MapKey(name = "suoritustapakoodi")
     @JoinTable(name = "peruste_suoritustapa",
             joinColumns = @JoinColumn(name = "peruste_id"),
             inverseJoinColumns = @JoinColumn(name = "suoritustapa_id"))
     @Getter
     @Setter
     private Set<Suoritustapa> suoritustavat;
+
+    public Suoritustapa getSuoritustapa(Suoritustapakoodi koodi) {
+        for ( Suoritustapa s : suoritustavat ) {
+            if ( s.getSuoritustapakoodi() == koodi) {
+                return s;
+            }
+        }
+        throw new IllegalArgumentException("Perusteella ei ole pyydettyä suoritustapaa");
+    }
 
 }
