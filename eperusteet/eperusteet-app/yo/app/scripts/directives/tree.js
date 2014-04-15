@@ -197,6 +197,9 @@ angular.module('eperusteApp')
           '  <span ng-if="!rakenne._tutkinnonOsa && muokkaus" class="pull-right">' +
           '    <a href="" ng-click="ryhmaModaali(rakenne, vanhempi)">Muokkaa ryhmää <span class="glyphicon glyphicon-chevron-right"></span></a>' +
           '  </span>' +
+          '  <span ng-if="rakenne._tutkinnonOsa && muokkaus" class="pull-right">' +
+          '    <a href="" ng-click="poista(rakenne, vanhempi)"><span class="glyphicon glyphicon-remove"></span></a>' +
+          '  </span>' +
           '</div>';
         optiot += generoiOptiot(scope.rakenne, scope.tutkinnonOsat);
         var kentta = '<div ng-if="rakenne._tutkinnonOsa" class="bubble-osa">' + optiot + '</div>';
