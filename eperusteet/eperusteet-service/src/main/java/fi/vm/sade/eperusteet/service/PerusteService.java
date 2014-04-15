@@ -23,7 +23,9 @@ import org.springframework.data.domain.PageRequest;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonRakenneDto;
+import java.util.List;
 
 /**
  *
@@ -41,10 +43,11 @@ public interface PerusteService {
 
     PerusteenosaViiteDto getSuoritustapaSisalto(final Long perusteId, final Suoritustapakoodi suoritustapakoodi);
 
-    String lammitys();
-
     TutkinnonRakenneDto getTutkinnonRakenne(final Long perusteId, final Suoritustapakoodi suoritustapa);
 
     TutkinnonRakenneDto updateTutkinnonRakenne(final Long perusteId, final Suoritustapakoodi suoritustapa, final TutkinnonRakenneDto rakenne);
 
+    List<TutkinnonOsaViiteDto> getTutkinnonOsat(Long perusteid, Suoritustapakoodi suoritustapakoodi);
+
+    String lammitys();
 }

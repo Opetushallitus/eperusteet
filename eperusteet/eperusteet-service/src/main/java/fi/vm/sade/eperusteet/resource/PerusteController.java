@@ -1,9 +1,15 @@
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.PerusteDto;
+import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonRakenneDto;
+import fi.vm.sade.eperusteet.service.PerusteService;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,24 +21,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import static org.springframework.web.bind.annotation.RequestMethod.*;
-
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.dto.PerusteDto;
-import fi.vm.sade.eperusteet.dto.PerusteQuery;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonRakenneDto;
-import fi.vm.sade.eperusteet.resource.util.RakenneUtil;
-import fi.vm.sade.eperusteet.service.PerusteService;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
+
 
 @Controller
 @RequestMapping("/api/perusteet")
 public class PerusteController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PerusteController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PerusteController.class);
 
     @Autowired
     private PerusteService service;
@@ -54,23 +53,23 @@ public class PerusteController {
         return new ResponseEntity<>(t, ResponseHeaders.cacheHeaders(1, TimeUnit.SECONDS), HttpStatus.OK);
     }
 
-    //XXX
-    private static TutkinnonRakenneDto rakenne_ = RakenneUtil.getStaticRakenneDto();
-
-    @RequestMapping(value = "/{id}/suoritustapa/{suoritustapakoodi}/rakenne", method = GET)
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne", method = GET)
     @ResponseBody
     public ResponseEntity<TutkinnonRakenneDto> getRakenne(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
-        
-        return new ResponseEntity<>(rakenne_, ResponseHeaders.cacheHeaders(1, TimeUnit.SECONDS), HttpStatus.OK);
+        return new ResponseEntity<>(service.getTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi)), ResponseHeaders.cacheHeaders(1, TimeUnit.SECONDS), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}/rakenne", method = POST)
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/tutkinnonosat", method = GET)
     @ResponseBody
-    public synchronized ResponseEntity<TutkinnonRakenneDto> addPerusteenRakenne(@PathVariable("id") final Long id, @RequestBody TutkinnonRakenneDto rakenne) {
-    	LOG.debug("perusteen rakenne: {}", rakenne);
-        rakenne_ = rakenne;
-        service.updateTutkinnonRakenne(id, Suoritustapakoodi.OPS, rakenne);
-    	return new ResponseEntity<>(rakenne, HttpStatus.CREATED);
+    public ResponseEntity<List<TutkinnonOsaViiteDto>> getTutkinnonOsat(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        return new ResponseEntity<>(service.getTutkinnonOsat(id, Suoritustapakoodi.of(suoritustapakoodi)), ResponseHeaders.cacheHeaders(1, TimeUnit.SECONDS), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne", method = POST)
+    @ResponseBody
+    public ResponseEntity<TutkinnonRakenneDto> updatePerusteenRakenne(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi, @RequestBody TutkinnonRakenneDto rakenne) {
+        service.updateTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), rakenne);
+        return new ResponseEntity<>(rakenne, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{perusteId}/osat/{id}/lapset", method = POST)
@@ -83,11 +82,11 @@ public class PerusteController {
         return new ResponseEntity<>(service.addViite(viiteId, ennen, viite), HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/{perusteId}/suoritustapa/{suoritustapakoodi}", method = GET)
+    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)
     @ResponseBody
-    public ResponseEntity<PerusteenosaViiteDto> getSuoritustapaSisalto (
-            @PathVariable("perusteId") final Long perusteId,
-            @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+    public ResponseEntity<PerusteenosaViiteDto> getSuoritustapaSisalto(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
 
         PerusteenosaViiteDto dto = service.getSuoritustapaSisalto(perusteId, Suoritustapakoodi.of(suoritustapakoodi));
         if (dto == null) {

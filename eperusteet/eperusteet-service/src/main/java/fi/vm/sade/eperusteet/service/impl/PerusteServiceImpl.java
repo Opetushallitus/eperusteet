@@ -176,15 +176,24 @@ public class PerusteServiceImpl implements PerusteService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public TutkinnonRakenneDto getTutkinnonRakenne(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
         Peruste peruste = perusteet.findOne(perusteid);
+        LOG.debug(suoritustapakoodi.toString());
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         return new TutkinnonRakenneDto(
             mapper.mapAsList(suoritustapa.getTutkinnonOsat(), TutkinnonOsaViiteDto.class),
             mapper.map(suoritustapa.getRakenne(), RakenneModuuliDto.class));
     }
-    
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TutkinnonOsaViiteDto> getTutkinnonOsat(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
+        Peruste peruste = perusteet.findOne(perusteid);
+        Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+        return mapper.mapAsList(suoritustapa.getTutkinnonOsat(), TutkinnonOsaViiteDto.class);
+    }
+
     @Override
     @Transactional
     public TutkinnonRakenneDto updateTutkinnonRakenne(Long perusteid, Suoritustapakoodi suoritustapakoodi, TutkinnonRakenneDto rakenne) {
@@ -201,12 +210,12 @@ public class PerusteServiceImpl implements PerusteService {
         for (TutkinnonOsaViite v : mapper.mapAsList(rakenne.getTutkinnonOsat(), TutkinnonOsaViite.class)) {
             osat.add(v);
         }
-        
+
         suoritustapa.setTutkinnonOsat(osat);
-        for ( TutkinnonOsaViite v : suoritustapa.getTutkinnonOsat() ) {
+        for (TutkinnonOsaViite v : suoritustapa.getTutkinnonOsat()) {
             em.persist(v);
         }
-        
+
         final Map<EntityReference, TutkinnonOsaViite> uniqueIndex = Maps.uniqueIndex(suoritustapa.getTutkinnonOsat(), IndexFunction.INSTANCE);
         rakenne.getRakenne().visit(new VisitorImpl(uniqueIndex));
         RakenneModuuli moduuli = mapper.map(rakenne.getRakenne(), RakenneModuuli.class);
