@@ -35,7 +35,11 @@
         </tab>
         <tab heading="Osat">
           <div class="skratchpad-items">
-            <div class="skratchpad-item" ng-repeat="(key, value) in rakenne.tutkinnonOsat">{{ value.nimi.fi }}</div>
+            <div ui-sortable="sortableOptionsUnique" ng-model="uniikit">
+              <div class="skratchpad-item" ng-repeat="osa in uniikit">
+                {{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna }}
+              </div>
+            </div>
           </div>
         </tab>
       </tabset>

@@ -4,9 +4,10 @@
 
 .group-placeholder {
   background: #555;
-  padding: 4px;
+  padding: 0px;
   border-radius: 3px;
   margin: 12px;
+  min-height:32px;
   list-style-type: none;
 }
 

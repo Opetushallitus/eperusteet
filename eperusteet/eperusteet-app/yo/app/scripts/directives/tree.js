@@ -180,7 +180,7 @@ angular.module('eperusteApp')
           connectWith: '.tree-group',
           disabled: !scope.muokkaus,
           delay: 100,
-          tolerance: 'pointer',
+          // tolerance: 'pointer',
           cursorAt: { top : 2, left: 2 },
           cursor: 'move',
         };
@@ -218,7 +218,7 @@ angular.module('eperusteApp')
             '<div ng-show="!rakenne.$collapsed">';
 
           template +=
-            '<ul ng-if="true" ui-sortable="sortableOptions" class="tree-group" ng-model="rakenne.osat">' +
+            '<ul ui-sortable="sortableOptions" id="tree-sortable" class="tree-group" ng-model="rakenne.osat">' +
             '  <li ng-repeat="osa in rakenne.osat">' +
             '    <tree muokkaus="muokkaus" rakenne="osa" vanhempi="rakenne" tutkinnon-osat="tutkinnonOsat" uusi-tutkinnon-osa="uusiTutkinnonOsa" ng-init="notfirst = true"></tree>' +
             '  </li>' +
@@ -259,16 +259,36 @@ angular.module('eperusteApp')
         scope.lisataanUuttaOsaa = false;
         scope.uusiOsa = null;
         scope.skratchpad = [];
+        scope.uniikit = [];
         scope.topredicate = 'nimi.fi';
+
+        function paivitaUniikit() {
+          scope.uniikit = [];
+          scope.uniikit = _.map(scope.rakenne.tutkinnonOsat, function(osa) {
+            return _.pick(osa, '_tutkinnonOsa', 'pakollinen');
+          });
+        }
+        paivitaUniikit();
 
         scope.sortableOptions = {
           placeholder: 'group-placeholder',
           connectWith: '.tree-group',
           disabled: !scope.muokkaus,
           delay: 100,
-          tolerance: 'pointer',
+          // tolerance: 'pointer',
           cursorAt: { top : 2, left: 2 },
           cursor: 'move',
+        };
+
+        scope.sortableOptionsUnique = {
+          placeholder: 'group-placeholder',
+          connectWith: '#tree-sortable',
+          disabled: !scope.muokkaus,
+          delay: 100,
+          // tolerance: 'pointer',
+          cursorAt: { top : 2, left: 2 },
+          cursor: 'move',
+          stop: function() { paivitaUniikit(); }
         };
 
         scope.ryhmaModaali = function(ryhma) {
@@ -277,11 +297,8 @@ angular.module('eperusteApp')
             controller: 'MuodostumisryhmaModalCtrl',
             resolve: { ryhma: function() { return ryhma; } }
           }).result.then(function(uusiryhma) {
-            if (ryhma === undefined) {
-              scope.skratchpad.push(uusiryhma);
-            } else {
-              ryhma = uusiryhma;
-            }
+            if (ryhma === undefined) { scope.skratchpad.push(uusiryhma); }
+            else { ryhma = uusiryhma; }
           });
         };
 
@@ -300,6 +317,7 @@ angular.module('eperusteApp')
             kuvaus: { fi: '' },
             _tutkinnonOsa: osa.id
           });
+          paivitaUniikit();
         });
 
         Editointikontrollit.registerAdditionalSaveCallback(function() {
