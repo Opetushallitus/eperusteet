@@ -23,19 +23,26 @@ angular.module('eperusteApp')
     $scope.peruste = {};
     $scope.syvyys = 2;
     $scope.suosikkiLista = {};
-
     $scope.rakenne = {};
-    if (TreeCache.nykyinen() !== $stateParams.perusteenId) {
+
+    function haeRakenne() {
       PerusteRakenteet.get({ perusteenId: $stateParams.perusteenId }, function(re) {
         $scope.rakenne = re;
         $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck($scope.rakenne.tutkinnonOsat, '_tutkinnonOsa'), $scope.rakenne.tutkinnonOsat);
       });
-    } else {
-      TreeCache.hae();
     }
+
+    $scope.peruMuutokset = haeRakenne;
+
+    if (TreeCache.nykyinen() !== $stateParams.perusteenId) { haeRakenne(); }
+    else { TreeCache.hae(); }
 
     $scope.tallennaRakenne = function(rakenne) {
       TreeCache.tallenna(rakenne, $stateParams.perusteenId);
+      rakenne.tutkinnonOsat = _.values(rakenne.tutkinnonOsat);
+      PerusteRakenteet.save({ perusteenId: $stateParams.perusteenId }, rakenne, function(re) {
+        console.log(re);
+      });
     };
 
     var eiSuosikkiTyyli = 'glyphicon glyphicon-star-empty pointer';

@@ -352,7 +352,6 @@ angular.module('eperusteApp')
       else if ($scope.ms.laajus) { uusiryhma = _.omit(uusiryhma, 'muodostumisSaanto.laajuus'); }
       else if ($scope.ms.koko) { uusiryhma = _.omit(uusiryhma, 'muodostumisSaanto.koko'); }
 
-      console.log(uusiryhma);
       $modalInstance.close(uusiryhma);
     };
     $scope.peruuta = function() { $modalInstance.dismiss(); };
