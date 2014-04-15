@@ -67,9 +67,8 @@ public class PerusteController {
 
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne", method = POST)
     @ResponseBody
-    public ResponseEntity<TutkinnonRakenneDto> updatePerusteenRakenne(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi, @RequestBody TutkinnonRakenneDto rakenne) {
-        service.updateTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), rakenne);
-        return new ResponseEntity<>(rakenne, HttpStatus.CREATED);
+    public TutkinnonRakenneDto updatePerusteenRakenne(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi, @RequestBody TutkinnonRakenneDto rakenne) {
+        return service.updateTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), rakenne);
     }
 
     @RequestMapping(value = "/{perusteId}/osat/{id}/lapset", method = POST)

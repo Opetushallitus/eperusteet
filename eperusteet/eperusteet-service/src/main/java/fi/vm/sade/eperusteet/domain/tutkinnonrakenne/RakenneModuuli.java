@@ -35,12 +35,12 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 @Audited
 public class RakenneModuuli extends AbstractRakenneOsa {
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter
     @Setter
     @Audited(targetAuditMode = NOT_AUDITED)
     private TekstiPalanen nimi;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter
     @Setter
     @Audited(targetAuditMode = NOT_AUDITED)

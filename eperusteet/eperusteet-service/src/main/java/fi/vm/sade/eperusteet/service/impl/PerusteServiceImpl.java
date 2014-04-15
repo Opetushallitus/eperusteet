@@ -231,7 +231,6 @@ public class PerusteServiceImpl implements PerusteService {
             em.remove(suoritustapa.getRakenne());
         }
         suoritustapa.setRakenne(moduuli);
-
         return getTutkinnonRakenne(perusteid, suoritustapakoodi);
     }
 
