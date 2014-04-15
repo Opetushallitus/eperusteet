@@ -1,0 +1,84 @@
+/*
+Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+
+This program is free software: Licensed under the EUPL, Version 1.1 or - as
+soon as they will be approved by the European Commission - subsequent versions
+of the EUPL (the "Licence");
+
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+European Union Public Licence for more details.
+*/
+/* Perusteprojektin tyylit*/
+.project-header {
+	position: relative;
+}
+
+.project-header h5 {
+	display: inline;
+}
+.project-header .tools {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+}
+
+
+.main-content .row {
+	padding-left: 40px;
+	padding-right: 40px;
+}
+.main-content .list-element {
+	position: relative;
+	border: 1px solid #ddd;
+	border-radius: 2px;
+	padding: 20px 20px 20px 45px;
+	margin-top: 20px;
+}
+.main-content .list-element:hover,
+.main-content .li:hover {
+	background-color: #F2F2F2;
+}
+.main-content .list-element h3 {
+	display: inline;
+	margin-left: 20px;
+	margin-top: 5px;
+}
+.main-content  h4,
+.main-content p {
+
+}
+.main-content .list-element a.next,
+.main-content a.next {
+	cursor: pointer;
+	position: absolute;
+	top: 50%;
+	margin-top: -9px;
+	right: 10px;
+}
+.main-content .list-element a.next span,
+.main-content a.next span {
+	margin-left: 4px;
+}
+.main-content ul.sub-items {
+	margin-left: 140px;
+	background-color: #fff;
+}
+.main-content ul.sub-items li {
+	position: relative;
+	padding: 10px inherit 10px 20px;
+	border: 1px solid #ddd;
+	border-top: none;
+}
+.main-content .list-element span.glyphicon.next,
+.main-content ul.sub-items li span.glyphicon.next {
+	position: relative;
+	right: 10px;
+}
+
+/*#############################################################################*/
+

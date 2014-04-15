@@ -14,13 +14,24 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
-<form class="form-horizontal" name="perusteprojektiForm" role="form" novalidate>
-    <tabset>
-        <tab ng-repeat="tab in tabs" heading="{{tab.otsikko | translate}}" active="tab.active" disabled="tab.disabled">
-            <div style="margin-top: 20px;">
-                <ng-include  src="tab.url"></ng-include>
-            </div>
-        </tab>
-    </tabset>
-    <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-default" ng-disabled="perusteprojektiForm.$invalid"  translate>tallenna-perusteprojekti-nappi</button>
-</form>
+<div class="container project-header">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>{{ valitseKieli(projekti.peruste.nimi) || "perusteprojekti-perustenimi-placeholder" | translate }}</h2>
+            <p>Koulutusala: {{valitseKieli(koulutusalaNimi(projekti.peruste.koulutukset[0].koulutusalakoodi).nimi) || "perusteprojekti-koulutusala-placeholder" | translate}}</p>
+            <!--p>voimassaoloaika kumoamistiedot siirtymäajat</p-->
+        </div>
+        <div class="col-md-4 tools">
+            <button type="button" class="btn btn-default btn-sm" ui-sref="perusteprojekti.tiedot({ perusteProjektiId: projekti.id })">
+                <span class="glyphicon glyphicon-info-sign"></span> 
+                Projektin tiedot
+            </button>
+            <button type="button" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-user"></span> 
+                Projektiryhmä
+            </button>
+        </div>
+    </div>
+</div>
+<hr class="divider">
+<div ui-view></div>

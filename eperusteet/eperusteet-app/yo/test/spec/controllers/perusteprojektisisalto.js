@@ -1,17 +1,17 @@
 'use strict';
 
-describe('Controller: PerusteprojektiCtrl', function () {
+describe('Controller: PerusteprojektisisaltoCtrl', function () {
 
   // load the controller's module
   beforeEach(module('eperusteApp'));
 
-  var PerusteprojektiCtrl,
+  var PerusteprojektisisaltoCtrl,
     scope;
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
-    PerusteprojektiCtrl = $controller('PerusteprojektiCtrl', {
+    PerusteprojektisisaltoCtrl = $controller('PerusteprojektisisaltoCtrl', {
       $scope: scope
     });
   }));

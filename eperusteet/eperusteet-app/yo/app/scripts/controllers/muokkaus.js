@@ -13,41 +13,33 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 * European Union Public Licence for more details.
 */
-
 'use strict';
 /*global _*/
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
-      .state('muokkaus', {
-        url: '/muokkaus',
-        template: '<div ui-view></div>',
-      })
-      .state('muokkaus.uusi', {
-        url: '/:perusteenOsanTyyppi',
+      .state('perusteprojekti.editoi.perusteenosa', {
+        url: '/perusteenosa/:perusteenOsanTyyppi/:perusteenOsaId',
         templateUrl: 'views/muokkaus.html',
         controller: 'MuokkausCtrl',
-        naviBase: ['muokkaus', ':perusteenOsanTyyppi']
-      })
-      .state('muokkaus.vanha', {
-        url: '/:perusteenOsanTyyppi/:perusteenId',
-        templateUrl: 'views/muokkaus.html',
-        naviBase: ['muokkaus', ':perusteenOsanTyyppi', ':perusteenId'],
-        controller: 'MuokkausCtrl'
+        naviRest: [':perusteenOsanTyyppi']
+        /*naviBase: ['muokkaus', ':perusteenOsanTyyppi']*/
       });
   })
   .controller('MuokkausCtrl', function($scope, $stateParams, PerusteenOsat, $state, $compile, Navigaatiopolku) {
     $scope.tyyppi = $stateParams.perusteenOsanTyyppi;
     $scope.objekti = null;
 
-    if ($stateParams.perusteenId) {
-      $scope.objekti = PerusteenOsat.get({ osanId: $stateParams.perusteenId }, function(re) {
-        Navigaatiopolku.asetaElementit({ perusteenId: re.nimi });
+    if ($stateParams.perusteenOsaId !== 'uusi') {
+      $scope.objekti = PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, function(re) {
+        Navigaatiopolku.asetaElementit({ perusteenOsaId: re.nimi });
       }, function() {
         console.log('unable to find perusteen osa #' + $stateParams.perusteenId);
         $state.go('aloitussivu');
       });
+    } else {
+      Navigaatiopolku.asetaElementit({ perusteenOsaId: 'uusi' });
     }
 
     var muokkausDirective = null;

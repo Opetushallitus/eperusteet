@@ -1,63 +1,68 @@
+/*
+* Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+*
+* This program is free software: Licensed under the EUPL, Version 1.1 or - as
+* soon as they will be approved by the European Commission - subsequent versions
+* of the EUPL (the "Licence");
+*
+* You may not use this work except in compliance with the Licence.
+* You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* European Union Public Licence for more details.
+*/
 'use strict';
 
 angular.module('eperusteApp')
-  .config(function($stateProvider, $urlRouterProvider) {
-    $urlRouterProvider.when('/perusteprojekti', '/perusteprojekti/uusi');
-    $urlRouterProvider.when('/perusteprojekti/', '/perusteprojekti/uusi');
+.config(function($stateProvider, $urlRouterProvider) {
+    $urlRouterProvider.when('/perusteprojekti', '/perusteprojekti/uusi/sisalto');
+    $urlRouterProvider.when('/perusteprojekti/', '/perusteprojekti/uusi/sisalto');
     $stateProvider
       .state('perusteprojekti', {
-        url: '/perusteprojekti',
+        url: '/perusteprojekti/:perusteProjektiId',
         navigaationimi: 'navi-perusteprojekti',
-        template: '<div ui-view></div>'
+        template: '<div ui-view></div>',
+        resolve: {'koulutusalaService': 'Koulutusalat'},
+        abstract: true
       })
       .state('perusteprojekti.editoi', {
-        url: '/:perusteProjektiId',
+        url: '/muokkaa',
         templateUrl: 'views/perusteprojekti.html',
         controller: 'PerusteprojektiCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
-        navigaationimiId: 'projektiId',
-        resolve: {'koulutusalaService': 'Koulutusalat',
-                  'opintoalaService': 'Opintoalat'}
+        navigaationimiId: 'perusteProjektiId',
+        abstract: true
       });
-  })
-  .controller('PerusteprojektiCtrl', function($scope, $rootScope, $state, $stateParams,
-    PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, koulutusalaService, opintoalaService) {
-
-    $scope.Koulutusalat = koulutusalaService;
-    $scope.Opintoalat = opintoalaService;
-    $scope.projekti = {};
-    $scope.projekti.peruste = {};
-    $scope.projekti.peruste.nimi = {};
-    $scope.projekti.peruste.koulutukset = [];
-
-    $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojektiPerustiedot.html'},
-                   {otsikko: 'projekti-projektiryhmä', url: 'views/partials/perusteprojektiProjektiryhma.html'},
-                   {otsikko: 'projekti-peruste', url: 'views/partials/perusteprojektiPeruste.html'}];
-
+    })
+  .controller('PerusteprojektiCtrl', function ($scope, $stateParams, Navigaatiopolku,
+   PerusteprojektiResource, PerusteProjektiService, YleinenData, koulutusalaService) {
+     PerusteProjektiService.watcher($scope, 'projekti');
+     
+     $scope.projekti = {};
+     console.log('projekti', $scope.projekti);
+    
     console.log('$stateparams', $stateParams);
     if ($stateParams.perusteProjektiId !== 'uusi') {
       $scope.projekti.id = $stateParams.perusteProjektiId;
       PerusteprojektiResource.get({ id: $stateParams.perusteProjektiId }, function(vastaus) {
         $scope.projekti = vastaus;
         Navigaatiopolku.asetaElementit({ perusteProjektiId: vastaus.nimi });
+      }, function(virhe) {
+        console.log('virhe', virhe);
       });
     } else {
+        $scope.projekti.id = 'uusi';
         Navigaatiopolku.asetaElementit({ perusteProjektiId: 'uusi' });
     }
-
-    $scope.tallennaPerusteprojekti = function() {
-      var projekti = PerusteProjektiService.get();
-      if (projekti.id) {
-        PerusteprojektiResource.update(projekti, function() {
-          PerusteProjektiService.update();
-        });
-      } else {
-        PerusteprojektiResource.save(projekti, function(vastaus) {
-          PerusteProjektiService.update();
-          $state.go('perusteprojekti.editoi', { perusteProjektiId: vastaus.id });
-        }, function(virhe) {
-          console.log('virhe', virhe);
-        });
-      }
+    
+    $scope.valitseKieli = function(nimi) {
+      return YleinenData.valitseKieli(nimi);
     };
+    
+    $scope.koulutusalaNimi = function(koodi) {
+      return koulutusalaService.haeKoulutusalaNimi(koodi);
+    };
+    
   });
