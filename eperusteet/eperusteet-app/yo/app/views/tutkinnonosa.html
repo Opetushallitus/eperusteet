@@ -28,14 +28,14 @@
           'arviointi',
           'ammattitaidonOsoittamistavat',
           'osaamisala'
-    ]">
+    ]" ng-show="tutkinnonOsa[osio]">
       <div class="osio-otsikko" ng-click="nakyvilla[osio] = !nakyvilla[osio]">
           <span class="glyphicon" ng-class="{'glyphicon-chevron-down': !nakyvilla[osio], 'glyphicon-chevron-up': nakyvilla[osio]}"></span>
           <span>{{'tutkinnonosa-'+osio | translate}}</span>
       </div>
 
       <div collapse="!nakyvilla[osio]" ng-switch on="osio">
-        <div ng-switch-default class="well well-sm" ng-bind-html="valitseKieli(tutkinnonOsa[osio])"></div>
+        <div ng-switch-default class="well well-sm pelkka-teksti" ng-bind-html="valitseKieli(tutkinnonOsa[osio])"></div>
         <arviointi ng-switch-when="arviointi" arviointi="tutkinnonOsa.arviointi"></arviointi>
       </div>
     </div>

@@ -30,7 +30,7 @@ angular.module('eperusteApp')
         $scope.fields =
           new Array({
              path: 'nimi',
-             hideHeader: true,
+             hideHeader: false,
              localeKey: 'tutkinnon-osan-nimi',
              type: 'editor-header',
              localized: true,

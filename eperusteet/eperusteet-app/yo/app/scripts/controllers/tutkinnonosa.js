@@ -19,7 +19,13 @@ angular.module('eperusteApp')
 
     $scope.tutkinnonOsa = {};
 
-    $scope.nakyvilla = {ammattitaitovaatimukset: true};
+    $scope.nakyvilla = {
+      arviointi: true,
+      tavoitteet: true,
+      ammattitaitovaatimukset: true,
+      ammattitaidonOsoittamistavat: true,
+      osaamisala: true
+    };
 
     $scope.revisiotiedot = null;
     $scope.revisio = null;
