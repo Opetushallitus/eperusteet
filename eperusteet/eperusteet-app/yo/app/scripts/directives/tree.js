@@ -237,7 +237,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('treeWrapper', function($modal, Editointikontrollit, TutkinnonOsanTuonti) {
+  .directive('treeWrapper', function($modal, Editointikontrollit, TutkinnonOsanTuonti, Kaanna) {
     function kaikilleRakenteille(rakenne, f) {
       if (!rakenne || !f) { return; }
       _.forEach(rakenne, function(r) {
@@ -264,12 +264,11 @@ angular.module('eperusteApp')
         scope.skratchpad = [];
         scope.uniikit = [];
         scope.topredicate = 'nimi.fi';
+        scope.tosarajaus = '';
 
         function paivitaUniikit() {
           scope.uniikit = [];
-          scope.uniikit = _.map(scope.rakenne.tutkinnonOsat, function(osa) {
-            return _.pick(osa, '_tutkinnonOsa', 'pakollinen');
-          });
+          scope.uniikit = _.map(scope.rakenne.tutkinnonOsat, function(osa) { return osa; });
         }
         paivitaUniikit();
 
@@ -305,6 +304,9 @@ angular.module('eperusteApp')
           });
         };
 
+        scope.paivitaRajaus = function(rajaus) { scope.tosarajaus = rajaus; };
+        scope.rajaaTutkinnonOsia = function(haku) { return Kaanna.kaanna(haku.nimi).indexOf(scope.tosarajaus) !== -1; };
+
         scope.suljePolut = function() {
           scope.rakenne.rakenne.$collapsed = scope.suljettuViimeksi;
           kaikilleRakenteille(scope.rakenne.rakenne.osat, function(osa) {
@@ -314,18 +316,11 @@ angular.module('eperusteApp')
         };
 
         scope.tuoTutkinnonosa = TutkinnonOsanTuonti.modaali(function(osa) {
-          osa.laajuus = 20; // FIXME: poista kun laajuus tulee osan mukana
-          scope.rakenne.tutkinnonOsat[osa.id] = osa;
-          scope.skratchpad.push({
-            kuvaus: { fi: '' },
-            _tutkinnonOsa: osa.id
-          });
+          scope.skratchpad.push(osa);
           paivitaUniikit();
         });
 
-        Editointikontrollit.registerAdditionalSaveCallback(function() {
-          scope.lisataanUuttaOsaa = false;
-        });
+        Editointikontrollit.registerAdditionalSaveCallback(function() { scope.lisataanUuttaOsaa = false; });
 
         scope.uusiTutkinnonOsa = function(cb) {
           scope.lisataanUuttaOsaa = true;

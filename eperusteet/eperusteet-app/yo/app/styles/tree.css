@@ -2,13 +2,52 @@
   min-height: 16px;
 }
 
-.group-placeholder {
+.tree-group .group-placeholder {
   background: #555;
-  padding: 0px;
   border-radius: 3px;
-  margin: 12px;
-  min-height:32px;
+  margin: 0px;
+  height: 32px;
   list-style-type: none;
+}
+
+.skratchpad-items .group-placeholder {
+  background: #555;
+  border-radius: 3px;
+  margin: 4px;
+  height: 16px;
+  list-style-type: none;
+}
+
+.rajauslaatikko {
+  width: 600px;
+  margin-top: 20px;
+  border-radius: 2px;
+}
+
+.tutkinnonosa-laatikko {
+  width: 600px;
+  border: 1px solid #cccccc;
+  margin: 15px;
+  margin-left: 0px;
+  padding: 0px;
+  padding-top: 0px;
+}
+
+.tutkinnonosa-laatikko .sisalto {
+  margin: 0px;
+  padding-left: 10px;
+  padding-right: 20px;
+  border-top: 1px solid #cccccc;
+}
+
+.tutkinnonosa-laatikko .otsikko {
+  margin: 0px;
+  padding-left: 10px;
+  padding-right: 20px;
+}
+
+.tutkinnonosa-laatikko .muokkaus {
+  float: right;
 }
 
 .grab-cursor {

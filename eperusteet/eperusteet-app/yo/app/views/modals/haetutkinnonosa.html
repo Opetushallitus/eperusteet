@@ -1,60 +1,44 @@
 <div modal="modalVisible" close="close()" options="{windowClass:'modal-to-haku'}">
-<div class="modal-header">
-  <h1>Hae tutkinnon osa</h1>
-  <h2 ng-show="vaihe === 0">Haku</h2>
-  <h2 ng-show="vaihe === 1">Hakutulokset haulle: {{ thaku }}</h2>
-  <h2 ng-show="vaihe === 2">Osan valinta</h2>
-</div>
-
-<div ng-show="vaihe === 0" class="modal-body">
-  <label>Tutkinnon osan nimellä tai koodilla</label>
-  <input ng-model="haku.str" class="form-control" type="text" placeholder="Kirjoita tähän haku"></input>
-</div>
-
-<div class="modal-body">
-  <div ng-show="vaihe === 1">
-    <table class="table">
-      <tr>
-        <th>Tutkinnon osa</th>
-      </tr>
-      <tr ng-repeat="tulos in tulokset">
-        <td><a href="" ng-click="jatka(tulos)">{{ tulos.nimi.fi }}</a></td>
-      </tr>
-    </table>
+  <div class="modal-header">
+    <h1>Hae tutkinnon osia</h1>
+    <h3 ng-if="!haku">{{ valittu.nimi | kaanna }}</h3>
   </div>
-  <div ng-show="vaihe === 2">
-    <div class="col-sm-12">
-      <label class="col-sm-4">Nimi</label>
-      <div class="col-sm-8">{{ tulos.nimi.fi }}</div>
-    </div>
-    <div class="clearfix"></div>
-    <div class="col-sm-12">
-      <label class="col-sm-4">Tutkinto</label>
-      <div class="col-sm-8">{{ tulos.tutkinto.fi || '-' }}</div>
-    </div>
-    <div class="clearfix"></div>
-    <div class="col-sm-12">
-      <label class="col-sm-4">Koodi</label>
-      <div class="col-sm-8">{{ tulos.koodiUri || '-' }}</div>
-    </div>
-    <div class="clearfix"></div>
-    <div class="col-sm-12">
-      <label class="col-sm-4">Luotu</label>
-      <div class="col-sm-8">{{ tulos.luotu | date }}</div>
-    </div>
-    <div class="clearfix"></div>
-    <div class="col-sm-12">
-      <label class="col-sm-4">Viimeksi muokattu</label>
-      <div class="col-sm-8">{{ tulos.muokattu | date }}</div>
-    </div>
-  </div>
-  <div class="clearfix"></div>
-</div>
 
-<div class="modal-footer">
-  <button ng-hide="vaihe === 0" class="btn" ng-click="takaisin()" translate>Takaisin</button>
-  <button ng-show="vaihe === 2" class="btn btn-primary" ng-click="valitse(tulos)" translate>Valitse</button>
-  <button ng-show="vaihe === 0" class="btn" ng-click="jatka($scope.thaku)" translate>Jatka</button>
-  <button class="btn" ng-click="peruuta()" translate>peru</button>
-</div>
+  <div class="modal-body">
+    <div ng-show="haku">
+      <label>Tutkinnon nimellä</label>
+      <input ng-change="paivitaHaku(hakustr)" ng-model="hakustr" class="form-control" type="text" placeholder="Hae tutkintoja..."></input>
+      <div ng-show="perusteet.data.length > 0">
+        <table class="table table-striped">
+          <tr>
+            <th>Koodi</th>
+            <th>Tutkinto</th>
+          </tr>
+          <tr ng-repeat="peruste in perusteet.data">
+            <td class="koodi">{{ peruste.koodi }}</td>
+            <td><a href=""ng-click="jatka(peruste)">{{ peruste.nimi | kaanna }}</a></td>
+          </tr>
+        </table>
+        <pagination ng-show="kaikkisivut > 1" first-text="«" last-text="»" previous-text="‹" next-text="›" ng-click="paivitaHaku(hakustr, nykyinensivu)" total-items="perusteet.sivuja" page="nykyinensivu" max-size="7" class="pagination-sm" boundary-links="true" rotate="false" num-pages="kaikkisivut"></pagination>
+      </div>
+    </div>
+    <div ng-hide="haku">
+      <table class="table table-striped">
+        <tr>
+          <th>Tutkinnon osa</th>
+          <th>Laajuus</th>
+        </tr>
+        <tr ng-repeat="osa in perusteenosat">
+          <td><a href="" ng-click="valitse(osa)">{{ osa.nimi | kaanna }}</a></td>
+          <td>{{ osa.laajuus }}</td>
+        </tr>
+      </table>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+
+  <div class="modal-footer">
+    <button ng-hide="haku" class="btn" ng-click="takaisin()">{{ 'takaisin' | kaanna }}</button>
+    <button class="btn" ng-click="peruuta()">{{ 'peru' | kaanna }}</button>
+  </div>
 </div>

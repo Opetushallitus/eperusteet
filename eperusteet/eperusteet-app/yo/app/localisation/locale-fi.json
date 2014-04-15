@@ -47,8 +47,10 @@
     "haku-kaikki-opintoalat" : "Kaikki opintoalat",
     "hae-koodi-koodistosta": "Hae koodistosta",
 
-    "muodostumis-rakenne-validointi-1": "Tutkintojen määrä ei riitä kattamaan vaadittua laajuutta",
-    "muodostumis-rakenne-validointi-2": "Tutkintojen määrä on pienempi kuin ryhmän minimi",
+    "OPINTOVIIKKO": "ov",
+
+    "muodostumis-rakenne-validointi-1": "Osien määrä ei riitä kattamaan vaadittua laajuutta",
+    "muodostumis-rakenne-validointi-2": "Osien määrä on pienempi kuin ryhmän minimi",
     "muodostumis-rakenne-validointi-3": "Ryhmässä on samoja tutkinnon osia",
 
     "esiopetus": "Esiopetus",
