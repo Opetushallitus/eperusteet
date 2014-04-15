@@ -181,9 +181,14 @@ public class PerusteServiceImpl implements PerusteService {
         Peruste peruste = perusteet.findOne(perusteid);
         LOG.debug(suoritustapakoodi.toString());
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+        RakenneModuuli rakenne = suoritustapa.getRakenne();
+        if ( rakenne == null ) {
+            rakenne = new RakenneModuuli();
+            rakenne.setNimi(peruste.getNimi());
+        }
         return new TutkinnonRakenneDto(
             mapper.mapAsList(suoritustapa.getTutkinnonOsat(), TutkinnonOsaViiteDto.class),
-            mapper.map(suoritustapa.getRakenne(), RakenneModuuliDto.class));
+            mapper.map(rakenne, RakenneModuuliDto.class));
     }
 
     @Override
