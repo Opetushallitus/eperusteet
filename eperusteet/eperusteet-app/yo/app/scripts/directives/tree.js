@@ -75,8 +75,9 @@ angular.module('eperusteApp')
     function generoiOtsikko() {
       var tosa = 'tutkinnonOsat[rakenne._tutkinnonOsa]';
       var otsikko = '' +
-        '<span ng-if="rakenne._tutkinnonOsa">{{ ' + tosa + '.nimi.fi }} {{' + tosa + '.laajuus }}ov</span>' +
-        '<span ng-if="!rakenne._tutkinnonOsa && rakenne.muodostumisSaanto === undefined && rakenne.nimi && rakenne.nimi.fi.length > 0">{{ rakenne.nimi.fi }}</span>' +
+        '<span ng-if="rakenne._tutkinnonOsa">{{ ' + tosa + '.nimi | kaanna }} {{' + tosa + '.laajuus }}ov</span>' +
+        '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi">{{ rakenne.nimi | kaanna }}</span>' +
+        '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi && rakenne.muodostumisSaanto"><br></span>' +
         '<span ng-if="rakenne.muodostumisSaanto !== undefined">' +
         '  <span ng-if="rakenne.muodostumisSaanto.laajuus">' +
         '    <span ng-if="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi">' +
@@ -351,6 +352,7 @@ angular.module('eperusteApp')
       else if ($scope.ms.laajus) { uusiryhma = _.omit(uusiryhma, 'muodostumisSaanto.laajuus'); }
       else if ($scope.ms.koko) { uusiryhma = _.omit(uusiryhma, 'muodostumisSaanto.koko'); }
 
+      console.log(uusiryhma);
       $modalInstance.close(uusiryhma);
     };
     $scope.peruuta = function() { $modalInstance.dismiss(); };
