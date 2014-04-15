@@ -1,27 +1,19 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .config(function($stateProvider, $urlRouterProvider) {
+  .config(function($stateProvider) {
     $stateProvider
-      .state('perusteprojektiTiedot', {
-        url: '/perusteprojekti',
-        navigaationimi: 'navi-perusteprojekti-tiedot',
-        template: '<div ui-view></div>'
-      })
-      .state('perusteprojektiTiedot.editoi', {
-        url: '/projektinTiedot/:perusteProjektiId',
+      .state('perusteprojekti.tiedot', {
+        url: '/projektinTiedot',
         templateUrl: 'views/perusteprojektiTiedot.html',
         controller: 'PerusteprojektiTiedotCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
-        navigaationimiId: 'projektiId',
-        resolve: {'koulutusalaService': 'Koulutusalat',
-                  'opintoalaService': 'Opintoalat'}
+        navigaationimiId: 'perusteProjektiId',
+        resolve: {'opintoalaService': 'Opintoalat'}
       });
   })
   .controller('PerusteprojektiTiedotCtrl', function($scope, $rootScope, $state, $stateParams,
     PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, koulutusalaService, opintoalaService) {
-      
-      $scope.uusi = 'uusi';
 
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
@@ -29,6 +21,8 @@ angular.module('eperusteApp')
     $scope.projekti.peruste = {};
     $scope.projekti.peruste.nimi = {};
     $scope.projekti.peruste.koulutukset = [];
+    
+    $scope.projekti.id = $stateParams.perusteProjektiId;
 
     $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojektiPerustiedot.html'},
                    {otsikko: 'projekti-projektiryhmä', url: 'views/partials/perusteprojektiProjektiryhma.html'},
@@ -47,14 +41,15 @@ angular.module('eperusteApp')
 
     $scope.tallennaPerusteprojekti = function() {
       var projekti = PerusteProjektiService.get();
-      if (projekti.id) {
+      if (projekti.id !== 'uusi') {
         PerusteprojektiResource.update(projekti, function() {
           PerusteProjektiService.update();
         });
       } else {
+        projekti.id = null;
         PerusteprojektiResource.save(projekti, function(vastaus) {
           PerusteProjektiService.update();
-          $state.go('perusteprojektiTiedot.editoi', { perusteProjektiId: vastaus.id });
+          $state.go('perusteprojekti.tiedot', { perusteProjektiId: vastaus.id });
         }, function(virhe) {
           console.log('virhe', virhe);
         });

@@ -14,7 +14,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
-<a ui-sref="perusteprojekti.editoi({ perusteProjektiId: projekti.id})" translate>takaisin</a>
+<a ui-sref="perusteprojekti.editoi.sisalto({ perusteProjektiId: projekti.id})" translate>takaisin</a>
 <form class="form-horizontal" name="perusteprojektiForm" role="form" novalidate>
     <tabset>
         <tab ng-repeat="tab in tabs" heading="{{tab.otsikko | translate}}" active="tab.active" disabled="tab.disabled">
