@@ -76,7 +76,7 @@ angular.module('eperusteApp')
       var tosa = 'tutkinnonOsat[rakenne._tutkinnonOsa]';
       var otsikko = '' +
         '<span ng-if="rakenne._tutkinnonOsa">{{ ' + tosa + '.nimi.fi }} {{' + tosa + '.laajuus }}ov</span>' +
-        '<span ng-if="!rakenne._tutkinnonOsa && rakenne.muodostumisSaanto === undefined && rakenne.otsikko && rakenne.otsikko.fi.length > 0">{{ rakenne.otsikko.fi }}</span>' +
+        '<span ng-if="!rakenne._tutkinnonOsa && rakenne.muodostumisSaanto === undefined && rakenne.nimi && rakenne.nimi.fi.length > 0">{{ rakenne.nimi.fi }}</span>' +
         '<span ng-if="rakenne.muodostumisSaanto !== undefined">' +
         '  <span ng-if="rakenne.muodostumisSaanto.laajuus">' +
         '    <span ng-if="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi">' +
@@ -336,7 +336,7 @@ angular.module('eperusteApp')
     };
     $scope.ryhma = ryhma ? angular.copy(ryhma) : {};
     if (!$scope.ryhma.muodostumisSaanto) { $scope.ryhma.muodostumisSaanto = {}; }
-    if (!$scope.ryhma.otsikko) { $scope.ryhma.otsikko = {}; }
+    if (!$scope.ryhma.nimi) { $scope.ryhma.nimi = {}; }
     if (!$scope.ryhma.kuvaus) { $scope.ryhma.kuvaus = {}; }
     if ($scope.ryhma.muodostumisSaanto.laajuus) { $scope.ms.laajuus = false; }
     if ($scope.ryhma.muodostumisSaanto.koko) { $scope.ms.koko = false; }

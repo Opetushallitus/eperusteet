@@ -27,6 +27,7 @@ angular.module('eperusteApp')
     $scope.rakenne = {};
     if (TreeCache.nykyinen() !== $stateParams.perusteenId) {
       PerusteRakenteet.get({ perusteenId: $stateParams.perusteenId }, function(re) {
+        console.log(re);
         $scope.rakenne = re;
         $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck($scope.rakenne.tutkinnonOsat, '_tutkinnonOsa'), $scope.rakenne.tutkinnonOsat);
       });

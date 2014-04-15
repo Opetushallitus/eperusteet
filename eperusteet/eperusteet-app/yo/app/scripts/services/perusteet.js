@@ -2,7 +2,7 @@
 
 angular.module('eperusteApp')
   .factory('PerusteRakenteet', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/rakenne',
+    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/naytto/rakenne',
       {
         perusteenId: '@id'
       }, {
