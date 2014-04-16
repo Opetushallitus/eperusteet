@@ -29,6 +29,7 @@ angular.module('eperusteApp')
       PerusteRakenteet.get({ perusteenId: $stateParams.perusteenId }, function(re) {
         $scope.rakenne = re;
         $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck($scope.rakenne.tutkinnonOsat, '_tutkinnonOsa'), $scope.rakenne.tutkinnonOsat);
+        console.log($scope.rakenne);
       });
     }
 

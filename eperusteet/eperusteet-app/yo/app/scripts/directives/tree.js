@@ -160,9 +160,13 @@ angular.module('eperusteApp')
             controller: 'MuodostumisryhmaModalCtrl',
             resolve: { ryhma: function() { return ryhma; } }
           }).result.then(function(uusiryhma) {
-            var indeksi = scope.vanhempi.osat.indexOf(ryhma);
-            if (indeksi !== -1) {
-              scope.vanhempi.osat[indeksi] = uusiryhma;
+            if (!scope.vanhempi) {
+              scope.rakenne = uusiryhma;
+            } else {
+              var indeksi = scope.vanhempi.osat.indexOf(ryhma);
+              if (indeksi !== -1) {
+                scope.vanhempi.osat[indeksi] = uusiryhma;
+              }
             }
           });
         };
@@ -328,15 +332,14 @@ angular.module('eperusteApp')
   })
   .controller('MuodostumisryhmaModalCtrl', function($scope, $modalInstance, ryhma) {
     $scope.ms = {
-      laajuus: false,
-      koko: false,
+      laajuus: ryhma.muodostumisSaanto !== undefined && ryhma.muodostumisSaanto.laajuus !== undefined,
+      koko: ryhma.muodostumisSaanto !== undefined && ryhma.muodostumisSaanto.koko !== undefined,
     };
+
     $scope.ryhma = ryhma ? angular.copy(ryhma) : {};
     if (!$scope.ryhma.muodostumisSaanto) { $scope.ryhma.muodostumisSaanto = {}; }
     if (!$scope.ryhma.nimi) { $scope.ryhma.nimi = {}; }
     if (!$scope.ryhma.kuvaus) { $scope.ryhma.kuvaus = {}; }
-    if ($scope.ryhma.muodostumisSaanto.laajuus) { $scope.ms.laajuus = false; }
-    if ($scope.ryhma.muodostumisSaanto.koko) { $scope.ms.koko = false; }
 
     // $scope.toggleLaajuus = function() { $scope.laajuus = !$scope.laajuus; };
     // $scope.toggleKoko = function() { $scope.koko = !$scope.koko; };

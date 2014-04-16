@@ -1,8 +1,8 @@
 <ol class="breadcrumb">
     <li>
-        <a ui-sref="aloitussivu">{{'ePerusteet-koti' | translate}}</a>
-    </li> 
-       
+        <a ui-sref="aloitussivu"><span class="glyphicon glyphicon-home"></span></a>
+    </li>
+
     <li ng-repeat="np in navigaatiopolku">
       <a ng-hide="$last" ng-href="{{ np.url }}">{{ np.arvo | translate }}</a>
       <span ng-show="$last">{{ np.arvo | translate }}</span>
