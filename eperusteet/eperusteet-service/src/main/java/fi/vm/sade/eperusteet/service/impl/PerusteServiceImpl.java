@@ -14,6 +14,7 @@ import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.PageDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
@@ -315,6 +316,18 @@ public class PerusteServiceImpl implements PerusteService {
             suoritustavat.add(suoritustapa);
         }
         return suoritustavat;
+    }
+
+    @Override
+    public PerusteenSisaltoViiteDto addSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, PerusteenSisaltoViiteDto viite) {
+        PerusteenSisaltoViiteDto viiteDto = null;
+        
+        Peruste peruste = perusteet.findOne(perusteId);
+        if (peruste != null) {
+            Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+        }
+        
+        return viiteDto;
     }
 
     private enum IndexFunction implements Function<TutkinnonOsaViite, EntityReference> {

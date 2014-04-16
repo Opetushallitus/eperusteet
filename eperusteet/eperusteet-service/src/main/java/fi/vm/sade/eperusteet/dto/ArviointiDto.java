@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.dto;
 
 import java.util.List;
@@ -27,7 +26,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ArviointiDto {
-	private Long id;
+
+    private Long id;
     private LokalisoituTekstiDto lisatiedot;
     private List<ArvioinninKohdealueDto> arvioinninKohdealueet;
 }

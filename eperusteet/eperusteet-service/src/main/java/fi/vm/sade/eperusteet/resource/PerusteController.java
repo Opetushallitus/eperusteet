@@ -4,6 +4,7 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonRakenneDto;
@@ -21,10 +22,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @Controller
@@ -71,14 +72,29 @@ public class PerusteController {
         return service.updateTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), rakenne);
     }
 
-    @RequestMapping(value = "/{perusteId}/osat/{id}/lapset", method = POST)
+    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto", method = POST)
     @ResponseBody
-    public ResponseEntity<PerusteenOsaViite> lisääViite(
+    public ResponseEntity<PerusteenSisaltoViiteDto> addSisalto(
         @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long viiteId,
-        @RequestParam(value = "ennen", required = false) Long ennen, @RequestBody PerusteenOsaViite viite) {
-
-        return new ResponseEntity<>(service.addViite(viiteId, ennen, viite), HttpStatus.CREATED);
+        @PathVariable("suoritustapa") final String suoritustapa) {
+        PerusteDto p = service.get(perusteId);
+        if (p == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), null), HttpStatus.CREATED);
+    }
+    
+    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto", method = PUT)
+    @ResponseBody
+    public ResponseEntity<PerusteenSisaltoViiteDto> addSisaltoViite(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("suoritustapa") final String suoritustapa,
+        @RequestBody PerusteenSisaltoViiteDto sisaltoViite) {
+        PerusteDto p = service.get(perusteId);
+        if (p == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), sisaltoViite), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)
