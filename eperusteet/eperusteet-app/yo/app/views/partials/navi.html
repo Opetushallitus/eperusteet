@@ -4,7 +4,7 @@
     </li>
 
     <li ng-repeat="np in navigaatiopolku">
-      <a ng-hide="$last" ng-href="{{ np.url }}">{{ np.arvo | translate }}</a>
+      <a ng-hide="$last" ng-href="{{ np.url }}">{{ np.arvo | kaanna }}</a>
       <span ng-show="$last">{{ np.arvo | translate }}</span>
     </li>
 </ol>
