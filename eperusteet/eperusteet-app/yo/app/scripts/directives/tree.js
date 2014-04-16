@@ -155,6 +155,8 @@ angular.module('eperusteApp')
         scope.poista = function(i, a) { _.remove(a.osat, i); };
 
         scope.ryhmaModaali = function(ryhma) {
+          ryhma = ryhma || {};
+
           $modal.open({
             templateUrl: 'views/modals/ryhmaModal.html',
             controller: 'MuodostumisryhmaModalCtrl',
@@ -166,6 +168,8 @@ angular.module('eperusteApp')
               var indeksi = scope.vanhempi.osat.indexOf(ryhma);
               if (indeksi !== -1) {
                 scope.vanhempi.osat[indeksi] = uusiryhma;
+              } else {
+                console.log('wat');
               }
             }
           });
@@ -332,8 +336,8 @@ angular.module('eperusteApp')
   })
   .controller('MuodostumisryhmaModalCtrl', function($scope, $modalInstance, ryhma) {
     $scope.ms = {
-      laajuus: ryhma.muodostumisSaanto !== undefined && ryhma.muodostumisSaanto.laajuus !== undefined,
-      koko: ryhma.muodostumisSaanto !== undefined && ryhma.muodostumisSaanto.koko !== undefined,
+      laajuus: ryhma && ryhma.muodostumisSaanto !== undefined && ryhma.muodostumisSaanto.laajuus !== undefined,
+      koko: ryhma && ryhma.muodostumisSaanto !== undefined && ryhma.muodostumisSaanto.koko !== undefined,
     };
 
     $scope.ryhma = ryhma ? angular.copy(ryhma) : {};

@@ -4,7 +4,7 @@ angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
       .state('perusteprojekti.tiedot', {
-        url: '/projektinTiedot',
+        url: '/perustiedot',
         templateUrl: 'views/perusteprojektiTiedot.html',
         controller: 'PerusteprojektiTiedotCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
@@ -21,7 +21,7 @@ angular.module('eperusteApp')
     $scope.projekti.peruste = {};
     $scope.projekti.peruste.nimi = {};
     $scope.projekti.peruste.koulutukset = [];
-    
+
     $scope.projekti.id = $stateParams.perusteProjektiId;
 
     $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojektiPerustiedot.html'},
