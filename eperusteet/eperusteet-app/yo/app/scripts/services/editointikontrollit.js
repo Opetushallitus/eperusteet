@@ -43,7 +43,8 @@ angular.module('eperusteApp')
             // Kutsutaan kaikkia callback listenereitä ja annetaan parametrina
             // viimeisin muutettu objecti ja tieto siitä, onko editointikontrollit ylipäätänsä
             // pääällä
-            callback(self.lastModified, scope.editingCallback !== null);
+            // callback(self.lastModified, scope.editingCallback !== null);
+            callback(undefined, scope.editingCallback !== null);
           });
           scope.editMode = false;
           scope.editModeDefer = $q.defer();

@@ -17,7 +17,7 @@ angular.module('eperusteApp')
   })
   .controller('EsitysCtrl', function($q, $scope, $stateParams, Kayttajaprofiilit, Suosikit,
       Perusteet, Suosikitbroadcast, Suoritustapa, YleinenData, Navigaatiopolku,
-      palvelinhaunIlmoitusKanava, PerusteRakenteet, TreeCache) {
+      palvelinhaunIlmoitusKanava, PerusteRakenteet, TreeCache, $state) {
 
     $scope.konteksti = $stateParams.konteksti;
     $scope.peruste = {};
@@ -92,7 +92,7 @@ angular.module('eperusteApp')
         $scope.peruste.rakenne = vastaus;
         $scope.suodatin.otsikot = _.pluck(_.pluck(vastaus.lapset, 'perusteenOsa'), 'nimi');
       }, function (virhe) {
-          // console.log('suoritustapasisältöä ei löytynyt', virhe);
+          console.log('suoritustapasisältöä ei löytynyt', virhe);
       });
     };
 

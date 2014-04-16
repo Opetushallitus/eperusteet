@@ -1,6 +1,5 @@
 'use strict';
 /*global _*/
-/*global $*/
 
 angular.module('eperusteApp')
   .service('TreeCache', function() {
@@ -22,15 +21,13 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('tree', function($compile, $state, $modal, $timeout) {
-    function validoiRyhma(rakenne, tutkinnonOsat) {
-      if (!rakenne) return;
+  .directive('tree', function($compile, $state, $modal) {
+    function validoiRyhma(rakenne) {
+      if (!rakenne) { return; }
 
       delete rakenne.$virhe;
 
       if (rakenne.muodostumisSaanto) {
-        var minimi, maksimi;
-
         if (rakenne.muodostumisSaanto.laajuus) {
           var msl = rakenne.muodostumisSaanto.laajuus;
           if (msl.minimi) {
@@ -99,7 +96,7 @@ angular.module('eperusteApp')
       return otsikko;
     }
 
-    function generoiOptiot(rakenne, tutkinnonOsat) {
+    function generoiOptiot(rakenne) {
       var url = '';
       if (rakenne._tutkinnonOsa) {
         url = $state.href('muokkaus.vanha', { perusteenOsanId: rakenne._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' });
@@ -141,7 +138,7 @@ angular.module('eperusteApp')
         //   osa.$parent = scope.rakenne;
         // });
 
-        function liitaUusiTutkinnonOsa(osa) {
+        function liitaUusiTutkinnonOsa() {
           scope.rakenne.osat.push({
             otsikko: { fi: 'Uusi' },
             kuvaus: { fi: '' },
@@ -157,7 +154,7 @@ angular.module('eperusteApp')
 
         scope.poista = function(i, a) { _.remove(a.osat, i); };
 
-        scope.ryhmaModaali = function(ryhma, vanhempi) {
+        scope.ryhmaModaali = function(ryhma) {
           $modal.open({
             templateUrl: 'views/modals/ryhmaModal.html',
             controller: 'MuodostumisryhmaModalCtrl',
@@ -204,7 +201,7 @@ angular.module('eperusteApp')
         optiot += generoiOptiot(scope.rakenne, scope.tutkinnonOsat);
         var kentta = '<div ng-if="rakenne._tutkinnonOsa" class="bubble-osa">' + optiot + '</div>';
         kentta += '<div ng-if="!rakenne._tutkinnonOsa" class="bubble">' + optiot + '</div>';
-        kentta += '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe" class="virhe"><span>{{ rakenne.$virhe | translate }}</span></div>'
+        kentta += '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe" class="virhe"><span>{{ rakenne.$virhe | translate }}</span></div>';
         kentta += '<div ng-show="rakenne.$laajenna" class="beef">' +
           '<div ng-if="rakenne._tutkinnonOsa">20ov</div>' +
           '<div ng-if="rakenne.kuvaus">{{ rakenne.kuvaus.fi }}</div>' +

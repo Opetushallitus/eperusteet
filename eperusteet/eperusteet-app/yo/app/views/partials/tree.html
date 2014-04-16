@@ -13,8 +13,6 @@
         </a>
       </div>
       <div class="tree-presentation">
-        <h2>{{ rakenne.rakenne.nimi | kaanna }}</h2>
-        <hr></hr>
         <div ng-if="!lisataanUuttaOsaa" class="tree">
           <tree muokkaus="muokkaus" ng-if="rakenne.$resolved" rakenne="rakenne.rakenne" tutkinnon-osat="rakenne.tutkinnonOsat" uusi-tutkinnon-osa="uusiTutkinnonOsa"></tree>
         </div>

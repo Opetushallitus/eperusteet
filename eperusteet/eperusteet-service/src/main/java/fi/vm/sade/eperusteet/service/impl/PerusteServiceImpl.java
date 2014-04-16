@@ -15,15 +15,12 @@ import fi.vm.sade.eperusteet.dto.PageDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
-<<<<<<< HEAD
-import fi.vm.sade.eperusteet.repository.KoulutusRepository;
-=======
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonRakenneDto;
->>>>>>> feature/tutkintorakenteen-esittaminen
+import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
@@ -76,13 +73,9 @@ public class PerusteServiceImpl implements PerusteService {
     @Autowired
     PerusteRepository perusteet;
     @Autowired
-<<<<<<< HEAD
     KoulutusRepository koulutusRepo;
     @Autowired
-    PerusteenOsaViiteRepository viitteet;
-=======
     PerusteenOsaViiteRepository rakenteenOsaRepository;
->>>>>>> feature/tutkintorakenteen-esittaminen
     @Autowired
     KoulutusalaService koulutusalaService;
     @Autowired
