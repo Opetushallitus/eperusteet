@@ -16,18 +16,10 @@
 
 package fi.vm.sade.eperusteet.dto;
 
-import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  *
  * @author harrik
  */
-@Getter
-@Setter
-public class PerusteenosaViiteDto {
+public class PerusteenSisaltoViiteDto {
     
-    private PerusteenOsaDto perusteenOsa;
-    private List<PerusteenosaViiteDto> lapset;
 }
