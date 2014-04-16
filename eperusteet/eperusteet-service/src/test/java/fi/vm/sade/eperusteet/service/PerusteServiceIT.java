@@ -15,38 +15,46 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonRakenneDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.test.annotation.DirtiesContext;
+
+import static org.junit.Assert.assertEquals;
+
 
 /**
- * Yksinkertainen integraatiotesti muistinvaraista kantaa vasten.
+ * Integraatiotesti muistinvaraista kantaa vasten.
  * @author jhyoty
  */
-@Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class PerusteServiceIT extends AbstractIntegrationTest {
 
     @Autowired
@@ -55,7 +63,13 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     private PerusteRepository repo;
     @PersistenceContext
     private EntityManager em;
-    
+    @Autowired
+    private PerusteenOsaRepository perusteenOsaRepository;
+    @Autowired
+    private PerusteenOsaService perusteenOsaService;
+
+    private Peruste peruste;
+
     public PerusteServiceIT() {
     }
 
@@ -63,7 +77,10 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     public void setUp() {
         Peruste p = TestUtils.createPeruste();
         p.setSiirtyma(new GregorianCalendar(2000, Calendar.MARCH, 12).getTime());
-        repo.save(p);
+        Suoritustapa s = new Suoritustapa();
+        s.setSuoritustapakoodi(Suoritustapakoodi.OPS);
+        p.setSuoritustavat(Sets.newHashSet(s));
+        peruste = repo.save(p);
 
         p = TestUtils.createPeruste();
         p.setSiirtyma(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
@@ -71,23 +88,57 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
         p = TestUtils.createPeruste();
         repo.save(p);
-
-        em.flush();
     }
 
     @Test
-    @Rollback(true)
     public void testGetAll() {
         Page<PerusteDto> perusteet = perusteService.getAll(new PageRequest(0, 10), Kieli.FI.toString());
         assertEquals(perusteet.getTotalElements(), 2);
     }
 
     @Test
-    @Rollback(true)
     public void testFindBy() {
         PerusteQuery pquery = new PerusteQuery();
         pquery.setSiirtyma(true);
         Page<PerusteDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
         assertEquals(perusteet.getTotalElements(), 3);
     }
+
+    @Test
+    public void testAddTutkinnonRakenne() {
+        TutkinnonOsa tutkinnonOsa1 = new TutkinnonOsa();
+        tutkinnonOsa1.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "Nimi"));
+        tutkinnonOsa1 = perusteenOsaRepository.save(tutkinnonOsa1);
+
+        TutkinnonOsa tutkinnonOsa2 = new TutkinnonOsa();
+        tutkinnonOsa2.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "Nimi 2"));
+        tutkinnonOsa2 = perusteenOsaRepository.save(tutkinnonOsa2);
+
+        TutkinnonRakenneDto rakenne = new TutkinnonRakenneDto();
+
+        TutkinnonOsaViiteDto v1 = new TutkinnonOsaViiteDto();
+        v1.setTutkinnonOsa(tutkinnonOsa1.getReference());
+
+        TutkinnonOsaViiteDto v2 = new TutkinnonOsaViiteDto();
+        v2.setTutkinnonOsa(tutkinnonOsa2.getReference());
+
+        rakenne.setTutkinnonOsat(Lists.newArrayList(v1, v2));
+        rakenne.setRakenne(new RakenneModuuliDto());
+
+        RakenneOsaDto o1 = new RakenneOsaDto();
+        o1.setTutkinnonOsa(tutkinnonOsa1.getReference());
+
+        RakenneOsaDto o2 = new RakenneOsaDto();
+        o2.setTutkinnonOsa(tutkinnonOsa2.getReference());
+
+        rakenne.getRakenne().setOsat(Arrays.<AbstractRakenneOsaDto>asList(o1,o2));
+
+        TutkinnonRakenneDto updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, rakenne);
+
+        updatedTutkinnonRakenne.getTutkinnonOsat().get(0).setLaajuus(100);
+        updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, updatedTutkinnonRakenne);
+        assertEquals(tutkinnonOsa1.getReference(), ((RakenneOsaDto)updatedTutkinnonRakenne.getRakenne().getOsat().get(0)).getTutkinnonOsa());
+    }
+
+    private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceIT.class);
 }

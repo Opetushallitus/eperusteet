@@ -1,6 +1,6 @@
 <div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
   <h3>{{ 'tutkinnonosat' | translate }} ({{ osatutkinnot.length }}kpl)</h3>
-  <table class="table table-striped">
+  <table class="table">
     <tr>
       <th translate>tila</th>
       <th translate>koodi</th>
@@ -43,7 +43,7 @@
       </td>
       <td class="osatutkintoid">{{ ot.koodiUri }}</td>
       <td>
-        <a target="_blank" ui-sref="muokkaus.vanha({ id: ot.id, perusteenOsanTyyppi: 'tutkinnonosa' })">{{ ot.nimi.fi }}</a>
+        <a target="_blank" ui-sref="muokkaus.vanha({ perusteenOsanId: ot.id, perusteenOsanTyyppi: 'tutkinnonosa' })">{{ ot.nimi.fi }}</a>
       </td>
       <td class="text-right"></td>
     </tr>
@@ -60,7 +60,7 @@
 <!-- Tallennusvirheet -->
 <div class="alert alert-danger" ng-show="uploadErrors.length > 0">
   {{ 'tutkinnonosa-save-fail' | translate }}
-  <table class="table table-striped">
+  <table class="table">
     <tr>
       <th translate>tutkinnonosa</th>
       <th translate>syy</th>

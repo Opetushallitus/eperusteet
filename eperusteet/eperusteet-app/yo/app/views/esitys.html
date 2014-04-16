@@ -28,7 +28,7 @@ European Union Public Licence for more details.
               </ul>
               <select id="suodatin-tyyppi" ng-model="suodatinId" class="form-control" ng-change="suodatinValittu(suodatinId)">
                   <option value="" disabled selected translate>valitse-suodatin</option>
-                  <option ng-repeat="otsikko in suodatin.otsikot" value="{{otsikko._id}}" ng-hide="otsikko.valittu">{{valitseKieli(otsikko)}}</option>         
+                  <option ng-repeat="otsikko in suodatin.otsikot" value="{{otsikko._id}}" ng-hide="otsikko.valittu">{{valitseKieli(otsikko)}}</option>
               </select>
           </div>
       </div>
@@ -36,13 +36,13 @@ European Union Public Licence for more details.
   <div class="col-md-8">
 
     <script type="text/ng-template"  id="lapset_renderer.html">
-      <div ng-show="onkoSuodatettu(lapsi.perusteenOsa.nimi._id)">  
+      <div ng-show="onkoSuodatettu(lapsi.perusteenOsa.nimi._id)">
           <esitys-otsikko id="{{lapsi.perusteenOsa.id}}">{{lapsi.perusteenOsa.nimi['fi']}}</esitys-otsikko>
           <div ng-bind-html="lapsi.perusteenOsa.teksti.fi"></div>
           <div ng-repeat="lapsi in lapsi.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
       </div>
     </script>
-    
+
     <div class="row">
         <div class="col-md-6">
         <div align="left">
@@ -58,7 +58,7 @@ European Union Public Licence for more details.
             </div>
         </div>
     </div>
-    
+
     <h1>{{valitseKieli(peruste.nimi)}} </h1>
 
     <p>
@@ -77,7 +77,13 @@ European Union Public Licence for more details.
     </script>
 
     <!-- Tutkinnon rakenne puuesityksenä -->
-    <div tree rakenne="rakenne" baseurl="esitys/{{ peruste.id }}/tutkinnonosa"></div>
+    <div>
+      <tree-wrapper muokkaus="true" ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
+    </div>
+    <div class="clearfix"></div>
+    <hr>
+    <button class="btn btn" ng-click="tallennaRakenne(rakenne)">Tallenna</button>
+    <button class="btn btn-primary" ng-click="peruMuutokset()">Peru muutokset</button>
 
   </div>
 

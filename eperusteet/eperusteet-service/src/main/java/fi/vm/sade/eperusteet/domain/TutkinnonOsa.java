@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
+import fi.vm.sade.eperusteet.dto.EntityReference;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 
 import java.io.Serializable;
@@ -41,24 +42,24 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Audited
 public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@ValidHtml
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ValidHtml
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen tavoitteet;
 
-	@ValidHtml
+    @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen ammattitaitovaatimukset;
 
-	@ValidHtml
+    @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen ammattitaidonOsoittamistavat;
 
-	@ValidHtml
+    @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen osaamisala;
@@ -72,6 +73,11 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(withModifiedFlag = true)
     private Arviointi arviointi;
+
+	@Override
+	public EntityReference getReference() {
+		return new EntityReference(getId());
+	}
 
     public TekstiPalanen getTavoitteet() {
         return tavoitteet;

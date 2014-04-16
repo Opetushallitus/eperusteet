@@ -11,11 +11,11 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
  * @author jhyoty
  */
 public interface PerusteenOsaService {
-    
+
 	public <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass);
-	
+
     <T extends PerusteenOsaDto, D extends PerusteenOsa> T save(T perusteenOsaDto, Class<T> dtoClass, Class<D> destinationClass);
-   
+
     void delete(final Long id);
 
     PerusteenOsaDto get(final Long id);
@@ -24,7 +24,9 @@ public interface PerusteenOsaService {
 
     List<PerusteenOsaDto> getAll();
 
-	public List<Revision> getRevisions(Long id);
-	
-	public PerusteenOsaDto getRevision(final Long id, final Integer revisionId);
+    List<PerusteenOsaDto> getAllWithName(final String name);
+
+    public List<Revision> getRevisions(Long id);
+
+    public PerusteenOsaDto getRevision(final Long id, final Integer revisionId);
 }

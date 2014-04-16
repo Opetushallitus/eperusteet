@@ -1,0 +1,86 @@
+<div class="modal-header">
+  <h2>Ryhmän editointi</h2>
+</div>
+
+<div class="modal-body modal-ryhma-body">
+  <div class="form-group">
+    <label class="col-sm-3">Nimi</label>
+    <div class="col-sm-9">
+      <input ng-model="ryhma.nimi.fi" type="text" class="form-control"></input>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-3">Kuvaus</label>
+    <div class="col-sm-9">
+      <input ng-model="ryhma.kuvaus.fi" type="text" class="form-control"></input>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-3">Pakollisuus</label>
+    <div class="col-sm-9">
+      <input ng-model="ryhma.pakollinen" type="checkbox" class="form-control"></input>
+    </div>
+  </div>
+
+  <h3>Muodostumissännöt</h3>
+  <div class="form-group">
+    <div class="clearfix"></div>
+    <div class="col-sm-12">
+      <div class="btn-group">
+        <button ng-model="ms.laajuus" type="button" class="btn btn-default" btn-checkbox translate>laajuus</button>
+        <button ng-model="ms.koko" type="button" class="btn btn-default" btn-checkbox translate>koko</button>
+      </div>
+    </div>
+  </div>
+
+  <div ng-show="ms.laajuus">
+    <h3>Laajuus</h3>
+    <div class="form-group">
+      <div class="clearfix"></div>
+      <label class="col-sm-3">Minimi</label>
+      <div class="col-sm-9">
+        <input ng-model="ryhma.muodostumisSaanto.laajuus.minimi" type="number" class="form-control"></input>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="clearfix"></div>
+      <label class="col-sm-3">Maksimi</label>
+      <div class="col-sm-9">
+        <input ng-model="ryhma.muodostumisSaanto.laajuus.maksimi" type="number" class="form-control"></input>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="clearfix"></div>
+      <label class="col-sm-3">Yksikkö</label>
+      <div class="col-sm-9">
+        <select ng-model="ryhma.muodostumisSaanto.laajuus.yksikko" class="form-control">
+          <option>OPINTOVIIKKO</option>
+          <option>OPINTOPISTE</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div ng-show="ms.koko">
+    <h3>Koko</h3>
+    <div class="form-group">
+      <div class="clearfix"></div>
+      <label class="col-sm-3">Minimi</label>
+      <div class="col-sm-9">
+        <input ng-model="ryhma.muodostumisSaanto.koko.minimi" type="number" class="form-control"></input>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="clearfix"></div>
+      <label class="col-sm-3">Maksimi</label>
+      <div class="col-sm-9">
+        <input ng-model="ryhma.muodostumisSaanto.koko.maksimi" type="number" class="form-control"></input>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-click="ok(ryhma)" translate>tallenna</button>
+  <button class="btn btn-danger" ng-click="peruuta()" translate>peru</button>
+</div>

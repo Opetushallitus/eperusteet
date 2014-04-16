@@ -1,7 +1,15 @@
+.hoverpointer {
+  cursor: move;
+}
+
 body {
     background: #fafafa;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #333;
+}
+
+tr .koodi {
+  width: 48px;
 }
 
 .hero-unit {

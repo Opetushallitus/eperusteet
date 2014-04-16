@@ -22,7 +22,7 @@ import fi.vm.sade.eperusteet.dto.EntityReference;
  *
  * @author teele1
  */
-public interface CachedEntity {
+public interface ReferenceableEntity {
     
     EntityReference getReference();
 }

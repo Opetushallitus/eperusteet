@@ -15,21 +15,42 @@ angular.module('eperusteApp')
         naviRest: [':perusteenId']
       });
   })
-  .controller('EsitysCtrl', function($q, $scope, $stateParams, $state,
-    Kayttajaprofiilit, Suosikit, Perusteet, Suoritustapa, Suosikitbroadcast, YleinenData,
-    Navigaatiopolku, palvelinhaunIlmoitusKanava) {
+  .controller('EsitysCtrl', function($q, $scope, $stateParams, Kayttajaprofiilit, Suosikit,
+      Perusteet, Suosikitbroadcast, Suoritustapa, YleinenData, Navigaatiopolku,
+      palvelinhaunIlmoitusKanava, PerusteRakenteet, TreeCache) {
 
     $scope.konteksti = $stateParams.konteksti;
     $scope.peruste = {};
     $scope.syvyys = 2;
     $scope.suosikkiLista = {};
+    $scope.rakenne = {};
+
+    function haeRakenne() {
+      PerusteRakenteet.get({ perusteenId: $stateParams.perusteenId }, function(re) {
+        $scope.rakenne = re;
+        $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck($scope.rakenne.tutkinnonOsat, '_tutkinnonOsa'), $scope.rakenne.tutkinnonOsat);
+      });
+    }
+
+    $scope.peruMuutokset = haeRakenne;
+
+    if (TreeCache.nykyinen() !== $stateParams.perusteenId) { haeRakenne(); }
+    else { TreeCache.hae(); }
+
+    $scope.tallennaRakenne = function(rakenne) {
+      TreeCache.tallenna(rakenne, $stateParams.perusteenId);
+      rakenne.tutkinnonOsat = _.values(rakenne.tutkinnonOsat);
+      PerusteRakenteet.save({ perusteenId: $stateParams.perusteenId }, rakenne, function(re) {
+        console.log(re);
+      });
+    };
+
     var eiSuosikkiTyyli = 'glyphicon glyphicon-star-empty pointer';
     var suosikkiTyyli = 'glyphicon glyphicon-star pointer';
     $scope.suosikkiTyyli = eiSuosikkiTyyli;
     $scope.suoritustapa = $stateParams.suoritustapa;
     var suosikkiId = null;
     $scope.suodatin = {};
-
 
     var perusteHakuPromise = (function() {
       if ($stateParams.perusteenId) {
@@ -71,8 +92,8 @@ angular.module('eperusteApp')
         $scope.peruste.rakenne = vastaus;
         $scope.suodatin.otsikot = _.pluck(_.pluck(vastaus.lapset, 'perusteenOsa'), 'nimi');
       }, function (virhe) {
-          console.log('suoritustapasisältöä ei löytynyt', virhe);
-        });
+          // console.log('suoritustapasisältöä ei löytynyt', virhe);
+      });
     };
 
     $scope.onSuosikki = function() {
@@ -145,284 +166,37 @@ angular.module('eperusteApp')
     palvelinhaunIlmoitusKanava.kunHakuAloitettu($scope, hakuAloitettuKäsittelijä);
     palvelinhaunIlmoitusKanava.kunHakuLopetettu($scope, hakuLopetettuKäsittelijä);
 
-    /****************************************
-     *
-     * Kovakoodattu rakenne-esitys, plsremovewhenfit!!
-     *
-     **************************************/
-    $scope.rakenne = {
-      otsikko: 'Tieto- ja tietoliikennealan perustutkinto',
-      laajuus: '120 ov',
-      osat: [
-        {
-          otsikko: 'Ammatilliset tutkinnon osat',
-          kuvaus: 'Tutkinnon osiin sisältyy työssäoppimista vähintään 20 ov, yrittäjyyttä vähintään 5 ov ja opinnäyte vähintään 2 ov',
-          laajuus: '90 ov',
-          osat: [
-            {
-              otsikko: 'Kaikille pakolliset tutkinnon osat',
-              osat: [
-                {
-                  otsikko: 'Elektroniikan ja ICT:n perustehtävät',
-                  laajuus: '30 ov',
-                  tutkinnonosa: 1
-                }
-              ]
-            },
-            {
-              tyyppi: 'yksi',
-              osat: [
-                {
-                  otsikko: 'Tieto- ja tietoliikennetekniikan koulutusohjelma, elektroniikka-asentaja',
-                  osat: [
-                    {
-                      otsikko: 'Ammattielektroniikka',
-                      laajuus: '20 ov',
-                      tutkinnonosa: 1
-                    },
-                    {
-                      tyyppi: 'yksi',
-                      osat: [
-                        {
-                          otsikko: 'Sulautetut sovellukset ja projektityöt',
-                          laajuus: '20 ov',
-                          tutkinnonosa: 1
-                        },
-                        {
-                          otsikko: 'Elektroniikkatuotanto',
-                          laajuus: '20 ov',
-                          tutkinnonosa: 1
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  otsikko: 'Tieto- ja tietoliikennetekniikan koulutusohjelma, ICT-asentaja',
-                  osat: [
-                    {
-                      otsikko: 'Tietokone- ja tietoliikenneasennukset',
-                      laajuus: '20 ov',
-                      tutkinnonosa: 1
-                    },
-                    {
-                      tyyppi: 'yksi',
-                      osat: [
-                        {
-                          otsikko: 'Palvelinjärjestelmät ja projektityöt',
-                          laajuus: '20 ov',
-                          tutkinnonosa: 1
-                        },
-                        {
-                          otsikko: 'Tietoliikennelaiteasennukset ja kaapelointi',
-                          laajuus: '20 ov',
-                          tutkinnonosa: 1
-                        },
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              otsikko: 'Seuraavista kohdista tutkinnon osia yhteensä 20ov',
-              osat: [
-                {
-                  otsikko: 'Kaikille valinnaiset tutkinnon osat',
-                  laajuus: '10-20 ov',
-                  osat: [
-                      {
-                          otsikko: 'Huoltopalvelut',
-                          laajuus: '10 ov'
-                      },
-                      {
-                          otsikko: 'Valvonta ja ilmoitusjärjestelmäasennukset',
-                          laajuus: '10 ov'
-                      },
-                      {
-                          otsikko: 'Kodin elektroniikka ja asennukset',
-                          laajuus: '10 ov'
-                      },
-                      {
-                          otsikko: 'RF-työt',
-                          laajuus: '10 ov'
-                      },
-                      {
-                          otsikko: 'Sähköasennukset',
-                          laajuus: '10 ov',
-                      },
-                      {
-                          otsikko: 'Tutkinnon osa ammatillisesta perustutkinnosta',
-                          laajuus: '0-20 ov'
-                      },
-                      {
-                          otsikko: 'Tutkinnon osa ammattitutkinnosta'
-                      },
-                      {
-                          otsikko: 'Tutkinnon osa erikoisammattitutkinnosta'
-                      },
-                      {
-                          otsikko: 'Paikallisesti tarjottava tutkinnon osa',
-                          laajuus: '0-20 ov'
-                      }
-                  ]
-                },
-                {
-                  otsikko: 'Muut valinnaiset tutkinnon osat ammatillisessa peruskoulutuksessa',
-                  laajuus: '0-10 ov',
-                  osat: [
-                      {
-                          otsikko: 'Yrittäjyys',
-                          laajuus: '10 ov'
-                      },
-                      {
-                          otsikko: 'Työpaikkaohjaajaksi valmentautuminen',
-                          laajuus: '2 ov'
-                      },
-                      {
-                          otsikko: 'Ammattitaitoa täydentävät tutkinnon osat (yhteiset opinnot)'
-                      },
-                      {
-                          otsikko: 'Lukio-opinnot'
-                      }
-                  ]
-                }
-              ]
-            }
-          ]
+    $scope.terveydentilaOptiot = [
+      {teksti: 'Kaikki', valittu: true},
+      {teksti: 'Terveydentila optio 1', valittu: false},
+      {teksti: 'Terveydentila optio 2', valittu: false},
+      {teksti: 'Terveydentila optio 3', valittu: false},
+      {teksti: 'Terveydentila optio 4', valittu: false}
+    ];
 
-        },
-        {
-          otsikko: 'Ammattitaitoa täydentävät tutkinnon osat ammatillisessa peruskoulutuksessa (yhteiset opinnot)',
-          laajuus: '20 ov',
-          osat: [
-            {
-              tyyppi: 'selite',
-              otsikko: ['Opetuskieleltään ruotsinkielisessä koulutuksessa toisen kotimaisen kielen opintojen laajuus on 2 ov, jolloin pakollisten ammattitaitoa täydentävien tutkinnon osien laajuus on 17 ov ja valinnaisten 3 ov.', 'Liikunnan pakollisten opintojen laajuus on 1 ov ja terveystiedon pakollisten opintojen laajuus on 1 ov. Koulutuksen järjestäjä voi päättää liikunnan ja terveystiedon pakollisten opintojen jakamisesta poikkea- valla tavalla kuitenkin siten, että niiden yhteislaajuus on kaksi opintoviikkoa.']
-            },
-            {
-              otsikko: 'Pakolliset tutkinnon osat',
-              osat: [
-                {
-                  otsikko: 'Äidinkieli',
-                  laajuus: '4 ov'
-                },
-                {
-                  otsikko: 'Toinen kotimainen kieli',
-                  tyyppi: 'yksi',
-                  osat: [
-                    {
-                      otsikko: 'Toinen kotimainen kieli ruotsi',
-                      laajuus: '1ov'
-                    },
-                    {
-                      otsikko: 'Toinen kotimainen kieli suomi',
-                      laajuus: '2ov'
-                    }
-                  ]
-                },
-                {
-                  otsikko: 'Vieras kieli',
-                  laajuus: '2 ov'
-                },
-                {
-                  otsikko: 'Matematiikka',
-                  laajuus: '3 ov'
-                },
-                {
-                  otsikko: 'Fysiikka ja kemia',
-                  laajuus: '2 ov'
-                },
-                {
-                  otsikko: 'Yhteiskunta-, yritys- ja työelämätieto',
-                  laajuus: '1 ov'
-                },
-                {
-                  otsikko: 'Liikunta',
-                  laajuus: '1 ov'
-                },
-                {
-                  otsikko: 'Terveystieto',
-                  laajuus: '1 ov'
-                },
-                {
-                  otsikko: 'Taide ja kulttuuri',
-                  laajuus: '1 ov'
-                }
-              ]
-            },
-            {
-              otsikko: 'Valinnaiset tutkinnon osat',
-              osat: [
-                {
-                  otsikko: 'Äidinkieli',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Vieras kieli',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Matematiikka',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Fysiikka ja kemia',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Yhteiskunta-, yritys- ja työelämätieto',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Liikunta',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Terveystieto',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Taide ja kulttuuri',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Ympäristötieto',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Tieto- ja viestintätekniikka',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Etiikka',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Kulttuurien tuntemus',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Psykologia',
-                  laajuus: '0-4 ov'
-                },
-                {
-                  otsikko: 'Yritystoiminta',
-                  laajuus: '0-4 ov'
-                }
-              ]
-            }
-          ]
+    $scope.todistuksetOptiot = [
+      {teksti: 'Kaikki', valittu: true},
+      {teksti: 'Todistukset optio 1', valittu: false},
+      {teksti: 'Todistukset optio 2', valittu: false},
+      {teksti: 'Todistukset optio 3', valittu: false}
+    ];
 
+    $scope.arviointiOptiot = [
+      {teksti: 'Kaikki', valittu: true},
+      {teksti: 'Oppilaan arviointi oppiaineessa', valittu: false},
+      {teksti: 'Oppiaineen hyvän edistymisen kuvaus', valittu: false},
+      {teksti: 'Oppiaineen hyvän osaamisen kuvaus', valittu: false},
+      {teksti: 'Oppiaineen päätösarvioinnin kriteerit arvosanalle 8', valittu: false},
+      {teksti: 'Todistukset', valittu: false},
+      {teksti: 'Erityisen tutkinnon suoritusten arviointi ja muutokset', valittu: false}
+    ];
 
-
-        },
-        {
-          otsikko: 'Vapaasti valittavat tutkinnon osat ammatillisessa peruskoulutuksessa',
-          laajuus: '10 ov'
-        },
-
-      ]
-    };
-
+    $scope.maarayksetOptiot = [
+      {teksti: 'Kaikki', valittu: true},
+      {teksti: 'Määräykset optio 1', valittu: false},
+      {teksti: 'Määräykset optio 2', valittu: false},
+      {teksti: 'Määräykset optio 3', valittu: false},
+      {teksti: 'Määräykset optio 4', valittu: false},
+      {teksti: 'Määräykset optio 5', valittu: false}
+    ];
   });

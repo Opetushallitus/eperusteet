@@ -33,7 +33,7 @@ public class EPerusteetMappingModule extends SimpleModule {
 
     @Override
     public void setupModule(SetupContext context) {
-        super.setupModule(context);
+        super.setupModule(context);        
         context.setMixInAnnotations(Page.class, PageMixin.class);
     }
 

@@ -42,7 +42,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Audited
 @Table(name="perusteenosa")
-public abstract class PerusteenOsa extends AbstractAuditedEntity implements Serializable {
+public abstract class PerusteenOsa extends AbstractAuditedEntity implements Serializable, ReferenceableEntity {
 
 	private static final long serialVersionUID = 1L;
 

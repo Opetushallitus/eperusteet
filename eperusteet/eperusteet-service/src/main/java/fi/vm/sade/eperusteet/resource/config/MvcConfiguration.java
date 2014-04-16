@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fi.vm.sade.eperusteet.dto.EntityReference;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,21 +79,23 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
         converter.getObjectMapper().enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
         converter.getObjectMapper().enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
         converter.getObjectMapper().setPropertyNamingStrategy(new PropertyNamingStrategy() {
-            
-            @Override
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
             public String nameForGetterMethod(MapperConfig<?> config, AnnotatedMethod method,
             String defaultName)
             {
                 return tryToconvertFromMethodName(method, defaultName);
             }
-            
+
             @Override
             public String nameForSetterMethod(MapperConfig<?> config, AnnotatedMethod method,
             String defaultName)
             {
                 return tryToconvertFromMethodName(method, defaultName);
             }
-            
+
             private String tryToconvertFromMethodName(AnnotatedMethod annotatedMethod, String defaultName) {
                 if((annotatedMethod.getParameterCount() == 1 && EntityReference.class.isAssignableFrom(annotatedMethod.getParameter(0).getRawType()))
                         || EntityReference.class.isAssignableFrom(annotatedMethod.getRawReturnType())) {
@@ -101,9 +104,10 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
                 return defaultName;
             }
         });
-        converter.getObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
         converter.getObjectMapper().registerModule(new JodaModule());
-        converter.getObjectMapper().registerModule(new EPerusteetMappingModule());
+        EPerusteetMappingModule module = new EPerusteetMappingModule();
+        module.addDeserializer(AbstractRakenneOsaDto.class, new AbstractRakenneOsaDeserializer());
+        converter.getObjectMapper().registerModule(module);
         return converter;
     }
 

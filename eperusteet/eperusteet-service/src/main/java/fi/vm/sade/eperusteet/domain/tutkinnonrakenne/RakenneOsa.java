@@ -13,50 +13,29 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.domain;
 
-import java.util.List;
+package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
-import javax.persistence.CascadeType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
 
 /**
- * 
+ *
  * @author jhyoty
- * 
  */
+@Getter
+@Setter
 @Entity
-public class PerusteenOsaViite {
-	
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-	@Getter
-	@Setter
-    private Long id;
-	
-	@ManyToOne
-	@Getter
-	@Setter
-	private PerusteenOsaViite vanhempi;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@Getter
-	@Setter
-    private PerusteenOsa perusteenOsa;
-    
-	@OneToMany(mappedBy = "vanhempi", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @OrderColumn
-    @Getter
-	@Setter
-    private List<PerusteenOsaViite> lapset;
+@DiscriminatorValue("RO")
+@Audited
+public class RakenneOsa extends AbstractRakenneOsa {
+    private boolean pakollinen;
+    @JoinColumn(name = "rakenneosa_tutkinnonosaviite")
+    @ManyToOne
+    private TutkinnonOsaViite tutkinnonOsaViite;
 }

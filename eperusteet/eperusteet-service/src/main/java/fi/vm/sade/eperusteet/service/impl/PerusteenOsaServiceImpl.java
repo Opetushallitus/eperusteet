@@ -37,7 +37,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Autowired
     @Dto
     private DtoMapper mapper;
-    
+
     @Override
     public List<PerusteenOsaDto> getAll() {
         return mapper.mapAsList(perusteenOsaRepo.findAll(), PerusteenOsaDto.class);
@@ -61,7 +61,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         current = perusteenOsaRepo.save(current);
         return mapper.map(current, dtoClass);
     }
-    
+
     @Override
     @Transactional(readOnly = false)
     public <T extends PerusteenOsaDto, D extends PerusteenOsa> T save(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
@@ -69,7 +69,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         perusteenOsa = perusteenOsaRepo.save(perusteenOsa);
         return mapper.map(perusteenOsa, dtoClass);
     }
-  
+
     @Override
     @Transactional(readOnly = false)
     public void delete(final Long id) {
@@ -78,6 +78,10 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     }
 
 	@Override
+	public List<PerusteenOsaDto> getAllWithName(String name) {
+		return mapper.mapAsList(tutkinnonOsaRepo.findByNimiTekstiTekstiContainingIgnoreCase(name), PerusteenOsaDto.class);
+	}
+
 	public List<Revision> getRevisions(Long id) {
 		PerusteenOsa perusteenOsa = perusteenOsaRepo.findOne(id);
 		if(perusteenOsa instanceof TutkinnonOsa) {

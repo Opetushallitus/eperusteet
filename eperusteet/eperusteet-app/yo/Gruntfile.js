@@ -42,7 +42,8 @@ module.exports = function(grunt) {
       },
       livereload: {
         options: {
-          livereload: LIVERELOAD_PORT
+          livereload: LIVERELOAD_PORT,
+          open: false
         },
         files: [
           '<%= yeoman.app %>/**/*.{html,js}',
@@ -118,11 +119,11 @@ module.exports = function(grunt) {
         }
       }
     },
-    open: {
-      server: {
-        url: 'http://localhost:<%= connect.options.port %>'
-      }
-    },
+    // open: {
+    //   server: {
+    //     url: 'http://localhost:<%= connect.options.port %>'
+    //   }
+    // },
     clean: {
       dist: {
         files: [{
@@ -341,7 +342,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('server', function(target) {
     if (target === 'dist') {
-      return grunt.task.run(['build', 'open', 'connect:dist:keepalive']);
+      return grunt.task.run(['build', 'connect:dist:keepalive']);
     }
 
     grunt.task.run([
@@ -351,7 +352,6 @@ module.exports = function(grunt) {
       'autoprefixer',
       'configureProxies',
       'connect:livereload',
-      'open',
       'watch'
     ]);
   });

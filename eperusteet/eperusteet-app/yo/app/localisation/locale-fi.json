@@ -47,6 +47,12 @@
     "haku-kaikki-opintoalat" : "Kaikki opintoalat",
     "hae-koodi-koodistosta": "Hae koodistosta",
 
+    "OPINTOVIIKKO": "ov",
+
+    "muodostumis-rakenne-validointi-1": "Osien määrä ei riitä kattamaan vaadittua laajuutta",
+    "muodostumis-rakenne-validointi-2": "Osien määrä on pienempi kuin ryhmän minimi",
+    "muodostumis-rakenne-validointi-3": "Ryhmässä on samoja tutkinnon osia",
+
     "esiopetus": "Esiopetus",
     "perusopetus": "Perusopetus",
     "lukiokoulutus": "Lukiokoulutus",
@@ -157,7 +163,9 @@
     "muokkaus-tutkinnon-osan-osaamisala-header": "Osaamisala",
     "muokkaus-tutkinnon-osan-osaamisala-placeholder": "Kirjoita tähän tutkinnon osan osaamisala",
     "muokkaus-tutkinnon-osan-arviointi-header": "Arviointi",
-    
+
+    "puu-tyyppi-yksi": "Valitse yksi seuraavista",
+
     "muokkaus-teksikappaleen-nimi-header": "Nimi",
     "muokkaus-teksikappaleen-nimi-placeholder": "Kirjoita tähän otsikko",
     "muokkaus-tekstikappaleen-teksti-header": "Teksti",
@@ -171,7 +179,7 @@
     "arviointi-uusi-kriteeri": "Uusi kriteeri",
     "arviointi-uusi-kriteeri-placeholder": "Kriteerin teksti",
     "arviointi-asteikon-valinta": "Valitse arviointiasteikko",
-    
+
     "arviointi-muokkaa-tekstikenttänä": "Muokkaa tekstikenttänä",
     "arviointi-muokkaa-taulukkona": "Muokkaa taulukkona",
     "arviointi-kohdealueet": "Arvioinnin kohdealueet",
@@ -207,18 +215,20 @@
     "kelvoton-pvm": "Kelvoton päivämäärä",
     "yhteistyotaho-label": "Yhteistyötaho",
     "anna-yhteistyotaho-placeholder": "Syötä yhteistyötaho",
-    
+
     "projektipäällikkö": "Projektipäällikkö",
-    
+
     "perusteen-nimi": "Perusteen nimi",
     "anna-perusteen-nimi": "Syötä perusteen nimi",
+
+    "ok": "OK",
 
     "projekti-perustiedot": "Perustiedot",
     "projekti-projektiryhmä": "Projektiryhmä",
     "projekti-peruste": "Perusteen tiedot",
     "valitse-peruste": "Valitse peruste",
     "perusteen-koodi": "Perusteen koodi",
-    
+
     "opetussuunnitelma": "Opetussuunnitelma",
     "nayttotutkinto": "Näyttötutkinto",
     
