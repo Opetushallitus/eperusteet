@@ -1,10 +1,10 @@
 <ol class="breadcrumb">
-    <li>
-        <a ui-sref="aloitussivu"><span class="glyphicon glyphicon-home"></span></a>
-    </li>
+  <!-- Kovakoodattu kotisivu -->
+  <li><a ui-sref="aloitussivu"><span class="glyphicon glyphicon-home"></span></a></li>
 
-    <li ng-repeat="np in navigaatiopolku">
-      <a ng-hide="$last" ng-href="{{ np.url }}">{{ np.arvo | kaanna }}</a>
-      <span ng-show="$last">{{ np.arvo | translate }}</span>
-    </li>
+  <!-- naviBase + naviRest -->
+  <li ng-repeat="np in navigaatiopolku">
+    <a ng-hide="$last" ng-href="{{ np.url }}">{{ np.arvo | kaanna }}</a>
+    <span ng-show="$last">{{ np.arvo | kaanna }}</span>
+  </li>
 </ol>
