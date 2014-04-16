@@ -25,19 +25,21 @@ angular.module('eperusteApp')
     $scope.suosikkiLista = {};
     $scope.rakenne = {};
 
-    function haeRakenne() {
-      PerusteRakenteet.get({ perusteenId: $stateParams.perusteenId }, function(re) {
+    function haeRakenne(suoritustapa) {
+      PerusteRakenteet.get({
+          perusteenId: $stateParams.perusteenId,
+          suoritustapa: suoritustapa
+      }, function(re) {
         $scope.rakenne = re;
         $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck($scope.rakenne.tutkinnonOsat, '_tutkinnonOsa'), $scope.rakenne.tutkinnonOsat);
-        console.log($scope.rakenne);
       });
     }
 
     $scope.peruMuutokset = haeRakenne;
 
-    if (TreeCache.nykyinen() !== $stateParams.perusteenId) { haeRakenne(); }
-    else { TreeCache.hae(); }
-
+    // if (TreeCache.nykyinen() !== $stateParams.perusteenId) { haeRakenne(); }
+    // else { TreeCache.hae(); }
+    //
     $scope.tallennaRakenne = function(rakenne) {
       TreeCache.tallenna(rakenne, $stateParams.perusteenId);
       rakenne.tutkinnonOsat = _.values(rakenne.tutkinnonOsat);
@@ -65,8 +67,8 @@ angular.module('eperusteApp')
 
     perusteHakuPromise.then(function(peruste) {
       if (peruste.id) {
+        haeRakenne(peruste.suoritustavat[0].suoritustapakoodi);
         $scope.peruste = peruste;
-        console.log('peruste', peruste);
         Navigaatiopolku.asetaElementit({ perusteenId: peruste.nimi });
         haeSuoritustapaSisalto(peruste.id);
       } else {

@@ -22,7 +22,10 @@ angular.module('eperusteApp')
     };
 
     function haeRakenne() {
-      PerusteRakenteet.get({ perusteenId: $stateParams.perusteenId }, function(re) {
+      PerusteRakenteet.get({
+          perusteenId: $stateParams.perusteenId,
+          suoritustapa: 'naytto' // FIXME
+      }, function(re) {
         $scope.rakenne = re;
         $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck($scope.rakenne.tutkinnonOsat, '_tutkinnonOsa'), $scope.rakenne.tutkinnonOsat);
       }, function() {
