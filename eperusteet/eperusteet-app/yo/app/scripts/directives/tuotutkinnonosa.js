@@ -25,7 +25,7 @@ angular.module('eperusteApp')
     $scope.valittu = {};
 
     $scope.takaisin = function() { $scope.haku = true; };
-    $scope.valitse = function(tutkinnonosa) { $modalInstance.close(_.clone(tutkinnonosa)); };
+    $scope.valitse = function() { $modalInstance.close(_.filter($scope.perusteenosat, function(osa) { return osa.$valitse; })); };
 
     $scope.paivitaHaku = function(haku, sivu) {
       Perusteet.query({
@@ -40,7 +40,10 @@ angular.module('eperusteApp')
     $scope.jatka = function(par) {
       $scope.haku = false;
       $scope.valittu = par;
-      PerusteRakenteet.query({ perusteenId: par.id }, function(re) {
+      PerusteRakenteet.query({
+        perusteenId: par.id,
+        suoritustapa: 'naytto'
+      }, function(re) {
         $scope.perusteenosat = _.values(re.tutkinnonOsat);
       });
     };

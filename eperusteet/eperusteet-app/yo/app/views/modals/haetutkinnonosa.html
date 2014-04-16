@@ -25,10 +25,12 @@
     <div ng-hide="haku">
       <table class="table table-striped">
         <tr>
+          <th>Valitse</th>
           <th>Tutkinnon osa</th>
           <th>Laajuus</th>
         </tr>
         <tr ng-repeat="osa in perusteenosat">
+          <td class="has-checkbox"><input ng-model="osa.$valitse" type="checkbox" class="form-control"></td>
           <td><a href="" ng-click="valitse(osa)">{{ osa.nimi | kaanna }}</a></td>
           <td>{{ osa.laajuus }}</td>
         </tr>
@@ -39,6 +41,7 @@
 
   <div class="modal-footer">
     <button ng-hide="haku" class="btn" ng-click="takaisin()">{{ 'takaisin' | kaanna }}</button>
+    <button ng-show="!haku" class="btn" ng-click="valitse()">{{ 'ok' | kaanna }}</button>
     <button class="btn" ng-click="peruuta()">{{ 'peru' | kaanna }}</button>
   </div>
 </div>

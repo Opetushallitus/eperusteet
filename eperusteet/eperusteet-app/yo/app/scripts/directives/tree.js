@@ -320,8 +320,8 @@ angular.module('eperusteApp')
           scope.suljettuViimeksi = !scope.suljettuViimeksi;
         };
 
-        scope.tuoTutkinnonosa = TutkinnonOsanTuonti.modaali(function(osa) {
-          scope.skratchpad.push(osa);
+        scope.tuoTutkinnonosa = TutkinnonOsanTuonti.modaali(function(osat) {
+          _.forEach(osat, function(osa) { scope.skratchpad.push(osa); });
           paivitaUniikit();
         });
 
