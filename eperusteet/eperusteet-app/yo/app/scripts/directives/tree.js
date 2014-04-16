@@ -77,7 +77,6 @@ angular.module('eperusteApp')
       var otsikko = '' +
         '<span ng-if="rakenne._tutkinnonOsa">{{ ' + tosa + '.nimi | kaanna }} {{' + tosa + '.laajuus }}ov</span>' +
         '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi">{{ rakenne.nimi | kaanna }}</span>' +
-        '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi && rakenne.muodostumisSaanto"><br></span>' +
         '<span ng-if="rakenne.muodostumisSaanto !== undefined">' +
         '  <span ng-if="rakenne.muodostumisSaanto.laajuus">' +
         '    <span ng-if="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi">' +
