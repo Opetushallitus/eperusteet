@@ -7,8 +7,8 @@ describe('Service: Navigaatiopolku', function () {
 
   // instantiate service
   var Navigaatiopolku;
-  beforeEach(inject(function (_navigaatiopolku_) {
-    Navigaatiopolku = _navigaatiopolku_;
+  beforeEach(inject(function (_Navigaatiopolku_) {
+    Navigaatiopolku = _Navigaatiopolku_;
   }));
 
   it('should do something', function () {

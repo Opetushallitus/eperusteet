@@ -16,7 +16,7 @@
         </ul>
       </div>
       <table>
-          <tr><th>{{'tutkinnonosa-nimi' | translate}}</th><td>{{valitseKieli(tutkinnonOsa.nimi)}}</td></tr>
+          <tr><th>{{'tutkinnonosa-nimi' | translate}}</th><td>{{tutkinnonOsa.nimi | kaanna}}</td></tr>
           <tr><th>{{'tutkinnonosa-laajuus' | translate}}</th><td><!-- TODO: laajuus? --></td></tr>
       </table>
   </div>
@@ -35,7 +35,7 @@
       </div>
 
       <div collapse="!nakyvilla[osio]" ng-switch on="osio">
-        <div ng-switch-default class="well well-sm pelkka-teksti" ng-bind-html="valitseKieli(tutkinnonOsa[osio])"></div>
+        <div ng-switch-default class="well well-sm pelkka-teksti" ng-bind-html="tutkinnonOsa[osio] | kaanna"></div>
         <arviointi ng-switch-when="arviointi" arviointi="tutkinnonOsa.arviointi"></arviointi>
       </div>
     </div>

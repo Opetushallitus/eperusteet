@@ -19,7 +19,7 @@ European Union Public Licence for more details.
 </div>
 <div ng-show="showArviointiteksti()">
   <div ng-if="editAllowed" ckeditor localized ng-model="arviointi.lisatiedot" editor-placeholder="arviointi-lisatiedot-placeholder" editing-enabled="editAllowed" layout="simplified"></div>
-  <div ng-if="!editAllowed" class="well well-sm" ng-bind-html="valitseKieli(arviointi.lisatiedot)"></div>
+  <div ng-if="!editAllowed" class="well well-sm" ng-bind-html="arviointi.lisatiedot | kaanna"></div>
 </div>
 <div ng-show="showArviointitaulukko()">
   <div class="panel panel-default panel-small arviointi-kohdealueet">
@@ -29,22 +29,28 @@ European Union Public Licence for more details.
 
     <div class="panel-body">
       <accordion close-others="false">
-      <accordion-group class="arvioinnin-kohdealue" heading="{{valitseKieli(kohdealue.otsikko)}}" ng-repeat="kohdealue in arviointi.arvioinninKohdealueet" is-open="true">
+      <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi.arvioinninKohdealueet">
+        <accordion-group class="arvioinnin-kohdealue" heading="{{kohdealue.otsikko | kaanna}}" ng-repeat="kohdealue in arviointi.arvioinninKohdealueet" is-open="true">
         <accordion-heading>
           <h3 class="panel-title"><arvioinnin-tekstikentta sisalto="kohdealue" sisaltoteksti="kohdealue.otsikko" sisaltoalue="$parent.arviointi.arvioinninKohdealueet" edit-allowed="editAllowed"/></h3>
         </accordion-heading>
 
-        <div class="arvioinnin-kohde" ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet">
-          <h4><arvioinnin-tekstikentta clickable="false" sisalto="arvioinninkohde" sisaltoteksti="arvioinninkohde.otsikko" sisaltoalue="$parent.kohdealue.arvioinninKohteet" edit-allowed="editAllowed"></arvioinnin-tekstikentta></h4>
+        <accordion close-others="false">
+        <div id="sortableKohteet" ui-sortable="sortableOptions" ng-model="kohdealue.arvioinninKohteet">
+
+          <accordion-group class="arvioinnin-kohde" heading="{{arvioinninkohde.otsikko | kaanna}}" ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet" is-open="true">
+          <accordion-heading>
+            <h4><arvioinnin-tekstikentta clickable="false" sisalto="arvioinninkohde" sisaltoteksti="arvioinninkohde.otsikko" sisaltoalue="$parent.kohdealue.arvioinninKohteet" edit-allowed="editAllowed"></arvioinnin-tekstikentta></h4>
+          </accordion-heading>
 
           <div ng-repeat="taso in arviointiasteikot[arvioinninkohde._arviointiAsteikko].osaamistasot" ng-class-odd="'raita'" ng-class-even="'ei-raitaa'">
             <div class="row">
               <div class="col-md-3 taso-otsikko">
-                {{valitseKieli(taso.otsikko)}}
+                {{taso.otsikko | kaanna}}
               </div>
               <div class="col-md-9">
                 <div class="panel kriteeri" ng-repeat="osaamistasonKriteeri in arvioinninkohde.osaamistasonKriteerit | filter:{_osaamistaso: taso.id}">
-                  <ul class="list-group">
+                  <ul class="list-group" ui-sortable="sortableOptions" ng-model="osaamistasonKriteeri.kriteerit">
                     <li class="list-group-item" ng-repeat="kriteeri in osaamistasonKriteeri.kriteerit">
                       <arvioinnin-tekstikentta sisalto="kriteeri" sisaltoalue="$parent.osaamistasonKriteeri.kriteerit" edit-allowed="editAllowed"/>
                     </li>
@@ -60,7 +66,9 @@ European Union Public Licence for more details.
               </div>
             </div>
           </div>
+          </accordion-group> <!-- arvioinnin-kohde -->
         </div>
+        </accordion>
 
         <!-- Kohteen lisäys -->
         <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed">
@@ -70,7 +78,7 @@ European Union Public Licence for more details.
               <h4 translate>arviointi-asteikon-valinta</h4>
               <label ng-repeat="arviointiasteikko in arviointiasteikot">
                 <input editointi-kontrolli type="radio" ng-model="uudenKohteenTiedot.arviointiasteikko" ng-value="arviointiasteikko" name="{{arviointiasteikko}}" />
-                <span ng-repeat="osaamistaso in arviointiasteikko.osaamistasot">{{valitseKieli(osaamistaso.otsikko)}}{{$index + 1 !== arviointiasteikko.osaamistasot.length ? '&nbsp;/&nbsp;': ''}}</span>
+                <span ng-repeat="osaamistaso in arviointiasteikko.osaamistasot">{{osaamistaso.otsikko | kaanna}}{{$index + 1 !== arviointiasteikko.osaamistasot.length ? '&nbsp;/&nbsp;': ''}}</span>
               </label>
               <div class="muokkaus-napit">
                 <button class="btn btn-default btn-xs" editointi-kontrolli ng-disabled="!(uudenKohteenTiedot.nimi && uudenKohteenTiedot.arviointiasteikko)" ng-click="addNewKohde($parent.kohdealue, uudenKohteenTiedot);" translate>ok</button>
@@ -83,6 +91,7 @@ European Union Public Licence for more details.
         </div>
 
       </accordion-group>
+      </div> <!-- sortableKohdealueet -->
       </accordion>
 
       <!-- Kohdealueen lisäys -->

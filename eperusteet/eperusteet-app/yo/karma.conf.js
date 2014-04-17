@@ -29,12 +29,14 @@ module.exports = function(config) {
       'app/bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js',
       'app/bower_components/angular-ui-utils/ui-utils.js',
       'app/bower_components/angular-ui-sortable/sortable.js',
+      'app/bower_components/angular-ui-router/release/angular-ui-router.js',
       'app/bower_components/ckeditor/ckeditor.js',
       'app/bower_components/lodash/dist/lodash.js',
       'app/scripts/*.js',
       'app/scripts/**/*.js',
       'test/mock/**/*.js',
-      'test/spec/**/*.js'
+      'test/spec/**/*.js',
+      'app/views/**/*.html'
     ],
 
     // list of files / patterns to exclude
@@ -62,6 +64,19 @@ module.exports = function(config) {
     // - IE (only Windows)
     browsers: ['PhantomJS'],
 
+    plugins: [
+      'karma-jasmine',
+      'karma-phantomjs-launcher',
+      'karma-ng-html2js-preprocessor'
+    ],
+
+    preprocessors: {
+      'app/**/*.html': ['ng-html2js']
+    },
+
+    ngHtml2JsPreprocessor: {
+      stripPrefix: 'app/'
+    },
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit

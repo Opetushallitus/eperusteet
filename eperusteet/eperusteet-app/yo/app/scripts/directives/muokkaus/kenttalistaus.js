@@ -28,36 +28,36 @@ angular.module('eperusteApp')
         objectPromise: "="
       },
       link: function(scope, element, attrs) {
-        
+
         scope.innerObjectPromise = scope.objectPromise.then(function(object) {
           setInnerObjectPromise();
         });
-        
+
         scope.$watch('objectPromise', function() {
           setInnerObjectPromise();
         });
-                
+
         scope.removeField = function(fieldToRemove) {
           _.remove(scope.visibleFields, fieldToRemove);
           scope.hiddenFields.push(fieldToRemove);
         };
-        
+
         scope.addFieldToVisible = function(field) {
           _.remove(scope.hiddenFields, field);
           scope.visibleFields.push(field);
         };
-        
+
         scope.isEmpty = function(object) {
           return _.isEmpty(object);
         };
-        
+
         function splitFields(object) {
           scope.visibleFields = _.filter(scope.fields, function(field) {
             return field.mandatory || MuokkausUtils.hasValue(object, field.path);
           });
           scope.hiddenFields = _.difference(scope.fields, scope.visibleFields);
         }
-        
+
         function setInnerObjectPromise() {
           scope.innerObjectPromise = scope.objectPromise.then(function(object) {
             splitFields(object);

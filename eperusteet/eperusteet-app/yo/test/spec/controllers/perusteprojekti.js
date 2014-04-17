@@ -10,9 +10,18 @@ describe('Controller: PerusteprojektiCtrl', function () {
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope) {
+    var mockKoulutusalaService = {
+      query: function() {
+        queryDeferred = $q.defer();
+        return {$promise: queryDeferred.promise};
+      }
+    };
+    spyOn(mockKoulutusalaService, 'query').andCallThrough();
+
     scope = $rootScope.$new();
     PerusteprojektiCtrl = $controller('PerusteprojektiCtrl', {
-      $scope: scope
+      $scope: scope,
+      koulutusalaService: mockKoulutusalaService
     });
   }));
 

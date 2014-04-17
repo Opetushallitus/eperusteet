@@ -91,7 +91,6 @@ angular.module('eperusteApp')
     };
 
     this.nestedGet = function(obj, path, delimiter) {
-
       function innerNestedGet(obj, names) {
         if(names.length > 1) {
           return innerNestedGet(obj[names[0]], names.splice(1, names.length));

@@ -6,9 +6,9 @@ describe('Controller: HakuCtrl', function () {
   beforeEach(module('eperusteApp'));
 
   var SearchCtrl,
-    scope, 
+    scope,
     koulutusalaService;
-    
+
   // Mock koulutusalaService
   beforeEach(module(function($provide) {
     koulutusalaService = {
@@ -20,6 +20,15 @@ describe('Controller: HakuCtrl', function () {
       }
     };
     $provide.value('koulutusalaService', koulutusalaService);
+    var mockHaku = {
+      getHakuparametrit: function () {
+        return {koulutusala: ''};
+      },
+      setHakuparametrit: function () {
+        // no-op
+      }
+    };
+    $provide.value('Haku', mockHaku);
   }));
 
   // Initialize the controller and a mock scope

@@ -40,6 +40,10 @@ module.exports = function(grunt) {
         files: ['<%= yeoman.app %>/styles/{,*/}*.scss'],
         tasks: ['sass', 'copy:fonts', 'autoprefixer'],
       },
+      test: {
+        files: ['<%= yeoman.app %>/**/*.{js,html}', 'test/**/*.js'],
+        tasks: ['karma:unit', 'jshint']
+      },
       livereload: {
         options: {
           livereload: LIVERELOAD_PORT,
@@ -380,7 +384,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', [
     'jshint',
-//    'test',
+    'test',
     'build'
   ]);
 };
