@@ -12,24 +12,25 @@ angular.module('eperusteApp')
       });
   })
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $rootScope, $state, $stateParams,
-    Navigaatiopolku, PerusteRakenteet, TreeCache) {
+    Navigaatiopolku, PerusteprojektiResource, PerusteProjektiService, PerusteRakenteet, TreeCache) {
 
     $scope.rakenne = {
-      rakenne: {
-        osat: []
-      },
+      rakenne: { osat: [] },
       tutkinnonOsat: {},
     };
 
     function haeRakenne() {
-      PerusteRakenteet.get({
-          perusteenId: $stateParams.perusteenId,
+      PerusteprojektiResource.get({ id: $stateParams.perusteProjektiId }, function(vastaus) {
+        PerusteProjektiService.save(vastaus);
+        PerusteRakenteet.get({
+          perusteenId: vastaus.peruste.id,
           suoritustapa: 'naytto' // FIXME
-      }, function(re) {
-        $scope.rakenne = re;
-        $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck($scope.rakenne.tutkinnonOsat, '_tutkinnonOsa'), $scope.rakenne.tutkinnonOsat);
-      }, function() {
-        $scope.rakenne.$resolved = true;
+        }, function(re) {
+          $scope.rakenne = re;
+          $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck($scope.rakenne.tutkinnonOsat, '_tutkinnonOsa'), $scope.rakenne.tutkinnonOsat);
+        }, function() {
+          $scope.rakenne.$resolved = true;
+        });
       });
     }
 
@@ -39,10 +40,14 @@ angular.module('eperusteApp')
     else { TreeCache.hae(); }
 
     $scope.tallennaRakenne = function(rakenne) {
-      TreeCache.tallenna(rakenne, $stateParams.perusteenId);
-      rakenne.tutkinnonOsat = _.values(rakenne.tutkinnonOsat);
-      PerusteRakenteet.save({ perusteenId: $stateParams.perusteenId }, rakenne, function(re) {
-        console.log(re);
-      });
+      console.log(rakenne);
+      // TreeCache.tallenna(rakenne, $stateParams.perusteenId);
+      // rakenne.tutkinnonOsat = _.values(rakenne.tutkinnonOsat);
+      // PerusteRakenteet.save({
+      //   perusteenId: PerusteProjektiService.get().peruste.id,
+      //   suoritustapa: 'naytto' // FIXME
+      // }, rakenne, function(re) {
+      //   console.log(re);
+      // });
     };
   });

@@ -48,6 +48,7 @@ angular.module('eperusteApp')
       $scope.projekti.id = $stateParams.perusteProjektiId;
       PerusteprojektiResource.get({ id: $stateParams.perusteProjektiId }, function(vastaus) {
         $scope.projekti = vastaus;
+        PerusteProjektiService.save(vastaus);
         Navigaatiopolku.asetaElementit({ perusteProjektiId: vastaus.nimi });
       }, function(virhe) {
         console.log('virhe', virhe);

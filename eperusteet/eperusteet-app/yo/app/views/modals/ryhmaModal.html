@@ -15,15 +15,15 @@
       <input ng-model="ryhma.kuvaus.fi" type="text" class="form-control"></input>
     </div>
   </div>
-  <div class="form-group">
+  <div ng-if="vanhempi" class="form-group">
     <label class="col-sm-3">Pakollisuus</label>
     <div class="col-sm-9">
       <input ng-model="ryhma.pakollinen" type="checkbox" class="form-control"></input>
     </div>
   </div>
 
-  <h3>Muodostumissännöt</h3>
-  <div class="form-group">
+  <h3 ng-if="vanhempi">Muodostumissännöt</h3>
+  <div ng-if="vanhempi" class="form-group">
     <div class="clearfix"></div>
     <div class="col-sm-12">
       <div class="btn-group">
@@ -33,7 +33,7 @@
     </div>
   </div>
 
-  <div ng-show="ms.laajuus">
+  <div ng-show="ms.laajuus || !vanhempi">
     <h3>Laajuus</h3>
     <div class="form-group">
       <div class="clearfix"></div>
@@ -61,7 +61,7 @@
     </div>
   </div>
 
-  <div ng-show="ms.koko">
+  <div ng-if="vanhempi" ng-show="ms.koko">
     <h3>Koko</h3>
     <div class="form-group">
       <div class="clearfix"></div>

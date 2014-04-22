@@ -17,8 +17,13 @@
           <tree muokkaus="muokkaus" ng-if="rakenne.$resolved" rakenne="rakenne.rakenne" tutkinnon-osat="rakenne.tutkinnonOsat" uusi-tutkinnon-osa="uusiTutkinnonOsa"></tree>
         </div>
         <div ng-if="muokkaus" class="skratchpadlist">
+          <div class="skratchpad-header">
+            <div><a href="" ng-click="ryhmaModaali()"><span class="glyphicon glyphicon-plus-sign"></span> Uusi ryhmä</a></div>
+            <div><a href="" ng-click="tuoTutkinnonosa()"><span class="glyphicon glyphicon-plus-sign"></span> Tuo tutkinnon osa</a></div>
+          </div>
           <tabset justified="true">
             <tab heading="Leikelauta">
+              <div ng-if="skratchpad.length === 0" class="skratchpad-help">{{ 'Raahaa puun osia tähän...' | kaanna }}</div>
               <div class="skratchpad-items">
                 <div ui-sortable="sortableOptions" class="tree-group skratchpad" ng-model="skratchpad">
                   <div class="skratchpad-item" ng-class="{ 'skratchpad-item-virhe': osa.$virhe }" ng-repeat="osa in skratchpad">
@@ -27,7 +32,7 @@
                     <div ng-if="osa.osat !== undefined">
                       <span>
                         Ryhmä ({{ osa.osat.length }} osaa)
-                        <a class="pull-right" href="" ng-click="ryhmaModaali(osa)"><span class="glyphicon glyphicon-pencil"></span> Muokkaa</a>
+                        <a class="pull-right" href="" ng-click="ryhmaModaali(osa)"><span class="glyphicon glyphicon-pencil"></span></a>
                       </span>
                     </div>
                   </div>
@@ -38,16 +43,12 @@
               <div class="skratchpad-items">
                 <div ui-sortable="sortableOptionsUnique" ng-model="uniikit">
                   <div class="skratchpad-item" ng-repeat="osa in uniikit">
-                    {{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna }}
+                    {{ osa.nimi | kaanna }}
                   </div>
                 </div>
               </div>
             </tab>
           </tabset>
-          <div class="skratchpad-footer">
-            <button class="btn btn-default skratchpad-btn" ng-click="ryhmaModaali()"><span class="glyphicon glyphicon-plus"></span> Uusi ryhmä</button>
-            <button class="btn btn-default skratchpad-btn" ng-click="tuoTutkinnonosa()"><span class="glyphicon glyphicon-plus"></span> Tuo tutkinnon osa</button>
-          </div>
         </div>
       </div>
     </tab>

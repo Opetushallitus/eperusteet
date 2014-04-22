@@ -19,5 +19,5 @@ angular.module('eperusteApp')
       });
   })
   .factory('Suoritustapa', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustapa/:suoritustapa');
+    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa');
   });
