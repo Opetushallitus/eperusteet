@@ -201,6 +201,7 @@ angular.module('eperusteApp')
           '<div ng-if="!vanhempi">' +
           '  <div class="otsikko">' +
           '    <h4><a href="" ng-click="ryhmaModaali(rakenne, vanhempi)">{{ rakenne.nimi | kaanna }}</a>, {{ rakenne.$laajuus }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</h4>' +
+          '    <div ng-if="rakenne.$virhe" class="isovirhe">{{ rakenne.$virhe | kaanna }}</div>' +
           '  </div>' +
           '</div>' +
           '<div ng-if="vanhempi">' + kentta + '</div>' +
