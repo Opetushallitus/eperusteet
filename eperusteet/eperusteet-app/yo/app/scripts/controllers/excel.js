@@ -118,6 +118,7 @@ angular.module('eperusteApp')
             });
           });
           $scope.lukeeTiedostoa = false;
+          console.log($scope.osatutkinnot);
         }, function(errors) {
           $scope.errors = errors;
           $scope.lukeeTiedostoa = false;

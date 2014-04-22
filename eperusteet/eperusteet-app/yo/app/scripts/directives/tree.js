@@ -1,6 +1,7 @@
 'use strict';
 /*global _*/
 
+
 angular.module('eperusteApp')
   .service('TreeCache', function() {
     var puuId = -1;
@@ -254,25 +255,86 @@ angular.module('eperusteApp')
 
         // FIXME POISTA
         console.log(scope.rakenne);
-        scope.rakenne.rakenne.nimi = { fi: 'yla' };
+        scope.rakenne.rakenne.nimi = { fi: 'Verhoilijan ammattitutkinto' };
+        scope.rakenne.rakenne.muodostumisSaanto = { laajuus: { minimi: 120, maksimi: 120, yksiko: 'OPINTOVIIKKO' } };
+
+        scope.rakenne.rakenne.nimi = { fi: 'Verhoilijan ammattitutkinto' };
         scope.rakenne.rakenne.osat.push({
           kuvaus: {},
-          muodostumisSaanto: {},
-          nimi: { fi: 'ryhmä' },
+          muodostumisSaanto: { koko: { minimi: 1, maksimi: 1 } },
+          nimi: { fi: 'Valitse yksi seuraavista' },
+          osat: []
+        }, {
+          kuvaus: {},
+          muodostumisSaanto: { laajuus: { minimi: 60, maksimi: 60, yksikko: 'OPINTOVIIKKO' } },
+          nimi: { fi: 'Valitse seuraavista vaaditulla laajuudella' },
           osat: []
         });
+
+        scope.rakenne.rakenne.osat[1].osat.push({
+          kuvaus: {},
+          nimi: { fi: 'Valitse A tai B' },
+          osat: [{ _tutkinnonOsa: 5 }]
+        });
+
+        scope.rakenne.rakenne.osat[1].osat[0].osat.push({
+          kuvaus: {},
+          nimi: { fi: 'A' },
+          osat: [{ _tutkinnonOsa: 3 }, { _tutkinnonOsa: 4 }]
+        }, {
+          kuvaus: {},
+          nimi: { fi: 'B' },
+          osat: [{ _tutkinnonOsa: 1 }, { _tutkinnonOsa: 2 }]
+        });
+
         scope.rakenne.tutkinnonOsat = {
           1: {
-            nimi: { fi: 'eka' },
-            laajuus: 30,
-            _tutkinnonOsa: 1,
+            'nimi': {
+              'fi': 'Yrittäjänä toimiminen'
+            },
+            'koodiUri': '',
+            '_tutkinnonOsa': 1,
+            'laajuus': 10,
+            'syy': ''
           },
           2: {
-            nimi: { fi: 'toinen' },
-            laajuus: 30,
-            _tutkinnonOsa: 2,
-          }
+            'nimi': {
+              'fi': 'Verhoilun suunnittelu'
+            },
+            'koodiUri': '',
+            '_tutkinnonOsa': 2,
+            'laajuus': 20,
+            'syy': ''
+          },
+          3: {
+            'nimi': {
+              'fi': 'Verhoilu'
+            },
+            'koodiUri': '',
+            '_tutkinnonOsa': 3,
+            'laajuus': 30,
+            'syy': ''
+          },
+          4: {
+            'nimi': {
+              'fi': 'Työnkulun suunnittelu teollisen verhoilutuotteen valmistuksessa'
+            },
+            'koodiUri': '',
+            '_tutkinnonOsa': 4,
+            'laajuus': 40,
+            'syy': ''
+          },
+          5: {
+            'nimi': {
+              'fi': 'Teollinen verhoilu'
+            },
+            'koodiUri': '',
+            '_tutkinnonOsa': 5,
+            'laajuus': 50,
+            'syy': ''
+          },
         };
+
 
         function paivitaUniikit() {
           scope.uniikit = [];
