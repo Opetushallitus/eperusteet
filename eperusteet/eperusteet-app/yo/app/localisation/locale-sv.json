@@ -196,6 +196,9 @@
     "valitse-suodatin": "Valitse suodatin",
     
     "perusteprojekti-perustenimi-placeholder": "<[Anna perusteen nimi]>",
-    "perusteprojekti-koulutusala-placeholder": "<[Anna koulutusala]>"
+    "perusteprojekti-koulutusala-placeholder": "<[Anna koulutusala]>",
+    
+    "lisaa-tutkintokohtainen-osa": "[Lisää tutkintokohtainen osa]",
+    "uusi-tutkinnon-osa": "[<Uusi sisältö>]"
 }
 

@@ -14,6 +14,7 @@ angular.module('eperusteApp')
   })
   .controller('PerusteprojektiTiedotCtrl', function($scope, $rootScope, $state, $stateParams,
     PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, koulutusalaService, opintoalaService) {
+    PerusteProjektiService.watcher($scope, 'projekti');
 
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
@@ -21,6 +22,7 @@ angular.module('eperusteApp')
     $scope.projekti.peruste = {};
     $scope.projekti.peruste.nimi = {};
     $scope.projekti.peruste.koulutukset = [];
+    PerusteProjektiService.clean();
 
     $scope.projekti.id = $stateParams.perusteProjektiId;
 
@@ -28,7 +30,6 @@ angular.module('eperusteApp')
                    {otsikko: 'projekti-projektiryhmä', url: 'views/partials/perusteprojektiProjektiryhma.html'},
                    {otsikko: 'projekti-peruste', url: 'views/partials/perusteprojektiPeruste.html'}];
 
-    console.log('$stateparams', $stateParams);
     if ($stateParams.perusteProjektiId !== 'uusi') {
       $scope.projekti.id = $stateParams.perusteProjektiId;
       PerusteprojektiResource.get({ id: $stateParams.perusteProjektiId }, function(vastaus) {

@@ -20,4 +20,11 @@ angular.module('eperusteApp')
   })
   .factory('Suoritustapa', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa');
+  })
+  .factory('SuoritustapaSisalto', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/sisalto',
+    {
+      perusteId: '@perusteId',
+      suoritustapa: '@suoritustapa'
+    });
   });
