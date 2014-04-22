@@ -1,9 +1,9 @@
 package fi.vm.sade.eperusteet.resource;
 
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonRakenneDto;
@@ -21,10 +21,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @Controller
@@ -71,14 +70,41 @@ public class PerusteController {
         return service.updateTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), rakenne);
     }
 
-    @RequestMapping(value = "/{perusteId}/osat/{id}/lapset", method = POST)
+    /**
+     * Luo perusteeseen suoritustavan alle tyhjän perusteenosan
+     * @param perusteId
+     * @param suoritustapa
+     * @return Luodun perusteenOsaViite entityReferencen
+     */
+    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto", method = POST)
     @ResponseBody
-    public ResponseEntity<PerusteenOsaViite> lisääViite(
+    public ResponseEntity<PerusteenSisaltoViiteDto> addSisalto(
         @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long viiteId,
-        @RequestParam(value = "ennen", required = false) Long ennen, @RequestBody PerusteenOsaViite viite) {
+        @PathVariable("suoritustapa") final String suoritustapa) {
 
-        return new ResponseEntity<>(service.addViite(viiteId, ennen, viite), HttpStatus.CREATED);
+        return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), null), HttpStatus.CREATED);
+    }
+    
+    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto", method = PUT)
+    @ResponseBody
+    public ResponseEntity<PerusteenSisaltoViiteDto> addSisaltoViite(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("suoritustapa") final String suoritustapa,
+        @RequestBody PerusteenSisaltoViiteDto sisaltoViite) {
+        
+        return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), sisaltoViite), HttpStatus.CREATED);
+    }
+
+     
+    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{perusteenosaId}/lapsi", method = POST)
+    @ResponseBody
+    public ResponseEntity<PerusteenSisaltoViiteDto> addSisaltoLapsi(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("suoritustapa") final String suoritustapa,
+        @PathVariable("perusteenosaId") final String perusteenosaId) {
+        PerusteDto p = service.get(perusteId);
+        throw new UnsupportedOperationException("Not supported yet.");
+        //return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), null), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)

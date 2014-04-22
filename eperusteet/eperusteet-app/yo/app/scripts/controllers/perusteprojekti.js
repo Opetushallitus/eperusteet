@@ -37,18 +37,13 @@ angular.module('eperusteApp')
       });
     })
   .controller('PerusteprojektiCtrl', function ($scope, $stateParams, Navigaatiopolku,
-    PerusteprojektiResource, PerusteProjektiService, YleinenData, koulutusalaService) {
-    PerusteProjektiService.watcher($scope, 'projekti');
-
+    PerusteprojektiResource, koulutusalaService) {
     $scope.projekti = {};
-    console.log('projekti', $scope.projekti);
-
-    console.log('$stateparams', $stateParams);
+    
     if ($stateParams.perusteProjektiId !== 'uusi') {
       $scope.projekti.id = $stateParams.perusteProjektiId;
       PerusteprojektiResource.get({ id: $stateParams.perusteProjektiId }, function(vastaus) {
         $scope.projekti = vastaus;
-        PerusteProjektiService.save(vastaus);
         Navigaatiopolku.asetaElementit({ perusteProjektiId: vastaus.nimi });
       }, function(virhe) {
         console.log('virhe', virhe);
@@ -57,10 +52,6 @@ angular.module('eperusteApp')
       $scope.projekti.id = 'uusi';
       Navigaatiopolku.asetaElementit({ perusteProjektiId: 'uusi' });
     }
-
-    $scope.valitseKieli = function(nimi) {
-      return YleinenData.valitseKieli(nimi);
-    };
 
     $scope.koulutusalaNimi = function(koodi) {
       return koulutusalaService.haeKoulutusalaNimi(koodi);

@@ -17,12 +17,13 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import fi.vm.sade.eperusteet.dto.KoulutusDto;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
+import fi.vm.sade.eperusteet.service.SuoritustapaService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.HashSet;
@@ -55,6 +56,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     
     @Autowired
     private KoulutusRepository koulutusRepository;
+    
+    @Autowired
+    private SuoritustapaService suoritustapaService;
 
     @Override
     @Transactional(readOnly = true)
@@ -68,6 +72,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     public PerusteprojektiDto save(PerusteprojektiDto perusteprojektiDto) {
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
         perusteprojekti = checkIfKoulutuksetAlreadyExists(perusteprojekti);
+        Set<Suoritustapa> temp = new HashSet<>();
+        for (Suoritustapa suoritustapa : perusteprojekti.getPeruste().getSuoritustavat()) {
+            temp.add(suoritustapaService.createSuoritustapaWithSisaltoRoot(suoritustapa.getSuoritustapakoodi()));
+        }
+        perusteprojekti.getPeruste().setSuoritustavat(temp);
         perusteprojekti = repository.save(perusteprojekti);
         kayttajaprofiiliService.addPerusteprojekti(perusteprojekti.getId());
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);

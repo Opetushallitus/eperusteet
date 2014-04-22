@@ -195,6 +195,7 @@ angular.module('eperusteApp')
 
         ngModelCtrl.$formatters.push(function(modelValue) {
           if(angular.isUndefined(modelValue)) return;
+          if(modelValue === null) return;
           return modelValue[YleinenData.kieli];
         });
 
@@ -202,6 +203,9 @@ angular.module('eperusteApp')
           var localizedModelValue = ngModelCtrl.$modelValue;
 
           if(angular.isUndefined(localizedModelValue)) {
+            localizedModelValue = {};
+          }
+          if(localizedModelValue === null) {
             localizedModelValue = {};
           }
           localizedModelValue[YleinenData.kieli] = viewValue;

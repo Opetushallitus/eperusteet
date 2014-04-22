@@ -93,7 +93,7 @@ angular.module('eperusteApp')
     var haeSuoritustapaSisalto = function (id) {
       Suoritustapa.get({perusteenId: id, suoritustapa: $scope.suoritustapa}, function(vastaus) {
         $scope.peruste.rakenne = vastaus;
-        $scope.suodatin.otsikot = _.pluck(_.pluck(vastaus.lapset, 'perusteenOsa'), 'nimi');
+        $scope.suodatin.otsikot = _.compact(_.pluck(_.pluck(vastaus.lapset, 'perusteenOsa'), 'nimi'));
       }, function (virhe) {
           console.log('suoritustapasisältöä ei löytynyt', virhe);
       });

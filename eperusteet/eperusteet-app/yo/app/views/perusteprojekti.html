@@ -17,8 +17,8 @@ European Union Public Licence for more details.
 <div class="container project-header">
     <div class="row">
         <div class="col-md-8">
-            <h2>{{ valitseKieli(projekti.peruste.nimi) || "perusteprojekti-perustenimi-placeholder" | translate }}</h2>
-            <p>Koulutusala: {{valitseKieli(koulutusalaNimi(projekti.peruste.koulutukset[0].koulutusalakoodi).nimi) || "perusteprojekti-koulutusala-placeholder" | translate}}</p>
+            <h2>{{ projekti.peruste.nimi || "perusteprojekti-perustenimi-placeholder" | kaanna }}</h2>
+            <p>Koulutusala: {{koulutusalaNimi(projekti.peruste.koulutukset[0].koulutusalakoodi).nimi || "perusteprojekti-koulutusala-placeholder" | kaanna}}</p>
             <!--p>voimassaoloaika kumoamistiedot siirtymäajat</p-->
         </div>
         <div class="col-md-4 tools">

@@ -34,6 +34,7 @@ angular.module('eperusteApp')
     if ($stateParams.perusteenOsaId !== 'uusi') {
       $scope.objekti = PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, function(re) {
         Navigaatiopolku.asetaElementit({ perusteenOsaId: re.nimi });
+        console.log('muokkaus perusteenosa', $scope.objekti);
       }, function() {
         console.log('unable to find perusteen osa #' + $stateParams.perusteenId);
         $state.go('aloitussivu');

@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.dto.EntityReference;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -31,32 +32,37 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 
+ *
  * @author jhyoty
- * 
+ *
  */
 @Entity
-public class PerusteenOsaViite {
-	
-	@Id
+public class PerusteenOsaViite implements ReferenceableEntity{
+
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-	@Getter
-	@Setter
+    @Getter
+    @Setter
     private Long id;
-	
-	@ManyToOne
-	@Getter
-	@Setter
-	private PerusteenOsaViite vanhempi;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@Getter
-	@Setter
+
+    @ManyToOne
+    @Getter
+    @Setter
+    private PerusteenOsaViite vanhempi;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @Getter
+    @Setter
     private PerusteenOsa perusteenOsa;
-    
-	@OneToMany(mappedBy = "vanhempi", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+
+    @OneToMany(mappedBy = "vanhempi", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @OrderColumn
     @Getter
-	@Setter
+    @Setter
     private List<PerusteenOsaViite> lapset;
+    
+    @Override
+    public EntityReference getReference() {
+        return new EntityReference(id);
+    }
 }

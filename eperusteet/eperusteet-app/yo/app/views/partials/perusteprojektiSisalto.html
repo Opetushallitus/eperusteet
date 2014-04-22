@@ -32,22 +32,25 @@ European Union Public Licence for more details.
         <div class="row">
             <div class="tutkinto">
                 <h2 class="section-title">Tutkintokohtaiset osat</h2>
-                <div class="list-element">
+                <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="projekti.peruste.id" translate>lisaa-tutkintokohtainen-osa</button>
+                <ul class="tutkinnonsisalto-list">
+                <li class="list-element">
                     <span class="glyphicon glyphicon-chevron-down"></span>
                     <h3>Käsi- ja taideteollisuusalan perustutkinnon tavoitteet</h3>
                     <a class="next" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: 'uusi'})">Muokkaa<span class="glyphicon glyphicon-chevron-right"></span></a>
-                </div>
-                <div class="list-element">
+                </li>
+                <li class="list-element">
                     <span class="glyphicon glyphicon-chevron-down"></span>
                     <h3>Tutkinnon muodostuminen</h3>
                     <!--h5 id="tutkinnon-muodostuminen" class="next">Muokkaa<span class="glyphicon glyphicon-chevron-right"></span></h5-->
                     <a class="next" ui-sref="perusteprojekti.editoi.muodostumissaannot">Muokkaa<span class="glyphicon glyphicon-chevron-right"></span></a>
-                </div>
-                <div class="list-element">
+                </li>
+                <li class="list-element" ng-repeat="sisalto in projekti.peruste.sisalto.lapset">
                     <span class="glyphicon glyphicon-chevron-down"></span>
-                    <h3>Liiteosa</h3>
-                    <a class="next">Muokkaa<span class="glyphicon glyphicon-chevron-right"></span></a>
-                </div>
+                    <h3>{{ sisalto.perusteenOsa.nimi || 'uusi-tutkinnon-osa' | kaanna}}</h3>
+                    <a class="next" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id})">Muokkaa<span class="glyphicon glyphicon-chevron-right"></span></a>
+                </li>
+                </ul>
             </div>
             <div class="yleiset">
                 <h2 class="section-title">Yleiset osat</h2>

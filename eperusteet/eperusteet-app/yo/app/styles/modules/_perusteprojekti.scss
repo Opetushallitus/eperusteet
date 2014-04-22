@@ -32,6 +32,11 @@ European Union Public Licence for more details.
 	padding-left: 40px;
 	padding-right: 40px;
 }
+
+.main-content .tutkinnonsisalto-list {
+    padding: 0;
+    list-style: none;
+}
 .main-content .list-element {
 	position: relative;
 	border: 1px solid #ddd;

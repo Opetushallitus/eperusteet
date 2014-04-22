@@ -25,9 +25,38 @@ angular.module('eperusteApp')
         naviRest: ['sisältö']
       });
   })
-  .controller('PerusteprojektisisaltoCtrl', function($scope, PerusteProjektiService) {
-    PerusteProjektiService.watcher($scope, 'projekti');
-     
+  .controller('PerusteprojektisisaltoCtrl', function($scope, $stateParams, PerusteprojektiResource,
+    Suoritustapa, SuoritustapaSisalto) {
      $scope.projekti = {};
 
+    if ($stateParams.perusteProjektiId !== 'uusi') {
+      $scope.projekti.id = $stateParams.perusteProjektiId;
+      PerusteprojektiResource.get({id: $stateParams.perusteProjektiId}, function(vastaus) {
+        $scope.projekti = vastaus;
+        if ($scope.projekti.peruste.id) {
+          haeSisalto('ops');
+        }
+      }, function(virhe) {
+        console.log('virhe', virhe);
+      });
+      
+    } else {
+      $scope.projekti.id = 'uusi';
+      //Navigaatiopolku.asetaElementit({ perusteProjektiId: 'uusi' });
+    }
+    
+    var haeSisalto = function(suoritustapa) {
+      Suoritustapa.get({perusteenId: $scope.projekti.peruste.id, suoritustapa: suoritustapa}, function(vastaus) {
+        $scope.projekti.peruste.sisalto = vastaus;
+      }, function(virhe) {
+        console.log('suoritustapasisältöä ei löytynyt', virhe);
+      });
+    };
+
+    $scope.createSisalto = function () {
+      SuoritustapaSisalto.save({perusteId: $scope.projekti.peruste.id, suoritustapa: 'ops'}, function(vastaus) {
+        haeSisalto('ops');
+        console.log('uusi suoritustapa sisältö', vastaus);
+      });
+    };
   });

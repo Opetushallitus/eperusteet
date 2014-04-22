@@ -14,20 +14,15 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.service;
 
-import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 
 /**
  *
  * @author harrik
  */
-@Getter
-@Setter
-public class PerusteenosaViiteDto {
-    
-    private PerusteenOsaDto perusteenOsa;
-    private List<PerusteenosaViiteDto> lapset;
+public interface SuoritustapaService {
+    Suoritustapa createSuoritustapaWithSisaltoRoot(Suoritustapakoodi suoritustapakoodi);
 }
