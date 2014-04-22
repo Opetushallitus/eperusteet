@@ -55,16 +55,32 @@ angular.module('eperusteApp')
       }
     }
 
-    function laskeLaajuudet(rakenne, tutkinnonOsat) {
+    function laskeLaajuudet(rakenne, tutkinnonOsat, root) {
+      root = root || true;
+
       if (!rakenne) { return; }
+
+      _.forEach(rakenne.osat, function(osa) { laskeLaajuudet(osa, tutkinnonOsat, false); });
+      rakenne.$laajuus = 0;
+
       if (rakenne._tutkinnonOsa) {
         rakenne.$laajuus = tutkinnonOsat[rakenne._tutkinnonOsa].laajuus;
       } else if (rakenne.osat) {
-        rakenne.$laajuus = 0;
-        _.forEach(rakenne.osat, function(osa) {
-          laskeLaajuudet(osa, tutkinnonOsat);
-          rakenne.$laajuus += osa.$laajuus || 0;
-        });
+        if (!root && rakenne.muodostumisSaanto && rakenne.muodostumisSaanto.laajuus && rakenne.muodostumisSaanto.laajuus.maksimi) {
+          rakenne.$laajuus = rakenne.muodostumisSaanto.laajuus.maksimi;
+        } else if (rakenne.osat.length > 0 && rakenne.muodostumisSaanto && rakenne.muodostumisSaanto.koko && rakenne.muodostumisSaanto.koko.maksimi) {
+          var set = [];
+          for (var i = 0; i < rakenne.muodostumisSaanto.koko.maksimi; ++i) {
+            var newindex = 0;
+            for (var j = 0; j < rakenne.osat.length; ++j) {
+              if (rakenne.osat[j].$laajuus > rakenne.osat[newindex].$laajuus && set.indexOf(j) === -1) {
+                newindex = j;
+              }
+            }
+            set.push(newindex);
+          }
+          _.forEach(set, function(s) { rakenne.$laajuus += rakenne.osat[s].$laajuus; });
+        } else { _.forEach(rakenne.osat, function(osa) { rakenne.$laajuus += osa.$laajuus || 0; }); }
       } else {
         console.log('jokin meni pieleen');
       }
@@ -75,26 +91,7 @@ angular.module('eperusteApp')
       return '' +
         '<span ng-if="rakenne._tutkinnonOsa">{{ ' + tosa + '.nimi | kaanna }}, {{' + tosa + '.laajuus }}ov</span>' +
         '<span class="pull-right" ng-if="rakenne._tutkinnonOsa"><a href="" ng-click="poista(rakenne, vanhempi)"><span class="glyphicon glyphicon-remove"></a></span>' +
-        '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi"><b>{{ rakenne.nimi | kaanna }}</b></span>' +
-        // '<span ng-if="rakenne.muodostumisSaanto !== undefined">' +
-        // '  <span ng-if="rakenne.muodostumisSaanto.laajuus">' +
-        // '    <span ng-if="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi">' +
-        // '      Valitse seuraavista vähintään {{ rakenne.muodostumisSaanto.laajuus.minimi }}ov edestä' +
-        // '    </span>' +
-        // '    <span ng-if="rakenne.muodostumisSaanto.laajuus.minimi !== rakenne.muodostumisSaanto.laajuus.maksimi">' +
-        // '      Valitse seuraavista vähintään {{ rakenne.muodostumisSaanto.laajuus.minimi }} ja enintään {{ rakenne.muodostumisSaanto.laajuus.maksimi }}ov edestä' +
-        // '    </span>' +
-        // '  </span>' +
-        // '  <span ng-if="rakenne.muodostumisSaanto.koko">' +
-        // '    <span ng-if="rakenne.muodostumisSaanto.koko.minimi === rakenne.muodostumisSaanto.koko.maksimi">' +
-        // '      Valitse seuraavista vähintään {{ rakenne.muodostumisSaanto.koko.minimi }}' +
-        // '    </span>' +
-        // '    <span ng-if="rakenne.muodostumisSaanto.koko.minimi !== rakenne.muodostumisSaanto.koko.maksimi">' +
-        // '      Valitse seuraavista vähintään {{ rakenne.muodostumisSaanto.koko.minimi }} ja enintään {{ rakenne.muodostumisSaanto.koko.maksimi }}' +
-        // '    </span>' +
-        // '  </span>' +
-        // '</span>' +
-        '';
+        '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi"><b>{{ rakenne.nimi | kaanna }}</b></span>';
     }
 
     return {
@@ -113,10 +110,6 @@ angular.module('eperusteApp')
         scope.lisataanUuttaPerusteenOsaa = false;
         scope.scratchpad = [];
         scope.roskakori = [];
-
-        // _.forEach(scope.rakenne.osat, function(osa) {
-        //   osa.$parent = scope.rakenne;
-        // });
 
         function liitaUusiTutkinnonOsa() {
           scope.rakenne.osat.push({
@@ -186,9 +179,10 @@ angular.module('eperusteApp')
           '  <div ng-if="!rakenne._tutkinnonOsa && muokkaus" class="right-item">' +
           '    <a href="" ng-click="ryhmaModaali(rakenne, vanhempi)"><span class="glyphicon glyphicon-pencil"></span></a>' +
           '  </div>' +
-          '  <div class="pull-right" ng-if="!rakenne._tutkinnonOsa && muokkaus && rakenne.muodostumisSaanto">' +
-          '    <span class="right-item" ng-if="rakenne.muodostumisSaanto.laajuus"><b>{{ rakenne.$laajuus }}/{{ rakenne.muodostumisSaanto.laajuus.minimi }}ov</b></span>' +
-          '    <span class="right-item" ng-if="rakenne.muodostumisSaanto.koko"><b>{{ rakenne.osat.length }}/{{ rakenne.muodostumisSaanto.koko.minimi }}kpl</b></span>' +
+          '  <div class="pull-right" ng-if="!rakenne._tutkinnonOsa && muokkaus">' +
+          '    <span class="right-item" ng-if="!rakenne.muodostumisSaanto.laajuus"><b>{{ rakenne.$laajuus }}ov</b></span>' +
+          '    <span class="right-item" ng-if="rakenne.muodostumisSaanto && rakenne.muodostumisSaanto.laajuus"><b>{{ rakenne.$laajuus }}/{{ rakenne.muodostumisSaanto.laajuus.minimi }}ov</b></span>' +
+          '    <span class="right-item" ng-if="rakenne.muodostumisSaanto && rakenne.muodostumisSaanto.koko"><b>{{ rakenne.osat.length }}/{{ rakenne.muodostumisSaanto.koko.minimi }}kpl</b></span>' +
           '  </div>' +
           '</div>';
 
@@ -263,7 +257,7 @@ angular.module('eperusteApp')
           kuvaus: {},
           muodostumisSaanto: { koko: { minimi: 1, maksimi: 1 } },
           nimi: { fi: 'Valitse yksi seuraavista' },
-          osat: []
+          osat: [{ _tutkinnonOsa: 1 }, { _tutkinnonOsa: 4 }, { _tutkinnonOsa: 2 }]
         }, {
           kuvaus: {},
           muodostumisSaanto: { laajuus: { minimi: 60, maksimi: 60, yksikko: 'OPINTOVIIKKO' } },
@@ -274,6 +268,7 @@ angular.module('eperusteApp')
         scope.rakenne.rakenne.osat[1].osat.push({
           kuvaus: {},
           nimi: { fi: 'Valitse A tai B' },
+          muodostumisSaanto: { koko: { minimi: 1, maksimi: 1 } },
           osat: [{ _tutkinnonOsa: 5 }]
         });
 
