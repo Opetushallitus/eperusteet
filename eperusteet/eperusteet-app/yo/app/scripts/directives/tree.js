@@ -147,7 +147,8 @@ angular.module('eperusteApp')
               scope.rakenne = uusiryhma;
             } else {
               var indeksi = scope.vanhempi.osat.indexOf(ryhma);
-              if (indeksi !== -1) { scope.vanhempi.osat[indeksi] = uusiryhma; }
+              if (!uusiryhma) { _.remove(scope.vanhempi.osat, ryhma); }
+              else if (indeksi !== -1) { scope.vanhempi.osat[indeksi] = uusiryhma; }
             }
           });
         };
@@ -309,8 +310,12 @@ angular.module('eperusteApp')
               vanhempi: function() { return vanhempi; },
             }
           }).result.then(function(uusiryhma) {
-            if (ryhma === undefined) { scope.skratchpad.push(uusiryhma); }
-            else { ryhma = uusiryhma; }
+            if (uusiryhma) {
+              if (ryhma === undefined) { scope.skratchpad.push(uusiryhma); }
+              else { ryhma = uusiryhma; }
+            } else {
+              _.remove(scope.skratchpad, ryhma);
+            }
           });
         };
 
@@ -356,11 +361,11 @@ angular.module('eperusteApp')
     // $scope.toggleKoko = function() { $scope.koko = !$scope.koko; };
 
     $scope.ok = function(uusiryhma) {
-      if (uusiryhma.osat === undefined) { uusiryhma.osat = []; }
-
-      if (!$scope.ms.laajus) { uusiryhma = _.omit(uusiryhma, 'muodostumisSaanto.laajuus'); }
-      if (!$scope.ms.koko) { uusiryhma = _.omit(uusiryhma, 'muodostumisSaanto.koko'); }
-
+      if (uusiryhma) {
+        if (uusiryhma.osat === undefined) { uusiryhma.osat = []; }
+        if (!$scope.ms.laajus) { uusiryhma = _.omit(uusiryhma, 'muodostumisSaanto.laajuus'); }
+        if (!$scope.ms.koko) { uusiryhma = _.omit(uusiryhma, 'muodostumisSaanto.koko'); }
+      }
       $modalInstance.close(uusiryhma);
     };
     $scope.peruuta = function() { $modalInstance.dismiss(); };

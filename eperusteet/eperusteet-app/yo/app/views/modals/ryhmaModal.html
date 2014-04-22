@@ -81,6 +81,12 @@
 </div>
 
 <div class="modal-footer">
-  <button class="btn btn-primary" ng-click="ok(ryhma)" translate>tallenna</button>
-  <button class="btn btn-danger" ng-click="peruuta()" translate>peru</button>
+  <div class="pull-left">
+    <button ng-show="!poistamassa" class="btn btn-danger" ng-click="poistamassa = true">{{ 'poista' | kaanna }}</button>
+    <div class="clearfix"></div>
+    <button ng-show="poistamassa" class="btn btn-danger" ng-click="poistamassa = false">{{ 'peruuta' | kaanna }}</button>
+    <button ng-show="poistamassa" class="btn btn-danger" ng-click="ok(null)">{{ 'poista' | kaanna }}</button>
+  </div>
+  <button class="btn btn-primary" ng-click="ok(ryhma)">{{ 'tallenna' | kaanna }}</button>
+  <button class="btn btn-danger" ng-click="peruuta()">{{ 'peru' | kaanna }}</button>
 </div>
