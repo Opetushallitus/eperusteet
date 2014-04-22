@@ -58,7 +58,7 @@ public class KoodistoMetadataConverter {
                 tekstit.put(Kieli.of(metadata.getKieli()),  metadata.getNimi());
             }
             
-            TekstiPalanen nimi = new TekstiPalanen(tekstit);
+            TekstiPalanen nimi = TekstiPalanen.of(tekstit);
             return nimi;
 
         }

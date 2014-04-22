@@ -67,6 +67,6 @@ public abstract class TestUtils {
     }
 
     public static TekstiPalanen tekstiPalanenOf(Kieli k, String teksti) {
-        return new TekstiPalanen(Collections.singletonMap(k, teksti));
+        return TekstiPalanen.of(Collections.singletonMap(k, teksti));
     }
 }

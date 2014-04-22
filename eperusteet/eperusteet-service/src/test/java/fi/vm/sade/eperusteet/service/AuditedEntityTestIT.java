@@ -65,8 +65,8 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
 
         setUpSecurityContext(user1);
         TekstiKappale teksti = new TekstiKappale();
-        teksti.setNimi(new TekstiPalanen(Collections.singletonMap(Kieli.FI, "Nimi")));
-        teksti.setTeksti(new TekstiPalanen(Collections.singletonMap(Kieli.FI, "Nimi")));
+        teksti.setNimi(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi")));
+        teksti.setTeksti(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi")));
         teksti = perusteenOsaRepository.save(teksti);
 
         assertEquals(user1, teksti.getLuoja());
@@ -83,7 +83,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         setUpSecurityContext(user2);
         TekstiKappale teksti2 = new TekstiKappale();
         teksti2.setId(teksti.getId());
-        teksti2.setNimi(new TekstiPalanen(Collections.singletonMap(Kieli.FI, "Nimi2")));
+        teksti2.setNimi(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi2")));
         teksti2.setTeksti(teksti.getTeksti());
 
         teksti2 = perusteenOsaRepository.save(teksti2);
@@ -100,8 +100,8 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
     public void testAuditRevisions() {
 
         TekstiKappale teksti = new TekstiKappale();
-        teksti.setNimi(new TekstiPalanen(Collections.singletonMap(Kieli.FI, "Nimi")));
-        teksti.setTeksti(new TekstiPalanen(Collections.singletonMap(Kieli.FI, "Teksti")));
+        teksti.setNimi(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi")));
+        teksti.setTeksti(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Teksti")));
         teksti = perusteenOsaRepository.save(teksti);
 
         teksti.getNimi().getTeksti().put(Kieli.FI, "nimi, muokattu");

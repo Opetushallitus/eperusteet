@@ -7,20 +7,23 @@ import javax.validation.ConstraintValidatorContext;
 
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 
-public class ValidHtmlCollectionValidator extends ValidHtmlValidatorBase implements ConstraintValidator<ValidHtml, Collection<TekstiPalanen>> {
+public class ValidHtmlCollectionValidator extends ValidHtmlValidatorBase implements
+    ConstraintValidator<ValidHtml, Collection<TekstiPalanen>> {
 
-	@Override
-	public void initialize(ValidHtml constraintAnnotation) {
-		setupValidator(constraintAnnotation);
-	}
+    @Override
+    public void initialize(ValidHtml constraintAnnotation) {
+        setupValidator(constraintAnnotation);
+    }
 
-	@Override
-	public boolean isValid(Collection<TekstiPalanen> value, ConstraintValidatorContext context) {
-		for(TekstiPalanen palanen : value) {
-			if(!isValid(palanen)) {
-				return false;
-			}
-		}
-		return true;
-	}
+    @Override
+    public boolean isValid(Collection<TekstiPalanen> value, ConstraintValidatorContext context) {
+        if (value != null) {
+            for (TekstiPalanen palanen : value) {
+                if (!isValid(palanen)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

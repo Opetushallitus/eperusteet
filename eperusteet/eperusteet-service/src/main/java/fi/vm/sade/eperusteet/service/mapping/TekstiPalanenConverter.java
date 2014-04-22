@@ -58,13 +58,13 @@ public class TekstiPalanenConverter extends BidirectionalConverter<TekstiPalanen
             if (current != null) {
                 Map<Kieli, String> teksti = current.getTeksti();
                 teksti.putAll(dto.getTekstit());
-                TekstiPalanen tekstiPalanen = new TekstiPalanen(teksti);
-                if ( tekstiPalanen.equals(current) ) {
+                TekstiPalanen tekstiPalanen = TekstiPalanen.of(teksti);
+                if ( current.equals(tekstiPalanen) ) {
                     return current;
                 }
                 return tekstiPalanen;
             }
         }
-        return new TekstiPalanen(dto.getTekstit());
+        return TekstiPalanen.of(dto.getTekstit());
     }
 }

@@ -52,7 +52,7 @@ public class PerusteServiceDbIT extends AbstractDbIntegrationTest {
     @Before
     public void setUp() {
         Peruste p = new Peruste();
-        p.setNimi(new TekstiPalanen(Collections.singletonMap(Kieli.FI, "Nimi")));
+        p.setNimi(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi")));
         repo.save(p);
         em.flush();
     }

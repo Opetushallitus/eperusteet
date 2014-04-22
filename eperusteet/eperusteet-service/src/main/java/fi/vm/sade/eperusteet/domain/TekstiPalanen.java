@@ -58,20 +58,17 @@ public class TekstiPalanen implements Serializable {
     protected TekstiPalanen() {
     }
 
-    public TekstiPalanen(Map<Kieli, String> tekstit) {
-        teksti = new HashSet<>(tekstit.size());
-        for ( Map.Entry<Kieli, String> e : tekstit.entrySet() ) {
-            teksti.add(new LokalisoituTeksti(e.getKey(), e.getValue()));
-        }
+    private TekstiPalanen(Set<LokalisoituTeksti> tekstit) {
+        this.teksti = tekstit;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Map<Kieli,String> getTeksti() {
-        EnumMap<Kieli,String> map = new EnumMap<>(Kieli.class);
-        for ( LokalisoituTeksti t : teksti ) {
+    public Map<Kieli, String> getTeksti() {
+        EnumMap<Kieli, String> map = new EnumMap<>(Kieli.class);
+        for (LokalisoituTeksti t : teksti) {
             map.put(t.getKieli(), t.getTeksti());
         }
         return map;
@@ -97,6 +94,19 @@ public class TekstiPalanen implements Serializable {
             return Objects.equals(this.teksti, other.teksti);
         }
         return false;
+    }
+
+    public static TekstiPalanen of(Map<Kieli, String> tekstit) {
+        HashSet<LokalisoituTeksti> tmp = new HashSet<>(tekstit.size());
+        for (Map.Entry<Kieli, String> e : tekstit.entrySet()) {
+            if (e.getValue() != null && !e.getValue().isEmpty()) {
+                tmp.add(new LokalisoituTeksti(e.getKey(), e.getValue()));
+            }
+        }
+        if ( tmp.isEmpty() ) {
+            return null;
+        }
+        return new TekstiPalanen(tmp);
     }
 
 }

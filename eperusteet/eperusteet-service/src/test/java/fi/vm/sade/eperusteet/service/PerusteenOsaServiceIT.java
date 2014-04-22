@@ -15,19 +15,8 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Lists;
 
@@ -82,7 +71,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
 
     @Before
     public void setUp() {
-        TekstiPalanen osaamistasoOtsikko = new TekstiPalanen(Collections.singletonMap(Kieli.FI, "otsikko"));
+        TekstiPalanen osaamistasoOtsikko = TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "otsikko"));
         em.persist(osaamistasoOtsikko);
 
         Osaamistaso osaamistaso = new Osaamistaso();

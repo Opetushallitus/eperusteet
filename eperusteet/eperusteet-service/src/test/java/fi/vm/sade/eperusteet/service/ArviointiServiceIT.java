@@ -104,7 +104,7 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
     
     @Before
     public void setUp() {
-        TekstiPalanen osaamistasoOtsikko = new TekstiPalanen(Collections.singletonMap(Kieli.FI, "otsikko"));
+        TekstiPalanen osaamistasoOtsikko = TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "otsikko"));
         em.persist(osaamistasoOtsikko);
 
         Osaamistaso osaamistaso = new Osaamistaso();
@@ -119,9 +119,9 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
 
         em.persist(arviointiasteikko);
         
-        TekstiPalanen osaamistasoOtsikko2 = new TekstiPalanen(Collections.singletonMap(Kieli.FI, "otsikko 2"));
+        TekstiPalanen osaamistasoOtsikko2 = TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "otsikko 2"));
         em.persist(osaamistasoOtsikko2);
-        TekstiPalanen osaamistasoOtsikko3 = new TekstiPalanen(Collections.singletonMap(Kieli.FI, "otsikko 2"));
+        TekstiPalanen osaamistasoOtsikko3 = TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "otsikko 2"));
         em.persist(osaamistasoOtsikko3);
 
         osaamistaso = new Osaamistaso();
