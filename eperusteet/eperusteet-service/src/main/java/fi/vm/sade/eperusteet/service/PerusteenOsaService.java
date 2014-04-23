@@ -20,7 +20,7 @@ public interface PerusteenOsaService {
 
     PerusteenOsaDto get(final Long id);
 
-    PerusteenOsaDto getByKoodiUri(final String koodiUri);
+    List<PerusteenOsaDto> getAllByKoodiUri(final String koodiUri);
 
     List<PerusteenOsaDto> getAll();
 

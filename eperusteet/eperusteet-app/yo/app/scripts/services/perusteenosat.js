@@ -7,7 +7,7 @@ angular.module('eperusteApp')
       {
         osanId: '@id'
       }, {
-        byKoodiUri: { method: 'GET', params: { koodi: true } },
+        byKoodiUri: { method: 'GET', isArray: true, params: { koodi: true } },
         saveTekstikappale: {method:'POST', params:{tyyppi:'perusteen-osat-tekstikappale'}},
         saveTutkinnonOsa: {method:'POST', params:{tyyppi:'perusteen-osat-tutkinnon-osa'}},
         revisions: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/revisions'},
@@ -36,8 +36,12 @@ angular.module('eperusteApp')
         if (!tutkinnonOsa.koodiUri || tutkinnonOsa.koodiUri === '') {
           deferred.reject(['koodi-virhe-1']);
         } else {
-          PerusteenOsat.byKoodiUri({ osanId: tutkinnonOsa.koodiUri }, function() {
-            deferred.reject(['koodi-virhe-2']);
+          PerusteenOsat.byKoodiUri({ osanId: tutkinnonOsa.koodiUri }, function(re) {
+            if (re.length === 0) {
+              deferred.resolve();
+            } else {
+              deferred.reject(['koodi-virhe-2']);
+            }
           }, function() {
             var virheet = validoi(tutkinnonOsa);
             if (_.isEmpty(virheet)) {

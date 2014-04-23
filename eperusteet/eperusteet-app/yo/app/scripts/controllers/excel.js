@@ -70,25 +70,33 @@ angular.module('eperusteApp')
     $scope.tallennaOsatutkinnot = function() {
       var doneSuccess = _.after(_.size($scope.osatutkinnot), function() { $scope.uploadSuccess = true; });
       _($scope.osatutkinnot).filter(function(ot) {
-        return ot.ladattu !== 0;
+        return ot.$ladattu !== 0;
       }).forEach(function(ot) {
-        var cop = _.clone(ot);
-        TutkinnonOsanValidointi.validoi(cop).then(function() {
-          PerusteenOsat.saveTutkinnonOsa(cop, function(re) {
-            ot.$ladattu = 0;
-            ot.id = re.id;
-            ot.koodiUri = re.koodi;
-            doneSuccess();
-          }, function(err) {
-            if (err) {
-              ot.$syy = [err.data.syy];
-              ot.$ladattu = 1;
-            }
-          });
-        }, function(virhe) {
-          ot.$syy = virhe;
-          ot.$ladattu = 1;
+        var koodiUriKaytossa = _.any($scope.osatutkinnot, function(toinen) {
+          return (ot !== toinen && ot.koodiUri !== '' && toinen.koodiUri === ot.koodiUri);
         });
+        if (koodiUriKaytossa) {
+          ot.$syy = ['excel-ei-kahta-samaa'];
+        } else {
+          var cop = _.clone(ot);
+          TutkinnonOsanValidointi.validoi(cop).then(function() {
+            cop.tavoitteet = {};
+            PerusteenOsat.saveTutkinnonOsa(cop, function(re) {
+              ot.$ladattu = 0;
+              ot.id = re.id;
+              ot.koodiUri = re.koodiUri;
+              doneSuccess();
+            }, function(err) {
+              if (err) {
+                ot.$syy = [err.data.syy];
+                ot.$ladattu = 1;
+              }
+            });
+          }, function(virhe) {
+            ot.$syy = virhe;
+            ot.$ladattu = 1;
+          });
+        }
       });
     };
 

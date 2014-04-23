@@ -35,17 +35,17 @@ import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 public class PerusteenOsaController {
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteenOsaController.class);
-    
+
     @Autowired
     private PerusteenOsaService service;
-    
+
     @RequestMapping(method = GET)
     @ResponseBody
     public List<? extends PerusteenOsaDto> getAll() {
         LOG.info("FINDALL");
         return service.getAll();
     }
-    
+
     @RequestMapping(method = GET, params = "nimi")
     @ResponseBody
     public List<? extends PerusteenOsaDto> getAllWithName(@RequestParam("nimi") final String name) {
@@ -63,14 +63,14 @@ public class PerusteenOsaController {
         }
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/{id}/revisions", method = GET)
     @ResponseBody
     public List<Revision> getRevisions(@PathVariable("id") final Long id) {
     	LOG.debug("get revisions");
     	return service.getRevisions(id);
     }
-    
+
     @RequestMapping(value = "/{id}/revisions/{revisionId}", method = GET)
     @ResponseBody
     public ResponseEntity<PerusteenOsaDto> getRevision(@PathVariable("id") final Long id, @PathVariable("revisionId") final Integer revisionId) {
@@ -81,19 +81,16 @@ public class PerusteenOsaController {
         }
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/{koodiUri}", method = GET, params = "koodi=true")
     @ResponseBody
-    public ResponseEntity<PerusteenOsaDto> get(@PathVariable("koodiUri") final String koodiUri) {
+    public ResponseEntity<List<PerusteenOsaDto>> get(@PathVariable("koodiUri") final String koodiUri) {
     	LOG.info("get by koodi {}", koodiUri);
-    	PerusteenOsaDto t = service.getByKoodiUri(koodiUri);
-        if (t == null) {
-        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    	List<PerusteenOsaDto> t = service.getAllByKoodiUri(koodiUri);
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
-    
-    
+
+
 
     @RequestMapping(method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
     @ResponseStatus(HttpStatus.CREATED)
@@ -103,7 +100,7 @@ public class PerusteenOsaController {
         tutkinnonOsaDto = service.save(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
         return new ResponseEntity<>(tutkinnonOsaDto, buildHeadersFor(tutkinnonOsaDto.getId(), ucb), HttpStatus.CREATED);
     }
-    
+
     @RequestMapping(method = POST, params = PerusteenOsaMappings.IS_TEKSTIKAPPALE_PARAM)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -120,7 +117,7 @@ public class PerusteenOsaController {
         tekstiKappaleDto.setId(id);
         return service.update(tekstiKappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
     }
-    
+
     @RequestMapping(value = "/{id}", method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
     @ResponseBody
     public TutkinnonOsaDto update(@PathVariable("id") final Long id, @RequestBody TutkinnonOsaDto tutkinnonOsaDto) {
@@ -128,7 +125,7 @@ public class PerusteenOsaController {
         tutkinnonOsaDto.setId(id);
         return service.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
     }
-   
+
     @RequestMapping(value = "/{id}", method = DELETE, consumes = "*/*")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
@@ -136,7 +133,7 @@ public class PerusteenOsaController {
         LOG.info("delete {}", id);
         service.delete(id);
     }
-    
+
     @RequestMapping(value = "/tyypit", method = GET)
     @ResponseBody
     public List<String> getPerusteenOsaTypes() {

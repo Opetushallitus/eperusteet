@@ -48,8 +48,8 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     }
 
     @Override
-    public PerusteenOsaDto getByKoodiUri(final String koodiUri) {
-        return mapper.map(tutkinnonOsaRepo.findOneByKoodiUri(koodiUri), PerusteenOsaDto.class);
+    public List<PerusteenOsaDto> getAllByKoodiUri(final String koodiUri) {
+        return mapper.mapAsList(tutkinnonOsaRepo.findByKoodiUri(koodiUri), PerusteenOsaDto.class);
     }
 
     @Override

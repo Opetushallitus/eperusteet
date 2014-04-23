@@ -18,9 +18,6 @@ package fi.vm.sade.eperusteet.repository;
 
 import java.util.List;
 
-import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
-
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
@@ -32,6 +29,6 @@ import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
  */
 @Repository
 public interface TutkinnonOsaRepository extends JpaWithVersioningRepository<TutkinnonOsa, Long> {
-    TutkinnonOsa findOneByKoodiUri(String koodiUri);
+    List<TutkinnonOsa> findByKoodiUri(String koodiUri);
     List<TutkinnonOsa> findByNimiTekstiTekstiContainingIgnoreCase(String teksti);
 }
