@@ -5,10 +5,12 @@
     <h3 ng-hide="tk.id">{{ tk.nimi.fi }} (<a href="" ng-click="poistaTekstikentta(tk)">Poista</a>)</h3>
     <h3 ng-show="tk.id"><a target="_blank" ui-sref="muokkaus.vanha({ perusteenOsanTyyppi: 'tekstikappale', id: tk.id })">{{ tk.nimi.fi }}</a></h3>
     <div class="well">
-      <div class="alert alert-danger" ng-show="tk.syy !== ''">
-        {{ tk.syy }}
+      <div class="alert alert-danger" ng-show="tk.$syy.length > 0">
+        <div ng-repeat="syy in ot.$syy">
+          {{ syy | kaanna }}
+        </div>
       </div>
-      <div class="alert alert-success" ng-show="tk.syy === '' && tk.id">
+      <div class="alert alert-success" ng-show="tk.$syy.length === 0 && tk.id">
         Tekstikappale tallennettiin onnistuneesti (<b>id</b>: {{ tk.id }})
       </div>
       {{ tk.teksti.fi }}

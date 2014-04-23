@@ -51,14 +51,14 @@ angular.module('eperusteApp')
     $scope.tallennaPeruste = function(peruste) {
       var doneSuccess = _.after(_.size(peruste.tekstikentat), function() { $scope.uploadSuccess = true; });
       _(peruste.tekstikentat).filter(function(tk) {
-        return tk.ladattu !== 0;
+        return tk.$ladattu !== 0;
       }).forEach(function(tk) {
-        PerusteenOsat.saveTekstikappale(_.omit(tk, 'uploadErrors', 'syy', 'ladattu'), function(re) {
-          tk.ladattu = true;
+        PerusteenOsat.saveTekstikappale(tk, function(re) {
+          tk.$ladattu = true;
           tk.id = re.id;
           doneSuccess();
         }, function(err) {
-          tk.syy = err.data.syy;
+          tk.$syy = err.data.syy;
         });
       });
     };
@@ -72,22 +72,22 @@ angular.module('eperusteApp')
       _($scope.osatutkinnot).filter(function(ot) {
         return ot.ladattu !== 0;
       }).forEach(function(ot) {
-        var cop = _.omit(_.clone(ot), 'ladattu', 'syy');
+        var cop = _.clone(ot);
         TutkinnonOsanValidointi.validoi(cop).then(function() {
           PerusteenOsat.saveTutkinnonOsa(cop, function(re) {
-            ot.ladattu = 0;
+            ot.$ladattu = 0;
             ot.id = re.id;
             ot.koodiUri = re.koodi;
             doneSuccess();
           }, function(err) {
             if (err) {
-              ot.syy = err.data.syy;
-              ot.ladattu = 1;
+              ot.$syy = [err.data.syy];
+              ot.$ladattu = 1;
             }
           });
         }, function(virhe) {
-          ot.syy = virhe;
-          ot.ladattu = 1;
+          ot.$syy = virhe;
+          ot.$ladattu = 1;
         });
       });
     };
@@ -106,19 +106,18 @@ angular.module('eperusteApp')
           $scope.peruste = resolve.peruste;
           $scope.peruste.tekstikentat = _.map($scope.peruste.tekstikentat, function(tk) {
             return _.merge(tk, {
-                ladattu: -1,
-                syy: ''
+                $ladattu: -1,
+                $syy: []
             });
           });
           $scope.osatutkinnot = _.map(resolve.osatutkinnot.osaperusteet, function(ot) {
             return _.merge(ot, {
-                ladattu: -1,
+                $ladattu: -1,
                 koodiUri: '',
-                syy: ''
+                $syy: []
             });
           });
           $scope.lukeeTiedostoa = false;
-          console.log($scope.osatutkinnot);
         }, function(errors) {
           $scope.errors = errors;
           $scope.lukeeTiedostoa = false;

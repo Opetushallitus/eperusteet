@@ -2,7 +2,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('Koodisto', function($http, $modal, SERVICE_LOC, $resource) {
+  .service('Koodisto', function($http, $modal, SERVICE_LOC, $resource, Kaanna) {
     var taydennykset = [];
     var koodistoVaihtoehdot = ['tutkinnonosat', 'koulutus'];
     var nykyinenKoodisto = _.first(koodistoVaihtoehdot);
@@ -12,6 +12,7 @@ angular.module('eperusteApp')
       if (!_.isEmpty(taydennykset) && koodisto === nykyinenKoodisto) { cb(); return; }
       $http.get(SERVICE_LOC + '/koodisto/' + koodisto).then(function(re) {
         taydennykset = koodistoMapping(re.data);
+        taydennykset = _.sortBy(taydennykset, function(t) { return Kaanna.kaanna(t.nimi); });
         cb();
       });
     }
@@ -50,7 +51,10 @@ angular.module('eperusteApp')
 
     function filtteri(haku) {
       haku = haku.toLowerCase();
-      return _.filter(taydennykset, function(t) { return (t.koodi.indexOf(haku) !== -1 || t.haku.indexOf(haku) !== -1) && lisaFiltteri(t); });
+
+      return _.filter(taydennykset, function(t) {
+        return (t.koodi.indexOf(haku) !== -1 || t.haku.indexOf(haku) !== -1);
+      });
     }
 
     function modaali(successCb, resolve, failureCb, lisaf) {
@@ -81,14 +85,29 @@ angular.module('eperusteApp')
     $scope.koodistoVaihtoehdot = Koodisto.vaihtoehdot;
     $scope.tyyppi = tyyppi;
     $scope.loydetyt = [];
-    $scope.haku = function(rajaus, kieli) { $scope.loydetyt = Koodisto.filtteri(rajaus, kieli);};
+    $scope.nakyvilla = [];
     $scope.lataa = true;
     $scope.syote = '';
-    $scope.kieli = 'fi';
+
+    $scope.nykyinen = 0;
+
+    var persivu = 10;
+
+    $scope.valitseSivu = function(sivu) {
+      if (sivu >= 0 && sivu < _.size($scope.loydetyt) / persivu) {
+        $scope.nykyinen = sivu;
+        $scope.nakyvilla = _.last(_.first($scope.loydetyt, persivu * sivu + persivu), persivu);
+      }
+    };
+
+    $scope.haku = function(rajaus) {
+      $scope.loydetyt = Koodisto.filtteri(rajaus);
+      $scope.valitseSivu(0);
+    };
 
     Koodisto.hae($scope.tyyppi, function() {
       $scope.lataa = false;
-      $scope.haku('', $scope.kieli);
+      $scope.haku('');
     });
 
     $scope.ok = function(koodi) { $modalInstance.close(koodi); };

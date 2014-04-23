@@ -1,5 +1,5 @@
 <div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
-  <h3>{{ 'tutkinnonosat' | translate }} ({{ osatutkinnot.length }}kpl)</h3>
+  <h3>{{ 'tutkinnonosat' | kaanna }} ({{ osatutkinnot.length }}kpl)</h3>
   <table class="table">
     <tr>
       <th translate>tila</th>
@@ -7,12 +7,12 @@
       <th translate>nimi</th>
       <th></th>
     </tr>
-    <tr ng-repeat="ot in osatutkinnot" ng-show="ot.ladattu !== 0">
+    <tr ng-repeat="ot in osatutkinnot" ng-show="ot.$ladattu !== 0">
       <td class="glyphtila">
-        <span ng-show="ot.ladattu === 1">
+        <span ng-show="ot.$ladattu === 1">
           <span class="glyphicon glyphicon-remove"></span>
         </span>
-        <span ng-hide="ot.ladattu === 1" class="glyphicon glyphicon-minus"></span>
+        <span ng-hide="ot.$ladattu === 1" class="glyphicon glyphicon-minus"></span>
       </td>
       <td class="osatutkintoid">
         <div class="input-group input-group-sm">
@@ -25,8 +25,10 @@
       <td>
         {{ ot.nimi.fi }}
         <br>
-        <div ng-show="ot.syy !== ''" class="alert alert-danger">
-          <span ng-repeat="syy in ot.syy">{{ syy | translate }} </span>
+        <div ng-show="ot.$syy.length > 0" class="alert alert-danger">
+          <div ng-repeat="syy in ot.$syy">
+            {{ syy | kaanna }}
+          </div>
         </div>
       </td>
       <td class="text-right">
@@ -37,7 +39,7 @@
         </div>
       </td>
     </tr>
-    <tr ng-repeat="ot in osatutkinnot" ng-show="ot.ladattu === 0" class="success">
+    <tr ng-repeat="ot in osatutkinnot" ng-show="ot.$ladattu === 0" class="success">
       <td class="glyphtila">
         <span class="glyphicon glyphicon-ok"></span>
       </td>
@@ -59,7 +61,7 @@
 
 <!-- Tallennusvirheet -->
 <div class="alert alert-danger" ng-show="uploadErrors.length > 0">
-  {{ 'tutkinnonosa-save-fail' | translate }}
+  {{ 'tutkinnonosa-save-fail' | kaanna }}
   <table class="table">
     <tr>
       <th translate>tutkinnonosa</th>

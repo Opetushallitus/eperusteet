@@ -1,27 +1,33 @@
 <div class="modal-header">
-  <h2>{{ 'hae-koodi-koodistosta' | translate }} ({{ tyyppi | translate }})</h2>
+  <h2>{{ 'hae-koodi-koodistosta' | kaanna }} ({{ tyyppi | kaanna }})</h2>
 </div>
 
 <div class="modal-body">
   <div class="panel panel-default">
     <div class="panel-body">
       <div class="clearfix"></div>
-      <label translate>koodi</label>
-      <input ng-hide="lataa" ng-change="haku(syote, kieli)" type="text" ng-model="syote" class="form-control" placeholder="{{ 'rajaa-tuloksia' | translate }}" />
-      <input ng-show="lataa" class="form-control" value="{{ 'haetaan-tutkinnon-osia' | translate }}" disabled />
+      <label>{{ 'koodi' | kaanna }}</label>
+      <input ng-hide="lataa" ng-change="haku(syote, kieli)" type="text" ng-model="syote" class="form-control" placeholder="{{ 'rajaa-tuloksia' | kaanna }}" />
+      <input ng-show="lataa" class="form-control" value="{{ 'haetaan-tutkinnon-osia' | kaanna }}" disabled />
     </div>
   </div>
 
-  <table ng-hide="lataa" class="table table-striped" ng-model="kieli">
+  <table class="table table-striped">
     <tr>
-      <th translate>koodi</th>
-      <th translate>nimi</th>
+      <th class="col-xs-3">{{ 'koodi' | kaanna }}</th>
+      <th class="col-xs-9">{{ 'nimi' | kaanna }}</th>
     </tr>
-    <tr ng-repeat="l in loydetyt | limitTo: 10">
-      <td><a href="" ng-click="ok(l)">{{ l.koodi }}</a></td>
-      <td>{{ l.nimi[kieli] }}</td>
+    <tr ng-repeat="l in nakyvilla">
+      <td class="col-xs-3"><a href="" ng-click="ok(l)">{{ l.koodi }}</a></td>
+      <td class="col-xs-9">{{ l.nimi | kaanna }}</td>
     </tr>
   </table>
+
+  <ul class="pager">
+    <li><a href="" ng-click="valitseSivu(nykyinen - 1)">{{ 'edelliset' | kaanna }}</a></li>
+    <li><a href="" ng-click="valitseSivu(nykyinen + 1)">{{ 'seuraavat' | kaanna }}</a></li>
+  </ul>
+
 </div>
 
 <div class="modal-footer">
