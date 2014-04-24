@@ -13,6 +13,8 @@
     "tallennettu": "[Tallennettu]",
     "tyhjä": "[Tyhjä]",
     "haku": "[Haku]",
+    "peruuta": "[Peruuta]",
+    "tallenna-nappi": "[Tallenna]",
 
     "haku-otsikko": "[Perusteen haku]",
     "haku-koulutusala": "[Koulutusala]",
@@ -161,7 +163,7 @@
     "diaarinumero-label": "[Diaarinumero]",
     "anna-diaarinumero-placeholder": "[Syötä diaarinumero]",
     "päätöspvm-label": "[Päätöspäivämäärä]",
-    "tallenna-perusteprojekti-nappi": "[Tallenna]",
+    "luo-perusteprojekti-nappi": "[Luo projekti]",
     "valitse-tehtäväluokka": "[Valitse tehtäväluokka]",
     "tehtäväluokka-label": "[Tehtäväluokka]",
     "anna-päätöspäivämäärä": "[Syötä päätöspäivämäärä]",
@@ -184,8 +186,11 @@
     "projekti-perustiedot": "[Perustiedot]",
     "projekti-projektiryhmä": "[Projektiryhmä]",
     "projekti-peruste": "[Perusteen tiedot]",
+    "projekti-toimikausi": "[Toimikausi]",
     "valitse-peruste": "[Valitse peruste]",
     "perusteen-koodi": "[Perusteen koodi]",
+    "projektin-tiedot": "[Projektin tiedot]",
+    "uusi-projekti-otsikko": "[Uusi perusteprojekti]",
     
     "opetussuunnitelma": "[Opetussuunnitelma]",
     "nayttotutkinto": "[Näyttötutkinto]",
@@ -197,6 +202,9 @@
     
     "perusteprojekti-perustenimi-placeholder": "<[Anna perusteen nimi]>",
     "perusteprojekti-koulutusala-placeholder": "<[Anna koulutusala]>",
+    "perusteprojekti-nimi-placeholder": "[<Anna projektin nimi>]",
+    "projekti-header-peruste": "[Peruste]",
+    "projekti-header-paatosPvm": "[Päätöspäivämäärä]",
     
     "lisaa-tutkintokohtainen-osa": "[Lisää tutkintokohtainen osa]",
     "uusi-tutkinnon-osa": "[<Uusi sisältö>]"

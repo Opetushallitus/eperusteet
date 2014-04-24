@@ -11,6 +11,7 @@ angular.module('eperusteApp')
     };
 
     $scope.koodistoHaku = function(koodisto) {
+      $scope.hakemassa = true;
 
       $scope.projekti.peruste.nimi = koodisto.nimi;
       $scope.projekti.peruste.koodi = koodisto.koodi;
@@ -18,6 +19,8 @@ angular.module('eperusteApp')
       $scope.projekti.peruste.koulutukset.push({});
       $scope.projekti.peruste.koulutukset[0].koulutuskoodi = koodisto.koodi;
       $scope.projekti.peruste.suoritustavat = [{suoritustapakoodi: 'ops'}];
+      
+      
 
       Koodisto.haeAlarelaatiot($scope.projekti.peruste.koodi, function (relaatiot) {
         _.forEach(relaatiot, function(rel) {
@@ -35,6 +38,10 @@ angular.module('eperusteApp')
               break;
           }
         });
+        $scope.hakemassa = false;
+      }, function (virhe) {
+        console.log('koodisto alarelaatio virhe', virhe);
+        $scope.hakemassa = false;
       });
     };
 

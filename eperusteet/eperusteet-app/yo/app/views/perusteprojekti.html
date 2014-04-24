@@ -14,22 +14,28 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
-<div class="container project-header">
+<div class="project-header">
     <div class="row">
         <div class="col-md-8">
-            <h2>{{ projekti.peruste.nimi || "perusteprojekti-perustenimi-placeholder" | kaanna }}</h2>
-            <p>Koulutusala: {{koulutusalaNimi(projekti.peruste.koulutukset[0].koulutusalakoodi).nimi || "perusteprojekti-koulutusala-placeholder" | kaanna}}</p>
+            <div class="status text-center">
+                <p class="glyphicon glyphicon-pencil"></p>
+                <p>LUONNOS</p>
+            </div>
+            <h2>{{ projekti.nimi || 'perusteprojekti-nimi-placeholder' | kaanna }}</h2>
+            {{'projekti-header-peruste' | kaanna}}: {{projekti.peruste.nimi || 'perusteprojekti-perustenimi-placeholder' | kaanna}}<br>
+            {{'projekti-header-koulutusala' | kaanna}}: {{koulutusalaNimi(projekti.peruste.koulutukset[0].koulutusalakoodi).nimi || 'perusteprojekti-koulutusala-placeholder' | kaanna}}<br>
+            {{'projekti-header-paatosPvm' | kaanna}}: {{projekti.paatosPvm | date:'dd.MM.yyyy'}}
             <!--p>voimassaoloaika kumoamistiedot siirtymäajat</p-->
         </div>
         <div class="col-md-4 tools">
-            <button type="button" class="btn btn-default btn-sm" ui-sref="perusteprojekti.tiedot({ perusteProjektiId: projekti.id })">
+            <a ui-sref="perusteprojekti.editoi.tiedot({ perusteProjektiId: projekti.id })">
                 <span class="glyphicon glyphicon-info-sign"></span> 
                 Projektin tiedot
-            </button>
-            <button type="button" class="btn btn-default btn-sm">
+            </a>
+            <a>
                 <span class="glyphicon glyphicon-user"></span> 
                 Projektiryhmä
-            </button>
+            </a>
         </div>
     </div>
 </div>

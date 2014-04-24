@@ -35,7 +35,7 @@ European Union Public Licence for more details.
       <div class="panel panel-default">
         <div class="panel-heading" >{{'perusteprojektit-otsikko'| translate}}</div>
         <div class="panel-body">
-          <a class="btn btn-default btn-xs" title="{{'uusi-projekti'| translate}}" ui-sref="perusteprojekti.editoi.sisalto({ perusteProjektiId: 'uusi' })" translate>uusi-projekti</a>
+          <a class="btn btn-default btn-xs" title="{{'uusi-projekti'| translate}}" ui-sref="perusteprojekti.tiedot.uusi({ perusteProjektiId: 'uusi' })" translate>uusi-projekti</a>
           <ul class="list-unstyled">
             <li class="ellipsis-no-wrap" ng-repeat="projekti in projektit| limitTo:projektitRaja" ><a title="{{projekti.nimi}}" href="{{ projekti.url}}">{{projekti.diaarinumero}}: {{projekti.nimi}}</a></li>
           </ul>
