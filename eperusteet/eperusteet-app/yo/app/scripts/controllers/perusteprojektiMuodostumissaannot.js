@@ -24,7 +24,7 @@ angular.module('eperusteApp')
         PerusteProjektiService.save(vastaus);
         PerusteRakenteet.get({
           perusteenId: vastaus.peruste.id,
-          suoritustapa: 'naytto' // FIXME
+          suoritustapa: vastaus.peruste.suoritustavat[0].suoritustapakoodi // FIXME
         }, function(re) {
           $scope.rakenne = re;
           $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck($scope.rakenne.tutkinnonOsat, '_tutkinnonOsa'), $scope.rakenne.tutkinnonOsat);

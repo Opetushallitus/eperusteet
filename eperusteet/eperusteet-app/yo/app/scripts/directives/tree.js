@@ -153,13 +153,16 @@ angular.module('eperusteApp')
         }, true);
 
         scope.sortableOptions = {
-          placeholder: 'group-placeholder',
+          placeholder: 'placeholder',
           connectWith: '.tree-group',
           disabled: !scope.muokkaus,
           delay: 100,
-          // tolerance: 'pointer',
-          cursorAt: { top : 2, left: 2 },
+          //tolerance: 'pointer',
+          //cursorAt: { top : 2, left: 2 },
           cursor: 'move',
+          start: function(e, ui) {
+            ui.placeholder.html('<div class="group-placeholder"></div>');
+          }
         };
 
         scope.liitaUusiTutkinnonOsa = liitaUusiTutkinnonOsa;
@@ -341,24 +344,30 @@ angular.module('eperusteApp')
         paivitaUniikit();
 
         scope.sortableOptions = {
-          placeholder: 'group-placeholder',
+          placeholder: 'placeholder',
           connectWith: '.tree-group',
           disabled: !scope.muokkaus,
           delay: 100,
-          // tolerance: 'pointer',
-          cursorAt: { top : 2, left: 2 },
+          //tolerance: 'pointer',
+          //cursorAt: { top : 2, left: 2 },
           cursor: 'move',
+          start: function(e, ui) {
+            ui.placeholder.html('<div class="group-placeholder"></div>');
+          }
         };
 
         scope.sortableOptionsUnique = {
-          placeholder: 'group-placeholder',
+          placeholder: 'placeholder',
           connectWith: '.tree-group',
           disabled: !scope.muokkaus,
           delay: 100,
-          // tolerance: 'pointer',
-          cursorAt: { top : 2, left: 2 },
+          //tolerance: 'pointer',
+          //cursorAt: { top : 2, left: 2 },
           cursor: 'move',
-          stop: function() { paivitaUniikit(); }
+          stop: function() { paivitaUniikit(); },
+          start: function(e, ui) {
+            ui.placeholder.html('<div class="group-placeholder"></div>');
+          }
         };
 
         scope.ryhmaModaali = function(ryhma, vanhempi) {
