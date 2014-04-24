@@ -334,7 +334,9 @@ angular.module('eperusteApp')
 
         function paivitaUniikit() {
           scope.uniikit = [];
-          scope.uniikit = _.map(scope.rakenne.tutkinnonOsat, function(osa) { return _.clone(osa); });
+          scope.uniikit = _.map(scope.rakenne.tutkinnonOsat, function(osa) {
+            return {  _tutkinnonOsa: osa._tutkinnonOsa, nimi: osa.nimi };
+          });
         }
         paivitaUniikit();
 
@@ -350,7 +352,7 @@ angular.module('eperusteApp')
 
         scope.sortableOptionsUnique = {
           placeholder: 'group-placeholder',
-          connectWith: '#tree-sortable',
+          connectWith: '.tree-group',
           disabled: !scope.muokkaus,
           delay: 100,
           // tolerance: 'pointer',

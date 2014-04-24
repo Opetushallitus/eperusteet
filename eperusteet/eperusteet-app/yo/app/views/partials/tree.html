@@ -57,7 +57,7 @@
         <h3>Tutkinnon osia ei ole</h3>
       </div>
       <div ng-if="uniikit.length > 0" class="rajauslaatikko">
-        <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia..."></input>
+        <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia...">
       </div>
       <div class="tutkinnonosa-laatikko" ng-repeat="osa in uniikit | filter:rajaaTutkinnonOsia | orderBy:'nimi.fi'">
         <div class="otsikko">
