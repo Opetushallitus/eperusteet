@@ -3,3 +3,19 @@
     max-width: $screen-sm-min;
   }
 }
+
+.iso-valinta {
+  cursor: pointer;
+  border: 1px solid $nav-tabs-border-color;
+  text-align: center;
+  vertical-align: middle;
+  margin-top: 10px;
+  &:hover {
+    border: 1px solid black;
+  }
+  h3 {
+    margin-bottom: 20px;
+  }
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
