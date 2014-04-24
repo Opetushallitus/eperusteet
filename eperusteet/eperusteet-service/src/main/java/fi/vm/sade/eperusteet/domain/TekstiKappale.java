@@ -57,4 +57,13 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
         this.teksti = teksti;
     }
 
+    @Override
+    public void mergeState(PerusteenOsa perusteenOsa) {
+        super.mergeState(perusteenOsa);
+        if (perusteenOsa instanceof TekstiKappale) {
+            TekstiKappale other = (TekstiKappale) perusteenOsa;
+            this.setTeksti(other.getTeksti());
+        } 
+    }
+
 }

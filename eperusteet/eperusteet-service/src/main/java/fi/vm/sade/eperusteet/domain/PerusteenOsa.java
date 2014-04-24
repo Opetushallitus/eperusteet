@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
@@ -41,16 +40,17 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Audited
-@Table(name="perusteenosa")
-public abstract class PerusteenOsa extends AbstractAuditedEntity implements Serializable, Mergeable<PerusteenOsa>, ReferenceableEntity {
+@Table(name = "perusteenosa")
+public abstract class PerusteenOsa extends AbstractAuditedEntity implements Serializable, Mergeable<PerusteenOsa>,
+    ReferenceableEntity {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-	@ValidHtml(whitelist=WhitelistType.MINIMAL)
+    @ValidHtml(whitelist = WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen nimi;
@@ -73,10 +73,10 @@ public abstract class PerusteenOsa extends AbstractAuditedEntity implements Seri
 
     @Override
     public void mergeState(PerusteenOsa updated) {
-        if ( getId() == null || !getId().equals(updated.getId()) ) {
+        if (this.getClass().isAssignableFrom(updated.getClass()) && getId() == null || !getId().equals(updated.getId())) {
             throw new IllegalArgumentException("Vain kahden saman entiteetin tilan voi yhdistää");
         }
         this.nimi = updated.getNimi();
     }
-    
+
 }

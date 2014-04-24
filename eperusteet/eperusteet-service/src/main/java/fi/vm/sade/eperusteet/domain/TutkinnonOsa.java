@@ -146,10 +146,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setKoodiUri(other.getKoodiUri());
             this.setOpintoluokitus(other.getOpintoluokitus());
             this.setOsaamisala(other.getOsaamisala());
-        } else {
-            throw new IllegalArgumentException("Oletettiin " + this.getClass().getSimpleName() + ", oli "
-                + perusteenOsa.getClass().getSimpleName());
-        }
+        } 
     }
 
 }
