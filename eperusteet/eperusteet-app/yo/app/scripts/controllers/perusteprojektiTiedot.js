@@ -65,7 +65,7 @@ angular.module('eperusteApp')
           PerusteProjektiService.update();
           avaaProjektinSisalto(vastaus.id);
         }, function (virhe) {
-          
+          console.log('projektin tallennusvirhe', virhe);
         });
       } else {
         projekti.id = null;
@@ -74,7 +74,7 @@ angular.module('eperusteApp')
           PerusteProjektiService.update();
           avaaProjektinSisalto(vastaus.id);
         }, function(virhe) {
-          console.log('virhe', virhe);
+          console.log('projektin luontivirhe', virhe);
         });
       }
     };
