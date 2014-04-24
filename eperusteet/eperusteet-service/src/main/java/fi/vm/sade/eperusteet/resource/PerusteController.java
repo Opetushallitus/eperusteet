@@ -96,15 +96,13 @@ public class PerusteController {
     }
 
      
-    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{perusteenosaId}/lapsi", method = POST)
+    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{perusteenosaViiteId}/lapsi", method = POST)
     @ResponseBody
     public ResponseEntity<PerusteenSisaltoViiteDto> addSisaltoLapsi(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa,
-        @PathVariable("perusteenosaId") final String perusteenosaId) {
-        PerusteDto p = service.get(perusteId);
-        throw new UnsupportedOperationException("Not supported yet.");
-        //return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), null), HttpStatus.CREATED);
+        @PathVariable("perusteenosaViiteId") final Long perusteenosaViiteId) {
+        return new ResponseEntity<>(service.addSisaltoLapsi(perusteId, perusteenosaViiteId), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)

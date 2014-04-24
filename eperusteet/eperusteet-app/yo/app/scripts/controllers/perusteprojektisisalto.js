@@ -48,6 +48,7 @@ angular.module('eperusteApp')
     var haeSisalto = function(suoritustapa) {
       Suoritustapa.get({perusteenId: $scope.projekti.peruste.id, suoritustapa: suoritustapa}, function(vastaus) {
         $scope.projekti.peruste.sisalto = vastaus;
+        console.log('suoritustapa sisältö', vastaus);
       }, function(virhe) {
         console.log('suoritustapasisältöä ei löytynyt', virhe);
       });

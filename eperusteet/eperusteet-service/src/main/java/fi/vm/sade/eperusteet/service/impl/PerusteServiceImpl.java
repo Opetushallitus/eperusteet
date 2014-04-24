@@ -82,6 +82,8 @@ public class PerusteServiceImpl implements PerusteService {
     @Autowired
     KoulutusalaService koulutusalaService;
     @Autowired
+    PerusteenOsaViiteRepository perusteenOsaViiteRepo;
+    @Autowired
     @Dto
     private DtoMapper mapper;
     @Autowired
@@ -224,7 +226,6 @@ public class PerusteServiceImpl implements PerusteService {
         uusiViite = new PerusteenOsaViite();
         
         if (viite == null) {
-            uusiViite = new PerusteenOsaViite();
             TekstiKappale uusiKappale = new TekstiKappale();
             em.persist(uusiKappale);
             uusiViite.setPerusteenOsa(uusiKappale);
@@ -240,6 +241,25 @@ public class PerusteServiceImpl implements PerusteService {
         return mapper.map(uusiViite, PerusteenSisaltoViiteDto.class);
     }
 
+    @Override
+    @Transactional
+    public PerusteenSisaltoViiteDto addSisaltoLapsi(Long perusteId, Long perusteenosaViiteId) {
+        PerusteenOsaViite uusiViite = new PerusteenOsaViite();
+        
+        PerusteenOsaViite viiteEntity = perusteenOsaViiteRepo.findOne(perusteenosaViiteId);
+        if (viiteEntity == null) {
+            throw new IllegalArgumentException("Perusteenosaviitettä ei ole olemassa");
+        }
+
+        TekstiKappale uusiKappale = new TekstiKappale();
+        em.persist(uusiKappale);
+        uusiViite.setPerusteenOsa(uusiKappale);
+        uusiViite.setVanhempi(viiteEntity);
+        em.persist(uusiViite);
+        viiteEntity.getLapset().add(uusiViite);
+        
+        return mapper.map(uusiViite, PerusteenSisaltoViiteDto.class);
+    }
     
     /**
      * Lämmittää tyhjään järjestelmään koodistosta löytyvät koulutukset.
@@ -358,7 +378,7 @@ public class PerusteServiceImpl implements PerusteService {
         return suoritustavat;
     }
 
-
+    
     private enum IndexFunction implements Function<TutkinnonOsaViite, EntityReference> {
 
         INSTANCE;
