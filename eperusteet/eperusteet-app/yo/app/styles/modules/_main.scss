@@ -87,8 +87,8 @@ tr .koodi {
 
 .edit-controls {
   position: fixed;
-  top: 3px;
-  right: 30px;
+  top: 10px;
+  left: 400px;
   z-index: 1040;
   border: 1px solid #ccc;
   -webkit-border-radius: 4px;
@@ -98,6 +98,10 @@ tr .koodi {
   border-radius: 4px;
   background: white;
   padding: 3px 4px;
+  @media (max-width: $screen-xs-min) {
+    left: auto;
+    right: 30px;
+  }
 }
 
 .list-group.muokkaus .list-group-item-heading {

@@ -19,7 +19,7 @@
 angular.module('eperusteApp')
   .directive('muokkausTekstikappale', function() {
     return {
-      template: '<kenttalistaus object-promise="tekstikappalePromise" fields="fields">{{tekstikappaleenMuokkausOtsikko | translate}}</kenttalistaus>',
+      templateUrl: 'views/partials/muokkaus/tekstikappale.html',
       restrict: 'E',
       scope: {
         tekstikappale: '='

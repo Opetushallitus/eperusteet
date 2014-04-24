@@ -41,9 +41,9 @@ angular.module('eperusteApp')
       },
       link: function(scope, element, attrs, ctrl) {
         var placeholderText = null;
-        
+
         var editingEnabled = (scope.editMode || 'true') === 'true';
-        
+
         if(editingEnabled) {
           element.addClass('edit-mode');
         }
@@ -73,7 +73,7 @@ angular.module('eperusteApp')
             toolbarLayout = editorLayouts.minimal;
           }
         }
-        
+
         editor = CKEDITOR.inline(element[0], {
           toolbar: toolbarLayout,
           removePlugins: 'resize,elementspath,scayt,wsc',
@@ -86,7 +86,7 @@ angular.module('eperusteApp')
           },
           readOnly: !editingEnabled
         });
-        
+
         // poistetaan enterin käyttö, jos kyseessä on yhden rivin syöttö
         if(!element.is('div')) {
           editor.on('key', function(event) {
@@ -160,11 +160,11 @@ angular.module('eperusteApp')
           }
           $('#toolbar').hide();
         });
-        
+
         // model -> view
 
         ctrl.$render = function() {
-          console.log('render: ' + ctrl.$viewValue);
+          //console.log('render: ' + ctrl.$viewValue);
           if (editor) {
             if(angular.isUndefined(ctrl.$viewValue) || (angular.isString(ctrl.$viewValue) && _.isEmpty(ctrl.$viewValue) && placeholderText)) {
               element.addClass('has-placeholder');

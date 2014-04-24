@@ -2,6 +2,7 @@ $icon-font-path: 'fonts/';
 @import "../components/bootstrap-sass/stylesheets/bootstrap/bootstrap";
 @import "vendor/virkailija";
 
+@import "modules/yleiset";
 @import "modules/main";
 @import "modules/spinner";
 @import "modules/tree";

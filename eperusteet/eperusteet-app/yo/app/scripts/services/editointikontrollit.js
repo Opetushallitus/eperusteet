@@ -27,13 +27,17 @@ angular.module('eperusteApp')
     this.lastModified = null;
     var additionalCallbacks = {save: [], start: [], cancel: []};
 
+    function setEditMode(mode) {
+      scope.editMode = mode;
+      scope.editModeDefer = $q.defer();
+      scope.editModeDefer.resolve(scope.editMode);
+    }
+
     return {
       startEditing: function() {
         if(scope.editingCallback) {
           scope.editingCallback.edit();
-          scope.editMode = true;
-          scope.editModeDefer = $q.defer();
-          scope.editModeDefer.resolve(scope.editMode);
+          setEditMode(true);
         }
       },
       saveEditing: function() {
@@ -46,17 +50,13 @@ angular.module('eperusteApp')
             // callback(self.lastModified, scope.editingCallback !== null);
             callback(undefined, scope.editingCallback !== null);
           });
-          scope.editMode = false;
-          scope.editModeDefer = $q.defer();
-          scope.editModeDefer.resolve(scope.editMode);
+          setEditMode(false);
         }
       },
       cancelEditing: function() {
         if(scope.editingCallback) {
           scope.editingCallback.cancel();
-          scope.editMode = false;
-          scope.editModeDefer = $q.defer();
-          scope.editModeDefer.resolve(scope.editMode);
+          setEditMode(false);
         }
       },
       registerCallback: function(callback) {
@@ -84,8 +84,7 @@ angular.module('eperusteApp')
       },
       unregisterCallback: function() {
         scope.editingCallback = null;
-        scope.editMode = false;
-        scope.editModeDefer = $q.defer();
+        setEditMode(false);
 
         additionalCallbacks = {save: [], start: [], cancel: []};
       },
