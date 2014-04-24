@@ -11,11 +11,7 @@ angular.module('eperusteApp')
     { nimi: 'Tehtäväluokka-4'}
   ];
   
-  $scope.kalenteriTilat = {
-    'paatosPvmButton': false,
-    'toimikausiAlkuButton': false,
-    'toimikausiLoppuButton': false
-  };
+  $scope.paatosPvmOpen = false;
   
   $scope.showWeeks = true;
   
@@ -23,12 +19,7 @@ angular.module('eperusteApp')
     $event.preventDefault();
     $event.stopPropagation();
     
-    for (var key in $scope.kalenteriTilat) {
-      if ($scope.kalenteriTilat.hasOwnProperty(key) && key !== $event.target.id) {
-        $scope.kalenteriTilat[key] = false;
-      }
-    }
-    $scope.kalenteriTilat[$event.target.id] = !$scope.kalenteriTilat[$event.target.id];
+    $scope.paatosPvmOpen = !$scope.paatosPvmOpen;
   };
 
   $scope.dateOptions = {

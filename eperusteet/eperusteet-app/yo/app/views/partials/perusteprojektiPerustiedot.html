@@ -15,7 +15,6 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 <div ng-controller="ProjektinperustiedotCtrl">
-    <p translate>tahdella-pakolliset</p>
     <div ng-form="perustiedotForm" name="perustiedotForm">
         <div class="form-group">
             <label for="projektinNimi" class="col-sm-3">{{'projektin-nimi-label'| translate}}<span>*</span></label>
@@ -34,7 +33,7 @@ European Union Public Licence for more details.
             <div class="col-sm-9">
                 <span class="input-group">
                     <input type="text" id="paatospvm" name="paatospvm" class="form-control" datepicker-popup="{{format}}" ng-model="projekti.paatosPvm" 
-                           placeholder="{{'anna-päätöspäivämäärä' | translate}}" is-open="kalenteriTilat.paatosPvmButton" datepicker-options="dateOptions"
+                           placeholder="{{'anna-päätöspäivämäärä' | translate}}" is-open="paatosPvmOpen" datepicker-options="dateOptions"
                            show-button-bar="false" dateformatter/>
                     <span class="input-group-btn">
                         <button id="paatosPvmButton" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -42,46 +41,6 @@ European Union Public Licence for more details.
                 </span>
                 <p style="color:red" ng-show="perusteprojektiForm.perustiedotForm.paatospvm.$error.dateformatter" translate>
                     kelvoton-pvm
-                </p>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="toimikausiAlku" class="col-sm-3">{{'toimikausi-alku-label'| translate}}</label>
-            <div class="col-sm-9">
-                <span class="input-group">
-                    <input type="text" id="toimikausiAlku" name="toimikausiAlku" class="form-control" datepicker-popup="{{format}}"
-                           ng-model="projekti.toimikausiAlku" placeholder="{{'anna-toimikausi_alku' | translate}}" is-open="kalenteriTilat.toimikausiAlkuButton"
-                           datepicker-options="dateOptions" show-button-bar="false" date-comparison-validator date-comparison-name="toimikausiLoppu" 
-                           date-comparison-earlier="true" dateformatter/>
-                    <span class="input-group-btn">
-                        <button id="toimikausiAlkuButton" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </span>
-                <p style="color:red" ng-show="perusteprojektiForm.perustiedotForm.toimikausiAlku.$error.dateformatter" translate>
-                    kelvoton-pvm
-                </p>
-                <p style="color:red" ng-show="perusteprojektiForm.perustiedotForm.toimikausiAlku.$error.dateComparisonValidator" translate>
-                    aloitus-ennen-lopetusta
-                </p>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="toimikausiLoppu" class="col-sm-3">{{'toimikausi-loppu-label'| translate}}</label>
-            <div class="col-sm-9">
-                <span class="input-group">
-                    <input type="text" id="toimikausiLoppu" name="toimikausiLoppu" class="form-control" datepicker-popup="{{format}}"
-                           ng-model="projekti.toimikausiLoppu" placeholder="{{'anna-toimikausi_loppu' | translate}}" is-open="kalenteriTilat.toimikausiLoppuButton"
-                           datepicker-options="dateOptions" show-button-bar="false" date-comparison-validator date-comparison-name="toimikausiAlku"
-                           date-comparison-earlier="false" dateformatter/>
-                    <span class="input-group-btn">
-                        <button id="toimikausiLoppuButton" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </span>
-                <p style="color:red" ng-show="perusteprojektiForm.perustiedotForm.toimikausiLoppu.$error.dateformatter" translate>
-                    kelvoton-pvm
-                </p>
-                <p style="color:red" ng-show="perusteprojektiForm.perustiedotForm.toimikausiLoppu.$error.dateComparisonValidator" translate>
-                    lopetus-aloituksen-jälkeen
                 </p>
             </div>
         </div>

@@ -156,31 +156,35 @@ tr .koodi {
   border-radius: 0;
 }
 
-.container .row.main-nav {
+.row.main-nav {
 
 }
-.container .row.main-nav .nav {
+.row.main-nav .nav {
 	margin: 20px 0 0 0;
 }
-.container .row.main-nav .nav div {
+.row.main-nav .nav div {
 	cursor: pointer;
 	padding: 15px 10px;
 	border: 1px solid #ddd;
 }
 
-.container .row.main-nav .nav div:hover {
+.row.main-nav .nav div:hover {
         border: 1px solid black;
 }
-.container .row.main-nav div h3 {
+.row.main-nav div h3 {
 	margin-bottom: 20px;
 }
 
-.container .sidebar .panel-heading {
+.sidebar .panel-heading {
 	background-color:#06526b;
 	color: #fff;
 }
 
-.container .sidebar {
+.sidebar {
 	margin-top: 20px;
+}
+
+.form-control {
+    border-radius: 3px;
 }
 

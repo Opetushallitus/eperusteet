@@ -14,14 +14,25 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
-<a ui-sref="perusteprojekti.editoi.sisalto({ perusteProjektiId: projekti.id})" translate>takaisin</a>
-<form class="form-horizontal" name="perusteprojektiForm" role="form" novalidate>
-    <tabset>
-        <tab ng-repeat="tab in tabs" heading="{{tab.otsikko | translate}}" active="tab.active" disabled="tab.disabled">
-            <div style="margin-top: 20px;">
-                <ng-include  src="tab.url"></ng-include>
-            </div>
-        </tab>
-    </tabset>
-    <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-default" ng-disabled="perusteprojektiForm.$invalid"  translate>tallenna-perusteprojekti-nappi</button>
+<!--a ui-sref="perusteprojekti.editoi.sisalto({ perusteProjektiId: projekti.id})" translate>takaisin</a-->
+<div class="uusi-projekti-content">
+<h2>{{'projektin-tiedot' | kaanna}}</h2>
+<p translate>tahdella-pakolliset</p>
+<form class="form-horizontal projekti-form" name="perusteprojektiForm" role="form" novalidate>
+    <div ng-repeat="tab in tabs" style="margin-top: 20px;">
+        <h3>{{tab.otsikko | kaanna}}</h3>
+        <div class="form-area">
+        <ng-include  src="tab.url"></ng-include>
+        </div>
+    </div>
+    <div class="projekti-form-buttons" ng-show="{{ 'perusteprojekti.tiedot.uusi' | isState }}">
+        <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid || koodistohaku"  translate>luo-perusteprojekti-nappi</button>
+        <button ui-sref="aloitussivu" id="cancel" class="btn" translate>peruuta</button>
+    </div>
+    <div class="projekti-form-buttons" ng-show="{{ 'perusteprojekti.editoi.tiedot' | isState }}">
+        <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid || koodistohaku"  translate>tallenna-nappi</button>
+        <button ui-sref="perusteprojekti.editoi.sisalto({ perusteProjektiId: projekti.id })" id="cancel" class="btn" translate>peruuta</button>
+    </div>
+
 </form>
+</div>
