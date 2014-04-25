@@ -250,5 +250,24 @@
     "projekti-header-paatosPvm": "Päätöspäivämäärä",
     
     "lisaa-tutkintokohtainen-osa": "Lisää tutkintokohtainen osa",
-    "uusi-tutkinnon-osa": "<Uusi sisältö>"
+    "uusi-tutkinnon-osa": "<Uusi sisältö>",
+
+    "takaisin-paanakymaan": "Takaisin päänäkymään",
+    "projektiryhma-otsikko-omistaja": "Perusteprosessin omistaja",
+    "projektiryhma-otsikko-sihteeri": "Sihteeri",
+    "projektiryhma-otsikko-jasen": "Projektiryhmän jäsenet",
+    "projektiryhma-otsikko-kommentoija": "Kommentoijat",
+    "puhelin": "Puh.",
+    "email": "Email",
+    "kutsu-uusi": "Kutsu uusi jäsen",
+    "muokkaa": "Muokkaa",
+    "jasen-puhelin": "Puhelin",
+    "jasen-nimi": "Nimi",
+    "jasen-email": "Email",
+    "jasen-rooli": "Rooli",
+    "poista-projektista": "Poista projektista",
+    "rooli-jasen": "Jäsen",
+    "rooli-sihteeri": "Sihteeri",
+    "rooli-omistaja": "Omistaja",
+    "rooli-kommentoija": "Kommentoija"
 }

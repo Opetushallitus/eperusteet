@@ -14,13 +14,25 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
-<div ng-controller="ProjektiryhmaCtrl">
-    <div ng-form="projektiryhmaForm">
-        <div class="form-group">
-            <label for="projektipaallikko" class="col-sm-3" translate>projektipäällikkö</label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control" id="projektipaallikko" ng-model='projekti.paallikko' placeholder="Nimeä projektipäällikkö">
-            </div>
-        </div>
-    </div>
+<div>
+  <a ui-sref="perusteprojekti.editoi.sisalto({ perusteProjektiId: projekti.id })">
+    <span class="glyphicon glyphicon-chevron-left"></span>{{'takaisin-paanakymaan' | kaanna}}
+  </a>
+</div>
+
+<h2 translate>projekti-projektiryhmä</h2>
+
+<a href="" ng-click="kutsuUusi(rooli)">
+  <span class="glyphicon glyphicon-plus"></span>{{'kutsu-uusi' | kaanna}}
+</a>
+
+<div class="ryhma-rivi">
+  <ryhmanjasenet rooli="omistaja" ryhma="ryhma"></ryhmanjasenet>
+  <ryhmanjasenet rooli="sihteeri" ryhma="ryhma"></ryhmanjasenet>
+</div>
+<div class="ryhma-rivi">
+  <ryhmanjasenet rooli="jasen" ryhma="ryhma"></ryhmanjasenet>
+</div>
+<div class="ryhma-rivi">
+  <ryhmanjasenet rooli="kommentoija" ryhma="ryhma"></ryhmanjasenet>
 </div>

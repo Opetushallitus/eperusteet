@@ -1,0 +1,57 @@
+$avatar-koko: 64px;
+.ryhma-rivi {
+  clear: both;
+}
+.ryhma-rooli {
+  float: left;
+  margin-right: 30px;
+  h3 {
+    border-bottom: 1px solid #ccc;
+  }
+}
+.ryhma-jasen {
+  float: left;
+  border: 2px solid $nav-tabs-border-color;
+  height: 104px;
+  min-width: 240px;
+  padding: 15px;
+  margin: 10px;
+  margin-right: 40px;
+}
+.ryhma-jasen-avatar {
+  background-color: $nav-tabs-border-color;
+  float: left;
+  width: $avatar-koko;
+  height: $avatar-koko;
+  overflow: hidden;
+}
+.ryhma-jasen-tiedot {
+  margin-left: 15px;
+  float: left;
+  h4 {
+    margin-top: 0;
+    padding-top: 0;
+  }
+}
+.ryhma-jasen-muokkaus {
+  width: 85%;
+}
+.ryhma-jasen-muokkausnappi {
+  color: #888;
+  cursor: pointer;
+  width: 21px;
+  height: 21px;
+  border-radius: 4px;
+  border: solid 1px #ccc;
+  margin-left: 4px;
+  margin-top: -7px;
+  margin-right: -7px;
+  padding: 2px;
+  float: right;
+}
+.nimikirjain-avatar {
+  padding-left: $avatar-koko / 8;
+  line-height: $avatar-koko;
+  font-weight: bold;
+  font-size: $avatar-koko / 2;
+}
