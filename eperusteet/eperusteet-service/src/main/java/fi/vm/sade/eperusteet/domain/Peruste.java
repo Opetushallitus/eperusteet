@@ -36,6 +36,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
  *
@@ -43,6 +45,7 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "peruste")
+@Audited
 public class Peruste implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -61,6 +64,7 @@ public class Peruste implements Serializable {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter
     @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen nimi;
     
     @Getter
@@ -73,6 +77,7 @@ public class Peruste implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "koulutus_id"))
     @Getter
     @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Set<Koulutus> koulutukset;
 
     @Temporal(TemporalType.TIMESTAMP)

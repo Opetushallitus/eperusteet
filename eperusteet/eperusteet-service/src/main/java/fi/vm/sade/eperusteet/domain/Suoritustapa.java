@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -36,6 +35,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
 
 /**
  *
@@ -43,20 +43,21 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "suoritustapa")
+@Audited
 public class Suoritustapa implements Serializable {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
     @Setter
     private Long id;
-    
+
     @Getter
     @Setter
     @Enumerated(EnumType.STRING)
     @NotNull
     private Suoritustapakoodi suoritustapakoodi;
-    
+
     @OneToOne(fetch = FetchType.LAZY)
     @Getter
     @Setter
@@ -75,10 +76,10 @@ public class Suoritustapa implements Serializable {
 
     public void setTutkinnonOsat(Set<TutkinnonOsaViite> osat) {
 
-        for ( TutkinnonOsaViite  v  : osat ) {
+        for (TutkinnonOsaViite v : osat) {
             v.setSuoritustapa(this);
         }
-        
+
         tutkinnonOsat.retainAll(osat);
         tutkinnonOsat.addAll(osat);
     }

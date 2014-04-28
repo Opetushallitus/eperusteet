@@ -27,9 +27,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
+import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
 
 /**
  *
@@ -37,6 +39,8 @@ import lombok.Setter;
  *
  */
 @Entity
+@Audited
+@Table(name = "perusteenosaviite")
 public class PerusteenOsaViite implements ReferenceableEntity{
 
     @Id
