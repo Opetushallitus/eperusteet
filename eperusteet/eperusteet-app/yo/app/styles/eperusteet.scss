@@ -1,3 +1,5 @@
+$brand-primary: #0c566e;
+$list-group-link-color: $brand-primary;
 $icon-font-path: 'fonts/';
 @import "../components/bootstrap-sass/stylesheets/bootstrap/bootstrap";
 @import "vendor/virkailija";
@@ -9,3 +11,4 @@ $icon-font-path: 'fonts/';
 @import "modules/tutkinnonosa";
 @import "modules/perusteprojekti";
 @import "modules/projektiryhma";
+@import "modules/sivunavigaatio";

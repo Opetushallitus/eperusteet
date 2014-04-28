@@ -37,13 +37,14 @@ angular.module('eperusteApp')
       });
     })
   .controller('PerusteprojektiCtrl', function ($scope, $stateParams, Navigaatiopolku,
-    PerusteprojektiResource, koulutusalaService) {
+    PerusteprojektiResource, koulutusalaService, SivunavigaatioService) {
     $scope.projekti = {};
-    
+
     if ($stateParams.perusteProjektiId !== 'uusi') {
       $scope.projekti.id = $stateParams.perusteProjektiId;
       PerusteprojektiResource.get({ id: $stateParams.perusteProjektiId }, function(vastaus) {
         $scope.projekti = vastaus;
+        SivunavigaatioService.asetaProjekti($scope.projekti);
         console.log('projekti', vastaus);
         Navigaatiopolku.asetaElementit({ perusteProjektiId: vastaus.nimi });
       }, function(virhe) {

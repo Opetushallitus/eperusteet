@@ -1,0 +1,45 @@
+$sivunavi-leveys: 280px;
+
+.sivunavi-wrapper {
+ .sivunavi {
+    display: none;
+    a {
+      border-radius: 0;
+      & *:hover {
+        text-decoration: none;
+      }
+      .glyphicon {
+        float: left;
+        display: block;
+        color: black;
+        top: 3px;
+      }
+      .linkkiteksti {
+        display: block;
+        padding-left: 30px;
+      }
+      &.navi-aktiivinen {
+        background-color: $list-group-link-color;
+        color: white;
+        font-weight: 700;
+        .glyphicon {
+          display: none;
+        }
+      }
+    }
+  }
+  @media (min-width: $screen-lg-min) {
+    .sivunavi {
+      display: block;
+      float: left;
+      width: $sivunavi-leveys;
+      margin-right: 20px;
+    }
+    .sivunavi-sisalto {
+      float: left;
+    }
+  }
+  .sivunavi.piilota {
+    display: none;
+  }
+}

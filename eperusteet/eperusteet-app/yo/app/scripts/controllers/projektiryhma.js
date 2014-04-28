@@ -8,7 +8,10 @@ angular.module('eperusteApp')
         url: '/projektiryhma',
         templateUrl: 'views/partials/perusteprojektiProjektiryhma.html',
         controller: 'ProjektiryhmaCtrl',
-        naviBase: ['perusteprojekti', ':perusteProjektiId']
+        naviBase: ['perusteprojekti', ':perusteProjektiId'],
+        onEnter: function (SivunavigaatioService) {
+          SivunavigaatioService.aseta({osiot: false});
+        }
       });
   })
 

@@ -23,8 +23,11 @@ angular.module('eperusteApp')
         url: '/perusteenosa/:perusteenOsanTyyppi/:perusteenOsaId',
         templateUrl: 'views/muokkaus.html',
         controller: 'MuokkausCtrl',
-        naviRest: [':perusteenOsanTyyppi']
+        naviRest: [':perusteenOsanTyyppi'],
         /*naviBase: ['muokkaus', ':perusteenOsanTyyppi']*/
+        onEnter: function (SivunavigaatioService) {
+          SivunavigaatioService.aseta({osiot: true});
+        }
       });
   })
   .controller('MuokkausCtrl', function($scope, $stateParams, PerusteenOsat, $state, $compile, Navigaatiopolku) {

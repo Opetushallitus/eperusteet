@@ -22,7 +22,10 @@ angular.module('eperusteApp')
         url: '/sisalto',
         templateUrl: 'views/partials/perusteprojektiSisalto.html',
         controller: 'PerusteprojektisisaltoCtrl',
-        naviRest: ['sisältö']
+        naviRest: ['sisältö'],
+        onEnter: function (SivunavigaatioService) {
+          SivunavigaatioService.aseta({piilota: true});
+        }
       });
   })
   .controller('PerusteprojektisisaltoCtrl', function($scope, $stateParams, PerusteprojektiResource,
@@ -39,12 +42,12 @@ angular.module('eperusteApp')
       }, function(virhe) {
         console.log('virhe', virhe);
       });
-      
+
     } else {
       $scope.projekti.id = 'uusi';
       //Navigaatiopolku.asetaElementit({ perusteProjektiId: 'uusi' });
     }
-    
+
     var haeSisalto = function(suoritustapa) {
       Suoritustapa.get({perusteenId: $scope.projekti.peruste.id, suoritustapa: suoritustapa}, function(vastaus) {
         $scope.projekti.peruste.sisalto = vastaus;

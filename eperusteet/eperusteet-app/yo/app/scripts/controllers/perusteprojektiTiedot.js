@@ -17,6 +17,9 @@ angular.module('eperusteApp')
         controller: 'PerusteprojektiTiedotCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
         navigaationimiId: 'perusteProjektiId',
+        onEnter: function (SivunavigaatioService) {
+          SivunavigaatioService.aseta({osiot: false});
+        }
       })
       .state('perusteprojekti.editoi.tiedot', {
         url: '/perustiedot',
@@ -24,13 +27,16 @@ angular.module('eperusteApp')
         controller: 'PerusteprojektiTiedotCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
         navigaationimiId: 'perusteProjektiId',
-        resolve: {'opintoalaService': 'Opintoalat'}
+        resolve: {'opintoalaService': 'Opintoalat'},
+        onEnter: function (SivunavigaatioService) {
+          SivunavigaatioService.aseta({osiot: false});
+        }
       });
   })
   .controller('PerusteprojektiTiedotCtrl', function($scope, $rootScope, $state, $stateParams,
     PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, koulutusalaService, opintoalaService) {
     PerusteProjektiService.watcher($scope, 'projekti');
-    
+
     $scope.koodistohaku = false;
 
     $scope.Koulutusalat = koulutusalaService;
@@ -78,15 +84,15 @@ angular.module('eperusteApp')
         });
       }
     };
-    
+
     var avaaProjektinSisalto = function(projektiId) {
       $state.go('perusteprojekti.editoi.sisalto', {perusteProjektiId: projektiId});
     };
-    
+
     $rootScope.$on('event:spinner_on', function () {
       $scope.koodistohaku = true;
     });
-    
+
     $rootScope.$on('event:spinner_off', function () {
       $scope.koodistohaku = false;
     });
