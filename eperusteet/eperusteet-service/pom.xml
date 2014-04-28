@@ -13,16 +13,16 @@
     <properties>
         <hibernate.version>4.3.5.Final</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>4.0.2.RELEASE</spring.version>
-        <spring.security.version>3.2.2.RELEASE</spring.security.version>
-        <spring.data.jpa.version>1.5.1.RELEASE</spring.data.jpa.version>
+        <spring.version>4.0.3.RELEASE</spring.version>
+        <spring.security.version>3.2.3.RELEASE</spring.security.version>
+        <spring.data.jpa.version>1.5.2.RELEASE</spring.data.jpa.version>
         <logback.version>1.1.1</logback.version>
         <postgresql.version>9.3-1100-jdbc41</postgresql.version>
-        <jackson.version>2.3.2</jackson.version>
+        <jackson.version>2.3.3</jackson.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
         <buildhelper.skipAttach>true</buildhelper.skipAttach>
-        <jsoup.version>1.7.2</jsoup.version>
+        <jsoup.version>1.7.3</jsoup.version>
     </properties>
     <dependencyManagement>
         <dependencies>
