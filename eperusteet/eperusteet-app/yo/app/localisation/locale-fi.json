@@ -269,5 +269,8 @@
     "rooli-jasen": "Jäsen",
     "rooli-sihteeri": "Sihteeri",
     "rooli-omistaja": "Omistaja",
-    "rooli-kommentoija": "Kommentoija"
+    "rooli-kommentoija": "Kommentoija",
+
+    "sivunavigointi-avaa-menu": "Avaa navigointimenu",
+    "sivunavigointi-sulje-menu": "Sulje navigointimenu"
 }

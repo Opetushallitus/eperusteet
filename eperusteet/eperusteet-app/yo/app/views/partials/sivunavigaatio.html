@@ -1,35 +1,47 @@
-<div class="sivunavi" ng-class="{piilota: data.piilota}">
+<div class="sivunavi-sisempi-wrapper" ng-class="{piilota: isHidden()}">
+<div class="sivunavi-takaisin">
   <div class="list-group">
-    <a class="list-group-item" href="" ng-click="takaisin()">
+    <a class="list-group-item" href="" ng-click="goBackToMain()">
       <span class="glyphicon glyphicon-chevron-left"></span>
       <span class="linkkiteksti">{{'takaisin-paanakymaan' | kaanna}}</span>
     </a>
   </div>
-  <div ng-show="data.osiot" class="list-group">
-    <a href="" class="list-group-item">
-      <span class="glyphicon glyphicon-chevron-down"></span>
-      <span class="linkkiteksti">Käsi- ja taideteollisuusalan perustutkinnon tavoitteet</span>
-    </a>
-    <a class="list-group-item" ui-sref="perusteprojekti.editoi.muodostumissaannot" ui-sref-active="navi-aktiivinen">
-      <span class="glyphicon glyphicon-chevron-down"></span>
-      <span class="linkkiteksti">Tutkinnon muodostuminen</span>
-    </a>
-    <a class="list-group-item" ng-repeat="sisalto in data.projekti.peruste.sisalto.lapset"
-       ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id})"
-       ui-sref-active="navi-aktiivinen">
-      <span class="glyphicon glyphicon-chevron-down"></span>
-      <span class="linkkiteksti">{{ sisalto.perusteenOsa.nimi || 'uusi-tutkinnon-osa' | kaanna}}</span>
-    </a>
+</div>
+<div ng-show="data.osiot" class="sivunavi" ng-class="{'sivunavi-collapsed': menuCollapsed, 'sivunavi-open': !menuCollapsed}">
+  <div class="sivunavi-toggler" ng-click="toggleSideMenu()"
+       ng-attr-title="{{menuCollapsed && ('sivunavigointi-avaa-menu'|kaanna) || ('sivunavigointi-sulje-menu'|kaanna)}}">
+    <div class="sivunavi-valinta">
+      <span class="glyphicon glyphicon-align-justify"></span>
+    </div>
   </div>
-  <div ng-show="data.osiot" class="list-group">
-    <a class="list-group-item" ng-repeat="hardkoodattuOtsikko in [
-      'Perustutkinnon perusteiden toimeenpano ammatillisessa peruskoulutuksessa',
-      'Perustutkinnon suorittaminen näyttötutkintona',
-      'Opiskelijan arviointi ammatillisessa peruskoulutuksessa',
-      'Muut määräykset ammatillisessa peruskoulutuksessa'
-    ]">
-      <span class="glyphicon glyphicon-chevron-down"></span>
-      <span class="linkkiteksti">{{ hardkoodattuOtsikko }}</span>
-    </a>
+  <div class="sivunavi-linkit">
+    <div class="list-group">
+      <a href="" class="list-group-item">
+        <span class="glyphicon glyphicon-chevron-down"></span>
+        <span class="linkkiteksti">Käsi- ja taideteollisuusalan perustutkinnon tavoitteet</span>
+      </a>
+      <a class="list-group-item" ui-sref="perusteprojekti.editoi.muodostumissaannot" ui-sref-active="navi-aktiivinen">
+        <span class="glyphicon glyphicon-chevron-down"></span>
+        <span class="linkkiteksti">Tutkinnon muodostuminen</span>
+      </a>
+      <a class="list-group-item" ng-repeat="sisalto in data.projekti.peruste.sisalto.lapset"
+         ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id})"
+         ui-sref-active="navi-aktiivinen">
+        <span class="glyphicon glyphicon-chevron-down"></span>
+        <span class="linkkiteksti">{{ sisalto.perusteenOsa.nimi || 'uusi-tutkinnon-osa' | kaanna}}</span>
+      </a>
+    </div>
+    <div ng-show="data.osiot" class="list-group">
+      <a class="list-group-item" ng-repeat="hardkoodattuOtsikko in [
+        'Perustutkinnon perusteiden toimeenpano ammatillisessa peruskoulutuksessa',
+        'Perustutkinnon suorittaminen näyttötutkintona',
+        'Opiskelijan arviointi ammatillisessa peruskoulutuksessa',
+        'Muut määräykset ammatillisessa peruskoulutuksessa'
+      ]">
+        <span class="glyphicon glyphicon-chevron-down"></span>
+        <span class="linkkiteksti">{{ hardkoodattuOtsikko }}</span>
+      </a>
+    </div>
   </div>
+</div>
 </div>

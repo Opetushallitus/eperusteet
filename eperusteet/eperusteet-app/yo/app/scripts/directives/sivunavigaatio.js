@@ -12,19 +12,36 @@ angular.module('eperusteApp')
       controller: 'sivunavigaatioCtrl'
     };
   })
-  .controller('sivunavigaatioCtrl', function($scope, $state, SivunavigaatioService) {
-    $scope.takaisin = function () {
+
+  .controller('sivunavigaatioCtrl', function($rootScope, $scope, $state, SivunavigaatioService) {
+    $scope.menuCollapsed = true;
+    $rootScope.$on('$stateChangeStart', function () {
+      $scope.menuCollapsed = true;
+    });
+    $scope.goBackToMain = function () {
       $state.go('perusteprojekti.editoi.sisalto', {perusteProjektiId: $scope.projekti.id});
     };
-    SivunavigaatioService.sido($scope);
+    $scope.toggleSideMenu = function () {
+      $scope.menuCollapsed = !$scope.menuCollapsed;
+    };
+    $scope.isHidden = function () {
+      if ($scope.data.piilota) {
+        // TODO: parempi/tehokkaampi ratkaisu. Sisältö-div on tämän direktiivin
+        // ulkopuolella, mutta sen tyyli riippuu 'piilota'-attribuutista.
+        angular.element('.sivunavi-sisalto').css('margin-left', '0px');
+      }
+      return $scope.data.piilota;
+    };
+    SivunavigaatioService.bind($scope);
   })
+
   .service('SivunavigaatioService', function (Suoritustapa) {
     this.data = {
       osiot: false,
       piilota: false,
       projekti: {id: 0}
     };
-    this.sido = function (scope) {
+    this.bind = function (scope) {
       scope.data = this.data;
     };
 
