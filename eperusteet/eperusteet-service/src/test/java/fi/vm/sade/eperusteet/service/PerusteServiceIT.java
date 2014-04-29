@@ -15,13 +15,11 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
@@ -106,30 +104,19 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
     @Test
     public void testAddTutkinnonRakenne() {
-        TutkinnonOsa tutkinnonOsa1 = new TutkinnonOsa();
-        tutkinnonOsa1.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "Nimi"));
-        tutkinnonOsa1 = perusteenOsaRepository.save(tutkinnonOsa1);
 
-        TutkinnonOsa tutkinnonOsa2 = new TutkinnonOsa();
-        tutkinnonOsa2.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "Nimi 2"));
-        tutkinnonOsa2 = perusteenOsaRepository.save(tutkinnonOsa2);
+        TutkinnonOsaViiteDto v1 = perusteService.addTutkinnonOsa(peruste.getId(), Suoritustapakoodi.OPS, new TutkinnonOsaViiteDto());
+        TutkinnonOsaViiteDto v2 = perusteService.addTutkinnonOsa(peruste.getId(), Suoritustapakoodi.OPS, new TutkinnonOsaViiteDto());
 
         TutkinnonRakenneDto rakenne = new TutkinnonRakenneDto();
 
-        TutkinnonOsaViiteDto v1 = new TutkinnonOsaViiteDto();
-        v1.setTutkinnonOsa(tutkinnonOsa1.getReference());
-
-        TutkinnonOsaViiteDto v2 = new TutkinnonOsaViiteDto();
-        v2.setTutkinnonOsa(tutkinnonOsa2.getReference());
-
-        rakenne.setTutkinnonOsat(Lists.newArrayList(v1, v2));
         rakenne.setRakenne(new RakenneModuuliDto());
 
         RakenneOsaDto o1 = new RakenneOsaDto();
-        o1.setTutkinnonOsa(tutkinnonOsa1.getReference());
+        o1.setTutkinnonOsa(v1.getTutkinnonOsa());
 
         RakenneOsaDto o2 = new RakenneOsaDto();
-        o2.setTutkinnonOsa(tutkinnonOsa2.getReference());
+        o2.setTutkinnonOsa(v2.getTutkinnonOsa());
 
         rakenne.getRakenne().setOsat(Arrays.<AbstractRakenneOsaDto>asList(o1,o2));
 
@@ -137,7 +124,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
         updatedTutkinnonRakenne.getTutkinnonOsat().get(0).setLaajuus(100);
         updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, updatedTutkinnonRakenne);
-        assertEquals(tutkinnonOsa1.getReference(), ((RakenneOsaDto)updatedTutkinnonRakenne.getRakenne().getOsat().get(0)).getTutkinnonOsa());
+        assertEquals(v1.getTutkinnonOsa(), ((RakenneOsaDto)updatedTutkinnonRakenne.getRakenne().getOsat().get(0)).getTutkinnonOsa());
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceIT.class);

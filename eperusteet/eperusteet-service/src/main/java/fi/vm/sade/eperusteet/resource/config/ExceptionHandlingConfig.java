@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.resource.config;
 
 import java.util.ArrayList;
@@ -50,6 +49,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 
 /**
  *
@@ -57,91 +57,96 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
  */
 @ControllerAdvice
 public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ExceptionHandlingConfig.class);
-    
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleAllExceptions(Exception e, WebRequest request) throws Exception{
-        
+    public ResponseEntity<Object> handleAllExceptions(Exception e, WebRequest request) throws Exception {
+
         // Spring Security autentikoi käyttäjän service-kerroksessa ja heittää AccessDeniedException-poikkeuksen, jos käyttäjä ei ole kirjautunut, tai
         // hänellä ei ole oikeuksia kyseisiin resursseihin. Tätä poikkeusta ei saa ottaa kiinni, vaan se pitää heittää eteenpäin, jotta SS osaa tehdä
         // tarvittavat toimenpiteet käyttäjän autentikoimiseen.
-        if(e instanceof AccessDeniedException) throw e;
-        
+        if (e instanceof AccessDeniedException) {
+            throw e;
+        }
+
         return handleExceptionInternal(e, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
-    
+
     @ExceptionHandler(TransactionSystemException.class)
     public ResponseEntity<Object> handleTransactionExceptions(TransactionSystemException e, WebRequest request) {
-        if(e.getRootCause() != null && e.getRootCause() instanceof ConstraintViolationException) {
-            return handleExceptionInternal((ConstraintViolationException) e.getRootCause(), null, new HttpHeaders(), 
-                    HttpStatus.BAD_REQUEST, request);
+        if (e.getRootCause() != null && e.getRootCause() instanceof ConstraintViolationException) {
+            return handleExceptionInternal((ConstraintViolationException) e.getRootCause(), null, new HttpHeaders(),
+                                           HttpStatus.BAD_REQUEST, request);
         } else {
             return handleExceptionInternal(e, null, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
         }
     }
-    
+
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex ,HttpHeaders headers, HttpStatus status, 
-            WebRequest request) {
-        if(ex.getRootCause() != null && ex.getRootCause() instanceof UnrecognizedPropertyException) {
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status,
+        WebRequest request) {
+        if (ex.getRootCause() != null && ex.getRootCause() instanceof UnrecognizedPropertyException) {
             return handleExceptionInternal((UnrecognizedPropertyException) ex.getRootCause(), null, headers, status, request);
         } else {
             return handleExceptionInternal(ex, null, headers, status, request);
         }
     }
-    
+
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
         Map<String, Object> map = new HashMap<>();
-        map.put("koodi", status.value());
         LOG.debug("Virhe", ex);
-        
-        if(ex instanceof BindException) {
+
+        if (ex instanceof BindException) {
             map.put("syy", "Virhe datan kytkemisessä.");
-        }else if(ex instanceof ConversionNotSupportedException) {
+        } else if (ex instanceof ConversionNotSupportedException) {
             map.put("syy", "Datamuunnos ei ole tuettu.");
-        }else if(ex instanceof HttpMediaTypeNotAcceptableException) {
+        } else if (ex instanceof HttpMediaTypeNotAcceptableException) {
             map.put("syy", "Mediatyyppi ei ole hyväksytty.");
-        }else if(ex instanceof HttpMediaTypeNotSupportedException) {
+        } else if (ex instanceof HttpMediaTypeNotSupportedException) {
             map.put("syy", "Mediatyyppi ei ole tuettu.");
-        }else if(ex instanceof HttpMessageNotWritableException) {
+        } else if (ex instanceof HttpMessageNotWritableException) {
             map.put("syy", "Http-viestiä ei pystytty kirjoittamaan.");
-        }else if(ex instanceof HttpRequestMethodNotSupportedException) {
+        } else if (ex instanceof HttpRequestMethodNotSupportedException) {
             map.put("syy", "Palvelin ei pystynyt käsittelemään http-pyyntöä.");
-        }else if(ex instanceof MethodArgumentNotValidException) {
+        } else if (ex instanceof MethodArgumentNotValidException) {
             map.put("syy", "Palvelin ei pystynyt käsittelemään http-pyyntöä.");
-        }else if(ex instanceof MissingServletRequestParameterException) {
+        } else if (ex instanceof MissingServletRequestParameterException) {
             map.put("syy", "Pyynnöstä puuttui parametri, eikä sitä voitu tästä syystä käsitellä.");
-        }else if(ex instanceof MissingServletRequestPartException) {
+        } else if (ex instanceof MissingServletRequestPartException) {
             map.put("syy", "Pyynnöstä puuttui osa, eikä sitä voitu tästä syystä käsitellä.");
-        }else if(ex instanceof NoSuchRequestHandlingMethodException) {
+        } else if (ex instanceof NoSuchRequestHandlingMethodException) {
             map.put("syy", "Palvelimelta ei löytynyt http-pyynnölle käsittelijää.");
-        }else if(ex instanceof TypeMismatchException) {
+        } else if (ex instanceof TypeMismatchException) {
             map.put("syy", "Tyypin yhteensopivuusongelma.");
-        }else if(ex instanceof TransactionSystemException) {
+        } else if (ex instanceof TransactionSystemException) {
             map.put("syy", "Datan käsittelyssä tapahtui odottamaton virhe.");
-        }else if(ex instanceof UnrecognizedPropertyException) {
-            map.put("syy", "Dataa ei pystytty käsittelemään. Lähetetyssä datassa esiintyi tuntematon kenttä \"" 
+        } else if (ex instanceof UnrecognizedPropertyException) {
+            map.put("syy", "Dataa ei pystytty käsittelemään. Lähetetyssä datassa esiintyi tuntematon kenttä \""
                     + ((UnrecognizedPropertyException) ex).getPropertyName() + "\"");
-        }else if(ex instanceof ConstraintViolationException) {
+        } else if (ex instanceof ConstraintViolationException) {
             List<String> reasons = new ArrayList<>();
-            for(ConstraintViolation<?> constraintViolation : ((ConstraintViolationException) ex).getConstraintViolations()) {
+            for (ConstraintViolation<?> constraintViolation : ((ConstraintViolationException) ex).getConstraintViolations()) {
                 reasons.add(constraintViolation.getMessage());
             }
             map.put("syy", reasons);
-        }else if(ex instanceof UnsatisfiedServletRequestParameterException) {
-        	StringBuilder builder = new StringBuilder().append("Pyynnöstä puuttui parametrit \"");
-        	for(String violation : ((UnsatisfiedServletRequestParameterException) ex).getParamConditions()) {
-        		builder.append(violation).append(' ');
-        	}
-        	builder.append("\"");
+        } else if (ex instanceof UnsatisfiedServletRequestParameterException) {
+            StringBuilder builder = new StringBuilder().append("Pyynnöstä puuttui parametrit \"");
+            for (String violation : ((UnsatisfiedServletRequestParameterException) ex).getParamConditions()) {
+                builder.append(violation).append(' ');
+            }
+            builder.append("\"");
             map.put("syy", builder.toString());
-        }else {
+        } else if (ex instanceof BusinessRuleViolationException) {
+            map.put("syy", ex.getLocalizedMessage());
+            status = HttpStatus.BAD_REQUEST;
+        } else {
             LOG.error("Creating common error response for exception", ex);
             map.put("syy", "Sovelluspalvelimessa tapahtui odottamaton virhe");
         }
-        
+
+        map.put("koodi", status);
         return super.handleExceptionInternal(ex, map, headers, status, request);
     }
 }

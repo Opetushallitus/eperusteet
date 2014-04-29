@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.SuosikkiDto;
@@ -32,6 +33,7 @@ import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.context.annotation.Bean;
@@ -89,6 +91,11 @@ public class DtoMapperConfig {
                 .use(AbstractRakenneOsaDto.class, AbstractRakenneOsa.class)
                 .fieldBToA("tutkinnonOsaViite.tutkinnonOsa", "tutkinnonOsa")
                 .fieldAToB("tutkinnonOsaViite", "tutkinnonOsaViite")
+                .byDefault()
+                .register();
+
+        factory.classMap(TutkinnonOsaViiteDto.class, TutkinnonOsaViite.class)
+                .fieldBToA("tutkinnonOsa.nimi", "nimi")
                 .byDefault()
                 .register();
 

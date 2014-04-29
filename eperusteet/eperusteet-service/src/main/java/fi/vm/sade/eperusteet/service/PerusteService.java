@@ -27,12 +27,22 @@ import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonRakenneDto;
 import java.util.List;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  *
  * @author harrik
  */
 public interface PerusteService {
+
+    @PreAuthorize("isAuthenticated()")
+    TutkinnonOsaViiteDto updateTutkinnonOsa(Long id, Suoritustapakoodi of, TutkinnonOsaViiteDto osa);
+
+    @PreAuthorize("isAuthenticated()")
+    TutkinnonOsaViiteDto attachTutkinnonOsa(Long id, Suoritustapakoodi of, TutkinnonOsaViiteDto osa);
+
+    @PreAuthorize("isAuthenticated()")
+    TutkinnonOsaViiteDto addTutkinnonOsa(Long id, Suoritustapakoodi suoritustapa, TutkinnonOsaViiteDto osa);
 
     PerusteDto get(final Long id);
     
@@ -42,19 +52,25 @@ public interface PerusteService {
 
     Page<PerusteDto> findBy(PageRequest page, PerusteQuery pquery);
 
+    @PreAuthorize("isAuthenticated()")
     PerusteenSisaltoViiteDto addSisalto(final Long perusteId, final Suoritustapakoodi suoritustapakoodi, PerusteenSisaltoViiteDto viite);
-    
+
+    @PreAuthorize("isAuthenticated()")
     PerusteenSisaltoViiteDto addSisaltoLapsi(final Long perusteId, final Long perusteenosaViiteId);
-    
+
+    @PreAuthorize("isAuthenticated()")
     PerusteenOsaViite addViite(final Long parentId, final Long seuraavaViite, PerusteenOsaViite viite);
+
 
     PerusteenosaViiteDto getSuoritustapaSisalto(final Long perusteId, final Suoritustapakoodi suoritustapakoodi);
 
     TutkinnonRakenneDto getTutkinnonRakenne(final Long perusteId, final Suoritustapakoodi suoritustapa);
 
+    @PreAuthorize("isAuthenticated()")
     TutkinnonRakenneDto updateTutkinnonRakenne(final Long perusteId, final Suoritustapakoodi suoritustapa, final TutkinnonRakenneDto rakenne);
 
     List<TutkinnonOsaViiteDto> getTutkinnonOsat(Long perusteid, Suoritustapakoodi suoritustapakoodi);
 
+    @PreAuthorize("isAuthenticated()")
     String lammitys();
 }

@@ -23,8 +23,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
-import org.springframework.web.bind.annotation.ResponseBody;
 
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 @RequestMapping("/api/perusteet")
@@ -60,8 +61,53 @@ public class PerusteController {
 
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/tutkinnonosat", method = GET)
     @ResponseBody
-    public ResponseEntity<List<TutkinnonOsaViiteDto>> getTutkinnonOsat(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
-        return new ResponseEntity<>(service.getTutkinnonOsat(id, Suoritustapakoodi.of(suoritustapakoodi)), ResponseHeaders.cacheHeaders(1, TimeUnit.SECONDS), HttpStatus.OK);
+    public List<TutkinnonOsaViiteDto> getTutkinnonOsat(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        return service.getTutkinnonOsat(id, Suoritustapakoodi.of(suoritustapakoodi));
+    }
+
+    /**
+     * Luo ja liittää uuden tutkinnon osa perusteeseen.
+     * @param id
+     * @param suoritustapakoodi
+     * @param osa viitteen tiedot
+     * @return Viite uuten tutkinnon osaan
+     */
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/tutkinnonosat", method = POST)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public TutkinnonOsaViiteDto addTutkinnonOsa(
+        @PathVariable("id") final Long id,
+        @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+        @RequestBody TutkinnonOsaViiteDto osa) {
+        return service.addTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osa);
+    }
+
+    /**
+     * Liitää olemassa olevan tutkinnon osan perusteeseen
+     * @param id tutkinnon id
+     * @param suoritustapakoodi suoritustapa (naytto,ops)
+     * @param osa liitettävä tutkinnon osa
+     * @return
+     */
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/tutkinnonosat", method = PUT)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public TutkinnonOsaViiteDto attachTutkinnonOsa(
+        @PathVariable("id") final Long id,
+        @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+        @RequestBody TutkinnonOsaViiteDto osa) {
+        return service.attachTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osa);
+    }
+
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/{osanId}", method = POST)
+    @ResponseBody
+    public TutkinnonOsaViiteDto updateTutkinnonOsa(
+        @PathVariable("id") final Long id,
+        @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+        @PathVariable("osanId") final Long osanId,
+        @RequestBody TutkinnonOsaViiteDto osa) {
+        osa.setId(osanId);
+        return service.updateTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osa);
     }
 
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne", method = POST)
@@ -72,6 +118,7 @@ public class PerusteController {
 
     /**
      * Luo perusteeseen suoritustavan alle tyhjän perusteenosan
+     *
      * @param perusteId
      * @param suoritustapa
      * @return Luodun perusteenOsaViite entityReferencen
@@ -84,18 +131,17 @@ public class PerusteController {
 
         return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), null), HttpStatus.CREATED);
     }
-    
+
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto", method = PUT)
     @ResponseBody
     public ResponseEntity<PerusteenSisaltoViiteDto> addSisaltoViite(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa,
         @RequestBody PerusteenSisaltoViiteDto sisaltoViite) {
-        
+
         return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), sisaltoViite), HttpStatus.CREATED);
     }
 
-     
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{perusteenosaViiteId}/lapsi", method = POST)
     @ResponseBody
     public ResponseEntity<PerusteenSisaltoViiteDto> addSisaltoLapsi(

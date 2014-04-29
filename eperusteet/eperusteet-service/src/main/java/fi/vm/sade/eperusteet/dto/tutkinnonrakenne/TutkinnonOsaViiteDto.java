@@ -26,6 +26,7 @@ import lombok.Setter;
 @Setter
 public class TutkinnonOsaViiteDto {
 
+    private Long id;
     private Integer laajuus;
     private LaajuusYksikko yksikko;
     private Integer jarjestys;

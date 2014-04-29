@@ -28,11 +28,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 
-import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 /**
  *
@@ -50,9 +50,8 @@ public class TutkinnonOsaViite implements ReferenceableEntity {
     private Long id;
 
     @Getter
-    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
-    @Audited(targetAuditMode = NOT_AUDITED)
+    @NotNull
     private Suoritustapa suoritustapa;
 
     @Getter
@@ -70,11 +69,16 @@ public class TutkinnonOsaViite implements ReferenceableEntity {
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     private TutkinnonOsa tutkinnonOsa;
 
     @Override
     public EntityReference getReference() {
         return new EntityReference(id);
+    }
+
+    public void setSuoritustapa(Suoritustapa suoritustapa) {
+        this.suoritustapa = suoritustapa;
     }
 
     @Override
@@ -91,15 +95,6 @@ public class TutkinnonOsaViite implements ReferenceableEntity {
         if (that instanceof TutkinnonOsaViite) {
             final TutkinnonOsaViite other = (TutkinnonOsaViite) that;
             if (!Objects.equals(this.suoritustapa, other.suoritustapa)) {
-                return false;
-            }
-            if (!Objects.equals(this.laajuus, other.laajuus)) {
-                return false;
-            }
-            if (this.yksikko != other.yksikko) {
-                return false;
-            }
-            if (!Objects.equals(this.jarjestys, other.jarjestys)) {
                 return false;
             }
             if (!Objects.equals(this.tutkinnonOsa, other.tutkinnonOsa)) {
