@@ -26,7 +26,6 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonRakenneDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -108,9 +107,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         TutkinnonOsaViiteDto v1 = perusteService.addTutkinnonOsa(peruste.getId(), Suoritustapakoodi.OPS, new TutkinnonOsaViiteDto());
         TutkinnonOsaViiteDto v2 = perusteService.addTutkinnonOsa(peruste.getId(), Suoritustapakoodi.OPS, new TutkinnonOsaViiteDto());
 
-        TutkinnonRakenneDto rakenne = new TutkinnonRakenneDto();
-
-        rakenne.setRakenne(new RakenneModuuliDto());
+        RakenneModuuliDto rakenne = new RakenneModuuliDto();
 
         RakenneOsaDto o1 = new RakenneOsaDto();
         o1.setTutkinnonOsa(v1.getTutkinnonOsa());
@@ -118,13 +115,12 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         RakenneOsaDto o2 = new RakenneOsaDto();
         o2.setTutkinnonOsa(v2.getTutkinnonOsa());
 
-        rakenne.getRakenne().setOsat(Arrays.<AbstractRakenneOsaDto>asList(o1,o2));
+        rakenne.setOsat(Arrays.<AbstractRakenneOsaDto>asList(o1,o2));
 
-        TutkinnonRakenneDto updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, rakenne);
-
-        updatedTutkinnonRakenne.getTutkinnonOsat().get(0).setLaajuus(100);
+        RakenneModuuliDto updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, rakenne);
+        
         updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, updatedTutkinnonRakenne);
-        assertEquals(v1.getTutkinnonOsa(), ((RakenneOsaDto)updatedTutkinnonRakenne.getRakenne().getOsat().get(0)).getTutkinnonOsa());
+        assertEquals(v1.getTutkinnonOsa(), ((RakenneOsaDto)updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsa());
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceIT.class);

@@ -46,7 +46,7 @@ public class Perusteprojekti implements Serializable {
     @Getter
     @Setter
     private Long id;
-    
+
     @Getter
     @Setter
     @NotNull(message="Nimi ei voi olla tyhjä")
