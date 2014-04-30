@@ -60,17 +60,12 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExceptionHandlingConfig.class);
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleAllExceptions(Exception e, WebRequest request) throws Exception {
-
+    @ExceptionHandler(AccessDeniedException.class)
+    public void rethrowAccessDeniedException(AccessDeniedException ex) {
         // Spring Security autentikoi käyttäjän service-kerroksessa ja heittää AccessDeniedException-poikkeuksen, jos käyttäjä ei ole kirjautunut, tai
         // hänellä ei ole oikeuksia kyseisiin resursseihin. Tätä poikkeusta ei saa ottaa kiinni, vaan se pitää heittää eteenpäin, jotta SS osaa tehdä
         // tarvittavat toimenpiteet käyttäjän autentikoimiseen.
-        if (e instanceof AccessDeniedException) {
-            throw e;
-        }
-
-        return handleExceptionInternal(e, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+        throw ex;
     }
 
     @ExceptionHandler(TransactionSystemException.class)
@@ -91,6 +86,11 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
         } else {
             return handleExceptionInternal(ex, null, headers, status, request);
         }
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleAllExceptions(Exception e, WebRequest request) throws Exception {
+        return handleExceptionInternal(e, null, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @Override
@@ -140,9 +140,9 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             map.put("syy", builder.toString());
         } else if (ex instanceof BusinessRuleViolationException) {
             map.put("syy", ex.getLocalizedMessage());
-            status = HttpStatus.BAD_REQUEST;
         } else {
             LOG.error("Creating common error response for exception", ex);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
             map.put("syy", "Sovelluspalvelimessa tapahtui odottamaton virhe");
         }
 
