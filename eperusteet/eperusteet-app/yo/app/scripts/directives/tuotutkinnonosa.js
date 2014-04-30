@@ -3,12 +3,15 @@
 
 angular.module('eperusteApp')
   .service('TutkinnonOsanTuonti', function($modal) {
-    function modaali(successCb, failureCb) {
+    function modaali(tyyppi, successCb, failureCb) {
       failureCb = failureCb || function() {};
       return function() {
         $modal.open({
           templateUrl: 'views/modals/haetutkinnonosa.html',
-          controller: 'TuoTutkinnonOsaCtrl'
+          controller: 'TuoTutkinnonOsaCtrl',
+          resolve: {
+            tyyppi: function() { return tyyppi; }
+          }
         })
         .result.then(successCb, failureCb);
       };
@@ -18,7 +21,7 @@ angular.module('eperusteApp')
       modaali: modaali
     };
   })
-  .controller('TuoTutkinnonOsaCtrl', function(PerusteenOsat, $scope, $modalInstance, Perusteet, PerusteRakenteet) {
+  .controller('TuoTutkinnonOsaCtrl', function(PerusteenOsat, $scope, $modalInstance, Perusteet, PerusteRakenteet, PerusteTutkinnonosat, tyyppi) {
     $scope.haku = true;
     $scope.perusteet = [];
     $scope.perusteenosat = [];
@@ -28,7 +31,7 @@ angular.module('eperusteApp')
     $scope.valitse = function() { $modalInstance.close(_.filter($scope.perusteenosat, function(osa) { return osa.$valitse; })); };
 
     $scope.paivitaHaku = function(haku, sivu) {
-      Perusteet.query({
+      Perusteet.get({
           nimi: haku,
           sivukoko: 10,
           sivu: sivu
@@ -36,15 +39,17 @@ angular.module('eperusteApp')
         $scope.perusteet = perusteet;
       });
     };
+    console.log(tyyppi);
 
     $scope.jatka = function(par) {
       $scope.haku = false;
       $scope.valittu = par;
-      PerusteRakenteet.query({
+      console.log(par.id, tyyppi);
+      PerusteTutkinnonosat.query({
         perusteenId: par.id,
-        suoritustapa: 'naytto'
+        suoritustapa: tyyppi,
       }, function(re) {
-        $scope.perusteenosat = _.values(re.tutkinnonOsat);
+        $scope.perusteenosat = re;
       });
     };
 

@@ -15,10 +15,12 @@ angular.module('eperusteApp')
       });
   })
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $rootScope, $state, $stateParams,
-    Navigaatiopolku, PerusteprojektiResource, PerusteProjektiService, PerusteRakenteet, TreeCache) {
+    Navigaatiopolku, PerusteprojektiResource, PerusteProjektiService, PerusteRakenteet, TreeCache, PerusteTutkinnonosat) {
 
     $scope.rakenne = {
-      rakenne: { osat: [] },
+      rakenne: {
+        osat: []
+      },
       tutkinnonOsat: {},
     };
 
@@ -28,9 +30,15 @@ angular.module('eperusteApp')
         PerusteRakenteet.get({
           perusteenId: vastaus.peruste.id,
           suoritustapa: vastaus.peruste.suoritustavat[0].suoritustapakoodi // FIXME
-        }, function(re) {
-          $scope.rakenne = re;
-          $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck($scope.rakenne.tutkinnonOsat, '_tutkinnonOsa'), $scope.rakenne.tutkinnonOsat);
+        }, function(rakenne) {
+          PerusteTutkinnonosat.query({
+            perusteenId: vastaus.peruste.id,
+            suoritustapa: vastaus.peruste.suoritustavat[0].suoritustapakoodi // FIXME
+          }, function(tosat) {
+            $scope.rakenne.rakenne = rakenne;
+            $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck(tosat, '_tutkinnonOsa'), tosat);
+            $scope.rakenne.$resolved = true;
+          });
         }, function() {
           $scope.rakenne.$resolved = true;
         });
@@ -43,14 +51,13 @@ angular.module('eperusteApp')
     else { TreeCache.hae(); }
 
     $scope.tallennaRakenne = function(rakenne) {
-      console.log(rakenne);
-      // TreeCache.tallenna(rakenne, $stateParams.perusteenId);
-      // rakenne.tutkinnonOsat = _.values(rakenne.tutkinnonOsat);
-      // PerusteRakenteet.save({
-      //   perusteenId: PerusteProjektiService.get().peruste.id,
-      //   suoritustapa: 'naytto' // FIXME
-      // }, rakenne, function(re) {
-      //   console.log(re);
-      // });
+      TreeCache.tallenna(rakenne, $stateParams.perusteenId);
+      rakenne.tutkinnonOsat = _.values(rakenne.tutkinnonOsat);
+      PerusteRakenteet.save({
+        perusteenId: PerusteProjektiService.get().peruste.id,
+        suoritustapa: 'naytto' // FIXME
+      }, rakenne, function(re) {
+        console.log(re);
+      });
     };
   });

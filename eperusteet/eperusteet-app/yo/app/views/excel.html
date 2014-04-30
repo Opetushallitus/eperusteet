@@ -29,8 +29,7 @@
     <h3>
       Virheet
     </h3>
-    <table class="table">
-      <tr>
+    <table class="table"> <tr>
         <th>Solu</th>
         <th>Odotettu arvo</th>
         <th>Antamasi tiedoston arvo</th>
@@ -70,12 +69,54 @@
     </div>
   </div>
 
-  <tabset justified="true" ng-show="!lukeeTiedostoa && !alussa && errors.length === 0">
-    <tab heading="{{ 'tekstikappaleet' | translate }}">
-      <div ng-include src="'views/partials/excelPeruste.html'"></div>
-    </tab>
-    <tab heading="{{ 'tutkinnonosat' | translate }}">
-      <div ng-include src="'views/partials/excelOsaperuste.html'"></div>
-    </tab>
-  </tabset>
+  <div ng-show="!lukeeTiedostoa && !alussa && errors.length === 0 && !perusteTallennettu">
+    <form class="form-horizontal projekti-form" name="perusteprojektiForm" role="form" novalidate>
+      <div class="form-area">
+        <div ng-form="projektinPerusteForm">
+          <div class="form-group">
+            <label class="col-sm-3" translate>perusteprojekti-nimi</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" ng-model="projekti.nimi" placeholder="{{ 'valitse-nimi' | kaanna }}"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3" translate>diaarinumero</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" ng-model="projekti.diaarinumero" placeholder="{{'valitse-diaarinumero' | kaanna}}"/>
+            </div>
+          </div>
+          <div>
+            <koodisto-select valmis="perusteHaku" tyyppi="koulutus" filtteri="rajaaKoodit"></koodisto-select>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3" translate>perusteen-nimi</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" value="{{ projekti.peruste.nimi | kaanna }}" placeholder="{{ 'valitse-peruste' | kaanna }}"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3" translate>perusteen-koodi</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" ng-model="projekti.peruste.koodi" placeholder="{{'valitse-peruste' | kaanna}}"/>
+            </div>
+          </div>
+          <button ng-click="tallennaPerusteprojekti(projekti)" class="btn btn-primary">{{ 'luo-perusteprojekti-nappi' | kaanna }}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div ng-show="perusteTallennettu">
+    <div class="alert alert-success">
+      {{ 'perusteprojekti' | kaanna }} <a href="" ui-sref="perusteprojekti.editoi.sisalto({ perusteProjektiId: haettuProjekti.id })"><b>{{ haettuProjekti.nimi | kaanna }}</b></a> {{ 'tallennettiin-onnistuneesti' | kaanna }}
+    </div>
+
+    <tabset justified="true">
+      <tab heading="{{ 'tekstikappaleet' | translate }}">
+        <div ng-include src="'views/partials/excelPeruste.html'"></div>
+      </tab>
+      <tab heading="{{ 'tutkinnonosat' | translate }}">
+        <div ng-include src="'views/partials/excelOsaperuste.html'"></div>
+      </tab>
+    </tabset>
+  </div>
 </div>

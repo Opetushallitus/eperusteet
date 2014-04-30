@@ -118,7 +118,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         rakenne.setOsat(Arrays.<AbstractRakenneOsaDto>asList(o1,o2));
 
         RakenneModuuliDto updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, rakenne);
-        
+
         updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, updatedTutkinnonRakenne);
         assertEquals(v1.getTutkinnonOsa(), ((RakenneOsaDto)updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsa());
     }

@@ -25,15 +25,15 @@ angular.module('eperusteApp')
     $scope.suosikkiLista = {};
     $scope.rakenne = {};
 
-    function haeRakenne(suoritustapa) {
-      PerusteRakenteet.get({
-          perusteenId: $stateParams.perusteenId,
-          suoritustapa: suoritustapa
-      }, function(re) {
-        $scope.rakenne = re;
-        $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck($scope.rakenne.tutkinnonOsat, '_tutkinnonOsa'), $scope.rakenne.tutkinnonOsat);
-      });
-    }
+    // function haeRakenne(suoritustapa) {
+    //   PerusteRakenteet.get({
+    //       perusteenId: $stateParams.perusteenId,
+    //       suoritustapa: suoritustapa
+    //   }, function(re) {
+    //     $scope.rakenne.rakenne = re;
+    //     $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck($scope.rakenne.tutkinnonOsat, '_tutkinnonOsa'), $scope.rakenne.tutkinnonOsat);
+    //   });
+    // }
 
     $scope.peruMuutokset = haeRakenne;
 

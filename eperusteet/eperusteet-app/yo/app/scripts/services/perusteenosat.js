@@ -33,24 +33,22 @@ angular.module('eperusteApp')
       validoi: function(tutkinnonOsa) {
         var deferred = $q.defer();
 
-        if (!tutkinnonOsa.koodiUri || tutkinnonOsa.koodiUri === '') {
-          deferred.reject(['koodi-virhe-1']);
-        } else {
-          PerusteenOsat.byKoodiUri({ osanId: tutkinnonOsa.koodiUri }, function(re) {
-            if (re.length === 0) {
-              deferred.resolve();
-            } else {
-              deferred.reject(['koodi-virhe-2']);
-            }
-          }, function() {
-            var virheet = validoi(tutkinnonOsa);
-            if (_.isEmpty(virheet)) {
-              deferred.resolve();
-            } else {
-              deferred.reject(virheet);
-            }
-          });
-        }
+        PerusteenOsat.byKoodiUri({
+          osanId: tutkinnonOsa.koodiUri
+        }, function(re) {
+          if (re.length === 0) {
+            deferred.resolve();
+          } else {
+            deferred.reject(['koodi-virhe-2']);
+          }
+        }, function() {
+          var virheet = validoi(tutkinnonOsa);
+          if (_.isEmpty(virheet)) {
+            deferred.resolve();
+          } else {
+            deferred.reject(virheet);
+          }
+        });
         return deferred.promise;
       }
     };

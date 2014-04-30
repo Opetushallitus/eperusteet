@@ -202,7 +202,7 @@ public class PerusteServiceImpl implements PerusteService {
     @Override
     @Transactional
     public TutkinnonOsaViiteDto attachTutkinnonOsa(Long id, Suoritustapakoodi koodi, TutkinnonOsaViiteDto osa) {
-        //XXX 
+        //XXX
         return addTutkinnonOsa(id, koodi, osa);
     }
 
