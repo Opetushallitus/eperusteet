@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -273,6 +274,8 @@ public class PerusteServiceImpl implements PerusteService {
             throw new BusinessRuleViolationException("Perusteen " + peruste + " + suoritustavalla " + suoritustapakoodi
                 + " ei ole sisältöä");
         }
+
+        em.refresh(suoritustapa.getSisalto(), LockModeType.PESSIMISTIC_WRITE);
 
         uusiViite = new PerusteenOsaViite();
 
