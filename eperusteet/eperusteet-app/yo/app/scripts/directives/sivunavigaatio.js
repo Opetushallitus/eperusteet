@@ -59,7 +59,8 @@ angular.module('eperusteApp')
         // TODO: kevyempi API jolla haetaan pelkät otsikot/linkkeihin
         // tarvittavat tiedot, ei koko sisältöä
         var that = this;
-        Suoritustapa.get({perusteenId: this.data.projekti.peruste.id, suoritustapa: 'ops'}, function(vastaus) {
+        Suoritustapa.get({perusteenId: this.data.projekti._peruste, suoritustapa: 'ops'}, function(vastaus) {
+          that.data.projekti.peruste = {};
           that.data.projekti.peruste.sisalto = vastaus;
         });
         return;

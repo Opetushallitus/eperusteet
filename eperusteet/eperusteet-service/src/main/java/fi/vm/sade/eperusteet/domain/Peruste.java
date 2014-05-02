@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+import fi.vm.sade.eperusteet.dto.EntityReference;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -46,7 +47,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "peruste")
 @Audited
-public class Peruste implements Serializable {
+public class Peruste implements Serializable, ReferenceableEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -106,6 +107,11 @@ public class Peruste implements Serializable {
             }
         }
         throw new IllegalArgumentException("Perusteella ei ole pyydettyä suoritustapaa");
+    }
+    
+    @Override
+    public EntityReference getReference() {
+        return new EntityReference(id);
     }
 
 }

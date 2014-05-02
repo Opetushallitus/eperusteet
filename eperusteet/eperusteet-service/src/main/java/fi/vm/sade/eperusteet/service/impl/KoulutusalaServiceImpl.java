@@ -47,17 +47,6 @@ public class KoulutusalaServiceImpl implements KoulutusalaService {
     @Autowired
     @Koodisto
     private DtoMapper mapper;
-
-    /*@Override
-    @Transactional(readOnly = true)
-    public KoulutusalaDto get(Long id) {
-        Koulutusala k = repository.findOne(id);
-        if (k == null) {
-            LOG.warn("Koulutusalaa {} ei löytynyt", id);
-        }
-
-        return mapper.map(k, KoulutusalaDto.class);
-    }*/
     
     @Override
     @Cacheable(cacheName = "koulutusalat")
@@ -74,19 +63,5 @@ public class KoulutusalaServiceImpl implements KoulutusalaService {
         return koulutusalatDtos;
     }
 
-    /*@Override
-    @Transactional()
-    public void koulutusalaLammitys() {
-        RestTemplate restTemplate = new RestTemplate();
-        KoodistoKoodiDto[] koulutusalat = restTemplate.getForObject(KOODISTO_REST_URL + KOULUTUSALA_URI + "/koodi", KoodistoKoodiDto[].class);
-        Koulutusala koulutusalaEntity;
-        for (KoodistoKoodiDto koulutusala : koulutusalat) {
-            koulutusalaEntity = new Koulutusala();
-            koulutusalaEntity.setKoodi(koulutusala.getKoodiUri());
-            if (repository.findOneByKoodi(koulutusala.getKoodiUri()) == null) {
-                repository.save(koulutusalaEntity);
-            }
-        }
-    }*/
 
 }

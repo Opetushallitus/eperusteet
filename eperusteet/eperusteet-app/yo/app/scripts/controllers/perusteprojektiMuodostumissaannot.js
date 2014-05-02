@@ -21,7 +21,7 @@ angular.module('eperusteApp')
       rakenne: {
         osat: []
       },
-      tutkinnonOsat: {},
+      tutkinnonOsat: {}
     };
 
     function haeRakenne() {

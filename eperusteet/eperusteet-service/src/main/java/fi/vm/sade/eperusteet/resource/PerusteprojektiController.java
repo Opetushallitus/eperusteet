@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,9 +68,9 @@ public class PerusteprojektiController {
     @RequestMapping(method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public ResponseEntity<PerusteprojektiDto> add(@RequestBody PerusteprojektiDto perusteprojektiDto, UriComponentsBuilder ucb) {
-        LOG.info("add {}", perusteprojektiDto);
-        perusteprojektiDto = service.save(perusteprojektiDto);
+    public ResponseEntity<PerusteprojektiDto> add(@RequestBody PerusteprojektiLuontiDto perusteprojektiLuontiDto, UriComponentsBuilder ucb) {
+        LOG.info("add {}", perusteprojektiLuontiDto);
+        PerusteprojektiDto perusteprojektiDto = service.save(perusteprojektiLuontiDto);
         return new ResponseEntity<>(perusteprojektiDto, buildHeadersFor(perusteprojektiDto.getId(), ucb), HttpStatus.CREATED);
     }
     

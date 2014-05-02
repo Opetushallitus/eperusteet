@@ -2,47 +2,74 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('ProjektinPerusteCtrl', function($scope, PerusteProjektiService,
-      YleinenData, Koodisto) {
-    PerusteProjektiService.watcher($scope, 'projekti');
+  .config(function($stateProvider) {
+    $stateProvider
+      .state('perusteprojekti.editoi.peruste', {
+        url: '/peruste',
+        templateUrl: 'views/partials/perusteprojektiPeruste.html',
+        controller: 'ProjektinPerusteCtrl',
+        naviBase: ['perusteprojekti', ':perusteProjektiId'],
+        navigaationimiId: 'perusteProjektiId'
+      });
+  })
+  .controller('ProjektinPerusteCtrl', function($scope, $rootScope, $stateParams, $state,
+    YleinenData, Koodisto, Perusteet, PerusteprojektiResource) {
 
+    $scope.hakemassa = false;
+    $scope.peruste = {};
+    $scope.projektiId = $stateParams.perusteProjektiId;
+
+    PerusteprojektiResource.get({id: $stateParams.perusteProjektiId}, function(vastaus) {
+      $scope.projekti = vastaus;
+      if ($scope.projekti._peruste) {
+        Perusteet.get({perusteenId: vastaus._peruste}, function(vastaus) {
+          console.log('peruste', vastaus);
+          $scope.peruste = vastaus;
+        }, function(virhe) {
+          console.log('perusteen haku virhe', virhe);
+        });
+      }
+    }, function(virhe) {
+      console.log('virhe', virhe);
+    });
+          
     $scope.rajaaKoodit = function(koodi) {
       return koodi.koodi.indexOf('_3') !== -1;
     };
 
     $scope.koodistoHaku = function(koodisto) {
+
       $scope.hakemassa = true;
+      $scope.peruste.nimi = koodisto.nimi;
+      $scope.peruste.koodi = koodisto.koodi;
+      $scope.peruste.koulutukset = [];
+      $scope.peruste.koulutukset.push({});
+      $scope.peruste.koulutukset[0].koulutuskoodi = koodisto.koodi;
 
-      $scope.projekti.peruste.nimi = koodisto.nimi;
-      $scope.projekti.peruste.koodi = koodisto.koodi;
-      $scope.projekti.peruste.koulutukset.length = 0;
-      $scope.projekti.peruste.koulutukset.push({});
-      $scope.projekti.peruste.koulutukset[0].koulutuskoodi = koodisto.koodi;
-      $scope.projekti.peruste.suoritustavat = [{suoritustapakoodi: 'ops'}];
-
-
-
-      Koodisto.haeAlarelaatiot($scope.projekti.peruste.koodi, function (relaatiot) {
+      Koodisto.haeAlarelaatiot($scope.peruste.koodi, function(relaatiot) {
         _.forEach(relaatiot, function(rel) {
           switch (rel.koodisto.koodistoUri) {
             case 'koulutusalaoph2002':
-              $scope.projekti.peruste.koulutukset[0].koulutusalakoodi = rel.koodi;
+              $scope.peruste.koulutukset[0].koulutusalakoodi = rel.koodi;
               break;
             case 'opintoalaoph2002':
-              $scope.projekti.peruste.koulutukset[0].opintoalakoodi = rel.koodi;
-              break;
-            case 'koulutustyyppi':
-              if (rel.koodi === 'koulutustyyppi_1' || rel.koodi === 'koulutustyyppi_11' || rel.koodi === 'koulutustyyppi_12') {
-                $scope.projekti.peruste.tutkintokoodi = rel.koodi;
-              }
+              $scope.peruste.koulutukset[0].opintoalakoodi = rel.koodi;
               break;
           }
         });
-        $scope.hakemassa = false;
-      }, function (virhe) {
+      }, function(virhe) {
         console.log('koodisto alarelaatio virhe', virhe);
-        $scope.hakemassa = false;
       });
+    };
+    
+    $scope.tallennaPeruste = function() {
+      Perusteet.save({perusteenId: $scope.peruste.id}, $scope.peruste, function(vastaus) {
+          console.log('tallennettu peruste', vastaus);
+          $scope.peruste = vastaus;
+          $state.go('perusteprojekti.editoi.sisalto', {perusteProjektiId: $scope.projektiId}, {reload: true});
+        }, function(virhe) {
+          console.log('perusteen tallennus virhe', virhe);
+        });
     };
 
     $scope.valitseKieli = function(teksti) {
@@ -56,5 +83,13 @@ angular.module('eperusteApp')
     $scope.opintoalaNimi = function(koodi) {
       return $scope.Opintoalat.haeOpintoalaNimi(koodi);
     };
+    
+    $rootScope.$on('event:spinner_on', function () {
+      $scope.hakemassa = true;
+    });
+    
+    $rootScope.$on('event:spinner_off', function () {
+      $scope.hakemassa = false;
+    });
 
   });

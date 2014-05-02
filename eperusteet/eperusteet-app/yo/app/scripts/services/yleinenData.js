@@ -5,7 +5,7 @@ angular.module('eperusteApp')
   .service('YleinenData', function YleinenData($translate, Arviointiasteikot, $rootScope) {
 
     this.kontekstit = ['ammatillinenperuskoulutus',
-                       'ammatillinenaikuiskoulutus'];
+      'ammatillinenaikuiskoulutus'];
 
     $rootScope.
       this.kontekstit = [
@@ -13,82 +13,88 @@ angular.module('eperusteApp')
         'ammatillinenaikuiskoulutus'
       ];
 
-      this.kielet = {
-        'suomi': 'fi',
-        'ruotsi': 'sv'
-      };
+    this.koulutustyypit = [
+      'koulutustyyppi_1',
+      'koulutustyyppi_11',
+      'koulutustyyppi_12'
+    ];
 
-      this.kieli = 'fi';
+    this.kielet = {
+      'suomi': 'fi',
+      'ruotsi': 'sv'
+    };
 
-      this.arviointiasteikot = undefined;
-      
-      this.dateFormatDatepicker = 'd.M.yyyy';
-      this.dateFormatMomentJS = 'D.M.YYYY';
+    this.kieli = 'fi';
 
-      this.haeArviointiasteikot = function() {
-        if (this.arviointiasteikot === undefined) {
-          var self = this;
-          Arviointiasteikot.query({}, function(tulos) {
+    this.arviointiasteikot = undefined;
 
-            self.arviointiasteikot = _.indexBy(tulos, 'id');
-            $rootScope.$broadcast('arviointiasteikot');
+    this.dateFormatDatepicker = 'd.M.yyyy';
+    this.dateFormatMomentJS = 'D.M.YYYY';
 
-          }, function(/*virhe*/) {
-            // TODO
-          });
+    this.haeArviointiasteikot = function() {
+      if (this.arviointiasteikot === undefined) {
+        var self = this;
+        Arviointiasteikot.query({}, function(tulos) {
 
-        } else {
+          self.arviointiasteikot = _.indexBy(tulos, 'id');
           $rootScope.$broadcast('arviointiasteikot');
-        }
-      };
 
-      this.lisääKontekstitPerusteisiin = function(perusteet) {
-        if (perusteet) {
-          for (var i = 0; i < perusteet.length; i++) {
-            switch (perusteet[i].tutkintokoodi)
-            {
-              case '1':
-                perusteet[i].konteksti = this.kontekstit[0];
-                break;
-              case '2':
-                perusteet[i].konteksti = this.kontekstit[1];
-                break;
-              case '3':
-                perusteet[i].konteksti = this.kontekstit[1];
-                break;
-            }
-          }
-        }
-      };
+        }, function(/*virhe*/) {
+          // TODO
+        });
 
-      this.vaihdaKieli = function(kielikoodi) {
+      } else {
+        $rootScope.$broadcast('arviointiasteikot');
+      }
+    };
 
-        var löytyi = false;
-        for (var avain in this.kielet) {
-          if (this.kielet.hasOwnProperty(avain)) {
-            if (this.kielet[avain] === kielikoodi) {
-              löytyi = true;
-              this.kieli = kielikoodi;
-              $translate.use(kielikoodi);
+    this.lisääKontekstitPerusteisiin = function(perusteet) {
+      if (perusteet) {
+        for (var i = 0; i < perusteet.length; i++) {
+          switch (perusteet[i].tutkintokoodi)
+          {
+            case '1':
+              perusteet[i].konteksti = this.kontekstit[0];
               break;
-            }
+            case '2':
+              perusteet[i].konteksti = this.kontekstit[1];
+              break;
+            case '3':
+              perusteet[i].konteksti = this.kontekstit[1];
+              break;
           }
         }
-        // Jos kielikoodi ei löydy listalta niin käytetään suomea.
-        if (!löytyi) {
-          $translate.use('fi');
-          this.kieli = 'fi';
+      }
+    };
+
+    this.vaihdaKieli = function(kielikoodi) {
+
+      var löytyi = false;
+      for (var avain in this.kielet) {
+        if (this.kielet.hasOwnProperty(avain)) {
+          if (this.kielet[avain] === kielikoodi) {
+            löytyi = true;
+            this.kieli = kielikoodi;
+            $translate.use(kielikoodi);
+            break;
+          }
         }
-      };
+      }
+      // Jos kielikoodi ei löydy listalta niin käytetään suomea.
+      if (!löytyi) {
+        $translate.use('fi');
+        this.kieli = 'fi';
+      }
+    };
 
-      this.valitseKieli = function(teksti) {
+    this.valitseKieli = function(teksti) {
 
-        if (teksti && teksti.hasOwnProperty(this.kieli)) {
-          return teksti[this.kieli];
-        } else {
-          return '';
-        }
+      if (teksti && teksti.hasOwnProperty(this.kieli)) {
+        return teksti[this.kieli];
+      } else {
+        return '';
+      }
 
-      };
+    };
 
-    });
+  });

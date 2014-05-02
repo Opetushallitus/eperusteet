@@ -14,20 +14,17 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service;
+package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
-import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author harrik
  */
-public interface PerusteprojektiService {
-    
-    PerusteprojektiDto get(final Long id);
-    
-    PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto);
-    
-    PerusteprojektiDto update(final Long id, PerusteprojektiDto perusteprojektiDto);
+@Getter
+@Setter
+public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
+    private String koulutustyyppi;
 }

@@ -5,11 +5,11 @@
       <label for="tutkinnon-nimi" translate>haku-nimi</label>
       <input id="tutkinnon-nimi" type="text" class="form-control" placeholder="{{'haku-tutkinnon-nimi-placeholder'| translate}}" ng-model="hakuparametrit.nimi" ng-change="hakuMuuttui()">
     </div>
-    <div class="form-group col-xs-6" ng-hide="piilotaTutkintotyyppi()">
+    <div class="form-group col-xs-6" ng-hide="piilotaKoulutustyyppi()">
       <label for="haku-tyyppi" translate>haku-tyyppi</label>
       <select id="haku-tyyppi" ng-model="hakuparametrit.tyyppi" class="form-control" ng-change="hakuMuuttui()">
         <option value="" translate>haku-kaikki-tutkinnot</option>
-        <option ng-repeat="(koodi, nimi) in tutkintotyypit" value="{{koodi}}" ng-selected="hakuparametrit.tyyppi === koodi">{{nimi| translate}}</option>
+        <option ng-repeat="koodi in koulutustyypit" value="{{koodi}}" ng-selected="hakuparametrit.tyyppi === koodi">{{koodi| translate}}</option>
       </select>
     </div>
     <div class="clearfix"></div>

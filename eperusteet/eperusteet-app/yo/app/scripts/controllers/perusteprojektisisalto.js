@@ -31,12 +31,13 @@ angular.module('eperusteApp')
   .controller('PerusteprojektisisaltoCtrl', function($scope, $stateParams, PerusteprojektiResource,
     Suoritustapa, SuoritustapaSisalto) {
      $scope.projekti = {};
+     $scope.peruste = {};
 
     if ($stateParams.perusteProjektiId !== 'uusi') {
       $scope.projekti.id = $stateParams.perusteProjektiId;
       PerusteprojektiResource.get({id: $stateParams.perusteProjektiId}, function(vastaus) {
         $scope.projekti = vastaus;
-        if ($scope.projekti.peruste.id) {
+        if ($scope.projekti._peruste) {
           haeSisalto('ops');
         }
       }, function(virhe) {
@@ -49,8 +50,8 @@ angular.module('eperusteApp')
     }
 
     var haeSisalto = function(suoritustapa) {
-      Suoritustapa.get({perusteenId: $scope.projekti.peruste.id, suoritustapa: suoritustapa}, function(vastaus) {
-        $scope.projekti.peruste.sisalto = vastaus;
+      Suoritustapa.get({perusteenId: $scope.projekti._peruste, suoritustapa: suoritustapa}, function(vastaus) {
+        $scope.peruste.sisalto = vastaus;
         console.log('suoritustapa sisältö', vastaus);
       }, function(virhe) {
         console.log('suoritustapasisältöä ei löytynyt', virhe);
@@ -58,9 +59,11 @@ angular.module('eperusteApp')
     };
 
     $scope.createSisalto = function () {
-      SuoritustapaSisalto.save({perusteId: $scope.projekti.peruste.id, suoritustapa: 'ops'}, function(vastaus) {
+      SuoritustapaSisalto.save({perusteId: $scope.projekti._peruste, suoritustapa: 'ops'}, {}, function(vastaus) {
         haeSisalto('ops');
         console.log('uusi suoritustapa sisältö', vastaus);
+      }, function (virhe) {
+        console.log('Uuden sisällön luontivirhe', virhe);
       });
     };
   });

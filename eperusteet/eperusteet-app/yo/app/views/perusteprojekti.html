@@ -21,9 +21,9 @@ European Union Public Licence for more details.
                 <p class="glyphicon glyphicon-pencil"></p>
                 <p>LUONNOS</p>
             </div>
-            <h2>{{ projekti.nimi || 'perusteprojekti-nimi-placeholder' | kaanna }}</h2>
-            {{'projekti-header-peruste' | kaanna}}: {{projekti.peruste.nimi || 'perusteprojekti-perustenimi-placeholder' | kaanna}}<br>
-            {{'projekti-header-koulutusala' | kaanna}}: {{koulutusalaNimi(projekti.peruste.koulutukset[0].koulutusalakoodi).nimi || 'perusteprojekti-koulutusala-placeholder' | kaanna}}<br>
+            <h2>{{ peruste.nimi || projekti.nimi || 'perusteprojekti-nimi-placeholder' | kaanna }}</h2>
+            {{'projekti-header-koulutustyyppi' | kaanna}}: {{peruste.tutkintokoodi || 'perusteprojekti-koulutustyyppi-placeholder' | kaanna}}<br>
+            {{'projekti-header-koulutusala' | kaanna}}: {{koulutusalaNimi(peruste.koulutukset[0].koulutusalakoodi).nimi || 'perusteprojekti-koulutusala-placeholder' | kaanna}}<br>
             {{'projekti-header-paatosPvm' | kaanna}}: {{projekti.paatosPvm | date:'dd.MM.yyyy'}}
             <!--p>voimassaoloaika kumoamistiedot siirtymäajat</p-->
         </div>
@@ -31,6 +31,10 @@ European Union Public Licence for more details.
             <a ui-sref="perusteprojekti.editoi.tiedot({ perusteProjektiId: projekti.id })">
                 <span class="glyphicon glyphicon-info-sign"></span> 
                 Projektin tiedot
+            </a>
+            <a ui-sref="perusteprojekti.editoi.peruste({ perusteProjektiId: projekti.id })">
+                <span class="glyphicon glyphicon-list-alt"></span> 
+                Perusteen tiedot
             </a>
             <a ui-sref="perusteprojekti.editoi.projektiryhma({perusteProjektiId: projekti.id})">
                 <span class="glyphicon glyphicon-user"></span> 
