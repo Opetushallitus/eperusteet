@@ -35,7 +35,7 @@ angular.module('eperusteApp')
     //   });
     // }
 
-    $scope.peruMuutokset = haeRakenne;
+    // $scope.peruMuutokset = haeRakenne;
 
     // if (TreeCache.nykyinen() !== $stateParams.perusteenId) { haeRakenne(); }
     // else { TreeCache.hae(); }
@@ -67,7 +67,7 @@ angular.module('eperusteApp')
 
     perusteHakuPromise.then(function(peruste) {
       if (peruste.id) {
-        haeRakenne(peruste.suoritustavat[0].suoritustapakoodi);
+        // haeRakenne(peruste.suoritustavat[0].suoritustapakoodi);
         $scope.peruste = peruste;
         Navigaatiopolku.asetaElementit({ perusteenId: peruste.nimi });
         haeSuoritustapaSisalto(peruste.id);
