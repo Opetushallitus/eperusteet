@@ -28,7 +28,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ValidDateRangeValidator implements ConstraintValidator<ValidateDateRange, Object> {
 
-    private static final Class<?>[] EMPTY_TYPE_ARRAY = new Class<?>[0];
+    private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
+    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
     private String startMethodName;
     private String endMethodName;
 
@@ -52,7 +53,7 @@ public class ValidDateRangeValidator implements ConstraintValidator<ValidateDate
 
     private static Date invokeDateGetter(Object obj, String methodName) {
         try {
-            return (Date) obj.getClass().getMethod(methodName, EMPTY_TYPE_ARRAY).invoke(obj, (Object) null);
+            return (Date) obj.getClass().getMethod(methodName, EMPTY_CLASS_ARRAY).invoke(obj, EMPTY_OBJECT_ARRAY);
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ClassCastException e) {
             throw new IllegalArgumentException("Unable to access " + obj.getClass().getName() + "#" + methodName, e);
         }
