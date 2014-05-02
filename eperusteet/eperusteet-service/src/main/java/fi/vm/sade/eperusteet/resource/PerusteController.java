@@ -9,7 +9,6 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +25,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
-
 @Controller
-@RequestMapping("/api/perusteet")
+@RequestMapping("/perusteet")
 public class PerusteController {
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteController.class);
@@ -36,11 +34,18 @@ public class PerusteController {
     @Autowired
     private PerusteService service;
 
+//    @RequestMapping(method = GET)
+//    @ResponseBody
+//    public ResponseEntity<Page<PerusteDto>> getAll(PerusteQuery pquery) {
+//        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
+//        return new ResponseEntity<>(service.findBy(p, pquery), ResponseHeaders.cacheHeaders(1, TimeUnit.MINUTES), HttpStatus.OK);
+//    }
+
     @RequestMapping(method = GET)
     @ResponseBody
-    public ResponseEntity<Page<PerusteDto>> getAll(PerusteQuery pquery) {
+    public Page<PerusteDto> getAll(PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
-        return new ResponseEntity<>(service.findBy(p, pquery), ResponseHeaders.cacheHeaders(1, TimeUnit.MINUTES), HttpStatus.OK);
+        return service.findBy(p, pquery);
     }
 
     @RequestMapping(value = "/{id}", method = GET)

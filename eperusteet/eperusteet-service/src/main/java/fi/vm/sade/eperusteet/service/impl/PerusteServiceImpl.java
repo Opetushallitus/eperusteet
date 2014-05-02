@@ -258,27 +258,14 @@ public class PerusteServiceImpl implements PerusteService {
     @Override
     @Transactional
     public PerusteenSisaltoViiteDto addSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, PerusteenSisaltoViiteDto viite) {
-        PerusteenOsaViite uusiViite = null;
-
-        Peruste peruste = perusteet.findOne(perusteId);
-        if (peruste == null) {
-            throw new BusinessRuleViolationException("Perustetta ei ole olemassa");
-        }
-        Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
-        if (suoritustapa == null) {
-            throw new BusinessRuleViolationException("Perusteella " + peruste + " + ei ole suoritustapaa "
-                + suoritustapakoodi);
-        }
-
+        Suoritustapa suoritustapa = getSuoritustapa(perusteId, suoritustapakoodi);
         if (suoritustapa.getSisalto() == null) {
-            throw new BusinessRuleViolationException("Perusteen " + peruste + " + suoritustavalla " + suoritustapakoodi
+            throw new BusinessRuleViolationException("Perusteen " + perusteId + " + suoritustavalla "
+                + suoritustapakoodi
                 + " ei ole sisältöä");
         }
-
-        em.refresh(suoritustapa.getSisalto(), LockModeType.PESSIMISTIC_WRITE);
-
-        uusiViite = new PerusteenOsaViite();
-
+        
+        PerusteenOsaViite uusiViite = new PerusteenOsaViite();
         if (viite == null) {
             TekstiKappale uusiKappale = new TekstiKappale();
             em.persist(uusiKappale);
@@ -288,6 +275,8 @@ public class PerusteServiceImpl implements PerusteService {
             uusiViite.setLapset(viiteEntity.getLapset());
             uusiViite.setPerusteenOsa(viiteEntity.getPerusteenOsa());
         }
+
+        em.refresh(suoritustapa.getSisalto(), LockModeType.PESSIMISTIC_WRITE);
         uusiViite.setVanhempi(suoritustapa.getSisalto());
         em.persist(uusiViite);
         suoritustapa.getSisalto().getLapset().add(uusiViite);

@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author harrik
  */
 @Controller
-@RequestMapping("/api/opintoalat")
+@RequestMapping("/opintoalat")
 public class OpintoalaController {
     @Autowired
     private OpintoalaService service;

@@ -14,14 +14,16 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc">
 
-  <context:component-scan base-package="fi.vm.sade.eperusteet.resource"/>
-  <mvc:interceptors>
-    <bean class="org.springframework.web.servlet.mvc.WebContentInterceptor" p:cacheSeconds="0" p:alwaysUseFullPath="true">
-      <property name="cacheMappings">
-        <props>
-          <prop key="/api/perusteet/**">-1</prop>
-        </props>
-      </property>
-    </bean>
-  </mvc:interceptors>
+    <context:annotation-config/>
+    <context:component-scan base-package="fi.vm.sade.eperusteet.resource"/>
+
+    <mvc:interceptors>
+        <bean class="org.springframework.web.servlet.mvc.WebContentInterceptor" p:cacheSeconds="0" p:alwaysUseFullPath="true">
+            <property name="cacheMappings">
+                <props>
+                    <prop key="/api/perusteet/**">-1</prop>
+                </props>
+            </property>
+        </bean>
+    </mvc:interceptors>
 </beans>

@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author teele1
  */
 @Controller
-@RequestMapping("/api/arvioinnit")
+@RequestMapping("/arvioinnit")
 public class ArviointiController {
     
     private static final Logger LOG = LoggerFactory.getLogger(ArviointiController.class);

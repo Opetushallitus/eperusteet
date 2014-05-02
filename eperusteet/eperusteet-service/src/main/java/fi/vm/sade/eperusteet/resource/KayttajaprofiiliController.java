@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author harrik
  */
 @Controller
-@RequestMapping("/api/kayttajaprofiili")
+@RequestMapping("/kayttajaprofiili")
 public class KayttajaprofiiliController {
 
     private static final Logger LOG = LoggerFactory.getLogger(KayttajaprofiiliController.class);

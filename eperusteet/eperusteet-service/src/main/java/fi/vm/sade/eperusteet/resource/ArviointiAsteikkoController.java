@@ -33,7 +33,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  * @author jhyoty
  */
 @Controller
-@RequestMapping("/api/arviointiasteikot")
+@RequestMapping("/arviointiasteikot")
 public class ArviointiAsteikkoController {
 
     @Autowired

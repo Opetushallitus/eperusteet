@@ -31,7 +31,7 @@ import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 
 @Controller
-@RequestMapping("/api/perusteenosat")
+@RequestMapping("/perusteenosat")
 public class PerusteenOsaController {
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteenOsaController.class);

@@ -37,7 +37,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  * @author harrik
  */
 @Controller
-@RequestMapping("/api/perusteprojektit")
+@RequestMapping("/perusteprojektit")
 public class PerusteprojektiController {
     
     private static final Logger LOG = LoggerFactory.getLogger(PerusteprojektiController.class);

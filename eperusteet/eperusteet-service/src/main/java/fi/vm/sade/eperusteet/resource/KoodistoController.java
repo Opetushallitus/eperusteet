@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * @author nkala
  */
 @Controller
-@RequestMapping("/api/koodisto")
+@RequestMapping("/koodisto")
 public class KoodistoController {
     private static final Logger LOG = LoggerFactory.getLogger(KoodistoController.class);
 
