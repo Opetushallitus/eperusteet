@@ -55,7 +55,7 @@ angular.module('eperusteApp')
     $scope.haePerusteet = function(sivu) {
       $scope.hakuparametrit.sivu = sivu;
       Haku.setHakuparametrit($state.current.name, $scope.hakuparametrit);
-      Perusteet.query(Haku.getHakuparametrit($state.current.name), hakuVastaus, function(virhe) {
+      Perusteet.get(Haku.getHakuparametrit($state.current.name), hakuVastaus, function(virhe) {
         if (virhe.status === 404) {
           hakuVastaus(virhe.data);
         }

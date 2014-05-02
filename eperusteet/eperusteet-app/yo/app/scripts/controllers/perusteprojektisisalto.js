@@ -59,9 +59,11 @@ angular.module('eperusteApp')
     };
 
     $scope.createSisalto = function () {
-      SuoritustapaSisalto.save({perusteId: $scope.projekti._peruste, suoritustapa: 'ops'}, function(vastaus) {
+      SuoritustapaSisalto.save({perusteId: $scope.projekti._peruste, suoritustapa: 'ops'}, {}, function(vastaus) {
         haeSisalto('ops');
         console.log('uusi suoritustapa sisältö', vastaus);
+      }, function (virhe) {
+        console.log('Uuden sisällön luontivirhe', virhe);
       });
     };
   });

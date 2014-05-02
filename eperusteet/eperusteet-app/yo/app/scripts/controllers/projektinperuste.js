@@ -22,7 +22,7 @@ angular.module('eperusteApp')
     PerusteprojektiResource.get({id: $stateParams.perusteProjektiId}, function(vastaus) {
       $scope.projekti = vastaus;
       if ($scope.projekti._peruste) {
-        Perusteet.query({perusteenId: vastaus._peruste}, function(vastaus) {
+        Perusteet.get({perusteenId: vastaus._peruste}, function(vastaus) {
           console.log('peruste', vastaus);
           $scope.peruste = vastaus;
         }, function(virhe) {
