@@ -61,9 +61,9 @@
     "koulutusalakoodi-7": "[Sosiaali-, terveys- ja liikunta-ala]",
     "koulutusalakoodi-8": "[Luonnontieteiden ala]",
 
-    "tutkintotyyppikoodi-1": "[perustutkinto]",
-    "tutkintotyyppikoodi-2": "[ammattitutkinto]",
-    "tutkintotyyppikoodi-3": "[erikoisammattitutkinto]",
+    "koulutustyyppi_1": "[perustutkinto]",
+    "koulutustyyppi_11": "[ammattitutkinto]",
+    "koulutustyyppi_12": "[erikoisammattitutkinto]",
 
     "opintoalakoodi-1": "[Kielitieteet]",
     "opintoalakoodi-2": "[Muu humanistinen ja kasvatusala]",
@@ -177,6 +177,8 @@
     "kelvoton-pvm": "[Kelvoton päivämäärä]",
     "yhteistyotaho-label": "[Yhteistyötaho]",
     "anna-yhteistyotaho-placeholder": "[Syötä yhteistyötaho]",
+    "valitse-koulutustyyppi": "[Valitse koulutustyyppi]",
+    "koulutustyyppi-label": "[Koulutustyyppi]",
     
     "projektipäällikkö": "[Projektipäällikkö]",
     
@@ -205,6 +207,7 @@
     "perusteprojekti-nimi-placeholder": "[<Anna projektin nimi>]",
     "projekti-header-peruste": "[Peruste]",
     "projekti-header-paatosPvm": "[Päätöspäivämäärä]",
+    "projekti-header-koulutustyyppi": "[Koulutustyyppi]",
     
     "lisaa-tutkintokohtainen-osa": "[Lisää tutkintokohtainen osa]",
     "uusi-tutkinnon-osa": "[<Uusi sisältö>]"

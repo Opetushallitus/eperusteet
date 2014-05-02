@@ -37,21 +37,15 @@ angular.module('eperusteApp')
     PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, koulutusalaService, opintoalaService) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
-    $scope.koodistohaku = false;
-
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
     $scope.projekti = {};
-    $scope.projekti.peruste = {};
-    $scope.projekti.peruste.nimi = {};
-    $scope.projekti.peruste.koulutukset = [];
     PerusteProjektiService.clean();
 
     $scope.projekti.id = $stateParams.perusteProjektiId;
 
     $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojektiPerustiedot.html'},
-                   {otsikko: 'projekti-toimikausi', url: 'views/partials/perusteprojektiToimikausi.html'},
-                   {otsikko: 'projekti-peruste', url: 'views/partials/perusteprojektiPeruste.html'}];
+                   {otsikko: 'projekti-toimikausi', url: 'views/partials/perusteprojektiToimikausi.html'}];
 
     if ($stateParams.perusteProjektiId !== 'uusi') {
       $scope.projekti.id = $stateParams.perusteProjektiId;
@@ -66,6 +60,9 @@ angular.module('eperusteApp')
     $scope.tallennaPerusteprojekti = function() {
       var projekti = PerusteProjektiService.get();
       if (projekti.id !== 'uusi') {
+        // Poista tämä hackkin, kun keksitty parempi tapa viedä koulutustyyppi uuden projektin luonnissa.
+        // Uuden projektin luonti dto:ssa kulkee koulutustyyppi, mutta ei normaalissa perusteprojektiDto:ssa
+        delete projekti.koulutustyyppi;
         PerusteprojektiResource.update(projekti, function(vastaus) {
           PerusteProjektiService.save(vastaus);
           PerusteProjektiService.update();
@@ -86,14 +83,7 @@ angular.module('eperusteApp')
     };
 
     var avaaProjektinSisalto = function(projektiId) {
-      $state.go('perusteprojekti.editoi.sisalto', {perusteProjektiId: projektiId});
+      $state.go('perusteprojekti.editoi.sisalto', {perusteProjektiId: projektiId}, {reload:true});
     };
 
-    $rootScope.$on('event:spinner_on', function () {
-      $scope.koodistohaku = true;
-    });
-
-    $rootScope.$on('event:spinner_off', function () {
-      $scope.koodistohaku = false;
-    });
   });

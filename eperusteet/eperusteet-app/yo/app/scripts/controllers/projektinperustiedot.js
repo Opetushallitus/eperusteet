@@ -5,11 +5,13 @@ angular.module('eperusteApp')
   PerusteProjektiService.watcher($scope, 'projekti');
 
   $scope.tehtavaluokat = [
-    { nimi: 'Tehtäväluokka-1'},
-    { nimi: 'Tehtäväluokka-2'},
-    { nimi: 'Tehtäväluokka-3'},
-    { nimi: 'Tehtäväluokka-4'}
+    'Tehtäväluokka-1',
+    'Tehtäväluokka-2',
+    'Tehtäväluokka-3',
+    'Tehtäväluokka-4'
   ];
+
+  $scope.koulutustyypit = YleinenData.koulutustyypit;
   
   $scope.paatosPvmOpen = false;
   

@@ -34,11 +34,7 @@ angular.module('eperusteApp')
     $scope.koulutusalat = koulutusalaService.haeKoulutusalat();
     $scope.hakuparametrit = Haku.getHakuparametrit($state.current.name);
 
-    $scope.tutkintotyypit = {
-      'koulutustyyppi_1': 'tutkintotyyppikoodi-1',
-      'koulutustyyppi_11': 'tutkintotyyppikoodi-2',
-      'koulutustyyppi_12': 'tutkintotyyppikoodi-3'
-    };
+    $scope.koulutustyypit = YleinenData.koulutustyypit;
 
     $scope.tyhjenna = function() {
       $scope.nykyinenSivu = 0;
@@ -112,7 +108,7 @@ angular.module('eperusteApp')
       return koulutusalaService.haeKoulutusalaNimi(koodi);
     };
     
-    $scope.piilotaTutkintotyyppi = function() {
+    $scope.piilotaKoulutustyyppi = function() {
       return $state.current.name === 'selaus.ammatillinenperuskoulutus';
     };
   });

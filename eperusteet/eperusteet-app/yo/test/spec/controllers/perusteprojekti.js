@@ -17,11 +17,20 @@ describe('Controller: PerusteprojektiCtrl', function () {
       }
     };
     spyOn(mockKoulutusalaService, 'query').andCallThrough();
+    
+    var mockOpintoalaService = {
+      query: function() {
+        queryDeferred = $q.defer();
+        return {$promise: queryDeferred.promise};
+      }
+    };
+    spyOn(mockOpintoalaService, 'query').andCallThrough();
 
     scope = $rootScope.$new();
     PerusteprojektiCtrl = $controller('PerusteprojektiCtrl', {
       $scope: scope,
-      koulutusalaService: mockKoulutusalaService
+      koulutusalaService: mockKoulutusalaService,
+      opintoalaService: mockOpintoalaService
     });
   }));
 

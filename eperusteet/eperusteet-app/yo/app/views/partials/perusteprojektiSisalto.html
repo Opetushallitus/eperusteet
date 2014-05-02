@@ -31,15 +31,15 @@ European Union Public Licence for more details.
     <div class="row">
         <div class="tutkinto">
             <h2 class="section-title">Tutkintokohtaiset osat</h2>
-            <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="projekti.peruste.id" translate>lisaa-tutkintokohtainen-osa</button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="projekti._peruste" translate>lisaa-tutkintokohtainen-osa</button>
             <ul class="tutkinnonsisalto-list">
-                <li class="list-element" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: 'uusi'})">
+                <li class="list-element pointer" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: 'uusi'})">
                     <h3>Käsi- ja taideteollisuusalan perustutkinnon tavoitteet</h3>
                 </li>
-                <li class="list-element" ui-sref="perusteprojekti.editoi.muodostumissaannot">
+                <li class="list-element pointer" ui-sref="perusteprojekti.editoi.muodostumissaannot">
                     <h3>Tutkinnon muodostuminen</h3>
                 </li>
-                <li class="list-element" ng-repeat="sisalto in projekti.peruste.sisalto.lapset" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id})">
+                <li class="list-element pointer" ng-repeat="sisalto in peruste.sisalto.lapset" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id})">
                     <h3>{{ sisalto.perusteenOsa.nimi || 'uusi-tutkinnon-osa' | kaanna}}</h3>
                 </li>
             </ul>

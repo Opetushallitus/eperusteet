@@ -24,6 +24,12 @@ angular.module('eperusteApp')
     $scope.syvyys = 2;
     $scope.suosikkiLista = {};
     $scope.rakenne = {};
+    var eiSuosikkiTyyli = 'glyphicon glyphicon-star-empty pointer';
+    var suosikkiTyyli = 'glyphicon glyphicon-star pointer';
+    $scope.suosikkiTyyli = eiSuosikkiTyyli;
+    $scope.suoritustapa = $stateParams.suoritustapa;
+    var suosikkiId = null;
+    $scope.suodatin = {};
 
     // function haeRakenne(suoritustapa) {
     //   PerusteRakenteet.get({
@@ -47,13 +53,6 @@ angular.module('eperusteApp')
         console.log(re);
       });
     };
-
-    var eiSuosikkiTyyli = 'glyphicon glyphicon-star-empty pointer';
-    var suosikkiTyyli = 'glyphicon glyphicon-star pointer';
-    $scope.suosikkiTyyli = eiSuosikkiTyyli;
-    $scope.suoritustapa = $stateParams.suoritustapa;
-    var suosikkiId = null;
-    $scope.suodatin = {};
 
     var perusteHakuPromise = (function() {
       if ($stateParams.perusteenId) {

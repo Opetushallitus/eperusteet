@@ -15,19 +15,16 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.Koulutus;
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
-import fi.vm.sade.eperusteet.repository.KoulutusRepository;
+import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
+import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
-import fi.vm.sade.eperusteet.service.SuoritustapaService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,11 +52,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     private KayttajaprofiiliService kayttajaprofiiliService;
     
     @Autowired
-    private KoulutusRepository koulutusRepository;
-    
-    @Autowired
-    private SuoritustapaService suoritustapaService;
-
+    private PerusteService perusteService;
     @Override
     @Transactional(readOnly = true)
     public PerusteprojektiDto get(Long id) {
@@ -69,48 +62,28 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @Transactional(readOnly = false)
-    public PerusteprojektiDto save(PerusteprojektiDto perusteprojektiDto) {
+    public PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto) {
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
-        perusteprojekti = checkIfKoulutuksetAlreadyExists(perusteprojekti);
-        Set<Suoritustapa> temp = new HashSet<>();
-        for (Suoritustapa suoritustapa : perusteprojekti.getPeruste().getSuoritustavat()) {
-            temp.add(suoritustapaService.createSuoritustapaWithSisaltoRoot(suoritustapa.getSuoritustapakoodi()));
-        }
-        perusteprojekti.getPeruste().setSuoritustavat(temp);
+        
+        Peruste peruste = perusteService.luoPerusteRunko(perusteprojektiDto.getKoulutustyyppi());
+        perusteprojekti.setPeruste(peruste);
         perusteprojekti = repository.save(perusteprojekti);
         kayttajaprofiiliService.addPerusteprojekti(perusteprojekti.getId());
+        
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
     }
 
     @Override
+    @Transactional(readOnly = false)
     public PerusteprojektiDto update(Long id, PerusteprojektiDto perusteprojektiDto) {
         if (!repository.exists(id)) {
             throw new EntityNotFoundException("Objektia ei löytynyt id:llä: " + id);
         }
-
+        
         perusteprojektiDto.setId(id);
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
-        perusteprojekti = checkIfKoulutuksetAlreadyExists(perusteprojekti);
         perusteprojekti = repository.save(perusteprojekti);
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
     }
     
-    private Perusteprojekti checkIfKoulutuksetAlreadyExists(Perusteprojekti projekti) {
-             
-        Set<Koulutus> koulutukset = new HashSet<>();
-        Koulutus koulutusTemp;
-        
-        if (projekti != null && projekti.getPeruste() != null && projekti.getPeruste().getKoulutukset() != null) {
-            for (Koulutus koulutus : projekti.getPeruste().getKoulutukset()) {
-                koulutusTemp = koulutusRepository.findOneByKoulutuskoodi(koulutus.getKoulutuskoodi());
-                if (koulutusTemp != null) {
-                    koulutukset.add(koulutusTemp);
-                } else {
-                    koulutukset.add(koulutus);
-                }
-            }
-            projekti.getPeruste().setKoulutukset(koulutukset);
-        }
-        return projekti;
-    }
 }

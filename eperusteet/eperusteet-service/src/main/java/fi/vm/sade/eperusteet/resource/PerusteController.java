@@ -20,10 +20,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @Controller
 @RequestMapping("/perusteet")
@@ -47,6 +47,16 @@ public class PerusteController {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findBy(p, pquery);
     }
+    
+    @RequestMapping(value = "/{id}", method = POST)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public PerusteDto update(@PathVariable("id") final long id, @RequestBody PerusteDto perusteDto) {
+        LOG.info("update {}", perusteDto);
+        perusteDto = service.update(id, perusteDto);
+        return perusteDto;
+    }
+    
 
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody

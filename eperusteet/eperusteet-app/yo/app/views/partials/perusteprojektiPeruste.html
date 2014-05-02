@@ -14,7 +14,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
-<div ng-controller="ProjektinPerusteCtrl">
+<form class="form-horizontal" name="perusteForm" role="form" novalidate>
     <div ng-form="projektinPerusteForm">
         <div>
             <koodisto-select valmis="koodistoHaku" tyyppi="koulutus" filtteri="rajaaKoodit"></koodisto-select>
@@ -22,27 +22,32 @@ European Union Public Licence for more details.
         <div class="form-group">
             <label for="perusteenNimi" class="col-sm-3" translate>perusteen-nimi</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="perusteenNimi"  value="{{valitseKieli(projekti.peruste.nimi)}}" placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
+                <input type="text" class="form-control" id="perusteenNimi"  value="{{peruste.nimi | kaanna}}" placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
             </div>
         </div>
         <div class="form-group">
             <label for="perusteenKoodi" class="col-sm-3" translate>perusteen-koodi</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="perusteenKoodi"  ng-model="projekti.peruste.koodi" placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
+                <input type="text" class="form-control" id="perusteenKoodi"  ng-model="peruste.koodi" placeholder="{{'valitse-peruste' | kaanna}}" readonly="true"/>
             </div>
         </div>
         <div class="form-group">
             <label for="koulutusala" class="col-sm-3" translate>haku-koulutusala</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="koulutusala" value="{{valitseKieli(koulutusalaNimi(projekti.peruste.koulutukset[0].koulutusalakoodi).nimi)}}" placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
+                <input type="text" class="form-control" id="koulutusala" value="{{valitseKieli(koulutusalaNimi(peruste.koulutukset[0].koulutusalakoodi).nimi)}}" placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
             </div>
         </div>
         <div class="form-group">
             <label for="opintoala" class="col-sm-3" translate>haku-opintoala</label>
             <div class="col-sm-9">
                 <!--input ng-show="projekti.peruste.opintoalat.length < 1" type="text" class="form-control" id="opintoala"  placeholder="{{'valitse-peruste' | translate}}" readonly="true"/-->
-                <input type="text" class="form-control" id="opintoala" value="{{valitseKieli(opintoalaNimi(projekti.peruste.koulutukset[0].opintoalakoodi).nimi)}}" placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
+                <input type="text" class="form-control" id="opintoala" value="{{valitseKieli(opintoalaNimi(peruste.koulutukset[0].opintoalakoodi).nimi)}}" placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
             </div>
         </div>
     </div>
-</div>
+    <div class="projekti-form-buttons">
+        <button type="submit" ng-click="tallennaPeruste()" id="submit" class="btn btn-primary" ng-disabled="projektinPerusteForm.$invalid || koodistohaku"  translate>tallenna-nappi</button>
+        <button ui-sref="perusteprojekti.editoi.sisalto({ perusteProjektiId: projektiId })" id="cancel" class="btn" translate>peruuta</button>
+    </div>
+</form>
+

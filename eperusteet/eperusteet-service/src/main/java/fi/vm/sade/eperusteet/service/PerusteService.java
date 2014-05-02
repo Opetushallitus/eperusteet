@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
@@ -45,6 +46,8 @@ public interface PerusteService {
 
     PerusteDto get(final Long id);
     
+    PerusteDto update(long id, PerusteDto perusteDto);
+    
     PerusteDto getByIdAndSuoritustapa(final Long id, Suoritustapakoodi suoritustapakoodi);
 
     Page<PerusteDto> getAll(PageRequest page, String kieli);
@@ -69,6 +72,8 @@ public interface PerusteService {
     RakenneModuuliDto updateTutkinnonRakenne(final Long perusteId, final Suoritustapakoodi suoritustapa, final RakenneModuuliDto rakenne);
 
     List<TutkinnonOsaViiteDto> getTutkinnonOsat(Long perusteid, Suoritustapakoodi suoritustapakoodi);
+    
+    Peruste luoPerusteRunko(String koulutustyyppi);
 
     @PreAuthorize("isAuthenticated()")
     String lammitys();

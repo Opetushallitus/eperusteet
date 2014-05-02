@@ -28,6 +28,15 @@ European Union Public Licence for more details.
                 <input type="text" class="form-control" id="diaarinumero" ng-model='projekti.diaarinumero' placeholder="{{'anna-diaarinumero-placeholder'| translate}}" ng-maxlength="255" ng-required="true">
             </div>
         </div>
+        <div class="form-group" ng-if="'perusteprojekti.tiedot.uusi' | isState">
+            <label for="koulutustyyppi" class="col-sm-3">{{'koulutustyyppi-label'| translate}}<span>*</span></label>
+            <div class="col-md-9">
+                <select id="koulutustyyppi" ng-model="projekti.koulutustyyppi" class="form-control" ng-required="true">
+                    <option value="" disabled selected translate>valitse-koulutustyyppi</option>
+                    <option ng-repeat="koulutustyyppi in koulutustyypit" value="{{koulutustyyppi}}" ng-selected="projekti.koulutustyyppi === koulutustyyppi">{{koulutustyyppi | kaanna}}</option>
+                </select>
+            </div>
+        </div>
         <div class="form-group">
             <label for="paatospvm" class="col-sm-3">{{'päätöspvm-label'| translate}}</label>
             <div class="col-sm-9">
@@ -49,7 +58,7 @@ European Union Public Licence for more details.
             <div class="col-md-9">
                 <select id="tehtavaluokka" ng-model="projekti.tehtavaluokka" class="form-control">
                     <option value="" disabled selected translate>valitse-tehtäväluokka</option>
-                    <option ng-repeat="tehtavaluokka in tehtavaluokat" value="{{tehtavaluokka.nimi}}" ng-selected="valittuTehtavaluokka.nimi === tehtavaluokka.nimi">{{tehtavaluokka.nimi}}</option>
+                    <option ng-repeat="tehtavaluokka in tehtavaluokat" ng-selected="projekti.tehtavaluokka === tehtavaluokka">{{tehtavaluokka}}</option>
                 </select>
             </div>
         </div>
