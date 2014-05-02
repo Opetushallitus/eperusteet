@@ -316,11 +316,11 @@ public class PerusteServiceImpl implements PerusteService {
             uusiViite.setPerusteenOsa(viiteEntity.getPerusteenOsa());
         }
 
-        em.refresh(suoritustapa.getSisalto(), LockModeType.PESSIMISTIC_WRITE);
-        uusiViite.setVanhempi(suoritustapa.getSisalto());
-        em.persist(uusiViite);
-        suoritustapa.getSisalto().getLapset().add(uusiViite);
-
+        em.refresh(suoritustapa, LockModeType.PESSIMISTIC_WRITE);
+        final PerusteenOsaViite sisalto = suoritustapa.getSisalto();
+        uusiViite.setVanhempi(sisalto);
+        sisalto.getLapset().add(uusiViite);
+        em.persist(uusiViite);        
         return mapper.map(uusiViite, PerusteenSisaltoViiteDto.class);
     }
 
