@@ -31,7 +31,7 @@ angular.module('eperusteApp')
   .directive('spinner', function($rootScope) {
     return {
       template: '<div id="global-spinner" ng-show="isSpinning">' +
-                '  SPINNER' +
+                '<span class="glyphicon glyphicon-refresh spin"></span>' +
                 '</div>',
       restrict: 'E',
       link: function($scope) {
