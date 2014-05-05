@@ -57,10 +57,6 @@ public class Peruste implements Serializable, ReferenceableEntity {
     @Setter
     private Long id;
     
-    @Getter
-    @Setter
-    private String koodiUri;
-    
     @ValidHtml(whitelist = WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter

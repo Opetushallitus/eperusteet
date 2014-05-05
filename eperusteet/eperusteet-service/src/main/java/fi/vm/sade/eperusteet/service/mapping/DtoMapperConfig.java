@@ -71,7 +71,6 @@ public class DtoMapperConfig {
                 .byDefault()
                 .register();
         factory.classMap(PerusteDto.class, Peruste.class)
-                .field("koodi", "koodiUri")
                 .byDefault()
                 .register();
         factory.classMap(SuosikkiDto.class, Suosikki.class)

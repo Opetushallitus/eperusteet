@@ -19,7 +19,6 @@ import lombok.Setter;
 public class PerusteDto implements Serializable {
 
     private Long id;
-    private String koodi;
     private LokalisoituTekstiDto nimi;
     private String tutkintokoodi;
     private Set<KoulutusDto> koulutukset;
