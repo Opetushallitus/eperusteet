@@ -2,6 +2,17 @@ $spinner-size: 30px;
 $spinner-transform-x: 15px;
 $spinner-transform-y: 14px;
 #global-spinner {
+  &.ng-hide-add, &.ng-hide-remove {
+    transition: opacity 0.2s;
+    display: block !important;
+  }
+  &.ng-hide-add.ng-hide-add-active, &.ng-hide-remove {
+    opacity: 0;
+  }
+  &.ng-hide-add, &.ng-hide-remove.ng-hide-remove-active {
+    opacity: 0.6;
+  }
+
   position: absolute;
   top: 20px;
   right: 20px;
