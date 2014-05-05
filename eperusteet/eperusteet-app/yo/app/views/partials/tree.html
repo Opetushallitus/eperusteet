@@ -41,7 +41,8 @@
             <tab heading="Osat">
               <div class="skratchpad-items">
                 <ul ui-sortable="sortableOptionsUnique" ng-model="uniikit">
-                  <li class="skratchpad-item" ng-repeat="osa in uniikit"><div>{{ osa.nimi | kaanna }}</div></li>
+                  <li class="skratchpad-item" ng-repeat="osa in uniikit"><div>{{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna }}</div></li>
+
                 </ul>
               </div>
             </tab>
@@ -59,13 +60,13 @@
       <div class="tutkinnonosa-laatikko" ng-repeat="osa in uniikit | filter:rajaaTutkinnonOsia | orderBy:'nimi.fi'">
         <div class="otsikko">
           <div class="muokkaus">
-            <a href="" ui-sref="perusteenosa({ perusteenOsaId: osa._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })">Muokkaa <span class="glyphicon glyphicon-chevron-right"></span></a>
+            <a href="" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsaId: osa._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })">Muokkaa <span class="glyphicon glyphicon-chevron-right"></span></a>
           </div>
           <h3>
             <a href="" ng-click="osa.$avattu = !osa.$avattu">
               <span ng-show="osa.$avattu" class="glyphicon glyphicon-chevron-down"></span>
               <span ng-hide="osa.$avattu" class="glyphicon glyphicon-chevron-up"></span>
-              {{ osa.nimi | kaanna }}
+              {{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna }}
             </a>
           </h3>
         </div>

@@ -19,8 +19,8 @@
 angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
-      .state('perusteenosa', {
-        url: '/muokkaus/perusteenosa/:perusteenOsanTyyppi/:perusteenOsaId',
+      .state('perusteprojekti.editoi.perusteenosa', {
+        url: 'perusteenosa/:perusteenOsanTyyppi/:perusteenOsaId',
         templateUrl: 'views/muokkaus.html',
         controller: 'MuokkausCtrl',
         naviRest: [':perusteenOsanTyyppi'],
@@ -31,7 +31,6 @@ angular.module('eperusteApp')
       });
   })
   .controller('MuokkausCtrl', function($scope, $stateParams, PerusteenOsat, $state, $compile, Navigaatiopolku) {
-    console.log('moi');
     $scope.tyyppi = $stateParams.perusteenOsanTyyppi;
     $scope.objekti = null;
 
