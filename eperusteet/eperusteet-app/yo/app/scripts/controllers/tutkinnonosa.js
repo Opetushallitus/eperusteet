@@ -57,7 +57,7 @@ angular.module('eperusteApp')
       $rootScope.$broadcast('paivitaNavigaatiopolku');
 
     }, function(virhe) {
-      console.log('VIRHE: ' + virhe.status);
+      console.log('VIRHE: ' + virhe);
       //Virhe tapahtui, esim. perustetta ei löytynyt. Virhesivu.
       $state.go('selaus.ammatillinenperuskoulutus');
     });

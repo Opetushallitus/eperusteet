@@ -59,7 +59,7 @@
       <div class="tutkinnonosa-laatikko" ng-repeat="osa in uniikit | filter:rajaaTutkinnonOsia | orderBy:'nimi.fi'">
         <div class="otsikko">
           <div class="muokkaus">
-            <a href="" ui-sref="muokkaus.vanha({ perusteenOsanId: osa._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })">Muokkaa <span class="glyphicon glyphicon-chevron-right"></span></a>
+            <a href="" ui-sref="perusteenosa({ perusteenOsaId: osa._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })">Muokkaa <span class="glyphicon glyphicon-chevron-right"></span></a>
           </div>
           <h3>
             <a href="" ng-click="osa.$avattu = !osa.$avattu">
