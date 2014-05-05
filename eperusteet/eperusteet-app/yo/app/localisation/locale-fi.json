@@ -129,6 +129,7 @@
     "suomi": "Suomi",
     "ruotsi": "Svenska",
 
+    "tutkinnon-rakenne": "Tutkinnon rakenne",
     "tutkinnon-muodostuminen": "Tutkinnon muodostuminen",
     "tutkinnonosa-nimi": "Nimi",
     "tutkinnonosa-laajuus": "Laajuus",
@@ -228,11 +229,11 @@
     "ok": "OK",
 
     "projekti-perustiedot": "Perustiedot",
-    "projekti-projektiryhmä": "Projektiryhmä",
+    "projekti-projektiryhmä": "Perustetyöryhmä",
     "projekti-peruste": "Perusteen tiedot",
     "projekti-toimikausi": "Toimikausi",
     "valitse-peruste": "Valitse peruste",
-    "perusteen-koodi": "Perusteen koodi",
+    "perusteen-koodi": "Tutkinnon koodi",
     "projektin-tiedot": "Projektin tiedot",
     "uusi-projekti-otsikko": "Uusi perusteprojekti",
 
@@ -258,7 +259,7 @@
     "takaisin-paanakymaan": "Takaisin päänäkymään",
     "projektiryhma-otsikko-omistaja": "Perusteprosessin omistaja",
     "projektiryhma-otsikko-sihteeri": "Sihteeri",
-    "projektiryhma-otsikko-jasen": "Projektiryhmän jäsenet",
+    "projektiryhma-otsikko-jasen": "Perustetyöryhmän jäsenet",
     "projektiryhma-otsikko-kommentoija": "Kommentoijat",
     "puhelin": "Puh.",
     "email": "Email",

@@ -5,7 +5,7 @@ angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
       .state('perusteprojekti.editoi.muodostumissaannot', {
-        url: '/muodostumissaannot',
+        url: '/tutkinnonrakenne',
         templateUrl: 'views/perusteprojektiMuodostumissaannot.html',
         controller: 'PerusteprojektiMuodostumissaannotCtrl',
         naviRest: ['muodostumissaannot'],
