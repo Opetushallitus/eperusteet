@@ -49,7 +49,10 @@ angular.module('eperusteApp', [
   })
   .config(function($urlRouterProvider, $sceProvider) {
     $sceProvider.enabled(true);
-    $urlRouterProvider.otherwise('/');
+    $urlRouterProvider.otherwise(function ($injector, $location) {
+      $injector.get('virheService').setData({path: $location.path()});
+      $injector.get('$state').go('virhe');
+    });
   })
   .config(function($translateProvider) {
       $translateProvider.useStaticFilesLoader({
