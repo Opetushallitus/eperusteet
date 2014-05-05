@@ -36,7 +36,7 @@ public class RakenneModuuliDto extends AbstractRakenneOsaDto {
     public void visit(Visitor visitor) {
         visitor.visit(this);
         for ( AbstractRakenneOsaDto dto : osat ) {
-            visitor.visit(dto);
+            dto.visit(visitor);
         }
     }
 
