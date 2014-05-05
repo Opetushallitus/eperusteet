@@ -42,7 +42,7 @@ angular.module('eperusteApp')
     PerusteprojektiResource, koulutusalaService, opintoalaService, Perusteet, SivunavigaatioService) {
     $scope.projekti = {};
     $scope.peruste = {};
-    
+
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
 
@@ -51,16 +51,14 @@ angular.module('eperusteApp')
       PerusteprojektiResource.get({ id: $stateParams.perusteProjektiId }, function(vastaus) {
         $scope.projekti = vastaus;
         SivunavigaatioService.asetaProjekti($scope.projekti);
-        console.log('projekti', vastaus);
         Navigaatiopolku.asetaElementit({ perusteProjektiId: vastaus.nimi });
-        
+
         Perusteet.get({perusteenId: vastaus._peruste}, function(vastaus) {
-          console.log('peruste', vastaus);
           $scope.peruste = vastaus;
         }, function(virhe) {
           console.log('perusteen haku virhe', virhe);
         });
-        
+
       }, function(virhe) {
         console.log('virhe', virhe);
       });

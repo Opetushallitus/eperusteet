@@ -15,9 +15,10 @@ angular.module('eperusteApp')
       });
   })
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $rootScope, $state, $stateParams,
-    Navigaatiopolku, PerusteprojektiResource, PerusteProjektiService, PerusteRakenteet, TreeCache, PerusteTutkinnonosat) {
+    Navigaatiopolku, PerusteprojektiResource, PerusteProjektiService, PerusteRakenteet, TreeCache, PerusteTutkinnonosat, Perusteet) {
 
     $scope.rakenne = {
+      $resolved: false,
       rakenne: {
         osat: []
       },
@@ -27,20 +28,24 @@ angular.module('eperusteApp')
     function haeRakenne() {
       PerusteprojektiResource.get({ id: $stateParams.perusteProjektiId }, function(vastaus) {
         PerusteProjektiService.save(vastaus);
-        PerusteRakenteet.get({
-          perusteenId: vastaus.peruste.id,
-          suoritustapa: vastaus.peruste.suoritustavat[0].suoritustapakoodi // FIXME
-        }, function(rakenne) {
-          PerusteTutkinnonosat.query({
-            perusteenId: vastaus.peruste.id,
-            suoritustapa: vastaus.peruste.suoritustavat[0].suoritustapakoodi // FIXME
-          }, function(tosat) {
-            $scope.rakenne.rakenne = rakenne;
-            $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck(tosat, '_tutkinnonOsa'), tosat);
+        Perusteet.get({
+          perusteenId: vastaus._peruste
+        }, function(peruste) {
+          PerusteRakenteet.get({
+            perusteenId: peruste.id,
+            suoritustapa: peruste.suoritustavat[0].suoritustapakoodi // FIXME
+          }, function(rakenne) {
+            PerusteTutkinnonosat.query({
+              perusteenId: peruste.id,
+              suoritustapa: peruste.suoritustavat[0].suoritustapakoodi // FIXME
+            }, function(tosat) {
+              $scope.rakenne.rakenne = rakenne;
+              $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck(tosat, '_tutkinnonOsa'), tosat);
+              $scope.rakenne.$resolved = true;
+            });
+          }, function() {
             $scope.rakenne.$resolved = true;
           });
-        }, function() {
-          $scope.rakenne.$resolved = true;
         });
       });
     }
