@@ -57,7 +57,7 @@
       <div ng-if="uniikit.length > 0" class="rajauslaatikko">
         <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia...">
       </div>
-      <div class="tutkinnonosa-laatikko" ng-repeat="osa in uniikit | filter:rajaaTutkinnonOsia | orderBy:'nimi.fi'">
+      <div class="tutkinnonosa-laatikko" ng-repeat="osa in rakenne.tutkinnonOsat | filter:rajaaTutkinnonOsia | orderBy:'nimi.fi'">
         <div class="otsikko">
           <div class="muokkaus">
             <a href="" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsaId: osa._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })">Muokkaa <span class="glyphicon glyphicon-chevron-right"></span></a>
@@ -66,12 +66,22 @@
             <a href="" ng-click="osa.$avattu = !osa.$avattu">
               <span ng-show="osa.$avattu" class="glyphicon glyphicon-chevron-down"></span>
               <span ng-hide="osa.$avattu" class="glyphicon glyphicon-chevron-up"></span>
-              {{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna }}
+              {{ osa.nimi | kaanna }}
             </a>
           </h3>
         </div>
         <div ng-show="osa.$avattu" class="sisalto">
-          {{ osa.laajuus }}{{ osa.yksikko | kaanna }}
+          <div>
+            <label>{{ 'laajuus' | kaanna }}</label>
+            <input ng-model="osa.laajuus" type="number">
+          </div>
+          <div>
+            <label>{{ 'yksikkö' | kaanna }}</label>
+            <div class="btn-group">
+              <button type="button" class="btn btn-default" ng-model="osa.tyyppi" btn-radio="'OPINTOVIIKKO'">{{ 'OPINTOVIIKKO' | translate }}</button>
+              <button type="button" class="btn btn-default" ng-model="osa.tyyppi" btn-radio="'OPINTOPISTE'">{{ 'OPINTOPISTE' | translate }}</button>
+            </div>
+          </div>
         </div>
       </div>
     </tab>

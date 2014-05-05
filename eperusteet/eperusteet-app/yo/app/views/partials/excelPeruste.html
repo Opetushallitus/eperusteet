@@ -1,6 +1,4 @@
 <div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
-  <h2>{{ projekti.peruste.nimi | kaanna }} ({{ projekti.peruste.tutkintokoodi }})</h2>
-
   <div ng-repeat="tk in tekstikentat">
     <h3 ng-hide="tk.id">{{ tk.nimi | kaanna }} (<a href="" ng-click="poistaTekstikentta(tk)">Poista</a>)</h3>
     <h3 ng-show="tk.id">{{ tk.nimi | kaanna }}</h3>

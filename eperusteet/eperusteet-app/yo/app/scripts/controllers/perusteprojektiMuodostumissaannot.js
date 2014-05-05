@@ -39,12 +39,13 @@ angular.module('eperusteApp')
 
     $scope.tallennaRakenne = function(rakenne) {
       TreeCache.tallenna(rakenne, $stateParams.perusteenId);
-      rakenne.tutkinnonOsat = _.values(rakenne.tutkinnonOsat);
-      PerusteRakenteet.save({
-        perusteenId: PerusteProjektiService.get().peruste.id,
-        suoritustapa: 'naytto' // FIXME
-      }, rakenne, function(re) {
-        console.log(re);
-      });
+      PerusteenRakenne.tallenna(
+        rakenne,
+        rakenne.$peruste.id,
+        rakenne.$peruste.suoritustavat[0].suoritustapakoodi,
+        function() {
+          console.log('success');
+        }
+      );
     };
   });

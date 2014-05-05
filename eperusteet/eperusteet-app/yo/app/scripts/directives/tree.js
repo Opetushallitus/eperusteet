@@ -89,7 +89,7 @@ angular.module('eperusteApp')
     function generoiOtsikko() {
       var tosa = 'tutkinnonOsat[rakenne._tutkinnonOsa]';
       return '' +
-        '<span ng-if="rakenne._tutkinnonOsa">{{ ' + tosa + '.nimi | kaanna }}, {{' + tosa + '.laajuus }}ov</span>' +
+        '<span ng-if="rakenne._tutkinnonOsa">{{ ' + tosa + '.nimi | kaanna }}, <b>{{' + tosa + '.laajuus || 0 }}</b>ov</span>' +
         '<span class="pull-right" ng-if="rakenne._tutkinnonOsa"><a href="" ng-click="poista(rakenne, vanhempi)"><span class="glyphicon glyphicon-remove"></a></span>' +
         '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi"><b>{{ rakenne.nimi | kaanna }}</b></span>';
     }
@@ -111,19 +111,19 @@ angular.module('eperusteApp')
         scope.scratchpad = [];
         scope.roskakori = [];
 
-        function liitaUusiTutkinnonOsa() {
-          scope.rakenne.osat.push({
-            otsikko: { fi: 'Uusi' },
-            kuvaus: { fi: '' },
-            _tutkinnonOsa: 1337,
-            muodostumisSaanto: {
-              maara: 10,
-              yksikko: 'ov',
-              tyyppi: 'laajuus',
-              pakollinen: false
-            }
-          });
-        }
+        // function liitaUusiTutkinnonOsa() {
+        //   scope.rakenne.osat.push({
+        //     otsikko: { fi: 'Uusi' },
+        //     kuvaus: { fi: '' },
+        //     _tutkinnonOsa: 1337,
+        //     muodostumisSaanto: {
+        //       maara: 10,
+        //       yksikko: 'ov',
+        //       tyyppi: 'laajuus',
+        //       pakollinen: false
+        //     }
+        //   });
+        // }
 
         scope.poista = function(i, a) { _.remove(a.osat, i); };
 
@@ -165,7 +165,7 @@ angular.module('eperusteApp')
           }
         };
 
-        scope.liitaUusiTutkinnonOsa = liitaUusiTutkinnonOsa;
+        // scope.liitaUusiTutkinnonOsa = liitaUusiTutkinnonOsa;
 
         var optiot = '' +
           '  <span class="colorbox"></span>' +
@@ -203,7 +203,7 @@ angular.module('eperusteApp')
         template =
           '<div ng-if="!vanhempi">' +
           '  <div class="otsikko">' +
-          '    <h4><a href="" ng-click="ryhmaModaali(rakenne, vanhempi)">{{ rakenne.nimi | kaanna }}</a>, {{ rakenne.$laajuus }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</h4>' +
+          '    <h4><a href="" ng-click="ryhmaModaali(rakenne, vanhempi)">{{ rakenne.nimi || \'perusteella-ei-nimeä\' | kaanna }}</a>, {{ rakenne.$laajuus }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</h4>' +
           '    <div ng-if="rakenne.$virhe" class="isovirhe">{{ rakenne.$virhe | kaanna }}</div>' +
           '  </div>' +
           '</div>' +
@@ -254,7 +254,7 @@ angular.module('eperusteApp')
         function paivitaUniikit() {
           scope.uniikit = [];
           scope.uniikit = _.map(scope.rakenne.tutkinnonOsat, function(osa) {
-            return {  _tutkinnonOsa: osa._tutkinnonOsa, nimi: osa.nimi };
+            return {  _tutkinnonOsa: osa._tutkinnonOsa };
           });
         }
         paivitaUniikit();

@@ -69,7 +69,7 @@
     </div>
   </div>
 
-  <div ng-show="!lukeeTiedostoa && !alussa && errors.length === 0 && !perusteTallennettu">
+  <div ng-show="!lukeeTiedostoa && !alussa && errors.length === 0 && !peruste.$perusteTallennettu">
     <form class="form-horizontal projekti-form" name="perusteprojektiForm" role="form" novalidate>
       <div class="form-area">
         <div ng-form="projektinPerusteForm">
@@ -85,30 +85,32 @@
               <input type="text" class="form-control" ng-model="projekti.diaarinumero" placeholder="{{'valitse-diaarinumero' | kaanna}}"/>
             </div>
           </div>
-          <div>
-            <koodisto-select valmis="perusteHaku" tyyppi="koulutus" filtteri="rajaaKoodit"></koodisto-select>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3" translate>perusteen-nimi</label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control" value="{{ projekti.peruste.nimi | kaanna }}" placeholder="{{ 'valitse-peruste' | kaanna }}"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3" translate>perusteen-koodi</label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control" ng-model="projekti.peruste.koodi" placeholder="{{'valitse-peruste' | kaanna}}"/>
-            </div>
-          </div>
+          <!-- <div> -->
+          <!-- <koodisto-select valmis="perusteHaku" tyyppi="koulutus" filtteri="rajaaKoodit"></koodisto-select> -->
+          <!-- </div> -->
+          <!-- <div class="form-group"> -->
+          <!--   <label class="col-sm-3" translate>perusteen-nimi</label> -->
+          <!--   <div class="col-sm-9"> -->
+          <!--     <input type="text" class="form-control" value="{{ peruste.nimi | kaanna }}" placeholder="{{ 'valitse-peruste' | kaanna }}"/> -->
+          <!--   </div> -->
+          <!-- </div> -->
+          <!-- <div class="form-group"> -->
+          <!--   <label class="col-sm-3" translate>perusteen-koodi</label> -->
+          <!--   <div class="col-sm-9"> -->
+          <!--     <input type="text" class="form-control" ng-model="peruste.koodi" placeholder="{{'valitse-peruste' | kaanna}}"/> -->
+          <!--   </div> -->
+          <!-- </div> -->
           <button ng-click="tallennaPerusteprojekti(projekti)" class="btn btn-primary">{{ 'luo-perusteprojekti-nappi' | kaanna }}</button>
         </div>
       </div>
     </form>
   </div>
-  <div ng-show="perusteTallennettu">
+  <div ng-show="peruste.$perusteTallennettu">
     <div class="alert alert-success">
       {{ 'perusteprojekti' | kaanna }} <a href="" ui-sref="perusteprojekti.editoi.sisalto({ perusteProjektiId: haettuProjekti.id })"><b>{{ haettuProjekti.nimi | kaanna }}</b></a> {{ 'tallennettiin-onnistuneesti' | kaanna }}
     </div>
+
+    <h2>{{ projekti.nimi | kaanna }} ({{ projekti.diaarinumero }})</h2>
 
     <tabset justified="true">
       <tab heading="{{ 'tekstikappaleet' | translate }}">
