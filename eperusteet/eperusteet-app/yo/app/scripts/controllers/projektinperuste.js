@@ -9,7 +9,10 @@ angular.module('eperusteApp')
         templateUrl: 'views/partials/perusteprojektiPeruste.html',
         controller: 'ProjektinPerusteCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
-        navigaationimiId: 'perusteProjektiId'
+        navigaationimiId: 'perusteProjektiId',
+        onEnter: function (SivunavigaatioService) {
+          SivunavigaatioService.aseta({osiot: false});
+        }
       });
   })
   .controller('ProjektinPerusteCtrl', function($scope, $rootScope, $stateParams, $state,
