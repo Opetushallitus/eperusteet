@@ -1,27 +1,35 @@
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
-  .service('PerusteenRakenne', function() {
-    // function haeRakenne() {
-    //   PerusteprojektiResource.get({ id: $stateParams.perusteProjektiId }, function(vastaus) {
-    //     PerusteProjektiService.save(vastaus);
-    //     PerusteRakenteet.get({
-    //       perusteenId: vastaus.peruste.id,
-    //       suoritustapa: vastaus.peruste.suoritustavat[0].suoritustapakoodi // FIXME
-    //     }, function(rakenne) {
-    //       PerusteTutkinnonosat.query({
-    //         perusteenId: vastaus.peruste.id,
-    //         suoritustapa: vastaus.peruste.suoritustavat[0].suoritustapakoodi // FIXME
-    //       }, function(tosat) {
-    //         $scope.rakenne = rakenne;
-    //         $scope.rakenne.tutkinnonOsat = tosat;
-    //         $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck($scope.rakenne.tutkinnonOsat, '_tutkinnonOsa'), $scope.rakenne.tutkinnonOsat);
-    //       });
-    //     }, function() {
-    //       $scope.rakenne.$resolved = true;
-    //     });
-    //   });
-    // }
+  .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet, TreeCache, PerusteTutkinnonosat, Perusteet) {
+    function haeRakenne(perusteProjektiId, success, failure) {
+      var response = {};
+      PerusteprojektiResource.get({ id: perusteProjektiId }, function(vastaus) {
+        PerusteProjektiService.save(vastaus);
+        Perusteet.get({
+          perusteenId: vastaus._peruste
+        }, function(peruste) {
+          PerusteRakenteet.get({
+            perusteenId: peruste.id,
+            suoritustapa: peruste.suoritustavat[0].suoritustapakoodi // FIXME
+          }, function(rakenne) {
+            PerusteTutkinnonosat.query({
+              perusteenId: peruste.id,
+              suoritustapa: peruste.suoritustavat[0].suoritustapakoodi // FIXME
+            }, function(tosat) {
+              response.rakenne = rakenne;
+              response.tutkinnonOsat = _.zipObject(_.pluck(tosat, '_tutkinnonOsa'), tosat);
+              success(response);
+            });
+          });
+        });
+      });
+    }
+
+    return {
+      hae: haeRakenne
+    };
   })
   .factory('PerusteTutkinnonosat', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa/tutkinnonosat',
