@@ -168,14 +168,13 @@ angular.module('eperusteApp')
         // scope.liitaUusiTutkinnonOsa = liitaUusiTutkinnonOsa;
 
         var optiot = '' +
-          '  <span class="colorbox"></span>' +
+          '<span ng-if="!rakenne._tutkinnonOsa" class="colorbox">' +
+          '  <a href="" ng-click="rakenne.$collapsed = !rakenne.$collapsed">' +
+          '    <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-up"></span>' +
+          '    <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
+          '  </a>' +
+          '</span>' +
           '<div class="left">' +
-          '  <span ng-if="!rakenne._tutkinnonOsa">' +
-          '    <a href="" ng-click="rakenne.$collapsed = !rakenne.$collapsed">' +
-          '      <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
-          '      <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-up"></span>' +
-          '    </a>' +
-          '  </span> ' +
           '  <span class="tree-item">' + generoiOtsikko() + '</span>' +
           '</div>' +
           '<div class="right">' +

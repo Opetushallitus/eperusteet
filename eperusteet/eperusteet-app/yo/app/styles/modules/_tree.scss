@@ -227,9 +227,9 @@ div.skratchpad-items>ul {
 .tree .bubble, .tree li .textbox {
   max-width: 480px;
   min-height: 32px;
-  border: 1px solid #cccccc;
+  border: 1px solid #ccc;
   /* display:inline-block; */
-  background-color: #fcfcfc;
+  background-color: #eee;
   text-decoration: none;
 }
 
@@ -242,12 +242,19 @@ div.skratchpad-items>ul {
 
 .tree .bubble .colorbox {
   height: 31px;
-  width: 5px;
+  width: 31px;
+  padding: 6px 9px;
   display: inline-block;
-  margin-right: 3px;
+  margin-right: 10px;
   float: left;
   background: #06526c;
+  text-decoration: none;
 }
+
+.tree .bubble .colorbox a:link {color: #FFF; }
+.tree .bubble .colorbox a:visited {color: #FFF; }
+.tree .bubble .colorbox a:hover {color: #FFF; }
+.tree .bubble .colorbox a:active {color: #FFF; }
 
 .tree .bubble .right {
   float: right;
@@ -264,7 +271,7 @@ div.skratchpad-items>ul {
   max-width: 480px;
   min-height: 32px;
   border: 1px solid #cccccc;
-  background-color: #eeeeee;
+  background-color: #fff;
   padding: 5px 8px;
   text-decoration: none;
 }
