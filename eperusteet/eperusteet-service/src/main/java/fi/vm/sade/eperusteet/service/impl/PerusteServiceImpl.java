@@ -391,10 +391,17 @@ public class PerusteServiceImpl implements PerusteService {
 
     private Peruste haeErikoistapaus(String koodiUri, List<Peruste> perusteEntityt, Map<String, String> erikoistapausMap) {
         Peruste peruste = null;
+        boolean perusteFound = false;
         if (ERIKOISTAPAUKSET.contains(koodiUri)) {
             for (Peruste perusteEntity : perusteEntityt) {
-                if (perusteEntity.getKoodiUri().equals(erikoistapausMap.get(koodiUri))) {
-                    peruste = perusteEntity;
+                for (Koulutus koulutus : perusteEntity.getKoulutukset()) {
+                    if (koulutus.getKoulutuskoodi().equals(erikoistapausMap.get(koodiUri))) {
+                        peruste = perusteEntity;
+                        perusteFound = true;
+                        break;
+                    }
+                }
+                if (perusteFound) {
                     break;
                 }
             }
