@@ -143,6 +143,8 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 
 .uusi-projekti-content {
     margin: 20px;
+    /* Tilaa päivämäärän valitsimelle ettei se piiloudu overflown alle. */
+    margin-bottom: 200px;
 }
 
 .projekti-form-buttons {

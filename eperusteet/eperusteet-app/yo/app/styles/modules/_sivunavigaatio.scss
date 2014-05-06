@@ -117,7 +117,7 @@ $sivunavi-leveys: 280px;
     }
     .sivunavi-sisalto {
       margin: 0 0 0 $sivunavi-leveys + 20px;
-      overflow-x: hidden;
+      overflow: hidden;
     }
   }
 }
