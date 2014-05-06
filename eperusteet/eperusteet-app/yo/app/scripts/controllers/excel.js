@@ -60,8 +60,7 @@ angular.module('eperusteApp')
           $scope.peruste.$perusteTallennettu = true;
           $scope.haettuPeruste = resPeruste;
         });
-      }, function (virhe) {
-        console.log('virhe:', virhe);
+      }, function() {
         // TODO: Virhe notifikaatio
       });
     };
@@ -71,12 +70,15 @@ angular.module('eperusteApp')
 
       _(tekstikentat).filter(function(tk) {
         return tk.$ladattu !== 0;
-      }).forEach(function(tk) {
+      })
+      .forEach(function(tk) {
         PerusteenOsat.saveTekstikappale(tk, function(re) {
           SuoritustapaSisalto.add({
             perusteId: $scope.haettuPeruste.id,
             suoritustapa: $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi
-          }, { _perusteenOsa: re.id }, function() {
+          }, {
+            _perusteenOsa: re.id
+          }, function() {
             tk.$ladattu = true;
             tk.id = re.id;
             doneSuccess();
@@ -129,7 +131,8 @@ angular.module('eperusteApp')
 
       _($scope.osatutkinnot).filter(function(ot) {
         return ot.$ladattu !== 0;
-      }).forEach(function(ot) {
+      })
+      .forEach(function(ot) {
         var koodiUriKaytossa = _.any($scope.osatutkinnot, function(toinen) {
           return (ot !== toinen && ot.koodiUri !== '' && toinen.koodiUri === ot.koodiUri);
         });
@@ -140,10 +143,9 @@ angular.module('eperusteApp')
           // TutkinnonOsanValidointi.validoi(cop).then(function() {
             cop.tavoitteet = {};
             PerusteenOsat.saveTutkinnonOsa(cop, function(re) {
-              console.log($scope.haettuPeruste.id, $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi, re.id);
               PerusteTutkinnonosat.save({
                 perusteenId: $scope.haettuPeruste.id,
-                suoritustapa: $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi
+                suoritustapa: $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi // FIXME
               }, {
                 _tutkinnonOsa: re.id
               }, function() {

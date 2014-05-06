@@ -2,6 +2,14 @@
 /* global _ */
 
 angular.module('eperusteApp')
+  .factory('PerusteTutkinnonosa', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa/tutkinnonosat/:osanId',
+      {
+        perusteenId: '@id',
+        suoritustapa: '@suoritustapa',
+        osanId: '@id'
+      });
+  })
   .factory('PerusteTutkinnonosat', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa/tutkinnonosat',
       {
@@ -36,7 +44,7 @@ angular.module('eperusteApp')
         add: {method: 'PUT'}
     });
   })
-  .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet, TreeCache, PerusteTutkinnonosat, Perusteet) {
+  .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet, TreeCache, PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa) {
     function haeRakenne(perusteProjektiId, success) {
       var response = {};
       PerusteprojektiResource.get({ id: perusteProjektiId }, function(vastaus) {
@@ -58,7 +66,6 @@ angular.module('eperusteApp')
                                         .pluck('_tutkinnonOsa')
                                         .zipObject(tosat)
                                         .value();
-              // console.log(response);
               success(response);
             });
           });
@@ -80,14 +87,13 @@ angular.module('eperusteApp')
       });
 
       _.forEach(_.values(rakenne.tutkinnonOsat), function(osa) {
-        console.log(osa);
-        PerusteTutkinnonosat.update({
+        PerusteTutkinnonosa.save({
           perusteenId: id,
-          suoritustapa: suoritustapa
+          suoritustapa: suoritustapa,
+          osaId: osa.id
         }, osa, function() {
           after();
-        }, function(virhe) {
-          console.log(virhe);
+        }, function() {
           // TODO: notifikaatio
         });
       });
