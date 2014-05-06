@@ -31,7 +31,7 @@ European Union Public Licence for more details.
     <div class="row">
         <div class="tutkinto">
             <h2 class="section-title">Tutkintokohtaiset osat</h2>
-            <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="projekti._peruste" translate>lisaa-tutkintokohtainen-osa</button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" translate>lisaa-tutkintokohtainen-osa</button>
             <ul class="tutkinnonsisalto-list">
                 <li class="list-element pointer" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: 'uusi'})">
                     <h3>Käsi- ja taideteollisuusalan perustutkinnon tavoitteet</h3>

@@ -38,8 +38,13 @@ angular.module('eperusteApp')
         abstract: true
       });
     })
-  .controller('PerusteprojektiCtrl', function ($scope, $stateParams, Navigaatiopolku,
-    PerusteprojektiResource, koulutusalaService, opintoalaService, Perusteet, SivunavigaatioService) {
+  .controller('PerusteprojektiCtrl', function ($scope, $rootScope, $stateParams, Navigaatiopolku,
+    PerusteprojektiResource, koulutusalaService, opintoalaService, Perusteet, SivunavigaatioService,
+    PerusteProjektiService) {
+
+    PerusteProjektiService.cleanSuoritustapa();
+    $scope.valittuSuoritustapa = '';
+    
     $scope.projekti = {};
     $scope.peruste = {};
 
@@ -55,6 +60,10 @@ angular.module('eperusteApp')
 
         Perusteet.get({perusteenId: vastaus._peruste}, function(vastaus) {
           $scope.peruste = vastaus;
+          if (vastaus.suoritustavat !== null && vastaus.suoritustavat.length > 0) {
+            $scope.valittuSuoritustapa = vastaus.suoritustavat[0].suoritustapakoodi;
+            PerusteProjektiService.setSuoritustapa($scope.valittuSuoritustapa);
+          }
         }, function(virhe) {
           console.log('perusteen haku virhe', virhe);
         });
@@ -69,6 +78,11 @@ angular.module('eperusteApp')
 
     $scope.koulutusalaNimi = function(koodi) {
       return koulutusalaService.haeKoulutusalaNimi(koodi);
+    };
+    
+    $scope.vaihdaSuoritustapa = function(suoritustapakoodi) {
+      $scope.valittuSuoritustapa = suoritustapakoodi;
+      PerusteProjektiService.setSuoritustapa(suoritustapakoodi);
     };
 
   });
