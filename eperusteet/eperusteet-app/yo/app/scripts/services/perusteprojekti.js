@@ -41,14 +41,11 @@ angular.module('eperusteApp')
     
     function setSuoritustapa(st) {
       suoritustapa = _.clone(st);
-      $rootScope.$broadcast('projekti:suoritustapa');
     }
     
     function cleanSuoritustapa() {
       suoritustapa = '';
     }
-    
-    
 
     return {
       save: save,

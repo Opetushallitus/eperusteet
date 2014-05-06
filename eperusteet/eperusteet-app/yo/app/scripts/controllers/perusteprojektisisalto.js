@@ -41,8 +41,7 @@ angular.module('eperusteApp')
         Perusteet.get({perusteenId: vastaus._peruste}, function(vastaus) {
           $scope.peruste = vastaus;
           if (vastaus.suoritustavat !== null && vastaus.suoritustavat.length > 0) {
-            $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa() === '' ? vastaus.suoritustavat[0].suoritustapakoodi : PerusteProjektiService.getSuoritustapa();
-            PerusteProjektiService.setSuoritustapa($scope.valittuSuoritustapa);
+            $scope.vaihdaSuoritustapa(PerusteProjektiService.getSuoritustapa() === '' ? vastaus.suoritustavat[0].suoritustapakoodi : PerusteProjektiService.getSuoritustapa());
           }
         }, function(virhe) {
           console.log('perusteen haku virhe', virhe);
@@ -77,13 +76,10 @@ angular.module('eperusteApp')
       });
     };
     
-    $scope.$on('projekti:suoritustapa', function() {
-      haeSisalto(PerusteProjektiService.getSuoritustapa());
-    });
-    
     $scope.vaihdaSuoritustapa = function(suoritustapakoodi) {
       $scope.valittuSuoritustapa = suoritustapakoodi;
       PerusteProjektiService.setSuoritustapa(suoritustapakoodi);
+      haeSisalto($scope.valittuSuoritustapa);
     };
     
   });
