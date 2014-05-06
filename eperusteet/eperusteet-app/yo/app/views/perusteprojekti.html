@@ -16,7 +16,7 @@ European Union Public Licence for more details.
 -->
 <div class="project-header">
     <div class="row">
-        <div class="col-md-8">
+        <div class="project-otsikkotiedot">
             <div class="status text-center">
                 <p class="glyphicon glyphicon-pencil"></p>
                 <p>LUONNOS</p>
@@ -27,19 +27,27 @@ European Union Public Licence for more details.
             {{'projekti-header-paatosPvm' | kaanna}}: {{projekti.paatosPvm | date:'dd.MM.yyyy'}}
             <!--p>voimassaoloaika kumoamistiedot siirtymäajat</p-->
         </div>
-        <div class="col-md-4 tools">
-            <a ui-sref="perusteprojekti.editoi.tiedot({ perusteProjektiId: projekti.id })">
+        <div class="headernavi">
+          <ul>
+            <li>
+              <a ui-sref="perusteprojekti.editoi.tiedot({ perusteProjektiId: projekti.id })" ui-sref-active="headernavi-active">
                 <span class="glyphicon glyphicon-info-sign"></span> 
                 {{'projektin-tiedot' | translate}}
-            </a>
-            <a ui-sref="perusteprojekti.editoi.peruste({ perusteProjektiId: projekti.id })">
+              </a>
+            </li>
+            <li>
+              <a ui-sref="perusteprojekti.editoi.peruste({ perusteProjektiId: projekti.id })" ui-sref-active="headernavi-active">
                 <span class="glyphicon glyphicon-list-alt"></span> 
                 {{'projekti-peruste' | translate}}
-            </a>
-            <a ui-sref="perusteprojekti.editoi.projektiryhma({perusteProjektiId: projekti.id})">
+              </a>
+            </li>
+            <li>
+              <a ui-sref="perusteprojekti.editoi.projektiryhma({perusteProjektiId: projekti.id})" ui-sref-active="headernavi-active">
                 <span class="glyphicon glyphicon-user"></span> 
                 {{'projekti-projektiryhmä' | translate}}
-            </a>
+              </a>
+            </li>
+          </ul>
         </div>
     </div>
 </div>

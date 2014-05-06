@@ -13,30 +13,83 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 */
+$project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 .project-header {
 	position: relative;
-        background-color: rgba(20, 158, 203, 0.06);
-        border:  1px solid rgba(6, 82, 107, 0.12);
+  background-color: rgba(20, 158, 203, 0.06);
+  border: $project-header-border;
+  h5 {
+    display: inline;
+  }
+  .headernavi {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    ul {
+      float: right;
+      margin: 0;
+      padding: 0;
+    }
+    li {
+      list-style-type: none;
+      display: inline-block;
+      padding: 0;
+      margin: 0;
+      a {
+        display: block;
+        padding: 7px;
+      }
+    }
+  }
+  .headernavi-active {
+    cursor: default;
+    color: black;
+    background-color: white;
+    border: $project-header-border;
+    border-bottom: none;
+    &:hover {
+      color: black;
+      text-decoration: none;
+    }
+  }
+  @media (max-width: 900px) {
+    .headernavi {
+      position: relative;
+      margin-right: 20px;
+      margin-left: 20px;
+    }
+  }
+
+  .status {
+    float:left;
+    margin: 20px;
+    margin-top: 0;
+    background-color: #fbb03b;
+    padding-top: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    p {
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: 2px;
+      color: #fff;
+      font-weight: bold;
+      &.glyphicon {
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+    }
+  }
+}
+
+.project-otsikkotiedot {
+  margin-left: 20px;
 }
 
 .uusi-projekti-header {
     padding: 20px;
 }
-
-.project-header h5 {
-	display: inline;
-}
-.project-header .tools {
-	position: absolute;
-	right: 0px;
-        bottom: 10px;
-        
-}
-
-.project-header a {
-    margin-right: 10px;
-}
-
 
 .main-content .row {
 	padding-left: 40px;
@@ -117,28 +170,4 @@ European Union Public Licence for more details.
 .projekti-form-buttons {
     margin-top: 20px;
     float: right;
-}
-
-.project-header .status {
-	float:left;
-        margin: 20px;
-	background-color: #fbb03b;
-	padding-top: 20px;
-        padding-left: 10px;
-        padding-right: 10px;
-        padding-bottom: 10px;
-        
-}
-
-.project-header .status p {
-	margin: 0;
-	font-size: 14px;
-	letter-spacing: 2px;
-	color: #fff;
-	font-weight: bold;
-}
-
-.project-header .status p.glyphicon.glyphicon-pencil {
-    font-size: 28px;
-    margin-bottom: 10px;
 }
