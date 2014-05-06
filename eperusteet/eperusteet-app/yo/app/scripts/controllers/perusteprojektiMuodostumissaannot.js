@@ -1,5 +1,4 @@
 'use strict';
-/* global _ */
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {

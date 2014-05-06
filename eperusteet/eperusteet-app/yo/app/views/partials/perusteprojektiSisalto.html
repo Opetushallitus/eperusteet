@@ -16,7 +16,11 @@ European Union Public Licence for more details.
 -->
 <div class="main-content" id="main">
     <div class="row">
-        <div class="toggle-view">
+        <div class="toggle-view">    
+            <div id="suoritustavat-vaihto" class="btn-group" ng-show="peruste.suoritustavat.length > 1">
+                <button ng-repeat="suoritustapa in peruste.suoritustavat | orderBy:'suoritustapakoodi'" class="btn btn-default" ng-click="vaihdaSuoritustapa(suoritustapa.suoritustapakoodi)" 
+                        ng-class="{ 'active' : suoritustapa.suoritustapakoodi === valittuSuoritustapa }" translate>{{suoritustapa.suoritustapakoodi}}</button>
+            </div>
             <!--button type="button" class="btn btn-default" id="avaa-kaikki"><span class="glyphicon glyphicon-chevron-down"></span>Avaa kaikki</button>
             <button type="button" class="btn btn-default" id="sulje-kaikki"><span class="glyphicon glyphicon-chevron-up"></span>Sulje kaikki</button-->
             <div class="view-type pull-right">

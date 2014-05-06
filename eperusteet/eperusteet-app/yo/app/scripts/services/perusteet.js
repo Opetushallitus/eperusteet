@@ -37,7 +37,7 @@ angular.module('eperusteApp')
     });
   })
   .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet, TreeCache, PerusteTutkinnonosat, Perusteet) {
-    function haeRakenne(perusteProjektiId, success, failure) {
+    function haeRakenne(perusteProjektiId, success) {
       var response = {};
       PerusteprojektiResource.get({ id: perusteProjektiId }, function(vastaus) {
         PerusteProjektiService.save(vastaus);

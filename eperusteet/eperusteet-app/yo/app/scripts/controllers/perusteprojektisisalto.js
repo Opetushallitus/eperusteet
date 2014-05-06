@@ -29,7 +29,7 @@ angular.module('eperusteApp')
       });
   })
   .controller('PerusteprojektisisaltoCtrl', function($scope, $stateParams, PerusteprojektiResource,
-    Suoritustapa, SuoritustapaSisalto, PerusteProjektiService) {
+    Suoritustapa, SuoritustapaSisalto, PerusteProjektiService, Perusteet) {
      $scope.projekti = {};
      $scope.peruste = {};
      $scope.valittuSuoritustapa = '';
@@ -38,9 +38,16 @@ angular.module('eperusteApp')
       $scope.projekti.id = $stateParams.perusteProjektiId;
       PerusteprojektiResource.get({id: $stateParams.perusteProjektiId}, function(vastaus) {
         $scope.projekti = vastaus;
-        if ($scope.projekti._peruste && PerusteProjektiService.getSuoritustapa() !== '') {
-          haeSisalto(PerusteProjektiService.getSuoritustapa());
-        }
+        Perusteet.get({perusteenId: vastaus._peruste}, function(vastaus) {
+          $scope.peruste = vastaus;
+          if (vastaus.suoritustavat !== null && vastaus.suoritustavat.length > 0) {
+            $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa() === '' ? vastaus.suoritustavat[0].suoritustapakoodi : PerusteProjektiService.getSuoritustapa();
+            PerusteProjektiService.setSuoritustapa($scope.valittuSuoritustapa);
+          }
+        }, function(virhe) {
+          console.log('perusteen haku virhe', virhe);
+        });
+
       }, function(virhe) {
         console.log('virhe', virhe);
       });
@@ -73,4 +80,10 @@ angular.module('eperusteApp')
     $scope.$on('projekti:suoritustapa', function() {
       haeSisalto(PerusteProjektiService.getSuoritustapa());
     });
+    
+    $scope.vaihdaSuoritustapa = function(suoritustapakoodi) {
+      $scope.valittuSuoritustapa = suoritustapakoodi;
+      PerusteProjektiService.setSuoritustapa(suoritustapakoodi);
+    };
+    
   });
