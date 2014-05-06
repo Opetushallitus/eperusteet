@@ -17,10 +17,7 @@ European Union Public Licence for more details.
 <div class="project-header">
     <div class="row">
         <div class="project-otsikkotiedot">
-            <div class="status text-center">
-                <p class="glyphicon glyphicon-pencil"></p>
-                <p>LUONNOS</p>
-            </div>
+            <statusbadge status="luonnos"/>
             <h2>{{ peruste.nimi || projekti.nimi || 'perusteprojekti-nimi-placeholder' | kaanna }}</h2>
             {{'projekti-header-koulutustyyppi'| kaanna}}: {{peruste.tutkintokoodi|| 'perusteprojekti-koulutustyyppi-placeholder' | kaanna}}<br>
             {{'projekti-header-koulutusala'| kaanna}}: {{koulutusalaNimi(peruste.koulutukset[0].koulutusalakoodi).nimi || 'perusteprojekti-koulutusala-placeholder' | kaanna}}<br>

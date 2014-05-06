@@ -276,7 +276,9 @@
     "rooli-kommentoija": "Kommentoija",
 
     "sivunavigointi-avaa-menu": "Avaa navigointimenu",
-    "sivunavigointi-sulje-menu": "Sulje navigointimenu"
+    "sivunavigointi-sulje-menu": "Sulje navigointimenu",
     
-    
+    "luonnos": "Luonnos",
+    "hyvaksyttavana": "Hyväksyttävänä",
+    "kommentoitavana": "Kommentoitavana"
 }
