@@ -1,7 +1,6 @@
-$brand-primary: #0c566e;
-$list-group-link-color: $brand-primary;
-$icon-font-path: 'fonts/';
+@import "modules/variables";
 @import "../components/bootstrap-sass/stylesheets/bootstrap/bootstrap";
+@import "modules/bootstrap-overrides";
 @import "vendor/virkailija";
 
 @import "modules/yleiset";
