@@ -38,8 +38,11 @@ angular.module('eperusteApp')
         abstract: true
       });
     })
-  .controller('PerusteprojektiCtrl', function ($scope, $stateParams, Navigaatiopolku,
-    PerusteprojektiResource, koulutusalaService, opintoalaService, Perusteet, SivunavigaatioService) {
+  .controller('PerusteprojektiCtrl', function ($scope, $rootScope, $stateParams, Navigaatiopolku,
+    PerusteprojektiResource, koulutusalaService, opintoalaService, Perusteet, SivunavigaatioService,
+    PerusteProjektiService) {
+
+    PerusteProjektiService.cleanSuoritustapa();
     $scope.projekti = {};
     $scope.peruste = {};
 
@@ -70,5 +73,5 @@ angular.module('eperusteApp')
     $scope.koulutusalaNimi = function(koodi) {
       return koulutusalaService.haeKoulutusalaNimi(koodi);
     };
-
+    
   });

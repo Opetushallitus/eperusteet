@@ -44,12 +44,11 @@ angular.module('eperusteApp')
 
       $scope.hakemassa = true;
       $scope.peruste.nimi = koodisto.nimi;
-      $scope.peruste.koodi = koodisto.koodi;
       $scope.peruste.koulutukset = [];
       $scope.peruste.koulutukset.push({});
       $scope.peruste.koulutukset[0].koulutuskoodi = koodisto.koodi;
 
-      Koodisto.haeAlarelaatiot($scope.peruste.koodi, function(relaatiot) {
+      Koodisto.haeAlarelaatiot(koodisto.koodi, function(relaatiot) {
         _.forEach(relaatiot, function(rel) {
           switch (rel.koodisto.koodistoUri) {
             case 'koulutusalaoph2002':

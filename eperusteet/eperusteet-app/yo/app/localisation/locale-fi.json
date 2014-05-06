@@ -237,8 +237,8 @@
     "projektin-tiedot": "Projektin tiedot",
     "uusi-projekti-otsikko": "Uusi perusteprojekti",
 
-    "opetussuunnitelma": "Opetussuunnitelma",
-    "nayttotutkinto": "Näyttötutkinto",
+    "ops": "Opetussuunnitelma",
+    "naytto": "Näyttötutkinto",
     
     "ePerusteet-koti": "ePerusteet",
     
@@ -252,7 +252,7 @@
     "projekti-header-koulutusala": "Koulutusala",
     "projekti-header-paatosPvm": "Päätöspäivämäärä",
     "projekti-header-koulutustyyppi": "Koulutustyyppi",
-    
+        
     "lisaa-tutkintokohtainen-osa": "Lisää tutkintokohtainen osa",
     "uusi-tutkinnon-osa": "<Uusi sisältö>",
 
@@ -277,4 +277,6 @@
 
     "sivunavigointi-avaa-menu": "Avaa navigointimenu",
     "sivunavigointi-sulje-menu": "Sulje navigointimenu"
+    
+    
 }

@@ -10,6 +10,7 @@ angular.module('eperusteApp')
     });
   }).service('PerusteProjektiService', function($rootScope) {
     var pp = {};
+    var suoritustapa = '';
 
     function save(obj) {
       obj = obj || {};
@@ -33,12 +34,27 @@ angular.module('eperusteApp')
     function update() {
       $rootScope.$broadcast('update:perusteprojekti');
     }
+    
+    function getSuoritustapa() {
+      return _.clone(suoritustapa);
+    }
+    
+    function setSuoritustapa(st) {
+      suoritustapa = _.clone(st);
+    }
+    
+    function cleanSuoritustapa() {
+      suoritustapa = '';
+    }
 
     return {
       save: save,
       get: get,
       watcher: watcher,
       clean: clean,
-      update: update
+      update: update,
+      getSuoritustapa: getSuoritustapa,
+      setSuoritustapa: setSuoritustapa,
+      cleanSuoritustapa: cleanSuoritustapa
     };
   });

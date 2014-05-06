@@ -29,17 +29,24 @@ angular.module('eperusteApp')
       });
   })
   .controller('PerusteprojektisisaltoCtrl', function($scope, $stateParams, PerusteprojektiResource,
-    Suoritustapa, SuoritustapaSisalto) {
+    Suoritustapa, SuoritustapaSisalto, PerusteProjektiService, Perusteet) {
      $scope.projekti = {};
      $scope.peruste = {};
+     $scope.valittuSuoritustapa = '';
 
     if ($stateParams.perusteProjektiId !== 'uusi') {
       $scope.projekti.id = $stateParams.perusteProjektiId;
       PerusteprojektiResource.get({id: $stateParams.perusteProjektiId}, function(vastaus) {
         $scope.projekti = vastaus;
-        if ($scope.projekti._peruste) {
-          haeSisalto('ops');
-        }
+        Perusteet.get({perusteenId: vastaus._peruste}, function(vastaus) {
+          $scope.peruste = vastaus;
+          if (vastaus.suoritustavat !== null && vastaus.suoritustavat.length > 0) {
+            $scope.vaihdaSuoritustapa(PerusteProjektiService.getSuoritustapa() === '' ? vastaus.suoritustavat[0].suoritustapakoodi : PerusteProjektiService.getSuoritustapa());
+          }
+        }, function(virhe) {
+          console.log('perusteen haku virhe', virhe);
+        });
+
       }, function(virhe) {
         console.log('virhe', virhe);
       });
@@ -52,18 +59,27 @@ angular.module('eperusteApp')
     var haeSisalto = function(suoritustapa) {
       Suoritustapa.get({perusteenId: $scope.projekti._peruste, suoritustapa: suoritustapa}, function(vastaus) {
         $scope.peruste.sisalto = vastaus;
+        $scope.valittuSuoritustapa = suoritustapa;
         console.log('suoritustapa sisältö', vastaus);
       }, function(virhe) {
+        $scope.valittuSuoritustapa = '';
         console.log('suoritustapasisältöä ei löytynyt', virhe);
       });
     };
 
     $scope.createSisalto = function () {
-      SuoritustapaSisalto.save({perusteId: $scope.projekti._peruste, suoritustapa: 'ops'}, {}, function(vastaus) {
-        haeSisalto('ops');
+      SuoritustapaSisalto.save({perusteId: $scope.projekti._peruste, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {}, function(vastaus) {
+        haeSisalto(PerusteProjektiService.getSuoritustapa());
         console.log('uusi suoritustapa sisältö', vastaus);
       }, function (virhe) {
         console.log('Uuden sisällön luontivirhe', virhe);
       });
     };
+    
+    $scope.vaihdaSuoritustapa = function(suoritustapakoodi) {
+      $scope.valittuSuoritustapa = suoritustapakoodi;
+      PerusteProjektiService.setSuoritustapa(suoritustapakoodi);
+      haeSisalto($scope.valittuSuoritustapa);
+    };
+    
   });
