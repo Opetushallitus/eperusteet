@@ -42,7 +42,6 @@
               <div class="skratchpad-items">
                 <ul ui-sortable="sortableOptionsUnique" ng-model="uniikit">
                   <li class="skratchpad-item" ng-repeat="osa in uniikit"><div>{{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna }}</div></li>
-
                 </ul>
               </div>
             </tab>
@@ -57,29 +56,29 @@
       <div ng-if="uniikit.length > 0" class="rajauslaatikko">
         <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia...">
       </div>
-      <div class="tutkinnonosa-laatikko" ng-repeat="osa in rakenne.tutkinnonOsat | filter:rajaaTutkinnonOsia | orderBy:'nimi.fi'">
+      <div class="tutkinnonosa-laatikko" ng-repeat="(k, v) in rakenne.tutkinnonOsat | mapFilter:rajaaTutkinnonOsia">
         <div class="otsikko">
           <div class="muokkaus">
-            <a href="" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsaId: osa._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })">Muokkaa <span class="glyphicon glyphicon-chevron-right"></span></a>
+            <a href="" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })">Muokkaa <span class="glyphicon glyphicon-chevron-right"></span></a>
           </div>
           <h3>
-            <a href="" ng-click="osa.$avattu = !osa.$avattu">
-              <span ng-show="osa.$avattu" class="glyphicon glyphicon-chevron-down"></span>
-              <span ng-hide="osa.$avattu" class="glyphicon glyphicon-chevron-up"></span>
-              {{ osa.nimi | kaanna }}
+            <a href="" ng-click="v.$avattu = !v.$avattu">
+              <span ng-show="v.$avattu" class="glyphicon glyphicon-chevron-down"></span>
+              <span ng-hide="v.$avattu" class="glyphicon glyphicon-chevron-up"></span>
+              {{ v.nimi | kaanna }}
             </a>
           </h3>
         </div>
-        <div ng-show="osa.$avattu" class="sisalto">
+        <div ng-show="v.$avattu" class="sisalto">
           <div>
             <label>{{ 'laajuus' | kaanna }}</label>
-            <input ng-model="osa.laajuus" type="number">
+            <input ng-model="v.laajuus" type="number">
           </div>
           <div>
             <label>{{ 'yksikkö' | kaanna }}</label>
             <div class="btn-group">
-              <button type="button" class="btn btn-default" ng-model="osa.yksikko" btn-radio="'ov'">{{ 'ov' | translate }}</button>
-              <button type="button" class="btn btn-default" ng-model="osa.yksikko" btn-radio="'op'">{{ 'op' | translate }}</button>
+              <button type="button" class="btn btn-default" ng-model="v.yksikko" btn-radio="'ov'">{{ 'ov' | translate }}</button>
+              <button type="button" class="btn btn-default" ng-model="v.yksikko" btn-radio="'op'">{{ 'op' | translate }}</button>
             </div>
           </div>
         </div>

@@ -62,6 +62,7 @@ angular.module('eperusteApp')
             }, function(tosat) {
               response.rakenne = rakenne;
               response.$peruste = peruste;
+              console.log(tosat);
               response.tutkinnonOsat = _(tosat)
                                         .pluck('_tutkinnonOsa')
                                         .zipObject(tosat)

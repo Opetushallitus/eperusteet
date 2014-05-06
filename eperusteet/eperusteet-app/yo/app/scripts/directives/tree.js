@@ -1,7 +1,6 @@
 'use strict';
 /*global _*/
 
-
 angular.module('eperusteApp')
   .service('TreeCache', function() {
     var puuId = -1;
@@ -304,7 +303,9 @@ angular.module('eperusteApp')
         };
 
         scope.paivitaRajaus = function(rajaus) { scope.tosarajaus = rajaus; };
-        scope.rajaaTutkinnonOsia = function(haku) { return Kaanna.kaanna(haku.nimi).indexOf(scope.tosarajaus) !== -1; };
+        scope.rajaaTutkinnonOsia = function(haku) {
+          return Kaanna.kaanna(haku.nimi).toLowerCase().indexOf(scope.tosarajaus.toLowerCase()) !== -1;
+        };
 
         scope.suljePolut = function() {
           scope.rakenne.rakenne.$collapsed = scope.suljettuViimeksi;
