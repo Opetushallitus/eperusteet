@@ -11,7 +11,9 @@ angular.module('eperusteApp')
         naviBase: ['tuo-excel'],
       });
   })
-  .controller('ExcelCtrl', function($scope, ExcelService, PerusteenOsat, TutkinnonOsanValidointi, Koodisto, PerusteprojektiResource, PerusteTutkinnonosat, SuoritustapaSisalto, Perusteet) {
+  .controller('ExcelCtrl', function($scope, ExcelService, PerusteenOsat, TutkinnonOsanValidointi,
+                                    Koodisto, PerusteprojektiResource, PerusteTutkinnonosat,
+                                    SuoritustapaSisalto, Perusteet, Notifikaatiot) {
     $scope.osatutkinnot = [];
     $scope.vaihe = [];
     $scope.errors = [];
@@ -127,7 +129,10 @@ angular.module('eperusteApp')
     $scope.poistaTekstikentta = function(tekstikentta) { _.remove($scope.peruste.tekstikentat, tekstikentta); };
 
     $scope.tallennaOsatutkinnot = function() {
-      var doneSuccess = _.after(_.size($scope.osatutkinnot), function() { $scope.uploadSuccess = true; });
+      var doneSuccess = _.after(_.size($scope.osatutkinnot), function() {
+        $scope.uploadSuccess = true;
+        Notifikaatiot.onnistui('tallennus-onnistui', '');
+      });
 
       _($scope.osatutkinnot).filter(function(ot) {
         return ot.$ladattu !== 0;

@@ -33,6 +33,19 @@
       <spinner></spinner>
     </div>
 
+    <div class="notification-wrapper">
+      <div class="notifications" ng-controller="NotifikaatioCtrl">
+        <div ng-click="poistaNotifikaatio(viesti)" ng-model="viestit" ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }" ng-repeat="viesti in viestit">
+          <h2 class="notification-header">{{ viesti.otsikko | kaanna }}</h2>
+          <p>{{ viesti.viesti | kaanna }}</p>
+        </div>
+        <!-- <button ng-click="lisaaNotifikaatio(0)">Lisää normaali</button> -->
+        <!-- <button ng-click="lisaaNotifikaatio(1)">Lisää onnistuminen</button> -->
+        <!-- <button ng-click="lisaaNotifikaatio(2)">Lisää varoitus</button> -->
+        <!-- <button ng-click="lisaaNotifikaatio(3)">Lisää fataali</button> -->
+      </div>
+    </div>
+
     <!-- build:js scripts/components.js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/jquery-ui/ui/jquery.ui.core.js"></script>
@@ -83,6 +96,7 @@
     <script src="scripts/directives/optioLista.js"></script>
     <script src="scripts/directives/tree.js"></script>
     <script src="scripts/directives/sivunavigaatio.js"></script>
+    <script src="scripts/services/notifikaatiot.js"></script>
     <script src="scripts/services/kayttajaprofiilit.js"></script>
     <script src="scripts/services/suosikit.js"></script>
     <script src="scripts/services/haku.js"></script>

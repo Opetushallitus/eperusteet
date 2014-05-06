@@ -62,7 +62,6 @@ angular.module('eperusteApp')
             }, function(tosat) {
               response.rakenne = rakenne;
               response.$peruste = peruste;
-              console.log(tosat);
               response.tutkinnonOsat = _(tosat)
                                         .pluck('_tutkinnonOsa')
                                         .zipObject(tosat)
@@ -80,23 +79,14 @@ angular.module('eperusteApp')
       PerusteRakenteet.save({
         perusteenId: id,
         suoritustapa: suoritustapa
-      }, rakenne.rakenne, function() {
-        // TODO: notifikaatio
-        after();
-      }, function() {
-        // TODO: notifikaatio
-      });
+      }, rakenne.rakenne, function() { after(); });
 
       _.forEach(_.values(rakenne.tutkinnonOsat), function(osa) {
         PerusteTutkinnonosa.save({
           perusteenId: id,
           suoritustapa: suoritustapa,
           osaId: osa.id
-        }, osa, function() {
-          after();
-        }, function() {
-          // TODO: notifikaatio
-        });
+        }, osa, function() { after(); });
       });
     }
 

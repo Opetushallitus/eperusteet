@@ -14,7 +14,7 @@ angular.module('eperusteApp')
       });
   })
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $rootScope, $state, $stateParams,
-    Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, TreeCache) {
+    Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, TreeCache, Notifikaatiot) {
 
     $scope.rakenne = {
       $resolved: false,
@@ -42,9 +42,8 @@ angular.module('eperusteApp')
         rakenne,
         rakenne.$peruste.id,
         rakenne.$peruste.suoritustavat[0].suoritustapakoodi,
-        function() {
-          console.log('success');
-        }
+        function() { Notifikaatiot.onnistui('tallentaminen-onnistui', ''); },
+        function(virhe) { Notifikaatiot.varoitus('tallentaminen-epäonnistui', virhe); }
       );
     };
   });
