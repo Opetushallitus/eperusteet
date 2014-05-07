@@ -49,11 +49,11 @@
     "haku-kaikki-opintoalat" : "Kaikki opintoalat",
     "hae-koodi-koodistosta": "Hae koodistosta",
 
-    "OPINTOVIIKKO": "ov",
-
-    "muodostumis-rakenne-validointi-1": "Osien määrä ei riitä kattamaan vaadittua laajuutta",
-    "muodostumis-rakenne-validointi-2": "Osien määrä on pienempi kuin ryhmän minimi",
-    "muodostumis-rakenne-validointi-3": "Ryhmässä on samoja tutkinnon osia",
+    "rakenne-validointi-maara-laajuus-minimi": "Minimikoon kattavat osat eivät riitä kattamaan vaadittua minimilaajuutta",
+    "rakenne-validointi-maara-laajuus-maksimi": "Maksimikoon kattavat osat eivät riitä kattamaan vaadittua maksimilaajuutta",
+    "rakenne-validointi-laajuus": "Osien yhteenlaskettu laajuus ei riitä kattamaan vaadittua laajuutta",
+    "rakenne-validointi-maara": "Osien määrä on pienempi kuin ryhmän maksimi",
+    "rakenne-validointi-uniikit": "Ryhmässä on samoja tutkinnon osia",
 
     "esiopetus": "Esiopetus",
     "perusopetus": "Perusopetus",

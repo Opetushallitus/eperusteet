@@ -21,39 +21,71 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('tree', function($compile, $state, $modal) {
+  .service('Muodostumissaannot', function() {
     function validoiRyhma(rakenne) {
+      function osienLaajuudenSumma(osat) {
+          return _(osat)
+            .map(function(osa) { return osa.$laajuus; })
+            .reduce(function(sum, newval) { return sum + newval; });
+      }
+
+      function lajittele(osat) {
+        var buckets = {};
+        _.forEach(osat, function(osa) {
+          if (!buckets[osa.$laajuus]) { buckets[osa.$laajuus] = 0; }
+          buckets[osa.$laajuus] += 1;
+        });
+        return buckets;
+      }
+
+      function avaintenSumma(osat, n, avaimetCb) {
+        var res = 0;
+        var i = n;
+        var lajitellut = lajittele(osat);
+        _.forEach(avaimetCb(lajitellut), function(k) {
+          while (lajitellut[k]-- > 0 && i-- > 0) { res += parseInt(k, 10) || 0; }
+        });
+        return res;
+      }
+
       if (!rakenne) { return; }
 
       delete rakenne.$virhe;
 
+      // On rakennemoduuli
       if (rakenne.muodostumisSaanto) {
-        if (rakenne.muodostumisSaanto.laajuus) {
-          var msl = rakenne.muodostumisSaanto.laajuus;
-          if (msl.minimi) {
-            var summa = _(rakenne.osat)
-              .map(function(osa) { return osa.$laajuus; })
-              .reduce(function(sum, newval) { return sum + newval; });
-            if (summa < msl.minimi) {
-              rakenne.$virhe = 'muodostumis-rakenne-validointi-1';
+        var msl = rakenne.muodostumisSaanto.laajuus;
+        var msk = rakenne.muodostumisSaanto.koko;
+
+        if (msl && msk) {
+          var minimi = avaintenSumma(rakenne.osat, msk.minimi, function(lajitellut) { return _.keys(lajitellut); });
+          var maksimi = avaintenSumma(rakenne.osat, msk.maksimi, function(lajitellut) { return _.keys(lajitellut).reverse(); });
+          console.log('minmax', minimi, msl.minimi, 'ja', maksimi, msl.maksimi);
+          if (minimi < msl.minimi) { rakenne.$virhe = 'rakenne-validointi-maara-laajuus-minimi'; }
+          else if (maksimi < msl.maksimi) { rakenne.$virhe =  'rakenne-validointi-maara-laajuus-maksimi'; }
+        } else if (msl) {
+          // Validoidaan maksimi
+          if (msl.maksimi) {
+            if (osienLaajuudenSumma(rakenne.osat) < msl.maksimi) {
+              rakenne.$virhe = 'muodostumis-rakenne-validointi-laajuus';
             }
           }
-        }
-
-        if (rakenne.muodostumisSaanto.koko) {
-          var msk = rakenne.muodostumisSaanto.koko;
-          if (_.size(rakenne.osat) < msk.minimi) {
-            rakenne.$virhe = 'muodostumis-rakenne-validointi-2';
+        } else if (msk) {
+          if (_.size(rakenne.osat) < msk.maksimi) {
+            rakenne.$virhe = 'muodostumis-rakenne-validointi-maara';
           }
         }
 
-        var tosat = _(rakenne.osat).filter(function(osa) { return osa._tutkinnonOsa; }).value();
+        var tosat = _(rakenne.osat)
+          .filter(function(osa) { return osa._tutkinnonOsa; })
+          .value();
         if (_.size(tosat) !== _(tosat).uniq('_tutkinnonOsa').size()) {
-            rakenne.$virhe = 'muodostumis-rakenne-validointi-3';
+            rakenne.$virhe = 'muodostumis-rakenne-validointi-uniikit';
         }
       }
     }
 
+    // Laskee rekursiivisesti puun solmujen (rakennemoduulien) kokonaislaajuuden
     function laskeLaajuudet(rakenne, tutkinnonOsat, root) {
       root = root || true;
 
@@ -80,11 +112,15 @@ angular.module('eperusteApp')
           }
           _.forEach(set, function(s) { rakenne.$laajuus += rakenne.osat[s].$laajuus; });
         } else { _.forEach(rakenne.osat, function(osa) { rakenne.$laajuus += osa.$laajuus || 0; }); }
-      } else {
-        console.log('jokin meni pieleen');
       }
     }
 
+    return {
+      validoiRyhma: validoiRyhma,
+      laskeLaajuudet: laskeLaajuudet
+    };
+  })
+  .directive('tree', function($compile, $state, $modal, Muodostumissaannot) {
     function generoiOtsikko() {
       var tosa = 'tutkinnonOsat[rakenne._tutkinnonOsa]';
       return '' +
@@ -147,8 +183,8 @@ angular.module('eperusteApp')
         };
 
         scope.$watch('rakenne', function(uusirakenne) {
-          laskeLaajuudet(scope.rakenne, scope.tutkinnonOsat);
-          validoiRyhma(uusirakenne, scope.tutkinnonOsat);
+          Muodostumissaannot.laskeLaajuudet(scope.rakenne, scope.tutkinnonOsat);
+          Muodostumissaannot.validoiRyhma(uusirakenne, scope.tutkinnonOsat);
         }, true);
 
         scope.sortableOptions = {
