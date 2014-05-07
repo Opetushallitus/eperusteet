@@ -22,13 +22,13 @@ angular.module('eperusteApp')
     };
   })
   .service('Muodostumissaannot', function() {
-    function validoiRyhma(rakenne) {
-      function osienLaajuudenSumma(osat) {
-          return _(osat)
-            .map(function(osa) { return osa.$laajuus; })
-            .reduce(function(sum, newval) { return sum + newval; });
-      }
+    function osienLaajuudenSumma(osat) {
+        return _(osat)
+          .map(function(osa) { return osa.$vaadittuLaajuus ? osa.$vaadittuLaajuus : osa.$laajuus; })
+          .reduce(function(sum, newval) { return sum + newval; });
+    }
 
+    function validoiRyhma(rakenne) {
       function lajittele(osat) {
         var buckets = {};
         _.forEach(osat, function(osa) {
@@ -60,7 +60,6 @@ angular.module('eperusteApp')
         if (msl && msk) {
           var minimi = avaintenSumma(rakenne.osat, msk.minimi, function(lajitellut) { return _.keys(lajitellut); });
           var maksimi = avaintenSumma(rakenne.osat, msk.maksimi, function(lajitellut) { return _.keys(lajitellut).reverse(); });
-          console.log('minmax', minimi, msl.minimi, 'ja', maksimi, msl.maksimi);
           if (minimi < msl.minimi) { rakenne.$virhe = 'rakenne-validointi-maara-laajuus-minimi'; }
           else if (maksimi < msl.maksimi) { rakenne.$virhe =  'rakenne-validointi-maara-laajuus-maksimi'; }
         } else if (msl) {
@@ -96,22 +95,15 @@ angular.module('eperusteApp')
 
       if (rakenne._tutkinnonOsa) {
         rakenne.$laajuus = tutkinnonOsat[rakenne._tutkinnonOsa].laajuus;
-      } else if (rakenne.osat) {
-        if (!root && rakenne.muodostumisSaanto && rakenne.muodostumisSaanto.laajuus && rakenne.muodostumisSaanto.laajuus.maksimi) {
-          rakenne.$laajuus = rakenne.muodostumisSaanto.laajuus.maksimi;
-        } else if (rakenne.osat.length > 0 && rakenne.muodostumisSaanto && rakenne.muodostumisSaanto.koko && rakenne.muodostumisSaanto.koko.maksimi) {
-          var set = [];
-          for (var i = 0; i < rakenne.muodostumisSaanto.koko.maksimi; ++i) {
-            var newindex = 0;
-            for (var j = 0; j < rakenne.osat.length; ++j) {
-              if (rakenne.osat[j].$laajuus > rakenne.osat[newindex].$laajuus && set.indexOf(j) === -1) {
-                newindex = j;
-              }
-            }
-            set.push(newindex);
+      }
+      else {
+        if (rakenne.osat && rakenne.muodostumisSaanto) {
+          var msl = rakenne.muodostumisSaanto.laajuus;
+          if (msl) {
+            rakenne.$vaadittuLaajuus = msl.maksimi;
           }
-          _.forEach(set, function(s) { rakenne.$laajuus += rakenne.osat[s].$laajuus; });
-        } else { _.forEach(rakenne.osat, function(osa) { rakenne.$laajuus += osa.$laajuus || 0; }); }
+        }
+        rakenne.$laajuus = osienLaajuudenSumma(rakenne.osat);
       }
     }
 
@@ -217,9 +209,9 @@ angular.module('eperusteApp')
           '    <a href="" ng-click="ryhmaModaali(rakenne, vanhempi)"><span class="glyphicon glyphicon-pencil"></span></a>' +
           '  </div>' +
           '  <div class="pull-right" ng-if="!rakenne._tutkinnonOsa && muokkaus">' +
-          '    <span class="right-item" ng-if="!rakenne.muodostumisSaanto.laajuus"><b>{{ rakenne.$laajuus }}ov</b></span>' +
-          '    <span class="right-item" ng-if="rakenne.muodostumisSaanto && rakenne.muodostumisSaanto.laajuus"><b>{{ rakenne.$laajuus }}/{{ rakenne.muodostumisSaanto.laajuus.minimi }}ov</b></span>' +
-          '    <span class="right-item" ng-if="rakenne.muodostumisSaanto && rakenne.muodostumisSaanto.koko"><b>{{ rakenne.osat.length }}/{{ rakenne.muodostumisSaanto.koko.minimi }}kpl</b></span>' +
+          '    <span class="right-item" ng-show="rakenne.$vaadittuLaajuus"><b>{{ rakenne.$vaadittuLaajuus }}ov</b></span>' +
+          '    <span class="right-item" ng-hide="rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus }}ov</b></span>' +
+          '    <span class="right-item"><b>{{ rakenne.osat.length }}kpl</b></span>' +
           '  </div>' +
           '</div>';
 
