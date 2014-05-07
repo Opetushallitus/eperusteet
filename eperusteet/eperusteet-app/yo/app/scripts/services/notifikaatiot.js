@@ -14,6 +14,7 @@ angular.module('eperusteApp')
     }
 
     function uusiViesti(tyyppi, otsikko, viesti) {
+      viesti = viesti || '';
       viestit.push({
         otsikko: otsikko,
         viesti: viesti,
@@ -60,16 +61,6 @@ angular.module('eperusteApp')
     $scope.poistaNotifikaatio = function(viesti) {
       Notifikaatiot.poista(viesti);
     };
-
-    // $scope.lisaaNotifikaatio = function(tyyppi) {
-    //   switch(tyyppi) {
-    //     case 0: Notifikaatiot.normaali('normaali', 'viestiosa tätä notifikaatiota'); break;
-    //     case 1: Notifikaatiot.onnistui('onnistui', 'viestiosa tätä notifikaatiota'); break;
-    //     case 2: Notifikaatiot.varoitus('varoitus', 'viestiosa tätä notifikaatiota'); break;
-    //     case 3: Notifikaatiot.fataali('fataali', 'viestiosa tätä notifikaatiota'); break;
-    //     default: break;
-    //   }
-    // };
 
     $scope.$on('update:notifikaatiot', function() { $scope.viestit = Notifikaatiot.viestit(); });
   });

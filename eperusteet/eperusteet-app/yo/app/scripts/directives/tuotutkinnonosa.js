@@ -39,12 +39,10 @@ angular.module('eperusteApp')
         $scope.perusteet = perusteet;
       });
     };
-    console.log(tyyppi);
 
     $scope.jatka = function(par) {
       $scope.haku = false;
       $scope.valittu = par;
-      console.log(par.id, tyyppi);
       PerusteTutkinnonosat.query({
         perusteenId: par.id,
         suoritustapa: tyyppi,

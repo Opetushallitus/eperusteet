@@ -34,15 +34,11 @@
     </div>
 
     <div class="notification-wrapper">
-      <div class="notifications" ng-controller="NotifikaatioCtrl">
-        <div ng-click="poistaNotifikaatio(viesti)" ng-model="viestit" ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }" ng-repeat="viesti in viestit">
-          <h2 class="notification-header">{{ viesti.otsikko | kaanna }}</h2>
-          <p>{{ viesti.viesti | kaanna }}</p>
+      <div class="notifications" ng-model="viestit" ng-controller="NotifikaatioCtrl">
+        <div ng-if="viestit" ng-click="poistaNotifikaatio(viesti)" ng-model="viestit" ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }" ng-repeat="viesti in viestit">
+          <h2 class="notification-header" ng-cloak>{{ viesti.otsikko | kaanna }}</h2>
+          <p ng-cloak>{{ viesti.viesti | kaanna }}</p>
         </div>
-        <!-- <button ng-click="lisaaNotifikaatio(0)">Lisää normaali</button> -->
-        <!-- <button ng-click="lisaaNotifikaatio(1)">Lisää onnistuminen</button> -->
-        <!-- <button ng-click="lisaaNotifikaatio(2)">Lisää varoitus</button> -->
-        <!-- <button ng-click="lisaaNotifikaatio(3)">Lisää fataali</button> -->
       </div>
     </div>
 

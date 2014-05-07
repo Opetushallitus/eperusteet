@@ -209,8 +209,8 @@ angular.module('eperusteApp')
           '    <a href="" ng-click="ryhmaModaali(rakenne, vanhempi)"><span class="glyphicon glyphicon-pencil"></span></a>' +
           '  </div>' +
           '  <div class="pull-right" ng-if="!rakenne._tutkinnonOsa && muokkaus">' +
-          '    <span class="right-item" ng-show="rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus }}</b>/<b>{{ rakenne.$vaadittuLaajuus }}</b>ov</span>' +
-          '    <span class="right-item" ng-hide="rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus }}</b>ov</span>' +
+          '    <span class="right-item" ng-show="rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus || 0 }}</b>/<b>{{ rakenne.$vaadittuLaajuus || 0 }}</b>ov</span>' +
+          '    <span class="right-item" ng-hide="rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus || 0 }}</b>ov</span>' +
           '    <span class="right-item"><b>{{ rakenne.osat.length }}kpl</b></span>' +
           '  </div>' +
           '</div>';
@@ -229,7 +229,7 @@ angular.module('eperusteApp')
         template =
           '<div ng-if="!vanhempi">' +
           '  <div class="otsikko">' +
-          '    <h4><a href="" ng-click="ryhmaModaali(rakenne, vanhempi)">{{ rakenne.nimi || \'perusteella-ei-nimeä\' | kaanna }}</a>, {{ rakenne.$laajuus }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</h4>' +
+          '    <h4><a href="" ng-click="ryhmaModaali(rakenne, vanhempi)">{{ rakenne.nimi || \'perusteella-ei-nimeä\' | kaanna }}</a>, {{ rakenne.$laajuus || 0 }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</h4>' +
           '    <div ng-if="rakenne.$virhe" class="isovirhe">{{ rakenne.$virhe | kaanna }}</div>' +
           '  </div>' +
           '</div>' +
@@ -248,7 +248,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('treeWrapper', function($modal, Editointikontrollit, TutkinnonOsanTuonti, Kaanna) {
+  .directive('treeWrapper', function($modal, $state, Editointikontrollit, TutkinnonOsanTuonti, Kaanna, Editointicatcher) {
     function kaikilleRakenteille(rakenne, f) {
       if (!rakenne || !f) { return; }
       _.forEach(rakenne, function(r) {
@@ -349,6 +349,10 @@ angular.module('eperusteApp')
         });
 
         Editointikontrollit.registerAdditionalSaveCallback(function() { scope.lisataanUuttaOsaa = false; });
+
+        scope.lisaaTutkinnonOsa = function() {
+          $state.go('perusteprojekti.editoi.perusteenosa', { perusteenOsanTyyppi: 'tutkinnonosa', perusteenOsaId: 'uusi' });
+        };
 
         scope.uusiTutkinnonOsa = function(cb) {
           scope.lisataanUuttaOsaa = true;

@@ -2,13 +2,12 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('SpinnerService', function($rootScope, SPINNER_WAIT) {
+  .service('SpinnerService', function(SPINNER_WAIT, $rootScope, $timeout) {
     var pyynnot = 0;
 
     function enableSpinner() {
       ++pyynnot;
-      $rootScope.$emit('event:spinner_on');
-      _.delay(function() {
+      $timeout(function() {
         if (pyynnot > 0) {
           $rootScope.$emit('event:spinner_on');
         }

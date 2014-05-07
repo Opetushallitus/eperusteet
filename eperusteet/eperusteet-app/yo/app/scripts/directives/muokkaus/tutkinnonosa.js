@@ -18,15 +18,14 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .directive('muokkausTutkinnonosa', function() {
+  .directive('muokkausTutkinnonosa', function(Notifikaatiot) {
     return {
       template: '<kenttalistaus object-promise="tutkinnonOsaPromise" fields="fields">{{tutkinnonOsanMuokkausOtsikko | translate}}</kenttalistaus>',
       restrict: 'E',
       scope: {
         tutkinnonOsa: '='
       },
-      controller: function($scope, $state, $q, $modal, Editointikontrollit, PerusteenOsat) {
-
+      controller: function($rootScope, $scope, $state, $q, $modal, Editointikontrollit, PerusteenOsat, Editointicatcher) {
         $scope.fields =
           new Array({
              path: 'nimi',
@@ -100,32 +99,28 @@ angular.module('eperusteApp')
                   $scope.tutkinnonOsa = angular.copy(response);
                   Editointikontrollit.lastModified = response;
 
-                  openNotificationDialog().result.then(function() {
-                    var tutkinnonOsaDefer = $q.defer();
-                    $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
-
-                    tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
-                  });
+                  openNotificationDialog();
+                  // FIXME: Näillä ei mitään virkaa?
+                  var tutkinnonOsaDefer = $q.defer();
+                  $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
+                  tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
                 });
               } else {
                 PerusteenOsat.saveTutkinnonOsa($scope.editableTutkinnonOsa).$promise.then(function(response) {
-
                   Editointikontrollit.lastModified = response;
-
-                  openNotificationDialog().result.then(function() {
-                    // FIXME: Tämä kontrollerin puolelle ettei se häiritse direktiivin käyttämistä muissa konteksteissa
-                    // $state.go('muokkaus.vanha', { perusteenId: response.id, perusteenOsanTyyppi: 'tutkinnonosa' });
-                  });
+                  openNotificationDialog();
                 });
               }
+              Editointicatcher.give(_.clone($scope.editableTutkinnonOsa));
             },
             cancel: function() {
               console.log('tutkinnon osa - cancel');
 
               $scope.editableTutkinnonOsa = angular.copy($scope.tutkinnonOsa);
+
+              // FIXME: Näillä ei mitään virkaa?
               var tutkinnonOsaDefer = $q.defer();
               $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
-
               tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
             }
           });
@@ -134,18 +129,7 @@ angular.module('eperusteApp')
           angular.element('.edit-controls').scope().start();
 
           function openNotificationDialog() {
-            return $modal.open({
-              templateUrl: 'views/modals/ilmoitusdialogi.html',
-              controller: 'IlmoitusdialogiCtrl',
-              resolve: {
-                sisalto: function() {
-                  return {
-                    otsikko: 'tallennettu',
-                    ilmoitus: 'muokkaus-tutkinnon-osa-tallennettu'
-                  };
-                }
-              }
-            });
+            Notifikaatiot.onnistui('tallennettu', 'muokkaus-tutkinnon-osa-tallennettu');
           }
         }
 

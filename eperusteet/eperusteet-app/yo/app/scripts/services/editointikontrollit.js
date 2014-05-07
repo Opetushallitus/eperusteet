@@ -17,6 +17,19 @@
 'use strict';
 
 angular.module('eperusteApp')
+  .service('Editointicatcher', function() {
+    var f = function(osa) {};
+
+    return {
+      register: function(cb) {
+        f = cb;
+      },
+      give: function(osa) {
+        f(osa);
+        f = function() {};
+      }
+    };
+  })
   .factory('Editointikontrollit', function($rootScope, $q) {
     var scope = $rootScope.$new(true);
     scope.editingCallback = null;
@@ -61,11 +74,8 @@ angular.module('eperusteApp')
       },
       registerCallback: function(callback) {
         if(!callback ||
-            !callback.edit ||
             !angular.isFunction(callback.edit) ||
-            !callback.save ||
             !angular.isFunction(callback.save) ||
-            !callback.cancel ||
             !angular.isFunction(callback.cancel)) {
           console.error('callback-function invalid');
           throw 'editCallback-function invalid';

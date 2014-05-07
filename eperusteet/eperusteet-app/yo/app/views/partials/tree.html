@@ -56,6 +56,12 @@
       <div ng-if="uniikit.length > 0" class="rajauslaatikko">
         <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia...">
       </div>
+      <h3>
+        <a href="" ng-click="lisaaTutkinnonOsa()">
+          <span class="glyphicon glyphicon-plus"></span>
+          {{ 'lisää' | kaanna }}
+        </a>
+      </h3>
       <div class="tutkinnonosa-laatikko" ng-repeat="(k, v) in rakenne.tutkinnonOsat | mapFilter:rajaaTutkinnonOsia">
         <div class="otsikko">
           <div class="muokkaus">
