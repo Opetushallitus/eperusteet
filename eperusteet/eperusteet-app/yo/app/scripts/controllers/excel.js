@@ -13,7 +13,7 @@ angular.module('eperusteApp')
   })
   .controller('ExcelCtrl', function($scope, ExcelService, PerusteenOsat, TutkinnonOsanValidointi,
                                     Koodisto, PerusteprojektiResource, PerusteTutkinnonosat,
-                                    SuoritustapaSisalto, Perusteet, Notifikaatiot) {
+                                    SuoritustapaSisalto, Perusteet, Notifikaatiot, YleinenData) {
     $scope.osatutkinnot = [];
     $scope.vaihe = [];
     $scope.errors = [];
@@ -29,6 +29,7 @@ angular.module('eperusteApp')
     $scope.peruste = {};
     $scope.haettuPeruste = {};
     $scope.peruste.$perusteTallennettu = false;
+    $scope.koulutustyypit = YleinenData.koulutustyypit;
 
     $scope.clearSelect = function() {
       $scope.osatutkinnot = [];

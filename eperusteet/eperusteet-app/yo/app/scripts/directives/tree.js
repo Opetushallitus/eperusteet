@@ -209,8 +209,8 @@ angular.module('eperusteApp')
           '    <a href="" ng-click="ryhmaModaali(rakenne, vanhempi)"><span class="glyphicon glyphicon-pencil"></span></a>' +
           '  </div>' +
           '  <div class="pull-right" ng-if="!rakenne._tutkinnonOsa && muokkaus">' +
-          '    <span class="right-item" ng-show="rakenne.$vaadittuLaajuus"><b>{{ rakenne.$vaadittuLaajuus }}ov</b></span>' +
-          '    <span class="right-item" ng-hide="rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus }}ov</b></span>' +
+          '    <span class="right-item" ng-show="rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus }}</b>/<b>{{ rakenne.$vaadittuLaajuus }}</b>ov</span>' +
+          '    <span class="right-item" ng-hide="rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus }}</b>ov</span>' +
           '    <span class="right-item"><b>{{ rakenne.osat.length }}kpl</b></span>' +
           '  </div>' +
           '</div>';

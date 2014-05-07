@@ -74,15 +74,24 @@
       <div class="form-area">
         <div ng-form="projektinPerusteForm">
           <div class="form-group">
-            <label class="col-sm-3" translate>perusteprojekti-nimi</label>
+            <label class="col-sm-3">{{ 'projektin-nimi-label' | kaanna }}<span>*</span></label>
             <div class="col-sm-9">
               <input type="text" class="form-control" ng-model="projekti.nimi" placeholder="{{ 'valitse-nimi' | kaanna }}"/>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-3" translate>diaarinumero</label>
+            <label class="col-sm-3">{{ 'diaarinumero-label' | kaanna }}<span>*</span></label>
             <div class="col-sm-9">
               <input type="text" class="form-control" ng-model="projekti.diaarinumero" placeholder="{{'valitse-diaarinumero' | kaanna}}"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="koulutustyyppi" class="col-sm-3">{{'koulutustyyppi-label'| kaanna}}<span>*</span></label>
+            <div class="col-md-9">
+              <select id="koulutustyyppi" ng-model="projekti.koulutustyyppi" class="form-control" ng-required>
+                <option value="" disabled selected>{{ 'valitse-koulutustyyppi' | kaanna }}</option>
+                <option ng-repeat="koulutustyyppi in koulutustyypit" value="{{koulutustyyppi}}" ng-selected="projekti.koulutustyyppi === koulutustyyppi">{{koulutustyyppi | kaanna}}</option>
+              </select>
             </div>
           </div>
           <!-- <div> -->

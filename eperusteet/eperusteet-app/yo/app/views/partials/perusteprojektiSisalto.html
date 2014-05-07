@@ -16,9 +16,9 @@ European Union Public Licence for more details.
 -->
 <div class="main-content" id="main">
     <div class="row">
-        <div class="toggle-view">    
+        <div class="toggle-view">
             <div id="suoritustavat-vaihto" class="btn-group" ng-show="peruste.suoritustavat.length > 1">
-                <button ng-repeat="suoritustapa in peruste.suoritustavat | orderBy:'suoritustapakoodi'" class="btn btn-default" ng-click="vaihdaSuoritustapa(suoritustapa.suoritustapakoodi)" 
+                <button ng-repeat="suoritustapa in peruste.suoritustavat | orderBy:'suoritustapakoodi'" class="btn btn-default" ng-click="vaihdaSuoritustapa(suoritustapa.suoritustapakoodi)"
                         ng-class="{ 'active' : suoritustapa.suoritustapakoodi === valittuSuoritustapa }" translate>{{suoritustapa.suoritustapakoodi}}</button>
             </div>
             <!--button type="button" class="btn btn-default" id="avaa-kaikki"><span class="glyphicon glyphicon-chevron-down"></span>Avaa kaikki</button>
@@ -41,7 +41,7 @@ European Union Public Licence for more details.
                     <h3>Käsi- ja taideteollisuusalan perustutkinnon tavoitteet</h3>
                 </li>
                 <li class="list-element pointer" ui-sref="perusteprojekti.editoi.muodostumissaannot">
-                    <h3>Tutkinnon muodostuminen</h3>
+                    <h3>{{ 'tutkinnon-rakenne' | kaanna }}</h3>
                 </li>
                 <li class="list-element pointer" ng-repeat="sisalto in peruste.sisalto.lapset" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id})">
                     <h3>{{ sisalto.perusteenOsa.nimi || 'uusi-tutkinnon-osa' | kaanna}}</h3>
@@ -50,10 +50,10 @@ European Union Public Licence for more details.
         </div>
         <div class="yleiset">
             <h2 class="section-title">Yleiset osat</h2>
-            <div class="list-element">    
+            <div class="list-element">
                 <h3>Perustutkinnon perusteiden toimeenpano ammatillisessa peruskoulutuksessa</h3>
             </div>
-            <div class="list-element">  
+            <div class="list-element">
                 <h3>Perustutkinnon suorittaminen näyttötutkintona</h3>
             </div>
             <div class="list-element">
