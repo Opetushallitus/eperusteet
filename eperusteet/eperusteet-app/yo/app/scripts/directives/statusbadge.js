@@ -10,7 +10,8 @@ angular.module('eperusteApp')
   .directive('statusbadge', function () {
     return {
       templateUrl: 'views/partials/statusbadge.html',
-      restrict: 'E',
+      restrict: 'EA',
+      replace: true,
       scope: {
         status: '@'
       },

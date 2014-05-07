@@ -10,9 +10,9 @@ angular.module('eperusteApp')
         controller: 'ProjektinPerusteCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
         navigaationimiId: 'perusteProjektiId',
-        onEnter: function (SivunavigaatioService) {
+        onEnter: ['SivunavigaatioService', function (SivunavigaatioService) {
           SivunavigaatioService.aseta({osiot: false});
-        }
+        }]
       });
   })
   .controller('ProjektinPerusteCtrl', function($scope, $rootScope, $stateParams, $state,
@@ -35,7 +35,7 @@ angular.module('eperusteApp')
     }, function(virhe) {
       console.log('virhe', virhe);
     });
-          
+
     $scope.rajaaKoodit = function(koodi) {
       console.log('rajaaKoodit koodi', koodi);
       return koodi.koodi.indexOf('_3') !== -1;
@@ -62,7 +62,7 @@ angular.module('eperusteApp')
         console.log('koodisto alarelaatio virhe', virhe);
       });
     };
-    
+
     $scope.tallennaPeruste = function() {
       Perusteet.save({perusteenId: $scope.peruste.id}, $scope.peruste, function(vastaus) {
           console.log('tallennettu peruste', vastaus);
@@ -72,13 +72,13 @@ angular.module('eperusteApp')
           console.log('perusteen tallennus virhe', virhe);
         });
     };
-    
+
     $scope.avaaKoodistoModaali = function() {
       Koodisto.modaali(function(koodi) { $scope.koodistoHaku(koodi);},
         {tyyppi: function() {return 'koulutus';}, ylarelaatioTyyppi: function() {return $scope.peruste.tutkintokoodi;}},
         function() {}, null)();
     };
-                              
+
 
     $scope.valitseKieli = function(teksti) {
       return YleinenData.valitseKieli(teksti);
@@ -91,11 +91,11 @@ angular.module('eperusteApp')
     $scope.opintoalaNimi = function(koodi) {
       return $scope.Opintoalat.haeOpintoalaNimi(koodi);
     };
-    
+
     $rootScope.$on('event:spinner_on', function () {
       $scope.hakemassa = true;
     });
-    
+
     $rootScope.$on('event:spinner_off', function () {
       $scope.hakemassa = false;
     });

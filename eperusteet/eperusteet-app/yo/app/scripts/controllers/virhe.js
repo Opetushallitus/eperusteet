@@ -5,7 +5,7 @@ angular.module('eperusteApp')
     $stateProvider
       .state('virhe', {
         url: '/virhe',
-        templateUrl: '/views/virhe.html',
+        templateUrl: 'views/virhe.html',
         controller: 'virheCtrl'
       });
   })

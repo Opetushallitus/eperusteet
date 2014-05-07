@@ -25,9 +25,9 @@ angular.module('eperusteApp')
         controller: 'MuokkausCtrl',
         naviRest: [':perusteenOsanTyyppi'],
         /*naviBase: ['muokkaus', ':perusteenOsanTyyppi']*/
-        onEnter: function (SivunavigaatioService) {
+        onEnter: ['SivunavigaatioService', function (SivunavigaatioService) {
           SivunavigaatioService.aseta({osiot: true});
-        }
+        }]
       });
   })
   .controller('MuokkausCtrl', function($scope, $stateParams, PerusteenOsat, $state, $compile, Navigaatiopolku) {

@@ -17,9 +17,9 @@ angular.module('eperusteApp')
         controller: 'PerusteprojektiTiedotCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
         navigaationimiId: 'perusteProjektiId',
-        onEnter: function (SivunavigaatioService) {
+        onEnter: ['SivunavigaatioService', function (SivunavigaatioService) {
           SivunavigaatioService.aseta({osiot: false});
-        }
+        }]
       })
       .state('perusteprojekti.editoi.tiedot', {
         url: '/perustiedot',
@@ -28,9 +28,9 @@ angular.module('eperusteApp')
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
         navigaationimiId: 'perusteProjektiId',
         resolve: {'opintoalaService': 'Opintoalat'},
-        onEnter: function (SivunavigaatioService) {
+        onEnter: ['SivunavigaatioService', function (SivunavigaatioService) {
           SivunavigaatioService.aseta({osiot: false});
-        }
+        }]
       });
   })
   .controller('PerusteprojektiTiedotCtrl', function($scope, $rootScope, $state, $stateParams,

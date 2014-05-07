@@ -8,9 +8,9 @@ angular.module('eperusteApp')
         templateUrl: 'views/perusteprojektiMuodostumissaannot.html',
         controller: 'PerusteprojektiMuodostumissaannotCtrl',
         naviRest: ['muodostumissaannot'],
-        onEnter: function (SivunavigaatioService) {
+        onEnter: ['SivunavigaatioService', function (SivunavigaatioService) {
           SivunavigaatioService.aseta({osiot: true});
-        }
+        }]
       });
   })
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $rootScope, $state, $stateParams,
