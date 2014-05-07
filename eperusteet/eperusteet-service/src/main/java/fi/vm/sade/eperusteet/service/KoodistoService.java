@@ -28,4 +28,5 @@ public interface KoodistoService {
     KoodistoKoodiDto get(String koodisto, String koodi);
     List<KoodistoKoodiDto> filterBy(String koodisto, String haku);
     List<KoodistoKoodiDto> getAlarelaatio(String koodi);
+    List<KoodistoKoodiDto> getYlarelaatio(String koodi);
 }

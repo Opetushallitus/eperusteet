@@ -37,12 +37,11 @@ angular.module('eperusteApp')
     });
           
     $scope.rajaaKoodit = function(koodi) {
+      console.log('rajaaKoodit koodi', koodi);
       return koodi.koodi.indexOf('_3') !== -1;
     };
 
     $scope.koodistoHaku = function(koodisto) {
-
-      $scope.hakemassa = true;
       $scope.peruste.nimi = koodisto.nimi;
       $scope.peruste.koulutukset = [];
       $scope.peruste.koulutukset.push({});
@@ -73,6 +72,13 @@ angular.module('eperusteApp')
           console.log('perusteen tallennus virhe', virhe);
         });
     };
+    
+    $scope.avaaKoodistoModaali = function() {
+      Koodisto.modaali(function(koodi) { $scope.koodistoHaku(koodi);},
+        {tyyppi: function() {return 'koulutus';}, ylarelaatioTyyppi: function() {return $scope.peruste.tutkintokoodi;}},
+        function() {}, null)();
+    };
+                              
 
     $scope.valitseKieli = function(teksti) {
       return YleinenData.valitseKieli(teksti);
