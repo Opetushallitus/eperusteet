@@ -1,5 +1,4 @@
 'use strict';
-/* global _ */
 
 angular.module('eperusteApp')
   .service('SpinnerService', function(SPINNER_WAIT, $rootScope, $timeout) {
@@ -24,14 +23,16 @@ angular.module('eperusteApp')
     return {
       enable: enableSpinner,
       disable: disableSpinner,
-      isSpinning: function() { return pyynnot > 0; }
+      isSpinning: function() {
+        return pyynnot > 0;
+      }
     };
   })
   .directive('spinner', function($rootScope) {
     return {
       template: '<div id="global-spinner" ng-show="isSpinning">' +
-                '<span class="glyphicon glyphicon-refresh spin"></span>' +
-                '</div>',
+        '<span class="glyphicon glyphicon-refresh spin"></span>' +
+        '</div>',
       restrict: 'E',
       link: function($scope) {
         $scope.isSpinning = false;

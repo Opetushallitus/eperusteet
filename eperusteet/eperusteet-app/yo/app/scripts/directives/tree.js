@@ -248,7 +248,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('treeWrapper', function($modal, $state, Editointikontrollit, TutkinnonOsanTuonti, Kaanna, Editointicatcher) {
+  .directive('treeWrapper', function($modal, $state, Editointikontrollit, TutkinnonOsanTuonti, Kaanna /*Editointicatcher*/) {
     function kaikilleRakenteille(rakenne, f) {
       if (!rakenne || !f) { return; }
       _.forEach(rakenne, function(r) {

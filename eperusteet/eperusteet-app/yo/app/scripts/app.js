@@ -2,17 +2,17 @@
 /* global _ */
 
 angular.module('eperusteApp', [
-    'ngRoute',
-    'ngSanitize',
-    'ui.router',
-    'ngResource',
-    'ngAnimate',
-    'pascalprecht.translate',
-    'ui.bootstrap',
-    'ui.utils',
-    'ui.sortable'
-  ])
-  .constant('SERVICE_LOC','/eperusteet-service/api')
+  'ngRoute',
+  'ngSanitize',
+  'ui.router',
+  'ngResource',
+  'ngAnimate',
+  'pascalprecht.translate',
+  'ui.bootstrap',
+  'ui.utils',
+  'ui.sortable'
+])
+  .constant('SERVICE_LOC', '/eperusteet-service/api')
   .constant('SPINNER_WAIT', 100)
   .constant('NOTIFICATION_DELAY_SUCCESS', 2000)
   .constant('NOTIFICATION_DELAY_WARNING', 5000)
@@ -45,63 +45,64 @@ angular.module('eperusteApp', [
           // Lähetetään ilmoitus, että haut ovat päättyneet.
           palvelinhaunIlmoitusKanava.hakuLopetettu();
         }
-         return $q.reject(rejection);
+        return $q.reject(rejection);
       }
     };
   })
   .config(function($urlRouterProvider, $sceProvider) {
     $sceProvider.enabled(true);
-    $urlRouterProvider.otherwise(function ($injector, $location) {
+    $urlRouterProvider.when('','/');
+    $urlRouterProvider.otherwise(function($injector, $location) {
       $injector.get('virheService').setData({path: $location.path()});
       $injector.get('$state').go('virhe');
     });
   })
   .config(function($translateProvider) {
-      $translateProvider.useStaticFilesLoader({
-        prefix: 'localisation/locale-',
-        suffix: '.json'
-      });
-      $translateProvider.preferredLanguage('fi');
+    $translateProvider.useStaticFilesLoader({
+      prefix: 'localisation/locale-',
+      suffix: '.json'
+    });
+    $translateProvider.preferredLanguage('fi');
 
   })
   .config(function($httpProvider) {
     $httpProvider.interceptors.push(['$rootScope', '$q', 'SpinnerService', function($rootScope, $q, Spinner) {
-      return {
-        request: function(request) {
-          Spinner.enable();
-          return request;
-        },
-        response: function(response) {
-          Spinner.disable();
-          return response || $q.when(response);
-        },
-        responseError: function(error) {
-          Spinner.disable();
-          return $q.reject(error);
-        }
-      };
-    }]);
+        return {
+          request: function(request) {
+            Spinner.enable();
+            return request;
+          },
+          response: function(response) {
+            Spinner.disable();
+            return response || $q.when(response);
+          },
+          responseError: function(error) {
+            Spinner.disable();
+            return $q.reject(error);
+          }
+        };
+      }]);
   })
   // Uudelleenohjaus autentikointiin ja palvelinvirheiden ilmoitukset
   .config(function($httpProvider) {
     // Asetetaan oma interceptor kuuntelemaan palvelinkutsuja
     $httpProvider.interceptors.push('palvelinHakuInterceptor');
     $httpProvider.interceptors.push(['$rootScope', '$q', function($rootScope, $q) {
-      return {
-        'response': function(response) {
-          // var uudelleenohjausStatuskoodit = [401, 403, 412, 500];
-          var uudelleenohjausStatuskoodit = [412, 500];
-          if (_.indexOf(uudelleenohjausStatuskoodit, response.status) !== -1) {
-            // TODO: ota käyttöön poistamalla kommentista
-            $rootScope.$emit('event:uudelleenohjattava', response.status);
+        return {
+          'response': function(response) {
+            // var uudelleenohjausStatuskoodit = [401, 403, 412, 500];
+            var uudelleenohjausStatuskoodit = [412, 500];
+            if (_.indexOf(uudelleenohjausStatuskoodit, response.status) !== -1) {
+              // TODO: ota käyttöön poistamalla kommentista
+              $rootScope.$emit('event:uudelleenohjattava', response.status);
+            }
+            return response || $q.when(response);
+          },
+          'responseError': function(err) {
+            return $q.reject(err);
           }
-          return response || $q.when(response);
-        },
-        'responseError': function(err) {
-          return $q.reject(err);
-        }
-      };
-    }]);
+        };
+      }]);
   })
   .run(function($rootScope, $modal, $location, $window) {
     var onAvattuna = false;
@@ -136,22 +137,26 @@ angular.module('eperusteApp', [
         templateUrl: 'views/modals/uudelleenohjaus.html',
         controller: 'UudelleenohjausModalCtrl',
         resolve: {
-          status: function() { return status; },
-          redirect: function() { return casurl; }
+          status: function() {
+            return status;
+          },
+          redirect: function() {
+            return casurl;
+          }
         }
       });
 
-      uudelleenohjausModaali.result.then(function () {
+      uudelleenohjausModaali.result.then(function() {
       }, function() {
       }).finally(function() {
         onAvattuna = false;
         switch (status) {
-        case 500:
-          $location.path('/');
-          break;
-        case 412:
-          $window.location.href = casurl;
-          break;
+          case 500:
+            $location.path('/');
+            break;
+          case 412:
+            $window.location.href = casurl;
+            break;
         }
       });
     });

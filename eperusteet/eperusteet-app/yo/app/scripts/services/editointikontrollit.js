@@ -18,7 +18,7 @@
 
 angular.module('eperusteApp')
   .service('Editointicatcher', function() {
-    var f = function(osa) {};
+    var f = function(/*osa*/) {};
 
     return {
       register: function(cb) {
