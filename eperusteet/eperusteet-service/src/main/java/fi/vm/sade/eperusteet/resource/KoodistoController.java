@@ -67,4 +67,11 @@ public class KoodistoController {
         @PathVariable("koodi") final String koodi) {
         return new ResponseEntity<>(service.getAlarelaatio(koodi), HttpStatus.OK);
     }
+    
+    @RequestMapping(value = "/relaatio/sisaltyy-ylakoodit/{koodi}", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<KoodistoKoodiDto>> ylarelaatio(
+        @PathVariable("koodi") final String koodi) {
+        return new ResponseEntity<>(service.getYlarelaatio(koodi), HttpStatus.OK);
+    }
 }

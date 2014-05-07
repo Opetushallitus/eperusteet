@@ -94,4 +94,13 @@ public class KoodistoServiceImpl implements KoodistoService {
         List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(koodistot), KoodistoKoodiDto.class);
         return koodistoDtot;
     }
+
+    @Override
+    public List<KoodistoKoodiDto> getYlarelaatio(String koodi) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = KOODISTO_API + YLARELAATIO + koodi;
+        KoodistoKoodiDto[] koodistot = restTemplate.getForObject(url, KoodistoKoodiDto[].class);
+        List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(koodistot), KoodistoKoodiDto.class);
+        return koodistoDtot;
+    }
 }
