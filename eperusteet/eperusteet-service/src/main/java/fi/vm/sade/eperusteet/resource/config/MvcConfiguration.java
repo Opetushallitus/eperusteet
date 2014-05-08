@@ -61,6 +61,7 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //registry.addWebRequestInterceptor(openEntityManagerInViewInterceptor());
+        registry.addInterceptor(new LoggingInterceptor());
         super.addInterceptors(registry);
     }
 
