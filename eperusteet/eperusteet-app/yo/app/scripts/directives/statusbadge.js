@@ -2,7 +2,7 @@
 
 /**
  * Statusbadge:
- * <statusbadge status="luonnos|hyvaksyttavana|kommentoitavana|..."/>
+ * <statusbadge status="luonnos|..." editable="true|false"></statusbadge>
  * Tyylit eri statuksille määritellään "statusbadge" sass-moduulissa.
  * Sama avainsana pitää olla käytössä tyyleissä ja lokalisoinnissa.
  */
@@ -13,11 +13,36 @@ angular.module('eperusteApp')
       restrict: 'EA',
       replace: true,
       scope: {
-        status: '@'
+        status: '=',
+        editable: '=?'
       },
-      controller: 'statusbadgeCtrl'
+      controller: 'StatusbadgeCtrl'
     };
   })
-  .controller('statusbadgeCtrl', function ($scope) {
-      $scope.editointi = true;
+
+  .controller('StatusbadgeCtrl', function ($scope, PerusteprojektinTilanvaihto) {
+    $scope.iconMapping = {
+      luonnos: 'pencil',
+      kommentointi: 'comment',
+      viimeistely: 'certificate',
+      kaannos: 'book',
+      hyvaksytty: 'thumbs-up'
+    };
+
+    $scope.appliedClasses = function () {
+      var classes = {editable: $scope.editable};
+      classes[$scope.status] = true;
+      return classes;
+    };
+
+    $scope.iconClasses = function () {
+      return 'glyphicon glyphicon-' + $scope.iconMapping[$scope.status];
+    };
+
+    $scope.startEditing = function () {
+      PerusteprojektinTilanvaihto.start($scope.status, function (newStatus) {
+        // TODO tilan tallennus, tämä asettaa uuden tilan parent scopen projektiobjektiin.
+        $scope.status = newStatus;
+      });
+    };
   });

@@ -53,6 +53,8 @@ angular.module('eperusteApp')
       $scope.projekti.id = $stateParams.perusteProjektiId;
       PerusteprojektiResource.get({ id: $stateParams.perusteProjektiId }, function(vastaus) {
         $scope.projekti = vastaus;
+        // TODO: väliaikaisesti hardkoodattu tila
+        $scope.projekti.tila = 'luonnos';
         SivunavigaatioService.asetaProjekti($scope.projekti);
         Navigaatiopolku.asetaElementit({ perusteProjektiId: vastaus.nimi });
 
@@ -73,5 +75,10 @@ angular.module('eperusteApp')
     $scope.koulutusalaNimi = function(koodi) {
       return koulutusalaService.haeKoulutusalaNimi(koodi);
     };
-    
+
+    $scope.canChangePerusteprojektiStatus = function () {
+      // TODO vain omistaja voi vaihtaa tilaa
+      return true;
+    };
+
   });

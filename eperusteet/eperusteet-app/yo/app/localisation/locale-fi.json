@@ -1,10 +1,12 @@
 {
     "edellinen-sivu": "<< Edellinen",
+    "edellinen": "Edellinen",
     "kieli": "Kieli",
     "koodi": "Koodi",
     "lisää": "Lisää",
     "nimi": "Nimi",
     "ok": "OK",
+    "aseta-tila": "Aseta tila",
     "palauta" : "Palauta",
     "peru": "Peru",
     "poista": "Poista",
@@ -22,7 +24,9 @@
     "haku": "Haku",
     "esitys": "Esitys",
     "peruuta": "Peruuta",
+    "valitse": "Valitse",
     "tallenna-nappi": "Tallenna",
+    "haluatko-jatkaa": "Haluatko jatkaa?",
 
     "ammattitutkinto": "Ammattitutkinto",
     "erikoisammattitutkinto": "Erikoisammattitutkinto",
@@ -278,7 +282,9 @@
     "sivunavigointi-avaa-menu": "Avaa navigointimenu",
     "sivunavigointi-sulje-menu": "Sulje navigointimenu",
     
+    "perusteprojekti-tila-aseta": "Aseta perusteprojektin tila",
     "luonnos": "Luonnos",
-    "hyvaksyttavana": "Hyväksyttävänä",
-    "kommentoitavana": "Kommentoitavana"
+    "hyvaksytty": "Hyväksytty",
+    "kaannos": "Käännös",
+    "kommentointi": "Kommentointi"
 }

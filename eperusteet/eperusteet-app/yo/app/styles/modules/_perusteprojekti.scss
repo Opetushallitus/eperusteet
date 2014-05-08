@@ -15,6 +15,11 @@ European Union Public Licence for more details.
 */
 $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 .project-header {
+  .statusbadge {
+    float:left;
+    margin: 20px;
+    margin-top: 0;
+  }
 	position: relative;
   background-color: rgba(20, 158, 203, 0.06);
   border: $project-header-border;
@@ -150,4 +155,38 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 .projekti-form-buttons {
     margin-top: 20px;
     float: right;
+}
+
+.tilanvaihto {
+  li {
+    cursor: pointer;
+    border: none;
+    .statusbadge {
+      float: left;
+      margin-right: 20px;
+    }
+    &.vanha {
+      background-color: #ccc;
+    }
+    &.uusi {
+      background-color: $valinta-vari;
+    }
+  }
+  .row>div {
+    text-align: center;
+  }
+  .arrow {
+    height: $statusbadge-height;
+    .glyphicon {
+      opacity: 0.5;
+      font-size: 60px;
+      line-height: $statusbadge-height;
+    }
+  }
+  p {
+    margin-top: 20px;
+  }
+  .confirmation {
+    font-size: 125%;
+  }
 }
