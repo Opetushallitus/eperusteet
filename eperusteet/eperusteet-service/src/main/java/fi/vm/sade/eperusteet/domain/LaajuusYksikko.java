@@ -20,18 +20,6 @@ package fi.vm.sade.eperusteet.domain;
  * @author jhyoty
  */
 public enum LaajuusYksikko {
-
-    OPINTOVIIKKO("ov"),
-    OSAAMISPISTE("op");
-    private final String yksikko;
-
-    private LaajuusYksikko(String yksikko) {
-        this.yksikko = yksikko;
-    }
-
-    @Override
-    public String toString() {
-        return yksikko;
-    }
-
+    OPINTOVIIKKO,
+    OSAAMISPISTE;
 }
