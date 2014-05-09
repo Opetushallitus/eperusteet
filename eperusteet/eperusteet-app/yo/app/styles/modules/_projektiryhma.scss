@@ -1,22 +1,22 @@
 $avatar-koko: 64px;
-.ryhma-rivi {
-  clear: both;
-}
 .ryhma-rooli {
-  float: left;
   margin-right: 30px;
+  max-width: 900px;
+  position: relative;
   h3 {
-    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    border-bottom: 1px solid $erotin-vari;
   }
 }
 .ryhma-jasen {
   float: left;
-  border: 2px solid $nav-tabs-border-color;
+  border: 2px solid darken($nav-tabs-border-color, 20%);
   height: 104px;
-  min-width: 240px;
+  width: 360px;
   padding: 15px;
   margin: 10px;
-  margin-right: 40px;
+  margin-right: 30px;
+  position: relative;
 }
 .ryhma-jasen-avatar {
   background-color: $nav-tabs-border-color;
@@ -26,8 +26,11 @@ $avatar-koko: 64px;
   overflow: hidden;
 }
 .ryhma-jasen-tiedot {
-  margin-left: 15px;
-  float: left;
+  margin-left: $avatar-koko + 15px;
+  word-break: break-all;
+  p {
+    margin-bottom: 3px;
+  }
   h4 {
     margin-top: 0;
     padding-top: 0;
@@ -43,15 +46,48 @@ $avatar-koko: 64px;
   height: 21px;
   border-radius: 4px;
   border: solid 1px #ccc;
-  margin-left: 4px;
-  margin-top: -7px;
-  margin-right: -7px;
   padding: 2px;
-  float: right;
+  position: absolute;
+  top: 7px;
+  right: 7px;
 }
 .nimikirjain-avatar {
-  padding-left: $avatar-koko / 8;
+  text-align: center;
   line-height: $avatar-koko;
   font-weight: bold;
   font-size: $avatar-koko / 2;
+}
+.ryhma-johto {
+  .ryhma-rooli {
+    float: left;
+  }
+}
+.ryhma-jasenet {
+  min-width: 900px;
+  .ryhma-rooli {
+    margin-right: 0;
+  }
+  .ryhma-jasen {
+    margin-right: 60px;
+  }
+  h3 {
+    border: none;
+  }
+  h3:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 30px;
+    height: 1px;
+    width: 830px;
+    border-bottom: 1px solid $erotin-vari;
+  }
+}
+@media (max-width: 949px) {
+  .ryhma-jasenet {
+    min-width: 400px;
+    h3:before {
+      width: 400px;
+    }
+  }
 }

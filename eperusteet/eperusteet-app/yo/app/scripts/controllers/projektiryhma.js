@@ -62,7 +62,7 @@ angular.module('eperusteApp')
       restrict: 'E',
       template: '<div class="ryhma-rooli">' +
         '<h3>{{\'projektiryhma-otsikko-\' + rooli | kaanna}}</h3>' +
-        '<jasenkortti ng-repeat="jasen in ryhma | filter:{rooli: rooli}:true" ryhma="ryhma" jasen="jasen" voi-muokata="true"/>' +
+        '<jasenkortti ng-repeat="jasen in ryhma | filter:{rooli: rooli}:true" ryhma="ryhma" jasen="jasen" voi-muokata="true"></jasenkortti>' +
         '</div>',
       controller: 'ryhmanjasenetCtrl',
       scope: {

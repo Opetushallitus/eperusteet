@@ -20,7 +20,8 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
     margin: 20px;
     margin-top: 0;
   }
-	position: relative;
+  margin-bottom: 40px;
+  position: relative;
   background-color: rgba(20, 158, 203, 0.06);
   border: $project-header-border;
   h5 {
@@ -157,9 +158,8 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 
 
 .uusi-projekti-content {
-    margin: 20px;
-    /* Tilaa päivämäärän valitsimelle ettei se piiloudu overflown alle. */
-    margin-bottom: 200px;
+  /* Tilaa päivämäärän valitsimelle ettei se piiloudu overflown alle. */
+  margin: 0 20px 200px 0;
 }
 
 .projekti-form-buttons {
