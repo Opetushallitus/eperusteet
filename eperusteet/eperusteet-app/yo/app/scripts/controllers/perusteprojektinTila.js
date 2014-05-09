@@ -21,7 +21,9 @@ angular.module('eperusteApp')
     var that = this;
     this.start = function (currentStatus, setFn) {
       var dummyDescription = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.';
-      that.setFn = setFn;
+      if (_.isFunction(setFn)) {
+        that.setFn = setFn;
+      }
       $modal.open({
         templateUrl: 'views/modals/perusteprojektinTila.html',
         controller: 'PerusteprojektinTilaModal',

@@ -30,7 +30,7 @@ European Union Public Licence for more details.
         <button ui-sref="aloitussivu" id="cancel" class="btn" translate>peruuta</button>
     </div>
     <div class="projekti-form-buttons" ng-show="{{ 'perusteprojekti.editoi.tiedot' | isState }}">
-        <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid"  translate>tallenna-nappi</button>
+        <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid"  translate>tallenna</button>
         <button ui-sref="perusteprojekti.editoi.sisalto({ perusteProjektiId: projekti.id })" id="cancel" class="btn" translate>peruuta</button>
     </div>
 
