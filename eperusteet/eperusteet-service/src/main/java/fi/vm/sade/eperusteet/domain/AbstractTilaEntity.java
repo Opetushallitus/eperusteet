@@ -14,27 +14,27 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.domain;
 
-import fi.vm.sade.eperusteet.domain.Tila;
-import java.util.Date;
+import java.io.Serializable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author jhyoty
+ * @author harrik
  */
-@Getter
-@Setter
-//@JsonTypeInfo(include = JsonTypeInfo.As.PROPERTY, use = JsonTypeInfo.Id.NAME, property = "tyyppi")
-//@JsonSubTypes({@JsonSubTypes.Type(TekstiKappaleDto.class), @JsonSubTypes.Type(TutkinnonOsaDto.class)})
-public abstract class PerusteenOsaDto {
+@MappedSuperclass
+public abstract class AbstractTilaEntity extends AbstractAuditedEntity implements Serializable {
+    
+    @Getter
+    @Setter
+    @Enumerated(EnumType.STRING)
     @NotNull
-    private Long id;
-    private Date luotu;
-    private Date muokattu;
-    private LokalisoituTekstiDto nimi;
     private Tila tila;
+    
 }

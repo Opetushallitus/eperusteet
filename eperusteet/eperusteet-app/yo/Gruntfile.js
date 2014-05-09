@@ -41,7 +41,7 @@ module.exports = function(grunt) {
         tasks: ['sass', 'copy:fonts', 'autoprefixer'],
       },
       test: {
-        files: ['<%= yeoman.app %>/**/*.{js,html}', 'test/**/*.js'],
+        files: ['<%= yeoman.app %>/**/*.{js,html}', 'test/**/*.js','!<%= yeoman.app %>/bower_components/**'],
         tasks: ['karma:unit', 'jshint']
       },
       livereload: {

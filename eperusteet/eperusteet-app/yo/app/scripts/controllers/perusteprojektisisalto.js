@@ -29,10 +29,12 @@ angular.module('eperusteApp')
       });
   })
   .controller('PerusteprojektisisaltoCtrl', function($scope, $stateParams, PerusteprojektiResource,
-    Suoritustapa, SuoritustapaSisalto, PerusteProjektiService, Perusteet) {
+    Suoritustapa, SuoritustapaSisalto, PerusteProjektiService, Perusteet, PerusteenOsaViitteet) {
      $scope.projekti = {};
      $scope.peruste = {};
      $scope.valittuSuoritustapa = '';
+     $scope.poistoMouseLeaveLuokka = 'glyphicon glyphicon-remove pull-right smaller';
+     $scope.poistoMouseOverLuokka = 'glyphicon glyphicon-remove pull-right larger';
 
     if ($stateParams.perusteProjektiId !== 'uusi') {
       $scope.projekti.id = $stateParams.perusteProjektiId;
@@ -80,6 +82,25 @@ angular.module('eperusteApp')
       $scope.valittuSuoritustapa = suoritustapakoodi;
       PerusteProjektiService.setSuoritustapa(suoritustapakoodi);
       haeSisalto($scope.valittuSuoritustapa);
+    };
+    
+    $scope.setLargerSize = function (event) {
+      event.currentTarget.className = $scope.poistoMouseOverLuokka;
+    };
+    
+    $scope.setSmallerSize = function (event) {
+      event.currentTarget.className = $scope.poistoMouseLeaveLuokka;
+    };
+    
+    $scope.poistaSisalto = function(viiteId, event) {
+      //TODO: Varmistusdialogi vahinkopoistamisen estämiseksi.
+      
+      event.stopPropagation();
+      PerusteenOsaViitteet.delete({viiteId: viiteId}, {}, function() {
+        haeSisalto(PerusteProjektiService.getSuoritustapa());
+      }, function(virhe) {
+        console.log('Sisällön poistovirhe', virhe);
+      });
     };
 
   });

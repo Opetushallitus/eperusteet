@@ -14,6 +14,9 @@ angular.module('eperusteApp')
         getRevision: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/:osanId/revisions/:revisionId'}
       });
   })
+  .factory('PerusteenOsaViitteet', function($resource, SERVICE_LOC) {
+      return $resource(SERVICE_LOC + '/perusteenosaviitteet/sisalto/:viiteId');
+  })
   .service('TutkinnonOsanValidointi', function($q, PerusteenOsat) {
     function validoi(tutkinnonOsa) {
       var virheet = [];
