@@ -1,7 +1,10 @@
 package fi.vm.sade.eperusteet.service;
 
 import java.util.List;
+
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 
 /**
  *
@@ -9,14 +12,21 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsa;
  */
 public interface PerusteenOsaService {
 
-    PerusteenOsa add(PerusteenOsa perusteenOsa);
+	public <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass);
+
+    <T extends PerusteenOsaDto, D extends PerusteenOsa> T save(T perusteenOsaDto, Class<T> dtoClass, Class<D> destinationClass);
 
     void delete(final Long id);
 
-    PerusteenOsa get(final Long id);
+    PerusteenOsaDto get(final Long id);
 
-    List<PerusteenOsa> getAll();
+    List<PerusteenOsaDto> getAllByKoodiUri(final String koodiUri);
 
-    PerusteenOsa update(final Long id, PerusteenOsa perusteenOsa);
+    List<PerusteenOsaDto> getAll();
 
+    List<PerusteenOsaDto> getAllWithName(final String name);
+
+    public List<Revision> getRevisions(Long id);
+
+    public PerusteenOsaDto getRevision(final Long id, final Integer revisionId);
 }

@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <h2 translate>perusteprojekti-tila-aseta</h2>
+</div>
+
+<div class="modal-body tilanvaihto">
+  <ul class="list-group">
+    <li class="list-group-item" ng-repeat="tila in data.statuses"
+        ng-class="{vanha: tila.key === data.oldStatus, uusi: tila.key === data.selected}"
+        ng-click="data.selected = tila.key"
+        ng-dblclick="data.selected = tila.key; (data.selected !== data.oldStatus) && valitse();">
+      <statusbadge editable="data.editable" status="tila.key"></statusbadge>
+      <p class="description">
+        {{tila.description | kaanna}}
+      </p>
+      <div class="clearfix"></div>
+    </li>
+  </ul>
+</div>
+
+<div class="modal-footer">
+  <button ng-disabled="!(data.selected && data.selected !== data.oldStatus)"
+          class="btn btn-default" ng-click="valitse()" translate>valitse</button>
+  <button class="btn btn-default" ng-click="peruuta()" translate>peruuta</button>
+</div>

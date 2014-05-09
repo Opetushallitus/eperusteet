@@ -14,19 +14,33 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
-<div ng-controller="SuosikitCtrl" class="row">
-  <div class="col-xs-12">
+<div class="row">
+  <div class="col-xs-12 sidebar">
+    <div ng-controller="SuosikitCtrl">
       <label for="kielen-vaihto" translate>kielen-vaihto</label>
       <div id="kielen-vaihto" class="btn-group">
-          <button ng-repeat="(nimi, koodi) in kielet" ng-click="vaihdaKieli(koodi)" type="button" class="btn btn-default" ng-class="{ 'active' : koodi === kieli }">{{nimi|translate}}</button>
+        <button ng-repeat="(nimi, koodi) in kielet" ng-click="vaihdaKieli(koodi)" type="button" class="btn btn-default" ng-class="{ 'active' : koodi === kieli }">{{nimi|translate}}</button>
       </div>
-    <div class="panel panel-default">
-      <div class="panel-heading" translate>suosikit-otsikko</div>
-      <div class="panel-body">
-        <ul class="list-unstyled">
-            <li class="ellipsis-no-wrap" ng-repeat="suosikki in suosikit| limitTo:suosikkiRaja" ><a title="{{valitseKieli(suosikki.nimi)}}" ng-href="#/selaus/{{suosikki.konteksti}}/{{suosikki.id}}">{{valitseKieli(suosikki.nimi)}}</a></li>
-        </ul>
-        <button class="btn btn-default btn-xs pull-right" ng-show="naytaSuosikkiNappi" ng-click="muutaSuosikkiMaara()">{{suosikkiNapinTeksti| translate}}</button>
+      <div class="panel panel-default">
+        <div class="panel-heading" translate>suosikit-otsikko</div>
+        <div class="panel-body">
+          <ul class="list-unstyled">
+            <li class="ellipsis-no-wrap" ng-repeat="suosikki in suosikit| limitTo:suosikkiRaja" ><a title="{{valitseKieli(suosikki.nimi)}}" ng-click="resetNavi()" ng-href="{{ suosikki.url}}">{{valitseKieli(suosikki.nimi)}} ({{suosikki.suoritustapakoodi}})</a></li>
+          </ul>
+          <button class="btn btn-default btn-xs pull-right" ng-show="naytaSuosikkiNappi" ng-click="muutaSuosikkiMaara()">{{suosikkiNapinTeksti| translate}}</button>
+        </div>
+      </div>
+    </div>
+    <div ng-controller="OmatperusteprojektitCtrl">
+      <div class="panel panel-default">
+        <div class="panel-heading" >{{'perusteprojektit-otsikko'| translate}}</div>
+        <div class="panel-body">
+          <a class="btn btn-default btn-xs" title="{{'uusi-projekti'| translate}}" ui-sref="perusteprojekti.tiedot.uusi({ perusteProjektiId: 'uusi' })" translate>uusi-projekti</a>
+          <ul class="list-unstyled">
+            <li class="ellipsis-no-wrap" ng-repeat="projekti in projektit| limitTo:projektitRaja" ><a title="{{projekti.nimi}}" href="{{ projekti.url}}">{{projekti.diaarinumero}}: {{projekti.nimi}}</a></li>
+          </ul>
+          <button class="btn btn-default btn-xs pull-right" ng-show="naytaProjektitNappi" ng-click="muutaProjektienMaara()">{{projektitNapinTeksti| translate}}</button>
+        </div>
       </div>
     </div>
     <div class="panel panel-default">
@@ -38,11 +52,5 @@ European Union Public Licence for more details.
         </ul>
       </div>
     </div>
-    <div class="panel panel-default">
-      <div class="panel-heading">Omat perusteprojektisi</div>
-      <div class="panel-body">
-        Stuff here...
-      </div>
-    </div>  
   </div>
 </div>

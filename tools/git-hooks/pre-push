@@ -1,0 +1,12 @@
+#!/bin/sh
+cd eperusteet
+LOG=/tmp/eperusteet-build.log
+echo "Running build before push...(log in $LOG)"
+mvn -o -ff verify >$LOG
+if [ $? -ne 0 ] ; then 
+  echo "Build failed"
+  exit 1
+fi
+exit 0
+
+

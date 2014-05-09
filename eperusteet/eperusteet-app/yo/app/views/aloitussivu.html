@@ -1,0 +1,17 @@
+    <h1>Opetussuunnitelmien ja tutkintojen perusteet</h1>
+    <div class="col-md-8">
+        <div class="iso-valinta"><h3>Esiopetus</h3></div>
+        <div class="iso-valinta"><h3>Perusopetus</h3></div>
+        <div class="iso-valinta"><h3>Lukiokoulutus</h3></div>
+        <a ui-sref="selaus.ammatillinenperuskoulutus">
+          <div class="iso-valinta">
+            <h3>{{'ammatillinen-peruskoulutus'|translate}}</h3>
+          </div>
+        </a>
+        <a ui-sref="selaus.ammatillinenaikuiskoulutus">
+          <div class="iso-valinta">
+            <h3>{{'ammatillinen-aikuiskoulutus'|translate}}</h3>
+          </div>
+        </a>
+    </div>
+    <div class="col-md-4" ng-include="'views/partials/sivupalkki.html'"></div>

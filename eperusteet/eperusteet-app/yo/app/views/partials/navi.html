@@ -1,7 +1,10 @@
-<ul class="nav nav-tabs">
-	<li><a>{{'navi-esiopetus'|translate}}</a></li>
-	<li><a>{{'navi-perusopetus'|translate}}</a></li>
-	<li><a>{{'navi-lukiokoulutus'|translate}}</a></li>
-	<li ng-class="{ active: isActive('/selaus/ammatillinenperuskoulutus')}"><a href="#/selaus/ammatillinenperuskoulutus">{{'navi-ammatillinen-peruskoulutus'|translate}}</a></li>
-	<li ng-class="{ active: isActive('/selaus/ammatillinenaikuiskoulutus')}"><a href="#/selaus/ammatillinenaikuiskoulutus">{{'navi-ammatillinen-aikuiskoulutus'|translate}}</a></li>
-</ul>
+<ol class="breadcrumb">
+  <!-- Kovakoodattu kotisivu -->
+  <li><a ui-sref="aloitussivu"><span class="glyphicon glyphicon-home"></span></a></li>
+
+  <!-- naviBase + naviRest -->
+  <li ng-repeat="np in navigaatiopolku">
+    <a ng-hide="$last" ng-href="{{ np.url }}">{{ np.arvo | kaanna }}</a>
+    <span ng-show="$last">{{ np.arvo | kaanna }}</span>
+  </li>
+</ol>

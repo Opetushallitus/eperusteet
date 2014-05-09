@@ -7,3 +7,13 @@ target
 /tools/opintoalaImporter/nbproject/private/
 /tools/opintoalaImporter/build/
 /tools/opintoalaImporter/dist/
+nbproject/
+
+**/.project
+**/.settings
+**/.classpath
+**/rebel.xml
+/eperusteet/eperusteet-service/nbactions-oph.xml
+
+npm-debug.log
+

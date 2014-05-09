@@ -5,5 +5,6 @@ angular.module('eperusteApp')
     return $resource(SERVICE_LOC + '/kayttajaprofiili/:id',
       {
         id: '@id'
-      });
+      }
+    );
   });

@@ -1,0 +1,192 @@
+/*
+Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+
+This program is free software: Licensed under the EUPL, Version 1.1 or - as
+soon as they will be approved by the European Commission - subsequent versions
+of the EUPL (the "Licence");
+
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+European Union Public Licence for more details.
+*/
+$project-header-border: 1px solid rgba(6, 82, 107, 0.12);
+.project-header {
+  .statusbadge {
+    float:left;
+    margin: 20px;
+    margin-top: 0;
+  }
+	position: relative;
+  background-color: rgba(20, 158, 203, 0.06);
+  border: $project-header-border;
+  h5 {
+    display: inline;
+  }
+  .headernavi {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    ul {
+      float: right;
+      margin: 0;
+      padding: 0;
+    }
+    li {
+      list-style-type: none;
+      display: inline-block;
+      padding: 0;
+      margin: 0;
+      a {
+        display: block;
+        padding: 7px;
+      }
+    }
+  }
+  .headernavi-active {
+    cursor: default;
+    color: black;
+    background-color: white;
+    border: $project-header-border;
+    border-bottom: none;
+    &:hover {
+      color: black;
+      text-decoration: none;
+    }
+  }
+  @media (max-width: 900px) {
+    .headernavi {
+      position: relative;
+      margin-right: 20px;
+      margin-left: 20px;
+    }
+  }
+}
+
+.project-otsikkotiedot {
+  margin-left: 20px;
+}
+
+.uusi-projekti-header {
+    padding: 20px;
+}
+
+.main-content .row {
+	padding-left: 40px;
+	padding-right: 40px;
+}
+
+.main-content .tutkinnonsisalto-list {
+    padding: 0;
+    list-style: none;
+}
+.main-content .list-element {
+	position: relative;
+	border: 1px solid #ddd;
+	border-radius: 2px;
+	padding: 20px 20px 20px 45px;
+	margin-top: 20px;
+}
+.main-content .list-element:hover,
+.main-content .li:hover {
+	background-color: #F2F2F2;
+}
+.main-content .list-element h3 {
+	display: inline;
+	margin-left: 20px;
+	margin-top: 5px;
+}
+.main-content  h4,
+.main-content p {
+
+}
+.main-content .list-element a.next,
+.main-content a.next {
+	cursor: pointer;
+	position: absolute;
+	top: 50%;
+	margin-top: -9px;
+	right: 10px;
+}
+.main-content .list-element a.next span,
+.main-content a.next span {
+	margin-left: 4px;
+}
+.main-content ul.sub-items {
+	margin-left: 140px;
+	background-color: #fff;
+}
+.main-content ul.sub-items li {
+	position: relative;
+	padding: 10px inherit 10px 20px;
+	border: 1px solid #ddd;
+	border-top: none;
+}
+.main-content .list-element span.glyphicon.next,
+.main-content ul.sub-items li span.glyphicon.next {
+	position: relative;
+	right: 10px;
+}
+
+.form-area {
+    border: 2px solid #ddd;
+    border-radius: 2px;
+    padding: 10px;
+}
+
+.projekti-form {
+    margin: 20px;
+}
+
+.uusi-projekti-header {
+    padding: 20px;
+}
+
+
+.uusi-projekti-content {
+    margin: 20px;
+    /* Tilaa päivämäärän valitsimelle ettei se piiloudu overflown alle. */
+    margin-bottom: 200px;
+}
+
+.projekti-form-buttons {
+    margin-top: 20px;
+    float: right;
+}
+
+.tilanvaihto {
+  li {
+    cursor: pointer;
+    border: none;
+    .statusbadge {
+      float: left;
+      margin-right: 20px;
+    }
+    &.vanha {
+      background-color: #ccc;
+    }
+    &.uusi {
+      background-color: $valinta-vari;
+    }
+  }
+  .row>div {
+    text-align: center;
+  }
+  .arrow {
+    height: $statusbadge-height;
+    .glyphicon {
+      opacity: 0.5;
+      font-size: 60px;
+      line-height: $statusbadge-height;
+    }
+  }
+  p {
+    margin-top: 20px;
+  }
+  .confirmation {
+    font-size: 125%;
+  }
+}

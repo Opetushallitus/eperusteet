@@ -16,11 +16,10 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.test.AbstractDbIntegrationTest;
 import java.util.Collections;
 import javax.persistence.EntityManager;
@@ -53,7 +52,7 @@ public class PerusteServiceDbIT extends AbstractDbIntegrationTest {
     @Before
     public void setUp() {
         Peruste p = new Peruste();
-        p.setNimi(new TekstiPalanen(Collections.singletonMap(Kieli.FI, new LokalisoituTeksti(Kieli.FI, "Nimi"))));
+        p.setNimi(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi")));
         repo.save(p);
         em.flush();
     }
@@ -61,7 +60,7 @@ public class PerusteServiceDbIT extends AbstractDbIntegrationTest {
     @Test
     @Rollback(true)
     public void testGet() {
-        Page<Peruste> perusteet = perusteService.getAll(new PageRequest(0, 10), "fi");
+        Page<PerusteDto> perusteet = perusteService.getAll(new PageRequest(0, 10), "fi");
         assertEquals(perusteet.getTotalElements(), 1);
     }
 

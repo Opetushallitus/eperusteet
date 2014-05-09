@@ -2,9 +2,9 @@
 
 angular.module('eperusteApp')
   .factory('Suosikit', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/kayttajaprofiili/:id/suosikki/:suosikkiId',
+    return $resource(SERVICE_LOC + '/kayttajaprofiili/suosikki/:suosikkiId',
       {
-        id: '@id'
+        
       });
   })
   .factory('Suosikitbroadcast', function($rootScope) {
@@ -12,10 +12,6 @@ angular.module('eperusteApp')
 
     suosikitbroadcast.suosikitMuuttuivat = function() {
       $rootScope.$broadcast('suosikitMuuttuivat');
-    };
-
-    suosikitbroadcast.kieliVaihtui = function() {
-      $rootScope.$broadcast('kieliVaihtui');
     };
 
     return suosikitbroadcast;

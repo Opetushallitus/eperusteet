@@ -16,17 +16,20 @@
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import javax.persistence.Cacheable;
+import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Immutable;
@@ -39,30 +42,71 @@ import org.hibernate.annotations.Immutable;
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Immutable
+@Table(name = "tekstipalanen")
 public class TekstiPalanen implements Serializable {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
     @Immutable
+    @CollectionTable(name = "tekstipalanen_teksti")
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<LokalisoituTeksti> teksti;
+    private Set<LokalisoituTeksti> teksti;
 
     protected TekstiPalanen() {
     }
 
-    public TekstiPalanen(Map<Kieli, LokalisoituTeksti> tekstit) {
-        teksti = new ArrayList<>(tekstit.values());
+    private TekstiPalanen(Set<LokalisoituTeksti> tekstit) {
+        this.teksti = tekstit;
     }
 
     public Long getId() {
         return id;
     }
 
-    public List<LokalisoituTeksti> getTeksti() {
-        return Collections.unmodifiableList(teksti);
+    public Map<Kieli, String> getTeksti() {
+        EnumMap<Kieli, String> map = new EnumMap<>(Kieli.class);
+        for (LokalisoituTeksti t : teksti) {
+            map.put(t.getKieli(), t.getTeksti());
+        }
+        return map;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.teksti);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof TekstiPalanen) {
+            final TekstiPalanen other = (TekstiPalanen) obj;
+            return Objects.equals(this.teksti, other.teksti);
+        }
+        return false;
+    }
+
+    public static TekstiPalanen of(Map<Kieli, String> tekstit) {
+        HashSet<LokalisoituTeksti> tmp = new HashSet<>(tekstit.size());
+        for (Map.Entry<Kieli, String> e : tekstit.entrySet()) {
+            if (e.getValue() != null && !e.getValue().isEmpty()) {
+                tmp.add(new LokalisoituTeksti(e.getKey(), e.getValue()));
+            }
+        }
+        if ( tmp.isEmpty() ) {
+            return null;
+        }
+        return new TekstiPalanen(tmp);
     }
 
 }

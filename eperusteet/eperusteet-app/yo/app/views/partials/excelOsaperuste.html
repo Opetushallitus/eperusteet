@@ -1,0 +1,75 @@
+<div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
+  <h3>{{ 'tutkinnonosat' | kaanna }} ({{ osatutkinnot.length }}kpl)</h3>
+  <table class="table">
+    <tr>
+      <th translate>tila</th>
+      <th translate>koodi</th>
+      <th translate>nimi</th>
+      <th></th>
+    </tr>
+    <tr ng-repeat="ot in osatutkinnot" ng-show="ot.$ladattu !== 0">
+      <td class="glyphtila">
+        <span ng-show="ot.$ladattu === 1">
+          <span class="glyphicon glyphicon-remove"></span>
+        </span>
+        <span ng-hide="ot.$ladattu === 1" class="glyphicon glyphicon-minus"></span>
+      </td>
+      <td class="osatutkintoid">
+        <div class="input-group input-group-sm">
+          <input class="form-control osatutkintoid" type="text" ng-model="ot.koodiUri" />
+          <span class="input-group-btn">
+            <button ng-click="liitaKoodiOT(ot)" class="btn btn-default btn-sm">Hae</button>
+          </span>
+        </div>
+      </td>
+      <td>
+        {{ ot.nimi.fi }}
+        <br>
+        <div ng-show="ot.$syy.length > 0" class="alert alert-danger">
+          <div ng-repeat="syy in ot.$syy">
+            {{ syy | kaanna }}
+          </div>
+        </div>
+      </td>
+      <td class="text-right">
+        <div class="btn-group">
+          <button type="button" class="btn btn-default btn-xs" ng-click="poistaOsatutkinto(ot)">
+            <span class="glyphicon glyphicon-remove"></span>
+          </button>
+        </div>
+      </td>
+    </tr>
+    <tr ng-repeat="ot in osatutkinnot" ng-show="ot.$ladattu === 0" class="success">
+      <td class="glyphtila">
+        <span class="glyphicon glyphicon-ok"></span>
+      </td>
+      <td class="osatutkintoid">{{ ot.koodiUri }}</td>
+      <td>
+        <a target="_blank" ui-sref="muokkaus.vanha({ perusteenOsanId: ot.id, perusteenOsanTyyppi: 'tutkinnonosa' })">{{ ot.nimi.fi }}</a>
+      </td>
+      <td class="text-right"></td>
+    </tr>
+  </table>
+</div>
+
+<div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
+  <button ng-click="tallennaOsatutkinnot()" class="btn btn-success">
+    <span class="glyphicon glyphicon-cloud-upload"></span>
+    Tallenna
+  </button>
+</div>
+
+<!-- Tallennusvirheet -->
+<div class="alert alert-danger" ng-show="uploadErrors.length > 0">
+  {{ 'tutkinnonosa-save-fail' | kaanna }}
+  <table class="table">
+    <tr>
+      <th translate>tutkinnonosa</th>
+      <th translate>syy</th>
+    </tr>
+    <tr ng-repeat="error in uploadErrors" class="danger">
+      <td>{{ error.name.fi }}</td>
+      <td>{{ error.message }}</td>
+    </tr>
+  </table>
+</div>

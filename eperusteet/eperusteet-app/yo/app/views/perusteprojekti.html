@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+
+This program is free software: Licensed under the EUPL, Version 1.1 or - as
+soon as they will be approved by the European Commission - subsequent versions
+of the EUPL (the "Licence");
+
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+European Union Public Licence for more details.
+-->
+<div class="project-header">
+    <div class="row">
+        <div class="project-otsikkotiedot">
+            <statusbadge status="projekti.tila" editable="canChangePerusteprojektiStatus()"></statusbadge>
+            <h2>{{ peruste.nimi || projekti.nimi || 'perusteprojekti-nimi-placeholder' | kaanna }}</h2>
+            {{'projekti-header-koulutustyyppi'| kaanna}}: {{peruste.tutkintokoodi|| 'perusteprojekti-koulutustyyppi-placeholder' | kaanna}}<br>
+            {{'projekti-header-koulutusala'| kaanna}}: {{koulutusalaNimi(peruste.koulutukset[0].koulutusalakoodi).nimi || 'perusteprojekti-koulutusala-placeholder' | kaanna}}<br>
+            {{'projekti-header-paatosPvm'| kaanna}}: {{projekti.paatosPvm| date:'dd.MM.yyyy'}}
+            <!--p>voimassaoloaika kumoamistiedot siirtymäajat</p-->
+        </div>
+        <div class="headernavi">
+          <ul>
+            <li>
+              <a ui-sref="perusteprojekti.editoi.tiedot({ perusteProjektiId: projekti.id })" ui-sref-active="headernavi-active">
+                <span class="glyphicon glyphicon-info-sign"></span>
+                {{'projektin-tiedot' | translate}}
+              </a>
+            </li>
+            <li>
+              <a ui-sref="perusteprojekti.editoi.peruste({ perusteProjektiId: projekti.id })" ui-sref-active="headernavi-active">
+                <span class="glyphicon glyphicon-list-alt"></span>
+                {{'projekti-peruste' | translate}}
+              </a>
+            </li>
+            <li>
+              <a ui-sref="perusteprojekti.editoi.projektiryhma({perusteProjektiId: projekti.id})" ui-sref-active="headernavi-active">
+                <span class="glyphicon glyphicon-user"></span>
+                {{'projekti-projektiryhmä' | translate}}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+    </div>
+</div>
+<hr class="divider">
+<div class="sivunavi-wrapper row">
+    <sivunavigaatio></sivunavigaatio>
+    <div class="sivunavi-sisalto" ui-view></div>
+</div>

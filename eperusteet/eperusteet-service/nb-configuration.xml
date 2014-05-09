@@ -8,14 +8,11 @@
     -->
     <spring-data xmlns="http://www.netbeans.org/ns/spring-data/1">
         <config-files>
-            <config-file>src/main/webapp/WEB-INF/applicationContext.xml</config-file>
-            <config-file>src/main/webapp/WEB-INF/dispatcher-servlet.xml</config-file>
+            <config-file>src/main/resources/spring/application-context.xml</config-file>
+            <config-file>src/main/resources/spring/dispatcher-servlet.xml</config-file>
         </config-files>
         <config-file-groups>
-            <config-file-group name="Default Group">
-                <config-file>src/main/webapp/WEB-INF/applicationContext.xml</config-file>
-                <config-file>src/main/webapp/WEB-INF/dispatcher-servlet.xml</config-file>
-            </config-file-group>
+            <config-file-group name="Default Group"/>
         </config-file-groups>
     </spring-data>
     <properties xmlns="http://www.netbeans.org/ns/maven-properties-data/1">
@@ -32,5 +29,11 @@
         <netbeans.hint.licensePath>${project.basedir}/../nb-licenseheader.txt</netbeans.hint.licensePath>
         <netbeans.hint.jdkPlatform>JDK_1.7</netbeans.hint.jdkPlatform>
         <org-netbeans-modules-web-clientproject-api.js_2e_libs_2e_folder>js/libs</org-netbeans-modules-web-clientproject-api.js_2e_libs_2e_folder>
+        <org-netbeans-modules-css-prep.sass_2e_compiler_2e_options/>
+        <org-netbeans-modules-css-prep.less_2e_mappings>/less:/css</org-netbeans-modules-css-prep.less_2e_mappings>
+        <org-netbeans-modules-css-prep.less_2e_enabled>false</org-netbeans-modules-css-prep.less_2e_enabled>
+        <org-netbeans-modules-css-prep.sass_2e_mappings>/scss:/css</org-netbeans-modules-css-prep.sass_2e_mappings>
+        <org-netbeans-modules-css-prep.sass_2e_enabled>false</org-netbeans-modules-css-prep.sass_2e_enabled>
+        <org-netbeans-modules-css-prep.less_2e_compiler_2e_options/>
     </properties>
 </project-shared-configuration>

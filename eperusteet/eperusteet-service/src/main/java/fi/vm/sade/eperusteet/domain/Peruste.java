@@ -1,12 +1,26 @@
 /*
- * Copyright Gofore Oy. 
- * http://www.gofore.com/ 
+ * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+ * 
+ * This program is free software: Licensed under the EUPL, Version 1.1 or - as
+ * soon as they will be approved by the European Commission - subsequent versions
+ * of the EUPL (the "Licence");
+ * 
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * European Union Public Licence for more details.
  */
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+import fi.vm.sade.eperusteet.dto.EntityReference;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,10 +31,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.MapKey;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
  *
@@ -28,85 +46,68 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "peruste")
-public class Peruste implements Serializable {
+@Audited
+public class Peruste implements Serializable, ReferenceableEntity {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
+    @Setter
     private Long id;
+    
+    @ValidHtml(whitelist = WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen nimi;
+    
+    @Getter
+    @Setter
     private String tutkintokoodi;
-    
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "koulutusala_id")
-    private Koulutusala koulutusala;
-    
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "peruste_opintoala", 
-            joinColumns = @JoinColumn(name = "peruste_id"), 
-            inverseJoinColumns = @JoinColumn(name = "opintoala_id"))
-    private List<Opintoala> opintoalat;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "peruste_koulutus",
+            joinColumns = @JoinColumn(name = "peruste_id"),
+            inverseJoinColumns = @JoinColumn(name = "koulutus_id"))
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private Set<Koulutus> koulutukset;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Getter
+    @Setter
     private Date paivays;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private PerusteenOsaViite rakenne;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Getter
+    @Setter
+    private Date siirtyma;
+    
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @MapKey(name = "suoritustapakoodi")
+    @JoinTable(name = "peruste_suoritustapa",
+            joinColumns = @JoinColumn(name = "peruste_id"),
+            inverseJoinColumns = @JoinColumn(name = "suoritustapa_id"))
+    @Getter
+    @Setter
+    private Set<Suoritustapa> suoritustavat;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public TekstiPalanen getNimi() {
-        return nimi;
-    }
-
-    public void setNimi(TekstiPalanen nimi) {
-        this.nimi = nimi;
-    }
-
-    public String getTutkintokoodi() {
-        return tutkintokoodi;
-    }
-
-    public void setTutkintokoodi(String tutkintokoodi) {
-        this.tutkintokoodi = tutkintokoodi;
-    }
-
-    public Koulutusala getKoulutusala() {
-        return koulutusala;
-    }
-
-    public void setKoulutusala(Koulutusala koulutusala) {
-        this.koulutusala = koulutusala;
-    }
-
-    public List<Opintoala> getOpintoalat() {
-        return opintoalat;
-    }
-
-    public void setOpintoalat(List<Opintoala> opintoalat) {
-        this.opintoalat = opintoalat;
+    public Suoritustapa getSuoritustapa(Suoritustapakoodi koodi) {
+        for ( Suoritustapa s : suoritustavat ) {
+            if ( s.getSuoritustapakoodi() == koodi) {
+                return s;
+            }
+        }
+        throw new IllegalArgumentException("Perusteella ei ole pyydettyä suoritustapaa");
     }
     
-    public Date getPaivays() {
-        return paivays;
-    }
-
-    public void setPaivays(Date paivays) {
-        this.paivays = paivays;
-    }
-
-    public PerusteenOsaViite getRakenne() {
-        return rakenne;
-    }
-
-    public void setRakenne(PerusteenOsaViite juuriViite) {
-        this.rakenne = juuriViite;
+    @Override
+    public EntityReference getReference() {
+        return new EntityReference(id);
     }
 
 }

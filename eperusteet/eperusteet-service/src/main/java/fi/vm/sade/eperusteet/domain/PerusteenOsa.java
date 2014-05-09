@@ -13,15 +13,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.domain;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.io.Serializable;
-import java.util.Date;
+
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,9 +25,13 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.Table;
+
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 
 /**
  *
@@ -39,24 +39,21 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@JsonTypeInfo(include = JsonTypeInfo.As.PROPERTY, use = JsonTypeInfo.Id.NAME, property = "tyyppi")
-@JsonSubTypes({@JsonSubTypes.Type(TekstiKappale.class), @JsonSubTypes.Type(TutkinnonOsa.class)})
-public abstract class PerusteenOsa implements Serializable {
+@Audited
+@Table(name = "perusteenosa")
+public abstract class PerusteenOsa extends AbstractAuditedEntity implements Serializable, Mergeable<PerusteenOsa>,
+    ReferenceableEntity {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date luotu;
-
-    @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date muokattu;
-
+    @ValidHtml(whitelist = WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private TekstiPalanen otsikko;
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen nimi;
 
     public Long getId() {
         return id;
@@ -66,34 +63,20 @@ public abstract class PerusteenOsa implements Serializable {
         this.id = id;
     }
 
-    public Date getLuotu() {
-        return luotu;
+    public TekstiPalanen getNimi() {
+        return nimi;
     }
 
-    public void setLuotu(Date luotu) {
-        this.luotu = luotu;
+    public void setNimi(TekstiPalanen nimi) {
+        this.nimi = nimi;
     }
 
-    public Date getMuokattu() {
-        return muokattu;
-    }
-
-    public void setMuokattu(Date muokattu) {
-        this.muokattu = muokattu;
-    }
-
-    public TekstiPalanen getOtsikko() {
-        return otsikko;
-    }
-
-    public void setOtsikko(TekstiPalanen otsikko) {
-        this.otsikko = otsikko;
-    }
-    
-    @PrePersist
-    private void prePersist() {
-        luotu = new Date();
-        muokattu = luotu;
+    @Override
+    public void mergeState(PerusteenOsa updated) {
+        if (this.getClass().isAssignableFrom(updated.getClass()) && getId() == null || !getId().equals(updated.getId())) {
+            throw new IllegalArgumentException("Vain kahden saman entiteetin tilan voi yhdistää");
+        }
+        this.nimi = updated.getNimi();
     }
 
 }

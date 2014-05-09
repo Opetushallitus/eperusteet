@@ -13,14 +13,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.domain;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
  *
  * @author jhyoty
  */
 public enum Kieli {
+
     FI("fi"),
     SV("sv"),
     EN("en");
@@ -31,16 +33,20 @@ public enum Kieli {
         this.koodi = koodi;
     }
 
+
     @Override
     public String toString() {
         return koodi;
     }
 
+    @JsonCreator
     public static Kieli of(String koodi) {
-        for ( Kieli k : values() ) {
-            if ( k.koodi.equalsIgnoreCase(koodi) ) return k;
+        for (Kieli k : values()) {
+            if (k.koodi.equalsIgnoreCase(koodi)) {
+                return k;
+            }
         }
         throw new IllegalArgumentException(koodi + " ei ole kelvollinen kielikoodi");
     }
-    
+
 }

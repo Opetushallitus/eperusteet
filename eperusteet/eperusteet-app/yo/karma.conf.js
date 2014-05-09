@@ -11,20 +11,32 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'app/bower_components/jquery/jquery.js',
+      'app/bower_components/jquery/dist/jquery.js',
+      'app/bower_components/jquery-ui/ui/jquery.ui.core.js',
+      'app/bower_components/jquery-ui/ui/jquery.ui.widget.js',
+      'app/bower_components/jquery-ui/ui/jquery.ui.mouse.js',
+      'app/bower_components/jquery-ui/ui/jquery.ui.sortable.js',
       'app/bower_components/angular/angular.js',
       'app/bower_components/angular-route/angular-route.js',
       'app/bower_components/angular-sanitize/angular-sanitize.js',
       'app/bower_components/angular-resource/angular-resource.js',
+      'app/bower_components/angular-animate/angular-animate.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
       'app/bower_components/angular-translate/angular-translate.js',
       'app/bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
-      'app/components/ckeditor/ckeditor.js',
+      'app/bower_components/angular-ui-utils/ui-utils.js',
+      'app/bower_components/angular-ui-bootstrap-bower/ui-bootstrap.js',
+      'app/bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js',
+      'app/bower_components/angular-ui-utils/ui-utils.js',
+      'app/bower_components/angular-ui-sortable/sortable.js',
+      'app/bower_components/angular-ui-router/release/angular-ui-router.js',
+      'app/bower_components/ckeditor/ckeditor.js',
       'app/bower_components/lodash/dist/lodash.js',
       'app/scripts/*.js',
       'app/scripts/**/*.js',
       'test/mock/**/*.js',
-      'test/spec/**/*.js'
+      'test/spec/**/*.js',
+      'app/views/**/*.html'
     ],
 
     // list of files / patterns to exclude
@@ -52,6 +64,19 @@ module.exports = function(config) {
     // - IE (only Windows)
     browsers: ['PhantomJS'],
 
+    plugins: [
+      'karma-jasmine',
+      'karma-phantomjs-launcher',
+      'karma-ng-html2js-preprocessor'
+    ],
+
+    preprocessors: {
+      'app/**/*.html': ['ng-html2js']
+    },
+
+    ngHtml2JsPreprocessor: {
+      stripPrefix: 'app/'
+    },
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit

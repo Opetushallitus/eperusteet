@@ -1,83 +1,184 @@
 'use strict';
-/*global CKEDITOR,$*/
+/*global CKEDITOR,$,_*/
 
 angular.module('eperusteApp')
-  .directive('ckeditor', function() {
+  .run(function() {
     CKEDITOR.disableAutoInline = true;
-
+  })
+  .constant('editorLayouts', {
+    minimal:
+      [
+        { name: 'clipboard', items : [ 'Cut','Copy','-','Undo','Redo' ] },
+        { name: 'tools', items : [ 'About' ] }
+      ],
+    simplified:
+      [
+        { name: 'clipboard', items : [ 'Cut','Copy','Paste','-','Undo','Redo' ] },
+        { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
+        { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent'] },
+        { name: 'styles', items : [ 'Format' ] },
+        { name: 'tools', items : [ 'About' ] }
+      ],
+    normal:
+      [
+        { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+        { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
+        '/',
+        { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
+        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar' ] },
+        { name: 'styles', items : [ 'Format' ] },
+        { name: 'tools', items : [ 'About' ] }
+      ]
+  })
+  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts) {
     return {
+      priority: 10,
       restrict: 'A',
       require: 'ngModel',
+      scope: {
+        editorPlaceholder: '@?',
+        editMode: '@?editingEnabled'
+      },
       link: function(scope, element, attrs, ctrl) {
+        var placeholderText = null;
+
+        var editingEnabled = (scope.editMode || 'true') === 'true';
+
+        if(editingEnabled) {
+          element.addClass('edit-mode');
+        }
         element.attr('contenteditable', 'true');
 
-        console.log('CKEDIOR!!');
+        function getPlaceholder() {
+          if(scope.editorPlaceholder) {
+            return $filter('translate')(scope.editorPlaceholder);
+          } else {
+            return '';
+          }
+        }
+
         var editor = CKEDITOR.instances[attrs.id];
         if (editor) {
           console.log('editor exist');
           return;
         }
-        console.log('creating editor...');
+
+        var toolbarLayout;
+        if(!_.isEmpty(attrs.layout) && !_.isEmpty(editorLayouts[attrs.layout])) {
+          toolbarLayout = editorLayouts[attrs.layout];
+        } else {
+          if(element.is('div')) {
+            toolbarLayout = editorLayouts.normal;
+          } else {
+            toolbarLayout = editorLayouts.minimal;
+          }
+        }
 
         editor = CKEDITOR.inline(element[0], {
-          toolbar: 'Basic',
-          removePlugins: 'resize,elementspath',
+          toolbar: toolbarLayout,
+          removePlugins: 'resize,elementspath,scayt,wsc',
           extraPlugins: 'divarea,sharedspace',
           extraAllowedContent: '*[contenteditable]',
           language: 'fi',
           'entities_latin': false,
           sharedSpaces: {
             top: 'ck-toolbar-top'
+          },
+          readOnly: !editingEnabled
+        });
+
+        // poistetaan enterin käyttö, jos kyseessä on yhden rivin syöttö
+        if(!element.is('div')) {
+          editor.on('key', function(event) {
+            if(event.data.keyCode === 13) {
+              event.cancel();
+            }
+          });
+        }
+
+        $rootScope.$on('$translateChangeSuccess', function() {
+          placeholderText = getPlaceholder();
+          ctrl.$render();
+        });
+
+        scope.$on('enableEditing', function() {
+          editingEnabled = true;
+          editor.setReadOnly(!editingEnabled);
+          element.addClass('edit-mode');
+        });
+
+        scope.$on('disableEditing', function() {
+          editingEnabled = false;
+          editor.setReadOnly(!editingEnabled);
+          element.removeClass('edit-mode');
+        });
+
+        scope.$on('$destroy', function() {
+          if (editor) {
+            editor.destroy(false);
           }
         });
 
-        console.log('attaching events');
-
         editor.on('focus', function() {
           console.log('focus');
-          $('#toolbar').show();
-//          var h = $('#ck-toolbar-top').height();
-//          console.log(h);
-//          $('body').css('padding-top', h);
-          //element.attr('contenteditable','false');
+          if (editingEnabled) {
+            element.removeClass('has-placeholder');
+            $('#toolbar').show();
+            if(_.isEmpty(ctrl.$viewValue)) {
+              editor.setData('');
+            }
+          }
         });
 
-        editor.on('change', function() {
-          console.log('pasteState');
-        });
-
-        editor.on('instanceReady', function() {
-          console.log('ready');
+        var dataSavedOnNotification = false;
+        $rootScope.$on('notifyCKEditor', function() {
+          console.log('notifyCKEditor');
+          if(editor.checkDirty()) {
+            dataSavedOnNotification = true;
+            var data = editor.getData();
+            ctrl.$setViewValue(data);
+          }
+          $('#toolbar').hide();
         });
 
         editor.on('blur', function() {
           console.log('blur');
-          //element.attr('contenteditable','false');
+          if (dataSavedOnNotification) {
+            dataSavedOnNotification = false;
+            return;
+          }
           if (editor.checkDirty()) {
             var data = editor.getData();
             scope.$apply(function() {
               ctrl.$setViewValue(data);
               scope.$broadcast('edited');
             });
+            if(_.isEmpty(data)) {
+              element.addClass('has-placeholder');
+              editor.setData(placeholderText);
+            }
           }
           $('#toolbar').hide();
-          $('body').css('padding-top', 0);
         });
 
         // model -> view
 
         ctrl.$render = function() {
-          console.log('render');
-          console.log(editor);
+          //console.log('render: ' + ctrl.$viewValue);
           if (editor) {
-            editor.setData(ctrl.$viewValue);
+            if(angular.isUndefined(ctrl.$viewValue) || (angular.isString(ctrl.$viewValue) && _.isEmpty(ctrl.$viewValue) && placeholderText)) {
+              element.addClass('has-placeholder');
+              editor.setData(placeholderText);
+              editor.resetDirty();
+            } else {
+              element.removeClass('has-placeholder');
+              editor.setData(ctrl.$viewValue);
+            }
           }
         };
 
-        // load init value from DOM
+        placeholderText = getPlaceholder();
         ctrl.$render();
-        //element.click(ev);
-
       }
     };
   });

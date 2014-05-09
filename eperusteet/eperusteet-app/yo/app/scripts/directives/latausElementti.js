@@ -2,6 +2,7 @@
 
 angular.module('eperusteApp')
   .directive('latausElementti', function(palvelinhaunIlmoitusKanava) {
+
     return {
       //templateURL: 'views/partials/latausElementti.html',
       restrict: 'E',
@@ -9,7 +10,6 @@ angular.module('eperusteApp')
       link: function(scope, element) {
         // piilotetaan elementti aluksi
         element.hide();
-        element.text('Alustus...');
 
         var hakuAloitettuKäsittelijä = function() {
           // Haku aloitettu sanoma saatu, näytetään lataus elementti
@@ -19,7 +19,6 @@ angular.module('eperusteApp')
 
         var hakuLopetettuKäsittelijä = function() {
           // Haku lopetettu sanoma saatu, piilotetaan lataus elementti
-          element.text('Piilota...');
           element.hide();
         };
 

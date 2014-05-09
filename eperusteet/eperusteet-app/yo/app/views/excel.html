@@ -1,0 +1,133 @@
+<div>
+  <h2 translate>tuo-excel</h2>
+  <div class="panel panel-default">
+    <div class="clearfix"></div>
+    <form class="panel-body">
+      <div class="clearfix"></div>
+      <div class="form-group col-xs-12">
+        <label translate>tutkinnon-tyyppi</label>
+        <div class="clearfix"></div>
+        <div class="btn-group">
+          <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'ammattitutkinto'">{{ 'ammattitutkinto' | translate }}</button>
+          <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'erikoisammattitutkinto'">{{ 'erikoisammattitutkinto' | translate }}</button>
+          <button type="button" class="btn btn-default" ng-model="tutkinnonTyyppi" btn-radio="'perustutkinto'">{{ 'perustutkinto' | translate }}</button>
+        </div>
+      </div>
+      <div class="form-group col-xs-12">
+        <div class="clearfix"></div>
+        <label>{{ 'tiedosto' | translate }} (.xslx)</label>
+        <file-select id="fileselect-button" flabel="lataa" before-select="clearSelect" on-select="onFileSelect" on-progress="onProgress" read-type="binary"></file-select>
+      </div>
+    </form>
+  </div>
+
+  <!-- virheet -->
+  <div ng-show="errors.length > 0">
+    <div class="alert alert-danger">
+      Antamassasi tiedostossa oli virheitä, jotka estävät tiedoston lukemisen eteenpäin. Korjaa seuraavat virheet ja lähetä tiedosto uudestaan.
+    </div>
+    <h3>
+      Virheet
+    </h3>
+    <table class="table"> <tr>
+        <th>Solu</th>
+        <th>Odotettu arvo</th>
+        <th>Antamasi tiedoston arvo</th>
+      </tr>
+      <tr ng-repeat="error in errors" class="danger">
+        <td>{{ error.cell }}</td>
+        <td>{{ error.expected }}</td>
+        <td>{{ error.actual }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div ng-show="warnings.length > 0">
+    <div class="alert alert-warning">
+      Tiedostossa oli huomion arvoisia ongelmia, mutta voit halutessasi yrittää jatkaa.
+      <a href="" ng-click="naytaVirheet = !naytaVirheet">
+        <h3>Varoitukset
+          <span ng-show="!naytaVirheet" class="glyphicon glyphicon-chevron-down"></span>
+          <span ng-show="naytaVirheet" class="glyphicon glyphicon-chevron-up"></span>
+        </h3>
+      </a>
+    </div>
+
+    <div class="bg-warning" ng-show="naytaVirheet">
+      <table class="table">
+        <tr>
+          <th>Solu</th>
+          <th>Tutkinnon osa</th>
+          <th>Ongelma</th>
+        </tr>
+        <tr ng-repeat="warning in warnings" class="warning">
+          <td>{{ warning.cell }}</td>
+          <td>{{ warning.name }}</td>
+          <td>{{ warning.warning }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div ng-show="!lukeeTiedostoa && !alussa && errors.length === 0 && !peruste.$perusteTallennettu">
+    <form class="form-horizontal projekti-form" name="perusteprojektiForm" role="form" novalidate>
+      <div class="form-area">
+        <div ng-form="projektinPerusteForm">
+          <div class="form-group">
+            <label class="col-sm-3">{{ 'projektin-nimi-label' | kaanna }}<span>*</span></label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" ng-model="projekti.nimi" placeholder="{{ 'valitse-nimi' | kaanna }}"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3">{{ 'diaarinumero-label' | kaanna }}<span>*</span></label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" ng-model="projekti.diaarinumero" placeholder="{{'valitse-diaarinumero' | kaanna}}"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="koulutustyyppi" class="col-sm-3">{{'koulutustyyppi-label'| kaanna}}<span>*</span></label>
+            <div class="col-md-9">
+              <select id="koulutustyyppi" ng-model="projekti.koulutustyyppi" class="form-control" ng-required>
+                <option value="" disabled selected>{{ 'valitse-koulutustyyppi' | kaanna }}</option>
+                <option ng-repeat="koulutustyyppi in koulutustyypit" value="{{koulutustyyppi}}" ng-selected="projekti.koulutustyyppi === koulutustyyppi">{{koulutustyyppi | kaanna}}</option>
+              </select>
+            </div>
+          </div>
+          <!-- <div> -->
+          <!-- <koodisto-select valmis="perusteHaku" tyyppi="koulutus" filtteri="rajaaKoodit"></koodisto-select> -->
+          <!-- </div> -->
+          <!-- <div class="form-group"> -->
+          <!--   <label class="col-sm-3" translate>perusteen-nimi</label> -->
+          <!--   <div class="col-sm-9"> -->
+          <!--     <input type="text" class="form-control" value="{{ peruste.nimi | kaanna }}" placeholder="{{ 'valitse-peruste' | kaanna }}"/> -->
+          <!--   </div> -->
+          <!-- </div> -->
+          <!-- <div class="form-group"> -->
+          <!--   <label class="col-sm-3" translate>perusteen-koodi</label> -->
+          <!--   <div class="col-sm-9"> -->
+          <!--     <input type="text" class="form-control" ng-model="peruste.koodi" placeholder="{{'valitse-peruste' | kaanna}}"/> -->
+          <!--   </div> -->
+          <!-- </div> -->
+          <button ng-click="tallennaPerusteprojekti(projekti)" class="btn btn-primary">{{ 'luo-perusteprojekti-nappi' | kaanna }}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div ng-show="peruste.$perusteTallennettu">
+    <div class="alert alert-success">
+      {{ 'perusteprojekti' | kaanna }} <a href="" ui-sref="perusteprojekti.editoi.sisalto({ perusteProjektiId: haettuProjekti.id })"><b>{{ haettuProjekti.nimi | kaanna }}</b></a> {{ 'tallennettiin-onnistuneesti' | kaanna }}
+    </div>
+
+    <h2>{{ projekti.nimi | kaanna }} ({{ projekti.diaarinumero }})</h2>
+
+    <tabset justified="true">
+      <tab heading="{{ 'tekstikappaleet' | translate }}">
+        <div ng-include src="'views/partials/excelPeruste.html'"></div>
+      </tab>
+      <tab heading="{{ 'tutkinnonosat' | translate }}">
+        <div ng-include src="'views/partials/excelOsaperuste.html'"></div>
+      </tab>
+    </tabset>
+  </div>
+</div>

@@ -30,24 +30,30 @@ module.exports = function(grunt) {
   try {
     yeomanConfig.app = require('./bower.json').appPath || yeomanConfig.app;
   } catch (e) {
-    
+
   }
 
   grunt.initConfig({
     yeoman: yeomanConfig,
     watch: {
-      styles: {
-        files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
-        tasks: ['copy:styles', 'autoprefixer']
+      css: {
+        files: ['<%= yeoman.app %>/styles/{,*/}*.scss'],
+        tasks: ['sass', 'copy:fonts', 'autoprefixer'],
+      },
+      test: {
+        files: ['<%= yeoman.app %>/**/*.{js,html}', 'test/**/*.js'],
+        tasks: ['karma:unit', 'jshint']
       },
       livereload: {
         options: {
-          livereload: LIVERELOAD_PORT
+          livereload: LIVERELOAD_PORT,
+          open: false
         },
         files: [
-          '<%= yeoman.app %>/{,*/}*.html',
-          '.tmp/styles/{,*/}*.css',
-          '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
+          '<%= yeoman.app %>/**/*.{html,js}',
+          '!<%= yeoman.app %>/bower_components/**',
+          '.tmp/styles/**/*.css',
+          '{.tmp,<%= yeoman.app %>}/scripts/**/*.js',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
       }
@@ -66,8 +72,7 @@ module.exports = function(grunt) {
     connect: {
       options: {
         port: 9000,
-        // Change this to '0.0.0.0' to access the server from outside.
-        hostname: 'localhost'
+        hostname: '0.0.0.0'
       },
       proxies: [{
         context: '/eperusteet-service',
@@ -117,11 +122,11 @@ module.exports = function(grunt) {
         }
       }
     },
-    open: {
-      server: {
-        url: 'http://localhost:<%= connect.options.port %>'
-      }
-    },
+    // open: {
+    //   server: {
+    //     url: 'http://localhost:<%= connect.options.port %>'
+    //   }
+    // },
     clean: {
       dist: {
         files: [{
@@ -223,7 +228,7 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: '<%= yeoman.app %>',
-          src: ['*.html', 'views/*.html', 'views/partials/*.html'],
+          src: ['*.html', 'views/**/*.html'],
           dest: '<%= yeoman.dist %>'
         }]
       }
@@ -247,8 +252,15 @@ module.exports = function(grunt) {
           cwd: '<%= yeoman.app %>/components',
           dest: '<%= yeoman.dist %>/components',
           src: [
-            'ckeditor/**',
             'bootstrap/**'
+          ]
+        }, {
+          expand: true,
+          cwd: '<%= yeoman.app %>/bower_components',
+          dest: '<%= yeoman.dist %>/bower_components',
+          src: [
+            'ckeditor/**',
+            '!ckeditor/samples/**'
           ]
         }, {
           expand: true,
@@ -264,24 +276,29 @@ module.exports = function(grunt) {
           src: [
             'generated/*'
           ]
+        }, {
+          expand: true,
+          cwd: '<%= yeoman.app %>/components/bootstrap-sass/fonts/bootstrap',
+          dest: '<%= yeoman.dist %>/styles/fonts',
+          src: '*.{eot,svg,ttf,woff}'
         }]
       },
-      styles: {
+      fonts: {
         expand: true,
-        cwd: '<%= yeoman.app %>/styles',
-        dest: '.tmp/styles/',
-        src: '{,*/}*.css'
+        cwd: '<%= yeoman.app %>/components/bootstrap-sass/fonts/bootstrap',
+        dest: '.tmp/styles/fonts/',
+        src: '*.{eot,svg,ttf,woff}'
       }
     },
     concurrent: {
       server: [
-        'copy:styles'
+        'sass'
       ],
       test: [
-        'copy:styles'
+        'sass'
       ],
       dist: [
-        'copy:styles',
+        'sass',
         'imagemin',
         'svgmin',
         'htmlmin'
@@ -316,21 +333,28 @@ module.exports = function(grunt) {
           ]
         }
       }
+    },
+    sass: {
+      dist: {
+        files: {
+          '.tmp/styles/eperusteet.css': '<%= yeoman.app %>/styles/eperusteet.scss'
+        }
+      }
     }
   });
 
   grunt.registerTask('server', function(target) {
     if (target === 'dist') {
-      return grunt.task.run(['build', 'open', 'connect:dist:keepalive']);
+      return grunt.task.run(['build', 'connect:dist:keepalive']);
     }
 
     grunt.task.run([
       'clean:server',
       'concurrent:server',
+      'copy:fonts',
       'autoprefixer',
       'configureProxies',
       'connect:livereload',
-      'open',
       'watch'
     ]);
   });

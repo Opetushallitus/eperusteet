@@ -15,10 +15,9 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import java.io.Serializable;
+import fi.vm.sade.eperusteet.dto.EntityReference;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -28,61 +27,46 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
+import javax.persistence.Table;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.envers.Audited;
 
 /**
- * Perusteen rakenneosanen. Muodostaa puun jonka solmut osoittavat perusteeseen kuuluviin perusteen osiin
- * määritellyssä järjestyksessä ja hierarkiassa.
+ *
  * @author jhyoty
+ *
  */
 @Entity
-public class PerusteenOsaViite implements Serializable {
+@Audited
+@Table(name = "perusteenosaviite")
+public class PerusteenOsaViite implements ReferenceableEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Long id;
+    @Getter
+    @Setter
+    private Long id;
 
     @ManyToOne
-    @JsonBackReference
-    protected PerusteenOsaViite vanhempi;
+    @Getter
+    @Setter
+    private PerusteenOsaViite vanhempi;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @Getter
+    @Setter
     private PerusteenOsa perusteenOsa;
 
     @OneToMany(mappedBy = "vanhempi", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @OrderColumn
-    @JsonManagedReference
+    @Getter
+    @Setter
     private List<PerusteenOsaViite> lapset;
     
-    public Long getId() {
-        return id;
+    @Override
+    public EntityReference getReference() {
+        return new EntityReference(id);
     }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public PerusteenOsaViite getVanhempi() {
-        return vanhempi;
-    }
-
-    public void setVanhempi(PerusteenOsaViite vanhempi) {
-        this.vanhempi = vanhempi;
-    }
-
-    public List<PerusteenOsaViite> getLapset() {
-        return lapset;
-    }
-
-    public void setLapset(List<PerusteenOsaViite> viiteet) {
-        this.lapset = viiteet;
-    }
-
-    public PerusteenOsa getPerusteenOsa() {
-        return perusteenOsa;
-    }
-
-    public void setPerusteenOsa(PerusteenOsa perusteenOsa) {
-        this.perusteenOsa = perusteenOsa;
-    }
-    
 }

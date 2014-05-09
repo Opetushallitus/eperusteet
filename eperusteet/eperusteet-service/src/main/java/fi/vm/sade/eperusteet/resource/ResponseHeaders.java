@@ -24,7 +24,7 @@ import org.springframework.http.HttpHeaders;
  *
  * @author jhyoty
  */
-public class ResponseHeaders {
+public final class ResponseHeaders {
 
     private ResponseHeaders() {
         //apuluokka

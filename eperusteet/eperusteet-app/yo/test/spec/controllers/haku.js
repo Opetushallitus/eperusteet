@@ -6,10 +6,34 @@ describe('Controller: HakuCtrl', function () {
   beforeEach(module('eperusteApp'));
 
   var SearchCtrl,
-    scope;
+    scope,
+    koulutusalaService;
+
+  // Mock koulutusalaService
+  beforeEach(module(function($provide) {
+    koulutusalaService = {
+      haeKoulutusalat: function() {
+        return [];
+      },
+      haeKoulutusalaNimi: function(koodi) {
+        return {};
+      }
+    };
+    $provide.value('koulutusalaService', koulutusalaService);
+    var mockHaku = {
+      getHakuparametrit: function () {
+        return {koulutusala: ''};
+      },
+      setHakuparametrit: function () {
+        // no-op
+      }
+    };
+    $provide.value('Haku', mockHaku);
+  }));
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope) {
+
     scope = $rootScope.$new();
     SearchCtrl = $controller('HakuCtrl', {
       $scope: scope

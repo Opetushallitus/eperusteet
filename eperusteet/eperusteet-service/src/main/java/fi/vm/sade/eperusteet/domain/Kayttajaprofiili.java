@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,8 +26,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -40,41 +44,34 @@ public class Kayttajaprofiili implements Serializable {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
+    @Setter
     private Long id;
+    
+    @Getter
+    @Setter
+    private String oid;
 
-    @ManyToMany
     @OrderColumn(name = "suosikki_order")
-    @JoinTable(name = "kayttajaprofiili_peruste", 
+    @OneToMany(mappedBy = "kayttajaprofiili", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Getter
+    @Setter
+    private List<Suosikki> suosikit;
+    
+    @ManyToMany
+    @OrderColumn(name = "projekti_order")
+    @JoinTable(name = "kayttajaprofiili_perusteprojekti", 
             joinColumns = @JoinColumn(name = "kayttajaprofiili_id"), 
-            inverseJoinColumns = @JoinColumn(name = "peruste_id"))
-    private List<Peruste> suosikit;
+            inverseJoinColumns = @JoinColumn(name = "perusteprojekti_id"))
+    @Getter
+    @Setter
+    private List<Perusteprojekti> perusteprojektit;
 
     public Kayttajaprofiili() {
     }
 
     public Kayttajaprofiili(Long id) {
         this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public List<Peruste> getSuosikit() {
-        return suosikit;
-    }
-
-    public void setSuosikit(List<Peruste> suosikit) {
-        this.suosikit = suosikit;
-    }
-
-    @Override
-    public String toString() {
-        return "fi.vm.sade.eperusteet.domain.Kayttajaprofiili[ id=" + id + " ]";
     }
 
 }
