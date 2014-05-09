@@ -25,6 +25,7 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
@@ -94,6 +95,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     public void testSaveWithArviointi() {
         TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
         tutkinnonOsa.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "Nimi"));
+        tutkinnonOsa.setTila(Tila.LUONNOS);
         tutkinnonOsa.setArviointi(TestUtils.createArviointi(arviointiasteikko));
         tutkinnonOsa = (TutkinnonOsa) perusteenOsaRepository.saveAndFlush(tutkinnonOsa);
         List<PerusteenOsaDto> perusteenOsat = perusteenOsaService.getAll();
@@ -112,10 +114,12 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     public void testFindTutkinnonOsaByName() {
     	TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
     	tutkinnonOsa.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "Nimi"));
+        tutkinnonOsa.setTila(Tila.LUONNOS);
     	tutkinnonOsa = tutkinnonOsaRepository.saveAndFlush(tutkinnonOsa);
 
     	tutkinnonOsa = new TutkinnonOsa();
     	tutkinnonOsa.setNimi(TestUtils.tekstiPalanenOf(Kieli.SV, "Namnet"));
+        tutkinnonOsa.setTila(Tila.LUONNOS);
     	tutkinnonOsa = tutkinnonOsaRepository.saveAndFlush(tutkinnonOsa);
 
     	List<TutkinnonOsa> tutkinnonOsat = tutkinnonOsaRepository.findByNimiTekstiTekstiContainingIgnoreCase("nim");

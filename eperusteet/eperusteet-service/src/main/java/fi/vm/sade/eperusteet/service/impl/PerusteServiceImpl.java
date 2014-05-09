@@ -4,10 +4,12 @@ import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
@@ -30,8 +32,8 @@ import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
 import fi.vm.sade.eperusteet.service.PerusteService;
-import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.SuoritustapaService;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
@@ -44,8 +46,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,8 +104,6 @@ public class PerusteServiceImpl implements PerusteService {
     private EntityManager em;
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
-    @Autowired
-    private SuoritustapaRepository suoritustapaRepository;
     @Autowired
     private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
 
@@ -252,7 +252,9 @@ public class PerusteServiceImpl implements PerusteService {
         final Suoritustapa suoritustapa = getSuoritustapa(id, suoritustapakoodi);
         TutkinnonOsaViite viite = mapper.map(osa, TutkinnonOsaViite.class);
         if (viite.getTutkinnonOsa() == null) {
-            TutkinnonOsa tutkinnonOsa = perusteenOsaRepository.save(new TutkinnonOsa());
+            TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
+            tutkinnonOsa.setTila(Tila.LUONNOS);
+            tutkinnonOsa = perusteenOsaRepository.save(tutkinnonOsa);
             viite.setTutkinnonOsa(tutkinnonOsa);
         }
         viite.setSuoritustapa(suoritustapa);
@@ -308,6 +310,7 @@ public class PerusteServiceImpl implements PerusteService {
         PerusteenOsaViite uusiViite = new PerusteenOsaViite();
         if (viite == null) {
             TekstiKappale uusiKappale = new TekstiKappale();
+            uusiKappale.setTila(Tila.LUONNOS);
             em.persist(uusiKappale);
             uusiViite.setPerusteenOsa(uusiKappale);
         } else {
@@ -335,6 +338,7 @@ public class PerusteServiceImpl implements PerusteService {
         }
 
         TekstiKappale uusiKappale = new TekstiKappale();
+        uusiKappale.setTila(Tila.LUONNOS);
         em.persist(uusiKappale);
         uusiViite.setPerusteenOsa(uusiKappale);
         uusiViite.setVanhempi(viiteEntity);
@@ -343,7 +347,7 @@ public class PerusteServiceImpl implements PerusteService {
 
         return mapper.map(uusiViite, PerusteenSisaltoViiteDto.class);
     }
-
+    
     /**
      * Lämmittää tyhjään järjestelmään koodistosta löytyvät koulutukset.
      *
@@ -490,7 +494,7 @@ public class PerusteServiceImpl implements PerusteService {
         return peruste;
     }
 
-    
+        
     private enum IndexFunction implements Function<TutkinnonOsaViite, EntityReference> {
 
         INSTANCE;

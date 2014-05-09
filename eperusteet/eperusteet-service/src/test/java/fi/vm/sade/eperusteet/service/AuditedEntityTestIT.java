@@ -36,6 +36,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.ArvioinninKohdealueDto;
 import fi.vm.sade.eperusteet.dto.ArviointiDto;
@@ -69,6 +70,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         TekstiKappale teksti = new TekstiKappale();
         teksti.setNimi(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi")));
         teksti.setTeksti(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi")));
+        teksti.setTila(Tila.LUONNOS);
         teksti = perusteenOsaRepository.save(teksti);
 
         assertEquals(user1, teksti.getLuoja());
@@ -87,6 +89,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         teksti2.setId(teksti.getId());
         teksti2.setNimi(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi2")));
         teksti2.setTeksti(teksti.getTeksti());
+        teksti2.setTila(teksti.getTila());
 
         teksti2 = perusteenOsaRepository.save(teksti2);
         teksti2 = (TekstiKappale)perusteenOsaRepository.findOne(teksti.getId());
@@ -104,6 +107,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         TekstiKappale teksti = new TekstiKappale();
         teksti.setNimi(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi")));
         teksti.setTeksti(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Teksti")));
+        teksti.setTila(Tila.LUONNOS);
         teksti = perusteenOsaRepository.save(teksti);
 
         teksti.getNimi().getTeksti().put(Kieli.FI, "nimi, muokattu");
@@ -120,6 +124,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
     public void testTutkinnonOsaRevisions() {
     	TutkinnonOsaDto tutkinnonOsaDto = new TutkinnonOsaDto();
     	tutkinnonOsaDto.setNimi(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Nimi")));
+        tutkinnonOsaDto.setTila(Tila.LUONNOS);
     	tutkinnonOsaDto = perusteenOsaService.save(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
 
     	tutkinnonOsaDto.setArviointi(new ArviointiDto());

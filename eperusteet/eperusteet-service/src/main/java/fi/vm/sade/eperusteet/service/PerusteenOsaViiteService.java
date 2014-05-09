@@ -14,27 +14,17 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Tila;
-import java.util.Date;
-import javax.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  *
- * @author jhyoty
+ * @author harrik
  */
-@Getter
-@Setter
-//@JsonTypeInfo(include = JsonTypeInfo.As.PROPERTY, use = JsonTypeInfo.Id.NAME, property = "tyyppi")
-//@JsonSubTypes({@JsonSubTypes.Type(TekstiKappaleDto.class), @JsonSubTypes.Type(TutkinnonOsaDto.class)})
-public abstract class PerusteenOsaDto {
-    @NotNull
-    private Long id;
-    private Date luotu;
-    private Date muokattu;
-    private LokalisoituTekstiDto nimi;
-    private Tila tila;
+public interface PerusteenOsaViiteService {
+    
+    @PreAuthorize("isAuthenticated()")
+    void removeSisalto(Long id);
+    
 }
