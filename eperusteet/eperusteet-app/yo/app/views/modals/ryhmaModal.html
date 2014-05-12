@@ -37,10 +37,7 @@
 
 <div class="modal-footer">
   <div class="pull-left" ng-if="!luonti">
-    <button ng-show="!poistamassa" class="btn btn-danger" ng-click="poistamassa = true">{{ 'poista' | kaanna }}</button>
-    <div class="clearfix"></div>
-    <button ng-show="poistamassa" class="btn btn-danger" ng-click="poistamassa = false">{{ 'peruuta' | kaanna }}</button>
-    <button ng-show="poistamassa" class="btn btn-danger" ng-click="ok(null)">{{ 'poista' | kaanna }}</button>
+    <button class="btn btn-danger" ng-click="poista()"><span class="glyphicon glyphicon-remove"></span>{{ 'poista' | kaanna }}</button>
   </div>
   <button class="btn btn-primary" ng-click="ok(ryhma)">{{ 'tallenna' | kaanna }}</button>
   <button class="btn btn-danger" ng-click="peruuta()">{{ 'peru' | kaanna }}</button>

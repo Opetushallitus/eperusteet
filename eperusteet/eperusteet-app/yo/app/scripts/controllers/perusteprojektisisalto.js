@@ -84,32 +84,35 @@ angular.module('eperusteApp')
       PerusteProjektiService.setSuoritustapa(suoritustapakoodi);
       haeSisalto($scope.valittuSuoritustapa);
     };
-    
+
     $scope.setLargerSize = function (event) {
       event.currentTarget.className = $scope.poistoMouseOverLuokka;
     };
-    
+
     $scope.setSmallerSize = function (event) {
       event.currentTarget.className = $scope.poistoMouseLeaveLuokka;
     };
-    
+
     $scope.poistaSisalto = function(viiteId, otsikko, event) {
       //TODO: Varmistusdialogi vahinkopoistamisen estämiseksi.
       event.stopPropagation();
       poistettavaViiteId = viiteId;
       otsikko = Kaanna.kaanna(otsikko);
-      
-      Varmistusdialogi.dialogi(poistaminenVarmistettu, function () {}, 'poista-tekstikappale-otsikko', $translate('poista-tekstikappale-teksti', {otsikko: otsikko}))();
-      
+
+      Varmistusdialogi.dialogi({
+        successCb: poistaminenVarmistettu,
+        otsikko: 'poista-tekstikappale-otsikko',
+        teksti: $translate('poista-tekstikappale-teksti', {otsikko: otsikko})
+      })();
     };
-    
+
     var poistaminenVarmistettu = function() {
       PerusteenOsaViitteet.delete({viiteId: poistettavaViiteId}, {}, function() {
         haeSisalto(PerusteProjektiService.getSuoritustapa());
       }, function(virhe) {
         console.log('Sisällön poistovirhe', virhe);
       });
-      
+
       poistettavaViiteId = null;
     };
 

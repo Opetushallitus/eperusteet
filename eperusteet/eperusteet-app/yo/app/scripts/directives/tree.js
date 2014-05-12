@@ -386,7 +386,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .controller('MuodostumisryhmaModalCtrl', function($scope, $modalInstance, ryhma, vanhempi) {
+  .controller('MuodostumisryhmaModalCtrl', function($scope, $modalInstance, ryhma, vanhempi, Varmistusdialogi) {
     $scope.vanhempi = vanhempi;
 
     var msl = ryhma && ryhma.muodostumisSaanto && ryhma.muodostumisSaanto.laajuus ? ryhma.muodostumisSaanto.laajuus : null;
@@ -417,6 +417,14 @@ angular.module('eperusteApp')
       }
       console.log(uusiryhma);
       $modalInstance.close(uusiryhma);
+    };
+    $scope.poista = function () {
+      Varmistusdialogi.dialogi({
+        otsikko: 'poistetaanko-ryhma',
+        successCb: function () {
+          $scope.ok(null);
+        }
+      })();
     };
     $scope.peruuta = function() { $modalInstance.dismiss(); };
   });
