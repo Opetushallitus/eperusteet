@@ -31,7 +31,7 @@
         </tr>
         <tr ng-repeat="osa in perusteenosat">
           <td class="has-checkbox"><input ng-model="osa.$valitse" type="checkbox" class="form-control"></td>
-          <td><a href="" ng-click="valitse(osa)">{{ osa.nimi | kaanna }}</a></td>
+          <td>{{ osa.nimi | kaanna }}</td>
           <td>{{ osa.laajuus }}</td>
         </tr>
       </table>

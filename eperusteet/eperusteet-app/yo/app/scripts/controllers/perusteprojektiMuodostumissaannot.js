@@ -26,7 +26,6 @@ angular.module('eperusteApp')
     };
 
     function haeRakenne() {
-      $scope.rakenne.$resolved = false;
       PerusteenRakenne.hae($stateParams.perusteProjektiId, function(res) {
         $scope.rakenne = res;
         $scope.rakenne.$resolved = true;
@@ -43,8 +42,8 @@ angular.module('eperusteApp')
         rakenne,
         rakenne.$peruste.id,
         $scope.rakenne.$suoritustapa,
-        function() { Notifikaatiot.onnistui('tallentaminen-onnistui', ''); },
-        function(virhe) { Notifikaatiot.varoitus('tallentaminen-epäonnistui', virhe); }
+        function() { Notifikaatiot.onnistui('tallennus-onnistui', ''); },
+        function(virhe) { Notifikaatiot.varoitus('tallennus-epäonnistui', virhe); }
       );
     }
 
@@ -57,6 +56,7 @@ angular.module('eperusteApp')
         $scope.editoi = false;
       },
       cancel: function() {
+        haeRakenne();
         $scope.editoi = false;
       }
     });

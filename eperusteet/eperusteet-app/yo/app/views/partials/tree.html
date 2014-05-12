@@ -18,7 +18,6 @@
         <div ng-if="muokkaus" class="skratchpadlist col-lg-4 col-md-4 col-xs-12 pull-right">
           <div class="skratchpad-header">
             <div><a href="" ng-click="ryhmaModaali()"><span class="glyphicon glyphicon-plus-sign"></span> Uusi ryhmä</a></div>
-            <div><a href="" ng-click="tuoTutkinnonosa()"><span class="glyphicon glyphicon-plus-sign"></span> Tuo tutkinnon osa</a></div>
           </div>
           <tabset justified="true">
             <tab heading="Leikelauta">
@@ -58,8 +57,8 @@
       </div>
       <div class="tutkinnonosa-laatikko" ng-repeat="(k, v) in rakenne.tutkinnonOsat | mapFilter:rajaaTutkinnonOsia">
         <div class="otsikko">
-          <div ng-show="muokkaus" class="muokkaus">
-            <a href="" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })">Muokkaa <span class="glyphicon glyphicon-chevron-right"></span></a>
+          <div ng-hide="muokkaus" class="muokkaus">
+            <a href="" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })">{{ 'näytä' | kaanna }} <span class="glyphicon glyphicon-chevron-right"></span></a>
           </div>
           <h3>
             <a href="" ng-click="v.$avattu = !v.$avattu">
@@ -102,6 +101,12 @@
         <a href="" ng-click="lisaaTutkinnonOsa()">
           <span class="glyphicon glyphicon-plus"></span>
           {{ 'lisää' | kaanna }}
+        </a>
+      </h3>
+      <h3 ng-show="muokkaus">
+        <a href="" ng-click="tuoTutkinnonosa()">
+          <span class="glyphicon glyphicon-cloud-download"></span>
+          {{ 'tuo-tutkinnonosa' | kaanna }}
         </a>
       </h3>
     </tab>

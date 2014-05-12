@@ -2,6 +2,7 @@
     "edellinen-sivu": "<< Edellinen",
     "edellinen": "Edellinen",
     "kieli": "Kieli",
+    "näytä": "Näytä",
     "koodi": "Koodi",
     "lisää": "Lisää",
     "nimi": "Nimi",
@@ -16,6 +17,8 @@
     "suosikki": "Lisää suosikiksi",
     "takaisin": "Takaisin",
     "tallennettu": "Tallennettu",
+    "tallennus-epäonnistui": "Tallennus epäonnistui",
+    "tallennus-onnistui": "Tallennus onnistui",
     "tiedosto": "Tiedosto",
     "tila": "Tila",
     "tyhjä": "Tyhjä",
@@ -37,6 +40,7 @@
     "uusi-projekti": "Uusi projekti",
 
     "uusi-tutkinnonosa": "<Uusi tutkinnon osa>",
+    "tuo-tutkinnonosa": "Tuo tutkinnon osa",
 
     "haku-otsikko": "Perusteen haku",
     "haku-koulutusala": "Koulutusala",

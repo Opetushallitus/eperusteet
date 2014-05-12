@@ -14,7 +14,9 @@ angular.module('eperusteApp')
     }
 
     function uusiViesti(tyyppi, otsikko, viesti) {
-      viesti = viesti || '';
+      if (_.isObject(viesti) && viesti.data && viesti.data.syy) { viesti = viesti.data.syy; }
+      else if (!viesti) { viesti = ''; }
+
       viestit.push({
         otsikko: otsikko,
         viesti: viesti,

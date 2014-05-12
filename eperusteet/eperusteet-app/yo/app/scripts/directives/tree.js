@@ -352,31 +352,29 @@ angular.module('eperusteApp')
           scope.suljettuViimeksi = !scope.suljettuViimeksi;
         };
 
-        scope.tuoTutkinnonosa = TutkinnonOsanTuonti.modaali('ops', function(osat) {
-          _.forEach(osat, function(osa) { scope.skratchpad.push(osa); });
+        scope.tuoTutkinnonosa = TutkinnonOsanTuonti.modaali(scope.rakenne.$suoritustapa, function(osat) {
+          _.forEach(osat, function(osa) {
+            scope.lisaaTutkinnonOsa(osa);
+          });
           paivitaUniikit();
         });
 
         Editointikontrollit.registerAdditionalSaveCallback(function() { scope.lisataanUuttaOsaa = false; });
 
-        scope.lisaaTutkinnonOsa = function() {
+        scope.lisaaTutkinnonOsa = function(osa) {
+          osa = { _tutkinnonOsa: osa._tutkinnonOsa } || {};
           PerusteTutkinnonosa.save({
             perusteenId: scope.rakenne.$peruste.id,
             suoritustapa: scope.rakenne.$suoritustapa
-          }, {
-          }, function(res) {
+          }, osa, function(res) {
             scope.rakenne.tutkinnonOsat[res._tutkinnonOsa] = res;
           }, function(err) {
-            if (err.data && err.data.syy) {
-              Notifikaatiot.fataali('tallennus-epäonnistui', err.data.syy);
-            }
+            Notifikaatiot.fataali('tallennus-epäonnistui', err);
           });
-          // $state.go('perusteprojekti.editoi.perusteenosa', { perusteenOsanTyyppi: 'tutkinnonosa', perusteenOsaId: 'uusi' });
         };
 
         scope.poistaTutkinnonOsa = function(v) {
           PerusteenRakenne.poistaTutkinnonOsaViite(v, scope.rakenne.$peruste.id, scope.rakenne.$suoritustapa, function() {
-            console.log(v);
             delete scope.rakenne.tutkinnonOsat[v._tutkinnonOsa];
           });
         };
