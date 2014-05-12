@@ -132,14 +132,18 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 	right: 10px;
 }
 
-.main-content span.glyphicon-remove.larger {
-    font-size: 1.6em;
+
+.main-content span.glyphicon-remove {
     color: red;
+}
+.main-content span.glyphicon-remove.larger {
+    font-size: 21px;
+    padding: 2px;
 }
 
 .main-content span.glyphicon-remove.smaller {
-    font-size: 1.2em;
-    color: red;
+    font-size: 16px;
+    padding: 5px;
 }
 
 .form-area {
