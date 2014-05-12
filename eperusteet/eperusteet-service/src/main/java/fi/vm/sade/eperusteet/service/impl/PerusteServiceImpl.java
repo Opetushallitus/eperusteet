@@ -4,7 +4,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
@@ -28,7 +27,6 @@ import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
-import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -225,7 +223,7 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, RakenneModuuliDto rakenne) {
         Suoritustapa suoritustapa = getSuoritustapa(perusteId, suoritustapakoodi);
-
+        
         final Map<EntityReference, TutkinnonOsaViite> uniqueIndex = Maps.uniqueIndex(suoritustapa.getTutkinnonOsat(), IndexFunction.INSTANCE);
         rakenne.visit(new VisitorImpl(uniqueIndex));
         RakenneModuuli moduuli = mapper.map(rakenne, RakenneModuuli.class);
@@ -323,7 +321,7 @@ public class PerusteServiceImpl implements PerusteService {
         final PerusteenOsaViite sisalto = suoritustapa.getSisalto();
         uusiViite.setVanhempi(sisalto);
         sisalto.getLapset().add(uusiViite);
-        em.persist(uusiViite);        
+        em.persist(uusiViite);
         return mapper.map(uusiViite, PerusteenSisaltoViiteDto.class);
     }
 

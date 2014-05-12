@@ -19,10 +19,10 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
+import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.service.SuoritustapaService;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +33,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class SuoritustapaServiceImpl implements SuoritustapaService {
     
-    @PersistenceContext
-    private EntityManager em;
+    @Autowired
+    private SuoritustapaRepository suoritustapaRepository;
+    @Autowired
+    private PerusteenOsaViiteRepository perusteenOsaViiteRepository;
 
     @Override
     @Transactional
@@ -43,12 +45,10 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
         
         suoritustapa.setSuoritustapakoodi(suoritustapakoodi);
         PerusteenOsaViite perusteenOsaViite = new PerusteenOsaViite();
-        TekstiKappale tekstiKappale = new TekstiKappale();
-        em.persist(tekstiKappale);
-        perusteenOsaViite.setPerusteenOsa(tekstiKappale);
-        em.persist(perusteenOsaViite);
+        perusteenOsaViite = perusteenOsaViiteRepository.save(perusteenOsaViite);
+
         suoritustapa.setSisalto(perusteenOsaViite);
-        em.persist(suoritustapa);
+        suoritustapa = suoritustapaRepository.save(suoritustapa);
         
         return suoritustapa;
     }

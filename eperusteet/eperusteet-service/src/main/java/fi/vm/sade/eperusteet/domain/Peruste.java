@@ -47,7 +47,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "peruste")
 @Audited
-public class Peruste implements Serializable, ReferenceableEntity {
+public class Peruste extends AbstractAuditedEntity implements Serializable, ReferenceableEntity {
 
     private static final long serialVersionUID = 1L;
 
