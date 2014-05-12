@@ -47,11 +47,21 @@ angular.module('eperusteApp')
       $rootScope.$broadcast('update:notifikaatiot');
     }
 
+    function serverCb(response) {
+      console.log(response);
+      if (response && response.status) {
+        uusiViesti(response.status >= 500 ? 3 : 2, 'virheellinen-palvelinkutsu', response);
+      } else {
+        uusiViesti(3, 'virheellinen-palvelinkutsu', 'odottamaton-virhe');
+      }
+    }
+
     return {
       normaali: _.partial(uusiViesti, 0),
       onnistui: _.partial(uusiViesti, 1),
       varoitus: _.partial(uusiViesti, 2),
       fataali: _.partial(uusiViesti, 3),
+      serverCb: serverCb,
       viestit: function() { return _.clone(viestit); },
       paivita: paivita,
       poista: poista
