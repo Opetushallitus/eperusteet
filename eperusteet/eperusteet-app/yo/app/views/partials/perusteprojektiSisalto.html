@@ -39,7 +39,7 @@ European Union Public Licence for more details.
                 </li>
                 <li class="list-element pointer" ng-repeat="sisalto in peruste.sisalto.lapset" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id})">
                     <h3>{{ sisalto.perusteenOsa.nimi || 'uusi-tutkinnon-osa' | kaanna}}</h3>
-                    <span ng-click="poistaSisalto(sisalto.id, $event)" class="glyphicon glyphicon-remove pull-right smaller" ng-mouseover="setLargerSize($event)" ng-mouseleave="setSmallerSize($event)"></span>
+                    <span ng-click="poistaSisalto(sisalto.id, sisalto.perusteenOsa.nimi || 'uusi-tutkinnon-osa' , $event)" class="glyphicon glyphicon-remove pull-right smaller" ng-mouseover="setLargerSize($event)" ng-mouseleave="setSmallerSize($event)"></span>
                 </li>
             </ul>
         </div>

@@ -210,6 +210,9 @@
     "projekti-header-koulutustyyppi": "[Koulutustyyppi]",
     
     "lisaa-tutkintokohtainen-osa": "[Lisää tutkintokohtainen osa]",
-    "uusi-tutkinnon-osa": "[<Uusi sisältö>]"
+    "uusi-tutkinnon-osa": "[<Uusi sisältö>]",
+    
+    "poista-tekstikappale-otsikko": "[Poista tekstikappale]",
+    "poista-tekstikappale-teksti": "[Tekstikappale \"{{otsikko}}\" poistetaan. Oletko varma?]"
 }
 

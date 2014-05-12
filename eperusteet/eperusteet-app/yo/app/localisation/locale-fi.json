@@ -287,5 +287,8 @@
     "luonnos": "Luonnos",
     "hyvaksytty": "Hyväksytty",
     "kaannos": "Käännös",
-    "kommentointi": "Kommentointi"
+    "kommentointi": "Kommentointi",
+    
+    "poista-tekstikappale-otsikko": "Poista tekstikappale",
+    "poista-tekstikappale-teksti": "Tekstikappale \"{{otsikko}}\" poistetaan. Oletko varma?"
 }
