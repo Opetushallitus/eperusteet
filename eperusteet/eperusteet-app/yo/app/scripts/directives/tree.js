@@ -318,7 +318,7 @@ angular.module('eperusteApp')
             controller: 'MuodostumisryhmaModalCtrl',
             resolve: {
               ryhma: function() { return ryhma; },
-              vanhempi: function() { return vanhempi; },
+              vanhempi: function() { return vanhempi; }
             }
           }).result.then(function(uusiryhma) {
             if (uusiryhma) {
@@ -366,9 +366,10 @@ angular.module('eperusteApp')
 
     $scope.ms = {
       laajuus: ryhma && ryhma.muodostumisSaanto && ryhma.muodostumisSaanto.laajuus,
-      koko: ryhma && ryhma.muodostumisSaanto && ryhma.muodostumisSaanto.koko,
+      koko: ryhma && ryhma.muodostumisSaanto && ryhma.muodostumisSaanto.koko
     };
 
+    $scope.luonti = !_.isObject(ryhma);
     $scope.ryhma = ryhma ? angular.copy(ryhma) : {};
     if (!$scope.ryhma.muodostumisSaanto) { $scope.ryhma.muodostumisSaanto = {}; }
     if (!$scope.ryhma.nimi) { $scope.ryhma.nimi = {}; }
@@ -377,7 +378,7 @@ angular.module('eperusteApp')
     $scope.ok = function(uusiryhma) {
       if (uusiryhma) {
         if (uusiryhma.osat === undefined) { uusiryhma.osat = []; }
-        if (!$scope.ms.laajus) { uusiryhma = _.omit(uusiryhma, 'muodostumisSaanto.laajuus'); }
+        if (!$scope.ms.laajuus) { uusiryhma = _.omit(uusiryhma, 'muodostumisSaanto.laajuus'); }
         if (!$scope.ms.koko) { uusiryhma = _.omit(uusiryhma, 'muodostumisSaanto.koko'); }
       }
       $modalInstance.close(uusiryhma);
