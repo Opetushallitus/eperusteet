@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -26,7 +26,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -36,12 +35,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService{
-    
+
     @Autowired
     private PerusteenOsaViiteRepository repository;
     @PersistenceContext
     private EntityManager em;
-    
+
     @Override
     @Transactional(readOnly = false)
     public void removeSisalto(Long id) {
@@ -49,23 +48,23 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService{
         if (viite == null) {
             throw new BusinessRuleViolationException("Perusteenosaviitettä ei ole olemassa");
         }
-        
+
         if (viite.getVanhempi() == null) {
             throw new BusinessRuleViolationException("Suoritustavan juurielementtiä ei voi poistaa");
         }
-        
+
         if (viite.getLapset() != null && !viite.getLapset().isEmpty() ) {
                 throw new BusinessRuleViolationException("Sisällöllä on lapsia, ei voida poistaa");
         }
-        
+
         if (viite.getPerusteenOsa() != null && viite.getPerusteenOsa().getTila().equals(Tila.LUONNOS)) {
-            
+
             PerusteenOsa perusteenOsa = viite.getPerusteenOsa();
             viite.setPerusteenOsa(null);
 
             viite.getVanhempi().getLapset().remove(viite);
             viite.setVanhempi(null);
-            
+
             em.remove(perusteenOsa);
             repository.delete(viite);
         }

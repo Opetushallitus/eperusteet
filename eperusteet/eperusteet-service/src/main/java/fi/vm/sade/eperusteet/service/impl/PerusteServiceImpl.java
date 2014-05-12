@@ -131,16 +131,15 @@ public class PerusteServiceImpl implements PerusteService {
         Peruste p = perusteet.findPerusteByIdAndSuoritustapakoodi(id, suoritustapakoodi);
         return mapper.map(p, PerusteDto.class);
     }
-    
-    
+
     @Override
     public PerusteDto update(long id, PerusteDto perusteDto) {
         if (!perusteet.exists(id)) {
             throw new EntityNotFoundException("Objektia ei löytynyt id:llä: " + id);
         }
-        
+
         Peruste perusteVanha = perusteet.findById(id);
-        
+
         perusteDto.setId(id);
         Peruste peruste = mapper.map(perusteDto, Peruste.class);
         peruste = checkIfKoulutuksetAlreadyExists(peruste);
@@ -148,12 +147,12 @@ public class PerusteServiceImpl implements PerusteService {
         peruste = perusteet.save(peruste);
         return mapper.map(peruste, PerusteDto.class);
     }
-    
+
     private Peruste checkIfKoulutuksetAlreadyExists(Peruste peruste) {
-             
+
         Set<Koulutus> koulutukset = new HashSet<>();
         Koulutus koulutusTemp;
-        
+
         if (peruste != null && peruste.getKoulutukset() != null) {
             for (Koulutus koulutus : peruste.getKoulutukset()) {
                 koulutusTemp = koulutusRepo.findOneByKoulutuskoodi(koulutus.getKoulutuskoodi());
@@ -239,6 +238,15 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Override
     @Transactional
+    public void removeTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, Long osaId) {
+        Suoritustapa suoritustapa = getSuoritustapa(id, suoritustapakoodi);
+        Set<TutkinnonOsaViite> tutkinnonOsat = suoritustapa.getTutkinnonOsat();
+        TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osaId);
+        tutkinnonOsat.remove(viite);
+    }
+
+    @Override
+    @Transactional
     public TutkinnonOsaViiteDto attachTutkinnonOsa(Long id, Suoritustapakoodi koodi, TutkinnonOsaViiteDto osa) {
         //XXX
         return addTutkinnonOsa(id, koodi, osa);
@@ -271,7 +279,7 @@ public class PerusteServiceImpl implements PerusteService {
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osa.getId());
 
         if (viite == null || !viite.getSuoritustapa().equals(suoritustapa)
-            || !viite.getTutkinnonOsa().getReference().equals(osa.getTutkinnonOsa())) {
+                || !viite.getTutkinnonOsa().getReference().equals(osa.getTutkinnonOsa())) {
             throw new BusinessRuleViolationException("Virheellinen viite");
         }
         viite.setJarjestys(osa.getJarjestys());
@@ -289,7 +297,7 @@ public class PerusteServiceImpl implements PerusteService {
         final Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         if (suoritustapa == null) {
             throw new BusinessRuleViolationException("Perusteella " + peruste + " + ei ole suoritustapaa "
-                + suoritustapa);
+                    + suoritustapa);
         }
 
         return suoritustapa;
@@ -301,10 +309,10 @@ public class PerusteServiceImpl implements PerusteService {
         Suoritustapa suoritustapa = getSuoritustapa(perusteId, suoritustapakoodi);
         if (suoritustapa.getSisalto() == null) {
             throw new BusinessRuleViolationException("Perusteen " + perusteId + " + suoritustavalla "
-                + suoritustapakoodi
-                + " ei ole sisältöä");
+                    + suoritustapakoodi
+                    + " ei ole sisältöä");
         }
-        
+
         PerusteenOsaViite uusiViite = new PerusteenOsaViite();
         if (viite == null) {
             TekstiKappale uusiKappale = new TekstiKappale();
@@ -345,7 +353,7 @@ public class PerusteServiceImpl implements PerusteService {
 
         return mapper.map(uusiViite, PerusteenSisaltoViiteDto.class);
     }
-    
+
     /**
      * Lämmittää tyhjään järjestelmään koodistosta löytyvät koulutukset.
      *
@@ -368,7 +376,7 @@ public class PerusteServiceImpl implements PerusteService {
             for (KoodistoKoodiDto tutkinto : tutkinnot) {
                 LOG.info("koodiUri: " + tutkinto.getKoodiUri());
                 if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus")
-                    && (koulutusRepo.findOneByKoulutuskoodi(tutkinto.getKoodiUri()) == null)) {
+                        && (koulutusRepo.findOneByKoulutuskoodi(tutkinto.getKoodiUri()) == null)) {
                     // Haetaan erikoistapausperusteet, jotka kuvaavat kahden eri koulutusalan tutkinnot
                     peruste = haeErikoistapaus(tutkinto.getKoodiUri(), perusteEntityt, erikoistapausMap);
                     if (peruste == null) {
@@ -473,6 +481,7 @@ public class PerusteServiceImpl implements PerusteService {
 
     /**
      * Luo uuden perusteen perusrakenteella.
+     *
      * @param koulutustyyppi
      * @return Palauttaa 'tyhjän' perusterungon
      */
@@ -480,7 +489,7 @@ public class PerusteServiceImpl implements PerusteService {
     // HUOM!: Luo vain ammatillisen puolen perusteita. Refactoroi, kun tulee lisää koulutustyyppejä.
     public Peruste luoPerusteRunko(String koulutustyyppi) {
         Peruste peruste = new Peruste();
-        
+
         peruste.setTutkintokoodi(koulutustyyppi);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
         suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoRoot(Suoritustapakoodi.NAYTTO));
@@ -488,11 +497,10 @@ public class PerusteServiceImpl implements PerusteService {
             suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoRoot(Suoritustapakoodi.OPS));
         }
         peruste.setSuoritustavat(suoritustavat);
-        
+
         return peruste;
     }
 
-        
     private enum IndexFunction implements Function<TutkinnonOsaViite, EntityReference> {
 
         INSTANCE;

@@ -1,8 +1,10 @@
 <h1 translate>tutkinnon-muodostuminen</h1>
+<div ng-show="rakenne.$peruste.suoritustavat.length > 1">
+  <span class="btn-group">
+    <button class="btn btn-default" ng-repeat="st in rakenne.$peruste.suoritustavat" ng-model="rakenne.$suoritustapa" btn-radio="{{ st.suoritustapakoodi }}">{{ st.suoritustapakoodi | kaanna }}</button>
+  </span>
+</div>
 <div>
-  <tree-wrapper muokkaus="true" ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
+  <tree-wrapper muokkaus="editoi" ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
 </div>
 <div class="clearfix"></div>
-<hr>
-<button class="btn btn-primary" ng-click="tallennaRakenne(rakenne)" translate>tallenna</button>
-<button class="btn btn-default" ng-click="peruMuutokset()" translate>peruuta</button>

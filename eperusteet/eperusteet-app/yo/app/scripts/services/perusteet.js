@@ -32,6 +32,9 @@ angular.module('eperusteApp')
         perusteenId: '@id'
       });
   })
+  .factory('PerusteenOsaviitteet', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteenosaviitteet/:viiteId');
+  })
   .factory('Suoritustapa', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa');
   })
@@ -44,7 +47,7 @@ angular.module('eperusteApp')
         add: {method: 'PUT'}
     });
   })
-  .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet, TreeCache, PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa) {
+  .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet, TreeCache, PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {
     function haeRakenne(perusteProjektiId, success) {
       var response = {};
       PerusteprojektiResource.get({ id: perusteProjektiId }, function(vastaus) {
@@ -85,13 +88,27 @@ angular.module('eperusteApp')
         PerusteTutkinnonosa.save({
           perusteenId: id,
           suoritustapa: suoritustapa,
-          osaId: osa.id
+          osanId: osa.id
         }, osa, function() { after(); });
+      });
+    }
+
+    function poistaTutkinnonOsaViite(osa, _peruste, suoritustapa, success) {
+      PerusteTutkinnonosa.remove({
+          perusteenId: _peruste,
+          suoritustapa: suoritustapa,
+          osanId: osa.id
+      }, function(res) {
+        console.log(res);
+        success(res);
+      }, function(res) {
+        Notifikaatiot.fataali(res);
       });
     }
 
     return {
       hae: haeRakenne,
-      tallenna: tallennaRakenne
+      tallenna: tallennaRakenne,
+      poistaTutkinnonOsaViite: poistaTutkinnonOsaViite
     };
   });

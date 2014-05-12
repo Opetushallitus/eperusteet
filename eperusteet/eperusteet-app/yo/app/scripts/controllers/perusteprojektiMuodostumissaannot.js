@@ -14,8 +14,9 @@ angular.module('eperusteApp')
       });
   })
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $rootScope, $state, $stateParams,
-    Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, TreeCache, Notifikaatiot) {
-
+              Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, TreeCache, Notifikaatiot,
+              Editointikontrollit) {
+    $scope.editoi = false;
     $scope.rakenne = {
       $resolved: false,
       rakenne: {
@@ -25,25 +26,38 @@ angular.module('eperusteApp')
     };
 
     function haeRakenne() {
+      $scope.rakenne.$resolved = false;
       PerusteenRakenne.hae($stateParams.perusteProjektiId, function(res) {
         $scope.rakenne = res;
         $scope.rakenne.$resolved = true;
+        $scope.rakenne.$suoritustapa = $scope.rakenne.$suoritustapa || $scope.rakenne.$peruste.suoritustavat[0].suoritustapakoodi;
       });
     }
-
-    $scope.peruMuutokset = haeRakenne;
 
     if (TreeCache.nykyinen() !== $stateParams.perusteenId) { haeRakenne(); }
     else { TreeCache.hae(); }
 
-    $scope.tallennaRakenne = function(rakenne) {
+    function tallennaRakenne(rakenne) {
       TreeCache.tallenna(rakenne, $stateParams.perusteenId);
       PerusteenRakenne.tallenna(
         rakenne,
         rakenne.$peruste.id,
-        rakenne.$peruste.suoritustavat[0].suoritustapakoodi,
+        $scope.rakenne.$suoritustapa,
         function() { Notifikaatiot.onnistui('tallentaminen-onnistui', ''); },
         function(virhe) { Notifikaatiot.varoitus('tallentaminen-epäonnistui', virhe); }
       );
-    };
+    }
+
+    Editointikontrollit.registerCallback({
+      edit: function() {
+        $scope.editoi = true;
+      },
+      save: function() {
+        tallennaRakenne($scope.rakenne);
+        $scope.editoi = false;
+      },
+      cancel: function() {
+        $scope.editoi = false;
+      }
+    });
   });

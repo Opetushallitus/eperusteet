@@ -1,9 +1,9 @@
 <div>
-  <div ng-if="lisataanUuttaOsaa">
-    <muokkaus-tutkinnonosa tutkinnon-osa="uusiOsa"></muokkaus-tutkinnonosa>
-  </div>
+  <!-- <div ng-if="lisataanUuttaOsaa"> -->
+  <!--   <muokkaus-tutkinnonosa tutkinnon-osa="uusiOsa"></muokkaus-tutkinnonosa> -->
+  <!-- </div> -->
   <tabset>
-    <tab heading="{{'tutkinnon-rakenne' | translate}}">
+    <tab heading="{{ 'tutkinnon-rakenne' | kaanna }}">
       <div class="muodostumisvivut">
         <a href="" ng-click="suljePolut()">
           <span ng-show="suljettuViimeksi" class="glyphicon glyphicon-chevron-down"></span>
@@ -50,45 +50,60 @@
       </div>
     </tab>
     <tab heading="Tutkinnon osat">
-      <div ng-if="uniikit.length === 0" class="">
+      <div ng-show="uniikit.length === 0" class="">
         <h3>Tutkinnon osia ei ole</h3>
       </div>
-      <div ng-if="uniikit.length > 0" class="rajauslaatikko">
+      <div ng-show="uniikit.length > 0" class="rajauslaatikko">
         <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia...">
       </div>
-      <h3>
-        <a href="" ng-click="lisaaTutkinnonOsa()">
-          <span class="glyphicon glyphicon-plus"></span>
-          {{ 'lisää' | kaanna }}
-        </a>
-      </h3>
       <div class="tutkinnonosa-laatikko" ng-repeat="(k, v) in rakenne.tutkinnonOsat | mapFilter:rajaaTutkinnonOsia">
         <div class="otsikko">
-          <div class="muokkaus">
+          <div ng-show="muokkaus" class="muokkaus">
             <a href="" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })">Muokkaa <span class="glyphicon glyphicon-chevron-right"></span></a>
           </div>
           <h3>
             <a href="" ng-click="v.$avattu = !v.$avattu">
               <span ng-show="v.$avattu" class="glyphicon glyphicon-chevron-down"></span>
               <span ng-hide="v.$avattu" class="glyphicon glyphicon-chevron-up"></span>
-              {{ v.nimi | kaanna }}
+              {{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}
             </a>
           </h3>
         </div>
         <div ng-show="v.$avattu" class="sisalto">
-          <div>
-            <label>{{ 'laajuus' | kaanna }}</label>
-            <input ng-model="v.laajuus" type="number">
+          <div ng-hide="muokkaus">
+            <div>
+              <label>{{ 'laajuus' | kaanna }}</label>
+              {{ v.laajuus }}
+            </div>
+            <div>
+              <label>{{ 'yksikkö' | kaanna }}</label>
+              {{ v.yksikko | kaanna }}
+            </div>
           </div>
-          <div>
-            <label>{{ 'yksikkö' | kaanna }}</label>
-            <div class="btn-group">
-              <button type="button" class="btn btn-default" ng-model="v.yksikko" btn-radio="'ov'">{{ 'ov' | translate }}</button>
-              <button type="button" class="btn btn-default" ng-model="v.yksikko" btn-radio="'op'">{{ 'op' | translate }}</button>
+          <div ng-show="muokkaus">
+            <div>
+              <label>{{ 'laajuus' | kaanna }}</label>
+              <input ng-model="v.laajuus" type="number">
+            </div>
+            <div>
+              <label>{{ 'yksikkö' | kaanna }}</label>
+              <div class="btn-group">
+                <button type="button" class="btn btn-default" ng-model="v.yksikko" btn-radio="'OPINTOVIIKKO'">{{ 'OPINTOVIIKKO' | kaanna }}</button>
+                <button type="button" class="btn btn-default" ng-model="v.yksikko" btn-radio="'OSAAMISPISTE'">{{ 'OSAAMISPISTE' | kaanna }}</button>
+              </div>
+            </div>
+            <div>
+              <button class="btn btn-danger" ng-click="poistaTutkinnonOsa(v)">Poista</button>
             </div>
           </div>
         </div>
       </div>
+      <h3 ng-show="muokkaus">
+        <a href="" ng-click="lisaaTutkinnonOsa()">
+          <span class="glyphicon glyphicon-plus"></span>
+          {{ 'lisää' | kaanna }}
+        </a>
+      </h3>
     </tab>
   </tabset>
 </div>
