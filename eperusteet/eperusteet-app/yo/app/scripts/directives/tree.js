@@ -116,9 +116,9 @@ angular.module('eperusteApp')
     function generoiOtsikko() {
       var tosa = 'tutkinnonOsat[rakenne._tutkinnonOsa]';
       return '' +
-        '<span ng-if="rakenne._tutkinnonOsa">{{ ' + tosa + '.nimi | kaanna }}, <b>{{' + tosa + '.laajuus || 0 }}</b>ov</span>' +
+        '<span ng-if="rakenne._tutkinnonOsa">{{ ' + tosa + '.nimi | kaanna | rajaaKoko:40 }}, <b>{{' + tosa + '.laajuus || 0 }}</b>ov</span>' +
         '<span class="pull-right" ng-if="rakenne._tutkinnonOsa && muokkaus"><a href="" ng-click="poista(rakenne, vanhempi)"><span class="glyphicon glyphicon-remove"></a></span>' +
-        '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi"><b>{{ rakenne.nimi | kaanna }}</b></span>';
+        '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi"><b>{{ rakenne.nimi | kaanna | rajaaKoko:40 }}</b></span>';
     }
 
     return {
@@ -392,8 +392,6 @@ angular.module('eperusteApp')
     var msl = ryhma && ryhma.muodostumisSaanto && ryhma.muodostumisSaanto.laajuus ? ryhma.muodostumisSaanto.laajuus : null;
     var msk = ryhma && ryhma.muodostumisSaanto && ryhma.muodostumisSaanto.koko ? ryhma.muodostumisSaanto.koko : null;
 
-    console.log(msl, msk);
-
     $scope.ms = {
       laajuus: msl ? true : false,
       koko: msk ? true : false
@@ -415,7 +413,6 @@ angular.module('eperusteApp')
           delete uusiryhma.muodostumisSaanto.koko;
         }
       }
-      console.log(uusiryhma);
       $modalInstance.close(uusiryhma);
     };
     $scope.poista = function () {
