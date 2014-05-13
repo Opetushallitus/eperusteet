@@ -224,20 +224,25 @@ div.skratchpad-items>ul {
   padding: 12px;
 }
 
+.tree .bubble {
+  clear: both;
+  display: inline-block;
+  height: 32px;
+}
 .tree .bubble, .tree li .textbox {
   width: 480px;
   min-height: 32px;
   border: 1px solid #ccc;
-  /* display:inline-block; */
   background-color: #eee;
   text-decoration: none;
 }
 
 .tree .bubble .left {
-  float: left;
-  min-height: 32px;
   padding-top: 8px;
   padding-left: 0px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .tree .bubble .colorbox {

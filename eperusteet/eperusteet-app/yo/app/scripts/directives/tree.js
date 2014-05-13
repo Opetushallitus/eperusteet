@@ -118,7 +118,7 @@ angular.module('eperusteApp')
       return '' +
         '<span ng-if="rakenne._tutkinnonOsa">{{ ' + tosa + '.nimi | kaanna | rajaaKoko:40 }}, <b>{{' + tosa + '.laajuus || 0 }}</b>ov</span>' +
         '<span class="pull-right" ng-if="rakenne._tutkinnonOsa && muokkaus"><a href="" ng-click="poista(rakenne, vanhempi)"><span class="glyphicon glyphicon-remove"></a></span>' +
-        '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi"><b>{{ rakenne.nimi | kaanna | rajaaKoko:40 }}</b></span>';
+        '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi"><b>{{ rakenne.nimi | kaanna  }}</b></span>';
     }
 
     return {
@@ -205,9 +205,7 @@ angular.module('eperusteApp')
           '    <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
           '  </a>' +
           '</span>' +
-          '<div class="left">' +
-          '  <span class="tree-item">' + generoiOtsikko() + '</span>' +
-          '</div>' +
+
           '<div class="right">' +
           '  <div ng-if="!rakenne._tutkinnonOsa && muokkaus" class="right-item">' +
           '    <a href="" ng-click="ryhmaModaali(rakenne, vanhempi)"><span class="glyphicon glyphicon-pencil"></span></a>' +
@@ -217,6 +215,10 @@ angular.module('eperusteApp')
           '    <span class="right-item" ng-hide="rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus || 0 }}</b>ov</span>' +
           '    <span class="right-item"><b>{{ rakenne.osat.length }}kpl</b></span>' +
           '  </div>' +
+          '</div>' +
+
+          '<div class="left">' +
+          '  <span class="tree-item">' + generoiOtsikko() + '</span>' +
           '</div>';
 
         var kentta = '<div ng-if="rakenne._tutkinnonOsa" class="bubble-osa">' + optiot + '</div>';
