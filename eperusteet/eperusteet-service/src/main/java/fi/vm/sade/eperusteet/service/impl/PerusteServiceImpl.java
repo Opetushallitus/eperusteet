@@ -382,7 +382,7 @@ public class PerusteServiceImpl implements PerusteService {
                     if (peruste == null) {
                         peruste = koodistoMapper.map(tutkinto, Peruste.class);
                         peruste.setTutkintokoodi(koulutustyyppiUri);
-                        peruste.setPaivays(new GregorianCalendar(3000, 0, 1).getTime());
+                        peruste.setVoimassaoloAlkaa(new GregorianCalendar(3000, 0, 1).getTime());
                         peruste.setKoulutukset(new HashSet<Koulutus>());
                         peruste.setSuoritustavat(luoSuoritustavat(koulutustyyppiUri));
                     }

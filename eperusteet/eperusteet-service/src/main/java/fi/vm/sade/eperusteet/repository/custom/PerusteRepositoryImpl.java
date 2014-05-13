@@ -142,10 +142,13 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             Join<Peruste, Koulutus> ala = root.join(Peruste_.koulutukset);
             pred = cb.and(pred, ala.get(Koulutus_.opintoalakoodi).in(pquery.getOpintoala()));
         }
-        if (!pquery.isSiirtyma()) {
-            Expression<Date> rsiirtyma = root.get(Peruste_.siirtyma);
-            pred = cb.and(pred, cb.or(cb.isNull(rsiirtyma),
-                                      cb.greaterThan(rsiirtyma, cb.currentDate())));
+        Expression<Date> siirtymaAlkaa = root.get(Peruste_.siirtymaAlkaa);
+        Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
+        if (pquery.isSiirtyma()) {
+            pred = cb.and(pred, cb.or(cb.isNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate())));
+        } else {
+            pred = cb.and(pred, cb.and( cb.or(cb.isNull(siirtymaAlkaa), cb.greaterThan(siirtymaAlkaa, cb.currentDate())), 
+                                        cb.or(cb.isNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate()))));
         }
         return pred;
     }
