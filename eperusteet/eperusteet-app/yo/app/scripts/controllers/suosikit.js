@@ -12,8 +12,6 @@ angular.module('eperusteApp')
     $scope.naytetaanKaikkiSuosikit = false;
     $scope.naytetaanKaikkiProjektit = false;
     $scope.suosikkiNapinTeksti = '';
-    $scope.kielet = YleinenData.kielet;
-    $scope.kieli = YleinenData.kieli;
 
     var naytaKaikkiTeksti = 'sivupalkki-näytä-kaikki';
     var piilotaTeksti = 'sivupalkki-piilota';
@@ -50,17 +48,6 @@ angular.module('eperusteApp')
     };
 
     paivitaSuosikit();
-
-    $scope.vaihdaKieli = function(kielikoodi) {
-      $rootScope.$broadcast('notifyCKEditor');
-      $scope.kieli = kielikoodi;
-      YleinenData.vaihdaKieli(kielikoodi);
-    };
-
-    // Alustetaan UI alkuhetken kielivalinnalla
-    $scope.vaihdaKieli(YleinenData.kieli);
-
-    $scope.valitseKieli = YleinenData.valitseKieli;
 
     $scope.muutaSuosikkiMaara = function() {
       $scope.naytetaanKaikkiSuosikit = !$scope.naytetaanKaikkiSuosikit;

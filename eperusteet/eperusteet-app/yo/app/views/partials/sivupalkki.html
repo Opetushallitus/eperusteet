@@ -17,15 +17,11 @@ European Union Public Licence for more details.
 <div class="row">
   <div class="col-xs-12 sidebar">
     <div ng-controller="SuosikitCtrl">
-      <label for="kielen-vaihto" translate>kielen-vaihto</label>
-      <div id="kielen-vaihto" class="btn-group">
-        <button ng-repeat="(nimi, koodi) in kielet" ng-click="vaihdaKieli(koodi)" type="button" class="btn btn-default" ng-class="{ 'active' : koodi === kieli }">{{nimi|translate}}</button>
-      </div>
       <div class="panel panel-default">
         <div class="panel-heading" translate>suosikit-otsikko</div>
         <div class="panel-body">
           <ul class="list-unstyled">
-            <li class="ellipsis-no-wrap" ng-repeat="suosikki in suosikit| limitTo:suosikkiRaja" ><a title="{{valitseKieli(suosikki.nimi)}}" ng-click="resetNavi()" ng-href="{{ suosikki.url}}">{{valitseKieli(suosikki.nimi)}} ({{suosikki.suoritustapakoodi}})</a></li>
+            <li class="ellipsis-no-wrap" ng-repeat="suosikki in suosikit| limitTo:suosikkiRaja" ><a title="{{suosikki.nimi | kaanna}}" ng-click="resetNavi()" ng-href="{{suosikki.url}}">{{suosikki.nimi|kaanna}} ({{suosikki.suoritustapakoodi}})</a></li>
           </ul>
           <button class="btn btn-default btn-xs pull-right" ng-show="naytaSuosikkiNappi" ng-click="muutaSuosikkiMaara()">{{suosikkiNapinTeksti| translate}}</button>
         </div>
