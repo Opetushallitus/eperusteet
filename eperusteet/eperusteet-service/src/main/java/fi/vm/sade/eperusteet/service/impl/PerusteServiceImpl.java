@@ -385,6 +385,7 @@ public class PerusteServiceImpl implements PerusteService {
                         peruste.setVoimassaoloAlkaa(new GregorianCalendar(3000, 0, 1).getTime());
                         peruste.setKoulutukset(new HashSet<Koulutus>());
                         peruste.setSuoritustavat(luoSuoritustavat(koulutustyyppiUri));
+                        peruste.setTila(Tila.VALMIS);
                     }
                     peruste.getKoulutukset().add(luoKoulutus(tutkinto.getKoodiUri()));
 
@@ -491,6 +492,7 @@ public class PerusteServiceImpl implements PerusteService {
         Peruste peruste = new Peruste();
 
         peruste.setTutkintokoodi(koulutustyyppi);
+        peruste.setTila(Tila.LUONNOS);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
         suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoRoot(Suoritustapakoodi.NAYTTO));
         if (koulutustyyppi != null && koulutustyyppi.equals(KOULUTUSTYYPPI_URIT[0])) {

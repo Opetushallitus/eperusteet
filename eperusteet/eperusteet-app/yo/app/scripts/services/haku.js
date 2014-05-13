@@ -29,7 +29,8 @@ angular.module('eperusteApp')
         siirtyma: false,
         sivu: 0,
         sivukoko: 20,
-        suoritustapa: 'ops'
+        suoritustapa: 'ops',
+        tila: 'valmis'
       },
       'selaus.ammatillinenaikuiskoulutus': {
         nimi: '',
@@ -40,7 +41,8 @@ angular.module('eperusteApp')
         siirtyma: false,
         sivu: 0,
         sivukoko: 20,
-        suoritustapa: 'naytto'
+        suoritustapa: 'naytto',
+        tila: 'valmis'
       }
     };
     
