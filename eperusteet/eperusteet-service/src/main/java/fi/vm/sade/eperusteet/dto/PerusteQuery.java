@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.dto;
 
+import fi.vm.sade.eperusteet.domain.Tila;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,4 +37,5 @@ public class PerusteQuery {
     private String kieli = "fi";
     private List<String> opintoala;
     private String suoritustapa;
+    private String tila;
 }

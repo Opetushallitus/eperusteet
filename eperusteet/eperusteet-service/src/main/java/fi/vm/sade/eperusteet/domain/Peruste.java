@@ -24,6 +24,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,6 +38,7 @@ import javax.persistence.MapKey;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -104,6 +107,12 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Getter
     @Setter
     private Set<Suoritustapa> suoritustavat;
+    
+    @Getter
+    @Setter
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private Tila tila;
 
     public Suoritustapa getSuoritustapa(Suoritustapakoodi koodi) {
         for ( Suoritustapa s : suoritustavat ) {

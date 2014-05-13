@@ -25,14 +25,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 public enum Tila {
     
     LUONNOS("luonnos"),
-    KOMMENTOITAVANA("kommentoitavana"),
-    VIIMEISTELTAVANA("viimeisteltavana"),
-    KIELENHUOLLOSSA("kielenhuollossa"),
-    KAANNETTAVANA("kaannettavana"),
-    HYVAKSYTTAVANA("hyvaksyttavana"),
-    VOIMASSA("voimassa"),
-    SIIRTYMAAJALLA("siirtymaajalla"),
-    VANHENTUNUT("vanhentunut");
+    VALMIS("valmis");
     
     private final String tila;
     
