@@ -32,6 +32,11 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -41,7 +46,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Audited
 @Table(name = "perusteenosa")
-public abstract class PerusteenOsa extends AbstractTilaEntity implements Serializable, Mergeable<PerusteenOsa>,
+public abstract class PerusteenOsa extends AbstractAuditedEntity implements Serializable, Mergeable<PerusteenOsa>,
     ReferenceableEntity {
 
     private static final long serialVersionUID = 1L;
@@ -70,6 +75,12 @@ public abstract class PerusteenOsa extends AbstractTilaEntity implements Seriali
     public void setNimi(TekstiPalanen nimi) {
         this.nimi = nimi;
     }
+    
+    @Getter
+    @Setter
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private Tila tila;
 
     @Override
     public void mergeState(PerusteenOsa updated) {
