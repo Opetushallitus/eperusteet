@@ -222,7 +222,7 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, RakenneModuuliDto rakenne) {
         Suoritustapa suoritustapa = getSuoritustapa(perusteId, suoritustapakoodi);
-        
+
         final Map<EntityReference, TutkinnonOsaViite> uniqueIndex = Maps.uniqueIndex(suoritustapa.getTutkinnonOsat(), IndexFunction.INSTANCE);
         rakenne.visit(new VisitorImpl(uniqueIndex));
         RakenneModuuli moduuli = mapper.map(rakenne, RakenneModuuli.class);

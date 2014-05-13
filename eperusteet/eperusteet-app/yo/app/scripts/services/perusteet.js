@@ -95,7 +95,7 @@ angular.module('eperusteApp')
 
     function poistaTutkinnonOsaViite(osa, _peruste, suoritustapa, success) {
       PerusteTutkinnonosa.remove({
-          perusteenId: 0,
+          perusteenId: _peruste,
           suoritustapa: suoritustapa,
           osanId: osa.id
       }, function(res) {
