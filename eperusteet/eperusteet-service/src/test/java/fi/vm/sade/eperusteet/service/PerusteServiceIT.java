@@ -87,6 +87,10 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
         p = TestUtils.createPeruste();
         repo.save(p);
+        
+        p = TestUtils.createPeruste();
+        p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
+        repo.save(p);
     }
 
     @Test
