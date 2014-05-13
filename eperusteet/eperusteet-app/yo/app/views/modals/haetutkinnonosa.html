@@ -7,8 +7,9 @@
   <div class="modal-body">
     <div ng-show="haku">
       <label>Tutkinnon nimellä</label>
-      <input ng-change="paivitaHaku(hakustr)" ng-model="hakustr" class="form-control" type="text" placeholder="Hae tutkintoja..."></input>
-      <div ng-show="perusteet.data.length > 0">
+      <input ng-change="hakuMuuttui()" ng-model="data.hakustr" class="form-control" type="text" placeholder="Hae tutkintoja..."></input>
+      <p class="results-amount">{{perusteet['kokonaismäärä']}} {{'hakutulosta' | kaanna}}</p>
+      <div class="results">
         <table class="table table-striped">
           <tr>
             <th>Koodi</th>
@@ -19,8 +20,10 @@
             <td><a href=""ng-click="jatka(peruste)">{{ peruste.nimi | kaanna }}</a></td>
           </tr>
         </table>
-        <pagination ng-show="kaikkisivut > 1" first-text="«" last-text="»" previous-text="‹" next-text="›" ng-click="paivitaHaku(hakustr, nykyinensivu)" total-items="perusteet.sivuja" page="nykyinensivu" max-size="7" class="pagination-sm" boundary-links="true" rotate="false" num-pages="kaikkisivut"></pagination>
       </div>
+      <pagination ng-model="data.nykyinensivu" ng-change="paivitaHaku()"
+                  total-items="perusteet['kokonaismäärä']" items-per-page="sivukoko"
+                  boundary-links="true"></pagination>
     </div>
     <div ng-hide="haku">
       <table class="table table-striped">

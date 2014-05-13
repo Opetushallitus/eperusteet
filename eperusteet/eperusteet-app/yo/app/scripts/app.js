@@ -104,7 +104,14 @@ angular.module('eperusteApp', [
         };
       }]);
   })
-  .run(function($rootScope, $modal, $location, $window) {
+  .run(function($rootScope, $modal, $location, $window, paginationConfig) {
+    paginationConfig.firstText = '';
+    paginationConfig.previousText = '';
+    paginationConfig.nextText = '';
+    paginationConfig.lastText = '';
+    paginationConfig.maxSize = 5;
+    paginationConfig.rotate = false;
+
     var onAvattuna = false;
 
     $rootScope.$on('event:uudelleenohjattava', function(event, status) {

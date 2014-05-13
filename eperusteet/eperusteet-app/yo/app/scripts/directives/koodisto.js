@@ -43,7 +43,7 @@ angular.module('eperusteApp')
         cb();
       });
     }
-    
+
     function suodataTyypinMukaan(koodistodata, tyyppi) {
       var tulos = [];
       angular.forEach(koodistodata, function(data){
@@ -114,24 +114,23 @@ angular.module('eperusteApp')
     $scope.tyyppi = tyyppi;
     $scope.ylarelaatioTyyppi = ylarelaatioTyyppi;
     $scope.loydetyt = [];
-    $scope.nakyvilla = [];
+    $scope.totalItems = 0;
+    $scope.itemsPerPage = 10;
     $scope.lataa = true;
     $scope.syote = '';
 
-    $scope.nykyinen = 0;
-
-    var persivu = 10;
+    $scope.nykyinen = 1;
 
     $scope.valitseSivu = function(sivu) {
-      if (sivu >= 0 && sivu < _.size($scope.loydetyt) / persivu) {
+      if (sivu > 0 && sivu <= Math.ceil($scope.totalItems / $scope.itemsPerPage)) {
         $scope.nykyinen = sivu;
-        $scope.nakyvilla = _.last(_.first($scope.loydetyt, persivu * sivu + persivu), persivu);
       }
     };
 
     $scope.haku = function(rajaus) {
       $scope.loydetyt = Koodisto.filtteri(rajaus);
-      $scope.valitseSivu(0);
+      $scope.totalItems = _.size($scope.loydetyt);
+      $scope.valitseSivu(1);
     };
 
     if ($scope.ylarelaatioTyyppi === '') {
@@ -162,7 +161,7 @@ angular.module('eperusteApp')
         var filtteri = $scope.$eval(attrs.filtteri);
         var tyyppi = attrs.tyyppi || 'tutkinnonosat';
         var ylarelaatioTyyppi = attrs.ylarelaatiotyyppi || '';
-        
+
         attrs.$observe('ylarelaatiotyyppi', function() {
                 ylarelaatioTyyppi = attrs.ylarelaatiotyyppi || '';
         });
