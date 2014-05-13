@@ -32,6 +32,9 @@
     "haluatko-jatkaa": "Haluatko jatkaa?",
     "tuo-valitut": "Tuo valitut",
 
+    "OPINTOVIIKKO": "ov",
+    "OSAAMISPISTE": "op",
+
     "ammattitutkinto": "Ammattitutkinto",
     "erikoisammattitutkinto": "Erikoisammattitutkinto",
     "perustutkinto": "Perustutkinto",
@@ -150,7 +153,6 @@
     "ruotsi": "Svenska",
 
     "tutkinnon-rakenne": "Tutkinnon rakenne",
-    "tutkinnon-muodostuminen": "Tutkinnon muodostuminen",
     "tutkinnonosa-nimi": "Nimi",
     "tutkinnonosa-laajuus": "Laajuus",
     "tutkinnonosa-koko": "Koko",
