@@ -362,7 +362,10 @@ angular.module('eperusteApp')
         Editointikontrollit.registerAdditionalSaveCallback(function() { scope.lisataanUuttaOsaa = false; });
 
         scope.lisaaTutkinnonOsa = function(osa) {
-          osa = { _tutkinnonOsa: osa._tutkinnonOsa } || {};
+          if (osa) {
+            osa = { _tutkinnonOsa: osa._tutkinnonOsa };
+          }
+          else { osa =  {}; }
           PerusteTutkinnonosa.save({
             perusteenId: scope.rakenne.$peruste.id,
             suoritustapa: scope.rakenne.$suoritustapa
