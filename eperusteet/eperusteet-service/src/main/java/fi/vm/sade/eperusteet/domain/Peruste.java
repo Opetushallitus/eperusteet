@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -80,12 +81,20 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
-    private Date paivays;
+    @Column(name="voimassaolo_alkaa")
+    private Date voimassaoloAlkaa;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Getter
+    @Setter
+    @Column(name="voimassaolo_loppuu")
+    private Date voimassaoloLoppuu;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
-    private Date siirtyma;
+    @Column(name="siirtyma_alkaa")
+    private Date siirtymaAlkaa;
     
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @MapKey(name = "suoritustapakoodi")

@@ -73,14 +73,16 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     @Before
     public void setUp() {
         Peruste p = TestUtils.createPeruste();
-        p.setSiirtyma(new GregorianCalendar(2000, Calendar.MARCH, 12).getTime());
+        p.setSiirtymaAlkaa(new GregorianCalendar(2000, Calendar.MARCH, 12).getTime());
+        p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
         Suoritustapa s = new Suoritustapa();
         s.setSuoritustapakoodi(Suoritustapakoodi.OPS);
         p.setSuoritustavat(Sets.newHashSet(s));
         peruste = repo.save(p);
 
         p = TestUtils.createPeruste();
-        p.setSiirtyma(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
+        p.setSiirtymaAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
+        p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 4, Calendar.MARCH, 12).getTime());
         repo.save(p);
 
         p = TestUtils.createPeruste();
