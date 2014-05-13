@@ -1,3 +1,11 @@
+ALTER TABLE ONLY perusteenosa_aud
+        ADD tila VARCHAR(255);
+
+UPDATE perusteenosa_aud SET tila = 'LUONNOS';
+
+ALTER TABLE ONLY perusteenosa_aud
+        ALTER tila SET NOT NULL;
+
 ALTER TABLE ONLY peruste_aud
         RENAME COLUMN paivays TO voimassaolo_alkaa;
 ALTER TABLE ONLY peruste_aud
