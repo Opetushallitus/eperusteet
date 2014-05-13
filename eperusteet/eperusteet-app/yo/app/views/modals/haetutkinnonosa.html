@@ -12,12 +12,11 @@
       <div class="results">
         <table class="table table-striped">
           <tr>
-            <th>Koodi</th>
-            <th>Tutkinto</th>
+            <th translate>haku-nimi</th><th translate>haku-voimaantulopvm</th>
           </tr>
           <tr ng-repeat="peruste in perusteet.data">
-            <td class="koodi">{{ peruste.koodi }}</td>
             <td><a href=""ng-click="jatka(peruste)">{{ peruste.nimi | kaanna }}</a></td>
+            <td>{{peruste.voimassaoloAlkaa|date:'dd.MM.yyyy'}}</td>
           </tr>
         </table>
       </div>
@@ -35,7 +34,7 @@
         <tr ng-repeat="osa in perusteenosat">
           <td class="has-checkbox"><input ng-model="osa.$valitse" type="checkbox" class="form-control"></td>
           <td>{{ osa.nimi | kaanna }}</td>
-          <td>{{ osa.laajuus }}</td>
+          <td>{{ osa.laajuus}}</td>
         </tr>
       </table>
     </div>

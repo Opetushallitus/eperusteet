@@ -29,7 +29,7 @@
                     <!-- <div ng&#45;if="!osa._tutkinnonOsa &#38;&#38; osa.nimi">{{ osa.nimi | kaanna }}</div> -->
                     <div ng-if="osa.osat !== undefined">
                       <span>
-                        Ryhmä ({{ osa.osat.length }} osaa)
+                        {{osa.nimi|kaanna}} ({{ osa.osat.length }} osaa)
                         <a class="pull-right" href="" ng-click="ryhmaModaali(osa)"><span class="glyphicon glyphicon-pencil"></span></a>
                       </span>
                     </div>
