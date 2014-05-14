@@ -252,6 +252,7 @@
 
     "perusteen-nimi": "Perusteen nimi",
     "anna-perusteen-nimi": "Syötä perusteen nimi",
+    "koulutuksen-nimi": "Koulutuksen nimi",
 
     "ok": "OK",
 
@@ -263,6 +264,7 @@
     "perusteen-koodi": "Tutkinnon koodi",
     "projektin-tiedot": "Projektin tiedot",
     "uusi-projekti-otsikko": "Uusi perusteprojekti",
+    "peruste-koulutukset": "Koulutukset",
 
     "ops": "Opetussuunnitelma",
     "naytto": "Näyttötutkinto",
@@ -312,5 +314,7 @@
     "kommentointi": "Kommentointi",
     
     "poista-tekstikappale-otsikko": "Poista tekstikappale",
-    "poista-tekstikappale-teksti": "Tekstikappale \"{{otsikko}}\" poistetaan. Oletko varma?"
+    "poista-tekstikappale-teksti": "Tekstikappale \"{{otsikko}}\" poistetaan. Oletko varma?",
+    
+    "lisaa-koulutus": "Lisää koulutus"
 }

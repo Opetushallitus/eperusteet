@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
@@ -387,7 +388,7 @@ public class PerusteServiceImpl implements PerusteService {
                         peruste.setSuoritustavat(luoSuoritustavat(koulutustyyppiUri));
                         peruste.setTila(Tila.VALMIS);
                     }
-                    peruste.getKoulutukset().add(luoKoulutus(tutkinto.getKoodiUri()));
+                    peruste.getKoulutukset().add(luoKoulutus(tutkinto));
 
                     if (!perusteEntityt.contains(peruste)) {
                         perusteEntityt.add(peruste);
@@ -425,14 +426,15 @@ public class PerusteServiceImpl implements PerusteService {
      * @param koodiUri luotavan koulutuksen koodisto koodiUri
      * @return luotu koulutus entity
      */
-    private Koulutus luoKoulutus(String koodiUri) {
-        Koulutus koulutus = new Koulutus();
+    private Koulutus luoKoulutus(KoodistoKoodiDto tutkinto) {
+        Koulutus koulutus = koodistoMapper.map(tutkinto, Koulutus.class);
+        
         KoodistoKoodiDto[] koulutusAlarelaatiot;
         RestTemplate restTemplate = new RestTemplate();
 
-        koulutus.setKoulutuskoodi(koodiUri);
-        // Haetaan joka tutkinnolle alarelaatiot ja lisätään tarvittavat tiedot peruste entityyn
-        koulutusAlarelaatiot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + "/" + koodiUri, KoodistoKoodiDto[].class);
+        koulutus.setKoulutuskoodi(tutkinto.getKoodiUri());
+        // Haetaan joka tutkinnolle alarelaatiot ja lisätään tarvittavat tiedot koulutus entityyn
+        koulutusAlarelaatiot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + "/" + tutkinto.getKoodiUri(), KoodistoKoodiDto[].class);
         koulutus.setKoulutusalakoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, KOULUTUSALALUOKITUS));
         koulutus.setOpintoalakoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, OPINTOALALUOKITUS));
         return koulutus;
