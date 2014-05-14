@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  */
 public enum Tila {
 
+    POISTETTU("poistettu"),
     LUONNOS("luonnos"),
     VALMIS("valmis");
 

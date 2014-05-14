@@ -25,6 +25,9 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12">
+          <div class="pull-right admin-cog">
+            <a href="" ui-sref="admin"><span class="glyphicon glyphicon-cog"></span></a>
+          </div>
           <div ng-controller="KieliCtrl" id="kielen-vaihto" class="btn-group pull-right ng-cloak" style="margin-top: 5px">
             <button ng-repeat="(nimi, koodi) in kielet" ng-click="vaihdaKieli(koodi)" type="button" class="btn btn-xs" ng-class="{ 'active' : koodi === kieli }" ng-bind="nimi|translate"></button>
           </div>
@@ -39,8 +42,8 @@
     <div class="notification-wrapper">
       <div class="notifications" ng-model="viestit" ng-controller="NotifikaatioCtrl">
         <div ng-if="viestit" ng-click="poistaNotifikaatio(viesti)" ng-model="viestit" ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }" ng-repeat="viesti in viestit">
-          <h2 class="notification-header" ng-cloak>{{ viesti.otsikko | kaanna }}</h2>
-          <p ng-cloak>{{ viesti.viesti | kaanna }}</p>
+          <h2 class="notification-header ng-cloak">{{ viesti.otsikko | kaanna }}</h2>
+          <p class="ng-cloak">{{ viesti.viesti | kaanna }}</p>
         </div>
       </div>
     </div>
@@ -73,77 +76,80 @@
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
-    <script src="scripts/controllers/virhe.js"></script>
-    <script src="scripts/services/pagination.js"></script>
-    <script src="scripts/services/excel.js"></script>
-    <script src="scripts/controllers/excel.js"></script>
-    <script src="scripts/directives/spinner.js"></script>
-    <script src="scripts/controllers/modals/uudelleenohjaus.js"></script>
-    <script src="scripts/directives/ckeditor.js"></script>
-    <script src="scripts/directives/fileselect.js"></script>
-    <script src="scripts/directives/formfield.js"></script>
-    <script src="scripts/services/perusteet.js"></script>
-    <script src="scripts/services/perusteenosat.js"></script>
-    <script src="scripts/controllers/haku.js"></script>
-    <script src="scripts/controllers/perusteprojektinTila.js"></script>
+    <script src="scripts/filters/customfilters.js"></script>
     <script src="scripts/filters/kaanna.js"></script>
+    <script src="scripts/filters/koulutusalakoodi.js"></script>
     <script src="scripts/filters/rajaateksti.js"></script>
     <script src="scripts/filters/tutkintokoodi.js"></script>
-    <script src="scripts/filters/koulutusalakoodi.js"></script>
-    <script src="scripts/filters/customfilters.js"></script>
-    <script src="scripts/controllers/esitys.js"></script>
-    <script src="scripts/directives/esitysOtsikko.js"></script>
-    <script src="scripts/directives/koodisto.js"></script>
-    <script src="scripts/directives/navi.js"></script>
-    <script src="scripts/directives/optioModal.js"></script>
-    <script src="scripts/directives/optioLista.js"></script>
-    <script src="scripts/directives/tree.js"></script>
-    <script src="scripts/directives/sivunavigaatio.js"></script>
-    <script src="scripts/services/notifikaatiot.js"></script>
-    <script src="scripts/directives/statusbadge.js"></script>
-    <script src="scripts/services/kayttajaprofiilit.js"></script>
-    <script src="scripts/services/suosikit.js"></script>
+    <script src="scripts/services/admin.js"></script>
+    <script src="scripts/services/arviointi.js"></script>
+    <script src="scripts/services/editointikontrollit.js"></script>
+    <script src="scripts/services/excel.js"></script>
     <script src="scripts/services/haku.js"></script>
     <script src="scripts/services/kayttajaprofiilit.js"></script>
-    <script src="scripts/services/suosikit.js"></script>
-    <script src='scripts/services/koulutusalat.js'></script>
-    <script src="scripts/controllers/suosikit.js"></script>
-    <script src="scripts/services/yleinenData.js"></script>
-    <script src="scripts/directives/latausElementti.js"></script>
-    <script src="scripts/services/palvelinhaunIlmoitusKanava.js"></script>
-    <script src="scripts/controllers/tutkinnonosa.js"></script>
-    <script src="scripts/services/arviointi.js"></script>
+    <script src="scripts/services/kayttajaprofiilit.js"></script>
     <script src="scripts/services/navigaatiopolku.js"></script>
-    <script src="scripts/directives/editointikontrollit.js"></script>
-    <script src="scripts/directives/editointiKontrolli.js"></script>
-    <script src="scripts/directives/tuotutkinnonosa.js"></script>
-    <script src="scripts/services/editointikontrollit.js"></script>
-    <script src="scripts/controllers/muokkaus.js"></script>
-    <script src="scripts/directives/muokkaus/tutkinnonosa.js"></script>
-    <script src="scripts/directives/muokkaus/tekstikappale.js"></script>
-    <script src="scripts/services/perusteprojekti.js"></script>
-    <script src="scripts/controllers/perusteprojektiTiedot.js"></script>
-    <script src="scripts/controllers/perusteprojektiMuodostumissaannot.js"></script>
-    <script src="scripts/controllers/projektiryhmanJasen.js"></script>
-    <script src="scripts/controllers/projektiryhma.js"></script>
-    <script src="scripts/controllers/projektinperustiedot.js"></script>
-    <script src="scripts/controllers/omatperusteprojektit.js"></script>
-    <script src="scripts/directives/datecomparisonvalidator.js"></script>
-    <script src="scripts/directives/muokkaus/muokattavaKentta.js"></script>
-    <script src="scripts/directives/arviointi.js"></script>
-    <script src="scripts/controllers/modals/ilmoitusdialogi.js"></script>
-    <script src="scripts/controllers/projektinperuste.js"></script>
-    <script src="scripts/services/projektinperuste.js"></script>
+    <script src="scripts/services/notifikaatiot.js"></script>
     <script src="scripts/services/opintoalat.js"></script>
-    <script src="scripts/directives/muokkaus/kenttalistaus.js"></script>
+    <script src="scripts/services/pagination.js"></script>
+    <script src="scripts/services/palvelinhaunIlmoitusKanava.js"></script>
+    <script src="scripts/services/perusteenosat.js"></script>
+    <script src="scripts/services/perusteet.js"></script>
+    <script src="scripts/services/perusteprojekti.js"></script>
+    <script src="scripts/services/projektinperuste.js"></script>
+    <script src="scripts/services/suosikit.js"></script>
+    <script src="scripts/services/suosikit.js"></script>
+    <script src="scripts/services/varmistusdialogi.js"></script>
+    <script src="scripts/services/yleinenData.js"></script>
+    <script src='scripts/services/admin.js'></script>
+    <script src='scripts/services/koulutusalat.js'></script>
+    <script src="scripts/directives/arviointi.js"></script>
+    <script src="scripts/directives/ckeditor.js"></script>
+    <script src="scripts/directives/datecomparisonvalidator.js"></script>
     <script src="scripts/directives/dateformatter.js"></script>
+    <script src="scripts/directives/editointiKontrolli.js"></script>
+    <script src="scripts/directives/editointikontrollit.js"></script>
+    <script src="scripts/directives/esitysOtsikko.js"></script>
+    <script src="scripts/directives/fileselect.js"></script>
+    <script src="scripts/directives/formfield.js"></script>
+    <script src="scripts/directives/koodisto.js"></script>
+    <script src="scripts/directives/latausElementti.js"></script>
+    <script src="scripts/directives/muokkaus/kenttalistaus.js"></script>
+    <script src="scripts/directives/muokkaus/muokattavaKentta.js"></script>
+    <script src="scripts/directives/muokkaus/tekstikappale.js"></script>
+    <script src="scripts/directives/muokkaus/tutkinnonosa.js"></script>
+    <script src="scripts/directives/navi.js"></script>
+    <script src="scripts/directives/optioLista.js"></script>
+    <script src="scripts/directives/optioModal.js"></script>
+    <script src="scripts/directives/sivunavigaatio.js"></script>
+    <script src="scripts/directives/spinner.js"></script>
+    <script src="scripts/directives/statusbadge.js"></script>
+    <script src="scripts/directives/tree.js"></script>
+    <script src="scripts/directives/tuotutkinnonosa.js"></script>
+    <script src="scripts/controllers/admin.js"></script>
     <script src="scripts/controllers/aloitussivu.js"></script>
-    <script src="scripts/controllers/suodattimet.js"></script>
+    <script src="scripts/controllers/esitys.js"></script>
+    <script src="scripts/controllers/excel.js"></script>
+    <script src="scripts/controllers/haku.js"></script>
+    <script src="scripts/controllers/kieli.js"></script>
+    <script src="scripts/controllers/modals/ilmoitusdialogi.js"></script>
+    <script src="scripts/controllers/modals/uudelleenohjaus.js"></script>
+    <script src="scripts/controllers/muokkaus.js"></script>
+    <script src="scripts/controllers/omatperusteprojektit.js"></script>
     <script src="scripts/controllers/perusteprojekti.js"></script>
+    <script src="scripts/controllers/perusteprojektiMuodostumissaannot.js"></script>
+    <script src="scripts/controllers/perusteprojektiTiedot.js"></script>
+    <script src="scripts/controllers/perusteprojektinTila.js"></script>
     <script src="scripts/controllers/perusteprojektisisalto.js"></script>
     <script src="scripts/controllers/perusteprojektitoimikausi.js"></script>
-    <script src="scripts/services/varmistusdialogi.js"></script>
-    <script src="scripts/controllers/kieli.js"></script>
+    <script src="scripts/controllers/projektinperuste.js"></script>
+    <script src="scripts/controllers/projektinperustiedot.js"></script>
+    <script src="scripts/controllers/projektiryhma.js"></script>
+    <script src="scripts/controllers/projektiryhmanJasen.js"></script>
+    <script src="scripts/controllers/suodattimet.js"></script>
+    <script src="scripts/controllers/suosikit.js"></script>
+    <script src="scripts/controllers/tutkinnonosa.js"></script>
+    <script src="scripts/controllers/virhe.js"></script>
     <!-- endbuild -->
   </body>
 </html>

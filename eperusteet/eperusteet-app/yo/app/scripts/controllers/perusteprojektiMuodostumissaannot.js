@@ -47,7 +47,6 @@ angular.module('eperusteApp')
     else { TreeCache.hae(); }
 
     function tallennaRakenne(rakenne) {
-      console.log($scope.rakenne.$suoritustapa);
       TreeCache.tallenna(rakenne, $stateParams.perusteenId);
       PerusteenRakenne.tallenna(
         rakenne,
