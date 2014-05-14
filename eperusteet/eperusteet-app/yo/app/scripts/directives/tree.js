@@ -130,9 +130,10 @@ angular.module('eperusteApp')
   })
   .directive('tree', function($compile, $state, $modal, Muodostumissaannot) {
     function generoiOtsikko() {
-      var tosa = 'tutkinnonOsat[rakenne._tutkinnonOsa]';
+      var tosa = '{{ tutkinnonOsat[rakenne._tutkinnonOsa] .nimi | kaanna | rajaaKoko:40 }}, <b>{{ + tutkinnonOsat[rakenne._tutkinnonOsa].laajuus || 0 }}</b>ov';
       return '' +
-        '<span ng-if="rakenne._tutkinnonOsa">{{ ' + tosa + '.nimi | kaanna | rajaaKoko:40 }}, <b>{{' + tosa + '.laajuus || 0 }}</b>ov</span>' +
+        '<span ng-if="rakenne._tutkinnonOsa && muokkaus">' + tosa + '</span>' +
+        '<span ng-if="rakenne._tutkinnonOsa && !muokkaus"><a href="" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsaId: rakenne._tutkinnonOsa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a></span>' +
         '<span class="pull-right" ng-if="rakenne._tutkinnonOsa && muokkaus"><a href="" ng-click="poista(rakenne, vanhempi)"><span class="glyphicon glyphicon-remove"></a></span>' +
         '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi"><b>{{ rakenne.nimi | kaanna  }}</b></span>';
     }
