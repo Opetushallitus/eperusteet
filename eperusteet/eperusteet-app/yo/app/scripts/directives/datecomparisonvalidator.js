@@ -6,29 +6,32 @@ angular.module('eperusteApp')
     return {
       restrict: 'A',
       require: 'ngModel',
-      scope: {
-        vertailtavaKenttaNimi: '@dateComparisonName',
-        aikaisempiAjankohta: '@dateComparisonEarlier'
-      },
+//      scope: {
+//        vertailtavaKenttaNimi: '@dateComparisonName',
+//        aikaisempiAjankohta: '@dateComparisonEarlier'
+//      },
       link: function(scope, element, attrs, ctrl) {
-             
+
+        var vertailtavaKenttaNimi = attrs['dateComparisonName'];
+        var aikaisempiAjankohta = attrs['dateComparisonEarlier'];
+
         ctrl.$parsers.push(function(viewValue) {
           var form = element.inheritedData('$formController');
-          scope.vertailtavaKentta = form[scope.vertailtavaKenttaNimi].$modelValue;
+          var vertailtavaKentta = form[vertailtavaKenttaNimi].$modelValue;
 
-          if (scope.aikaisempiAjankohta === 'true') {
-            if (moment(scope.vertailtavaKentta).isAfter(viewValue, 'day') || !scope.vertailtavaKentta ||  !viewValue) {
+          if (aikaisempiAjankohta === 'true') {
+            if (moment(vertailtavaKentta).isAfter(viewValue, 'day') || !vertailtavaKentta ||  !viewValue) {
               ctrl.$setValidity('dateComparisonValidator', true);
-              form[scope.vertailtavaKenttaNimi].$setValidity('dateComparisonValidator', true);
+              form[vertailtavaKenttaNimi].$setValidity('dateComparisonValidator', true);
               return viewValue;
             } else {
               ctrl.$setValidity('dateComparisonValidator', false);
               return viewValue;
             }
           } else {
-            if (moment(viewValue).isAfter(scope.vertailtavaKentta, 'day') || !scope.vertailtavaKentta ||  !viewValue) {
+            if (moment(viewValue).isAfter(vertailtavaKentta, 'day') || !vertailtavaKentta ||  !viewValue) {
               ctrl.$setValidity('dateComparisonValidator', true);
-              form[scope.vertailtavaKenttaNimi].$setValidity('dateComparisonValidator', true);
+              form[vertailtavaKenttaNimi].$setValidity('dateComparisonValidator', true);
               return viewValue;
             } else {
               ctrl.$setValidity('dateComparisonValidator', false);
