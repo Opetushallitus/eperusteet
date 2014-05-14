@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -53,29 +53,27 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Audited
 public class Peruste extends AbstractAuditedEntity implements Serializable, ReferenceableEntity {
 
-    private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
     @Setter
     private Long id;
-    
+
     @ValidHtml(whitelist = WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen nimi;
-    
+
     @Getter
     @Setter
     private String tutkintokoodi;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "peruste_koulutus",
-            joinColumns = @JoinColumn(name = "peruste_id"),
-            inverseJoinColumns = @JoinColumn(name = "koulutus_id"))
+               joinColumns = @JoinColumn(name = "peruste_id"),
+               inverseJoinColumns = @JoinColumn(name = "koulutus_id"))
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -84,45 +82,45 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
-    @Column(name="voimassaolo_alkaa")
+    @Column(name = "voimassaolo_alkaa")
     private Date voimassaoloAlkaa;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
-    @Column(name="voimassaolo_loppuu")
+    @Column(name = "voimassaolo_loppuu")
     private Date voimassaoloLoppuu;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
-    @Column(name="siirtyma_alkaa")
+    @Column(name = "siirtyma_alkaa")
     private Date siirtymaAlkaa;
-    
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @MapKey(name = "suoritustapakoodi")
     @JoinTable(name = "peruste_suoritustapa",
-            joinColumns = @JoinColumn(name = "peruste_id"),
-            inverseJoinColumns = @JoinColumn(name = "suoritustapa_id"))
+               joinColumns = @JoinColumn(name = "peruste_id"),
+               inverseJoinColumns = @JoinColumn(name = "suoritustapa_id"))
     @Getter
     @Setter
     private Set<Suoritustapa> suoritustavat;
-    
+
     @Getter
     @Setter
     @Enumerated(EnumType.STRING)
     @NotNull
-    private Tila tila;
+    private Tila tila = Tila.LUONNOS;
 
     public Suoritustapa getSuoritustapa(Suoritustapakoodi koodi) {
-        for ( Suoritustapa s : suoritustavat ) {
-            if ( s.getSuoritustapakoodi() == koodi) {
+        for (Suoritustapa s : suoritustavat) {
+            if (s.getSuoritustapakoodi() == koodi) {
                 return s;
             }
         }
         throw new IllegalArgumentException("Perusteella ei ole pyydettyä suoritustapaa");
     }
-    
+
     @Override
     public EntityReference getReference() {
         return new EntityReference(id);

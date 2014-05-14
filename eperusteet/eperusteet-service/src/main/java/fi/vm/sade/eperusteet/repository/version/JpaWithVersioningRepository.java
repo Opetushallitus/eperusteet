@@ -8,17 +8,15 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean
 public interface JpaWithVersioningRepository<T, ID extends Serializable> extends JpaRepository<T, ID> {
-	
+
 	List<Revision> getRevisions(final ID id);
 	T findRevision(final ID id, final Integer revisionId);
-		
-	public class DomainClassNotAuditedException extends BeanCreationException {
 
-		private static final long serialVersionUID = 1L;
-		
+	public class DomainClassNotAuditedException extends BeanCreationException {
+        
 		public DomainClassNotAuditedException(Class<?> clazz) {
 			super("Defined domain class '" + clazz.getSimpleName() + "' does not contain @audited-annotation");
 		}
 	}
-	
+
 }
