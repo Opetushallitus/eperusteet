@@ -10,24 +10,26 @@
     <formfield ng-if="vanhempi" ng-model="ryhma" model-var="pakollinen" label="pakollisuus" type="checkbox"></formfield>
 
     <h3 ng-if="vanhempi">{{'tutkinnon-rakenne' | translate}}</h3>
-    <div ng-if="vanhempi" class="form-group">
-      <div class="btn-group col-sm-offset-3">
+    <div class="form-group">
+      <div ng-show="suoritustapa !== 'naytto'" class="btn-group col-sm-offset-3">
         <button ng-model="ms.laajuus" type="button" class="btn btn-default" btn-checkbox translate>tutkinnonosa-laajuus</button>
+        <button ng-model="ms.koko" type="button" class="btn btn-default" btn-checkbox translate>tutkinnonosa-koko</button>
+      </div>
+      <div ng-hide="suoritustapa !== 'naytto'" class="col-sm-offset-3">
         <button ng-model="ms.koko" type="button" class="btn btn-default" btn-checkbox translate>tutkinnonosa-koko</button>
       </div>
     </div>
 
-    <div ng-show="ms.laajuus || !vanhempi">
+    <div ng-show="suoritustapa !== 'naytto' && ms.laajuus">
       <h3 translate>tutkinnonosa-laajuus</h3>
       <formfield ng-model="ryhma" model-var="muodostumisSaanto.laajuus.minimi" label="minimi" type="number"></formfield>
       <formfield ng-model="ryhma" model-var="muodostumisSaanto.laajuus.maksimi" label="maksimi" type="number"></formfield>
       <formfield ng-model="ryhma" model-var="muodostumisSaanto.laajuus.yksikko" label="yksikko" options="[
                  {value: 'OPINTOVIIKKO', label: 'opintoviikko'},
                  {value: 'OSAAMISPISTE', label: 'osaamispiste'}]"></formfield>
-
     </div>
 
-    <div ng-if="vanhempi" ng-show="ms.koko">
+    <div ng-show="ms.koko">
       <h3 translate>tutkinnonosa-koko</h3>
       <formfield ng-model="ryhma" model-var="muodostumisSaanto.koko.minimi" label="minimi" type="number"></formfield>
       <formfield ng-model="ryhma" model-var="muodostumisSaanto.koko.maksimi" label="maksimi" type="number"></formfield>

@@ -1,4 +1,5 @@
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {
@@ -25,18 +26,28 @@ angular.module('eperusteApp')
       tutkinnonOsat: {}
     };
 
-    function haeRakenne() {
-      PerusteenRakenne.hae($stateParams.perusteProjektiId, function(res) {
+    $scope.vaihdaSuoritustapa = function() {
+      haeRakenne();
+    };
+
+    function haeRakenne(st) {
+      if (st) {
+        $scope.rakenne.$suoritustapa = st.suoritustapakoodi;
+      }
+      PerusteenRakenne.hae($stateParams.perusteProjektiId, $scope.rakenne.$suoritustapa, function(res) {
+        res.$resolved = true;
+        res.$suoritustavat = _.sortBy(res.$peruste.suoritustavat, function(st) { return st.suoritustapakoodi; });
+        res.$suoritustapa = $scope.rakenne.$suoritustapa || res.$suoritustavat[0].suoritustapakoodi;
         $scope.rakenne = res;
-        $scope.rakenne.$resolved = true;
-        $scope.rakenne.$suoritustapa = $scope.rakenne.$suoritustapa || $scope.rakenne.$peruste.suoritustavat[0].suoritustapakoodi;
       });
     }
+    $scope.haeRakenne = haeRakenne;
 
     if (TreeCache.nykyinen() !== $stateParams.perusteenId) { haeRakenne(); }
     else { TreeCache.hae(); }
 
     function tallennaRakenne(rakenne) {
+      console.log($scope.rakenne.$suoritustapa);
       TreeCache.tallenna(rakenne, $stateParams.perusteenId);
       PerusteenRakenne.tallenna(
         rakenne,

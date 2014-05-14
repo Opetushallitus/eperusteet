@@ -63,6 +63,10 @@ div.skratchpad-items>ul {
   float: right;
 }
 
+.tree .pointer {
+  cursor: pointer;
+}
+
 .grab-cursor {
   cursor: move;
 }

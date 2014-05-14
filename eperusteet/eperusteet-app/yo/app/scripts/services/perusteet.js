@@ -48,7 +48,7 @@ angular.module('eperusteApp')
     });
   })
   .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet, TreeCache, PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {
-    function haeRakenne(perusteProjektiId, success) {
+    function haeRakenne(perusteProjektiId, suoritustapa, success) {
       var response = {};
       PerusteprojektiResource.get({ id: perusteProjektiId }, function(vastaus) {
         PerusteProjektiService.save(vastaus);
@@ -57,11 +57,11 @@ angular.module('eperusteApp')
         }, function(peruste) {
           PerusteRakenteet.get({
             perusteenId: peruste.id,
-            suoritustapa: peruste.suoritustavat[0].suoritustapakoodi // FIXME
+            suoritustapa: suoritustapa || peruste.suoritustavat[0].suoritustapakoodi
           }, function(rakenne) {
             PerusteTutkinnonosat.query({
               perusteenId: peruste.id,
-              suoritustapa: peruste.suoritustavat[0].suoritustapakoodi // FIXME
+              suoritustapa: suoritustapa || peruste.suoritustavat[0].suoritustapakoodi
             }, function(tosat) {
               response.rakenne = rakenne;
               response.$peruste = peruste;

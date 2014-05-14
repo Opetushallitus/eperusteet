@@ -8,16 +8,16 @@
         <a href="" ng-click="suljePolut()">
           <span ng-show="suljettuViimeksi" class="glyphicon glyphicon-chevron-down"></span>
           <span ng-hide="suljettuViimeksi" class="glyphicon glyphicon-chevron-up"></span>
-          Avaa / Sulje kaikki
+          {{ 'avaa-ja-sulje' | kaanna }}
         </a>
       </div>
       <div class="tree-presentation">
         <div ng-if="!lisataanUuttaOsaa" class="tree col-lg-6 col-md-8 col-xs-12">
-          <tree muokkaus="muokkaus" ng-if="rakenne.$resolved" rakenne="rakenne.rakenne" tutkinnon-osat="rakenne.tutkinnonOsat" uusi-tutkinnon-osa="uusiTutkinnonOsa"></tree>
+          <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" ng-if="rakenne.$resolved" rakenne="rakenne.rakenne" tutkinnon-osat="rakenne.tutkinnonOsat" uusi-tutkinnon-osa="uusiTutkinnonOsa"></tree>
         </div>
         <div ng-if="muokkaus" class="skratchpadlist col-lg-4 col-md-4 col-xs-12 pull-right">
           <div class="skratchpad-header">
-            <div><a href="" ng-click="ryhmaModaali()"><span class="glyphicon glyphicon-plus-sign"></span> Uusi ryhmä</a></div>
+            <div><a href="" ng-click="ryhmaModaali(rakenne.$suoritustapa)"><span class="glyphicon glyphicon-plus-sign"></span> {{ 'luo-uusi-ryhma' | kaanna }}</a></div>
           </div>
           <tabset justified="true">
             <tab heading="Leikelauta">
@@ -26,11 +26,9 @@
                 <ul ui-sortable="sortableOptions" class="tree-group skratchpad" ng-model="skratchpad">
                   <li class="skratchpad-item" ng-class="{ 'skratchpad-item-virhe': osa.$virhe }" ng-repeat="osa in skratchpad">
                     <div ng-if="osa._tutkinnonOsa">{{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna }}</div>
-                    <!-- <div ng&#45;if="!osa._tutkinnonOsa &#38;&#38; osa.nimi">{{ osa.nimi | kaanna }}</div> -->
                     <div ng-if="osa.osat !== undefined">
                       <span>
                         {{osa.nimi|kaanna}} ({{ osa.osat.length }} osaa)
-                        <a class="pull-right" href="" ng-click="ryhmaModaali(osa)"><span class="glyphicon glyphicon-pencil"></span></a>
                       </span>
                     </div>
                   </li>
@@ -50,7 +48,7 @@
     </tab>
     <tab heading="Tutkinnon osat">
       <div ng-show="uniikit.length === 0" class="">
-        <h3>Tutkinnon osia ei ole</h3>
+        <h3>{{ tutkinnon-osia-ei-ole | kaanna }}</h3>
       </div>
       <div ng-show="uniikit.length > 0" class="rajauslaatikko">
         <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia...">
@@ -110,13 +108,13 @@
         </div>
       </div>
       <h3 ng-show="muokkaus">
-        <a href="" ng-click="lisaaTutkinnonOsa()">
+        <a href="" ng-click="lisaaTutkinnonOsa(rakenne.$suoritustapa)">
           <span class="glyphicon glyphicon-plus"></span>
           {{ 'lisää' | kaanna }}
         </a>
       </h3>
       <h3 ng-show="muokkaus">
-        <a href="" ng-click="tuoTutkinnonosa()">
+        <a href="" ng-click="tuoTutkinnonosa(rakenne.$suoritustapa)">
           <span class="glyphicon glyphicon-cloud-download"></span>
           {{ 'tuo-tutkinnonosa' | kaanna }}
         </a>
