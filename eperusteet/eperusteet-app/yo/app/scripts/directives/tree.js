@@ -225,8 +225,8 @@ angular.module('eperusteApp')
         template =
           '<div ng-if="!vanhempi">' +
           '  <div class="otsikko">' +
-          '    <h4 ng-show="muokkaus"><a href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)">{{ rakenne.nimi || \'nimetön\' | kaanna }}</a>, {{ rakenne.$laajuus || 0 }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</h4>' +
-          '    <h4 ng-hide="muokkaus">{{ rakenne.nimi || \'nimetön\' | kaanna }}, {{ rakenne.$laajuus || 0 }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</h4>' +
+          '    <h4 ng-show="muokkaus"><a href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)">{{ rakenne.nimi || \'nimetön\' | kaanna }}</a><span ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus">, {{ rakenne.$laajuus || 0 }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</span></h4>' +
+          '    <h4 ng-hide="muokkaus">{{ rakenne.nimi || \'nimetön\' | kaanna }}<span ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus">, {{ rakenne.$laajuus || 0 }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</span></h4>' +
           '    <div ng-if="rakenne.$virhe" class="isovirhe">{{ rakenne.$virhe | kaanna }}</div>' +
           '  </div>' +
           '</div>' +
@@ -273,7 +273,6 @@ angular.module('eperusteApp')
         scope.skratchpad = [];
         scope.uniikit = [];
         scope.topredicate = 'nimi.fi';
-        scope.tosarajaus = '';
 
         scope.$watch('rakenne.$suoritustapa', function() {
           scope.apumuuttujat = {
@@ -328,11 +327,6 @@ angular.module('eperusteApp')
           }
           else { _.remove(scope.skratchpad, ryhma); }
         });
-
-        scope.paivitaRajaus = function(rajaus) { scope.tosarajaus = rajaus; };
-        scope.rajaaTutkinnonOsia = function(haku) {
-          return Kaanna.kaanna(haku.nimi).toLowerCase().indexOf(scope.tosarajaus.toLowerCase()) !== -1;
-        };
 
         scope.suljePolut = function() {
           scope.rakenne.rakenne.$collapsed = scope.suljettuViimeksi;

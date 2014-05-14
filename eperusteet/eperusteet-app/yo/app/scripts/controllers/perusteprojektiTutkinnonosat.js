@@ -4,11 +4,11 @@
 angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
-      .state('perusteprojekti.editoi.muodostumissaannot', {
-        url: '/tutkinnonrakenne',
-        templateUrl: 'views/perusteprojektiMuodostumissaannot.html',
+      .state('perusteprojekti.editoi.tutkinnonosat', {
+        url: '/tutkinnonosat',
+        templateUrl: 'views/perusteprojektiTutkinnonosat.html',
         controller: 'PerusteprojektiMuodostumissaannotCtrl',
-        naviRest: ['muodostumissaannot'],
+        naviRest: ['tutkinnonosat'],
         onEnter: ['SivunavigaatioService', function (SivunavigaatioService) {
           SivunavigaatioService.aseta({osiot: true});
         }]
@@ -16,15 +16,19 @@ angular.module('eperusteApp')
   })
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $rootScope, $state, $stateParams,
               Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, TreeCache, Notifikaatiot,
-              Editointikontrollit) {
-    $scope.editoi = false;
+              Editointikontrollit, Kaanna) {
     $scope.rakenne = {
       $resolved: false,
       rakenne: { osat: [] },
       tutkinnonOsat: {}
     };
 
+    $scope.editoi = false;
+    $scope.tosarajaus = '';
+
     $scope.vaihdaSuoritustapa = function() { haeRakenne(); };
+
+    $scope.paivitaRajaus = function(rajaus) { $scope.tosarajaus = rajaus; };
 
     function haeRakenne(st) {
       if (st) { $scope.rakenne.$suoritustapa = st.suoritustapakoodi; }
@@ -64,4 +68,8 @@ angular.module('eperusteApp')
         $scope.editoi = false;
       }
     });
+
+    $scope.rajaaTutkinnonOsia = function(haku) {
+      return Kaanna.kaanna(haku.nimi).toLowerCase().indexOf($scope.tosarajaus.toLowerCase()) !== -1;
+    };
   });

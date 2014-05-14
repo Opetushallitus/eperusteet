@@ -1,0 +1,74 @@
+<div ng-if="rakenne.$resolved">
+    <div ng-show="rakenne.tutkinnonOsat.length === 0" class="">
+        <h3>{{ tutkinnon-osia-ei-ole | kaanna }}</h3>
+    </div>
+    <div ng-hide="rakenne.tutkinnonOsat.length === 0" class="rajauslaatikko">
+        <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia...">
+    </div>
+    <div class="tutkinnonosa-laatikko" ng-repeat="(k, v) in rakenne.tutkinnonOsat | mapFilter:rajaaTutkinnonOsia">
+        <div class="otsikko">
+            <div ng-hide="editoi" class="muokkaus">
+                <a href="" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })">{{ 'näytä' | kaanna }} <span class="glyphicon glyphicon-chevron-right"></span></a>
+            </div>
+            <h3>
+                <a href="" ng-click="v.$avattu = !v.$avattu">
+                    <span ng-show="v.$avattu" class="glyphicon glyphicon-chevron-down"></span>
+                    <span ng-hide="v.$avattu" class="glyphicon glyphicon-chevron-up"></span>
+                    {{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}
+                </a>
+            </h3>
+        </div>
+        <div ng-show="v.$avattu" class="sisalto">
+            <div ng-hide="editoi">
+                <div class="form-group">
+                    <label class="col-sm-2">{{ 'laajuus' | kaanna }}</label>
+                    <div class="col-sm-10">
+                        {{ v.laajuus || 0 }}
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <label class="col-sm-2">{{ 'yksikkö' | kaanna }}</label>
+                    <div class="col-sm-10">
+                        {{ v.yksikko || '-' | kaanna }}
+                    </div>
+                </div>
+            </div>
+            <div ng-show="editoi">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">{{ 'laajuus' | kaanna }}</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" ng-model="v.laajuus" type="number">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">{{ 'yksikkö' | kaanna }}</label>
+                        <div class="col-sm-8">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default" ng-model="v.yksikko" btn-radio="'OPINTOVIIKKO'">{{ 'OPINTOVIIKKO' | kaanna }}</button>
+                                <button type="button" class="btn btn-default" ng-model="v.yksikko" btn-radio="'OSAAMISPISTE'">{{ 'OSAAMISPISTE' | kaanna }}</button>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-danger" ng-click="poistaTutkinnonOsa(v)">Poista</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <h3 ng-show="editoi">
+        <a href="" ng-click="lisaaTutkinnonOsa(rakenne.$suoritustapa)">
+            <span class="glyphicon glyphicon-plus"></span>
+            {{ 'lisää' | kaanna }}
+        </a>
+    </h3>
+    <h3 ng-show="editoi">
+        <a href="" ng-click="tuoTutkinnonosa()">
+            <span class="glyphicon glyphicon-cloud-download"></span>
+            {{ 'tuo-tutkinnonosa' | kaanna }}
+        </a>
+    </h3>
+</div>

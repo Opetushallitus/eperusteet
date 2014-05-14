@@ -34,6 +34,9 @@ European Union Public Licence for more details.
             <h2 class="section-title">Tutkintokohtaiset osat</h2>
             <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" translate>lisaa-tutkintokohtainen-osa</button>
             <ul class="tutkinnonsisalto-list">
+                <li class="list-element pointer" ui-sref="perusteprojekti.editoi.tutkinnonosat">
+                    <h3>{{ 'tutkinnonosat' | kaanna }}</h3>
+                </li>
                 <li class="list-element pointer" ui-sref="perusteprojekti.editoi.muodostumissaannot">
                     <h3>{{ 'tutkinnon-rakenne' | kaanna }}</h3>
                 </li>

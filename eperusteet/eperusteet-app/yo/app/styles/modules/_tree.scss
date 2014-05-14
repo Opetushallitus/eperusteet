@@ -72,7 +72,8 @@ div.skratchpad-items>ul {
 }
 
 .skratchpad {
-  min-height: 20px;
+  // min-height: 20px;
+  margin-bottom: 8px;
 }
 
 .skratchpadlist {
@@ -87,13 +88,13 @@ div.skratchpad-items>ul {
 }
 
 .skratchpad-items {
-  overflow-y: auto;
-  height: 300px;
+  overflow: hidden;
+  // height: 300px;
 }
 
 .skratchpad-help {
-  margin-top: 0px;
-  padding: 10px;
+  margin: 0px;
+  // padding: 4px;
   color: #999;
 }
 
