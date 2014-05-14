@@ -12,8 +12,8 @@ angular.module('eperusteApp')
 //      },
       link: function(scope, element, attrs, ctrl) {
 
-        var vertailtavaKenttaNimi = attrs['dateComparisonName'];
-        var aikaisempiAjankohta = attrs['dateComparisonEarlier'];
+        var vertailtavaKenttaNimi = attrs.dateComparisonName;
+        var aikaisempiAjankohta = attrs.dateComparisonEarlier;
 
         ctrl.$parsers.push(function(viewValue) {
           var form = element.inheritedData('$formController');
