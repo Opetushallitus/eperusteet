@@ -24,7 +24,7 @@ angular.module('eperusteApp')
       scope: {
         tekstikappale: '='
       },
-      controller: function($scope, $state, $q, $modal, Editointikontrollit, PerusteenOsat) {
+      controller: function($scope, $state, $q, $modal, Editointikontrollit, PerusteenOsat, Notifikaatiot) {
 
         $scope.fields =
           new Array({
@@ -51,26 +51,17 @@ angular.module('eperusteApp')
 
           Editointikontrollit.registerCallback({
             edit: function() {
-              console.log('tutkinnon osa - edit');
             },
             save: function() {
               //TODO: Validate tutkinnon osa
-              console.log('validate tekstikappale');
-              if($scope.editableTekstikappale.id) {
-                $scope.editableTekstikappale.$saveTekstikappale();
-                openNotificationDialog();
+              if ($scope.editableTekstikappale.id) {
+                $scope.editableTekstikappale.$saveTekstikappale(openNotificationDialog, Notifikaatiot.serverCb);
               } else {
-                PerusteenOsat.saveTekstikappale($scope.editableTekstikappale).$promise.then(function(response) {
-                  openNotificationDialog().result.then(function() {
-                    $state.go('perusteprojekti.editoi.perusteenosa', { perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: response.id });
-                  });
-                });
+                PerusteenOsat.saveTekstikappale($scope.editableTekstikappale, openNotificationDialog(), Notifikaatiot.serverCb);
               }
               $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
             },
             cancel: function() {
-              console.log('tutkinnon osa - cancel');
-
               $scope.editableTekstikappale = angular.copy($scope.tekstikappale);
               var tekstikappaleDefer = $q.defer();
               $scope.tekstikappalePromise = tekstikappaleDefer.promise;
@@ -81,21 +72,10 @@ angular.module('eperusteApp')
         }
 
         function openNotificationDialog() {
-          return $modal.open({
-            templateUrl: 'views/modals/ilmoitusdialogi.html',
-            controller: 'IlmoitusdialogiCtrl',
-            resolve: {
-              sisalto: function() {
-                return {
-                  otsikko: 'tallennettu',
-                  ilmoitus: 'muokkaus-tekstikappale-tallennettu'
-                };
-              }
-            }
-          });
+          Notifikaatiot.onnistui('tallennettu', 'muokkaus-tutkinnon-osa-tallennettu');
         }
 
-        if($scope.tekstikappale) {
+        if ($scope.tekstikappale) {
           $scope.tekstikappalePromise = $scope.tekstikappale.$promise.then(function(response) {
             setupTekstikappale(response);
             return $scope.editableTekstikappale;

@@ -50,18 +50,20 @@ angular.module('eperusteApp')
   .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet, TreeCache, PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {
     function haeRakenne(perusteProjektiId, suoritustapa, success) {
       var response = {};
+
       PerusteprojektiResource.get({ id: perusteProjektiId }, function(vastaus) {
         PerusteProjektiService.save(vastaus);
         Perusteet.get({
           perusteenId: vastaus._peruste
         }, function(peruste) {
+          suoritustapa = suoritustapa || peruste.suoritustavat[0].suoritustapakoodi;
           PerusteRakenteet.get({
             perusteenId: peruste.id,
-            suoritustapa: suoritustapa || peruste.suoritustavat[0].suoritustapakoodi
+            suoritustapa: suoritustapa
           }, function(rakenne) {
             PerusteTutkinnonosat.query({
               perusteenId: peruste.id,
-              suoritustapa: suoritustapa || peruste.suoritustavat[0].suoritustapakoodi
+              suoritustapa: suoritustapa
             }, function(tosat) {
               response.rakenne = rakenne;
               response.$peruste = peruste;

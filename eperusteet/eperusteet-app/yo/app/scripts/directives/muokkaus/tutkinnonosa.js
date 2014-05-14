@@ -83,18 +83,15 @@ angular.module('eperusteApp')
         function setupTutkinnonOsa(osa) {
           $scope.editableTutkinnonOsa = angular.copy(osa);
 
-          $scope.tutkinnonOsanMuokkausOtsikko = $scope.editableTutkinnonOsa.id ? "muokkaus-tutkinnon-osa" : "luonti-tutkinnon-osa";
+          $scope.tutkinnonOsanMuokkausOtsikko = $scope.editableTutkinnonOsa.id ? 'muokkaus-tutkinnon-osa' : 'luonti-tutkinnon-osa';
 
           Editointikontrollit.registerCallback({
             edit: function() {
-              console.log('tutkinnon osa - edit');
             },
             save: function() {
               //TODO: Validate tutkinnon osa
-              console.log('validate tutkinnon osa');
-
-              if($scope.editableTutkinnonOsa.id) {
-                $scope.editableTutkinnonOsa.$saveTutkinnonOsa().then(function (response) {
+              if ($scope.editableTutkinnonOsa.id) {
+                $scope.editableTutkinnonOsa.$saveTutkinnonOsa(function (response) {
                   $scope.editableTutkinnonOsa = angular.copy(response);
                   $scope.tutkinnonOsa = angular.copy(response);
                   Editointikontrollit.lastModified = response;
@@ -104,18 +101,16 @@ angular.module('eperusteApp')
                   var tutkinnonOsaDefer = $q.defer();
                   $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
                   tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
-                });
+                }, Notifikaatiot.serverCb);
               } else {
-                PerusteenOsat.saveTutkinnonOsa($scope.editableTutkinnonOsa).$promise.then(function(response) {
+                PerusteenOsat.saveTutkinnonOsa($scope.editableTutkinnonOsa, function(response) {
                   Editointikontrollit.lastModified = response;
                   openNotificationDialog();
-                });
+                }, Notifikaatiot.serverCb);
               }
               Editointicatcher.give(_.clone($scope.editableTutkinnonOsa));
             },
             cancel: function() {
-              console.log('tutkinnon osa - cancel');
-
               $scope.editableTutkinnonOsa = angular.copy($scope.tutkinnonOsa);
 
               // FIXME: Näillä ei mitään virkaa?

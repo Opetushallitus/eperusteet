@@ -15,45 +15,63 @@
   margin-left: auto;
   margin-right: auto;
   position: relative;
-  width: 420px;
   top: 0px;
-}
-
-.notification-header {
-  margin: 0px;
-  padding: 0px;
-  text-align: center;
 }
 
 @mixin notification() {
   cursor: pointer;
   padding: 0px 5px 0px 5px;
   min-height: 32px;
-  width: 300px;
-  opacity: 0.85;
+  width: 70%;
   margin: 0px;
-  margin-top: 0px;
-  color: white;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5px;
   font-weight: bold;
+  border-radius: 3px;
+  box-shadow: 2px 2px 6px #999;
+  vertical-align: center;
+}
+
+.notification-body {
+  padding: 6px;
+}
+
+.notification-picture {
+  margin-right: 4px;
+  float: left;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  opacity: 0.2;
+  background: #222;
+}
+
+.notification-message {
+  float: left;
+  font-weight: normal;
 }
 
 .notification-normal {
   @include notification();
-  background: #ccc;
+  background: #e5f4f9;
+  color: #4987b3;
 }
 
 .notification-success {
   @include notification();
-  background: #5cb85c;
+  background: #e4f4e5;
+  color: #4b8947;
 }
 
 .notification-warning {
   @include notification();
-  background: #c80;
+  background: #fcf3d3;
+  color: #a07c3a;
 }
 
 .notification-danger {
   @include notification();
-  background: #f55;
+  background: #d9534f;
+  color: #fff;
 }
-

@@ -30,6 +30,10 @@ angular.module('eperusteApp')
       haeRakenne();
     };
 
+    Notifikaatiot.normaali('tallennus-onnistui', true);
+    Notifikaatiot.onnistui('tallennus-onnistui');
+    Notifikaatiot.varoitus('tallennus-onnistui', true);
+
     function haeRakenne(st) {
       if (st) {
         $scope.rakenne.$suoritustapa = st.suoritustapakoodi;

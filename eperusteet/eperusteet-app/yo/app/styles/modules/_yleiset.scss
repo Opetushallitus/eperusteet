@@ -33,8 +33,42 @@ h1 {
     margin-right: 20px;
   }
 }
+
 button {
   .glyphicon {
     margin-right: 5px;
   }
+}
+
+.jarjestelmavirhe {
+  min-height: 60px;
+  background: beige;
+  border-radius: 5px;
+}
+
+.jarjestelmavirhe-kuva {
+  margin-top: 1%;
+  margin-left: 3%;
+  margin-right: 32px;
+  position: relative;
+  width: 65px;
+  height: 64px;
+  display: inline-block;
+  background: #222;
+  opacity: 0.2;
+  float: left;
+}
+
+.jarjestelmavirhe-viesti {
+  margin-left: 128px;
+  min-height: 60px;
+}
+
+.jarjestelmavirhe-ok {
+  margin-top: 12px;
+  margin-left: 50%;
+}
+
+.jarjestelmavirhe-ok button {
+  width: 60px;
 }

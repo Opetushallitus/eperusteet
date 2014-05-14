@@ -10,5 +10,5 @@ angular.module('eperusteApp')
         controller: 'AdminCtrl'
       });
   })
-  .controller('AdminCtrl', function($scope) {
+  .controller('AdminCtrl', function() {
   });

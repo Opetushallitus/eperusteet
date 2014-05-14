@@ -347,8 +347,6 @@ angular.module('eperusteApp')
           _.forEach(osat, function(osa) { scope.lisaaTutkinnonOsa(osa, after); });
         });
 
-        Editointikontrollit.registerAdditionalSaveCallback(function() { scope.lisataanUuttaOsaa = false; });
-
         scope.lisaaTutkinnonOsa = function(osa, cb) {
           if (osa) {
             osa = { _tutkinnonOsa: osa._tutkinnonOsa };

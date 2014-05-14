@@ -317,4 +317,8 @@
     "poista-tekstikappale-teksti": "Tekstikappale \"{{otsikko}}\" poistetaan. Oletko varma?",
     
     "lisaa-koulutus": "Lisää koulutus"
+
+    "järjestelmävirhe-alku": "Tapahtui järjestelmävirhe ",
+    "järjestelmävirhe-loppu": ". Ole hyvä ja yritä uudelleen. Jos ongelma toistuu ota yhteyttä palvelun ylläpitäjään.",
+    "odottamaton-virhe": "Tapahtui odottamaton virhe"
 }
