@@ -17,34 +17,51 @@ European Union Public Licence for more details.
 <h1 translate>projekti-peruste</h1>
 <form class="form-horizontal" name="perusteForm" role="form" novalidate>
     <div ng-form="projektinPerusteForm">
-        <div>
-            <!--koodisto-select valmis="koodistoHaku" tyyppi="koulutus" ylarelaatiotyyppi="{{peruste.tutkintokoodi}}" filtteri="rajaaKoodit"></koodisto-select-->
-            <button class="btn btn-default" type="button" ng-click="avaaKoodistoModaali()" ng-disabled="hakemassa">{{ "hae-koodi-koodistosta" | kaanna }}</button>
-        </div>
         <div class="form-group">
             <label for="perusteenNimi" class="col-sm-3" translate>perusteen-nimi</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="perusteenNimi"  value="{{peruste.nimi | kaanna}}" placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
+                <input type="text" class="form-control" id="perusteenNimi" ng-model="nimi"  placeholder="{{'anna-perusteen-nimi'| translate}}">
             </div>
         </div>
-        <div class="form-group">
-            <label for="tutkinnonKoodi" class="col-sm-3" translate>perusteen-koodi</label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control" id="tutkinnonKoodi"  ng-model="peruste.koulutukset[0].koulutuskoodi" placeholder="{{'valitse-peruste' | kaanna}}" readonly="true"/>
+
+        <div ng-show="peruste.koulutukset.length > 0">
+            <h3>{{'peruste-koulutukset' | kaanna}}</h3>
+
+            <div ng-repeat="koulutus in peruste.koulutukset">
+                <div class="osio-otsikko" ng-click="open[koulutus.koulutuskoodi] = !open[koulutus.koulutuskoodi]">
+                    <span class="glyphicon" ng-class="{'glyphicon-chevron-down': !open[koulutus.koulutuskoodi], 'glyphicon-chevron-up': open[koulutus.koulutuskoodi]}"></span>
+                    <span>{{koulutus.nimi| kaanna}}</span>
+                </div>
+                <div collapse="!open[koulutus.koulutuskoodi]" class="form-area">
+                    <div class="form-group">
+                        <label for="koulutuksenNimi" class="col-sm-3" translate>koulutuksen-nimi</label>
+                        <div class="col-sm-9">
+                            {{koulutus.nimi| kaanna}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="tutkinnonKoodi" class="col-sm-3" translate>perusteen-koodi</label>
+                        <div class="col-sm-9">
+                            {{koulutus.koulutuskoodi}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="koulutusala" class="col-sm-3" translate>haku-koulutusala</label>
+                        <div class="col-sm-9">
+                            {{valitseKieli(koulutusalaNimi(koulutus.koulutusalakoodi).nimi)}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="opintoala" class="col-sm-3" translate>haku-opintoala</label>
+                        <div class="col-sm-9">      
+                            {{valitseKieli(opintoalaNimi(koulutus.opintoalakoodi).nimi)}}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="form-group">
-            <label for="koulutusala" class="col-sm-3" translate>haku-koulutusala</label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control" id="koulutusala" value="{{valitseKieli(koulutusalaNimi(peruste.koulutukset[0].koulutusalakoodi).nimi)}}" placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="opintoala" class="col-sm-3" translate>haku-opintoala</label>
-            <div class="col-sm-9">
-                <!--input ng-show="projekti.peruste.opintoalat.length < 1" type="text" class="form-control" id="opintoala"  placeholder="{{'valitse-peruste' | translate}}" readonly="true"/-->
-                <input type="text" class="form-control" id="opintoala" value="{{valitseKieli(opintoalaNimi(peruste.koulutukset[0].opintoalakoodi).nimi)}}" placeholder="{{'valitse-peruste' | translate}}" readonly="true"/>
-            </div>
+        <div>
+            <button class="btn btn-default" type="button" ng-click="avaaKoodistoModaali()" ng-disabled="hakemassa">{{ "lisaa-koulutus" | kaanna }}</button>
         </div>
     </div>
     <div class="projekti-form-buttons">

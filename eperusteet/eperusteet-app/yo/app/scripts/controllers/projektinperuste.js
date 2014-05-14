@@ -10,17 +10,25 @@ angular.module('eperusteApp')
         controller: 'ProjektinPerusteCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
         navigaationimiId: 'perusteProjektiId',
-        onEnter: ['SivunavigaatioService', function (SivunavigaatioService) {
-          SivunavigaatioService.aseta({osiot: false});
-        }]
+        onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
+            SivunavigaatioService.aseta({osiot: false});
+          }]
       });
   })
   .controller('ProjektinPerusteCtrl', function($scope, $rootScope, $stateParams, $state,
-    YleinenData, Koodisto, Perusteet, PerusteprojektiResource) {
+    YleinenData, Koodisto, Perusteet, PerusteprojektiResource, Kaanna) {
 
     $scope.hakemassa = false;
     $scope.peruste = {};
     $scope.projektiId = $stateParams.perusteProjektiId;
+    $scope.open = {};
+
+    $scope.$watch('nimi', function() {
+      if (!$scope.peruste.nimi) {
+        $scope.peruste.nimi = {};
+      }
+      $scope.peruste.nimi[YleinenData.kieli] = $scope.nimi;
+    });
 
     PerusteprojektiResource.get({id: $stateParams.perusteProjektiId}, function(vastaus) {
       $scope.projekti = vastaus;
@@ -28,6 +36,10 @@ angular.module('eperusteApp')
         Perusteet.get({perusteenId: vastaus._peruste}, function(vastaus) {
           console.log('peruste', vastaus);
           $scope.peruste = vastaus;
+
+          $scope.nimi = Kaanna.kaanna($scope.peruste.nimi);
+
+
         }, function(virhe) {
           console.log('perusteen haku virhe', virhe);
         });
@@ -42,19 +54,24 @@ angular.module('eperusteApp')
     };
 
     $scope.koodistoHaku = function(koodisto) {
-      $scope.peruste.nimi = koodisto.nimi;
-      $scope.peruste.koulutukset = [];
+      console.log('koodisto', koodisto);
+      $scope.peruste.nimi = _.isEmpty($scope.peruste.nimi[YleinenData.kieli]) ? koodisto.nimi : $scope.peruste.nimi;
+      $scope.nimi = Kaanna.kaanna($scope.peruste.nimi);
+
       $scope.peruste.koulutukset.push({});
-      $scope.peruste.koulutukset[0].koulutuskoodi = koodisto.koodi;
+      $scope.peruste.koulutukset[$scope.peruste.koulutukset.length - 1].nimi = koodisto.nimi;
+      $scope.peruste.koulutukset[$scope.peruste.koulutukset.length - 1].koulutuskoodi = koodisto.koodi;
+
+      $scope.open[koodisto.koodi] = true;
 
       Koodisto.haeAlarelaatiot(koodisto.koodi, function(relaatiot) {
         _.forEach(relaatiot, function(rel) {
           switch (rel.koodisto.koodistoUri) {
             case 'koulutusalaoph2002':
-              $scope.peruste.koulutukset[0].koulutusalakoodi = rel.koodi;
+              $scope.peruste.koulutukset[$scope.peruste.koulutukset.length - 1].koulutusalakoodi = rel.koodi;
               break;
             case 'opintoalaoph2002':
-              $scope.peruste.koulutukset[0].opintoalakoodi = rel.koodi;
+              $scope.peruste.koulutukset[$scope.peruste.koulutukset.length - 1].opintoalakoodi = rel.koodi;
               break;
           }
         });
@@ -65,18 +82,25 @@ angular.module('eperusteApp')
 
     $scope.tallennaPeruste = function() {
       Perusteet.save({perusteenId: $scope.peruste.id}, $scope.peruste, function(vastaus) {
-          console.log('tallennettu peruste', vastaus);
-          $scope.peruste = vastaus;
-          $state.go('perusteprojekti.editoi.sisalto', {perusteProjektiId: $scope.projektiId}, {reload: true});
-        }, function(virhe) {
-          console.log('perusteen tallennus virhe', virhe);
-        });
+        console.log('tallennettu peruste', vastaus);
+        $scope.peruste = vastaus;
+        $state.go('perusteprojekti.editoi.sisalto', {perusteProjektiId: $scope.projektiId}, {reload: true});
+      }, function(virhe) {
+        console.log('perusteen tallennus virhe', virhe);
+      });
     };
 
     $scope.avaaKoodistoModaali = function() {
-      Koodisto.modaali(function(koodi) { $scope.koodistoHaku(koodi);},
-        {tyyppi: function() {return 'koulutus';}, ylarelaatioTyyppi: function() {return $scope.peruste.tutkintokoodi;}},
-        function() {}, null)();
+      Koodisto.modaali(function(koodi) {
+        $scope.koodistoHaku(koodi);
+      },
+        {tyyppi: function() {
+            return 'koulutus';
+          }, ylarelaatioTyyppi: function() {
+            return $scope.peruste.tutkintokoodi;
+          }},
+      function() {
+      }, null)();
     };
 
 
@@ -92,12 +116,20 @@ angular.module('eperusteApp')
       return $scope.Opintoalat.haeOpintoalaNimi(koodi);
     };
 
-    $rootScope.$on('event:spinner_on', function () {
+    $rootScope.$on('event:spinner_on', function() {
       $scope.hakemassa = true;
     });
 
-    $rootScope.$on('event:spinner_off', function () {
+    $rootScope.$on('event:spinner_off', function() {
       $scope.hakemassa = false;
+    });
+
+    $rootScope.$on('$translateChangeSuccess', function() {
+      if (!angular.isUndefined($scope.peruste.nimi) && !_.isEmpty($scope.peruste.nimi[YleinenData.kieli])) {
+        $scope.nimi = $scope.peruste.nimi[YleinenData.kieli];
+      } else {
+        $scope.nimi = '';
+      }
     });
 
   });

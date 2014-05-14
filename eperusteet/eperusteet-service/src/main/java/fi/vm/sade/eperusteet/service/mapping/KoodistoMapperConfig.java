@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.service.mapping;
 
+import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.KoulutusalaDto;
@@ -47,6 +48,12 @@ public class KoodistoMapperConfig {
                 .register();
         
         factory.classMap(KoodistoKoodiDto.class, Peruste.class)
+                //.fieldMap("voimassaAlkuPvm", "paivays").converter("koodistoPaivaysConverter").add()
+                .fieldMap("metadata", "nimi").converter("metadataToTekstipalanenConverter").add()
+                .byDefault()
+                .register();
+        
+        factory.classMap(KoodistoKoodiDto.class, Koulutus.class)
                 //.fieldMap("voimassaAlkuPvm", "paivays").converter("koodistoPaivaysConverter").add()
                 .fieldMap("metadata", "nimi").converter("metadataToTekstipalanenConverter").add()
                 .byDefault()
