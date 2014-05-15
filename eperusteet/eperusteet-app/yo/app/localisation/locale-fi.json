@@ -321,5 +321,7 @@
 
     "järjestelmävirhe-alku": "Tapahtui järjestelmävirhe ",
     "järjestelmävirhe-loppu": ". Ole hyvä ja yritä uudelleen. Jos ongelma toistuu ota yhteyttä palvelun ylläpitäjään.",
-    "odottamaton-virhe": "Tapahtui odottamaton virhe"
+    "odottamaton-virhe": "Tapahtui odottamaton virhe",
+    
+    "poisto-onnistui": "Poisto onnistui"
 }

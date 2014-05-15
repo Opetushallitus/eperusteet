@@ -29,8 +29,9 @@ angular.module('eperusteApp')
         }]
       });
   })
-  .controller('PerusteprojektisisaltoCtrl', function($scope, $stateParams, $translate, Kaanna, PerusteprojektiResource,
-    Suoritustapa, SuoritustapaSisalto, PerusteProjektiService, Perusteet, PerusteenOsaViitteet, Varmistusdialogi) {
+  .controller('PerusteprojektisisaltoCtrl', function($scope, $stateParams, $translate, Kaanna,
+    PerusteprojektiResource, Suoritustapa, SuoritustapaSisalto, PerusteProjektiService,
+    Perusteet, PerusteenOsaViitteet, Varmistusdialogi, Notifikaatiot) {
      $scope.projekti = {};
      $scope.peruste = {};
      $scope.valittuSuoritustapa = '';
@@ -108,9 +109,10 @@ angular.module('eperusteApp')
 
     var poistaminenVarmistettu = function(viiteId) {
       PerusteenOsaViitteet.delete({viiteId: viiteId}, {}, function() {
+        Notifikaatiot.onnistui('poisto-onnistui');
         haeSisalto(PerusteProjektiService.getSuoritustapa());
       }, function(virhe) {
-        console.log('Sisällön poistovirhe', virhe);
+        Notifikaatiot.varoitus(virhe);
       });
     };
 
