@@ -248,6 +248,7 @@ angular.module('eperusteApp')
   })
   .directive('treeWrapper', function($stateParams, $modal, $state, Editointikontrollit, TutkinnonOsanTuonti, Kaanna,
                                      PerusteTutkinnonosa, Notifikaatiot, PerusteenRakenne, Muodostumissaannot) {
+
     function kaikilleRakenteille(rakenne, f) {
       if (!rakenne || !f) { return; }
       _.forEach(rakenne, function(r) {
