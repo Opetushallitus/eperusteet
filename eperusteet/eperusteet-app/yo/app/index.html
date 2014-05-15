@@ -29,22 +29,21 @@
             <a href="" ui-sref="admin"><span class="glyphicon glyphicon-cog"></span></a>
           </div>
           <div ng-controller="KieliCtrl" id="kielen-vaihto" class="btn-group pull-right ng-cloak" style="margin-top: 5px">
-            <button ng-repeat="(nimi, koodi) in kielet" ng-click="vaihdaKieli(koodi)" type="button" class="btn btn-xs" ng-class="{ 'active' : koodi === kieli }" ng-bind="nimi|translate"></button>
+            <button ng-repeat="(nimi, koodi) in kielet" ng-click="vaihdaKieli(koodi)" type="button" class="btn btn-xs" ng-class="{ 'active' : koodi === kieli }" ng-bind="nimi | translate"></button>
           </div>
           <eperuste-navi ng-controller="NaviCtrl"></eperuste-navi>
-          <editointikontrollit ng-controller="EditointiCtrl"></editointikontrollit>
           <div class="col-md-12" ui-view></div>
         </div>
       </div>
       <spinner></spinner>
-    </div>
-
-    <div class="notification-wrapper">
-      <div class="notifications" ng-model="viestit" ng-controller="NotifikaatioCtrl">
-        <div ng-if="viestit" ng-click="poistaNotifikaatio(viesti)" ng-model="viestit" ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }" ng-repeat="viesti in viestit">
-          <div class="notification-body">
-            <span ng-hide="viesti.ilmanKuvaa" class="notification-picture ng-cloak"></span>
-            <span class="notification-message ng-cloak">{{ viesti.viesti | kaanna }}</span>
+      <editointikontrollit ng-controller="EditointiCtrl"></editointikontrollit>
+      <div class="notification-wrapper">
+        <div class="notifications" ng-model="viestit" ng-controller="NotifikaatioCtrl">
+          <div ng-if="viestit" ng-click="poistaNotifikaatio(viesti)" ng-model="viestit" ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }" ng-repeat="viesti in viestit">
+            <div class="notification-body">
+              <span ng-hide="viesti.ilmanKuvaa" class="notification-picture ng-cloak"></span>
+              <span class="notification-message ng-cloak">{{ viesti.viesti | kaanna }}</span>
+            </div>
           </div>
         </div>
       </div>
