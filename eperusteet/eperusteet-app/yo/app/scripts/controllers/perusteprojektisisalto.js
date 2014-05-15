@@ -35,7 +35,6 @@ angular.module('eperusteApp')
      $scope.valittuSuoritustapa = '';
      $scope.poistoMouseLeaveLuokka = 'glyphicon glyphicon-remove pull-right smaller';
      $scope.poistoMouseOverLuokka = 'glyphicon glyphicon-remove pull-right larger';
-     var poistettavaViiteId = null;
 
     if ($stateParams.perusteProjektiId !== 'uusi') {
       $scope.projekti.id = $stateParams.perusteProjektiId;
@@ -93,27 +92,24 @@ angular.module('eperusteApp')
       event.currentTarget.className = $scope.poistoMouseLeaveLuokka;
     };
 
-    $scope.poistaSisalto = function(viiteId, otsikko, event) {
-      //TODO: Varmistusdialogi vahinkopoistamisen estämiseksi.
+    $scope.poistaSisalto = function(viiteId, nimi, event) {
       event.stopPropagation();
-      poistettavaViiteId = viiteId;
-      otsikko = Kaanna.kaanna(otsikko);
+      nimi = Kaanna.kaanna(nimi);
 
       Varmistusdialogi.dialogi({
         successCb: poistaminenVarmistettu,
         otsikko: 'poista-tekstikappale-otsikko',
-        teksti: $translate('poista-tekstikappale-teksti', {otsikko: otsikko})
+        teksti: $translate('poista-tekstikappale-teksti', {nimi: nimi}),
+        data: viiteId
       })();
     };
 
-    var poistaminenVarmistettu = function() {
-      PerusteenOsaViitteet.delete({viiteId: poistettavaViiteId}, {}, function() {
+    var poistaminenVarmistettu = function(viiteId) {
+      PerusteenOsaViitteet.delete({viiteId: viiteId}, {}, function() {
         haeSisalto(PerusteProjektiService.getSuoritustapa());
       }, function(virhe) {
         console.log('Sisällön poistovirhe', virhe);
       });
-
-      poistettavaViiteId = null;
     };
 
 

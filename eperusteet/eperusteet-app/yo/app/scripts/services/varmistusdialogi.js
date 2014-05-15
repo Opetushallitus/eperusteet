@@ -12,6 +12,9 @@ angular.module('eperusteApp')
         resolve.teksti = function() {
           return options.teksti || '';
         };
+        resolve.cbData = function() {
+          return options.data || null;
+        };
         var failureCb = options.failureCb || angular.noop;
         var successCb = options.successCb || angular.noop;
 
@@ -28,13 +31,17 @@ angular.module('eperusteApp')
     };
 
   })
-  .controller('VarmistusDialogiCtrl', function($scope, $modalInstance, otsikko, teksti) {
+  .controller('VarmistusDialogiCtrl', function($scope, $modalInstance, otsikko, teksti, cbData) {
 
     $scope.otsikko = otsikko;
     $scope.teksti = teksti;
 
     $scope.ok = function() {
-      $modalInstance.close();
+      if (cbData !== null) {
+        $modalInstance.close(cbData);
+      } else {
+        $modalInstance.close();
+      }
     };
 
     $scope.peruuta = function() {

@@ -314,9 +314,10 @@
     "kommentointi": "Kommentointi",
     
     "poista-tekstikappale-otsikko": "Poista tekstikappale",
-    "poista-tekstikappale-teksti": "Tekstikappale \"{{otsikko}}\" poistetaan. Oletko varma?",
+    "poista-tekstikappale-teksti": "Tekstikappale \"{{nimi}}\" poistetaan. Oletko varma?",
     
     "lisaa-koulutus": "Lisää koulutus",
+    "poista-koulutus": "Poista koulutus",
 
     "järjestelmävirhe-alku": "Tapahtui järjestelmävirhe ",
     "järjestelmävirhe-loppu": ". Ole hyvä ja yritä uudelleen. Jos ongelma toistuu ota yhteyttä palvelun ylläpitäjään.",
