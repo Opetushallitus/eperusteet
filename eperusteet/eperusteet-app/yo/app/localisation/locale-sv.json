@@ -215,8 +215,9 @@
     "uusi-tutkinnon-osa": "[<Uusi sisältö>]",
     
     "poista-tekstikappale-otsikko": "[Poista tekstikappale]",
-    "poista-tekstikappale-teksti": "[Tekstikappale \"{{otsikko}}\" poistetaan. Oletko varma?]",
+    "poista-tekstikappale-teksti": "[Tekstikappale \"{{nimi}}\" poistetaan. Oletko varma?]",
     
-    "lisaa-koulutus": "[Lisää koulutus]"
+    "lisaa-koulutus": "[Lisää koulutus]",
+    "poista-koulutus": "[Poista koulutus]"
 }
 

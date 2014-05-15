@@ -34,11 +34,8 @@ angular.module('eperusteApp')
       $scope.projekti = vastaus;
       if ($scope.projekti._peruste) {
         Perusteet.get({perusteenId: vastaus._peruste}, function(vastaus) {
-          console.log('peruste', vastaus);
           $scope.peruste = vastaus;
-
           $scope.nimi = Kaanna.kaanna($scope.peruste.nimi);
-
 
         }, function(virhe) {
           console.log('perusteen haku virhe', virhe);
@@ -49,12 +46,10 @@ angular.module('eperusteApp')
     });
 
     $scope.rajaaKoodit = function(koodi) {
-      console.log('rajaaKoodit koodi', koodi);
       return koodi.koodi.indexOf('_3') !== -1;
     };
 
     $scope.koodistoHaku = function(koodisto) {
-      console.log('koodisto', koodisto);
       $scope.peruste.nimi = _.isEmpty($scope.peruste.nimi[YleinenData.kieli]) ? koodisto.nimi : $scope.peruste.nimi;
       $scope.nimi = Kaanna.kaanna($scope.peruste.nimi);
 
@@ -82,7 +77,6 @@ angular.module('eperusteApp')
 
     $scope.tallennaPeruste = function() {
       Perusteet.save({perusteenId: $scope.peruste.id}, $scope.peruste, function(vastaus) {
-        console.log('tallennettu peruste', vastaus);
         $scope.peruste = vastaus;
         $state.go('perusteprojekti.editoi.sisalto', {perusteProjektiId: $scope.projektiId}, {reload: true});
       }, function(virhe) {
@@ -102,10 +96,11 @@ angular.module('eperusteApp')
       function() {
       }, null)();
     };
-
-
-    $scope.valitseKieli = function(teksti) {
-      return YleinenData.valitseKieli(teksti);
+    
+    $scope.poistaKoulutus = function (koulutuskoodi) {
+      $scope.peruste.koulutukset = _.remove($scope.peruste.koulutukset, function(koulutus) {
+            return koulutus.koulutuskoodi !== koulutuskoodi;
+      });
     };
 
     $scope.koulutusalaNimi = function(koodi) {
