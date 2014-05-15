@@ -24,6 +24,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -33,6 +34,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 @Entity
 @DiscriminatorValue("RM")
 @Audited
+@EqualsAndHashCode(callSuper = true)
 public class RakenneModuuli extends AbstractRakenneOsa {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
@@ -60,7 +62,7 @@ public class RakenneModuuli extends AbstractRakenneOsa {
             for ( AbstractRakenneOsa o : osat ) {
                 o.setModuuli(this);
                 this.osat.add(o);
-            }            
+            }
         }
     }
 
