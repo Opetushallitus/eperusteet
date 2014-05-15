@@ -22,7 +22,7 @@ angular.module('eperusteApp')
     $scope.peruste = {};
     $scope.projektiId = $stateParams.perusteProjektiId;
     $scope.open = {};
-
+      
     $scope.$watch('nimi', function() {
       if (!$scope.peruste.nimi) {
         $scope.peruste.nimi = {};
@@ -50,7 +50,18 @@ angular.module('eperusteApp')
     };
 
     $scope.koodistoHaku = function(koodisto) {
-      $scope.peruste.nimi = _.isEmpty($scope.peruste.nimi[YleinenData.kieli]) ? koodisto.nimi : $scope.peruste.nimi;
+      // Korjaus IE:tä varten. IE ei päivitä alustus vaiheessa $scope.$watch lohkossa perusteen nimeä tyhjäksi vaan jättää null:iksi.
+      if ($scope.peruste.nimi === null) {
+        $scope.peruste.nimi = {};
+        $scope.peruste.nimi[YleinenData.kieli] = '';
+      }
+      
+      angular.forEach(YleinenData.kielet, function(value) {
+        if (_.isEmpty($scope.peruste.nimi[value]) && !_.isNull(koodisto.nimi[value])) {
+          $scope.peruste.nimi[value] = koodisto.nimi[value];
+        }
+      });
+      
       $scope.nimi = Kaanna.kaanna($scope.peruste.nimi);
 
       $scope.peruste.koulutukset.push({});
