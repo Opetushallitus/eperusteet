@@ -42,7 +42,8 @@ angular.module('eperusteApp')
         $scope.projekti = vastaus;
         Perusteet.get({perusteenId: vastaus._peruste}, function(vastaus) {
           $scope.peruste = vastaus;
-          if (vastaus.suoritustavat !== null && vastaus.suoritustavat.length > 0) {
+          if ($scope.peruste.suoritustavat !== null && $scope.peruste.suoritustavat.length > 0) {
+            $scope.peruste.suoritustavat = _.sortBy($scope.peruste.suoritustavat, 'suoritustapakoodi');
             $scope.vaihdaSuoritustapa(PerusteProjektiService.getSuoritustapa() === '' ? vastaus.suoritustavat[0].suoritustapakoodi : PerusteProjektiService.getSuoritustapa());
           }
         }, function(virhe) {
