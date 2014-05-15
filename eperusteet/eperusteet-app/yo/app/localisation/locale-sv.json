@@ -184,6 +184,7 @@
     
     "perusteen-nimi": "[Perusteen nimi]",
     "anna-perusteen-nimi": "[Syötä perusteen nimi]",
+    "koulutuksen-nimi": "[Koulutuksen nimi]",
     
     "projekti-perustiedot": "[Perustiedot]",
     "projekti-projektiryhmä": "[Projektiryhmä]",
@@ -193,6 +194,7 @@
     "perusteen-koodi": "[Perusteen koodi]",
     "projektin-tiedot": "[Projektin tiedot]",
     "uusi-projekti-otsikko": "[Uusi perusteprojekti]",
+    "peruste-koulutukset": "[Koulutukset]",
     
     "ops": "[Opetussuunnitelma]",
     "naytto": "[Näyttötutkinto]",
@@ -210,6 +212,12 @@
     "projekti-header-koulutustyyppi": "[Koulutustyyppi]",
     
     "lisaa-tutkintokohtainen-osa": "[Lisää tutkintokohtainen osa]",
-    "uusi-tutkinnon-osa": "[<Uusi sisältö>]"
+    "uusi-tutkinnon-osa": "[<Uusi sisältö>]",
+    
+    "poista-tekstikappale-otsikko": "[Poista tekstikappale]",
+    "poista-tekstikappale-teksti": "[Tekstikappale \"{{nimi}}\" poistetaan. Oletko varma?]",
+    
+    "lisaa-koulutus": "[Lisää koulutus]",
+    "poista-koulutus": "[Poista koulutus]"
 }
 

@@ -24,9 +24,13 @@ import lombok.Setter;
 @Setter
 public abstract class AbstractRakenneOsaDto {
 
-    public abstract void visit(Visitor visitor);
+    public final void foreach(final Visitor visitor) {
+        foreach(visitor, 0);
+    };
+
+    protected abstract void foreach(final Visitor visitor,final int currentDepth);
 
     public interface Visitor {
-        void visit(AbstractRakenneOsaDto dto);
+        void visit(final AbstractRakenneOsaDto dto, final int depth);
     }
 }

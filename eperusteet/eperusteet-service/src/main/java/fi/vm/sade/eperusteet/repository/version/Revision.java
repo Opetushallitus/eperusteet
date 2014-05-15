@@ -10,8 +10,6 @@ import lombok.Setter;
 @Setter
 public class Revision implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-
 	private Integer number;
 	private Date date;
 

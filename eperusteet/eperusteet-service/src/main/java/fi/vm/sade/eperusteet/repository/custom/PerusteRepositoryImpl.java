@@ -29,6 +29,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapa_;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen_;
+import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
 import java.util.Date;
@@ -142,11 +143,19 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             Join<Peruste, Koulutus> ala = root.join(Peruste_.koulutukset);
             pred = cb.and(pred, ala.get(Koulutus_.opintoalakoodi).in(pquery.getOpintoala()));
         }
-        if (!pquery.isSiirtyma()) {
-            Expression<Date> rsiirtyma = root.get(Peruste_.siirtyma);
-            pred = cb.and(pred, cb.or(cb.isNull(rsiirtyma),
-                                      cb.greaterThan(rsiirtyma, cb.currentDate())));
+        Expression<Date> siirtymaAlkaa = root.get(Peruste_.siirtymaAlkaa);
+        Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
+        if (pquery.isSiirtyma()) {
+            pred = cb.and(pred, cb.or(cb.isNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate())));
+        } else {
+            pred = cb.and(pred, cb.and( cb.or(cb.isNull(siirtymaAlkaa), cb.greaterThan(siirtymaAlkaa, cb.currentDate())), 
+                                        cb.or(cb.isNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate()))));
         }
+        if (pquery.getTila() != null) {
+            Tila tila = Tila.of(pquery.getTila());
+            pred = cb.and(pred, cb.equal(root.get(Peruste_.tila), tila));
+        }
+        
         return pred;
     }
 

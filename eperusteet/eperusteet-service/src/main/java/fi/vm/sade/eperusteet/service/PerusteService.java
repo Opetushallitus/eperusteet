@@ -34,6 +34,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
  * @author harrik
  */
 public interface PerusteService {
+    @PreAuthorize("isAuthenticated()")
+    void removeTutkinnonOsa(Long id, Suoritustapakoodi of, Long osaId);
 
     @PreAuthorize("isAuthenticated()")
     TutkinnonOsaViiteDto updateTutkinnonOsa(Long id, Suoritustapakoodi of, TutkinnonOsaViiteDto osa);
@@ -45,9 +47,9 @@ public interface PerusteService {
     TutkinnonOsaViiteDto addTutkinnonOsa(Long id, Suoritustapakoodi suoritustapa, TutkinnonOsaViiteDto osa);
 
     PerusteDto get(final Long id);
-    
+
     PerusteDto update(long id, PerusteDto perusteDto);
-    
+
     PerusteDto getByIdAndSuoritustapa(final Long id, Suoritustapakoodi suoritustapakoodi);
 
     Page<PerusteDto> getAll(PageRequest page, String kieli);
@@ -63,7 +65,6 @@ public interface PerusteService {
     @PreAuthorize("isAuthenticated()")
     PerusteenOsaViite addViite(final Long parentId, final Long seuraavaViite, PerusteenOsaViite viite);
 
-
     PerusteenosaViiteDto getSuoritustapaSisalto(final Long perusteId, final Suoritustapakoodi suoritustapakoodi);
 
     RakenneModuuliDto getTutkinnonRakenne(final Long perusteId, final Suoritustapakoodi suoritustapa);
@@ -72,7 +73,7 @@ public interface PerusteService {
     RakenneModuuliDto updateTutkinnonRakenne(final Long perusteId, final Suoritustapakoodi suoritustapa, final RakenneModuuliDto rakenne);
 
     List<TutkinnonOsaViiteDto> getTutkinnonOsat(Long perusteid, Suoritustapakoodi suoritustapakoodi);
-    
+
     Peruste luoPerusteRunko(String koulutustyyppi);
 
     @PreAuthorize("isAuthenticated()")

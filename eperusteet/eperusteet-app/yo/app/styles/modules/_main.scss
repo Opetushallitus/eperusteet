@@ -1,60 +1,10 @@
-.notification-wrapper {
-  margin: 0px;
-  padding: 0px;
-  margin-left: auto;
-  margin-right: auto;
-  position: absolute;
-  width: 100%;
-  top: 0px;
-  left: 0px;
-}
-
-.notifications {
-  margin: 0px;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-  width: 420px;
-  top: 0px;
-}
-
-.notification-header {
-  text-align: center;
-}
-
-@mixin notification() {
-  cursor: pointer;
-  padding: 0px 5px 0px 5px;
-  min-height: 20px;
-  width: 300px;
-  opacity: 0.9;
-  margin-bottom: 3px;
-  color: white;
-  font-weight: bold;
-}
-
-.notification-normal {
-  @include notification();
-  background: #ccc;
-}
-
-.notification-success {
-  @include notification();
-  background: #5cb85c;
-}
-
-.notification-warning {
-  @include notification();
-  background: #ff0;
-}
-
-.notification-danger {
-  @include notification();
-  background: #f55;
-}
-
 .hoverpointer {
   cursor: move;
+}
+
+.admin-cog {
+  margin-left: 8px;
+  margin-top: 8px;
 }
 
 .has-checkbox {

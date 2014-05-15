@@ -16,13 +16,9 @@
   </div>
   <div class="sivunavi-linkit">
     <div class="list-group">
-      <a href="" class="list-group-item">
-        <span class="glyphicon glyphicon-chevron-down"></span>
-        <span class="linkkiteksti">Käsi- ja taideteollisuusalan perustutkinnon tavoitteet</span>
-      </a>
       <a class="list-group-item" ui-sref="perusteprojekti.editoi.muodostumissaannot" ui-sref-active="navi-aktiivinen">
         <span class="glyphicon glyphicon-chevron-down"></span>
-        <span class="linkkiteksti">Tutkinnon muodostuminen</span>
+        <span class="linkkiteksti" translate>tutkinnon-rakenne</span>
       </a>
       <a class="list-group-item" ng-repeat="sisalto in data.projekti.peruste.sisalto.lapset"
          ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id})"

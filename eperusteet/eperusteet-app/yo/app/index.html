@@ -25,6 +25,12 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12">
+          <div class="pull-right admin-cog">
+            <a href="" ui-sref="admin"><span class="glyphicon glyphicon-cog"></span></a>
+          </div>
+          <div ng-controller="KieliCtrl" id="kielen-vaihto" class="btn-group pull-right ng-cloak" style="margin-top: 5px">
+            <button ng-repeat="(nimi, koodi) in kielet" ng-click="vaihdaKieli(koodi)" type="button" class="btn btn-xs" ng-class="{ 'active' : koodi === kieli }" ng-bind="nimi|translate"></button>
+          </div>
           <eperuste-navi ng-controller="NaviCtrl"></eperuste-navi>
           <editointikontrollit ng-controller="EditointiCtrl"></editointikontrollit>
           <div class="col-md-12" ui-view></div>
@@ -36,8 +42,10 @@
     <div class="notification-wrapper">
       <div class="notifications" ng-model="viestit" ng-controller="NotifikaatioCtrl">
         <div ng-if="viestit" ng-click="poistaNotifikaatio(viesti)" ng-model="viestit" ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }" ng-repeat="viesti in viestit">
-          <h2 class="notification-header" ng-cloak>{{ viesti.otsikko | kaanna }}</h2>
-          <p ng-cloak>{{ viesti.viesti | kaanna }}</p>
+          <div class="notification-body">
+            <span ng-hide="viesti.ilmanKuvaa" class="notification-picture ng-cloak"></span>
+            <span class="notification-message ng-cloak">{{ viesti.viesti | kaanna }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -71,17 +79,20 @@
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
     <script src="scripts/controllers/virhe.js"></script>
+    <script src="scripts/services/pagination.js"></script>
     <script src="scripts/services/excel.js"></script>
     <script src="scripts/controllers/excel.js"></script>
     <script src="scripts/directives/spinner.js"></script>
     <script src="scripts/controllers/modals/uudelleenohjaus.js"></script>
     <script src="scripts/directives/ckeditor.js"></script>
     <script src="scripts/directives/fileselect.js"></script>
+    <script src="scripts/directives/formfield.js"></script>
     <script src="scripts/services/perusteet.js"></script>
     <script src="scripts/services/perusteenosat.js"></script>
     <script src="scripts/controllers/haku.js"></script>
     <script src="scripts/controllers/perusteprojektinTila.js"></script>
     <script src="scripts/filters/kaanna.js"></script>
+    <script src="scripts/filters/rajaateksti.js"></script>
     <script src="scripts/filters/tutkintokoodi.js"></script>
     <script src="scripts/filters/koulutusalakoodi.js"></script>
     <script src="scripts/filters/customfilters.js"></script>
@@ -101,6 +112,7 @@
     <script src="scripts/services/kayttajaprofiilit.js"></script>
     <script src="scripts/services/suosikit.js"></script>
     <script src='scripts/services/koulutusalat.js'></script>
+    <script src='scripts/services/admin.js'></script>
     <script src="scripts/controllers/suosikit.js"></script>
     <script src="scripts/services/yleinenData.js"></script>
     <script src="scripts/directives/latausElementti.js"></script>
@@ -118,6 +130,7 @@
     <script src="scripts/services/perusteprojekti.js"></script>
     <script src="scripts/controllers/perusteprojektiTiedot.js"></script>
     <script src="scripts/controllers/perusteprojektiMuodostumissaannot.js"></script>
+    <script src="scripts/controllers/perusteprojektiTutkinnonosat.js"></script>
     <script src="scripts/controllers/projektiryhmanJasen.js"></script>
     <script src="scripts/controllers/projektiryhma.js"></script>
     <script src="scripts/controllers/projektinperustiedot.js"></script>
@@ -136,6 +149,9 @@
     <script src="scripts/controllers/perusteprojekti.js"></script>
     <script src="scripts/controllers/perusteprojektisisalto.js"></script>
     <script src="scripts/controllers/perusteprojektitoimikausi.js"></script>
+    <script src="scripts/services/varmistusdialogi.js"></script>
+    <script src="scripts/controllers/kieli.js"></script>
+    <script src="scripts/controllers/admin.js"></script>
     <!-- endbuild -->
   </body>
 </html>

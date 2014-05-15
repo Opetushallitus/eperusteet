@@ -37,8 +37,6 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 @Audited
 public class TekstiKappale extends PerusteenOsa implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -63,7 +61,7 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
         if (perusteenOsa instanceof TekstiKappale) {
             TekstiKappale other = (TekstiKappale) perusteenOsa;
             this.setTeksti(other.getTeksti());
-        } 
+        }
     }
 
 }

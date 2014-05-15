@@ -40,7 +40,7 @@ angular.module('eperusteApp')
     })
   .controller('PerusteprojektiCtrl', function ($scope, $rootScope, $stateParams, Navigaatiopolku,
     PerusteprojektiResource, koulutusalaService, opintoalaService, Perusteet, SivunavigaatioService,
-    PerusteProjektiService) {
+    PerusteProjektiService, Kaanna) {
 
     PerusteProjektiService.cleanSuoritustapa();
     $scope.projekti = {};
@@ -80,5 +80,14 @@ angular.module('eperusteApp')
       // TODO vain omistaja voi vaihtaa tilaa
       return true;
     };
+    
+    $scope.perusteenNimi = function() {
+      if (Kaanna.kaanna($scope.peruste.nimi) === '') {
+        return null;
+      } else {
+        return $scope.peruste.nimi;
+      }
+    };
+    
 
   });

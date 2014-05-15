@@ -30,7 +30,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .factory('Editointikontrollit', function($rootScope, $q) {
+  .factory('Editointikontrollit', function($rootScope, $q, $timeout) {
     var scope = $rootScope.$new(true);
     scope.editingCallback = null;
     scope.editMode = false;
@@ -39,6 +39,7 @@ angular.module('eperusteApp')
 
     this.lastModified = null;
     var additionalCallbacks = {save: [], start: [], cancel: []};
+    var cbListener = null;
 
     function setEditMode(mode) {
       scope.editMode = mode;
@@ -80,8 +81,11 @@ angular.module('eperusteApp')
           console.error('callback-function invalid');
           throw 'editCallback-function invalid';
         }
-        scope.editingCallback = callback;
-        scope.editModeDefer.resolve(scope.editMode);
+        $timeout(function() {
+          scope.editingCallback = callback;
+          scope.editModeDefer.resolve(scope.editMode);
+          cbListener();
+        }, 0);
 
 //        scope.$watch('editingCallback', function() {
 //          angular.forEach(callbackListeners, function(listener) {
@@ -106,7 +110,7 @@ angular.module('eperusteApp')
         }
       },
       registerCallbackListener: function(callbackListener) {
-        scope.$watch('editingCallback', callbackListener);
+        cbListener = callbackListener;
 //        callbackListeners.push(callbackListener);
       },
       getEditModePromise: function() {

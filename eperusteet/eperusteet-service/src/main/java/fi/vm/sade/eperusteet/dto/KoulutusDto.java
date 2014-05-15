@@ -26,6 +26,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class KoulutusDto {
+    private LokalisoituTekstiDto nimi;
     private String koulutuskoodi;
     private String koulutusalakoodi;
     private String opintoalakoodi;

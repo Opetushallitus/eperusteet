@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -32,6 +32,11 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -43,8 +48,6 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 @Table(name = "perusteenosa")
 public abstract class PerusteenOsa extends AbstractAuditedEntity implements Serializable, Mergeable<PerusteenOsa>,
     ReferenceableEntity {
-
-    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -70,6 +73,12 @@ public abstract class PerusteenOsa extends AbstractAuditedEntity implements Seri
     public void setNimi(TekstiPalanen nimi) {
         this.nimi = nimi;
     }
+
+    @Getter
+    @Setter
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private Tila tila;
 
     @Override
     public void mergeState(PerusteenOsa updated) {

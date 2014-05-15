@@ -49,6 +49,7 @@ public class PerusteServiceDbIT extends AbstractDbIntegrationTest {
     @PersistenceContext
     private EntityManager em;
 
+        
     @Before
     public void setUp() {
         Peruste p = new Peruste();

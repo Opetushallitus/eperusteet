@@ -3,17 +3,17 @@
 
 angular.module('eperusteApp')
   .service('Haku', function Haku(YleinenData) {
-    
+
     var self = this;
-    
+
     this.getHakuparametrit = function (stateName) {
       return _.clone(self.hakuparametrit[stateName]);
     };
-    
+
     this.setHakuparametrit = function (stateName, hakuparametrit) {
       self.hakuparametrit[stateName] = _.merge(hakuparametrit);
     };
-    
+
     this.resetHakuparametrit = function (stateName) {
       self.hakuparametrit[stateName] = _.clone(self.hakuparametritOrg[stateName]);
       return self.hakuparametrit[stateName];
@@ -29,7 +29,8 @@ angular.module('eperusteApp')
         siirtyma: false,
         sivu: 0,
         sivukoko: 20,
-        suoritustapa: 'ops'
+        suoritustapa: 'ops',
+        tila: 'valmis'
       },
       'selaus.ammatillinenaikuiskoulutus': {
         nimi: '',
@@ -40,10 +41,11 @@ angular.module('eperusteApp')
         siirtyma: false,
         sivu: 0,
         sivukoko: 20,
-        suoritustapa: 'naytto'
+        suoritustapa: 'naytto',
+        tila: 'valmis'
       }
     };
-    
+
     this.hakuparametrit = _.clone(self.hakuparametritOrg);
-    
+
   });

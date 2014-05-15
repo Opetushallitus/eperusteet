@@ -1,4 +1,5 @@
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {
@@ -14,36 +15,53 @@ angular.module('eperusteApp')
       });
   })
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $rootScope, $state, $stateParams,
-    Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, TreeCache, Notifikaatiot) {
-
+              Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, TreeCache, Notifikaatiot,
+              Editointikontrollit) {
+    $scope.editoi = false;
     $scope.rakenne = {
       $resolved: false,
-      rakenne: {
-        osat: []
-      },
+      rakenne: { osat: [] },
       tutkinnonOsat: {}
     };
 
-    function haeRakenne() {
-      PerusteenRakenne.hae($stateParams.perusteProjektiId, function(res) {
+    $scope.vaihdaSuoritustapa = function() { haeRakenne(); };
+
+    function haeRakenne(st) {
+      if (st) { $scope.rakenne.$suoritustapa = st.suoritustapakoodi; }
+      PerusteenRakenne.hae($stateParams.perusteProjektiId, $scope.rakenne.$suoritustapa, function(res) {
+        res.$resolved = true;
+        res.$suoritustavat = _.sortBy(res.$peruste.suoritustavat, function(st) { return st.suoritustapakoodi; });
+        res.$suoritustapa = $scope.rakenne.$suoritustapa || res.$suoritustavat[0].suoritustapakoodi;
         $scope.rakenne = res;
-        $scope.rakenne.$resolved = true;
       });
     }
-
-    $scope.peruMuutokset = haeRakenne;
+    $scope.haeRakenne = haeRakenne;
 
     if (TreeCache.nykyinen() !== $stateParams.perusteenId) { haeRakenne(); }
     else { TreeCache.hae(); }
 
-    $scope.tallennaRakenne = function(rakenne) {
+    function tallennaRakenne(rakenne) {
       TreeCache.tallenna(rakenne, $stateParams.perusteenId);
       PerusteenRakenne.tallenna(
         rakenne,
         rakenne.$peruste.id,
-        rakenne.$peruste.suoritustavat[0].suoritustapakoodi,
-        function() { Notifikaatiot.onnistui('tallentaminen-onnistui', ''); },
-        function(virhe) { Notifikaatiot.varoitus('tallentaminen-epäonnistui', virhe); }
+        $scope.rakenne.$suoritustapa,
+        function() { Notifikaatiot.onnistui('tallennus-onnistui', ''); },
+        function(virhe) { Notifikaatiot.varoitus('tallennus-epäonnistui', virhe); }
       );
-    };
+    }
+
+    Editointikontrollit.registerCallback({
+      edit: function() {
+        $scope.editoi = true;
+      },
+      save: function() {
+        tallennaRakenne($scope.rakenne);
+        $scope.editoi = false;
+      },
+      cancel: function() {
+        haeRakenne();
+        $scope.editoi = false;
+      }
+    });
   });

@@ -1,6 +1,13 @@
 $sivunavi-leveys: 280px;
 
 .sivunavi-wrapper {
+  margin-left: 0;
+  margin-right: 0;
+  .sivunavi-sisalto {
+    h1 {
+      margin-top: 0;
+    }
+  }
   .piilota {
     display: none !important;
   }
@@ -98,7 +105,7 @@ $sivunavi-leveys: 280px;
       float: none;
     }
     .sivunavi-sisalto {
-      margin: 0 0 0 $sivunavi-toggle-leveys;
+      margin: 0 0 0 30px;
     }
   }
 
@@ -116,7 +123,7 @@ $sivunavi-leveys: 280px;
       float: left;
     }
     .sivunavi-sisalto {
-      margin: 0 0 0 $sivunavi-leveys + 20px;
+      margin: 0 0 0 $sivunavi-leveys + 30px;
       overflow: hidden;
     }
   }

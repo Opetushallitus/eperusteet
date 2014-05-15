@@ -39,8 +39,6 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Audited
 public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -71,10 +69,10 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     //Hibernate bug: orphanRemoval ei toimi jos fetchMode = Lazy
     private Arviointi arviointi;
 
-	@Override
-	public EntityReference getReference() {
-		return new EntityReference(getId());
-	}
+    @Override
+    public EntityReference getReference() {
+        return new EntityReference(getId());
+    }
 
     public TekstiPalanen getTavoitteet() {
         return tavoitteet;
@@ -146,7 +144,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setKoodiUri(other.getKoodiUri());
             this.setOpintoluokitus(other.getOpintoluokitus());
             this.setOsaamisala(other.getOsaamisala());
-        } 
+        }
     }
 
 }

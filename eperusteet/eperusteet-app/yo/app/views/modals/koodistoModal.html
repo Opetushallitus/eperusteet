@@ -3,30 +3,24 @@
 </div>
 
 <div class="modal-body">
-  <div class="panel panel-default">
-    <div class="panel-body">
-      <div class="clearfix"></div>
-      <label>{{ 'koodi' | kaanna }}</label>
-      <input ng-hide="lataa" ng-change="haku(syote, kieli)" type="text" ng-model="syote" class="form-control" placeholder="{{ 'rajaa-tuloksia' | kaanna }}" />
-      <input ng-show="lataa" class="form-control" value="{{ 'haetaan-tutkinnon-osia' | kaanna }}" disabled />
-    </div>
-  </div>
+  <input ng-hide="lataa" ng-change="haku(syote, kieli)" type="text" ng-model="syote" class="form-control" placeholder="{{ 'rajaa-tuloksia' | kaanna }}" />
+  <input ng-show="lataa" class="form-control" value="{{ 'haetaan-tutkinnon-osia' | kaanna }}" disabled />
+  <p class="results-amount"><span ng-show="!!syote">{{totalItems}} {{'hakutulosta' | translate}}</span></p>
+  <div class="results">
   <table class="table table-striped">
     <tr>
       <th class="col-xs-3">{{ 'koodi' | kaanna }}</th>
       <th class="col-xs-9">{{ 'nimi' | kaanna }}</th>
     </tr>
-    <tr ng-repeat="l in nakyvilla">
+    <tr ng-repeat="l in loydetyt | startFrom:itemsPerPage*(nykyinen-1) | limitTo:itemsPerPage">
       <td class="col-xs-3"><a href="" ng-click="ok(l)">{{ l.koodi }}</a></td>
       <td class="col-xs-9">{{ l.nimi | kaanna }}</td>
     </tr>
   </table>
+  </div>
 
-  <ul class="pager">
-    <li><a href="" ng-click="valitseSivu(nykyinen - 1)">{{ 'edelliset' | kaanna }}</a></li>
-    <li><a href="" ng-click="valitseSivu(nykyinen + 1)">{{ 'seuraavat' | kaanna }}</a></li>
-  </ul>
-
+  <pagination ng-model="nykyinen" ng-change="valitseSivu(nykyinen)"
+              total-items="totalItems" items-per-page="itemsPerPage"></pagination>
 </div>
 
 <div class="modal-footer">

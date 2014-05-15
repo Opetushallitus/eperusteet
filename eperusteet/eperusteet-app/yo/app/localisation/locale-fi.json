@@ -2,13 +2,14 @@
     "edellinen-sivu": "<< Edellinen",
     "edellinen": "Edellinen",
     "kieli": "Kieli",
+    "näytä": "Näytä",
     "koodi": "Koodi",
     "lisää": "Lisää",
     "nimi": "Nimi",
     "ok": "OK",
     "aseta-tila": "Aseta tila",
     "palauta" : "Palauta",
-    "peru": "Peru",
+    "peru": "Peruuta",
     "poista": "Poista",
     "rajaa-tuloksia": "Rajaa...",
     "seuraava-sivu": "Seuraava >>",
@@ -16,6 +17,8 @@
     "suosikki": "Lisää suosikiksi",
     "takaisin": "Takaisin",
     "tallennettu": "Tallennettu",
+    "tallennus-epäonnistui": "Tallennus epäonnistui",
+    "tallennus-onnistui": "Tallennus onnistui",
     "tiedosto": "Tiedosto",
     "tila": "Tila",
     "tyhjä": "Tyhjä",
@@ -25,8 +28,14 @@
     "esitys": "Esitys",
     "peruuta": "Peruuta",
     "valitse": "Valitse",
-    "tallenna-nappi": "Tallenna",
+    "tallenna": "Tallenna",
     "haluatko-jatkaa": "Haluatko jatkaa?",
+    "tuo-valitut": "Tuo valitut",
+
+    "nimetön": "<Nimetön>",
+
+    "OPINTOVIIKKO": "ov",
+    "OSAAMISPISTE": "op",
 
     "ammattitutkinto": "Ammattitutkinto",
     "erikoisammattitutkinto": "Erikoisammattitutkinto",
@@ -34,6 +43,11 @@
 
     "perusteprojektit-otsikko": "Omat perusteprojektit",
     "uusi-projekti": "Uusi projekti",
+
+    "uusi-tutkinnonosa": "<Uusi tutkinnon osa>",
+    "tuo-tutkinnonosa": "Tuo tutkinnon osa",
+    "tutkinnon-osia-ei-ole": "Tutkinnon osia ei ole",
+    "avaa-ja-sulje": "Avaa / Sulje kaikki",
 
     "haku-otsikko": "Perusteen haku",
     "haku-koulutusala": "Koulutusala",
@@ -58,6 +72,15 @@
     "rakenne-validointi-laajuus": "Osien yhteenlaskettu laajuus ei riitä kattamaan vaadittua laajuutta",
     "rakenne-validointi-maara": "Osien määrä on pienempi kuin ryhmän maksimi",
     "rakenne-validointi-uniikit": "Ryhmässä on samoja tutkinnon osia",
+    "luo-uusi-ryhma": "Luo uusi ryhmä",
+    "muokkaa-ryhmaa": "Muokkaa ryhmää",
+    "perustiedot": "Perustiedot",
+    "kuvaus": "Kuvaus",
+    "minimi": "Minimi",
+    "maksimi": "Maksimi",
+    "yksikko": "Yksikkö",
+    "pakollisuus": "Pakollinen",
+    "poistetaanko-ryhma": "Poistetaanko ryhmä?",
 
     "esiopetus": "Esiopetus",
     "perusopetus": "Perusopetus",
@@ -134,9 +157,9 @@
     "ruotsi": "Svenska",
 
     "tutkinnon-rakenne": "Tutkinnon rakenne",
-    "tutkinnon-muodostuminen": "Tutkinnon muodostuminen",
     "tutkinnonosa-nimi": "Nimi",
     "tutkinnonosa-laajuus": "Laajuus",
+    "tutkinnonosa-koko": "Koko",
     "tutkintokoodi": "Tutkintokoodi",
     "koulutusalakoodi": "Koulutusalakoodi",
     "tutkinnonosa": "Tutkinnon osa",
@@ -229,6 +252,7 @@
 
     "perusteen-nimi": "Perusteen nimi",
     "anna-perusteen-nimi": "Syötä perusteen nimi",
+    "koulutuksen-nimi": "Koulutuksen nimi",
 
     "ok": "OK",
 
@@ -240,6 +264,7 @@
     "perusteen-koodi": "Tutkinnon koodi",
     "projektin-tiedot": "Projektin tiedot",
     "uusi-projekti-otsikko": "Uusi perusteprojekti",
+    "peruste-koulutukset": "Koulutukset",
 
     "ops": "Opetussuunnitelma",
     "naytto": "Näyttötutkinto",
@@ -286,5 +311,15 @@
     "luonnos": "Luonnos",
     "hyvaksytty": "Hyväksytty",
     "kaannos": "Käännös",
-    "kommentointi": "Kommentointi"
+    "kommentointi": "Kommentointi",
+    
+    "poista-tekstikappale-otsikko": "Poista tekstikappale",
+    "poista-tekstikappale-teksti": "Tekstikappale \"{{nimi}}\" poistetaan. Oletko varma?",
+    
+    "lisaa-koulutus": "Lisää koulutus",
+    "poista-koulutus": "Poista koulutus",
+
+    "järjestelmävirhe-alku": "Tapahtui järjestelmävirhe ",
+    "järjestelmävirhe-loppu": ". Ole hyvä ja yritä uudelleen. Jos ongelma toistuu ota yhteyttä palvelun ylläpitäjään.",
+    "odottamaton-virhe": "Tapahtui odottamaton virhe"
 }

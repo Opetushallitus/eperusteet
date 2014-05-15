@@ -56,13 +56,17 @@
       </tr>
     </tbody>
   </table>
-  <ul class="pagination">
+  <pagination ng-model="nykyinenSivu" ng-change="pageChanged()"
+              total-items="kokonaismaara" items-per-page="hakuparametrit.sivukoko"></pagination>
+  <!-- <ul class="pagination">
     <li ng-class="{disabled:nykyinenSivu === 0}">
-      <a ng-click="edellinenSivu()"><span class="glyphicon glyphicon-backward"></span></a>
+      <a href="" class="glyphicon glyphicon-backward" ng-click="edellinenSivu()"></a>
     </li>
-    <li ng-class="{active : nykyinenSivu === sivu}" data-ng-repeat="sivu in sivut"><a ng-click="haePerusteet(sivu)">{{$index + 1}}</a></li>
+    <li ng-class="{active : nykyinenSivu === sivu}" data-ng-repeat="sivu in sivut">
+      <a href="" ng-click="haePerusteet(sivu)">{{$index + 1}}</a>
+    </li>
     <li ng-class="{disabled: nykyinenSivu + 1 >= sivuja}">
-      <a ng-click="seuraavaSivu()"><span class="glyphicon glyphicon-forward"></span></a>
+      <a href="" ng-click="seuraavaSivu()"><span class="glyphicon glyphicon-forward"></span></a>
     </li>
-  </ul>
+  </ul> -->
 </div>

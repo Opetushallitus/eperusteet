@@ -37,7 +37,6 @@ angular.module('eperusteApp')
     if ($stateParams.perusteenOsaId !== 'uusi') {
       $scope.objekti = PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, function(re) {
         Navigaatiopolku.asetaElementit({ perusteenOsaId: re.nimi });
-        console.log('muokkaus perusteenosa', $scope.objekti);
       }, function() {
         console.log('unable to find perusteen osa #' + $stateParams.perusteenId);
         $state.go('aloitussivu');
@@ -50,30 +49,6 @@ angular.module('eperusteApp')
     if ($stateParams.perusteenOsanTyyppi === 'tekstikappale') {
       muokkausDirective = angular.element('<muokkaus-tekstikappale tekstikappale="objekti"></muokkaus-tekstikappale>');
     } else if ($stateParams.perusteenOsanTyyppi === 'tutkinnonosa') {
-      // Puukotus
-      var failCb = function(res) {
-        var syy = '';
-        if (res.data) { syy = res.data.syy; }
-        Notifikaatiot.fataali('tallennus-epäonnistui', syy);
-      };
-
-      Editointicatcher.register(function(osa) {
-        PerusteprojektiResource.get({
-          id: $stateParams.perusteProjektiId
-        }, function(projekti) {
-          PerusteenOsat.saveTutkinnonOsa(osa, function(osaRes) {
-            PerusteTutkinnonosa.save({
-              perusteenId: projekti._peruste,
-              suoritustapa: 'ops', // FIXME
-              osaId: osaRes.id
-            }, {
-              _tutkinnonOsa: osaRes.id
-            }, function() {
-              $state.go('perusteprojekti.editoi.muodostumissaannot');
-            }, failCb);
-          }, failCb);
-        }, failCb);
-      });
       muokkausDirective = angular.element('<muokkaus-tutkinnonosa tutkinnon-osa="objekti"></muokkaus-tutkinnonosa>');
     } else {
       console.log('invalid perusteen osan tyyppi');

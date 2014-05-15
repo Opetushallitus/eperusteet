@@ -34,7 +34,7 @@ angular.module('eperusteApp')
         template: '<div class="modal-header"><h2>Lisää jäsen</h2></div>' +
           '<div class="modal-body"><jasenkortti jasen="jasen" muokkaus-moodi="true"></jasenkortti></div>' +
           '<div class="modal-footer">' +
-          '<button class="btn btn-default" ng-click="tallenna()" translate>tallenna-nappi</button>' +
+          '<button class="btn btn-primary" ng-click="tallenna()" translate>tallenna</button>' +
           '<button class="btn btn-default" ng-click="peruuta()" translate>peruuta</button>' +
           '</div>',
         controller: 'uusiJasenCtrl',
@@ -62,7 +62,7 @@ angular.module('eperusteApp')
       restrict: 'E',
       template: '<div class="ryhma-rooli">' +
         '<h3>{{\'projektiryhma-otsikko-\' + rooli | kaanna}}</h3>' +
-        '<jasenkortti ng-repeat="jasen in ryhma | filter:{rooli: rooli}:true" ryhma="ryhma" jasen="jasen" voi-muokata="true"/>' +
+        '<jasenkortti ng-repeat="jasen in ryhma | filter:{rooli: rooli}:true" ryhma="ryhma" jasen="jasen" voi-muokata="true"></jasenkortti>' +
         '</div>',
       controller: 'ryhmanjasenetCtrl',
       scope: {

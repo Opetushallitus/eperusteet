@@ -80,25 +80,22 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
         converter.getObjectMapper().enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
         converter.getObjectMapper().setPropertyNamingStrategy(new PropertyNamingStrategy() {
 
-			private static final long serialVersionUID = 1L;
-
-			@Override
+            @Override
             public String nameForGetterMethod(MapperConfig<?> config, AnnotatedMethod method,
-            String defaultName)
-            {
+                String defaultName) {
                 return tryToconvertFromMethodName(method, defaultName);
             }
 
             @Override
             public String nameForSetterMethod(MapperConfig<?> config, AnnotatedMethod method,
-            String defaultName)
-            {
+                String defaultName) {
                 return tryToconvertFromMethodName(method, defaultName);
             }
 
             private String tryToconvertFromMethodName(AnnotatedMethod annotatedMethod, String defaultName) {
-                if((annotatedMethod.getParameterCount() == 1 && EntityReference.class.isAssignableFrom(annotatedMethod.getParameter(0).getRawType()))
-                        || EntityReference.class.isAssignableFrom(annotatedMethod.getRawReturnType())) {
+                if ((annotatedMethod.getParameterCount() == 1
+                    && EntityReference.class.isAssignableFrom(annotatedMethod.getParameter(0).getRawType()))
+                    || EntityReference.class.isAssignableFrom(annotatedMethod.getRawReturnType())) {
                     defaultName = '_' + defaultName;
                 }
                 return defaultName;

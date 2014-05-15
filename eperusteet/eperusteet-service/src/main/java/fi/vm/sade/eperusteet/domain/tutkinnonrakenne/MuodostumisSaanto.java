@@ -6,12 +6,14 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Embeddable
+@EqualsAndHashCode
 public class MuodostumisSaanto implements Serializable {
 
     private Laajuus laajuus;
@@ -32,6 +34,7 @@ public class MuodostumisSaanto implements Serializable {
 
     @Getter
     @Setter
+    @EqualsAndHashCode
     @Embeddable
     public static class Laajuus implements Serializable {
 
@@ -57,6 +60,7 @@ public class MuodostumisSaanto implements Serializable {
 
     @Getter
     @Setter
+    @EqualsAndHashCode
     @Embeddable
     public static class Koko implements Serializable {
 
@@ -71,7 +75,7 @@ public class MuodostumisSaanto implements Serializable {
         }
 
         public Koko() {
-
         }
+
     }
 }

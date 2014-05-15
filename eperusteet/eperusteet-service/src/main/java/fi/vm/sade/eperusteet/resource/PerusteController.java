@@ -8,8 +8,8 @@ import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import java.util.List;
-import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -36,6 +35,9 @@ public class PerusteController {
     @Autowired
     private PerusteService service;
 
+    @Autowired
+    private PerusteenOsaViiteService PerusteenOsaViiteService;
+
 //    @RequestMapping(method = GET)
 //    @ResponseBody
 //    public ResponseEntity<Page<PerusteDto>> getAll(PerusteQuery pquery) {
@@ -49,7 +51,7 @@ public class PerusteController {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findBy(p, pquery);
     }
-    
+
     @RequestMapping(value = "/{id}", method = POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -58,7 +60,7 @@ public class PerusteController {
         perusteDto = service.update(id, perusteDto);
         return perusteDto;
     }
-    
+
 
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
@@ -127,6 +129,15 @@ public class PerusteController {
         return service.updateTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osa);
     }
 
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/{osanId}", method = DELETE)
+    @ResponseBody
+    public void removeTutkinnonOsa(
+        @PathVariable("id") final Long id,
+        @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+        @PathVariable("osanId") final Long osanId) {
+        service.removeTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osanId);
+    }
+
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne", method = POST)
     @ResponseBody
     public RakenneModuuliDto updatePerusteenRakenne(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi, @RequestBody RakenneModuuliDto rakenne) {
@@ -167,6 +178,7 @@ public class PerusteController {
         @PathVariable("perusteenosaViiteId") final Long perusteenosaViiteId) {
         return new ResponseEntity<>(service.addSisaltoLapsi(perusteId, perusteenosaViiteId), HttpStatus.CREATED);
     }
+
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)
     @ResponseBody

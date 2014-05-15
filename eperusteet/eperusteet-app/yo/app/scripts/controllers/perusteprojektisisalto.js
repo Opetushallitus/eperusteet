@@ -14,6 +14,7 @@
 * European Union Public Licence for more details.
 */
 'use strict';
+/*global _*/
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {
@@ -28,11 +29,13 @@ angular.module('eperusteApp')
         }]
       });
   })
-  .controller('PerusteprojektisisaltoCtrl', function($scope, $stateParams, PerusteprojektiResource,
-    Suoritustapa, SuoritustapaSisalto, PerusteProjektiService, Perusteet) {
+  .controller('PerusteprojektisisaltoCtrl', function($scope, $stateParams, $translate, Kaanna, PerusteprojektiResource,
+    Suoritustapa, SuoritustapaSisalto, PerusteProjektiService, Perusteet, PerusteenOsaViitteet, Varmistusdialogi) {
      $scope.projekti = {};
      $scope.peruste = {};
      $scope.valittuSuoritustapa = '';
+     $scope.poistoMouseLeaveLuokka = 'glyphicon glyphicon-remove pull-right smaller';
+     $scope.poistoMouseOverLuokka = 'glyphicon glyphicon-remove pull-right larger';
 
     if ($stateParams.perusteProjektiId !== 'uusi') {
       $scope.projekti.id = $stateParams.perusteProjektiId;
@@ -40,7 +43,8 @@ angular.module('eperusteApp')
         $scope.projekti = vastaus;
         Perusteet.get({perusteenId: vastaus._peruste}, function(vastaus) {
           $scope.peruste = vastaus;
-          if (vastaus.suoritustavat !== null && vastaus.suoritustavat.length > 0) {
+          if ($scope.peruste.suoritustavat !== null && $scope.peruste.suoritustavat.length > 0) {
+            $scope.peruste.suoritustavat = _.sortBy($scope.peruste.suoritustavat, 'suoritustapakoodi');
             $scope.vaihdaSuoritustapa(PerusteProjektiService.getSuoritustapa() === '' ? vastaus.suoritustavat[0].suoritustapakoodi : PerusteProjektiService.getSuoritustapa());
           }
         }, function(virhe) {
@@ -81,5 +85,34 @@ angular.module('eperusteApp')
       PerusteProjektiService.setSuoritustapa(suoritustapakoodi);
       haeSisalto($scope.valittuSuoritustapa);
     };
+
+    $scope.setLargerSize = function (event) {
+      event.currentTarget.className = $scope.poistoMouseOverLuokka;
+    };
+
+    $scope.setSmallerSize = function (event) {
+      event.currentTarget.className = $scope.poistoMouseLeaveLuokka;
+    };
+
+    $scope.poistaSisalto = function(viiteId, nimi, event) {
+      event.stopPropagation();
+      nimi = Kaanna.kaanna(nimi);
+
+      Varmistusdialogi.dialogi({
+        successCb: poistaminenVarmistettu,
+        otsikko: 'poista-tekstikappale-otsikko',
+        teksti: $translate('poista-tekstikappale-teksti', {nimi: nimi}),
+        data: viiteId
+      })();
+    };
+
+    var poistaminenVarmistettu = function(viiteId) {
+      PerusteenOsaViitteet.delete({viiteId: viiteId}, {}, function() {
+        haeSisalto(PerusteProjektiService.getSuoritustapa());
+      }, function(virhe) {
+        console.log('Sisällön poistovirhe', virhe);
+      });
+    };
+
 
   });
