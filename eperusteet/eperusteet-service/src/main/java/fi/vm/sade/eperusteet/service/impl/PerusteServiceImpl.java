@@ -380,7 +380,6 @@ public class PerusteServiceImpl implements PerusteService {
             Peruste peruste;
 
             for (KoodistoKoodiDto tutkinto : tutkinnot) {
-                LOG.info("koodiUri: " + tutkinto.getKoodiUri());
                 if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus")
                     && (koulutusRepo.findOneByKoulutuskoodi(tutkinto.getKoodiUri()) == null)) {
                     // Haetaan erikoistapausperusteet, jotka kuvaavat kahden eri koulutusalan tutkinnot
@@ -474,15 +473,9 @@ public class PerusteServiceImpl implements PerusteService {
      */
     private Set<Suoritustapa> luoSuoritustavat(String koulutustyyppiUri) {
         Set<Suoritustapa> suoritustavat = new HashSet<>();
-
-        Suoritustapa suoritustapa = new Suoritustapa();
-        suoritustapa.setSuoritustapakoodi(Suoritustapakoodi.NAYTTO);
-        suoritustavat.add(suoritustapa);
-
+        suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoRoot(Suoritustapakoodi.NAYTTO));
         if (koulutustyyppiUri.equals(KOULUTUSTYYPPI_URIT[0])) {
-            suoritustapa = new Suoritustapa();
-            suoritustapa.setSuoritustapakoodi(Suoritustapakoodi.OPS);
-            suoritustavat.add(suoritustapa);
+            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoRoot(Suoritustapakoodi.OPS));
         }
         return suoritustavat;
     }
