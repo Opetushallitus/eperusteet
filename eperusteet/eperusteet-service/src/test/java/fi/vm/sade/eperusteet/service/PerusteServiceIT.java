@@ -29,6 +29,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.Arrays;
@@ -41,9 +42,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.assertEquals;
 
@@ -52,7 +55,7 @@ import static org.junit.Assert.assertEquals;
  * Integraatiotesti muistinvaraista kantaa vasten.
  * @author jhyoty
  */
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Transactional
 public class PerusteServiceIT extends AbstractIntegrationTest {
 
     @Autowired
@@ -91,7 +94,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         p = TestUtils.createPeruste();
         p.setTila(Tila.VALMIS);
         repo.save(p);
-        
+
         p = TestUtils.createPeruste();
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
         p.setTila(Tila.VALMIS);
@@ -113,6 +116,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Rollback(true)
     public void testAddTutkinnonRakenne() {
 
         TutkinnonOsaViiteDto v1 = perusteService.addTutkinnonOsa(peruste.getId(), Suoritustapakoodi.OPS, new TutkinnonOsaViiteDto());
@@ -135,6 +139,22 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
         updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, updatedTutkinnonRakenne);
         assertEquals(v1.getTutkinnonOsa(), ((RakenneOsaDto)updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsa());
+    }
+
+    @Value("${fi.vm.sade.eperusteet.tutkinnonrakenne.maksimisyvyys}")
+    private int maxDepth;
+
+    @Test(expected = BusinessRuleViolationException.class)
+    @Rollback(true)
+    public void addiningDeepTutkinnonRakenneShouldFail() {
+
+        RakenneModuuliDto rakenne = new RakenneModuuliDto();
+        for ( int i = 0; i < maxDepth + 1; i++ ) {
+            RakenneModuuliDto ryhma = new RakenneModuuliDto();
+            ryhma.setOsat(Arrays.<AbstractRakenneOsaDto>asList(rakenne));
+            rakenne = ryhma;
+        }
+        RakenneModuuliDto updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, rakenne);
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceIT.class);
