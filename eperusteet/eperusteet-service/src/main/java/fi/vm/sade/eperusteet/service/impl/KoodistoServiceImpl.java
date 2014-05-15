@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import com.googlecode.ehcache.annotations.Cacheable;
 import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.service.KoodistoService;
@@ -27,6 +26,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -47,7 +47,7 @@ public class KoodistoServiceImpl implements KoodistoService {
     private DtoMapper mapper;
 
     @Override
-    @Cacheable(cacheName = "koodistot")
+    @Cacheable("koodistot")
     public List<KoodistoKoodiDto> getAll(String koodisto) {
         RestTemplate restTemplate = new RestTemplate();
         String url = KOODISTO_API + koodisto + "/koodi/";
@@ -57,6 +57,7 @@ public class KoodistoServiceImpl implements KoodistoService {
     }
 
     @Override
+    @Cacheable("koodistot")
     public KoodistoKoodiDto get(String koodisto, String koodi) {
         RestTemplate restTemplate = new RestTemplate();
         String url = KOODISTO_API + koodisto + "/koodi/" + koodi;
@@ -66,6 +67,7 @@ public class KoodistoServiceImpl implements KoodistoService {
     }
 
     @Override
+    @Cacheable("koodistot")
     public List<KoodistoKoodiDto> filterBy(String koodisto, String koodi) {
         List<KoodistoKoodiDto> filter = getAll(koodisto);
         List<KoodistoKoodiDto> tulos = new ArrayList<>();
@@ -87,6 +89,7 @@ public class KoodistoServiceImpl implements KoodistoService {
     }
 
     @Override
+    @Cacheable("koodistot")
     public List<KoodistoKoodiDto> getAlarelaatio(String koodi) {
         RestTemplate restTemplate = new RestTemplate();
         String url = KOODISTO_API + ALARELAATIO + koodi;
@@ -96,6 +99,7 @@ public class KoodistoServiceImpl implements KoodistoService {
     }
 
     @Override
+    @Cacheable("koodistot")
     public List<KoodistoKoodiDto> getYlarelaatio(String koodi) {
         RestTemplate restTemplate = new RestTemplate();
         String url = KOODISTO_API + YLARELAATIO + koodi;

@@ -1,12 +1,12 @@
-<ehcache 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<ehcache
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="../config/ehcache.xsd"
   updateCheck="false"
   monitoring="autodetect"
   dynamicConfig="true"
 >
 
-    <!--   
+    <!--
     The diskStore element is optional. It must be configured if you have overflowToDisk or diskPersistent enabled
     for any cache. If it is not configured, a warning will be issues and java.io.tmpdir will be used.
 
@@ -273,7 +273,7 @@
   Mandatory Default Cache configuration. These settings will be applied to caches
   created programmtically using CacheManager.add(String cacheName)
   -->
-  <defaultCache           
+  <defaultCache
     maxElementsInMemory="10000"
     eternal="false"
     timeToIdleSeconds="3600"
@@ -285,17 +285,17 @@
     memoryStoreEvictionPolicy="LRU"
   />
   <cache name="koulutusalat"
-         maxElementsInMemory="10" 
+         maxElementsInMemory="10"
          eternal="false"
          timeToLiveSeconds="86400"
          overflowToDisk="false" />
   <cache name="koodistot"
-         maxElementsInMemory="4" 
+         maxElementsInMemory="1000"
          eternal="false"
          timeToLiveSeconds="86400"
          overflowToDisk="false" />
   <cache name="opintoalat"
-         maxElementsInMemory="10" 
+         maxElementsInMemory="10"
          eternal="false"
          timeToLiveSeconds="86400"
          overflowToDisk="false" />
