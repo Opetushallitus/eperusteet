@@ -17,69 +17,63 @@
        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
        http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
-         <!-- Enables the caching through annotations -->
-  <cache:annotation-driven />
+    <!-- Enables the caching through annotations -->
+    <cache:annotation-driven />
 
-  <context:property-placeholder
-    location="classpath:eperusteet-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/eperusteet-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
-    ignore-resource-not-found="true"
-    properties-ref="defaultProps"/>
+    <context:property-placeholder
+        location="classpath:eperusteet-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/eperusteet-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
+        ignore-resource-not-found="true"
+        properties-ref="defaultProps"/>
 
-  <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-    <property name="properties">
-      <util:properties local-override="true">
-        <prop key="cas_key">eperusteet-service</prop>
-        <!-- prop key="cas_service">${cas.service.eperusteet-service}</prop -->
-        <prop key="spring_security_default_access">permitAll</prop>
-      </util:properties>
-    </property>
-  </bean>
+    <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+            <util:properties local-override="true">
+                <prop key="cas_key">eperusteet-service</prop>
+                <!-- prop key="cas_service">${cas.service.eperusteet-service}</prop -->
+                <prop key="spring_security_default_access">permitAll</prop>
+            </util:properties>
+        </property>
+    </bean>
 
-  <!-- generic cache manager -->
-<bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
-    <property name="caches">
-        <set>
-            <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean" p:name="koulutusalat"/>
-        </set>
-    </property>
-</bean>
+    <!-- generic cache manager -->
+    <bean id="cacheManager" class="org.springframework.cache.concurrent.ConcurrentMapCacheManager"/>
+    
+    <!-- import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/ -->
+    <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>
+    <tx:annotation-driven/>
 
-  <!-- import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/ -->
-  <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>
-  <tx:annotation-driven/>
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
-  <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
-
-  <bean id="dataSource"
+    <bean id="dataSource"
         class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" destroy-method="close">
-    <property name="driverClassName" value="org.h2.Driver"/>
-    <property name="url" value="jdbc:h2:mem:test"/>
-  </bean>
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:test"/>
+    </bean>
 
-  <bean id="entityManager" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-    <property name="persistenceUnitName" value="eperusteet"/>
-    <property name="dataSource" ref="dataSource"/>
-    <property name="packagesToScan" value="fi.vm.sade.eperusteet.domain"/>
-    <property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider"/>
-    <property name="jpaPropertyMap">
-      <map>
-        <entry key="hibernate.hbm2ddl.auto" value="create"/>
-        <entry key="hibernate.show_sql" value="${hibernate.show_sql:false}"/>
-<!-- 		<entry key="hibernate.show_sql" value="true"/> -->
-        <entry key="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-        <entry key="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE"/>
-        <entry key="hibernate.cache.use_second_level_cache" value="true"/>
-        <entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
-        <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.ValidityAuditStrategy"/>
-        <entry key="javax.persistence.validation.factory" value-ref="validator"/>
-      </map>
-    </property>
-  </bean>
+    <bean id="entityManager" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="eperusteet"/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="fi.vm.sade.eperusteet.domain"/>
+        <property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider"/>
+        <property name="jpaPropertyMap">
+            <map>
+                <entry key="hibernate.hbm2ddl.auto" value="create"/>
+                <entry key="hibernate.show_sql" value="${hibernate.show_sql:false}"/>
+                <!-- 		<entry key="hibernate.show_sql" value="true"/> -->
+                <entry key="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+                <entry key="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE"/>
+                <entry key="hibernate.cache.use_second_level_cache" value="true"/>
+                <entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
+                <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.ValidityAuditStrategy"/>
+                <entry key="javax.persistence.validation.factory" value-ref="validator"/>
+            </map>
+        </property>
+    </bean>
 
-  <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-    <property name="entityManagerFactory" ref="entityManager"/>
-  </bean>
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManager"/>
+    </bean>
 
-  <jpa:repositories base-package="fi.vm.sade.eperusteet.repository" factory-class="fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepositoryFactoryBean"/>
+    <jpa:repositories base-package="fi.vm.sade.eperusteet.repository" factory-class="fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepositoryFactoryBean"/>
 
 </beans>
