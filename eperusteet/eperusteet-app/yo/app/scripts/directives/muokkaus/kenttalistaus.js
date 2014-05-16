@@ -24,8 +24,9 @@ angular.module('eperusteApp')
       restrict: 'E',
       transclude: true,
       scope: {
-        fields: "=",
-        objectPromise: "="
+        fields: '=',
+        objectPromise: '=',
+        editEnabled: '='
       },
       link: function(scope, element, attrs) {
 

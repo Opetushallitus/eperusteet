@@ -100,6 +100,7 @@
   background-color: transparent;
   border: 0px none;
   box-shadow: none;
+  margin-bottom: 150px;
 }
 
 .muokkaus-kohdealue {
@@ -121,5 +122,16 @@
   }
   ul.ui-sortable li {
     cursor: move;
+  }
+  ul.ui-sortable-disabled li {
+    cursor: default;
+  }
+}
+
+.arviointi-kohdealueet {
+  .toggler {
+    font-size: 80%;
+    display: inline-block;
+    margin-left: 2em;
   }
 }

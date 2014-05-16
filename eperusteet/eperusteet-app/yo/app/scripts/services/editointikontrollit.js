@@ -18,7 +18,7 @@
 
 angular.module('eperusteApp')
   .service('Editointicatcher', function() {
-    var f = function(/*osa*/) {};
+    var f = angular.noop;
 
     return {
       register: function(cb) {
@@ -26,7 +26,7 @@ angular.module('eperusteApp')
       },
       give: function(osa) {
         f(osa);
-        f = function() {};
+        f = angular.noop;
       }
     };
   })
@@ -45,6 +45,9 @@ angular.module('eperusteApp')
       scope.editMode = mode;
       scope.editModeDefer = $q.defer();
       scope.editModeDefer.resolve(scope.editMode);
+      if (scope.editingCallback) {
+        scope.editingCallback.notify(mode);
+      }
     }
 
     return {
@@ -81,6 +84,9 @@ angular.module('eperusteApp')
           console.error('callback-function invalid');
           throw 'editCallback-function invalid';
         }
+        if (!angular.isFunction(callback.notify)) {
+          callback.notify = angular.noop;
+        }
         $timeout(function() {
           scope.editingCallback = callback;
           scope.editModeDefer.resolve(scope.editMode);
@@ -115,9 +121,6 @@ angular.module('eperusteApp')
       },
       getEditModePromise: function() {
         return scope.editModeDefer.promise;
-      },
-      registerAdditionalSaveCallback: function(callback) {
-        additionalCallbacks.save.push(callback);
       }
     };
 });

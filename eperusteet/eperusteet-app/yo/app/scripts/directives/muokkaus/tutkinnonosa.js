@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .directive('muokkausTutkinnonosa', function(Notifikaatiot) {
     return {
-      template: '<kenttalistaus object-promise="tutkinnonOsaPromise" fields="fields">{{tutkinnonOsanMuokkausOtsikko | translate}}</kenttalistaus>',
+      template: '<kenttalistaus edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields">{{tutkinnonOsanMuokkausOtsikko | translate}}</kenttalistaus>',
       restrict: 'E',
       scope: {
         tutkinnonOsa: '='
@@ -79,6 +79,18 @@ angular.module('eperusteApp')
            });
 
         $scope.editableTutkinnonOsa = {};
+        $scope.editEnabled = false;
+
+        function cleanAccordionData(obj) {
+          if (_.has(obj, 'accordionOpen')) {
+            delete obj.accordionOpen;
+          }
+          _.each(obj, function (innerObj) {
+            if (_.isObject(innerObj)) {
+              cleanAccordionData(innerObj);
+            }
+          });
+        }
 
         function setupTutkinnonOsa(osa) {
           $scope.editableTutkinnonOsa = angular.copy(osa);
@@ -90,6 +102,7 @@ angular.module('eperusteApp')
             },
             save: function() {
               //TODO: Validate tutkinnon osa
+              cleanAccordionData($scope.editableTutkinnonOsa.arviointi);
               if ($scope.editableTutkinnonOsa.id) {
                 $scope.editableTutkinnonOsa.$saveTutkinnonOsa(function (response) {
                   $scope.editableTutkinnonOsa = angular.copy(response);
@@ -117,11 +130,11 @@ angular.module('eperusteApp')
               var tutkinnonOsaDefer = $q.defer();
               $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
               tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
+            },
+            notify: function (mode) {
+              $scope.editEnabled = mode;
             }
           });
-          // Siirry suoraan muokkaustilaan.
-          // TODO: parempi API editointikontrolleihin
-          angular.element('.edit-controls').scope().start();
 
           function openNotificationDialog() {
             Notifikaatiot.onnistui('tallennettu', 'muokkaus-tutkinnon-osa-tallennettu');

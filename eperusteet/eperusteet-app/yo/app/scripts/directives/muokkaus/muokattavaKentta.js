@@ -49,7 +49,8 @@ angular.module('eperusteApp')
       scope: {
         field: '=fieldInfo',
         objectReady: '=objectPromise',
-        removeField: '&?'
+        removeField: '&?',
+        editEnabled: '='
       },
       link: function(scope, element, attrs) {
 
@@ -119,7 +120,8 @@ angular.module('eperusteApp')
             element =
             angular.element('<arviointi></arviointi>')
             .attr('arviointi', 'object.' + scope.field.path)
-            .attr('editointi-sallittu', 'true');
+            .attr('editointi-sallittu', 'true')
+            .attr('edit-enabled', 'editEnabled');
           }
 
           else if (elementType === 'koodisto-select') {
@@ -177,7 +179,7 @@ angular.module('eperusteApp')
     return {
       template:
         '<div ng-transclude></div>' +
-        '<button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-click="suljeOsio()">{{\'poista\' | translate}}&nbsp;{{osionNimi | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-minus"></span></button>',
+        '<button ng-if="$parent.editEnabled" editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-click="suljeOsio()">{{\'poista\' | translate}}&nbsp;{{osionNimi | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-minus"></span></button>',
       restrict: 'E',
       transclude: true,
       scope: {

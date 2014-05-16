@@ -24,11 +24,11 @@ angular.module('eperusteApp')
       restrict: 'E',
       scope: {
         arviointi: '=',
-        editAllowed: '@?editointiSallittu'
+        editAllowed: '@?editointiSallittu',
+        editEnabled: '='
       },
       link: function(scope) {
         scope.editAllowed = (scope.editAllowed === 'true' || scope.editAllowed === true);
-        scope.editEnabled = false;
 
         scope.arviointiasteikot = YleinenData.arviointiasteikot || {};
         scope.showNewKohdealueInput = false;
@@ -165,6 +165,12 @@ angular.module('eperusteApp')
             // ei toimi
           }
         };
+        scope.kriteeriSortableOptions = {};
+
+        scope.$watch('editEnabled', function (value) {
+          scope.sortableOptions.disabled = !value;
+          scope.kriteeriSortableOptions.disabled = !value;
+        });
 
         scope.isElementDragged = function() {
           if (scope.elementDragged) {
@@ -174,6 +180,36 @@ angular.module('eperusteApp')
             return false;
           }
         };
+
+        /**
+         * is-open attribuutti on annettava modelina accordionille, jotta
+         * ui-sortable voidaan disabloida lukutilassa.
+         * Accordionin tiloja seurataan suoraan modelin datassa. Haittapuoli
+         * on se, että tallennettaessa pitää siivota accordionOpen-tagit pois.
+         */
+        function setAccordion(mode) {
+          var obj = scope.arviointi;
+          if (!_.isObject(obj)) {
+            return;
+          }
+          _.each(obj.arvioinninKohdealueet, function (kohdealue) {
+            kohdealue.accordionOpen = mode;
+            _.each(kohdealue.arvioinninKohteet, function (kohde) {
+              kohde.accordionOpen = mode;
+            });
+          });
+        }
+
+        function accordionState() {
+          var obj = _.first(scope.arviointi.arvioinninKohdealueet);
+          return obj && obj.accordionOpen;
+        }
+
+        scope.toggleAll = function () {
+          setAccordion(!accordionState());
+        };
+
+        setAccordion(true);
       }
     };
   })
