@@ -1,0 +1,38 @@
+<h1>
+  {{tutkinnonOsanMuokkausOtsikko | kaanna}}
+  <button ng-if="editEnabled" class="btn btn-danger" ng-click="poistaTutkinnonOsa()">
+    <span class="glyphicon glyphicon-remove"></span>{{'poista' | translate}}
+  </button>
+</h1>
+<div class="well viitetiedot">
+  <div class="col-md-6">
+    <p ng-hide="editEnabled" ng-if="rakenne.tutkinnonOsat[tutkinnonOsa.id] && rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus">
+      {{'laajuus'}}: {{rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus}} {{rakenne.tutkinnonOsat[tutkinnonOsa.id].yksikko || '' | kaanna}}
+    </p>
+    <div ng-show="editEnabled">
+      <form class="form-horizontal" role="form">
+        <div class="form-group">
+          <label class="control-label col-sm-2">{{ 'laajuus' | kaanna }}</label>
+          <div class="col-sm-10">
+            <input class="form-control" ng-model="viiteosa.laajuus" type="number">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-sm-2">{{ 'yksikkö' | kaanna }}</label>
+          <div class="col-sm-8">
+            <div class="btn-group">
+              <button type="button" class="btn btn-default" ng-model="viiteosa.yksikko" btn-radio="'OPINTOVIIKKO'">{{ 'OPINTOVIIKKO' | kaanna }}</button>
+              <button type="button" class="btn btn-default" ng-model="viiteosa.yksikko" btn-radio="'OSAAMISPISTE'">{{ 'OSAAMISPISTE' | kaanna }}</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <p>Muokattu viimeksi: {{tutkinnonOsa.muokattu | aikaleima}}</p>
+    <p>Muokkaaja: Erkki Esimerkki</p>
+  </div>
+  <div class="clearfix"></div>
+</div>
+<kenttalistaus edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields"></kenttalistaus>

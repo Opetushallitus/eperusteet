@@ -338,12 +338,6 @@ angular.module('eperusteApp')
           scope.suljettuViimeksi = !scope.suljettuViimeksi;
         };
 
-        scope.poistaTutkinnonOsa = function(v) {
-          PerusteenRakenne.poistaTutkinnonOsaViite(v, scope.rakenne.$peruste.id, scope.rakenne.$suoritustapa, function() {
-            delete scope.rakenne.tutkinnonOsat[v._tutkinnonOsa];
-          });
-        };
-
         scope.uusiTutkinnonOsa = function(cb) {
           scope.lisataanUuttaOsaa = true;
           cb();

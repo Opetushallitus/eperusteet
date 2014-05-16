@@ -20,12 +20,20 @@
 angular.module('eperusteApp')
   .directive('muokkausTutkinnonosa', function(Notifikaatiot) {
     return {
-      template: '<kenttalistaus edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields">{{tutkinnonOsanMuokkausOtsikko | kaanna}}</kenttalistaus>',
+      templateUrl: 'views/partials/muokkaus/tutkinnonosa.html',
       restrict: 'E',
       scope: {
         tutkinnonOsa: '='
       },
-      controller: function($rootScope, $scope, $state, $q, $modal, Editointikontrollit, PerusteenOsat, Editointicatcher) {
+      controller: function($scope, $state, $stateParams, $q,
+        Editointikontrollit, PerusteenOsat, Editointicatcher, PerusteenRakenne,
+        PerusteTutkinnonosa) {
+        $scope.rakenne = {};
+        PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
+          $scope.rakenne = res;
+        });
+        $scope.viiteosa = {};
+
         $scope.fields =
           new Array({
              path: 'nimi',
@@ -99,6 +107,7 @@ angular.module('eperusteApp')
 
           Editointikontrollit.registerCallback({
             edit: function() {
+              $scope.viiteosa = $scope.rakenne.tutkinnonOsat[$scope.editableTutkinnonOsa.id] || {};
             },
             save: function() {
               //TODO: Validate tutkinnon osa
@@ -115,6 +124,12 @@ angular.module('eperusteApp')
                   $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
                   tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
                 }, Notifikaatiot.serverCb);
+                // Viiteosa (laajuus) tallennetaan erikseen
+                PerusteTutkinnonosa.save({
+                  perusteenId: $scope.rakenne.$peruste.id,
+                  suoritustapa: $stateParams.suoritustapa,
+                  osanId: $scope.viiteosa.id
+                }, $scope.viiteosa, angular.noop, Notifikaatiot.serverCb);
               } else {
                 PerusteenOsat.saveTutkinnonOsa($scope.editableTutkinnonOsa, function(response) {
                   Editointikontrollit.lastModified = response;
@@ -153,6 +168,13 @@ angular.module('eperusteApp')
           setupTutkinnonOsa($scope.tutkinnonOsa);
           objectReadyDefer.resolve($scope.editableTutkinnonOsa);
         }
+
+        $scope.poistaTutkinnonOsa = function() {
+          PerusteenRakenne.poistaTutkinnonOsaViite($scope.tutkinnonOsa,
+            $scope.rakenne.$peruste.id, $stateParams.suoritustapa, function() {
+              $state.go('perusteprojekti.editoi.tutkinnonosat');
+          });
+        };
       }
     };
   });

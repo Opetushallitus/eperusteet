@@ -10,4 +10,10 @@ angular.module('eperusteApp')
       });
       return input;
     };
+  })
+
+  .filter('aikaleima', function ($filter) {
+    return function (input) {
+      return $filter('date')(input, 'd.M.yyyy H:mm');
+    };
   });

@@ -79,8 +79,7 @@ angular.module('eperusteApp')
       else {
         osa = {};
       }
-      cb = cb || function() {
-      };
+      cb = cb || angular.noop;
 
       PerusteTutkinnonosa.save({
         perusteenId: $scope.rakenne.$peruste.id,
@@ -88,6 +87,10 @@ angular.module('eperusteApp')
       }, osa, function(res) {
         $scope.rakenne.tutkinnonOsat[res._tutkinnonOsa] = res;
         cb();
+        $state.go('perusteprojekti.editoi.perusteenosa', {
+          perusteenOsaId: res._tutkinnonOsa,
+          perusteenOsanTyyppi: 'tutkinnonosa'
+        });
       }, function(err) {
         Notifikaatiot.fataali('tallennus-epäonnistui', err);
         cb();
