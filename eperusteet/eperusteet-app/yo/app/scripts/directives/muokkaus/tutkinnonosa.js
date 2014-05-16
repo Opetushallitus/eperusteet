@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .directive('muokkausTutkinnonosa', function(Notifikaatiot) {
     return {
-      template: '<kenttalistaus edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields">{{tutkinnonOsanMuokkausOtsikko | translate}}</kenttalistaus>',
+      template: '<kenttalistaus edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields">{{tutkinnonOsanMuokkausOtsikko | kaanna}}</kenttalistaus>',
       restrict: 'E',
       scope: {
         tutkinnonOsa: '='
@@ -95,7 +95,7 @@ angular.module('eperusteApp')
         function setupTutkinnonOsa(osa) {
           $scope.editableTutkinnonOsa = angular.copy(osa);
 
-          $scope.tutkinnonOsanMuokkausOtsikko = $scope.editableTutkinnonOsa.id ? 'muokkaus-tutkinnon-osa' : 'luonti-tutkinnon-osa';
+          $scope.tutkinnonOsanMuokkausOtsikko = $scope.editableTutkinnonOsa.id ? $scope.editableTutkinnonOsa.nimi : 'luonti-tutkinnon-osa';
 
           Editointikontrollit.registerCallback({
             edit: function() {
