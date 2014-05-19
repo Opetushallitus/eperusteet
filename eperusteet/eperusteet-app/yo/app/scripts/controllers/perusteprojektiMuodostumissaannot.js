@@ -1,5 +1,4 @@
 'use strict';
-/* global _ */
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {
@@ -18,34 +17,29 @@ angular.module('eperusteApp')
               Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, TreeCache, Notifikaatiot,
               Editointikontrollit) {
     $scope.editoi = false;
+    $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
     $scope.rakenne = {
       $resolved: false,
       rakenne: { osat: [] },
       tutkinnonOsat: {}
     };
 
-    $scope.vaihdaSuoritustapa = function() { haeRakenne(); };
-
-    function haeRakenne(st) {
-      if (st) { $scope.rakenne.$suoritustapa = st.suoritustapakoodi; }
-      PerusteenRakenne.hae($stateParams.perusteProjektiId, $scope.rakenne.$suoritustapa, function(res) {
+    function haeRakenne() {
+      PerusteenRakenne.hae($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
+        res.$suoritustapa = $scope.suoritustapa;
         res.$resolved = true;
-        res.$suoritustavat = _.sortBy(res.$peruste.suoritustavat, function(st) { return st.suoritustapakoodi; });
-        res.$suoritustapa = $scope.rakenne.$suoritustapa || res.$suoritustavat[0].suoritustapakoodi;
         $scope.rakenne = res;
       });
     }
     $scope.haeRakenne = haeRakenne;
-
-    if (TreeCache.nykyinen() !== $stateParams.perusteenId) { haeRakenne(); }
-    else { TreeCache.hae(); }
+    haeRakenne();
 
     function tallennaRakenne(rakenne) {
       TreeCache.tallenna(rakenne, $stateParams.perusteenId);
       PerusteenRakenne.tallenna(
         rakenne,
         rakenne.$peruste.id,
-        $scope.rakenne.$suoritustapa,
+        $scope.suoritustapa,
         function() { Notifikaatiot.onnistui('tallennus-onnistui', ''); },
         function(virhe) { Notifikaatiot.varoitus('tallennus-epäonnistui', virhe); }
       );

@@ -34,15 +34,15 @@ angular.module('eperusteApp')
     function update() {
       $rootScope.$broadcast('update:perusteprojekti');
     }
-    
+
     function getSuoritustapa() {
       return _.clone(suoritustapa);
     }
-    
+
     function setSuoritustapa(st) {
       suoritustapa = _.clone(st);
     }
-    
+
     function cleanSuoritustapa() {
       suoritustapa = '';
     }

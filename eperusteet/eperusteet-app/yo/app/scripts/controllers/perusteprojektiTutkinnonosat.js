@@ -7,67 +7,46 @@ angular.module('eperusteApp')
       .state('perusteprojekti.editoi.tutkinnonosat', {
         url: '/tutkinnonosat',
         templateUrl: 'views/perusteprojektiTutkinnonosat.html',
-        controller: 'PerusteprojektiMuodostumissaannotCtrl',
+        controller: 'PerusteprojektiTutkinnonOsatCtrl',
         naviRest: ['tutkinnonosat'],
         onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
             SivunavigaatioService.aseta({osiot: true});
           }]
       });
   })
-  .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $rootScope, $state, $stateParams,
+  .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $rootScope, $state, $stateParams,
     Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, TreeCache, Notifikaatiot,
-    Editointikontrollit, Kaanna, PerusteTutkinnonosa) {
+    Editointikontrollit, Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti) {
+
+    $scope.editoi = false;
+    $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
+    $scope.tosarajaus = '';
     $scope.rakenne = {
       $resolved: false,
       rakenne: {osat: []},
       tutkinnonOsat: {}
     };
 
-    $scope.editoi = false;
-    $scope.tosarajaus = '';
+    $scope.paivitaRajaus = function(rajaus) { $scope.tosarajaus = rajaus; };
 
-    $scope.vaihdaSuoritustapa = function() {
-      haeRakenne();
-    };
-
-    $scope.paivitaRajaus = function(rajaus) {
-      $scope.tosarajaus = rajaus;
-    };
-
-    function haeRakenne(st) {
-      if (st) {
-        $scope.rakenne.$suoritustapa = st.suoritustapakoodi;
-      }
-      PerusteenRakenne.hae($stateParams.perusteProjektiId, $scope.rakenne.$suoritustapa, function(res) {
+    function haeRakenne() {
+      PerusteenRakenne.hae($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
+        res.$suoritustapa = $scope.suoritustapa;
         res.$resolved = true;
-        res.$suoritustavat = _.sortBy(res.$peruste.suoritustavat, function(st) {
-          return st.suoritustapakoodi;
-        });
-        res.$suoritustapa = $scope.rakenne.$suoritustapa || res.$suoritustavat[0].suoritustapakoodi;
         $scope.rakenne = res;
       });
     }
     $scope.haeRakenne = haeRakenne;
-
-    if (TreeCache.nykyinen() !== $stateParams.perusteenId) {
-      haeRakenne();
-    }
-    else {
-      TreeCache.hae();
-    }
+    haeRakenne();
 
     function tallennaRakenne(rakenne) {
       TreeCache.tallenna(rakenne, $stateParams.perusteenId);
       PerusteenRakenne.tallenna(
         rakenne,
         rakenne.$peruste.id,
-        $scope.rakenne.$suoritustapa,
-        function() {
-          Notifikaatiot.onnistui('tallennus-onnistui', '');
-        },
-        function(virhe) {
-          Notifikaatiot.varoitus('tallennus-epäonnistui', virhe);
-        }
+        $scope.suoritustapa,
+        function() { Notifikaatiot.onnistui('tallennus-onnistui', ''); },
+        function(virhe) { Notifikaatiot.varoitus('tallennus-epäonnistui', virhe); }
       );
     }
 
@@ -88,6 +67,10 @@ angular.module('eperusteApp')
     $scope.rajaaTutkinnonOsia = function(haku) {
       return Kaanna.kaanna(haku.nimi).toLowerCase().indexOf($scope.tosarajaus.toLowerCase()) !== -1;
     };
+
+    $scope.tuoTutkinnonosa = TutkinnonOsanTuonti.modaali($scope.suoritustapa, function(osat) {
+      _.forEach(osat, function(osa) { $scope.lisaaTutkinnonOsa(osa); });
+    });
 
     $scope.lisaaTutkinnonOsa = function(osa, cb) {
       if (osa) {

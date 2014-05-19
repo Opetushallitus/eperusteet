@@ -338,30 +338,6 @@ angular.module('eperusteApp')
           scope.suljettuViimeksi = !scope.suljettuViimeksi;
         };
 
-        scope.tuoTutkinnonosa = TutkinnonOsanTuonti.modaali(scope.rakenne.$suoritustapa, function(osat) {
-          var after = _.after(_.size(osat), function() { paivitaUniikit(); });
-          _.forEach(osat, function(osa) { scope.lisaaTutkinnonOsa(osa, after); });
-        });
-
-        scope.lisaaTutkinnonOsa = function(osa, cb) {
-          if (osa) {
-            osa = { _tutkinnonOsa: osa._tutkinnonOsa };
-          }
-          else { osa =  {}; }
-          cb = cb || function(){};
-
-          PerusteTutkinnonosa.save({
-            perusteenId: scope.rakenne.$peruste.id,
-            suoritustapa: scope.rakenne.$suoritustapa
-          }, osa, function(res) {
-            scope.rakenne.tutkinnonOsat[res._tutkinnonOsa] = res;
-            cb();
-          }, function(err) {
-            Notifikaatiot.fataali('tallennus-epäonnistui', err);
-            cb();
-          });
-        };
-
         scope.poistaTutkinnonOsa = function(v) {
           PerusteenRakenne.poistaTutkinnonOsaViite(v, scope.rakenne.$peruste.id, scope.rakenne.$suoritustapa, function() {
             delete scope.rakenne.tutkinnonOsat[v._tutkinnonOsa];
@@ -372,6 +348,7 @@ angular.module('eperusteApp')
           scope.lisataanUuttaOsaa = true;
           cb();
         };
+
       }
     };
   })

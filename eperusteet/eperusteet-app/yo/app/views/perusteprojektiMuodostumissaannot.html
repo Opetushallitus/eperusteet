@@ -1,10 +1,5 @@
 <h1>
   {{ 'tutkinnon-rakenne' | kaanna }}
-  <span ng-show="rakenne.$suoritustavat.length > 1">
-    <span ng-hide="editoi" class="btn-group">
-      <button class="btn btn-default" ng-model="rakenne.$suoritustapa" ng-click="haeRakenne(st)" ng-repeat="st in rakenne.$suoritustavat" btn-radio="'{{ st.suoritustapakoodi }}'">{{ st.suoritustapakoodi | kaanna }}</button>
-    </span>
-  </span>
 </h1>
 <div>
   <tree-wrapper muokkaus="editoi" ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
