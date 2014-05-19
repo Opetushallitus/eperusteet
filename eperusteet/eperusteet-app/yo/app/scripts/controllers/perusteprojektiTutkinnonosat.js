@@ -45,8 +45,8 @@ angular.module('eperusteApp')
         rakenne,
         rakenne.$peruste.id,
         $scope.suoritustapa,
-        function() { Notifikaatiot.onnistui('tallennus-onnistui', ''); },
-        function(virhe) { Notifikaatiot.varoitus('tallennus-epäonnistui', virhe); }
+        function() { Notifikaatiot.onnistui(); },
+        Notifikaatiot.serverCb
       );
     }
 

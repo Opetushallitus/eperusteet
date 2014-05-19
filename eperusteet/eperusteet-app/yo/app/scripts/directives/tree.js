@@ -128,7 +128,7 @@ angular.module('eperusteApp')
       ryhmaModaali: ryhmaModaali
     };
   })
-  .directive('tree', function($compile, $state, $modal, Muodostumissaannot) {
+  .directive('tree', function($compile, $state, $modal, Muodostumissaannot, PerusteenRakenne) {
     function generoiOtsikko() {
       var tosa = '{{ tutkinnonOsat[rakenne._tutkinnonOsa].nimi | kaanna:true | rajaaKoko:40 }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsat[rakenne._tutkinnonOsa].laajuus">, <b>{{ + tutkinnonOsat[rakenne._tutkinnonOsa].laajuus || 0 }}</b>{{ tutkinnonOsat[rakenne._tutkinnonOsa].yksikko | kaanna }}</span>';
       return '' +
@@ -175,7 +175,7 @@ angular.module('eperusteApp')
 
         scope.suljePolut = function() {
           scope.rakenne.rakenne.$collapsed = scope.suljettuViimeksi;
-          kaikilleRakenteille(scope.rakenne.rakenne.osat, function(osa) {
+          PerusteenRakenne.kaikilleRakenteille(scope.rakenne.rakenne.osat, function(osa) {
             osa.$collapsed = scope.suljettuViimeksi;
           });
           scope.suljettuViimeksi = !scope.suljettuViimeksi;
@@ -261,14 +261,6 @@ angular.module('eperusteApp')
   .directive('treeWrapper', function($stateParams, $modal, $state, Editointikontrollit, TutkinnonOsanTuonti, Kaanna,
                                      PerusteTutkinnonosa, Notifikaatiot, PerusteenRakenne, Muodostumissaannot) {
 
-    function kaikilleRakenteille(rakenne, f) {
-      if (!rakenne || !f) { return; }
-      _.forEach(rakenne, function(r) {
-        kaikilleRakenteille(r.osat, f);
-        f(r);
-      });
-    }
-
     return {
       restrict: 'AE',
       transclude: true,
@@ -344,7 +336,7 @@ angular.module('eperusteApp')
 
         scope.suljePolut = function() {
           scope.rakenne.rakenne.$collapsed = scope.suljettuViimeksi;
-          kaikilleRakenteille(scope.rakenne.rakenne.osat, function(osa) {
+          PerusteenRakenne.kaikilleRakenteille(scope.rakenne.rakenne.osat, function(osa) {
             osa.$collapsed = scope.suljettuViimeksi;
           });
           scope.suljettuViimeksi = !scope.suljettuViimeksi;

@@ -78,6 +78,14 @@ angular.module('eperusteApp')
       });
     }
 
+    function kaikilleRakenteille(rakenne, f) {
+      if (!rakenne || !f) { return; }
+      _.forEach(rakenne, function(r) {
+        kaikilleRakenteille(r.osat, f);
+        f(r);
+      });
+    }
+
     function tallennaRakenne(rakenne, id, suoritustapa, success) {
       var after = _.after(_.size(rakenne.tutkinnonOsat) + 1, success);
 
@@ -116,6 +124,7 @@ angular.module('eperusteApp')
     return {
       hae: haeRakenne,
       tallenna: tallennaRakenne,
-      poistaTutkinnonOsaViite: poistaTutkinnonOsaViite
+      poistaTutkinnonOsaViite: poistaTutkinnonOsaViite,
+      kaikilleRakenteille: kaikilleRakenteille
     };
   });

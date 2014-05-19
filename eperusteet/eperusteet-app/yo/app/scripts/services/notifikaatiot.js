@@ -22,7 +22,7 @@ angular.module('eperusteApp')
       else if (!viesti) { viesti = ''; }
 
       viestit.push({
-        viesti: viesti,
+        viesti: viesti ? viesti : tyyppi === 1 ? 'tallennus-onnistui' : '',
         ilmanKuvaa: ilmanKuvaa || false,
         tyyppi: tyyppi,
         luotu: new Date(),
