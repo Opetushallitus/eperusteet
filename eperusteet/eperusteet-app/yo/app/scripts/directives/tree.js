@@ -130,12 +130,12 @@ angular.module('eperusteApp')
   })
   .directive('tree', function($compile, $state, $modal, Muodostumissaannot) {
     function generoiOtsikko() {
-      var tosa = '{{ tutkinnonOsat[rakenne._tutkinnonOsa].nimi | kaanna | rajaaKoko:40 }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\'">, <b>{{ + tutkinnonOsat[rakenne._tutkinnonOsa].laajuus || 0 }}</b>{{ tutkinnonOsat[rakenne._tutkinnonOsa].yksikko | kaanna }}</span>';
+      var tosa = '{{ tutkinnonOsat[rakenne._tutkinnonOsa].nimi | kaanna:true | rajaaKoko:40 }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\'">, <b>{{ + tutkinnonOsat[rakenne._tutkinnonOsa].laajuus || 0 }}</b>{{ tutkinnonOsat[rakenne._tutkinnonOsa].yksikko | kaanna }}</span>';
       return '' +
         '<span ng-if="rakenne._tutkinnonOsa && muokkaus">' + tosa + '</span>' +
         '<span ng-if="rakenne._tutkinnonOsa && !muokkaus"><a href="" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsaId: rakenne._tutkinnonOsa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a></span>' +
         '<span class="pull-right" ng-if="rakenne._tutkinnonOsa && muokkaus"><a href="" ng-click="poista(rakenne, vanhempi)"><span class="glyphicon glyphicon-remove"></a></span>' +
-        '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi"><b>{{ rakenne.nimi | kaanna  }}</b></span>';
+        '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi"><b>{{ rakenne.nimi | kaanna:true }}</b></span>';
     }
 
     return {
@@ -226,7 +226,7 @@ angular.module('eperusteApp')
           '<div ng-if="!vanhempi">' +
           '  <div class="otsikko">' +
           '    <h4 ng-show="muokkaus"><a href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)">{{ rakenne.nimi || \'nimetön\' | kaanna }}</a><span ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus">, {{ rakenne.$laajuus || 0 }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</span></h4>' +
-          '    <h4 ng-hide="muokkaus">{{ rakenne.nimi || \'nimetön\' | kaanna }}<span ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus">, {{ rakenne.$laajuus || 0 }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</span></h4>' +
+          '    <h4 ng-hide="muokkaus">{{ rakenne.nimi | kaanna:true }}<span ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus">, {{ rakenne.$laajuus || 0 }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</span></h4>' +
           '    <div ng-if="rakenne.$virhe" class="isovirhe">{{ rakenne.$virhe | kaanna }}</div>' +
           '  </div>' +
           '</div>' +
