@@ -51,7 +51,9 @@
     "uusi-tutkinnonosa": "<Uusi tutkinnon osa>",
     "tuo-tutkinnonosa": "Tuo tutkinnon osa",
     "tutkinnon-osia-ei-ole": "Tutkinnon osia ei ole",
-    "avaa-ja-sulje": "Avaa / Sulje kaikki",
+    "avaa-kaikki": "Avaa kaikki",
+    "sulje-kaikki": "Sulje kaikki",
+    "avaa-sulje-kaikki": "Avaa / sulje kaikki",
 
     "haku-otsikko": "Perusteen haku",
     "haku-koulutusala": "Koulutusala",

@@ -130,7 +130,7 @@ angular.module('eperusteApp')
   })
   .directive('tree', function($compile, $state, $modal, Muodostumissaannot) {
     function generoiOtsikko() {
-      var tosa = '{{ tutkinnonOsat[rakenne._tutkinnonOsa].nimi | kaanna:true | rajaaKoko:40 }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\'">, <b>{{ + tutkinnonOsat[rakenne._tutkinnonOsa].laajuus || 0 }}</b>{{ tutkinnonOsat[rakenne._tutkinnonOsa].yksikko | kaanna }}</span>';
+      var tosa = '{{ tutkinnonOsat[rakenne._tutkinnonOsa].nimi | kaanna:true | rajaaKoko:40 }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsat[rakenne._tutkinnonOsa].laajuus">, <b>{{ + tutkinnonOsat[rakenne._tutkinnonOsa].laajuus || 0 }}</b>{{ tutkinnonOsat[rakenne._tutkinnonOsa].yksikko | kaanna }}</span>';
       return '' +
         '<span ng-if="rakenne._tutkinnonOsa && muokkaus">' + tosa + '</span>' +
         '<span ng-if="rakenne._tutkinnonOsa && !muokkaus"><a href="" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsaId: rakenne._tutkinnonOsa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a></span>' +
@@ -172,6 +172,14 @@ angular.module('eperusteApp')
           Muodostumissaannot.laskeLaajuudet(scope.rakenne, scope.tutkinnonOsat);
           Muodostumissaannot.validoiRyhma(uusirakenne, scope.tutkinnonOsat);
         }, true);
+
+        scope.suljePolut = function() {
+          scope.rakenne.rakenne.$collapsed = scope.suljettuViimeksi;
+          kaikilleRakenteille(scope.rakenne.rakenne.osat, function(osa) {
+            osa.$collapsed = scope.suljettuViimeksi;
+          });
+          scope.suljettuViimeksi = !scope.suljettuViimeksi;
+        };
 
         scope.sortableOptions = {
           placeholder: 'placeholder',
@@ -215,6 +223,11 @@ angular.module('eperusteApp')
         kentta += '<div ng-if="!rakenne._tutkinnonOsa" ng-class="{ \'pointer\': muokkaus }" class="bubble">' + optiot + '</div>';
         kentta += '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe" class="virhe"><span>{{ rakenne.$virhe | translate }}</span></div>';
 
+        var avaaKaikki = '<a href="" ng-click="rakenne.$collapsed = !rakenne.$collapsed" title="{{ \'avaa-sulje-kaikki\' | kaanna }}">' +
+                         '  <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-up"></span>' +
+                         '  <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
+                         '</a>';
+
         var template = '';
 
         template =
@@ -225,8 +238,8 @@ angular.module('eperusteApp')
         template =
           '<div ng-if="!vanhempi">' +
           '  <div class="otsikko">' +
-          '    <h4 ng-show="muokkaus"><a href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)">{{ rakenne.nimi || \'nimetön\' | kaanna }}</a><span ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus">, {{ rakenne.$laajuus || 0 }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</span></h4>' +
-          '    <h4 ng-hide="muokkaus">{{ rakenne.nimi | kaanna:true }}<span ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus">, {{ rakenne.$laajuus || 0 }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</span></h4>' +
+          '    <h4 ng-show="muokkaus">' + avaaKaikki + ' <a href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)">{{ rakenne.nimi | kaanna:fi }}</a><span ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus">, {{ rakenne.$laajuus || 0 }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</span></h4>' +
+          '    <h4 ng-hide="muokkaus">' + avaaKaikki + ' {{ rakenne.nimi | kaanna:true }}<span ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus">, {{ rakenne.$laajuus || 0 }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</span></h4>' +
           '    <div ng-if="rakenne.$virhe" class="isovirhe">{{ rakenne.$virhe | kaanna }}</div>' +
           '  </div>' +
           '</div>' +
