@@ -4,13 +4,23 @@
 angular.module('eperusteApp')
   .service('Kaanna', function($translate) {
     return {
-      kaanna: function(input) {
-        var lang = $translate.use() || $translate.preferredLanguage();
-        if (_.isObject(input) && input[lang]) { return input[lang] === '' ? 'nimetön' : input[lang]; }
-        else if (_.isString(input)) {
-          return $translate.instant(input === '' ? 'nimetön' : input);
+      kaanna: function(input, nimetön) {
+        nimetön = nimetön || false;
+
+        function lisääPlaceholder(input) {
+          return _.isEmpty(input) && nimetön ? $translate.instant('nimetön') : input;
         }
-        else { return $translate.instant('nimetön'); }
+
+        var lang = $translate.use() || $translate.preferredLanguage();
+        if (_.isObject(input) && input[lang]) {
+          return lisääPlaceholder(input[lang]);
+        }
+        else if (_.isString(input)) {
+          return lisääPlaceholder($translate.instant(input));
+        }
+        else {
+          return lisääPlaceholder('');
+        }
       }
     };
   })

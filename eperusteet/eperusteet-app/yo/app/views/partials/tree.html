@@ -17,11 +17,9 @@
         </div>
         <ul ui-sortable="sortableOptions" class="tree-group skratchpad" ng-model="skratchpad">
           <li class="skratchpad-item" ng-class="{ 'skratchpad-item-virhe': osa.$virhe }" ng-repeat="osa in skratchpad">
-            <div ng-if="osa._tutkinnonOsa">{{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna }}</div>
+            <div ng-if="osa._tutkinnonOsa">{{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna:true }}</div>
             <div ng-if="osa.osat !== undefined">
-              <span>
-                {{osa.nimi|kaanna}} ({{ osa.osat.length }} osaa)
-              </span>
+              <span>{{osa.nimi | kaanna:true}} ({{ osa.osat.length }} osaa)</span>
             </div>
           </li>
         </ul>
@@ -30,7 +28,7 @@
       <hr>
       <div class="skratchpad-items">
         <ul ui-sortable="sortableOptionsUnique" ng-model="uniikit">
-          <li class="skratchpad-item" ng-repeat="osa in uniikit"><div>{{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna }}</div></li>
+          <li class="skratchpad-item" ng-repeat="osa in uniikit"><div>{{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna:true }}</div></li>
         </ul>
       </div>
     </div>

@@ -37,7 +37,7 @@ European Union Public Licence for more details.
 
     <script type="text/ng-template"  id="lapset_renderer.html">
       <div ng-show="onkoSuodatettu(lapsi.perusteenOsa.nimi._id)">
-          <esitys-otsikko id="{{lapsi.perusteenOsa.id}}">{{lapsi.perusteenOsa.nimi['fi']}}</esitys-otsikko>
+          <esitys-otsikko id="{{lapsi.perusteenOsa.id}}">{{lapsi.perusteenOsa.nimi | kaanna}}</esitys-otsikko>
           <div ng-bind-html="lapsi.perusteenOsa.teksti.fi"></div>
           <div ng-repeat="lapsi in lapsi.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
       </div>
