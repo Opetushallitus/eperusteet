@@ -21,7 +21,7 @@ angular.module('eperusteApp')
     $urlRouterProvider.when('/perusteprojekti/', '/perusteprojekti/uusi/sisalto');
     $stateProvider
       .state('perusteprojekti', {
-        url: '/perusteprojekti/:perusteProjektiId',
+        url: '/perusteprojekti/:perusteProjektiId/:suoritustapa',
         navigaationimi: 'navi-perusteprojekti',
         template: '<div ui-view></div>',
         resolve: {'koulutusalaService': 'Koulutusalat'},
@@ -41,13 +41,14 @@ angular.module('eperusteApp')
   .controller('PerusteprojektiCtrl', function ($scope, $rootScope, $stateParams, Navigaatiopolku,
     PerusteprojektiResource, koulutusalaService, opintoalaService, Perusteet, SivunavigaatioService,
     PerusteProjektiService, Kaanna) {
-
     PerusteProjektiService.cleanSuoritustapa();
     $scope.projekti = {};
     $scope.peruste = {};
 
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
+
+    PerusteProjektiService.setSuoritustapa($stateParams.suoritustapa);
 
     if ($stateParams.perusteProjektiId !== 'uusi') {
       $scope.projekti.id = $stateParams.perusteProjektiId;
@@ -80,7 +81,7 @@ angular.module('eperusteApp')
       // TODO vain omistaja voi vaihtaa tilaa
       return true;
     };
-    
+
     $scope.perusteenNimi = function() {
       if (Kaanna.kaanna($scope.peruste.nimi) === '') {
         return null;
@@ -88,6 +89,6 @@ angular.module('eperusteApp')
         return $scope.peruste.nimi;
       }
     };
-    
+
 
   });

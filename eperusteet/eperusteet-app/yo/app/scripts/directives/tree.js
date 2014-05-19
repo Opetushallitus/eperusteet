@@ -355,7 +355,6 @@ angular.module('eperusteApp')
   .controller('MuodostumisryhmaModalCtrl', function($scope, $modalInstance, ryhma, vanhempi, suoritustapa, Varmistusdialogi) {
     $scope.vanhempi = vanhempi;
     $scope.suoritustapa = suoritustapa;
-    console.log($scope.suoritustapa);
 
     var msl = ryhma && ryhma.muodostumisSaanto && ryhma.muodostumisSaanto.laajuus ? ryhma.muodostumisSaanto.laajuus : null;
     var msk = ryhma && ryhma.muodostumisSaanto && ryhma.muodostumisSaanto.koko ? ryhma.muodostumisSaanto.koko : null;

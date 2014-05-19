@@ -29,14 +29,14 @@ angular.module('eperusteApp')
         }]
       });
   })
-  .controller('PerusteprojektisisaltoCtrl', function($scope, $stateParams, $translate, Kaanna,
+  .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams, $translate, Kaanna,
     PerusteprojektiResource, Suoritustapa, SuoritustapaSisalto, PerusteProjektiService,
     Perusteet, PerusteenOsaViitteet, Varmistusdialogi, Notifikaatiot) {
-     $scope.projekti = {};
-     $scope.peruste = {};
-     $scope.valittuSuoritustapa = '';
-     $scope.poistoMouseLeaveLuokka = 'glyphicon glyphicon-remove pull-right smaller';
-     $scope.poistoMouseOverLuokka = 'glyphicon glyphicon-remove pull-right larger';
+    $scope.projekti = {};
+    $scope.peruste = {};
+    $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa() || '';
+    $scope.poistoMouseLeaveLuokka = 'glyphicon glyphicon-remove pull-right smaller';
+    $scope.poistoMouseOverLuokka = 'glyphicon glyphicon-remove pull-right larger';
 
     if ($stateParams.perusteProjektiId !== 'uusi') {
       $scope.projekti.id = $stateParams.perusteProjektiId;
@@ -46,7 +46,7 @@ angular.module('eperusteApp')
           $scope.peruste = vastaus;
           if ($scope.peruste.suoritustavat !== null && $scope.peruste.suoritustavat.length > 0) {
             $scope.peruste.suoritustavat = _.sortBy($scope.peruste.suoritustavat, 'suoritustapakoodi');
-            $scope.vaihdaSuoritustapa(PerusteProjektiService.getSuoritustapa() === '' ? vastaus.suoritustavat[0].suoritustapakoodi : PerusteProjektiService.getSuoritustapa());
+            // $scope.vaihdaSuoritustapa(PerusteProjektiService.getSuoritustapa() === '' ? vastaus.suoritustavat[0].suoritustapakoodi : PerusteProjektiService.getSuoritustapa());
           }
         }, function(virhe) {
           console.log('perusteen haku virhe', virhe);
@@ -84,7 +84,8 @@ angular.module('eperusteApp')
     $scope.vaihdaSuoritustapa = function(suoritustapakoodi) {
       $scope.valittuSuoritustapa = suoritustapakoodi;
       PerusteProjektiService.setSuoritustapa(suoritustapakoodi);
-      haeSisalto($scope.valittuSuoritustapa);
+      $state.go('perusteprojekti.editoi.sisalto', { perusteProjektiId: $stateParams.perusteProjektiId, suoritustapa: suoritustapakoodi });
+      // haeSisalto($scope.valittuSuoritustapa);
     };
 
     $scope.setLargerSize = function (event) {
