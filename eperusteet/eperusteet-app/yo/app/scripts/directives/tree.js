@@ -130,7 +130,7 @@ angular.module('eperusteApp')
   })
   .directive('tree', function($compile, $state, $modal, Muodostumissaannot) {
     function generoiOtsikko() {
-      var tosa = '{{ tutkinnonOsat[rakenne._tutkinnonOsa] .nimi | kaanna | rajaaKoko:40 }}, <b>{{ + tutkinnonOsat[rakenne._tutkinnonOsa].laajuus || 0 }}</b>ov';
+      var tosa = '{{ tutkinnonOsat[rakenne._tutkinnonOsa].nimi | kaanna | rajaaKoko:40 }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\'">, <b>{{ + tutkinnonOsat[rakenne._tutkinnonOsa].laajuus || 0 }}</b>{{ tutkinnonOsat[rakenne._tutkinnonOsa].yksikko | kaanna }}</span>';
       return '' +
         '<span ng-if="rakenne._tutkinnonOsa && muokkaus">' + tosa + '</span>' +
         '<span ng-if="rakenne._tutkinnonOsa && !muokkaus"><a href="" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsaId: rakenne._tutkinnonOsa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a></span>' +
@@ -207,7 +207,6 @@ angular.module('eperusteApp')
           '    <span class="right-item"><b>{{ rakenne.osat.length }}kpl</b></span>' +
           '  </div>' +
           '</div>' +
-
           '<div class="left">' +
           '  <span class="tree-item">' + generoiOtsikko() + '</span>' +
           '</div>';
@@ -342,7 +341,6 @@ angular.module('eperusteApp')
           scope.lisataanUuttaOsaa = true;
           cb();
         };
-
       }
     };
   })
@@ -370,6 +368,7 @@ angular.module('eperusteApp')
         if (!$scope.ms.laajuus) { delete uusiryhma.muodostumisSaanto.laajuus; }
         if (!$scope.ms.koko) { delete uusiryhma.muodostumisSaanto.koko; }
       }
+      console.log(uusiryhma);
       $modalInstance.close(uusiryhma);
     };
 

@@ -14,6 +14,7 @@
  * European Union Public Licence for more details.
  */
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .directive('formfield', function ($parse) {
@@ -22,7 +23,10 @@ angular.module('eperusteApp')
       template: '<div class="form-group">' +
         '<label class="col-sm-3 control-label">{{label | kaanna}}</label>' +
         '<div class="input-group col-sm-9">' +
-        '<input ng-if="!options" ng-class="inputClasses()" ng-model="input.model" ng-change="updateModel()" type="{{type}}">' +
+        '<input ng-if="!options && !isObject" ng-class="inputClasses()" ng-model="input.model" ng-change="updateModel()" type="{{type}}">' +
+        '<span ng-if="!options && isObject">' +
+        '  <ml-input ml-data="input.model" ng-model="input.model" ng-change="updateModel()"></ml-input>' +
+        '</span>' +
         '<select ng-if="options" class="form-control" ng-model="input.model" ng-change="updateModel()"' +
         'ng-options="obj.value as obj.label for obj in options">' +
         '</select>' +
@@ -50,6 +54,7 @@ angular.module('eperusteApp')
         var getter = $parse(scope.modelVar);
         scope.input = {};
         scope.input.model = getter(scope.ngModel);
+        scope.isObject = _.isObject(scope.input.model);
         scope.updateModel = function() {
           getter.assign(scope.ngModel, scope.input.model);
         };

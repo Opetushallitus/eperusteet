@@ -6,9 +6,11 @@ angular.module('eperusteApp')
     return {
       kaanna: function(input) {
         var lang = $translate.use() || $translate.preferredLanguage();
-        if (_.isObject(input) && input[lang]) { return input[lang]; }
-        else if (_.isString(input)) { return $translate.instant(input); }
-        else { return ''; }
+        if (_.isObject(input) && input[lang]) { return input[lang] === '' ? 'nimetön' : input[lang]; }
+        else if (_.isString(input)) {
+          return $translate.instant(input === '' ? 'nimetön' : input);
+        }
+        else { return $translate.instant('nimetön'); }
       }
     };
   })

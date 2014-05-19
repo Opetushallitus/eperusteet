@@ -81,18 +81,25 @@ angular.module('eperusteApp')
     function tallennaRakenne(rakenne, id, suoritustapa, success) {
       var after = _.after(_.size(rakenne.tutkinnonOsat) + 1, success);
 
+      success = success || function() {};
+
       PerusteRakenteet.save({
         perusteenId: id,
         suoritustapa: suoritustapa
-      }, rakenne.rakenne, function() { after(); });
+      }, rakenne.rakenne, function() {
+        after();
+        _.forEach(_.values(rakenne.tutkinnonOsat), function(osa) {
+          PerusteTutkinnonosa.save({
+            perusteenId: id,
+            suoritustapa: suoritustapa,
+            osanId: osa.id
+          },
+          osa,
+          after(),
+          Notifikaatiot.serverCb);
+        });
+      }, Notifikaatiot.serverCb);
 
-      _.forEach(_.values(rakenne.tutkinnonOsat), function(osa) {
-        PerusteTutkinnonosa.save({
-          perusteenId: id,
-          suoritustapa: suoritustapa,
-          osanId: osa.id
-        }, osa, function() { after(); });
-      });
     }
 
     function poistaTutkinnonOsaViite(osa, _peruste, suoritustapa, success) {

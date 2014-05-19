@@ -45,6 +45,8 @@ angular.module('eperusteApp')
     $scope.projekti = {};
     $scope.peruste = {};
 
+    $scope.testi = '';
+
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
 
@@ -89,6 +91,4 @@ angular.module('eperusteApp')
         return $scope.peruste.nimi;
       }
     };
-
-
   });

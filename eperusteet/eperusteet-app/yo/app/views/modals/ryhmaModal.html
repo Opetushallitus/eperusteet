@@ -5,8 +5,8 @@
 <div class="modal-body">
   <form class="form-horizontal">
     <h3 translate>perustiedot</h3>
-    <formfield ng-model="ryhma" model-var="nimi.fi" label="nimi" type="text"></formfield>
-    <formfield ng-model="ryhma" model-var="kuvaus.fi" label="kuvaus" type="text"></formfield>
+    <formfield ng-model="ryhma" model-var="nimi" label="nimi" type="text"></formfield>
+    <formfield ng-model="ryhma" model-var="kuvaus" label="kuvaus" type="text"></formfield>
     <formfield ng-if="vanhempi" ng-model="ryhma" model-var="pakollinen" label="pakollisuus" type="checkbox"></formfield>
 
     <h3 ng-if="vanhempi">{{'tutkinnon-rakenne' | translate}}</h3>

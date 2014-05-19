@@ -35,13 +35,14 @@ angular.module('eperusteApp')
     haeRakenne();
 
     function tallennaRakenne(rakenne) {
+      console.log(rakenne);
       TreeCache.tallenna(rakenne, $stateParams.perusteenId);
       PerusteenRakenne.tallenna(
         rakenne,
         rakenne.$peruste.id,
         $scope.suoritustapa,
-        function() { Notifikaatiot.onnistui('tallennus-onnistui', ''); },
-        function(virhe) { Notifikaatiot.varoitus('tallennus-epäonnistui', virhe); }
+        function() { Notifikaatiot.onnistui('tallennus-onnistui'); },
+        Notifikaatiot.serverCb
       );
     }
 
