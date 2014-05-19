@@ -67,7 +67,6 @@ angular.module('eperusteApp')
     }
 
     function serverCb(response) {
-      console.log('server', response);
       if (response && response.status && response.status >= 500) {
         fataali(Kaanna.kaanna('järjestelmävirhe-alku') + response.status + Kaanna.kaanna('järjestelmävirhe-loppu'), function() {
           // $state.go('aloitussivu');
