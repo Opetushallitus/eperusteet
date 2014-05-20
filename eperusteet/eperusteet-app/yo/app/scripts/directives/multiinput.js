@@ -17,17 +17,20 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .directive('mlInput', function($translate) {
+  .directive('mlInput', function($translate, YleinenData) {
     return {
       restrict: 'E',
       scope: {
         mlData: '=',
+        mlAdditionalLanguages: '='
       },
       templateUrl: 'views/multiinput.html',
       replace: true,
       link: function ($scope) {
-        $scope.langs = ['fi', 'sv', 'en'];
         $scope.isObject = _.isObject($scope.mlData);
+        $scope.langs = _(_.values(YleinenData.kielet)).union($scope.mlAdditionalLanguages || [])
+                                                      .sort()
+                                                      .value();
 
         if (!$scope.mlData) {
           console.log('You must set ml-data for ml-input.');
@@ -36,6 +39,10 @@ angular.module('eperusteApp')
         if (!$scope.isObject) {
           console.log('ml-data must be an object');
         }
+
+        _.forEach($scope.langs, function(lang) {
+          $scope.mlData[lang] = $scope.mlData[lang] || '';
+        });
 
         $scope.activeLang = $translate.use() || $translate.preferredLanguage();
         $scope.kielivalintaAuki = false;
