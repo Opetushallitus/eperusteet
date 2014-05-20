@@ -87,6 +87,10 @@ angular.module('eperusteApp')
           setupTekstikappale($scope.tekstikappale);
           objectReadyDefer.resolve($scope.editableTekstikappale);
         }
+
+        $scope.muokkaa = function () {
+          Editointikontrollit.startEditing();
+        };
       }
     };
   });

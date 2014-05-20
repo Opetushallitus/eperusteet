@@ -1,3 +1,4 @@
+<button ng-hide="editEnabled" ng-click="muokkaa()" class="pull-right btn btn-default"><span class="glyphicon glyphicon-pencil"></span>{{'muokkaa' | translate}}</button>
 <h1>
   {{tutkinnonOsanMuokkausOtsikko | kaanna}}
   <button ng-if="editEnabled" class="btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsa.id].id)">

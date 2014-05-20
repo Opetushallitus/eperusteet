@@ -184,6 +184,9 @@ angular.module('eperusteApp')
             });
           }
         };
+        $scope.muokkaa = function () {
+          Editointikontrollit.startEditing();
+        };
       }
     };
   });

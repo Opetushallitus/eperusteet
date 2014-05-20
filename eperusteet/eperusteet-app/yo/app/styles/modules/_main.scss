@@ -90,21 +90,6 @@ tr .koodi {
   color: #aaa;
 }
 
-.edit-controls {
-  position: fixed;
-  bottom: 0px;
-  left: 0px;
-  z-index: 1040;
-  border: 4px solid #ff0000;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
-  background: white;
-  padding: 3px 4px;
-}
-
 .list-group.muokkaus .list-group-item-heading {
   color: #777;
 }
@@ -130,11 +115,7 @@ tr .koodi {
 .edit-mode {
   background: white;
   padding: 4px 12px;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
+  @include borderradius(4px);
   border: 1px solid #ccc;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
@@ -154,11 +135,7 @@ tr .koodi {
   -ms-box-shadow: 0 0 0 0;
   -o-box-shadow: 0 0 0 0;
   box-shadow: 0 0 0 0;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  -ms-border-radius: 0;
-  -o-border-radius: 0;
-  border-radius: 0;
+  @include borderradius(0);
 }
 
 .sidebar .panel-heading {

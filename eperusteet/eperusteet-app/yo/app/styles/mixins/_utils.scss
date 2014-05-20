@@ -1,0 +1,7 @@
+@mixin borderradius($all) {
+  -webkit-border-radius: $all;
+  -moz-border-radius: $all;
+  -ms-border-radius: $all;
+  -o-border-radius: $all;
+  border-radius: $all;
+}

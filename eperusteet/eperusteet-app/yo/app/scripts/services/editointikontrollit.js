@@ -56,6 +56,7 @@ angular.module('eperusteApp')
           scope.editingCallback.edit();
           setEditMode(true);
         }
+        $rootScope.$broadcast('enableEditing');
       },
       saveEditing: function() {
         if(scope.editingCallback) {
@@ -69,12 +70,16 @@ angular.module('eperusteApp')
           });
           setEditMode(false);
         }
+        $rootScope.$broadcast('disableEditing');
+        $rootScope.$broadcast('notifyCKEditor');
       },
       cancelEditing: function() {
         if(scope.editingCallback) {
           scope.editingCallback.cancel();
           setEditMode(false);
         }
+        $rootScope.$broadcast('disableEditing');
+        $rootScope.$broadcast('notifyCKEditor');
       },
       registerCallback: function(callback) {
         if(!callback ||

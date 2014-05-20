@@ -34,7 +34,7 @@ $sivunavi-leveys: 280px;
 
   .sivunavi, .sivunavi-takaisin {
    a {
-      border-radius: 0;
+      @include borderradius(0);
       & *:hover {
         text-decoration: none;
       }

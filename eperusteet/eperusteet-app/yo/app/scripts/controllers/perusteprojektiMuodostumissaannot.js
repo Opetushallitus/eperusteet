@@ -46,6 +46,11 @@ angular.module('eperusteApp')
       );
     }
 
+    $scope.muokkaa = function () {
+      Editointikontrollit.startEditing();
+      $scope.editoi = true;
+    };
+
     Editointikontrollit.registerCallback({
       edit: function() {
         $scope.editoi = true;

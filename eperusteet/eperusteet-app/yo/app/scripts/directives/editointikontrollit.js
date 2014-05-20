@@ -44,27 +44,24 @@ angular.module('eperusteApp')
 
     Editointikontrollit.registerCallbackListener(setEditControls);
 
-    $scope.start = function() {
+    $rootScope.$on('enableEditing', function () {
       $scope.editClass = 'editing';
       $scope.buttonClass = 'btn-info';
       $scope.editStarted = true;
-      $rootScope.$broadcast('enableEditing');
+    });
+    $rootScope.$on('disableEditing', function () {
+      $scope.editClass = '';
+      $scope.buttonClass = 'btn-default';
+      $scope.editStarted = false;
+    });
+
+    $scope.start = function() {
       Editointikontrollit.startEditing();
     };
     $scope.save = function() {
-      $scope.editClass = '';
-      $scope.buttonClass = 'btn-default';
-      $scope.editStarted = false;
-      $rootScope.$broadcast('disableEditing');
-      $rootScope.$broadcast('notifyCKEditor');
       Editointikontrollit.saveEditing();
     };
     $scope.cancel = function() {
-      $scope.editClass = '';
-      $scope.buttonClass = 'btn-default';
-      $scope.editStarted = false;
-      $rootScope.$broadcast('disableEditing');
-      $rootScope.$broadcast('notifyCKEditor');
       Editointikontrollit.cancelEditing();
     };
   });
