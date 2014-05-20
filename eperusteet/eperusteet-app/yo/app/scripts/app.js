@@ -104,7 +104,7 @@ angular.module('eperusteApp', [
         };
       }]);
   })
-  .run(function($rootScope, $modal, $location, $window, $state, paginationConfig, Muokkaustila,
+  .run(function($rootScope, $modal, $location, $window, $state, paginationConfig, Editointikontrollit,
                 Varmistusdialogi) {
     paginationConfig.firstText = '';
     paginationConfig.previousText = '';
@@ -169,23 +169,17 @@ angular.module('eperusteApp', [
       });
     });
 
-    $rootScope.$on('$stateChangeStart',
-      function(event, toState, toParams/*, fromState, fromParams*/) {
-        if (Muokkaustila.isEditoimassa()) {
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
+
+        if (Editointikontrollit.getEditMode() && fromState.name !== 'perusteprojekti.editoi.tutkinnonosat') {
           event.preventDefault();
-          $rootScope.$broadcast('test');
+
           var data = {toState: toState, toParams: toParams};
           Varmistusdialogi.dialogi({successCb: function(data) {
-              $rootScope.$broadcast('disableEditing');
+              Editointikontrollit.cancelEditing();
               $state.go(data.toState, data.toParams);
             }, data: data, otsikko: 'vahvista-liikkuminen', teksti: 'tallentamattomia-muutoksia',
                lisaTeksti: 'haluatko-jatkaa', primaryBtn: 'poistu-sivulta'})();
-
         }
-        //event.preventDefault();
-        // transitionTo() promise will be rejected with
-        // a 'transition prevented' error
       });
-
-
   });
