@@ -16,26 +16,21 @@ angular.module('eperusteApp')
       });
   })
   .controller('ProjektinPerusteCtrl', function($scope, $rootScope, $stateParams, $state,
-    YleinenData, Koodisto, Perusteet, PerusteprojektiResource, Kaanna) {
+    Koodisto, Perusteet, PerusteprojektiResource, YleinenData) {
 
     $scope.hakemassa = false;
     $scope.peruste = {};
+    $scope.peruste.nimi = {};
     $scope.projektiId = $stateParams.perusteProjektiId;
     $scope.open = {};
-      
-    $scope.$watch('nimi', function() {
-      if (!$scope.peruste.nimi) {
-        $scope.peruste.nimi = {};
-      }
-      $scope.peruste.nimi[YleinenData.kieli] = $scope.nimi;
-    });
+
 
     PerusteprojektiResource.get({id: $stateParams.perusteProjektiId}, function(vastaus) {
       $scope.projekti = vastaus;
       if ($scope.projekti._peruste) {
         Perusteet.get({perusteenId: vastaus._peruste}, function(vastaus) {
+          vastaus.nimi = vastaus.nimi || {};
           $scope.peruste = vastaus;
-          $scope.nimi = Kaanna.kaanna($scope.peruste.nimi);
 
         }, function(virhe) {
           console.log('perusteen haku virhe', virhe);
@@ -50,19 +45,12 @@ angular.module('eperusteApp')
     };
 
     $scope.koodistoHaku = function(koodisto) {
-      // Korjaus IE:tä varten. IE ei päivitä alustus vaiheessa $scope.$watch lohkossa perusteen nimeä tyhjäksi vaan jättää null:iksi.
-      if ($scope.peruste.nimi === null) {
-        $scope.peruste.nimi = {};
-        $scope.peruste.nimi[YleinenData.kieli] = '';
-      }
-      
+
       angular.forEach(YleinenData.kielet, function(value) {
         if (_.isEmpty($scope.peruste.nimi[value]) && !_.isNull(koodisto.nimi[value])) {
           $scope.peruste.nimi[value] = koodisto.nimi[value];
         }
       });
-      
-      $scope.nimi = Kaanna.kaanna($scope.peruste.nimi);
 
       $scope.peruste.koulutukset.push({});
       $scope.peruste.koulutukset[$scope.peruste.koulutukset.length - 1].nimi = koodisto.nimi;
@@ -128,14 +116,6 @@ angular.module('eperusteApp')
 
     $rootScope.$on('event:spinner_off', function() {
       $scope.hakemassa = false;
-    });
-
-    $rootScope.$on('$translateChangeSuccess', function() {
-      if (!angular.isUndefined($scope.peruste.nimi) && !_.isEmpty($scope.peruste.nimi[YleinenData.kieli])) {
-        $scope.nimi = $scope.peruste.nimi[YleinenData.kieli];
-      } else {
-        $scope.nimi = '';
-      }
     });
 
   });

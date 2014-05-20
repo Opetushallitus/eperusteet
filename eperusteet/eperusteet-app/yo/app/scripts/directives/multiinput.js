@@ -43,7 +43,7 @@ angular.module('eperusteApp')
         _.forEach($scope.langs, function(lang) {
           $scope.mlData[lang] = $scope.mlData[lang] || '';
         });
-
+console.log($scope.mlData);
         $scope.activeLang = $translate.use() || $translate.preferredLanguage();
         $scope.kielivalintaAuki = false;
 

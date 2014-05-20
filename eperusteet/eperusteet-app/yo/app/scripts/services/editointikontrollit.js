@@ -126,6 +126,10 @@ angular.module('eperusteApp')
       },
       getEditModePromise: function() {
         return scope.editModeDefer.promise;
+      },
+      
+      getEditMode: function() {
+        return scope.editMode;
       }
     };
 });
