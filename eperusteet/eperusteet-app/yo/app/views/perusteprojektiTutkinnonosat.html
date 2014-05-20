@@ -22,10 +22,10 @@
        <span class="glyphicon glyphicon-chevron-right"></span>
     </div>
     <div class="otsikko">
-      <h3>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}<span class="osan-laajuus" ng-if="v.laajuus">{{ v.laajuus }} {{ v.yksikko || '' | kaanna }}</span></h3>
+      <h3>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}<span class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && v.laajuus">{{ v.laajuus }} {{ v.yksikko || '' | kaanna }}</span></h3>
     </div>
     <div class="clearfix"></div>
   </li>
   </ul>
-    
+
 </div>

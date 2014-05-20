@@ -28,6 +28,7 @@ angular.module('eperusteApp')
       controller: function($scope, $state, $stateParams, $q,
         Editointikontrollit, PerusteenOsat, Editointicatcher, PerusteenRakenne,
         PerusteTutkinnonosa) {
+        $scope.suoritustapa = $stateParams.suoritustapa;
         $scope.rakenne = {};
         PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
           $scope.rakenne = res;
