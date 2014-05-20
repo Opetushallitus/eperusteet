@@ -238,7 +238,7 @@ angular.module('eperusteApp')
         template =
           '<div ng-if="!vanhempi">' +
           '  <div class="otsikko">' +
-          '    <h4 ng-show="muokkaus">' + avaaKaikki + ' <a href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)">{{ rakenne.nimi | kaanna:fi }}</a><span ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus">, {{ rakenne.$laajuus || 0 }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</span></h4>' +
+          '    <h4 ng-show="muokkaus">' + avaaKaikki + ' <a href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)">{{ rakenne.nimi | kaanna:true }}</a><span ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus">, {{ rakenne.$laajuus || 0 }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</span></h4>' +
           '    <h4 ng-hide="muokkaus">' + avaaKaikki + ' {{ rakenne.nimi | kaanna:true }}<span ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus">, {{ rakenne.$laajuus || 0 }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</span></h4>' +
           '    <div ng-if="rakenne.$virhe" class="isovirhe">{{ rakenne.$virhe | kaanna }}</div>' +
           '  </div>' +

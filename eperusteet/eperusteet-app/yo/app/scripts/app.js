@@ -168,16 +168,11 @@ angular.module('eperusteApp', [
         }
       });
     });
-    
+
     $rootScope.$on('$stateChangeStart',
       function(event, toState, toParams/*, fromState, fromParams*/) {
-        
-      console.log(event);
-
         if (Muokkaustila.isEditoimassa()) {
           event.preventDefault();
-          console.log('stateChangeStart muokkaus päällä', Muokkaustila.isEditoimassa());
-          
           $rootScope.$broadcast('test');
           var data = {toState: toState, toParams: toParams};
           Varmistusdialogi.dialogi({successCb: function(data) {
@@ -185,12 +180,12 @@ angular.module('eperusteApp', [
               $state.go(data.toState, data.toParams);
             }, data: data, otsikko: 'vahvista-liikkuminen', teksti: 'tallentamattomia-muutoksia',
                lisaTeksti: 'haluatko-jatkaa', primaryBtn: 'poistu-sivulta'})();
-          
+
         }
         //event.preventDefault();
         // transitionTo() promise will be rejected with
         // a 'transition prevented' error
       });
 
-    
+
   });
