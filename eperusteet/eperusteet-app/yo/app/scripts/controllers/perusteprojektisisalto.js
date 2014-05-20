@@ -46,7 +46,7 @@ angular.module('eperusteApp')
           $scope.peruste = vastaus;
           if ($scope.peruste.suoritustavat !== null && $scope.peruste.suoritustavat.length > 0) {
             $scope.peruste.suoritustavat = _.sortBy($scope.peruste.suoritustavat, 'suoritustapakoodi');
-            // $scope.vaihdaSuoritustapa(PerusteProjektiService.getSuoritustapa() === '' ? vastaus.suoritustavat[0].suoritustapakoodi : PerusteProjektiService.getSuoritustapa());
+            haeSisalto($scope.valittuSuoritustapa === '' ? $scope.peruste.suoritustavat[0] : PerusteProjektiService.getSuoritustapa());
           }
         }, function(virhe) {
           console.log('perusteen haku virhe', virhe);
@@ -65,6 +65,7 @@ angular.module('eperusteApp')
       Suoritustapa.get({perusteenId: $scope.projekti._peruste, suoritustapa: suoritustapa}, function(vastaus) {
         $scope.peruste.sisalto = vastaus;
         $scope.valittuSuoritustapa = suoritustapa;
+        PerusteProjektiService.setSuoritustapa(suoritustapa);
         console.log('suoritustapa sisältö', vastaus);
       }, function(virhe) {
         $scope.valittuSuoritustapa = '';
@@ -85,7 +86,6 @@ angular.module('eperusteApp')
       $scope.valittuSuoritustapa = suoritustapakoodi;
       PerusteProjektiService.setSuoritustapa(suoritustapakoodi);
       $state.go('perusteprojekti.editoi.sisalto', { perusteProjektiId: $stateParams.perusteProjektiId, suoritustapa: suoritustapakoodi });
-      // haeSisalto($scope.valittuSuoritustapa);
     };
 
     $scope.setLargerSize = function (event) {
@@ -116,6 +116,5 @@ angular.module('eperusteApp')
         Notifikaatiot.varoitus(virhe);
       });
     };
-
 
   });
