@@ -17,9 +17,9 @@
   </div>
 
   <ul class="list-group tutkinnonosat">
-  <li class="tutkinnonosa-laatikko list-group-item" ng-repeat="(k, v) in rakenne.tutkinnonOsat | mapFilter:rajaaTutkinnonOsia">
+  <li class="tutkinnonosa-laatikko list-group-item" ng-repeat="(k, v) in rakenne.tutkinnonOsat | mapFilter:rajaaTutkinnonOsia" ng-click="navigoiTutkinnonosaan(v)">
     <div ng-hide="editoi" class="muokkaus">
-       <a class="glyphicon glyphicon-chevron-right" href="" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })"></a>
+       <span class="glyphicon glyphicon-chevron-right"></span>
     </div>
     <div class="otsikko">
       <h3>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}<span class="osan-laajuus" ng-if="v.laajuus">{{ v.laajuus }} {{ v.yksikko || '' | kaanna }}</span></h3>

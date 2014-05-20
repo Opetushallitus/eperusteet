@@ -4,6 +4,13 @@ ul.tutkinnonosat {
     margin: 15px;
     margin-left: 0px;
     padding-top: 20px;
+    cursor: pointer;
+    &:hover {
+      border-color: black;
+      .muokkaus {
+        color: black;
+      }
+    }
     h3 {
       margin-top: 0px;
     }
@@ -14,9 +21,7 @@ ul.tutkinnonosat {
     .muokkaus {
       font-size: 40px;
       float: right;
-      a:hover, a:focus {
-        text-decoration: none;
-      }
+      color: $brand-primary;
     }
   }
 }

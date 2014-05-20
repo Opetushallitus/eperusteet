@@ -72,6 +72,13 @@ angular.module('eperusteApp')
       _.forEach(osat, function(osa) { $scope.lisaaTutkinnonOsa(osa); });
     });
 
+    $scope.navigoiTutkinnonosaan = function (osa) {
+      $state.go('perusteprojekti.editoi.perusteenosa', {
+        perusteenOsaId: osa._tutkinnonOsa,
+        perusteenOsanTyyppi: 'tutkinnonosa'
+      });
+    };
+
     $scope.lisaaTutkinnonOsa = function(osa, cb) {
       if (osa) {
         osa = {_tutkinnonOsa: osa._tutkinnonOsa};
@@ -87,10 +94,7 @@ angular.module('eperusteApp')
       }, osa, function(res) {
         $scope.rakenne.tutkinnonOsat[res._tutkinnonOsa] = res;
         cb();
-        $state.go('perusteprojekti.editoi.perusteenosa', {
-          perusteenOsaId: res._tutkinnonOsa,
-          perusteenOsanTyyppi: 'tutkinnonosa'
-        });
+        $scope.navigoiTutkinnonosaan(res);
       }, function(err) {
         Notifikaatiot.fataali('tallennus-epäonnistui', err);
         cb();
