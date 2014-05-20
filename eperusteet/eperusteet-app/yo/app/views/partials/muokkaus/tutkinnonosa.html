@@ -1,13 +1,13 @@
 <h1>
   {{tutkinnonOsanMuokkausOtsikko | kaanna}}
-  <button ng-if="editEnabled" class="btn btn-danger" ng-click="poistaTutkinnonOsa()">
+  <button ng-if="editEnabled" class="btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsa.id].id)">
     <span class="glyphicon glyphicon-remove"></span>{{'poista' | translate}}
   </button>
 </h1>
 <div class="well viitetiedot">
   <div class="col-md-6">
     <p ng-hide="editEnabled" ng-if="rakenne.tutkinnonOsat[tutkinnonOsa.id] && rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus">
-      {{'laajuus'}}: {{rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus}} {{rakenne.tutkinnonOsat[tutkinnonOsa.id].yksikko || '' | kaanna}}
+      {{'laajuus' | kaanna}}: {{rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus}} {{rakenne.tutkinnonOsat[tutkinnonOsa.id].yksikko || '' | kaanna}}
     </p>
     <div ng-show="editEnabled">
       <form class="form-horizontal" role="form">

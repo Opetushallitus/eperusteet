@@ -169,9 +169,9 @@ angular.module('eperusteApp')
           objectReadyDefer.resolve($scope.editableTutkinnonOsa);
         }
 
-        $scope.poistaTutkinnonOsa = function() {
-          PerusteenRakenne.poistaTutkinnonOsaViite($scope.tutkinnonOsa,
-            $scope.rakenne.$peruste.id, $stateParams.suoritustapa, function() {
+        $scope.poistaTutkinnonOsa = function(osaId) {
+          PerusteenRakenne.poistaTutkinnonOsaViite(
+            osaId, $scope.rakenne.$peruste.id, $stateParams.suoritustapa, function() {
               $state.go('perusteprojekti.editoi.tutkinnonosat');
           });
         };
