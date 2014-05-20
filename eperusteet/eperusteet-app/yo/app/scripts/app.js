@@ -1,5 +1,5 @@
 'use strict';
-/* global _ */
+/* global _, moment */
 
 angular.module('eperusteApp', [
   'ngRoute',
@@ -63,7 +63,7 @@ angular.module('eperusteApp', [
       suffix: '.json'
     });
     $translateProvider.preferredLanguage('fi');
-
+    moment.lang('fi');
   })
   .config(function($httpProvider) {
     $httpProvider.interceptors.push(['$rootScope', '$q', 'SpinnerService', function($rootScope, $q, Spinner) {

@@ -1,5 +1,5 @@
 'use strict';
-/* global _ */
+/* global _, moment */
 
 angular.module('eperusteApp')
   .filter('mapFilter', function() {
@@ -14,6 +14,6 @@ angular.module('eperusteApp')
 
   .filter('aikaleima', function ($filter) {
     return function (input) {
-      return $filter('date')(input, 'd.M.yyyy H:mm');
+      return $filter('date')(input, 'd.M.yyyy H:mm') + ' (' + moment(input).fromNow() + ')';
     };
   });
