@@ -76,8 +76,8 @@ angular.module('eperusteApp')
     }
 
     $rootScope.$on('$stateChangeStart', function() {
-      viestit = [];
-      $rootScope.$broadcast('update:notifikaatiot');
+      // viestit = [];
+      // $rootScope.$broadcast('update:notifikaatiot');
     });
 
     return {

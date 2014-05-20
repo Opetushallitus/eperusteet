@@ -15,7 +15,7 @@ angular.module('eperusteApp', [
   .constant('SERVICE_LOC', '/eperusteet-service/api')
   .constant('SPINNER_WAIT', 100)
   .constant('NOTIFICATION_DELAY_SUCCESS', 2000)
-  .constant('NOTIFICATION_DELAY_WARNING', 5000)
+  .constant('NOTIFICATION_DELAY_WARNING', 8000)
   .factory('palvelinHakuInterceptor', function($injector, $q, palvelinhaunIlmoitusKanava) {
     var http;
     return {

@@ -110,6 +110,22 @@ angular.module('eperusteApp')
 
     }
 
+    function validoiRakennetta(rakenne, testi) {
+      if (testi(rakenne)) {
+        return true;
+      }
+      else if (rakenne.osat) {
+        var löyty = false;
+        _.forEach(rakenne.osat, function(osa) {
+          if (validoiRakennetta(osa, testi)) {
+            löyty = true;
+          }
+        });
+        return löyty;
+      }
+      return false;
+    }
+
     function poistaTutkinnonOsaViite(osaId, _peruste, suoritustapa, success) {
       PerusteTutkinnonosa.remove({
           perusteenId: _peruste,
@@ -124,6 +140,7 @@ angular.module('eperusteApp')
       hae: haeRakenne,
       tallenna: tallennaRakenne,
       poistaTutkinnonOsaViite: poistaTutkinnonOsaViite,
-      kaikilleRakenteille: kaikilleRakenteille
+      kaikilleRakenteille: kaikilleRakenteille,
+      validoiRakennetta: validoiRakennetta
     };
   });
