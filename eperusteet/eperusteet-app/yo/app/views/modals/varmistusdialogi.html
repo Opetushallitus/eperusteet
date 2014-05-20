@@ -19,8 +19,9 @@ European Union Public Licence for more details.
 </div>
 <div class="modal-body">
   <p>{{teksti | kaanna}}</p>
+  <p>{{lisaTeksti | kaanna}}</p>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="ok()" translate>ok</button>
-    <button class="btn" ng-click="peruuta()" translate>peruuta</button>
+    <button class="btn btn-primary" ng-click="ok()">{{primaryBtn | kaanna}}</button>
+    <button class="btn" ng-click="peruuta()" translate>{{secondaryBtn | kaanna}}</button>
 </div>

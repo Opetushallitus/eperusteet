@@ -30,7 +30,8 @@ angular.module('eperusteApp')
         }]
       });
   })
-  .controller('MuokkausCtrl', function($scope, $stateParams, $state, $compile, Navigaatiopolku, PerusteTutkinnonosa, Editointicatcher, PerusteprojektiResource, Notifikaatiot, PerusteenOsat) {
+  .controller('MuokkausCtrl', function($scope, $rootScope, $stateParams, $state, $compile, Navigaatiopolku,
+    PerusteTutkinnonosa, Editointicatcher, PerusteprojektiResource, Notifikaatiot, PerusteenOsat) {
     $scope.tyyppi = $stateParams.perusteenOsanTyyppi;
     $scope.objekti = null;
 
@@ -57,6 +58,8 @@ angular.module('eperusteApp')
     var el = $compile(muokkausDirective)($scope);
 
     angular.element('#muokkaus-elementti-placeholder').replaceWith(el);
+    
+    
   })
   .service('MuokkausUtils', function() {
     this.hasValue = function(obj, path) {

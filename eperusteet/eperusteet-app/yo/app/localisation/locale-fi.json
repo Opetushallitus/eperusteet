@@ -329,5 +329,10 @@
     "järjestelmävirhe-loppu": ". Ole hyvä ja yritä uudelleen. Jos ongelma toistuu ota yhteyttä palvelun ylläpitäjään.",
     "odottamaton-virhe": "Tapahtui odottamaton virhe",
     
-    "poisto-onnistui": "Poisto onnistui"
+    "poisto-onnistui": "Poisto onnistui",
+    
+    "poistu-sivulta": "Poistu sivulta",
+    "tallentamattomia-muutoksia": "Sinulla on tallentamattomia muutoksia. Jos poistut sivulta muutokset menetetään.",
+    "haluatko-jatkaa": "Haluatko jatkaa?",
+    "vahvista-liikkuminen": "Vahvista liikkuminen"
 }
