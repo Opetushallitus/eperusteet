@@ -6,7 +6,7 @@ angular.module('eperusteApp')
     $stateProvider
       .state('perusteprojekti.editoi.peruste', {
         url: '/peruste',
-        templateUrl: 'views/partials/perusteprojektiPeruste.html',
+        templateUrl: 'views/partials/perusteprojekti/perusteprojektiPeruste.html',
         controller: 'ProjektinPerusteCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
         navigaationimiId: 'perusteProjektiId',

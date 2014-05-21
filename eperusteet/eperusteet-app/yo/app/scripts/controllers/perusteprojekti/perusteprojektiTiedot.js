@@ -5,7 +5,7 @@ angular.module('eperusteApp')
     $stateProvider
       .state('perusteprojekti.tiedot', {
         //url: '/perustiedot',
-        templateUrl: 'views/partials/perusteprojektiTiedotUusi.html',
+        templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedotUusi.html',
         controller: 'PerusteprojektiTiedotCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
         navigaationimiId: 'perusteProjektiId',
@@ -13,7 +13,7 @@ angular.module('eperusteApp')
         abstract: true
       }).state('perusteprojekti.tiedot.uusi', {
         url: '/perustiedot',
-        templateUrl: 'views/perusteprojektiTiedot.html',
+        templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedot.html',
         controller: 'PerusteprojektiTiedotCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
         navigaationimiId: 'perusteProjektiId',
@@ -23,7 +23,7 @@ angular.module('eperusteApp')
       })
       .state('perusteprojekti.editoi.tiedot', {
         url: '/perustiedot',
-        templateUrl: 'views/perusteprojektiTiedot.html',
+        templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedot.html',
         controller: 'PerusteprojektiTiedotCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
         navigaationimiId: 'perusteProjektiId',
@@ -44,8 +44,8 @@ angular.module('eperusteApp')
 
     $scope.projekti.id = $stateParams.perusteProjektiId;
 
-    $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojektiPerustiedot.html'},
-                   {otsikko: 'projekti-toimikausi', url: 'views/partials/perusteprojektiToimikausi.html'}];
+    $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojekti/perusteprojektiPerustiedot.html'},
+                   {otsikko: 'projekti-toimikausi', url: 'views/partials/perusteprojekti/perusteprojektiToimikausi.html'}];
 
     if ($stateParams.perusteProjektiId !== 'uusi') {
       $scope.projekti.id = $stateParams.perusteProjektiId;

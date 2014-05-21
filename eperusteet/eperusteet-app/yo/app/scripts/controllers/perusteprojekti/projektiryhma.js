@@ -6,7 +6,7 @@ angular.module('eperusteApp')
     $stateProvider
       .state('perusteprojekti.editoi.projektiryhma', {
         url: '/projektiryhma',
-        templateUrl: 'views/partials/perusteprojektiProjektiryhma.html',
+        templateUrl: 'views/partials/perusteprojekti/perusteprojektiProjektiryhma.html',
         controller: 'ProjektiryhmaCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
         onEnter: ['SivunavigaatioService', function (SivunavigaatioService) {

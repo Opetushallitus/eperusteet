@@ -6,7 +6,7 @@ angular.module('eperusteApp')
     $stateProvider
       .state('perusteprojekti.editoi.tutkinnonosat', {
         url: '/tutkinnonosat',
-        templateUrl: 'views/perusteprojektiTutkinnonosat.html',
+        templateUrl: 'views/partials/perusteprojekti/perusteprojektiTutkinnonosat.html',
         controller: 'PerusteprojektiTutkinnonOsatCtrl',
         naviRest: ['tutkinnonosat'],
         onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {

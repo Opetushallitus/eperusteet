@@ -21,7 +21,7 @@ angular.module('eperusteApp')
     $stateProvider
       .state('perusteprojekti.editoi.sisalto', {
         url: '/sisalto',
-        templateUrl: 'views/partials/perusteprojektiSisalto.html',
+        templateUrl: 'views/partials/perusteprojekti/perusteprojektiSisalto.html',
         controller: 'PerusteprojektisisaltoCtrl',
         naviRest: ['sisältö'],
         onEnter: ['SivunavigaatioService', function (SivunavigaatioService) {
