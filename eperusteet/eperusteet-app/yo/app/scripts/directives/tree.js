@@ -26,7 +26,7 @@ angular.module('eperusteApp')
       var tosa = '{{ tutkinnonOsat[rakenne._tutkinnonOsa].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsat[rakenne._tutkinnonOsa].laajuus">, <b>{{ + tutkinnonOsat[rakenne._tutkinnonOsa].laajuus || 0 }}</b>{{ tutkinnonOsat[rakenne._tutkinnonOsa].yksikko | kaanna }}</span>';
       return '' +
         '<span ng-if="rakenne._tutkinnonOsa && muokkaus">' + tosa + '</span>' +
-        '<span ng-if="rakenne._tutkinnonOsa && !muokkaus"><a href="" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsaId: rakenne._tutkinnonOsa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a></span>' +
+        '<span ng-if="rakenne._tutkinnonOsa && !muokkaus"><a href="" ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: rakenne._tutkinnonOsa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a></span>' +
         '<span class="pull-right" ng-if="rakenne._tutkinnonOsa && muokkaus"><a href="" ng-click="poista(rakenne, vanhempi)"><span class="glyphicon glyphicon-remove"></a></span>' +
         '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi"><b>{{ rakenne.nimi | kaanna:true }}</b></span>';
     }

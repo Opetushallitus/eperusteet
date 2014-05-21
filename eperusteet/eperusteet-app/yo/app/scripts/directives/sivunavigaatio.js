@@ -13,13 +13,13 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('sivunavigaatioCtrl', function($rootScope, $scope, $state, SivunavigaatioService) {
+  .controller('sivunavigaatioCtrl', function($rootScope, $scope, $state, SivunavigaatioService, PerusteProjektiService) {
     $scope.menuCollapsed = true;
     $rootScope.$on('$stateChangeStart', function () {
       $scope.menuCollapsed = true;
     });
     $scope.goBackToMain = function () {
-      $state.go('perusteprojekti.editoi.sisalto', {perusteProjektiId: $scope.projekti.id});
+      $state.go('perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: $scope.projekti.id, suoritustapa: PerusteProjektiService.getSuoritustapa()});
     };
     $scope.toggleSideMenu = function () {
       $scope.menuCollapsed = !$scope.menuCollapsed;

@@ -2,19 +2,6 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .config(function($stateProvider) {
-    $stateProvider
-      .state('perusteprojekti.editoi.peruste', {
-        url: '/peruste',
-        templateUrl: 'views/partials/perusteprojekti/perusteprojektiPeruste.html',
-        controller: 'ProjektinPerusteCtrl',
-        naviBase: ['perusteprojekti', ':perusteProjektiId'],
-        navigaationimiId: 'perusteProjektiId',
-        onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
-            SivunavigaatioService.aseta({osiot: false});
-          }]
-      });
-  })
   .controller('ProjektinPerusteCtrl', function($scope, $rootScope, $stateParams, $state,
     Koodisto, Perusteet, PerusteprojektiResource, YleinenData) {
 
@@ -23,7 +10,6 @@ angular.module('eperusteApp')
     $scope.peruste.nimi = {};
     $scope.projektiId = $stateParams.perusteProjektiId;
     $scope.open = {};
-
 
     PerusteprojektiResource.get({id: $stateParams.perusteProjektiId}, function(vastaus) {
       $scope.projekti = vastaus;
@@ -77,7 +63,7 @@ angular.module('eperusteApp')
     $scope.tallennaPeruste = function() {
       Perusteet.save({perusteenId: $scope.peruste.id}, $scope.peruste, function(vastaus) {
         $scope.peruste = vastaus;
-        $state.go('perusteprojekti.editoi.sisalto', {perusteProjektiId: $scope.projektiId}, {reload: true});
+        $state.go('perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: $scope.projektiId}, {reload: true});
       }, function(virhe) {
         console.log('perusteen tallennus virhe', virhe);
       });

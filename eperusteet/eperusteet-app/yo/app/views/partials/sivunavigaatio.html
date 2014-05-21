@@ -16,16 +16,16 @@
   </div>
   <div class="sivunavi-linkit">
     <div class="list-group">
-      <a class="list-group-item" ui-sref="perusteprojekti.editoi.tutkinnonosat" ui-sref-active="navi-aktiivinen">
+      <a class="list-group-item" ui-sref="perusteprojekti.suoritustapa.tutkinnonosat" ui-sref-active="navi-aktiivinen">
         <span class="glyphicon glyphicon-chevron-down"></span>
         <span class="linkkiteksti" translate>tutkinnonosat</span>
       </a>
-      <a class="list-group-item" ui-sref="perusteprojekti.editoi.muodostumissaannot" ui-sref-active="navi-aktiivinen">
+      <a class="list-group-item" ui-sref="perusteprojekti.suoritustapa.muodostumissaannot" ui-sref-active="navi-aktiivinen">
         <span class="glyphicon glyphicon-chevron-down"></span>
         <span class="linkkiteksti" translate>tutkinnon-rakenne</span>
       </a>
       <a class="list-group-item" ng-repeat="sisalto in data.projekti.peruste.sisalto.lapset"
-         ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id})"
+         ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id})"
          ui-sref-active="navi-aktiivinen">
         <span class="glyphicon glyphicon-chevron-down"></span>
         <span class="linkkiteksti">{{ sisalto.perusteenOsa.nimi || 'uusi-tutkinnon-osa' | kaanna}}</span>

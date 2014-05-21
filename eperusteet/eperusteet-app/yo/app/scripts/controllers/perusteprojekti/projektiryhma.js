@@ -2,19 +2,6 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .config(function($stateProvider) {
-    $stateProvider
-      .state('perusteprojekti.editoi.projektiryhma', {
-        url: '/projektiryhma',
-        templateUrl: 'views/partials/perusteprojekti/perusteprojektiProjektiryhma.html',
-        controller: 'ProjektiryhmaCtrl',
-        naviBase: ['perusteprojekti', ':perusteProjektiId'],
-        onEnter: ['SivunavigaatioService', function (SivunavigaatioService) {
-          SivunavigaatioService.aseta({osiot: false});
-        }]
-      });
-  })
-
   .controller('ProjektiryhmaCtrl', function($scope, PerusteProjektiService, $modal) {
     PerusteProjektiService.watcher($scope, 'projekti');
 

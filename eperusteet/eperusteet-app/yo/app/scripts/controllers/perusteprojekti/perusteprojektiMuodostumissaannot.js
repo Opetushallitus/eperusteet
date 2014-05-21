@@ -1,18 +1,6 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .config(function($stateProvider) {
-    $stateProvider
-      .state('perusteprojekti.editoi.muodostumissaannot', {
-        url: '/tutkinnonrakenne',
-        templateUrl: 'views/partials/perusteprojekti/perusteprojektiMuodostumissaannot.html',
-        controller: 'PerusteprojektiMuodostumissaannotCtrl',
-        naviRest: ['muodostumissaannot'],
-        onEnter: ['SivunavigaatioService', function (SivunavigaatioService) {
-          SivunavigaatioService.aseta({osiot: true});
-        }]
-      });
-  })
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $rootScope, $state, $stateParams,
               Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, TreeCache, Notifikaatiot,
               Editointikontrollit, SivunavigaatioService) {

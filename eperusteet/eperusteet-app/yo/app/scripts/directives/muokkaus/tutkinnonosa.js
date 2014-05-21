@@ -104,7 +104,7 @@ angular.module('eperusteApp')
         function setupTutkinnonOsa(osa) {
           function afterDone() {
             Notifikaatiot.onnistui('muokkaus-tutkinnon-osa-tallennettu');
-            $state.go('perusteprojekti.editoi.tutkinnonosat');
+            $state.go('perusteprojekti.suoritustapa.tutkinnonosat');
           }
 
           $scope.editableTutkinnonOsa = angular.copy(osa);
@@ -181,7 +181,7 @@ angular.module('eperusteApp')
             PerusteenRakenne.poistaTutkinnonOsaViite(
               osaId, $scope.rakenne.$peruste.id, $stateParams.suoritustapa, function() {
                 Notifikaatiot.onnistui('tutkinnon-osa-rakenteesta-poistettu');
-                $state.go('perusteprojekti.editoi.tutkinnonosat');
+                $state.go('perusteprojekti.suoritustapa.tutkinnonosat');
             });
           }
         };
