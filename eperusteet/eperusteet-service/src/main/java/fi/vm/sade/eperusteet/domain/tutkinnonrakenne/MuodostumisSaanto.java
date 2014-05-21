@@ -32,6 +32,11 @@ public class MuodostumisSaanto implements Serializable {
         this.laajuus = null;
     }
 
+    public MuodostumisSaanto(Laajuus laajuus, Koko koko) {
+        this.koko = koko;
+        this.laajuus = laajuus;
+    }
+
     @Getter
     @Setter
     @EqualsAndHashCode
