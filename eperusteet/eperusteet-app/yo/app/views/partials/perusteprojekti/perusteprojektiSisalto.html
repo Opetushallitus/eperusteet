@@ -34,13 +34,13 @@ European Union Public Licence for more details.
             <h2 class="section-title">Tutkintokohtaiset osat</h2>
             <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" translate>lisaa-tutkintokohtainen-osa</button>
             <ul class="tutkinnonsisalto-list">
-                <li class="list-element pointer" ui-sref="perusteprojekti.editoi.tutkinnonosat">
+                <li class="list-element pointer" ui-sref="perusteprojekti.suoritustapa.tutkinnonosat">
                     <h3>{{ 'tutkinnonosat' | kaanna }}</h3>
                 </li>
-                <li class="list-element pointer" ui-sref="perusteprojekti.editoi.muodostumissaannot">
+                <li class="list-element pointer" ui-sref="perusteprojekti.suoritustapa.muodostumissaannot">
                     <h3>{{ 'tutkinnon-rakenne' | kaanna }}</h3>
                 </li>
-                <li class="list-element pointer" ng-repeat="sisalto in peruste.sisalto.lapset" ui-sref="perusteprojekti.editoi.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id})">
+                <li class="list-element pointer" ng-repeat="sisalto in peruste.sisalto.lapset" ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id})">
                     <h3>{{ sisalto.perusteenOsa.nimi || 'uusi-tutkinnon-osa' | kaanna}}</h3>
                     <span ng-click="poistaSisalto(sisalto.id, sisalto.perusteenOsa.nimi || 'uusi-tutkinnon-osa' , $event)" class="glyphicon glyphicon-remove pull-right smaller" ng-mouseover="setLargerSize($event)" ng-mouseleave="setSmallerSize($event)"></span>
                 </li>

@@ -1,65 +1,34 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .config(function($stateProvider) {
-    $stateProvider
-      .state('perusteprojekti.tiedot', {
-        //url: '/perustiedot',
-        templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedotUusi.html',
-        controller: 'PerusteprojektiTiedotCtrl',
-        naviBase: ['perusteprojekti', ':perusteProjektiId'],
-        navigaationimiId: 'perusteProjektiId',
-        resolve: {'opintoalaService': 'Opintoalat'},
-        abstract: true
-      }).state('perusteprojekti.tiedot.uusi', {
-        url: '/perustiedot',
-        templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedot.html',
-        controller: 'PerusteprojektiTiedotCtrl',
-        naviBase: ['perusteprojekti', ':perusteProjektiId'],
-        navigaationimiId: 'perusteProjektiId',
-        onEnter: ['SivunavigaatioService', function (SivunavigaatioService) {
-          SivunavigaatioService.aseta({osiot: false});
-        }]
-      })
-      .state('perusteprojekti.editoi.tiedot', {
-        url: '/perustiedot',
-        templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedot.html',
-        controller: 'PerusteprojektiTiedotCtrl',
-        naviBase: ['perusteprojekti', ':perusteProjektiId'],
-        navigaationimiId: 'perusteProjektiId',
-        resolve: {'opintoalaService': 'Opintoalat'},
-        onEnter: ['SivunavigaatioService', function (SivunavigaatioService) {
-          SivunavigaatioService.aseta({osiot: false});
-        }]
-      });
-  })
-  .controller('PerusteprojektiTiedotCtrl', function($scope, $rootScope, $state, $stateParams,
-    PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, koulutusalaService, opintoalaService) {
+  .controller('PerusteprojektiTiedotCtrl', function($scope, $state, $stateParams,
+    PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
-    $scope.Koulutusalat = koulutusalaService;
-    $scope.Opintoalat = opintoalaService;
     $scope.projekti = {};
     PerusteProjektiService.clean();
+    // NOTE: Jos ei löydy suoritustapaa serviceltä niin käytetään suoritustapaa 'naytto'.
+    //       Tämä toimii ammatillisen puolen projekteissa, mutta ei yleissivistävän puolella.
+    //       Korjataan kun keksitään parempi suoritustavan valinta-algoritmi.
+    $scope.suoritustapa = PerusteProjektiService.getSuoritustapa() || 'naytto';
 
     $scope.projekti.id = $stateParams.perusteProjektiId;
 
     $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojekti/perusteprojektiPerustiedot.html'},
                    {otsikko: 'projekti-toimikausi', url: 'views/partials/perusteprojekti/perusteprojektiToimikausi.html'}];
 
-    if ($stateParams.perusteProjektiId !== 'uusi') {
+    if (angular.isDefined($stateParams.perusteProjektiId)) {
       $scope.projekti.id = $stateParams.perusteProjektiId;
       PerusteprojektiResource.get({ id: $stateParams.perusteProjektiId }, function(vastaus) {
         $scope.projekti = vastaus;
         Navigaatiopolku.asetaElementit({ perusteProjektiId: vastaus.nimi });
       });
-    } else {
-        Navigaatiopolku.asetaElementit({ perusteProjektiId: 'uusi' });
     }
 
     $scope.tallennaPerusteprojekti = function() {
       var projekti = PerusteProjektiService.get();
-      if (projekti.id !== 'uusi') {
+      console.log('projekti.id', projekti.id);
+      if (angular.isDefined(projekti.id)) {
         // Poista tämä hackkin, kun keksitty parempi tapa viedä koulutustyyppi uuden projektin luonnissa.
         // Uuden projektin luonti dto:ssa kulkee koulutustyyppi, mutta ei normaalissa perusteprojektiDto:ssa
         delete projekti.koulutustyyppi;
@@ -83,7 +52,7 @@ angular.module('eperusteApp')
     };
 
     var avaaProjektinSisalto = function(projektiId) {
-      $state.go('perusteprojekti.editoi.sisalto', {perusteProjektiId: projektiId}, {reload:true});
+      $state.go('perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: projektiId, suoritustapa: $scope.suoritustapa}, {reload:true});
     };
 
   });

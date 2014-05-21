@@ -17,19 +17,6 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .config(function($stateProvider) {
-    $stateProvider
-      .state('perusteprojekti.editoi.perusteenosa', {
-        url: 'perusteenosa/:perusteenOsanTyyppi/:perusteenOsaId',
-        templateUrl: 'views/muokkaus.html',
-        controller: 'MuokkausCtrl',
-        naviRest: [':perusteenOsanTyyppi'],
-        /*naviBase: ['muokkaus', ':perusteenOsanTyyppi']*/
-        onEnter: ['SivunavigaatioService', function (SivunavigaatioService) {
-          SivunavigaatioService.aseta({osiot: true});
-        }]
-      });
-  })
   .controller('MuokkausCtrl', function($scope, $rootScope, $stateParams, $state, $compile, Navigaatiopolku,
     PerusteTutkinnonosa, Editointicatcher, PerusteprojektiResource, Notifikaatiot, PerusteenOsat) {
     $scope.tyyppi = $stateParams.perusteenOsanTyyppi;

@@ -16,7 +16,7 @@ angular.module('eperusteApp')
       Kayttajaprofiilit.get({}, function(vastaus) {
 
         $scope.projektit = _.forEach(vastaus.perusteprojektit, function(pp) {
-          pp.url = $state.href('perusteprojekti.editoi.sisalto', { perusteProjektiId: pp.id, suoritustapa: 'naytto' });
+          pp.url = $state.href('perusteprojekti.suoritustapa.sisalto', { perusteProjektiId: pp.id, suoritustapa: 'naytto' });
         });
 
         if ($scope.naytetaanKaikkiSuosikit) {

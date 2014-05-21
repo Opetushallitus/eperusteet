@@ -2,18 +2,6 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .config(function($stateProvider) {
-    $stateProvider
-      .state('perusteprojekti.editoi.tutkinnonosat', {
-        url: '/tutkinnonosat',
-        templateUrl: 'views/partials/perusteprojekti/perusteprojektiTutkinnonosat.html',
-        controller: 'PerusteprojektiTutkinnonOsatCtrl',
-        naviRest: ['tutkinnonosat'],
-        onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
-            SivunavigaatioService.aseta({osiot: true});
-          }]
-      });
-  })
   .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $rootScope, $state, $stateParams,
     Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, TreeCache, Notifikaatiot,
     Editointikontrollit, Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti) {
@@ -73,7 +61,7 @@ angular.module('eperusteApp')
     });
 
     $scope.navigoiTutkinnonosaan = function (osa) {
-      $state.go('perusteprojekti.editoi.perusteenosa', {
+      $state.go('perusteprojekti.suoritustapa.perusteenosa', {
         perusteenOsaId: osa._tutkinnonOsa,
         perusteenOsanTyyppi: 'tutkinnonosa'
       });

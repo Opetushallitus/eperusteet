@@ -27,7 +27,7 @@ European Union Public Licence for more details.
                 <input type="text" class="form-control" id="diaarinumero" ng-model='projekti.diaarinumero' placeholder="{{'anna-diaarinumero-placeholder'| translate}}" ng-maxlength="255" ng-required="true">
             </div>
         </div>
-        <div class="form-group" ng-if="'perusteprojekti.tiedot.uusi' | isState">
+        <div class="form-group" ng-if="'perusteprojektiwizard.tiedot' | isState">
             <label for="koulutustyyppi" class="col-sm-3">{{'koulutustyyppi-label'| translate}}<span>*</span></label>
             <div class="col-md-9">
                 <select id="koulutustyyppi" ng-model="projekti.koulutustyyppi" class="form-control" ng-required="true">

@@ -171,7 +171,7 @@ angular.module('eperusteApp', [
 
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
 
-        if (Editointikontrollit.getEditMode() && fromState.name !== 'perusteprojekti.editoi.tutkinnonosat') {
+        if (Editointikontrollit.getEditMode() && fromState.name !== 'perusteprojekti.suoritustapa.tutkinnonosat') {
           event.preventDefault();
 
           var data = {toState: toState, toParams: toParams};
