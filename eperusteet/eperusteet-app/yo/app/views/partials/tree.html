@@ -2,26 +2,46 @@
   <div ng-if="!lisataanUuttaOsaa" class="tree col-lg-6 col-md-8 col-xs-12">
     <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" ng-if="rakenne.$resolved" rakenne="rakenne.rakenne" tutkinnon-osat="rakenne.tutkinnonOsat" uusi-tutkinnon-osa="uusiTutkinnonOsa"></tree>
   </div>
-  <div ng-if="muokkaus" class="skratchpadlist col-lg-4 col-md-4 col-xs-12 pull-right">
-    <div class="skratchpad-items">
-      <div ng-if="skratchpad.length === 0" class="skratchpad-help">
-        <span>{{ 'Raahaa puun osia tähän...' | kaanna }}</span>
+  <div ng-if="muokkaus" class="skratchpad-wrapper col-lg-4 col-md-4 col-xs-12 pull-right">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title" translate>leikelauta</h3>
       </div>
-      <ul ui-sortable="sortableOptions" class="tree-group skratchpad" ng-model="skratchpad">
-        <li class="skratchpad-item" ng-class="{ 'skratchpad-item-virhe': osa.$virhe }" ng-repeat="osa in skratchpad">
-          <div ng-if="osa._tutkinnonOsa">{{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna:true }}</div>
-          <div ng-if="osa.osat !== undefined">
-            <span>{{osa.nimi | kaanna:true}} ({{ osa.osat.length }} osaa)</span>
-          </div>
-        </li>
-      </ul>
+      <div class="panel-body">
+
+        <div ng-if="skratchpad.length === 0" class="skratchpad-help">
+          <span>{{ 'Raahaa puun osia tähän...' | kaanna }}</span>
+        </div>
+        <ul ui-sortable="sortableOptions" class="tree-group skratchpad" ng-model="skratchpad">
+          <li class="skratchpad-item" ng-class="{ 'skratchpad-item-virhe': osa.$virhe }" ng-repeat="osa in skratchpad">
+            <div ng-if="osa._tutkinnonOsa">{{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna:true }}</div>
+            <div ng-if="osa.osat !== undefined">
+              <span>{{osa.nimi | kaanna:true}} ({{ osa.osat.length }} osaa)</span>
+            </div>
+          </li>
+        </ul>
+        <div><a class="iconlink" href="" ng-click="ryhmaModaali(rakenne.$suoritustapa)"><span class="glyphicon glyphicon-plus-sign"></span>{{ 'luo-uusi-ryhma' | kaanna }}</a></div>
+
+      </div>
     </div>
-    <div><a href="" ng-click="ryhmaModaali(rakenne.$suoritustapa)"><span class="glyphicon glyphicon-plus-sign"></span> {{ 'luo-uusi-ryhma' | kaanna }}</a></div>
-    <hr>
-    <div class="skratchpad-items">
-      <ul ui-sortable="sortableOptionsUnique" ng-model="uniikit">
-        <li class="skratchpad-item" ng-repeat="osa in uniikit"><div>{{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna:true }}</div></li>
-      </ul>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title" translate>tutkinnonosat</h3>
+      </div>
+      <div class="panel-body">
+
+        <div ng-show="tutkinnonOsat.rajaus || tutkinnonOsat.multiPage" class="tutkinnonosa-rajaus">
+          <input ng-model="tutkinnonOsat.rajaus" type="input" class="form-control" placeholder="{{'tutkinnon-osa-haku-placeholder' | translate}}">
+        </div>
+        <ul ui-sortable="sortableOptionsUnique" ng-model="uniikit" class="uniikit">
+          <li class="skratchpad-item" ng-repeat="osa in uniikit | startFrom:(tutkinnonOsat.sivu-1)*tutkinnonOsat.perSivu | limitTo:tutkinnonOsat.perSivu">
+            <div>{{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna:true }}</div>
+          </li>
+        </ul>
+        <pagination ng-show="tutkinnonOsat.multiPage" ng-model="tutkinnonOsat.sivu" ng-change="valitseSivu(tutkinnonOsat.sivu)"
+                    total-items="uniikit.length" items-per-page="tutkinnonOsat.perSivu"></pagination>
+
+      </div>
     </div>
   </div>
 </div>
