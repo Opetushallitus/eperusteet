@@ -40,6 +40,12 @@ button {
   }
 }
 
+/* ikoni + linkkiteksti */
 a.iconlink > .glyphicon {
   margin-right: 5px;
+}
+
+/* animointia varten */
+.ng-hide-add, .ng-hide-remove {
+  display: block !important;
 }

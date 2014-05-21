@@ -130,7 +130,7 @@ angular.module('eperusteApp')
           '  </div>' +
           '</div>' +
           '<div ng-if="vanhempi">' + kentta + '</div>' +
-          '<div ng-show="!rakenne.$collapsed">' +
+          '<div class="collapser" ng-show="!rakenne.$collapsed">' +
           '  <ul ng-if="rakenne.osat !== undefined" ui-sortable="sortableOptions" id="tree-sortable" class="tree-group" ng-model="rakenne.osat">' +
           '    <li ng-repeat="osa in rakenne.osat">' +
           '      <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" rakenne="osa" vanhempi="rakenne" tutkinnon-osat="tutkinnonOsat" uusi-tutkinnon-osa="uusiTutkinnonOsa" ng-init="notfirst = true"></tree>' +
