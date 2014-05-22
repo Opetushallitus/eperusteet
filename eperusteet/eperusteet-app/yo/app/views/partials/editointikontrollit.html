@@ -14,9 +14,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 
-<div class="edit-controls" ng-class="editClass" ng-cloak ng-hide="hideControls || !editStarted">
-  <button class="btn btn-default btn-sm" ng-class="buttonClass" ng-click="start()" ng-hide="editStarted"><span class="glyphicon glyphicon-pencil"></span></button>
-  <div ng-hide="!editStarted" class="edit-control-content">
+<div class="edit-controls" ng-cloak ng-hide="hideControls || !editStarted">
+  <div class="edit-control-content">
     <div class="edit-control-header">
       <span class="glyphicon glyphicon-pencil"></span>{{'muokattavana' | kaanna}}
     </div>
