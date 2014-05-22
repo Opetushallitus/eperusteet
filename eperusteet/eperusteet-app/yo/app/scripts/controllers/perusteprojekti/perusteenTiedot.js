@@ -2,7 +2,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('ProjektinPerusteCtrl', function($scope, $rootScope, $stateParams, $state,
+  .controller('PerusteenTiedotCtrl', function($scope, $rootScope, $stateParams, $state,
     Koodisto, Perusteet, PerusteprojektiResource, YleinenData) {
 
     $scope.hakemassa = false;

@@ -72,7 +72,7 @@ angular.module('eperusteApp')
       .state('perusteprojekti.tiedot', {
         url: '/perustiedot',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedot.html',
-        controller: 'PerusteprojektiTiedotCtrl',
+        controller: 'ProjektinTiedotCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
         navigaationimiId: 'perusteProjektiId',
         resolve: {'opintoalaService': 'Opintoalat'},
@@ -83,7 +83,7 @@ angular.module('eperusteApp')
       .state('perusteprojekti.peruste', {
         url: '/peruste',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiPeruste.html',
-        controller: 'ProjektinPerusteCtrl',
+        controller: 'PerusteenTiedotCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
         navigaationimiId: 'perusteProjektiId',
         onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
@@ -102,13 +102,13 @@ angular.module('eperusteApp')
       .state('perusteprojektiwizard', {
         url: '/perusteprojekti',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedotUusi.html',
-        controller: 'PerusteprojektiTiedotCtrl',
+        controller: 'ProjektinTiedotCtrl',
         abstract: true
       })
       .state('perusteprojektiwizard.tiedot', {
         url: '/perustiedot',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedot.html',
-        controller: 'PerusteprojektiTiedotCtrl',
+        controller: 'ProjektinTiedotCtrl',
         naviBase: ['uusi-perusteprojekti'],
         onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
             SivunavigaatioService.aseta({osiot: false});
