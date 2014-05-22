@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .controller('PerusteprojektiTiedotCtrl', function($scope, $state, $stateParams,
+  .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams,
     PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
