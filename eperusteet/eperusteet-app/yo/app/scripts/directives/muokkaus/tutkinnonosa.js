@@ -27,11 +27,16 @@ angular.module('eperusteApp')
       },
       controller: function($scope, $state, $stateParams, $q, Navigaatiopolku,
         Editointikontrollit, PerusteenOsat, Editointicatcher, PerusteenRakenne,
-        PerusteTutkinnonosa) {
+        PerusteTutkinnonosa, TutkinnonOsaEditMode, $timeout) {
         $scope.suoritustapa = $stateParams.suoritustapa;
         $scope.rakenne = {};
         PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
           $scope.rakenne = res;
+          if (TutkinnonOsaEditMode.getMode()) {
+            $timeout(function () {
+              $scope.muokkaa();
+            }, 50);
+          }
         });
         $scope.viiteosa = {};
 

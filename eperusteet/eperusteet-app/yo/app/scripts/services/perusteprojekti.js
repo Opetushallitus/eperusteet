@@ -57,4 +57,16 @@ angular.module('eperusteApp')
       setSuoritustapa: setSuoritustapa,
       cleanSuoritustapa: cleanSuoritustapa
     };
+  })
+  .service('TutkinnonOsaEditMode', function () {
+    this.mode = false;
+    this.setMode = function (mode) {
+      this.mode = mode;
+    };
+    this.getMode = function () {
+      var ret = this.mode;
+      this.mode = false;
+      return ret;
+    };
   });
+

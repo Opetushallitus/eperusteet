@@ -4,7 +4,7 @@
 angular.module('eperusteApp')
   .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $rootScope, $state, $stateParams,
     Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, TreeCache, Notifikaatiot,
-    Editointikontrollit, Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti) {
+    Editointikontrollit, Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode) {
 
     $scope.editoi = false;
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
@@ -82,6 +82,7 @@ angular.module('eperusteApp')
       }, osa, function(res) {
         $scope.rakenne.tutkinnonOsat[res._tutkinnonOsa] = res;
         cb();
+        TutkinnonOsaEditMode.setMode(true);
         $scope.navigoiTutkinnonosaan(res);
       }, function(err) {
         Notifikaatiot.fataali('tallennus-epäonnistui', err);

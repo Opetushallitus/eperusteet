@@ -45,8 +45,8 @@ angular.module('eperusteApp')
     var el = $compile(muokkausDirective)($scope);
 
     angular.element('#muokkaus-elementti-placeholder').replaceWith(el);
-    
-    
+
+
   })
   .service('MuokkausUtils', function() {
     this.hasValue = function(obj, path) {
