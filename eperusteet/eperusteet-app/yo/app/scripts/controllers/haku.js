@@ -12,14 +12,12 @@ angular.module('eperusteApp')
         url: '/ammatillinenperuskoulutus',
         templateUrl: 'views/haku.html',
         controller: 'HakuCtrl',
-        naviBase: ['haku', 'ammatillinen-peruskoulutus'],
         resolve: {'koulutusalaService': 'Koulutusalat'}
       })
       .state('selaus.ammatillinenaikuiskoulutus', {
         url: '/ammatillinenaikuiskoulutus',
         templateUrl: 'views/haku.html',
         controller: 'HakuCtrl',
-        naviBase: ['haku', 'ammatillinen-aikuiskoulutus'],
         resolve: {'koulutusalaService': 'Koulutusalat'}
       });
   })

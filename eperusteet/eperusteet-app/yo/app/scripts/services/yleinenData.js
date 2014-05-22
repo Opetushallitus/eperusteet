@@ -4,6 +4,8 @@
 angular.module('eperusteApp')
   .service('YleinenData', function YleinenData($translate, Arviointiasteikot, $rootScope) {
 
+    this.naviOmit = ['editoi', 'suoritustapa', 'sisalto', 'aloitussivu', 'selaus', 'esitys'];
+
     this.kontekstit = ['ammatillinenperuskoulutus',
       'ammatillinenaikuiskoulutus'];
 

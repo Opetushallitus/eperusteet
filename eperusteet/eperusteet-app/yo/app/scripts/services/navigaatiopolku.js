@@ -1,88 +1,55 @@
 'use strict';
 /* global _ */
 
-// Tila-asetukset:
-// $stateProvider.state('', { ... asetus: optio, ... });
-//
-// naviBase []:
-// Tyhjentää navin ja asettaa naviBasen listan naviksi
-//
-// naviRest []:
-// Asettaa naviksi edellisen/voimassaolevan naviBasen ja yhdistää naviRestin sen perään
-//
-// Kummallekin voi antaa merkkijonona muuttujan (alkaa ':':lla), jonka tilalle haetaan
-// kyseinen muuttuja $stateParamsista tilan vaihtuessa
-//
-// Navigaatiopolku.asetaElementit-funktiolla voi asettaa näiden merkkijonomuuttujien
-// tilalle muita merkkijonoja, esimerkiksi voisit haluta korvata id:n nimellä.
-
 angular.module('eperusteApp')
-  .service('Navigaatiopolku', function($rootScope, $state) {
+  .service('Navigaatiopolku', function($rootScope, $state, YleinenData) {
     var naviElementit = {};
     var naviPolku = [];
-    $rootScope.naviBase = [];
-    $rootScope.naviRest = [];
+    var params = {};
+    var state = {};
 
-    function navigaatioMap(toState, toParams) {
-      var defcon = _.merge({ append: false }, toState.naviConfig);
-
-      function relink(link) {
-        var nlink = link;
-
-        if (_.first(link) === ':') {
-          var kentta = link.substr(1);
-          nlink = naviElementit[kentta] ? naviElementit[kentta] : toParams[kentta];
+    function haeTaiUndef(olio) {
+      for (var i = 1; i < arguments.length; ++i) {
+        if (_.isObject(olio) && olio[arguments[i]]) {
+          olio = olio[arguments[i]];
         }
-        return {
-          url: $state.href(toState.name, toParams),
-          kentta: link,
-          arvo: nlink
-        };
+        else {
+          return null;
+        }
       }
-
-      var rest = [];
-      if (toState.naviBase) { $rootScope.naviBase = _.map(toState.naviBase, relink); }
-      if (toState.naviRest) { rest = _.map(toState.naviRest, relink); }
-      $rootScope.naviRest = defcon.append ? $rootScope.naviRest.concat(rest) : rest;
+      return olio;
     }
 
-    function paivitaNavigaatio() {
-      function paivita(l) {
-        var nl = naviElementit[l.kentta.substr(1)];
-        if (nl) { l.arvo = nl; }
+    function päivitä() {
+      if (!state.name) {
+        return;
       }
-      _.forEach($rootScope.naviBase, paivita);
-      _.forEach($rootScope.naviRest, paivita);
-      naviPolku = _.filter($rootScope.naviBase.concat($rootScope.naviRest), function(link) { return !_.isEmpty(link); });
-      $rootScope.$emit('naviUpdate');
+      naviPolku = _(state.name.split('.'))
+        .difference(YleinenData.naviOmit)
+        .map(function(el) {
+          var url = haeTaiUndef(naviElementit, el, 'url');
+          if (url) { url = $state.href(url, params); }
+          return {
+            arvo: haeTaiUndef(naviElementit, el, 'nimi') || el,
+            kentta: el,
+            url: url || ''
+          };
+        })
+        .value();
+      $rootScope.$emit('update:navipolku');
     }
 
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams) {
-      if (_.isEmpty($rootScope.naviBase) && _.isEmpty($rootScope.naviRest)) {
-        var state = _.first($state.$current.self.name.split('.'));
-        $rootScope.naviBase.push({
-          arvo: state,
-          kentta: state,
-          url: $state.href(state)
-        });
-      }
-      navigaatioMap(toState, toParams);
-      paivitaNavigaatio();
+      state = toState;
+      params = toParams;
+      päivitä();
     });
 
     return {
-      // Palauttaa populoidun navipolun - kotisivu
-      haeNavipolku: function() { return _.clone(naviPolku); },
-      // Asettaa :muuttujan näkyvän arvon
-      asetaElementit: function(elements) {
-        naviElementit = _.merge(_.clone(naviElementit), elements);
-        paivitaNavigaatio();
-      },
-      // Tyhjentää navipolun täysin
-      clear: function() {
-        naviPolku = [];
-        $rootScope.naviBase = [];
-        $rootScope.naviRest = [];
+      hae: function() { return _.clone(naviPolku); },
+      asetaElementit: function(elementit) {
+        naviElementit = _.merge(_.clone(naviElementit), elementit);
+        päivitä();
       }
     };
   });

@@ -48,7 +48,6 @@ angular.module('eperusteApp')
         $scope.peruste.sisalto = vastaus;
         $scope.valittuSuoritustapa = suoritustapa;
         PerusteProjektiService.setSuoritustapa(suoritustapa);
-        console.log('suoritustapa sisältö', vastaus);
       }, function(virhe) {
         $scope.valittuSuoritustapa = '';
         console.log('suoritustapasisältöä ei löytynyt', virhe);

@@ -25,7 +25,7 @@ angular.module('eperusteApp')
       scope: {
         tutkinnonOsa: '='
       },
-      controller: function($scope, $state, $stateParams, $q,
+      controller: function($scope, $state, $stateParams, $q, Navigaatiopolku,
         Editointikontrollit, PerusteenOsat, Editointicatcher, PerusteenRakenne,
         PerusteTutkinnonosa) {
         $scope.suoritustapa = $stateParams.suoritustapa;
@@ -160,6 +160,11 @@ angular.module('eperusteApp')
 
         if($scope.tutkinnonOsa) {
           $scope.tutkinnonOsaPromise = $scope.tutkinnonOsa.$promise.then(function(response) {
+            Navigaatiopolku.asetaElementit({
+              perusteenosa: {
+                nimi: response.nimi
+              }
+            });
             setupTutkinnonOsa(response);
             return $scope.editableTutkinnonOsa;
           });

@@ -5,7 +5,6 @@ angular.module('eperusteApp')
     $stateProvider
       .state('admin', {
         url: '/admin',
-        naviBase: ['admin'],
         templateUrl: 'views/admin.html',
         controller: 'AdminCtrl'
       });

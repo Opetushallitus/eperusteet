@@ -5,7 +5,6 @@ angular.module('eperusteApp')
     $stateProvider
       .state('aloitussivu', {
         url: '/',
-        naviBase: [],
         templateUrl: 'views/aloitussivu.html'
       });
   });

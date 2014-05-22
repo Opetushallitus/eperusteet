@@ -66,9 +66,11 @@ angular.module('eperusteApp')
 
     perusteHakuPromise.then(function(peruste) {
       if (peruste.id) {
+        Navigaatiopolku.asetaElementit({
+          peruste: { nimi: peruste.nimi }
+        });
         // haeRakenne(peruste.suoritustavat[0].suoritustapakoodi);
         $scope.peruste = peruste;
-        Navigaatiopolku.asetaElementit({ perusteenId: peruste.nimi });
         haeSuoritustapaSisalto(peruste.id);
       } else {
         // TODO perustetta ei löytynyt, virhesivu.

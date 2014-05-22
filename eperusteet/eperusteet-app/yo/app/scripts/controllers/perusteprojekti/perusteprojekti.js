@@ -16,7 +16,7 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .config(function($stateProvider, $urlRouterProvider) {
+  .config(function($stateProvider) {
     $stateProvider
       .state('perusteprojekti', {
         url: '/perusteprojekti/:perusteProjektiId',
@@ -37,7 +37,6 @@ angular.module('eperusteApp')
         url: '/tutkinnonrakenne',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiMuodostumissaannot.html',
         controller: 'PerusteprojektiMuodostumissaannotCtrl',
-        naviRest: ['muodostumissaannot'],
         onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
             SivunavigaatioService.aseta({osiot: true});
           }]
@@ -46,7 +45,6 @@ angular.module('eperusteApp')
         url: '/tutkinnonosat',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiTutkinnonosat.html',
         controller: 'PerusteprojektiTutkinnonOsatCtrl',
-        naviRest: ['tutkinnonosat'],
         onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
             SivunavigaatioService.aseta({osiot: true});
           }]
@@ -55,7 +53,6 @@ angular.module('eperusteApp')
         url: '/perusteenosa/:perusteenOsanTyyppi/:perusteenOsaId',
         templateUrl: 'views/muokkaus.html',
         controller: 'MuokkausCtrl',
-        naviRest: [':perusteenOsanTyyppi'],
         onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
             SivunavigaatioService.aseta({osiot: true});
           }]
@@ -64,7 +61,6 @@ angular.module('eperusteApp')
         url: '/sisalto',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiSisalto.html',
         controller: 'PerusteprojektisisaltoCtrl',
-        naviBase: ['perusteprojekti', ':perusteProjektiId'],
         onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
             SivunavigaatioService.aseta({piilota: true});
           }]
@@ -73,7 +69,6 @@ angular.module('eperusteApp')
         url: '/perustiedot',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedot.html',
         controller: 'ProjektinTiedotCtrl',
-        naviBase: ['perusteprojekti', ':perusteProjektiId'],
         navigaationimiId: 'perusteProjektiId',
         onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
             SivunavigaatioService.aseta({osiot: false});
@@ -83,7 +78,6 @@ angular.module('eperusteApp')
         url: '/peruste',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiPeruste.html',
         controller: 'PerusteenTiedotCtrl',
-        naviBase: ['perusteprojekti', ':perusteProjektiId'],
         navigaationimiId: 'perusteProjektiId',
         onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
             SivunavigaatioService.aseta({osiot: false});
@@ -93,7 +87,6 @@ angular.module('eperusteApp')
         url: '/projektiryhma',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiProjektiryhma.html',
         controller: 'ProjektiryhmaCtrl',
-        naviBase: ['perusteprojekti', ':perusteProjektiId'],
         onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
             SivunavigaatioService.aseta({osiot: false});
           }]
@@ -108,7 +101,6 @@ angular.module('eperusteApp')
         url: '/perustiedot',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedot.html',
         controller: 'ProjektinTiedotCtrl',
-        naviBase: ['uusi-perusteprojekti'],
         onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
             SivunavigaatioService.aseta({osiot: false});
           }]
@@ -117,7 +109,7 @@ angular.module('eperusteApp')
   .controller('PerusteprojektiCtrl', function ($scope, $stateParams, Navigaatiopolku,
     PerusteprojektiResource, koulutusalaService, opintoalaService, Perusteet, SivunavigaatioService,
     PerusteProjektiService, Kaanna) {
-      
+
     PerusteProjektiService.cleanSuoritustapa();
     $scope.projekti = {};
     $scope.peruste = {};
@@ -133,8 +125,12 @@ angular.module('eperusteApp')
       // TODO: väliaikaisesti hardkoodattu tila
       $scope.projekti.tila = 'luonnos';
       SivunavigaatioService.asetaProjekti($scope.projekti);
-      Navigaatiopolku.asetaElementit({perusteProjektiId: vastaus.nimi});
-
+      Navigaatiopolku.asetaElementit({
+        perusteprojekti: {
+          nimi: vastaus.nimi,
+          url: 'perusteprojekti.suoritustapa.sisalto'
+        }
+      });
       Perusteet.get({perusteenId: vastaus._peruste}, function(vastaus) {
         $scope.peruste = vastaus;
       }, function(virhe) {

@@ -49,6 +49,12 @@
     "erikoisammattitutkinto": "Erikoisammattitutkinto",
     "perustutkinto": "Perustutkinto",
 
+    "tiedot": "Tiedot",
+    "projektiryhma": "Projektiryhmä",
+    "peruste": "Peruste",
+    "ammatillinenperuskoulutus": "Ammatillinen peruskoulutus",
+    "ammatillinenaikuiskoulutus": "Ammatillinen aikuiskoulutus",
+
     "perusteprojektit-otsikko": "Omat perusteprojektit",
     "uusi-projekti": "Uusi projekti",
 
@@ -344,5 +350,7 @@
     "poistu-sivulta": "Poistu sivulta",
     "tallentamattomia-muutoksia": "Sinulla on tallentamattomia muutoksia. Jos poistut sivulta muutokset menetetään.",
     "haluatko-jatkaa": "Haluatko jatkaa?",
-    "vahvista-liikkuminen": "Vahvista liikkuminen"
+    "vahvista-liikkuminen": "Vahvista liikkuminen",
+
+    "muodostumissaannot": "Tutkinnon rakenne"
 }
