@@ -27,7 +27,7 @@ angular.module('eperusteApp')
       },
       controller: function($scope, $state, $stateParams, $q, Navigaatiopolku,
         Editointikontrollit, PerusteenOsat, Editointicatcher, PerusteenRakenne,
-        PerusteTutkinnonosa, TutkinnonOsaEditMode, $timeout) {
+        PerusteTutkinnonosa, TutkinnonOsaEditMode, $timeout, Varmistusdialogi) {
         $scope.suoritustapa = $stateParams.suoritustapa;
         $scope.rakenne = {};
         PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
@@ -188,11 +188,18 @@ angular.module('eperusteApp')
           if (onRakenteessa) {
             Notifikaatiot.varoitus('tutkinnon-osa-rakenteessa-ei-voi-poistaa');
           } else {
-            PerusteenRakenne.poistaTutkinnonOsaViite(
-              osaId, $scope.rakenne.$peruste.id, $stateParams.suoritustapa, function() {
-                Notifikaatiot.onnistui('tutkinnon-osa-rakenteesta-poistettu');
-                $state.go('perusteprojekti.suoritustapa.tutkinnonosat');
-            });
+            Varmistusdialogi.dialogi({
+              otsikko: 'poistetaanko-tutkinnonosa',
+              primaryBtn: 'poista',
+              successCb: function () {
+                Editointikontrollit.cancelEditing();
+                PerusteenRakenne.poistaTutkinnonOsaViite(osaId, $scope.rakenne.$peruste.id,
+                  $stateParams.suoritustapa, function() {
+                  Notifikaatiot.onnistui('tutkinnon-osa-rakenteesta-poistettu');
+                  $state.go('perusteprojekti.suoritustapa.tutkinnonosat');
+                });
+              }
+            })();
           }
         };
         $scope.muokkaa = function () {

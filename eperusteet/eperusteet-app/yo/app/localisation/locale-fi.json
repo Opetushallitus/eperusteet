@@ -65,6 +65,7 @@
     "sulje-kaikki": "Sulje kaikki",
     "avaa-sulje-kaikki": "Avaa / sulje kaikki",
 
+    "poistetaanko-tutkinnonosa": "Poistetaanko tutkinnon osa?",
     "tutkinnon-osa-rakenteessa-ei-voi-poistaa": "Tutkinnon osaa ei voi poistaa, koska se on käytössä tutkinnon rakenteessa. Poista viite puusta ensin.",
     "tutkinnon-osa-rakenteesta-poistettu": "Tutkinnon osa poistettu onnistuneesti.",
 
