@@ -27,7 +27,6 @@ angular.module('eperusteApp')
 
     $scope.tallennaPerusteprojekti = function() {
       var projekti = PerusteProjektiService.get();
-      console.log('projekti.id', projekti.id);
       if (angular.isDefined(projekti.id)) {
         // Poista tämä hackkin, kun keksitty parempi tapa viedä koulutustyyppi uuden projektin luonnissa.
         // Uuden projektin luonti dto:ssa kulkee koulutustyyppi, mutta ei normaalissa perusteprojektiDto:ssa

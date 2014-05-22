@@ -24,7 +24,7 @@ angular.module('eperusteApp')
         templateUrl: 'views/perusteprojekti.html',
         controller: 'PerusteprojektiCtrl',
         resolve: {'koulutusalaService': 'Koulutusalat',
-          'opintoalaService': 'Opintoalat'},
+                  'opintoalaService': 'Opintoalat'},
         abstract: true
       })
       .state('perusteprojekti.suoritustapa', {
@@ -75,7 +75,6 @@ angular.module('eperusteApp')
         controller: 'ProjektinTiedotCtrl',
         naviBase: ['perusteprojekti', ':perusteProjektiId'],
         navigaationimiId: 'perusteProjektiId',
-        resolve: {'opintoalaService': 'Opintoalat'},
         onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
             SivunavigaatioService.aseta({osiot: false});
           }]
@@ -115,42 +114,36 @@ angular.module('eperusteApp')
           }]
       });
   })
-  .controller('PerusteprojektiCtrl', function ($scope, $rootScope, $stateParams, Navigaatiopolku,
+  .controller('PerusteprojektiCtrl', function ($scope, $stateParams, Navigaatiopolku,
     PerusteprojektiResource, koulutusalaService, opintoalaService, Perusteet, SivunavigaatioService,
     PerusteProjektiService, Kaanna) {
+      
     PerusteProjektiService.cleanSuoritustapa();
     $scope.projekti = {};
     $scope.peruste = {};
-
-    $scope.testi = '';
 
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
 
     PerusteProjektiService.setSuoritustapa($stateParams.suoritustapa);
 
-    if ($stateParams.perusteProjektiId !== 'uusi') {
-      $scope.projekti.id = $stateParams.perusteProjektiId;
-      PerusteprojektiResource.get({ id: $stateParams.perusteProjektiId }, function(vastaus) {
-        $scope.projekti = vastaus;
-        // TODO: väliaikaisesti hardkoodattu tila
-        $scope.projekti.tila = 'luonnos';
-        SivunavigaatioService.asetaProjekti($scope.projekti);
-        Navigaatiopolku.asetaElementit({ perusteProjektiId: vastaus.nimi });
+    $scope.projekti.id = $stateParams.perusteProjektiId;
+    PerusteprojektiResource.get({id: $stateParams.perusteProjektiId}, function(vastaus) {
+      $scope.projekti = vastaus;
+      // TODO: väliaikaisesti hardkoodattu tila
+      $scope.projekti.tila = 'luonnos';
+      SivunavigaatioService.asetaProjekti($scope.projekti);
+      Navigaatiopolku.asetaElementit({perusteProjektiId: vastaus.nimi});
 
-        Perusteet.get({perusteenId: vastaus._peruste}, function(vastaus) {
-          $scope.peruste = vastaus;
-        }, function(virhe) {
-          console.log('perusteen haku virhe', virhe);
-        });
-
+      Perusteet.get({perusteenId: vastaus._peruste}, function(vastaus) {
+        $scope.peruste = vastaus;
       }, function(virhe) {
-        console.log('virhe', virhe);
+        console.log('perusteen haku virhe', virhe);
       });
-    } else {
-      $scope.projekti.id = 'uusi';
-      Navigaatiopolku.asetaElementit({ perusteProjektiId: 'uusi' });
-    }
+
+    }, function(virhe) {
+      console.log('virhe', virhe);
+    });
 
     $scope.koulutusalaNimi = function(koodi) {
       return koulutusalaService.haeKoulutusalaNimi(koodi);
