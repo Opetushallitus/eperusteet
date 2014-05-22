@@ -54,7 +54,6 @@ angular.module('eperusteApp')
           delete uusiryhma.muodostumisSaanto.koko;
         }
       }
-      console.log(uusiryhma);
       $modalInstance.close(uusiryhma);
     };
 

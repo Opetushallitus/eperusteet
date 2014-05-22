@@ -21,7 +21,7 @@ angular.module('eperusteApp')
     var uniqueId = 0;
     return {
       template: '<div class="form-group">' +
-        '<label class="col-sm-3 control-label">{{label | kaanna}}</label>' +
+        '<label class="col-sm-3 control-label">{{label | kaanna}}{{ postfix }}</label>' +
         '<div class="input-group col-sm-9">' +
         '<input ng-if="!options && !isObject" ng-class="inputClasses()" ng-model="input.model" ng-change="updateModel()" type="{{type}}">' +
         '<span ng-if="!options && isObject">' +
@@ -39,7 +39,11 @@ angular.module('eperusteApp')
         options: '=?',
         modelVar: '@'
       },
-      link: function (scope, element) {
+      link: function (scope, element, attrs) {
+        scope.postfix = '';
+        attrs.$observe('required', function(value) {
+          if (value) { scope.postfix = '*'; }
+        });
         scope.inputClasses = function () {
           var classes = [];
           if (scope.type !== 'checkbox') {
