@@ -28,7 +28,9 @@ angular.module('eperusteApp')
       if ($scope.data.piilota) {
         // TODO: parempi/tehokkaampi ratkaisu. Sisältö-div on tämän direktiivin
         // ulkopuolella, mutta sen tyyli riippuu 'piilota'-attribuutista.
-        angular.element('.sivunavi-sisalto').css('margin-left', '0px');
+        angular.element('.sivunavi-sisalto').addClass('disable');
+      } else {
+        angular.element('.sivunavi-sisalto').removeClass('disable');
       }
       return $scope.data.piilota;
     };
