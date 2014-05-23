@@ -1,0 +1,15 @@
+<div>
+    <div ng-repeat="ryhma in ryhmat">
+        <h2>{{ ryhma.nimi | kaanna }}</h2>
+        <p>{{ ryhma.kuvaus2 | kaanna }}</p>
+        <table class="table table-striped">
+            <tr>
+                <th>Nimi</th>
+                <th>Muuta</th>
+            </tr>
+            <tr>
+                <td ng-repeat="yt in ryhma.yhteystiedot">{{  }}</td>
+            </tr>
+        </table>
+    </div>
+</div>

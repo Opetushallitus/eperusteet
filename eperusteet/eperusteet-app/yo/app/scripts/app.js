@@ -13,6 +13,9 @@ angular.module('eperusteApp', [
   'ui.sortable'
 ])
   .constant('SERVICE_LOC', '/eperusteet-service/api')
+  // .constant('ORGANISATION_SERVICE_LOC', '/organisaatio-service/rest')
+  .constant('ORGANISATION_SERVICE_LOC', '')
+  .constant('AUTHENTICATION_SERVICE_LOC', '/authentication-service/resources')
   .constant('SPINNER_WAIT', 100)
   .constant('NOTIFICATION_DELAY_SUCCESS', 2000)
   .constant('NOTIFICATION_DELAY_WARNING', 8000)
