@@ -249,13 +249,6 @@ module.exports = function(grunt) {
           ]
         }, {
           expand: true,
-          cwd: '<%= yeoman.app %>/components',
-          dest: '<%= yeoman.dist %>/components',
-          src: [
-            'bootstrap/**'
-          ]
-        }, {
-          expand: true,
           cwd: '<%= yeoman.app %>/bower_components',
           dest: '<%= yeoman.dist %>/bower_components',
           src: [
@@ -278,14 +271,14 @@ module.exports = function(grunt) {
           ]
         }, {
           expand: true,
-          cwd: '<%= yeoman.app %>/components/bootstrap-sass/fonts/bootstrap',
+          cwd: '<%= yeoman.app %>/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap',
           dest: '<%= yeoman.dist %>/styles/fonts',
           src: '*.{eot,svg,ttf,woff}'
         }]
       },
       fonts: {
         expand: true,
-        cwd: '<%= yeoman.app %>/components/bootstrap-sass/fonts/bootstrap',
+        cwd: '<%= yeoman.app %>/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap',
         dest: '.tmp/styles/fonts/',
         src: '*.{eot,svg,ttf,woff}'
       }
