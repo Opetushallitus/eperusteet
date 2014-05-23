@@ -3,26 +3,45 @@ $edit-control-buttons-width: 180px;
 $edit-control-height: 60px;
 
 .edit-controls {
-  position: fixed;
-  bottom: 0px;
-  left: 0px;
-  z-index: 1040;
-  border-top: 2px solid black;
   background: transparentize($valinta-vari, 0.3);
-  width: 100%;
   height: $edit-control-height;
-  &.ng-hide-add {
-    transition: bottom 0.1s;
-  }
-  &.ng-hide-remove {
-    transition: bottom 0.4s;
-  }
-  &.ng-hide-add.ng-hide-add-active, &.ng-hide-remove {
-    bottom: -$edit-control-height;
-  }
-  &.ng-hide-add, &.ng-hide-remove.ng-hide-remove-active {
+  position: static;
+  float: left;
+  border: 2px solid black;
+  z-index: 1040;
+
+  &.floating {
+    position: fixed;
+    border-bottom-color: transparentize($valinta-vari, 0.3);
     bottom: 0px;
+    &.ng-hide-add {
+      transition: bottom 0.1s;
+    }
+    &.ng-hide-remove {
+      transition: bottom 0.4s;
+    }
+    &.ng-hide-add.ng-hide-add-active, &.ng-hide-remove {
+      bottom: -$edit-control-height;
+    }
+    &.ng-hide-add, &.ng-hide-remove.ng-hide-remove-active {
+      bottom: 0px;
+    }
   }
+  &.static {
+    &.ng-hide-add {
+      transition: none;
+    }
+    &.ng-hide-remove {
+      transition: opacity 0.4s;
+    }
+    &.ng-hide-add.ng-hide-add-active, &.ng-hide-remove {
+      opacity: 0;
+    }
+    &.ng-hide-add, &.ng-hide-remove.ng-hide-remove-active {
+      opacity: 1;
+    }
+  }
+
   .edit-control-content {
     max-width: $fluid-container-width;
     height: 100%;

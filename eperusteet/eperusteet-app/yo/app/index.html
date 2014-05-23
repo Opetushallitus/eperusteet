@@ -33,10 +33,10 @@
           </div>
           <eperuste-navi ng-controller="NaviCtrl"></eperuste-navi>
           <div class="col-md-12" ui-view></div>
+          <div class="col-md-12 editointi-wrapper"><editointikontrollit ng-controller="EditointiCtrl"></editointikontrollit></div>
         </div>
       </div>
       <spinner></spinner>
-      <editointikontrollit ng-controller="EditointiCtrl"></editointikontrollit>
       <div class="notification-wrapper">
         <div class="notifications" ng-model="viestit" ng-controller="NotifikaatioCtrl">
           <div ng-if="viestit" ng-click="poistaNotifikaatio(viesti)" ng-model="viestit" ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }" ng-repeat="viesti in viestit">

@@ -16,13 +16,42 @@
 
 'use strict';
 angular.module('eperusteApp')
-  .directive('editointikontrollit', function() {
+  .directive('editointikontrollit', function($window) {
     return {
       templateUrl: 'views/partials/editointikontrollit.html',
-      restrict: 'E'
+      restrict: 'E',
+      link: function(scope) {
+        var window = angular.element($window),
+            container = angular.element('.edit-controls'),
+            wrapper = angular.element('.editointi-wrapper');
+
+        /**
+         * Editointipalkki asettuu staattisesti footerin päälle kun skrollataan
+         * tarpeeksi alas. Ylempänä editointipalkki kelluu.
+         */
+        scope.updatePosition = function () {
+          if (window.scrollTop() + window.innerHeight() < wrapper.offset().top + container.height()) {
+            container.addClass('floating');
+            container.removeClass('static');
+            container.css('width', wrapper.width());
+          } else {
+            container.removeClass('floating');
+            container.addClass('static');
+            container.css('width', '100%');
+          }
+        };
+
+        window.on('scroll resize', function() {
+          if (scope.editStarted) {
+            scope.updatePosition();
+          }
+        });
+
+        scope.updatePosition();
+      }
     };
   })
-  .controller('EditointiCtrl', function($scope, $rootScope, Editointikontrollit) {
+  .controller('EditointiCtrl', function($scope, $rootScope, Editointikontrollit, $timeout) {
 
     $scope.kommentti = '';
     $scope.hideControls = true;
@@ -47,6 +76,9 @@ angular.module('eperusteApp')
     $rootScope.$on('enableEditing', function () {
       $scope.editStarted = true;
       $scope.kommentti = '';
+      $timeout(function () {
+        $scope.updatePosition();
+      });
     });
     $rootScope.$on('disableEditing', function () {
       $scope.editStarted = false;
