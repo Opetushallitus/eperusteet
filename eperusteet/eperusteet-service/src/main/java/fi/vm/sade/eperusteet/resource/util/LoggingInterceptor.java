@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.resource.config;
+package fi.vm.sade.eperusteet.resource.util;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
  *
  * @author jhyoty
  */
-class LoggingInterceptor implements HandlerInterceptor {
+public class LoggingInterceptor implements HandlerInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger("fi.vm.sade.eperusteet.PROFILING");
 

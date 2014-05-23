@@ -15,6 +15,8 @@
  */
 package fi.vm.sade.eperusteet.resource.config;
 
+import fi.vm.sade.eperusteet.resource.util.LoggingInterceptor;
+import fi.vm.sade.eperusteet.resource.util.CacheHeaderInterceptor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -62,6 +64,7 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         //registry.addWebRequestInterceptor(openEntityManagerInViewInterceptor());
         registry.addInterceptor(new LoggingInterceptor());
+        registry.addInterceptor(new CacheHeaderInterceptor());
         super.addInterceptors(registry);
     }
 
