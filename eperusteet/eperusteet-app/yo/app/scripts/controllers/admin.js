@@ -6,8 +6,15 @@ angular.module('eperusteApp')
       .state('admin', {
         url: '/admin',
         templateUrl: 'views/admin.html',
-        controller: 'AdminCtrl'
+        controller: 'AdminCtrl',
+        resolve: {
+          RyhmienHallintaData: function(RyhmienHallinta) {
+            return RyhmienHallinta.promise;
+          }
+        }
       });
   })
-  .controller('AdminCtrl', function() {
+  .controller('AdminCtrl', function($scope, RyhmienHallinta) {
+    $scope.ryhmat = RyhmienHallinta.haeRyhmat();
+    console.log($scope.ryhmat);
   });

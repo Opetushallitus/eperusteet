@@ -2,13 +2,21 @@
 /*global _*/
 
 angular.module('eperusteApp')
+  .factory('PerusteprojektiJasenet', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteprojektit/:id/jasenet', {
+      id: '@id'
+    }, {
+      get: {method: 'GET', isArray: true}
+    });
+  })
   .factory('PerusteprojektiResource', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteprojektit/:id', {
       id: '@id'
     }, {
       update: {method: 'POST', isArray: false}
     });
-  }).service('PerusteProjektiService', function($rootScope) {
+  })
+  .service('PerusteProjektiService', function($rootScope) {
     var pp = {};
     var suoritustapa = '';
 

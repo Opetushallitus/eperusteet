@@ -2,19 +2,16 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('ProjektiryhmaCtrl', function($scope, PerusteProjektiService, $modal) {
+  .controller('ProjektiryhmaCtrl', function($scope, $modal, $stateParams, PerusteprojektiJasenet, PerusteProjektiService) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
-    $scope.ryhma = [
-      {rooli: 'omistaja', nimi: 'Olaf Omistaja', puhelin: '040-1234567', email: 'ossi.omistaja@joku.fi'},
-      {rooli: 'sihteeri', nimi: 'Sirkku Sihteeri', puhelin: '040-1234567', email: 'email.email@joku.fi'},
-      {rooli: 'jasen', nimi: 'Jetro Jäsen', puhelin: '040-1234567', email: 'email.email@joku.fi'},
-      {rooli: 'jasen', nimi: 'Jaana Jäsen', puhelin: '040-1234567', email: 'email.email@joku.fi'},
-      {rooli: 'jasen', nimi: 'Matti Esimerkki', puhelin: '040-1234567', email: 'email.email@joku.fi'},
-      {rooli: 'jasen', nimi: 'Erkki-Sakari Meikäläinen', puhelin: '040-1234567', email: 'email.email@joku.fi'},
-      {rooli: 'kommentoija', nimi: 'Killian Kalle K. Kommentoija', puhelin: '+358-(0)40-1234567', email: 'email.tosipitkaemail@jokujossain.fi'},
-      {rooli: 'kommentoija', nimi: 'Kathryn Kommentoija', puhelin: '040-1234567', email: 'email.email@joku.fi'}
-    ];
+    $scope.ryhma = [];
+
+    PerusteprojektiJasenet.get({
+      id: $stateParams.perusteProjektiId
+    }, function(jasenet) {
+      $scope.ryhma = jasenet;
+    });
 
     $scope.kutsuUusi = function () {
       $modal.open({
