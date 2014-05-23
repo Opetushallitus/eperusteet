@@ -69,7 +69,7 @@ angular.module('eperusteApp')
       return ret;
     };
   })
-  .service('PerusteprojektiTiedotService', function ($q, PerusteprojektiResource, Perusteet, Suoritustapa) {
+  .service('PerusteprojektiTiedotService', function ($q, PerusteprojektiResource, Perusteet, Suoritustapa, PerusteProjektiService) {
 
     var deferred = $q.defer();
     var projekti = {};
@@ -88,6 +88,12 @@ angular.module('eperusteApp')
     
     this.getSisalto = function () {
       return sisalto;
+    };
+    
+    this.cleanData = function () {
+      projekti = {};
+      peruste = {};
+      sisalto = {};
     };
     
     this.haeSisalto = function(perusteenId, suoritustapa) {
@@ -136,9 +142,11 @@ angular.module('eperusteApp')
       // NOTE: Jos ei löydy suoritustapaa serviceltä niin käytetään suoritustapaa 'naytto'.
       //       Tämä toimii ammatillisen puolen projekteissa, mutta ei yleissivistävän puolella.
       //       Korjataan kun keksitään parempi suoritustavan valinta-algoritmi.
+      console.log('alustaPerusteenSisalto suoritustapa', stateParams.suoritustapa);
       if (angular.isUndefined(stateParams.suoritustapa) || stateParams.suoritustapa === null || stateParams.suoritustapa === '') {
         stateParams.suoritustapa = 'naytto';
       }
+      PerusteProjektiService.setSuoritustapa(stateParams.suoritustapa);
       var perusteenSisaltoDeferred = $q.defer();
 
       if (peruste.suoritustavat !== null && peruste.suoritustavat.length > 0) {

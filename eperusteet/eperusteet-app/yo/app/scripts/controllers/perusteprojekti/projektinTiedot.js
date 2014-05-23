@@ -6,6 +6,9 @@ angular.module('eperusteApp')
     PerusteProjektiService.watcher($scope, 'projekti');
 
     PerusteProjektiService.clean();
+    if ($state.current.name === 'perusteprojektiwizard.tiedot') {
+      perusteprojektiTiedot.cleanData();
+    }
     
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     Navigaatiopolku.asetaElementit({ perusteProjektiId: $scope.projekti.nimi });

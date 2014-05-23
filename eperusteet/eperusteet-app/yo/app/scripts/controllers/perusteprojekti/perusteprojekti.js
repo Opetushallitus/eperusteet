@@ -107,23 +107,23 @@ angular.module('eperusteApp')
       .state('perusteprojektiwizard', {
         url: '/perusteprojekti',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedotUusi.html',
-        controller: 'ProjektinTiedotCtrl',
         abstract: true
       })
       .state('perusteprojektiwizard.tiedot', {
         url: '/perustiedot',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedot.html',
         controller: 'ProjektinTiedotCtrl',
+        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService'},
         onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
             SivunavigaatioService.aseta({osiot: false});
           }]
       });
   })
-  .controller('PerusteprojektiCtrl', function ($scope, Navigaatiopolku,
+  .controller('PerusteprojektiCtrl', function ($scope, $state, Navigaatiopolku,
     koulutusalaService, opintoalaService, SivunavigaatioService, PerusteProjektiService,
     Kaanna, perusteprojektiTiedot) {
       
-    PerusteProjektiService.cleanSuoritustapa();
+    //PerusteProjektiService.cleanSuoritustapa();
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.Koulutusalat = koulutusalaService;

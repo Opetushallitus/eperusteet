@@ -25,8 +25,7 @@ angular.module('eperusteApp')
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
     
-    $scope.valittuSuoritustapa = $stateParams.suoritustapa;
-    PerusteProjektiService.setSuoritustapa($stateParams.suoritustapa);
+    $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa();
     $scope.poistoMouseLeaveLuokka = 'glyphicon glyphicon-remove pull-right smaller';
     $scope.poistoMouseOverLuokka = 'glyphicon glyphicon-remove pull-right larger';
 
