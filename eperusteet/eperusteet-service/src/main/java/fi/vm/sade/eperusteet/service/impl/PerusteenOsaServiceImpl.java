@@ -1,21 +1,20 @@
 package fi.vm.sade.eperusteet.service.impl;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
+import fi.vm.sade.eperusteet.service.LockManager;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -36,6 +35,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Autowired
     @Dto
     private DtoMapper mapper;
+
+    @Autowired
+    private LockManager lockManager;
 
     @Override
     public List<PerusteenOsaDto> getAll() {
@@ -60,6 +62,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         PerusteenOsa updated = mapper.map(perusteenOsaDto, current.getClass());
         current.mergeState(updated);
         current = perusteenOsaRepo.save(current);
+
         return mapper.map(current, dtoClass);
     }
 

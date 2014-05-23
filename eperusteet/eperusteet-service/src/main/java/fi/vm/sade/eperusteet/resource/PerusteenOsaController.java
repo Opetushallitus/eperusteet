@@ -8,8 +8,9 @@ import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
-import fi.vm.sade.eperusteet.service.LockManagerService;
+import fi.vm.sade.eperusteet.service.LockManager;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
+import fi.vm.sade.eperusteet.service.exception.LockException;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class PerusteenOsaController {
     private PerusteenOsaService service;
 
     @Autowired
-    private LockManagerService lockManager;
+    private LockManager lockManager;
 
     @RequestMapping(method = GET)
     @ResponseBody
@@ -117,6 +118,9 @@ public class PerusteenOsaController {
     @ResponseBody
     public TekstiKappaleDto update(@PathVariable("id") final Long id, @RequestBody TekstiKappaleDto tekstiKappaleDto) {
         LOG.info("update {}", tekstiKappaleDto);
+        if ( !lockManager.isLockedByAuthenticatedUser(id) ) {
+            throw new LockException("Lukitus vaaditaan");
+        }
         tekstiKappaleDto.setId(id);
         return service.update(tekstiKappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
     }
@@ -125,6 +129,9 @@ public class PerusteenOsaController {
     @ResponseBody
     public TutkinnonOsaDto update(@PathVariable("id") final Long id, @RequestBody TutkinnonOsaDto tutkinnonOsaDto) {
         LOG.info("update {}", tutkinnonOsaDto);
+        if ( !lockManager.isLockedByAuthenticatedUser(id) ) {
+            throw new LockException("Lukitus vaaditaan");
+        }
         tutkinnonOsaDto.setId(id);
         return service.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
     }

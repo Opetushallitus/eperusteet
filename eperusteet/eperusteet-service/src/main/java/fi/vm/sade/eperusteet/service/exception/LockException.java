@@ -24,13 +24,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author jhyoty
  */
 @ResponseStatus(HttpStatus.CONFLICT)
-public class AlreadyLockedException extends RuntimeException {
+public class LockException extends RuntimeException {
 
-    public AlreadyLockedException(String message) {
+    public LockException(String message) {
         super(message);
     }
 
-    public AlreadyLockedException(String message, Throwable cause) {
+    public LockException(String message, Throwable cause) {
         super(message, cause);
     }
 

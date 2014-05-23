@@ -16,7 +16,7 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.dto.LukkoDto;
-import fi.vm.sade.eperusteet.service.LockManagerService;
+import fi.vm.sade.eperusteet.service.LockManager;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.io.Serializable;
 import java.util.Objects;
@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
  * @author jhyoty
  */
 @Service
-public class LockManagerServiceImpl implements LockManagerService {
+public class LockManagerImpl implements LockManager {
 
     //TODO. Väliaikainen toteutus, ei ota huomioon hajautusta.
     //Täytyy toteuttaa tietokannan (ehcache?) tms. avulla jotta palvelun kahdennus toimii.

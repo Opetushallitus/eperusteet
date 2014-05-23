@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -50,11 +50,13 @@ import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMeth
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.exception.LockException;
 
 /**
  *
  * @author teele1
  */
+//TODO: vaatii refaktorointia
 @ControllerAdvice
 public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
 
@@ -138,7 +140,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             }
             builder.append("\"");
             map.put("syy", builder.toString());
-        } else if (ex instanceof BusinessRuleViolationException) {
+        } else if (ex instanceof BusinessRuleViolationException || ex instanceof LockException ) {
             map.put("syy", ex.getLocalizedMessage());
         } else {
             LOG.error("Creating common error response for exception", ex);

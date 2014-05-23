@@ -23,7 +23,7 @@ import java.io.Serializable;
  *
  * @author jhyoty
  */
-public interface LockManagerService {
+public interface LockManager {
 
     boolean lock(Serializable id);
     boolean isLockedByAuthenticatedUser(Serializable id);
