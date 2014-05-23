@@ -2,7 +2,7 @@
   <div ng-if="!lisataanUuttaOsaa" class="tree col-lg-6 col-md-8 col-xs-12">
     <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" ng-if="rakenne.$resolved" rakenne="rakenne.rakenne" tutkinnon-osat="rakenne.tutkinnonOsat" uusi-tutkinnon-osa="uusiTutkinnonOsa"></tree>
   </div>
-  <div ng-if="muokkaus" class="skratchpad-wrapper col-lg-4 col-md-4 col-xs-12 pull-right">
+  <div ng-if="muokkaus" class="skratchpad-wrapper col-lg-4 col-md-4 col-xs-12 pull-right" follow-scroll>
     <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title" translate>leikelauta</h3>

@@ -105,7 +105,7 @@ $sivunavi-leveys: 280px;
       float: none;
     }
     .sivunavi-sisalto {
-      margin: 0 0 0 30px;
+      margin: 0 0 50px 30px;
     }
   }
 
@@ -123,8 +123,8 @@ $sivunavi-leveys: 280px;
       float: left;
     }
     .sivunavi-sisalto {
-      margin: 0 0 0 $sivunavi-leveys + 30px;
-      overflow: hidden;
+      margin: 0 0 50px $sivunavi-leveys + 30px;
+      overflow: visible;
     }
   }
 }

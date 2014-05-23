@@ -26,7 +26,8 @@ $placeholder-vari: #555;
 }
 
 .skratchpad-wrapper {
-  margin: 0 0 40px 0;
+  transition: none;
+  margin: 0;
   padding: 0;
   h3 {
     text-align: center;
