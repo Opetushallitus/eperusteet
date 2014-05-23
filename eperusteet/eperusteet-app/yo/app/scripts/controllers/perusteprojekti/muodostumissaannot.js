@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $rootScope, $state, $stateParams,
-              Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, TreeCache, Notifikaatiot,
+  .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams,
+              PerusteProjektiService, PerusteenRakenne, TreeCache, Notifikaatiot,
               Editointikontrollit, SivunavigaatioService) {
     $scope.editoi = false;
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();

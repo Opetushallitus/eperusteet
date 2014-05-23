@@ -18,33 +18,20 @@
 
 angular.module('eperusteApp')
   .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams, $translate, Kaanna,
-    PerusteprojektiResource, Suoritustapa, SuoritustapaSisalto, PerusteProjektiService,
-    Perusteet, PerusteenOsaViitteet, Varmistusdialogi, Notifikaatiot) {
-    $scope.projekti = {};
-    $scope.peruste = {};
-    $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa() || '';
+    SuoritustapaSisalto, PerusteProjektiService, PerusteenOsaViitteet, Varmistusdialogi,
+    Notifikaatiot, perusteprojektiTiedot) {
+      
+    $scope.projekti = perusteprojektiTiedot.getProjekti();
+    $scope.peruste = perusteprojektiTiedot.getPeruste();
+    $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
+    
+    $scope.valittuSuoritustapa = $stateParams.suoritustapa;
+    PerusteProjektiService.setSuoritustapa($stateParams.suoritustapa);
     $scope.poistoMouseLeaveLuokka = 'glyphicon glyphicon-remove pull-right smaller';
     $scope.poistoMouseOverLuokka = 'glyphicon glyphicon-remove pull-right larger';
 
-    $scope.projekti.id = $stateParams.perusteProjektiId;
-    PerusteprojektiResource.get({id: $stateParams.perusteProjektiId}, function(vastaus) {
-      $scope.projekti = vastaus;
-      Perusteet.get({perusteenId: vastaus._peruste}, function(vastaus) {
-        $scope.peruste = vastaus;
-        if ($scope.peruste.suoritustavat !== null && $scope.peruste.suoritustavat.length > 0) {
-          $scope.peruste.suoritustavat = _.sortBy($scope.peruste.suoritustavat, 'suoritustapakoodi');
-          haeSisalto($scope.valittuSuoritustapa === '' ? $scope.peruste.suoritustavat[0].suoritustapakoodi : $scope.valittuSuoritustapa);
-        }
-      }, function(virhe) {
-        console.log('perusteen haku virhe', virhe);
-      });
-
-    }, function(virhe) {
-      console.log('virhe', virhe);
-    });
-
     var haeSisalto = function(suoritustapa) {
-      Suoritustapa.get({perusteenId: $scope.projekti._peruste, suoritustapa: suoritustapa}, function(vastaus) {
+      perusteprojektiTiedot.haeSisalto($scope.projekti._peruste, suoritustapa).then(function(vastaus) {
         $scope.peruste.sisalto = vastaus;
         $scope.valittuSuoritustapa = suoritustapa;
         PerusteProjektiService.setSuoritustapa(suoritustapa);
@@ -55,10 +42,8 @@ angular.module('eperusteApp')
     };
 
     $scope.createSisalto = function() {
-      console.log('Suoritustapa sisältö create', PerusteProjektiService.getSuoritustapa());
       SuoritustapaSisalto.save({perusteId: $scope.projekti._peruste, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {}, function(vastaus) {
         haeSisalto(PerusteProjektiService.getSuoritustapa());
-        console.log('uusi suoritustapa sisältö', vastaus);
       }, function(virhe) {
         console.log('Uuden sisällön luontivirhe', virhe);
       });

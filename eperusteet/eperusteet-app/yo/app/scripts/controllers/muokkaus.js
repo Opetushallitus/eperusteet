@@ -17,8 +17,8 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('MuokkausCtrl', function($scope, $rootScope, $stateParams, $state, $compile, Navigaatiopolku,
-    PerusteTutkinnonosa, Editointicatcher, PerusteprojektiResource, Notifikaatiot, PerusteenOsat) {
+  .controller('MuokkausCtrl', function($scope, $stateParams, $state, $compile, Navigaatiopolku, PerusteenOsat) {
+    
     $scope.tyyppi = $stateParams.perusteenOsanTyyppi;
     $scope.objekti = null;
 

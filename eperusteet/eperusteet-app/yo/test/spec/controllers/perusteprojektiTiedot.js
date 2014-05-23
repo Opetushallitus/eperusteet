@@ -8,7 +8,8 @@ describe('Controller: ProjektinTiedotCtrl', function () {
   var PerusteprojektiCtrl,
     scope,
     koulutusalaService, 
-    opintoalaService;
+    opintoalaService,
+    perusteprojektiTiedot;
     
   // Mock koulutusalaService
   beforeEach(module(function($provide) {
@@ -21,10 +22,7 @@ describe('Controller: ProjektinTiedotCtrl', function () {
       }
     };
     $provide.value('koulutusalaService', koulutusalaService);
-  }));
-  
-  // Mock koulutusalaService
-  beforeEach(module(function($provide) {
+    
     opintoalaService = {
       haeOpintoalat: function() {
         return [];
@@ -34,6 +32,13 @@ describe('Controller: ProjektinTiedotCtrl', function () {
       }
     };
     $provide.value('opintoalaService', opintoalaService);
+    
+    perusteprojektiTiedot = {
+      getProjekti: function () {return {};},
+      getPeruste: function () {return {};},
+      getSisalto: function () {return {};}
+    };
+    $provide.value('perusteprojektiTiedot', perusteprojektiTiedot);
   }));
 
   // Initialize the controller and a mock scope

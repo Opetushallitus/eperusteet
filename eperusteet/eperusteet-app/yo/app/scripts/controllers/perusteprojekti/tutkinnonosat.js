@@ -2,8 +2,8 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $rootScope, $state, $stateParams,
-    Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, TreeCache, Notifikaatiot,
+  .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $state, $stateParams,
+    PerusteProjektiService, PerusteenRakenne, TreeCache, Notifikaatiot,
     Editointikontrollit, Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode) {
 
     $scope.editoi = false;
