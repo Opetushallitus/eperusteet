@@ -25,12 +25,24 @@ describe('Controller: PerusteprojektiCtrl', function () {
       }
     };
     spyOn(mockOpintoalaService, 'query').andCallThrough();
-
+    
+    var mockPerusteprojektiTiedot = {
+      query: function() {
+        queryDeferred = $q.defer();
+        return {$promise: queryDeferred.promise};
+      }, 
+      getProjekti: function () {return {};},
+      getPeruste: function () {return {};},
+      getSisalto: function () {return {};}
+    };
+    spyOn(mockPerusteprojektiTiedot, 'query').andCallThrough();
+    
     scope = $rootScope.$new();
     PerusteprojektiCtrl = $controller('PerusteprojektiCtrl', {
       $scope: scope,
       koulutusalaService: mockKoulutusalaService,
-      opintoalaService: mockOpintoalaService
+      opintoalaService: mockOpintoalaService,
+      perusteprojektiTiedot: mockPerusteprojektiTiedot
     });
   }));
 

@@ -3,28 +3,13 @@
 
 angular.module('eperusteApp')
   .controller('PerusteenTiedotCtrl', function($scope, $rootScope, $stateParams, $state,
-    Koodisto, Perusteet, PerusteprojektiResource, YleinenData) {
+    Koodisto, Perusteet, YleinenData, PerusteProjektiService, perusteprojektiTiedot) {
 
     $scope.hakemassa = false;
-    $scope.peruste = {};
-    $scope.peruste.nimi = {};
+    $scope.peruste = perusteprojektiTiedot.getPeruste();
+    $scope.peruste.nimi = $scope.peruste.nimi || {};
     $scope.projektiId = $stateParams.perusteProjektiId;
     $scope.open = {};
-
-    PerusteprojektiResource.get({id: $stateParams.perusteProjektiId}, function(vastaus) {
-      $scope.projekti = vastaus;
-      if ($scope.projekti._peruste) {
-        Perusteet.get({perusteenId: vastaus._peruste}, function(vastaus) {
-          vastaus.nimi = vastaus.nimi || {};
-          $scope.peruste = vastaus;
-
-        }, function(virhe) {
-          console.log('perusteen haku virhe', virhe);
-        });
-      }
-    }, function(virhe) {
-      console.log('virhe', virhe);
-    });
 
     $scope.rajaaKoodit = function(koodi) {
       return koodi.koodi.indexOf('_3') !== -1;
@@ -63,7 +48,7 @@ angular.module('eperusteApp')
     $scope.tallennaPeruste = function() {
       Perusteet.save({perusteenId: $scope.peruste.id}, $scope.peruste, function(vastaus) {
         $scope.peruste = vastaus;
-        $state.go('perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: $scope.projektiId}, {reload: true});
+        $state.go('perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: $scope.projektiId, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {reload: true});
       }, function(virhe) {
         console.log('perusteen tallennus virhe', virhe);
       });

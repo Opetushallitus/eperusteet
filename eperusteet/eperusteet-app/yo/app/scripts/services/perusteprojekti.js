@@ -68,5 +68,92 @@ angular.module('eperusteApp')
       this.mode = false;
       return ret;
     };
-  });
+  })
+  .service('PerusteprojektiTiedotService', function ($q, PerusteprojektiResource, Perusteet, Suoritustapa) {
 
+    var deferred = $q.defer();
+    var projekti = {};
+    var peruste = {};
+    var sisalto = {};
+    var self = this;
+    var projektinTiedotDeferred = $q.defer();
+
+    this.getProjekti = function () {
+      return projekti;
+    };
+    
+    this.getPeruste = function () {
+      return peruste;
+    };
+    
+    this.getSisalto = function () {
+      return sisalto;
+    };
+    
+    this.haeSisalto = function(perusteenId, suoritustapa) {
+      var deferred = $q.defer();
+      Suoritustapa.get({perusteenId: perusteenId, suoritustapa: suoritustapa}, function(vastaus) {
+        deferred.resolve(vastaus);
+        sisalto = vastaus;
+      }, function(virhe) {
+        deferred.reject(virhe);
+      });
+      return deferred.promise;
+    };
+    
+    this.projektinTiedotAlustettu = function () {
+      return projektinTiedotDeferred.promise;
+    };
+    
+    
+    this.alustaProjektinTiedot = function (stateParams) {
+      projektinTiedotDeferred = $q.defer();
+      
+      PerusteprojektiResource.get({id: stateParams.perusteProjektiId}, function(projektiVastaus) {
+        projekti = projektiVastaus;
+        Perusteet.get({perusteenId: projekti._peruste}, function (perusteVastaus) {
+          peruste = perusteVastaus;
+          if (peruste.suoritustavat !== null && peruste.suoritustavat.length > 0) {
+            peruste.suoritustavat = _.sortBy(peruste.suoritustavat, 'suoritustapakoodi');
+          }
+          projektinTiedotDeferred.resolve();
+          
+        }, function(virhe) {
+          projektinTiedotDeferred.reject();
+          console.log('Virhe perusteen tietojen alustuksessa', virhe);
+        });
+      }, function(virhe) {
+        projektinTiedotDeferred.reject();
+        console.log('Virhe projektin tietojen alustuksessa', virhe);
+      });
+      
+      return projektinTiedotDeferred.promise;
+      
+    };
+
+    this.alustaPerusteenSisalto = function (stateParams) {
+
+      // NOTE: Jos ei löydy suoritustapaa serviceltä niin käytetään suoritustapaa 'naytto'.
+      //       Tämä toimii ammatillisen puolen projekteissa, mutta ei yleissivistävän puolella.
+      //       Korjataan kun keksitään parempi suoritustavan valinta-algoritmi.
+      if (angular.isUndefined(stateParams.suoritustapa) || stateParams.suoritustapa === null || stateParams.suoritustapa === '') {
+        stateParams.suoritustapa = 'naytto';
+      }
+      var perusteenSisaltoDeferred = $q.defer();
+
+      if (peruste.suoritustavat !== null && peruste.suoritustavat.length > 0) {
+        self.haeSisalto(peruste.id, stateParams.suoritustapa).then(function() {
+          perusteenSisaltoDeferred.resolve();
+        }, function(virhe) {
+          perusteenSisaltoDeferred.reject();
+          console.log('Virhe perusteen sisällön alustuksessa', virhe);
+        });
+      } else {
+        perusteenSisaltoDeferred.resolve();
+      }
+      return perusteenSisaltoDeferred.promise;
+    };
+  
+    deferred.resolve(this);
+    return deferred.promise;
+    });
