@@ -1,11 +1,16 @@
 package fi.vm.sade.eperusteet.resource;
 
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.repository.version.Revision;
+import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
+import fi.vm.sade.eperusteet.service.LockManagerService;
+import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +26,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
-import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
-import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
-import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.repository.version.Revision;
-import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
-import fi.vm.sade.eperusteet.service.PerusteenOsaService;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @Controller
 @RequestMapping("/perusteenosat")
@@ -38,6 +39,9 @@ public class PerusteenOsaController {
 
     @Autowired
     private PerusteenOsaService service;
+
+    @Autowired
+    private LockManagerService lockManager;
 
     @RequestMapping(method = GET)
     @ResponseBody
@@ -91,7 +95,6 @@ public class PerusteenOsaController {
     }
 
 
-
     @RequestMapping(method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -124,6 +127,28 @@ public class PerusteenOsaController {
         LOG.info("update {}", tutkinnonOsaDto);
         tutkinnonOsaDto.setId(id);
         return service.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+    }
+
+    @RequestMapping(value = "/{id}/lukko", method = GET)
+    @ResponseBody
+    public ResponseEntity<LukkoDto> checkLock(@PathVariable("id") final Long id) {
+        return new ResponseEntity<>(lockManager.getLock(id), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/lukko", method = {POST, PUT})
+    @ResponseBody
+    public ResponseEntity<LukkoDto> lock(@PathVariable("id") final Long id) {
+        if ( lockManager.lock(id) ) {
+            return new ResponseEntity<>(lockManager.getLock(id), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(lockManager.getLock(id), HttpStatus.CONFLICT);
+        }
+    }
+
+    @RequestMapping(value = "/{id}/lukko", method = DELETE)
+    @ResponseBody
+    public void unlock(@PathVariable("id") final Long id) {
+        lockManager.unlock(id);
     }
 
     @RequestMapping(value = "/{id}", method = DELETE, consumes = "*/*")

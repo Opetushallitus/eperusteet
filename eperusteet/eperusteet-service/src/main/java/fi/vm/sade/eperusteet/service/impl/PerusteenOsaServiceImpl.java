@@ -43,6 +43,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PerusteenOsaDto get(final Long id) {
         return mapper.map(perusteenOsaRepo.findOne(id), PerusteenOsaDto.class);
     }
