@@ -13,18 +13,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 'use strict';
-/*global _*/
+// /*global _*/
 
 angular.module('eperusteApp')
   .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams, $translate, Kaanna,
     SuoritustapaSisalto, PerusteProjektiService, PerusteenOsaViitteet, Varmistusdialogi,
     Notifikaatiot, perusteprojektiTiedot) {
-      
+
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
-    
+
     $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa();
     $scope.poistoMouseLeaveLuokka = 'glyphicon glyphicon-remove pull-right smaller';
     $scope.poistoMouseOverLuokka = 'glyphicon glyphicon-remove pull-right larger';
@@ -41,7 +42,7 @@ angular.module('eperusteApp')
     };
 
     $scope.createSisalto = function() {
-      SuoritustapaSisalto.save({perusteId: $scope.projekti._peruste, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {}, function(vastaus) {
+      SuoritustapaSisalto.save({perusteId: $scope.projekti._peruste, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {}, function() {
         haeSisalto(PerusteProjektiService.getSuoritustapa());
       }, function(virhe) {
         console.log('Uuden sisällön luontivirhe', virhe);

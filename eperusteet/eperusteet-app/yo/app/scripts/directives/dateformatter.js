@@ -15,31 +15,31 @@
  */
 
 'use strict';
-/* global _ */
+/*global moment*/
 
 angular.module('eperusteApp')
-  .service('Kaanna', function($translate) {
+  .directive('dateformatter', function (YleinenData) {
     return {
-      kaanna: function(input, nimeton) {
-        nimeton = nimeton || false;
+      restrict: 'A',
+      require: 'ngModel',
+      link: function (scope, element, attrs, ctrl) {
 
-        function lisaaPlaceholder(input) {
-          return _.isEmpty(input) && nimeton ? $translate.instant('nimeton') : input;
-        }
+        ctrl.$parsers.unshift(function(viewValue) {
+          if (typeof viewValue === 'object' || viewValue === '') {
+            ctrl.$setValidity('dateformatter', true);
+            return viewValue;
+          }
 
-        var lang = $translate.use() || $translate.preferredLanguage();
-        if (_.isObject(input) && input[lang]) {
-          return lisaaPlaceholder(input[lang]);
-        }
-        else if (_.isString(input)) {
-          return lisaaPlaceholder($translate.instant(input));
-        }
-        else {
-          return lisaaPlaceholder('');
-        }
+          var parsedMoment = moment(viewValue, YleinenData.dateFormatMomentJS, true);
+
+          if (parsedMoment.isValid()) {
+            ctrl.$setValidity('dateformatter', true);
+            return parsedMoment.toDate();
+          } else {
+            ctrl.$setValidity('dateformatter', false);
+            return viewValue;
+          }
+        });
       }
     };
-  })
-  .filter('kaanna', function(Kaanna) {
-    return Kaanna.kaanna;
   });

@@ -13,6 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 'use strict';
 
 // NOTE: The default configuration for pagination is set in app.js run function
