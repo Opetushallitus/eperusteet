@@ -48,14 +48,14 @@ angular.module('eperusteApp')
            });
 
         function setupTekstikappale(kappale) {
-          $scope.editableTekstikappale = angular.copy(kappale);
-          $scope.tekstikappaleenMuokkausOtsikko = $scope.editableTekstikappale.id ? 'muokkaus-tekstikappale' : 'luonti-tekstikappale';
-
           function successCb(res) {
             Lukitus.vapauta(res.id);
             Notifikaatiot.onnistui('muokkaus-tutkinnon-osa-tallennettu');
             SivunavigaatioService.update();
           }
+
+          $scope.editableTekstikappale = angular.copy(kappale);
+          $scope.tekstikappaleenMuokkausOtsikko = $scope.editableTekstikappale.id ? 'muokkaus-tekstikappale' : 'luonti-tekstikappale';
 
           Editointikontrollit.registerCallback({
             edit: function() {

@@ -130,7 +130,7 @@ public class PerusteenOsaController {
     public TutkinnonOsaDto update(@PathVariable("id") final Long id, @RequestBody TutkinnonOsaDto tutkinnonOsaDto) {
         LOG.info("update {}", tutkinnonOsaDto);
         if (!lockManager.isLockedByAuthenticatedUser(id)) {
-            throw new LockException("Lukitus vaaditaan");
+            throw new LockException("lukitus-vaaditaan");
         }
         tutkinnonOsaDto.setId(id);
         return service.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);

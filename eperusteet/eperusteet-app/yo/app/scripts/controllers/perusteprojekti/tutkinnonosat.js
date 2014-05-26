@@ -2,8 +2,8 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $state, $stateParams,
-    PerusteProjektiService, PerusteenRakenne, TreeCache, Notifikaatiot,
+  .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $rootScope, $state, $stateParams,
+    Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, TreeCache, Notifikaatiot,
     Editointikontrollit, Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode) {
 
     $scope.editoi = false;
@@ -83,15 +83,16 @@ angular.module('eperusteApp')
       PerusteTutkinnonosa.save({
         perusteenId: $scope.rakenne.$peruste.id,
         suoritustapa: $scope.rakenne.$suoritustapa
-      }, osa, function(res) {
+      }, osa,
+      function(res) {
         $scope.rakenne.tutkinnonOsat[res._tutkinnonOsa] = res;
         cb();
         TutkinnonOsaEditMode.setMode(true);
         $scope.navigoiTutkinnonosaan(res);
-      }, function(err) {
+      },
+      function(err) {
         Notifikaatiot.fataali('tallennus-epäonnistui', err);
         cb();
       });
     };
-
   });
