@@ -5,6 +5,7 @@ ul.tutkinnonosat {
     margin-left: 0px;
     padding-top: 20px;
     cursor: pointer;
+    overflow: hidden;
     &:hover {
       border-color: black;
       .muokkaus {
