@@ -15,6 +15,7 @@ angular.module('eperusteApp')
   })
   .service('Lukitus', function(LukkoPerusteenosa, LukkoSisalto, Notifikaatiot) {
     function lukitseSisalto(id, suoritustapa, success) {
+      success = success || angular.noop;
       LukkoSisalto.save({
         osanId: id,
         suoritustapa: suoritustapa
@@ -24,6 +25,7 @@ angular.module('eperusteApp')
     }
 
     function vapautaSisalto(id, suoritustapa, success) {
+      success = success || angular.noop;
       LukkoSisalto.remove({
         osanId: id,
         suoritustapa: suoritustapa
@@ -33,6 +35,7 @@ angular.module('eperusteApp')
     }
 
     function lukitsePerusteenosa(id, success) {
+      success = success || angular.noop;
       LukkoPerusteenosa.save({
         osanId: id
       },
@@ -41,6 +44,7 @@ angular.module('eperusteApp')
     }
 
     function vapautaPerusteenosa(id, success) {
+      success = success || angular.noop;
       LukkoPerusteenosa.remove({
         osanId: id
       },

@@ -52,6 +52,8 @@ angular.module('eperusteApp')
             Lukitus.vapauta(res.id);
             Notifikaatiot.onnistui('muokkaus-tutkinnon-osa-tallennettu');
             SivunavigaatioService.update();
+            Lukitus.vapautaPerusteenosa(res.id);
+            Notifikaatiot.onnistui('muokkaus-tekstikappale-tallennettu');
           }
 
           $scope.editableTekstikappale = angular.copy(kappale);
@@ -83,7 +85,7 @@ angular.module('eperusteApp')
             },
             notify: function (mode) {
               $scope.editEnabled = mode;
-              Lukitus.vapauta($scope.tekstikappale.id);
+              Lukitus.vapautaPerusteenosa($scope.tekstikappale.id);
             }
           });
 
@@ -104,7 +106,7 @@ angular.module('eperusteApp')
         }
 
         $scope.muokkaa = function () {
-          Lukitus.lukitse($scope.tekstikappale.id, function() {
+          Lukitus.lukitsePerusteenosa($scope.tekstikappale.id, function() {
             Editointikontrollit.startEditing();
           });
         };

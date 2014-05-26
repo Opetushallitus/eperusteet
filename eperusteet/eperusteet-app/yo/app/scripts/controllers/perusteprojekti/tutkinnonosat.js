@@ -27,9 +27,9 @@ angular.module('eperusteApp')
     $scope.haeRakenne = haeRakenne;
     haeRakenne();
 
-    function tallennaRakenne(rakenne) {
+    function tallennaTutkinnonosat(rakenne) {
       TreeCache.tallenna(rakenne, $stateParams.perusteenId);
-      PerusteenRakenne.tallenna(
+      PerusteenRakenne.tallennaTutkinnonosat(
         rakenne,
         rakenne.$peruste.id,
         $scope.suoritustapa,
@@ -47,7 +47,7 @@ angular.module('eperusteApp')
         return true;
       },
       save: function() {
-        tallennaRakenne($scope.rakenne);
+        tallennaTutkinnonosat($scope.rakenne);
         $scope.editoi = false;
       },
       cancel: function() {
