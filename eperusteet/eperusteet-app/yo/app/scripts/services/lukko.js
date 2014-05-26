@@ -2,13 +2,37 @@
 // /*global _*/
 
 angular.module('eperusteApp')
+  .factory('LukkoSisalto', function(SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/perusteet/:osanId/suoritustavat/:suoritustapa/lukko', {
+      osanId: '@osanId',
+      suoritustapa: '@suoritustapa'
+    });
+  })
   .factory('LukkoPerusteenosa', function(SERVICE_LOC, $resource) {
     return $resource(SERVICE_LOC + '/perusteenosat/:osanId/lukko', {
       osanId: '@osanId'
     });
   })
-  .service('Lukitus', function(LukkoPerusteenosa, Notifikaatiot) {
-    function lukitse(id, success) {
+  .service('Lukitus', function(LukkoPerusteenosa, LukkoSisalto, Notifikaatiot) {
+    function lukitseSisalto(id, suoritustapa, success) {
+      LukkoSisalto.save({
+        osanId: id,
+        suoritustapa: suoritustapa
+      },
+      success,
+      Notifikaatiot.serverLukitus);
+    }
+
+    function vapautaSisalto(id, suoritustapa, success) {
+      LukkoSisalto.remove({
+        osanId: id,
+        suoritustapa: suoritustapa
+      },
+      success,
+      Notifikaatiot.serverCb);
+    }
+
+    function lukitsePerusteenosa(id, success) {
       LukkoPerusteenosa.save({
         osanId: id
       },
@@ -16,16 +40,18 @@ angular.module('eperusteApp')
       Notifikaatiot.serverLukitus);
     }
 
-    function vapauta(id) {
+    function vapautaPerusteenosa(id, success) {
       LukkoPerusteenosa.remove({
         osanId: id
       },
-      angular.noop,
+      success,
       Notifikaatiot.serverCb);
     }
 
     return {
-      lukitse: lukitse,
-      vapauta: vapauta
+      lukitseSisalto: lukitseSisalto,
+      vapautaSisalto: vapautaSisalto,
+      lukitsePerusteenosa: lukitsePerusteenosa,
+      vapautaPerusteenosa: vapautaPerusteenosa
     };
   });

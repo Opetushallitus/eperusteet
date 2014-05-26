@@ -4,22 +4,22 @@
 angular.module('eperusteApp')
   .service('Kaanna', function($translate) {
     return {
-      kaanna: function(input, nimetön) {
-        nimetön = nimetön || false;
+      kaanna: function(input, nimeton) {
+        nimeton = nimeton || false;
 
-        function lisääPlaceholder(input) {
-          return _.isEmpty(input) && nimetön ? $translate.instant('nimetön') : input;
+        function lisaaPlaceholder(input) {
+          return _.isEmpty(input) && nimeton ? $translate.instant('nimeton') : input;
         }
 
         var lang = $translate.use() || $translate.preferredLanguage();
         if (_.isObject(input) && input[lang]) {
-          return lisääPlaceholder(input[lang]);
+          return lisaaPlaceholder(input[lang]);
         }
         else if (_.isString(input)) {
-          return lisääPlaceholder($translate.instant(input));
+          return lisaaPlaceholder($translate.instant(input));
         }
         else {
-          return lisääPlaceholder('');
+          return lisaaPlaceholder('');
         }
       }
     };

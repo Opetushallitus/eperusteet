@@ -72,12 +72,7 @@ angular.module('eperusteApp')
     };
 
     $scope.lisaaTutkinnonOsa = function(osa, cb) {
-      if (osa) {
-        osa = {_tutkinnonOsa: osa._tutkinnonOsa};
-      }
-      else {
-        osa = {};
-      }
+      osa = osa ? {_tutkinnonOsa: osa._tutkinnonOsa} : {};
       cb = cb || angular.noop;
 
       PerusteTutkinnonosa.save({

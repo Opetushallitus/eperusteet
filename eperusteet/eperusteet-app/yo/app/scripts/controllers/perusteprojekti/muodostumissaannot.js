@@ -3,9 +3,10 @@
 angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams,
               PerusteProjektiService, PerusteenRakenne, TreeCache, Notifikaatiot,
-              Editointikontrollit, SivunavigaatioService, Kommentit, KommentitBySuoritustapa) {
+              Editointikontrollit, SivunavigaatioService, Kommentit, KommentitBySuoritustapa, Lukitus) {
     $scope.editoi = false;
-    $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
+    // $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
+    $scope.suoritustapa = $stateParams.suoritustapa;
     $scope.rakenne = {
       $resolved: false,
       rakenne: { osat: [] },
@@ -27,18 +28,24 @@ angular.module('eperusteApp')
 
     function tallennaRakenne(rakenne) {
       TreeCache.tallenna(rakenne, $stateParams.perusteenId);
-      PerusteenRakenne.tallenna(
+      PerusteenRakenne.tallennaRakenne(
         rakenne,
         rakenne.$peruste.id,
         $scope.suoritustapa,
-        function() { Notifikaatiot.onnistui('tallennus-onnistui'); },
-        Notifikaatiot.serverCb
+        function() {
+          Notifikaatiot.onnistui('tallennus-onnistui');
+        },
+        function() {
+          Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
+        }
       );
     }
 
     $scope.muokkaa = function () {
-      Editointikontrollit.startEditing();
-      $scope.editoi = true;
+      Lukitus.lukitseSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa, function() {
+        Editointikontrollit.startEditing();
+        $scope.editoi = true;
+      });
     };
 
     Editointikontrollit.registerCallback({
@@ -54,6 +61,7 @@ angular.module('eperusteApp')
         $scope.editoi = false;
       },
       cancel: function() {
+        Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
         haeRakenne();
         $scope.editoi = false;
       }

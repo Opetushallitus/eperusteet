@@ -24,11 +24,8 @@ import java.io.Serializable;
  * @author jhyoty
  */
 public interface LockManager {
-
     boolean lock(Serializable id);
     boolean isLockedByAuthenticatedUser(Serializable id);
     LukkoDto getLock(Serializable id);
     boolean unlock(Serializable id);
-    
-
 }

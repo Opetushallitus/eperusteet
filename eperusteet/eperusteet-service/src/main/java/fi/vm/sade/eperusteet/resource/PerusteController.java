@@ -1,14 +1,17 @@
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.service.LockManager;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import fi.vm.sade.eperusteet.service.exception.LockException;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +40,9 @@ public class PerusteController {
 
     @Autowired
     private PerusteenOsaViiteService PerusteenOsaViiteService;
+
+    @Autowired
+    private LockManager lockManager;
 
 //    @RequestMapping(method = GET)
 //    @ResponseBody
@@ -141,7 +147,40 @@ public class PerusteController {
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne", method = POST)
     @ResponseBody
     public RakenneModuuliDto updatePerusteenRakenne(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi, @RequestBody RakenneModuuliDto rakenne) {
+        PerusteenosaViiteDto ss = service.getSuoritustapaSisalto(id, Suoritustapakoodi.of(suoritustapakoodi));
+        Long sid = ss.getId();
+        if (!lockManager.isLockedByAuthenticatedUser(sid)) {
+            throw new LockException("lukitus-vaaditaan");
+        }
         return service.updateTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), rakenne);
+    }
+
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko", method = GET)
+    @ResponseBody
+    public ResponseEntity<LukkoDto> checkLock(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        PerusteenosaViiteDto ss = service.getSuoritustapaSisalto(id, Suoritustapakoodi.of(suoritustapakoodi));
+        Long sid = ss.getId();
+        LukkoDto lock = lockManager.getLock(sid);
+        return new ResponseEntity<>(lock, lock == null ? HttpStatus.OK : HttpStatus.PRECONDITION_FAILED);
+    }
+
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko", method = {POST, PUT})
+    @ResponseBody
+    public ResponseEntity<LukkoDto> lock(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        PerusteenosaViiteDto ss = service.getSuoritustapaSisalto(id, Suoritustapakoodi.of(suoritustapakoodi));
+        Long sid = ss.getId();
+        if (lockManager.lock(sid)) {
+            return new ResponseEntity<>(lockManager.getLock(sid), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(lockManager.getLock(sid), HttpStatus.CONFLICT);
+        }
+    }
+
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko", method = DELETE)
+    @ResponseBody
+    public void unlock(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        PerusteenosaViiteDto ss = service.getSuoritustapaSisalto(id, Suoritustapakoodi.of(suoritustapakoodi));
+        lockManager.unlock(ss.getId());
     }
 
     /**
@@ -156,7 +195,6 @@ public class PerusteController {
     public ResponseEntity<PerusteenSisaltoViiteDto> addSisalto(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa) {
-
         return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), null), HttpStatus.CREATED);
     }
 
@@ -166,7 +204,6 @@ public class PerusteController {
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa,
         @RequestBody PerusteenSisaltoViiteDto sisaltoViite) {
-
         return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), sisaltoViite), HttpStatus.CREATED);
     }
 

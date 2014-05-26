@@ -14,14 +14,13 @@
 * European Union Public Licence for more details.
 */
 'use strict';
-/* global _ */
+// /* global _ */
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
       .state('perusteprojekti', {
         url: '/perusteprojekti/:perusteProjektiId',
-        navigaationimi: 'navi-perusteprojekti',
         templateUrl: 'views/perusteprojekti.html',
         controller: 'PerusteprojektiCtrl',
         resolve: {'koulutusalaService': 'Koulutusalat',
@@ -84,7 +83,6 @@ angular.module('eperusteApp')
         url: '/perustiedot',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedot.html',
         controller: 'ProjektinTiedotCtrl',
-        navigaationimiId: 'perusteProjektiId',
         onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
             SivunavigaatioService.aseta({osiot: false});
           }]
@@ -93,7 +91,6 @@ angular.module('eperusteApp')
         url: '/peruste',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiPeruste.html',
         controller: 'PerusteenTiedotCtrl',
-        navigaationimiId: 'perusteProjektiId',
         onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
             SivunavigaatioService.aseta({osiot: false});
           }]

@@ -86,28 +86,36 @@ angular.module('eperusteApp')
       });
     }
 
-    function tallennaRakenne(rakenne, id, suoritustapa, success) {
-      var after = _.after(_.size(rakenne.tutkinnonOsat) + 1, success);
-
-      success = success || function() {};
-
+    function tallennaRakenne(rakenne, id, suoritustapa, success, after) {
+      success = success || angular.noop;
+      after = after || angular.noop;
       PerusteRakenteet.save({
         perusteenId: id,
         suoritustapa: suoritustapa
-      }, rakenne.rakenne, function() {
+      }, rakenne.rakenne,
+      function() {
         after();
-        _.forEach(_.values(rakenne.tutkinnonOsat), function(osa) {
-          PerusteTutkinnonosa.save({
-            perusteenId: id,
-            suoritustapa: suoritustapa,
-            osanId: osa.id
-          },
-          osa,
-          after(),
-          Notifikaatiot.serverCb);
-        });
-      }, Notifikaatiot.serverCb);
+        success();
+      },
+      function(err) {
+        after();
+        Notifikaatiot.serverCb(err);
+      });
+    }
 
+    function tallennaTutkinnonosat(rakenne, id, suoritustapa, success) {
+      success = success || function() {};
+      var after = _.after(_.size(rakenne.tutkinnonOsat), success);
+      _.forEach(_.values(rakenne.tutkinnonOsat), function(osa) {
+        PerusteTutkinnonosa.save({
+          perusteenId: id,
+          suoritustapa: suoritustapa,
+          osanId: osa.id
+        },
+        osa,
+        after(),
+        Notifikaatiot.serverCb);
+      });
     }
 
     function validoiRakennetta(rakenne, testi) {
@@ -138,7 +146,8 @@ angular.module('eperusteApp')
 
     return {
       hae: haeRakenne,
-      tallenna: tallennaRakenne,
+      tallennaRakenne: tallennaRakenne,
+      tallennaTutkinnonosat: tallennaTutkinnonosat,
       poistaTutkinnonOsaViite: poistaTutkinnonOsaViite,
       kaikilleRakenteille: kaikilleRakenteille,
       validoiRakennetta: validoiRakennetta
