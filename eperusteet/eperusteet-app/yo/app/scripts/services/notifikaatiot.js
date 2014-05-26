@@ -25,7 +25,7 @@ angular.module('eperusteApp')
         viesti: viesti ? viesti : tyyppi === 1 ? 'tallennus-onnistui' : '',
         ilmanKuvaa: ilmanKuvaa || false,
         tyyppi: tyyppi,
-        luotu: new Date(),
+        luotu: new Date()
       });
 
       $rootScope.$broadcast('update:notifikaatiot');
@@ -33,7 +33,7 @@ angular.module('eperusteApp')
     }
 
     function fataali(viesti, cb) {
-      cb = cb || function(){};
+      cb = cb || angular.noop;
       $modal.open({
         templateUrl: 'views/modals/jarjestelmavirhe.html',
         controller: 'JarjestelmaVirheModalCtrl',

@@ -182,8 +182,8 @@ angular.module('eperusteApp', [
                lisaTeksti: 'haluatko-jatkaa', primaryBtn: 'poistu-sivulta'})();
         }
       });
-      
-    // NOTE: Pitäisiköhän näistä virheistä siirtyä virhesivulle? 
+
+    // NOTE: Pitäisiköhän näistä virheistä siirtyä virhesivulle?
     $rootScope.$on('$stateChangeError', function(event/*, toState, toParams, fromState*/) {
       console.log(event);
     });
@@ -191,5 +191,5 @@ angular.module('eperusteApp', [
     $rootScope.$on('$stateNotFound', function(event/*, toState, toParams, fromState*/) {
       console.log(event);
     });
-      
+
   });
