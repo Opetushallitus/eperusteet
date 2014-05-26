@@ -1,10 +1,12 @@
 <button ng-hide="editEnabled" ng-click="muokkaa()" class="pull-right btn btn-default"><span class="glyphicon glyphicon-pencil"></span>{{'muokkaa' | translate}}</button>
-<h1>
-  {{tutkinnonOsanMuokkausOtsikko | kaanna}}
+<a class="iconlink" href="" ui-sref="perusteprojekti.suoritustapa.tutkinnonosat"><span class="glyphicon glyphicon-chevron-left"></span>{{'tutkinnonosat' | translate}}</a>
+<pikamenu>
+  {{tutkinnonOsanMuokkausOtsikko | kaanna:true}}
   <button ng-if="editEnabled" class="btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsa.id].id)">
     <span class="glyphicon glyphicon-remove"></span>{{'poista' | translate}}
   </button>
-</h1>
+</pikamenu>
+
 <div class="well viitetiedot">
   <div class="col-md-6">
     <p ng-hide="editEnabled" ng-if="suoritustapa !== 'naytto' && rakenne.tutkinnonOsat[tutkinnonOsa.id] && rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus">
