@@ -8,6 +8,7 @@
  */
 angular.module('eperusteApp')
   .directive('statusbadge', function () {
+    var OFFSET = 4;
     return {
       templateUrl: 'views/partials/statusbadge.html',
       restrict: 'EA',
@@ -16,7 +17,20 @@ angular.module('eperusteApp')
         status: '=',
         editable: '=?'
       },
-      controller: 'StatusbadgeCtrl'
+      controller: 'StatusbadgeCtrl',
+      link: function (scope, element) {
+        // To fit long status names into the badge, adjust letter spacing
+        var el = element.find('.status-name');
+
+        function adjust() {
+          if (scope.status.length > 8) {
+            var spacing = 1 - ((scope.status.length - OFFSET) * 0.2);
+            el.css('letter-spacing', spacing + 'px');
+          }
+        }
+        scope.$watch('status', adjust);
+        adjust();
+      }
     };
   })
 
