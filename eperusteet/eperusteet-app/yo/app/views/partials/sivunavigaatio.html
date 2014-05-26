@@ -1,11 +1,6 @@
 <div class="sivunavi-sisempi-wrapper" ng-class="{piilota: isHidden()}">
 <div class="sivunavi-takaisin">
-  <div class="list-group">
-    <a class="list-group-item" href="" ng-click="goBackToMain()">
-      <span class="glyphicon glyphicon-chevron-left"></span>
-      <span class="linkkiteksti">{{'takaisin-paanakymaan' | kaanna}}</span>
-    </a>
-  </div>
+  <a class="iconlink" href="" ng-click="goBackToMain()"><span class="glyphicon glyphicon-chevron-left"></span>{{'takaisin-paanakymaan' | kaanna}}</a>
 </div>
 <div ng-show="data.osiot" class="sivunavi" ng-class="{'sivunavi-collapsed': menuCollapsed, 'sivunavi-open': !menuCollapsed}">
   <div class="sivunavi-toggler" ng-click="toggleSideMenu()"

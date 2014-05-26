@@ -30,9 +30,13 @@ $sivunavi-leveys: 280px;
   .sivunavi-takaisin {
     width: $sivunavi-leveys;
     float: left;
+    .glyphicon {
+      color: black;
+    }
+    margin-bottom: 30px;
   }
 
-  .sivunavi, .sivunavi-takaisin {
+  .sivunavi {
    a {
       @include borderradius(0);
       & *:hover {
