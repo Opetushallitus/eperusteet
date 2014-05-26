@@ -26,7 +26,7 @@ angular.module('eperusteApp')
       },
       controller: function($scope, $state, $stateParams, $q, $modal,
         Editointikontrollit, PerusteenOsat, Notifikaatiot, SivunavigaatioService,
-        VersionHelper) {
+        VersionHelper, Lukitus) {
         $scope.versiot = {};
 
         $scope.fields =
@@ -49,8 +49,13 @@ angular.module('eperusteApp')
 
         function setupTekstikappale(kappale) {
           $scope.editableTekstikappale = angular.copy(kappale);
+          $scope.tekstikappaleenMuokkausOtsikko = $scope.editableTekstikappale.id ? 'muokkaus-tekstikappale' : 'luonti-tekstikappale';
 
-          $scope.tekstikappaleenMuokkausOtsikko = $scope.editableTekstikappale.id ? "muokkaus-tekstikappale" : "luonti-tekstikappale";
+          function successCb(res) {
+            Lukitus.vapauta(res.id);
+            Notifikaatiot.onnistui('muokkaus-tutkinnon-osa-tallennettu');
+            SivunavigaatioService.update();
+          }
 
           Editointikontrollit.registerCallback({
             edit: function() {
@@ -74,21 +79,15 @@ angular.module('eperusteApp')
               $scope.editableTekstikappale = angular.copy($scope.tekstikappale);
               var tekstikappaleDefer = $q.defer();
               $scope.tekstikappalePromise = tekstikappaleDefer.promise;
-
               tekstikappaleDefer.resolve($scope.editableTekstikappale);
             },
             notify: function (mode) {
               $scope.editEnabled = mode;
+              Lukitus.vapauta($scope.tekstikappale.id);
             }
           });
 
           $scope.haeVersiot();
-        }
-
-        function successCb() {
-          Notifikaatiot.onnistui('tallennettu', 'muokkaus-tutkinnon-osa-tallennettu');
-          // Päivitä sivunaviin mahdollisesti muuttuneet otsikot
-          SivunavigaatioService.update();
         }
 
         if ($scope.tekstikappale) {
@@ -105,7 +104,9 @@ angular.module('eperusteApp')
         }
 
         $scope.muokkaa = function () {
-          Editointikontrollit.startEditing();
+          Lukitus.lukitse($scope.tekstikappale.id, function() {
+            Editointikontrollit.startEditing();
+          });
         };
 
         $scope.$watch('editEnabled', function (editEnabled) {

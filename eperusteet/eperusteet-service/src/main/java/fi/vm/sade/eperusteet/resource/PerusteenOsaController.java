@@ -118,8 +118,8 @@ public class PerusteenOsaController {
     @ResponseBody
     public TekstiKappaleDto update(@PathVariable("id") final Long id, @RequestBody TekstiKappaleDto tekstiKappaleDto) {
         LOG.info("update {}", tekstiKappaleDto);
-        if ( !lockManager.isLockedByAuthenticatedUser(id) ) {
-            throw new LockException("Lukitus vaaditaan");
+        if (!lockManager.isLockedByAuthenticatedUser(id)) {
+            throw new LockException("lukitus-vaaditaan");
         }
         tekstiKappaleDto.setId(id);
         return service.update(tekstiKappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
@@ -129,7 +129,7 @@ public class PerusteenOsaController {
     @ResponseBody
     public TutkinnonOsaDto update(@PathVariable("id") final Long id, @RequestBody TutkinnonOsaDto tutkinnonOsaDto) {
         LOG.info("update {}", tutkinnonOsaDto);
-        if ( !lockManager.isLockedByAuthenticatedUser(id) ) {
+        if (!lockManager.isLockedByAuthenticatedUser(id)) {
             throw new LockException("Lukitus vaaditaan");
         }
         tutkinnonOsaDto.setId(id);
@@ -139,13 +139,14 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/lukko", method = GET)
     @ResponseBody
     public ResponseEntity<LukkoDto> checkLock(@PathVariable("id") final Long id) {
-        return new ResponseEntity<>(lockManager.getLock(id), HttpStatus.OK);
+        LukkoDto lock = lockManager.getLock(id);
+        return new ResponseEntity<>(lock, lock == null ? HttpStatus.OK : HttpStatus.PRECONDITION_FAILED);
     }
 
     @RequestMapping(value = "/{id}/lukko", method = {POST, PUT})
     @ResponseBody
     public ResponseEntity<LukkoDto> lock(@PathVariable("id") final Long id) {
-        if ( lockManager.lock(id) ) {
+        if (lockManager.lock(id)) {
             return new ResponseEntity<>(lockManager.getLock(id), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(lockManager.getLock(id), HttpStatus.CONFLICT);

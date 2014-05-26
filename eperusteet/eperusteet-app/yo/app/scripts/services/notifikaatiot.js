@@ -67,14 +67,28 @@ angular.module('eperusteApp')
     }
 
     function serverCb(response) {
-      if (response && response.status && response.status >= 500) {
-        fataali(Kaanna.kaanna('järjestelmävirhe-alku') + response.status + Kaanna.kaanna('järjestelmävirhe-loppu'), function() {
-          // $state.go('aloitussivu');
-        });
+      if (response) {
+        if (response.status >= 500) {
+          fataali(Kaanna.kaanna('järjestelmävirhe-alku') + response.status + Kaanna.kaanna('järjestelmävirhe-loppu'), function() {
+            // $state.go('aloitussivu');
+          });
+        }
+        else if (response.data && response.data.syy) {
+          uusiViesti(2, response.data.syy);
+        }
       }
-      else { uusiViesti(2, 'odottamaton-virhe'); }
+      else {
+        uusiViesti(2, 'odottamaton-virhe');
+      }
     }
 
+    function serverLukitus(response) {
+      if (response && response.status === 409) {
+        uusiViesti(2, 'Resurssi lukittu käyttäjälle: ' + response.data.haltijaOid + ' (' + (new Date(response.data.luotu) + ')'));
+      }
+    }
+
+    // TODO: päätä tarvitaanko tätä vai ei
     $rootScope.$on('$stateChangeStart', function() {
       // viestit = [];
       // $rootScope.$broadcast('update:notifikaatiot');
@@ -86,6 +100,7 @@ angular.module('eperusteApp')
       varoitus: _.partial(uusiViesti, 2),
       fataali: fataali,
       serverCb: serverCb,
+      serverLukitus: serverLukitus,
       viestit: function() { return _.clone(viestit); },
       paivita: paivita,
       poista: poista
