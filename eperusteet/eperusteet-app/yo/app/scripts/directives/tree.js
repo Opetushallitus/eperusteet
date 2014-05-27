@@ -203,9 +203,13 @@ angular.module('eperusteApp')
           disabled: !scope.muokkaus,
           delay: 100,
           cursor: 'move',
-          stop: function() { paivitaUniikit(); },
+          stop: function() {
+            paivitaUniikit();
+          },
           start: function(e, ui) {
             ui.placeholder.html('<div class="group-placeholder"></div>');
+            // Adjust index according to pagination
+            ui.item.sortable.index += (scope.tutkinnonOsat.sivu - 1) * scope.tutkinnonOsat.perSivu;
           }
         };
 
