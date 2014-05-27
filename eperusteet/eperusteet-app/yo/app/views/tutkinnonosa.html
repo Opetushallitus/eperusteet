@@ -30,7 +30,7 @@
           'osaamisala'
     ]" ng-show="tutkinnonOsa[osio]">
       <div class="osio-otsikko" ng-click="nakyvilla[osio] = !nakyvilla[osio]">
-          <span class="glyphicon" ng-class="{'glyphicon-chevron-down': !nakyvilla[osio], 'glyphicon-chevron-up': nakyvilla[osio]}"></span>
+          <span class="glyphicon" ng-class="{'glyphicon-chevron-right': !nakyvilla[osio], 'glyphicon-chevron-down': nakyvilla[osio]}"></span>
           <span>{{'tutkinnonosa-'+osio | translate}}</span>
       </div>
 

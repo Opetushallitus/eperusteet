@@ -93,9 +93,9 @@ angular.module('eperusteApp')
 
         var optiot = '' +
           '<span ng-if="!rakenne._tutkinnonOsa" class="colorbox">' +
-          '  <a href="" ng-click="rakenne.$collapsed = !rakenne.$collapsed">' +
-          '    <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-up"></span>' +
-          '    <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
+          '  <a href="" ng-click="rakenne.$collapsed = !rakenne.$collapsed" class="group-toggler">' +
+          '    <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
+          '    <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
           '  </a>' +
           '</span>' +
           '<div class="right">' +
@@ -116,9 +116,9 @@ angular.module('eperusteApp')
         kentta += '<div ng-if="!rakenne._tutkinnonOsa" ng-class="{ \'pointer\': muokkaus }" class="bubble">' + optiot + '</div>';
         kentta += '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe" class="virhe"><span>{{ rakenne.$virhe | translate }}</span></div>';
 
-        var avaaKaikki = '<a href="" ng-click="rakenne.$collapsed = !rakenne.$collapsed" title="{{ \'avaa-sulje-kaikki\' | kaanna }}">' +
-                         '  <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-up"></span>' +
-                         '  <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
+        var avaaKaikki = '<a href="" ng-click="rakenne.$collapsed = !rakenne.$collapsed" title="{{ \'avaa-sulje-kaikki\' | kaanna }}" class="group-toggler">' +
+                         '  <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
+                         '  <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
                          '</a>';
 
         var template =

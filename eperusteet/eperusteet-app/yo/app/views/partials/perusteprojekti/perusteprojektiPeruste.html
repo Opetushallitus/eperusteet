@@ -30,7 +30,7 @@ European Union Public Licence for more details.
 
             <div ng-repeat="koulutus in peruste.koulutukset">
                 <div class="osio-otsikko" ng-click="open[koulutus.koulutuskoodi] = !open[koulutus.koulutuskoodi]">
-                    <span class="glyphicon" ng-class="{'glyphicon-chevron-down': !open[koulutus.koulutuskoodi], 'glyphicon-chevron-up': open[koulutus.koulutuskoodi]}"></span>
+                    <span class="glyphicon" ng-class="{'glyphicon-chevron-right': !open[koulutus.koulutuskoodi], 'glyphicon-chevron-down': open[koulutus.koulutuskoodi]}"></span>
                     <span>{{koulutus.nimi| kaanna}}</span>
                 </div>
                 <div collapse="!open[koulutus.koulutuskoodi]" class="form-area koulutukset">

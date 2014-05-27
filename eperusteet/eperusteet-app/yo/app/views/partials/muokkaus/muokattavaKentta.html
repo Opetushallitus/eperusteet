@@ -14,7 +14,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 <div ng-show="canCollapse" class="osio-otsikko" ng-click="collapsed = !collapsed">
-  <span class="glyphicon" ng-class="{'glyphicon-chevron-down': collapsed, 'glyphicon-chevron-up': !collapsed}"></span>
+  <span class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span>
   <span>{{otsikko | translate}}</span>
 </div>
 <h3 ng-show="!canCollapse">{{otsikko | translate}}</h3>

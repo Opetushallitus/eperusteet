@@ -1,6 +1,13 @@
 $colorbox-vari: #06526c;
 $placeholder-vari: #555;
 
+.group-toggler, .group-toggler span {
+  &:hover, &:active, &:focus {
+    text-decoration: none;
+    outline: 0;
+  }
+}
+
 .tree .otsikko {
   margin-bottom: 0px;
   border-bottom: 1px solid $colorbox-vari;
