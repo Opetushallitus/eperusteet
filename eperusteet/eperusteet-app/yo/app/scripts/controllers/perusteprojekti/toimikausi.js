@@ -3,6 +3,13 @@
 angular.module('eperusteApp')
   .controller('PerusteprojektiToimikausiCtrl', function ($scope, YleinenData) {
     
+  if (typeof $scope.projekti.toimikausiAlku === 'number') {
+    $scope.projekti.toimikausiAlku = new Date($scope.projekti.toimikausiAlku);
+  }
+  if (typeof $scope.projekti.toimikausiLoppu === 'number') {
+    $scope.projekti.toimikausiLoppu = new Date($scope.projekti.toimikausiLoppu);
+  }
+    
   $scope.kalenteriTilat = {
     'toimikausiAlkuButton': false,
     'toimikausiLoppuButton': false

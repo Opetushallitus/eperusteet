@@ -50,32 +50,32 @@ angular.module('eperusteApp')
         url: '/tutkinnonrakenne',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiMuodostumissaannot.html',
         controller: 'PerusteprojektiMuodostumissaannotCtrl',
-        onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
-            SivunavigaatioService.aseta({osiot: true});
+        onEnter: ['SivunavigaatioService', 'perusteprojektiTiedot', function(SivunavigaatioService, perusteprojektiTiedot) {
+            SivunavigaatioService.aseta({osiot: true, perusteprojektiTiedot: perusteprojektiTiedot});
           }]
       })
       .state('perusteprojekti.suoritustapa.tutkinnonosat', {
         url: '/tutkinnonosat',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiTutkinnonosat.html',
         controller: 'PerusteprojektiTutkinnonOsatCtrl',
-        onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
-            SivunavigaatioService.aseta({osiot: true});
+        onEnter: ['SivunavigaatioService', 'perusteprojektiTiedot', function(SivunavigaatioService, perusteprojektiTiedot) {
+            SivunavigaatioService.aseta({osiot: true, perusteprojektiTiedot: perusteprojektiTiedot});
           }]
       })
       .state('perusteprojekti.suoritustapa.perusteenosa', {
         url: '/perusteenosa/:perusteenOsanTyyppi/:perusteenOsaId',
         templateUrl: 'views/muokkaus.html',
         controller: 'MuokkausCtrl',
-        onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
-            SivunavigaatioService.aseta({osiot: true});
+        onEnter: ['SivunavigaatioService', 'perusteprojektiTiedot', function(SivunavigaatioService, perusteprojektiTiedot) {
+            SivunavigaatioService.aseta({osiot: true, perusteprojektiTiedot: perusteprojektiTiedot});
           }]
       })
       .state('perusteprojekti.suoritustapa.sisalto', {
         url: '/sisalto',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiSisalto.html',
         controller: 'PerusteprojektisisaltoCtrl',
-        onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
-            SivunavigaatioService.aseta({piilota: true});
+        onEnter: ['SivunavigaatioService','perusteprojektiTiedot', function(SivunavigaatioService, perusteprojektiTiedot) {
+            SivunavigaatioService.aseta({piilota: true, perusteprojektiTiedot: perusteprojektiTiedot});
           }]
       })
       .state('perusteprojekti.tiedot', {
@@ -113,24 +113,18 @@ angular.module('eperusteApp')
         url: '/perustiedot',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedot.html',
         controller: 'ProjektinTiedotCtrl',
-        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService'},
-        onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
-            SivunavigaatioService.aseta({osiot: false});
-          }]
+        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService'}
       });
   })
-  .controller('PerusteprojektiCtrl', function ($scope, $state, Navigaatiopolku,
-    koulutusalaService, opintoalaService, SivunavigaatioService, PerusteProjektiService,
-    Kaanna, perusteprojektiTiedot) {
-      
-    //PerusteProjektiService.cleanSuoritustapa();
+  .controller('PerusteprojektiCtrl', function ($scope, Navigaatiopolku,
+    koulutusalaService, opintoalaService, Kaanna, perusteprojektiTiedot) {
+
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
 
     $scope.projekti.tila = 'luonnos';
-    SivunavigaatioService.asetaProjekti(_.clone($scope.projekti));
     Navigaatiopolku.asetaElementit({
         perusteprojekti: {
           nimi: $scope.projekti.nimi,
