@@ -125,7 +125,9 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
     	TutkinnonOsaDto tutkinnonOsaDto = new TutkinnonOsaDto();
     	tutkinnonOsaDto.setNimi(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Nimi")));
         tutkinnonOsaDto.setTila(Tila.LUONNOS);
-    	tutkinnonOsaDto = perusteenOsaService.save(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+    	tutkinnonOsaDto = perusteenOsaService.add(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+
+        perusteenOsaService.lock(tutkinnonOsaDto.getId());
 
     	tutkinnonOsaDto.setArviointi(new ArviointiDto());
     	tutkinnonOsaDto.getArviointi().setLisatiedot(new LokalisoituTekstiDto(Collections.singletonMap("fi", "lisätiedot")));
@@ -162,6 +164,9 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         assertNotNull(tutkinnonOsaDto.getArviointi().getLisatiedot().getTekstit());
         assertEquals("lisätiedot", tutkinnonOsaDto.getArviointi().getLisatiedot().getTekstit().get(Kieli.FI));
         LOG.debug(tutkinnonOsaDto.getArviointi().getLisatiedot().getTekstit().get(Kieli.FI));
+
+        perusteenOsaService.unlock(tutkinnonOsaDto.getId());
+
     }
 
     private void setUpSecurityContext(String username) {

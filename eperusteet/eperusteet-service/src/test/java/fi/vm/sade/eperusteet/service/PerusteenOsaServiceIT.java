@@ -139,6 +139,6 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     	TekstiKappaleDto dto = new TekstiKappaleDto();
     	dto.setNimi(new LokalisoituTekstiDto(Collections.singletonMap("fi", "<i>otsikko</i>")));
 
-    	perusteenOsaService.save(dto, TekstiKappaleDto.class, TekstiKappale.class);
+    	perusteenOsaService.add(dto, TekstiKappaleDto.class, TekstiKappale.class);
     }
 }

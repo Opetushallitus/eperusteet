@@ -49,8 +49,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
-import fi.vm.sade.eperusteet.service.exception.LockException;
+import fi.vm.sade.eperusteet.service.exception.ServiceException;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
@@ -92,7 +92,12 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllExceptions(Exception e, WebRequest request) throws Exception {
-        return handleExceptionInternal(e, null, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ResponseStatus rs = e.getClass().getAnnotation(ResponseStatus.class);
+        if (rs != null) {
+            status = rs.value();
+        }
+        return handleExceptionInternal(e, null, new HttpHeaders(), status, request);
     }
 
     @Override
@@ -140,7 +145,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             }
             builder.append("\"");
             map.put("syy", builder.toString());
-        } else if (ex instanceof BusinessRuleViolationException || ex instanceof LockException ) {
+        } else if (ex instanceof ServiceException) {
             map.put("syy", ex.getLocalizedMessage());
         } else {
             LOG.error("Creating common error response for exception", ex);

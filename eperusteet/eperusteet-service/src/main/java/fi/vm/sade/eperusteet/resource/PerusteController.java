@@ -23,10 +23,8 @@ import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
-import fi.vm.sade.eperusteet.service.LockManager;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
-import fi.vm.sade.eperusteet.service.exception.LockException;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +37,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import static org.springframework.web.bind.annotation.RequestMethod.*;
+
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -55,9 +55,6 @@ public class PerusteController {
 
     @Autowired
     private PerusteenOsaViiteService PerusteenOsaViiteService;
-
-    @Autowired
-    private LockManager lockManager;
 
 //    @RequestMapping(method = GET)
 //    @ResponseBody
@@ -162,40 +159,26 @@ public class PerusteController {
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne", method = POST)
     @ResponseBody
     public RakenneModuuliDto updatePerusteenRakenne(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi, @RequestBody RakenneModuuliDto rakenne) {
-        PerusteenosaViiteDto ss = service.getSuoritustapaSisalto(id, Suoritustapakoodi.of(suoritustapakoodi));
-        Long sid = ss.getId();
-        if (!lockManager.isLockedByAuthenticatedUser(sid)) {
-            throw new LockException("lukitus-vaaditaan");
-        }
         return service.updateTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), rakenne);
     }
 
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko", method = GET)
     @ResponseBody
-    public ResponseEntity<LukkoDto> checkLock(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
-        PerusteenosaViiteDto ss = service.getSuoritustapaSisalto(id, Suoritustapakoodi.of(suoritustapakoodi));
-        Long sid = ss.getId();
-        LukkoDto lock = lockManager.getLock(sid);
-        return new ResponseEntity<>(lock, lock == null ? HttpStatus.OK : HttpStatus.PRECONDITION_FAILED);
+    public ResponseEntity<LukkoDto> getLock(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        LukkoDto lock = service.getLock(id, Suoritustapakoodi.of(suoritustapakoodi));
+        return new ResponseEntity<>(lock, lock == null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko", method = {POST, PUT})
     @ResponseBody
-    public ResponseEntity<LukkoDto> lock(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
-        PerusteenosaViiteDto ss = service.getSuoritustapaSisalto(id, Suoritustapakoodi.of(suoritustapakoodi));
-        Long sid = ss.getId();
-        if (lockManager.lock(sid)) {
-            return new ResponseEntity<>(lockManager.getLock(sid), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(lockManager.getLock(sid), HttpStatus.CONFLICT);
-        }
+    public LukkoDto lock(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        return service.lock(id, Suoritustapakoodi.of(suoritustapakoodi));
     }
 
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko", method = DELETE)
     @ResponseBody
     public void unlock(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
-        PerusteenosaViiteDto ss = service.getSuoritustapaSisalto(id, Suoritustapakoodi.of(suoritustapakoodi));
-        lockManager.unlock(ss.getId());
+        service.unlock(id, Suoritustapakoodi.of(suoritustapakoodi));
     }
 
     /**

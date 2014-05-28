@@ -14,24 +14,20 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service;
-
-import fi.vm.sade.eperusteet.dto.LukkoDto;
-import fi.vm.sade.eperusteet.service.exception.LockingException;
+package fi.vm.sade.eperusteet.service.exception;
 
 /**
- *
+ *  Kantaluokka palvelukerroksen poikkeuksille
  * @author jhyoty
  */
-public interface LockManager {
-    LukkoDto lock(Long id);
-    boolean isLockedByAuthenticatedUser(Long id);
-    /**
-     * Varmistaa että tunnistettu käyttäjä omistaa lukon,
-     * @param id lukon tunniste
-     * @throws LockingException jos lukkoa ei ole tai sen omistaa toinen käyttäjä
-     */
-    void ensureLockedByAuthenticatedUser(Long id);
-    LukkoDto getLock(Long id);
-    boolean unlock(Long id);
+public abstract class ServiceException extends RuntimeException {
+
+    public ServiceException(String message) {
+        super(message);
+    }
+
+    public ServiceException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

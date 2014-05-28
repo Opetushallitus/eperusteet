@@ -29,6 +29,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.EntityReference;
 import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PageDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
@@ -44,6 +45,7 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
+import fi.vm.sade.eperusteet.service.LockManager;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.SuoritustapaService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -120,6 +122,8 @@ public class PerusteServiceImpl implements PerusteService {
     private PerusteenOsaRepository perusteenOsaRepository;
     @Autowired
     private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
+    @Autowired
+    private LockManager lockManager;
 
     @Override
     @Transactional(readOnly = true)
@@ -242,6 +246,7 @@ public class PerusteServiceImpl implements PerusteService {
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, RakenneModuuliDto rakenne) {
 
         Suoritustapa suoritustapa = getSuoritustapa(perusteId, suoritustapakoodi);
+        lockManager.ensureLockedByAuthenticatedUser(suoritustapa.getId());
 
         final Map<EntityReference, TutkinnonOsaViite> uniqueIndex = Maps.uniqueIndex(suoritustapa.getTutkinnonOsat(), IndexFunction.INSTANCE);
         rakenne.foreach(new VisitorImpl(uniqueIndex, maxRakenneDepth));
@@ -261,9 +266,14 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional
     public void removeTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, Long osaId) {
         Suoritustapa suoritustapa = getSuoritustapa(id, suoritustapakoodi);
-        Set<TutkinnonOsaViite> tutkinnonOsat = suoritustapa.getTutkinnonOsat();
-        TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osaId);
-        tutkinnonOsat.remove(viite);
+        lockManager.lock(suoritustapa.getId());
+        try {
+            Set<TutkinnonOsaViite> tutkinnonOsat = suoritustapa.getTutkinnonOsat();
+            TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osaId);
+            tutkinnonOsat.remove(viite);
+        } finally {
+            lockManager.unlock(suoritustapa.getId());
+        }
     }
 
     @Override
@@ -375,6 +385,24 @@ public class PerusteServiceImpl implements PerusteService {
         return mapper.map(uusiViite, PerusteenSisaltoViiteDto.class);
     }
 
+    @Override
+    public LukkoDto lock(Long id, Suoritustapakoodi suoritustapakoodi) {
+        Suoritustapa suoritustapa = getSuoritustapa(id, suoritustapakoodi);
+        return lockManager.lock(suoritustapa.getId());
+    }
+
+    @Override
+    public void unlock(Long id, Suoritustapakoodi suoritustapakoodi) {
+        Suoritustapa suoritustapa = getSuoritustapa(id, suoritustapakoodi);
+        lockManager.unlock(suoritustapa.getId());
+    }
+
+    @Override
+    public LukkoDto getLock(Long id, Suoritustapakoodi suoritustapakoodi) {
+        Suoritustapa suoritustapa = getSuoritustapa(id, suoritustapakoodi);
+        return lockManager.getLock(suoritustapa.getId());
+    }
+
     /**
      * Lämmittää tyhjään järjestelmään koodistosta löytyvät koulutukset.
      *
@@ -453,7 +481,8 @@ public class PerusteServiceImpl implements PerusteService {
 
         koulutus.setKoulutuskoodi(tutkinto.getKoodiUri());
         // Haetaan joka tutkinnolle alarelaatiot ja lisätään tarvittavat tiedot koulutus entityyn
-        koulutusAlarelaatiot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + "/" + tutkinto.getKoodiUri(), KoodistoKoodiDto[].class);
+        koulutusAlarelaatiot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + "/"
+            + tutkinto.getKoodiUri(), KoodistoKoodiDto[].class);
         koulutus.setKoulutusalakoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, KOULUTUSALALUOKITUS));
         koulutus.setOpintoalakoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, OPINTOALALUOKITUS));
         return koulutus;

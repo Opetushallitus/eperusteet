@@ -17,28 +17,29 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.service.LockManager;
+import fi.vm.sade.eperusteet.service.exception.LockingException;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
-import java.io.Serializable;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author jhyoty
  */
-@Service
+@Component
 public class LockManagerImpl implements LockManager {
 
     //TODO. Väliaikainen toteutus, ei ota huomioon hajautusta.
     //Täytyy toteuttaa tietokannan (ehcache?) tms. avulla jotta palvelun kahdennus toimii.
-    private final ConcurrentMap<Serializable, LukkoDto> locks = new ConcurrentHashMap<>(256);
+    private static final ConcurrentMap<Long, LukkoDto> locks = new ConcurrentHashMap<>(256);
 
-    @Override
     @PreAuthorize("isAuthenticated()")
-    public boolean lock(Serializable id) {
+    @Override
+    public LukkoDto lock(Long id) {
+
         final String oid = SecurityUtil.getAuthenticatedPrincipal().getName();
         final LukkoDto newLukko = new LukkoDto(oid);
 
@@ -54,24 +55,35 @@ public class LockManagerImpl implements LockManager {
                 current = locks.putIfAbsent(id, newLukko);
             }
         }
-        return current == null || oid.equals(current.getHaltijaOid());
+        if (!(current == null || oid.equals(current.getHaltijaOid()))) {
+            throw new LockingException("Lukitus vaaditaan");
+        }
+        return newLukko;
     }
 
-    @Override
     @PreAuthorize("isAuthenticated()")
-    public boolean isLockedByAuthenticatedUser(Serializable id) {
+    @Override
+    public boolean isLockedByAuthenticatedUser(Long id) {
         return isOwnedByAuthenticatedUser(locks.get(id));
     }
 
-    @Override
     @PreAuthorize("isAuthenticated()")
-    public boolean unlock(Serializable id) {
+    @Override
+    public void ensureLockedByAuthenticatedUser(Long id) {
+        if (!isLockedByAuthenticatedUser(id)) {
+            throw new LockingException("Käyttäjä ei omista lukkoa tai lukitus puuttuu", locks.get(id));
+        }
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @Override
+    public boolean unlock(Long id) {
         LukkoDto l = getLock(id);
         return l == null || (isOwnedByAuthenticatedUser(l) && locks.remove(id, l));
     }
 
     @Override
-    public LukkoDto getLock(Serializable id) {
+    public LukkoDto getLock(Long id) {
         return locks.get(id);
     }
 

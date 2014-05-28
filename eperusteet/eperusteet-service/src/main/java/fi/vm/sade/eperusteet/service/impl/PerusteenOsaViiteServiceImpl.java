@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
+import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import javax.persistence.EntityManager;
@@ -40,6 +41,8 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService{
     private PerusteenOsaViiteRepository repository;
     @PersistenceContext
     private EntityManager em;
+    @Autowired
+    private PerusteenOsaService perusteenOsaService;
 
     @Override
     @Transactional(readOnly = false)
@@ -60,12 +63,11 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService{
         if (viite.getPerusteenOsa() != null && viite.getPerusteenOsa().getTila().equals(Tila.LUONNOS)) {
 
             PerusteenOsa perusteenOsa = viite.getPerusteenOsa();
-            viite.setPerusteenOsa(null);
+            perusteenOsaService.delete(perusteenOsa.getId());
 
+            viite.setPerusteenOsa(null);
             viite.getVanhempi().getLapset().remove(viite);
             viite.setVanhempi(null);
-
-            em.remove(perusteenOsa);
             repository.delete(viite);
         }
     }

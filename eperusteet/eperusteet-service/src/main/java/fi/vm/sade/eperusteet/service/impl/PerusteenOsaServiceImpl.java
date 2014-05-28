@@ -16,12 +16,14 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.LockManager;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.List;
@@ -36,7 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author jhyoty
  */
 @Service
-@Transactional(readOnly = true)
 public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteenOsaServiceImpl.class);
@@ -66,6 +67,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PerusteenOsaDto> getAllByKoodiUri(final String koodiUri) {
         return mapper.mapAsList(tutkinnonOsaRepo.findByKoodiUri(koodiUri), PerusteenOsaDto.class);
     }
@@ -73,6 +75,8 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     @Transactional(readOnly = false)
     public <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
+        assertExists(perusteenOsaDto.getId());
+        lockManager.ensureLockedByAuthenticatedUser(perusteenOsaDto.getId());
         PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
         PerusteenOsa updated = mapper.map(perusteenOsaDto, current.getClass());
         current.mergeState(updated);
@@ -83,32 +87,64 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     @Transactional(readOnly = false)
-    public <T extends PerusteenOsaDto, D extends PerusteenOsa> T save(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
+    public <T extends PerusteenOsaDto, D extends PerusteenOsa> T add(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
         D perusteenOsa = mapper.map(perusteenOsaDto, entityClass);
         perusteenOsa = perusteenOsaRepo.save(perusteenOsa);
         return mapper.map(perusteenOsa, dtoClass);
     }
 
     @Override
-    @Transactional(readOnly = false)
     public void delete(final Long id) {
-        LOG.info("delete" + id);
-        perusteenOsaRepo.delete(id);
+        assertExists(id);
+        lockManager.lock(id);
+        try {
+            perusteenOsaRepo.delete(id);
+        } finally {
+            lockManager.unlock(id);
+        }
     }
 
-	@Override
-	public List<PerusteenOsaDto> getAllWithName(String name) {
-		return mapper.mapAsList(tutkinnonOsaRepo.findByNimiTekstiTekstiContainingIgnoreCase(name), PerusteenOsaDto.class);
-	}
+    @Override
+    @Transactional(readOnly = true)
+    public List<PerusteenOsaDto> getAllWithName(String name) {
+        return mapper.mapAsList(tutkinnonOsaRepo.findByNimiTekstiTekstiContainingIgnoreCase(name), PerusteenOsaDto.class);
+    }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Revision> getRevisions(Long id) {
         PerusteenOsa perusteenOsa = perusteenOsaRepo.findOne(id);
         return perusteenOsaRepo.getRevisions(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PerusteenOsaDto getRevision(Long id, Integer revisionId) {
         return mapper.map(perusteenOsaRepo.findRevision(id, revisionId), PerusteenOsaDto.class);
     }
+
+    @Override
+    public LukkoDto lock(Long id) {
+        assertExists(id);
+        return lockManager.lock(id);
+    }
+
+    @Override
+    public void unlock(Long id) {
+        assertExists(id);
+        lockManager.unlock(id);
+    }
+
+    @Override
+    public LukkoDto getLock(Long id) {
+        assertExists(id);
+        return lockManager.getLock(id);
+    }
+
+    private void assertExists(Long id) {
+        if (!perusteenOsaRepo.exists(id)) {
+            throw new BusinessRuleViolationException("Pyydettyä perusteen osaa ei ole olemassa");
+        }
+    }
+
 }

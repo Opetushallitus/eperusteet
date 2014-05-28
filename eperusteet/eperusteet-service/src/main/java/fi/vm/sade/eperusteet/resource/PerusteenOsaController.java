@@ -23,9 +23,7 @@ import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
-import fi.vm.sade.eperusteet.service.LockManager;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
-import fi.vm.sade.eperusteet.service.exception.LockException;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,9 +53,6 @@ public class PerusteenOsaController {
 
     @Autowired
     private PerusteenOsaService service;
-
-    @Autowired
-    private LockManager lockManager;
 
     @RequestMapping(method = GET)
     @ResponseBody
@@ -115,8 +110,7 @@ public class PerusteenOsaController {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public ResponseEntity<TutkinnonOsaDto> add(@RequestBody TutkinnonOsaDto tutkinnonOsaDto, UriComponentsBuilder ucb) {
-        LOG.info("add {}", tutkinnonOsaDto);
-        tutkinnonOsaDto = service.save(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+        tutkinnonOsaDto = service.add(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
         return new ResponseEntity<>(tutkinnonOsaDto, buildHeadersFor(tutkinnonOsaDto.getId(), ucb), HttpStatus.CREATED);
     }
 
@@ -124,18 +118,13 @@ public class PerusteenOsaController {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public ResponseEntity<TekstiKappaleDto> add(@RequestBody TekstiKappaleDto tekstikappaleDto, UriComponentsBuilder ucb) {
-        LOG.info("add {}", tekstikappaleDto);
-        tekstikappaleDto = service.save(tekstikappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
+        tekstikappaleDto = service.add(tekstikappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
         return new ResponseEntity<>(tekstikappaleDto, buildHeadersFor(tekstikappaleDto.getId(), ucb), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = POST, params = PerusteenOsaMappings.IS_TEKSTIKAPPALE_PARAM)
     @ResponseBody
     public TekstiKappaleDto update(@PathVariable("id") final Long id, @RequestBody TekstiKappaleDto tekstiKappaleDto) {
-        LOG.info("update {}", tekstiKappaleDto);
-        if (!lockManager.isLockedByAuthenticatedUser(id)) {
-            throw new LockException("lukitus-vaaditaan");
-        }
         tekstiKappaleDto.setId(id);
         return service.update(tekstiKappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
     }
@@ -143,10 +132,6 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}", method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
     @ResponseBody
     public TutkinnonOsaDto update(@PathVariable("id") final Long id, @RequestBody TutkinnonOsaDto tutkinnonOsaDto) {
-        LOG.info("update {}", tutkinnonOsaDto);
-        if (!lockManager.isLockedByAuthenticatedUser(id)) {
-            throw new LockException("lukitus-vaaditaan");
-        }
         tutkinnonOsaDto.setId(id);
         return service.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
     }
@@ -154,31 +139,26 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/lukko", method = GET)
     @ResponseBody
     public ResponseEntity<LukkoDto> checkLock(@PathVariable("id") final Long id) {
-        LukkoDto lock = lockManager.getLock(id);
-        return new ResponseEntity<>(lock, lock == null ? HttpStatus.OK : HttpStatus.PRECONDITION_FAILED);
+        LukkoDto lock = service.getLock(id);
+        return new ResponseEntity<>(lock, lock == null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "/{id}/lukko", method = {POST, PUT})
     @ResponseBody
-    public ResponseEntity<LukkoDto> lock(@PathVariable("id") final Long id) {
-        if (lockManager.lock(id)) {
-            return new ResponseEntity<>(lockManager.getLock(id), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(lockManager.getLock(id), HttpStatus.CONFLICT);
-        }
+    public LukkoDto lock(@PathVariable("id") final Long id) {
+        return service.lock(id);
     }
 
     @RequestMapping(value = "/{id}/lukko", method = DELETE)
     @ResponseBody
     public void unlock(@PathVariable("id") final Long id) {
-        lockManager.unlock(id);
+        service.unlock(id);
     }
 
     @RequestMapping(value = "/{id}", method = DELETE, consumes = "*/*")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void delete(@PathVariable final Long id) {
-        LOG.info("delete {}", id);
         service.delete(id);
     }
 
