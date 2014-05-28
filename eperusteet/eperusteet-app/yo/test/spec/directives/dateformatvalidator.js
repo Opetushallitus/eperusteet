@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Directive: dateformatter', function () {
+describe('Directive: dateformatvalidator', function () {
 
   // load the directive's module
   beforeEach(module('eperusteApp'));

@@ -19,7 +19,7 @@ angular.module('eperusteApp')
       $scope.menuCollapsed = true;
     });
     $scope.goBackToMain = function () {
-      $state.go('perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: $scope.projekti.id, suoritustapa: PerusteProjektiService.getSuoritustapa()});
+      $state.go('perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: $scope.projekti.id, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {reload: true});
     };
     $scope.toggleSideMenu = function () {
       $scope.menuCollapsed = !$scope.menuCollapsed;
@@ -37,7 +37,7 @@ angular.module('eperusteApp')
     SivunavigaatioService.bind($scope);
   })
 
-  .service('SivunavigaatioService', function (Suoritustapa) {
+  .service('SivunavigaatioService', function () {
     this.data = {
       osiot: false,
       piilota: false,
@@ -56,26 +56,16 @@ angular.module('eperusteApp')
      *     piilota: true piilottaa koko navigaatioelementin
      */
     this.aseta = function (data) {
-      if (data.projekti) {
-        this.data.projekti = data.projekti;
-        // TODO: kevyempi API jolla haetaan pelkät otsikot/linkkeihin
-        // tarvittavat tiedot, ei koko sisältöä
-        var that = this;
-        Suoritustapa.get({perusteenId: this.data.projekti._peruste, suoritustapa: 'ops'}, function(vastaus) {
-          that.data.projekti.peruste = {};
-          that.data.projekti.peruste.sisalto = vastaus;
-        });
-        return;
+      if (data.perusteprojektiTiedot) {
+        this.data.projekti = data.perusteprojektiTiedot.getProjekti();
+        this.data.projekti.peruste = data.perusteprojektiTiedot.getPeruste();
+        this.data.projekti.peruste.sisalto = data.perusteprojektiTiedot.getSisalto();
       }
+      
       if (!_.isUndefined(data.osiot)) {
         this.data.osiot = data.osiot;
       }
       this.data.piilota = !!data.piilota;
     };
-    /**
-     * Asettaa projektiobjektin, täytyy sisältää ainakin 'id'
-     */
-    this.asetaProjekti = function (projekti) {
-      this.aseta({projekti: projekti});
-    };
+
   });

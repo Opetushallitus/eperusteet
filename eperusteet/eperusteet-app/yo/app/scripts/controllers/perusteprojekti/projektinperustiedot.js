@@ -4,6 +4,10 @@ angular.module('eperusteApp')
   .controller('ProjektinperustiedotCtrl', function($scope, PerusteProjektiService, YleinenData) {
   PerusteProjektiService.watcher($scope, 'projekti');
 
+  if (typeof $scope.projekti.paatosPvm === 'number') {
+     $scope.projekti.paatosPvm = new Date($scope.projekti.paatosPvm);
+  }
+  
   $scope.tehtavaluokat = [
     'Tehtäväluokka-1',
     'Tehtäväluokka-2',

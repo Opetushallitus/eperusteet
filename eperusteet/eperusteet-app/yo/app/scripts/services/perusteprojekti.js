@@ -79,15 +79,15 @@ angular.module('eperusteApp')
     var projektinTiedotDeferred = $q.defer();
 
     this.getProjekti = function () {
-      return projekti;
+      return _.clone(projekti);
     };
     
     this.getPeruste = function () {
-      return peruste;
+      return _.clone(peruste);
     };
     
     this.getSisalto = function () {
-      return sisalto;
+      return _.clone(sisalto);
     };
     
     this.cleanData = function () {
@@ -142,7 +142,6 @@ angular.module('eperusteApp')
       // NOTE: Jos ei löydy suoritustapaa serviceltä niin käytetään suoritustapaa 'naytto'.
       //       Tämä toimii ammatillisen puolen projekteissa, mutta ei yleissivistävän puolella.
       //       Korjataan kun keksitään parempi suoritustavan valinta-algoritmi.
-      console.log('alustaPerusteenSisalto suoritustapa', stateParams.suoritustapa);
       if (angular.isUndefined(stateParams.suoritustapa) || stateParams.suoritustapa === null || stateParams.suoritustapa === '') {
         stateParams.suoritustapa = 'naytto';
       }

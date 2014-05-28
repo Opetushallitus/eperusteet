@@ -11,6 +11,9 @@ describe('Controller: PerusteprojektiToimikausiCtrl', function () {
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
+    scope.projekti = {};
+    scope.projekti.toimikausiAlku = {};
+    scope.projekti.toimikausiLoppu = {};
     PerusteprojektiToimikausiCtrl = $controller('PerusteprojektiToimikausiCtrl', {
       $scope: scope
     });
