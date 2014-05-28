@@ -32,11 +32,12 @@ angular.module('eperusteApp')
 
     Kommentit.haeKommentit(KommentitBySuoritustapa, { id: $stateParams.perusteProjektiId, suoritustapa: $scope.suoritustapa });
 
-    function haeRakenne() {
+    function haeRakenne(cb) {
       PerusteenRakenne.hae($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
         res.$suoritustapa = $scope.suoritustapa;
         res.$resolved = true;
         $scope.rakenne = res;
+        cb();
       });
     }
     $scope.haeRakenne = haeRakenne;
@@ -59,8 +60,10 @@ angular.module('eperusteApp')
 
     $scope.muokkaa = function () {
       Lukitus.lukitseSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa, function() {
-        Editointikontrollit.startEditing();
-        $scope.editoi = true;
+        haeRakenne(function() {
+          Editointikontrollit.startEditing();
+          $scope.editoi = true;
+        });
       });
     };
 
