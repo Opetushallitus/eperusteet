@@ -14,33 +14,19 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.domain;
+package fi.vm.sade.eperusteet.service;
 
-import java.io.Serializable;
-import lombok.Getter;
-import lombok.Setter;
+import fi.vm.sade.eperusteet.dto.KommenttiDto;
+import java.util.List;
 
 /**
  *
  * @author nkala
  */
-@Getter
-@Setter
-public class Henkilo implements Serializable {
-    private String henkiloId;
-    private String nimi;
-    private String puhelinnumero;
-    private String email;
-    private Rooli rooli;
-
-    public Henkilo() {
-    }
-
-    public Henkilo(String henkiloId, String nimi, String puhelinnumero, String email, Rooli rooli) {
-        this.henkiloId = henkiloId;
-        this.nimi = nimi;
-        this.puhelinnumero = puhelinnumero;
-        this.email = email;
-        this.rooli = rooli;
-    }
+public interface KommenttiService {
+    public KommenttiDto get(Long kommenttiId);
+    public List<KommenttiDto> get(Long parentId, Long ylinId, Long perusteprojektiId);
+    public KommenttiDto add(final KommenttiDto kommenttidto);
+    public KommenttiDto update(Long kommenttiId, final KommenttiDto kommenttidto);
+    public KommenttiDto remove(Long kommenttiId);
 }

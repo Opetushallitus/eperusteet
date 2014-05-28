@@ -1,4 +1,5 @@
 <!doctype html>
+
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
@@ -23,6 +24,21 @@
     <!-- endbuild  -->
     <!-- Add your site or application content here -->
     <div class="container-fluid">
+      <div ng-controller="KommenttiCtrl">
+        <hr>
+        <div>
+          <h2>Keskustelu ({{ kommentit.yhteensa }} {{ 'kommenttia' | kaanna }})</h2>
+        </div>
+        <a ng-hide="editoi" href="" ng-click="editoi = true"><h3><span class="glyphicon glyphicon-plus"></span> {{ 'lisaa-kommentti' | kaanna }}</h3></a>
+        <div ng-show="editoi">
+          <expandable-ta ng-model="editoitava"></expandable-ta>
+          <div>
+            <button class="btn" ng-click="lisaaKommentti(editoitava)">Tallenna</button>
+            <button class="btn" ng-click="editoi = false">Peruuta</button>
+          </div>
+        </div>
+        <kommentit depth="0" sisalto="kommentit"></kommentit>
+      </div>
       <div class="row">
         <div class="col-md-12">
           <div class="pull-right admin-cog">
@@ -91,6 +107,8 @@
     <script src="scripts/services/excel.js"></script>
     <script src="scripts/services/muodostumissaannot.js"></script>
     <script src="scripts/directives/multiinput.js"></script>
+    <script src="scripts/directives/expandableta.js"></script>
+    <script src="scripts/directives/kommentit.js"></script>
     <script src="scripts/controllers/excel.js"></script>
     <script src="scripts/directives/spinner.js"></script>
     <script src="scripts/controllers/modals/uudelleenohjaus.js"></script>
@@ -102,6 +120,7 @@
     <script src="scripts/services/perusteet.js"></script>
     <script src="scripts/services/perusteenosat.js"></script>
     <script src="scripts/controllers/haku.js"></script>
+    <script src="scripts/controllers/kommentti.js"></script>
     <script src="scripts/controllers/perusteprojekti/projektinTila.js"></script>
     <script src="scripts/filters/kaanna.js"></script>
     <script src="scripts/filters/tutkintokoodi.js"></script>
@@ -153,6 +172,7 @@
     <script src="scripts/controllers/modals/ilmoitusdialogi.js"></script>
     <script src="scripts/controllers/perusteprojekti/perusteenTiedot.js"></script>
     <script src="scripts/services/opintoalat.js"></script>
+    <script src="scripts/services/kommentit.js"></script>
     <script src="scripts/directives/muokkaus/kenttalistaus.js"></script>
     <script src="scripts/directives/dateformatter.js"></script>
     <script src="scripts/controllers/aloitussivu.js"></script>

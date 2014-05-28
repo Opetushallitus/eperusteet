@@ -1,0 +1,26 @@
+$kommentti-avatar-margin: 10px;
+
+.kommentti {
+  margin-bottom: 5px;
+  padding: 0px;
+  background: #fdfdfd;
+}
+
+.kommentti h3 {
+  padding-top: 8px;
+}
+
+.kommentti-avatar {
+  margin: $kommentti-avatar-margin;
+}
+
+.kommentti-footer {
+}
+
+.kommentti-poistettu {
+  padding-left: 5px;
+}
+
+.kommentti-sisalto {
+  margin-left: $avatar-koko + $kommentti-avatar-margin * 2;
+}

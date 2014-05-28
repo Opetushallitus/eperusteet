@@ -1,0 +1,48 @@
+<div>
+  <script type="text/ng-template" id="viesti_piirtaja.html">
+    <div ng-style="{ 'margin-left': indent }" class="kommentti">
+
+      <div class="kommentti-poistettu" ng-if="viesti.poistettu">
+        <h3>{{ 'viesti-poistettu' | kaanna }} {{ viesti.muokattu | aikaleima }}</h3>
+      </div>
+
+      <div ng-if="!viesti.poistettu">
+        <div class="pull-left ryhma-jasen-avatar kommentti-avatar">
+          <div class="nimikirjain-avatar">EE</div>
+        </div>
+        <div class="kommentti-sisalto">
+          <h3>
+            {{ viesti.nimi }}
+            <span class="pull-right">
+              <a href="" ng-click="editoi = true; editoitava = viesti.sisalto"><span class="glyphicon glyphicon-pencil"></span></a>
+              <a href="" ng-click="poistaKommentti(viesti)"><span class="glyphicon glyphicon-remove"></span></a>
+            </span>
+          </h3>
+          <p ng-hide="editoi">{{ viesti.sisalto }}</p>
+          <div ng-show="editoi" class="kommentti-muokkaus">
+            <expandable-ta ng-model="editoitava"></expandable-ta>
+            <div>
+              <button class="btn" ng-click="tallennaKommentti(viesti, editoitava); editoi = false">{{ 'tallenna' | kaanna }}</button>
+              <button class="btn" ng-click="editoi = false">{{ 'peruuta' | kaanna }}</button>
+            </div>
+          </div>
+          <div class="kommentti-footer">
+            <span ng-show="viesti.muokattu"><i><b>Muokattu </b>{{ viesti.muokattu | aikaleima }}</i></span>
+            <span ng-hide="viesti.muokattu"><i>{{ viesti.lahetetty | aikaleima }}</i></span>
+            <a href="" ng-click="viesti.$lisaa = true">{{ 'vastaa' | kaanna }}</a>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div ng-show="viesti.$lisaa">
+        <expandable-ta ng-model="editoitava"></expandable-ta>
+        <div>
+          <button class="btn" ng-click="lisaaKommentti(viesti, editoitava); editoitava = ''; viesti.$lisaa = false">{{ 'tallenna' | kaanna }}</button>
+          <button class="btn" ng-click="viesti.$lisaa = false">{{ 'peruuta' | kaanna }}</button>
+        </div>
+      </div>
+    </div>
+    <kommentit parent="sisalto" depth="depth + 1" sisalto="viesti"></kommentit>
+  </script>
+  <div ng-repeat="viesti in sisalto.viestit" ng-include="'viesti_piirtaja.html'"></div>
+</div>

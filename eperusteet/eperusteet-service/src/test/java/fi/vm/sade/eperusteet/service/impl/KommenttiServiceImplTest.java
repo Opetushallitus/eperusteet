@@ -14,33 +14,45 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.domain;
+package fi.vm.sade.eperusteet.service.impl;
 
-import java.io.Serializable;
-import lombok.Getter;
-import lombok.Setter;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
  * @author nkala
  */
-@Getter
-@Setter
-public class Henkilo implements Serializable {
-    private String henkiloId;
-    private String nimi;
-    private String puhelinnumero;
-    private String email;
-    private Rooli rooli;
+public class KommenttiServiceImplTest {
 
-    public Henkilo() {
+    public KommenttiServiceImplTest() {
     }
 
-    public Henkilo(String henkiloId, String nimi, String puhelinnumero, String email, Rooli rooli) {
-        this.henkiloId = henkiloId;
-        this.nimi = nimi;
-        this.puhelinnumero = puhelinnumero;
-        this.email = email;
-        this.rooli = rooli;
+    @BeforeClass
+    public static void setUpClass() {
     }
+
+    @AfterClass
+    public static void tearDownClass() {
+    }
+
+    @Before
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() {
+    }
+
+    /**
+     * Test of getKommentti method, of class KommenttiServiceImpl.
+     */
+    @Test
+    public void testGetKommentti() {
+        System.out.println("getKommentti");
+    }
+
 }

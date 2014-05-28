@@ -14,33 +14,24 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.domain;
+'use strict';
+// /* global _ */
 
-import java.io.Serializable;
-import lombok.Getter;
-import lombok.Setter;
+angular.module('eperusteApp')
+  .controller('KommenttiCtrl', function ($scope, YleinenData, Kommentit) {
+    $scope.editoitava = '';
+    $scope.editoi = false;
+    $scope.kommentit = {};
 
-/**
- *
- * @author nkala
- */
-@Getter
-@Setter
-public class Henkilo implements Serializable {
-    private String henkiloId;
-    private String nimi;
-    private String puhelinnumero;
-    private String email;
-    private Rooli rooli;
+    $scope.muokkaaKommenttia = function(uusikommentti) {
+      Kommentit.muokkaaKommenttia($scope.kommentit, uusikommentti);
+      $scope.editoi = false;
+    };
 
-    public Henkilo() {
-    }
+    $scope.lisaaKommentti = function(kommentti) {
+      Kommentit.lisaaKommentti($scope.kommentit, kommentti);
+      $scope.editoi = false;
+    };
 
-    public Henkilo(String henkiloId, String nimi, String puhelinnumero, String email, Rooli rooli) {
-        this.henkiloId = henkiloId;
-        this.nimi = nimi;
-        this.puhelinnumero = puhelinnumero;
-        this.email = email;
-        this.rooli = rooli;
-    }
-}
+    $scope.kommentit = Kommentit.haeKommentit();
+  });
