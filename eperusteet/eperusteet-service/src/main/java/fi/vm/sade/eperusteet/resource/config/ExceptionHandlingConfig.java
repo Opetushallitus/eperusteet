@@ -49,6 +49,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import fi.vm.sade.eperusteet.service.exception.LockingException;
 import fi.vm.sade.eperusteet.service.exception.ServiceException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -145,6 +146,9 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             }
             builder.append("\"");
             map.put("syy", builder.toString());
+        } else if (ex instanceof LockingException ) {
+            LockingException le = (LockingException)ex;
+            return super.handleExceptionInternal(ex, le.getLukko(), headers, status, request);
         } else if (ex instanceof ServiceException) {
             map.put("syy", ex.getLocalizedMessage());
         } else {

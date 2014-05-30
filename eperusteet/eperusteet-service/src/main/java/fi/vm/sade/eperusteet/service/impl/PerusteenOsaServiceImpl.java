@@ -126,7 +126,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     public LukkoDto lock(Long id) {
         assertExists(id);
-        return lockManager.lock(id);
+        return LukkoDto.of(lockManager.lock(id));
     }
 
     @Override
@@ -138,7 +138,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     public LukkoDto getLock(Long id) {
         assertExists(id);
-        return lockManager.getLock(id);
+        return LukkoDto.of(lockManager.getLock(id));
     }
 
     private void assertExists(Long id) {

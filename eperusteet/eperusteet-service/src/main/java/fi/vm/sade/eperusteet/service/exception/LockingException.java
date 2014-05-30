@@ -44,4 +44,8 @@ public class LockingException extends ServiceException {
         this.lukko = lukko;
     }
 
+    public LukkoDto getLukko() {
+        return lukko;
+    }
+    
 }

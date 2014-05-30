@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto;
 
+import fi.vm.sade.eperusteet.domain.Lukko;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.joda.time.DateTime;
@@ -28,11 +29,16 @@ import org.joda.time.DateTime;
 @EqualsAndHashCode
 public class LukkoDto {
 
-    public LukkoDto(String haltijaOid) {
-        this.haltijaOid = haltijaOid;
-        this.luotu = new DateTime();
+    public LukkoDto(Lukko lukko) {
+        this.haltijaOid = lukko.getHaltijaOid();
+        this.luotu = lukko.getLuotu();
     }
 
     final String haltijaOid;
     final DateTime luotu;
+
+    public static LukkoDto of(Lukko lukko) {
+        if ( lukko == null  ) return null;
+        return new LukkoDto(lukko);
+    }
 }
