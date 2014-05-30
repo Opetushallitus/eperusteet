@@ -105,7 +105,7 @@ angular.module('eperusteApp', [
       }]);
   })
   .run(function($rootScope, $modal, $location, $window, $state, paginationConfig, Editointikontrollit,
-                Varmistusdialogi) {
+                Varmistusdialogi, Kaanna) {
     paginationConfig.firstText = '';
     paginationConfig.previousText = '';
     paginationConfig.nextText = '';
@@ -114,7 +114,7 @@ angular.module('eperusteApp', [
     paginationConfig.rotate = false;
 
     var onAvattuna = false;
-
+    
     $rootScope.$on('event:uudelleenohjattava', function(event, status) {
       if (onAvattuna) {
         return;
@@ -171,6 +171,7 @@ angular.module('eperusteApp', [
 
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
 
+
         if (Editointikontrollit.getEditMode() && fromState.name !== 'perusteprojekti.suoritustapa.tutkinnonosat') {
           event.preventDefault();
 
@@ -190,6 +191,14 @@ angular.module('eperusteApp', [
 
     $rootScope.$on('$stateNotFound', function(event/*, toState, toParams, fromState*/) {
       console.log(event);
+    });
+    
+    // Jos käyttäjä editoi dokumenttia ja koittaa poistua palvelusta (refresh, iltalehti...), niin varoitetaan, että hän menettää muutoksensa jos jatkaa.
+    $window.addEventListener('beforeunload', function(event) {
+      if (Editointikontrollit.getEditMode()) {
+        event.preventDefault();
+        return Kaanna.kaanna('tallentamattomia-muutoksia');
+      }
     });
 
   });
