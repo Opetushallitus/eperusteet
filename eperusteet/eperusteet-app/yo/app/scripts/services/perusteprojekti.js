@@ -81,21 +81,21 @@ angular.module('eperusteApp')
     this.getProjekti = function () {
       return _.clone(projekti);
     };
-    
+
     this.getPeruste = function () {
       return _.clone(peruste);
     };
-    
+
     this.getSisalto = function () {
       return _.clone(sisalto);
     };
-    
+
     this.cleanData = function () {
       projekti = {};
       peruste = {};
       sisalto = {};
     };
-    
+
     this.haeSisalto = function(perusteenId, suoritustapa) {
       var deferred = $q.defer();
       Suoritustapa.get({perusteenId: perusteenId, suoritustapa: suoritustapa}, function(vastaus) {
@@ -106,15 +106,15 @@ angular.module('eperusteApp')
       });
       return deferred.promise;
     };
-    
+
     this.projektinTiedotAlustettu = function () {
       return projektinTiedotDeferred.promise;
     };
-    
-    
+
+
     this.alustaProjektinTiedot = function (stateParams) {
       projektinTiedotDeferred = $q.defer();
-      
+
       PerusteprojektiResource.get({id: stateParams.perusteProjektiId}, function(projektiVastaus) {
         projekti = projektiVastaus;
         Perusteet.get({perusteenId: projekti._peruste}, function (perusteVastaus) {
@@ -123,7 +123,7 @@ angular.module('eperusteApp')
             peruste.suoritustavat = _.sortBy(peruste.suoritustavat, 'suoritustapakoodi');
           }
           projektinTiedotDeferred.resolve();
-          
+
         }, function(virhe) {
           projektinTiedotDeferred.reject();
           console.log('Virhe perusteen tietojen alustuksessa', virhe);
@@ -132,12 +132,12 @@ angular.module('eperusteApp')
         projektinTiedotDeferred.reject();
         console.log('Virhe projektin tietojen alustuksessa', virhe);
       });
-      
+
       return projektinTiedotDeferred.promise;
-      
+
     };
 
-    this.alustaPerusteenSisalto = function (stateParams) {
+    this.alustaPerusteenSisalto = function (stateParams, forced) {
 
       // NOTE: Jos ei löydy suoritustapaa serviceltä niin käytetään suoritustapaa 'naytto'.
       //       Tämä toimii ammatillisen puolen projekteissa, mutta ei yleissivistävän puolella.
@@ -148,7 +148,7 @@ angular.module('eperusteApp')
       PerusteProjektiService.setSuoritustapa(stateParams.suoritustapa);
       var perusteenSisaltoDeferred = $q.defer();
 
-      if (peruste.suoritustavat !== null && peruste.suoritustavat.length > 0) {
+      if (forced || (peruste.suoritustavat !== null && peruste.suoritustavat.length > 0)) {
         self.haeSisalto(peruste.id, stateParams.suoritustapa).then(function() {
           perusteenSisaltoDeferred.resolve();
         }, function(virhe) {
@@ -160,7 +160,7 @@ angular.module('eperusteApp')
       }
       return perusteenSisaltoDeferred.promise;
     };
-  
+
     deferred.resolve(this);
     return deferred.promise;
     });

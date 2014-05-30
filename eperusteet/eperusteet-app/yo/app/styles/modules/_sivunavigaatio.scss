@@ -1,4 +1,5 @@
 $sivunavi-leveys: 280px;
+$sivunavi-takaisin-korkeus: 50px;
 
 .sivunavi-wrapper {
   margin-left: 0;
@@ -33,7 +34,7 @@ $sivunavi-leveys: 280px;
     .glyphicon {
       color: black;
     }
-    margin-bottom: 25px;
+    height: $sivunavi-takaisin-korkeus;
   }
 
   .sivunavi {
@@ -127,7 +128,7 @@ $sivunavi-leveys: 280px;
       float: left;
     }
     .sivunavi-sisalto {
-      margin: 0 0 50px $sivunavi-leveys + 30px;
+      margin: $sivunavi-takaisin-korkeus 0 50px $sivunavi-leveys + 80px;
       overflow: visible;
     }
   }
@@ -135,6 +136,7 @@ $sivunavi-leveys: 280px;
 
 .sivunavi-sisalto.disable {
   margin-left: 0;
+  margin-top: 0;
 }
 
 .sivunavi-wrapper.osiot-piilossa {

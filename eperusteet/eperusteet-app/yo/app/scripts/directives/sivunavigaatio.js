@@ -31,11 +31,12 @@ angular.module('eperusteApp')
     SivunavigaatioService.bind($scope);
   })
 
-  .service('SivunavigaatioService', function () {
+  .service('SivunavigaatioService', function ($stateParams) {
     this.data = {
       osiot: false,
       piilota: false,
-      projekti: {id: 0}
+      projekti: {id: 0},
+      service: null
     };
     this.bind = function (scope) {
       scope.data = this.data;
@@ -51,15 +52,27 @@ angular.module('eperusteApp')
      */
     this.aseta = function (data) {
       if (data.perusteprojektiTiedot) {
-        this.data.projekti = data.perusteprojektiTiedot.getProjekti();
-        this.data.projekti.peruste = data.perusteprojektiTiedot.getPeruste();
-        this.data.projekti.peruste.sisalto = data.perusteprojektiTiedot.getSisalto();
+        this.data.service = data.perusteprojektiTiedot;
+        this.setData();
       }
 
       if (!_.isUndefined(data.osiot)) {
         this.data.osiot = data.osiot;
       }
       this.data.piilota = !!data.piilota;
+    };
+
+    this.setData = function () {
+      this.data.projekti = this.data.service.getProjekti();
+      this.data.projekti.peruste =  this.data.service.getPeruste();
+      this.data.projekti.peruste.sisalto =  this.data.service.getSisalto();
+    };
+
+    this.update = function () {
+      var self = this;
+      this.data.service.alustaPerusteenSisalto($stateParams, true).then(function () {
+        self.setData();
+      });
     };
 
   });
