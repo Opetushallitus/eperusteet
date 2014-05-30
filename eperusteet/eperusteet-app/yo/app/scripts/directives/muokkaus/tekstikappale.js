@@ -53,6 +53,10 @@ angular.module('eperusteApp')
           Editointikontrollit.registerCallback({
             edit: function() {
             },
+            validate: function() {
+              console.log('Tekstikappaleelta puuttuu validointi. Toteuta.');
+              return true;
+            },
             save: function() {
               //TODO: Validate tutkinnon osa
               if ($scope.editableTekstikappale.id) {

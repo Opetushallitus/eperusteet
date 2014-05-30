@@ -114,18 +114,22 @@ angular.module('eperusteApp')
           }
 
           $scope.editableTutkinnonOsa = angular.copy(osa);
+          
 
           $scope.tutkinnonOsanMuokkausOtsikko = $scope.editableTutkinnonOsa.id ? $scope.editableTutkinnonOsa.nimi : 'luonti-tutkinnon-osa';
 
           Editointikontrollit.registerCallback({
             edit: function() {
-              $scope.viiteosa = $scope.rakenne.tutkinnonOsat[$scope.editableTutkinnonOsa.id] || {};
+              $scope.viiteosa = _.clone($scope.rakenne.tutkinnonOsat[$scope.editableTutkinnonOsa.id] || {});
+            },
+            validate: function() {
+              return $scope.tutkinnonOsaHeaderForm.$valid;
             },
             save: function() {
               //TODO: Validate tutkinnon osa
               cleanAccordionData($scope.editableTutkinnonOsa.arviointi);
               if ($scope.editableTutkinnonOsa.id) {
-                $scope.editableTutkinnonOsa.$saveTutkinnonOsa(function (response) {
+                $scope.editableTutkinnonOsa.$saveTutkinnonOsa(function(response) {
                   $scope.editableTutkinnonOsa = angular.copy(response);
                   $scope.tutkinnonOsa = angular.copy(response);
                   Editointikontrollit.lastModified = response;
@@ -148,7 +152,9 @@ angular.module('eperusteApp')
                   afterDone();
                 }, Notifikaatiot.serverCb);
               }
+
               Editointicatcher.give(_.clone($scope.editableTutkinnonOsa));
+
             },
             cancel: function() {
               $scope.editableTutkinnonOsa = angular.copy($scope.tutkinnonOsa);

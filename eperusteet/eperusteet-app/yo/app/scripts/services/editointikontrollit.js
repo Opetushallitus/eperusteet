@@ -30,7 +30,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .factory('Editointikontrollit', function($rootScope, $q, $timeout) {
+  .factory('Editointikontrollit', function($rootScope, $q, $timeout, Notifikaatiot) {
     var scope = $rootScope.$new(true);
     scope.editingCallback = null;
     scope.editMode = false;
@@ -59,18 +59,25 @@ angular.module('eperusteApp')
         $rootScope.$broadcast('enableEditing');
       },
       saveEditing: function() {
-        if(scope.editingCallback) {
-          scope.editingCallback.save();
-          angular.forEach(additionalCallbacks.save, function(callback) {
-            // Kutsutaan kaikkia callback listenereitä ja annetaan parametrina
-            // viimeisin muutettu objecti ja tieto siitä, onko editointikontrollit ylipäätänsä
-            // pääällä
-            // callback(self.lastModified, scope.editingCallback !== null);
-            callback(undefined, scope.editingCallback !== null);
-          });
-          setEditMode(false);
+        if (scope.editingCallback) {
+
+          if (scope.editingCallback.validate()) {
+
+            scope.editingCallback.save();
+            angular.forEach(additionalCallbacks.save, function(callback) {
+              // Kutsutaan kaikkia callback listenereitä ja annetaan parametrina
+              // viimeisin muutettu objecti ja tieto siitä, onko editointikontrollit ylipäätänsä
+              // pääällä
+              // callback(self.lastModified, scope.editingCallback !== null);
+              callback(undefined, scope.editingCallback !== null);
+            });
+            setEditMode(false);
+            $rootScope.$broadcast('disableEditing');
+          } else {
+            Notifikaatiot.varoitus('sivu-virheellisia-arvoja');
+          }
         }
-        $rootScope.$broadcast('disableEditing');
+
         $rootScope.$broadcast('notifyCKEditor');
       },
       cancelEditing: function() {
