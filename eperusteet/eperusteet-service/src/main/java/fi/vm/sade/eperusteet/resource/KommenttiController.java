@@ -19,7 +19,6 @@ package fi.vm.sade.eperusteet.resource;
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.service.KommenttiService;
 import java.util.List;
-import javax.ws.rs.QueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,15 +45,26 @@ public class KommenttiController {
 
     @RequestMapping(value = "/perusteprojekti/{id}", method = GET)
     @ResponseBody
-    public ResponseEntity<List<KommenttiDto>> getAll(
-            @QueryParam("ylin") Long ylin,
-            @QueryParam("parent") Long parent,
-            @PathVariable("id") final long perusteprojektiId) {
-        List<KommenttiDto> t = service.get(ylin, parent, perusteprojektiId);
+    public ResponseEntity<List<KommenttiDto>> getAll(@PathVariable("id") final long id) {
+        List<KommenttiDto> t = service.getAllByPerusteprojekti(id);
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/id/{id}", method = GET)
+    @RequestMapping(value = "/ylin/{id}", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<KommenttiDto>> getAllByYlin(@PathVariable("id") final long id) {
+        List<KommenttiDto> t = service.getAllByYlin(id);
+        return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/parent/{id}", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<KommenttiDto>> getAllByParent(@PathVariable("id") final long id) {
+        List<KommenttiDto> t = service.getAllByParent(id);
+        return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
     public ResponseEntity<KommenttiDto> get(@PathVariable("id") final long id) {
         KommenttiDto t = service.get(id);
@@ -67,16 +77,16 @@ public class KommenttiController {
         return new ResponseEntity<>(service.add(body), HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/id/{id}", method = {POST,PUT})
+    @RequestMapping(value = "/{id}", method = {POST,PUT})
     @ResponseBody
     public ResponseEntity<KommenttiDto> update(@PathVariable("id") final long id, @RequestBody KommenttiDto body) {
         return new ResponseEntity<>(service.update(id, body), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/id/{id}", method = DELETE)
+    @RequestMapping(value = "/{id}", method = DELETE)
     @ResponseBody
-    public ResponseEntity remove(@PathVariable("id") final long id) {
-        service.remove(id);
+    public ResponseEntity delete(@PathVariable("id") final long id) {
+        service.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

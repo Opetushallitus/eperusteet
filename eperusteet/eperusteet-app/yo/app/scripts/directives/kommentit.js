@@ -15,11 +15,12 @@
  */
 
 'use strict';
+// /* global _ */
 
 angular.module('eperusteApp')
-  .directive('kommentit', function (Kommentit) {
+  .directive('kommentit', function (YleinenData, Kommentit) {
     return {
-      templateUrl: '/views/partials/kommenttiViesti.html',
+      templateUrl: '/views/kommentit.html',
       restrict: 'E',
       replace: true,
       scope: {
@@ -27,18 +28,21 @@ angular.module('eperusteApp')
         depth: '=',
         parent: '='
       },
-      link: function (scope) {
-        scope.editoi = false;
-        scope.editoitava = '';
-        scope.indent = (scope.depth * 60) + 'px';
+      link: function ($scope) {
+        $scope.editoitava = '';
+        $scope.editoi = false;
 
-        scope.poistaKommentti = Kommentit.poistaKommentti;
-        scope.tallennaKommentti = Kommentit.muokkaaKommenttia;
-        scope.lisaaKommentti = Kommentit.lisaaKommentti;
+        $scope.muokkaaKommenttia = function(uusikommentti) {
+          Kommentit.muokkaaKommenttia(uusikommentti);
+          $scope.editoi = false;
+        };
 
-        // scope.poistaKommentti = function(kommentti) {
-        //   Kommentit.poistaKommentti(kommentti);
-        // };
+        $scope.lisaaKommentti = function(parent, kommentti) {
+          Kommentit.lisaaKommentti(parent, kommentti);
+          $scope.editoi = false;
+        };
+
+        // $scope.kommentit = Kommentit.haeKommentit();
       }
     };
   });

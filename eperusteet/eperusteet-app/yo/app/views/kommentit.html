@@ -1,0 +1,9 @@
+<div>
+    <hr>
+    <div>
+        <h2>Keskustelu ({{ sisalto.yhteensa }} {{ 'kommenttia' | kaanna }})</h2>
+    </div>
+    <a ng-hide="editoi" href="" ng-click="editoi = true"><h3><span class="glyphicon glyphicon-plus"></span> {{ 'lisaa-kommentti' | kaanna }}</h3></a>
+    <div ng-show="editoi" ng-include="'views/partials/kommenttiMuokkaus.html'"></div>
+    <kommentti-viesti depth="0" sisalto="sisalto"></kommentti-viesti>
+</div>

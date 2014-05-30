@@ -119,10 +119,16 @@ angular.module('eperusteApp')
           }]
       });
   })
-  .controller('PerusteprojektiCtrl', function ($scope, $state, Navigaatiopolku,
-    koulutusalaService, opintoalaService, SivunavigaatioService, PerusteProjektiService,
-    Kaanna, perusteprojektiTiedot) {
-      
+  .controller('PerusteprojektiCtrl', function ($scope, $state, $stateParams,
+    Navigaatiopolku, koulutusalaService, opintoalaService, SivunavigaatioService,
+    PerusteProjektiService, Kaanna, perusteprojektiTiedot, Kommentit, KommenttiSivuCache) {
+
+    KommenttiSivuCache.perusteProjektiId = $stateParams.perusteProjektiId;
+    $scope.kommentit = { $resolved: false };
+    Kommentit.haeKommentitByPerusteprojekti($stateParams.perusteProjektiId, function(kommentit) {
+      $scope.kommentit = kommentit;
+    });
+
     //PerusteProjektiService.cleanSuoritustapa();
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();

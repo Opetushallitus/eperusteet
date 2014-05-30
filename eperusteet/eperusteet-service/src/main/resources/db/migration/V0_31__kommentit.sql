@@ -8,5 +8,5 @@ CREATE TABLE kommentti (
     muokattu timestamp with time zone,
     sisalto varchar not null,
     poistettu boolean default false,
-    perusteprojekti_id bigint references perusteprojekti(id)
+    perusteprojekti_id bigint not null references perusteprojekti(id)
 );

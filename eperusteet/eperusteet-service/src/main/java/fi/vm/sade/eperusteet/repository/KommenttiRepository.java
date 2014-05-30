@@ -28,8 +28,12 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface KommenttiRepository extends JpaRepository<Kommentti, Long> {
-    @Query("SELECT k FROM Kommentti k WHERE (?1 IS NULL OR k.perusteprojektiId = ?1)" +
-                                            " AND (?2 IS NULL OR k.parentId = ?2)" +
-                                            " AND (?3 IS NULL OR k.ylinId = ?3)")
-    List<Kommentti> findAllByParams(Long perusteprojektiId, Long parentId, Long ylinId);
+    @Query("SELECT k FROM Kommentti k WHERE k.ylinId = ?1")
+    List<Kommentti> findAllByYlin(Long ylinId);
+
+    @Query("SELECT k FROM Kommentti k WHERE k.parentId = ?1")
+    List<Kommentti> findAllByParent(Long parentId);
+
+    @Query("SELECT k FROM Kommentti k WHERE k.perusteprojektiId = ?1")
+    List<Kommentti> findAllByPerusteprojekti(Long perusteprojektiId);
 }

@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,11 +27,13 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class KommenttiDto {
     private String muokkaaja;
     private String sisalto;
-    private Date lahetetty;
+    private Date luotu;
     private Date muokattu;
+    private Long id;
     private Long ylinId;
     private Long parentId;
     private Long perusteprojektiId;

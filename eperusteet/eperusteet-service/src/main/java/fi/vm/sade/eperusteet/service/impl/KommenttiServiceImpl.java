@@ -55,8 +55,24 @@ public class KommenttiServiceImpl implements KommenttiService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("isAuthenticated()")
-    public List<KommenttiDto> get(Long parentId, Long ylinId, Long perusteprojektiId) {
-        List<Kommentti> re = kommentit.findAllByParams(parentId, ylinId, perusteprojektiId);
+    public List<KommenttiDto> getAllByPerusteprojekti(Long id) {
+        List<Kommentti> re = kommentit.findAllByPerusteprojekti(id);
+        return mapper.mapAsList(re, KommenttiDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("isAuthenticated()")
+    public List<KommenttiDto> getAllByParent(Long id) {
+        List<Kommentti> re = kommentit.findAllByParent(id);
+        return mapper.mapAsList(re, KommenttiDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("isAuthenticated()")
+    public List<KommenttiDto> getAllByYlin(Long id) {
+        List<Kommentti> re = kommentit.findAllByYlin(id);
         return mapper.mapAsList(re, KommenttiDto.class);
     }
 
@@ -67,9 +83,13 @@ public class KommenttiServiceImpl implements KommenttiService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Kommentti kommentti = new Kommentti();
         kommentti.setSisalto(kommenttidto.getSisalto());
-        kommentti.setYlinId(kommenttidto.getYlinId());
         kommentti.setPerusteprojektiId(kommenttidto.getPerusteprojektiId());
-        kommentti.setParentId(kommenttidto.getParentId());
+
+        if (kommenttidto.getParentId() != null) {
+            Kommentti parent = kommentit.findOne(kommenttidto.getParentId());
+            kommentti.setParentId(parent.getId());
+            kommentti.setYlinId(parent.getYlinId() == null ? parent.getId() : parent.getYlinId());
+        }
         return mapper.map(kommentit.save(kommentti), KommenttiDto.class);
     }
 
@@ -85,10 +105,9 @@ public class KommenttiServiceImpl implements KommenttiService {
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    public KommenttiDto remove(Long kommenttiId) {
+    public void delete(Long kommenttiId) {
         Kommentti kommentti = kommentit.findOne(kommenttiId);
-        kommentti.setSisalto(null);
+        kommentti.setSisalto("");
         kommentti.setPoistettu(true);
-        return mapper.map(kommentit.save(kommentti), KommenttiDto.class);
     }
 }

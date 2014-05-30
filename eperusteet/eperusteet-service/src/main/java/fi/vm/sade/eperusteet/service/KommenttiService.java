@@ -24,9 +24,12 @@ import java.util.List;
  * @author nkala
  */
 public interface KommenttiService {
+    public List<KommenttiDto> getAllByPerusteprojekti(Long id);
+    public List<KommenttiDto> getAllByParent(Long id);
+    public List<KommenttiDto> getAllByYlin(Long id);
     public KommenttiDto get(Long kommenttiId);
-    public List<KommenttiDto> get(Long parentId, Long ylinId, Long perusteprojektiId);
     public KommenttiDto add(final KommenttiDto kommenttidto);
     public KommenttiDto update(Long kommenttiId, final KommenttiDto kommenttidto);
-    public KommenttiDto remove(Long kommenttiId);
+    public void delete(Long kommenttiId);
+
 }
