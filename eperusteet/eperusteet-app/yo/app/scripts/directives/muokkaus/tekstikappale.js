@@ -24,7 +24,8 @@ angular.module('eperusteApp')
       scope: {
         tekstikappale: '='
       },
-      controller: function($scope, $state, $q, $modal, Editointikontrollit, PerusteenOsat, Notifikaatiot, SivunavigaatioService) {
+      controller: function($scope, $state, $stateParams, $q, $modal,
+        Editointikontrollit, PerusteenOsat, Notifikaatiot, SivunavigaatioService) {
         $scope.versiot = {};
 
         $scope.fields =
@@ -60,9 +61,9 @@ angular.module('eperusteApp')
             save: function() {
               //TODO: Validate tutkinnon osa
               if ($scope.editableTekstikappale.id) {
-                $scope.editableTekstikappale.$saveTekstikappale(openNotificationDialog, Notifikaatiot.serverCb);
+                $scope.editableTekstikappale.$saveTekstikappale(successCb, Notifikaatiot.serverCb);
               } else {
-                PerusteenOsat.saveTekstikappale($scope.editableTekstikappale, openNotificationDialog(), Notifikaatiot.serverCb);
+                PerusteenOsat.saveTekstikappale($scope.editableTekstikappale, successCb, Notifikaatiot.serverCb);
               }
               $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
               // Päivitä versiot
@@ -84,8 +85,10 @@ angular.module('eperusteApp')
           $scope.haeVersiot();
         }
 
-        function openNotificationDialog() {
+        function successCb() {
           Notifikaatiot.onnistui('tallennettu', 'muokkaus-tutkinnon-osa-tallennettu');
+          // Päivitä sivunaviin mahdollisesti muuttuneet otsikot
+          SivunavigaatioService.update();
         }
 
         if ($scope.tekstikappale) {
@@ -114,7 +117,12 @@ angular.module('eperusteApp')
         };
 
         $scope.viimeksiMuokattu = function () {
-          return _.find($scope.versiot.tiedot, {number: $scope.versiot.valittu.number}).date;
+          if ($scope.versiot && $scope.versiot.valittu) {
+            var found = _.find($scope.versiot.tiedot, {number: $scope.versiot.valittu.number});
+            if (found) {
+              return found.date;
+            }
+          }
         };
 
         $scope.haeVersiot = function () {
