@@ -121,6 +121,7 @@ angular.module('eperusteApp')
           Editointikontrollit.registerCallback({
             edit: function() {
               $scope.viiteosa = _.clone($scope.rakenne.tutkinnonOsat[$scope.editableTutkinnonOsa.id] || {});
+              $scope.viiteosa.yksikko = $scope.viiteosa.yksikko || 'OSAAMISPISTE';
             },
             validate: function() {
               return $scope.tutkinnonOsaHeaderForm.$valid;
