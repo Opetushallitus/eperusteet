@@ -136,3 +136,12 @@ $sivunavi-leveys: 280px;
 .sivunavi-sisalto.disable {
   margin-left: 0;
 }
+
+.sivunavi-wrapper.osiot-piilossa {
+  .sivunavi-sisempi-wrapper {
+    width: 100%;
+  }
+  .sivunavi-sisalto {
+    margin-left: 0;
+  }
+}

@@ -14,9 +14,19 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 
-<button ng-hide="editEnabled" ng-click="muokkaa()" class="pull-right btn btn-default"><span class="glyphicon glyphicon-pencil"></span>{{'muokkaa' | translate}}</button>
-<div class="max-sm-leveys">
+<button ng-hide="editEnabled || !versiot.uusin" ng-click="muokkaa()" class="pull-right btn btn-default"><span class="glyphicon glyphicon-pencil"></span>{{'muokkaa' | translate}}</button>
+<div ng-class="{'edit-tekstikappale': editEnabled, 'max-sm-leveys': !editEnabled}">
   <div ng-repeat="field in fields | orderBy:'order'" otsikko="{{field.localeKey}}" kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}">
     <muokattava-kentta field-info="field" object-promise="tekstikappalePromise"></muokattava-kentta>
+    <div class="muokkaustiedot" ng-if="field.path === 'nimi'" ng-hide="editEnabled">
+      <ul>
+        <li>
+          <span>{{'versio' | translate}}</span>: <select ng-model="versiot.valittu" ng-options="ver.index for ver in versiot.tiedot" ng-change="vaihdaVersio()"></select>
+        </li>
+        <li><span>{{'muokattu-viimeksi' | translate}}</span>: {{viimeksiMuokattu() | aikaleima}}</li>
+        <li><span>{{'muokkaaja' | translate}}</span>: Erkki Esimerkki</li>
+      </ul>
+      <hr>
+    </div>
   </div>
 </div>

@@ -27,7 +27,8 @@ angular.module('eperusteApp')
       },
       controller: function($scope, $state, $stateParams, $q, Navigaatiopolku,
         Editointikontrollit, PerusteenOsat, Editointicatcher, PerusteenRakenne,
-        PerusteTutkinnonosa, TutkinnonOsaEditMode, $timeout, Varmistusdialogi) {
+        PerusteTutkinnonosa, TutkinnonOsaEditMode, $timeout, Varmistusdialogi,
+        SivunavigaatioService) {
         $scope.suoritustapa = $stateParams.suoritustapa;
         $scope.rakenne = {};
         PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
@@ -205,6 +206,9 @@ angular.module('eperusteApp')
         $scope.muokkaa = function () {
           Editointikontrollit.startEditing();
         };
+        $scope.$watch('editEnabled', function (editEnabled) {
+          SivunavigaatioService.aseta({osiot: !editEnabled});
+        });
       }
     };
   });

@@ -9,6 +9,7 @@ angular.module('eperusteApp')
     return {
       templateUrl: 'views/partials/sivunavigaatio.html',
       restrict: 'E',
+      transclude: true,
       controller: 'sivunavigaatioCtrl'
     };
   })
@@ -25,13 +26,6 @@ angular.module('eperusteApp')
       $scope.menuCollapsed = !$scope.menuCollapsed;
     };
     $scope.isHidden = function () {
-      if ($scope.data.piilota) {
-        // TODO: parempi/tehokkaampi ratkaisu. Sisältö-div on tämän direktiivin
-        // ulkopuolella, mutta sen tyyli riippuu 'piilota'-attribuutista.
-        angular.element('.sivunavi-sisalto').addClass('disable');
-      } else {
-        angular.element('.sivunavi-sisalto').removeClass('disable');
-      }
       return $scope.data.piilota;
     };
     SivunavigaatioService.bind($scope);
@@ -61,7 +55,7 @@ angular.module('eperusteApp')
         this.data.projekti.peruste = data.perusteprojektiTiedot.getPeruste();
         this.data.projekti.peruste.sisalto = data.perusteprojektiTiedot.getSisalto();
       }
-      
+
       if (!_.isUndefined(data.osiot)) {
         this.data.osiot = data.osiot;
       }

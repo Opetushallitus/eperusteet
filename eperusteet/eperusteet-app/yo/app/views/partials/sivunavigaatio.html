@@ -1,3 +1,4 @@
+<div class="sivunavi-wrapper row" ng-class="{'osiot-piilossa': !data.osiot}">
 <div class="sivunavi-sisempi-wrapper" ng-class="{piilota: isHidden()}">
 <div class="sivunavi-takaisin">
   <a class="iconlink" href="" ng-click="goBackToMain()"><span class="glyphicon glyphicon-chevron-left"></span>{{'takaisin-paanakymaan' | kaanna}}</a>
@@ -39,4 +40,6 @@
     </div>
   </div>
 </div>
+</div>
+<div class="sivunavi-sisalto" ng-class="{disable: data.piilota}" ng-transclude></div>
 </div>

@@ -24,7 +24,8 @@ angular.module('eperusteApp')
       scope: {
         tekstikappale: '='
       },
-      controller: function($scope, $state, $q, $modal, Editointikontrollit, PerusteenOsat, Notifikaatiot) {
+      controller: function($scope, $state, $q, $modal, Editointikontrollit, PerusteenOsat, Notifikaatiot, SivunavigaatioService) {
+        $scope.versiot = {};
 
         $scope.fields =
           new Array({
@@ -60,6 +61,9 @@ angular.module('eperusteApp')
                 PerusteenOsat.saveTekstikappale($scope.editableTekstikappale, openNotificationDialog(), Notifikaatiot.serverCb);
               }
               $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
+              // Päivitä versiot
+              $scope.versiot.tiedot = null;
+              $scope.haeVersiot();
             },
             cancel: function() {
               $scope.editableTekstikappale = angular.copy($scope.tekstikappale);
@@ -67,8 +71,13 @@ angular.module('eperusteApp')
               $scope.tekstikappalePromise = tekstikappaleDefer.promise;
 
               tekstikappaleDefer.resolve($scope.editableTekstikappale);
+            },
+            notify: function (mode) {
+              $scope.editEnabled = mode;
             }
           });
+
+          $scope.haeVersiot();
         }
 
         function openNotificationDialog() {
@@ -90,6 +99,44 @@ angular.module('eperusteApp')
 
         $scope.muokkaa = function () {
           Editointikontrollit.startEditing();
+        };
+
+        $scope.$watch('editEnabled', function (editEnabled) {
+          SivunavigaatioService.aseta({osiot: !editEnabled});
+        });
+
+        $scope.uusin = function () {
+          return _.first($scope.versiot.tiedot) || {};
+        };
+
+        $scope.viimeksiMuokattu = function () {
+          return _.find($scope.versiot.tiedot, {number: $scope.versiot.valittu.number}).date;
+        };
+
+        $scope.haeVersiot = function () {
+          if (!$scope.versiot.tiedot) {
+            $scope.versiot.tiedot = PerusteenOsat.revisions({osanId: $scope.tekstikappale.id}, function () {
+              $scope.versiot.valittu = $scope.uusin();
+              $scope.versiot.uusin = true;
+              _.each($scope.versiot.tiedot, function (item, index) {
+                // reverse numbering for UI, oldest = 1
+                item.index = $scope.versiot.tiedot.length - index;
+              });
+            });
+          }
+        };
+        $scope.vaihdaVersio = function () {
+          PerusteenOsat.getRevision({
+            osanId: $scope.tekstikappale.id,
+            revisionId: $scope.versiot.valittu.number
+          }).$promise.then(function(response) {
+            $scope.tekstikappale = response;
+            setupTekstikappale(response);
+            $scope.versiot.uusin = $scope.versiot.valittu.number === $scope.uusin().number;
+            var tekstikappaleDefer = $q.defer();
+            $scope.tekstikappalePromise = tekstikappaleDefer.promise;
+            tekstikappaleDefer.resolve($scope.editableTekstikappale);
+          });
         };
       }
     };
