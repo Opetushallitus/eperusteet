@@ -42,6 +42,10 @@ angular.module('eperusteApp')
       edit: function() {
         $scope.editoi = true;
       },
+      validate: function() {
+        console.log('Tutkinnon rakenteelta puuttuu validointi. Toteuta.');
+        return true;
+      },
       save: function() {
         tallennaRakenne($scope.rakenne);
         $scope.editoi = false;

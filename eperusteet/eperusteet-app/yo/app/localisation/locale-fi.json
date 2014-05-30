@@ -354,5 +354,9 @@
     "haluatko-jatkaa": "Haluatko jatkaa?",
     "vahvista-liikkuminen": "Vahvista liikkuminen",
 
-    "muodostumissaannot": "Tutkinnon rakenne"
+    "muodostumissaannot": "Tutkinnon rakenne",
+    
+    "arvo-rajojen-ulkopuolella": "Arvon pitää olla välillä {{min}} - {{max}}",
+    "arvo-ei-numero": "Arvon täytyy olla numero",
+    "sivu-virheellisia-arvoja": "Sivulla on virheellisiä arvoja"
 }
