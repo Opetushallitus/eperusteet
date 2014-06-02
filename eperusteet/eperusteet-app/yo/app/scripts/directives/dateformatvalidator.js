@@ -19,8 +19,10 @@ angular.module('eperusteApp')
         });
         
         function validate (viewValue) {
+          
+          console.log('viewValue', viewValue);
 
-          if (viewValue instanceof Date || viewValue === '' || viewValue === null) {
+          if (viewValue instanceof Date || viewValue === '' || viewValue === null || viewValue === undefined) {
             ngModel.$setValidity('dateformatvalidator', true);
             return viewValue;
           } else if (typeof viewValue === 'string') {
