@@ -105,7 +105,7 @@ angular.module('eperusteApp', [
       }]);
   })
   .run(function($rootScope, $modal, $location, $window, $state, paginationConfig, Editointikontrollit,
-                Varmistusdialogi, Kaanna) {
+                Varmistusdialogi, Kaanna, virheService) {
     paginationConfig.firstText = '';
     paginationConfig.previousText = '';
     paginationConfig.nextText = '';
@@ -184,16 +184,19 @@ angular.module('eperusteApp', [
         }
       });
 
-    // NOTE: Pitäisiköhän näistä virheistä siirtyä virhesivulle?
-    $rootScope.$on('$stateChangeError', function(event/*, toState, toParams, fromState*/) {
-      console.log(event);
+    $rootScope.$on('$stateChangeError', function(event, toState/*, toParams, fromState*/) {
+      console.error(event);
+      virheService.setData({state: toState.name});
+      $state.go('virhe');
     });
 
-    $rootScope.$on('$stateNotFound', function(event/*, toState, toParams, fromState*/) {
-      console.log(event);
+    $rootScope.$on('$stateNotFound', function(event, toState/*, toParams, fromState*/) {
+      console.error(event);
+      virheService.setData({state: toState.to});
+      $state.go('virhe');
     });
     
-    // Jos käyttäjä editoi dokumenttia ja koittaa poistua palvelusta (refresh, iltalehti...), niin varoitetaan, että hän menettää muutoksensa jos jatkaa.
+    // Jos käyttäjä editoi dokumenttia ja koittaa poistua palvelusta (reload, iltalehti...), niin varoitetaan, että hän menettää muutoksensa jos jatkaa.
     $window.addEventListener('beforeunload', function(event) {
       if (Editointikontrollit.getEditMode()) {
         var confirmationMessage = Kaanna.kaanna('tallentamattomia-muutoksia');
