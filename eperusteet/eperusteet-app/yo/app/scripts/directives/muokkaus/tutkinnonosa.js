@@ -28,9 +28,12 @@ angular.module('eperusteApp')
       controller: function($scope, $state, $stateParams, $q, Navigaatiopolku,
         Editointikontrollit, PerusteenOsat, Editointicatcher, PerusteenRakenne,
         PerusteTutkinnonosa, TutkinnonOsaEditMode, $timeout, Varmistusdialogi,
-        SivunavigaatioService) {
+        SivunavigaatioService, VersionHelper) {
+
         $scope.suoritustapa = $stateParams.suoritustapa;
         $scope.rakenne = {};
+        $scope.versiot = {};
+
         PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
           $scope.rakenne = res;
           if (TutkinnonOsaEditMode.getMode()) {
@@ -61,34 +64,34 @@ angular.module('eperusteApp')
              localeKey: 'tutkinnon-osan-tavoitteet',
              type: 'editor-area',
              localized: true,
-             defaultClosed: true,
+             collapsible: true,
              order: 3
            },{
              path: 'ammattitaitovaatimukset',
              localeKey: 'tutkinnon-osan-ammattitaitovaatimukset',
              type: 'editor-area',
              localized: true,
-             defaultClosed: true,
+             collapsible: true,
              order: 4
            },{
              path: 'ammattitaidonOsoittamistavat',
              localeKey: 'tutkinnon-osan-ammattitaidon-osoittamistavat',
              type: 'editor-text',
              localized: true,
-             defaultClosed: true,
+             collapsible: true,
              order: 5
            },{
              path: 'osaamisala',
              localeKey: 'tutkinnon-osan-osaamisala',
              type: 'editor-text',
              localized: true,
-             defaultClosed: true,
+             collapsible: true,
              order: 6
            },{
              path: 'arviointi',
              localeKey: 'tutkinnon-osan-arviointi',
              type: 'arviointi',
-             defaultClosed: true,
+             collapsible: true,
              mandatory: true,
              order: 7
            });
@@ -114,7 +117,7 @@ angular.module('eperusteApp')
           }
 
           $scope.editableTutkinnonOsa = angular.copy(osa);
-          
+
 
           $scope.tutkinnonOsanMuokkausOtsikko = $scope.editableTutkinnonOsa.id ? $scope.editableTutkinnonOsa.nimi : 'luonti-tutkinnon-osa';
 
@@ -155,6 +158,7 @@ angular.module('eperusteApp')
               }
 
               Editointicatcher.give(_.clone($scope.editableTutkinnonOsa));
+              $scope.haeVersiot(true);
 
             },
             cancel: function() {
@@ -169,6 +173,7 @@ angular.module('eperusteApp')
               $scope.editEnabled = mode;
             }
           });
+          $scope.haeVersiot();
         }
 
         if($scope.tutkinnonOsa) {
@@ -216,6 +221,21 @@ angular.module('eperusteApp')
         $scope.$watch('editEnabled', function (editEnabled) {
           SivunavigaatioService.aseta({osiot: !editEnabled});
         });
+
+        $scope.haeVersiot = function (force) {
+          VersionHelper.getVersions($scope.versiot, $scope.tutkinnonOsa.id, force);
+        };
+
+        $scope.vaihdaVersio = function () {
+          VersionHelper.change($scope.versiot, $scope.tutkinnonOsa.id, function (response) {
+            $scope.tutkinnonOsa = response;
+            setupTutkinnonOsa(response);
+            var objDefer = $q.defer();
+            $scope.tutkinnonOsaPromise = objDefer.promise;
+            objDefer.resolve($scope.editableTutkinnonOsa);
+          });
+        };
+
       }
     };
   });

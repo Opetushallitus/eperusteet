@@ -35,6 +35,7 @@
     "kommentoi-muutosta": "Kommentoi muutosta",
     "haluatko-jatkaa": "Haluatko jatkaa?",
     "tuo-valitut": "Tuo valitut",
+    "sulje": "Sulje",
 
     "fi": "Suomi",
     "sv": "Ruotsi",
@@ -229,6 +230,7 @@
     "muokkaus-tekstikappaleen-teksti-header": "Teksti",
     "muokkaus-tekstikappaleen-teksti-placeholder": "Kirjoita tähän kappaleen teksti",
     "versio": "Versio",
+    "nayta-versiohistoria": "Näytä versiohistoria",
 
     "arviointi-lisatiedot-placeholder": "Arvioinnin sanallinen selitys tähän",
     "arviointi-uusi-kohdealue": "Uusi kohdealue",

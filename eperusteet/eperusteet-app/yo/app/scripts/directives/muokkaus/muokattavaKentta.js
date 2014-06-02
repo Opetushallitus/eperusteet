@@ -32,13 +32,8 @@ angular.module('eperusteApp')
         element.addClass('list-group-item ');
         element.attr('ng-class', '');
 
-        if(attrs.kiinniOletuksena) {
-          scope.canCollapse = true;
-          scope.collapsed = attrs.kiinniOletuksena;
-        } else {
-          scope.canCollapse = false;
-          scope.collapsed = false;
-        }
+        scope.canCollapse = attrs.collapsible || false;
+        scope.collapsed = false;
       }
     };
   })

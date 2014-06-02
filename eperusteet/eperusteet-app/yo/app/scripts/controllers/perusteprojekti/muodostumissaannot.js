@@ -11,6 +11,7 @@ angular.module('eperusteApp')
       rakenne: { osat: [] },
       tutkinnonOsat: {}
     };
+    $scope.versiot = {};
 
     Kommentit.haeKommentit(KommentitBySuoritustapa, { id: $stateParams.perusteProjektiId, suoritustapa: $scope.suoritustapa });
 

@@ -2,6 +2,7 @@
 <h1>
   {{ 'tutkinnon-rakenne' | kaanna }}
 </h1>
+<versiotiedot ng-hide="editoi"></versiotiedot>
 <div>
   <tree-wrapper muokkaus="editoi" ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
 </div>

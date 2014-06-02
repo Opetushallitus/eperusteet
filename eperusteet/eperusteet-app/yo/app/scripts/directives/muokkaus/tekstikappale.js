@@ -25,7 +25,8 @@ angular.module('eperusteApp')
         tekstikappale: '='
       },
       controller: function($scope, $state, $stateParams, $q, $modal,
-        Editointikontrollit, PerusteenOsat, Notifikaatiot, SivunavigaatioService) {
+        Editointikontrollit, PerusteenOsat, Notifikaatiot, SivunavigaatioService,
+        VersionHelper) {
         $scope.versiot = {};
 
         $scope.fields =
@@ -67,8 +68,7 @@ angular.module('eperusteApp')
               }
               $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
               // Päivitä versiot
-              $scope.versiot.tiedot = null;
-              $scope.haeVersiot();
+              $scope.haeVersiot(true);
             },
             cancel: function() {
               $scope.editableTekstikappale = angular.copy($scope.tekstikappale);
@@ -112,39 +112,14 @@ angular.module('eperusteApp')
           SivunavigaatioService.aseta({osiot: !editEnabled});
         });
 
-        $scope.uusin = function () {
-          return _.first($scope.versiot.tiedot) || {};
+        $scope.haeVersiot = function (force) {
+          VersionHelper.getVersions($scope.versiot, $scope.tekstikappale.id, force);
         };
 
-        $scope.viimeksiMuokattu = function () {
-          if ($scope.versiot && $scope.versiot.valittu) {
-            var found = _.find($scope.versiot.tiedot, {number: $scope.versiot.valittu.number});
-            if (found) {
-              return found.date;
-            }
-          }
-        };
-
-        $scope.haeVersiot = function () {
-          if (!$scope.versiot.tiedot) {
-            $scope.versiot.tiedot = PerusteenOsat.revisions({osanId: $scope.tekstikappale.id}, function () {
-              $scope.versiot.valittu = $scope.uusin();
-              $scope.versiot.uusin = true;
-              _.each($scope.versiot.tiedot, function (item, index) {
-                // reverse numbering for UI, oldest = 1
-                item.index = $scope.versiot.tiedot.length - index;
-              });
-            });
-          }
-        };
         $scope.vaihdaVersio = function () {
-          PerusteenOsat.getRevision({
-            osanId: $scope.tekstikappale.id,
-            revisionId: $scope.versiot.valittu.number
-          }).$promise.then(function(response) {
+          VersionHelper.change($scope.versiot, $scope.tekstikappale.id, function (response) {
             $scope.tekstikappale = response;
             setupTekstikappale(response);
-            $scope.versiot.uusin = $scope.versiot.valittu.number === $scope.uusin().number;
             var tekstikappaleDefer = $q.defer();
             $scope.tekstikappalePromise = tekstikappaleDefer.promise;
             tekstikappaleDefer.resolve($scope.editableTekstikappale);

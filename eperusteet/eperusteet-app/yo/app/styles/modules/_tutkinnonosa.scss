@@ -238,7 +238,10 @@ $pikamenu-max-height: 400px;
     margin-top: 5px;
   }
   ul {
-    margin-top: 15px;
+    display: inline-block;
+    line-height: 3;
+    margin-top: 10px;
+    margin-bottom: 5px;
     color: $secondary-lighter;
     padding: 0;
     li {
@@ -248,6 +251,9 @@ $pikamenu-max-height: 400px;
       span {
         font-weight: 700;
       }
+    }
+    &.version-valinta {
+      float: right;
     }
   }
 }
