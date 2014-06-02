@@ -29,6 +29,10 @@
             <span ng-show="viesti.muokattu"><i><b>Muokattu </b>{{ viesti.muokattu | aikaleima }}</i></span>
             <span ng-hide="viesti.muokattu"><i>{{ viesti.luotu | aikaleima }}</i></span>
             <a href="" ng-click="viesti.$lisaa = true">{{ 'vastaa' | kaanna }}</a>
+            <span ng-show="viesti.viestit.length > 0">
+              <a ng-show="viesti.$piilotaAliviestit" href="" ng-click="viesti.$piilotaAliviestit = false">{{ 'nayta-aliviestit' | kaanna }}</a>
+              <a ng-hide="viesti.$piilotaAliviestit" href="" ng-click="viesti.$piilotaAliviestit = true">{{ 'piilota-aliviestit' | kaanna }}</a>
+            </span>
           </div>
         </div>
       </div>
@@ -44,7 +48,7 @@
         </div>
       </div>
     </div>
-    <kommentti-viesti parent="sisalto" depth="depth + 1" sisalto="viesti"></kommentti-viesti>
+    <kommentti-viesti ng-if="!viesti.$piilotaAliviestit" parent="sisalto" depth="depth + 1" sisalto="viesti"></kommentti-viesti>
   </script>
   <div ng-repeat="viesti in sisalto.viestit" ng-include="'viesti_piirtaja.html'"></div>
 </div>

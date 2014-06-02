@@ -70,7 +70,9 @@
     "tutkinnon-osa-rakenteesta-poistettu": "Tutkinnon osa poistettu onnistuneesti.",
 
     "viesti-poistettu": "Viesti poistettu",
-    "kommentti-poistettu": "Kommentti poistettu onnistuneesti",
+    "kommentti-poistettu": "Kommentti poistettiin onnistuneesti",
+    "nayta-aliviestit": "Näytä vastaukset",
+    "piilota-aliviestit": "Piilota vastaukset",
 
     "haku-otsikko": "Perusteen haku",
     "haku-koulutusala": "Koulutusala",

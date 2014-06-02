@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
@@ -43,6 +42,20 @@ public class KommenttiController {
     @Autowired
     KommenttiService service;
 
+    @RequestMapping(value = "/perusteprojekti/{id}/suoritustapa/{suoritustapa}", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<KommenttiDto>> getAll(@PathVariable("id") final long id, @PathVariable("suoritustapa") final String suoritustapa) {
+        List<KommenttiDto> t = service.getAllBySuoritustapa(id, suoritustapa);
+        return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/perusteprojekti/{id}/perusteenosa/{perusteenOsaId}", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<KommenttiDto>> getAll(@PathVariable("id") final long id, @PathVariable("perusteenOsaId") final long perusteenOsaId) {
+        List<KommenttiDto> t = service.getAllByPerusteenOsa(id, perusteenOsaId);
+        return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/perusteprojekti/{id}", method = GET)
     @ResponseBody
     public ResponseEntity<List<KommenttiDto>> getAll(@PathVariable("id") final long id) {
@@ -71,13 +84,13 @@ public class KommenttiController {
         return new ResponseEntity<>(t, t == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
 
-    @RequestMapping(method = {POST,PUT})
+    @RequestMapping(method = {POST, PUT})
     @ResponseBody
     public ResponseEntity<KommenttiDto> add(@RequestBody KommenttiDto body) {
         return new ResponseEntity<>(service.add(body), HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/{id}", method = {POST,PUT})
+    @RequestMapping(value = "/{id}", method = {POST, PUT})
     @ResponseBody
     public ResponseEntity<KommenttiDto> update(@PathVariable("id") final long id, @RequestBody KommenttiDto body) {
         return new ResponseEntity<>(service.update(id, body), HttpStatus.OK);

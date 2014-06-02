@@ -55,6 +55,22 @@ public class KommenttiServiceImpl implements KommenttiService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("isAuthenticated()")
+    public List<KommenttiDto> getAllByPerusteenOsa(Long id, Long perusteenOsaId) {
+        List<Kommentti> re = kommentit.findAllByPerusteenOsa(id, perusteenOsaId);
+        return mapper.mapAsList(re, KommenttiDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("isAuthenticated()")
+    public List<KommenttiDto> getAllBySuoritustapa(Long id, String suoritustapa) {
+        List<Kommentti> re = kommentit.findAllBySuoritustapa(id, suoritustapa);
+        return mapper.mapAsList(re, KommenttiDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllByPerusteprojekti(Long id) {
         List<Kommentti> re = kommentit.findAllByPerusteprojekti(id);
         return mapper.mapAsList(re, KommenttiDto.class);
@@ -84,6 +100,8 @@ public class KommenttiServiceImpl implements KommenttiService {
         Kommentti kommentti = new Kommentti();
         kommentti.setSisalto(kommenttidto.getSisalto());
         kommentti.setPerusteprojektiId(kommenttidto.getPerusteprojektiId());
+        kommentti.setSuoritustapa(kommenttidto.getSuoritustapa());
+        kommentti.setPerusteenOsaId(kommenttidto.getPerusteenOsaId());
 
         if (kommenttidto.getParentId() != null) {
             Kommentti parent = kommentit.findOne(kommenttidto.getParentId());

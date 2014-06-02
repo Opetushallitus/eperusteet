@@ -38,4 +38,6 @@ public class KommenttiDto {
     private Long parentId;
     private Long perusteprojektiId;
     private Boolean poistettu;
+    private Long perusteenOsaId;
+    private String suoritustapa;
 }

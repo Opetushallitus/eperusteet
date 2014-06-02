@@ -24,6 +24,8 @@ import java.util.List;
  * @author nkala
  */
 public interface KommenttiService {
+    public List<KommenttiDto> getAllByPerusteenOsa(Long id, Long perusteeonOsaId);
+    public List<KommenttiDto> getAllBySuoritustapa(Long id, String suoritustapa);
     public List<KommenttiDto> getAllByPerusteprojekti(Long id);
     public List<KommenttiDto> getAllByParent(Long id);
     public List<KommenttiDto> getAllByYlin(Long id);

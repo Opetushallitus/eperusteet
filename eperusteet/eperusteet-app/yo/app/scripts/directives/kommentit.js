@@ -15,34 +15,62 @@
  */
 
 'use strict';
-// /* global _ */
 
 angular.module('eperusteApp')
-  .directive('kommentit', function (YleinenData, Kommentit) {
+  .directive('kommentit', function ($location, $state, $rootScope, YleinenData, Kommentit) {
     return {
       templateUrl: '/views/kommentit.html',
       restrict: 'E',
       replace: true,
       scope: {
-        sisalto: '=',
         depth: '=',
         parent: '='
       },
       link: function ($scope) {
+        $scope.nayta = true;
         $scope.editoitava = '';
         $scope.editoi = false;
+        $scope.sisalto = false;
+        $scope.urlit = {};
+
+        function lataaKommentit(url, lataaja) {
+          if (lataaja) {
+            $scope.urlit[url] = lataaja;
+          }
+
+          lataaja = $scope.urlit[url];
+          if (lataaja) {
+            lataaja(function(kommentit) {
+              $scope.sisalto = kommentit;
+              $scope.nayta = true;
+            });
+          }
+        }
+
+        $rootScope.$on('$stateChangeStart', function() {
+          $scope.nayta = false;
+        });
+
+        $rootScope.$on('$stateChangeSuccess', function() {
+          lataaKommentit($location.url());
+        });
 
         $scope.muokkaaKommenttia = function(uusikommentti) {
           Kommentit.muokkaaKommenttia(uusikommentti);
-          $scope.editoi = false;
         };
 
         $scope.lisaaKommentti = function(parent, kommentti) {
-          Kommentit.lisaaKommentti(parent, kommentti);
-          $scope.editoi = false;
+          Kommentit.lisaaKommentti(parent, kommentti, function() {
+            $scope.sisalto.yhteensa += 1;
+          });
         };
 
-        // $scope.kommentit = Kommentit.haeKommentit();
+        $scope.$on('enableEditing', function() { $scope.nayta = false; });
+        $scope.$on('disableEditing', function() { $scope.nayta = true; });
+
+        $scope.$on('update:kommentit', function(event, url, lataaja) {
+          lataaKommentit(url, lataaja);
+        });
       }
     };
   });

@@ -14,6 +14,7 @@
 * European Union Public Licence for more details.
 */
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {
@@ -66,9 +67,10 @@ angular.module('eperusteApp')
         url: '/perusteenosa/:perusteenOsanTyyppi/:perusteenOsaId',
         templateUrl: 'views/muokkaus.html',
         controller: 'MuokkausCtrl',
-        onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
-            SivunavigaatioService.aseta({osiot: true});
-          }]
+        onEnter: ['SivunavigaatioService', 'Kommentit', 'KommentitByPerusteenOsa', '$stateParams', function(SivunavigaatioService, Kommentit, KommentitByPerusteenOsa, $stateParams) {
+          Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });
+          SivunavigaatioService.aseta({osiot: true});
+        }]
       })
       .state('perusteprojekti.suoritustapa.sisalto', {
         url: '/sisalto',
@@ -121,13 +123,7 @@ angular.module('eperusteApp')
   })
   .controller('PerusteprojektiCtrl', function ($scope, $state, $stateParams,
     Navigaatiopolku, koulutusalaService, opintoalaService, SivunavigaatioService,
-    PerusteProjektiService, Kaanna, perusteprojektiTiedot, Kommentit, KommenttiSivuCache) {
-
-    KommenttiSivuCache.perusteProjektiId = $stateParams.perusteProjektiId;
-    $scope.kommentit = { $resolved: false };
-    Kommentit.haeKommentitByPerusteprojekti($stateParams.perusteProjektiId, function(kommentit) {
-      $scope.kommentit = kommentit;
-    });
+    PerusteProjektiService, Kaanna, perusteprojektiTiedot, Kommentit, KommentitByPerusteprojekti) {
 
     //PerusteProjektiService.cleanSuoritustapa();
     $scope.projekti = perusteprojektiTiedot.getProjekti();

@@ -36,4 +36,10 @@ public interface KommenttiRepository extends JpaRepository<Kommentti, Long> {
 
     @Query("SELECT k FROM Kommentti k WHERE k.perusteprojektiId = ?1")
     List<Kommentti> findAllByPerusteprojekti(Long perusteprojektiId);
+
+    @Query("SELECT k FROM Kommentti k WHERE k.perusteprojektiId = ?1 AND k.perusteenOsaId = ?2")
+    List<Kommentti> findAllByPerusteenOsa(Long perusteprojektiId, Long PerusteenOsaId);
+
+    @Query("SELECT k FROM Kommentti k WHERE k.perusteprojektiId = ?1 AND k.suoritustapa = ?2")
+    List<Kommentti> findAllBySuoritustapa(Long perusteprojektiId, String suoritustapa);
 }

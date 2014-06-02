@@ -28,6 +28,22 @@ angular.module('eperusteApp')
       get: { method: 'GET', isArray: true }
     });
   })
+  .factory('KommentitByPerusteenOsa', function(SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/kommentit/perusteprojekti/:id/perusteenosa/:perusteenOsaId', {
+      id: '@id',
+      perusteenOsaId: '@perusteenOsaId'
+    }, {
+      get: { method: 'GET', isArray: true }
+    });
+  })
+  .factory('KommentitBySuoritustapa', function(SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/kommentit/perusteprojekti/:id/suoritustapa/:suoritustapa', {
+      id: '@id',
+      suoritustapa: '@suoritustapa'
+    }, {
+      get: { method: 'GET', isArray: true }
+    });
+  })
   .factory('KommentitByPerusteprojekti', function(SERVICE_LOC, $resource) {
     return $resource(SERVICE_LOC + '/kommentit/perusteprojekti/:id', { id: '@id' }, {
       get: { method: 'GET', isArray: true }
@@ -42,19 +58,20 @@ angular.module('eperusteApp')
   .service('KommenttiSivuCache', function() {
     this.perusteProjektiId = null;
   })
-  .service('Kommentit', function(Notifikaatiot, KommenttiSivuCache, KommentitCRUD, KommentitByParent, KommentitByYlin, KommentitByPerusteprojekti) {
-    function rakennaKommenttiPuu(viestit) {
-      viestit = _(viestit)
-        .map(function(viesti) {
-          viesti.muokattu = viesti.luotu === viesti.muokattu ? null : viesti.muokattu;
-          viesti.viestit = [];
-          viesti.$sortDate = viesti.muokattu ? viesti.muokattu : viesti.luotu;
-          return viesti;
-        })
-        .sort('$sortDate')
-        .value();
+  .service('Kommentit', function($stateParams, $location, $timeout, $rootScope, Notifikaatiot, KommenttiSivuCache, KommentitCRUD) {
+    var nykyinen = {};
+    var nykyinenParams = {};
 
-      var viestiMap = _.zipObject(_.map(viestit, 'id'), _.map(viestit, _.identity));
+    function rakennaKommenttiPuu(viestit) {
+      viestit = _(viestit).map(function(viesti) {
+                             viesti.muokattu = viesti.luotu === viesti.muokattu ? null : viesti.muokattu;
+                             viesti.viestit = [];
+                             return viesti;
+                           })
+                           .sort('luotu')
+                           .value();
+
+      var viestiMap = _.zipObject(_.map(viestit, 'id'), viestit);
 
       _.forEach(viestit, function(viesti) {
         if (viesti.parentId && viestiMap[viesti.parentId]) {
@@ -62,28 +79,32 @@ angular.module('eperusteApp')
         }
       });
 
-      var baseKommentit = _(viestiMap)
-        .values()
-        .reject(function(viesti) { return viesti.parentId !== null; })
-        .sort('$sortDate')
-        .reverse()
-        .value();
-
       var sisaltoObject = {
         $resolved: true,
         yhteensa: _.size(viestit),
         seuraajat: [],
-        viestit: baseKommentit
+        viestit: _(viestiMap).values()
+                             .reject(function(viesti) { return viesti.parentId !== null; })
+                             .sort('luotu')
+                             .reverse()
+                             .value()
       };
       return sisaltoObject;
     }
 
-    function haeKommentitByPerusteprojekti(id, cb) {
-      cb = cb || angular.noop;
-      KommentitByPerusteprojekti.get({ id: id }, function(res) {
-        cb(rakennaKommenttiPuu(res));
-      },
-      Notifikaatiot.serverCb);
+    function haeKommentit(Resource, params) {
+      nykyinenParams = params;
+      var url = $location.url();
+      var lataaja = function(cb) {
+        Resource.get(params, function(res) {
+          nykyinen = rakennaKommenttiPuu(res);
+          cb(nykyinen);
+        },
+        Notifikaatiot.serverCb);
+      };
+      $timeout(function() {
+        $rootScope.$broadcast('update:kommentit', url, lataaja);
+      }, 100);
     }
 
     // TODO: ota käyttöön tarvittaessa
@@ -94,14 +115,20 @@ angular.module('eperusteApp')
     // function haeAliKommentit(parentId) {
     // }
 
-    function lisaaKommentti(parent, viesti) {
-      KommentitCRUD.save({
-        parentId: parent ? parent.id : null,
+    function lisaaKommentti(parent, viesti, success) {
+      success = success || angular.noop;
+      var payload = _.merge(_.clone(nykyinenParams), {
+        parentId: parent && parent.id ? parent.id : null,
         sisalto: viesti,
-        perusteprojektiId: KommenttiSivuCache.perusteProjektiId
-      }, function(res) {
+        perusteprojektiId: $stateParams.perusteProjektiId ? $stateParams.perusteProjektiId : null
+      });
+      delete payload.id;
+
+      KommentitCRUD.save(payload, function(res) {
         res.muokattu = null;
+        res.viestit = [];
         parent.viestit.unshift(res);
+        success();
       });
     }
 
@@ -129,7 +156,7 @@ angular.module('eperusteApp')
     }
 
     return {
-      haeKommentitByPerusteprojekti: haeKommentitByPerusteprojekti,
+      haeKommentit: haeKommentit,
       lisaaKommentti: lisaaKommentti,
       poistaKommentti: poistaKommentti,
       muokkaaKommenttia: muokkaaKommenttia

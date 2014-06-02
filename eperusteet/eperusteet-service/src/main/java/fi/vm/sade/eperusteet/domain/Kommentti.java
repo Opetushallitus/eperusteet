@@ -62,4 +62,14 @@ public class Kommentti extends AbstractAuditedEntity {
     @Setter
     @Column(name="sisalto")
     private String sisalto;
+
+    @Getter
+    @Setter
+    @Column(name="viite_suoritustapa")
+    private String suoritustapa;
+
+    @Getter
+    @Setter
+    @Column(name="viite_perusteenosa_id")
+    private Long perusteenOsaId;
 }
