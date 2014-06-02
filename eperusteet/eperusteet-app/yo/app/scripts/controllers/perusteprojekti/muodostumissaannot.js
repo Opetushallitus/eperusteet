@@ -3,7 +3,7 @@
 angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams,
               PerusteProjektiService, PerusteenRakenne, TreeCache, Notifikaatiot,
-              Editointikontrollit, SivunavigaatioService) {
+              Editointikontrollit, SivunavigaatioService, Kommentit, KommentitBySuoritustapa) {
     $scope.editoi = false;
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
     $scope.rakenne = {
@@ -11,6 +11,8 @@ angular.module('eperusteApp')
       rakenne: { osat: [] },
       tutkinnonOsat: {}
     };
+
+    Kommentit.haeKommentit(KommentitBySuoritustapa, { id: $stateParams.perusteProjektiId, suoritustapa: $scope.suoritustapa });
 
     function haeRakenne() {
       PerusteenRakenne.hae($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
@@ -23,7 +25,6 @@ angular.module('eperusteApp')
     haeRakenne();
 
     function tallennaRakenne(rakenne) {
-      console.log(rakenne);
       TreeCache.tallenna(rakenne, $stateParams.perusteenId);
       PerusteenRakenne.tallenna(
         rakenne,

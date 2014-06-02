@@ -16,7 +16,6 @@ angular.module('eperusteApp')
   })
   .controller('TutkinnonosaCtrl', function ($q, $scope, $rootScope, $stateParams, $state,
     YleinenData, Navigaatiopolku, PerusteenOsat, Perusteet, palvelinhaunIlmoitusKanava) {
-
     $scope.tutkinnonOsa = {};
 
     $scope.nakyvilla = {

@@ -1,0 +1,16 @@
+<div ng-if="sisalto && nayta">
+    <hr>
+    <div>
+        <h2>Keskustelu ({{ sisalto.yhteensa }} {{ 'kommenttia' | kaanna }})</h2>
+    </div>
+    <a ng-model="editoi" ng-hide="editoi" href="" ng-click="editoi = true"><h3><span class="glyphicon glyphicon-plus"></span> {{ 'lisaa-kommentti' | kaanna }}</h3></a>
+    <div ng-show="editoi" class="kommentti-uusi">
+        <expandable-ta ng-model="editoitava"></expandable-ta>
+        <div class="kommentti-painikkeet">
+            <button class="btn btn-primary" ng-click="lisaaKommentti(sisalto, editoitava); editoi = false; editoitava = ''">Tallenna</button>
+            <button class="btn" ng-click="editoi = false">Peruuta</button>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <kommentti-viesti depth="0" sisalto="sisalto"></kommentti-viesti>
+</div>

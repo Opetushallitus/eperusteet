@@ -14,6 +14,7 @@
 * European Union Public Licence for more details.
 */
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {
@@ -66,8 +67,9 @@ angular.module('eperusteApp')
         url: '/perusteenosa/:perusteenOsanTyyppi/:perusteenOsaId',
         templateUrl: 'views/muokkaus.html',
         controller: 'MuokkausCtrl',
-        onEnter: ['SivunavigaatioService', 'perusteprojektiTiedot', function(SivunavigaatioService, perusteprojektiTiedot) {
-            SivunavigaatioService.aseta({osiot: true, perusteprojektiTiedot: perusteprojektiTiedot});
+        onEnter: ['SivunavigaatioService', 'Kommentit', 'KommentitByPerusteenOsa', '$stateParams', function(SivunavigaatioService, Kommentit, KommentitByPerusteenOsa, $stateParams) {
+            Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });
+            SivunavigaatioService.aseta({osiot: true});
           }]
       })
       .state('perusteprojekti.suoritustapa.sisalto', {
@@ -116,8 +118,9 @@ angular.module('eperusteApp')
         resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService'}
       });
   })
-  .controller('PerusteprojektiCtrl', function ($scope, Navigaatiopolku,
-    koulutusalaService, opintoalaService, Kaanna, perusteprojektiTiedot) {
+  .controller('PerusteprojektiCtrl', function ($scope, $state, $stateParams,
+    Navigaatiopolku, koulutusalaService, opintoalaService, SivunavigaatioService,
+    PerusteProjektiService, Kaanna, perusteprojektiTiedot) {
 
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
