@@ -196,8 +196,9 @@ angular.module('eperusteApp', [
     // Jos käyttäjä editoi dokumenttia ja koittaa poistua palvelusta (refresh, iltalehti...), niin varoitetaan, että hän menettää muutoksensa jos jatkaa.
     $window.addEventListener('beforeunload', function(event) {
       if (Editointikontrollit.getEditMode()) {
-        event.preventDefault();
-        return Kaanna.kaanna('tallentamattomia-muutoksia');
+        var confirmationMessage = Kaanna.kaanna('tallentamattomia-muutoksia');
+        (event || window.event).returnValue = confirmationMessage;
+        return confirmationMessage;
       }
     });
 
