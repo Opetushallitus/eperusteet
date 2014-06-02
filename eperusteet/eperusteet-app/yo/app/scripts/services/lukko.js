@@ -30,42 +30,40 @@ angular.module('eperusteApp')
     });
   })
   .service('Lukitus', function(LukkoPerusteenosa, LukkoSisalto, Notifikaatiot) {
-    function lukitseSisalto(id, suoritustapa, success) {
+    function lukitse(Resource, obj, success) {
       success = success || angular.noop;
-      LukkoSisalto.save({
+      Resource.save(obj, success, Notifikaatiot.serverLukitus);
+    }
+
+    function vapauta(Resource, obj, success) {
+      success = success || angular.noop;
+      Resource.remove(obj, success, Notifikaatiot.serverLukitus);
+    }
+
+    function lukitseSisalto(id, suoritustapa, success) {
+      lukitse(LukkoSisalto, {
         osanId: id,
         suoritustapa: suoritustapa
-      },
-      success,
-      Notifikaatiot.serverLukitus);
+      }, success);
     }
 
     function vapautaSisalto(id, suoritustapa, success) {
-      success = success || angular.noop;
-      LukkoSisalto.remove({
+      vapauta(LukkoSisalto, {
         osanId: id,
         suoritustapa: suoritustapa
-      },
-      success,
-      Notifikaatiot.serverCb);
+      }, success);
     }
 
     function lukitsePerusteenosa(id, success) {
-      success = success || angular.noop;
-      LukkoPerusteenosa.save({
+      lukitse(LukkoPerusteenosa, {
         osanId: id
-      },
-      success,
-      Notifikaatiot.serverLukitus);
+      }, success);
     }
 
     function vapautaPerusteenosa(id, success) {
-      success = success || angular.noop;
-      LukkoPerusteenosa.remove({
+      vapauta(LukkoPerusteenosa, {
         osanId: id
-      },
-      success,
-      Notifikaatiot.serverCb);
+      }, success);
     }
 
     return {

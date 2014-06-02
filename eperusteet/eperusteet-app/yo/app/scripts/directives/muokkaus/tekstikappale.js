@@ -49,7 +49,6 @@ angular.module('eperusteApp')
 
         function setupTekstikappale(kappale) {
           function successCb(res) {
-            Lukitus.vapauta(res.id);
             Notifikaatiot.onnistui('muokkaus-tutkinnon-osa-tallennettu');
             SivunavigaatioService.update();
             Lukitus.vapautaPerusteenosa(res.id);
@@ -82,10 +81,10 @@ angular.module('eperusteApp')
               var tekstikappaleDefer = $q.defer();
               $scope.tekstikappalePromise = tekstikappaleDefer.promise;
               tekstikappaleDefer.resolve($scope.editableTekstikappale);
+              Lukitus.vapautaPerusteenosa($scope.tekstikappale.id);
             },
             notify: function (mode) {
               $scope.editEnabled = mode;
-              Lukitus.vapautaPerusteenosa($scope.tekstikappale.id);
             }
           });
 
