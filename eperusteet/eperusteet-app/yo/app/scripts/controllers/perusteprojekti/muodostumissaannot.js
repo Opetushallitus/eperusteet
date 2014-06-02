@@ -33,6 +33,7 @@ angular.module('eperusteApp')
     Kommentit.haeKommentit(KommentitBySuoritustapa, { id: $stateParams.perusteProjektiId, suoritustapa: $scope.suoritustapa });
 
     function haeRakenne(cb) {
+      cb = cb || angular.noop;
       PerusteenRakenne.hae($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
         res.$suoritustapa = $scope.suoritustapa;
         res.$resolved = true;

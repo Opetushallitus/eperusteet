@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .directive('kommentit', function ($location, $state, $rootScope, YleinenData, Kommentit) {
+  .directive('kommentit', function ($timeout, $location, $state, $rootScope, YleinenData, Kommentit) {
     return {
       templateUrl: '/views/kommentit.html',
       restrict: 'E',
@@ -52,7 +52,9 @@ angular.module('eperusteApp')
         });
 
         $rootScope.$on('$stateChangeSuccess', function() {
-          lataaKommentit($location.url());
+          $timeout(function() {
+            lataaKommentit($location.url());
+          }, 100);
         });
 
         $scope.muokkaaKommenttia = function(uusikommentti) {

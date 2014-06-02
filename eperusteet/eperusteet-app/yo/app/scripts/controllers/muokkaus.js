@@ -18,7 +18,11 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('MuokkausCtrl', function($scope, $stateParams, $state, $compile, Navigaatiopolku, PerusteenOsat) {
+  .controller('MuokkausCtrl', function($scope, $stateParams, $state, $compile, Navigaatiopolku, PerusteenOsat, Kommentit, KommentitByPerusteenOsa) {
+
+    if ($stateParams.perusteProjektiId && $stateParams.perusteenOsaId) {
+      Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });
+    }
 
     $scope.tyyppi = $stateParams.perusteenOsanTyyppi;
     $scope.objekti = null;

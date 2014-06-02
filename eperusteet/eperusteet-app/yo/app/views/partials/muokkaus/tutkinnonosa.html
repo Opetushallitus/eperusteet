@@ -10,15 +10,17 @@
 <versiotiedot ng-hide="editEnabled"></versiotiedot>
 
 <div class="well viitetiedot">
-  <p ng-hide="editEnabled" ng-if="suoritustapa !== 'naytto' && rakenne.tutkinnonOsat[tutkinnonOsa.id] && rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus">
-    {{'tutkinnonosa-laajuus' | kaanna}}: {{rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus}} {{rakenne.tutkinnonOsat[tutkinnonOsa.id].yksikko || '' | kaanna}}
-  </p>
-  <div ng-show="editEnabled">
-    <form name="tutkinnonOsaHeaderForm" class="form-horizontal" role="form">
-      <div ng-if="suoritustapa !== 'naytto'" class="form-group">
-        <label class="control-label col-sm-2">{{ 'tutkinnonosa-laajuus' | kaanna }}</label>
-        <div class="col-sm-10">
-            <numberinput luokka="form-control" name="laajuus" data="viiteosa.laajuus" min="0" max="999" form="tutkinnonOsaHeaderForm"></numberinput>
+  <div class="col-md-6">
+    <p ng-hide="editEnabled" ng-if="suoritustapa !== 'naytto' && rakenne.tutkinnonOsat[tutkinnonOsa.id] && rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus">
+      {{'tutkinnonosa-laajuus' | kaanna}}: {{rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus}} {{rakenne.tutkinnonOsat[tutkinnonOsa.id].yksikko || '' | kaanna}}
+    </p>
+    <div ng-show="editEnabled">
+      <form name="tutkinnonOsaHeaderForm" class="form-horizontal" role="form">
+        <div ng-if="suoritustapa !== 'naytto'" class="form-group">
+          <label class="control-label col-sm-2">{{ 'tutkinnonosa-laajuus' | kaanna }}</label>
+          <div class="col-sm-10">
+              <numberinput luokka="form-control" name="laajuus" data="viiteosa.laajuus" min="0" max="999" form="tutkinnonOsaHeaderForm"></numberinput>
+          </div>
         </div>
       </div>
       <div ng-if="suoritustapa !== 'naytto'" class="form-group">

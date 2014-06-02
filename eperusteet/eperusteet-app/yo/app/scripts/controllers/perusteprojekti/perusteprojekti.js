@@ -67,8 +67,7 @@ angular.module('eperusteApp')
         url: '/perusteenosa/:perusteenOsanTyyppi/:perusteenOsaId',
         templateUrl: 'views/muokkaus.html',
         controller: 'MuokkausCtrl',
-        onEnter: ['SivunavigaatioService', 'Kommentit', 'KommentitByPerusteenOsa', '$stateParams', function(SivunavigaatioService, Kommentit, KommentitByPerusteenOsa, $stateParams) {
-            Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });
+        onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
             SivunavigaatioService.aseta({osiot: true});
           }]
       })
