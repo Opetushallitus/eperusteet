@@ -56,7 +56,6 @@ angular.module('eperusteApp')
     $scope.kommentti = '';
     $scope.hideControls = true;
     function setEditControls() {
-      console.log('setEditControls');
       if(Editointikontrollit.editingEnabled()) {
         $scope.hideControls = false;
       } else {
@@ -68,7 +67,6 @@ angular.module('eperusteApp')
     setEditControls();
 
     $rootScope.$on('$stateChangeSuccess', function() {
-      console.log('locationChangeSuccess');
       Editointikontrollit.unregisterCallback();
       setEditControls();
     });
