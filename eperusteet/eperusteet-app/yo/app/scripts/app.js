@@ -26,7 +26,8 @@ angular.module('eperusteApp', [
   'pascalprecht.translate',
   'ui.bootstrap',
   'ui.utils',
-  'ui.sortable'
+  'ui.sortable',
+  'monospaced.elastic'
 ])
   .constant('SERVICE_LOC', '/eperusteet-service/api')
   // .constant('ORGANISATION_SERVICE_LOC', '/organisaatio-service/rest')
