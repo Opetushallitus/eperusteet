@@ -91,13 +91,13 @@ angular.module('eperusteApp')
         };
 
         scope.sortableOptions = {
-          placeholder: 'placeholder',
           connectWith: '.tree-group',
-          disabled: !scope.muokkaus,
-          delay: 100,
-          //tolerance: 'pointer',
-          //cursorAt: { top : 2, left: 2 },
           cursor: 'move',
+          cursorAt: { top : 2, left: 2 },
+          delay: 100,
+          disabled: !scope.muokkaus,
+          placeholder: 'placeholder',
+          tolerance: 'pointer',
           start: function(e, ui) {
             ui.placeholder.html('<div class="group-placeholder"></div>');
           }
@@ -109,7 +109,7 @@ angular.module('eperusteApp')
 
         var optiot = '' +
           '<span ng-if="!rakenne._tutkinnonOsa" class="colorbox">' +
-          '  <a href="" ng-click="rakenne.$collapsed = !rakenne.$collapsed" class="group-toggler">' +
+          '  <a href="" ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" class="group-toggler">' +
           '    <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
           '    <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
           '  </a>' +
@@ -162,7 +162,6 @@ angular.module('eperusteApp')
   })
   .directive('treeWrapper', function($stateParams, $modal, $state, Editointikontrollit, TutkinnonOsanTuonti, Kaanna,
                                      PerusteTutkinnonosa, Notifikaatiot, PerusteenRakenne, Muodostumissaannot) {
-
     return {
       restrict: 'AE',
       transclude: true,
@@ -203,22 +202,26 @@ angular.module('eperusteApp')
         paivitaUniikit();
 
         scope.sortableOptions = {
-          placeholder: 'placeholder',
           connectWith: '.tree-group',
-          disabled: !scope.muokkaus,
-          delay: 100,
           cursor: 'move',
+          cursorAt: { top : 2, left: 2 },
+          delay: 100,
+          disabled: !scope.muokkaus,
+          placeholder: 'placeholder',
+          tolerance: 'pointer',
           start: function(e, ui) {
             ui.placeholder.html('<div class="group-placeholder"></div>');
           }
         };
 
         scope.sortableOptionsUnique = {
-          placeholder: 'placeholder',
           connectWith: '.tree-group',
-          disabled: !scope.muokkaus,
-          delay: 100,
           cursor: 'move',
+          cursorAt: { top : 2, left: 2 },
+          delay: 100,
+          disabled: !scope.muokkaus,
+          placeholder: 'placeholder',
+          tolerance: 'pointer',
           stop: function() {
             paivitaUniikit();
           },
