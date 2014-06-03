@@ -18,7 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('ProjektiryhmaCtrl', function($scope, $modal, $stateParams, PerusteprojektiJasenet, PerusteProjektiService) {
+  .controller('ProjektiryhmaCtrl', function($scope, $modal, $stateParams, PerusteprojektiJasenet, PerusteProjektiService, VariHyrra) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
     $scope.ryhma = [];
@@ -27,6 +27,10 @@ angular.module('eperusteApp')
       id: $stateParams.perusteProjektiId
     }, function(jasenet) {
       $scope.ryhma = jasenet;
+      VariHyrra.reset();
+      _.each($scope.ryhma, function (member) {
+        member.color = VariHyrra.next();
+      });
     });
 
     $scope.kutsuUusi = function () {
@@ -45,10 +49,11 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('uusiJasenCtrl', function ($scope, $modalInstance, kayttajaToiminnot, data) {
+  .controller('uusiJasenCtrl', function ($scope, $modalInstance, kayttajaToiminnot, data, VariHyrra) {
     $scope.jasen = {nimi: '', email: '', puhelin: '', rooli: 'jasen'};
     $scope.kayttajaToiminnot = kayttajaToiminnot;
     $scope.tallenna = function () {
+      $scope.jasen.color = VariHyrra.next();
       data.ryhma.push($scope.jasen);
       $modalInstance.close();
     };

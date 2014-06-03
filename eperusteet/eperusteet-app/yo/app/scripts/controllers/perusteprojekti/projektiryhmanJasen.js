@@ -62,7 +62,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('jasenkorttiCtrl', function ($scope, $modal) {
+  .controller('jasenkorttiCtrl', function ($scope, $modal, ColorCalculator) {
     $scope.muokkaaJasenta = function (jasen, ryhma) {
       $modal.open({
         templateUrl: 'views/modals/projektiryhmanJasen.html',
@@ -71,5 +71,11 @@ angular.module('eperusteApp')
           data: function () { return {jasen: jasen, ryhma: ryhma}; }
         }
       });
+    };
+    $scope.styleFor = function (jasen) {
+      return jasen.color ? {
+        'background-color': '#' + jasen.color,
+        'color': ColorCalculator.readableTextColorForBg(jasen.color)
+      } : {};
     };
   });
