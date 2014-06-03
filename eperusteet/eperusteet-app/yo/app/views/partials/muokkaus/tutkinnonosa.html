@@ -19,20 +19,20 @@
         <div ng-if="suoritustapa !== 'naytto'" class="form-group">
           <label class="control-label col-sm-2">{{ 'tutkinnonosa-laajuus' | kaanna }}</label>
           <div class="col-sm-10">
-              <numberinput luokka="form-control" name="laajuus" data="viiteosa.laajuus" min="0" max="999" form="tutkinnonOsaHeaderForm"></numberinput>
+            <numberinput luokka="form-control" name="laajuus" data="viiteosa.laajuus" min="0" max="999" form="tutkinnonOsaHeaderForm"></numberinput>
           </div>
         </div>
-      </div>
-      <div ng-if="suoritustapa !== 'naytto'" class="form-group">
-        <label class="control-label col-sm-2">{{ 'yksikkö' | kaanna }}</label>
-        <div class="col-sm-8">
-          <div class="btn-group">
-            <button type="button" class="btn btn-default" ng-model="viiteosa.yksikko" btn-radio="'OPINTOVIIKKO'">{{ 'OPINTOVIIKKO' | kaanna }}</button>
-            <button type="button" class="btn btn-default" ng-model="viiteosa.yksikko" btn-radio="'OSAAMISPISTE'">{{ 'OSAAMISPISTE' | kaanna }}</button>
+        <div ng-if="suoritustapa !== 'naytto'" class="form-group">
+          <label class="control-label col-sm-2">{{ 'yksikkö' | kaanna }}</label>
+          <div class="col-sm-8">
+            <div class="btn-group">
+              <button type="button" class="btn btn-default" ng-model="viiteosa.yksikko" btn-radio="'OPINTOVIIKKO'">{{ 'OPINTOVIIKKO' | kaanna }}</button>
+              <button type="button" class="btn btn-default" ng-model="viiteosa.yksikko" btn-radio="'OSAAMISPISTE'">{{ 'OSAAMISPISTE' | kaanna }}</button>
+            </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
   <div class="clearfix"></div>
 </div>
