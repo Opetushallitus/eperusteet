@@ -147,6 +147,10 @@ $placeholder-vari: #555;
     }
 }
 
+.tree ul:empty {
+    padding-bottom: 16px;
+}
+
 .tree-item {
   cursor: pointer;
 }
@@ -154,12 +158,13 @@ $placeholder-vari: #555;
 .tree {
   min-height: 20px;
   padding: 0;
+/*
   .collapser {
     &.ng-hide-add, &.ng-hide-remove {
       overflow: hidden;
       white-space: nowrap;
       max-width: 500px;
-      transition: all 0.3s cubic-bezier(0, 1, 0.5, 1);
+      transition: all 0.2s cubic-bezier(0, 1, 0.5, 1);
     }
     &.ng-hide-add.ng-hide-add-active, &.ng-hide-remove {
       max-width: 0;
@@ -168,6 +173,7 @@ $placeholder-vari: #555;
       max-width: 500px;
     }
   }
+*/
   .isovirhe, .virhe, .beef {
     border: 1px solid #cccccc;
     border-top: 0px;
