@@ -43,7 +43,6 @@ import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
-import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
 import fi.vm.sade.eperusteet.service.LockManager;
@@ -217,18 +216,11 @@ public class PerusteServiceImpl implements PerusteService {
         return mapper.map(entity, PerusteenosaViiteDto.class);
     }
 
-    @Autowired SuoritustapaRepository sr;
-
     @Override
     @Transactional(readOnly = true)
     public RakenneModuuliDto getTutkinnonRakenne(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
         Peruste peruste = perusteet.findOne(perusteid);
-        LOG.debug(suoritustapakoodi.toString());
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
-
-        Suoritustapa r = sr.findRevision(suoritustapa.getId(), sr.getRevisions(suoritustapa.getId()).get(0).getNumber());
-        mapper.map(r.getRakenne(), RakenneModuuliDto.class);
-
         RakenneModuuli rakenne = suoritustapa.getRakenne();
         if (rakenne == null) {
             rakenne = new RakenneModuuli();
