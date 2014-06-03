@@ -63,12 +63,13 @@ angular.module('eperusteApp')
     var nykyinenParams = {};
 
     function rakennaKommenttiPuu(viestit) {
+      console.log(viestit);
       viestit = _(viestit).map(function(viesti) {
                              viesti.muokattu = viesti.luotu === viesti.muokattu ? null : viesti.muokattu;
                              viesti.viestit = [];
                              return viesti;
                            })
-                           .sort('luotu')
+                           .sortBy('luotu')
                            .value();
 
       var viestiMap = _.zipObject(_.map(viestit, 'id'), viestit);
@@ -85,7 +86,7 @@ angular.module('eperusteApp')
         seuraajat: [],
         viestit: _(viestiMap).values()
                              .reject(function(viesti) { return viesti.parentId !== null; })
-                             .sort('luotu')
+                             .sortBy('luotu')
                              .reverse()
                              .value()
       };
