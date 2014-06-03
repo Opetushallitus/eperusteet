@@ -14,6 +14,7 @@
 * European Union Public Licence for more details.
 */
 
+/* global _ */
 'use strict';
 
 angular.module('eperusteApp')
@@ -24,10 +25,29 @@ angular.module('eperusteApp')
       scope: {
         tekstikappale: '='
       },
-      controller: function($scope, $state, $stateParams, $q, $modal,
-        Editointikontrollit, PerusteenOsat, Notifikaatiot, SivunavigaatioService,
-        VersionHelper, Lukitus) {
+      controller: function($scope, $q, Editointikontrollit, PerusteenOsat,
+        Notifikaatiot, SivunavigaatioService, VersionHelper, Lukitus, $state,
+        TutkinnonOsaEditMode, PerusteenOsaViitteet, Varmistusdialogi, $timeout,
+        $translate, Kaanna, PerusteprojektiTiedotService, $stateParams,
+        $rootScope) {
+
         $scope.versiot = {};
+        $scope.sisalto = {};
+
+        PerusteprojektiTiedotService.then(function (instance) {
+          instance.haeSisalto($scope.$parent.peruste.id, $stateParams.suoritustapa).then(function(res) {
+            $scope.sisalto = res;
+          });
+        });
+
+        $scope.viiteId = function () {
+          var found = _.find($scope.sisalto.lapset, function (item) {
+            return item.perusteenOsa.id === $scope.tekstikappale.id;
+          });
+          if (found) {
+            return found.id;
+          }
+        };
 
         $scope.fields =
           new Array({
@@ -127,6 +147,38 @@ angular.module('eperusteApp')
             tekstikappaleDefer.resolve($scope.editableTekstikappale);
           });
         };
+
+        $scope.poista = function() {
+          var nimi = Kaanna.kaanna($scope.tekstikappale.nimi);
+
+          Varmistusdialogi.dialogi({
+            successCb: poistaminenVarmistettu,
+            otsikko: 'poista-tekstikappale-otsikko',
+            teksti: $translate('poista-tekstikappale-teksti', {nimi: nimi})
+          })();
+        };
+
+        var poistaminenVarmistettu = function() {
+          PerusteenOsaViitteet.delete({viiteId: $scope.viiteId()}, {}, function() {
+            Editointikontrollit.cancelEditing();
+            Notifikaatiot.onnistui('poisto-onnistui');
+            $state.go('perusteprojekti.suoritustapa.sisalto', {}, {reload: true});
+          }, function(virhe) {
+            Notifikaatiot.varoitus(virhe);
+          });
+        };
+
+        // Odota tekstikenttien alustus ennen siirtymistä editointitilaan
+        var received = 0;
+        $rootScope.$on('ckEditorInstanceReady', function () {
+          if (++received === $scope.fields.length) {
+            if (TutkinnonOsaEditMode.getMode()) {
+              $timeout(function () {
+                $scope.muokkaa();
+              }, 50);
+            }
+          }
+        });
       }
     };
   });

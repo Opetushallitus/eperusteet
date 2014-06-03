@@ -232,7 +232,7 @@
     "muokkaus-tekstikappaleen-teksti-header": "Teksti",
     "muokkaus-tekstikappaleen-teksti-placeholder": "Kirjoita tähän kappaleen teksti",
     "versio": "Versio",
-    "nayta-versiohistoria": "Näytä versiohistoria",
+    "nayta-versiohistoria": "Historia",
 
     "arviointi-lisatiedot-placeholder": "Arvioinnin sanallinen selitys tähän",
     "arviointi-uusi-kohdealue": "Uusi kohdealue",
@@ -317,7 +317,8 @@
     "projekti-header-paatosPvm": "Päätöspäivämäärä",
     "projekti-header-koulutustyyppi": "Koulutustyyppi",
         
-    "lisaa-tutkintokohtainen-osa": "Lisää tutkintokohtainen osa",
+    "tutkintokohtaiset-osat": "Tutkintokohtaiset osat",
+    "lisaa-tutkintokohtainen-osa": "Lisää otsikko",
     "uusi-tutkinnon-osa": "<Uusi sisältö>",
 
     "takaisin-paanakymaan": "Projektin päänäkymä",

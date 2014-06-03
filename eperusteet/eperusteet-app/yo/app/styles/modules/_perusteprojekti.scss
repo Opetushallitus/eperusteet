@@ -89,8 +89,9 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 }
 
 .main-content .tutkinnonsisalto-list {
-    padding: 0;
-    list-style: none;
+  padding: 0;
+  list-style: none;
+  margin-bottom: 40px;
 }
 .main-content .list-element {
 	position: relative;
@@ -98,6 +99,7 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 	border-radius: 2px;
 	padding: 20px 20px 20px 45px;
 	margin-top: 20px;
+  cursor: pointer;
 }
 .main-content .list-element:hover,
 .main-content .li:hover {
@@ -107,10 +109,6 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 	display: inline;
 	margin-left: 20px;
 	margin-top: 5px;
-}
-.main-content  h4,
-.main-content p {
-
 }
 .main-content .list-element a.next,
 .main-content a.next {
@@ -138,20 +136,6 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 .main-content ul.sub-items li span.glyphicon.next {
 	position: relative;
 	right: 10px;
-}
-
-
-.main-content span.glyphicon-remove {
-    color: red;
-}
-.main-content span.glyphicon-remove.larger {
-    font-size: 21px;
-    padding: 2px;
-}
-
-.main-content span.glyphicon-remove.smaller {
-    font-size: 16px;
-    padding: 5px;
 }
 
 .form-area {
@@ -215,4 +199,12 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   .confirmation {
     font-size: 125%;
   }
+}
+
+.tutkinto-sisalto {
+  max-width: 900px;
+  margin-top: 30px;
+  margin-bottom: 100px;
+  margin-left: auto;
+  margin-right: auto;
 }

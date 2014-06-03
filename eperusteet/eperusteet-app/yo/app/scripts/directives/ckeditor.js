@@ -177,6 +177,10 @@ angular.module('eperusteApp')
           $('#toolbar').hide();
         });
 
+        editor.on('instanceReady', function () {
+          $rootScope.$broadcast('ckEditorInstanceReady');
+        });
+
         // model -> view
 
         ctrl.$render = function() {

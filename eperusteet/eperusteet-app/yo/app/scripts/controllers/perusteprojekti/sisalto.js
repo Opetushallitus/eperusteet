@@ -18,17 +18,14 @@
 // /*global _*/
 
 angular.module('eperusteApp')
-  .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams, $translate, Kaanna,
-    SuoritustapaSisalto, PerusteProjektiService, PerusteenOsaViitteet, Varmistusdialogi,
-    Notifikaatiot, perusteprojektiTiedot) {
+  .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams,
+    SuoritustapaSisalto, PerusteProjektiService, perusteprojektiTiedot, TutkinnonOsaEditMode) {
 
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
 
     $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa();
-    $scope.poistoMouseLeaveLuokka = 'glyphicon glyphicon-remove pull-right smaller';
-    $scope.poistoMouseOverLuokka = 'glyphicon glyphicon-remove pull-right larger';
 
     var haeSisalto = function(suoritustapa) {
       perusteprojektiTiedot.haeSisalto($scope.projekti._peruste, suoritustapa).then(function(vastaus) {
@@ -42,8 +39,13 @@ angular.module('eperusteApp')
     };
 
     $scope.createSisalto = function() {
-      SuoritustapaSisalto.save({perusteId: $scope.projekti._peruste, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {}, function() {
-        haeSisalto(PerusteProjektiService.getSuoritustapa());
+      SuoritustapaSisalto.save({perusteId: $scope.projekti._peruste, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {}, function(response) {
+        // Uusi luotu, siirry suoraan muokkaustilaan
+        TutkinnonOsaEditMode.setMode(true);
+        $scope.navigoi('perusteprojekti.suoritustapa.perusteenosa', {
+          perusteenOsanTyyppi: 'tekstikappale',
+          perusteenOsaId: response._perusteenOsa
+        });
       }, function(virhe) {
         console.log('Uuden sisällön luontivirhe', virhe);
       });
@@ -55,33 +57,7 @@ angular.module('eperusteApp')
       $state.go('perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: $stateParams.perusteProjektiId, suoritustapa: suoritustapakoodi});
     };
 
-    $scope.setLargerSize = function(event) {
-      event.currentTarget.className = $scope.poistoMouseOverLuokka;
+    $scope.navigoi = function (state, params) {
+      $state.go(state, params);
     };
-
-    $scope.setSmallerSize = function(event) {
-      event.currentTarget.className = $scope.poistoMouseLeaveLuokka;
-    };
-
-    $scope.poistaSisalto = function(viiteId, nimi, event) {
-      event.stopPropagation();
-      nimi = Kaanna.kaanna(nimi);
-
-      Varmistusdialogi.dialogi({
-        successCb: poistaminenVarmistettu,
-        otsikko: 'poista-tekstikappale-otsikko',
-        teksti: $translate('poista-tekstikappale-teksti', {nimi: nimi}),
-        data: viiteId
-      })();
-    };
-
-    var poistaminenVarmistettu = function(viiteId) {
-      PerusteenOsaViitteet.delete({viiteId: viiteId}, {}, function() {
-        Notifikaatiot.onnistui('poisto-onnistui');
-        haeSisalto(PerusteProjektiService.getSuoritustapa());
-      }, function(virhe) {
-        Notifikaatiot.varoitus(virhe);
-      });
-    };
-
   });
