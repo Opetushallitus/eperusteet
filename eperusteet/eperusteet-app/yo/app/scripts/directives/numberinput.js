@@ -3,7 +3,7 @@
 angular.module('eperusteApp')
   .directive('numberinput', function () {
     return {
-      templateUrl: '/views/partials/numberinput.html',
+      templateUrl: 'views/partials/numberinput.html',
       restrict: 'E',
       scope: {
         data: '=',

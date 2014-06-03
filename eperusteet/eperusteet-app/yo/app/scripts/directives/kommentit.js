@@ -19,7 +19,7 @@
 angular.module('eperusteApp')
   .directive('kommentit', function ($timeout, $location, $state, $rootScope, YleinenData, Kommentit) {
     return {
-      templateUrl: '/views/kommentit.html',
+      templateUrl: 'views/kommentit.html',
       restrict: 'E',
       replace: true,
       scope: {

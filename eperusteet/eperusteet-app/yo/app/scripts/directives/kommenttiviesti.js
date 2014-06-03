@@ -19,7 +19,7 @@
 angular.module('eperusteApp')
   .directive('kommenttiViesti', function (Kommentit, kayttajaToiminnot) {
     return {
-      templateUrl: '/views/partials/kommenttiViesti.html',
+      templateUrl: 'views/partials/kommenttiViesti.html',
       restrict: 'E',
       replace: true,
       scope: {
