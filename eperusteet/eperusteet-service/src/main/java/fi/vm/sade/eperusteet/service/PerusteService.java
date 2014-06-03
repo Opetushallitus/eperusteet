@@ -35,6 +35,7 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -42,23 +43,24 @@ import org.springframework.security.access.prepost.PreAuthorize;
  * @author harrik
  */
 public interface PerusteService {
-    @PreAuthorize("isAuthenticated()")
-    void removeTutkinnonOsa(Long id, Suoritustapakoodi of, Long osaId);
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'UPDATE')")
+    void removeTutkinnonOsa(@P("perusteId") Long perusteId, Suoritustapakoodi of, Long osaId);
 
-    @PreAuthorize("isAuthenticated()")
-    TutkinnonOsaViiteDto updateTutkinnonOsa(Long id, Suoritustapakoodi of, TutkinnonOsaViiteDto osa);
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'UPDATE')")
+    TutkinnonOsaViiteDto updateTutkinnonOsa(@P("perusteId") Long perusteId, Suoritustapakoodi of, TutkinnonOsaViiteDto osa);
 
-    @PreAuthorize("isAuthenticated()")
-    TutkinnonOsaViiteDto attachTutkinnonOsa(Long id, Suoritustapakoodi of, TutkinnonOsaViiteDto osa);
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'UPDATE')")
+    TutkinnonOsaViiteDto attachTutkinnonOsa(@P("perusteId") Long perusteId, Suoritustapakoodi of, TutkinnonOsaViiteDto osa);
 
-    @PreAuthorize("isAuthenticated()")
-    TutkinnonOsaViiteDto addTutkinnonOsa(Long id, Suoritustapakoodi suoritustapa, TutkinnonOsaViiteDto osa);
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'UPDATE')")
+    TutkinnonOsaViiteDto addTutkinnonOsa(@P("perusteId") Long perusteId, Suoritustapakoodi suoritustapa, TutkinnonOsaViiteDto osa);
 
     PerusteDto get(final Long id);
 
     PerusteKaikkiDto getKokoSisalto(final Long id);
 
-    PerusteDto update(long id, PerusteDto perusteDto);
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'UPDATE')")
+    PerusteDto update(@P("perusteId") long perusteId, PerusteDto perusteDto);
 
     PerusteDto getByIdAndSuoritustapa(final Long id, Suoritustapakoodi suoritustapakoodi);
 
@@ -68,11 +70,11 @@ public interface PerusteService {
 
     Page<PerusteDto> findBy(PageRequest page, PerusteQuery pquery);
 
-    @PreAuthorize("isAuthenticated()")
-    PerusteenSisaltoViiteDto addSisalto(final Long perusteId, final Suoritustapakoodi suoritustapakoodi, PerusteenSisaltoViiteDto viite);
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'UPDATE')")
+    PerusteenSisaltoViiteDto addSisalto(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapakoodi, PerusteenSisaltoViiteDto viite);
 
-    @PreAuthorize("isAuthenticated()")
-    PerusteenSisaltoViiteDto addSisaltoLapsi(final Long perusteId, final Long perusteenosaViiteId);
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'UPDATE')")
+    PerusteenSisaltoViiteDto addSisaltoLapsi(@P("perusteId") final Long perusteId, final Long perusteenosaViiteId);
 
     @PreAuthorize("isAuthenticated()")
     PerusteenSisaltoViiteDto attachSisaltoLapsi(Long perusteId, Long parentViiteId, Long tekstikappaleId);
@@ -86,13 +88,13 @@ public interface PerusteService {
 
     RakenneModuuliDto getTutkinnonRakenne(final Long perusteId, final Suoritustapakoodi suoritustapa, Integer eTag);
 
-    @PreAuthorize("isAuthenticated()")
-    RakenneModuuliDto updateTutkinnonRakenne(final Long perusteId, final Suoritustapakoodi suoritustapa, final UpdateDto<RakenneModuuliDto> rakenne);
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'UPDATE')")
+    RakenneModuuliDto updateTutkinnonRakenne(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapa, final UpdateDto<RakenneModuuliDto> rakenne);
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'UPDATE')")
+    RakenneModuuliDto updateTutkinnonRakenne(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapa, final RakenneModuuliDto rakenne);
 
-    @PreAuthorize("isAuthenticated()")
-    RakenneModuuliDto updateTutkinnonRakenne(final Long perusteId, final Suoritustapakoodi suoritustapa, final RakenneModuuliDto rakenne);
-
-    RakenneModuuliDto revertRakenneVersio(Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId);
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'UPDATE')")
+    RakenneModuuliDto revertRakenneVersio(@P("perusteId") Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId);
 
     List<Revision> getRakenneVersiot(Long id, Suoritustapakoodi suoritustapakoodi);
 
