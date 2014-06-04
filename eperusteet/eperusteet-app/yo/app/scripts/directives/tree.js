@@ -16,6 +16,7 @@
 
 'use strict';
 /*global _*/
+/*global $*/
 
 angular.module('eperusteApp')
   .service('TreeCache', function() {
@@ -269,6 +270,12 @@ angular.module('eperusteApp')
           disabled: !scope.muokkaus,
           placeholder: 'placeholder',
           tolerance: 'pointer',
+          // http://stackoverflow.com/questions/6940390/how-do-i-duplicate-item-when-using-jquery-sortable
+          helper: function(el, ui) {
+            this.copyHelper = ui.clone().insertAfter(ui);
+            $(this).data('copied', false);
+            return ui.clone();
+          },
           stop: function() {
             paivitaUniikit();
           },

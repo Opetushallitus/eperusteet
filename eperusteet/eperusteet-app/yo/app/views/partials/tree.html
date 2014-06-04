@@ -32,11 +32,9 @@
       <div ng-show="tutkinnonOsat.rajaus || tutkinnonOsat.multiPage" class="tutkinnonosa-rajaus">
         <input ng-model="tutkinnonOsat.rajaus" type="input" class="form-control" placeholder="{{'tutkinnon-osa-haku-placeholder' | translate}}">
       </div>
-      <ul ui-sortable="sortableOptionsUnique" ng-model="uniikit" class="uniikit">
+      <ul ui-sortable="sortableOptionsUnique" ng-model="uniikit" class="uniikit placeholder-hide">
         <li class="skratchpad-item" ng-repeat="osa in uniikit | startFrom:(tutkinnonOsat.sivu-1)*tutkinnonOsat.perSivu | limitTo:tutkinnonOsat.perSivu">
-          <div>
-            <img src="images/tutkinnonosa.png" alt=""> {{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== 'naytto' && rakenne.tutkinnonOsat[osa._tutkinnonOsa].laajuus">, {{ + rakenne.tutkinnonOsat[osa._tutkinnonOsa].laajuus || 0 }}{{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].yksikko | kaanna }}</span>
-          </div>
+          <img src="images/tutkinnonosa.png" alt=""> {{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== 'naytto' && rakenne.tutkinnonOsat[osa._tutkinnonOsa].laajuus">, {{ + rakenne.tutkinnonOsat[osa._tutkinnonOsa].laajuus || 0 }}{{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].yksikko | kaanna }}</span>
         </li>
       </ul>
       <pagination ng-show="tutkinnonOsat.multiPage" ng-model="tutkinnonOsat.sivu" ng-change="valitseSivu(tutkinnonOsat.sivu)"
