@@ -23,11 +23,14 @@ import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fi.vm.sade.eperusteet.dto.EntityReference;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
@@ -55,7 +58,8 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(converter());
+       converters.add(byteArrayConverter());
+       converters.add(converter()); // keep last, will override any non-explicitely declared media types
     }
 
     @Override
@@ -105,6 +109,13 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
         EPerusteetMappingModule module = new EPerusteetMappingModule();
         module.addDeserializer(AbstractRakenneOsaDto.class, new AbstractRakenneOsaDeserializer());
         converter.getObjectMapper().registerModule(module);
+        return converter;
+    }
+
+    @Bean
+    ByteArrayHttpMessageConverter byteArrayConverter() {
+        ByteArrayHttpMessageConverter converter = new ByteArrayHttpMessageConverter();
+        converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/pdf"));
         return converter;
     }
 
