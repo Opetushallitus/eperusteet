@@ -1,5 +1,10 @@
 $colorbox-vari: #06526c;
-$placeholder-vari: #555;
+$colorbox-open-vari: #29ABE2;
+$colorbox-empty-vari: #FDBB07;
+$reunus-vari: #ccc;
+$yla-reunus-vari: #ddd;
+$placeholder-vari: #777;
+$puuviiva-vari: #ccc;
 
 .group-toggler, .group-toggler span {
   &:hover, &:active, &:focus {
@@ -8,10 +13,32 @@ $placeholder-vari: #555;
   }
 }
 
-.tree .otsikko {
-  margin-bottom: 0px;
-  border-bottom: 1px solid $colorbox-vari;
+.tree-con {
+  padding: 20px;
 }
+
+.tree-otsikko {
+  background: #eee;
+  min-width: 700px;
+  padding: 4px 10px 4px 10px;
+  margin-bottom: 0px;
+  border: 1px solid $reunus-vari;
+}
+
+.tree-otsikko-left {
+  font-weight: bold;
+}
+
+.tree-otsikko-laajuus {
+  margin-left: 5px;
+}
+
+// .tree-otsikko .back {
+//   font-size: 28px;
+//   margin: 0px;
+//   padding-right: 5px;
+//   float: left;
+// }
 
 .tree-group {
   min-height: 16px;
@@ -33,11 +60,47 @@ $placeholder-vari: #555;
 }
 
 .skratchpad-wrapper {
+  background: #fefefe;
   transition: none;
   margin: 0;
-  padding: 0;
+  width: 280px;
+  height: 100%;
+  padding: 8px;
+  border: 1px solid $yla-reunus-vari;
   h3 {
     text-align: center;
+  }
+  .skratchpad-button {
+    margin: 3px auto 10px auto;
+    text-align: center;
+  }
+  .skratchpad-list-header {
+    background: #f2f2f2;
+    padding: 2px 0px 2px 0px;
+    margin: 0px auto 0px auto;
+    text-align: center;
+    text-transform: uppercase;
+    color: #555;
+  }
+  .skratchpad-badge {
+    display: inline-block;
+    min-width: 10px;
+    font-size: 10px;
+    text-transform: uppercase;
+    vertical-align: baseline;
+    white-space: nowrap;
+    text-align: center;
+    border-radius: 4px;
+    background-color: #FEC300;
+    margin-right: 10px;
+    color: #000;
+  }
+  .skratchpad-list {
+    background: #fff;
+    border: 1px solid $reunus-vari;
+    padding: 3px;
+    margin-top: 8px;
+    margin-bottom: 6px;
   }
   .skratchpad-help {
     margin: 0px;
@@ -59,6 +122,7 @@ $placeholder-vari: #555;
     background: $placeholder-vari;
     margin: 4px;
     height: 20px;
+    width: 98%;
   }
   .tutkinnonosa-rajaus {
     margin-bottom: 15px;
@@ -74,13 +138,23 @@ $placeholder-vari: #555;
   padding: 5px;
 }
 
+.skratchpad-separator {
+  height: 0px;
+  border-bottom: 1px solid #cccccc;
+}
+
 .skratchpad-item {
   list-style-type:none;
   margin: 5px;
-  border: 1px solid #cccccc;
-  padding: 2px;
+  padding: 4px;
   background-color: #ffffff;
   cursor: pointer;
+}
+
+.skratchpad-item-ryhma {
+  background: #f5f5f5;
+  border: 1px solid #cccccc;
+  padding: 5px;
 }
 
 .skratchpad-item-virhe {
@@ -133,14 +207,14 @@ $placeholder-vari: #555;
       right: auto;
     }
     &::before {
-      border-left: 1px solid $colorbox-vari;
+      border-left: 1px solid $puuviiva-vari;
       bottom: 50px;
       height: 100%;
       top: 0;
       width: 1px;
     }
     &::after {
-      border-top: 1px solid $colorbox-vari;
+      border-top: 1px solid $puuviiva-vari;
       height: 20px;
       top: 25px;
       width: 35px;
@@ -212,13 +286,13 @@ $placeholder-vari: #555;
       float: right;
     }
     .colorbox {
-      height: 31px;
+      height: 30px;
       width: 31px;
       padding: 6px 9px;
       display: inline-block;
       margin-right: 10px;
       float: left;
-      background: $colorbox-vari;
+      // background: $colorbox-vari;
       text-decoration: none;
       a:link, a:visited, a:hover, a:active {
         color: #FFF;
@@ -232,10 +306,10 @@ $placeholder-vari: #555;
     }
   }
   .bubble, li .textbox {
-    width: 480px;
+    min-width: 480px;
     min-height: 32px;
     border: 1px solid #ccc;
-    background-color: #eee;
+    background-color: #f2f2f2;
     text-decoration: none;
   }
   li span.glyphicon {
@@ -251,10 +325,17 @@ $placeholder-vari: #555;
     height: 25px;
   }
   li.parent_li>span:hover, li.parent_li>span:hover+ul li span {
-    background: #eee;
+    background: #f2f2f2;
     border: 1px solid #94a0b4;
     color: #000
   }
+}
+
+.left-item {
+  border-right: 1px solid #cccccc;
+  padding: 0;
+  margin: 0;
+  min-height: 31px;
 }
 
 .form-row {
@@ -266,7 +347,7 @@ $placeholder-vari: #555;
 }
 
 .bubble-osa {
-  max-width: 480px;
+  width: 300px;
   min-height: 32px;
   border: 1px solid #cccccc;
   background-color: #fff;
@@ -274,10 +355,8 @@ $placeholder-vari: #555;
   text-decoration: none;
 }
 
-.tree-presentation hr {
-  display: block;
-  height: 0px;
-  border-top: 1px solid $colorbox-vari;
+.tree-presentation {
+  // border: 1px solid $yla-reunus-vari;
   margin: 0px;
   margin-bottom: 10px;
   padding: 0px;

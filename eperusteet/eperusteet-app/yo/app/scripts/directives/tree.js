@@ -40,11 +40,14 @@ angular.module('eperusteApp')
   .directive('tree', function($compile, $state, $modal, Muodostumissaannot, PerusteenRakenne) {
     function generoiOtsikko() {
       var tosa = '{{ tutkinnonOsat[rakenne._tutkinnonOsa].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsat[rakenne._tutkinnonOsa].laajuus">, <b>{{ + tutkinnonOsat[rakenne._tutkinnonOsa].laajuus || 0 }}</b>{{ tutkinnonOsat[rakenne._tutkinnonOsa].yksikko | kaanna }}</span>';
+      var editointiIkoni = '<img src="images/tutkinnonosa.png" alt=""> ';
       return '' +
-        '<span ng-if="rakenne._tutkinnonOsa && muokkaus">' + tosa + '</span>' +
-        '<span ng-if="rakenne._tutkinnonOsa && !muokkaus"><a href="" ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: rakenne._tutkinnonOsa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a></span>' +
+        '<span ng-if="rakenne._tutkinnonOsa && muokkaus">' + editointiIkoni + tosa + '</span>' +
+        '<span ng-if="rakenne._tutkinnonOsa && !muokkaus">' + editointiIkoni + '<a href="" ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: rakenne._tutkinnonOsa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a></span>' +
         '<span class="pull-right" ng-if="rakenne._tutkinnonOsa && muokkaus"><a href="" ng-click="poista(rakenne, vanhempi)"><span class="glyphicon glyphicon-remove"></a></span>' +
-        '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi"><b>{{ rakenne.nimi | kaanna:true }}</b></span>';
+        '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi">' +
+        '  <b>{{ rakenne.nimi | kaanna:true }}</b>' +
+        '</span>';
     }
 
     return {
@@ -82,12 +85,21 @@ angular.module('eperusteApp')
           Muodostumissaannot.validoiRyhma(uusirakenne, scope.tutkinnonOsat);
         }, true);
 
-        scope.suljePolut = function() {
-          scope.rakenne.rakenne.$collapsed = scope.suljettuViimeksi;
-          PerusteenRakenne.kaikilleRakenteille(scope.rakenne.rakenne.osat, function(osa) {
-            osa.$collapsed = scope.suljettuViimeksi;
-          });
-          scope.suljettuViimeksi = !scope.suljettuViimeksi;
+        scope.togglaaPolut = function() {
+          var avaamattomat = _(scope.rakenne.osat).reject(function(osa) { return osa._tutkinnonOsa || osa.$collapsed || osa.osat.length === 0; }).size();
+          if (avaamattomat !== 0) {
+            PerusteenRakenne.kaikilleRakenteille(scope.rakenne, function(r) {
+              if (r.osat && _.size(r.osat) > 0) {
+                r.$collapsed = true;
+              }
+            });
+          } else {
+            PerusteenRakenne.kaikilleRakenteille(scope.rakenne, function(r) {
+              if (r.osat && _.size(r.osat) > 0) {
+                r.$collapsed = false;
+              }
+            });
+          }
         };
 
         scope.sortableOptions = {
@@ -108,7 +120,7 @@ angular.module('eperusteApp')
         });
 
         var optiot = '' +
-          '<span ng-if="!rakenne._tutkinnonOsa" class="colorbox">' +
+          '<span ng-if="!rakenne._tutkinnonOsa" class="colorbox" ng-style="{ \'background\': rakenne.osat.length === 0 ? \'#FDBB07\' : rakenne.$collapsed ? \'#06526c\' : \'#29ABE2\' }">' +
           '  <a href="" ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" class="group-toggler">' +
           '    <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
           '    <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
@@ -132,18 +144,28 @@ angular.module('eperusteApp')
         kentta += '<div ng-if="!rakenne._tutkinnonOsa" ng-class="{ \'pointer\': muokkaus }" class="bubble">' + optiot + '</div>';
         kentta += '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe" class="virhe"><span>{{ rakenne.$virhe | translate }}</span></div>';
 
-        var avaaKaikki = '<a href="" ng-click="rakenne.$collapsed = !rakenne.$collapsed" title="{{ \'avaa-sulje-kaikki\' | kaanna }}" class="group-toggler">' +
-                         '  <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
-                         '  <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
-                         '</a>';
+        var avaaKaikki = '<div class="pull-right">' +
+                         '  <a href="" ng-click="togglaaPolut()" class="group-toggler">' +
+                         '    <span class="avaa-sulje"><img src="images/expander.png" alt=""> {{ "avaa-sulje-kaikki" | kaanna }}</span>' +
+                         '  </a>' +
+                         '</div>';
 
         var template =
-          '<div ng-if="!vanhempi">' +
-          '  <div class="otsikko">' +
-          '    <h4 ng-show="muokkaus">' + avaaKaikki + ' <a href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)">{{ rakenne.nimi | kaanna:true }}</a><span ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus">, {{ rakenne.$laajuus || 0 }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</span></h4>' +
-          '    <h4 ng-hide="muokkaus">' + avaaKaikki + ' {{ rakenne.nimi | kaanna:true }}<span ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus">, {{ rakenne.$laajuus || 0 }} / {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}ov</span></h4>' +
-          '    <div ng-if="rakenne.$virhe" class="isovirhe">{{ rakenne.$virhe | kaanna }}</div>' +
-          '  </div>' +
+          '<div class="tree-otsikko" ng-if="!vanhempi">' +
+          '  <a ng-if="zoomaus" class="back" href=""><span class="glyphicon glyphicon-chevron-left"></span></a>' +
+          '  <h4>' +
+          '    <a ng-show="muokkaus" href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)">' +
+          '      <span class="tree-otsikko-left"><b>{{ rakenne.nimi | kaanna:true }}</b></span>' +
+          '    </a>' +
+          '    <span ng-hide="muokkaus"><b>{{ rakenne.nimi | kaanna:true }}</b></span>' +
+          '    <span class="tree-otsikko-laajuus" ng-show="apumuuttujat.suoritustapa !== \'naytto\'"> ' +
+          '      (<b>{{ rakenne.$laajuus || 0 }}</b> / ' +
+          '      <span ng-show="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi"><b>{{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}</b>ov)</span>' +
+            '      <span ng-hide="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi"><b>{{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}</b> - {{ rakenne.muodostumisSaanto.laajuus.maksimi || 0 }}ov)</span>' +
+          '    </span>' +
+          avaaKaikki +
+          '  </h4>' +
+          '  <div ng-show="muokkaus && rakenne.$virhe" class="isovirhe">{{ rakenne.$virhe | kaanna }}</div>' +
           '</div>' +
           '<div ng-if="vanhempi">' + kentta + '</div>' +
           '<div class="collapser" ng-show="!rakenne.$collapsed">' +
@@ -179,12 +201,27 @@ angular.module('eperusteApp')
         scope.uusiOsa = null;
         scope.skratchpad = [];
         scope.uniikit = [];
+        scope.kaikkiUniikit = [];
         scope.topredicate = 'nimi.fi';
+        scope.tosarajaus = '';
         scope.tutkinnonOsat = {
           perSivu: 8,
           rajaus: '',
           multiPage: false,
           sivu: 1
+        };
+
+        scope.paivitaRajaus = function(input) {
+          input = input === undefined ? scope.tosarajaus : input;
+          scope.tosarajaus = input;
+          if (_.isEmpty(input)) {
+            scope.uniikit = scope.kaikkiUniikit;
+          } else {
+            scope.uniikit = _.reject(scope.kaikkiUniikit, function(yksi) {
+              var nimi = Kaanna.kaanna(scope.rakenne.tutkinnonOsat[yksi._tutkinnonOsa].nimi).toLowerCase();
+              return nimi.indexOf(input.toLowerCase()) === -1;
+            });
+          }
         };
 
         function paivitaUniikit() {
@@ -198,6 +235,11 @@ angular.module('eperusteApp')
             }
           });
           scope.tutkinnonOsat.multiPage = _.size(scope.uniikit) > scope.tutkinnonOsat.perSivu;
+          scope.kaikkiUniikit = _.sortBy(scope.uniikit, function(osa) {
+            return Kaanna.kaanna(scope.rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi);
+          });
+          scope.uniikit = scope.kaikkiUniikit;
+          scope.paivitaRajaus();
         }
         paivitaUniikit();
 
@@ -209,6 +251,11 @@ angular.module('eperusteApp')
           disabled: !scope.muokkaus,
           placeholder: 'placeholder',
           tolerance: 'pointer',
+          stop: function() {
+            PerusteenRakenne.kaikilleRakenteille(scope.rakenne.rakenne, function(r) {
+              delete r.$uusi;
+            });
+          },
           start: function(e, ui) {
             ui.placeholder.html('<div class="group-placeholder"></div>');
           }
@@ -234,19 +281,14 @@ angular.module('eperusteApp')
 
         scope.ryhmaModaali = Muodostumissaannot.ryhmaModaali(function(ryhma, vanhempi, uusiryhma) {
           if (uusiryhma) {
-            if (ryhma === undefined) { scope.skratchpad.push(uusiryhma); }
+            if (ryhma === undefined) {
+              uusiryhma.$uusi = true;
+              scope.skratchpad.push(uusiryhma);
+            }
             else { ryhma = uusiryhma; }
           }
           else { _.remove(scope.skratchpad, ryhma); }
         });
-
-        scope.suljePolut = function() {
-          scope.rakenne.rakenne.$collapsed = scope.suljettuViimeksi;
-          PerusteenRakenne.kaikilleRakenteille(scope.rakenne.rakenne.osat, function(osa) {
-            osa.$collapsed = scope.suljettuViimeksi;
-          });
-          scope.suljettuViimeksi = !scope.suljettuViimeksi;
-        };
 
         scope.uusiTutkinnonOsa = function(cb) {
           scope.lisataanUuttaOsaa = true;
@@ -255,7 +297,8 @@ angular.module('eperusteApp')
 
         scope.$watch('rakenne.$suoritustapa', function() {
           scope.apumuuttujat = {
-            suoritustapa: scope.rakenne.$suoritustapa
+            suoritustapa: scope.rakenne.$suoritustapa,
+            vanhin: scope.rakenne
           };
         });
 

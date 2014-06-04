@@ -82,8 +82,9 @@ angular.module('eperusteApp')
       },
       cancel: function() {
         Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
-        haeRakenne();
-        $scope.editoi = false;
+        haeRakenne(function() {
+          $scope.editoi = false;
+        });
       }
     });
 

@@ -50,7 +50,7 @@ angular.module('eperusteApp')
         abstract: true
       })
       .state('perusteprojekti.suoritustapa.muodostumissaannot', {
-        url: '/tutkinnonrakenne',
+        url: '/rakenne',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiMuodostumissaannot.html',
         controller: 'PerusteprojektiMuodostumissaannotCtrl',
         onEnter: ['SivunavigaatioService', 'perusteprojektiTiedot', function(SivunavigaatioService, perusteprojektiTiedot) {

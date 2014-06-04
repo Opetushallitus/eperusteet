@@ -94,10 +94,15 @@ angular.module('eperusteApp')
       });
     }
 
+    function haeYlataso(rakenne) {
+      console.log(rakenne);
+      var ylempi = rakenne;
+    }
+
     function kaikilleRakenteille(rakenne, f) {
       if (!rakenne || !f) { return; }
-      _.forEach(rakenne, function(r) {
-        kaikilleRakenteille(r.osat, f);
+      _.forEach(rakenne.osat, function(r) {
+        kaikilleRakenteille(r, f);
         f(r);
       });
     }

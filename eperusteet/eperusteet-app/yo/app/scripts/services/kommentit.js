@@ -63,7 +63,6 @@ angular.module('eperusteApp')
     var nykyinenParams = {};
 
     function rakennaKommenttiPuu(viestit) {
-      console.log(viestit);
       viestit = _(viestit).map(function(viesti) {
                              viesti.muokattu = viesti.luotu === viesti.muokattu ? null : viesti.muokattu;
                              viesti.viestit = [];
