@@ -169,14 +169,29 @@ module.exports = function(grunt) {
     useminPrepare: {
       html: '<%= yeoman.app %>/index.html',
       options: {
-        dest: '<%= yeoman.dist %>'
+        dest: '<%= yeoman.dist %>',
+        flow: {
+          html: {
+            steps: {
+              js: ['concat'],
+              css: ['cssmin']
+            },
+            post: {}
+          }
+        }
       }
     },
     usemin: {
-      html: ['<%= yeoman.dist %>/{,*/}*.html'],
+      html: ['<%= yeoman.dist %>/*.html','<%= yeoman.dist %>/views/**/*.html'],
       css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
+      js: ['<%= yeoman.dist %>/scripts/*.scripts.js'],
       options: {
-        dirs: ['<%= yeoman.dist %>']
+        assetsDirs: ['<%= yeoman.dist %>','<%=yeoman.dist %>/styles'],
+        patterns: {
+          js: [
+          [/"(images\/.*?\.png)"/g,'JS rev png images']
+          ]
+        }
       }
     },
     imagemin: {
