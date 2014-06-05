@@ -19,26 +19,7 @@
 /*global $*/
 
 angular.module('eperusteApp')
-  .service('TreeCache', function() {
-    var puuId = -1;
-    var puu = {};
-
-    return {
-      nykyinen: function() { return puuId; },
-      hae: function() { console.log('haetaan'); return _.clone(puu); },
-      tallenna: function(rakenne, id) {
-        if (id) {
-          puu = _.clone(rakenne);
-          puuId = id;
-        }
-      },
-      puhdista: function() {
-        puuId = -1;
-        puu = {};
-      }
-    };
-  })
-  .directive('tree', function($compile, $state, $modal, Muodostumissaannot, PerusteenRakenne) {
+  .directive('tree', function($compile, $state, $modal, Muodostumissaannot) {
     function generoiOtsikko() {
       var tosa = '{{ tutkinnonOsat[rakenne._tutkinnonOsa].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsat[rakenne._tutkinnonOsa].laajuus">, <b>{{ + tutkinnonOsat[rakenne._tutkinnonOsa].laajuus || 0 }}</b>{{ tutkinnonOsat[rakenne._tutkinnonOsa].yksikko | kaanna }}</span>';
       var editointiIkoni = '<img src="images/tutkinnonosa.png" alt=""> ';
@@ -89,13 +70,13 @@ angular.module('eperusteApp')
         scope.togglaaPolut = function() {
           var avaamattomat = _(scope.rakenne.osat).reject(function(osa) { return osa._tutkinnonOsa || osa.$collapsed || osa.osat.length === 0; }).size();
           if (avaamattomat !== 0) {
-            PerusteenRakenne.kaikilleRakenteille(scope.rakenne, function(r) {
+            _.forEach(scope.rakenne.osat, function(r) {
               if (r.osat && _.size(r.osat) > 0) {
                 r.$collapsed = true;
               }
             });
           } else {
-            PerusteenRakenne.kaikilleRakenteille(scope.rakenne, function(r) {
+            _.forEach(scope.rakenne.osat, function(r) {
               if (r.osat && _.size(r.osat) > 0) {
                 r.$collapsed = false;
               }
@@ -121,11 +102,9 @@ angular.module('eperusteApp')
         });
 
         var optiot = '' +
-          '<span ng-if="!rakenne._tutkinnonOsa" class="colorbox" ng-style="{ \'background\': rakenne.osat.length === 0 ? \'#FDBB07\' : rakenne.$collapsed ? \'#06526c\' : \'#29ABE2\' }">' +
-          '  <a href="" ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" class="group-toggler">' +
-          '    <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
-          '    <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
-          '  </a>' +
+          '<span ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" ng-if="!rakenne._tutkinnonOsa" class="colorbox" ng-style="{ \'background\': rakenne.osat.length === 0 ? \'#FDBB07\' : rakenne.$collapsed ? \'#06526c\' : \'#29ABE2\' }">' +
+          '  <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
+          '  <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
           '</span>' +
           '<div class="right">' +
           '  <div ng-if="!rakenne._tutkinnonOsa && muokkaus" class="right-item">' +

@@ -33,7 +33,7 @@ angular.module('eperusteApp')
   })
   .controller('EsitysCtrl', function($q, $scope, $stateParams, Kayttajaprofiilit, Suosikit,
       Perusteet, Suosikitbroadcast, Suoritustapa, YleinenData, Navigaatiopolku,
-      palvelinhaunIlmoitusKanava, PerusteRakenteet, TreeCache, $state) {
+      palvelinhaunIlmoitusKanava, PerusteRakenteet, $state) {
 
     $scope.konteksti = $stateParams.konteksti;
     $scope.peruste = {};
@@ -59,11 +59,7 @@ angular.module('eperusteApp')
 
     // $scope.peruMuutokset = haeRakenne;
 
-    // if (TreeCache.nykyinen() !== $stateParams.perusteenId) { haeRakenne(); }
-    // else { TreeCache.hae(); }
-    //
     $scope.tallennaRakenne = function(rakenne) {
-      TreeCache.tallenna(rakenne, $stateParams.perusteenId);
       rakenne.tutkinnonOsat = _.values(rakenne.tutkinnonOsat);
       PerusteRakenteet.save({ perusteenId: $stateParams.perusteenId }, rakenne, function(re) {
         console.log(re);

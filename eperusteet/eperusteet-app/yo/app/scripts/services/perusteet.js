@@ -63,7 +63,7 @@ angular.module('eperusteApp')
         add: {method: 'PUT'}
     });
   })
-  .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet, TreeCache, PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {
+  .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet, PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {
     function haeRakenne(perusteProjektiId, suoritustapa, success) {
       var response = {};
 

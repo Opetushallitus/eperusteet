@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $rootScope, $state, $stateParams,
-    Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, TreeCache, Notifikaatiot,
+    Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, Notifikaatiot,
     Editointikontrollit, Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode) {
 
     $scope.editoi = false;
@@ -44,7 +44,6 @@ angular.module('eperusteApp')
     haeRakenne();
 
     function tallennaTutkinnonosat(rakenne) {
-      TreeCache.tallenna(rakenne, $stateParams.perusteenId);
       PerusteenRakenne.tallennaTutkinnonosat(
         rakenne,
         rakenne.$peruste.id,

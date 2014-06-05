@@ -18,7 +18,7 @@
 
 angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams,
-              PerusteProjektiService, PerusteenRakenne, TreeCache, Notifikaatiot,
+              PerusteProjektiService, PerusteenRakenne, Notifikaatiot,
               Editointikontrollit, SivunavigaatioService, Kommentit, KommentitBySuoritustapa, Lukitus) {
     $scope.editoi = false;
     // $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
@@ -45,7 +45,6 @@ angular.module('eperusteApp')
     haeRakenne();
 
     function tallennaRakenne(rakenne) {
-      TreeCache.tallenna(rakenne, $stateParams.perusteenId);
       PerusteenRakenne.tallennaRakenne(
         rakenne,
         rakenne.$peruste.id,
