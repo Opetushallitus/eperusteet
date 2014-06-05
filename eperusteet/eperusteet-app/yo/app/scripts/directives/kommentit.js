@@ -16,6 +16,8 @@
 
 'use strict';
 
+// /* global _ */
+
 angular.module('eperusteApp')
   .directive('kommentit', function ($timeout, $location, $state, $rootScope, YleinenData, Kommentit) {
     return {
@@ -27,18 +29,15 @@ angular.module('eperusteApp')
         parent: '='
       },
       link: function ($scope) {
+        var stateChanged = false;
         $scope.nayta = true;
         $scope.editoitava = '';
         $scope.editoi = false;
         $scope.sisalto = false;
         $scope.urlit = {};
 
-        function lataaKommentit(url, lataaja) {
-          if (lataaja) {
-            $scope.urlit[url] = lataaja;
-          }
-
-          lataaja = $scope.urlit[url];
+        function lataaKommentit(url) {
+          var lataaja = $scope.urlit[url];
           if (lataaja) {
             lataaja(function(kommentit) {
               $scope.sisalto = kommentit;
@@ -51,9 +50,22 @@ angular.module('eperusteApp')
           $scope.nayta = false;
         });
 
+        $scope.$on('update:kommentit', function(event, url, lataaja) {
+          if (!$scope.urlit[url]) {
+            $scope.urlit[url] = lataaja;
+            if (!stateChanged) {
+              lataaKommentit($location.url());
+            }
+          }
+        });
+
         $rootScope.$on('$stateChangeSuccess', function() {
+          stateChanged = true;
           $timeout(function() {
-            lataaKommentit($location.url());
+            var url = $location.url();
+            if ($scope.urlit[url]) {
+              lataaKommentit($location.url());
+            }
           }, 100);
         });
 
@@ -69,10 +81,6 @@ angular.module('eperusteApp')
 
         $scope.$on('enableEditing', function() { $scope.nayta = false; });
         $scope.$on('disableEditing', function() { $scope.nayta = true; });
-
-        $scope.$on('update:kommentit', function(event, url, lataaja) {
-          lataaKommentit(url, lataaja);
-        });
       }
     };
   });

@@ -62,11 +62,6 @@ angular.module('eperusteApp')
           }
         });
 
-        scope.$watch('rakenne', function(uusirakenne) {
-          Muodostumissaannot.laskeLaajuudet(scope.rakenne, scope.tutkinnonOsat);
-          Muodostumissaannot.validoiRyhma(uusirakenne, scope.tutkinnonOsat);
-        }, true);
-
         scope.togglaaPolut = function() {
           var avaamattomat = _(scope.rakenne.osat).reject(function(osa) { return osa._tutkinnonOsa || osa.$collapsed || osa.osat.length === 0; }).size();
           if (avaamattomat !== 0) {
@@ -131,21 +126,23 @@ angular.module('eperusteApp')
                          '</div>';
 
         var template =
-          '<div class="tree-otsikko" ng-if="!vanhempi">' +
+          '<div class="tree-box" ng-if="!vanhempi">' +
           '  <a ng-if="zoomaus" class="back" href=""><span class="glyphicon glyphicon-chevron-left"></span></a>' +
-          '  <h4>' +
-          '    <a ng-show="muokkaus" href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)">' +
-          '      <span class="tree-otsikko-left"><b>{{ rakenne.nimi | kaanna:true }}</b></span>' +
-          '    </a>' +
-          '    <span ng-hide="muokkaus"><b>{{ rakenne.nimi | kaanna:true }}</b></span>' +
-          '    <span class="tree-otsikko-laajuus" ng-show="apumuuttujat.suoritustapa !== \'naytto\'"> ' +
-          '      (<b>{{ rakenne.$laajuus || 0 }}</b> / ' +
-          '      <span ng-show="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi"><b>{{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}</b>ov)</span>' +
-            '      <span ng-hide="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi"><b>{{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}</b> - {{ rakenne.muodostumisSaanto.laajuus.maksimi || 0 }}ov)</span>' +
-          '    </span>' +
+          '  <div class="tree-otsikko">' +
+          '    <h4>' +
+          '      <a ng-show="muokkaus" href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)">' +
+          '        <span class="tree-otsikko-left"><b>{{ rakenne.nimi | kaanna:true }}</b></span>' +
+          '      </a>' +
+          '      <span ng-hide="muokkaus"><b>{{ rakenne.nimi | kaanna:true }}</b></span>' +
+          '      <span class="tree-otsikko-laajuus" ng-show="apumuuttujat.suoritustapa !== \'naytto\'"> ' +
+          '        (<b>{{ rakenne.$laajuus || 0 }}</b> / ' +
+          '        <span ng-show="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi"><b>{{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}</b>ov)</span>' +
+          '        <span ng-hide="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi"><b>{{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}</b> - {{ rakenne.muodostumisSaanto.laajuus.maksimi || 0 }}ov)</span>' +
+          '      </span>' +
           avaaKaikki +
-          '  </h4>' +
-          '  <div ng-show="muokkaus && rakenne.$virhe" class="isovirhe">{{ rakenne.$virhe | kaanna }}</div>' +
+          '    </h4>' +
+          '  </div>' +
+          '  <div ng-show="muokkaus && rakenne.$virhe" class="isovirhe-otsikko">{{ rakenne.$virhe | kaanna }}</div>' +
           '</div>' +
           '<div ng-if="vanhempi">' + kentta + '</div>' +
           '<div class="collapser" ng-show="!rakenne.$collapsed">' +

@@ -51,6 +51,11 @@ angular.module('eperusteApp')
 
       // On rakennemoduuli
       if (rakenne.muodostumisSaanto) {
+        _.forEach(rakenne.osat, function(tosa) {
+          if (!tosa._tutkinnonOsa) {
+            validoiRyhma(tosa);
+          }
+        });
         var msl = rakenne.muodostumisSaanto.laajuus;
         var msk = rakenne.muodostumisSaanto.koko;
 
@@ -76,7 +81,7 @@ angular.module('eperusteApp')
           .filter(function(osa) { return osa._tutkinnonOsa; })
           .value();
         if (_.size(tosat) !== _(tosat).uniq('_tutkinnonOsa').size()) {
-            rakenne.$virhe = 'muodostumis-rakenne-validointi-uniikit';
+          rakenne.$virhe = 'muodostumis-rakenne-validointi-uniikit';
         }
       }
     }

@@ -33,7 +33,7 @@
     <div class="skratchpad-list">
       <p class="skratchpad-list-header" translate>tutkinnonosat</p>
       <div ng-show="tutkinnonOsat.rajaus || tutkinnonOsat.multiPage" class="tutkinnonosa-rajaus">
-        <input ng-model="tutkinnonOsat.rajaus" type="input" class="form-control" placeholder="{{'tutkinnon-osa-haku-placeholder' | translate}}">
+        <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia..."></input>
       </div>
       <ul ui-sortable="sortableOptionsUnique" ng-model="uniikit" class="uniikit placeholder-hide">
         <li class="skratchpad-item" ng-repeat="osa in uniikit | startFrom:(tutkinnonOsat.sivu-1)*tutkinnonOsat.perSivu | limitTo:tutkinnonOsat.perSivu">
@@ -42,7 +42,6 @@
       </ul>
       <pagination ng-show="tutkinnonOsat.multiPage" ng-model="tutkinnonOsat.sivu" ng-change="valitseSivu(tutkinnonOsat.sivu)"
                   total-items="uniikit.length" items-per-page="tutkinnonOsat.perSivu"></pagination>
-      <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia..."></input>
     </div>
   </div>
   <div class="clearfix"></div>

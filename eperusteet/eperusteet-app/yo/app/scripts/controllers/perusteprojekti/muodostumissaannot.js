@@ -19,7 +19,7 @@
 angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams,
               PerusteProjektiService, PerusteenRakenne, Notifikaatiot,
-              Editointikontrollit, SivunavigaatioService, Kommentit, KommentitBySuoritustapa, Lukitus) {
+              Editointikontrollit, SivunavigaatioService, Kommentit, KommentitBySuoritustapa, Lukitus, Muodostumissaannot) {
     $scope.editoi = false;
     // $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
     $scope.suoritustapa = $stateParams.suoritustapa;
@@ -38,6 +38,7 @@ angular.module('eperusteApp')
         res.$suoritustapa = $scope.suoritustapa;
         res.$resolved = true;
         $scope.rakenne = res;
+        Muodostumissaannot.laskeLaajuudet($scope.rakenne.rakenne, $scope.rakenne.tutkinnonOsat);
         cb();
       });
     }
@@ -61,6 +62,7 @@ angular.module('eperusteApp')
     $scope.muokkaa = function () {
       Lukitus.lukitseSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa, function() {
         haeRakenne(function() {
+          Muodostumissaannot.validoiRyhma($scope.rakenne.rakenne, $scope.tutkinnonOsat);
           Editointikontrollit.startEditing();
           $scope.editoi = true;
         });
@@ -71,10 +73,7 @@ angular.module('eperusteApp')
       edit: function() {
         $scope.editoi = true;
       },
-      validate: function() {
-        console.log('Muodostumissäännöiltä puuttuu validointi. Toteuta.');
-        return true;
-      },
+      validate: function() { return true; },
       save: function() {
         tallennaRakenne($scope.rakenne);
         $scope.editoi = false;
@@ -86,6 +85,11 @@ angular.module('eperusteApp')
         });
       }
     });
+
+    $scope.$watch('rakenne.rakenne', function(uusirakenne) {
+      Muodostumissaannot.laskeLaajuudet(uusirakenne, $scope.rakenne.tutkinnonOsat);
+      Muodostumissaannot.validoiRyhma(uusirakenne, $scope.tutkinnonOsat);
+    }, true);
 
     $scope.$watch('editoi', function (editoi) {
       SivunavigaatioService.aseta({osiot: !editoi});

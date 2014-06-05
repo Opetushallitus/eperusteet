@@ -112,6 +112,12 @@
     "leikelauta": "Leikelauta",
     "tutkinnon-osa-haku-placeholder": "Rajaa tutkinnon osia...",
 
+    "muodostumis-rakenne-validointi-laajuus": "Ryhmän osien yhteenlaskettu laajuus ei riitä kattamaan tarvittavaa laajuutta",
+    "muodostumis-rakenne-validointi-maara": "Ryhmän osien yhteenlaskettu määrä ei riitä kattamaan tarvittavaa määrää",
+    "muodostumis-rakenne-validointi-maksimi": "Ryhmän laskettu minimi on pienempi kuin vaadittu minimi",
+    "muodostumis-rakenne-validointi-minimi": "Ryhmän laskettu maksimi on pienempi kuin vaadittu maksimi",
+    "muodostumis-rakenne-validointi-uniikit": "Ryhmä sisältää samoja tutkinnon osia",
+
     "esiopetus": "Esiopetus",
     "perusopetus": "Perusopetus",
     "lukiokoulutus": "Lukiokoulutus",

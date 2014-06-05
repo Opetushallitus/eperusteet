@@ -17,12 +17,15 @@ $puuviiva-vari: #ccc;
   padding: 20px;
 }
 
-.tree-otsikko {
+.tree-box {
   background: #eee;
   min-width: 700px;
-  padding: 4px 10px 4px 10px;
   margin-bottom: 0px;
   border: 1px solid $reunus-vari;
+}
+
+.tree-otsikko {
+  padding: 4px 10px 4px 10px;
 }
 
 .tree-otsikko-left {
@@ -81,6 +84,7 @@ $puuviiva-vari: #ccc;
     text-align: center;
     text-transform: uppercase;
     color: #555;
+    text-shadow: 0px 1px 1px #ccc;
   }
   .skratchpad-badge {
     display: inline-block;
@@ -130,9 +134,8 @@ $puuviiva-vari: #ccc;
     width: 0px;
   }
   .tutkinnonosa-rajaus {
-    margin-bottom: 15px;
+    margin: 5px;
     input {
-      width: 80%;
       margin: 0 auto;
     }
   }
@@ -253,7 +256,14 @@ $puuviiva-vari: #ccc;
     }
   }
 */
+  .isovirhe-otsikko {
+    border-top: 1px solid #cccccc;
+    margin: 0px;
+    padding: 3px;
+    background-color: $error-vari;
+  }
   .isovirhe, .virhe, .beef {
+    width: 100%;
     border: 1px solid #cccccc;
     border-top: 0px;
   }
