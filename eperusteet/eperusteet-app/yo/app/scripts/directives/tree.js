@@ -292,11 +292,14 @@ angular.module('eperusteApp')
               uusiryhma.$uusi = true;
               scope.skratchpad.push(uusiryhma);
             }
-            else { ryhma = uusiryhma; }
+            else { _.merge(ryhma, uusiryhma); }
           }
           else { _.remove(scope.skratchpad, ryhma); }
         });
 
+        scope.poista = function(i, a) {
+          _.remove(i, a);
+        };
         scope.uusiTutkinnonOsa = function(cb) {
           scope.lisataanUuttaOsaa = true;
           cb();
