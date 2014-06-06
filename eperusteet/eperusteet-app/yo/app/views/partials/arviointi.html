@@ -13,15 +13,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
-<div class="btn-group" ng-show="naytaMuokkausmoodinValitsin()">
-  <button class="btn btn-default" editointi-kontrolli ng-click="asetaMuokkausmoodi('tekstikentta')" translate>arviointi-muokkaa-tekstikenttänä</button>
-  <button class="btn btn-default" editointi-kontrolli ng-click="asetaMuokkausmoodi('taulukko')" translate>arviointi-muokkaa-taulukkona</button>
-</div>
-<div ng-show="showArviointiteksti()">
-  <div ng-if="editAllowed" ckeditor localized ng-model="arviointi.lisatiedot" editor-placeholder="arviointi-lisatiedot-placeholder" editing-enabled="editAllowed" layout="simplified"></div>
-  <div ng-if="!editAllowed" class="well well-sm" ng-bind-html="arviointi.lisatiedot | kaanna"></div>
-</div>
-<div ng-show="showArviointitaulukko()">
+<div>
   <div class="panel panel-default panel-small arviointi-kohdealueet">
     <div class="panel-heading">
       <h3 class="panel-title">{{'arviointi-kohdealueet' | translate}}<span class="toggler"><a href="" translate ng-click="toggleAll()">avaa-sulje-kaikki</a></span></h3>
@@ -29,8 +21,8 @@ European Union Public Licence for more details.
 
     <div class="panel-body">
       <accordion close-others="false">
-      <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi.arvioinninKohdealueet">
-        <accordion-group class="arvioinnin-kohdealue" heading="{{kohdealue.otsikko | kaanna}}" ng-repeat="kohdealue in arviointi.arvioinninKohdealueet" is-open="kohdealue.accordionOpen">
+      <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi">
+        <accordion-group class="arvioinnin-kohdealue" heading="{{kohdealue.otsikko | kaanna}}" ng-repeat="kohdealue in arviointi" is-open="kohdealue.accordionOpen">
         <accordion-heading>
           <h3 class="panel-title"><arvioinnin-tekstikentta sisalto="kohdealue" sisaltoteksti="kohdealue.otsikko" sisaltoalue="$parent.arviointi.arvioinninKohdealueet" edit-allowed="editAllowed"/></h3>
         </accordion-heading>

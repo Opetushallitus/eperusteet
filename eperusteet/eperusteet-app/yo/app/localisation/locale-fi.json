@@ -229,7 +229,12 @@
     "muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat-placeholder": "Listaa tähän ammattitaidon osoittamistavat",
     "muokkaus-tutkinnon-osan-osaamisala-header": "Osaamisala",
     "muokkaus-tutkinnon-osan-osaamisala-placeholder": "Kirjoita tähän tutkinnon osan osaamisala",
-    "muokkaus-tutkinnon-osan-arviointi-header": "Arviointi",
+    "muokkaus-tutkinnon-osan-arviointi-teksti-header": "Arviointi tekstinä",
+    "muokkaus-tutkinnon-osan-arviointi-teksti-placeholder": "Kirjoita tähän arviointikriteerit",
+    "muokkaus-tutkinnon-osan-arviointi-taulukko-header": "Arviointi taulukkona",
+    "poista-osio": "Poista osio",
+    "varmista-osion-poisto-otsikko": "Varmista osion poisto",
+    "varmista-osion-poisto-teksti": "Haluatko poistaa osion? Kaikki osion sisältö menetetään.",
 
     "puu-tyyppi-yksi": "Valitse yksi seuraavista",
 

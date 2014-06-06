@@ -37,6 +37,7 @@ angular.module('eperusteApp')
         PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
           $scope.rakenne = res;
           if (TutkinnonOsaEditMode.getMode()) {
+          //if (true) {
             $timeout(function () {
               $scope.muokkaa();
             }, 50);
@@ -88,12 +89,18 @@ angular.module('eperusteApp')
              collapsible: true,
              order: 6
            },{
-             path: 'arviointi',
-             localeKey: 'tutkinnon-osan-arviointi',
+             path: 'arviointi.lisatiedot',
+             localeKey: 'tutkinnon-osan-arviointi-teksti',
+             type: 'editor-text',
+             localized: true,
+             collapsible: true,
+             order: 7
+           },{
+             path: 'arviointi.arvioinninKohdealueet',
+             localeKey: 'tutkinnon-osan-arviointi-taulukko',
              type: 'arviointi',
              collapsible: true,
-             mandatory: true,
-             order: 7
+             order: 8
            });
 
         $scope.editableTutkinnonOsa = {};
@@ -114,7 +121,6 @@ angular.module('eperusteApp')
           function successCb(res) {
             Lukitus.vapautaPerusteenosa(res.id);
             Notifikaatiot.onnistui('muokkaus-tutkinnon-osa-tallennettu');
-            $state.go('perusteprojekti.suoritustapa.tutkinnonosat');
           }
 
           $scope.editableTutkinnonOsa = angular.copy(osa);

@@ -55,21 +55,7 @@ angular.module('eperusteApp')
   })
   .service('MuokkausUtils', function() {
     this.hasValue = function(obj, path) {
-      if (this.nestedHas(obj, path, '.')) {
-        if (angular.isString(this.nestedGet(obj, path, '.'))) {
-          if(this.nestedGet(obj, path, '.').length > 0) {
-            return true;
-          } else {
-            return false;
-          }
-        } else if(!angular.isUndefined(this.nestedGet(obj, path, '.')) && this.nestedGet(obj, path, '.') !== null) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
+      return this.nestedHas(obj, path, '.') && !_.isEmpty(this.nestedGet(obj, path, '.'));
     };
 
     this.nestedHas = function(obj, path, delimiter) {

@@ -197,7 +197,7 @@ $pikamenu-max-height: 400px;
   background-color: transparent;
   border: 0px none;
   box-shadow: none;
-  margin-bottom: 150px;
+  margin-bottom: 20px;
 }
 
 .muokkaus-kohdealue {
@@ -267,4 +267,10 @@ $pikamenu-max-height: 400px;
   max-width: 1000px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.dropdown-menu {
+  .disabled-link, .disabled-link:hover {
+    color: #ddd;
+  }
 }

@@ -45,11 +45,7 @@ angular.module('eperusteApp')
           }
 
           if(angular.isUndefined(scope.arviointi) || scope.arviointi === null) {
-            scope.arviointi = {};
-          }
-
-          if(angular.isUndefined(scope.arviointi.arvioinninKohdealueet) || scope.arviointi.arvioinninKohdealueet === null) {
-            scope.arviointi.arvioinninKohdealueet = [];
+            scope.arviointi = [];
           }
 
           var kohdealue = {
@@ -57,7 +53,7 @@ angular.module('eperusteApp')
           };
           kohdealue.otsikko[YleinenData.kieli] = scope.uudenKohdealueenNimi;
 
-          scope.arviointi.arvioinninKohdealueet.push(kohdealue);
+          scope.arviointi.push(kohdealue);
 
           scope.uudenKohdealueenNimi = null;
           scope.showNewKohdealueInput = false;
@@ -116,40 +112,6 @@ angular.module('eperusteApp')
           _.remove(list, item);
         };
 
-        var currentMoodi;
-
-        scope.arviointiOnOlemassaTekstina = function () {
-          var lisatietoKenttaOnOlemassa = (!_.isEmpty(scope.arviointi) &&
-                  !_.isEmpty(scope.arviointi.lisatiedot));
-          var lisatiedoissaOnSisaltoa = _.any(_.values(_.omit(scope.lisatiedot, '_id')));
-          return lisatietoKenttaOnOlemassa && lisatiedoissaOnSisaltoa;
-        };
-
-        scope.showArviointitaulukko = function() {
-          return currentMoodi === 'taulukko' ||
-              (!_.isEmpty(scope.arviointi) &&
-                  (!scope.arviointiOnOlemassaTekstina() &&
-                   !_.isEmpty(scope.arviointi.arvioinninKohdealueet)));
-        };
-
-        scope.showArviointiteksti = function() {
-          return currentMoodi === 'tekstikentta' ||
-              (!_.isEmpty(scope.arviointi) &&
-                  (scope.arviointiOnOlemassaTekstina() &&
-                  _.isEmpty(scope.arviointi.arvioinninKohdealueet)));
-        };
-
-        scope.naytaMuokkausmoodinValitsin = function() {
-          return scope.editAllowed && angular.isUndefined(currentMoodi) && (_.isEmpty(scope.arviointi) || (_.isEmpty(scope.arviointi.lisatiedot) && _.isEmpty(scope.arviointi.arvioinninKohdealueet)));
-        };
-
-        scope.asetaMuokkausmoodi = function(moodi) {
-          currentMoodi = moodi;
-          if(scope.arviointi === undefined) {
-            scope.arviointi = {};
-          }
-        };
-
         scope.valitseKieli = function(teksti) {
           return YleinenData.valitseKieli(teksti);
         };
@@ -189,10 +151,7 @@ angular.module('eperusteApp')
          */
         function setAccordion(mode) {
           var obj = scope.arviointi;
-          if (!_.isObject(obj)) {
-            return;
-          }
-          _.each(obj.arvioinninKohdealueet, function (kohdealue) {
+          _.each(obj, function (kohdealue) {
             kohdealue.accordionOpen = mode;
             _.each(kohdealue.arvioinninKohteet, function (kohde) {
               kohde.accordionOpen = mode;
@@ -201,7 +160,7 @@ angular.module('eperusteApp')
         }
 
         function accordionState() {
-          var obj = _.first(scope.arviointi.arvioinninKohdealueet);
+          var obj = _.first(scope.arviointi);
           return obj && obj.accordionOpen;
         }
 
