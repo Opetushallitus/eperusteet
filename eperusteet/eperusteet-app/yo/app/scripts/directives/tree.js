@@ -115,7 +115,7 @@ angular.module('eperusteApp')
           '  <span class="tree-item">' + generoiOtsikko() + '</span>' +
           '</div>';
 
-        var kentta = '<div ng-if="rakenne._tutkinnonOsa" ng-class="{ \'pointer\': muokkaus }" class="bubble-osa">' + optiot + '</div>';
+        var kentta = '<div ng-if="rakenne._tutkinnonOsa" ng-class="{ \'pointer\': muokkaus, \'huomio\': tutkinnonOsat[rakenne._tutkinnonOsa].$elevate }" class="bubble-osa">' + optiot + '</div>';
         kentta += '<div ng-if="!rakenne._tutkinnonOsa" ng-class="{ \'pointer\': muokkaus }" class="bubble">' + optiot + '</div>';
         kentta += '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe" class="virhe"><span>{{ rakenne.$virhe | translate }}</span></div>';
 
@@ -178,6 +178,7 @@ angular.module('eperusteApp')
         scope.uusiOsa = null;
         scope.skratchpad = [];
         scope.uniikit = [];
+        scope.kaytetytUniikit = {};
         scope.kaikkiUniikit = [];
         scope.topredicate = 'nimi.fi';
         scope.tosarajaus = '';
@@ -217,6 +218,7 @@ angular.module('eperusteApp')
           });
           scope.uniikit = scope.kaikkiUniikit;
           scope.paivitaRajaus();
+          scope.kaytetytUniikit = PerusteenRakenne.puustaLoytyy(scope.rakenne.rakenne);
         }
         paivitaUniikit();
 
@@ -275,7 +277,9 @@ angular.module('eperusteApp')
 
         scope.poista = function(i, a) {
           _.remove(i, a);
+          scope.kaytetytUniikit = PerusteenRakenne.puustaLoytyy(scope.rakenne.rakenne);
         };
+
         scope.uusiTutkinnonOsa = function(cb) {
           scope.lisataanUuttaOsaa = true;
           cb();

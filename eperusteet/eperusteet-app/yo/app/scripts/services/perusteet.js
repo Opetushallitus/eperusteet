@@ -70,9 +70,22 @@ angular.module('eperusteApp')
     });
   })
   .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet, PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {
+    function haeTutkinnonosat(perusteProjektiId, suoritustapa, success) {
+      // FIXME: käytä perusteprojekti serviceä
+      PerusteprojektiResource.get({ id: perusteProjektiId }, function(perusteprojekti) {
+        PerusteTutkinnonosat.query({
+          perusteenId: perusteprojekti._peruste,
+          suoritustapa: suoritustapa
+        },
+        success,
+        Notifikaatiot.serverCb);
+      });
+    }
+
     function haeRakenne(perusteProjektiId, suoritustapa, success) {
       var response = {};
 
+      // FIXME: käytä perusteprojekti serviceä
       PerusteprojektiResource.get({ id: perusteProjektiId }, function(vastaus) {
         PerusteProjektiService.save(vastaus);
         Perusteet.get({
@@ -166,12 +179,22 @@ angular.module('eperusteApp')
       }, Notifikaatiot.serverCb);
     }
 
+    function puustaLoytyy(rakenne) {
+      var set = {};
+      kaikilleRakenteille(rakenne, function(osa) {
+        set[osa._tutkinnonOsa] = osa._tutkinnonOsa ? true : false;
+      });
+      return set;
+    }
+
     return {
       hae: haeRakenne,
       tallennaRakenne: tallennaRakenne,
+      haeTutkinnonosat: haeTutkinnonosat,
       tallennaTutkinnonosat: tallennaTutkinnonosat,
       poistaTutkinnonOsaViite: poistaTutkinnonOsaViite,
       kaikilleRakenteille: kaikilleRakenteille,
-      validoiRakennetta: validoiRakennetta
+      validoiRakennetta: validoiRakennetta,
+      puustaLoytyy: puustaLoytyy
     };
   });

@@ -19,57 +19,22 @@
 
 angular.module('eperusteApp')
   .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $rootScope, $state, $stateParams,
-    Navigaatiopolku, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, Notifikaatiot,
+    Navigaatiopolku, perusteprojektiTiedot, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, Notifikaatiot,
     Editointikontrollit, Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode) {
 
     $scope.editoi = false;
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
     $scope.tosarajaus = '';
-    $scope.rakenne = {
-      $resolved: false,
-      rakenne: {osat: []},
-      tutkinnonOsat: {}
-    };
+    $scope.tutkinnonOsat = [];
 
     $scope.paivitaRajaus = function(rajaus) { $scope.tosarajaus = rajaus; };
 
-    function haeRakenne() {
-      PerusteenRakenne.hae($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
-        res.$suoritustapa = $scope.suoritustapa;
-        res.$resolved = true;
-        $scope.rakenne = res;
+    function haeTutkinnonosat() {
+      PerusteenRakenne.haeTutkinnonosat($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
+        $scope.tutkinnonOsat = res;
       });
     }
-    $scope.haeRakenne = haeRakenne;
-    haeRakenne();
-
-    function tallennaTutkinnonosat(rakenne) {
-      PerusteenRakenne.tallennaTutkinnonosat(
-        rakenne,
-        rakenne.$peruste.id,
-        $scope.suoritustapa,
-        function() { Notifikaatiot.onnistui(); },
-        Notifikaatiot.serverCb
-      );
-    }
-
-    Editointikontrollit.registerCallback({
-      edit: function() {
-        $scope.editoi = true;
-      },
-      validate: function() {
-        console.log('Tutkinnon rakenteelta puuttuu validointi. Toteuta.');
-        return true;
-      },
-      save: function() {
-        tallennaTutkinnonosat($scope.rakenne);
-        $scope.editoi = false;
-      },
-      cancel: function() {
-        haeRakenne();
-        $scope.editoi = false;
-      }
-    });
+    haeTutkinnonosat();
 
     $scope.rajaaTutkinnonOsia = function(haku) {
       return Kaanna.kaanna(haku.nimi).toLowerCase().indexOf($scope.tosarajaus.toLowerCase()) !== -1;
@@ -89,13 +54,14 @@ angular.module('eperusteApp')
     $scope.lisaaTutkinnonOsa = function(osa, cb) {
       osa = osa ? {_tutkinnonOsa: osa._tutkinnonOsa} : {};
       cb = cb || angular.noop;
+      var peruste = perusteprojektiTiedot.getPeruste();
 
       PerusteTutkinnonosa.save({
-        perusteenId: $scope.rakenne.$peruste.id,
-        suoritustapa: $scope.rakenne.$suoritustapa
+        perusteenId: peruste.id,
+        suoritustapa: $stateParams.suoritustapa
       }, osa,
       function(res) {
-        $scope.rakenne.tutkinnonOsat[res._tutkinnonOsa] = res;
+        $scope.tutkinnonOsat.unshift(res);
         cb();
         TutkinnonOsaEditMode.setMode(true);
         $scope.navigoiTutkinnonosaan(res);

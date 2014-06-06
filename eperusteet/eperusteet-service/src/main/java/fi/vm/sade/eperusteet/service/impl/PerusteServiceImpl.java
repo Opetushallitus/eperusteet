@@ -249,6 +249,21 @@ public class PerusteServiceImpl implements PerusteService {
         return mapper.map(rakenneRepository.findRevision(id, versioId), RakenneModuuliDto.class);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public TutkinnonOsaViiteDto getTutkinnonOsaViite(Long osaId) {
+        TutkinnonOsaViite re = tutkinnonOsaViiteRepository.findOne(osaId);
+        return mapper.map(re, TutkinnonOsaViiteDto.class);
+    }
+
+    @Override
+    public TutkinnonOsaViiteDto updateTutkinnonOsaViite(Long osaId, TutkinnonOsaViiteDto tov) {
+        TutkinnonOsaViite to = tutkinnonOsaViiteRepository.findOne(osaId);
+        to.setJarjestys(tov.getJarjestys());
+        to.setLaajuus(tov.getLaajuus());
+        to.setYksikko(tov.getYksikko());
+        return mapper.map(to, TutkinnonOsaViiteDto.class);
+    }
 
     @Override
     @Transactional(readOnly = true)

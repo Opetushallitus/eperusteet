@@ -80,6 +80,10 @@ public interface PerusteService {
 
     List<TutkinnonOsaViiteDto> getTutkinnonOsat(Long perusteid, Suoritustapakoodi suoritustapakoodi);
 
+    public TutkinnonOsaViiteDto getTutkinnonOsaViite(Long osaId);
+
+    public TutkinnonOsaViiteDto updateTutkinnonOsaViite(Long osaId, TutkinnonOsaViiteDto tov);
+
     Peruste luoPerusteRunko(String koulutustyyppi);
 
     @PreAuthorize("isAuthenticated()")

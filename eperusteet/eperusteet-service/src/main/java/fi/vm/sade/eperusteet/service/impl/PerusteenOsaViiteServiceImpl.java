@@ -23,6 +23,8 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +41,16 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService{
 
     @Autowired
     private PerusteenOsaViiteRepository repository;
+
     @PersistenceContext
     private EntityManager em;
+
     @Autowired
     private PerusteenOsaService perusteenOsaService;
+
+    @Autowired
+    @Dto
+    private DtoMapper mapper;
 
     @Override
     @Transactional(readOnly = false)
