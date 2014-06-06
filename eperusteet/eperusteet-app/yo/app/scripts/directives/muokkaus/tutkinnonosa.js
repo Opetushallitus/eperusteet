@@ -76,7 +76,7 @@ angular.module('eperusteApp')
            },{
              path: 'ammattitaidonOsoittamistavat',
              localeKey: 'tutkinnon-osan-ammattitaidon-osoittamistavat',
-             type: 'editor-text',
+             type: 'editor-area',
              localized: true,
              collapsible: true,
              order: 5
