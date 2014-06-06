@@ -18,10 +18,12 @@ angular.module('eperusteApp')
         // Poistetaan tmpName controlleri form:ista. Ja registeröidään controlleri
         // nimellä, mikä annettiin directiven name kentässä. Näin saadaan form validoinnit
         // näkymään directiven sisällä ja ulkona.
-        var nameCtrl = scope.form.tmpName;
-        scope.form.$removeControl(nameCtrl);
-        nameCtrl.$name = scope.name;
-        scope.form.$addControl(nameCtrl);
+        if (scope.form) {
+          var nameCtrl = scope.form.tmpName;
+          scope.form.$removeControl(nameCtrl);
+          nameCtrl.$name = scope.name;
+          scope.form.$addControl(nameCtrl);
+        }
       }
     };
   });

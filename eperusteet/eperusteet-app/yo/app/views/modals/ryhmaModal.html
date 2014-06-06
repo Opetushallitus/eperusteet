@@ -3,7 +3,7 @@
 </div>
 
 <div class="modal-body">
-  <form class="form-horizontal">
+  <form class="form-horizontal" name="ryhmaForm">
     <h3 translate>perustiedot</h3>
     <formfield ng-model="ryhma" model-var="nimi" label="nimi" type="text" required></formfield>
     <formfield ng-model="ryhma" model-var="kuvaus" label="kuvaus" type="text"></formfield>
@@ -22,8 +22,8 @@
 
     <div ng-show="suoritustapa !== 'naytto' && ms.laajuus">
       <h3 translate>tutkinnonosa-laajuus</h3>
-      <formfield ng-model="ryhma" model-var="muodostumisSaanto.laajuus.minimi" label="minimi" type="number"></formfield>
-      <formfield ng-model="ryhma" model-var="muodostumisSaanto.laajuus.maksimi" label="maksimi" type="number"></formfield>
+      <formfield ng-model="ryhma" model-var="muodostumisSaanto.laajuus.minimi" label="minimi" type="number" name="laajuusMin" min="0" max="999" form="ryhmaForm"></formfield>
+      <formfield ng-model="ryhma" model-var="muodostumisSaanto.laajuus.maksimi" label="maksimi" type="number" name="laajuusMax" min="0" max="999" form="ryhmaForm"></formfield>
       <formfield ng-model="ryhma" model-var="muodostumisSaanto.laajuus.yksikko" label="yksikko" options="[
                  {value: 'OPINTOVIIKKO', label: 'opintoviikko'},
                  {value: 'OSAAMISPISTE', label: 'osaamispiste'}]"></formfield>
@@ -31,8 +31,8 @@
 
     <div ng-show="ms.koko">
       <h3 translate>tutkinnonosa-koko</h3>
-      <formfield ng-model="ryhma" model-var="muodostumisSaanto.koko.minimi" label="minimi" type="number"></formfield>
-      <formfield ng-model="ryhma" model-var="muodostumisSaanto.koko.maksimi" label="maksimi" type="number"></formfield>
+      <formfield ng-model="ryhma" model-var="muodostumisSaanto.koko.minimi" label="minimi" type="number" name="kokoMin" min="0" max="999" form="ryhmaForm"></formfield>
+      <formfield ng-model="ryhma" model-var="muodostumisSaanto.koko.maksimi" label="maksimi" type="number" name="kokoMax" min="0" max="999" form="ryhmaForm"></formfield>
     </div>
   </form>
 </div>
@@ -41,6 +41,6 @@
   <div class="pull-left" ng-if="!luonti">
     <button class="btn btn-danger" ng-click="poista()"><span class="glyphicon glyphicon-remove"></span>{{ 'poista' | kaanna }}</button>
   </div>
-  <button class="btn btn-primary" ng-click="ok(ryhma)">{{ 'tallenna' | kaanna }}</button>
+  <button class="btn btn-primary" ng-disabled="ryhmaForm.$invalid" ng-click="ok(ryhma)">{{ 'tallenna' | kaanna }}</button>
   <button class="btn btn-danger" ng-click="peruuta()">{{ 'peru' | kaanna }}</button>
 </div>
