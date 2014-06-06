@@ -73,34 +73,34 @@ angular.module('eperusteApp')
              type: 'editor-area',
              localized: true,
              collapsible: true,
-             order: 4
+             order: 6
            },{
              path: 'ammattitaidonOsoittamistavat',
              localeKey: 'tutkinnon-osan-ammattitaidon-osoittamistavat',
              type: 'editor-area',
              localized: true,
              collapsible: true,
-             order: 5
+             order: 7
            },{
              path: 'osaamisala',
              localeKey: 'tutkinnon-osan-osaamisala',
              type: 'editor-text',
              localized: true,
              collapsible: true,
-             order: 6
+             order: 8
            },{
              path: 'arviointi.lisatiedot',
              localeKey: 'tutkinnon-osan-arviointi-teksti',
              type: 'editor-text',
              localized: true,
              collapsible: true,
-             order: 7
+             order: 4
            },{
              path: 'arviointi.arvioinninKohdealueet',
              localeKey: 'tutkinnon-osan-arviointi-taulukko',
              type: 'arviointi',
              collapsible: true,
-             order: 8
+             order: 5
            });
 
         $scope.editableTutkinnonOsa = {};
@@ -124,9 +124,6 @@ angular.module('eperusteApp')
           }
 
           $scope.editableTutkinnonOsa = angular.copy(osa);
-
-
-          $scope.tutkinnonOsanMuokkausOtsikko = $scope.editableTutkinnonOsa.id ? $scope.editableTutkinnonOsa.nimi : 'luonti-tutkinnon-osa';
 
           Editointikontrollit.registerCallback({
             edit: function() {

@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .directive('kenttalistaus', function($q, MuokkausUtils, ArviointiHelper) {
+  .directive('kenttalistaus', function($q, MuokkausUtils, ArviointiHelper, $timeout, $window) {
     return {
       templateUrl: 'views/partials/muokkaus/kenttalistaus.html',
       restrict: 'E',
@@ -43,8 +43,20 @@ angular.module('eperusteApp')
           fieldToRemove.visible = false;
         };
 
+        function scrollTo(selector) {
+          var element = angular.element(selector);
+          if (element.length) {
+            $window.scrollTo(0, element[0].offsetTop);
+          }
+        }
+
         scope.addFieldToVisible = function(field) {
           field.visible = true;
+          // Varmista että menu sulkeutuu klikin jälkeen
+          $timeout(function () {
+            angular.element('h1').click();
+            scrollTo('li[otsikko='+field.localeKey+']');
+          });
         };
 
         /**

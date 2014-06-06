@@ -1,7 +1,8 @@
 <button ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="pull-right btn btn-default"><span class="glyphicon glyphicon-pencil"></span>{{'muokkaa' | translate}}</button>
 <a class="iconlink" href="" ui-sref="perusteprojekti.suoritustapa.tutkinnonosat"><span class="glyphicon glyphicon-chevron-left"></span>{{'tutkinnonosat' | translate}}</a>
-<pikamenu>
-  {{tutkinnonOsanMuokkausOtsikko | kaanna:true}}
+<pikamenu ng-if="tutkinnonOsa.$resolved">
+  <span ng-if="editEnabled">{{editableTutkinnonOsa.nimi | kaanna:true}}</span>
+  <span ng-if="!editEnabled">{{tutkinnonOsa.nimi | kaanna:true}}</span>
   <button ng-if="editEnabled" class="btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsa.id].id)">
     <span class="glyphicon glyphicon-remove"></span>{{'poista' | translate}}
   </button>

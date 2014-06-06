@@ -36,7 +36,6 @@ ul.tutkinnonosat {
 .rajauslaatikko {
   width: 600px;
   margin-top: 20px;
-  /*border-radius: 2px;*/
 }
 
 @media (max-width: $screen-md-max) {
@@ -112,7 +111,7 @@ $pikamenu-max-height: 400px;
 }
 
 .osio-otsikko {
-  padding-top: 5px;
+  padding-top: 10px;
   padding-bottom: 5px;
   cursor: pointer;
   font-size: 120%;
@@ -131,46 +130,6 @@ $pikamenu-max-height: 400px;
   }
   .pelkka-teksti {
     background-color: transparent;
-  }
-}
-
-.arvioinnin-kohdealue {
-  border: 0px none;
-  box-shadow: none;
-  margin-left: 0px !important;
-  & > .panel-heading {
-    padding-left: 0;
-  }
-  .panel-heading {
-    background-color: transparent;
-    padding-bottom: 0px;
-  }
-  .panel-body {
-    border: 0px none !important;
-    padding-top: 0;
-  }
-  a {
-    cursor: pointer;
-  }
-  h4 {
-    font-size: 14px;
-    font-weight: bolder;
-  }
-}
-
-.arvioinnin-kohde {
-  border: 0px none;
-  box-shadow: none;
-  margin-left: 0px !important;
-  .list-group-item {
-    padding: 5px 5px;
-  }
-  .taso-otsikko {
-    padding-top: 5px;
-    padding-left: 20px;
-  }
-  h4 {
-    padding-top: 0;
   }
 }
 
@@ -194,9 +153,7 @@ $pikamenu-max-height: 400px;
 }
 
 .muokkaus-lisaa-osio {
-  background-color: transparent;
-  border: 0px none;
-  box-shadow: none;
+  margin-top: 30px;
   margin-bottom: 20px;
 }
 
@@ -213,7 +170,7 @@ $pikamenu-max-height: 400px;
     margin-bottom: 0;
     padding-bottom: 0;
   }
-  .list-group-item, .panel:not(.arviointi-kohdealueet) {
+  .list-group-item, .panel:not(.arvioinnin-kohdealue) {
     border: 0px none;
     box-shadow: none;
   }
@@ -226,10 +183,41 @@ $pikamenu-max-height: 400px;
 }
 
 .arviointi-kohdealueet {
+  box-shadow: none;
+  border: 0;
   .toggler {
-    font-size: 80%;
-    display: inline-block;
-    margin-left: 2em;
+
+  }
+}
+
+.arvioinnin-kohdealue {
+  margin-bottom: 10px !important;
+  .panel-body .panel-heading {
+    background-color: transparent;
+    padding-bottom: 0px;
+  }
+  a {
+    cursor: pointer;
+  }
+  h4 {
+    font-size: 14px;
+    font-weight: bolder;
+  }
+}
+
+.arvioinnin-kohde {
+  border: 0px none;
+  box-shadow: none;
+  margin-left: 0px !important;
+  .list-group-item {
+    padding: 5px 5px;
+  }
+  .taso-otsikko {
+    padding-top: 5px;
+    padding-left: 20px;
+  }
+  h4 {
+    padding-top: 0;
   }
 }
 
