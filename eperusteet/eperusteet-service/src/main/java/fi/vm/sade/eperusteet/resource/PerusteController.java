@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import java.util.List;
@@ -94,6 +95,24 @@ public class PerusteController {
     @ResponseBody
     public ResponseEntity<RakenneModuuliDto> getRakenne(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
         return new ResponseEntity<>(service.getTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi)), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/rakenne/{id}/versiot", method = GET)
+    @ResponseBody
+    public List<Revision> getRakenneVersiot(@PathVariable("id") final Long id) {
+    	LOG.debug("get rakenne versio: " + id);
+    	return service.getRakenneVersiot(id);
+    }
+    
+    @RequestMapping(value = "/rakenne/{id}/versio/{versioId}", method = GET)
+    @ResponseBody
+    public ResponseEntity<RakenneModuuliDto> getRakenneVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
+    	LOG.debug("get rakenne #{} versio #{}", id, versioId);
+    	RakenneModuuliDto t = service.getRakenneVersio(id, versioId);
+        if (t == null) {
+        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/tutkinnonosat", method = GET)

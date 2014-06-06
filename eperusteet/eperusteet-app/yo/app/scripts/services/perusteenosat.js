@@ -26,8 +26,8 @@ angular.module('eperusteApp')
         byKoodiUri: { method: 'GET', isArray: true, params: { koodi: true } },
         saveTekstikappale: {method:'POST', params:{tyyppi:'perusteen-osat-tekstikappale'}},
         saveTutkinnonOsa: {method:'POST', params:{tyyppi:'perusteen-osat-tutkinnon-osa'}},
-        revisions: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/revisions'},
-        getRevision: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/:osanId/revisions/:revisionId'}
+        versiot: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/versiot'},
+        getVersio: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/:osanId/versio/:versioId'}
       });
   })
   .factory('PerusteenOsaViitteet', function($resource, SERVICE_LOC) {

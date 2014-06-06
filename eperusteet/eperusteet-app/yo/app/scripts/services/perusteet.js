@@ -42,6 +42,12 @@ angular.module('eperusteApp')
         suoritustapa: '@suoritustapa'
       });
   })
+  .factory('RakenneVersiot', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/rakenne/:rakenneId/versiot');
+  })
+  .factory('RakenneVersio', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/rakenne/:rakenneId/versio/:versioId');
+  })
   .factory('Perusteet', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteenId',
       {

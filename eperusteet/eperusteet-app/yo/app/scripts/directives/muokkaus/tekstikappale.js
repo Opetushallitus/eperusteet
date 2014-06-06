@@ -69,7 +69,6 @@ angular.module('eperusteApp')
 
         function setupTekstikappale(kappale) {
           function successCb(res) {
-            Notifikaatiot.onnistui('muokkaus-tutkinnon-osa-tallennettu');
             SivunavigaatioService.update();
             Lukitus.vapautaPerusteenosa(res.id);
             Notifikaatiot.onnistui('muokkaus-tekstikappale-tallennettu');
@@ -135,11 +134,11 @@ angular.module('eperusteApp')
         });
 
         $scope.haeVersiot = function (force) {
-          VersionHelper.getVersions($scope.versiot, $scope.tekstikappale.id, force);
+          VersionHelper.getPerusteenosaVersions($scope.versiot, $scope.tekstikappale.id, force);
         };
 
         $scope.vaihdaVersio = function () {
-          VersionHelper.change($scope.versiot, $scope.tekstikappale.id, function (response) {
+          VersionHelper.changePerusteenosa($scope.versiot, $scope.tekstikappale.id, function (response) {
             $scope.tekstikappale = response;
             setupTekstikappale(response);
             var tekstikappaleDefer = $q.defer();

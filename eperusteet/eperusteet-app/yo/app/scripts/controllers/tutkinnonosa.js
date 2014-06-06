@@ -86,13 +86,12 @@ angular.module('eperusteApp')
 
     $scope.haeRevisiot = function() {
       if($scope.revisiotiedot === null) {
-        console.log('fetch revisions');
-        $scope.revisiotiedot = PerusteenOsat.revisions({osanId: $scope.tutkinnonOsa.id});
+        $scope.revisiotiedot = PerusteenOsat.versiot({osanId: $scope.tutkinnonOsa.id});
       }
     };
 
     $scope.getRevision = function(revisio) {
-      PerusteenOsat.getRevision({osanId: $scope.tutkinnonOsa.id, revisionId: revisio.number}).$promise.then(function(response) {
+      PerusteenOsat.getVersio({osanId: $scope.tutkinnonOsa.id, versioId: revisio.number}).$promise.then(function(response) {
         console.log(response);
         $scope.tutkinnonOsa = response;
 

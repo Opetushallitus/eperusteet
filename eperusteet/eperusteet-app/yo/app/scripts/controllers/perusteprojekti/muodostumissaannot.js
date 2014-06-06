@@ -18,8 +18,8 @@
 
 angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams,
-              PerusteProjektiService, PerusteenRakenne, Notifikaatiot,
-              Editointikontrollit, SivunavigaatioService, Kommentit, KommentitBySuoritustapa, Lukitus, Muodostumissaannot) {
+              PerusteenRakenne, TreeCache, Notifikaatiot, Editointikontrollit, SivunavigaatioService,
+              Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot) {
     $scope.editoi = false;
     // $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
     $scope.suoritustapa = $stateParams.suoritustapa;
@@ -39,6 +39,7 @@ angular.module('eperusteApp')
         res.$resolved = true;
         $scope.rakenne = res;
         Muodostumissaannot.laskeLaajuudet($scope.rakenne.rakenne, $scope.rakenne.tutkinnonOsat);
+        haeVersiot();
         cb();
       });
     }
@@ -52,12 +53,23 @@ angular.module('eperusteApp')
         $scope.suoritustapa,
         function() {
           Notifikaatiot.onnistui('tallennus-onnistui');
+          haeVersiot(true);
         },
         function() {
           Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
         }
       );
     }
+    
+    function haeVersiot(force) {
+      VersionHelper.getRakenneVersions($scope.versiot, $scope.rakenne.rakenne.id, force);
+    };
+    
+    $scope.vaihdaVersio = function() {
+      VersionHelper.changeRakenne($scope.versiot, $scope.rakenne.rakenne.id, function (response) {
+        $scope.rakenne.rakenne = response;
+      });
+    };
 
     $scope.muokkaa = function () {
       Lukitus.lukitseSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa, function() {

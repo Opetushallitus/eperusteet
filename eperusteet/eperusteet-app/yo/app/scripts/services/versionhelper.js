@@ -18,7 +18,7 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .service('VersionHelper', function(PerusteenOsat, $modal) {
+  .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot, RakenneVersio) {
     function latest(data) {
       return _.first(data) || {};
     }
@@ -32,30 +32,69 @@ angular.module('eperusteApp')
       }
     };
 
-    this.getVersions = function (data, id, force) {
+    this.getPerusteenosaVersions = function (data, id, force) {
+      getVersions(data, id, 'perusteenosa', force);
+    };
+    
+    this.getRakenneVersions = function (data, id, force) {
+      getVersions(data, id, 'rakenne', force);
+    };
+    
+    var getVersions = function(data, id, tyyppi, force) {
       if (!_.isObject(data)) {
         throw 'VersionHelper: not an object!';
       }
       if (force || !data.list) {
-        data.list = PerusteenOsat.revisions({osanId: id}, function () {
-          data.chosen = latest(data.list);
-          data.latest = true;
-          _.each(data.list, function (item, index) {
-            // reverse numbering for UI, oldest = 1
-            item.index = data.list.length - index;
+        if (tyyppi === 'perusteenosa') {
+          PerusteenOsat.versiot({osanId: id}, function(res) {
+            data.list = res;
+            versiotListHandler(data);
           });
+        } else if (tyyppi === 'rakenne') {
+          console.log('haetaan rakenne versioita');
+          RakenneVersiot.query({rakenneId: id}, function(res) {
+            data.list = res;
+            versiotListHandler(data);
+          });
+        }
+      }
+    };
+    
+    var versiotListHandler = function(data) {
+      data.chosen = latest(data.list);
+      data.latest = true;
+      _.each(data.list, function(item, index) {
+        // reverse numbering for UI, oldest = 1
+        item.index = data.list.length - index;
+      });
+    };
+    
+    this.changePerusteenosa = function(data, id, cb) {
+      change(data, id, 'Perusteenosa', cb);
+    };
+    
+    this.changeRakenne = function(data, id, cb) {
+      change(data, id, 'Rakenne', cb);
+    };
+    
+    var change = function(data, id, tyyppi, cb) {
+      if (tyyppi === 'Perusteenosa') {
+        PerusteenOsat.getVersio({
+          osanId: id,
+          versioId: data.chosen.number
+        }, function(response) {
+          changeResponseHandler(data, response, cb);
+        });
+      } else if (tyyppi === 'Rakenne') {
+        RakenneVersio.get({rakenneId: id, versioId: data.chosen.number}, function(response) {
+          changeResponseHandler(data, response, cb);
         });
       }
     };
-
-    this.change = function (data, id, cb) {
-      PerusteenOsat.getRevision({
-        osanId: id,
-        revisionId: data.chosen.number
-      }).$promise.then(function(response) {
-        cb(response);
-        data.latest = data.chosen.number === latest(data.list).number;
-      });
+    
+    var changeResponseHandler = function(data, response, cb) {
+      cb(response);
+      data.latest = data.chosen.number === latest(data.list).number;
     };
 
     this.historyView = function (data) {
