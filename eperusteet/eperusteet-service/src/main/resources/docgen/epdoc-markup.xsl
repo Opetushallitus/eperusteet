@@ -82,4 +82,40 @@
     </doc:blockquote>
   </xsl:template>
 
+  <!-- table elements should go with simple namespace switch -->
+  <xsl:template match="h:table">
+    <doc:table>
+      <xsl:apply-templates select="node()|@*"/>
+    </doc:table>
+  </xsl:template>
+  <xsl:template match="h:tbody">
+    <doc:tbody>
+      <xsl:apply-templates select="node()|@*"/>
+    </doc:tbody>
+  </xsl:template>
+  <xsl:template match="h:tr">
+    <doc:tr>
+      <xsl:apply-templates select="node()|@*"/>
+    </doc:tr>
+  </xsl:template>
+  <xsl:template match="h:td">
+    <doc:td>
+      <xsl:apply-templates select="node()|@*"/>
+    </doc:td>
+  </xsl:template>
+  <xsl:template match="h:thead">
+    <doc:thead>
+      <xsl:apply-templates select="node()|@*"/>
+    </doc:thead>
+  </xsl:template>
+  <xsl:template match="h:th">
+    <doc:th>
+      <xsl:apply-templates select="node()|@*"/>
+    </doc:th>
+  </xsl:template>
+  <xsl:template match="h:caption">
+    <doc:caption>
+      <xsl:apply-templates select="node()|@*"/>
+    </doc:caption>
+  </xsl:template>     
 </xsl:stylesheet>
