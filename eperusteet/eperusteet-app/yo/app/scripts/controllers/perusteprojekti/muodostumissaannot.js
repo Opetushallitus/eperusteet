@@ -18,7 +18,7 @@
 
 angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams,
-              PerusteenRakenne, TreeCache, Notifikaatiot, Editointikontrollit, SivunavigaatioService,
+              PerusteenRakenne, Notifikaatiot, Editointikontrollit, SivunavigaatioService,
               Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot) {
     $scope.editoi = false;
     // $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
