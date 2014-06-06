@@ -113,7 +113,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         teksti.getNimi().getTeksti().put(Kieli.FI, "nimi, muokattu");
         teksti = perusteenOsaRepository.save(teksti);
 
-        List<Revision> revisions = perusteenOsaService.getRevisions(teksti.getId());
+        List<Revision> revisions = perusteenOsaService.getVersiot(teksti.getId());
 
     	assertNotNull(revisions);
         assertEquals(1, revisions.size());
@@ -144,12 +144,12 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
     	tutkinnonOsaDto.setAmmattitaitovaatimukset(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Ammattitaitovaatimukset")));
     	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
 
-    	List<Revision> tutkinnonOsaRevisions = perusteenOsaService.getRevisions(tutkinnonOsaDto.getId());
+    	List<Revision> tutkinnonOsaRevisions = perusteenOsaService.getVersiot(tutkinnonOsaDto.getId());
 
     	assertNotNull(tutkinnonOsaRevisions);
         assertEquals(4, tutkinnonOsaRevisions.size());
 
-        tutkinnonOsaDto = (TutkinnonOsaDto) perusteenOsaService.getRevision(tutkinnonOsaDto.getId(), 3);
+        tutkinnonOsaDto = (TutkinnonOsaDto) perusteenOsaService.getVersio(tutkinnonOsaDto.getId(), 3);
         assertNotNull(tutkinnonOsaDto);
         assertNotNull(tutkinnonOsaDto.getArviointi());
         assertNotNull(tutkinnonOsaDto.getArviointi().getLisatiedot());
@@ -157,7 +157,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         assertEquals("lisätiedot, muokattu", tutkinnonOsaDto.getArviointi().getLisatiedot().getTekstit().get(Kieli.FI));
         LOG.debug(tutkinnonOsaDto.getArviointi().getLisatiedot().getTekstit().get(Kieli.FI));
 
-        tutkinnonOsaDto = (TutkinnonOsaDto) perusteenOsaService.getRevision(tutkinnonOsaDto.getId(), 2);
+        tutkinnonOsaDto = (TutkinnonOsaDto) perusteenOsaService.getVersio(tutkinnonOsaDto.getId(), 2);
         assertNotNull(tutkinnonOsaDto);
         assertNotNull(tutkinnonOsaDto.getArviointi());
         assertNotNull(tutkinnonOsaDto.getArviointi().getLisatiedot());

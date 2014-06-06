@@ -41,9 +41,9 @@ public interface PerusteenOsaService {
 
     List<PerusteenOsaDto> getAllWithName(final String name);
 
-    List<Revision> getRevisions(Long id);
+    List<Revision> getVersiot(Long id);
 
-    PerusteenOsaDto getRevision(final Long id, final Integer revisionId);
+    PerusteenOsaDto getVersio(final Long id, final Integer versioId);
 
     LukkoDto lock(final Long id);
 

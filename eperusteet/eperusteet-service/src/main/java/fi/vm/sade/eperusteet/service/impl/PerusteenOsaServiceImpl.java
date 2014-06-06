@@ -112,15 +112,15 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Revision> getRevisions(Long id) {
+    public List<Revision> getVersiot(Long id) {
         PerusteenOsa perusteenOsa = perusteenOsaRepo.findOne(id);
         return perusteenOsaRepo.getRevisions(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public PerusteenOsaDto getRevision(Long id, Integer revisionId) {
-        return mapper.map(perusteenOsaRepo.findRevision(id, revisionId), PerusteenOsaDto.class);
+    public PerusteenOsaDto getVersio(Long id, Integer versioId) {
+        return mapper.map(perusteenOsaRepo.findRevision(id, versioId), PerusteenOsaDto.class);
     }
 
     @Override

@@ -19,7 +19,9 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
+import fi.vm.sade.eperusteet.repository.RakenneRepository;
 import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.service.SuoritustapaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,17 +39,23 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
     private SuoritustapaRepository suoritustapaRepository;
     @Autowired
     private PerusteenOsaViiteRepository perusteenOsaViiteRepository;
+    @Autowired
+    private RakenneRepository rakenneRepository;
 
     @Override
     @Transactional
-    public Suoritustapa createSuoritustapaWithSisaltoRoot(Suoritustapakoodi suoritustapakoodi) {
+    public Suoritustapa createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi suoritustapakoodi) {
         Suoritustapa suoritustapa = new Suoritustapa();
         
         suoritustapa.setSuoritustapakoodi(suoritustapakoodi);
         PerusteenOsaViite perusteenOsaViite = new PerusteenOsaViite();
         perusteenOsaViite = perusteenOsaViiteRepository.save(perusteenOsaViite);
-
         suoritustapa.setSisalto(perusteenOsaViite);
+        
+        RakenneModuuli rakenne = new RakenneModuuli();
+        rakenne = rakenneRepository.save(rakenne);
+        suoritustapa.setRakenne(rakenne);
+        
         suoritustapa = suoritustapaRepository.save(suoritustapa);
         
         return suoritustapa;

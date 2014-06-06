@@ -79,18 +79,18 @@ public class PerusteenOsaController {
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}/revisions", method = GET)
+    @RequestMapping(value = "/{id}/versiot", method = GET)
     @ResponseBody
-    public List<Revision> getRevisions(@PathVariable("id") final Long id) {
+    public List<Revision> getVersiot(@PathVariable("id") final Long id) {
     	LOG.debug("get revisions");
-    	return service.getRevisions(id);
+    	return service.getVersiot(id);
     }
 
-    @RequestMapping(value = "/{id}/revisions/{revisionId}", method = GET)
+    @RequestMapping(value = "/{id}/versio/{versioId}", method = GET)
     @ResponseBody
-    public ResponseEntity<PerusteenOsaDto> getRevision(@PathVariable("id") final Long id, @PathVariable("revisionId") final Integer revisionId) {
-    	LOG.debug("get #{} revision #{}", id, revisionId);
-    	PerusteenOsaDto t = service.getRevision(id, revisionId);
+    public ResponseEntity<PerusteenOsaDto> getVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
+    	LOG.debug("get #{} revision #{}", id, versioId);
+    	PerusteenOsaDto t = service.getVersio(id, versioId);
         if (t == null) {
         	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

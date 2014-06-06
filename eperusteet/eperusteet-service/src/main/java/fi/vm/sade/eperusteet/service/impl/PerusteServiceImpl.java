@@ -43,7 +43,9 @@ import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
+import fi.vm.sade.eperusteet.repository.RakenneRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
 import fi.vm.sade.eperusteet.service.LockManager;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -124,6 +126,9 @@ public class PerusteServiceImpl implements PerusteService {
     private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
     @Autowired
     private LockManager lockManager;
+    @Autowired
+    private RakenneRepository rakenneRepository;
+
 
     @Override
     @Transactional(readOnly = true)
@@ -228,6 +233,21 @@ public class PerusteServiceImpl implements PerusteService {
         }
         return mapper.map(rakenne, RakenneModuuliDto.class);
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<Revision> getRakenneVersiot(Long rakenneId) {
+        if (!rakenneRepository.exists(rakenneId)) {
+            throw new EntityNotFoundException("Rakennetta ei löytynyt id:llä: " + rakenneId);
+        }
+        return rakenneRepository.getRevisions(rakenneId);
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public RakenneModuuliDto getRakenneVersio(Long id, Integer versioId) {
+        return mapper.map(rakenneRepository.findRevision(id, versioId), RakenneModuuliDto.class);
+    }
 
 
     @Override
@@ -253,11 +273,14 @@ public class PerusteServiceImpl implements PerusteService {
         RakenneModuuli moduuli = mapper.map(rakenne, RakenneModuuli.class);
 
         if (!moduuli.equals(suoritustapa.getRakenne())) {
-            em.persist(moduuli);
-            if (suoritustapa.getRakenne() != null) {
-                em.remove(suoritustapa.getRakenne());
+            RakenneModuuli current = suoritustapa.getRakenne();
+            if (current != null) {
+                current.mergeState(moduuli);
+            } else {
+                current = moduuli;
+                suoritustapa.setRakenne(current);
             }
-            suoritustapa.setRakenne(moduuli);
+            em.persist(current);
         }
         return mapper.map(moduuli, RakenneModuuliDto.class);
     }
@@ -517,9 +540,9 @@ public class PerusteServiceImpl implements PerusteService {
      */
     private Set<Suoritustapa> luoSuoritustavat(String koulutustyyppiUri) {
         Set<Suoritustapa> suoritustavat = new HashSet<>();
-        suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoRoot(Suoritustapakoodi.NAYTTO));
+        suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO));
         if (koulutustyyppiUri.equals(KOULUTUSTYYPPI_URIT[0])) {
-            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoRoot(Suoritustapakoodi.OPS));
+            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS));
         }
         return suoritustavat;
     }
@@ -538,9 +561,9 @@ public class PerusteServiceImpl implements PerusteService {
         peruste.setTutkintokoodi(koulutustyyppi);
         peruste.setTila(Tila.LUONNOS);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
-        suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoRoot(Suoritustapakoodi.NAYTTO));
+        suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO));
         if (koulutustyyppi != null && koulutustyyppi.equals(KOULUTUSTYYPPI_URIT[0])) {
-            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoRoot(Suoritustapakoodi.OPS));
+            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS));
         }
         peruste.setSuoritustavat(suoritustavat);
 

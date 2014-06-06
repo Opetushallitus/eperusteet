@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
+import fi.vm.sade.eperusteet.domain.Mergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,14 +31,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
-
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
 @DiscriminatorValue("RM")
 @Audited
 @EqualsAndHashCode(callSuper = true)
-public class RakenneModuuli extends AbstractRakenneOsa {
+public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<RakenneModuuli> {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter
@@ -67,6 +67,18 @@ public class RakenneModuuli extends AbstractRakenneOsa {
         this.osat.clear();
         if (osat != null) {
             this.osat.addAll(osat);
+        }
+    }
+    
+    @Override
+    public void mergeState(RakenneModuuli moduuli) {
+        if (moduuli != null) {
+            this.setOsat(moduuli.osat);
+            if (this.muodostumisSaanto != null) {
+                this.muodostumisSaanto.mergeState(moduuli.getMuodostumisSaanto());
+            } else {
+                this.muodostumisSaanto = moduuli.getMuodostumisSaanto();
+            }
         }
     }
 
