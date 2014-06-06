@@ -63,6 +63,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,9 +85,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     private Kieli kieli = Kieli.FI;
     
-    @Autowired
-    private PerusteRepository perusteRepository;
-
     @Autowired
     private PerusteprojektiRepository perusteprojektiRepository;
 
@@ -501,17 +499,66 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 Element sectionTitleElement = doc.createElement("title");
                 sectionTitleElement.appendChild(doc.createTextNode(osanNimi));
 
-                Element arviointiElement = getArviointi(doc, osa);
-
                 sectionElement.appendChild(sectionTitleElement);
-                sectionElement.appendChild(arviointiElement);
+
+                addTavoitteet(doc, sectionElement, osa);
+                addAmmattitaitovaatimukset(doc, sectionElement, osa);
+                addAmmattitaidonOsoittamistavat(doc, sectionElement, osa);
+                addArviointi(doc, sectionElement, osa);
+                
                 chapterElement.appendChild(sectionElement);
             }
         }
         doc.getDocumentElement().appendChild(chapterElement);
     }
 
-    private Element getArviointi(Document doc, TutkinnonOsa tutkinnonOsa) {
+    private void addTavoitteet(Document doc, Element parent, TutkinnonOsa tutkinnonOsa) {
+
+        String TavoitteetText = getTextString(tutkinnonOsa.getTavoitteet());
+        if (StringUtils.isEmpty(TavoitteetText)) {
+            LOG.info("Oops, no tavoitteetText :(");
+            return;
+        }
+        // TODO: localize
+        addTekstiSectionGeneric(doc, parent, TavoitteetText, "Tavoitteet");
+    }
+    
+    private void addAmmattitaitovaatimukset(Document doc, Element parent, TutkinnonOsa tutkinnonOsa) {
+
+        String ammattitaitovaatimuksetText = getTextString(tutkinnonOsa.getAmmattitaitovaatimukset());
+        if (StringUtils.isEmpty(ammattitaitovaatimuksetText)) {
+            LOG.info("Oops, no ammattitaitovaatimuksetText :(");
+            return;
+        }
+        // TODO: localize
+        addTekstiSectionGeneric(doc, parent, ammattitaitovaatimuksetText, "Ammattitaitovaatimukset");
+    }
+    
+    private void addAmmattitaidonOsoittamistavat(Document doc, Element parent, TutkinnonOsa tutkinnonOsa) {
+
+        String ammattitaidonOsoittamistavatText = getTextString(tutkinnonOsa.getAmmattitaidonOsoittamistavat());
+        if (StringUtils.isEmpty(ammattitaidonOsoittamistavatText)) {
+            LOG.info("Oops, no ammattitaidonOsoittamistavatText for {}:(", getTextString(tutkinnonOsa.getNimi()));
+            return;
+        }
+        // TODO: localize
+        addTekstiSectionGeneric(doc, parent, ammattitaidonOsoittamistavatText, "Ammattitaidon osoittamistavat");
+    }
+    
+    private void addTekstiSectionGeneric(Document doc, Element parent, String teksti, String title) {
+        
+        Element section = doc.createElement("section");
+        Element sectionTitle = doc.createElement("title");
+        sectionTitle.appendChild(doc.createTextNode(title));
+        section.appendChild(sectionTitle);
+        
+        org.jsoup.nodes.Document fragment = Jsoup.parseBodyFragment(teksti);
+        jsoupIntoDOMNode(doc, section, fragment.body());
+        
+        parent.appendChild(section);
+    }
+    
+    private void addArviointi(Document doc, Element parent, TutkinnonOsa tutkinnonOsa) {
 
         Element arviointiSection = doc.createElement("section");
         Element arviointiSectionTitle = doc.createElement("title");
@@ -521,9 +568,11 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         Arviointi arviointi = tutkinnonOsa.getArviointi();
         
         if (arviointi == null) {
-            return arviointiSection;
+            return;
         }
-        
+
+        parent.appendChild(arviointiSection);
+                
         TekstiPalanen lisatiedot = arviointi.getLisatiedot();
         if (lisatiedot != null) {
             Element lisatietoPara = doc.createElement("para");
@@ -598,7 +647,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             }
         }
 
-        return arviointiSection;
+        
     }
 
     private void addTableCell(Document doc, Element row, String text) {
