@@ -18,6 +18,7 @@ var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
 
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-connect-proxy');
+  grunt.loadNpmTasks('grunt-angular-templates');
   require('load-grunt-tasks')(grunt);
   require('time-grunt')(grunt);
 
@@ -173,7 +174,7 @@ module.exports = function(grunt) {
         flow: {
           html: {
             steps: {
-              js: ['concat'],
+              js: ['concat','uglifyjs'],
               css: ['cssmin']
             },
             post: {}
@@ -184,12 +185,15 @@ module.exports = function(grunt) {
     usemin: {
       html: ['<%= yeoman.dist %>/*.html','<%= yeoman.dist %>/views/**/*.html'],
       css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
-      js: ['<%= yeoman.dist %>/scripts/*.scripts.js'],
+      js: [
+        '<%= yeoman.dist %>/scripts/*.scripts.js',
+        '<%= yeoman.dist %>/scripts/*.templates.js'
+      ],
       options: {
         assetsDirs: ['<%= yeoman.dist %>','<%=yeoman.dist %>/styles'],
         patterns: {
           js: [
-          [/"(images\/.*?\.png)"/g,'JS rev png images']
+          [/\\?"(images\/.*?\.png)\\?"/g,'JS rev png images']
           ]
         }
       }
@@ -243,7 +247,7 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: '<%= yeoman.app %>',
-          src: ['*.html', 'views/**/*.html'],
+          src: ['*.html'],
           dest: '<%= yeoman.dist %>'
         }]
       }
@@ -264,11 +268,11 @@ module.exports = function(grunt) {
           ]
         }, {
           expand: true,
-          cwd: '<%= yeoman.app %>/bower_components',
-          dest: '<%= yeoman.dist %>/bower_components',
+          cwd: '<%= yeoman.app %>/bower_components/ckeditor',
+          dest: '<%= yeoman.dist %>/bower_components/ckeditor',
           src: [
-            'ckeditor/**',
-            '!ckeditor/samples/**'
+            '**',
+            '!samples/**',
           ]
         }, {
           expand: true,
@@ -334,18 +338,32 @@ module.exports = function(grunt) {
       }
     },
     uglify: {
-      dist: {
-        files: {
-          '<%= yeoman.dist %>/scripts/scripts.js': [
-            '<%= yeoman.dist %>/scripts/scripts.js'
-          ]
-        }
-      }
+      options: { mangle: false },
+//      dist: {
+//        files: {
+//          '.tmp/concat/scripts/scripts.js': [
+//            '<%= yeoman.dist %>/scripts/scripts.js'
+//          ]
+//        }
+//      }
     },
     sass: {
       dist: {
         files: {
           '.tmp/styles/eperusteet.css': '<%= yeoman.app %>/styles/eperusteet.scss'
+        }
+      }
+    },
+    ngtemplates: {
+      dist: {
+        cwd: '<%= yeoman.app %>',
+        src: 'views/**/*.html',
+        dest: '<%= yeoman.dist %>/scripts/scripts.js',
+        //append: true,
+        options:    {
+          module: 'eperusteApp',
+          usemin: 'scripts/scripts.js',
+          htmlmin: { collapseWhitespace: true, removeComments: true }
         }
       }
     }
@@ -372,7 +390,7 @@ module.exports = function(grunt) {
     'concurrent:test',
     'autoprefixer',
     'connect:test',
-    'karma'
+//    'karma'
   ]);
 
   grunt.registerTask('build', [
@@ -380,9 +398,10 @@ module.exports = function(grunt) {
     'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
+    'ngtemplates',
     'concat',
     'copy:dist',
-    'ngmin',
+//    'ngmin',
     'cssmin',
     'uglify',
     'rev',
