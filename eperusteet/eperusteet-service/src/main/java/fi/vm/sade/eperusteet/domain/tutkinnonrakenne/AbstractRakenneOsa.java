@@ -23,7 +23,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -35,7 +34,7 @@ import org.hibernate.envers.Audited;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tyyppi")
 @Audited
-@EqualsAndHashCode(exclude = {"id", "moduuli"})
+@EqualsAndHashCode(exclude = {"id"})
 public abstract class AbstractRakenneOsa implements Serializable {
 
     @Id
@@ -44,8 +43,4 @@ public abstract class AbstractRakenneOsa implements Serializable {
     @Setter
     private Long id;
 
-    @ManyToOne
-    @Getter
-    @Setter
-    private RakenneModuuli moduuli;
 }

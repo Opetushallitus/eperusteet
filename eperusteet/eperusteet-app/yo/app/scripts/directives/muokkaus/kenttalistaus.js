@@ -18,18 +18,20 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .directive('kenttalistaus', function($q, MuokkausUtils) {
+  .directive('kenttalistaus', function($q, MuokkausUtils, ArviointiHelper, $timeout, $window) {
     return {
       templateUrl: 'views/partials/muokkaus/kenttalistaus.html',
       restrict: 'E',
       transclude: true,
       scope: {
-        fields: "=",
-        objectPromise: "="
+        fields: '=',
+        objectPromise: '=',
+        editEnabled: '='
       },
       link: function(scope, element, attrs) {
+        scope.menuItems = [];
 
-        scope.innerObjectPromise = scope.objectPromise.then(function(object) {
+        scope.innerObjectPromise = scope.objectPromise.then(function() {
           setInnerObjectPromise();
         });
 
@@ -38,24 +40,57 @@ angular.module('eperusteApp')
         });
 
         scope.removeField = function(fieldToRemove) {
-          _.remove(scope.visibleFields, fieldToRemove);
-          scope.hiddenFields.push(fieldToRemove);
+          fieldToRemove.visible = false;
         };
+
+        function scrollTo(selector) {
+          var element = angular.element(selector);
+          if (element.length) {
+            $window.scrollTo(0, element[0].offsetTop);
+          }
+        }
 
         scope.addFieldToVisible = function(field) {
-          _.remove(scope.hiddenFields, field);
-          scope.visibleFields.push(field);
+          field.visible = true;
+          // Varmista että menu sulkeutuu klikin jälkeen
+          $timeout(function () {
+            angular.element('h1').click();
+            scrollTo('li[otsikko='+field.localeKey+']');
+          });
         };
 
-        scope.isEmpty = function(object) {
-          return _.isEmpty(object);
+        /**
+         * Palauttaa true jos kaikki mahdolliset osiot on jo lisätty
+         */
+        scope.allVisible = function() {
+          var lisatty = _.all(scope.fields, function (field) {
+            return (_.contains(field.path, 'arviointi.') ||
+                    !field.inMenu ||
+                    (field.inMenu && field.visible));
+          });
+          return lisatty && scope.arviointiHelper.exists();
         };
+
+        scope.updateMenu = function () {
+          scope.menuItems = _.reject(scope.fields, 'mandatory');
+          if (scope.arviointiHelper) {
+            scope.arviointiHelper.setMenu(scope.menuItems);
+          }
+        };
+
+        scope.$watch('arviointiFields.teksti.visible', scope.updateMenu);
+        scope.$watch('arviointiFields.taulukko.visible', scope.updateMenu);
 
         function splitFields(object) {
-          scope.visibleFields = _.filter(scope.fields, function(field) {
-            return field.mandatory || MuokkausUtils.hasValue(object, field.path);
+          _.each(scope.fields, function (field) {
+            field.inMenu = field.path !== 'nimi' && field.path !== 'koodiUri';
+            field.visible = field.mandatory || MuokkausUtils.hasValue(object, field.path);
           });
-          scope.hiddenFields = _.difference(scope.fields, scope.visibleFields);
+          if (!scope.arviointiHelper) {
+            scope.arviointiHelper = ArviointiHelper.create();
+          }
+          scope.arviointiFields = scope.arviointiHelper.initFromFields(scope.fields);
+          scope.updateMenu();
         }
 
         function setInnerObjectPromise() {
@@ -64,6 +99,68 @@ angular.module('eperusteApp')
             return object;
           });
         }
+      }
+    };
+  })
+
+  .factory('ArviointiHelper', function () {
+    var remove = function (arr, str) {
+      var index = _.findIndex(arr, {path: str});
+      if (index >= 0) {
+        arr.splice(index, 1);
+      }
+    };
+
+    /**
+     * Arviointi voi olla tekstinä tai taulukkona (mutta ei kumpanakin).
+     * Helper hanskaa mitä näytetään kenttälistauksessa ja "lisää osio"-menussa
+     */
+    function Helper() {
+      var TAULUKKO_PATH = 'arviointi.arvioinninKohdealueet';
+      var TEKSTI_PATH = 'arviointi.lisatiedot';
+      var self = {};
+      self.obj = {};
+
+      self.hasTeksti = function () {
+        return self.obj.teksti && self.obj.teksti.visible;
+      };
+
+      self.hasTaulukko = function () {
+        return self.obj.taulukko && self.obj.taulukko.visible;
+      };
+
+      self.initFromFields = function (fields) {
+        var obj = {teksti: null, taulukko: null};
+        _.each(fields, function (field) {
+          if (field.path === TAULUKKO_PATH) {
+            obj.taulukko = field;
+          } else if (field.path === TEKSTI_PATH) {
+            obj.teksti = field;
+          }
+        });
+        if (self.hasTeksti()) {
+          obj.taulukko.visible = false;
+        }
+        return self.obj = obj;
+      };
+
+      self.setMenu = function (menu) {
+        if (self.exists()) {
+          remove(menu, TAULUKKO_PATH);
+          remove(menu, TEKSTI_PATH);
+        }
+      };
+
+      self.exists = function () {
+        return self.hasTeksti() || self.hasTaulukko();
+      };
+
+      return self;
+    };
+
+    return {
+      create: function () {
+        return new Helper();
       }
     };
   });

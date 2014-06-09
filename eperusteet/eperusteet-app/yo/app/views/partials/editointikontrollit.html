@@ -14,9 +14,17 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 
-<div class="edit-controls" ng-class="editClass" ng-cloak ng-hide="hideControls">
-    <button class="btn btn-default btn-sm" ng-class="buttonClass" ng-click="start()" ng-hide="editStarted"><span class="glyphicon glyphicon-pencil"></span></button>
-    <button class="btn btn-default btn-sm" ng-class="buttonClass" ng-click="save()" ng-hide="!editStarted"><span class="glyphicon glyphicon-ok"></span></button>
-    <button class="btn btn-default btn-sm" ng-class="buttonClass" ng-click="cancel()" ng-hide="!editStarted"><span class="glyphicon glyphicon-remove"></span></button>
+<div class="edit-controls" ng-cloak ng-hide="hideControls || !editStarted">
+  <div class="edit-control-content">
+    <div class="edit-control-header">
+      <span class="glyphicon glyphicon-pencil"></span>{{'muokattavana' | kaanna}}
+    </div>
+    <div class="edit-control-buttons">
+      <button class="btn btn-primary" ng-click="save()" translate>tallenna</button>
+      <button class="btn btn-default" ng-click="cancel()" translate>peruuta</button>
+    </div>
+    <div class="edit-control-comment">
+      <input class="form-control" type="text" ng-model="kommentti" placeholder="{{'kommentoi-muutosta' | kaanna}}">
+    </div>
   </div>
-{{viesti}}</div>
+</div>

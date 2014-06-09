@@ -1,4 +1,5 @@
 <!doctype html>
+
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
@@ -29,70 +30,89 @@
             <a href="" ui-sref="admin"><span class="glyphicon glyphicon-cog"></span></a>
           </div>
           <div ng-controller="KieliCtrl" id="kielen-vaihto" class="btn-group pull-right ng-cloak" style="margin-top: 5px">
-            <button ng-repeat="(nimi, koodi) in kielet" ng-click="vaihdaKieli(koodi)" type="button" class="btn btn-xs" ng-class="{ 'active' : koodi === kieli }" ng-bind="nimi|translate"></button>
+            <button ng-repeat="(nimi, koodi) in kielet" ng-click="vaihdaKieli(koodi)" type="button" class="btn btn-xs" ng-class="{ 'active' : koodi === kieli }" ng-bind="nimi | translate"></button>
           </div>
           <eperuste-navi ng-controller="NaviCtrl"></eperuste-navi>
-          <editointikontrollit ng-controller="EditointiCtrl"></editointikontrollit>
           <div class="col-md-12" ui-view></div>
+          <div class="col-md-12 editointi-wrapper"><editointikontrollit ng-controller="EditointiCtrl"></editointikontrollit></div>
         </div>
       </div>
       <spinner></spinner>
-    </div>
-
-    <div class="notification-wrapper">
-      <div class="notifications" ng-model="viestit" ng-controller="NotifikaatioCtrl">
-        <div ng-if="viestit" ng-click="poistaNotifikaatio(viesti)" ng-model="viestit" ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }" ng-repeat="viesti in viestit">
-          <div class="notification-body">
-            <span ng-hide="viesti.ilmanKuvaa" class="notification-picture ng-cloak"></span>
-            <span class="notification-message ng-cloak">{{ viesti.viesti | kaanna }}</span>
+      <div class="notification-wrapper">
+        <div class="notifications" ng-model="viestit" ng-controller="NotifikaatioCtrl">
+          <div ng-if="viestit" ng-click="poistaNotifikaatio(viesti)" ng-model="viestit" ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }" ng-repeat="viesti in viestit">
+            <div class="notification-body">
+              <span class="close">×</span>
+              <span ng-hide="viesti.ilmanKuvaa" class="notification-picture ng-cloak">
+                <img ng-if="viesti.tyyppi === 0" src="images/notify-info.png" alt="">
+                <img ng-if="viesti.tyyppi === 1" src="images/notify-success.png" alt="">
+                <img ng-if="viesti.tyyppi === 2" src="images/notify-alert.png" alt="">
+              </span>
+              <span class="notification-message ng-cloak">
+                {{ viesti.viesti | kaanna }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- build:js scripts/components.js -->
-    <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/jquery-ui/ui/jquery.ui.core.js"></script>
-    <script src="bower_components/jquery-ui/ui/jquery.ui.widget.js"></script>
-    <script src="bower_components/jquery-ui/ui/jquery.ui.mouse.js"></script>
-    <script src="bower_components/jquery-ui/ui/jquery.ui.sortable.js"></script>
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-    <script src="bower_components/angular-route/angular-route.js"></script>
-    <script src="bower_components/angular-resource/angular-resource.js"></script>
-    <script src="bower_components/angular-translate/angular-translate.js"></script>
-    <script src="bower_components/angular-animate/angular-animate.js"></script>
-    <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
-    <script src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js"></script>
-    <script src="bower_components/angular-ui-utils/ui-utils.js"></script>
-    <script src="bower_components/angular-ui-sortable/sortable.js"></script>
-    <script src="bower_components/lodash/dist/lodash.js"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/jquery-ui/ui/minified/jquery.ui.core.min.js"></script>
+    <script src="bower_components/jquery-ui/ui/minified/jquery.ui.widget.min.js"></script>
+    <script src="bower_components/jquery-ui/ui/minified/jquery.ui.mouse.min.js"></script>
+    <script src="bower_components/jquery-ui/ui/minified/jquery.ui.sortable.min.js"></script>
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="bower_components/angular-route/angular-route.min.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+    <script src="bower_components/angular-translate/angular-translate.min.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
+    <script src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>
+    <script src="bower_components/angular-ui-utils/ui-utils.min.js"></script>
+    <script src="scripts/directives/angular-ui-sortable/sortable.js"></script>
+    <script src="bower_components/angular-elastic/elastic.js"></script>
+    <script src="bower_components/lodash/dist/lodash.min.js"></script>
     <script src="bower_components/js-xlsx/jszip.js"></script>
-    <script src="bower_components/js-xlsx/xlsx.js"></script>
+    <script src="bower_components/js-xlsx/dist/xlsx.min.js"></script>
     <script src="bower_components/angular-i18n/angular-locale_fi-fi.js"></script>
-    <script src="bower_components/momentjs/moment.js"></script>
+    <script src="bower_components/momentjs/min/moment.min.js"></script>
+    <script src="bower_components/momentjs/lang/fi.js"></script>
+    <script src="bower_components/momentjs/lang/sv.js"></script>
     <!-- endbuild -->
 
-    <script src="bower_components/ckeditor/ckeditor.js"></script>
+    <script src="bower_components/ckeditor/ckeditor.js?v=4.4.0"></script>
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
     <script src="scripts/controllers/virhe.js"></script>
     <script src="scripts/services/pagination.js"></script>
     <script src="scripts/services/excel.js"></script>
+    <script src="scripts/services/versionhelper.js"></script>
+    <script src="scripts/services/muodostumissaannot.js"></script>
+    <script src="scripts/directives/muokkaus/versiotiedot.js"></script>
+    <script src="scripts/directives/multiinput.js"></script>
+    <script src="scripts/directives/kommentit.js"></script>
+    <script src="scripts/directives/kommenttiviesti.js"></script>
     <script src="scripts/controllers/excel.js"></script>
     <script src="scripts/directives/spinner.js"></script>
     <script src="scripts/controllers/modals/uudelleenohjaus.js"></script>
+    <script src="scripts/controllers/modals/muodostumisryhma.js"></script>
     <script src="scripts/directives/ckeditor.js"></script>
     <script src="scripts/directives/fileselect.js"></script>
     <script src="scripts/directives/formfield.js"></script>
+    <script src="scripts/directives/followscroll.js"></script>
     <script src="scripts/services/perusteet.js"></script>
+    <script src="scripts/services/lukko.js"></script>
     <script src="scripts/services/perusteenosat.js"></script>
+    <script src="scripts/services/varihyrra.js"></script>
+    <script src="scripts/services/colorcalculator.js"></script>
     <script src="scripts/controllers/haku.js"></script>
-    <script src="scripts/controllers/perusteprojektinTila.js"></script>
+    <script src="scripts/controllers/perusteprojekti/projektinTila.js"></script>
     <script src="scripts/filters/kaanna.js"></script>
-    <script src="scripts/filters/rajaateksti.js"></script>
     <script src="scripts/filters/tutkintokoodi.js"></script>
     <script src="scripts/filters/koulutusalakoodi.js"></script>
     <script src="scripts/filters/customfilters.js"></script>
@@ -106,11 +126,9 @@
     <script src="scripts/directives/sivunavigaatio.js"></script>
     <script src="scripts/services/notifikaatiot.js"></script>
     <script src="scripts/directives/statusbadge.js"></script>
-    <script src="scripts/services/kayttajaprofiilit.js"></script>
     <script src="scripts/services/suosikit.js"></script>
     <script src="scripts/services/haku.js"></script>
     <script src="scripts/services/kayttajaprofiilit.js"></script>
-    <script src="scripts/services/suosikit.js"></script>
     <script src='scripts/services/koulutusalat.js'></script>
     <script src='scripts/services/admin.js'></script>
     <script src="scripts/controllers/suosikit.js"></script>
@@ -127,31 +145,35 @@
     <script src="scripts/controllers/muokkaus.js"></script>
     <script src="scripts/directives/muokkaus/tutkinnonosa.js"></script>
     <script src="scripts/directives/muokkaus/tekstikappale.js"></script>
+    <script src="scripts/directives/pikamenu.js"></script>
     <script src="scripts/services/perusteprojekti.js"></script>
-    <script src="scripts/controllers/perusteprojektiTiedot.js"></script>
-    <script src="scripts/controllers/perusteprojektiMuodostumissaannot.js"></script>
-    <script src="scripts/controllers/perusteprojektiTutkinnonosat.js"></script>
-    <script src="scripts/controllers/projektiryhmanJasen.js"></script>
-    <script src="scripts/controllers/projektiryhma.js"></script>
-    <script src="scripts/controllers/projektinperustiedot.js"></script>
+    <script src="scripts/controllers/perusteprojekti/projektinTiedot.js"></script>
+    <script src="scripts/controllers/perusteprojekti/muodostumissaannot.js"></script>
+    <script src="scripts/controllers/perusteprojekti/tutkinnonosat.js"></script>
+    <script src="scripts/controllers/perusteprojekti/projektiryhmanJasen.js"></script>
+    <script src="scripts/controllers/perusteprojekti/projektiryhma.js"></script>
+    <script src="scripts/controllers/perusteprojekti/projektinperustiedot.js"></script>
     <script src="scripts/controllers/omatperusteprojektit.js"></script>
     <script src="scripts/directives/datecomparisonvalidator.js"></script>
     <script src="scripts/directives/muokkaus/muokattavaKentta.js"></script>
     <script src="scripts/directives/arviointi.js"></script>
     <script src="scripts/controllers/modals/ilmoitusdialogi.js"></script>
-    <script src="scripts/controllers/projektinperuste.js"></script>
-    <script src="scripts/services/projektinperuste.js"></script>
+    <script src="scripts/controllers/perusteprojekti/perusteenTiedot.js"></script>
     <script src="scripts/services/opintoalat.js"></script>
+    <script src="scripts/services/kommentit.js"></script>
     <script src="scripts/directives/muokkaus/kenttalistaus.js"></script>
-    <script src="scripts/directives/dateformatter.js"></script>
+    <script src="scripts/directives/dateformatvalidator.js"></script>
     <script src="scripts/controllers/aloitussivu.js"></script>
-    <script src="scripts/controllers/suodattimet.js"></script>
-    <script src="scripts/controllers/perusteprojekti.js"></script>
-    <script src="scripts/controllers/perusteprojektisisalto.js"></script>
-    <script src="scripts/controllers/perusteprojektitoimikausi.js"></script>
+    <script src="scripts/controllers/perusteprojekti/perusteprojekti.js"></script>
+    <script src="scripts/controllers/perusteprojekti/sisalto.js"></script>
+    <script src="scripts/controllers/perusteprojekti/toimikausi.js"></script>
     <script src="scripts/services/varmistusdialogi.js"></script>
     <script src="scripts/controllers/kieli.js"></script>
     <script src="scripts/controllers/admin.js"></script>
+    <script src="scripts/directives/numberinput.js"></script>
+    <script src="scripts/directives/dateformatter.js"></script>
+    <script src="scripts/services/admin.js"></script>
+    <script src="scripts/services/koulutusalat.js"></script>
     <!-- endbuild -->
   </body>
 </html>

@@ -32,24 +32,21 @@ angular.module('eperusteApp')
         element.addClass('list-group-item ');
         element.attr('ng-class', '');
 
-        if(attrs.kiinniOletuksena) {
-          scope.canCollapse = true;
-          scope.collapsed = attrs.kiinniOletuksena;
-        } else {
-          scope.canCollapse = false;
-          scope.collapsed = false;
-        }
+        scope.canCollapse = attrs.collapsible || false;
+        scope.collapsed = false;
       }
     };
   })
-  .directive('muokattavaKentta', function($compile, $rootScope, MuokkausUtils, YleinenData, Editointikontrollit, $q) {
+  .directive('muokattavaKentta', function($compile, $rootScope, MuokkausUtils,
+    YleinenData, Editointikontrollit, $q, Varmistusdialogi) {
     return {
       restrict: 'E',
       replace: true,
       scope: {
         field: '=fieldInfo',
         objectReady: '=objectPromise',
-        removeField: '&?'
+        removeField: '&?',
+        editEnabled: '='
       },
       link: function(scope, element, attrs) {
 
@@ -61,6 +58,35 @@ angular.module('eperusteApp')
 
         var typeParams = scope.field.type.split('.');
 
+        function poistaOsio(value) {
+          if(angular.isString(value)) {
+            MuokkausUtils.nestedSet(scope.object, scope.field.path, '.', '');
+          } else {
+            MuokkausUtils.nestedSet(scope.object, scope.field.path, '.', undefined);
+          }
+          if(!scope.mandatory) {
+            scope.removeField({fieldToRemove: scope.field});
+          }
+        }
+
+        scope.suljeOsio = function() {
+          // Jos kentässä on dataa, kysytään varmistus.
+          var getValue = MuokkausUtils.nestedGet(scope.object, scope.field.path, '.');
+          if (!_.isEmpty(getValue)) {
+            Varmistusdialogi.dialogi({
+              otsikko: 'varmista-osion-poisto-otsikko',
+              teksti: 'varmista-osion-poisto-teksti',
+              primaryBtn: 'poista',
+              successCb: function () {
+                poistaOsio(getValue);
+              }
+            })();
+          } else {
+            // Tyhjän voi poistaa heti.
+            poistaOsio(getValue);
+          }
+        };
+
         $q.all({object: scope.objectReady, editMode: Editointikontrollit.getEditModePromise()}).then(function(values) {
           scope.object = values.object;
           scope.editMode = values.editMode;
@@ -69,20 +95,6 @@ angular.module('eperusteApp')
             var contentFrame = angular.element('<vaihtoehtoisen-kentan-raami></vaihtoehtoisen-kentan-raami>')
             .attr('osion-nimi', scope.field.header)
             .append(getElementContent(typeParams[0]));
-
-            scope.suljeOsio = function() {
-              console.log('suljetaan ja poistetaan sisältö');
-
-              if(angular.isString(MuokkausUtils.nestedGet(scope.object, scope.field.path, '.'))) {
-                MuokkausUtils.nestedSet(scope.object, scope.field.path, '.', '');
-              } else {
-                MuokkausUtils.nestedSet(scope.object, scope.field.path, '.', undefined);
-              }
-
-              if(!scope.mandatory) {
-                scope.removeField({fieldToRemove: scope.field});
-              }
-            };
 
             contentFrame.attr('sulje-osio', 'suljeOsio()');
 
@@ -119,7 +131,8 @@ angular.module('eperusteApp')
             element =
             angular.element('<arviointi></arviointi>')
             .attr('arviointi', 'object.' + scope.field.path)
-            .attr('editointi-sallittu', 'true');
+            .attr('editointi-sallittu', 'true')
+            .attr('edit-enabled', 'editEnabled');
           }
 
           else if (elementType === 'koodisto-select') {
@@ -177,7 +190,8 @@ angular.module('eperusteApp')
     return {
       template:
         '<div ng-transclude></div>' +
-        '<button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-click="suljeOsio()">{{\'poista\' | translate}}&nbsp;{{osionNimi | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-minus"></span></button>',
+        '<button ng-if="$parent.editEnabled" editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-click="suljeOsio()">' +
+        '<span class="glyphicon glyphicon-remove"></span>{{\'poista-osio\' | translate}}</button>',
       restrict: 'E',
       transclude: true,
       scope: {

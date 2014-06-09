@@ -1,8 +1,104 @@
+ul.tutkinnonosat {
+  .tutkinnonosa-laatikko {
+    width: 600px;
+    margin: 15px;
+    margin-left: 0px;
+    padding-top: 20px;
+    cursor: pointer;
+    overflow: hidden;
+    &:hover {
+      border-color: black;
+      .muokkaus {
+        color: black;
+      }
+    }
+    h3 {
+      margin-top: 0px;
+    }
+    .otsikko {
+      float: left;
+      width: 80%;
+    }
+    .muokkaus {
+      font-size: 40px;
+      float: right;
+      color: $brand-primary;
+    }
+  }
+}
+
+.osan-laajuus {
+  margin-left: 0.5em;
+  opacity: 0.6;
+  font-size: 90%;
+}
+
+.rajauslaatikko {
+  width: 600px;
+  margin-top: 20px;
+}
+
+@media (max-width: $screen-md-max) {
+  $tutkinnonosa-leveys: 600px;
+  ul.tutkinnonosat {
+    .tutkinnonosa-laatikko {
+      width: $tutkinnonosa-leveys;
+    }
+  }
+  .rajauslaatikko {
+    width: $tutkinnonosa-leveys;
+  }
+}
+
 #otsikkotiedot table {
   margin-top: 1.5em;
   margin-bottom: 2em;
   th, td {
     padding-right: 1em;
+  }
+}
+
+.viitetiedot {
+  margin-top: 20px;
+}
+
+#pikamenu-header {
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+$pikamenu-max-height: 400px;
+#tutkinnonosat-pikamenu {
+  display: block;
+  position: absolute;
+  max-width: 400px;
+  max-height: $pikamenu-max-height;
+  z-index: 1050;
+  overflow-y: auto;
+  @include box-shadow(0 6px 12px rgba(0,0,0,.175));
+  &.ng-hide-add, &.ng-hide-remove {
+    transition: clip 0.3s ease;
+  }
+  &.ng-hide-add.ng-hide-add-active, &.ng-hide-remove {
+    clip: rect(auto, auto, 0px, auto);
+  }
+  &.ng-hide-add, &.ng-hide-remove.ng-hide-remove-active {
+    clip: rect(auto, auto, $pikamenu-max-height, auto);
+  }
+}
+#tutkinnonosat-pikamenu-button {
+  display: inline-block;
+  font-size: 80%;
+  margin-left: 5px;
+  cursor: pointer;
+}
+#tutkinnonosat-pikamenu-list {
+  ul {
+    background-color: white;
+    margin: 0;
+    .active {
+      font-weight: 700;
+    }
   }
 }
 
@@ -15,7 +111,7 @@
 }
 
 .osio-otsikko {
-  padding-top: 5px;
+  padding-top: 10px;
   padding-bottom: 5px;
   cursor: pointer;
   font-size: 120%;
@@ -37,20 +133,68 @@
   }
 }
 
-.arvioinnin-kohdealue {
+.muokkaus-lisays {
   border: 0px none;
   box-shadow: none;
-  margin-left: 0px !important;
-  & > .panel-heading {
-    padding-left: 0;
-  }
-  .panel-heading {
+  padding-left: 0;
+  &.panel-footer.panel {
     background-color: transparent;
-    padding-bottom: 0px;
+    border: 0px none;
+    box-shadow: none;
   }
   .panel-body {
-    border: 0px none !important;
-    padding-top: 0;
+    padding: 0;
+    padding-top: 15px;
+  }
+  label {
+    display: block;
+    font-weight: normal;
+  }
+}
+
+.muokkaus-lisaa-osio {
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.muokkaus-kohdealue {
+  padding-left: 5px;
+}
+
+.muokkaus-napit {
+  padding-top: 6px;
+}
+
+#muokattavat-kentat {
+  .list-group-item {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .list-group-item, .panel:not(.arvioinnin-kohdealue) {
+    border: 0px none;
+    box-shadow: none;
+  }
+  ul.ui-sortable li {
+    cursor: move;
+  }
+  ul.ui-sortable-disabled li {
+    cursor: default;
+  }
+}
+
+.arviointi-kohdealueet {
+  box-shadow: none;
+  border: 0;
+  .toggler {
+
+  }
+}
+
+.arvioinnin-kohdealue {
+  margin-bottom: 10px !important;
+  .panel-body .panel-heading {
+    background-color: transparent;
+    padding-bottom: 0px;
   }
   a {
     cursor: pointer;
@@ -77,49 +221,44 @@
   }
 }
 
-.muokkaus-lisays {
-  border: 0px none;
-  box-shadow: none;
-  padding-left: 0;
-  &.panel-footer.panel {
-    background-color: transparent;
-    border: 0px none;
-    box-shadow: none;
+.muokkaustiedot {
+  hr {
+    margin-top: 5px;
+    clear: right;
   }
-  .panel-body {
+  ul {
+    display: inline-block;
+    line-height: 3;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: $secondary-lighter;
     padding: 0;
-    padding-top: 15px;
-  }
-  label {
-    display: block;
-    font-weight: normal;
+    li {
+      margin-right: 10px;
+      list-style-type: none;
+      display: inline-block;
+      span {
+        font-weight: 700;
+      }
+    }
+    &.version-valinta {
+      float: right;
+    }
   }
 }
-
-.muokkaus-lisaa-osio {
-  background-color: transparent;
-  border: 0px none;
-  box-shadow: none;
-}
-
-.muokkaus-kohdealue {
-  padding-left: 5px;
-}
-
-.muokkaus-napit {
-  padding-top: 6px;
-}
-
-#muokattavat-kentat {
-  .list-group-item {
-    margin-bottom: 0;
-    padding-bottom: 0;
+.tekstikappale {
+  h3 {
+    margin-top: 0;
   }
-  .list-group-item, .panel:not(.arviointi-kohdealueet) {
-    border: 0px none;
-    box-shadow: none;
-  }
-  ul.ui-sortable li {
-    cursor: move;
+}
+.edit-tekstikappale {
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.dropdown-menu {
+  .disabled-link, .disabled-link:hover {
+    color: #ddd;
   }
 }

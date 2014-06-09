@@ -1,7 +1,9 @@
 @import "modules/variables";
-@import "../components/bootstrap-sass/stylesheets/bootstrap/bootstrap";
+@import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap";
 @import "modules/bootstrap-overrides";
 @import "vendor/virkailija";
+
+@import "mixins/utils";
 
 @import "modules/yleiset";
 @import "modules/main";
@@ -14,3 +16,5 @@
 @import "modules/sivunavigaatio";
 @import "modules/notifikaatiot";
 @import "modules/koodisto";
+@import "modules/editointikontrollit";
+@import "modules/kommentit";

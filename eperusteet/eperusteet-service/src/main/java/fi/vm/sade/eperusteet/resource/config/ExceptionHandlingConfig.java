@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -49,12 +49,15 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.exception.LockingException;
+import fi.vm.sade.eperusteet.service.exception.ServiceException;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
  * @author teele1
  */
+//TODO: vaatii refaktorointia
 @ControllerAdvice
 public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
 
@@ -90,7 +93,12 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllExceptions(Exception e, WebRequest request) throws Exception {
-        return handleExceptionInternal(e, null, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ResponseStatus rs = e.getClass().getAnnotation(ResponseStatus.class);
+        if (rs != null) {
+            status = rs.value();
+        }
+        return handleExceptionInternal(e, null, new HttpHeaders(), status, request);
     }
 
     @Override
@@ -138,7 +146,10 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             }
             builder.append("\"");
             map.put("syy", builder.toString());
-        } else if (ex instanceof BusinessRuleViolationException) {
+        } else if (ex instanceof LockingException ) {
+            LockingException le = (LockingException)ex;
+            return super.handleExceptionInternal(ex, le.getLukko(), headers, status, request);
+        } else if (ex instanceof ServiceException) {
             map.put("syy", ex.getLocalizedMessage());
         } else {
             LOG.error("Creating common error response for exception", ex);

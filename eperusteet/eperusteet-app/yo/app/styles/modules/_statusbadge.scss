@@ -1,8 +1,5 @@
 .statusbadge {
-  padding-top: 20px;
-  padding-bottom: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding: 10px 7px 10px 7px;
   color: #fff;
   font-weight: bold;
   display: table;
@@ -20,7 +17,8 @@
   }
   .glyphicon {
     font-size: 28px;
-    margin-bottom: 10px;
+    margin-top: 4px;
+    margin-bottom: 7px;
   }
   &.editable {
     cursor: pointer;

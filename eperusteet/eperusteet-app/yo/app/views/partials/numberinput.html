@@ -1,0 +1,9 @@
+<div>
+    <input class="{{luokka}}" name="tmpName" ng-model="data" type="number" min="{{min}}" max="{{max}}">
+    <p class="alert alert-error" ng-show="form.{{name}}.$error.min || form.{{name}}.$error.max" translate translate-values="{min:min, max:max}">
+      arvo-rajojen-ulkopuolella
+    </p>
+    <p class="alert alert-error" ng-show="form.{{name}}.$error.number" translate>
+      arvo-ei-numero
+    </p>
+</div>

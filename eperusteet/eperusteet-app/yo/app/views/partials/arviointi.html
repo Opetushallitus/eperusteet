@@ -13,24 +13,13 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
-<div class="btn-group" ng-show="naytaMuokkausmoodinValitsin()">
-  <button class="btn btn-default" editointi-kontrolli ng-click="asetaMuokkausmoodi('tekstikentta')" translate>arviointi-muokkaa-tekstikenttänä</button>
-  <button class="btn btn-default" editointi-kontrolli ng-click="asetaMuokkausmoodi('taulukko')" translate>arviointi-muokkaa-taulukkona</button>
-</div>
-<div ng-show="showArviointiteksti()">
-  <div ng-if="editAllowed" ckeditor localized ng-model="arviointi.lisatiedot" editor-placeholder="arviointi-lisatiedot-placeholder" editing-enabled="editAllowed" layout="simplified"></div>
-  <div ng-if="!editAllowed" class="well well-sm" ng-bind-html="arviointi.lisatiedot | kaanna"></div>
-</div>
-<div ng-show="showArviointitaulukko()">
+<div>
   <div class="panel panel-default panel-small arviointi-kohdealueet">
-    <div class="panel-heading">
-      <h3 class="panel-title">{{'arviointi-kohdealueet' | translate}}</h3>
-    </div>
-
+    <span class="toggler"><a href="" translate ng-click="toggleAll()">avaa-sulje-kaikki</a></span>
     <div class="panel-body">
       <accordion close-others="false">
-      <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi.arvioinninKohdealueet">
-        <accordion-group class="arvioinnin-kohdealue" heading="{{kohdealue.otsikko | kaanna}}" ng-repeat="kohdealue in arviointi.arvioinninKohdealueet" is-open="true">
+      <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi">
+        <accordion-group class="arvioinnin-kohdealue" heading="{{kohdealue.otsikko | kaanna}}" ng-repeat="kohdealue in arviointi" is-open="kohdealue.accordionOpen">
         <accordion-heading>
           <h3 class="panel-title"><arvioinnin-tekstikentta sisalto="kohdealue" sisaltoteksti="kohdealue.otsikko" sisaltoalue="$parent.arviointi.arvioinninKohdealueet" edit-allowed="editAllowed"/></h3>
         </accordion-heading>
@@ -38,7 +27,7 @@ European Union Public Licence for more details.
         <accordion close-others="false">
         <div id="sortableKohteet" ui-sortable="sortableOptions" ng-model="kohdealue.arvioinninKohteet">
 
-          <accordion-group class="arvioinnin-kohde" heading="{{arvioinninkohde.otsikko | kaanna}}" ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet" is-open="true">
+          <accordion-group class="arvioinnin-kohde" heading="{{arvioinninkohde.otsikko | kaanna}}" ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet" is-open="arvioinninkohde.accordionOpen">
           <accordion-heading>
             <h4><arvioinnin-tekstikentta clickable="false" sisalto="arvioinninkohde" sisaltoteksti="arvioinninkohde.otsikko" sisaltoalue="$parent.kohdealue.arvioinninKohteet" edit-allowed="editAllowed"></arvioinnin-tekstikentta></h4>
           </accordion-heading>
@@ -50,7 +39,7 @@ European Union Public Licence for more details.
               </div>
               <div class="col-md-9">
                 <div class="panel kriteeri" ng-repeat="osaamistasonKriteeri in arvioinninkohde.osaamistasonKriteerit | filter:{_osaamistaso: taso.id}">
-                  <ul class="list-group" ui-sortable ng-model="osaamistasonKriteeri.kriteerit">
+                  <ul class="list-group" ui-sortable="kriteeriSortableOptions" ng-model="osaamistasonKriteeri.kriteerit">
                     <li class="list-group-item" ng-repeat="kriteeri in osaamistasonKriteeri.kriteerit">
                       <arvioinnin-tekstikentta sisalto="kriteeri" sisaltoalue="$parent.osaamistasonKriteeri.kriteerit" edit-allowed="editAllowed"/>
                     </li>
@@ -59,7 +48,7 @@ European Union Public Licence for more details.
                     <input focus-me="uudenKriteerinTiedot.showInput" editointi-kontrolli class="form-control" ng-show="uudenKriteerinTiedot.showInput" type="text" 
                       ng-model="uudenKriteerinTiedot.teksti" on-enter="addNewKriteeri($parent.osaamistasonKriteeri, uudenKriteerinTiedot)" 
                       on-esc="uudenKriteerinTiedot.showInput = false; uudenKriteerinTiedot.teksti = null;" placeholder="{{'arviointi-uusi-kriteeri-placeholder' | translate}}"/>
-                    <button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-show="!uudenKriteerinTiedot.showInput" 
+                    <button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-show="!uudenKriteerinTiedot.showInput && editEnabled" 
                       ng-click="uudenKriteerinTiedot.showInput = true">{{'arviointi-uusi-kriteeri' | translate}}&nbsp;&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
                   </div>
                 </div>
@@ -71,7 +60,7 @@ European Union Public Licence for more details.
         </accordion>
 
         <!-- Kohteen lisäys -->
-        <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed">
+        <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed && editEnabled">
           <div class="panel-body">
             <div ng-show="uudenKohteenTiedot.showInputArea">
               <input focus-me="uudenKohteenTiedot.showInputArea" editointi-kontrolli class="form-control" type="text" ng-model="uudenKohteenTiedot.nimi" placeholder="{{'arviointi-uusi-kohde-placeholder' | translate}}"/><br/>
@@ -95,7 +84,7 @@ European Union Public Licence for more details.
       </accordion>
 
       <!-- Kohdealueen lisäys -->
-      <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed">
+      <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed && editEnabled">
         <div class="panel-body">
           <input editointi-kontrolli class="form-control" ng-show="$parent.showNewKohdealueInput" type="text" ng-model="$parent.uudenKohdealueenNimi" on-enter="$parent.addNewKohdealue()"
             on-esc="$parent.showNewKohdealueInput = false; $parent.uudenKohdealueenNimi = null;" focus-me="$parent.showNewKohdealueInput" placeholder="{{'arviointi-uusi-kohdealue-placeholder' | translate}}"/>

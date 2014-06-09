@@ -16,15 +16,44 @@
 
 'use strict';
 angular.module('eperusteApp')
-  .directive('editointikontrollit', function() {
+  .directive('editointikontrollit', function($window) {
     return {
       templateUrl: 'views/partials/editointikontrollit.html',
-      restrict: 'E'
+      restrict: 'E',
+      link: function(scope) {
+        var window = angular.element($window),
+            container = angular.element('.edit-controls'),
+            wrapper = angular.element('.editointi-wrapper');
+
+        /**
+         * Editointipalkki asettuu staattisesti footerin päälle kun skrollataan
+         * tarpeeksi alas. Ylempänä editointipalkki kelluu.
+         */
+        scope.updatePosition = function () {
+          if (window.scrollTop() + window.innerHeight() < wrapper.offset().top + container.height()) {
+            container.addClass('floating');
+            container.removeClass('static');
+            container.css('width', wrapper.width());
+          } else {
+            container.removeClass('floating');
+            container.addClass('static');
+            container.css('width', '100%');
+          }
+        };
+
+        window.on('scroll resize', function() {
+          if (scope.editStarted) {
+            scope.updatePosition();
+          }
+        });
+
+        scope.updatePosition();
+      }
     };
   })
-  .controller('EditointiCtrl', function($scope, $rootScope, Editointikontrollit) {
+  .controller('EditointiCtrl', function($scope, $rootScope, Editointikontrollit, $timeout) {
 
-    $scope.buttonClass = 'btn-default';
+    $scope.kommentti = '';
     $scope.hideControls = true;
     function setEditControls() {
       if(Editointikontrollit.editingEnabled()) {
@@ -37,34 +66,31 @@ angular.module('eperusteApp')
 
     setEditControls();
 
-    $rootScope.$on('$locationChangeSuccess', function() {
+    $rootScope.$on('$stateChangeSuccess', function() {
       Editointikontrollit.unregisterCallback();
       setEditControls();
     });
 
     Editointikontrollit.registerCallbackListener(setEditControls);
 
-    $scope.start = function() {
-      $scope.editClass = 'editing';
-      $scope.buttonClass = 'btn-info';
+    $rootScope.$on('enableEditing', function () {
       $scope.editStarted = true;
-      $rootScope.$broadcast('enableEditing');
+      $scope.kommentti = '';
+      $timeout(function () {
+        $scope.updatePosition();
+      });
+    });
+    $rootScope.$on('disableEditing', function () {
+      $scope.editStarted = false;
+    });
+
+    $scope.start = function() {
       Editointikontrollit.startEditing();
     };
     $scope.save = function() {
-      $scope.editClass = '';
-      $scope.buttonClass = 'btn-default';
-      $scope.editStarted = false;
-      $rootScope.$broadcast('disableEditing');
-      $rootScope.$broadcast('notifyCKEditor');
       Editointikontrollit.saveEditing();
     };
     $scope.cancel = function() {
-      $scope.editClass = '';
-      $scope.buttonClass = 'btn-default';
-      $scope.editStarted = false;
-      $rootScope.$broadcast('disableEditing');
-      $rootScope.$broadcast('notifyCKEditor');
       Editointikontrollit.cancelEditing();
     };
   });

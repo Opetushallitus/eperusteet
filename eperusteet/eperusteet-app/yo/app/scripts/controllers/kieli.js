@@ -13,7 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 'use strict';
+/* global moment */
 
 angular.module('eperusteApp')
   .controller('KieliCtrl', function($scope, YleinenData, $rootScope) {
@@ -24,6 +26,7 @@ angular.module('eperusteApp')
     $scope.vaihdaKieli = function(kielikoodi) {
       $rootScope.$broadcast('notifyCKEditor');
       $scope.kieli = kielikoodi;
+      moment.lang(kielikoodi);
       YleinenData.vaihdaKieli(kielikoodi);
     };
 

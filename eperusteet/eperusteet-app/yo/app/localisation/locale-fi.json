@@ -29,10 +29,19 @@
     "peruuta": "Peruuta",
     "valitse": "Valitse",
     "tallenna": "Tallenna",
+    "muokattavana": "Muokattavana",
+    "muokattu-viimeksi": "Muokattu viimeksi",
+    "muokkaaja": "Muokkaaja",
+    "kommentoi-muutosta": "Kommentoi muutosta",
     "haluatko-jatkaa": "Haluatko jatkaa?",
     "tuo-valitut": "Tuo valitut",
+    "sulje": "Sulje",
 
-    "nimetön": "<Nimetön>",
+    "fi": "Suomi",
+    "sv": "Ruotsi",
+    "en": "Englanti",
+
+    "nimeton": "<Nimetön>",
 
     "OPINTOVIIKKO": "ov",
     "OSAAMISPISTE": "op",
@@ -41,13 +50,32 @@
     "erikoisammattitutkinto": "Erikoisammattitutkinto",
     "perustutkinto": "Perustutkinto",
 
+    "tiedot": "Tiedot",
+    "projektiryhma": "Projektiryhmä",
+    "peruste": "Peruste",
+    "ammatillinenperuskoulutus": "Ammatillinen peruskoulutus",
+    "ammatillinenaikuiskoulutus": "Ammatillinen aikuiskoulutus",
+
+    "lukitus-vaaditaan": "Muokattavaa resurssia ei ole lukittu",
+
     "perusteprojektit-otsikko": "Omat perusteprojektit",
     "uusi-projekti": "Uusi projekti",
 
     "uusi-tutkinnonosa": "<Uusi tutkinnon osa>",
     "tuo-tutkinnonosa": "Tuo tutkinnon osa",
     "tutkinnon-osia-ei-ole": "Tutkinnon osia ei ole",
-    "avaa-ja-sulje": "Avaa / Sulje kaikki",
+    "avaa-kaikki": "Avaa kaikki",
+    "sulje-kaikki": "Sulje kaikki",
+    "avaa-sulje-kaikki": "Avaa / sulje kaikki",
+
+    "poistetaanko-tutkinnonosa": "Poistetaanko tutkinnon osa?",
+    "tutkinnon-osa-rakenteessa-ei-voi-poistaa": "Tutkinnon osaa ei voi poistaa, koska se on käytössä tutkinnon rakenteessa. Poista viite puusta ensin.",
+    "tutkinnon-osa-rakenteesta-poistettu": "Tutkinnon osa poistettu onnistuneesti.",
+
+    "viesti-poistettu": "Viesti poistettu",
+    "kommentti-poistettu": "Kommentti poistettiin onnistuneesti",
+    "nayta-aliviestit": "Näytä vastaukset",
+    "piilota-aliviestit": "Piilota vastaukset",
 
     "haku-otsikko": "Perusteen haku",
     "haku-koulutusala": "Koulutusala",
@@ -81,6 +109,14 @@
     "yksikko": "Yksikkö",
     "pakollisuus": "Pakollinen",
     "poistetaanko-ryhma": "Poistetaanko ryhmä?",
+    "leikelauta": "Leikelauta",
+    "tutkinnon-osa-haku-placeholder": "Rajaa tutkinnon osia...",
+
+    "muodostumis-rakenne-validointi-laajuus": "Ryhmän osien yhteenlaskettu laajuus ei riitä kattamaan tarvittavaa laajuutta",
+    "muodostumis-rakenne-validointi-maara": "Ryhmän osien yhteenlaskettu määrä ei riitä kattamaan tarvittavaa määrää",
+    "muodostumis-rakenne-validointi-maksimi": "Ryhmän laskettu minimi on pienempi kuin vaadittu minimi",
+    "muodostumis-rakenne-validointi-minimi": "Ryhmän laskettu maksimi on pienempi kuin vaadittu maksimi",
+    "muodostumis-rakenne-validointi-uniikit": "Ryhmä sisältää samoja tutkinnon osia",
 
     "esiopetus": "Esiopetus",
     "perusopetus": "Perusopetus",
@@ -89,6 +125,7 @@
     "ammatillinen-aikuiskoulutus": "Ammatillinen aikuiskoulutus",
     "hakuehdot": "Hakuehdot",
     "perusteprojekti": "Perusteprojekti",
+    "uusi-perusteprojekti": "Uusi perusteprojekti",
 
     "muokkaus-uusi-kappale-placeholder": "Uusi kappale",
     "muokkaus-kommentit": "Kommentit",
@@ -192,7 +229,12 @@
     "muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat-placeholder": "Listaa tähän ammattitaidon osoittamistavat",
     "muokkaus-tutkinnon-osan-osaamisala-header": "Osaamisala",
     "muokkaus-tutkinnon-osan-osaamisala-placeholder": "Kirjoita tähän tutkinnon osan osaamisala",
-    "muokkaus-tutkinnon-osan-arviointi-header": "Arviointi",
+    "muokkaus-tutkinnon-osan-arviointi-teksti-header": "Arviointi tekstinä",
+    "muokkaus-tutkinnon-osan-arviointi-teksti-placeholder": "Kirjoita tähän arviointikriteerit",
+    "muokkaus-tutkinnon-osan-arviointi-taulukko-header": "Arviointi taulukkona",
+    "poista-osio": "Poista osio",
+    "varmista-osion-poisto-otsikko": "Varmista osion poisto",
+    "varmista-osion-poisto-teksti": "Haluatko poistaa osion? Kaikki osion sisältö menetetään.",
 
     "puu-tyyppi-yksi": "Valitse yksi seuraavista",
 
@@ -200,6 +242,8 @@
     "muokkaus-teksikappaleen-nimi-placeholder": "Kirjoita tähän otsikko",
     "muokkaus-tekstikappaleen-teksti-header": "Teksti",
     "muokkaus-tekstikappaleen-teksti-placeholder": "Kirjoita tähän kappaleen teksti",
+    "versio": "Versio",
+    "nayta-versiohistoria": "Historia",
 
     "arviointi-lisatiedot-placeholder": "Arvioinnin sanallinen selitys tähän",
     "arviointi-uusi-kohdealue": "Uusi kohdealue",
@@ -215,13 +259,15 @@
     "arviointi-kohdealueet": "Arvioinnin kohdealueet",
 
     "muokkaus-lisaa-osio": "Lisää osio",
-    "muokkaus-tutkinnon-osa-tallennettu": "Tutkinnon osa tallennettu onnistuneesti.",
-    "muokkaus-tekstikappale-tallennettu": "Tekstikappale tallennenttu onnistuneesti.",
+    "muokkaus-tutkinnon-osa-tallennettu": "Tutkinnon osa tallennettu onnistuneesti",
+    "muokkaus-tekstikappale-tallennettu": "Tekstikappale tallennettu onnistuneesti",
 
     "opintoluokitus": "Opintoluokitus",
     "tavoitteet": "Tavoitteet",
     "ammattitaitovaatimukset": "Ammattitaitovaatimukset",
     "arvointi": "Arviointi",
+
+    "lisaa-kommentti": "Lisää kommentti",
 
     "tuo-excel": "Tuo Excel",
     "tutkinnon-tyyppi": "Tutkinnon tyyppi",
@@ -282,10 +328,11 @@
     "projekti-header-paatosPvm": "Päätöspäivämäärä",
     "projekti-header-koulutustyyppi": "Koulutustyyppi",
         
-    "lisaa-tutkintokohtainen-osa": "Lisää tutkintokohtainen osa",
+    "tutkintokohtaiset-osat": "Tutkintokohtaiset osat",
+    "lisaa-tutkintokohtainen-osa": "Lisää otsikko",
     "uusi-tutkinnon-osa": "<Uusi sisältö>",
 
-    "takaisin-paanakymaan": "Takaisin päänäkymään",
+    "takaisin-paanakymaan": "Projektin päänäkymä",
     "projektiryhma-otsikko-omistaja": "Perusteprosessin omistaja",
     "projektiryhma-otsikko-sihteeri": "Sihteeri",
     "projektiryhma-otsikko-jasen": "Perustetyöryhmän jäsenet",
@@ -294,7 +341,8 @@
     "email": "Email",
     "kutsu-uusi": "Kutsu uusi jäsen",
     "muokkaa": "Muokkaa",
-    "jasen-puhelin": "Puhelin",
+    "vastaa": "Vastaa",
+    "jasen-puhelinnumero": "Puhelin",
     "jasen-nimi": "Nimi",
     "jasen-email": "Email",
     "jasen-rooli": "Rooli",
@@ -321,5 +369,18 @@
 
     "järjestelmävirhe-alku": "Tapahtui järjestelmävirhe ",
     "järjestelmävirhe-loppu": ". Ole hyvä ja yritä uudelleen. Jos ongelma toistuu ota yhteyttä palvelun ylläpitäjään.",
-    "odottamaton-virhe": "Tapahtui odottamaton virhe"
+    "odottamaton-virhe": "Tapahtui odottamaton virhe",
+    
+    "poisto-onnistui": "Poisto onnistui",
+    
+    "poistu-sivulta": "Poistu sivulta",
+    "tallentamattomia-muutoksia": "Sinulla on tallentamattomia muutoksia. Jos poistut sivulta muutokset menetetään.",
+    "haluatko-jatkaa": "Haluatko jatkaa?",
+    "vahvista-liikkuminen": "Vahvista liikkuminen",
+
+    "muodostumissaannot": "Tutkinnon rakenne",
+    
+    "arvo-rajojen-ulkopuolella": "Arvon pitää olla välillä {{min}} - {{max}}",
+    "arvo-ei-numero": "Arvon täytyy olla numero",
+    "sivu-virheellisia-arvoja": "Sivulla on virheellisiä arvoja"
 }

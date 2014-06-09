@@ -18,7 +18,7 @@
 
 angular.module('eperusteApp')
   .service('Editointicatcher', function() {
-    var f = function(/*osa*/) {};
+    var f = angular.noop;
 
     return {
       register: function(cb) {
@@ -26,11 +26,11 @@ angular.module('eperusteApp')
       },
       give: function(osa) {
         f(osa);
-        f = function() {};
+        f = angular.noop;
       }
     };
   })
-  .factory('Editointikontrollit', function($rootScope, $q, $timeout) {
+  .factory('Editointikontrollit', function($rootScope, $q, $timeout, Notifikaatiot) {
     var scope = $rootScope.$new(true);
     scope.editingCallback = null;
     scope.editMode = false;
@@ -45,6 +45,9 @@ angular.module('eperusteApp')
       scope.editMode = mode;
       scope.editModeDefer = $q.defer();
       scope.editModeDefer.resolve(scope.editMode);
+      if (scope.editingCallback) {
+        scope.editingCallback.notify(mode);
+      }
     }
 
     return {
@@ -53,25 +56,37 @@ angular.module('eperusteApp')
           scope.editingCallback.edit();
           setEditMode(true);
         }
+        $rootScope.$broadcast('enableEditing');
       },
       saveEditing: function() {
-        if(scope.editingCallback) {
-          scope.editingCallback.save();
-          angular.forEach(additionalCallbacks.save, function(callback) {
-            // Kutsutaan kaikkia callback listenereitä ja annetaan parametrina
-            // viimeisin muutettu objecti ja tieto siitä, onko editointikontrollit ylipäätänsä
-            // pääällä
-            // callback(self.lastModified, scope.editingCallback !== null);
-            callback(undefined, scope.editingCallback !== null);
-          });
-          setEditMode(false);
+        if (scope.editingCallback) {
+
+          if (scope.editingCallback.validate()) {
+
+            scope.editingCallback.save();
+            angular.forEach(additionalCallbacks.save, function(callback) {
+              // Kutsutaan kaikkia callback listenereitä ja annetaan parametrina
+              // viimeisin muutettu objecti ja tieto siitä, onko editointikontrollit ylipäätänsä
+              // pääällä
+              // callback(self.lastModified, scope.editingCallback !== null);
+              callback(undefined, scope.editingCallback !== null);
+            });
+            setEditMode(false);
+            $rootScope.$broadcast('disableEditing');
+          } else {
+            Notifikaatiot.varoitus('sivu-virheellisia-arvoja');
+          }
         }
+
+        $rootScope.$broadcast('notifyCKEditor');
       },
       cancelEditing: function() {
         if(scope.editingCallback) {
           scope.editingCallback.cancel();
           setEditMode(false);
         }
+        $rootScope.$broadcast('disableEditing');
+        $rootScope.$broadcast('notifyCKEditor');
       },
       registerCallback: function(callback) {
         if(!callback ||
@@ -80,6 +95,9 @@ angular.module('eperusteApp')
             !angular.isFunction(callback.cancel)) {
           console.error('callback-function invalid');
           throw 'editCallback-function invalid';
+        }
+        if (!angular.isFunction(callback.notify)) {
+          callback.notify = angular.noop;
         }
         $timeout(function() {
           scope.editingCallback = callback;
@@ -116,8 +134,8 @@ angular.module('eperusteApp')
       getEditModePromise: function() {
         return scope.editModeDefer.promise;
       },
-      registerAdditionalSaveCallback: function(callback) {
-        additionalCallbacks.save.push(callback);
+      getEditMode: function() {
+        return scope.editMode;
       }
     };
 });

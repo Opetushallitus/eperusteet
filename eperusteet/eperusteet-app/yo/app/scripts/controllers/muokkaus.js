@@ -13,24 +13,17 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 * European Union Public Licence for more details.
 */
+
 'use strict';
 /*global _*/
 
 angular.module('eperusteApp')
-  .config(function($stateProvider) {
-    $stateProvider
-      .state('perusteprojekti.editoi.perusteenosa', {
-        url: 'perusteenosa/:perusteenOsanTyyppi/:perusteenOsaId',
-        templateUrl: 'views/muokkaus.html',
-        controller: 'MuokkausCtrl',
-        naviRest: [':perusteenOsanTyyppi'],
-        /*naviBase: ['muokkaus', ':perusteenOsanTyyppi']*/
-        onEnter: ['SivunavigaatioService', function (SivunavigaatioService) {
-          SivunavigaatioService.aseta({osiot: true});
-        }]
-      });
-  })
-  .controller('MuokkausCtrl', function($scope, $stateParams, $state, $compile, Navigaatiopolku, PerusteTutkinnonosa, Editointicatcher, PerusteprojektiResource, Notifikaatiot, PerusteenOsat) {
+  .controller('MuokkausCtrl', function($scope, $stateParams, $state, $compile, Navigaatiopolku, PerusteenOsat, Kommentit, KommentitByPerusteenOsa) {
+
+    if ($stateParams.perusteProjektiId && $stateParams.perusteenOsaId) {
+      Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });
+    }
+
     $scope.tyyppi = $stateParams.perusteenOsanTyyppi;
     $scope.objekti = null;
 
@@ -57,24 +50,12 @@ angular.module('eperusteApp')
     var el = $compile(muokkausDirective)($scope);
 
     angular.element('#muokkaus-elementti-placeholder').replaceWith(el);
+
+
   })
   .service('MuokkausUtils', function() {
     this.hasValue = function(obj, path) {
-      if (this.nestedHas(obj, path, '.')) {
-        if (angular.isString(this.nestedGet(obj, path, '.'))) {
-          if(this.nestedGet(obj, path, '.').length > 0) {
-            return true;
-          } else {
-            return false;
-          }
-        } else if(!angular.isUndefined(this.nestedGet(obj, path, '.')) && this.nestedGet(obj, path, '.') !== null) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
+      return this.nestedHas(obj, path, '.') && !_.isEmpty(this.nestedGet(obj, path, '.'));
     };
 
     this.nestedHas = function(obj, path, delimiter) {

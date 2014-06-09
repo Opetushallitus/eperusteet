@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+ *
+ * This program is free software: Licensed under the EUPL, Version 1.1 or - as
+ * soon as they will be approved by the European Commission - subsequent versions
+ * of the EUPL (the "Licence");
+ *
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * European Union Public Licence for more details.
+ */
+
 'use strict';
 /* global _ */
 
@@ -17,7 +33,7 @@ angular.module('eperusteApp')
   })
   .controller('EsitysCtrl', function($q, $scope, $stateParams, Kayttajaprofiilit, Suosikit,
       Perusteet, Suosikitbroadcast, Suoritustapa, YleinenData, Navigaatiopolku,
-      palvelinhaunIlmoitusKanava, PerusteRakenteet, TreeCache, $state) {
+      palvelinhaunIlmoitusKanava, PerusteRakenteet, $state) {
 
     $scope.konteksti = $stateParams.konteksti;
     $scope.peruste = {};
@@ -43,11 +59,7 @@ angular.module('eperusteApp')
 
     // $scope.peruMuutokset = haeRakenne;
 
-    // if (TreeCache.nykyinen() !== $stateParams.perusteenId) { haeRakenne(); }
-    // else { TreeCache.hae(); }
-    //
     $scope.tallennaRakenne = function(rakenne) {
-      TreeCache.tallenna(rakenne, $stateParams.perusteenId);
       rakenne.tutkinnonOsat = _.values(rakenne.tutkinnonOsat);
       PerusteRakenteet.save({ perusteenId: $stateParams.perusteenId }, rakenne, function(re) {
         console.log(re);
@@ -66,9 +78,11 @@ angular.module('eperusteApp')
 
     perusteHakuPromise.then(function(peruste) {
       if (peruste.id) {
+        Navigaatiopolku.asetaElementit({
+          peruste: { nimi: peruste.nimi }
+        });
         // haeRakenne(peruste.suoritustavat[0].suoritustapakoodi);
         $scope.peruste = peruste;
-        Navigaatiopolku.asetaElementit({ perusteenId: peruste.nimi });
         haeSuoritustapaSisalto(peruste.id);
       } else {
         // TODO perustetta ei löytynyt, virhesivu.

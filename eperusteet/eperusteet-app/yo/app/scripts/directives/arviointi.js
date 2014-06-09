@@ -24,11 +24,11 @@ angular.module('eperusteApp')
       restrict: 'E',
       scope: {
         arviointi: '=',
-        editAllowed: '@?editointiSallittu'
+        editAllowed: '@?editointiSallittu',
+        editEnabled: '='
       },
       link: function(scope) {
         scope.editAllowed = (scope.editAllowed === 'true' || scope.editAllowed === true);
-        scope.editEnabled = false;
 
         scope.arviointiasteikot = YleinenData.arviointiasteikot || {};
         scope.showNewKohdealueInput = false;
@@ -45,11 +45,7 @@ angular.module('eperusteApp')
           }
 
           if(angular.isUndefined(scope.arviointi) || scope.arviointi === null) {
-            scope.arviointi = {};
-          }
-
-          if(angular.isUndefined(scope.arviointi.arvioinninKohdealueet) || scope.arviointi.arvioinninKohdealueet === null) {
-            scope.arviointi.arvioinninKohdealueet = [];
+            scope.arviointi = [];
           }
 
           var kohdealue = {
@@ -57,7 +53,7 @@ angular.module('eperusteApp')
           };
           kohdealue.otsikko[YleinenData.kieli] = scope.uudenKohdealueenNimi;
 
-          scope.arviointi.arvioinninKohdealueet.push(kohdealue);
+          scope.arviointi.push(kohdealue);
 
           scope.uudenKohdealueenNimi = null;
           scope.showNewKohdealueInput = false;
@@ -116,40 +112,6 @@ angular.module('eperusteApp')
           _.remove(list, item);
         };
 
-        var currentMoodi;
-
-        scope.arviointiOnOlemassaTekstina = function () {
-          var lisatietoKenttaOnOlemassa = (!_.isEmpty(scope.arviointi) &&
-                  !_.isEmpty(scope.arviointi.lisatiedot));
-          var lisatiedoissaOnSisaltoa = _.any(_.values(_.omit(scope.lisatiedot, '_id')));
-          return lisatietoKenttaOnOlemassa && lisatiedoissaOnSisaltoa;
-        };
-
-        scope.showArviointitaulukko = function() {
-          return currentMoodi === 'taulukko' ||
-              (!_.isEmpty(scope.arviointi) &&
-                  (!scope.arviointiOnOlemassaTekstina() &&
-                   !_.isEmpty(scope.arviointi.arvioinninKohdealueet)));
-        };
-
-        scope.showArviointiteksti = function() {
-          return currentMoodi === 'tekstikentta' ||
-              (!_.isEmpty(scope.arviointi) &&
-                  (scope.arviointiOnOlemassaTekstina() &&
-                  _.isEmpty(scope.arviointi.arvioinninKohdealueet)));
-        };
-
-        scope.naytaMuokkausmoodinValitsin = function() {
-          return scope.editAllowed && angular.isUndefined(currentMoodi) && (_.isEmpty(scope.arviointi) || (_.isEmpty(scope.arviointi.lisatiedot) && _.isEmpty(scope.arviointi.arvioinninKohdealueet)));
-        };
-
-        scope.asetaMuokkausmoodi = function(moodi) {
-          currentMoodi = moodi;
-          if(scope.arviointi === undefined) {
-            scope.arviointi = {};
-          }
-        };
-
         scope.valitseKieli = function(teksti) {
           return YleinenData.valitseKieli(teksti);
         };
@@ -165,6 +127,12 @@ angular.module('eperusteApp')
             // ei toimi
           }
         };
+        scope.kriteeriSortableOptions = {};
+
+        scope.$watch('editEnabled', function (value) {
+          scope.sortableOptions.disabled = !value;
+          scope.kriteeriSortableOptions.disabled = !value;
+        });
 
         scope.isElementDragged = function() {
           if (scope.elementDragged) {
@@ -174,6 +142,33 @@ angular.module('eperusteApp')
             return false;
           }
         };
+
+        /**
+         * is-open attribuutti on annettava modelina accordionille, jotta
+         * ui-sortable voidaan disabloida lukutilassa.
+         * Accordionin tiloja seurataan suoraan modelin datassa. Haittapuoli
+         * on se, että tallennettaessa pitää siivota accordionOpen-tagit pois.
+         */
+        function setAccordion(mode) {
+          var obj = scope.arviointi;
+          _.each(obj, function (kohdealue) {
+            kohdealue.accordionOpen = mode;
+            _.each(kohdealue.arvioinninKohteet, function (kohde) {
+              kohde.accordionOpen = mode;
+            });
+          });
+        }
+
+        function accordionState() {
+          var obj = _.first(scope.arviointi);
+          return obj && obj.accordionOpen;
+        }
+
+        scope.toggleAll = function () {
+          setAccordion(!accordionState());
+        };
+
+        setAccordion(true);
       }
     };
   })

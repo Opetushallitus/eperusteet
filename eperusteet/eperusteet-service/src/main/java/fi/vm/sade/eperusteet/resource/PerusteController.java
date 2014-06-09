@@ -1,12 +1,29 @@
+/*
+ * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+ *
+ * This program is free software: Licensed under the EUPL, Version 1.1 or - as
+ * soon as they will be approved by the European Commission - subsequent versions
+ * of the EUPL (the "Licence");
+ *
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * European Union Public Licence for more details.
+ */
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import java.util.List;
@@ -21,7 +38,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import static org.springframework.web.bind.annotation.RequestMethod.*;
+
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -76,6 +95,24 @@ public class PerusteController {
     @ResponseBody
     public ResponseEntity<RakenneModuuliDto> getRakenne(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
         return new ResponseEntity<>(service.getTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi)), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/rakenne/{id}/versiot", method = GET)
+    @ResponseBody
+    public List<Revision> getRakenneVersiot(@PathVariable("id") final Long id) {
+    	LOG.debug("get rakenne versio: " + id);
+    	return service.getRakenneVersiot(id);
+    }
+    
+    @RequestMapping(value = "/rakenne/{id}/versio/{versioId}", method = GET)
+    @ResponseBody
+    public ResponseEntity<RakenneModuuliDto> getRakenneVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
+    	LOG.debug("get rakenne #{} versio #{}", id, versioId);
+    	RakenneModuuliDto t = service.getRakenneVersio(id, versioId);
+        if (t == null) {
+        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/tutkinnonosat", method = GET)
@@ -144,6 +181,25 @@ public class PerusteController {
         return service.updateTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), rakenne);
     }
 
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko", method = GET)
+    @ResponseBody
+    public ResponseEntity<LukkoDto> getLock(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        LukkoDto lock = service.getLock(id, Suoritustapakoodi.of(suoritustapakoodi));
+        return new ResponseEntity<>(lock, lock == null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+    }
+
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko", method = {POST, PUT})
+    @ResponseBody
+    public LukkoDto lock(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        return service.lock(id, Suoritustapakoodi.of(suoritustapakoodi));
+    }
+
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko", method = DELETE)
+    @ResponseBody
+    public void unlock(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        service.unlock(id, Suoritustapakoodi.of(suoritustapakoodi));
+    }
+
     /**
      * Luo perusteeseen suoritustavan alle tyhjän perusteenosan
      *
@@ -156,7 +212,6 @@ public class PerusteController {
     public ResponseEntity<PerusteenSisaltoViiteDto> addSisalto(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa) {
-
         return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), null), HttpStatus.CREATED);
     }
 
@@ -166,7 +221,6 @@ public class PerusteController {
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa,
         @RequestBody PerusteenSisaltoViiteDto sisaltoViite) {
-
         return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), sisaltoViite), HttpStatus.CREATED);
     }
 

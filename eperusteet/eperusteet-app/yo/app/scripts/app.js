@@ -1,5 +1,21 @@
+/*
+ * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+ *
+ * This program is free software: Licensed under the EUPL, Version 1.1 or - as
+ * soon as they will be approved by the European Commission - subsequent versions
+ * of the EUPL (the "Licence");
+ *
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * European Union Public Licence for more details.
+ */
+
 'use strict';
-/* global _ */
+/* global _, moment */
 
 angular.module('eperusteApp', [
   'ngRoute',
@@ -10,12 +26,16 @@ angular.module('eperusteApp', [
   'pascalprecht.translate',
   'ui.bootstrap',
   'ui.utils',
-  'ui.sortable'
+  'ui.sortable',
+  'monospaced.elastic'
 ])
   .constant('SERVICE_LOC', '/eperusteet-service/api')
+  // .constant('ORGANISATION_SERVICE_LOC', '/organisaatio-service/rest')
+  .constant('ORGANISATION_SERVICE_LOC', '')
+  .constant('AUTHENTICATION_SERVICE_LOC', '/authentication-service/resources')
   .constant('SPINNER_WAIT', 100)
   .constant('NOTIFICATION_DELAY_SUCCESS', 2000)
-  .constant('NOTIFICATION_DELAY_WARNING', 5000)
+  .constant('NOTIFICATION_DELAY_WARNING', 8000)
   .factory('palvelinHakuInterceptor', function($injector, $q, palvelinhaunIlmoitusKanava) {
     var http;
     return {
@@ -63,7 +83,7 @@ angular.module('eperusteApp', [
       suffix: '.json'
     });
     $translateProvider.preferredLanguage('fi');
-
+    moment.lang('fi');
   })
   .config(function($httpProvider) {
     $httpProvider.interceptors.push(['$rootScope', '$q', 'SpinnerService', function($rootScope, $q, Spinner) {
@@ -104,7 +124,8 @@ angular.module('eperusteApp', [
         };
       }]);
   })
-  .run(function($rootScope, $modal, $location, $window, paginationConfig) {
+  .run(function($rootScope, $modal, $location, $window, $state, paginationConfig, Editointikontrollit,
+                Varmistusdialogi, Kaanna, virheService) {
     paginationConfig.firstText = '';
     paginationConfig.previousText = '';
     paginationConfig.nextText = '';
@@ -167,4 +188,41 @@ angular.module('eperusteApp', [
         }
       });
     });
+
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
+
+
+        if (Editointikontrollit.getEditMode() && fromState.name !== 'perusteprojekti.suoritustapa.tutkinnonosat') {
+          event.preventDefault();
+
+          var data = {toState: toState, toParams: toParams};
+          Varmistusdialogi.dialogi({successCb: function(data) {
+              Editointikontrollit.cancelEditing();
+              $state.go(data.toState, data.toParams);
+            }, data: data, otsikko: 'vahvista-liikkuminen', teksti: 'tallentamattomia-muutoksia',
+               lisaTeksti: 'haluatko-jatkaa', primaryBtn: 'poistu-sivulta'})();
+        }
+      });
+
+    $rootScope.$on('$stateChangeError', function(event, toState/*, toParams, fromState*/) {
+      console.error(event);
+      virheService.setData({state: toState.name});
+      $state.go('virhe');
+    });
+
+    $rootScope.$on('$stateNotFound', function(event, toState/*, toParams, fromState*/) {
+      console.error(event);
+      virheService.setData({state: toState.to});
+      $state.go('virhe');
+    });
+
+    // Jos käyttäjä editoi dokumenttia ja koittaa poistua palvelusta (reload, iltalehti...), niin varoitetaan, että hän menettää muutoksensa jos jatkaa.
+    $window.addEventListener('beforeunload', function(event) {
+      if (Editointikontrollit.getEditMode()) {
+        var confirmationMessage = Kaanna.kaanna('tallentamattomia-muutoksia');
+        (event || window.event).returnValue = confirmationMessage;
+        return confirmationMessage;
+      }
+    });
+
   });

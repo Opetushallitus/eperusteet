@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Controller: PerusteprojektiTiedotCtrl', function () {
+describe('Controller: ProjektinTiedotCtrl', function () {
 
   // load the controller's module
   beforeEach(module('eperusteApp'));
@@ -8,7 +8,8 @@ describe('Controller: PerusteprojektiTiedotCtrl', function () {
   var PerusteprojektiCtrl,
     scope,
     koulutusalaService, 
-    opintoalaService;
+    opintoalaService,
+    perusteprojektiTiedot;
     
   // Mock koulutusalaService
   beforeEach(module(function($provide) {
@@ -21,10 +22,7 @@ describe('Controller: PerusteprojektiTiedotCtrl', function () {
       }
     };
     $provide.value('koulutusalaService', koulutusalaService);
-  }));
-  
-  // Mock koulutusalaService
-  beforeEach(module(function($provide) {
+    
     opintoalaService = {
       haeOpintoalat: function() {
         return [];
@@ -34,12 +32,19 @@ describe('Controller: PerusteprojektiTiedotCtrl', function () {
       }
     };
     $provide.value('opintoalaService', opintoalaService);
+    
+    perusteprojektiTiedot = {
+      getProjekti: function () {return {};},
+      getPeruste: function () {return {};},
+      getSisalto: function () {return {};}
+    };
+    $provide.value('perusteprojektiTiedot', perusteprojektiTiedot);
   }));
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
-    PerusteprojektiCtrl = $controller('PerusteprojektiTiedotCtrl', {
+    PerusteprojektiCtrl = $controller('ProjektinTiedotCtrl', {
       $scope: scope
     });
   }));

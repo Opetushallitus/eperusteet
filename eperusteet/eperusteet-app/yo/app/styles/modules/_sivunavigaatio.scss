@@ -1,4 +1,5 @@
 $sivunavi-leveys: 280px;
+$sivunavi-takaisin-korkeus: 50px;
 
 .sivunavi-wrapper {
   margin-left: 0;
@@ -30,11 +31,15 @@ $sivunavi-leveys: 280px;
   .sivunavi-takaisin {
     width: $sivunavi-leveys;
     float: left;
+    .glyphicon {
+      color: black;
+    }
+    height: $sivunavi-takaisin-korkeus;
   }
 
-  .sivunavi, .sivunavi-takaisin {
+  .sivunavi {
    a {
-      border-radius: 0;
+      @include borderradius(0);
       & *:hover {
         text-decoration: none;
       }
@@ -105,7 +110,7 @@ $sivunavi-leveys: 280px;
       float: none;
     }
     .sivunavi-sisalto {
-      margin: 0 0 0 30px;
+      margin: 0 0 50px 30px;
     }
   }
 
@@ -123,8 +128,22 @@ $sivunavi-leveys: 280px;
       float: left;
     }
     .sivunavi-sisalto {
-      margin: 0 0 0 $sivunavi-leveys + 30px;
-      overflow: hidden;
+      margin: $sivunavi-takaisin-korkeus 0 50px $sivunavi-leveys + 80px;
+      overflow: visible;
     }
+  }
+}
+
+.sivunavi-sisalto.disable {
+  margin-left: 0;
+  margin-top: 0;
+}
+
+.sivunavi-wrapper.osiot-piilossa {
+  .sivunavi-sisempi-wrapper {
+    width: 100%;
+  }
+  .sivunavi-sisalto {
+    margin-left: 0;
   }
 }

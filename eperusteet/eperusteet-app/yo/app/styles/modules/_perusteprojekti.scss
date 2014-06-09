@@ -15,18 +15,18 @@ European Union Public Licence for more details.
 */
 $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 .project-header {
+  h2 {
+    margin-top: 0;
+    font-weight: 700;
+  }
   .statusbadge {
     float:left;
-    margin: 20px;
-    margin-top: 0;
+    margin-right: 14px;
   }
-  margin-bottom: 40px;
+  margin-bottom: 25px;
   position: relative;
   background-color: rgba(20, 158, 203, 0.06);
   border: $project-header-border;
-  h5 {
-    display: inline;
-  }
   .headernavi {
     position: absolute;
     right: 0;
@@ -68,11 +68,19 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 }
 
 .project-otsikkotiedot {
-  margin-left: 20px;
+  margin-left: 25px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  table {
+    color: $secondary-lighter;
+    th {
+      padding-right: 5px;
+    }
+  }
 }
 
 .uusi-projekti-header {
-    padding: 20px;
+  padding: 20px;
 }
 
 .main-content .row {
@@ -81,8 +89,9 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 }
 
 .main-content .tutkinnonsisalto-list {
-    padding: 0;
-    list-style: none;
+  padding: 0;
+  list-style: none;
+  margin-bottom: 40px;
 }
 .main-content .list-element {
 	position: relative;
@@ -90,6 +99,7 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 	border-radius: 2px;
 	padding: 20px 20px 20px 45px;
 	margin-top: 20px;
+  cursor: pointer;
 }
 .main-content .list-element:hover,
 .main-content .li:hover {
@@ -99,10 +109,6 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 	display: inline;
 	margin-left: 20px;
 	margin-top: 5px;
-}
-.main-content  h4,
-.main-content p {
-
 }
 .main-content .list-element a.next,
 .main-content a.next {
@@ -130,20 +136,6 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 .main-content ul.sub-items li span.glyphicon.next {
 	position: relative;
 	right: 10px;
-}
-
-
-.main-content span.glyphicon-remove {
-    color: red;
-}
-.main-content span.glyphicon-remove.larger {
-    font-size: 21px;
-    padding: 2px;
-}
-
-.main-content span.glyphicon-remove.smaller {
-    font-size: 16px;
-    padding: 5px;
 }
 
 .form-area {
@@ -207,4 +199,12 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   .confirmation {
     font-size: 125%;
   }
+}
+
+.tutkinto-sisalto {
+  max-width: 900px;
+  margin-top: 30px;
+  margin-bottom: 100px;
+  margin-left: auto;
+  margin-right: auto;
 }

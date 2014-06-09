@@ -40,35 +40,17 @@ button {
   }
 }
 
-.jarjestelmavirhe {
-  min-height: 60px;
-  background: beige;
-  border-radius: 5px;
+/* ikoni + linkkiteksti */
+a.iconlink > .glyphicon {
+  margin-right: 5px;
 }
 
-.jarjestelmavirhe-kuva {
-  margin-top: 1%;
-  margin-left: 3%;
-  margin-right: 32px;
-  position: relative;
-  width: 65px;
-  height: 64px;
-  display: inline-block;
-  background: #222;
-  opacity: 0.2;
-  float: left;
+/* animointia varten */
+.ng-hide-add, .ng-hide-remove {
+  display: block !important;
 }
 
-.jarjestelmavirhe-viesti {
-  margin-left: 128px;
-  min-height: 60px;
-}
-
-.jarjestelmavirhe-ok {
-  margin-top: 12px;
-  margin-left: 50%;
-}
-
-.jarjestelmavirhe-ok button {
-  width: 60px;
+.editointi-wrapper {
+  margin-top: 20px;
+  margin-bottom: 50px;
 }

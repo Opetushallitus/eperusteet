@@ -23,7 +23,7 @@
         </div>
       </td>
       <td>
-        {{ ot.nimi.fi }}
+        {{ ot.nimi | kaanna }}
         <br>
         <div ng-show="ot.$syy.length > 0" class="alert alert-danger">
           <div ng-repeat="syy in ot.$syy">
@@ -45,7 +45,7 @@
       </td>
       <td class="osatutkintoid">{{ ot.koodiUri }}</td>
       <td>
-        <a target="_blank" ui-sref="muokkaus.vanha({ perusteenOsanId: ot.id, perusteenOsanTyyppi: 'tutkinnonosa' })">{{ ot.nimi.fi }}</a>
+        <a target="_blank" ui-sref="muokkaus.vanha({ perusteenOsanId: ot.id, perusteenOsanTyyppi: 'tutkinnonosa' })">{{ ot.nimi | kaanna }}</a>
       </td>
       <td class="text-right"></td>
     </tr>
@@ -68,8 +68,8 @@
       <th translate>syy</th>
     </tr>
     <tr ng-repeat="error in uploadErrors" class="danger">
-      <td>{{ error.name.fi }}</td>
-      <td>{{ error.message }}</td>
+      <td>{{ error.name | kaanna }}</td>
+      <td>{{ error.message | kaanna }}</td>
     </tr>
   </table>
 </div>

@@ -13,16 +13,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .directive('formfield', function ($parse) {
     var uniqueId = 0;
     return {
       template: '<div class="form-group">' +
-        '<label class="col-sm-3 control-label">{{label | kaanna}}</label>' +
+        '<label class="col-sm-3 control-label">{{label | kaanna}}{{ postfix }}</label>' +
         '<div class="input-group col-sm-9">' +
-        '<input ng-if="!options" ng-class="inputClasses()" ng-model="input.model" ng-change="updateModel()" type="{{type}}">' +
+        '<numberinput luokka="form-control" ng-if="!options && !isObject && type===&quot;number&quot;" name={{name}} data="input.model" min={{min}} max={{max}} form=form></numberinput>' +
+        '<input ng-if="!options && !isObject && type!==&quot;number&quot;" ng-class="inputClasses()" ng-model="input.model" ng-change="updateModel()" type="{{type}}">' +
+        '<span ng-if="!options && isObject">' +
+        '  <ml-input ml-data="input.model" ng-model="input.model" ng-change="updateModel()"></ml-input>' +
+        '</span>' +
         '<select ng-if="options" class="form-control" ng-model="input.model" ng-change="updateModel()"' +
         'ng-options="obj.value as obj.label for obj in options">' +
         '</select>' +
@@ -33,9 +39,17 @@ angular.module('eperusteApp')
         label: '@',
         type: '@',
         options: '=?',
-        modelVar: '@'
+        modelVar: '@',
+        form: '=',
+        min: '@',
+        max: '@',
+        name: '@'
       },
-      link: function (scope, element) {
+      link: function (scope, element, attrs) {
+        scope.postfix = '';
+        attrs.$observe('required', function(value) {
+          if (value) { scope.postfix = '*'; }
+        });
         scope.inputClasses = function () {
           var classes = [];
           if (scope.type !== 'checkbox') {
@@ -50,6 +64,7 @@ angular.module('eperusteApp')
         var getter = $parse(scope.modelVar);
         scope.input = {};
         scope.input.model = getter(scope.ngModel);
+        scope.isObject = _.isObject(scope.input.model);
         scope.updateModel = function() {
           getter.assign(scope.ngModel, scope.input.model);
         };

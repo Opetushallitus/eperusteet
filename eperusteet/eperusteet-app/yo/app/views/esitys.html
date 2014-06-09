@@ -37,7 +37,7 @@ European Union Public Licence for more details.
 
     <script type="text/ng-template"  id="lapset_renderer.html">
       <div ng-show="onkoSuodatettu(lapsi.perusteenOsa.nimi._id)">
-          <esitys-otsikko id="{{lapsi.perusteenOsa.id}}">{{lapsi.perusteenOsa.nimi['fi']}}</esitys-otsikko>
+          <esitys-otsikko id="{{lapsi.perusteenOsa.id}}">{{lapsi.perusteenOsa.nimi | kaanna}}</esitys-otsikko>
           <div ng-bind-html="lapsi.perusteenOsa.teksti.fi"></div>
           <div ng-repeat="lapsi in lapsi.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
       </div>
@@ -67,8 +67,8 @@ European Union Public Licence for more details.
       Päiväys: {{peruste.paivays|date:'dd.MM.yyyy'}} <br>
     </p>
 
-    <h2 id="{{peruste.rakenne.perusteenOsa.id}}">{{peruste.rakenne.perusteenOsa.nimi.fi}}</h2>
-    <p ng-bind-html="peruste.rakenne.perusteenOsa.teksti.fi"></p>
+    <h2 id="{{peruste.rakenne.perusteenOsa.id}}">{{peruste.rakenne.perusteenOsa.nimi | kaanna}}</h2>
+    <p ng-bind-html="peruste.rakenne.perusteenOsa.teksti | kaanna"></p>
     <div ng-repeat="lapsi in peruste.rakenne.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
 
     <script type="text/ng-template" id='lehtirenderer.html'>

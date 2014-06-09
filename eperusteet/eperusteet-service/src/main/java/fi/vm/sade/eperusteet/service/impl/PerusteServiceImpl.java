@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+ *
+ * This program is free software: Licensed under the EUPL, Version 1.1 or - as
+ * soon as they will be approved by the European Commission - subsequent versions
+ * of the EUPL (the "Licence");
+ *
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * European Union Public Licence for more details.
+ */
 package fi.vm.sade.eperusteet.service.impl;
 
 import com.google.common.base.Function;
@@ -14,6 +29,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.EntityReference;
 import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PageDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
@@ -27,8 +43,11 @@ import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
+import fi.vm.sade.eperusteet.repository.RakenneRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
+import fi.vm.sade.eperusteet.service.LockManager;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.SuoritustapaService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -105,6 +124,11 @@ public class PerusteServiceImpl implements PerusteService {
     private PerusteenOsaRepository perusteenOsaRepository;
     @Autowired
     private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
+    @Autowired
+    private LockManager lockManager;
+    @Autowired
+    private RakenneRepository rakenneRepository;
+
 
     @Override
     @Transactional(readOnly = true)
@@ -201,7 +225,6 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional(readOnly = true)
     public RakenneModuuliDto getTutkinnonRakenne(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
         Peruste peruste = perusteet.findOne(perusteid);
-        LOG.debug(suoritustapakoodi.toString());
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         RakenneModuuli rakenne = suoritustapa.getRakenne();
         if (rakenne == null) {
@@ -210,6 +233,22 @@ public class PerusteServiceImpl implements PerusteService {
         }
         return mapper.map(rakenne, RakenneModuuliDto.class);
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<Revision> getRakenneVersiot(Long rakenneId) {
+        if (!rakenneRepository.exists(rakenneId)) {
+            throw new EntityNotFoundException("Rakennetta ei löytynyt id:llä: " + rakenneId);
+        }
+        return rakenneRepository.getRevisions(rakenneId);
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public RakenneModuuliDto getRakenneVersio(Long id, Integer versioId) {
+        return mapper.map(rakenneRepository.findRevision(id, versioId), RakenneModuuliDto.class);
+    }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -227,17 +266,21 @@ public class PerusteServiceImpl implements PerusteService {
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, RakenneModuuliDto rakenne) {
 
         Suoritustapa suoritustapa = getSuoritustapa(perusteId, suoritustapakoodi);
+        lockManager.ensureLockedByAuthenticatedUser(suoritustapa.getId());
 
         final Map<EntityReference, TutkinnonOsaViite> uniqueIndex = Maps.uniqueIndex(suoritustapa.getTutkinnonOsat(), IndexFunction.INSTANCE);
         rakenne.foreach(new VisitorImpl(uniqueIndex, maxRakenneDepth));
         RakenneModuuli moduuli = mapper.map(rakenne, RakenneModuuli.class);
 
         if (!moduuli.equals(suoritustapa.getRakenne())) {
-            em.persist(moduuli);
-            if (suoritustapa.getRakenne() != null) {
-                em.remove(suoritustapa.getRakenne());
+            RakenneModuuli current = suoritustapa.getRakenne();
+            if (current != null) {
+                current.mergeState(moduuli);
+            } else {
+                current = moduuli;
+                suoritustapa.setRakenne(current);
             }
-            suoritustapa.setRakenne(moduuli);
+            em.persist(current);
         }
         return mapper.map(moduuli, RakenneModuuliDto.class);
     }
@@ -246,9 +289,14 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional
     public void removeTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, Long osaId) {
         Suoritustapa suoritustapa = getSuoritustapa(id, suoritustapakoodi);
-        Set<TutkinnonOsaViite> tutkinnonOsat = suoritustapa.getTutkinnonOsat();
-        TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osaId);
-        tutkinnonOsat.remove(viite);
+        lockManager.lock(suoritustapa.getId());
+        try {
+            Set<TutkinnonOsaViite> tutkinnonOsat = suoritustapa.getTutkinnonOsat();
+            TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osaId);
+            tutkinnonOsat.remove(viite);
+        } finally {
+            lockManager.unlock(suoritustapa.getId());
+        }
     }
 
     @Override
@@ -360,6 +408,24 @@ public class PerusteServiceImpl implements PerusteService {
         return mapper.map(uusiViite, PerusteenSisaltoViiteDto.class);
     }
 
+    @Override
+    public LukkoDto lock(Long id, Suoritustapakoodi suoritustapakoodi) {
+        Suoritustapa suoritustapa = getSuoritustapa(id, suoritustapakoodi);
+        return LukkoDto.of(lockManager.lock(suoritustapa.getId()));
+    }
+
+    @Override
+    public void unlock(Long id, Suoritustapakoodi suoritustapakoodi) {
+        Suoritustapa suoritustapa = getSuoritustapa(id, suoritustapakoodi);
+        lockManager.unlock(suoritustapa.getId());
+    }
+
+    @Override
+    public LukkoDto getLock(Long id, Suoritustapakoodi suoritustapakoodi) {
+        Suoritustapa suoritustapa = getSuoritustapa(id, suoritustapakoodi);
+        return LukkoDto.of(lockManager.getLock(suoritustapa.getId()));
+    }
+
     /**
      * Lämmittää tyhjään järjestelmään koodistosta löytyvät koulutukset.
      *
@@ -380,7 +446,6 @@ public class PerusteServiceImpl implements PerusteService {
             Peruste peruste;
 
             for (KoodistoKoodiDto tutkinto : tutkinnot) {
-                LOG.info("koodiUri: " + tutkinto.getKoodiUri());
                 if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus")
                     && (koulutusRepo.findOneByKoulutuskoodi(tutkinto.getKoodiUri()) == null)) {
                     // Haetaan erikoistapausperusteet, jotka kuvaavat kahden eri koulutusalan tutkinnot
@@ -439,7 +504,8 @@ public class PerusteServiceImpl implements PerusteService {
 
         koulutus.setKoulutuskoodi(tutkinto.getKoodiUri());
         // Haetaan joka tutkinnolle alarelaatiot ja lisätään tarvittavat tiedot koulutus entityyn
-        koulutusAlarelaatiot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + "/" + tutkinto.getKoodiUri(), KoodistoKoodiDto[].class);
+        koulutusAlarelaatiot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + "/"
+            + tutkinto.getKoodiUri(), KoodistoKoodiDto[].class);
         koulutus.setKoulutusalakoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, KOULUTUSALALUOKITUS));
         koulutus.setOpintoalakoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, OPINTOALALUOKITUS));
         return koulutus;
@@ -474,15 +540,9 @@ public class PerusteServiceImpl implements PerusteService {
      */
     private Set<Suoritustapa> luoSuoritustavat(String koulutustyyppiUri) {
         Set<Suoritustapa> suoritustavat = new HashSet<>();
-
-        Suoritustapa suoritustapa = new Suoritustapa();
-        suoritustapa.setSuoritustapakoodi(Suoritustapakoodi.NAYTTO);
-        suoritustavat.add(suoritustapa);
-
+        suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO));
         if (koulutustyyppiUri.equals(KOULUTUSTYYPPI_URIT[0])) {
-            suoritustapa = new Suoritustapa();
-            suoritustapa.setSuoritustapakoodi(Suoritustapakoodi.OPS);
-            suoritustavat.add(suoritustapa);
+            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS));
         }
         return suoritustavat;
     }
@@ -501,9 +561,9 @@ public class PerusteServiceImpl implements PerusteService {
         peruste.setTutkintokoodi(koulutustyyppi);
         peruste.setTila(Tila.LUONNOS);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
-        suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoRoot(Suoritustapakoodi.NAYTTO));
+        suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO));
         if (koulutustyyppi != null && koulutustyyppi.equals(KOULUTUSTYYPPI_URIT[0])) {
-            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoRoot(Suoritustapakoodi.OPS));
+            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS));
         }
         peruste.setSuoritustavat(suoritustavat);
 

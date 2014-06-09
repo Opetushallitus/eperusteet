@@ -13,7 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 'use strict';
+
 angular.module('eperusteApp')
   .factory('palvelinhaunIlmoitusKanava', ['$rootScope', function($rootScope) {
       // ilmoitussanomat

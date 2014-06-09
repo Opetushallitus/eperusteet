@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+ *
+ * This program is free software: Licensed under the EUPL, Version 1.1 or - as
+ * soon as they will be approved by the European Commission - subsequent versions
+ * of the EUPL (the "Licence");
+ *
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * European Union Public Licence for more details.
+ */
+
 'use strict';
 /* global _ */
 
@@ -26,6 +42,12 @@ angular.module('eperusteApp')
         suoritustapa: '@suoritustapa'
       });
   })
+  .factory('RakenneVersiot', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/rakenne/:rakenneId/versiot');
+  })
+  .factory('RakenneVersio', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/rakenne/:rakenneId/versio/:versioId');
+  })
   .factory('Perusteet', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteenId',
       {
@@ -47,7 +69,7 @@ angular.module('eperusteApp')
         add: {method: 'PUT'}
     });
   })
-  .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet, TreeCache, PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {
+  .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet, PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {
     function haeRakenne(perusteProjektiId, suoritustapa, success) {
       var response = {};
 
@@ -78,37 +100,78 @@ angular.module('eperusteApp')
       });
     }
 
-    function tallennaRakenne(rakenne, id, suoritustapa, success) {
-      var after = _.after(_.size(rakenne.tutkinnonOsat) + 1, success);
+    function kaikilleRakenteille(rakenne, f) {
+      if (!rakenne || !f) { return; }
+      _.forEach(rakenne.osat, function(r) {
+        kaikilleRakenteille(r, f);
+        f(r);
+      });
+    }
 
+    function tallennaRakenne(rakenne, id, suoritustapa, success, after) {
+      success = success || angular.noop;
+      after = after || angular.noop;
       PerusteRakenteet.save({
         perusteenId: id,
         suoritustapa: suoritustapa
-      }, rakenne.rakenne, function() { after(); });
+      }, rakenne.rakenne,
+      function() {
+        after();
+        success();
+      },
+      function(err) {
+        after();
+        Notifikaatiot.serverCb(err);
+      });
+    }
 
+    function tallennaTutkinnonosat(rakenne, id, suoritustapa, success) {
+      success = success || function() {};
+      var after = _.after(_.size(rakenne.tutkinnonOsat), success);
       _.forEach(_.values(rakenne.tutkinnonOsat), function(osa) {
         PerusteTutkinnonosa.save({
           perusteenId: id,
           suoritustapa: suoritustapa,
           osanId: osa.id
-        }, osa, function() { after(); });
+        },
+        osa,
+        after(),
+        Notifikaatiot.serverCb);
       });
     }
 
-    function poistaTutkinnonOsaViite(osa, _peruste, suoritustapa, success) {
+    function validoiRakennetta(rakenne, testi) {
+      if (testi(rakenne)) {
+        return true;
+      }
+      else if (rakenne.osat) {
+        var löyty = false;
+        _.forEach(rakenne.osat, function(osa) {
+          if (validoiRakennetta(osa, testi)) {
+            löyty = true;
+          }
+        });
+        return löyty;
+      }
+      return false;
+    }
+
+    function poistaTutkinnonOsaViite(osaId, _peruste, suoritustapa, success) {
       PerusteTutkinnonosa.remove({
           perusteenId: _peruste,
           suoritustapa: suoritustapa,
-          osanId: osa.id
+          osanId: osaId
       }, function(res) {
-        console.log(res);
         success(res);
       }, Notifikaatiot.serverCb);
     }
 
     return {
       hae: haeRakenne,
-      tallenna: tallennaRakenne,
-      poistaTutkinnonOsaViite: poistaTutkinnonOsaViite
+      tallennaRakenne: tallennaRakenne,
+      tallennaTutkinnonosat: tallennaTutkinnonosat,
+      poistaTutkinnonOsaViite: poistaTutkinnonOsaViite,
+      kaikilleRakenteille: kaikilleRakenteille,
+      validoiRakennetta: validoiRakennetta
     };
   });

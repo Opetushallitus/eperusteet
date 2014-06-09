@@ -15,12 +15,15 @@
  */
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
+import fi.vm.sade.eperusteet.domain.Mergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
@@ -28,14 +31,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
-
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
 @DiscriminatorValue("RM")
 @Audited
 @EqualsAndHashCode(callSuper = true)
-public class RakenneModuuli extends AbstractRakenneOsa {
+public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<RakenneModuuli> {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter
@@ -51,17 +53,31 @@ public class RakenneModuuli extends AbstractRakenneOsa {
     @Setter
     private MuodostumisSaanto muodostumisSaanto;
 
-    @OneToMany(mappedBy = "moduuli", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderColumn
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(name = "rakennemoduuli_rakenneosa",
+               joinColumns = {
+                   @JoinColumn(name = "rakennemoduuli_id")},
+               inverseJoinColumns = {
+                   @JoinColumn(name = "rakenneosa_id")})
+    @OrderColumn(name = "osat_order")
     @Getter
     private List<AbstractRakenneOsa> osat = new ArrayList<>();
 
     public void setOsat(List<AbstractRakenneOsa> osat) {
         this.osat.clear();
         if (osat != null) {
-            for ( AbstractRakenneOsa o : osat ) {
-                o.setModuuli(this);
-                this.osat.add(o);
+            this.osat.addAll(osat);
+        }
+    }
+    
+    @Override
+    public void mergeState(RakenneModuuli moduuli) {
+        if (moduuli != null) {
+            this.setOsat(moduuli.osat);
+            if (this.muodostumisSaanto != null) {
+                this.muodostumisSaanto.mergeState(moduuli.getMuodostumisSaanto());
+            } else {
+                this.muodostumisSaanto = moduuli.getMuodostumisSaanto();
             }
         }
     }

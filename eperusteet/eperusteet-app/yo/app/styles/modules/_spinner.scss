@@ -4,7 +4,6 @@ $spinner-transform-y: 14px;
 #global-spinner {
   &.ng-hide-add, &.ng-hide-remove {
     transition: opacity 0.2s;
-    display: block !important;
   }
   &.ng-hide-add.ng-hide-add-active, &.ng-hide-remove {
     opacity: 0;
@@ -13,7 +12,8 @@ $spinner-transform-y: 14px;
     opacity: 0.6;
   }
 
-  position: absolute;
+  position: fixed;
+  z-index: 1050;
   top: 20px;
   right: 20px;
   opacity: 0.6;

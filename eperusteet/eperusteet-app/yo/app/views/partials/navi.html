@@ -1,9 +1,8 @@
 <ol class="breadcrumb">
-  <!-- Kovakoodattu kotisivu -->
   <li><a ui-sref="aloitussivu"><span class="glyphicon glyphicon-home"></span></a></li>
-  <!-- naviBase + naviRest -->
   <li ng-repeat="np in navigaatiopolku">
-    <a ng-hide="$last" ng-href="{{ np.url}}">{{ np.arvo | kaanna }}</a>
+    <a ng-hide="$last || np.url === ''" href="{{ np.url }}">{{ np.arvo }}</a>
+    <span ng-hide="$last || np.url !== ''">{{ np.arvo }}</span>
     <span ng-show="$last">{{ np.arvo | kaanna }}</span>
   </li>
 </ol>

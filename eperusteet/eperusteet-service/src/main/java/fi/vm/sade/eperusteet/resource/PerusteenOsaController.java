@@ -1,11 +1,30 @@
+/*
+ * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+ *
+ * This program is free software: Licensed under the EUPL, Version 1.1 or - as
+ * soon as they will be approved by the European Commission - subsequent versions
+ * of the EUPL (the "Licence");
+ *
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * European Union Public Licence for more details.
+ */
 package fi.vm.sade.eperusteet.resource;
 
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.repository.version.Revision;
+import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
+import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +40,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
-import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
-import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
-import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.repository.version.Revision;
-import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
-import fi.vm.sade.eperusteet.service.PerusteenOsaService;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @Controller
 @RequestMapping("/perusteenosat")
@@ -64,18 +79,18 @@ public class PerusteenOsaController {
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}/revisions", method = GET)
+    @RequestMapping(value = "/{id}/versiot", method = GET)
     @ResponseBody
-    public List<Revision> getRevisions(@PathVariable("id") final Long id) {
+    public List<Revision> getVersiot(@PathVariable("id") final Long id) {
     	LOG.debug("get revisions");
-    	return service.getRevisions(id);
+    	return service.getVersiot(id);
     }
 
-    @RequestMapping(value = "/{id}/revisions/{revisionId}", method = GET)
+    @RequestMapping(value = "/{id}/versio/{versioId}", method = GET)
     @ResponseBody
-    public ResponseEntity<PerusteenOsaDto> getRevision(@PathVariable("id") final Long id, @PathVariable("revisionId") final Integer revisionId) {
-    	LOG.debug("get #{} revision #{}", id, revisionId);
-    	PerusteenOsaDto t = service.getRevision(id, revisionId);
+    public ResponseEntity<PerusteenOsaDto> getVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
+    	LOG.debug("get #{} revision #{}", id, versioId);
+    	PerusteenOsaDto t = service.getVersio(id, versioId);
         if (t == null) {
         	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -91,13 +106,11 @@ public class PerusteenOsaController {
     }
 
 
-
     @RequestMapping(method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public ResponseEntity<TutkinnonOsaDto> add(@RequestBody TutkinnonOsaDto tutkinnonOsaDto, UriComponentsBuilder ucb) {
-        LOG.info("add {}", tutkinnonOsaDto);
-        tutkinnonOsaDto = service.save(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+        tutkinnonOsaDto = service.add(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
         return new ResponseEntity<>(tutkinnonOsaDto, buildHeadersFor(tutkinnonOsaDto.getId(), ucb), HttpStatus.CREATED);
     }
 
@@ -105,15 +118,13 @@ public class PerusteenOsaController {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public ResponseEntity<TekstiKappaleDto> add(@RequestBody TekstiKappaleDto tekstikappaleDto, UriComponentsBuilder ucb) {
-        LOG.info("add {}", tekstikappaleDto);
-        tekstikappaleDto = service.save(tekstikappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
+        tekstikappaleDto = service.add(tekstikappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
         return new ResponseEntity<>(tekstikappaleDto, buildHeadersFor(tekstikappaleDto.getId(), ucb), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = POST, params = PerusteenOsaMappings.IS_TEKSTIKAPPALE_PARAM)
     @ResponseBody
     public TekstiKappaleDto update(@PathVariable("id") final Long id, @RequestBody TekstiKappaleDto tekstiKappaleDto) {
-        LOG.info("update {}", tekstiKappaleDto);
         tekstiKappaleDto.setId(id);
         return service.update(tekstiKappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
     }
@@ -121,16 +132,33 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}", method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
     @ResponseBody
     public TutkinnonOsaDto update(@PathVariable("id") final Long id, @RequestBody TutkinnonOsaDto tutkinnonOsaDto) {
-        LOG.info("update {}", tutkinnonOsaDto);
         tutkinnonOsaDto.setId(id);
         return service.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+    }
+
+    @RequestMapping(value = "/{id}/lukko", method = GET)
+    @ResponseBody
+    public ResponseEntity<LukkoDto> checkLock(@PathVariable("id") final Long id) {
+        LukkoDto lock = service.getLock(id);
+        return new ResponseEntity<>(lock, lock == null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+    }
+
+    @RequestMapping(value = "/{id}/lukko", method = {POST, PUT})
+    @ResponseBody
+    public LukkoDto lock(@PathVariable("id") final Long id) {
+        return service.lock(id);
+    }
+
+    @RequestMapping(value = "/{id}/lukko", method = DELETE)
+    @ResponseBody
+    public void unlock(@PathVariable("id") final Long id) {
+        service.unlock(id);
     }
 
     @RequestMapping(value = "/{id}", method = DELETE, consumes = "*/*")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void delete(@PathVariable final Long id) {
-        LOG.info("delete {}", id);
         service.delete(id);
     }
 

@@ -24,5 +24,5 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
  * @author harrik
  */
 public interface SuoritustapaService {
-    Suoritustapa createSuoritustapaWithSisaltoRoot(Suoritustapakoodi suoritustapakoodi);
+    Suoritustapa createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi suoritustapakoodi);
 }

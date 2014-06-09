@@ -1,0 +1,13 @@
+<div class="muokkaustiedot" ng-hide="editEnabled">
+  <ul ng-show="versiot.chosen">
+    <li><span>{{'muokattu-viimeksi' | translate}}</span>: {{lastModified() | aikaleima}}</li>
+    <li><span>{{'muokkaaja' | translate}}</span>: Erkki Esimerkki</li>
+  </ul>
+  <ul class="version-valinta">
+    <li>
+      <span>{{'versio' | translate}}</span>: <select ng-model="versiot.chosen" ng-options="ver.index for ver in versiot.list" ng-change="vaihdaVersio()"></select>
+    </li>
+    <li><a href="" translate ng-click="history()">nayta-versiohistoria</a></li>
+  </ul>
+  <hr>
+</div>

@@ -26,7 +26,7 @@ public abstract class AbstractRakenneOsaDto {
 
     public final void foreach(final Visitor visitor) {
         foreach(visitor, 0);
-    };
+    }
 
     protected abstract void foreach(final Visitor visitor,final int currentDepth);
 

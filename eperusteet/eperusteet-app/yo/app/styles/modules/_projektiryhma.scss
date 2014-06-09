@@ -44,7 +44,7 @@ $avatar-koko: 64px;
   cursor: pointer;
   width: 21px;
   height: 21px;
-  border-radius: 4px;
+  @include borderradius(4px);
   border: solid 1px #ccc;
   padding: 2px;
   position: absolute;

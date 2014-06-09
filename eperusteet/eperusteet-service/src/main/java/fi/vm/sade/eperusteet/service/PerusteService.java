@@ -18,12 +18,14 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -71,6 +73,10 @@ public interface PerusteService {
 
     @PreAuthorize("isAuthenticated()")
     RakenneModuuliDto updateTutkinnonRakenne(final Long perusteId, final Suoritustapakoodi suoritustapa, final RakenneModuuliDto rakenne);
+    
+    List<Revision> getRakenneVersiot(Long rakenneId);
+    
+    RakenneModuuliDto getRakenneVersio(Long id, Integer versioId);
 
     List<TutkinnonOsaViiteDto> getTutkinnonOsat(Long perusteid, Suoritustapakoodi suoritustapakoodi);
 
@@ -78,4 +84,10 @@ public interface PerusteService {
 
     @PreAuthorize("isAuthenticated()")
     String lammitys();
+
+    LukkoDto lock(final Long id, Suoritustapakoodi suoritustapakoodi);
+
+    void unlock(final Long id, Suoritustapakoodi suoritustapakoodi);
+
+    LukkoDto getLock(final Long id, Suoritustapakoodi suoritustapakoodi);
 }

@@ -50,7 +50,7 @@
         <property name="password" value="${eperusteet.ittestdb.password}"/>
     </bean>
 
-    <bean id="entityManager" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="dbinit">
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="dbinit">
         <property name="persistenceUnitName" value="eperusteet"/>
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="fi.vm.sade.eperusteet.domain"/>
@@ -79,7 +79,7 @@
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManager"/>
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
     <jpa:repositories base-package="fi.vm.sade.eperusteet.repository" factory-class="fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepositoryFactoryBean" />

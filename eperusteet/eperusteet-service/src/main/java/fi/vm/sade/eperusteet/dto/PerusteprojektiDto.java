@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Getter;
@@ -27,6 +28,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@JsonIgnoreProperties(value = "tila")
 public class PerusteprojektiDto implements Serializable {    
     private Long id;
     private String nimi;

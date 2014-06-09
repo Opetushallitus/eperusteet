@@ -1,0 +1,15 @@
+<h1 id="pikamenu-header" ng-transclude>
+</h1>
+<div id="tutkinnonosat-pikamenu-button" ng-show="!editEnabled" ng-click="pikamenu.opened = !pikamenu.opened">
+  <span class="glyphicon glyphicon-chevron-down"></span>
+</div>
+<div id="tutkinnonosat-pikamenu" ng-show="pikamenu.opened">
+  <div id="tutkinnonosat-pikamenu-list">
+    <ul class="list-group">
+      <li class="list-group-item" ng-repeat="(key, value) in rakenne.tutkinnonOsat">
+        <a ng-show="tutkinnonOsa.id != key" href="" ng-click="navigoiTutkinnonosaan(value)">{{value.nimi | kaanna:true}}</a>
+        <span class="active" ng-show="tutkinnonOsa.id == key">{{value.nimi | kaanna:true}}</span>
+      </li>
+    </ul>
+  </div>
+</div>

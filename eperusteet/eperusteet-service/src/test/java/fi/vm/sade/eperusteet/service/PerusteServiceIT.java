@@ -37,6 +37,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -50,9 +51,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.assertEquals;
 
-
 /**
  * Integraatiotesti muistinvaraista kantaa vasten.
+ *
  * @author jhyoty
  */
 @Transactional
@@ -99,6 +100,13 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
         p.setTila(Tila.VALMIS);
         repo.save(p);
+
+        perusteService.lock(peruste.getId(), Suoritustapakoodi.OPS);
+    }
+
+    @After
+    public void cleanUp() {
+        perusteService.unlock(peruste.getId(), Suoritustapakoodi.OPS);
     }
 
     @Test
@@ -133,12 +141,12 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         o2.setTutkinnonOsa(v2.getTutkinnonOsa());
         ryhma.setOsat(Arrays.<AbstractRakenneOsaDto>asList(o2));
 
-        rakenne.setOsat(Arrays.<AbstractRakenneOsaDto>asList(o1,ryhma));
+        rakenne.setOsat(Arrays.<AbstractRakenneOsaDto>asList(o1, ryhma));
 
         RakenneModuuliDto updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, rakenne);
 
         updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, updatedTutkinnonRakenne);
-        assertEquals(v1.getTutkinnonOsa(), ((RakenneOsaDto)updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsa());
+        assertEquals(v1.getTutkinnonOsa(), ((RakenneOsaDto) updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsa());
     }
 
     @Value("${fi.vm.sade.eperusteet.tutkinnonrakenne.maksimisyvyys}")
@@ -149,7 +157,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     public void addiningDeepTutkinnonRakenneShouldFail() {
 
         RakenneModuuliDto rakenne = new RakenneModuuliDto();
-        for ( int i = 0; i < maxDepth + 1; i++ ) {
+        for (int i = 0; i < maxDepth + 1; i++) {
             RakenneModuuliDto ryhma = new RakenneModuuliDto();
             ryhma.setOsat(Arrays.<AbstractRakenneOsaDto>asList(rakenne));
             rakenne = ryhma;
