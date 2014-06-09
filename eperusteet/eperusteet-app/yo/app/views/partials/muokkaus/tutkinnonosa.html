@@ -1,8 +1,11 @@
 <button ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="pull-right btn btn-default"><span class="glyphicon glyphicon-pencil"></span>{{'muokkaa' | translate}}</button>
 <a class="iconlink" href="" ui-sref="perusteprojekti.suoritustapa.tutkinnonosat"><span class="glyphicon glyphicon-chevron-left"></span>{{'tutkinnonosat' | translate}}</a>
 <pikamenu ng-if="tutkinnonOsa.$resolved">
-  <span ng-if="editEnabled">{{editableTutkinnonOsa.nimi | kaanna:true}}</span>
-  <span ng-if="!editEnabled">{{tutkinnonOsa.nimi | kaanna:true}}</span>
+  <span ng-if="editEnabled" edit-in-place="editableTutkinnonOsa.nimi"></span>
+  <span ng-if="!editEnabled">{{tutkinnonOsa.nimi | kaanna:true}}<span class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && rakenne.tutkinnonOsat[tutkinnonOsa.id] && rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus">
+      {{rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus}} {{rakenne.tutkinnonOsat[tutkinnonOsa.id].yksikko || '' | kaanna}}
+    </span>
+  </span>
   <button ng-if="editEnabled" class="btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsa.id].id)">
     <span class="glyphicon glyphicon-remove"></span>{{'poista' | translate}}
   </button>
@@ -10,23 +13,21 @@
 
 <versiotiedot ng-hide="editEnabled"></versiotiedot>
 
-<div class="well viitetiedot">
-  <div class="col-md-6">
-    <p ng-hide="editEnabled" ng-if="suoritustapa !== 'naytto' && rakenne.tutkinnonOsat[tutkinnonOsa.id] && rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus">
-      {{'tutkinnonosa-laajuus' | kaanna}}: {{rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus}} {{rakenne.tutkinnonOsat[tutkinnonOsa.id].yksikko || '' | kaanna}}
-    </p>
-    <div ng-show="editEnabled">
-      <form name="tutkinnonOsaHeaderForm" class="form-horizontal" role="form">
-        <div ng-if="suoritustapa !== 'naytto'" class="form-group">
-          <label class="control-label col-sm-2">{{ 'tutkinnonosa-laajuus' | kaanna }}</label>
-          <div class="col-sm-9">
-            <numberinput luokka="form-control" name="laajuus" my-model="viiteosa.laajuus" min="0" max="999" form="tutkinnonOsaHeaderForm"></numberinput>
-          </div>
-          <label class="control-label col-sm-1">{{ viiteosa.yksikko | kaanna }}</label>
-        </div>
-      </form>
-    </div>
+<form name="tutkinnonOsaHeaderForm" role="form">
+  <div ng-if="editEnabled && suoritustapa !== 'naytto'" class="stack">
+    <span>{{viiteosa.yksikko | kaanna}}</span>
+    <label>{{'tutkinnonosa-laajuus' | kaanna}}</label>
+    <numberinput name="laajuus" my-model="viiteosa.laajuus" min="0" max="999" form="tutkinnonOsaHeaderForm"></numberinput>
   </div>
-  <div class="clearfix"></div>
+</form>
+<div class="stack" ng-if="editEnabled">
+  <koodisto-select valmis="tuoKoodi"></koodisto-select>
+  <label>{{'muokkaus-tutkinnon-osan-koodi-header' | kaanna}}</label>
+  <input type="text" ng-model="editableTutkinnonOsa.koodiUri" editointi-kontrolli>
 </div>
+<div ng-if="!editEnabled">
+  <label>{{'muokkaus-tutkinnon-osan-koodi-header' | kaanna}}:</label><span> {{tutkinnonOsa.koodiUri || 'ei asetettu' | kaanna}}</span>
+</div>
+
+
 <kenttalistaus edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields"></kenttalistaus>

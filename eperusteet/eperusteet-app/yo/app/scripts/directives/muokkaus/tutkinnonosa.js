@@ -28,7 +28,7 @@ angular.module('eperusteApp')
       controller: function($scope, $state, $stateParams, $q, Navigaatiopolku,
         Editointikontrollit, PerusteenOsat, Editointicatcher, PerusteenRakenne,
         PerusteTutkinnonosa, TutkinnonOsaEditMode, $timeout, Varmistusdialogi,
-        SivunavigaatioService, VersionHelper, Lukitus) {
+        SivunavigaatioService, VersionHelper, Lukitus, MuokkausUtils) {
 
         $scope.suoritustapa = $stateParams.suoritustapa;
         $scope.rakenne = {};
@@ -39,7 +39,6 @@ angular.module('eperusteApp')
         PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
           $scope.rakenne = res;
           if (TutkinnonOsaEditMode.getMode()) {
-          //if (true) {
             $timeout(function () {
               $scope.muokkaa();
             }, 50);
@@ -50,20 +49,6 @@ angular.module('eperusteApp')
 
         $scope.fields =
           new Array({
-             path: 'nimi',
-             hideHeader: false,
-             localeKey: 'tutkinnon-osan-nimi',
-             type: 'editor-header',
-             localized: true,
-             mandatory: true,
-             order: 1
-           },{
-             path: 'koodiUri',
-             localeKey: 'tutkinnon-osan-koodi',
-             type: 'koodisto-select',
-             mandatory: true,
-             order: 2
-           },{
              path: 'tavoitteet',
              localeKey: 'tutkinnon-osan-tavoitteet',
              type: 'editor-area',
@@ -106,6 +91,10 @@ angular.module('eperusteApp')
              order: 5
            });
 
+        $scope.tuoKoodi = function(koodisto) {
+          MuokkausUtils.nestedSet($scope.editableTutkinnonOsa, 'koodiUri', ',', koodisto.koodi);
+        };
+
         $scope.editableTutkinnonOsa = {};
         $scope.editEnabled = false;
 
@@ -119,8 +108,8 @@ angular.module('eperusteApp')
             }
           });
         }
-        
-        
+
+
 
         function setupTutkinnonOsa(osa) {
           function successCb(res) {
@@ -175,7 +164,7 @@ angular.module('eperusteApp')
               }
 
               Editointicatcher.give(_.clone($scope.editableTutkinnonOsa));
-              
+
 
             },
             cancel: function() {

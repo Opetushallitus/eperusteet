@@ -69,7 +69,7 @@ angular.module('eperusteApp')
           }
         }
 
-        scope.suljeOsio = function() {
+        scope.suljeOsio = function($event) {
           // Jos kentässä on dataa, kysytään varmistus.
           var getValue = MuokkausUtils.nestedGet(scope.object, scope.field.path, '.');
           if (!_.isEmpty(getValue)) {
@@ -135,23 +135,6 @@ angular.module('eperusteApp')
             .attr('edit-enabled', 'editEnabled');
           }
 
-          else if (elementType === 'koodisto-select') {
-            scope.tuoKoodi = function(koodisto) {
-              MuokkausUtils.nestedSet(scope.object, scope.field.path, ',', koodisto.koodi);
-            };
-            element = angular.element('<div></div>').addClass('input-group')
-            .append(
-                angular.element('<input/>')
-                .addClass('form-control')
-                .attr('type', 'text')
-                .attr('ng-model', 'object.' + scope.field.path)
-                .attr('editointi-kontrolli', ''))
-            .append(
-                angular.element('<koodisto-select></koodisto-select>')
-                .addClass('input-group-btn')
-                .attr('valmis', 'tuoKoodi'));
-          }
-
           if(element !== null && scope.field.localized) {
             element.attr('localized', '');
           }
@@ -186,18 +169,25 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('vaihtoehtoisenKentanRaami', function($rootScope) {
+  .directive('vaihtoehtoisenKentanRaami', function() {
     return {
       template:
         '<div ng-transclude></div>' +
-        '<button ng-if="$parent.editEnabled" editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-click="suljeOsio()">' +
+        '<button ng-if="$parent.editEnabled" editointi-kontrolli type="button" class="poista-osio btn btn-default btn-xs" ng-click="suljeOsio($event)">' +
         '<span class="glyphicon glyphicon-remove"></span>{{\'poista-osio\' | translate}}</button>',
       restrict: 'E',
       transclude: true,
       scope: {
         osionNimi: '@',
-        suljeOsio: '&',
+        suljeOsio: '&'
       },
+      link: function (scope, element) {
+        scope.$watch('$parent.editEnabled', function () {
+          var button = element.find('button.poista-osio');
+          var header = angular.element('li[otsikko='+scope.$parent.field.localeKey+'] .osio-otsikko');
+          button.detach().appendTo(header);
+        });
+      }
     };
   })
   .directive('localized', function($rootScope, YleinenData)  {

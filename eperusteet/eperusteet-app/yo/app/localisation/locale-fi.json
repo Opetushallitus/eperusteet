@@ -266,12 +266,13 @@
     "nayta-versiohistoria": "Historia",
 
     "arviointi-lisatiedot-placeholder": "Arvioinnin sanallinen selitys tähän",
-    "arviointi-uusi-kohdealue": "Uusi kohdealue",
+    "arviointi-uusi-kohdealue": "Lisää kohdealue",
     "arviointi-uusi-kohdealue-placeholder": "Kohdealueen nimi",
-    "arviointi-uusi-kohde": "Uusi kohde",
+    "arviointi-uusi-kohde": "Lisää arvioinnin kohde",
     "arviointi-uusi-kohde-placeholder": "Kohteen nimi",
-    "arviointi-uusi-kriteeri": "Uusi kriteeri",
+    "arviointi-uusi-kriteeri": "Lisää rivi",
     "arviointi-uusi-kriteeri-placeholder": "Kriteerin teksti",
+    "arviointi-poista-kriteeri": "Poista rivi",
     "arviointi-asteikon-valinta": "Valitse arviointiasteikko",
 
     "arviointi-muokkaa-tekstikenttänä": "Muokkaa tekstikenttänä",

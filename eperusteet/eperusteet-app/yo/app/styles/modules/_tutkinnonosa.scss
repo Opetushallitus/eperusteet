@@ -63,8 +63,8 @@ ul.tutkinnonosat {
 }
 
 #pikamenu-header {
-  margin-bottom: 5px;
-  margin-top: 5px;
+  margin-bottom: 15px;
+  margin-top: 15px;
 }
 
 $pikamenu-max-height: 400px;
@@ -116,6 +116,9 @@ $pikamenu-max-height: 400px;
   cursor: pointer;
   font-size: 120%;
   color: $brand-primary;
+  .poista-osio {
+    margin-left: 10px;
+  }
 }
 
 #tutkinnon-osa-tiedot {
@@ -163,6 +166,9 @@ $pikamenu-max-height: 400px;
 
 .muokkaus-napit {
   padding-top: 6px;
+  &:hover {
+    text-decoration: none;
+  }
 }
 
 #muokattavat-kentat {
@@ -174,16 +180,12 @@ $pikamenu-max-height: 400px;
     border: 0px none;
     box-shadow: none;
   }
-  ul.ui-sortable li {
-    cursor: move;
-  }
-  ul.ui-sortable-disabled li {
-    cursor: default;
-  }
 }
 
 .arviointi-kohdealueet {
   box-shadow: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
   border: 0;
   .toggler {
 
@@ -192,6 +194,7 @@ $pikamenu-max-height: 400px;
 
 .arvioinnin-kohdealue {
   margin-bottom: 10px !important;
+  max-width: 900px;
   .panel-body .panel-heading {
     background-color: transparent;
     padding-bottom: 0px;
@@ -209,8 +212,46 @@ $pikamenu-max-height: 400px;
   border: 0px none;
   box-shadow: none;
   margin-left: 0px !important;
-  .list-group-item {
-    padding: 5px 5px;
+  .panel-body {
+    border: 0 !important;
+  }
+  table {
+    width: 100%;
+    td {
+      padding-left: 5px;
+    }
+    td.otsikko {
+      width: 25%;
+    }
+    td.dragger {
+      width: 5%;
+      font-size: 19px;
+      opacity: 0;
+      &.drag-enable {
+        opacity: 1;
+        cursor: move;
+      }
+    }
+    td.rivi {
+      p {
+        margin-bottom: 5px;
+        margin-top: 5px;
+        display: list-item;
+        list-style: disc;
+      }
+    }
+    td.toiminnot {
+      width: 20%;
+      & a {
+        line-height: 29px;
+      }
+    }
+    input {
+      font-size: 13px;
+      height: 28px;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
   }
   .taso-otsikko {
     padding-top: 5px;
@@ -219,6 +260,23 @@ $pikamenu-max-height: 400px;
   h4 {
     padding-top: 0;
   }
+  .kohdeotsikko {
+    display: inline-block;
+    width: 75%;
+  }
+}
+
+.muokkausnappi {
+  float: right;
+  color: $brand-primary !important;
+  &:hover {
+    color: black !important;
+    text-decoration: none !important;
+  }
+  span:hover {
+    text-decoration: none;
+  }
+  margin-left: 5px;
 }
 
 .muokkaustiedot {
