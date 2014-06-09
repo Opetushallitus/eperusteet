@@ -18,9 +18,12 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .controller('MuodostumisryhmaModalCtrl', function($scope, $modalInstance, ryhma, vanhempi, suoritustapa, Varmistusdialogi) {
+  .controller('MuodostumisryhmaModalCtrl', function($scope, $modalInstance, ryhma, vanhempi, suoritustapa, Varmistusdialogi, YleinenData) {
     $scope.vanhempi = vanhempi;
     $scope.suoritustapa = suoritustapa;
+    $scope.roolit = _.map(YleinenData.rakenneRyhmaRoolit, function(rooli) {
+      return { value: rooli, label: rooli };
+    });
 
     var msl = ryhma && ryhma.muodostumisSaanto && ryhma.muodostumisSaanto.laajuus ? ryhma.muodostumisSaanto.laajuus : null;
     var msk = ryhma && ryhma.muodostumisSaanto && ryhma.muodostumisSaanto.koko ? ryhma.muodostumisSaanto.koko : null;

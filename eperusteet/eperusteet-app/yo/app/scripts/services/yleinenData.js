@@ -28,6 +28,11 @@ angular.module('eperusteApp')
     this.kontekstit = ['ammatillinenperuskoulutus',
       'ammatillinenaikuiskoulutus'];
 
+    this.rakenneRyhmaRoolit = [
+      'normaali',
+      'virtuaalinen'
+    ];
+
     $rootScope.
       this.kontekstit = [
         'ammatillinenperuskoulutus',

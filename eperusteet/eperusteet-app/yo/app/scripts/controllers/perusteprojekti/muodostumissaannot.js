@@ -60,11 +60,11 @@ angular.module('eperusteApp')
         }
       );
     }
-    
+
     function haeVersiot(force) {
       VersionHelper.getRakenneVersions($scope.versiot, $scope.rakenne.rakenne.id, force);
     };
-    
+
     $scope.vaihdaVersio = function() {
       VersionHelper.changeRakenne($scope.versiot, $scope.rakenne.rakenne.id, function (response) {
         $scope.rakenne.rakenne = response;

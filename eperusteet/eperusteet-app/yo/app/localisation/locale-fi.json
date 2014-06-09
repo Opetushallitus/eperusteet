@@ -44,7 +44,11 @@
     "nimeton": "<Nimetön>",
 
     "OPINTOVIIKKO": "ov",
-    "OSAAMISPISTE": "op",
+    "OSAAMISPISTE": "osp",
+
+    "erikoisrooli": "Erikoisrooli",
+    "normaali": "Normaali",
+    "virtuaalinen": "Vapaa",
 
     "ammattitutkinto": "Ammattitutkinto",
     "erikoisammattitutkinto": "Erikoisammattitutkinto",

@@ -22,7 +22,7 @@ angular.module('eperusteApp')
     function osienLaajuudenSumma(osat) {
         return _(osat)
           .map(function(osa) { return osa.$vaadittuLaajuus ? osa.$vaadittuLaajuus : osa.$laajuus; })
-          .reduce(function(sum, newval) { return sum + newval; });
+          .reduce(function(sum, newval) { return sum + newval; }) || 0;
     }
 
     function validoiRyhma(rakenne) {
@@ -49,15 +49,16 @@ angular.module('eperusteApp')
 
       delete rakenne.$virhe;
 
+      _.forEach(rakenne.osat, function(tosa) {
+        if (!tosa._tutkinnonOsa) {
+          validoiRyhma(tosa);
+        }
+      });
+
       // On rakennemoduuli
-      if (rakenne.muodostumisSaanto) {
-        _.forEach(rakenne.osat, function(tosa) {
-          if (!tosa._tutkinnonOsa) {
-            validoiRyhma(tosa);
-          }
-        });
-        var msl = rakenne.muodostumisSaanto.laajuus;
-        var msk = rakenne.muodostumisSaanto.koko;
+      if (rakenne.muodostumisSaanto && rakenne.rooli !== 'virtuaalinen') {
+        var msl = rakenne.muodostumisSaanto.laajuus || 0;
+        var msk = rakenne.muodostumisSaanto.koko || 0;
 
         if (msl && msk) {
           var minimi = avaintenSumma(rakenne.osat, msk.minimi, function(lajitellut) { return _.keys(lajitellut); });
@@ -107,6 +108,7 @@ angular.module('eperusteApp')
         }
         rakenne.$laajuus = osienLaajuudenSumma(rakenne.osat);
       }
+      rakenne.$laajuus = rakenne.$laajuus || 0;
     }
 
     function ryhmaModaali(thenCb) {

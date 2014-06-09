@@ -22,6 +22,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
@@ -32,6 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
+
 
 @Entity
 @DiscriminatorValue("RM")
@@ -44,14 +47,21 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
     @Setter
     @Audited(targetAuditMode = NOT_AUDITED)
     private TekstiPalanen nimi;
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter
     @Setter
     @Audited(targetAuditMode = NOT_AUDITED)
     private TekstiPalanen kuvaus;
+
     @Getter
     @Setter
     private MuodostumisSaanto muodostumisSaanto;
+
+    @Getter
+    @Setter
+    @Enumerated(EnumType.STRING)
+    private RakenneModuuliRooli rooli;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "rakennemoduuli_rakenneosa",
@@ -69,7 +79,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             this.osat.addAll(osat);
         }
     }
-    
+
     @Override
     public void mergeState(RakenneModuuli moduuli) {
         if (moduuli != null) {

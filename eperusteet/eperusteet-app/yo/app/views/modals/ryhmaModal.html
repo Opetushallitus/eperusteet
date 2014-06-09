@@ -7,7 +7,7 @@
     <h3 translate>perustiedot</h3>
     <formfield ng-model="ryhma" model-var="nimi" label="nimi" type="text" required></formfield>
     <formfield ng-model="ryhma" model-var="kuvaus" label="kuvaus" type="text"></formfield>
-    <formfield ng-if="vanhempi" ng-model="ryhma" model-var="pakollinen" label="pakollisuus" type="checkbox"></formfield>
+    <formfield ng-if="luonti" ng-model="ryhma" model-var="rooli" label="erikoisrooli" options="roolit"></formfield>
 
     <h3 ng-if="vanhempi">{{'tutkinnon-rakenne' | translate}}</h3>
     <div class="form-group">

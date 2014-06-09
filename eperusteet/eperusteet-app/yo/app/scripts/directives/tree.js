@@ -22,7 +22,11 @@ angular.module('eperusteApp')
   .directive('tree', function($compile, $state, $modal, Muodostumissaannot) {
     function generoiOtsikko() {
       var tosa = '{{ tutkinnonOsat[rakenne._tutkinnonOsa].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsat[rakenne._tutkinnonOsa].laajuus">, <b>{{ + tutkinnonOsat[rakenne._tutkinnonOsa].laajuus || 0 }}</b>{{ tutkinnonOsat[rakenne._tutkinnonOsa].yksikko | kaanna }}</span>';
-      var editointiIkoni = '<img src="images/tutkinnonosa.png" alt=""> ';
+      var editointiIkoni =
+      '<span ng-click="togglaaPakollisuus(rakenne)">' +
+        '  <span ng-show="!rakenne.pakollinen"><img src="images/tutkinnonosa.png" alt=""></span> ' +
+        '  <span ng-show="rakenne.pakollinen"><img src="images/tutkinnonosa_pakollinen.png" alt=""></span> ' +
+        '</span>';
       return '' +
         '<span ng-if="rakenne._tutkinnonOsa && muokkaus">' + editointiIkoni + tosa + '</span>' +
         '<span ng-if="rakenne._tutkinnonOsa && !muokkaus">' + editointiIkoni + '<a href="" ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: rakenne._tutkinnonOsa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a></span>' +
@@ -51,6 +55,12 @@ angular.module('eperusteApp')
         scope.roskakori = [];
 
         scope.poista = function(i, a) { _.remove(a.osat, i); };
+
+        scope.togglaaPakollisuus = function(rakenne) {
+          if (scope.muokkaus) {
+            rakenne.pakollinen = !rakenne.pakollinen;
+          }
+        };
 
         scope.ryhmaModaali = Muodostumissaannot.ryhmaModaali(function(ryhma, vanhempi, uusiryhma) {
           if (!scope.vanhempi) {
@@ -96,10 +106,19 @@ angular.module('eperusteApp')
           scope.sortableOptions.disabled = !scope.muokkaus;
         });
 
+        var varivalinta = '{ \'background\': rakenne.rooli === \'virtuaalinen\'' +
+                                              '? \'#93278F\'' +
+                                              ': rakenne.osat.length === 0' +
+                                                '? \'#FDBB07\'' +
+                                                ': rakenne.$collapsed' +
+                                                  '? \'#06526c\'' +
+                                                  ': \'#29ABE2\' }';
         var optiot = '' +
-          '<span ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" ng-if="!rakenne._tutkinnonOsa" class="colorbox" ng-style="{ \'background\': rakenne.osat.length === 0 ? \'#FDBB07\' : rakenne.$collapsed ? \'#06526c\' : \'#29ABE2\' }">' +
-          '  <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
-          '  <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
+          '<span ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" ng-if="!rakenne._tutkinnonOsa" class="colorbox" ng-style="' + varivalinta + '">' +
+          '  <span ng-show="rakenne.rooli !== \'virtuaalinen\'">' +
+          '    <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
+          '    <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
+          '  </span>' +
           '</span>' +
           '<div class="right">' +
           '  <div ng-if="!rakenne._tutkinnonOsa && muokkaus" class="right-item">' +
@@ -145,12 +164,12 @@ angular.module('eperusteApp')
           '  <div ng-show="muokkaus && rakenne.$virhe" class="isovirhe-otsikko">{{ rakenne.$virhe | kaanna }}</div>' +
           '</div>' +
           '<div ng-if="vanhempi">' + kentta + '</div>' +
-          '<div class="collapser" ng-show="!rakenne.$collapsed">' +
-          '<ul ng-if="rakenne.osat !== undefined" ui-sortable="sortableOptions" id="tree-sortable" class="tree-group" ng-model="rakenne.osat">' +
-          '<li ng-repeat="osa in rakenne.osat">' +
-          '<tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" rakenne="osa" vanhempi="rakenne" tutkinnon-osat="tutkinnonOsat" uusi-tutkinnon-osa="uusiTutkinnonOsa" ng-init="notfirst = true"></tree>' +
-          '</li>' +
-          '</ul>' +
+          '<div ng-if="rakenne.rooli !== \'virtuaalinen\'" class="collapser" ng-show="!rakenne.$collapsed">' +
+          '  <ul ng-if="rakenne.osat !== undefined" ui-sortable="sortableOptions" id="tree-sortable" class="tree-group" ng-model="rakenne.osat">' +
+          '    <li ng-repeat="osa in rakenne.osat">' +
+          '      <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" rakenne="osa" vanhempi="rakenne" tutkinnon-osat="tutkinnonOsat" uusi-tutkinnon-osa="uusiTutkinnonOsa" ng-init="notfirst = true"></tree>' +
+          '    </li>' +
+          '  </ul>' +
           '</div>';
 
         var templateElement = angular.element(template);
