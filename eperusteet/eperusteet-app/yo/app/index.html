@@ -38,7 +38,7 @@
         </div>
       </div>
       <spinner></spinner>
-      <div class="notification-wrapper">
+      <div class="notification-wrapper" ng-cloak>
         <div class="notifications" ng-model="viestit" ng-controller="NotifikaatioCtrl">
           <div ng-if="viestit" ng-click="poistaNotifikaatio(viesti)" ng-model="viestit" ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }" ng-repeat="viesti in viestit">
             <div class="notification-body">
@@ -59,10 +59,6 @@
 
     <!-- build:js scripts/components.js -->
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/jquery-ui/ui/minified/jquery.ui.core.min.js"></script>
-    <script src="bower_components/jquery-ui/ui/minified/jquery.ui.widget.min.js"></script>
-    <script src="bower_components/jquery-ui/ui/minified/jquery.ui.mouse.min.js"></script>
-    <script src="bower_components/jquery-ui/ui/minified/jquery.ui.sortable.min.js"></script>
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
@@ -71,6 +67,10 @@
     <script src="bower_components/angular-translate/angular-translate.min.js"></script>
     <script src="bower_components/angular-animate/angular-animate.min.js"></script>
     <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
+    <script src="bower_components/jquery-ui/ui/minified/jquery.ui.core.min.js"></script>
+    <script src="bower_components/jquery-ui/ui/minified/jquery.ui.widget.min.js"></script>
+    <script src="bower_components/jquery-ui/ui/minified/jquery.ui.mouse.min.js"></script>
+    <script src="bower_components/jquery-ui/ui/minified/jquery.ui.sortable.min.js"></script>
     <script src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>
     <script src="bower_components/angular-ui-utils/ui-utils.min.js"></script>
     <script src="scripts/directives/angular-ui-sortable/sortable.js"></script>
