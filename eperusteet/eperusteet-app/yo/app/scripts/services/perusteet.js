@@ -32,6 +32,7 @@ angular.module('eperusteApp')
         perusteenId: '@id',
         suoritustapa: '@suoritustapa'
       }, {
+        get: { method: 'GET', isArray: true },
         update: { method: 'PUT' }
       });
   })

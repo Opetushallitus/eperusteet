@@ -67,9 +67,13 @@
 
     "perusteprojektit-otsikko": "Omat perusteprojektit",
     "uusi-projekti": "Uusi projekti",
+    "tutkinnon-osia-ei-löytynyt": "Tutkinnon osia ei löytynyt",
+
+    "valitse-suoritustapa": "Valitse suoritustapa",
 
     "uusi-tutkinnonosa": "<Uusi tutkinnon osa>",
     "tuo-tutkinnonosa": "Tuo tutkinnon osa",
+    "tuo-toisesta-suoritustavasta": "Tuo suoritustavasta",
     "tutkinnon-osia-ei-ole": "Tutkinnon osia ei ole",
     "avaa-kaikki": "Avaa kaikki",
     "sulje-kaikki": "Sulje kaikki",

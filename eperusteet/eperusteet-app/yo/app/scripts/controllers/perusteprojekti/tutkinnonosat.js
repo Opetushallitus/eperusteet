@@ -22,6 +22,8 @@ angular.module('eperusteApp')
     Navigaatiopolku, perusteprojektiTiedot, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, Notifikaatiot,
     Editointikontrollit, Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode) {
 
+    var peruste = perusteprojektiTiedot.getPeruste();
+
     $scope.editoi = false;
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
     $scope.tosarajaus = '';
@@ -40,8 +42,12 @@ angular.module('eperusteApp')
       return Kaanna.kaanna(haku.nimi).toLowerCase().indexOf($scope.tosarajaus.toLowerCase()) !== -1;
     };
 
-    $scope.tuoTutkinnonosa = TutkinnonOsanTuonti.modaali($scope.suoritustapa, function(osat) {
-      _.forEach(osat, function(osa) { $scope.lisaaTutkinnonOsa(osa); });
+    $scope.tuoSuoritustavasta = TutkinnonOsanTuonti.suoritustavoista(perusteprojektiTiedot.getPeruste(), $scope.suoritustapa, function(osat) {
+      _.forEach(osat, function(osa) { $scope.lisaaTutkinnonOsaSuoraan(osa); });
+    });
+
+    $scope.tuoTutkinnonosa = TutkinnonOsanTuonti.kaikista($scope.suoritustapa, function(osat) {
+      _.forEach(osat, function(osa) { $scope.lisaaTutkinnonOsaSuoraan(osa); });
     });
 
     $scope.navigoiTutkinnonosaan = function (osa) {
@@ -51,10 +57,19 @@ angular.module('eperusteApp')
       });
     };
 
+    $scope.lisaaTutkinnonOsaSuoraan = function(osa) {
+      PerusteTutkinnonosa.save({
+        perusteenId: peruste.id,
+        suoritustapa: $stateParams.suoritustapa
+      }, osa,
+      function(res) {
+        $scope.tutkinnonOsat.unshift(res);
+      }, Notifikaatiot.serverCb);
+    };
+
     $scope.lisaaTutkinnonOsa = function(osa, cb) {
       osa = osa ? {_tutkinnonOsa: osa._tutkinnonOsa} : {};
       cb = cb || angular.noop;
-      var peruste = perusteprojektiTiedot.getPeruste();
 
       PerusteTutkinnonosa.save({
         perusteenId: peruste.id,
@@ -67,7 +82,7 @@ angular.module('eperusteApp')
         $scope.navigoiTutkinnonosaan(res);
       },
       function(err) {
-        Notifikaatiot.fataali('tallennus-epäonnistui', err);
+        Notifikaatiot.serverCb(err);
         cb();
       });
     };
