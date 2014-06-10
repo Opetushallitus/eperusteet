@@ -100,7 +100,8 @@ angular.module('eperusteApp')
           tolerance: 'pointer',
           start: function(e, ui) {
             ui.placeholder.html('<div class="group-placeholder"></div>');
-          }
+          },
+          cancel: '.ui-state-disabled',
         };
 
         scope.$watch('muokkaus', function() {
@@ -170,7 +171,7 @@ angular.module('eperusteApp')
           '    <li ng-repeat="osa in rakenne.osat">' +
           '      <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" rakenne="osa" vanhempi="rakenne" tutkinnon-osat="tutkinnonOsat" uusi-tutkinnon-osa="uusiTutkinnonOsa" ng-init="notfirst = true"></tree>' +
           '    </li>' +
-          '    <li ng-if="muokkaus && !vanhempi && rakenne.osat.length > 0">' +
+          '    <li class="ui-state-disabled" ng-if="muokkaus && !vanhempi && rakenne.osat.length > 0">' +
           '      <span class="tree-anchor"></span>' +
           '    </li>' +
           '  </ul>' +
