@@ -80,7 +80,8 @@ angular.module('eperusteApp')
                 r.$collapsed = true;
               }
             });
-          } else {
+          }
+          else {
             _.forEach(scope.rakenne.osat, function(r) {
               if (r.osat && _.size(r.osat) > 0) {
                 r.$collapsed = false;
@@ -168,6 +169,9 @@ angular.module('eperusteApp')
           '  <ul ng-if="rakenne.osat !== undefined" ui-sortable="sortableOptions" id="tree-sortable" class="tree-group" ng-model="rakenne.osat">' +
           '    <li ng-repeat="osa in rakenne.osat">' +
           '      <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" rakenne="osa" vanhempi="rakenne" tutkinnon-osat="tutkinnonOsat" uusi-tutkinnon-osa="uusiTutkinnonOsa" ng-init="notfirst = true"></tree>' +
+          '    </li>' +
+          '    <li ng-if="!vanhempi && rakenne.osat.length > 0">' +
+          '      <span class="tree-anchor"></span>' +
           '    </li>' +
           '  </ul>' +
           '</div>';

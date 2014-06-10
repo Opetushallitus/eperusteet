@@ -18,6 +18,16 @@ $puuviiva-vari: #ccc;
   padding: 20px;
 }
 
+.tree-anchor {
+  margin-top: 11px;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  background: #fdfdfd;
+  border: 1px solid $reunus-vari;
+  z-index: -2;
+}
+
 .tree-con-empty {
   position: relative;
   top: 0;
