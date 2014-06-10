@@ -29,7 +29,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -39,7 +38,6 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 @Entity
 @DiscriminatorValue("RM")
 @Audited
-@EqualsAndHashCode(callSuper = true)
 public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<RakenneModuuli> {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
@@ -90,6 +88,46 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
                 this.muodostumisSaanto = moduuli.getMuodostumisSaanto();
             }
         }
+    }
+    
+    public boolean isSame(RakenneModuuli moduuli) {
+        
+        if (moduuli == null) {
+            return false;
+        }
+        if ( (this.osat == null && moduuli.getOsat() != null) || (this.osat != null && moduuli.getOsat() == null) ) {
+            return false;
+        }
+        if ( (this.muodostumisSaanto == null && moduuli.getMuodostumisSaanto() != null) || (this.muodostumisSaanto != null && moduuli.getMuodostumisSaanto() == null) ) {
+            return false;
+        }
+
+        if (moduuli.osat != null) {
+            if (this.osat.size() != moduuli.getOsat().size()) {
+                return false;
+            } else {
+                for (int i = 0; i < this.osat.size(); i++) {
+                    if (this.osat.get(i) instanceof RakenneModuuli && moduuli.getOsat().get(i) instanceof RakenneModuuli) {
+                        if ( ((RakenneModuuli) this.osat.get(i)).isSame((RakenneModuuli) moduuli.getOsat().get(i)) == false) {
+                            return false;
+                        }
+                    } else if (this.osat.get(i) instanceof RakenneOsa && moduuli.getOsat().get(i) instanceof RakenneOsa) {
+                        if (!((RakenneOsa) this.osat.get(i)).getTutkinnonOsaViite().equals(((RakenneOsa) moduuli.getOsat().get(i)).getTutkinnonOsaViite())) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (this.muodostumisSaanto != null) {
+            if (!this.muodostumisSaanto.equals(moduuli.muodostumisSaanto)) {
+                System.out.println("Muodostumissääntö false");
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

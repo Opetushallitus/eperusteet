@@ -287,7 +287,7 @@ public class PerusteServiceImpl implements PerusteService {
         rakenne.foreach(new VisitorImpl(uniqueIndex, maxRakenneDepth));
         RakenneModuuli moduuli = mapper.map(rakenne, RakenneModuuli.class);
 
-        if (!moduuli.equals(suoritustapa.getRakenne())) {
+        if (!moduuli.isSame(suoritustapa.getRakenne())) {
             RakenneModuuli current = suoritustapa.getRakenne();
             if (current != null) {
                 current.mergeState(moduuli);
