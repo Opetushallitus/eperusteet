@@ -14,7 +14,30 @@ $puuviiva-vari: #ccc;
 }
 
 .tree-con {
+  min-width: 800px;
   padding: 20px;
+}
+
+.tree-con-empty {
+  position: relative;
+  top: 0;
+  left: 0;
+
+  .empty-bubble {
+    color: #777;
+    background: #fcfcfc;
+    margin: 0px;
+    text-align: center;
+    // border-bottom-left-radius: 15px;
+    // border-bottom-right-radius: 15px;
+    padding: 16px;
+    min-width: 760px;
+    position: absolute;
+    top: 66px;
+    left: 20px;
+    z-index: -1;
+    overflow: hidden;
+  }
 }
 
 .tree-box {
@@ -366,7 +389,7 @@ $puuviiva-vari: #ccc;
 }
 
 .bubble-osa {
-  width: 300px;
+  width: 480px;
   min-height: 32px;
   border: 1px solid #cccccc;
   background-color: #fff;

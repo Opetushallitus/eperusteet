@@ -1,7 +1,12 @@
 <div>
+  <div ng-show="muokkaus && rakenne.$resolved && rakenne.rakenne.osat.length === 0" class="tree-con-empty">
+    <div class="empty-bubble">
+      {{ 'aloita-raahaamalla-puuhun' | kaanna }}
+    </div>
+  </div>
   <div ng-if="!lisataanUuttaOsaa" class="tree col-lg-6 col-md-8 col-xs-12">
     <div class="tree-con">
-      <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" ng-hide="rakenne.$resolved" rakenne="rakenne.rakenne" tutkinnon-osat="rakenne.tutkinnonOsat" uusi-tutkinnon-osa="uusiTutkinnonOsa"></tree>
+      <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" ng-if="rakenne.$resolved" rakenne="rakenne.rakenne" tutkinnon-osat="rakenne.tutkinnonOsat" uusi-tutkinnon-osa="uusiTutkinnonOsa"></tree>
     </div>
   </div>
   <div ng-if="muokkaus" class="skratchpad-wrapper pull-right" follow-scroll>
