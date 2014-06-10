@@ -20,10 +20,19 @@ import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.ArvioinninKohdealue;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -68,5 +77,28 @@ public abstract class TestUtils {
 
     public static TekstiPalanen tekstiPalanenOf(Kieli k, String teksti) {
         return TekstiPalanen.of(Collections.singletonMap(k, teksti));
+    }
+    
+    static public RakenneOsa teeRakenneOsa(long id, Integer laajuus) {
+        TutkinnonOsa to = new TutkinnonOsa();
+        to.setId(id);
+
+        TutkinnonOsaViite tov = new TutkinnonOsaViite();
+        tov.setTutkinnonOsa(to);
+        tov.setLaajuus(laajuus);
+
+        RakenneOsa ro = new RakenneOsa();
+        ro.setTutkinnonOsaViite(tov);
+        return ro;
+    }
+
+    static public RakenneModuuli teeRyhma(Integer minimi, Integer maksimi, AbstractRakenneOsa... osat) {
+        RakenneModuuli rakenne = new RakenneModuuli();
+        MuodostumisSaanto ms = new MuodostumisSaanto(new MuodostumisSaanto.Laajuus(minimi, maksimi, LaajuusYksikko.OPINTOVIIKKO));
+        ArrayList<AbstractRakenneOsa> aosat = new ArrayList<>();
+        aosat.addAll(Arrays.asList(osat));
+        rakenne.setOsat(aosat);
+        rakenne.setMuodostumisSaanto(ms);
+        return rakenne;
     }
 }
