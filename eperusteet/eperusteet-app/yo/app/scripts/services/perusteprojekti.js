@@ -93,7 +93,7 @@ angular.module('eperusteApp')
       return ret;
     };
   })
-  .service('PerusteprojektiTiedotService', function ($q, PerusteprojektiResource, Perusteet, Suoritustapa, PerusteProjektiService) {
+  .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet, Suoritustapa, PerusteProjektiService) {
 
     var deferred = $q.defer();
     var projekti = {};
@@ -168,6 +168,7 @@ angular.module('eperusteApp')
       //       Korjataan kun keksitään parempi suoritustavan valinta-algoritmi.
       if (angular.isUndefined(stateParams.suoritustapa) || stateParams.suoritustapa === null || stateParams.suoritustapa === '') {
         stateParams.suoritustapa = 'naytto';
+        $state.reload();
       }
       PerusteProjektiService.setSuoritustapa(stateParams.suoritustapa);
       var perusteenSisaltoDeferred = $q.defer();
