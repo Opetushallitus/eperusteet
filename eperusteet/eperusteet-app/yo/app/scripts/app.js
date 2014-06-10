@@ -15,7 +15,7 @@
  */
 
 'use strict';
-/* global _, moment */
+/* global _, moment, alert */
 
 angular.module('eperusteApp', [
   'ngRoute',
@@ -33,42 +33,10 @@ angular.module('eperusteApp', [
   // .constant('ORGANISATION_SERVICE_LOC', '/organisaatio-service/rest')
   .constant('ORGANISATION_SERVICE_LOC', '')
   .constant('AUTHENTICATION_SERVICE_LOC', '/authentication-service/resources')
+  .constant('REQUEST_TIMEOUT', 5000)
   .constant('SPINNER_WAIT', 100)
   .constant('NOTIFICATION_DELAY_SUCCESS', 2000)
   .constant('NOTIFICATION_DELAY_WARNING', 8000)
-  .factory('palvelinHakuInterceptor', function($injector, $q, palvelinhaunIlmoitusKanava) {
-    var http;
-    return {
-      'request': function(config) {
-        palvelinhaunIlmoitusKanava.hakuAloitettu();
-        return config;
-      },
-      'requestError': function(rejection) {
-        // TODO: pitäisikö olla sama toteutus kuin responsella?
-        return rejection;
-      },
-      'response': function(response) {
-        // Injektoidaan $http injector:illa, jotta estetään riippuvuuksien circular dependency
-        http = http || $injector.get('$http');
-        // Ei lähetetä ilmoitusta ennen kuin kaikki haut ovat päättyneet
-        if (http.pendingRequests.length < 1) {
-          // Lähetetään ilmoitus, että haut ovat päättyneet.
-          palvelinhaunIlmoitusKanava.hakuLopetettu();
-        }
-        return response;
-      },
-      'responseError': function(rejection) {
-        // Injektoidaan $http injector:illa, jotta estetään riippuvuuksien circular dependency
-        http = http || $injector.get('$http');
-        // Ei lähetetä ilmoitusta ennen kuin kaikki haut ovat päättyneet
-        if (http.pendingRequests.length < 1) {
-          // Lähetetään ilmoitus, että haut ovat päättyneet.
-          palvelinhaunIlmoitusKanava.hakuLopetettu();
-        }
-        return $q.reject(rejection);
-      }
-    };
-  })
   .config(function($urlRouterProvider, $sceProvider) {
     $sceProvider.enabled(true);
     $urlRouterProvider.when('','/');
@@ -84,6 +52,22 @@ angular.module('eperusteApp', [
     });
     $translateProvider.preferredLanguage('fi');
     moment.lang('fi');
+  })
+  .config(function($httpProvider) {
+    $httpProvider.interceptors.push(['$rootScope', '$q', 'Kaanna', function($rootScope, $q, Kaanna) {
+        return {
+          request: function(request) {
+            request.timeout = 5000;
+            return request;
+          },
+          responseError: function(error) {
+            if (error.status === 0) {
+              alert(Kaanna.kaanna('yhteys-palvelimeen-timeout'));
+            }
+            return $q.reject(error);
+          }
+        };
+      }]);
   })
   .config(function($httpProvider) {
     $httpProvider.interceptors.push(['$rootScope', '$q', 'SpinnerService', function($rootScope, $q, Spinner) {
@@ -106,7 +90,6 @@ angular.module('eperusteApp', [
   // Uudelleenohjaus autentikointiin ja palvelinvirheiden ilmoitukset
   .config(function($httpProvider) {
     // Asetetaan oma interceptor kuuntelemaan palvelinkutsuja
-    $httpProvider.interceptors.push('palvelinHakuInterceptor');
     $httpProvider.interceptors.push(['$rootScope', '$q', function($rootScope, $q) {
         return {
           'response': function(response) {
@@ -147,7 +130,6 @@ angular.module('eperusteApp', [
         var protocol = $location.protocol();
         var cas = '/cas/login';
         var redirectURL = encodeURIComponent($location.absUrl());
-
         var url = protocol + '://' + host;
 
         if (port !== 443 && port !== 80) {
@@ -155,7 +137,6 @@ angular.module('eperusteApp', [
         }
 
         url += cas + '?service=' + redirectURL;
-
         return url;
       }
 
@@ -190,19 +171,20 @@ angular.module('eperusteApp', [
     });
 
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
+      if (Editointikontrollit.getEditMode() && fromState.name !== 'perusteprojekti.suoritustapa.tutkinnonosat') {
+        event.preventDefault();
 
-
-        if (Editointikontrollit.getEditMode() && fromState.name !== 'perusteprojekti.suoritustapa.tutkinnonosat') {
-          event.preventDefault();
-
-          var data = {toState: toState, toParams: toParams};
-          Varmistusdialogi.dialogi({successCb: function(data) {
-              Editointikontrollit.cancelEditing();
-              $state.go(data.toState, data.toParams);
-            }, data: data, otsikko: 'vahvista-liikkuminen', teksti: 'tallentamattomia-muutoksia',
-               lisaTeksti: 'haluatko-jatkaa', primaryBtn: 'poistu-sivulta'})();
-        }
-      });
+        var data = {toState: toState, toParams: toParams};
+        Varmistusdialogi.dialogi({
+          successCb: function(data) {
+            Editointikontrollit.cancelEditing();
+            $state.go(data.toState, data.toParams);
+          }, data: data, otsikko: 'vahvista-liikkuminen', teksti: 'tallentamattomia-muutoksia',
+          lisaTeksti: 'haluatko-jatkaa',
+          primaryBtn: 'poistu-sivulta'
+        })();
+      }
+    });
 
     $rootScope.$on('$stateChangeError', function(event, toState/*, toParams, fromState*/) {
       console.error(event);

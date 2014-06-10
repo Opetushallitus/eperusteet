@@ -50,6 +50,9 @@
     "normaali": "Normaali",
     "virtuaalinen": "Vapaa",
 
+    "yhteys-palvelimeen-timeout": "Yhteys palveluun on aikakatkaistu.",
+    "yhteys-palvelimeen-poikki": "Yhteys palveluun on katkennut.",
+
     "ammattitutkinto": "Ammattitutkinto",
     "erikoisammattitutkinto": "Erikoisammattitutkinto",
     "perustutkinto": "Perustutkinto",

@@ -31,7 +31,7 @@ angular.module('eperusteApp')
       });
   })
   .controller('TutkinnonosaCtrl', function ($q, $scope, $rootScope, $stateParams, $state,
-    YleinenData, Navigaatiopolku, PerusteenOsat, Perusteet, palvelinhaunIlmoitusKanava) {
+    YleinenData, Navigaatiopolku, PerusteenOsat, Perusteet) {
     $scope.tutkinnonOsa = {};
 
     $scope.nakyvilla = {
@@ -110,14 +110,4 @@ angular.module('eperusteApp')
     $scope.valitseKieli = function(nimi) {
       return YleinenData.valitseKieli(nimi);
     };
-
-    var hakuAloitettuKäsittelijä = function() {
-      $scope.hakuMenossa = true;
-    };
-
-    var hakuLopetettuKäsittelijä = function() {
-      $scope.hakuMenossa = false;
-    };
-    palvelinhaunIlmoitusKanava.kunHakuAloitettu($scope, hakuAloitettuKäsittelijä);
-    palvelinhaunIlmoitusKanava.kunHakuLopetettu($scope, hakuLopetettuKäsittelijä);
   });

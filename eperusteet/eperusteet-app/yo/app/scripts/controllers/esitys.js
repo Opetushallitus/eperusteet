@@ -32,8 +32,7 @@ angular.module('eperusteApp')
       });
   })
   .controller('EsitysCtrl', function($q, $scope, $stateParams, Kayttajaprofiilit, Suosikit,
-      Perusteet, Suosikitbroadcast, Suoritustapa, YleinenData, Navigaatiopolku,
-      palvelinhaunIlmoitusKanava, PerusteRakenteet, $state) {
+      Perusteet, Suosikitbroadcast, Suoritustapa, YleinenData, Navigaatiopolku, PerusteRakenteet, $state) {
 
     $scope.konteksti = $stateParams.konteksti;
     $scope.peruste = {};
@@ -171,16 +170,6 @@ angular.module('eperusteApp')
       $state.go('esitys.peruste', {perusteenId: $stateParams.perusteenId, suoritustapa: suoritustapa});
     };
 
-
-    var hakuAloitettuKäsittelijä = function() {
-      $scope.hakuMenossa = true;
-    };
-
-    var hakuLopetettuKäsittelijä = function() {
-      $scope.hakuMenossa = false;
-    };
-    palvelinhaunIlmoitusKanava.kunHakuAloitettu($scope, hakuAloitettuKäsittelijä);
-    palvelinhaunIlmoitusKanava.kunHakuLopetettu($scope, hakuLopetettuKäsittelijä);
 
     $scope.terveydentilaOptiot = [
       {teksti: 'Kaikki', valittu: true},
