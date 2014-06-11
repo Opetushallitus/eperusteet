@@ -23,7 +23,9 @@ angular.module('eperusteApp')
   if (typeof $scope.projekti.paatosPvm === 'number') {
      $scope.projekti.paatosPvm = new Date($scope.projekti.paatosPvm);
   }
-  
+
+  $scope.yksikot = YleinenData.yksikot;
+
   $scope.tehtavaluokat = [
     'Tehtäväluokka-1',
     'Tehtäväluokka-2',

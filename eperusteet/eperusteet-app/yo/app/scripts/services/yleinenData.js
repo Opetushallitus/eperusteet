@@ -33,6 +33,11 @@ angular.module('eperusteApp')
       'virtuaalinen'
     ];
 
+    this.yksikot = [
+      'OSAAMISPISTE',
+      'OPINTOVIIKKO',
+    ];
+
     $rootScope.
       this.kontekstit = [
         'ammatillinenperuskoulutus',

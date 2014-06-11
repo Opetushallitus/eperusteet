@@ -27,6 +27,8 @@ angular.module('eperusteApp')
     }
 
     $scope.projekti = perusteprojektiTiedot.getProjekti();
+    $scope.projekti.yksikko = $scope.projekti.yksikko || 'OSAAMISPISTE';
+
     Navigaatiopolku.asetaElementit({ perusteProjektiId: $scope.projekti.nimi });
 
 

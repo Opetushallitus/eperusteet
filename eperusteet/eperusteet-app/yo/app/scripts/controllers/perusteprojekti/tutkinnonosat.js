@@ -22,8 +22,7 @@ angular.module('eperusteApp')
     Navigaatiopolku, perusteprojektiTiedot, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, Notifikaatiot,
     Editointikontrollit, Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode) {
 
-    var peruste = perusteprojektiTiedot.getPeruste();
-
+    $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.editoi = false;
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
     $scope.tosarajaus = '';
@@ -59,7 +58,7 @@ angular.module('eperusteApp')
 
     $scope.lisaaTutkinnonOsaSuoraan = function(osa) {
       PerusteTutkinnonosa.save({
-        perusteenId: peruste.id,
+        perusteenId: $scope.peruste.id,
         suoritustapa: $stateParams.suoritustapa
       }, osa,
       function(res) {
@@ -72,7 +71,7 @@ angular.module('eperusteApp')
       cb = cb || angular.noop;
 
       PerusteTutkinnonosa.save({
-        perusteenId: peruste.id,
+        perusteenId: $scope.peruste.id,
         suoritustapa: $stateParams.suoritustapa
       }, osa,
       function(res) {

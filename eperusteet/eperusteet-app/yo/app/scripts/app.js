@@ -33,7 +33,7 @@ angular.module('eperusteApp', [
   // .constant('ORGANISATION_SERVICE_LOC', '/organisaatio-service/rest')
   .constant('ORGANISATION_SERVICE_LOC', '')
   .constant('AUTHENTICATION_SERVICE_LOC', '/authentication-service/resources')
-  .constant('REQUEST_TIMEOUT', 5000)
+  .constant('REQUEST_TIMEOUT', 10000)
   .constant('SPINNER_WAIT', 100)
   .constant('NOTIFICATION_DELAY_SUCCESS', 2000)
   .constant('NOTIFICATION_DELAY_WARNING', 8000)
@@ -54,20 +54,20 @@ angular.module('eperusteApp', [
     moment.lang('fi');
   })
   .config(function($httpProvider) {
-    $httpProvider.interceptors.push(['$rootScope', '$q', 'Kaanna', function($rootScope, $q, Kaanna) {
-        return {
-          request: function(request) {
-            request.timeout = 5000;
-            return request;
-          },
-          responseError: function(error) {
-            if (error.status === 0) {
-              alert(Kaanna.kaanna('yhteys-palvelimeen-timeout'));
-            }
-            return $q.reject(error);
+    $httpProvider.interceptors.push(['$rootScope', '$q', 'Kaanna', 'REQUEST_TIMEOUT', function($rootScope, $q, Kaanna, REQUEST_TIMEOUT) {
+      return {
+        request: function(request) {
+          request.timeout = REQUEST_TIMEOUT;
+          return request;
+        },
+        responseError: function(error) {
+          if (error.status === 0) {
+            alert(Kaanna.kaanna('yhteys-palvelimeen-timeout'));
           }
-        };
-      }]);
+          return $q.reject(error);
+        }
+      };
+    }]);
   })
   .config(function($httpProvider) {
     $httpProvider.interceptors.push(['$rootScope', '$q', 'SpinnerService', function($rootScope, $q, Spinner) {

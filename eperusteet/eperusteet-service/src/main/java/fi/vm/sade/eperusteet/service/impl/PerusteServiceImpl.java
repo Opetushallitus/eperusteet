@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service.impl;
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import fi.vm.sade.eperusteet.domain.Koulutus;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
@@ -233,7 +234,7 @@ public class PerusteServiceImpl implements PerusteService {
         }
         return mapper.map(rakenne, RakenneModuuliDto.class);
     }
-    
+
     @Override
     @Transactional(readOnly = true)
     public List<Revision> getRakenneVersiot(Long id, Suoritustapakoodi suoritustapakoodi) {
@@ -254,7 +255,7 @@ public class PerusteServiceImpl implements PerusteService {
         
         return versiot;
     }
-    
+
     @Override
     @Transactional(readOnly = true)
     public RakenneModuuliDto getRakenneVersio(Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId) {
@@ -288,7 +289,7 @@ public class PerusteServiceImpl implements PerusteService {
         TutkinnonOsaViite to = tutkinnonOsaViiteRepository.findOne(osaId);
         to.setJarjestys(tov.getJarjestys());
         to.setLaajuus(tov.getLaajuus());
-        to.setYksikko(tov.getYksikko());
+        to.setYksikko(to.getYksikko());
         return mapper.map(to, TutkinnonOsaViiteDto.class);
     }
 
@@ -360,6 +361,7 @@ public class PerusteServiceImpl implements PerusteService {
             viite.setTutkinnonOsa(tutkinnonOsa);
         }
         viite.setSuoritustapa(suoritustapa);
+        viite.setYksikko(suoritustapa.getYksikko());
         if (suoritustapa.getTutkinnonOsat().add(viite)) {
             viite = tutkinnonOsaViiteRepository.save(viite);
         } else {
@@ -380,7 +382,7 @@ public class PerusteServiceImpl implements PerusteService {
         }
         viite.setJarjestys(osa.getJarjestys());
         viite.setLaajuus(osa.getLaajuus());
-        viite.setYksikko(osa.getYksikko());
+        viite.setYksikko(viite.getSuoritustapa().getYksikko());
         return mapper.map(viite, TutkinnonOsaViiteDto.class);
     }
 
@@ -497,7 +499,7 @@ public class PerusteServiceImpl implements PerusteService {
                         peruste.setTutkintokoodi(koulutustyyppiUri);
                         peruste.setVoimassaoloAlkaa(new GregorianCalendar(3000, 0, 1).getTime());
                         peruste.setKoulutukset(new HashSet<Koulutus>());
-                        peruste.setSuoritustavat(luoSuoritustavat(koulutustyyppiUri));
+                        peruste.setSuoritustavat(luoSuoritustavat(koulutustyyppiUri, null));
                         peruste.setTila(Tila.VALMIS);
                     }
                     peruste.getKoulutukset().add(luoKoulutus(tutkinto));
@@ -580,11 +582,11 @@ public class PerusteServiceImpl implements PerusteService {
      * @param koulutustyyppiUri
      * @return palauttaa mahdolliset tutkinnon suoritustavat
      */
-    private Set<Suoritustapa> luoSuoritustavat(String koulutustyyppiUri) {
+    private Set<Suoritustapa> luoSuoritustavat(String koulutustyyppiUri, LaajuusYksikko yksikko) {
         Set<Suoritustapa> suoritustavat = new HashSet<>();
-        suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO));
+        suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO, null));
         if (koulutustyyppiUri.equals(KOULUTUSTYYPPI_URIT[0])) {
-            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS));
+            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko));
         }
         return suoritustavat;
     }
@@ -597,15 +599,15 @@ public class PerusteServiceImpl implements PerusteService {
      */
     @Override
     // HUOM!: Luo vain ammatillisen puolen perusteita. Refactoroi, kun tulee lisää koulutustyyppejä.
-    public Peruste luoPerusteRunko(String koulutustyyppi) {
+    public Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko) {
         Peruste peruste = new Peruste();
 
         peruste.setTutkintokoodi(koulutustyyppi);
         peruste.setTila(Tila.LUONNOS);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
-        suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO));
+        suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO, null));
         if (koulutustyyppi != null && koulutustyyppi.equals(KOULUTUSTYYPPI_URIT[0])) {
-            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS));
+            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko));
         }
         peruste.setSuoritustavat(suoritustavat);
 

@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
@@ -73,9 +74,9 @@ public interface PerusteService {
 
     @PreAuthorize("isAuthenticated()")
     RakenneModuuliDto updateTutkinnonRakenne(final Long perusteId, final Suoritustapakoodi suoritustapa, final RakenneModuuliDto rakenne);
-    
+
     List<Revision> getRakenneVersiot(Long id, Suoritustapakoodi suoritustapakoodi);
-    
+
     RakenneModuuliDto getRakenneVersio(Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId);
 
     List<TutkinnonOsaViiteDto> getTutkinnonOsat(Long perusteid, Suoritustapakoodi suoritustapakoodi);
@@ -84,7 +85,7 @@ public interface PerusteService {
 
     public TutkinnonOsaViiteDto updateTutkinnonOsaViite(Long osaId, TutkinnonOsaViiteDto tov);
 
-    Peruste luoPerusteRunko(String koulutustyyppi);
+    Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko);
 
     @PreAuthorize("isAuthenticated()")
     String lammitys();

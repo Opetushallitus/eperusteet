@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
@@ -23,6 +24,7 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import javax.persistence.EntityNotFoundException;
@@ -50,7 +52,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private KayttajaprofiiliService kayttajaprofiiliService;
-    
+
     @Autowired
     private PerusteService perusteService;
     @Override
@@ -64,12 +66,18 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional(readOnly = false)
     public PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto) {
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
-        
-        Peruste peruste = perusteService.luoPerusteRunko(perusteprojektiDto.getKoulutustyyppi());
+        String koulutustyyppi = perusteprojektiDto.getKoulutustyyppi();
+        LaajuusYksikko yksikko = perusteprojektiDto.getYksikko();
+
+        if (koulutustyyppi.equals("ops") && yksikko == null) {
+            throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
+        }
+
+        Peruste peruste = perusteService.luoPerusteRunko(perusteprojektiDto.getKoulutustyyppi(), perusteprojektiDto.getYksikko());
         perusteprojekti.setPeruste(peruste);
         perusteprojekti = repository.save(perusteprojekti);
         kayttajaprofiiliService.addPerusteprojekti(perusteprojekti.getId());
-        
+
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
     }
 
@@ -79,11 +87,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (!repository.exists(id)) {
             throw new EntityNotFoundException("Objektia ei löytynyt id:llä: " + id);
         }
-        
+
         perusteprojektiDto.setId(id);
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
         perusteprojekti = repository.save(perusteprojekti);
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
     }
-    
+
 }

@@ -85,7 +85,7 @@ angular.module('eperusteApp')
 
     $scope.poistaKoulutus = function (koulutuskoodi) {
       $scope.peruste.koulutukset = _.remove($scope.peruste.koulutukset, function(koulutus) {
-            return koulutus.koulutuskoodi !== koulutuskoodi;
+        return koulutus.koulutuskoodi !== koulutuskoodi;
       });
     };
 

@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -70,6 +71,11 @@ public class Suoritustapa implements Serializable {
     @Setter
     @JoinColumn(name = "tutkinnon_rakenne_id")
     private RakenneModuuli rakenne;
+
+    @Getter
+    @Setter
+    @Column(name = "yksikko")
+    private LaajuusYksikko yksikko;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "suoritustapa")
     @Getter
