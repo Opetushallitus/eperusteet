@@ -25,9 +25,8 @@ angular.module('eperusteApp')
         '<div class="form-group">' +
         '  <label class="col-sm-3 control-label">{{label | kaanna}}{{ postfix }}</label>' +
         '  <div class="input-group col-sm-9">' +
-        // '    <numberinput luokka="form-control" ng-if="!options && !isObject && type===&quot;number&quot;" name="{{name}}" data="input.model" min="{{min}}" max="{{max}}" form="form"></numberinput>' +
-        // '    <input ng-if="!options && !isObject && type!==&quot;number&quot;" ng-class="inputClasses()" ng-model="input.model" ng-change="updateModel()" type="{{type}}">' +
-        '    <input ng-if="!options && !isObject" ng-class="inputClasses()" ng-model="input.model" ng-change="updateModel()" type="{{type}}">' +
+        '    <numberinput luokka="form-control" ng-if="!options && !isObject && type===\'number\'" name="{{name}}" my-model="input.model" my-change="updateModel()" min="{{min}}" max="{{max}}" form="form"></numberinput>' +
+        '    <input ng-if="!options && !isObject && type!==\'number\'" ng-class="inputClasses()" ng-model="input.model" ng-change="updateModel()" type="{{type}}">' +
         '    <span ng-if="!options && isObject">' +
         '      <ml-input ml-data="input.model" ng-model="input.model" ng-change="updateModel()"></ml-input>' +
         '    </span>' +
@@ -62,6 +61,7 @@ angular.module('eperusteApp')
         };
         element.find('label').attr('for', scope.label + '-' + uniqueId);
         element.find('input').attr('id', scope.label + '-' + uniqueId++);
+        element.find('numberinput').attr('id', scope.label + '-' + uniqueId++);
 
         _.forEach(scope.options, function(opt) {
           opt.label = Kaanna.kaanna(opt.label);

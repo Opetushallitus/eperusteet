@@ -33,6 +33,8 @@ angular.module('eperusteApp')
         $scope.suoritustapa = $stateParams.suoritustapa;
         $scope.rakenne = {};
         $scope.versiot = {};
+        $scope.test = angular.noop;
+
 
         PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
           $scope.rakenne = res;
@@ -44,6 +46,7 @@ angular.module('eperusteApp')
           }
         });
         $scope.viiteosa = {};
+        $scope.viiteosa.laajuus = {};
 
         $scope.fields =
           new Array({
@@ -116,6 +119,8 @@ angular.module('eperusteApp')
             }
           });
         }
+        
+        
 
         function setupTutkinnonOsa(osa) {
           function successCb(res) {
@@ -127,7 +132,7 @@ angular.module('eperusteApp')
 
           Editointikontrollit.registerCallback({
             edit: function() {
-              $scope.viiteosa = _.clone($scope.rakenne.tutkinnonOsat[$scope.editableTutkinnonOsa.id] || {});
+              $scope.viiteosa = $scope.rakenne.tutkinnonOsat[$scope.editableTutkinnonOsa.id] || {};
               $scope.viiteosa.yksikko = $scope.viiteosa.yksikko || 'OSAAMISPISTE';
             },
             validate: function() {

@@ -6,7 +6,8 @@ angular.module('eperusteApp')
       templateUrl: 'views/partials/numberinput.html',
       restrict: 'E',
       scope: {
-        data: '=',
+        myModel: '=',
+        myChange: '=',
         min: '@',
         max: '@',
         luokka: '@',
@@ -15,6 +16,7 @@ angular.module('eperusteApp')
       },
       replace: true,
       link: function (scope/*, element, attrs*/) {
+        scope.myChange = scope.myChange || angular.noop;
         // Poistetaan tmpName controlleri form:ista. Ja registeröidään controlleri
         // nimellä, mikä annettiin directiven name kentässä. Näin saadaan form validoinnit
         // näkymään directiven sisällä ja ulkona.
@@ -24,6 +26,7 @@ angular.module('eperusteApp')
           nameCtrl.$name = scope.name;
           scope.form.$addControl(nameCtrl);
         }
+        
       }
     };
   });
