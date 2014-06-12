@@ -15,7 +15,7 @@
  */
 
 'use strict';
-// /*global _*/
+/*global _*/
 
 angular.module('eperusteApp')
   .factory('LukkoSisalto', function(SERVICE_LOC, $resource) {
@@ -29,15 +29,30 @@ angular.module('eperusteApp')
       osanId: '@osanId'
     });
   })
-  .service('Lukitus', function(LukkoPerusteenosa, LukkoSisalto, Notifikaatiot) {
+  .service('Lukitus', function(LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, LukkoPerusteenosa, LukkoSisalto, Notifikaatiot) {
+    var lukitsin = null;
+
+    var onevent = _.debounce(function() {
+      if (lukitsin) {
+        lukitsin();
+      }
+    }, LUKITSIN_MINIMI, {
+      maxWait: LUKITSIN_MAKSIMI
+    });
+    angular.element(window).on('click', onevent);
+
     function lukitse(Resource, obj, success) {
       success = success || angular.noop;
-      Resource.save(obj, success, Notifikaatiot.serverLukitus);
+      lukitsin = function() {
+        Resource.save(obj, success, Notifikaatiot.serverLukitus);
+      };
+      lukitsin();
     }
 
     function vapauta(Resource, obj, success) {
       success = success || angular.noop;
       Resource.remove(obj, success, Notifikaatiot.serverLukitus);
+      lukitsin = null;
     }
 
     function lukitseSisalto(id, suoritustapa, success) {

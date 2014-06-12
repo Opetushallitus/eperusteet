@@ -15,7 +15,7 @@
  */
 
 'use strict';
-/* global _, moment */
+/* global _, moment, window */
 
 angular.module('eperusteApp', [
   'ngRoute',
@@ -37,6 +37,8 @@ angular.module('eperusteApp', [
   .constant('SPINNER_WAIT', 100)
   .constant('NOTIFICATION_DELAY_SUCCESS', 2000)
   .constant('NOTIFICATION_DELAY_WARNING', 8000)
+  .constant('LUKITSIN_MINIMI', 5000)
+  .constant('LUKITSIN_MAKSIMI', 20000)
   .config(function($urlRouterProvider, $sceProvider) {
     $sceProvider.enabled(true);
     $urlRouterProvider.when('','/');
@@ -206,5 +208,4 @@ angular.module('eperusteApp', [
         return confirmationMessage;
       }
     });
-
   });
