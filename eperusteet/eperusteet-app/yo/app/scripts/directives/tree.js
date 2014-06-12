@@ -122,6 +122,10 @@ angular.module('eperusteApp')
           scope.sortableOptions.disabled = !scope.muokkaus;
         });
 
+        scope.piilotaVirheet = function() {
+          scope.apumuuttujat.piilotaVirheet = !scope.apumuuttujat.piilotaVirheet;
+        };
+
         var varivalinta = '{ \'background\': rakenne.rooli === \'virtuaalinen\'' +
                                               '? \'#93278F\'' +
                                               ': rakenne.osat.length === 0' +
@@ -173,9 +177,15 @@ angular.module('eperusteApp')
 
         var kentta = '<div ng-if="rakenne._tutkinnonOsa" ng-class="{ \'pointer\': muokkaus, \'huomio\': tutkinnonOsat[rakenne._tutkinnonOsa].$elevate }" class="bubble-osa">' + optiot + '</div>';
         kentta += '<div ng-if="!rakenne._tutkinnonOsa" ng-class="{ \'pointer\': muokkaus }" class="bubble">' + optiot + '</div>';
-        kentta += '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe" class="virhe"><span>{{ tkaanna(rakenne.$virhe.selite) }}. {{ rakenne.$virhe.virhe | kaanna }}.</span></div>';
+        kentta += '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="virhe">' +
+                  '  <span>{{ tkaanna(rakenne.$virhe.selite) }}<span ng-show="rakenne.$virhe.selite.length > 0">. </span>{{ rakenne.$virhe.virhe | kaanna }}.</span>' +
+                  '</div>';
 
         var avaaKaikki = '<div class="pull-right">' +
+                         '  <a ng-show="muokkaus" style="margin-right: 10px;" href="" ng-click="piilotaVirheet()" class="group-toggler">' +
+                         '    <span ng-hide="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "piilota-virheet" | kaanna }}</span>' +
+                         '    <span ng-show="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "nayta-virheet" | kaanna }}</span>' +
+                         '  </a>' +
                          '  <a href="" ng-click="togglaaPolut()" class="group-toggler">' +
                          '    <span class="avaa-sulje"><img src="images/expander.png" alt=""> {{ "avaa-sulje-kaikki" | kaanna }}</span>' +
                          '  </a>' +
@@ -197,7 +207,7 @@ angular.module('eperusteApp')
           avaaKaikki +
           '    </h4>' +
           '  </div>' +
-          '  <div ng-show="muokkaus && rakenne.$virhe" class="isovirhe-otsikko">{{ tkaanna(rakenne.$virhe.selite) }}{{ rakenne.$virhe.virhe | kaanna }}</div>' +
+          '  <div ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="isovirhe-otsikko">{{ tkaanna(rakenne.$virhe.selite) }}{{ rakenne.$virhe.virhe | kaanna }}</div>' +
           '</div>' +
           '<div ng-if="vanhempi">' + kentta + '</div>' +
           '<div ng-if="rakenne.rooli !== \'virtuaalinen\'" class="collapser" ng-show="!rakenne.$collapsed">' +
@@ -344,7 +354,8 @@ angular.module('eperusteApp')
           scope.apumuuttujat = {
             suoritustapa: scope.rakenne.$suoritustapa,
             yksikko: sts ? sts.yksikko : null,
-            vanhin: scope.rakenne
+            vanhin: scope.rakenne,
+            piilotaVirheet: false
           };
         });
 

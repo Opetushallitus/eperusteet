@@ -26,6 +26,7 @@ angular.module('eperusteApp')
     }
 
     function kaannaSaanto(ms) {
+      if (!ms) { return; }
       var fraasi = [];
       var msl = ms.laajuus;
       var msk = ms.koko;
