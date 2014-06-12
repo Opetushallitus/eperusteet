@@ -70,7 +70,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         String koulutustyyppi = perusteprojektiDto.getKoulutustyyppi();
         LaajuusYksikko yksikko = perusteprojektiDto.getYksikko();
 
-        if (koulutustyyppi.equals("ops") && yksikko == null) {
+        if (koulutustyyppi.equals("koulutustyyppi_1") && yksikko == null) {
             throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
         }
 

@@ -38,13 +38,17 @@ angular.module('eperusteApp')
     $scope.naytaVirheet = false;
     $scope.uploadErrors = [];
     $scope.uploadSuccess = false;
-    $scope.tutkinnonTyyppi = 'ammattitutkinto';
     $scope.parsinnanTyyppi = 'peruste';
     $scope.projekti = {};
+    $scope.projekti.koulutustyyppi = 'koulutustyyppi_1';
+    $scope.projekti.yksikko = 'OSAAMISPISTE';
     $scope.peruste = {};
     $scope.haettuPeruste = {};
     $scope.peruste.$perusteTallennettu = false;
     $scope.koulutustyypit = YleinenData.koulutustyypit;
+    $scope.yksikot = YleinenData.yksikot;
+    $scope.suoritustavat = YleinenData.suoritustavat;
+    $scope.suoritustapa = 'ops';
 
     $scope.clearSelect = function() {
       $scope.osatutkinnot = [];
@@ -78,8 +82,6 @@ angular.module('eperusteApp')
           $scope.peruste.$perusteTallennettu = true;
           $scope.haettuPeruste = resPeruste;
         });
-      }, function() {
-        // TODO: Virhe notifikaatio
       });
     };
 
@@ -90,10 +92,11 @@ angular.module('eperusteApp')
         return tk.$ladattu !== 0;
       })
       .forEach(function(tk) {
+        tk.tila = 'luonnos';
         PerusteenOsat.saveTekstikappale(tk, function(re) {
           SuoritustapaSisalto.add({
             perusteId: $scope.haettuPeruste.id,
-            suoritustapa: $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi
+            suoritustapa: $scope.suoritustapa || $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi
           }, {
             _perusteenOsa: re.id
           }, function() {
@@ -102,45 +105,12 @@ angular.module('eperusteApp')
             doneSuccess();
           }, function(err) {
             tk.$syy = err.data.syy;
-            // TODO: Lisää notifikaatio
           });
         }, function(err) {
           tk.$syy = err.data.syy;
         });
       });
     };
-
-    // $scope.perusteHaku = function(koodisto) {
-    //   $scope.hakemassa = true;
-
-    //   $scope.peruste.nimi = koodisto.nimi;
-    //   $scope.peruste.koodi = koodisto.koodi;
-    //   $scope.peruste.koulutukset = [{}];
-    //   $scope.peruste.koulutukset[0].koulutuskoodi = koodisto.koodi;
-    //   $scope.peruste.suoritustavat = [{suoritustapakoodi: 'ops'}];
-
-    //   Koodisto.haeAlarelaatiot($scope.peruste.koodi, function (relaatiot) {
-    //     _.forEach(relaatiot, function(rel) {
-    //       switch (rel.koodisto.koodistoUri) {
-    //         case 'koulutusalaoph2002':
-    //           $scope.peruste.koulutukset[0].koulutusalakoodi = rel.koodi;
-    //           break;
-    //         case 'opintoalaoph2002':
-    //           $scope.peruste.koulutukset[0].opintoalakoodi = rel.koodi;
-    //           break;
-    //         case 'koulutustyyppi':
-    //           if (rel.koodi === 'koulutustyyppi_1' || rel.koodi === 'koulutustyyppi_11' || rel.koodi === 'koulutustyyppi_12') {
-    //             $scope.peruste.tutkintokoodi = rel.koodi;
-    //           }
-    //           break;
-    //       }
-    //     });
-    //     $scope.hakemassa = false;
-    //   }, function (virhe) {
-    //     console.log('koodisto alarelaatio virhe', virhe);
-    //     $scope.hakemassa = false;
-    //   });
-    // };
 
     $scope.poistaTekstikentta = function(tekstikentta) { _.remove($scope.peruste.tekstikentat, tekstikentta); };
 
@@ -163,10 +133,12 @@ angular.module('eperusteApp')
           var cop = _.clone(ot);
           // TutkinnonOsanValidointi.validoi(cop).then(function() {
             cop.tavoitteet = {};
+            cop.tila = 'luonnos';
+            console.log(cop);
             PerusteenOsat.saveTutkinnonOsa(cop, function(re) {
               PerusteTutkinnonosat.save({
                 perusteenId: $scope.haettuPeruste.id,
-                suoritustapa: $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi // FIXME
+                suoritustapa: $scope.suoritustapa || $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi
               }, {
                 _tutkinnonOsa: re.id
               }, function() {
@@ -202,7 +174,7 @@ angular.module('eperusteApp')
       if (err || !file) {
         // TODO: Hoida virhetilanteet
       } else {
-        var promise = ExcelService.parseXLSXToOsaperuste(file, $scope.tutkinnonTyyppi, $scope.parsinnanTyyppi);
+        var promise = ExcelService.parseXLSXToOsaperuste(file, $scope.projekti.koulutustyyppi === 'koulutustyyppi_1' ? 'perustutkinto' : 'ammattitutkinto', $scope.parsinnanTyyppi);
         promise.then(function(resolve) {
           $scope.warnings = resolve.osatutkinnot.varoitukset;
           $scope.peruste = _.omit(resolve.peruste, 'tekstikentat');

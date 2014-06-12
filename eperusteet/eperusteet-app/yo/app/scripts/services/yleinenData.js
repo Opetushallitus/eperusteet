@@ -44,6 +44,11 @@ angular.module('eperusteApp')
         'ammatillinenaikuiskoulutus'
       ];
 
+    this.suoritustavat = [
+      'ops',
+      'naytto'
+    ];
+
     this.koulutustyypit = [
       'koulutustyyppi_1',
       'koulutustyyppi_11',

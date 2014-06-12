@@ -207,7 +207,7 @@ angular.module('eperusteApp')
           avaaKaikki +
           '    </h4>' +
           '  </div>' +
-          '  <div ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="isovirhe-otsikko">{{ tkaanna(rakenne.$virhe.selite) }}{{ rakenne.$virhe.virhe | kaanna }}</div>' +
+          '  <div ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="isovirhe-otsikko">{{ tkaanna(rakenne.$virhe.selite) }}<span ng-show="rakenne.$virhe.selite.length > 0">. </span>{{ rakenne.$virhe.virhe | kaanna }}</div>' +
           '</div>' +
           '<div ng-if="vanhempi">' + kentta + '</div>' +
           '<div ng-if="rakenne.rooli !== \'virtuaalinen\'" class="collapser" ng-show="!rakenne.$collapsed">' +
@@ -332,7 +332,9 @@ angular.module('eperusteApp')
               uusiryhma.$uusi = true;
               scope.skratchpad.push(uusiryhma);
             }
-            else { _.merge(ryhma, uusiryhma); }
+            else {
+              ryhma = _.merge(ryhma, uusiryhma);
+            }
           }
           else { _.remove(scope.skratchpad, ryhma); }
         });

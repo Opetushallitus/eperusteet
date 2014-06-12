@@ -44,9 +44,9 @@ angular.module('eperusteApp')
     function lukitse(Resource, obj, success) {
       success = success || angular.noop;
       lukitsin = function() {
-        Resource.save(obj, success, Notifikaatiot.serverLukitus);
+        Resource.save(obj, angular.noop, Notifikaatiot.serverLukitus);
       };
-      lukitsin();
+      Resource.save(obj, success, Notifikaatiot.serverLukitus);
     }
 
     function vapauta(Resource, obj, success) {

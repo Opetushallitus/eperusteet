@@ -27,7 +27,7 @@ angular.module('eperusteApp')
       }
 
       var lang = $translate.use() || $translate.preferredLanguage();
-      if (_.isObject(input) && input[lang]) {
+      if (_.isObject(input) && _.isString(input[lang])) {
         return lisaaPlaceholder(input[lang]);
       }
       else if (_.isString(input)) {

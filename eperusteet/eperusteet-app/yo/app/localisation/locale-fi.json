@@ -173,6 +173,10 @@
     "koulutustyyppi_11": "Ammattitutkinto",
     "koulutustyyppi_12": "Erikoisammattitutkinto",
 
+    "solu": "Solu",
+    "annettu-arvo": "Annettu arvo",
+    "odotettu-arvo": "Odotettu arvo",
+
     "opintoalakoodi-1": "Kielitieteet",
     "opintoalakoodi-2": "Muu humanistinen ja kasvatusala",
     "opintoalakoodi-3": "Opetus- ja kasvatustyö",
@@ -226,6 +230,9 @@
     "tutkinnonosat": "Tutkinnon osat",
     "tekstikappaleet": "Tekstikappaleet",
     "koulutus": "Koulutus",
+
+    "tekstikappale-tallennettiin-onnistuneesti": "Tekstikappale tallennettiin onnistuneesti",
+    "antamassasi-tiedostossa-oli-virheitä": "Antamassasi tiedostossa oli virheitä, jotka estävät tiedoston lukemisen eteenpäin. Korjaa seuraavat virheet ja lähetä tiedosto uudestaan.",
 
     "koodi-virhe-1": "Koodia ei ole asetettu.",
     "koodi-virhe-2": "Käyttämälläsi koodilla löytyi jo tutkinnon osa.",
@@ -295,6 +302,11 @@
 
     "tuo-excel": "Tuo Excel",
     "tutkinnon-tyyppi": "Tutkinnon tyyppi",
+    "excel-tiedostossasi-oli-virheitä": "Excel-tiedostossasi oli virheitä",
+    "valitse-nimi": "Valitse nimi",
+    "valitse-diaarinumero": "Valitse diaarinumero",
+    "suoritustapa": "Suoritustapa",
+    "liita-perusteeseen": "Liitä perusteeseen",
 
     "projektin-nimi-label": "Projektin nimi",
     "anna-projektin-nimi-placeholder": "Syötä projektin nimi",
