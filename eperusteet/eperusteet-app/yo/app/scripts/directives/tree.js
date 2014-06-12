@@ -16,7 +16,6 @@
 
 'use strict';
 /*global _*/
-/*global $*/
 
 angular.module('eperusteApp')
   .directive('tree', function($compile, $state, $modal, Muodostumissaannot, Kaanna) {

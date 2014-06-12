@@ -15,7 +15,7 @@
  */
 
 'use strict';
-/* global _, moment, alert */
+/* global _, moment */
 
 angular.module('eperusteApp', [
   'ngRoute',
