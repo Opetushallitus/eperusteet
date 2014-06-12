@@ -54,15 +54,15 @@ angular.module('eperusteApp', [
     moment.lang('fi');
   })
   .config(function($httpProvider) {
-    $httpProvider.interceptors.push(['$rootScope', '$q', 'Kaanna', 'REQUEST_TIMEOUT', function($rootScope, $q, Kaanna, REQUEST_TIMEOUT) {
+    $httpProvider.interceptors.push(['$rootScope', 'REQUEST_TIMEOUT', 'Kaanna', '$q', function($rootScope, REQUEST_TIMEOUT, Kaanna, $q) {
       return {
         request: function(request) {
-          request.timeout = REQUEST_TIMEOUT;
+          // request.timeout = REQUEST_TIMEOUT;
           return request;
         },
         responseError: function(error) {
           if (error.status === 0) {
-            alert(Kaanna.kaanna('yhteys-palvelimeen-timeout'));
+            // alert(Kaanna.kaanna('yhteys-palvelimeen-timeout'));
           }
           return $q.reject(error);
         }

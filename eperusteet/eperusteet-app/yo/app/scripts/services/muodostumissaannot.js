@@ -25,6 +25,36 @@ angular.module('eperusteApp')
           .reduce(function(sum, newval) { return sum + newval; }) || 0;
     }
 
+    function kaannaSaanto(ms) {
+      var fraasi = [];
+      var msl = ms.laajuus;
+      var msk = ms.koko;
+
+      if (msl && msl.minimi && msl.maksimi) {
+        fraasi.push('osia-valittava-vahintaan');
+        fraasi.push(msl.minimi);
+        if (msl.minimi !== msl.maksimi) {
+          fraasi.push('ja-enintään');
+          fraasi.push(msl.maksimi);
+        }
+        fraasi.push('$yksikko');
+        fraasi.push('edestä');
+      }
+
+      if (msk && msk.minimi && msk.maksimi) {
+        if (!_.isEmpty(fraasi)) { fraasi.push('ja'); }
+        fraasi.push('osia-valittava-vahintaan');
+        fraasi.push(msk.minimi);
+        if (msk.minimi === msk.maksimi) {
+          fraasi.push('ja-enintään');
+          fraasi.push(msk.maksimi);
+        }
+        fraasi.push('kappaletta');
+      }
+
+      return fraasi;
+    }
+
     function validoiRyhma(rakenne) {
       function lajittele(osat) {
         var buckets = {};
@@ -33,6 +63,13 @@ angular.module('eperusteApp')
           buckets[osa.$laajuus] += 1;
         });
         return buckets;
+      }
+
+      function asetaVirhe(virhe, ms) {
+        rakenne.$virhe = {
+          virhe: virhe,
+          selite: kaannaSaanto(ms)
+        };
       }
 
       function avaintenSumma(osat, n, avaimetCb) {
@@ -45,7 +82,7 @@ angular.module('eperusteApp')
         return res;
       }
 
-      if (!rakenne) { return; }
+      if (!rakenne || !rakenne.osat) { return; }
 
       delete rakenne.$virhe;
 
@@ -57,33 +94,40 @@ angular.module('eperusteApp')
 
       // On rakennemoduuli
       if (rakenne.muodostumisSaanto && rakenne.rooli !== 'virtuaalinen') {
-        var msl = rakenne.muodostumisSaanto.laajuus || 0;
-        var msk = rakenne.muodostumisSaanto.koko || 0;
+        var ms = rakenne.muodostumisSaanto;
+        var msl = ms.laajuus || 0;
+        var msk = ms.koko || 0;
+        kaannaSaanto(rakenne.muodostumisSaanto);
 
         if (msl && msk) {
           var minimi = avaintenSumma(rakenne.osat, msk.minimi, function(lajitellut) { return _.keys(lajitellut); });
           var maksimi = avaintenSumma(rakenne.osat, msk.maksimi, function(lajitellut) { return _.keys(lajitellut).reverse(); });
-          if (minimi < msl.minimi) { rakenne.$virhe = 'rakenne-validointi-maara-laajuus-minimi'; }
-          else if (maksimi < msl.maksimi) { rakenne.$virhe =  'rakenne-validointi-maara-laajuus-maksimi'; }
+          if (minimi < msl.minimi) {
+            asetaVirhe('rakenne-validointi-maara-laajuus-minimi', ms);
+          }
+          else if (maksimi < msl.maksimi) {
+            asetaVirhe('rakenne-validointi-maara-laajuus-maksimi', ms);
+          }
         } else if (msl) {
           // Validoidaan maksimi
           if (msl.maksimi) {
             if (osienLaajuudenSumma(rakenne.osat) < msl.maksimi) {
-              rakenne.$virhe = 'muodostumis-rakenne-validointi-laajuus';
+              asetaVirhe('muodostumis-rakenne-validointi-laajuus', ms);
             }
           }
         } else if (msk) {
           if (_.size(rakenne.osat) < msk.maksimi) {
-            rakenne.$virhe = 'muodostumis-rakenne-validointi-maara';
+            asetaVirhe('muodostumis-rakenne-validointi-maara', ms);
           }
         }
 
-        var tosat = _(rakenne.osat)
-          .filter(function(osa) { return osa._tutkinnonOsa; })
-          .value();
-        if (_.size(tosat) !== _(tosat).uniq('_tutkinnonOsa').size()) {
-          rakenne.$virhe = 'muodostumis-rakenne-validointi-uniikit';
-        }
+      }
+      var tosat = _(rakenne.osat)
+        .filter(function(osa) { return osa._tutkinnonOsa; })
+        .value();
+
+      if (_.size(tosat) !== _(tosat).uniq('_tutkinnonOsa').size()) {
+        asetaVirhe('muodostumis-rakenne-validointi-uniikit');
       }
     }
 
@@ -129,6 +173,7 @@ angular.module('eperusteApp')
     return {
       validoiRyhma: validoiRyhma,
       laskeLaajuudet: laskeLaajuudet,
-      ryhmaModaali: ryhmaModaali
+      ryhmaModaali: ryhmaModaali,
+      kaannaSaanto: kaannaSaanto
     };
   });

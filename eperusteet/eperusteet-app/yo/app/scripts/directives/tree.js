@@ -19,9 +19,9 @@
 /*global $*/
 
 angular.module('eperusteApp')
-  .directive('tree', function($compile, $state, $modal, Muodostumissaannot) {
+  .directive('tree', function($compile, $state, $modal, Muodostumissaannot, Kaanna) {
     function generoiOtsikko() {
-      var tosa = '{{ tutkinnonOsat[rakenne._tutkinnonOsa].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsat[rakenne._tutkinnonOsa].laajuus">, <b>{{ + tutkinnonOsat[rakenne._tutkinnonOsa].laajuus || 0 }}</b>{{ tutkinnonOsat[rakenne._tutkinnonOsa].yksikko | kaanna }}</span>';
+      var tosa = '{{ tutkinnonOsat[rakenne._tutkinnonOsa].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsat[rakenne._tutkinnonOsa].laajuus">, <b>{{ + tutkinnonOsat[rakenne._tutkinnonOsa].laajuus || 0 }}</b>{{ apumuuttujat.yksikko | kaanna }}</span>';
       var editointiIkoni =
       '<span ng-click="togglaaPakollisuus(rakenne)">' +
         '  <span ng-show="!rakenne.pakollinen"><img src="images/tutkinnonosa.png" alt=""></span> ' +
@@ -90,6 +90,21 @@ angular.module('eperusteApp')
           }
         };
 
+        scope.tkaanna = function(input) {
+          return _.reduce(_.map(input, function(str) {
+            switch (str) {
+              case '$yksikko':
+                str = scope.apumuuttujat.yksikko;
+                break;
+              default:
+                break;
+            }
+            return Kaanna.kaanna(str);
+          }), function(str, next) {
+            return str + ' ' + next;
+          });
+        };
+
         scope.sortableOptions = {
           connectWith: '.tree-group',
           cursor: 'move',
@@ -115,6 +130,21 @@ angular.module('eperusteApp')
                                                 ': rakenne.$collapsed' +
                                                   '? \'#06526c\'' +
                                                   ': \'#29ABE2\' }';
+
+        var koonIlmaisu = '<span ng-show="rakenne.muodostumisSaanto.koko.minimi === rakenne.muodostumisSaanto.koko.maksimi">' +
+                          '  <b>{{ rakenne.muodostumisSaanto.koko.minimi || 0 }}</b> {{ \'kpl\' | kaanna }}' +
+                          '</span>' +
+                          '<span ng-hide="rakenne.muodostumisSaanto.koko.minimi === rakenne.muodostumisSaanto.koko.maksimi">' +
+                          '  <b>{{ rakenne.muodostumisSaanto.koko.minimi || 0 }}</b> - <b>{{ rakenne.muodostumisSaanto.koko.maksimi || 0 }}</b> {{ \'kpl\' | kaanna }}' +
+                          '</span>';
+
+        var laajuudenIlmaisu = '<span ng-show="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi">' +
+                               '  <b>{{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}</b> {{ apumuuttujat.yksikko | kaanna }}' +
+                               '</span>' +
+                               '<span ng-hide="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi">' +
+                               '  <b>{{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}</b> - <b>{{ rakenne.muodostumisSaanto.laajuus.maksimi || 0 }}</b> {{ apumuuttujat.yksikko | kaanna }}' +
+                               '</span>';
+
         var optiot = '' +
           '<span ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" ng-if="!rakenne._tutkinnonOsa" class="colorbox" ng-style="' + varivalinta + '">' +
           '  <span ng-show="rakenne.rooli !== \'virtuaalinen\'">' +
@@ -126,10 +156,16 @@ angular.module('eperusteApp')
           '  <div ng-if="!rakenne._tutkinnonOsa && muokkaus" class="right-item">' +
           '    <a href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)"><span class="glyphicon glyphicon-pencil"></span></a>' +
           '  </div>' +
-          '  <div class="pull-right" ng-if="!rakenne._tutkinnonOsa && muokkaus">' +
-          '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus || 0 }}</b>/<b>{{ rakenne.$vaadittuLaajuus || 0 }}</b>ov</span>' +
-          '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\'"><b>{{ rakenne.$laajuus || 0 }}</b>ov</span>' +
-          '    <span class="right-item"><b>{{ rakenne.osat.length }}kpl</b></span>' +
+          '  <div class="pull-right" ng-if="!rakenne._tutkinnonOsa">' +
+          '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.muodostumisSaanto.laajuus.minimi">' +
+          laajuudenIlmaisu +
+          '    </span>' +
+          '    <span class="right-item" ng-if="rakenne.muodostumisSaanto.koko.minimi">' +
+          koonIlmaisu +
+          '    </span>' +
+          // '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus || 0 }}</b>/<b>{{ rakenne.$vaadittuLaajuus || 0 }}</b>{{ apumuuttujat.yksikko | kaanna }}</span>' +
+          // '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\' && !rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus || 0 }}</b>{{ apumuuttujat.yksikko | kaanna }}</span>' +
+          // '    <span class="right-item"><b>{{ rakenne.osat.length }}kpl</b></span>' +
           '  </div>' +
           '</div>' +
           '<div class="left">' +
@@ -138,7 +174,7 @@ angular.module('eperusteApp')
 
         var kentta = '<div ng-if="rakenne._tutkinnonOsa" ng-class="{ \'pointer\': muokkaus, \'huomio\': tutkinnonOsat[rakenne._tutkinnonOsa].$elevate }" class="bubble-osa">' + optiot + '</div>';
         kentta += '<div ng-if="!rakenne._tutkinnonOsa" ng-class="{ \'pointer\': muokkaus }" class="bubble">' + optiot + '</div>';
-        kentta += '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe" class="virhe"><span>{{ rakenne.$virhe | translate }}</span></div>';
+        kentta += '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe" class="virhe"><span>{{ tkaanna(rakenne.$virhe.selite) }}. {{ rakenne.$virhe.virhe | kaanna }}.</span></div>';
 
         var avaaKaikki = '<div class="pull-right">' +
                          '  <a href="" ng-click="togglaaPolut()" class="group-toggler">' +
@@ -156,14 +192,13 @@ angular.module('eperusteApp')
           '      </a>' +
           '      <span ng-hide="muokkaus"><b>{{ rakenne.nimi | kaanna:true }}</b></span>' +
           '      <span class="tree-otsikko-laajuus" ng-show="apumuuttujat.suoritustapa !== \'naytto\'"> ' +
-          '        (<b>{{ rakenne.$laajuus || 0 }}</b> / ' +
-          '        <span ng-show="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi"><b>{{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}</b>ov)</span>' +
-          '        <span ng-hide="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi"><b>{{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}</b> - {{ rakenne.muodostumisSaanto.laajuus.maksimi || 0 }}ov)</span>' +
+          '        <b>{{ rakenne.$laajuus || 0 }}</b> / ' +
+          laajuudenIlmaisu +
           '      </span>' +
           avaaKaikki +
           '    </h4>' +
           '  </div>' +
-          '  <div ng-show="muokkaus && rakenne.$virhe" class="isovirhe-otsikko">{{ rakenne.$virhe | kaanna }}</div>' +
+          '  <div ng-show="muokkaus && rakenne.$virhe" class="isovirhe-otsikko">{{ tkaanna(rakenne.$virhe.selite) }}{{ rakenne.$virhe.virhe | kaanna }}</div>' +
           '</div>' +
           '<div ng-if="vanhempi">' + kentta + '</div>' +
           '<div ng-if="rakenne.rooli !== \'virtuaalinen\'" class="collapser" ng-show="!rakenne.$collapsed">' +
@@ -310,8 +345,12 @@ angular.module('eperusteApp')
         };
 
         scope.$watch('rakenne.$suoritustapa', function() {
+          var sts = _(scope.rakenne.$peruste.suoritustavat).filter(function(st) { return st.yksikko; }) .value();
+          sts = _.zipObject(_.map(sts, 'suoritustapakoodi'), sts)[scope.rakenne.$suoritustapa];
+
           scope.apumuuttujat = {
             suoritustapa: scope.rakenne.$suoritustapa,
+            yksikko: sts ? sts.yksikko : null,
             vanhin: scope.rakenne
           };
         });
@@ -320,10 +359,6 @@ angular.module('eperusteApp')
           scope.sortableOptions.disabled = !scope.muokkaus;
           scope.sortableOptionsUnique.disabled = !scope.muokkaus;
         });
-
-        scope.$watch('tutkinnonOsat.rajaus', _.debounce(function () {
-          scope.$apply(paivitaUniikit);
-        }, 200, {leading: false}));
       }
     };
   });

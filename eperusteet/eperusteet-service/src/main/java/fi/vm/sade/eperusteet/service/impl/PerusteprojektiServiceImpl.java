@@ -55,6 +55,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private PerusteService perusteService;
+
     @Override
     @Transactional(readOnly = true)
     public PerusteprojektiDto get(Long id) {

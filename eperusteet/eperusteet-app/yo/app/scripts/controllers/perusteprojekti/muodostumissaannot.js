@@ -63,7 +63,7 @@ angular.module('eperusteApp')
 
     function haeVersiot(force) {
       VersionHelper.getRakenneVersions($scope.versiot, {id: $scope.rakenne.$peruste.id, suoritustapa: $scope.suoritustapa}, force);
-    };
+    }
 
     $scope.vaihdaVersio = function() {
       VersionHelper.changeRakenne($scope.versiot, {id: $scope.rakenne.$peruste.id, suoritustapa: $scope.suoritustapa}, function (response) {
