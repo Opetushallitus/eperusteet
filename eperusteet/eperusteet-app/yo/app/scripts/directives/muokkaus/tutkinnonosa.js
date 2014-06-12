@@ -126,6 +126,7 @@ angular.module('eperusteApp')
           function successCb(res) {
             Lukitus.vapautaPerusteenosa(res.id);
             Notifikaatiot.onnistui('muokkaus-tutkinnon-osa-tallennettu');
+            $scope.haeVersiot(true);
           }
 
           $scope.editableTutkinnonOsa = angular.copy(osa);
@@ -174,7 +175,7 @@ angular.module('eperusteApp')
               }
 
               Editointicatcher.give(_.clone($scope.editableTutkinnonOsa));
-              $scope.haeVersiot(true);
+              
 
             },
             cancel: function() {
