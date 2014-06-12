@@ -32,27 +32,27 @@ angular.module('eperusteApp')
       }
     };
 
-    this.getPerusteenosaVersions = function (data, id, force) {
-      getVersions(data, id, 'perusteenosa', force);
+    this.getPerusteenosaVersions = function (data, tunniste, force) {
+      getVersions(data, tunniste, 'perusteenosa', force);
     };
     
-    this.getRakenneVersions = function (data, id, force) {
-      getVersions(data, id, 'rakenne', force);
+    this.getRakenneVersions = function (data, tunniste, force) {
+      getVersions(data, tunniste, 'rakenne', force);
     };
     
-    var getVersions = function(data, id, tyyppi, force) {
+    var getVersions = function(data, tunniste, tyyppi, force) {
       if (!_.isObject(data)) {
         throw 'VersionHelper: not an object!';
       }
       if (force || !data.list) {
         if (tyyppi === 'perusteenosa') {
-          PerusteenOsat.versiot({osanId: id}, function(res) {
+          PerusteenOsat.versiot({osanId: tunniste.id}, function(res) {
             data.list = res;
             versiotListHandler(data);
           });
         } else if (tyyppi === 'rakenne') {
           console.log('haetaan rakenne versioita');
-          RakenneVersiot.query({rakenneId: id}, function(res) {
+          RakenneVersiot.query({perusteenId: tunniste.id, suoritustapa: tunniste.suoritustapa}, function(res) {
             data.list = res;
             versiotListHandler(data);
           });
@@ -69,24 +69,24 @@ angular.module('eperusteApp')
       });
     };
     
-    this.changePerusteenosa = function(data, id, cb) {
-      change(data, id, 'Perusteenosa', cb);
+    this.changePerusteenosa = function(data, tunniste, cb) {
+      change(data, tunniste, 'Perusteenosa', cb);
     };
     
-    this.changeRakenne = function(data, id, cb) {
-      change(data, id, 'Rakenne', cb);
+    this.changeRakenne = function(data, tunniste, cb) {
+      change(data, tunniste, 'Rakenne', cb);
     };
     
-    var change = function(data, id, tyyppi, cb) {
+    var change = function(data, tunniste, tyyppi, cb) {
       if (tyyppi === 'Perusteenosa') {
         PerusteenOsat.getVersio({
-          osanId: id,
+          osanId: tunniste.id,
           versioId: data.chosen.number
         }, function(response) {
           changeResponseHandler(data, response, cb);
         });
       } else if (tyyppi === 'Rakenne') {
-        RakenneVersio.get({rakenneId: id, versioId: data.chosen.number}, function(response) {
+        RakenneVersio.get({perusteenId: tunniste.id, suoritustapa: tunniste.suoritustapa, versioId: data.chosen.number}, function(response) {
           changeResponseHandler(data, response, cb);
         });
       }

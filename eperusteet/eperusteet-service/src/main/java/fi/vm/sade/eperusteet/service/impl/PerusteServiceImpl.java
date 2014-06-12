@@ -236,17 +236,44 @@ public class PerusteServiceImpl implements PerusteService {
     
     @Override
     @Transactional(readOnly = true)
-    public List<Revision> getRakenneVersiot(Long rakenneId) {
-        if (!rakenneRepository.exists(rakenneId)) {
-            throw new EntityNotFoundException("Rakennetta ei löytynyt id:llä: " + rakenneId);
+    public List<Revision> getRakenneVersiot(Long id, Suoritustapakoodi suoritustapakoodi) {
+        List<Revision> versiot = new ArrayList<>();
+        
+        Peruste peruste = perusteet.findOne(id);
+        if (peruste == null) {
+            throw new EntityNotFoundException("Perustetta ei löytynyt id:llä: " + id);
         }
-        return rakenneRepository.getRevisions(rakenneId);
+        Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+        if (suoritustapa == null) {
+            throw new EntityNotFoundException("Suoritustapaa " + suoritustapakoodi.toString() + " ei löytynyt");
+        }
+        RakenneModuuli rakenne = suoritustapa.getRakenne();
+        if (rakenne != null) {
+            versiot = rakenneRepository.getRevisions(rakenne.getId());
+        }
+        
+        return versiot;
     }
     
     @Override
     @Transactional(readOnly = true)
-    public RakenneModuuliDto getRakenneVersio(Long id, Integer versioId) {
-        return mapper.map(rakenneRepository.findRevision(id, versioId), RakenneModuuliDto.class);
+    public RakenneModuuliDto getRakenneVersio(Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId) {
+        RakenneModuuli rakenneVersio = null;
+        
+        Peruste peruste = perusteet.findOne(id);
+        if (peruste == null) {
+            throw new EntityNotFoundException("Perustetta ei löytynyt id:llä: " + id);
+        }
+        Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+        if (suoritustapa == null) {
+            throw new EntityNotFoundException("Suoritustapaa " + suoritustapakoodi.toString() + " ei löytynyt");
+        }
+        RakenneModuuli rakenne = suoritustapa.getRakenne();
+        if (rakenne != null) {
+            rakenneVersio = rakenneRepository.findRevision(rakenne.getId(), versioId);
+        }
+        
+        return mapper.map(rakenneVersio, RakenneModuuliDto.class);
     }
 
     @Override

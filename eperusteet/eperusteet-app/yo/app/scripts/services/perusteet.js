@@ -44,10 +44,10 @@ angular.module('eperusteApp')
       });
   })
   .factory('RakenneVersiot', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/rakenne/:rakenneId/versiot');
+    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa/rakenne/versiot');
   })
   .factory('RakenneVersio', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/rakenne/:rakenneId/versio/:versioId');
+    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa/rakenne/versio/:versioId');
   })
   .factory('Perusteet', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteenId',

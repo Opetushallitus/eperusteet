@@ -84,7 +84,6 @@ public class DtoMapperConfig {
                 .register();
         factory.classMap(RakenneModuuliDto.class, RakenneModuuli.class)
                 .use(AbstractRakenneOsaDto.class, AbstractRakenneOsa.class)
-                .fieldBToA("id", "id")
                 .byDefault()
                 .register();
         factory.classMap(RakenneOsaDto.class, RakenneOsa.class)

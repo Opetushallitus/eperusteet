@@ -243,11 +243,11 @@ angular.module('eperusteApp')
         });
 
         $scope.haeVersiot = function (force) {
-          VersionHelper.getPerusteenosaVersions($scope.versiot, $scope.tutkinnonOsa.id, force);
+          VersionHelper.getPerusteenosaVersions($scope.versiot, {id: $scope.tutkinnonOsa.id}, force);
         };
 
         $scope.vaihdaVersio = function () {
-          VersionHelper.changePerusteenosa($scope.versiot, $scope.tutkinnonOsa.id, function (response) {
+          VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tutkinnonOsa.id}, function (response) {
             $scope.tutkinnonOsa = response;
             setupTutkinnonOsa(response);
             var objDefer = $q.defer();
