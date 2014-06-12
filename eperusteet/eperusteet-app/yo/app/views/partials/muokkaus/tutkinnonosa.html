@@ -19,6 +19,7 @@
       <form name="tutkinnonOsaHeaderForm" class="form-horizontal" role="form">
         <div ng-if="suoritustapa !== 'naytto'" class="form-group">
           <label class="control-label col-sm-2">{{ 'tutkinnonosa-laajuus' | kaanna }}</label>
+          <div class="col-sm-9">
             <numberinput luokka="form-control" name="laajuus" my-model="viiteosa.laajuus" min="0" max="999" form="tutkinnonOsaHeaderForm"></numberinput>
           </div>
           <label class="control-label col-sm-1">{{ viiteosa.yksikko | kaanna }}</label>
