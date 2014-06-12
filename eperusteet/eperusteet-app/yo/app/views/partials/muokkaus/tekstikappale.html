@@ -14,8 +14,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 
-<button ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="pull-right btn btn-default"><span class="glyphicon glyphicon-pencil"></span>{{'muokkaa' | translate}}</button>
-<button ng-if="editEnabled" class="btn btn-danger pull-right" ng-click="poista()">
+<button ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="floater btn btn-default"><span class="glyphicon glyphicon-pencil"></span>{{'muokkaa' | translate}}</button>
+<button ng-if="editEnabled" class="btn btn-danger floater" ng-click="poista()">
     <span class="glyphicon glyphicon-remove"></span>{{'poista' | translate}}
 </button>
 <div class="tekstikappale" ng-class="{'edit-tekstikappale': editEnabled, 'max-sm-leveys': !editEnabled}">

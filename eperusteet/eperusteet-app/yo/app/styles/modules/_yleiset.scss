@@ -70,3 +70,9 @@ a.iconlink > .glyphicon {
     float: left;
   }
 }
+
+.btn.floater {
+  position: relative;
+  float: right;
+  top: -40px;
+}
