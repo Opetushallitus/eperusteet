@@ -97,18 +97,19 @@ public class PerusteController {
         return new ResponseEntity<>(service.getTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi)), HttpStatus.OK);
     }
     
-    @RequestMapping(value = "/rakenne/{id}/versiot", method = GET)
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne/versiot", method = GET)
     @ResponseBody
-    public List<Revision> getRakenneVersiot(@PathVariable("id") final Long id) {
-    	LOG.debug("get rakenne versio: " + id);
-    	return service.getRakenneVersiot(id);
+    public List<Revision> getRakenneVersiot(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+    	LOG.debug("get rakenne versiot: " + id + ", " + suoritustapakoodi);
+    	return service.getRakenneVersiot(id, Suoritustapakoodi.of(suoritustapakoodi));
     }
     
-    @RequestMapping(value = "/rakenne/{id}/versio/{versioId}", method = GET)
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne/versio/{versioId}", method = GET)
     @ResponseBody
-    public ResponseEntity<RakenneModuuliDto> getRakenneVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
-    	LOG.debug("get rakenne #{} versio #{}", id, versioId);
-    	RakenneModuuliDto t = service.getRakenneVersio(id, versioId);
+    public ResponseEntity<RakenneModuuliDto> getRakenneVersio(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+                                                              @PathVariable("versioId") final Integer versioId) {
+    	LOG.debug("get peruste #{} suoritustapa #{} versio #{}", id, suoritustapakoodi, versioId);
+    	RakenneModuuliDto t = service.getRakenneVersio(id, Suoritustapakoodi.of(suoritustapakoodi), versioId);
         if (t == null) {
         	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

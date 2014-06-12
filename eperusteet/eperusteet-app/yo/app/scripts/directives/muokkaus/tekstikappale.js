@@ -69,6 +69,8 @@ angular.module('eperusteApp')
 
         function setupTekstikappale(kappale) {
           function successCb(res) {
+            // Päivitä versiot
+            $scope.haeVersiot(true);
             SivunavigaatioService.update();
             Lukitus.vapautaPerusteenosa(res.id);
             Notifikaatiot.onnistui('muokkaus-tekstikappale-tallennettu');
@@ -92,8 +94,6 @@ angular.module('eperusteApp')
                 PerusteenOsat.saveTekstikappale($scope.editableTekstikappale, successCb, Notifikaatiot.serverCb);
               }
               $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
-              // Päivitä versiot
-              $scope.haeVersiot(true);
             },
             cancel: function() {
               $scope.editableTekstikappale = angular.copy($scope.tekstikappale);
@@ -134,11 +134,11 @@ angular.module('eperusteApp')
         });
 
         $scope.haeVersiot = function (force) {
-          VersionHelper.getPerusteenosaVersions($scope.versiot, $scope.tekstikappale.id, force);
+          VersionHelper.getPerusteenosaVersions($scope.versiot, {id: $scope.tekstikappale.id}, force);
         };
 
         $scope.vaihdaVersio = function () {
-          VersionHelper.changePerusteenosa($scope.versiot, $scope.tekstikappale.id, function (response) {
+          VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tekstikappale.id}, function (response) {
             $scope.tekstikappale = response;
             setupTekstikappale(response);
             var tekstikappaleDefer = $q.defer();

@@ -25,7 +25,6 @@ import lombok.Setter;
 @Setter
 public class RakenneModuuliDto extends AbstractRakenneOsaDto {
 
-    private Long id;
     private LokalisoituTekstiDto nimi;
     private LokalisoituTekstiDto kuvaus;
     private RakenneModuuliRooli rooli;
