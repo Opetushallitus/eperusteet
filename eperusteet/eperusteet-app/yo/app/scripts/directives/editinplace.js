@@ -28,7 +28,7 @@ angular.module('eperusteApp')
         var readOnlyEl = angular.element('<span></span>');
         readOnlyEl.attr('ng-show', '!editing')
           .attr('ng-click', 'edit()')
-          .text('{{editInPlace | kaanna}}');
+          .text('{{editInPlace | kaanna:true}}');
         var inputEl = angular.element('<input>');
         inputEl.attr('ng-show', 'editing')
           .attr('ng-model', 'editInPlace')
