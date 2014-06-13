@@ -87,7 +87,6 @@ angular.module('eperusteApp')
               return true;
             },
             save: function() {
-              //TODO: Validate tutkinnon osa
               if ($scope.editableTekstikappale.id) {
                 $scope.editableTekstikappale.$saveTekstikappale(successCb, Notifikaatiot.serverCb);
               } else {

@@ -70,6 +70,7 @@
     "tutkinnon-osia-ei-löytynyt": "Tutkinnon osia ei löytynyt",
     "aloita-raahaamalla-puuhun": "Rakenna puuta raahaamalla päälleni esineitä!",
 
+    "virhe-tiedosto-epäonnistui": "Tiedoston avaaminen epäonnistui",
     "virhe-perustetta-ei-löytynyt": "Hakemaasi perustetta ei löytynyt",
     "virhe": "Virhe",
     "virhe-sivua-ei-löytynyt": "Sivua ei löytynyt",
@@ -316,6 +317,11 @@
     "valitse-diaarinumero": "Valitse diaarinumero",
     "suoritustapa": "Suoritustapa",
     "liita-perusteeseen": "Liitä perusteeseen",
+    "excel-avataan-tiedostoa": "Avataan tiedostoa",
+    "excel-parsitaan-perustietoja": "Luetaan perustietoja",
+    "excel-luetaan-tekstikappaleita": "Luetaan tekstikappaleita",
+    "excel-luetaan-tutkinnonosia": "Luetaan tutkinnonosia",
+    "excel": "Excel",
 
     "projektin-nimi-label": "Projektin nimi",
     "anna-projektin-nimi-placeholder": "Syötä projektin nimi",

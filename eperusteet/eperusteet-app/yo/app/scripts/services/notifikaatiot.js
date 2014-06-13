@@ -104,12 +104,6 @@ angular.module('eperusteApp')
       }
     }
 
-    // TODO: päätä tarvitaanko tätä vai ei
-    $rootScope.$on('$stateChangeStart', function() {
-      // viestit = [];
-      // $rootScope.$broadcast('update:notifikaatiot');
-    });
-
     return {
       normaali: _.partial(uusiViesti, 0),
       onnistui: _.partial(uusiViesti, 1),

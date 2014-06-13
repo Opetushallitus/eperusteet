@@ -18,7 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('PerusteprojektinTilanvaihto', function ($modal) {
+  .service('PerusteprojektinTilanvaihto', function ($modal, YleinenData) {
     var that = this;
     this.start = function (currentStatus, setFn) {
       var dummyDescription = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.';
@@ -32,14 +32,7 @@ angular.module('eperusteApp')
           data: function () {
             return {
               oldStatus: currentStatus,
-              // TODO: mikä on tilojen ja kuvausten oikea asuinpaikka?
-              statuses: _.map([
-                'luonnos',
-                'kommentointi',
-                'viimeistely',
-                'kaannos',
-                'hyvaksytty'
-              ], function (item) {
+              statuses: _.map(YleinenData.tilakuvaukset, function (item) {
                 return {'key': item, 'description': {'fi': dummyDescription}};
               })
             };

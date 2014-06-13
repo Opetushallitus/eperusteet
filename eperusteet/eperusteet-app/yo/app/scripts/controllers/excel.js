@@ -29,15 +29,8 @@ angular.module('eperusteApp')
   .controller('ExcelCtrl', function($scope, ExcelService, PerusteenOsat, TutkinnonOsanValidointi,
                                     Koodisto, PerusteprojektiResource, PerusteTutkinnonosat,
                                     SuoritustapaSisalto, Perusteet, Notifikaatiot, YleinenData) {
-    $scope.osatutkinnot = [];
-    $scope.vaihe = [];
-    $scope.errors = [];
-    $scope.warnings = [];
     $scope.filename = '';
-    $scope.lukeeTiedostoa = true;
     $scope.naytaVirheet = false;
-    $scope.uploadErrors = [];
-    $scope.uploadSuccess = false;
     $scope.parsinnanTyyppi = 'peruste';
     $scope.projekti = {};
     $scope.projekti.koulutustyyppi = 'koulutustyyppi_1';
@@ -51,15 +44,15 @@ angular.module('eperusteApp')
     $scope.suoritustapa = 'ops';
 
     $scope.clearSelect = function() {
+      $scope.parsinnanTila = [];
       $scope.osatutkinnot = [];
-      $scope.vaihe = [];
       $scope.errors = [];
       $scope.warnings = [];
-      $scope.lukeeTiedostoa = true;
       $scope.lukeeTiedostoa = true;
       $scope.uploadErrors = [];
       $scope.uploadSuccess = false;
     };
+    $scope.clearSelect();
 
     $scope.editoiOsatutkintoa = function() {
     };
@@ -117,7 +110,7 @@ angular.module('eperusteApp')
     $scope.tallennaOsatutkinnot = function() {
       var doneSuccess = _.after(_.size($scope.osatutkinnot), function() {
         $scope.uploadSuccess = true;
-        Notifikaatiot.onnistui('tallennus-onnistui', '');
+        Notifikaatiot.onnistui('tallennus-onnistui');
       });
 
       _($scope.osatutkinnot).filter(function(ot) {
@@ -131,39 +124,37 @@ angular.module('eperusteApp')
           ot.$syy = ['excel-ei-kahta-samaa'];
         } else {
           var cop = _.clone(ot);
-          // TutkinnonOsanValidointi.validoi(cop).then(function() {
-            cop.tavoitteet = {};
-            cop.tila = 'luonnos';
-            console.log(cop);
-            PerusteenOsat.saveTutkinnonOsa(cop, function(re) {
-              PerusteTutkinnonosat.save({
-                perusteenId: $scope.haettuPeruste.id,
-                suoritustapa: $scope.suoritustapa || $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi
-              }, {
-                _tutkinnonOsa: re.id
-              }, function() {
-                ot.$ladattu = 0;
-                ot.id = re.id;
-                ot.koodiUri = re.koodiUri;
-                doneSuccess();
-              }, function(err) {
-                if (err) {
-                  ot.$syy = [err.data.syy];
-                  ot.$ladattu = 1;
-                }
-              });
+          cop.tavoitteet = {};
+          cop.tila = 'luonnos';
+          PerusteenOsat.saveTutkinnonOsa(cop, function(re) {
+            PerusteTutkinnonosat.save({
+              perusteenId: $scope.haettuPeruste.id,
+              suoritustapa: $scope.suoritustapa || $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi
+            }, {
+              _tutkinnonOsa: re.id
+            }, function() {
+              ot.$ladattu = 0;
+              ot.id = re.id;
+              ot.koodiUri = re.koodiUri;
+              doneSuccess();
             }, function(err) {
               if (err) {
                 ot.$syy = [err.data.syy];
                 ot.$ladattu = 1;
               }
             });
-          // }, function(virhe) {
-            // ot.$syy = virhe;
-            // ot.$ladattu = 1;
-          // });
+          }, function(err) {
+            if (err) {
+              ot.$syy = [err.data.syy];
+              ot.$ladattu = 1;
+            }
+          });
         }
       });
+    };
+
+    $scope.paivitaTilaa = function(notifier) {
+      $scope.parsinnanTila.push(notifier);
     };
 
     $scope.onFileSelect = function(err, file) {
@@ -172,34 +163,34 @@ angular.module('eperusteApp')
       $scope.osatutkinnot = [];
 
       if (err || !file) {
-        // TODO: Hoida virhetilanteet
+        Notifikaatiot.varoitus('virhe-tiedosto-epäonnistui');
       } else {
-        var promise = ExcelService.parseXLSXToOsaperuste(file, $scope.projekti.koulutustyyppi === 'koulutustyyppi_1' ? 'perustutkinto' : 'ammattitutkinto', $scope.parsinnanTyyppi);
+        var promise = ExcelService.parseXLSXToOsaperuste(
+          file,
+          $scope.projekti.koulutustyyppi === 'koulutustyyppi_1' ? 'perustutkinto' : 'ammattitutkinto',
+          $scope.paivitaTilaa
+        );
         promise.then(function(resolve) {
           $scope.warnings = resolve.osatutkinnot.varoitukset;
           $scope.peruste = _.omit(resolve.peruste, 'tekstikentat');
           $scope.tekstikentat = _.map(resolve.peruste.tekstikentat, function(tk) {
             return _.merge(tk, {
-                $ladattu: -1,
-                $syy: []
+              $ladattu: -1,
+              $syy: []
             });
           });
           $scope.osatutkinnot = _.map(resolve.osatutkinnot.osaperusteet, function(ot) {
             return _.merge(ot, {
-                $ladattu: -1,
-                koodiUri: '',
-                $syy: []
+              $ladattu: -1,
+              koodiUri: '',
+              $syy: []
             });
           });
           $scope.lukeeTiedostoa = false;
         }, function(errors) {
           $scope.errors = errors;
           $scope.lukeeTiedostoa = false;
-        }, function() {
-          // TODO: Ota tilannepäivitykset vastaan ja rendaa tilapalkki
         });
       }
-    };
-    $scope.onProgress = function() {
     };
   });

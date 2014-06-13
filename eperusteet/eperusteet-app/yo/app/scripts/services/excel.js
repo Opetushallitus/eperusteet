@@ -21,6 +21,8 @@
 angular.module('eperusteApp')
   .service('ExcelService', function($q) {
 
+    var notifier = angular.noop;
+
     // Tutkintojen/perusteiden parsiminen
     var tutkintoMap = {
       // Lopullisen backendille lähetettävän perusteen rakenne
@@ -292,6 +294,7 @@ angular.module('eperusteApp')
     }
 
     function readPerusteet(data, tyyppi) {
+      notifier('excel-luetaan-tekstikappaleita');
       var height = sheetHeight(data);
       var kentat = tutkintoMap[tyyppi].kentat;
       var peruste = {};
@@ -336,6 +339,7 @@ angular.module('eperusteApp')
     }
 
     function readOsaperusteet(data, tyyppi) {
+      notifier('excel-luetaan-tutkinnonosia');
       var height = sheetHeight(data);
       var anchors = getOsaAnchors(data, tyyppi);
       var osaperusteet = [];
@@ -495,6 +499,7 @@ angular.module('eperusteApp')
       if (_.isEmpty(parsedxlsx.SheetNames)) {
         deferred.reject(1);
       } else {
+        notifier('excel-parsitaan-perustietoja');
         var name = parsedxlsx.SheetNames[0];
         var sheet = parsedxlsx.Sheets[name];
         var err = validoi(sheet, validoiOtsikot(sheet, tyyppi), validoiRivit);
@@ -511,8 +516,11 @@ angular.module('eperusteApp')
       return deferred.promise;
     }
 
-    function parseXLSXToOsaperuste(file, tyyppi) {
-      return toJson(XLSX.read(file, { type: 'binary' }), tyyppi);
+    function parseXLSXToOsaperuste(file, tyyppi, notifierCb) {
+      notifier = notifierCb || angular.noop;
+      notifier('excel-avataan-tiedostoa');
+      var tiedosto = XLSX.read(file, { type: 'binary' });
+      return toJson(tiedosto, tyyppi);
     }
 
     return {

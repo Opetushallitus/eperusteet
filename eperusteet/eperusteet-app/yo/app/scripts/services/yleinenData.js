@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .service('YleinenData', function YleinenData($translate, Arviointiasteikot, $rootScope) {
+  .service('YleinenData', function YleinenData($rootScope, $translate, Arviointiasteikot, Notifikaatiot) {
 
     this.naviOmit = ['editoi', 'suoritustapa', 'sisalto', 'aloitussivu', 'selaus', 'esitys'];
 
@@ -42,6 +42,14 @@ angular.module('eperusteApp')
       this.kontekstit = [
         'ammatillinenperuskoulutus',
         'ammatillinenaikuiskoulutus'
+      ];
+
+      this.tilakuvaukset = [
+        'luonnos',
+        'kommentointi',
+        'viimeistely',
+        'kaannos',
+        'hyvaksytty'
       ];
 
     this.suoritustavat = [
@@ -75,9 +83,7 @@ angular.module('eperusteApp')
           self.arviointiasteikot = _.indexBy(tulos, 'id');
           $rootScope.$broadcast('arviointiasteikot');
 
-        }, function(/*virhe*/) {
-          // TODO
-        });
+        }, Notifikaatiot.serverCb);
 
       } else {
         $rootScope.$broadcast('arviointiasteikot');

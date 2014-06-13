@@ -98,7 +98,6 @@ angular.module('eperusteApp', [
             // var uudelleenohjausStatuskoodit = [401, 403, 412, 500];
             var uudelleenohjausStatuskoodit = [412, 500];
             if (_.indexOf(uudelleenohjausStatuskoodit, response.status) !== -1) {
-              // TODO: ota käyttöön poistamalla kommentista
               $rootScope.$emit('event:uudelleenohjattava', response.status);
             }
             return response || $q.when(response);

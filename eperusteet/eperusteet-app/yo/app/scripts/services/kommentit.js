@@ -107,14 +107,6 @@ angular.module('eperusteApp')
       }, 10);
     }
 
-    // TODO: ota käyttöön tarvittaessa
-    // function haeKommentitByParent(id, cb) {
-    // }
-    // function haeKommentitByYlin(id, cb) {
-    // }
-    // function haeAliKommentit(parentId) {
-    // }
-
     function lisaaKommentti(parent, viesti, success) {
       success = success || angular.noop;
       var payload = _.merge(_.clone(nykyinenParams), {
