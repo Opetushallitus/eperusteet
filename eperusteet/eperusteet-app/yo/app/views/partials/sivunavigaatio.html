@@ -1,7 +1,7 @@
 <div class="sivunavi-wrapper row" ng-class="{'osiot-piilossa': !data.osiot}">
 <div class="sivunavi-sisempi-wrapper" ng-class="{piilota: isHidden()}">
 <div class="sivunavi-takaisin">
-  <a class="iconlink" href="" ng-click="goBackToMain()" icon-role="back">{{'takaisin-paanakymaan' | kaanna}}</a>
+  <a href="" ng-click="goBackToMain()" icon-role="back">{{'takaisin-paanakymaan' | kaanna}}</a>
 </div>
 <div ng-show="data.osiot" class="sivunavi" ng-class="{'sivunavi-collapsed': menuCollapsed, 'sivunavi-open': !menuCollapsed}">
   <div class="sivunavi-toggler" ng-click="toggleSideMenu()"
