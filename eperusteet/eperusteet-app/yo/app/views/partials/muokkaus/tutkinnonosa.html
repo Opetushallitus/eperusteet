@@ -17,7 +17,7 @@
   <div ng-if="editEnabled && suoritustapa !== 'naytto'" class="stack">
     <span>{{viiteosa.yksikko | kaanna}}</span>
     <label>{{'tutkinnonosa-laajuus' | kaanna}}</label>
-    <numberinput name="laajuus" my-model="viiteosa.laajuus" min="0" max="999" form="tutkinnonOsaHeaderForm"></numberinput>
+    <numberinput name="laajuus" model="viiteosa.laajuus" min="0" max="999" form="tutkinnonOsaHeaderForm"></numberinput>
   </div>
 </form>
 <div class="stack" ng-if="editEnabled">

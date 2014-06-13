@@ -21,23 +21,10 @@ angular.module('eperusteApp')
   .directive('formfield', function ($parse, Kaanna) {
     var uniqueId = 0;
     return {
-      template:
-        '<div class="form-group">' +
-        '  <label class="col-sm-3 control-label">{{label | kaanna}}{{ postfix }}</label>' +
-        '  <div class="input-group col-sm-9">' +
-        '    <numberinput luokka="form-control" ng-if="!options && !isObject && type===\'number\'" name="{{name}}" my-model="input.model" my-change="updateModel()" min="{{min}}" max="{{max}}" form="form"></numberinput>' +
-        '    <input ng-if="!options && !isObject && type!==\'number\'" ng-class="inputClasses()" ng-model="input.model" ng-change="updateModel()" type="{{type}}">' +
-        '    <span ng-if="!options && isObject">' +
-        '      <ml-input ml-data="input.model" ng-model="input.model" ng-change="updateModel()"></ml-input>' +
-        '    </span>' +
-        '    <select ng-if="options" class="form-control" ng-model="input.model" ng-change="updateModel()"' +
-        '      ng-options="obj.value as obj.label for obj in options">' +
-        '    </select>' +
-        '  </div>' +
-        '</div>',
+      templateUrl: 'views/partials/formfield.html',
       restrict: 'E',
       scope: {
-        ngModel: '=',
+        model: '=',
         label: '@',
         type: '@',
         options: '=?',
@@ -59,9 +46,8 @@ angular.module('eperusteApp')
           }
           return classes;
         };
-        element.find('label').attr('for', scope.label + '-' + uniqueId);
-        element.find('input').attr('id', scope.label + '-' + uniqueId++);
-        element.find('numberinput').attr('id', scope.label + '-' + uniqueId++);
+        scope.inputElId = scope.label.replace(/ /g, '-') + '-' + uniqueId++;
+        element.find('label').attr('for', scope.inputElId);
 
         _.forEach(scope.options, function(opt) {
           opt.label = Kaanna.kaanna(opt.label);
@@ -69,12 +55,20 @@ angular.module('eperusteApp')
 
         // Two-way binding with deep object hierarchies needs some tricks
         var getter = $parse(scope.modelVar);
+        var setter = getter.assign;
         scope.input = {};
-        scope.input.model = getter(scope.ngModel);
+        scope.input.model = getter(scope.model);
         scope.isObject = _.isObject(scope.input.model);
-        scope.updateModel = function() {
-          getter.assign(scope.ngModel, scope.input.model);
-        };
+        // inner => outside
+        scope.$watch('input.model', function () {
+          setter(scope.model, scope.input.model);
+        });
+        // outside => inner
+        scope.$watch(function () {
+          return getter(scope.model);
+        }, function (value) {
+          scope.input.model = value;
+        });
       }
     };
   });

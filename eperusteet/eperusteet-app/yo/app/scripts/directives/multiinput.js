@@ -27,30 +27,33 @@ angular.module('eperusteApp')
       },
       templateUrl: 'views/multiinput.html',
       replace: true,
-      link: function ($scope) {
-        $scope.isObject = _.isObject($scope.mlData);
-        $scope.langs = _(_.values(YleinenData.kielet)).union($scope.mlAdditionalLanguages || [])
+      link: function (scope, element) {
+        scope.isObject = _.isObject(scope.mlData);
+        scope.langs = _(_.values(YleinenData.kielet)).union(scope.mlAdditionalLanguages || [])
                                                       .sort()
                                                       .value();
 
-        if (!$scope.mlData) {
+        if (!scope.mlData) {
           console.log('You must set ml-data for ml-input.');
         }
 
-        if (!$scope.isObject) {
+        if (!scope.isObject) {
           console.log('ml-data must be an object');
         }
 
-        _.forEach($scope.langs, function(lang) {
-          $scope.mlData[lang] = $scope.mlData[lang] || '';
+        _.forEach(scope.langs, function(lang) {
+          scope.mlData[lang] = scope.mlData[lang] || '';
         });
-        $scope.activeLang = $translate.use() || $translate.preferredLanguage();
-        $scope.kielivalintaAuki = false;
+        scope.activeLang = $translate.use() || $translate.preferredLanguage();
+        scope.kielivalintaAuki = false;
 
-        $scope.vaihdaKieli = function(uusiKieli) {
-          $scope.kielivalintaAuki = false;
-          $scope.activeLang = uusiKieli;
+        scope.vaihdaKieli = function(uusiKieli) {
+          scope.kielivalintaAuki = false;
+          scope.activeLang = uusiKieli;
         };
+        if (scope.$parent.inputElId) {
+          element.find('input').attr('id', scope.$parent.inputElId);
+        }
       }
     };
   });
