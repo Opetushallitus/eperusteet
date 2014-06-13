@@ -5,6 +5,7 @@ $reunus-vari: #ccc;
 $yla-reunus-vari: #ddd;
 $placeholder-vari: #777;
 $puuviiva-vari: #ccc;
+$tree-container-width: 800px;
 
 .group-toggler, .group-toggler span {
   &:hover, &:active, &:focus {
@@ -14,8 +15,7 @@ $puuviiva-vari: #ccc;
 }
 
 .tree-con {
-  min-width: 800px;
-  padding: 20px;
+  min-width: $tree-container-width;
 }
 
 .tree-anchor {
@@ -38,15 +38,13 @@ $puuviiva-vari: #ccc;
     background: #fcfcfc;
     margin: 0px;
     text-align: center;
-    // border-bottom-left-radius: 15px;
-    // border-bottom-right-radius: 15px;
     padding: 16px;
-    min-width: 760px;
+    min-width: $tree-container-width;
     position: absolute;
-    top: 66px;
-    left: 20px;
     z-index: -1;
     overflow: hidden;
+    border: 1px dashed #ddd;
+    top: 46px;
   }
 }
 
