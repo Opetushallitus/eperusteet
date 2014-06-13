@@ -239,7 +239,7 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional(readOnly = true)
     public List<Revision> getRakenneVersiot(Long id, Suoritustapakoodi suoritustapakoodi) {
         List<Revision> versiot = new ArrayList<>();
-        
+
         Peruste peruste = perusteet.findOne(id);
         if (peruste == null) {
             throw new EntityNotFoundException("Perustetta ei löytynyt id:llä: " + id);
@@ -252,7 +252,7 @@ public class PerusteServiceImpl implements PerusteService {
         if (rakenne != null) {
             versiot = rakenneRepository.getRevisions(rakenne.getId());
         }
-        
+
         return versiot;
     }
 
@@ -260,7 +260,7 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional(readOnly = true)
     public RakenneModuuliDto getRakenneVersio(Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId) {
         RakenneModuuli rakenneVersio = null;
-        
+
         Peruste peruste = perusteet.findOne(id);
         if (peruste == null) {
             throw new EntityNotFoundException("Perustetta ei löytynyt id:llä: " + id);
@@ -273,7 +273,7 @@ public class PerusteServiceImpl implements PerusteService {
         if (rakenne != null) {
             rakenneVersio = rakenneRepository.findRevision(rakenne.getId(), versioId);
         }
-        
+
         return mapper.map(rakenneVersio, RakenneModuuliDto.class);
     }
 
@@ -325,6 +325,7 @@ public class PerusteServiceImpl implements PerusteService {
             }
             em.persist(current);
         }
+
         return mapper.map(moduuli, RakenneModuuliDto.class);
     }
 

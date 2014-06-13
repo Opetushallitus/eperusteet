@@ -35,11 +35,11 @@ angular.module('eperusteApp')
     this.getPerusteenosaVersions = function (data, tunniste, force) {
       getVersions(data, tunniste, 'perusteenosa', force);
     };
-    
+
     this.getRakenneVersions = function (data, tunniste, force) {
       getVersions(data, tunniste, 'rakenne', force);
     };
-    
+
     var getVersions = function(data, tunniste, tyyppi, force) {
       if (!_.isObject(data)) {
         throw 'VersionHelper: not an object!';
@@ -51,7 +51,6 @@ angular.module('eperusteApp')
             versiotListHandler(data);
           });
         } else if (tyyppi === 'rakenne') {
-          console.log('haetaan rakenne versioita');
           RakenneVersiot.query({perusteenId: tunniste.id, suoritustapa: tunniste.suoritustapa}, function(res) {
             data.list = res;
             versiotListHandler(data);
@@ -59,7 +58,7 @@ angular.module('eperusteApp')
         }
       }
     };
-    
+
     var versiotListHandler = function(data) {
       data.chosen = latest(data.list);
       data.latest = true;
@@ -68,15 +67,15 @@ angular.module('eperusteApp')
         item.index = data.list.length - index;
       });
     };
-    
+
     this.changePerusteenosa = function(data, tunniste, cb) {
       change(data, tunniste, 'Perusteenosa', cb);
     };
-    
+
     this.changeRakenne = function(data, tunniste, cb) {
       change(data, tunniste, 'Rakenne', cb);
     };
-    
+
     var change = function(data, tunniste, tyyppi, cb) {
       if (tyyppi === 'Perusteenosa') {
         PerusteenOsat.getVersio({
@@ -91,7 +90,7 @@ angular.module('eperusteApp')
         });
       }
     };
-    
+
     var changeResponseHandler = function(data, response, cb) {
       cb(response);
       data.latest = data.chosen.number === latest(data.list).number;

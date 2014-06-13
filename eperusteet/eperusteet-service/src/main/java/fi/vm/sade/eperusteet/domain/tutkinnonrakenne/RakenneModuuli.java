@@ -81,7 +81,11 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
     @Override
     public void mergeState(RakenneModuuli moduuli) {
         if (moduuli != null) {
+            // FIXME: Tämä räjähtää jos olioon tulee lisää kenttiä
             this.setOsat(moduuli.osat);
+            this.nimi = moduuli.nimi;
+            this.rooli = moduuli.rooli;
+            this.kuvaus = moduuli.kuvaus;
             if (this.muodostumisSaanto != null) {
                 this.muodostumisSaanto.mergeState(moduuli.getMuodostumisSaanto());
             } else {
@@ -89,12 +93,18 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             }
         }
     }
-    
+
     public boolean isSame(RakenneModuuli moduuli) {
-        
+
         if (moduuli == null) {
             return false;
         }
+
+        TekstiPalanen moduuliNimi = moduuli.getNimi();
+        if (this.nimi == moduuliNimi) {
+            return false;
+        }
+
         if ( (this.osat == null && moduuli.getOsat() != null) || (this.osat != null && moduuli.getOsat() == null) ) {
             return false;
         }
@@ -119,7 +129,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
                 }
             }
         }
-        
+
         if (this.muodostumisSaanto != null) {
             if (!this.muodostumisSaanto.equals(moduuli.muodostumisSaanto)) {
                 System.out.println("Muodostumissääntö false");
