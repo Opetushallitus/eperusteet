@@ -189,6 +189,7 @@ angular.module('eperusteApp')
           console.log('koodisto-select:', tyyppi, 'ei vastaa mitään mitään vaihtoehtoa:', Koodisto.vaihtoehdot);
           return;
         }
+        console.log('direktiivi', tyyppi, ylarelaatioTyyppi);
         $scope.activate = Koodisto.modaali(function(koodi) {valmis(koodi);}, {tyyppi: function() {return tyyppi;}, ylarelaatioTyyppi: function() {return ylarelaatioTyyppi;}}, function() {}, filtteri);
       }
     };

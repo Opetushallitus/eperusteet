@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .directive('muokkausTutkinnonosa', function(Notifikaatiot) {
+  .directive('muokkausTutkinnonosa', function(Notifikaatiot, Koodisto) {
     return {
       templateUrl: 'views/partials/muokkaus/tutkinnonosa.html',
       restrict: 'E',
@@ -91,9 +91,12 @@ angular.module('eperusteApp')
              order: 5
            });
 
-        $scope.tuoKoodi = function(koodisto) {
+        $scope.koodistoClick = Koodisto.modaali(function(koodisto) {
           MuokkausUtils.nestedSet($scope.editableTutkinnonOsa, 'koodiUri', ',', koodisto.koodi);
-        };
+        }, {
+          tyyppi: function() { return 'tutkinnonosat'; },
+          ylarelaatioTyyppi: function() { return ''; }
+        });
 
         $scope.editableTutkinnonOsa = {};
         $scope.editEnabled = false;
