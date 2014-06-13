@@ -40,6 +40,7 @@ European Union Public Licence for more details.
             <label for="koulutustyyppi" class="col-sm-3">{{ 'laajuuden-yksikkö' | translate }}<span>*</span></label>
             <div class="col-md-9">
                 <select id="koulutustyyppi" ng-model="projekti.yksikko" class="form-control" ng-required="projekti.koulutustyyppi === 'koulutustyyppi_1'">
+                    <option value="" disabled selected translate>valitse-yksikko</option>
                     <option ng-repeat="yk in yksikot" value="{{ yk }}" ng-selected="projekti.yksikko === yk">{{ yk | kaanna }}</option>
                 </select>
             </div>

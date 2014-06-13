@@ -35,6 +35,8 @@ angular.module('eperusteApp')
 
     $scope.luonti = !_.isObject(ryhma);
     $scope.ryhma = ryhma ? angular.copy(ryhma) : {};
+    $scope.ryhma.rooli = $scope.ryhma.rooli || YleinenData.rakenneRyhmaRoolit[0];
+
     if (!$scope.ryhma.muodostumisSaanto) {
       $scope.ryhma.muodostumisSaanto = {};
     }
