@@ -23,11 +23,9 @@ European Union Public Licence for more details.
     on-enter="hyvaksyMuutos()"
     focus-me="muokkaustila"
     localized editointi-kontrolli/>
-  <a href="" ng-click="poistaAlkio(sisalto, sisaltoalue, $event)" editointi-kontrolli ng-show="!muokkaustila" class="muokkausnappi">
-    <span class="glyphicon glyphicon-remove"></span>
+  <a href="" ng-click="poistaAlkio(sisalto, sisaltoalue, $event)" editointi-kontrolli ng-show="!muokkaustila" class="muokkausnappi" icon-role="remove">
   </a>
-  <a href="" ng-click="asetaMuokkaustila(true, $event)" editointi-kontrolli ng-show="!muokkaustila" class="muokkausnappi">
-    <span class="glyphicon glyphicon-pencil"></span>
+  <a href="" ng-click="asetaMuokkaustila(true, $event)" editointi-kontrolli ng-show="!muokkaustila" class="muokkausnappi" icon-role="edit">
   </a>
   <div ng-show="muokkaustila" class="muokkaus-napit">
     <button class="btn btn-primary btn-xs" ng-click="hyvaksyMuutos($event)" translate>ok</button>

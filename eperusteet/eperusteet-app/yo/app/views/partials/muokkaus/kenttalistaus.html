@@ -18,8 +18,8 @@ European Union Public Licence for more details.
   <div class="panel panel-default">
     <div class="muokkaus-lisaa-osio" ng-if="editEnabled">
       <div class="dropdown">
-        <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()">
-          <span class="glyphicon glyphicon-plus"></span>{{'muokkaus-lisaa-osio' | translate}}
+        <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add">
+          {{'muokkaus-lisaa-osio' | translate}}
         </button>
         <ul class="dropdown-menu">
           <li ng-repeat="field in menuItems | orderBy:'order'">

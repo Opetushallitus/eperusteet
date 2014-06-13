@@ -1,13 +1,13 @@
 <h1>
   {{'tutkinnonosat' | kaanna}} ({{ tutkinnonOsat.length }} {{ 'kpl' | kaanna }})
-    <button class="btn btn-default" ng-click="lisaaTutkinnonOsa()">
-      <span class="glyphicon glyphicon-plus"></span>{{ 'lisää' | kaanna }}
+    <button class="btn btn-default" ng-click="lisaaTutkinnonOsa()" icon-role="add">
+      {{ 'lisää' | kaanna }}
     </button>
-    <button class="btn btn-default" ng-click="tuoSuoritustavasta()">
-      <span class="glyphicon glyphicon-cloud-download"></span>{{ 'tuo-toisesta-suoritustavasta' | kaanna }}
+    <button class="btn btn-default" ng-click="tuoSuoritustavasta()" icon-role="import">
+      {{ 'tuo-toisesta-suoritustavasta' | kaanna }}
     </button>
-    <button class="btn btn-default" ng-click="tuoTutkinnonosa()">
-      <span class="glyphicon glyphicon-cloud-download"></span>{{ 'tuo-tutkinnonosa' | kaanna }}
+    <button class="btn btn-default" ng-click="tuoTutkinnonosa()" icon-role="import">
+      {{ 'tuo-tutkinnonosa' | kaanna }}
     </button>
 </h1>
 

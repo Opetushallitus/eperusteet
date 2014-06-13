@@ -14,10 +14,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 
-<button ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="floater btn btn-default"><span class="glyphicon glyphicon-pencil"></span>{{'muokkaa' | translate}}</button>
-<button ng-if="editEnabled" class="btn btn-danger floater" ng-click="poista()">
-    <span class="glyphicon glyphicon-remove"></span>{{'poista' | translate}}
-</button>
+<button ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit">{{'muokkaa' | translate}}</button>
+<button ng-if="editEnabled" class="btn btn-danger floater" ng-click="poista()" icon-role="remove">{{'poista' | translate}}</button>
 <div class="tekstikappale" ng-class="{'edit-tekstikappale': editEnabled, 'max-sm-leveys': !editEnabled}">
   <div ng-repeat="field in fields | orderBy:'order'" otsikko="{{field.localeKey}}" kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}">
     <muokattava-kentta field-info="field" object-promise="tekstikappalePromise"></muokattava-kentta>

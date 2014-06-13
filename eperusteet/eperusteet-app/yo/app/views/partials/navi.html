@@ -1,5 +1,5 @@
 <ol class="breadcrumb">
-  <li><a ui-sref="aloitussivu"><span class="glyphicon glyphicon-home"></span></a></li>
+  <li><a ui-sref="aloitussivu" icon-role="home"></a></li>
   <li ng-repeat="np in navigaatiopolku">
     <a ng-hide="$last || np.url === ''" href="{{ np.url }}">{{ np.arvo }}</a>
     <span ng-hide="$last || np.url !== ''">{{ np.arvo }}</span>

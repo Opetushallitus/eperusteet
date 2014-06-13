@@ -13,8 +13,8 @@
           <h3>
             {{ viesti.muokkaaja }}
             <span class="pull-right">
-              <a href="" ng-click="editoi = true; editoitava = viesti.sisalto"><span class="glyphicon glyphicon-pencil"></span></a>
-              <a href="" ng-click="poistaKommentti(viesti)"><span class="glyphicon glyphicon-remove"></span></a>
+              <a href="" ng-click="editoi = true; editoitava = viesti.sisalto" icon-role="edit"></a>
+              <a href="" ng-click="poistaKommentti(viesti)" icon-role="remove"></a>
             </span>
           </h3>
           <p ng-hide="editoi">{{ viesti.sisalto }}</p>

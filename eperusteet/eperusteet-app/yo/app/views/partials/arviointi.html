@@ -32,8 +32,8 @@ European Union Public Licence for more details.
           <accordion-heading>
             <span ng-show="arvioinninkohde !== originalKohde">
               {{arvioinninkohde.otsikko | kaanna}}
-              <a href="" editointi-kontrolli ng-click="kohde.poista(kohdealue.arvioinninKohteet, arvioinninkohde, $event)" class="muokkausnappi"><span class="glyphicon glyphicon-remove"></span></a>
-              <a href="" editointi-kontrolli ng-click="kohde.muokkaa(arvioinninkohde, $event)" class="muokkausnappi"><span class="glyphicon glyphicon-pencil"></span></a>
+              <a href="" editointi-kontrolli ng-click="kohde.poista(kohdealue.arvioinninKohteet, arvioinninkohde, $event)" class="muokkausnappi" icon-role="remove"></a>
+              <a href="" editointi-kontrolli ng-click="kohde.muokkaa(arvioinninkohde, $event)" class="muokkausnappi" icon-role="edit"></a>
             </span>
             <span ng-show="arvioinninkohde === originalKohde">
               <input class="form-control kohdeotsikko" ng-model="editableKohde.otsikko" localized>
@@ -56,10 +56,10 @@ European Union Public Licence for more details.
                       <input class="form-control" ng-model="kriteeri" localized ui-keydown="{'enter':'!$last || rivi.uusi(osaamistasonKriteeri, $event)'}" placeholder="{{'arviointi-uusi-kriteeri-placeholder' | translate}}">
                     </td>
                     <td class="toiminnot">
-                      <a href="" ng-click="rivi.poista(osaamistasonKriteeri.kriteerit, $index)"><span class="glyphicon glyphicon-minus"></span>{{'arviointi-poista-kriteeri' | translate}}</a>
+                      <a href="" ng-click="rivi.poista(osaamistasonKriteeri.kriteerit, $index)" icon-role="minus">{{'arviointi-poista-kriteeri' | translate}}</a>
                     </td>
                   </tr>
-                  <tr class="row-adder"><td></td><td></td><td class="toiminnot"><a href="" ng-click="rivi.uusi(osaamistasonKriteeri, $event)"><span class="glyphicon glyphicon-plus"></span>{{'arviointi-uusi-kriteeri' | translate}}</a></td></tr>
+                  <tr class="row-adder"><td></td><td></td><td class="toiminnot"><a href="" ng-click="rivi.uusi(osaamistasonKriteeri, $event)" icon-role="add">{{'arviointi-uusi-kriteeri' | translate}}</a></td></tr>
                   </tbody>
                 </table>
                 <table ng-if="arvioinninkohde !== originalKohde" ng-repeat="osaamistasonKriteeri in arvioinninkohde.osaamistasonKriteerit | filter:{_osaamistaso: taso.id}">
@@ -90,7 +90,7 @@ European Union Public Licence for more details.
               </div>
             </div>
             <button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-show="!uudenKohteenTiedot.showInputArea" 
-              ng-click="uudenKohteenTiedot.showInputArea = true"><span class="glyphicon glyphicon-plus"></span>{{'arviointi-uusi-kohde' | translate}}</button>
+              ng-click="uudenKohteenTiedot.showInputArea = true" icon-role="add">{{'arviointi-uusi-kohde' | translate}}</button>
           </div>
         </div>
 
@@ -108,7 +108,7 @@ European Union Public Licence for more details.
             <button class="btn btn-default btn-xs" ng-click="$parent.kohdealue.cancel()" translate>peru</button>
           </div>
           <button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-show="!$parent.showNewKohdealueInput" 
-            ng-click="$parent.showNewKohdealueInput = true"><span class="glyphicon glyphicon-plus"></span>{{'arviointi-uusi-kohdealue' | translate}}</button>
+            ng-click="$parent.showNewKohdealueInput = true" icon-role="add">{{'arviointi-uusi-kohdealue' | translate}}</button>
         </div>
       </div>
 

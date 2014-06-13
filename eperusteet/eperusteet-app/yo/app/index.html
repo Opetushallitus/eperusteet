@@ -27,7 +27,7 @@
       <div class="row">
         <div class="col-md-12">
           <div class="pull-right admin-cog">
-            <a href="" ui-sref="admin"><span class="glyphicon glyphicon-cog"></span></a>
+            <a href="" ui-sref="admin" icon-role="settings"></a>
           </div>
           <div ng-controller="KieliCtrl" id="kielen-vaihto" class="btn-group pull-right ng-cloak" style="margin-top: 5px">
             <button ng-repeat="(nimi, koodi) in kielet" ng-click="vaihdaKieli(koodi)" type="button" class="btn btn-xs" ng-class="{ 'active' : koodi === kieli }" ng-bind="nimi | translate"></button>
@@ -121,8 +121,6 @@
     <script src="scripts/directives/esitysOtsikko.js"></script>
     <script src="scripts/directives/koodisto.js"></script>
     <script src="scripts/directives/navi.js"></script>
-    <script src="scripts/directives/optioModal.js"></script>
-    <script src="scripts/directives/optioLista.js"></script>
     <script src="scripts/directives/tree.js"></script>
     <script src="scripts/controllers/modals/aikakatko.js"></script>
     <script src="scripts/directives/sivunavigaatio.js"></script>

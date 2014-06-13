@@ -173,8 +173,8 @@ angular.module('eperusteApp')
     return {
       template:
         '<div ng-transclude></div>' +
-        '<button ng-if="$parent.editEnabled" editointi-kontrolli type="button" class="poista-osio btn btn-default btn-xs" ng-click="suljeOsio($event)">' +
-        '<span class="glyphicon glyphicon-remove"></span>{{\'poista-osio\' | translate}}</button>',
+        '<button icon-role="remove" ng-if="$parent.editEnabled" editointi-kontrolli type="button" class="poista-osio btn btn-default btn-xs" ng-click="suljeOsio($event)">' +
+        '{{\'poista-osio\' | translate}}</button>',
       restrict: 'E',
       transclude: true,
       scope: {

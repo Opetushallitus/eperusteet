@@ -20,16 +20,14 @@
           <div ng-if="osa._tutkinnonOsa">
             <img src="images/tutkinnonosa.png" alt=""> {{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna:true }}
             <span class="pull-right">
-              <a href="" ng-click="poista(skratchpad, osa)"><span class="glyphicon glyphicon-remove"></span></a>
+              <a href="" ng-click="poista(skratchpad, osa)" icon-role="remove"></a>
             </span>
           </div>
           <div ng-if="osa.osat !== undefined">
             <span>{{osa.nimi | kaanna:true}} <span ng-show="osa.osat.length > 0">({{ osa.osat.length }} {{ 'osaa' | kaanna }})</span></span>
             <span class="pull-right">
               <span ng-show="osa.$uusi" class="badge skratchpad-badge">{{ 'uusi' | kaanna }}</span>
-              <a href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, osa)">
-                <span class="glyphicon glyphicon-pencil"></span>
-              </a>
+              <a href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, osa)" icon-role="edit"></a>
             </span>
           </div>
         </li>

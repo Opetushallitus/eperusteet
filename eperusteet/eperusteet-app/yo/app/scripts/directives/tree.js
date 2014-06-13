@@ -29,7 +29,7 @@ angular.module('eperusteApp')
       return '' +
         '<span ng-if="rakenne._tutkinnonOsa && muokkaus">' + editointiIkoni + tosa + '</span>' +
         '<span ng-if="rakenne._tutkinnonOsa && !muokkaus">' + editointiIkoni + '<a href="" ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: rakenne._tutkinnonOsa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a></span>' +
-        '<span class="pull-right" ng-if="rakenne._tutkinnonOsa && muokkaus"><a href="" ng-click="poista(rakenne, vanhempi)"><span class="glyphicon glyphicon-remove"></a></span>' +
+        '<span class="pull-right" ng-if="rakenne._tutkinnonOsa && muokkaus"><a href="" icon-role="remove" ng-click="poista(rakenne, vanhempi)"></a></span>' +
         '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi">' +
         '  <b>{{ rakenne.nimi | kaanna:true }}</b>' +
         '</span>';
@@ -157,7 +157,7 @@ angular.module('eperusteApp')
           '</span>' +
           '<div class="right">' +
           '  <div ng-if="!rakenne._tutkinnonOsa && muokkaus" class="right-item">' +
-          '    <a href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)"><span class="glyphicon glyphicon-pencil"></span></a>' +
+          '    <a href="" icon-role="edit" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)"></a>' +
           '  </div>' +
           '  <div class="pull-right" ng-if="!rakenne._tutkinnonOsa">' +
           '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.muodostumisSaanto.laajuus.minimi">' +
@@ -193,7 +193,7 @@ angular.module('eperusteApp')
 
         var template =
           '<div class="tree-box" ng-if="!vanhempi">' +
-          '  <a ng-if="zoomaus" class="back" href=""><span class="glyphicon glyphicon-chevron-left"></span></a>' +
+          '  <a ng-if="zoomaus" icon-role="back" class="back" href=""></a>' +
           '  <div class="tree-otsikko">' +
           '    <h4>' +
           '      <a ng-show="muokkaus" href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)">' +

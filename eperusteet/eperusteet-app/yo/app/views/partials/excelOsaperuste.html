@@ -33,8 +33,7 @@
       </td>
       <td class="text-right">
         <div class="btn-group">
-          <button type="button" class="btn btn-default btn-xs" ng-click="poistaOsatutkinto(ot)">
-            <span class="glyphicon glyphicon-remove"></span>
+          <button type="button" class="btn btn-default btn-xs" ng-click="poistaOsatutkinto(ot)" icon-role="remove">
           </button>
         </div>
       </td>
@@ -53,10 +52,7 @@
 </div>
 
 <div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
-  <button ng-click="tallennaOsatutkinnot()" class="btn btn-primary">
-    <span class="glyphicon glyphicon-cloud-upload"></span>
-    Tallenna
-  </button>
+  <button ng-click="tallennaOsatutkinnot()" class="btn btn-primary" icon-role="save">Tallenna</button>
 </div>
 
 <!-- Tallennusvirheet -->

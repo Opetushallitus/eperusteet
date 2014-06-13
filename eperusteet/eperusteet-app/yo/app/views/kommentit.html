@@ -3,7 +3,7 @@
     <div>
         <h2>Keskustelu ({{ sisalto.yhteensa }} {{ 'kommenttia' | kaanna }})</h2>
     </div>
-    <a ng-model="editoi" ng-hide="editoi" href="" ng-click="editoi = true"><h3><span class="glyphicon glyphicon-plus"></span> {{ 'lisaa-kommentti' | kaanna }}</h3></a>
+    <a ng-model="editoi" ng-hide="editoi" href="" ng-click="editoi = true"><h3 icon-role="add">{{ 'lisaa-kommentti' | kaanna }}</h3></a>
     <div ng-show="editoi" class="kommentti-uusi">
         <textarea class="form-control msd-elastic" ng-model="editoitava"></textarea>
         <div class="kommentti-painikkeet">

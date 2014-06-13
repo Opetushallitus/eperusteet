@@ -35,10 +35,19 @@ angular.module('eperusteApp')
 
   .service('IconMapping', function () {
     this.icons = {
-      back: 'chevron-left',
       add: 'plus',
+      back: 'chevron-left',
+      edit: 'pencil',
+      first: 'fast-backward',
+      import: 'cloud-download',
+      info: 'info-sign',
+      last: 'fast-forward',
+      minus: 'minus',
+      next: 'forward',
+      previous: 'backward',
       remove: 'remove',
-      edit: 'pencil'
+      save: 'cloud-upload',
+      settings: 'cog'
     };
   });
 
