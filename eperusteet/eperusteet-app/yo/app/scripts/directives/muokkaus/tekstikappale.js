@@ -80,12 +80,8 @@ angular.module('eperusteApp')
           $scope.tekstikappaleenMuokkausOtsikko = $scope.editableTekstikappale.id ? 'muokkaus-tekstikappale' : 'luonti-tekstikappale';
 
           Editointikontrollit.registerCallback({
-            edit: function() {
-            },
-            validate: function() {
-              console.log('Tekstikappaleelta puuttuu validointi. Toteuta.');
-              return true;
-            },
+            edit: function() { },
+            validate: function() { return true; },
             save: function() {
               if ($scope.editableTekstikappale.id) {
                 $scope.editableTekstikappale.$saveTekstikappale(successCb, Notifikaatiot.serverCb);

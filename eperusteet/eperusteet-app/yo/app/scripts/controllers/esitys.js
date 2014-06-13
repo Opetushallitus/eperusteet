@@ -58,13 +58,6 @@ angular.module('eperusteApp')
 
     // $scope.peruMuutokset = haeRakenne;
 
-    $scope.tallennaRakenne = function(rakenne) {
-      rakenne.tutkinnonOsat = _.values(rakenne.tutkinnonOsat);
-      PerusteRakenteet.save({ perusteenId: $stateParams.perusteenId }, rakenne, function(re) {
-        console.log(re);
-      });
-    };
-
     var perusteHakuPromise = (function() {
       if ($stateParams.perusteenId) {
         return Perusteet.get({perusteenId: $stateParams.perusteenId}).$promise;
@@ -94,7 +87,7 @@ angular.module('eperusteApp')
       $scope.suosikkiLista = profiili.suosikit;
       $scope.suosikkiTyyli = $scope.onSuosikki();
     }, function() {
-      console.log('profiilia ei löytynyt');
+      virheService.virhe('virhe-profiilia-ei-löytynyt');
       $scope.suosikkiLista = [];
       $scope.suosikkiTyyli = $scope.onSuosikki();
     });
@@ -103,8 +96,8 @@ angular.module('eperusteApp')
       Suoritustapa.get({perusteenId: id, suoritustapa: $scope.suoritustapa}, function(vastaus) {
         $scope.peruste.rakenne = vastaus;
         $scope.suodatin.otsikot = _.compact(_.pluck(_.pluck(vastaus.lapset, 'perusteenOsa'), 'nimi'));
-      }, function (virhe) {
-          console.log('suoritustapasisältöä ei löytynyt', virhe);
+      }, function () {
+        virheService.virhe('virhe-suoritustapasisältöä-ei-löytynyt');
       });
     };
 

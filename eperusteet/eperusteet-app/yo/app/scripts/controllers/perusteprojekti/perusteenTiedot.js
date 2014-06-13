@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('PerusteenTiedotCtrl', function($scope, $rootScope, $stateParams, $state,
-    Koodisto, Perusteet, YleinenData, PerusteProjektiService, perusteprojektiTiedot) {
+    Koodisto, Perusteet, YleinenData, PerusteProjektiService, perusteprojektiTiedot, Notifikaatiot) {
 
     $scope.hakemassa = false;
     $scope.peruste = perusteprojektiTiedot.getPeruste();
@@ -57,7 +57,7 @@ angular.module('eperusteApp')
           }
         });
       }, function(virhe) {
-        console.log('koodisto alarelaatio virhe', virhe);
+        Notifikaatiot.fataali(virhe);
       });
     };
 
@@ -65,8 +65,8 @@ angular.module('eperusteApp')
       Perusteet.save({perusteenId: $scope.peruste.id}, $scope.peruste, function(vastaus) {
         $scope.peruste = vastaus;
         $state.go('perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: $scope.projektiId, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {reload: true});
-      }, function(virhe) {
-        console.log('perusteen tallennus virhe', virhe);
+      }, function() {
+        Notifikaatiot.fataali('tallentaminen-epäonnistui');
       });
     };
 

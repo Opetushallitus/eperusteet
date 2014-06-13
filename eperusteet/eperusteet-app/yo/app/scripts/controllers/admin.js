@@ -32,5 +32,4 @@ angular.module('eperusteApp')
   })
   .controller('AdminCtrl', function($scope, RyhmienHallinta) {
     $scope.ryhmat = RyhmienHallinta.haeRyhmat();
-    console.log($scope.ryhmat);
   });

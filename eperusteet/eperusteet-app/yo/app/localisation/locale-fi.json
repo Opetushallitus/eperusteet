@@ -70,13 +70,18 @@
     "tutkinnon-osia-ei-löytynyt": "Tutkinnon osia ei löytynyt",
     "aloita-raahaamalla-puuhun": "Rakenna puuta raahaamalla päälleni esineitä!",
 
+    "virhe-suoritustapasisältöä-ei-löytynyt": "Suoritustavan sisältöä ei löytynyt",
     "virhe-tiedosto-epäonnistui": "Tiedoston avaaminen epäonnistui",
     "virhe-perustetta-ei-löytynyt": "Hakemaasi perustetta ei löytynyt",
+    "virhe-profiilia-ei-löytynyt": "Hakemaasi profiilia ei löytynyt",
+    "virhe-tutkinnonosaa-ei-löytynyt": "Hakemaasi tutkinnon osaa ei löytynyt",
+    "virhe-perusteenosaa-ei-löytynyt": "Hakemaasi perusteen osaa ei löytynyt",
     "virhe": "Virhe",
     "virhe-sivua-ei-löytynyt": "Sivua ei löytynyt",
     "virhe-tilan-vaihtamisessa": "Virhe tilan vaihtamisessa",
     "virhe-muu": "Virhe",
     "virhe-etusivulle": "Etusivulle",
+    "tallentaminen-epäonnistui": "Tallentaminen epäonnistui",
 
     "ja-myös-valittava": "ja valittava myös",
     "osia-valittava-vahintaan": "Valittava vähintään",

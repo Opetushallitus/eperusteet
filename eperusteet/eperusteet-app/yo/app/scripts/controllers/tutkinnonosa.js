@@ -31,7 +31,7 @@ angular.module('eperusteApp')
       });
   })
   .controller('TutkinnonosaCtrl', function ($q, $scope, $rootScope, $stateParams, $state,
-    YleinenData, Navigaatiopolku, PerusteenOsat, Perusteet) {
+    YleinenData, Navigaatiopolku, PerusteenOsat, Perusteet, virheSivu, Notifikaatiot) {
     $scope.tutkinnonOsa = {};
 
     $scope.nakyvilla = {
@@ -70,11 +70,8 @@ angular.module('eperusteApp')
 
       // Data haettu, päivitetään navigaatiopolku
       $rootScope.$broadcast('paivitaNavigaatiopolku');
-
-    }, function(virhe) {
-      console.log('VIRHE: ' + virhe);
-      //Virhe tapahtui, esim. perustetta ei löytynyt. Virhesivu.
-      $state.go('selaus.ammatillinenperuskoulutus');
+    }, function() {
+      virheSivu.virhe('virhe-tutkinnonosaa-ei-löytynyt');
     });
 
     $scope.siirryMuokkaustilaan = function() {
@@ -92,19 +89,15 @@ angular.module('eperusteApp')
 
     $scope.getRevision = function(revisio) {
       PerusteenOsat.getVersio({osanId: $scope.tutkinnonOsa.id, versioId: revisio.number}).$promise.then(function(response) {
-        console.log(response);
         $scope.tutkinnonOsa = response;
 
         if(revisio.number === _.chain($scope.revisiotiedot).sortBy('date').last().value().number) {
           $scope.revisio = null;
         } else {
-          console.log('set revision id');
           $scope.revisio = revisio;
         }
 
-      }, function(error) {
-        console.log(error);
-      });
+      }, Notifikaatiot.serverCb);
     };
 
     $scope.valitseKieli = function(nimi) {

@@ -18,7 +18,8 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('MuokkausCtrl', function($scope, $stateParams, $state, $compile, Navigaatiopolku, PerusteenOsat, Kommentit, KommentitByPerusteenOsa) {
+  .controller('MuokkausCtrl', function($scope, $stateParams, $state, $compile, Navigaatiopolku, PerusteenOsat,
+                                       Kommentit, KommentitByPerusteenOsa, virheSivu) {
 
     if ($stateParams.perusteProjektiId && $stateParams.perusteenOsaId) {
       Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });
@@ -31,8 +32,7 @@ angular.module('eperusteApp')
       $scope.objekti = PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, function(re) {
         Navigaatiopolku.asetaElementit({ perusteenOsaId: re.nimi });
       }, function() {
-        console.log('unable to find perusteen osa #' + $stateParams.perusteenId);
-        $state.go('aloitussivu');
+        virheSivu('virhe-perusteenosaa-ei-löytynyt');
       });
     } else {
       Navigaatiopolku.asetaElementit({ perusteenOsaId: 'uusi' });
@@ -44,8 +44,7 @@ angular.module('eperusteApp')
     } else if ($stateParams.perusteenOsanTyyppi === 'tutkinnonosa') {
       muokkausDirective = angular.element('<muokkaus-tutkinnonosa tutkinnon-osa="objekti"></muokkaus-tutkinnonosa>');
     } else {
-      console.log('invalid perusteen osan tyyppi');
-      $state.go('aloitussivu');
+      virheSivu('virhe-perusteenosaa-ei-löytynyt');
     }
     var el = $compile(muokkausDirective)($scope);
 
