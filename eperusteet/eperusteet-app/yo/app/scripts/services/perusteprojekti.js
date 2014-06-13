@@ -93,7 +93,7 @@ angular.module('eperusteApp')
       return ret;
     };
   })
-  .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet, Suoritustapa, PerusteProjektiService) {
+  .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet, Suoritustapa, PerusteProjektiService, Notifikaatiot) {
 
     var deferred = $q.defer();
     var projekti = {};
@@ -150,15 +150,14 @@ angular.module('eperusteApp')
 
         }, function(virhe) {
           projektinTiedotDeferred.reject();
-          console.log('Virhe perusteen tietojen alustuksessa', virhe);
+          Notifikaatiot.serverCb(virhe);
         });
       }, function(virhe) {
         projektinTiedotDeferred.reject();
-        console.log('Virhe projektin tietojen alustuksessa', virhe);
+        Notifikaatiot.serverCb(virhe);
       });
 
       return projektinTiedotDeferred.promise;
-
     };
 
     this.alustaPerusteenSisalto = function (stateParams, forced) {
@@ -178,7 +177,7 @@ angular.module('eperusteApp')
           perusteenSisaltoDeferred.resolve();
         }, function(virhe) {
           perusteenSisaltoDeferred.reject();
-          console.log('Virhe perusteen sisällön alustuksessa', virhe);
+          Notifikaatiot.serverCb(virhe);
         });
       } else {
         perusteenSisaltoDeferred.resolve();
@@ -188,4 +187,4 @@ angular.module('eperusteApp')
 
     deferred.resolve(this);
     return deferred.promise;
-    });
+  });

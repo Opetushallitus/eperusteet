@@ -189,15 +189,11 @@ angular.module('eperusteApp', [
     });
 
     $rootScope.$on('$stateChangeError', function(event, toState/*, toParams, fromState*/) {
-      console.error(event);
-      virheService.setData({state: toState.name});
-      $state.go('virhe');
+      virheService.virhe({state: toState.name});
     });
 
     $rootScope.$on('$stateNotFound', function(event, toState/*, toParams, fromState*/) {
-      console.error(event);
-      virheService.setData({state: toState.to});
-      $state.go('virhe');
+      virheService.virhe({state: toState.to});
     });
 
     // Jos käyttäjä editoi dokumenttia ja koittaa poistua palvelusta (reload, iltalehti...), niin varoitetaan, että hän menettää muutoksensa jos jatkaa.

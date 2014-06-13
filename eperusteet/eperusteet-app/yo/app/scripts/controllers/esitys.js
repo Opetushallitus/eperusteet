@@ -32,7 +32,7 @@ angular.module('eperusteApp')
       });
   })
   .controller('EsitysCtrl', function($q, $scope, $stateParams, Kayttajaprofiilit, Suosikit,
-      Perusteet, Suosikitbroadcast, Suoritustapa, YleinenData, Navigaatiopolku, PerusteRakenteet, $state) {
+      Perusteet, Suosikitbroadcast, Suoritustapa, YleinenData, Navigaatiopolku, PerusteRakenteet, $state, virheService) {
 
     $scope.konteksti = $stateParams.konteksti;
     $scope.peruste = {};
@@ -84,13 +84,10 @@ angular.module('eperusteApp')
         $scope.peruste = peruste;
         haeSuoritustapaSisalto(peruste.id);
       } else {
-        // TODO perustetta ei löytynyt, virhesivu.
+        virheService.virhe('virhe-perustetta-ei-löytynyt');
       }
-    }, function(error) {
-      console.log(error);
-      // TODO
-      //Virhe tapahtui, esim. perustetta ei löytynyt. Virhesivu.
-      // $location.path('/selaus/' + $scope.konteksti);
+    }, function() {
+      virheService.virhe('virhe-perustetta-ei-löytynyt');
     });
 
     kayttajaProfiiliPromise.then(function(profiili) {

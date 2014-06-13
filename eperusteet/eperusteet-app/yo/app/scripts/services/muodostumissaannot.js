@@ -43,8 +43,12 @@ angular.module('eperusteApp')
       }
 
       if (msk && msk.minimi && msk.maksimi) {
-        if (!_.isEmpty(fraasi)) { fraasi.push('ja'); }
-        fraasi.push('osia-valittava-vahintaan');
+        if (!_.isEmpty(fraasi)) {
+          fraasi.push('ja-myös-valittava');
+        }
+        else {
+          fraasi.push('osia-valittava-vahintaan');
+        }
         fraasi.push(msk.minimi);
         if (msk.minimi === msk.maksimi) {
           fraasi.push('ja-enintään');

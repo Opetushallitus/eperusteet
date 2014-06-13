@@ -15,6 +15,7 @@
  */
 
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {
@@ -30,13 +31,18 @@ angular.module('eperusteApp')
       $scope.data = value;
     });
   })
-  .service('virheService', function () {
-    this.data = {};
-    var that = this;
-    this.setData = function (data) {
-      that.data = data;
-    };
-    this.getData = function () {
-      return that.data;
+  .service('virheService', function ($state) {
+    var data = {};
+
+    this.setData = function(data) { data = data; };
+    this.getData = function() { return data; };
+
+    this.virhe = function(virhe) {
+      if (_.isObject(virhe)) {
+        data = virhe;
+      } else {
+        data = { muu: virhe };
+      }
+      $state.go('virhe');
     };
   });

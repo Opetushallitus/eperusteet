@@ -135,17 +135,17 @@ angular.module('eperusteApp')
                                                   ': \'#29ABE2\' }';
 
         var koonIlmaisu = '<span ng-show="rakenne.muodostumisSaanto.koko.minimi === rakenne.muodostumisSaanto.koko.maksimi">' +
-                          '  <b>{{ rakenne.muodostumisSaanto.koko.minimi || 0 }}</b> {{ \'kpl\' | kaanna }}' +
+                          '  {{ rakenne.muodostumisSaanto.koko.minimi || 0 }} {{ \'kpl\' | kaanna }}' +
                           '</span>' +
                           '<span ng-hide="rakenne.muodostumisSaanto.koko.minimi === rakenne.muodostumisSaanto.koko.maksimi">' +
-                          '  <b>{{ rakenne.muodostumisSaanto.koko.minimi || 0 }}</b> - <b>{{ rakenne.muodostumisSaanto.koko.maksimi || 0 }}</b> {{ \'kpl\' | kaanna }}' +
+                          '  {{ rakenne.muodostumisSaanto.koko.minimi || 0 }} - {{ rakenne.muodostumisSaanto.koko.maksimi || 0 }} {{ \'kpl\' | kaanna }}' +
                           '</span>';
 
         var laajuudenIlmaisu = '<span ng-show="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi">' +
-                               '  <b>{{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}</b> {{ apumuuttujat.yksikko | kaanna }}' +
+                               '  {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }} {{ apumuuttujat.yksikko | kaanna }}' +
                                '</span>' +
                                '<span ng-hide="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi">' +
-                               '  <b>{{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }}</b> - <b>{{ rakenne.muodostumisSaanto.laajuus.maksimi || 0 }}</b> {{ apumuuttujat.yksikko | kaanna }}' +
+                               '  {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }} - {{ rakenne.muodostumisSaanto.laajuus.maksimi || 0 }} {{ apumuuttujat.yksikko | kaanna }}' +
                                '</span>';
 
         var optiot = '' +
@@ -201,7 +201,7 @@ angular.module('eperusteApp')
           '      </a>' +
           '      <span ng-hide="muokkaus"><b>{{ rakenne.nimi | kaanna:true }}</b></span>' +
           '      <span class="tree-otsikko-laajuus" ng-show="apumuuttujat.suoritustapa !== \'naytto\'"> ' +
-          '        <b>{{ rakenne.$laajuus || 0 }}</b> / ' +
+          '        <span ng-show="muokkaus">{{ rakenne.$laajuus || 0 }} / </span>' +
           laajuudenIlmaisu +
           '      </span>' +
           avaaKaikki +

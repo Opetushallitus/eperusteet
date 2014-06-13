@@ -70,7 +70,15 @@
     "tutkinnon-osia-ei-löytynyt": "Tutkinnon osia ei löytynyt",
     "aloita-raahaamalla-puuhun": "Rakenna puuta raahaamalla päälleni esineitä!",
 
-    "osia-valittava-vahintaan": "Osia valittava vähintään",
+    "virhe-perustetta-ei-löytynyt": "Hakemaasi perustetta ei löytynyt",
+    "virhe": "Virhe",
+    "virhe-sivua-ei-löytynyt": "Sivua ei löytynyt",
+    "virhe-tilan-vaihtamisessa": "Virhe tilan vaihtamisessa",
+    "virhe-muu": "Virhe",
+    "virhe-etusivulle": "Etusivulle",
+
+    "ja-myös-valittava": "ja valittava myös",
+    "osia-valittava-vahintaan": "Valittava vähintään",
     "ja-enintään": "ja enintään",
     "edestä": "edestä",
     "kappaletta": "kappaletta",

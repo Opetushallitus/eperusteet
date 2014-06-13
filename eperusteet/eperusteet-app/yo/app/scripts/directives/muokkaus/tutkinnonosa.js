@@ -132,7 +132,6 @@ angular.module('eperusteApp')
               return $scope.tutkinnonOsaHeaderForm.$valid;
             },
             save: function() {
-              //TODO: Validate tutkinnon osa
               cleanAccordionData($scope.editableTutkinnonOsa.arviointi);
               if ($scope.editableTutkinnonOsa.id) {
                 $scope.editableTutkinnonOsa.$saveTutkinnonOsa(function(response) {
@@ -141,7 +140,6 @@ angular.module('eperusteApp')
                   Editointikontrollit.lastModified = response;
                   successCb(response);
 
-                  // FIXME: Näillä ei mitään virkaa?
                   var tutkinnonOsaDefer = $q.defer();
                   $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
                   tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
@@ -173,7 +171,6 @@ angular.module('eperusteApp')
             cancel: function() {
               $scope.editableTutkinnonOsa = angular.copy($scope.tutkinnonOsa);
 
-              // FIXME: Näillä ei mitään virkaa?
               var tutkinnonOsaDefer = $q.defer();
               $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
               tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
