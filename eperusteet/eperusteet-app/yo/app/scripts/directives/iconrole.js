@@ -32,7 +32,6 @@ angular.module('eperusteApp')
       }
     };
   })
-
   .service('IconMapping', function () {
     this.icons = {
       add: 'plus',

@@ -38,8 +38,14 @@
       <div ng-show="tutkinnonOsat.rajaus || tutkinnonOsat.multiPage" class="tutkinnonosa-rajaus">
         <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia..."></input>
       </div>
+      <div class="optiolaatikko">
+        <a href="" ng-click="piilotaKaikki = !piilotaKaikki">
+          <span ng-show="!piilotaKaikki">{{ 'vain-käyttämättömät' | kaanna }}</span>
+          <span ng-show="piilotaKaikki">{{ 'näytä-kaikki' | kaanna }}</span>
+        </a>
+      </div>
       <ul ui-sortable="sortableOptionsUnique" ng-model="uniikit" class="uniikit placeholder-hide">
-        <li class="skratchpad-item" ng-repeat="osa in uniikit | startFrom:(tutkinnonOsat.sivu-1)*tutkinnonOsat.perSivu | limitTo:tutkinnonOsat.perSivu">
+        <li ng-model="osa" ng-show="!piilotaKaikki || !kaytetytUniikit[osa._tutkinnonOsa]" class="skratchpad-item" ng-repeat="osa in uniikit | startFrom:(tutkinnonOsat.sivu-1)*tutkinnonOsat.perSivu | limitTo:tutkinnonOsat.perSivu">
           <img src="images/tutkinnonosa.png" alt="">
           {{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== 'naytto' && rakenne.tutkinnonOsat[osa._tutkinnonOsa].laajuus">, {{ + rakenne.tutkinnonOsat[osa._tutkinnonOsa].laajuus || 0 }}{{ rakenne.tutkinnonOsat[osa._tutkinnonOsa].yksikko | kaanna }}</span>
           <span class="badge skratchpad-badge" ng-show="!kaytetytUniikit[osa._tutkinnonOsa]" title="{{ 'tutkinnonosa-ei-käytössä' | kaanna }}"><span class="glyphicon glyphicon-asterisk"></span></span>
