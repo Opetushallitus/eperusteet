@@ -28,8 +28,9 @@ angular.module('eperusteApp')
       controller: function($scope, $q, Editointikontrollit, PerusteenOsat,
         Notifikaatiot, SivunavigaatioService, VersionHelper, Lukitus, $state,
         TutkinnonOsaEditMode, PerusteenOsaViitteet, Varmistusdialogi, $timeout,
-        $translate, Kaanna, PerusteprojektiTiedotService, $stateParams,
-        $rootScope) {
+        $translate, Kaanna, PerusteprojektiTiedotService, $stateParams, $rootScope) {
+
+        document.getElementById('ylasivuankkuri').scrollIntoView(); // FIXME: Keksi tälle joku oikea ratkaisu
 
         $scope.versiot = {};
         $scope.sisalto = {};

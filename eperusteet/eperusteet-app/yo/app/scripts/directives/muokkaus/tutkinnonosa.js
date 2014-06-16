@@ -30,11 +30,12 @@ angular.module('eperusteApp')
         PerusteTutkinnonosa, TutkinnonOsaEditMode, $timeout, Varmistusdialogi,
         SivunavigaatioService, VersionHelper, Lukitus, MuokkausUtils) {
 
+        document.getElementById('ylasivuankkuri').scrollIntoView(); // FIXME: Keksi tälle joku oikea ratkaisu
+
         $scope.suoritustapa = $stateParams.suoritustapa;
         $scope.rakenne = {};
         $scope.versiot = {};
         $scope.test = angular.noop;
-
 
         PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
           $scope.rakenne = res;
