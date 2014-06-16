@@ -31,7 +31,7 @@ angular.module('eperusteApp')
       });
   })
   .controller('TutkinnonosaCtrl', function ($q, $scope, $rootScope, $stateParams, $state,
-    YleinenData, Navigaatiopolku, PerusteenOsat, Perusteet, virheSivu, Notifikaatiot) {
+    YleinenData, Navigaatiopolku, PerusteenOsat, Perusteet, virheService, Notifikaatiot) {
     $scope.tutkinnonOsa = {};
 
     $scope.nakyvilla = {
@@ -71,7 +71,7 @@ angular.module('eperusteApp')
       // Data haettu, päivitetään navigaatiopolku
       $rootScope.$broadcast('paivitaNavigaatiopolku');
     }, function() {
-      virheSivu.virhe('virhe-tutkinnonosaa-ei-löytynyt');
+      virheService.virhe('virhe-tutkinnonosaa-ei-löytynyt');
     });
 
     $scope.siirryMuokkaustilaan = function() {

@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('MuokkausCtrl', function($scope, $stateParams, $state, $compile, Navigaatiopolku, PerusteenOsat,
-                                       Kommentit, KommentitByPerusteenOsa, virheSivu) {
+                                       Kommentit, KommentitByPerusteenOsa, virheService) {
 
     if ($stateParams.perusteProjektiId && $stateParams.perusteenOsaId) {
       Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });
@@ -32,7 +32,7 @@ angular.module('eperusteApp')
       $scope.objekti = PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, function(re) {
         Navigaatiopolku.asetaElementit({ perusteenOsaId: re.nimi });
       }, function() {
-        virheSivu('virhe-perusteenosaa-ei-löytynyt');
+        virheService.virhe('virhe-perusteenosaa-ei-löytynyt');
       });
     } else {
       Navigaatiopolku.asetaElementit({ perusteenOsaId: 'uusi' });
@@ -44,7 +44,7 @@ angular.module('eperusteApp')
     } else if ($stateParams.perusteenOsanTyyppi === 'tutkinnonosa') {
       muokkausDirective = angular.element('<muokkaus-tutkinnonosa tutkinnon-osa="objekti"></muokkaus-tutkinnonosa>');
     } else {
-      virheSivu('virhe-perusteenosaa-ei-löytynyt');
+      virheService.virhe('virhe-perusteenosaa-ei-löytynyt');
     }
     var el = $compile(muokkausDirective)($scope);
 
