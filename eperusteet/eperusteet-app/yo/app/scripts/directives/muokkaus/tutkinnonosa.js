@@ -148,7 +148,7 @@ angular.module('eperusteApp')
 
                 // Viiteosa (laajuus) tallennetaan erikseen
                 PerusteTutkinnonosa.save({
-                  perusteenId: $scope.rakenne.$peruste.id,
+                  perusteId: $scope.rakenne.$peruste.id,
                   suoritustapa: $stateParams.suoritustapa,
                   osanId: $scope.viiteosa.id
                 },

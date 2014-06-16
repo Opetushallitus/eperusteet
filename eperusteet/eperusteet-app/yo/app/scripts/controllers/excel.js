@@ -70,7 +70,7 @@ angular.module('eperusteApp')
     $scope.tallennaPerusteprojekti = function(perusteprojekti) {
       PerusteprojektiResource.update(perusteprojekti, function(resPerusteprojekti) {
         Perusteet.get({
-          perusteenId: resPerusteprojekti._peruste
+          perusteId: resPerusteprojekti._peruste
         }, function(resPeruste) {
           $scope.peruste.$perusteTallennettu = true;
           $scope.haettuPeruste = resPeruste;
@@ -128,7 +128,7 @@ angular.module('eperusteApp')
           cop.tila = 'luonnos';
           PerusteenOsat.saveTutkinnonOsa(cop, function(re) {
             PerusteTutkinnonosat.save({
-              perusteenId: $scope.haettuPeruste.id,
+              perusteId: $scope.haettuPeruste.id,
               suoritustapa: $scope.suoritustapa || $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi
             }, {
               _tutkinnonOsa: re.id

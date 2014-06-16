@@ -40,7 +40,7 @@ angular.module('eperusteApp')
         YleinenData.lisääKontekstitPerusteisiin(vastaus.suosikit);
         $scope.suosikit = _.map(vastaus.suosikit, function(s) {
           if (s.perusteId && s.suoritustapakoodi) {
-            s.url = $state.href('esitys.peruste', { perusteenId: s.perusteId, suoritustapa: s.suoritustapakoodi });
+            s.url = $state.href('esitys.peruste', { perusteId: s.perusteId, suoritustapa: s.suoritustapakoodi });
           }
           return s;
         });

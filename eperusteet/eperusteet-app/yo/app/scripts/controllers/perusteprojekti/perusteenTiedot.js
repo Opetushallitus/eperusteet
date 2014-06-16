@@ -62,7 +62,7 @@ angular.module('eperusteApp')
     };
 
     $scope.tallennaPeruste = function() {
-      Perusteet.save({perusteenId: $scope.peruste.id}, $scope.peruste, function(vastaus) {
+      Perusteet.save({perusteId: $scope.peruste.id}, $scope.peruste, function(vastaus) {
         $scope.peruste = vastaus;
         $state.go('perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: $scope.projektiId, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {reload: true});
       }, function() {
