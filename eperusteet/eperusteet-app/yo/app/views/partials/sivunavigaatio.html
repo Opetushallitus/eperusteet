@@ -1,35 +1,35 @@
 <div class="sivunavi-wrapper row" ng-class="{'osiot-piilossa': !data.osiot}">
-<div class="sivunavi-sisempi-wrapper" ng-class="{piilota: isHidden()}">
-<div class="sivunavi-takaisin">
-  <a href="" ng-click="goBackToMain()" icon-role="back">{{'takaisin-paanakymaan' | kaanna}}</a>
-</div>
-<div ng-show="data.osiot" class="sivunavi" ng-class="{'sivunavi-collapsed': menuCollapsed, 'sivunavi-open': !menuCollapsed}">
-  <div class="sivunavi-toggler" ng-click="toggleSideMenu()"
-       ng-attr-title="{{menuCollapsed && ('sivunavigointi-avaa-menu'|kaanna) || ('sivunavigointi-sulje-menu'|kaanna)}}">
-    <div class="sivunavi-valinta">
-      <span class="glyphicon glyphicon-align-justify"></span>
+  <div class="sivunavi-sisempi-wrapper" ng-class="{piilota: isHidden()}">
+    <div class="sivunavi-takaisin">
+      <a href="" ng-click="goBackToMain()" icon-role="back">{{'takaisin-paanakymaan' | kaanna}}</a>
+    </div>
+    <div ng-show="data.osiot" class="sivunavi" ng-class="{'sivunavi-collapsed': menuCollapsed, 'sivunavi-open': !menuCollapsed}">
+      <div class="sivunavi-toggler" ng-click="toggleSideMenu()"
+        ng-attr-title="{{menuCollapsed && ('sivunavigointi-avaa-menu'|kaanna) || ('sivunavigointi-sulje-menu'|kaanna)}}">
+        <div class="sivunavi-valinta">
+          <span class="glyphicon glyphicon-align-justify"></span>
+        </div>
+      </div>
+      <div class="sivunavi-linkit">
+        <div class="list-group">
+          <span ng-show="suoritustapa" class="list-group-item list-group-static"><h4>{{ suoritustapa | kaanna }}</h4></span>
+          <a class="list-group-item" ui-sref="perusteprojekti.suoritustapa.tutkinnonosat" ui-sref-active="navi-aktiivinen">
+            <span class="glyphicon glyphicon-chevron-down"></span>
+            <span class="linkkiteksti" translate>tutkinnonosat</span>
+          </a>
+          <a class="list-group-item" ui-sref="perusteprojekti.suoritustapa.muodostumissaannot" ui-sref-active="navi-aktiivinen">
+            <span class="glyphicon glyphicon-chevron-down"></span>
+            <span class="linkkiteksti" translate>tutkinnon-rakenne</span>
+          </a>
+          <a class="list-group-item" ng-repeat="sisalto in data.projekti.peruste.sisalto.lapset"
+            ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id})"
+            ui-sref-active="navi-aktiivinen">
+            <span class="glyphicon glyphicon-chevron-down"></span>
+            <span class="linkkiteksti">{{ sisalto.perusteenOsa.nimi || 'uusi-tutkinnon-osa' | kaanna}}</span>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="sivunavi-linkit">
-    <div class="list-group">
-      <span ng-show="suoritustapa" class="list-group-item list-group-static"><h4>{{ suoritustapa | kaanna }}</h4></span>
-      <a class="list-group-item" ui-sref="perusteprojekti.suoritustapa.tutkinnonosat" ui-sref-active="navi-aktiivinen">
-        <span class="glyphicon glyphicon-chevron-down"></span>
-        <span class="linkkiteksti" translate>tutkinnonosat</span>
-      </a>
-      <a class="list-group-item" ui-sref="perusteprojekti.suoritustapa.muodostumissaannot" ui-sref-active="navi-aktiivinen">
-        <span class="glyphicon glyphicon-chevron-down"></span>
-        <span class="linkkiteksti" translate>tutkinnon-rakenne</span>
-      </a>
-      <a class="list-group-item" ng-repeat="sisalto in data.projekti.peruste.sisalto.lapset"
-         ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id})"
-         ui-sref-active="navi-aktiivinen">
-        <span class="glyphicon glyphicon-chevron-down"></span>
-        <span class="linkkiteksti">{{ sisalto.perusteenOsa.nimi || 'uusi-tutkinnon-osa' | kaanna}}</span>
-      </a>
-    </div>
-  </div>
-</div>
-</div>
-<div class="sivunavi-sisalto" ng-class="{disable: data.piilota}" ui-view></div>
+  <div class="sivunavi-sisalto" ng-class="{disable: isHidden()}" ng-transclude></div>
 </div>

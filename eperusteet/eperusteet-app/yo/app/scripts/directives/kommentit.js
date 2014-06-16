@@ -39,10 +39,12 @@ angular.module('eperusteApp')
         function lataaKommentit(url) {
           var lataaja = $scope.urlit[url];
           if (lataaja) {
-            lataaja(function(kommentit) {
-              $scope.sisalto = kommentit;
-              $scope.nayta = true;
-            });
+            $timeout(function() {
+              lataaja(function(kommentit) {
+                $scope.sisalto = kommentit;
+                $scope.nayta = true;
+              });
+            }, 100);
           }
         }
 
@@ -50,7 +52,7 @@ angular.module('eperusteApp')
           $scope.nayta = false;
         });
 
-        $scope.$on('update:kommentit', function(event, url, lataaja) {
+        $rootScope.$on('update:kommentit', function(event, url, lataaja) {
           if (!$scope.urlit[url]) {
             $scope.urlit[url] = lataaja;
             if (!stateChanged) {
@@ -66,7 +68,7 @@ angular.module('eperusteApp')
             if ($scope.urlit[url]) {
               lataaKommentit($location.url());
             }
-          }, 100);
+          }, 1000);
         });
 
         $scope.muokkaaKommenttia = function(uusikommentti) {
