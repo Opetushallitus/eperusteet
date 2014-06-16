@@ -15,6 +15,10 @@ $sivunavi-takaisin-korkeus: 50px;
   .sivunavi {
     .list-group {
       margin-bottom: 0px;
+      .list-group-static {
+          background-color: #fafafa;
+          border-radius: 0px;
+      }
     }
     a {
       &.navi-aktiivinen {

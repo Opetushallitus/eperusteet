@@ -12,6 +12,7 @@
   </div>
   <div class="sivunavi-linkit">
     <div class="list-group">
+      <span ng-show="suoritustapa" class="list-group-item list-group-static"><h4>{{ suoritustapa | kaanna }}</h4></span>
       <a class="list-group-item" ui-sref="perusteprojekti.suoritustapa.tutkinnonosat" ui-sref-active="navi-aktiivinen">
         <span class="glyphicon glyphicon-chevron-down"></span>
         <span class="linkkiteksti" translate>tutkinnonosat</span>

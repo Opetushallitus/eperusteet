@@ -19,13 +19,16 @@
 
 angular.module('eperusteApp')
   .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams,
-    SuoritustapaSisalto, PerusteProjektiService, perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot) {
-
+    SuoritustapaSisalto, PerusteProjektiService, perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, YleinenData, Kaanna) {
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
+    $scope.rajaus = '';
 
     $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa();
+
+    $scope.aakkosJarjestys = function(data) { return Kaanna.kaanna(data.perusteenOsa.nimi); };
+    $scope.rajaaSisaltoa = function(haku) { return YleinenData.rajausVertailu($scope.rajaus, haku, 'perusteenOsa', 'nimi'); };
 
     $scope.createSisalto = function() {
       SuoritustapaSisalto.save({perusteId: $scope.projekti._peruste, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {}, function(response) {

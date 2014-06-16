@@ -30,7 +30,8 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('sivunavigaatioCtrl', function($rootScope, $scope, $state, SivunavigaatioService, PerusteProjektiService) {
+  .controller('sivunavigaatioCtrl', function($rootScope, $scope, $stateParams, $state, SivunavigaatioService, PerusteProjektiService) {
+    $scope.suoritustapa = $stateParams.suoritustapa;
     $scope.menuCollapsed = true;
     $rootScope.$on('$stateChangeStart', function () {
       $scope.menuCollapsed = true;
@@ -46,7 +47,6 @@ angular.module('eperusteApp')
     };
     SivunavigaatioService.bind($scope);
   })
-
   .service('SivunavigaatioService', function ($stateParams) {
     this.data = {
       osiot: false,
