@@ -17,19 +17,31 @@ package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.VersionedDto;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class RakenneModuuliDto extends AbstractRakenneOsaDto {
+public class RakenneModuuliDto extends AbstractRakenneOsaDto implements VersionedDto{
 
     private LokalisoituTekstiDto nimi;
     private LokalisoituTekstiDto kuvaus;
     private RakenneModuuliRooli rooli;
     private MuodostumisSaantoDto muodostumisSaanto;
     private List<AbstractRakenneOsaDto> osat;
+    private Integer versioId;
+    
+    @Override
+    public Integer getVersioId() {
+        return versioId;
+    }
+
+    @Override
+    public void setVersionId(Integer id) {
+        versioId = id;
+    }
 
     @Override
     protected void foreach(final Visitor visitor, final int depth) {

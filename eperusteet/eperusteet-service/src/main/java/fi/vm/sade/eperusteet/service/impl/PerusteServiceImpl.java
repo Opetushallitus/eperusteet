@@ -224,15 +224,21 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Override
     @Transactional(readOnly = true)
-    public RakenneModuuliDto getTutkinnonRakenne(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
-        Peruste peruste = perusteet.findOne(perusteid);
-        Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
-        RakenneModuuli rakenne = suoritustapa.getRakenne();
-        if (rakenne == null) {
-            rakenne = new RakenneModuuli();
-            rakenne.setNimi(peruste.getNimi());
+    public RakenneModuuliDto getTutkinnonRakenne(Long perusteid, Suoritustapakoodi suoritustapakoodi, Integer eTag) {
+        
+        Long rakenneId = rakenneRepository.getRakenneIdWithPerusteAndSuoritustapa(perusteid, suoritustapakoodi);
+        if (rakenneId == null) {
+            throw new BusinessRuleViolationException("Rakennetta ei ole olemassa");
+        }  
+        Integer rakenneVersioId  = rakenneRepository.getLatestRevisionId(rakenneId);
+        if (eTag != null && rakenneVersioId != null && rakenneVersioId.equals(eTag)) {
+            return null;
         }
-        return mapper.map(rakenne, RakenneModuuliDto.class);
+
+        RakenneModuuli rakenne = rakenneRepository.findOne(rakenneId);                           
+        RakenneModuuliDto rakenneModuuliDto = mapper.map(rakenne, RakenneModuuliDto.class);
+        rakenneModuuliDto.setVersioId(rakenneVersioId);
+        return rakenneModuuliDto;
     }
 
     @Override

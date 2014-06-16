@@ -14,20 +14,14 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.repository;
+package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
-import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author harrik
  */
-@Repository
-public interface RakenneRepository extends JpaWithVersioningRepository<RakenneModuuli, Long> {
-    @Query("SELECT s.rakenne.id FROM Suoritustapa s, Peruste p LEFT JOIN p.suoritustavat s WHERE p.id = ?1 AND s.suoritustapakoodi = ?2")
-    public Long getRakenneIdWithPerusteAndSuoritustapa(Long perusteId, Suoritustapakoodi suoritustapakoodi);
+public interface VersionedDto {
+    Integer getVersioId();
+    void setVersionId(Integer id);
 }
