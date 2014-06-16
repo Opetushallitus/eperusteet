@@ -67,7 +67,7 @@ angular.module('eperusteApp')
 
     $scope.paivitaTulokset = function(st) {
       PerusteTutkinnonosat.get({
-        perusteenId: peruste.id,
+        perusteId: peruste.id,
         suoritustapa: st
       },
       function(res) {
@@ -125,7 +125,7 @@ angular.module('eperusteApp')
       $scope.haku = false;
       $scope.valittu = par;
       PerusteTutkinnonosat.query({
-        perusteenId: par.id,
+        perusteId: par.id,
         suoritustapa: tyyppi
       }, function(re) {
         $scope.perusteenosat = re;

@@ -19,17 +19,17 @@
 
 angular.module('eperusteApp')
   .factory('PerusteTutkinnonosa', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa/tutkinnonosat/:osanId',
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat/:osanId',
       {
-        perusteenId: '@id',
+        perusteId: '@id',
         suoritustapa: '@suoritustapa',
         osanId: '@id'
       });
   })
   .factory('PerusteTutkinnonosat', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa/tutkinnonosat',
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat',
       {
-        perusteenId: '@id',
+        perusteId: '@id',
         suoritustapa: '@suoritustapa'
       }, {
         get: { method: 'GET', isArray: true },
@@ -37,29 +37,29 @@ angular.module('eperusteApp')
       });
   })
   .factory('PerusteRakenteet', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa/rakenne',
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/rakenne',
       {
-        perusteenId: '@id',
+        perusteId: '@id',
         suoritustapa: '@suoritustapa'
       });
   })
   .factory('RakenneVersiot', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa/rakenne/versiot');
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/rakenne/versiot');
   })
   .factory('RakenneVersio', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa/rakenne/versio/:versioId');
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/rakenne/versio/:versioId');
   })
   .factory('Perusteet', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteenId',
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId',
       {
-        perusteenId: '@id'
+        perusteId: '@id'
       });
   })
   .factory('PerusteenOsaviitteet', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteenosaviitteet/:viiteId');
   })
   .factory('Suoritustapa', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa');
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa');
   })
   .factory('SuoritustapaSisalto', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/sisalto',
@@ -74,7 +74,7 @@ angular.module('eperusteApp')
     function haeTutkinnonosat(perusteProjektiId, suoritustapa, success) {
       PerusteprojektiResource.get({ id: perusteProjektiId }, function(perusteprojekti) {
         PerusteTutkinnonosat.query({
-          perusteenId: perusteprojekti._peruste,
+          perusteId: perusteprojekti._peruste,
           suoritustapa: suoritustapa
         },
         success,
@@ -87,15 +87,15 @@ angular.module('eperusteApp')
       PerusteprojektiResource.get({ id: perusteProjektiId }, function(vastaus) {
         PerusteProjektiService.save(vastaus);
         Perusteet.get({
-          perusteenId: vastaus._peruste
+          perusteId: vastaus._peruste
         }, function(peruste) {
           suoritustapa = suoritustapa || peruste.suoritustavat[0].suoritustapakoodi;
           PerusteRakenteet.get({
-            perusteenId: peruste.id,
+            perusteId: peruste.id,
             suoritustapa: suoritustapa
           }, function(rakenne) {
             PerusteTutkinnonosat.query({
-              perusteenId: peruste.id,
+              perusteId: peruste.id,
               suoritustapa: suoritustapa
             }, function(tosat) {
               response.rakenne = rakenne;
@@ -123,7 +123,7 @@ angular.module('eperusteApp')
       success = success || angular.noop;
       after = after || angular.noop;
       PerusteRakenteet.save({
-        perusteenId: id,
+        perusteId: id,
         suoritustapa: suoritustapa
       }, rakenne.rakenne,
       function() {
@@ -141,7 +141,7 @@ angular.module('eperusteApp')
       var after = _.after(_.size(rakenne.tutkinnonOsat), success);
       _.forEach(_.values(rakenne.tutkinnonOsat), function(osa) {
         PerusteTutkinnonosa.save({
-          perusteenId: id,
+          perusteId: id,
           suoritustapa: suoritustapa,
           osanId: osa.id
         },
@@ -169,7 +169,7 @@ angular.module('eperusteApp')
 
     function poistaTutkinnonOsaViite(osaId, _peruste, suoritustapa, success) {
       PerusteTutkinnonosa.remove({
-          perusteenId: _peruste,
+          perusteId: _peruste,
           suoritustapa: suoritustapa,
           osanId: osaId
       }, function(res) {

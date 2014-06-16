@@ -58,7 +58,7 @@ angular.module('eperusteApp')
 
     $scope.lisaaTutkinnonOsaSuoraan = function(osa) {
       PerusteTutkinnonosa.save({
-        perusteenId: $scope.peruste.id,
+        perusteId: $scope.peruste.id,
         suoritustapa: $stateParams.suoritustapa
       }, osa,
       function(res) {
@@ -71,7 +71,7 @@ angular.module('eperusteApp')
       cb = cb || angular.noop;
 
       PerusteTutkinnonosa.save({
-        perusteenId: $scope.peruste.id,
+        perusteId: $scope.peruste.id,
         suoritustapa: $stateParams.suoritustapa
       }, osa,
       function(res) {

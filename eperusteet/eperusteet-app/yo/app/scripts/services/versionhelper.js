@@ -51,7 +51,7 @@ angular.module('eperusteApp')
             versiotListHandler(data);
           });
         } else if (tyyppi === 'rakenne') {
-          RakenneVersiot.query({perusteenId: tunniste.id, suoritustapa: tunniste.suoritustapa}, function(res) {
+          RakenneVersiot.query({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa}, function(res) {
             data.list = res;
             versiotListHandler(data);
           });
@@ -85,7 +85,7 @@ angular.module('eperusteApp')
           changeResponseHandler(data, response, cb);
         });
       } else if (tyyppi === 'Rakenne') {
-        RakenneVersio.get({perusteenId: tunniste.id, suoritustapa: tunniste.suoritustapa, versioId: data.chosen.number}, function(response) {
+        RakenneVersio.get({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa, versioId: data.chosen.number}, function(response) {
           changeResponseHandler(data, response, cb);
         });
       }

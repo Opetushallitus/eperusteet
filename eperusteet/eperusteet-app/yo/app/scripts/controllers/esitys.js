@@ -25,14 +25,14 @@ angular.module('eperusteApp')
         template: '<div ui-view></div>'
       })
       .state('esitys.peruste', {
-        url: '/:perusteenId/:suoritustapa',
+        url: '/:perusteId/:suoritustapa',
         templateUrl: 'views/esitys.html',
         controller: 'EsitysCtrl',
-        naviRest: [':perusteenId']
+        naviRest: [':perusteId']
       });
   })
   .controller('EsitysCtrl', function($q, $scope, $stateParams, Kayttajaprofiilit, Suosikit,
-      Perusteet, Suosikitbroadcast, Suoritustapa, YleinenData, Navigaatiopolku, PerusteRakenteet, $state, virheService) {
+      Perusteet, Suosikitbroadcast, SuoritustapaSisalto, YleinenData, Navigaatiopolku, PerusteRakenteet, $state, virheService) {
 
     $scope.konteksti = $stateParams.konteksti;
     $scope.peruste = {};
@@ -48,7 +48,7 @@ angular.module('eperusteApp')
 
     // function haeRakenne(suoritustapa) {
     //   PerusteRakenteet.get({
-    //       perusteenId: $stateParams.perusteenId,
+    //       perusteId: $stateParams.perusteId,
     //       suoritustapa: suoritustapa
     //   }, function(re) {
     //     $scope.rakenne.rakenne = re;
@@ -59,8 +59,8 @@ angular.module('eperusteApp')
     // $scope.peruMuutokset = haeRakenne;
 
     var perusteHakuPromise = (function() {
-      if ($stateParams.perusteenId) {
-        return Perusteet.get({perusteenId: $stateParams.perusteenId}).$promise;
+      if ($stateParams.perusteId) {
+        return Perusteet.get({perusteId: $stateParams.perusteId}).$promise;
       } else {
         return $q.reject();
       }
@@ -93,7 +93,7 @@ angular.module('eperusteApp')
     });
 
     var haeSuoritustapaSisalto = function (id) {
-      Suoritustapa.get({perusteenId: id, suoritustapa: $scope.suoritustapa}, function(vastaus) {
+      SuoritustapaSisalto.get({perusteId: id, suoritustapa: $scope.suoritustapa}, function(vastaus) {
         $scope.peruste.rakenne = vastaus;
         $scope.suodatin.otsikot = _.compact(_.pluck(_.pluck(vastaus.lapset, 'perusteenOsa'), 'nimi'));
       }, function () {
@@ -157,7 +157,7 @@ angular.module('eperusteApp')
     });
 
     $scope.vaihdaSuoritustapa = function(suoritustapa) {
-      $state.go('esitys.peruste', {perusteenId: $stateParams.perusteenId, suoritustapa: suoritustapa});
+      $state.go('esitys.peruste', {perusteId: $stateParams.perusteId, suoritustapa: suoritustapa});
     };
 
 

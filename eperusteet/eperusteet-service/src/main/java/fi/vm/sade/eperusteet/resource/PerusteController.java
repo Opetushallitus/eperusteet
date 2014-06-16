@@ -265,7 +265,7 @@ public class PerusteController {
     }
 
 
-    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)
+    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}/sisalto", method = GET)
     @ResponseBody
     public ResponseEntity<PerusteenosaViiteDto> getSuoritustapaSisalto(
         @PathVariable("perusteId") final Long perusteId,

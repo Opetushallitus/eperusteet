@@ -21,7 +21,7 @@ angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
       .state('esitys.tutkinnonosa', {
-        url: '/:perusteenId/tutkinnonosa/:tutkinnonOsaId',
+        url: '/:perusteId/tutkinnonosa/:tutkinnonOsaId',
         templateUrl: 'views/tutkinnonosa.html',
         controller: 'TutkinnonosaCtrl',
         naviRest: [':tutkinnonOsaId'],
@@ -46,8 +46,8 @@ angular.module('eperusteApp')
     $scope.revisio = null;
 
     var perusteHakuPromise = (function() {
-      if ($stateParams.perusteenId) {
-        return Perusteet.get({perusteenId: $stateParams.perusteenId}).$promise;
+      if ($stateParams.perusteId) {
+        return Perusteet.get({perusteId: $stateParams.perusteId}).$promise;
       } else {
         return $q.reject();
       }
@@ -77,7 +77,7 @@ angular.module('eperusteApp')
     $scope.siirryMuokkaustilaan = function() {
       $state.go('muokkaus.vanha', {
         perusteenOsanTyyppi: 'tutkinnonosa',
-        perusteenId: $stateParams.tutkinnonOsaId
+        perusteId: $stateParams.tutkinnonOsaId
       });
     };
 

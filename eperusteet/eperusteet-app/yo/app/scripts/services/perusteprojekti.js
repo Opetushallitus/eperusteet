@@ -93,7 +93,7 @@ angular.module('eperusteApp')
       return ret;
     };
   })
-  .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet, Suoritustapa, PerusteProjektiService, Notifikaatiot) {
+  .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet, SuoritustapaSisalto, PerusteProjektiService, Notifikaatiot) {
 
     var deferred = $q.defer();
     var projekti = {};
@@ -120,9 +120,9 @@ angular.module('eperusteApp')
       sisalto = {};
     };
 
-    this.haeSisalto = function(perusteenId, suoritustapa) {
+    this.haeSisalto = function(perusteId, suoritustapa) {
       var deferred = $q.defer();
-      Suoritustapa.get({perusteenId: perusteenId, suoritustapa: suoritustapa}, function(vastaus) {
+      SuoritustapaSisalto.get({perusteId: perusteId, suoritustapa: suoritustapa}, function(vastaus) {
         deferred.resolve(vastaus);
         sisalto = vastaus;
       }, function(virhe) {
@@ -141,7 +141,7 @@ angular.module('eperusteApp')
 
       PerusteprojektiResource.get({id: stateParams.perusteProjektiId}, function(projektiVastaus) {
         projekti = projektiVastaus;
-        Perusteet.get({perusteenId: projekti._peruste}, function (perusteVastaus) {
+        Perusteet.get({perusteId: projekti._peruste}, function (perusteVastaus) {
           peruste = perusteVastaus;
           if (peruste.suoritustavat !== null && peruste.suoritustavat.length > 0) {
             peruste.suoritustavat = _.sortBy(peruste.suoritustavat, 'suoritustapakoodi');
