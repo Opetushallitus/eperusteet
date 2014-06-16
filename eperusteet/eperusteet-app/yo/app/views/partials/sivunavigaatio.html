@@ -27,17 +27,6 @@
         <span class="linkkiteksti">{{ sisalto.perusteenOsa.nimi || 'uusi-tutkinnon-osa' | kaanna}}</span>
       </a>
     </div>
-    <div ng-show="data.osiot" class="list-group">
-      <a class="list-group-item" ng-repeat="hardkoodattuOtsikko in [
-        'Perustutkinnon perusteiden toimeenpano ammatillisessa peruskoulutuksessa',
-        'Perustutkinnon suorittaminen näyttötutkintona',
-        'Opiskelijan arviointi ammatillisessa peruskoulutuksessa',
-        'Muut määräykset ammatillisessa peruskoulutuksessa'
-      ]">
-        <span class="glyphicon glyphicon-chevron-down"></span>
-        <span class="linkkiteksti">{{ hardkoodattuOtsikko }}</span>
-      </a>
-    </div>
   </div>
 </div>
 </div>

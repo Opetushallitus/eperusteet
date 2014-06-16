@@ -90,7 +90,6 @@ angular.module('eperusteApp')
           perusteenId: vastaus._peruste
         }, function(peruste) {
           suoritustapa = suoritustapa || peruste.suoritustavat[0].suoritustapakoodi;
-          console.log('Perusterakenteet resource', PerusteRakenteet);
           PerusteRakenteet.get({
             perusteenId: peruste.id,
             suoritustapa: suoritustapa
