@@ -25,8 +25,6 @@
         ignore-resource-not-found="true"
         properties-ref="defaultProps"/>
 
-    <cache:annotation-driven />
-
     <bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
         <property name="configLocation"  value="classpath:ehcache.xml"/>
         <property name="cacheManagerName" value="eperusteetCacheManager"/>
@@ -54,6 +52,8 @@
 
     <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>
     <tx:annotation-driven/>
+    <cache:annotation-driven />
+    <aop:aspectj-autoproxy  />
 
     <jee:jndi-lookup id="dataSource" jndi-name="jdbc/eperusteet" expected-type="javax.sql.DataSource"/>
 
@@ -72,6 +72,7 @@
                 <entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
                 <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.ValidityAuditStrategy"/>
                 <entry key="javax.persistence.validation.factory" value-ref="validator" />
+                <entry key="org.hibernate.envers.revision_listener" value="fi.vm.sade.eperusteet.service.impl.RevisionListener"/>
             </map>
         </property>
     </bean>

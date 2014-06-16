@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
+import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import java.util.List;
@@ -61,7 +62,7 @@ public class PerusteController {
 //    @ResponseBody
 //    public ResponseEntity<Page<PerusteDto>> getAll(PerusteQuery pquery) {
 //        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
-//        return new ResponseEntity<>(service.findBy(p, pquery), ResponseHeaders.cacheHeaders(1, TimeUnit.MINUTES), HttpStatus.OK);
+//        return new ResponseEntity<>(service.findBy(p, pquery), HttpStatus.OK);
 //    }
 
     @RequestMapping(method = GET)
@@ -96,16 +97,17 @@ public class PerusteController {
     public ResponseEntity<RakenneModuuliDto> getRakenne(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
         return new ResponseEntity<>(service.getTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi)), HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne/versiot", method = GET)
     @ResponseBody
     public List<Revision> getRakenneVersiot(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
     	LOG.debug("get rakenne versiot: " + id + ", " + suoritustapakoodi);
     	return service.getRakenneVersiot(id, Suoritustapakoodi.of(suoritustapakoodi));
     }
-    
+
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne/versio/{versioId}", method = GET)
     @ResponseBody
+    @CacheControl(age = CacheControl.ONE_YEAR)
     public ResponseEntity<RakenneModuuliDto> getRakenneVersio(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
                                                               @PathVariable("versioId") final Integer versioId) {
     	LOG.debug("get peruste #{} suoritustapa #{} versio #{}", id, suoritustapakoodi, versioId);
