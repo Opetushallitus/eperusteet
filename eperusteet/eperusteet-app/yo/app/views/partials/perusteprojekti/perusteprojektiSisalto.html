@@ -15,16 +15,13 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 <div class="main-content" id="main">
-    <div class="row">
-        <div class="toggle-view">
-            <div id="suoritustavat-vaihto" class="btn-group" ng-show="peruste.suoritustavat.length > 1">
-                <button ng-repeat="suoritustapa in peruste.suoritustavat | orderBy:'suoritustapakoodi'" class="btn btn-default" ng-click="vaihdaSuoritustapa(suoritustapa.suoritustapakoodi)"
-                        ng-class="{ 'active' : suoritustapa.suoritustapakoodi === valittuSuoritustapa }" translate>{{suoritustapa.suoritustapakoodi}}</button>
-            </div>
-        </div>
-    </div>
     <div class="row tutkinto-sisalto">
-      <hr>
+        <ul class="nav nav-tabs nav-justified">
+            <li ng-class="{ active: valittuSuoritustapa === st.suoritustapakoodi }" ng-repeat="st in peruste.suoritustavat | orderBy:'suoritustapakoodi'"
+                ng-click="vaihdaSuoritustapa(st.suoritustapakoodi)">
+                <a href="">{{ st.suoritustapakoodi | kaanna }}</a>
+             </li>
+        </ul>
         <div class="tutkinto">
             <h1 class="section-title">{{'tutkintokohtaiset-osat'|translate}}
               <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="add">

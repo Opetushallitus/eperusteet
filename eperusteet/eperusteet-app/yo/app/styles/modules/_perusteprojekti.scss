@@ -207,4 +207,28 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   margin-bottom: 100px;
   margin-left: auto;
   margin-right: auto;
+
+  .nav {
+    margin-bottom: 30px;
+  }
+
+  .nav-tabs>li>a {
+    padding: 20px;
+    background: none;
+    filter: none;
+    background: #fafafa;
+  }
+
+  .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+    padding: 20px;
+    background: none;
+    background: #fff;
+  }
+
+  .nav-tabs>li>a:hover {
+    padding: 20px;
+    background: none;
+    background: #fff;
+  }
 }
+

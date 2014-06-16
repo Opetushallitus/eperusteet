@@ -1,14 +1,14 @@
 <h1>
   {{'tutkinnonosat' | kaanna}} ({{ tutkinnonOsat.length }} {{ 'kpl' | kaanna }})
-    <button class="btn btn-default" ng-click="lisaaTutkinnonOsa()" icon-role="add">
-      {{ 'lisää' | kaanna }}
-    </button>
-    <button class="btn btn-default" ng-click="tuoSuoritustavasta()" icon-role="import">
-      {{ 'tuo-toisesta-suoritustavasta' | kaanna }}
-    </button>
-    <button class="btn btn-default" ng-click="tuoTutkinnonosa()" icon-role="import">
-      {{ 'tuo-tutkinnonosa' | kaanna }}
-    </button>
+  <button class="btn btn-default" ng-click="lisaaTutkinnonOsa()" icon-role="add">
+    {{ 'lisää' | kaanna }}
+  </button>
+  <button class="btn btn-default" ng-click="tuoSuoritustavasta()" icon-role="import">
+    {{ 'tuo-toisesta-suoritustavasta' | kaanna }}
+  </button>
+  <button class="btn btn-default" ng-click="tuoTutkinnonosa()" icon-role="import">
+    {{ 'tuo-tutkinnonosa' | kaanna }}
+  </button>
 </h1>
 
 <div>
@@ -20,14 +20,14 @@
   </div>
 
   <ul class="list-group tutkinnonosat">
-  <li class="tutkinnonosa-laatikko list-group-item" ng-repeat="v in tutkinnonOsat | mapFilter:rajaaTutkinnonOsia" ng-click="navigoiTutkinnonosaan(v)">
-    <div ng-hide="editoi" class="muokkaus">
-       <span class="glyphicon glyphicon-chevron-right"></span>
-    </div>
-    <div class="otsikko">
-      <h3>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}<span class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && v.laajuus">{{ v.laajuus }} {{ v.yksikko || '' | kaanna }}</span></h3>
-    </div>
-    <div class="clearfix"></div>
-  </li>
+    <li class="tutkinnonosa-laatikko list-group-item" ng-repeat="v in tutkinnonOsat | mapFilter:rajaaTutkinnonOsia" ng-click="navigoiTutkinnonosaan(v)">
+      <div ng-hide="editoi" class="muokkaus">
+        <span class="glyphicon glyphicon-chevron-right"></span>
+      </div>
+      <div class="otsikko">
+        <h3>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}<span class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && v.laajuus">{{ v.laajuus }} {{ v.yksikko || '' | kaanna }}</span></h3>
+      </div>
+      <div class="clearfix"></div>
+    </li>
   </ul>
 </div>

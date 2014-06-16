@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams,
-    SuoritustapaSisalto, PerusteProjektiService, perusteprojektiTiedot, TutkinnonOsaEditMode) {
+    SuoritustapaSisalto, PerusteProjektiService, perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot) {
 
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
@@ -27,34 +27,25 @@ angular.module('eperusteApp')
 
     $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa();
 
-    var haeSisalto = function(suoritustapa) {
-      perusteprojektiTiedot.haeSisalto($scope.projekti._peruste, suoritustapa).then(function(vastaus) {
-        $scope.peruste.sisalto = vastaus;
-        $scope.valittuSuoritustapa = suoritustapa;
-        PerusteProjektiService.setSuoritustapa(suoritustapa);
-      }, function(virhe) {
-        $scope.valittuSuoritustapa = '';
-        console.log('suoritustapasisältöä ei löytynyt', virhe);
-      });
-    };
-
     $scope.createSisalto = function() {
       SuoritustapaSisalto.save({perusteId: $scope.projekti._peruste, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {}, function(response) {
-        // Uusi luotu, siirry suoraan muokkaustilaan
-        TutkinnonOsaEditMode.setMode(true);
+        TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
         $scope.navigoi('perusteprojekti.suoritustapa.perusteenosa', {
           perusteenOsanTyyppi: 'tekstikappale',
           perusteenOsaId: response._perusteenOsa
         });
-      }, function(virhe) {
-        console.log('Uuden sisällön luontivirhe', virhe);
-      });
+      },
+      Notifikaatiot.serverCb);
     };
 
     $scope.vaihdaSuoritustapa = function(suoritustapakoodi) {
       $scope.valittuSuoritustapa = suoritustapakoodi;
       PerusteProjektiService.setSuoritustapa(suoritustapakoodi);
-      $state.go('perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: $stateParams.perusteProjektiId, suoritustapa: suoritustapakoodi});
+
+      $state.go('perusteprojekti.suoritustapa.sisalto', {
+        perusteProjektiId: $stateParams.perusteProjektiId,
+        suoritustapa: suoritustapakoodi
+      });
     };
 
     $scope.navigoi = function (state, params) {

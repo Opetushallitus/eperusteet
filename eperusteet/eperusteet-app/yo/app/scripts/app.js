@@ -55,22 +55,22 @@ angular.module('eperusteApp', [
     $translateProvider.preferredLanguage('fi');
     moment.lang('fi');
   })
-  .config(function($httpProvider) {
-    $httpProvider.interceptors.push(['$rootScope', 'REQUEST_TIMEOUT', 'Kaanna', '$q', function($rootScope, REQUEST_TIMEOUT, Kaanna, $q) {
-      return {
-        request: function(request) {
-          // request.timeout = REQUEST_TIMEOUT;
-          return request;
-        },
-        responseError: function(error) {
-          if (error.status === 0) {
-            // alert(Kaanna.kaanna('yhteys-palvelimeen-timeout'));
-          }
-          return $q.reject(error);
-        }
-      };
-    }]);
-  })
+  // .config(function($httpProvider) {
+  //   $httpProvider.interceptors.push(['$rootScope', 'REQUEST_TIMEOUT', 'Kaanna', '$q', function($rootScope, REQUEST_TIMEOUT, Kaanna, $q) {
+  //     return {
+  //       request: function(request) {
+  //         // request.timeout = REQUEST_TIMEOUT;
+  //         return request;
+  //       },
+  //       responseError: function(error) {
+  //         if (error.status === 0) {
+  //           // alert(Kaanna.kaanna('yhteys-palvelimeen-timeout'));
+  //         }
+  //         return $q.reject(error);
+  //       }
+  //     };
+  //   }]);
+  // })
   .config(function($httpProvider) {
     $httpProvider.interceptors.push(['$rootScope', '$q', 'SpinnerService', function($rootScope, $q, Spinner) {
         return {
