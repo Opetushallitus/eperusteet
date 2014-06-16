@@ -67,7 +67,11 @@ angular.module('eperusteApp')
       perusteId: '@id',
       suoritustapa: '@suoritustapa'
     }, {
-        add: {method: 'PUT'}
+      add: {method: 'PUT'},
+      addChild: {
+        method: 'POST',
+        url: SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/sisalto/:perusteenosaViiteId/lapsi'
+      }
     });
   })
   .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet, PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {

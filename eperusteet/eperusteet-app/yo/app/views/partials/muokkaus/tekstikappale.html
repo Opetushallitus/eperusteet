@@ -15,7 +15,9 @@ European Union Public Licence for more details.
 -->
 
 <div>
+  <div id="tekstikappale-crumbs"></div>
   <button ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit">{{'muokkaa' | translate}}</button>
+<button ng-if="canAddLapsi()" ng-hide="editEnabled || !versiot.latest" ng-click="addLapsi()" class="floater btn btn-default" icon-role="add">{{'lisaa-aliotsikko' | translate}}</button>
   <button ng-if="editEnabled" class="btn btn-danger floater" ng-click="poista()" icon-role="remove">{{'poista' | translate}}</button>
   <div class="tekstikappale" ng-class="{'edit-tekstikappale': editEnabled, 'max-sm-leveys': !editEnabled}">
     <div ng-repeat="field in fields | orderBy:'order'" otsikko="{{field.localeKey}}" kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}">

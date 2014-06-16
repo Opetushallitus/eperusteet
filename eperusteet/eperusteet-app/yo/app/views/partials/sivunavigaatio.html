@@ -12,21 +12,15 @@
       </div>
       <div class="sivunavi-linkit">
         <div class="list-group">
-          <span ng-show="suoritustapa" class="list-group-item list-group-static"><h4>{{ suoritustapa | kaanna }}</h4></span>
-          <a class="list-group-item" ui-sref="perusteprojekti.suoritustapa.tutkinnonosat" ui-sref-active="navi-aktiivinen">
-            <span class="glyphicon glyphicon-chevron-down"></span>
-            <span class="linkkiteksti" translate>tutkinnonosat</span>
-          </a>
-          <a class="list-group-item" ui-sref="perusteprojekti.suoritustapa.muodostumissaannot" ui-sref-active="navi-aktiivinen">
-            <span class="glyphicon glyphicon-chevron-down"></span>
-            <span class="linkkiteksti" translate>tutkinnon-rakenne</span>
-          </a>
-          <a class="list-group-item" ng-repeat="sisalto in data.projekti.peruste.sisalto.lapset"
-            ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id})"
-            ui-sref-active="navi-aktiivinen">
-            <span class="glyphicon glyphicon-chevron-down"></span>
-            <span class="linkkiteksti">{{ sisalto.perusteenOsa.nimi || 'uusi-tutkinnon-osa' | kaanna}}</span>
-          </a>
+          <div ng-show="suoritustapa" class="list-group-item list-group-static"><h4>{{ suoritustapa | kaanna }}</h4></div>
+          <div class="list-group-item">
+            <a class="linkkiteksti" ui-sref="perusteprojekti.suoritustapa.tutkinnonosat" ui-sref-active="navi-aktiivinen" translate>tutkinnonosat</a>
+          </div>
+          <div class="list-group-item">
+            <a class="linkkiteksti" ui-sref="perusteprojekti.suoritustapa.muodostumissaannot" ui-sref-active="navi-aktiivinen" translate>tutkinnon-rakenne</a>
+          </div>
+          <div subnavi="data.projekti.peruste.sisalto.lapset">
+          </div>
         </div>
       </div>
     </div>

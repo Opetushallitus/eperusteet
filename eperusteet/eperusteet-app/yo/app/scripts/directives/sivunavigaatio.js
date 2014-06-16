@@ -29,6 +29,38 @@ angular.module('eperusteApp')
       controller: 'sivunavigaatioCtrl'
     };
   })
+
+  .directive('subnavi', function ($compile) {
+    return {
+      templateUrl: 'views/partials/subnavi.html',
+      restrict: 'A',
+      scope: {
+        subnavi: '='
+      },
+      controller: function ($scope) {
+        $scope.sivunaviopen = {};
+        $scope.toggle = function (id, event) {
+          $scope.sivunaviopen[id] = !$scope.sivunaviopen[id];
+          event.stopPropagation();
+        };
+        $scope.openFor = function (id) {
+          $scope.sivunaviopen[id] = true;
+        };
+      },
+      compile: function(tElement) {
+        var contents = tElement.contents().remove();
+        var compiledContents;
+        return function(scope, iElement) {
+          if(!compiledContents) {
+            compiledContents = $compile(contents);
+          }
+          compiledContents(scope, function(clone) {
+            iElement.append(clone);
+          });
+        };
+      }
+    };
+  })
   .controller('sivunavigaatioCtrl', function($rootScope, $scope, $stateParams, $state, SivunavigaatioService, PerusteProjektiService) {
     var lastParams = {};
     $scope.suoritustapa = $stateParams.suoritustapa;
@@ -77,7 +109,7 @@ angular.module('eperusteApp')
       return $scope.data.piilota;
     };
   })
-  .service('SivunavigaatioService', function ($stateParams, PerusteprojektiTiedotService) {
+  .service('SivunavigaatioService', function ($stateParams, PerusteprojektiTiedotService, $rootScope, $compile) {
     var data = {
       osiot: false,
       piilota: false,
@@ -127,5 +159,63 @@ angular.module('eperusteApp')
 
     this.getData = function() {
       return data;
+    };
+
+    function openParent(el) {
+      var parentEl = el.closest('.subnavi-lapset').closest('.list-group-item').find('a');
+      if (parentEl.length === 0) {
+        return;
+      }
+      var parentId = parentEl.attr('id').split('-').pop();
+      parentEl.scope().openFor(parentId);
+      return parentEl;
+    }
+
+    /**
+     * Open (uncollapse) the subnavi tree for given item.
+     * Opens the tree up to the item and shows its children also.
+     * @param {type} id Id of item in subnavi tree
+     * @returns {undefined}
+     */
+    this.unCollapseFor = function (id) {
+      var visibleEl = angular.element('#subnavi-id-'+id);
+      var hiddenEl = angular.element('#subnavi-id-'+id+':hidden');
+      if (visibleEl.length === 0 && hiddenEl.length === 0) {
+        return;
+      }
+      if (hiddenEl.length > 0) {
+        // Element is hidden, need to open parents
+        hiddenEl.scope().openFor(id);
+        var parent = openParent(hiddenEl);
+        openParent(parent);
+      } else {
+        visibleEl.scope().openFor(id);
+      }
+    };
+
+    function linktext(id) {
+      return angular.element('#subnavi-id-'+id).text();
+    }
+
+    /**
+     * Sets breadcrumb in ui-view based on given content ids
+     */
+    this.setCrumb = function (ids) {
+      var crumbEl = angular.element('#tekstikappale-crumbs');
+      crumbEl.empty();
+      ids.splice(0, 1);
+      if (!_.isEmpty(ids)) {
+        var listEl = angular.element('<ol>').addClass('breadcrumb');
+        crumbEl.append(listEl);
+        _.each(ids, function (id) {
+          var link = angular.element('<a>')
+            .attr('ui-sref', 'perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: \'tekstikappale\', perusteenOsaId:'+id+'})')
+            .text(linktext(id));
+          var el = angular.element('<li>').html(link);
+          listEl.prepend(el);
+          var compiled = $compile(listEl);
+          compiled($rootScope);
+        });
+      }
     };
   });

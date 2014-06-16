@@ -1,9 +1,15 @@
 $sivunavi-leveys: 280px;
 $sivunavi-takaisin-korkeus: 50px;
+$sivunavi-sisennys: 20px;
+$glyph-padding-left: 10px;
+$linkkiteksti-padding-left: 30px;
 
 .sivunavi-wrapper {
   margin-left: 0;
   margin-right: 0;
+  .sivunavi-linkit {
+    width: 100%;
+  }
   .sivunavi-sisalto {
     h1 {
       margin-top: 0;
@@ -14,20 +20,67 @@ $sivunavi-takaisin-korkeus: 50px;
   }
   .sivunavi {
     .list-group {
+      &.ng-hide-add, &.ng-hide-remove {
+        transition: max-height 0.2s ease;
+      }
+      &.ng-hide-add.ng-hide-add-active, &.ng-hide-remove {
+        overflow: hidden;
+        max-height: 0px;
+      }
+      &.ng-hide-add, &.ng-hide-remove.ng-hide-remove-active {
+        overflow: hidden;
+        max-height: 100px;
+      }
       margin-bottom: 0px;
+      .list-group-item {
+        padding: 0;
+        border-radius: 0 !important;
+        .glyphicon {
+          padding-top: 12px;
+          padding-left: $glyph-padding-left;
+          color: black;
+          float: left;
+          display: block;
+        }
+      }
+      .list-group {
+        .list-group-item {
+          border: 0;
+          .glyphicon {
+            padding-left: $glyph-padding-left + $sivunavi-sisennys;
+          }
+          .linkkiteksti {
+            padding-left: $linkkiteksti-padding-left + $sivunavi-sisennys;
+          }
+          .list-group {
+            .list-group-item {
+              .glyphicon {
+                padding-left: $glyph-padding-left + 2*$sivunavi-sisennys;
+              }
+              .linkkiteksti {
+                padding-left: $linkkiteksti-padding-left + 2*$sivunavi-sisennys;
+              }
+            }
+          }
+        }
+      }
       .list-group-static {
-          background-color: #fafafa;
-          border-radius: 0px;
+        background-color: #fafafa;
+        border-radius: 0px;
+        padding: 10px 15px;
       }
     }
     a {
+      &:active {
+        outline: 0;
+      }
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-right: 8px;
       &.navi-aktiivinen {
         background-color: $list-group-link-color;
         color: white;
         font-weight: 700;
-        .glyphicon {
-          display: none;
-        }
       }
     }
   }
@@ -42,21 +95,15 @@ $sivunavi-takaisin-korkeus: 50px;
   }
 
   .sivunavi {
-   a {
-      @include borderradius(0);
-      & *:hover {
-        text-decoration: none;
-      }
-      .glyphicon {
-        float: left;
-        display: block;
-        color: black;
-        top: 3px;
-      }
-      .linkkiteksti {
-        display: block;
-        padding-left: 30px;
-      }
+    .linkkiteksti {
+      display: block;
+      padding-left: $linkkiteksti-padding-left;
+    }
+    .submenu-toggler {
+      float: left;
+      display: block;
+      width: 30px;
+      height: 30px;
     }
   }
 

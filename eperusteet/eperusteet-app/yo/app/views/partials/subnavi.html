@@ -1,0 +1,10 @@
+<div class="list-group-item" ng-repeat="sisalto in subnavi">
+  <span ng-if="sisalto.lapset" ng-click="toggle(sisalto.perusteenOsa.id, $event)"
+        class="glyphicon pointer" ng-class="{'glyphicon-chevron-right': !sivunaviopen[sisalto.perusteenOsa.id], 'glyphicon-chevron-down': sivunaviopen[sisalto.perusteenOsa.id]}"></span>
+  <a class="linkkiteksti" id="subnavi-id-{{sisalto.perusteenOsa.id}}"
+    ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id})"
+    ui-sref-active="navi-aktiivinen">{{ sisalto.perusteenOsa.nimi || 'uusi-tutkinnon-osa' | kaanna}}</a>
+  <div class="list-group subnavi-lapset" ng-if="sisalto.lapset" ng-show="sivunaviopen[sisalto.perusteenOsa.id]">
+    <div subnavi="sisalto.lapset"></div>
+  </div>
+</div>

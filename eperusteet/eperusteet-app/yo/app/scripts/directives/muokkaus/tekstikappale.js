@@ -28,8 +28,7 @@ angular.module('eperusteApp')
       controller: function($scope, $q, Editointikontrollit, PerusteenOsat,
         Notifikaatiot, SivunavigaatioService, VersionHelper, Lukitus, $state,
         TutkinnonOsaEditMode, PerusteenOsaViitteet, Varmistusdialogi, $timeout,
-        $translate, Kaanna, PerusteprojektiTiedotService, $stateParams, $rootScope) {
-
+        $translate, Kaanna, PerusteprojektiTiedotService, $stateParams, $rootScope, SuoritustapaSisalto) {
         document.getElementById('ylasivuankkuri').scrollIntoView(); // FIXME: Keksi tälle joku oikea ratkaisu
 
         $scope.versiot = {};
@@ -38,16 +37,52 @@ angular.module('eperusteApp')
         PerusteprojektiTiedotService.then(function (instance) {
           instance.haeSisalto($scope.$parent.peruste.id, $stateParams.suoritustapa).then(function(res) {
             $scope.sisalto = res;
+            $scope.setNavigation();
           });
         });
 
-        $scope.viiteId = function () {
-          var found = _.find($scope.sisalto.lapset, function (item) {
-            return item.perusteenOsa.id === $scope.tekstikappale.id;
+        $scope.setNavigation = function () {
+          $scope.tree.init();
+          SivunavigaatioService.setCrumb($scope.tree.get());
+          $timeout(function () {
+            SivunavigaatioService.unCollapseFor($scope.tekstikappale.id);
+          }, 50);
+        };
+
+        function storeTree (sisalto, level) {
+          level = level || 0;
+          _.each(sisalto.lapset, function (lapsi) {
+            if (!_.isObject($scope.viitteet[lapsi.perusteenOsa.id])) {
+              $scope.viitteet[lapsi.perusteenOsa.id] = {};
+            }
+            $scope.viitteet[lapsi.perusteenOsa.id].viite = lapsi.id;
+            $scope.viitteet[lapsi.perusteenOsa.id].level = level;
+            if (sisalto.perusteenOsa) {
+              $scope.viitteet[lapsi.perusteenOsa.id].parent = sisalto.perusteenOsa.id;
+            }
+            storeTree(lapsi, level + 1);
           });
-          if (found) {
-            return found.id;
+        }
+
+        $scope.tree = {
+          init: function () {
+            console.log("init tree");
+            $scope.viitteet = {};
+            storeTree($scope.sisalto);
+          },
+          get: function () {
+            var ids = [];
+            var id = $scope.tekstikappale.id;
+            do {
+              ids.push(id);
+              var id = $scope.viitteet[id] ? $scope.viitteet[id].parent : null;
+            } while (id);
+            return ids;
           }
+        };
+
+        $scope.viiteId = function () {
+          return $scope.viitteet[$scope.tekstikappale.id] ? $scope.viitteet[$scope.tekstikappale.id].viite : null;
         };
 
         $scope.fields =
@@ -75,6 +110,7 @@ angular.module('eperusteApp')
             SivunavigaatioService.update();
             Lukitus.vapautaPerusteenosa(res.id);
             Notifikaatiot.onnistui('muokkaus-tekstikappale-tallennettu');
+            $scope.setNavigation();
           }
 
           $scope.editableTekstikappale = angular.copy(kappale);
@@ -104,6 +140,7 @@ angular.module('eperusteApp')
           });
 
           $scope.haeVersiot();
+          $scope.setNavigation();
         }
 
         if ($scope.tekstikappale) {
@@ -122,6 +159,29 @@ angular.module('eperusteApp')
         $scope.muokkaa = function () {
           Lukitus.lukitsePerusteenosa($scope.tekstikappale.id, function() {
             Editointikontrollit.startEditing();
+          });
+        };
+
+        $scope.canAddLapsi = function () {
+          // Vain kolme tasoa hierarkiaa sallitaan
+          return $scope.tekstikappale.id &&
+                 $scope.viitteet[$scope.tekstikappale.id] &&
+                 $scope.viitteet[$scope.tekstikappale.id].level < 2;
+        };
+
+        $scope.addLapsi = function () {
+          SuoritustapaSisalto.addChild({
+            perusteId: $scope.$parent.peruste.id,
+            suoritustapa: $stateParams.suoritustapa,
+            perusteenosaViiteId: $scope.viiteId()
+          }, {}, function (response) {
+            TutkinnonOsaEditMode.setMode(true);
+            $state.go('perusteprojekti.suoritustapa.perusteenosa', {
+              perusteenOsanTyyppi: 'tekstikappale',
+              perusteenOsaId: response._perusteenOsa
+            });
+          }, function (virhe) {
+            Notifikaatiot.varoitus(virhe);
           });
         };
 
