@@ -29,19 +29,6 @@ angular.module('eperusteApp')
       tutkinnonOsat: {}
     };
     $scope.versiot = {};
-    
-    
-    /*
-     * TEST CODE
-     */
-    $http.get(SERVICE_LOC + '/perusteet/ETag').then(function (res){
-      console.log('ETag success', res);
-    }, function (virhe) {
-      console.log('ETag error', virhe);
-    });
-    /*
-     * 
-     */
 
     Kommentit.haeKommentit(KommentitBySuoritustapa, { id: $stateParams.perusteProjektiId, suoritustapa: $scope.suoritustapa });
 

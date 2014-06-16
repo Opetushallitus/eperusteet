@@ -73,15 +73,6 @@ public class PerusteController {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findBy(p, pquery);
     }
-    
-    @RequestMapping(value = "/ETag", method = GET)
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<PerusteDto> get(@RequestHeader(value="If-None-Match", required=false) Integer eTag, HttpServletResponse  response) {
-        LOG.debug("ETag: " + eTag);
-        response.addHeader("ETag", "100");
-        return new ResponseEntity<>(HttpStatus.OK);
-        
-    }
 
     @RequestMapping(value = "/{id}", method = POST)
     @ResponseStatus(HttpStatus.OK)
