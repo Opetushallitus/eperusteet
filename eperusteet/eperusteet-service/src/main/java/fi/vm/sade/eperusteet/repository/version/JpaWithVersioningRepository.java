@@ -24,14 +24,17 @@ import org.springframework.data.repository.NoRepositoryBean;
 @NoRepositoryBean
 public interface JpaWithVersioningRepository<T, ID extends Serializable> extends JpaRepository<T, ID> {
 
-	List<Revision> getRevisions(final ID id);
-	T findRevision(final ID id, final Integer revisionId);
+    List<Revision> getRevisions(final ID id);
 
-	public class DomainClassNotAuditedException extends BeanCreationException {
+    T findRevision(final ID id, final Integer revisionId);
 
-		public DomainClassNotAuditedException(Class<?> clazz) {
-			super("Defined domain class '" + clazz.getSimpleName() + "' does not contain @audited-annotation");
-		}
-	}
+    Integer getLatestRevisionId(final ID id);
+
+    public class DomainClassNotAuditedException extends BeanCreationException {
+
+        public DomainClassNotAuditedException(Class<?> clazz) {
+            super("Defined domain class '" + clazz.getSimpleName() + "' does not contain @audited-annotation");
+        }
+    }
 
 }

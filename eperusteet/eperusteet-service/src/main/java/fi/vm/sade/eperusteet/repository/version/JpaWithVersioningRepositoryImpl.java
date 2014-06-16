@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.repository.version;
 import fi.vm.sade.eperusteet.service.impl.PerusteenOsaServiceImpl;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import org.hibernate.envers.AuditReader;
@@ -31,46 +32,56 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements JpaWithVersioningRepository<T, ID> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PerusteenOsaServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PerusteenOsaServiceImpl.class);
 
-	private EntityManager entityManager;
-	private JpaEntityInformation<T, ID> entityInformation;
+    private EntityManager entityManager;
+    private JpaEntityInformation<T, ID> entityInformation;
 
-	public JpaWithVersioningRepositoryImpl(JpaEntityInformation<T, ID> entityInformation, EntityManager entityManager) {
-		super(entityInformation, entityManager);
+    public JpaWithVersioningRepositoryImpl(JpaEntityInformation<T, ID> entityInformation, EntityManager entityManager) {
+        super(entityInformation, entityManager);
 
-		this.entityManager = entityManager;
-		this.entityInformation = entityInformation;
-	}
+        this.entityManager = entityManager;
+        this.entityInformation = entityInformation;
+    }
 
-	@Override
-	public List<Revision> getRevisions(ID id) {
-		AuditReader auditReader = AuditReaderFactory.get(entityManager);
+    @Override
+    public List<Revision> getRevisions(ID id) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
-		@SuppressWarnings("unchecked")
-		List<Object[]> results = (List<Object[]>) auditReader.createQuery()
-				.forRevisionsOfEntity(entityInformation.getJavaType(), false, true)
-				.addProjection(AuditEntity.revisionNumber())
-				.addProjection(AuditEntity.revisionProperty("timestamp"))
-				.addOrder(AuditEntity.revisionProperty("timestamp").desc())
-				.add(AuditEntity.id().eq(id))
-				.getResultList();
+        @SuppressWarnings("unchecked")
+        List<Object[]> results = (List<Object[]>) auditReader.createQuery()
+                .forRevisionsOfEntity(entityInformation.getJavaType(), false, true)
+                .addProjection(AuditEntity.revisionNumber())
+                .addProjection(AuditEntity.revisionProperty("timestamp"))
+                .addOrder(AuditEntity.revisionProperty("timestamp").desc())
+                .add(AuditEntity.id().eq(id))
+                .getResultList();
 
-		List<Revision> revisions = new ArrayList<>();
-		for (Object[] result : results) {
-			revisions.add(new Revision((Integer) result[0], (Long) result[1]));
-		}
+        List<Revision> revisions = new ArrayList<>();
+        for (Object[] result : results) {
+            revisions.add(new Revision((Integer) result[0], (Long) result[1]));
+        }
 
-		return revisions;
-	}
+        return revisions;
+    }
 
-	@Override
-	public T findRevision(ID id, Integer revisionId) {
-		return AuditReaderFactory.get(entityManager).find(entityInformation.getJavaType(), id, revisionId);
-	}
+    @Override
+    public T findRevision(ID id, Integer revisionId) {
+        return AuditReaderFactory.get(entityManager).find(entityInformation.getJavaType(), id, revisionId);
+    }
 
-	private static DefaultRevisionEntity getRevisionEntity(Object[] object) {
-		return (DefaultRevisionEntity) object[1];
-	}
+    private static DefaultRevisionEntity getRevisionEntity(Object[] object) {
+        return (DefaultRevisionEntity) object[1];
+    }
+
+    @Override
+    public Integer getLatestRevisionId(ID id) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+        final List<Number> revisions = auditReader.getRevisions(entityInformation.getJavaType(), id);
+        if (revisions == null || revisions.isEmpty()) {
+            return null;
+        }
+        return revisions.get(revisions.size() - 1).intValue();
+    }
 
 }
