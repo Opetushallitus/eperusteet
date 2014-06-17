@@ -36,6 +36,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.DokumenttiService;
+import com.google.code.docbook4j.renderer.PerustePDFRenderer;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -106,7 +107,8 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             //String style = "file:///full/path/to/docbookstyle.xsl";            
             String style = "res:docgen/docbookstyle.xsl";
 
-            PDFRenderer r = PDFRenderer.create(xmlpath, style);            
+            //PDFRenderer r = PDFRenderer.create(xmlpath, style);
+            PerustePDFRenderer r = new PerustePDFRenderer().xml(xmlpath).xsl(style);
             r.parameter("l10n.gentext.language", "fi");
             InputStream is;
             is = r.render();
