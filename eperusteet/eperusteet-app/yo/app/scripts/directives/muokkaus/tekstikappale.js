@@ -66,7 +66,6 @@ angular.module('eperusteApp')
 
         $scope.tree = {
           init: function () {
-            console.log("init tree");
             $scope.viitteet = {};
             storeTree($scope.sisalto);
           },
