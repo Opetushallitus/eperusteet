@@ -134,9 +134,8 @@ public class LockManagerImpl implements LockManager {
             em.remove(lukko);
             return true;
         } else {
-            throw new LockingException("Käyttäjä ei omista poistettavaa lukkoa", LukkoDto.of(lukko));
+            return false;
         }
-
     }
 
     @Override
