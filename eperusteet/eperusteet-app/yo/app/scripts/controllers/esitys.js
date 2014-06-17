@@ -148,10 +148,6 @@ angular.module('eperusteApp')
       return valitutSuodattimet.length === 0 || _.isObject(_.find(valitutSuodattimet, function(suodatin) {return suodatin._id === id;}));
     };
 
-    $scope.valitseKieli = function(teksti) {
-      return YleinenData.valitseKieli(teksti);
-    };
-
     $scope.$on('optioPoistettu', function() {
       $scope.$broadcast('optiotMuuttuneet');
     });
