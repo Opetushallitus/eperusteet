@@ -36,6 +36,7 @@ import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
+import fi.vm.sade.eperusteet.dto.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
@@ -221,6 +222,13 @@ public class PerusteServiceImpl implements PerusteService {
         PerusteenOsaViite entity = perusteet.findSisaltoByIdAndSuoritustapakoodi(perusteId, suoritustapakoodi);
         return mapper.map(entity, PerusteenosaViiteDto.class);
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public SuoritustapaDto getSuoritustapa(Long perusteId, Suoritustapakoodi suoritustapakoodi) {
+        Suoritustapa entity = getSuoritustapaEntity(perusteId, suoritustapakoodi);
+        return mapper.map(entity, SuoritustapaDto.class);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -314,7 +322,7 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, RakenneModuuliDto rakenne) {
 
-        Suoritustapa suoritustapa = getSuoritustapa(perusteId, suoritustapakoodi);
+        Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
         lockManager.ensureLockedByAuthenticatedUser(suoritustapa.getId());
 
         final Map<EntityReference, TutkinnonOsaViite> uniqueIndex = Maps.uniqueIndex(suoritustapa.getTutkinnonOsat(), IndexFunction.INSTANCE);
@@ -338,7 +346,7 @@ public class PerusteServiceImpl implements PerusteService {
     @Override
     @Transactional
     public void removeTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, Long osaId) {
-        Suoritustapa suoritustapa = getSuoritustapa(id, suoritustapakoodi);
+        Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
         lockManager.lock(suoritustapa.getId());
         try {
             Set<TutkinnonOsaViite> tutkinnonOsat = suoritustapa.getTutkinnonOsat();
@@ -359,7 +367,7 @@ public class PerusteServiceImpl implements PerusteService {
     @Override
     @Transactional
     public TutkinnonOsaViiteDto addTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteDto osa) {
-        final Suoritustapa suoritustapa = getSuoritustapa(id, suoritustapakoodi);
+        final Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
         TutkinnonOsaViite viite = mapper.map(osa, TutkinnonOsaViite.class);
         if (viite.getTutkinnonOsa() == null) {
             TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
@@ -380,7 +388,7 @@ public class PerusteServiceImpl implements PerusteService {
     @Override
     @Transactional
     public TutkinnonOsaViiteDto updateTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteDto osa) {
-        final Suoritustapa suoritustapa = getSuoritustapa(id, suoritustapakoodi);
+        final Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osa.getId());
 
         if (viite == null || !viite.getSuoritustapa().equals(suoritustapa)
@@ -393,9 +401,8 @@ public class PerusteServiceImpl implements PerusteService {
         return mapper.map(viite, TutkinnonOsaViiteDto.class);
     }
 
-    private Suoritustapa getSuoritustapa(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
+    private Suoritustapa getSuoritustapaEntity(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
         final Peruste peruste = perusteet.findOne(perusteid);
-
         if (peruste == null) {
             throw new BusinessRuleViolationException("Perustetta ei ole olemassa");
         }
@@ -404,14 +411,13 @@ public class PerusteServiceImpl implements PerusteService {
             throw new BusinessRuleViolationException("Perusteella " + peruste + " + ei ole suoritustapaa "
                 + suoritustapa);
         }
-
         return suoritustapa;
     }
 
     @Override
     @Transactional
     public PerusteenSisaltoViiteDto addSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, PerusteenSisaltoViiteDto viite) {
-        Suoritustapa suoritustapa = getSuoritustapa(perusteId, suoritustapakoodi);
+        Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
         if (suoritustapa.getSisalto() == null) {
             throw new BusinessRuleViolationException("Perusteen " + perusteId + " + suoritustavalla "
                 + suoritustapakoodi
@@ -461,19 +467,19 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Override
     public LukkoDto lock(Long id, Suoritustapakoodi suoritustapakoodi) {
-        Suoritustapa suoritustapa = getSuoritustapa(id, suoritustapakoodi);
+        Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
         return LukkoDto.of(lockManager.lock(suoritustapa.getId()));
     }
 
     @Override
     public void unlock(Long id, Suoritustapakoodi suoritustapakoodi) {
-        Suoritustapa suoritustapa = getSuoritustapa(id, suoritustapakoodi);
+        Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
         lockManager.unlock(suoritustapa.getId());
     }
 
     @Override
     public LukkoDto getLock(Long id, Suoritustapakoodi suoritustapakoodi) {
-        Suoritustapa suoritustapa = getSuoritustapa(id, suoritustapakoodi);
+        Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
         return LukkoDto.of(lockManager.getLock(suoritustapa.getId()));
     }
 

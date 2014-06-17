@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
+import fi.vm.sade.eperusteet.dto.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
@@ -272,6 +273,20 @@ public class PerusteController {
         @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
 
         PerusteenosaViiteDto dto = service.getSuoritustapaSisalto(perusteId, Suoritustapakoodi.of(suoritustapakoodi));
+        if (dto == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)
+    @ResponseBody
+    public ResponseEntity<SuoritustapaDto> getSuoritustapa(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+
+        SuoritustapaDto dto = service.getSuoritustapa(perusteId, Suoritustapakoodi.of(suoritustapakoodi));
         if (dto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

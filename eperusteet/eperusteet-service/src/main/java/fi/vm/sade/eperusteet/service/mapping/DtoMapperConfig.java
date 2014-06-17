@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.mapping;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suosikki;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
@@ -27,6 +28,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.SuosikkiDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
@@ -78,7 +80,6 @@ public class DtoMapperConfig {
                 .fieldBToA("peruste.nimi", "nimi")
                 .byDefault()
                 .register();
-
         factory.classMap(AbstractRakenneOsaDto.class, AbstractRakenneOsa.class)
                 .byDefault()
                 .register();
@@ -92,9 +93,11 @@ public class DtoMapperConfig {
                 .fieldAToB("tutkinnonOsaViite", "tutkinnonOsaViite")
                 .byDefault()
                 .register();
-
         factory.classMap(TutkinnonOsaViiteDto.class, TutkinnonOsaViite.class)
                 .fieldBToA("tutkinnonOsa.nimi", "nimi")
+                .byDefault()
+                .register();
+        factory.classMap(SuoritustapaDto.class, Suoritustapa.class)
                 .byDefault()
                 .register();
 
