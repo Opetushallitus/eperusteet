@@ -337,8 +337,7 @@ angular.module('eperusteApp')
           for (var i = 2; i < height; ++i) {
             var solu = data[col + i];
             if (solu && solu.v) {
-              // tekstikentta.teksti.fi += '<p>' + suodataTekstipala(solu.v) + '</p>';
-              tekstikentta.teksti.fi += suodataTekstipala(solu.v);
+              tekstikentta.teksti.fi += '<p>' + suodataTekstipala(solu.v) + '</p>';
             }
           }
           peruste.tekstikentat.push(tekstikentta);
