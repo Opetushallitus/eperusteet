@@ -26,13 +26,15 @@
         <ehcache.version>2.6.8</ehcache.version>
         <slf4j.version>1.7.7</slf4j.version>
     </properties>
+
     <repositories> 
         <repository> 
             <id>googlecode</id> 
             <url>http://docbook4j.googlecode.com/svn/m2-repo/releases/</url> 
         </repository> 
     </repositories>
-    <dependencyManagement>
+
+   <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -287,9 +289,9 @@
             </exclusions>
         </dependency>
         <dependency> 
-            <groupId>com.google.code.docbook4j</groupId>
+            <groupId>net.javaforge.docbook4j</groupId>
             <artifactId>docbook4j</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
     </dependencies>
     <build>
