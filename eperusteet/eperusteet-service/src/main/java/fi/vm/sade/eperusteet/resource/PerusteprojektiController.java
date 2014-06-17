@@ -84,7 +84,6 @@ public class PerusteprojektiController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public PerusteprojektiDto update(@PathVariable("id") final long id, @RequestBody PerusteprojektiDto perusteprojektiDto) {
-        LOG.info("update {}", perusteprojektiDto);
         perusteprojektiDto = service.update(id, perusteprojektiDto);
         return perusteprojektiDto;
     }
@@ -93,7 +92,6 @@ public class PerusteprojektiController {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public ResponseEntity<PerusteprojektiDto> add(@RequestBody PerusteprojektiLuontiDto perusteprojektiLuontiDto, UriComponentsBuilder ucb) {
-        LOG.info("add {}", perusteprojektiLuontiDto);
         PerusteprojektiDto perusteprojektiDto = service.save(perusteprojektiLuontiDto);
         return new ResponseEntity<>(perusteprojektiDto, buildHeadersFor(perusteprojektiDto.getId(), ucb), HttpStatus.CREATED);
     }

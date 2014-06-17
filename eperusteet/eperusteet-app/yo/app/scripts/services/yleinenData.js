@@ -49,6 +49,10 @@ angular.module('eperusteApp')
       'OSAAMISPISTE',
       'OPINTOVIIKKO',
     ];
+    this.yksikotMap = {
+      osp: 'OSAAMISPISTE',
+      ov: 'OPINTOVIIKKO',
+    };
 
     $rootScope.
       this.kontekstit = [
