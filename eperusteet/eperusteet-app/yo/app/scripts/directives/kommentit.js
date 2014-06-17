@@ -48,11 +48,11 @@ angular.module('eperusteApp')
           }
         }
 
-        $rootScope.$on('$stateChangeStart', function() {
+        $scope.$on('$stateChangeStart', function() {
           $scope.nayta = false;
         });
 
-        $rootScope.$on('update:kommentit', function(event, url, lataaja) {
+        $scope.$on('update:kommentit', function(event, url, lataaja) {
           if (!$scope.urlit[url]) {
             $scope.urlit[url] = lataaja;
             if (!stateChanged) {
@@ -61,7 +61,7 @@ angular.module('eperusteApp')
           }
         });
 
-        $rootScope.$on('$stateChangeSuccess', function() {
+        $scope.$on('$stateChangeSuccess', function() {
           stateChanged = true;
           $timeout(function() {
             var url = $location.url();
