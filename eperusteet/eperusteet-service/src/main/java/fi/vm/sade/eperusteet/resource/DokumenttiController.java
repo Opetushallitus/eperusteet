@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.service.DokumenttiService;
+import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +47,30 @@ public class DokumenttiController {
     @RequestMapping(value="/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<byte[]> generateById(@PathVariable("id") final long id) {
-
-        LOG.debug("generateById: {}", id);
-
+        LOG.debug("generateById: {}", id);                
+        return generate(id);
+    }
+    
+    @RequestMapping(value="/async/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public Callable<ResponseEntity<byte[]>> generateByIdAsync(@PathVariable("id") final long id) {
+        LOG.debug("generateByIdAsync: {}", id);
+                
+        Callable<ResponseEntity<byte[]>> callable = new Callable<ResponseEntity<byte[]>>() {
+            
+            @Override
+            public ResponseEntity<byte[]> call() {
+                LOG.debug("Callable.call: {}", id);
+                return generate(id);
+            }
+        };
+        
+        System.out.println("After creating callable");
+        return callable;
+    }
+    
+    private ResponseEntity<byte[]> generate(long id) {
+        LOG.debug("generate: {}", id);
         byte[] pdfdata = service.generateFor(id);
 
         if (pdfdata == null || pdfdata.length == 0) {
