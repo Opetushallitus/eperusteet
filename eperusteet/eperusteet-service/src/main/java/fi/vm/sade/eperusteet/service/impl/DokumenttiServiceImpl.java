@@ -253,7 +253,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
             org.jsoup.nodes.TextNode t = ((org.jsoup.nodes.TextNode) node);
             if (!(out instanceof Document)) {
-                out.appendChild(doc.createTextNode(t.text()));
+                out.appendChild(doc.createTextNode(t.getWholeText()));                
             }
         }
     }
