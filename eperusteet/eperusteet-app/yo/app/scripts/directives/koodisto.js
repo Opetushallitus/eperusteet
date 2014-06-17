@@ -26,6 +26,11 @@ angular.module('eperusteApp')
       return true;
     };
 
+    function piilotaEtuliite(koodi) {
+      var indeksi = koodi.koodi.indexOf('_');
+      koodi.$siivottuKoodi = indeksi !== -1 ? koodi.koodi.substr(indeksi + 1) : koodi.koodi;
+    }
+
     function hae(koodisto, cb) {
       if (!_.isEmpty(taydennykset) && koodisto === nykyinenKoodisto) {
         cb();
@@ -33,9 +38,11 @@ angular.module('eperusteApp')
       }
       $http.get(SERVICE_LOC + '/koodisto/' + koodisto).then(function(re) {
         taydennykset = koodistoMapping(re.data);
-        taydennykset = _.sortBy(taydennykset, function(t) {
+        taydennykset = _(taydennykset).sortBy(function(t) {
           return Kaanna.kaanna(t.nimi);
-        });
+        })
+        .forEach(piilotaEtuliite)
+        .value();
         cb();
       });
     }
