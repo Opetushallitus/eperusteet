@@ -33,7 +33,6 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.DokumenttiService;
 import com.google.code.docbook4j.renderer.PerustePDFRenderer;
@@ -174,18 +173,18 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         DOMSource source = new DOMSource(doc);
         SAXTransformerFactory stf = (SAXTransformerFactory) TransformerFactory.newInstance();       
 
-        InputStream xslresource = getClass().getClassLoader().getResourceAsStream("docgen/epdoc-markup.xsl");
-        Templates templates = stf.newTemplates(new StreamSource(xslresource));
-        // or
-        //Templates templates = stf.newTemplates(new StreamSource(new File("/full/path/to/epdoc-markup.xsl")));
+        File resultFile;
+        try (InputStream xslresource = getClass().getClassLoader().getResourceAsStream("docgen/epdoc-markup.xsl")) {
+            Templates templates = stf.newTemplates(new StreamSource(xslresource));
+            // or
+            //Templates templates = stf.newTemplates(new StreamSource(new File("/full/path/to/epdoc-markup.xsl")));
+            TransformerHandler th = stf.newTransformerHandler(templates);
+            resultFile = File.createTempFile("peruste_" + UUID.randomUUID().toString(), ".xml");
+            th.setResult(new StreamResult(resultFile));
+            Transformer transformer = stf.newTransformer();
+            transformer.transform(source, new SAXResult(th));
+        }
         
-        TransformerHandler th = stf.newTransformerHandler(templates);
-        File resultFile = File.createTempFile("peruste_" + UUID.randomUUID().toString(), ".xml");
-        th.setResult(new StreamResult(resultFile));
-
-        Transformer transformer = stf.newTransformer();
-        transformer.transform(source, new SAXResult(th));
-
         return resultFile.getAbsolutePath();
     }
 

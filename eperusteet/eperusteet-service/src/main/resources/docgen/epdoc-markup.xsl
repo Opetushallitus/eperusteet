@@ -117,5 +117,22 @@
     <doc:caption>
       <xsl:apply-templates select="node()|@*"/>
     </doc:caption>
-  </xsl:template>     
+  </xsl:template>
+  
+  <!-- links be funky:
+    - ignore target attribute
+    - footnote the href attribute as ulink url...
+    - ...after outputting the link text   
+  -->
+  <xsl:template match="h:a">
+      <xsl:apply-templates select="node()|@*"/>
+      <doc:footnote>
+          <doc:para>
+            <doc:ulink url="{@href}">
+              <xsl:value-of select="@href" />              
+            </doc:ulink>
+          </doc:para>
+      </doc:footnote>
+  </xsl:template>
+
 </xsl:stylesheet>
