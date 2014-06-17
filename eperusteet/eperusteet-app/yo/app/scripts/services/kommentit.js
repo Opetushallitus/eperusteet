@@ -104,7 +104,7 @@ angular.module('eperusteApp')
       };
       $timeout(function() {
         $rootScope.$broadcast('update:kommentit', url, lataaja);
-      }, 10);
+      }, 100);
     }
 
     function lisaaKommentti(parent, viesti, success) {

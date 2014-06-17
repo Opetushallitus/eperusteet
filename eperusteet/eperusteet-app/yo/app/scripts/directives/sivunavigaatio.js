@@ -29,34 +29,80 @@ angular.module('eperusteApp')
       controller: 'sivunavigaatioCtrl'
     };
   })
-
   .controller('sivunavigaatioCtrl', function($rootScope, $scope, $stateParams, $state, SivunavigaatioService, PerusteProjektiService) {
+    var lastParams = {};
     $scope.suoritustapa = $stateParams.suoritustapa;
     $scope.menuCollapsed = true;
-    $rootScope.$on('$stateChangeStart', function () {
+    $scope.data = {};
+    $scope.piilota = true;
+
+    function onStateChange(params) {
+      function load() {
+        $scope.data = SivunavigaatioService.getData();
+      }
+
+      if (_.size(params) !== _.size(lastParams)) { load(); }
+      else {
+        var isSame = _.isObject(params) && _.isObject(lastParams);
+        _.forEach(params, function(v, k) {
+          if (!lastParams[k] || lastParams[k] !== v) {
+            isSame = false;
+          }
+        });
+        if (!isSame) {
+          load();
+        }
+        lastParams = params;
+      }
+    }
+    onStateChange();
+
+    $rootScope.$on('$stateChangeStart', function() {
       $scope.menuCollapsed = true;
     });
+
+    $rootScope.$on('$stateChangeSuccess', function(_1, _2, params) {
+      onStateChange(params);
+    });
+
     $scope.goBackToMain = function () {
       $state.go('perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: $scope.projekti.id, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {reload: true});
     };
+
     $scope.toggleSideMenu = function () {
       $scope.menuCollapsed = !$scope.menuCollapsed;
     };
-    $scope.isHidden = function () {
+
+    $scope.isHidden = function() {
       return $scope.data.piilota;
     };
-    SivunavigaatioService.bind($scope);
   })
-  .service('SivunavigaatioService', function ($stateParams) {
-    this.data = {
+  .service('SivunavigaatioService', function ($stateParams, PerusteprojektiTiedotService) {
+    var data = {
       osiot: false,
       piilota: false,
       projekti: {id: 0},
       service: null
     };
-    this.bind = function (scope) {
-      scope.data = this.data;
-    };
+
+    function setData(afterCb) {
+      afterCb = afterCb || angular.noop;
+
+      function load(service) {
+        data.projekti = service.getProjekti();
+        data.projekti.peruste = service.getPeruste();
+        data.projekti.peruste.sisalto = service.getSisalto();
+      }
+
+      if (data.service) {
+          load(data.service);
+          afterCb();
+      } else {
+        PerusteprojektiTiedotService.then(function(res) {
+          data.service = res;
+        });
+      }
+    }
 
     /**
      * Asettaa sivunavigaation tiettyyn tilaan.
@@ -66,29 +112,20 @@ angular.module('eperusteApp')
      *            false näyttää vain "takaisin"-linkin
      *     piilota: true piilottaa koko navigaatioelementin
      */
-    this.aseta = function (data) {
-      if (data.perusteprojektiTiedot) {
-        this.data.service = data.perusteprojektiTiedot;
-        this.setData();
-      }
-
-      if (!_.isUndefined(data.osiot)) {
-        this.data.osiot = data.osiot;
-      }
-      this.data.piilota = !!data.piilota;
-    };
-
-    this.setData = function () {
-      this.data.projekti = this.data.service.getProjekti();
-      this.data.projekti.peruste =  this.data.service.getPeruste();
-      this.data.projekti.peruste.sisalto =  this.data.service.getSisalto();
-    };
-
-    this.update = function () {
-      var self = this;
-      this.data.service.alustaPerusteenSisalto($stateParams, true).then(function () {
-        self.setData();
+    this.aseta = function(config) {
+      setData(function() {
+        data.osiot = config.osiot || false;
+        data.piilota = !!config.piilota;
       });
     };
 
+    this.update = function () {
+      data.service.alustaPerusteenSisalto($stateParams, true).then(function () {
+        setData();
+      });
+    };
+
+    this.getData = function() {
+      return data;
+    };
   });
