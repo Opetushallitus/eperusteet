@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.Tila;
+import fi.vm.sade.eperusteet.dto.EntityReference;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
@@ -133,12 +134,12 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         RakenneModuuliDto rakenne = new RakenneModuuliDto();
 
         RakenneOsaDto o1 = new RakenneOsaDto();
-        o1.setTutkinnonOsaViite(v1.getTutkinnonOsa());
+        o1.setTutkinnonOsaViite(new EntityReference(v1.getId()));
 
         RakenneModuuliDto ryhma = new RakenneModuuliDto();
 
         RakenneOsaDto o2 = new RakenneOsaDto();
-        o2.setTutkinnonOsaViite(v2.getTutkinnonOsa());
+        o2.setTutkinnonOsaViite(new EntityReference(v2.getId()));
         ryhma.setOsat(Arrays.<AbstractRakenneOsaDto>asList(o2));
 
         rakenne.setOsat(Arrays.<AbstractRakenneOsaDto>asList(o1, ryhma));
