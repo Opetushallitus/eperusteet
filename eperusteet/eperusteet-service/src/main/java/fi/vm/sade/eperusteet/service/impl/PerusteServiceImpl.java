@@ -15,8 +15,6 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Maps;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
@@ -28,7 +26,6 @@ import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.dto.EntityReference;
 import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PageDto;
@@ -39,7 +36,6 @@ import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
 import fi.vm.sade.eperusteet.dto.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -325,8 +321,7 @@ public class PerusteServiceImpl implements PerusteService {
         Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
         lockManager.ensureLockedByAuthenticatedUser(suoritustapa.getId());
 
-        final Map<EntityReference, TutkinnonOsaViite> uniqueIndex = Maps.uniqueIndex(suoritustapa.getTutkinnonOsat(), IndexFunction.INSTANCE);
-        rakenne.foreach(new VisitorImpl(uniqueIndex, maxRakenneDepth));
+        rakenne.foreach(new VisitorImpl(maxRakenneDepth));
         RakenneModuuli moduuli = mapper.map(rakenne, RakenneModuuli.class);
 
         if (!moduuli.isSame(suoritustapa.getRakenne())) {
@@ -627,23 +622,11 @@ public class PerusteServiceImpl implements PerusteService {
         return peruste;
     }
 
-    private enum IndexFunction implements Function<TutkinnonOsaViite, EntityReference> {
-
-        INSTANCE;
-
-        @Override
-        public EntityReference apply(TutkinnonOsaViite input) {
-            return input.getTutkinnonOsa().getReference();
-        }
-    }
-
     private static class VisitorImpl implements AbstractRakenneOsaDto.Visitor {
 
-        private final Map<EntityReference, TutkinnonOsaViite> uniqueIndex;
-        private int maxDepth;
+        private final int maxDepth;
 
-        public VisitorImpl(Map<EntityReference, TutkinnonOsaViite> uniqueIndex, int maxDepth) {
-            this.uniqueIndex = uniqueIndex;
+        public VisitorImpl(int maxDepth) {
             this.maxDepth = maxDepth;
         }
 
@@ -651,10 +634,6 @@ public class PerusteServiceImpl implements PerusteService {
         public void visit(final AbstractRakenneOsaDto dto, final int depth) {
             if (depth >= maxDepth) {
                 throw new BusinessRuleViolationException("Tutkinnon rakennehierarkia ylittää maksimisyvyyden");
-            }
-            if (dto instanceof RakenneOsaDto) {
-                RakenneOsaDto r = (RakenneOsaDto) dto;
-                r.setTutkinnonOsaViite(uniqueIndex.get(r.getTutkinnonOsa()).getReference());
             }
         }
     }

@@ -89,8 +89,6 @@ public class DtoMapperConfig {
                 .register();
         factory.classMap(RakenneOsaDto.class, RakenneOsa.class)
                 .use(AbstractRakenneOsaDto.class, AbstractRakenneOsa.class)
-                .fieldBToA("tutkinnonOsaViite.tutkinnonOsa", "tutkinnonOsa")
-                .fieldAToB("tutkinnonOsaViite", "tutkinnonOsaViite")
                 .byDefault()
                 .register();
         factory.classMap(TutkinnonOsaViiteDto.class, TutkinnonOsaViite.class)
