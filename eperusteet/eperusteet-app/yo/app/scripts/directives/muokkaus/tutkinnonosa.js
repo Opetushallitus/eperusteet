@@ -126,7 +126,7 @@ angular.module('eperusteApp')
 
           Editointikontrollit.registerCallback({
             edit: function() {
-              $scope.viiteosa = $scope.rakenne.tutkinnonOsat[$scope.editableTutkinnonOsa.id] || {};
+              $scope.viiteosa = _.find($scope.rakenne.tutkinnonOsat, {'_tutkinnonOsa': $scope.editableTutkinnonOsa.id.toString()}) || {};
               $scope.viiteosa.yksikko = $scope.viiteosa.yksikko || 'OSAAMISPISTE';
             },
             validate: function() {
@@ -146,7 +146,6 @@ angular.module('eperusteApp')
                   tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
                 },
                 Notifikaatiot.serverCb);
-
                 // Viiteosa (laajuus) tallennetaan erikseen
                 PerusteTutkinnonosa.save({
                   perusteId: $scope.rakenne.$peruste.id,
@@ -186,11 +185,11 @@ angular.module('eperusteApp')
 
         if($scope.tutkinnonOsa) {
           $scope.tutkinnonOsaPromise = $scope.tutkinnonOsa.$promise.then(function(response) {
-            Navigaatiopolku.asetaElementit({
+            /*Navigaatiopolku.asetaElementit({
               perusteenosa: {
                 nimi: response.nimi
               }
-            });
+            });*/
             setupTutkinnonOsa(response);
             return $scope.editableTutkinnonOsa;
           });

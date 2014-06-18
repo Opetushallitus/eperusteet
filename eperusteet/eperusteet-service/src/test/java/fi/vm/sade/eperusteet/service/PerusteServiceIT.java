@@ -133,12 +133,12 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         RakenneModuuliDto rakenne = new RakenneModuuliDto();
 
         RakenneOsaDto o1 = new RakenneOsaDto();
-        o1.setTutkinnonOsa(v1.getTutkinnonOsa());
+        o1.setTutkinnonOsaViite(v1.getTutkinnonOsa());
 
         RakenneModuuliDto ryhma = new RakenneModuuliDto();
 
         RakenneOsaDto o2 = new RakenneOsaDto();
-        o2.setTutkinnonOsa(v2.getTutkinnonOsa());
+        o2.setTutkinnonOsaViite(v2.getTutkinnonOsa());
         ryhma.setOsat(Arrays.<AbstractRakenneOsaDto>asList(o2));
 
         rakenne.setOsat(Arrays.<AbstractRakenneOsaDto>asList(o1, ryhma));
@@ -146,7 +146,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         RakenneModuuliDto updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, rakenne);
 
         updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, updatedTutkinnonRakenne);
-        assertEquals(v1.getTutkinnonOsa(), ((RakenneOsaDto) updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsa());
+        assertEquals(v1.getTutkinnonOsa(), ((RakenneOsaDto) updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsaViite());
     }
 
     @Value("${fi.vm.sade.eperusteet.tutkinnonrakenne.maksimisyvyys}")

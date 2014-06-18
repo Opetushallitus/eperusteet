@@ -18,19 +18,19 @@
 
 angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams,
-              PerusteenRakenne, Notifikaatiot, Editointikontrollit, SivunavigaatioService,
-              Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot, $http, SERVICE_LOC) {
+    PerusteenRakenne, Notifikaatiot, Editointikontrollit, SivunavigaatioService,
+    Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot, $http, SERVICE_LOC) {
     $scope.editoi = false;
     // $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
     $scope.suoritustapa = $stateParams.suoritustapa;
     $scope.rakenne = {
       $resolved: false,
-      rakenne: { osat: [] },
+      rakenne: {osat: []},
       tutkinnonOsat: {}
     };
     $scope.versiot = {};
 
-    Kommentit.haeKommentit(KommentitBySuoritustapa, { id: $stateParams.perusteProjektiId, suoritustapa: $scope.suoritustapa });
+    Kommentit.haeKommentit(KommentitBySuoritustapa, {id: $stateParams.perusteProjektiId, suoritustapa: $scope.suoritustapa});
 
     function haeRakenne(cb) {
       cb = cb || angular.noop;
@@ -66,12 +66,12 @@ angular.module('eperusteApp')
     }
 
     $scope.vaihdaVersio = function() {
-      VersionHelper.changeRakenne($scope.versiot, {id: $scope.rakenne.$peruste.id, suoritustapa: $scope.suoritustapa}, function (response) {
+      VersionHelper.changeRakenne($scope.versiot, {id: $scope.rakenne.$peruste.id, suoritustapa: $scope.suoritustapa}, function(response) {
         $scope.rakenne.rakenne = response;
       });
     };
 
-    $scope.muokkaa = function () {
+    $scope.muokkaa = function() {
       Lukitus.lukitseSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa, function() {
         haeRakenne(function() {
           Muodostumissaannot.validoiRyhma($scope.rakenne.rakenne, $scope.tutkinnonOsat);
@@ -85,7 +85,9 @@ angular.module('eperusteApp')
       edit: function() {
         $scope.editoi = true;
       },
-      validate: function() { return true; },
+      validate: function() {
+        return true;
+      },
       save: function() {
         tallennaRakenne($scope.rakenne);
         $scope.editoi = false;
@@ -103,7 +105,7 @@ angular.module('eperusteApp')
       Muodostumissaannot.validoiRyhma(uusirakenne, $scope.tutkinnonOsat);
     }, true);
 
-    $scope.$watch('editoi', function (editoi) {
+    $scope.$watch('editoi', function(editoi) {
       SivunavigaatioService.aseta({osiot: !editoi});
     });
   });

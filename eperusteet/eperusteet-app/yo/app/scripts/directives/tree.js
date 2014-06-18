@@ -20,17 +20,17 @@
 angular.module('eperusteApp')
   .directive('tree', function($compile, $state, $modal, Muodostumissaannot, Kaanna) {
     function generoiOtsikko() {
-      var tosa = '{{ tutkinnonOsat[rakenne._tutkinnonOsa].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsat[rakenne._tutkinnonOsa].laajuus">, <b>{{ + tutkinnonOsat[rakenne._tutkinnonOsa].laajuus || 0 }}</b>{{ apumuuttujat.yksikko | kaanna }}</span>';
+      var tosa = '{{ tutkinnonOsat[rakenne._tutkinnonOsaViite].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsat[rakenne._tutkinnonOsaViite].laajuus">, <b>{{ + tutkinnonOsat[rakenne._tutkinnonOsaViite].laajuus || 0 }}</b>{{ apumuuttujat.yksikko | kaanna }}</span>';
       var editointiIkoni =
       '<span ng-click="togglaaPakollisuus(rakenne)">' +
         '  <span ng-show="!rakenne.pakollinen"><img src="images/tutkinnonosa.png" alt=""></span> ' +
         '  <span ng-show="rakenne.pakollinen"><img src="images/tutkinnonosa_pakollinen.png" alt=""></span> ' +
         '</span>';
       return '' +
-        '<span ng-if="rakenne._tutkinnonOsa && muokkaus">' + editointiIkoni + tosa + '</span>' +
-        '<span ng-if="rakenne._tutkinnonOsa && !muokkaus">' + editointiIkoni + '<a href="" ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: rakenne._tutkinnonOsa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a></span>' +
-        '<span class="pull-right" ng-if="rakenne._tutkinnonOsa && muokkaus"><a href="" icon-role="remove" ng-click="poista(rakenne, vanhempi)"></a></span>' +
-        '<span ng-if="!rakenne._tutkinnonOsa && rakenne.nimi">' +
+        '<span ng-if="rakenne._tutkinnonOsaViite && muokkaus">' + editointiIkoni + tosa + '</span>' +
+        '<span ng-if="rakenne._tutkinnonOsaViite && !muokkaus">' + editointiIkoni + '<a href="" ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: rakenne._tutkinnonOsaViite, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a></span>' +
+        '<span class="pull-right" ng-if="rakenne._tutkinnonOsaViite && muokkaus"><a href="" icon-role="remove" ng-click="poista(rakenne, vanhempi)"></a></span>' +
+        '<span ng-if="!rakenne._tutkinnonOsaViite && rakenne.nimi">' +
         '  <b>{{ rakenne.nimi | kaanna:true }}</b>' +
         '</span>';
     }
@@ -72,7 +72,7 @@ angular.module('eperusteApp')
         });
 
         scope.togglaaPolut = function() {
-          var avaamattomat = _(scope.rakenne.osat).reject(function(osa) { return osa._tutkinnonOsa || osa.$collapsed || osa.osat.length === 0; }).size();
+          var avaamattomat = _(scope.rakenne.osat).reject(function(osa) { return osa._tutkinnonOsaViite || osa.$collapsed || osa.osat.length === 0; }).size();
           if (avaamattomat !== 0) {
             _.forEach(scope.rakenne.osat, function(r) {
               if (r.osat && _.size(r.osat) > 0) {
@@ -149,17 +149,17 @@ angular.module('eperusteApp')
                                '</span>';
 
         var optiot = '' +
-          '<span ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" ng-if="!rakenne._tutkinnonOsa" class="colorbox" ng-style="' + varivalinta + '">' +
+          '<span ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" ng-if="!rakenne._tutkinnonOsaViite" class="colorbox" ng-style="' + varivalinta + '">' +
           '  <span ng-show="rakenne.rooli !== \'virtuaalinen\'">' +
           '    <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
           '    <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
           '  </span>' +
           '</span>' +
           '<div class="right">' +
-          '  <div ng-if="!rakenne._tutkinnonOsa && muokkaus" class="right-item">' +
+          '  <div ng-if="!rakenne._tutkinnonOsaViite && muokkaus" class="right-item">' +
           '    <a href="" icon-role="edit" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)"></a>' +
           '  </div>' +
-          '  <div class="pull-right" ng-if="!rakenne._tutkinnonOsa">' +
+          '  <div class="pull-right" ng-if="!rakenne._tutkinnonOsaViite">' +
           '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.muodostumisSaanto.laajuus.minimi">' +
           laajuudenIlmaisu +
           '    </span>' +
@@ -175,8 +175,8 @@ angular.module('eperusteApp')
           '  <span class="tree-item">' + generoiOtsikko() + '</span>' +
           '</div>';
 
-        var kentta = '<div ng-if="rakenne._tutkinnonOsa" ng-class="{ \'pointer\': muokkaus, \'huomio\': tutkinnonOsat[rakenne._tutkinnonOsa].$elevate }" class="bubble-osa">' + optiot + '</div>';
-        kentta += '<div ng-if="!rakenne._tutkinnonOsa" ng-class="{ \'pointer\': muokkaus }" class="bubble">' + optiot + '</div>';
+        var kentta = '<div ng-if="rakenne._tutkinnonOsaViite" ng-class="{ \'pointer\': muokkaus, \'huomio\': tutkinnonOsat[rakenne._tutkinnonOsaViite].$elevate }" class="bubble-osa">' + optiot + '</div>';
+        kentta += '<div ng-if="!rakenne._tutkinnonOsaViite" ng-class="{ \'pointer\': muokkaus }" class="bubble">' + optiot + '</div>';
         kentta += '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="virhe">' +
                   '  <span>{{ tkaanna(rakenne.$virhe.selite) }}<span ng-show="rakenne.$virhe.selite.length > 0">. </span>{{ rakenne.$virhe.virhe | kaanna }}.</span>' +
                   '</div>';
@@ -264,7 +264,7 @@ angular.module('eperusteApp')
             scope.uniikit = scope.kaikkiUniikit;
           } else {
             scope.uniikit = _.reject(scope.kaikkiUniikit, function(yksi) {
-              var nimi = Kaanna.kaanna(scope.rakenne.tutkinnonOsat[yksi._tutkinnonOsa].nimi).toLowerCase();
+              var nimi = Kaanna.kaanna(scope.rakenne.tutkinnonOsat[yksi._tutkinnonOsaViite].nimi).toLowerCase();
               return nimi.indexOf(input.toLowerCase()) === -1;
             });
           }
@@ -277,12 +277,12 @@ angular.module('eperusteApp')
               _.contains(Kaanna.kaanna(osa.nimi).toLowerCase(),
               scope.tutkinnonOsat.rajaus.toLowerCase());
             if (!scope.tutkinnonOsat.rajaus || match) {
-              scope.uniikit.push({_tutkinnonOsa: osa._tutkinnonOsa});
+              scope.uniikit.push({_tutkinnonOsaViite: osa.id});
             }
           });
           scope.tutkinnonOsat.multiPage = _.size(scope.uniikit) > scope.tutkinnonOsat.perSivu;
           scope.kaikkiUniikit = _.sortBy(scope.uniikit, function(osa) {
-            return Kaanna.kaanna(scope.rakenne.tutkinnonOsat[osa._tutkinnonOsa].nimi);
+            return Kaanna.kaanna(scope.rakenne.tutkinnonOsat[osa._tutkinnonOsaViite].nimi);
           });
           scope.uniikit = scope.kaikkiUniikit;
           scope.paivitaRajaus();
