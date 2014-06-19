@@ -98,6 +98,7 @@ $linkkiteksti-padding-left: 30px;
     .linkkiteksti {
       display: block;
       padding-left: $linkkiteksti-padding-left;
+      outline: 0;
     }
     .submenu-toggler {
       float: left;
