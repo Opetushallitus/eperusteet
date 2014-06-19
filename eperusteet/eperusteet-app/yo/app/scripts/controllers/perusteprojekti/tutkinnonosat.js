@@ -28,7 +28,7 @@ angular.module('eperusteApp')
     $scope.tosarajaus = '';
     $scope.editoi = false;
     $scope.jarjestysTapa = 'nimi';
-    $scope.jarjestysOrder = true;
+    $scope.jarjestysOrder = false;
 
     $scope.paivitaRajaus = function(rajaus) { $scope.tosarajaus = rajaus; };
     $scope.asetaJarjestys = function(tyyppi, suunta) {
@@ -37,7 +37,7 @@ angular.module('eperusteApp')
         suunta = $scope.jarjestysOrder;
       }
       else {
-        $scope.jarjestysOrder = true;
+        $scope.jarjestysOrder = false;
         $scope.jarjestysTapa = tyyppi;
       }
     };

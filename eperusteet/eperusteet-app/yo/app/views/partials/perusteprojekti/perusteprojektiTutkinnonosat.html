@@ -31,14 +31,24 @@
   </div>
   <table class="table table-striped" style="margin-top: 0px">
     <tr>
-      <th width="70%" ng-click=""><a href="" ng-click="asetaJarjestys('nimi')">{{ 'nimi' | kaanna }}</a></th>
-      <th ng-if="suoritustapa !== 'naytto'"><a href="" ng-click="asetaJarjestys('laajuus')">{{ 'laajuus' | kaanna }}</a></th>
+      <th width="70%" ng-click="">
+        <a href="" ng-click="asetaJarjestys('nimi')">{{ 'nimi' | kaanna }}</a>
+        <span ng-show="jarjestysTapa === 'nimi'">
+          <span ng-hide="jarjestysOrder" class="glyphicon glyphicon-sort-by-alphabet"></span>
+          <span ng-show="jarjestysOrder" class="glyphicon glyphicon-sort-by-alphabet-alt"></span>
+      </span>
+      </th>
+      <th ng-if="suoritustapa !== 'naytto'">
+        <a href="" ng-click="asetaJarjestys('laajuus')">{{ 'laajuus' | kaanna }}</a>
+        <span ng-show="jarjestysTapa === 'laajuus'">
+          <span ng-hide="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes"></span>
+          <span ng-show="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+        </span>
+      </th>
     </tr>
     <tr ng-repeat="v in tutkinnonOsat | orderBy:jarjestys:jarjestysOrder | mapFilter:rajaaTutkinnonOsia">
       <td>
-        <a ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })" href="">
-          {{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}
-        </a>
+        <a ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })" href="">{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</a>
       </td>
       <td ng-if="suoritustapa !== 'naytto'">
         <span ng-show="v.laajuus">{{ v.laajuus }} {{ v.yksikko || '' | kaanna }}</span>
