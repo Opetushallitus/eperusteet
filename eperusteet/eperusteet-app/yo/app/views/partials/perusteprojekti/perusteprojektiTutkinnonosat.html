@@ -31,18 +31,25 @@
   </div>
   <table class="table table-striped" style="margin-top: 0px">
     <tr>
-      <th width="70%" ng-click="">
+      <th width="50%" ng-click="">
         <a href="" ng-click="asetaJarjestys('nimi')">{{ 'nimi' | kaanna }}</a>
         <span ng-show="jarjestysTapa === 'nimi'">
           <span ng-hide="jarjestysOrder" class="glyphicon glyphicon-sort-by-alphabet"></span>
           <span ng-show="jarjestysOrder" class="glyphicon glyphicon-sort-by-alphabet-alt"></span>
-      </span>
+        </span>
       </th>
-      <th ng-if="suoritustapa !== 'naytto'">
+      <th width="10%" ng-if="suoritustapa !== 'naytto'">
         <a href="" ng-click="asetaJarjestys('laajuus')">{{ 'laajuus' | kaanna }}</a>
         <span ng-show="jarjestysTapa === 'laajuus'">
           <span ng-hide="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes"></span>
           <span ng-show="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+        </span>
+      </th>
+      <th width="30%">
+        <a href="" ng-click="asetaJarjestys('muokattu')">{{ 'muokattu-viimeksi' | kaanna }}</a>
+        <span ng-show="jarjestysTapa === 'muokattu'">
+          <span ng-hide="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+          <span ng-show="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes"></span>
         </span>
       </th>
     </tr>
@@ -52,6 +59,9 @@
       </td>
       <td ng-if="suoritustapa !== 'naytto'">
         <span ng-show="v.laajuus">{{ v.laajuus }} {{ v.yksikko || '' | kaanna }}</span>
+      </td>
+      <td>
+        {{ v.muokattu || 0 | aikaleima }}
       </td>
     </tr>
   </table>

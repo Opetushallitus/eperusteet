@@ -54,6 +54,7 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -300,6 +301,7 @@ public class PerusteServiceImpl implements PerusteService {
         to.setJarjestys(tov.getJarjestys());
         to.setLaajuus(tov.getLaajuus());
         to.setYksikko(to.getYksikko());
+        to.setMuokattu(new Date());
         return mapper.map(to, TutkinnonOsaViiteDto.class);
     }
 
@@ -372,6 +374,7 @@ public class PerusteServiceImpl implements PerusteService {
         }
         viite.setSuoritustapa(suoritustapa);
         viite.setYksikko(suoritustapa.getYksikko());
+        viite.setMuokattu(new Date());
         if (suoritustapa.getTutkinnonOsat().add(viite)) {
             viite = tutkinnonOsaViiteRepository.save(viite);
         } else {
@@ -393,6 +396,7 @@ public class PerusteServiceImpl implements PerusteService {
         viite.setJarjestys(osa.getJarjestys());
         viite.setLaajuus(osa.getLaajuus());
         viite.setYksikko(viite.getSuoritustapa().getYksikko());
+        viite.setMuokattu(new Date());
         return mapper.map(viite, TutkinnonOsaViiteDto.class);
     }
 

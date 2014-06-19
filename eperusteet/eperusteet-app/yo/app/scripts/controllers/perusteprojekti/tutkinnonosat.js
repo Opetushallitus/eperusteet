@@ -45,8 +45,7 @@ angular.module('eperusteApp')
       switch($scope.jarjestysTapa) {
         case 'nimi': return Kaanna.kaanna(data.nimi);
         case 'laajuus': return data.laajuus;
-        case 'muokattu':
-          break;
+        case 'muokattu': return data.muokattu;
         default:
           break;
       }

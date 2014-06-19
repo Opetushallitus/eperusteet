@@ -257,6 +257,7 @@
 
     "laajuus": "Laajuus",
 
+    "tallennettiin-onnistuneesti": "tallennettiin onnistuneesti",
     "tekstikappale-tallennettiin-onnistuneesti": "Tekstikappale tallennettiin onnistuneesti",
     "antamassasi-tiedostossa-oli-virheitä": "Antamassasi tiedostossa oli virheitä, jotka estävät tiedoston lukemisen eteenpäin. Korjaa seuraavat virheet ja lähetä tiedosto uudestaan.",
 
@@ -333,6 +334,8 @@
 
     "lisaa-kommentti": "Lisää kommentti",
 
+    "et-ole-vielä-tallentanut-tutkinnonosia": "Et ole vielä liittänyt kaikkia tutkinnon osia perusteeseen",
+    "et-ole-vielä-tallentanut-tekstikappaleita": "Et ole vielä liittänyt kaikkia tekstikappaleita perusteeseen",
     "tuo-excel": "Tuo Excel",
     "tutkinnon-tyyppi": "Tutkinnon tyyppi",
     "excel-tiedostossasi-oli-virheitä": "Excel-tiedostossasi oli virheitä",
@@ -345,6 +348,7 @@
     "excel-luetaan-tekstikappaleita": "Luetaan tekstikappaleita",
     "excel-luetaan-tutkinnonosia": "Luetaan tutkinnonosia",
     "excel": "Excel",
+    "liitä-suoritustapaan": "Liitettävä suoritustapa",
 
     "projektin-nimi-label": "Projektin nimi",
     "anna-projektin-nimi-placeholder": "Syötä projektin nimi",
