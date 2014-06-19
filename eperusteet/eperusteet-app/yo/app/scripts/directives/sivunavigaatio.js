@@ -63,12 +63,12 @@ angular.module('eperusteApp')
   })
   .controller('sivunavigaatioCtrl', function($rootScope, $scope, $stateParams, $state, SivunavigaatioService, PerusteProjektiService) {
     var lastParams = {};
-    $scope.suoritustapa = $stateParams.suoritustapa;
     $scope.menuCollapsed = true;
     $scope.data = {};
     $scope.piilota = true;
 
     function onStateChange(params) {
+      $scope.suoritustapa = $stateParams.suoritustapa;
       function load() {
         $scope.data = SivunavigaatioService.getData();
       }
