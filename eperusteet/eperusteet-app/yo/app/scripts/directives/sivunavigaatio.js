@@ -109,7 +109,7 @@ angular.module('eperusteApp')
       return $scope.data.piilota;
     };
   })
-  .service('SivunavigaatioService', function ($stateParams, PerusteprojektiTiedotService, $rootScope, $compile) {
+  .service('SivunavigaatioService', function ($stateParams, PerusteprojektiTiedotService) {
     var data = {
       osiot: false,
       piilota: false,
@@ -202,20 +202,16 @@ angular.module('eperusteApp')
      */
     this.setCrumb = function (ids) {
       var crumbEl = angular.element('#tekstikappale-crumbs');
-      crumbEl.empty();
       ids.splice(0, 1);
-      if (!_.isEmpty(ids)) {
-        var listEl = angular.element('<ol>').addClass('breadcrumb');
-        crumbEl.append(listEl);
-        _.each(ids, function (id) {
-          var link = angular.element('<a>')
-            .attr('ui-sref', 'perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: \'tekstikappale\', perusteenOsaId:'+id+'})')
-            .text(linktext(id));
-          var el = angular.element('<li>').html(link);
-          listEl.prepend(el);
-          var compiled = $compile(listEl);
-          compiled($rootScope);
-        });
+      ids.reverse();
+      var crumbs = _.map(ids, function (id) {
+        return {name: linktext(id), id: id};
+      });
+      var scope = crumbEl.scope();
+      if (!scope) {
+        console.log('Ei pystynyt asettamaan tekstikappaleen murupolkua!');
+      } else {
+        scope.setCrumbs(crumbs);
       }
     };
   });

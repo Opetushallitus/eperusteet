@@ -184,6 +184,10 @@ angular.module('eperusteApp')
           });
         };
 
+        $scope.setCrumbs = function (crumbs) {
+          $scope.crumbs = crumbs;
+        };
+
         $scope.$watch('editEnabled', function (editEnabled) {
           SivunavigaatioService.aseta({osiot: !editEnabled});
         });
