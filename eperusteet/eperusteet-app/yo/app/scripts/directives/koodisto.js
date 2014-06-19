@@ -60,9 +60,11 @@ angular.module('eperusteApp')
       resource.query({koodi: koodi}, function(re) {
         taydennykset = suodataTyypinMukaan(re, tyyppi);
         taydennykset = koodistoMapping(taydennykset);
-        taydennykset = _.sortBy(taydennykset, function(t) {
+        taydennykset = _(taydennykset).sortBy(function(t) {
           return Kaanna.kaanna(t.nimi);
-        });
+        })
+        .forEach(piilotaEtuliite)
+        .value();
         cb();
       });
     }
