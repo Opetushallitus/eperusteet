@@ -104,12 +104,14 @@ angular.module('eperusteApp')
               perusteId: peruste.id,
               suoritustapa: suoritustapa
             }, function(tosat) {
+              console.log('haeRakenne tosat', tosat);
               response.rakenne = rakenne;
               response.$peruste = peruste;
-              response.tutkinnonOsat = _(tosat)
+              response.tutkinnonOsaViitteet = _(tosat)
                                         .pluck('id')
                                         .zipObject(tosat)
                                         .value();
+              response.tutkinnonOsat = _.zipObject(_.map(tosat, '_tutkinnonOsa'), tosat);
               success(response);
             });
           });

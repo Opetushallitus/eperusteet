@@ -202,6 +202,9 @@ angular.module('eperusteApp')
         }
 
         $scope.poistaTutkinnonOsa = function(osaId) {
+          console.log('PoistaTutkinnonOsa rakenne', $scope.rakenne);
+          console.log('PoistaTutkinnonOsa tutkinnonosa', $scope.tutkinnonOsa);
+          console.log('PoistaTutkinnonOsa osaId', osaId);
           var onRakenteessa = PerusteenRakenne.validoiRakennetta($scope.rakenne.rakenne, function(osa) {
             return osa._tutkinnonOsa && $scope.rakenne.tutkinnonOsat[osa._tutkinnonOsa].id === osaId;
           });
