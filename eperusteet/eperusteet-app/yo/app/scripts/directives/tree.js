@@ -104,19 +104,19 @@ angular.module('eperusteApp')
           });
         };
 
-        // scope.sortableOptions = {
-        //   connectWith: '.tree-group',
-        //   cursor: 'move',
-        //   cursorAt: { top : 2, left: 2 },
-        //   delay: 100,
-        //   disabled: !scope.muokkaus,
-        //   placeholder: 'placeholder',
-        //   tolerance: 'pointer',
-        //   start: function(e, ui) {
-        //     ui.placeholder.html('<div class="group-placeholder"></div>');
-        //   },
-        //   cancel: '.ui-state-disabled',
-        // };
+        scope.sortableOptions = {
+          connectWith: '.tree-group',
+          cursor: 'move',
+          cursorAt: { top : 2, left: 2 },
+          delay: 100,
+          disabled: !scope.muokkaus,
+          placeholder: 'placeholder',
+          tolerance: 'pointer',
+          start: function(e, ui) {
+            ui.placeholder.html('<div class="group-placeholder"></div>');
+          },
+          cancel: '.ui-state-disabled',
+        };
 
         scope.$watch('muokkaus', function() {
           scope.sortableOptions.disabled = !scope.muokkaus;
