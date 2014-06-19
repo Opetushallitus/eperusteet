@@ -18,17 +18,39 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $rootScope, $state, $stateParams,
+  .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $rootScope, $state, $stateParams, $filter,
     Navigaatiopolku, perusteprojektiTiedot, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, Notifikaatiot,
     Editointikontrollit, Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode, YleinenData) {
 
     $scope.peruste = perusteprojektiTiedot.getPeruste();
-    $scope.editoi = false;
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
-    $scope.tosarajaus = '';
     $scope.tutkinnonOsat = [];
+    $scope.tosarajaus = '';
+    $scope.editoi = false;
+    $scope.jarjestysTapa = 'nimi';
+    $scope.jarjestysOrder = true;
 
     $scope.paivitaRajaus = function(rajaus) { $scope.tosarajaus = rajaus; };
+    $scope.asetaJarjestys = function(tyyppi, suunta) {
+      if ($scope.jarjestysTapa === tyyppi) {
+        $scope.jarjestysOrder = !$scope.jarjestysOrder;
+        suunta = $scope.jarjestysOrder;
+      }
+      else {
+        $scope.jarjestysOrder = true;
+        $scope.jarjestysTapa = tyyppi;
+      }
+    };
+    $scope.jarjestys = function(data) {
+      switch($scope.jarjestysTapa) {
+        case 'nimi': return Kaanna.kaanna(data.nimi);
+        case 'laajuus': return data.laajuus;
+        case 'muokattu':
+          break;
+        default:
+          break;
+      }
+    };
 
     function haeTutkinnonosat() {
       PerusteenRakenne.haeTutkinnonosat($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {

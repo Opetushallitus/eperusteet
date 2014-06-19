@@ -12,7 +12,7 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
-*/
+ */
 $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 .project-header {
   h2 {
@@ -84,76 +84,111 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 }
 
 .main-content .row {
-	padding-left: 40px;
-	padding-right: 40px;
+  padding-left: 40px;
+  padding-right: 40px;
 }
 
 .main-content .tutkinnonsisalto-list {
   padding: 0;
   list-style: none;
   margin-bottom: 40px;
+
+  hr {
+    background: #ccc;
+  }
 }
-.main-content .list-element {
-	position: relative;
-	border: 1px solid #ddd;
-	border-radius: 2px;
-	padding: 20px 20px 20px 45px;
-	margin-top: 20px;
-  cursor: pointer;
+.main-content {
+  .list-element {
+    border: 1px solid #ccc;
+    background: #fcfcfc;
+    padding: 15px 20px 20px 0px;
+    margin: 0px;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+  // TODO: Korjaa laatikon viivat overlappaamaan
+  .list-element-child {
+    margin: 0px;
+    margin-top: 2px;
+    border: 1px solid #ddd;
+    background: #fff;
+    padding: 5px 20px 15px 5px;
+    cursor: pointer;
+
+    ul {
+      margin: 10px 0 0 0;
+    }
+  }
+  .list-element-child:hover {
+    background: #fdfdfd;
+    border: 1px solid #777;
+  }
+  .list-element-info {
+    margin: 5px 0 0 5px;
+    color: #777;
+  }
 }
 .main-content .list-element:hover,
 .main-content .li:hover {
-	background-color: #F2F2F2;
+  background: #fafafa;
+  border: 1px solid #777;
 }
 .main-content .list-element h3 {
-	display: inline;
-	margin-left: 20px;
-	margin-top: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  display: inline;
+  margin-left: 15px;
+  margin-top: 15px;
+}
+.main-content .list-element-child h6 {
+  font-weight: bold;
+  margin-top: 8px;
+  margin-left: 5px;
 }
 .main-content .list-element a.next,
 .main-content a.next {
-	cursor: pointer;
-	position: absolute;
-	top: 50%;
-	margin-top: -9px;
-	right: 10px;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  margin-top: -9px;
+  right: 10px;
 }
 .main-content .list-element a.next span,
 .main-content a.next span {
-	margin-left: 4px;
+  margin-left: 4px;
 }
 .main-content ul.sub-items {
-	margin-left: 140px;
-	background-color: #fff;
+  margin-left: 140px;
+  background-color: #fff;
 }
 .main-content ul.sub-items li {
-	position: relative;
-	padding: 10px inherit 10px 20px;
-	border: 1px solid #ddd;
-	border-top: none;
+  position: relative;
+  padding: 10px inherit 10px 20px;
+  border: 1px solid #ddd;
+  border-top: none;
 }
 .main-content .list-element span.glyphicon.next,
 .main-content ul.sub-items li span.glyphicon.next {
-	position: relative;
-	right: 10px;
+  position: relative;
+  right: 10px;
 }
 
 .form-area {
-    border: 2px solid #ddd;
-    border-radius: 2px;
-    padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 2px;
+  padding: 10px;
 }
 
 .form-area.koulutukset{
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .projekti-form {
-    margin: 20px;
+  margin: 20px;
 }
 
 .uusi-projekti-header {
-    padding: 20px;
+  padding: 20px;
 }
 
 
@@ -163,8 +198,8 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 }
 
 .projekti-form-buttons {
-    margin-top: 20px;
-    float: right;
+  margin-top: 20px;
+  float: right;
 }
 
 .tilanvaihto {

@@ -1,36 +1,65 @@
-<h1>
-  {{'tutkinnonosat' | kaanna}} ({{ tutkinnonOsat.length }} {{ 'kpl' | kaanna }})
-  <button class="btn btn-default" ng-click="lisaaTutkinnonOsa()" icon-role="add">
-    {{ 'lisää' | kaanna }}
-  </button>
-  <button class="btn btn-default" ng-click="tuoSuoritustavasta()" icon-role="import">
-    {{ 'tuo-toisesta-suoritustavasta' | kaanna }}
-  </button>
-  <button class="btn btn-default" ng-click="tuoTutkinnonosa()" icon-role="import">
+<div>
+  <button class="floater btn" href="" icon-role="import" ng-click="tuoTutkinnonosa()">
     {{ 'tuo-tutkinnonosa' | kaanna }}
   </button>
+  <button class="floater btn" href="" icon-role="import" ng-click="tuoSuoritustavasta()">
+    {{ 'tuo-toisesta-suoritustavasta' | kaanna }}
+  </button>
+  <button icon-role="add" class="floater btn" href="" ng-click="lisaaTutkinnonOsa()">
+    {{ 'lisää' | kaanna }}
+  </button>
+</div>
+
+<h1>
+  {{'tutkinnonosat' | kaanna}} ({{ tutkinnonOsat.length }} {{ 'kpl' | kaanna }})
 </h1>
+
+<div class="tutkinnonosa-lista-toolbar">
+  <div class="pull-right">
+    <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="tosarajaus form-control input-sm" placeholder="Rajaa tutkinnon osia...">
+  </div>
+  <!-- <select class="jarjestys-select" ng-model="jarjestysTapa"> -->
+  <!--   <option value="nimi">{{ 'nimi' | kaanna }}</option> -->
+  <!--   <option value="muokattu">{{ 'muokattu-viimeksi' | kaanna }}</option> -->
+  <!--   <option value="laajuus">{{ 'laajuus' | kaanna }}</option> -->
+  <!-- </select> -->
+</div>
 
 <div>
   <div ng-show="rakenne.tutkinnonOsat.length === 0">
     <h3>{{ tutkinnon-osia-ei-ole | kaanna }}</h3>
   </div>
-  <div ng-hide="rakenne.tutkinnonOsat.length === 0" class="rajauslaatikko">
-    <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia...">
-  </div>
-
-  <ul class="list-group tutkinnonosat">
-    <li class="tutkinnonosa-laatikko list-group-item" ng-repeat="v in tutkinnonOsat | mapFilter:rajaaTutkinnonOsia" ng-click="navigoiTutkinnonosaan(v)">
-      <div ng-hide="editoi" class="muokkaus">
-        <span class="glyphicon glyphicon-chevron-right"></span>
-      </div>
-      <div class="otsikko">
-        <h3>
+  <table class="table table-striped" style="margin-top: 0px">
+    <tr>
+      <th width="70%" ng-click=""><a href="" ng-click="asetaJarjestys('nimi')">{{ 'nimi' | kaanna }}</a></th>
+      <th ng-if="suoritustapa !== 'naytto'"><a href="" ng-click="asetaJarjestys('laajuus')">{{ 'laajuus' | kaanna }}</a></th>
+    </tr>
+    <tr ng-repeat="v in tutkinnonOsat | orderBy:jarjestys:jarjestysOrder | mapFilter:rajaaTutkinnonOsia">
+      <td>
+        <a ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })" href="">
           {{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}
-          <span class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && v.laajuus">{{ v.laajuus }} {{ v.yksikko || '' | kaanna }}</span>
-      </h3>
-      </div>
-      <div class="clearfix"></div>
-    </li>
-  </ul>
+        </a>
+      </td>
+      <td ng-if="suoritustapa !== 'naytto'">
+        <span ng-show="v.laajuus">{{ v.laajuus }} {{ v.yksikko || '' | kaanna }}</span>
+      </td>
+    </tr>
+  </table>
+    <!-- <button class="btn" href="" ng-click="jarjestysOrder = !jarjestysOrder" style="margin-right: 20px"> -->
+      <!--   <span ng-hide="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes"></span> -->
+      <!--   <span ng-show="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes-alt"></span> -->
+      <!-- </button> -->
+  <!-- <ul class="tutkinnonosat"> -->
+  <!--   <li class="col-xs-6 tutkinnonosa-laatikko list-group-item" ng-repeat="v in tutkinnonOsat | orderBy:jarjestys:jarjestysOrder | mapFilter:rajaaTutkinnonOsia"> -->
+  <!--     <div ng-hide="editoi" class="muokkaus"> -->
+  <!--       <span class="glyphicon glyphicon-chevron-right"></span> -->
+  <!--     </div> -->
+  <!--     <div class="otsikko"> -->
+  <!--       <h3>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</h3> -->
+  <!--       <div> -->
+  <!--         <span class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && v.laajuus">{{ v.laajuus }} {{ v.yksikko || '' | kaanna }}</span> -->
+  <!--       </div> -->
+  <!--     </div> -->
+  <!--   </li> -->
+  <!-- </ul> -->
 </div>
