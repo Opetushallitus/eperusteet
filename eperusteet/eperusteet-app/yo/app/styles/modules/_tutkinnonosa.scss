@@ -371,3 +371,46 @@ $pikamenu-max-height: 400px;
 #tekstikappale-crumbs .breadcrumb {
   padding-left: 0;
 }
+
+.version-warning {
+  position: absolute;
+  top: -65px;
+  border: 1px solid #ddd;
+  background-color: #f2f2f2;
+  width: 70%;
+  z-index: 1020;
+  .note {
+    font-size: 30px;
+    line-height: 38px;
+    font-weight: 700;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #333;
+    float: left;
+    @include borderradius(10px);
+    margin: 5px;
+    text-align: center;
+    &::before {
+      content: "!";
+    }
+  }
+  .content {
+    p {
+      margin: 0;
+      margin-top: 5px;
+      padding: 0;
+    }
+    padding-left: 60px;
+    padding-right: 60px;
+  }
+  & > button {
+    margin: 5px;
+    float: right;
+  }
+}
+@media (max-width: $screen-md-max) {
+  .version-warning {
+    left: 150px;
+    width: 60%;
+  }
+}

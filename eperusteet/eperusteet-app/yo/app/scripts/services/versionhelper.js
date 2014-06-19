@@ -18,7 +18,7 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot, RakenneVersio) {
+  .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot, RakenneVersio, Notifikaatiot) {
     function latest(data) {
       return _.first(data) || {};
     }
@@ -68,6 +68,10 @@ angular.module('eperusteApp')
       });
     };
 
+    this.chooseLatest = function (data) {
+      data.chosen = latest(data.list);
+    };
+
     this.changePerusteenosa = function(data, tunniste, cb) {
       change(data, tunniste, 'Perusteenosa', cb);
     };
@@ -87,6 +91,22 @@ angular.module('eperusteApp')
       } else if (tyyppi === 'Rakenne') {
         RakenneVersio.get({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa, versioId: data.chosen.number}, function(response) {
           changeResponseHandler(data, response, cb);
+        });
+      }
+    };
+
+    this.revertPerusteenosa = function (data, tunniste, cb) {
+      revert(data, tunniste, 'Perusteenosa', cb);
+    };
+
+    var revert = function (data, tunniste, tyyppi, cb) {
+      // revert = get old (currently chosen) data, save as new version
+      if (tyyppi === 'Perusteenosa') {
+        PerusteenOsat.getVersio({
+          osanId: tunniste.id,
+          versioId: data.chosen.number
+        }, function(response) {
+          response.$saveTekstikappale(cb, Notifikaatiot.serverCb);
         });
       }
     };

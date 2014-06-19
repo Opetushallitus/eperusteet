@@ -7,6 +7,7 @@
     "lisää": "Lisää",
     "nimi": "Nimi",
     "ok": "OK",
+    "vahvista": "Vahvista",
     "aseta-tila": "Aseta tila",
     "palauta" : "Palauta",
     "peru": "Peruuta",
@@ -290,6 +291,12 @@
     "poista-osio": "Poista osio",
     "varmista-osion-poisto-otsikko": "Varmista osion poisto",
     "varmista-osion-poisto-teksti": "Haluatko poistaa osion? Kaikki osion sisältö menetetään.",
+
+    "ota-versio-kayttoon": "Ota tämä versio käyttöön",
+    "katso-uusin-versio": "Katso uusin versio",
+    "katselet-vanhaa-versiota": "Tarkastelet vanhaa versiota sivusta.",
+    "vahvista-version-palauttaminen": "Vahvista version palauttaminen",
+    "vahvista-version-palauttaminen-teksti": "Haluatko ottaa tämän version ({{versio}}) käyttöön? Versiosta luodaan kopio ja siitä luodaan uusi versio.",
 
     "puu-tyyppi-yksi": "Valitse yksi seuraavista",
 

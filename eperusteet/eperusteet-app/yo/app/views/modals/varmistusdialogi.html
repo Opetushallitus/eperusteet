@@ -22,6 +22,7 @@ European Union Public Licence for more details.
   <p>{{lisaTeksti | kaanna}}</p>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="ok()">{{primaryBtn | kaanna}}</button>
-    <button class="btn" ng-click="peruuta()" translate>{{secondaryBtn | kaanna}}</button>
+    <input ng-model="comment.text" ng-if="comment.enabled" placeholder="{{comment.placeholder|kaanna}}">
+    <button class="btn btn-primary" ng-click="ok()">{{opts.primaryBtn | kaanna}}</button>
+    <button class="btn" ng-click="peruuta()" translate>{{opts.secondaryBtn | kaanna}}</button>
 </div>

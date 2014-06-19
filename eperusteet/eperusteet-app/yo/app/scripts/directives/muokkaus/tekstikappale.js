@@ -102,16 +102,16 @@ angular.module('eperusteApp')
              order: 2
            });
 
-        function setupTekstikappale(kappale) {
-          function successCb(res) {
-            // Päivitä versiot
-            $scope.haeVersiot(true);
-            SivunavigaatioService.update();
-            Lukitus.vapautaPerusteenosa(res.id);
-            Notifikaatiot.onnistui('muokkaus-tekstikappale-tallennettu');
-            $scope.setNavigation();
-          }
+        function saveCb(res) {
+          // Päivitä versiot
+          $scope.haeVersiot(true);
+          SivunavigaatioService.update();
+          Lukitus.vapautaPerusteenosa(res.id);
+          Notifikaatiot.onnistui('muokkaus-tekstikappale-tallennettu');
+          $scope.setNavigation();
+        }
 
+        function setupTekstikappale(kappale) {
           $scope.editableTekstikappale = angular.copy(kappale);
           $scope.tekstikappaleenMuokkausOtsikko = $scope.editableTekstikappale.id ? 'muokkaus-tekstikappale' : 'luonti-tekstikappale';
 
@@ -120,9 +120,9 @@ angular.module('eperusteApp')
             validate: function() { return true; },
             save: function() {
               if ($scope.editableTekstikappale.id) {
-                $scope.editableTekstikappale.$saveTekstikappale(successCb, Notifikaatiot.serverCb);
+                $scope.editableTekstikappale.$saveTekstikappale(saveCb, Notifikaatiot.serverCb);
               } else {
-                PerusteenOsat.saveTekstikappale($scope.editableTekstikappale, successCb, Notifikaatiot.serverCb);
+                PerusteenOsat.saveTekstikappale($scope.editableTekstikappale, saveCb, Notifikaatiot.serverCb);
               }
               $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
             },
@@ -196,14 +196,43 @@ angular.module('eperusteApp')
           VersionHelper.getPerusteenosaVersions($scope.versiot, {id: $scope.tekstikappale.id}, force);
         };
 
+        function responseFn(response) {
+          $scope.tekstikappale = response;
+          setupTekstikappale(response);
+          var tekstikappaleDefer = $q.defer();
+          $scope.tekstikappalePromise = tekstikappaleDefer.promise;
+          tekstikappaleDefer.resolve($scope.editableTekstikappale);
+        }
+
         $scope.vaihdaVersio = function () {
-          VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tekstikappale.id}, function (response) {
-            $scope.tekstikappale = response;
-            setupTekstikappale(response);
-            var tekstikappaleDefer = $q.defer();
-            $scope.tekstikappalePromise = tekstikappaleDefer.promise;
-            tekstikappaleDefer.resolve($scope.editableTekstikappale);
-          });
+          VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tekstikappale.id}, responseFn);
+        };
+
+        $scope.version = {
+          revert: function () {
+            Varmistusdialogi.dialogi({
+              successCb: function () {
+                Lukitus.lukitsePerusteenosa($scope.tekstikappale.id, function() {
+                  VersionHelper.revertPerusteenosa($scope.versiot, {id: $scope.tekstikappale.id}, function (res) {
+                    responseFn(res);
+                    saveCb(res);
+                  });
+                });
+              },
+              otsikko: 'vahvista-version-palauttaminen',
+              teksti: $translate('vahvista-version-palauttaminen-teksti', {versio: $scope.versiot.chosen.index}),
+              primaryBtn: 'vahvista',
+              comment: {
+                enabled: true,
+                placeholder: 'kommentoi-muutosta'
+              }
+            })();
+
+          },
+          goToLatest: function () {
+            VersionHelper.chooseLatest($scope.versiot);
+            $scope.vaihdaVersio();
+          }
         };
 
         $scope.poista = function() {
