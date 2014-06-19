@@ -73,7 +73,9 @@ angular.module('eperusteApp')
         $scope.data = SivunavigaatioService.getData();
       }
 
-      if (_.size(params) !== _.size(lastParams)) { load(); }
+      if (_.size(params) !== _.size(lastParams)) {
+        load();
+      }
       else {
         var isSame = _.isObject(params) && _.isObject(lastParams);
         _.forEach(params, function(v, k) {
@@ -87,13 +89,13 @@ angular.module('eperusteApp')
         lastParams = params;
       }
     }
-    onStateChange();
+    onStateChange($stateParams);
 
-    $rootScope.$on('$stateChangeStart', function() {
+    $scope.$on('$stateChangeStart', function() {
       $scope.menuCollapsed = true;
     });
 
-    $rootScope.$on('$stateChangeSuccess', function(_1, _2, params) {
+    $scope.$on('$stateChangeSuccess', function(_1, _2, params) {
       onStateChange(params);
     });
 
@@ -132,6 +134,8 @@ angular.module('eperusteApp')
       } else {
         PerusteprojektiTiedotService.then(function(res) {
           data.service = res;
+          load(data.service);
+          afterCb();
         });
       }
     }
