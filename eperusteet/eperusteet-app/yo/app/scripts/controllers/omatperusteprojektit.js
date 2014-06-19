@@ -32,6 +32,7 @@ angular.module('eperusteApp')
       Kayttajaprofiilit.get({}, function(vastaus) {
 
         $scope.projektit = _.forEach(vastaus.perusteprojektit, function(pp) {
+          // TODO: Omat perusteprojektit linkin suoritustapa pitäisi varmaankin olla jotain muuta kuin kovakoodattu 'naytto'
           pp.url = $state.href('perusteprojekti.suoritustapa.sisalto', { perusteProjektiId: pp.id, suoritustapa: 'naytto' });
         });
 

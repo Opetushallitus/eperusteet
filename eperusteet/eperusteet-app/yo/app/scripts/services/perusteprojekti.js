@@ -162,7 +162,7 @@ angular.module('eperusteApp')
 
     this.alustaPerusteenSisalto = function (stateParams, forced) {
 
-      // NOTE: Jos ei löydy suoritustapaa serviceltä niin käytetään suoritustapaa 'naytto'.
+      // NOTE: Jos ei löydy suoritustapaa stateParams:ista niin käytetään suoritustapaa 'naytto'.
       //       Tämä toimii ammatillisen puolen projekteissa, mutta ei yleissivistävän puolella.
       //       Korjataan kun keksitään parempi suoritustavan valinta-algoritmi.
       if (angular.isUndefined(stateParams.suoritustapa) || stateParams.suoritustapa === null || stateParams.suoritustapa === '') {
