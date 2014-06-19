@@ -38,7 +38,7 @@
 <div>
   <table ng-if="nakymatyyli === 'lista'" class="table table-striped" style="margin-top: 0px">
     <tr>
-      <th width="50%" ng-click="">
+      <th width="50%">
         <a href="" ng-click="asetaJarjestys('nimi')">{{ 'nimi' | kaanna }}</a>
         <span ng-show="jarjestysTapa === 'nimi'">
           <span ng-hide="jarjestysOrder" class="glyphicon glyphicon-sort-by-alphabet"></span>
@@ -74,7 +74,7 @@
   </table>
 
   <ul ng-if="nakymatyyli === 'palikka'" class="tutkinnonosat">
-    <li class="col-xs-6 tutkinnonosa-laatikko list-group-item" ng-repeat="v in tutkinnonOsat | orderBy:jarjestys:jarjestysOrder | mapFilter:rajaaTutkinnonOsia">
+    <li ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })" class="col-xs-6 tutkinnonosa-laatikko list-group-item" ng-repeat="v in tutkinnonOsat | orderBy:jarjestys:jarjestysOrder | mapFilter:rajaaTutkinnonOsia">
       <div ng-hide="editoi" class="muokkaus">
         <span class="glyphicon glyphicon-chevron-right"></span>
       </div>
