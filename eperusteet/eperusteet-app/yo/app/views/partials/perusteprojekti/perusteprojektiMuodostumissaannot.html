@@ -1,9 +1,14 @@
-<div>
+<div class="row">
+  <div class="col-md-12">
+
+  <revert-note object="rakenne" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
   <button ng-hide="editoi || !versiot.latest" ng-click="muokkaa()" class="pull-right btn btn-default" icon-role="edit">{{'muokkaa' | translate}}</button>
-  <h2>{{ 'tutkinnon-rakenne' | kaanna }}</h2>
+  <h1>{{ 'tutkinnon-rakenne' | kaanna }}</h1>
   <versiotiedot ng-hide="editoi"></versiotiedot>
   <div class="tree-presentation">
     <tree-wrapper muokkaus="editoi" ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
   </div>
   <!-- <kommentit depth="0"></kommentit> -->
+
+  </div>
 </div>

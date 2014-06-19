@@ -113,13 +113,13 @@ angular.module('eperusteApp')
           });
         }
 
-        function setupTutkinnonOsa(osa) {
-          function successCb(res) {
-            Lukitus.vapautaPerusteenosa(res.id);
-            Notifikaatiot.onnistui('muokkaus-tutkinnon-osa-tallennettu');
-            $scope.haeVersiot(true);
-          }
+        function saveCb(res) {
+          Lukitus.vapautaPerusteenosa(res.id);
+          Notifikaatiot.onnistui('muokkaus-tutkinnon-osa-tallennettu');
+          $scope.haeVersiot(true);
+        }
 
+        function setupTutkinnonOsa(osa) {
           $scope.editableTutkinnonOsa = angular.copy(osa);
 
           Editointikontrollit.registerCallback({
@@ -137,7 +137,7 @@ angular.module('eperusteApp')
                   $scope.editableTutkinnonOsa = angular.copy(response);
                   $scope.tutkinnonOsa = angular.copy(response);
                   Editointikontrollit.lastModified = response;
-                  successCb(response);
+                  saveCb(response);
 
                   var tutkinnonOsaDefer = $q.defer();
                   $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
@@ -158,7 +158,7 @@ angular.module('eperusteApp')
               else {
                 PerusteenOsat.saveTutkinnonOsa($scope.editableTutkinnonOsa, function(response) {
                   Editointikontrollit.lastModified = response;
-                  successCb(response);
+                  saveCb(response);
                 },
                 Notifikaatiot.serverCb);
               }
@@ -232,14 +232,21 @@ angular.module('eperusteApp')
           VersionHelper.getPerusteenosaVersions($scope.versiot, {id: $scope.tutkinnonOsa.id}, force);
         };
 
+        function responseFn(response) {
+          $scope.tutkinnonOsa = response;
+          setupTutkinnonOsa(response);
+          var objDefer = $q.defer();
+          $scope.tutkinnonOsaPromise = objDefer.promise;
+          objDefer.resolve($scope.editableTutkinnonOsa);
+        }
+
         $scope.vaihdaVersio = function () {
-          VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tutkinnonOsa.id}, function (response) {
-            $scope.tutkinnonOsa = response;
-            setupTutkinnonOsa(response);
-            var objDefer = $q.defer();
-            $scope.tutkinnonOsaPromise = objDefer.promise;
-            objDefer.resolve($scope.editableTutkinnonOsa);
-          });
+          VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tutkinnonOsa.id}, responseFn);
+        };
+
+        $scope.revertCb = function (response) {
+          responseFn(response);
+          saveCb(response);
         };
 
       }

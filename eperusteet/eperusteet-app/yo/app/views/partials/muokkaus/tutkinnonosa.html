@@ -1,4 +1,5 @@
 <div>
+  <revert-note object="tutkinnonOsa" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
   <button icon-role="edit" ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="pull-right btn btn-default">{{'muokkaa' | translate}}</button>
   <a icon-role="back" href="" ui-sref="perusteprojekti.suoritustapa.tutkinnonosat">{{'tutkinnonosat' | translate}}</a>
   <pikamenu ng-if="tutkinnonOsa.$resolved">

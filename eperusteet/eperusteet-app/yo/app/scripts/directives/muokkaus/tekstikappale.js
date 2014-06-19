@@ -28,7 +28,7 @@ angular.module('eperusteApp')
       controller: function($scope, $q, Editointikontrollit, PerusteenOsat,
         Notifikaatiot, SivunavigaatioService, VersionHelper, Lukitus, $state,
         TutkinnonOsaEditMode, PerusteenOsaViitteet, Varmistusdialogi, $timeout,
-        $translate, Kaanna, PerusteprojektiTiedotService, $stateParams, $rootScope, SuoritustapaSisalto) {
+        $translate, Kaanna, PerusteprojektiTiedotService, $stateParams, SuoritustapaSisalto) {
         document.getElementById('ylasivuankkuri').scrollIntoView(); // FIXME: Keksi tälle joku oikea ratkaisu
 
         $scope.versiot = {};
@@ -208,31 +208,9 @@ angular.module('eperusteApp')
           VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tekstikappale.id}, responseFn);
         };
 
-        $scope.version = {
-          revert: function () {
-            Varmistusdialogi.dialogi({
-              successCb: function () {
-                Lukitus.lukitsePerusteenosa($scope.tekstikappale.id, function() {
-                  VersionHelper.revertPerusteenosa($scope.versiot, {id: $scope.tekstikappale.id}, function (res) {
-                    responseFn(res);
-                    saveCb(res);
-                  });
-                });
-              },
-              otsikko: 'vahvista-version-palauttaminen',
-              teksti: $translate('vahvista-version-palauttaminen-teksti', {versio: $scope.versiot.chosen.index}),
-              primaryBtn: 'vahvista',
-              comment: {
-                enabled: true,
-                placeholder: 'kommentoi-muutosta'
-              }
-            })();
-
-          },
-          goToLatest: function () {
-            VersionHelper.chooseLatest($scope.versiot);
-            $scope.vaihdaVersio();
-          }
+        $scope.revertCb = function (response) {
+          responseFn(response);
+          saveCb(response);
         };
 
         $scope.poista = function() {

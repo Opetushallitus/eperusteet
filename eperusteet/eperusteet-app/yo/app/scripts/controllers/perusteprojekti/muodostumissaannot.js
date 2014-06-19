@@ -19,7 +19,7 @@
 angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams,
     PerusteenRakenne, Notifikaatiot, Editointikontrollit, SivunavigaatioService,
-    Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot, $http, SERVICE_LOC) {
+    Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot) {
     $scope.editoi = false;
     // $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
     $scope.suoritustapa = $stateParams.suoritustapa;
@@ -68,6 +68,13 @@ angular.module('eperusteApp')
     $scope.vaihdaVersio = function() {
       VersionHelper.changeRakenne($scope.versiot, {id: $scope.rakenne.$peruste.id, suoritustapa: $scope.suoritustapa}, function(response) {
         $scope.rakenne.rakenne = response;
+      });
+    };
+
+    $scope.revertCb = function () {
+      haeRakenne(function () {
+        Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
+        haeVersiot(true);
       });
     };
 

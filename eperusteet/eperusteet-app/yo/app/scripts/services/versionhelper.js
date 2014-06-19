@@ -18,7 +18,8 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot, RakenneVersio, Notifikaatiot) {
+  .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot, RakenneVersio, Notifikaatiot,
+    PerusteenRakenne) {
     function latest(data) {
       return _.first(data) || {};
     }
@@ -95,18 +96,38 @@ angular.module('eperusteApp')
       }
     };
 
-    this.revertPerusteenosa = function (data, tunniste, cb) {
-      revert(data, tunniste, 'Perusteenosa', cb);
+    this.revertPerusteenosa = function (data, object, cb) {
+      var isTekstikappale = _.has(object, 'nimi') && _.has(object, 'teksti');
+      var type = isTekstikappale ? 'Perusteenosa' : 'Tutkinnonosa';
+      revert(data, {id: object.id}, type, cb);
+    };
+
+    this.revertRakenne = function (data, tunniste, cb) {
+      revert(data, tunniste, 'Rakenne', cb);
     };
 
     var revert = function (data, tunniste, tyyppi, cb) {
       // revert = get old (currently chosen) data, save as new version
-      if (tyyppi === 'Perusteenosa') {
+      if (tyyppi === 'Perusteenosa' || tyyppi === 'Tutkinnonosa') {
         PerusteenOsat.getVersio({
           osanId: tunniste.id,
           versioId: data.chosen.number
         }, function(response) {
-          response.$saveTekstikappale(cb, Notifikaatiot.serverCb);
+          if (tyyppi === 'Perusteenosa') {
+            response.$saveTekstikappale(cb, Notifikaatiot.serverCb);
+          } else {
+            response.$saveTutkinnonOsa(cb, Notifikaatiot.serverCb);
+          }
+        });
+      } else if (tyyppi === 'Rakenne') {
+        RakenneVersio.get({
+          perusteId: tunniste.id,
+          suoritustapa: tunniste.suoritustapa,
+          versioId: data.chosen.number
+        }, function(response) {
+          PerusteenRakenne.tallennaRakenne({
+            rakenne: response
+          }, tunniste.id, tunniste.suoritustapa, cb, Notifikaatiot.serverCb);
         });
       }
     };
