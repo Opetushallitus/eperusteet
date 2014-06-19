@@ -74,7 +74,7 @@ angular.module('eperusteApp')
             var id = $scope.tekstikappale.id;
             do {
               ids.push(id);
-              var id = $scope.viitteet[id] ? $scope.viitteet[id].parent : null;
+              id = $scope.viitteet[id] ? $scope.viitteet[id].parent : null;
             } while (id);
             return ids;
           }
@@ -228,7 +228,7 @@ angular.module('eperusteApp')
 
         // Odota tekstikenttien alustus ennen siirtymistä editointitilaan
         var received = 0;
-        $rootScope.$on('ckEditorInstanceReady', function () {
+        $scope.$on('ckEditorInstanceReady', function () {
           if (++received === $scope.fields.length) {
             if (TutkinnonOsaEditMode.getMode()) {
               $timeout(function () {

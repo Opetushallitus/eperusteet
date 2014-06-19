@@ -33,7 +33,7 @@ angular.module('eperusteApp')
     };
 
     $scope.koodistoHaku = function(koodisto) {
-      
+
       console.log('koodisto', koodisto);
 
       angular.forEach(YleinenData.kielet, function(value) {
@@ -100,11 +100,11 @@ angular.module('eperusteApp')
       return $scope.Opintoalat.haeOpintoalaNimi(koodi);
     };
 
-    $rootScope.$on('event:spinner_on', function() {
+    $scope.$on('event:spinner_on', function() {
       $scope.hakemassa = true;
     });
 
-    $rootScope.$on('event:spinner_off', function() {
+    $scope.$on('event:spinner_off', function() {
       $scope.hakemassa = false;
     });
 
