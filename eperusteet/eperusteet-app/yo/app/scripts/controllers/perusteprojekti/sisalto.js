@@ -15,20 +15,40 @@
  */
 
 'use strict';
-// /*global _*/
+/* global _ */
 
 angular.module('eperusteApp')
   .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams,
     SuoritustapaSisalto, PerusteProjektiService, perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, YleinenData, Kaanna) {
+
+    function kaikilleTutkintokohtaisilleOsille(juuri, cb) {
+      var lapsellaOn = false;
+      _.forEach(juuri.lapset, function(osa) {
+        lapsellaOn = kaikilleTutkintokohtaisilleOsille(osa, cb) || lapsellaOn;
+      });
+      return cb(juuri, lapsellaOn) || lapsellaOn;
+    }
+
+    $scope.rajaus = '';
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
-    $scope.rajaus = '';
+
+    kaikilleTutkintokohtaisilleOsille($scope.peruste.sisalto, function(osa) {
+      osa.$opened = false;
+    });
 
     $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa();
 
     $scope.aakkosJarjestys = function(data) { return Kaanna.kaanna(data.perusteenOsa.nimi); };
-    $scope.rajaaSisaltoa = function(haku) { return YleinenData.rajausVertailu($scope.rajaus, haku, 'perusteenOsa', 'nimi'); };
+
+    $scope.rajaaSisaltoa = function() {
+      kaikilleTutkintokohtaisilleOsille($scope.peruste.sisalto, function(osa, lapsellaOn) {
+        osa.$filtered = lapsellaOn || YleinenData.rajausVertailu($scope.rajaus, osa, 'perusteenOsa', 'nimi');
+        return osa.$filtered;
+      });
+    };
+    $scope.rajaaSisaltoa();
 
     $scope.createSisalto = function() {
       SuoritustapaSisalto.save({perusteId: $scope.projekti._peruste, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {}, function(response) {
@@ -40,6 +60,20 @@ angular.module('eperusteApp')
       },
       Notifikaatiot.serverCb);
     };
+
+    // scope.sortableOptions = {
+    //   connectWith: '.',
+    //   cursor: 'move',
+    //   cursorAt: { top : 2, left: 2 },
+    //   delay: 100,
+    //   disabled: !scope.muokkaus,
+    //   placeholder: 'placeholder',
+    //   tolerance: 'pointer',
+    //   // start: function(e, ui) {
+    //   //   ui.placeholder.html('<div class="group-placeholder"></div>');
+    //   // },
+    //   // cancel: '.ui-state-disabled',
+    // };
 
     $scope.vaihdaSuoritustapa = function(suoritustapakoodi) {
       $scope.valittuSuoritustapa = suoritustapakoodi;

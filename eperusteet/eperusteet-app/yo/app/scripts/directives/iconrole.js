@@ -46,7 +46,8 @@ angular.module('eperusteApp')
       previous: 'backward',
       remove: 'remove',
       save: 'cloud-upload',
-      settings: 'cog'
+      search: 'search',
+      settings: 'cog',
     };
   });
 

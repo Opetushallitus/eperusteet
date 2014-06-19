@@ -66,21 +66,21 @@ angular.module('eperusteApp')
 
     setEditControls();
 
-    $rootScope.$on('$stateChangeSuccess', function() {
+    $scope.$on('$stateChangeSuccess', function() {
       Editointikontrollit.unregisterCallback();
       setEditControls();
     });
 
     Editointikontrollit.registerCallbackListener(setEditControls);
 
-    $rootScope.$on('enableEditing', function () {
+    $scope.$on('enableEditing', function () {
       $scope.editStarted = true;
       $scope.kommentti = '';
       $timeout(function () {
         $scope.updatePosition();
       });
     });
-    $rootScope.$on('disableEditing', function () {
+    $scope.$on('disableEditing', function () {
       $scope.editStarted = false;
     });
 

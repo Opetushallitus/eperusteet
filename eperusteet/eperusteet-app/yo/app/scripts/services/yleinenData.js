@@ -23,6 +23,7 @@ angular.module('eperusteApp')
     this.rajausVertailu = function(input, kentta) {
       kentta = arguments.length > 2 ? kentta[arguments[2]] : kentta;
       for (var i = 3; i < arguments.length; ++i) {
+        if (!kentta) { return undefined; }
         kentta = kentta[arguments[i]];
       }
 
@@ -49,6 +50,10 @@ angular.module('eperusteApp')
       'OSAAMISPISTE',
       'OPINTOVIIKKO',
     ];
+    this.yksikotMap = {
+      osp: 'OSAAMISPISTE',
+      ov: 'OPINTOVIIKKO',
+    };
 
     $rootScope.
       this.kontekstit = [

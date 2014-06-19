@@ -26,7 +26,7 @@ angular.module('eperusteApp')
   })
   .controller('NaviCtrl', function($rootScope, $scope, $location, Navigaatiopolku) {
     $scope.navigaatiopolku = [];
-    $rootScope.$on('update:navipolku', function() {
+    $scope.$on('update:navipolku', function() {
       $scope.navigaatiopolku = Navigaatiopolku.hae();
     });
   });

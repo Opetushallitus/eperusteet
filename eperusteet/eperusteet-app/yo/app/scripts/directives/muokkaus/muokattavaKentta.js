@@ -48,7 +48,7 @@ angular.module('eperusteApp')
         removeField: '&?',
         editEnabled: '='
       },
-      link: function(scope, element, attrs) {
+      link: function(scope, element) {
 
         scope.$watch('objectReady', function(newObjectReadyPromise) {
           newObjectReadyPromise.then(function(newObject) {
@@ -69,7 +69,7 @@ angular.module('eperusteApp')
           }
         }
 
-        scope.suljeOsio = function($event) {
+        scope.suljeOsio = function() {
           // Jos kentässä on dataa, kysytään varmistus.
           var getValue = MuokkausUtils.nestedGet(scope.object, scope.field.path, '.');
           if (!_.isEmpty(getValue)) {
@@ -105,6 +105,21 @@ angular.module('eperusteApp')
         });
 
         function getElementContent(elementType) {
+          function addEditorAttributesFor(element) {
+            return element
+            .addClass('list-group-item-text')
+            .attr('ng-model', 'object.' + scope.field.path)
+            .attr('ckeditor', '')
+            .attr('editing-enabled', '{{editMode}}')
+            .attr('editor-placeholder', 'muokkaus-' + scope.field.localeKey + '-placeholder');
+          }
+
+          function addInputAttributesFor(element) {
+            return element
+            .addClass('form-control')
+            .attr('ng-model', 'object.' + scope.field.path)
+            .attr('placeholder','{{\'muokkaus-' + scope.field.localeKey + '-placeholder\' | translate}}');
+          }
 
           var element = null;
           if(elementType === 'editor-header') {
@@ -139,28 +154,12 @@ angular.module('eperusteApp')
             element.attr('localized', '');
           }
           return element;
-
-          function addEditorAttributesFor(element) {
-            return element
-            .addClass('list-group-item-text')
-            .attr('ng-model', 'object.' + scope.field.path)
-            .attr('ckeditor', '')
-            .attr('editing-enabled', '{{editMode}}')
-            .attr('editor-placeholder', 'muokkaus-' + scope.field.localeKey + '-placeholder');
-          }
-
-          function addInputAttributesFor(element) {
-            return element
-            .addClass('form-control')
-            .attr('ng-model', 'object.' + scope.field.path)
-            .attr('placeholder','{{\'muokkaus-' + scope.field.localeKey + '-placeholder\' | translate}}');
-          }
         }
 
-        function replaceElementContent(content) {
-          element.empty();
-          populateElementContent(content);
-        }
+        // function replaceElementContent(content) {
+        //   element.empty();
+        //   populateElementContent(content);
+        // }
 
         function populateElementContent(content) {
           element.append(content);
@@ -198,8 +197,8 @@ angular.module('eperusteApp')
       link: function(scope, element, attrs, ngModelCtrl) {
 
         ngModelCtrl.$formatters.push(function(modelValue) {
-          if(angular.isUndefined(modelValue)) return;
-          if(modelValue === null) return;
+          if(angular.isUndefined(modelValue)) { return; }
+          if(modelValue === null) { return; }
           return modelValue[YleinenData.kieli];
         });
 
@@ -216,7 +215,7 @@ angular.module('eperusteApp')
           return localizedModelValue;
         });
 
-        $rootScope.$on('$translateChangeSuccess', function() {
+        scope.$on('$translateChangeSuccess', function() {
           if(!angular.isUndefined(ngModelCtrl.$modelValue) && !_.isEmpty(ngModelCtrl.$modelValue[YleinenData.kieli])) {
             ngModelCtrl.$setViewValue(ngModelCtrl.$modelValue[YleinenData.kieli]);
           } else {

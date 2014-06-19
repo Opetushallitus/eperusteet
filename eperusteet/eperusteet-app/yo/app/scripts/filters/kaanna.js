@@ -19,9 +19,11 @@
 
 angular.module('eperusteApp')
   .service('Kaanna', function($translate) {
-    this.kaanna = function(input) {
+    this.kaanna = function(input, nimeton) {
+      nimeton = nimeton || false;
+
       function lisaaPlaceholder(input) {
-        return !input ? $translate.instant('nimeton') : input;
+        return _.isEmpty(input) && nimeton ? $translate.instant('nimeton') : input;
       }
 
       var lang = $translate.use() || $translate.preferredLanguage();

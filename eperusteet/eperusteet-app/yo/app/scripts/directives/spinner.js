@@ -44,7 +44,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('spinner', function($rootScope) {
+  .directive('spinner', function() {
     return {
       template: '<div id="global-spinner" ng-show="isSpinning">' +
                 '<span class="glyphicon glyphicon-refresh spin"></span>' +
@@ -57,11 +57,11 @@ angular.module('eperusteApp')
           $scope.isSpinning = state;
         }
 
-        $rootScope.$on('event:spinner_on', function() {
+        $scope.$on('event:spinner_on', function() {
           spin(true);
         });
 
-        $rootScope.$on('event:spinner_off', function() {
+        $scope.$on('event:spinner_off', function() {
           spin(false);
         });
       }

@@ -111,7 +111,7 @@ angular.module('eperusteApp')
           });
         }
 
-        $rootScope.$on('$translateChangeSuccess', function() {
+        scope.$on('$translateChangeSuccess', function() {
           placeholderText = getPlaceholder();
           ctrl.$render();
         });
@@ -145,7 +145,7 @@ angular.module('eperusteApp')
         });
 
         var dataSavedOnNotification = false;
-        $rootScope.$on('notifyCKEditor', function() {
+        scope.$on('notifyCKEditor', function() {
           if(editor.checkDirty()) {
             dataSavedOnNotification = true;
             var data = editor.getData();

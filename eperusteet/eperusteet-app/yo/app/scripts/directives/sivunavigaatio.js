@@ -73,7 +73,9 @@ angular.module('eperusteApp')
         $scope.data = SivunavigaatioService.getData();
       }
 
-      if (_.size(params) !== _.size(lastParams)) { load(); }
+      if (_.size(params) !== _.size(lastParams)) {
+        load();
+      }
       else {
         var isSame = _.isObject(params) && _.isObject(lastParams);
         _.forEach(params, function(v, k) {
@@ -87,13 +89,13 @@ angular.module('eperusteApp')
         lastParams = params;
       }
     }
-    onStateChange();
+    onStateChange($stateParams);
 
-    $rootScope.$on('$stateChangeStart', function() {
+    $scope.$on('$stateChangeStart', function() {
       $scope.menuCollapsed = true;
     });
 
-    $rootScope.$on('$stateChangeSuccess', function(_1, _2, params) {
+    $scope.$on('$stateChangeSuccess', function(_1, _2, params) {
       onStateChange(params);
     });
 
@@ -109,7 +111,7 @@ angular.module('eperusteApp')
       return $scope.data.piilota;
     };
   })
-  .service('SivunavigaatioService', function ($stateParams, PerusteprojektiTiedotService, $rootScope, $compile) {
+  .service('SivunavigaatioService', function ($stateParams, PerusteprojektiTiedotService) {
     var data = {
       osiot: false,
       piilota: false,
@@ -132,6 +134,8 @@ angular.module('eperusteApp')
       } else {
         PerusteprojektiTiedotService.then(function(res) {
           data.service = res;
+          load(data.service);
+          afterCb();
         });
       }
     }
@@ -202,20 +206,16 @@ angular.module('eperusteApp')
      */
     this.setCrumb = function (ids) {
       var crumbEl = angular.element('#tekstikappale-crumbs');
-      crumbEl.empty();
       ids.splice(0, 1);
-      if (!_.isEmpty(ids)) {
-        var listEl = angular.element('<ol>').addClass('breadcrumb');
-        crumbEl.append(listEl);
-        _.each(ids, function (id) {
-          var link = angular.element('<a>')
-            .attr('ui-sref', 'perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: \'tekstikappale\', perusteenOsaId:'+id+'})')
-            .text(linktext(id));
-          var el = angular.element('<li>').html(link);
-          listEl.prepend(el);
-          var compiled = $compile(listEl);
-          compiled($rootScope);
-        });
+      ids.reverse();
+      var crumbs = _.map(ids, function (id) {
+        return {name: linktext(id), id: id};
+      });
+      var scope = crumbEl.scope();
+      if (!scope) {
+        console.log('Ei pystynyt asettamaan tekstikappaleen murupolkua!');
+      } else {
+        scope.setCrumbs(crumbs);
       }
     };
   });

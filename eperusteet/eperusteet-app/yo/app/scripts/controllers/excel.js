@@ -68,10 +68,12 @@ angular.module('eperusteApp')
     $scope.rajaaKoodit = function(koodi) { return koodi.koodi.indexOf('_3') !== -1; };
 
     $scope.tallennaPerusteprojekti = function(perusteprojekti) {
-      PerusteprojektiResource.update(perusteprojekti, function(resPerusteprojekti) {
+      PerusteprojektiResource.save(perusteprojekti, function(resPerusteprojekti) {
+        $scope.haettuProjekti = resPerusteprojekti;
         Perusteet.get({
           perusteId: resPerusteprojekti._peruste
-        }, function(resPeruste) {
+        },
+        function(resPeruste) {
           $scope.peruste.$perusteTallennettu = true;
           $scope.haettuPeruste = resPeruste;
         });
@@ -122,16 +124,20 @@ angular.module('eperusteApp')
         });
         if (koodiUriKaytossa) {
           ot.$syy = ['excel-ei-kahta-samaa'];
-        } else {
+        }
+        else {
           var cop = _.clone(ot);
           cop.tavoitteet = {};
           cop.tila = 'luonnos';
+          cop.$laajuus = cop.laajuus;
+          delete cop.laajuus;
           PerusteenOsat.saveTutkinnonOsa(cop, function(re) {
             PerusteTutkinnonosat.save({
               perusteId: $scope.haettuPeruste.id,
               suoritustapa: $scope.suoritustapa || $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi
             }, {
-              _tutkinnonOsa: re.id
+              _tutkinnonOsa: re.id,
+              laajuus: cop.$laajuus
             }, function() {
               ot.$ladattu = 0;
               ot.id = re.id;
@@ -164,13 +170,14 @@ angular.module('eperusteApp')
 
       if (err || !file) {
         Notifikaatiot.varoitus('virhe-tiedosto-epäonnistui');
-      } else {
-        var promise = ExcelService.parseXLSXToOsaperuste(
+      }
+      else {
+        ExcelService.parseXLSXToOsaperuste(
           file,
           $scope.projekti.koulutustyyppi === 'koulutustyyppi_1' ? 'perustutkinto' : 'ammattitutkinto',
           $scope.paivitaTilaa
-        );
-        promise.then(function(resolve) {
+        )
+        .then(function(resolve) {
           $scope.warnings = resolve.osatutkinnot.varoitukset;
           $scope.peruste = _.omit(resolve.peruste, 'tekstikentat');
           $scope.tekstikentat = _.map(resolve.peruste.tekstikentat, function(tk) {
@@ -179,6 +186,7 @@ angular.module('eperusteApp')
               $syy: []
             });
           });
+
           $scope.osatutkinnot = _.map(resolve.osatutkinnot.osaperusteet, function(ot) {
             return _.merge(ot, {
               $ladattu: -1,
@@ -186,6 +194,9 @@ angular.module('eperusteApp')
               $syy: []
             });
           });
+
+          $scope.projekti.diaarinumero = $scope.peruste.diaarinumero || '';
+          $scope.projekti.yksikko = YleinenData.yksikotMap[$scope.peruste.yksikko] || '';
           $scope.lukeeTiedostoa = false;
         }, function(errors) {
           $scope.errors = errors;

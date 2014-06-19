@@ -29,7 +29,9 @@ angular.module('eperusteApp')
       parsittavatKentat: {
         1: 'nimi',
         2: 'tutkintokoodi',
-        // 4: 'koulutusala',
+        3: 'laajuus',
+        4: 'yksikko',
+        5: 'diaarinumero',
         // 5: 'opintoalat',
         // 6: 'paivays',
       },
@@ -39,10 +41,11 @@ angular.module('eperusteApp')
         kentat: {
           1: 'A',
           2: 'B',
+          3: 'D',
+          4: 'E',
+          5: 'C',
         },
         tekstikentat: [
-          'D',
-          'E',
           'F',
           'G',
           'H',
@@ -78,6 +81,7 @@ angular.module('eperusteApp')
         kentat: {
           1: 'A',
           2: 'B',
+          5: 'C'
         },
         // Tekstikappaleet/perusteen osat
         tekstikentat: [
@@ -117,6 +121,7 @@ angular.module('eperusteApp')
         10: 'hyvä',
         11: 'kiitettävä',
         12: 'erillispätevyys',
+        13: 'laajuus',
       },
       virheet: {
         1: 'Osaperusteen nimeä ei ole määritetty'
@@ -126,7 +131,7 @@ angular.module('eperusteApp')
         3: 'Opintoluokitusta ei ole määritetty.',
         4: 'Osaamisalaa ei ole määritetty.'
       },
-      info: [1, 2, 3, 4],
+      info: [1, 2, 3, 4, 13],
       lokalisointi: [1, 2, 4],
       ammattitutkinto: {
         kentat: {
@@ -170,10 +175,12 @@ angular.module('eperusteApp')
           9: 'AX',
           10: 'AY',
           11: 'AZ',
+          13: 'AL',
         },
         otsikot: {
           AJ1: 'Tutkinnon osan opintoluokituskoodi',
           AK1: 'Tutkinnon osan nimi',
+          AL1: 'Tutkinnon osan laajuus',
           AR1: 'Tutkintonimike',
           AS1: 'Tutkintonimikekoodi',
           AU1: 'Ammattitaitovaatimus / tavoite',
@@ -266,7 +273,8 @@ angular.module('eperusteApp')
     function suodataTekstipala(teksti) {
       if (!teksti) {
         return '';
-      } else if (!_.isString(teksti)) {
+      }
+      else if (!_.isString(teksti)) {
         return teksti;
       }
 
@@ -435,7 +443,8 @@ angular.module('eperusteApp')
                   _arviointiAsteikko: arviointiasteikko,
                   osaamistasonKriteerit: []
               });
-            } else {
+            }
+            else {
               varoitukset.push(rakennaVaroitus(kentat[8] + j, '', 'Arvioinnin kohdealuetta ei löytynyt'));
             }
           }
@@ -463,12 +472,14 @@ angular.module('eperusteApp')
                     fi: suodataTekstipala(kriteeri.v)
                 });
               }
-            } else {
+            }
+            else {
               tyydyttavat.push({ fi: filtteroituKentta(9) });
               hyvat.push({ fi: filtteroituKentta(10) });
               kiitettavat.push({ fi: filtteroituKentta(11) });
             }
-          } else {
+          }
+          else {
             if (arviointiasteikko === '1') {
               varoitukset.push(rakennaVaroitus(kentat[8] + j, osaperuste.nimi, 'Arvioinnin kohdetta ei löytynyt'));
             } else if (arviointiasteikko === '2') {
@@ -498,7 +509,8 @@ angular.module('eperusteApp')
       var deferred = $q.defer();
       if (_.isEmpty(parsedxlsx.SheetNames)) {
         deferred.reject(1);
-      } else {
+      }
+      else {
         notifier('excel-parsitaan-perustietoja');
         var name = parsedxlsx.SheetNames[0];
         var sheet = parsedxlsx.Sheets[name];
@@ -506,7 +518,8 @@ angular.module('eperusteApp')
 
         if (err.length > 0) {
           deferred.reject(err);
-        } else {
+        }
+        else {
           deferred.resolve({
             peruste: readPerusteet(sheet, tyyppi),
             osatutkinnot: readOsaperusteet(sheet, tyyppi)

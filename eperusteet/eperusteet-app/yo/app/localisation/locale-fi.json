@@ -156,7 +156,7 @@
     "poistetaanko-ryhma": "Poistetaanko ryhmä?",
     "leikelauta": "Leikelauta",
     "tutkinnon-osa-haku-placeholder": "Rajaa tutkinnon osia...",
-    "rajaa-tutkintokohtaisia-osia": "Rajaa tutkintokohtaisia osia...",
+    "rajaa-tutkintokohtaisia-osia": "Etsi tutkintokohtaisista osista...",
 
     "muodostumis-rakenne-validointi-laajuus": "Ryhmän osien yhteenlaskettu laajuus ei riitä kattamaan tarvittavaa laajuutta",
     "muodostumis-rakenne-validointi-maara": "Ryhmän osien yhteenlaskettu määrä ei riitä kattamaan tarvittavaa määrää",
@@ -253,6 +253,8 @@
     "tutkinnonosat": "Tutkinnon osat",
     "tekstikappaleet": "Tekstikappaleet",
     "koulutus": "Koulutus",
+
+    "laajuus": "Laajuus",
 
     "tekstikappale-tallennettiin-onnistuneesti": "Tekstikappale tallennettiin onnistuneesti",
     "antamassasi-tiedostossa-oli-virheitä": "Antamassasi tiedostossa oli virheitä, jotka estävät tiedoston lukemisen eteenpäin. Korjaa seuraavat virheet ja lähetä tiedosto uudestaan.",
