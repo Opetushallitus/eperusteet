@@ -113,8 +113,6 @@ angular.module('eperusteApp')
           });
         }
 
-
-
         function setupTutkinnonOsa(osa) {
           function successCb(res) {
             Lukitus.vapautaPerusteenosa(res.id);
@@ -146,6 +144,7 @@ angular.module('eperusteApp')
                   tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
                 },
                 Notifikaatiot.serverCb);
+
                 // Viiteosa (laajuus) tallennetaan erikseen
                 PerusteTutkinnonosa.save({
                   perusteId: $scope.rakenne.$peruste.id,
@@ -163,10 +162,7 @@ angular.module('eperusteApp')
                 },
                 Notifikaatiot.serverCb);
               }
-
               Editointicatcher.give(_.clone($scope.editableTutkinnonOsa));
-
-
             },
             cancel: function() {
               $scope.editableTutkinnonOsa = angular.copy($scope.tutkinnonOsa);

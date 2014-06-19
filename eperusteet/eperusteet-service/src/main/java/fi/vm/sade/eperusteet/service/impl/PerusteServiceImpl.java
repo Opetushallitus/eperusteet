@@ -218,7 +218,7 @@ public class PerusteServiceImpl implements PerusteService {
         PerusteenOsaViite entity = perusteet.findSisaltoByIdAndSuoritustapakoodi(perusteId, suoritustapakoodi);
         return mapper.map(entity, PerusteenosaViiteDto.class);
     }
-    
+
     @Override
     @Transactional(readOnly = true)
     public SuoritustapaDto getSuoritustapa(Long perusteId, Suoritustapakoodi suoritustapakoodi) {
@@ -229,17 +229,17 @@ public class PerusteServiceImpl implements PerusteService {
     @Override
     @Transactional(readOnly = true)
     public RakenneModuuliDto getTutkinnonRakenne(Long perusteid, Suoritustapakoodi suoritustapakoodi, Integer eTag) {
-        
+
         Long rakenneId = rakenneRepository.getRakenneIdWithPerusteAndSuoritustapa(perusteid, suoritustapakoodi);
         if (rakenneId == null) {
             throw new BusinessRuleViolationException("Rakennetta ei ole olemassa");
-        }  
+        }
         Integer rakenneVersioId  = rakenneRepository.getLatestRevisionId(rakenneId);
         if (eTag != null && rakenneVersioId != null && rakenneVersioId.equals(eTag)) {
             return null;
         }
 
-        RakenneModuuli rakenne = rakenneRepository.findOne(rakenneId);                           
+        RakenneModuuli rakenne = rakenneRepository.findOne(rakenneId);
         RakenneModuuliDto rakenneModuuliDto = mapper.map(rakenne, RakenneModuuliDto.class);
         rakenneModuuliDto.setVersioId(rakenneVersioId);
         return rakenneModuuliDto;

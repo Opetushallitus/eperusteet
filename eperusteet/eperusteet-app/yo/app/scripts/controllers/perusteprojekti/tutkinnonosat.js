@@ -68,7 +68,10 @@ angular.module('eperusteApp')
     });
 
     $scope.tuoTutkinnonosa = TutkinnonOsanTuonti.kaikista($scope.suoritustapa, function(osat) {
-      _.forEach(osat, function(osa) { $scope.lisaaTutkinnonOsaSuoraan(osa); });
+      _.forEach(osat, function(osa) {
+        delete osa.id;
+        $scope.lisaaTutkinnonOsaSuoraan(osa);
+      });
     });
 
     $scope.navigoiTutkinnonosaan = function (osa) {

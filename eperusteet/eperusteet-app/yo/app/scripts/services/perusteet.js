@@ -76,7 +76,7 @@ angular.module('eperusteApp')
   })
   .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet,
     PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {
-    
+
     function haeTutkinnonosat(perusteProjektiId, suoritustapa, success) {
       PerusteprojektiResource.get({ id: perusteProjektiId }, function(perusteprojekti) {
         PerusteTutkinnonosat.query({
