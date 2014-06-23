@@ -41,6 +41,7 @@ angular.module('eperusteApp')
           PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
             $scope.rakenne = res;
             if (TutkinnonOsaEditMode.getMode()) {
+              $scope.isNew = true;
               $timeout(function () {
                 $scope.muokkaa();
               }, 50);
@@ -125,6 +126,7 @@ angular.module('eperusteApp')
 
         function setupTutkinnonOsa(osa) {
           $scope.editableTutkinnonOsa = angular.copy(osa);
+          $scope.isNew = !$scope.editableTutkinnonOsa.id;
 
           Editointikontrollit.registerCallback({
             edit: function() {
@@ -169,6 +171,7 @@ angular.module('eperusteApp')
                 Notifikaatiot.serverCb);
               }
               Editointicatcher.give(_.clone($scope.editableTutkinnonOsa));
+              $scope.isNew = false;
             },
             cancel: function() {
               $scope.editableTutkinnonOsa = angular.copy($scope.tutkinnonOsa);
@@ -177,6 +180,10 @@ angular.module('eperusteApp')
               $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
               tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
               Lukitus.vapautaPerusteenosa($scope.tutkinnonOsa.id);
+              if ($scope.isNew) {
+                doDelete($scope.rakenne.tutkinnonOsat[$scope.tutkinnonOsa.id].id);
+              }
+              $scope.isNew = false;
             },
             notify: function (mode) {
               $scope.editEnabled = mode;
@@ -203,6 +210,14 @@ angular.module('eperusteApp')
           objectReadyDefer.resolve($scope.editableTutkinnonOsa);
         }
 
+        function doDelete(osaId) {
+          PerusteenRakenne.poistaTutkinnonOsaViite(osaId, $scope.rakenne.$peruste.id,
+            $stateParams.suoritustapa, function() {
+            Notifikaatiot.onnistui('tutkinnon-osa-rakenteesta-poistettu');
+            $state.go('perusteprojekti.suoritustapa.tutkinnonosat');
+          });
+        }
+
         $scope.poistaTutkinnonOsa = function(osaId) {
           var onRakenteessa = PerusteenRakenne.validoiRakennetta($scope.rakenne.rakenne, function(osa) {
             return osa._tutkinnonOsaViite && $scope.rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].id === osaId;
@@ -214,12 +229,9 @@ angular.module('eperusteApp')
               otsikko: 'poistetaanko-tutkinnonosa',
               primaryBtn: 'poista',
               successCb: function () {
+                $scope.isNew = false;
                 Editointikontrollit.cancelEditing();
-                PerusteenRakenne.poistaTutkinnonOsaViite(osaId, $scope.rakenne.$peruste.id,
-                  $stateParams.suoritustapa, function() {
-                  Notifikaatiot.onnistui('tutkinnon-osa-rakenteesta-poistettu');
-                  $state.go('perusteprojekti.suoritustapa.tutkinnonosat');
-                });
+                doDelete(osaId);
               }
             })();
           }

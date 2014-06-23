@@ -271,8 +271,9 @@
     "muokkaus": "Muokkaus",
     "muokkaus-tutkinnon-osa": "Muokkaa tutkinnon osaa",
     "muokkaus-tekstikappale": "Muokkaa tekstikappaletta",
-    "luonti-tutkinnon-osa": "Luo uusi tutkinnon osa",
-    "luonti-tekstikappale": "Luo uusi tekstikappale",
+    "muokkaus-rakenne": "Muokkaa tutkinnon rakennetta",
+    "luonti-tutkinnon-osa": "Uusi tutkinnon osa",
+    "luonti-tekstikappale": "Uusi tekstikappale",
 
     "muokkaus-tutkinnon-osan-nimi-header": "Nimi",
     "muokkaus-tutkinnon-osan-nimi-placeholder": "Kirjoita tähän otsikko",

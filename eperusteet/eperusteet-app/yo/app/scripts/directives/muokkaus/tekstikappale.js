@@ -113,7 +113,7 @@ angular.module('eperusteApp')
 
         function setupTekstikappale(kappale) {
           $scope.editableTekstikappale = angular.copy(kappale);
-          $scope.tekstikappaleenMuokkausOtsikko = $scope.editableTekstikappale.id ? 'muokkaus-tekstikappale' : 'luonti-tekstikappale';
+          $scope.isNew = !$scope.editableTekstikappale.id;
 
           Editointikontrollit.registerCallback({
             edit: function() { },
@@ -125,6 +125,7 @@ angular.module('eperusteApp')
                 PerusteenOsat.saveTekstikappale($scope.editableTekstikappale, saveCb, Notifikaatiot.serverCb);
               }
               $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
+              $scope.isNew = false;
             },
             cancel: function() {
               $scope.editableTekstikappale = angular.copy($scope.tekstikappale);
@@ -132,6 +133,10 @@ angular.module('eperusteApp')
               $scope.tekstikappalePromise = tekstikappaleDefer.promise;
               tekstikappaleDefer.resolve($scope.editableTekstikappale);
               Lukitus.vapautaPerusteenosa($scope.tekstikappale.id);
+              if ($scope.isNew) {
+                doDelete();
+              }
+              $scope.isNew = false;
             },
             notify: function (mode) {
               $scope.editEnabled = mode;
@@ -217,13 +222,13 @@ angular.module('eperusteApp')
           var nimi = Kaanna.kaanna($scope.tekstikappale.nimi);
 
           Varmistusdialogi.dialogi({
-            successCb: poistaminenVarmistettu,
+            successCb: doDelete,
             otsikko: 'poista-tekstikappale-otsikko',
             teksti: $translate('poista-tekstikappale-teksti', {nimi: nimi})
           })();
         };
 
-        var poistaminenVarmistettu = function() {
+        var doDelete = function() {
           PerusteenOsaViitteet.delete({viiteId: $scope.viiteId()}, {}, function() {
             Editointikontrollit.cancelEditing();
             Notifikaatiot.onnistui('poisto-onnistui');
@@ -238,6 +243,7 @@ angular.module('eperusteApp')
         $scope.$on('ckEditorInstanceReady', function () {
           if (++received === $scope.fields.length) {
             if (TutkinnonOsaEditMode.getMode()) {
+              $scope.isNew = true;
               $timeout(function () {
                 $scope.muokkaa();
               }, 50);

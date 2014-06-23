@@ -1,16 +1,20 @@
 <div>
   <revert-note object="tutkinnonOsa" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
   <button icon-role="edit" ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="pull-right btn btn-default">{{'muokkaa' | translate}}</button>
-  <a icon-role="back" href="" ui-sref="perusteprojekti.suoritustapa.tutkinnonosat">{{'tutkinnonosat' | translate}}</a>
+  <a ng-show="!editEnabled" icon-role="back" href="" ui-sref="perusteprojekti.suoritustapa.tutkinnonosat">{{'tutkinnonosat' | translate}}</a>
+  <h1 ng-show="editEnabled">
+    <span ng-show="!isNew" translate>muokkaus-tutkinnon-osa</span>
+    <span ng-show="isNew" translate>luonti-tutkinnon-osa</span>
+    <button icon-role="remove" ng-if="editEnabled && !isNew" class="btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsa.id].id)">
+      {{'poista' | translate}}
+    </button>
+  </h1>
   <pikamenu ng-if="tutkinnonOsa.$resolved">
   <span ng-if="editEnabled" edit-in-place="editableTutkinnonOsa.nimi"></span>
   <span ng-if="!editEnabled">{{tutkinnonOsa.nimi | kaanna:true}}<span class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && rakenne.tutkinnonOsat[tutkinnonOsa.id] && rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus">
       {{rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus}} {{rakenne.tutkinnonOsat[tutkinnonOsa.id].yksikko || '' | kaanna}}
     </span>
   </span>
-  <button icon-role="remove" ng-if="editEnabled" class="btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsa.id].id)">
-    {{'poista' | translate}}
-  </button>
   </pikamenu>
 
   <versiotiedot ng-hide="editEnabled"></versiotiedot>

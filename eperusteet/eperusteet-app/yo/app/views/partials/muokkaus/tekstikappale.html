@@ -16,7 +16,7 @@ European Union Public Licence for more details.
 
 <div>
   <revert-note object="tekstikappale" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
-  <div id="tekstikappale-crumbs">
+  <div id="tekstikappale-crumbs" ng-if="!editEnabled">
     <ol class="breadcrumb" ng-if="crumbs">
       <li ng-repeat="crumb in crumbs">
         <a ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: crumb.id})">{{crumb.name}}</a>
@@ -25,7 +25,11 @@ European Union Public Licence for more details.
   </div>
   <button ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit">{{'muokkaa' | translate}}</button>
   <button ng-if="canAddLapsi()" ng-hide="editEnabled || !versiot.latest" ng-click="addLapsi()" class="floater btn btn-default" icon-role="add">{{'lisaa-aliotsikko' | translate}}</button>
-  <button ng-if="editEnabled" class="btn btn-danger floater" ng-click="poista()" icon-role="remove">{{'poista' | translate}}</button>
+  <button ng-if="editEnabled && !isNew" class="btn btn-danger floater" ng-click="poista()" icon-role="remove">{{'poista' | translate}}</button>
+  <h1 ng-if="editEnabled">
+    <span ng-show="isNew" translate>luonti-tekstikappale</span>
+    <span ng-show="!isNew" translate>muokkaus-tekstikappale</span>
+  </h1>
   <div class="tekstikappale" ng-class="{'edit-tekstikappale': editEnabled, 'max-sm-leveys': !editEnabled}">
     <div ng-repeat="field in fields | orderBy:'order'" otsikko="{{field.localeKey}}" kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}">
       <muokattava-kentta field-info="field" object-promise="tekstikappalePromise"></muokattava-kentta>
