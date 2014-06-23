@@ -15,6 +15,7 @@
 */
 
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .service('Editointicatcher', function() {
@@ -30,7 +31,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .factory('Editointikontrollit', function($rootScope, $q, $timeout, Notifikaatiot) {
+  .factory('Editointikontrollit', function($rootScope, $q, $timeout) {
     var scope = $rootScope.$new(true);
     scope.editingCallback = null;
     scope.editMode = false;
@@ -59,10 +60,8 @@ angular.module('eperusteApp')
         $rootScope.$broadcast('enableEditing');
       },
       saveEditing: function() {
-        if (scope.editingCallback) {
-
-          if (scope.editingCallback.validate()) {
-
+        function after() {
+          if (!scope.editingCallback.validate || scope.editingCallback.validate()) {
             scope.editingCallback.save();
             angular.forEach(additionalCallbacks.save, function(callback) {
               // Kutsutaan kaikkia callback listenereitä ja annetaan parametrina
@@ -73,9 +72,14 @@ angular.module('eperusteApp')
             });
             setEditMode(false);
             $rootScope.$broadcast('disableEditing');
-          } else {
-            Notifikaatiot.varoitus('sivu-virheellisia-arvoja');
           }
+        }
+
+        if (scope.editingCallback) {
+          if (_.isFunction(scope.editingCallback.asyncValidate)) {
+            scope.editingCallback.asyncValidate(after);
+          }
+          else { after(); }
         }
 
         $rootScope.$broadcast('notifyCKEditor');

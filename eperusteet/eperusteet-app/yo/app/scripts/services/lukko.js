@@ -46,18 +46,18 @@ angular.module('eperusteApp')
     });
     angular.element(window).on('click', onevent);
 
-    function lueLukitus(Resource, obj, success) {
-      success = success || angular.noop;
-      Resource.get(obj, success, Notifikaatiot.serverLukitus);
+    function lueLukitus(Resource, obj, cb) {
+      cb = cb || angular.noop;
+      Resource.get(obj, cb, Notifikaatiot.serverLukitus);
     }
 
-    function lukitse(Resource, obj, success) {
-      success = success || angular.noop;
+    function lukitse(Resource, obj, cb) {
+      cb = cb || angular.noop;
       lukitsin = function(isNew) {
         Resource.save(obj, function(res, headers) {
           if (isNew) {
             etag = headers().etag;
-            success(res);
+            cb(res);
           }
 
           if (etag && headers().etag !== etag) {
@@ -73,41 +73,43 @@ angular.module('eperusteApp')
             });
           }
         },
-        Notifikaatiot.serverLukitus);
+        function(err) {
+          Notifikaatiot.serverLukitus(err);
+        });
       };
       lukitsin(true);
     }
 
-    function vapauta(Resource, obj, success) {
-      success = success || angular.noop;
-      Resource.remove(obj, success, Notifikaatiot.serverLukitus);
+    function vapauta(Resource, obj, cb) {
+      cb = cb || angular.noop;
+      Resource.remove(obj, cb, Notifikaatiot.serverLukitus);
       lukitsin = null;
     }
 
-    function lukitseSisalto(id, suoritustapa, success) {
+    function lukitseSisalto(id, suoritustapa, cb) {
       lukitse(LukkoSisalto, {
         osanId: id,
         suoritustapa: suoritustapa
-      }, success);
+      }, cb);
     }
 
-    function vapautaSisalto(id, suoritustapa, success) {
+    function vapautaSisalto(id, suoritustapa, cb) {
       vapauta(LukkoSisalto, {
         osanId: id,
         suoritustapa: suoritustapa
-      }, success);
+      }, cb);
     }
 
-    function lukitsePerusteenosa(id, success) {
+    function lukitsePerusteenosa(id, cb) {
       lukitse(LukkoPerusteenosa, {
         osanId: id
-      }, success);
+      }, cb);
     }
 
-    function vapautaPerusteenosa(id, success) {
+    function vapautaPerusteenosa(id, cb) {
       vapauta(LukkoPerusteenosa, {
         osanId: id
-      }, success);
+      }, cb);
     }
 
     return {

@@ -96,8 +96,10 @@ angular.module('eperusteApp')
       edit: function() {
         $scope.editoi = true;
       },
-      validate: function() {
-        return true;
+      asyncValidate: function(cb) {
+        lukitse(function() {
+          cb();
+        });
       },
       save: function() {
         tallennaRakenne($scope.rakenne);
