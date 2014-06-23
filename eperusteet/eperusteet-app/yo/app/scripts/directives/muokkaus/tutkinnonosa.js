@@ -37,14 +37,18 @@ angular.module('eperusteApp')
         $scope.versiot = {};
         $scope.test = angular.noop;
 
-        PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
-          $scope.rakenne = res;
-          if (TutkinnonOsaEditMode.getMode()) {
-            $timeout(function () {
-              $scope.muokkaa();
-            }, 50);
-          }
-        });
+        function getRakenne() {
+          PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
+            $scope.rakenne = res;
+            if (TutkinnonOsaEditMode.getMode()) {
+              $timeout(function () {
+                $scope.muokkaa();
+              }, 50);
+            }
+          });
+        }
+        getRakenne();
+
         $scope.viiteosa = {};
         $scope.viiteosa.laajuus = {};
 
@@ -138,6 +142,7 @@ angular.module('eperusteApp')
                   $scope.tutkinnonOsa = angular.copy(response);
                   Editointikontrollit.lastModified = response;
                   saveCb(response);
+                  getRakenne();
 
                   var tutkinnonOsaDefer = $q.defer();
                   $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
@@ -159,6 +164,7 @@ angular.module('eperusteApp')
                 PerusteenOsat.saveTutkinnonOsa($scope.editableTutkinnonOsa, function(response) {
                   Editointikontrollit.lastModified = response;
                   saveCb(response);
+                  getRakenne();
                 },
                 Notifikaatiot.serverCb);
               }
