@@ -104,7 +104,6 @@ angular.module('eperusteApp')
               perusteId: peruste.id,
               suoritustapa: suoritustapa
             }, function(tosat) {
-              console.log('haeRakenne tosat', tosat);
               response.rakenne = rakenne;
               response.$peruste = peruste;
               response.tutkinnonOsaViitteet = _(tosat)
