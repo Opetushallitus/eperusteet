@@ -45,7 +45,8 @@ angular.module('eperusteApp')
         uusiTutkinnonOsa: '=',
         vanhempi: '=',
         apumuuttujat: '=',
-        muokkaus: '='
+        muokkaus: '=',
+        poistoTehtyCb: '='
       },
       link: function(scope, el) {
         scope.lisaaUusi = 0;
@@ -53,7 +54,10 @@ angular.module('eperusteApp')
         scope.scratchpad = [];
         scope.roskakori = [];
 
-        scope.poista = function(i, a) { _.remove(a.osat, i); };
+        scope.poista = function(i, a) {
+          _.remove(a.osat, i);
+          scope.poistoTehtyCb();
+        };
 
         scope.togglaaPakollisuus = function(rakenne) {
           if (scope.muokkaus) {
@@ -213,7 +217,7 @@ angular.module('eperusteApp')
           '<div ng-if="rakenne.rooli !== \'virtuaalinen\'" class="collapser" ng-show="!rakenne.$collapsed">' +
           '  <ul ng-if="rakenne.osat !== undefined" ui-sortable="sortableOptions" id="tree-sortable" class="tree-group" ng-model="rakenne.osat">' +
           '    <li ng-repeat="osa in rakenne.osat">' +
-          '      <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" rakenne="osa" vanhempi="rakenne" tutkinnon-osa-viitteet="tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" ng-init="notfirst = true"></tree>' +
+          '      <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" rakenne="osa" vanhempi="rakenne" tutkinnon-osa-viitteet="tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" ng-init="notfirst = true" poisto-tehty-cb="poistoTehtyCb"></tree>' +
           '    </li>' +
           '    <li class="ui-state-disabled" ng-if="muokkaus && !vanhempi && rakenne.osat.length > 0">' +
           '      <span class="tree-anchor"></span>' +
@@ -272,6 +276,9 @@ angular.module('eperusteApp')
 
         function paivitaUniikit() {
           scope.uniikit = [];
+          console.log('paivitaUniikit tutkinnonOsaViitteet', scope.rakenne.tutkinnonOsaViitteet);
+          console.log('paivitaUniikit rakenne', scope.rakenne);
+          console.log('paivitaUniikit scope.tutkinnonOsat', scope.tutkinnonOsat);
           _.each(scope.rakenne.tutkinnonOsaViitteet, function (osa) {
             var match = scope.tutkinnonOsat.rajaus &&
               _.contains(Kaanna.kaanna(osa.nimi).toLowerCase(),
@@ -287,6 +294,7 @@ angular.module('eperusteApp')
           scope.uniikit = scope.kaikkiUniikit;
           scope.paivitaRajaus();
           scope.kaytetytUniikit = PerusteenRakenne.puustaLoytyy(scope.rakenne.rakenne);
+          console.log('käytetyt uniikit', scope.kaytetytUniikit);
         }
         paivitaUniikit();
 
@@ -341,6 +349,10 @@ angular.module('eperusteApp')
 
         scope.poista = function(i, a) {
           _.remove(i, a);
+          scope.kaytetytUniikit = PerusteenRakenne.puustaLoytyy(scope.rakenne.rakenne);
+        };
+        
+        scope.poistoTehtyCb = function() {
           scope.kaytetytUniikit = PerusteenRakenne.puustaLoytyy(scope.rakenne.rakenne);
         };
 

@@ -187,7 +187,7 @@ angular.module('eperusteApp')
     function puustaLoytyy(rakenne) {
       var set = {};
       kaikilleRakenteille(rakenne, function(osa) {
-        set[osa._tutkinnonOsa] = osa._tutkinnonOsa ? true : false;
+        set[osa._tutkinnonOsaViite] = osa._tutkinnonOsaViite ? true : false;
       });
       return set;
     }
