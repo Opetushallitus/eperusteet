@@ -32,6 +32,10 @@ angular.module('eperusteApp')
 
     Kommentit.haeKommentit(KommentitBySuoritustapa, {id: $stateParams.perusteProjektiId, suoritustapa: $scope.suoritustapa});
 
+    function lukitse(cb) {
+      Lukitus.lukitseSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa, cb);
+    }
+
     function haeRakenne(cb) {
       cb = cb || angular.noop;
       PerusteenRakenne.hae($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
@@ -79,7 +83,7 @@ angular.module('eperusteApp')
     };
 
     $scope.muokkaa = function() {
-      Lukitus.lukitseSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa, function() {
+      lukitse(function() {
         haeRakenne(function() {
           Muodostumissaannot.validoiRyhma($scope.rakenne.rakenne, $scope.tutkinnonOsat);
           Editointikontrollit.startEditing();

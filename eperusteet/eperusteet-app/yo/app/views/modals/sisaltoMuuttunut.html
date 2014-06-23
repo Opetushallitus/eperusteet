@@ -1,0 +1,13 @@
+<div class="modal-header">
+  <h2>{{ 'editoimasi-sisältö-on-muuttunut' | kaanna }}</h2>
+</div>
+
+<div class="modal-body">
+  <p>{{ 'joku-toinen-on-muokannut-dokumenttia' | kaanna }}</p>
+  <p><b>{{ 'huom' | kaanna }}</b> {{ 'ylikirjoittaessasi-voit-palauttaa' | kaanna }}</p>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-disabled="ryhmaForm.$invalid" ng-click="ok(ryhma)">{{ 'ylikirjoita-uusi-sisältö' | kaanna }}</button>
+  <button class="btn btn-danger" ng-click="peruuta()">{{ 'peru-omat-muutokset' | kaanna }}</button>
+</div>

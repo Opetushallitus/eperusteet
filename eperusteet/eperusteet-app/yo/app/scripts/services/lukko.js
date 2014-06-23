@@ -29,24 +29,53 @@ angular.module('eperusteApp')
       osanId: '@osanId'
     });
   })
-  .service('Lukitus', function(LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, LukkoPerusteenosa, LukkoSisalto, Notifikaatiot) {
+  .controller('LukittuSisaltoMuuttunutModalCtrl', function($scope, $modalInstance) {
+    $scope.ok = function() { $modalInstance.close(); };
+    $scope.peruuta = function() { $modalInstance.dismiss(); };
+  })
+  .service('Lukitus', function($timeout, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit) {
     var lukitsin = null;
+    var etag = null;
 
     var onevent = _.debounce(function() {
-      if (lukitsin) {
-        lukitsin();
-      }
+      if (lukitsin) { lukitsin(); }
     }, LUKITSIN_MINIMI, {
+      leading: true,
+      trailing: false,
       maxWait: LUKITSIN_MAKSIMI
     });
     angular.element(window).on('click', onevent);
 
+    function lueLukitus(Resource, obj, success) {
+      success = success || angular.noop;
+      Resource.get(obj, success, Notifikaatiot.serverLukitus);
+    }
+
     function lukitse(Resource, obj, success) {
       success = success || angular.noop;
-      lukitsin = function() {
-        Resource.save(obj, angular.noop, Notifikaatiot.serverLukitus);
+      lukitsin = function(isNew) {
+        Resource.save(obj, function(res, headers) {
+          if (isNew) {
+            etag = headers().etag;
+            success(res);
+          }
+
+          if (etag && headers().etag !== etag) {
+            $modal.open({
+              templateUrl: 'views/modals/sisaltoMuuttunut.html',
+              controller: 'LukittuSisaltoMuuttunutModalCtrl'
+            })
+            .result.then(function() {
+              etag = headers().etag;
+            },
+            function() {
+              Editointikontrollit.cancelEditing();
+            });
+          }
+        },
+        Notifikaatiot.serverLukitus);
       };
-      Resource.save(obj, success, Notifikaatiot.serverLukitus);
+      lukitsin(true);
     }
 
     function vapauta(Resource, obj, success) {
@@ -82,6 +111,7 @@ angular.module('eperusteApp')
     }
 
     return {
+      lueLukitus: lueLukitus,
       lukitseSisalto: lukitseSisalto,
       vapautaSisalto: vapautaSisalto,
       lukitsePerusteenosa: lukitsePerusteenosa,

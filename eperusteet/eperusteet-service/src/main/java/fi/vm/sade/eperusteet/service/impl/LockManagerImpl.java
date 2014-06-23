@@ -53,7 +53,7 @@ public class LockManagerImpl implements LockManager {
         transaction.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
     }
 
-    @Value("${fi.vm.sade.eperusteet.lukitus.aikaMinuutteina}")
+    @Value("${fi.vm.sade.eperusteet.lukitus.aikaSekunteina}")
     private int maxLockTime;
 
     @PreAuthorize("isAuthenticated()")
@@ -73,7 +73,7 @@ public class LockManagerImpl implements LockManager {
                         em.refresh(current, LockModeType.PESSIMISTIC_WRITE);
                         if (oid.equals(current.getHaltijaOid())) {
                             current.refresh();
-                        } else if (current.getLuotu().plusMinutes(maxLockTime).isBeforeNow()) {
+                        } else if (current.getLuotu().plusSeconds(maxLockTime).isBeforeNow()) {
                             em.remove(current);
                             em.persist(newLukko);
                             current = newLukko;

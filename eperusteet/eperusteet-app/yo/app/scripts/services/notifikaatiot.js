@@ -33,7 +33,7 @@ angular.module('eperusteApp')
       }, NOTIFICATION_DELAY_SUCCESS);
     }
 
-    function uusiViesti(tyyppi, viesti, ilmanKuvaa) {
+    var uusiViesti = _.debounce(function(tyyppi, viesti, ilmanKuvaa) {
       if (_.isObject(viesti) && viesti.data && viesti.data.syy) { viesti = viesti.data.syy; }
       else if (!viesti) { viesti = ''; }
 
@@ -46,7 +46,10 @@ angular.module('eperusteApp')
 
       $rootScope.$broadcast('update:notifikaatiot');
       refresh();
-    }
+    }, 100, {
+      leading: true,
+      trailing: false,
+    });
 
     function fataali(viesti, cb) {
       cb = _.isFunction(cb) ? cb : angular.noop;

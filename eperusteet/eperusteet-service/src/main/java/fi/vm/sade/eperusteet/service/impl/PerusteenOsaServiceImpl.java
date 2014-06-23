@@ -68,6 +68,12 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     @Transactional(readOnly = true)
+    public Integer getLatestRevision(final Long id) {
+        return perusteenOsaRepo.getLatestRevisionId(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<PerusteenOsaDto> getAllByKoodiUri(final String koodiUri) {
         return mapper.mapAsList(tutkinnonOsaRepo.findByKoodiUri(koodiUri), PerusteenOsaDto.class);
     }

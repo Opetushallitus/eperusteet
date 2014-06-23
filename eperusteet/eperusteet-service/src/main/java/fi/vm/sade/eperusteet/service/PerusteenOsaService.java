@@ -33,6 +33,8 @@ public interface PerusteenOsaService {
 
     void delete(final Long id);
 
+    public Integer getLatestRevision(final Long id);
+
     PerusteenOsaDto get(final Long id);
 
     List<PerusteenOsaDto> getAllByKoodiUri(final String koodiUri);
