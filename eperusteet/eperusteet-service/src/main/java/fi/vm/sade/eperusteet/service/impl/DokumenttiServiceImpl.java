@@ -37,6 +37,8 @@ import fi.vm.sade.eperusteet.service.DokumenttiService;
 import com.google.code.docbook4j.renderer.PerustePDFRenderer;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -64,6 +67,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.slf4j.Logger;
@@ -92,15 +96,24 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Override
     @Transactional(readOnly = true)
     public void generateWithToken(long id, String token){ 
-        LOG.info("generate with token {},{}", id, token);
+        LOG.debug("generate with token {},{}", id, token);
         
         try {
+            String tmpdir = System.getProperty("java.io.tmpdir");
+            String basepath = tmpdir + File.separator + token; 
+            String tmppath =  basepath + ".tmp";
+            String finalpath = basepath + ".pdf";
+            
+            File fout = new File(tmppath);
             byte[] doc = generateFor(id);
-            File fout = File.createTempFile(token, ".pdf");
-            LOG.info("dumping to file {}", fout.getAbsolutePath());
             try (FileOutputStream fos = new FileOutputStream(fout)) {
+                LOG.debug("dumping to file {}", tmppath);
                 fos.write(doc);
             }
+            
+            LOG.debug("renaming file to {}", finalpath);
+            fout.renameTo(new File(finalpath));
+            
         } catch (IOException ex) {
             LOG.error("IOException when writing doc: {}", ex);
         }
@@ -114,6 +127,29 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 .append("_")
                 .append(new Date().getTime())
                 .toString();                
+    }
+    
+    @Override
+    public byte[] getWithToken(String token) {
+        // TODO: SANITIZE TOKEN!!!!            
+        String tmpdir = System.getProperty("java.io.tmpdir");
+        String path = tmpdir + File.separator + token + ".pdf";
+        try {            
+            File f = new File(path);
+            ByteArrayOutputStream baos;
+            try (FileInputStream fis = new FileInputStream(f)) {
+                baos = new ByteArrayOutputStream();
+                IOUtils.copy(fis, baos);
+            }
+            baos.close();
+            return baos.toByteArray();
+        } catch (FileNotFoundException ex) {
+            LOG.debug("{} does not exist", path);
+            return null;
+        } catch (IOException ex) {
+            LOG.error("IOException when copying: {}", ex);
+            return null;
+        }        
     }
     
     @Override

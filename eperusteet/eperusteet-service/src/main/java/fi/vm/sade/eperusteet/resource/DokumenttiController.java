@@ -68,6 +68,26 @@ public class DokumenttiController {
         return new ResponseEntity<>(dto, HttpStatus.CREATED);        
     }
 
+    @RequestMapping(value="/get/{token}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<byte[]> create(@PathVariable("token") final String token) {
+        LOG.debug("get: {}", token); 
+                
+        byte[] pdfdata = service.getWithToken(token);
+
+        if (pdfdata == null || pdfdata.length == 0) {
+            LOG.error("Got null or empty data from service");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        headers.setContentLength(pdfdata.length);
+        headers.set("Content-disposition", "attachment; filename="+token+".pdf");
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return new ResponseEntity<>(pdfdata, headers, HttpStatus.OK);
+    }
         
     @RequestMapping(value="/{id}", method = RequestMethod.GET)
     @ResponseBody
