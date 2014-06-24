@@ -16,7 +16,6 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import com.google.code.docbook4j.Docbook4JException;
-import com.google.code.docbook4j.renderer.PDFRenderer;
 import fi.vm.sade.eperusteet.domain.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.Arviointi;
@@ -38,11 +37,13 @@ import fi.vm.sade.eperusteet.service.DokumenttiService;
 import com.google.code.docbook4j.renderer.PerustePDFRenderer;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +88,34 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     
     @Autowired
     private PerusteprojektiRepository perusteprojektiRepository;
+    
+    @Override
+    @Transactional(readOnly = true)
+    public void generateWithToken(long id, String token){ 
+        LOG.info("generate with token {},{}", id, token);
+        
+        try {
+            byte[] doc = generateFor(id);
+            File fout = File.createTempFile(token, ".pdf");
+            LOG.info("dumping to file {}", fout.getAbsolutePath());
+            try (FileOutputStream fos = new FileOutputStream(fout)) {
+                fos.write(doc);
+            }
+        } catch (IOException ex) {
+            LOG.error("IOException when writing doc: {}", ex);
+        }
+    }
 
+    @Override
+    public String getNewTokenFor(long id) {
+        return new StringBuilder()
+                .append("peruste_")
+                .append(id)
+                .append("_")
+                .append(new Date().getTime())
+                .toString();                
+    }
+    
     @Override
     @Transactional(readOnly = true)
     public byte[] generateFor(long id) {

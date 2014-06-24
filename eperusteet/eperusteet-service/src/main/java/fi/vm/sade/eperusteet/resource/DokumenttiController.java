@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.service.DokumenttiService;
 import java.util.concurrent.Callable;
 import org.slf4j.Logger;
@@ -44,6 +45,30 @@ public class DokumenttiController {
     @Autowired
     DokumenttiService service;
 
+    @RequestMapping(value="/create/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<DokumenttiDto> create(@PathVariable("id") final long id) {
+        LOG.debug("create: {}", id); 
+                
+        DokumenttiDto dto = new DokumenttiDto();
+        final String token = service.getNewTokenFor(id);
+        dto.setToken(token);
+        dto.setTila(DokumenttiDto.Tila.LUODAAN);
+
+         // TODO: use executor service from threadpool
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                service.generateWithToken(id, token);
+            }
+        };
+        new Thread(r).start();
+        
+        LOG.info("after thread start");
+        return new ResponseEntity<>(dto, HttpStatus.CREATED);        
+    }
+
+        
     @RequestMapping(value="/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<byte[]> generateById(@PathVariable("id") final long id) {
