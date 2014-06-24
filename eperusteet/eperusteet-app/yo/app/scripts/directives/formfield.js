@@ -17,8 +17,24 @@
 'use strict';
 /* global _ */
 
+/**
+ * Form field with label and input field.
+ * @param {Object} model Model base object for input, e.g. a.b.c => a is model
+ * @param {String} modelVar Suffix for model, e.g. a.b.c => b.c is modelVar
+ * @param {String} label Label in the ui, will be translated
+ * @param {String} type Input type text|number|checkbox|..., default text
+ * @param {Array} options Options for selector, doesn't require type attribute
+ *     Flat array: value will be raw value, displayed label is translated from raw value
+ *     Object array: {value: VALUE, label: LABEL}, label is translated
+  * @param {form} form Form object
+ * @param {Integer} min Minimum value for number input
+ * @param {Integer} max Maximum value for number input or max length for text
+ * @param {String} name Field name
+ * @param {String} placeholder Placeholder for input or select, will be translated
+ * @param {String/Expression} required 'required'|'true'|parent scope expression
+ */
 angular.module('eperusteApp')
-  .directive('formfield', function ($parse, Kaanna) {
+  .directive('formfield', function ($parse, Kaanna, $timeout) {
     var uniqueId = 0;
     return {
       templateUrl: 'views/partials/formfield.html',
@@ -26,18 +42,45 @@ angular.module('eperusteApp')
       scope: {
         model: '=',
         label: '@',
-        type: '@',
+        type: '@?',
         options: '=?',
         modelVar: '@',
         form: '=',
-        min: '@',
-        max: '@',
-        name: '@'
+        min: '@?',
+        max: '@?',
+        name: '@',
+        placeholder: '@'
       },
       link: function (scope, element, attrs) {
+        scope.kaanna = function (val) {
+          return Kaanna.kaanna(val);
+        };
+        scope.flatOptions = _.isArray(scope.options) &&
+                scope.options.length > 0 && !_.isObject(scope.options[0]);
+        if (!scope.flatOptions) {
+          _.forEach(scope.options, function(opt) {
+            opt.label = Kaanna.kaanna(opt.label);
+          });
+        }
+
+        scope.type = scope.type || 'text';
+        if (scope.type === 'text' && attrs.max) {
+          $timeout(function () {
+            element.find('input').attr('maxlength', attrs.max);
+          });
+        }
         scope.postfix = '';
         attrs.$observe('required', function(value) {
-          if (value) { scope.postfix = '*'; }
+          if (value === 'required' || value === 'true') {
+            scope.postfix = '*';
+          } else if (value) {
+            var parsed = $parse(value);
+            scope.$watch(function () {
+              return parsed(scope.$parent);
+            }, function (value) {
+              scope.postfix = value ? '*' : '';
+            });
+          }
         });
         scope.inputClasses = function () {
           var classes = [];
@@ -48,10 +91,6 @@ angular.module('eperusteApp')
         };
         scope.inputElId = scope.label.replace(/ /g, '-') + '-' + uniqueId++;
         element.find('label').attr('for', scope.inputElId);
-
-        _.forEach(scope.options, function(opt) {
-          opt.label = Kaanna.kaanna(opt.label);
-        });
 
         // Two-way binding with deep object hierarchies needs some tricks
         var getter = $parse(scope.modelVar);

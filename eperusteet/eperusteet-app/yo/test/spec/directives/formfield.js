@@ -85,4 +85,33 @@ describe('Directive: formfield', function () {
       expect(field.$error.max).toBe(true);
     });
   });
+
+  describe('options type input', function () {
+    it('should support flat array', function () {
+      scope.data = {option: 'first option'};
+      scope.options = ['first option', 'second option'];
+      kaanna('<formfield label="choose" model="data" model-var="option" options="options"></formfield>');
+      var options = element.find('option').not('.ng-hide');
+      expect(options.length).toBe(2);
+      expect(options.eq(0).text()).toBe('first option');
+      expect(options.eq(0).attr('selected')).toBe('selected');
+      expect(options.eq(1).text()).toBe('second option');
+      expect(options.eq(1).attr('selected')).toBeUndefined();
+    });
+
+    it('should support placeholder option', function () {
+      scope.data = {option: 200};
+      scope.options = [
+        {value: 100, label: 'first option'},
+        {value: 200, label: 'second option'}
+      ];
+      kaanna('<formfield label="choose" model="data" model-var="option" options="options" placeholder="choose one"></formfield>');
+      var options = element.find('option');
+      expect(options.length).toBe(3);
+      expect(options.eq(0).text()).toBe('choose one');
+      expect(options.eq(1).text()).toBe('first option');
+      expect(options.eq(2).text()).toBe('second option');
+      expect(options.eq(2).attr('selected')).toBe('selected');
+    });
+  });
 });

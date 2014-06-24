@@ -28,7 +28,10 @@ angular.module('eperusteApp')
         var suffix = IconMapping.icons[attrs.iconRole] || attrs.iconRole;
         var iconEl = angular.element('<span>')
           .addClass('glyphicon').addClass('glyphicon-' + suffix);
-        element.addClass('iconlink').prepend(iconEl);
+        if (element.text()) {
+          element.addClass('iconlink');
+        }
+        element.prepend(iconEl);
       }
     };
   })

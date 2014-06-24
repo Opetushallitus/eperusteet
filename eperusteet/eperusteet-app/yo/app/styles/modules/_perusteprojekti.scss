@@ -173,10 +173,16 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   right: 10px;
 }
 
+.form-group-wrapper {
+  margin-right: 30px;
+  margin-left: 30px;
+}
+
 .form-area {
   border: 2px solid #ddd;
   border-radius: 2px;
   padding: 10px;
+  max-width: 1024px;
 }
 
 .form-area.koulutukset{
