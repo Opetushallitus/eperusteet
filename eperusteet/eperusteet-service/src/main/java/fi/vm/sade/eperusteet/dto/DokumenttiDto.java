@@ -17,7 +17,6 @@
 package fi.vm.sade.eperusteet.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import fi.vm.sade.eperusteet.domain.Kieli;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,7 +35,6 @@ public class DokumenttiDto {
         VALMIS;
     }
     
-    private Kieli kieli;
     private Tila tila = Tila.EI_OLE;
     private String token;
 }

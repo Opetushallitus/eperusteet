@@ -785,8 +785,8 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     }
     
     private String getFilenameBase(String token) {
-        // TODO: SANITIZE token!!!
+        String sane = token.replace("/", "");
         String tmpdir = System.getProperty("java.io.tmpdir");
-        return tmpdir + File.separator + token;     
+        return tmpdir + File.separator + sane;     
     }
 }
