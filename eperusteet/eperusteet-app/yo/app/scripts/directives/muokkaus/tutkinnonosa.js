@@ -37,6 +37,8 @@ angular.module('eperusteApp')
         $scope.versiot = {};
         $scope.test = angular.noop;
 
+        console.log('sisään');
+
         function getRakenne() {
           PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
             $scope.rakenne = res;
@@ -49,6 +51,18 @@ angular.module('eperusteApp')
           });
         }
         getRakenne();
+
+        function lukitse(cb) {
+          Lukitus.lukitsePerusteenosa($scope.tutkinnonOsa.id, cb);
+        }
+
+        function fetch(cb) {
+          cb = cb || angular.noop;
+          PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, function(res) {
+            $scope.tutkinnonOsa = res;
+            cb(res);
+          });
+        }
 
         $scope.viiteosa = {};
         $scope.viiteosa.laajuus = {};
@@ -107,15 +121,11 @@ angular.module('eperusteApp')
         $scope.editableTutkinnonOsa = {};
         $scope.editEnabled = false;
 
-        function cleanAccordionData(obj) {
-          if (_.has(obj, 'accordionOpen')) {
-            delete obj.accordionOpen;
-          }
-          _.each(obj, function (innerObj) {
-            if (_.isObject(innerObj)) {
-              cleanAccordionData(innerObj);
-            }
-          });
+        function refreshPromise() {
+          $scope.editableTutkinnonOsa = angular.copy($scope.tutkinnonOsa);
+          var tutkinnonOsaDefer = $q.defer();
+          $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
+          tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
         }
 
         function saveCb(res) {
@@ -130,14 +140,20 @@ angular.module('eperusteApp')
 
           Editointikontrollit.registerCallback({
             edit: function() {
-              $scope.viiteosa = _.find($scope.rakenne.tutkinnonOsat, {'_tutkinnonOsa': $scope.editableTutkinnonOsa.id.toString()}) || {};
-              $scope.viiteosa.yksikko = $scope.viiteosa.yksikko || 'OSAAMISPISTE';
+              fetch(function() {
+                refreshPromise();
+                $scope.viiteosa = _.find($scope.rakenne.tutkinnonOsat, {'_tutkinnonOsa': $scope.editableTutkinnonOsa.id.toString()}) || {};
+                $scope.viiteosa.yksikko = $scope.viiteosa.yksikko || 'OSAAMISPISTE';
+              });
             },
-            validate: function() {
-              return $scope.tutkinnonOsaHeaderForm.$valid;
+            asyncValidate: function(cb) {
+              if ($scope.tutkinnonOsaHeaderForm.$valid) {
+                lukitse(function() {
+                  cb();
+                });
+              }
             },
             save: function() {
-              cleanAccordionData($scope.editableTutkinnonOsa.arviointi);
               if ($scope.editableTutkinnonOsa.id) {
                 $scope.editableTutkinnonOsa.$saveTutkinnonOsa(function(response) {
                   $scope.editableTutkinnonOsa = angular.copy(response);
@@ -174,16 +190,14 @@ angular.module('eperusteApp')
               $scope.isNew = false;
             },
             cancel: function() {
-              $scope.editableTutkinnonOsa = angular.copy($scope.tutkinnonOsa);
-
-              var tutkinnonOsaDefer = $q.defer();
-              $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
-              tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
-              Lukitus.vapautaPerusteenosa($scope.tutkinnonOsa.id);
-              if ($scope.isNew) {
-                doDelete($scope.rakenne.tutkinnonOsat[$scope.tutkinnonOsa.id].id);
-              }
               $scope.isNew = false;
+              fetch(function() {
+                refreshPromise();
+                Lukitus.vapautaPerusteenosa($scope.tutkinnonOsa.id);
+                if ($scope.isNew) {
+                  doDelete($scope.rakenne.tutkinnonOsat[$scope.tutkinnonOsa.id].id);
+                }
+              });
             },
             notify: function (mode) {
               $scope.editEnabled = mode;
@@ -238,8 +252,10 @@ angular.module('eperusteApp')
         };
 
         $scope.muokkaa = function () {
-          Lukitus.lukitsePerusteenosa($scope.tutkinnonOsa.id, function() {
-            Editointikontrollit.startEditing();
+          lukitse(function() {
+            fetch(function() {
+              Editointikontrollit.startEditing();
+            });
           });
         };
         $scope.$watch('editEnabled', function (editEnabled) {
@@ -266,7 +282,6 @@ angular.module('eperusteApp')
           responseFn(response);
           saveCb(response);
         };
-
       }
     };
   });
