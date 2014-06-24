@@ -134,6 +134,14 @@ angular.module('eperusteApp')
           $scope.haeVersiot(true);
         }
 
+        function doDelete(osaId) {
+          PerusteenRakenne.poistaTutkinnonOsaViite(osaId, $scope.rakenne.$peruste.id,
+            $stateParams.suoritustapa, function() {
+            Notifikaatiot.onnistui('tutkinnon-osa-rakenteesta-poistettu');
+            $state.go('perusteprojekti.suoritustapa.tutkinnonosat');
+          });
+        }
+
         function setupTutkinnonOsa(osa) {
           $scope.editableTutkinnonOsa = angular.copy(osa);
           $scope.isNew = !$scope.editableTutkinnonOsa.id;
@@ -148,9 +156,7 @@ angular.module('eperusteApp')
             },
             asyncValidate: function(cb) {
               if ($scope.tutkinnonOsaHeaderForm.$valid) {
-                lukitse(function() {
-                  cb();
-                });
+                lukitse(function() { cb(); });
               }
             },
             save: function() {
@@ -190,14 +196,16 @@ angular.module('eperusteApp')
               $scope.isNew = false;
             },
             cancel: function() {
-              $scope.isNew = false;
-              fetch(function() {
-                refreshPromise();
-                Lukitus.vapautaPerusteenosa($scope.tutkinnonOsa.id);
-                if ($scope.isNew) {
-                  doDelete($scope.rakenne.tutkinnonOsat[$scope.tutkinnonOsa.id].id);
-                }
-              });
+              if ($scope.isNew) {
+                doDelete($scope.rakenne.tutkinnonOsat[$scope.tutkinnonOsa.id].id);
+                $scope.isNew = false;
+              }
+              else {
+                fetch(function() {
+                  refreshPromise();
+                  Lukitus.vapautaPerusteenosa($scope.tutkinnonOsa.id);
+                });
+              }
             },
             notify: function (mode) {
               $scope.editEnabled = mode;
@@ -222,14 +230,6 @@ angular.module('eperusteApp')
           $scope.tutkinnonOsa = {};
           setupTutkinnonOsa($scope.tutkinnonOsa);
           objectReadyDefer.resolve($scope.editableTutkinnonOsa);
-        }
-
-        function doDelete(osaId) {
-          PerusteenRakenne.poistaTutkinnonOsaViite(osaId, $scope.rakenne.$peruste.id,
-            $stateParams.suoritustapa, function() {
-            Notifikaatiot.onnistui('tutkinnon-osa-rakenteesta-poistettu');
-            $state.go('perusteprojekti.suoritustapa.tutkinnonosat');
-          });
         }
 
         $scope.poistaTutkinnonOsa = function(osaId) {

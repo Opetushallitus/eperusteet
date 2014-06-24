@@ -34,6 +34,13 @@ angular.module('eperusteApp')
         $scope.versiot = {};
         $scope.sisalto = {};
 
+        PerusteprojektiTiedotService.then(function (instance) {
+          instance.haeSisalto($scope.$parent.peruste.id, $stateParams.suoritustapa).then(function(res) {
+            $scope.sisalto = res;
+            $scope.setNavigation();
+          });
+        });
+
         $scope.setNavigation = function () {
           $scope.tree.init();
           SivunavigaatioService.setCrumb($scope.tree.get());
@@ -125,6 +132,14 @@ angular.module('eperusteApp')
           $scope.setNavigation();
         }
 
+        function doDelete() {
+          PerusteenOsaViitteet.delete({viiteId: $scope.viiteId()}, {}, function() {
+            Editointikontrollit.cancelEditing();
+            Notifikaatiot.onnistui('poisto-onnistui');
+            $state.go('perusteprojekti.suoritustapa.sisalto', {}, {reload: true});
+          }, Notifikaatiot.serverCb);
+        }
+
         function setupTekstikappale(kappale) {
           $scope.editableTekstikappale = angular.copy(kappale);
           $scope.isNew = !$scope.editableTekstikappale.id;
@@ -135,7 +150,9 @@ angular.module('eperusteApp')
                 refreshPromise();
               });
             },
-            validate: function() { return true; },
+            asyncValidate: function(cb) {
+              lukitse(function() { cb(); });
+            },
             save: function() {
               if ($scope.editableTekstikappale.id) {
                 $scope.editableTekstikappale.$saveTekstikappale(saveCb, Notifikaatiot.serverCb);
@@ -147,14 +164,16 @@ angular.module('eperusteApp')
               $scope.isNew = false;
             },
             cancel: function() {
+              if ($scope.isNew) {
+                doDelete();
+              }
+              else {
+                fetch(function() {
+                  refreshPromise();
+                  $scope.isNew = false;
+                });
+              }
               Lukitus.vapautaPerusteenosa($scope.tekstikappale.id);
-              fetch(function() {
-                refreshPromise();
-                if ($scope.isNew) {
-                  doDelete();
-                }
-                $scope.isNew = false;
-              });
             },
             notify: function (mode) {
               $scope.editEnabled = mode;
@@ -245,16 +264,6 @@ angular.module('eperusteApp')
             otsikko: 'poista-tekstikappale-otsikko',
             teksti: $translate('poista-tekstikappale-teksti', {nimi: nimi})
           })();
-        };
-
-        var doDelete = function() {
-          PerusteenOsaViitteet.delete({viiteId: $scope.viiteId()}, {}, function() {
-            Editointikontrollit.cancelEditing();
-            Notifikaatiot.onnistui('poisto-onnistui');
-            $state.go('perusteprojekti.suoritustapa.sisalto', {}, {reload: true});
-          }, function(virhe) {
-            Notifikaatiot.varoitus(virhe);
-          });
         };
 
         // Odota tekstikenttien alustus ennen siirtymistä editointitilaan

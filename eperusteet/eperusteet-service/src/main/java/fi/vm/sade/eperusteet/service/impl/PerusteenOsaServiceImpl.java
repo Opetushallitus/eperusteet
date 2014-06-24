@@ -16,11 +16,13 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
+import fi.vm.sade.eperusteet.service.KommenttiService;
 import fi.vm.sade.eperusteet.service.LockManager;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -41,6 +43,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteenOsaServiceImpl.class);
+
+    @Autowired
+    private KommenttiService kommenttiService;
 
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepo;
@@ -104,6 +109,10 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         assertExists(id);
         lockManager.lock(id);
         try {
+            List<KommenttiDto> allByPerusteenOsa = kommenttiService.getAllByPerusteenOsa(id);
+            for (KommenttiDto kommentti : allByPerusteenOsa) {
+                kommenttiService.deleteReally(kommentti.getId());
+            }
             perusteenOsaRepo.delete(id);
         } finally {
             lockManager.unlock(id);

@@ -55,6 +55,14 @@ public class KommenttiServiceImpl implements KommenttiService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("isAuthenticated()")
+    public List<KommenttiDto> getAllByPerusteenOsa(Long perusteenOsaId) {
+        List<Kommentti> re = kommentit.findAllByPerusteenOsa(perusteenOsaId);
+        return mapper.mapAsList(re, KommenttiDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllByPerusteenOsa(Long id, Long perusteenOsaId) {
         List<Kommentti> re = kommentit.findAllByPerusteenOsa(id, perusteenOsaId);
         return mapper.mapAsList(re, KommenttiDto.class);
@@ -127,5 +135,12 @@ public class KommenttiServiceImpl implements KommenttiService {
         Kommentti kommentti = kommentit.findOne(kommenttiId);
         kommentti.setSisalto("");
         kommentti.setPoistettu(true);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
+    public void deleteReally(Long kommenttiId) {
+        kommentit.delete(kommenttiId);
     }
 }
