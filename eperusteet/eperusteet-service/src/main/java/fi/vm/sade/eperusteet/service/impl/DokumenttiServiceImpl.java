@@ -35,6 +35,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.DokumenttiService;
 import com.google.code.docbook4j.renderer.PerustePDFRenderer;
+import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -98,21 +99,18 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     public void generateWithToken(long id, String token){ 
         LOG.debug("generate with token {},{}", id, token);
         
-        try {
-            String tmpdir = System.getProperty("java.io.tmpdir");
-            String basepath = tmpdir + File.separator + token; 
-            String tmppath =  basepath + ".tmp";
-            String finalpath = basepath + ".pdf";
-            
-            File fout = new File(tmppath);
+        try {            
+            File fout = getTmpFile(token);
+            fout.createNewFile(); // so that tell whether it exists if queried
+            File finalFile = getFinalFile(token);
             byte[] doc = generateFor(id);
             try (FileOutputStream fos = new FileOutputStream(fout)) {
-                LOG.debug("dumping to file {}", tmppath);
+                LOG.debug("dumping to file {}", fout.getAbsolutePath());
                 fos.write(doc);
             }
             
-            LOG.debug("renaming file to {}", finalpath);
-            fout.renameTo(new File(finalpath));
+            LOG.debug("renaming file to {}", finalFile.getAbsolutePath());
+            fout.renameTo(finalFile);
             
         } catch (IOException ex) {
             LOG.error("IOException when writing doc: {}", ex);
@@ -131,11 +129,8 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     
     @Override
     public byte[] getWithToken(String token) {
-        // TODO: SANITIZE TOKEN!!!!            
-        String tmpdir = System.getProperty("java.io.tmpdir");
-        String path = tmpdir + File.separator + token + ".pdf";
+        File f = getFinalFile(token);
         try {            
-            File f = new File(path);
             ByteArrayOutputStream baos;
             try (FileInputStream fis = new FileInputStream(f)) {
                 baos = new ByteArrayOutputStream();
@@ -144,12 +139,30 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             baos.close();
             return baos.toByteArray();
         } catch (FileNotFoundException ex) {
-            LOG.debug("{} does not exist", path);
+            LOG.debug("{} does not exist", f.getAbsolutePath());
             return null;
         } catch (IOException ex) {
             LOG.error("IOException when copying: {}", ex);
             return null;
         }        
+    }
+
+    @Override
+    public DokumenttiDto query(String token) {
+        boolean tmpExists = getTmpFile(token).exists();
+        boolean finalExists = getFinalFile(token).exists();
+        
+        DokumenttiDto dto = new DokumenttiDto();
+        dto.setToken(token);
+        if (finalExists) {
+            dto.setTila(DokumenttiDto.Tila.VALMIS);
+        } else if (tmpExists) {
+            dto.setTila(DokumenttiDto.Tila.LUODAAN);
+        } else {
+            dto.setTila(DokumenttiDto.Tila.EI_OLE);
+        }
+        
+        return dto;
     }
     
     @Override
@@ -758,5 +771,22 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             return "";
         }
         return teksti.getTeksti().get(kieli);
+    }
+    
+    
+    private File getTmpFile(String token) {        
+        String tmppath =  getFilenameBase(token) + ".tmp";        
+        return new File(tmppath);
+    }
+    
+    private File getFinalFile(String token) {        
+        String finalpath = getFilenameBase(token) + ".pdf";        
+        return new File(finalpath);
+    }
+    
+    private String getFilenameBase(String token) {
+        // TODO: SANITIZE token!!!
+        String tmpdir = System.getProperty("java.io.tmpdir");
+        return tmpdir + File.separator + token;     
     }
 }

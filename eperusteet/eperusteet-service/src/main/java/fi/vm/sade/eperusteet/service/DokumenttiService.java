@@ -16,6 +16,8 @@
 
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+
 /**
  *
  * @author jussini
@@ -27,4 +29,6 @@ public interface DokumenttiService {
     public String getNewTokenFor(final long id);
 
     public byte[] getWithToken(String token);
+
+    public DokumenttiDto query(String token);
 }

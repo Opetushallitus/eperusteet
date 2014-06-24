@@ -88,7 +88,17 @@ public class DokumenttiController {
 
         return new ResponseEntity<>(pdfdata, headers, HttpStatus.OK);
     }
+
+    @RequestMapping(value="/query/{token}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<DokumenttiDto> query(@PathVariable("token") final String token) {
+        LOG.debug("query: {}", token); 
+                
+        DokumenttiDto dto = service.query(token);
         
+        return new ResponseEntity<>(dto, HttpStatus.OK);        
+    }
+    
     @RequestMapping(value="/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<byte[]> generateById(@PathVariable("id") final long id) {
