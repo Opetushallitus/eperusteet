@@ -34,13 +34,6 @@ angular.module('eperusteApp')
         $scope.versiot = {};
         $scope.sisalto = {};
 
-        PerusteprojektiTiedotService.then(function (instance) {
-          instance.haeSisalto($scope.$parent.peruste.id, $stateParams.suoritustapa).then(function(res) {
-            $scope.sisalto = res;
-            $scope.setNavigation();
-          });
-        });
-
         $scope.setNavigation = function () {
           $scope.tree.init();
           SivunavigaatioService.setCrumb($scope.tree.get());
@@ -48,6 +41,20 @@ angular.module('eperusteApp')
             SivunavigaatioService.unCollapseFor($scope.tekstikappale.id);
           }, 50);
         };
+
+        function lukitse(cb) {
+          Lukitus.lukitsePerusteenosa($scope.tekstikappale.id, cb);
+        }
+
+        function fetch(cb) {
+          cb = cb || angular.noop;
+          PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, function(res) {
+            console.log(res);
+            $scope.tekstikappale = res;
+            cb(res);
+          });
+        }
+
 
         function storeTree (sisalto, level) {
           level = level || 0;
@@ -102,6 +109,13 @@ angular.module('eperusteApp')
              order: 2
            });
 
+        function refreshPromise() {
+          $scope.editableTekstikappale = angular.copy($scope.tekstikappale);
+          var tekstikappaleDefer = $q.defer();
+          $scope.tekstikappalePromise = tekstikappaleDefer.promise;
+          tekstikappaleDefer.resolve($scope.editableTekstikappale);
+        }
+
         function saveCb(res) {
           // Päivitä versiot
           $scope.haeVersiot(true);
@@ -116,27 +130,31 @@ angular.module('eperusteApp')
           $scope.isNew = !$scope.editableTekstikappale.id;
 
           Editointikontrollit.registerCallback({
-            edit: function() { },
+            edit: function() {
+              fetch(function() {
+                refreshPromise();
+              });
+            },
             validate: function() { return true; },
             save: function() {
               if ($scope.editableTekstikappale.id) {
                 $scope.editableTekstikappale.$saveTekstikappale(saveCb, Notifikaatiot.serverCb);
-              } else {
+              }
+              else {
                 PerusteenOsat.saveTekstikappale($scope.editableTekstikappale, saveCb, Notifikaatiot.serverCb);
               }
               $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
               $scope.isNew = false;
             },
             cancel: function() {
-              $scope.editableTekstikappale = angular.copy($scope.tekstikappale);
-              var tekstikappaleDefer = $q.defer();
-              $scope.tekstikappalePromise = tekstikappaleDefer.promise;
-              tekstikappaleDefer.resolve($scope.editableTekstikappale);
               Lukitus.vapautaPerusteenosa($scope.tekstikappale.id);
-              if ($scope.isNew) {
-                doDelete();
-              }
-              $scope.isNew = false;
+              fetch(function() {
+                refreshPromise();
+                if ($scope.isNew) {
+                  doDelete();
+                }
+                $scope.isNew = false;
+              });
             },
             notify: function (mode) {
               $scope.editEnabled = mode;
@@ -152,7 +170,8 @@ angular.module('eperusteApp')
             setupTekstikappale(response);
             return $scope.editableTekstikappale;
           });
-        } else {
+        }
+        else {
           var objectReadyDefer = $q.defer();
           $scope.tekstikappalePromise = objectReadyDefer.promise;
           $scope.tekstikappale = {};
@@ -161,7 +180,7 @@ angular.module('eperusteApp')
         }
 
         $scope.muokkaa = function () {
-          Lukitus.lukitsePerusteenosa($scope.tekstikappale.id, function() {
+          lukitse(function() {
             Editointikontrollit.startEditing();
           });
         };
