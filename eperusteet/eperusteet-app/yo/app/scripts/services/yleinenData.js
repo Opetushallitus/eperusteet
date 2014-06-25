@@ -32,6 +32,13 @@ angular.module('eperusteApp')
       return kaannetty.toLowerCase().indexOf(input.toLowerCase()) !== -1;
     };
 
+    this.dateOptions = {
+      'year-format': 'yy',
+      //'month-format': 'M',
+      //'day-format': 'd',
+      'starting-day': 1
+    };
+
 
     this.naviOmit = ['editoi', 'suoritustapa', 'sisalto', 'aloitussivu', 'selaus', 'esitys'];
 

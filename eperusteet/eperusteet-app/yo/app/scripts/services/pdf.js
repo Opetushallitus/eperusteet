@@ -26,20 +26,19 @@ angular.module('eperusteApp')
   })
   .service('Pdf', function(Dokumentti) {
     function generoiPdf(perusteId, success, failure) {
-
-    }
-
-    function lataaPdf(perusteId, success, failure) {
       Dokumentti.get({
-        tapa: 'get',
+        tapa: 'create',
         id: perusteId
       }, function(res) {
         console.log(res);
       });
     }
 
+    function haeLatausLinkki(perusteId) {
+    }
+
     return {
       generoiPdf: generoiPdf,
-      lataaPdf: lataaPdf
+      haeLatausLinkki: haeLatausLinkki
     };
   });

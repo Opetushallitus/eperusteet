@@ -360,6 +360,14 @@
     "huom": "Huom!",
     "tiivistelmä": "Tiivistelmä",
 
+    "lataa-pdf": "Lataa pdf",
+    "generoi-pdf": "Generoi pdf",
+
+    "voimaantulo-pvm": "Voimassaolon alkamispäivämäärä",
+    "voimassaolo-paattymispvm": "Voimassaolon päättymispäivämäärä",
+    "anna-voimaantulo-pvm": "Anna voimaantulon alkamispäivämäärä",
+    "anna-voimaantulo-loppu-pvm": "Anna voimaantulon päättymispäivämäärä",
+
     "projektin-nimi-label": "Projektin nimi",
     "anna-projektin-nimi-placeholder": "Syötä projektin nimi",
     "diaarinumero-label": "Diaarinumero",

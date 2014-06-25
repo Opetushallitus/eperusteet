@@ -67,6 +67,13 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   }
 }
 
+.download-pdf {
+  height: 0px;
+  float: right;
+  position: relative;
+  top: -60px;
+}
+
 .project-otsikkotiedot {
   margin-left: 25px;
   margin-top: 10px;

@@ -46,13 +46,7 @@ angular.module('eperusteApp')
     $scope.paatosPvmOpen = !$scope.paatosPvmOpen;
   };
 
-  $scope.dateOptions = {
-    'year-format': 'yy',
-    //'month-format': 'M',
-    //'day-format': 'd',
-    'starting-day': 1
-  };
-
+  $scope.dateOptions = YleinenData.dateOptions;
   $scope.format = YleinenData.dateFormatDatepicker;
 });
 
