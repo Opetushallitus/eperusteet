@@ -32,10 +32,10 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.DokumenttiService;
 import com.google.code.docbook4j.renderer.PerustePDFRenderer;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,7 +52,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Level;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -92,7 +91,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     private Kieli kieli = Kieli.FI;
     
     @Autowired
-    private PerusteprojektiRepository perusteprojektiRepository;
+    private PerusteRepository perusteRepository;
     
     @Override
     @Transactional(readOnly = true)
@@ -171,7 +170,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
         LOG.info("generateFor: id {}", id);
 
-        Peruste peruste = perusteprojektiRepository.findOne(id).getPeruste();
+        Peruste peruste = perusteRepository.findOne(id);
         LOG.info("Peruste: {}", peruste);
         TekstiPalanen nimi = peruste.getNimi();
         LOG.info("Nimi: {}", getTextString(nimi));
