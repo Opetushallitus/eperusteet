@@ -19,15 +19,34 @@
 
 angular.module('eperusteApp')
   .controller('PerusteenTiedotCtrl', function($scope, $rootScope, $stateParams, $state,
-    Koodisto, Perusteet, YleinenData, PerusteProjektiService, perusteprojektiTiedot, Notifikaatiot) {
+    Koodisto, Perusteet, YleinenData, PerusteProjektiService, perusteprojektiTiedot, Notifikaatiot, Pdf) {
 
     $scope.hakemassa = false;
     $scope.peruste = perusteprojektiTiedot.getPeruste();
-    $scope.peruste.nimi = $scope.peruste.nimi || { fi: '' };
-    $scope.peruste.kuvaus = $scope.peruste.kuvaus || { fi: '' };
+    $scope.peruste.nimi = $scope.peruste.nimi || {};
+    $scope.peruste.kuvaus = $scope.peruste.kuvaus || {};
     $scope.projektiId = $stateParams.perusteProjektiId;
     //$scope.open = {};
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa() || 'naytto';
+
+    function fixTimefield(field) {
+      if (typeof $scope.peruste[field] === 'number') {
+        $scope.peruste[field] = new Date($scope.peruste[field]);
+      }
+    }
+    fixTimefield('voimassaoloAlkaa');
+    fixTimefield('voimassaoloLoppuu');
+
+    $scope.voimaantuloPvmOpen = false;
+    $scope.voimaantuloLoppuuPvmOpen = false;
+    $scope.dateOptions = YleinenData.dateOptions;
+    $scope.format = YleinenData.dateFormatDatepicker;
+    $scope.open = function(value, $event) {
+      $event.preventDefault();
+      $event.stopPropagation();
+      $scope[value] = !$scope[value];
+    };
+
 
     $scope.rajaaKoodit = function(koodi) {
       return koodi.koodi.indexOf('_3') !== -1;
@@ -60,6 +79,14 @@ angular.module('eperusteApp')
       }, function(virhe) {
         Notifikaatiot.fataali(virhe);
       });
+    };
+
+    $scope.generoiPdf = function() {
+      Pdf.generoiPdf($scope.peruste.id);
+    };
+
+    $scope.lataaPdf = function() {
+      // Pdf.lataaPdf($scope.peruste.id);
     };
 
     $scope.tallennaPeruste = function() {

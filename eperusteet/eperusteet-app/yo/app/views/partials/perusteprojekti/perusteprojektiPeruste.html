@@ -15,82 +15,84 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 <h1 translate>projekti-peruste</h1>
+<div class="download-pdf">
+  <button class="btn" ng-click="generoiPdf()">
+    <span class="glyphicon glyphicon-file"></span>
+    {{ 'generoi-pdf' | kaanna }}
+  </button>
+  <button class="btn" ng-click="lataaPdf()">
+    <span class="glyphicon glyphicon-download-alt"></span>
+    {{ 'lataa-pdf' | kaanna }}
+  </button>
+</div>
+<div class="clearfix"></div>
 <form class="form-horizontal" name="perusteForm" role="form" novalidate>
-    <div ng-form="projektinPerusteForm">
-        <div class="form-group">
-            <label for="perusteenNimi" class="col-sm-3" translate>perusteen-nimi</label>
-            <div class="col-sm-9">
-                <ml-input ml-data="peruste.nimi"></ml-input>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="perusteenTiivistelma" class="col-sm-3" translate>tiivistelmä</label>
-            <div class="col-sm-9">
-                <ml-input ml-data="peruste.kuvaus"></ml-input>
-            </div>
-        </div>
-
-        <h3>{{'peruste-koulutukset' | kaanna}}</h3>
-        <table class="table table-condensed table-striped" ng-show="peruste.koulutukset.length > 0">
-    <thead>
-      <tr>
-        <th translate>koulutuksen-nimi</th><th translate>perusteen-koodi</th><th translate>haku-koulutusala</th><th translate>haku-opintoala</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="koulutus in peruste.koulutukset">
-        <td>{{koulutus.nimi| kaanna}}</td>
-        <td>{{koulutus.koulutuskoodi}}</td>
-        <td>{{koulutusalaNimi(koulutus.koulutusalakoodi).nimi | kaanna}}</td>
-        <td>{{opintoalaNimi(koulutus.opintoalakoodi).nimi | kaanna}}</td>
-      </tr>
-    </tbody>
-  </table>
-
-        <!--div ng-show="peruste.koulutukset.length > 0">
-            <h3>{{'peruste-koulutukset' | kaanna}}</h3>
-
-            <div ng-repeat="koulutus in peruste.koulutukset">
-                <div class="osio-otsikko" ng-click="open[koulutus.koulutuskoodi] = !open[koulutus.koulutuskoodi]">
-                    <span class="glyphicon" ng-class="{'glyphicon-chevron-right': !open[koulutus.koulutuskoodi], 'glyphicon-chevron-down': open[koulutus.koulutuskoodi]}"></span>
-                    <span>{{koulutus.nimi| kaanna}}</span>
-                </div>
-                <div collapse="!open[koulutus.koulutuskoodi]" class="form-area koulutukset">
-                    <div class="form-group">
-                        <label for="koulutuksenNimi" class="col-sm-3" translate>koulutuksen-nimi</label>
-                        <div class="col-sm-9">
-                            {{koulutus.nimi| kaanna}}
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="tutkinnonKoodi" class="col-sm-3" translate>perusteen-koodi</label>
-                        <div class="col-sm-9">
-                            {{koulutus.koulutuskoodi}}
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="koulutusala" class="col-sm-3" translate>haku-koulutusala</label>
-                        <div class="col-sm-9">
-                            {{koulutusalaNimi(koulutus.koulutusalakoodi).nimi | kaanna}}
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="opintoala" class="col-sm-3" translate>haku-opintoala</label>
-                        <div class="col-sm-9">
-                            {{opintoalaNimi(koulutus.opintoalakoodi).nimi | kaanna}}
-                        </div>
-                    </div>
-                    <button class="btn" ng-click="poistaKoulutus(koulutus.koulutuskoodi)" translate>poista-koulutus</button>
-                </div>
-            </div>
-        </div-->
-        <div>
-            <button class="btn btn-default" type="button" ng-click="avaaKoodistoModaali()" ng-disabled="hakemassa">{{ "lisaa-koulutus" | kaanna }}</button>
-        </div>
+  <div ng-form="projektinPerusteForm">
+    <div class="form-group">
+      <label for="perusteenNimi" class="col-sm-3" translate>perusteen-nimi</label>
+      <div class="col-sm-9">
+        <ml-input ml-data="peruste.nimi"></ml-input>
+      </div>
     </div>
-    <div class="projekti-form-buttons">
-        <button type="submit" ng-click="tallennaPeruste()" id="submit" class="btn btn-primary" ng-disabled="projektinPerusteForm.$invalid || hakemassa"  translate>tallenna</button>
-        <button ui-sref="perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: projektiId, suoritustapa: suoritustapa })" id="cancel" class="btn" translate>peruuta</button>
+
+    <div class="form-group">
+      <label for="perusteenTiivistelma" class="col-sm-3" translate>tiivistelmä</label>
+      <div class="col-sm-9">
+        <ml-input ml-data="peruste.kuvaus"></ml-input>
+      </div>
     </div>
+
+    <div class="form-group">
+      <label for="voimaantulopvm" class="col-sm-3" translate>voimaantulo-pvm</label>
+      <div class="col-sm-9">
+        <div class="input-group">
+          <input type="text" id="voimaantulopvm" name="voimaantulopvm" class="form-control" datepicker-popup="{{format}}" ng-model="peruste.voimassaoloAlkaa"
+                 placeholder="{{'anna-voimaantulo-pvm' | translate}}" is-open="voimaantuloPvmOpen " datepicker-options="dateOptions"
+                 show-button-bar="false">
+          <span class="input-group-btn">
+            <button id="paatosPvmButton" class="btn btn-default" ng-click="open('voimaantuloPvmOpen', $event)" icon-role="calendar"></button>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="paattymispvm" class="col-sm-3" translate>voimassaolo-paattymispvm</label>
+      <div class="col-sm-9">
+        <div class="input-group">
+          <input type="text" id="paattymispvm" name="paattymispvm" class="form-control" datepicker-popup="{{format}}" ng-model="peruste.voimassaoloLoppuu"
+                 placeholder="{{'anna-voimaantulo-loppu-pvm' | translate}}" is-open="voimaantuloLoppuuPvmOpen " datepicker-options="dateOptions"
+                 show-button-bar="false" dateformatvalidator>
+          <span class="input-group-btn">
+            <button id="paatosPvmButton" class="btn btn-default" ng-click="open('voimaantuloLoppuuPvmOpen', $event)" icon-role="calendar"></button>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <h3>{{'peruste-koulutukset' | kaanna}}</h3>
+    <table class="table table-condensed table-striped" ng-show="peruste.koulutukset.length > 0">
+      <thead>
+        <tr>
+          <th translate>koulutuksen-nimi</th><th translate>perusteen-koodi</th><th translate>haku-koulutusala</th><th translate>haku-opintoala</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="koulutus in peruste.koulutukset">
+          <td>{{koulutus.nimi| kaanna}}</td>
+          <td>{{koulutus.koulutuskoodi}}</td>
+          <td>{{koulutusalaNimi(koulutus.koulutusalakoodi).nimi | kaanna}}</td>
+          <td>{{opintoalaNimi(koulutus.opintoalakoodi).nimi | kaanna}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div>
+      <button class="btn btn-default" type="button" ng-click="avaaKoodistoModaali()" ng-disabled="hakemassa">{{ "lisaa-koulutus" | kaanna }}</button>
+    </div>
+  </div>
+  <div class="projekti-form-buttons">
+    <button type="submit" ng-click="tallennaPeruste()" id="submit" class="btn btn-primary" ng-disabled="projektinPerusteForm.$invalid || hakemassa"  translate>tallenna</button>
+    <button ui-sref="perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: projektiId, suoritustapa: suoritustapa })" id="cancel" class="btn" translate>peruuta</button>
+  </div>
 </form>
 
