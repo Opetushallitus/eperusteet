@@ -41,7 +41,7 @@ angular.module('eperusteApp')
         { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
         '/',
         { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
-        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar' ] },
+        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link' ] },
         { name: 'styles', items : [ 'Format' ] },
         { name: 'tools', items : [ 'About' ] }
       ]
