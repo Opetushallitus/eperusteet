@@ -23,7 +23,8 @@ angular.module('eperusteApp')
 
     $scope.hakemassa = false;
     $scope.peruste = perusteprojektiTiedot.getPeruste();
-    $scope.peruste.nimi = $scope.peruste.nimi || {};
+    $scope.peruste.nimi = $scope.peruste.nimi || { fi: '' };
+    $scope.peruste.kuvaus = $scope.peruste.kuvaus || { fi: '' };
     $scope.projektiId = $stateParams.perusteProjektiId;
     //$scope.open = {};
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa() || 'naytto';
@@ -33,9 +34,6 @@ angular.module('eperusteApp')
     };
 
     $scope.koodistoHaku = function(koodisto) {
-
-      console.log('koodisto', koodisto);
-
       angular.forEach(YleinenData.kielet, function(value) {
         if (_.isEmpty($scope.peruste.nimi[value]) && !_.isNull(koodisto.nimi[value])) {
           $scope.peruste.nimi[value] = koodisto.nimi[value];

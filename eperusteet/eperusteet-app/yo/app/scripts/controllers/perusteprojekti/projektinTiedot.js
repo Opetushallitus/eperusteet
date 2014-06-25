@@ -18,7 +18,7 @@
 
 angular.module('eperusteApp')
   .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams,
-    PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, perusteprojektiTiedot) {
+    PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, perusteprojektiTiedot, Notifikaatiot, Perusteet) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
     PerusteProjektiService.clean();
@@ -37,31 +37,25 @@ angular.module('eperusteApp')
 
     $scope.tallennaPerusteprojekti = function() {
       var projekti = PerusteProjektiService.get();
-      if (angular.isDefined(projekti.id)) {
-        // Poista tämä hack:ki, kun keksitty parempi tapa viedä koulutustyyppi uuden projektin luonnissa.
-        // Uuden projektin luonti dto:ssa kulkee koulutustyyppi, mutta ei normaalissa perusteprojektiDto:ssa
+      if (projekti.id) {
         delete projekti.koulutustyyppi;
-        PerusteprojektiResource.update(projekti, function(vastaus) {
-          PerusteProjektiService.save(vastaus);
-          PerusteProjektiService.update();
-          avaaProjektinSisalto(vastaus.id);
-        }, function (virhe) {
-          console.log('projektin tallennusvirhe', virhe);
-        });
-      } else {
-        projekti.id = null;
-        PerusteprojektiResource.save(projekti, function(vastaus) {
-          PerusteProjektiService.save(vastaus);
-          PerusteProjektiService.update();
-          avaaProjektinSisalto(vastaus.id);
-        }, function(virhe) {
-          console.log('projektin luontivirhe', virhe);
-        });
+        delete projekti.yksikko;
       }
+      else { projekti.id = null; }
+
+      PerusteprojektiResource.update(projekti, function(vastaus) {
+        PerusteProjektiService.save(vastaus);
+        PerusteProjektiService.update();
+        avaaProjektinSisalto(vastaus.id, vastaus._peruste);
+      }, Notifikaatiot.serverCb);
     };
 
-    var avaaProjektinSisalto = function(projektiId) {
-      $state.go('perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: projektiId, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {reload:true});
+    var avaaProjektinSisalto = function(projektiId, perusteId) {
+      Perusteet.get({ perusteId: perusteId }, function(res) {
+        $state.go('perusteprojekti.suoritustapa.sisalto', {
+          perusteProjektiId: projektiId,
+          suoritustapa: res.suoritustavat[0].suoritustapakoodi
+        }, { reload: true });
+      });
     };
-
   });
