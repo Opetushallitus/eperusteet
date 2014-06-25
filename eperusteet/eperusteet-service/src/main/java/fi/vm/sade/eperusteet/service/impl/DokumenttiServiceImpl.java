@@ -389,10 +389,20 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         chapterParaElement.appendChild(doc.createTextNode(""));
         chapterElement.appendChild(chapterTitleElement);
         chapterElement.appendChild(chapterParaElement);
-
-        chapterElement.appendChild(getTutkinnonMuodostuminenPeruskoulutuksessa(doc, peruste));
-        chapterElement.appendChild(getTutkinnonMuodostuminenNayttotutkinnossa(doc, peruste));
-
+        
+        // ew, dodgy trycatching
+        try {
+            chapterElement.appendChild(getTutkinnonMuodostuminenPeruskoulutuksessa(doc, peruste));
+        } catch (Exception ex) { 
+            LOG.warn("adding tutkinnonmuodostuminenperuskoulutuksessa failed: {}", ex);
+        }
+        
+        try {
+            chapterElement.appendChild(getTutkinnonMuodostuminenNayttotutkinnossa(doc, peruste));
+        } catch(Exception ex) { 
+            LOG.warn("adding tutkinnonmuodostuminennayttotutkinnossa failed {}",ex);
+        }
+                
         doc.getDocumentElement().appendChild(chapterElement);
     }
 
@@ -514,17 +524,21 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     }
 
     private void addSuorittaminenGeneric(Document doc, Peruste peruste, String title, Suoritustapakoodi suoritustapa) {
-        Element chapterElement = doc.createElement("chapter");
-        Element chapterTitleElement = doc.createElement("title");
-        chapterTitleElement.appendChild(doc.createTextNode(title));
-        Element chapterParaElement = doc.createElement("para");
-        chapterParaElement.appendChild(doc.createTextNode(""));
-        chapterElement.appendChild(chapterTitleElement);
-        chapterElement.appendChild(chapterParaElement);
-        doc.getDocumentElement().appendChild(chapterElement);
+        try {
+            Element chapterElement = doc.createElement("chapter");
+            Element chapterTitleElement = doc.createElement("title");
+            chapterTitleElement.appendChild(doc.createTextNode(title));
+            Element chapterParaElement = doc.createElement("para");
+            chapterParaElement.appendChild(doc.createTextNode(""));
+            chapterElement.appendChild(chapterTitleElement);
+            chapterElement.appendChild(chapterParaElement);
+            doc.getDocumentElement().appendChild(chapterElement);
 
-        PerusteenOsaViite sisalto = peruste.getSuoritustapa(suoritustapa).getSisalto();
-        addSisaltoElement(doc, chapterElement, sisalto);
+            PerusteenOsaViite sisalto = peruste.getSuoritustapa(suoritustapa).getSisalto();
+            addSisaltoElement(doc, chapterElement, sisalto);
+        } catch (Exception ex) {
+            LOG.warn("Failed to add suorittaminengeneric: {}", ex);
+        }
     }
 
     private void addSisaltoElement(Document doc, Element parentElement, PerusteenOsaViite sisalto) {
