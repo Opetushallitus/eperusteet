@@ -87,7 +87,6 @@ angular.module('eperusteApp')
       $scope.suosikkiLista = profiili.suosikit;
       $scope.suosikkiTyyli = $scope.onSuosikki();
     }, function() {
-      virheService.virhe('virhe-profiilia-ei-löytynyt');
       $scope.suosikkiLista = [];
       $scope.suosikkiTyyli = $scope.onSuosikki();
     });
