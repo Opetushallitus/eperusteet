@@ -98,15 +98,8 @@ public class DokumenttiController {
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
-    
-    @RequestMapping(value="/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<byte[]> generateById(@PathVariable("id") final long id) {
-        LOG.debug("generateById: {}", id);
-        return generate(id);
-    }
 
-    @RequestMapping(value="/async/{id}", method = RequestMethod.GET)
+    @RequestMapping(value="/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Callable<ResponseEntity<byte[]>> generateByIdAsync(@PathVariable("id") final long id) {
         LOG.debug("generateByIdAsync: {}", id);
