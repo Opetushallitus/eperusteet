@@ -130,7 +130,6 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         List<String> opintoala = pquery.getOpintoala();
         boolean siirtyma = pquery.isSiirtyma();
         String tilaStr = pquery.getTila();
-        String koodiUri = pquery.getKoodiUri();
         Expression<Date> siirtymaAlkaa = root.get(Peruste_.siirtymaAlkaa);
         Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
 
