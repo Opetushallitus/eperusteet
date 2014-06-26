@@ -91,16 +91,16 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiServiceImpl.class);
 
     private Kieli kieli = Kieli.FI;
-    
+
     @Autowired
     private PerusteRepository perusteRepository;
-    
+
     @Override
     @Transactional(readOnly = true)
-    public void generateWithToken(long id, String token){ 
+    public void generateWithToken(long id, String token){
         LOG.debug("generate with token {},{}", id, token);
-        
-        try {            
+
+        try {
             File fout = getTmpFile(token);
             fout.createNewFile(); // so that tell whether it exists if queried
             File finalFile = getFinalFile(token);
@@ -109,10 +109,10 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 LOG.debug("dumping to file {}", fout.getAbsolutePath());
                 fos.write(doc);
             }
-            
+
             LOG.debug("renaming file to {}", finalFile.getAbsolutePath());
             fout.renameTo(finalFile);
-            
+
         } catch (IOException ex) {
             LOG.error("IOException when writing doc: {}", ex);
         }
@@ -125,13 +125,13 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 .append(id)
                 .append("_")
                 .append(new Date().getTime())
-                .toString();                
+                .toString();
     }
-    
+
     @Override
     public byte[] getWithToken(String token) {
         File f = getFinalFile(token);
-        try {            
+        try {
             ByteArrayOutputStream baos;
             try (FileInputStream fis = new FileInputStream(f)) {
                 baos = new ByteArrayOutputStream();
@@ -145,14 +145,14 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         } catch (IOException ex) {
             LOG.error("IOException when copying: {}", ex);
             return null;
-        }        
+        }
     }
 
     @Override
     public DokumenttiDto query(String token) {
         boolean tmpExists = getTmpFile(token).exists();
         boolean finalExists = getFinalFile(token).exists();
-        
+
         DokumenttiDto dto = new DokumenttiDto();
         dto.setToken(token);
         if (finalExists) {
@@ -162,10 +162,10 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         } else {
             dto.setTila(DokumenttiDto.Tila.EI_OLE);
         }
-        
+
         return dto;
     }
-    
+
     @Override
     @Transactional(readOnly = true)
     public byte[] generateFor(long id) {
@@ -180,8 +180,8 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         try {
             String xmlpath = generateXML(peruste);
             LOG.debug("Temporary xml file: \n{}", xmlpath);
-            // we could also use 
-            //String style = "file:///full/path/to/docbookstyle.xsl";            
+            // we could also use
+            //String style = "file:///full/path/to/docbookstyle.xsl";
             String style = "res:docgen/docbookstyle.xsl";
 
             //PDFRenderer r = PDFRenderer.create(xmlpath, style);
@@ -249,7 +249,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         // so far doc contains mixed content from docbook and xhtml namespaces
         // lets transform xhtml bits onto docbook-format
         DOMSource source = new DOMSource(doc);
-        SAXTransformerFactory stf = (SAXTransformerFactory) TransformerFactory.newInstance();       
+        SAXTransformerFactory stf = (SAXTransformerFactory) TransformerFactory.newInstance();
 
         File resultFile;
         try (InputStream xslresource = getClass().getClassLoader().getResourceAsStream("docgen/epdoc-markup.xsl")) {
@@ -262,11 +262,11 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             Transformer transformer = stf.newTransformer();
             transformer.transform(source, new SAXResult(th));
         }
-        
+
         return resultFile.getAbsolutePath();
     }
 
-    
+
     /**
      * Copies content from all the children of Jsoup Node on under W3C DOM Node
      * on given W3C document.
@@ -278,7 +278,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     }
 
     /**
-     * The helper that copies content from the specified Jsoup Node into 
+     * The helper that copies content from the specified Jsoup Node into
      * a W3C Node.
      *
      * @param node The Jsoup node containing the content to copy to the
@@ -298,7 +298,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
             org.jsoup.nodes.Element e = ((org.jsoup.nodes.Element) node);
             // create all new elements into xhtml namespace
-            org.w3c.dom.Element _e = doc.createElementNS("http://www.w3.org/1999/xhtml", e.tagName());           
+            org.w3c.dom.Element _e = doc.createElementNS("http://www.w3.org/1999/xhtml", e.tagName());
             out.appendChild(_e);
             org.jsoup.nodes.Attributes atts = e.attributes();
 
@@ -331,7 +331,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
             org.jsoup.nodes.TextNode t = ((org.jsoup.nodes.TextNode) node);
             if (!(out instanceof Document)) {
-                out.appendChild(doc.createTextNode(t.getWholeText()));                
+                out.appendChild(doc.createTextNode(t.getWholeText()));
             }
         }
     }
@@ -391,48 +391,48 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         chapterParaElement.appendChild(doc.createTextNode(""));
         chapterElement.appendChild(chapterTitleElement);
         chapterElement.appendChild(chapterParaElement);
-        
+
         // ew, dodgy trycatching
         try {
             chapterElement.appendChild(getTutkinnonMuodostuminenPeruskoulutuksessa(doc, peruste));
-        } catch (Exception ex) { 
+        } catch (Exception ex) {
             LOG.warn("adding tutkinnonmuodostuminenperuskoulutuksessa failed: {}", ex);
         }
-        
+
         try {
             chapterElement.appendChild(getTutkinnonMuodostuminenNayttotutkinnossa(doc, peruste));
-        } catch(Exception ex) { 
+        } catch(Exception ex) {
             LOG.warn("adding tutkinnonmuodostuminennayttotutkinnossa failed {}",ex);
         }
-                
+
         doc.getDocumentElement().appendChild(chapterElement);
     }
 
     private Element getTutkinnonMuodostuminenPeruskoulutuksessa(
-            Document doc, Peruste peruste) 
+            Document doc, Peruste peruste)
     {
         return getTutkinnonMuodostuminenGeneric(
-                doc, 
-                peruste, 
+                doc,
+                peruste,
                 // TODO: localize
                 "Ammatillisessa peruskoulutuksessa",
                 Suoritustapakoodi.OPS);
     }
 
     private Element getTutkinnonMuodostuminenNayttotutkinnossa(
-            Document doc, Peruste peruste) 
+            Document doc, Peruste peruste)
     {
         return getTutkinnonMuodostuminenGeneric(
-                doc, 
-                peruste, 
+                doc,
+                peruste,
                 // TODO: localize
                 "Näyttötutkinnossa",
                 Suoritustapakoodi.NAYTTO);
     }
 
     private Element getTutkinnonMuodostuminenGeneric(
-            Document doc, Peruste peruste, String title, 
-            Suoritustapakoodi suoritustapakoodi) 
+            Document doc, Peruste peruste, String title,
+            Suoritustapakoodi suoritustapakoodi)
     {
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         RakenneModuuli rakenne = suoritustapa.getRakenne();
@@ -548,7 +548,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             if (lapsi.getPerusteenOsa() == null) {
                 continue;
             }
-            
+
             TekstiKappale tk = (TekstiKappale) lapsi.getPerusteenOsa();
             if (tk == null) {
                 continue;
@@ -588,7 +588,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 osat.add(viite.getTutkinnonOsa());
             }
         }
-        
+
         for (TutkinnonOsa osa : osat) {
             String osanNimi = getTextString(osa.getNimi());
             LOG.debug("handling {} - {}", osa.getId(), osanNimi);
@@ -621,7 +621,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         // TODO: localize
         addTekstiSectionGeneric(doc, parent, TavoitteetText, "Tavoitteet");
     }
-    
+
     private void addAmmattitaitovaatimukset(Document doc, Element parent, TutkinnonOsa tutkinnonOsa) {
 
         String ammattitaitovaatimuksetText = getTextString(tutkinnonOsa.getAmmattitaitovaatimukset());
@@ -632,7 +632,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         // TODO: localize
         addTekstiSectionGeneric(doc, parent, ammattitaitovaatimuksetText, "Ammattitaitovaatimukset");
     }
-    
+
     private void addAmmattitaidonOsoittamistavat(Document doc, Element parent, TutkinnonOsa tutkinnonOsa) {
 
         String ammattitaidonOsoittamistavatText = getTextString(tutkinnonOsa.getAmmattitaidonOsoittamistavat());
@@ -643,20 +643,20 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         // TODO: localize
         addTekstiSectionGeneric(doc, parent, ammattitaidonOsoittamistavatText, "Ammattitaidon osoittamistavat");
     }
-    
+
     private void addTekstiSectionGeneric(Document doc, Element parent, String teksti, String title) {
-        
+
         Element section = doc.createElement("section");
         Element sectionTitle = doc.createElement("title");
         sectionTitle.appendChild(doc.createTextNode(title));
         section.appendChild(sectionTitle);
-        
+
         org.jsoup.nodes.Document fragment = Jsoup.parseBodyFragment(teksti);
         jsoupIntoDOMNode(doc, section, fragment.body());
-        
+
         parent.appendChild(section);
     }
-    
+
     private void addArviointi(Document doc, Element parent, TutkinnonOsa tutkinnonOsa) {
 
         Element arviointiSection = doc.createElement("section");
@@ -665,13 +665,13 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         arviointiSection.appendChild(arviointiSectionTitle);
 
         Arviointi arviointi = tutkinnonOsa.getArviointi();
-        
+
         if (arviointi == null) {
             return;
         }
 
         parent.appendChild(arviointiSection);
-                
+
         TekstiPalanen lisatiedot = arviointi.getLisatiedot();
         if (lisatiedot != null) {
             Element lisatietoPara = doc.createElement("para");
@@ -699,7 +699,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
             // initial implementation:
             // lets have each kohde as a table of their own, like in
-            // website so that each osaamistaso with its kiteerit is on 
+            // website so that each osaamistaso with its kiteerit is on
             //its own row
             List<ArvioinninKohde> arvioinninKohteet = ka.getArvioinninKohteet();
             for (ArvioinninKohde kohde : arvioinninKohteet) {
@@ -746,7 +746,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             }
         }
 
-        
+
     }
 
     private void addTableCell(Document doc, Element row, String text) {
@@ -764,50 +764,50 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         }
         row.appendChild(entry);
     }
-    
+
     private List<String> asStringList(List<TekstiPalanen> palaset) {
         List<String> list = new ArrayList();
         for(TekstiPalanen palanen : palaset) {
             list.add(getTextString(palanen));
-        }        
-        return list;
-    }
- 
-    private <T> List<T> sanitizeList(List<T> list) {
-        if (list == null) {
-            return new ArrayList(); 
         }
         return list;
     }
-    
+
+    private <T> List<T> sanitizeList(List<T> list) {
+        if (list == null) {
+            return new ArrayList();
+        }
+        return list;
+    }
+
     private String getTextString(TekstiPalanen teksti) {
         return getTextString(teksti, this.kieli);
     }
-    
+
     private String getTextString(TekstiPalanen teksti, Kieli kieli) {
-        if(teksti == null || 
-           teksti.getTeksti() == null || 
-           teksti.getTeksti().get(kieli) == null) 
+        if(teksti == null ||
+           teksti.getTeksti() == null ||
+           teksti.getTeksti().get(kieli) == null)
         {
             return "";
         }
         return teksti.getTeksti().get(kieli);
     }
-    
-    
-    private File getTmpFile(String token) {        
-        String tmppath =  getFilenameBase(token) + ".tmp";        
+
+
+    private File getTmpFile(String token) {
+        String tmppath =  getFilenameBase(token) + ".tmp";
         return new File(tmppath);
     }
-    
-    private File getFinalFile(String token) {        
-        String finalpath = getFilenameBase(token) + ".pdf";        
+
+    private File getFinalFile(String token) {
+        String finalpath = getFilenameBase(token) + ".pdf";
         return new File(finalpath);
     }
-    
+
     private String getFilenameBase(String token) {
         String sane = token.replace("/", "");
         String tmpdir = System.getProperty("java.io.tmpdir");
-        return tmpdir + File.separator + sane;     
+        return tmpdir + File.separator + sane;
     }
 }

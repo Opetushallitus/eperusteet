@@ -48,8 +48,8 @@ public class DokumenttiController {
     @RequestMapping(value="/create/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<DokumenttiDto> create(@PathVariable("id") final long id) {
-        LOG.debug("create: {}", id); 
-                
+        LOG.debug("create: {}", id);
+
         DokumenttiDto dto = new DokumenttiDto();
         final String token = service.getNewTokenFor(id);
         dto.setToken(token);
@@ -63,16 +63,16 @@ public class DokumenttiController {
             }
         };
         new Thread(r).start();
-        
+
         LOG.info("after thread start");
-        return new ResponseEntity<>(dto, HttpStatus.CREATED);        
+        return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
 
     @RequestMapping(value="/get/{token}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<byte[]> create(@PathVariable("token") final String token) {
-        LOG.debug("get: {}", token); 
-                
+        LOG.debug("get: {}", token);
+
         byte[] pdfdata = service.getWithToken(token);
 
         if (pdfdata == null || pdfdata.length == 0) {
@@ -92,38 +92,38 @@ public class DokumenttiController {
     @RequestMapping(value="/query/{token}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<DokumenttiDto> query(@PathVariable("token") final String token) {
-        LOG.debug("query: {}", token); 
-                
+        LOG.debug("query: {}", token);
+
         DokumenttiDto dto = service.query(token);
-        
-        return new ResponseEntity<>(dto, HttpStatus.OK);        
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
     
     @RequestMapping(value="/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<byte[]> generateById(@PathVariable("id") final long id) {
-        LOG.debug("generateById: {}", id);                
+        LOG.debug("generateById: {}", id);
         return generate(id);
     }
-    
+
     @RequestMapping(value="/async/{id}", method = RequestMethod.GET)
     @ResponseBody
     public Callable<ResponseEntity<byte[]>> generateByIdAsync(@PathVariable("id") final long id) {
         LOG.debug("generateByIdAsync: {}", id);
-                
+
         Callable<ResponseEntity<byte[]>> callable = new Callable<ResponseEntity<byte[]>>() {
-            
+
             @Override
             public ResponseEntity<byte[]> call() {
                 LOG.debug("Callable.call: {}", id);
                 return generate(id);
             }
         };
-        
+
         System.out.println("After creating callable");
         return callable;
     }
-    
+
     private ResponseEntity<byte[]> generate(long id) {
         LOG.debug("generate: {}", id);
         byte[] pdfdata = service.generateFor(id);
