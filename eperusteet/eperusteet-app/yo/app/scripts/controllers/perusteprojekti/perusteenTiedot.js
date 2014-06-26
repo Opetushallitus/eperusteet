@@ -18,11 +18,44 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('PerusteenTiedotCtrl', function($scope, $rootScope, $stateParams, $state,
-    Koodisto, Perusteet, YleinenData, PerusteProjektiService, perusteprojektiTiedot, Notifikaatiot, Pdf) {
+  .controller('PerusteenTiedotCtrl', function($scope, $stateParams, $state,
+    Koodisto, Perusteet, YleinenData, PerusteProjektiService,
+    perusteprojektiTiedot, Notifikaatiot, Pdf, Editointikontrollit) {
+
+    $scope.editEnabled = false;
+    var editingCallbacks = {
+      edit: function () {
+        fixTimefield('voimassaoloAlkaa');
+        fixTimefield('voimassaoloLoppuu');
+        $scope.editablePeruste = angular.copy($scope.peruste);
+      },
+      save: function () {
+        $scope.tallennaPeruste();
+      },
+      validate: function () {
+        return $scope.projektinPerusteForm.$valid;
+      },
+      cancel: function () {
+        $scope.editablePeruste = $scope.peruste;
+      },
+      notify: function (mode) {
+        $scope.editEnabled = mode;
+      }
+    };
+    Editointikontrollit.registerCallback(editingCallbacks);
+
+    $scope.voiMuokata = function () {
+      // TODO Vain omistaja/sihteeri voi muokata
+      return true;
+    };
+
+    $scope.muokkaa = function () {
+      Editointikontrollit.startEditing();
+    };
 
     $scope.hakemassa = false;
     $scope.peruste = perusteprojektiTiedot.getPeruste();
+    $scope.editablePeruste = $scope.peruste;
     $scope.peruste.nimi = $scope.peruste.nimi || {};
     $scope.peruste.kuvaus = $scope.peruste.kuvaus || {};
     $scope.projektiId = $stateParams.perusteProjektiId;
@@ -54,14 +87,13 @@ angular.module('eperusteApp')
 
     $scope.koodistoHaku = function(koodisto) {
       angular.forEach(YleinenData.kielet, function(value) {
-        if (_.isEmpty($scope.peruste.nimi[value]) && !_.isNull(koodisto.nimi[value])) {
-          $scope.peruste.nimi[value] = koodisto.nimi[value];
+        if (_.isEmpty($scope.editablePeruste.nimi[value]) && !_.isNull(koodisto.nimi[value])) {
+          $scope.editablePeruste.nimi[value] = koodisto.nimi[value];
         }
       });
 
-      $scope.peruste.koulutukset.push({});
-      $scope.peruste.koulutukset[$scope.peruste.koulutukset.length - 1].nimi = koodisto.nimi;
-      $scope.peruste.koulutukset[$scope.peruste.koulutukset.length - 1].koulutuskoodi = koodisto.koodi;
+      var added = {nimi: koodisto.nimi, koulutuskoodi: koodisto.koodi};
+      $scope.editablePeruste.koulutukset.push(added);
 
       //$scope.open[koodisto.koodi] = true;
 
@@ -69,10 +101,10 @@ angular.module('eperusteApp')
         _.forEach(relaatiot, function(rel) {
           switch (rel.koodisto.koodistoUri) {
             case 'koulutusalaoph2002':
-              $scope.peruste.koulutukset[$scope.peruste.koulutukset.length - 1].koulutusalakoodi = rel.koodi;
+              added.koulutusalakoodi = rel.koodi;
               break;
             case 'opintoalaoph2002':
-              $scope.peruste.koulutukset[$scope.peruste.koulutukset.length - 1].opintoalakoodi = rel.koodi;
+              added.opintoalakoodi = rel.koodi;
               break;
           }
         });
@@ -90,9 +122,9 @@ angular.module('eperusteApp')
     };
 
     $scope.tallennaPeruste = function() {
-      Perusteet.save({perusteId: $scope.peruste.id}, $scope.peruste, function(vastaus) {
+      Perusteet.save({perusteId: $scope.peruste.id}, $scope.editablePeruste, function(vastaus) {
         $scope.peruste = vastaus;
-        $state.go('perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: $scope.projektiId, suoritustapa: $scope.suoritustapa}, {reload: true});
+        PerusteProjektiService.update();
       }, function() {
         Notifikaatiot.fataali('tallentaminen-epäonnistui');
       });
@@ -101,18 +133,18 @@ angular.module('eperusteApp')
     $scope.avaaKoodistoModaali = function() {
       Koodisto.modaali(function(koodi) {
         $scope.koodistoHaku(koodi);
-      },
-        {tyyppi: function() {
-            return 'koulutus';
-          }, ylarelaatioTyyppi: function() {
-            return $scope.peruste.tutkintokoodi;
-          }},
-      function() {
-      }, null)();
+      }, {
+        tyyppi: function() {
+          return 'koulutus';
+        },
+        ylarelaatioTyyppi: function() {
+          return $scope.editablePeruste.tutkintokoodi;
+        }
+      }, angular.noop, null)();
     };
 
     $scope.poistaKoulutus = function (koulutuskoodi) {
-      $scope.peruste.koulutukset = _.remove($scope.peruste.koulutukset, function(koulutus) {
+      $scope.editablePeruste.koulutukset = _.remove($scope.editablePeruste.koulutukset, function(koulutus) {
         return koulutus.koulutuskoodi !== koulutuskoodi;
       });
     };

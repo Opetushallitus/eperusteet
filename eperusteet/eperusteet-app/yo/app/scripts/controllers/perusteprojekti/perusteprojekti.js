@@ -121,12 +121,17 @@ angular.module('eperusteApp')
     Navigaatiopolku, koulutusalaService, opintoalaService, SivunavigaatioService,
     PerusteProjektiService, Kaanna, perusteprojektiTiedot) {
 
-    $scope.projekti = perusteprojektiTiedot.getProjekti();
-    $scope.peruste = perusteprojektiTiedot.getPeruste();
+    function init() {
+      $scope.projekti = perusteprojektiTiedot.getProjekti();
+      $scope.peruste = perusteprojektiTiedot.getPeruste();
+      // TODO poista kun tilasiirtymät tuettuina
+      $scope.projekti.tila = 'luonnos';
+    }
+    init();
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
 
-    $scope.projekti.tila = 'luonnos';
+
     Navigaatiopolku.asetaElementit({
       perusteprojekti: {
         nimi: $scope.projekti.nimi,
@@ -150,4 +155,10 @@ angular.module('eperusteApp')
         return $scope.peruste.nimi;
       }
     };
+
+    $scope.$on('update:perusteprojekti', function () {
+      perusteprojektiTiedot.alustaProjektinTiedot($stateParams).then(function () {
+        init();
+      });
+    });
   });

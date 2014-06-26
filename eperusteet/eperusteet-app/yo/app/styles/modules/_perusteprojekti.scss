@@ -67,13 +67,6 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   }
 }
 
-.download-pdf {
-  height: 0px;
-  float: right;
-  position: relative;
-  top: -60px;
-}
-
 .project-otsikkotiedot {
   margin-left: 25px;
   margin-top: 10px;
@@ -296,4 +289,9 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
     background: none;
     background: #fff;
   }
+}
+
+table.koulutukset td a {
+  font-size: 20px;
+  line-height: 14px;
 }

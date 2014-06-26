@@ -116,8 +116,7 @@ angular.module('eperusteApp')
       }
       return function() {
         resolve = resolve || {};
-        failureCb = failureCb || function() {
-        };
+        failureCb = failureCb || angular.noop;
         $modal.open({
           templateUrl: 'views/modals/koodistoModal.html',
           controller: 'KoodistoModalCtrl',

@@ -13,13 +13,12 @@ angular.module('eperusteApp')
         ngModel.$parsers.unshift(function(viewValue) {
           return validate(viewValue);
         });
-        
+
         ngModel.$formatters.unshift(function (viewValue) {
           return validate(viewValue);
         });
-        
-        function validate (viewValue) {
 
+        function validate (viewValue) {
           if (viewValue instanceof Date || viewValue === '' || viewValue === null || viewValue === undefined) {
             ngModel.$setValidity('dateformatvalidator', true);
             return viewValue;
@@ -31,7 +30,7 @@ angular.module('eperusteApp')
             ngModel.$setValidity('dateformatvalidator', false);
             return undefined;
           }
-                   
+
           if (parsedMoment.isValid()) {
             ngModel.$setValidity('dateformatvalidator', true);
             return viewValue;
@@ -40,7 +39,7 @@ angular.module('eperusteApp')
             return undefined;
           }
         }
-        
+
       }
     };
   });
