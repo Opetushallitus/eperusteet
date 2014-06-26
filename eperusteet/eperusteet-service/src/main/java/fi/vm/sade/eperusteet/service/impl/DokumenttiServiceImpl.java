@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import com.google.code.docbook4j.Docbook4JException;
+import com.google.code.docbook4j.renderer.PerustePDFRenderer;
 import fi.vm.sade.eperusteet.domain.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.Arviointi;
@@ -48,6 +49,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -575,30 +577,33 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         chapterElement.appendChild(chapterTitleElement);
         chapterElement.appendChild(chapterParaElement);
 
+        // only distinct TutkinnonOsa
         Set<Suoritustapa> suoritustavat = peruste.getSuoritustavat();
-        for (Suoritustapa suoritustapa : suoritustavat) {
-
-            // Tutkinnonosat
-            for (TutkinnonOsaViite tutkinnonOsaViite : suoritustapa.getTutkinnonOsat()) {
-                TutkinnonOsa osa = tutkinnonOsaViite.getTutkinnonOsa();
-                String osanNimi = getTextString(osa.getNimi());
-
-                Element sectionElement = doc.createElement("section");
-                String refid = "tutkinnonosa" + osa.getId();
-                sectionElement.setAttribute("id", refid);
-
-                Element sectionTitleElement = doc.createElement("title");
-                sectionTitleElement.appendChild(doc.createTextNode(osanNimi));
-
-                sectionElement.appendChild(sectionTitleElement);
-
-                addTavoitteet(doc, sectionElement, osa);
-                addAmmattitaitovaatimukset(doc, sectionElement, osa);
-                addAmmattitaidonOsoittamistavat(doc, sectionElement, osa);
-                addArviointi(doc, sectionElement, osa);
-                
-                chapterElement.appendChild(sectionElement);
+        Set<TutkinnonOsa> osat = new HashSet();
+        for (Suoritustapa suoritustapa: suoritustavat) {
+            for (TutkinnonOsaViite viite : suoritustapa.getTutkinnonOsat()) {
+                osat.add(viite.getTutkinnonOsa());
             }
+        }
+        
+        for (TutkinnonOsa osa : osat) {
+            String osanNimi = getTextString(osa.getNimi());
+            LOG.debug("handling {} - {}", osa.getId(), osanNimi);
+            Element sectionElement = doc.createElement("section");
+            String refid = "tutkinnonosa" + osa.getId();
+            sectionElement.setAttribute("id", refid);
+
+            Element sectionTitleElement = doc.createElement("title");
+            sectionTitleElement.appendChild(doc.createTextNode(osanNimi));
+
+            sectionElement.appendChild(sectionTitleElement);
+
+            addTavoitteet(doc, sectionElement, osa);
+            addAmmattitaitovaatimukset(doc, sectionElement, osa);
+            addAmmattitaidonOsoittamistavat(doc, sectionElement, osa);
+            addArviointi(doc, sectionElement, osa);
+
+            chapterElement.appendChild(sectionElement);
         }
         doc.getDocumentElement().appendChild(chapterElement);
     }
