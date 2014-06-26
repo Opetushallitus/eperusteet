@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.service.DokumenttiService;
 import java.util.concurrent.Callable;
@@ -47,30 +48,46 @@ public class DokumenttiController {
 
     @RequestMapping(value="/create/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<DokumenttiDto> create(@PathVariable("id") final long id) {
-        LOG.debug("create: {}", id);
+    public ResponseEntity<DokumenttiDto> create(
+            @PathVariable("id") final long id) {
 
-        DokumenttiDto dto = new DokumenttiDto();
-        final String token = service.getNewTokenFor(id);
-        dto.setToken(token);
-        dto.setTila(DokumenttiDto.Tila.LUODAAN);
+        return create(id, "fi");
+    }
 
-         // TODO: use executor service from threadpool
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                service.generateWithToken(id, token);
-            }
-        };
-        new Thread(r).start();
+    @RequestMapping(value="/create/{id}/{kieli}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<DokumenttiDto> create(
+            @PathVariable("id") final long id,
+            @PathVariable("kieli") final String kieli) {
+
+        try {
+            DokumenttiDto dto = new DokumenttiDto();
+            final Kieli k = Kieli.of(kieli);
+            final String token = service.getNewTokenFor(id);
+            dto.setToken(token);
+            dto.setTila(DokumenttiDto.Tila.LUODAAN);
+
+            // TODO: use executor service from threadpool
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    service.generateWithToken(id, token, k);
+                }
+            };
+            new Thread(r).start();
 
         LOG.info("after thread start");
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
+        } catch (IllegalArgumentException ex) {
+            LOG.warn("{}", ex.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @RequestMapping(value="/get/{token}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<byte[]> create(@PathVariable("token") final String token) {
+    public ResponseEntity<byte[]> get(@PathVariable("token") final String token) {
         LOG.debug("get: {}", token);
 
         byte[] pdfdata = service.getWithToken(token);
@@ -101,39 +118,53 @@ public class DokumenttiController {
 
     @RequestMapping(value="/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public Callable<ResponseEntity<byte[]>> generateByIdAsync(@PathVariable("id") final long id) {
-        LOG.debug("generateByIdAsync: {}", id);
+    public Callable<ResponseEntity<byte[]>> generateByIdAsync(
+            @PathVariable("id") final long id) {
+
+        return generateByIdAsync(id, "fi");
+    }
+
+    @RequestMapping(value="/{id}/{kieli}", method = RequestMethod.GET)
+    @ResponseBody
+    public Callable<ResponseEntity<byte[]>> generateByIdAsync(
+            @PathVariable("id") final long id,
+            @PathVariable("kieli") final String kieli) {
 
         Callable<ResponseEntity<byte[]>> callable = new Callable<ResponseEntity<byte[]>>() {
 
             @Override
             public ResponseEntity<byte[]> call() {
                 LOG.debug("Callable.call: {}", id);
-                return generate(id);
+                return generate(id, kieli);
             }
         };
 
-        System.out.println("After creating callable");
         return callable;
     }
 
-    private ResponseEntity<byte[]> generate(long id) {
+    private ResponseEntity<byte[]> generate(long id, String kieli) {
         LOG.debug("generate: {}", id);
-        byte[] pdfdata = service.generateFor(id);
 
-        if (pdfdata == null || pdfdata.length == 0) {
-            LOG.error("Got null or empty data from service");
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        try {
+            byte[] pdfdata = service.generateFor(id, Kieli.of(kieli));
+
+            if (pdfdata == null || pdfdata.length == 0) {
+                LOG.error("Got null or empty data from service");
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("application/pdf"));
+            headers.setContentLength(pdfdata.length);
+            headers.set("Content-disposition", "attachment; filename=output.pdf");
+            headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+            return new ResponseEntity<>(pdfdata, headers, HttpStatus.OK);
+
+        } catch (IllegalArgumentException ex) {
+            LOG.warn("{}", ex.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType("application/pdf"));
-        headers.setContentLength(pdfdata.length);
-        headers.set("Content-disposition", "attachment; filename=output.pdf");
-        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-
-        return new ResponseEntity<>(pdfdata, headers, HttpStatus.OK);
-
     }
 
 }
