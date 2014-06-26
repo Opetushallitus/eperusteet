@@ -563,6 +563,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             jsoupIntoDOMNode(doc, sectionElement, fragment.body());
 
             sectionElement.appendChild(sectionTitleElement);
+
+            addSisaltoElement(doc, sectionElement, lapsi); // keep it rollin
+
             parentElement.appendChild(sectionElement);
         }
     }
