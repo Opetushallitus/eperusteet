@@ -26,6 +26,9 @@ angular.module('eperusteApp')
   })
   .service('Pdf', function(Dokumentti) {
     function generoiPdf(perusteId, success, failure) {
+      success = success || angular.noop;
+      failure = failure || angular.noop;
+
       Dokumentti.get({
         tapa: 'create',
         id: perusteId
@@ -34,7 +37,9 @@ angular.module('eperusteApp')
       });
     }
 
-    function haeLatausLinkki(perusteId) {
+    function haeLatausLinkki(
+      // perusteId
+    ) {
     }
 
     return {
