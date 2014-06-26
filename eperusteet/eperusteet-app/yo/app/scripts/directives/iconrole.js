@@ -39,6 +39,7 @@ angular.module('eperusteApp')
     this.icons = {
       add: 'plus',
       back: 'chevron-left',
+      download: 'download-alt',
       edit: 'pencil',
       first: 'fast-backward',
       import: 'cloud-download',
