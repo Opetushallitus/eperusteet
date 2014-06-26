@@ -56,15 +56,18 @@ public class PerusteenRakenne {
     static private Validointi validoiRyhma(RakenneModuuli rakenne, final Integer syvyys) {
         List<AbstractRakenneOsa> osat = rakenne.getOsat();
         MuodostumisSaanto ms = rakenne.getMuodostumisSaanto();
+        Validointi validointi = new Validointi();
+        if (ms == null) {
+            return validointi;
+        }
 
         final TekstiPalanen nimi = rakenne.getNimi();
         final Integer kokoMin = ms.getKoko() != null ? ms.getKoko().getMinimi() : 0;
         final Integer kokoMax = ms.getKoko() != null ? ms.getKoko().getMaksimi() : 0;
-        final Integer laajuusMin = ms.getLaajuus().getMinimi();
-        final Integer laajuusMax = ms.getLaajuus().getMaksimi();
+        final Integer laajuusMin = ms.getLaajuus() != null ? ms.getLaajuus().getMinimi() : 0;
+        final Integer laajuusMax = ms.getLaajuus() != null ? ms.getLaajuus().getMaksimi() : 0;
         final RakenneModuuliRooli rooli = rakenne.getRooli();
 
-        Validointi validointi = new Validointi();
         Integer laajuusSummaMin = 0;
         Integer laajuusSummaMax = 0;
         Integer ryhmienMäärä = 0;
@@ -108,7 +111,6 @@ public class PerusteenRakenne {
                 validointi.ongelmat.add(new Ongelma("Ryhmässä on samoja tutkinnon osia (" + uniikit.size() + " uniikkia).", nimi, syvyys));
             }
         }
-
 
         validointi.laskettuLaajuus = laajuusSummaMax;
         return validointi;

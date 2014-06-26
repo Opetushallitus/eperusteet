@@ -52,25 +52,25 @@ public class RakenneModuuliTest {
     @Test
     public void testIsSameEriRyhmaRakenne() {
         RakenneModuuli rakenneOld = TestUtils.teeRyhma(
-            120, 240,
+            120, 240, -1, -1,
             TestUtils.teeRyhma(
-                90, 90,
+                90, 90, -1, -1,
                 TestUtils.teeRyhma(
-                    30, 60
+                    30, 60, -1, -1
                 )
             )
         );
 
         RakenneModuuli rakenneNew = TestUtils.teeRyhma(
-                120, 240,
+                120, 240, -1, -1,
                 TestUtils.teeRyhma(
-                        90, 90,
+                        90, 90, -1, -1,
                         TestUtils.teeRyhma(
-                                30, 60
+                                30, 60, -1, -1
                         )
                 ),
                 TestUtils.teeRyhma(
-                        30, 60
+                        30, 60, -1, -1
                 )
         );
 
@@ -80,21 +80,21 @@ public class RakenneModuuliTest {
     @Test
     public void testIsSameSamaRyhmaRakenne() {
         RakenneModuuli rakenneOld = TestUtils.teeRyhma(
-            120, 240,
+            120, 240, -1, -1,
             TestUtils.teeRyhma(
-                90, 90,
+                90, 90, -1, -1,
                 TestUtils.teeRyhma(
-                    30, 60
+                    30, 60, -1, -1
                 )
             )
         );
 
         RakenneModuuli rakenneNew = TestUtils.teeRyhma(
-            120, 240,
+            120, 240, -1, -1,
             TestUtils.teeRyhma(
-                90, 90,
+                90, 90, -1, -1,
                 TestUtils.teeRyhma(
-                    30, 60
+                    30, 60, -1, -1
                 )
             )
         );
@@ -108,14 +108,14 @@ public class RakenneModuuliTest {
         RakenneOsa osa2 = TestUtils.teeRakenneOsa(1, 20);
 
         RakenneModuuli rakenneOld = TestUtils.teeRyhma(
-            120, 240,
+            120, 240, -1, -1,
             osa2,
             TestUtils.teeRyhma(
-                90, 90,
+                90, 90, -1, -1,
                 osa1,
                 osa2,
                 TestUtils.teeRyhma(
-                    30, 60,
+                    30, 60, -1, -1,
                     osa1,
                     osa2
                 )
@@ -123,14 +123,14 @@ public class RakenneModuuliTest {
         );
 
         RakenneModuuli rakenneNew = TestUtils.teeRyhma(
-            120, 240,
+            120, 240, -1, -1,
             osa1,
             TestUtils.teeRyhma(
-                90, 90,
+                90, 90, -1, -1,
                 osa1,
                 osa2,
                 TestUtils.teeRyhma(
-                    30, 60,
+                    30, 60, -1, -1,
                     osa1,
                     osa2
                 )
@@ -145,14 +145,14 @@ public class RakenneModuuliTest {
         RakenneOsa osa2 = TestUtils.teeRakenneOsa(1, 20);
 
         RakenneModuuli rakenneOld = TestUtils.teeRyhma(
-            120, 240,
+            120, 240, -1, -1,
             osa1,
             TestUtils.teeRyhma(
-                90, 90,
+                90, 90, -1, -1,
                 osa1,
                 osa2,
                 TestUtils.teeRyhma(
-                    30, 60,
+                    30, 60, -1, -1,
                     osa1,
                     osa2
                 )
@@ -160,14 +160,14 @@ public class RakenneModuuliTest {
         );
 
         RakenneModuuli rakenneNew = TestUtils.teeRyhma(
-            120, 240,
+            120, 240, -1, -1,
             osa1,
             TestUtils.teeRyhma(
-                90, 90,
+                90, 90, -1, -1,
                 osa1,
                 osa2,
                 TestUtils.teeRyhma(
-                    30, 60,
+                    30, 60, -1, -1,
                     osa1,
                     osa2
                 )
@@ -179,9 +179,9 @@ public class RakenneModuuliTest {
     @Test
     public void testIsSameNullInput() {
         RakenneModuuli rakenneOld = TestUtils.teeRyhma(
-            120, 240,
+            120, 240, -1, -1,
             TestUtils.teeRyhma(
-                90, 90
+                90, 90, -1, -1
             )
         );
         Assert.assertFalse("Rakenneosien pitäisi olla erilaiset", rakenneOld.isSame(null));
@@ -189,18 +189,18 @@ public class RakenneModuuliTest {
 
     @Test
     public void testIsSameMuodostumissaantoNull() {
-        RakenneModuuli ryhma = TestUtils.teeRyhma(90, 90);
-        RakenneModuuli ryhma2 = TestUtils.teeRyhma(90, 90);
+        RakenneModuuli ryhma = TestUtils.teeRyhma(90, 90, -1, -1);
+        RakenneModuuli ryhma2 = TestUtils.teeRyhma(90, 90, -1, -1);
         ryhma2.setMuodostumisSaanto(null);
         ryhma2.setOsat(ryhma.getOsat());
 
         RakenneModuuli rakenneOld = TestUtils.teeRyhma(
-            120, 240,
+            120, 240, -1, -1,
             ryhma
         );
 
         RakenneModuuli rakenneNew = TestUtils.teeRyhma(
-            120, 240,
+            120, 240, -1, -1,
             ryhma2
         );
         Assert.assertFalse("Rakenteiden pitäisi olla erilaiset", rakenneOld.isSame(rakenneNew));

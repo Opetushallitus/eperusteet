@@ -93,9 +93,13 @@ public abstract class TestUtils {
         return ro;
     }
 
-    static public RakenneModuuli teeRyhma(Integer minimi, Integer maksimi, AbstractRakenneOsa... osat) {
+    static public RakenneModuuli teeRyhma(Integer laajuusMinimi, Integer laajuusMaksimi, Integer kokoMinimi, Integer kokoMaksimi, AbstractRakenneOsa... osat) {
         RakenneModuuli rakenne = new RakenneModuuli();
-        MuodostumisSaanto ms = new MuodostumisSaanto(new MuodostumisSaanto.Laajuus(minimi, maksimi, LaajuusYksikko.OPINTOVIIKKO));
+
+        MuodostumisSaanto.Laajuus msl = laajuusMinimi != -1 ? new MuodostumisSaanto.Laajuus(laajuusMinimi, laajuusMaksimi, LaajuusYksikko.OPINTOVIIKKO) : null;
+        MuodostumisSaanto.Koko msk = kokoMinimi != -1 ? new MuodostumisSaanto.Koko(kokoMinimi, kokoMaksimi) : null;
+        MuodostumisSaanto ms = (msl != null || msk != null) ? new MuodostumisSaanto(msl, msk) : null;
+
         ArrayList<AbstractRakenneOsa> aosat = new ArrayList<>();
         aosat.addAll(Arrays.asList(osat));
         rakenne.setOsat(aosat);
