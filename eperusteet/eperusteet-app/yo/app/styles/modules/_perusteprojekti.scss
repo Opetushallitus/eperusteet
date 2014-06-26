@@ -190,10 +190,28 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   border-radius: 2px;
   padding: 10px;
   max-width: 1024px;
-}
-
-.form-area.koulutukset{
-  margin-bottom: 10px;
+  .form-clear {
+    margin: 0;
+    padding: 0;
+  }
+  &.koulutukset {
+    margin-bottom: 10px;
+  }
+  &.viewmode {
+    border: none !important;
+  }
+  table.perustiedot {
+    width: 100%;
+    th {
+      width: 25%;
+    }
+    td {
+      font-size: 14px;
+    }
+    th, td {
+      padding: 10px;
+    }
+  }
 }
 
 .projekti-form {
@@ -279,4 +297,3 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
     background: #fff;
   }
 }
-

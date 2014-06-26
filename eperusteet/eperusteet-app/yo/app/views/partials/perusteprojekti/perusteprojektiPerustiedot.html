@@ -14,25 +14,27 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 <div ng-controller="ProjektinperustiedotCtrl">
-  <div ng-form="perustiedotForm" name="perustiedotForm" class="form-group-wrapper">
+  <div ng-form="perustiedotForm" name="perustiedotForm" class="form-group-wrapper" ng-if="$parent.wizardissa() || $parent.editEnabled">
     <formfield label="projektin-nimi-label" model="projekti" model-var="nimi" form="form"
                name="projektinNimi" required="required" placeholder="anna-projektin-nimi-placeholder" max="255"></formfield>
     <formfield label="diaarinumero-label" model="projekti" model-var="diaarinumero" form="form"
                name="diaarinumero" required="required" placeholder="anna-diaarinumero-placeholder" max="255"></formfield>
-    <formfield ng-if="'perusteprojektiwizard.tiedot' | isState" label="koulutustyyppi-label"
+    <formfield ng-if="$parent.wizardissa()" label="koulutustyyppi-label"
                model="projekti" model-var="koulutustyyppi" required="required" options="koulutustyypit" placeholder="valitse-koulutustyyppi"></formfield>
-    <formfield label="laajuuden-yksikkö" ng-show="projekti.koulutustyyppi === 'koulutustyyppi_1'" ng-if="'perusteprojektiwizard.tiedot' | isState"
+    <formfield label="laajuuden-yksikkö" ng-show="projekti.koulutustyyppi === 'koulutustyyppi_1'" ng-if="$parent.wizardissa()"
                model="projekti" model-var="yksikko" required="projekti.koulutustyyppi === 'koulutustyyppi_1'" options="yksikot"></formfield>
 
     <div class="form-group">
       <label for="paatospvm" class="col-sm-3 control-label">{{'päätöspvm-label'| translate}}</label>
-      <div class="col-sm-9 input-group">
+      <div class="col-sm-9 form-clear">
+        <div class="input-group">
           <input type="text" id="paatospvm" name="paatospvm" class="form-control" datepicker-popup="{{format}}" ng-model="projekti.paatosPvm"
                  placeholder="{{'anna-päätöspäivämäärä' | translate}}" is-open="paatosPvmOpen" datepicker-options="dateOptions"
                  show-button-bar="false" dateformatvalidator>
           <span class="input-group-btn">
             <button id="paatosPvmButton" class="btn btn-default" ng-click="open($event)" icon-role="calendar"></button>
           </span>
+        </div>
         <p class="alert alert-error" ng-show="perusteprojektiForm.perustiedotForm.paatospvm.$invalid" translate>kelvoton-pvm</p>
       </div>
     </div>
@@ -41,5 +43,14 @@ European Union Public Licence for more details.
                model="projekti" model-var="tehtavaluokka" options="tehtavaluokat" placeholder="valitse-tehtäväluokka"></formfield>
     <formfield label="yhteistyotaho-label" model="projekti" model-var="yhteistyotaho" placeholder="anna-yhteistyotaho-placeholder" max="255"></formfield>
 
+  </div>
+  <div ng-if="!$parent.editEnabled && !$parent.wizardissa()">
+    <table class="perustiedot">
+      <tr ng-repeat="item in fields">
+        <th>{{item.label | kaanna}}</th>
+        <td ng-if="item.type !== 'date'" ng-bind="{{item.model}}"></td>
+        <td ng-if="item.type === 'date'" pvm="{{item.model}}"></td>
+      </tr>
+    </table>
   </div>
 </div>

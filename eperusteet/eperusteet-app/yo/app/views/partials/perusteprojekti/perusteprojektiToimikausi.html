@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 <div ng-controller="PerusteprojektiToimikausiCtrl">
-    <div ng-form="toimikausiForm" name="toimikausiForm">
+    <div ng-form="toimikausiForm" name="toimikausiForm" ng-if="$parent.wizardissa() || $parent.editEnabled">
         <div class="row">
         <div class="form-group col-sm-6">
             <label for="toimikausiAlku" class="col-sm-3">{{'toimikausi-alku-label'| translate}}</label>
@@ -59,4 +59,16 @@ European Union Public Licence for more details.
         </div>
         </div>
     </div>
+  <div ng-if="!$parent.wizardissa() && !$parent.editEnabled">
+    <table class="perustiedot">
+      <tr>
+        <th>{{'toimikausi-alku-label' | kaanna}}</th>
+        <td pvm="projekti.toimikausiAlku"></td>
+      </tr>
+      <tr>
+        <th>{{'toimikausi-loppu-label' | kaanna}}</th>
+        <td pvm="projekti.toimikausiLoppu"></td>
+      </tr>
+    </table>
+  </div>
 </div>

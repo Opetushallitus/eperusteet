@@ -18,35 +18,43 @@
 
 angular.module('eperusteApp')
   .controller('ProjektinperustiedotCtrl', function($scope, PerusteProjektiService, YleinenData) {
-  PerusteProjektiService.watcher($scope, 'projekti');
+    PerusteProjektiService.watcher($scope, 'projekti');
 
-  if (typeof $scope.projekti.paatosPvm === 'number') {
-     $scope.projekti.paatosPvm = new Date($scope.projekti.paatosPvm);
-  }
+    if (typeof $scope.projekti.paatosPvm === 'number') {
+       $scope.projekti.paatosPvm = new Date($scope.projekti.paatosPvm);
+    }
 
-  $scope.yksikot = YleinenData.yksikot;
+    $scope.fields = [
+      {label: 'projektin-nimi-label', model: 'projekti.nimi'},
+      {label: 'diaarinumero-label', model: 'projekti.diaarinumero'},
+      {label: 'päätöspvm-label', model: 'projekti.paatosPvm', type: 'date'},
+      {label: 'tehtäväluokka-label', model: 'projekti.tehtavaluokka'},
+      {label: 'yhteistyotaho-label', model: 'projekti.yhteistyotaho'}
+    ];
 
-  $scope.tehtavaluokat = [
-    'Tehtäväluokka-1',
-    'Tehtäväluokka-2',
-    'Tehtäväluokka-3',
-    'Tehtäväluokka-4'
-  ];
+    $scope.yksikot = YleinenData.yksikot;
 
-  $scope.koulutustyypit = YleinenData.koulutustyypit;
+    $scope.tehtavaluokat = [
+      'Tehtäväluokka-1',
+      'Tehtäväluokka-2',
+      'Tehtäväluokka-3',
+      'Tehtäväluokka-4'
+    ];
 
-  $scope.paatosPvmOpen = false;
+    $scope.koulutustyypit = YleinenData.koulutustyypit;
 
-  $scope.showWeeks = true;
+    $scope.paatosPvmOpen = false;
 
-  $scope.open = function($event) {
-    $event.preventDefault();
-    $event.stopPropagation();
+    $scope.showWeeks = true;
 
-    $scope.paatosPvmOpen = !$scope.paatosPvmOpen;
-  };
+    $scope.open = function($event) {
+      $event.preventDefault();
+      $event.stopPropagation();
 
-  $scope.dateOptions = YleinenData.dateOptions;
-  $scope.format = YleinenData.dateFormatDatepicker;
-});
+      $scope.paatosPvmOpen = !$scope.paatosPvmOpen;
+    };
+
+    $scope.dateOptions = YleinenData.dateOptions;
+    $scope.format = YleinenData.dateFormatDatepicker;
+  });
 

@@ -17,9 +17,45 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams,
-    PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, perusteprojektiTiedot, Notifikaatiot, Perusteet) {
+  .controller('ProjektinTiedotCtrl', function($scope, $state,
+    PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku,
+    perusteprojektiTiedot, Notifikaatiot, Perusteet, Editointikontrollit) {
     PerusteProjektiService.watcher($scope, 'projekti');
+
+    $scope.editEnabled = false;
+    var originalProjekti = null;
+
+    var editingCallbacks = {
+      edit: function () {
+        originalProjekti = PerusteProjektiService.get();
+      },
+      save: function () {
+        $scope.tallennaPerusteprojekti();
+      },
+      validate: function () {
+        return $scope.perusteprojektiForm.$valid;
+      },
+      cancel: function () {
+        $scope.projekti = originalProjekti;
+      },
+      notify: function (mode) {
+        $scope.editEnabled = mode;
+      }
+    };
+    Editointikontrollit.registerCallback(editingCallbacks);
+
+    $scope.wizardissa = function () {
+      return $state.is('perusteprojektiwizard.tiedot');
+    };
+
+    $scope.voiMuokata = function () {
+      // TODO Vain omistaja/sihteeri voi muokata
+      return true;
+    };
+
+    $scope.muokkaa = function () {
+      Editointikontrollit.startEditing();
+    };
 
     PerusteProjektiService.clean();
     if ($state.current.name === 'perusteprojektiwizard.tiedot') {
@@ -46,7 +82,11 @@ angular.module('eperusteApp')
       PerusteprojektiResource.update(projekti, function(vastaus) {
         PerusteProjektiService.save(vastaus);
         PerusteProjektiService.update();
-        avaaProjektinSisalto(vastaus.id, vastaus._peruste);
+        if ($scope.wizardissa()) {
+          avaaProjektinSisalto(vastaus.id, vastaus._peruste);
+        } else {
+          Notifikaatiot.onnistui('tallennettu');
+        }
       }, Notifikaatiot.serverCb);
     };
 

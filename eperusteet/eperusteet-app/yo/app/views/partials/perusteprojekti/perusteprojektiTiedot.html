@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <!--
 Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
 
@@ -14,25 +13,21 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
-<!--a ui-sref="perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: projekti.id})" translate>takaisin</a-->
+
 <div class="uusi-projekti-content">
-<h1>{{'projektin-tiedot' | kaanna}}</h1>
-<p translate>tahdella-pakolliset</p>
-<!--ng-form class="form-horizontal projekti-form" name="perusteprojektiForm" role="form" novalidate-->
-<ng-form class="form-horizontal projekti-form" name="perusteprojektiForm" role="form">
+  <button ng-if="!wizardissa() && voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit">{{'muokkaa' | translate}}</button>
+  <h1>{{'projektin-tiedot' | kaanna}}</h1>
+  <p ng-if="wizardissa() || editEnabled" translate>tahdella-pakolliset</p>
+  <ng-form class="form-horizontal projekti-form" name="perusteprojektiForm" role="form">
     <div ng-repeat="tab in tabs">
-        <h3>{{tab.otsikko | kaanna}}</h3>
-        <div class="form-area">
-        <ng-include src="tab.url"></ng-include>
-        </div>
+      <h3>{{tab.otsikko | kaanna}}</h3>
+      <div class="form-area" ng-class="{viewmode: !wizardissa() && !editEnabled}">
+      <ng-include src="tab.url"></ng-include>
+      </div>
     </div>
-    <div class="projekti-form-buttons" ng-show="{{ 'perusteprojektiwizard.tiedot' | isState }}">
-        <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid"  translate>luo-perusteprojekti-nappi</button>
-        <button ui-sref="aloitussivu" id="cancel" class="btn" translate>peruuta</button>
+    <div class="projekti-form-buttons" ng-show="wizardissa()">
+      <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid"  translate>luo-perusteprojekti-nappi</button>
+      <button ui-sref="aloitussivu" id="cancel" class="btn" translate>peruuta</button>
     </div>
-    <div class="projekti-form-buttons" ng-show="{{ 'perusteprojekti.tiedot' | isState }}">
-        <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid"  translate>tallenna</button>
-        <button ui-sref="perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: projekti.id, suoritustapa: suoritustapa })" id="cancel" class="btn" translate>peruuta</button>
-    </div>
-</ng-form>
+  </ng-form>
 </div>
