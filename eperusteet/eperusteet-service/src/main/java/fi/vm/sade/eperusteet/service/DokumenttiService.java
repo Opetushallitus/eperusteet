@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 
 /**
@@ -24,8 +25,8 @@ import fi.vm.sade.eperusteet.dto.DokumenttiDto;
  */
 public interface DokumenttiService {
 
-    public byte[] generateFor(final long id);
-    public void   generateWithToken(final long id, final String token);
+    public byte[] generateFor(final long id, Kieli kieli);
+    public void   generateWithToken(final long id, final String token, Kieli kieli);
     public String getNewTokenFor(final long id);
 
     public byte[] getWithToken(String token);
