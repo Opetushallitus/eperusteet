@@ -35,7 +35,7 @@ angular.module('eperusteApp')
 
         var kohdealue = {
           otsikko: {},
-          accordionOpen: true
+          $accordionOpen: true
         };
         kohdealue.otsikko[YleinenData.kieli] = $scope.uudenKohdealueenNimi;
 
@@ -81,7 +81,7 @@ angular.module('eperusteApp')
             otsikko: {},
             _arviointiAsteikko: uudenKohteenTiedot.arviointiasteikko.id,
             osaamistasonKriteerit: [],
-            accordionOpen: true
+            $accordionOpen: true
         };
         kohde.otsikko[YleinenData.kieli] = uudenKohteenTiedot.nimi;
 
@@ -203,22 +203,20 @@ angular.module('eperusteApp')
         /**
          * is-open attribuutti on annettava modelina accordionille, jotta
          * ui-sortable voidaan disabloida lukutilassa.
-         * Accordionin tiloja seurataan suoraan modelin datassa. Haittapuoli
-         * on se, että tallennettaessa pitää siivota accordionOpen-tagit pois.
          */
         function setAccordion(mode) {
           var obj = scope.arviointi;
           _.each(obj, function (kohdealue) {
-            kohdealue.accordionOpen = mode;
+            kohdealue.$accordionOpen = mode;
             _.each(kohdealue.arvioinninKohteet, function (kohde) {
-              kohde.accordionOpen = mode;
+              kohde.$accordionOpen = mode;
             });
           });
         }
 
         function accordionState() {
           var obj = _.first(scope.arviointi);
-          return obj && obj.accordionOpen;
+          return obj && obj.$accordionOpen;
         }
 
         scope.toggleAll = function () {
