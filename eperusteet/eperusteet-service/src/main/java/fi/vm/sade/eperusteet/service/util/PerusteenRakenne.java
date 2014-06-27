@@ -57,16 +57,6 @@ public class PerusteenRakenne {
         List<AbstractRakenneOsa> osat = rakenne.getOsat();
         MuodostumisSaanto ms = rakenne.getMuodostumisSaanto();
         Validointi validointi = new Validointi();
-        if (ms == null) {
-            return validointi;
-        }
-
-        final TekstiPalanen nimi = rakenne.getNimi();
-        final Integer kokoMin = ms.getKoko() != null ? ms.getKoko().getMinimi() : 0;
-        final Integer kokoMax = ms.getKoko() != null ? ms.getKoko().getMaksimi() : 0;
-        final Integer laajuusMin = ms.getLaajuus() != null ? ms.getLaajuus().getMinimi() : 0;
-        final Integer laajuusMax = ms.getLaajuus() != null ? ms.getLaajuus().getMaksimi() : 0;
-        final RakenneModuuliRooli rooli = rakenne.getRooli();
 
         Integer laajuusSummaMin = 0;
         Integer laajuusSummaMax = 0;
@@ -91,6 +81,17 @@ public class PerusteenRakenne {
                 laajuusSummaMax += validoitu.laskettuLaajuus;
             }
         }
+        
+        if (ms == null) {
+            return validointi;
+        }
+
+        final TekstiPalanen nimi = rakenne.getNimi();
+        final Integer kokoMin = ms.getKoko() != null ? ms.getKoko().getMinimi() : 0;
+        final Integer kokoMax = ms.getKoko() != null ? ms.getKoko().getMaksimi() : 0;
+        final Integer laajuusMin = ms.getLaajuus() != null ? ms.getLaajuus().getMinimi() : 0;
+        final Integer laajuusMax = ms.getLaajuus() != null ? ms.getLaajuus().getMaksimi() : 0;
+        final RakenneModuuliRooli rooli = rakenne.getRooli();
 
         if (rooli == RakenneModuuliRooli.NORMAALI) {
             if (laajuusSummaMin < laajuusMin) {
