@@ -41,16 +41,13 @@
     <div class="skratchpad-list">
       <p class="skratchpad-list-header" translate>tutkinnonosat</p>
       <div ng-show="tutkinnonOsat.rajaus || tutkinnonOsat.multiPage" class="tutkinnonosa-rajaus">
-        <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia..."></input>
+        <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia...">
       </div>
       <div class="optiolaatikko">
-        <a href="" ng-click="piilotaKaikki = !piilotaKaikki">
-          <span ng-show="!piilotaKaikki">{{ 'vain-käyttämättömät' | kaanna }}</span>
-          <span ng-show="piilotaKaikki">{{ 'näytä-kaikki' | kaanna }}</span>
-        </a>
+        <a href="" ng-click="toggleNotUsed()">{{ piilotaKaikki ? 'näytä-kaikki' : 'vain-käyttämättömät' | kaanna }}</a>
       </div>
       <ul ui-sortable="sortableOptionsUnique" ng-model="uniikit" class="uniikit placeholder-hide">
-        <li ng-model="osa" ng-show="!piilotaKaikki || !kaytetytUniikit[osa._tutkinnonOsaViite]" class="skratchpad-item" ng-repeat="osa in uniikit | startFrom:(tutkinnonOsat.sivu-1)*tutkinnonOsat.perSivu | limitTo:tutkinnonOsat.perSivu">
+        <li ng-model="osa" class="skratchpad-item" ng-repeat="osa in uniikit | startFrom:(tutkinnonOsat.sivu-1)*tutkinnonOsat.perSivu | limitTo:tutkinnonOsat.perSivu">
           <img src="images/tutkinnonosa.png" alt="">
           {{ rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== 'naytto' && rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus">, {{ + rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus || 0 }}{{ rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].yksikko | kaanna }}</span>
           <span class="badge skratchpad-badge" ng-show="!kaytetytUniikit[osa._tutkinnonOsaViite]" title="{{ 'tutkinnonosa-ei-käytössä' | kaanna }}"><span class="glyphicon glyphicon-asterisk"></span></span>

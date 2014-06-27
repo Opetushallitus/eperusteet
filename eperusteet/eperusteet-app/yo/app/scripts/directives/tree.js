@@ -264,14 +264,17 @@ angular.module('eperusteApp')
         scope.paivitaRajaus = function(input) {
           input = input === undefined ? scope.tosarajaus : input;
           scope.tosarajaus = input;
-          if (_.isEmpty(input)) {
-            scope.uniikit = scope.kaikkiUniikit;
-          } else {
-            scope.uniikit = _.reject(scope.kaikkiUniikit, function(yksi) {
-              var nimi = Kaanna.kaanna(scope.rakenne.tutkinnonOsaViitteet[yksi._tutkinnonOsaViite].nimi).toLowerCase();
-              return nimi.indexOf(input.toLowerCase()) === -1;
-            });
-          }
+          var filtered = !_.isEmpty(input);
+          scope.uniikit = _.reject(scope.kaikkiUniikit, function(yksi) {
+            var nimi = Kaanna.kaanna(scope.rakenne.tutkinnonOsaViitteet[yksi._tutkinnonOsaViite].nimi).toLowerCase();
+            return (filtered && nimi.indexOf(input.toLowerCase()) === -1) ||
+                   (scope.piilotaKaikki && scope.kaytetytUniikit[yksi._tutkinnonOsaViite]);
+          });
+        };
+
+        scope.toggleNotUsed = function () {
+          scope.piilotaKaikki = !scope.piilotaKaikki;
+          scope.paivitaRajaus();
         };
 
         function paivitaUniikit() {
