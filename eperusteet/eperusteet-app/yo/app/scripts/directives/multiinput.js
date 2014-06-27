@@ -23,11 +23,13 @@ angular.module('eperusteApp')
       restrict: 'E',
       scope: {
         mlData: '=',
-        mlAdditionalLanguages: '='
+        mlAdditionalLanguages: '=',
+        type: '@'
       },
       templateUrl: 'views/multiinput.html',
       replace: true,
       link: function (scope, element) {
+        scope.type = scope.type || 'text';
         scope.isObject = _.isObject(scope.mlData);
         scope.langs = _(_.values(YleinenData.kielet)).union(scope.mlAdditionalLanguages || [])
                                                       .sort()
