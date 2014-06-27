@@ -17,6 +17,8 @@ package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.domain.Henkilo;
 import fi.vm.sade.eperusteet.domain.Rooli;
+import fi.vm.sade.eperusteet.domain.Tila;
+import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
@@ -24,6 +26,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +82,13 @@ public class PerusteprojektiController {
         t.add(new Henkilo("1.1.1.1.1", "Kalle Kommentoija", "040-1234567", "kalle@kommentoija.fi", Rooli.of("kommentoija")));
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
+    
+    @RequestMapping(value = "/{id}/tilat", method = GET)
+    @ResponseBody
+    public ResponseEntity<Set<Tila>> getTilat(@PathVariable("id") final long id) {
+        
+        return new ResponseEntity<>(service.getTilat(id), HttpStatus.OK);
+    }
 
     @RequestMapping(value = "/{id}", method = POST)
     @ResponseStatus(HttpStatus.OK)
@@ -86,6 +96,14 @@ public class PerusteprojektiController {
     public PerusteprojektiDto update(@PathVariable("id") final long id, @RequestBody PerusteprojektiDto perusteprojektiDto) {
         perusteprojektiDto = service.update(id, perusteprojektiDto);
         return perusteprojektiDto;
+    }
+    
+    @RequestMapping(value = "/{id}/tila/{tila}", method = POST)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public TilaUpdateStatus updateTila(@PathVariable("id") final long id, @PathVariable("tila") final String tila) {
+        return service.updateTila(id, Tila.of(tila));
+        
     }
 
     @RequestMapping(method = POST)

@@ -25,6 +25,11 @@ angular.module('eperusteApp')
       get: {method: 'GET', isArray: true}
     });
   })
+  .factory('PerusteprojektiTila', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteprojektit/:id/tila/:tila', {
+      id: '@id'
+    });
+  })
   .factory('PerusteprojektiResource', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteprojektit/:id', {
       id: '@id'

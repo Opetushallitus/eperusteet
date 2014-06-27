@@ -31,7 +31,8 @@ angular.module('eperusteApp')
       replace: true,
       scope: {
         status: '=',
-        editable: '=?'
+        editable: '=?',
+        projektiId: '='
       },
       controller: 'StatusbadgeCtrl',
       link: function (scope, element) {
@@ -50,13 +51,15 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('StatusbadgeCtrl', function ($scope, PerusteprojektinTilanvaihto) {
+  .controller('StatusbadgeCtrl', function ($scope, PerusteprojektinTilanvaihto,
+    PerusteprojektiTila, Notifikaatiot, $http, SERVICE_LOC) {
     $scope.iconMapping = {
-      luonnos: 'pencil',
+      laadinta: 'pencil',
       kommentointi: 'comment',
       viimeistely: 'certificate',
       kaannos: 'book',
-      hyvaksytty: 'thumbs-up'
+      valmis: 'thumbs-up',
+      julkaistu: 'glass'
     };
 
     $scope.appliedClasses = function () {
@@ -70,9 +73,24 @@ angular.module('eperusteApp')
     };
 
     $scope.startEditing = function () {
-      PerusteprojektinTilanvaihto.start($scope.status, function (newStatus) {
+      $http.get(SERVICE_LOC + '/perusteprojektit/' + $scope.projektiId + '/tilat').then( function (vastaus) {
+        PerusteprojektinTilanvaihto.start($scope.status, vastaus.data, function (newStatus) {
         // TODO tilan tallennus, tämä asettaa uuden tilan parent scopen projektiobjektiin.
-        $scope.status = newStatus;
+        PerusteprojektiTila.save({id: $scope.projektiId, tila: newStatus}, {}, function(vastaus) {
+          console.log(vastaus);
+          if (vastaus.vaihtoOk) {
+            $scope.status = newStatus;
+          } else {
+            Notifikaatiot.varoitus(vastaus.info[0].viesti);
+          }
+        }, function (virhe) {
+          console.log('tilan vaihto virhe', virhe);
+        });
+        
       });
+      }, function(err) {
+        Notifikaatiot.serverCb(err);
+      });
+      
     };
   });

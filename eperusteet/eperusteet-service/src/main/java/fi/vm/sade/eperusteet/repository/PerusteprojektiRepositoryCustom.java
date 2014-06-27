@@ -14,27 +14,16 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service;
+package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.domain.Tila;
-import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
-import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
-import java.util.Set;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import org.springframework.data.repository.NoRepositoryBean;
 
 /**
  *
  * @author harrik
  */
-public interface PerusteprojektiService {
-    
-    PerusteprojektiDto get(final Long id);
-    
-    PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto);
-    
-    PerusteprojektiDto update(final Long id, PerusteprojektiDto perusteprojektiDto);
-    
-    Set<Tila> getTilat(final Long id);
-    
-    TilaUpdateStatus updateTila(final Long id, Tila tila);
+@NoRepositoryBean
+public interface PerusteprojektiRepositoryCustom {
+    Perusteprojekti findByIdEager(Long id);
 }

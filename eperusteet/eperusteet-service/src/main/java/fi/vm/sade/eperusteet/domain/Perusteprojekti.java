@@ -20,6 +20,8 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -91,4 +93,10 @@ public class Perusteprojekti extends AbstractAuditedEntity {
     @Getter
     @Setter
     private String yhteistyotaho;
+    
+    @Getter
+    @Setter
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private Tila tila = Tila.LAADINTA;
 }

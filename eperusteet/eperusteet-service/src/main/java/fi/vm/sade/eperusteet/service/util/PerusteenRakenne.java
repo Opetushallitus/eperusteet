@@ -56,6 +56,7 @@ public class PerusteenRakenne {
     static private Validointi validoiRyhma(RakenneModuuli rakenne, final Integer syvyys) {
         List<AbstractRakenneOsa> osat = rakenne.getOsat();
         MuodostumisSaanto ms = rakenne.getMuodostumisSaanto();
+
         Validointi validointi = new Validointi();
 
         Integer laajuusSummaMin = 0;

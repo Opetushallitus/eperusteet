@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .service('PerusteprojektinTilanvaihto', function ($modal, YleinenData) {
     var that = this;
-    this.start = function (currentStatus, setFn) {
+    this.start = function (currentStatus, mahdollisetTilat, setFn) {
       var dummyDescription = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.';
       if (_.isFunction(setFn)) {
         that.setFn = setFn;
@@ -32,7 +32,8 @@ angular.module('eperusteApp')
           data: function () {
             return {
               oldStatus: currentStatus,
-              statuses: _.map(YleinenData.tilakuvaukset, function (item) {
+              mahdollisetTilat: mahdollisetTilat,
+              statuses: _.map(mahdollisetTilat, function (item) {
                 return {'key': item, 'description': {'fi': dummyDescription}};
               })
             };
@@ -46,6 +47,7 @@ angular.module('eperusteApp')
   })
 
   .controller('PerusteprojektinTilaModal', function ($scope, $modal, $modalInstance, data) {
+    console.log('data', data);
     $scope.data = data;
     $scope.data.selected = null;
     $scope.data.editable = false;
@@ -69,7 +71,7 @@ angular.module('eperusteApp')
     $scope.data = data;
     $scope.edellinen = function () {
       $modalInstance.dismiss();
-      PerusteprojektinTilanvaihto.start(data.oldStatus);
+      PerusteprojektinTilanvaihto.start(data.oldStatus, data.mahdollisetTilat);
     };
     $scope.ok = function () {
       PerusteprojektinTilanvaihto.set(data.selected);

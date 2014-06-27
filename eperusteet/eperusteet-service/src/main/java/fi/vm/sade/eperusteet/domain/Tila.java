@@ -17,6 +17,8 @@
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import java.util.EnumSet;
+import java.util.Set;
 
 /**
  *
@@ -26,7 +28,32 @@ public enum Tila {
 
     POISTETTU("poistettu"),
     LUONNOS("luonnos"),
-    VALMIS("valmis");
+    VALMIS("valmis"){
+        @Override
+        public Set<Tila> mahdollisetTilat() {
+            return EnumSet.of(VIIMEISTELY, JULKAISTU);
+        }
+    },
+    LAADINTA("laadinta") {
+        @Override
+        public Set<Tila> mahdollisetTilat() {
+            return EnumSet.of(KOMMENTOINTI, VIIMEISTELY);
+        }
+    },
+    KOMMENTOINTI("kommentointi"){
+        @Override
+        public Set<Tila> mahdollisetTilat() {
+            return EnumSet.of(LAADINTA);
+        }
+    },
+    VIIMEISTELY("viimeistely"){
+        @Override
+        public Set<Tila> mahdollisetTilat() {
+            return EnumSet.of(LAADINTA, VALMIS);
+        }
+    },
+    JULKAISTU("julkaistu");
+    
 
     private final String tila;
 
@@ -47,5 +74,9 @@ public enum Tila {
             }
         }
         throw new IllegalArgumentException(tila + " ei ole kelvollinen tila");
+    }
+    
+    public Set<Tila> mahdollisetTilat() {
+        return EnumSet.noneOf(Tila.class);
     }
 }
