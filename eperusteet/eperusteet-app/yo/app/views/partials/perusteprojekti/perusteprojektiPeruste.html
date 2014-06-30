@@ -17,7 +17,8 @@ European Union Public Licence for more details.
 <h1 translate>projekti-peruste</h1>
 <div class="download-pdf">
   <button class="btn btn-default" ng-click="generoiPdf()" icon-role="file">{{ 'generoi-pdf' | kaanna }}</button>
-  <button class="btn btn-default" ng-click="lataaPdf()" icon-role="download">{{ 'lataa-pdf' | kaanna }}</button>
+  <!--<button class="btn btn-default" ng-click="lataaPdf()" icon-role="download"></button> -->
+  <a ng-href="{{pdfLinkki}}" ng-show="pdfLinkki !== null">{{ 'lataa-pdf' | kaanna }}</a>
 </div>
 <div class="clearfix"></div>
 <form class="form-horizontal" name="perusteForm" role="form" novalidate>

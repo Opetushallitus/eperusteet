@@ -18,7 +18,9 @@ package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.service.DokumenttiService;
+import fi.vm.sade.eperusteet.service.PerusteService;
 import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +48,9 @@ public class DokumenttiController {
     @Autowired
     DokumenttiService service;
 
+    @Autowired
+    PerusteService perusteService;
+
     @RequestMapping(value="/create/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<DokumenttiDto> create(
@@ -61,6 +66,8 @@ public class DokumenttiController {
             @PathVariable("kieli") final String kieli) {
 
         try {
+            PerusteDto perusteDto = perusteService.get(new Long(id));
+
             DokumenttiDto dto = new DokumenttiDto();
             final Kieli k = Kieli.of(kieli);
             final String token = service.getNewTokenFor(id);

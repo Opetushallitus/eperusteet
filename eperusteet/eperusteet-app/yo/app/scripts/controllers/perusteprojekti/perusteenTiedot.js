@@ -28,6 +28,8 @@ angular.module('eperusteApp')
     $scope.projektiId = $stateParams.perusteProjektiId;
     //$scope.open = {};
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa() || 'naytto';
+    $scope.pdf_token = null;
+    $scope.pdfLinkki = null;
 
     function fixTimefield(field) {
       if (typeof $scope.peruste[field] === 'number') {
@@ -82,11 +84,20 @@ angular.module('eperusteApp')
     };
 
     $scope.generoiPdf = function() {
-      Pdf.generoiPdf($scope.peruste.id);
+      Pdf.generoiPdf($scope.peruste.id, function(res) {
+          $scope.pdf_token = res.token;
+          $scope.pdfLinkki = Pdf.haeLinkki(res.token);
+      } );
     };
 
     $scope.lataaPdf = function() {
-      // Pdf.lataaPdf($scope.peruste.id);
+
+      Pdf.haeDokumentti($scope.pdf_token, function(res) {
+        var file = new Blob([res], { type: 'application/pdf' });
+        var fileURL = URL.createObjectURL(file);
+        window.open(fileURL);
+      });
+
     };
 
     $scope.tallennaPeruste = function() {

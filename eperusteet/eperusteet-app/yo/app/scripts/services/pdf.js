@@ -19,31 +19,78 @@
 
 angular.module('eperusteApp')
   .factory('Dokumentti', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/dokumentti/:tapa/:id', {
-      tapa: '@tapa', // create | get
-      id: '@id'
+
+      // api:
+      //
+      // Generointi:
+      // /dokumentti/create/:id/:kieli
+      // /dokumentti/create/:id // oletuskieli
+      //
+      // Luonnin seuranta/tilakysely:
+      // /dokumentti/query/:token
+      //
+      // Valmiin dokumentin hakeminen:
+      // /dokumentti/get/:token
+      //
+      // Yksivaiheinen luominen
+      // /dokumentti/:id/:kieli
+      // /dokumentti/:id // oletuskieli
+
+    return $resource(SERVICE_LOC + '/dokumentti/create/:id/:kieli', {
+      id: '@id',
+      kieli: '@kieli'
     });
   })
-  .service('Pdf', function(Dokumentti) {
+  .factory('DokumenttiHaku', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/dokumentti/:tapa/:token', {
+      tapa: '@tapa', // query | get
+      token: '@token'
+    },
+    {
+        hae: {method: 'GET', responseType: 'arraybuffer'}
+    });
+  })
+  .service('Pdf', function(Dokumentti, DokumenttiHaku, SERVICE_LOC) {
+
     function generoiPdf(perusteId, success, failure) {
       success = success || angular.noop;
       failure = failure || angular.noop;
 
       Dokumentti.get({
-        tapa: 'create',
-        id: perusteId
-      }, function(res) {
-        console.log(res);
-      });
+        id: perusteId,
+        kieli: 'fi'
+      }, success);
     }
 
-    function haeLatausLinkki(
-      // perusteId
-    ) {
+    function haeTila(tokenId, success, failure) {
+      success = success || angular.noop;
+      failure = failure || angular.noop;
+
+      DokumenttiHaku.get({
+        tapa: 'query',
+        token: tokenId
+      }, success);
+    }
+
+    function haeDokumentti(tokenId, success, failure) {
+        success = success || angular.noop;
+        failure = failure || angular.noop;
+
+        return DokumenttiHaku.hae({
+            tapa: 'get',
+            token: tokenId
+        }, success);
+    }
+
+    function haeLinkki(tokenId) {
+        // dis like, ewwww
+        return SERVICE_LOC + '/dokumentti/get/'+tokenId;
     }
 
     return {
       generoiPdf: generoiPdf,
-      haeLatausLinkki: haeLatausLinkki
+      haeDokumentti: haeDokumentti,
+      haeTila: haeTila,
+      haeLinkki: haeLinkki
     };
   });
