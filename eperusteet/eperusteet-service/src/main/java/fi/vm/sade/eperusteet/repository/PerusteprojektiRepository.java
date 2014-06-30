@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -26,7 +25,7 @@ import org.springframework.stereotype.Repository;
  * @author harrik
  */
 @Repository
-public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti, Long>, PerusteprojektiRepositoryCustom{
-    @Query("SELECT pp FROM Perusteprojekti pp LEFT JOIN FETCH pp.peruste WHERE pp.id = ?1")
-    Perusteprojekti findOneEager(Long id);
+public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti, Long> {
+    /*@Query("SELECT pp FROM Perusteprojekti pp LEFT JOIN FETCH pp.peruste WHERE pp.id = ?1")
+    Perusteprojekti findOneFetchPerusteEagerly(Long id);*/
 }

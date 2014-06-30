@@ -68,6 +68,7 @@ public class PerusteenRakenne {
             if (x instanceof RakenneOsa) {
                 RakenneOsa ro = (RakenneOsa)x;
                 Integer laajuus = ro.getTutkinnonOsaViite().getLaajuus();
+                laajuus = laajuus == null ? 0 : laajuus;
                 laajuusSummaMin += laajuus;
                 laajuusSummaMax += laajuus;
                 uniikit.add(ro.getTutkinnonOsaViite().getTutkinnonOsa().getId());

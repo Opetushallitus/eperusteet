@@ -77,14 +77,15 @@ angular.module('eperusteApp')
         PerusteprojektinTilanvaihto.start($scope.status, vastaus.data, function (newStatus) {
         // TODO tilan tallennus, tämä asettaa uuden tilan parent scopen projektiobjektiin.
         PerusteprojektiTila.save({id: $scope.projektiId, tila: newStatus}, {}, function(vastaus) {
-          console.log(vastaus);
           if (vastaus.vaihtoOk) {
             $scope.status = newStatus;
           } else {
             Notifikaatiot.varoitus(vastaus.info[0].viesti);
+            // TODO: Virheen tietojen näyttäminen järkevästi
           }
         }, function (virhe) {
           console.log('tilan vaihto virhe', virhe);
+          Notifikaatiot.serverCb(virhe);
         });
         
       });

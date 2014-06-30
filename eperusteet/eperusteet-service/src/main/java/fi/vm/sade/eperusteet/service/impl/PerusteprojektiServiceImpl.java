@@ -21,17 +21,11 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Tila;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
-import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
-import fi.vm.sade.eperusteet.repository.RakenneRepository;
-import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
-import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
@@ -63,18 +57,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private PerusteprojektiRepository repository;
-    
-    @Autowired
-    private RakenneRepository rakenneRepository;
-    
-    @Autowired
-    private PerusteenOsaViiteRepository perusteenOsaViiteRepository;
-    
-    @Autowired
-    private PerusteenOsaRepository perusteenOsaRepository;
-    
-    @Autowired
-    private TutkinnonOsaRepository tutkinnonOsaRepository;
 
     @Autowired
     private KayttajaprofiiliService kayttajaprofiiliService;
@@ -133,11 +115,13 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public TilaUpdateStatus updateTila(Long id, Tila tila) {
         TilaUpdateStatus status = new TilaUpdateStatus();
         status.setVaihtoOk(true);
         
-        Perusteprojekti projekti = repository.findByIdEager(id);
+        Perusteprojekti projekti = repository.findOne(id);
+        
         if (projekti == null) {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
         }
@@ -150,7 +134,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         if (projekti.getPeruste() != null && projekti.getPeruste().getSuoritustavat() != null
             && tila == Tila.VIIMEISTELY && projekti.getTila() == Tila.LAADINTA) {
-            for (Suoritustapa suoritustapa : projekti.getPeruste().getSuoritustavat()) {
+            /*for (Suoritustapa suoritustapa : projekti.getPeruste().getSuoritustavat()) {
                 Validointi validointi;
                 if (suoritustapa.getRakenne() != null) {
                     validointi = PerusteenRakenne.validoiRyhma(suoritustapa.getRakenne());
@@ -159,7 +143,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         status.setVaihtoOk(false);
                     }
                 }
-            }
+            } */    
         }
         
         if ( !status.isVaihtoOk() ) {
@@ -170,11 +154,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             for (Suoritustapa suoritustapa : projekti.getPeruste().getSuoritustavat()) {
                 setSisaltoValmis(suoritustapa.getSisalto());
                 for (TutkinnonOsaViite tutkinnonosaViite : suoritustapa.getTutkinnonOsat()) {
-                    setOsatValmis(tutkinnonosaViite);
-                }          
+                    setOsatValmis(tutkinnonosaViite);  
+                }
             }
+            projekti.getPeruste().setTila(Tila.VALMIS);
         }
-        
+
         projekti.setTila(tila);
         repository.save(projekti);   
         return status;
@@ -184,8 +169,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (sisaltoRoot.getPerusteenOsa() != null) {
             sisaltoRoot.getPerusteenOsa().setTila(Tila.VALMIS);
         }
-        for (PerusteenOsaViite lapsi : sisaltoRoot.getLapset()) {
-           setSisaltoValmis(lapsi);    
+        if (sisaltoRoot.getLapset() != null) {
+            for (PerusteenOsaViite lapsi : sisaltoRoot.getLapset()) {
+               setSisaltoValmis(lapsi);    
+            }
         }
         return sisaltoRoot;
     }

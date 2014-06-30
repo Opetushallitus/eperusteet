@@ -49,7 +49,7 @@ public class TilaUpdateStatus {
     
     @Getter
     @Setter
-    private static class Status {
+    public static class Status {
 
         String viesti;
         Statuskoodi koodi;
