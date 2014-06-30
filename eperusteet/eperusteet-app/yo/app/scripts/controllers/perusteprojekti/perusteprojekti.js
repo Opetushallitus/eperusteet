@@ -131,7 +131,6 @@ angular.module('eperusteApp')
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
 
-
     Navigaatiopolku.asetaElementit({
       perusteprojekti: {
         nimi: $scope.projekti.nimi,

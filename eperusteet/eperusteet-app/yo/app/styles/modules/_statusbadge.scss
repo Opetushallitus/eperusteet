@@ -24,16 +24,19 @@
     cursor: pointer;
   }
 
-  &.luonnos {
+  &.laadinta {
     background-color: #fbb03b;
   }
   &.kommentointi {
     background-color: #3a8fbe;
   }
-  &.hyvaksytty {
+  &.valmis {
     background-color: green;
   }
   &.viimeistely {
     background-color: purple;
+  }
+  &.julkaistu {
+    background-color: green;
   }
 }

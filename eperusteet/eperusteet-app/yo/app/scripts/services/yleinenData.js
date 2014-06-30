@@ -69,7 +69,7 @@ angular.module('eperusteApp')
       ];
 
       this.tilakuvaukset = [
-        'luonnos',
+        'laadinta',
         'kommentointi',
         'viimeistely',
         'kaannos',

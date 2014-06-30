@@ -16,8 +16,11 @@
 
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.Tila;
+import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
+import java.util.Set;
 
 /**
  *
@@ -30,4 +33,8 @@ public interface PerusteprojektiService {
     PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto);
     
     PerusteprojektiDto update(final Long id, PerusteprojektiDto perusteprojektiDto);
+    
+    Set<Tila> getTilat(final Long id);
+    
+    TilaUpdateStatus updateTila(final Long id, Tila tila);
 }

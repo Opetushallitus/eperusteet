@@ -18,7 +18,7 @@ European Union Public Licence for more details.
 <div class="project-header">
   <div class="row">
     <div class="project-otsikkotiedot">
-      <statusbadge status="projekti.tila" editable="canChangePerusteprojektiStatus()"></statusbadge>
+      <statusbadge status="projekti.tila" editable="canChangePerusteprojektiStatus()" projekti-id="projekti.id"></statusbadge>
       <h2>{{ perusteenNimi() || projekti.nimi || 'perusteprojekti-nimi-placeholder' | kaanna }}</h2>
       <table>
         <tr>
