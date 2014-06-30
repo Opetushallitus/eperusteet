@@ -14,10 +14,18 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
-<button ng-if="voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit">{{'muokkaa' | translate}}</button>
-<button class="floater btn btn-default" ng-click="lataaPdf()" icon-role="download">{{ 'lataa-pdf' | kaanna }}</button>
-<button class="floater btn btn-default" ng-click="generoiPdf()" icon-role="file">{{ 'generoi-pdf' | kaanna }}</button>
+
+  <button ng-if="voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit">{{'muokkaa' | translate}}</button>  
+  <button class="floater btn btn-default" ng-click="generoiPdf()" icon-role="file">{{ 'generoi-pdf' | kaanna }}</button>
+  <!-- FIXME: proper-->
+  <div ng-show="pdfLinkki !== null" class="btn btn-default floater">
+    <a ng-href="{{pdfLinkki}}">{{ 'lataa-pdf' | kaanna }}</a>    
+  </div>
+  <!--<button class="btn btn-default" ng-click="lataaPdf()" icon-role="download"></button> -->
+  
+
 <h1 translate>projekti-peruste</h1>
+<div class="clearfix"></div>
 <form class="form-horizontal" name="perusteForm" role="form" novalidate>
   <div ng-form="projektinPerusteForm">
     <div class="form-area" ng-class="{viewmode: !editEnabled}">

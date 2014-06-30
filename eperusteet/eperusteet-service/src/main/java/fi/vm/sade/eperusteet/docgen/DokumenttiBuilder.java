@@ -589,6 +589,7 @@ public class DokumenttiBuilder {
 
                 Element headerElement = doc.createElement("thead");
                 Element rowElement = doc.createElement("row");
+                // TODO: Localize
                 addTableCell(doc, rowElement, "Osaamistaso");
                 addTableCell(doc, rowElement, "Osaamistason kriteeri");
                 headerElement.appendChild(rowElement);
