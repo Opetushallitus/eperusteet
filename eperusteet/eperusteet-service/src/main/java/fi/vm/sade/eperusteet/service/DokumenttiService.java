@@ -16,8 +16,12 @@
 
 package fi.vm.sade.eperusteet.service;
 
+import com.google.code.docbook4j.Docbook4JException;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+import java.io.IOException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -25,7 +29,10 @@ import fi.vm.sade.eperusteet.dto.DokumenttiDto;
  */
 public interface DokumenttiService {
 
-    public byte[] generateFor(final long id, Kieli kieli);
+    public byte[] generateFor(final long id, Kieli kieli) throws IOException,
+            TransformerException, ParserConfigurationException,
+            Docbook4JException;
+    
     public void   generateWithToken(final long id, final String token, Kieli kieli);
     public String getNewTokenFor(final long id);
 

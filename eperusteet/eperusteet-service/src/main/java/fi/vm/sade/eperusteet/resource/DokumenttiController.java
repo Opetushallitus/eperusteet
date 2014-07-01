@@ -16,12 +16,16 @@
 
 package fi.vm.sade.eperusteet.resource;
 
+import com.google.code.docbook4j.Docbook4JException;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.service.DokumenttiService;
 import fi.vm.sade.eperusteet.service.PerusteService;
+import java.io.IOException;
 import java.util.concurrent.Callable;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,13 +70,17 @@ public class DokumenttiController {
             @PathVariable("kieli") final String kieli) {
 
         try {
-            PerusteDto perusteDto = perusteService.get(new Long(id));
-
             DokumenttiDto dto = new DokumenttiDto();
             final Kieli k = Kieli.of(kieli);
             final String token = service.getNewTokenFor(id);
             dto.setToken(token);
             dto.setTila(DokumenttiDto.Tila.LUODAAN);
+
+            if(perusteService.get(id) == null) {
+                LOG.warn("Peruste with id {} was not found", id);
+                dto.setTila(DokumenttiDto.Tila.EPAONNISTUI);
+                return new ResponseEntity<>(dto, HttpStatus.CREATED);
+            }
 
             // TODO: use executor service from threadpool
             Runnable r = new Runnable() {
@@ -83,7 +91,6 @@ public class DokumenttiController {
             };
             new Thread(r).start();
 
-        LOG.info("after thread start");
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
         } catch (IllegalArgumentException ex) {
             LOG.warn("{}", ex.getMessage());
@@ -171,6 +178,9 @@ public class DokumenttiController {
         } catch (IllegalArgumentException ex) {
             LOG.warn("{}", ex.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (IOException | TransformerException | ParserConfigurationException | Docbook4JException ex) {
+            LOG.error("Exception during document generation:", ex);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

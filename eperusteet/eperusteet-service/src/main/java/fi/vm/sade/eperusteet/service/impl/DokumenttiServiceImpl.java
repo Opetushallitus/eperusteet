@@ -62,6 +62,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             fout.createNewFile(); // so that tell whether it exists if queried
             File finalFile = getFinalFile(token);
             byte[] doc = generateFor(id, kieli);
+
             try (FileOutputStream fos = new FileOutputStream(fout)) {
                 LOG.debug("dumping to file {}", fout.getAbsolutePath());
                 fos.write(doc);
@@ -70,8 +71,13 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             LOG.debug("renaming file to {}", finalFile.getAbsolutePath());
             fout.renameTo(finalFile);
 
-        } catch (IOException ex) {
-            LOG.error("IOException when writing doc: {}", ex);
+        } catch (TransformerException | ParserConfigurationException | Docbook4JException | IOException ex) {
+            LOG.error("Exception during document generation:", ex);
+            try {
+                getFailFile(token).createNewFile();
+            } catch (IOException ioex) {
+               LOG.error("IOException during failfile generation", ioex);
+            }
         }
     }
 
@@ -109,10 +115,13 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     public DokumenttiDto query(String token) {
         boolean tmpExists = getTmpFile(token).exists();
         boolean finalExists = getFinalFile(token).exists();
+        boolean failExists = getFailFile(token).exists();
 
         DokumenttiDto dto = new DokumenttiDto();
         dto.setToken(token);
-        if (finalExists) {
+        if (failExists) {
+            dto.setTila(DokumenttiDto.Tila.EPAONNISTUI);
+        } else if (finalExists) {
             dto.setTila(DokumenttiDto.Tila.VALMIS);
         } else if (tmpExists) {
             dto.setTila(DokumenttiDto.Tila.LUODAAN);
@@ -125,45 +134,44 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    public byte[] generateFor(long id, Kieli kieli) {
-
+    public byte[] generateFor(long id, Kieli kieli)
+            throws IOException, TransformerException,
+            ParserConfigurationException, Docbook4JException
+    {
         LOG.info("generateFor: id {}", id);
 
         Peruste peruste = perusteRepository.findOne(id);
 
         DokumenttiBuilder builder = new DokumenttiBuilder(peruste, kieli);
 
-        try {
-            String xmlpath = builder.generateXML();
-            LOG.debug("Temporary xml file: \n{}", xmlpath);
-            // we could also use
-            //String style = "file:///full/path/to/docbookstyle.xsl";
-            String style = "res:docgen/docbookstyle.xsl";
+        String xmlpath = builder.generateXML();
+        LOG.debug("Temporary xml file: \n{}", xmlpath);
+        // we could also use
+        //String style = "file:///full/path/to/docbookstyle.xsl";
+        String style = "res:docgen/docbookstyle.xsl";
 
-            //PDFRenderer r = PDFRenderer.create(xmlpath, style);
-            PerustePDFRenderer r = new PerustePDFRenderer().xml(xmlpath).xsl(style);
-            r.parameter("l10n.gentext.language", kieli.toString());
-            InputStream is;
-            is = r.render();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        //PDFRenderer r = PDFRenderer.create(xmlpath, style);
+        PerustePDFRenderer r = new PerustePDFRenderer().xml(xmlpath).xsl(style);
+        r.parameter("l10n.gentext.language", kieli.toString());
+        InputStream is;
+        is = r.render();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-            // TODO, maybe use ioutils as it seems to be project dependency anyways
-            byte[] buf = new byte[2048];
-            int n = -1;
-            while ((n = is.read(buf)) != -1) {
-                baos.write(buf, 0, n);
-            }
-
-            baos.close();
-            is.close();
-
-            return baos.toByteArray();
-
-        } catch (Docbook4JException | IOException | TransformerException | ParserConfigurationException ex) {
-            LOG.error(ex.getMessage());
-            ex.printStackTrace();
-            return null;
+        // TODO, maybe use ioutils as it seems to be project dependency anyways
+        byte[] buf = new byte[2048];
+        int n = -1;
+        while ((n = is.read(buf)) != -1) {
+            baos.write(buf, 0, n);
         }
+        baos.close();
+        is.close();
+
+        return baos.toByteArray();
+    }
+
+    private File getFailFile(String token) {
+        String failpath = getFilenameBase(token) + "_fail.tmp";
+        return new File(failpath);
     }
 
     private File getTmpFile(String token) {
