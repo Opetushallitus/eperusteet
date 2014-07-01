@@ -26,4 +26,5 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
  */
 public interface SuoritustapaService {
     Suoritustapa createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi suoritustapakoodi, LaajuusYksikko yksikko);
+    Suoritustapa createFromOther(final Long suoritustapaId);
 }

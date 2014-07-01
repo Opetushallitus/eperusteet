@@ -4,6 +4,7 @@
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
  *
@@ -13,18 +14,17 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.repository;
+package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
- * @author harrik
+ * @author nkala
  */
-@Repository
-public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti, Long> {
-    /*@Query("SELECT pp FROM Perusteprojekti pp LEFT JOIN FETCH pp.peruste WHERE pp.id = ?1")
-    Perusteprojekti findOneFetchPerusteEagerly(Long id);*/
+@Getter
+@Setter
+public class TutkinnonOsaInfoDto {
+    private String koodiUri;
 }

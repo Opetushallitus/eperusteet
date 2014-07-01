@@ -36,8 +36,15 @@ angular.module('eperusteApp')
    * 'ago' pelkkä ihmisluettava esim. '4 tuntia sitten'
    */
   .filter('aikaleima', function ($filter) {
-    return function (input, options) {
-      var date = $filter('date')(input, 'd.M.yyyy H:mm');
+    return function (input, options, format) {
+      var date = null;
+      if (format === 'date') {
+        date = $filter('date')(input, 'd.M.yyyy');
+      }
+      else {
+        date = $filter('date')(input, 'd.M.yyyy H:mm');
+      }
+
       var ago = moment(input).fromNow();
       if (options === 'ago') {
         return ago;

@@ -50,7 +50,6 @@ public class PerusteenRakenneTest {
     public void tearDown() {
     }
 
-
     @Test
     public void testValidoiRyhmaValidi() {
         RakenneModuuli rakenne = TestUtils.teeRyhma(
@@ -74,6 +73,31 @@ public class PerusteenRakenneTest {
 
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(rakenne);
         assertTrue(validoitu.ongelmat.isEmpty());
+    }
+
+    @Test
+    public void testValidoiRyhmaIlmanJuurenMuodostumissaantoa() {
+        RakenneModuuli rakenne = TestUtils.teeRyhma(
+            -1, -1, -1, -1,
+            TestUtils.teeRakenneOsa(1, 10),
+            TestUtils.teeRakenneOsa(2, 20),
+            TestUtils.teeRakenneOsa(3, 30),
+            TestUtils.teeRakenneOsa(4, 40),
+            TestUtils.teeRyhma(
+                180, 180, -1, -1,
+                TestUtils.teeRakenneOsa(1, 10),
+                TestUtils.teeRakenneOsa(2, 20),
+                TestUtils.teeRyhma(
+                    180, 180, -1, -1,
+                    TestUtils.teeRakenneOsa(1, 10),
+                    TestUtils.teeRakenneOsa(2, 20),
+                    TestUtils.teeRakenneOsa(3, 30)
+                )
+            )
+        );
+
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(rakenne);
+        assertTrue(validoitu.ongelmat.size() == 2);
     }
 
     @Test

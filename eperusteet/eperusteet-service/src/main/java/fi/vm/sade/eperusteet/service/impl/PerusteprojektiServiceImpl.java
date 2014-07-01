@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.dto.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
@@ -35,6 +36,7 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import java.util.Set;
+import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,12 +68,19 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<PerusteprojektiInfoDto> getBasicInfo() {
+        return mapper.mapAsList(repository.findAll(), PerusteprojektiInfoDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public PerusteprojektiDto get(Long id) {
         Perusteprojekti p = repository.findOne(id);
         return mapper.map(p, PerusteprojektiDto.class);
     }
 
     @Override
+
     @Transactional(readOnly = false)
     public PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto) {
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
@@ -82,7 +91,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
         }
 
-        Peruste peruste = perusteService.luoPerusteRunko(perusteprojektiDto.getKoulutustyyppi(), perusteprojektiDto.getYksikko());
+        Peruste peruste;
+        if (perusteprojektiDto.getPerusteId() == null) {
+            peruste = perusteService.luoPerusteRunko(perusteprojektiDto.getKoulutustyyppi(), perusteprojektiDto.getYksikko());
+        }
+        else {
+            peruste = perusteService.luoPerusteRunkoToisestaPerusteesta(perusteprojektiDto.getPerusteId());
+        }
+
         perusteprojekti.setPeruste(peruste);
         perusteprojekti.setTila(Tila.LAADINTA);
         perusteprojekti = repository.save(perusteprojekti);
@@ -113,7 +129,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (p == null) {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
         }
-        
+
         return p.getTila().mahdollisetTilat();
     }
 
@@ -122,9 +138,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     public TilaUpdateStatus updateTila(Long id, Tila tila) {
         TilaUpdateStatus status = new TilaUpdateStatus();
         status.setVaihtoOk(true);
-        
+
         Perusteprojekti projekti = repository.findOne(id);
-        
+
         if (projekti == null) {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
         }
@@ -146,46 +162,44 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         status.setVaihtoOk(false);
                     }
                 }
-            } */    
+            } */
         }
-        
+
         if ( !status.isVaihtoOk() ) {
             return status;
         }
-        
+
         if (tila == Tila.JULKAISTU && projekti.getTila() == Tila.VALMIS) {
             for (Suoritustapa suoritustapa : projekti.getPeruste().getSuoritustavat()) {
                 setSisaltoValmis(suoritustapa.getSisalto());
                 for (TutkinnonOsaViite tutkinnonosaViite : suoritustapa.getTutkinnonOsat()) {
-                    setOsatValmis(tutkinnonosaViite);  
+                    setOsatValmis(tutkinnonosaViite);
                 }
             }
             projekti.getPeruste().setTila(Tila.VALMIS);
         }
 
         projekti.setTila(tila);
-        repository.save(projekti);   
+        repository.save(projekti);
         return status;
     }
-    
+
     private PerusteenOsaViite setSisaltoValmis(PerusteenOsaViite sisaltoRoot) {
         if (sisaltoRoot.getPerusteenOsa() != null) {
             sisaltoRoot.getPerusteenOsa().setTila(Tila.VALMIS);
         }
         if (sisaltoRoot.getLapset() != null) {
             for (PerusteenOsaViite lapsi : sisaltoRoot.getLapset()) {
-               setSisaltoValmis(lapsi);    
+               setSisaltoValmis(lapsi);
             }
         }
         return sisaltoRoot;
     }
-    
+
     private TutkinnonOsaViite setOsatValmis(TutkinnonOsaViite osa) {
         if (osa.getTutkinnonOsa()!= null) {
             osa.getTutkinnonOsa().setTila(Tila.VALMIS);
         }
         return osa;
     }
-    
-
 }

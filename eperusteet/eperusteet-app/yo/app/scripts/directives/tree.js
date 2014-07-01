@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .directive('tree', function($compile, $state, $modal, Muodostumissaannot, Kaanna) {
+  .directive('tree', function($compile, $state, Muodostumissaannot, Kaanna) {
     function generoiOtsikko() {
       var tosa = '{{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">, <b>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</b>{{ apumuuttujat.yksikko | kaanna }}</span>';
       var editointiIkoni =
@@ -231,7 +231,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('treeWrapper', function($stateParams, $modal, $state, Editointikontrollit, TutkinnonOsanTuonti, Kaanna,
+  .directive('treeWrapper', function($stateParams, $state, Editointikontrollit, TutkinnonOsanTuonti, Kaanna,
                                      PerusteTutkinnonosa, Notifikaatiot, PerusteenRakenne, Muodostumissaannot) {
     return {
       restrict: 'AE',

@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.resource;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
+import fi.vm.sade.eperusteet.dto.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
@@ -61,12 +62,11 @@ public class PerusteController {
     @Autowired
     private PerusteenOsaViiteService PerusteenOsaViiteService;
 
-//    @RequestMapping(method = GET)
-//    @ResponseBody
-//    public ResponseEntity<Page<PerusteDto>> getAll(PerusteQuery pquery) {
-//        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
-//        return new ResponseEntity<>(service.findBy(p, pquery), HttpStatus.OK);
-//    }
+    @RequestMapping(value ="/info", method = GET)
+    @ResponseBody
+    public List<PerusteInfoDto> getAllInfo() {
+        return service.getAllInfo();
+    }
 
     @RequestMapping(method = GET)
     @ResponseBody

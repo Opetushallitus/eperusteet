@@ -30,6 +30,7 @@ import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PageDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
+import fi.vm.sade.eperusteet.dto.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
@@ -133,6 +134,12 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional(readOnly = true)
     public Page<PerusteDto> getAll(PageRequest page, String kieli) {
         return findBy(page, new PerusteQuery());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PerusteInfoDto> getAllInfo() {
+        return mapper.mapAsList(perusteet.findAll(), PerusteInfoDto.class);
     }
 
     @Override
@@ -607,13 +614,13 @@ public class PerusteServiceImpl implements PerusteService {
      * Luo uuden perusteen perusrakenteella.
      *
      * @param koulutustyyppi
+     * @param yksikko
      * @return Palauttaa 'tyhjän' perusterungon
      */
     @Override
-    // HUOM!: Luo vain ammatillisen puolen perusteita. Refactoroi, kun tulee lisää koulutustyyppejä.
+    // FIXME: Luo vain ammatillisen puolen perusteita. Refactoroi, kun tulee lisää koulutustyyppejä.
     public Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko) {
         Peruste peruste = new Peruste();
-
         peruste.setTutkintokoodi(koulutustyyppi);
         peruste.setTila(Tila.LUONNOS);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
@@ -622,7 +629,35 @@ public class PerusteServiceImpl implements PerusteService {
             suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko));
         }
         peruste.setSuoritustavat(suoritustavat);
+        return peruste;
+    }
 
+    @Override
+    public Peruste luoPerusteRunkoToisestaPerusteesta(Long perusteId) {
+        Peruste vanha = perusteet.getOne(perusteId);
+        Peruste peruste = new Peruste();
+        peruste.setTila(Tila.LUONNOS);
+        peruste.setKuvaus(vanha.getKuvaus());
+        peruste.setNimi(vanha.getNimi());
+        peruste.setTutkintokoodi(vanha.getTutkintokoodi());
+
+        Set<Koulutus> vanhatKoulutukset = vanha.getKoulutukset();
+        Set<Koulutus> koulutukset = new HashSet<>();
+        for (Koulutus vanhaKoulutus : vanhatKoulutukset) {
+            koulutukset.add(vanhaKoulutus);
+        }
+        peruste.setKoulutukset(koulutukset);
+
+        Set<Suoritustapa> suoritustavat = vanha.getSuoritustavat();
+        Set<Suoritustapa> uudetSuoritustavat = new HashSet<>();
+
+        for (Suoritustapa st : suoritustavat) {
+            uudetSuoritustavat.add(suoritustapaService.createFromOther(st.getId()));
+        }
+
+        peruste.setSuoritustavat(uudetSuoritustavat);
+
+        peruste = perusteet.save(peruste);
         return peruste;
     }
 

@@ -15,7 +15,19 @@ European Union Public Licence for more details.
 -->
 
 <div class="uusi-projekti-content">
+
+  <div ng-if="wizardissa() && !peruste" class="pull-right">
+    <button ng-click="mergeProjekti()" class="btn">{{ 'tuo-peruste-projektista' | kaanna }}</button>
+  </div>
+  <div ng-if="wizardissa() && peruste">
+    <div class="alert alert-info">
+      {{ 'perusteprojektin-pohjaksi-otetaan-peruste' | kaanna }}: <b>{{ peruste.nimi | kaanna }}</b>
+      (<b><a href="" ng-click="puhdistaValinta()">{{ 'peruuta' | kaanna }}</a></b>)
+    </div>
+  </div>
+
   <button ng-if="!wizardissa() && voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit">{{'muokkaa' | translate}}</button>
+
   <h1>{{'projektin-tiedot' | kaanna}}</h1>
   <p ng-if="wizardissa() || editEnabled" translate>tahdella-pakolliset</p>
   <ng-form class="form-horizontal projekti-form" name="perusteprojektiForm" role="form">
@@ -25,6 +37,7 @@ European Union Public Licence for more details.
       <ng-include src="tab.url"></ng-include>
       </div>
     </div>
+
     <div class="projekti-form-buttons" ng-show="wizardissa()">
       <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid"  translate>luo-perusteprojekti-nappi</button>
       <button ui-sref="aloitussivu" id="cancel" class="btn" translate>peruuta</button>

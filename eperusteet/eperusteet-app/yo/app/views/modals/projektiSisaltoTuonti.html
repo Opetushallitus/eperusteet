@@ -1,0 +1,31 @@
+<div class="modal-header">
+    <h2>{{ 'tuo-peruste-projektista' | kaanna }}</h2>
+</div>
+
+<div class="modal-body">
+  <div>
+    <input style="margin-bottom: 14px" ng-hide="lataa" ng-change="haku(syote)" ng-model="syote" type="text" class="form-control" placeholder="{{ 'hae-perusteprojekteja' | translate }}">
+    <div ng-show="perusteet.length > 0" class="results">
+      <table class="table table-striped">
+        <tr>
+          <th width="50%" translate>nimi</th>
+          <th translate>tutkintokoodi</th>
+          <th translate>voimaantulo-pvm</th>
+        </tr>
+        <tr ng-repeat="peruste in perusteet">
+          <td><a href="" ng-click="ok(peruste)">{{ peruste.nimi | kaanna }}</a></td>
+          <td>{{ peruste.tutkintokoodi | kaanna }}</td>
+          <td>{{ peruste.voimassaoloAlkaa | aikaleima:'time':'date' }}</td>
+        </tr>
+      </table>
+      <pagination ng-model="nykyinen" ng-change="valitseSivu(nykyinen)" total-items="totalItems" items-per-page="itemsPerPage"></pagination>
+    </div>
+    <div class="alarm alarm-info" ng-hide="projektit.length > 0">
+      {{ 'rajauksellasi-ei-löytynyt-vaihtoehtoa' | kaanna }}
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-danger" ng-click="peruuta()">{{ 'peru' | kaanna }}</button>
+</div>

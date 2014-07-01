@@ -37,6 +37,23 @@ angular.module('eperusteApp')
       update: {method: 'POST', isArray: false}
     });
   })
+  .service('PerusteProjektit', function($http, SERVICE_LOC) {
+    function hae(success, failure) {
+      success = success || angular.noop;
+      failure = failure || angular.noop;
+      $http.get(SERVICE_LOC + '/perusteprojektit/info')
+        .success(function(data) {
+          success(data);
+        })
+        .error(function(err) {
+          failure(err);
+        });
+    }
+
+    return {
+      hae: hae
+    };
+  })
   .service('PerusteProjektiService', function($rootScope) {
     var pp = {};
     var suoritustapa = '';

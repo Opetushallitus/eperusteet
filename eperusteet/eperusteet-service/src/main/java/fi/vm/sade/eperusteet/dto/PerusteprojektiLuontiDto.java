@@ -29,4 +29,5 @@ import lombok.Setter;
 public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
     private String koulutustyyppi;
     private LaajuusYksikko yksikko;
+    private Long perusteId;
 }

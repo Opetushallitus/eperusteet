@@ -96,6 +96,8 @@ angular.module('eperusteApp')
 
     this.arviointiasteikot = undefined;
 
+    this.defaultItemsInModal = 10;
+
     this.dateFormatDatepicker = 'd.M.yyyy';
     this.dateFormatMomentJS = 'D.M.YYYY';
 

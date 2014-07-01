@@ -255,6 +255,14 @@
     "tekstikappaleet": "Tekstikappaleet",
     "koulutus": "Koulutus",
 
+    "perusteen-tiedot": "Perusteen tiedot",
+    "tuo": "Tuo",
+
+    "valitse-kaikki": "Valitse kaikki",
+    "perusteeseen-liitetään-seuraavat": "Perusteeseen liitetään seuraavat",
+    "koulutukset": "Koulutukset",
+    "suoritustavat": "Suoritustavat",
+
     "laajuus": "Laajuus",
 
     "tallennettiin-onnistuneesti": "tallennettiin onnistuneesti",
@@ -363,11 +371,14 @@
     "lataa-pdf": "Lataa pdf",
     "generoi-pdf": "Generoi pdf",
 
-    "voimaantulo-pvm": "Voimassaolon alkamispäivämäärä",
+    "voimaantulo-pvm": "Voimaantulo pvm",
     "voimassaolo-paattymispvm": "Voimassaolon päättymispäivämäärä",
     "anna-voimaantulo-pvm": "Anna voimaantulon alkamispäivämäärä",
     "anna-voimaantulo-loppu-pvm": "Anna voimaantulon päättymispäivämäärä",
 
+    "hae-perusteprojekteja": "Hae perusteprojekteja",
+
+    "tuo-peruste-projektista": "Tuo peruste toisesta projektista",
     "projektin-nimi-label": "Projektin nimi",
     "anna-projektin-nimi-placeholder": "Syötä projektin nimi",
     "diaarinumero-label": "Diaarinumero",
@@ -389,6 +400,7 @@
     "anna-yhteistyotaho-placeholder": "Syötä yhteistyötaho",
     "valitse-koulutustyyppi": "Valitse koulutustyyppi",
     "koulutustyyppi-label": "Koulutustyyppi",
+    "perusteprojektin-pohjaksi-otetaan-peruste": "Perusteprojektin pohjaksi otetaan peruste",
 
     "projektipäällikkö": "Projektipäällikkö",
 

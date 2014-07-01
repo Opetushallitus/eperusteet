@@ -67,6 +67,31 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   }
 }
 
+.ominaisuudet {
+  input[type="checkbox"] {
+    position: static;
+    top: 0px;
+  }
+  hr {
+    background: none;
+  }
+  .valitse-kaikki {
+    float: right;
+    position: relative;
+    top: 8px;
+  }
+  .feature {
+    padding: 2px;
+  }
+}
+
+.download-pdf {
+  height: 0px;
+  float: right;
+  position: relative;
+  top: -60px;
+}
+
 .project-otsikkotiedot {
   margin-left: 25px;
   margin-top: 10px;

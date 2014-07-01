@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.Rooli;
 import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.dto.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -59,6 +60,12 @@ public class PerusteprojektiController {
 
     @Autowired
     private PerusteprojektiService service;
+
+    @RequestMapping(value = "/info", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<PerusteprojektiInfoDto>> getAll() {
+        return new ResponseEntity<>(service.getBasicInfo(), HttpStatus.OK);
+    }
 
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody

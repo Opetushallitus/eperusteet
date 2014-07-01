@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
+import fi.vm.sade.eperusteet.dto.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
@@ -58,6 +59,8 @@ public interface PerusteService {
 
     Page<PerusteDto> getAll(PageRequest page, String kieli);
 
+    List<PerusteInfoDto> getAllInfo();
+
     Page<PerusteDto> findBy(PageRequest page, PerusteQuery pquery);
 
     @PreAuthorize("isAuthenticated()")
@@ -70,7 +73,7 @@ public interface PerusteService {
     PerusteenOsaViite addViite(final Long parentId, final Long seuraavaViite, PerusteenOsaViite viite);
 
     PerusteenosaViiteDto getSuoritustapaSisalto(final Long perusteId, final Suoritustapakoodi suoritustapakoodi);
-    
+
     SuoritustapaDto getSuoritustapa(final Long perusteId, final Suoritustapakoodi suoritustapakoodi);
 
     RakenneModuuliDto getTutkinnonRakenne(final Long perusteId, final Suoritustapakoodi suoritustapa, Integer eTag);
@@ -89,6 +92,8 @@ public interface PerusteService {
     public TutkinnonOsaViiteDto updateTutkinnonOsaViite(Long osaId, TutkinnonOsaViiteDto tov);
 
     Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko);
+
+    Peruste luoPerusteRunkoToisestaPerusteesta(Long perusteId);
 
     @PreAuthorize("isAuthenticated()")
     String lammitys();
