@@ -89,7 +89,8 @@ angular.module('eperusteApp')
         }, function(response) {
           changeResponseHandler(data, response, cb);
         });
-      } else if (tyyppi === 'Rakenne') {
+      }
+      else if (tyyppi === 'Rakenne') {
         RakenneVersio.get({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa, versioId: data.chosen.number}, function(response) {
           changeResponseHandler(data, response, cb);
         });

@@ -96,9 +96,6 @@ angular.module('eperusteApp')
           uusiViesti(2, response.data.syy);
         }
       }
-      else {
-        uusiViesti(2, 'odottamaton-virhe');
-      }
     }
 
     function serverLukitus(response) {

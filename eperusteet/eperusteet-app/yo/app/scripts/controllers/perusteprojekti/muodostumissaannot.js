@@ -75,7 +75,7 @@ angular.module('eperusteApp')
       });
     };
 
-    $scope.revertCb = function () {
+    $scope.revert = function () {
       haeRakenne(function () {
         Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
         haeVersiot(true);
