@@ -376,8 +376,8 @@
 
     "voimaantulo-pvm": "Voimaantulo pvm",
     "voimassaolo-paattymispvm": "Voimassaolon päättymispäivämäärä",
-    "anna-voimaantulo-pvm": "Anna voimaantulon alkamispäivämäärä",
-    "anna-voimaantulo-loppu-pvm": "Anna voimaantulon päättymispäivämäärä",
+    "anna-voimaantulo-pvm": "Anna voimaantulopäivämäärä",
+    "anna-voimaantulo-loppu-pvm": "Anna voimassaolon päättymispäivämäärä",
 
     "tuo-toisesta-projektista": "Tuo sisältöä toisesta projektista",
     "hae-perusteprojekteja": "Hae perusteprojekteja",
