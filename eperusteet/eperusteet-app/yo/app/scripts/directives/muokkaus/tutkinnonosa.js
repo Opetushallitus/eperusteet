@@ -37,8 +37,6 @@ angular.module('eperusteApp')
         $scope.versiot = {};
         $scope.test = angular.noop;
 
-        console.log('sisään');
-
         function getRakenne() {
           PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
             $scope.rakenne = res;

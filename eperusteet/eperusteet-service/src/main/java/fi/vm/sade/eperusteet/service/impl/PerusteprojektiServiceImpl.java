@@ -105,6 +105,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Set<Tila> getTilat(Long id) {
         Perusteprojekti p = repository.findOne(id);
         if (p == null) {

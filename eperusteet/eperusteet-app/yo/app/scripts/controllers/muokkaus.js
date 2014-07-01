@@ -41,10 +41,10 @@ angular.module('eperusteApp')
 
     var muokkausDirective = null;
     if ($stateParams.perusteenOsanTyyppi === 'tekstikappale') {
-      muokkausDirective = angular.element('<muokkaus-tekstikappale tekstikappale="objekti"></muokkaus-tekstikappale>');
+      muokkausDirective = angular.element('<muokkaus-tekstikappale ng-if="objekti.$resolved" tekstikappale="objekti"></muokkaus-tekstikappale>');
     }
     else if ($stateParams.perusteenOsanTyyppi === 'tutkinnonosa') {
-      muokkausDirective = angular.element('<muokkaus-tutkinnonosa tutkinnon-osa="objekti"></muokkaus-tutkinnonosa>');
+      muokkausDirective = angular.element('<muokkaus-tutkinnonosa ng-if="objekti.$resolved" tutkinnon-osa="objekti"></muokkaus-tutkinnonosa>');
     }
     else {
       virheService.virhe('virhe-perusteenosaa-ei-löytynyt');
@@ -93,16 +93,15 @@ angular.module('eperusteApp')
     };
 
     this.nestedSet = function(obj, path, delimiter, value) {
-
       function innerNestedSet(obj, names, newValue) {
         if(names.length > 1) {
-          if(!_.has(obj, names[0])) {
+          if(!_.has(obj, names[0]) || obj[names[0]] === null) {
             obj[names[0]] = {};
           }
           innerNestedSet(obj[names[0]], names.splice(1, names.length), newValue);
         }
         else {
-          obj[names[0]] = newValue;
+            obj[names[0]] = newValue;
         }
       }
 
