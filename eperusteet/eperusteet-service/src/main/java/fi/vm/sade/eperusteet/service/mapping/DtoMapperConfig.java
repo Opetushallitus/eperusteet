@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.mapping;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suosikki;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
@@ -28,6 +29,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.SuosikkiDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
@@ -73,6 +75,9 @@ public class DtoMapperConfig {
                 .byDefault()
                 .register();
         factory.classMap(PerusteDto.class, Peruste.class)
+                .byDefault()
+                .register();
+        factory.classMap(PerusteprojektiDto.class, Perusteprojekti.class)
                 .byDefault()
                 .register();
         factory.classMap(SuosikkiDto.class, Suosikki.class)

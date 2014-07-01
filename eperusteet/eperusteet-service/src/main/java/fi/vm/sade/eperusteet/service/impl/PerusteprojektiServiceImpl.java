@@ -94,11 +94,13 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @Transactional(readOnly = false)
     public PerusteprojektiDto update(Long id, PerusteprojektiDto perusteprojektiDto) {
-        if (!repository.exists(id)) {
-            throw new EntityNotFoundException("Objektia ei löytynyt id:llä: " + id);
+        Perusteprojekti vanhaProjekti = repository.findOne(id);
+        if (vanhaProjekti == null) {
+            throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
         }
 
         perusteprojektiDto.setId(id);
+        perusteprojektiDto.setTila(vanhaProjekti.getTila());
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
         perusteprojekti = repository.save(perusteprojekti);
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
