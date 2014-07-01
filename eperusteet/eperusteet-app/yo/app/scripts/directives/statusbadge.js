@@ -72,26 +72,29 @@ angular.module('eperusteApp')
       return 'glyphicon glyphicon-' + $scope.iconMapping[$scope.status];
     };
 
-    $scope.startEditing = function () {
-      $http.get(SERVICE_LOC + '/perusteprojektit/' + $scope.projektiId + '/tilat').then( function (vastaus) {
-        PerusteprojektinTilanvaihto.start($scope.status, vastaus.data, function (newStatus) {
-        // TODO tilan tallennus, tämä asettaa uuden tilan parent scopen projektiobjektiin.
-        PerusteprojektiTila.save({id: $scope.projektiId, tila: newStatus}, {}, function(vastaus) {
-          if (vastaus.vaihtoOk) {
-            $scope.status = newStatus;
-          } else {
-            Notifikaatiot.varoitus(vastaus.info[0].viesti);
-            // TODO: Virheen tietojen näyttäminen järkevästi
-          }
-        }, function (virhe) {
-          console.log('tilan vaihto virhe', virhe);
-          Notifikaatiot.serverCb(virhe);
+    $scope.startEditing = function() {
+      $http.get(SERVICE_LOC + '/perusteprojektit/' + $scope.projektiId + '/tilat').then(function(vastaus) {
+
+      if (vastaus.data.length !== 0) {
+        PerusteprojektinTilanvaihto.start($scope.status, vastaus.data, function(newStatus) {
+          // TODO tilan tallennus, tämä asettaa uuden tilan parent scopen projektiobjektiin.
+          PerusteprojektiTila.save({id: $scope.projektiId, tila: newStatus}, {}, function(vastaus) {
+            if (vastaus.vaihtoOk) {
+              $scope.status = newStatus;
+            } else {
+              Notifikaatiot.varoitus(vastaus.info[0].viesti);
+              // TODO: Virheen tietojen näyttäminen järkevästi
+            }
+          }, function(virhe) {
+            console.log('tilan vaihto virhe', virhe);
+            Notifikaatiot.serverCb(virhe);
+          });
+
         });
-        
-      });
+      }
       }, function(err) {
         Notifikaatiot.serverCb(err);
       });
-      
+
     };
   });
