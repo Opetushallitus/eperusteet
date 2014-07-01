@@ -17,12 +17,18 @@ European Union Public Licence for more details.
 <div class="uusi-projekti-content">
 
   <div ng-if="wizardissa() && !peruste" class="pull-right">
-    <button ng-click="mergeProjekti()" class="btn">{{ 'tuo-peruste-projektista' | kaanna }}</button>
+    <button ng-click="mergeProjekti()" class="btn">{{ 'tuo-peruste' | kaanna }}</button>
   </div>
   <div ng-if="wizardissa() && peruste">
     <div class="alert alert-info">
       {{ 'perusteprojektin-pohjaksi-otetaan-peruste' | kaanna }}: <b>{{ peruste.nimi | kaanna }}</b>
-      (<b><a href="" ng-click="puhdistaValinta()">{{ 'peruuta' | kaanna }}</a></b>)
+      <div>{{ 'tutkintokoodi' | kaanna }}: <b>{{ peruste.tutkintokoodi | kaanna }}</b></div>
+      <div ng-show="peruste.voimassaoloAlkaa">{{ 'voimassaoloAlkaa' | kaanna }}: <b>{{ peruste.voimassaoloAlkaa | aikaleima }}</b></div>
+      <div ng-show="peruste.voimassaoloLoppuu">{{ 'voimassaoloLoppuu' | kaanna }}: <b>{{ peruste.voimassaoloLoppuu | aikaleima }}</b></div>
+      <div ng-show="peruste.siirtymaAlkaa">{{ 'siirtymaAlkaa' | kaanna }}: <b>{{ peruste.siirtymaAlkaa | aikaleima }}</b></div>
+      <div style="margin-top: 10px">
+        <button class="btn btn-danger" ng-click="puhdistaValinta()">{{ 'peruuta' | kaanna }}</button>
+      </div>
     </div>
   </div>
 

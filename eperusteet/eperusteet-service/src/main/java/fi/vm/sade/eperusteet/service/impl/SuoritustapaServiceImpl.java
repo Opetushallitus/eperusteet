@@ -86,11 +86,14 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
 
         List<PerusteenOsaViite> vanhaLapset = vanha.getLapset();
         List<PerusteenOsaViite> lapset = new ArrayList<>();
-        for (PerusteenOsaViite vanhaPov : vanhaLapset) {
-            PerusteenOsaViite lapsi = kopioiSisalto(vanhaPov);
-            lapsi.setVanhempi(pov);
-            lapsi.setPerusteenOsa(vanhaPov.getPerusteenOsa());
-            lapset.add(lapsi);
+
+        if (vanhaLapset != null) {
+            for (PerusteenOsaViite vanhaPov : vanhaLapset) {
+                PerusteenOsaViite lapsi = kopioiSisalto(vanhaPov);
+                lapsi.setVanhempi(pov);
+                lapsi.setPerusteenOsa(vanhaPov.getPerusteenOsa());
+                lapset.add(lapsi);
+            }
         }
         pov.setLapset(lapset);
         return perusteenOsaViiteRepository.save(pov);

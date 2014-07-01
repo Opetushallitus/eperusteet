@@ -358,6 +358,9 @@
     "excel-luetaan-tutkinnonosia": "Luetaan tutkinnonosia",
     "excel": "Excel",
     "liitä-suoritustapaan": "Liitettävä suoritustapa",
+    "voimassaoloAlkaa": "Voimassaolo alkaa",
+    "voimassaoloLoppuu": "Voimassaolo päättyy",
+    "siirtymaAlkaa": "Siirtymäaika alkaa",
 
     "perusteella-ei-vielä-tutkinnonosia": "Perusteella ei ole vielä tutkinnon osia",
     "editoimasi-sisältö-on-muuttunut": "Muokkaamasi sisältö on muuttunut",
@@ -376,9 +379,10 @@
     "anna-voimaantulo-pvm": "Anna voimaantulon alkamispäivämäärä",
     "anna-voimaantulo-loppu-pvm": "Anna voimaantulon päättymispäivämäärä",
 
+    "tuo-toisesta-projektista": "Tuo sisältöä toisesta projektista",
     "hae-perusteprojekteja": "Hae perusteprojekteja",
 
-    "tuo-peruste-projektista": "Tuo peruste toisesta projektista",
+    "tuo-peruste": "Tuo peruste",
     "projektin-nimi-label": "Projektin nimi",
     "anna-projektin-nimi-placeholder": "Syötä projektin nimi",
     "diaarinumero-label": "Diaarinumero",
@@ -407,7 +411,6 @@
     "perusteen-nimi": "Perusteen nimi",
     "anna-perusteen-nimi": "Syötä perusteen nimi",
     "koulutuksen-nimi": "Koulutuksen nimi",
-    "ei-koulutuksia": "Yhtään koulutusta ei ole valittu.",
 
     "ok": "OK",
 
