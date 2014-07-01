@@ -125,7 +125,7 @@ angular.module('eperusteApp')
       $scope.projekti = perusteprojektiTiedot.getProjekti();
       $scope.peruste = perusteprojektiTiedot.getPeruste();
       // TODO poista kun tilasiirtymät tuettuina
-      $scope.projekti.tila = 'luonnos';
+      //$scope.projekti.tila = 'luonnos';
     }
     init();
     $scope.Koulutusalat = koulutusalaService;
