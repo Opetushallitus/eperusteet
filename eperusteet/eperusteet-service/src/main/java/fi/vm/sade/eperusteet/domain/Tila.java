@@ -28,12 +28,6 @@ public enum Tila {
 
     POISTETTU("poistettu"),
     LUONNOS("luonnos"),
-    VALMIS("valmis"){
-        @Override
-        public Set<Tila> mahdollisetTilat() {
-            return EnumSet.of(VIIMEISTELY, JULKAISTU);
-        }
-    },
     LAADINTA("laadinta") {
         @Override
         public Set<Tila> mahdollisetTilat() {
@@ -50,6 +44,12 @@ public enum Tila {
         @Override
         public Set<Tila> mahdollisetTilat() {
             return EnumSet.of(LAADINTA, VALMIS);
+        }
+    },
+    VALMIS("valmis"){
+        @Override
+        public Set<Tila> mahdollisetTilat() {
+            return EnumSet.of(VIIMEISTELY, JULKAISTU);
         }
     },
     JULKAISTU("julkaistu");
