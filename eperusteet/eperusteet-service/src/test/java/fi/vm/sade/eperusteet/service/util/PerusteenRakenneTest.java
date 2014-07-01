@@ -141,6 +141,24 @@ public class PerusteenRakenneTest {
             )
         );
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(rakenne);
+        assertTrue(validoitu.ongelmat.size() == 2);
+    }
+
+    @Test
+    public void testValidoiNullKokoTaiLaajuus() {
+        RakenneModuuli rakenne = TestUtils.teeRyhma(
+            0, 200, null, null,
+            TestUtils.teeRakenneOsa(1, 10),
+            TestUtils.teeRakenneOsa(5, 20),
+            TestUtils.teeRakenneOsa(3, 30),
+            TestUtils.teeRakenneOsa(4, 40),
+            TestUtils.teeRyhma(
+                null, null, 0, 10,
+                TestUtils.teeRakenneOsa(1, 10),
+                TestUtils.teeRakenneOsa(2, 20)
+            )
+        );
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(rakenne);
         assertTrue(validoitu.ongelmat.isEmpty());
     }
 
