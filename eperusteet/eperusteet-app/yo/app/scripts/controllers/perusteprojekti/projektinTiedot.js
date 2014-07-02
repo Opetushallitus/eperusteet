@@ -36,12 +36,6 @@ angular.module('eperusteApp')
         $scope.perusteet = perusteet.data;
         $scope.totalItems = perusteet['kokonaismäärä'];
         $scope.itemsPerPage = perusteet.sivukoko;
-        // $scope.projektit = _(projektit).filter(function(projekti) {
-        //   return projekti.diaarinumero.indexOf(haku) !== -1 || projekti.nimi.toLowerCase().indexOf(haku.toLowerCase()) !== -1;
-        // })
-        // .sortBy(function(projekti) { return projekti.nimi.toLowerCase(); })
-        // .value();
-        // $scope.totalItems = _.size(projektit);
       });
     }, 300, { maxWait: 1000 });
 

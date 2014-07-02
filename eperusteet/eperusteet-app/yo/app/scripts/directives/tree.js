@@ -289,7 +289,7 @@ angular.module('eperusteApp')
           });
           scope.tutkinnonOsat.multiPage = _.size(scope.uniikit) > scope.tutkinnonOsat.perSivu;
           scope.kaikkiUniikit = _.sortBy(scope.uniikit, function(osa) {
-            return Kaanna.kaanna(scope.rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi);
+            return Kaanna.kaanna(scope.rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi).toLowerCase();
           });
           scope.uniikit = scope.kaikkiUniikit;
           scope.paivitaRajaus();

@@ -33,7 +33,7 @@ angular.module('eperusteApp')
       }
       $http.get(SERVICE_LOC + '/koodisto/' + koodisto).then(function(re) {
         taydennykset = koodistoMapping(re.data);
-        taydennykset = _.sortBy(taydennykset, function(t) { return Kaanna.kaanna(t.nimi); });
+        taydennykset = _.sortBy(taydennykset, function(t) { return Kaanna.kaanna(t.nimi).toLowerCase(); });
         cb();
       });
     }
@@ -51,7 +51,7 @@ angular.module('eperusteApp')
       resource.query({koodi: koodi}, function(re) {
         taydennykset = suodataTyypinMukaan(re, tyyppi);
         taydennykset = koodistoMapping(taydennykset);
-        taydennykset = _.sortBy(taydennykset, function(t) { return Kaanna.kaanna(t.nimi); });
+        taydennykset = _.sortBy(taydennykset, function(t) { return Kaanna.kaanna(t.nimi).toLowerCase(); });
         cb();
       });
     }
