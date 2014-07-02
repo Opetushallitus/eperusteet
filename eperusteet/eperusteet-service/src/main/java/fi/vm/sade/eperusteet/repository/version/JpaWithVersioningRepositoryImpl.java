@@ -18,9 +18,9 @@ package fi.vm.sade.eperusteet.repository.version;
 import fi.vm.sade.eperusteet.service.impl.PerusteenOsaServiceImpl;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.DefaultRevisionEntity;
@@ -30,12 +30,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
-public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements JpaWithVersioningRepository<T, ID> {
+public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements
+    JpaWithVersioningRepository<T, ID> {
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteenOsaServiceImpl.class);
 
-    private EntityManager entityManager;
-    private JpaEntityInformation<T, ID> entityInformation;
+    private final EntityManager entityManager;
+    private final JpaEntityInformation<T, ID> entityInformation;
 
     public JpaWithVersioningRepositoryImpl(JpaEntityInformation<T, ID> entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
@@ -50,12 +51,12 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
 
         @SuppressWarnings("unchecked")
         List<Object[]> results = (List<Object[]>) auditReader.createQuery()
-                .forRevisionsOfEntity(entityInformation.getJavaType(), false, true)
-                .addProjection(AuditEntity.revisionNumber())
-                .addProjection(AuditEntity.revisionProperty("timestamp"))
-                .addOrder(AuditEntity.revisionProperty("timestamp").desc())
-                .add(AuditEntity.id().eq(id))
-                .getResultList();
+            .forRevisionsOfEntity(entityInformation.getJavaType(), false, true)
+            .addProjection(AuditEntity.revisionNumber())
+            .addProjection(AuditEntity.revisionProperty("timestamp"))
+            .addOrder(AuditEntity.revisionProperty("timestamp").desc())
+            .add(AuditEntity.id().eq(id))
+            .getResultList();
 
         List<Revision> revisions = new ArrayList<>();
         for (Object[] result : results) {
@@ -82,6 +83,12 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
             return null;
         }
         return revisions.get(revisions.size() - 1).intValue();
+    }
+
+    @Override
+    public T lock(T entity) {
+        entityManager.refresh(entity, LockModeType.PESSIMISTIC_WRITE);
+        return entity;
     }
 
 }

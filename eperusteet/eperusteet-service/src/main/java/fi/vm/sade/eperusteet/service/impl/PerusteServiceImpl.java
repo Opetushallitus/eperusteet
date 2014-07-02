@@ -129,7 +129,6 @@ public class PerusteServiceImpl implements PerusteService {
     @Autowired
     private RakenneRepository rakenneRepository;
 
-
     @Override
     @Transactional(readOnly = true)
     public Page<PerusteDto> getAll(PageRequest page, String kieli) {
@@ -165,12 +164,12 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Override
     public PerusteDto update(long id, PerusteDto perusteDto) {
-        if (!perusteet.exists(id)) {
-            throw new EntityNotFoundException("Objektia ei löytynyt id:llä: " + id);
+        Peruste perusteVanha = perusteet.findById(id);
+        if ( perusteVanha == null  ) {
+            throw new BusinessRuleViolationException("Päivitettävää perustetta ei ole olemassa");
         }
 
-        Peruste perusteVanha = perusteet.findById(id);
-
+        perusteet.lock(perusteVanha);
         perusteDto.setId(id);
         Peruste peruste = mapper.map(perusteDto, Peruste.class);
         peruste = checkIfKoulutuksetAlreadyExists(peruste);
@@ -242,7 +241,7 @@ public class PerusteServiceImpl implements PerusteService {
         if (rakenneId == null) {
             throw new BusinessRuleViolationException("Rakennetta ei ole olemassa");
         }
-        Integer rakenneVersioId  = rakenneRepository.getLatestRevisionId(rakenneId);
+        Integer rakenneVersioId = rakenneRepository.getLatestRevisionId(rakenneId);
         if (eTag != null && rakenneVersioId != null && rakenneVersioId.equals(eTag)) {
             return null;
         }
@@ -351,7 +350,10 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional
     public void removeTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, Long osaId) {
         Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
+        //varmistetaan että rakenteen muokkaus ei ole käynnissä.
         lockManager.lock(suoritustapa.getId());
+        //workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
+        em.refresh(suoritustapa, LockModeType.PESSIMISTIC_WRITE);
         try {
             Set<TutkinnonOsaViite> tutkinnonOsat = suoritustapa.getTutkinnonOsat();
             TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osaId);
@@ -372,6 +374,9 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional
     public TutkinnonOsaViiteDto addTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteDto osa) {
         final Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
+        //workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
+        em.refresh(suoritustapa, LockModeType.PESSIMISTIC_WRITE);
+
         TutkinnonOsaViite viite = mapper.map(osa, TutkinnonOsaViite.class);
         if (viite.getTutkinnonOsa() == null) {
             TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
@@ -453,13 +458,13 @@ public class PerusteServiceImpl implements PerusteService {
     @Override
     @Transactional
     public PerusteenSisaltoViiteDto addSisaltoLapsi(Long perusteId, Long perusteenosaViiteId) {
-        PerusteenOsaViite uusiViite = new PerusteenOsaViite();
 
         PerusteenOsaViite viiteEntity = perusteenOsaViiteRepo.findOne(perusteenosaViiteId);
         if (viiteEntity == null) {
             throw new BusinessRuleViolationException("Perusteenosaviitettä ei ole olemassa");
         }
-
+        perusteenOsaViiteRepo.lock(viiteEntity);
+        PerusteenOsaViite uusiViite = new PerusteenOsaViite();
         TekstiKappale uusiKappale = new TekstiKappale();
         uusiKappale.setTila(Tila.LUONNOS);
         em.persist(uusiKappale);

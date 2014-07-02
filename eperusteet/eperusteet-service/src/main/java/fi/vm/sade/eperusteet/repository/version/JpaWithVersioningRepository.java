@@ -20,6 +20,8 @@ import java.util.List;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @NoRepositoryBean
 public interface JpaWithVersioningRepository<T, ID extends Serializable> extends JpaRepository<T, ID> {
@@ -36,5 +38,17 @@ public interface JpaWithVersioningRepository<T, ID extends Serializable> extends
             super("Defined domain class '" + clazz.getSimpleName() + "' does not contain @audited-annotation");
         }
     }
+
+    /**
+     * Lukitsee entiteetin muokkausta varten. Lukitus vapautuu automaattisesti transaktion loppuessa.
+     *
+     * Enversillä on ongelmia yhtäaikaisten transaktioiden kanssa, joten pessimistisen lukituksen käyttäminen
+     * on joissakin tapauksissa tarpeen.
+     *
+     * @param entity
+     * @return päivitetty, lukittu entiteetti
+     */
+    @Transactional(propagation = Propagation.MANDATORY)
+    T lock(T entity);
 
 }
