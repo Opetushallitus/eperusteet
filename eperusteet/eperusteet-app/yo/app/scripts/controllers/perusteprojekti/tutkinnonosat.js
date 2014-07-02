@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $rootScope, $state, $stateParams, $filter,
     Navigaatiopolku, perusteprojektiTiedot, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, Notifikaatiot,
-    Editointikontrollit, Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode, YleinenData) {
+    Editointikontrollit, Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode, Algoritmit) {
 
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
@@ -60,7 +60,7 @@ angular.module('eperusteApp')
     haeTutkinnonosat();
 
     $scope.rajaaTutkinnonOsia = function(haku) {
-      return YleinenData.rajausVertailu($scope.tosarajaus, haku, 'nimi');
+      return Algoritmit.rajausVertailu($scope.tosarajaus, haku, 'nimi');
     };
 
     $scope.tuoSuoritustavasta = TutkinnonOsanTuonti.suoritustavoista(perusteprojektiTiedot.getPeruste(), $scope.suoritustapa, function(osat) {

@@ -18,27 +18,13 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .service('YleinenData', function YleinenData($rootScope, $translate, Arviointiasteikot, Notifikaatiot, Kaanna) {
-
-    this.rajausVertailu = function(input, kentta) {
-      kentta = arguments.length > 2 ? kentta[arguments[2]] : kentta;
-      for (var i = 3; i < arguments.length; ++i) {
-        if (!kentta) { return undefined; }
-        kentta = kentta[arguments[i]];
-      }
-
-      var kaannetty = Kaanna.kaanna(kentta);
-      kaannetty = _.isString(kaannetty) ? kaannetty : '';
-      return kaannetty.toLowerCase().indexOf(input.toLowerCase()) !== -1;
-    };
-
+  .service('YleinenData', function YleinenData($rootScope, $translate, Arviointiasteikot, Notifikaatiot) {
     this.dateOptions = {
       'year-format': 'yy',
       //'month-format': 'M',
       //'day-format': 'd',
       'starting-day': 1
     };
-
 
     this.naviOmit = ['editoi', 'suoritustapa', 'sisalto', 'aloitussivu', 'selaus', 'esitys'];
 

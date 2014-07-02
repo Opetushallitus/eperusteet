@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams,
-    SuoritustapaSisalto, PerusteProjektiService, perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, YleinenData, Kaanna) {
+    SuoritustapaSisalto, PerusteProjektiService, perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit) {
 
     function kaikilleTutkintokohtaisilleOsille(juuri, cb) {
       var lapsellaOn = false;
@@ -44,7 +44,7 @@ angular.module('eperusteApp')
 
     $scope.rajaaSisaltoa = function() {
       kaikilleTutkintokohtaisilleOsille($scope.peruste.sisalto, function(osa, lapsellaOn) {
-        osa.$filtered = lapsellaOn || YleinenData.rajausVertailu($scope.rajaus, osa, 'perusteenOsa', 'nimi');
+        osa.$filtered = lapsellaOn || Algoritmit.rajausVertailu($scope.rajaus, osa, 'perusteenOsa', 'nimi');
         return osa.$filtered;
       });
     };
