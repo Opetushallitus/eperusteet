@@ -27,7 +27,18 @@ angular.module('eperusteApp')
       return input;
     };
   })
-
+  .filter('koodisto', function(Kaanna) {
+    return function(koodi) {
+      if (!koodi || _.isEmpty(koodi)) {
+        return Kaanna.kaanna('ei-asetettu');
+      }
+      else {
+        var indeksi = koodi.indexOf('_');
+        koodi = indeksi !== -1 ? koodi.substr(indeksi + 1) : koodi;
+        return koodi;
+      }
+    };
+  })
   /**
    * Muotoilee timestampit
    * default: time (ago)
@@ -48,7 +59,8 @@ angular.module('eperusteApp')
       var ago = moment(input).fromNow();
       if (options === 'ago') {
         return ago;
-      } else if (options === 'time') {
+      }
+      else if (options === 'time') {
         return date;
       }
       return date + ' (' + ago + ')';

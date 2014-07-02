@@ -26,11 +26,6 @@ angular.module('eperusteApp')
       return true;
     };
 
-    function piilotaEtuliite(koodi) {
-      var indeksi = koodi.koodi.indexOf('_');
-      koodi.$siivottuKoodi = indeksi !== -1 ? koodi.koodi.substr(indeksi + 1) : koodi.koodi;
-    }
-
     function hae(koodisto, cb) {
       if (!_.isEmpty(taydennykset) && koodisto === nykyinenKoodisto) {
         cb();
@@ -38,12 +33,7 @@ angular.module('eperusteApp')
       }
       $http.get(SERVICE_LOC + '/koodisto/' + koodisto).then(function(re) {
         taydennykset = koodistoMapping(re.data);
-        console.log(taydennykset);
-        taydennykset = _(taydennykset).sortBy(function(t) {
-          return Kaanna.kaanna(t.nimi);
-        })
-        .forEach(piilotaEtuliite)
-        .value();
+        taydennykset = _.sortBy(taydennykset, function(t) { return Kaanna.kaanna(t.nimi); });
         cb();
       });
     }
@@ -61,11 +51,7 @@ angular.module('eperusteApp')
       resource.query({koodi: koodi}, function(re) {
         taydennykset = suodataTyypinMukaan(re, tyyppi);
         taydennykset = koodistoMapping(taydennykset);
-        taydennykset = _(taydennykset).sortBy(function(t) {
-          return Kaanna.kaanna(t.nimi);
-        })
-        .forEach(piilotaEtuliite)
-        .value();
+        taydennykset = _.sortBy(taydennykset, function(t) { return Kaanna.kaanna(t.nimi); });
         cb();
       });
     }
@@ -143,7 +129,6 @@ angular.module('eperusteApp')
     $scope.itemsPerPage = 10;
     $scope.lataa = true;
     $scope.syote = '';
-
     $scope.nykyinen = 1;
 
     $scope.valitseSivu = function(sivu) {
@@ -163,7 +148,8 @@ angular.module('eperusteApp')
         $scope.lataa = false;
         $scope.haku('');
       });
-    } else {
+    }
+    else {
       Koodisto.haeYlarelaatiot($scope.ylarelaatioTyyppi, $scope.tyyppi, function() {
         $scope.lataa = false;
         $scope.haku('');
@@ -194,7 +180,8 @@ angular.module('eperusteApp')
         if (!valmis) {
           console.log('koodisto-select: valmis-callback puuttuu');
           return;
-        } else if (_.indexOf(Koodisto.vaihtoehdot, tyyppi) === -1) {
+        }
+        else if (_.indexOf(Koodisto.vaihtoehdot, tyyppi) === -1) {
           console.log('koodisto-select:', tyyppi, 'ei vastaa mitään mitään vaihtoehtoa:', Koodisto.vaihtoehdot);
           return;
         }

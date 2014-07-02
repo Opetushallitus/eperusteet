@@ -42,7 +42,7 @@
       <td class="glyphtila">
         <span class="glyphicon glyphicon-ok"></span>
       </td>
-      <td class="osatutkintoid">{{ ot.koodiUri }}</td>
+      <td class="osatutkintoid">{{ ot.koodiUri | koodisto }}</td>
       <td>
         <a target="_blank" ui-sref="muokkaus.vanha({ perusteenOsanId: ot.id, perusteenOsanTyyppi: 'tutkinnonosa' })">{{ ot.nimi | kaanna }}</a>
       </td>

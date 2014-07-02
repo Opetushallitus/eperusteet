@@ -5,7 +5,7 @@
   <div id="otsikkotiedot">
       <h2>{{'tutkinnonosa' | translate}}</h2>
       <span class="revisio" ng-show="revisio !== null">rev: {{revisio.number}} {{revisio.date | date:'d.M.yyyy klo H:mm:ss'}}</span>
-      <span class="tutkinnon-osa-koodi">{{tutkinnonOsa.koodiUri}}</span>
+      <span class="tutkinnon-osa-koodi">{{ tutkinnonOsa.koodiUri | koodisto }}</span>
       <div class="pull-right dropdown">
         <button class="btn btn-default btn-sm" ng-click="siirryMuokkaustilaan()">{{'muokkaus' | translate}}</button>
         <button class="btn btn-default btn-sm dropdown-toggle" ng-click="haeRevisiot()">Versiohistoria</button>

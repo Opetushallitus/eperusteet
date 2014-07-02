@@ -38,7 +38,7 @@
     </div>
   </div>
   <div ng-if="!editEnabled">
-    <label>{{'muokkaus-tutkinnon-osan-koodi-header' | kaanna}}:</label><span> {{tutkinnonOsa.koodiUri || 'ei asetettu' | kaanna}}</span>
+    <label>{{'muokkaus-tutkinnon-osan-koodi-header' | kaanna}}:</label><span> {{ tutkinnonOsa.koodiUri | koodisto }}</span>
   </div>
 
   <kenttalistaus edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields"></kenttalistaus>
