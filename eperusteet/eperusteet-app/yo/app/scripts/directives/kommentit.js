@@ -29,7 +29,6 @@ angular.module('eperusteApp')
         parent: '='
       },
       link: function ($scope) {
-        var stateChanged = false;
         $scope.nayta = false;
         $scope.editoitava = '';
         $scope.editoi = false;
