@@ -32,8 +32,9 @@ angular.module('eperusteApp')
   .controller('LukittuSisaltoMuuttunutModalCtrl', function($scope, $modalInstance) {
     $scope.ok = function() { $modalInstance.close(); };
     $scope.peruuta = function() { $modalInstance.dismiss(); };
+    $scope.$on('$stateChangeSuccess', function() { $scope.peruuta(); });
   })
-  .service('Lukitus', function($timeout, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit) {
+  .service('Lukitus', function($timeout, $rootScope, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit) {
     var lukitsin = null;
     var etag = null;
 
@@ -45,6 +46,12 @@ angular.module('eperusteApp')
       maxWait: LUKITSIN_MAKSIMI
     });
     angular.element(window).on('click', onevent);
+
+    $rootScope.$on('$stateChangeSuccess', function() {
+      lukitsin = null;
+      etag = null;
+      console.log('nulled lukitus');
+    });
 
     function lueLukitus(Resource, obj, cb) {
       cb = cb || angular.noop;
