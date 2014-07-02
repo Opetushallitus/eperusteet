@@ -88,8 +88,8 @@
           <div class="form-group" ng-show="projekti.koulutustyyppi === 'koulutustyyppi_1'">
             <label for="koulutustyyppi" class="col-sm-3">{{ 'laajuuden-yksikkö' | translate }}<span>*</span></label>
             <div class="col-md-9">
-              <select id="koulutustyyppi" ng-model="projekti.yksikko" class="form-control" ng-required="projekti.koulutustyyppi === 'koulutustyyppi_1'">
-                <option ng-repeat="yk in yksikot" value="{{ yk }}" ng-selected="projekti.yksikko === yk">{{ yk | kaanna }}</option>
+              <select id="koulutustyyppi" ng-model="projekti.laajuusYksikko" class="form-control" ng-required="projekti.koulutustyyppi === 'koulutustyyppi_1'">
+                <option ng-repeat="yk in yksikot" value="{{ yk }}" ng-selected="projekti.laajuusYksikko === yk">{{ yk | kaanna }}</option>
               </select>
             </div>
           </div>

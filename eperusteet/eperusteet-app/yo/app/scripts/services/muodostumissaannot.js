@@ -38,7 +38,7 @@ angular.module('eperusteApp')
           fraasi.push('ja-enintään');
           fraasi.push(msl.maksimi);
         }
-        fraasi.push('$yksikko');
+        fraasi.push('$laajuusYksikko');
         fraasi.push('edestä');
       }
 

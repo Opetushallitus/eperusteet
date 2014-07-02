@@ -385,7 +385,7 @@ public class PerusteServiceImpl implements PerusteService {
             viite.setTutkinnonOsa(tutkinnonOsa);
         }
         viite.setSuoritustapa(suoritustapa);
-        viite.setYksikko(suoritustapa.getYksikko());
+        viite.setYksikko(suoritustapa.getLaajuusYksikko());
         viite.setMuokattu(new Date());
         if (suoritustapa.getTutkinnonOsat().add(viite)) {
             viite = tutkinnonOsaViiteRepository.save(viite);
@@ -407,7 +407,7 @@ public class PerusteServiceImpl implements PerusteService {
         }
         viite.setJarjestys(osa.getJarjestys());
         viite.setLaajuus(osa.getLaajuus());
-        viite.setYksikko(viite.getSuoritustapa().getYksikko());
+        viite.setYksikko(viite.getSuoritustapa().getLaajuusYksikko());
         viite.setMuokattu(new Date());
         return mapper.map(viite, TutkinnonOsaViiteDto.class);
     }

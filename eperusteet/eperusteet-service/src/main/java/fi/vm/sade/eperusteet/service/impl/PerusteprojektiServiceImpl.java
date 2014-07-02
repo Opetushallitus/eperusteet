@@ -85,7 +85,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     public PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto) {
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
         String koulutustyyppi = perusteprojektiDto.getKoulutustyyppi();
-        LaajuusYksikko yksikko = perusteprojektiDto.getYksikko();
+        LaajuusYksikko yksikko = perusteprojektiDto.getLaajuusYksikko();
 
         if (koulutustyyppi.equals("koulutustyyppi_1") && yksikko == null) {
             throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
@@ -93,7 +93,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         Peruste peruste;
         if (perusteprojektiDto.getPerusteId() == null) {
-            peruste = perusteService.luoPerusteRunko(perusteprojektiDto.getKoulutustyyppi(), perusteprojektiDto.getYksikko());
+            peruste = perusteService.luoPerusteRunko(perusteprojektiDto.getKoulutustyyppi(), perusteprojektiDto.getLaajuusYksikko());
         }
         else {
             peruste = perusteService.luoPerusteRunkoToisestaPerusteesta(perusteprojektiDto.getPerusteId());

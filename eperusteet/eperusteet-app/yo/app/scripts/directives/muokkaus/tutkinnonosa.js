@@ -149,7 +149,7 @@ angular.module('eperusteApp')
               fetch(function() {
                 refreshPromise();
                 $scope.viiteosa = _.find($scope.rakenne.tutkinnonOsat, {'_tutkinnonOsa': $scope.editableTutkinnonOsa.id.toString()}) || {};
-                $scope.viiteosa.yksikko = $scope.viiteosa.yksikko || 'OSAAMISPISTE';
+                $scope.viiteosa.laajuusYksikko = $scope.viiteosa.laajuusYksikko || 'OSAAMISPISTE';
               });
             },
             asyncValidate: function(cb) {

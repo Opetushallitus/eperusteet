@@ -95,7 +95,7 @@ public class SuoritustapaServiceIT extends AbstractIntegrationTest {
         List<PerusteenOsaViite> lapset2 = stUusi.getSisalto().getLapset();
 
         Assert.assertFalse(Objects.equals(st.getId(), stUusi.getId()));
-        Assert.assertTrue(Objects.equals(st.getYksikko(), stUusi.getYksikko()));
+        Assert.assertTrue(Objects.equals(st.getLaajuusYksikko(), stUusi.getLaajuusYksikko()));
         Assert.assertTrue(Objects.equals(st.getTutkinnonOsat().size(), stUusi.getTutkinnonOsat().size()));
 
 //        Assert.assertTrue(lapset1 != null && lapset2 != null);

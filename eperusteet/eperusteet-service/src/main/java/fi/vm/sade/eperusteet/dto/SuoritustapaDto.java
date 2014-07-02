@@ -29,5 +29,5 @@ import lombok.Setter;
 @Setter
 public class SuoritustapaDto {
     private Suoritustapakoodi suoritustapakoodi;
-    private LaajuusYksikko yksikko;
+    private LaajuusYksikko laajuusYksikko;
 }

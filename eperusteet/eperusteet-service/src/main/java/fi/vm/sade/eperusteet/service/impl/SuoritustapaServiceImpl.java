@@ -68,7 +68,7 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
     private Suoritustapa createCommon(Suoritustapakoodi suoritustapakoodi, LaajuusYksikko yksikko) {
         Suoritustapa suoritustapa = new Suoritustapa();
         suoritustapa.setSuoritustapakoodi(suoritustapakoodi);
-        suoritustapa.setYksikko(yksikko);
+        suoritustapa.setLaajuusYksikko(yksikko);
 
         PerusteenOsaViite perusteenOsaViite = perusteenOsaViiteRepository.save(new PerusteenOsaViite());
         RakenneModuuli rakenne = rakenneRepository.save(new RakenneModuuli());
@@ -154,7 +154,7 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
     @Transactional
     public Suoritustapa createFromOther(final Long suoritustapaId) {
         Suoritustapa vanhaSt = suoritustapaRepository.getOne(suoritustapaId);
-        Suoritustapa suoritustapa = createCommon(vanhaSt.getSuoritustapakoodi(), vanhaSt.getYksikko());
+        Suoritustapa suoritustapa = createCommon(vanhaSt.getSuoritustapakoodi(), vanhaSt.getLaajuusYksikko());
         suoritustapa = suoritustapaRepository.save(suoritustapa);
         Set<TutkinnonOsaViite> tosat = suoritustapa.getTutkinnonOsat();
         Set<TutkinnonOsaViite> vanhatTosat = vanhaSt.getTutkinnonOsat();

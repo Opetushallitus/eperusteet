@@ -75,7 +75,7 @@ public class Suoritustapa implements Serializable {
     @Getter
     @Setter
     @Column(name = "yksikko")
-    private LaajuusYksikko yksikko;
+    private LaajuusYksikko laajuusYksikko;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "suoritustapa")
     @Getter

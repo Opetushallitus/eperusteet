@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .directive('tree', function($compile, $state, Muodostumissaannot, Kaanna) {
     function generoiOtsikko() {
-      var tosa = '{{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">, <b>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</b>{{ apumuuttujat.yksikko | kaanna }}</span>';
+      var tosa = '{{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">, <b>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</b>{{ apumuuttujat.laajuusYksikko | kaanna }}</span>';
       var editointiIkoni =
       '<span ng-click="togglaaPakollisuus(rakenne)">' +
         '  <span ng-show="!rakenne.pakollinen"><img src="images/tutkinnonosa.png" alt=""></span> ' +
@@ -96,8 +96,8 @@ angular.module('eperusteApp')
         scope.tkaanna = function(input) {
           return _.reduce(_.map(input, function(str) {
             switch (str) {
-              case '$yksikko':
-                str = scope.apumuuttujat.yksikko;
+              case '$laajuusYksikko':
+                str = scope.apumuuttujat.laajuusYksikko;
                 break;
               default:
                 break;
@@ -146,10 +146,10 @@ angular.module('eperusteApp')
                           '</span>';
 
         var laajuudenIlmaisu = '<span ng-show="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi">' +
-                               '  {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }} {{ apumuuttujat.yksikko | kaanna }}' +
+                               '  {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }} {{ apumuuttujat.laajuusYksikko | kaanna }}' +
                                '</span>' +
                                '<span ng-hide="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi">' +
-                               '  {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }} - {{ rakenne.muodostumisSaanto.laajuus.maksimi || 0 }} {{ apumuuttujat.yksikko | kaanna }}' +
+                               '  {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }} - {{ rakenne.muodostumisSaanto.laajuus.maksimi || 0 }} {{ apumuuttujat.laajuusYksikko | kaanna }}' +
                                '</span>';
 
         var optiot = '' +
@@ -170,8 +170,8 @@ angular.module('eperusteApp')
           '    <span class="right-item" ng-if="rakenne.muodostumisSaanto.koko.minimi">' +
           koonIlmaisu +
           '    </span>' +
-          // '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus || 0 }}</b>/<b>{{ rakenne.$vaadittuLaajuus || 0 }}</b>{{ apumuuttujat.yksikko | kaanna }}</span>' +
-          // '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\' && !rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus || 0 }}</b>{{ apumuuttujat.yksikko | kaanna }}</span>' +
+          // '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus || 0 }}</b>/<b>{{ rakenne.$vaadittuLaajuus || 0 }}</b>{{ apumuuttujat.laajuusYksikko | kaanna }}</span>' +
+          // '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\' && !rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus || 0 }}</b>{{ apumuuttujat.laajuusYksikko | kaanna }}</span>' +
           // '    <span class="right-item"><b>{{ rakenne.osat.length }}kpl</b></span>' +
           '  </div>' +
           '</div>' +
@@ -361,12 +361,12 @@ angular.module('eperusteApp')
         };
 
         scope.$watch('rakenne.$suoritustapa', function() {
-          var sts = _(scope.rakenne.$peruste.suoritustavat).filter(function(st) { return st.yksikko; }) .value();
+          var sts = _(scope.rakenne.$peruste.suoritustavat).filter(function(st) { return st.laajuusYksikko; }) .value();
           sts = _.zipObject(_.map(sts, 'suoritustapakoodi'), sts)[scope.rakenne.$suoritustapa];
 
           scope.apumuuttujat = {
             suoritustapa: scope.rakenne.$suoritustapa,
-            yksikko: sts ? sts.yksikko : null,
+            laajuusYksikko: sts ? sts.laajuusYksikko : null,
             vanhin: scope.rakenne,
             piilotaVirheet: false
           };

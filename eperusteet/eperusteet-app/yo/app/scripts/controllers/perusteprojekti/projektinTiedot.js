@@ -94,7 +94,7 @@ angular.module('eperusteApp')
     }
 
     $scope.projekti = perusteprojektiTiedot.getProjekti();
-    $scope.projekti.yksikko = $scope.projekti.yksikko || 'OSAAMISPISTE';
+    $scope.projekti.laajuusYksikko = $scope.projekti.laajuusYksikko || 'OSAAMISPISTE';
 
     Navigaatiopolku.asetaElementit({ perusteProjektiId: $scope.projekti.nimi });
 
@@ -118,7 +118,7 @@ angular.module('eperusteApp')
         _.forEach(peruste.suoritustavat, function(st) {
           if (st.suoritustapakoodi === 'ops') {
             onOps = true;
-            $scope.projekti.yksikko = st.yksikko;
+            $scope.projekti.laajuusYksikko = st.laajuusYksikko;
           }
         });
       },
@@ -134,7 +134,7 @@ angular.module('eperusteApp')
       var projekti = PerusteProjektiService.get();
       if (projekti.id) {
         delete projekti.koulutustyyppi;
-        delete projekti.yksikko;
+        delete projekti.laajuusYksikko;
       }
       else { projekti.id = null; }
 

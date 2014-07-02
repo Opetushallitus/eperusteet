@@ -35,7 +35,7 @@ angular.module('eperusteApp')
     $scope.parsinnanTyyppi = 'peruste';
     $scope.projekti = {};
     $scope.projekti.koulutustyyppi = 'koulutustyyppi_1';
-    $scope.projekti.yksikko = 'OSAAMISPISTE';
+    $scope.projekti.laajuusYksikko = 'OSAAMISPISTE';
     $scope.peruste = {};
     $scope.haettuPeruste = {};
     $scope.peruste.$perusteTallennettu = false;
@@ -70,7 +70,7 @@ angular.module('eperusteApp')
     $scope.rajaaKoodit = function(koodi) { return koodi.koodi.indexOf('_3') !== -1; };
 
     $scope.tallennaPerusteprojekti = function(perusteprojekti) {
-      if (perusteprojekti.koulutustyyppi !== 'koulutustyyppi_1') { delete perusteprojekti.yksikko; }
+      if (perusteprojekti.koulutustyyppi !== 'koulutustyyppi_1') { delete perusteprojekti.laajuusYksikko; }
       PerusteprojektiResource.save(perusteprojekti, function(resPerusteprojekti) {
         $scope.haettuProjekti = resPerusteprojekti;
         Perusteet.get({
@@ -198,7 +198,7 @@ angular.module('eperusteApp')
           });
 
           $scope.projekti.diaarinumero = $scope.peruste.diaarinumero || '';
-          $scope.projekti.yksikko = YleinenData.yksikotMap[$scope.peruste.yksikko] || '';
+          $scope.projekti.laajuusYksikko = YleinenData.yksikotMap[$scope.peruste.laajuusYksikko] || '';
           $scope.lukeeTiedostoa = false;
         }, function(errors) {
           $scope.errors = errors;
