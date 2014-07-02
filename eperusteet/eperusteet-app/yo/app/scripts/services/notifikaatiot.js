@@ -37,6 +37,13 @@ angular.module('eperusteApp')
       if (_.isObject(viesti) && viesti.data && viesti.data.syy) { viesti = viesti.data.syy; }
       else if (!viesti) { viesti = ''; }
 
+      if (!_.isEmpty(viestit)) {
+        var viimeinenViesti = viestit[_.size(viestit) - 1];
+        if (viimeinenViesti.tyyppi === tyyppi && viesti === viesti) {
+          return;
+        }
+      }
+
       viestit.push({
         viesti: viesti ? viesti : tyyppi === 1 ? 'tallennus-onnistui' : '',
         ilmanKuvaa: ilmanKuvaa || false,
