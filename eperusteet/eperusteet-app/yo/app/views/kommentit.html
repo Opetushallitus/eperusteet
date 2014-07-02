@@ -1,5 +1,6 @@
-<div>
-    <div class="kommentti-alue" ng-if="sisalto && nayta" ng-cloak>
+<div ng-if="nayta">
+    <a ng-hide="sisalto" ng-click="naytaKommentit()" href=""><span class="glyphicon glyphicon-comment"></span> {{ 'näytä-kommentit' | kaanna }}</a>
+    <div class="kommentti-alue" ng-if="sisalto" ng-cloak>
         <hr>
         <div>
             <h2>Keskustelu ({{ sisalto.yhteensa }} {{ 'kommenttia' | kaanna }})</h2>

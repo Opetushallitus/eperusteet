@@ -30,7 +30,7 @@ angular.module('eperusteApp')
       },
       link: function ($scope) {
         var stateChanged = false;
-        $scope.nayta = true;
+        $scope.nayta = false;
         $scope.editoitava = '';
         $scope.editoi = false;
         $scope.sisalto = false;
@@ -55,26 +55,12 @@ angular.module('eperusteApp')
         $scope.$on('update:kommentit', function(event, url, lataaja) {
           if (!$scope.urlit[url]) {
             $scope.urlit[url] = lataaja;
-            if (!stateChanged) {
-              lataaKommentit($location.url());
-            }
           }
+          $scope.nayta = true;
         });
 
-        $scope.$on('$stateChangeSuccess', function() {
-          stateChanged = true;
-          $timeout(function() {
-            var url = $location.url();
-            if ($scope.urlit[url]) {
-              lataaKommentit($location.url());
-            }
-          }, 1000);
-        });
-
-        $scope.muokkaaKommenttia = function(uusikommentti) {
-          Kommentit.muokkaaKommenttia(uusikommentti);
-        };
-
+        $scope.naytaKommentit = function() { lataaKommentit($location.url()); };
+        $scope.muokkaaKommenttia = function(uusikommentti) { Kommentit.muokkaaKommenttia(uusikommentti); };
         $scope.lisaaKommentti = function(parent, kommentti) {
           Kommentit.lisaaKommentti(parent, kommentti, function() {
             $scope.sisalto.yhteensa += 1;
