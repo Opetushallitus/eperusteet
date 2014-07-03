@@ -24,7 +24,6 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
@@ -139,6 +138,23 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
         }
 
         return true;
+    }
+    
+    public boolean isInRakenne (TutkinnonOsaViite viite, boolean ylinTaso) {
+        
+        for (AbstractRakenneOsa rakenneosa : osat) {
+            if (rakenneosa instanceof RakenneModuuli) {
+                if (((RakenneModuuli)rakenneosa).isInRakenne(viite, false)) {
+                    return true;
+                }
+            } else if (rakenneosa instanceof RakenneOsa) {
+                if ( ((RakenneOsa)rakenneosa).getTutkinnonOsaViite().equals(viite) ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;  
     }
 
 }

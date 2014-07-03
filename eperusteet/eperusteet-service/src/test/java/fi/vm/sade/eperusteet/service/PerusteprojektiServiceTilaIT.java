@@ -26,9 +26,11 @@ import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.HashSet;
@@ -62,6 +64,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     private Peruste peruste;
     private TekstiKappale tekstikappale;
     private TutkinnonOsa osa;
+    private Suoritustapa naytto;
     
     public PerusteprojektiServiceTilaIT() {
     }
@@ -76,12 +79,46 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     
     @Before
     public void setUp() {
+//        projekti = new Perusteprojekti();
+//        projekti.setDiaarinumero("12345");
+//        projekti.setNimi("Testi projekti");
+//        projekti.setTila(Tila.LAADINTA);
+//        
+//        naytto = new Suoritustapa();
+//        PerusteenOsaViite sisalto = new PerusteenOsaViite();
+//        tekstikappale = new TekstiKappale();
+//        tekstikappale.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "testi_tekstikappale"));
+//        tekstikappale.setTeksti(TestUtils.tekstiPalanenOf(Kieli.FI, "Hodor, hodor - hodor, hodor. Hodor hodor hodor! Hodor, hodor, hodor. Hodor hodor - hodor hodor. Hodor. Hodor. Hodor hodor hodor hodor? Hodor hodor hodor; hodor hodor... Hodor hodor hodor... Hodor hodor hodor. Hodor. "));
+//        tekstikappale.setTila(Tila.LUONNOS);
+//        em.persist(tekstikappale);
+//        sisalto.setPerusteenOsa(tekstikappale);
+//        em.persist(sisalto);
+//        naytto.setSisalto(sisalto);
+//        naytto.setSuoritustapakoodi(Suoritustapakoodi.NAYTTO);
+//        TutkinnonOsaViite osaViite = new TutkinnonOsaViite();
+//        osa = new TutkinnonOsa();
+//        osa.setTila(Tila.LUONNOS);
+//        em.persist(osa);
+//        osaViite.setSuoritustapa(naytto);
+//        osaViite.setTutkinnonOsa(osa);
+//        naytto.setTutkinnonOsat(new HashSet<TutkinnonOsaViite>());
+//        naytto.getTutkinnonOsat().add(osaViite);
+//        
+//        peruste = new Peruste();
+//        peruste.setSuoritustavat(new HashSet<Suoritustapa>());
+//        peruste.getSuoritustavat().add(naytto);
+//        peruste.setTila(Tila.LUONNOS);
+//   
+//        projekti.setPeruste(peruste);
+//        em.flush();
+//        repo.save(projekti);
+        
         projekti = new Perusteprojekti();
         projekti.setDiaarinumero("12345");
         projekti.setNimi("Testi projekti");
         projekti.setTila(Tila.LAADINTA);
         
-        Suoritustapa naytto = new Suoritustapa();
+        naytto = new Suoritustapa();
         PerusteenOsaViite sisalto = new PerusteenOsaViite();
         tekstikappale = new TekstiKappale();
         tekstikappale.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "testi_tekstikappale"));
@@ -89,17 +126,14 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         tekstikappale.setTila(Tila.LUONNOS);
         em.persist(tekstikappale);
         sisalto.setPerusteenOsa(tekstikappale);
-        em.persist(sisalto);
         naytto.setSisalto(sisalto);
+        em.persist(sisalto);
         naytto.setSuoritustapakoodi(Suoritustapakoodi.NAYTTO);
-        TutkinnonOsaViite osaViite = new TutkinnonOsaViite();
-        osa = new TutkinnonOsa();
-        osa.setTila(Tila.LUONNOS);
-        em.persist(osa);
-        osaViite.setSuoritustapa(naytto);
-        osaViite.setTutkinnonOsa(osa);
         naytto.setTutkinnonOsat(new HashSet<TutkinnonOsaViite>());
-        naytto.getTutkinnonOsat().add(osaViite);
+        em.persist(naytto);
+        naytto.setRakenne(luoValidiRakenne());
+
+        
         
         peruste = new Peruste();
         peruste.setSuoritustavat(new HashSet<Suoritustapa>());
@@ -107,8 +141,13 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         peruste.setTila(Tila.LUONNOS);
    
         projekti.setPeruste(peruste);
-        em.flush();
+        em.persist(peruste);
+        
+        //projekti.getPeruste().getSuoritustapa(Suoritustapakoodi.NAYTTO).setRakenne(luoValidiRakenne());
+        
+        
         repo.save(projekti);
+        em.flush();
 
     }
     
@@ -146,8 +185,8 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     @Rollback(true)
     public void testUpdateTilaLaadintaToViimeistelyValidiRakenne() {
         
-        projekti.getPeruste().getSuoritustapa(Suoritustapakoodi.NAYTTO).setRakenne(luoValidiRakenne());
-        repo.save(projekti);
+        /*projekti.getPeruste().getSuoritustapa(Suoritustapakoodi.NAYTTO).setRakenne(luoValidiRakenne());
+        repo.save(projekti);*/
         
         TilaUpdateStatus status = service.updateTila(projekti.getId(), Tila.VIIMEISTELY);
         assertTrue(status.isVaihtoOk());
@@ -158,7 +197,8 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         assertTrue(em.find(TutkinnonOsa.class, osa.getId()).getTila().equals(Tila.LUONNOS));
     }
     
-    /*@Test
+    
+    @Test
     @Rollback(true)
     public void testUpdateTilaLaadintaToViimeistelyEpaValidiRakenne() {
         
@@ -172,7 +212,24 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(Tila.LUONNOS));
         assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(Tila.LUONNOS));
         assertTrue(em.find(TutkinnonOsa.class, osa.getId()).getTila().equals(Tila.LUONNOS));
-    }*/
+    }
+    
+    @Test
+    @Rollback(true)
+    public void testUpdateTilaLaadintaToViimeistelyVapaitaTutkinnonOsia() {
+        
+
+        projekti.getPeruste().getSuoritustapa(Suoritustapakoodi.NAYTTO).getTutkinnonOsat().add(luoTutkinnonOsaViite());
+        repo.save(projekti);
+        
+        TilaUpdateStatus status = service.updateTila(projekti.getId(), Tila.VIIMEISTELY);
+        assertFalse(status.isVaihtoOk());
+        assertNotNull(status.getInfo());
+        assertTrue(repo.getOne(projekti.getId()).getTila().equals(Tila.LAADINTA));
+        assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(Tila.LUONNOS));
+        assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(Tila.LUONNOS));
+        assertTrue(em.find(TutkinnonOsa.class, osa.getId()).getTila().equals(Tila.LUONNOS));
+    }
     
     @Test
     @Rollback(true)
@@ -238,19 +295,34 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         assertTrue(em.find(TutkinnonOsa.class, osa.getId()).getTila().equals(Tila.VALMIS));
     }
     
-    private RakenneModuuli luoValidiRakenne() {
-        RakenneModuuli rakenne = TestUtils.teeRyhma(
-            10, 240, -1, -1,
-            TestUtils.teeRakenneOsa(1, 10),
-            TestUtils.teeRyhma(
-                10, 90, -1, -1,
-                TestUtils.teeRakenneOsa(1, 10),
-                TestUtils.teeRakenneOsa(2, 20)    
-            )
-        );
-        
-        return rakenne;
-    }
+//    private RakenneModuuli luoValidiRakenne() {
+//        RakenneModuuli rakenne = new RakenneModuuli();
+//                /*= TestUtils.teeRyhma(
+//            10, 240, -1, -1,
+//            TestUtils.teeRakenneOsa(1, 10),
+//            TestUtils.teeRyhma(
+//                10, 90, -1, -1,
+//                TestUtils.teeRakenneOsa(1, 10),
+//                TestUtils.teeRakenneOsa(2, 20)    
+//            )
+//        );*/
+//        em.persist(rakenne);
+//        
+//        RakenneOsa rakenneOsa = TestUtils.teeRakenneOsa(0, 0);
+//        TutkinnonOsaViite osaViite = new TutkinnonOsaViite();
+//        osaViite.setSuoritustapa(naytto);
+//        osaViite.setTutkinnonOsa(osa);
+//        em.persist(osaViite);
+//        rakenneOsa.setTutkinnonOsaViite(osaViite);
+//        em.persist(rakenneOsa);
+//        rakenneOsa.getTutkinnonOsaViite().setTutkinnonOsa(osa);
+//        rakenne.getOsat().add(rakenneOsa);
+//        
+//        
+//        
+//        return rakenne;
+//    }
+    
     
     private RakenneModuuli luoEpaValidiRakenne() {
         RakenneModuuli rakenne = TestUtils.teeRyhma(
@@ -265,4 +337,65 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         
         return rakenne;
     }
+    
+   /* private TutkinnonOsaViite luoTutkinnonOsaViite() {
+        
+        TutkinnonOsaViite osaViite = new TutkinnonOsaViite();
+        TutkinnonOsa osaTemp = new TutkinnonOsa();
+        osaTemp.setTila(Tila.LUONNOS);
+        em.persist(osaTemp);
+        osaViite.setSuoritustapa(naytto);
+        osaViite.setTutkinnonOsa(osaTemp);
+        em.persist(osaViite);
+        em.flush();
+        
+        return osaViite;
+
+    }*/
+    
+    private RakenneModuuli luoValidiRakenne() {
+        RakenneModuuli juuri = new RakenneModuuli();
+        em.persist(juuri);
+        
+        juuri.getOsat().add(luoRakenneOsa());
+        juuri.getOsat().add(luoRakenneOsa());
+        
+        RakenneModuuli ryhmaA = new RakenneModuuli();
+        em.persist(ryhmaA);
+        juuri.getOsat().add(ryhmaA);
+        
+        ryhmaA.getOsat().add(luoRakenneOsa());    
+        
+        return juuri;
+    }
+    
+    private TutkinnonOsaViite luoTutkinnonOsaViite() {
+        TutkinnonOsaViite osaViite = new TutkinnonOsaViite();
+        TutkinnonOsa tutkinnonosa = new TutkinnonOsa();
+        tutkinnonosa.setTila(Tila.LUONNOS);
+        em.persist(tutkinnonosa);
+        osaViite.setSuoritustapa(naytto);
+        osaViite.setTutkinnonOsa(tutkinnonosa);
+        em.persist(osaViite);
+        
+        return osaViite;
+    }
+    
+    private RakenneOsa luoRakenneOsa() {
+        RakenneOsa rakenneOsa = TestUtils.teeRakenneOsa(0, 0);
+        
+        osa = new TutkinnonOsa();
+        osa.setTila(Tila.LUONNOS);
+        em.persist(osa);        
+        TutkinnonOsaViite osaViite = new TutkinnonOsaViite();
+        osaViite.setSuoritustapa(naytto);
+        osaViite.setTutkinnonOsa(osa);
+        em.persist(osaViite);
+        naytto.getTutkinnonOsat().add(osaViite);
+        rakenneOsa.setTutkinnonOsaViite(osaViite);
+        em.persist(rakenneOsa);
+        
+        return rakenneOsa;
+    }
+
 }

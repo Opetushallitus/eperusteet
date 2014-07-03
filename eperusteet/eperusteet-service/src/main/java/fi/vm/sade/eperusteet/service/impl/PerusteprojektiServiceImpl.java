@@ -20,7 +20,9 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.Tila;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiInfoDto;
@@ -35,6 +37,8 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
@@ -153,16 +157,29 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         if (projekti.getPeruste() != null && projekti.getPeruste().getSuoritustavat() != null
             && tila == Tila.VIIMEISTELY && projekti.getTila() == Tila.LAADINTA) {
-            /*for (Suoritustapa suoritustapa : projekti.getPeruste().getSuoritustavat()) {
-                Validointi validointi;
+            for (Suoritustapa suoritustapa : projekti.getPeruste().getSuoritustavat()) {
+                /*Validointi validointi;
                 if (suoritustapa.getRakenne() != null) {
                     validointi = PerusteenRakenne.validoiRyhma(suoritustapa.getRakenne());
                     if (!validointi.ongelmat.isEmpty()) {
                         status.addStatus("Rakenteen validointi virhe", TilaUpdateStatus.Statuskoodi.VIRHE, validointi);
                         status.setVaihtoOk(false);
                     }
+                }*/
+                
+                List<TutkinnonOsaViite> vapaatOsat = vapaatTutkinnonosat(suoritustapa);
+                
+                if (!vapaatOsat.isEmpty()) {
+                    List<TekstiPalanen> nimet = new ArrayList<>();
+                    for (TutkinnonOsaViite viite : vapaatOsat) {
+                        nimet.add(viite.getTutkinnonOsa().getNimi());
+                    }
+                    status.addStatus("Liittämättömiä tutkinnon osia", TilaUpdateStatus.Statuskoodi.VIRHE, nimet);
+                    status.setVaihtoOk(false);
                 }
-            } */
+
+            }     
+
         }
 
         if ( !status.isVaihtoOk() ) {
@@ -202,4 +219,20 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
         return osa;
     }
+
+    
+    private List<TutkinnonOsaViite> vapaatTutkinnonosat(Suoritustapa suoritustapa) {
+        List<TutkinnonOsaViite> viiteList = new ArrayList<>();
+
+        RakenneModuuli rakenne = suoritustapa.getRakenne();
+        if (rakenne != null) {
+            for (TutkinnonOsaViite viite : suoritustapa.getTutkinnonOsat()) {
+                if (!rakenne.isInRakenne(viite, true)) {
+                    viiteList.add(viite);
+                }
+            }
+        }
+        return viiteList;
+    }
+
 }
