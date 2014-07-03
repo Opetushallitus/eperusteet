@@ -24,10 +24,12 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.TilaUpdateStatus.Status;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -40,7 +42,6 @@ import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,50 +141,49 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @Transactional(readOnly = false)
     public TilaUpdateStatus updateTila(Long id, Tila tila) {
-        TilaUpdateStatus status = new TilaUpdateStatus();
-        status.setVaihtoOk(true);
+        TilaUpdateStatus updateStatus = new TilaUpdateStatus();
+        updateStatus.setVaihtoOk(true);
 
         Perusteprojekti projekti = repository.findOne(id);
 
         if (projekti == null) {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
         }
-        status.setVaihtoOk(projekti.getTila().mahdollisetTilat().contains(tila));
-        if ( !status.isVaihtoOk() ) {
+        updateStatus.setVaihtoOk(projekti.getTila().mahdollisetTilat().contains(tila));
+        if ( !updateStatus.isVaihtoOk() ) {
             String viesti = "Tilasiirtymä tilasta '" + projekti.getTila().toString() + "' tilaan '" + tila.toString() + "' ei mahdollinen";
-            status.addStatus(viesti, TilaUpdateStatus.Statuskoodi.VIRHE);
-            return status;
+            updateStatus.addStatus(viesti);
+            return updateStatus;
         }
 
         if (projekti.getPeruste() != null && projekti.getPeruste().getSuoritustavat() != null
             && tila == Tila.VIIMEISTELY && projekti.getTila() == Tila.LAADINTA) {
+            Validointi validointi;
             for (Suoritustapa suoritustapa : projekti.getPeruste().getSuoritustavat()) {
-                /*Validointi validointi;
-                if (suoritustapa.getRakenne() != null) {
+                /*if (suoritustapa.getRakenne() != null) {
                     validointi = PerusteenRakenne.validoiRyhma(suoritustapa.getRakenne());
                     if (!validointi.ongelmat.isEmpty()) {
-                        status.addStatus("Rakenteen validointi virhe", TilaUpdateStatus.Statuskoodi.VIRHE, validointi);
-                        status.setVaihtoOk(false);
+                        updateStatus.addStatus("Rakenteen validointi virhe", TilaUpdateStatus.Statuskoodi.VIRHE, validointi);
+                        updateStatus.setVaihtoOk(false);
                     }
                 }*/
                 
                 List<TutkinnonOsaViite> vapaatOsat = vapaatTutkinnonosat(suoritustapa);
-                
                 if (!vapaatOsat.isEmpty()) {
-                    List<TekstiPalanen> nimet = new ArrayList<>();
+                    List<LokalisoituTekstiDto> nimet = new ArrayList<>();
                     for (TutkinnonOsaViite viite : vapaatOsat) {
-                        nimet.add(viite.getTutkinnonOsa().getNimi());
+                        if (viite.getTutkinnonOsa().getNimi() != null) {
+                           nimet.add(new LokalisoituTekstiDto(viite.getTutkinnonOsa().getNimi().getId(), viite.getTutkinnonOsa().getNimi().getTeksti()));
+                        }
                     }
-                    status.addStatus("Liittämättömiä tutkinnon osia", TilaUpdateStatus.Statuskoodi.VIRHE, nimet);
-                    status.setVaihtoOk(false);
+                    updateStatus.addStatus("liittamattomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);
+                    updateStatus.setVaihtoOk(false);
                 }
-
             }     
-
         }
 
-        if ( !status.isVaihtoOk() ) {
-            return status;
+        if ( !updateStatus.isVaihtoOk() ) {
+            return updateStatus;
         }
 
         if (tila == Tila.JULKAISTU && projekti.getTila() == Tila.VALMIS) {
@@ -198,7 +198,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         projekti.setTila(tila);
         repository.save(projekti);
-        return status;
+        return updateStatus;
     }
 
     private PerusteenOsaViite setSisaltoValmis(PerusteenOsaViite sisaltoRoot) {

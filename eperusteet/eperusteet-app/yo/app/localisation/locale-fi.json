@@ -495,5 +495,9 @@
     
     "arvo-rajojen-ulkopuolella": "Arvon pitää olla välillä {{min}} - {{max}}",
     "arvo-ei-numero": "Arvon täytyy olla numero",
-    "sivu-virheellisia-arvoja": "Sivulla on virheellisiä arvoja"
+    "sivu-virheellisia-arvoja": "Sivulla on virheellisiä arvoja",
+    
+    "tilanvaihtovirhe-header": "Projektin tilan vaihtaminen ei onnistunut",
+    "liittamattomia-tutkinnon-osia": "Projektissa on rakenteeseen liittämättömiä tutkinnon osia. Poista tai liitä rakenteeseen seuraavat tutkinnon osat:",
+    "korjaa-virheet": "Korjaa seuraavat virheet"
 }

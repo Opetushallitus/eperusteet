@@ -52,7 +52,7 @@ angular.module('eperusteApp')
   })
 
   .controller('StatusbadgeCtrl', function ($scope, PerusteprojektinTilanvaihto,
-    PerusteprojektiTila, Notifikaatiot, $http, SERVICE_LOC) {
+    PerusteprojektiTila, Notifikaatiot, $http, SERVICE_LOC, $modal) {
     $scope.iconMapping = {
       laadinta: 'pencil',
       kommentointi: 'comment',
@@ -75,16 +75,26 @@ angular.module('eperusteApp')
     $scope.startEditing = function() {
       $http.get(SERVICE_LOC + '/perusteprojektit/' + $scope.projektiId + '/tilat').then(function(vastaus) {
 
-      if (vastaus.data.length !== 0) {
-        PerusteprojektinTilanvaihto.start($scope.status, vastaus.data, function(newStatus) {
-          // TODO tilan tallennus, tämä asettaa uuden tilan parent scopen projektiobjektiin.
-          PerusteprojektiTila.save({id: $scope.projektiId, tila: newStatus}, {}, function(vastaus) {
-            if (vastaus.vaihtoOk) {
-              $scope.status = newStatus;
-            } else {
-              Notifikaatiot.varoitus(vastaus.info[0].viesti);
-              // TODO: Virheen tietojen näyttäminen järkevästi
-            }
+        if (vastaus.data.length !== 0) {
+          PerusteprojektinTilanvaihto.start($scope.status, vastaus.data, function(newStatus) {
+            // TODO tilan tallennus, tämä asettaa uuden tilan parent scopen projektiobjektiin.
+            PerusteprojektiTila.save({id: $scope.projektiId, tila: newStatus}, {}, function(vastaus) {
+              if (vastaus.vaihtoOk) {
+                $scope.status = newStatus;
+              } else {
+                //Notifikaatiot.varoitus(vastaus.info[0].viesti);
+                // TODO: Virheen tietojen näyttäminen järkevästi
+                console.log('virhe modaalin infot', vastaus.infot);
+                $modal.open({
+                  templateUrl: 'views/modals/tilanVaihtoVirhe.html',
+                  controller: 'TilanvaihtovirheCtrl',
+                  resolve: {infot: function() {
+                      return vastaus.infot;
+                    }}
+                }).result.then(function() {
+                  console.log('Virhe modaali sulki');
+                });
+              }
           }, function(virhe) {
             console.log('tilan vaihto virhe', virhe);
             Notifikaatiot.serverCb(virhe);
@@ -93,6 +103,7 @@ angular.module('eperusteApp')
         });
       }
       }, function(err) {
+        // TODO: serverCb ei toimi hyvin yhteen $http virheiden kanssa. Korjaa.
         Notifikaatiot.serverCb(err);
       });
 

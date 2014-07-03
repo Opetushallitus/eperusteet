@@ -93,7 +93,6 @@ public class PerusteprojektiController {
     @RequestMapping(value = "/{id}/tilat", method = GET)
     @ResponseBody
     public ResponseEntity<Set<Tila>> getTilat(@PathVariable("id") final long id) {
-        
         return new ResponseEntity<>(service.getTilat(id), HttpStatus.OK);
     }
 

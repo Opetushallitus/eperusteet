@@ -47,7 +47,6 @@ angular.module('eperusteApp')
   })
 
   .controller('PerusteprojektinTilaModal', function ($scope, $modal, $modalInstance, data) {
-    console.log('data', data);
     $scope.data = data;
     $scope.data.selected = null;
     $scope.data.editable = false;

@@ -15,8 +15,7 @@
  */
 package fi.vm.sade.eperusteet.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,32 +29,32 @@ import lombok.Setter;
 public class TilaUpdateStatus {
     @Getter
     @Setter
-    List<Status> info;
+    List<Status> infot;
     @Getter
     @Setter
     boolean vaihtoOk;
     
-    public void addStatus(String viesti, Statuskoodi koodi) {
-
-        addStatus(viesti, koodi, null, null);
+    public void addStatus(String viesti) {
+        addStatus(viesti, null, null, null);
     }
     
-    public void addStatus(String viesti, Statuskoodi koodi, List<TekstiPalanen> nimet) {
-
-        addStatus(viesti, koodi, null, nimet);
+    public void addStatus(String viesti, Suoritustapakoodi suoritustapa) {
+        addStatus(viesti, suoritustapa, null, null);
     }
     
-    public void addStatus(String viesti, Statuskoodi koodi, Validointi validointi) {
-
-        addStatus(viesti, koodi, validointi, null);
+    public void addStatus(String viesti, Suoritustapakoodi suoritustapa, List<LokalisoituTekstiDto> nimet) {
+        addStatus(viesti, suoritustapa, null, nimet);
     }
     
-    public void addStatus(String viesti, Statuskoodi koodi, Validointi validointi, List<TekstiPalanen> nimet) {
-        if (info == null) {
-            info = new ArrayList<>();
-        }
-        
-        info.add(new Status(viesti, koodi, validointi, nimet));
+    public void addStatus(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi) {
+        addStatus(viesti, suoritustapa, validointi, null);
+    }
+    
+    public void addStatus(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet) {
+        if (infot == null) {
+            infot = new ArrayList<>();
+        }  
+        infot.add(new Status(viesti, suoritustapa, validointi, nimet));
     }
     
     @Getter
@@ -63,43 +62,16 @@ public class TilaUpdateStatus {
     public static class Status {
 
         String viesti;
-        Statuskoodi koodi;
         Validointi validointi;
-        List<TekstiPalanen> nimet;
+        List<LokalisoituTekstiDto> nimet;
+        Suoritustapakoodi suoritustapa;
         
-        public Status(String viesti, Statuskoodi koodi, Validointi validointi, List<TekstiPalanen> nimet) {
+        public Status(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet) {
             this.viesti = viesti;
-            this.koodi = koodi;
             this.validointi = validointi;
             this.nimet = nimet;
+            this.suoritustapa = suoritustapa;
         }
     }
 
-    public enum Statuskoodi {
-
-        INFO("info"),
-        VAROITUS("varoitus"),
-        VIRHE("virhe");
-
-        private final String koodi;
-
-        private Statuskoodi(String koodi) {
-            this.koodi = koodi;
-        }
-
-        @Override
-        public String toString() {
-            return koodi;
-        }
-
-        @JsonCreator
-        public static Statuskoodi of(String koodi) {
-            for (Statuskoodi s : values()) {
-                if (s.koodi.equalsIgnoreCase(koodi)) {
-                    return s;
-                }
-            }
-            throw new IllegalArgumentException(koodi + " ei ole kelvollinen statuskoodi");
-        }
-    }
 }

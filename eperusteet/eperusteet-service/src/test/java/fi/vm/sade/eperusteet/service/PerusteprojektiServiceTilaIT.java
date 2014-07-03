@@ -17,12 +17,14 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -33,7 +35,9 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.junit.After;
@@ -160,7 +164,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     public void testUpdateTilaLaadintaToKommentointi() {
         TilaUpdateStatus status = service.updateTila(projekti.getId(), Tila.KOMMENTOINTI);
         assertTrue(status.isVaihtoOk());
-        assertNull(status.getInfo());
+        assertNull(status.getInfot());
         assertTrue(repo.getOne(projekti.getId()).getTila().equals(Tila.KOMMENTOINTI));
         assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(Tila.LUONNOS));
         assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(Tila.LUONNOS));
@@ -174,7 +178,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         repo.save(projekti);
         TilaUpdateStatus status = service.updateTila(projekti.getId(), Tila.LAADINTA);
         assertTrue(status.isVaihtoOk());
-        assertNull(status.getInfo());
+        assertNull(status.getInfot());
         assertTrue(repo.getOne(projekti.getId()).getTila().equals(Tila.LAADINTA));
         assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(Tila.LUONNOS));
         assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(Tila.LUONNOS));
@@ -190,7 +194,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         
         TilaUpdateStatus status = service.updateTila(projekti.getId(), Tila.VIIMEISTELY);
         assertTrue(status.isVaihtoOk());
-        assertNull(status.getInfo());
+        assertNull(status.getInfot());
         assertTrue(repo.getOne(projekti.getId()).getTila().equals(Tila.VIIMEISTELY));
         assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(Tila.LUONNOS));
         assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(Tila.LUONNOS));
@@ -207,7 +211,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         
         TilaUpdateStatus status = service.updateTila(projekti.getId(), Tila.VIIMEISTELY);
         assertFalse(status.isVaihtoOk());
-        assertNotNull(status.getInfo());
+        assertNotNull(status.getInfot());
         assertTrue(repo.getOne(projekti.getId()).getTila().equals(Tila.LAADINTA));
         assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(Tila.LUONNOS));
         assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(Tila.LUONNOS));
@@ -224,7 +228,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         
         TilaUpdateStatus status = service.updateTila(projekti.getId(), Tila.VIIMEISTELY);
         assertFalse(status.isVaihtoOk());
-        assertNotNull(status.getInfo());
+        assertNotNull(status.getInfot());
         assertTrue(repo.getOne(projekti.getId()).getTila().equals(Tila.LAADINTA));
         assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(Tila.LUONNOS));
         assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(Tila.LUONNOS));
@@ -238,7 +242,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         repo.save(projekti);
         TilaUpdateStatus status = service.updateTila(projekti.getId(), Tila.LAADINTA);
         assertTrue(status.isVaihtoOk());
-        assertNull(status.getInfo());
+        assertNull(status.getInfot());
         assertTrue(repo.getOne(projekti.getId()).getTila().equals(Tila.LAADINTA));
         assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(Tila.LUONNOS));
         assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(Tila.LUONNOS));
@@ -252,7 +256,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         repo.save(projekti);
         TilaUpdateStatus status = service.updateTila(projekti.getId(), Tila.VALMIS);
         assertTrue(status.isVaihtoOk());
-        assertNull(status.getInfo());
+        assertNull(status.getInfot());
         assertTrue(repo.getOne(projekti.getId()).getTila().equals(Tila.VALMIS));
         assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(Tila.LUONNOS));
         assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(Tila.LUONNOS));
@@ -266,7 +270,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         repo.save(projekti);
         TilaUpdateStatus status = service.updateTila(projekti.getId(), Tila.JULKAISTU);
         assertTrue(status.isVaihtoOk());
-        assertNull(status.getInfo());
+        assertNull(status.getInfot());
         assertTrue(repo.getOne(projekti.getId()).getTila().equals(Tila.JULKAISTU));
         assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(Tila.VALMIS));
         assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(Tila.VALMIS));
@@ -288,41 +292,13 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         
         TilaUpdateStatus status = service.updateTila(projekti.getId(), Tila.VALMIS);
         assertFalse(status.isVaihtoOk());
-        assertNotNull(status.getInfo());
+        assertNotNull(status.getInfot());
         assertTrue(repo.getOne(projekti.getId()).getTila().equals(Tila.JULKAISTU));
         assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(Tila.VALMIS));
         assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(Tila.VALMIS));
         assertTrue(em.find(TutkinnonOsa.class, osa.getId()).getTila().equals(Tila.VALMIS));
     }
-    
-//    private RakenneModuuli luoValidiRakenne() {
-//        RakenneModuuli rakenne = new RakenneModuuli();
-//                /*= TestUtils.teeRyhma(
-//            10, 240, -1, -1,
-//            TestUtils.teeRakenneOsa(1, 10),
-//            TestUtils.teeRyhma(
-//                10, 90, -1, -1,
-//                TestUtils.teeRakenneOsa(1, 10),
-//                TestUtils.teeRakenneOsa(2, 20)    
-//            )
-//        );*/
-//        em.persist(rakenne);
-//        
-//        RakenneOsa rakenneOsa = TestUtils.teeRakenneOsa(0, 0);
-//        TutkinnonOsaViite osaViite = new TutkinnonOsaViite();
-//        osaViite.setSuoritustapa(naytto);
-//        osaViite.setTutkinnonOsa(osa);
-//        em.persist(osaViite);
-//        rakenneOsa.setTutkinnonOsaViite(osaViite);
-//        em.persist(rakenneOsa);
-//        rakenneOsa.getTutkinnonOsaViite().setTutkinnonOsa(osa);
-//        rakenne.getOsat().add(rakenneOsa);
-//        
-//        
-//        
-//        return rakenne;
-//    }
-    
+      
     
     private RakenneModuuli luoEpaValidiRakenne() {
         RakenneModuuli rakenne = TestUtils.teeRyhma(
@@ -338,21 +314,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         return rakenne;
     }
     
-   /* private TutkinnonOsaViite luoTutkinnonOsaViite() {
-        
-        TutkinnonOsaViite osaViite = new TutkinnonOsaViite();
-        TutkinnonOsa osaTemp = new TutkinnonOsa();
-        osaTemp.setTila(Tila.LUONNOS);
-        em.persist(osaTemp);
-        osaViite.setSuoritustapa(naytto);
-        osaViite.setTutkinnonOsa(osaTemp);
-        em.persist(osaViite);
-        em.flush();
-        
-        return osaViite;
-
-    }*/
-    
+       
     private RakenneModuuli luoValidiRakenne() {
         RakenneModuuli juuri = new RakenneModuuli();
         em.persist(juuri);
@@ -386,6 +348,9 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         
         osa = new TutkinnonOsa();
         osa.setTila(Tila.LUONNOS);
+        Map<Kieli,String> tekstiMap = new HashMap<>();
+        tekstiMap.put(Kieli.FI, "Teksti");
+        osa.setNimi(TekstiPalanen.of(tekstiMap));
         em.persist(osa);        
         TutkinnonOsaViite osaViite = new TutkinnonOsaViite();
         osaViite.setSuoritustapa(naytto);
