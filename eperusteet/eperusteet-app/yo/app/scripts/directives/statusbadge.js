@@ -82,9 +82,6 @@ angular.module('eperusteApp')
               if (vastaus.vaihtoOk) {
                 $scope.status = newStatus;
               } else {
-                //Notifikaatiot.varoitus(vastaus.info[0].viesti);
-                // TODO: Virheen tietojen näyttäminen järkevästi
-                console.log('virhe modaalin infot', vastaus.infot);
                 $modal.open({
                   templateUrl: 'views/modals/tilanVaihtoVirhe.html',
                   controller: 'TilanvaihtovirheCtrl',
@@ -92,7 +89,6 @@ angular.module('eperusteApp')
                       return vastaus.infot;
                     }}
                 }).result.then(function() {
-                  console.log('Virhe modaali sulki');
                 });
               }
           }, function(virhe) {
