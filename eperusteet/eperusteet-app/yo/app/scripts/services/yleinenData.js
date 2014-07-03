@@ -35,8 +35,8 @@ angular.module('eperusteApp')
       'ammatillinenaikuiskoulutus'];
 
     this.rakenneRyhmaRoolit = [
-      'normaali',
-      'virtuaalinen'
+      'määritelty',
+      'määrittelemätön'
     ];
 
     this.yksikot = [

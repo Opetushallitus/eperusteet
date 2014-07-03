@@ -23,8 +23,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  * @author nkala
  */
 public enum RakenneModuuliRooli {
-    NORMAALI("normaali"),
-    VIRTUAALINEN("virtuaalinen");
+    NORMAALI("määritelty"),
+    VIRTUAALINEN("määrittelemätön");
 
     private final String rooli;
 

@@ -48,8 +48,8 @@
     "OSAAMISPISTE": "osp",
 
     "erikoisrooli": "Erikoisrooli",
-    "normaali": "Normaali",
-    "virtuaalinen": "Vapaa",
+    "määritelty": "Määritelty",
+    "määrittelemätön": "Määrittelemätön",
 
     "yhteys-palvelimeen-timeout": "Yhteys palveluun on aikakatkaistu.",
     "yhteys-palvelimeen-poikki": "Yhteys palveluun on katkennut.",

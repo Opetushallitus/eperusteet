@@ -130,7 +130,7 @@ angular.module('eperusteApp')
           scope.apumuuttujat.piilotaVirheet = !scope.apumuuttujat.piilotaVirheet;
         };
 
-        var varivalinta = '{ \'background\': rakenne.rooli === \'virtuaalinen\'' +
+        var varivalinta = '{ \'background\': rakenne.rooli === \'määrittelemätön\'' +
                                               '? \'#93278F\'' +
                                               ': rakenne.osat.length === 0' +
                                                 '? \'#FDBB07\'' +
@@ -154,7 +154,7 @@ angular.module('eperusteApp')
 
         var optiot = '' +
           '<span ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" ng-if="!rakenne._tutkinnonOsaViite" class="colorbox" ng-style="' + varivalinta + '">' +
-          '  <span ng-show="rakenne.rooli !== \'virtuaalinen\'">' +
+          '  <span ng-show="rakenne.rooli !== \'määrittelemätön\'">' +
           '    <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
           '    <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
           '  </span>' +
@@ -214,7 +214,7 @@ angular.module('eperusteApp')
           '  <div ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="isovirhe-otsikko">{{ tkaanna(rakenne.$virhe.selite) }}<span ng-show="rakenne.$virhe.selite.length > 0">. </span>{{ rakenne.$virhe.virhe | kaanna }}</div>' +
           '</div>' +
           '<div ng-if="vanhempi">' + kentta + '</div>' +
-          '<div ng-if="rakenne.rooli !== \'virtuaalinen\'" class="collapser" ng-show="!rakenne.$collapsed">' +
+          '<div ng-if="rakenne.rooli !== \'määrittelemätön\'" class="collapser" ng-show="!rakenne.$collapsed">' +
           '  <ul ng-if="rakenne.osat !== undefined" ui-sortable="sortableOptions" id="tree-sortable" class="tree-group" ng-model="rakenne.osat">' +
           '    <li ng-repeat="osa in rakenne.osat">' +
           '      <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" rakenne="osa" vanhempi="rakenne" tutkinnon-osa-viitteet="tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" ng-init="notfirst = true" poisto-tehty-cb="poistoTehtyCb"></tree>' +
