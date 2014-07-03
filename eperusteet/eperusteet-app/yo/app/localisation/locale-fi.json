@@ -123,6 +123,9 @@
     "nayta-aliviestit": "Näytä vastaukset",
     "piilota-aliviestit": "Piilota vastaukset",
 
+    "ryhmä-rooli-selite-määritelty": "Ryhmän sisältö määritellään perustepuun luonnin yhteydessä",
+    "ryhmä-rooli-selite-määrittelemätön": "Ryhmälle annetaan vain muodostumissäännöt ja sen sisältö määritellään paikallisen laadinnan puolella",
+
     "haku-otsikko": "Perusteen haku",
     "haku-koulutusala": "Koulutusala",
     "haku-voimaantulopvm" : "Voimaantulopvm.",

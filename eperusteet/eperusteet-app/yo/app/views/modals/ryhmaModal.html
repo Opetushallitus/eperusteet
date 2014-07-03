@@ -8,6 +8,13 @@
     <formfield model="ryhma" model-var="nimi" label="nimi" type="text" required></formfield>
     <formfield model="ryhma" model-var="kuvaus" label="kuvaus" type="text"></formfield>
     <formfield ng-if="luonti" model="ryhma" model-var="rooli" label="erikoisrooli" options="roolit"></formfield>
+    <div>
+      <div class="col-sm-3"></div>
+      <div class="col-sm-9 alert alert-info">
+        <span ng-show="ryhma.rooli === 'määritelty'">{{ 'ryhmä-rooli-selite-määritelty' | kaanna }}.</span>
+        <span ng-show="ryhma.rooli === 'määrittelemätön'">{{ 'ryhmä-rooli-selite-määrittelemätön' | kaanna }}.</span>
+      </div>
+    </div>
 
     <h3 ng-if="vanhempi">{{'tutkinnon-rakenne' | translate}}</h3>
     <div class="form-group">
