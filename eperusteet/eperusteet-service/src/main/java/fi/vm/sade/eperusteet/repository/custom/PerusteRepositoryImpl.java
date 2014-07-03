@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.repository.custom;
 
 import com.google.common.base.Function;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutus;
@@ -120,18 +121,18 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
     }
 
     private Predicate buildPredicate(
-            Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, PerusteQuery pquery) {
+        Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, PerusteQuery pquery) {
 
-        Kieli kieli = Kieli.of(pquery.getKieli());
-        String nimi = pquery.getNimi();
-        String st = pquery.getSuoritustapa();
-        List<String> koulutusala = pquery.getKoulutusala();
-        List<String> tyyppi = pquery.getTyyppi();
-        List<String> opintoala = pquery.getOpintoala();
-        boolean siirtyma = pquery.isSiirtyma();
-        String tilaStr = pquery.getTila();
-        Expression<Date> siirtymaAlkaa = root.get(Peruste_.siirtymaAlkaa);
-        Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
+        final Kieli kieli = Kieli.of(pquery.getKieli());
+        final String nimi = pquery.getNimi();
+        final String st = pquery.getSuoritustapa();
+        final List<String> koulutusala = pquery.getKoulutusala();
+        final List<String> tyyppi = pquery.getTyyppi();
+        final List<String> opintoala = pquery.getOpintoala();
+        final boolean siirtyma = pquery.isSiirtyma();
+        final String tilaStr = pquery.getTila();
+        final Expression<Date> siirtymaAlkaa = root.get(Peruste_.siirtymaAlkaa);
+        final Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
 
         Predicate pred = cb.equal(teksti.get(LokalisoituTeksti_.kieli), kieli);
 
@@ -145,31 +146,35 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             pred = cb.and(pred, cb.equal(suoritustapa.get(Suoritustapa_.suoritustapakoodi), suoritustapakoodi));
         }
 
-        if (koulutusala != null && !koulutusala.isEmpty()) {
-            Join<Peruste, Koulutus> ala = root.join(Peruste_.koulutukset);
-            pred = cb.and(pred, ala.get(Koulutus_.koulutusalakoodi).in(koulutusala));
-        }
-
         if (tyyppi != null && !tyyppi.isEmpty()) {
             pred = cb.and(pred, root.get(Peruste_.tutkintokoodi).in(tyyppi));
         }
 
+        Join<Peruste, Koulutus> koulutukset = null;
+        if (koulutusala != null && !koulutusala.isEmpty()) {
+            koulutukset = root.join(Peruste_.koulutukset);
+            pred = cb.and(pred, koulutukset.get(Koulutus_.koulutusalakoodi).in(koulutusala));
+        }
+
         if (opintoala != null && !opintoala.isEmpty()) {
-            Join<Peruste, Koulutus> ala = root.join(Peruste_.koulutukset);
-            pred = cb.and(pred, ala.get(Koulutus_.opintoalakoodi).in(opintoala));
+            koulutukset = (koulutukset == null ) ? root.join(Peruste_.koulutukset) : koulutukset;
+            pred = cb.and(pred, koulutukset.get(Koulutus_.opintoalakoodi).in(opintoala));
+        }
+
+        if (!Strings.isNullOrEmpty(pquery.getKoodiUri())) {
+            koulutukset = (koulutukset == null ) ? root.join(Peruste_.koulutukset) : koulutukset;
+            pred = cb.and(pred, cb.equal(koulutukset.get(Koulutus_.koulutuskoodi), pquery.getKoodiUri()));
         }
 
         if (siirtyma) {
             pred = cb.and(pred, cb.or(cb.isNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate())));
-        }
-        else {
+        } else {
             pred = cb.and(pred, cb.and(cb.or(cb.isNull(siirtymaAlkaa), cb.greaterThan(siirtymaAlkaa, cb.currentDate())),
                                        cb.or(cb.isNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate()))));
         }
 
-        if (tilaStr != null) {
-            Tila tila = Tila.of(tilaStr);
-            pred = cb.and(pred, cb.equal(root.get(Peruste_.tila), tila));
+        if (!Strings.isNullOrEmpty(tilaStr)) {
+            pred = cb.and(pred, cb.equal(root.get(Peruste_.tila), Tila.of(tilaStr)));
         }
 
         return pred;

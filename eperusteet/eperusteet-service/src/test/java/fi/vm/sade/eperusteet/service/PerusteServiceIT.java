@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service;
 
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
@@ -28,6 +29,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -50,6 +52,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -70,6 +73,8 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     private PerusteenOsaRepository perusteenOsaRepository;
     @Autowired
     private PerusteenOsaService perusteenOsaService;
+    @Autowired
+    private KoulutusRepository koulutusRepository;
 
     private Peruste peruste;
 
@@ -78,6 +83,10 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
     @Before
     public void setUp() {
+
+        Koulutus koulutus = new Koulutus(tekstiPalanenOf(Kieli.FI,"Koulutus"),"koulutuskoodi","koulutusalakoodi","opintoalakoodi");
+        koulutus = koulutusRepository.save(koulutus);
+
         Peruste p = TestUtils.createPeruste();
         p.setSiirtymaAlkaa(new GregorianCalendar(2000, Calendar.MARCH, 12).getTime());
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
@@ -85,6 +94,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         Suoritustapa s = new Suoritustapa();
         s.setSuoritustapakoodi(Suoritustapakoodi.OPS);
         p.setSuoritustavat(Sets.newHashSet(s));
+        p.setKoulutukset(Sets.newHashSet(koulutus));
         peruste = repo.save(p);
 
         p = TestUtils.createPeruste();
@@ -121,7 +131,16 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         PerusteQuery pquery = new PerusteQuery();
         pquery.setSiirtyma(true);
         Page<PerusteDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
-        assertEquals(perusteet.getTotalElements(), 3);
+        assertEquals(3, perusteet.getTotalElements());
+    }
+
+    @Test
+    public void testFindByKoulutus() {
+        PerusteQuery pquery = new PerusteQuery();
+        pquery.setSiirtyma(true);
+        pquery.setKoodiUri("koulutuskoodi");
+        Page<PerusteDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
+        assertEquals(1, perusteet.getTotalElements());
     }
 
     @Test
