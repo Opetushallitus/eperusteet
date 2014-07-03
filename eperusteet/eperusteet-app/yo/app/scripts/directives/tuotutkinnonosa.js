@@ -62,7 +62,6 @@ angular.module('eperusteApp')
                                                    .value();
 
     $scope.valinta = function(tulos) {
-        console.log('valinta', tulos)
       $scope.valitut += tulos.$valitse ? -1 : 1;
     };
 
