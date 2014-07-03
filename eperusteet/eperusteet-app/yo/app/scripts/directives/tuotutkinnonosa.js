@@ -62,7 +62,13 @@ angular.module('eperusteApp')
                                                    .value();
 
     $scope.valinta = function(tulos) {
+        console.log('valinta', tulos)
       $scope.valitut += tulos.$valitse ? -1 : 1;
+    };
+
+    $scope.vaihdaValinta = function(tulos) {
+        tulos.$valitse = !tulos.$valitse;
+        $scope.valinta(tulos);
     };
 
     $scope.paivitaTulokset = function(st) {
