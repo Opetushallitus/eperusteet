@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,15 +37,25 @@ public class TilaUpdateStatus {
     
     public void addStatus(String viesti, Statuskoodi koodi) {
 
-        addStatus(viesti, koodi, null);
+        addStatus(viesti, koodi, null, null);
+    }
+    
+    public void addStatus(String viesti, Statuskoodi koodi, List<TekstiPalanen> nimet) {
+
+        addStatus(viesti, koodi, null, nimet);
     }
     
     public void addStatus(String viesti, Statuskoodi koodi, Validointi validointi) {
+
+        addStatus(viesti, koodi, validointi, null);
+    }
+    
+    public void addStatus(String viesti, Statuskoodi koodi, Validointi validointi, List<TekstiPalanen> nimet) {
         if (info == null) {
             info = new ArrayList<>();
         }
         
-        info.add(new Status(viesti, koodi, validointi));
+        info.add(new Status(viesti, koodi, validointi, nimet));
     }
     
     @Getter
@@ -54,11 +65,13 @@ public class TilaUpdateStatus {
         String viesti;
         Statuskoodi koodi;
         Validointi validointi;
+        List<TekstiPalanen> nimet;
         
-        public Status(String viesti, Statuskoodi koodi, Validointi validointi) {
+        public Status(String viesti, Statuskoodi koodi, Validointi validointi, List<TekstiPalanen> nimet) {
             this.viesti = viesti;
             this.koodi = koodi;
             this.validointi = validointi;
+            this.nimet = nimet;
         }
     }
 
