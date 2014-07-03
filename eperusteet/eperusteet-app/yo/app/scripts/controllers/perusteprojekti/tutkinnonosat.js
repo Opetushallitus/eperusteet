@@ -37,6 +37,7 @@ angular.module('eperusteApp')
     $scope.preferenssit = Preferenssit.data;
     $scope.jarjestysTapa = 'nimi';
     $scope.jarjestysOrder = false;
+    $scope.naytaToisestaSuoritustavastaTuonti = perusteprojektiTiedot.getPeruste().suoritustavat.length > 1;
 
     $scope.paivitaRajaus = function(rajaus) { $scope.tosarajaus = rajaus; };
     $scope.asetaJarjestys = function(tyyppi, suunta) {
