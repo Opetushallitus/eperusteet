@@ -13,30 +13,26 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.domain.Tila;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.Set;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import java.util.List;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author jhyoty
+ * @author nkala
  */
 @Getter
 @Setter
-public class PerusteDto implements Serializable {
-    private Long id;
-    private LokalisoituTekstiDto nimi;
-    private LokalisoituTekstiDto kuvaus;
-    private String tutkintokoodi;
-    private Set<KoulutusDto> koulutukset;
-    private Date voimassaoloAlkaa;
-    private Date voimassaoloLoppuu;
-    private Date siirtymaAlkaa;
-    private Set<SuoritustapaDto> suoritustavat;
-    private Tila tila;
+public class PerusteKaikkiDto extends PerusteDto {
+    Map<Suoritustapakoodi, RakenneModuuliDto> rakenteet;
+    Map<Suoritustapakoodi, List<TutkinnonOsaDto>> tutkinnonOsat;
+    Map<Suoritustapakoodi, List<TutkinnonOsaViiteDto>> tutkinnonOsaViitteet;
+    Map<Suoritustapakoodi, PerusteenosaViiteDto> sisallot;
 }
