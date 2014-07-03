@@ -23,8 +23,10 @@ import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.Objects;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import javax.persistence.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -85,7 +87,8 @@ public class LockManagerImpl implements LockManager {
                     return current;
                 }
             });
-        } catch (TransactionException t) {
+        } catch (TransactionException | DataAccessException | PersistenceException t) {
+
             // (todennäköisesti) samanaikaisesti toisessa transaktiossa lisätty sama lukko, yritetään lukea tämä.
             lukko = transaction.execute(new TransactionCallback<Lukko>() {
                 @Override

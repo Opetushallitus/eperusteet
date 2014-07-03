@@ -49,6 +49,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +62,7 @@ import static org.junit.Assert.assertEquals;
  * @author jhyoty
  */
 @Transactional
+@DirtiesContext
 public class PerusteServiceIT extends AbstractIntegrationTest {
 
     @Autowired

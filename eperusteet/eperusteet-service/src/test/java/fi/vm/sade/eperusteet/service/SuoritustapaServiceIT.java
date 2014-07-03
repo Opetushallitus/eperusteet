@@ -19,26 +19,16 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
-import fi.vm.sade.eperusteet.service.impl.SuoritustapaServiceImpl;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
-import fi.vm.sade.eperusteet.service.test.DbInitializer;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -48,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author nkala
  */
+@Transactional
 public class SuoritustapaServiceIT extends AbstractIntegrationTest {
 
     @Autowired
@@ -62,7 +53,6 @@ public class SuoritustapaServiceIT extends AbstractIntegrationTest {
     public SuoritustapaServiceIT() {
     }
 
-    @Transactional
     private TutkinnonOsaViite uusiTutkinnonOsaViite(Suoritustapa st) {
         TutkinnonOsa tosa = new TutkinnonOsa();
         tosa.setTila(Tila.LUONNOS);
@@ -78,7 +68,6 @@ public class SuoritustapaServiceIT extends AbstractIntegrationTest {
      */
     @Test
     @Rollback(true)
-    @Transactional
     public void testCreateFromOther() {
         Suoritustapa st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, LaajuusYksikko.OSAAMISPISTE);
         PerusteenOsaViite sisalto = st.getSisalto();
