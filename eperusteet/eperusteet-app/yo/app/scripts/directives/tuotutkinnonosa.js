@@ -72,6 +72,9 @@ angular.module('eperusteApp')
     };
 
     $scope.paivitaTulokset = function(st) {
+      if (typeof st === 'undefined') {
+        return;
+      }
       PerusteTutkinnonosat.get({
         perusteId: peruste.id,
         suoritustapa: st
@@ -87,6 +90,9 @@ angular.module('eperusteApp')
       },
       Notifikaatiot.serverCb);
     };
+    $scope.paivitaTulokset($scope.valittuSuoritustapa);
+
+    $scope.valittuSuoritustapa = $scope.suoritustavat[0];
     $scope.paivitaTulokset($scope.valittuSuoritustapa);
 
     $scope.ok = function() {
