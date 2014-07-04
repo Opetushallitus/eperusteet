@@ -498,6 +498,8 @@
     "sivu-virheellisia-arvoja": "Sivulla on virheellisiä arvoja",
     
     "tilanvaihtovirhe-header": "Projektin tilan vaihtaminen ei onnistunut",
-    "liittamattomia-tutkinnon-osia": "Projektissa on rakenteeseen liittämättömiä tutkinnon osia. Poista tai liitä rakenteeseen seuraavat tutkinnon osat:",
-    "korjaa-virheet": "Korjaa seuraavat virheet"
+    "liittamattomia-tutkinnon-osia": "Projektissa on rakenteeseen liittämättömiä tutkinnon osia.",
+    "korjaa-virheet": "Korjaa seuraavat virheet",
+    "viesti": "Viesti",
+    "korjattavat": "Korjattavat"
 }

@@ -85,6 +85,7 @@ angular.module('eperusteApp')
                 $modal.open({
                   templateUrl: 'views/modals/tilanVaihtoVirhe.html',
                   controller: 'TilanvaihtovirheCtrl',
+                  size: 'lg',
                   resolve: {infot: function() {
                       return vastaus.infot;
                     }}
