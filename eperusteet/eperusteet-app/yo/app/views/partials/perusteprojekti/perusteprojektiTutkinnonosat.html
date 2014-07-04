@@ -65,7 +65,7 @@
         <a ui-sref="perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })" href="">{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</a>
       </td>
       <td ng-if="suoritustapa !== 'naytto'">
-        <span ng-show="v.laajuus">{{ v.laajuus }} {{ v.yksikko || '' | kaanna }}</span>
+        <span ng-show="v.laajuus">{{ v.laajuus }} {{ v.laajuusYksikko || '' | kaanna }}</span>
       </td>
       <td>
         {{ v.muokattu || 0 | aikaleima }}
@@ -81,7 +81,7 @@
       <div class="otsikko">
         <h3>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</h3>
         <div class="pienet-tiedot">
-            <div class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && v.laajuus">{{ v.laajuus }} {{ v.yksikko || '' | kaanna }}</div>
+            <div class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && v.laajuus">{{ v.laajuus }} {{ v.laajuusYksikko || '' | kaanna }}</div>
             <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ v.muokattu | aikaleima }}</div>
         </div>
       </div>

@@ -22,7 +22,7 @@ European Union Public Licence for more details.
     <formfield ng-if="$parent.wizardissa()" label="koulutustyyppi-label"
                model="projekti" model-var="koulutustyyppi" required="required" options="koulutustyypit" placeholder="valitse-koulutustyyppi"></formfield>
     <formfield label="laajuuden-yksikkö" ng-show="projekti.koulutustyyppi === 'koulutustyyppi_1'" ng-if="$parent.wizardissa()"
-               model="projekti" model-var="yksikko" required="projekti.koulutustyyppi === 'koulutustyyppi_1'" options="yksikot"></formfield>
+               model="projekti" model-var="laajuusYksikko" required="projekti.koulutustyyppi === 'koulutustyyppi_1'" options="yksikot"></formfield>
 
     <div class="form-group">
       <label for="paatospvm" class="col-sm-3 control-label">{{'päätöspvm-label'| translate}}</label>
