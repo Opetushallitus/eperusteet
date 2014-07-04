@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .service('Algoritmit', function(Kaanna) {
-    this.rajausVertailu = function(input, kentta) {
+    function rajausVertailu(input, kentta) {
       kentta = arguments.length > 2 ? kentta[arguments[2]] : kentta;
       for (var i = 3; i < arguments.length; ++i) {
         if (!kentta) { return undefined; }
@@ -29,5 +29,17 @@ angular.module('eperusteApp')
       var kaannetty = Kaanna.kaanna(kentta);
       kaannetty = _.isString(kaannetty) ? kaannetty : '';
       return kaannetty.toLowerCase().indexOf(input.toLowerCase()) !== -1;
+    }
+
+    function kaikilleLapsisolmuille(objekti, lapsenAvain, cb) {
+      _.forEach(objekti[lapsenAvain], function(solmu) {
+        kaikilleLapsisolmuille(solmu, lapsenAvain, cb);
+        cb(solmu);
+      });
+    }
+
+    return {
+      rajausVertailu: rajausVertailu,
+      kaikilleLapsisolmuille: kaikilleLapsisolmuille
     };
   });

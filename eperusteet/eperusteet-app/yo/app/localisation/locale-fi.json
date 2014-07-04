@@ -37,6 +37,7 @@
     "haluatko-jatkaa": "Haluatko jatkaa?",
     "tuo-valitut": "Tuo valitut",
     "sulje": "Sulje",
+    "muokattu": "Muokattu",
 
     "fi": "Suomi",
     "sv": "Ruotsi",
@@ -123,8 +124,12 @@
     "nayta-aliviestit": "Näytä vastaukset",
     "piilota-aliviestit": "Piilota vastaukset",
 
+    "lopeta-muokkaus": "Lopeta muokkaus",
+
     "ryhmä-rooli-selite-määritelty": "Ryhmän sisältö määritellään perustepuun luonnin yhteydessä",
     "ryhmä-rooli-selite-määrittelemätön": "Ryhmälle annetaan vain muodostumissäännöt ja sen sisältö määritellään paikallisen laadinnan puolella",
+
+    "muokkaa-rakennetta": "Muokkaa rakennetta",
 
     "haku-otsikko": "Perusteen haku",
     "haku-koulutusala": "Koulutusala",
@@ -161,7 +166,7 @@
     "poistetaanko-ryhma": "Poistetaanko ryhmä?",
     "leikelauta": "Leikelauta",
     "tutkinnon-osa-haku-placeholder": "Rajaa tutkinnon osia...",
-    "rajaa-tutkintokohtaisia-osia": "Etsi tutkintokohtaisista osista...",
+    "etsi-sisällöstä": "Rajaa sisältöä...",
 
     "muodostumis-rakenne-validointi-laajuus": "Ryhmän osien yhteenlaskettu laajuus ei riitä kattamaan tarvittavaa laajuutta",
     "muodostumis-rakenne-validointi-maara": "Ryhmän osien yhteenlaskettu määrä ei riitä kattamaan tarvittavaa määrää",
@@ -445,7 +450,7 @@
     "projekti-header-koulutustyyppi": "Koulutustyyppi",
         
     "tutkintokohtaiset-osat": "Tutkintokohtaiset osat",
-    "lisaa-tutkintokohtainen-osa": "Lisää otsikko",
+    "lisaa-tutkintokohtainen-osa": "Lisää tekstikappale",
     "uusi-tutkinnon-osa": "<Uusi sisältö>",
 
     "takaisin-paanakymaan": "Projektin päänäkymä",

@@ -113,6 +113,11 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   padding-right: 40px;
 }
 
+.avaa-sulje {
+  padding-top: 10px;
+  font-size: small
+}
+
 .main-content .tutkinnonsisalto-list {
   padding: 0;
   list-style: none;
@@ -123,51 +128,66 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   }
 }
 .main-content {
-  .list-element {
-    border: 1px solid #ccc;
+  .striped {
     background: #fcfcfc;
-    padding: 15px 20px 20px 0px;
-    margin: 0px;
-    margin-top: 10px;
-    cursor: pointer;
   }
-  // TODO: Korjaa laatikon viivat overlappaamaan
-  .list-element-child {
+  .list-element {
+    border: 1px solid #eee;
+    padding: 4px 10px 4px 0;
     margin: 0px;
     margin-top: 2px;
-    border: 1px solid #ddd;
-    background: #fff;
-    padding: 5px 20px 15px 5px;
     cursor: pointer;
-
-    ul {
-      margin: 10px 0 0 0;
+    .otsikko {
+      margin-left: 28px;
     }
-  }
-  .list-element-child:hover {
-    background: #fdfdfd;
-    border: 1px solid #777;
+    .chevron {
+      left: -1px;
+      top: -4px;
+      position: relative;
+      width: 27px;
+      height: 26px;
+      float: left;
+      border-left: 1px solid #ccc;
+      padding: 4px 0 0 6px;
+      text-decoration: none;
+      color: #fff;
+    }
   }
   .list-element-info {
     margin: 5px 0 0 5px;
     color: #777;
+    font-weight: normal;
+    font-size: x-small;
   }
 }
+
+.main-content .ceiling {
+  border-top: 1px solid #ccc;
+}
+
+.list-element-placeholder {
+  padding: 2px 0 2px 0px;
+  display: inline-block;
+  width: 100%;
+  background: #999;
+}
+
 .main-content .list-element:hover,
 .main-content .li:hover {
   background: #fafafa;
-  border: 1px solid #777;
+  border: 1px solid #c9c9c9;
 }
 .main-content .list-element h3 {
   font-size: 14px;
   font-weight: bold;
   display: inline;
-  margin-left: 15px;
-  margin-top: 15px;
+  padding: 4px;
+  // padding-left: 20px;
+  // margin-top: 15px;
 }
 .main-content .list-element-child h6 {
   font-weight: bold;
-  margin-top: 8px;
+  padding-top: 8px;
   margin-left: 5px;
 }
 .main-content .list-element a.next,
@@ -286,11 +306,20 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 }
 
 .tutkinto-sisalto {
-  max-width: 900px;
-  margin-top: 30px;
   margin-bottom: 100px;
   margin-left: auto;
   margin-right: auto;
+
+  .tutkinto {
+    .toolbar-input {
+      width: 60%;
+      float: left;
+    }
+    h2 .buttons {
+      position: relative;
+      top: -8px;
+    }
+  }
 
   .nav {
     margin-bottom: 22px;

@@ -33,6 +33,9 @@ angular.module('eperusteApp')
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
+    $scope.naytaTutkinnonOsat = true;
+    $scope.naytaRakenne = true;
+    $scope.muokkaus = false;
 
     kaikilleTutkintokohtaisilleOsille($scope.peruste.sisalto, function(osa) {
       osa.$opened = false;
@@ -47,6 +50,9 @@ angular.module('eperusteApp')
         osa.$filtered = lapsellaOn || Algoritmit.rajausVertailu($scope.rajaus, osa, 'perusteenOsa', 'nimi');
         return osa.$filtered;
       });
+
+      $scope.naytaTutkinnonOsat = Kaanna.kaanna('tutkinnonosat').toLowerCase().indexOf($scope.rajaus.toLowerCase()) !== -1;
+      $scope.naytaRakenne = Kaanna.kaanna('tutkinnon-rakenne').toLowerCase().indexOf($scope.rajaus.toLowerCase()) !== -1;
     };
     $scope.rajaaSisaltoa();
 
@@ -61,19 +67,25 @@ angular.module('eperusteApp')
       Notifikaatiot.serverCb);
     };
 
-    // scope.sortableOptions = {
-    //   connectWith: '.',
-    //   cursor: 'move',
-    //   cursorAt: { top : 2, left: 2 },
-    //   delay: 100,
-    //   disabled: !scope.muokkaus,
-    //   placeholder: 'placeholder',
-    //   tolerance: 'pointer',
-    //   // start: function(e, ui) {
-    //   //   ui.placeholder.html('<div class="group-placeholder"></div>');
-    //   // },
-    //   // cancel: '.ui-state-disabled',
-    // };
+    $scope.avaaSuljeKaikki = function() {
+      var open = false;
+      Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) { open = open || lapsi.$opened; });
+      Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) { lapsi.$opened = !open; });
+    };
+
+    $scope.sortableOptions = {
+      connectWith: '.sisalto-group',
+      cursor: 'move',
+      cursorAt: { top : 2, left: 2 },
+      delay: 100,
+      disabled: true,
+      placeholder: 'list-element-placeholder',
+      tolerance: 'pointer',
+    };
+
+    $scope.$watch('muokkaus', function() {
+      $scope.sortableOptions.disabled = !$scope.muokkaus;
+    });
 
     $scope.vaihdaSuoritustapa = function(suoritustapakoodi) {
       $scope.valittuSuoritustapa = suoritustapakoodi;

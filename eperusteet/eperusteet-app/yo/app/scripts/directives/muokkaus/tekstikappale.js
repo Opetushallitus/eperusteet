@@ -33,6 +33,7 @@ angular.module('eperusteApp')
 
         $scope.versiot = {};
         $scope.sisalto = {};
+        $scope.viitteet = {};
 
         PerusteprojektiTiedotService.then(function (instance) {
           instance.haeSisalto($scope.$parent.peruste.id, $stateParams.suoritustapa).then(function(res) {
@@ -56,12 +57,10 @@ angular.module('eperusteApp')
         function fetch(cb) {
           cb = cb || angular.noop;
           PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, function(res) {
-            console.log(res);
             $scope.tekstikappale = res;
             cb(res);
           });
         }
-
 
         function storeTree (sisalto, level) {
           level = level || 0;
@@ -205,10 +204,7 @@ angular.module('eperusteApp')
         };
 
         $scope.canAddLapsi = function () {
-          // Vain kolme tasoa hierarkiaa sallitaan
-          return $scope.tekstikappale.id &&
-                 $scope.viitteet[$scope.tekstikappale.id] &&
-                 $scope.viitteet[$scope.tekstikappale.id].level < 2;
+          return $scope.tekstikappale.id && $scope.viitteet[$scope.tekstikappale.id];
         };
 
         $scope.addLapsi = function () {

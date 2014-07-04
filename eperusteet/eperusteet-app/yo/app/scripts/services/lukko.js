@@ -50,7 +50,6 @@ angular.module('eperusteApp')
     $rootScope.$on('$stateChangeSuccess', function() {
       lukitsin = null;
       etag = null;
-      console.log('nulled lukitus');
     });
 
     function lueLukitus(Resource, obj, cb) {

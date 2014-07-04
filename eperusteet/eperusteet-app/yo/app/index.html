@@ -48,9 +48,7 @@
                 <img ng-if="viesti.tyyppi === 1" src="images/notify-success.png" alt="">
                 <img ng-if="viesti.tyyppi === 2" src="images/notify-alert.png" alt="">
               </span>
-              <span class="notification-message ng-cloak">
-                {{ viesti.viesti | kaanna }}
-              </span>
+              <span class="notification-message" ng-bind="viesti.viesti | kaanna"></span>
             </div>
           </div>
         </div>
