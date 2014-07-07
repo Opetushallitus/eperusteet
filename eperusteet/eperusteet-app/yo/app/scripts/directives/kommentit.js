@@ -33,6 +33,7 @@ angular.module('eperusteApp')
         $scope.editoitava = '';
         $scope.editoi = false;
         $scope.sisalto = false;
+        $scope.onLataaja = false;
         $scope.urlit = {};
 
         function lataaKommentit(url) {
@@ -47,10 +48,12 @@ angular.module('eperusteApp')
 
         $scope.$on('$stateChangeStart', function() {
           $scope.nayta = false;
+          $scope.onLataaja = false;
         });
 
         $scope.$on('update:kommentit', function(event, url, lataaja) {
           if (!$scope.urlit[url]) {
+            $scope.onLataaja = true;
             $scope.urlit[url] = lataaja;
           }
         });
