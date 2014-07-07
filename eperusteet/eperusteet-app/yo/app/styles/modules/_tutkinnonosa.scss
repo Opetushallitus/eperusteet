@@ -374,6 +374,12 @@ $pikamenu-max-height: 400px;
 }
 #tekstikappale-crumbs .breadcrumb {
   padding-left: 0;
+  li {
+    max-width: 20em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
 }
 
 .version-warning {

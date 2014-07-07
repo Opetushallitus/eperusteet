@@ -37,8 +37,8 @@ angular.module('eperusteApp')
       scope: {
         subnavi: '='
       },
-      controller: function ($scope) {
-        $scope.sivunaviopen = {};
+      controller: function ($scope, SubnaviState) {
+        $scope.sivunaviopen = SubnaviState.open;
         $scope.toggle = function (id, event) {
           $scope.sivunaviopen[id] = !$scope.sivunaviopen[id];
           event.stopPropagation();
@@ -60,6 +60,12 @@ angular.module('eperusteApp')
         };
       }
     };
+  })
+  .service('SubnaviState', function () {
+    this.init = function () {
+      this.open = {};
+    };
+    this.init();
   })
   .controller('sivunavigaatioCtrl', function($rootScope, $scope, $stateParams, $state, SivunavigaatioService, PerusteProjektiService) {
     var lastParams = {};
@@ -166,7 +172,7 @@ angular.module('eperusteApp')
     };
 
     function openParent(el) {
-      var parentEl = el.closest('.subnavi-lapset').closest('.list-group-item').find('a');
+      var parentEl = el.closest('.subnavi-lapset').closest('.list-group-item').children('a');
       if (parentEl.length === 0) {
         return;
       }
@@ -191,7 +197,9 @@ angular.module('eperusteApp')
         // Element is hidden, need to open parents
         hiddenEl.scope().openFor(id);
         var parent = openParent(hiddenEl);
-        openParent(parent);
+        while (parent) {
+          parent = openParent(parent);
+        }
       } else {
         visibleEl.scope().openFor(id);
       }

@@ -60,6 +60,26 @@ $linkkiteksti-padding-left: 30px;
               .linkkiteksti {
                 padding-left: $linkkiteksti-padding-left + 2*$sivunavi-sisennys;
               }
+              .list-group {
+                .list-group-item {
+                  .glyphicon {
+                    padding-left: $glyph-padding-left + 3*$sivunavi-sisennys;
+                  }
+                  .linkkiteksti {
+                    padding-left: $linkkiteksti-padding-left + 3*$sivunavi-sisennys;
+                  }
+                  .list-group {
+                    .list-group-item {
+                      .glyphicon {
+                        padding-left: $glyph-padding-left + 4*$sivunavi-sisennys;
+                      }
+                      .linkkiteksti {
+                        padding-left: $linkkiteksti-padding-left + 4*$sivunavi-sisennys;
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
