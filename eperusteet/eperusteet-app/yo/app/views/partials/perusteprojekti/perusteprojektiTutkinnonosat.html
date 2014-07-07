@@ -8,19 +8,25 @@
   <button icon-role="add" class="floater btn" href="" ng-click="lisaaTutkinnonOsa()">
     {{ 'lisää' | kaanna }}
   </button>
-  <button class="floater btn" icon-role="th" ng-click="nakymatyyli = 'palikka'"></button>
-  <button class="floater btn" icon-role="list" ng-click="nakymatyyli = 'lista'"></button>
 </div>
 
 <h1>
   {{'tutkinnonosat' | kaanna}} ({{ tutkinnonOsat.length }} {{ 'kpl' | kaanna }})
+  <div class="btn-group">
+      <label class="btn" ng-model="nakymatyyli" btn-radio="'lista'">
+        <span class="glyphicon glyphicon-list"></span>
+      </label>
+      <label class="btn" ng-model="nakymatyyli" btn-radio="'palikka'">
+        <span class="glyphicon glyphicon-th"></span>
+      </label>
+  </div>
 </h1>
 
 <div class="tutkinnonosa-lista-toolbar">
   <div class="pull-right">
     <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="tosarajaus form-control input-sm" placeholder="Rajaa tutkinnon osia...">
   </div>
-  <div ng-if="nakymatyyli === 'palikka'">
+  <div ng-show="nakymatyyli === 'palikka'">
     <select class="jarjestys-select" ng-model="jarjestysTapa">
       <option value="nimi">{{ 'nimi' | kaanna }}</option>
       <option value="muokattu">{{ 'muokattu-viimeksi' | kaanna }}</option>
@@ -36,7 +42,7 @@
 </div>
 
 <div>
-  <table ng-if="nakymatyyli === 'lista'" class="table table-striped" style="margin-top: 0px">
+  <table ng-show="nakymatyyli === 'lista'" class="table table-striped" style="margin-top: 0px">
     <tr>
       <th width="50%">
         <a href="" ng-click="asetaJarjestys('nimi')">{{ 'nimi' | kaanna }}</a>

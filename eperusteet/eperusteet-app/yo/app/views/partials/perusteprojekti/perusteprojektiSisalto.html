@@ -44,16 +44,11 @@ European Union Public Licence for more details.
             <div class="clearfix"></div>
 
             <h2 ng-show="naytaTutkinnonOsat || naytaRakenne">Tutkinnon muodostuminen</h2>
-            <div ng-show="naytaTutkinnonOsat" class="list-element striped">
-                <h3>
-                    <a href="" ng-click="navigoi('perusteprojekti.suoritustapa.tutkinnonosat')">{{ 'tutkinnonosat' | kaanna }}</a>
-                </h3>
+            <div ng-show="naytaTutkinnonOsat" class="list-element striped" ng-click="navigoi('perusteprojekti.suoritustapa.tutkinnonosat')">
+                <h3><a href="">{{ 'tutkinnonosat' | kaanna }}</a></h3>
             </div>
-
-            <div ng-show="naytaRakenne" class="list-element striped">
-                <h3>
-                    <a href="" ng-click="navigoi('perusteprojekti.suoritustapa.muodostumissaannot')">{{ 'tutkinnon-rakenne' | kaanna }}</a>
-                </h3>
+            <div ng-show="naytaRakenne" class="list-element striped" ng-click="navigoi('perusteprojekti.suoritustapa.muodostumissaannot')">
+                <h3><a href="">{{ 'tutkinnon-rakenne' | kaanna }}</a></h3>
             </div>
 
             <h2>

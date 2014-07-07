@@ -28,7 +28,7 @@ angular.module('eperusteApp')
         depth: '=',
         parent: '='
       },
-      link: function ($scope) {
+      link: function($scope) {
         $scope.nayta = false;
         $scope.editoitava = '';
         $scope.editoi = false;
@@ -38,12 +38,10 @@ angular.module('eperusteApp')
         function lataaKommentit(url) {
           var lataaja = $scope.urlit[url];
           if (lataaja) {
-            $timeout(function() {
-              lataaja(function(kommentit) {
-                $scope.sisalto = kommentit;
-                $scope.nayta = true;
-              });
-            }, 100);
+            lataaja(function(kommentit) {
+              $scope.sisalto = kommentit;
+              $scope.nayta = true;
+            });
           }
         }
 
@@ -55,7 +53,6 @@ angular.module('eperusteApp')
           if (!$scope.urlit[url]) {
             $scope.urlit[url] = lataaja;
           }
-          $scope.nayta = true;
         });
 
         $scope.naytaKommentit = function() { lataaKommentit($location.url()); };
@@ -66,8 +63,12 @@ angular.module('eperusteApp')
           });
         };
 
-        $scope.$on('enableEditing', function() { $scope.nayta = false; });
-        $scope.$on('disableEditing', function() { $scope.nayta = true; });
+        $scope.$on('enableEditing', function() {
+          $scope.nayta = false;
+        });
+        $scope.$on('disableEditing', function() {
+          $scope.nayta = true;
+        });
       }
     };
   });

@@ -27,7 +27,7 @@ angular.module('eperusteApp')
     $scope.tutkinnonOsat = [];
     $scope.tosarajaus = '';
     $scope.editoi = false;
-    $scope.nakymatyyli = 'palikka';
+    $scope.nakymatyyli = 'lista';
     $scope.jarjestysTapa = 'nimi';
     $scope.jarjestysOrder = false;
 
