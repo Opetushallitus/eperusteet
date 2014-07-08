@@ -5,14 +5,12 @@
 
   <div class="modal-body">
     <select style="margin-bottom: 8px" class="form-control" ng-model="valittuSuoritustapa" ng-change="paivitaTulokset(valittuSuoritustapa)">
-      <option ng-repeat="st in suoritustavat"
-              ng-selected="{{ valittuSuoritustapa == st }}"
-              value="{{ st }}">{{ st | kaanna }}</option>
+      <option ng-repeat="st in suoritustavat" ng-selected="{{ valittuSuoritustapa === st }}" value="{{ st }}">{{ st | kaanna }}</option>
     </select>
     <table class="table table-striped" ng-show="tulokset.length > 0">
       <tr>
         <th></th>
-        <th>Nimi</th>
+        <th translate>nimi</th>
       </tr>
       <tr ng-repeat="tulos in tulokset">
         <td class="has-checkbox"><input ng-change="valinta(tulos)" ng-model="tulos.$valitse" type="checkbox" class="form-control"></td>

@@ -19,16 +19,16 @@
 
 angular.module('eperusteApp')
   .factory('PerusteenOsat', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteenosat/:osanId',
-      {
-        osanId: '@id'
-      }, {
-        byKoodiUri: { method: 'GET', isArray: true, params: { koodi: true } },
-        saveTekstikappale: {method:'POST', params:{tyyppi:'perusteen-osat-tekstikappale'}},
-        saveTutkinnonOsa: {method:'POST', params:{tyyppi:'perusteen-osat-tutkinnon-osa'}},
-        versiot: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/versiot'},
-        getVersio: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/:osanId/versio/:versioId'}
-      });
+    return $resource(SERVICE_LOC + '/perusteenosat/:osanId', {
+      osanId: '@id'
+    }, {
+      byKoodiUri: { method: 'GET', isArray: true, params: { koodi: true } },
+      saveTekstikappale: {method:'POST', params:{tyyppi:'perusteen-osat-tekstikappale'}},
+      saveTutkinnonOsa: {method:'POST', params:{tyyppi:'perusteen-osat-tutkinnon-osa'}},
+      versiot: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/versiot'},
+      getVersio: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/:osanId/versio/:versioId'},
+      palauta: {method: 'POST', url: SERVICE_LOC + '/perusteenosat/:osanId/palauta/:versioId'}
+    });
   })
   .factory('PerusteenOsaViitteet', function($resource, SERVICE_LOC) {
       return $resource(SERVICE_LOC + '/perusteenosaviitteet/sisalto/:viiteId');

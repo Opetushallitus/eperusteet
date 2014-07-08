@@ -94,8 +94,15 @@ public class PerusteenOsaController {
     	LOG.debug("get #{} revision #{}", id, versioId);
     	PerusteenOsaDto t = service.getVersio(id, versioId);
         if (t == null) {
-        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/palauta/{versioId}", method = POST)
+    @ResponseBody
+    public ResponseEntity<PerusteenOsaDto> revertToVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
+    	PerusteenOsaDto t = service.revertToVersio(id, versioId);
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
@@ -128,14 +135,14 @@ public class PerusteenOsaController {
     @ResponseBody
     public TekstiKappaleDto update(@PathVariable("id") final Long id, @RequestBody TekstiKappaleDto tekstiKappaleDto) {
         tekstiKappaleDto.setId(id);
-        return service.update(tekstiKappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
+        return service.update(tekstiKappaleDto, TekstiKappaleDto.class);
     }
 
     @RequestMapping(value = "/{id}", method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
     @ResponseBody
     public TutkinnonOsaDto update(@PathVariable("id") final Long id, @RequestBody TutkinnonOsaDto tutkinnonOsaDto) {
         tutkinnonOsaDto.setId(id);
-        return service.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+        return service.update(tutkinnonOsaDto, TutkinnonOsaDto.class);
     }
 
     @RequestMapping(value = "/{id}/lukko", method = GET)

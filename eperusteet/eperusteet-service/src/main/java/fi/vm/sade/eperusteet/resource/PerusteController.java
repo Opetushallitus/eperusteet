@@ -135,6 +135,20 @@ public class PerusteController {
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne/palauta/{versioId}", method = POST)
+    @ResponseBody
+    @CacheControl(age = CacheControl.ONE_YEAR)
+    public ResponseEntity<RakenneModuuliDto> revertRakenneVersio(
+            @PathVariable("id") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+            @PathVariable("versioId") final Integer versioId) {
+        RakenneModuuliDto t = service.revertRakenneVersio(id, Suoritustapakoodi.of(suoritustapakoodi), versioId);
+        if (t == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne", method = POST)
     @ResponseBody
     public RakenneModuuliDto updatePerusteenRakenne(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi,

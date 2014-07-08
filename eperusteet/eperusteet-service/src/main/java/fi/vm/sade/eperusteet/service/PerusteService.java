@@ -84,6 +84,8 @@ public interface PerusteService {
     @PreAuthorize("isAuthenticated()")
     RakenneModuuliDto updateTutkinnonRakenne(final Long perusteId, final Suoritustapakoodi suoritustapa, final RakenneModuuliDto rakenne);
 
+    RakenneModuuliDto revertRakenneVersio(Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId);
+
     List<Revision> getRakenneVersiot(Long id, Suoritustapakoodi suoritustapakoodi);
 
     RakenneModuuliDto getRakenneVersio(Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId);

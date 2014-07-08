@@ -19,41 +19,43 @@
 
 angular.module('eperusteApp')
   .factory('PerusteTutkinnonosa', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat/:osanId',
-      {
-        perusteId: '@id',
-        suoritustapa: '@suoritustapa',
-        osanId: '@id'
-      });
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat/:osanId', {
+      perusteId: '@id',
+      suoritustapa: '@suoritustapa',
+      osanId: '@id'
+    });
   })
   .factory('PerusteTutkinnonosat', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat',
-      {
-        perusteId: '@id',
-        suoritustapa: '@suoritustapa'
-      }, {
-        get: { method: 'GET', isArray: true },
-        update: { method: 'PUT' }
-      });
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat', {
+      perusteId: '@id',
+      suoritustapa: '@suoritustapa'
+    }, {
+      get: { method: 'GET', isArray: true },
+      update: { method: 'PUT' }
+    });
   })
   .factory('PerusteRakenteet', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/rakenne',
-      {
-        perusteId: '@id',
-        suoritustapa: '@suoritustapa'
-      });
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/rakenne', {
+      perusteId: '@id',
+      suoritustapa: '@suoritustapa'
+    });
   })
   .factory('RakenneVersiot', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/rakenne/versiot');
   })
   .factory('RakenneVersio', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/rakenne/versio/:versioId');
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/rakenne/versio/:versioId', {
+      perusteId: '@perusteId',
+      suoritustapa: '@suoritustapa',
+      versioId: '@versioId'
+    }, {
+      palauta: { method: 'POST', url: SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/rakenne/palauta/:versioId' }
+    });
   })
   .factory('Perusteet', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId',
-      {
-        perusteId: '@id'
-      });
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId', {
+      perusteId: '@id'
+    });
   })
   .factory('PerusteenOsaviitteet', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteenosaviitteet/:viiteId');
@@ -62,8 +64,7 @@ angular.module('eperusteApp')
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa');
   })
   .factory('SuoritustapaSisalto', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/sisalto',
-    {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/sisalto', {
       perusteId: '@id',
       suoritustapa: '@suoritustapa'
     }, {

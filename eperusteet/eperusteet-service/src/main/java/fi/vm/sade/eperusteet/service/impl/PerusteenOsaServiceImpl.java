@@ -85,7 +85,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     @Transactional(readOnly = false)
-    public <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
+    public <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(T perusteenOsaDto, Class<T> dtoClass) {
         assertExists(perusteenOsaDto.getId());
         lockManager.ensureLockedByAuthenticatedUser(perusteenOsaDto.getId());
         PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
@@ -128,7 +128,6 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     @Transactional(readOnly = true)
     public List<Revision> getVersiot(Long id) {
-        PerusteenOsa perusteenOsa = perusteenOsaRepo.findOne(id);
         return perusteenOsaRepo.getRevisions(id);
     }
 
@@ -136,6 +135,13 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Transactional(readOnly = true)
     public PerusteenOsaDto getVersio(Long id, Integer versioId) {
         return mapper.map(perusteenOsaRepo.findRevision(id, versioId), PerusteenOsaDto.class);
+    }
+
+    @Override
+    @Transactional
+    public PerusteenOsaDto revertToVersio(Long id, Integer versioId) {
+        PerusteenOsa revision = perusteenOsaRepo.findRevision(id, versioId);
+        return update(mapper.map(revision, PerusteenOsaDto.class), PerusteenOsaDto.class);
     }
 
     @Override

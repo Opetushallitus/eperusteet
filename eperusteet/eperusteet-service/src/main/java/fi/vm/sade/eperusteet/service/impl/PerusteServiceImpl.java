@@ -25,7 +25,9 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
@@ -189,7 +191,7 @@ public class PerusteServiceImpl implements PerusteService {
             for (TutkinnonOsaViiteDto tova : tovat) {
                 PerusteenOsa tosa = perusteenOsaRepository.findOne(Long.parseLong(tova.getTutkinnonOsa().getId()));
                 if (tosa instanceof TutkinnonOsa) {
-                    tosat.add(mapper.map((TutkinnonOsa)tosa, TutkinnonOsaDto.class));
+                    tosat.add(mapper.map((TutkinnonOsa) tosa, TutkinnonOsaDto.class));
                 }
             }
 
@@ -322,11 +324,9 @@ public class PerusteServiceImpl implements PerusteService {
         return versiot;
     }
 
-    @Override
     @Transactional(readOnly = true)
-    public RakenneModuuliDto getRakenneVersio(Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId) {
+    private RakenneModuuli haeRakenneVersio(Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId) {
         RakenneModuuli rakenneVersio = null;
-
         Peruste peruste = perusteet.findOne(id);
         if (peruste == null) {
             throw new EntityNotFoundException("Perustetta ei löytynyt id:llä: " + id);
@@ -339,8 +339,43 @@ public class PerusteServiceImpl implements PerusteService {
         if (rakenne != null) {
             rakenneVersio = rakenneRepository.findRevision(rakenne.getId(), versioId);
         }
+        return rakenneVersio;
+    }
 
-        return mapper.map(rakenneVersio, RakenneModuuliDto.class);
+    @Override
+    @Transactional(readOnly = true)
+    public RakenneModuuliDto getRakenneVersio(Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId) {
+        return mapper.map(haeRakenneVersio(id, suoritustapakoodi, versioId), RakenneModuuliDto.class);
+    }
+
+    @Transactional(readOnly = true)
+    private void haeTutkinnonOsaViitteetRakenteesta(AbstractRakenneOsa rakenne, Set<TutkinnonOsaViite> tovat) {
+        if (rakenne instanceof RakenneModuuli) {
+            for (AbstractRakenneOsa lapsi : ((RakenneModuuli) rakenne).getOsat()) {
+                haeTutkinnonOsaViitteetRakenteesta(lapsi, tovat);
+            }
+        } else if (rakenne instanceof RakenneOsa) {
+            tovat.add(((RakenneOsa) rakenne).getTutkinnonOsaViite());
+        }
+    }
+
+    @Override
+    @Transactional
+    public RakenneModuuliDto revertRakenneVersio(Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId) {
+        RakenneModuuli rakenneVersio = haeRakenneVersio(id, suoritustapakoodi, versioId);
+//        Peruste peruste = perusteet.findOne(id);
+//        Map<TutkinnonOsaViite, List<Revision>> tovienVersiot = new HashMap<>();
+//        HashSet<TutkinnonOsaViite> tovat = new HashSet<>();
+//        haeTutkinnonOsaViitteetRakenteesta(rakenneVersio, tovat);
+//
+//        for (TutkinnonOsaViite tova : tovat) {
+//            List<Revision> tovaVersiot = tutkinnonOsaViiteRepository.getRevisions(tova.getId());
+//            if (tovaVersiot.size() > 1) {
+//                Revision get = tovaVersiot.get(tovaVersiot.size() - 1);
+//            }
+//        }
+
+        return updateTutkinnonRakenne(id, suoritustapakoodi, mapper.map(rakenneVersio, RakenneModuuliDto.class));
     }
 
     @Override

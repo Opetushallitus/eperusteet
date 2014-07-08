@@ -18,10 +18,77 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot, RakenneVersio, Notifikaatiot,
-    PerusteenRakenne) {
+  .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot, RakenneVersio, Notifikaatiot) {
+    function getVersions(data, tunniste, tyyppi, force) {
+      if (!_.isObject(data)) {
+        throw 'VersionHelper: not an object!';
+      }
+      if (force || !data.list) {
+        if (tyyppi === 'perusteenosa') {
+          PerusteenOsat.versiot({osanId: tunniste.id}, function(res) {
+            data.list = res;
+            versiotListHandler(data);
+          });
+        }
+        else if (tyyppi === 'rakenne') {
+          RakenneVersiot.query({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa}, function(res) {
+            data.list = res;
+            versiotListHandler(data);
+          });
+        }
+      }
+    }
+
+    function versiotListHandler(data) {
+      if (!_.isEmpty(data.list)) { data.list.splice(_.size(data.list) - 1, 1); }
+      data.chosen = latest(data.list);
+      data.latest = true;
+      _.each(data.list, function(item, index) {
+        // reverse numbering for UI, oldest = 1
+        item.index = data.list.length - index;
+      });
+    }
+
     function latest(data) {
       return _.first(data) || {};
+    }
+
+    function revert(data, tunniste, tyyppi, cb) {
+      // revert = get old (currently chosen) data, save as new version
+      if (tyyppi === 'Perusteenosa' || tyyppi === 'Tutkinnonosa') {
+        PerusteenOsat.palauta({
+          osanId: tunniste.id,
+          versioId: data.chosen.number
+        }, {}, cb, Notifikaatiot.serverCb);
+      }
+      else if (tyyppi === 'Rakenne') {
+        RakenneVersio.palauta({
+          perusteId: tunniste.id,
+          suoritustapa: tunniste.suoritustapa,
+          versioId: data.chosen.number
+        }, {}, cb, Notifikaatiot.serverCb);
+      }
+    }
+
+    function change(data, tunniste, tyyppi, cb) {
+      if (tyyppi === 'Perusteenosa') {
+        PerusteenOsat.getVersio({
+          osanId: tunniste.id,
+          versioId: data.chosen.number
+        }, function(response) {
+          changeResponseHandler(data, response, cb);
+        });
+      }
+      else if (tyyppi === 'Rakenne') {
+        RakenneVersio.get({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa, versioId: data.chosen.number}, function(response) {
+          changeResponseHandler(data, response, cb);
+        });
+      }
+    }
+
+    function changeResponseHandler(data, response, cb) {
+      cb(response);
+      data.latest = data.chosen.number === latest(data.list).number;
     }
 
     this.lastModified = function (data) {
@@ -41,35 +108,6 @@ angular.module('eperusteApp')
       getVersions(data, tunniste, 'rakenne', force);
     };
 
-    var getVersions = function(data, tunniste, tyyppi, force) {
-      if (!_.isObject(data)) {
-        throw 'VersionHelper: not an object!';
-      }
-      if (force || !data.list) {
-        if (tyyppi === 'perusteenosa') {
-          PerusteenOsat.versiot({osanId: tunniste.id}, function(res) {
-            data.list = res;
-            versiotListHandler(data);
-          });
-        } else if (tyyppi === 'rakenne') {
-          RakenneVersiot.query({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa}, function(res) {
-            data.list = res;
-            versiotListHandler(data);
-          });
-        }
-      }
-    };
-
-    var versiotListHandler = function(data) {
-      if (!_.isEmpty(data.list)) { data.list.splice(_.size(data.list) - 1, 1); }
-      data.chosen = latest(data.list);
-      data.latest = true;
-      _.each(data.list, function(item, index) {
-        // reverse numbering for UI, oldest = 1
-        item.index = data.list.length - index;
-      });
-    };
-
     this.chooseLatest = function (data) {
       data.chosen = latest(data.list);
     };
@@ -82,22 +120,6 @@ angular.module('eperusteApp')
       change(data, tunniste, 'Rakenne', cb);
     };
 
-    var change = function(data, tunniste, tyyppi, cb) {
-      if (tyyppi === 'Perusteenosa') {
-        PerusteenOsat.getVersio({
-          osanId: tunniste.id,
-          versioId: data.chosen.number
-        }, function(response) {
-          changeResponseHandler(data, response, cb);
-        });
-      }
-      else if (tyyppi === 'Rakenne') {
-        RakenneVersio.get({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa, versioId: data.chosen.number}, function(response) {
-          changeResponseHandler(data, response, cb);
-        });
-      }
-    };
-
     this.revertPerusteenosa = function (data, object, cb) {
       var isTekstikappale = _.has(object, 'nimi') && _.has(object, 'teksti');
       var type = isTekstikappale ? 'Perusteenosa' : 'Tutkinnonosa';
@@ -106,37 +128,6 @@ angular.module('eperusteApp')
 
     this.revertRakenne = function (data, tunniste, cb) {
       revert(data, tunniste, 'Rakenne', cb);
-    };
-
-    var revert = function (data, tunniste, tyyppi, cb) {
-      // revert = get old (currently chosen) data, save as new version
-      if (tyyppi === 'Perusteenosa' || tyyppi === 'Tutkinnonosa') {
-        PerusteenOsat.getVersio({
-          osanId: tunniste.id,
-          versioId: data.chosen.number
-        }, function(response) {
-          if (tyyppi === 'Perusteenosa') {
-            response.$saveTekstikappale(cb, Notifikaatiot.serverCb);
-          } else {
-            response.$saveTutkinnonOsa(cb, Notifikaatiot.serverCb);
-          }
-        });
-      } else if (tyyppi === 'Rakenne') {
-        RakenneVersio.get({
-          perusteId: tunniste.id,
-          suoritustapa: tunniste.suoritustapa,
-          versioId: data.chosen.number
-        }, function(response) {
-          PerusteenRakenne.tallennaRakenne({
-            rakenne: response
-          }, tunniste.id, tunniste.suoritustapa, cb, Notifikaatiot.serverCb);
-        });
-      }
-    };
-
-    var changeResponseHandler = function(data, response, cb) {
-      cb(response);
-      data.latest = data.chosen.number === latest(data.list).number;
     };
 
     this.historyView = function (data) {

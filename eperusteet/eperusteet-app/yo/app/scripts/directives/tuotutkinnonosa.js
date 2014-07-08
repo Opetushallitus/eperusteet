@@ -60,6 +60,7 @@ angular.module('eperusteApp')
     $scope.suoritustavat = _(peruste.suoritustavat).map('suoritustapakoodi')
                                                    .reject(function(st) { return st === suoritustapa; })
                                                    .value();
+    $scope.valittuSuoritustapa = $scope.suoritustavat[0];
 
     $scope.valinta = function(tulos) {
       $scope.valitut += tulos.$valitse ? -1 : 1;
@@ -86,6 +87,7 @@ angular.module('eperusteApp')
       },
       Notifikaatiot.serverCb);
     };
+    $scope.paivitaTulokset($scope.valittuSuoritustapa);
 
     $scope.ok = function() {
       $modalInstance.close(_.filter($scope.tulokset, function(tulos) {

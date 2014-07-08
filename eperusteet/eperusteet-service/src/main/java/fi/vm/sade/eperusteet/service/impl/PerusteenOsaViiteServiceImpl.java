@@ -19,12 +19,15 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Tila;
+import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(readOnly = true)
-public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService{
+public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
 
     @Autowired
     private PerusteenOsaViiteRepository repository;
@@ -53,7 +56,6 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService{
     private DtoMapper mapper;
 
     @Override
-    @Transactional(readOnly = false)
     public void removeSisalto(Long id) {
         PerusteenOsaViite viite = repository.findOne(id);
         if (viite == null) {
@@ -65,11 +67,10 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService{
         }
 
         if (viite.getLapset() != null && !viite.getLapset().isEmpty() ) {
-                throw new BusinessRuleViolationException("Sisällöllä on lapsia, ei voida poistaa");
+            throw new BusinessRuleViolationException("Sisällöllä on lapsia, ei voida poistaa");
         }
 
         if (viite.getPerusteenOsa() != null && viite.getPerusteenOsa().getTila().equals(Tila.LUONNOS)) {
-
             PerusteenOsa perusteenOsa = viite.getPerusteenOsa();
             perusteenOsaService.delete(perusteenOsa.getId());
 
@@ -78,5 +79,24 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService{
             viite.setVanhempi(null);
             repository.delete(viite);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Revision> getVersiot(Long id) {
+        return repository.getRevisions(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PerusteenosaViiteDto getVersio(Long id, Integer versioId) {
+        return mapper.map(repository.findRevision(id, versioId), PerusteenosaViiteDto.class);
+    }
+
+    @Override
+    @Transactional
+    public PerusteenosaViiteDto revertToVersio(Long id, Integer versioId) {
+        PerusteenOsaViite revision = repository.findRevision(id, versioId);
+        return mapper.map(repository.save(revision), PerusteenosaViiteDto.class);
     }
 }

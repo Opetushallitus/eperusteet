@@ -27,13 +27,15 @@ import java.util.List;
  */
 public interface PerusteenOsaService {
 
-    <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass);
+    <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(T perusteenOsaDto, Class<T> dtoClass);
 
     <T extends PerusteenOsaDto, D extends PerusteenOsa> T add(T perusteenOsaDto, Class<T> dtoClass, Class<D> destinationClass);
 
     void delete(final Long id);
 
-    public Integer getLatestRevision(final Long id);
+    Integer getLatestRevision(final Long id);
+
+    PerusteenOsaDto revertToVersio(Long id, Integer versioId);
 
     PerusteenOsaDto get(final Long id);
 

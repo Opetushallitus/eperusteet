@@ -236,7 +236,8 @@ angular.module('eperusteApp')
           });
           if (onRakenteessa) {
             Notifikaatiot.varoitus('tutkinnon-osa-rakenteessa-ei-voi-poistaa');
-          } else {
+          }
+          else {
             Varmistusdialogi.dialogi({
               otsikko: 'poistetaanko-tutkinnonosa',
               primaryBtn: 'poista',

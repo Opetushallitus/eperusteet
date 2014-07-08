@@ -16,7 +16,11 @@
 
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
+import fi.vm.sade.eperusteet.repository.version.Revision;
+import java.util.List;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -26,4 +30,13 @@ public interface PerusteenOsaViiteService {
 
     @PreAuthorize("isAuthenticated()")
     void removeSisalto(Long id);
+
+    @PreAuthorize("isAuthenticated()")
+    public PerusteenosaViiteDto getVersio(Long id, Integer versioId);
+
+    @PreAuthorize("isAuthenticated()")
+    public PerusteenosaViiteDto revertToVersio(Long id, Integer versioId);
+
+    @PreAuthorize("isAuthenticated()")
+    List<Revision> getVersiot(Long id);
 }
