@@ -43,18 +43,5 @@ angular.module('eperusteApp')
 
     $scope.koulutustyypit = YleinenData.koulutustyypit;
 
-    $scope.paatosPvmOpen = false;
-
-    $scope.showWeeks = true;
-
-    $scope.open = function($event) {
-      $event.preventDefault();
-      $event.stopPropagation();
-
-      $scope.paatosPvmOpen = !$scope.paatosPvmOpen;
-    };
-
-    $scope.dateOptions = YleinenData.dateOptions;
-    $scope.format = YleinenData.dateFormatDatepicker;
   });
 

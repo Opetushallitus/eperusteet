@@ -23,22 +23,7 @@ European Union Public Licence for more details.
                model="projekti" model-var="koulutustyyppi" required="required" options="koulutustyypit" placeholder="valitse-koulutustyyppi"></formfield>
     <formfield label="laajuuden-yksikkö" ng-show="projekti.koulutustyyppi === 'koulutustyyppi_1'" ng-if="$parent.wizardissa()"
                model="projekti" model-var="laajuusYksikko" required="projekti.koulutustyyppi === 'koulutustyyppi_1'" options="yksikot"></formfield>
-
-    <div class="form-group">
-      <label for="paatospvm" class="col-sm-3 control-label">{{'päätöspvm-label'| translate}}</label>
-      <div class="col-sm-9 form-clear">
-        <div class="input-group">
-          <input type="text" id="paatospvm" name="paatospvm" class="form-control" datepicker-popup="{{format}}" ng-model="projekti.paatosPvm"
-                 placeholder="{{'anna-päätöspäivämäärä' | translate}}" is-open="paatosPvmOpen" datepicker-options="dateOptions"
-                 show-button-bar="false" dateformatvalidator>
-          <span class="input-group-btn">
-            <button id="paatosPvmButton" class="btn btn-default" ng-click="open($event)" icon-role="calendar"></button>
-          </span>
-        </div>
-        <p class="alert alert-error" ng-show="perusteprojektiForm.perustiedotForm.paatospvm.$invalid" translate>kelvoton-pvm</p>
-      </div>
-    </div>
-
+    <formfield label="päätöspvm-label" model="projekti" model-var="paatosPvm" placeholder="anna-päätöspäivämäärä" type="date"></formfield>
     <formfield label="tehtäväluokka-label"
                model="projekti" model-var="tehtavaluokka" options="tehtavaluokat" placeholder="valitse-tehtäväluokka"></formfield>
     <formfield label="yhteistyotaho-label" model="projekti" model-var="yhteistyotaho" placeholder="anna-yhteistyotaho-placeholder" max="255"></formfield>

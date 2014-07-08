@@ -31,8 +31,6 @@ angular.module('eperusteApp')
     'toimikausiLoppuButton': false
   };
 
-  $scope.showWeeks = true;
-
   $scope.open = function($event) {
     $event.preventDefault();
     $event.stopPropagation();
@@ -45,12 +43,6 @@ angular.module('eperusteApp')
     $scope.kalenteriTilat[$event.target.id] = !$scope.kalenteriTilat[$event.target.id];
   };
 
-  $scope.dateOptions = {
-    'year-format': 'yy',
-    //'month-format': 'M',
-    //'day-format': 'd',
-    'starting-day': 1
-  };
-
+  $scope.dateOptions = YleinenData.dateOptions;
   $scope.format = YleinenData.dateFormatDatepicker;
   });
