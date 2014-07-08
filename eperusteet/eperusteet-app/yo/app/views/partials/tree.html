@@ -44,16 +44,17 @@
         <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia...">
       </div>
       <div class="optiolaatikko">
-        <a href="" ng-click="toggleNotUsed()">{{ piilotaKaikki ? 'näytä-kaikki' : 'vain-käyttämättömät' | kaanna }}</a>
+        <a class="action-link" ng-click="toggleNotUsed()">{{ piilotaKaikki ? 'näytä-kaikki' : 'vain-käyttämättömät' | kaanna }}</a>
       </div>
       <ul ui-sortable="sortableOptionsUnique" ng-model="uniikit" class="uniikit placeholder-hide">
         <li ng-model="osa" class="skratchpad-item" ng-repeat="osa in uniikit | startFrom:(tutkinnonOsat.sivu-1)*tutkinnonOsat.perSivu | limitTo:tutkinnonOsat.perSivu">
-          <img src="images/tutkinnonosa.png" alt="">
+          <span class="skratchpad-badge" ng-class="{'ei-kaytetty': !kaytetytUniikit[osa._tutkinnonOsaViite], 'kaytetty': kaytetytUniikit[osa._tutkinnonOsaViite]}"></span>
           {{ rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== 'naytto' && rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus">, {{ + rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus || 0 }}{{ rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuusYksikko | kaanna }}</span>
-          <span class="badge skratchpad-badge" ng-show="!kaytetytUniikit[osa._tutkinnonOsaViite]" title="{{ 'tutkinnonosa-ei-käytössä' | kaanna }}"><span class="glyphicon glyphicon-asterisk"></span></span>
           <span class="pull-right">
-            <a href="" ng-click="rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate = false"><span ng-show="rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate" class="glyphicon glyphicon-eye-open"></span></a>
-            <a href="" ng-click="rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate = true"><span ng-hide="rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate" class="glyphicon glyphicon-eye-close"></span></a>
+            <a class="action-link" ng-click="rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate = !rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate"
+               ng-show="kaytetytUniikit[osa._tutkinnonOsaViite]" ng-attr-title="{{rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate && ('poista-korostus'|kaanna) || ('korosta'|kaanna)}}">
+              <span class="glyphicon" ng-class="{'glyphicon-eye-open': rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate, 'glyphicon-eye-close': !rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate}"></span>
+            </a>
           </span>
         </li>
       </ul>
