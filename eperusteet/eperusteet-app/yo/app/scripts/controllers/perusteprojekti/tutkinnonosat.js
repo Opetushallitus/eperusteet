@@ -18,16 +18,23 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $rootScope, $state, $stateParams, $filter,
-    Navigaatiopolku, perusteprojektiTiedot, PerusteProjektiService, PerusteRakenteet, PerusteenRakenne, Notifikaatiot,
-    Editointikontrollit, Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode, Algoritmit) {
+  .service('Preferenssit', function () {
+    /* TODO: Käyttäjän preferenssit keksiin tai käyttäjäprofiiliin? */
+    this.data = {
+      nakymatyyli: 'palikka'
+    };
+  })
+  .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $state, $stateParams,
+    perusteprojektiTiedot, PerusteProjektiService, PerusteenRakenne, Notifikaatiot,
+    Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode, Algoritmit,
+    Preferenssit) {
 
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
     $scope.tutkinnonOsat = [];
     $scope.tosarajaus = '';
     $scope.editoi = false;
-    $scope.nakymatyyli = 'lista';
+    $scope.preferenssit = Preferenssit.data;
     $scope.jarjestysTapa = 'nimi';
     $scope.jarjestysOrder = false;
 

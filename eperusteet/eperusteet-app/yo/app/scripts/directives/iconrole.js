@@ -42,6 +42,7 @@ angular.module('eperusteApp')
       download: 'download-alt',
       edit: 'pencil',
       first: 'fast-backward',
+      forward: 'chevron-right',
       import: 'cloud-download',
       info: 'info-sign',
       last: 'fast-forward',

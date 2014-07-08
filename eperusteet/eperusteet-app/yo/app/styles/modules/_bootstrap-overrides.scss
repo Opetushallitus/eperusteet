@@ -14,3 +14,7 @@ $fluid-container-width: 1400px;
 .input-group .btn, .input-group input {
   border-radius: 0;
 }
+
+.form-control {
+  border-radius: 0 !important;
+}
