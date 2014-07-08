@@ -114,4 +114,12 @@ describe('Directive: formfield', function () {
       expect(options.eq(2).attr('selected')).toBe('selected');
     });
   });
+
+  describe('date type input', function () {
+    it('should be rendered with a datepicker', function () {
+      scope.data = {date: 23456789};
+      kaanna('<formfield label="Date" model="data" model-var="date" type="date"></formfield>');
+      expect(element.find('.input-group-btn button').length).toBe(1);
+    });
+  });
 });

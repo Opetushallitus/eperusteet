@@ -34,7 +34,7 @@
  * @param {String/Expression} required 'required'|'true'|parent scope expression
  */
 angular.module('eperusteApp')
-  .directive('formfield', function ($parse, Kaanna, $timeout) {
+  .directive('formfield', function ($parse, Kaanna, $timeout, YleinenData) {
     var uniqueId = 0;
     return {
       templateUrl: 'views/partials/formfield.html',
@@ -52,24 +52,40 @@ angular.module('eperusteApp')
         placeholder: '@'
       },
       link: function (scope, element, attrs) {
-        scope.kaanna = function (val) {
-          return Kaanna.kaanna(val);
-        };
+        scope.postfix = '';
+        scope.type = scope.type || 'text';
         scope.flatOptions = _.isArray(scope.options) &&
                 scope.options.length > 0 && !_.isObject(scope.options[0]);
+
         if (!scope.flatOptions) {
           _.forEach(scope.options, function(opt) {
             opt.label = Kaanna.kaanna(opt.label);
           });
         }
 
-        scope.type = scope.type || 'text';
+        scope.kaanna = function (val) {
+          return Kaanna.kaanna(val);
+        };
+
+        scope.inputClasses = function () {
+          var classes = [];
+          if (scope.type !== 'checkbox') {
+            classes.push('form-control');
+          }
+          return classes;
+        };
+
+        function bindLabel() {
+          scope.inputElId = scope.label.replace(/ /g, '-') + '-' + uniqueId++;
+          element.find('label').attr('for', scope.inputElId);
+        }
+
         if (scope.type === 'text' && attrs.max) {
           $timeout(function () {
             element.find('input').attr('maxlength', attrs.max);
           });
         }
-        scope.postfix = '';
+
         attrs.$observe('required', function(value) {
           if (value === 'required' || value === 'true') {
             scope.postfix = '*';
@@ -82,22 +98,14 @@ angular.module('eperusteApp')
             });
           }
         });
-        scope.inputClasses = function () {
-          var classes = [];
-          if (scope.type !== 'checkbox') {
-            classes.push('form-control');
-          }
-          return classes;
-        };
-        scope.inputElId = scope.label.replace(/ /g, '-') + '-' + uniqueId++;
-        element.find('label').attr('for', scope.inputElId);
+
+        bindLabel();
 
         // Two-way binding with deep object hierarchies needs some tricks
         var getter = $parse(scope.modelVar);
         var setter = getter.assign;
         scope.input = {};
         scope.input.model = getter(scope.model);
-        scope.isObject = _.isObject(scope.input.model);
         // inner => outside
         scope.$watch('input.model', function () {
           setter(scope.model, scope.input.model);
@@ -108,6 +116,22 @@ angular.module('eperusteApp')
         }, function (value) {
           scope.input.model = value;
         });
+
+        scope.isObject = _.isObject(scope.input.model);
+        scope.isNumber = !scope.options && !scope.isObject && scope.type === 'number';
+        scope.isDate = !scope.options && scope.type === 'date';
+        scope.isText = !scope.options && !scope.isObject && scope.type !== 'number';
+        scope.isMultiText = !scope.options && scope.isObject;
+        scope.datePicker = {
+          options: YleinenData.dateOptions,
+          format: YleinenData.dateFormatDatepicker,
+          state: false,
+          open: function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            scope.datePicker.state = !scope.datePicker.state;
+          }
+        };
       }
     };
   });

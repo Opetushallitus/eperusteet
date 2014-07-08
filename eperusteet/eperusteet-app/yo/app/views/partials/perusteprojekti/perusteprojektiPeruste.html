@@ -33,38 +33,12 @@ European Union Public Licence for more details.
       <div class="form-group-wrapper" ng-if="editEnabled">
         <formfield model="editablePeruste" model-var="nimi" label="perusteen-nimi"></formfield>
         <formfield model="editablePeruste" model-var="kuvaus" label="tiivistelmä" type="textarea"></formfield>
-
-        <div class="form-group">
-          <label for="voimaantulopvm" class="col-sm-3 control-label" translate>voimaantulo-pvm</label>
-          <div class="col-sm-9 form-clear">
-            <div class="input-group">
-              <input type="text" id="voimaantulopvm" name="voimaantulopvm" class="form-control" datepicker-popup="{{format}}" ng-model="editablePeruste.voimassaoloAlkaa"
-                     placeholder="{{'anna-voimaantulo-pvm' | translate}}" is-open="voimaantuloPvmOpen " datepicker-options="dateOptions"
-                     show-button-bar="false" dateformatvalidator>
-              <span class="input-group-btn">
-                <button id="paatosPvmButton" class="btn btn-default" ng-click="open('voimaantuloPvmOpen', $event)" icon-role="calendar"></button>
-              </span>
-            </div>
-            <p class="alert alert-error" ng-show="projektinPerusteForm.voimaantulopvm.$invalid" translate>kelvoton-pvm</p>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="paattymispvm" class="col-sm-3 control-label" translate>voimassaolo-paattymispvm</label>
-          <div class="col-sm-9 form-clear">
-            <div class="input-group">
-              <input type="text" id="paattymispvm" name="paattymispvm" class="form-control" datepicker-popup="{{format}}" ng-model="editablePeruste.voimassaoloLoppuu"
-                     placeholder="{{'anna-voimaantulo-loppu-pvm' | translate}}" is-open="voimaantuloLoppuuPvmOpen " datepicker-options="dateOptions"
-                     show-button-bar="false" dateformatvalidator>
-              <span class="input-group-btn">
-                <button id="paatosPvmButton" class="btn btn-default" ng-click="open('voimaantuloLoppuuPvmOpen', $event)" icon-role="calendar"></button>
-              </span>
-            </div>
-            <p class="alert alert-error" ng-show="projektinPerusteForm.paattymispvm.$invalid" translate>kelvoton-pvm</p>
-          </div>
-        </div>
+        <formfield model="editablePeruste" model-var="voimassaoloAlkaa" label="voimaantulo-pvm" type="date"
+                   placeholder="anna-voimaantulo-pvm"></formfield>
+        <formfield model="editablePeruste" model-var="voimassaoloLoppuu" label="voimassaolo-paattymispvm" type="date"
+                   placeholder="anna-voimaantulo-loppu-pvm"></formfield>
       </div>
-      
+
 
       <div ng-if="!editEnabled">
         <table class="perustiedot">

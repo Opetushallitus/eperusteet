@@ -18,7 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .directive('mlInput', function($translate, YleinenData) {
+  .directive('mlInput', function($translate, YleinenData, $timeout) {
     return {
       restrict: 'E',
       scope: {
@@ -54,7 +54,9 @@ angular.module('eperusteApp')
           scope.activeLang = uusiKieli;
         };
         if (scope.$parent.inputElId) {
-          element.find('input').attr('id', scope.$parent.inputElId);
+          $timeout(function () {
+            element.find('input, textarea').attr('id', scope.$parent.inputElId);
+          });
         }
       }
     };

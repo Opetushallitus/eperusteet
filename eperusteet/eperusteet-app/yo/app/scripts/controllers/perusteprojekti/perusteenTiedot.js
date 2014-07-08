@@ -72,16 +72,6 @@ angular.module('eperusteApp')
     fixTimefield('voimassaoloAlkaa');
     fixTimefield('voimassaoloLoppuu');
 
-    $scope.voimaantuloPvmOpen = false;
-    $scope.voimaantuloLoppuuPvmOpen = false;
-    $scope.dateOptions = YleinenData.dateOptions;
-    $scope.format = YleinenData.dateFormatDatepicker;
-    $scope.open = function(value, $event) {
-      $event.preventDefault();
-      $event.stopPropagation();
-      $scope[value] = !$scope[value];
-    };
-
 
     $scope.rajaaKoodit = function(koodi) {
       return koodi.koodi.indexOf('_3') !== -1;
