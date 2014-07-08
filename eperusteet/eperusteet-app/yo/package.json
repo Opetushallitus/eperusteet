@@ -35,7 +35,8 @@
     "karma-phantomjs-launcher": "~0.1.4",
     "load-grunt-tasks": "~0.1.0",
     "node-sass": "0.8.4",
-    "time-grunt": "~0.1.0"
+    "time-grunt": "~0.1.0",
+    "grunt-regex-check": "~0.1.5"
   },
   "engines": {
     "node": ">=0.8.0"

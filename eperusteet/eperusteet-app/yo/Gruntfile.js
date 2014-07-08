@@ -43,7 +43,7 @@ module.exports = function(grunt) {
       },
       test: {
         files: ['<%= yeoman.app %>/**/*.{js,html}', 'test/**/*.js','!<%= yeoman.app %>/bower_components/**'],
-        tasks: ['karma:unit', 'jshint']
+        tasks: ['karma:unit', 'jshint', 'regex-check']
       },
       livereload: {
         options: {
@@ -147,7 +147,7 @@ module.exports = function(grunt) {
       },
       all: [
         'Gruntfile.js',
-        '<%= yeoman.app %>/scripts/{,*/}*.js'
+        '<%= yeoman.app %>/scripts/{,*/,*/*/}*.js'
       ]
     },
     // not used since Uglify task does concat,
@@ -366,6 +366,13 @@ module.exports = function(grunt) {
           htmlmin: { collapseWhitespace: true, removeComments: true }
         }
       }
+    },
+    'regex-check': {
+      files: '<%= yeoman.app %>/scripts/{,*/,*/*/}*.js',
+      options: {
+        /* Check that templateUrls don't start with slash */
+        pattern : /templateUrl:\s*['"]\//m
+      },
     }
   });
 
@@ -410,6 +417,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', [
     'jshint',
+    'regex-check',
     'test',
     'build'
   ]);

@@ -18,7 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('PerusteprojektinTilanvaihto', function ($modal, YleinenData) {
+  .service('PerusteprojektinTilanvaihto', function ($modal) {
     var that = this;
     this.start = function (currentStatus, mahdollisetTilat, setFn) {
       var dummyDescription = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.';

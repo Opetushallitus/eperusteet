@@ -28,7 +28,7 @@ angular.module('eperusteApp')
         objectPromise: '=',
         editEnabled: '='
       },
-      link: function(scope, element, attrs) {
+      link: function(scope) {
         scope.menuItems = [];
 
         scope.innerObjectPromise = scope.objectPromise.then(function() {
@@ -141,7 +141,8 @@ angular.module('eperusteApp')
         if (self.hasTeksti()) {
           obj.taulukko.visible = false;
         }
-        return self.obj = obj;
+        self.obj = obj;
+        return self.obj;
       };
 
       self.setMenu = function (menu) {
@@ -156,7 +157,7 @@ angular.module('eperusteApp')
       };
 
       return self;
-    };
+    }
 
     return {
       create: function () {
