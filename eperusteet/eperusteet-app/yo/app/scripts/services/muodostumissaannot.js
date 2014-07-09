@@ -92,7 +92,7 @@ angular.module('eperusteApp')
       delete rakenne.$virhe;
 
       _.forEach(rakenne.osat, function(tosa) {
-        if (!tosa._tutkinnonOsa) {
+        if (!tosa._tutkinnonOsaViite) {
           validoiRyhma(tosa);
         }
       });
@@ -127,11 +127,12 @@ angular.module('eperusteApp')
         }
 
       }
+
       var tosat = _(rakenne.osat)
-        .filter(function(osa) { return osa._tutkinnonOsa; })
+        .filter(function(osa) { return osa._tutkinnonOsaViite; })
         .value();
 
-      if (_.size(tosat) !== _(tosat).uniq('_tutkinnonOsa').size()) {
+      if (_.size(tosat) !== _(tosat).uniq('_tutkinnonOsaViite').size()) {
         asetaVirhe('muodostumis-rakenne-validointi-uniikit');
       }
     }

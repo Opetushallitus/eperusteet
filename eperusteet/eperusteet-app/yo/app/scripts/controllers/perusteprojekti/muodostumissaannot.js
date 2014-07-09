@@ -114,8 +114,10 @@ angular.module('eperusteApp')
     });
 
     $scope.$watch('rakenne.rakenne', function(uusirakenne) {
-      Muodostumissaannot.laskeLaajuudet(uusirakenne, $scope.rakenne.tutkinnonOsat);
-      Muodostumissaannot.validoiRyhma(uusirakenne, $scope.tutkinnonOsat);
+      if ($scope.editoi) {
+        Muodostumissaannot.laskeLaajuudet(uusirakenne, $scope.rakenne.tutkinnonOsat);
+        Muodostumissaannot.validoiRyhma(uusirakenne, $scope.tutkinnonOsat);
+      }
     }, true);
 
     $scope.$watch('editoi', function(editoi) {
