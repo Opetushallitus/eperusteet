@@ -14,10 +14,29 @@
     <fo:block border-top-style="solid" text-align="center"></fo:block>
   </xsl:template>
 
+   <!-- From: http://www.sagehill.net/docbookxsl/CustomGentext.html
+        Defines an XSL parameter named local.l10n.xml. The select attribute that
+        provides the content of the parameter performs a neat trick. The XSL 
+        document() function normally opens and reads another file. But the blank
+        function argument is a special case, which means to read the current 
+        document, that is, the current XSL file. This loads your entire 
+        customization layer file into the parameter. Once loaded, specific
+        instances of generated text can be extracted as needed.-->
   <xsl:param name="local.l10n.xml" select="document('')"/>
+  
+  <!-- Section numbering to use arabic numbers -->
   <xsl:param name="section.autolabel" select="1"></xsl:param>
+  
+  <!-- Section numbers to include chapter number -->
   <xsl:param name="section.label.includes.component.label" select="1"></xsl:param>
-  <xsl:param name="toc.section.depth" select="1"></xsl:param>  
+  
+  <!-- Only include two levels below chapter table of contents -->
+  <xsl:param name="toc.section.depth" select="2"></xsl:param>
+  
+  <!-- Only include the main toc (no list of figures, tables etc -->
+  <xsl:param name="generate.toc">
+    book    toc,title
+  </xsl:param>
 
   <l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0">
     <l:l10n language="fi">
