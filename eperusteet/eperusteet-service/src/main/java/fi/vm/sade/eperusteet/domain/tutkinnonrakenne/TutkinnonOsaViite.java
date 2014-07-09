@@ -73,6 +73,10 @@ public class TutkinnonOsaViite implements ReferenceableEntity {
 
     @Getter
     @Setter
+    private Boolean poistettu;
+
+    @Getter
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private TutkinnonOsa tutkinnonOsa;

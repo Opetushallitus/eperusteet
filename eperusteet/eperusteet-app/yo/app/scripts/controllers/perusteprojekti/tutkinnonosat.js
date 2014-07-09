@@ -61,7 +61,7 @@ angular.module('eperusteApp')
 
     function haeTutkinnonosat() {
       PerusteenRakenne.haeTutkinnonosat($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
-        $scope.tutkinnonOsat = res;
+        $scope.tutkinnonOsat = _.reject(res, function(r) { return r.poistettu; });
       });
     }
     haeTutkinnonosat();

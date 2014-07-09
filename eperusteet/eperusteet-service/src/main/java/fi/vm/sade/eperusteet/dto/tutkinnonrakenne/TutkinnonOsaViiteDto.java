@@ -32,5 +32,6 @@ public class TutkinnonOsaViiteDto {
     private Integer jarjestys;
     private LokalisoituTekstiDto nimi;
     private Date muokattu;
+    private Boolean poistettu;
     private EntityReference tutkinnonOsa;
 }

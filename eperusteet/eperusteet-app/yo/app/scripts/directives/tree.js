@@ -279,14 +279,17 @@ angular.module('eperusteApp')
 
         function paivitaUniikit() {
           scope.uniikit = [];
-          _.each(scope.rakenne.tutkinnonOsaViitteet, function (osa) {
-            var match = scope.tutkinnonOsat.rajaus &&
-              _.contains(Kaanna.kaanna(osa.nimi).toLowerCase(),
-              scope.tutkinnonOsat.rajaus.toLowerCase());
-            if (!scope.tutkinnonOsat.rajaus || match) {
-              scope.uniikit.push({_tutkinnonOsaViite: osa.id});
-            }
-          });
+          _(scope.rakenne.tutkinnonOsaViitteet)
+            .reject(function(osa) { return osa.poistettu; })
+            .each(function (osa) {
+              var match = scope.tutkinnonOsat.rajaus &&
+                _.contains(Kaanna.kaanna(osa.nimi).toLowerCase(),
+                scope.tutkinnonOsat.rajaus.toLowerCase());
+              if (!scope.tutkinnonOsat.rajaus || match) {
+                scope.uniikit.push({_tutkinnonOsaViite: osa.id});
+              }
+            })
+            .value();
           scope.tutkinnonOsat.multiPage = _.size(scope.uniikit) > scope.tutkinnonOsat.perSivu;
           scope.kaikkiUniikit = _.sortBy(scope.uniikit, function(osa) {
             return Kaanna.kaanna(scope.rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi).toLowerCase();

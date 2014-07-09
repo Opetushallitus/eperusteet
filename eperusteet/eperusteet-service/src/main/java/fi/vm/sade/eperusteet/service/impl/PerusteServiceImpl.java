@@ -68,6 +68,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -355,7 +356,8 @@ public class PerusteServiceImpl implements PerusteService {
                 haeTutkinnonOsaViitteetRakenteesta(lapsi, tovat);
             }
         } else if (rakenne instanceof RakenneOsa) {
-            tovat.add(((RakenneOsa) rakenne).getTutkinnonOsaViite());
+            TutkinnonOsaViite viite = ((RakenneOsa) rakenne).getTutkinnonOsaViite();
+            tovat.add(viite);
         }
     }
 
@@ -363,18 +365,22 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional
     public RakenneModuuliDto revertRakenneVersio(Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId) {
         RakenneModuuli rakenneVersio = haeRakenneVersio(id, suoritustapakoodi, versioId);
-//        Peruste peruste = perusteet.findOne(id);
-//        Map<TutkinnonOsaViite, List<Revision>> tovienVersiot = new HashMap<>();
-//        HashSet<TutkinnonOsaViite> tovat = new HashSet<>();
-//        haeTutkinnonOsaViitteetRakenteesta(rakenneVersio, tovat);
-//
-//        for (TutkinnonOsaViite tova : tovat) {
-//            List<Revision> tovaVersiot = tutkinnonOsaViiteRepository.getRevisions(tova.getId());
-//            if (tovaVersiot.size() > 1) {
-//                Revision get = tovaVersiot.get(tovaVersiot.size() - 1);
-//            }
-//        }
+        Peruste peruste = perusteet.findOne(id);
+        Set<TutkinnonOsaViite> rakenneTovat = new HashSet<>();
+        haeTutkinnonOsaViitteetRakenteesta(rakenneVersio, rakenneTovat);
 
+        Map<Long, TutkinnonOsaViite> tovat = new HashMap<>();
+        Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+        Set<TutkinnonOsaViite> tutkinnonOsat = suoritustapa.getTutkinnonOsat();
+        for (TutkinnonOsaViite tov : tutkinnonOsat) {
+            tovat.put(tov.getId(), tov);
+        }
+
+        for (TutkinnonOsaViite tov : rakenneTovat) {
+            TutkinnonOsaViite utov = tovat.get(tov.getId());
+            utov.setPoistettu(false);
+        }
+        tutkinnonOsat = suoritustapa.getTutkinnonOsat();
         return updateTutkinnonRakenne(id, suoritustapakoodi, mapper.map(rakenneVersio, RakenneModuuliDto.class));
     }
 
@@ -400,6 +406,7 @@ public class PerusteServiceImpl implements PerusteService {
     public List<TutkinnonOsaViiteDto> getTutkinnonOsat(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
         Peruste peruste = perusteet.findOne(perusteid);
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+        Set<TutkinnonOsaViite> tutkinnonOsat = suoritustapa.getTutkinnonOsat();
         return mapper.mapAsList(suoritustapa.getTutkinnonOsat(), TutkinnonOsaViiteDto.class);
     }
 
@@ -441,7 +448,8 @@ public class PerusteServiceImpl implements PerusteService {
         try {
             Set<TutkinnonOsaViite> tutkinnonOsat = suoritustapa.getTutkinnonOsat();
             TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osaId);
-            tutkinnonOsat.remove(viite);
+            viite.setPoistettu(true);
+//            tutkinnonOsat.remove(viite);
         } finally {
             lockManager.unlock(suoritustapa.getId());
         }
