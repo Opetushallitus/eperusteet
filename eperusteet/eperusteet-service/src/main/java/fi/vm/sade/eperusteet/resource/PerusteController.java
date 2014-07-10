@@ -64,8 +64,9 @@ public class PerusteController {
 
     @RequestMapping(value = "/info", method = GET)
     @ResponseBody
-    public List<PerusteInfoDto> getAllInfo() {
-        return service.getAllInfo();
+    public Page<PerusteInfoDto> getAllInfo(PerusteQuery pquery) {
+        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
+        return service.findByInfo(p, pquery);
     }
 
     @RequestMapping(method = GET)
@@ -302,6 +303,16 @@ public class PerusteController {
             @PathVariable("suoritustapa") final String suoritustapa,
             @PathVariable("perusteenosaViiteId") final Long perusteenosaViiteId) {
         return new ResponseEntity<>(service.addSisaltoLapsi(perusteId, perusteenosaViiteId), HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{parentId}/lapsi/{childId}", method = POST)
+    @ResponseBody
+    public ResponseEntity<PerusteenSisaltoViiteDto> addSisaltoLapsi(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapa") final String suoritustapa,
+            @PathVariable("parentId") final Long parentId,
+            @PathVariable("childId") final Long childId) {
+        return new ResponseEntity<>(service.attachSisaltoLapsi(perusteId, parentId, childId), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}/sisalto", method = GET)

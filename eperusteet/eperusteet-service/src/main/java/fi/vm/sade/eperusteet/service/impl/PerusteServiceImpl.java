@@ -170,6 +170,13 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<PerusteInfoDto> findByInfo(PageRequest page, PerusteQuery pquery) {
+        Page<Peruste> result = perusteet.findBy(page, pquery);
+        return new PageDto<>(result, PerusteInfoDto.class, page, mapper);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public PerusteDto get(final Long id) {
         Peruste p = perusteet.findById(id);
         return mapper.map(p, PerusteDto.class);
@@ -561,6 +568,24 @@ public class PerusteServiceImpl implements PerusteService {
         uusiKappale.setTila(Tila.LUONNOS);
         em.persist(uusiKappale);
         uusiViite.setPerusteenOsa(uusiKappale);
+        uusiViite.setVanhempi(viiteEntity);
+        em.persist(uusiViite);
+        viiteEntity.getLapset().add(uusiViite);
+
+        return mapper.map(uusiViite, PerusteenSisaltoViiteDto.class);
+    }
+
+    @Override
+    @Transactional
+    public PerusteenSisaltoViiteDto attachSisaltoLapsi(Long perusteId, Long parentViiteId, Long tekstikappaleId) {
+        PerusteenOsaViite viiteEntity = perusteenOsaViiteRepo.findOne(parentViiteId);
+        if (viiteEntity == null) {
+            throw new BusinessRuleViolationException("Perusteenosaviitettä ei ole olemassa");
+        }
+        perusteenOsaViiteRepo.lock(viiteEntity);
+        PerusteenOsaViite uusiViite = new PerusteenOsaViite();
+        PerusteenOsa kappale = perusteenOsaRepository.findOne(tekstikappaleId);
+        uusiViite.setPerusteenOsa(kappale);
         uusiViite.setVanhempi(viiteEntity);
         em.persist(uusiViite);
         viiteEntity.getLapset().add(uusiViite);

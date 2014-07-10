@@ -73,6 +73,9 @@ public interface PerusteService {
     PerusteenSisaltoViiteDto addSisaltoLapsi(final Long perusteId, final Long perusteenosaViiteId);
 
     @PreAuthorize("isAuthenticated()")
+    PerusteenSisaltoViiteDto attachSisaltoLapsi(Long perusteId, Long parentViiteId, Long tekstikappaleId);
+
+    @PreAuthorize("isAuthenticated()")
     PerusteenOsaViite addViite(final Long parentId, final Long seuraavaViite, PerusteenOsaViite viite);
 
     PerusteenosaViiteDto getSuoritustapaSisalto(final Long perusteId, final Suoritustapakoodi suoritustapakoodi);
@@ -99,6 +102,8 @@ public interface PerusteService {
     Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko);
 
     Peruste luoPerusteRunkoToisestaPerusteesta(Long perusteId);
+
+    Page<PerusteInfoDto> findByInfo(PageRequest page, PerusteQuery pquery);
 
     @PreAuthorize("isAuthenticated()")
     String lammitys();

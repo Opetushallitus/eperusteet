@@ -55,6 +55,7 @@ European Union Public Licence for more details.
                 Tutkintokohtaiset osat ({{ peruste.sisalto.lapset.length }})
                 <a ng-click="avaaSuljeKaikki(peruste.sisalto)" href=""><span class="avaa-sulje"><img src="images/expander.png" alt=""> {{ "avaa-sulje-kaikki" | kaanna }}</span></a>
                 <div class="pull-right buttons">
+                    <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="cloud-download">{{ 'tuo-tutkintokohtainen-osa' | translate }}</button>
                     <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="add">{{ 'lisaa-tutkintokohtainen-osa' | translate }}</button>
                 </div>
             </h2>

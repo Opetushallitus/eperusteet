@@ -38,8 +38,16 @@ angular.module('eperusteApp')
       });
     }
 
+    function asyncTraverse(list, cb, done) {
+      done = done || angular.noop;
+      list = list || [];
+      if (_.isEmpty(list)) { done(); return; }
+      cb(_.first(list), function() { asyncTraverse(_.rest(list), cb, done); });
+    }
+
     return {
       rajausVertailu: rajausVertailu,
-      kaikilleLapsisolmuille: kaikilleLapsisolmuille
+      kaikilleLapsisolmuille: kaikilleLapsisolmuille,
+      asyncTraverse: asyncTraverse
     };
   });

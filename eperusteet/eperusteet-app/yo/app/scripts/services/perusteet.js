@@ -55,6 +55,8 @@ angular.module('eperusteApp')
   .factory('Perusteet', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId', {
       perusteId: '@id'
+    }, {
+      info: { method: 'GET', url: SERVICE_LOC + '/perusteet/info' }
     });
   })
   .factory('PerusteenOsaviitteet', function($resource, SERVICE_LOC) {
@@ -71,7 +73,7 @@ angular.module('eperusteApp')
       add: {method: 'PUT'},
       addChild: {
         method: 'POST',
-        url: SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/sisalto/:perusteenosaViiteId/lapsi'
+        url: SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/sisalto/:perusteenosaViiteId/lapsi/:childId'
       }
     });
   })
@@ -175,6 +177,13 @@ angular.module('eperusteApp')
       return false;
     }
 
+    function haePerusteita(haku, success) {
+      Perusteet.info({
+        nimi: haku,
+        sivukoko: 15
+      }, success, Notifikaatiot.serverCb);
+    }
+
     function poistaTutkinnonOsaViite(osaId, _peruste, suoritustapa, success) {
       PerusteTutkinnonosa.remove({
           perusteId: _peruste,
@@ -195,12 +204,13 @@ angular.module('eperusteApp')
 
     return {
       hae: haeRakenne,
-      tallennaRakenne: tallennaRakenne,
+      haePerusteita: haePerusteita,
       haeTutkinnonosat: haeTutkinnonosat,
-      tallennaTutkinnonosat: tallennaTutkinnonosat,
-      poistaTutkinnonOsaViite: poistaTutkinnonOsaViite,
       kaikilleRakenteille: kaikilleRakenteille,
+      poistaTutkinnonOsaViite: poistaTutkinnonOsaViite,
+      puustaLoytyy: puustaLoytyy,
+      tallennaRakenne: tallennaRakenne,
+      tallennaTutkinnonosat: tallennaTutkinnonosat,
       validoiRakennetta: validoiRakennetta,
-      puustaLoytyy: puustaLoytyy
     };
   });

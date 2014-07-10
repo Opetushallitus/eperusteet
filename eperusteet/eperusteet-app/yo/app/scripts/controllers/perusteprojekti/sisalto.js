@@ -18,7 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams,
+  .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams, $modal, PerusteenOsat,
     SuoritustapaSisalto, PerusteProjektiService, perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit) {
 
     function kaikilleTutkintokohtaisilleOsille(juuri, cb) {
@@ -27,6 +27,14 @@ angular.module('eperusteApp')
         lapsellaOn = kaikilleTutkintokohtaisilleOsille(osa, cb) || lapsellaOn;
       });
       return cb(juuri, lapsellaOn) || lapsellaOn;
+    }
+
+    function lisaaSisalto(method, sisalto, cb) {
+      cb = cb || angular.noop;
+      SuoritustapaSisalto[method]({
+        perusteId: $scope.projekti._peruste,
+        suoritustapa: PerusteProjektiService.getSuoritustapa()
+      }, sisalto, cb, Notifikaatiot.serverCb);
     }
 
     $scope.rajaus = '';
@@ -56,15 +64,60 @@ angular.module('eperusteApp')
     };
     $scope.rajaaSisaltoa();
 
+    $scope.tuoSisalto = function() {
+      function lisaaLapset(parent, lapset, cb) {
+        cb = cb || angular.noop;
+        lapset = lapset || [];
+        if (_.isEmpty(lapset)) { cb(); return; }
+
+        var lapsi = _.first(lapset);
+        SuoritustapaSisalto.addChild({
+          perusteId: $scope.projekti._peruste,
+          suoritustapa: PerusteProjektiService.getSuoritustapa(),
+          perusteenosaViiteId: parent.id,
+          childId: lapsi.perusteenOsa.id
+        }, {}, function(res) {
+          lisaaLapset(res, lapsi.lapset, function() {
+            parent.lapset = parent.lapset || [];
+            parent.lapset.push(lapsi);
+            lisaaLapset(parent, _.rest(lapset), cb);
+          });
+        });
+      }
+
+      $modal.open({
+        templateUrl: 'views/modals/tuotekstikappale.html',
+        controller: 'TuoTekstikappale',
+        resolve: {
+          peruste: function() { return $scope.peruste; },
+          suoritustapa: function() { return PerusteProjektiService.getSuoritustapa(); },
+        }
+      })
+      .result.then(function(lisattavaSisalto) {
+        Algoritmit.asyncTraverse(lisattavaSisalto, function(lapsi, next) {
+          lisaaSisalto('add', { _perusteenOsa: lapsi.perusteenOsa.id }, function(pov) {
+            PerusteenOsat.get({
+              osanId: pov._perusteenOsa
+            }, function(po) {
+              pov.perusteenOsa = po;
+              lisaaLapset(pov, lapsi.lapset, function() {
+                $scope.peruste.sisalto.lapset.push(pov);
+                next();
+              });
+            });
+          });
+        }, function() { Notifikaatiot.onnistui('tekstikappaleiden-tuonti-onnistui'); });
+      });
+    };
+
     $scope.createSisalto = function() {
-      SuoritustapaSisalto.save({perusteId: $scope.projekti._peruste, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {}, function(response) {
+      lisaaSisalto('save', {}, function(response) {
         TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
         $scope.navigoi('perusteprojekti.suoritustapa.perusteenosa', {
           perusteenOsanTyyppi: 'tekstikappale',
           perusteenOsaId: response._perusteenOsa
         });
-      },
-      Notifikaatiot.serverCb);
+      });
     };
 
     $scope.avaaSuljeKaikki = function() {
@@ -97,7 +150,7 @@ angular.module('eperusteApp')
       });
     };
 
-    $scope.navigoi = function (state, params) {
+    $scope.navigoi = function(state, params) {
       $state.go(state, params);
     };
   });

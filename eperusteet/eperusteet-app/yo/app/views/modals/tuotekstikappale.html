@@ -1,0 +1,51 @@
+<div class="modal-header">
+  <h2>{{ 'tekstisisällön-tuonti' | kaanna }}</h2>
+</div>
+
+<div class="modal-body">
+  <div ng-hide="valittuPeruste" class="input-group">
+    <span class="input-group-addon">
+      <span class="glyphicon glyphicon-search"></span>
+    </span>
+    <input ng-hide="lataa" ng-change="haku(syote)" type="text" ng-model="syote" class="form-control" placeholder="{{ 'hae-perusteita' | kaanna }}..." />
+  </div>
+  <div ng-show="!valittuPeruste" style="margin-top: 8px" class="results">
+    <table class="table table-striped">
+      <tr>
+        <th translate>nimi</th>
+        <th translate>voimassaoloLoppuu</th>
+      </tr>
+      <tr ng-repeat="peruste in perusteet">
+        <td>
+          <a ng-click="valitse(peruste)" href="">{{ peruste.nimi | kaanna }}</a>
+        </td>
+        <td>
+          <span ng-show="peruste.voimassaoloLoppuu">{{ peruste.voimassaoloLoppuu | aikaleima }}</span>
+          <span ng-hide="peruste.voimassaoloLoppuu" translate>ei-päättymis-päivämäärää</span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div ng-show="valittuPeruste" style="margin-top: 8px">
+    <input ng-hide="lataa" type="text" ng-model="rajaus" class="form-control" placeholder="{{ 'hae-perusteita' | kaanna }}..." />
+    <h3>{{ valittuPeruste.nimi | kaanna }}</h3>
+    <table class="table table-striped">
+      <tr>
+        <th></th>
+        <th width="50%" translate>otsikko</th>
+        <th translate>muokattu-viimeksi</th>
+      </tr>
+      <tr ng-repeat="s in sisalto">
+        <td><input ng-model="s.$valittu" type="checkbox"></td>
+        <td>{{ s.perusteenOsa.nimi | kaanna }}</td>
+        <td>{{ s.perusteenOsa.muokattu | aikaleima }}</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button ng-show="valittuPeruste" class="btn" ng-click="takaisin()">{{ 'takaisin' | kaanna }}</button>
+  <button ng-show="valittuPeruste" class="btn btn-primary" ng-click="ok()">{{ 'valitse' | kaanna }}</button>
+  <button class="btn btn-danger" ng-click="peru()">{{ 'peru' | kaanna }}</button>
+</div>

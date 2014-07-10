@@ -129,6 +129,9 @@
     "ryhmä-rooli-selite-määritelty": "Ryhmän sisältö määritellään perustepuun luonnin yhteydessä",
     "ryhmä-rooli-selite-määrittelemätön": "Ryhmälle annetaan vain muodostumissäännöt ja sen sisältö määritellään paikallisen laadinnan puolella",
 
+    "otsikko": "otsikko",
+    "osien-määrä": "Osien määrä",
+
     "muokkaa-rakennetta": "Muokkaa rakennetta",
 
     "haku-otsikko": "Perusteen haku",
@@ -370,6 +373,10 @@
     "voimassaoloAlkaa": "Voimassaolo alkaa",
     "voimassaoloLoppuu": "Voimassaolo päättyy",
     "siirtymaAlkaa": "Siirtymäaika alkaa",
+    "ei-päättymis-päivämäärää": "Ei määritetty",
+
+    "tekstisisällön-tuonti": "Tekstisisällön tuonti",
+    "hae-perusteita": "Hae perusteita",
 
     "perusteella-ei-vielä-tutkinnonosia": "Perusteella ei ole vielä tutkinnon osia",
     "editoimasi-sisältö-on-muuttunut": "Muokkaamasi sisältö on muuttunut",
@@ -454,6 +461,7 @@
         
     "tutkintokohtaiset-osat": "Tutkintokohtaiset osat",
     "lisaa-tutkintokohtainen-osa": "Lisää tekstikappale",
+    "tuo-tutkintokohtainen-osa": "Tuo tekstikappale",
     "uusi-tutkinnon-osa": "<Uusi sisältö>",
 
     "takaisin-paanakymaan": "Projektin päänäkymä",
