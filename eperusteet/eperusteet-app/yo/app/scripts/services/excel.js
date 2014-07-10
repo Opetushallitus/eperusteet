@@ -394,6 +394,8 @@ angular.module('eperusteApp')
         var nextAnchor = index < anchors.length - 1 ? anchors[index + 1] : height;
         var arvioinninKohdealue = {};
 
+        /* jshint -W074 */
+        /* TODO simplify/split ---> */
         _.each(_.range(anchor, nextAnchor), function(j) {
           // Osoittamistapojen kerääminen
           var cell = data[kentat[5] + j];
@@ -487,6 +489,8 @@ angular.module('eperusteApp')
             }
           }
         });
+        /* <--- */
+        /* jshint +W074 */
 
         osaperusteet.push(_.clone(osaperuste));
       });

@@ -17,6 +17,8 @@
 'use strict';
 /* global _ */
 
+/* jshint -W074 */
+
 angular.module('eperusteApp')
   .service('Muodostumissaannot', function($modal) {
     function osienLaajuudenSumma(osat) {
@@ -60,6 +62,7 @@ angular.module('eperusteApp')
       return fraasi;
     }
 
+    /* TODO (jshint complexity/W074) simplify/split ---> */
     function validoiRyhma(rakenne) {
       function lajittele(osat) {
         var buckets = {};
@@ -136,6 +139,7 @@ angular.module('eperusteApp')
         asetaVirhe('muodostumis-rakenne-validointi-uniikit');
       }
     }
+    /* <--- */
 
     // Laskee rekursiivisesti puun solmujen (rakennemoduulien) kokonaislaajuuden
     function laskeLaajuudet(rakenne, tutkinnonOsat, root) {
@@ -183,3 +187,5 @@ angular.module('eperusteApp')
       kaannaSaanto: kaannaSaanto
     };
   });
+
+/* jshint +W074 */
