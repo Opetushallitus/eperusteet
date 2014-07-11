@@ -63,6 +63,8 @@ angular.module('eperusteApp')
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa() || 'naytto';
     $scope.pdfToken = null;
     $scope.pdfLinkki = null;
+    $scope.generointiDisabled = false;
+    $scope.generointiTeksti = 'generoi-pdf';
 
     function fixTimefield(field) {
       if (typeof $scope.peruste[field] === 'number') {
@@ -106,9 +108,41 @@ angular.module('eperusteApp')
     };
 
     $scope.generoiPdf = function() {
+      $scope.generointiDisabled = true;
+      $scope.pdfLinkki = null;
+      $scope.generointiTeksti = 'generoidaan-dokumenttia';
+
       Pdf.generoiPdf($scope.peruste.id, function(res) {
           $scope.pdfToken = res.token;
-          $scope.pdfLinkki = Pdf.haeLinkki(res.token);
+
+          function polleri(t) {
+            Pdf.haeTila(t, function(res2) {
+              switch(res2.tila) {
+                case 'LUODAAN':
+                  setTimeout(function() {
+                    polleri(res2.token);
+                  }, 500);
+                  break;
+                case 'VALMIS':
+                  Notifikaatiot.onnistui('dokumentti-luotu');
+                  $scope.pdfLinkki = Pdf.haeLinkki(res.token);
+                  $scope.generointiDisabled = false;
+                  $scope.generointiTeksti = 'generoi-pdf';
+                  break;
+                case 'EPAONNISTUI':
+                  // todo: syy mukaan
+                  Notifikaatiot.fataali('dokumentin-luonti-epaonnistui');
+                  $scope.generointiDisabled = false;
+                  $scope.generointiTeksti = 'generoi-pdf';
+                  break;
+              }
+            });
+          }
+          
+          setTimeout(function() {
+            polleri(res.token);
+          }, 500);
+
       } );
     };
 

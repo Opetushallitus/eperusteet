@@ -98,21 +98,15 @@ public class DokumenttiBuilder {
         titleElement.appendChild(doc.createTextNode(nimi));
         rootElement.appendChild(titleElement);
 
-        rootElement.appendChild(doc.createElement("info"));
+        //rootElement.appendChild(doc.createElement("info"));
 
-        // Luku: Johdanto (hmm, oikeesti?)
-        addJohdanto(doc, peruste);
+        // TODO: should we process suoritustavat in some specific order?
+        for (Suoritustapa st : peruste.getSuoritustavat()) {
+            PerusteenOsaViite sisalto = peruste.getSuoritustapa(st.getSuoritustapakoodi()).getSisalto();
+            addSisaltoElement(doc, rootElement, sisalto, 0, st);
+        }
 
-        // Luku: tutkinnon muodostuminen (tutkinnon osat ja tutkinnon rakenne)
-        addTutkinnonMuodostuminen(doc, peruste);
-
-        // Luku: Perusteiden toimeenpano ammatillisessa peruskoulutuksessa
-        addToimeenpanoPeruskoulutuksessa(doc, peruste);
-
-        // Luku: Perustutkinnon suorittaminen näyttötutkintona
-        addSuorittaminenNayttotutkintona(doc, peruste);
-
-        // Luku: Tutkinnonosat, ammattitaitovaatimukset ja arviointi
+        // add tutkinnonosat as distinct chapters
         addTutkinnonosat(doc, peruste);
 
         // For dev/debugging love
@@ -242,62 +236,20 @@ public class DokumenttiBuilder {
                 new StreamResult(new OutputStreamWriter(out, "UTF-8")));
     }
 
-    private void addJohdanto(Document doc, Peruste peruste) {
-        Element chapterElement = doc.createElement("chapter");
-        Element chapterTitleElement = doc.createElement("title");
-        // TODO: localize
-        chapterTitleElement.appendChild(doc.createTextNode("Johdanto"));
-        Element chapterParaElement = doc.createElement("para");
-        chapterParaElement.appendChild(doc.createTextNode(""));
-        chapterElement.appendChild(chapterTitleElement);
-        chapterElement.appendChild(chapterParaElement);
-        doc.getDocumentElement().appendChild(chapterElement);
-    }
-
-    private void addTutkinnonMuodostuminen(Document doc, Peruste peruste) {
-        Element chapterElement = doc.createElement("chapter");
-        Element chapterTitleElement = doc.createElement("title");
-        // TODO: localize
-        chapterTitleElement.appendChild(doc.createTextNode("Perustutkinnon tavoitteet ja tutkinnon muodostuminen"));
-        Element chapterParaElement = doc.createElement("para");
-        chapterParaElement.appendChild(doc.createTextNode(""));
-        chapterElement.appendChild(chapterTitleElement);
-        chapterElement.appendChild(chapterParaElement);
+    private void addTutkinnonMuodostuminen(Document doc, Element parentElement, Peruste peruste, Suoritustapa tapa) {
 
         // ew, dodgy trycatching
         try {
-            chapterElement.appendChild(getTutkinnonMuodostuminenPeruskoulutuksessa(doc, peruste));
+            parentElement.appendChild(
+                    getTutkinnonMuodostuminenGeneric(
+                            doc,
+                            peruste,
+                            // TODO: jostain muualta???
+                            "Geneerinen tutkinnonmuodostumistitle: " + tapa.getSuoritustapakoodi(),
+                            tapa.getSuoritustapakoodi()));
         } catch (Exception ex) {
-            LOG.warn("adding tutkinnonmuodostuminenperuskoulutuksessa failed: {}", ex);
+            LOG.warn("adding getTutkinnonMuodostuminenGeneric failed miserably:", ex);
         }
-
-        try {
-            chapterElement.appendChild(getTutkinnonMuodostuminenNayttotutkinnossa(doc, peruste));
-        } catch (Exception ex) {
-            LOG.warn("adding tutkinnonmuodostuminennayttotutkinnossa failed {}", ex);
-        }
-
-        doc.getDocumentElement().appendChild(chapterElement);
-    }
-
-    private Element getTutkinnonMuodostuminenPeruskoulutuksessa(
-            Document doc, Peruste peruste) {
-        return getTutkinnonMuodostuminenGeneric(
-                doc,
-                peruste,
-                // TODO: localize
-                "Ammatillisessa peruskoulutuksessa",
-                Suoritustapakoodi.OPS);
-    }
-
-    private Element getTutkinnonMuodostuminenNayttotutkinnossa(
-            Document doc, Peruste peruste) {
-        return getTutkinnonMuodostuminenGeneric(
-                doc,
-                peruste,
-                // TODO: localize
-                "Näyttötutkinnossa",
-                Suoritustapakoodi.NAYTTO);
     }
 
     private Element getTutkinnonMuodostuminenGeneric(
@@ -376,43 +328,8 @@ public class DokumenttiBuilder {
         }
     }
 
-    private void addToimeenpanoPeruskoulutuksessa(Document doc, Peruste peruste) {
-        addSuorittaminenGeneric(
-                doc,
-                peruste,
-                // TODO: localize
-                "Perustutkinnon perusteiden toimeenpano ammatillisessa peruskoulutuksessa",
-                Suoritustapakoodi.OPS);
-    }
+    private void addSisaltoElement(Document doc, Element parentElement, PerusteenOsaViite sisalto, int depth, Suoritustapa tapa) {
 
-    private void addSuorittaminenNayttotutkintona(Document doc, Peruste peruste) {
-        addSuorittaminenGeneric(
-                doc,
-                peruste,
-                // TODO: localize
-                "Perustutkinnon suorittaminen näyttötutkintona",
-                Suoritustapakoodi.NAYTTO);
-    }
-
-    private void addSuorittaminenGeneric(Document doc, Peruste peruste, String title, Suoritustapakoodi suoritustapa) {
-        try {
-            Element chapterElement = doc.createElement("chapter");
-            Element chapterTitleElement = doc.createElement("title");
-            chapterTitleElement.appendChild(doc.createTextNode(title));
-            Element chapterParaElement = doc.createElement("para");
-            chapterParaElement.appendChild(doc.createTextNode(""));
-            chapterElement.appendChild(chapterTitleElement);
-            chapterElement.appendChild(chapterParaElement);
-            doc.getDocumentElement().appendChild(chapterElement);
-
-            PerusteenOsaViite sisalto = peruste.getSuoritustapa(suoritustapa).getSisalto();
-            addSisaltoElement(doc, chapterElement, sisalto);
-        } catch (Exception ex) {
-            LOG.warn("Failed to add suorittaminengeneric: {}", ex);
-        }
-    }
-
-    private void addSisaltoElement(Document doc, Element parentElement, PerusteenOsaViite sisalto) {
         for (PerusteenOsaViite lapsi : sisalto.getLapset()) {
             if (lapsi.getPerusteenOsa() == null) {
                 continue;
@@ -423,31 +340,38 @@ public class DokumenttiBuilder {
                 continue;
             }
 
-            Element sectionElement = doc.createElement("section");
-            Element sectionTitleElement = doc.createElement("title");
-            sectionTitleElement.appendChild(doc.createTextNode(getTextString(tk.getNimi())));
-            String teksti = getTextString(tk.getTeksti());
+            Element element;
+            if (depth == 0) {
+                element = doc.createElement("chapter");
+            } else {
+                element = doc.createElement("section");
+            }
 
-            org.jsoup.nodes.Document fragment = Jsoup.parseBodyFragment(teksti);
-            jsoupIntoDOMNode(doc, sectionElement, fragment.body());
+            String nimi = getTextString(tk.getNimi());
+            // special case, render TutkinnonRakenne here and continue with
+            // rest of the sibligs
+            // TODO: compare to class instead of name
+            if ("__TutkinnonRakenne__".equals(nimi)) {
+                addTutkinnonMuodostuminen(doc, parentElement, peruste, tapa);
+            } else {
+                Element titleElement = doc.createElement("title");
+                titleElement.appendChild(doc.createTextNode(nimi));
+                String teksti = getTextString(tk.getTeksti());
 
-            sectionElement.appendChild(sectionTitleElement);
+                org.jsoup.nodes.Document fragment = Jsoup.parseBodyFragment(teksti);
+                jsoupIntoDOMNode(doc, element, fragment.body());
 
-            addSisaltoElement(doc, sectionElement, lapsi); // keep it rollin
+                element.appendChild(titleElement);
 
-            parentElement.appendChild(sectionElement);
+                addSisaltoElement(doc, element, lapsi, depth + 1, tapa); // keep it rollin
+
+                parentElement.appendChild(element);
+            }
+
         }
     }
 
     private void addTutkinnonosat(Document doc, Peruste peruste) {
-        Element chapterElement = doc.createElement("chapter");
-        Element chapterTitleElement = doc.createElement("title");
-        // TODO: localize
-        chapterTitleElement.appendChild(doc.createTextNode("Perustutkinnon ammatilliset tutkinnonosat, ammattitaitovaatimukset ja arviointi"));
-        Element chapterParaElement = doc.createElement("para");
-        chapterParaElement.appendChild(doc.createTextNode(""));
-        chapterElement.appendChild(chapterTitleElement);
-        chapterElement.appendChild(chapterParaElement);
 
         // only distinct TutkinnonOsa
         Set<Suoritustapa> suoritustavat = peruste.getSuoritustavat();
@@ -461,23 +385,22 @@ public class DokumenttiBuilder {
         for (TutkinnonOsa osa : osat) {
             String osanNimi = getTextString(osa.getNimi());
             LOG.debug("handling {} - {}", osa.getId(), osanNimi);
-            Element sectionElement = doc.createElement("section");
+            Element element = doc.createElement("chapter");
             String refid = "tutkinnonosa" + osa.getId();
-            sectionElement.setAttribute("id", refid);
+            element.setAttribute("id", refid);
 
-            Element sectionTitleElement = doc.createElement("title");
-            sectionTitleElement.appendChild(doc.createTextNode(osanNimi));
+            Element titleElement = doc.createElement("title");
+            titleElement.appendChild(doc.createTextNode(osanNimi));
 
-            sectionElement.appendChild(sectionTitleElement);
+            element.appendChild(titleElement);
 
-            addTavoitteet(doc, sectionElement, osa);
-            addAmmattitaitovaatimukset(doc, sectionElement, osa);
-            addAmmattitaidonOsoittamistavat(doc, sectionElement, osa);
-            addArviointi(doc, sectionElement, osa);
+            addTavoitteet(doc, element, osa);
+            addAmmattitaitovaatimukset(doc, element, osa);
+            addAmmattitaidonOsoittamistavat(doc, element, osa);
+            addArviointi(doc, element, osa);
 
-            chapterElement.appendChild(sectionElement);
+            doc.getDocumentElement().appendChild(element);
         }
-        doc.getDocumentElement().appendChild(chapterElement);
     }
 
     private void addTavoitteet(Document doc, Element parent, TutkinnonOsa tutkinnonOsa) {
