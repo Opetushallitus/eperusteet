@@ -16,15 +16,20 @@
 
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
@@ -43,5 +48,12 @@ public class PerusteenOsaViiteController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeSisaltoViite(@PathVariable("id") final Long id) {
         service.removeSisalto(id);
+    }
+
+    @RequestMapping(value = "/kloonaa/{id}", method = POST)
+    @ResponseBody
+    public PerusteenosaViiteDto kloonaa(@PathVariable("id") final Long id) {
+        PerusteenosaViiteDto re = service.kloonaa(id);
+        return re;
     }
 }

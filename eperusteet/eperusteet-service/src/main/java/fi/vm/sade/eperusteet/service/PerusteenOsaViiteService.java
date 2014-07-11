@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import java.util.List;
@@ -39,4 +40,7 @@ public interface PerusteenOsaViiteService {
 
     @PreAuthorize("isAuthenticated()")
     List<Revision> getVersiot(Long id);
+
+    @PreAuthorize("isAuthenticated()")
+    PerusteenosaViiteDto kloonaa(Long id);
 }

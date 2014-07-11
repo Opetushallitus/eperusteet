@@ -35,17 +35,17 @@ angular.module('eperusteApp')
         $scope.sisalto = {};
         $scope.viitteet = {};
 
-        PerusteprojektiTiedotService.then(function (instance) {
+        PerusteprojektiTiedotService.then(function(instance) {
           instance.haeSisalto($scope.$parent.peruste.id, $stateParams.suoritustapa).then(function(res) {
             $scope.sisalto = res;
             $scope.setNavigation();
           });
         });
 
-        $scope.setNavigation = function () {
+        $scope.setNavigation = function() {
           $scope.tree.init();
           SivunavigaatioService.setCrumb($scope.tree.get());
-          $timeout(function () {
+          $timeout(function() {
             SivunavigaatioService.unCollapseFor($scope.tekstikappale.id);
           }, 50);
           VersionHelper.setUrl($scope.versiot);
@@ -65,7 +65,7 @@ angular.module('eperusteApp')
 
         function storeTree (sisalto, level) {
           level = level || 0;
-          _.each(sisalto.lapset, function (lapsi) {
+          _.each(sisalto.lapset, function(lapsi) {
             if (!_.isObject($scope.viitteet[lapsi.perusteenOsa.id])) {
               $scope.viitteet[lapsi.perusteenOsa.id] = {};
             }
@@ -79,11 +79,11 @@ angular.module('eperusteApp')
         }
 
         $scope.tree = {
-          init: function () {
+          init: function() {
             $scope.viitteet = {};
             storeTree($scope.sisalto);
           },
-          get: function () {
+          get: function() {
             var ids = [];
             var id = $scope.tekstikappale.id;
             do {
@@ -94,7 +94,7 @@ angular.module('eperusteApp')
           }
         };
 
-        $scope.viiteId = function () {
+        $scope.viiteId = function() {
           return $scope.viitteet[$scope.tekstikappale.id] ? $scope.viitteet[$scope.tekstikappale.id].viite : null;
         };
 
@@ -177,7 +177,7 @@ angular.module('eperusteApp')
               }
               Lukitus.vapautaPerusteenosa($scope.tekstikappale.id);
             },
-            notify: function (mode) {
+            notify: function(mode) {
               $scope.editEnabled = mode;
             }
           });
@@ -200,42 +200,56 @@ angular.module('eperusteApp')
           objectReadyDefer.resolve($scope.editableTekstikappale);
         }
 
-        $scope.muokkaa = function () {
+
+        $scope.kopioiMuokattavaksi = function() {
+          PerusteenOsaViitteet.kloonaa({
+            viiteId: $scope.viitteet[$scope.tekstikappale.id].viite
+          }, function(tk) {
+            TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
+            Notifikaatiot.onnistui('tekstikappale-kopioitu-onnistuneesti');
+            $state.go('perusteprojekti.suoritustapa.perusteenosa', {
+              perusteenOsanTyyppi: 'tekstikappale',
+              perusteenOsaId: tk.perusteenOsa.id
+            });
+          });
+        };
+
+        $scope.muokkaa = function() {
           lukitse(function() {
             Editointikontrollit.startEditing();
           });
         };
 
-        $scope.canAddLapsi = function () {
+        $scope.canAddLapsi = function() {
           return $scope.tekstikappale.id && $scope.viitteet[$scope.tekstikappale.id];
         };
 
-        $scope.addLapsi = function () {
+        $scope.addLapsi = function() {
           SuoritustapaSisalto.addChild({
             perusteId: $scope.$parent.peruste.id,
             suoritustapa: $stateParams.suoritustapa,
             perusteenosaViiteId: $scope.viiteId()
-          }, {}, function (response) {
+          }, {}, function(response) {
             TutkinnonOsaEditMode.setMode(true);
             $state.go('perusteprojekti.suoritustapa.perusteenosa', {
               perusteenOsanTyyppi: 'tekstikappale',
               perusteenOsaId: response._perusteenOsa
             });
-          }, function (virhe) {
+          }, function(virhe) {
             Notifikaatiot.varoitus(virhe);
           });
         };
 
-        $scope.setCrumbs = function (crumbs) {
+        $scope.setCrumbs = function(crumbs) {
           $scope.crumbs = crumbs;
         };
 
-        $scope.$watch('editEnabled', function (editEnabled) {
+        $scope.$watch('editEnabled', function(editEnabled) {
           SivunavigaatioService.aseta({osiot: !editEnabled});
         });
 
-        $scope.haeVersiot = function (force, cb) {
-          VersionHelper.getPerusteenosaVersions($scope.versiot, {id: $scope.tekstikappale.id}, force, cb);
+        $scope.haeVersiot = function(force) {
+          VersionHelper.getPerusteenosaVersions($scope.versiot, {id: $scope.tekstikappale.id}, force);
         };
 
         function responseFn(response) {
@@ -252,7 +266,7 @@ angular.module('eperusteApp')
           VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tekstikappale.id}, responseFn);
         };
 
-        $scope.revertCb = function (response) {
+        $scope.revertCb = function(response) {
           responseFn(response);
           saveCb(response);
         };
@@ -269,11 +283,11 @@ angular.module('eperusteApp')
 
         // Odota tekstikenttien alustus ennen siirtymistä editointitilaan
         var received = 0;
-        $scope.$on('ckEditorInstanceReady', function () {
+        $scope.$on('ckEditorInstanceReady', function() {
           if (++received === $scope.fields.length) {
             if (TutkinnonOsaEditMode.getMode()) {
               $scope.isNew = true;
-              $timeout(function () {
+              $timeout(function() {
                 $scope.muokkaa();
               }, 50);
             }

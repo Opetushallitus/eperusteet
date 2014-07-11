@@ -296,6 +296,16 @@ public class PerusteController {
         return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), sisaltoViite), HttpStatus.CREATED);
     }
 
+//    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{perusteenosaViiteId}/kloonaa", method = POST)
+//    @ResponseBody
+//    public PerusteenosaViiteDto kloonaa(
+//            @PathVariable("perusteId") final Long perusteId,
+//            @PathVariable("suoritustapa") final String suoritustapa,
+//            @PathVariable("perusteenosaViiteId") final Long id) {
+//        PerusteenosaViiteDto re = PerusteenOsaViiteService.kloonaa(perusteId, suoritustapa, id);
+//        return re;
+//    }
+
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{perusteenosaViiteId}/lapsi", method = POST)
     @ResponseBody
     public ResponseEntity<PerusteenSisaltoViiteDto> addSisaltoLapsi(

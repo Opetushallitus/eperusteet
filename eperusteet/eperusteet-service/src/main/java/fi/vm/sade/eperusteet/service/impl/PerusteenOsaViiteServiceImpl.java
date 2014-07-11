@@ -18,8 +18,11 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
+import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
@@ -27,6 +30,7 @@ import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -50,6 +54,9 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
 
     @Autowired
     private PerusteenOsaService perusteenOsaService;
+
+    @Autowired
+    private PerusteenOsaRepository perusteenOsaRepository;
 
     @Autowired
     @Dto
@@ -98,5 +105,38 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     public PerusteenosaViiteDto revertToVersio(Long id, Integer versioId) {
         PerusteenOsaViite revision = repository.findRevision(id, versioId);
         return mapper.map(repository.save(revision), PerusteenosaViiteDto.class);
+    }
+
+    @Transactional
+    private TekstiKappale kloonaaTekstiKappale(Long id) {
+        PerusteenOsa current = perusteenOsaRepository.findOne(id);
+        if (!(current instanceof TekstiKappale)) {
+            throw new BusinessRuleViolationException("Kloonattava perusteen osa ei ole tekstikappale.");
+        }
+
+        TekstiKappale from = (TekstiKappale)current;
+        TekstiKappale uusi = new TekstiKappale();
+        uusi.setTila(Tila.LUONNOS);
+        uusi.setNimi(from.getNimi());
+        uusi.setTeksti(from.getTeksti());
+        return perusteenOsaRepository.save(uusi);
+    }
+
+    @Transactional
+    private PerusteenOsaViite kloonaaSisalto(Long id) {
+        PerusteenOsaViite pov = repository.findOne(id);
+        PerusteenOsa perusteenOsa = pov.getPerusteenOsa();
+        pov.setPerusteenOsa(kloonaaTekstiKappale(perusteenOsa.getId()));
+
+        for (PerusteenOsaViite lpov : pov.getLapset()) {
+            kloonaaSisalto(lpov.getId());
+        }
+        return pov;
+    }
+
+    @Override
+    @Transactional
+    public PerusteenosaViiteDto kloonaa(Long id) {
+        return mapper.map(kloonaaSisalto(id), PerusteenosaViiteDto.class);
     }
 }
