@@ -380,8 +380,11 @@
     "huom": "Huom!",
     "tiivistelmä": "Tiivistelmä",
 
-    "lataa-pdf": "Lataa pdf",
-    "generoi-pdf": "Generoi pdf",
+    "lataa-pdf": "Lataa PDF-dokumentti",
+    "generoi-pdf": "Luo PDF-dokumentti",
+    "dokumentti-luotu": "PDF-dokumentin luonti onnistui",
+    "dokumentin-luonti-epaonnistui": "PDF-dokumentin luonti epäonnistui",
+    "generoidaan-dokumenttia": "Luodaan dokumenttia, odota hetki",
 
     "voimaantulo-pvm": "Voimaantulo pvm",
     "voimassaolo-paattymispvm": "Voimassaolon päättymispäivämäärä",
