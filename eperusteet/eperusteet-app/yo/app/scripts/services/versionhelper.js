@@ -18,8 +18,10 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot, RakenneVersio, Notifikaatiot) {
-    function getVersions(data, tunniste, tyyppi, force) {
+  .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot,
+    RakenneVersio, Notifikaatiot, $state, $location) {
+    function getVersions(data, tunniste, tyyppi, force, cb) {
+      cb = cb || angular.noop;
       if (!_.isObject(data)) {
         throw 'VersionHelper: not an object!';
       }
@@ -28,12 +30,14 @@ angular.module('eperusteApp')
           PerusteenOsat.versiot({osanId: tunniste.id}, function(res) {
             data.list = res;
             versiotListHandler(data);
+            cb();
           });
         }
         else if (tyyppi === 'rakenne') {
           RakenneVersiot.query({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa}, function(res) {
             data.list = res;
             versiotListHandler(data);
+            cb();
           });
         }
       }
@@ -100,12 +104,34 @@ angular.module('eperusteApp')
       }
     };
 
-    this.getPerusteenosaVersions = function (data, tunniste, force) {
-      getVersions(data, tunniste, 'perusteenosa', force);
+    this.select = function (data, index) {
+      var found = _.find(data.list, {index: parseInt(index, 10)});
+      if (found) {
+        data.chosen = found;
+        data.latest = data.chosen.number === latest(data.list).number;
+        return found.number;
+      }
     };
 
-    this.getRakenneVersions = function (data, tunniste, force) {
-      getVersions(data, tunniste, 'rakenne', force);
+    this.currentIndex = function (data) {
+      if (data && data.chosen) {
+        return data.chosen.index;
+      }
+    };
+
+    this.latestIndex = function (data) {
+      var latestItem = latest(data.list);
+      if (latestItem) {
+        return latestItem.index;
+      }
+    };
+
+    this.getPerusteenosaVersions = function (data, tunniste, force, cb) {
+      getVersions(data, tunniste, 'perusteenosa', force, cb);
+    };
+
+    this.getRakenneVersions = function (data, tunniste, force, cb) {
+      getVersions(data, tunniste, 'rakenne', force, cb);
     };
 
     this.chooseLatest = function (data) {
@@ -128,6 +154,21 @@ angular.module('eperusteApp')
 
     this.revertRakenne = function (data, tunniste, cb) {
       revert(data, tunniste, 'Rakenne', cb);
+    };
+
+    this.setUrl = function (data) {
+      // Tricks for ui-router 0.2.*
+      // We want to update the url only when user changes the version
+      // If we enter with versionless url don't rewrite it
+      var versionlessUrl = $state.href('perusteprojekti.suoritustapa.perusteenosa', {versio: null}, {inherit:true}).replace(/#/g, '');
+      var currentVersion = this.currentIndex(data);
+      var isValid = _.isNumber(currentVersion);
+      var urlHasVersion = $location.url() !== versionlessUrl;
+      if ((urlHasVersion || data.hasChanged) && isValid) {
+        data.hasChanged = false;
+        var versionUrl = $state.href('perusteprojekti.suoritustapa.perusteenosa', {versio: '/' + currentVersion}, {inherit:true}).replace(/#/g, '');
+        $location.url(versionUrl);
+      }
     };
 
     this.historyView = function (data) {

@@ -23,7 +23,8 @@ angular.module('eperusteApp')
       templateUrl: 'views/partials/muokkaus/tutkinnonosa.html',
       restrict: 'E',
       scope: {
-        tutkinnonOsa: '='
+        tutkinnonOsa: '=',
+        versiot: '='
       },
       controller: function($scope, $state, $stateParams, $q, Navigaatiopolku,
         Editointikontrollit, PerusteenOsat, Editointicatcher, PerusteenRakenne,
@@ -34,7 +35,6 @@ angular.module('eperusteApp')
 
         $scope.suoritustapa = $stateParams.suoritustapa;
         $scope.rakenne = {};
-        $scope.versiot = {};
         $scope.test = angular.noop;
 
         function getRakenne() {
@@ -129,7 +129,9 @@ angular.module('eperusteApp')
         function saveCb(res) {
           Lukitus.vapautaPerusteenosa(res.id);
           Notifikaatiot.onnistui('muokkaus-tutkinnon-osa-tallennettu');
-          $scope.haeVersiot(true);
+          $scope.haeVersiot(true, function () {
+            VersionHelper.setUrl($scope.versiot);
+          });
         }
 
         function doDelete(osaId) {
@@ -228,6 +230,7 @@ angular.module('eperusteApp')
           $scope.tutkinnonOsa = {};
           setupTutkinnonOsa($scope.tutkinnonOsa);
           objectReadyDefer.resolve($scope.editableTutkinnonOsa);
+          VersionHelper.setUrl($scope.versiot);
         }
 
         $scope.poistaTutkinnonOsa = function(osaId) {
@@ -261,8 +264,8 @@ angular.module('eperusteApp')
           SivunavigaatioService.aseta({osiot: !editEnabled});
         });
 
-        $scope.haeVersiot = function (force) {
-          VersionHelper.getPerusteenosaVersions($scope.versiot, {id: $scope.tutkinnonOsa.id}, force);
+        $scope.haeVersiot = function (force, cb) {
+          VersionHelper.getPerusteenosaVersions($scope.versiot, {id: $scope.tutkinnonOsa.id}, force, cb);
         };
 
         function responseFn(response) {
@@ -271,9 +274,11 @@ angular.module('eperusteApp')
           var objDefer = $q.defer();
           $scope.tutkinnonOsaPromise = objDefer.promise;
           objDefer.resolve($scope.editableTutkinnonOsa);
+          VersionHelper.setUrl($scope.versiot);
         }
 
         $scope.vaihdaVersio = function () {
+          $scope.versiot.hasChanged = true;
           VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tutkinnonOsa.id}, responseFn);
         };
 

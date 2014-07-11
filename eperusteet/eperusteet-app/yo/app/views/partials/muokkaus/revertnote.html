@@ -1,8 +1,10 @@
-<div ng-if="versiot.list.$resolved && !versiot.latest" class="version-warning">
-  <div class="note"></div>
-  <button ng-click="version.revert()" class="btn btn-default btn-sm" translate>ota-versio-kayttoon</button>
-  <div class="content">
-    <p>{{'katselet-vanhaa-versiota'|translate}}</p>
-    <p><a href="" ng-click="version.goToLatest()" translate>katso-uusin-versio</a></p>
+<div>
+  <div ng-if="versiot.list.$resolved && !versiot.latest" class="version-warning">
+    <div class="note"></div>
+    <button ng-click="version.revert()" class="btn btn-default btn-sm" translate>ota-versio-kayttoon</button>
+    <div class="content">
+      <p>{{'katselet-vanhaa-versiota'|translate}}</p>
+      <p><a href="" ng-click="version.goToLatest()" translate>katso-uusin-versio</a></p>
+    </div>
   </div>
 </div>

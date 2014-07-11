@@ -30,14 +30,14 @@ angular.module('eperusteApp')
     };
   })
 
-  .directive('subnavi', function ($compile) {
+  .directive('subnavi', function ($compile, $location) {
     return {
       templateUrl: 'views/partials/subnavi.html',
       restrict: 'A',
       scope: {
         subnavi: '='
       },
-      controller: function ($scope, SubnaviState) {
+      controller: function ($scope, SubnaviState, $state) {
         $scope.sivunaviopen = SubnaviState.open;
         $scope.toggle = function (id, event) {
           $scope.sivunaviopen[id] = !$scope.sivunaviopen[id];
@@ -45,6 +45,16 @@ angular.module('eperusteApp')
         };
         $scope.openFor = function (id) {
           $scope.sivunaviopen[id] = true;
+        };
+        $scope.isRouteActive = function (id) {
+          // ui-sref-active doesn't work directly in ui-router 0.2.*
+          // with optional parameters.
+          // Versionless url should be considered same as specific version url.
+          var url = $state.href('perusteprojekti.suoritustapa.perusteenosa', {
+            perusteenOsaId: id,
+            versio: null
+          }, {inherit:true}).replace(/#/g, '');
+          return $location.url().indexOf(url) > -1;
         };
       },
       compile: function(tElement) {

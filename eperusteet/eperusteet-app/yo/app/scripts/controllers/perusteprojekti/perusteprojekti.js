@@ -66,7 +66,7 @@ angular.module('eperusteApp')
           }]
       })
       .state('perusteprojekti.suoritustapa.perusteenosa', {
-        url: '/perusteenosa/:perusteenOsanTyyppi/:perusteenOsaId',
+        url: '/perusteenosa/{perusteenOsanTyyppi}/{perusteenOsaId}{versio:(?:/[^/]+)?}',
         templateUrl: 'views/muokkaus.html',
         controller: 'MuokkausCtrl',
         onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {

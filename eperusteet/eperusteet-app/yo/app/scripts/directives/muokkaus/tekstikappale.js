@@ -23,7 +23,8 @@ angular.module('eperusteApp')
       templateUrl: 'views/partials/muokkaus/tekstikappale.html',
       restrict: 'E',
       scope: {
-        tekstikappale: '='
+        tekstikappale: '=',
+        versiot: '='
       },
       controller: function($scope, $q, Editointikontrollit, PerusteenOsat,
         Notifikaatiot, SivunavigaatioService, VersionHelper, Lukitus, $state,
@@ -31,7 +32,6 @@ angular.module('eperusteApp')
         $translate, Kaanna, PerusteprojektiTiedotService, $stateParams, SuoritustapaSisalto) {
         document.getElementById('ylasivuankkuri').scrollIntoView(); // FIXME: Keksi tälle joku oikea ratkaisu
 
-        $scope.versiot = {};
         $scope.sisalto = {};
         $scope.viitteet = {};
 
@@ -48,6 +48,7 @@ angular.module('eperusteApp')
           $timeout(function () {
             SivunavigaatioService.unCollapseFor($scope.tekstikappale.id);
           }, 50);
+          VersionHelper.setUrl($scope.versiot);
         };
 
         function lukitse(cb) {
@@ -124,7 +125,9 @@ angular.module('eperusteApp')
 
         function saveCb(res) {
           // Päivitä versiot
-          $scope.haeVersiot(true);
+          $scope.haeVersiot(true, function () {
+            VersionHelper.setUrl($scope.versiot);
+          });
           SivunavigaatioService.update();
           Lukitus.vapautaPerusteenosa(res.id);
           Notifikaatiot.onnistui('muokkaus-tekstikappale-tallennettu');
@@ -231,8 +234,8 @@ angular.module('eperusteApp')
           SivunavigaatioService.aseta({osiot: !editEnabled});
         });
 
-        $scope.haeVersiot = function (force) {
-          VersionHelper.getPerusteenosaVersions($scope.versiot, {id: $scope.tekstikappale.id}, force);
+        $scope.haeVersiot = function (force, cb) {
+          VersionHelper.getPerusteenosaVersions($scope.versiot, {id: $scope.tekstikappale.id}, force, cb);
         };
 
         function responseFn(response) {
@@ -241,9 +244,11 @@ angular.module('eperusteApp')
           var tekstikappaleDefer = $q.defer();
           $scope.tekstikappalePromise = tekstikappaleDefer.promise;
           tekstikappaleDefer.resolve($scope.editableTekstikappale);
+          VersionHelper.setUrl($scope.versiot);
         }
 
         $scope.vaihdaVersio = function () {
+          $scope.versiot.hasChanged = true;
           VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tekstikappale.id}, responseFn);
         };
 

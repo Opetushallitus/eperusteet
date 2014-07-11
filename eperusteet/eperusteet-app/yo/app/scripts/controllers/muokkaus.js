@@ -18,8 +18,8 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('MuokkausCtrl', function($scope, $stateParams, $state, $compile, Navigaatiopolku, PerusteenOsat,
-                                       Kommentit, KommentitByPerusteenOsa, virheService) {
+  .controller('MuokkausCtrl', function($scope, $stateParams, $compile, Navigaatiopolku, PerusteenOsat,
+                                       Kommentit, KommentitByPerusteenOsa, virheService, VersionHelper) {
 
     if ($stateParams.perusteProjektiId && $stateParams.perusteenOsaId) {
       Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });
@@ -27,13 +27,31 @@ angular.module('eperusteApp')
 
     $scope.tyyppi = $stateParams.perusteenOsanTyyppi;
     $scope.objekti = null;
+    $scope.versiot = {};
 
     if ($stateParams.perusteenOsaId !== 'uusi') {
-      $scope.objekti = PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, function(re) {
+      var successCb = function(re) {
         Navigaatiopolku.asetaElementit({ perusteenOsaId: re.nimi });
-      }, function() {
+      };
+      var errorCb = function() {
         virheService.virhe('virhe-perusteenosaa-ei-löytynyt');
-      });
+      };
+      var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, '') : null;
+      if (versio) {
+        VersionHelper.getPerusteenosaVersions($scope.versiot, {id: $stateParams.perusteenOsaId}, true, function () {
+          var revNumber = VersionHelper.select($scope.versiot, versio);
+          if (!revNumber) {
+            errorCb();
+          } else {
+            $scope.objekti = PerusteenOsat.getVersio({
+              osanId: $stateParams.perusteenOsaId,
+              versioId: revNumber
+            }, successCb, errorCb);
+          }
+        });
+      } else {
+        $scope.objekti = PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, successCb, errorCb);
+      }
     }
     else {
       Navigaatiopolku.asetaElementit({ perusteenOsaId: 'uusi' });
@@ -41,10 +59,10 @@ angular.module('eperusteApp')
 
     var muokkausDirective = null;
     if ($stateParams.perusteenOsanTyyppi === 'tekstikappale') {
-      muokkausDirective = angular.element('<muokkaus-tekstikappale ng-if="objekti.$resolved" tekstikappale="objekti"></muokkaus-tekstikappale>');
+      muokkausDirective = angular.element('<muokkaus-tekstikappale ng-if="objekti.$resolved" tekstikappale="objekti" versiot="versiot"></muokkaus-tekstikappale>');
     }
     else if ($stateParams.perusteenOsanTyyppi === 'tutkinnonosa') {
-      muokkausDirective = angular.element('<muokkaus-tutkinnonosa ng-if="objekti.$resolved" tutkinnon-osa="objekti"></muokkaus-tutkinnonosa>');
+      muokkausDirective = angular.element('<muokkaus-tutkinnonosa ng-if="objekti.$resolved" tutkinnon-osa="objekti" versiot="versiot"></muokkaus-tutkinnonosa>');
     }
     else {
       virheService.virhe('virhe-perusteenosaa-ei-löytynyt');
