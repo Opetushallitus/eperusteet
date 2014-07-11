@@ -18,7 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('TuoTekstikappale', function($scope, $modalInstance, Notifikaatiot, peruste, suoritustapa, PerusteenRakenne, SuoritustapaSisalto, Algoritmit) {
+  .controller('TuoTekstikappale', function($scope, $modalInstance, Notifikaatiot, peruste, suoritustapa, PerusteenRakenne, SuoritustapaSisalto) {
     $scope.perusteet = [];
     $scope.sivuja = 0;
     $scope.sivu = 0;
