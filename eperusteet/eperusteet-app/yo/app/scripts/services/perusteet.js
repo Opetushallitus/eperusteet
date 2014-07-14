@@ -109,10 +109,9 @@ angular.module('eperusteApp')
             }, function(tosat) {
               response.rakenne = rakenne;
               response.$peruste = peruste;
-              response.tutkinnonOsaViitteet = _(tosat)
-                                        .pluck('id')
-                                        .zipObject(tosat)
-                                        .value();
+              response.tutkinnonOsaViitteet = _(tosat).pluck('id')
+                                                      .zipObject(tosat)
+                                                      .value();
               response.tutkinnonOsat = _.zipObject(_.map(tosat, '_tutkinnonOsa'), tosat);
               success(response);
             });

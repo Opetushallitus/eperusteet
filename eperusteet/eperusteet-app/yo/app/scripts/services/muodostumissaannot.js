@@ -21,10 +21,13 @@
 
 angular.module('eperusteApp')
   .service('Muodostumissaannot', function($modal) {
-    function osienLaajuudenSumma(osat) {
-        return _(osat)
-          .map(function(osa) { return osa.$vaadittuLaajuus ? osa.$vaadittuLaajuus : osa.$laajuus; })
-          .reduce(function(sum, newval) { return sum + newval; }) || 0;
+    function osienLaajuudenSumma(rakenne, viitteet) {
+      return _(rakenne ? rakenne.osat : [])
+        .map(function(osa) {
+          var viite = viitteet[osa._tutkinnonOsaViite];
+          return viite.$vaadittuLaajuus || viite.laajuus || 0;
+        })
+        .reduce(function(sum, newval) { return sum + newval; }) || 0;
     }
 
     function kaannaSaanto(ms) {
@@ -63,7 +66,7 @@ angular.module('eperusteApp')
     }
 
     /* TODO (jshint complexity/W074) simplify/split ---> */
-    function validoiRyhma(rakenne) {
+    function validoiRyhma(rakenne, viitteet) {
       function lajittele(osat) {
         var buckets = {};
         _.forEach(osat, function(osa) {
@@ -96,7 +99,7 @@ angular.module('eperusteApp')
 
       _.forEach(rakenne.osat, function(tosa) {
         if (!tosa._tutkinnonOsaViite) {
-          validoiRyhma(tosa);
+          validoiRyhma(tosa, viitteet);
         }
       });
 
@@ -119,7 +122,7 @@ angular.module('eperusteApp')
         } else if (msl) {
           // Validoidaan maksimi
           if (msl.maksimi) {
-            if (osienLaajuudenSumma(rakenne.osat) < msl.maksimi) {
+            if (osienLaajuudenSumma(rakenne, viitteet) < msl.maksimi) {
               asetaVirhe('muodostumis-rakenne-validointi-laajuus', ms);
             }
           }
@@ -142,16 +145,17 @@ angular.module('eperusteApp')
     /* <--- */
 
     // Laskee rekursiivisesti puun solmujen (rakennemoduulien) kokonaislaajuuden
-    function laskeLaajuudet(rakenne, tutkinnonOsat, root) {
+    function laskeLaajuudet(rakenne, viitteet, root) {
       root = root || true;
-
       if (!rakenne) { return; }
 
-      _.forEach(rakenne.osat, function(osa) { laskeLaajuudet(osa, tutkinnonOsat, false); });
+      _.forEach(rakenne.osat, function(osa) {
+        laskeLaajuudet(osa, viitteet, false);
+      });
       rakenne.$laajuus = 0;
 
-      if (rakenne._tutkinnonOsa) {
-        rakenne.$laajuus = tutkinnonOsat[rakenne._tutkinnonOsa].laajuus;
+      if (rakenne._tutkinnonOsaViite) {
+        rakenne.$laajuus = viitteet[rakenne._tutkinnonOsaViite].laajuus;
       }
       else {
         if (rakenne.osat && rakenne.muodostumisSaanto) {
@@ -160,7 +164,7 @@ angular.module('eperusteApp')
             rakenne.$vaadittuLaajuus = msl.maksimi;
           }
         }
-        rakenne.$laajuus = osienLaajuudenSumma(rakenne.osat);
+        rakenne.$laajuus = osienLaajuudenSumma(rakenne.osat, viitteet);
       }
       rakenne.$laajuus = rakenne.$laajuus || 0;
     }

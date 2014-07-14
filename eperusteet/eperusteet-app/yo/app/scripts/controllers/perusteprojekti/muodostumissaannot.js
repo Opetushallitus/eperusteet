@@ -45,7 +45,7 @@ angular.module('eperusteApp')
       res.$suoritustapa = $scope.suoritustapa;
       res.$resolved = true;
       $scope.rakenne = res;
-      Muodostumissaannot.laskeLaajuudet($scope.rakenne.rakenne, $scope.rakenne.tutkinnonOsat);
+      Muodostumissaannot.laskeLaajuudet($scope.rakenne.rakenne, $scope.rakenne.tutkinnonOsaViitteet, $scope.rakenne.tutkinnonOsat);
       haeVersiot();
       Lukitus.tarkista($scope.rakenne.$peruste.id, $scope, $scope.suoritustapa);
     };
@@ -111,7 +111,7 @@ angular.module('eperusteApp')
     $scope.muokkaa = function() {
       lukitse(function() {
         haeRakenne(function() {
-          Muodostumissaannot.validoiRyhma($scope.rakenne.rakenne, $scope.tutkinnonOsat);
+          Muodostumissaannot.validoiRyhma($scope.rakenne.rakenne, $scope.rakenne.tutkinnonOsaViitteet, $scope.tutkinnonOsat);
           Editointikontrollit.startEditing();
           $scope.editoi = true;
         });
@@ -141,8 +141,8 @@ angular.module('eperusteApp')
 
     $scope.$watch('rakenne.rakenne', function(uusirakenne) {
       if ($scope.editoi) {
-        Muodostumissaannot.laskeLaajuudet(uusirakenne, $scope.rakenne.tutkinnonOsat);
-        Muodostumissaannot.validoiRyhma(uusirakenne, $scope.tutkinnonOsat);
+        Muodostumissaannot.laskeLaajuudet(uusirakenne, $scope.rakenne.tutkinnonOsaViitteet);
+        Muodostumissaannot.validoiRyhma(uusirakenne, $scope.rakenne.tutkinnonOsaViitteet);
       }
     }, true);
 
