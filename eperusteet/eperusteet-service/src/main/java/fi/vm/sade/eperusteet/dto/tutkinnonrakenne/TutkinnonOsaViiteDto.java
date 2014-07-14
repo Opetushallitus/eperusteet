@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.dto.EntityReference;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
+import java.math.BigDecimal;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +27,7 @@ import lombok.Setter;
 @Setter
 public class TutkinnonOsaViiteDto {
     private Long id;
-    private Integer laajuus;
+    private BigDecimal laajuus;
     private Integer jarjestys;
     private LokalisoituTekstiDto nimi;
     private Date muokattu;

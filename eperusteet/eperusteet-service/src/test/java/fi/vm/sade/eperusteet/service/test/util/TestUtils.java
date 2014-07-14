@@ -15,14 +15,14 @@
  */
 package fi.vm.sade.eperusteet.service.test.util;
 
+import fi.vm.sade.eperusteet.domain.ArvioinninKohde;
+import fi.vm.sade.eperusteet.domain.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.Arviointi;
 import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.ArvioinninKohde;
-import fi.vm.sade.eperusteet.domain.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
-import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
+import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
@@ -32,6 +32,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -86,7 +87,7 @@ public abstract class TestUtils {
 
         TutkinnonOsaViite tov = new TutkinnonOsaViite();
         tov.setTutkinnonOsa(to);
-        tov.setLaajuus(laajuus);
+        tov.setLaajuus(new BigDecimal(laajuus));
 
         RakenneOsa ro = new RakenneOsa();
         ro.setTutkinnonOsaViite(tov);

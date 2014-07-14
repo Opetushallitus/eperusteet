@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +47,7 @@ public class PerusteenRakenne {
 
     static public class Validointi {
         public List<Ongelma> ongelmat = new ArrayList<>();
-        public Integer laskettuLaajuus = 0;
+        public BigDecimal laskettuLaajuus = new BigDecimal(0);
     }
 
     static public Validointi validoiRyhma(RakenneModuuli rakenne) {
@@ -61,18 +62,18 @@ public class PerusteenRakenne {
 
         Validointi validointi = new Validointi();
 
-        Integer laajuusSummaMin = 0;
-        Integer laajuusSummaMax = 0;
+        BigDecimal laajuusSummaMin = new BigDecimal(0);
+        BigDecimal laajuusSummaMax = new BigDecimal(0);
         Integer ryhmienMäärä = 0;
         Set<Long> uniikit = new HashSet<>();
 
         for (AbstractRakenneOsa x : osat) {
             if (x instanceof RakenneOsa) {
                 RakenneOsa ro = (RakenneOsa)x;
-                Integer laajuus = ro.getTutkinnonOsaViite().getLaajuus();
-                laajuus = laajuus == null ? 0 : laajuus;
-                laajuusSummaMin += laajuus;
-                laajuusSummaMax += laajuus;
+                BigDecimal laajuus = ro.getTutkinnonOsaViite().getLaajuus();
+                laajuus = laajuus == null ? new BigDecimal(0) : laajuus;
+                laajuusSummaMin = laajuusSummaMin.add(laajuus);
+                laajuusSummaMax = laajuusSummaMax.add(laajuus);
                 uniikit.add(ro.getTutkinnonOsaViite().getTutkinnonOsa().getId());
             }
             else if (x instanceof RakenneModuuli) {
@@ -80,9 +81,9 @@ public class PerusteenRakenne {
                 ++ryhmienMäärä;
                 Validointi validoitu = validoiRyhma(rm, syvyys + 1);
                 validointi.ongelmat.addAll(validoitu.ongelmat);
-                validointi.laskettuLaajuus += validoitu.laskettuLaajuus;
-                laajuusSummaMin += validoitu.laskettuLaajuus;
-                laajuusSummaMax += validoitu.laskettuLaajuus;
+                validointi.laskettuLaajuus = validointi.laskettuLaajuus.add(validoitu.laskettuLaajuus);
+                laajuusSummaMin = laajuusSummaMin.add(validoitu.laskettuLaajuus);
+                laajuusSummaMax = laajuusSummaMax.add(validoitu.laskettuLaajuus);
             }
         }
 
@@ -93,14 +94,14 @@ public class PerusteenRakenne {
         if (ms != null && rooli == RakenneModuuliRooli.NORMAALI) {
             final Integer kokoMin = ms.kokoMinimi();
             final Integer kokoMax = ms.kokoMaksimi();
-            final Integer laajuusMin = ms.laajuusMinimi();
-            final Integer laajuusMax = ms.laajuusMaksimi();
+            final BigDecimal laajuusMin = new BigDecimal(ms.laajuusMinimi());
+            final BigDecimal laajuusMax = new BigDecimal(ms.laajuusMaksimi());
 
             if (rooli == RakenneModuuliRooli.NORMAALI) {
-                if (laajuusSummaMin < laajuusMin) {
+                if (laajuusSummaMin.compareTo(laajuusMin) == -1) {
                     validointi.ongelmat.add(new Ongelma("Laskettu laajuuksien summan minimi on pienempi kuin ryhmän vaadittu minimi (" + laajuusSummaMin + " < " + laajuusMin + ").", nimi, syvyys));
                 }
-                else if (laajuusSummaMax > laajuusMax) {
+                else if (laajuusSummaMax.compareTo(laajuusMax) == 1) {
                     validointi.ongelmat.add(new Ongelma("Laskettu laajuuksien summan maksimi on suurempi kuin ryhmän vaadittu maksimi (" + laajuusSummaMax + " > " + laajuusMax + ").", nimi, syvyys));
                 }
 
