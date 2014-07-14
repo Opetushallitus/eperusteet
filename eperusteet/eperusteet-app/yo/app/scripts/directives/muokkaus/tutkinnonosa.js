@@ -226,6 +226,7 @@ angular.module('eperusteApp')
             }
           });
           $scope.haeVersiot();
+          Lukitus.tarkista($scope.tutkinnonOsa.id, $scope);
         }
 
         if($scope.tutkinnonOsa) {

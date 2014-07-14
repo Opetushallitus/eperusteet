@@ -71,7 +71,7 @@ button {
   }
 }
 
-.btn.floater {
+.btn.floater, div.floater {
   margin-left: 5px;
   position: relative;
   float: right;
@@ -88,4 +88,30 @@ button {
 .action-link {
   outline: 0;
   cursor: pointer;
+}
+
+$lukko-width: 2em;
+$lukko-inner: 1.4em;
+.lukko {
+  display: inline-block;
+  width: $lukko-width;
+  height: $lukko-width*1.3;
+  margin-left: 5px;
+  margin-right: 5px;
+  .inner1 {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    width: $lukko-inner;
+    height: $lukko-inner*1.2;
+    border: $lukko-inner*0.3 solid black;
+    border-radius: $lukko-inner/2;
+  }
+  .inner2 {
+    position: relative;
+    top: -$lukko-inner*1.2/2;
+    background-color: black;
+    height: $lukko-width;
+    width: $lukko-width;
+  }
 }

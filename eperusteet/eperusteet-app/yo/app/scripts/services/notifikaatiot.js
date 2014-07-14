@@ -22,7 +22,7 @@ angular.module('eperusteApp')
     $scope.viesti = viesti;
     $scope.ok = function() { $modalInstance.close(); };
   })
-  .service('Notifikaatiot', function($rootScope, $timeout, NOTIFICATION_DELAY_SUCCESS, NOTIFICATION_DELAY_WARNING, $modal, $state, Kaanna) {
+  .service('Notifikaatiot', function($rootScope, $timeout, NOTIFICATION_DELAY_SUCCESS, NOTIFICATION_DELAY_WARNING, $modal, $state, Kaanna, $translate) {
     var viestit = [];
 
     function refresh() {
@@ -107,7 +107,8 @@ angular.module('eperusteApp')
 
     function serverLukitus(response) {
       if (response && response.status === 409) {
-        uusiViesti(2, 'Resurssi lukittu käyttäjälle: ' + response.data.haltijaOid + ' (' + (new Date(response.data.luotu) + ')'));
+        var translated = $translate.instant('lukitus-kayttajalla', {user: response.data.haltijaOid});
+        uusiViesti(2, translated);
       }
     }
 

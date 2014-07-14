@@ -28,6 +28,7 @@ angular.module('eperusteApp')
     $scope.tyyppi = $stateParams.perusteenOsanTyyppi;
     $scope.objekti = null;
     $scope.versiot = {};
+    $scope.isLocked = false;
 
     if ($stateParams.perusteenOsaId !== 'uusi') {
       var successCb = function(re) {

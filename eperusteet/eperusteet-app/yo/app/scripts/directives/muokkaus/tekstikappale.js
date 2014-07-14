@@ -184,6 +184,7 @@ angular.module('eperusteApp')
 
           $scope.haeVersiot();
           $scope.setNavigation();
+          Lukitus.tarkista($scope.tekstikappale.id, $scope);
         }
 
         if ($scope.tekstikappale) {

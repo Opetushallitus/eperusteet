@@ -66,6 +66,7 @@
     "ammatillinenaikuiskoulutus": "Ammatillinen aikuiskoulutus",
 
     "lukitus-vaaditaan": "Muokattavaa resurssia ei ole lukittu",
+    "lukitus-kayttajalla": "Sivu on lukittu. Käyttäjä {{user}} muokkaa sivua.",
 
     "perusteprojektit-otsikko": "Omat perusteprojektit",
     "uusi-projekti": "Uusi projekti",

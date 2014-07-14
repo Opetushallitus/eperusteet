@@ -34,7 +34,8 @@ angular.module('eperusteApp')
     $scope.peruuta = function() { $modalInstance.dismiss(); };
     $scope.$on('$stateChangeSuccess', function() { $scope.peruuta(); });
   })
-  .service('Lukitus', function($timeout, $rootScope, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit) {
+  .service('Lukitus', function($rootScope, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI,
+    LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit, $translate) {
     var lukitsin = null;
     var etag = null;
 
@@ -52,9 +53,8 @@ angular.module('eperusteApp')
       etag = null;
     });
 
-    function lueLukitus(Resource, obj, cb) {
-      cb = cb || angular.noop;
-      Resource.get(obj, cb, Notifikaatiot.serverLukitus);
+    function lueLukitus(Resource, obj, cb, errorCb) {
+      Resource.get(obj, cb || angular.noop, errorCb || Notifikaatiot.serverLukitus);
     }
 
     function lukitse(Resource, obj, cb) {
@@ -118,8 +118,27 @@ angular.module('eperusteApp')
       }, cb);
     }
 
+    function tarkistaLukitus(id, scope, suoritustapa) {
+      var okCb = function () {
+        scope.isLocked = false;
+        scope.lockNotification = '';
+      };
+      var failCb = function (res) {
+        scope.isLocked = true;
+        // TODO käyttäjän oikea nimi id:n sijaan
+        scope.lockNotification = $translate.instant('lukitus-kayttajalla', {
+          user: res.data ? res.data.haltijaOid : ''
+        });
+      };
+      if (suoritustapa) {
+        lueLukitus(LukkoSisalto, {osanId: id, suoritustapa: suoritustapa}, okCb, failCb);
+      } else {
+        lueLukitus(LukkoPerusteenosa, {osanId: id}, okCb, failCb);
+      }
+    }
+
     return {
-      lueLukitus: lueLukitus,
+      tarkista: tarkistaLukitus,
       lukitseSisalto: lukitseSisalto,
       vapautaSisalto: vapautaSisalto,
       lukitsePerusteenosa: lukitsePerusteenosa,

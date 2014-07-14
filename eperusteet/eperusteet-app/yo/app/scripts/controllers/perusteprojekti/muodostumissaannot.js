@@ -30,6 +30,7 @@ angular.module('eperusteApp')
       tutkinnonOsat: {}
     };
     $scope.versiot = {};
+    $scope.isLocked = false;
 
     Kommentit.haeKommentit(KommentitBySuoritustapa, {id: $stateParams.perusteProjektiId, suoritustapa: $scope.suoritustapa});
 
@@ -46,6 +47,7 @@ angular.module('eperusteApp')
       $scope.rakenne = res;
       Muodostumissaannot.laskeLaajuudet($scope.rakenne.rakenne, $scope.rakenne.tutkinnonOsat);
       haeVersiot();
+      Lukitus.tarkista($scope.rakenne.$peruste.id, $scope, $scope.suoritustapa);
     };
 
     function haeRakenne(cb, versio) {
