@@ -156,17 +156,18 @@ angular.module('eperusteApp')
       revert(data, tunniste, 'Rakenne', cb);
     };
 
-    this.setUrl = function (data) {
+    this.setUrl = function (data, isRakenne) {
       // Tricks for ui-router 0.2.*
       // We want to update the url only when user changes the version
       // If we enter with versionless url don't rewrite it
-      var versionlessUrl = $state.href('perusteprojekti.suoritustapa.perusteenosa', {versio: null}, {inherit:true}).replace(/#/g, '');
+      var state = isRakenne ? 'perusteprojekti.suoritustapa.muodostumissaannot' : 'perusteprojekti.suoritustapa.perusteenosa';
+      var versionlessUrl = $state.href(state, {versio: null}, {inherit:true}).replace(/#/g, '');
       var currentVersion = this.currentIndex(data);
       var isValid = _.isNumber(currentVersion);
       var urlHasVersion = $location.url() !== versionlessUrl;
       if ((urlHasVersion || data.hasChanged) && isValid) {
         data.hasChanged = false;
-        var versionUrl = $state.href('perusteprojekti.suoritustapa.perusteenosa', {versio: '/' + currentVersion}, {inherit:true}).replace(/#/g, '');
+        var versionUrl = $state.href(state, {versio: '/' + currentVersion}, {inherit:true}).replace(/#/g, '');
         $location.url(versionUrl);
       }
     };

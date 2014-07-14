@@ -364,8 +364,11 @@ angular.module('eperusteApp')
         };
 
         scope.$watch('rakenne.$suoritustapa', function() {
-          var sts = _(scope.rakenne.$peruste.suoritustavat).filter(function(st) { return st.laajuusYksikko; }) .value();
-          sts = _.zipObject(_.map(sts, 'suoritustapakoodi'), sts)[scope.rakenne.$suoritustapa];
+          var sts = null;
+          if (scope.rakenne.$peruste) {
+            sts = _(scope.rakenne.$peruste.suoritustavat).filter(function(st) { return st.laajuusYksikko; }) .value();
+            sts = _.zipObject(_.map(sts, 'suoritustapakoodi'), sts)[scope.rakenne.$suoritustapa];
+          }
 
           scope.apumuuttujat = {
             suoritustapa: scope.rakenne.$suoritustapa,

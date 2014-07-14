@@ -19,7 +19,8 @@
 angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams,
     PerusteenRakenne, Notifikaatiot, Editointikontrollit, SivunavigaatioService,
-    Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot) {
+    Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot,
+    virheService) {
     $scope.editoi = false;
     // $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
     $scope.suoritustapa = $stateParams.suoritustapa;
@@ -36,19 +37,38 @@ angular.module('eperusteApp')
       Lukitus.lukitseSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa, cb);
     }
 
-    function haeRakenne(cb) {
+    var errorCb = function() {
+      virheService.virhe('virhe-perusteenosaa-ei-löytynyt');
+    };
+    var successCb = function (res) {
+      res.$suoritustapa = $scope.suoritustapa;
+      res.$resolved = true;
+      $scope.rakenne = res;
+      Muodostumissaannot.laskeLaajuudet($scope.rakenne.rakenne, $scope.rakenne.tutkinnonOsat);
+      haeVersiot();
+    };
+
+    function haeRakenne(cb, versio) {
       cb = cb || angular.noop;
       PerusteenRakenne.hae($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
-        res.$suoritustapa = $scope.suoritustapa;
-        res.$resolved = true;
-        $scope.rakenne = res;
-        Muodostumissaannot.laskeLaajuudet($scope.rakenne.rakenne, $scope.rakenne.tutkinnonOsat);
-        haeVersiot();
-        cb();
+        successCb(res);
+        if (versio) {
+          haeVersiot(true, function () {
+            var revNumber = VersionHelper.select($scope.versiot, versio);
+            if (!revNumber) {
+              errorCb();
+            } else {
+              $scope.vaihdaVersio(cb);
+            }
+          });
+        } else {
+          cb();
+        }
       });
     }
     $scope.haeRakenne = haeRakenne;
-    haeRakenne();
+    var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, '') : null;
+    haeRakenne(angular.noop, versio);
 
     function tallennaRakenne(rakenne) {
       PerusteenRakenne.tallennaRakenne(
@@ -65,13 +85,17 @@ angular.module('eperusteApp')
       );
     }
 
-    function haeVersiot(force) {
-      VersionHelper.getRakenneVersions($scope.versiot, {id: $scope.rakenne.$peruste.id, suoritustapa: $scope.suoritustapa}, force);
+    function haeVersiot(force, cb) {
+      VersionHelper.getRakenneVersions($scope.versiot, {id: $scope.peruste.id, suoritustapa: $scope.suoritustapa}, force, cb);
     }
 
-    $scope.vaihdaVersio = function() {
+    $scope.vaihdaVersio = function(cb) {
+      cb = cb || angular.noop;
+      $scope.versiot.hasChanged = true;
       VersionHelper.changeRakenne($scope.versiot, {id: $scope.rakenne.$peruste.id, suoritustapa: $scope.suoritustapa}, function(response) {
         $scope.rakenne.rakenne = response;
+        VersionHelper.setUrl($scope.versiot, true);
+        cb();
       });
     };
 
