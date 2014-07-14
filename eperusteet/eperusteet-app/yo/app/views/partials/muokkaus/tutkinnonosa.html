@@ -1,6 +1,7 @@
 <div>
   <revert-note object="tutkinnonOsa" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
-  <button icon-role="edit" ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="pull-right btn btn-default">{{'muokkaa' | translate}}</button>
+  <button icon-role="edit" ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="floater btn btn-default">{{'muokkaa' | translate}}</button>
+  <button ng-hide="editEnabled" ng-click="kopioiMuokattavaksi()" class="floater btn btn-danger" icon-role="fire">{{'kopioi-muokattavaksi' | translate}}</button>
   <a ng-show="!editEnabled" icon-role="back" href="" ui-sref="perusteprojekti.suoritustapa.tutkinnonosat">{{'tutkinnonosat' | translate}}</a>
   <h1 ng-show="editEnabled">
     <span ng-show="!isNew" translate>muokkaus-tutkinnon-osa</span>
@@ -12,7 +13,7 @@
   <pikamenu ng-if="tutkinnonOsa.$resolved">
   <span ng-if="editEnabled" edit-in-place="editableTutkinnonOsa.nimi"></span>
   <span ng-if="!editEnabled">{{tutkinnonOsa.nimi | kaanna:true}}<span class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && rakenne.tutkinnonOsat[tutkinnonOsa.id] && rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus">
-      {{rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus}} {{rakenne.tutkinnonOsat[tutkinnonOsa.id].yksikko || '' | kaanna}}
+    {{rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus}} {{ yksikko | kaanna }}
     </span>
   </span>
   </pikamenu>
@@ -21,7 +22,7 @@
 
   <form name="tutkinnonOsaHeaderForm" role="form">
     <div ng-if="editEnabled && suoritustapa !== 'naytto'" class="stack">
-      <span>{{viiteosa.yksikko | kaanna}}</span>
+      <span>{{ yksikko | kaanna}}</span>
       <label>{{'tutkinnonosa-laajuus' | kaanna}}</label>
       <numberinput name="laajuus" model="viiteosa.laajuus" min="0" max="999" form="tutkinnonOsaHeaderForm"></numberinput>
     </div>

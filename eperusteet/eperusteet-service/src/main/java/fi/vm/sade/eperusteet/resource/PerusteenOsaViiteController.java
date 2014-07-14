@@ -17,6 +17,8 @@
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -50,10 +52,15 @@ public class PerusteenOsaViiteController {
         service.removeSisalto(id);
     }
 
-    @RequestMapping(value = "/kloonaa/{id}", method = POST)
+    @RequestMapping(value = "/kloonaa/{id}", method = POST, params = PerusteenOsaMappings.IS_TEKSTIKAPPALE_PARAM)
     @ResponseBody
-    public PerusteenosaViiteDto kloonaa(@PathVariable("id") final Long id) {
-        PerusteenosaViiteDto re = service.kloonaa(id);
-        return re;
+    public PerusteenosaViiteDto kloonaaTekstiKappale(@PathVariable("id") final Long id) {
+        return service.kloonaaTekstiKappale(id);
+    }
+
+    @RequestMapping(value = "/kloonaa/{id}", method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
+    @ResponseBody
+    public TutkinnonOsaViiteDto kloonaaTutkinnonOsa(@PathVariable("id") final Long id) {
+        return service.kloonaaTutkinnonOsa(id);
     }
 }

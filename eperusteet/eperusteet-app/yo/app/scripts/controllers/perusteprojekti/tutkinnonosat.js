@@ -38,6 +38,9 @@ angular.module('eperusteApp')
     $scope.jarjestysTapa = 'nimi';
     $scope.jarjestysOrder = false;
     $scope.naytaToisestaSuoritustavastaTuonti = perusteprojektiTiedot.getPeruste().suoritustavat.length > 1;
+    $scope.yksikko = _.zipObject(_.map($scope.peruste.suoritustavat, 'suoritustapakoodi'),
+                                  _.map($scope.peruste.suoritustavat, 'laajuusYksikko'))
+                                  [$scope.suoritustapa];
 
     $scope.paivitaRajaus = function(rajaus) { $scope.tosarajaus = rajaus; };
     $scope.asetaJarjestys = function(tyyppi, suunta) {

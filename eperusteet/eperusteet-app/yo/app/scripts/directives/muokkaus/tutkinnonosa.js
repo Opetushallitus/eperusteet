@@ -29,7 +29,7 @@ angular.module('eperusteApp')
       controller: function($scope, $state, $stateParams, $q, Navigaatiopolku,
         Editointikontrollit, PerusteenOsat, Editointicatcher, PerusteenRakenne,
         PerusteTutkinnonosa, TutkinnonOsaEditMode, $timeout, Varmistusdialogi,
-        SivunavigaatioService, VersionHelper, Lukitus, MuokkausUtils) {
+        SivunavigaatioService, VersionHelper, Lukitus, MuokkausUtils, PerusteenOsaViitteet) {
 
         document.getElementById('ylasivuankkuri').scrollIntoView(); // FIXME: Keksi tälle joku oikea ratkaisu
 
@@ -40,6 +40,11 @@ angular.module('eperusteApp')
         function getRakenne() {
           PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
             $scope.rakenne = res;
+            $scope.viiteosa = _.find($scope.rakenne.tutkinnonOsat, {'_tutkinnonOsa': $scope.editableTutkinnonOsa.id.toString()}) || {};
+            $scope.viiteosa.laajuus = $scope.viiteosa.laajuus || 0;
+            $scope.yksikko = _.zipObject(_.map(res.$peruste.suoritustavat, 'suoritustapakoodi'),
+                                         _.map(res.$peruste.suoritustavat, 'laajuusYksikko'))
+                                         [$scope.suoritustapa];
             if (TutkinnonOsaEditMode.getMode()) {
               $scope.isNew = true;
               $timeout(function () {
@@ -61,9 +66,6 @@ angular.module('eperusteApp')
             cb(res);
           });
         }
-
-        $scope.viiteosa = {};
-        $scope.viiteosa.laajuus = {};
 
         $scope.fields =
           new Array({
@@ -119,6 +121,19 @@ angular.module('eperusteApp')
         $scope.editableTutkinnonOsa = {};
         $scope.editEnabled = false;
 
+        $scope.kopioiMuokattavaksi = function() {
+          PerusteenOsaViitteet.kloonaaTutkinnonOsa({
+            viiteId: $scope.viiteosa.id
+          }, function(tk) {
+            TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
+            Notifikaatiot.onnistui('tutkinnonosa-kopioitu-onnistuneesti');
+            $state.go('perusteprojekti.suoritustapa.perusteenosa', {
+              perusteenOsanTyyppi: 'tutkinnonosa',
+              perusteenOsaId: tk._tutkinnonOsa
+            });
+          });
+        };
+
         function refreshPromise() {
           $scope.editableTutkinnonOsa = angular.copy($scope.tutkinnonOsa);
           var tutkinnonOsaDefer = $q.defer();
@@ -150,8 +165,6 @@ angular.module('eperusteApp')
             edit: function() {
               fetch(function() {
                 refreshPromise();
-                $scope.viiteosa = _.find($scope.rakenne.tutkinnonOsat, {'_tutkinnonOsa': $scope.editableTutkinnonOsa.id.toString()}) || {};
-                $scope.viiteosa.laajuus = $scope.viiteosa.laajuus || 'OSAAMISPISTE';
               });
             },
             asyncValidate: function(cb) {
@@ -175,6 +188,7 @@ angular.module('eperusteApp')
                 Notifikaatiot.serverCb);
 
                 // Viiteosa (laajuus) tallennetaan erikseen
+                console.log($scope.viiteosa);
                 PerusteTutkinnonosa.save({
                   perusteId: $scope.rakenne.$peruste.id,
                   suoritustapa: $stateParams.suoritustapa,

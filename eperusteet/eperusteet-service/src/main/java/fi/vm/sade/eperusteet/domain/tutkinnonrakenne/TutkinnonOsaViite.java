@@ -65,10 +65,6 @@ public class TutkinnonOsaViite implements ReferenceableEntity {
 
     @Getter
     @Setter
-    private LaajuusYksikko yksikko;
-
-    @Getter
-    @Setter
     private Integer jarjestys;
 
     @Getter

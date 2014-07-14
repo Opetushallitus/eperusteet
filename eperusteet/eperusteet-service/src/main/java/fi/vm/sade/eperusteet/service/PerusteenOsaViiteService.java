@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import java.util.List;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,5 +43,8 @@ public interface PerusteenOsaViiteService {
     List<Revision> getVersiot(Long id);
 
     @PreAuthorize("isAuthenticated()")
-    PerusteenosaViiteDto kloonaa(Long id);
+    PerusteenosaViiteDto kloonaaTekstiKappale(Long id);
+
+    @PreAuthorize("isAuthenticated()")
+    TutkinnonOsaViiteDto kloonaaTutkinnonOsa(Long id);
 }

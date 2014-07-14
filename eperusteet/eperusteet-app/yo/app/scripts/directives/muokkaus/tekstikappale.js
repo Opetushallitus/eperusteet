@@ -202,7 +202,7 @@ angular.module('eperusteApp')
 
 
         $scope.kopioiMuokattavaksi = function() {
-          PerusteenOsaViitteet.kloonaa({
+          PerusteenOsaViitteet.kloonaaTekstikappale({
             viiteId: $scope.viitteet[$scope.tekstikappale.id].viite
           }, function(tk) {
             TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan

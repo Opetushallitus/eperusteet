@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
-import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.dto.EntityReference;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
 import java.util.Date;
@@ -28,7 +27,6 @@ import lombok.Setter;
 public class TutkinnonOsaViiteDto {
     private Long id;
     private Integer laajuus;
-    private LaajuusYksikko yksikko;
     private Integer jarjestys;
     private LokalisoituTekstiDto nimi;
     private Date muokattu;

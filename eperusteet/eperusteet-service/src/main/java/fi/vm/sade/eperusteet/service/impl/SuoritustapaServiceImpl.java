@@ -167,7 +167,6 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
             uusiTov.setTutkinnonOsa(tov.getTutkinnonOsa());
             uusiTov.setJarjestys(tov.getJarjestys());
             uusiTov.setLaajuus(tov.getLaajuus());
-            uusiTov.setYksikko(tov.getYksikko());
             tosat.add(uusiTov);
             viitemap.put(tov, uusiTov);
         }

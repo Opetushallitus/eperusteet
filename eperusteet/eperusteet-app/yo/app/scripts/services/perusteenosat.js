@@ -35,7 +35,8 @@ angular.module('eperusteApp')
     return $resource(SERVICE_LOC + '/perusteenosaviitteet/sisalto/:viiteId', {
       viiteId: '@viiteId'
     }, {
-      kloonaa: { method: 'POST', url: SERVICE_LOC + '/perusteenosaviitteet/kloonaa/:viiteId' }
+      kloonaaTekstikappale: { method: 'POST', url: SERVICE_LOC + '/perusteenosaviitteet/kloonaa/:viiteId', params:{tyyppi:'perusteen-osat-tekstikappale'} },
+      kloonaaTutkinnonOsa: { method: 'POST', url: SERVICE_LOC + '/perusteenosaviitteet/kloonaa/:viiteId', params:{tyyppi:'perusteen-osat-tutkinnon-osa'} }
     });
   })
   .service('TutkinnonOsanValidointi', function($q, PerusteenOsat) {

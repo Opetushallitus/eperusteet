@@ -13,18 +13,25 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.ArvioinninKohdealue;
+import fi.vm.sade.eperusteet.domain.Arviointi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.Tila;
+import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
+import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
+import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
+import fi.vm.sade.eperusteet.service.ArviointiService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -56,6 +63,15 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     private PerusteenOsaService perusteenOsaService;
 
     @Autowired
+    private TutkinnonOsaRepository tutkinnonOsaRepository;
+
+    @Autowired
+    private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
+
+    @Autowired
+    private ArviointiService arviointiService;
+
+    @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
 
     @Autowired
@@ -73,7 +89,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
             throw new BusinessRuleViolationException("Suoritustavan juurielementtiä ei voi poistaa");
         }
 
-        if (viite.getLapset() != null && !viite.getLapset().isEmpty() ) {
+        if (viite.getLapset() != null && !viite.getLapset().isEmpty()) {
             throw new BusinessRuleViolationException("Sisällöllä on lapsia, ei voida poistaa");
         }
 
@@ -107,36 +123,38 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         return mapper.map(repository.save(revision), PerusteenosaViiteDto.class);
     }
 
+    @Override
     @Transactional
-    private TekstiKappale kloonaaTekstiKappale(Long id) {
-        PerusteenOsa current = perusteenOsaRepository.findOne(id);
-        if (!(current instanceof TekstiKappale)) {
-            throw new BusinessRuleViolationException("Kloonattava perusteen osa ei ole tekstikappale.");
-        }
-
-        TekstiKappale from = (TekstiKappale)current;
+    public PerusteenosaViiteDto kloonaaTekstiKappale(Long id) {
+        PerusteenOsaViite pov = repository.findOne(id);
+        PerusteenOsa perusteenOsa = pov.getPerusteenOsa();
+        TekstiKappale from = (TekstiKappale)perusteenOsaRepository.findOne(id);
         TekstiKappale uusi = new TekstiKappale();
         uusi.setTila(Tila.LUONNOS);
         uusi.setNimi(from.getNimi());
         uusi.setTeksti(from.getTeksti());
-        return perusteenOsaRepository.save(uusi);
-    }
-
-    @Transactional
-    private PerusteenOsaViite kloonaaSisalto(Long id) {
-        PerusteenOsaViite pov = repository.findOne(id);
-        PerusteenOsa perusteenOsa = pov.getPerusteenOsa();
-        pov.setPerusteenOsa(kloonaaTekstiKappale(perusteenOsa.getId()));
-
+        pov.setPerusteenOsa(perusteenOsaRepository.save(uusi));
         for (PerusteenOsaViite lpov : pov.getLapset()) {
-            kloonaaSisalto(lpov.getId());
+            kloonaaTekstiKappale(lpov.getId());
         }
-        return pov;
+        return mapper.map(pov, PerusteenosaViiteDto.class);
     }
 
     @Override
     @Transactional
-    public PerusteenosaViiteDto kloonaa(Long id) {
-        return mapper.map(kloonaaSisalto(id), PerusteenosaViiteDto.class);
+    public TutkinnonOsaViiteDto kloonaaTutkinnonOsa(Long id) {
+        TutkinnonOsaViite tov = tutkinnonOsaViiteRepository.getOne(id);
+        TutkinnonOsa to = tov.getTutkinnonOsa();
+        TutkinnonOsa uusi = new TutkinnonOsa();
+        uusi.setTila(Tila.LUONNOS);
+        uusi.setNimi(to.getNimi());
+        uusi.setAmmattitaidonOsoittamistavat(to.getAmmattitaidonOsoittamistavat());
+        uusi.setAmmattitaitovaatimukset(to.getAmmattitaitovaatimukset());
+        uusi.setArviointi(arviointiService.kopioi(to.getArviointi()));
+        uusi.setOpintoluokitus(to.getOpintoluokitus());
+        uusi.setOsaamisala(to.getOsaamisala());
+        uusi.setTavoitteet(to.getTavoitteet());
+        tov.setTutkinnonOsa(tutkinnonOsaRepository.save(uusi));
+        return mapper.map(tov, TutkinnonOsaViiteDto.class);
     }
 }
