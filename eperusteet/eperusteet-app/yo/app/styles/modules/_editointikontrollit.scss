@@ -5,7 +5,7 @@ $edit-control-height: 60px;
 .edit-controls {
   background: transparentize($valinta-vari, 0.3);
   height: $edit-control-height;
-  position: static;
+  position: relative;
   float: left;
   border: 2px solid black;
   z-index: 1040;
