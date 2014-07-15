@@ -41,7 +41,7 @@ angular.module('eperusteApp')
     $scope.rajaaSisaltoa = function(pp) {
       return _.isEmpty($scope.rajaus) ||
             Algoritmit.match($scope.rajaus, pp.nimi) ||
-            Algoritmit.match($scope.rajaus, pp.tila) ||
+            Algoritmit.match($scope.rajaus, 'tila-' + pp.tila) ||
             Algoritmit.match($scope.rajaus, pp.diaarinumero);
     };
   });
