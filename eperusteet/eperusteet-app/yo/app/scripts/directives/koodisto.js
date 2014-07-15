@@ -18,7 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('Koodisto', function($http, $modal, SERVICE_LOC, $resource, Kaanna) {
+  .service('Koodisto', function($http, $modal, SERVICE_LOC, $resource, Kaanna, Notifikaatiot) {
     var taydennykset = [];
     var koodistoVaihtoehdot = ['tutkinnonosat', 'koulutus'];
     var nykyinenKoodisto = _.first(koodistoVaihtoehdot);
@@ -35,7 +35,7 @@ angular.module('eperusteApp')
         taydennykset = koodistoMapping(re.data);
         taydennykset = _.sortBy(taydennykset, function(t) { return Kaanna.kaanna(t.nimi).toLowerCase(); });
         cb();
-      });
+      }, Notifikaatiot.serverCb);
     }
 
     function haeAlarelaatiot(koodi, cb) {
