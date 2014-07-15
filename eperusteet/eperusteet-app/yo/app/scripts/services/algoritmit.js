@@ -45,9 +45,14 @@ angular.module('eperusteApp')
       cb(_.first(list), function() { asyncTraverse(_.rest(list), cb, done); });
     }
 
+    function match(input, to) {
+      return Kaanna.kaanna(to).toLowerCase().indexOf(input) !== -1;
+    }
+
     return {
       rajausVertailu: rajausVertailu,
       kaikilleLapsisolmuille: kaikilleLapsisolmuille,
-      asyncTraverse: asyncTraverse
+      asyncTraverse: asyncTraverse,
+      match: match
     };
   });

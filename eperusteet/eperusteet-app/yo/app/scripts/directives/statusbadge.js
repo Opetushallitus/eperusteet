@@ -15,6 +15,7 @@
  */
 
 'use strict';
+/* global _ */
 
 /**
  * Statusbadge:
@@ -59,7 +60,8 @@ angular.module('eperusteApp')
       viimeistely: 'certificate',
       kaannos: 'book',
       valmis: 'thumbs-up',
-      julkaistu: 'glass'
+      julkaistu: 'glass',
+      poistettu: 'fire'
     };
 
     $scope.appliedClasses = function () {
@@ -74,7 +76,10 @@ angular.module('eperusteApp')
 
     $scope.startEditing = function() {
       $http.get(SERVICE_LOC + '/perusteprojektit/' + $scope.projektiId + '/tilat').then(function(vastaus) {
-
+        if (_.indexOf(vastaus.data, 'poistettu') !== -1) {
+          vastaus.data = _.reject(vastaus.data, function(a) { return a === 'poistettu'; });
+          vastaus.data.push('poistettu');
+        }
         if (vastaus.data.length !== 0) {
           PerusteprojektinTilanvaihto.start($scope.status, vastaus.data, function(newStatus) {
             // TODO tilan tallennus, tämä asettaa uuden tilan parent scopen projektiobjektiin.
@@ -87,22 +92,13 @@ angular.module('eperusteApp')
                   controller: 'TilanvaihtovirheCtrl',
                   size: 'lg',
                   resolve: {infot: function() {
-                      return vastaus.infot;
-                    }}
-                }).result.then(function() {
-                });
+                    return vastaus.infot;
+                  }}
+                }).result.then(angular.noop);
               }
-          }, function(virhe) {
-            console.log('tilan vaihto virhe', virhe);
-            Notifikaatiot.serverCb(virhe);
+            }, Notifikaatiot.serverCb);
           });
-
-        });
-      }
-      }, function(err) {
-        // TODO: serverCb ei toimi hyvin yhteen $http virheiden kanssa. Korjaa.
-        Notifikaatiot.serverCb(err);
-      });
-
+        }
+      }, Notifikaatiot.serverCb);
     };
   });

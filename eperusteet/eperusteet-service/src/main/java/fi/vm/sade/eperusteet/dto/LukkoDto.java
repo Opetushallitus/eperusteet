@@ -38,7 +38,6 @@ public class LukkoDto {
     final DateTime luotu;
 
     public static LukkoDto of(Lukko lukko) {
-        if ( lukko == null  ) return null;
-        return new LukkoDto(lukko);
+        return lukko == null ? null : new LukkoDto(lukko);
     }
 }

@@ -37,17 +37,13 @@ angular.module('eperusteApp')
       update: {method: 'POST', isArray: false}
     });
   })
-  .service('PerusteProjektit', function($http, SERVICE_LOC) {
-    function hae(success, failure) {
+  .service('PerusteProjektit', function($http, SERVICE_LOC, Notifikaatiot) {
+    function hae(query, success, failure) {
       success = success || angular.noop;
-      failure = failure || angular.noop;
-      $http.get(SERVICE_LOC + '/perusteprojektit/info')
-        .success(function(data) {
-          success(data);
-        })
-        .error(function(err) {
-          failure(err);
-        });
+      failure = failure || Notifikaatiot.serverCb;
+      $http.get(SERVICE_LOC + '/perusteprojektit/info', query)
+        .success(success)
+        .error(failure);
     }
 
     return {

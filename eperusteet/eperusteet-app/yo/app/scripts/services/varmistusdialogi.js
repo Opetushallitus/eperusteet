@@ -20,7 +20,6 @@ angular.module('eperusteApp')
   .service('Varmistusdialogi', function($modal) {
 
     function dialogi(options) {
-
       return function() {
         var resolve = {
           opts: function () {
@@ -49,7 +48,6 @@ angular.module('eperusteApp')
     return {
       dialogi: dialogi
     };
-
   })
   .controller('VarmistusDialogiCtrl', function($scope, $modalInstance, opts, data, otsikko, teksti, lisaTeksti, comment) {
     $scope.opts = opts;

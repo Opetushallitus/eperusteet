@@ -26,34 +26,44 @@ import java.util.Set;
  */
 public enum Tila {
 
-    POISTETTU("poistettu"),
-    LUONNOS("luonnos"),
+    POISTETTU("poistettu") {
+        @Override
+        public Set<Tila> mahdollisetTilat() {
+            return EnumSet.of(LUONNOS, LAADINTA);
+        }
+    },
+    LUONNOS("luonnos") {
+        @Override
+        public Set<Tila> mahdollisetTilat() {
+            return EnumSet.of(POISTETTU);
+        }
+    },
     LAADINTA("laadinta") {
         @Override
         public Set<Tila> mahdollisetTilat() {
-            return EnumSet.of(KOMMENTOINTI, VIIMEISTELY);
+            return EnumSet.of(KOMMENTOINTI, VIIMEISTELY, POISTETTU);
         }
     },
     KOMMENTOINTI("kommentointi"){
         @Override
         public Set<Tila> mahdollisetTilat() {
-            return EnumSet.of(LAADINTA);
+            return EnumSet.of(LAADINTA, POISTETTU);
         }
     },
     VIIMEISTELY("viimeistely"){
         @Override
         public Set<Tila> mahdollisetTilat() {
-            return EnumSet.of(LAADINTA, VALMIS);
+            return EnumSet.of(LAADINTA, VALMIS, POISTETTU);
         }
     },
     VALMIS("valmis"){
         @Override
         public Set<Tila> mahdollisetTilat() {
-            return EnumSet.of(VIIMEISTELY, JULKAISTU);
+            return EnumSet.of(VIIMEISTELY, JULKAISTU, POISTETTU);
         }
     },
     JULKAISTU("julkaistu");
-    
+
 
     private final String tila;
 
@@ -75,7 +85,7 @@ public enum Tila {
         }
         throw new IllegalArgumentException(tila + " ei ole kelvollinen tila");
     }
-    
+
     public Set<Tila> mahdollisetTilat() {
         return EnumSet.noneOf(Tila.class);
     }

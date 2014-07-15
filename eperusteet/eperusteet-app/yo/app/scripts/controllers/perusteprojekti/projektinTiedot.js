@@ -18,7 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('ProjektiTiedotSisaltoModalCtrl', function($scope, $modalInstance, PerusteProjektit, YleinenData, PerusteprojektiResource,
+  .controller('ProjektiTiedotSisaltoModalCtrl', function($scope, $modalInstance, YleinenData, PerusteprojektiResource,
                                                          Notifikaatiot, Perusteet) {
     $scope.ominaisuudet = {};
     $scope.suoritustavat = [];

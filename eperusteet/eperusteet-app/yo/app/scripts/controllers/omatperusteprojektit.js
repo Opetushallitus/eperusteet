@@ -30,11 +30,15 @@ angular.module('eperusteApp')
 
     var paivitaOmatProjektit = function() {
       Kayttajaprofiilit.get({}, function(vastaus) {
-
-        $scope.projektit = _.forEach(vastaus.perusteprojektit, function(pp) {
-          // TODO: Omat perusteprojektit linkin suoritustapa pitäisi varmaankin olla jotain muuta kuin kovakoodattu 'naytto'
-          pp.url = $state.href('perusteprojekti.suoritustapa.sisalto', { perusteProjektiId: pp.id, suoritustapa: 'naytto' });
-        });
+        $scope.projektit = _(vastaus.perusteprojektit)
+          .reject(function(pp) {
+            return pp.tila === 'poistettu' || pp.tila === 'julkaistu';
+          })
+          .forEach(function(pp) {
+            // TODO: Omat perusteprojektit linkin suoritustapa pitäisi varmaankin olla jotain muuta kuin kovakoodattu 'naytto'
+            pp.url = $state.href('perusteprojekti.suoritustapa.sisalto', { perusteProjektiId: pp.id, suoritustapa: 'naytto' });
+          })
+          .value();
 
         if ($scope.naytetaanKaikkiSuosikit) {
           $scope.projektitNapinTeksti = piilotaTeksti;
@@ -43,11 +47,7 @@ angular.module('eperusteApp')
           $scope.projektitNapinTeksti = naytaKaikkiTeksti;
         }
 
-        if (_.size($scope.projektit) > $scope.suppeaMaara) {
-          $scope.naytaProjektitNappi = true;
-        } else {
-          $scope.naytaProjektitNappi = false;
-        }
+        $scope.naytaProjektitNappi = _.size($scope.projektit) > $scope.suppeaMaara;
       });
     };
 
@@ -55,15 +55,8 @@ angular.module('eperusteApp')
 
     $scope.muutaProjektienMaara = function() {
       $scope.naytetaanKaikkiProjektit = !$scope.naytetaanKaikkiProjektit;
-
-      if ($scope.naytetaanKaikkiProjektit) {
-        $scope.projektitRaja = _.size($scope.projektit);
-        $scope.projektitNapinTeksti = piilotaTeksti;
-
-      } else {
-        $scope.projektitRaja = $scope.suppeaMaara;
-        $scope.projektitNapinTeksti = naytaKaikkiTeksti;
-      }
+      $scope.projektitRaja = $scope.naytetaanKaikkiProjektit ? _.size($scope.projektit) : $scope.suppeaMaara;
+      $scope.projektitNapinTeksti = $scope.naytetaanKaikkiProjektit ? piilotaTeksti : naytaKaikkiTeksti;
     };
 
     $scope.$on('update:perusteprojekti', function() {

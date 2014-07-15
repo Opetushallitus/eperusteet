@@ -1,14 +1,28 @@
 <div>
-    <div ng-repeat="ryhma in ryhmat">
-        <h2>{{ ryhma.nimi | kaanna }}</h2>
-        <p>{{ ryhma.kuvaus2 | kaanna }}</p>
+    <div class="input-group rajauslaatikko">
+        <span class="input-group-addon">
+            <span class="glyphicon glyphicon-search"></span>
+        </span>
+        <input ng-model="rajaus" placeholder="{{ 'etsi-sisällöstä' | kaanna }}" type="input" class="form-control">
+    </div>
+    <div>
         <table class="table table-striped">
             <tr>
-                <th>Nimi</th>
-                <th>Muuta</th>
+                <th translate>nimi</th>
+                <th translate>haltia</th>
+                <th translate>diaarinumero</th>
+                <th translate>tila</th>
+                <th translate>toiminto</th>
             </tr>
-            <tr>
-                <td ng-repeat="yt in ryhma.yhteystiedot">{{  }}</td>
+            <tr ng-repeat="pp in perusteprojektit | filter:rajaaSisaltoa">
+                <td>{{ pp.nimi | kaanna }}</td>
+                <td>Erkki Esimerkki</td>
+                <td>{{ pp.diaarinumero }}</td>
+                <td>
+                    {{ 'tila-' + pp.tila | kaanna }}
+                    <span ng-show="pp.tila === 'poistettu'">(<a ng-click="palautaPerusteprojekti(pp)" href="" translate>palauta</a>)</span>
+                </td>
+                <td></td>
             </tr>
         </table>
     </div>

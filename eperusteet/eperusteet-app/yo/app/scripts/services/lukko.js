@@ -78,10 +78,7 @@ angular.module('eperusteApp')
               Editointikontrollit.cancelEditing();
             });
           }
-        },
-        function(err) {
-          Notifikaatiot.serverLukitus(err);
-        });
+        }, Notifikaatiot.serverLukitus);
       };
       lukitsin(true);
     }

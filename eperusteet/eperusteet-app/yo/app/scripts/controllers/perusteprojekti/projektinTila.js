@@ -20,7 +20,8 @@
 angular.module('eperusteApp')
   .service('PerusteprojektinTilanvaihto', function ($modal) {
     var that = this;
-    this.start = function (currentStatus, mahdollisetTilat, setFn) {
+    this.start = function(currentStatus, mahdollisetTilat, setFn, successCb) {
+      successCb = successCb || angular.noop;
       var dummyDescription = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.';
       if (_.isFunction(setFn)) {
         that.setFn = setFn;
@@ -39,17 +40,18 @@ angular.module('eperusteApp')
             };
           }
         }
-      });
+      })
+      .result.then(successCb);
     };
-    this.set = function (status) {
-      that.setFn(status);
+    this.set = function(status, successCb) {
+      that.setFn(status, successCb);
     };
   })
-
-  .controller('PerusteprojektinTilaModal', function ($scope, $modal, $modalInstance, data) {
+  .controller('PerusteprojektinTilaModal', function ($scope, $modal, $modalInstance, $state, data) {
     $scope.data = data;
     $scope.data.selected = null;
     $scope.data.editable = false;
+
     $scope.valitse = function () {
       $modalInstance.close();
       $modal.open({
@@ -60,11 +62,11 @@ angular.module('eperusteApp')
         }
       });
     };
+
     $scope.peruuta = function () {
       $modalInstance.dismiss();
     };
   })
-
   .controller('PerusteprojektinTilaVarmistusModal', function ($scope,
       $modalInstance, data, PerusteprojektinTilanvaihto) {
     $scope.data = data;
@@ -72,10 +74,12 @@ angular.module('eperusteApp')
       $modalInstance.dismiss();
       PerusteprojektinTilanvaihto.start(data.oldStatus, data.mahdollisetTilat);
     };
+
     $scope.ok = function () {
       PerusteprojektinTilanvaihto.set(data.selected);
       $modalInstance.close();
     };
+
     $scope.peruuta = function () {
       $modalInstance.dismiss();
     };

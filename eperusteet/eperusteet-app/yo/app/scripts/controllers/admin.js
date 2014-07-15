@@ -15,6 +15,7 @@
  */
 
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {
@@ -23,13 +24,24 @@ angular.module('eperusteApp')
         url: '/admin',
         templateUrl: 'views/admin.html',
         controller: 'AdminCtrl',
-        resolve: {
-          RyhmienHallintaData: function(RyhmienHallinta) {
-            return RyhmienHallinta.promise;
-          }
-        }
       });
   })
-  .controller('AdminCtrl', function($scope, RyhmienHallinta) {
-    $scope.ryhmat = RyhmienHallinta.haeRyhmat();
+  .controller('AdminCtrl', function($scope, PerusteProjektit, Algoritmit, PerusteprojektiTila, Notifikaatiot) {
+    PerusteProjektit.hae({}, function(res) {
+      $scope.perusteprojektit = res;
+    });
+
+    $scope.palautaPerusteprojekti = function(pp) {
+      PerusteprojektiTila.save({ id: pp.id, tila: 'laadinta' }, {}, function(vastaus) {
+        if (vastaus.vaihtoOk) { pp.tila = 'laadinta'; }
+        else { Notifikaatiot.varoitus('tilan-vaihto-epäonnistui'); }
+      }, Notifikaatiot.serverCb);
+    };
+
+    $scope.rajaaSisaltoa = function(pp) {
+      return _.isEmpty($scope.rajaus) ||
+            Algoritmit.match($scope.rajaus, pp.nimi) ||
+            Algoritmit.match($scope.rajaus, pp.tila) ||
+            Algoritmit.match($scope.rajaus, pp.diaarinumero);
+    };
   });
