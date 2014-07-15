@@ -167,7 +167,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         updateStatus.setVaihtoOk(false);
                     }
                 }*/
-                
+
                 List<TutkinnonOsaViite> vapaatOsat = vapaatTutkinnonosat(suoritustapa);
                 if (!vapaatOsat.isEmpty()) {
                     List<LokalisoituTekstiDto> nimet = new ArrayList<>();
@@ -179,7 +179,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     updateStatus.addStatus("liittamattomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);
                     updateStatus.setVaihtoOk(false);
                 }
-            }     
+            }
         }
 
         if ( !updateStatus.isVaihtoOk() ) {
@@ -194,6 +194,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 }
             }
             projekti.getPeruste().setTila(Tila.VALMIS);
+        }
+
+        if (tila == Tila.POISTETTU) {
+            projekti.getPeruste().setTila(Tila.POISTETTU);
         }
 
         projekti.setTila(tila);
@@ -220,7 +224,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         return osa;
     }
 
-    
+
     private List<TutkinnonOsaViite> vapaatTutkinnonosat(Suoritustapa suoritustapa) {
         List<TutkinnonOsaViite> viiteList = new ArrayList<>();
 

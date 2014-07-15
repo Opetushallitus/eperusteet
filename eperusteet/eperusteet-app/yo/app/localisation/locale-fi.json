@@ -138,13 +138,15 @@
 
     "tilan-vaihto-epäonnistui": "Tilan vaihto epäonnistui",
 
-    "tila-poistettu": "Poistettu",
+    "tila-poistettu": "Arkistoitu",
     "tila-luonnos": "Luonnos",
     "tila-laadinta": "Laadinta",
     "tila-kommentointi": "Kommentointi",
     "tila-viimeistely": "Viimeistely",
     "tila-valmis": "Valmis",
     "tila-julkaistu": "Julkaistu",
+
+    "ei-koulutuksia": "Ei koulutuksia",
 
     "muokkaa-rakennetta": "Muokkaa rakennetta",
 
