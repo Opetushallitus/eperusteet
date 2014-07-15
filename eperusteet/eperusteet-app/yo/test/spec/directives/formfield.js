@@ -9,13 +9,16 @@ describe('Directive: formfield', function () {
                     'views/partials/numberinput.html',
                     'views/multiinput.html'));
 
-  var element, scope, $compile;
+  var element, scope, $compile, $timeout, $httpBackend;
 
-  beforeEach(inject(function ($rootScope, _$compile_, $httpBackend) {
+  beforeEach(inject(function ($rootScope, _$compile_, _$httpBackend_, _$timeout_) {
+    $httpBackend = _$httpBackend_;
     $httpBackend.when('GET', /localisation.+/).respond({});
     $httpBackend.when('GET', /eperusteet-service\/api.+/).respond({});
+    $httpBackend.when('GET', /views\/aloitussivu.+/).respond({});
     scope = $rootScope.$new();
     $compile = _$compile_;
+    $timeout = _$timeout_;
   }));
 
   function kaanna(el) {
@@ -33,6 +36,7 @@ describe('Directive: formfield', function () {
       kaanna(field);
       input = element.find('input');
       label = element.find('label');
+      $timeout.flush();
       expect(input.length).toBe(1);
       expect(label.length).toBe(1);
       expect(input.attr('id')).toBe('thelabel-' + index);
@@ -69,11 +73,11 @@ describe('Directive: formfield', function () {
     it('should validate itself on a form', function () {
       scope.data = {number: 0};
       kaanna('<form name="myform" role="form">' +
-             '<formfield type="number" label="numero" model="data" min="2" max="10" model-var="number" form="form" name="numberfield"></formfield>' +
+             '<formfield type="number" label="numero" model="data" min="2" max="10" model-var="number" form="form"></formfield>' +
              '</form>');
       var form = scope.myform;
-      // TODO: pitäisi olla form.numberfield...?
-      var field = form.tmpName;
+      $timeout.flush();
+      var field = form.innerForm.tmpName;
       field.$setViewValue('asdf');
       expect(field.$valid).toBe(false);
       expect(field.$error.number).toBe(true);

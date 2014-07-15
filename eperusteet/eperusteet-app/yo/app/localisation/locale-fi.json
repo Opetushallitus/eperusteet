@@ -531,6 +531,9 @@
     
     "arvo-rajojen-ulkopuolella": "Arvon pitää olla välillä {{min}} - {{max}}",
     "arvo-ei-numero": "Arvon täytyy olla numero",
+    "arvo-ei-kokonaisluku": "Arvon täytyy olla kokonaisluku",
+    "arvo-ei-desimaaliluku": "Arvon täytyy olla desimaaliluku",
+    "arvo-askelvirhe": "Arvon hyväksytty askelväli on {{step}}",
     "sivu-virheellisia-arvoja": "Sivulla on virheellisiä arvoja",
     
     "tilanvaihtovirhe-header": "Projektin tilan vaihtaminen ei onnistunut",

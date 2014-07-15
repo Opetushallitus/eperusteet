@@ -49,7 +49,8 @@ angular.module('eperusteApp')
         min: '@?',
         max: '@?',
         name: '@',
-        placeholder: '@'
+        placeholder: '@',
+        step: '@?'
       },
       link: function (scope, element, attrs) {
         scope.postfix = '';
@@ -118,9 +119,11 @@ angular.module('eperusteApp')
         });
 
         scope.isObject = _.isObject(scope.input.model);
-        scope.isNumber = !scope.options && !scope.isObject && scope.type === 'number';
+        scope.isNumber = !scope.options && !scope.isObject &&
+          (scope.type === 'number' || scope.type === 'float' || scope.type === 'integer');
         scope.isDate = !scope.options && scope.type === 'date';
-        scope.isText = !scope.options && !scope.isObject && scope.type !== 'number';
+        scope.isText = !scope.options && !scope.isObject &&
+          !(scope.type === 'number' || scope.type === 'float' || scope.type === 'integer');
         scope.isMultiText = !scope.options && scope.isObject;
         scope.datePicker = {
           options: YleinenData.dateOptions,

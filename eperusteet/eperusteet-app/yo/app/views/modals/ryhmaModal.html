@@ -29,14 +29,14 @@
 
     <div ng-show="suoritustapa !== 'naytto' && ms.laajuus">
       <h3 translate>tutkinnonosa-laajuus</h3>
-      <formfield model="ryhma" model-var="muodostumisSaanto.laajuus.minimi" label="minimi" type="number" name="laajuusMin" min="0" max="999" form="ryhmaForm"></formfield>
-      <formfield model="ryhma" model-var="muodostumisSaanto.laajuus.maksimi" label="maksimi" type="number" name="laajuusMax" min="0" max="999" form="ryhmaForm"></formfield>
+      <formfield model="ryhma" model-var="muodostumisSaanto.laajuus.minimi" label="minimi" type="float" name="laajuusMin" min="0" max="999" form="ryhmaForm"></formfield>
+      <formfield model="ryhma" model-var="muodostumisSaanto.laajuus.maksimi" label="maksimi" type="float" name="laajuusMax" min="0" max="999" form="ryhmaForm"></formfield>
     </div>
 
     <div ng-show="ms.koko">
       <h3 translate>tutkinnonosa-koko</h3>
-      <formfield model="ryhma" model-var="muodostumisSaanto.koko.minimi" label="minimi" type="number" name="kokoMin" min="0" max="999" form="ryhmaForm"></formfield>
-      <formfield model="ryhma" model-var="muodostumisSaanto.koko.maksimi" label="maksimi" type="number" name="kokoMax" min="0" max="999" form="ryhmaForm"></formfield>
+      <formfield model="ryhma" model-var="muodostumisSaanto.koko.minimi" label="minimi" type="integer" name="kokoMin" min="0" max="999" form="ryhmaForm"></formfield>
+      <formfield model="ryhma" model-var="muodostumisSaanto.koko.maksimi" label="maksimi" type="integer" name="kokoMax" min="0" max="999" form="ryhmaForm"></formfield>
     </div>
   </form>
 </div>

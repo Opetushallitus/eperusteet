@@ -1,7 +1,7 @@
 <div class="form-group">
   <label class="col-sm-3 control-label">{{label | kaanna}}{{ postfix }}</label>
   <div class="input-group col-sm-9" ng-if="!isDate">
-    <numberinput luokka="form-control" ng-if="isNumber" model="input.model" min="{{min}}" max="{{max}}" form="form" name="{{name}}"></numberinput>
+    <numberinput luokka="form-control" ng-if="isNumber" type="{{type}}" model="input.model" min="{{min}}" max="{{max}}" form="form" step="{{step}}"></numberinput>
     <input id="{{inputElId}}" ng-if="isText" ng-class="inputClasses()" ng-model="input.model" type="{{type}}" placeholder="{{placeholder | kaanna}}" ng-required="!!postfix">
     <ml-input ng-if="isMultiText" ml-data="input.model" ng-model="input.model" type="{{type}}"></ml-input>
     <select id="{{inputElId}}" ng-if="options && !flatOptions" class="form-control" ng-model="input.model" ng-required="!!postfix"
