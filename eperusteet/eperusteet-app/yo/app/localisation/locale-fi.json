@@ -186,6 +186,8 @@
     "etsi-sisällöstä": "Rajaa sisältöä...",
     "etsi-perusteprojekteista": "Etsi perusteprojekteista...",
 
+    "haltija": "Haltija",
+
     "muodostumis-rakenne-validointi-laajuus": "Ryhmän osien yhteenlaskettu laajuus ei riitä kattamaan tarvittavaa laajuutta",
     "muodostumis-rakenne-validointi-maara": "Ryhmän osien yhteenlaskettu määrä ei riitä kattamaan tarvittavaa määrää",
     "muodostumis-rakenne-validointi-maksimi": "Ryhmän laskettu minimi on pienempi kuin vaadittu minimi",
@@ -419,6 +421,8 @@
 
     "tuo-toisesta-projektista": "Tuo sisältöä toisesta projektista",
     "hae-perusteprojekteja": "Hae perusteprojekteja",
+
+    "toiminto": "Toiminto",
 
     "tuo-peruste": "Tuo peruste",
     "projektin-nimi-label": "Projektin nimi",

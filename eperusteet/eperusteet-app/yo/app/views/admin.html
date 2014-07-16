@@ -8,14 +8,14 @@
     <div>
         <table class="table table-striped">
             <tr>
-                <th translate>nimi</th>
-                <th translate>haltia</th>
-                <th translate>diaarinumero</th>
-                <th translate>tila</th>
+                <th><a href="" ng-click="asetaJarjestys('nimi')" translate>nimi</a></th>
+                <th><a href="" ng-click="asetaJarjestys('haltija')" translate>haltija</a></th>
+                <th><a href="" ng-click="asetaJarjestys('diaarinumero')" translate>diaarinumero-label</a></th>
+                <th><a href="" ng-click="asetaJarjestys('tila')" translate>tila</a></th>
                 <th translate>toiminto</th>
             </tr>
-            <tr ng-repeat="pp in perusteprojektit | filter:rajaaSisaltoa">
-                <td>{{ pp.nimi | kaanna }}</td>
+            <tr ng-repeat="pp in perusteprojektit | orderBy:jarjestys:jarjestysOrder | filter:rajaaSisaltoa">
+                <td><a href="" ui-sref="perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: pp.id, suoritustapa: 'naytto' })">{{ pp.nimi | kaanna }}</a></td>
                 <td>Erkki Esimerkki</td>
                 <td>{{ pp.diaarinumero }}</td>
                 <td>

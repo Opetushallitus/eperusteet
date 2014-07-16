@@ -45,10 +45,6 @@ angular.module('eperusteApp')
     $scope.naytaRakenne = true;
     $scope.muokkaus = false;
 
-    kaikilleTutkintokohtaisilleOsille($scope.peruste.sisalto, function(osa) {
-      osa.$opened = false;
-    });
-
     $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa();
 
     $scope.aakkosJarjestys = function(data) { return Kaanna.kaanna(data.perusteenOsa.nimi); };
@@ -58,11 +54,9 @@ angular.module('eperusteApp')
         osa.$filtered = lapsellaOn || Algoritmit.rajausVertailu($scope.rajaus, osa, 'perusteenOsa', 'nimi');
         return osa.$filtered;
       });
-
       $scope.naytaTutkinnonOsat = Kaanna.kaanna('tutkinnonosat').toLowerCase().indexOf($scope.rajaus.toLowerCase()) !== -1;
       $scope.naytaRakenne = Kaanna.kaanna('tutkinnon-rakenne').toLowerCase().indexOf($scope.rajaus.toLowerCase()) !== -1;
     };
-    $scope.rajaaSisaltoa();
 
     $scope.tuoSisalto = function() {
       function lisaaLapset(parent, lapset, cb) {
@@ -153,4 +147,11 @@ angular.module('eperusteApp')
     $scope.navigoi = function(state, params) {
       $state.go(state, params);
     };
+
+    (function() {
+      kaikilleTutkintokohtaisilleOsille($scope.peruste.sisalto, function(osa) {
+        osa.$opened = false;
+      });
+      $scope.rajaaSisaltoa();
+    }());
   });

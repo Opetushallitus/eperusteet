@@ -26,7 +26,31 @@ angular.module('eperusteApp')
         controller: 'AdminCtrl',
       });
   })
-  .controller('AdminCtrl', function($scope, PerusteProjektit, Algoritmit, PerusteprojektiTila, Notifikaatiot) {
+  .controller('AdminCtrl', function($scope, PerusteProjektit, Algoritmit, PerusteprojektiTila, Notifikaatiot, Kaanna) {
+    $scope.jarjestysTapa = 'nimi';
+    $scope.jarjestysOrder = false;
+
+    $scope.asetaJarjestys = function(tyyppi, suunta) {
+      if ($scope.jarjestysTapa === tyyppi) {
+        $scope.jarjestysOrder = !$scope.jarjestysOrder;
+        suunta = $scope.jarjestysOrder;
+      }
+      else {
+        $scope.jarjestysOrder = false;
+        $scope.jarjestysTapa = tyyppi;
+      }
+    };
+    $scope.jarjestys = function(data) {
+      switch($scope.jarjestysTapa) {
+        case 'nimi': return Kaanna.kaanna(data.nimi);
+        case 'haltija': return data.haltija;
+        case 'diaarinumero': return data.diaarinumero;
+        case 'tila': return data.tila;
+        default:
+          break;
+      }
+    };
+
     PerusteProjektit.hae({}, function(res) {
       $scope.perusteprojektit = res;
     });
