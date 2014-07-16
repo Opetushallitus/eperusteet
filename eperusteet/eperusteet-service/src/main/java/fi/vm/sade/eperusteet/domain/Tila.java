@@ -29,7 +29,7 @@ public enum Tila {
     POISTETTU("poistettu") {
         @Override
         public Set<Tila> mahdollisetTilat() {
-            return EnumSet.of(LUONNOS, LAADINTA);
+            return EnumSet.of(LAADINTA);
         }
     },
     LUONNOS("luonnos") {
