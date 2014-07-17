@@ -29,14 +29,15 @@ import javax.xml.transform.TransformerException;
  */
 public interface DokumenttiService {
 
-    public byte[] generateFor(final long id, Kieli kieli) throws IOException,
+    public byte[] generateFor(DokumenttiDto dto) throws IOException,
             TransformerException, ParserConfigurationException,
             Docbook4JException;
-    
-    public void   generateWithToken(final long id, final String token, Kieli kieli);
-    public String getNewTokenFor(final long id);
 
-    public byte[] getWithToken(String token);
+    public void setStarted(DokumenttiDto dto);
+    public void generateWithDto(DokumenttiDto dto);
+    public DokumenttiDto createDtoFor(final long id, Kieli kieli);
 
-    public DokumenttiDto query(String token);
+    public byte[] get(Long id);
+    public DokumenttiDto query(Long id);
+    public DokumenttiDto findLatest(Long id, Kieli kieli);
 }
