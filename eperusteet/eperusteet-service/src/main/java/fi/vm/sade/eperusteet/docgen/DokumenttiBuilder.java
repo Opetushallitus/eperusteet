@@ -107,6 +107,7 @@ public class DokumenttiBuilder {
         }
 
         // add tutkinnonosat as distinct chapters
+        // TODO: Ordering?
         addTutkinnonosat(doc, peruste);
 
         // For dev/debugging love
@@ -516,12 +517,14 @@ public class DokumenttiBuilder {
                 addTableCell(doc, rowElement, "Osaamistaso");
                 addTableCell(doc, rowElement, "Osaamistason kriteeri");
                 headerElement.appendChild(rowElement);
+                groupElement.appendChild(headerElement);
 
                 Element bodyElement = doc.createElement("tbody");
                 // TODO asteikko may be needed for proper ordering,
                 // we'll see...
                 //ArviointiAsteikko arviointiAsteikko = kohde.getArviointiAsteikko();
                 Set<OsaamistasonKriteeri> osaamistasonKriteerit = kohde.getOsaamistasonKriteerit();
+
                 for (OsaamistasonKriteeri krit : osaamistasonKriteerit) {
                     String taso = getTextString(krit.getOsaamistaso().getOtsikko());
                     List<String> kriteerit = asStringList(krit.getKriteerit());
@@ -532,7 +535,13 @@ public class DokumenttiBuilder {
                     bodyElement.appendChild(bodyRowElement);
                 }
 
-                groupElement.appendChild(headerElement);
+                // dirty fix: a tbody must have a row which must have an entry
+                if (osaamistasonKriteerit.isEmpty()) {
+                    Element bodyRowElement = doc.createElement("row");
+                    addTableCell(doc, bodyRowElement, "");
+                    bodyElement.appendChild(bodyRowElement);
+                }
+
                 groupElement.appendChild(bodyElement);
                 tableElement.appendChild(groupElement);
                 kaSection.appendChild(tableElement);
