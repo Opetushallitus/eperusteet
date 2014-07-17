@@ -36,7 +36,8 @@ angular.module('eperusteApp')
       viiteId: '@viiteId'
     }, {
       kloonaaTekstikappale: { method: 'POST', url: SERVICE_LOC + '/perusteenosaviitteet/kloonaa/:viiteId', params:{tyyppi:'perusteen-osat-tekstikappale'} },
-      kloonaaTutkinnonOsa: { method: 'POST', url: SERVICE_LOC + '/perusteenosaviitteet/kloonaa/:viiteId', params:{tyyppi:'perusteen-osat-tutkinnon-osa'} }
+      kloonaaTutkinnonOsa: { method: 'POST', url: SERVICE_LOC + '/perusteenosaviitteet/kloonaa/:viiteId', params:{tyyppi:'perusteen-osat-tutkinnon-osa'} },
+      update: { method: 'POST', url: SERVICE_LOC + '/perusteenosaviitteet/sisalto/:viiteId' }
     });
   })
   .service('TutkinnonOsanValidointi', function($q, PerusteenOsat) {

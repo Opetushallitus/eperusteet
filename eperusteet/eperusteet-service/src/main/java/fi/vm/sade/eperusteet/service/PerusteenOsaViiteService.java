@@ -17,7 +17,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
+import fi.vm.sade.eperusteet.dto.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import java.util.List;
@@ -34,17 +34,20 @@ public interface PerusteenOsaViiteService {
     void removeSisalto(Long id);
 
     @PreAuthorize("isAuthenticated()")
-    public PerusteenosaViiteDto getVersio(Long id, Integer versioId);
+    public PerusteenOsaViiteDto getVersio(Long id, Integer versioId);
 
     @PreAuthorize("isAuthenticated()")
-    public PerusteenosaViiteDto revertToVersio(Long id, Integer versioId);
+    public PerusteenOsaViiteDto revertToVersio(Long id, Integer versioId);
 
     @PreAuthorize("isAuthenticated()")
     List<Revision> getVersiot(Long id);
 
     @PreAuthorize("isAuthenticated()")
-    PerusteenosaViiteDto kloonaaTekstiKappale(Long id);
+    PerusteenOsaViiteDto kloonaaTekstiKappale(Long id);
 
     @PreAuthorize("isAuthenticated()")
     TutkinnonOsaViiteDto kloonaaTutkinnonOsa(Long id);
+
+    @PreAuthorize("isAuthenticated()")
+    void update(Long id, PerusteenOsaViiteDto uusi);
 }

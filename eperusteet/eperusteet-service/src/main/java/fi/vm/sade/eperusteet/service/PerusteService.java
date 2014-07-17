@@ -25,7 +25,7 @@ import fi.vm.sade.eperusteet.dto.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
-import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
+import fi.vm.sade.eperusteet.dto.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
@@ -78,7 +78,7 @@ public interface PerusteService {
     @PreAuthorize("isAuthenticated()")
     PerusteenOsaViite addViite(final Long parentId, final Long seuraavaViite, PerusteenOsaViite viite);
 
-    PerusteenosaViiteDto getSuoritustapaSisalto(final Long perusteId, final Suoritustapakoodi suoritustapakoodi);
+    PerusteenOsaViiteDto getSuoritustapaSisalto(final Long perusteId, final Suoritustapakoodi suoritustapakoodi);
 
     SuoritustapaDto getSuoritustapa(final Long perusteId, final Suoritustapakoodi suoritustapakoodi);
 

@@ -36,7 +36,7 @@ European Union Public Licence for more details.
                     </div>
                 </div>
                 <div class="pull-right">
-                    <button type="button" class="btn btn-default btn-sm" ng-click="muokkaus = !muokkaus" ng-show="valittuSuoritustapa !== ''" icon-role="edit">
+                    <button type="button" class="btn btn-default btn-sm" ng-click="updateSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="edit">
                         <span ng-show="muokkaus">{{ 'lopeta-muokkaus' | translate }}</span>
                         <span ng-hide="muokkaus">{{ 'muokkaa-rakennetta' | translate }}</span>
                     </button>

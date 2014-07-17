@@ -18,7 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams, $modal, PerusteenOsat,
+  .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams, $modal, PerusteenOsat, PerusteenOsaViitteet,
     SuoritustapaSisalto, PerusteProjektiService, perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit) {
 
     function kaikilleTutkintokohtaisilleOsille(juuri, cb) {
@@ -130,9 +130,29 @@ angular.module('eperusteApp')
       tolerance: 'pointer',
     };
 
-    $scope.$watch('muokkaus', function() {
+    $scope.updateSisalto = function() {
+      function mapSisalto(sisalto) {
+        return {
+          id: sisalto.id,
+          perusteenOsa: null,
+          lapset: _.map(sisalto.lapset, mapSisalto)
+        };
+      }
+
+      $scope.muokkaus = !$scope.muokkaus;
+      if (!$scope.muokkaus) {
+        PerusteenOsaViitteet.update({
+          viiteId: $scope.peruste.sisalto.id
+        },
+        mapSisalto($scope.peruste.sisalto),
+        Notifikaatiot.onnistui('osien-rakenteen-päivitys-onnistui'),
+        function(err) {
+          Notifikaatiot.serverCb(err);
+          $state.go($state.current.name, $stateParams);
+        });
+      }
       $scope.sortableOptions.disabled = !$scope.muokkaus;
-    });
+    };
 
     $scope.vaihdaSuoritustapa = function(suoritustapakoodi) {
       $scope.valittuSuoritustapa = suoritustapakoodi;

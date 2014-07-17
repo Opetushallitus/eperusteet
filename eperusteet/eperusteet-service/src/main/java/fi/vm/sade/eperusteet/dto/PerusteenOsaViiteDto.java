@@ -26,8 +26,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class PerusteenosaViiteDto {
+public class PerusteenOsaViiteDto {
     private Long id;
     private PerusteenOsaDto perusteenOsa;
-    private List<PerusteenosaViiteDto> lapset;
+    private List<PerusteenOsaViiteDto> lapset;
 }

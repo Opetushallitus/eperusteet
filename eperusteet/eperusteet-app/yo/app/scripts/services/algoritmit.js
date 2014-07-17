@@ -31,9 +31,16 @@ angular.module('eperusteApp')
       return kaannetty.toLowerCase().indexOf(input.toLowerCase()) !== -1;
     }
 
-    function kaikilleLapsisolmuille(objekti, lapsenAvain, cb) {
-      _.forEach(objekti[lapsenAvain], function(solmu) {
-        kaikilleLapsisolmuille(solmu, lapsenAvain, cb);
+    function mapLapsisolmut(objekti, lapsienAvain, cb) {
+      return _.map(objekti[lapsienAvain], function(solmu) {
+        solmu[lapsienAvain] = kaikilleLapsisolmuille(solmu, lapsienAvain, cb);
+        return cb(solmu);
+      });
+    }
+
+    function kaikilleLapsisolmuille(objekti, lapsienAvain, cb) {
+      _.forEach(objekti[lapsienAvain], function(solmu) {
+        kaikilleLapsisolmuille(solmu, lapsienAvain, cb);
         cb(solmu);
       });
     }
@@ -51,6 +58,7 @@ angular.module('eperusteApp')
 
     return {
       rajausVertailu: rajausVertailu,
+      mapLapsisolmut: mapLapsisolmut,
       kaikilleLapsisolmuille: kaikilleLapsisolmuille,
       asyncTraverse: asyncTraverse,
       match: match

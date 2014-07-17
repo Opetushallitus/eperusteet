@@ -38,7 +38,7 @@ import fi.vm.sade.eperusteet.dto.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
-import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
+import fi.vm.sade.eperusteet.dto.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
@@ -189,7 +189,7 @@ public class PerusteServiceImpl implements PerusteService {
         Map<Suoritustapakoodi, RakenneModuuliDto> rakenteet = new HashMap<>();
         Map<Suoritustapakoodi, List<TutkinnonOsaDto>> tutkinnonOsat = new HashMap<>();
         Map<Suoritustapakoodi, List<TutkinnonOsaViiteDto>> tutkinnonOsaViitteet = new HashMap<>();
-        Map<Suoritustapakoodi, PerusteenosaViiteDto> sisallot = new HashMap<>();
+        Map<Suoritustapakoodi, PerusteenOsaViiteDto> sisallot = new HashMap<>();
 
         for (SuoritustapaDto st : peruste.getSuoritustavat()) {
             rakenteet.put(st.getSuoritustapakoodi(), getTutkinnonRakenne(id, st.getSuoritustapakoodi(), 0));
@@ -280,9 +280,9 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Override
     @Transactional(readOnly = true)
-    public PerusteenosaViiteDto getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi) {
+    public PerusteenOsaViiteDto getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi) {
         PerusteenOsaViite entity = perusteet.findSisaltoByIdAndSuoritustapakoodi(perusteId, suoritustapakoodi);
-        return mapper.map(entity, PerusteenosaViiteDto.class);
+        return mapper.map(entity, PerusteenOsaViiteDto.class);
     }
 
     @Override
@@ -387,7 +387,6 @@ public class PerusteServiceImpl implements PerusteService {
             TutkinnonOsaViite utov = tovat.get(tov.getId());
             utov.setPoistettu(false);
         }
-        tutkinnonOsat = suoritustapa.getTutkinnonOsat();
         return updateTutkinnonRakenne(id, suoritustapakoodi, mapper.map(rakenneVersio, RakenneModuuliDto.class));
     }
 

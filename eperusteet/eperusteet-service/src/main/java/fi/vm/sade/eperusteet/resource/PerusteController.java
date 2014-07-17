@@ -22,7 +22,7 @@ import fi.vm.sade.eperusteet.dto.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
-import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
+import fi.vm.sade.eperusteet.dto.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
@@ -298,11 +298,11 @@ public class PerusteController {
 
 //    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{perusteenosaViiteId}/kloonaa", method = POST)
 //    @ResponseBody
-//    public PerusteenosaViiteDto kloonaa(
+//    public PerusteenOsaViiteDto kloonaa(
 //            @PathVariable("perusteId") final Long perusteId,
 //            @PathVariable("suoritustapa") final String suoritustapa,
 //            @PathVariable("perusteenosaViiteId") final Long id) {
-//        PerusteenosaViiteDto re = PerusteenOsaViiteService.kloonaa(perusteId, suoritustapa, id);
+//        PerusteenOsaViiteDto re = PerusteenOsaViiteService.kloonaa(perusteId, suoritustapa, id);
 //        return re;
 //    }
 
@@ -327,11 +327,11 @@ public class PerusteController {
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}/sisalto", method = GET)
     @ResponseBody
-    public ResponseEntity<PerusteenosaViiteDto> getSuoritustapaSisalto(
+    public ResponseEntity<PerusteenOsaViiteDto> getSuoritustapaSisalto(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
 
-        PerusteenosaViiteDto dto = service.getSuoritustapaSisalto(perusteId, Suoritustapakoodi.of(suoritustapakoodi));
+        PerusteenOsaViiteDto dto = service.getSuoritustapaSisalto(perusteId, Suoritustapakoodi.of(suoritustapakoodi));
         if (dto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

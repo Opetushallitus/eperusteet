@@ -16,7 +16,9 @@
 
 package fi.vm.sade.eperusteet.resource;
 
-import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
+import fi.vm.sade.eperusteet.dto.EntityReference;
+import fi.vm.sade.eperusteet.dto.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
@@ -26,9 +28,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -52,9 +56,18 @@ public class PerusteenOsaViiteController {
         service.removeSisalto(id);
     }
 
+    @RequestMapping(value = "/sisalto/{id}", method = POST)
+    @ResponseBody
+    public ResponseEntity updateSisaltoViite(
+            @PathVariable("id") final Long id,
+            @RequestBody final PerusteenOsaViiteDto pov) {
+        service.update(id, pov);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/kloonaa/{id}", method = POST, params = PerusteenOsaMappings.IS_TEKSTIKAPPALE_PARAM)
     @ResponseBody
-    public PerusteenosaViiteDto kloonaaTekstiKappale(@PathVariable("id") final Long id) {
+    public PerusteenOsaViiteDto kloonaaTekstiKappale(@PathVariable("id") final Long id) {
         return service.kloonaaTekstiKappale(id);
     }
 
