@@ -22,7 +22,10 @@ angular.module('eperusteApp')
       .state('root', {
         url: '/:lang',
         template: '<div ui-view></div>',
-        abstract: true
+        abstract: true,
+        onEnter: ['YleinenData', '$stateParams', function (YleinenData, $stateParams) {
+          YleinenData.vaihdaKieli($stateParams.lang);
+        }]
       })
       .state('root.aloitussivu', {
         url: '',

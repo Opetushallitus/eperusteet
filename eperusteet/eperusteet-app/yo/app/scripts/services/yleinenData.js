@@ -15,7 +15,7 @@
  */
 
 'use strict';
-/*global _*/
+/*global _, moment*/
 
 angular.module('eperusteApp')
   .service('YleinenData', function YleinenData($rootScope, $translate, Arviointiasteikot, Notifikaatiot) {
@@ -122,22 +122,22 @@ angular.module('eperusteApp')
     };
 
     this.vaihdaKieli = function(kielikoodi) {
-
       var löytyi = false;
       for (var avain in this.kielet) {
-        if (this.kielet.hasOwnProperty(avain)) {
-          if (this.kielet[avain] === kielikoodi) {
-            löytyi = true;
-            this.kieli = kielikoodi;
-            $translate.use(kielikoodi);
-            break;
-          }
+        if (this.kielet.hasOwnProperty(avain) && this.kielet[avain] === kielikoodi) {
+          löytyi = true;
+          break;
         }
       }
       // Jos kielikoodi ei löydy listalta niin käytetään suomea.
       if (!löytyi) {
-        $translate.use('fi');
-        this.kieli = 'fi';
+        kielikoodi = 'fi';
+      }
+      if (this.kielikoodi !== kielikoodi) {
+        moment.lang(kielikoodi);
+        $translate.use(kielikoodi);
+        this.kieli = kielikoodi;
+        $rootScope.$broadcast('notifyCKEditor');
       }
     };
 

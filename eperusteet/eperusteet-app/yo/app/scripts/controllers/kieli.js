@@ -15,19 +15,20 @@
  */
 
 'use strict';
-/* global moment */
+/* global _ */
 
 angular.module('eperusteApp')
-  .controller('KieliCtrl', function($scope, YleinenData, $rootScope) {
+  .controller('KieliCtrl', function($scope, YleinenData, $state) {
 
     $scope.kielet = YleinenData.kielet;
     $scope.kieli = YleinenData.kieli;
 
+    $scope.$on('notifyCKEditor', function () {
+      $scope.kieli = YleinenData.kieli;
+    });
+
     $scope.vaihdaKieli = function(kielikoodi) {
-      $rootScope.$broadcast('notifyCKEditor');
-      $scope.kieli = kielikoodi;
-      moment.lang(kielikoodi);
-      YleinenData.vaihdaKieli(kielikoodi);
+      $state.go($state.current.name, _.extend($state.params, {lang: kielikoodi}), {reload: true});
     };
 
   });
