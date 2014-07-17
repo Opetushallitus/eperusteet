@@ -19,8 +19,13 @@
 angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
-      .state('aloitussivu', {
-        url: '/',
+      .state('root', {
+        url: '/:lang',
+        template: '<div ui-view></div>',
+        abstract: true
+      })
+      .state('root.aloitussivu', {
+        url: '',
         templateUrl: 'views/aloitussivu.html'
       });
   });

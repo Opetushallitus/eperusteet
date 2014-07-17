@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
-      .state('virhe', {
+      .state('root.virhe', {
         url: '/virhe',
         templateUrl: 'views/virhe.html',
         controller: 'virheCtrl'
@@ -43,6 +43,6 @@ angular.module('eperusteApp')
       } else {
         data = { muu: virhe };
       }
-      $state.go('virhe');
+      $state.go('root.virhe');
     };
   });

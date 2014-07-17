@@ -36,7 +36,7 @@ angular.module('eperusteApp')
           })
           .forEach(function(pp) {
             // TODO: Omat perusteprojektit linkin suoritustapa pitäisi varmaankin olla jotain muuta kuin kovakoodattu 'naytto'
-            pp.url = $state.href('perusteprojekti.suoritustapa.sisalto', { perusteProjektiId: pp.id, suoritustapa: 'naytto' });
+            pp.url = $state.href('root.perusteprojekti.suoritustapa.sisalto', { perusteProjektiId: pp.id, suoritustapa: 'naytto' });
           })
           .value();
 

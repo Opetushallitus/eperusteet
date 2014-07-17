@@ -98,7 +98,7 @@ angular.module('eperusteApp')
         if (response.status >= 500) {
           fataali(Kaanna.kaanna('järjestelmävirhe-alku') + response.status + Kaanna.kaanna('järjestelmävirhe-loppu'), function() {
             // TODO Ota käyttöön möyhemmin
-            // $state.go('aloitussivu');
+            // $state.go('root.aloitussivu');
           });
         }
         else if (response.data && response.data.syy) {

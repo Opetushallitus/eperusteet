@@ -20,11 +20,11 @@
 angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
-      .state('esitys', {
+      .state('root.esitys', {
         url: '/esitys',
         template: '<div ui-view></div>'
       })
-      .state('esitys.peruste', {
+      .state('root.esitys.peruste', {
         url: '/:perusteId/:suoritustapa',
         templateUrl: 'views/esitys.html',
         controller: 'EsitysCtrl',
@@ -152,7 +152,7 @@ angular.module('eperusteApp')
     });
 
     $scope.vaihdaSuoritustapa = function(suoritustapa) {
-      $state.go('esitys.peruste', {perusteId: $stateParams.perusteId, suoritustapa: suoritustapa});
+      $state.go('root.esitys.peruste', {perusteId: $stateParams.perusteId, suoritustapa: suoritustapa});
     };
 
 

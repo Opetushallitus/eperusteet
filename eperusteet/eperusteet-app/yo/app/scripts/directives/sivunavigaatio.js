@@ -50,7 +50,7 @@ angular.module('eperusteApp')
           // ui-sref-active doesn't work directly in ui-router 0.2.*
           // with optional parameters.
           // Versionless url should be considered same as specific version url.
-          var url = $state.href('perusteprojekti.suoritustapa.perusteenosa', {
+          var url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', {
             perusteenOsaId: id,
             versio: null
           }, {inherit:true}).replace(/#/g, '');
@@ -116,7 +116,7 @@ angular.module('eperusteApp')
     });
 
     $scope.goBackToMain = function () {
-      $state.go('perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: $scope.projekti.id, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {reload: true});
+      $state.go('root.perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: $scope.projekti.id, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {reload: true});
     };
 
     $scope.toggleSideMenu = function () {

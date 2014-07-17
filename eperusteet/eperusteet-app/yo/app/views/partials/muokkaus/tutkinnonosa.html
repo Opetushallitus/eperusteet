@@ -6,7 +6,7 @@
             class="btn btn-default">{{'muokkaa' | translate}}</button>
   </div>
   <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
-  <a ng-show="!editEnabled" icon-role="back" href="" ui-sref="perusteprojekti.suoritustapa.tutkinnonosat">{{'tutkinnonosat' | translate}}</a>
+  <a ng-show="!editEnabled" icon-role="back" href="" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat">{{'tutkinnonosat' | translate}}</a>
   <h1 ng-show="editEnabled">
     <span ng-show="!isNew" translate>muokkaus-tutkinnon-osa</span>
     <span ng-show="isNew" translate>luonti-tutkinnon-osa</span>

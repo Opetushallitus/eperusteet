@@ -138,7 +138,7 @@ angular.module('eperusteApp')
           PerusteenOsaViitteet.delete({viiteId: $scope.viiteId()}, {}, function() {
             Editointikontrollit.cancelEditing();
             Notifikaatiot.onnistui('poisto-onnistui');
-            $state.go('perusteprojekti.suoritustapa.sisalto', {}, {reload: true});
+            $state.go('root.perusteprojekti.suoritustapa.sisalto', {}, {reload: true});
           }, Notifikaatiot.serverCb);
         }
 
@@ -208,7 +208,7 @@ angular.module('eperusteApp')
           }, function(tk) {
             TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
             Notifikaatiot.onnistui('tekstikappale-kopioitu-onnistuneesti');
-            $state.go('perusteprojekti.suoritustapa.perusteenosa', {
+            $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
               perusteenOsanTyyppi: 'tekstikappale',
               perusteenOsaId: tk.perusteenOsa.id
             });
@@ -232,7 +232,7 @@ angular.module('eperusteApp')
             perusteenosaViiteId: $scope.viiteId()
           }, {}, function(response) {
             TutkinnonOsaEditMode.setMode(true);
-            $state.go('perusteprojekti.suoritustapa.perusteenosa', {
+            $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
               perusteenOsanTyyppi: 'tekstikappale',
               perusteenOsaId: response._perusteenOsa
             });

@@ -20,17 +20,17 @@
 angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
-      .state('selaus', {
+      .state('root.selaus', {
         url: '/selaus',
         template: '<div ui-view></div>'
       })
-      .state('selaus.ammatillinenperuskoulutus', {
+      .state('root.selaus.ammatillinenperuskoulutus', {
         url: '/ammatillinenperuskoulutus',
         templateUrl: 'views/haku.html',
         controller: 'HakuCtrl',
         resolve: {'koulutusalaService': 'Koulutusalat'}
       })
-      .state('selaus.ammatillinenaikuiskoulutus', {
+      .state('root.selaus.ammatillinenaikuiskoulutus', {
         url: '/ammatillinenaikuiskoulutus',
         templateUrl: 'views/haku.html',
         controller: 'HakuCtrl',
@@ -116,6 +116,6 @@ angular.module('eperusteApp')
     };
 
     $scope.piilotaKoulutustyyppi = function() {
-      return $state.current.name === 'selaus.ammatillinenperuskoulutus';
+      return $state.current.name === 'root.selaus.ammatillinenperuskoulutus';
     };
   });

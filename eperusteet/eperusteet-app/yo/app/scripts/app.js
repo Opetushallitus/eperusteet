@@ -44,16 +44,18 @@ angular.module('eperusteApp', [
     $urlRouterProvider.when('','/');
     $urlRouterProvider.otherwise(function($injector, $location) {
       $injector.get('virheService').setData({path: $location.path()});
-      $injector.get('$state').go('virhe');
+      $injector.get('$state').go('root.virhe');
     });
   })
-  .config(function($translateProvider) {
+  .config(function($translateProvider, $urlRouterProvider) {
+    var preferred = 'fi';
+    $urlRouterProvider.when('/', '/' + preferred);
     $translateProvider.useStaticFilesLoader({
       prefix: 'localisation/locale-',
       suffix: '.json'
     });
-    $translateProvider.preferredLanguage('fi');
-    moment.lang('fi');
+    $translateProvider.preferredLanguage(preferred);
+    moment.lang(preferred);
   })
   // .config(function($httpProvider) {
   //   $httpProvider.interceptors.push(['$rootScope', 'REQUEST_TIMEOUT', 'Kaanna', '$q', function($rootScope, REQUEST_TIMEOUT, Kaanna, $q) {
@@ -172,7 +174,7 @@ angular.module('eperusteApp', [
     });
 
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
-      if (Editointikontrollit.getEditMode() && fromState.name !== 'perusteprojekti.suoritustapa.tutkinnonosat') {
+      if (Editointikontrollit.getEditMode() && fromState.name !== 'root.perusteprojekti.suoritustapa.tutkinnonosat') {
         event.preventDefault();
 
         var data = {toState: toState, toParams: toParams};

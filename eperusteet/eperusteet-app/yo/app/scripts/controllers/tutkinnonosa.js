@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
-      .state('esitys.tutkinnonosa', {
+      .state('root.esitys.tutkinnonosa', {
         url: '/:perusteId/tutkinnonosa/:tutkinnonOsaId',
         templateUrl: 'views/tutkinnonosa.html',
         controller: 'TutkinnonosaCtrl',

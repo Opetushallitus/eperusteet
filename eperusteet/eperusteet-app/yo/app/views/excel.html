@@ -109,7 +109,7 @@
   <div ng-show="peruste.$perusteTallennettu">
     <div class="alert alert-success">
       {{ 'perusteprojekti' | kaanna }}
-      <a href="" ui-sref="perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: haettuProjekti.id, suoritustapa: haettuPeruste.suoritustavat[0].suoritustapakoodi })">
+      <a href="" ui-sref="root.perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: haettuProjekti.id, suoritustapa: haettuPeruste.suoritustavat[0].suoritustapakoodi })">
         <b>{{ haettuProjekti.nimi | kaanna }}</b>
       </a>
       {{ 'tallennettiin-onnistuneesti' | kaanna }}

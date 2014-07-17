@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
-      .state('admin', {
+      .state('root.admin', {
         url: '/admin',
         templateUrl: 'views/admin.html',
         controller: 'AdminCtrl',

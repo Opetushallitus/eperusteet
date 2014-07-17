@@ -160,7 +160,7 @@ angular.module('eperusteApp')
       // Tricks for ui-router 0.2.*
       // We want to update the url only when user changes the version
       // If we enter with versionless url don't rewrite it
-      var state = isRakenne ? 'perusteprojekti.suoritustapa.muodostumissaannot' : 'perusteprojekti.suoritustapa.perusteenosa';
+      var state = isRakenne ? 'root.perusteprojekti.suoritustapa.muodostumissaannot' : 'root.perusteprojekti.suoritustapa.perusteenosa';
       var versionlessUrl = $state.href(state, {versio: null}, {inherit:true}).replace(/#/g, '');
       var currentVersion = this.currentIndex(data);
       var isValid = _.isNumber(currentVersion);

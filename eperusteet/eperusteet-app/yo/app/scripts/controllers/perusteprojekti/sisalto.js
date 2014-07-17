@@ -113,7 +113,7 @@ angular.module('eperusteApp')
     $scope.createSisalto = function() {
       lisaaSisalto('save', {}, function(response) {
         TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
-        $scope.navigoi('perusteprojekti.suoritustapa.perusteenosa', {
+        $scope.navigoi('root.perusteprojekti.suoritustapa.perusteenosa', {
           perusteenOsanTyyppi: 'tekstikappale',
           perusteenOsaId: response._perusteenOsa
         });
@@ -144,7 +144,7 @@ angular.module('eperusteApp')
       $scope.valittuSuoritustapa = suoritustapakoodi;
       PerusteProjektiService.setSuoritustapa(suoritustapakoodi);
 
-      $state.go('perusteprojekti.suoritustapa.sisalto', {
+      $state.go('root.perusteprojekti.suoritustapa.sisalto', {
         perusteProjektiId: $stateParams.perusteProjektiId,
         suoritustapa: suoritustapakoodi
       });

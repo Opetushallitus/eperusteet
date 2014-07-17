@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
-      .state('perusteprojekti', {
+      .state('root.perusteprojekti', {
         url: '/perusteprojekti/:perusteProjektiId',
         templateUrl: 'views/perusteprojekti.html',
         controller: 'PerusteprojektiCtrl',
@@ -34,7 +34,7 @@ angular.module('eperusteApp')
         },
         abstract: true
       })
-      .state('perusteprojekti.suoritustapa', {
+      .state('root.perusteprojekti.suoritustapa', {
         url: '/:suoritustapa',
         template: '<div ui-view></div>',
         navigaationimi: 'navi-perusteprojekti',
@@ -49,7 +49,7 @@ angular.module('eperusteApp')
         },
         abstract: true
       })
-      .state('perusteprojekti.suoritustapa.muodostumissaannot', {
+      .state('root.perusteprojekti.suoritustapa.muodostumissaannot', {
         url: '/rakenne{versio:(?:/[^/]+)?}',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiMuodostumissaannot.html',
         controller: 'PerusteprojektiMuodostumissaannotCtrl',
@@ -57,7 +57,7 @@ angular.module('eperusteApp')
             SivunavigaatioService.aseta({osiot: true, perusteprojektiTiedot: perusteprojektiTiedot});
           }]
       })
-      .state('perusteprojekti.suoritustapa.tutkinnonosat', {
+      .state('root.perusteprojekti.suoritustapa.tutkinnonosat', {
         url: '/tutkinnonosat',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiTutkinnonosat.html',
         controller: 'PerusteprojektiTutkinnonOsatCtrl',
@@ -65,7 +65,7 @@ angular.module('eperusteApp')
             SivunavigaatioService.aseta({osiot: true, perusteprojektiTiedot: perusteprojektiTiedot});
           }]
       })
-      .state('perusteprojekti.suoritustapa.perusteenosa', {
+      .state('root.perusteprojekti.suoritustapa.perusteenosa', {
         url: '/perusteenosa/{perusteenOsanTyyppi}/{perusteenOsaId}{versio:(?:/[^/]+)?}',
         templateUrl: 'views/muokkaus.html',
         controller: 'MuokkausCtrl',
@@ -73,7 +73,7 @@ angular.module('eperusteApp')
             SivunavigaatioService.aseta({osiot: true});
           }]
       })
-      .state('perusteprojekti.suoritustapa.sisalto', {
+      .state('root.perusteprojekti.suoritustapa.sisalto', {
         url: '/sisalto',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiSisalto.html',
         controller: 'PerusteprojektisisaltoCtrl',
@@ -81,7 +81,7 @@ angular.module('eperusteApp')
             SivunavigaatioService.aseta({piilota: true, perusteprojektiTiedot: perusteprojektiTiedot});
           }]
       })
-      .state('perusteprojekti.tiedot', {
+      .state('root.perusteprojekti.tiedot', {
         url: '/perustiedot',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedot.html',
         controller: 'ProjektinTiedotCtrl',
@@ -89,7 +89,7 @@ angular.module('eperusteApp')
             SivunavigaatioService.aseta({osiot: false});
           }]
       })
-      .state('perusteprojekti.peruste', {
+      .state('root.perusteprojekti.peruste', {
         url: '/peruste',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiPeruste.html',
         controller: 'PerusteenTiedotCtrl',
@@ -97,7 +97,7 @@ angular.module('eperusteApp')
             SivunavigaatioService.aseta({osiot: false});
           }]
       })
-      .state('perusteprojekti.projektiryhma', {
+      .state('root.perusteprojekti.projektiryhma', {
         url: '/projektiryhma',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiProjektiryhma.html',
         controller: 'ProjektiryhmaCtrl',
@@ -105,12 +105,12 @@ angular.module('eperusteApp')
             SivunavigaatioService.aseta({osiot: false});
           }]
       })
-      .state('perusteprojektiwizard', {
+      .state('root.perusteprojektiwizard', {
         url: '/perusteprojekti',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedotUusi.html',
         abstract: true
       })
-      .state('perusteprojektiwizard.tiedot', {
+      .state('root.perusteprojektiwizard.tiedot', {
         url: '/perustiedot',
         templateUrl: 'views/partials/perusteprojekti/perusteprojektiTiedot.html',
         controller: 'ProjektinTiedotCtrl',
@@ -134,7 +134,7 @@ angular.module('eperusteApp')
     Navigaatiopolku.asetaElementit({
       perusteprojekti: {
         nimi: $scope.projekti.nimi,
-        url: 'perusteprojekti.suoritustapa.sisalto'
+        url: 'root.perusteprojekti.suoritustapa.sisalto'
       }
     });
 

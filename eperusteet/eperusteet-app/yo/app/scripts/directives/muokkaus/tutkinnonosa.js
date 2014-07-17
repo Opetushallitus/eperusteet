@@ -127,7 +127,7 @@ angular.module('eperusteApp')
           }, function(tk) {
             TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
             Notifikaatiot.onnistui('tutkinnonosa-kopioitu-onnistuneesti');
-            $state.go('perusteprojekti.suoritustapa.perusteenosa', {
+            $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
               perusteenOsanTyyppi: 'tutkinnonosa',
               perusteenOsaId: tk._tutkinnonOsa
             });
@@ -153,7 +153,7 @@ angular.module('eperusteApp')
           PerusteenRakenne.poistaTutkinnonOsaViite(osaId, $scope.rakenne.$peruste.id,
             $stateParams.suoritustapa, function() {
             Notifikaatiot.onnistui('tutkinnon-osa-rakenteesta-poistettu');
-            $state.go('perusteprojekti.suoritustapa.tutkinnonosat');
+            $state.go('root.perusteprojekti.suoritustapa.tutkinnonosat');
           });
         }
 

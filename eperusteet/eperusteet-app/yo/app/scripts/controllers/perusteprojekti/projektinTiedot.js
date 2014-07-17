@@ -76,7 +76,7 @@ angular.module('eperusteApp')
     Editointikontrollit.registerCallback(editingCallbacks);
 
     $scope.wizardissa = function () {
-      return $state.is('perusteprojektiwizard.tiedot');
+      return $state.is('root.perusteprojektiwizard.tiedot');
     };
 
     $scope.voiMuokata = function () {
@@ -155,7 +155,7 @@ angular.module('eperusteApp')
         perusteId: perusteId
       }, function(res) {
         console.log(res);
-        $state.go('perusteprojekti.suoritustapa.sisalto', {
+        $state.go('root.perusteprojekti.suoritustapa.sisalto', {
           perusteProjektiId: projektiId,
           suoritustapa: res.suoritustavat[0].suoritustapakoodi
         }, { reload: true });

@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
-      .state('excel', {
+      .state('root.excel', {
         url: '/excel',
         templateUrl: 'views/excel.html',
         controller: 'ExcelCtrl',
