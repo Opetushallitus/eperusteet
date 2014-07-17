@@ -50,15 +50,22 @@ angular.module('eperusteApp')
         hae: {method: 'GET', responseType: 'arraybuffer'}
     });
   })
-  .service('Pdf', function(Dokumentti, DokumenttiHaku, SERVICE_LOC) {
+  .factory('DokumenttiKysely', function($resource, SERVICE_LOC) {
 
-    function generoiPdf(perusteId, success, failure) {
+    return $resource(SERVICE_LOC + '/dokumentti/uusin/:perusteId/:kieli', {
+      perusteId: '@id',
+      kieli: '@kieli'
+    });
+  })
+  .service('Pdf', function(Dokumentti, DokumenttiHaku, DokumenttiKysely, SERVICE_LOC) {
+
+    function generoiPdf(perusteId, kieli, success, failure) {
       success = success || angular.noop;
       failure = failure || angular.noop;
 
       Dokumentti.get({
         id: perusteId,
-        kieli: 'fi'
+        kieli: kieli
       }, success);
     }
 
@@ -87,10 +94,22 @@ angular.module('eperusteApp')
         return SERVICE_LOC + '/dokumentti/get/'+tokenId;
     }
 
+    function haeUusin(perusteId, kieli, success, failure) {
+      success = success || angular.noop;
+      failure = failure || angular.noop;
+
+      return DokumenttiKysely.get({
+        perusteId: perusteId,
+        kieli: kieli
+      }, success);
+
+    }
+
     return {
       generoiPdf: generoiPdf,
       haeDokumentti: haeDokumentti,
       haeTila: haeTila,
-      haeLinkki: haeLinkki
+      haeLinkki: haeLinkki,
+      haeUusin: haeUusin
     };
   });

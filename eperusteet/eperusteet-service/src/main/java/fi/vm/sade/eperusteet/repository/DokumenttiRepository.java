@@ -14,30 +14,24 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.repository;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import fi.vm.sade.eperusteet.domain.Dokumentti;
 import fi.vm.sade.eperusteet.domain.DokumenttiTila;
-import fi.vm.sade.eperusteet.domain.DokumenttiVirhe;
 import fi.vm.sade.eperusteet.domain.Kieli;
-import java.util.Date;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.List;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author jussi
  */
-@Getter
-@Setter
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class DokumenttiDto {
-    private Long id;
-    private Long perusteId;
-    private String luoja;
-    private Kieli kieli;
-    private Date aloitusaika;
-    private Date valmistumisaika;
-    private DokumenttiTila tila = DokumenttiTila.EI_OLE;
-    private DokumenttiVirhe virhekoodi = DokumenttiVirhe.EI_VIRHETTA;
+@Repository
+public interface DokumenttiRepository extends JpaRepository<Dokumentti, Long> {
+
+    public Dokumentti findById(Long id);
+    public List<Dokumentti> findByPerusteIdAndKieliAndTila(Long perusteId, Kieli kieli, DokumenttiTila tila, Sort sort);
+    
 }

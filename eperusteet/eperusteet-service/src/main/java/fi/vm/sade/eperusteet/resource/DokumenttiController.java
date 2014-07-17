@@ -17,9 +17,9 @@
 package fi.vm.sade.eperusteet.resource;
 
 import com.google.code.docbook4j.Docbook4JException;
+import fi.vm.sade.eperusteet.domain.DokumenttiTila;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
-import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.service.DokumenttiService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import java.io.IOException;
@@ -55,43 +55,37 @@ public class DokumenttiController {
     @Autowired
     PerusteService perusteService;
 
-    @RequestMapping(value="/create/{id}", method = RequestMethod.GET)
+    @RequestMapping(value="/create/{perusteId}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<DokumenttiDto> create(
-            @PathVariable("id") final long id) {
+            @PathVariable("perusteId") final long perusteId) {
 
-        return create(id, "fi");
+        return create(perusteId, "fi");
     }
 
-    @RequestMapping(value="/create/{id}/{kieli}", method = RequestMethod.GET)
+    @RequestMapping(value="/create/{perusteId}/{kieli}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<DokumenttiDto> create(
-            @PathVariable("id") final long id,
+            @PathVariable("perusteId") final long perusteId,
             @PathVariable("kieli") final String kieli) {
 
         try {
-            DokumenttiDto dto = new DokumenttiDto();
             final Kieli k = Kieli.of(kieli);
-            final String token = service.getNewTokenFor(id);
-            dto.setToken(token);
-            dto.setTila(DokumenttiDto.Tila.LUODAAN);
+            final DokumenttiDto createDtoFor = service.createDtoFor(perusteId, k);
 
-            if(perusteService.get(id) == null) {
-                LOG.warn("Peruste with id {} was not found", id);
-                dto.setTila(DokumenttiDto.Tila.EPAONNISTUI);
-                return new ResponseEntity<>(dto, HttpStatus.CREATED);
+            if (createDtoFor.getTila() != DokumenttiTila.EPAONNISTUI) {
+                // TODO: use executor service from threadpool
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        service.setStarted(createDtoFor);
+                        service.generateWithDto(createDtoFor);
+                    }
+                };
+                new Thread(r).start();
             }
 
-            // TODO: use executor service from threadpool
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    service.generateWithToken(id, token, k);
-                }
-            };
-            new Thread(r).start();
-
-        return new ResponseEntity<>(dto, HttpStatus.CREATED);
+            return new ResponseEntity<>(createDtoFor, HttpStatus.CREATED);
         } catch (IllegalArgumentException ex) {
             LOG.warn("{}", ex.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -99,12 +93,12 @@ public class DokumenttiController {
 
     }
 
-    @RequestMapping(value="/get/{token}", method = RequestMethod.GET)
+    @RequestMapping(value="/get/{dokumenttiId}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<byte[]> get(@PathVariable("token") final String token) {
-        LOG.debug("get: {}", token);
-
-        byte[] pdfdata = service.getWithToken(token);
+    public ResponseEntity<byte[]> get(
+            @PathVariable("dokumenttiId") final Long dokumenttiId)
+    {
+        byte[] pdfdata = service.get(dokumenttiId);
 
         if (pdfdata == null || pdfdata.length == 0) {
             LOG.error("Got null or empty data from service");
@@ -114,53 +108,70 @@ public class DokumenttiController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType("application/pdf"));
         headers.setContentLength(pdfdata.length);
-        headers.set("Content-disposition", "attachment; filename="+token+".pdf");
+        headers.set("Content-disposition", "attachment; filename="+dokumenttiId+".pdf");
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
 
         return new ResponseEntity<>(pdfdata, headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value="/query/{token}", method = RequestMethod.GET)
+    @RequestMapping(value="/query/{dokumenttiId}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<DokumenttiDto> query(@PathVariable("token") final String token) {
-        LOG.debug("query: {}", token);
-
-        DokumenttiDto dto = service.query(token);
+    public ResponseEntity<DokumenttiDto> query(
+            @PathVariable("dokumenttiId") final Long dokumenttiId)
+    {
+        LOG.debug("query {}", dokumenttiId);
+        DokumenttiDto dto = service.query(dokumenttiId);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @RequestMapping(value="/{id}", method = RequestMethod.GET)
+    @RequestMapping(value="/uusin/{perusteId}/{kieli}", method = RequestMethod.GET)
     @ResponseBody
-    public Callable<ResponseEntity<byte[]>> generateByIdAsync(
-            @PathVariable("id") final long id) {
-
-        return generateByIdAsync(id, "fi");
+    public ResponseEntity<DokumenttiDto> query(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("kieli") final String kieli)
+    {
+        try {
+            Kieli k = Kieli.of(kieli);
+            DokumenttiDto dto = service.findLatest(perusteId, k);
+            return new ResponseEntity<>(dto, HttpStatus.OK);
+        } catch (IllegalArgumentException ex) {
+            LOG.warn("{}", ex.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @RequestMapping(value="/{id}/{kieli}", method = RequestMethod.GET)
+
+    @RequestMapping(value="/{perusteId}", method = RequestMethod.GET)
     @ResponseBody
     public Callable<ResponseEntity<byte[]>> generateByIdAsync(
-            @PathVariable("id") final long id,
+            @PathVariable("perusteId") final long perusteId) {
+
+        return generateByIdAsync(perusteId, "fi");
+    }
+
+    @RequestMapping(value="/{perusteId}/{kieli}", method = RequestMethod.GET)
+    @ResponseBody
+    public Callable<ResponseEntity<byte[]>> generateByIdAsync(
+            @PathVariable("perusteId") final long perusteId,
             @PathVariable("kieli") final String kieli) {
 
         Callable<ResponseEntity<byte[]>> callable = new Callable<ResponseEntity<byte[]>>() {
 
             @Override
             public ResponseEntity<byte[]> call() {
-                LOG.debug("Callable.call: {}", id);
-                return generate(id, kieli);
+                return generate(perusteId, kieli);
             }
         };
 
         return callable;
     }
 
-    private ResponseEntity<byte[]> generate(long id, String kieli) {
-        LOG.debug("generate: {}", id);
+    private ResponseEntity<byte[]> generate(long perusteId, String kieli) {
 
         try {
-            byte[] pdfdata = service.generateFor(id, Kieli.of(kieli));
+            DokumenttiDto dto = service.createDtoFor(perusteId, Kieli.of(kieli));
+            byte[] pdfdata = service.generateFor(dto);
 
             if (pdfdata == null || pdfdata.length == 0) {
                 LOG.error("Got null or empty data from service");
