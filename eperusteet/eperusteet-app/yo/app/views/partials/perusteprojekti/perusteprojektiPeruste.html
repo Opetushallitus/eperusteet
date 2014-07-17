@@ -16,11 +16,15 @@ European Union Public Licence for more details.
 -->
 
   <button ng-if="voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit">{{'muokkaa' | translate}}</button>  
-  <button ng-disabled="generointiDisabled" class="floater btn btn-default" ng-click="generoiPdf()" icon-role="file">{{ generointiTeksti | kaanna }}</button>
-  <div class="link-floater" ng-show="pdfLinkki !== null">
-    <a ng-href="{{pdfLinkki}}">{{ 'lataa-pdf' | kaanna }}</a>    
-  </div>
-  
+
+    <div class="floater dropdown">
+        <button ng-disabled="generointiDisabled" class="btn btn-default dropdown-toggle" data-toggle="dropdown" icon-role="file">{{ generointiTeksti | kaanna }}<span class="caret"></span></button>
+        <ul class="dropdown-menu">
+          <li ng-repeat="kieli in kielet"><a href="" ng-click="generoiPdf(kieli)" translate>luo-dokumentti-kielella-{{kieli}}</a></li>             
+          <li class="divider"></li>
+          <li ng-repeat="dokumentti in dokumentit"><a ng-href="{{dokumentti.linkki}}"><span translate>uusin-dokumentti-kielella-{{dokumentti.kieli}}</span><br>{{dokumentti.valmistumisaika|date:'dd.MM.yyyy hh:mm:ss'}}</a></li>
+        </ul>
+    </div>
 
 <h1 translate>projekti-peruste</h1>
 <div class="clearfix"></div>
