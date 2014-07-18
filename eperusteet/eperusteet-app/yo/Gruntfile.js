@@ -36,6 +36,11 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     yeoman: yeomanConfig,
+    focus: {
+      dev: {
+        exclude: ['test']
+      }
+    },
     watch: {
       css: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.scss'],
@@ -147,7 +152,7 @@ module.exports = function(grunt) {
       },
       all: [
         'Gruntfile.js',
-        '<%= yeoman.app %>/scripts/{,*/,*/*/}*.js'
+        '<%= yeoman.app %>/scripts/**/*.js'
       ]
     },
     // not used since Uglify task does concat,
@@ -376,27 +381,34 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('server', function(target) {
-    if (target === 'dist') {
-      return grunt.task.run(['build', 'connect:dist:keepalive']);
-    }
+  var devTask = function (excludeTests) {
+    return function(target) {
+      if (target === 'dist') {
+        return grunt.task.run(['build', 'connect:dist:keepalive']);
+      }
 
-    grunt.task.run([
-      'clean:server',
-      'concurrent:server',
-      'copy:fonts',
-      'autoprefixer',
-      'configureProxies',
-      'connect:livereload',
-      'watch'
-    ]);
-  });
+      grunt.task.run([
+        'clean:server',
+        'concurrent:server',
+        'copy:fonts',
+        'autoprefixer',
+        'configureProxies',
+        'connect:livereload',
+        excludeTests ? 'focus:dev' : 'watch'
+      ]);
+    };
+  };
+
+  grunt.registerTask('server', devTask());
+  grunt.registerTask('dev', devTask(true));
 
   grunt.registerTask('test', [
     'clean:server',
     'concurrent:test',
     'autoprefixer',
     'connect:test',
+    'regex-check',
+    'jshint',
     'karma'
   ]);
 
@@ -416,8 +428,6 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('default', [
-    'jshint',
-    'regex-check',
     'test',
     'build'
   ]);
