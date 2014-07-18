@@ -29,8 +29,13 @@
           <div class="pull-right admin-cog">
             <a href="" ui-sref="root.admin" icon-role="settings"></a>
           </div>
-          <div ng-controller="KieliCtrl" id="kielen-vaihto" class="btn-group pull-right ng-cloak" style="margin-top: 5px">
-            <button ng-repeat="(nimi, koodi) in kielet" ng-click="vaihdaKieli(koodi)" type="button" class="btn btn-xs" ng-class="{ 'active' : koodi === kieli }" ng-bind="nimi | translate"></button>
+          <div ng-controller="KieliCtrl" id="kielen-vaihto" class="pull-right ng-cloak">
+            <ul>
+              <li ng-repeat="item in koodit | filter:{koodi: '!'+kieli}" ng-click="vaihdaKieli(item.koodi)">
+                <span ng-if="!$first">|</span>
+                <a class="action-link" ng-click="vaihdaKieli(item.koodi)" translate>{{item.nimi}}</a>
+              </li>
+            </ul>
           </div>
           <eperuste-navi ng-controller="NaviCtrl"></eperuste-navi>
           <div class="col-md-12" ui-view></div>

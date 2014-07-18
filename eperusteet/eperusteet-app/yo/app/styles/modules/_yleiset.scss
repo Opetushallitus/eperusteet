@@ -115,3 +115,14 @@ $lukko-inner: 1.4em;
     width: $lukko-width;
   }
 }
+
+#kielen-vaihto {
+  ul {
+    margin: 0;
+    padding: 8px 15px;
+    list-style-type: none;
+    li {
+      display: inline;
+    }
+  }
+}

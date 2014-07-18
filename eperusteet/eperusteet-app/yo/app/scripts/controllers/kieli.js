@@ -20,7 +20,9 @@
 angular.module('eperusteApp')
   .controller('KieliCtrl', function($scope, YleinenData, $state) {
 
-    $scope.kielet = YleinenData.kielet;
+    $scope.koodit = _.map(_.pairs(YleinenData.kielet), function (item) {
+      return {koodi: item[1], nimi: item[0]};
+    });
     $scope.kieli = YleinenData.kieli;
 
     $scope.$on('notifyCKEditor', function () {
