@@ -98,8 +98,8 @@ angular.module('eperusteApp')
 
     Navigaatiopolku.asetaElementit({ perusteProjektiId: $scope.projekti.nimi });
 
-    $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojekti/perusteprojektiPerustiedot.html'},
-                   {otsikko: 'projekti-toimikausi', url: 'views/partials/perusteprojekti/perusteprojektiToimikausi.html'}];
+    $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojekti/perustiedot.html'},
+                   {otsikko: 'projekti-toimikausi', url: 'views/partials/perusteprojekti/toimikausi.html'}];
 
     $scope.mergeProjekti = function() {
       $modal.open({

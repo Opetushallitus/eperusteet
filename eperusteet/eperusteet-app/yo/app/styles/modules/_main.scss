@@ -1,7 +1,3 @@
-.hoverpointer {
-  cursor: move;
-}
-
 .info-box {
   background: #fcfcfc;
   margin-top: 10px;
@@ -30,23 +26,6 @@ tr .koodi {
   width: 48px;
 }
 
-.hero-unit {
-    margin: 50px auto 0 auto;
-    width: 300px;
-    font-size: 18px;
-    font-weight: 200;
-    line-height: 30px;
-    background-color: #eee;
-    border-radius: 6px;
-    padding: 60px;
-}
-
-.hero-unit h1 {
-    font-size: 60px;
-    line-height: 1;
-    letter-spacing: -1px;
-}
-
 .ellipsis-no-wrap{
     text-overflow: ellipsis;
     overflow: hidden;
@@ -55,10 +34,6 @@ tr .koodi {
 
 .pointer {
     cursor: pointer;
-}
-
-.alleviivaus:hover {
-    text-decoration:underline;
 }
 
 .raita,
@@ -71,21 +46,9 @@ tr .koodi {
   background-color: #fff;
 }
 
-.no-round {
-  border-radius: 0px;
-}
-
 .osatutkintoid {
   width: 140px;
   height: 26px;
-}
-
-.no-transition {
-  -webkit-transition: height 0.001s;
-  -moz-transition: height 0.001s;
-  -ms-transition: height 0.001s;
-  -o-transition: height 0.001s;
-  transition: height 0.001s;
 }
 
 .glyphtila {
@@ -158,4 +121,3 @@ tr .koodi {
 .form-control {
     border-radius: 3px;
 }
-

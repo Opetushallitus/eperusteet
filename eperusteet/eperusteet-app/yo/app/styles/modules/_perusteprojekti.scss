@@ -67,31 +67,6 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   }
 }
 
-.ominaisuudet {
-  input[type="checkbox"] {
-    position: static;
-    top: 0px;
-  }
-  hr {
-    background: none;
-  }
-  .valitse-kaikki {
-    float: right;
-    position: relative;
-    top: 8px;
-  }
-  .feature {
-    padding: 2px;
-  }
-}
-
-.download-pdf {
-  height: 0px;
-  float: right;
-  position: relative;
-  top: -60px;
-}
-
 .project-otsikkotiedot {
   margin-left: 25px;
   margin-top: 10px;
@@ -137,6 +112,14 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
     margin: 0px;
     margin-top: 2px;
     cursor: pointer;
+    h3 {
+      font-size: 14px;
+      font-weight: bold;
+      display: inline;
+      padding: 4px;
+      // padding-left: 20px;
+      // margin-top: 15px;
+    }
     .otsikko {
       margin-left: 28px;
     }
@@ -159,10 +142,19 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
     font-weight: normal;
     font-size: x-small;
   }
-}
-
-.main-content .ceiling {
-  border-top: 1px solid #ccc;
+  .ceiling {
+    border-top: 1px solid #ccc;
+  }
+  ul.sub-items {
+    margin-left: 140px;
+    background-color: #fff;
+    li {
+      position: relative;
+      padding: 10px inherit 10px 20px;
+      border: 1px solid #ddd;
+      border-top: none;
+    }
+  }
 }
 
 .list-element-placeholder {
@@ -177,14 +169,7 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   background: #fafafa;
   border: 1px solid #c9c9c9;
 }
-.main-content .list-element h3 {
-  font-size: 14px;
-  font-weight: bold;
-  display: inline;
-  padding: 4px;
-  // padding-left: 20px;
-  // margin-top: 15px;
-}
+.main-content .list-element
 .main-content .list-element-child h6 {
   font-weight: bold;
   padding-top: 8px;
@@ -201,16 +186,6 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 .main-content .list-element a.next span,
 .main-content a.next span {
   margin-left: 4px;
-}
-.main-content ul.sub-items {
-  margin-left: 140px;
-  background-color: #fff;
-}
-.main-content ul.sub-items li {
-  position: relative;
-  padding: 10px inherit 10px 20px;
-  border: 1px solid #ddd;
-  border-top: none;
 }
 .main-content .list-element span.glyphicon.next,
 .main-content ul.sub-items li span.glyphicon.next {
