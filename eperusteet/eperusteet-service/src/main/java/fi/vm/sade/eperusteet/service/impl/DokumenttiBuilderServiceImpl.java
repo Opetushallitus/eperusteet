@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.docgen;
+package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.ArvioinninKohdealue;
@@ -31,6 +31,8 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.service.DokumenttiBuilderService;
+import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,6 +64,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -70,19 +74,21 @@ import org.w3c.dom.Node;
  *
  * @author jussi
  */
-public class DokumenttiBuilder {
+@Service
+public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DokumenttiBuilder.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DokumenttiBuilderServiceImpl.class);
 
-    private Kieli kieli;
-    private Peruste peruste;
+    @Autowired
+    private LocalizedMessagesService messages;
 
-    public DokumenttiBuilder(Peruste peruste, Kieli kieli) {
-        this.peruste = peruste;
-        this.kieli = kieli;
-    }
-
-    public String generateXML() throws TransformerConfigurationException, IOException, TransformerException, ParserConfigurationException {
+    @Override
+    public String generateXML(Peruste peruste, Kieli kieli) throws
+            TransformerConfigurationException,
+            IOException,
+            TransformerException,
+            ParserConfigurationException
+    {
 
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -93,7 +99,7 @@ public class DokumenttiBuilder {
         rootElement.setAttribute("xmlns:h", "http://www.w3.org/1999/xhtml");
         doc.appendChild(rootElement);
 
-        String nimi = getTextString(peruste.getNimi());
+        String nimi = getTextString(peruste.getNimi(), kieli);
         Element titleElement = doc.createElement("title");
         titleElement.appendChild(doc.createTextNode(nimi));
         rootElement.appendChild(titleElement);
@@ -103,12 +109,12 @@ public class DokumenttiBuilder {
         // TODO: should we process suoritustavat in some specific order?
         for (Suoritustapa st : peruste.getSuoritustavat()) {
             PerusteenOsaViite sisalto = peruste.getSuoritustapa(st.getSuoritustapakoodi()).getSisalto();
-            addSisaltoElement(doc, rootElement, sisalto, 0, st);
+            addSisaltoElement(doc, peruste, rootElement, sisalto, 0, st, kieli);
         }
 
         // add tutkinnonosat as distinct chapters
         // TODO: Ordering?
-        addTutkinnonosat(doc, peruste);
+        addTutkinnonosat(doc, peruste, kieli);
 
         // For dev/debugging love
         printDocument(doc, System.out);
@@ -237,7 +243,7 @@ public class DokumenttiBuilder {
                 new StreamResult(new OutputStreamWriter(out, "UTF-8")));
     }
 
-    private void addTutkinnonMuodostuminen(Document doc, Element parentElement, Peruste peruste, Suoritustapa tapa) {
+    private void addTutkinnonMuodostuminen(Document doc, Element parentElement, Peruste peruste, Suoritustapa tapa, Kieli kieli) {
 
         // ew, dodgy trycatching
         try {
@@ -246,8 +252,10 @@ public class DokumenttiBuilder {
                             doc,
                             peruste,
                             // TODO: jostain muualta???
-                            "Geneerinen tutkinnonmuodostumistitle: " + tapa.getSuoritustapakoodi(),
-                            tapa.getSuoritustapakoodi()));
+                            messages.translate("docgen.tutkinnon_muodostuminen.title", kieli)
+                             + tapa.getSuoritustapakoodi(),
+                            tapa.getSuoritustapakoodi(),
+                            kieli));
         } catch (Exception ex) {
             LOG.warn("adding getTutkinnonMuodostuminenGeneric failed miserably:", ex);
         }
@@ -255,11 +263,13 @@ public class DokumenttiBuilder {
 
     private Element getTutkinnonMuodostuminenGeneric(
             Document doc, Peruste peruste, String title,
-            Suoritustapakoodi suoritustapakoodi) {
+            Suoritustapakoodi suoritustapakoodi,
+            Kieli kieli)
+    {
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         RakenneModuuli rakenne = suoritustapa.getRakenne();
-        String nimi = getTextString(rakenne.getNimi());
-        String kuvaus = getTextString(rakenne.getKuvaus());
+        String nimi = getTextString(rakenne.getNimi(), kieli);
+        String kuvaus = getTextString(rakenne.getKuvaus(), kieli);
 
         Element sectionElement = doc.createElement("section");
         Element sectionTitleElement = doc.createElement("title");
@@ -275,7 +285,7 @@ public class DokumenttiBuilder {
         rakenneSectionElement.appendChild(rakenneSectionParaElement);
 
         List<AbstractRakenneOsa> osat = rakenne.getOsat();
-        addRakenneOsatRec(rakenneSectionElement, osat, doc);
+        addRakenneOsatRec(rakenneSectionElement, osat, doc, kieli);
 
         sectionElement.appendChild(sectionTitleElement);
         sectionElement.appendChild(rakenneSectionElement);
@@ -284,7 +294,7 @@ public class DokumenttiBuilder {
     }
 
     private void addRakenneOsatRec(Element parent,
-            List<AbstractRakenneOsa> osat, Document doc) {
+            List<AbstractRakenneOsa> osat, Document doc, Kieli kieli) {
         if (!osat.isEmpty()) {
             Element modlist = doc.createElement("itemizedlist");
             for (AbstractRakenneOsa osa : osat) {
@@ -293,17 +303,17 @@ public class DokumenttiBuilder {
                         RakenneModuuli moduuli = (RakenneModuuli) osa;
 
                         Element modListItem = doc.createElement("listitem");
-                        String modnimi = getTextString(moduuli.getNimi());
+                        String modnimi = getTextString(moduuli.getNimi(), kieli);
                         modListItem.appendChild(doc.createTextNode(modnimi));
 
                         // dwell deeper
-                        addRakenneOsatRec(modListItem, moduuli.getOsat(), doc);
+                        addRakenneOsatRec(modListItem, moduuli.getOsat(), doc, kieli);
 
                         modlist.appendChild(modListItem);
 
                     } else if (osa instanceof RakenneOsa) {
                         RakenneOsa rakenneOsa = (RakenneOsa) osa;
-                        String modnimi = getTextString(rakenneOsa.getTutkinnonOsaViite().getTutkinnonOsa().getNimi());
+                        String modnimi = getTextString(rakenneOsa.getTutkinnonOsaViite().getTutkinnonOsa().getNimi(), kieli);
                         String refid = "tutkinnonosa" + rakenneOsa.getTutkinnonOsaViite().getTutkinnonOsa().getId();
                         Element modListItem = doc.createElement("listitem");
                         modListItem.appendChild(doc.createTextNode(modnimi));
@@ -329,7 +339,7 @@ public class DokumenttiBuilder {
         }
     }
 
-    private void addSisaltoElement(Document doc, Element parentElement, PerusteenOsaViite sisalto, int depth, Suoritustapa tapa) {
+    private void addSisaltoElement(Document doc, Peruste peruste, Element parentElement, PerusteenOsaViite sisalto, int depth, Suoritustapa tapa, Kieli kieli) {
 
         for (PerusteenOsaViite lapsi : sisalto.getLapset()) {
             if (lapsi.getPerusteenOsa() == null) {
@@ -348,23 +358,23 @@ public class DokumenttiBuilder {
                 element = doc.createElement("section");
             }
 
-            String nimi = getTextString(tk.getNimi());
+            String nimi = getTextString(tk.getNimi(), kieli);
             // special case, render TutkinnonRakenne here and continue with
             // rest of the sibligs
             // TODO: compare to class instead of name
             if ("__TutkinnonRakenne__".equals(nimi)) {
-                addTutkinnonMuodostuminen(doc, parentElement, peruste, tapa);
+                addTutkinnonMuodostuminen(doc, parentElement, peruste, tapa, kieli);
             } else {
                 Element titleElement = doc.createElement("title");
                 titleElement.appendChild(doc.createTextNode(nimi));
-                String teksti = getTextString(tk.getTeksti());
+                String teksti = getTextString(tk.getTeksti(), kieli);
 
                 org.jsoup.nodes.Document fragment = Jsoup.parseBodyFragment(teksti);
                 jsoupIntoDOMNode(doc, element, fragment.body());
 
                 element.appendChild(titleElement);
 
-                addSisaltoElement(doc, element, lapsi, depth + 1, tapa); // keep it rollin
+                addSisaltoElement(doc, peruste, element, lapsi, depth + 1, tapa, kieli); // keep it rollin
 
                 parentElement.appendChild(element);
             }
@@ -372,7 +382,7 @@ public class DokumenttiBuilder {
         }
     }
 
-    private void addTutkinnonosat(Document doc, Peruste peruste) {
+    private void addTutkinnonosat(Document doc, Peruste peruste, Kieli kieli) {
 
         // only distinct TutkinnonOsa
         Set<Suoritustapa> suoritustavat = peruste.getSuoritustavat();
@@ -384,7 +394,7 @@ public class DokumenttiBuilder {
         }
 
         for (TutkinnonOsa osa : osat) {
-            String osanNimi = getTextString(osa.getNimi());
+            String osanNimi = getTextString(osa.getNimi(), kieli);
             LOG.debug("handling {} - {}", osa.getId(), osanNimi);
             Element element = doc.createElement("chapter");
             String refid = "tutkinnonosa" + osa.getId();
@@ -395,46 +405,55 @@ public class DokumenttiBuilder {
 
             element.appendChild(titleElement);
 
-            addTavoitteet(doc, element, osa);
-            addAmmattitaitovaatimukset(doc, element, osa);
-            addAmmattitaidonOsoittamistavat(doc, element, osa);
-            addArviointi(doc, element, osa);
+            addTavoitteet(doc, element, osa, kieli);
+            addAmmattitaitovaatimukset(doc, element, osa, kieli);
+            addAmmattitaidonOsoittamistavat(doc, element, osa, kieli);
+            addArviointi(doc, element, osa, kieli);
 
             doc.getDocumentElement().appendChild(element);
         }
     }
 
-    private void addTavoitteet(Document doc, Element parent, TutkinnonOsa tutkinnonOsa) {
+    private void addTavoitteet(Document doc, Element parent, TutkinnonOsa tutkinnonOsa, Kieli kieli) {
 
-        String TavoitteetText = getTextString(tutkinnonOsa.getTavoitteet());
+        String TavoitteetText = getTextString(tutkinnonOsa.getTavoitteet(), kieli);
         if (StringUtils.isEmpty(TavoitteetText)) {
-            LOG.info("Oops, no tavoitteetText :(");
             return;
         }
-        // TODO: localize
-        addTekstiSectionGeneric(doc, parent, TavoitteetText, "Tavoitteet");
+
+        addTekstiSectionGeneric(
+                doc,
+                parent,
+                TavoitteetText,
+                messages.translate("docgen.tavoitteet.title", kieli));
     }
 
-    private void addAmmattitaitovaatimukset(Document doc, Element parent, TutkinnonOsa tutkinnonOsa) {
+    private void addAmmattitaitovaatimukset(Document doc, Element parent, TutkinnonOsa tutkinnonOsa, Kieli kieli) {
 
-        String ammattitaitovaatimuksetText = getTextString(tutkinnonOsa.getAmmattitaitovaatimukset());
+        String ammattitaitovaatimuksetText = getTextString(tutkinnonOsa.getAmmattitaitovaatimukset(), kieli);
         if (StringUtils.isEmpty(ammattitaitovaatimuksetText)) {
-            LOG.info("Oops, no ammattitaitovaatimuksetText :(");
             return;
         }
-        // TODO: localize
-        addTekstiSectionGeneric(doc, parent, ammattitaitovaatimuksetText, "Ammattitaitovaatimukset");
+
+        addTekstiSectionGeneric(
+                doc,
+                parent,
+                ammattitaitovaatimuksetText,
+                messages.translate("docgen.ammattitaitovaatimukset.title", kieli));
     }
 
-    private void addAmmattitaidonOsoittamistavat(Document doc, Element parent, TutkinnonOsa tutkinnonOsa) {
+    private void addAmmattitaidonOsoittamistavat(Document doc, Element parent, TutkinnonOsa tutkinnonOsa, Kieli kieli) {
 
-        String ammattitaidonOsoittamistavatText = getTextString(tutkinnonOsa.getAmmattitaidonOsoittamistavat());
+        String ammattitaidonOsoittamistavatText = getTextString(tutkinnonOsa.getAmmattitaidonOsoittamistavat(), kieli);
         if (StringUtils.isEmpty(ammattitaidonOsoittamistavatText)) {
-            LOG.info("Oops, no ammattitaidonOsoittamistavatText for {}:(", getTextString(tutkinnonOsa.getNimi()));
             return;
         }
-        // TODO: localize
-        addTekstiSectionGeneric(doc, parent, ammattitaidonOsoittamistavatText, "Ammattitaidon osoittamistavat");
+
+        addTekstiSectionGeneric(
+                doc,
+                parent,
+                ammattitaidonOsoittamistavatText,
+                messages.translate("docgen.ammattitaidon_osoittamistavat.title", kieli));
     }
 
     private void addTekstiSectionGeneric(Document doc, Element parent, String teksti, String title) {
@@ -450,11 +469,14 @@ public class DokumenttiBuilder {
         parent.appendChild(section);
     }
 
-    private void addArviointi(Document doc, Element parent, TutkinnonOsa tutkinnonOsa) {
+    private void addArviointi(Document doc, Element parent, TutkinnonOsa tutkinnonOsa, Kieli kieli) {
 
         Element arviointiSection = doc.createElement("section");
         Element arviointiSectionTitle = doc.createElement("title");
-        arviointiSectionTitle.appendChild(doc.createTextNode("Arviointi"));
+
+        arviointiSectionTitle.appendChild(doc.createTextNode(
+                messages.translate("docgen.arviointi.title", kieli)));
+
         arviointiSection.appendChild(arviointiSectionTitle);
 
         Arviointi arviointi = tutkinnonOsa.getArviointi();
@@ -468,7 +490,7 @@ public class DokumenttiBuilder {
         TekstiPalanen lisatiedot = arviointi.getLisatiedot();
         if (lisatiedot != null) {
             Element lisatietoPara = doc.createElement("para");
-            String lisatietoteksti = getTextString(lisatiedot);
+            String lisatietoteksti = getTextString(lisatiedot, kieli);
             org.jsoup.nodes.Document fragment = Jsoup.parseBodyFragment(lisatietoteksti);
             jsoupIntoDOMNode(doc, lisatietoPara, fragment.body());
             arviointiSection.appendChild(lisatietoPara);
@@ -483,7 +505,7 @@ public class DokumenttiBuilder {
                 continue;
             }
 
-            String otsikkoTeksti = getTextString(ka.getOtsikko());
+            String otsikkoTeksti = getTextString(ka.getOtsikko(), kieli);
             Element kaSection = doc.createElement("section");
             Element kaSectionTitle = doc.createElement("title");
             kaSectionTitle.appendChild(doc.createTextNode(otsikkoTeksti));
@@ -498,7 +520,7 @@ public class DokumenttiBuilder {
             for (ArvioinninKohde kohde : arvioinninKohteet) {
                 Element tableElement = doc.createElement("table");
                 Element tableTitleElement = doc.createElement("title");
-                String kohdeTeksti = getTextString(kohde.getOtsikko());
+                String kohdeTeksti = getTextString(kohde.getOtsikko(), kieli);
                 tableTitleElement.appendChild(doc.createTextNode(kohdeTeksti));
                 tableElement.appendChild(tableTitleElement);
 
@@ -513,9 +535,15 @@ public class DokumenttiBuilder {
 
                 Element headerElement = doc.createElement("thead");
                 Element rowElement = doc.createElement("row");
-                // TODO: Localize
-                addTableCell(doc, rowElement, "Osaamistaso");
-                addTableCell(doc, rowElement, "Osaamistason kriteeri");
+
+                addTableCell(
+                        doc,
+                        rowElement,
+                        messages.translate("docgen.osaamistaso.title", kieli));
+                addTableCell(
+                        doc,
+                        rowElement,
+                        messages.translate("docgen.osaamistason_kriteeri.title", kieli));
                 headerElement.appendChild(rowElement);
                 groupElement.appendChild(headerElement);
 
@@ -526,8 +554,8 @@ public class DokumenttiBuilder {
                 Set<OsaamistasonKriteeri> osaamistasonKriteerit = kohde.getOsaamistasonKriteerit();
 
                 for (OsaamistasonKriteeri krit : osaamistasonKriteerit) {
-                    String taso = getTextString(krit.getOsaamistaso().getOtsikko());
-                    List<String> kriteerit = asStringList(krit.getKriteerit());
+                    String taso = getTextString(krit.getOsaamistaso().getOtsikko(), kieli);
+                    List<String> kriteerit = asStringList(krit.getKriteerit(), kieli);
 
                     Element bodyRowElement = doc.createElement("row");
                     addTableCell(doc, bodyRowElement, taso);
@@ -566,10 +594,10 @@ public class DokumenttiBuilder {
         row.appendChild(entry);
     }
 
-    private List<String> asStringList(List<TekstiPalanen> palaset) {
+    private List<String> asStringList(List<TekstiPalanen> palaset, Kieli kieli) {
         List<String> list = new ArrayList();
         for (TekstiPalanen palanen : palaset) {
-            list.add(getTextString(palanen));
+            list.add(getTextString(palanen, kieli));
         }
         return list;
     }
@@ -579,10 +607,6 @@ public class DokumenttiBuilder {
             return new ArrayList();
         }
         return list;
-    }
-
-    private String getTextString(TekstiPalanen teksti) {
-        return getTextString(teksti, this.kieli);
     }
 
     private String getTextString(TekstiPalanen teksti, Kieli kieli) {

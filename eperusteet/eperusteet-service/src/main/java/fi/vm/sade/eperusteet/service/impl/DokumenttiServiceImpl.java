@@ -20,13 +20,13 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.service.DokumenttiService;
 import com.google.code.docbook4j.renderer.PerustePDFRenderer;
-import fi.vm.sade.eperusteet.docgen.DokumenttiBuilder;
 import fi.vm.sade.eperusteet.domain.Dokumentti;
 import fi.vm.sade.eperusteet.domain.DokumenttiTila;
 import fi.vm.sade.eperusteet.domain.DokumenttiVirhe;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.service.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
@@ -64,6 +64,8 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Dto
     private DtoMapper mapper;
 
+    @Autowired
+    DokumenttiBuilderService builder;
 
     @Override
     @Transactional
@@ -88,7 +90,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             doc.setValmistumisaika(new Date());
             dokumenttiRepository.save(doc);
 
-        } catch (TransformerException | ParserConfigurationException | Docbook4JException | IOException ex) {
+        } catch (TransformerException | ParserConfigurationException | Docbook4JException | IOException | RuntimeException ex) {
             LOG.error("Exception during document generation:", ex);
             doc.setTila(DokumenttiTila.EPAONNISTUI);
             doc.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);
@@ -149,9 +151,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         Peruste peruste = perusteRepository.findOne(dto.getPerusteId());
         Kieli kieli = dto.getKieli();
 
-        DokumenttiBuilder builder = new DokumenttiBuilder(peruste, kieli);
-
-        String xmlpath = builder.generateXML();
+        String xmlpath = builder.generateXML(peruste, kieli);
         LOG.debug("Temporary xml file: \n{}", xmlpath);
         // we could also use
         //String style = "file:///full/path/to/docbookstyle.xsl";
