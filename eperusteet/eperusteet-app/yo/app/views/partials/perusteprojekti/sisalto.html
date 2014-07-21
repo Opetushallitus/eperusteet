@@ -35,12 +35,6 @@ European Union Public Licence for more details.
                         <input ng-model="rajaus" ng-change="rajaaSisaltoa()" placeholder="{{ 'etsi-sisällöstä' | kaanna }}" type="input" class="form-control">
                     </div>
                 </div>
-                <div class="pull-right">
-                    <button type="button" class="btn btn-default btn-sm" ng-click="updateSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="edit">
-                        <span ng-show="muokkaus">{{ 'lopeta-muokkaus' | translate }}</span>
-                        <span ng-hide="muokkaus">{{ 'muokkaa-rakennetta' | translate }}</span>
-                    </button>
-                </div>
             </div>
 
             <div class="clearfix"></div>
@@ -57,6 +51,10 @@ European Union Public Licence for more details.
                 Tutkintokohtaiset osat ({{ peruste.sisalto.lapset.length }})
                 <a ng-click="avaaSuljeKaikki(peruste.sisalto)" href=""><span class="avaa-sulje"><img src="images/expander.png" alt=""> {{ "avaa-sulje-kaikki" | kaanna }}</span></a>
                 <div class="pull-right buttons">
+                    <button type="button" class="btn btn-default btn-sm" ng-click="updateSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="edit">
+                        <span ng-show="muokkaus">{{ 'lopeta-muokkaus' | translate }}</span>
+                        <span ng-hide="muokkaus">{{ 'muokkaa-rakennetta' | translate }}</span>
+                    </button>
                     <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="cloud-download">{{ 'tuo-tutkintokohtainen-osa' | translate }}</button>
                     <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="add">{{ 'lisaa-tutkintokohtainen-osa' | translate }}</button>
                 </div>
