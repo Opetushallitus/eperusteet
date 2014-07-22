@@ -15,7 +15,7 @@ European Union Public Licence for more details.
 -->
 <div>
   <div class="panel panel-default panel-small arviointi-kohdealueet">
-    <span class="toggler" ng-show="arviointi.length"><a href="" translate ng-click="toggleAll()">avaa-sulje-kaikki</a></span>
+    <span class="toggler" ng-show="arviointi.length"><a href="" class="action-link" translate ng-click="toggleAll()">avaa-sulje-kaikki</a></span>
     <div class="panel-body">
       <accordion close-others="false">
       <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi">
@@ -89,7 +89,7 @@ European Union Public Licence for more details.
                 <button class="btn btn-default btn-xs" ng-click="kohde.cancel(uudenKohteenTiedot)" translate>peru</button>
               </div>
             </div>
-            <button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-show="!uudenKohteenTiedot.showInputArea" 
+            <button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-show="!uudenKohteenTiedot.showInputArea"
               ng-click="uudenKohteenTiedot.showInputArea = true" icon-role="add">{{'arviointi-uusi-kohde' | translate}}</button>
           </div>
         </div>
@@ -107,7 +107,7 @@ European Union Public Licence for more details.
             <button class="btn btn-primary btn-xs" ng-disabled="!$parent.uudenKohdealueenNimi" ng-click="$parent.kohdealue.uusi()" translate>lisää</button>
             <button class="btn btn-default btn-xs" ng-click="$parent.kohdealue.cancel()" translate>peru</button>
           </div>
-          <button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-show="!$parent.showNewKohdealueInput" 
+          <button editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-show="!$parent.showNewKohdealueInput"
             ng-click="$parent.showNewKohdealueInput = true" icon-role="add">{{'arviointi-uusi-kohdealue' | translate}}</button>
         </div>
       </div>

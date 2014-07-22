@@ -29,13 +29,17 @@ angular.module('eperusteApp')
       controller: function($scope, $state, $stateParams, $q, Navigaatiopolku,
         Editointikontrollit, PerusteenOsat, Editointicatcher, PerusteenRakenne,
         PerusteTutkinnonosa, TutkinnonOsaEditMode, $timeout, Varmistusdialogi,
-        SivunavigaatioService, VersionHelper, Lukitus, MuokkausUtils, PerusteenOsaViitteet) {
+        SivunavigaatioService, VersionHelper, Lukitus, MuokkausUtils, PerusteenOsaViitteet,
+        $window, ArviointiHelper) {
 
         document.getElementById('ylasivuankkuri').scrollIntoView(); // FIXME: Keksi tälle joku oikea ratkaisu
 
         $scope.suoritustapa = $stateParams.suoritustapa;
         $scope.rakenne = {};
         $scope.test = angular.noop;
+        $scope.menuItems = [];
+        $scope.editableTutkinnonOsa = {};
+        $scope.editEnabled = false;
 
         function getRakenne() {
           PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
@@ -118,9 +122,6 @@ angular.module('eperusteApp')
           ylarelaatioTyyppi: function() { return ''; }
         });
 
-        $scope.editableTutkinnonOsa = {};
-        $scope.editEnabled = false;
-
         $scope.kopioiMuokattavaksi = function() {
           PerusteenOsaViitteet.kloonaaTutkinnonOsa({
             viiteId: $scope.viiteosa.id
@@ -136,6 +137,7 @@ angular.module('eperusteApp')
 
         function refreshPromise() {
           $scope.editableTutkinnonOsa = angular.copy($scope.tutkinnonOsa);
+          $scope.editableViiteosa = angular.copy($scope.viiteosa);
           var tutkinnonOsaDefer = $q.defer();
           $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
           tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
@@ -188,13 +190,12 @@ angular.module('eperusteApp')
                 Notifikaatiot.serverCb);
 
                 // Viiteosa (laajuus) tallennetaan erikseen
-                console.log($scope.viiteosa);
                 PerusteTutkinnonosa.save({
                   perusteId: $scope.rakenne.$peruste.id,
                   suoritustapa: $stateParams.suoritustapa,
-                  osanId: $scope.viiteosa.id
+                  osanId: $scope.editableViiteosa.id
                 },
-                $scope.viiteosa,
+                $scope.editableViiteosa,
                 angular.noop,
                 Notifikaatiot.serverCb);
               }
@@ -301,6 +302,50 @@ angular.module('eperusteApp')
           responseFn(response);
           saveCb(response);
         };
+
+        function scrollTo(selector) {
+          var element = angular.element(selector);
+          if (element.length) {
+            $window.scrollTo(0, element[0].offsetTop);
+          }
+        }
+
+        $scope.addFieldToVisible = function(field) {
+          field.visible = true;
+          // Varmista että menu sulkeutuu klikin jälkeen
+          $timeout(function () {
+            angular.element('h1').click();
+            scrollTo('li[otsikko='+field.localeKey+']');
+          });
+        };
+
+        /**
+         * Palauttaa true jos kaikki mahdolliset osiot on jo lisätty
+         */
+        $scope.allVisible = function() {
+          var lisatty = _.all($scope.fields, function (field) {
+            return (_.contains(field.path, 'arviointi.') ||
+                    !field.inMenu ||
+                    (field.inMenu && field.visible));
+          });
+          return lisatty && $scope.arviointiHelper.exists();
+        };
+
+        $scope.updateMenu = function () {
+          if (!$scope.arviointiHelper) {
+            $scope.arviointiHelper = ArviointiHelper.create();
+          }
+          $scope.arviointiFields = $scope.arviointiHelper.initFromFields($scope.fields);
+          $scope.menuItems = _.reject($scope.fields, 'mandatory');
+          if ($scope.arviointiHelper) {
+            $scope.arviointiHelper.setMenu($scope.menuItems);
+          }
+        };
+
+        $scope.$watch('arviointiFields.teksti.visible', $scope.updateMenu);
+        $scope.$watch('arviointiFields.taulukko.visible', $scope.updateMenu);
+
+
       }
     };
   });

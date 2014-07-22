@@ -26,7 +26,9 @@ angular.module('eperusteApp')
       link: function (scope, element, attrs) {
         $timeout(function () {
           var input = element.find('input');
-          if (scope.$parent.inputElId) {
+          if (attrs.labelId) {
+            input.attr('id', attrs.labelId);
+          } else if (scope.$parent.inputElId) {
             input.attr('id', scope.$parent.inputElId);
           }
           if (attrs.step && attrs.type === 'float') {

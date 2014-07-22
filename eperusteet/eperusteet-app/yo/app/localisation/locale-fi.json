@@ -113,9 +113,12 @@
     "sulje-kaikki": "Sulje kaikki",
     "avaa-sulje-kaikki": "Avaa / sulje kaikki",
 
+    "poista-tutkinnonosa": "Poista tutkinnon osa",
     "poistetaanko-tutkinnonosa": "Poistetaanko tutkinnon osa?",
     "tutkinnon-osa-rakenteessa-ei-voi-poistaa": "Tutkinnon osaa ei voi poistaa, koska se on käytössä tutkinnon rakenteessa. Poista viite puusta ensin.",
     "tutkinnon-osa-rakenteesta-poistettu": "Tutkinnon osa poistettu onnistuneesti.",
+    "tutkinnon-osa-ei-sisaltoa": "Tutkinnon osalla ei ole sisältöä.",
+    "tutkinnon-osa-ei-sisaltoa-ohje": "Lisää osioita valitsemalla \"Lisää osio\".",
 
     "viesti-poistettu": "Viesti poistettu",
     "kommentti-poistettu": "Kommentti poistettiin onnistuneesti",
@@ -468,12 +471,12 @@
 
     "ops": "Opetussuunnitelma",
     "naytto": "Näyttötutkinto",
-    
+
     "ePerusteet-koti": "ePerusteet",
-    
+
     "suodattimet": "Suodattimet",
     "valitse-suodatin": "Valitse suodatin",
-    
+
     "perusteprojekti-perustenimi-placeholder": "<Anna perusteen nimi>",
     "perusteprojekti-koulutusala-placeholder": "<Anna koulutusala>",
     "perusteprojekti-nimi-placeholder": "<Anna projektin nimi>",
@@ -481,7 +484,7 @@
     "projekti-header-koulutusala": "Koulutusala",
     "projekti-header-paatosPvm": "Päätöspäivämäärä",
     "projekti-header-koulutustyyppi": "Koulutustyyppi",
-        
+
     "tutkintokohtaiset-osat": "Tutkintokohtaiset osat",
     "lisaa-tutkintokohtainen-osa": "Lisää tekstikappale",
     "tuo-tutkintokohtainen-osa": "Tuo tekstikappale",
@@ -509,39 +512,39 @@
 
     "sivunavigointi-avaa-menu": "Avaa navigointimenu",
     "sivunavigointi-sulje-menu": "Sulje navigointimenu",
-    
+
     "perusteprojekti-tila-aseta": "Aseta perusteprojektin tila",
     "luonnos": "Luonnos",
     "hyvaksytty": "Hyväksytty",
     "kaannos": "Käännös",
     "kommentointi": "Kommentointi",
-    
+
     "poista-tekstikappale-otsikko": "Poista tekstikappale",
     "poista-tekstikappale-teksti": "Tekstikappale \"{{nimi}}\" poistetaan. Oletko varma?",
-    
+
     "lisaa-koulutus": "Lisää koulutus",
     "poista-koulutus": "Poista koulutus",
 
     "järjestelmävirhe-alku": "Tapahtui järjestelmävirhe ",
     "järjestelmävirhe-loppu": ". Ole hyvä ja yritä uudelleen. Jos ongelma toistuu ota yhteyttä palvelun ylläpitäjään.",
     "odottamaton-virhe": "Tapahtui odottamaton virhe",
-    
+
     "poisto-onnistui": "Poisto onnistui",
-    
+
     "poistu-sivulta": "Poistu sivulta",
     "tallentamattomia-muutoksia": "Sinulla on tallentamattomia muutoksia. Jos poistut sivulta muutokset menetetään.",
     "haluatko-jatkaa": "Haluatko jatkaa?",
     "vahvista-liikkuminen": "Vahvista liikkuminen",
 
     "muodostumissaannot": "Tutkinnon rakenne",
-    
+
     "arvo-rajojen-ulkopuolella": "Arvon pitää olla välillä {{min}} - {{max}}",
     "arvo-ei-numero": "Arvon täytyy olla numero",
     "arvo-ei-kokonaisluku": "Arvon täytyy olla kokonaisluku",
     "arvo-ei-desimaaliluku": "Arvon täytyy olla desimaaliluku",
     "arvo-askelvirhe": "Arvon hyväksytty askelväli on {{step}}",
     "sivu-virheellisia-arvoja": "Sivulla on virheellisiä arvoja",
-    
+
     "tilanvaihtovirhe-header": "Projektin tilan vaihtaminen ei onnistunut",
     "liittamattomia-tutkinnon-osia": "Projektissa on rakenteeseen liittämättömiä tutkinnon osia.",
     "korjaa-virheet": "Korjaa seuraavat virheet",

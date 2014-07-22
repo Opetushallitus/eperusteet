@@ -55,14 +55,41 @@ $pikamenu-max-height: 400px;
 }
 
 .osio-otsikko {
-  padding-top: 10px;
-  padding-bottom: 5px;
   cursor: pointer;
+  padding-top: 15px;
+  padding-bottom: 17px;
   font-size: 120%;
+  font-weight: 700;
   color: $brand-primary;
+  border-top: 2px solid #ddd;
   .poista-osio {
-    margin-left: 10px;
+    margin-top: -5px;
   }
+}
+
+.non-collapsibles {
+  max-width: 900px;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-bottom: 20px;
+  label {
+    font-weight: 700;
+    padding-top: 15px;
+    padding-bottom: 10px;
+    font-size: 120%;
+    color: $brand-primary;
+  }
+}
+
+#tutkinnon-osa-ei-sisaltoa {
+  color: #777;
+  background: #fcfcfc;
+  margin: 0px;
+  text-align: center;
+  padding: 16px;
+  min-width: $tree-container-width;
+  border: 1px dashed #ddd;
+  margin-top: 40px;
 }
 
 #tutkinnon-osa-tiedot {
@@ -117,7 +144,7 @@ $pikamenu-max-height: 400px;
 
 #muokattavat-kentat {
   .list-group-item {
-    margin-bottom: 0;
+    margin-bottom: 10px;
     padding-bottom: 0;
   }
   .list-group-item, .panel:not(.arvioinnin-kohdealue) {

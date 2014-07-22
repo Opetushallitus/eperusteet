@@ -16,19 +16,6 @@ European Union Public Licence for more details.
 
 <div id="muokattavat-kentat">
   <div class="panel panel-default">
-    <div class="muokkaus-lisaa-osio" ng-if="editEnabled">
-      <div class="dropdown">
-        <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add">
-          {{'muokkaus-lisaa-osio' | translate}}
-        </button>
-        <ul class="dropdown-menu">
-          <li ng-repeat="field in menuItems | orderBy:'order'">
-            <a ng-show="field.visible" class="disabled-link" translate>muokkaus-{{field.localeKey}}-header</a>
-            <a href="" ng-show="!field.visible" ng-click="addFieldToVisible(field)" translate>muokkaus-{{field.localeKey}}-header</a>
-          </li>
-        </ul>
-      </div>
-    </div>
     <ul class="list-group muokkaus">
       <li ng-repeat="field in fields | filter:{'visible':true}:true | orderBy:'order'"
           muokkauskentta-raamit otsikko="{{field.localeKey}}" piilota-otsikko="{{field.hideHeader}}"
@@ -37,5 +24,8 @@ European Union Public Licence for more details.
                            remove-field="removeField(fieldToRemove)"></muokattava-kentta>
       </li>
     </ul>
+    <p ng-show="noContent" id="tutkinnon-osa-ei-sisaltoa">{{'tutkinnon-osa-ei-sisaltoa'|kaanna}}
+    <span ng-show="editEnabled" translate>tutkinnon-osa-ei-sisaltoa-ohje</span>
+    </p>
   </div>
 </div>

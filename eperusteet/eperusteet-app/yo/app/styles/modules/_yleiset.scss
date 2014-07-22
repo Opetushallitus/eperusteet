@@ -82,12 +82,20 @@ button {
   margin-left: 5px;
   position: relative;
   float: right;
-  top: -23px;    
+  top: -23px;
 }
 
 .action-link {
   outline: 0;
   cursor: pointer;
+  &:hover {
+    outline: 0;
+  }
+  &:active, &:focus {
+    outline: 0;
+    text-decoration: none;
+    color: $brand-primary;
+  }
 }
 
 $lukko-width: 2em;
