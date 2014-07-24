@@ -18,10 +18,7 @@
 
 angular.module('eperusteApp')
   .factory('Suosikit', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/kayttajaprofiili/suosikki/:suosikkiId',
-      {
-
-      });
+    return $resource(SERVICE_LOC + '/kayttajaprofiili/suosikki/:suosikkiId', {});
   })
   .factory('Suosikitbroadcast', function($rootScope) {
     var suosikitbroadcast = {};

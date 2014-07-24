@@ -42,7 +42,8 @@ angular.module('eperusteApp')
         $scope.editEnabled = false;
 
         function getRakenne() {
-          PerusteenRakenne.hae($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
+          // FIXME: Vaihda käyttämään parempaa endpointtia
+          PerusteenRakenne.haeByPerusteprojekti($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
             $scope.rakenne = res;
             $scope.viiteosa = _.find($scope.rakenne.tutkinnonOsat, {'_tutkinnonOsa': $scope.editableTutkinnonOsa.id.toString()}) || {};
             $scope.viiteosa.laajuus = $scope.viiteosa.laajuus || 0;

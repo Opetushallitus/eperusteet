@@ -46,7 +46,8 @@ angular.module('eperusteApp')
         sivu: 0,
         sivukoko: 20,
         suoritustapa: 'ops',
-        tila: 'valmis'
+        // FIXME Ota pois kommenteista
+        // tila: 'valmis'
       },
       'root.selaus.ammatillinenaikuiskoulutus': {
         nimi: '',
@@ -58,7 +59,8 @@ angular.module('eperusteApp')
         sivu: 0,
         sivukoko: 20,
         suoritustapa: 'naytto',
-        tila: 'valmis'
+        // FIXME Ota pois kommenteista
+        // tila: 'valmis'
       }
     };
 

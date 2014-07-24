@@ -53,7 +53,19 @@ angular.module('eperusteApp')
     }
 
     function match(input, to) {
-      return Kaanna.kaanna(to).toLowerCase().indexOf(input) !== -1;
+      return Kaanna.kaanna(to).toLowerCase().indexOf(input.toLowerCase()) !== -1;
+    }
+
+    function access(object) {
+      if (object && _.isObject(object) && arguments.length > 1) {
+        return access.apply([object[arguments[1]].concat(arguments.splice(2))]);
+      }
+      return object;
+    }
+
+    function perusteenSuoritustavanYksikko(peruste, suoritustapa) {
+      var st = _.first(_.filter(peruste.suoritustavat, function(st) { return st.suoritustapakoodi === suoritustapa; }));
+      return st.laajuusYksikko;
     }
 
     return {
@@ -61,6 +73,8 @@ angular.module('eperusteApp')
       mapLapsisolmut: mapLapsisolmut,
       kaikilleLapsisolmuille: kaikilleLapsisolmuille,
       asyncTraverse: asyncTraverse,
-      match: match
+      match: match,
+      access: access,
+      perusteenSuoritustavanYksikko: perusteenSuoritustavanYksikko
     };
   });

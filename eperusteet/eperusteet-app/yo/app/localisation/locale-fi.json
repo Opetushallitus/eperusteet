@@ -193,6 +193,8 @@
 
     "haltija": "Haltija",
 
+    "perusteen-sisältö": "Perusteen sisältö",
+
     "muodostumis-rakenne-validointi-laajuus": "Ryhmän osien yhteenlaskettu laajuus ei riitä kattamaan tarvittavaa laajuutta",
     "muodostumis-rakenne-validointi-maara": "Ryhmän osien yhteenlaskettu määrä ei riitä kattamaan tarvittavaa määrää",
     "muodostumis-rakenne-validointi-maksimi": "Ryhmän laskettu minimi on pienempi kuin vaadittu minimi",
@@ -217,6 +219,16 @@
     "tutkinnonosa-ammattitaidonOsoittamistavat": "Ammattitaidon osoittamistavat",
     "tutkinnonosa-tavoitteet": "Tavoitteet",
     "tutkinnonosa-osaamisala": "Osaamisala",
+
+    "osaamisala": "Osaamisala",
+    "ammattitaidonOsoittamistavat": "Ammattitaidon osoittamistavat",
+    "arviointi": "Arviointi",
+
+    "takaisin-hakuun": "Takaisin hakuun",
+    "tulosta-sivu": "Tulosta sivu",
+    "merkitse-suosikiksi": "Merkitse suosikiksi",
+    "poista-suosikeista": "Poista suosikeista",
+    "lataa-peruste-pdf-muodossa": "Lataa peruste pdf-muodossa",
 
     "koulutusalakoodi-1": "Tekniikan ja liikenteen ala",
     "koulutusalakoodi-2": "Kulttuuriala",

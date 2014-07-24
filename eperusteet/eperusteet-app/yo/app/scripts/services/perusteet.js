@@ -80,41 +80,57 @@ angular.module('eperusteApp')
   .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet,
     PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {
 
+    function haeTutkinnonosatByPeruste(perusteId, suoritustapa, success) {
+      PerusteTutkinnonosat.query({
+        perusteId: perusteId,
+        suoritustapa: suoritustapa
+      },
+      success,
+      Notifikaatiot.serverCb);
+    }
+
     function haeTutkinnonosat(perusteProjektiId, suoritustapa, success) {
       PerusteprojektiResource.get({ id: perusteProjektiId }, function(perusteprojekti) {
-        PerusteTutkinnonosat.query({
-          perusteId: perusteprojekti._peruste,
-          suoritustapa: suoritustapa
-        },
-        success,
-        Notifikaatiot.serverCb);
+        haeTutkinnonosatByPeruste(perusteprojekti._peruste, suoritustapa, success);
       });
     }
 
-    function haeRakenne(perusteProjektiId, suoritustapa, success) {
+    function pilkoTutkinnonOsat(tutkinnonOsat, response) {
+      response = response || {};
+      response.tutkinnonOsaViitteet = _(tutkinnonOsat).pluck('id')
+                                                      .zipObject(tutkinnonOsat)
+                                                      .value();
+      response.tutkinnonOsat = _.zipObject(_.map(tutkinnonOsat, '_tutkinnonOsa'), tutkinnonOsat);
+      return response;
+    }
+
+    function haeByPerusteprojekti(id, suoritustapa, success) {
+      PerusteprojektiResource.get({ id: id }, function(vastaus) {
+        hae(vastaus._peruste, suoritustapa, success);
+      });
+    }
+
+    function hae(perusteId, suoritustapa, success) {
       var response = {};
-      PerusteprojektiResource.get({ id: perusteProjektiId }, function(vastaus) {
-        PerusteProjektiService.save(vastaus);
-        Perusteet.get({
-          perusteId: vastaus._peruste
-        }, function(peruste) {
-          suoritustapa = suoritustapa || peruste.suoritustavat[0].suoritustapakoodi;
-          PerusteRakenteet.get({
+      Perusteet.get({
+        perusteId: perusteId
+      }, function(peruste) {
+        suoritustapa = suoritustapa || peruste.suoritustavat[0].suoritustapakoodi;
+        PerusteRakenteet.get({
+          perusteId: peruste.id,
+          suoritustapa: suoritustapa
+        }, function(rakenne) {
+          PerusteTutkinnonosat.query({
             perusteId: peruste.id,
             suoritustapa: suoritustapa
-          }, function(rakenne) {
-            PerusteTutkinnonosat.query({
-              perusteId: peruste.id,
-              suoritustapa: suoritustapa
-            }, function(tosat) {
-              response.rakenne = rakenne;
-              response.$peruste = peruste;
-              response.tutkinnonOsaViitteet = _(tosat).pluck('id')
-                                                      .zipObject(tosat)
-                                                      .value();
-              response.tutkinnonOsat = _.zipObject(_.map(tosat, '_tutkinnonOsa'), tosat);
-              success(response);
-            });
+          }, function(tosat) {
+            response.rakenne = rakenne;
+            response.$peruste = peruste;
+            response.tutkinnonOsaViitteet = _(tosat).pluck('id')
+                                                    .zipObject(tosat)
+                                                    .value();
+            response.tutkinnonOsat = _.zipObject(_.map(tosat, '_tutkinnonOsa'), tosat);
+            success(pilkoTutkinnonOsat(tosat, response));
           });
         });
       });
@@ -202,9 +218,12 @@ angular.module('eperusteApp')
     }
 
     return {
-      hae: haeRakenne,
+      hae: hae,
+      haeByPerusteprojekti: haeByPerusteprojekti,
       haePerusteita: haePerusteita,
+      pilkoTutkinnonOsat: pilkoTutkinnonOsat,
       haeTutkinnonosat: haeTutkinnonosat,
+      haeTutkinnonosatByPeruste: haeTutkinnonosatByPeruste,
       kaikilleRakenteille: kaikilleRakenteille,
       poistaTutkinnonOsaViite: poistaTutkinnonOsaViite,
       puustaLoytyy: puustaLoytyy,

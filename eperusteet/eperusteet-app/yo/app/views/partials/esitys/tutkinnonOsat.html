@@ -1,0 +1,21 @@
+<div>
+    <h2>
+        {{ 'tutkinnonosat' | kaanna }}
+    </h2>
+    <hr>
+
+    <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="tosarajaus form-control input-sm" placeholder="Rajaa tutkinnon osia...">
+
+    <ul class="tutkinnonosat">
+        <li ui-sref="root.esitys.peruste.tutkinnonosa({ id: v.id })"
+            class="tutkinnonosa-laatikko list-group-item" ng-repeat="v in tutkinnonOsat | mapFilter:rajaaTutkinnonOsia">
+            <div ng-hide="editoi" class="muokkaus" icon-role="forward"></div>
+            <div class="otsikko">
+                <h3>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</h3>
+                <div style="padding-top: 10px;" class="pienet-tiedot">
+                    <div class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && v.laajuus">{{ v.laajuus }} {{ yksikko || '' | kaanna }}</div>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>

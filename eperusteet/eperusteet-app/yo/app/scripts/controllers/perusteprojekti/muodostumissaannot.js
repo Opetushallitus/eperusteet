@@ -18,11 +18,11 @@
 
 angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams,
-    PerusteenRakenne, Notifikaatiot, Editointikontrollit, SivunavigaatioService,
+    PerusteenRakenne, Notifikaatiot, Editointikontrollit, SivunavigaatioService, PerusteProjektiService,
     Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot,
     virheService) {
     $scope.editoi = false;
-    // $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
+    // $scope.peruste = PerusteProjektiService.getPeruste();
     $scope.suoritustapa = $stateParams.suoritustapa;
     $scope.rakenne = {
       $resolved: false,
@@ -52,7 +52,7 @@ angular.module('eperusteApp')
 
     function haeRakenne(cb, versio) {
       cb = cb || angular.noop;
-      PerusteenRakenne.hae($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
+      PerusteenRakenne.haeByPerusteprojekti($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
         successCb(res);
         if (versio) {
           haeVersiot(true, function () {

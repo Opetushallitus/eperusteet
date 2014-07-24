@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -50,11 +50,11 @@ public class KayttajaprofiiliController {
 
     @Autowired
     private PerusteService perusteService;
-    
+
     @Autowired
     private SuosikkiService suosikkiService;
-    
-    
+
+
 
     @RequestMapping(value = "", method = GET)
     @ResponseBody
@@ -65,7 +65,7 @@ public class KayttajaprofiiliController {
         }
         return new ResponseEntity<>(k, HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/suosikki", method = POST, consumes="application/json")
     @ResponseBody
     public ResponseEntity<KayttajaProfiiliDto> addSuosikki(@RequestBody SuosikkiDto suosikkiDto) {
@@ -89,5 +89,4 @@ public class KayttajaprofiiliController {
         KayttajaProfiiliDto k = service.deleteSuosikki(suosikkiId);
         return new ResponseEntity<>(k, HttpStatus.OK);
     }
-    
 }

@@ -1,0 +1,80 @@
+$sivunavigaatio-width: 260px;
+$border-color: #0C566E;
+
+.esitys {
+  .navigaatio {
+    float: left;
+    width: $sivunavigaatio-width;
+
+    .takaisin {
+      margin: 10px;
+    }
+
+    .separator {
+      display: inline-block;
+      width: $sivunavigaatio-width - 1;
+      border-bottom: 1px solid $border-color;
+      margin: 0px;
+      padding: 0px;
+    }
+
+    .item {
+      padding: 5px;
+      cursor: pointer;
+    }
+    .item:hover {
+      background: #eee;
+    }
+    .item-selected {
+      background: #eee;
+    }
+  }
+  .sisalto {
+    margin-left: $sivunavigaatio-width;
+    padding-left: 20px;
+
+    hr {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin: 0px;
+    }
+
+    h2 {
+      margin-bottom: 2px;
+    }
+
+    .tiedot {
+      padding: 5px;
+    }
+
+    .painikkeet {
+      padding-top: 8px;
+      font-size: small;
+    }
+
+    .left-space {
+      margin-left: 8px;
+    }
+
+    .arviointi {
+      margin: 5px;
+      margin-top: 20px;
+      border: 1px solid $border-color;
+
+      .arviointi-otsikko {
+	background: $border-color;
+	color: #fff;
+	padding: 5px;
+      }
+      .arviointi-sisalto {
+	padding: 10px;
+
+	h4 {
+	  font-weight: bold;
+	}
+      }
+    }
+  }
+}
