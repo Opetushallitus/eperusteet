@@ -15,16 +15,16 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 
-  <button ng-if="voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit">{{'muokkaa' | translate}}</button>  
+<button ng-if="voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit">{{'muokkaa' | translate}}</button>
 
-    <div class="floater dropdown">
-        <button ng-disabled="generointiDisabled" class="btn btn-default dropdown-toggle" data-toggle="dropdown" icon-role="file">{{ generointiTeksti | kaanna }}<span class="caret"></span></button>
-        <ul class="dropdown-menu">
-          <li ng-repeat="kieli in kielet"><a href="" ng-click="generoiPdf(kieli)" translate>luo-dokumentti-kielella-{{kieli}}</a></li>             
-          <li class="divider"></li>
-          <li ng-repeat="dokumentti in dokumentit"><a ng-href="{{dokumentti.linkki}}"><span translate>uusin-dokumentti-kielella-{{dokumentti.kieli}}</span><br>{{dokumentti.valmistumisaika|date:'dd.MM.yyyy hh:mm:ss'}}</a></li>
-        </ul>
-    </div>
+<div class="floater dropdown">
+  <button ng-disabled="generointiDisabled" class="btn btn-default dropdown-toggle" data-toggle="dropdown" icon-role="file">{{ generointiTeksti | kaanna }}<span class="caret"></span></button>
+  <ul class="dropdown-menu">
+    <li ng-repeat="kieli in kielet"><a href="" ng-click="generoiPdf(kieli)" translate>luo-dokumentti-kielella-{{kieli}}</a></li>
+    <li class="divider"></li>
+    <li ng-repeat="dokumentti in dokumentit"><a ng-href="{{dokumentti.linkki}}"><span translate>uusin-dokumentti-kielella-{{dokumentti.kieli}}</span><br>{{dokumentti.valmistumisaika|date:'dd.MM.yyyy hh:mm:ss'}}</a></li>
+  </ul>
+</div>
 
 <h1 translate>projekti-peruste</h1>
 <div class="clearfix"></div>
@@ -36,9 +36,9 @@ European Union Public Licence for more details.
         <formfield model="editablePeruste" model-var="nimi" label="perusteen-nimi"></formfield>
         <formfield model="editablePeruste" model-var="kuvaus" label="tiivistelmä" type="textarea"></formfield>
         <formfield model="editablePeruste" model-var="voimassaoloAlkaa" label="voimaantulo-pvm" type="date"
-                   placeholder="anna-voimaantulo-pvm"></formfield>
+        placeholder="anna-voimaantulo-pvm"></formfield>
         <formfield model="editablePeruste" model-var="voimassaoloLoppuu" label="voimassaolo-paattymispvm" type="date"
-                   placeholder="anna-voimaantulo-loppu-pvm"></formfield>
+        placeholder="anna-voimaantulo-loppu-pvm"></formfield>
       </div>
 
 
