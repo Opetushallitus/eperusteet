@@ -196,21 +196,35 @@ angular.module('eperusteApp')
                          '</div>';
 
         var template =
-          '<div class="tree-box" ng-if="!vanhempi">' +
-          '  <a ng-if="zoomaus" icon-role="back" class="back" href=""></a>' +
-          '  <div class="tree-otsikko">' +
-          '    <h4>' +
-          '      <a ng-show="muokkaus" href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)">' +
-          '        <span class="tree-otsikko-left"><b>{{ rakenne.nimi | kaanna:true }}</b></span>' +
-          '      </a>' +
-          '      <span ng-hide="muokkaus"><b>{{ rakenne.nimi | kaanna:true }}</b></span>' +
-          '      <span class="tree-otsikko-laajuus" ng-show="apumuuttujat.suoritustapa !== \'naytto\'"> ' +
-          '        <span ng-show="muokkaus">{{ rakenne.$laajuus || 0 }} / </span>' +
-          laajuudenIlmaisu +
+          '<div ng-if="!vanhempi">' +
+          '  <div class="ylapainikkeet">' +
+          '    <span ng-if="rakenne.muodostumisSaanto && rakenne.muodostumisSaanto.laajuus">' +
+          '      <span ng-if="rakenne.$laajuus">{{ rakenne.$laajuus }} / </span>' +
+          '      <span ng-if="rakenne.muodostumisSaanto.laajuus.minimi">' +
+          '        {{ rakenne.muodostumisSaanto.laajuus.minimi }}' +
           '      </span>' +
+          '      <span ng-if="rakenne.muodostumisSaanto.laajuus.maksimi && rakenne.muodostumisSaanto.laajuus.minimi !== rakenne.muodostumisSaanto.laajuus.maksimi">' +
+          '        - {{ rakenne.muodostumisSaanto.laajuus.maksimi }}' +
+          '      </span>' +
+          '      {{ apumuuttujat.laajuusYksikko | kaanna }}' +
+          '    </span>' +
+          '    <a ng-if="zoomaus" icon-role="back" class="back" href=""></a>' +
           avaaKaikki +
-          '    </h4>' +
           '  </div>' +
+          '  <div><div class="tree-yliviiva"></div></div>' +
+          // '  <div class="tree-otsikko">' +
+          // '    <h4>' +
+          // '      <a ng-show="muokkaus" href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)">' +
+          // '        <span class="tree-otsikko-left"><b>{{ rakenne.nimi | kaanna:true }}</b></span>' +
+          // '      </a>' +
+          // '      <span ng-hide="muokkaus"><b>{{ rakenne.nimi | kaanna:true }}</b></span>' +
+          // '      <span class="tree-otsikko-laajuus" ng-show="apumuuttujat.suoritustapa !== \'naytto\'"> ' +
+          // '        <span ng-show="muokkaus">{{ rakenne.$laajuus || 0 }} / </span>' +
+          // laajuudenIlmaisu +
+          // '      </span>' +
+          // avaaKaikki +
+          // '    </h4>' +
+          // '  </div>' +
           '  <div ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="isovirhe-otsikko">{{ tkaanna(rakenne.$virhe.selite) }}<span ng-show="rakenne.$virhe.selite.length > 0">. </span>{{ rakenne.$virhe.virhe | kaanna }}</div>' +
           '</div>' +
           '<div ng-if="vanhempi">' + kentta + '</div>' +
@@ -366,7 +380,7 @@ angular.module('eperusteApp')
         scope.$watch('rakenne.$suoritustapa', function() {
           var sts = null;
           if (scope.rakenne.$peruste) {
-            sts = _(scope.rakenne.$peruste.suoritustavat).filter(function(st) { return st.laajuusYksikko; }) .value();
+            sts = _(scope.rakenne.$peruste.suoritustavat).filter(function(st) { return st.laajuusYksikko; }).value();
             sts = _.zipObject(_.map(sts, 'suoritustapakoodi'), sts)[scope.rakenne.$suoritustapa];
           }
 

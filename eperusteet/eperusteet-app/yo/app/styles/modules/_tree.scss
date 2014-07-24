@@ -47,11 +47,24 @@ $tree-container-width: 800px;
   }
 }
 
-.tree-box {
+.ylapainikkeet {
+  position: relative;
+  top: 12px;
+
+  button {
+    position: relative;
+    top: 18px;
+  }
+}
+
+.tree-yliviiva {
+  display: inline-block;
   background: #eee;
-  min-width: 700px;
-  margin-bottom: 0px;
+  height: 3px;
+  min-width: 800px;
   border: 1px solid $reunus-vari;
+  top: 5px;
+  position: relative;
 }
 
 .tree-otsikko {

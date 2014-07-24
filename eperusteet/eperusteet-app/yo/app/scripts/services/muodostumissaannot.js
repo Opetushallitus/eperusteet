@@ -21,12 +21,9 @@
 
 angular.module('eperusteApp')
   .service('Muodostumissaannot', function($modal) {
-    function osienLaajuudenSumma(rakenne, viitteet) {
-      return _(rakenne ? rakenne.osat : [])
-        .map(function(osa) {
-          var viite = viitteet[osa._tutkinnonOsaViite];
-          return viite.$vaadittuLaajuus || viite.laajuus || 0;
-        })
+    function osienLaajuudenSumma(rakenneOsat) {
+      return _(rakenneOsat ? rakenneOsat : [])
+        .map(function(osa) { return osa ? osa.$laajuus : 0; })
         .reduce(function(sum, newval) { return sum + newval; }) || 0;
     }
 
@@ -145,12 +142,11 @@ angular.module('eperusteApp')
     /* <--- */
 
     // Laskee rekursiivisesti puun solmujen (rakennemoduulien) kokonaislaajuuden
-    function laskeLaajuudet(rakenne, viitteet, root) {
-      root = root || true;
+    function laskeLaajuudet(rakenne, viitteet) {
       if (!rakenne) { return; }
 
       _.forEach(rakenne.osat, function(osa) {
-        laskeLaajuudet(osa, viitteet, false);
+        laskeLaajuudet(osa, viitteet);
       });
       rakenne.$laajuus = 0;
 

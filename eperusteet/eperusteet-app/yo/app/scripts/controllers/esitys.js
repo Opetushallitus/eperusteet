@@ -68,6 +68,7 @@ angular.module('eperusteApp')
     $scope.$parent.valittu.sisalto = 'rakenne';
     PerusteenRakenne.hae($stateParams.perusteId, $stateParams.suoritustapa, function(rakenne) {
       $scope.rakenne = rakenne;
+      $scope.rakenne.$suoritustapa = $stateParams.suoritustapa;
       $scope.rakenne.$resolved = true;
     });
   })
@@ -122,7 +123,6 @@ angular.module('eperusteApp')
 
     $scope.valittu = {};
     $scope.rajaus = '';
-    $scope.valittuSuoritustapa = $stateParams.suoritustapa;
     $scope.suoritustavat = _.map(peruste.suoritustavat, 'suoritustapakoodi');
     $scope.suoritustapa = $stateParams.suoritustapa;
     $scope.extra = {};

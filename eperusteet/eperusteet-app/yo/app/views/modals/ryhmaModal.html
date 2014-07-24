@@ -4,11 +4,11 @@
 
 <div class="modal-body">
   <form class="form-horizontal" name="ryhmaForm">
-    <h3 translate>perustiedot</h3>
-    <formfield model="ryhma" model-var="nimi" label="nimi" type="text" required></formfield>
-    <formfield model="ryhma" model-var="kuvaus" label="kuvaus" type="text"></formfield>
+    <h3 ng-if="vanhempi || luonti" translate>perustiedot</h3>
+    <formfield ng-if="vanhempi || luonti" model="ryhma" model-var="nimi" label="nimi" type="text" required></formfield>
+    <formfield ng-if="vanhempi || luonti" model="ryhma" model-var="kuvaus" label="kuvaus" type="text"></formfield>
     <formfield ng-if="luonti" model="ryhma" model-var="rooli" label="erikoisrooli" options="roolit"></formfield>
-    <div>
+    <div ng-if="luonti">
       <div class="col-sm-3"></div>
       <div class="col-sm-9 alert alert-info">
         <span ng-show="ryhma.rooli === 'määritelty'">{{ 'ryhmä-rooli-selite-määritelty' | kaanna }}.</span>

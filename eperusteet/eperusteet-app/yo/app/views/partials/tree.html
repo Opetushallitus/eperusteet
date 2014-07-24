@@ -49,7 +49,7 @@
       <ul ui-sortable="sortableOptionsUnique" ng-model="uniikit" class="uniikit placeholder-hide">
         <li ng-model="osa" class="skratchpad-item" ng-repeat="osa in uniikit | startFrom:(tutkinnonOsat.sivu-1)*tutkinnonOsat.perSivu | limitTo:tutkinnonOsat.perSivu">
           <span class="skratchpad-badge" ng-class="{'ei-kaytetty': !kaytetytUniikit[osa._tutkinnonOsaViite], 'kaytetty': kaytetytUniikit[osa._tutkinnonOsaViite]}"></span>
-          {{ rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== 'naytto' && rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus">, {{ + rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus || 0 }}{{ apumuuttujat.aajuusYksikko | kaanna }}</span>
+          {{ rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== 'naytto' && rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus">, {{ + rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus || 0 }}{{ apumuuttujat.laajuusYksikko | kaanna }}</span>
           <span class="pull-right">
             <a class="action-link" ng-click="rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate = !rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate"
                ng-show="kaytetytUniikit[osa._tutkinnonOsaViite]" ng-attr-title="{{rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate && ('poista-korostus'|kaanna) || ('korosta'|kaanna)}}">
