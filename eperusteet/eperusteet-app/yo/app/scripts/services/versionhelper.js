@@ -44,7 +44,6 @@ angular.module('eperusteApp')
     }
 
     function versiotListHandler(data) {
-      if (!_.isEmpty(data.list)) { data.list.splice(_.size(data.list) - 1, 1); }
       data.chosen = latest(data.list);
       data.latest = true;
       _.each(data.list, function(item, index) {

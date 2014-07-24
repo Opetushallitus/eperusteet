@@ -1,13 +1,18 @@
 <div class="muokkaustiedot" ng-hide="editEnabled">
   <ul ng-show="versiot.chosen">
-    <li><span>{{'muokattu-viimeksi' | translate}}</span>: {{lastModified() | aikaleima}}</li>
-    <li><span>{{'muokkaaja' | translate}}</span>: Erkki Esimerkki</li>
+    <li>
+      <span ng-show="versiot.chosen.index > 1" translate>muokattu-viimeksi</span><span ng-show="versiot.chosen.index === 1" translate>luotu</span>: {{lastModified() | aikaleima}}
+    </li>
+    <li>
+      <span ng-show="versiot.chosen.index > 1" translate>muokkaaja</span><span ng-show="versiot.chosen.index === 1" translate>luoja</span>: Erkki Esimerkki
+    </li>
   </ul>
   <ul class="version-valinta">
-    <li>
-      <span>{{'versio' | translate}}</span>: <select ng-model="versiot.chosen" ng-options="ver.index for ver in versiot.list" ng-change="vaihdaVersio()"></select>
+    <li ng-show="versiot.list.length > 1">
+      <span translate>versio</span>: <select ng-model="versiot.chosen" ng-options="ver.index for ver in versiot.list" ng-change="vaihdaVersio()"></select>
     </li>
-    <li><a href="" translate ng-click="history()">nayta-versiohistoria</a></li>
+    <li ng-show="versiot.list.length === 1"><span translate>versio</span>: 1</li>
+    <li ng-show="versiot.list.length > 1"><a href="" translate ng-click="history()">nayta-versiohistoria</a></li>
   </ul>
   <hr>
 </div>
