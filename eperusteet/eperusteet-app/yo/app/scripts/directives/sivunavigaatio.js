@@ -236,4 +236,155 @@ angular.module('eperusteApp')
         scope.setCrumbs(crumbs);
       }
     };
+  })
+
+  .directive('sivunavigaatio2', function () {
+    return {
+      templateUrl: 'views/partials/sivunavi2.html',
+      restrict: 'AE',
+      scope: {
+        items: '='
+      },
+      controller: 'SivuNaviController',
+      transclude: true
+    };
+  })
+
+  .controller('SivuNaviController', function ($scope, $state, Algoritmit) {
+    $scope.search = {
+      term: '',
+      update: function() {
+        var matchCount = 0;
+        _.each($scope.items, function(item) {
+          item.$matched = _.isEmpty($scope.search.term) || _.isEmpty(item.label) ? true :
+            Algoritmit.match($scope.search.term, item.label);
+          if (item.$matched) {
+            matchCount++;
+            var parent = $scope.items[item.$parent];
+            while (parent) {
+              parent.$matched = true;
+              parent = $scope.items[parent.$parent];
+            }
+          }
+        });
+        $scope.hasResults = matchCount > 1; // root matches always
+        updateModel();
+      }
+    };
+
+    $scope.$watch('search.term', $scope.search.update);
+
+    $scope.itemClasses = function (item) {
+      var classes = ['level' + item.depth];
+      if (item.$matched && $scope.search.term) {
+        classes.push('matched');
+      }
+      return classes;
+    };
+
+    $scope.refresh = function () {
+      var levels = {};
+      if ($scope.items.length && !$scope.items[0].root) {
+        $scope.items.unshift({root: true, depth: -1});
+      }
+      _.each($scope.items, function (item, index) {
+        item.depth = item.depth || 0;
+        levels[item.depth] = index;
+        if (_.isArray(item.link)) {
+          item.href = $state.href.apply($state, item.link);
+        }
+        item.$parent = levels[item.depth-1] || null;
+        item.$hidden = false;
+      });
+      updateModel();
+    };
+
+    function getChildren(index) {
+      var children = [];
+      var level = $scope.items[index].depth;
+      index = index + 1;
+      var depth = level + 1;
+      for (; index < $scope.items.length && depth > level; ++index) {
+        depth = $scope.items[index].depth;
+        if (depth === level + 1) {
+          children.push(index);
+        }
+      }
+      return children;
+    }
+
+    function traverse(index) {
+      if (index >= $scope.items.length) {
+        return;
+      }
+      var item = $scope.items[index];
+      var children = getChildren(index);
+      var hidden = [];
+      for (var i = 0; i < children.length; ++i) {
+        traverse(children[i]);
+        hidden.push($scope.items[children[i]].$hidden);
+      }
+      item.$leaf = hidden.length === 0;
+      item.$collapsed = _.all(hidden);
+      item.$impHidden = false;
+    }
+
+    function hideNodeOrphans(index) {
+      var item = $scope.items[index];
+      for (index++; index < $scope.items.length && $scope.items[index].depth > item.depth; ++index) {
+        if (!$scope.items[index].$hidden) {
+          $scope.items[index].$impHidden = true;
+        }
+      }
+    }
+
+    function hideOrphans() {
+      for (var i = 0; i < $scope.items.length; ++i) {
+        if ($scope.items[i].$collapsed) {
+          hideNodeOrphans(i);
+        }
+      }
+    }
+
+    function updateModel() {
+      traverse(0);
+      hideOrphans();
+    }
+
+    $scope.toggle = function (item, state) {
+      var index = _.indexOf($scope.items, item);
+      state = _.isUndefined(state) ? !item.$collapsed : state;
+      if (index >= 0 && index < ($scope.items.length - 1)) {
+        index = index + 1;
+        while(index < $scope.items.length &&
+              $scope.items[index].depth > item.depth) {
+          if ($scope.items[index].depth === item.depth + 1) {
+            $scope.items[index].$hidden = state;
+          }
+          index++;
+        }
+      }
+      updateModel();
+    };
+
+    $scope.$watch('items', function () {
+      $scope.refresh();
+    }, true);
+  })
+
+  .directive('epHighlight', function () {
+    var matcher;
+    return {
+      scope: {
+        epHighlight: '='
+      },
+      restrict: 'A',
+      link: function (scope, element) {
+        scope.$watch('epHighlight', function (value) {
+          matcher = new RegExp('('+value+')', 'i');
+          var text = element.text();
+          element.html(text.replace(matcher, '<strong>$1</strong>'));
+        });
+      }
+    };
   });

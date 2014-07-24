@@ -219,3 +219,24 @@ $linkkiteksti-padding-left: 30px;
     margin-left: 0;
   }
 }
+
+
+.sivunavi-outer {
+  clear: both;
+  width: 280px;
+}
+$sivunavi-level-zero: 15px;
+$sivunavi-level-padding: 20px;
+@mixin sn-padding($level) {
+  padding-left: $sivunavi-level-zero + $level*$sivunavi-level-padding;
+}
+.sivunavi-box {
+  .level { @include sn-padding(0); }
+  .level1 { @include sn-padding(1); }
+  .level2 { @include sn-padding(2); }
+  .level3 { @include sn-padding(3); }
+  .level4, .level5, .level6 { @include sn-padding(4); }
+  .matched {
+    background-color: lighten($nappi-vari, 5);
+  }
+}
