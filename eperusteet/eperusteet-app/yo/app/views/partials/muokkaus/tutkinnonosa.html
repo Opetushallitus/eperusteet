@@ -17,7 +17,7 @@
         <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add">
           {{'muokkaus-lisaa-osio' | translate}}
         </button>
-        <ul class="dropdown-menu">
+        <ul class="pull-right dropdown-menu">
           <li ng-repeat="field in menuItems | orderBy:'order'">
             <a ng-show="field.visible" class="disabled-link" translate>muokkaus-{{field.localeKey}}-header</a>
             <a href="" ng-show="!field.visible" ng-click="addFieldToVisible(field)" translate>muokkaus-{{field.localeKey}}-header</a>
