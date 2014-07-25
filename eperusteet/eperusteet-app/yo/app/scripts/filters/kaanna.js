@@ -19,25 +19,19 @@
 
 angular.module('eperusteApp')
   .service('Kaanna', function($translate, Lokalisointi) {
-    this.kaanna = function(input, nimeton) {
-      nimeton = nimeton || false;
+    return {
+      kaanna: function(input, config) {
+        var lang = $translate.use() || $translate.preferredLanguage();
 
-      function lisaaPlaceholder(input) {
-        return _.isEmpty(input) && nimeton ? $translate.instant('nimeton') : input;
-      }
-
-      var lang = $translate.use() || $translate.preferredLanguage();
-      if (_.isObject(input)) {
-        return lisaaPlaceholder(input[lang]);
-      }
-      else if (_.isString(input)) {
-        return lisaaPlaceholder(Lokalisointi.hae(input) || $translate.instant(input));
-      }
-      else if (input === null || input === undefined) {
-        return lisaaPlaceholder();
-      }
-      else {
-        return input;
+        if (_.isObject(input)) {
+          return input[lang];
+        }
+        else if (_.isString(input)) {
+          return Lokalisointi.hae(input) || $translate.instant(input, config);
+        }
+        else {
+          return input;
+        }
       }
     };
   })

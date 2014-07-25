@@ -35,7 +35,7 @@ angular.module('eperusteApp')
     $scope.$on('$stateChangeSuccess', function() { $scope.peruuta(); });
   })
   .service('Lukitus', function($rootScope, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI,
-    LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit, $translate) {
+    LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit, Kaanna) {
     var lukitsin = null;
     var etag = null;
 
@@ -123,7 +123,7 @@ angular.module('eperusteApp')
       var failCb = function (res) {
         scope.isLocked = true;
         // TODO käyttäjän oikea nimi id:n sijaan
-        scope.lockNotification = $translate.instant('lukitus-kayttajalla', { // FIXME
+        scope.lockNotification = Kaanna.kaanna('lukitus-kayttajalla', {
           user: res.data ? res.data.haltijaOid : ''
         });
       };

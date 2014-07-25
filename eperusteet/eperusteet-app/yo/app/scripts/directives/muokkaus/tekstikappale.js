@@ -29,7 +29,7 @@ angular.module('eperusteApp')
       controller: function($scope, $q, Editointikontrollit, PerusteenOsat,
         Notifikaatiot, SivunavigaatioService, VersionHelper, Lukitus, $state,
         TutkinnonOsaEditMode, PerusteenOsaViitteet, Varmistusdialogi, $timeout,
-        $translate, Kaanna, PerusteprojektiTiedotService, $stateParams, SuoritustapaSisalto) {
+        Kaanna, PerusteprojektiTiedotService, $stateParams, SuoritustapaSisalto) {
         document.getElementById('ylasivuankkuri').scrollIntoView(); // FIXME: Keksi tälle joku oikea ratkaisu
 
         $scope.sisalto = {};
@@ -278,7 +278,7 @@ angular.module('eperusteApp')
           Varmistusdialogi.dialogi({
             successCb: doDelete,
             otsikko: 'poista-tekstikappale-otsikko',
-            teksti: $translate('poista-tekstikappale-teksti', {nimi: nimi}) // FIXME
+            teksti: Kaanna.kaanna('poista-tekstikappale-teksti', {nimi: nimi})
           })();
         };
 

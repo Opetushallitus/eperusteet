@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .directive('tree', function($compile, $state, Muodostumissaannot, Kaanna) {
     function generoiOtsikko() {
-      var tosa = '{{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">, <b>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</b>{{ apumuuttujat.laajuusYksikko | kaanna }}</span>';
+      var tosa = '{{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].nimi || "nimetön" | kaanna }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">, <b>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</b>{{ apumuuttujat.laajuusYksikko | kaanna }}</span>';
       var editointiIkoni =
       '<span ng-click="togglaaPakollisuus(rakenne)">' +
         '  <span ng-show="!rakenne.pakollinen"><img src="images/tutkinnonosa.png" alt=""></span> ' +
@@ -31,7 +31,7 @@ angular.module('eperusteApp')
         '<span ng-if="rakenne._tutkinnonOsaViite && !muokkaus">' + editointiIkoni + '<a href="" ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite]._tutkinnonOsa, suoritustapa: apumuuttujat.suoritustapa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a></span>' +
         '<span class="pull-right" ng-if="rakenne._tutkinnonOsaViite && muokkaus"><a href="" icon-role="remove" ng-click="poista(rakenne, vanhempi)"></a></span>' +
         '<span ng-if="!rakenne._tutkinnonOsaViite && rakenne.nimi">' +
-        '  <b>{{ rakenne.nimi | kaanna:true }}</b>' +
+        '  <b>{{ rakenne.nimi || "nimetön" | kaanna }}</b>' +
         '</span>';
     }
 
@@ -212,19 +212,6 @@ angular.module('eperusteApp')
           avaaKaikki +
           '  </div>' +
           '  <div><div class="tree-yliviiva"></div></div>' +
-          // '  <div class="tree-otsikko">' +
-          // '    <h4>' +
-          // '      <a ng-show="muokkaus" href="" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)">' +
-          // '        <span class="tree-otsikko-left"><b>{{ rakenne.nimi | kaanna:true }}</b></span>' +
-          // '      </a>' +
-          // '      <span ng-hide="muokkaus"><b>{{ rakenne.nimi | kaanna:true }}</b></span>' +
-          // '      <span class="tree-otsikko-laajuus" ng-show="apumuuttujat.suoritustapa !== \'naytto\'"> ' +
-          // '        <span ng-show="muokkaus">{{ rakenne.$laajuus || 0 }} / </span>' +
-          // laajuudenIlmaisu +
-          // '      </span>' +
-          // avaaKaikki +
-          // '    </h4>' +
-          // '  </div>' +
           '  <div ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="isovirhe-otsikko">{{ tkaanna(rakenne.$virhe.selite) }}<span ng-show="rakenne.$virhe.selite.length > 0">. </span>{{ rakenne.$virhe.virhe | kaanna }}</div>' +
           '</div>' +
           '<div ng-if="vanhempi">' + kentta + '</div>' +
