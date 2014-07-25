@@ -123,7 +123,7 @@ angular.module('eperusteApp')
       var failCb = function (res) {
         scope.isLocked = true;
         // TODO käyttäjän oikea nimi id:n sijaan
-        scope.lockNotification = $translate.instant('lukitus-kayttajalla', {
+        scope.lockNotification = $translate.instant('lukitus-kayttajalla', { // FIXME
           user: res.data ? res.data.haltijaOid : ''
         });
       };

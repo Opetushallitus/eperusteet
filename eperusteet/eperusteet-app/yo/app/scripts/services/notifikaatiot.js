@@ -112,7 +112,7 @@ angular.module('eperusteApp')
 
     function serverLukitus(response) {
       if (response && response.status === 409) {
-        var translated = $translate.instant('lukitus-kayttajalla', {user: response.data.haltijaOid});
+        var translated = $translate.instant('lukitus-kayttajalla', {user: response.data.haltijaOid}); // FIXME
         uusiViesti(2, translated);
       }
     }

@@ -67,7 +67,7 @@ angular.module('eperusteApp')
 
         function getPlaceholder() {
           if(scope.editorPlaceholder) {
-            return $filter('translate')(scope.editorPlaceholder);
+            return $filter('kaanna')(scope.editorPlaceholder);
           } else {
             return '';
           }

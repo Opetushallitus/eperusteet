@@ -49,7 +49,7 @@ angular.module('eperusteApp')
             Varmistusdialogi.dialogi({
               successCb: cb,
               otsikko: 'vahvista-version-palauttaminen',
-              teksti: $translate('vahvista-version-palauttaminen-teksti', {versio: $scope.versiot.chosen.index}),
+              teksti: $translate('vahvista-version-palauttaminen-teksti', {versio: $scope.versiot.chosen.index}), // FIXME
               primaryBtn: 'vahvista',
               comment: {
                 enabled: true,

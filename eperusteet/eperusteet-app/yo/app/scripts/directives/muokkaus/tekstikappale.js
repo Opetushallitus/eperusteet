@@ -278,7 +278,7 @@ angular.module('eperusteApp')
           Varmistusdialogi.dialogi({
             successCb: doDelete,
             otsikko: 'poista-tekstikappale-otsikko',
-            teksti: $translate('poista-tekstikappale-teksti', {nimi: nimi})
+            teksti: $translate('poista-tekstikappale-teksti', {nimi: nimi}) // FIXME
           })();
         };
 

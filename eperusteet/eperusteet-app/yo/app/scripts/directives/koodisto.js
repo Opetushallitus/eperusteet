@@ -120,7 +120,7 @@ angular.module('eperusteApp')
       haeYlarelaatiot: haeYlarelaatiot
     };
   })
-  .controller('KoodistoModalCtrl', function($scope, $modalInstance, $translate, $timeout, Koodisto, tyyppi, ylarelaatioTyyppi) {
+  .controller('KoodistoModalCtrl', function($scope, $modalInstance, $timeout, Koodisto, tyyppi, ylarelaatioTyyppi) {
     $scope.koodistoVaihtoehdot = Koodisto.vaihtoehdot;
     $scope.tyyppi = tyyppi;
     $scope.ylarelaatioTyyppi = ylarelaatioTyyppi;
@@ -165,7 +165,7 @@ angular.module('eperusteApp')
   })
   .directive('koodistoSelect', function(Koodisto) {
     return {
-      template: '<button class="btn btn-default" type="text" ng-click="activate()">{{ "hae-koodi-koodistosta" | translate }}</button>',
+      template: '<button class="btn btn-default" type="text" ng-click="activate()">{{ "hae-koodi-koodistosta" | kaanna }}</button>',
       restrict: 'E',
       link: function($scope, el, attrs) {
         var valmis = $scope.$eval(attrs.valmis);

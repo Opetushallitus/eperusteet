@@ -118,7 +118,7 @@ angular.module('eperusteApp')
             return element
             .addClass('form-control')
             .attr('ng-model', 'object.' + scope.field.path)
-            .attr('placeholder','{{\'muokkaus-' + scope.field.localeKey + '-placeholder\' | translate}}');
+            .attr('placeholder','{{ \'muokkaus-' + scope.field.localeKey + '-placeholder\' | kaanna }}');
           }
 
           var element = null;
@@ -174,7 +174,7 @@ angular.module('eperusteApp')
         '<div ng-transclude></div>' +
         '<button icon-role="remove" ng-if="$parent.editEnabled" editointi-kontrolli type="button"' +
         ' class="pull-right poista-osio btn btn-default btn-xs" ng-click="suljeOsio($event)">' +
-        '{{\'poista-osio\' | translate}}</button>',
+        '{{ \'poista-osio\' | kaanna }}</button>',
       restrict: 'E',
       transclude: true,
       scope: {
