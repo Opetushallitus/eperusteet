@@ -1,4 +1,4 @@
-<div ng-hide="editointi">
+<div ng-hide="editointi || !onLataaja">
     <a ng-hide="nayta" ng-click="naytaKommentit()" href=""><span class="glyphicon glyphicon-comment"></span> {{ 'näytä-kommentit' | kaanna }}</a>
     <div ng-show="nayta && sisalto">
         <div class="kommentti-alue" ng-if="sisalto" ng-cloak>
