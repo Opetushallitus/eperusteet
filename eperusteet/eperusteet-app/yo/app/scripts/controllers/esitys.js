@@ -90,31 +90,29 @@ angular.module('eperusteApp')
   })
   .controller('EsitysCtrl', function($q, $scope, $stateParams, sisalto, peruste, Kayttajaprofiilit, Suosikit, Suosikitbroadcast, YleinenData,
                                      Navigaatiopolku, $state, virheService, Algoritmit, PerusteenRakenne, tutkinnonOsat, Kaanna, arviointiasteikot) {
+    $scope.navi = {
+      items: [
+        {label: 'tutkinnonosat', link: ['root.esitys.peruste.tutkinnonosat', {}]},
+        {label: 'tutkinnon-rakenne', link: ['root.esitys.peruste.rakenne', {}]},
+      ]
+    };
+
     function mapSisalto(sisalto) {
       sisalto = _.clone(sisalto);
       var flattened = {};
       Algoritmit.kaikilleLapsisolmuille(sisalto, 'lapset', function(lapsi) {
         flattened[lapsi.id] = _.clone(lapsi.perusteenOsa);
+        $scope.navi.items.push({
+          label: lapsi.perusteenOsa.nimi,
+          link: ['root.esitys.peruste.tekstikappale', { osanId: ''+lapsi.id }]
+        });
       });
       return flattened;
     }
 
-    function mapSisaltoRakenne(rakenne, sisalto, parentId, depth) {
-      depth = depth || 0;
-      rakenne.push({
-        id: sisalto.id,
-        parent: parentId || null,
-        depth: depth,
-        indent: depth * 16
-      });
-      _.forEach(sisalto.lapset, function(lapsi) { mapSisaltoRakenne(rakenne, lapsi, sisalto.id, depth + 1); });
-      return rakenne;
-    }
-
     $scope.peruste = peruste;
     $scope.sisalto = mapSisalto(sisalto);
-    $scope.sisaltoRakenne = _.rest(mapSisaltoRakenne([], sisalto));
-    $scope.sisaltoRakenneMap = _.zipObject(_.map($scope.sisaltoRakenne, 'id'), $scope.sisaltoRakenne);
+
     $scope.arviointiasteikot = _.zipObject(_.map(arviointiasteikot, 'id'), _.map(arviointiasteikot, function(asteikko) {
       return _.zipObject(_.map(asteikko.osaamistasot, 'id'), asteikko.osaamistasot);
     }));
@@ -123,34 +121,21 @@ angular.module('eperusteApp')
                                            .value();
 
     $scope.valittu = {};
-    $scope.rajaus = '';
     $scope.suoritustavat = _.map(peruste.suoritustavat, 'suoritustapakoodi');
     $scope.suoritustapa = $stateParams.suoritustapa;
-    $scope.extra = {};
 
     $scope.yksikko = Algoritmit.perusteenSuoritustavanYksikko(peruste, $scope.suoritustapa);
 
     $scope.vaihdaSuoritustapa = function(suoritustapa) {
-      $state.go('root.esitys.peruste', { lang: $stateParams.lang, perusteId: $stateParams.perusteId, suoritustapa: suoritustapa });
+      $state.go('root.esitys.peruste', {suoritustapa: suoritustapa});
     };
 
     if ($state.current.name === 'root.esitys.peruste') {
-      var params = _.isEmpty($scope.sisaltoRakenne) ? {} : { osanId: _.first($scope.sisaltoRakenne).id };
+      var links = _.filter($scope.navi.items, function (item) {
+        return item.label !== 'tutkinnonosat' && item.label !== 'tutkinnon-rakenne' &&
+          _.isArray(item.link) && item.link.length > 1;
+      });
+      var params = _.isEmpty(links) ? {} : { osanId: _.first(links).link[1].osanId };
       $state.go('root.esitys.peruste.tekstikappale', params);
     }
-
-    $scope.rajaaSisaltoa = function() {
-      _.forEach($scope.sisaltoRakenne, function(r) {
-        r.$rejected = _.isEmpty($scope.rajaus) ? false : !Algoritmit.match($scope.rajaus, $scope.sisalto[r.id].nimi);
-        if (!r.$rejected) {
-          var parent = $scope.sisaltoRakenneMap[r.parent];
-          while (parent) {
-            parent.$rejected = false;
-            parent = $scope.sisaltoRakenneMap[parent.parent];
-          }
-        }
-      });
-      $scope.extra.tutkinnonOsat = !Algoritmit.match($scope.rajaus, Kaanna.kaanna('tutkinnonosat'));
-      $scope.extra.tutkinnonRakenne = !Algoritmit.match($scope.rajaus, Kaanna.kaanna('tutkinnon-rakenne'));
-    };
   });

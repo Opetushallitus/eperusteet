@@ -19,50 +19,29 @@ European Union Public Licence for more details.
     <div class="row esitys">
         <div class="navigaatio">
             <div class="takaisin">
-                <a href="" ui-sref="root.selaus.ammatillinenperuskoulutus"><span class="glyphicon glyphicon-chevron-left"></span> {{ 'takaisin-hakuun' | kaanna }}</a>
+              <a ui-sref="root.selaus.ammatillinenperuskoulutus" icon-role="back">{{ 'takaisin-hakuun' | kaanna }}</a>
             </div>
-            <div class="panel panel-primary">
-                <div class="panel-heading" translate>perusteen-sisältö</div>
-                <div class="panel-body">
-                    <select class="form-control input-sm" ng-model="suoritustapa" ng-change="vaihdaSuoritustapa(suoritustapa)">
-                        <option ng-selected="suoritustapa === st" ng-repeat="st in suoritustavat" value="{{ st }}">{{ st | kaanna }}</option>
-                    </select>
-                    <div style="margin-top: 16px" class="input-group">
-                        <span class="input-group-addon input-sm">
-                            <span class="glyphicon glyphicon-search"></span>
-                        </span>
-                        <input ng-model="rajaus" ng-change="rajaaSisaltoa()" placeholder="{{ 'etsi-sisällöstä' | kaanna }}" type="input" class="form-control input-sm">
-                    </div>
-                </div>
-                <div class="separator"></div>
-                <div ng-hide="extra.tutkinnonOsat" ng-class="{ 'item-selected': 'tutkinnonosat' === valittu.sisalto }" ui-sref="root.esitys.peruste.tutkinnonosat({})" class="item">
-                    {{ 'tutkinnonosat' | kaanna }}
-                </div>
-                <div ng-hide="extra.tutkinnonRakenne" ng-class="{ 'item-selected': 'rakenne' === valittu.sisalto }" ui-sref="root.esitys.peruste.rakenne({})" class="item">
-                    {{ 'tutkinnon-rakenne' | kaanna }}
-                </div>
-                <div ng-class="{ 'item-selected': r.id == valittu.sisalto }" ui-sref="root.esitys.peruste.tekstikappale({ osanId: r.id })"
-                     ng-hide="r.$rejected" class="item" style="padding-left: {{ r.indent - 10}}px" ng-repeat="r in sisaltoRakenne">
-                    {{ sisalto[r.id].nimi | kaanna }}
-                </div>
-            </div>
+            <sivunavigaatio2 items="navi.items" header="perusteen-sisältö">
+              <select class="form-control input-sm" ng-model="suoritustapa" ng-change="vaihdaSuoritustapa(suoritustapa)">
+                <option ng-selected="suoritustapa === st" ng-repeat="st in suoritustavat" value="{{ st }}">{{ st | kaanna }}</option>
+              </select>
+            </sivunavigaatio2>
         </div>
         <div class="sisalto">
             <h1>
                 {{ peruste.nimi | kaanna }}
                 <a href="" ng-click="merkitseSuosikiksi()">
-                    <span ng-hide="onSuosikki" class="glyphicon glyphicon-star-empty"></span>
-                    <span ng-show="onSuosikki" class="glyphicon glyphicon-star-empty"></span>
+                  <span class="glyphicon" ng-class="{'glyphicon-star': onSuosikki, 'glyphicon-star-empty': !onSuosikki}"></span>
                 </a>
             </h1>
             <div class="tiedot">
                 <a href="" ng-click="naytaPerusteenTiedot = !naytaPerusteenTiedot">
                     <span ng-show="naytaPerusteenTiedot" class="glyphicon glyphicon-chevron-down"></span>
-                    <span ng-hide="naytaPerusteenTiedot" class="glyphicon glyphicon-chevron-up"></span>
+                    <span ng-hide="naytaPerusteenTiedot" class="glyphicon glyphicon-chevron-right"></span>
                     {{ 'perusteen-tiedot' | kaanna }}
                 </a>
-                <a href="" ng-click="naytaPerusteenTiedot = !naytaPerusteenTiedot">
-                    <span class="left-space glyphicon glyphicon-save"></span>{{ 'lataa-peruste-pdf-muodossa' | kaanna }}
+                <a href="" ng-click="naytaPerusteenTiedot = !naytaPerusteenTiedot" icon-role="save">
+                  {{ 'lataa-peruste-pdf-muodossa' | kaanna }}
                 </a>
             </div>
             <div ng-show="naytaPerusteenTiedot">

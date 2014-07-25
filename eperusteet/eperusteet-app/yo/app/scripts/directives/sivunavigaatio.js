@@ -243,10 +243,15 @@ angular.module('eperusteApp')
       templateUrl: 'views/partials/sivunavi2.html',
       restrict: 'AE',
       scope: {
-        items: '='
+        items: '=',
+        header: '@?'
       },
       controller: 'SivuNaviController',
-      transclude: true
+      transclude: true,
+      link: function (scope, element) {
+        var transcluded = element.find('#sivunavi-tc').contents();
+        scope.hasTransclude = transcluded.length > 0;
+      }
     };
   })
 
@@ -278,6 +283,12 @@ angular.module('eperusteApp')
       var classes = ['level' + item.depth];
       if (item.$matched && $scope.search.term) {
         classes.push('matched');
+      }
+      if (!_.isEmpty(item.link)) {
+        if (_.isArray(item.link) &&
+            $state.is(item.link[0], _.extend(_.clone($state.params), item.link[1]))) {
+          classes.push('active');
+        }
       }
       return classes;
     };

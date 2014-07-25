@@ -9,25 +9,6 @@ $border-color: #0C566E;
     .takaisin {
       margin: 10px;
     }
-
-    .separator {
-      display: inline-block;
-      width: $sivunavigaatio-width - 1;
-      border-bottom: 1px solid $border-color;
-      margin: 0px;
-      padding: 0px;
-    }
-
-    .item {
-      padding: 5px;
-      cursor: pointer;
-    }
-    .item:hover {
-      background: #eee;
-    }
-    .item-selected {
-      background: #eee;
-    }
   }
   .sisalto {
     margin-left: $sivunavigaatio-width;
@@ -64,16 +45,15 @@ $border-color: #0C566E;
       border: 1px solid $border-color;
 
       .arviointi-otsikko {
-	background: $border-color;
-	color: #fff;
-	padding: 5px;
+	      background: $border-color;
+	      color: #fff;
+	      padding: 5px;
       }
       .arviointi-sisalto {
-	padding: 10px;
-
-	h4 {
-	  font-weight: bold;
-	}
+	      padding: 10px;
+	      h4 {
+	        font-weight: bold;
+	      }
       }
     }
   }
