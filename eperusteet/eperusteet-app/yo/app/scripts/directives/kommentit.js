@@ -30,6 +30,7 @@ angular.module('eperusteApp')
       },
       link: function($scope) {
         $scope.nayta = false;
+        $scope.editointi = false;
         $scope.editoitava = '';
         $scope.editoi = false;
         $scope.sisalto = false;
@@ -67,10 +68,10 @@ angular.module('eperusteApp')
         };
 
         $scope.$on('enableEditing', function() {
-          $scope.nayta = false;
+          $scope.editointi = true;
         });
         $scope.$on('disableEditing', function() {
-          $scope.nayta = true;
+          $scope.editointi = false;
         });
       }
     };
