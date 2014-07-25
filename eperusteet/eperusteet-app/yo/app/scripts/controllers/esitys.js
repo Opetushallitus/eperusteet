@@ -64,32 +64,36 @@ angular.module('eperusteApp')
         controller: 'EsitysSisaltoCtrl'
       });
   })
-  .controller('EsitysRakenneCtrl', function($scope, $stateParams, PerusteenRakenne) {
+  .controller('EsitysRakenneCtrl', function($scope, $state, $stateParams, PerusteenRakenne) {
     $scope.$parent.valittu.sisalto = 'rakenne';
     PerusteenRakenne.hae($stateParams.perusteId, $stateParams.suoritustapa, function(rakenne) {
       $scope.rakenne = rakenne;
       $scope.rakenne.$suoritustapa = $stateParams.suoritustapa;
       $scope.rakenne.$resolved = true;
     });
+    $scope.suosikkiHelper($state, $stateParams, 'tutkinnon-rakenne');
   })
-  .controller('EsitysTutkinnonOsaCtrl', function($scope, $stateParams, PerusteenOsat) {
+  .controller('EsitysTutkinnonOsaCtrl', function($scope, $state, $stateParams, PerusteenOsat) {
     $scope.tutkinnonOsaViite = _.find($scope.$parent.tutkinnonOsat, function(tosa) {
       return tosa.id === parseInt($stateParams.id, 10);
     });
     PerusteenOsat.get({ osanId: $scope.tutkinnonOsaViite._tutkinnonOsa }, function(res) { $scope.tutkinnonOsa = res; });
+    $scope.suosikkiHelper($state, $stateParams, $scope.tutkinnonOsaViite.nimi);
   })
-  .controller('EsitysTutkinnonOsatCtrl', function($scope, $stateParams, PerusteenRakenne, Algoritmit) {
+  .controller('EsitysTutkinnonOsatCtrl', function($scope, $state, $stateParams, PerusteenRakenne, Algoritmit) {
     $scope.$parent.valittu.sisalto = 'tutkinnonosat';
     $scope.tosarajaus = '';
     $scope.rajaaTutkinnonOsia = function(haku) { return Algoritmit.rajausVertailu($scope.tosarajaus, haku, 'nimi'); };
+    $scope.suosikkiHelper($state, $stateParams, 'tutkinnonosat');
   })
-  .controller('EsitysSisaltoCtrl', function($scope, $stateParams, Lokalisointi) {
+  .controller('EsitysSisaltoCtrl', function($scope, $state, $stateParams, Lokalisointi) {
     $scope.$parent.valittu.sisalto = $stateParams.osanId;
     $scope.valittuSisalto = $scope.$parent.sisalto[$stateParams.osanId];
     Lokalisointi.valitseKieli($stateParams.lang);
+    $scope.suosikkiHelper($state, $stateParams, $scope.valittuSisalto.nimi);
   })
   .controller('EsitysCtrl', function($q, $scope, $stateParams, sisalto, peruste, Kayttajaprofiilit, Suosikit, Suosikitbroadcast, YleinenData,
-                                     Navigaatiopolku, $state, virheService, Algoritmit, PerusteenRakenne, tutkinnonOsat, Kaanna, arviointiasteikot) {
+                                     Navigaatiopolku, $state, virheService, Algoritmit, PerusteenRakenne, tutkinnonOsat, Kaanna, arviointiasteikot, SuosikkiTemp) {
     $scope.navi = {
       items: [
         {label: 'tutkinnonosat', link: ['root.esitys.peruste.tutkinnonosat', {}]},
@@ -138,4 +142,26 @@ angular.module('eperusteApp')
       var params = _.isEmpty(links) ? {} : { osanId: _.first(links).link[1].osanId };
       $state.go('root.esitys.peruste.tekstikappale', params);
     }
+
+    $scope.rajaaSisaltoa = function() {
+      _.forEach($scope.sisaltoRakenne, function(r) {
+        r.$rejected = _.isEmpty($scope.rajaus) ? false : !Algoritmit.match($scope.rajaus, $scope.sisalto[r.id].nimi);
+        if (!r.$rejected) {
+          var parent = $scope.sisaltoRakenneMap[r.parent];
+          while (parent) {
+            parent.$rejected = false;
+            parent = $scope.sisaltoRakenneMap[parent.parent];
+          }
+        }
+      });
+      $scope.extra.tutkinnonOsat = !Algoritmit.match($scope.rajaus, Kaanna.kaanna('tutkinnonosat'));
+      $scope.extra.tutkinnonRakenne = !Algoritmit.match($scope.rajaus, Kaanna.kaanna('tutkinnon-rakenne'));
+    };
+
+    $scope.suosikkiHelper = function(state, stateParams, nimi) {
+      $scope.onSuosikki = SuosikkiTemp.hae(state, stateParams);
+      $scope.asetaSuosikki = function() {
+        $scope.onSuosikki = SuosikkiTemp.aseta(state, stateParams, Kaanna.kaanna($scope.peruste.nimi) + ' - ' + (Kaanna.kaanna(nimi) || '') + ' (' + Kaanna.kaanna($scope.suoritustapa) + ')');
+      };
+    };
   });

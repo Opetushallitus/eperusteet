@@ -38,6 +38,7 @@ angular.module('eperusteApp')
             // TODO: Omat perusteprojektit linkin suoritustapa pitäisi varmaankin olla jotain muuta kuin kovakoodattu 'naytto'
             pp.url = $state.href('root.perusteprojekti.suoritustapa.sisalto', { perusteProjektiId: pp.id, suoritustapa: 'naytto' });
           })
+          .reverse()
           .value();
 
         if ($scope.naytetaanKaikkiSuosikit) {

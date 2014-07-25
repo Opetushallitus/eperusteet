@@ -15,6 +15,7 @@
  */
 
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .factory('Suosikit', function($resource, SERVICE_LOC) {
@@ -28,4 +29,51 @@ angular.module('eperusteApp')
     };
 
     return suosikitbroadcast;
+  })
+  .service('SuosikkiTemp', function($state, $rootScope) {
+    var suosikit = [];
+
+    function isSame(paramsA, paramsB) {
+      return _.size(paramsA) === _.size(paramsB) && _.all(paramsA, function(v, k) {
+        return paramsB[k] === v;
+      });
+    }
+
+    return {
+      aseta: function(state, stateParams, nimi) {
+        var vanha = _(suosikit).filter(function(s) {
+          return state.current.name === s.tila && isSame(stateParams, s.parametrit);
+        }).first();
+
+        var re;
+        if (!_.isEmpty(vanha)) {
+          _.remove(suosikit, vanha);
+        }
+        else {
+          suosikit.push({
+            tila: state.current.name,
+            parametrit: stateParams,
+            nimi: nimi,
+            url: $state.href(state.current.name, stateParams),
+            lisatty: new Date()
+          });
+          re = _.last(suosikit);
+        }
+
+        $rootScope.$broadcast('suosikitMuuttuivat', _.clone(suosikit));
+        return re;
+      },
+      listaa: function() {
+        return _.clone(suosikit);
+      },
+      hae: function(state, stateParams) {
+        var haku = _.filter(suosikit, function(s) {
+          return state.current.name === s.tila && isSame(stateParams, s.parametrit);
+        });
+        return _.first(haku);
+      },
+      haeUrl: function(id) {
+        return $state.href(suosikit[id].tila, suosikit[id].parametrit);
+      }
+    };
   });
