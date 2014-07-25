@@ -89,8 +89,13 @@ angular.module('eperusteApp')
   .controller('EsitysSisaltoCtrl', function($scope, $state, $stateParams, Lokalisointi) {
     $scope.$parent.valittu.sisalto = $stateParams.osanId;
     $scope.valittuSisalto = $scope.$parent.sisalto[$stateParams.osanId];
+    if (!$scope.valittuSisalto) {
+      $state.go('root.esitys.peruste.rakenne');
+    }
+    else {
+      $scope.suosikkiHelper($state, $stateParams, $scope.valittuSisalto.nimi);
+    }
     Lokalisointi.valitseKieli($stateParams.lang);
-    $scope.suosikkiHelper($state, $stateParams, $scope.valittuSisalto.nimi);
   })
   .controller('EsitysCtrl', function($q, $scope, $stateParams, sisalto, peruste, Kayttajaprofiilit, Suosikit, Suosikitbroadcast, YleinenData,
                                      Navigaatiopolku, $state, virheService, Algoritmit, PerusteenRakenne, tutkinnonOsat, Kaanna, arviointiasteikot, SuosikkiTemp) {
