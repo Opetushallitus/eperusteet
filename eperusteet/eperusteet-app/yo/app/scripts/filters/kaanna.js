@@ -18,7 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('Kaanna', function($translate) {
+  .service('Kaanna', function($translate, Lokalisointi) {
     this.kaanna = function(input, nimeton) {
       nimeton = nimeton || false;
 
@@ -31,7 +31,7 @@ angular.module('eperusteApp')
         return lisaaPlaceholder(input[lang]);
       }
       else if (_.isString(input)) {
-        return lisaaPlaceholder($translate.instant(input));
+        return lisaaPlaceholder(Lokalisointi.hae(input) || $translate.instant(input));
       }
       else if (input === null || input === undefined) {
         return lisaaPlaceholder();

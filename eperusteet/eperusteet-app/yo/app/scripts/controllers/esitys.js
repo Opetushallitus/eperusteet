@@ -83,9 +83,10 @@ angular.module('eperusteApp')
     $scope.tosarajaus = '';
     $scope.rajaaTutkinnonOsia = function(haku) { return Algoritmit.rajausVertailu($scope.tosarajaus, haku, 'nimi'); };
   })
-  .controller('EsitysSisaltoCtrl', function($scope, $stateParams) {
+  .controller('EsitysSisaltoCtrl', function($scope, $stateParams, Lokalisointi) {
     $scope.$parent.valittu.sisalto = $stateParams.osanId;
     $scope.valittuSisalto = $scope.$parent.sisalto[$stateParams.osanId];
+    Lokalisointi.valitseKieli($stateParams.lang);
   })
   .controller('EsitysCtrl', function($q, $scope, $stateParams, sisalto, peruste, Kayttajaprofiilit, Suosikit, Suosikitbroadcast, YleinenData,
                                      Navigaatiopolku, $state, virheService, Algoritmit, PerusteenRakenne, tutkinnonOsat, Kaanna, arviointiasteikot) {

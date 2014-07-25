@@ -23,6 +23,11 @@ angular.module('eperusteApp')
         url: '/:lang',
         template: '<div ui-view></div>',
         abstract: true,
+        resolve: {
+          lokalisointi: function($stateParams, Lokalisointi) {
+            return Lokalisointi.valitseKieli($stateParams.lang);
+          }
+        },
         onEnter: ['YleinenData', '$stateParams', function (YleinenData, $stateParams) {
           YleinenData.vaihdaKieli($stateParams.lang);
         }]
