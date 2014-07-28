@@ -38,10 +38,11 @@ angular.module('eperusteApp')
       });
     }
 
-    function kaikilleLapsisolmuille(objekti, lapsienAvain, cb) {
+    function kaikilleLapsisolmuille(objekti, lapsienAvain, cb, depth) {
+      depth = depth || 0;
       _.forEach(objekti[lapsienAvain], function(solmu) {
-        kaikilleLapsisolmuille(solmu, lapsienAvain, cb);
-        cb(solmu);
+        cb(solmu, depth);
+        kaikilleLapsisolmuille(solmu, lapsienAvain, cb, depth + 1);
       });
     }
 

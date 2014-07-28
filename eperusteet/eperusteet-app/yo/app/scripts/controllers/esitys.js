@@ -104,11 +104,12 @@ angular.module('eperusteApp')
     function mapSisalto(sisalto) {
       sisalto = _.clone(sisalto);
       var flattened = {};
-      Algoritmit.kaikilleLapsisolmuille(sisalto, 'lapset', function(lapsi) {
+      Algoritmit.kaikilleLapsisolmuille(sisalto, 'lapset', function(lapsi, depth) {
         flattened[lapsi.id] = _.clone(lapsi.perusteenOsa);
         $scope.navi.items.push({
           label: lapsi.perusteenOsa.nimi,
-          link: ['root.esitys.peruste.tekstikappale', { osanId: ''+lapsi.id }]
+          link: ['root.esitys.peruste.tekstikappale', { osanId: ''+lapsi.id }],
+          depth: depth
         });
       });
       return flattened;
@@ -140,7 +141,9 @@ angular.module('eperusteApp')
           _.isArray(item.link) && item.link.length > 1;
       });
       var params = _.isEmpty(links) ? {} : { osanId: _.first(links).link[1].osanId };
-      $state.go('root.esitys.peruste.tekstikappale', params);
+      if (!_.isEmpty(params)) {
+        $state.go('root.esitys.peruste.tekstikappale', params);
+      }
     }
 
     $scope.rajaaSisaltoa = function() {
