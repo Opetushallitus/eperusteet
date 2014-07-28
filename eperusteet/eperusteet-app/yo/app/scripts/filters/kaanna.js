@@ -39,7 +39,7 @@ angular.module('eperusteApp')
     return {
       restrict: 'A',
       link: function(scope, el) {
-        el.context.innerText = Kaanna.kaanna(el.context.innerText);
+        el.text(Kaanna.kaanna(el.text()));
       }
     };
   })
