@@ -10,8 +10,8 @@
             <div ng-show="editoi" class="kommentti-uusi">
                 <textarea class="form-control msd-elastic" ng-model="editoitava"></textarea>
                 <div class="kommentti-painikkeet">
-                    <button class="btn btn-primary" ng-click="lisaaKommentti(sisalto, editoitava); editoi = false; editoitava = ''">Tallenna</button>
-                    <button class="btn" ng-click="editoi = false">Peruuta</button>
+                    <button class="btn" ng-click="editoi = false">{{'peruuta' | kaanna}}</button>
+                    <button class="btn btn-primary" ng-click="lisaaKommentti(sisalto, editoitava); editoi = false; editoitava = ''">{{'tallenna' | kaanna}}</button>
                 </div>
                 <div class="clearfix"></div>
             </div>

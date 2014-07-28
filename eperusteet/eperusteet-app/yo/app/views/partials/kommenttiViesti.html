@@ -21,8 +21,8 @@
           <div ng-show="editoi" class="kommentti-muokkaus">
             <textarea class="form-control msd-elastic" ng-model="editoitava"></textarea>
             <div>
-              <button class="btn" ng-click="tallennaKommentti(viesti, editoitava); editoi = false">{{ 'tallenna' | kaanna }}</button>
               <button class="btn" ng-click="editoi = false">{{ 'peruuta' | kaanna }}</button>
+              <button class="btn btn-primary" ng-click="tallennaKommentti(viesti, editoitava); editoi = false">{{ 'tallenna' | kaanna }}</button>
             </div>
           </div>
           <div class="kommentti-footer">
@@ -41,8 +41,8 @@
         <div class="kommentti-uusi">
           <textarea class="form-control msd-elastic" ng-model="editoitava"></textarea>
           <div class="kommentti-painikkeet">
-            <button class="btn" ng-click="lisaaKommentti(viesti, editoitava); editoitava = ''; viesti.$lisaa = false">{{ 'tallenna' | kaanna }}</button>
             <button class="btn" ng-click="viesti.$lisaa = false">{{ 'peruuta' | kaanna }}</button>
+            <button class="btn btn-primary" ng-click="lisaaKommentti(viesti, editoitava); editoitava = ''; viesti.$lisaa = false">{{ 'tallenna' | kaanna }}</button>
           </div>
           <div class="clearfix"></div>
         </div>
