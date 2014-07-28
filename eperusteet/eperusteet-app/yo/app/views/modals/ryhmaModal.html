@@ -11,12 +11,12 @@
     <div ng-if="luonti">
       <div class="col-sm-3"></div>
       <div class="col-sm-9 alert alert-info">
-        <span ng-show="ryhma.rooli === 'määritelty'">{{ 'ryhmä-rooli-selite-määritelty' | kaanna }}.</span>
-        <span ng-show="ryhma.rooli === 'määrittelemätön'">{{ 'ryhmä-rooli-selite-määrittelemätön' | kaanna }}.</span>
+        <span ng-show="ryhma.rooli === 'määritelty'" kaanna>ryhmä-rooli-selite-määritelty</span>.
+        <span ng-show="ryhma.rooli === 'määrittelemätön'" kaanna>ryhmä-rooli-selite-määrittelemätön</span>.
       </div>
     </div>
 
-    <h3 ng-if="vanhempi">{{'tutkinnon-rakenne' | kaanna}}</h3>
+    <h3 ng-if="vanhempi" kaanna>tutkinnon-rakenne</h3>
     <div class="form-group">
       <div ng-show="suoritustapa !== 'naytto'" class="btn-group col-sm-offset-3">
         <button ng-model="ms.laajuus" type="button" class="btn btn-default" btn-checkbox kaanna>tutkinnonosa-laajuus</button>
@@ -43,8 +43,8 @@
 
 <div class="modal-footer">
   <div class="pull-left" ng-if="!luonti">
-    <button class="btn btn-danger" ng-click="poista()" icon-role="remove">{{ 'poista' | kaanna }}</button>
+    <button class="btn btn-danger" ng-click="poista()" icon-role="remove" kaanna>poista</button>
   </div>
-  <button class="btn btn-danger" ng-click="peruuta()">{{ 'peru' | kaanna }}</button>
-  <button class="btn btn-primary" ng-disabled="ryhmaForm.$invalid" ng-click="ok(ryhma)">{{ 'tallenna' | kaanna }}</button>
+  <button class="btn btn-danger" ng-click="peruuta()" kaanna>peru</button>
+  <button class="btn btn-primary" ng-disabled="ryhmaForm.$invalid" ng-click="ok(ryhma)" kaanna>tallenna</button>
 </div>

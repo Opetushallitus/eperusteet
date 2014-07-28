@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h2>{{ 'tuo-peruste' | kaanna }}</h2>
+    <h2 kaanna>tuo-peruste</h2>
 </div>
 
 <div class="modal-body">
@@ -20,12 +20,10 @@
       </table>
       <pagination ng-model="nykyinen" ng-change="valitseSivu(nykyinen)" total-items="totalItems" items-per-page="itemsPerPage"></pagination>
     </div>
-    <div class="alarm alarm-info" ng-hide="projektit.length > 0">
-      {{ 'rajauksellasi-ei-löytynyt-vaihtoehtoa' | kaanna }}
-    </div>
+    <div class="alarm alarm-info" ng-hide="projektit.length > 0" kaanna>rajauksellasi-ei-löytynyt-vaihtoehtoa</div>
   </div>
 </div>
 
 <div class="modal-footer">
-  <button class="btn btn-danger" ng-click="peruuta()">{{ 'peru' | kaanna }}</button>
+  <button class="btn btn-danger" ng-click="peruuta()" kaanna>peru</button>
 </div>

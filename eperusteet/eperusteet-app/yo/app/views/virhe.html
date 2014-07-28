@@ -1,7 +1,7 @@
 <div ui-view>
   <h1 kaanna>virhe</h1>
-  <p ng-show="data.path">{{ 'virhe-sivua-ei-löytynyt' | kaanna }}: {{ data.path }}</p>
-  <p ng-show="data.state">{{ 'virhe-tilan-vaihtamisessa' | kaanna }}: {{ data.state }}</p>
+  <p ng-show="data.path" kaanna>{{ 'virhe-sivua-ei-löytynyt' | kaanna }}: {{ data.path }}</p>
+  <p ng-show="data.state" kaanna>virhe-tilan-vaihtamisessa' | kaanna }}: {{ data.state }}</p>
   <p ng-show="data.muu">{{ 'virhe-muu' | kaanna }}: {{ data.muu | kaanna }}</p>
-  <a ui-sref="root.aloitussivu">{{ 'virhe-sivua-ei-löytynyt' | kaanna }}</a>
+  <a ui-sref="root.aloitussivu" kaanna>virhe-sivua-ei-löytynyt</a>
 </div>

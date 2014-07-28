@@ -41,22 +41,22 @@ European Union Public Licence for more details.
 
             <h2 ng-show="naytaTutkinnonOsat || naytaRakenne">Tutkinnon muodostuminen</h2>
             <div ng-show="naytaTutkinnonOsat" class="list-element striped" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat">
-                <h3><a href="">{{ 'tutkinnonosat' | kaanna }}</a></h3>
+                <h3><a href="" kaanna>tutkinnonosat</a></h3>
             </div>
             <div ng-show="naytaRakenne" class="list-element striped" ui-sref="root.perusteprojekti.suoritustapa.muodostumissaannot">
-                <h3><a href="">{{ 'tutkinnon-rakenne' | kaanna }}</a></h3>
+                <h3><a href="" kaanna>tutkinnon-rakenne</a></h3>
             </div>
 
             <h2>
                 Tutkintokohtaiset osat ({{ peruste.sisalto.lapset.length }})
-                <a ng-click="avaaSuljeKaikki(peruste.sisalto)" href=""><span class="avaa-sulje"><img src="images/expander.png" alt=""> {{ "avaa-sulje-kaikki" | kaanna }}</span></a>
+                <a ng-click="avaaSuljeKaikki(peruste.sisalto)" href=""><span class="avaa-sulje"><img src="images/expander.png" alt="" kaanna>avaa-sulje-kaikki</span></a>
                 <div class="pull-right buttons">
                     <button type="button" class="btn btn-default btn-sm" ng-click="updateSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="edit">
-                        <span ng-show="muokkaus">{{ 'lopeta-muokkaus' | kaanna }}</span>
-                        <span ng-hide="muokkaus">{{ 'muokkaa-rakennetta' | kaanna }}</span>
+                        <span ng-show="muokkaus" kaanna>lopeta-muokkaus</span>
+                        <span ng-hide="muokkaus" kaanna>muokkaa-rakennetta</span>
                     </button>
-                    <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="cloud-download">{{ 'tuo-tutkintokohtainen-osa' | kaanna }}</button>
-                    <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="add">{{ 'lisaa-tutkintokohtainen-osa' | kaanna }}</button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="cloud-download" kaanna>tuo-tutkintokohtainen-osa</button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="add" kaanna>lisaa-tutkintokohtainen-osa</button>
                 </div>
             </h2>
             <div class="clearfix"></div>

@@ -8,9 +8,9 @@
         <label kaanna>tutkinnon-tyyppi</label>
         <div class="clearfix"></div>
         <div class="btn-group">
-          <button type="button" class="btn btn-default" ng-model="projekti.koulutustyyppi" btn-radio="'koulutustyyppi_11'">{{ 'ammattitutkinto' | kaanna }}</button>
-          <button type="button" class="btn btn-default" ng-model="projekti.koulutustyyppi" btn-radio="'koulutustyyppi_12'">{{ 'erikoisammattitutkinto' | kaanna }}</button>
-          <button type="button" class="btn btn-default" ng-model="projekti.koulutustyyppi" btn-radio="'koulutustyyppi_1'">{{ 'perustutkinto' | kaanna }}</button>
+          <button type="button" class="btn btn-default" ng-model="projekti.koulutustyyppi" btn-radio="'koulutustyyppi_11'" kaanna>ammattitutkinto</button>
+          <button type="button" class="btn btn-default" ng-model="projekti.koulutustyyppi" btn-radio="'koulutustyyppi_12'" kaanna>erikoisammattitutkinto</button>
+          <button type="button" class="btn btn-default" ng-model="projekti.koulutustyyppi" btn-radio="'koulutustyyppi_1'" kaanna>perustutkinto</button>
         </div>
       </div>
       <div class="form-group col-xs-12">
@@ -23,12 +23,8 @@
 
   <!-- virheet -->
   <div ng-show="errors.length > 0">
-    <div class="alert alert-danger">
-      {{ 'excel-tiedostossasi-oli-virheitä' | kaanna }}
-    </div>
-    <h3>
-      Virheet
-    </h3>
+    <div class="alert alert-danger" kaanna>excel-tiedostossasi-oli-virheitä</div>
+    <h3 kaanna>virheet</h3>
     <table class="table"> <tr>
         <th kaanna>solu</th>
         <th kaanna>odotettu-arvo</th>
@@ -101,7 +97,7 @@
               </select>
             </div>
           </div>
-          <button ng-click="tallennaPerusteprojekti(projekti)" class="btn btn-primary">{{ 'luo-perusteprojekti-nappi' | kaanna }}</button>
+          <button ng-click="tallennaPerusteprojekti(projekti)" class="btn btn-primary" kaanna>luo-perusteprojekti-nappi</button>
         </div>
       </div>
     </form>

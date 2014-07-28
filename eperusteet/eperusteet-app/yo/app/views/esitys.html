@@ -40,9 +40,7 @@ European Union Public Licence for more details.
                     <span ng-hide="naytaPerusteenTiedot" class="glyphicon glyphicon-chevron-right"></span>
                     {{ 'perusteen-tiedot' | kaanna }}
                 </a>
-                <a href="" ng-click="naytaPerusteenTiedot = !naytaPerusteenTiedot" icon-role="save">
-                  {{ 'lataa-peruste-pdf-muodossa' | kaanna }}
-                </a>
+                <a href="" ng-click="naytaPerusteenTiedot = !naytaPerusteenTiedot" icon-role="save" kaanna>lataa-peruste-pdf-muodossa</a>
             </div>
             <div ng-show="naytaPerusteenTiedot">
                 <div>{{ 'tutkintokoodi' | kaanna }}: {{ peruste.tutkintokoodi | kaanna }}</div>

@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 
-<button ng-if="voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit">{{'muokkaa' | kaanna}}</button>
+<button ng-if="voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit" kaanna>muokkaa</button>
 
 <div class="floater dropdown">
   <button ng-disabled="generointiDisabled" class="btn btn-default dropdown-toggle" data-toggle="dropdown" icon-role="file">{{ generointiTeksti | kaanna }}<span class="caret"></span></button>
@@ -44,16 +44,16 @@ European Union Public Licence for more details.
 
       <div ng-if="!editEnabled">
         <table class="perustiedot">
-          <tr><th>{{'perusteen-nimi' | kaanna}}</th><td>{{ peruste.nimi | kaanna }}</td></tr>
-          <tr><th>{{'tiivistelmä' | kaanna}}</th><td>{{ peruste.kuvaus | kaanna }}</td></tr>
-          <tr><th>{{'voimaantulo-pvm' | kaanna}}</th><td pvm="peruste.voimassaoloAlkaa"></td></tr>
-          <tr><th>{{'voimassaolo-paattymispvm' | kaanna}}</th><td pvm="peruste.voimassaoloLoppuu"></td></tr>
+          <tr><th kaanna>perusteen-nimi</th><td>{{ peruste.nimi | kaanna }}</td></tr>
+          <tr><th kaanna>tiivistelmä</th><td>{{ peruste.kuvaus | kaanna }}</td></tr>
+          <tr><th kaanna>voimaantulo-pvm</th><td pvm="peruste.voimassaoloAlkaa"></td></tr>
+          <tr><th kaanna>voimassaolo-paattymispvm</th><td pvm="peruste.voimassaoloLoppuu"></td></tr>
         </table>
       </div>
 
     </div>
 
-    <h3>{{'peruste-koulutukset' | kaanna}}</h3>
+    <h3 kaanna>peruste-koulutukset</h3>
     <p ng-show="editablePeruste.koulutukset.length === 0" kaanna>ei-koulutuksia</p>
     <table class="table table-condensed table-striped koulutukset" ng-show="editablePeruste.koulutukset.length > 0">
       <thead>
@@ -74,7 +74,7 @@ European Union Public Licence for more details.
       </tbody>
     </table>
     <div>
-      <button ng-if="editEnabled" icon-role="add" class="btn btn-default" type="button" ng-click="avaaKoodistoModaali()" ng-disabled="hakemassa">{{ "lisaa-koulutus" | kaanna }}</button>
+      <button ng-if="editEnabled" icon-role="add" class="btn btn-default" type="button" ng-click="avaaKoodistoModaali()" ng-disabled="hakemassa" kaanna>lisaa-koulutus</button>
     </div>
   </div>
 </form>

@@ -18,7 +18,7 @@ European Union Public Licence for more details.
     <div ng-form="toimikausiForm" name="toimikausiForm" ng-if="$parent.wizardissa() || $parent.editEnabled">
         <div class="row">
         <div class="form-group col-sm-6">
-            <label for="toimikausiAlku" class="col-sm-3">{{'toimikausi-alku-label'| kaanna}}</label>
+            <label for="toimikausiAlku" class="col-sm-3" kaanna>toimikausi-alku-label</label>
             <div class="col-sm-9">
                 <span class="input-group">
                     <input type="text" id="toimikausiAlku" name="toimikausiAlku" class="form-control" datepicker-popup="{{format}}"
@@ -38,7 +38,7 @@ European Union Public Licence for more details.
             </div>
         </div>
         <div class="form-group col-sm-6">
-            <label for="toimikausiLoppu" class="col-sm-3">{{'toimikausi-loppu-label'| kaanna}}</label>
+            <label for="toimikausiLoppu" class="col-sm-3" kaanna>toimikausi-loppu-label</label>
             <div class="col-sm-9">
                 <span class="input-group">
                     <input type="text" id="toimikausiLoppu" name="toimikausiLoppu" class="form-control" datepicker-popup="{{format}}"
@@ -62,11 +62,11 @@ European Union Public Licence for more details.
   <div ng-if="!$parent.wizardissa() && !$parent.editEnabled">
     <table class="perustiedot">
       <tr>
-        <th>{{'toimikausi-alku-label' | kaanna}}</th>
+        <th kaanna>toimikausi-alku-label</th>
         <td pvm="projekti.toimikausiAlku"></td>
       </tr>
       <tr>
-        <th>{{'toimikausi-loppu-label' | kaanna}}</th>
+        <th kaanna>toimikausi-loppu-label</th>
         <td pvm="projekti.toimikausiLoppu"></td>
       </tr>
     </table>

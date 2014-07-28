@@ -17,13 +17,11 @@
         <td class="pointer" ng-click="vaihdaValinta(tulos)">{{ tulos.nimi | kaanna }}</td>
       </tr>
     </table>
-    <div class="alert alert-warning" ng-show="tulokset.length === 0 && valittuSuoritustapa">
-      {{ 'tutkinnon-osia-ei-löytynyt' | kaanna }}.
-    </div>
+    <div class="alert alert-warning" ng-show="tulokset.length === 0 && valittuSuoritustapa" kaanna>tutkinnon-osia-ei-löytynyt</div>.
   </div>
 
   <div class="modal-footer">
-    <button class="btn" ng-click="peruuta()">{{ 'peru' | kaanna }}</button>
-    <button class="btn btn-primary" ng-click="ok()" ng-disabled="valitut === 0">{{ 'tuo-valitut' | kaanna }}</button>
+    <button class="btn" ng-click="peruuta()" kaanna>peru</button>
+    <button class="btn btn-primary" ng-click="ok()" ng-disabled="valitut === 0" kaanna>tuo-valitut</button>
   </div>
 </div>

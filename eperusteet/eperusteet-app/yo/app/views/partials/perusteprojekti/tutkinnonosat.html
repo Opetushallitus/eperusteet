@@ -1,13 +1,7 @@
 <div>
-  <button class="floater btn" href="" icon-role="import" ng-click="tuoTutkinnonosa()">
-    {{ 'tuo-tutkinnonosa' | kaanna }}
-  </button>
-  <button ng-show="naytaToisestaSuoritustavastaTuonti" class="floater btn" href="" icon-role="import" ng-click="tuoSuoritustavasta()">
-    {{ 'tuo-toisesta-suoritustavasta' | kaanna }}
-  </button>
-  <button icon-role="add" class="floater btn" href="" ng-click="lisaaTutkinnonOsa()">
-    {{ 'lisää' | kaanna }}
-  </button>
+  <button class="floater btn" href="" icon-role="import" ng-click="tuoTutkinnonosa()" kaanna>tuo-tutkinnonosa</button>
+  <button ng-show="naytaToisestaSuoritustavastaTuonti" class="floater btn" href="" icon-role="import" ng-click="tuoSuoritustavasta()" kaanna>tuo-toisesta-suoritustavasta</button>
+  <button icon-role="add" class="floater btn" href="" ng-click="lisaaTutkinnonOsa()" kaanna>lisää</button>
 </div>
 
 <h1>
@@ -24,9 +18,9 @@
   </div>
   <div ng-show="preferenssit.nakymatyyli === 'palikka'">
     <select class="jarjestys-select form-control" ng-model="jarjestysTapa">
-      <option value="nimi">{{ 'nimi' | kaanna }}</option>
-      <option value="muokattu">{{ 'muokattu-viimeksi' | kaanna }}</option>
-      <option value="laajuus">{{ 'laajuus' | kaanna }}</option>
+      <option value="nimi" kaanna>nimi</option>
+      <option value="muokattu" kaanna>muokattu-viimeksi</option>
+      <option value="laajuus" kaanna>laajuus</option>
     </select>
     <div class="lista-linkit">
       <a class="action-link" ng-click="jarjestysOrder = !jarjestysOrder">
@@ -41,21 +35,21 @@
   <table ng-show="preferenssit.nakymatyyli === 'lista'" class="table table-striped" style="margin-top: 0px">
     <tr>
       <th width="50%">
-        <a href="" ng-click="asetaJarjestys('nimi')">{{ 'nimi' | kaanna }}</a>
+        <a href="" ng-click="asetaJarjestys('nimi')" kaanna>nimi</a>
         <span ng-show="jarjestysTapa === 'nimi'">
           <span ng-hide="jarjestysOrder" class="glyphicon glyphicon-sort-by-alphabet"></span>
           <span ng-show="jarjestysOrder" class="glyphicon glyphicon-sort-by-alphabet-alt"></span>
         </span>
       </th>
       <th width="10%" ng-if="suoritustapa !== 'naytto'">
-        <a href="" ng-click="asetaJarjestys('laajuus')">{{ 'laajuus' | kaanna }}</a>
+        <a href="" ng-click="asetaJarjestys('laajuus')" kaanna>laajuus</a>
         <span ng-show="jarjestysTapa === 'laajuus'">
           <span ng-hide="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes"></span>
           <span ng-show="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
         </span>
       </th>
       <th width="30%">
-        <a href="" ng-click="asetaJarjestys('muokattu')">{{ 'muokattu-viimeksi' | kaanna }}</a>
+        <a href="" ng-click="asetaJarjestys('muokattu')" kaanna>muokattu-viimeksi</a>
         <span ng-show="jarjestysTapa === 'muokattu'">
           <span ng-hide="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
           <span ng-show="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes"></span>
@@ -92,5 +86,4 @@
   <div class="info-box" ng-show="tutkinnonOsat.length === 0">
       {{ 'perusteella-ei-vielä-tutkinnonosia' | kaanna }}.
   </div>
-
 </div>

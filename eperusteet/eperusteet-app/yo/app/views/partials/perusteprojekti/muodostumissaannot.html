@@ -4,9 +4,9 @@
   <revert-note object="rakenne" revert-cb="revert(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
   <div class="floater" ng-attr-title="{{lockNotification}}">
     <!-- <button ng-disabled="isLocked" ng-hide="editoi || !versiot.latest" ng-click="muokkaa()" -->
-    <!--         class="btn btn-default" icon-role="edit">{{'muokkaa' | kaanna}}</button> -->
+    <!--         class="btn btn-default" icon-role="edit" kaanna>muokkaa</button> -->
     <button ng-hide="editoi || !versiot.latest" ng-click="muokkaa()"
-            class="btn btn-default" icon-role="edit">{{'muokkaa' | kaanna}}</button>
+            class="btn btn-default" icon-role="edit" kaanna>muokkaa</button>
   </div>
   <div class="floater" ng-if="!editoi && isLocked"><lukko tip="lockNotification"></lukko></div>
   <h1>
