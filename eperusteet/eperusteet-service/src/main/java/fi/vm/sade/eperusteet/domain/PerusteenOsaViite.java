@@ -59,7 +59,7 @@ public class PerusteenOsaViite implements ReferenceableEntity{
     @Setter
     private PerusteenOsa perusteenOsa;
 
-    @OneToMany(mappedBy = "vanhempi", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "vanhempi", fetch = FetchType.EAGER)
     @OrderColumn
     @Getter
     @Setter

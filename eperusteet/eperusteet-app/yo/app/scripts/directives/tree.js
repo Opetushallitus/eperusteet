@@ -208,6 +208,7 @@ angular.module('eperusteApp')
           '      </span>' +
           '      {{ apumuuttujat.laajuusYksikko | kaanna }}' +
           '    </span>' +
+          '    <a href="" ng-show="muokkaus" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)" kaanna>muokkaa-muodostumissääntöjä</button>' +
           '    <a ng-if="zoomaus" icon-role="back" class="back" href=""></a>' +
           avaaKaikki +
           '  </div>' +
@@ -375,7 +376,7 @@ angular.module('eperusteApp')
             suoritustapa: scope.rakenne.$suoritustapa,
             laajuusYksikko: sts ? sts.laajuusYksikko : null,
             vanhin: scope.rakenne,
-            piilotaVirheet: false
+            piilotaVirheet: true
           };
         });
 
