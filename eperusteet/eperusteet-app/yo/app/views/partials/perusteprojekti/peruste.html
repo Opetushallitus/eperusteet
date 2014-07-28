@@ -15,18 +15,18 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 
-<button ng-if="voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit">{{'muokkaa' | translate}}</button>
+<button ng-if="voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit">{{'muokkaa' | kaanna}}</button>
 
 <div class="floater dropdown">
   <button ng-disabled="generointiDisabled" class="btn btn-default dropdown-toggle" data-toggle="dropdown" icon-role="file">{{ generointiTeksti | kaanna }}<span class="caret"></span></button>
   <ul class="dropdown-menu">
-    <li ng-repeat="kieli in kielet"><a href="" ng-click="generoiPdf(kieli)" translate>luo-dokumentti-kielella-{{kieli}}</a></li>
+    <li ng-repeat="kieli in kielet"><a href="" ng-click="generoiPdf(kieli)" kaanna>luo-dokumentti-kielella-{{kieli}}</a></li>
     <li class="divider"></li>
-    <li ng-repeat="dokumentti in dokumentit"><a ng-href="{{dokumentti.linkki}}"><span translate>uusin-dokumentti-kielella-{{dokumentti.kieli}}</span><br>{{dokumentti.valmistumisaika|date:'dd.MM.yyyy hh:mm:ss'}}</a></li>
+    <li ng-repeat="dokumentti in dokumentit"><a ng-href="{{dokumentti.linkki}}"><span kaanna>uusin-dokumentti-kielella-{{dokumentti.kieli}}</span><br>{{dokumentti.valmistumisaika|date:'dd.MM.yyyy hh:mm:ss'}}</a></li>
   </ul>
 </div>
 
-<h1 translate>projekti-peruste</h1>
+<h1 kaanna>projekti-peruste</h1>
 <div class="clearfix"></div>
 <form class="form-horizontal" name="perusteForm" role="form" novalidate>
   <div ng-form="projektinPerusteForm">
@@ -54,11 +54,14 @@ European Union Public Licence for more details.
     </div>
 
     <h3>{{'peruste-koulutukset' | kaanna}}</h3>
-    <p ng-show="editablePeruste.koulutukset.length === 0" translate>ei-koulutuksia</p>
+    <p ng-show="editablePeruste.koulutukset.length === 0" kaanna>ei-koulutuksia</p>
     <table class="table table-condensed table-striped koulutukset" ng-show="editablePeruste.koulutukset.length > 0">
       <thead>
         <tr>
-          <th translate>koulutuksen-nimi</th><th translate>perusteen-koodi</th><th translate>haku-koulutusala</th><th translate>haku-opintoala</th>
+          <th kaanna>koulutuksen-nimi</th>
+          <th kaanna>perusteen-koodi</th>
+          <th kaanna>haku-koulutusala</th>
+          <th kaanna>haku-opintoala</th>
         </tr>
       </thead>
       <tbody>

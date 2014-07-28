@@ -2,9 +2,9 @@
   <h3>{{ 'tutkinnonosat' | kaanna }} ({{ osatutkinnot.length }}kpl)</h3>
   <table class="table">
     <tr>
-      <th translate>tila</th>
-      <th translate>koodi</th>
-      <th translate>nimi</th>
+      <th kaanna>tila</th>
+      <th kaanna>koodi</th>
+      <th kaanna>nimi</th>
       <th></th>
     </tr>
     <tr ng-repeat="ot in osatutkinnot" ng-show="ot.$ladattu !== 0">
@@ -60,8 +60,8 @@
   {{ 'tutkinnonosa-save-fail' | kaanna }}
   <table class="table">
     <tr>
-      <th translate>tutkinnonosa</th>
-      <th translate>syy</th>
+      <th kaanna>tutkinnonosa</th>
+      <th kaanna>syy</th>
     </tr>
     <tr ng-repeat="error in uploadErrors" class="danger">
       <td>{{ error.name | kaanna }}</td>

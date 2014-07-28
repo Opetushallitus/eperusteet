@@ -23,17 +23,17 @@ European Union Public Licence for more details.
       </li>
     </ol>
   </div>
-  <button ng-if="canAddLapsi()" ng-hide="editEnabled || !versiot.latest" ng-click="addLapsi()" class="floater btn btn-default" icon-role="add">{{'lisaa-aliotsikko' | translate}}</button>
-  <button ng-hide="editEnabled" ng-click="kopioiMuokattavaksi()" class="floater btn btn-danger" icon-role="fire">{{'kopioi-muokattavaksi' | translate}}</button>
+  <button ng-if="canAddLapsi()" ng-hide="editEnabled || !versiot.latest" ng-click="addLapsi()" class="floater btn btn-default" icon-role="add">{{'lisaa-aliotsikko' | kaanna}}</button>
+  <button ng-hide="editEnabled" ng-click="kopioiMuokattavaksi()" class="floater btn btn-danger" icon-role="fire">{{'kopioi-muokattavaksi' | kaanna}}</button>
   <div class="floater" ng-attr-title="{{lockNotification}}">
     <button ng-disabled="isLocked" ng-hide="editableTekstikappale.tila !== 'luonnos' || editEnabled || !versiot.latest"
-            ng-click="muokkaa()" class="btn btn-default" icon-role="edit">{{'muokkaa' | translate}}</button>
+            ng-click="muokkaa()" class="btn btn-default" icon-role="edit">{{'muokkaa' | kaanna}}</button>
   </div>
   <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
-  <button ng-if="editEnabled && !isNew" class="btn btn-danger floater" ng-click="poista()" icon-role="remove">{{'poista' | translate}}</button>
+  <button ng-if="editEnabled && !isNew" class="btn btn-danger floater" ng-click="poista()" icon-role="remove">{{'poista' | kaanna}}</button>
   <h1 ng-if="editEnabled">
-    <span ng-show="isNew" translate>luonti-tekstikappale</span>
-    <span ng-show="!isNew" translate>muokkaus-tekstikappale</span>
+    <span ng-show="isNew" kaanna>luonti-tekstikappale</span>
+    <span ng-show="!isNew" kaanna>muokkaus-tekstikappale</span>
   </h1>
   <div class="tekstikappale" ng-class="{'edit-tekstikappale': editEnabled, 'max-sm-leveys': !editEnabled}">
     <div ng-repeat="field in fields | orderBy:'order'" otsikko="{{field.localeKey}}" kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}">

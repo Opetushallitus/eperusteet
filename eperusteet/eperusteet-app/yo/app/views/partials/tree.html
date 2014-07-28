@@ -17,7 +17,7 @@
   <div ng-if="muokkaus" class="skratchpad-wrapper pull-right" follow-scroll>
     <div class="skratchpad-button"><button class="btn btn-default" ng-click="ryhmaModaali(rakenne.$suoritustapa)"><img src="images/ryhma.png" alt=""> {{ 'luo-uusi-ryhma' | kaanna }}</button></div>
     <div class="skratchpad-list">
-      <p class="skratchpad-list-header" translate>leikelauta</p>
+      <p class="skratchpad-list-header" kaanna>leikelauta</p>
       <div ng-if="skratchpad.length === 0" class="skratchpad-help">
       </div>
       <ul ui-sortable="sortableOptions" class="tree-group skratchpad" ng-model="skratchpad">
@@ -39,7 +39,7 @@
       </ul>
     </div>
     <div class="skratchpad-list">
-      <p class="skratchpad-list-header" translate>tutkinnonosat</p>
+      <p class="skratchpad-list-header" kaanna>tutkinnonosat</p>
       <div ng-show="tutkinnonOsat.rajaus || tutkinnonOsat.multiPage" class="tutkinnonosa-rajaus">
         <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia...">
       </div>

@@ -8,13 +8,13 @@
 
 <div ng-repeat="(k, v) in tutkinnonOsa">
     <div ng-if="k === 'koodiUri' && v">
-        <b translate>koodi</b>: {{ v | koodisto }}
+        <b kaanna>koodi</b>: {{ v | koodisto }}
     </div>
     <div ng-if="k === 'opintoluokitus' && v">
-        <b translate>opintoluokitus</b>: {{ v }}
+        <b kaanna>opintoluokitus</b>: {{ v }}
     </div>
     <div ng-if="k === 'osaamisala' && v">
-        <b translate>osaamisala</b>: {{ v | kaanna }}
+        <b kaanna>osaamisala</b>: {{ v | kaanna }}
     </div>
 </div>
 
@@ -60,7 +60,7 @@
             </div>
         </div>
         <div ng-if="k.lisatiedot">
-            <h4 translate>lisätiedot</h4>
+            <h4 kaanna>lisätiedot</h4>
             {{ k.lisatiedot | kaanna }}
         </div>
     </div>

@@ -1,34 +1,34 @@
 <div>
   <revert-note object="tutkinnonOsa" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
-  <button ng-hide="editEnabled" ng-click="kopioiMuokattavaksi()" class="floater btn btn-danger" icon-role="fire">{{'kopioi-muokattavaksi' | translate}}</button>
+  <button ng-hide="editEnabled" ng-click="kopioiMuokattavaksi()" class="floater btn btn-danger" icon-role="fire">{{'kopioi-muokattavaksi' | kaanna}}</button>
   <div class="floater" ng-attr-title="{{lockNotification}}">
     <!-- ng-disabled="isLocked" -->
     <button icon-role="edit" ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()"
-            class="btn btn-default">{{'muokkaa' | translate}}</button>
+            class="btn btn-default">{{'muokkaa' | kaanna}}</button>
   </div>
   <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
-  <a ng-show="!editEnabled" icon-role="back" href="" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat">{{'tutkinnonosat' | translate}}</a>
+  <a ng-show="!editEnabled" icon-role="back" href="" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat">{{'tutkinnonosat' | kaanna}}</a>
   <div ng-if="editEnabled">
     <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsa.id].id)">
-      {{'poista-tutkinnonosa' | translate}}
+      {{'poista-tutkinnonosa' | kaanna}}
     </button>
     <div class="floater">
       <div class="dropdown">
         <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add">
-          {{'muokkaus-lisaa-osio' | translate}}
+          {{'muokkaus-lisaa-osio' | kaanna}}
         </button>
         <ul class="pull-right dropdown-menu">
           <li ng-repeat="field in menuItems | orderBy:'order'">
-            <a ng-show="field.visible" class="disabled-link" translate>muokkaus-{{field.localeKey}}-header</a>
-            <a href="" ng-show="!field.visible" ng-click="addFieldToVisible(field)" translate>muokkaus-{{field.localeKey}}-header</a>
+            <a ng-show="field.visible" class="disabled-link" kaanna>muokkaus-{{field.localeKey}}-header</a>
+            <a href="" ng-show="!field.visible" ng-click="addFieldToVisible(field)" kaanna>muokkaus-{{field.localeKey}}-header</a>
           </li>
         </ul>
       </div>
     </div>
   </div>
   <h1 ng-show="editEnabled">
-    <span ng-show="!isNew" translate>muokkaus-tutkinnon-osa</span>
-    <span ng-show="isNew" translate>luonti-tutkinnon-osa</span>
+    <span ng-show="!isNew" kaanna>muokkaus-tutkinnon-osa</span>
+    <span ng-show="isNew" kaanna>luonti-tutkinnon-osa</span>
   </h1>
   <pikamenu ng-if="tutkinnonOsa.$resolved">
   <!-- <span ng-if="editEnabled" edit-in-place="editableTutkinnonOsa.nimi"></span> -->
@@ -43,7 +43,7 @@
   <hr ng-show="editEnabled">
   <form name="tutkinnonOsaHeaderForm" role="form">
   <div class="non-collapsibles" ng-if="editEnabled">
-      <label for="nimi-input" translate>muokkaus-tutkinnon-osan-nimi-header</label>
+      <label for="nimi-input" kaanna>muokkaus-tutkinnon-osan-nimi-header</label>
     <input id="nimi-input" class="form-control" ng-model="editableTutkinnonOsa.nimi" localized>
     <div ng-if="suoritustapa !== 'naytto'">
     <label for="laajuus-input">{{'tutkinnonosa-laajuus' | kaanna}} ({{ yksikko | kaanna}})</label>

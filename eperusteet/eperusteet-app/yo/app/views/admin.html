@@ -8,11 +8,11 @@
     <div>
         <table class="table table-striped">
             <tr>
-                <th><a href="" ng-click="asetaJarjestys('nimi')" translate>nimi</a></th>
-                <th><a href="" ng-click="asetaJarjestys('haltija')" translate>haltija</a></th>
-                <th><a href="" ng-click="asetaJarjestys('diaarinumero')" translate>diaarinumero-label</a></th>
-                <th><a href="" ng-click="asetaJarjestys('tila')" translate>tila</a></th>
-                <th translate>toiminto</th>
+                <th><a href="" ng-click="asetaJarjestys('nimi')" kaanna>nimi</a></th>
+                <th><a href="" ng-click="asetaJarjestys('haltija')" kaanna>haltija</a></th>
+                <th><a href="" ng-click="asetaJarjestys('diaarinumero')" kaanna>diaarinumero-label</a></th>
+                <th><a href="" ng-click="asetaJarjestys('tila')" kaanna>tila</a></th>
+                <th kaanna>toiminto</th>
             </tr>
             <tr ng-repeat="pp in perusteprojektit | orderBy:jarjestys:jarjestysOrder | filter:rajaaSisaltoa">
                 <td><a href="" ui-sref="perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: pp.id, suoritustapa: 'naytto' })">{{ pp.nimi | kaanna }}</a></td>
@@ -20,7 +20,7 @@
                 <td>{{ pp.diaarinumero }}</td>
                 <td>
                     {{ 'tila-' + pp.tila | kaanna }}
-                    <span ng-show="pp.tila === 'poistettu'">(<a ng-click="palautaPerusteprojekti(pp)" href="" translate>palauta</a>)</span>
+                    <span ng-show="pp.tila === 'poistettu'">(<a ng-click="palautaPerusteprojekti(pp)" href="" kaanna>palauta</a>)</span>
                 </td>
                 <td></td>
             </tr>

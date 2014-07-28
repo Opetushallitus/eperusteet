@@ -4,14 +4,14 @@
   <revert-note object="rakenne" revert-cb="revert(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
   <div class="floater" ng-attr-title="{{lockNotification}}">
     <!-- <button ng-disabled="isLocked" ng-hide="editoi || !versiot.latest" ng-click="muokkaa()" -->
-    <!--         class="btn btn-default" icon-role="edit">{{'muokkaa' | translate}}</button> -->
+    <!--         class="btn btn-default" icon-role="edit">{{'muokkaa' | kaanna}}</button> -->
     <button ng-hide="editoi || !versiot.latest" ng-click="muokkaa()"
-            class="btn btn-default" icon-role="edit">{{'muokkaa' | translate}}</button>
+            class="btn btn-default" icon-role="edit">{{'muokkaa' | kaanna}}</button>
   </div>
   <div class="floater" ng-if="!editoi && isLocked"><lukko tip="lockNotification"></lukko></div>
   <h1>
-    <span ng-show="!editoi" translate>tutkinnon-rakenne</span>
-    <span ng-show="editoi" translate>muokkaus-rakenne</span>
+    <span ng-show="!editoi" kaanna>tutkinnon-rakenne</span>
+    <span ng-show="editoi" kaanna>muokkaus-rakenne</span>
   </h1>
   <versiotiedot ng-hide="editoi"></versiotiedot>
   <div class="tree-presentation">

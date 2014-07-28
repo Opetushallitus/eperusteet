@@ -5,7 +5,7 @@
 <div class="modal-body">
   <input ng-hide="lataa" ng-change="haku(syote, kieli)" type="text" ng-model="syote" class="form-control" placeholder="{{ 'rajaa-tuloksia' | kaanna }}" />
   <input ng-show="lataa" class="form-control" value="{{ 'haetaan-tutkinnon-osia' | kaanna }}" disabled />
-  <p class="results-amount"><span ng-show="!!syote">{{totalItems}} {{'hakutulosta' | translate}}</span></p>
+  <p class="results-amount"><span ng-show="!!syote">{{totalItems}} {{'hakutulosta' | kaanna}}</span></p>
   <div class="results">
     <table class="table table-striped">
       <tr>
@@ -22,5 +22,5 @@
 </div>
 
 <div class="modal-footer">
-  <button class="btn btn-danger" ng-click="peruuta()" translate>peru</button>
+  <button class="btn btn-danger" ng-click="peruuta()" kaanna>peru</button>
 </div>

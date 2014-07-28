@@ -8,17 +8,9 @@
     <p class="alert alert-error" ng-show="innerForm.tmpName.$error.min || innerForm.tmpName.$error.max" translate translate-values="{min:min, max:max}">
       arvo-rajojen-ulkopuolella
     </p>
-    <p class="alert alert-error" ng-show="innerForm.tmpName.$error.number" translate>
-      arvo-ei-numero
-    </p>
-    <p class="alert alert-error" ng-show="!innerForm.tmpName.$error.number && innerForm.tmpName.$error.integer" translate>
-      arvo-ei-kokonaisluku
-    </p>
-    <p class="alert alert-error" ng-show="innerForm.tmpName.$error.float" translate>
-      arvo-ei-desimaaliluku
-    </p>
-    <p class="alert alert-error" ng-show="innerForm.tmpName.$error.step" translate translate-values="{step:step}">
-      arvo-askelvirhe
-    </p>
+    <p class="alert alert-error" ng-show="innerForm.tmpName.$error.number" kaanna>arvo-ei-numero</p>
+    <p class="alert alert-error" ng-show="!innerForm.tmpName.$error.number && innerForm.tmpName.$error.integer" kaanna>arvo-ei-kokonaisluku</p>
+    <p class="alert alert-error" ng-show="innerForm.tmpName.$error.float" kaanna>arvo-ei-desimaaliluku</p>
+    <p class="alert alert-error" ng-show="innerForm.tmpName.$error.step" kaanna translate-values="{step:step}">arvo-askelvirhe</p>
   </div>
 </div>
