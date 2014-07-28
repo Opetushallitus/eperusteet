@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="deploy-to-remote-tomcat" basedir="." default="deploy-to-remote-tomcat" >
+
+    <target name="deploy-to-remote-tomcat">
+<!--
+deploy to luokka shell command:
+#ant -f build.eperusteet.xml -Dtomcat-host=luokka -Dtomcat-port=8422
+-->
+                <property name="oph.name" value="eperusteet"/>
+                <property name="pom.version" value="1.0-SNAPSHOT"/>
+
+                <property name="maven.repo" value="${user.home}/.m2/repository"/>
+                <property name="tomcat.name" value="tomcat_${oph.name}"/>
+                <property name="tomcat.home" value="/data00/oph/${oph.name}/tomcat"/>
+                <property name="ssh.keyfile" location="${user.home}/.ssh/id_rsa"/>
+                <property name="ssh.keypass" value=""/>
+
+        <echo>Stop Tomcat</echo>
+                <sshexec command="/data00/oph/tomcat/ophtomcat ${oph.name} stop"
+                 host="${tomcat-host}" username="tomcat" keyfile="${ssh.keyfile}"
+                 passphrase="${ssh.keypass}" trust="true" failonerror="false" />
+                                
+
+                <echo>Wait Tomcat to stop...</echo>
+        <waitfor maxwait="10000" checkevery="500">
+            <not>
+                <socket server="${tomcat-host}" port="${tomcat-port}" />
+            </not>
+        </waitfor>
+        <echo>Tomcat stopped.</echo>
+
+        <echo>Clean Tomcat</echo>
+        <sshexec command="rm -rf ${tomcat.home}/webapps/* ${tomcat.home}/work/* ${tomcat.home}/temp/*"
+                 host="${tomcat-host}" username="tomcat" keyfile="${ssh.keyfile}"
+                 passphrase="${ssh.keypass}" trust="true" failonerror="false" />
+
+        <echo>Copy files to server...</echo>
+                <scp todir="tomcat@${tomcat-host}:${tomcat.home}/webapps/"
+               keyfile="${ssh.keyfile}" passphrase="${ssh.keypass}" >
+               
+                               <fileset dir="../artifacts/eperusteet/eperusteet-app/target" >
+                                       <include name="eperusteet-app.war"/>
+                               </fileset>
+                        
+                                <fileset dir="../artifacts/eperusteet/eperusteet-service/target" >
+                                       <include name="eperusteet-service.war"/>
+                               </fileset>
+
+                </scp>
+
+                <echo>unzip files to wepabbs -directory...</echo>
+        <sshexec command="mkdir -p ${tomcat.home}/webapps
+cd ${tomcat.home}/webapps
+ls -la
+mkdir eperusteet-app;
+mkdir eperusteet-service;
+
+unzip -qo -deperusteet-app eperusteet-app.war;
+unzip -qo -deperusteet-service eperusteet-service.war;
+rm -rf *.war;"
+                host="${tomcat-host}" username="tomcat" keyfile="${ssh.keyfile}"
+                passphrase="${ssh.keypass}" trust="true" failonerror="false" />
+                        
+                <echo>Remove extra log4j config-files</echo>
+                <sshexec command="find ${tomcat.home} -name 'log4j.properties' -exec rm -rf {} \;"
+                 host="${tomcat-host}" username="tomcat" keyfile="${ssh.keyfile}"
+                 passphrase="${ssh.keypass}" trust="true" failonerror="false" />
+                                
+                <echo>Start Tomcat</echo>
+                <sshexec command="/data00/oph/tomcat/ophtomcat ${oph.name} start"
+                 host="${tomcat-host}" username="tomcat" keyfile="${ssh.keyfile}"
+                 passphrase="${ssh.keypass}" trust="true" failonerror="false" />
+
+                                
+                <echo>Wait for service http-url</echo>
+                <waitfor maxwait="10000" checkevery="500" >
+                        <http url="http://${tomcat-host}/eperusteet-app"/>
+                </waitfor>
+                <fail message="App did not come up. Check your log files, fix and try again. Good Luck :-).">
+                        <condition>
+                                <not>
+                                        <http url="http://${tomcat-host}/eperusteet-app" />
+                                </not>
+                        </condition>
+                </fail>
+                
+        <echo>Successfully deployed to ${tomcat-host}</echo>
+    </target>
+
+</project>

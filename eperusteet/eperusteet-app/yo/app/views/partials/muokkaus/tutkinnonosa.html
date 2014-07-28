@@ -1,0 +1,40 @@
+<button ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="pull-right btn btn-default"><span class="glyphicon glyphicon-pencil"></span>{{'muokkaa' | translate}}</button>
+<a class="iconlink" href="" ui-sref="perusteprojekti.suoritustapa.tutkinnonosat"><span class="glyphicon glyphicon-chevron-left"></span>{{'tutkinnonosat' | translate}}</a>
+<pikamenu ng-if="tutkinnonOsa.$resolved">
+  <span ng-if="editEnabled">{{editableTutkinnonOsa.nimi | kaanna:true}}</span>
+  <span ng-if="!editEnabled">{{tutkinnonOsa.nimi | kaanna:true}}</span>
+  <button ng-if="editEnabled" class="btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsa.id].id)">
+    <span class="glyphicon glyphicon-remove"></span>{{'poista' | translate}}
+  </button>
+</pikamenu>
+
+<versiotiedot ng-hide="editEnabled"></versiotiedot>
+
+<div class="well viitetiedot">
+  <div class="col-md-6">
+    <p ng-hide="editEnabled" ng-if="suoritustapa !== 'naytto' && rakenne.tutkinnonOsat[tutkinnonOsa.id] && rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus">
+      {{'tutkinnonosa-laajuus' | kaanna}}: {{rakenne.tutkinnonOsat[tutkinnonOsa.id].laajuus}} {{rakenne.tutkinnonOsat[tutkinnonOsa.id].yksikko || '' | kaanna}}
+    </p>
+    <div ng-show="editEnabled">
+      <form name="tutkinnonOsaHeaderForm" class="form-horizontal" role="form">
+        <div ng-if="suoritustapa !== 'naytto'" class="form-group">
+          <label class="control-label col-sm-2">{{ 'tutkinnonosa-laajuus' | kaanna }}</label>
+          <div class="col-sm-10">
+            <numberinput luokka="form-control" name="laajuus" data="viiteosa.laajuus" min="0" max="999" form="tutkinnonOsaHeaderForm"></numberinput>
+          </div>
+        </div>
+        <div ng-if="suoritustapa !== 'naytto'" class="form-group">
+          <label class="control-label col-sm-2">{{ 'yksikkö' | kaanna }}</label>
+          <div class="col-sm-8">
+            <div class="btn-group">
+              <button type="button" class="btn btn-default" ng-model="viiteosa.yksikko" btn-radio="'OPINTOVIIKKO'">{{ 'OPINTOVIIKKO' | kaanna }}</button>
+              <button type="button" class="btn btn-default" ng-model="viiteosa.yksikko" btn-radio="'OSAAMISPISTE'">{{ 'OSAAMISPISTE' | kaanna }}</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="clearfix"></div>
+</div>
+<kenttalistaus edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields"></kenttalistaus>

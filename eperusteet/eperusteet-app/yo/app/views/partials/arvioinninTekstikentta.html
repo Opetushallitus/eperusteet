@@ -1,0 +1,39 @@
+<!--
+Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+
+This program is free software: Licensed under the EUPL, Version 1.1 or - as
+soon as they will be approved by the European Commission - subsequent versions
+of the EUPL (the "Licence");
+
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+European Union Public Licence for more details.
+-->
+
+<span class="tekstikentta" ng-hide="muokkaustila" ng-class="{clickable:clickable}">{{teksti | kaanna}}</span>
+<span ng-if="editAllowed">
+  <input class="form-control"
+    ng-show="muokkaustila"
+    ng-model="$parent.teksti"
+    ng-click="estaEventti($event)"
+    ng-blur="asetaMuokkaustila(false)"
+    on-enter="asetaMuokkaustila(false)"
+    focus-me="muokkaustila"
+    localized editointi-kontrolli/>
+  <span ng-click="poistaAlkio(sisalto, sisaltoalue)" ng-show="!muokkaustila"
+    editointi-kontrolli class="glyphicon glyphicon-remove clickable pull-right badge"> </span>
+  <span ng-click="asetaMuokkaustila(true, $event)" ng-show="!muokkaustila"
+    editointi-kontrolli class="glyphicon glyphicon-pencil clickable pull-right badge"> </span>
+  <span ng-click="siirraAlas(sisalto, sisaltoalue, $event)" ng-show="!muokkaustila && $parent.$parent.$index !== sisaltoalue.length-1"
+    editointi-kontrolli class="glyphicon glyphicon-arrow-down clickable pull-right badge"> </span>
+  <span ng-click="siirraYlos(sisalto, sisaltoalue, $event)" ng-show="!muokkaustila && $parent.$parent.$index !== 0"
+    editointi-kontrolli class="glyphicon glyphicon-arrow-up clickable pull-right badge"> </span>
+  <span ng-show="muokkaustila">
+    <button class="btn btn-primary btn-xs" ng-click="hyvaksyMuutos()" translate>ok</button>
+    <button class="btn btn-default btn-xs" ng-click="peruMuutos()" translate>peru</button>
+  </span>
+</span>

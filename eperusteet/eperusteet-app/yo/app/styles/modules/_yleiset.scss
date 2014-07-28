@@ -1,0 +1,56 @@
+.max-sm-leveys {
+  @media (min-width: $screen-sm-min) {
+    max-width: $screen-sm-min;
+  }
+}
+
+.iso-valinta {
+  cursor: pointer;
+  border: 1px solid $nav-tabs-border-color;
+  text-align: center;
+  vertical-align: middle;
+  margin-top: 10px;
+  &:hover {
+    border: 1px solid black;
+  }
+  h3 {
+    margin-bottom: 20px;
+  }
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+h1 {
+  margin-bottom: 30px;
+  .btn {
+    margin-left: 10px;
+  }
+}
+
+.modal-body {
+  .form-horizontal {
+    margin-left: 10px;
+    margin-right: 20px;
+  }
+}
+
+button {
+  .glyphicon {
+    margin-right: 5px;
+  }
+}
+
+/* ikoni + linkkiteksti */
+a.iconlink > .glyphicon {
+  margin-right: 5px;
+}
+
+/* animointia varten */
+.ng-hide-add, .ng-hide-remove {
+  display: block !important;
+}
+
+.editointi-wrapper {
+  margin-top: 20px;
+  margin-bottom: 50px;
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+
+This program is free software: Licensed under the EUPL, Version 1.1 or - as
+soon as they will be approved by the European Commission - subsequent versions
+of the EUPL (the "Licence");
+
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+European Union Public Licence for more details.
+-->
+<div class="row">
+  <div class="col-xs-12 sidebar">
+    <div ng-controller="SuosikitCtrl">
+      <div class="panel panel-default">
+        <div class="panel-heading" translate>suosikit-otsikko</div>
+        <div class="panel-body">
+          <ul class="list-unstyled">
+            <li class="ellipsis-no-wrap" ng-repeat="suosikki in suosikit| limitTo:suosikkiRaja" ><a title="{{suosikki.nimi | kaanna}}" ng-click="resetNavi()" ng-href="{{suosikki.url}}">{{suosikki.nimi|kaanna}} ({{suosikki.suoritustapakoodi|kaanna}})</a></li>
+          </ul>
+          <button class="btn btn-default btn-xs pull-right" ng-show="naytaSuosikkiNappi" ng-click="muutaSuosikkiMaara()">{{suosikkiNapinTeksti| translate}}</button>
+        </div>
+      </div>
+    </div>
+    <div ng-controller="OmatperusteprojektitCtrl">
+      <div class="panel panel-default">
+        <div class="panel-heading" >{{'perusteprojektit-otsikko'| translate}}</div>
+        <div class="panel-body">
+          <a class="btn btn-default btn-xs" title="{{'uusi-projekti'| translate}}" ui-sref="perusteprojektiwizard.tiedot" translate>uusi-projekti</a>
+          <!--a class="btn btn-default btn-xs" title="{{'uusi-projekti'| translate}}" ui-sref="perusteprojekti.tiedot.uusi({ perusteProjektiId: 'uusi' })" translate>uusi-projekti</a-->
+          <ul class="list-unstyled">
+            <li class="ellipsis-no-wrap" ng-repeat="projekti in projektit| limitTo:projektitRaja" ><a title="{{projekti.nimi}}" href="{{ projekti.url}}">{{projekti.diaarinumero}}: {{projekti.nimi}}</a></li>
+          </ul>
+          <button class="btn btn-default btn-xs pull-right" ng-show="naytaProjektitNappi" ng-click="muutaProjektienMaara()">{{projektitNapinTeksti| translate}}</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">Tiedotteet</div>
+      <div class="panel-body">
+        <ul class="list-unstyled">
+          <li>Tiedote 1</li>
+          <li>Peruste muuttui</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

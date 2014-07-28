@@ -1,0 +1,93 @@
+$avatar-koko: 64px;
+.ryhma-rooli {
+  margin-right: 30px;
+  max-width: 900px;
+  position: relative;
+  h3 {
+    padding-bottom: 10px;
+    border-bottom: 1px solid $erotin-vari;
+  }
+}
+.ryhma-jasen {
+  float: left;
+  border: 2px solid darken($nav-tabs-border-color, 20%);
+  height: 104px;
+  width: 360px;
+  padding: 15px;
+  margin: 10px;
+  margin-right: 30px;
+  position: relative;
+}
+.ryhma-jasen-avatar {
+  background-color: $nav-tabs-border-color;
+  float: left;
+  width: $avatar-koko;
+  height: $avatar-koko;
+  overflow: hidden;
+}
+.ryhma-jasen-tiedot {
+  margin-left: $avatar-koko + 15px;
+  word-break: break-all;
+  p {
+    margin-bottom: 3px;
+  }
+  h4 {
+    margin-top: 0;
+    padding-top: 0;
+  }
+}
+.ryhma-jasen-muokkaus {
+  width: 85%;
+}
+.ryhma-jasen-muokkausnappi {
+  color: #888;
+  cursor: pointer;
+  width: 21px;
+  height: 21px;
+  @include borderradius(4px);
+  border: solid 1px #ccc;
+  padding: 2px;
+  position: absolute;
+  top: 7px;
+  right: 7px;
+}
+.nimikirjain-avatar {
+  text-align: center;
+  line-height: $avatar-koko;
+  font-weight: bold;
+  font-size: $avatar-koko / 2;
+}
+.ryhma-johto {
+  .ryhma-rooli {
+    float: left;
+  }
+}
+.ryhma-jasenet {
+  min-width: 900px;
+  .ryhma-rooli {
+    margin-right: 0;
+  }
+  .ryhma-jasen {
+    margin-right: 60px;
+  }
+  h3 {
+    border: none;
+  }
+  h3:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 30px;
+    height: 1px;
+    width: 830px;
+    border-bottom: 1px solid $erotin-vari;
+  }
+}
+@media (max-width: 949px) {
+  .ryhma-jasenet {
+    min-width: 400px;
+    h3:before {
+      width: 400px;
+    }
+  }
+}

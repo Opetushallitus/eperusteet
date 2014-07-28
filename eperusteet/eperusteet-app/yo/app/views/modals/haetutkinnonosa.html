@@ -1,0 +1,49 @@
+<div modal="modalVisible" close="close()" options="{windowClass:'modal-to-haku'}">
+  <div class="modal-header">
+    <h1>Hae tutkinnon osia</h1>
+    <h3 ng-if="!haku">{{ valittu.nimi | kaanna }}</h3>
+  </div>
+
+  <div class="modal-body">
+    <div ng-show="haku">
+      <label>Tutkinnon nimellä</label>
+      <input ng-change="hakuMuuttui()" ng-model="data.hakustr" class="form-control" type="text" placeholder="Hae tutkintoja..."></input>
+      <p class="results-amount">{{perusteet['kokonaismäärä']}} {{'hakutulosta' | kaanna}}</p>
+      <div class="results">
+        <table class="table table-striped">
+          <tr>
+            <th translate>haku-nimi</th><th translate>haku-voimaantulopvm</th>
+          </tr>
+          <tr ng-repeat="peruste in perusteet.data">
+            <td><a href=""ng-click="jatka(peruste)">{{ peruste.nimi | kaanna }}</a></td>
+            <td>{{peruste.voimassaoloAlkaa|date:'dd.MM.yyyy'}}</td>
+          </tr>
+        </table>
+      </div>
+      <pagination ng-model="data.nykyinensivu" ng-change="paivitaHaku()"
+                  total-items="perusteet['kokonaismäärä']" items-per-page="sivukoko"
+                  boundary-links="true"></pagination>
+    </div>
+    <div ng-hide="haku">
+      <table class="table table-striped">
+        <tr>
+          <th>Valitse</th>
+          <th>Tutkinnon osa</th>
+          <th>Laajuus</th>
+        </tr>
+        <tr ng-repeat="osa in perusteenosat">
+          <td class="has-checkbox"><input ng-model="osa.$valitse" type="checkbox" class="form-control"></td>
+          <td>{{ osa.nimi | kaanna }}</td>
+          <td>{{ osa.laajuus}}</td>
+        </tr>
+      </table>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+
+  <div class="modal-footer">
+    <button ng-hide="haku" class="btn" ng-click="takaisin()">{{ 'takaisin' | kaanna }}</button>
+    <button ng-show="!haku" class="btn btn-primary" ng-click="valitse()">{{ 'tuo-valitut' | kaanna }}</button>
+    <button class="btn" ng-click="peruuta()">{{ 'peru' | kaanna }}</button>
+  </div>
+</div>

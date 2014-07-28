@@ -1,0 +1,2 @@
+ALTER TABLE peruste
+    ADD COLUMN koodiUri VARCHAR(255);

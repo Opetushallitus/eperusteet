@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/eperusteet-service">
+  <ResourceLink global="jdbc/eperusteet" name="jdbc/eperusteet" type="javax.sql.DataSource"/>
+</Context>

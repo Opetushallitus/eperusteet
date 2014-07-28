@@ -1,0 +1,31 @@
+<h1>
+  {{'tutkinnonosat' | kaanna}}
+    <button class="btn btn-default" ng-click="lisaaTutkinnonOsa()">
+      <span class="glyphicon glyphicon-plus"></span>{{ 'lisää' | kaanna }}
+    </button>
+    <button class="btn btn-default" ng-click="tuoTutkinnonosa()">
+      <span class="glyphicon glyphicon-cloud-download"></span>{{ 'tuo-tutkinnonosa' | kaanna }}
+    </button>
+</h1>
+
+<div ng-if="rakenne.$resolved">
+  <div ng-show="rakenne.tutkinnonOsat.length === 0">
+    <h3>{{ tutkinnon-osia-ei-ole | kaanna }}</h3>
+  </div>
+  <div ng-hide="rakenne.tutkinnonOsat.length === 0" class="rajauslaatikko">
+    <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia...">
+  </div>
+
+  <ul class="list-group tutkinnonosat">
+  <li class="tutkinnonosa-laatikko list-group-item" ng-repeat="(k, v) in rakenne.tutkinnonOsat | mapFilter:rajaaTutkinnonOsia" ng-click="navigoiTutkinnonosaan(v)">
+    <div ng-hide="editoi" class="muokkaus">
+       <span class="glyphicon glyphicon-chevron-right"></span>
+    </div>
+    <div class="otsikko">
+      <h3>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}<span class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && v.laajuus">{{ v.laajuus }} {{ v.yksikko || '' | kaanna }}</span></h3>
+    </div>
+    <div class="clearfix"></div>
+  </li>
+  </ul>
+
+</div>
