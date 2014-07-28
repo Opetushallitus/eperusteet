@@ -30,52 +30,93 @@ European Union Public Licence for more details.
 <div class="clearfix"></div>
 <form class="form-horizontal" name="perusteForm" role="form" novalidate>
   <div ng-form="projektinPerusteForm">
-    <div class="form-area" ng-class="{viewmode: !editEnabled}">
 
-      <div class="form-group-wrapper" ng-if="editEnabled">
-        <formfield model="editablePeruste" model-var="nimi" label="perusteen-nimi"></formfield>
-        <formfield model="editablePeruste" model-var="kuvaus" label="tiivistelmä" type="textarea"></formfield>
-        <formfield model="editablePeruste" model-var="voimassaoloAlkaa" label="voimaantulo-pvm" type="date"
-        placeholder="anna-voimaantulo-pvm"></formfield>
-        <formfield model="editablePeruste" model-var="voimassaoloLoppuu" label="voimassaolo-paattymispvm" type="date"
-        placeholder="anna-voimaantulo-loppu-pvm"></formfield>
+    <div class="panel panel-default panel-clean">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{'peruste-koulutukset' | kaanna}}</h3>
       </div>
+      <div class="panel-body">
+        <p ng-show="editablePeruste.koulutukset.length === 0 && !editEnabled" translate>ei-koulutuksia</p>
+        <div class="koulutukset" ng-show="editablePeruste.koulutukset.length > 0">
+          <div class="koulutus" ng-repeat="koulutus in editablePeruste.koulutukset">
+            <div class="poisto" ng-if="editEnabled">
+              <button icon-role="remove" class="btn btn-default btn-xs" ng-click="poistaKoulutus(koulutus.koulutuskoodi)">{{'poista' | kaanna}}</button>
+            </div>
+            <table class="aligned">
+              <tr>
+                <th>{{'koulutuksen-nimi' | kaanna}}</th>
+                <td>{{koulutus.nimi| kaanna}}</td>
+              </tr>
+              <tr>
+                <th>{{'perusteen-koodi' | kaanna}}</th>
+                <td>{{koulutus.koulutuskoodi | koodisto}}</td>
+              </tr>
+              <tr>
+                <th>{{'haku-koulutusala' | kaanna}}</th>
+                <td>{{koulutusalaNimi(koulutus.koulutusalakoodi).nimi | kaanna}}</td>
+              </tr>
+              <tr>
+                <th>{{'haku-opintoala' | kaanna}}</th>
+                <td>{{opintoalaNimi(koulutus.opintoalakoodi).nimi | kaanna}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
 
+        <div>
+          <button ng-if="editEnabled" icon-role="add" class="btn btn-default" type="button"
+                  ng-click="avaaKoodistoModaali()" ng-disabled="hakemassa">{{ "lisaa-koulutus" | kaanna }}</button>
+        </div>
+      </div>
+    </div>
 
-      <div ng-if="!editEnabled">
-        <table class="perustiedot">
-          <tr><th kaanna>perusteen-nimi</th><td>{{ peruste.nimi | kaanna }}</td></tr>
-          <tr><th kaanna>tiivistelmä</th><td>{{ peruste.kuvaus | kaanna }}</td></tr>
+    <!-- *** TODO: backend-tuki laajuudelle ***
+    <div class="panel panel-default panel-clean">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{'laajuus' | kaanna}} ({{peruste.laajuus.yksikko}})</h3>
+      </div>
+      <div class="panel-body">
+        <div ng-if="editEnabled">
+          <formfield model="editablePeruste" model-var="laajuus.min" label="vahintaan" type="float" step="0.5"></formfield>
+          <formfield model="editablePeruste" model-var="laajuus.max" label="enintaan" type="float" step="0.5"></formfield>
+        </div>
+        <table class="aligned" ng-show="!editEnabled">
+          <tr><th>{{'vahintaan' | kaanna}}</th><td>{{peruste.laajuus.min | tyhja}}</td></tr>
+          <tr><th>{{'enintaan' | kaanna}}</th><td>{{peruste.laajuus.max | tyhja}}</td></tr>
+        </table>
+      </div>
+    </div> -->
+
+    <div class="panel panel-default panel-clean">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{'tiivistelmä' | kaanna}}</h3>
+      </div>
+      <div class="panel-body">
+        <ml-input ng-show="editEnabled" ml-data="editablePeruste.kuvaus" type="textarea"></ml-input>
+        <p ng-show="hasContent(peruste.kuvaus) && !editEnabled">{{ peruste.kuvaus | kaanna }}</p>
+        <p ng-show="!hasContent(peruste.kuvaus) && !editEnabled">{{'ei-tiivistelmaa' | kaanna}}</p>
+      </div>
+    </div>
+
+    <div class="panel panel-default panel-clean">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{'voimassaolo' | kaanna}}</h3>
+      </div>
+      <div class="panel-body">
+        <div ng-if="editEnabled">
+          <formfield model="editablePeruste" model-var="voimassaoloAlkaa" label="voimaantulo-pvm" type="date"
+          placeholder="anna-voimaantulo-pvm"></formfield>
+          <formfield model="editablePeruste" model-var="voimassaoloLoppuu" label="voimassaolo-paattymispvm" type="date"
+          placeholder="anna-voimaantulo-loppu-pvm"></formfield>
+        </div>
+
+        <table class="aligned" ng-show="!editEnabled">
           <tr><th kaanna>voimaantulo-pvm</th><td pvm="peruste.voimassaoloAlkaa"></td></tr>
           <tr><th kaanna>voimassaolo-paattymispvm</th><td pvm="peruste.voimassaoloLoppuu"></td></tr>
         </table>
       </div>
-
     </div>
 
-    <h3 kaanna>peruste-koulutukset</h3>
-    <p ng-show="editablePeruste.koulutukset.length === 0" kaanna>ei-koulutuksia</p>
-    <table class="table table-condensed table-striped koulutukset" ng-show="editablePeruste.koulutukset.length > 0">
-      <thead>
-        <tr>
-          <th kaanna>koulutuksen-nimi</th>
-          <th kaanna>perusteen-koodi</th>
-          <th kaanna>haku-koulutusala</th>
-          <th kaanna>haku-opintoala</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="koulutus in editablePeruste.koulutukset">
-          <td><a href="" ng-if="editEnabled" ng-click="poistaKoulutus(koulutus.koulutuskoodi)">×</a> {{koulutus.nimi| kaanna}}</td>
-          <td>{{koulutus.koulutuskoodi}}</td>
-          <td>{{koulutusalaNimi(koulutus.koulutusalakoodi).nimi | kaanna}}</td>
-          <td>{{opintoalaNimi(koulutus.opintoalakoodi).nimi | kaanna}}</td>
-        </tr>
-      </tbody>
-    </table>
-    <div>
-      <button ng-if="editEnabled" icon-role="add" class="btn btn-default" type="button" ng-click="avaaKoodistoModaali()" ng-disabled="hakemassa" kaanna>lisaa-koulutus</button>
-    </div>
+
   </div>
 </form>
-

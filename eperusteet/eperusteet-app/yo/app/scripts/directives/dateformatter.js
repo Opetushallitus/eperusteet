@@ -43,13 +43,13 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('pvm', function () {
+  .directive('pvm', function (Kaanna) {
     return {
       restrict: 'A',
       link: function (scope, element, attrs) {
         scope.$watch(attrs.pvm, function (value) {
           if (!value) {
-            element.text('');
+            element.text(Kaanna.kaanna('ei-asetettu'));
             return;
           }
           var date = new Date(value);

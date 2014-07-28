@@ -65,4 +65,10 @@ angular.module('eperusteApp')
       }
       return date + ' (' + ago + ')';
     };
+  })
+
+  .filter('tyhja', function (Kaanna) {
+    return function (input) {
+      return _.isEmpty(input) ? Kaanna.kaanna('ei-asetettu') : input;
+    };
   });

@@ -20,7 +20,8 @@
 angular.module('eperusteApp')
   .controller('PerusteenTiedotCtrl', function($scope, $stateParams, $state,
     Koodisto, Perusteet, YleinenData, PerusteProjektiService,
-    perusteprojektiTiedot, Notifikaatiot, Pdf, Editointikontrollit, Kaanna) {
+    perusteprojektiTiedot, Notifikaatiot, Pdf, Editointikontrollit, Kaanna,
+    Varmistusdialogi, $timeout, $rootScope) {
 
     $scope.editEnabled = false;
     var editingCallbacks = {
@@ -40,6 +41,10 @@ angular.module('eperusteApp')
       },
       notify: function (mode) {
         $scope.editEnabled = mode;
+        // Fix msd-elastic issue of setting incorrect initial height
+        $timeout(function () {
+          $rootScope.$broadcast('elastic:adjust');
+        });
       }
     };
     Editointikontrollit.registerCallback(editingCallbacks);
@@ -82,9 +87,20 @@ angular.module('eperusteApp')
       return koodi.koodi.indexOf('_3') !== -1;
     };
 
+    $scope.hasContent = function (value) {
+      if (_.isEmpty(value)) {
+        return false;
+      }
+      if (_.isObject(value)) {
+        return _.any(_.values(value));
+      }
+      return !!value;
+    };
+
     $scope.koodistoHaku = function(koodisto) {
       angular.forEach(YleinenData.kielet, function(value) {
         if (_.isEmpty($scope.editablePeruste.nimi[value]) && !_.isNull(koodisto.nimi[value])) {
+          // Nimi määräytyy ensimmäisen lisätyn koulutuksen perusteella
           $scope.editablePeruste.nimi[value] = koodisto.nimi[value];
         }
       });
@@ -209,9 +225,19 @@ angular.module('eperusteApp')
     };
 
     $scope.poistaKoulutus = function (koulutuskoodi) {
-      $scope.editablePeruste.koulutukset = _.remove($scope.editablePeruste.koulutukset, function(koulutus) {
-        return koulutus.koulutuskoodi !== koulutuskoodi;
-      });
+      Varmistusdialogi.dialogi({
+        otsikko: 'vahvista-poisto',
+        teksti: 'poistetaanko-koulutus',
+        primaryBtn: 'poista',
+        successCb: function () {
+          $scope.editablePeruste.koulutukset = _.remove($scope.editablePeruste.koulutukset, function(koulutus) {
+            return koulutus.koulutuskoodi !== koulutuskoodi;
+          });
+          if (_.isEmpty($scope.editablePeruste.koulutukset)) {
+            $scope.editablePeruste.nimi = {};
+          }
+        }
+      })();
     };
 
     $scope.koulutusalaNimi = function(koodi) {

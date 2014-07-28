@@ -320,9 +320,48 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   }
 }
 
-table.koulutukset td a {
-  font-size: 20px;
-  line-height: 14px;
+.panel-clean {
+  max-width: 900px;
+  table.aligned {
+    margin: 10px 0px;
+    th, td {
+      padding: 10px 0px;
+    }
+    th {
+      width: 160px;
+    }
+  }
+}
+.panel-clean, .panel-clean .panel-heading {
+  background-color: transparent;
+  border: 0;
+  box-shadow: none;
+  .panel-heading {
+    padding-left: 0;
+    .panel-title {
+      font-size: 18px;
+    }
+  }
+}
+
+
+.koulutukset {
+  .koulutus {
+    border: 1px solid #ddd;
+    max-width: 600px;
+    margin-bottom: 10px;
+    .poisto {
+      margin-top: 5px;
+      margin-right: 5px;
+      float: right;
+    }
+    table.aligned {
+      margin-left: 10px;
+      th, td {
+        padding-left: 10px;
+      }
+    }
+  }
 }
 
 .input-group-btn.textarea-selector {

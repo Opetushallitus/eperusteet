@@ -404,10 +404,12 @@
     "excel-luetaan-tutkinnonosia": "Luetaan tutkinnonosia",
     "excel": "Excel",
     "liitä-suoritustapaan": "Liitettävä suoritustapa",
+    "voimassaolo": "Voimassaolo",
     "voimassaoloAlkaa": "Voimassaolo alkaa",
     "voimassaoloLoppuu": "Voimassaolo päättyy",
     "siirtymaAlkaa": "Siirtymäaika alkaa",
     "ei-päättymis-päivämäärää": "Ei määritetty",
+    "ei-asetettu": "Ei asetettu",
 
     "tekstisisällön-tuonti": "Tekstisisällön tuonti",
     "hae-perusteita": "Hae perusteita",
@@ -431,8 +433,8 @@
     "luo-dokumentti-kielella-fi": "Luo suomenkielinen dokumentti",
     "luo-dokumentti-kielella-sv": "Luo ruotsinkielinen dokumentti",
 
-    "voimaantulo-pvm": "Voimaantulo pvm",
-    "voimassaolo-paattymispvm": "Voimassaolon päättymispäivämäärä",
+    "voimaantulo-pvm": "Voimaantulo",
+    "voimassaolo-paattymispvm": "Voimassaolon päättyminen",
     "anna-voimaantulo-pvm": "Anna voimaantulopäivämäärä",
     "anna-voimaantulo-loppu-pvm": "Anna voimassaolon päättymispäivämäärä",
 
@@ -470,6 +472,8 @@
     "perusteen-nimi": "Perusteen nimi",
     "anna-perusteen-nimi": "Syötä perusteen nimi",
     "koulutuksen-nimi": "Koulutuksen nimi",
+    "vahvista-poisto": "Vahvista poisto",
+    "poistetaanko-koulutus": "Poistetaanko koulutus?",
 
     "ok": "OK",
 
