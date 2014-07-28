@@ -35,6 +35,14 @@ angular.module('eperusteApp')
       }
     };
   })
+  .directive('kaanna', function(Kaanna) {
+    return {
+      restrict: 'A',
+      link: function(scope, el) {
+        el.context.innerText = Kaanna.kaanna(el.context.innerText);
+      }
+    };
+  })
   .filter('kaanna', function(Kaanna) {
     return Kaanna.kaanna;
   });
