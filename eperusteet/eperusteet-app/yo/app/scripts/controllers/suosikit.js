@@ -33,9 +33,8 @@ angular.module('eperusteApp')
 
     $scope.resetNavi = Navigaatiopolku.clear;
 
-    var paivitaSuosikit = function(suosikit) {
-      suosikit.reverse();
-      $scope.suosikit = suosikit;
+    var paivitaSuosikit = function() {
+      $scope.suosikit = SuosikkiTemp.listaa().reverse();
     };
 
     paivitaSuosikit(SuosikkiTemp.listaa());

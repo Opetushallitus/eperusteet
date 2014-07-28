@@ -169,7 +169,9 @@ angular.module('eperusteApp')
     $scope.suosikkiHelper = function(state, stateParams, nimi) {
       $scope.onSuosikki = SuosikkiTemp.hae(state, stateParams);
       $scope.asetaSuosikki = function() {
-        $scope.onSuosikki = SuosikkiTemp.aseta(state, stateParams, Kaanna.kaanna($scope.peruste.nimi) + ' - ' + (Kaanna.kaanna(nimi) || '') + ' (' + Kaanna.kaanna($scope.suoritustapa) + ')');
+        SuosikkiTemp.aseta(state, stateParams, Kaanna.kaanna($scope.peruste.nimi) + ' - ' + (Kaanna.kaanna(nimi) || '') + ' (' + Kaanna.kaanna($scope.suoritustapa) + ')', function() {
+          $scope.onSuosikki = SuosikkiTemp.hae(state, stateParams);
+        });
       };
     };
   });

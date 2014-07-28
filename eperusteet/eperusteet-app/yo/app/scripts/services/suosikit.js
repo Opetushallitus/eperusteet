@@ -21,7 +21,7 @@ angular.module('eperusteApp')
   .factory('Suosikit', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/kayttajaprofiili/suosikki/:suosikkiId', {});
   })
-  .service('SuosikkiTemp', function($state, $rootScope, Suosikit, Notifikaatiot) {
+  .service('SuosikkiTemp', function($state, $rootScope, Suosikit, Notifikaatiot, Kayttajaprofiilit) {
     var suosikit = [];
 
     function isSame(paramsA, paramsB) {
@@ -30,32 +30,46 @@ angular.module('eperusteApp')
       });
     }
 
+    function transform(uudetSuosikit) {
+      return _.map(uudetSuosikit, function(s) {
+        s.parametrit = JSON.parse(s.parametrit);
+        s.$url = $state.href(s.tila, s.parametrit);
+        return s;
+      });
+    }
+
+    Kayttajaprofiilit.get({}, function(res) {
+      suosikit = transform(res.suosikit);
+      $rootScope.$broadcast('suosikitMuuttuivat');
+    });
+
     return {
-      aseta: function(state, stateParams, nimi) {
+      aseta: function(state, stateParams, nimi, success) {
+        success = success || angular.noop;
+
         var vanha = _(suosikit).filter(function(s) {
           return state.current.name === s.tila && isSame(stateParams, s.parametrit);
-        }).first();
+        })
+        .first();
 
-        var re;
         if (!_.isEmpty(vanha)) {
           _.remove(suosikit, vanha);
-        }
-        else {
-          var uusi = {
-            tila: state.current.name,
-            parametrit: stateParams,
-            nimi: nimi
-          };
-
-          Suosikit.add(uusi, function(res) {
-            res.$url = $state.href(state.current.name, stateParams);
-            suosikit.push(res);
-            re = res;
+          Suosikit.delete({ suosikkiId: vanha.id }, function() {
+            success(_.clone(suosikit));
+            $rootScope.$broadcast('suosikitMuuttuivat');
           }, Notifikaatiot.serverCb);
         }
-
-        $rootScope.$broadcast('suosikitMuuttuivat', _.clone(suosikit));
-        return re;
+        else {
+          Suosikit.save({
+            tila: state.current.name,
+            parametrit: JSON.stringify(stateParams),
+            nimi: nimi
+          }, function(res) {
+            suosikit = transform(res.suosikit);
+            success();
+            $rootScope.$broadcast('suosikitMuuttuivat');
+          }, Notifikaatiot.serverCb);
+        }
       },
       listaa: function() {
         return _.clone(suosikit);
