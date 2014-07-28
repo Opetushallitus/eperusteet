@@ -19,7 +19,7 @@
            ng-href="{{item.href}}" ep-highlight="search.term">{{item.label|kaanna}}</a>
       </div>
       <div class="list-group-item" ng-show="!hasResults">
-        <p translate>ei-tuloksia</p>
+        <p>{{ ei-tuloksia | kaanna }}</p>
       </div>
     </div>
   </div>

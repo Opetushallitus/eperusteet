@@ -80,11 +80,6 @@ public class DtoMapperConfig {
         factory.classMap(PerusteprojektiDto.class, Perusteprojekti.class)
                 .byDefault()
                 .register();
-        factory.classMap(SuosikkiDto.class, Suosikki.class)
-                .fieldBToA("peruste.id", "perusteId")
-                .fieldBToA("peruste.nimi", "nimi")
-                .byDefault()
-                .register();
         factory.classMap(AbstractRakenneOsaDto.class, AbstractRakenneOsa.class)
                 .byDefault()
                 .register();

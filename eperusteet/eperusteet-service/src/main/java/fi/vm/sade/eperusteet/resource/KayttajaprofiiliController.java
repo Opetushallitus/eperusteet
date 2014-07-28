@@ -69,12 +69,6 @@ public class KayttajaprofiiliController {
     @RequestMapping(value = "/suosikki", method = POST, consumes="application/json")
     @ResponseBody
     public ResponseEntity<KayttajaProfiiliDto> addSuosikki(@RequestBody SuosikkiDto suosikkiDto) {
-        LOG.info("addSuosikki {}", suosikkiDto.getPerusteId());
-
-        PerusteDto peruste = perusteService.getByIdAndSuoritustapa(suosikkiDto.getPerusteId(), suosikkiDto.getSuoritustapakoodi());
-        if (peruste == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         KayttajaProfiiliDto profiiliDto = service.addSuosikki(suosikkiDto);
         return new ResponseEntity<>(profiiliDto, HttpStatus.CREATED);
     }

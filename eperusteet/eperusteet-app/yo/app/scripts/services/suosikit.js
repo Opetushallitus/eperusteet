@@ -21,16 +21,7 @@ angular.module('eperusteApp')
   .factory('Suosikit', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/kayttajaprofiili/suosikki/:suosikkiId', {});
   })
-  .factory('Suosikitbroadcast', function($rootScope) {
-    var suosikitbroadcast = {};
-
-    suosikitbroadcast.suosikitMuuttuivat = function() {
-      $rootScope.$broadcast('suosikitMuuttuivat');
-    };
-
-    return suosikitbroadcast;
-  })
-  .service('SuosikkiTemp', function($state, $rootScope) {
+  .service('SuosikkiTemp', function($state, $rootScope, Suosikit, Notifikaatiot) {
     var suosikit = [];
 
     function isSame(paramsA, paramsB) {
@@ -50,14 +41,17 @@ angular.module('eperusteApp')
           _.remove(suosikit, vanha);
         }
         else {
-          suosikit.push({
+          var uusi = {
             tila: state.current.name,
             parametrit: stateParams,
-            nimi: nimi,
-            url: $state.href(state.current.name, stateParams),
-            lisatty: new Date()
-          });
-          re = _.last(suosikit);
+            nimi: nimi
+          };
+
+          Suosikit.add(uusi, function(res) {
+            res.$url = $state.href(state.current.name, stateParams);
+            suosikit.push(res);
+            re = res;
+          }, Notifikaatiot.serverCb);
         }
 
         $rootScope.$broadcast('suosikitMuuttuivat', _.clone(suosikit));
