@@ -156,7 +156,7 @@ public class PerusteController {
     public RakenneModuuliDto updatePerusteenRakenne(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
             @RequestBody UpdateDto<RakenneModuuliDto> rakenne) {
         LOG.info("Kommentti: " + rakenne.getMetadata());
-        return service.updateTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), rakenne.getDto());
+        return service.updateTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), rakenne);
     }
 
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/tutkinnonosat", method = GET)

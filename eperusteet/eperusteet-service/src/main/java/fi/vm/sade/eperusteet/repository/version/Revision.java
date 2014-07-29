@@ -27,10 +27,14 @@ public class Revision implements Serializable {
 
 	private Integer number;
 	private Date date;
+    private String muokkaajaOid;
+    private String kommentti;
 
-	public Revision(Integer number, Long timestamp) {
+	public Revision(Integer number, Long timestamp, String muokkaajaOid, String kommentti) {
 		this.number = number;
-		date = new Date(timestamp);
+		this.date = new Date(timestamp);
+        this.muokkaajaOid = muokkaajaOid;
+        this.kommentti = kommentti;
 	}
 
 	@Override

@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.repository.version;
 
 import fi.vm.sade.eperusteet.domain.RevisionInfo;
+import fi.vm.sade.eperusteet.domain.RevisionInfo_;
 import fi.vm.sade.eperusteet.service.impl.PerusteenOsaServiceImpl;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -53,14 +54,16 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
         List<Object[]> results = (List<Object[]>) auditReader.createQuery()
             .forRevisionsOfEntity(entityInformation.getJavaType(), false, true)
             .addProjection(AuditEntity.revisionNumber())
-            .addProjection(AuditEntity.revisionProperty("timestamp"))
-            .addOrder(AuditEntity.revisionProperty("timestamp").desc())
+            .addProjection(AuditEntity.revisionProperty(RevisionInfo_.timestamp.getName()))
+            .addProjection(AuditEntity.revisionProperty(RevisionInfo_.muokkaajaOid.getName()))
+            .addProjection(AuditEntity.revisionProperty(RevisionInfo_.kommentti.getName()))
+            .addOrder(AuditEntity.revisionProperty(RevisionInfo_.timestamp.getName()).desc())
             .add(AuditEntity.id().eq(id))
             .getResultList();
 
         List<Revision> revisions = new ArrayList<>();
         for (Object[] result : results) {
-            revisions.add(new Revision((Integer) result[0], (Long) result[1]));
+            revisions.add(new Revision((Integer) result[0], (Long) result[1], (String)result[2], (String)result[3]));
         }
 
         return revisions;
