@@ -104,6 +104,12 @@ angular.module('eperusteApp')
       });
     };
 
+    $scope.peruutaRakenteenMuokkaus = function() {
+      $state.go($state.current.name, $stateParams, {
+        reload: true
+      });
+    };
+
     $scope.createSisalto = function() {
       lisaaSisalto('save', {}, function(response) {
         TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
@@ -140,6 +146,7 @@ angular.module('eperusteApp')
       }
 
       $scope.muokkaus = !$scope.muokkaus;
+
       if (!$scope.muokkaus) {
         PerusteenOsaViitteet.update({
           viiteId: $scope.peruste.sisalto.id

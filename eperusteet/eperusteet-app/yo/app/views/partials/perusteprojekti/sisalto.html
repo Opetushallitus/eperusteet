@@ -51,12 +51,13 @@ European Union Public Licence for more details.
                 Tutkintokohtaiset osat ({{ peruste.sisalto.lapset.length }})
                 <a ng-click="avaaSuljeKaikki(peruste.sisalto)" href=""><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
                 <div class="pull-right buttons">
-                    <button type="button" class="btn btn-default btn-sm" ng-click="updateSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="edit">
-                        <span ng-show="muokkaus" kaanna>lopeta-muokkaus</span>
-                        <span ng-hide="muokkaus" kaanna>muokkaa-rakennetta</span>
+                    <button ng-show="muokkaus" type="button" class="btn btn-default btn-sm" ng-click="peruutaRakenteenMuokkaus()" kaanna>peruuta</button>
+                    <button type="button" class="btn btn-default btn-sm" ng-class="{ 'btn-primary': muokkaus }" ng-click="updateSisalto()" ng-show="valittuSuoritustapa !== ''">
+                        <span ng-show="muokkaus" kaanna>tallenna-muutokset</span>
+                        <span icon-role="edit" ng-hide="muokkaus" kaanna>muokkaa-rakennetta</span>
                     </button>
-                    <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="cloud-download" kaanna>tuo-tutkintokohtainen-osa</button>
-                    <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="add" kaanna>lisaa-tutkintokohtainen-osa</button>
+                    <button ng-hide="muokkaus" type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="cloud-download" kaanna>tuo-tutkintokohtainen-osa</button>
+                    <button ng-hide="muokkaus" type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="add" kaanna>lisaa-tutkintokohtainen-osa</button>
                 </div>
             </h2>
             <div class="clearfix"></div>
