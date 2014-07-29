@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.dto;
 
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.Tila;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,4 +31,5 @@ public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
     private String koulutustyyppi;
     private LaajuusYksikko laajuusYksikko;
     private Long perusteId;
+    private Tila tila;
 }

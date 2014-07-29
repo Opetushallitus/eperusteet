@@ -25,7 +25,12 @@ import java.util.Set;
  * @author harrik
  */
 public enum Tila {
-
+    POHJA("pohja") {
+        @Override
+        public Set<Tila> mahdollisetTilat() {
+            return EnumSet.of(POISTETTU);
+        }
+    },
     POISTETTU("poistettu") {
         @Override
         public Set<Tila> mahdollisetTilat() {

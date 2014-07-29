@@ -105,7 +105,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         perusteprojekti.setPeruste(peruste);
-        perusteprojekti.setTila(Tila.LAADINTA);
+        perusteprojekti.setTila(perusteprojektiDto.getTila() == Tila.POHJA ? Tila.POHJA : Tila.LAADINTA);
         perusteprojekti = repository.save(perusteprojekti);
         kayttajaprofiiliService.addPerusteprojekti(perusteprojekti.getId());
 
