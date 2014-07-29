@@ -15,12 +15,12 @@
  */
 
 'use strict';
-/* global _, URL */
+/* global _ */
 
 angular.module('eperusteApp')
   .controller('PerusteenTiedotCtrl', function($scope, $stateParams, $state,
     Koodisto, Perusteet, YleinenData, PerusteProjektiService,
-    perusteprojektiTiedot, Notifikaatiot, Pdf, Editointikontrollit, Kaanna,
+    perusteprojektiTiedot, Notifikaatiot, Editointikontrollit, Kaanna,
     Varmistusdialogi, $timeout, $rootScope) {
 
     $scope.editEnabled = false;
@@ -66,11 +66,6 @@ angular.module('eperusteApp')
     $scope.projektiId = $stateParams.perusteProjektiId;
     //$scope.open = {};
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa() || 'naytto';
-    $scope.pdfToken = null;
-    $scope.uusinDokumenttiId = null;
-    $scope.pdfLinkki = null;
-    $scope.generointiDisabled = false;
-    $scope.generointiTeksti = 'generoi-pdf';
     $scope.kielet = YleinenData.kielet;
     $scope.dokumentit = {};
 
@@ -125,82 +120,6 @@ angular.module('eperusteApp')
         Notifikaatiot.fataali(virhe);
       });
     };
-
-    $scope.generoiPdf = function(kieli) {
-      $scope.generointiDisabled = true;
-      $scope.pdfLinkki = null;
-      $scope.generointiTeksti = 'generoidaan-dokumenttia';
-
-      Pdf.generoiPdf($scope.peruste.id, kieli, function(res) {
-
-          console.log('generoiPdf res', res);
-          function polleri(t) {
-            Pdf.haeTila(t, function(res2) {
-              switch(res2.tila) {
-                case 'luodaan':
-                case 'ei_ole':
-                  setTimeout(function() {
-                    polleri(res2.id);
-                  }, 3000);
-                  break;
-                case 'valmis':
-                  Notifikaatiot.onnistui('dokumentti-luotu');
-                  res2.linkki = Pdf.haeLinkki(res2.id);
-                  $scope.dokumentit[kieli] = res2;
-                  $scope.generointiDisabled = false;
-                  $scope.generointiTeksti = 'generoi-pdf';
-                  break;
-                case 'epaonnistui':
-                  Notifikaatiot.fataali(Kaanna.kaanna('dokumentin-luonti-epaonnistui') + ': ' + res2.virhekoodi);
-                  $scope.generointiDisabled = false;
-                  $scope.generointiTeksti = 'generoi-pdf';
-                  break;
-                default:
-                  console.log('tuntematon tila', res2.tila);
-                  break;
-              }
-            });
-          }
-
-          if (res.id !== null) {
-            $scope.pdfToken = res.token;
-            setTimeout(function() {
-              polleri(res.id);
-            }, 3000);
-          }
-
-      } );
-    };
-
-    $scope.paivitaUusin = function(kieli) {
-      Pdf.haeUusin($scope.peruste.id, kieli, function(res) {
-        if (res.id !== null) {
-          res.linkki = Pdf.haeLinkki(res);
-          $scope.dokumentit[kieli] = res;
-        }
-      });
-    };
-
-    $scope.lataaPdf = function() {
-
-      Pdf.haeDokumentti($scope.pdfToken, function(res) {
-        var file = new Blob([res], { type: 'application/pdf' });
-        var fileURL = URL.createObjectURL(file);
-        window.open(fileURL);
-      });
-
-    };
-
-    Object.keys($scope.kielet).forEach(function (item) {
-      var kieli = $scope.kielet[item];
-      Pdf.haeUusin($scope.peruste.id, kieli, function(res) {
-        if (res.id !== null) {
-          res.linkki = Pdf.haeLinkki(res.id);
-          $scope.dokumentit[kieli] = res;
-        }
-        console.log('Uusin kielella', item, ':', res);
-      });
-    });
 
     $scope.tallennaPeruste = function() {
       Perusteet.save({perusteId: $scope.peruste.id}, $scope.editablePeruste, function(vastaus) {

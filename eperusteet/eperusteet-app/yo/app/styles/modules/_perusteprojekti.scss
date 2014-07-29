@@ -285,6 +285,10 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   margin-left: auto;
   margin-right: auto;
 
+  .actions {
+    height: 50px;
+  }
+
   .tutkinto {
     .toolbar-input {
       width: 60%;

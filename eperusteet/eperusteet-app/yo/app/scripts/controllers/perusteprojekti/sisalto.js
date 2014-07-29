@@ -18,8 +18,10 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams, $modal, PerusteenOsat, PerusteenOsaViitteet,
-    SuoritustapaSisalto, PerusteProjektiService, perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit) {
+  .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams,
+    $modal, PerusteenOsat, PerusteenOsaViitteet, SuoritustapaSisalto, PerusteProjektiService,
+    perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit,
+    PdfCreation) {
 
     function kaikilleTutkintokohtaisilleOsille(juuri, cb) {
       var lapsellaOn = false;
@@ -46,6 +48,11 @@ angular.module('eperusteApp')
     $scope.muokkaus = false;
 
     $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa();
+
+    $scope.luoPdf = function () {
+      PdfCreation.setPerusteId($scope.projekti._peruste);
+      PdfCreation.openModal();
+    };
 
     $scope.aakkosJarjestys = function(data) { return Kaanna.kaanna(data.perusteenOsa.nimi); };
 

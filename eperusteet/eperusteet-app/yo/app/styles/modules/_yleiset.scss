@@ -40,11 +40,30 @@ button {
   .glyphicon {
     margin-right: 5px;
   }
+  img {
+    margin-right: 5px;
+  }
+}
+
+a {
+  img {
+    margin-right: 5px;
+  }
 }
 
 /* ikoni + linkkiteksti */
 .iconlink > .glyphicon {
   margin-right: 5px;
+}
+
+label input[type=radio] {
+  margin-right: 5px;
+  top: 0px;
+}
+
+.modal-body .modal-data {
+  margin-top: 15px;
+  margin-left: 15px;
 }
 
 /* animointia varten */

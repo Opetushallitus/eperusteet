@@ -15,7 +15,7 @@
  */
 
 'use strict';
-// /*global _*/
+/* global _ */
 
 angular.module('eperusteApp')
   .factory('Dokumentti', function($resource, SERVICE_LOC) {
@@ -66,7 +66,7 @@ angular.module('eperusteApp')
       Dokumentti.get({
         id: perusteId,
         kieli: kieli
-      }, success);
+      }, success, failure);
     }
 
     function haeTila(tokenId, success, failure) {
@@ -112,4 +112,117 @@ angular.module('eperusteApp')
       haeLinkki: haeLinkki,
       haeUusin: haeUusin
     };
+  })
+
+  .factory('PdfCreation', function ($modal, YleinenData) {
+    var service = {};
+    var perusteId = null;
+
+    service.setPerusteId = function (id) {
+      perusteId = id;
+    };
+
+    service.openModal = function () {
+      $modal.open({
+        templateUrl: 'views/modals/pdfcreation.html',
+        controller: 'PdfCreationController',
+        resolve: {
+          perusteId: function () { return perusteId; },
+          kielet: function () {
+            return {
+              lista: _.sortBy(YleinenData.kielet),
+              valittu: YleinenData.kieli
+            };
+          }
+        }
+      });
+    };
+
+    return service;
+  })
+  .controller('PdfCreationController', function ($scope, kielet, Pdf, perusteId,
+    $timeout, Notifikaatiot, Kaanna) {
+    $scope.kielet = kielet;
+    $scope.docs = {};
+    var pdfToken = null;
+
+    $scope.hasPdf = function () {
+      return !!$scope.docs[$scope.kielet.valittu];
+    };
+
+    function fetchLatest(lang) {
+      var kielet;
+      if (_.isString(lang)) {
+        kielet = [lang];
+      } else {
+        kielet = kielet.lista;
+      }
+      _.each(kielet, function (kieli) {
+        Pdf.haeUusin(perusteId, kieli, function(res) {
+          if (kieli === $scope.kielet.valittu) {
+            $scope.tila = res.tila;
+          }
+          if (res.id !== null) {
+            res.url = Pdf.haeLinkki(res.id);
+            $scope.docs[kieli] = res;
+          }
+        });
+      });
+    }
+
+    function enableActions(disable) {
+      $scope.generateInProgress = _.isUndefined(disable) ? false : !disable;
+    }
+
+    function getStatus(id) {
+      Pdf.haeTila(id, function(res) {
+        $scope.tila = res.tila;
+        switch(res.tila) {
+          case 'luodaan':
+          case 'ei_ole':
+            startPolling(res.id);
+            break;
+          case 'valmis':
+            Notifikaatiot.onnistui('dokumentti-luotu');
+            res.url = Pdf.haeLinkki(res.id);
+            $scope.docs[$scope.kielet.valittu] = res;
+            enableActions();
+            break;
+          default: // 'epaonnistui' + others(?)
+            Notifikaatiot.fataali(Kaanna.kaanna('dokumentin-luonti-epaonnistui') +
+              ': ' + res.virhekoodi || res.tila);
+            enableActions();
+            break;
+        }
+      });
+    }
+
+    function startPolling(id) {
+      $scope.poller = $timeout(function () {
+        getStatus(id);
+      }, 3000);
+    }
+
+    $scope.$on('$destroy', function() {
+      $timeout.cancel($scope.poller);
+    });
+
+    $scope.generate = function () {
+      enableActions(false);
+      $scope.docs[$scope.kielet.valittu] = null;
+      $scope.tila = 'luodaan';
+      Pdf.generoiPdf(perusteId, $scope.kielet.valittu, function(res) {
+        if (res.id !== null) {
+          pdfToken = res.id;
+          startPolling(res.id);
+        }
+      }, function () {
+        enableActions();
+        $scope.tila = 'ei_ole';
+      });
+    };
+
+    $scope.$watch('kielet.valittu', function (value) {
+      fetchLatest(value);
+    });
   });

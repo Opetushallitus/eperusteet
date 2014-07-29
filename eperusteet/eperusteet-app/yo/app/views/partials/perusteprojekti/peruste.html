@@ -17,15 +17,6 @@ European Union Public Licence for more details.
 
 <button ng-if="voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit" kaanna>muokkaa</button>
 
-<div class="floater dropdown">
-  <button ng-disabled="generointiDisabled" class="btn btn-default dropdown-toggle" data-toggle="dropdown" icon-role="file">{{ generointiTeksti | kaanna }}<span class="caret"></span></button>
-  <ul class="dropdown-menu">
-    <li ng-repeat="kieli in kielet"><a href="" ng-click="generoiPdf(kieli)" kaanna>luo-dokumentti-kielella-{{kieli}}</a></li>
-    <li class="divider"></li>
-    <li ng-repeat="dokumentti in dokumentit"><a ng-href="{{dokumentti.linkki}}"><span kaanna>uusin-dokumentti-kielella-{{dokumentti.kieli}}</span><br>{{dokumentti.valmistumisaika|date:'dd.MM.yyyy hh:mm:ss'}}</a></li>
-  </ul>
-</div>
-
 <h1 kaanna>projekti-peruste</h1>
 <div class="clearfix"></div>
 <form class="form-horizontal" name="perusteForm" role="form" novalidate>
