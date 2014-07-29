@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.repository.version;
 
+import fi.vm.sade.eperusteet.domain.RevisionInfo;
 import fi.vm.sade.eperusteet.service.impl.PerusteenOsaServiceImpl;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,7 +24,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
-import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.query.AuditEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,10 +71,6 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
         return AuditReaderFactory.get(entityManager).find(entityInformation.getJavaType(), id, revisionId);
     }
 
-    private static DefaultRevisionEntity getRevisionEntity(Object[] object) {
-        return (DefaultRevisionEntity) object[1];
-    }
-
     @Override
     public Integer getLatestRevisionId(ID id) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
@@ -89,6 +85,12 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
     public T lock(T entity) {
         entityManager.refresh(entity, LockModeType.PESSIMISTIC_WRITE);
         return entity;
+    }
+
+    @Override
+    public void setRevisioKommentti(String kommentti) {
+        RevisionInfo currentRevision = AuditReaderFactory.get(entityManager).getCurrentRevision(RevisionInfo.class, false);
+        currentRevision.setKommentti(kommentti);
     }
 
 }

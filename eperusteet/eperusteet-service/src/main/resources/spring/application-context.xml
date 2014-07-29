@@ -72,7 +72,7 @@
                 <entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
                 <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.ValidityAuditStrategy"/>
                 <entry key="javax.persistence.validation.factory" value-ref="validator" />
-                <entry key="org.hibernate.envers.revision_listener" value="fi.vm.sade.eperusteet.service.impl.RevisionListener"/>
+                <entry key="org.hibernate.envers.revision_listener" value="fi.vm.sade.eperusteet.service.impl.AuditRevisionListener"/>
             </map>
         </property>
     </bean>

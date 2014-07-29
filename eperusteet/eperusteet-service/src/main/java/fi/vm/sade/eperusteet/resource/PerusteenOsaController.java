@@ -21,11 +21,10 @@ import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.UpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
-import fi.vm.sade.eperusteet.service.mapping.Dto;
-import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -134,16 +133,16 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/{id}", method = POST, params = PerusteenOsaMappings.IS_TEKSTIKAPPALE_PARAM)
     @ResponseBody
-    public TekstiKappaleDto update(@PathVariable("id") final Long id, @RequestBody TekstiKappaleDto tekstiKappaleDto) {
-        tekstiKappaleDto.setId(id);
-        return service.update(tekstiKappaleDto, TekstiKappaleDto.class);
+    public TekstiKappaleDto updateTekstikappale(@PathVariable("id") final Long id, @RequestBody UpdateDto<TekstiKappaleDto> tekstiKappaleDto) {
+        tekstiKappaleDto.getDto().setId(id);
+        return service.update(tekstiKappaleDto.getDto(), TekstiKappaleDto.class);
     }
 
     @RequestMapping(value = "/{id}", method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
     @ResponseBody
-    public TutkinnonOsaDto update(@PathVariable("id") final Long id, @RequestBody TutkinnonOsaDto tutkinnonOsaDto) {
-        tutkinnonOsaDto.setId(id);
-        return service.update(tutkinnonOsaDto, TutkinnonOsaDto.class);
+    public TutkinnonOsaDto updateTutkinnonOsa(@PathVariable("id") final Long id, @RequestBody UpdateDto<TutkinnonOsaDto> tutkinnonOsaDto) {
+        tutkinnonOsaDto.getDto().setId(id);
+        return service.update(tutkinnonOsaDto.getDto(), TutkinnonOsaDto.class);
     }
 
     @RequestMapping(value = "/{id}/lukko", method = GET)

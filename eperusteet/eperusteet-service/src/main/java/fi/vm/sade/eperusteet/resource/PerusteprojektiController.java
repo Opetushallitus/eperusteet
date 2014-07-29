@@ -89,7 +89,7 @@ public class PerusteprojektiController {
         t.add(new Henkilo("1.1.1.1.1", "Kalle Kommentoija", "040-1234567", "kalle@kommentoija.fi", Rooli.of("kommentoija")));
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/{id}/tilat", method = GET)
     @ResponseBody
     public ResponseEntity<Set<Tila>> getTilat(@PathVariable("id") final long id) {
@@ -103,13 +103,13 @@ public class PerusteprojektiController {
         perusteprojektiDto = service.update(id, perusteprojektiDto);
         return perusteprojektiDto;
     }
-    
+
     @RequestMapping(value = "/{id}/tila/{tila}", method = POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public TilaUpdateStatus updateTila(@PathVariable("id") final long id, @PathVariable("tila") final String tila) {
         return service.updateTila(id, Tila.of(tila));
-        
+
     }
 
     @RequestMapping(method = POST)

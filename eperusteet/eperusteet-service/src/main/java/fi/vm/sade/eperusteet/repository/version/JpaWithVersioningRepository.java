@@ -42,13 +42,22 @@ public interface JpaWithVersioningRepository<T, ID extends Serializable> extends
     /**
      * Lukitsee entiteetin muokkausta varten. Lukitus vapautuu automaattisesti transaktion loppuessa.
      *
-     * Enversillä on ongelmia yhtäaikaisten transaktioiden kanssa, joten pessimistisen lukituksen käyttäminen
-     * on joissakin tapauksissa tarpeen.
+     * Enversillä on ongelmia yhtäaikaisten transaktioiden kanssa, joten pessimistisen lukituksen käyttäminen on joissakin tapauksissa tarpeen.
      *
      * @param entity
      * @return päivitetty, lukittu entiteetti
      */
     @Transactional(propagation = Propagation.MANDATORY)
     T lock(T entity);
+
+    /**
+     * Asettaa revisiokohtaisen kommentin.
+     *
+     * Jos revisioon on jo asetettu kommentti, uusi kommentti korvaa aikaisemman. Kommentti on globaali koko revisiolle; jos samassa muutoksessa muokataan
+     * useita entiteettejä, kommentti koskee niitä kaikkia.
+     *
+     * @param kommentti valinnainen kommentti
+     */
+    void setRevisioKommentti(String kommentti);
 
 }

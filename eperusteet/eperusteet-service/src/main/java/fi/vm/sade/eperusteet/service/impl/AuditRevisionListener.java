@@ -16,10 +16,8 @@
 
 package fi.vm.sade.eperusteet.service.impl;
 
-import com.google.common.eventbus.EventBus;
-import java.io.Serializable;
-import org.hibernate.envers.EntityTrackingRevisionListener;
-import org.hibernate.envers.RevisionType;
+import fi.vm.sade.eperusteet.domain.RevisionInfo;
+import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,24 +25,16 @@ import org.slf4j.LoggerFactory;
  *
  * @author jhyoty
  */
-public class RevisionListener implements EntityTrackingRevisionListener {
-    private static final Logger LOG = LoggerFactory.getLogger(RevisionListener.class);
-
-    private static final EventBus eventBus = new EventBus("revisionListener");
-
-    public static EventBus getEventBus() {
-        return eventBus;
-    }
-    
-    @Override
-    public void entityChanged(Class entityClass, String entityName, Serializable entityId, RevisionType revisionType, Object revisionEntity) {
-        LOG.info("CHANGED: " + entityName +  " " + revisionEntity);
-        eventBus.post(entityClass);
-    }
+public class AuditRevisionListener implements org.hibernate.envers.RevisionListener {
+    private static final Logger LOG = LoggerFactory.getLogger(AuditRevisionListener.class);
 
     @Override
     public void newRevision(Object revisionEntity) {
-        LOG.info("NEW REVISION" + revisionEntity.toString());
+        if ( revisionEntity instanceof RevisionInfo ) {
+            LOG.debug(revisionEntity.toString());
+            RevisionInfo ri = (RevisionInfo)revisionEntity;
+            ri.setMuokkaajaOid(SecurityUtil.getAuthenticatedPrincipal().getName());
+        }
     }
 
 }
