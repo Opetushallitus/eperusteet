@@ -93,13 +93,6 @@ angular.module('eperusteApp')
     };
 
     $scope.koodistoHaku = function(koodisto) {
-      angular.forEach(YleinenData.kielet, function(value) {
-        if (_.isEmpty($scope.editablePeruste.nimi[value]) && !_.isNull(koodisto.nimi[value])) {
-          // Nimi määräytyy ensimmäisen lisätyn koulutuksen perusteella
-          $scope.editablePeruste.nimi[value] = koodisto.nimi[value];
-        }
-      });
-
       var added = {nimi: koodisto.nimi, koulutuskoodi: koodisto.koodi};
       $scope.editablePeruste.koulutukset.push(added);
 
@@ -152,9 +145,6 @@ angular.module('eperusteApp')
           $scope.editablePeruste.koulutukset = _.remove($scope.editablePeruste.koulutukset, function(koulutus) {
             return koulutus.koulutuskoodi !== koulutuskoodi;
           });
-          if (_.isEmpty($scope.editablePeruste.koulutukset)) {
-            $scope.editablePeruste.nimi = {};
-          }
         }
       })();
     };

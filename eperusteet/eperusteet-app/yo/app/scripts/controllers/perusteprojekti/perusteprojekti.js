@@ -147,14 +147,6 @@ angular.module('eperusteApp')
       return true;
     };
 
-    $scope.perusteenNimi = function() {
-      if (Kaanna.kaanna($scope.peruste.nimi) === '') {
-        return null;
-      } else {
-        return $scope.peruste.nimi;
-      }
-    };
-
     $scope.$on('update:perusteprojekti', function () {
       perusteprojektiTiedot.alustaProjektinTiedot($stateParams).then(function () {
         init();
