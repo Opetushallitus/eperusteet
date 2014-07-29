@@ -89,7 +89,7 @@ angular.module('eperusteApp')
     };
 
     PerusteProjektiService.clean();
-    if ($state.current.name === 'perusteprojektiwizard.tiedot') {
+    if ($state.current.name === 'root.perusteprojektiwizard.tiedot') {
       perusteprojektiTiedot.cleanData();
     }
 
