@@ -89,8 +89,7 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
 
         Suosikki suosikki = new Suosikki();
         suosikki.setKayttajaprofiili(kayttajaprofiili);
-        suosikki.setTila(suosikkiDto.getTila());
-        suosikki.setParametrit(suosikkiDto.getParametrit());
+        suosikki.setSisalto(suosikkiDto.getSisalto());
         suosikki.setLisatty(new Date());
         suosikki.setNimi(suosikkiDto.getNimi());
         suosikki = suosikkiRepo.save(suosikki);

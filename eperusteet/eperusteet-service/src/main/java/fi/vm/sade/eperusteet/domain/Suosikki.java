@@ -52,11 +52,8 @@ public class Suosikki implements Serializable {
     @Column(name = "nimi")
     private String nimi;
 
-    @Column(name = "tila")
-    private String tila;
-
-    @Column(name = "parametrit")
-    private String parametrit;
+    @Column(name = "sisalto")
+    private String sisalto;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Getter

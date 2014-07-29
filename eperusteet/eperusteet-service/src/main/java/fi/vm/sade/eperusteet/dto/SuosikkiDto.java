@@ -30,7 +30,6 @@ import lombok.Setter;
 public class SuosikkiDto implements Serializable {
     private Long id;
     private String nimi;
-    private String tila;
-    private String parametrit;
+    private String sisalto;
     private Date lisatty;
 }

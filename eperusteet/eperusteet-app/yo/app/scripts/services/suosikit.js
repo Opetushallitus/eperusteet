@@ -32,8 +32,10 @@ angular.module('eperusteApp')
 
     function transform(uudetSuosikit) {
       return _.map(uudetSuosikit, function(s) {
-        s.parametrit = JSON.parse(s.parametrit);
-        s.$url = $state.href(s.tila, s.parametrit);
+        s.sisalto = JSON.parse(s.sisalto);
+        if (s.sisalto.tyyppi === 'linkki') {
+          s.$url = $state.href(s.sisalto.tila, s.sisalto.parametrit);
+        }
         return s;
       });
     }
@@ -48,7 +50,7 @@ angular.module('eperusteApp')
         success = success || angular.noop;
 
         var vanha = _(suosikit).filter(function(s) {
-          return state.current.name === s.tila && isSame(stateParams, s.parametrit);
+          return state.current.name === s.sisalto.tila && isSame(stateParams, s.sisalto.parametrit);
         })
         .first();
 
@@ -61,8 +63,11 @@ angular.module('eperusteApp')
         }
         else {
           Suosikit.save({
-            tila: state.current.name,
-            parametrit: JSON.stringify(stateParams),
+            sisalto: JSON.stringify({
+              tyyppi: 'linkki',
+              tila: state.current.name,
+              parametrit: stateParams,
+            }),
             nimi: nimi
           }, function(res) {
             suosikit = transform(res.suosikit);
@@ -76,12 +81,12 @@ angular.module('eperusteApp')
       },
       hae: function(state, stateParams) {
         var haku = _.filter(suosikit, function(s) {
-          return state.current.name === s.tila && isSame(stateParams, s.parametrit);
+          return state.current.name === s.sisalto.tila && isSame(stateParams, s.sisalto.parametrit);
         });
         return _.first(haku);
       },
       haeUrl: function(id) {
-        return $state.href(suosikit[id].tila, suosikit[id].parametrit);
+        return $state.href(suosikit[id].sisalto.tila, suosikit[id].sisalto.parametrit);
       }
     };
   });
