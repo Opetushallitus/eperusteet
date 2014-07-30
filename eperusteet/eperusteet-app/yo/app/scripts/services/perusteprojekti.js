@@ -161,7 +161,7 @@ angular.module('eperusteApp')
         projekti = projektiVastaus;
         Perusteet.get({perusteId: projekti._peruste}, function (perusteVastaus) {
           peruste = perusteVastaus;
-          if (peruste.suoritustavat !== null && peruste.suoritustavat.length > 0) {
+          if (peruste.suoritustavat && !_.isEmpty(peruste.suoritustavat.length)) {
             peruste.suoritustavat = _.sortBy(peruste.suoritustavat, 'suoritustapakoodi');
           }
           projektinTiedotDeferred.resolve();

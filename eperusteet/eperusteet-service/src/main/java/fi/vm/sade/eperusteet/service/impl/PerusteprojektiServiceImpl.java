@@ -20,7 +20,6 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
@@ -29,7 +28,6 @@ import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.dto.TilaUpdateStatus.Status;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -37,12 +35,10 @@ import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,27 +81,35 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
-
     @Transactional(readOnly = false)
     public PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto) {
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
+
         String koulutustyyppi = perusteprojektiDto.getKoulutustyyppi();
         LaajuusYksikko yksikko = perusteprojektiDto.getLaajuusYksikko();
+        perusteprojekti.setTila(Tila.LAADINTA);
 
-        if (koulutustyyppi.equals("koulutustyyppi_1") && yksikko == null) {
-            throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
+        if (perusteprojektiDto.getTila() == Tila.POHJA) {
+            perusteprojekti.setTila(Tila.POHJA);
+        }
+        else {
+            if (koulutustyyppi.equals("koulutustyyppi_1") && yksikko == null) {
+                throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
+            }
+            if (perusteprojektiDto.getDiaarinumero() == null) {
+                throw new BusinessRuleViolationException("Diaarinumeroa ei ole asetettu");
+            }
         }
 
         Peruste peruste;
         if (perusteprojektiDto.getPerusteId() == null) {
-            peruste = perusteService.luoPerusteRunko(perusteprojektiDto.getKoulutustyyppi(), perusteprojektiDto.getLaajuusYksikko());
+            peruste = perusteService.luoPerusteRunko(koulutustyyppi, yksikko, perusteprojektiDto.getTila() == Tila.POHJA ? Tila.POHJA : Tila.LUONNOS);
         }
         else {
             peruste = perusteService.luoPerusteRunkoToisestaPerusteesta(perusteprojektiDto.getPerusteId());
         }
 
         perusteprojekti.setPeruste(peruste);
-        perusteprojekti.setTila(perusteprojektiDto.getTila() == Tila.POHJA ? Tila.POHJA : Tila.LAADINTA);
         perusteprojekti = repository.save(perusteprojekti);
         kayttajaprofiiliService.addPerusteprojekti(perusteprojekti.getId());
 

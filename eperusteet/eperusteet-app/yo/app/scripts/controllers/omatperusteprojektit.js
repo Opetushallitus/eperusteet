@@ -32,7 +32,7 @@ angular.module('eperusteApp')
       Kayttajaprofiilit.get({}, function(vastaus) {
         $scope.projektit = _(vastaus.perusteprojektit)
           .reject(function(pp) {
-            return pp.tila === 'poistettu' || pp.tila === 'julkaistu';
+            return pp.tila === 'poistettu' || pp.tila === 'julkaistu' || pp.tila === 'pohja';
           })
           .forEach(function(pp) {
             // TODO: Omat perusteprojektit linkin suoritustapa pitäisi varmaankin olla jotain muuta kuin kovakoodattu 'naytto'

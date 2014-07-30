@@ -17,16 +17,18 @@ European Union Public Licence for more details.
   <div ng-form="perustiedotForm" name="perustiedotForm" class="form-group-wrapper" ng-if="$parent.wizardissa() || $parent.editEnabled">
     <formfield label="projektin-nimi-label" model="projekti" model-var="nimi" form="form"
                name="projektinNimi" required="required" placeholder="anna-projektin-nimi-placeholder" max="255"></formfield>
-    <formfield label="diaarinumero-label" model="projekti" model-var="diaarinumero" form="form"
+    <formfield label="diaarinumero-label" model="projekti" model-var="diaarinumero" form="form" ng-if="!$parent.pohja()"
                name="diaarinumero" required="required" placeholder="anna-diaarinumero-placeholder" max="255"></formfield>
-    <formfield ng-if="$parent.wizardissa()" label="koulutustyyppi-label"
+    <formfield ng-if="$parent.wizardissa()" label="koulutustyyppi-label" ng-hide="projekti.perusteId"
                model="projekti" model-var="koulutustyyppi" required="required" options="koulutustyypit" placeholder="valitse-koulutustyyppi"></formfield>
-    <formfield label="laajuuden-yksikkö" ng-show="projekti.koulutustyyppi === 'koulutustyyppi_1'" ng-if="$parent.wizardissa()"
-               model="projekti" model-var="laajuusYksikko" required="projekti.koulutustyyppi === 'koulutustyyppi_1'" options="yksikot"></formfield>
-    <formfield label="päätöspvm-label" model="projekti" model-var="paatosPvm" placeholder="anna-päätöspäivämäärä" type="date"></formfield>
-    <formfield label="tehtäväluokka-label"
-               model="projekti" model-var="tehtavaluokka" options="tehtavaluokat" placeholder="valitse-tehtäväluokka"></formfield>
-    <formfield label="yhteistyotaho-label" model="projekti" model-var="yhteistyotaho" placeholder="anna-yhteistyotaho-placeholder" max="255"></formfield>
+    <span ng-if="!$parent.pohja()">
+      <formfield label="laajuuden-yksikkö" ng-if="projekti.koulutustyyppi === 'koulutustyyppi_1'"
+                 model="projekti" model-var="laajuusYksikko" required="projekti.koulutustyyppi === 'koulutustyyppi_1'" options="yksikot"></formfield>
+      <formfield label="päätöspvm-label" model="projekti" model-var="paatosPvm" placeholder="anna-päätöspäivämäärä" type="date"></formfield>
+      <formfield label="tehtäväluokka-label"
+                 model="projekti" model-var="tehtavaluokka" options="tehtavaluokat" placeholder="valitse-tehtäväluokka"></formfield>
+      <formfield label="yhteistyotaho-label" model="projekti" model-var="yhteistyotaho" placeholder="anna-yhteistyotaho-placeholder" max="255"></formfield>
+    </span>
 
   </div>
   <div ng-if="!$parent.editEnabled && !$parent.wizardissa()">

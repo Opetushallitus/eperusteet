@@ -1,4 +1,10 @@
 <div>
+    <h1 kaanna>perusteprojektit</h1>
+
+    <button ui-sref="root.perusteprojektiwizard.tiedot" class="btn" icon-role="plus" kaanna>uusi-perusteprojekti</button>
+    <button ui-sref="root.perusteprojektiwizard.pohja" class="btn" icon-role="plus" kaanna>uusi-perustepohja</button>
+    <hr>
+
     <div class="input-group rajauslaatikko">
         <span class="input-group-addon">
             <span class="glyphicon glyphicon-search"></span>
@@ -15,7 +21,7 @@
                 <th kaanna>toiminto</th>
             </tr>
             <tr ng-repeat="pp in perusteprojektit | orderBy:jarjestys:jarjestysOrder | filter:rajaaSisaltoa">
-                <td><a href="" ui-sref="perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: pp.id, suoritustapa: 'naytto' })">{{ pp.nimi | kaanna }}</a></td>
+                <td><a href="" ui-sref="root.perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: pp.id, suoritustapa: 'naytto' })">{{ pp.nimi | kaanna }}</a></td>
                 <td>Erkki Esimerkki</td>
                 <td>{{ pp.diaarinumero }}</td>
                 <td>

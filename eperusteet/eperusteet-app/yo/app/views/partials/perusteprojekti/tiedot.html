@@ -14,15 +14,20 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 
-<div class="uusi-projekti-content">
+<div ng-if="wizardissa()" class="project-header uusi-projekti-header">
+  <h1 ng-if="pohja()" kaanna>uusi-perustepohja</h1>
+  <h1 ng-if="!pohja()" kaanna>uusi-projekti-otsikko</h1>
+</div>
 
-  <div ng-if="wizardissa() && !peruste" class="pull-right">
-    <button ng-click="mergeProjekti()" class="btn" kaanna>tuo-peruste</button>
+<div class="uusi-projekti-content">
+  <div ng-if="!pohja() && wizardissa() && !peruste" class="pull-right">
+    <button ng-click="mergeProjekti(true)" class="btn" kaanna>tuo-perustepohja</button>
+    <button ng-click="mergeProjekti(false)" class="btn" kaanna>tuo-peruste</button>
   </div>
   <div ng-if="wizardissa() && peruste">
     <div class="alert alert-info">
       {{ 'perusteprojektin-pohjaksi-otetaan-peruste' | kaanna }}: <b>{{ peruste.nimi | kaanna }}</b>
-      <div>{{ 'tutkintokoodi' | kaanna }}: <b>{{ peruste.tutkintokoodi | kaanna }}</b></div>
+      <div ng-show="peruste.tutkintokoodi">{{ 'tutkintokoodi' | kaanna }}: <b>{{ peruste.tutkintokoodi | kaanna }}</b></div>
       <div ng-show="peruste.voimassaoloAlkaa">{{ 'voimassaoloAlkaa' | kaanna }}: <b>{{ peruste.voimassaoloAlkaa | aikaleima }}</b></div>
       <div ng-show="peruste.voimassaoloLoppuu">{{ 'voimassaoloLoppuu' | kaanna }}: <b>{{ peruste.voimassaoloLoppuu | aikaleima }}</b></div>
       <div ng-show="peruste.siirtymaAlkaa">{{ 'siirtymaAlkaa' | kaanna }}: <b>{{ peruste.siirtymaAlkaa | aikaleima }}</b></div>
@@ -40,13 +45,13 @@ European Union Public Licence for more details.
     <div ng-repeat="tab in tabs">
       <h3>{{tab.otsikko | kaanna}}</h3>
       <div class="form-area" ng-class="{viewmode: !wizardissa() && !editEnabled}">
-      <ng-include src="tab.url"></ng-include>
+        <ng-include src="tab.url"></ng-include>
       </div>
     </div>
 
     <div class="projekti-form-buttons" ng-show="wizardissa()">
       <button ui-sref="root.aloitussivu" id="cancel" class="btn" kaanna>peruuta</button>
-      <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid" kaanna>luo-perusteprojekti-nappi</button>
+      <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid">{{ pohja() ? 'luo-perustepohja-nappi' : 'luo-perusteprojekti-nappi' | kaanna }}</button>
     </div>
   </ng-form>
 </div>

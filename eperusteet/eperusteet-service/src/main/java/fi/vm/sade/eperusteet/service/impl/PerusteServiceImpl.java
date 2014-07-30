@@ -641,7 +641,7 @@ public class PerusteServiceImpl implements PerusteService {
                     peruste = haeErikoistapaus(tutkinto.getKoodiUri(), perusteEntityt, erikoistapausMap);
                     if (peruste == null) {
                         peruste = koodistoMapper.map(tutkinto, Peruste.class);
-                        peruste.setTutkintokoodi(koulutustyyppiUri);
+                        peruste.setKoulutustyyppi(koulutustyyppiUri);
                         peruste.setVoimassaoloAlkaa(new GregorianCalendar(3000, 0, 1).getTime());
                         peruste.setKoulutukset(new HashSet<Koulutus>());
                         peruste.setSuoritustavat(luoSuoritustavat(koulutustyyppiUri, null));
@@ -741,18 +741,19 @@ public class PerusteServiceImpl implements PerusteService {
      *
      * @param koulutustyyppi
      * @param yksikko
+     * @param tila
      * @return Palauttaa 'tyhjän' perusterungon
      */
     @Override
     // FIXME: Luo vain ammatillisen puolen perusteita. Refactoroi, kun tulee lisää koulutustyyppejä.
-    public Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko) {
+    public Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, Tila tila) {
         Peruste peruste = new Peruste();
-        peruste.setTutkintokoodi(koulutustyyppi);
-        peruste.setTila(Tila.LUONNOS);
+        peruste.setKoulutustyyppi(koulutustyyppi);
+        peruste.setTila(tila);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
         suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO, null));
         if (koulutustyyppi != null && koulutustyyppi.equals(KOULUTUSTYYPPI_URIT[0])) {
-            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko));
+            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko != null ? yksikko : LaajuusYksikko.OSAAMISPISTE));
         }
         peruste.setSuoritustavat(suoritustavat);
         return peruste;
@@ -765,7 +766,7 @@ public class PerusteServiceImpl implements PerusteService {
         peruste.setTila(Tila.LUONNOS);
         peruste.setKuvaus(vanha.getKuvaus());
         peruste.setNimi(vanha.getNimi());
-        peruste.setTutkintokoodi(vanha.getTutkintokoodi());
+        peruste.setKoulutustyyppi(vanha.getKoulutustyyppi());
 
         Set<Koulutus> vanhatKoulutukset = vanha.getKoulutukset();
         Set<Koulutus> koulutukset = new HashSet<>();

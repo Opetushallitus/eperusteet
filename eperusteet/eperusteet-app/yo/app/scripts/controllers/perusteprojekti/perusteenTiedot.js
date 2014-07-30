@@ -109,9 +109,7 @@ angular.module('eperusteApp')
               break;
           }
         });
-      }, function(virhe) {
-        Notifikaatiot.fataali(virhe);
-      });
+      }, Notifikaatiot.fataali);
     };
 
     $scope.tallennaPeruste = function() {

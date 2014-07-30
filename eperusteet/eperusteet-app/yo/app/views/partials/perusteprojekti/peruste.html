@@ -24,7 +24,17 @@ European Union Public Licence for more details.
 
     <div class="panel panel-default panel-clean">
       <div class="panel-heading">
-        <h3 class="panel-title">{{'peruste-koulutukset' | kaanna}}</h3>
+        <h3 class="panel-title" kaanna>nimi</h3>
+      </div>
+      <div class="panel-body">
+        <ml-input ng-show="editEnabled" ml-data="editablePeruste.nimi"></ml-input>
+        <p ng-hide="editEnabled">{{ peruste.nimi | kaanna }}</p>
+      </div>
+    </div>
+
+    <div class="panel panel-default panel-clean">
+      <div class="panel-heading">
+        <h3 class="panel-title" kaanna>peruste-koulutukset</h3>
       </div>
       <div class="panel-body">
         <p ng-show="editablePeruste.koulutukset.length === 0 && !editEnabled" translate>ei-koulutuksia</p>
@@ -61,37 +71,20 @@ European Union Public Licence for more details.
       </div>
     </div>
 
-    <!-- *** TODO: backend-tuki laajuudelle ***
     <div class="panel panel-default panel-clean">
       <div class="panel-heading">
-        <h3 class="panel-title">{{'laajuus' | kaanna}} ({{peruste.laajuus.yksikko}})</h3>
-      </div>
-      <div class="panel-body">
-        <div ng-if="editEnabled">
-          <formfield model="editablePeruste" model-var="laajuus.min" label="vahintaan" type="float" step="0.5"></formfield>
-          <formfield model="editablePeruste" model-var="laajuus.max" label="enintaan" type="float" step="0.5"></formfield>
-        </div>
-        <table class="aligned" ng-show="!editEnabled">
-          <tr><th>{{'vahintaan' | kaanna}}</th><td>{{peruste.laajuus.min | tyhja}}</td></tr>
-          <tr><th>{{'enintaan' | kaanna}}</th><td>{{peruste.laajuus.max | tyhja}}</td></tr>
-        </table>
-      </div>
-    </div> -->
-
-    <div class="panel panel-default panel-clean">
-      <div class="panel-heading">
-        <h3 class="panel-title">{{'tiivistelmä' | kaanna}}</h3>
+        <h3 class="panel-title" kaanna>tiivistelmä</h3>
       </div>
       <div class="panel-body">
         <ml-input ng-show="editEnabled" ml-data="editablePeruste.kuvaus" type="textarea"></ml-input>
         <p ng-show="hasContent(peruste.kuvaus) && !editEnabled">{{ peruste.kuvaus | kaanna }}</p>
-        <p ng-show="!hasContent(peruste.kuvaus) && !editEnabled">{{'ei-tiivistelmaa' | kaanna}}</p>
+        <p ng-show="!hasContent(peruste.kuvaus) && !editEnabled" kaanna>ei-tiivistelmaa</p>
       </div>
     </div>
 
     <div class="panel panel-default panel-clean">
       <div class="panel-heading">
-        <h3 class="panel-title">{{'voimassaolo' | kaanna}}</h3>
+        <h3 class="panel-title" kaanna>voimassaolo</h3>
       </div>
       <div class="panel-body">
         <div ng-if="editEnabled">
@@ -107,7 +100,5 @@ European Union Public Licence for more details.
         </table>
       </div>
     </div>
-
-
   </div>
 </form>

@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Tila;
 import lombok.Getter;
@@ -27,6 +28,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
     private String koulutustyyppi;
     private LaajuusYksikko laajuusYksikko;

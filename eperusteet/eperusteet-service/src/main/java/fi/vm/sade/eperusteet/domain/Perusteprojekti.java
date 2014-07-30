@@ -61,8 +61,7 @@ public class Perusteprojekti extends AbstractAuditedEntity {
 
     @Getter
     @Setter
-    @NotNull(message="Diaarinumero ei voi olla tyhjä")
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String diaarinumero;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -93,7 +92,7 @@ public class Perusteprojekti extends AbstractAuditedEntity {
     @Getter
     @Setter
     private String yhteistyotaho;
-    
+
     @Getter
     @Setter
     @Enumerated(EnumType.STRING)

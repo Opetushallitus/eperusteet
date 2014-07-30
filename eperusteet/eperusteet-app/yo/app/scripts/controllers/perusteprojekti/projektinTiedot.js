@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('ProjektiTiedotSisaltoModalCtrl', function($scope, $modalInstance, YleinenData, PerusteprojektiResource,
-                                                         Notifikaatiot, Perusteet) {
+                                                         Notifikaatiot, Perusteet, pohja) {
     $scope.ominaisuudet = {};
     $scope.suoritustavat = [];
     $scope.nykyinen = 1;
@@ -29,9 +29,9 @@ angular.module('eperusteApp')
     var dhaku = _.debounce(function(haku) {
       Perusteet.get({
         nimi: haku,
-        // tila: 'valmis', FIXME ota joskus pois
         sivu: $scope.nykyinen - 1,
-        sivukoko: $scope.itemsPerPage
+        sivukoko: $scope.itemsPerPage,
+        tila: pohja ? 'pohja' : 'valmis',
       }, function(perusteet) {
         $scope.perusteet = perusteet.data;
         $scope.totalItems = perusteet['kokonaismäärä'];
@@ -59,7 +59,7 @@ angular.module('eperusteApp')
     };
     $scope.peruuta = function() { $modalInstance.dismiss(); };
   })
-  .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams, $modal,
+  .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams, $modal, $timeout,
     PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, perusteprojektiTiedot, Notifikaatiot, Perusteet, Editointikontrollit) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
@@ -75,8 +75,11 @@ angular.module('eperusteApp')
     };
     Editointikontrollit.registerCallback(editingCallbacks);
 
+    $scope.pohja = function () {
+      return $state.is('root.perusteprojektiwizard.pohja') || ($scope.peruste && $scope.peruste.tila === 'pohja');
+    };
     $scope.wizardissa = function () {
-      return $state.is('root.perusteprojektiwizard.tiedot');
+      return $state.is('root.perusteprojektiwizard.tiedot') || $state.is('root.perusteprojektiwizard.pohja');
     };
 
     $scope.voiMuokata = function () {
@@ -89,7 +92,7 @@ angular.module('eperusteApp')
     };
 
     PerusteProjektiService.clean();
-    if ($state.current.name === 'root.perusteprojektiwizard.tiedot') {
+    if ($scope.wizardissa()) {
       perusteprojektiTiedot.cleanData();
     }
 
@@ -98,22 +101,25 @@ angular.module('eperusteApp')
 
     Navigaatiopolku.asetaElementit({ perusteProjektiId: $scope.projekti.nimi });
 
-    $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojekti/perustiedot.html'},
-                   {otsikko: 'projekti-toimikausi', url: 'views/partials/perusteprojekti/toimikausi.html'}];
+    $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojekti/perustiedot.html'}];
+    if (!$scope.pohja()) {
+      $scope.tabs.push({otsikko: 'projekti-toimikausi', url: 'views/partials/perusteprojekti/toimikausi.html'});
+    }
 
-    $scope.mergeProjekti = function() {
+    $scope.mergeProjekti = function(tuoPohja) {
       $modal.open({
         templateUrl: 'views/modals/projektiSisaltoTuonti.html',
         controller: 'ProjektiTiedotSisaltoModalCtrl',
         resolve: {
-          projekti: function() { return $scope.projekti; }
+          pohja: function() { return !!tuoPohja; },
         }
       })
       .result.then(function(peruste) {
+        peruste.tila = 'laadinta';
         $scope.peruste = peruste;
         var onOps = false;
-        $scope.projekti.koulutustyyppi = peruste.tutkintokoodi;
         $scope.projekti.perusteId = peruste.id;
+        $scope.projekti.koulutustyyppi = peruste.koulutustyyppi;
 
         _.forEach(peruste.suoritustavat, function(st) {
           if (st.suoritustapakoodi === 'ops') {
@@ -126,8 +132,8 @@ angular.module('eperusteApp')
     };
 
     $scope.puhdistaValinta = function() {
-      delete $scope.peruste;
-      delete $scope.projekti.perusteId;
+      $scope.peruste = undefined;
+      $scope.projekti = {};
     };
 
     $scope.tallennaPerusteprojekti = function() {
@@ -138,11 +144,16 @@ angular.module('eperusteApp')
       }
       else { projekti.id = null; }
 
+      if ($scope.pohja()) {
+        projekti = _.merge(_.pick(projekti, 'id', 'nimi', 'koulutustyyppi'), {
+          tila: 'pohja'
+        });
+      }
+
       PerusteprojektiResource.update(projekti, function(vastaus) {
-        PerusteProjektiService.save(vastaus);
-        PerusteProjektiService.update();
+        $scope.puhdistaValinta();
         if ($scope.wizardissa()) {
-          avaaProjektinSisalto(vastaus.id, vastaus._peruste);
+          avaaProjektinSisalto(vastaus.id);
         }
         else {
           Notifikaatiot.onnistui('tallennettu');
@@ -150,15 +161,10 @@ angular.module('eperusteApp')
       }, Notifikaatiot.serverCb);
     };
 
-    var avaaProjektinSisalto = function(projektiId, perusteId) {
-      Perusteet.get({
-        perusteId: perusteId
-      }, function(res) {
-        console.log(res);
-        $state.go('root.perusteprojekti.suoritustapa.sisalto', {
-          perusteProjektiId: projektiId,
-          suoritustapa: res.suoritustavat[0].suoritustapakoodi
-        }, { reload: true });
-      });
+    var avaaProjektinSisalto = function(projektiId) {
+      $state.go('root.perusteprojekti.suoritustapa.sisalto', {
+        perusteProjektiId: projektiId,
+        suoritustapa: 'naytto'
+      } );
     };
   });

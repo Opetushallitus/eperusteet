@@ -107,8 +107,14 @@ angular.module('eperusteApp')
       })
       .state('root.perusteprojektiwizard', {
         url: '/perusteprojekti',
-        templateUrl: 'views/partials/perusteprojekti/tiedotUusi.html',
+        template: '<div ui-view></div>',
         abstract: true
+      })
+      .state('root.perusteprojektiwizard.pohja', {
+        url: '/perustepohja',
+        templateUrl: 'views/partials/perusteprojekti/tiedot.html',
+        controller: 'ProjektinTiedotCtrl',
+        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService'}
       })
       .state('root.perusteprojektiwizard.tiedot', {
         url: '/perustiedot',

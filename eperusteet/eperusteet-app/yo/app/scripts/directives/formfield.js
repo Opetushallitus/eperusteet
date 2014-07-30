@@ -109,7 +109,9 @@ angular.module('eperusteApp')
         scope.input.model = getter(scope.model);
         // inner => outside
         scope.$watch('input.model', function () {
-          setter(scope.model, scope.input.model);
+          if (scope.input && scope.input.model) {
+            setter(scope.model, scope.input.model);
+          }
         });
         // outside => inner
         scope.$watch(function () {
