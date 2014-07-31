@@ -61,7 +61,8 @@ angular.module('eperusteApp')
       kaannos: 'book',
       valmis: 'thumbs-up',
       julkaistu: 'glass',
-      poistettu: 'folder-open'
+      poistettu: 'folder-open',
+      poistettupohja: 'folder-open'
     };
 
     $scope.appliedClasses = function () {

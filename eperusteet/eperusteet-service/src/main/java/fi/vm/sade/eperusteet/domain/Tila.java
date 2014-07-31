@@ -28,7 +28,13 @@ public enum Tila {
     POHJA("pohja") {
         @Override
         public Set<Tila> mahdollisetTilat() {
-            return EnumSet.of(POISTETTU);
+            return EnumSet.of(POISTETTUPOHJA);
+        }
+    },
+    POISTETTUPOHJA("poistettupohja") {
+        @Override
+        public Set<Tila> mahdollisetTilat() {
+            return EnumSet.of(POHJA);
         }
     },
     POISTETTU("poistettu") {

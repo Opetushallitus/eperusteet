@@ -54,7 +54,8 @@ angular.module('eperusteApp')
     }
 
     function match(input, to) {
-      return Kaanna.kaanna(to).toLowerCase().indexOf(input.toLowerCase()) !== -1;
+      var vertailu = Kaanna.kaanna(to) || '';
+      return vertailu.toLowerCase().indexOf(input.toLowerCase()) !== -1;
     }
 
     function access(object) {
@@ -76,6 +77,6 @@ angular.module('eperusteApp')
       asyncTraverse: asyncTraverse,
       match: match,
       access: access,
-      perusteenSuoritustavanYksikko: perusteenSuoritustavanYksikko
+      perusteenSuoritustavanYksikko: perusteenSuoritustavanYksikko,
     };
   });

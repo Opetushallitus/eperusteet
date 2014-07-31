@@ -1,35 +1,52 @@
-<div>
-    <h1 kaanna>perusteprojektit</h1>
-
-    <button ui-sref="root.perusteprojektiwizard.tiedot" class="btn" icon-role="plus" kaanna>uusi-perusteprojekti</button>
-    <button ui-sref="root.perusteprojektiwizard.pohja" class="btn" icon-role="plus" kaanna>uusi-perustepohja</button>
-    <hr>
-
-    <div class="input-group rajauslaatikko">
-        <span class="input-group-addon">
-            <span class="glyphicon glyphicon-search"></span>
-        </span>
-        <input ng-model="rajaus" placeholder="{{ 'etsi-perusteprojekteista' | kaanna }}" type="input" class="form-control">
+<div class="admin">
+    <div>
+        <h1 kaanna>hallintapaneeli</h1>
     </div>
     <div>
-        <table class="table table-striped">
-            <tr>
-                <th><a href="" ng-click="asetaJarjestys('nimi')" kaanna>nimi</a></th>
-                <th><a href="" ng-click="asetaJarjestys('haltija')" kaanna>haltija</a></th>
-                <th><a href="" ng-click="asetaJarjestys('diaarinumero')" kaanna>diaarinumero-label</a></th>
-                <th><a href="" ng-click="asetaJarjestys('tila')" kaanna>tila</a></th>
-                <th kaanna>toiminto</th>
-            </tr>
-            <tr ng-repeat="pp in perusteprojektit | orderBy:jarjestys:jarjestysOrder | filter:rajaaSisaltoa">
-                <td><a href="" ui-sref="root.perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: pp.id, suoritustapa: 'naytto' })">{{ pp.nimi | kaanna }}</a></td>
-                <td>Erkki Esimerkki</td>
-                <td>{{ pp.diaarinumero }}</td>
-                <td>
-                    {{ 'tila-' + pp.tila | kaanna }}
-                    <span ng-show="pp.tila === 'poistettu'">(<a ng-click="palautaPerusteprojekti(pp)" href="" kaanna>palauta</a>)</span>
-                </td>
-                <td></td>
-            </tr>
-        </table>
+        <h2 kaanna>perusteprojektit</h2>
+        <div class="hallintapainikkeet">
+            <button ui-sref="root.perusteprojektiwizard.tiedot" class="btn" icon-role="plus" kaanna>uusi-perusteprojekti</button>
+            <button ui-sref="root.perusteprojektiwizard.pohja" class="btn" icon-role="plus" kaanna>uusi-perustepohja</button>
+        </div>
+
+        <div>
+            <div class="tilarajaus">
+                <select ng-model="tilaRajain" ng-change="rajaaTilat(tilaRajain)" class="form-control">
+                    <option value="kaikki" selected kaanna>kaikki</option>
+                    <option ng-repeat="tila in tilat" value="{{ tila }}">{{ 'tila-' + tila | kaanna }}</option>
+                </select>
+            </div>
+            <div class="input-group rajauslaatikko">
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-search"></span>
+                </span>
+                <input ng-model="rajaus" placeholder="{{ 'etsi-perusteprojekteista' | kaanna }}" type="input" class="form-control">
+            </div>
+        </div>
+
+        <div>
+            <table class="table table-striped">
+                <tr>
+                    <th><a href="" ng-click="asetaJarjestys('nimi')" kaanna>nimi</a></th>
+                    <th><a href="" ng-click="asetaJarjestys('haltija')" kaanna>haltija</a></th>
+                    <th><a href="" ng-click="asetaJarjestys('diaarinumero')" kaanna>diaarinumero-label</a></th>
+                    <th><a href="" ng-click="asetaJarjestys('tila')" kaanna>tila</a></th>
+                    <th kaanna>toiminto</th>
+                </tr>
+                <tr ng-show="$index >= alaraja && $index < ylaraja" ng-repeat="pp in filteredPp = (perusteprojektit | orderBy:jarjestys:jarjestysOrder | filter:rajaaSisaltoa)">
+                    <td><a href="" ui-sref="root.perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: pp.id, suoritustapa: 'naytto' })">{{ pp.nimi | kaanna }}</a></td>
+                    <td>Erkki Esimerkki</td>
+                    <td>{{ pp.diaarinumero }}</td>
+                    <td>
+                        {{ 'tila-' + pp.tila | kaanna }}
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" ng-click="palauta(pp)" ng-if="pp.tila === 'poistettu' || pp.tila === 'poistettupohja'"><span kaanna>palauta</span></button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <pagination ng-model="nykyinen" ng-change="valitseSivu(nykyinen)" total-items="filteredPp.length" items-per-page="itemsPerPage"></pagination>
     </div>
 </div>

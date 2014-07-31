@@ -142,6 +142,7 @@
     "tilan-vaihto-epäonnistui": "Tilan vaihto epäonnistui",
 
     "tila-poistettu": "Arkistoitu",
+    "tila-poistettupohja": "Arkistoitu",
     "tila-luonnos": "Luonnos",
     "tila-laadinta": "Laadinta",
     "tila-kommentointi": "Kommentointi",
@@ -149,6 +150,8 @@
     "tila-valmis": "Valmis",
     "tila-julkaistu": "Julkaistu",
     "tila-pohja": "Pohja",
+    "tila-kaannos": "Käännös",
+    "tila-hyvaksytty": "Hyväksytty",
 
     "ei-koulutuksia": "Ei koulutuksia",
 
@@ -493,6 +496,10 @@
     "peruste-koulutukset": "Koulutukset",
     "ei-tiivistelmaa": "Ei tiivistelmää",
 
+    "kaikki": "Kaikki",
+
+    "hallintapaneeli": "Hallintapaneeli",
+
     "ops": "Opetussuunnitelma",
     "naytto": "Näyttötutkinto",
 
@@ -500,6 +507,9 @@
 
     "suodattimet": "Suodattimet",
     "valitse-suodatin": "Valitse suodatin",
+
+    "vahvista-palautus": "Vahvista palautus",
+    "vahvista-palautus-sisältö": "Haluatko palauttaa perusteprojektin {{ nimi }}? Perusteprojektin sisältö palautetaan ja se asetetaan tilaan: {{ tila }}",
 
     "perusteprojekti-perustenimi-placeholder": "<Anna perusteen nimi>",
     "perusteprojekti-koulutusala-placeholder": "<Anna koulutusala>",

@@ -20,7 +20,7 @@ angular.module('eperusteApp')
   .service('Varmistusdialogi', function($modal) {
 
     function dialogi(options) {
-      return function() {
+      return function(success, failure) {
         var resolve = {
           opts: function () {
             return {
@@ -28,14 +28,14 @@ angular.module('eperusteApp')
               secondaryBtn: options.secondaryBtn || 'peruuta'
             };
           },
-          data: function () { return options.data || null; },
-          otsikko: function () { return options.otsikko || ''; },
-          teksti: function () { return options.teksti || ''; },
-          lisaTeksti: function () { return options.lisaTeksti || ''; },
-          comment: function () { return options.comment || {}; }
+          data: function() { return options.data || null; },
+          otsikko: function() { return options.otsikko || ''; },
+          teksti: function() { return options.teksti || ''; },
+          lisaTeksti: function() { return options.lisaTeksti || ''; },
+          comment: function() { return options.comment || {}; }
         };
-        var failureCb = options.failureCb || angular.noop;
-        var successCb = options.successCb || angular.noop;
+        var successCb = success || options.successCb || angular.noop;
+        var failureCb = failure || options.failureCb || angular.noop;
 
         $modal.open({
           templateUrl: 'views/modals/varmistusdialogi.html',
