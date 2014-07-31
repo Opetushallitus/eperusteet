@@ -147,7 +147,7 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         }
 
         if (tyyppi != null && !tyyppi.isEmpty()) {
-            pred = cb.and(pred, root.get(Peruste_.tutkintokoodi).in(tyyppi));
+            pred = cb.and(pred, root.get(Peruste_.koulutustyyppi).in(tyyppi));
         }
 
         Join<Peruste, Koulutus> koulutukset = null;
