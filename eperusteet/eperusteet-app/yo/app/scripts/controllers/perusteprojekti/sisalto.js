@@ -15,13 +15,13 @@
  */
 
 'use strict';
-/* global _ */
+/* global _, $ */
 
 angular.module('eperusteApp')
   .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams,
     $modal, PerusteenOsat, PerusteenOsaViitteet, SuoritustapaSisalto, PerusteProjektiService,
     perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit,
-    PdfCreation) {
+    PdfCreation, Editointikontrollit) {
 
     function kaikilleTutkintokohtaisilleOsille(juuri, cb) {
       var lapsellaOn = false;
@@ -45,7 +45,7 @@ angular.module('eperusteApp')
     $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
     $scope.naytaTutkinnonOsat = true;
     $scope.naytaRakenne = true;
-    $scope.muokkaus = false;
+    $scope.muokkausTutkintokohtaisetOsat = false;
 
     $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa();
 
@@ -111,12 +111,6 @@ angular.module('eperusteApp')
       });
     };
 
-    $scope.peruutaRakenteenMuokkaus = function() {
-      $state.go($state.current.name, $stateParams, {
-        reload: true
-      });
-    };
-
     $scope.createSisalto = function() {
       lisaaSisalto('save', {}, function(response) {
         TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
@@ -141,31 +135,26 @@ angular.module('eperusteApp')
       disabled: true,
       placeholder: 'list-element-placeholder',
       tolerance: 'pointer',
-    };
+      change: function(event) {
+        function endCondition(el) {
+          return !el || _.some(el.classList, function(c) { return c === 'sisalto'; });
+        }
 
-    $scope.updateSisalto = function() {
-      function mapSisalto(sisalto) {
-        return {
-          id: sisalto.id,
-          perusteenOsa: null,
-          lapset: _.map(sisalto.lapset, mapSisalto)
-        };
+        function isGroup(el) {
+          return _.some(el.classList, function(c) { return c === 'sisalto-group'; });
+        }
+
+        var depth = 0;
+        var el = event.target;
+        while (depth < 50 && !endCondition(el)) {
+          if (isGroup(el)) {
+            depth += 1;
+          }
+          el = el.parentNode;
+        }
+        depth -= 1;
+        $('.list-element-placeholder').css('margin-left', depth * 40);
       }
-
-      $scope.muokkaus = !$scope.muokkaus;
-
-      if (!$scope.muokkaus) {
-        PerusteenOsaViitteet.update({
-          viiteId: $scope.peruste.sisalto.id
-        },
-        mapSisalto($scope.peruste.sisalto),
-        Notifikaatiot.onnistui('osien-rakenteen-päivitys-onnistui'),
-        function(err) {
-          Notifikaatiot.serverCb(err);
-          $state.go($state.current.name, $stateParams);
-        });
-      }
-      $scope.sortableOptions.disabled = !$scope.muokkaus;
     };
 
     $scope.vaihdaSuoritustapa = function(suoritustapakoodi) {
@@ -179,7 +168,9 @@ angular.module('eperusteApp')
     };
 
     $scope.navigoi = function(state, params) {
-      $state.go(state, params);
+      if (!$scope.muokkausTutkintokohtaisetOsat ) {
+        $state.go(state, params);
+      }
     };
 
     (function() {
@@ -188,4 +179,40 @@ angular.module('eperusteApp')
       });
       $scope.rajaaSisaltoa();
     }());
+
+    Editointikontrollit.registerCallback({
+      edit: function() {
+        $scope.muokkausTutkintokohtaisetOsat = true;
+        $scope.sortableOptions.disabled = false;
+      },
+      save: function() {
+        function mapSisalto(sisalto) {
+          return {
+            id: sisalto.id,
+            perusteenOsa: null,
+            lapset: _.map(sisalto.lapset, mapSisalto)
+          };
+        }
+        PerusteenOsaViitteet.update({
+          viiteId: $scope.peruste.sisalto.id
+        },
+        mapSisalto($scope.peruste.sisalto),
+        function() {
+          $scope.muokkausTutkintokohtaisetOsat = false;
+          $scope.sortableOptions.disabled = true;
+          Notifikaatiot.onnistui('osien-rakenteen-päivitys-onnistui');
+        }, Notifikaatiot.serverCb);
+      },
+      cancel: function() {
+        $state.go($state.current.name, $stateParams, {
+          reload: true
+        });
+      },
+      validate: function() { return true; },
+      notify: angular.noop
+    });
+
+    $scope.aloitaMuokkaus = function() {
+      Editointikontrollit.startEditing();
+    };
   });

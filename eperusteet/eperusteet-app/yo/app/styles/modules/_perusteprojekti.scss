@@ -157,13 +157,6 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   }
 }
 
-.list-element-placeholder {
-  padding: 2px 0 2px 0px;
-  display: inline-block;
-  width: 100%;
-  background: #999;
-}
-
 .main-content .list-element:hover,
 .main-content .li:hover {
   background: #fafafa;
@@ -370,4 +363,19 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 
 .input-group-btn.textarea-selector {
   vertical-align: bottom;
+}
+
+.sisalto {
+  .sisalto-group {
+    padding-bottom: 5px;
+  }
+}
+
+.list-element-placeholder {
+  background: #999;
+  border: 1px solid #eee;
+  padding: 26px 10px 0px 0;
+  margin: 0px;
+  margin-top: 2px;
+  cursor: pointer;
 }

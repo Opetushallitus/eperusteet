@@ -86,8 +86,8 @@ angular.module('eperusteApp')
       },
       cancelEditing: function() {
         if(scope.editingCallback) {
-          scope.editingCallback.cancel();
           setEditMode(false);
+          scope.editingCallback.cancel();
         }
         $rootScope.$broadcast('disableEditing');
         $rootScope.$broadcast('notifyCKEditor');
