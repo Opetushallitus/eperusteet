@@ -28,5 +28,6 @@ public interface KayttajaprofiiliService {
     //KayttajaProfiiliDto addSuosikki(final Long perusteId);
     KayttajaProfiiliDto addSuosikki(final SuosikkiDto suosikkiDto);
     KayttajaProfiiliDto deleteSuosikki(final Long suosikkiId) throws IllegalArgumentException;
+    KayttajaProfiiliDto updateSuosikki(Long suosikkiId, SuosikkiDto suosikkiDto) throws IllegalArgumentException;
     KayttajaProfiiliDto addPerusteprojekti(final Long perusteprojektiId);
 }

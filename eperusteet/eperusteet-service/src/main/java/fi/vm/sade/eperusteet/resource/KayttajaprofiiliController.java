@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -81,6 +82,16 @@ public class KayttajaprofiiliController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         KayttajaProfiiliDto k = service.deleteSuosikki(suosikkiId);
+        return new ResponseEntity<>(k, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/suosikki/{suosikkiId}", method = {PUT, POST})
+    @ResponseBody
+    public ResponseEntity<KayttajaProfiiliDto> update(
+            @RequestBody SuosikkiDto suosikkiDto,
+            @PathVariable("suosikkiId") final Long suosikkiId
+    ) {
+        KayttajaProfiiliDto k = service.updateSuosikki(suosikkiId, suosikkiDto);
         return new ResponseEntity<>(k, HttpStatus.OK);
     }
 }

@@ -115,6 +115,22 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
         return mapper.map(kayttajaprofiili, KayttajaProfiiliDto.class);
     }
 
+    @Override
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
+    public KayttajaProfiiliDto updateSuosikki(Long suosikkiId, SuosikkiDto suosikkiDto) throws IllegalArgumentException {
+        LOG.info("updateSuosikki " + suosikkiId);
+
+        String oid = SecurityContextHolder.getContext().getAuthentication().getName();
+        Kayttajaprofiili kayttajaprofiili = kayttajaprofiiliRepo.findOneEager(oid);
+
+        if (kayttajaprofiili != null) {
+            Suosikki suosikki = suosikkiRepo.findOne(suosikkiId);
+            suosikki.setNimi(suosikkiDto.getNimi());
+        }
+
+        return mapper.map(kayttajaprofiili, KayttajaProfiiliDto.class);
+    }
 
     @Override
     @Transactional

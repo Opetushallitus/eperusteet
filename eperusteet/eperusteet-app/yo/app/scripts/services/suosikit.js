@@ -19,7 +19,9 @@
 
 angular.module('eperusteApp')
   .factory('Suosikit', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/kayttajaprofiili/suosikki/:suosikkiId', {});
+    return $resource(SERVICE_LOC + '/kayttajaprofiili/suosikki/:suosikkiId', {}, {
+      update: {method: 'PUT'}
+    });
   })
   .service('SuosikkiTemp', function($state, $rootScope, Suosikit, Notifikaatiot, Kayttajaprofiilit) {
     var suosikit = [];
@@ -95,7 +97,9 @@ angular.module('eperusteApp')
       paivita: function(suosikki) {
         var payload = _.clone(suosikki);
         payload.sisalto = JSON.stringify(payload.sisalto);
-        return Suosikit.save(payload).$promise;
+        return Suosikit.update({suosikkiId: payload.id}, payload).$promise.then(function (res) {
+          parseResponse(res);
+        });
       },
       poista: function(suosikki) {
         return Suosikit.delete({suosikkiId: suosikki.id}).$promise.then(function (res) {
