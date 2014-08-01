@@ -88,7 +88,7 @@ angular.module('eperusteApp')
       Editointikontrollit.startEditing();
     };
     $scope.save = function() {
-      Editointikontrollit.saveEditing();
+      Editointikontrollit.saveEditing($scope.kommentti);
     };
     $scope.cancel = function() {
       Editointikontrollit.cancelEditing();

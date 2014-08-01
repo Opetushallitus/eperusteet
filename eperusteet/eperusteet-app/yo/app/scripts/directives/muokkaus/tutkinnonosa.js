@@ -175,7 +175,8 @@ angular.module('eperusteApp')
                 lukitse(function() { cb(); });
               }
             },
-            save: function() {
+            save: function(kommentti) {
+              $scope.editableTutkinnonOsa.metadata = { kommentti: kommentti };
               if ($scope.editableTutkinnonOsa.id) {
                 $scope.editableTutkinnonOsa.$saveTutkinnonOsa(function(response) {
                   $scope.editableTutkinnonOsa = angular.copy(response);

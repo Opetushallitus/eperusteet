@@ -59,16 +59,16 @@ angular.module('eperusteApp')
         }
         $rootScope.$broadcast('enableEditing');
       },
-      saveEditing: function() {
+      saveEditing: function(kommentti) {
         function after() {
           if (!scope.editingCallback.validate || scope.editingCallback.validate()) {
-            scope.editingCallback.save();
+            scope.editingCallback.save(kommentti);
             angular.forEach(additionalCallbacks.save, function(callback) {
               // Kutsutaan kaikkia callback listenereitä ja annetaan parametrina
               // viimeisin muutettu objecti ja tieto siitä, onko editointikontrollit ylipäätänsä
               // pääällä
               // callback(self.lastModified, scope.editingCallback !== null);
-              callback(undefined, scope.editingCallback !== null);
+              callback(kommentti, scope.editingCallback !== null);
             });
             setEditMode(false);
             $rootScope.$broadcast('disableEditing');

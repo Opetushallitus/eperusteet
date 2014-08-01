@@ -131,7 +131,9 @@ angular.module('eperusteApp')
           cb();
         });
       },
-      save: function() {
+      save: function(kommentti) {
+        $scope.rakenne.metadata = { kommentti: kommentti };
+        console.log($scope.rakenne);
         tallennaRakenne($scope.rakenne);
         $scope.editoi = false;
       },

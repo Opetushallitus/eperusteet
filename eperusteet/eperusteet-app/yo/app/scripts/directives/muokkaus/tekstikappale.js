@@ -157,13 +157,11 @@ angular.module('eperusteApp')
             asyncValidate: function(cb) {
               lukitse(function() { cb(); });
             },
-            save: function() {
-              if ($scope.editableTekstikappale.id) {
-                $scope.editableTekstikappale.$saveTekstikappale(saveCb, Notifikaatiot.serverCb);
-              }
-              else {
-                PerusteenOsat.saveTekstikappale($scope.editableTekstikappale, saveCb, Notifikaatiot.serverCb);
-              }
+            save: function(kommentti) {
+              $scope.editableTekstikappale.metadata = { kommentti: kommentti };
+              PerusteenOsat.saveTekstikappale({
+                osanId: $scope.editableTekstikappale.id
+              }, $scope.editableTekstikappale, saveCb, Notifikaatiot.serverCb);
               $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
               $scope.isNew = false;
             },
