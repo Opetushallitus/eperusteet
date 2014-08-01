@@ -34,6 +34,7 @@
                     http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
     <global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
+      <expression-handler ref="expressionHandler"/>
     </global-method-security>
 
     <!-- /buildversion.txt?auth forced to require authentication (needed for auth health checking purposes) -->

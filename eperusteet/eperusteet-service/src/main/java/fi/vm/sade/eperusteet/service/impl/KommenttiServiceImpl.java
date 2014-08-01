@@ -22,8 +22,10 @@ import fi.vm.sade.eperusteet.repository.KommenttiRepository;
 import fi.vm.sade.eperusteet.service.KommenttiService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -102,7 +104,7 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasPermission(#kommenttidto.perusteProjektiId, 'perusteProjekti', 'COMMENT')")
     public KommenttiDto add(final KommenttiDto kommenttidto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Kommentti kommentti = new Kommentti();
@@ -121,19 +123,21 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional
-    @PreAuthorize("isAuthenticated()")
-    public KommenttiDto update(Long kommenttiId, final KommenttiDto kommenttidto) {
+    @PreAuthorize("hasPermission(#kommenttidto.perusteProjektiId, 'perusteProjekti', 'COMMENT')")
+    public KommenttiDto update(Long kommenttiId, @P("kommenttidto") final KommenttiDto kommenttidto) {
         Kommentti kommentti = kommentit.findOne(kommenttiId);
+        SecurityUtil.allow(kommentti.getLuoja());
         kommentti.setSisalto(kommenttidto.getSisalto());
         return mapper.map(kommentit.save(kommentti), KommenttiDto.class);
     }
 
     @Override
     @Transactional
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasPermission(#kommenttidto.perusteProjektiId, 'perusteProjekti', 'COMMENT')")
     public void delete(Long kommenttiId) {
         Kommentti kommentti = kommentit.findOne(kommenttiId);
-        kommentti.setSisalto("");
+        SecurityUtil.allow(kommentti.getLuoja());
+        kommentti.setSisalto(null);
         kommentti.setPoistettu(true);
     }
 

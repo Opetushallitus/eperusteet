@@ -48,6 +48,12 @@
         </property>
     </bean>
 
+    <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+        <property name="permissionEvaluator" ref="eperusteetPermissionEvaluator"/>
+    </bean>
+
+    <bean id="eperusteetPermissionEvaluator" class="fi.vm.sade.eperusteet.service.security.PermissionEvaluator"/>
+
     <import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/>
 
     <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>
