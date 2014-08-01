@@ -198,6 +198,7 @@ angular.module('eperusteApp')
         var template =
           '<div ng-if="!vanhempi">' +
           '  <div class="ylapainikkeet">' +
+          '    {{ apumuuttujat.peruste.nimi | kaanna }}' +
           '    <span ng-if="rakenne.muodostumisSaanto && rakenne.muodostumisSaanto.laajuus">' +
           '      <span ng-if="rakenne.$laajuus">{{ rakenne.$laajuus }} / </span>' +
           '      <span ng-if="rakenne.muodostumisSaanto.laajuus.minimi">' +
@@ -376,7 +377,8 @@ angular.module('eperusteApp')
             suoritustapa: scope.rakenne.$suoritustapa,
             laajuusYksikko: sts ? sts.laajuusYksikko : null,
             vanhin: scope.rakenne,
-            piilotaVirheet: true
+            piilotaVirheet: true,
+            peruste: scope.rakenne.$peruste
           };
         });
 

@@ -30,7 +30,7 @@ angular.module('eperusteApp')
           return Lokalisointi.hae(input) || $translate.instant(input, config);
         }
         else {
-          return input;
+          return '';
         }
       }
     };
