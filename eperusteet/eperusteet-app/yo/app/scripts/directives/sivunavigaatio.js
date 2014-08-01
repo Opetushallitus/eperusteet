@@ -255,7 +255,9 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('SivuNaviController', function ($scope, $state, Algoritmit) {
+  .controller('SivuNaviController', function ($scope, $state, Algoritmit, Utils) {
+    $scope.menuCollapsed = true;
+
     $scope.search = {
       term: '',
       update: function() {
@@ -377,6 +379,18 @@ angular.module('eperusteApp')
       }
       updateModel();
     };
+
+    $scope.toggleSideMenu = function () {
+      $scope.menuCollapsed = !$scope.menuCollapsed;
+    };
+
+    $scope.$on('$stateChangeStart', function() {
+      $scope.menuCollapsed = true;
+    });
+
+    $scope.$on('$stateChangeSuccess', function() {
+      Utils.scrollTo('#ylasivuankkuri');
+    });
 
     $scope.$watch('items', function () {
       $scope.refresh();

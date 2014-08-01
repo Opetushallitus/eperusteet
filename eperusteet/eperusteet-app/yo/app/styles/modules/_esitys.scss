@@ -1,19 +1,7 @@
-$sivunavigaatio-width: 260px;
 $border-color: #0C566E;
 
 .esitys {
-  .navigaatio {
-    float: left;
-    width: $sivunavigaatio-width;
-
-    .takaisin {
-      margin: 10px;
-    }
-  }
-  .sisalto {
-    margin-left: $sivunavigaatio-width;
-    padding-left: 20px;
-
+  .sivunavi-sisalto {
     hr {
       margin-top: 0;
     }

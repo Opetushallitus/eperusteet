@@ -1,5 +1,16 @@
 <div class="sivunavi-outer">
-  <div class="sivunavi-box">
+
+  <div class="sivunavi-box" ng-class="{'sivunavi-collapsed': menuCollapsed, 'sivunavi-open': !menuCollapsed}">
+
+    <div class="sivunavi-toggler-wrapper">
+      <div class="sivunavi-toggler" ng-click="toggleSideMenu()"
+           ng-attr-title="{{menuCollapsed && ('sivunavigointi-avaa-menu'|kaanna) || ('sivunavigointi-sulje-menu'|kaanna)}}">
+        <div class="sivunavi-valinta">
+          <span class="glyphicon glyphicon-align-justify"></span>
+        </div>
+      </div>
+    </div>
+
     <div class="list-group">
       <div class="list-group-item header" ng-show="header">{{header | kaanna}}</div>
       <div class="list-group-item">

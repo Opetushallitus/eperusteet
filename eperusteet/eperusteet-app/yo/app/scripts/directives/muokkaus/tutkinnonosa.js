@@ -30,9 +30,9 @@ angular.module('eperusteApp')
         Editointikontrollit, PerusteenOsat, Editointicatcher, PerusteenRakenne,
         PerusteTutkinnonosa, TutkinnonOsaEditMode, $timeout, Varmistusdialogi,
         SivunavigaatioService, VersionHelper, Lukitus, MuokkausUtils, PerusteenOsaViitteet,
-        $window, ArviointiHelper) {
+        Utils, ArviointiHelper) {
 
-        document.getElementById('ylasivuankkuri').scrollIntoView(); // FIXME: Keksi tälle joku oikea ratkaisu
+        Utils.scrollTo('#ylasivuankkuri');
 
         $scope.suoritustapa = $stateParams.suoritustapa;
         $scope.rakenne = {};
@@ -305,19 +305,12 @@ angular.module('eperusteApp')
           saveCb(response);
         };
 
-        function scrollTo(selector) {
-          var element = angular.element(selector);
-          if (element.length) {
-            $window.scrollTo(0, element[0].offsetTop);
-          }
-        }
-
         $scope.addFieldToVisible = function(field) {
           field.visible = true;
           // Varmista että menu sulkeutuu klikin jälkeen
           $timeout(function () {
             angular.element('h1').click();
-            scrollTo('li[otsikko='+field.localeKey+']');
+            Utils.scrollTo('li[otsikko='+field.localeKey+']');
           });
         };
 
