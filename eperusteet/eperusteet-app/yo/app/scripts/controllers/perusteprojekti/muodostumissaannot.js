@@ -80,11 +80,13 @@ angular.module('eperusteApp')
         function() {
           Notifikaatiot.onnistui('tallennus-onnistui');
           haeVersiot(true);
+          Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
         },
         function() {
           Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
         }
       );
+      $scope.isLocked = false;
     }
 
     function haeVersiot(force, cb) {
