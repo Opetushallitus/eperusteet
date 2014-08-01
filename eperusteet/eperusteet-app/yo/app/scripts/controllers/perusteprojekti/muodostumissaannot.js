@@ -94,11 +94,13 @@ angular.module('eperusteApp')
     $scope.vaihdaVersio = function(cb) {
       cb = cb || angular.noop;
       $scope.versiot.hasChanged = true;
-      VersionHelper.changeRakenne($scope.versiot, {id: $scope.rakenne.$peruste.id, suoritustapa: $scope.suoritustapa}, function(response) {
+      // Ideally we would reload the data and rewrite version to url without changing state
+      VersionHelper.setUrl($scope.versiot, true);
+      /*VersionHelper.changeRakenne($scope.versiot, {id: $scope.rakenne.$peruste.id, suoritustapa: $scope.suoritustapa}, function(response) {
         $scope.rakenne.rakenne = response;
         VersionHelper.setUrl($scope.versiot, true);
         cb();
-      });
+      });*/
     };
 
     $scope.revert = function () {

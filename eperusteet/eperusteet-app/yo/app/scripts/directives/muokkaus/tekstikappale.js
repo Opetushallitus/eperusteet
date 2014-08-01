@@ -264,7 +264,8 @@ angular.module('eperusteApp')
 
         $scope.vaihdaVersio = function () {
           $scope.versiot.hasChanged = true;
-          VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tekstikappale.id}, responseFn);
+          VersionHelper.setUrl($scope.versiot);
+          //VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tekstikappale.id}, responseFn);
         };
 
         $scope.revertCb = function(response) {
