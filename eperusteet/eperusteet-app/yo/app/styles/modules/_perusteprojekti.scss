@@ -379,3 +379,25 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   margin-top: 2px;
   cursor: pointer;
 }
+
+$napin-leveys: 250px;
+.pdf-lataus {
+  width: 100%;
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  button {
+    width: $napin-leveys;
+  }
+}
+
+.latauslinkki {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: -10px;
+  display: block;
+  text-align: center;
+  button {
+    width: $napin-leveys;
+  }
+}

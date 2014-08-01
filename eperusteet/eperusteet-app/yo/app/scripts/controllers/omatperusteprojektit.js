@@ -20,13 +20,7 @@
 angular.module('eperusteApp')
   .controller('OmatperusteprojektitCtrl', function ($scope, $state, Kayttajaprofiilit) {
     $scope.projektit = {};
-    $scope.suppeaMaara = 5;
-    $scope.projektitRaja = $scope.suppeaMaara;
-    $scope.naytetaanKaikkiProjektit = false;
-    $scope.projektitNapinTeksti = '';
-
-    var naytaKaikkiTeksti = 'sivupalkki-näytä-kaikki';
-    var piilotaTeksti = 'sivupalkki-piilota';
+    $scope.naytto = {limit: 5, shown: 5};
 
     var paivitaOmatProjektit = function() {
       Kayttajaprofiilit.get({}, function(vastaus) {
@@ -40,27 +34,41 @@ angular.module('eperusteApp')
           })
           .reverse()
           .value();
-
-        if ($scope.naytetaanKaikkiSuosikit) {
-          $scope.projektitNapinTeksti = piilotaTeksti;
-          $scope.projektitRaja = _.size($scope.projektit);
-        } else {
-          $scope.projektitNapinTeksti = naytaKaikkiTeksti;
-        }
-
-        $scope.naytaProjektitNappi = _.size($scope.projektit) > $scope.suppeaMaara;
       });
     };
 
     paivitaOmatProjektit();
 
-    $scope.muutaProjektienMaara = function() {
-      $scope.naytetaanKaikkiProjektit = !$scope.naytetaanKaikkiProjektit;
-      $scope.projektitRaja = $scope.naytetaanKaikkiProjektit ? _.size($scope.projektit) : $scope.suppeaMaara;
-      $scope.projektitNapinTeksti = $scope.naytetaanKaikkiProjektit ? piilotaTeksti : naytaKaikkiTeksti;
-    };
-
     $scope.$on('update:perusteprojekti', function() {
       paivitaOmatProjektit();
     });
-  });
+  })
+.directive('limitToggler', function () {
+  return {
+    restrict: 'AE',
+    template: '<div class="show-toggler" ng-show="isVisible">' +
+          '<a class="action-link" ng-click="toggle()">{{linktext| kaanna}}</a>' +
+          '</div>',
+    scope: {
+      'model': '=',
+      'limit': '=',
+      'limiter': '='
+    },
+    controller: function ($scope) {
+      $scope.isVisible = false;
+      $scope.linktext = 'sivupalkki-näytä-kaikki';
+      $scope.$watch('model', function () {
+        $scope.isVisible = $scope.model.length > $scope.limit;
+      });
+      $scope.toggle = function () {
+        if ($scope.limiter === $scope.limit) {
+          $scope.limiter = $scope.model.length;
+          $scope.linktext = 'sivupalkki-piilota';
+        } else {
+          $scope.limiter = $scope.limit;
+          $scope.linktext = 'sivupalkki-näytä-kaikki';
+        }
+      };
+    }
+  };
+});

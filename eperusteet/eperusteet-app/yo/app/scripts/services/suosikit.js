@@ -45,6 +45,12 @@ angular.module('eperusteApp')
       $rootScope.$broadcast('suosikitMuuttuivat');
     });
 
+    function parseResponse(res, cb) {
+      suosikit = transform(res.suosikit);
+      (cb || angular.noop)();
+      $rootScope.$broadcast('suosikitMuuttuivat');
+    }
+
     return {
       aseta: function(state, stateParams, nimi, success) {
         success = success || angular.noop;
@@ -70,9 +76,7 @@ angular.module('eperusteApp')
             }),
             nimi: nimi
           }, function(res) {
-            suosikit = transform(res.suosikit);
-            success();
-            $rootScope.$broadcast('suosikitMuuttuivat');
+            parseResponse(res, success);
           }, Notifikaatiot.serverCb);
         }
       },
@@ -87,6 +91,16 @@ angular.module('eperusteApp')
       },
       haeUrl: function(id) {
         return $state.href(suosikit[id].sisalto.tila, suosikit[id].sisalto.parametrit);
+      },
+      paivita: function(suosikki) {
+        var payload = _.clone(suosikki);
+        payload.sisalto = JSON.stringify(payload.sisalto);
+        return Suosikit.save(payload).$promise;
+      },
+      poista: function(suosikki) {
+        return Suosikit.delete({suosikkiId: suosikki.id}).$promise.then(function (res) {
+          parseResponse(res);
+        });
       }
     };
   });

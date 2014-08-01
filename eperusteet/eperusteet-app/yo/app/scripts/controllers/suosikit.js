@@ -18,39 +18,66 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('SuosikitCtrl', function($scope, Kayttajaprofiilit, YleinenData, $rootScope, $state, Navigaatiopolku, SuosikkiTemp) {
+  .controller('SuosikitCtrl', function($scope, Kayttajaprofiilit, YleinenData,
+      $rootScope, $state, Navigaatiopolku, SuosikkiTemp, $modal) {
     $scope.suosikit = {};
-    $scope.suppeaMaara = 5;
-    $scope.suosikkiRaja = $scope.suppeaMaara;
-    $scope.projektitRaja = $scope.suppeaMaara;
-    $scope.lisaaSuosikkeja = false;
-    $scope.naytetaanKaikkiSuosikit = false;
-    $scope.naytetaanKaikkiProjektit = false;
-    $scope.suosikkiNapinTeksti = '';
-
-    var naytaKaikkiTeksti = 'sivupalkki-näytä-kaikki';
-    var piilotaTeksti = 'sivupalkki-piilota';
-
+    $scope.naytto = {limit: 5, shown: 5};
     $scope.resetNavi = Navigaatiopolku.clear;
 
     var paivitaSuosikit = function() {
       $scope.suosikit = SuosikkiTemp.listaa().reverse();
     };
 
-    paivitaSuosikit(SuosikkiTemp.listaa());
-
-    $scope.muutaSuosikkiMaara = function() {
-      $scope.naytetaanKaikkiSuosikit = !$scope.naytetaanKaikkiSuosikit;
-
-      if ($scope.naytetaanKaikkiSuosikit) {
-        $scope.suosikkiRaja = _.size($scope.suosikit);
-        $scope.suosikkiNapinTeksti = piilotaTeksti;
-
-      } else {
-        $scope.suosikkiRaja = $scope.suppeaMaara;
-        $scope.suosikkiNapinTeksti = naytaKaikkiTeksti;
-      }
-    };
+    paivitaSuosikit();
 
     $scope.$on('suosikitMuuttuivat', paivitaSuosikit);
+
+    $scope.edit = function () {
+      $modal.open({
+        templateUrl: 'views/modals/suosikkienMuokkaus.html',
+        controller: 'SuosikkienMuokkausController',
+        size: 'lg'
+      });
+    };
+
+  })
+
+  .controller('SuosikkienMuokkausController', function ($scope, SuosikkiTemp,
+      Varmistusdialogi) {
+    function refresh() {
+      $scope.suosikit = SuosikkiTemp.listaa().reverse();
+    }
+    refresh();
+    $scope.$on('suosikitMuuttuivat', refresh);
+
+    $scope.edit = function (suosikki) {
+      $scope.editing = angular.copy(suosikki);
+    };
+    $scope.save = function (suosikki) {
+      var found = _.findIndex($scope.suosikit, {id: suosikki.id});
+      if (found > -1) {
+        $scope.suosikit[found] = $scope.editing;
+        SuosikkiTemp.paivita($scope.editing);
+      }
+      $scope.editing = null;
+    };
+    $scope.cancel = function () {
+      $scope.editing = null;
+    };
+    $scope.remove = function (suosikki) {
+      Varmistusdialogi.dialogi({
+        otsikko: 'varmista-poisto',
+        teksti: 'varmista-poisto-suosikki-teksti',
+        primaryBtn: 'poista',
+        successCb: function () {
+          SuosikkiTemp.poista(suosikki);
+        }
+      })();
+    };
+  })
+
+  .controller('TiedotteetController', function ($scope) {
+    // TODO tiedotteet toteutus
+    $scope.tiedotteet = [];
+    $scope.naytto = {limit: 5, shown: 5};
   });

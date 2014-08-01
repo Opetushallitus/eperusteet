@@ -37,6 +37,39 @@ angular.module('eperusteApp')
       })
       .state('root.aloitussivu', {
         url: '',
-        templateUrl: 'views/aloitussivu.html'
+        templateUrl: 'views/aloitussivu.html',
+        controller: 'AloitusSivuController'
       });
+  })
+  .controller('AloitusSivuController', function ($scope, $state) {
+    $scope.valinnat = [
+      {
+        'label': 'esiopetus',
+        'state': '',
+        'helper': 'selaa-perustetta'
+      },
+      {
+        'label': 'perusopetus',
+        'state': '',
+        'helper': 'selaa-perusteita'
+      },
+      {
+        'label': 'lukiokoulutus',
+        'state': '',
+        'helper': 'selaa-perusteita'
+      },
+      {
+        'label': 'ammatillinen-peruskoulutus',
+        'state': 'root.selaus.ammatillinenperuskoulutus',
+        'helper': 'hae-perusteita'
+      },
+      {
+        'label': 'ammatillinen-aikuiskoulutus',
+        'state': 'root.selaus.ammatillinenaikuiskoulutus',
+        'helper': 'hae-perusteita'
+      },
+    ];
+    $scope.getHref = function (valinta) {
+      return $state.href(valinta.state);
+    };
   });

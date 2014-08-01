@@ -18,16 +18,19 @@ European Union Public Licence for more details.
   <div class="col-xs-12 sidebar">
     <div ng-controller="SuosikitCtrl">
       <div class="panel panel-default">
-        <div class="panel-heading" translate>suosikit-otsikko</div>
+        <div class="panel-heading">{{'suosikit-otsikko' | kaanna}}
+          <button class="btn btn-default btn-sm suosikit-muokkaus" ng-click="edit()" icon-role="edit" kaanna>muokkaa</button>
+        </div>
         <div class="panel-body">
+          <p ng-show="suosikit.length === 0" kaanna>ei-suosikkeja</p>
           <ul class="list-unstyled">
-            <li class="ellipsis-no-wrap" ng-repeat="suosikki in suosikit" >
-              <a ng-click="resetNavi()" ng-href="{{ suosikki.$url }}">
+            <li class="ellipsis-no-wrap" ng-repeat="suosikki in suosikit|limitTo:naytto.shown">
+              <a ng-click="resetNavi()" ng-href="{{ suosikki.$url }}" ng-attr-title="{{ suosikki.nimi || 'nimetön' | kaanna }}">
                 {{ suosikki.nimi || 'nimetön' | kaanna }}
               </a>
             </li>
           </ul>
-          <button class="btn btn-default btn-xs pull-right" ng-show="naytaSuosikkiNappi" ng-click="muutaSuosikkiMaara()">{{suosikkiNapinTeksti| kaanna}}</button>
+          <limit-toggler limit="naytto.limit" model="suosikit" limiter="naytto.shown"></limit-toggler>
         </div>
       </div>
     </div>
@@ -35,24 +38,27 @@ European Union Public Licence for more details.
       <div class="panel panel-default">
         <div class="panel-heading" kaanna>perusteprojektit-otsikko</div>
         <div class="panel-body">
-          <a class="btn btn-default btn-xs" title="{{'uusi-projekti'| kaanna}}" ui-sref="root.perusteprojektiwizard.tiedot" kaanna>uusi-projekti</a>
-          <!--a class="btn btn-default btn-xs" title="{{'uusi-projekti'| kaanna}}" ui-sref="root.perusteprojekti.tiedot.uusi({ perusteProjektiId: 'uusi' })" kaanna>uusi-projekti</a-->
-          <ul class="list-unstyled">
-            <li class="ellipsis-no-wrap" ng-repeat="projekti in projektit| limitTo:projektitRaja" >
+          <p ng-show="projektit.length === 0" kaanna>ei-projekteja</p>
+          <a ui-sref="root.perusteprojektiwizard.tiedot">
+            <button class="btn btn-default btn-xs" title="{{'uusi-projekti'| kaanna}}" kaanna>uusi-projekti</button>
+          </a>
+          <ul class="list-unstyled projektit">
+            <li class="ellipsis-no-wrap" ng-repeat="projekti in projektit| limitTo:naytto.shown" >
               <a title="{{projekti.nimi}}" href="{{ projekti.url}}">{{projekti.diaarinumero}}: {{projekti.nimi}}</a>
             </li>
           </ul>
-          <button class="btn btn-default btn-xs pull-right" ng-show="naytaProjektitNappi" ng-click="muutaProjektienMaara()">{{projektitNapinTeksti| kaanna}}</button>
+          <limit-toggler limit="naytto.limit" model="projektit" limiter="naytto.shown"></limit-toggler>
         </div>
       </div>
     </div>
-    <div class="panel panel-default">
+    <div class="panel panel-default" ng-controller="TiedotteetController">
       <div class="panel-heading">Tiedotteet</div>
       <div class="panel-body">
+        <p ng-show="tiedotteet.length === 0" kaanna>ei-tiedotteita</p>
         <ul class="list-unstyled">
-          <li>Tiedote 1</li>
-          <li>Peruste muuttui</li>
+          <li ng-repeat="tiedote in tiedotteet|limitTo:naytto.shown">Tiedote: Jotain muuttui<!-- TODO: tiedotteet--></li>
         </ul>
+        <limit-toggler limit="naytto.limit" model="tiedotteet" limiter="naytto.shown"></limit-toggler>
       </div>
     </div>
   </div>
