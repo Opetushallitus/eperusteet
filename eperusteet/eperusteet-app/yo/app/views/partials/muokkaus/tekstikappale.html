@@ -18,8 +18,8 @@ European Union Public Licence for more details.
   <revert-note object="tekstikappale" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
 
   <div class="action-buttons">
-    <button ng-if="canAddLapsi()" ng-hide="editEnabled || !versiot.latest" ng-click="addLapsi()" class="floater btn btn-default" icon-role="add" kaanna>lisaa-aliotsikko</button>
-    <button ng-hide="editEnabled" ng-click="kopioiMuokattavaksi()" class="floater btn btn-danger" icon-role="fire" kaanna>kopioi-muokattavaksi</button>
+    <button ng-if="canAddLapsi() && tekstikappale.tila !== 'julkaistu'" ng-hide="editEnabled || !versiot.latest" ng-click="addLapsi()" class="floater btn btn-default" icon-role="add" kaanna>lisaa-aliotsikko</button>
+    <button ng-show="!editEnabled && tekstikappale.tila === 'julkaistu'" ng-click="kopioiMuokattavaksi()" class="floater btn btn-danger" icon-role="fire" kaanna>kopioi-muokattavaksi</button>
     <div class="floater" ng-attr-title="{{lockNotification}}">
       <button ng-disabled="isLocked" ng-hide="editableTekstikappale.tila !== 'luonnos' || editEnabled || !versiot.latest"
               ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna>muokkaa</button>
