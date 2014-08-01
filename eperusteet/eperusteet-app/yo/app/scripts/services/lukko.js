@@ -134,7 +134,27 @@ angular.module('eperusteApp')
       }
     }
 
+    function hae(parametrit, cb) {
+      parametrit = _.merge({
+        id: 0,
+        tyyppi: 'sisalto',
+        suoritustapa: 'naytto',
+      }, parametrit);
+
+      switch (parametrit.tyyppi) {
+        case 'sisalto':
+          lueLukitus(LukkoSisalto, { osanId: parametrit.id, suoritustapa: parametrit.suoritustapa }, cb, angular.noop);
+          break;
+        case 'perusteenosa':
+          lueLukitus(LukkoPerusteenosa, { osanId: parametrit.id }, cb, angular.noop);
+          break;
+        default:
+          break;
+      }
+    }
+
     return {
+      hae: hae,
       tarkista: tarkistaLukitus,
       lukitseSisalto: lukitseSisalto,
       vapautaSisalto: vapautaSisalto,

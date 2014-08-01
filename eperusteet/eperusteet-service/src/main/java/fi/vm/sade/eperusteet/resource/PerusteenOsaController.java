@@ -152,7 +152,7 @@ public class PerusteenOsaController {
                                               HttpServletResponse response) {
         LukkoDto lock = service.getLock(id);
         response.addHeader("ETag", String.valueOf(service.getLatestRevision(id)));
-        return new ResponseEntity<>(lock, lock == null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(lock, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/lukko", method = {POST, PUT})

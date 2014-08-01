@@ -21,7 +21,7 @@ angular.module('eperusteApp')
   .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams,
     $modal, PerusteenOsat, PerusteenOsaViitteet, SuoritustapaSisalto, PerusteProjektiService,
     perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit,
-    PdfCreation, Editointikontrollit) {
+    PdfCreation, Editointikontrollit, Lukitus) {
 
     function kaikilleTutkintokohtaisilleOsille(juuri, cb) {
       var lapsellaOn = false;
@@ -46,6 +46,27 @@ angular.module('eperusteApp')
     $scope.naytaTutkinnonOsat = true;
     $scope.naytaRakenne = true;
     $scope.muokkausTutkintokohtaisetOsat = false;
+
+    $scope.paivitaLukot = function() {
+      Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) {
+        Lukitus.hae({
+          id: lapsi.perusteenOsa.id,
+          tyyppi: 'perusteenosa',
+        }, function(res) {
+          if (res.haltijaOid) {
+            lapsi.$lukko = {
+              haltija: res.haltijaOid,
+              luotu: res.luotu
+            };
+          }
+          else {
+            delete lapsi.$lukko;
+          }
+        });
+      });
+    };
+    $scope.paivitaLukot();
+    $scope.$on('poll:mousemove', $scope.paivitaLukot);
 
     $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa();
 

@@ -536,6 +536,11 @@
     "tuo-tutkintokohtainen-osa": "Tuo tekstikappale",
     "uusi-tutkinnon-osa": "<Uusi sisältö>",
 
+    "sisältö-selite-ops": "Opetussuunnitelman mukaisen suoritustavan sisältö",
+    "sisältö-selite-naytto": "Näyttötutkinnon mukaisen suoritustavan sisältö",
+
+    "lukko-käyttäjällä": "Lukko on varattu käyttäjälle",
+
     "takaisin-paanakymaan": "Projektin päänäkymä",
     "projektiryhma-otsikko-omistaja": "Perusteprosessin omistaja",
     "projektiryhma-otsikko-sihteeri": "Sihteeri",

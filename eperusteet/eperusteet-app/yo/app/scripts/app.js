@@ -111,6 +111,15 @@ angular.module('eperusteApp', [
         };
       }]);
   })
+  .run(function($rootScope) {
+    var f = _.debounce(function() {
+      $rootScope.$broadcast('poll:mousemove');
+    }, 10000, {
+      leading: true,
+      maxWait: 60000
+    });
+    angular.element(window).on('mousemove', f);
+  })
   .run(function($rootScope, $modal, $location, $window, $state, paginationConfig, Editointikontrollit,
                 Varmistusdialogi, Kaanna, virheService) {
     paginationConfig.firstText = '';
