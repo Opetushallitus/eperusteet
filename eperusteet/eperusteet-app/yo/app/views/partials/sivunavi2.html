@@ -22,7 +22,7 @@
           <input ng-model="search.term" placeholder="{{ 'etsi-sisällöstä' | kaanna }}" class="form-control input-sm">
         </div>
       </div>
-      <div class="list-group-item item" ng-repeat="item in items" ng-class="itemClasses(item)"
+      <div ng-click="navigoi(item)" class="list-group-item item" ng-repeat="item in items" ng-class="itemClasses(item)"
         ng-hide="!item.$matched || item.root || (!search.term && (item.$hidden || item.$impHidden))">
         <span ng-show="!item.$leaf" ng-click="toggle(item)" class="glyphicon pointer"
               ng-class="{'glyphicon-chevron-right': item.$collapsed, 'glyphicon-chevron-down': !item.$collapsed}"></span>

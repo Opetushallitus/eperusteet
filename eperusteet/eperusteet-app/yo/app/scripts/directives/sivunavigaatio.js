@@ -279,6 +279,10 @@ angular.module('eperusteApp')
       }
     };
 
+    $scope.navigoi = function(item) {
+      $state.go(item.link[0], item.link[1]);
+    };
+
     $scope.$watch('search.term', $scope.search.update);
 
     $scope.itemClasses = function (item) {
