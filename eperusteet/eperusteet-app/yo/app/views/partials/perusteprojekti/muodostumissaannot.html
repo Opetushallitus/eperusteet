@@ -1,14 +1,17 @@
 <div class="row">
   <div class="col-md-12">
 
-  <revert-note object="rakenne" revert-cb="revert(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
-  <div class="floater" ng-attr-title="{{lockNotification}}">
-    <!-- <button ng-disabled="isLocked" ng-hide="editoi || !versiot.latest" ng-click="muokkaa()" -->
-    <!--         class="btn btn-default" icon-role="edit" kaanna>muokkaa</button> -->
-    <button ng-hide="editoi || !versiot.latest" ng-click="muokkaa()"
-            class="btn btn-default" icon-role="edit" kaanna>muokkaa</button>
+  <div class="action-buttons">
+    <div class="floater" ng-attr-title="{{lockNotification}}">
+      <!-- <button ng-disabled="isLocked" ng-hide="editoi || !versiot.latest" ng-click="muokkaa()" -->
+      <!--         class="btn btn-default" icon-role="edit" kaanna>muokkaa</button> -->
+      <button ng-hide="editoi || !versiot.latest" ng-click="muokkaa()"
+              class="btn btn-default" icon-role="edit" kaanna>muokkaa</button>
+    </div>
+    <div class="floater" ng-if="!editoi && isLocked"><lukko tip="lockNotification"></lukko></div>
   </div>
-  <div class="floater" ng-if="!editoi && isLocked"><lukko tip="lockNotification"></lukko></div>
+
+  <revert-note object="rakenne" revert-cb="revert(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
   <h1>
     <span ng-show="!editoi" kaanna>tutkinnon-rakenne</span>
     <span ng-show="editoi" kaanna>muokkaus-rakenne</span>

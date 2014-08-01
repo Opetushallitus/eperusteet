@@ -1,27 +1,32 @@
 <div>
   <revert-note object="tutkinnonOsa" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
-  <button ng-hide="editEnabled" ng-click="kopioiMuokattavaksi()" class="floater btn btn-danger" icon-role="fire" kaanna>kopioi-muokattavaksi</button>
-  <div class="floater" ng-attr-title="{{lockNotification}}">
-    <!-- ng-disabled="isLocked" -->
-    <button icon-role="edit" ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()"
-            class="btn btn-default" kaanna>muokkaa</button>
-  </div>
-  <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
-  <a ng-show="!editEnabled" icon-role="back" href="" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat" kaanna>tutkinnonosat</a>
-  <div ng-if="editEnabled">
-    <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsa.id].id)" kaanna>poista-tutkinnonosa</button>
-    <div class="floater">
-      <div class="dropdown">
-        <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add" kaanna>muokkaus-lisaa-osio</button>
-        <ul class="pull-right dropdown-menu">
-          <li ng-repeat="field in menuItems | orderBy:'order'">
-            <a ng-show="field.visible" class="disabled-link">{{'muokkaus-' + field.localeKey + '-header' | kaanna}}</a>
-            <a href="" ng-show="!field.visible" ng-click="addFieldToVisible(field)">{{'muokkaus-' + field.localeKey + '-header' | kaanna}}</a>
-          </li>
-        </ul>
+
+  <div class="action-buttons">
+    <button ng-hide="editEnabled" ng-click="kopioiMuokattavaksi()" class="floater btn btn-danger" icon-role="fire" kaanna>kopioi-muokattavaksi</button>
+    <div class="floater" ng-attr-title="{{lockNotification}}">
+      <!-- ng-disabled="isLocked" -->
+      <button icon-role="edit" ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()"
+              class="btn btn-default" kaanna>muokkaa</button>
+    </div>
+    <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
+
+    <div ng-if="editEnabled">
+      <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsa.id].id)" kaanna>poista-tutkinnonosa</button>
+      <div class="floater">
+        <div class="dropdown">
+          <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add" kaanna>muokkaus-lisaa-osio</button>
+          <ul class="pull-right dropdown-menu">
+            <li ng-repeat="field in menuItems | orderBy:'order'">
+              <a ng-show="field.visible" class="disabled-link">{{'muokkaus-' + field.localeKey + '-header' | kaanna}}</a>
+              <a href="" ng-show="!field.visible" ng-click="addFieldToVisible(field)">{{'muokkaus-' + field.localeKey + '-header' | kaanna}}</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
+
+  <a ng-show="!editEnabled" icon-role="back" href="" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat" kaanna>tutkinnonosat</a>
   <h1 ng-show="editEnabled">
     <span ng-show="!isNew" kaanna>muokkaus-tutkinnon-osa</span>
     <span ng-show="isNew" kaanna>luonti-tutkinnon-osa</span>

@@ -255,29 +255,39 @@ $pikamenu-max-height: 400px;
 }
 
 .muokkaustiedot {
-  hr {
-    margin-top: 5px;
-    clear: right;
+  color: $secondary-lighter;
+  & > div:not(.clearfix) {
+    height: 50px;
+    line-height: 2.8em;
+    overflow: hidden;
   }
-  ul {
-    display: inline-block;
-    line-height: 3;
-    margin-top: 10px;
-    margin-bottom: 5px;
-    color: $secondary-lighter;
-    padding: 0;
-    li {
-      margin-right: 10px;
-      list-style-type: none;
+  span {
+    font-weight: 700;
+  }
+  .muokattu-viimeksi {
+    float: left;
+  }
+  .versiotiedot {
+    float: right;
+    ul {
       display: inline-block;
-      span {
-        font-weight: 700;
+      padding: 0;
+      li {
+        display: inline-block;
+        list-style-type: none;
       }
     }
-    &.version-valinta {
-      float: right;
-    }
   }
+  .muokkaaja {
+    padding-left: 15px;
+  }
+  @media (max-width: 700px) {
+    .muokkaaja { display: none; }
+  }
+}
+hr.versioraja {
+  margin-top: 0;
+  margin-bottom: 15px;
 }
 .tekstikappale {
   h3 {

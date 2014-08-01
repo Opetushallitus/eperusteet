@@ -14,6 +14,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 
+<div class="row">
+<div class="col-md-12">
 <div ng-if="wizardissa()" class="project-header uusi-projekti-header">
   <h1 ng-if="pohja()" kaanna>uusi-perustepohja</h1>
   <h1 ng-if="!pohja()" kaanna>uusi-projekti-otsikko</h1>
@@ -37,7 +39,9 @@ European Union Public Licence for more details.
     </div>
   </div>
 
-  <button ng-if="!wizardissa() && voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit" kaanna>muokkaa</button>
+  <div class="action-buttons">
+    <button ng-if="!wizardissa() && voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit" kaanna>muokkaa</button>
+  </div>
 
   <h1 kaanna>projektin-tiedot</h1>
   <p ng-if="wizardissa() || editEnabled" kaanna>tahdella-pakolliset</p>
@@ -54,4 +58,6 @@ European Union Public Licence for more details.
       <button type="submit" ng-click="tallennaPerusteprojekti()" id="submit" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid">{{ pohja() ? 'luo-perustepohja-nappi' : 'luo-perusteprojekti-nappi' | kaanna }}</button>
     </div>
   </ng-form>
+</div>
+</div>
 </div>

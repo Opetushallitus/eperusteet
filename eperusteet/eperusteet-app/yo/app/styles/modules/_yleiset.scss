@@ -74,11 +74,16 @@ label input[type=radio] {
   }
 }
 
+.action-buttons {
+  position: absolute;
+  top: -40px;
+  right: 15px;
+}
+
 .btn.floater, div.floater {
   margin-left: 5px;
   position: relative;
   float: right;
-  top: -40px;
 }
 
 .link-floater {
