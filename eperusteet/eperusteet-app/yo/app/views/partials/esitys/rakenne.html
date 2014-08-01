@@ -1,10 +1,16 @@
 <h2>
     {{ 'tutkinnon-rakenne' | kaanna }}
     <div class="painikkeet pull-right">
-        <span class="left-space glyphicon glyphicon-print" on-click="printSisalto()"></span><a href="">{{ 'tulosta-sivu' | kaanna }}</a>
+        <a href="" ng-click="asetaSuosikki()">
+            <span class="glyphicon" ng-class="{'glyphicon-star': onSuosikki, 'glyphicon-star-empty': !onSuosikki}"></span>
+            {{ onSuosikki ? 'poista-suosikeista' : 'merkitse-suosikiksi' | kaanna }}
+        </a>
+        <a class="left-space" ng-click="printSisalto()" href="">
+            <span class="glyphicon glyphicon-print"></span>
+            {{ 'tulosta-sivu' | kaanna }}
+        </a>
     </div>
 </h2>
-<hr>
 <div class="tree-presentation">
     <tree-wrapper muokkaus="editoi" ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
 </div>

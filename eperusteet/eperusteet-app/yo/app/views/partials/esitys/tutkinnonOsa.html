@@ -1,10 +1,16 @@
 <h2>
     {{ tutkinnonOsa.nimi | kaanna }} <span ng-show="tutkinnonOsaViite.laajuus">{{ tutkinnonOsaViite.laajuus }}{{ yksikko | kaanna }}</span>
     <div class="painikkeet pull-right">
-        <span class="left-space glyphicon glyphicon-print" on-click="printSisalto()"></span><a href="">{{ 'tulosta-sivu' | kaanna }}</a>
+        <a href="" ng-click="asetaSuosikki()">
+            <span class="glyphicon" ng-class="{'glyphicon-star': onSuosikki, 'glyphicon-star-empty': !onSuosikki}"></span>
+            {{ onSuosikki ? 'poista-suosikeista' : 'merkitse-suosikiksi' | kaanna }}
+        </a>
+        <a class="left-space" on-click="printSisalto()" href="">
+            <span class="glyphicon glyphicon-print"></span>
+            {{ 'tulosta-sivu' | kaanna }}
+        </a>
     </div>
 </h2>
-<hr>
 
 <div ng-repeat="(k, v) in tutkinnonOsa">
     <div ng-if="k === 'koodiUri' && v">

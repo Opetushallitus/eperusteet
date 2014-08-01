@@ -15,7 +15,7 @@
  */
 
 'use strict';
-/* global _ */
+/* global _,$ */
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {
@@ -71,6 +71,7 @@ angular.module('eperusteApp')
       $scope.rakenne.$suoritustapa = $stateParams.suoritustapa;
       $scope.rakenne.$resolved = true;
     });
+
     $scope.suosikkiHelper($state, $stateParams, 'tutkinnon-rakenne');
   })
   .controller('EsitysTutkinnonOsaCtrl', function($scope, $state, $stateParams, PerusteenOsat) {
@@ -169,9 +170,18 @@ angular.module('eperusteApp')
     $scope.suosikkiHelper = function(state, stateParams, nimi) {
       $scope.onSuosikki = SuosikkiTemp.hae(state, stateParams);
       $scope.asetaSuosikki = function() {
-        SuosikkiTemp.aseta(state, stateParams, Kaanna.kaanna($scope.peruste.nimi) + ' - ' + (Kaanna.kaanna(nimi) || '') + ' (' + Kaanna.kaanna($scope.suoritustapa) + ')', function() {
+        SuosikkiTemp.aseta(state, stateParams, Kaanna.kaanna($scope.peruste.nimi) + ': ' + (Kaanna.kaanna(nimi) || '') + ' (' + Kaanna.kaanna($scope.suoritustapa) + ')', function() {
           $scope.onSuosikki = SuosikkiTemp.hae(state, stateParams);
         });
       };
+    };
+
+    $scope.printSisalto = function() {
+      var print = window.open('', 'esitysPrintSisalto', 'height=640,width=640');
+      print.document.write('<html><head><link rel="stylesheet" href="styles/eperusteet.css"></head><body>' +
+                           $('#esitysPrintSisalto').html() +
+                           '</body></html>');
+      print.print();
+      print.close();
     };
   });

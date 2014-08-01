@@ -1,10 +1,16 @@
 <h2>
     {{ valittuSisalto.nimi | kaanna }}
     <div class="painikkeet pull-right">
-        <span class="left-space glyphicon glyphicon-print" on-click="printSisalto()"></span><a href="" kaanna>tulosta-sivu</a>
+        <a href="" ng-click="asetaSuosikki()">
+            <span class="glyphicon" ng-class="{'glyphicon-star': onSuosikki, 'glyphicon-star-empty': !onSuosikki}"></span>
+            {{ onSuosikki ? 'poista-suosikeista' : 'merkitse-suosikiksi' | kaanna }}
+        </a>
+        <a class="left-space" ng-click="printSisalto()" href="">
+            <span class="glyphicon glyphicon-print"></span>
+            {{ 'tulosta-sivu' | kaanna }}
+        </a>
     </div>
 </h2>
-<hr>
 <!-- <p class="cke_contents_ltr" ng&#45;model="valittuSisalto.teksti" ckeditor>{{ valittuSisalto.teksti | kaanna }}</p> -->
 <div class="cke_contents_ltr max-sm-leveys"
      ng-model="valittuSisalto.teksti" ckeditor="" editing-enabled="false" localized=""

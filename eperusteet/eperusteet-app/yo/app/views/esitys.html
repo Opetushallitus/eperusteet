@@ -30,9 +30,6 @@ European Union Public Licence for more details.
         <div class="sivunavi-sisalto">
             <h1>
                 {{ peruste.nimi | kaanna }}
-                <a href="" ng-click="asetaSuosikki()">
-                    <span class="glyphicon" ng-class="{'glyphicon-star': onSuosikki, 'glyphicon-star-empty': !onSuosikki}"></span>
-                </a>
             </h1>
             <div class="tiedot">
                 <a href="" ng-click="naytaPerusteenTiedot = !naytaPerusteenTiedot">
@@ -40,7 +37,7 @@ European Union Public Licence for more details.
                     <span ng-hide="naytaPerusteenTiedot" class="glyphicon glyphicon-chevron-right"></span>
                     {{ 'perusteen-tiedot' | kaanna }}
                 </a>
-                <a href="" ng-click="naytaPerusteenTiedot = !naytaPerusteenTiedot" icon-role="save" kaanna>lataa-peruste-pdf-muodossa</a>
+                <a class="left-space" href="" ng-click="naytaPerusteenTiedot = !naytaPerusteenTiedot" icon-role="save" kaanna>lataa-peruste-pdf-muodossa</a>
             </div>
             <div ng-show="naytaPerusteenTiedot">
                 <div>{{ 'tutkintokoodi' | kaanna }}: {{ peruste.tutkintokoodi | kaanna }}</div>
