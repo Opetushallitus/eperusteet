@@ -35,12 +35,12 @@ import java.util.Set;
 public class PerusteenRakenne {
     static public class Ongelma {
         public String ongelma;
-        public TekstiPalanen ryhmä;
+        public TekstiPalanen ryhma;
         public Integer syvyys;
 
-        Ongelma(String ongelma, TekstiPalanen ryhmä, Integer syvyys) {
+        Ongelma(String ongelma, TekstiPalanen ryhma, Integer syvyys) {
             this.ongelma = ongelma;
-            this.ryhmä = ryhmä;
+            this.ryhma = ryhma;
             this.syvyys = syvyys;
         }
     }
@@ -101,15 +101,15 @@ public class PerusteenRakenne {
                 if (laajuusSummaMin.compareTo(laajuusMin) == -1) {
                     validointi.ongelmat.add(new Ongelma("Laskettu laajuuksien summan minimi on pienempi kuin ryhmän vaadittu minimi (" + laajuusSummaMin + " < " + laajuusMin + ").", nimi, syvyys));
                 }
-                else if (laajuusSummaMax.compareTo(laajuusMax) == 1) {
-                    validointi.ongelmat.add(new Ongelma("Laskettu laajuuksien summan maksimi on suurempi kuin ryhmän vaadittu maksimi (" + laajuusSummaMax + " > " + laajuusMax + ").", nimi, syvyys));
+                else if (laajuusSummaMax.compareTo(laajuusMax) == -1) {
+                    validointi.ongelmat.add(new Ongelma("Laskettu laajuuksien summan maksimi on pienempi kuin ryhmän vaadittu maksimi (" + laajuusSummaMax + " > " + laajuusMax + ").", nimi, syvyys));
                 }
 
                 if (osat.size() < kokoMin) {
                     validointi.ongelmat.add(new Ongelma("Laskettu koko on pienempi kuin vaadittu minimi (" + osat.size() + " < " + kokoMin + ").", nimi, syvyys));
                 }
-                else if (osat.size() > kokoMax) {
-                    validointi.ongelmat.add(new Ongelma("Laskettu koko on suurempi ryhmän vaadittu maksimi (" + osat.size() + " > " + kokoMax + ").", nimi, syvyys));
+                else if (osat.size() < kokoMax) {
+                    validointi.ongelmat.add(new Ongelma("Laskettu koko on pienempi kuin ryhmän vaadittu maksimi (" + osat.size() + " < " + kokoMax + ").", nimi, syvyys));
                 }
             }
             validointi.laskettuLaajuus = laajuusSummaMax;

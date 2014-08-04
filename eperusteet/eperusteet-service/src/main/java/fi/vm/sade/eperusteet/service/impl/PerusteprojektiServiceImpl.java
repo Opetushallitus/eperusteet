@@ -35,6 +35,7 @@ import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import java.util.ArrayList;
 import java.util.List;
@@ -164,13 +165,13 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             && tila == Tila.VIIMEISTELY && projekti.getTila() == Tila.LAADINTA) {
             Validointi validointi;
             for (Suoritustapa suoritustapa : projekti.getPeruste().getSuoritustavat()) {
-                /*if (suoritustapa.getRakenne() != null) {
+                if (suoritustapa.getRakenne() != null) {
                     validointi = PerusteenRakenne.validoiRyhma(suoritustapa.getRakenne());
                     if (!validointi.ongelmat.isEmpty()) {
-                        updateStatus.addStatus("Rakenteen validointi virhe", TilaUpdateStatus.Statuskoodi.VIRHE, validointi);
+                        updateStatus.addStatus("Rakenteen validointi virhe", suoritustapa.getSuoritustapakoodi(), validointi);
                         updateStatus.setVaihtoOk(false);
                     }
-                }*/
+                }
 
                 List<TutkinnonOsaViite> vapaatOsat = vapaatTutkinnonosat(suoritustapa);
                 if (!vapaatOsat.isEmpty()) {

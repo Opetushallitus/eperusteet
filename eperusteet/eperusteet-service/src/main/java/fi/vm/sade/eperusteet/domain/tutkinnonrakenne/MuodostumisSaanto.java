@@ -66,7 +66,7 @@ public class MuodostumisSaanto implements Serializable, Mergeable<MuodostumisSaa
     }
 
     public Integer kokoMaksimi() {
-        return koko != null && koko.getMaksimi() != null ? koko.getMaksimi() : Integer.MAX_VALUE;
+        return koko != null && koko.getMaksimi() != null ? koko.getMaksimi() : Integer.MIN_VALUE;
     }
 
     public Integer laajuusMinimi() {
@@ -74,7 +74,7 @@ public class MuodostumisSaanto implements Serializable, Mergeable<MuodostumisSaa
     }
 
     public Integer laajuusMaksimi() {
-        return laajuus != null && laajuus.getMaksimi() != null ? laajuus.getMaksimi() : Integer.MAX_VALUE;
+        return laajuus != null && laajuus.getMaksimi() != null ? laajuus.getMaksimi() : Integer.MIN_VALUE;
     }
 
     @Getter
