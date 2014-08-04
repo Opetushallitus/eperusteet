@@ -53,7 +53,7 @@ public class PerusteenRakenneTest {
     @Test
     public void testValidoiRyhmaValidi() {
         RakenneModuuli rakenne = TestUtils.teeRyhma(
-            120, 240, -1, -1,
+            120, 190, -1, -1,
             TestUtils.teeRakenneOsa(1, 10),
             TestUtils.teeRakenneOsa(2, 20),
             TestUtils.teeRakenneOsa(3, 30),
@@ -111,13 +111,13 @@ public class PerusteenRakenneTest {
     @Test
     public void testValidoiRyhmaUniikit() {
         RakenneModuuli rakenne = TestUtils.teeRyhma(
-            0, 240, -1, -1,
+            0, 130, -1, -1,
             TestUtils.teeRakenneOsa(1, 10),
             TestUtils.teeRakenneOsa(1, 20),
             TestUtils.teeRakenneOsa(3, 30),
             TestUtils.teeRakenneOsa(4, 40),
             TestUtils.teeRyhma(
-                0, 90, -1, -1,
+                0, 30, -1, -1,
                 TestUtils.teeRakenneOsa(1, 10),
                 TestUtils.teeRakenneOsa(1, 20)
             )
@@ -147,13 +147,13 @@ public class PerusteenRakenneTest {
     @Test
     public void testValidoiNullKokoTaiLaajuus() {
         RakenneModuuli rakenne = TestUtils.teeRyhma(
-            0, 200, null, null,
+            0, 130, null, null,
             TestUtils.teeRakenneOsa(1, 10),
             TestUtils.teeRakenneOsa(5, 20),
             TestUtils.teeRakenneOsa(3, 30),
             TestUtils.teeRakenneOsa(4, 40),
             TestUtils.teeRyhma(
-                null, null, 0, 10,
+                null, null, 0, 2,
                 TestUtils.teeRakenneOsa(1, 10),
                 TestUtils.teeRakenneOsa(2, 20)
             )
