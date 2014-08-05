@@ -124,8 +124,8 @@ angular.module('eperusteApp')
       });
   })
   .controller('PerusteprojektiCtrl', function($scope, $state, $stateParams,
-    Navigaatiopolku, koulutusalaService, opintoalaService, SivunavigaatioService,
-    PerusteProjektiService, Kaanna, perusteprojektiTiedot, PerusteProjektiSivunavi) {
+    Navigaatiopolku, koulutusalaService, opintoalaService,
+    PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi) {
 
     function init() {
       $scope.projekti = perusteprojektiTiedot.getProjekti();
@@ -191,7 +191,8 @@ angular.module('eperusteApp')
       });
     });
   })
-  .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams) {
+  .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams,
+                                                $state, $location) {
     var service = null;
     var _isVisible = false;
     var items = [];
@@ -222,11 +223,23 @@ angular.module('eperusteApp')
               perusteenOsaId: lapsi.perusteenOsa.id,
               versio: null
             }
-          ]
+          ],
+          isActive: isRouteActive,
         });
         nameMap[lapsi.perusteenOsa.id] = lapsi.perusteenOsa.nimi;
         processNode(lapsi, level + 1);
       });
+    };
+
+    var isRouteActive = function (item) {
+      // ui-sref-active doesn't work directly in ui-router 0.2.*
+      // with optional parameters.
+      // Versionless url should be considered same as specific version url.
+      var url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', {
+        perusteenOsaId: item.id,
+        versio: null
+      }, {inherit:true}).replace(/#/g, '');
+      return $location.url().indexOf(url) > -1;
     };
 
     var buildTree = function () {

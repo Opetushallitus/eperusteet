@@ -18,225 +18,15 @@
 /* global _ */
 
 /**
- * Perusteprojektin sivunavigaatioelementti
+ * Sivunavigaatioelementti
+ * @param items lista menuelementtejä, objekti jolla avaimet:
+ *  - label: näkyvä nimi joka ajetaan Kaanna-filterin läpi
+ *  - depth: solmun syvyys hierarkiassa, oletuksena 0 (päätaso)
+ *  - link: linkin osoite, array: [tilan nimi, tilan parametrit]
+ * @param header Otsikko elementille
+ * Valinnainen transclude sijoitetaan ensimmäiseksi otsikon alle.
  */
 angular.module('eperusteApp')
-  .directive('sivunavigaatio', function() {
-    return {
-      templateUrl: 'views/partials/sivunavigaatio.html',
-      restrict: 'E',
-      transclude: true,
-      controller: 'sivunavigaatioCtrl'
-    };
-  })
-
-  .directive('subnavi', function ($compile, $location) {
-    return {
-      templateUrl: 'views/partials/subnavi.html',
-      restrict: 'A',
-      scope: {
-        subnavi: '='
-      },
-      controller: function ($scope, SubnaviState, $state) {
-        $scope.sivunaviopen = SubnaviState.open;
-        $scope.toggle = function (id, event) {
-          $scope.sivunaviopen[id] = !$scope.sivunaviopen[id];
-          event.stopPropagation();
-        };
-        $scope.openFor = function (id) {
-          $scope.sivunaviopen[id] = true;
-        };
-        $scope.isRouteActive = function (id) {
-          // ui-sref-active doesn't work directly in ui-router 0.2.*
-          // with optional parameters.
-          // Versionless url should be considered same as specific version url.
-          var url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', {
-            perusteenOsaId: id,
-            versio: null
-          }, {inherit:true}).replace(/#/g, '');
-          return $location.url().indexOf(url) > -1;
-        };
-      },
-      compile: function(tElement) {
-        var contents = tElement.contents().remove();
-        var compiledContents;
-        return function(scope, iElement) {
-          if(!compiledContents) {
-            compiledContents = $compile(contents);
-          }
-          compiledContents(scope, function(clone) {
-            iElement.append(clone);
-          });
-        };
-      }
-    };
-  })
-  .service('SubnaviState', function () {
-    this.init = function () {
-      this.open = {};
-    };
-    this.init();
-  })
-  .controller('sivunavigaatioCtrl', function($rootScope, $scope, $stateParams, $state, SivunavigaatioService, PerusteProjektiService) {
-    var lastParams = {};
-    $scope.menuCollapsed = true;
-    $scope.data = {};
-    $scope.piilota = true;
-
-    function onStateChange(params) {
-      $scope.suoritustapa = $stateParams.suoritustapa;
-      function load() {
-        $scope.data = SivunavigaatioService.getData();
-      }
-
-      if (_.size(params) !== _.size(lastParams)) {
-        load();
-      }
-      else {
-        var isSame = _.isObject(params) && _.isObject(lastParams);
-        _.forEach(params, function(v, k) {
-          if (!lastParams[k] || lastParams[k] !== v) {
-            isSame = false;
-          }
-        });
-        if (!isSame) {
-          load();
-        }
-        lastParams = params;
-      }
-    }
-    onStateChange($stateParams);
-
-    $scope.$on('$stateChangeStart', function() {
-      $scope.menuCollapsed = true;
-    });
-
-    $scope.$on('$stateChangeSuccess', function(_1, _2, params) {
-      onStateChange(params);
-    });
-
-    $scope.goBackToMain = function () {
-      $state.go('root.perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: $scope.projekti.id, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {reload: true});
-    };
-
-    $scope.toggleSideMenu = function () {
-      $scope.menuCollapsed = !$scope.menuCollapsed;
-    };
-
-    $scope.isHidden = function() {
-      return $scope.data.piilota;
-    };
-  })
-  .service('SivunavigaatioService', function ($stateParams, PerusteprojektiTiedotService) {
-    var data = {
-      osiot: false,
-      piilota: false,
-      projekti: {id: 0},
-      service: null
-    };
-
-    function setData(afterCb) {
-      afterCb = afterCb || angular.noop;
-
-      function load(service) {
-        data.projekti = service.getProjekti();
-        data.projekti.peruste = service.getPeruste();
-        data.projekti.peruste.sisalto = service.getSisalto();
-      }
-
-      if (data.service) {
-          load(data.service);
-          afterCb();
-      } else {
-        PerusteprojektiTiedotService.then(function(res) {
-          data.service = res;
-          load(data.service);
-          afterCb();
-        });
-      }
-    }
-
-    /**
-     * Asettaa sivunavigaation tiettyyn tilaan.
-     * Suositeltu käyttöpaikka: $stateProvider.state -> onEnter
-     * @param data {Object} Mahdolliset asetukset:
-     *     osiot: true näyttää projektin kaikki osiot,
-     *            false näyttää vain "takaisin"-linkin
-     *     piilota: true piilottaa koko navigaatioelementin
-     */
-    this.aseta = function(config) {
-      setData(function() {
-        data.osiot = config.osiot || false;
-        data.piilota = !!config.piilota;
-      });
-    };
-
-    this.update = function () {
-      data.service.alustaPerusteenSisalto($stateParams, true).then(function () {
-        setData();
-      });
-    };
-
-    this.getData = function() {
-      return data;
-    };
-
-    function openParent(el) {
-      var parentEl = el.closest('.subnavi-lapset').closest('.list-group-item').children('a');
-      if (parentEl.length === 0) {
-        return;
-      }
-      var parentId = parentEl.attr('id').split('-').pop();
-      parentEl.scope().openFor(parentId);
-      return parentEl;
-    }
-
-    /**
-     * Open (uncollapse) the subnavi tree for given item.
-     * Opens the tree up to the item and shows its children also.
-     * @param {type} id Id of item in subnavi tree
-     * @returns {undefined}
-     */
-    this.unCollapseFor = function (id) {
-      var visibleEl = angular.element('#subnavi-id-'+id);
-      var hiddenEl = angular.element('#subnavi-id-'+id+':hidden');
-      if (visibleEl.length === 0 && hiddenEl.length === 0) {
-        return;
-      }
-      if (hiddenEl.length > 0) {
-        // Element is hidden, need to open parents
-        hiddenEl.scope().openFor(id);
-        var parent = openParent(hiddenEl);
-        while (parent) {
-          parent = openParent(parent);
-        }
-      } else {
-        visibleEl.scope().openFor(id);
-      }
-    };
-
-    function linktext(id) {
-      return angular.element('#subnavi-id-'+id).text();
-    }
-
-    /**
-     * Sets breadcrumb in ui-view based on given content ids
-     */
-    this.setCrumb = function (ids) {
-      var crumbEl = angular.element('#tekstikappale-crumbs');
-      ids.splice(0, 1);
-      ids.reverse();
-      var crumbs = _.map(ids, function (id) {
-        return {name: linktext(id), id: id};
-      });
-      var scope = crumbEl.scope();
-      if (!scope) {
-        console.log('Ei pystynyt asettamaan tekstikappaleen murupolkua!');
-      } else {
-        scope.setCrumbs(crumbs);
-      }
-    };
-  })
 
   .directive('sivunavigaatio2', function () {
     return {
@@ -300,6 +90,9 @@ angular.module('eperusteApp')
     }
 
     function isActive(item) {
+      if (_.isFunction(item.isActive)) {
+        return item.isActive(item);
+      }
       return (!_.isEmpty(item.link) && _.isArray(item.link) &&
         $state.is(item.link[0], _.extend(_.clone($state.params), item.link[1])));
     }
