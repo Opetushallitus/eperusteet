@@ -25,15 +25,13 @@ angular.module('eperusteApp')
         if (!kentta) { return undefined; }
         kentta = kentta[arguments[i]];
       }
-
-      var kaannetty = Kaanna.kaanna(kentta);
-      kaannetty = _.isString(kaannetty) ? kaannetty : '';
-      return kaannetty.toLowerCase().indexOf(input.toLowerCase()) !== -1;
+      return match(input, kentta);
     }
 
     function mapLapsisolmut(objekti, lapsienAvain, cb) {
-      return _.map(objekti[lapsienAvain], function(solmu) {
-        solmu[lapsienAvain] = kaikilleLapsisolmuille(solmu, lapsienAvain, cb);
+      return _.map(_.isArray(objekti) ? objekti : objekti[lapsienAvain], function(solmu) {
+        solmu = _.clone(solmu);
+        solmu[lapsienAvain] = mapLapsisolmut(solmu, lapsienAvain, cb);
         return cb(solmu);
       });
     }
@@ -59,8 +57,10 @@ angular.module('eperusteApp')
     }
 
     function access(object) {
-      if (object && _.isObject(object) && arguments.length > 1) {
-        return access.apply([object[arguments[1]].concat(arguments.splice(2))]);
+      if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+          object = object && _.isPlainObject(object) ? object[arguments[i]] : undefined;
+        }
       }
       return object;
     }
@@ -80,3 +80,4 @@ angular.module('eperusteApp')
       perusteenSuoritustavanYksikko: perusteenSuoritustavanYksikko,
     };
   });
+
