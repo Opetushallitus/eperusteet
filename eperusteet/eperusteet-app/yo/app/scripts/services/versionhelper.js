@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot,
-    RakenneVersio, Notifikaatiot, $state, $location) {
+    RakenneVersio, Notifikaatiot, $state, $location, $stateParams) {
     function getVersions(data, tunniste, tyyppi, force, cb) {
       cb = cb || angular.noop;
       if (!_.isObject(data)) {
@@ -183,7 +183,9 @@ angular.module('eperusteApp')
         }
       })
       .result.then(function(re) {
-        data.chosen = re;
+        var params = _.clone($stateParams);
+        params.versio = '/' + re.index;
+        $state.go($state.current.name, params);
       });
     };
   })
