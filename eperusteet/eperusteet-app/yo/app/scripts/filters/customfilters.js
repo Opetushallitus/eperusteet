@@ -39,6 +39,7 @@ angular.module('eperusteApp')
       }
     };
   })
+
   /**
    * Muotoilee timestampit
    * default: time (ago)

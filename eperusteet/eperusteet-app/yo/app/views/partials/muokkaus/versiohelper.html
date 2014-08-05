@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <h1 kaanna>versiohistoria</h1>
+</div>
+
+<div class="modal-body">
+  <table class="table table-striped">
+    <tr>
+      <th width="10%" kaanna>versio</th>
+      <th kaanna>muokkaaja</th>
+      <th width="50%" kaanna>kommentti</th>
+      <th width="20%" kaanna>muokattu</th>
+    </tr>
+    <tr ng-repeat="ver in versions.list">
+      <td><a href="" ng-click="close(ver)">{{ ver.index }}</a></td>
+      <td>Erkki Esimerkki</td>
+      <td>{{ ver.kommentti || '-' }}</td>
+      <td>{{ ver.date | aikaleima:'time' }}</td>
+    </tr>
+  </table>
+</div>
+
+<div class="modal-footer">
+  <button class="btn" ng-click="close()" kaanna>sulje</button>
+</div>

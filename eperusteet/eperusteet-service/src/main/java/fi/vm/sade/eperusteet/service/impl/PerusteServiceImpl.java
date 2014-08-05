@@ -420,7 +420,7 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, UpdateDto<RakenneModuuliDto> rakenne) {
         RakenneModuuliDto updated = updateTutkinnonRakenne(perusteId, suoritustapakoodi, rakenne.getDto());
-        if ( rakenne.getMetadata() != null ) {
+        if (rakenne.getMetadata() != null) {
             perusteet.setRevisioKommentti(rakenne.getMetadata().getKommentti());
         }
         return updated;

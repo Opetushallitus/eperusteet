@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.UpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import java.util.List;
 
@@ -29,6 +30,7 @@ import java.util.List;
  */
 public interface PerusteenOsaService {
 
+    <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(UpdateDto<T> perusteenOsaDto, Class<T> dtoClass);
     <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(T perusteenOsaDto, Class<T> dtoClass);
 
     <T extends PerusteenOsaDto, D extends PerusteenOsa> T add(T perusteenOsaDto, Class<T> dtoClass, Class<D> destinationClass);

@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.UpdateDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
@@ -97,6 +98,17 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         current = perusteenOsaRepo.save(current);
 
         return mapper.map(current, dtoClass);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(UpdateDto<T> perusteenOsaDto, Class<T> dtoClass) {
+        T updated = update(perusteenOsaDto.getDto(), dtoClass);
+
+        if (perusteenOsaDto.getMetadata() != null) {
+            perusteenOsaRepo.setRevisioKommentti(perusteenOsaDto.getMetadata().getKommentti());
+        }
+        return updated;
     }
 
     @Override

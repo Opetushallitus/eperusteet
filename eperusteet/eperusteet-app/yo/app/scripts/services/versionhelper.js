@@ -172,27 +172,29 @@ angular.module('eperusteApp')
       }
     };
 
-    this.historyView = function (data) {
+    this.historyView = function(data) {
       $modal.open({
-        template: '<div class="modal-header"><h1>Versiohistoria</h1></div>' +
-                '<div class="modal-body">' +
-                '<table class="table table-striped">' +
-                '<tr><th>{{\'versio\'|kaanna}}</th><th>{{\'muokattu-viimeksi\'|kaanna}}</th><th>{{\'muokkaaja\'|kaanna}}</th></tr>' +
-                '<tr ng-repeat="ver in versions.list"><td>{{ver.index}}</td><td>{{ver.date|aikaleima}}</td><td>Erkki Esimerkki</td></tr>' +
-                '</div></table>' +
-                '<div class="modal-footer"><button class="btn" ng-click="close()">{{\'sulje\' | kaanna }}</button></div>',
+        templateUrl: 'views/partials/muokkaus/versiohelper.html',
+        controller: 'HistoryViewCtrl',
         resolve: {
           versions: function() {
             return data;
           }
-        },
-        controller: 'HistoryViewCtrl'
+        }
+      })
+      .result.then(function(re) {
+        data.chosen = re;
       });
     };
   })
   .controller('HistoryViewCtrl', function ($scope, versions, $modalInstance) {
     $scope.versions = versions;
-    $scope.close = function () {
-      $modalInstance.close();
+    $scope.close = function(versio) {
+      if (versio) {
+        $modalInstance.close(versio);
+      }
+      else {
+        $modalInstance.dismiss();
+      }
     };
   });

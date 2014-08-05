@@ -153,7 +153,9 @@ public class PerusteController {
 
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne", method = POST)
     @ResponseBody
-    public RakenneModuuliDto updatePerusteenRakenne(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+    public RakenneModuuliDto updatePerusteenRakenne(
+            @PathVariable("id") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
             @RequestBody UpdateDto<RakenneModuuliDto> rakenne) {
         LOG.info("Kommentti: " + rakenne.getMetadata());
         return service.updateTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), rakenne);

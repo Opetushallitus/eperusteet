@@ -30,6 +30,7 @@
     "tallenna": "Tallenna",
     "muokattavana": "Muokattavana",
     "muokattu-viimeksi": "Muokattu viimeksi",
+    "muokattu": "Muokattu",
     "muokkaaja": "Muokkaaja",
     "luotu": "Luotu",
     "luoja": "Luoja",
@@ -244,6 +245,10 @@
     "merkitse-suosikiksi": "Merkitse suosikiksi",
     "poista-suosikeista": "Poista suosikeista",
     "lataa-peruste-pdf-muodossa": "Lataa peruste pdf-muodossa",
+
+    "versiohistoria": "Versiohistoria",
+
+    "kommentti": "Kommentti",
 
     "koulutusalakoodi-1": "Tekniikan ja liikenteen ala",
     "koulutusalakoodi-2": "Kulttuuriala",

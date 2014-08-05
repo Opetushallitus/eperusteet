@@ -135,14 +135,14 @@ public class PerusteenOsaController {
     @ResponseBody
     public TekstiKappaleDto updateTekstikappale(@PathVariable("id") final Long id, @RequestBody UpdateDto<TekstiKappaleDto> tekstiKappaleDto) {
         tekstiKappaleDto.getDto().setId(id);
-        return service.update(tekstiKappaleDto.getDto(), TekstiKappaleDto.class);
+        return service.update(tekstiKappaleDto, TekstiKappaleDto.class);
     }
 
     @RequestMapping(value = "/{id}", method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
     @ResponseBody
     public TutkinnonOsaDto updateTutkinnonOsa(@PathVariable("id") final Long id, @RequestBody UpdateDto<TutkinnonOsaDto> tutkinnonOsaDto) {
         tutkinnonOsaDto.getDto().setId(id);
-        return service.update(tutkinnonOsaDto.getDto(), TutkinnonOsaDto.class);
+        return service.update(tutkinnonOsaDto, TutkinnonOsaDto.class);
     }
 
     @RequestMapping(value = "/{id}/lukko", method = GET)
