@@ -30,7 +30,7 @@ angular.module('eperusteApp')
         Notifikaatiot, SivunavigaatioService, VersionHelper, Lukitus, $state,
         TutkinnonOsaEditMode, PerusteenOsaViitteet, Varmistusdialogi, $timeout,
         Kaanna, PerusteprojektiTiedotService, $stateParams, SuoritustapaSisalto,
-        Utils) {
+        Utils, PerusteProjektiSivunavi) {
 
         Utils.scrollTo('#ylasivuankkuri');
 
@@ -47,9 +47,6 @@ angular.module('eperusteApp')
         $scope.setNavigation = function() {
           $scope.tree.init();
           SivunavigaatioService.setCrumb($scope.tree.get());
-          $timeout(function() {
-            SivunavigaatioService.unCollapseFor($scope.tekstikappale.id);
-          }, 50);
           VersionHelper.setUrl($scope.versiot);
         };
 
@@ -130,7 +127,7 @@ angular.module('eperusteApp')
           $scope.haeVersiot(true, function () {
             VersionHelper.setUrl($scope.versiot);
           });
-          SivunavigaatioService.update();
+          PerusteProjektiSivunavi.refresh();
           Lukitus.vapautaPerusteenosa(res.id);
           Notifikaatiot.onnistui('muokkaus-tekstikappale-tallennettu');
           $scope.setNavigation();
@@ -246,7 +243,7 @@ angular.module('eperusteApp')
         };
 
         $scope.$watch('editEnabled', function(editEnabled) {
-          SivunavigaatioService.aseta({osiot: !editEnabled});
+          PerusteProjektiSivunavi.setVisible(!editEnabled);
         });
 
         $scope.haeVersiot = function(force) {

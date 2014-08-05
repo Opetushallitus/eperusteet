@@ -22,13 +22,14 @@
           <input ng-model="search.term" placeholder="{{ 'etsi-sisällöstä' | kaanna }}" class="form-control input-sm">
         </div>
       </div>
-      <div ng-click="navigoi(item)" class="list-group-item item" ng-repeat="item in items" ng-class="itemClasses(item)"
+      <a class="list-group-item item" ng-repeat="item in items" ng-class="itemClasses(item)" ng-href="{{item.href}}"
         ng-hide="!item.$matched || item.root || (!search.term && (item.$hidden || item.$impHidden))">
-        <span ng-show="!item.$leaf" ng-click="toggle(item)" class="glyphicon pointer"
-              ng-class="{'glyphicon-chevron-right': item.$collapsed, 'glyphicon-chevron-down': !item.$collapsed}"></span>
-        <a ng-class="{'action-link': !!item.href}"
-           ng-href="{{item.href}}" ep-highlight="search.term">{{item.label|kaanna}}</a>
-      </div>
+        <div class="toggler">
+          <span ng-show="!item.$leaf" ng-click="toggle(item, $event)" class="glyphicon"
+                ng-class="{'glyphicon-chevron-right': item.$collapsed, 'glyphicon-chevron-down': !item.$collapsed}"></span>
+        </div>
+        <span class="linktext" ng-class="{'action-link': !!item.href}" ep-highlight="search.term">{{item.label|kaanna}}</span>
+      </a>
       <div class="list-group-item" ng-show="!hasResults">
         <p>{{ ei-tuloksia | kaanna }}</p>
       </div>

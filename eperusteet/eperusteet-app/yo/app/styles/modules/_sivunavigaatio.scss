@@ -223,6 +223,14 @@ $sivunavi-shadow: 6px;
 .sivunavi-outer {
   clear: both;
 }
+.sivunavi-hidden {
+  .sivunavi-outer {
+    display: none !important;
+  }
+  .sivunavi-sisalto {
+    margin-left: 0;
+  }
+}
 $sivunavi-level-zero: 15px;
 $sivunavi-level-padding: 20px;
 @mixin sn-padding($level) {
@@ -258,8 +266,39 @@ $sivunavi-level-padding: 20px;
     background-color: $brand-primary;
     color: white;
   }
-  .item:hover:not(.active) {
-    background-color: #eee;
+  .item {
+    .toggler {
+      display: block;
+      float: left;
+      width: 20px;
+      min-height: 1px;
+      .glyphicon, .glyphicon:hover {
+        text-decoration: none;
+        color: black;
+      }
+    }
+    .linktext {
+      display: block;
+      margin-left: 22px;
+    }
+    &:hover:not(.active) {
+      background-color: #eee;
+    }
+    &:active, &:focus {
+      outline: 0;
+    }
+    // TODO animation problem when using search term
+    /*&.ng-hide-add, &.ng-hide-remove {
+      transition: max-height 0.2s ease;
+    }
+    &.ng-hide-add.ng-hide-add-active, &.ng-hide-remove {
+      overflow: hidden;
+      max-height: 0px;
+    }
+    &.ng-hide-add, &.ng-hide-remove.ng-hide-remove-active {
+      overflow: hidden;
+      max-height: 80px;
+    }*/
   }
 }
 
@@ -274,9 +313,6 @@ $sivunavi-level-padding: 20px;
 
 /* Pienellä näytöllä sivunavista tulee kelluva ja kollapsoituva */
 @media (max-width: $screen-md-max) {
-  .sivunavi-takaisin {
-    width: 100%;
-  }
   .sivunavi-outer {
     .sivunavi-toggler {
       position: absolute;
@@ -327,7 +363,9 @@ $sivunavi-level-padding: 20px;
     margin-left: 10px;
   }
   .sivunavi-takaisin {
-    margin: 10px;
+    margin-top: 0;
+    width: 100%;
+    height: auto;
   }
   .sivunavi-clear {
     clear: both;
@@ -344,9 +382,11 @@ $sivunavi-level-padding: 20px;
   }
   .sivunavi-sisalto {
     margin-left: $sivunavi-leveys + 40px;
+    margin-top: $sivunavi-takaisin-korkeus;
   }
   .sivunavi-takaisin {
-    margin: 15px 0;
+    margin-top: -26px;
+    height: $sivunavi-takaisin-korkeus;
   }
   .sivunavi-clear {
     display: none;

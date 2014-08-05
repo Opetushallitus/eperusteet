@@ -104,7 +104,8 @@ angular.module('eperusteApp')
       items: [
         {label: 'tutkinnonosat', link: ['root.esitys.peruste.tutkinnonosat', {}]},
         {label: 'tutkinnon-rakenne', link: ['root.esitys.peruste.rakenne', {}]},
-      ]
+      ],
+      header: 'perusteen-sisältö'
     };
 
     function mapSisalto(sisalto) {

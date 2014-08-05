@@ -244,7 +244,7 @@ angular.module('eperusteApp')
       restrict: 'AE',
       scope: {
         items: '=',
-        header: '@?'
+        header: '='
       },
       controller: 'SivuNaviController',
       transclude: true,
@@ -279,22 +279,38 @@ angular.module('eperusteApp')
       }
     };
 
-    $scope.navigoi = function(item) {
-      $state.go(item.link[0], item.link[1]);
-    };
-
     $scope.$watch('search.term', $scope.search.update);
+
+    function unCollapse(item) {
+      item.$hidden = false;
+      // Open up
+      var parent = $scope.items[item.$parent];
+      while (parent) {
+        parent.$hidden = false;
+        parent = $scope.items[parent.$parent];
+      }
+      // Open down one level
+      var index = _.indexOf($scope.items, item);
+      if (index > 0) {
+        var children = getChildren(index);
+        _.each(children, function (child) {
+          $scope.items[child].$hidden = false;
+        });
+      }
+    }
+
+    function isActive(item) {
+      return (!_.isEmpty(item.link) && _.isArray(item.link) &&
+        $state.is(item.link[0], _.extend(_.clone($state.params), item.link[1])));
+    }
 
     $scope.itemClasses = function (item) {
       var classes = ['level' + item.depth];
       if (item.$matched && $scope.search.term) {
         classes.push('matched');
       }
-      if (!_.isEmpty(item.link)) {
-        if (_.isArray(item.link) &&
-            $state.is(item.link[0], _.extend(_.clone($state.params), item.link[1]))) {
-          classes.push('active');
-        }
+      if (isActive(item)) {
+        classes.push('active');
       }
       return classes;
     };
@@ -309,9 +325,16 @@ angular.module('eperusteApp')
         levels[item.depth] = index;
         if (_.isArray(item.link)) {
           item.href = $state.href.apply($state, item.link);
+          if (item.link.length > 1) {
+            // State is matched with string parameters
+            _.each(item.link[1], function (value, key) {
+              item.link[1][key] = value === null ? '' : ('' + value);
+            });
+          }
         }
         item.$parent = levels[item.depth-1] || null;
-        item.$hidden = false;
+        item.$hidden = item.depth > 0;
+        item.$matched = true;
       });
       updateModel();
     };
@@ -343,12 +366,20 @@ angular.module('eperusteApp')
       }
       item.$leaf = hidden.length === 0;
       item.$collapsed = _.all(hidden);
+      if (!item.$collapsed) {
+        // Reveal all children of uncollapsed node
+        for (i = 0; i < children.length; ++i) {
+          $scope.items[children[i]].$hidden = false;
+        }
+      }
       item.$impHidden = false;
     }
 
     function hideNodeOrphans(index) {
+      // If the parent is hidden, then the child is implicitly hidden
       var item = $scope.items[index];
-      for (index++; index < $scope.items.length && $scope.items[index].depth > item.depth; ++index) {
+      for (index++; index < $scope.items.length &&
+           $scope.items[index].depth > item.depth; ++index) {
         if (!$scope.items[index].$hidden) {
           $scope.items[index].$impHidden = true;
         }
@@ -363,12 +394,24 @@ angular.module('eperusteApp')
       }
     }
 
-    function updateModel() {
+    function updateModel(doUncollapse) {
+      doUncollapse = _.isUndefined(doUncollapse) ? true : doUncollapse;
+      if (doUncollapse) {
+        var active = _.find($scope.items, function (item) {
+          return isActive(item);
+        });
+        if (active) {
+          unCollapse(active);
+        }
+      }
       traverse(0);
       hideOrphans();
     }
 
-    $scope.toggle = function (item, state) {
+    $scope.toggle = function (item, $event, state) {
+      if ($event) {
+        $event.preventDefault();
+      }
       var index = _.indexOf($scope.items, item);
       state = _.isUndefined(state) ? !item.$collapsed : state;
       if (index >= 0 && index < ($scope.items.length - 1)) {
@@ -381,7 +424,7 @@ angular.module('eperusteApp')
           index++;
         }
       }
-      updateModel();
+      updateModel(false);
     };
 
     $scope.toggleSideMenu = function () {
@@ -394,6 +437,7 @@ angular.module('eperusteApp')
 
     $scope.$on('$stateChangeSuccess', function() {
       Utils.scrollTo('#ylasivuankkuri');
+      updateModel();
     });
 
     $scope.$watch('items', function () {

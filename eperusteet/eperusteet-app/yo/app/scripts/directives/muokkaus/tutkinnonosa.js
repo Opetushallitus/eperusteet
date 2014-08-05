@@ -29,8 +29,8 @@ angular.module('eperusteApp')
       controller: function($scope, $state, $stateParams, $q, Navigaatiopolku,
         Editointikontrollit, PerusteenOsat, Editointicatcher, PerusteenRakenne,
         PerusteTutkinnonosa, TutkinnonOsaEditMode, $timeout, Varmistusdialogi,
-        SivunavigaatioService, VersionHelper, Lukitus, MuokkausUtils, PerusteenOsaViitteet,
-        Utils, ArviointiHelper) {
+        VersionHelper, Lukitus, MuokkausUtils, PerusteenOsaViitteet,
+        Utils, ArviointiHelper, PerusteProjektiSivunavi) {
 
         Utils.scrollTo('#ylasivuankkuri');
 
@@ -279,7 +279,7 @@ angular.module('eperusteApp')
           });
         };
         $scope.$watch('editEnabled', function (editEnabled) {
-          SivunavigaatioService.aseta({osiot: !editEnabled});
+          PerusteProjektiSivunavi.setVisible(!editEnabled);
         });
 
         $scope.haeVersiot = function (force, cb) {

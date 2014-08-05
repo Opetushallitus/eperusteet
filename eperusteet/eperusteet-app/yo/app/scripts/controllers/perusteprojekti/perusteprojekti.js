@@ -15,7 +15,7 @@
  */
 
 'use strict';
-// /* global _ */
+/* global _ */
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {
@@ -53,57 +53,57 @@ angular.module('eperusteApp')
         url: '/rakenne{versio:(?:/[^/]+)?}',
         templateUrl: 'views/partials/perusteprojekti/muodostumissaannot.html',
         controller: 'PerusteprojektiMuodostumissaannotCtrl',
-        onEnter: ['SivunavigaatioService', 'perusteprojektiTiedot', function(SivunavigaatioService, perusteprojektiTiedot) {
-            SivunavigaatioService.aseta({osiot: true, perusteprojektiTiedot: perusteprojektiTiedot});
-          }]
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible();
+        }]
       })
       .state('root.perusteprojekti.suoritustapa.tutkinnonosat', {
         url: '/tutkinnonosat',
         templateUrl: 'views/partials/perusteprojekti/tutkinnonosat.html',
         controller: 'PerusteprojektiTutkinnonOsatCtrl',
-        onEnter: ['SivunavigaatioService', 'perusteprojektiTiedot', function(SivunavigaatioService, perusteprojektiTiedot) {
-            SivunavigaatioService.aseta({osiot: true, perusteprojektiTiedot: perusteprojektiTiedot});
-          }]
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible();
+        }]
       })
       .state('root.perusteprojekti.suoritustapa.perusteenosa', {
         url: '/perusteenosa/{perusteenOsanTyyppi}/{perusteenOsaId}{versio:(?:/[^/]+)?}',
         templateUrl: 'views/muokkaus.html',
         controller: 'MuokkausCtrl',
-        onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
-            SivunavigaatioService.aseta({osiot: true});
-          }]
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible();
+        }]
       })
       .state('root.perusteprojekti.suoritustapa.sisalto', {
         url: '/sisalto',
         templateUrl: 'views/partials/perusteprojekti/sisalto.html',
         controller: 'PerusteprojektisisaltoCtrl',
-        onEnter: ['SivunavigaatioService', 'perusteprojektiTiedot', function(SivunavigaatioService, perusteprojektiTiedot) {
-            SivunavigaatioService.aseta({piilota: true, perusteprojektiTiedot: perusteprojektiTiedot});
-          }]
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(false);
+        }]
       })
       .state('root.perusteprojekti.tiedot', {
         url: '/perustiedot',
         templateUrl: 'views/partials/perusteprojekti/tiedot.html',
         controller: 'ProjektinTiedotCtrl',
-        onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
-            SivunavigaatioService.aseta({osiot: false});
-          }]
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(false);
+        }]
       })
       .state('root.perusteprojekti.peruste', {
         url: '/peruste',
         templateUrl: 'views/partials/perusteprojekti/peruste.html',
         controller: 'PerusteenTiedotCtrl',
-        onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
-            SivunavigaatioService.aseta({osiot: false});
-          }]
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(false);
+        }]
       })
       .state('root.perusteprojekti.projektiryhma', {
         url: '/projektiryhma',
         templateUrl: 'views/partials/perusteprojekti/projektiryhma.html',
         controller: 'ProjektiryhmaCtrl',
-        onEnter: ['SivunavigaatioService', function(SivunavigaatioService) {
-            SivunavigaatioService.aseta({osiot: false});
-          }]
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(false);
+        }]
       })
       .state('root.perusteprojektiwizard', {
         url: '/perusteprojekti',
@@ -125,7 +125,7 @@ angular.module('eperusteApp')
   })
   .controller('PerusteprojektiCtrl', function($scope, $state, $stateParams,
     Navigaatiopolku, koulutusalaService, opintoalaService, SivunavigaatioService,
-    PerusteProjektiService, Kaanna, perusteprojektiTiedot) {
+    PerusteProjektiService, Kaanna, perusteprojektiTiedot, PerusteProjektiSivunavi) {
 
     function init() {
       $scope.projekti = perusteprojektiTiedot.getProjekti();
@@ -136,6 +136,23 @@ angular.module('eperusteApp')
     init();
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
+    $scope.sivunavi = {
+      suoritustapa: PerusteProjektiService.getSuoritustapa(),
+      items: []
+    };
+    var sivunaviItemsChanged = function (items) {
+      $scope.sivunavi.items = items;
+    };
+    PerusteProjektiSivunavi.register(sivunaviItemsChanged);
+    PerusteProjektiSivunavi.refresh();
+
+    $scope.$on('$stateChangeSuccess', function() {
+      var newSuoritustapa = PerusteProjektiService.getSuoritustapa();
+      if (newSuoritustapa !== $scope.sivunavi.suoritustapa) {
+        PerusteProjektiSivunavi.refresh();
+      }
+      $scope.sivunavi.suoritustapa = newSuoritustapa;
+    });
 
     Navigaatiopolku.asetaElementit({
       perusteprojekti: {
@@ -153,9 +170,101 @@ angular.module('eperusteApp')
       return true;
     };
 
+    $scope.showBackLink = function () {
+      return !$state.is('root.perusteprojekti.suoritustapa.sisalto');
+    };
+
+    $scope.getBackLink = function () {
+      return $state.href('root.perusteprojekti.suoritustapa.sisalto', {
+        suoritustapa: PerusteProjektiService.getSuoritustapa() || 'naytto'
+      });
+    };
+
+    $scope.isNaviVisible = function () {
+      return PerusteProjektiSivunavi.isVisible();
+    };
+
     $scope.$on('update:perusteprojekti', function () {
       perusteprojektiTiedot.alustaProjektinTiedot($stateParams).then(function () {
         init();
+        PerusteProjektiSivunavi.refresh();
       });
     });
+  })
+  .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams) {
+    var service = null;
+    var _isVisible = false;
+    var items = [];
+    var data = {
+      projekti: {
+        peruste: {
+          sisalto: {
+          }
+        }
+      }
+    };
+    var callbacks = {
+      changed: angular.noop
+    };
+
+    var processNode = function (node, level) {
+      level = level || 0;
+      _.each(node.lapset, function (lapsi) {
+        items.push({
+          label: lapsi.perusteenOsa.nimi,
+          id: lapsi.id,
+          depth: level,
+          link: [
+            'root.perusteprojekti.suoritustapa.perusteenosa',
+            {
+              perusteenOsanTyyppi: 'tekstikappale',
+              perusteenOsaId: lapsi.perusteenOsa.id,
+              versio: null
+            }
+          ]
+        });
+        processNode(lapsi, level + 1);
+      });
+    };
+
+    var buildTree = function () {
+      items = [
+        {label: 'tutkinnonosat', link: ['root.perusteprojekti.suoritustapa.tutkinnonosat', {}]},
+        {label: 'tutkinnon-rakenne', link: ['root.perusteprojekti.suoritustapa.muodostumissaannot', {}]},
+      ];
+      processNode(data.projekti.peruste.sisalto);
+      callbacks.changed(items);
+    };
+
+    var load = function () {
+      data.projekti = service.getProjekti();
+      data.projekti.peruste = service.getPeruste();
+      data.projekti.peruste.sisalto = service.getSisalto();
+      buildTree();
+    };
+
+    this.register = function (cb) {
+      callbacks.changed = cb;
+    };
+
+    this.refresh = function () {
+      if (!service) {
+        PerusteprojektiTiedotService.then(function(res) {
+          service = res;
+          load();
+        });
+      } else {
+        service.alustaPerusteenSisalto($stateParams, true).then(function () {
+          load();
+        });
+      }
+    };
+
+    this.setVisible = function (visible) {
+      _isVisible = _.isUndefined(visible) ? true : visible;
+    };
+
+    this.isVisible = function () {
+      return _isVisible;
+    };
   });

@@ -20,7 +20,7 @@ European Union Public Licence for more details.
             <div class="sivunavi-takaisin">
               <a ui-sref="root.selaus.ammatillinenperuskoulutus" icon-role="back">{{ 'takaisin-hakuun' | kaanna }}</a>
             </div>
-            <sivunavigaatio2 items="navi.items" header="perusteen-sisältö">
+            <sivunavigaatio2 items="navi.items" header="navi.header">
               <select class="form-control input-sm" ng-model="suoritustapa" ng-change="vaihdaSuoritustapa(suoritustapa)">
                 <option ng-selected="suoritustapa === st" ng-repeat="st in suoritustavat" value="{{ st }}">{{ st | kaanna }}</option>
               </select>

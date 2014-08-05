@@ -18,9 +18,9 @@
 
 angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams,
-    PerusteenRakenne, Notifikaatiot, Editointikontrollit, SivunavigaatioService, PerusteProjektiService,
+    PerusteenRakenne, Notifikaatiot, Editointikontrollit, PerusteProjektiService,
     Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot,
-    virheService) {
+    virheService, PerusteProjektiSivunavi) {
     $scope.editoi = false;
     // $scope.peruste = PerusteProjektiService.getPeruste();
     $scope.suoritustapa = $stateParams.suoritustapa;
@@ -152,6 +152,6 @@ angular.module('eperusteApp')
     }, true);
 
     $scope.$watch('editoi', function(editoi) {
-      SivunavigaatioService.aseta({osiot: !editoi});
+      PerusteProjektiSivunavi.setVisible(!editoi);
     });
   });
