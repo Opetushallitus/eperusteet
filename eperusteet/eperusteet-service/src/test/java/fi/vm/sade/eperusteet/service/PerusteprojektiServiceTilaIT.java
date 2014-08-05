@@ -17,7 +17,6 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
@@ -32,7 +31,6 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
-import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.HashMap;
@@ -83,40 +81,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     
     @Before
     public void setUp() {
-//        projekti = new Perusteprojekti();
-//        projekti.setDiaarinumero("12345");
-//        projekti.setNimi("Testi projekti");
-//        projekti.setTila(Tila.LAADINTA);
-//        
-//        naytto = new Suoritustapa();
-//        PerusteenOsaViite sisalto = new PerusteenOsaViite();
-//        tekstikappale = new TekstiKappale();
-//        tekstikappale.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "testi_tekstikappale"));
-//        tekstikappale.setTeksti(TestUtils.tekstiPalanenOf(Kieli.FI, "Hodor, hodor - hodor, hodor. Hodor hodor hodor! Hodor, hodor, hodor. Hodor hodor - hodor hodor. Hodor. Hodor. Hodor hodor hodor hodor? Hodor hodor hodor; hodor hodor... Hodor hodor hodor... Hodor hodor hodor. Hodor. "));
-//        tekstikappale.setTila(Tila.LUONNOS);
-//        em.persist(tekstikappale);
-//        sisalto.setPerusteenOsa(tekstikappale);
-//        em.persist(sisalto);
-//        naytto.setSisalto(sisalto);
-//        naytto.setSuoritustapakoodi(Suoritustapakoodi.NAYTTO);
-//        TutkinnonOsaViite osaViite = new TutkinnonOsaViite();
-//        osa = new TutkinnonOsa();
-//        osa.setTila(Tila.LUONNOS);
-//        em.persist(osa);
-//        osaViite.setSuoritustapa(naytto);
-//        osaViite.setTutkinnonOsa(osa);
-//        naytto.setTutkinnonOsat(new HashSet<TutkinnonOsaViite>());
-//        naytto.getTutkinnonOsat().add(osaViite);
-//        
-//        peruste = new Peruste();
-//        peruste.setSuoritustavat(new HashSet<Suoritustapa>());
-//        peruste.getSuoritustavat().add(naytto);
-//        peruste.setTila(Tila.LUONNOS);
-//   
-//        projekti.setPeruste(peruste);
-//        em.flush();
-//        repo.save(projekti);
-        
+      
         projekti = new Perusteprojekti();
         projekti.setDiaarinumero("12345");
         projekti.setNimi("Testi projekti");
@@ -137,13 +102,11 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         em.persist(naytto);
         naytto.setRakenne(luoValidiRakenne());
 
-        
-        
         peruste = new Peruste();
         peruste.setSuoritustavat(new HashSet<Suoritustapa>());
         peruste.getSuoritustavat().add(naytto);
         peruste.setTila(Tila.LUONNOS);
-   
+
         projekti.setPeruste(peruste);
         em.persist(peruste);
         
@@ -338,6 +301,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         em.persist(tutkinnonosa);
         osaViite.setSuoritustapa(naytto);
         osaViite.setTutkinnonOsa(tutkinnonosa);
+        osaViite.setPoistettu(Boolean.FALSE);
         em.persist(osaViite);
         
         return osaViite;
@@ -355,6 +319,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         TutkinnonOsaViite osaViite = new TutkinnonOsaViite();
         osaViite.setSuoritustapa(naytto);
         osaViite.setTutkinnonOsa(osa);
+        osaViite.setPoistettu(Boolean.FALSE);
         em.persist(osaViite);
         naytto.getTutkinnonOsat().add(osaViite);
         rakenneOsa.setTutkinnonOsaViite(osaViite);

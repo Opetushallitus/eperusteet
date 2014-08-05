@@ -236,7 +236,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         RakenneModuuli rakenne = suoritustapa.getRakenne();
         if (rakenne != null) {
             for (TutkinnonOsaViite viite : suoritustapa.getTutkinnonOsat()) {
-                if (!rakenne.isInRakenne(viite, true)) {
+                if (!rakenne.isInRakenne(viite, true) && (viite.getPoistettu() == null || !viite.getPoistettu())) {
                     viiteList.add(viite);
                 }
             }
