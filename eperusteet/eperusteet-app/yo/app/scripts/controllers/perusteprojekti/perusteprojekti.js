@@ -195,6 +195,7 @@ angular.module('eperusteApp')
     var service = null;
     var _isVisible = false;
     var items = [];
+    var nameMap = {};
     var data = {
       projekti: {
         peruste: {
@@ -212,7 +213,7 @@ angular.module('eperusteApp')
       _.each(node.lapset, function (lapsi) {
         items.push({
           label: lapsi.perusteenOsa.nimi,
-          id: lapsi.id,
+          id: lapsi.perusteenOsa.id,
           depth: level,
           link: [
             'root.perusteprojekti.suoritustapa.perusteenosa',
@@ -223,6 +224,7 @@ angular.module('eperusteApp')
             }
           ]
         });
+        nameMap[lapsi.perusteenOsa.id] = lapsi.perusteenOsa.nimi;
         processNode(lapsi, level + 1);
       });
     };
@@ -266,5 +268,18 @@ angular.module('eperusteApp')
 
     this.isVisible = function () {
       return _isVisible;
+    };
+
+    this.setCrumb = function (ids) {
+      var crumbEl = angular.element('#tekstikappale-crumbs');
+      ids.splice(0, 1);
+      ids.reverse();
+      var crumbs = _.map(ids, function (id) {
+        return {name: nameMap[id], id: id};
+      });
+      var scope = crumbEl.scope();
+      if (scope) {
+        scope.setCrumbs(crumbs);
+      }
     };
   });

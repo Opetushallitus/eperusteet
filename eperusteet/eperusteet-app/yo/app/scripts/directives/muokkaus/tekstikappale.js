@@ -27,7 +27,7 @@ angular.module('eperusteApp')
         versiot: '='
       },
       controller: function($scope, $q, Editointikontrollit, PerusteenOsat,
-        Notifikaatiot, SivunavigaatioService, VersionHelper, Lukitus, $state,
+        Notifikaatiot, VersionHelper, Lukitus, $state,
         TutkinnonOsaEditMode, PerusteenOsaViitteet, Varmistusdialogi, $timeout,
         Kaanna, PerusteprojektiTiedotService, $stateParams, SuoritustapaSisalto,
         Utils, PerusteProjektiSivunavi) {
@@ -46,7 +46,7 @@ angular.module('eperusteApp')
 
         $scope.setNavigation = function() {
           $scope.tree.init();
-          SivunavigaatioService.setCrumb($scope.tree.get());
+          PerusteProjektiSivunavi.setCrumb($scope.tree.get());
           VersionHelper.setUrl($scope.versiot);
         };
 
