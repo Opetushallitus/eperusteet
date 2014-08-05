@@ -28,7 +28,10 @@ angular.module('eperusteApp')
         '</span>';
       return '' +
         '<span ng-if="rakenne._tutkinnonOsaViite && muokkaus">' + editointiIkoni + tosa + '</span>' +
-        '<span ng-if="rakenne._tutkinnonOsaViite && !muokkaus">' + editointiIkoni + '<a href="" ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite]._tutkinnonOsa, suoritustapa: apumuuttujat.suoritustapa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a></span>' +
+        '<span ng-if="rakenne._tutkinnonOsaViite && !muokkaus">' + editointiIkoni +
+        '  <a ng-if="esitystilassa" href="" ui-sref="root.esitys.peruste.tutkinnonosa({ id: rakenne._tutkinnonOsaViite, suoritustapa: apumuuttujat.suoritustapa })">' + tosa + '</a>' +
+        '  <a ng-if="!esitystilassa" href="" ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite]._tutkinnonOsa, suoritustapa: apumuuttujat.suoritustapa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a>' +
+        '</span>' +
         '<span class="pull-right" ng-if="rakenne._tutkinnonOsaViite && muokkaus"><a href="" icon-role="remove" ng-click="poista(rakenne, vanhempi)"></a></span>' +
         '<span ng-if="!rakenne._tutkinnonOsaViite && rakenne.nimi">' +
         '  <b>{{ rakenne.nimi || "nimetön" | kaanna }}</b>' +
@@ -53,6 +56,7 @@ angular.module('eperusteApp')
         scope.lisataanUuttaPerusteenOsaa = false;
         scope.scratchpad = [];
         scope.roskakori = [];
+        scope.esitystilassa = $state.includes('**.esitys.**');
 
         scope.poista = function(i, a) {
           _.remove(a.osat, i);
