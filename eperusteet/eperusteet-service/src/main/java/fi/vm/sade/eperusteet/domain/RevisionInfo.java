@@ -22,6 +22,8 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.RevisionEntity;
 
@@ -36,27 +38,13 @@ import org.hibernate.envers.RevisionEntity;
     @AttributeOverride(name="id", column = @Column(name = "rev")),
     @AttributeOverride(name="timestamp", column=@Column(name="revtstmp"))
 })
+@Getter
+@Setter
 public class RevisionInfo extends DefaultRevisionEntity {
-
     @Column
     private String muokkaajaOid;
+
     @Column(length = 1000)
     private String kommentti;
-
-    public String getMuokkaajaOid() {
-        return muokkaajaOid;
-    }
-
-    public void setMuokkaajaOid(String muokkaajaOid) {
-        this.muokkaajaOid = muokkaajaOid;
-    }
-
-    public String getKommentti() {
-        return kommentti;
-    }
-
-    public void setKommentti(String kommentti) {
-        this.kommentti = kommentti;
-    }
 
 }
