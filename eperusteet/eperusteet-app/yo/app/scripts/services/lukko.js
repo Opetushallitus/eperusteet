@@ -19,9 +19,12 @@
 
 angular.module('eperusteApp')
   .factory('LukkoSisalto', function(SERVICE_LOC, $resource) {
-    return $resource(SERVICE_LOC + '/perusteet/:osanId/suoritustavat/:suoritustapa/lukko', {
+    return $resource(SERVICE_LOC + '/perusteet/:osanId/suoritustavat/:suoritustapa/lukko/', {
       osanId: '@osanId',
-      suoritustapa: '@suoritustapa'
+      suoritustapa: '@suoritustapa',
+      tyyppi: '@tyyppi'
+    }, {
+      multiple: { method: 'GET', url: SERVICE_LOC + '/perusteet/:osanId/suoritustavat/:suoritustapa/lukko/:tyyppi'}
     });
   })
   .factory('LukkoPerusteenosa', function(SERVICE_LOC, $resource) {

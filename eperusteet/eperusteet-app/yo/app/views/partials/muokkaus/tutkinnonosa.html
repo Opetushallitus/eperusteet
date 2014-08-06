@@ -3,8 +3,7 @@
   <div class="action-buttons">
     <button ng-show="tutkinnonOsa.tila === 'julkaistu' && !editEnabled" ng-click="kopioiMuokattavaksi()" class="floater btn btn-danger" icon-role="fire" kaanna>kopioi-muokattavaksi</button>
     <div class="floater" ng-attr-title="{{lockNotification}}">
-      <!-- ng-disabled="isLocked" -->
-      <button ng-if="tekstikappale.tila !== 'julkaistu'" icon-role="edit" ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()"
+      <button ng-disabled="isLocked" ng-if="tekstikappale.tila !== 'julkaistu'" icon-role="edit" ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()"
               class="btn btn-default" kaanna>muokkaa</button>
     </div>
     <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>

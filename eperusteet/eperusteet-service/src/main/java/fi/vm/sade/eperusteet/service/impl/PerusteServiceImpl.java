@@ -54,6 +54,7 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
 import fi.vm.sade.eperusteet.service.LockManager;
 import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.SuoritustapaService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -137,6 +138,9 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
+
+    @Autowired
+    private PerusteenOsaService perusteenOsaService;
 
     @Autowired
     private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
@@ -613,6 +617,37 @@ public class PerusteServiceImpl implements PerusteService {
     public LukkoDto getLock(Long id, Suoritustapakoodi suoritustapakoodi) {
         Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
         return LukkoDto.of(lockManager.getLock(suoritustapa.getId()));
+    }
+
+    private void getLocksPerusteenOsat(PerusteenOsaViite sisalto, Map<Long, LukkoDto> map) {
+        for (PerusteenOsaViite lapsi : sisalto.getLapset()) {
+            LukkoDto lock = perusteenOsaService.getLock(lapsi.getPerusteenOsa().getId());
+            if (lock != null) {
+                map.put(lapsi.getPerusteenOsa().getId(), lock);
+            }
+        }
+    }
+
+    @Override
+    public Map<Long, LukkoDto> getLocksPerusteenOsat(Long id, Suoritustapakoodi suoritustapakoodi) {
+        Map<Long, LukkoDto> locks = new HashMap<>();
+        PerusteenOsaViite sisalto = perusteet.getOne(id).getSuoritustapa(suoritustapakoodi).getSisalto();
+        getLocksPerusteenOsat(sisalto, locks);
+        return locks;
+    }
+
+    @Override
+    public Map<Long, LukkoDto> getLocksTutkinnonOsat(Long id, Suoritustapakoodi suoritustapakoodi) {
+        Map<Long, LukkoDto> locks = new HashMap<>();
+        Set<TutkinnonOsaViite> tutkinnonOsat = perusteet.getOne(id).getSuoritustapa(suoritustapakoodi).getTutkinnonOsat();
+        for (TutkinnonOsaViite tov : tutkinnonOsat) {
+            TutkinnonOsa tosa = tov.getTutkinnonOsa();
+            LukkoDto lock = perusteenOsaService.getLock(tosa.getId());
+            if (lock != null) {
+                locks.put(id, lock);
+            }
+        }
+        return locks;
     }
 
     /**

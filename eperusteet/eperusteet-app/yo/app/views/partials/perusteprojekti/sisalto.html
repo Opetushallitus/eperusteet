@@ -47,6 +47,11 @@ European Union Public Licence for more details.
                 </div>
                 <div ng-show="naytaRakenne" class="list-element striped" ui-sref="root.perusteprojekti.suoritustapa.muodostumissaannot">
                     <h3><a href="" kaanna>tutkinnon-rakenne</a></h3>
+                    <div class="pull-right">
+                        <div lukko ng-show="lukot[peruste.id] && lukot[peruste.id].voimassa" style="font-size: 4px"
+                             title="{{ 'lukko-käyttäjällä' | kaanna }} {{ lukot[peruste.id].haltija }}
+                             {{ lukot[peruste.id].luotu | aikaleima:'ago' }}" class="lukko"></div>
+                    </div>
                 </div>
             </div>
 

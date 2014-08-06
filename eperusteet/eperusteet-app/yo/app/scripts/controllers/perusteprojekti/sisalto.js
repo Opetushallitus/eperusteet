@@ -21,7 +21,7 @@ angular.module('eperusteApp')
   .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams,
     $modal, PerusteenOsat, PerusteenOsaViitteet, SuoritustapaSisalto, PerusteProjektiService,
     perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit,
-    Editointikontrollit, Lukitus) {
+    Editointikontrollit, LukkoSisalto, $q) {
 
     function kaikilleTutkintokohtaisilleOsille(juuri, cb) {
       var lapsellaOn = false;
@@ -43,34 +43,33 @@ angular.module('eperusteApp')
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
+    $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa();
     $scope.naytaTutkinnonOsat = true;
     $scope.naytaRakenne = true;
     $scope.muokkausTutkintokohtaisetOsat = false;
+    $scope.lukot = {};
 
     $scope.paivitaLukot = function() {
-      Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) {
-        Lukitus.hae({
-          id: lapsi.perusteenOsa.id,
-          tyyppi: 'perusteenosa',
-        }, function(res) {
-          if (res.haltijaOid) {
-            lapsi.$lukko = {
-              haltija: res.haltijaOid,
-              luotu: res.luotu,
-              voimassa: new Date() <= new Date(res.vanhentuu)
-            };
-          }
-          else {
-            delete lapsi.$lukko;
+      $q.all([LukkoSisalto.multiple({
+          osanId: $scope.peruste.id,
+          suoritustapa: $scope.valittuSuoritustapa,
+          tyyppi: 'perusteenosat'
+      }).$promise, LukkoSisalto.get({
+          osanId: $scope.peruste.id,
+          suoritustapa: $scope.valittuSuoritustapa
+      }).$promise]).then(function(res) {
+        if (res[1]) { res[0][$scope.peruste.id] = res[1]; }
+        _.forEach(res[0], function(v) {
+          if (v.haltijaOid) {
+            v.voimassa = new Date() <= new Date(v.vanhentuu);
           }
         });
+        $scope.lukot = res[0];
+        console.log(res[0]);
       });
     };
     $scope.paivitaLukot();
     $scope.$on('poll:mousemove', $scope.paivitaLukot);
-
-    $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa();
-
 
     $scope.aakkosJarjestys = function(data) { return Kaanna.kaanna(data.perusteenOsa.nimi); };
 

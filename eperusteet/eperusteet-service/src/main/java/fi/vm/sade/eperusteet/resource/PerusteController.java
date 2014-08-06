@@ -31,7 +31,9 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +47,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 @Controller
@@ -240,25 +242,51 @@ public class PerusteController {
         service.removeTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osanId);
     }
 
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko/tutkinnonosat", method = GET)
+    @ResponseBody
+    public ResponseEntity<Map<Long, LukkoDto>> getLocksTutkinnonOsat(
+            @PathVariable("id") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        return new ResponseEntity<>(service.getLocksTutkinnonOsat(id, Suoritustapakoodi.of(suoritustapakoodi)), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko/perusteenosat", method = GET)
+    @ResponseBody
+    public ResponseEntity<Map<Long, LukkoDto>> getLocksPerusteenosat(
+            @PathVariable("id") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        return new ResponseEntity<>(service.getLocksPerusteenOsat(id, Suoritustapakoodi.of(suoritustapakoodi)), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko/kaikki", method = GET)
+    @ResponseBody
+    public ResponseEntity<Map<Long, LukkoDto>> getLockAll(
+            @PathVariable("id") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        Map<Long, LukkoDto> locks = service.getLocksTutkinnonOsat(id, Suoritustapakoodi.of(suoritustapakoodi));
+        locks.putAll(service.getLocksPerusteenOsat(id, Suoritustapakoodi.of(suoritustapakoodi)));
+
+        LukkoDto lockRakenne = service.getLock(id, Suoritustapakoodi.of(suoritustapakoodi));
+        if (lockRakenne != null) {
+            locks.put(id, lockRakenne);
+        }
+        return new ResponseEntity<>(locks, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko", method = GET)
     @ResponseBody
-    public ResponseEntity<LukkoDto> getLock(@PathVariable("id") final Long id,
+    public ResponseEntity<LukkoDto> getLock(
+            @PathVariable("id") final Long id,
             @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
             @RequestHeader(value = "If-None-Match", required = false) Integer eTag, HttpServletResponse response) {
         LukkoDto lock = service.getLock(id, Suoritustapakoodi.of(suoritustapakoodi));
-        RakenneModuuliDto rakenne = service.getTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), eTag);
-
-        if (rakenne == null) {
-            response.addHeader("ETag", eTag.toString());
-            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-        }
-        response.addHeader("ETag", rakenne.getVersioId().toString());
-        return new ResponseEntity(lock, lock == null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+        return new ResponseEntity(lock, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko", method = {POST, PUT})
     @ResponseBody
-    public ResponseEntity<LukkoDto> lock(@PathVariable("id") final Long id,
+    public ResponseEntity<LukkoDto> lock(
+            @PathVariable("id") final Long id,
             @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
             @RequestHeader(value = "If-None-Match", required = false) Integer eTag, HttpServletResponse response) {
         RakenneModuuliDto rakenne = service.getTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), eTag);
