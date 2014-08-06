@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
+import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.domain.Henkilo;
 import fi.vm.sade.eperusteet.domain.Rooli;
 import fi.vm.sade.eperusteet.domain.Tila;
@@ -38,7 +39,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import static org.springframework.web.bind.annotation.RequestMethod.*;
+
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -49,6 +52,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 @Controller
 @RequestMapping("/perusteprojektit")
+@Api(value = "perusteprojektit")
 public class PerusteprojektiController {
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteprojektiController.class);

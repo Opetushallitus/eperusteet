@@ -17,9 +17,11 @@
 package fi.vm.sade.eperusteet.resource;
 
 import com.google.code.docbook4j.Docbook4JException;
+import com.wordnik.swagger.annotations.ApiResponse;
 import fi.vm.sade.eperusteet.domain.DokumenttiTila;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.DokumenttiService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import java.io.IOException;
@@ -33,17 +35,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  * @author jussini
  */
-@Controller
+@RestController
 @RequestMapping("/dokumentti")
 public class DokumenttiController {
 
@@ -93,9 +95,10 @@ public class DokumenttiController {
 
     }
 
-    @RequestMapping(value="/get/{dokumenttiId}", method = RequestMethod.GET)
+    @RequestMapping(value="/get/{dokumenttiId}", method = RequestMethod.GET, produces = "application/pdf")
     @ResponseBody
-    public ResponseEntity<byte[]> get(
+    @CacheControl(age = CacheControl.ONE_YEAR, nonpublic = false)
+    public ResponseEntity<Object> get(
             @PathVariable("dokumenttiId") final Long dokumenttiId)
     {
         byte[] pdfdata = service.get(dokumenttiId);
@@ -106,12 +109,8 @@ public class DokumenttiController {
         }
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType("application/pdf"));
-        headers.setContentLength(pdfdata.length);
-        headers.set("Content-disposition", "attachment; filename="+dokumenttiId+".pdf");
-        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-
-        return new ResponseEntity<>(pdfdata, headers, HttpStatus.OK);
+        headers.set("Content-disposition", "attachment; filename=\""+dokumenttiId+".pdf\"");
+        return new ResponseEntity<Object>(pdfdata, headers, HttpStatus.OK);
     }
 
     @RequestMapping(value="/query/{dokumenttiId}", method = RequestMethod.GET)
@@ -144,7 +143,7 @@ public class DokumenttiController {
 
     @RequestMapping(value="/{perusteId}", method = RequestMethod.GET)
     @ResponseBody
-    public Callable<ResponseEntity<byte[]>> generateByIdAsync(
+    public Callable<ResponseEntity<Object>> generateByIdAsync(
             @PathVariable("perusteId") final long perusteId) {
 
         return generateByIdAsync(perusteId, "fi");
@@ -152,14 +151,15 @@ public class DokumenttiController {
 
     @RequestMapping(value="/{perusteId}/{kieli}", method = RequestMethod.GET)
     @ResponseBody
-    public Callable<ResponseEntity<byte[]>> generateByIdAsync(
+    @ApiResponse(code = 200, response = Object.class, message = "OK")
+    public Callable<ResponseEntity<Object>> generateByIdAsync(
             @PathVariable("perusteId") final long perusteId,
             @PathVariable("kieli") final String kieli) {
 
-        Callable<ResponseEntity<byte[]>> callable = new Callable<ResponseEntity<byte[]>>() {
+        Callable<ResponseEntity<Object>> callable = new Callable<ResponseEntity<Object>>() {
 
             @Override
-            public ResponseEntity<byte[]> call() {
+            public ResponseEntity<Object> call() {
                 return generate(perusteId, kieli);
             }
         };
@@ -167,7 +167,7 @@ public class DokumenttiController {
         return callable;
     }
 
-    private ResponseEntity<byte[]> generate(long perusteId, String kieli) {
+    private ResponseEntity<Object> generate(long perusteId, String kieli) {
 
         try {
             DokumenttiDto dto = service.createDtoFor(perusteId, Kieli.of(kieli));
@@ -184,7 +184,7 @@ public class DokumenttiController {
             headers.set("Content-disposition", "attachment; filename=output.pdf");
             headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
 
-            return new ResponseEntity<>(pdfdata, headers, HttpStatus.OK);
+            return new ResponseEntity<Object>(pdfdata, headers, HttpStatus.OK);
 
         } catch (IllegalArgumentException ex) {
             LOG.warn("{}", ex.getMessage());
