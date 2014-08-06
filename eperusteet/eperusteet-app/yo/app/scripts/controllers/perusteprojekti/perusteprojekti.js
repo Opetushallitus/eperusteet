@@ -125,8 +125,15 @@ angular.module('eperusteApp')
   })
   .controller('PerusteprojektiCtrl', function($scope, $state, $stateParams,
     Navigaatiopolku, koulutusalaService, opintoalaService,
-    PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi) {
+    PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation) {
 
+    $scope.muokkausEnabled = false;
+    
+    $scope.luoPdf = function () {
+      PdfCreation.setPerusteId($scope.projekti._peruste);
+      PdfCreation.openModal();
+    };
+    
     function init() {
       $scope.projekti = perusteprojektiTiedot.getProjekti();
       $scope.peruste = perusteprojektiTiedot.getPeruste();
@@ -189,6 +196,13 @@ angular.module('eperusteApp')
         init();
         PerusteProjektiSivunavi.refresh();
       });
+    });
+    
+    $scope.$on('enableEditing', function() {
+      $scope.muokkausEnabled = true;
+    });
+    $scope.$on('disableEditing', function() {
+      $scope.muokkausEnabled = false;
     });
   })
   .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams,

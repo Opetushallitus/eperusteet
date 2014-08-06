@@ -17,6 +17,7 @@ European Union Public Licence for more details.
 
 <div class="project-header">
   <div class="row">
+    <button class="btn btn-primary btn-header-pdf" ng-hide="muokkausEnabled" ng-click="luoPdf()"><img src="images/pdf-file-24.png" alt="">{{'luo-pdf' | kaanna}}</button>
     <div class="project-otsikkotiedot">
       <statusbadge status="projekti.tila" editable="canChangePerusteprojektiStatus()" projekti-id="projekti.id"></statusbadge>
       <h2>{{ projekti.nimi || 'perusteprojekti-nimi-placeholder' | kaanna }}</h2>
@@ -35,6 +36,7 @@ European Union Public Licence for more details.
         </tr>
       </table>
     </div>
+      
     <div class="headernavi">
       <ul>
         <li>
