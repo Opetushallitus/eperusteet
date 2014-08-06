@@ -61,14 +61,14 @@ angular.module('eperusteApp')
       if (tyyppi === 'Perusteenosa' || tyyppi === 'Tutkinnonosa') {
         PerusteenOsat.palauta({
           osanId: tunniste.id,
-          versioId: data.chosen.number
+          versioId: data.chosen.numero
         }, {}, cb, Notifikaatiot.serverCb);
       }
       else if (tyyppi === 'Rakenne') {
         RakenneVersio.palauta({
           perusteId: tunniste.id,
           suoritustapa: tunniste.suoritustapa,
-          versioId: data.chosen.number
+          versioId: data.chosen.numero
         }, {}, cb, Notifikaatiot.serverCb);
       }
     }
@@ -77,13 +77,13 @@ angular.module('eperusteApp')
       if (tyyppi === 'Perusteenosa') {
         PerusteenOsat.getVersio({
           osanId: tunniste.id,
-          versioId: data.chosen.number
+          versioId: data.chosen.numero
         }, function(response) {
           changeResponseHandler(data, response, cb);
         });
       }
       else if (tyyppi === 'Rakenne') {
-        RakenneVersio.get({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa, versioId: data.chosen.number}, function(response) {
+        RakenneVersio.get({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa, versioId: data.chosen.numero}, function(response) {
           changeResponseHandler(data, response, cb);
         });
       }
@@ -91,14 +91,14 @@ angular.module('eperusteApp')
 
     function changeResponseHandler(data, response, cb) {
       cb(response);
-      data.latest = data.chosen.number === latest(data.list).number;
+      data.latest = data.chosen.numero === latest(data.list).numero;
     }
 
     this.lastModified = function (data) {
       if (data && data.chosen) {
-        var found = _.find(data.list, {number: data.chosen.number});
+        var found = _.find(data.list, {numero: data.chosen.numero});
         if (found) {
-          return found.date;
+          return found.pvm;
         }
       }
     };
@@ -107,8 +107,8 @@ angular.module('eperusteApp')
       var found = _.find(data.list, {index: parseInt(index, 10)});
       if (found) {
         data.chosen = found;
-        data.latest = data.chosen.number === latest(data.list).number;
-        return found.number;
+        data.latest = data.chosen.numero === latest(data.list).numero;
+        return found.numero;
       }
     };
 

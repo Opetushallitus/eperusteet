@@ -24,15 +24,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Revision implements Serializable {
-
-    private Integer number;
-    private Date date;
+    private Integer numero;
+    private Date pvm;
     private String muokkaajaOid;
     private String kommentti;
 
     public Revision(Integer number, Long timestamp, String muokkaajaOid, String kommentti) {
-        this.number = number;
-        this.date = new Date(timestamp);
+        this.numero = number;
+        this.pvm = new Date(timestamp);
         this.muokkaajaOid = muokkaajaOid;
         this.kommentti = kommentti;
     }
@@ -41,8 +40,8 @@ public class Revision implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((date == null) ? 0 : date.hashCode());
-        result = prime * result + ((number == null) ? 0 : number.hashCode());
+        result = prime * result + ((pvm == null) ? 0 : pvm.hashCode());
+        result = prime * result + ((numero == null) ? 0 : numero.hashCode());
         return result;
     }
 
@@ -58,18 +57,18 @@ public class Revision implements Serializable {
             return false;
         }
         Revision other = (Revision) obj;
-        if (date == null) {
-            if (other.date != null) {
+        if (pvm == null) {
+            if (other.pvm != null) {
                 return false;
             }
-        } else if (!date.equals(other.date)) {
+        } else if (!pvm.equals(other.pvm)) {
             return false;
         }
-        if (number == null) {
-            if (other.number != null) {
+        if (numero == null) {
+            if (other.numero != null) {
                 return false;
             }
-        } else if (!number.equals(other.number)) {
+        } else if (!numero.equals(other.numero)) {
             return false;
         }
         return true;
