@@ -104,7 +104,7 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasPermission(#kommenttidto.perusteProjektiId, 'perusteProjekti', 'COMMENT')")
+    @PreAuthorize("hasPermission(#kommenttidto.perusteprojektiId, 'perusteProjekti', 'KOMMENTOINTI')")
     public KommenttiDto add(final KommenttiDto kommenttidto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Kommentti kommentti = new Kommentti();
@@ -123,7 +123,7 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasPermission(#kommenttidto.perusteProjektiId, 'perusteProjekti', 'COMMENT')")
+    @PreAuthorize("hasPermission(#kommenttidto.perusteprojektiId, 'perusteProjekti', 'KOMMENTOINTI')")
     public KommenttiDto update(Long kommenttiId, @P("kommenttidto") final KommenttiDto kommenttidto) {
         Kommentti kommentti = kommentit.findOne(kommenttiId);
         SecurityUtil.allow(kommentti.getLuoja());
@@ -133,7 +133,7 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasPermission(#kommenttidto.perusteProjektiId, 'perusteProjekti', 'COMMENT')")
+    //@PreAuthorize("hasPermission(#kommenttidto.perusteprojektiId, 'perusteProjekti', 'KOMMENTOINTI')")
     public void delete(Long kommenttiId) {
         Kommentti kommentti = kommentit.findOne(kommenttiId);
         SecurityUtil.allow(kommentti.getLuoja());
