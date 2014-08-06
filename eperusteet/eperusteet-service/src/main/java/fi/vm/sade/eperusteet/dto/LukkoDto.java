@@ -32,10 +32,12 @@ public class LukkoDto {
     public LukkoDto(Lukko lukko) {
         this.haltijaOid = lukko.getHaltijaOid();
         this.luotu = lukko.getLuotu();
+        this.vanhentuu = lukko.getVanhentuu();
     }
 
     final String haltijaOid;
     final DateTime luotu;
+    final DateTime vanhentuu;
 
     public static LukkoDto of(Lukko lukko) {
         return lukko == null ? null : new LukkoDto(lukko);

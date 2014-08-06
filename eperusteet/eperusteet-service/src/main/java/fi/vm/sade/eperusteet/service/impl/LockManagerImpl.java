@@ -63,19 +63,19 @@ public class LockManagerImpl implements LockManager {
     public Lukko lock(final Long id) {
 
         final String oid = SecurityUtil.getAuthenticatedPrincipal().getName();
-        final Lukko newLukko = new Lukko(id, oid);
 
         Lukko lukko;
         try {
             lukko = transaction.execute(new TransactionCallback<Lukko>() {
                 @Override
                 public Lukko doInTransaction(TransactionStatus status) {
-                    Lukko current = em.find(Lukko.class, id);
+                    final Lukko newLukko = new Lukko(id, oid, maxLockTime);
+                    Lukko current = getLock(id);
                     if (current != null) {
                         em.refresh(current, LockModeType.PESSIMISTIC_WRITE);
                         if (oid.equals(current.getHaltijaOid())) {
                             current.refresh();
-                        } else if (current.getLuotu().plusSeconds(maxLockTime).isBeforeNow()) {
+                        } else if (current.getVanhentuu().isBeforeNow()) {
                             em.remove(current);
                             em.persist(newLukko);
                             current = newLukko;
@@ -93,7 +93,7 @@ public class LockManagerImpl implements LockManager {
             lukko = transaction.execute(new TransactionCallback<Lukko>() {
                 @Override
                 public Lukko doInTransaction(TransactionStatus status) {
-                    return em.find(Lukko.class, id);
+                    return getLock(id);
                 }
             });
         }
@@ -113,8 +113,7 @@ public class LockManagerImpl implements LockManager {
     }
 
     /**
-     * Varmistaa, että autentikoitunut käyttäjä omistaa lukon. Huom! lukitsee lukon transaktion ajaksi siten että sitä
-     * ei voi muuttaa/poistaa.
+     * Varmistaa, että autentikoitunut käyttäjä omistaa lukon. Huom! lukitsee lukon transaktion ajaksi siten että sitä ei voi muuttaa/poistaa.
      *
      * @param id lukon tunniste
      */
@@ -123,6 +122,9 @@ public class LockManagerImpl implements LockManager {
     @Transactional
     public void ensureLockedByAuthenticatedUser(Long id) {
         Lukko lukko = em.find(Lukko.class, id, LockModeType.PESSIMISTIC_READ);
+        if (lukko != null) {
+            lukko.setVanhentumisAika(maxLockTime);
+        }
         if (!isLockedByAuthenticatedUser(lukko)) {
             throw new LockingException("Käyttäjä ei omista lukkoa", LukkoDto.of(lukko));
         }
@@ -144,7 +146,11 @@ public class LockManagerImpl implements LockManager {
     @Override
     @Transactional(readOnly = true)
     public Lukko getLock(Long id) {
-        return em.find(Lukko.class, id);
+        Lukko l = em.find(Lukko.class, id);
+        if (l != null) {
+            l.setVanhentumisAika(maxLockTime);
+        }
+        return l;
     }
 
     private boolean isLockedByAuthenticatedUser(Lukko lukko) {
