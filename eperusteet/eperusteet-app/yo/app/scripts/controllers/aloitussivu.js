@@ -27,8 +27,8 @@ angular.module('eperusteApp')
           lokalisointi: function($stateParams, Lokalisointi) {
             return Lokalisointi.valitseKieli($stateParams.lang);
           },
-          suosikit: function(SuosikkiTemp) {
-            return SuosikkiTemp;
+          suosikit: function(Profiili) {
+            return Profiili;
           }
         },
         onEnter: ['YleinenData', '$stateParams', function (YleinenData, $stateParams) {

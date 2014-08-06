@@ -19,13 +19,13 @@
 
 angular.module('eperusteApp')
   .controller('SuosikitCtrl', function($scope, Kayttajaprofiilit, YleinenData,
-      $rootScope, $state, Navigaatiopolku, SuosikkiTemp, $modal) {
+      $rootScope, $state, Navigaatiopolku, Profiili, $modal) {
     $scope.suosikit = {};
     $scope.naytto = {limit: 5, shown: 5};
     $scope.resetNavi = Navigaatiopolku.clear;
 
     var paivitaSuosikit = function() {
-      $scope.suosikit = SuosikkiTemp.listaa().reverse();
+      $scope.suosikit = Profiili.listaaSuosikit().reverse();
     };
 
     paivitaSuosikit();
@@ -42,10 +42,10 @@ angular.module('eperusteApp')
 
   })
 
-  .controller('SuosikkienMuokkausController', function ($scope, SuosikkiTemp,
+  .controller('SuosikkienMuokkausController', function ($scope, Profiili,
       Varmistusdialogi) {
     function refresh() {
-      $scope.suosikit = SuosikkiTemp.listaa().reverse();
+      $scope.suosikit = Profiili.listaaSuosikit().reverse();
     }
     refresh();
     $scope.$on('suosikitMuuttuivat', refresh);
@@ -57,7 +57,7 @@ angular.module('eperusteApp')
       var found = _.findIndex($scope.suosikit, {id: suosikki.id});
       if (found > -1) {
         $scope.suosikit[found] = $scope.editing;
-        SuosikkiTemp.paivita($scope.editing);
+        Profiili.paivitaSuosikki($scope.editing);
       }
       $scope.editing = null;
     };
@@ -70,7 +70,7 @@ angular.module('eperusteApp')
         teksti: 'varmista-poisto-suosikki-teksti',
         primaryBtn: 'poista',
         successCb: function () {
-          SuosikkiTemp.poista(suosikki);
+          Profiili.poistaSuosikki(suosikki);
         }
       })();
     };

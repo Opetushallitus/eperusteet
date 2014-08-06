@@ -34,7 +34,7 @@ angular.module('eperusteApp')
     $scope.peruuta = function() { $modalInstance.dismiss(); };
     $scope.$on('$stateChangeSuccess', function() { $scope.peruuta(); });
   })
-  .service('Lukitus', function($rootScope, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI,
+  .service('Lukitus', function($rootScope, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, Profiili,
     LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit, Kaanna) {
     var lukitsin = null;
     var etag = null;
@@ -116,21 +116,23 @@ angular.module('eperusteApp')
     }
 
     function tarkistaLukitus(id, scope, suoritustapa) {
-      var okCb = function () {
-        scope.isLocked = false;
-        scope.lockNotification = '';
+      var okCb = function(res) {
+        if (res.haltijaOid && Profiili.oid() !== res.haltijaOid) {
+          scope.isLocked = true;
+          scope.lockNotification = Kaanna.kaanna('lukitus-kayttajalla', {
+            user: res.data ? res.data.haltijaOid : ''
+          });
+        }
+        else {
+          scope.isLocked = false;
+          scope.lockNotification = '';
+        }
       };
-      var failCb = function (res) {
-        scope.isLocked = true;
-        // TODO käyttäjän oikea nimi id:n sijaan
-        scope.lockNotification = Kaanna.kaanna('lukitus-kayttajalla', {
-          user: res.data ? res.data.haltijaOid : ''
-        });
-      };
+
       if (suoritustapa) {
-        lueLukitus(LukkoSisalto, {osanId: id, suoritustapa: suoritustapa}, okCb, failCb);
+        lueLukitus(LukkoSisalto, {osanId: id, suoritustapa: suoritustapa}, okCb);
       } else {
-        lueLukitus(LukkoPerusteenosa, {osanId: id}, okCb, failCb);
+        lueLukitus(LukkoPerusteenosa, {osanId: id}, okCb);
       }
     }
 
@@ -143,10 +145,10 @@ angular.module('eperusteApp')
 
       switch (parametrit.tyyppi) {
         case 'sisalto':
-          lueLukitus(LukkoSisalto, { osanId: parametrit.id, suoritustapa: parametrit.suoritustapa }, cb, angular.noop);
+          lueLukitus(LukkoSisalto, { osanId: parametrit.id, suoritustapa: parametrit.suoritustapa }, cb);
           break;
         case 'perusteenosa':
-          lueLukitus(LukkoPerusteenosa, { osanId: parametrit.id }, cb, angular.noop);
+          lueLukitus(LukkoPerusteenosa, { osanId: parametrit.id }, cb);
           break;
         default:
           break;

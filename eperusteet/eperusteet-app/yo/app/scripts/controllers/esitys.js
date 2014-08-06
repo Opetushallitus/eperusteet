@@ -99,7 +99,7 @@ angular.module('eperusteApp')
     Lokalisointi.valitseKieli($stateParams.lang);
   })
   .controller('EsitysCtrl', function($q, $scope, $stateParams, sisalto, peruste, Kayttajaprofiilit, Suosikit, YleinenData,
-                                     Navigaatiopolku, $state, virheService, Algoritmit, PerusteenRakenne, tutkinnonOsat, Kaanna, arviointiasteikot, SuosikkiTemp) {
+                                     Navigaatiopolku, $state, virheService, Algoritmit, PerusteenRakenne, tutkinnonOsat, Kaanna, arviointiasteikot, Profiili) {
     $scope.navi = {
       items: [
         {label: 'tutkinnonosat', link: ['root.esitys.peruste.tutkinnonosat', {}]},
@@ -169,10 +169,10 @@ angular.module('eperusteApp')
     };
 
     $scope.suosikkiHelper = function(state, stateParams, nimi) {
-      $scope.onSuosikki = SuosikkiTemp.hae(state, stateParams);
+      $scope.onSuosikki = Profiili.haeSuosikki(state, stateParams);
       $scope.asetaSuosikki = function() {
-        SuosikkiTemp.aseta(state, stateParams, Kaanna.kaanna($scope.peruste.nimi) + ': ' + (Kaanna.kaanna(nimi) || '') + ' (' + Kaanna.kaanna($scope.suoritustapa) + ')', function() {
-          $scope.onSuosikki = SuosikkiTemp.hae(state, stateParams);
+        Profiili.asetaSuosikki(state, stateParams, Kaanna.kaanna($scope.peruste.nimi) + ': ' + (Kaanna.kaanna(nimi) || '') + ' (' + Kaanna.kaanna($scope.suoritustapa) + ')', function() {
+          $scope.onSuosikki = Profiili.haeSuosikki(state, stateParams);
         });
       };
     };

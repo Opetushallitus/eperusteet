@@ -15,96 +15,10 @@
  */
 
 'use strict';
-/* global _ */
 
 angular.module('eperusteApp')
   .factory('Suosikit', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/kayttajaprofiili/suosikki/:suosikkiId', {}, {
       update: {method: 'PUT'}
     });
-  })
-  .service('SuosikkiTemp', function($state, $rootScope, Suosikit, Notifikaatiot, Kayttajaprofiilit) {
-    var suosikit = [];
-
-    function isSame(paramsA, paramsB) {
-      return _.size(paramsA) === _.size(paramsB) && _.all(paramsA, function(v, k) {
-        return paramsB[k] === v;
-      });
-    }
-
-    function transform(uudetSuosikit) {
-      return _.map(uudetSuosikit, function(s) {
-        s.sisalto = JSON.parse(s.sisalto);
-        if (s.sisalto.tyyppi === 'linkki') {
-          s.$url = $state.href(s.sisalto.tila, s.sisalto.parametrit);
-        }
-        return s;
-      });
-    }
-
-    Kayttajaprofiilit.get({}, function(res) {
-      suosikit = transform(res.suosikit);
-      $rootScope.$broadcast('suosikitMuuttuivat');
-    });
-
-    function parseResponse(res, cb) {
-      suosikit = transform(res.suosikit);
-      (cb || angular.noop)();
-      $rootScope.$broadcast('suosikitMuuttuivat');
-    }
-
-    return {
-      aseta: function(state, stateParams, nimi, success) {
-        success = success || angular.noop;
-
-        var vanha = _(suosikit).filter(function(s) {
-          return state.current.name === s.sisalto.tila && isSame(stateParams, s.sisalto.parametrit);
-        })
-        .first();
-
-        if (!_.isEmpty(vanha)) {
-          _.remove(suosikit, vanha);
-          Suosikit.delete({ suosikkiId: vanha.id }, function() {
-            success(_.clone(suosikit));
-            $rootScope.$broadcast('suosikitMuuttuivat');
-          }, Notifikaatiot.serverCb);
-        }
-        else {
-          Suosikit.save({
-            sisalto: JSON.stringify({
-              tyyppi: 'linkki',
-              tila: state.current.name,
-              parametrit: stateParams,
-            }),
-            nimi: nimi
-          }, function(res) {
-            parseResponse(res, success);
-          }, Notifikaatiot.serverCb);
-        }
-      },
-      listaa: function() {
-        return _.clone(suosikit);
-      },
-      hae: function(state, stateParams) {
-        var haku = _.filter(suosikit, function(s) {
-          return state.current.name === s.sisalto.tila && isSame(stateParams, s.sisalto.parametrit);
-        });
-        return _.first(haku);
-      },
-      haeUrl: function(id) {
-        return $state.href(suosikit[id].sisalto.tila, suosikit[id].sisalto.parametrit);
-      },
-      paivita: function(suosikki) {
-        var payload = _.clone(suosikki);
-        payload.sisalto = JSON.stringify(payload.sisalto);
-        return Suosikit.update({suosikkiId: payload.id}, payload).$promise.then(function (res) {
-          parseResponse(res);
-        });
-      },
-      poista: function(suosikki) {
-        return Suosikit.delete({suosikkiId: suosikki.id}).$promise.then(function (res) {
-          parseResponse(res);
-        });
-      }
-    };
   });

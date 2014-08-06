@@ -63,10 +63,7 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
     @Transactional(readOnly = true)
     @PreAuthorize("isAuthenticated()")
     public KayttajaProfiiliDto get() {
-        LOG.info("Kayttajaprofiili get()");
-
         String oid = SecurityContextHolder.getContext().getAuthentication().getName();
-
         return mapper.map(kayttajaprofiiliRepo.findOneEager(oid), KayttajaProfiiliDto.class);
     }
 
