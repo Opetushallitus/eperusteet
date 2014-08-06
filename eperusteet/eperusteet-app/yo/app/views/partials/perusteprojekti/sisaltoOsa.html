@@ -16,7 +16,7 @@
           <div ng-show="!muokkausTutkintokohtaisetOsat" class="list-element-info">
             <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ sisalto.perusteenOsa.muokattu | aikaleima }}</div>
             <div>{{ 'muokkaaja' | kaanna }}: Erkki Esimerkki</div>
-            <div ng-if="sisalto.$lukko" lukko title="{{ 'lukko-käyttäjällä' | kaanna }} '{{ sisalto.$lukko.haltija }}' {{ sisalto.$lukko.luotu | aikaleima:'ago' }}" class="lukko"></div>
+            <div ng-if="sisalto.$lukko && sisalto.$lukko.voimassa" lukko title="{{ 'lukko-käyttäjällä' | kaanna }} '{{ sisalto.$lukko.haltija }}' {{ sisalto.$lukko.luotu | aikaleima:'ago' }}" class="lukko"></div>
           </div>
         </div>
       </div>

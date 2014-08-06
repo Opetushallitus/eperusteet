@@ -117,7 +117,7 @@ angular.module('eperusteApp')
 
     function tarkistaLukitus(id, scope, suoritustapa) {
       var okCb = function(res) {
-        if (res.haltijaOid && Profiili.oid() !== res.haltijaOid) {
+        if (res.haltijaOid && new Date() <= new Date(res.vanhentuu) && Profiili.oid() !== res.haltijaOid) {
           scope.isLocked = true;
           scope.lockNotification = Kaanna.kaanna('lukitus-kayttajalla', {
             user: res.data ? res.data.haltijaOid : ''

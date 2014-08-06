@@ -56,7 +56,8 @@ angular.module('eperusteApp')
           if (res.haltijaOid) {
             lapsi.$lukko = {
               haltija: res.haltijaOid,
-              luotu: res.luotu
+              luotu: res.luotu,
+              voimassa: new Date() <= new Date(res.vanhentuu)
             };
           }
           else {
@@ -70,7 +71,7 @@ angular.module('eperusteApp')
 
     $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa();
 
-    
+
     $scope.aakkosJarjestys = function(data) { return Kaanna.kaanna(data.perusteenOsa.nimi); };
 
     $scope.rajaaSisaltoa = function() {
