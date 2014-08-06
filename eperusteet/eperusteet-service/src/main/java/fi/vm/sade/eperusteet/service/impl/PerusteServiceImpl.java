@@ -246,7 +246,7 @@ public class PerusteServiceImpl implements PerusteService {
 
         if (peruste != null && peruste.getKoulutukset() != null) {
             for (Koulutus koulutus : peruste.getKoulutukset()) {
-                koulutusTemp = koulutusRepo.findOneByKoulutuskoodi(koulutus.getKoulutuskoodi());
+                koulutusTemp = koulutusRepo.findOneByKoulutuskoodiArvo(koulutus.getKoulutuskoodiArvo());
                 if (koulutusTemp != null) {
                     koulutukset.add(koulutusTemp);
                 } else {
@@ -671,7 +671,7 @@ public class PerusteServiceImpl implements PerusteService {
 
             for (KoodistoKoodiDto tutkinto : tutkinnot) {
                 if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus")
-                        && (koulutusRepo.findOneByKoulutuskoodi(tutkinto.getKoodiUri()) == null)) {
+                        && (koulutusRepo.findOneByKoulutuskoodiArvo(tutkinto.getKoodiArvo()) == null)) {
                     // Haetaan erikoistapausperusteet, jotka kuvaavat kahden eri koulutusalan tutkinnot
                     peruste = haeErikoistapaus(tutkinto.getKoodiUri(), perusteEntityt, erikoistapausMap);
                     if (peruste == null) {
@@ -701,7 +701,7 @@ public class PerusteServiceImpl implements PerusteService {
         if (ERIKOISTAPAUKSET.contains(koodiUri)) {
             for (Peruste perusteEntity : perusteEntityt) {
                 for (Koulutus koulutus : perusteEntity.getKoulutukset()) {
-                    if (koulutus.getKoulutuskoodi().equals(erikoistapausMap.get(koodiUri))) {
+                    if (koulutus.getKoulutuskoodiUri().equals(erikoistapausMap.get(koodiUri))) {
                         peruste = perusteEntity;
                         perusteFound = true;
                         break;
@@ -726,7 +726,8 @@ public class PerusteServiceImpl implements PerusteService {
         KoodistoKoodiDto[] koulutusAlarelaatiot;
         RestTemplate restTemplate = new RestTemplate();
 
-        koulutus.setKoulutuskoodi(tutkinto.getKoodiUri());
+        koulutus.setKoulutuskoodiUri(tutkinto.getKoodiUri());
+        koulutus.setKoulutuskoodiArvo(tutkinto.getKoodiArvo());
         // Haetaan joka tutkinnolle alarelaatiot ja lisätään tarvittavat tiedot koulutus entityyn
         koulutusAlarelaatiot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + "/"
                 + tutkinto.getKoodiUri(), KoodistoKoodiDto[].class);

@@ -86,7 +86,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     @Before
     public void setUp() {
 
-        Koulutus koulutus = new Koulutus(tekstiPalanenOf(Kieli.FI,"Koulutus"),"koulutuskoodi","koulutusalakoodi","opintoalakoodi");
+        Koulutus koulutus = new Koulutus(tekstiPalanenOf(Kieli.FI,"Koulutus"), "koulutuskoodiArvo", "koulutuskoodiUri","koulutusalakoodi","opintoalakoodi");
         koulutus = koulutusRepository.save(koulutus);
 
         Peruste p = TestUtils.createPeruste();
@@ -140,7 +140,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     public void testFindByKoulutus() {
         PerusteQuery pquery = new PerusteQuery();
         pquery.setSiirtyma(true);
-        pquery.setKoodiUri("koulutuskoodi");
+        pquery.setKoodiArvo("koulutuskoodiArvo");
         Page<PerusteDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
         assertEquals(1, perusteet.getTotalElements());
     }

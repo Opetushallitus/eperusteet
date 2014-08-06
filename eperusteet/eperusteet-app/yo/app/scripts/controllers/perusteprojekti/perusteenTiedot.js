@@ -93,7 +93,7 @@ angular.module('eperusteApp')
     };
 
     $scope.koodistoHaku = function(koodisto) {
-      var added = {nimi: koodisto.nimi, koulutuskoodi: koodisto.koodiUri};
+      var added = {nimi: koodisto.nimi, koulutuskoodiArvo: koodisto.koodiArvo, koulutuskoodiUri: koodisto.koodiUri};
       $scope.editablePeruste.koulutukset.push(added);
 
       //$scope.open[koodisto.koodi] = true;
@@ -134,14 +134,14 @@ angular.module('eperusteApp')
       }, angular.noop, null)();
     };
 
-    $scope.poistaKoulutus = function (koulutuskoodi) {
+    $scope.poistaKoulutus = function (koulutuskoodiArvo) {
       Varmistusdialogi.dialogi({
         otsikko: 'vahvista-poisto',
         teksti: 'poistetaanko-koulutus',
         primaryBtn: 'poista',
         successCb: function () {
           $scope.editablePeruste.koulutukset = _.remove($scope.editablePeruste.koulutukset, function(koulutus) {
-            return koulutus.koulutuskoodi !== koulutuskoodi;
+            return koulutus.koulutuskoodiArvo !== koulutuskoodiArvo;
           });
         }
       })();

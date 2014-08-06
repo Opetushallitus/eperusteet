@@ -44,7 +44,7 @@ European Union Public Licence for more details.
         <div class="koulutukset" ng-show="editablePeruste.koulutukset.length > 0">
           <div class="koulutus" ng-repeat="koulutus in editablePeruste.koulutukset">
             <div class="poisto" ng-if="editEnabled">
-              <button icon-role="remove" class="btn btn-default btn-xs" ng-click="poistaKoulutus(koulutus.koulutuskoodi)">{{'poista' | kaanna}}</button>
+              <button icon-role="remove" class="btn btn-default btn-xs" ng-click="poistaKoulutus(koulutus.koulutuskoodiArvo)">{{'poista' | kaanna}}</button>
             </div>
             <table class="aligned">
               <tr>
@@ -53,7 +53,7 @@ European Union Public Licence for more details.
               </tr>
               <tr>
                 <th>{{'perusteen-koodi' | kaanna}}</th>
-                <td>{{koulutus.koulutuskoodi | koodisto}}</td>
+                <td>{{koulutus.koulutuskoodiArvo}}</td>
               </tr>
               <tr>
                 <th>{{'haku-koulutusala' | kaanna}}</th>
