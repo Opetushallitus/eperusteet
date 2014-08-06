@@ -64,6 +64,9 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     @Column
     private String koodiUri;
+    
+    @Column
+    private String koodiArvo;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     //Hibernate bug: orphanRemoval ei toimi jos fetchMode = Lazy
@@ -121,6 +124,14 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     public void setKoodiUri(String koodiUri) {
         this.koodiUri = koodiUri;
     }
+    
+    public String getKoodiArvo() {
+        return koodiArvo;
+    }
+
+    public void setKoodiArvo(String koodiArvo) {
+        this.koodiArvo = koodiArvo;
+    }
 
     public Arviointi getArviointi() {
         return arviointi;
@@ -142,6 +153,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setAmmattitaidonOsoittamistavat(other.getAmmattitaidonOsoittamistavat());
             this.setTavoitteet(other.getTavoitteet());
             this.setKoodiUri(other.getKoodiUri());
+            this.setKoodiArvo(other.getKoodiArvo());
             this.setOpintoluokitus(other.getOpintoluokitus());
             this.setOsaamisala(other.getOsaamisala());
         }

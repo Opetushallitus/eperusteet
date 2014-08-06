@@ -117,7 +117,8 @@ angular.module('eperusteApp')
            });
 
         $scope.koodistoClick = Koodisto.modaali(function(koodisto) {
-          MuokkausUtils.nestedSet($scope.editableTutkinnonOsa, 'koodiUri', ',', koodisto.koodi);
+          MuokkausUtils.nestedSet($scope.editableTutkinnonOsa, 'koodiUri', ',', koodisto.koodiUri);
+          MuokkausUtils.nestedSet($scope.editableTutkinnonOsa, 'koodiArvo', ',', koodisto.koodiArvo);
         }, {
           tyyppi: function() { return 'tutkinnonosat'; },
           ylarelaatioTyyppi: function() { return ''; }

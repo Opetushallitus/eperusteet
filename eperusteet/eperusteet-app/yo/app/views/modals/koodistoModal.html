@@ -16,7 +16,7 @@
         <th class="col-xs-9" kaanna>nimi</th>
       </tr>
       <tr ng-repeat="l in loydetyt | startFrom:itemsPerPage*(nykyinen-1) | limitTo:itemsPerPage">
-        <td class="col-xs-3"><a href="" ng-click="ok(l)">{{ l.koodi | koodisto }}</a></td>
+        <td class="col-xs-3"><a href="" ng-click="ok(l)">{{ l.koodiArvo }}</a></td>
         <td class="col-xs-9">{{ l.nimi | kaanna }}</td>
       </tr>
     </table>

@@ -81,7 +81,8 @@ angular.module('eperusteApp')
           return result + v;
         }).toLowerCase();
         return {
-          koodi: kd.koodiUri,
+          koodiUri: kd.koodiUri,
+          koodiArvo: kd.koodiArvo,
           nimi: nimi,
           koodisto: kd.koodisto,
           haku: haku
@@ -92,7 +93,7 @@ angular.module('eperusteApp')
     function filtteri(haku) {
       haku = haku.toLowerCase();
       return _.filter(taydennykset, function(t) {
-        return (t.koodi.indexOf(haku) !== -1 || t.haku.indexOf(haku) !== -1);
+        return (t.koodiUri.indexOf(haku) !== -1 || t.haku.indexOf(haku) !== -1);
       });
     }
 
