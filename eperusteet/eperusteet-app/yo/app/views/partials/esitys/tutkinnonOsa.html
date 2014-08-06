@@ -13,8 +13,8 @@
 </h2>
 
 <div ng-repeat="(k, v) in tutkinnonOsa">
-    <div ng-if="k === 'koodiUri' && v">
-        <b kaanna>koodi</b>: {{ v | koodisto }}
+    <div ng-if="k === 'koodiArvo' && v">
+        <b kaanna>koodi</b>: {{ v }}
     </div>
     <div ng-if="k === 'opintoluokitus' && v">
         <b kaanna>opintoluokitus</b>: {{ v }}

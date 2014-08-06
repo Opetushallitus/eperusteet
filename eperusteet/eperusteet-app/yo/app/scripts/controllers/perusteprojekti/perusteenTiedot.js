@@ -93,19 +93,19 @@ angular.module('eperusteApp')
     };
 
     $scope.koodistoHaku = function(koodisto) {
-      var added = {nimi: koodisto.nimi, koulutuskoodi: koodisto.koodi};
+      var added = {nimi: koodisto.nimi, koulutuskoodi: koodisto.koodiUri};
       $scope.editablePeruste.koulutukset.push(added);
 
       //$scope.open[koodisto.koodi] = true;
 
-      Koodisto.haeAlarelaatiot(koodisto.koodi, function(relaatiot) {
+      Koodisto.haeAlarelaatiot(koodisto.koodiUri, function(relaatiot) {
         _.forEach(relaatiot, function(rel) {
           switch (rel.koodisto.koodistoUri) {
             case 'koulutusalaoph2002':
-              added.koulutusalakoodi = rel.koodi;
+              added.koulutusalakoodi = rel.koodiUri;
               break;
             case 'opintoalaoph2002':
-              added.opintoalakoodi = rel.koodi;
+              added.opintoalakoodi = rel.koodiUri;
               break;
           }
         });
@@ -129,7 +129,7 @@ angular.module('eperusteApp')
           return 'koulutus';
         },
         ylarelaatioTyyppi: function() {
-          return $scope.editablePeruste.tutkintokoodi;
+          return $scope.editablePeruste.koulutustyyppi;
         }
       }, angular.noop, null)();
     };

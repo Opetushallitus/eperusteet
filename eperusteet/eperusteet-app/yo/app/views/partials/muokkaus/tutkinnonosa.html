@@ -52,7 +52,7 @@
     </div>
     <label for="koodi-input" kaanna>muokkaus-tutkinnon-osan-koodi-header</label>
     <span class="input-group">
-      <input id="koodi-input" class="form-control" type="text" ng-model="editableTutkinnonOsa.koodiUri" editointi-kontrolli>
+      <input id="koodi-input" class="form-control" type="text" ng-model="editableTutkinnonOsa.koodiArvo" editointi-kontrolli>
       <span class="input-group-btn">
         <button class="btn btn-default" ng-click="koodistoClick()" kaanna>hae-koodistosta</button>
       </span>
@@ -62,7 +62,7 @@
 
 
   <div class="non-collapsibles" ng-if="!editEnabled">
-    <label kaanna>muokkaus-tutkinnon-osan-koodi-header</label>:<span> {{ tutkinnonOsa.koodiUri | koodisto }}</span>
+    <label kaanna>muokkaus-tutkinnon-osan-koodi-header</label>:<span> {{ tutkinnonOsa.koodiArvo }}</span>
   </div>
 
   <kenttalistaus edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields"></kenttalistaus>
