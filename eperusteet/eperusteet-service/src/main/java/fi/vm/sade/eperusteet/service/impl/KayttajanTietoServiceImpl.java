@@ -25,6 +25,7 @@ import fi.vm.sade.eperusteet.service.util.RestClientFactory;
 import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -33,21 +34,24 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class KayttajanTietoServiceImpl implements KayttajanTietoService {
-    private static final String KAYTTAJA_API = "https://itest-virkailija.oph.ware.fi/authentication-service/resources/henkilo/";
+    @Value("${cas.service.authentication-service:default}")
+    private String serviceUrl;
+
+    private static final String KAYTTAJA_API = "/resources/henkilo/";
 
     private final ObjectMapper mapper = new ObjectMapper();
     @Override
-//    @Cacheable("kayttajantiedot")
+    @Cacheable("kayttajat")
     public KayttajanTietoDto hae(String oid) {
         if (oid == null || oid.isEmpty()) {
             throw new BusinessRuleViolationException("Päivitettävää perustetta ei ole olemassa");
         }
 
-        CachingRestClient crc = RestClientFactory.create("https://itest-virkailija.oph.ware.fi/authentication-service/j_spring_cas_security_check");
+        CachingRestClient crc = RestClientFactory.create(serviceUrl);
         KayttajanTietoDto ktd = new KayttajanTietoDto();
 
         try {
-            JsonNode json = mapper.readTree(crc.getAsString(KAYTTAJA_API + oid));
+            JsonNode json = mapper.readTree(crc.getAsString(serviceUrl + KAYTTAJA_API + oid));
             ktd.setUsername(json.get("kayttajatiedot").get("username").asText());
             ktd.setEtunimet(json.get("etunimet").asText());
             ktd.setKieliKoodi(json.get("asiointiKieli").get("kieliKoodi").asText());
