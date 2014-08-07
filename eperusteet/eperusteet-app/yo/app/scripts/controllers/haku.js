@@ -102,6 +102,7 @@ angular.module('eperusteApp')
     };
 
     $scope.koulutusalaMuuttui = function() {
+      $scope.hakuparametrit.opintoala = '';
       if ($scope.hakuparametrit.koulutusala !== '') {
         $scope.opintoalat = _.findWhere($scope.koulutusalat, {koodi: $scope.hakuparametrit.koulutusala}).opintoalat;
       } else {
