@@ -92,6 +92,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         LaajuusYksikko yksikko = perusteprojektiDto.getLaajuusYksikko();
         PerusteTyyppi tyyppi = perusteprojektiDto.getTyyppi() == null ? PerusteTyyppi.NORMAALI : perusteprojektiDto.getTyyppi();
         perusteprojekti.setTila(ProjektiTila.LAADINTA);
+        perusteprojekti.setOid(perusteprojektiDto.getOid());
 
         if (tyyppi != PerusteTyyppi.POHJA) {
             if (koulutustyyppi.equals("koulutustyyppi_1") && yksikko == null) {
@@ -208,11 +209,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (tila == ProjektiTila.POISTETTU) {
             setPerusteTila(projekti.getPeruste(), PerusteTila.POISTETTU);
         }
-        
+
         if (tila == ProjektiTila.LAADINTA && projekti.getTila() == ProjektiTila.POISTETTU) {
             setPerusteTila(projekti.getPeruste(), PerusteTila.LUONNOS);
         }
-        
+
         if (projekti.getPeruste().getTyyppi() == PerusteTyyppi.POHJA && tila == ProjektiTila.VALMIS
             && projekti.getTila() == ProjektiTila.LAADINTA) {
             setPerusteTila(projekti.getPeruste(), PerusteTila.VALMIS);
@@ -232,7 +233,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             }
             peruste.setTila(tila);
     }
-            
+
     private PerusteenOsaViite setSisaltoTila(PerusteenOsaViite sisaltoRoot, PerusteTila tila) {
         if (sisaltoRoot.getPerusteenOsa() != null) {
             sisaltoRoot.getPerusteenOsa().setTila(tila);
