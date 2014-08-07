@@ -38,8 +38,8 @@ angular.module('eperusteApp')
         template: '<div class="modal-header"><h2>Lisää jäsen</h2></div>' +
           '<div class="modal-body"><jasenkortti jasen="jasen" muokkaus-moodi="true"></jasenkortti></div>' +
           '<div class="modal-footer">' +
-          '<button class="btn btn-primary" ng-click="tallenna()" translate>tallenna</button>' +
-          '<button class="btn btn-default" ng-click="peruuta()" translate>peruuta</button>' +
+          '<button class="btn btn-default" ng-click="peruuta()">{{ \'peruuta\' | kaanna }}</button>' +
+          '<button class="btn btn-primary" ng-click="tallenna()">{{ \'tallenna\' | kaanna }}</button>' +
           '</div>',
         controller: 'uusiJasenCtrl',
         resolve: {

@@ -11,22 +11,31 @@
     <packaging>war</packaging>
     <name>eperusteet-service</name>
     <properties>
-        <hibernate.version>4.3.5.Final</hibernate.version>
+        <hibernate.version>4.3.6.Final</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>4.0.5.RELEASE</spring.version>
+        <spring.version>4.0.6.RELEASE</spring.version>
         <spring.security.version>3.2.4.RELEASE</spring.security.version>
-        <spring.data.jpa.version>1.6.0.RELEASE</spring.data.jpa.version>
+        <spring.data.jpa.version>1.6.2.RELEASE</spring.data.jpa.version>
         <logback.version>1.1.1</logback.version>
         <postgresql.version>9.3-1100-jdbc41</postgresql.version>
-        <jackson.version>2.3.3</jackson.version>
+        <jackson.version>2.4.1</jackson.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
         <buildhelper.skipAttach>true</buildhelper.skipAttach>
         <jsoup.version>1.7.3</jsoup.version>
         <ehcache.version>2.6.8</ehcache.version>
         <slf4j.version>1.7.7</slf4j.version>
+        <swagger.version>0.8.5</swagger.version>
     </properties>
-    <dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>googlecode</id>
+            <url>http://docbook4j.googlecode.com/svn/m2-repo/releases/</url>
+        </repository>
+    </repositories>
+
+   <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -267,7 +276,12 @@
         <dependency>
             <groupId>com.mangofactory</groupId>
             <artifactId>swagger-springmvc</artifactId>
-            <version>0.8.3</version>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>1.8.0</version>
         </dependency>
         <dependency>
             <groupId>org.jasig.cas.client</groupId>
@@ -279,6 +293,11 @@
                     <artifactId>ehcache</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>net.javaforge.docbook4j</groupId>
+            <artifactId>docbook4j</artifactId>
+            <version>1.0.1</version>
         </dependency>
     </dependencies>
     <build>

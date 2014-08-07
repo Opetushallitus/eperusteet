@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -58,34 +58,34 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
  */
 @Transactional
 public class ArviointiServiceIT extends AbstractIntegrationTest {
-    
+
     @Autowired
     private ArviointiService arviointiService;
-    
+
     @PersistenceContext
     private EntityManager em;
-    
+
     private final ObjectMapper objectMapper;
-    
+
     public ArviointiServiceIT() {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setPrettyPrint(true);
         converter.getObjectMapper().setPropertyNamingStrategy(new PropertyNamingStrategy() {
-            
+
             @Override
             public String nameForGetterMethod(MapperConfig<?> config, AnnotatedMethod method,
             String defaultName)
             {
                 return tryToconvertFromMethodName(method, defaultName);
             }
-            
+
             @Override
             public String nameForSetterMethod(MapperConfig<?> config, AnnotatedMethod method,
             String defaultName)
             {
                 return tryToconvertFromMethodName(method, defaultName);
             }
-            
+
             private String tryToconvertFromMethodName(AnnotatedMethod annotatedMethod, String defaultName) {
                 if((annotatedMethod.getParameterCount() == 1 && EntityReference.class.isAssignableFrom(annotatedMethod.getParameter(0).getRawType()))
                         || EntityReference.class.isAssignableFrom(annotatedMethod.getRawReturnType())) {
@@ -98,10 +98,10 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
         converter.getObjectMapper().registerModule(new JodaModule());
         converter.getObjectMapper().registerModule(new EPerusteetMappingModule());
         converter.getObjectMapper().registerModule(new Hibernate4Module().enable(Hibernate4Module.Feature.SERIALIZE_IDENTIFIER_FOR_LAZY_NOT_LOADED_OBJECTS));
-        
+
         objectMapper = converter.getObjectMapper();
     }
-    
+
     @Before
     public void setUp() {
         TekstiPalanen osaamistasoOtsikko = TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "otsikko"));
@@ -118,7 +118,7 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
         arviointiasteikko.setOsaamistasot(Collections.singletonList(osaamistaso));
 
         em.persist(arviointiasteikko);
-        
+
         TekstiPalanen osaamistasoOtsikko2 = TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "otsikko 2"));
         em.persist(osaamistasoOtsikko2);
         TekstiPalanen osaamistasoOtsikko3 = TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "otsikko 2"));
@@ -127,9 +127,9 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
         osaamistaso = new Osaamistaso();
         osaamistaso.setId(2L);
         osaamistaso.setOtsikko(osaamistasoOtsikko2);
-        
+
         em.persist(osaamistaso);
-        
+
         Osaamistaso osaamistaso2 = new Osaamistaso();
         osaamistaso2.setId(3L);
         osaamistaso2.setOtsikko(osaamistasoOtsikko3);
@@ -143,32 +143,34 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
         em.persist(arviointiasteikko);
         em.flush();
     }
-    
+
     @Test
     @Rollback(true)
     public void testSaveArviointiFromJson() throws IOException {
         Resource resource = new ClassPathResource("material/valid_arviointi.json");
         ArviointiDto dto = objectMapper.readValue(resource.getFile(), ArviointiDto.class);
-        
+
         arviointiService.add(dto);
-        
+
         em.flush();
-        
+
         List<ArviointiDto> dtos = arviointiService.findAll();
-        
+
         Assert.assertNotNull(dtos);
         Assert.assertEquals(1, dtos.size());
     }
-    
+
     @Test(expected = ConstraintViolationException.class)
+    @Transactional
     @Rollback(true)
     public void testSaveInvalidArviointiFromJson() throws IOException {
         Resource resource = new ClassPathResource("material/invalid_arviointi.json");
         ArviointiDto dto = objectMapper.readValue(resource.getFile(), ArviointiDto.class);
         arviointiService.add(dto);
     }
-    
+
     @Test(expected = ConstraintViolationException.class)
+    @Transactional
     @Rollback(true)
     public void testSaveInvalidArviointi2FromJson() throws IOException {
         Resource resource = new ClassPathResource("material/invalid_arviointi2.json");

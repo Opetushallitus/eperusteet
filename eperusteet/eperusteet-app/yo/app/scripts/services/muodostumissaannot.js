@@ -17,15 +17,53 @@
 'use strict';
 /* global _ */
 
+/* jshint -W074 */
+
 angular.module('eperusteApp')
   .service('Muodostumissaannot', function($modal) {
-    function osienLaajuudenSumma(osat) {
-        return _(osat)
-          .map(function(osa) { return osa.$vaadittuLaajuus ? osa.$vaadittuLaajuus : osa.$laajuus; })
-          .reduce(function(sum, newval) { return sum + newval; });
+    function osienLaajuudenSumma(rakenneOsat) {
+      return _(rakenneOsat ? rakenneOsat : [])
+        .map(function(osa) { return osa ? osa.$laajuus : 0; })
+        .reduce(function(sum, newval) { return sum + newval; }) || 0;
     }
 
-    function validoiRyhma(rakenne) {
+    function kaannaSaanto(ms) {
+      if (!ms) { return; }
+      var fraasi = [];
+      var msl = ms.laajuus;
+      var msk = ms.koko;
+
+      if (msl && msl.minimi && msl.maksimi) {
+        fraasi.push('osia-valittava-vahintaan');
+        fraasi.push(msl.minimi);
+        if (msl.minimi !== msl.maksimi) {
+          fraasi.push('ja-enintään');
+          fraasi.push(msl.maksimi);
+        }
+        fraasi.push('$laajuusYksikko');
+        fraasi.push('edestä');
+      }
+
+      if (msk && msk.minimi && msk.maksimi) {
+        if (!_.isEmpty(fraasi)) {
+          fraasi.push('ja-myös-valittava');
+        }
+        else {
+          fraasi.push('osia-valittava-vahintaan');
+        }
+        fraasi.push(msk.minimi);
+        if (msk.minimi === msk.maksimi) {
+          fraasi.push('ja-enintään');
+          fraasi.push(msk.maksimi);
+        }
+        fraasi.push('kappaletta');
+      }
+
+      return fraasi;
+    }
+
+    /* TODO (jshint complexity/W074) simplify/split ---> */
+    function validoiRyhma(rakenne, viitteet) {
       function lajittele(osat) {
         var buckets = {};
         _.forEach(osat, function(osa) {
@@ -33,6 +71,13 @@ angular.module('eperusteApp')
           buckets[osa.$laajuus] += 1;
         });
         return buckets;
+      }
+
+      function asetaVirhe(virhe, ms) {
+        rakenne.$virhe = {
+          virhe: virhe,
+          selite: kaannaSaanto(ms)
+        };
       }
 
       function avaintenSumma(osat, n, avaimetCb) {
@@ -45,58 +90,68 @@ angular.module('eperusteApp')
         return res;
       }
 
-      if (!rakenne) { return; }
+      if (!rakenne || !rakenne.osat) { return; }
 
       delete rakenne.$virhe;
 
+      _.forEach(rakenne.osat, function(tosa) {
+        if (!tosa._tutkinnonOsaViite) {
+          validoiRyhma(tosa, viitteet);
+        }
+      });
+
       // On rakennemoduuli
-      if (rakenne.muodostumisSaanto) {
-        _.forEach(rakenne.osat, function(tosa) {
-          if (!tosa._tutkinnonOsa) {
-            validoiRyhma(tosa);
-          }
-        });
-        var msl = rakenne.muodostumisSaanto.laajuus;
-        var msk = rakenne.muodostumisSaanto.koko;
+      if (rakenne.muodostumisSaanto && rakenne.rooli !== 'virtuaalinen') {
+        var ms = rakenne.muodostumisSaanto;
+        var msl = ms.laajuus || 0;
+        var msk = ms.koko || 0;
+        kaannaSaanto(rakenne.muodostumisSaanto);
 
         if (msl && msk) {
           var minimi = avaintenSumma(rakenne.osat, msk.minimi, function(lajitellut) { return _.keys(lajitellut); });
           var maksimi = avaintenSumma(rakenne.osat, msk.maksimi, function(lajitellut) { return _.keys(lajitellut).reverse(); });
-          if (minimi < msl.minimi) { rakenne.$virhe = 'rakenne-validointi-maara-laajuus-minimi'; }
-          else if (maksimi < msl.maksimi) { rakenne.$virhe =  'rakenne-validointi-maara-laajuus-maksimi'; }
+          if (minimi < msl.minimi) {
+            asetaVirhe('rakenne-validointi-maara-laajuus-minimi', ms);
+          }
+          else if (maksimi < msl.maksimi) {
+            asetaVirhe('rakenne-validointi-maara-laajuus-maksimi', ms);
+          }
         } else if (msl) {
           // Validoidaan maksimi
           if (msl.maksimi) {
-            if (osienLaajuudenSumma(rakenne.osat) < msl.maksimi) {
-              rakenne.$virhe = 'muodostumis-rakenne-validointi-laajuus';
+            if (osienLaajuudenSumma(rakenne, viitteet) < msl.maksimi) {
+              asetaVirhe('muodostumis-rakenne-validointi-laajuus', ms);
             }
           }
         } else if (msk) {
           if (_.size(rakenne.osat) < msk.maksimi) {
-            rakenne.$virhe = 'muodostumis-rakenne-validointi-maara';
+            asetaVirhe('muodostumis-rakenne-validointi-maara', ms);
           }
         }
 
-        var tosat = _(rakenne.osat)
-          .filter(function(osa) { return osa._tutkinnonOsa; })
-          .value();
-        if (_.size(tosat) !== _(tosat).uniq('_tutkinnonOsa').size()) {
-          rakenne.$virhe = 'muodostumis-rakenne-validointi-uniikit';
-        }
+      }
+
+      var tosat = _(rakenne.osat)
+        .filter(function(osa) { return osa._tutkinnonOsaViite; })
+        .value();
+
+      if (_.size(tosat) !== _(tosat).uniq('_tutkinnonOsaViite').size()) {
+        asetaVirhe('muodostumis-rakenne-validointi-uniikit');
       }
     }
+    /* <--- */
 
     // Laskee rekursiivisesti puun solmujen (rakennemoduulien) kokonaislaajuuden
-    function laskeLaajuudet(rakenne, tutkinnonOsat, root) {
-      root = root || true;
-
+    function laskeLaajuudet(rakenne, viitteet) {
       if (!rakenne) { return; }
 
-      _.forEach(rakenne.osat, function(osa) { laskeLaajuudet(osa, tutkinnonOsat, false); });
+      _.forEach(rakenne.osat, function(osa) {
+        laskeLaajuudet(osa, viitteet);
+      });
       rakenne.$laajuus = 0;
 
-      if (rakenne._tutkinnonOsa) {
-        rakenne.$laajuus = tutkinnonOsat[rakenne._tutkinnonOsa].laajuus;
+      if (rakenne._tutkinnonOsaViite) {
+        rakenne.$laajuus = viitteet[rakenne._tutkinnonOsaViite].laajuus;
       }
       else {
         if (rakenne.osat && rakenne.muodostumisSaanto) {
@@ -105,8 +160,9 @@ angular.module('eperusteApp')
             rakenne.$vaadittuLaajuus = msl.maksimi;
           }
         }
-        rakenne.$laajuus = osienLaajuudenSumma(rakenne.osat);
+        rakenne.$laajuus = osienLaajuudenSumma(rakenne.osat, viitteet);
       }
+      rakenne.$laajuus = rakenne.$laajuus || 0;
     }
 
     function ryhmaModaali(thenCb) {
@@ -127,6 +183,9 @@ angular.module('eperusteApp')
     return {
       validoiRyhma: validoiRyhma,
       laskeLaajuudet: laskeLaajuudet,
-      ryhmaModaali: ryhmaModaali
+      ryhmaModaali: ryhmaModaali,
+      kaannaSaanto: kaannaSaanto
     };
   });
+
+/* jshint +W074 */

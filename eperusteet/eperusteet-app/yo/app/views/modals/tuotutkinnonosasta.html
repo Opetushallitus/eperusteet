@@ -1,0 +1,27 @@
+<div modal="modalVisible" close="close()" options="{windowClass:'modal-to-haku'}">
+  <div class="modal-header">
+    <h1>Tuo toisesta suoritustavasta</h1>
+  </div>
+
+  <div class="modal-body">
+    <select style="margin-bottom: 8px" class="form-control" ng-model="valittuSuoritustapa" ng-change="paivitaTulokset(valittuSuoritustapa)">
+      <option ng-repeat="st in suoritustavat" ng-selected="{{ valittuSuoritustapa === st }}" value="{{ st }}">{{ st | kaanna }}</option>
+    </select>
+    <table class="table table-striped" ng-show="tulokset.length > 0">
+      <tr>
+        <th></th>
+        <th kaanna>nimi</th>
+      </tr>
+      <tr ng-repeat="tulos in tulokset">
+        <td class="has-checkbox"><input ng-change="valinta(tulos)" ng-model="tulos.$valitse" type="checkbox" class="form-control"></td>
+        <td class="pointer" ng-click="vaihdaValinta(tulos)">{{ tulos.nimi | kaanna }}</td>
+      </tr>
+    </table>
+    <div class="alert alert-warning" ng-show="tulokset.length === 0 && valittuSuoritustapa" kaanna>tutkinnon-osia-ei-löytynyt</div>.
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn" ng-click="peruuta()" kaanna>peru</button>
+    <button class="btn btn-primary" ng-click="ok()" ng-disabled="valitut === 0" kaanna>tuo-valitut</button>
+  </div>
+</div>

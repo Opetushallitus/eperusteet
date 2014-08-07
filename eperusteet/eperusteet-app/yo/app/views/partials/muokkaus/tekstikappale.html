@@ -14,13 +14,37 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 
-<button ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="pull-right btn btn-default"><span class="glyphicon glyphicon-pencil"></span>{{'muokkaa' | translate}}</button>
-<button ng-if="editEnabled" class="btn btn-danger pull-right" ng-click="poista()">
-    <span class="glyphicon glyphicon-remove"></span>{{'poista' | translate}}
-</button>
-<div class="tekstikappale" ng-class="{'edit-tekstikappale': editEnabled, 'max-sm-leveys': !editEnabled}">
-  <div ng-repeat="field in fields | orderBy:'order'" otsikko="{{field.localeKey}}" kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}">
-    <muokattava-kentta field-info="field" object-promise="tekstikappalePromise"></muokattava-kentta>
-    <versiotiedot ng-if="field.path === 'nimi'" ng-hide="editEnabled"></versiotiedot>
+<div>
+  <revert-note object="tekstikappale" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
+
+  <div class="action-buttons">
+    <button ng-if="canAddLapsi() && tekstikappale.tila !== 'julkaistu'" ng-hide="editEnabled || !versiot.latest" ng-click="addLapsi()" class="floater btn btn-default" icon-role="add" kaanna>lisaa-aliotsikko</button>
+    <button ng-show="!editEnabled && tekstikappale.tila === 'julkaistu'" ng-click="kopioiMuokattavaksi()" class="floater btn btn-danger" icon-role="fire" kaanna>kopioi-muokattavaksi</button>
+    <div class="floater" ng-attr-title="{{lockNotification}}">
+      <button ng-disabled="isLocked" ng-hide="editableTekstikappale.tila !== 'luonnos' || editEnabled || !versiot.latest"
+              ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna>muokkaa</button>
+    </div>
+    <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
+    <button ng-if="editEnabled && !isNew" class="btn btn-danger floater" ng-click="poista()" icon-role="remove" kaanna>poista</button>
   </div>
+
+  <div id="tekstikappale-crumbs" ng-if="!editEnabled">
+    <ol class="breadcrumb" ng-if="crumbs">
+      <li ng-repeat="crumb in crumbs">
+        <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: crumb.id})">{{crumb.name | kaanna}}</a>
+      </li>
+    </ol>
+  </div>
+
+  <h1 ng-if="editEnabled">
+    <span ng-show="isNew" kaanna>luonti-tekstikappale</span>
+    <span ng-show="!isNew" kaanna>muokkaus-tekstikappale</span>
+  </h1>
+  <div class="tekstikappale" ng-class="{'edit-tekstikappale': editEnabled, 'max-sm-leveys': !editEnabled}">
+    <div ng-repeat="field in fields | orderBy:'order'" otsikko="{{field.localeKey}}" kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}">
+      <muokattava-kentta field-info="field" object-promise="tekstikappalePromise"></muokattava-kentta>
+      <versiotiedot ng-if="field.path === 'nimi'" ng-hide="editEnabled"></versiotiedot>
+    </div>
+  </div>
+  <!-- <kommentit depth="0"></kommentit> -->
 </div>

@@ -25,12 +25,30 @@ angular.module('eperusteApp')
       get: {method: 'GET', isArray: true}
     });
   })
+  .factory('PerusteprojektiTila', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteprojektit/:id/tila/:tila', {
+      id: '@id'
+    });
+  })
   .factory('PerusteprojektiResource', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteprojektit/:id', {
       id: '@id'
     }, {
       update: {method: 'POST', isArray: false}
     });
+  })
+  .service('PerusteProjektit', function($http, SERVICE_LOC, Notifikaatiot) {
+    function hae(query, success, failure) {
+      success = success || angular.noop;
+      failure = failure || Notifikaatiot.serverCb;
+      $http.get(SERVICE_LOC + '/perusteprojektit/info', query)
+        .success(success)
+        .error(failure);
+    }
+
+    return {
+      hae: hae
+    };
   })
   .service('PerusteProjektiService', function($rootScope) {
     var pp = {};
@@ -93,7 +111,7 @@ angular.module('eperusteApp')
       return ret;
     };
   })
-  .service('PerusteprojektiTiedotService', function ($q, PerusteprojektiResource, Perusteet, Suoritustapa, PerusteProjektiService) {
+  .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet, SuoritustapaSisalto, PerusteProjektiService, Notifikaatiot) {
 
     var deferred = $q.defer();
     var projekti = {};
@@ -120,9 +138,9 @@ angular.module('eperusteApp')
       sisalto = {};
     };
 
-    this.haeSisalto = function(perusteenId, suoritustapa) {
+    this.haeSisalto = function(perusteId, suoritustapa) {
       var deferred = $q.defer();
-      Suoritustapa.get({perusteenId: perusteenId, suoritustapa: suoritustapa}, function(vastaus) {
+      SuoritustapaSisalto.get({perusteId: perusteId, suoritustapa: suoritustapa}, function(vastaus) {
         deferred.resolve(vastaus);
         sisalto = vastaus;
       }, function(virhe) {
@@ -141,33 +159,33 @@ angular.module('eperusteApp')
 
       PerusteprojektiResource.get({id: stateParams.perusteProjektiId}, function(projektiVastaus) {
         projekti = projektiVastaus;
-        Perusteet.get({perusteenId: projekti._peruste}, function (perusteVastaus) {
+        Perusteet.get({perusteId: projekti._peruste}, function (perusteVastaus) {
           peruste = perusteVastaus;
-          if (peruste.suoritustavat !== null && peruste.suoritustavat.length > 0) {
+          if (peruste.suoritustavat && !_.isEmpty(peruste.suoritustavat.length)) {
             peruste.suoritustavat = _.sortBy(peruste.suoritustavat, 'suoritustapakoodi');
           }
           projektinTiedotDeferred.resolve();
 
         }, function(virhe) {
           projektinTiedotDeferred.reject();
-          console.log('Virhe perusteen tietojen alustuksessa', virhe);
+          Notifikaatiot.serverCb(virhe);
         });
       }, function(virhe) {
         projektinTiedotDeferred.reject();
-        console.log('Virhe projektin tietojen alustuksessa', virhe);
+        Notifikaatiot.serverCb(virhe);
       });
 
       return projektinTiedotDeferred.promise;
-
     };
 
     this.alustaPerusteenSisalto = function (stateParams, forced) {
 
-      // NOTE: Jos ei löydy suoritustapaa serviceltä niin käytetään suoritustapaa 'naytto'.
+      // NOTE: Jos ei löydy suoritustapaa stateParams:ista niin käytetään suoritustapaa 'naytto'.
       //       Tämä toimii ammatillisen puolen projekteissa, mutta ei yleissivistävän puolella.
       //       Korjataan kun keksitään parempi suoritustavan valinta-algoritmi.
       if (angular.isUndefined(stateParams.suoritustapa) || stateParams.suoritustapa === null || stateParams.suoritustapa === '') {
         stateParams.suoritustapa = 'naytto';
+        $state.reload();
       }
       PerusteProjektiService.setSuoritustapa(stateParams.suoritustapa);
       var perusteenSisaltoDeferred = $q.defer();
@@ -177,7 +195,7 @@ angular.module('eperusteApp')
           perusteenSisaltoDeferred.resolve();
         }, function(virhe) {
           perusteenSisaltoDeferred.reject();
-          console.log('Virhe perusteen sisällön alustuksessa', virhe);
+          Notifikaatiot.serverCb(virhe);
         });
       } else {
         perusteenSisaltoDeferred.resolve();
@@ -187,4 +205,4 @@ angular.module('eperusteApp')
 
     deferred.resolve(this);
     return deferred.promise;
-    });
+  });

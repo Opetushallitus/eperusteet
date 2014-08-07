@@ -19,7 +19,22 @@
 
 angular.module('eperusteApp')
   .service('TutkinnonOsanTuonti', function($modal) {
-    function modaali(tyyppi, successCb, failureCb) {
+    function suoritustavoista(peruste, nykyinenTyyppi, successCb, failureCb) {
+      failureCb = failureCb || function() {};
+      return function() {
+        $modal.open({
+          templateUrl: 'views/modals/tuotutkinnonosasta.html',
+          controller: 'TuoTutkinnonOsaSuoritustavastaaCtrl',
+          resolve: {
+            peruste: function() { return peruste; },
+            suoritustapa: function() { return nykyinenTyyppi; },
+          }
+        })
+        .result.then(successCb, failureCb);
+      };
+    }
+
+    function kaikista(tyyppi, successCb, failureCb) {
       failureCb = failureCb || function() {};
       return function() {
         $modal.open({
@@ -34,8 +49,58 @@ angular.module('eperusteApp')
     }
 
     return {
-      modaali: modaali
+      kaikista: kaikista,
+      suoritustavoista: suoritustavoista
     };
+  })
+  .controller('TuoTutkinnonOsaSuoritustavastaaCtrl', function(PerusteenOsat, $scope, $modalInstance, peruste, PerusteTutkinnonosat, Notifikaatiot, suoritustapa) {
+    $scope.tulokset = [];
+    $scope.valitut = 0;
+    $scope.peruste = peruste;
+    $scope.suoritustavat = _(peruste.suoritustavat).map('suoritustapakoodi')
+                                                   .reject(function(st) { return st === suoritustapa; })
+                                                   .value();
+    $scope.valittuSuoritustapa = $scope.suoritustavat[0];
+
+    $scope.valinta = function(tulos) {
+      $scope.valitut += tulos.$valitse ? -1 : 1;
+    };
+
+    $scope.vaihdaValinta = function(tulos) {
+        tulos.$valitse = !tulos.$valitse;
+        $scope.valinta(tulos);
+    };
+
+    $scope.paivitaTulokset = function(st) {
+      if (typeof st === 'undefined') {
+        return;
+      }
+      PerusteTutkinnonosat.get({
+        perusteId: peruste.id,
+        suoritustapa: st
+      },
+      function(res) {
+        $scope.tulokset = _(res).map(function(osa) {
+                                  return {
+                                    _tutkinnonOsa: osa._tutkinnonOsa,
+                                    nimi: osa.nimi
+                                  };
+                                })
+                                .value();
+      },
+      Notifikaatiot.serverCb);
+    };
+    $scope.paivitaTulokset($scope.valittuSuoritustapa);
+
+    $scope.valittuSuoritustapa = $scope.suoritustavat[0];
+    $scope.paivitaTulokset($scope.valittuSuoritustapa);
+
+    $scope.ok = function() {
+      $modalInstance.close(_.filter($scope.tulokset, function(tulos) {
+        return tulos.$valitse;
+      }));
+    };
+    $scope.peruuta = function() { $modalInstance.dismiss(); };
   })
   .controller('TuoTutkinnonOsaCtrl', function(PerusteenOsat, $scope, $modalInstance,
     Perusteet, PerusteRakenteet, PerusteTutkinnonosat, tyyppi) {
@@ -73,7 +138,7 @@ angular.module('eperusteApp')
       $scope.haku = false;
       $scope.valittu = par;
       PerusteTutkinnonosat.query({
-        perusteenId: par.id,
+        perusteId: par.id,
         suoritustapa: tyyppi
       }, function(re) {
         $scope.perusteenosat = re;

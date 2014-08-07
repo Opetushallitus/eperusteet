@@ -7,8 +7,8 @@
   <div id="tutkinnonosat-pikamenu-list">
     <ul class="list-group">
       <li class="list-group-item" ng-repeat="(key, value) in rakenne.tutkinnonOsat">
-        <a ng-show="tutkinnonOsa.id != key" href="" ng-click="navigoiTutkinnonosaan(value)">{{value.nimi | kaanna:true}}</a>
-        <span class="active" ng-show="tutkinnonOsa.id == key">{{value.nimi | kaanna:true}}</span>
+        <a ng-show="tutkinnonOsa.id != key" href="" ng-click="navigoiTutkinnonosaan(value)">{{value.nimi || 'nimetön' | kaanna}}</a>
+        <span class="active" ng-show="tutkinnonOsa.id == key">{{value.nimi || 'nimetön' | kaanna}}</span>
       </li>
     </ul>
   </div>

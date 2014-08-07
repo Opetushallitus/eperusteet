@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+
+This program is free software: Licensed under the EUPL, Version 1.1 or - as
+soon as they will be approved by the European Commission - subsequent versions
+of the EUPL (the "Licence");
+
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+European Union Public Licence for more details.
+-->
+<div class="main-content" id="main">
+    <div class="row tutkinto-sisalto">
+
+        <div ng-show="peruste.suoritustavat.length > 0 && !muokkausTutkintokohtaisetOsat">
+            <ul style="margin-bottom: 5px" class="nav nav-tabs nav-justified">
+                <li ng-class="{ active: valittuSuoritustapa === st.suoritustapakoodi }" ng-repeat="st in peruste.suoritustavat | orderBy:'suoritustapakoodi'"
+                    ng-click="vaihdaSuoritustapa(st.suoritustapakoodi)">
+                    <a href="" class="suoritustapa">{{ st.suoritustapakoodi | kaanna }}</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="tutkinto">
+            <div ng-hide="muokkausTutkintokohtaisetOsat">
+                <div class="toolbar-input">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </span>
+                        <input ng-model="rajaus" ng-change="rajaaSisaltoa()" placeholder="{{ 'etsi-sisällöstä' | kaanna }}" type="input" class="form-control rajauslaatikko">
+                    </div>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div style="margin-bottom: 40px" ng-hide="muokkausTutkintokohtaisetOsat">
+                <h2 ng-show="naytaTutkinnonOsat || naytaRakenne">Tutkinnon muodostuminen</h2>
+                <div ng-show="naytaTutkinnonOsat" class="list-element striped" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat">
+                    <h3><a href="" kaanna>tutkinnonosat</a></h3>
+                </div>
+                <div ng-show="naytaRakenne" class="list-element striped" ui-sref="root.perusteprojekti.suoritustapa.muodostumissaannot">
+                    <h3><a href="" kaanna>tutkinnon-rakenne</a></h3>
+                    <div class="pull-right">
+                        <div lukko ng-show="lukot[peruste.id] && lukot[peruste.id].voimassa" style="font-size: 4px"
+                             title="{{ 'lukko-käyttäjällä' | kaanna }} {{ lukot[peruste.id].haltija }}
+                             {{ lukot[peruste.id].luotu | aikaleima:'ago' }}" class="lukko"></div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>
+                {{ 'tekstikappaleet' | kaanna }} ({{ peruste.sisalto.lapset.length }})
+                <a style="margin-left: 10px" ng-click="avaaSuljeKaikki(peruste.sisalto)" href=""><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
+                <div class="pull-right buttons">
+                    <button ng-hide="muokkausTutkintokohtaisetOsat" type="button" class="btn btn-default btn-sm" ng-class="{ 'btn-primary': muokkausTutkintokohtaisetOsat }" ng-click="aloitaMuokkaus()" ng-show="valittuSuoritustapa !== ''">
+                        <span icon-role="edit" kaanna>muokkaa-rakennetta</span>
+                    </button>
+                    <button ng-hide="muokkausTutkintokohtaisetOsat" type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="cloud-download" kaanna>tuo-tutkintokohtainen-osa</button>
+                    <button ng-hide="muokkausTutkintokohtaisetOsat" type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="add" kaanna>lisaa-tutkintokohtainen-osa</button>
+                </div>
+            </h2>
+            <div class="clearfix"></div>
+            <div ng-include="'views/partials/perusteprojekti/sisaltoOsa.html'"></div>
+            <div class="info-box" ng-show="peruste.sisalto.lapset.length === 0">
+                {{ 'suoritustavalle-ei-ole-vielä-sisältöä' | kaanna }}.
+            </div>
+        </div>
+    </div>
+</div>

@@ -18,15 +18,23 @@ package fi.vm.sade.eperusteet.resource;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
+import fi.vm.sade.eperusteet.dto.PerusteInfoDto;
+import fi.vm.sade.eperusteet.dto.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
-import fi.vm.sade.eperusteet.dto.PerusteenosaViiteDto;
+import fi.vm.sade.eperusteet.dto.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.UpdateDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
+import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +45,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
-
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -57,12 +65,12 @@ public class PerusteController {
     @Autowired
     private PerusteenOsaViiteService PerusteenOsaViiteService;
 
-//    @RequestMapping(method = GET)
-//    @ResponseBody
-//    public ResponseEntity<Page<PerusteDto>> getAll(PerusteQuery pquery) {
-//        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
-//        return new ResponseEntity<>(service.findBy(p, pquery), ResponseHeaders.cacheHeaders(1, TimeUnit.MINUTES), HttpStatus.OK);
-//    }
+    @RequestMapping(value = "/info", method = GET)
+    @ResponseBody
+    public Page<PerusteInfoDto> getAllInfo(PerusteQuery pquery) {
+        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
+        return service.findByInfo(p, pquery);
+    }
 
     @RequestMapping(method = GET)
     @ResponseBody
@@ -80,7 +88,6 @@ public class PerusteController {
         return perusteDto;
     }
 
-
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
     public ResponseEntity<PerusteDto> get(@PathVariable("id") final long id) {
@@ -91,38 +98,97 @@ public class PerusteController {
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{id}/kaikki", method = GET)
+    @ResponseBody
+    public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(@PathVariable("id") final long id) {
+        PerusteKaikkiDto kokoSisalto = service.getKokoSisalto(id);
+        return new ResponseEntity(kokoSisalto, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne", method = GET)
     @ResponseBody
-    public ResponseEntity<RakenneModuuliDto> getRakenne(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
-        return new ResponseEntity<>(service.getTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi)), HttpStatus.OK);
+    public ResponseEntity<RakenneModuuliDto> getRakenne(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+            @RequestHeader(value = "If-None-Match", required = false) Integer eTag, HttpServletResponse response) {
+        RakenneModuuliDto rakenne = service.getTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), eTag);
+
+        if (rakenne == null) {
+            response.addHeader("ETag", eTag.toString());
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+        response.addHeader("ETag", rakenne.getVersioId().toString());
+        return new ResponseEntity<>(rakenne, HttpStatus.OK);
     }
-    
-    @RequestMapping(value = "/rakenne/{id}/versiot", method = GET)
+
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne/versiot", method = GET)
     @ResponseBody
-    public List<Revision> getRakenneVersiot(@PathVariable("id") final Long id) {
-    	LOG.debug("get rakenne versio: " + id);
-    	return service.getRakenneVersiot(id);
+    public List<Revision> getRakenneVersiot(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        LOG.debug("get rakenne versiot: " + id + ", " + suoritustapakoodi);
+        return service.getRakenneVersiot(id, Suoritustapakoodi.of(suoritustapakoodi));
     }
-    
-    @RequestMapping(value = "/rakenne/{id}/versio/{versioId}", method = GET)
+
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne/versio/{versioId}", method = GET)
     @ResponseBody
-    public ResponseEntity<RakenneModuuliDto> getRakenneVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
-    	LOG.debug("get rakenne #{} versio #{}", id, versioId);
-    	RakenneModuuliDto t = service.getRakenneVersio(id, versioId);
+    @CacheControl(age = CacheControl.ONE_YEAR)
+    public ResponseEntity<RakenneModuuliDto> getRakenneVersio(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+            @PathVariable("versioId") final Integer versioId) {
+        LOG.debug("get peruste #{} suoritustapa #{} versio #{}", id, suoritustapakoodi, versioId);
+        RakenneModuuliDto t = service.getRakenneVersio(id, Suoritustapakoodi.of(suoritustapakoodi), versioId);
         if (t == null) {
-        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne/palauta/{versioId}", method = POST)
+    @ResponseBody
+    @CacheControl(age = CacheControl.ONE_YEAR)
+    public ResponseEntity<RakenneModuuliDto> revertRakenneVersio(
+            @PathVariable("id") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+            @PathVariable("versioId") final Integer versioId) {
+        RakenneModuuliDto t = service.revertRakenneVersio(id, Suoritustapakoodi.of(suoritustapakoodi), versioId);
+        if (t == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne", method = POST)
+    @ResponseBody
+    public RakenneModuuliDto updatePerusteenRakenne(
+            @PathVariable("id") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+            @RequestBody UpdateDto<RakenneModuuliDto> rakenne) {
+        LOG.info("Kommentti: " + rakenne.getMetadata());
+        return service.updateTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), rakenne);
+    }
+
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/tutkinnonosat", method = GET)
     @ResponseBody
-    public List<TutkinnonOsaViiteDto> getTutkinnonOsat(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+    public List<TutkinnonOsaViiteDto> getTutkinnonOsat(
+            @PathVariable("id") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
         return service.getTutkinnonOsat(id, Suoritustapakoodi.of(suoritustapakoodi));
+    }
+
+    @RequestMapping(value = "/tutkinnonosa/{osaId}", method = GET)
+    @ResponseBody
+    public TutkinnonOsaViiteDto getTutkinnonOsaViite(@PathVariable("osaId") final Long osaId) {
+        TutkinnonOsaViiteDto to = service.getTutkinnonOsaViite(osaId);
+        return to;
+    }
+
+    @RequestMapping(value = "/tutkinnonosa/{osaId}", method = {PUT, POST})
+    @ResponseBody
+    public TutkinnonOsaViiteDto updateTutkinnonOsaViite(
+            @PathVariable("osaId") final Long osaId,
+            @RequestBody TutkinnonOsaViiteDto osa) {
+        return service.updateTutkinnonOsaViite(osaId, osa);
     }
 
     /**
      * Luo ja liittää uuden tutkinnon osa perusteeseen.
+     *
      * @param id
      * @param suoritustapakoodi
      * @param osa viitteen tiedot
@@ -132,14 +198,15 @@ public class PerusteController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public TutkinnonOsaViiteDto addTutkinnonOsa(
-        @PathVariable("id") final Long id,
-        @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
-        @RequestBody TutkinnonOsaViiteDto osa) {
+            @PathVariable("id") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+            @RequestBody TutkinnonOsaViiteDto osa) {
         return service.addTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osa);
     }
 
     /**
      * Liitää olemassa olevan tutkinnon osan perusteeseen
+     *
      * @param id tutkinnon id
      * @param suoritustapakoodi suoritustapa (naytto,ops)
      * @param osa liitettävä tutkinnon osa
@@ -149,19 +216,19 @@ public class PerusteController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public TutkinnonOsaViiteDto attachTutkinnonOsa(
-        @PathVariable("id") final Long id,
-        @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
-        @RequestBody TutkinnonOsaViiteDto osa) {
+            @PathVariable("id") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+            @RequestBody TutkinnonOsaViiteDto osa) {
         return service.attachTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osa);
     }
 
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/{osanId}", method = POST)
     @ResponseBody
     public TutkinnonOsaViiteDto updateTutkinnonOsa(
-        @PathVariable("id") final Long id,
-        @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
-        @PathVariable("osanId") final Long osanId,
-        @RequestBody TutkinnonOsaViiteDto osa) {
+            @PathVariable("id") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+            @PathVariable("osanId") final Long osanId,
+            @RequestBody TutkinnonOsaViiteDto osa) {
         osa.setId(osanId);
         return service.updateTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osa);
     }
@@ -169,29 +236,66 @@ public class PerusteController {
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/{osanId}", method = DELETE)
     @ResponseBody
     public void removeTutkinnonOsa(
-        @PathVariable("id") final Long id,
-        @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
-        @PathVariable("osanId") final Long osanId) {
+            @PathVariable("id") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+            @PathVariable("osanId") final Long osanId) {
         service.removeTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osanId);
     }
 
-    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne", method = POST)
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko/tutkinnonosat", method = GET)
     @ResponseBody
-    public RakenneModuuliDto updatePerusteenRakenne(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi, @RequestBody RakenneModuuliDto rakenne) {
-        return service.updateTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), rakenne);
+    public ResponseEntity<Map<Long, LukkoDto>> getLocksTutkinnonOsat(
+            @PathVariable("id") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        return new ResponseEntity<>(service.getLocksTutkinnonOsat(id, Suoritustapakoodi.of(suoritustapakoodi)), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko/perusteenosat", method = GET)
+    @ResponseBody
+    public ResponseEntity<Map<Long, LukkoDto>> getLocksPerusteenosat(
+            @PathVariable("id") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        return new ResponseEntity<>(service.getLocksPerusteenOsat(id, Suoritustapakoodi.of(suoritustapakoodi)), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko/kaikki", method = GET)
+    @ResponseBody
+    public ResponseEntity<Map<Long, LukkoDto>> getLockAll(
+            @PathVariable("id") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+        Map<Long, LukkoDto> locks = service.getLocksTutkinnonOsat(id, Suoritustapakoodi.of(suoritustapakoodi));
+        locks.putAll(service.getLocksPerusteenOsat(id, Suoritustapakoodi.of(suoritustapakoodi)));
+
+        LukkoDto lockRakenne = service.getLock(id, Suoritustapakoodi.of(suoritustapakoodi));
+        if (lockRakenne != null) {
+            locks.put(id, lockRakenne);
+        }
+        return new ResponseEntity<>(locks, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko", method = GET)
     @ResponseBody
-    public ResponseEntity<LukkoDto> getLock(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+    public ResponseEntity<LukkoDto> getLock(
+            @PathVariable("id") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+            @RequestHeader(value = "If-None-Match", required = false) Integer eTag, HttpServletResponse response) {
         LukkoDto lock = service.getLock(id, Suoritustapakoodi.of(suoritustapakoodi));
-        return new ResponseEntity<>(lock, lock == null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+        return new ResponseEntity(lock, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko", method = {POST, PUT})
     @ResponseBody
-    public LukkoDto lock(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
-        return service.lock(id, Suoritustapakoodi.of(suoritustapakoodi));
+    public ResponseEntity<LukkoDto> lock(
+            @PathVariable("id") final Long id,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+            @RequestHeader(value = "If-None-Match", required = false) Integer eTag, HttpServletResponse response) {
+        RakenneModuuliDto rakenne = service.getTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), eTag);
+        if (rakenne == null) {
+            response.addHeader("ETag", eTag.toString());
+            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+        response.addHeader("ETag", rakenne.getVersioId().toString());
+        return new ResponseEntity<>(service.lock(id, Suoritustapakoodi.of(suoritustapakoodi)), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/lukko", method = DELETE)
@@ -210,37 +314,70 @@ public class PerusteController {
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto", method = POST)
     @ResponseBody
     public ResponseEntity<PerusteenSisaltoViiteDto> addSisalto(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("suoritustapa") final String suoritustapa) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapa") final String suoritustapa) {
         return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), null), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto", method = PUT)
     @ResponseBody
     public ResponseEntity<PerusteenSisaltoViiteDto> addSisaltoViite(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("suoritustapa") final String suoritustapa,
-        @RequestBody PerusteenSisaltoViiteDto sisaltoViite) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapa") final String suoritustapa,
+            @RequestBody PerusteenSisaltoViiteDto sisaltoViite) {
         return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), sisaltoViite), HttpStatus.CREATED);
     }
+
+//    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{perusteenosaViiteId}/kloonaa", method = POST)
+//    @ResponseBody
+//    public PerusteenOsaViiteDto kloonaa(
+//            @PathVariable("perusteId") final Long perusteId,
+//            @PathVariable("suoritustapa") final String suoritustapa,
+//            @PathVariable("perusteenosaViiteId") final Long id) {
+//        PerusteenOsaViiteDto re = PerusteenOsaViiteService.kloonaa(perusteId, suoritustapa, id);
+//        return re;
+//    }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{perusteenosaViiteId}/lapsi", method = POST)
     @ResponseBody
     public ResponseEntity<PerusteenSisaltoViiteDto> addSisaltoLapsi(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("suoritustapa") final String suoritustapa,
-        @PathVariable("perusteenosaViiteId") final Long perusteenosaViiteId) {
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapa") final String suoritustapa,
+            @PathVariable("perusteenosaViiteId") final Long perusteenosaViiteId) {
         return new ResponseEntity<>(service.addSisaltoLapsi(perusteId, perusteenosaViiteId), HttpStatus.CREATED);
     }
 
+    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{parentId}/lapsi/{childId}", method = POST)
+    @ResponseBody
+    public ResponseEntity<PerusteenSisaltoViiteDto> addSisaltoLapsi(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapa") final String suoritustapa,
+            @PathVariable("parentId") final Long parentId,
+            @PathVariable("childId") final Long childId) {
+        return new ResponseEntity<>(service.attachSisaltoLapsi(perusteId, parentId, childId), HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}/sisalto", method = GET)
+    @ResponseBody
+    public ResponseEntity<PerusteenOsaViiteDto> getSuoritustapaSisalto(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+
+        PerusteenOsaViiteDto dto = service.getSuoritustapaSisalto(perusteId, Suoritustapakoodi.of(suoritustapakoodi));
+        if (dto == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)
     @ResponseBody
-    public ResponseEntity<PerusteenosaViiteDto> getSuoritustapaSisalto(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
+    public ResponseEntity<SuoritustapaDto> getSuoritustapa(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
 
-        PerusteenosaViiteDto dto = service.getSuoritustapaSisalto(perusteId, Suoritustapakoodi.of(suoritustapakoodi));
+        SuoritustapaDto dto = service.getSuoritustapa(perusteId, Suoritustapakoodi.of(suoritustapakoodi));
         if (dto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

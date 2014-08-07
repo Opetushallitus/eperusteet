@@ -16,20 +16,21 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
-import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.dto.EntityReference;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
+import java.math.BigDecimal;
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class TutkinnonOsaViiteDto {
-
     private Long id;
-    private Integer laajuus;
-    private LaajuusYksikko yksikko;
+    private BigDecimal laajuus;
     private Integer jarjestys;
     private LokalisoituTekstiDto nimi;
+    private Date muokattu;
+    private Boolean poistettu;
     private EntityReference tutkinnonOsa;
 }

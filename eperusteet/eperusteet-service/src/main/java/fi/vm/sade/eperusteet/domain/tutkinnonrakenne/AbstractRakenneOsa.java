@@ -24,7 +24,6 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -34,7 +33,6 @@ import org.hibernate.envers.Audited;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tyyppi")
 @Audited
-@EqualsAndHashCode(exclude = {"id"})
 public abstract class AbstractRakenneOsa implements Serializable {
 
     @Id

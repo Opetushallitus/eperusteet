@@ -14,26 +14,21 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 
-<span class="tekstikentta" ng-hide="muokkaustila" ng-class="{clickable:clickable}">{{teksti | kaanna}}</span>
+<span class="tekstikentta" ng-hide="muokkaustila" ng-class="{clickable:clickable}">{{sisaltoteksti | kaanna}}</span>
 <span ng-if="editAllowed">
   <input class="form-control"
     ng-show="muokkaustila"
-    ng-model="$parent.teksti"
+    ng-model="editoitava"
     ng-click="estaEventti($event)"
-    ng-blur="asetaMuokkaustila(false)"
-    on-enter="asetaMuokkaustila(false)"
+    on-enter="hyvaksyMuutos()"
     focus-me="muokkaustila"
     localized editointi-kontrolli/>
-  <span ng-click="poistaAlkio(sisalto, sisaltoalue)" ng-show="!muokkaustila"
-    editointi-kontrolli class="glyphicon glyphicon-remove clickable pull-right badge"> </span>
-  <span ng-click="asetaMuokkaustila(true, $event)" ng-show="!muokkaustila"
-    editointi-kontrolli class="glyphicon glyphicon-pencil clickable pull-right badge"> </span>
-  <span ng-click="siirraAlas(sisalto, sisaltoalue, $event)" ng-show="!muokkaustila && $parent.$parent.$index !== sisaltoalue.length-1"
-    editointi-kontrolli class="glyphicon glyphicon-arrow-down clickable pull-right badge"> </span>
-  <span ng-click="siirraYlos(sisalto, sisaltoalue, $event)" ng-show="!muokkaustila && $parent.$parent.$index !== 0"
-    editointi-kontrolli class="glyphicon glyphicon-arrow-up clickable pull-right badge"> </span>
-  <span ng-show="muokkaustila">
-    <button class="btn btn-primary btn-xs" ng-click="hyvaksyMuutos()" translate>ok</button>
-    <button class="btn btn-default btn-xs" ng-click="peruMuutos()" translate>peru</button>
-  </span>
+  <a href="" ng-click="poistaAlkio(sisalto, sisaltoalue, $event)" editointi-kontrolli ng-show="!muokkaustila" class="muokkausnappi" icon-role="remove">
+  </a>
+  <a href="" ng-click="asetaMuokkaustila(true, $event)" editointi-kontrolli ng-show="!muokkaustila" class="muokkausnappi" icon-role="edit">
+  </a>
+  <div ng-show="muokkaustila" class="muokkaus-napit">
+    <button class="btn btn-default btn-xs" ng-click="peruMuutos($event)" kaanna>peru</button>
+    <button class="btn btn-primary btn-xs" ng-click="hyvaksyMuutos($event)" kaanna>ok</button>
+  </div>
 </span>

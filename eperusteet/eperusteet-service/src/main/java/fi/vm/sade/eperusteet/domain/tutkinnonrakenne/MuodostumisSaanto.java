@@ -61,6 +61,22 @@ public class MuodostumisSaanto implements Serializable, Mergeable<MuodostumisSaa
         }
     }
 
+    public Integer kokoMinimi() {
+        return koko != null && koko.getMinimi() != null ? koko.getMinimi() : Integer.MIN_VALUE;
+    }
+
+    public Integer kokoMaksimi() {
+        return koko != null && koko.getMaksimi() != null ? koko.getMaksimi() : Integer.MIN_VALUE;
+    }
+
+    public Integer laajuusMinimi() {
+        return laajuus != null && laajuus.getMinimi() != null ? laajuus.getMinimi() : Integer.MIN_VALUE;
+    }
+
+    public Integer laajuusMaksimi() {
+        return laajuus != null && laajuus.getMaksimi() != null ? laajuus.getMaksimi() : Integer.MIN_VALUE;
+    }
+
     @Getter
     @Setter
     @EqualsAndHashCode

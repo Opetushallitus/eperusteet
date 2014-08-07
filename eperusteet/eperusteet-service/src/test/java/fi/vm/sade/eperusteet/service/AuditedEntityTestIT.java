@@ -135,14 +135,14 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         ArvioinninKohdealueDto ke = new ArvioinninKohdealueDto();
         ke.setOtsikko(new LokalisoituTekstiDto(Collections.singletonMap("fi", "kohdealue")));
         tutkinnonOsaDto.getArviointi().getArvioinninKohdealueet().add(ke);
-    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto, TutkinnonOsaDto.class);
 
     	tutkinnonOsaDto.getArviointi().setLisatiedot(new LokalisoituTekstiDto(Collections.singletonMap("fi", "lisätiedot, muokattu")));
         tutkinnonOsaDto.getArviointi().getArvioinninKohdealueet().get(0).setOtsikko(new LokalisoituTekstiDto(Collections.singletonMap("fi", "kohdealue, muokattu")));
-    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto, TutkinnonOsaDto.class);
 
     	tutkinnonOsaDto.setAmmattitaitovaatimukset(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Ammattitaitovaatimukset")));
-    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto, TutkinnonOsaDto.class);
 
     	List<Revision> tutkinnonOsaRevisions = perusteenOsaService.getVersiot(tutkinnonOsaDto.getId());
 

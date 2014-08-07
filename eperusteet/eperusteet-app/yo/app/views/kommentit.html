@@ -1,16 +1,21 @@
-<div ng-if="sisalto && nayta">
-    <hr>
-    <div>
-        <h2>Keskustelu ({{ sisalto.yhteensa }} {{ 'kommenttia' | kaanna }})</h2>
-    </div>
-    <a ng-model="editoi" ng-hide="editoi" href="" ng-click="editoi = true"><h3><span class="glyphicon glyphicon-plus"></span> {{ 'lisaa-kommentti' | kaanna }}</h3></a>
-    <div ng-show="editoi" class="kommentti-uusi">
-        <textarea class="form-control msd-elastic" ng-model="editoitava"></textarea>
-        <div class="kommentti-painikkeet">
-            <button class="btn btn-primary" ng-click="lisaaKommentti(sisalto, editoitava); editoi = false; editoitava = ''">Tallenna</button>
-            <button class="btn" ng-click="editoi = false">Peruuta</button>
+<div ng-hide="editointi || !onLataaja">
+    <a ng-hide="nayta" ng-click="naytaKommentit()" href=""><span class="glyphicon glyphicon-comment"></span> {{ 'näytä-kommentit' | kaanna }}</a>
+    <div ng-show="nayta && sisalto">
+        <div class="kommentti-alue" ng-if="sisalto" ng-cloak>
+            <hr>
+            <div>
+                <h2>Keskustelu ({{ sisalto.yhteensa }} {{ 'kommenttia' | kaanna }})</h2>
+            </div>
+            <a ng-model="editoi" ng-hide="editoi" href="" ng-click="editoi = true"><h3 icon-role="add" kaanna>lisaa-kommentti</h3></a>
+            <div ng-show="editoi" class="kommentti-uusi">
+                <textarea class="form-control msd-elastic" ng-model="editoitava"></textarea>
+                <div class="kommentti-painikkeet">
+                    <button class="btn" ng-click="editoi = false" kaanna>peruuta</button>
+                    <button class="btn btn-primary" ng-click="lisaaKommentti(sisalto, editoitava); editoi = false; editoitava = ''" kaanna>tallenna</button>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <kommentti-viesti depth="0" sisalto="sisalto"></kommentti-viesti>
         </div>
-        <div class="clearfix"></div>
     </div>
-    <kommentti-viesti depth="0" sisalto="sisalto"></kommentti-viesti>
 </div>

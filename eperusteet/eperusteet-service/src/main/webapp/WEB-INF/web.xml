@@ -7,6 +7,7 @@
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <async-supported>true</async-supported>
     </filter>
     <filter>
         <filter-name>encodingFilter</filter-name>
@@ -15,6 +16,7 @@
             <param-name>encoding</param-name>
             <param-value>UTF-8</param-value>
         </init-param>
+        <async-supported>true</async-supported>
     </filter>
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
@@ -35,6 +37,7 @@
             <param-value>classpath:spring/dispatcher-servlet.xml</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
+        <async-supported>true</async-supported>
     </servlet>
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>

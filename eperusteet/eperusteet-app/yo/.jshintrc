@@ -21,5 +21,7 @@
   "smarttabs": true,
   "globals": {
     "angular": false
-  }
+  },
+  "maxdepth": 4,
+  "maxcomplexity": 10
 }

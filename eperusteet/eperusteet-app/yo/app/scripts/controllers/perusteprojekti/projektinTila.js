@@ -20,7 +20,8 @@
 angular.module('eperusteApp')
   .service('PerusteprojektinTilanvaihto', function ($modal) {
     var that = this;
-    this.start = function (currentStatus, setFn) {
+    this.start = function(currentStatus, mahdollisetTilat, setFn, successCb) {
+      successCb = successCb || angular.noop;
       var dummyDescription = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.';
       if (_.isFunction(setFn)) {
         that.setFn = setFn;
@@ -32,30 +33,25 @@ angular.module('eperusteApp')
           data: function () {
             return {
               oldStatus: currentStatus,
-              // TODO: mikä on tilojen ja kuvausten oikea asuinpaikka?
-              statuses: _.map([
-                'luonnos',
-                'kommentointi',
-                'viimeistely',
-                'kaannos',
-                'hyvaksytty'
-              ], function (item) {
+              mahdollisetTilat: mahdollisetTilat,
+              statuses: _.map(mahdollisetTilat, function (item) {
                 return {'key': item, 'description': {'fi': dummyDescription}};
               })
             };
           }
         }
-      });
+      })
+      .result.then(successCb);
     };
-    this.set = function (status) {
-      that.setFn(status);
+    this.set = function(status, successCb) {
+      that.setFn(status, successCb);
     };
   })
-
-  .controller('PerusteprojektinTilaModal', function ($scope, $modal, $modalInstance, data) {
+  .controller('PerusteprojektinTilaModal', function ($scope, $modal, $modalInstance, $state, data) {
     $scope.data = data;
     $scope.data.selected = null;
     $scope.data.editable = false;
+
     $scope.valitse = function () {
       $modalInstance.close();
       $modal.open({
@@ -66,22 +62,24 @@ angular.module('eperusteApp')
         }
       });
     };
+
     $scope.peruuta = function () {
       $modalInstance.dismiss();
     };
   })
-
   .controller('PerusteprojektinTilaVarmistusModal', function ($scope,
       $modalInstance, data, PerusteprojektinTilanvaihto) {
     $scope.data = data;
     $scope.edellinen = function () {
       $modalInstance.dismiss();
-      PerusteprojektinTilanvaihto.start(data.oldStatus);
+      PerusteprojektinTilanvaihto.start(data.oldStatus, data.mahdollisetTilat);
     };
+
     $scope.ok = function () {
       PerusteprojektinTilanvaihto.set(data.selected);
       $modalInstance.close();
     };
+
     $scope.peruuta = function () {
       $modalInstance.dismiss();
     };

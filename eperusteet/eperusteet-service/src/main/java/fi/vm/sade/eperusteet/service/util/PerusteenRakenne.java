@@ -20,7 +20,9 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -33,19 +35,19 @@ import java.util.Set;
 public class PerusteenRakenne {
     static public class Ongelma {
         public String ongelma;
-        public TekstiPalanen ryhmä;
+        public TekstiPalanen ryhma;
         public Integer syvyys;
 
-        Ongelma(String ongelma, TekstiPalanen ryhmä, Integer syvyys) {
+        Ongelma(String ongelma, TekstiPalanen ryhma, Integer syvyys) {
             this.ongelma = ongelma;
-            this.ryhmä = ryhmä;
+            this.ryhma = ryhma;
             this.syvyys = syvyys;
         }
     }
 
     static public class Validointi {
         public List<Ongelma> ongelmat = new ArrayList<>();
-        public Integer laskettuLaajuus = 0;
+        public BigDecimal laskettuLaajuus = new BigDecimal(0);
     }
 
     static public Validointi validoiRyhma(RakenneModuuli rakenne) {
@@ -53,27 +55,25 @@ public class PerusteenRakenne {
     }
 
     static private Validointi validoiRyhma(RakenneModuuli rakenne, final Integer syvyys) {
+        final TekstiPalanen nimi = rakenne.getNimi();
+        final RakenneModuuliRooli rooli = rakenne.getRooli();
         List<AbstractRakenneOsa> osat = rakenne.getOsat();
         MuodostumisSaanto ms = rakenne.getMuodostumisSaanto();
 
-        final TekstiPalanen nimi = rakenne.getNimi();
-        final Integer kokoMin = ms.getKoko() != null ? ms.getKoko().getMinimi() : 0;
-        final Integer kokoMax = ms.getKoko() != null ? ms.getKoko().getMaksimi() : 0;
-        final Integer laajuusMin = ms.getLaajuus().getMinimi();
-        final Integer laajuusMax = ms.getLaajuus().getMaksimi();
-
         Validointi validointi = new Validointi();
-        Integer laajuusSummaMin = 0;
-        Integer laajuusSummaMax = 0;
+
+        BigDecimal laajuusSummaMin = new BigDecimal(0);
+        BigDecimal laajuusSummaMax = new BigDecimal(0);
         Integer ryhmienMäärä = 0;
         Set<Long> uniikit = new HashSet<>();
 
         for (AbstractRakenneOsa x : osat) {
             if (x instanceof RakenneOsa) {
                 RakenneOsa ro = (RakenneOsa)x;
-                Integer laajuus = ro.getTutkinnonOsaViite().getLaajuus();
-                laajuusSummaMin += laajuus;
-                laajuusSummaMax += laajuus;
+                BigDecimal laajuus = ro.getTutkinnonOsaViite().getLaajuus();
+                laajuus = laajuus == null ? new BigDecimal(0) : laajuus;
+                laajuusSummaMin = laajuusSummaMin.add(laajuus);
+                laajuusSummaMax = laajuusSummaMax.add(laajuus);
                 uniikit.add(ro.getTutkinnonOsaViite().getTutkinnonOsa().getId());
             }
             else if (x instanceof RakenneModuuli) {
@@ -81,31 +81,39 @@ public class PerusteenRakenne {
                 ++ryhmienMäärä;
                 Validointi validoitu = validoiRyhma(rm, syvyys + 1);
                 validointi.ongelmat.addAll(validoitu.ongelmat);
-                validointi.laskettuLaajuus += validoitu.laskettuLaajuus;
-                laajuusSummaMin += validoitu.laskettuLaajuus;
-                laajuusSummaMax += validoitu.laskettuLaajuus;
+                validointi.laskettuLaajuus = validointi.laskettuLaajuus.add(validoitu.laskettuLaajuus);
+                laajuusSummaMin = laajuusSummaMin.add(validoitu.laskettuLaajuus);
+                laajuusSummaMax = laajuusSummaMax.add(validoitu.laskettuLaajuus);
             }
         }
 
-        if (laajuusSummaMin < laajuusMin) {
-            validointi.ongelmat.add(new Ongelma("Laskettu laajuuksien summan minimi on pienempi kuin ryhmän vaadittu minimi (" + laajuusSummaMin + " < " + laajuusMin + ").", nimi, syvyys));
-        }
-        else if (laajuusSummaMax > laajuusMax) {
-            validointi.ongelmat.add(new Ongelma("Laskettu laajuuksien summan maksimi on suurempi kuin ryhmän vaadittu maksimi (" + laajuusSummaMax + " > " + laajuusMax + ").", nimi, syvyys));
-        }
-        if (ms.getKoko() != null) {
-            if (osat.size() < kokoMin) {
-                validointi.ongelmat.add(new Ongelma("Laskettu koko on pienempi kuin vaadittu minimi (" + osat.size() + " < " + kokoMin + ").", nimi, syvyys));
-            }
-            else if (osat.size() > kokoMax) {
-                validointi.ongelmat.add(new Ongelma("Laskettu koko on suurempi ryhmän vaadittu maksimi (" + osat.size() + " > " + kokoMax + ").", nimi, syvyys));
-            }
-        }
-        if (uniikit.size() + ryhmienMäärä != osat.size()) {
+        if (rooli == RakenneModuuliRooli.NORMAALI && uniikit.size() + ryhmienMäärä != osat.size()) {
             validointi.ongelmat.add(new Ongelma("Ryhmässä on samoja tutkinnon osia (" + uniikit.size() + " uniikkia).", nimi, syvyys));
         }
 
-        validointi.laskettuLaajuus = laajuusSummaMax;
+        if (ms != null && rooli == RakenneModuuliRooli.NORMAALI) {
+            final Integer kokoMin = ms.kokoMinimi();
+            final Integer kokoMax = ms.kokoMaksimi();
+            final BigDecimal laajuusMin = new BigDecimal(ms.laajuusMinimi());
+            final BigDecimal laajuusMax = new BigDecimal(ms.laajuusMaksimi());
+
+            if (rooli == RakenneModuuliRooli.NORMAALI) {
+                if (laajuusSummaMin.compareTo(laajuusMin) == -1) {
+                    validointi.ongelmat.add(new Ongelma("Laskettu laajuuksien summan minimi on pienempi kuin ryhmän vaadittu minimi (" + laajuusSummaMin + " < " + laajuusMin + ").", nimi, syvyys));
+                }
+                else if (laajuusSummaMax.compareTo(laajuusMax) == -1) {
+                    validointi.ongelmat.add(new Ongelma("Laskettu laajuuksien summan maksimi on pienempi kuin ryhmän vaadittu maksimi (" + laajuusSummaMax + " > " + laajuusMax + ").", nimi, syvyys));
+                }
+
+                if (osat.size() < kokoMin) {
+                    validointi.ongelmat.add(new Ongelma("Laskettu koko on pienempi kuin vaadittu minimi (" + osat.size() + " < " + kokoMin + ").", nimi, syvyys));
+                }
+                else if (osat.size() < kokoMax) {
+                    validointi.ongelmat.add(new Ongelma("Laskettu koko on pienempi kuin ryhmän vaadittu maksimi (" + osat.size() + " < " + kokoMax + ").", nimi, syvyys));
+                }
+            }
+            validointi.laskettuLaajuus = laajuusSummaMax;
+        }
         return validointi;
     }
 }

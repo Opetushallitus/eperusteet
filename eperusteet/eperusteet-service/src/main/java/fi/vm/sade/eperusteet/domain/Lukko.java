@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.domain;
 
 import java.util.Date;
@@ -23,6 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import lombok.Getter;
 import org.joda.time.DateTime;
 
@@ -45,14 +45,18 @@ public class Lukko {
     @Temporal(TemporalType.TIMESTAMP)
     private Date luotu;
 
+    @Transient
+    private DateTime vanhentuu;
+
     protected Lukko() {
         //JPA
     }
 
-    public Lukko(Long id, String haltijaOid) {
+    public Lukko(Long id, String haltijaOid, int vanhenemisAika) {
         this.id = id;
         this.haltijaOid = haltijaOid;
         this.luotu = new Date();
+        this.vanhentuu = new DateTime(luotu.getTime()).plusSeconds(vanhenemisAika);
     }
 
     public DateTime getLuotu() {
@@ -61,6 +65,19 @@ public class Lukko {
 
     public void refresh() {
         this.luotu = new Date();
+    }
+
+    public DateTime getVanhentuu() {
+        return vanhentuu;
+    }
+
+    public void setVanhentumisAika(int maxLockTime) {
+        DateTime t = getLuotu().plusSeconds(maxLockTime);
+        if ( this.vanhentuu == null || t.equals(this.vanhentuu)) {
+            this.vanhentuu = t;
+        } else {
+            throw new IllegalStateException("vanhenemisaikaa ei voi muuttaa");
+        }
     }
 
 }

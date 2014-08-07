@@ -6,9 +6,12 @@
 @import "mixins/utils";
 
 @import "modules/yleiset";
+@import "modules/aloitussivu";
+@import "modules/admin";
 @import "modules/main";
 @import "modules/spinner";
 @import "modules/tree";
+@import "modules/tutkinnonosat";
 @import "modules/tutkinnonosa";
 @import "modules/perusteprojekti";
 @import "modules/statusbadge";
@@ -18,3 +21,4 @@
 @import "modules/koodisto";
 @import "modules/editointikontrollit";
 @import "modules/kommentit";
+@import "modules/esitys";

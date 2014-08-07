@@ -18,33 +18,59 @@
 
 angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams,
-              PerusteenRakenne, Notifikaatiot, Editointikontrollit, SivunavigaatioService,
-              Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot) {
+    PerusteenRakenne, Notifikaatiot, Editointikontrollit, PerusteProjektiService,
+    Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot,
+    virheService, PerusteProjektiSivunavi) {
     $scope.editoi = false;
-    // $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
+    // $scope.peruste = PerusteProjektiService.getPeruste();
     $scope.suoritustapa = $stateParams.suoritustapa;
     $scope.rakenne = {
       $resolved: false,
-      rakenne: { osat: [] },
+      rakenne: {osat: []},
       tutkinnonOsat: {}
     };
     $scope.versiot = {};
+    $scope.isLocked = false;
 
-    Kommentit.haeKommentit(KommentitBySuoritustapa, { id: $stateParams.perusteProjektiId, suoritustapa: $scope.suoritustapa });
+    Kommentit.haeKommentit(KommentitBySuoritustapa, {id: $stateParams.perusteProjektiId, suoritustapa: $scope.suoritustapa});
 
-    function haeRakenne(cb) {
+    function lukitse(cb) {
+      Lukitus.lukitseSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa, cb);
+    }
+
+    var errorCb = function() {
+      virheService.virhe('virhe-perusteenosaa-ei-löytynyt');
+    };
+    var successCb = function (res) {
+      res.$suoritustapa = $scope.suoritustapa;
+      res.$resolved = true;
+      $scope.rakenne = res;
+      Muodostumissaannot.laskeLaajuudet($scope.rakenne.rakenne, $scope.rakenne.tutkinnonOsaViitteet, $scope.rakenne.tutkinnonOsat);
+      haeVersiot();
+      Lukitus.tarkista($scope.rakenne.$peruste.id, $scope, $scope.suoritustapa);
+    };
+
+    function haeRakenne(cb, versio) {
       cb = cb || angular.noop;
-      PerusteenRakenne.hae($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
-        res.$suoritustapa = $scope.suoritustapa;
-        res.$resolved = true;
-        $scope.rakenne = res;
-        Muodostumissaannot.laskeLaajuudet($scope.rakenne.rakenne, $scope.rakenne.tutkinnonOsat);
-        haeVersiot();
-        cb();
+      PerusteenRakenne.haeByPerusteprojekti($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
+        successCb(res);
+        if (versio) {
+          haeVersiot(true, function () {
+            var revNumber = VersionHelper.select($scope.versiot, versio);
+            if (!revNumber) {
+              errorCb();
+            } else {
+              $scope.vaihdaVersio(cb);
+            }
+          });
+        } else {
+          cb();
+        }
       });
     }
     $scope.haeRakenne = haeRakenne;
-    haeRakenne();
+    var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, '') : null;
+    haeRakenne(angular.noop, versio);
 
     function tallennaRakenne(rakenne) {
       PerusteenRakenne.tallennaRakenne(
@@ -54,27 +80,42 @@ angular.module('eperusteApp')
         function() {
           Notifikaatiot.onnistui('tallennus-onnistui');
           haeVersiot(true);
+          Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
         },
         function() {
           Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
         }
       );
+      $scope.isLocked = false;
     }
-    
-    function haeVersiot(force) {
-      VersionHelper.getRakenneVersions($scope.versiot, $scope.rakenne.rakenne.id, force);
-    };
-    
-    $scope.vaihdaVersio = function() {
-      VersionHelper.changeRakenne($scope.versiot, $scope.rakenne.rakenne.id, function (response) {
+
+    function haeVersiot(force, cb) {
+      VersionHelper.getRakenneVersions($scope.versiot, {id: $scope.peruste.id, suoritustapa: $scope.suoritustapa}, force, cb);
+    }
+
+    $scope.vaihdaVersio = function(cb) {
+      cb = cb || angular.noop;
+      $scope.versiot.hasChanged = true;
+      // Ideally we would reload the data and rewrite version to url without changing state
+      VersionHelper.setUrl($scope.versiot, true);
+      /*VersionHelper.changeRakenne($scope.versiot, {id: $scope.rakenne.$peruste.id, suoritustapa: $scope.suoritustapa}, function(response) {
         $scope.rakenne.rakenne = response;
+        VersionHelper.setUrl($scope.versiot, true);
+        cb();
+      });*/
+    };
+
+    $scope.revert = function () {
+      haeRakenne(function () {
+        Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
+        haeVersiot(true);
       });
     };
 
-    $scope.muokkaa = function () {
-      Lukitus.lukitseSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa, function() {
+    $scope.muokkaa = function() {
+      lukitse(function() {
         haeRakenne(function() {
-          Muodostumissaannot.validoiRyhma($scope.rakenne.rakenne, $scope.tutkinnonOsat);
+          Muodostumissaannot.validoiRyhma($scope.rakenne.rakenne, $scope.rakenne.tutkinnonOsaViitteet, $scope.tutkinnonOsat);
           Editointikontrollit.startEditing();
           $scope.editoi = true;
         });
@@ -85,8 +126,13 @@ angular.module('eperusteApp')
       edit: function() {
         $scope.editoi = true;
       },
-      validate: function() { return true; },
-      save: function() {
+      asyncValidate: function(cb) {
+        lukitse(function() {
+          cb();
+        });
+      },
+      save: function(kommentti) {
+        $scope.rakenne.rakenne.metadata = { kommentti: kommentti };
         tallennaRakenne($scope.rakenne);
         $scope.editoi = false;
       },
@@ -99,11 +145,13 @@ angular.module('eperusteApp')
     });
 
     $scope.$watch('rakenne.rakenne', function(uusirakenne) {
-      Muodostumissaannot.laskeLaajuudet(uusirakenne, $scope.rakenne.tutkinnonOsat);
-      Muodostumissaannot.validoiRyhma(uusirakenne, $scope.tutkinnonOsat);
+      if ($scope.editoi) {
+        Muodostumissaannot.laskeLaajuudet(uusirakenne, $scope.rakenne.tutkinnonOsaViitteet);
+        Muodostumissaannot.validoiRyhma(uusirakenne, $scope.rakenne.tutkinnonOsaViitteet);
+      }
     }, true);
 
-    $scope.$watch('editoi', function (editoi) {
-      SivunavigaatioService.aseta({osiot: !editoi});
+    $scope.$watch('editoi', function(editoi) {
+      PerusteProjektiSivunavi.setVisible(!editoi);
     });
   });

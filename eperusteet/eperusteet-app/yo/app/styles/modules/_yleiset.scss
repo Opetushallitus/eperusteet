@@ -4,24 +4,10 @@
   }
 }
 
-.iso-valinta {
-  cursor: pointer;
-  border: 1px solid $nav-tabs-border-color;
-  text-align: center;
-  vertical-align: middle;
-  margin-top: 10px;
-  &:hover {
-    border: 1px solid black;
-  }
-  h3 {
-    margin-bottom: 20px;
-  }
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
 h1 {
   margin-bottom: 30px;
+}
+h1, h2, h3, h4 {
   .btn {
     margin-left: 10px;
   }
@@ -38,11 +24,36 @@ button {
   .glyphicon {
     margin-right: 5px;
   }
+  img {
+    margin-right: 5px;
+  }
+}
+
+a {
+  img {
+    margin-right: 5px;
+  }
 }
 
 /* ikoni + linkkiteksti */
-a.iconlink > .glyphicon {
+.iconlink > .glyphicon {
   margin-right: 5px;
+}
+
+label input[type=radio] {
+  margin-right: 5px;
+  top: 0px;
+}
+
+.ep-label-input {
+  input {
+    top: 0px;
+  }
+}
+
+.modal-body .modal-data {
+  margin-top: 15px;
+  margin-left: 15px;
 }
 
 /* animointia varten */
@@ -53,4 +64,87 @@ a.iconlink > .glyphicon {
 .editointi-wrapper {
   margin-top: 20px;
   margin-bottom: 50px;
+}
+
+.stack {
+  clear: both;
+  margin-bottom: 15px;
+  & > label {
+    width: 200px;
+  }
+  & > * {
+    margin-right: 10px;
+  }
+  & > *:not(:first-child) {
+    float: left;
+  }
+}
+
+.action-buttons {
+  position: absolute;
+  top: -35px;
+  right: 15px;
+}
+
+.btn.floater, div.floater {
+  margin-left: 5px;
+  position: relative;
+  float: right;
+}
+
+.link-floater {
+  margin-left: 5px;
+  position: relative;
+  float: right;
+  top: -23px;
+}
+
+.action-link {
+  outline: 0;
+  cursor: pointer;
+  &:hover {
+    outline: 0;
+  }
+  &:active, &:focus {
+    outline: 0;
+    text-decoration: none;
+    color: $brand-primary;
+  }
+}
+
+$lukko-width: 2em;
+$lukko-inner: 1.4em;
+.lukko {
+  display: inline-block;
+  width: $lukko-width;
+  height: $lukko-width*1.3;
+  margin-left: 5px;
+  margin-right: 5px;
+  .inner1 {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    width: $lukko-inner;
+    height: $lukko-inner*1.2;
+    border: $lukko-inner*0.3 solid black;
+    border-radius: $lukko-inner/2;
+  }
+  .inner2 {
+    position: relative;
+    top: -$lukko-inner*1.2/2;
+    background-color: black;
+    height: $lukko-width;
+    width: $lukko-width;
+  }
+}
+
+#kielen-vaihto {
+  ul {
+    margin: 0;
+    padding: 8px 15px;
+    list-style-type: none;
+    li {
+      display: inline;
+    }
+  }
 }

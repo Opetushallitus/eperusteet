@@ -18,39 +18,30 @@
 
 angular.module('eperusteApp')
   .controller('ProjektinperustiedotCtrl', function($scope, PerusteProjektiService, YleinenData) {
-  PerusteProjektiService.watcher($scope, 'projekti');
+    PerusteProjektiService.watcher($scope, 'projekti');
 
-  if (typeof $scope.projekti.paatosPvm === 'number') {
-     $scope.projekti.paatosPvm = new Date($scope.projekti.paatosPvm);
-  }
-  
-  $scope.tehtavaluokat = [
-    'Tehtäväluokka-1',
-    'Tehtäväluokka-2',
-    'Tehtäväluokka-3',
-    'Tehtäväluokka-4'
-  ];
+    if (typeof $scope.projekti.paatosPvm === 'number') {
+       $scope.projekti.paatosPvm = new Date($scope.projekti.paatosPvm);
+    }
 
-  $scope.koulutustyypit = YleinenData.koulutustyypit;
+    $scope.fields = [
+      {label: 'projektin-nimi-label', model: 'projekti.nimi'},
+      {label: 'diaarinumero-label', model: 'projekti.diaarinumero'},
+      {label: 'päätöspvm-label', model: 'projekti.paatosPvm', type: 'date'},
+      {label: 'tehtäväluokka-label', model: 'projekti.tehtavaluokka'},
+      {label: 'yhteistyotaho-label', model: 'projekti.yhteistyotaho'}
+    ];
 
-  $scope.paatosPvmOpen = false;
+    $scope.yksikot = YleinenData.yksikot;
 
-  $scope.showWeeks = true;
+    $scope.tehtavaluokat = [
+      'Tehtäväluokka-1',
+      'Tehtäväluokka-2',
+      'Tehtäväluokka-3',
+      'Tehtäväluokka-4'
+    ];
 
-  $scope.open = function($event) {
-    $event.preventDefault();
-    $event.stopPropagation();
+    $scope.koulutustyypit = YleinenData.koulutustyypit;
 
-    $scope.paatosPvmOpen = !$scope.paatosPvmOpen;
-  };
-
-  $scope.dateOptions = {
-    'year-format': 'yy',
-    //'month-format': 'M',
-    //'day-format': 'd',
-    'starting-day': 1
-  };
-
-  $scope.format = YleinenData.dateFormatDatepicker;
-});
+  });
 

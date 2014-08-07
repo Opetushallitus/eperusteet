@@ -15,7 +15,7 @@
  */
 
 'use strict';
-/* global _, moment */
+/* global _, moment, window */
 
 angular.module('eperusteApp', [
   'ngRoute',
@@ -31,60 +31,49 @@ angular.module('eperusteApp', [
 ])
   .constant('SERVICE_LOC', '/eperusteet-service/api')
   // .constant('ORGANISATION_SERVICE_LOC', '/organisaatio-service/rest')
-  .constant('ORGANISATION_SERVICE_LOC', '')
+  .constant('ORGANISATION_SERVICE_LOC', '/lokalisointi/cxf/rest/v1/localisation')
+  .constant('LOKALISOINTI_SERVICE_LOC', '')
   .constant('AUTHENTICATION_SERVICE_LOC', '/authentication-service/resources')
+  .constant('REQUEST_TIMEOUT', 10000)
   .constant('SPINNER_WAIT', 100)
   .constant('NOTIFICATION_DELAY_SUCCESS', 2000)
   .constant('NOTIFICATION_DELAY_WARNING', 8000)
-  .factory('palvelinHakuInterceptor', function($injector, $q, palvelinhaunIlmoitusKanava) {
-    var http;
-    return {
-      'request': function(config) {
-        palvelinhaunIlmoitusKanava.hakuAloitettu();
-        return config;
-      },
-      'requestError': function(rejection) {
-        // TODO: pitäisikö olla sama toteutus kuin responsella?
-        return rejection;
-      },
-      'response': function(response) {
-        // Injektoidaan $http injector:illa, jotta estetään riippuvuuksien circular dependency
-        http = http || $injector.get('$http');
-        // Ei lähetetä ilmoitusta ennen kuin kaikki haut ovat päättyneet
-        if (http.pendingRequests.length < 1) {
-          // Lähetetään ilmoitus, että haut ovat päättyneet.
-          palvelinhaunIlmoitusKanava.hakuLopetettu();
-        }
-        return response;
-      },
-      'responseError': function(rejection) {
-        // Injektoidaan $http injector:illa, jotta estetään riippuvuuksien circular dependency
-        http = http || $injector.get('$http');
-        // Ei lähetetä ilmoitusta ennen kuin kaikki haut ovat päättyneet
-        if (http.pendingRequests.length < 1) {
-          // Lähetetään ilmoitus, että haut ovat päättyneet.
-          palvelinhaunIlmoitusKanava.hakuLopetettu();
-        }
-        return $q.reject(rejection);
-      }
-    };
-  })
+  .constant('LUKITSIN_MINIMI', 5000)
+  .constant('LUKITSIN_MAKSIMI', 20000)
   .config(function($urlRouterProvider, $sceProvider) {
     $sceProvider.enabled(true);
     $urlRouterProvider.when('','/');
     $urlRouterProvider.otherwise(function($injector, $location) {
       $injector.get('virheService').setData({path: $location.path()});
-      $injector.get('$state').go('virhe');
+      $injector.get('$state').go('root.virhe');
     });
   })
-  .config(function($translateProvider) {
+  .config(function($translateProvider, $urlRouterProvider) {
+    var preferred = 'fi';
+    $urlRouterProvider.when('/', '/' + preferred);
     $translateProvider.useStaticFilesLoader({
       prefix: 'localisation/locale-',
       suffix: '.json'
     });
-    $translateProvider.preferredLanguage('fi');
-    moment.lang('fi');
+    $translateProvider.preferredLanguage(preferred);
+    moment.lang(preferred);
   })
+  // .config(function($httpProvider) {
+  //   $httpProvider.interceptors.push(['$rootScope', 'REQUEST_TIMEOUT', 'Kaanna', '$q', function($rootScope, REQUEST_TIMEOUT, Kaanna, $q) {
+  //     return {
+  //       request: function(request) {
+  //         // request.timeout = REQUEST_TIMEOUT;
+  //         return request;
+  //       },
+  //       responseError: function(error) {
+  //         if (error.status === 0) {
+  //           // alert(Kaanna.kaanna('yhteys-palvelimeen-timeout'));
+  //         }
+  //         return $q.reject(error);
+  //       }
+  //     };
+  //   }]);
+  // })
   .config(function($httpProvider) {
     $httpProvider.interceptors.push(['$rootScope', '$q', 'SpinnerService', function($rootScope, $q, Spinner) {
         return {
@@ -106,14 +95,12 @@ angular.module('eperusteApp', [
   // Uudelleenohjaus autentikointiin ja palvelinvirheiden ilmoitukset
   .config(function($httpProvider) {
     // Asetetaan oma interceptor kuuntelemaan palvelinkutsuja
-    $httpProvider.interceptors.push('palvelinHakuInterceptor');
     $httpProvider.interceptors.push(['$rootScope', '$q', function($rootScope, $q) {
         return {
           'response': function(response) {
             // var uudelleenohjausStatuskoodit = [401, 403, 412, 500];
             var uudelleenohjausStatuskoodit = [412, 500];
             if (_.indexOf(uudelleenohjausStatuskoodit, response.status) !== -1) {
-              // TODO: ota käyttöön poistamalla kommentista
               $rootScope.$emit('event:uudelleenohjattava', response.status);
             }
             return response || $q.when(response);
@@ -123,6 +110,15 @@ angular.module('eperusteApp', [
           }
         };
       }]);
+  })
+  .run(function($rootScope) {
+    var f = _.debounce(function() {
+      $rootScope.$broadcast('poll:mousemove');
+    }, 10000, {
+      leading: true,
+      maxWait: 60000
+    });
+    angular.element(window).on('mousemove', f);
   })
   .run(function($rootScope, $modal, $location, $window, $state, paginationConfig, Editointikontrollit,
                 Varmistusdialogi, Kaanna, virheService) {
@@ -147,7 +143,6 @@ angular.module('eperusteApp', [
         var protocol = $location.protocol();
         var cas = '/cas/login';
         var redirectURL = encodeURIComponent($location.absUrl());
-
         var url = protocol + '://' + host;
 
         if (port !== 443 && port !== 80) {
@@ -155,7 +150,6 @@ angular.module('eperusteApp', [
         }
 
         url += cas + '?service=' + redirectURL;
-
         return url;
       }
 
@@ -190,30 +184,27 @@ angular.module('eperusteApp', [
     });
 
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
+      if (Editointikontrollit.getEditMode() && fromState.name !== 'root.perusteprojekti.suoritustapa.tutkinnonosat') {
+        event.preventDefault();
 
-
-        if (Editointikontrollit.getEditMode() && fromState.name !== 'perusteprojekti.suoritustapa.tutkinnonosat') {
-          event.preventDefault();
-
-          var data = {toState: toState, toParams: toParams};
-          Varmistusdialogi.dialogi({successCb: function(data) {
-              Editointikontrollit.cancelEditing();
-              $state.go(data.toState, data.toParams);
-            }, data: data, otsikko: 'vahvista-liikkuminen', teksti: 'tallentamattomia-muutoksia',
-               lisaTeksti: 'haluatko-jatkaa', primaryBtn: 'poistu-sivulta'})();
-        }
-      });
+        var data = {toState: toState, toParams: toParams};
+        Varmistusdialogi.dialogi({
+          successCb: function(data) {
+            Editointikontrollit.cancelEditing();
+            $state.go(data.toState, data.toParams);
+          }, data: data, otsikko: 'vahvista-liikkuminen', teksti: 'tallentamattomia-muutoksia',
+          lisaTeksti: 'haluatko-jatkaa',
+          primaryBtn: 'poistu-sivulta'
+        })();
+      }
+    });
 
     $rootScope.$on('$stateChangeError', function(event, toState/*, toParams, fromState*/) {
-      console.error(event);
-      virheService.setData({state: toState.name});
-      $state.go('virhe');
+      virheService.virhe({state: toState.name});
     });
 
     $rootScope.$on('$stateNotFound', function(event, toState/*, toParams, fromState*/) {
-      console.error(event);
-      virheService.setData({state: toState.to});
-      $state.go('virhe');
+      virheService.virhe({state: toState.to});
     });
 
     // Jos käyttäjä editoi dokumenttia ja koittaa poistua palvelusta (reload, iltalehti...), niin varoitetaan, että hän menettää muutoksensa jos jatkaa.
@@ -224,5 +215,4 @@ angular.module('eperusteApp', [
         return confirmationMessage;
       }
     });
-
   });

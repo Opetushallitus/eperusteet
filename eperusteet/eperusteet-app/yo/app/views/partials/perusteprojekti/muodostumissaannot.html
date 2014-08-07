@@ -1,0 +1,24 @@
+<div class="row">
+  <div class="col-md-12">
+
+  <div class="action-buttons">
+    <div class="floater" ng-attr-title="{{lockNotification}}">
+      <button ng-disabled="isLocked" ng-hide="editoi || !versiot.latest" ng-click="muokkaa()"
+              class="btn btn-default" icon-role="edit" kaanna>muokkaa</button>
+    </div>
+    <div class="floater" ng-if="!editoi && isLocked"><lukko tip="lockNotification"></lukko></div>
+  </div>
+
+  <revert-note object="rakenne" revert-cb="revert(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
+  <h1>
+    <span ng-show="!editoi" kaanna>tutkinnon-rakenne</span>
+    <span ng-show="editoi" kaanna>muokkaus-rakenne</span>
+  </h1>
+  <versiotiedot ng-hide="editoi"></versiotiedot>
+  <div class="tree-presentation">
+    <tree-wrapper muokkaus="editoi" ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
+  </div>
+  <!-- <kommentit depth="0"></kommentit> -->
+
+  </div>
+</div>

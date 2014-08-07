@@ -15,6 +15,7 @@
  */
 
 'use strict';
+/* global _ */
 
 /**
  * Statusbadge:
@@ -31,7 +32,8 @@ angular.module('eperusteApp')
       replace: true,
       scope: {
         status: '=',
-        editable: '=?'
+        editable: '=?',
+        projektiId: '='
       },
       controller: 'StatusbadgeCtrl',
       link: function (scope, element) {
@@ -50,13 +52,17 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('StatusbadgeCtrl', function ($scope, PerusteprojektinTilanvaihto) {
+  .controller('StatusbadgeCtrl', function ($scope, PerusteprojektinTilanvaihto,
+    PerusteprojektiTila, Notifikaatiot, $http, SERVICE_LOC, $modal) {
     $scope.iconMapping = {
-      luonnos: 'pencil',
+      laadinta: 'pencil',
       kommentointi: 'comment',
       viimeistely: 'certificate',
       kaannos: 'book',
-      hyvaksytty: 'thumbs-up'
+      valmis: 'thumbs-up',
+      julkaistu: 'glass',
+      poistettu: 'folder-open',
+      poistettupohja: 'folder-open'
     };
 
     $scope.appliedClasses = function () {
@@ -69,10 +75,31 @@ angular.module('eperusteApp')
       return 'glyphicon glyphicon-' + $scope.iconMapping[$scope.status];
     };
 
-    $scope.startEditing = function () {
-      PerusteprojektinTilanvaihto.start($scope.status, function (newStatus) {
-        // TODO tilan tallennus, tämä asettaa uuden tilan parent scopen projektiobjektiin.
-        $scope.status = newStatus;
-      });
+    $scope.startEditing = function() {
+      $http.get(SERVICE_LOC + '/perusteprojektit/' + $scope.projektiId + '/tilat').then(function(vastaus) {
+        if (_.indexOf(vastaus.data, 'poistettu') !== -1) {
+          vastaus.data = _.reject(vastaus.data, function(a) { return a === 'poistettu'; });
+          vastaus.data.push('poistettu');
+        }
+        if (vastaus.data.length !== 0) {
+          PerusteprojektinTilanvaihto.start($scope.status, vastaus.data, function(newStatus) {
+            // TODO tilan tallennus, tämä asettaa uuden tilan parent scopen projektiobjektiin.
+            PerusteprojektiTila.save({id: $scope.projektiId, tila: newStatus}, {}, function(vastaus) {
+              if (vastaus.vaihtoOk) {
+                $scope.status = newStatus;
+              } else {
+                $modal.open({
+                  templateUrl: 'views/modals/tilanVaihtoVirhe.html',
+                  controller: 'TilanvaihtovirheCtrl',
+                  size: 'lg',
+                  resolve: {infot: function() {
+                    return vastaus.infot;
+                  }}
+                }).result.then(angular.noop);
+              }
+            }, Notifikaatiot.serverCb);
+          });
+        }
+      }, Notifikaatiot.serverCb);
     };
   });

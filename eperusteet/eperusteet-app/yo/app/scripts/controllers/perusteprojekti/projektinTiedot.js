@@ -15,51 +15,156 @@
  */
 
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
-  .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams,
-    PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, perusteprojektiTiedot) {
+  .controller('ProjektiTiedotSisaltoModalCtrl', function($scope, $modalInstance, YleinenData, PerusteprojektiResource,
+                                                         Notifikaatiot, Perusteet, pohja) {
+    $scope.ominaisuudet = {};
+    $scope.suoritustavat = [];
+    $scope.nykyinen = 1;
+    $scope.itemsPerPage = YleinenData.defaultItemsInModal;
+    $scope.totalItems = 0;
+
+    var dhaku = _.debounce(function(haku) {
+      Perusteet.get({
+        nimi: haku,
+        sivu: $scope.nykyinen - 1,
+        sivukoko: $scope.itemsPerPage,
+        tila: pohja ? 'pohja' : 'valmis',
+      }, function(perusteet) {
+        $scope.perusteet = perusteet.data;
+        $scope.totalItems = perusteet['kokonaismäärä'];
+        $scope.itemsPerPage = perusteet.sivukoko;
+      });
+    }, 300, { maxWait: 1000 });
+
+    $scope.haku = function(haku) { dhaku(haku); };
+    $scope.haku('');
+
+    $scope.valitseSivu = function(sivu) {
+      if (sivu > 0 && sivu <= Math.ceil($scope.totalItems / $scope.itemsPerPage)) {
+        $scope.nykyinen = sivu;
+      }
+      $scope.haku($scope.syote);
+    };
+
+    $scope.takaisin = function() {
+      $scope.projekti = null;
+      $scope.peruste = null;
+      $scope.ominaisuudet = {};
+    };
+    $scope.ok = function(peruste) {
+      $modalInstance.close(peruste);
+    };
+    $scope.peruuta = function() { $modalInstance.dismiss(); };
+  })
+  .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams, $modal, $timeout,
+    PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, perusteprojektiTiedot, Notifikaatiot, Perusteet, Editointikontrollit) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
+    $scope.editEnabled = false;
+    var originalProjekti = null;
+
+    var editingCallbacks = {
+      edit: function () { originalProjekti = PerusteProjektiService.get(); },
+      save: function () { $scope.tallennaPerusteprojekti(); },
+      validate: function () { return $scope.perusteprojektiForm.$valid; },
+      cancel: function () { $scope.projekti = originalProjekti; },
+      notify: function (mode) { $scope.editEnabled = mode; }
+    };
+    Editointikontrollit.registerCallback(editingCallbacks);
+
+    $scope.pohja = function () {
+      return $state.is('root.perusteprojektiwizard.pohja') || ($scope.peruste && $scope.peruste.tila === 'pohja');
+    };
+    $scope.wizardissa = function () {
+      return $state.is('root.perusteprojektiwizard.tiedot') || $state.is('root.perusteprojektiwizard.pohja');
+    };
+
+    $scope.voiMuokata = function () {
+      // TODO Vain omistaja/sihteeri voi muokata
+      return true;
+    };
+
+    $scope.muokkaa = function () {
+      Editointikontrollit.startEditing();
+    };
+
     PerusteProjektiService.clean();
-    if ($state.current.name === 'perusteprojektiwizard.tiedot') {
+    if ($scope.wizardissa()) {
       perusteprojektiTiedot.cleanData();
     }
 
     $scope.projekti = perusteprojektiTiedot.getProjekti();
+    $scope.projekti.laajuusYksikko = $scope.projekti.laajuusYksikko || 'OSAAMISPISTE';
+
     Navigaatiopolku.asetaElementit({ perusteProjektiId: $scope.projekti.nimi });
 
+    $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojekti/perustiedot.html'}];
+    if (!$scope.pohja()) {
+      $scope.tabs.push({otsikko: 'projekti-toimikausi', url: 'views/partials/perusteprojekti/toimikausi.html'});
+    }
 
-    $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojekti/perusteprojektiPerustiedot.html'},
-                   {otsikko: 'projekti-toimikausi', url: 'views/partials/perusteprojekti/perusteprojektiToimikausi.html'}];
+    $scope.mergeProjekti = function(tuoPohja) {
+      $modal.open({
+        templateUrl: 'views/modals/projektiSisaltoTuonti.html',
+        controller: 'ProjektiTiedotSisaltoModalCtrl',
+        resolve: {
+          pohja: function() { return !!tuoPohja; },
+        }
+      })
+      .result.then(function(peruste) {
+        peruste.tila = 'laadinta';
+        $scope.peruste = peruste;
+        var onOps = false;
+        $scope.projekti.perusteId = peruste.id;
+        $scope.projekti.koulutustyyppi = peruste.koulutustyyppi;
+
+        _.forEach(peruste.suoritustavat, function(st) {
+          if (st.suoritustapakoodi === 'ops') {
+            onOps = true;
+            $scope.projekti.laajuusYksikko = st.laajuusYksikko;
+          }
+        });
+      },
+      angular.noop);
+    };
+
+    $scope.puhdistaValinta = function() {
+      $scope.peruste = undefined;
+      $scope.projekti = {};
+    };
 
     $scope.tallennaPerusteprojekti = function() {
       var projekti = PerusteProjektiService.get();
-      if (angular.isDefined(projekti.id)) {
-        // Poista tämä hack:ki, kun keksitty parempi tapa viedä koulutustyyppi uuden projektin luonnissa.
-        // Uuden projektin luonti dto:ssa kulkee koulutustyyppi, mutta ei normaalissa perusteprojektiDto:ssa
+      if (projekti.id) {
         delete projekti.koulutustyyppi;
-        PerusteprojektiResource.update(projekti, function(vastaus) {
-          PerusteProjektiService.save(vastaus);
-          PerusteProjektiService.update();
-          avaaProjektinSisalto(vastaus.id);
-        }, function (virhe) {
-          console.log('projektin tallennusvirhe', virhe);
-        });
-      } else {
-        projekti.id = null;
-        PerusteprojektiResource.save(projekti, function(vastaus) {
-          PerusteProjektiService.save(vastaus);
-          PerusteProjektiService.update();
-          avaaProjektinSisalto(vastaus.id);
-        }, function(virhe) {
-          console.log('projektin luontivirhe', virhe);
+        delete projekti.laajuusYksikko;
+      }
+      else { projekti.id = null; }
+
+      if ($scope.pohja()) {
+        projekti = _.merge(_.pick(projekti, 'id', 'nimi', 'koulutustyyppi'), {
+          tila: 'pohja'
         });
       }
+
+      PerusteprojektiResource.update(projekti, function(vastaus) {
+        $scope.puhdistaValinta();
+        if ($scope.wizardissa()) {
+          avaaProjektinSisalto(vastaus.id);
+        }
+        else {
+          Notifikaatiot.onnistui('tallennettu');
+        }
+      }, Notifikaatiot.serverCb);
     };
 
     var avaaProjektinSisalto = function(projektiId) {
-      $state.go('perusteprojekti.suoritustapa.sisalto', {perusteProjektiId: projektiId, suoritustapa: PerusteProjektiService.getSuoritustapa()}, {reload:true});
+      $state.go('root.perusteprojekti.suoritustapa.sisalto', {
+        perusteProjektiId: projektiId,
+        suoritustapa: 'naytto'
+      } );
     };
-
   });

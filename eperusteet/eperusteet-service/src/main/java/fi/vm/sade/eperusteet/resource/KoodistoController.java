@@ -25,7 +25,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.slf4j.Logger;
@@ -60,14 +62,14 @@ public class KoodistoController {
         @PathVariable("koodi") final String koodi) {
         return new ResponseEntity<>(service.get(koodisto, koodi), HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/relaatio/sisaltyy-alakoodit/{koodi}", method = GET)
     @ResponseBody
     public ResponseEntity<List<KoodistoKoodiDto>> alarelaatio(
         @PathVariable("koodi") final String koodi) {
         return new ResponseEntity<>(service.getAlarelaatio(koodi), HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/relaatio/sisaltyy-ylakoodit/{koodi}", method = GET)
     @ResponseBody
     public ResponseEntity<List<KoodistoKoodiDto>> ylarelaatio(

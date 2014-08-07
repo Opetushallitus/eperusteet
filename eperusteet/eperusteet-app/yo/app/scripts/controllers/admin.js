@@ -15,22 +15,83 @@
  */
 
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
-      .state('admin', {
+      .state('root.admin', {
         url: '/admin',
         templateUrl: 'views/admin.html',
         controller: 'AdminCtrl',
-        resolve: {
-          RyhmienHallintaData: function(RyhmienHallinta) {
-            return RyhmienHallinta.promise;
-          }
-        }
       });
   })
-  .controller('AdminCtrl', function($scope, RyhmienHallinta) {
-    $scope.ryhmat = RyhmienHallinta.haeRyhmat();
-    console.log($scope.ryhmat);
+  .controller('AdminCtrl', function($rootScope, $scope, PerusteProjektit, Algoritmit, PerusteprojektiTila, Notifikaatiot,
+                                    Kaanna, YleinenData, Varmistusdialogi) {
+    $scope.jarjestysTapa = 'nimi';
+    $scope.jarjestysOrder = false;
+    $scope.tilaRajain = 'kaikki';
+    $scope.tilat = YleinenData.tilakuvaukset;
+
+    $scope.filteredPp = [];
+    $scope.itemsPerPage = 5;
+    $scope.nykyinen = 1;
+    $scope.alaraja = 0;
+    $scope.ylaraja = $scope.alaraja + $scope.itemsPerPage;
+
+    $scope.asetaJarjestys = function(tyyppi, suunta) {
+      if ($scope.jarjestysTapa === tyyppi) {
+        $scope.jarjestysOrder = !$scope.jarjestysOrder;
+        suunta = $scope.jarjestysOrder;
+      }
+      else {
+        $scope.jarjestysOrder = false;
+        $scope.jarjestysTapa = tyyppi;
+      }
+    };
+    $scope.jarjestys = function(data) {
+      switch($scope.jarjestysTapa) {
+        case 'nimi': return Kaanna.kaanna(data.nimi);
+        case 'haltija': return data.haltija;
+        case 'diaarinumero': return data.diaarinumero;
+        case 'tila': return data.tila;
+        default:
+          break;
+      }
+    };
+
+    $scope.valitseSivu = function(sivu) {
+      if (sivu > 0 && sivu <= Math.ceil(_.size($scope.filteredPp) / $scope.itemsPerPage)) {
+        $scope.nykyinen = sivu;
+        $scope.alaraja = $scope.itemsPerPage * (sivu - 1);
+        $scope.ylaraja = $scope.alaraja + $scope.itemsPerPage;
+      }
+    };
+
+    PerusteProjektit.hae({}, function(res) {
+      $scope.perusteprojektit = res;
+    });
+
+    $scope.palauta = function(pp) {
+      var uusiTila = pp.tila === 'poistettupohja' ? 'pohja' : 'laadinta';
+      Varmistusdialogi.dialogi({
+        otsikko: Kaanna.kaanna('vahvista-palautus'),
+        teksti: Kaanna.kaanna('vahvista-palautus-sisältö', {
+          nimi: pp.nimi,
+          tila: Kaanna.kaanna('tila-' + uusiTila)
+        })
+      })(function() {
+        PerusteprojektiTila.save({ id: pp.id, tila: uusiTila }, {}, function(vastaus) {
+          if (vastaus.vaihtoOk) { pp.tila = uusiTila; }
+          else { Notifikaatiot.varoitus('tilan-vaihto-epäonnistui'); }
+        }, Notifikaatiot.serverCb);
+      });
+    };
+
+    $scope.rajaaSisaltoa = function(pp) {
+      return ($scope.tilaRajain === 'kaikki' || $scope.tilaRajain === pp.tila) && (_.isEmpty($scope.rajaus) ||
+              Algoritmit.match($scope.rajaus, pp.nimi) ||
+              Algoritmit.match($scope.rajaus, 'tila-' + pp.tila) ||
+              Algoritmit.match($scope.rajaus, pp.diaarinumero));
+    };
   });

@@ -18,25 +18,28 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('Kaanna', function($translate) {
+  .service('Kaanna', function($translate, Lokalisointi) {
     return {
-      kaanna: function(input, nimeton) {
-        nimeton = nimeton || false;
-
-        function lisaaPlaceholder(input) {
-          return _.isEmpty(input) && nimeton ? $translate.instant('nimeton') : input;
-        }
-
+      kaanna: function(input, config) {
         var lang = $translate.use() || $translate.preferredLanguage();
-        if (_.isObject(input) && input[lang]) {
-          return lisaaPlaceholder(input[lang]);
+
+        if (_.isObject(input)) {
+          return input[lang];
         }
         else if (_.isString(input)) {
-          return lisaaPlaceholder($translate.instant(input));
+          return Lokalisointi.hae(input) || $translate.instant(input, config);
         }
         else {
-          return lisaaPlaceholder('');
+          return '';
         }
+      }
+    };
+  })
+  .directive('kaanna', function(Kaanna) {
+    return {
+      restrict: 'A',
+      link: function(scope, el) {
+        el.text(Kaanna.kaanna(el.text()));
       }
     };
   })

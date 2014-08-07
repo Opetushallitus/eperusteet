@@ -9,14 +9,11 @@
         </div>
       </div>
       <div class="alert alert-success" ng-show="tk.$syy.length === 0 && tk.id">
-        Tekstikappale tallennettiin onnistuneesti (<b>id</b>: {{ tk.id }})
+        {{ 'tekstikappale-tallennettiin-onnistuneesti' | kaanna }} (<b>id</b>: {{ tk.id }})
       </div>
       {{ tk.teksti | kaanna }}
     </div>
   </div>
 
-  <button ng-click="tallennaTekstikappaleet(tekstikentat)" class="btn btn-primary">
-    <span class="glyphicon glyphicon-cloud-upload"></span>
-    {{ 'liita-perusteeseen' | kaanna }}
-  </button>
+  <button ng-click="tallennaTekstikappaleet(tekstikentat)" class="btn btn-primary" icon-role="save" kaanna>liita-perusteeseen</button>
 </div>

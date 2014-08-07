@@ -20,7 +20,10 @@ import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.EntityReference;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -28,6 +31,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -57,11 +62,8 @@ public class TutkinnonOsaViite implements ReferenceableEntity {
 
     @Getter
     @Setter
-    private Integer laajuus;
-
-    @Getter
-    @Setter
-    private LaajuusYksikko yksikko;
+    @Column(precision = 10, scale = 2)
+    private BigDecimal laajuus;
 
     @Getter
     @Setter
@@ -69,9 +71,19 @@ public class TutkinnonOsaViite implements ReferenceableEntity {
 
     @Getter
     @Setter
+    private Boolean poistettu;
+
+    @Getter
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private TutkinnonOsa tutkinnonOsa;
+
+    @Column
+    @Getter
+    @Setter
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date muokattu;
 
     @Override
     public EntityReference getReference() {

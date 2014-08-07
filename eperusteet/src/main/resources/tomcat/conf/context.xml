@@ -18,15 +18,19 @@
 <!-- The contents of this file will be loaded for each web application -->
 <Context>
 
-    <!-- Default set of monitored resources -->
-    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+  <!-- Default set of monitored resources -->
+  <WatchedResource>WEB-INF/web.xml</WatchedResource>
 
-    <Resource name="jdbc/eperusteet" auth="Container"
-        maxActive="{{ host_postgresql_eperusteet_maxActive | default(50) }}"
-        maxIdle="{{ host_postgresql_eperusteet_maxIdle | default(30) }}"
-        maxWait="{{ host_postgresql_eperusteet_maxWait | default(10000) }}"
-        username="{{host_postgresql_eperusteet_user}}" password="{{host_postgresql_eperusteet_password}}"
-        driverClassName="org.postgresql.Driver"
-        url="jdbc:postgresql://{{host_postgresql_eperusteet}}:{{port_postgresql}}/eperusteet" />
+  <Resource 
+    name="jdbc/eperusteet" 
+    auth="Container"
+    type="javax.sql.DataSource"
+    maxActive="{{ host_postgresql_eperusteet_maxActive | default(50) }}"
+    maxIdle="{{ host_postgresql_eperusteet_maxIdle | default(30) }}"
+    maxWait="{{ host_postgresql_eperusteet_maxWait | default(10000) }}"
+    username="{{ host_postgresql_eperusteet_user }}" 
+    password="{{ host_postgresql_eperusteet_password }}"
+    driverClassName="org.postgresql.Driver"
+    url="jdbc:postgresql://{{host_postgresql_eperusteet}}:{{port_postgresql}}/eperusteet" />
 
 </Context>

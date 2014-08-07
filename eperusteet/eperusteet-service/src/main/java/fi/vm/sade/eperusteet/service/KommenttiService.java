@@ -25,6 +25,7 @@ import java.util.List;
  */
 public interface KommenttiService {
     public List<KommenttiDto> getAllByPerusteenOsa(Long id, Long perusteeonOsaId);
+    public List<KommenttiDto> getAllByPerusteenOsa(Long perusteenOsaId);
     public List<KommenttiDto> getAllBySuoritustapa(Long id, String suoritustapa);
     public List<KommenttiDto> getAllByPerusteprojekti(Long id);
     public List<KommenttiDto> getAllByParent(Long id);
@@ -33,5 +34,5 @@ public interface KommenttiService {
     public KommenttiDto add(final KommenttiDto kommenttidto);
     public KommenttiDto update(Long kommenttiId, final KommenttiDto kommenttidto);
     public void delete(Long kommenttiId);
-
+    public void deleteReally(Long kommenttiId);
 }
