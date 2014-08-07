@@ -15,8 +15,6 @@
  */
 package fi.vm.sade.eperusteet.resource.config;
 
-import fi.vm.sade.eperusteet.resource.util.LoggingInterceptor;
-import fi.vm.sade.eperusteet.resource.util.CacheHeaderInterceptor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -25,9 +23,9 @@ import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fi.vm.sade.eperusteet.dto.EntityReference;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
+import fi.vm.sade.eperusteet.resource.util.CacheHeaderInterceptor;
+import fi.vm.sade.eperusteet.resource.util.LoggingInterceptor;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -39,10 +37,10 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -56,6 +54,11 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 
     @Autowired
     EntityManagerFactory emf;
+
+    @Override
+    public void configurePathMatch(PathMatchConfigurer matcher) {
+        matcher.setUseRegisteredSuffixPatternMatch(true);
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -133,10 +136,10 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(4);
-        executor.setQueueCapacity(20); // overkills ftw        
+        executor.setQueueCapacity(20); // overkills ftw
         executor.setThreadFactory(new CustomizableThreadFactory("AsyncThreadFactory-"));
         executor.afterPropertiesSet();
-                
+
         configurer.setTaskExecutor(executor).setDefaultTimeout(120000);
-    }       
+    }
 }
