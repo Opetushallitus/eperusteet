@@ -18,7 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('Koodisto', function($http, $modal, SERVICE_LOC, $resource, Kaanna) {
+  .service('Koodisto', function($http, $modal, SERVICE_LOC, $resource, Kaanna, Notifikaatiot) {
     var taydennykset = [];
     var koodistoVaihtoehdot = ['tutkinnonosat', 'koulutus'];
     var nykyinenKoodisto = _.first(koodistoVaihtoehdot);
@@ -33,11 +33,9 @@ angular.module('eperusteApp')
       }
       $http.get(SERVICE_LOC + '/koodisto/' + koodisto).then(function(re) {
         taydennykset = koodistoMapping(re.data);
-        taydennykset = _.sortBy(taydennykset, function(t) {
-          return Kaanna.kaanna(t.nimi);
-        });
+        taydennykset = _.sortBy(taydennykset, function(t) { return Kaanna.kaanna(t.nimi).toLowerCase(); });
         cb();
-      });
+      }, Notifikaatiot.serverCb);
     }
 
     function haeAlarelaatiot(koodi, cb) {
@@ -53,9 +51,7 @@ angular.module('eperusteApp')
       resource.query({koodi: koodi}, function(re) {
         taydennykset = suodataTyypinMukaan(re, tyyppi);
         taydennykset = koodistoMapping(taydennykset);
-        taydennykset = _.sortBy(taydennykset, function(t) {
-          return Kaanna.kaanna(t.nimi);
-        });
+        taydennykset = _.sortBy(taydennykset, function(t) { return Kaanna.kaanna(t.nimi).toLowerCase(); });
         cb();
       });
     }
@@ -85,7 +81,8 @@ angular.module('eperusteApp')
           return result + v;
         }).toLowerCase();
         return {
-          koodi: kd.koodiUri,
+          koodiUri: kd.koodiUri,
+          koodiArvo: kd.koodiArvo,
           nimi: nimi,
           koodisto: kd.koodisto,
           haku: haku
@@ -96,7 +93,7 @@ angular.module('eperusteApp')
     function filtteri(haku) {
       haku = haku.toLowerCase();
       return _.filter(taydennykset, function(t) {
-        return (t.koodi.indexOf(haku) !== -1 || t.haku.indexOf(haku) !== -1);
+        return (t.koodiUri.indexOf(haku) !== -1 || t.haku.indexOf(haku) !== -1);
       });
     }
 
@@ -106,8 +103,7 @@ angular.module('eperusteApp')
       }
       return function() {
         resolve = resolve || {};
-        failureCb = failureCb || function() {
-        };
+        failureCb = failureCb || angular.noop;
         $modal.open({
           templateUrl: 'views/modals/koodistoModal.html',
           controller: 'KoodistoModalCtrl',
@@ -125,7 +121,7 @@ angular.module('eperusteApp')
       haeYlarelaatiot: haeYlarelaatiot
     };
   })
-  .controller('KoodistoModalCtrl', function($scope, $modalInstance, $translate, $timeout, Koodisto, tyyppi, ylarelaatioTyyppi) {
+  .controller('KoodistoModalCtrl', function($scope, $modalInstance, $timeout, Koodisto, tyyppi, ylarelaatioTyyppi) {
     $scope.koodistoVaihtoehdot = Koodisto.vaihtoehdot;
     $scope.tyyppi = tyyppi;
     $scope.ylarelaatioTyyppi = ylarelaatioTyyppi;
@@ -134,7 +130,6 @@ angular.module('eperusteApp')
     $scope.itemsPerPage = 10;
     $scope.lataa = true;
     $scope.syote = '';
-
     $scope.nykyinen = 1;
 
     $scope.valitseSivu = function(sivu) {
@@ -154,7 +149,8 @@ angular.module('eperusteApp')
         $scope.lataa = false;
         $scope.haku('');
       });
-    } else {
+    }
+    else {
       Koodisto.haeYlarelaatiot($scope.ylarelaatioTyyppi, $scope.tyyppi, function() {
         $scope.lataa = false;
         $scope.haku('');
@@ -170,7 +166,7 @@ angular.module('eperusteApp')
   })
   .directive('koodistoSelect', function(Koodisto) {
     return {
-      template: '<button class="btn btn-default" type="text" ng-click="activate()">{{ "hae-koodi-koodistosta" | translate }}</button>',
+      template: '<button class="btn btn-default" type="text" ng-click="activate()">{{ "hae-koodi-koodistosta" | kaanna }}</button>',
       restrict: 'E',
       link: function($scope, el, attrs) {
         var valmis = $scope.$eval(attrs.valmis);
@@ -185,7 +181,8 @@ angular.module('eperusteApp')
         if (!valmis) {
           console.log('koodisto-select: valmis-callback puuttuu');
           return;
-        } else if (_.indexOf(Koodisto.vaihtoehdot, tyyppi) === -1) {
+        }
+        else if (_.indexOf(Koodisto.vaihtoehdot, tyyppi) === -1) {
           console.log('koodisto-select:', tyyppi, 'ei vastaa mitään mitään vaihtoehtoa:', Koodisto.vaihtoehdot);
           return;
         }

@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <!--
 Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
 
@@ -14,73 +13,48 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
-<div class="row">
-  <!-- Perusteteksti -->
-  <!--lataus-elementti></lataus-elementti-->
-  <!--div class="col-md-12" ng-hide="hakuMenossa"-->
-  <!--div class="col-md-4" ng-include="'views/partials/suodattimet.html'"></div-->
-  <div class="col-md-4">
-      <div class="panel panel-default">
-          <div class="panel-heading" translate>suodattimet</div>
-          <div class="panel-body">
-              <ul>
-                  <li ng-show="suodatin.valittu" ng-repeat="suodatin in suodatin.otsikot">{{valitseKieli(suodatin)}}<span class="pull-right glyphicon glyphicon-remove pointer" ng-click="poistaSuodatin(suodatin)"></span></li>
-              </ul>
-              <select id="suodatin-tyyppi" ng-model="suodatinId" class="form-control" ng-change="suodatinValittu(suodatinId)">
-                  <option value="" disabled selected translate>valitse-suodatin</option>
-                  <option ng-repeat="otsikko in suodatin.otsikot" value="{{otsikko._id}}" ng-hide="otsikko.valittu">{{valitseKieli(otsikko)}}</option>
+
+<div class="main-content" id="main">
+    <div class="row esitys">
+        <div class="sivunavi-navigaatio">
+            <div class="sivunavi-takaisin">
+              <a ui-sref="root.selaus.ammatillinenperuskoulutus" icon-role="back">{{ 'takaisin-hakuun' | kaanna }}</a>
+            </div>
+            <sivunavigaatio2 items="navi.items" header="navi.header">
+              <select class="form-control input-sm" ng-model="suoritustapa" ng-change="vaihdaSuoritustapa(suoritustapa)">
+                <option ng-selected="suoritustapa === st" ng-repeat="st in suoritustavat" value="{{ st }}">{{ st | kaanna }}</option>
               </select>
-          </div>
-      </div>
-  </div>
-  <div class="col-md-8">
-
-    <script type="text/ng-template"  id="lapset_renderer.html">
-      <div ng-show="onkoSuodatettu(lapsi.perusteenOsa.nimi._id)">
-          <esitys-otsikko id="{{lapsi.perusteenOsa.id}}">{{lapsi.perusteenOsa.nimi | kaanna}}</esitys-otsikko>
-          <div ng-bind-html="lapsi.perusteenOsa.teksti.fi"></div>
-          <div ng-repeat="lapsi in lapsi.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
-      </div>
-    </script>
-
-    <div class="row">
-        <div class="col-md-6">
-        <div align="left">
-            <span ng-class="suosikkiTyyli" style="font-size: 2em;" ng-click="asetaSuosikiksi()" title="aseta suosikiksi"></span>
+            </sivunavigaatio2>
         </div>
-        </div>
-        <div class="col-md-6">
-            <div align="right">
-                <div id="suoritustavat-vaihto" class="btn-group" ng-show="peruste.suoritustavat.length > 1">
-                <button ng-click="vaihdaSuoritustapa('ops')" type="button" class="btn btn-default" ng-class="{ 'active' : suoritustapa === 'ops' }" translate>ops</button>
-                <button ng-click="vaihdaSuoritustapa('naytto')" type="button" class="btn btn-default" ng-class="{ 'active' : suoritustapa === 'naytto' }" translate>naytto</button>
+        <div class="sivunavi-clear"></div>
+        <div class="sivunavi-sisalto">
+            <h1>
+                {{ peruste.nimi | kaanna }}
+            </h1>
+            <div class="tiedot">
+                <a href="" ng-click="naytaPerusteenTiedot = !naytaPerusteenTiedot">
+                    <span ng-show="naytaPerusteenTiedot" class="glyphicon glyphicon-chevron-down"></span>
+                    <span ng-hide="naytaPerusteenTiedot" class="glyphicon glyphicon-chevron-right"></span>
+                    {{ 'perusteen-tiedot' | kaanna }}
+                </a>
+                <a class="left-space" href="" ng-click="naytaPerusteenTiedot = !naytaPerusteenTiedot" icon-role="save" kaanna>lataa-peruste-pdf-muodossa</a>
+            </div>
+            <div ng-show="naytaPerusteenTiedot">
+                <div>{{ 'tutkintokoodi' | kaanna }}: {{ peruste.tutkintokoodi | kaanna }}</div>
+                <div ng-show="peruste.koulutukset.length === 1">
+                    {{ 'koulutusalakoodi' | kaanna }}: {{ peruste.koulutukset[0].koulutusalakoodi }} ({{ peruste.koulutukset[0].nimi | kaanna }})
+                </div>
+                <div ng-show="peruste.koulutukset.length > 1">
+                    {{ 'koulutusalakoodit' | kaanna }}:
+                    <span ng-repeat="koulutus in peruste.koulutukset">
+                        {{ 'koulutusalakoodi' | kaanna }}: {{ koulutus.koulutusalakoodi || '-' }} ({{ peruste.koulutukset[0].nimi | kaanna }})<span ng-hide="$last">, </span>
+                    </span>
+                </div>
+                <div class="kuvaus">
+                    {{ peruste.kuvaus | kaanna }}
                 </div>
             </div>
+            <div id="esitysPrintSisalto" ui-view></div>
         </div>
     </div>
-
-    <h1>{{valitseKieli(peruste.nimi)}} </h1>
-
-    <p>
-      {{'tutkintokoodi'|translate}}: {{peruste.tutkintokoodi}} <br>
-      {{'koulutusalakoodi'|translate}}: {{peruste.koulutusalakoodi}} <br>
-      Päiväys: {{peruste.paivays|date:'dd.MM.yyyy'}} <br>
-    </p>
-
-    <h2 id="{{peruste.rakenne.perusteenOsa.id}}">{{peruste.rakenne.perusteenOsa.nimi | kaanna}}</h2>
-    <p ng-bind-html="peruste.rakenne.perusteenOsa.teksti | kaanna"></p>
-    <div ng-repeat="lapsi in peruste.rakenne.lapset" ng-include="'lapset_renderer.html'" ng-init="syvyys = syvyys + 1"></div>
-
-    <script type="text/ng-template" id='lehtirenderer.html'>
-        {{data.otsikko}}
-    </script>
-
-    <!-- Tutkinnon rakenne puuesityksenä -->
-    <div>
-      <tree-wrapper muokkaus="false" ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
-    </div>
-    <div class="clearfix"></div>
-
-  </div>
-
 </div>

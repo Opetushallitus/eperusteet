@@ -1,70 +1,111 @@
 $sivunavi-leveys: 280px;
 $sivunavi-takaisin-korkeus: 50px;
+$sivunavi-toggle-leveys: 40px;
+$sivunavi-toggle-korkeus: 50px;
+$sivunavi-valinta-korkeus: $sivunavi-toggle-korkeus;
+$sivunavi-shadow: 6px;
 
-.sivunavi-wrapper {
-  margin-left: 0;
-  margin-right: 0;
-  .sivunavi-sisalto {
-    h1 {
-      margin-top: 0;
-    }
-  }
-  .piilota {
+.sivunavi-outer {
+  clear: both;
+}
+.sivunavi-hidden {
+  .sivunavi-outer {
     display: none !important;
   }
-  .sivunavi {
-    .list-group {
-      margin-bottom: 0px;
-    }
-    a {
-      &.navi-aktiivinen {
-        background-color: $list-group-link-color;
-        color: white;
-        font-weight: 700;
-        .glyphicon {
-          display: none;
-        }
-      }
-    }
+  .sivunavi-sisalto {
+    margin-left: 0;
   }
-
-  .sivunavi-takaisin {
-    width: $sivunavi-leveys;
-    float: left;
-    .glyphicon {
-      color: black;
-    }
-    height: $sivunavi-takaisin-korkeus;
+}
+$sivunavi-level-zero: 15px;
+$sivunavi-level-padding: 20px;
+@mixin sn-padding($level) {
+  padding-left: $sivunavi-level-zero + $level*$sivunavi-level-padding;
+}
+.sivunavi-box {
+  .list-group-item {
+    border-radius: 0 !important;
   }
-
-  .sivunavi {
-   a {
-      @include borderradius(0);
-      & *:hover {
+  .level { @include sn-padding(0); }
+  .level1 { @include sn-padding(1); }
+  .level2 { @include sn-padding(2); }
+  .level3 { @include sn-padding(3); }
+  .level4, .level5, .level6 { @include sn-padding(4); }
+  .matched {
+    background-color: lighten($nappi-vari, 5);
+  }
+  .input-group {
+    margin-bottom: 15px;
+  }
+  .header {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    background-color: $brand-primary;
+    font-size: 110%;
+    font-weight: 700;
+    color: white;
+  }
+  .sivunavi-tc-item {
+    margin-bottom: 20px;
+  }
+  .active, .active a {
+    background-color: $brand-primary;
+    color: white;
+  }
+  .item {
+    .toggler {
+      display: block;
+      float: left;
+      width: 20px;
+      min-height: 1px;
+      .glyphicon, .glyphicon:hover {
         text-decoration: none;
-      }
-      .glyphicon {
-        float: left;
-        display: block;
         color: black;
-        top: 3px;
-      }
-      .linkkiteksti {
-        display: block;
-        padding-left: 30px;
       }
     }
+    .linktext {
+      display: block;
+      margin-left: 22px;
+    }
+    &:hover:not(.active) {
+      background-color: #eee;
+    }
+    &:active, &:focus {
+      outline: 0;
+    }
+    // TODO animation problem when using search term
+    /*&.ng-hide-add, &.ng-hide-remove {
+      transition: max-height 0.2s ease;
+    }
+    &.ng-hide-add.ng-hide-add-active, &.ng-hide-remove {
+      overflow: hidden;
+      max-height: 0px;
+    }
+    &.ng-hide-add, &.ng-hide-remove.ng-hide-remove-active {
+      overflow: hidden;
+      max-height: 80px;
+    }*/
   }
+}
 
-  $sivunavi-toggle-leveys: 40px;
-  $sivunavi-toggle-korkeus: 50px;
-  $sivunavi-valinta-korkeus: $sivunavi-toggle-korkeus;
-  $sivunavi-shadow: 6px;
+.sivunavi-navigaatio {
+  float: left;
+  width: $sivunavi-leveys;
+}
 
-  /* Pienellä näytöllä sivunavista tulee kelluva ja kollapsoituva */
-  @media (max-width: $screen-md-max) {
+.sivunavi-toggler-wrapper {
+  position: relative;
+}
+.sivunavi-sisalto {
+ h1 {
+   margin-top: 0;
+ }
+}
+
+/* Pienellä näytöllä sivunavista tulee kelluva ja kollapsoituva */
+@media (max-width: $screen-md-max) {
+  .sivunavi-outer {
     .sivunavi-toggler {
-      position: relative;
+      position: absolute;
       width: $sivunavi-toggle-leveys;
       height: $sivunavi-toggle-korkeus;
       left: $sivunavi-leveys;
@@ -85,65 +126,61 @@ $sivunavi-takaisin-korkeus: 50px;
         }
       }
     }
-    .sivunavi-linkit {
-      margin-top: -$sivunavi-toggle-korkeus;
+  }
+  .sivunavi-box {
+    display: block;
+    position: absolute;
+    top: 40px;
+    left: -20px;
+    width: $sivunavi-leveys;
+    z-index: 1030;
+    box-shadow: 0 0 $sivunavi-shadow black;
+    .header {
+      border: 0;
     }
-    .sivunavi {
-      display: block;
-      position: absolute;
-      left: -20px;
-      width: $sivunavi-leveys;
-      z-index: 1030;
-      box-shadow: 0 0 $sivunavi-shadow black;
-    }
-    .sivunavi-collapsed {
+    &.sivunavi-collapsed {
       left: -20px - $sivunavi-leveys;
       box-shadow: none;
     }
-    .sivunavi-open {
+    &.sivunavi-open {
       left: -20px;
     }
-    .sivunavi.sivunavi-open-add, .sivunavi.sivunavi-collapsed-add {
+    &.sivunavi-open-add, &.sivunavi-collapsed-add {
       transition: left 0.2s;
     }
-    .sivunavi-takaisin {
-      float: none;
-    }
-    .sivunavi-sisalto {
-      margin: 0 0 50px 30px;
-    }
   }
-
-  /* Suurella näytöllä sivunavi näytetään vasemmassa laidassa */
-  @media (min-width: $screen-lg-min) {
+  .sivunavi-sisalto {
+    margin-left: 10px;
+  }
+  .sivunavi-takaisin {
+    margin-top: 0;
+    margin-bottom: 10px;
+    width: 100%;
+    height: auto;
+  }
+  .sivunavi-clear {
+    clear: both;
+    display: block;
+    height: 1px;
+  }
+}
+/* Suurella näytöllä sivunavi näytetään vasemmassa laidassa */
+@media (min-width: $screen-lg-min) {
+  .sivunavi-outer {
     .sivunavi-toggler {
       display: none;
     }
-    .sivunavi-sisempi-wrapper {
-      display: block;
-      float: left;
-      width: $sivunavi-leveys;
-    }
-    .sivunavi-linkit {
-      float: left;
-    }
-    .sivunavi-sisalto {
-      margin: $sivunavi-takaisin-korkeus 0 50px $sivunavi-leveys + 80px;
-      overflow: visible;
-    }
-  }
-}
-
-.sivunavi-sisalto.disable {
-  margin-left: 0;
-  margin-top: 0;
-}
-
-.sivunavi-wrapper.osiot-piilossa {
-  .sivunavi-sisempi-wrapper {
-    width: 100%;
   }
   .sivunavi-sisalto {
-    margin-left: 0;
+    margin-left: $sivunavi-leveys + 40px;
+    margin-top: $sivunavi-takaisin-korkeus + 20px;
+    overflow: visible;
+  }
+  .sivunavi-takaisin {
+    margin-top: -46px;
+    height: $sivunavi-takaisin-korkeus;
+  }
+  .sivunavi-clear {
+    display: none;
   }
 }

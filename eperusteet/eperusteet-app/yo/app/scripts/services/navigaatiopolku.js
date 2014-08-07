@@ -52,7 +52,7 @@ angular.module('eperusteApp')
           };
         })
         .value();
-      $rootScope.$emit('update:navipolku');
+      $rootScope.$broadcast('update:navipolku');
     }
 
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams) {

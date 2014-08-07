@@ -33,9 +33,16 @@ angular.module('eperusteApp')
       }, NOTIFICATION_DELAY_SUCCESS);
     }
 
-    function uusiViesti(tyyppi, viesti, ilmanKuvaa) {
+    var uusiViesti = _.debounce(function(tyyppi, viesti, ilmanKuvaa) {
       if (_.isObject(viesti) && viesti.data && viesti.data.syy) { viesti = viesti.data.syy; }
       else if (!viesti) { viesti = ''; }
+
+      if (!_.isEmpty(viestit)) {
+        var viimeinenViesti = viestit[_.size(viestit) - 1];
+        if (viimeinenViesti.tyyppi === tyyppi && viesti === viesti) {
+          return;
+        }
+      }
 
       viestit.push({
         viesti: viesti ? viesti : tyyppi === 1 ? 'tallennus-onnistui' : '',
@@ -46,7 +53,10 @@ angular.module('eperusteApp')
 
       $rootScope.$broadcast('update:notifikaatiot');
       refresh();
-    }
+    }, 100, {
+      leading: true,
+      trailing: false,
+    });
 
     function fataali(viesti, cb) {
       cb = _.isFunction(cb) ? cb : angular.noop;
@@ -82,33 +92,29 @@ angular.module('eperusteApp')
       else { viestit.splice(i, 1); }
     }
 
-    function serverCb(response) {
+    function serverCb(response, b, c, d) {
+      console.log(response, b, c, d);
       if (response) {
         if (response.status >= 500) {
           fataali(Kaanna.kaanna('järjestelmävirhe-alku') + response.status + Kaanna.kaanna('järjestelmävirhe-loppu'), function() {
-            // $state.go('aloitussivu');
+            // TODO Ota käyttöön möyhemmin
+            // $state.go('root.aloitussivu');
           });
         }
         else if (response.data && response.data.syy) {
           uusiViesti(2, response.data.syy);
         }
-      }
-      else {
-        uusiViesti(2, 'odottamaton-virhe');
+        else {
+          uusiViesti(2, Kaanna.kaanna('odottamaton-virhe'));
+        }
       }
     }
 
     function serverLukitus(response) {
       if (response && response.status === 409) {
-        uusiViesti(2, 'Resurssi lukittu käyttäjälle: ' + response.data.haltijaOid + ' (' + (new Date(response.data.luotu) + ')'));
+        uusiViesti(2, Kaanna.kaanna('lukitus-kayttajalla', { user: response.data.haltijaOid }));
       }
     }
-
-    // TODO: päätä tarvitaanko tätä vai ei
-    $rootScope.$on('$stateChangeStart', function() {
-      // viestit = [];
-      // $rootScope.$broadcast('update:notifikaatiot');
-    });
 
     return {
       normaali: _.partial(uusiViesti, 0),

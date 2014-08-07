@@ -15,9 +15,7 @@ European Union Public Licence for more details.
 -->
 
 <div ng-class="{'ryhma-jasen': !muokkausMoodi}">
-  <div ng-if="voiMuokata" class="ryhma-jasen-muokkausnappi" ng-click="muokkaaJasenta(jasen, ryhma)" title="{{'muokkaa' | kaanna}}">
-    <span class="glyphicon glyphicon-pencil"></span>
-  </div>
+  <div ng-if="voiMuokata" class="ryhma-jasen-muokkausnappi" ng-click="muokkaaJasenta(jasen, ryhma)" title="{{'muokkaa' | kaanna}}" icon-role="edit"></div>
   <div class="ryhma-jasen-avatar">
     <div ng-show="!jasen.kuva" class="nimikirjain-avatar"
          ng-style="styleFor(jasen)">{{$parent.kayttajaToiminnot.nimikirjaimet(jasen.nimi)}}</div>
@@ -37,7 +35,7 @@ European Union Public Licence for more details.
       </div>
     </div>
     <div class="form-group">
-      <label class="col-sm-4 control-label" for="jasen-rooli">{{'jasen-rooli' | kaanna}}</label>
+      <label class="col-sm-4 control-label" for="jasen-rooli" kaanna>jasen-rooli</label>
       <div class="col-sm-8">
         <select class="form-control" ng-id="jasen-rooli" ng-model="jasen.rooli"
                 ng-options="'rooli-' + r | kaanna for r in ['omistaja', 'sihteeri', 'jasen', 'kommentoija']">

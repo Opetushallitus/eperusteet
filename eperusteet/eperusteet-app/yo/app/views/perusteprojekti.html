@@ -17,9 +17,10 @@ European Union Public Licence for more details.
 
 <div class="project-header">
   <div class="row">
+    <button class="btn btn-primary btn-header-pdf" ng-hide="muokkausEnabled" ng-click="luoPdf()"><img src="images/pdf-file-24.png" alt="">{{'luo-pdf' | kaanna}}</button>
     <div class="project-otsikkotiedot">
-      <statusbadge status="projekti.tila" editable="canChangePerusteprojektiStatus()"></statusbadge>
-      <h2>{{ perusteenNimi() || projekti.nimi || 'perusteprojekti-nimi-placeholder' | kaanna }}</h2>
+      <statusbadge status="projekti.tila" editable="canChangePerusteprojektiStatus()" projekti-id="projekti.id"></statusbadge>
+      <h2>{{ projekti.nimi || 'perusteprojekti-nimi-placeholder' | kaanna }}</h2>
       <table>
         <tr>
           <th>{{'projekti-header-koulutustyyppi'| kaanna}}:</th>
@@ -35,27 +36,39 @@ European Union Public Licence for more details.
         </tr>
       </table>
     </div>
+      
     <div class="headernavi">
       <ul>
         <li>
-          <a class="iconlink" ui-sref="perusteprojekti.tiedot({ perusteProjektiId: projekti.id })"
-             ui-sref-active="headernavi-active"><span class="glyphicon glyphicon-info-sign"></span>{{'projektin-tiedot' | translate}}</a>
+          <a ui-sref="root.perusteprojekti.tiedot({ perusteProjektiId: projekti.id })"
+             ui-sref-active="headernavi-active" icon-role="info" kaanna>projektin-tiedot</a>
         </li>
         <li>
-          <a class="iconlink" ui-sref="perusteprojekti.peruste({ perusteProjektiId: projekti.id })"
-             ui-sref-active="headernavi-active"><span class="glyphicon glyphicon-list-alt"></span>{{'projekti-peruste' | translate}}</a>
+          <a ui-sref="root.perusteprojekti.peruste({ perusteProjektiId: projekti.id })"
+             ui-sref-active="headernavi-active" icon-role="list-alt" kaanna>projekti-peruste</a>
         </li>
         <li>
-          <a class="iconlink" ui-sref="perusteprojekti.projektiryhma({perusteProjektiId: projekti.id})"
-             ui-sref-active="headernavi-active"><span class="glyphicon glyphicon-user"></span>{{'projekti-projektiryhmä' | translate}}</a>
+          <a ui-sref="root.perusteprojekti.projektiryhma({perusteProjektiId: projekti.id})"
+             ui-sref-active="headernavi-active" icon-role="user" kaanna>projekti-projektiryhmä</a>
         </li>
       </ul>
     </div>
   </div>
 </div>
 
-<sivunavigaatio>
-  <div ui-view></div>
-</sivunavigaatio>
+<div id="sivunavi-sisalto-wrapper" ng-class="{'sivunavi-hidden': !isNaviVisible()}">
+  <div class="sivunavi-navigaatio">
+    <div class="sivunavi-takaisin" ng-if="showBackLink()">
+      <a ng-href="{{getBackLink()}}" icon-role="back" kaanna>takaisin-paanakymaan</a>
+    </div>
+    <sivunavigaatio2 items="sivunavi.items" header="sivunavi.suoritustapa">
+    </sivunavigaatio2>
+  </div>
+  <div class="sivunavi-clear"></div>
+  <div class="sivunavi-sisalto">
+    <div ui-view></div>
+  </div>
+</div>
 
+<!-- FIXME: Menee jostain kumman syystä rakenteen alle jos on määritelty siellä -->
 <kommentit depth="0"></kommentit>

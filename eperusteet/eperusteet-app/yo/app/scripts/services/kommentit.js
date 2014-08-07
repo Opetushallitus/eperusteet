@@ -104,16 +104,8 @@ angular.module('eperusteApp')
       };
       $timeout(function() {
         $rootScope.$broadcast('update:kommentit', url, lataaja);
-      }, 10);
+      }, 100);
     }
-
-    // TODO: ota käyttöön tarvittaessa
-    // function haeKommentitByParent(id, cb) {
-    // }
-    // function haeKommentitByYlin(id, cb) {
-    // }
-    // function haeAliKommentit(parentId) {
-    // }
 
     function lisaaKommentti(parent, viesti, success) {
       success = success || angular.noop;

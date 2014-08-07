@@ -37,9 +37,10 @@ import org.hibernate.envers.Audited;
 @Audited
 @EqualsAndHashCode(callSuper = true)
 public class RakenneOsa extends AbstractRakenneOsa {
-    private boolean pakollinen;
     @JoinColumn(name = "rakenneosa_tutkinnonosaviite")
     @ManyToOne
     @NotNull
     private TutkinnonOsaViite tutkinnonOsaViite;
+
+    private boolean pakollinen;
 }

@@ -37,8 +37,10 @@ angular.module('eperusteApp')
     $scope.poista = function () {
       $modal.open({
         template: '<div class="modal-header"><p>Poistetaanko {{jasen.nimi}}?</p></div>' +
-            '<div class="modal-footer"><button ng-click="poista()" class="btn btn-primary" translate>poista</button>' +
-            '<button ng-click="peruuta()" class="btn btn-default" translate>peru</button></div>',
+            '<div class="modal-footer">' +
+            '<button ng-click="peruuta()" class="btn btn-default">{{ "peru" | kaanna }}</button>' +
+            '<button ng-click="poista()" class="btn btn-primary">{{ "poista" | kaanna }}</button>' +
+            '</div>',
         controller: 'poistaJasenModalCtrl',
         resolve: {
           data: function () { return data; }

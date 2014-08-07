@@ -36,7 +36,7 @@ angular.module('eperusteApp')
     };
 
     this.hakuparametritOrg = {
-      'selaus.ammatillinenperuskoulutus': {
+      'root.selaus.ammatillinenperuskoulutus': {
         nimi: '',
         koulutusala: '',
         tyyppi: 'koulutustyyppi_1',
@@ -46,9 +46,10 @@ angular.module('eperusteApp')
         sivu: 0,
         sivukoko: 20,
         suoritustapa: 'ops',
-        tila: 'valmis'
+        // FIXME Ota pois kommenteista
+        // tila: 'valmis'
       },
-      'selaus.ammatillinenaikuiskoulutus': {
+      'root.selaus.ammatillinenaikuiskoulutus': {
         nimi: '',
         koulutusala: '',
         tyyppi: '',
@@ -58,7 +59,8 @@ angular.module('eperusteApp')
         sivu: 0,
         sivukoko: 20,
         suoritustapa: 'naytto',
-        tila: 'valmis'
+        // FIXME Ota pois kommenteista
+        // tila: 'valmis'
       }
     };
 

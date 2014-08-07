@@ -1,0 +1,109 @@
+<!--
+Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+
+This program is free software: Licensed under the EUPL, Version 1.1 or - as
+soon as they will be approved by the European Commission - subsequent versions
+of the EUPL (the "Licence");
+
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+European Union Public Licence for more details.
+-->
+
+<div class="row">
+<div class="col-md-12">
+<div class="action-buttons">
+  <button ng-if="voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit" kaanna>muokkaa</button>
+</div>
+
+<h1 kaanna>projekti-peruste</h1>
+<div class="clearfix"></div>
+<form class="form-horizontal" name="perusteForm" role="form" novalidate>
+  <div ng-form="projektinPerusteForm">
+
+    <div class="panel panel-default panel-clean">
+      <div class="panel-heading">
+        <h3 class="panel-title" kaanna>nimi</h3>
+      </div>
+      <div class="panel-body">
+        <ml-input ng-show="editEnabled" ml-data="editablePeruste.nimi"></ml-input>
+        <p ng-hide="editEnabled">{{ peruste.nimi | kaanna }}</p>
+      </div>
+    </div>
+
+    <div class="panel panel-default panel-clean">
+      <div class="panel-heading">
+        <h3 class="panel-title" kaanna>peruste-koulutukset</h3>
+      </div>
+      <div class="panel-body">
+        <p ng-show="editablePeruste.koulutukset.length === 0 && !editEnabled" translate>ei-koulutuksia</p>
+        <div class="koulutukset" ng-show="editablePeruste.koulutukset.length > 0">
+          <div class="koulutus" ng-repeat="koulutus in editablePeruste.koulutukset">
+            <div class="poisto" ng-if="editEnabled">
+              <button icon-role="remove" class="btn btn-default btn-xs" ng-click="poistaKoulutus(koulutus.koulutuskoodiArvo)">{{'poista' | kaanna}}</button>
+            </div>
+            <table class="aligned">
+              <tr>
+                <th>{{'koulutuksen-nimi' | kaanna}}</th>
+                <td>{{koulutus.nimi| kaanna}}</td>
+              </tr>
+              <tr>
+                <th>{{'perusteen-koodi' | kaanna}}</th>
+                <td>{{koulutus.koulutuskoodiArvo}}</td>
+              </tr>
+              <tr>
+                <th>{{'haku-koulutusala' | kaanna}}</th>
+                <td>{{koulutusalaNimi(koulutus.koulutusalakoodi).nimi | kaanna}}</td>
+              </tr>
+              <tr>
+                <th>{{'haku-opintoala' | kaanna}}</th>
+                <td>{{opintoalaNimi(koulutus.opintoalakoodi).nimi | kaanna}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <button ng-if="editEnabled" icon-role="add" class="btn btn-default" type="button"
+                  ng-click="avaaKoodistoModaali()" ng-disabled="hakemassa">{{ "lisaa-koulutus" | kaanna }}</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default panel-clean">
+      <div class="panel-heading">
+        <h3 class="panel-title" kaanna>tiivistelmä</h3>
+      </div>
+      <div class="panel-body">
+        <ml-input ng-show="editEnabled" ml-data="editablePeruste.kuvaus" type="textarea"></ml-input>
+        <p ng-show="hasContent(peruste.kuvaus) && !editEnabled">{{ peruste.kuvaus | kaanna }}</p>
+        <p ng-show="!hasContent(peruste.kuvaus) && !editEnabled" kaanna>ei-tiivistelmaa</p>
+      </div>
+    </div>
+
+    <div class="panel panel-default panel-clean">
+      <div class="panel-heading">
+        <h3 class="panel-title" kaanna>voimassaolo</h3>
+      </div>
+      <div class="panel-body">
+        <div ng-if="editEnabled">
+          <formfield model="editablePeruste" model-var="voimassaoloAlkaa" label="voimaantulo-pvm" type="date"
+          placeholder="anna-voimaantulo-pvm"></formfield>
+          <formfield model="editablePeruste" model-var="voimassaoloLoppuu" label="voimassaolo-paattymispvm" type="date"
+          placeholder="anna-voimaantulo-loppu-pvm"></formfield>
+        </div>
+
+        <table class="aligned" ng-show="!editEnabled">
+          <tr><th kaanna>voimaantulo-pvm</th><td pvm="peruste.voimassaoloAlkaa"></td></tr>
+          <tr><th kaanna>voimassaolo-paattymispvm</th><td pvm="peruste.voimassaoloLoppuu"></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</form>
+</div>
+</div>

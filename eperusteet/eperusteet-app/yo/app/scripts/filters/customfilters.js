@@ -27,6 +27,18 @@ angular.module('eperusteApp')
       return input;
     };
   })
+  .filter('koodisto', function(Kaanna) {
+    return function(koodi) {
+      if (!koodi || _.isEmpty(koodi)) {
+        return Kaanna.kaanna('ei-asetettu');
+      }
+      else {
+        var indeksi = koodi.indexOf('_');
+        koodi = indeksi !== -1 ? koodi.substr(indeksi + 1) : koodi;
+        return koodi;
+      }
+    };
+  })
 
   /**
    * Muotoilee timestampit
@@ -36,14 +48,28 @@ angular.module('eperusteApp')
    * 'ago' pelkkä ihmisluettava esim. '4 tuntia sitten'
    */
   .filter('aikaleima', function ($filter) {
-    return function (input, options) {
-      var date = $filter('date')(input, 'd.M.yyyy H:mm');
+    return function (input, options, format) {
+      var date = null;
+      if (format === 'date') {
+        date = $filter('date')(input, 'd.M.yyyy');
+      }
+      else {
+        date = $filter('date')(input, 'd.M.yyyy H:mm');
+      }
+
       var ago = moment(input).fromNow();
       if (options === 'ago') {
         return ago;
-      } else if (options === 'time') {
+      }
+      else if (options === 'time') {
         return date;
       }
       return date + ' (' + ago + ')';
+    };
+  })
+
+  .filter('tyhja', function (Kaanna) {
+    return function (input) {
+      return _.isEmpty(input) ? Kaanna.kaanna('ei-asetettu') : input;
     };
   });

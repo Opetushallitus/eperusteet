@@ -36,22 +36,38 @@ import lombok.Setter;
 @Table(name = "koulutus")
 public class Koulutus implements Serializable {
 
+    public Koulutus() {
+    }
+
+    public Koulutus(TekstiPalanen nimi, String koulutuskoodiArvo, String koulutuskoodiUri, String koulutusalakoodi, String opintoalakoodi) {
+        this.nimi = nimi;
+        this.koulutuskoodiArvo = koulutuskoodiArvo;
+        this.koulutuskoodiUri = koulutuskoodiUri;
+        this.koulutusalakoodi = koulutusalakoodi;
+        this.opintoalakoodi = opintoalakoodi;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
     @Setter
     private Long id;
-    
+
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter
     @Setter
     private TekstiPalanen nimi;
 
-    @Column(name = "koulutus_koodi")
+    @Column(name = "koulutuskoodi_arvo")
     @Getter
     @Setter
-    private String koulutuskoodi;
+    private String koulutuskoodiArvo;
+    
+    @Column(name = "koulutuskoodi_uri")
+    @Getter
+    @Setter
+    private String koulutuskoodiUri;
 
     @Column(name = "koulutusala_koodi")
     @Getter

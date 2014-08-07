@@ -15,13 +15,16 @@
  */
 
 'use strict';
-// /*global _*/
+/*global _*/
 
 angular.module('eperusteApp')
   .factory('LukkoSisalto', function(SERVICE_LOC, $resource) {
-    return $resource(SERVICE_LOC + '/perusteet/:osanId/suoritustavat/:suoritustapa/lukko', {
+    return $resource(SERVICE_LOC + '/perusteet/:osanId/suoritustavat/:suoritustapa/lukko/', {
       osanId: '@osanId',
-      suoritustapa: '@suoritustapa'
+      suoritustapa: '@suoritustapa',
+      tyyppi: '@tyyppi'
+    }, {
+      multiple: { method: 'GET', url: SERVICE_LOC + '/perusteet/:osanId/suoritustavat/:suoritustapa/lukko/:tyyppi'}
     });
   })
   .factory('LukkoPerusteenosa', function(SERVICE_LOC, $resource) {
@@ -29,44 +32,135 @@ angular.module('eperusteApp')
       osanId: '@osanId'
     });
   })
-  .service('Lukitus', function(LukkoPerusteenosa, LukkoSisalto, Notifikaatiot) {
-    function lukitse(Resource, obj, success) {
-      success = success || angular.noop;
-      Resource.save(obj, success, Notifikaatiot.serverLukitus);
+  .controller('LukittuSisaltoMuuttunutModalCtrl', function($scope, $modalInstance) {
+    $scope.ok = function() { $modalInstance.close(); };
+    $scope.peruuta = function() { $modalInstance.dismiss(); };
+    $scope.$on('$stateChangeSuccess', function() { $scope.peruuta(); });
+  })
+  .service('Lukitus', function($rootScope, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, Profiili,
+    LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit, Kaanna) {
+    var lukitsin = null;
+    var etag = null;
+
+    var onevent = _.debounce(function() {
+      if (lukitsin) { lukitsin(); }
+    }, LUKITSIN_MINIMI, {
+      leading: true,
+      trailing: false,
+      maxWait: LUKITSIN_MAKSIMI
+    });
+    angular.element(window).on('click', onevent);
+
+    $rootScope.$on('$stateChangeSuccess', function() {
+      lukitsin = null;
+      etag = null;
+    });
+
+    function lueLukitus(Resource, obj, cb, errorCb) {
+      Resource.get(obj, cb || angular.noop, errorCb || Notifikaatiot.serverLukitus);
     }
 
-    function vapauta(Resource, obj, success) {
-      success = success || angular.noop;
-      Resource.remove(obj, success, Notifikaatiot.serverLukitus);
+    function lukitse(Resource, obj, cb) {
+      cb = cb || angular.noop;
+      lukitsin = function(isNew) {
+        Resource.save(obj, function(res, headers) {
+          if (isNew) {
+            etag = headers().etag;
+            cb(res);
+          }
+
+          if (etag && headers().etag !== etag) {
+            $modal.open({
+              templateUrl: 'views/modals/sisaltoMuuttunut.html',
+              controller: 'LukittuSisaltoMuuttunutModalCtrl'
+            })
+            .result.then(function() {
+              etag = headers().etag;
+            },
+            function() {
+              Editointikontrollit.cancelEditing();
+            });
+          }
+        }, Notifikaatiot.serverLukitus);
+      };
+      lukitsin(true);
     }
 
-    function lukitseSisalto(id, suoritustapa, success) {
+    function vapauta(Resource, obj, cb) {
+      cb = cb || angular.noop;
+      Resource.remove(obj, cb, Notifikaatiot.serverLukitus);
+      lukitsin = null;
+    }
+
+    function lukitseSisalto(id, suoritustapa, cb) {
       lukitse(LukkoSisalto, {
         osanId: id,
         suoritustapa: suoritustapa
-      }, success);
+      }, cb);
     }
 
-    function vapautaSisalto(id, suoritustapa, success) {
+    function vapautaSisalto(id, suoritustapa, cb) {
       vapauta(LukkoSisalto, {
         osanId: id,
         suoritustapa: suoritustapa
-      }, success);
+      }, cb);
     }
 
-    function lukitsePerusteenosa(id, success) {
+    function lukitsePerusteenosa(id, cb) {
       lukitse(LukkoPerusteenosa, {
         osanId: id
-      }, success);
+      }, cb);
     }
 
-    function vapautaPerusteenosa(id, success) {
+    function vapautaPerusteenosa(id, cb) {
       vapauta(LukkoPerusteenosa, {
         osanId: id
-      }, success);
+      }, cb);
+    }
+
+    function tarkistaLukitus(id, scope, suoritustapa) {
+      var okCb = function(res) {
+        if (res.haltijaOid && new Date() <= new Date(res.vanhentuu) && Profiili.oid() !== res.haltijaOid) {
+          scope.isLocked = true;
+          scope.lockNotification = Kaanna.kaanna('lukitus-kayttajalla', {
+            user: res.data ? res.data.haltijaOid : ''
+          });
+        }
+        else {
+          scope.isLocked = false;
+          scope.lockNotification = '';
+        }
+      };
+
+      if (suoritustapa) {
+        lueLukitus(LukkoSisalto, {osanId: id, suoritustapa: suoritustapa}, okCb);
+      } else {
+        lueLukitus(LukkoPerusteenosa, {osanId: id}, okCb);
+      }
+    }
+
+    function hae(parametrit, cb) {
+      parametrit = _.merge({
+        id: 0,
+        tyyppi: 'sisalto',
+        suoritustapa: 'naytto',
+      }, parametrit);
+
+      switch (parametrit.tyyppi) {
+        case 'sisalto':
+          lueLukitus(LukkoSisalto, { osanId: parametrit.id, suoritustapa: parametrit.suoritustapa }, cb);
+          break;
+        case 'perusteenosa':
+          lueLukitus(LukkoPerusteenosa, { osanId: parametrit.id }, cb);
+          break;
+        default:
+          break;
+      }
     }
 
     return {
+      hae: hae,
+      tarkista: tarkistaLukitus,
       lukitseSisalto: lukitseSisalto,
       vapautaSisalto: vapautaSisalto,
       lukitsePerusteenosa: lukitsePerusteenosa,

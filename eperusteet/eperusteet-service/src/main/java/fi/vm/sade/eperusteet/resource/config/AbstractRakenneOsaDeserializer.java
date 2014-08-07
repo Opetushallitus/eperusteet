@@ -42,7 +42,7 @@ public class AbstractRakenneOsaDeserializer extends StdDeserializer<AbstractRake
         JsonProcessingException {
         final TreeNode tree = jp.readValueAsTree();
         final ObjectCodec codec = jp.getCodec();
-        if (tree.get("_tutkinnonOsa") != null) {
+        if (tree.get("_tutkinnonOsaViite") != null) {
             return codec.treeToValue(tree, RakenneOsaDto.class);
         }
         if (tree.get("osat") != null) {

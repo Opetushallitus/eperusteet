@@ -19,82 +19,118 @@
 
 angular.module('eperusteApp')
   .factory('PerusteTutkinnonosa', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa/tutkinnonosat/:osanId',
-      {
-        perusteenId: '@id',
-        suoritustapa: '@suoritustapa',
-        osanId: '@id'
-      });
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat/:osanId', {
+      perusteId: '@id',
+      suoritustapa: '@suoritustapa',
+      osanId: '@id'
+    });
   })
   .factory('PerusteTutkinnonosat', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa/tutkinnonosat',
-      {
-        perusteenId: '@id',
-        suoritustapa: '@suoritustapa'
-      }, {
-        update: { method: 'PUT' }
-      });
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat', {
+      perusteId: '@id',
+      suoritustapa: '@suoritustapa'
+    }, {
+      get: { method: 'GET', isArray: true },
+      update: { method: 'PUT' }
+    });
   })
   .factory('PerusteRakenteet', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa/rakenne',
-      {
-        perusteenId: '@id',
-        suoritustapa: '@suoritustapa'
-      });
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/rakenne', {
+      perusteId: '@id',
+      suoritustapa: '@suoritustapa'
+    });
   })
   .factory('RakenneVersiot', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/rakenne/:rakenneId/versiot');
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/rakenne/versiot');
   })
   .factory('RakenneVersio', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/rakenne/:rakenneId/versio/:versioId');
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/rakenne/versio/:versioId', {
+      perusteId: '@perusteId',
+      suoritustapa: '@suoritustapa',
+      versioId: '@versioId'
+    }, {
+      palauta: { method: 'POST', url: SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/rakenne/palauta/:versioId' }
+    });
   })
   .factory('Perusteet', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteenId',
-      {
-        perusteenId: '@id'
-      });
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId', {
+      perusteId: '@id'
+    }, {
+      info: { method: 'GET', url: SERVICE_LOC + '/perusteet/info' }
+    });
   })
   .factory('PerusteenOsaviitteet', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteenosaviitteet/:viiteId');
   })
   .factory('Suoritustapa', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteenId/suoritustavat/:suoritustapa');
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa');
   })
   .factory('SuoritustapaSisalto', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/sisalto',
-    {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/sisalto', {
       perusteId: '@id',
       suoritustapa: '@suoritustapa'
     }, {
-        add: {method: 'PUT'}
+      add: {method: 'PUT'},
+      addChild: {
+        method: 'POST',
+        url: SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/sisalto/:perusteenosaViiteId/lapsi/:childId'
+      }
     });
   })
-  .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet, PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {
-    function haeRakenne(perusteProjektiId, suoritustapa, success) {
-      var response = {};
+  .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet,
+    PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {
 
-      PerusteprojektiResource.get({ id: perusteProjektiId }, function(vastaus) {
-        PerusteProjektiService.save(vastaus);
-        Perusteet.get({
-          perusteenId: vastaus._peruste
-        }, function(peruste) {
-          suoritustapa = suoritustapa || peruste.suoritustavat[0].suoritustapakoodi;
-          PerusteRakenteet.get({
-            perusteenId: peruste.id,
+    function haeTutkinnonosatByPeruste(perusteId, suoritustapa, success) {
+      PerusteTutkinnonosat.query({
+        perusteId: perusteId,
+        suoritustapa: suoritustapa
+      },
+      success,
+      Notifikaatiot.serverCb);
+    }
+
+    function haeTutkinnonosat(perusteProjektiId, suoritustapa, success) {
+      PerusteprojektiResource.get({ id: perusteProjektiId }, function(perusteprojekti) {
+        haeTutkinnonosatByPeruste(perusteprojekti._peruste, suoritustapa, success);
+      });
+    }
+
+    function pilkoTutkinnonOsat(tutkinnonOsat, response) {
+      response = response || {};
+      response.tutkinnonOsaViitteet = _(tutkinnonOsat).pluck('id')
+                                                      .zipObject(tutkinnonOsat)
+                                                      .value();
+      response.tutkinnonOsat = _.zipObject(_.map(tutkinnonOsat, '_tutkinnonOsa'), tutkinnonOsat);
+      return response;
+    }
+
+    function haeByPerusteprojekti(id, suoritustapa, success) {
+      PerusteprojektiResource.get({ id: id }, function(vastaus) {
+        hae(vastaus._peruste, suoritustapa, success);
+      });
+    }
+
+    function hae(perusteId, suoritustapa, success) {
+      var response = {};
+      Perusteet.get({
+        perusteId: perusteId
+      }, function(peruste) {
+        suoritustapa = suoritustapa || peruste.suoritustavat[0].suoritustapakoodi;
+        PerusteRakenteet.get({
+          perusteId: peruste.id,
+          suoritustapa: suoritustapa
+        }, function(rakenne) {
+          PerusteTutkinnonosat.query({
+            perusteId: peruste.id,
             suoritustapa: suoritustapa
-          }, function(rakenne) {
-            PerusteTutkinnonosat.query({
-              perusteenId: peruste.id,
-              suoritustapa: suoritustapa
-            }, function(tosat) {
-              response.rakenne = rakenne;
-              response.$peruste = peruste;
-              response.tutkinnonOsat = _(tosat)
-                                        .pluck('_tutkinnonOsa')
-                                        .zipObject(tosat)
-                                        .value();
-              success(response);
-            });
+          }, function(tosat) {
+            response.rakenne = rakenne;
+            response.$peruste = peruste;
+            response.tutkinnonOsaViitteet = _(tosat).pluck('id')
+                                                    .zipObject(tosat)
+                                                    .value();
+            response.tutkinnonOsat = _.zipObject(_.map(tosat, '_tutkinnonOsa'), tosat);
+            success(pilkoTutkinnonOsat(tosat, response));
           });
         });
       });
@@ -112,7 +148,7 @@ angular.module('eperusteApp')
       success = success || angular.noop;
       after = after || angular.noop;
       PerusteRakenteet.save({
-        perusteenId: id,
+        perusteId: id,
         suoritustapa: suoritustapa
       }, rakenne.rakenne,
       function() {
@@ -130,7 +166,7 @@ angular.module('eperusteApp')
       var after = _.after(_.size(rakenne.tutkinnonOsat), success);
       _.forEach(_.values(rakenne.tutkinnonOsat), function(osa) {
         PerusteTutkinnonosa.save({
-          perusteenId: id,
+          perusteId: id,
           suoritustapa: suoritustapa,
           osanId: osa.id
         },
@@ -156,9 +192,16 @@ angular.module('eperusteApp')
       return false;
     }
 
+    function haePerusteita(haku, success) {
+      Perusteet.info({
+        nimi: haku,
+        sivukoko: 15
+      }, success, Notifikaatiot.serverCb);
+    }
+
     function poistaTutkinnonOsaViite(osaId, _peruste, suoritustapa, success) {
       PerusteTutkinnonosa.remove({
-          perusteenId: _peruste,
+          perusteId: _peruste,
           suoritustapa: suoritustapa,
           osanId: osaId
       }, function(res) {
@@ -166,12 +209,26 @@ angular.module('eperusteApp')
       }, Notifikaatiot.serverCb);
     }
 
+    function puustaLoytyy(rakenne) {
+      var set = {};
+      kaikilleRakenteille(rakenne, function(osa) {
+        set[osa._tutkinnonOsaViite] = osa._tutkinnonOsaViite ? true : false;
+      });
+      return set;
+    }
+
     return {
-      hae: haeRakenne,
+      hae: hae,
+      haeByPerusteprojekti: haeByPerusteprojekti,
+      haePerusteita: haePerusteita,
+      pilkoTutkinnonOsat: pilkoTutkinnonOsat,
+      haeTutkinnonosat: haeTutkinnonosat,
+      haeTutkinnonosatByPeruste: haeTutkinnonosatByPeruste,
+      kaikilleRakenteille: kaikilleRakenteille,
+      poistaTutkinnonOsaViite: poistaTutkinnonOsaViite,
+      puustaLoytyy: puustaLoytyy,
       tallennaRakenne: tallennaRakenne,
       tallennaTutkinnonosat: tallennaTutkinnonosat,
-      poistaTutkinnonOsaViite: poistaTutkinnonOsaViite,
-      kaikilleRakenteille: kaikilleRakenteille,
-      validoiRakennetta: validoiRakennetta
+      validoiRakennetta: validoiRakennetta,
     };
   });

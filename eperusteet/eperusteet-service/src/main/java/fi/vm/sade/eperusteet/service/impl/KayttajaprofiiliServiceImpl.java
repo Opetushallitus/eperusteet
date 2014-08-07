@@ -16,7 +16,6 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Kayttajaprofiili;
-import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.Suosikki;
 import fi.vm.sade.eperusteet.dto.KayttajaProfiiliDto;
@@ -29,6 +28,7 @@ import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.ArrayList;
+import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,13 +63,10 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
     @Transactional(readOnly = true)
     @PreAuthorize("isAuthenticated()")
     public KayttajaProfiiliDto get() {
-        LOG.info("Kayttajaprofiili get()");
-
         String oid = SecurityContextHolder.getContext().getAuthentication().getName();
-
         return mapper.map(kayttajaprofiiliRepo.findOneEager(oid), KayttajaProfiiliDto.class);
     }
-    
+
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
@@ -86,16 +83,15 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
             kayttajaprofiili.setSuosikit(new ArrayList<Suosikki>());
             kayttajaprofiili = kayttajaprofiiliRepo.save(kayttajaprofiili);
         }
-        
+
         Suosikki suosikki = new Suosikki();
         suosikki.setKayttajaprofiili(kayttajaprofiili);
-        Peruste peruste = perusteRepo.findById(suosikkiDto.getPerusteId());
-        suosikki.setPeruste(peruste);
-        suosikki.setSuoritustapakoodi(suosikkiDto.getSuoritustapakoodi());
+        suosikki.setSisalto(suosikkiDto.getSisalto());
+        suosikki.setLisatty(new Date());
+        suosikki.setNimi(suosikkiDto.getNimi());
         suosikki = suosikkiRepo.save(suosikki);
         kayttajaprofiili.getSuosikit().add(suosikki);
 
-        
         return mapper.map(kayttajaprofiili, KayttajaProfiiliDto.class);
     }
 
@@ -116,6 +112,22 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
         return mapper.map(kayttajaprofiili, KayttajaProfiiliDto.class);
     }
 
+    @Override
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
+    public KayttajaProfiiliDto updateSuosikki(Long suosikkiId, SuosikkiDto suosikkiDto) throws IllegalArgumentException {
+        LOG.info("updateSuosikki " + suosikkiId);
+
+        String oid = SecurityContextHolder.getContext().getAuthentication().getName();
+        Kayttajaprofiili kayttajaprofiili = kayttajaprofiiliRepo.findOneEager(oid);
+
+        if (kayttajaprofiili != null) {
+            Suosikki suosikki = suosikkiRepo.findOne(suosikkiId);
+            suosikki.setNimi(suosikkiDto.getNimi());
+        }
+
+        return mapper.map(kayttajaprofiili, KayttajaProfiiliDto.class);
+    }
 
     @Override
     @Transactional
@@ -135,7 +147,6 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
             kayttajaprofiili.setPerusteprojektit(new ArrayList<Perusteprojekti>());
             kayttajaprofiili = kayttajaprofiiliRepo.save(kayttajaprofiili);
         }
-
 
         if (!kayttajaprofiili.getPerusteprojektit().contains(perusteprojekti)) {
             kayttajaprofiili.getPerusteprojektit().add(perusteprojekti);

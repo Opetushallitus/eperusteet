@@ -12,7 +12,7 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
-*/
+ */
 $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 .project-header {
   h2 {
@@ -58,6 +58,11 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
       text-decoration: none;
     }
   }
+  .btn-header-pdf {
+      position: absolute;
+      right: 0;
+      margin: 10px;
+  }
   @media (max-width: 900px) {
     .headernavi {
       position: relative;
@@ -84,76 +89,153 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 }
 
 .main-content .row {
-	padding-left: 40px;
-	padding-right: 40px;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.avaa-sulje {
+  padding-top: 10px;
+  font-size: small
 }
 
 .main-content .tutkinnonsisalto-list {
   padding: 0;
   list-style: none;
   margin-bottom: 40px;
+
+  hr {
+    background: #ccc;
+  }
 }
-.main-content .list-element {
-	position: relative;
-	border: 1px solid #ddd;
-	border-radius: 2px;
-	padding: 20px 20px 20px 45px;
-	margin-top: 20px;
-  cursor: pointer;
+.main-content {
+  .striped {
+    background: #fcfcfc;
+  }
+  .list-element {
+    border: 1px solid #eee;
+    padding: 4px 10px 4px 0;
+    margin: 0px;
+    margin-top: 2px;
+    cursor: pointer;
+    h3 {
+      font-size: 14px;
+      font-weight: bold;
+      display: inline;
+      padding: 4px;
+      // padding-left: 20px;
+      // margin-top: 15px;
+    }
+    .otsikko {
+      margin-left: 28px;
+      .lukko {
+        top: -20px;
+        position: relative;
+        float: right;
+      }
+    }
+    .chevron {
+      left: -1px;
+      top: -4px;
+      position: relative;
+      width: 27px;
+      height: 26px;
+      float: left;
+      // border-left: 1px solid #ccc;
+      padding: 4px 0 0 6px;
+      text-decoration: none;
+      color: #222;
+    }
+  }
+  .list-element-info {
+    margin: 5px 0 0 5px;
+    color: #777;
+    font-weight: normal;
+    font-size: x-small;
+  }
+  .ceiling {
+    border-top: 1px solid #ccc;
+  }
+  ul.sub-items {
+    margin-left: 140px;
+    background-color: #fff;
+    li {
+      position: relative;
+      padding: 10px inherit 10px 20px;
+      border: 1px solid #ddd;
+      border-top: none;
+    }
+  }
 }
+
 .main-content .list-element:hover,
 .main-content .li:hover {
-	background-color: #F2F2F2;
+  background: #fafafa;
+  border: 1px solid #c9c9c9;
 }
-.main-content .list-element h3 {
-	display: inline;
-	margin-left: 20px;
-	margin-top: 5px;
+.main-content .list-element
+.main-content .list-element-child h6 {
+  font-weight: bold;
+  padding-top: 8px;
+  margin-left: 5px;
 }
 .main-content .list-element a.next,
 .main-content a.next {
-	cursor: pointer;
-	position: absolute;
-	top: 50%;
-	margin-top: -9px;
-	right: 10px;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  margin-top: -9px;
+  right: 10px;
 }
 .main-content .list-element a.next span,
 .main-content a.next span {
-	margin-left: 4px;
-}
-.main-content ul.sub-items {
-	margin-left: 140px;
-	background-color: #fff;
-}
-.main-content ul.sub-items li {
-	position: relative;
-	padding: 10px inherit 10px 20px;
-	border: 1px solid #ddd;
-	border-top: none;
+  margin-left: 4px;
 }
 .main-content .list-element span.glyphicon.next,
 .main-content ul.sub-items li span.glyphicon.next {
-	position: relative;
-	right: 10px;
+  position: relative;
+  right: 10px;
+}
+
+.form-group-wrapper {
+  margin-right: 30px;
+  margin-left: 30px;
 }
 
 .form-area {
-    border: 2px solid #ddd;
-    border-radius: 2px;
-    padding: 10px;
-}
-
-.form-area.koulutukset{
+  border: 2px solid #ddd;
+  border-radius: 2px;
+  padding: 10px;
+  max-width: 1024px;
+  .form-clear {
+    margin: 0;
+    padding: 0;
+  }
+  &.koulutukset {
     margin-bottom: 10px;
+  }
+  &.viewmode {
+    border: none !important;
+  }
+  table.perustiedot {
+    width: 100%;
+    th {
+      width: 25%;
+    }
+    td {
+      font-size: 14px;
+    }
+    th, td {
+      padding: 10px;
+    }
+  }
 }
 
 .projekti-form {
-    margin: 20px;
+  margin: 20px;
 }
 
 .uusi-projekti-header {
-    padding: 20px;
+  padding: 20px;
 }
 
 
@@ -163,8 +245,8 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 }
 
 .projekti-form-buttons {
-    margin-top: 20px;
-    float: right;
+  margin-top: 20px;
+  float: right;
 }
 
 .tilanvaihto {
@@ -202,9 +284,146 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 }
 
 .tutkinto-sisalto {
+  margin: -30px auto 100px auto;
+
+  .selite {
+    font-size: 18px;
+    text-align: center;
+    margin: 40px;
+  }
+
+  .suoritustapa {
+    font-size: 16px;
+  }
+
+  .actions {
+    height: 50px;
+  }
+
+  .tutkinto {
+    .toolbar-input {
+      margin-top: 40px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 40%;
+    }
+    h2 {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 7px;
+      margin-bottom: 20px;
+
+      .buttons {
+        position: relative;
+        top: -8px;
+      }
+    }
+  }
+
+  .nav {
+    margin-bottom: 22px;
+  }
+
+  .nav-tabs>li>a {
+    padding: 20px;
+    background: none;
+    filter: none;
+    background: #fafafa;
+  }
+
+  .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+    padding: 20px;
+    background: none;
+    background: #fff;
+  }
+
+  .nav-tabs>li>a:hover {
+    padding: 20px;
+    background: none;
+    background: #fff;
+  }
+}
+
+.panel-clean {
   max-width: 900px;
+  table.aligned {
+    margin: 10px 0px;
+    th, td {
+      padding: 10px 0px;
+    }
+    th {
+      width: 160px;
+    }
+  }
+}
+.panel-clean, .panel-clean .panel-heading {
+  background-color: transparent;
+  border: 0;
+  box-shadow: none;
+  .panel-heading {
+    padding-left: 0;
+    .panel-title {
+      font-size: 18px;
+    }
+  }
+}
+
+
+.koulutukset {
+  .koulutus {
+    border: 1px solid #ddd;
+    max-width: 600px;
+    margin-bottom: 10px;
+    .poisto {
+      margin-top: 5px;
+      margin-right: 5px;
+      float: right;
+    }
+    table.aligned {
+      margin-left: 10px;
+      th, td {
+        padding-left: 10px;
+      }
+    }
+  }
+}
+
+.input-group-btn.textarea-selector {
+  vertical-align: bottom;
+}
+
+.sisalto {
+  .sisalto-group {
+    padding-bottom: 5px;
+  }
+}
+
+.list-element-placeholder {
+  background: #999;
+  border: 1px solid #eee;
+  padding: 26px 10px 0px 0;
+  margin: 0px;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+$napin-leveys: 250px;
+.pdf-lataus {
+  width: 100%;
+  text-align: center;
   margin-top: 30px;
-  margin-bottom: 100px;
-  margin-left: auto;
-  margin-right: auto;
+  margin-bottom: 30px;
+  button {
+    width: $napin-leveys;
+  }
+}
+
+.latauslinkki {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: -10px;
+  display: block;
+  text-align: center;
+  button {
+    width: $napin-leveys;
+  }
 }

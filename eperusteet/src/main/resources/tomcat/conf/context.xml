@@ -25,7 +25,7 @@
         maxActive="{{ host_postgresql_eperusteet_maxActive | default(50) }}"
         maxIdle="{{ host_postgresql_eperusteet_maxIdle | default(30) }}"
         maxWait="{{ host_postgresql_eperusteet_maxWait | default(10000) }}"
-        username="{{host_postgresql_eperusteet_user}}" password="{{host_postgresql_eperusteet_password}}"
+        username="{{ host_postgresql_eperusteet_user }}" password="{{ host_postgresql_eperusteet_password }}"
         driverClassName="org.postgresql.Driver"
         url="jdbc:postgresql://{{host_postgresql_eperusteet}}:{{port_postgresql}}/eperusteet" />
 

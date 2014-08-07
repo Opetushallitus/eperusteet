@@ -18,34 +18,54 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('MuokkausCtrl', function($scope, $stateParams, $state, $compile, Navigaatiopolku, PerusteenOsat, Kommentit, KommentitByPerusteenOsa) {
-
+  .controller('MuokkausCtrl', function($scope, $stateParams, $compile, Navigaatiopolku, PerusteenOsat,
+                                       Kommentit, KommentitByPerusteenOsa, virheService, VersionHelper) {
     if ($stateParams.perusteProjektiId && $stateParams.perusteenOsaId) {
       Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });
     }
 
     $scope.tyyppi = $stateParams.perusteenOsanTyyppi;
     $scope.objekti = null;
+    $scope.versiot = {};
+    $scope.isLocked = false;
 
     if ($stateParams.perusteenOsaId !== 'uusi') {
-      $scope.objekti = PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, function(re) {
+      var successCb = function(re) {
         Navigaatiopolku.asetaElementit({ perusteenOsaId: re.nimi });
-      }, function() {
-        console.log('unable to find perusteen osa #' + $stateParams.perusteenId);
-        $state.go('aloitussivu');
-      });
-    } else {
+      };
+      var errorCb = function() {
+        virheService.virhe('virhe-perusteenosaa-ei-löytynyt');
+      };
+      var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, '') : null;
+      if (versio) {
+        VersionHelper.getPerusteenosaVersions($scope.versiot, {id: $stateParams.perusteenOsaId}, true, function () {
+          var revNumber = VersionHelper.select($scope.versiot, versio);
+          if (!revNumber) {
+            errorCb();
+          } else {
+            $scope.objekti = PerusteenOsat.getVersio({
+              osanId: $stateParams.perusteenOsaId,
+              versioId: revNumber
+            }, successCb, errorCb);
+          }
+        });
+      } else {
+        $scope.objekti = PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, successCb, errorCb);
+      }
+    }
+    else {
       Navigaatiopolku.asetaElementit({ perusteenOsaId: 'uusi' });
     }
 
     var muokkausDirective = null;
     if ($stateParams.perusteenOsanTyyppi === 'tekstikappale') {
-      muokkausDirective = angular.element('<muokkaus-tekstikappale tekstikappale="objekti"></muokkaus-tekstikappale>');
-    } else if ($stateParams.perusteenOsanTyyppi === 'tutkinnonosa') {
-      muokkausDirective = angular.element('<muokkaus-tutkinnonosa tutkinnon-osa="objekti"></muokkaus-tutkinnonosa>');
-    } else {
-      console.log('invalid perusteen osan tyyppi');
-      $state.go('aloitussivu');
+      muokkausDirective = angular.element('<muokkaus-tekstikappale ng-if="objekti.$resolved" tekstikappale="objekti" versiot="versiot"></muokkaus-tekstikappale>');
+    }
+    else if ($stateParams.perusteenOsanTyyppi === 'tutkinnonosa') {
+      muokkausDirective = angular.element('<muokkaus-tutkinnonosa ng-if="objekti.$resolved" tutkinnon-osa="objekti" versiot="versiot"></muokkaus-tutkinnonosa>');
+    }
+    else {
+      virheService.virhe('virhe-perusteenosaa-ei-löytynyt');
     }
     var el = $compile(muokkausDirective)($scope);
 
@@ -91,15 +111,16 @@ angular.module('eperusteApp')
     };
 
     this.nestedSet = function(obj, path, delimiter, value) {
-
+      
       function innerNestedSet(obj, names, newValue) {
         if(names.length > 1) {
-          if(!_.has(obj, names[0])) {
+          if(!_.has(obj, names[0]) || obj[names[0]] === null) {
             obj[names[0]] = {};
           }
           innerNestedSet(obj[names[0]], names.splice(1, names.length), newValue);
-        }  else {
-          obj[names[0]] = newValue;
+        }
+        else {
+            obj[names[0]] = newValue;
         }
       }
 
@@ -114,7 +135,8 @@ angular.module('eperusteApp')
         if(names.length > 1) {
           obj[names[0]] = innerNestedOmit(obj[names[0]], names.splice(1, names.length));
           return obj;
-        } else {
+        }
+        else {
           return _.omit(obj, names[0]);
         }
       }

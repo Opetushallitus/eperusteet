@@ -17,16 +17,19 @@ package fi.vm.sade.eperusteet.service;
 
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.Tila;
+import fi.vm.sade.eperusteet.dto.EntityReference;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -46,9 +49,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -57,6 +62,7 @@ import static org.junit.Assert.assertEquals;
  * @author jhyoty
  */
 @Transactional
+@DirtiesContext
 public class PerusteServiceIT extends AbstractIntegrationTest {
 
     @Autowired
@@ -69,6 +75,8 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     private PerusteenOsaRepository perusteenOsaRepository;
     @Autowired
     private PerusteenOsaService perusteenOsaService;
+    @Autowired
+    private KoulutusRepository koulutusRepository;
 
     private Peruste peruste;
 
@@ -77,6 +85,10 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
     @Before
     public void setUp() {
+
+        Koulutus koulutus = new Koulutus(tekstiPalanenOf(Kieli.FI,"Koulutus"), "koulutuskoodiArvo", "koulutuskoodiUri","koulutusalakoodi","opintoalakoodi");
+        koulutus = koulutusRepository.save(koulutus);
+
         Peruste p = TestUtils.createPeruste();
         p.setSiirtymaAlkaa(new GregorianCalendar(2000, Calendar.MARCH, 12).getTime());
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
@@ -84,6 +96,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         Suoritustapa s = new Suoritustapa();
         s.setSuoritustapakoodi(Suoritustapakoodi.OPS);
         p.setSuoritustavat(Sets.newHashSet(s));
+        p.setKoulutukset(Sets.newHashSet(koulutus));
         peruste = repo.save(p);
 
         p = TestUtils.createPeruste();
@@ -120,7 +133,16 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         PerusteQuery pquery = new PerusteQuery();
         pquery.setSiirtyma(true);
         Page<PerusteDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
-        assertEquals(perusteet.getTotalElements(), 3);
+        assertEquals(3, perusteet.getTotalElements());
+    }
+
+    @Test
+    public void testFindByKoulutus() {
+        PerusteQuery pquery = new PerusteQuery();
+        pquery.setSiirtyma(true);
+        pquery.setKoodiArvo("koulutuskoodiArvo");
+        Page<PerusteDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
+        assertEquals(1, perusteet.getTotalElements());
     }
 
     @Test
@@ -133,12 +155,12 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         RakenneModuuliDto rakenne = new RakenneModuuliDto();
 
         RakenneOsaDto o1 = new RakenneOsaDto();
-        o1.setTutkinnonOsa(v1.getTutkinnonOsa());
+        o1.setTutkinnonOsaViite(new EntityReference(v1.getId()));
 
         RakenneModuuliDto ryhma = new RakenneModuuliDto();
 
         RakenneOsaDto o2 = new RakenneOsaDto();
-        o2.setTutkinnonOsa(v2.getTutkinnonOsa());
+        o2.setTutkinnonOsaViite(new EntityReference(v2.getId()));
         ryhma.setOsat(Arrays.<AbstractRakenneOsaDto>asList(o2));
 
         rakenne.setOsat(Arrays.<AbstractRakenneOsaDto>asList(o1, ryhma));
@@ -146,7 +168,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         RakenneModuuliDto updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, rakenne);
 
         updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, updatedTutkinnonRakenne);
-        assertEquals(v1.getTutkinnonOsa(), ((RakenneOsaDto) updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsa());
+        assertEquals(new EntityReference(v1.getId()), ((RakenneOsaDto) updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsaViite());
     }
 
     @Value("${fi.vm.sade.eperusteet.tutkinnonrakenne.maksimisyvyys}")

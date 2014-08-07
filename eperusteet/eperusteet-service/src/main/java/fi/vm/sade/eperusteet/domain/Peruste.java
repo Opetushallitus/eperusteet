@@ -66,9 +66,16 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen nimi;
 
+    @ValidHtml(whitelist = WhitelistType.MINIMAL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter
     @Setter
-    private String tutkintokoodi;
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen kuvaus;
+
+    @Getter
+    @Setter
+    private String koulutustyyppi;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "peruste_koulutus",

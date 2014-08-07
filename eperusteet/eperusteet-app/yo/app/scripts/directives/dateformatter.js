@@ -42,4 +42,19 @@ angular.module('eperusteApp')
         });
       }
     };
+  })
+  .directive('pvm', function (Kaanna) {
+    return {
+      restrict: 'A',
+      link: function (scope, element, attrs) {
+        scope.$watch(attrs.pvm, function (value) {
+          if (!value) {
+            element.text(Kaanna.kaanna('ei-asetettu'));
+            return;
+          }
+          var date = new Date(value);
+          element.text(moment(date).format('l'));
+        });
+      }
+    };
   });

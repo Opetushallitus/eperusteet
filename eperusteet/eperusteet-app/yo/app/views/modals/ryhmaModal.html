@@ -4,43 +4,47 @@
 
 <div class="modal-body">
   <form class="form-horizontal" name="ryhmaForm">
-    <h3 translate>perustiedot</h3>
-    <formfield ng-model="ryhma" model-var="nimi" label="nimi" type="text" required></formfield>
-    <formfield ng-model="ryhma" model-var="kuvaus" label="kuvaus" type="text"></formfield>
-    <formfield ng-if="vanhempi" ng-model="ryhma" model-var="pakollinen" label="pakollisuus" type="checkbox"></formfield>
+    <h3 ng-if="vanhempi || luonti" kaanna>perustiedot</h3>
+    <formfield ng-if="vanhempi || luonti" model="ryhma" model-var="nimi" label="nimi" type="text" required></formfield>
+    <formfield ng-if="vanhempi || luonti" model="ryhma" model-var="kuvaus" label="kuvaus" type="text"></formfield>
+    <formfield ng-if="luonti" model="ryhma" model-var="rooli" label="erikoisrooli" options="roolit"></formfield>
+    <div ng-if="luonti">
+      <div class="col-sm-3"></div>
+      <div class="col-sm-9 alert alert-info">
+        <span ng-show="ryhma.rooli === 'määritelty'" kaanna>ryhmä-rooli-selite-määritelty</span>.
+        <span ng-show="ryhma.rooli === 'määrittelemätön'" kaanna>ryhmä-rooli-selite-määrittelemätön</span>.
+      </div>
+    </div>
 
-    <h3 ng-if="vanhempi">{{'tutkinnon-rakenne' | translate}}</h3>
+    <h3 ng-if="vanhempi" kaanna>tutkinnon-rakenne</h3>
     <div class="form-group">
       <div ng-show="suoritustapa !== 'naytto'" class="btn-group col-sm-offset-3">
-        <button ng-model="ms.laajuus" type="button" class="btn btn-default" btn-checkbox translate>tutkinnonosa-laajuus</button>
-        <button ng-model="ms.koko" type="button" class="btn btn-default" btn-checkbox translate>tutkinnonosa-koko</button>
+        <button ng-model="ms.laajuus" type="button" class="btn btn-default" btn-checkbox kaanna>tutkinnonosa-laajuus</button>
+        <button ng-model="ms.koko" type="button" class="btn btn-default" btn-checkbox kaanna>tutkinnonosa-koko</button>
       </div>
       <div ng-hide="suoritustapa !== 'naytto'" class="col-sm-offset-3">
-        <button ng-model="ms.koko" type="button" class="btn btn-default" btn-checkbox translate>tutkinnonosa-koko</button>
+        <button ng-model="ms.koko" type="button" class="btn btn-default" btn-checkbox kaanna>tutkinnonosa-koko</button>
       </div>
     </div>
 
     <div ng-show="suoritustapa !== 'naytto' && ms.laajuus">
-      <h3 translate>tutkinnonosa-laajuus</h3>
-      <formfield ng-model="ryhma" model-var="muodostumisSaanto.laajuus.minimi" label="minimi" type="number" name="laajuusMin" min="0" max="999" form="ryhmaForm"></formfield>
-      <formfield ng-model="ryhma" model-var="muodostumisSaanto.laajuus.maksimi" label="maksimi" type="number" name="laajuusMax" min="0" max="999" form="ryhmaForm"></formfield>
-      <formfield ng-model="ryhma" model-var="muodostumisSaanto.laajuus.yksikko" label="yksikko" options="[
-                 {value: 'OPINTOVIIKKO', label: 'opintoviikko'},
-                 {value: 'OSAAMISPISTE', label: 'osaamispiste'}]"></formfield>
+      <h3 kaanna>tutkinnonosa-laajuus</h3>
+      <formfield model="ryhma" model-var="muodostumisSaanto.laajuus.minimi" label="minimi" type="float" name="laajuusMin" min="0" max="999" step="0.5" form="ryhmaForm"></formfield>
+      <formfield model="ryhma" model-var="muodostumisSaanto.laajuus.maksimi" label="maksimi" type="float" name="laajuusMax" min="0" max="999" step="0.5" form="ryhmaForm"></formfield>
     </div>
 
     <div ng-show="ms.koko">
-      <h3 translate>tutkinnonosa-koko</h3>
-      <formfield ng-model="ryhma" model-var="muodostumisSaanto.koko.minimi" label="minimi" type="number" name="kokoMin" min="0" max="999" form="ryhmaForm"></formfield>
-      <formfield ng-model="ryhma" model-var="muodostumisSaanto.koko.maksimi" label="maksimi" type="number" name="kokoMax" min="0" max="999" form="ryhmaForm"></formfield>
+      <h3 kaanna>tutkinnonosa-koko</h3>
+      <formfield model="ryhma" model-var="muodostumisSaanto.koko.minimi" label="minimi" type="integer" name="kokoMin" min="0" max="999" form="ryhmaForm"></formfield>
+      <formfield model="ryhma" model-var="muodostumisSaanto.koko.maksimi" label="maksimi" type="integer" name="kokoMax" min="0" max="999" form="ryhmaForm"></formfield>
     </div>
   </form>
 </div>
 
 <div class="modal-footer">
   <div class="pull-left" ng-if="!luonti">
-    <button class="btn btn-danger" ng-click="poista()"><span class="glyphicon glyphicon-remove"></span>{{ 'poista' | kaanna }}</button>
+    <button class="btn btn-danger" ng-click="poista()" icon-role="remove" kaanna>poista</button>
   </div>
-  <button class="btn btn-primary" ng-disabled="ryhmaForm.$invalid" ng-click="ok(ryhma)">{{ 'tallenna' | kaanna }}</button>
-  <button class="btn btn-danger" ng-click="peruuta()">{{ 'peru' | kaanna }}</button>
+  <button class="btn btn-danger" ng-click="peruuta()" kaanna>peru</button>
+  <button class="btn btn-primary" ng-disabled="ryhmaForm.$invalid" ng-click="ok(ryhma)" kaanna>tallenna</button>
 </div>

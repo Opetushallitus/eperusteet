@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -15,15 +15,26 @@
  */
 package fi.vm.sade.eperusteet.service.test.util;
 
+import fi.vm.sade.eperusteet.domain.ArvioinninKohde;
+import fi.vm.sade.eperusteet.domain.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.Arviointi;
 import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.ArvioinninKohde;
-import fi.vm.sade.eperusteet.domain.ArvioinninKohdealue;
-import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
+import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -68,5 +79,33 @@ public abstract class TestUtils {
 
     public static TekstiPalanen tekstiPalanenOf(Kieli k, String teksti) {
         return TekstiPalanen.of(Collections.singletonMap(k, teksti));
+    }
+
+    static public RakenneOsa teeRakenneOsa(long id, Integer laajuus) {
+        TutkinnonOsa to = new TutkinnonOsa();
+        to.setId(id);
+
+        TutkinnonOsaViite tov = new TutkinnonOsaViite();
+        tov.setTutkinnonOsa(to);
+        tov.setLaajuus(new BigDecimal(laajuus));
+
+        RakenneOsa ro = new RakenneOsa();
+        ro.setTutkinnonOsaViite(tov);
+        return ro;
+    }
+
+    static public RakenneModuuli teeRyhma(Integer laajuusMinimi, Integer laajuusMaksimi, Integer kokoMinimi, Integer kokoMaksimi, AbstractRakenneOsa... osat) {
+        RakenneModuuli rakenne = new RakenneModuuli();
+
+        MuodostumisSaanto.Laajuus msl = laajuusMinimi != null && laajuusMinimi != -1 ? new MuodostumisSaanto.Laajuus(laajuusMinimi, laajuusMaksimi, LaajuusYksikko.OPINTOVIIKKO) : null;
+        MuodostumisSaanto.Koko msk = kokoMinimi != null && kokoMinimi != -1 ? new MuodostumisSaanto.Koko(kokoMinimi, kokoMaksimi) : null;
+        MuodostumisSaanto ms = (msl != null || msk != null) ? new MuodostumisSaanto(msl, msk) : null;
+
+        ArrayList<AbstractRakenneOsa> aosat = new ArrayList<>();
+        aosat.addAll(Arrays.asList(osat));
+        rakenne.setOsat(aosat);
+        rakenne.setMuodostumisSaanto(ms);
+        rakenne.setRooli(RakenneModuuliRooli.NORMAALI);
+        return rakenne;
     }
 }

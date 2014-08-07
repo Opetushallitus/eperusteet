@@ -36,6 +36,11 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     yeoman: yeomanConfig,
+    focus: {
+      dev: {
+        exclude: ['test']
+      }
+    },
     watch: {
       css: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.scss'],
@@ -43,7 +48,7 @@ module.exports = function(grunt) {
       },
       test: {
         files: ['<%= yeoman.app %>/**/*.{js,html}', 'test/**/*.js','!<%= yeoman.app %>/bower_components/**'],
-        tasks: ['karma:unit', 'jshint']
+        tasks: ['karma:unit', 'jshint', 'regex-check']
       },
       livereload: {
         options: {
@@ -147,7 +152,7 @@ module.exports = function(grunt) {
       },
       all: [
         'Gruntfile.js',
-        '<%= yeoman.app %>/scripts/{,*/}*.js'
+        '<%= yeoman.app %>/scripts/**/*.js'
       ]
     },
     // not used since Uglify task does concat,
@@ -366,31 +371,45 @@ module.exports = function(grunt) {
           htmlmin: { collapseWhitespace: true, removeComments: true }
         }
       }
+    },
+    'regex-check': {
+      files: '<%= yeoman.app %>/scripts/{,*/,*/*/}*.js',
+      options: {
+        /* Check that templateUrls don't start with slash */
+        pattern : /templateUrl:\s*['"]\//m
+      },
     }
   });
 
-  grunt.registerTask('server', function(target) {
-    if (target === 'dist') {
-      return grunt.task.run(['build', 'connect:dist:keepalive']);
-    }
+  var devTask = function (excludeTests) {
+    return function(target) {
+      if (target === 'dist') {
+        return grunt.task.run(['build', 'connect:dist:keepalive']);
+      }
 
-    grunt.task.run([
-      'clean:server',
-      'concurrent:server',
-      'copy:fonts',
-      'autoprefixer',
-      'configureProxies',
-      'connect:livereload',
-      'watch'
-    ]);
-  });
+      grunt.task.run([
+        'clean:server',
+        'concurrent:server',
+        'copy:fonts',
+        'autoprefixer',
+        'configureProxies',
+        'connect:livereload',
+        excludeTests ? 'focus:dev' : 'watch'
+      ]);
+    };
+  };
+
+  grunt.registerTask('server', devTask());
+  grunt.registerTask('dev', devTask(true));
 
   grunt.registerTask('test', [
     'clean:server',
     'concurrent:test',
     'autoprefixer',
     'connect:test',
-//    'karma'
+    'regex-check',
+    'jshint',
+    'karma'
   ]);
 
   grunt.registerTask('build', [
@@ -409,7 +428,6 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('default', [
-    'jshint',
     'test',
     'build'
   ]);

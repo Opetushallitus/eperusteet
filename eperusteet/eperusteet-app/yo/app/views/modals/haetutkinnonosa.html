@@ -12,7 +12,8 @@
       <div class="results">
         <table class="table table-striped">
           <tr>
-            <th translate>haku-nimi</th><th translate>haku-voimaantulopvm</th>
+            <th kaanna>haku-nimi</th>
+            <th kaanna>haku-voimaantulopvm</th>
           </tr>
           <tr ng-repeat="peruste in perusteet.data">
             <td><a href=""ng-click="jatka(peruste)">{{ peruste.nimi | kaanna }}</a></td>
@@ -42,8 +43,8 @@
   </div>
 
   <div class="modal-footer">
-    <button ng-hide="haku" class="btn" ng-click="takaisin()">{{ 'takaisin' | kaanna }}</button>
-    <button ng-show="!haku" class="btn btn-primary" ng-click="valitse()">{{ 'tuo-valitut' | kaanna }}</button>
-    <button class="btn" ng-click="peruuta()">{{ 'peru' | kaanna }}</button>
+    <button ng-hide="haku" class="btn" ng-click="takaisin()" kaanna>takaisin</button>
+    <button class="btn" ng-click="peruuta()" kaanna>peru</button>
+    <button ng-show="!haku" class="btn btn-primary" ng-click="valitse()" kaanna>tuo-valitut</button>
   </div>
 </div>

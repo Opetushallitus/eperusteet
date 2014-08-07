@@ -1,0 +1,73 @@
+<h2>
+    {{ tutkinnonOsa.nimi | kaanna }} <span ng-show="tutkinnonOsaViite.laajuus">{{ tutkinnonOsaViite.laajuus }}{{ yksikko | kaanna }}</span>
+    <div class="painikkeet pull-right">
+        <a href="" ng-click="asetaSuosikki()">
+            <span class="glyphicon" ng-class="{'glyphicon-star': onSuosikki, 'glyphicon-star-empty': !onSuosikki}"></span>
+            {{ onSuosikki ? 'poista-suosikeista' : 'merkitse-suosikiksi' | kaanna }}
+        </a>
+        <a class="left-space" on-click="printSisalto()" href="">
+            <span class="glyphicon glyphicon-print"></span>
+            {{ 'tulosta-sivu' | kaanna }}
+        </a>
+    </div>
+</h2>
+
+<div ng-repeat="(k, v) in tutkinnonOsa">
+    <div ng-if="k === 'koodiArvo' && v">
+        <b kaanna>koodi</b>: {{ v }}
+    </div>
+    <div ng-if="k === 'opintoluokitus' && v">
+        <b kaanna>opintoluokitus</b>: {{ v }}
+    </div>
+    <div ng-if="k === 'osaamisala' && v">
+        <b kaanna>osaamisala</b>: {{ v | kaanna }}
+    </div>
+</div>
+
+<!-- FIXME: korvaa ckeditorit jollain järkevällä ratkaisulla -->
+<div ng-repeat="(k, v) in tutkinnonOsa">
+    <div ng-if="k === 'ammattitaidonOsoittamistavat' && v">
+        <h3>{{ k | kaanna }}</h3>
+        <div class="cke_contents_ltr" ng-model="v" ckeditor="" editing-enabled="false" localized=""
+             contenteditable="false" tabindex="0" spellcheck="false" style="position: relative;" role="textbox"></div>
+    </div>
+    <div ng-if="k === 'ammattitaitovaatimukset' && v">
+        <h3>{{ k | kaanna }}</h3>
+        <div class="cke_contents_ltr" ng-model="v" ckeditor="" editing-enabled="false" localized=""
+             contenteditable="false" tabindex="0" spellcheck="false" style="position: relative;" role="textbox"></div>
+    </div>
+    <div ng-if="k === 'tavoitteet' && v">
+        <h3>{{ k | kaanna }}</h3>
+        <div class="cke_contents_ltr" ng-model="v" ckeditor="" editing-enabled="false" localized=""
+             contenteditable="false" tabindex="0" spellcheck="false" style="position: relative;" role="textbox"></div>
+    </div>
+    <div ng-if="k === 'arviointi' && v">
+        <h3>{{ k | kaanna }}</h3>
+        <div ng-repeat="kohdealue in v.arvioinninKohdealueet">
+            <div class="arviointi">
+                <div class="arviointi-otsikko">
+                    <h4>{{ kohdealue.otsikko | kaanna }}</h4>
+                </div>
+                <div class="arviointi-sisalto">
+                    <div ng-repeat="kohde in kohdealue.arvioinninKohteet">
+                        <h4>{{ kohde.otsikko | kaanna }}</h4>
+                        <table class="table table-striped">
+                            <tr ng-repeat="okriteeri in kohde.osaamistasonKriteerit">
+                                <td width="15%">{{ arviointiasteikot[kohde._arviointiAsteikko][okriteeri._osaamistaso].otsikko | kaanna }}</td>
+                                <td>
+                                    <ul>
+                                        <li ng-repeat="kriteeri in okriteeri.kriteerit">{{ kriteeri | kaanna }}</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-if="k.lisatiedot">
+            <h4 kaanna>lisätiedot</h4>
+            {{ k.lisatiedot | kaanna }}
+        </div>
+    </div>
+</div>

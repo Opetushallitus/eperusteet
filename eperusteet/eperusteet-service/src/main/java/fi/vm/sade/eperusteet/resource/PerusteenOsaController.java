@@ -21,10 +21,12 @@ import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.UpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import java.util.List;
+import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -92,8 +95,15 @@ public class PerusteenOsaController {
     	LOG.debug("get #{} revision #{}", id, versioId);
     	PerusteenOsaDto t = service.getVersio(id, versioId);
         if (t == null) {
-        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/palauta/{versioId}", method = POST)
+    @ResponseBody
+    public ResponseEntity<PerusteenOsaDto> revertToVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
+    	PerusteenOsaDto t = service.revertToVersio(id, versioId);
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
@@ -104,7 +114,6 @@ public class PerusteenOsaController {
     	List<PerusteenOsaDto> t = service.getAllByKoodiUri(koodiUri);
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
-
 
     @RequestMapping(method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
     @ResponseStatus(HttpStatus.CREATED)
@@ -124,29 +133,36 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/{id}", method = POST, params = PerusteenOsaMappings.IS_TEKSTIKAPPALE_PARAM)
     @ResponseBody
-    public TekstiKappaleDto update(@PathVariable("id") final Long id, @RequestBody TekstiKappaleDto tekstiKappaleDto) {
-        tekstiKappaleDto.setId(id);
-        return service.update(tekstiKappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
+    public TekstiKappaleDto updateTekstikappale(@PathVariable("id") final Long id, @RequestBody UpdateDto<TekstiKappaleDto> tekstiKappaleDto) {
+        tekstiKappaleDto.getDto().setId(id);
+        return service.update(tekstiKappaleDto, TekstiKappaleDto.class);
     }
 
     @RequestMapping(value = "/{id}", method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
     @ResponseBody
-    public TutkinnonOsaDto update(@PathVariable("id") final Long id, @RequestBody TutkinnonOsaDto tutkinnonOsaDto) {
-        tutkinnonOsaDto.setId(id);
-        return service.update(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+    public TutkinnonOsaDto updateTutkinnonOsa(@PathVariable("id") final Long id, @RequestBody UpdateDto<TutkinnonOsaDto> tutkinnonOsaDto) {
+        tutkinnonOsaDto.getDto().setId(id);
+        return service.update(tutkinnonOsaDto, TutkinnonOsaDto.class);
     }
 
     @RequestMapping(value = "/{id}/lukko", method = GET)
     @ResponseBody
-    public ResponseEntity<LukkoDto> checkLock(@PathVariable("id") final Long id) {
+    public ResponseEntity<LukkoDto> checkLock(@PathVariable("id") final Long id,
+                                              @RequestHeader(value="If-None-Match", required=false) Integer eTag,
+                                              HttpServletResponse response) {
         LukkoDto lock = service.getLock(id);
-        return new ResponseEntity<>(lock, lock == null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+        response.addHeader("ETag", String.valueOf(service.getLatestRevision(id)));
+        return new ResponseEntity<>(lock, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/lukko", method = {POST, PUT})
     @ResponseBody
-    public LukkoDto lock(@PathVariable("id") final Long id) {
-        return service.lock(id);
+    public ResponseEntity<LukkoDto> lock(@PathVariable("id") final Long id,
+                                         @RequestHeader(value="If-None-Match", required=false) Integer eTag,
+                                         HttpServletResponse response) {
+        LukkoDto lock = service.lock(id);
+        response.addHeader("ETag", String.valueOf(service.getLatestRevision(id)));
+        return new ResponseEntity<>(lock, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/lukko", method = DELETE)

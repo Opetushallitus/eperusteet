@@ -28,12 +28,13 @@ angular.module('eperusteApp')
         depth: '=',
         parent: '='
       },
-      link: function ($scope) {
-        var stateChanged = false;
-        $scope.nayta = true;
+      link: function($scope) {
+        $scope.nayta = false;
+        $scope.editointi = false;
         $scope.editoitava = '';
         $scope.editoi = false;
         $scope.sisalto = false;
+        $scope.onLataaja = false;
         $scope.urlit = {};
 
         function lataaKommentit(url) {
@@ -46,41 +47,32 @@ angular.module('eperusteApp')
           }
         }
 
-        $rootScope.$on('$stateChangeStart', function() {
+        $scope.$on('$stateChangeStart', function() {
           $scope.nayta = false;
+          $scope.onLataaja = false;
         });
 
         $scope.$on('update:kommentit', function(event, url, lataaja) {
           if (!$scope.urlit[url]) {
+            $scope.onLataaja = true;
             $scope.urlit[url] = lataaja;
-            if (!stateChanged) {
-              lataaKommentit($location.url());
-            }
           }
         });
 
-        $rootScope.$on('$stateChangeSuccess', function() {
-          stateChanged = true;
-          $timeout(function() {
-            var url = $location.url();
-            if ($scope.urlit[url]) {
-              lataaKommentit($location.url());
-            }
-          }, 100);
-        });
-
-        $scope.muokkaaKommenttia = function(uusikommentti) {
-          Kommentit.muokkaaKommenttia(uusikommentti);
-        };
-
+        $scope.naytaKommentit = function() { lataaKommentit($location.url()); };
+        $scope.muokkaaKommenttia = function(uusikommentti) { Kommentit.muokkaaKommenttia(uusikommentti); };
         $scope.lisaaKommentti = function(parent, kommentti) {
           Kommentit.lisaaKommentti(parent, kommentti, function() {
             $scope.sisalto.yhteensa += 1;
           });
         };
 
-        $scope.$on('enableEditing', function() { $scope.nayta = false; });
-        $scope.$on('disableEditing', function() { $scope.nayta = true; });
+        $scope.$on('enableEditing', function() {
+          $scope.editointi = true;
+        });
+        $scope.$on('disableEditing', function() {
+          $scope.editointi = false;
+        });
       }
     };
   });

@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -50,11 +51,11 @@ public class KayttajaprofiiliController {
 
     @Autowired
     private PerusteService perusteService;
-    
+
     @Autowired
     private SuosikkiService suosikkiService;
-    
-    
+
+
 
     @RequestMapping(value = "", method = GET)
     @ResponseBody
@@ -65,16 +66,10 @@ public class KayttajaprofiiliController {
         }
         return new ResponseEntity<>(k, HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/suosikki", method = POST, consumes="application/json")
     @ResponseBody
     public ResponseEntity<KayttajaProfiiliDto> addSuosikki(@RequestBody SuosikkiDto suosikkiDto) {
-        LOG.info("addSuosikki {}", suosikkiDto.getPerusteId());
-
-        PerusteDto peruste = perusteService.getByIdAndSuoritustapa(suosikkiDto.getPerusteId(), suosikkiDto.getSuoritustapakoodi());
-        if (peruste == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         KayttajaProfiiliDto profiiliDto = service.addSuosikki(suosikkiDto);
         return new ResponseEntity<>(profiiliDto, HttpStatus.CREATED);
     }
@@ -89,5 +84,14 @@ public class KayttajaprofiiliController {
         KayttajaProfiiliDto k = service.deleteSuosikki(suosikkiId);
         return new ResponseEntity<>(k, HttpStatus.OK);
     }
-    
+
+    @RequestMapping(value = "/suosikki/{suosikkiId}", method = {PUT, POST})
+    @ResponseBody
+    public ResponseEntity<KayttajaProfiiliDto> update(
+            @RequestBody SuosikkiDto suosikkiDto,
+            @PathVariable("suosikkiId") final Long suosikkiId
+    ) {
+        KayttajaProfiiliDto k = service.updateSuosikki(suosikkiId, suosikkiDto);
+        return new ResponseEntity<>(k, HttpStatus.OK);
+    }
 }

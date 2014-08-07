@@ -15,6 +15,7 @@
 */
 
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .service('Editointicatcher', function() {
@@ -30,7 +31,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .factory('Editointikontrollit', function($rootScope, $q, $timeout, Notifikaatiot) {
+  .factory('Editointikontrollit', function($rootScope, $q, $timeout) {
     var scope = $rootScope.$new(true);
     scope.editingCallback = null;
     scope.editMode = false;
@@ -58,32 +59,35 @@ angular.module('eperusteApp')
         }
         $rootScope.$broadcast('enableEditing');
       },
-      saveEditing: function() {
-        if (scope.editingCallback) {
-
-          if (scope.editingCallback.validate()) {
-
-            scope.editingCallback.save();
+      saveEditing: function(kommentti) {
+        function after() {
+          if (!scope.editingCallback.validate || scope.editingCallback.validate()) {
+            scope.editingCallback.save(kommentti);
             angular.forEach(additionalCallbacks.save, function(callback) {
               // Kutsutaan kaikkia callback listenereitä ja annetaan parametrina
               // viimeisin muutettu objecti ja tieto siitä, onko editointikontrollit ylipäätänsä
               // pääällä
               // callback(self.lastModified, scope.editingCallback !== null);
-              callback(undefined, scope.editingCallback !== null);
+              callback(kommentti, scope.editingCallback !== null);
             });
             setEditMode(false);
             $rootScope.$broadcast('disableEditing');
-          } else {
-            Notifikaatiot.varoitus('sivu-virheellisia-arvoja');
           }
+        }
+
+        if (scope.editingCallback) {
+          if (_.isFunction(scope.editingCallback.asyncValidate)) {
+            scope.editingCallback.asyncValidate(after);
+          }
+          else { after(); }
         }
 
         $rootScope.$broadcast('notifyCKEditor');
       },
       cancelEditing: function() {
         if(scope.editingCallback) {
-          scope.editingCallback.cancel();
           setEditMode(false);
+          scope.editingCallback.cancel();
         }
         $rootScope.$broadcast('disableEditing');
         $rootScope.$broadcast('notifyCKEditor');

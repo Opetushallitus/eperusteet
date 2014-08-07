@@ -41,7 +41,7 @@ angular.module('eperusteApp')
         { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
         '/',
         { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
-        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar' ] },
+        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link' ] },
         { name: 'styles', items : [ 'Format' ] },
         { name: 'tools', items : [ 'About' ] }
       ]
@@ -67,7 +67,7 @@ angular.module('eperusteApp')
 
         function getPlaceholder() {
           if(scope.editorPlaceholder) {
-            return $filter('translate')(scope.editorPlaceholder);
+            return $filter('kaanna')(scope.editorPlaceholder);
           } else {
             return '';
           }
@@ -75,7 +75,6 @@ angular.module('eperusteApp')
 
         var editor = CKEDITOR.instances[attrs.id];
         if (editor) {
-          console.log('editor exist');
           return;
         }
 
@@ -112,7 +111,7 @@ angular.module('eperusteApp')
           });
         }
 
-        $rootScope.$on('$translateChangeSuccess', function() {
+        scope.$on('$translateChangeSuccess', function() {
           placeholderText = getPlaceholder();
           ctrl.$render();
         });
@@ -136,7 +135,6 @@ angular.module('eperusteApp')
         });
 
         editor.on('focus', function() {
-          console.log('focus');
           if (editingEnabled) {
             element.removeClass('has-placeholder');
             $('#toolbar').show();
@@ -147,8 +145,7 @@ angular.module('eperusteApp')
         });
 
         var dataSavedOnNotification = false;
-        $rootScope.$on('notifyCKEditor', function() {
-          console.log('notifyCKEditor');
+        scope.$on('notifyCKEditor', function() {
           if(editor.checkDirty()) {
             dataSavedOnNotification = true;
             var data = editor.getData();
@@ -158,7 +155,6 @@ angular.module('eperusteApp')
         });
 
         editor.on('blur', function() {
-          console.log('blur');
           if (dataSavedOnNotification) {
             dataSavedOnNotification = false;
             return;
@@ -184,7 +180,6 @@ angular.module('eperusteApp')
         // model -> view
 
         ctrl.$render = function() {
-          //console.log('render: ' + ctrl.$viewValue);
           if (editor) {
             if(angular.isUndefined(ctrl.$viewValue) || (angular.isString(ctrl.$viewValue) && _.isEmpty(ctrl.$viewValue) && placeholderText)) {
               element.addClass('has-placeholder');

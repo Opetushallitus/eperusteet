@@ -22,21 +22,22 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
+
 @Entity
 @DiscriminatorValue("RM")
 @Audited
-@EqualsAndHashCode(callSuper = true)
 public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<RakenneModuuli> {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
@@ -44,14 +45,21 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
     @Setter
     @Audited(targetAuditMode = NOT_AUDITED)
     private TekstiPalanen nimi;
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter
     @Setter
     @Audited(targetAuditMode = NOT_AUDITED)
     private TekstiPalanen kuvaus;
+
     @Getter
     @Setter
     private MuodostumisSaanto muodostumisSaanto;
+
+    @Getter
+    @Setter
+    @Enumerated(EnumType.STRING)
+    private RakenneModuuliRooli rooli;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "rakennemoduuli_rakenneosa",
@@ -69,17 +77,84 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             this.osat.addAll(osat);
         }
     }
-    
+
     @Override
     public void mergeState(RakenneModuuli moduuli) {
         if (moduuli != null) {
+            // FIXME: Tämä räjähtää jos olioon tulee lisää kenttiä
             this.setOsat(moduuli.osat);
+            this.nimi = moduuli.nimi;
+            this.rooli = moduuli.rooli;
+            this.kuvaus = moduuli.kuvaus;
             if (this.muodostumisSaanto != null) {
                 this.muodostumisSaanto.mergeState(moduuli.getMuodostumisSaanto());
             } else {
                 this.muodostumisSaanto = moduuli.getMuodostumisSaanto();
             }
         }
+    }
+
+    public boolean isSame(RakenneModuuli moduuli) {
+
+        if (moduuli == null) {
+            return false;
+        }
+
+        TekstiPalanen moduuliNimi = moduuli.getNimi();
+        if (this.nimi == moduuliNimi) {
+            return false;
+        }
+
+        if ( (this.osat == null && moduuli.getOsat() != null) || (this.osat != null && moduuli.getOsat() == null) ) {
+            return false;
+        }
+        if ( (this.muodostumisSaanto == null && moduuli.getMuodostumisSaanto() != null) || (this.muodostumisSaanto != null && moduuli.getMuodostumisSaanto() == null) ) {
+            return false;
+        }
+
+        if (moduuli.osat != null) {
+            if (this.osat.size() != moduuli.getOsat().size()) {
+                return false;
+            } else {
+                for (int i = 0; i < this.osat.size(); i++) {
+                    if (this.osat.get(i) instanceof RakenneModuuli && moduuli.getOsat().get(i) instanceof RakenneModuuli) {
+                        if ( ((RakenneModuuli) this.osat.get(i)).isSame((RakenneModuuli) moduuli.getOsat().get(i)) == false) {
+                            return false;
+                        }
+                    } else if (this.osat.get(i) instanceof RakenneOsa && moduuli.getOsat().get(i) instanceof RakenneOsa) {
+                        if (!((RakenneOsa) this.osat.get(i)).getTutkinnonOsaViite().equals(((RakenneOsa) moduuli.getOsat().get(i)).getTutkinnonOsaViite())) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (this.muodostumisSaanto != null) {
+            if (!this.muodostumisSaanto.equals(moduuli.muodostumisSaanto)) {
+                System.out.println("Muodostumissääntö false");
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    public boolean isInRakenne (TutkinnonOsaViite viite, boolean ylinTaso) {
+        
+        for (AbstractRakenneOsa rakenneosa : osat) {
+            if (rakenneosa instanceof RakenneModuuli) {
+                if (((RakenneModuuli)rakenneosa).isInRakenne(viite, false)) {
+                    return true;
+                }
+            } else if (rakenneosa instanceof RakenneOsa) {
+                if ( ((RakenneOsa)rakenneosa).getTutkinnonOsaViite().equals(viite) ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;  
     }
 
 }

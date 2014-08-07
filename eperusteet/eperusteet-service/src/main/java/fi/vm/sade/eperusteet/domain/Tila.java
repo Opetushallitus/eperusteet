@@ -17,16 +17,64 @@
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import java.util.EnumSet;
+import java.util.Set;
 
 /**
  *
  * @author harrik
  */
 public enum Tila {
+    POHJA("pohja") {
+        @Override
+        public Set<Tila> mahdollisetTilat() {
+            return EnumSet.of(POISTETTUPOHJA);
+        }
+    },
+    POISTETTUPOHJA("poistettupohja") {
+        @Override
+        public Set<Tila> mahdollisetTilat() {
+            return EnumSet.of(POHJA);
+        }
+    },
+    POISTETTU("poistettu") {
+        @Override
+        public Set<Tila> mahdollisetTilat() {
+            return EnumSet.of(LAADINTA);
+        }
+    },
+    LUONNOS("luonnos") {
+        @Override
+        public Set<Tila> mahdollisetTilat() {
+            return EnumSet.of(POISTETTU);
+        }
+    },
+    LAADINTA("laadinta") {
+        @Override
+        public Set<Tila> mahdollisetTilat() {
+            return EnumSet.of(KOMMENTOINTI, VIIMEISTELY, POISTETTU);
+        }
+    },
+    KOMMENTOINTI("kommentointi"){
+        @Override
+        public Set<Tila> mahdollisetTilat() {
+            return EnumSet.of(LAADINTA, POISTETTU);
+        }
+    },
+    VIIMEISTELY("viimeistely"){
+        @Override
+        public Set<Tila> mahdollisetTilat() {
+            return EnumSet.of(LAADINTA, VALMIS, POISTETTU);
+        }
+    },
+    VALMIS("valmis"){
+        @Override
+        public Set<Tila> mahdollisetTilat() {
+            return EnumSet.of(VIIMEISTELY, JULKAISTU, POISTETTU);
+        }
+    },
+    JULKAISTU("julkaistu");
 
-    POISTETTU("poistettu"),
-    LUONNOS("luonnos"),
-    VALMIS("valmis");
 
     private final String tila;
 
@@ -47,5 +95,9 @@ public enum Tila {
             }
         }
         throw new IllegalArgumentException(tila + " ei ole kelvollinen tila");
+    }
+
+    public Set<Tila> mahdollisetTilat() {
+        return EnumSet.noneOf(Tila.class);
     }
 }

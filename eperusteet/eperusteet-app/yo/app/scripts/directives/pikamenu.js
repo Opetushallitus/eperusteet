@@ -44,9 +44,10 @@ angular.module('eperusteApp')
       opened: false
     };
     $scope.navigoiTutkinnonosaan = function (osa) {
-      $state.go('perusteprojekti.suoritustapa.perusteenosa', {
+      $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
         perusteenOsaId: osa._tutkinnonOsa,
-        perusteenOsanTyyppi: 'tutkinnonosa'
+        perusteenOsanTyyppi: 'tutkinnonosa',
+        versio: null
       });
     };
   });

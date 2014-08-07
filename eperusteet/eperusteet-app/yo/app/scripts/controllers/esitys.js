@@ -15,204 +15,174 @@
  */
 
 'use strict';
-/* global _ */
+/* global _,$ */
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {
     $stateProvider
-      .state('esitys', {
+      .state('root.esitys', {
         url: '/esitys',
         template: '<div ui-view></div>'
       })
-      .state('esitys.peruste', {
-        url: '/:perusteenId/:suoritustapa',
+      .state('root.esitys.peruste', {
+        url: '/:perusteId/:suoritustapa',
         templateUrl: 'views/esitys.html',
         controller: 'EsitysCtrl',
-        naviRest: [':perusteenId']
+        resolve: {
+          peruste: function($stateParams, Perusteet) {
+            return Perusteet.get({ perusteId: $stateParams.perusteId }).$promise;
+          },
+          sisalto: function($stateParams, SuoritustapaSisalto) {
+            return SuoritustapaSisalto.get({ perusteId: $stateParams.perusteId, suoritustapa: $stateParams.suoritustapa }).$promise;
+          },
+          arviointiasteikot: function($stateParams, Arviointiasteikot) {
+            return Arviointiasteikot.query({}).$promise;
+          },
+          tutkinnonOsat: function($stateParams, PerusteTutkinnonosat) {
+            return PerusteTutkinnonosat.query({ perusteId: $stateParams.perusteId, suoritustapa: $stateParams.suoritustapa }).$promise;
+          }
+        }
+      })
+      .state('root.esitys.peruste.rakenne', {
+        url: '/rakenne',
+        templateUrl: 'views/partials/esitys/rakenne.html',
+        controller: 'EsitysRakenneCtrl'
+      })
+      .state('root.esitys.peruste.tutkinnonosat', {
+        url: '/tutkinnonosat',
+        templateUrl: 'views/partials/esitys/tutkinnonOsat.html',
+        controller: 'EsitysTutkinnonOsatCtrl'
+      })
+      .state('root.esitys.peruste.tutkinnonosa', {
+        url: '/tutkinnonosat/:id',
+        templateUrl: 'views/partials/esitys/tutkinnonOsa.html',
+        controller: 'EsitysTutkinnonOsaCtrl'
+      })
+      .state('root.esitys.peruste.tekstikappale', {
+        url: '/sisalto/:osanId',
+        templateUrl: 'views/partials/esitys/sisalto.html',
+        controller: 'EsitysSisaltoCtrl'
       });
   })
-  .controller('EsitysCtrl', function($q, $scope, $stateParams, Kayttajaprofiilit, Suosikit,
-      Perusteet, Suosikitbroadcast, Suoritustapa, YleinenData, Navigaatiopolku,
-      palvelinhaunIlmoitusKanava, PerusteRakenteet, $state) {
+  .controller('EsitysRakenneCtrl', function($scope, $state, $stateParams, PerusteenRakenne) {
+    $scope.$parent.valittu.sisalto = 'rakenne';
+    PerusteenRakenne.hae($stateParams.perusteId, $stateParams.suoritustapa, function(rakenne) {
+      $scope.rakenne = rakenne;
+      $scope.rakenne.$suoritustapa = $stateParams.suoritustapa;
+      $scope.rakenne.$resolved = true;
+    });
 
-    $scope.konteksti = $stateParams.konteksti;
-    $scope.peruste = {};
-    $scope.syvyys = 2;
-    $scope.suosikkiLista = {};
-    $scope.rakenne = {};
-    var eiSuosikkiTyyli = 'glyphicon glyphicon-star-empty pointer';
-    var suosikkiTyyli = 'glyphicon glyphicon-star pointer';
-    $scope.suosikkiTyyli = eiSuosikkiTyyli;
+    $scope.suosikkiHelper($state, $stateParams, 'tutkinnon-rakenne');
+  })
+  .controller('EsitysTutkinnonOsaCtrl', function($scope, $state, $stateParams, PerusteenOsat) {
+    $scope.tutkinnonOsaViite = _.find($scope.$parent.tutkinnonOsat, function(tosa) {
+      return tosa.id === parseInt($stateParams.id, 10);
+    });
+    PerusteenOsat.get({ osanId: $scope.tutkinnonOsaViite._tutkinnonOsa }, function(res) { $scope.tutkinnonOsa = res; });
+    $scope.suosikkiHelper($state, $stateParams, $scope.tutkinnonOsaViite.nimi);
+  })
+  .controller('EsitysTutkinnonOsatCtrl', function($scope, $state, $stateParams, PerusteenRakenne, Algoritmit) {
+    $scope.$parent.valittu.sisalto = 'tutkinnonosat';
+    $scope.tosarajaus = '';
+    $scope.rajaaTutkinnonOsia = function(haku) { return Algoritmit.rajausVertailu($scope.tosarajaus, haku, 'nimi'); };
+    $scope.suosikkiHelper($state, $stateParams, 'tutkinnonosat');
+  })
+  .controller('EsitysSisaltoCtrl', function($scope, $state, $stateParams, Lokalisointi) {
+    $scope.$parent.valittu.sisalto = $stateParams.osanId;
+    $scope.valittuSisalto = $scope.$parent.sisalto[$stateParams.osanId];
+    if (!$scope.valittuSisalto) {
+      $state.go('root.esitys.peruste.rakenne');
+    }
+    else {
+      $scope.suosikkiHelper($state, $stateParams, $scope.valittuSisalto.nimi);
+    }
+    Lokalisointi.valitseKieli($stateParams.lang);
+  })
+  .controller('EsitysCtrl', function($q, $scope, $stateParams, sisalto, peruste, Kayttajaprofiilit, Suosikit, YleinenData,
+                                     Navigaatiopolku, $state, virheService, Algoritmit, PerusteenRakenne, tutkinnonOsat, Kaanna, arviointiasteikot, Profiili) {
+    $scope.navi = {
+      items: [
+        {label: 'tutkinnonosat', link: ['root.esitys.peruste.tutkinnonosat', {}]},
+        {label: 'tutkinnon-rakenne', link: ['root.esitys.peruste.rakenne', {}]},
+      ],
+      header: 'perusteen-sisältö'
+    };
+
+    function mapSisalto(sisalto) {
+      sisalto = _.clone(sisalto);
+      var flattened = {};
+      Algoritmit.kaikilleLapsisolmuille(sisalto, 'lapset', function(lapsi, depth) {
+        flattened[lapsi.id] = _.clone(lapsi.perusteenOsa);
+        $scope.navi.items.push({
+          label: lapsi.perusteenOsa.nimi,
+          link: ['root.esitys.peruste.tekstikappale', { osanId: ''+lapsi.id }],
+          depth: depth
+        });
+      });
+      return flattened;
+    }
+
+    $scope.peruste = peruste;
+    $scope.sisalto = mapSisalto(sisalto);
+
+    $scope.arviointiasteikot = _.zipObject(_.map(arviointiasteikot, 'id'), _.map(arviointiasteikot, function(asteikko) {
+      return _.zipObject(_.map(asteikko.osaamistasot, 'id'), asteikko.osaamistasot);
+    }));
+    $scope.tutkinnonOsat = _(tutkinnonOsat).reject(function(r) { return r.poistettu; })
+                                           .sortBy(function(r) { return Kaanna.kaanna(r.nimi); })
+                                           .value();
+
+    $scope.valittu = {};
+    $scope.suoritustavat = _.map(peruste.suoritustavat, 'suoritustapakoodi');
     $scope.suoritustapa = $stateParams.suoritustapa;
-    var suosikkiId = null;
-    $scope.suodatin = {};
 
-    // function haeRakenne(suoritustapa) {
-    //   PerusteRakenteet.get({
-    //       perusteenId: $stateParams.perusteenId,
-    //       suoritustapa: suoritustapa
-    //   }, function(re) {
-    //     $scope.rakenne.rakenne = re;
-    //     $scope.rakenne.tutkinnonOsat = _.zipObject(_.pluck($scope.rakenne.tutkinnonOsat, '_tutkinnonOsa'), $scope.rakenne.tutkinnonOsat);
-    //   });
-    // }
-
-    // $scope.peruMuutokset = haeRakenne;
-
-    $scope.tallennaRakenne = function(rakenne) {
-      rakenne.tutkinnonOsat = _.values(rakenne.tutkinnonOsat);
-      PerusteRakenteet.save({ perusteenId: $stateParams.perusteenId }, rakenne, function(re) {
-        console.log(re);
-      });
-    };
-
-    var perusteHakuPromise = (function() {
-      if ($stateParams.perusteenId) {
-        return Perusteet.get({perusteenId: $stateParams.perusteenId}).$promise;
-      } else {
-        return $q.reject();
-      }
-    }());
-
-    var kayttajaProfiiliPromise = Kayttajaprofiilit.get({}).$promise;
-
-    perusteHakuPromise.then(function(peruste) {
-      if (peruste.id) {
-        Navigaatiopolku.asetaElementit({
-          peruste: { nimi: peruste.nimi }
-        });
-        // haeRakenne(peruste.suoritustavat[0].suoritustapakoodi);
-        $scope.peruste = peruste;
-        haeSuoritustapaSisalto(peruste.id);
-      } else {
-        // TODO perustetta ei löytynyt, virhesivu.
-      }
-    }, function(error) {
-      console.log(error);
-      // TODO
-      //Virhe tapahtui, esim. perustetta ei löytynyt. Virhesivu.
-      // $location.path('/selaus/' + $scope.konteksti);
-    });
-
-    kayttajaProfiiliPromise.then(function(profiili) {
-      $scope.suosikkiLista = profiili.suosikit;
-      $scope.suosikkiTyyli = $scope.onSuosikki();
-    }, function() {
-      console.log('profiilia ei löytynyt');
-      $scope.suosikkiLista = [];
-      $scope.suosikkiTyyli = $scope.onSuosikki();
-    });
-
-    var haeSuoritustapaSisalto = function (id) {
-      Suoritustapa.get({perusteenId: id, suoritustapa: $scope.suoritustapa}, function(vastaus) {
-        $scope.peruste.rakenne = vastaus;
-        $scope.suodatin.otsikot = _.compact(_.pluck(_.pluck(vastaus.lapset, 'perusteenOsa'), 'nimi'));
-      }, function (virhe) {
-          console.log('suoritustapasisältöä ei löytynyt', virhe);
-      });
-    };
-
-    $scope.onSuosikki = function() {
-      for (var i = 0; i < _.size($scope.suosikkiLista); i++) {
-        if ($scope.suosikkiLista[i].perusteId === $scope.peruste.id && $scope.suosikkiLista[i].suoritustapakoodi === $scope.suoritustapa) {
-          suosikkiId = $scope.suosikkiLista[i].id;
-          return suosikkiTyyli;
-        }
-      }
-      suosikkiId = null;
-      return eiSuosikkiTyyli;
-    };
-
-    $scope.asetaSuosikiksi = function() {
-      if ($scope.suosikkiTyyli === eiSuosikkiTyyli) {
-
-        Suosikit.save({}, {perusteId: $scope.peruste.id, suoritustapakoodi: $scope.suoritustapa}, function(vastaus) {
-          $scope.suosikkiLista = vastaus.suosikit;
-          $scope.suosikkiTyyli = $scope.onSuosikki();
-          Suosikitbroadcast.suosikitMuuttuivat();
-        });
-
-      } else {
-        Suosikit.delete({suosikkiId: suosikkiId}, {}, function(vastaus) {
-          $scope.suosikkiLista = vastaus.suosikit;
-          $scope.suosikkiTyyli = $scope.onSuosikki();
-          Suosikitbroadcast.suosikitMuuttuivat();
-        });
-      }
-    };
-
-    $scope.suodatinValittu = function(suodatinId) {
-      var suodatinTmp = _.find($scope.suodatin.otsikot, function(suodatin) {
-        return suodatin._id === suodatinId;
-      });
-      suodatinTmp.valittu = true;
-
-      $scope.suodatinId = '';
-    };
-
-    $scope.poistaSuodatin = function (suodatin) {
-      suodatin.valittu = false;
-    };
-
-    $scope.onkoSuodatettu = function (id) {
-      var valitutSuodattimet = _.filter($scope.suodatin.otsikot, 'valittu');
-      return valitutSuodattimet.length === 0 || _.isObject(_.find(valitutSuodattimet, function(suodatin) {return suodatin._id === id;}));
-    };
-
-    $scope.valitseKieli = function(teksti) {
-      return YleinenData.valitseKieli(teksti);
-    };
-
-    $scope.$on('optioPoistettu', function() {
-      $scope.$broadcast('optiotMuuttuneet');
-    });
+    $scope.yksikko = Algoritmit.perusteenSuoritustavanYksikko(peruste, $scope.suoritustapa);
 
     $scope.vaihdaSuoritustapa = function(suoritustapa) {
-      $state.go('esitys.peruste', {perusteenId: $stateParams.perusteenId, suoritustapa: suoritustapa});
+      $state.go('root.esitys.peruste', {suoritustapa: suoritustapa});
     };
 
+    if ($state.current.name === 'root.esitys.peruste') {
+      var links = _.filter($scope.navi.items, function (item) {
+        return item.label !== 'tutkinnonosat' && item.label !== 'tutkinnon-rakenne' &&
+          _.isArray(item.link) && item.link.length > 1;
+      });
+      var params = _.isEmpty(links) ? {} : { osanId: _.first(links).link[1].osanId };
+      if (!_.isEmpty(params)) {
+        $state.go('root.esitys.peruste.tekstikappale', params);
+      }
+    }
 
-    var hakuAloitettuKäsittelijä = function() {
-      $scope.hakuMenossa = true;
+    $scope.rajaaSisaltoa = function() {
+      _.forEach($scope.sisaltoRakenne, function(r) {
+        r.$rejected = _.isEmpty($scope.rajaus) ? false : !Algoritmit.match($scope.rajaus, $scope.sisalto[r.id].nimi);
+        if (!r.$rejected) {
+          var parent = $scope.sisaltoRakenneMap[r.parent];
+          while (parent) {
+            parent.$rejected = false;
+            parent = $scope.sisaltoRakenneMap[parent.parent];
+          }
+        }
+      });
+      $scope.extra.tutkinnonOsat = !Algoritmit.match($scope.rajaus, Kaanna.kaanna('tutkinnonosat'));
+      $scope.extra.tutkinnonRakenne = !Algoritmit.match($scope.rajaus, Kaanna.kaanna('tutkinnon-rakenne'));
     };
 
-    var hakuLopetettuKäsittelijä = function() {
-      $scope.hakuMenossa = false;
+    $scope.suosikkiHelper = function(state, stateParams, nimi) {
+      $scope.onSuosikki = Profiili.haeSuosikki(state, stateParams);
+      $scope.asetaSuosikki = function() {
+        Profiili.asetaSuosikki(state, stateParams, Kaanna.kaanna($scope.peruste.nimi) + ': ' + (Kaanna.kaanna(nimi) || '') + ' (' + Kaanna.kaanna($scope.suoritustapa) + ')', function() {
+          $scope.onSuosikki = Profiili.haeSuosikki(state, stateParams);
+        });
+      };
     };
-    palvelinhaunIlmoitusKanava.kunHakuAloitettu($scope, hakuAloitettuKäsittelijä);
-    palvelinhaunIlmoitusKanava.kunHakuLopetettu($scope, hakuLopetettuKäsittelijä);
 
-    $scope.terveydentilaOptiot = [
-      {teksti: 'Kaikki', valittu: true},
-      {teksti: 'Terveydentila optio 1', valittu: false},
-      {teksti: 'Terveydentila optio 2', valittu: false},
-      {teksti: 'Terveydentila optio 3', valittu: false},
-      {teksti: 'Terveydentila optio 4', valittu: false}
-    ];
-
-    $scope.todistuksetOptiot = [
-      {teksti: 'Kaikki', valittu: true},
-      {teksti: 'Todistukset optio 1', valittu: false},
-      {teksti: 'Todistukset optio 2', valittu: false},
-      {teksti: 'Todistukset optio 3', valittu: false}
-    ];
-
-    $scope.arviointiOptiot = [
-      {teksti: 'Kaikki', valittu: true},
-      {teksti: 'Oppilaan arviointi oppiaineessa', valittu: false},
-      {teksti: 'Oppiaineen hyvän edistymisen kuvaus', valittu: false},
-      {teksti: 'Oppiaineen hyvän osaamisen kuvaus', valittu: false},
-      {teksti: 'Oppiaineen päätösarvioinnin kriteerit arvosanalle 8', valittu: false},
-      {teksti: 'Todistukset', valittu: false},
-      {teksti: 'Erityisen tutkinnon suoritusten arviointi ja muutokset', valittu: false}
-    ];
-
-    $scope.maarayksetOptiot = [
-      {teksti: 'Kaikki', valittu: true},
-      {teksti: 'Määräykset optio 1', valittu: false},
-      {teksti: 'Määräykset optio 2', valittu: false},
-      {teksti: 'Määräykset optio 3', valittu: false},
-      {teksti: 'Määräykset optio 4', valittu: false},
-      {teksti: 'Määräykset optio 5', valittu: false}
-    ];
+    $scope.printSisalto = function() {
+      var print = window.open('', 'esitysPrintSisalto', 'height=640,width=640');
+      print.document.write('<html><head><link rel="stylesheet" href="styles/eperusteet.css"></head><body>' +
+                           $('#esitysPrintSisalto').html() +
+                           '</body></html>');
+      print.print();
+      print.close();
+    };
   });

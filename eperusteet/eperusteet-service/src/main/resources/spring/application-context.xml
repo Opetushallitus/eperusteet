@@ -25,8 +25,6 @@
         ignore-resource-not-found="true"
         properties-ref="defaultProps"/>
 
-    <cache:annotation-driven />
-
     <bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
         <property name="configLocation"  value="classpath:ehcache.xml"/>
         <property name="cacheManagerName" value="eperusteetCacheManager"/>
@@ -50,10 +48,18 @@
         </property>
     </bean>
 
+    <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+        <property name="permissionEvaluator" ref="eperusteetPermissionEvaluator"/>
+    </bean>
+
+    <bean id="eperusteetPermissionEvaluator" class="fi.vm.sade.eperusteet.service.security.PermissionEvaluator"/>
+
     <import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/>
 
     <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>
     <tx:annotation-driven/>
+    <cache:annotation-driven />
+    <aop:aspectj-autoproxy  />
 
     <jee:jndi-lookup id="dataSource" jndi-name="jdbc/eperusteet" expected-type="javax.sql.DataSource"/>
 
@@ -72,6 +78,7 @@
                 <entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
                 <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.ValidityAuditStrategy"/>
                 <entry key="javax.persistence.validation.factory" value-ref="validator" />
+                <entry key="org.hibernate.envers.revision_listener" value="fi.vm.sade.eperusteet.service.impl.AuditRevisionListener"/>
             </map>
         </property>
     </bean>
@@ -85,4 +92,10 @@
     </bean>
 
     <jpa:repositories base-package="fi.vm.sade.eperusteet.repository" factory-class="fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepositoryFactoryBean" />
+
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename">
+            <value>messages</value>
+        </property>
+    </bean>
 </beans>

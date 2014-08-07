@@ -23,8 +23,10 @@ import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.Objects;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import javax.persistence.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -53,7 +55,7 @@ public class LockManagerImpl implements LockManager {
         transaction.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
     }
 
-    @Value("${fi.vm.sade.eperusteet.lukitus.aikaMinuutteina}")
+    @Value("${fi.vm.sade.eperusteet.lukitus.aikaSekunteina}")
     private int maxLockTime;
 
     @PreAuthorize("isAuthenticated()")
@@ -61,19 +63,19 @@ public class LockManagerImpl implements LockManager {
     public Lukko lock(final Long id) {
 
         final String oid = SecurityUtil.getAuthenticatedPrincipal().getName();
-        final Lukko newLukko = new Lukko(id, oid);
 
         Lukko lukko;
         try {
             lukko = transaction.execute(new TransactionCallback<Lukko>() {
                 @Override
                 public Lukko doInTransaction(TransactionStatus status) {
-                    Lukko current = em.find(Lukko.class, id);
+                    final Lukko newLukko = new Lukko(id, oid, maxLockTime);
+                    Lukko current = getLock(id);
                     if (current != null) {
                         em.refresh(current, LockModeType.PESSIMISTIC_WRITE);
                         if (oid.equals(current.getHaltijaOid())) {
                             current.refresh();
-                        } else if (current.getLuotu().plusMinutes(maxLockTime).isBeforeNow()) {
+                        } else if (current.getVanhentuu().isBeforeNow()) {
                             em.remove(current);
                             em.persist(newLukko);
                             current = newLukko;
@@ -85,12 +87,13 @@ public class LockManagerImpl implements LockManager {
                     return current;
                 }
             });
-        } catch (TransactionException t) {
+        } catch (TransactionException | DataAccessException | PersistenceException t) {
+
             // (todennäköisesti) samanaikaisesti toisessa transaktiossa lisätty sama lukko, yritetään lukea tämä.
             lukko = transaction.execute(new TransactionCallback<Lukko>() {
                 @Override
                 public Lukko doInTransaction(TransactionStatus status) {
-                    return em.find(Lukko.class, id);
+                    return getLock(id);
                 }
             });
         }
@@ -110,8 +113,7 @@ public class LockManagerImpl implements LockManager {
     }
 
     /**
-     * Varmistaa, että autentikoitunut käyttäjä omistaa lukon. Huom! lukitsee lukon transaktion ajaksi siten että sitä
-     * ei voi muuttaa/poistaa.
+     * Varmistaa, että autentikoitunut käyttäjä omistaa lukon. Huom! lukitsee lukon transaktion ajaksi siten että sitä ei voi muuttaa/poistaa.
      *
      * @param id lukon tunniste
      */
@@ -120,6 +122,9 @@ public class LockManagerImpl implements LockManager {
     @Transactional
     public void ensureLockedByAuthenticatedUser(Long id) {
         Lukko lukko = em.find(Lukko.class, id, LockModeType.PESSIMISTIC_READ);
+        if (lukko != null) {
+            lukko.setVanhentumisAika(maxLockTime);
+        }
         if (!isLockedByAuthenticatedUser(lukko)) {
             throw new LockingException("Käyttäjä ei omista lukkoa", LukkoDto.of(lukko));
         }
@@ -134,15 +139,18 @@ public class LockManagerImpl implements LockManager {
             em.remove(lukko);
             return true;
         } else {
-            throw new LockingException("Käyttäjä ei omista poistettavaa lukkoa", LukkoDto.of(lukko));
+            return false;
         }
-
     }
 
     @Override
     @Transactional(readOnly = true)
     public Lukko getLock(Long id) {
-        return em.find(Lukko.class, id);
+        Lukko l = em.find(Lukko.class, id);
+        if (l != null) {
+            l.setVanhentumisAika(maxLockTime);
+        }
+        return l;
     }
 
     private boolean isLockedByAuthenticatedUser(Lukko lukko) {

@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .directive('kenttalistaus', function($q, MuokkausUtils, ArviointiHelper, $timeout, $window) {
+  .directive('kenttalistaus', function($q, MuokkausUtils, $timeout) {
     return {
       templateUrl: 'views/partials/muokkaus/kenttalistaus.html',
       restrict: 'E',
@@ -28,8 +28,15 @@ angular.module('eperusteApp')
         objectPromise: '=',
         editEnabled: '='
       },
-      link: function(scope, element, attrs) {
-        scope.menuItems = [];
+      link: function(scope, element) {
+        scope.noContent = false;
+
+        scope.updateContentTip = function () {
+          scope.noContent = element.find('ul.muokkaus').children().length === 0;
+        };
+        $timeout(function () {
+          scope.updateContentTip();
+        }, 3000);
 
         scope.innerObjectPromise = scope.objectPromise.then(function() {
           setInnerObjectPromise();
@@ -43,54 +50,12 @@ angular.module('eperusteApp')
           fieldToRemove.visible = false;
         };
 
-        function scrollTo(selector) {
-          var element = angular.element(selector);
-          if (element.length) {
-            $window.scrollTo(0, element[0].offsetTop);
-          }
-        }
-
-        scope.addFieldToVisible = function(field) {
-          field.visible = true;
-          // Varmista että menu sulkeutuu klikin jälkeen
-          $timeout(function () {
-            angular.element('h1').click();
-            scrollTo('li[otsikko='+field.localeKey+']');
-          });
-        };
-
-        /**
-         * Palauttaa true jos kaikki mahdolliset osiot on jo lisätty
-         */
-        scope.allVisible = function() {
-          var lisatty = _.all(scope.fields, function (field) {
-            return (_.contains(field.path, 'arviointi.') ||
-                    !field.inMenu ||
-                    (field.inMenu && field.visible));
-          });
-          return lisatty && scope.arviointiHelper.exists();
-        };
-
-        scope.updateMenu = function () {
-          scope.menuItems = _.reject(scope.fields, 'mandatory');
-          if (scope.arviointiHelper) {
-            scope.arviointiHelper.setMenu(scope.menuItems);
-          }
-        };
-
-        scope.$watch('arviointiFields.teksti.visible', scope.updateMenu);
-        scope.$watch('arviointiFields.taulukko.visible', scope.updateMenu);
-
         function splitFields(object) {
           _.each(scope.fields, function (field) {
             field.inMenu = field.path !== 'nimi' && field.path !== 'koodiUri';
             field.visible = field.mandatory || MuokkausUtils.hasValue(object, field.path);
           });
-          if (!scope.arviointiHelper) {
-            scope.arviointiHelper = ArviointiHelper.create();
-          }
-          scope.arviointiFields = scope.arviointiHelper.initFromFields(scope.fields);
-          scope.updateMenu();
+          scope.updateContentTip();
         }
 
         function setInnerObjectPromise() {
@@ -141,7 +106,8 @@ angular.module('eperusteApp')
         if (self.hasTeksti()) {
           obj.taulukko.visible = false;
         }
-        return self.obj = obj;
+        self.obj = obj;
+        return self.obj;
       };
 
       self.setMenu = function (menu) {
@@ -156,7 +122,7 @@ angular.module('eperusteApp')
       };
 
       return self;
-    };
+    }
 
     return {
       create: function () {

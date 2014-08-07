@@ -26,10 +26,10 @@ angular.module('eperusteApp')
           }
         });
 
-        $rootScope.$on('enableEditing', function() {
+        scope.$on('enableEditing', function() {
           showOrEnableElement();
         });
-        $rootScope.$on('disableEditing', function() {
+        scope.$on('disableEditing', function() {
           hideOrDisableElement();
         });
 

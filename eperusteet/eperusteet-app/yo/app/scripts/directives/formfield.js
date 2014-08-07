@@ -17,39 +17,57 @@
 'use strict';
 /* global _ */
 
+/**
+ * Form field with label and input field.
+ * @param {Object} model Model base object for input, e.g. a.b.c => a is model
+ * @param {String} modelVar Suffix for model, e.g. a.b.c => b.c is modelVar
+ * @param {String} label Label in the ui, will be translated
+ * @param {String} type Input type text|number|checkbox|..., default text
+ * @param {Array} options Options for selector, doesn't require type attribute
+ *     Flat array: value will be raw value, displayed label is translated from raw value
+ *     Object array: {value: VALUE, label: LABEL}, label is translated
+  * @param {form} form Form object
+ * @param {Integer} min Minimum value for number input
+ * @param {Integer} max Maximum value for number input or max length for text
+ * @param {String} name Field name
+ * @param {String} placeholder Placeholder for input or select, will be translated
+ * @param {String/Expression} required 'required'|'true'|parent scope expression
+ */
 angular.module('eperusteApp')
-  .directive('formfield', function ($parse) {
+  .directive('formfield', function ($parse, Kaanna, $timeout, YleinenData) {
     var uniqueId = 0;
     return {
-      template: '<div class="form-group">' +
-        '<label class="col-sm-3 control-label">{{label | kaanna}}{{ postfix }}</label>' +
-        '<div class="input-group col-sm-9">' +
-        '<numberinput luokka="form-control" ng-if="!options && !isObject && type===&quot;number&quot;" name={{name}} data="input.model" min={{min}} max={{max}} form=form></numberinput>' +
-        '<input ng-if="!options && !isObject && type!==&quot;number&quot;" ng-class="inputClasses()" ng-model="input.model" ng-change="updateModel()" type="{{type}}">' +
-        '<span ng-if="!options && isObject">' +
-        '  <ml-input ml-data="input.model" ng-model="input.model" ng-change="updateModel()"></ml-input>' +
-        '</span>' +
-        '<select ng-if="options" class="form-control" ng-model="input.model" ng-change="updateModel()"' +
-        'ng-options="obj.value as obj.label for obj in options">' +
-        '</select>' +
-        '</div></div>',
+      templateUrl: 'views/partials/formfield.html',
       restrict: 'E',
       scope: {
-        ngModel: '=',
+        model: '=',
         label: '@',
-        type: '@',
+        type: '@?',
         options: '=?',
         modelVar: '@',
         form: '=',
-        min: '@',
-        max: '@',
-        name: '@'
+        min: '@?',
+        max: '@?',
+        name: '@',
+        placeholder: '@',
+        step: '@?'
       },
       link: function (scope, element, attrs) {
         scope.postfix = '';
-        attrs.$observe('required', function(value) {
-          if (value) { scope.postfix = '*'; }
-        });
+        scope.type = scope.type || 'text';
+        scope.flatOptions = _.isArray(scope.options) &&
+                scope.options.length > 0 && !_.isObject(scope.options[0]);
+
+        if (!scope.flatOptions) {
+          _.forEach(scope.options, function(opt) {
+            opt.label = Kaanna.kaanna(opt.label);
+          });
+        }
+
+        scope.kaanna = function (val) {
+          return Kaanna.kaanna(val);
+        };
+
         scope.inputClasses = function () {
           var classes = [];
           if (scope.type !== 'checkbox') {
@@ -57,16 +75,67 @@ angular.module('eperusteApp')
           }
           return classes;
         };
-        element.find('label').attr('for', scope.label + '-' + uniqueId);
-        element.find('input').attr('id', scope.label + '-' + uniqueId++);
+
+        function bindLabel() {
+          scope.inputElId = scope.label.replace(/ /g, '-') + '-' + uniqueId++;
+          element.find('label').attr('for', scope.inputElId);
+        }
+
+        if (scope.type === 'text' && attrs.max) {
+          $timeout(function () {
+            element.find('input').attr('maxlength', attrs.max);
+          });
+        }
+
+        attrs.$observe('required', function(value) {
+          if (value === 'required' || value === 'true') {
+            scope.postfix = '*';
+          } else if (value) {
+            var parsed = $parse(value);
+            scope.$watch(function () {
+              return parsed(scope.$parent);
+            }, function (value) {
+              scope.postfix = value ? '*' : '';
+            });
+          }
+        });
+
+        bindLabel();
 
         // Two-way binding with deep object hierarchies needs some tricks
         var getter = $parse(scope.modelVar);
+        var setter = getter.assign;
         scope.input = {};
-        scope.input.model = getter(scope.ngModel);
+        scope.input.model = getter(scope.model);
+        // inner => outside
+        scope.$watch('input.model', function () {
+          if (scope.input && scope.input.model) {
+            setter(scope.model, scope.input.model);
+          }
+        });
+        // outside => inner
+        scope.$watch(function () {
+          return getter(scope.model);
+        }, function (value) {
+          scope.input.model = value;
+        });
+
         scope.isObject = _.isObject(scope.input.model);
-        scope.updateModel = function() {
-          getter.assign(scope.ngModel, scope.input.model);
+        scope.isNumber = !scope.options && !scope.isObject &&
+          (scope.type === 'number' || scope.type === 'float' || scope.type === 'integer');
+        scope.isDate = !scope.options && scope.type === 'date';
+        scope.isText = !scope.options && !scope.isObject &&
+          !(scope.type === 'number' || scope.type === 'float' || scope.type === 'integer');
+        scope.isMultiText = !scope.options && scope.isObject;
+        scope.datePicker = {
+          options: YleinenData.dateOptions,
+          format: YleinenData.dateFormatDatepicker,
+          state: false,
+          open: function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            scope.datePicker.state = !scope.datePicker.state;
+          }
         };
       }
     };

@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <h3 class="modal-title" kaanna>luo-pdf-dokumentti</h3>
+</div>
+
+<div class="modal-body">
+  <h4 kaanna>luo-pdf-dokumentti-perusteesta</h4>
+  <div class="modal-data">
+    <p>{{'valitse-kieli' | kaanna}}:</p>
+    <div ng-repeat="kieli in kielet.lista">
+      <label><input type="radio" ng-model="kielet.valittu" name="kielivalinta"
+              ng-value="kieli" ng-disabled="generateInProgress">{{kieli | kaanna}}</label>
+    </div>
+  </div>
+  <div class="pdf-lataus">
+    <button class="btn btn-default btn-large" ng-click="generate()" ng-disabled="generateInProgress" kaanna>luo-pdf</button>
+  </div>
+  <div class="luodut">
+  <h4 kaanna>dokumentin-tila</h4>
+    <div class="modal-data">
+      <div ng-if="hasPdf()">
+        {{'luotu' | kaanna}} {{docs[kielet.valittu].valmistumisaika | aikaleima}}
+        <a class="latauslinkki" ng-href="{{docs[kielet.valittu].url}}">
+          <button class="btn btn-default btn-large">{{'lataa' | kaanna}}</button>
+        </a>
+      </div>
+      <div ng-if="!hasPdf()">
+        {{tila | kaanna}} <span ng-if="tila === 'luodaan'" small-spinner></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-default" ng-click="$close()" kaanna>sulje</button>
+</div>

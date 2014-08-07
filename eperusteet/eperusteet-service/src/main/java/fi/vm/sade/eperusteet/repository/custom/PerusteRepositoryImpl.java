@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.repository.custom;
 
 import com.google.common.base.Function;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutus;
@@ -34,6 +35,7 @@ import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -68,7 +70,7 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
      *
      * @param page sivumääritys
      * @param pquery hakuparametrit
-     * 
+     *
      * @return Yhden hakusivun verran vastauksia
      */
     @Override
@@ -119,43 +121,62 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
     }
 
     private Predicate buildPredicate(
-            Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, PerusteQuery pquery) {
+        Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, PerusteQuery pquery) {
 
-        Kieli kieli = Kieli.of(pquery.getKieli());
-        
+        final Kieli kieli = Kieli.of(pquery.getKieli());
+        final String nimi = pquery.getNimi();
+        final String st = pquery.getSuoritustapa();
+        final List<String> koulutusala = pquery.getKoulutusala();
+        final List<String> tyyppi = pquery.getTyyppi();
+        final List<String> opintoala = pquery.getOpintoala();
+        final boolean siirtyma = pquery.isSiirtyma();
+        final String tilaStr = pquery.getTila();
+        final Expression<Date> siirtymaAlkaa = root.get(Peruste_.siirtymaAlkaa);
+        final Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
+
         Predicate pred = cb.equal(teksti.get(LokalisoituTeksti_.kieli), kieli);
-        if (pquery.getNimi() != null) {
-            pred = cb.and(pred, cb.like(cb.lower(teksti.get(LokalisoituTeksti_.teksti)), cb.literal(RepositoryUtil.kuten(pquery.getNimi()))));
+
+        if (nimi != null) {
+            pred = cb.and(pred, cb.like(cb.lower(teksti.get(LokalisoituTeksti_.teksti)), cb.literal(RepositoryUtil.kuten(nimi))));
         }
-        if (pquery.getSuoritustapa()!= null) {
-            Suoritustapakoodi suoritustapakoodi = Suoritustapakoodi.of(pquery.getSuoritustapa());
+
+        if (st != null) {
+            Suoritustapakoodi suoritustapakoodi = Suoritustapakoodi.of(st);
             Join<Peruste, Suoritustapa> suoritustapa = root.join(Peruste_.suoritustavat);
             pred = cb.and(pred, cb.equal(suoritustapa.get(Suoritustapa_.suoritustapakoodi), suoritustapakoodi));
         }
-        if (pquery.getKoulutusala() != null && !pquery.getKoulutusala().isEmpty()) {
-            Join<Peruste, Koulutus> ala = root.join(Peruste_.koulutukset);
-            pred = cb.and(pred, ala.get(Koulutus_.koulutusalakoodi).in(pquery.getKoulutusala()));
+
+        if (tyyppi != null && !tyyppi.isEmpty()) {
+            pred = cb.and(pred, root.get(Peruste_.koulutustyyppi).in(tyyppi));
         }
-        if (pquery.getTyyppi() != null && !pquery.getTyyppi().isEmpty()) {
-            pred = cb.and(pred, root.get(Peruste_.tutkintokoodi).in(pquery.getTyyppi()));
+
+        Join<Peruste, Koulutus> koulutukset = null;
+        if (koulutusala != null && !koulutusala.isEmpty()) {
+            koulutukset = root.join(Peruste_.koulutukset);
+            pred = cb.and(pred, koulutukset.get(Koulutus_.koulutusalakoodi).in(koulutusala));
         }
-        if (pquery.getOpintoala() != null && !pquery.getOpintoala().isEmpty()) {
-            Join<Peruste, Koulutus> ala = root.join(Peruste_.koulutukset);
-            pred = cb.and(pred, ala.get(Koulutus_.opintoalakoodi).in(pquery.getOpintoala()));
+
+        if (opintoala != null && !opintoala.isEmpty()) {
+            koulutukset = (koulutukset == null ) ? root.join(Peruste_.koulutukset) : koulutukset;
+            pred = cb.and(pred, koulutukset.get(Koulutus_.opintoalakoodi).in(opintoala));
         }
-        Expression<Date> siirtymaAlkaa = root.get(Peruste_.siirtymaAlkaa);
-        Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
-        if (pquery.isSiirtyma()) {
+
+        if (!Strings.isNullOrEmpty(pquery.getKoodiArvo())) {
+            koulutukset = (koulutukset == null ) ? root.join(Peruste_.koulutukset) : koulutukset;
+            pred = cb.and(pred, cb.equal(koulutukset.get(Koulutus_.koulutuskoodiArvo), pquery.getKoodiArvo()));
+        }
+
+        if (siirtyma) {
             pred = cb.and(pred, cb.or(cb.isNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate())));
         } else {
-            pred = cb.and(pred, cb.and( cb.or(cb.isNull(siirtymaAlkaa), cb.greaterThan(siirtymaAlkaa, cb.currentDate())), 
-                                        cb.or(cb.isNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate()))));
+            pred = cb.and(pred, cb.and(cb.or(cb.isNull(siirtymaAlkaa), cb.greaterThan(siirtymaAlkaa, cb.currentDate())),
+                                       cb.or(cb.isNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate()))));
         }
-        if (pquery.getTila() != null) {
-            Tila tila = Tila.of(pquery.getTila());
-            pred = cb.and(pred, cb.equal(root.get(Peruste_.tila), tila));
+
+        if (!Strings.isNullOrEmpty(tilaStr)) {
+            pred = cb.and(pred, cb.equal(root.get(Peruste_.tila), Tila.of(tilaStr)));
         }
-        
+
         return pred;
     }
 

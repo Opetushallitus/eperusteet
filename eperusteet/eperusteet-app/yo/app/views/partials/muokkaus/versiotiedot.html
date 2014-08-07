@@ -1,13 +1,21 @@
-<div class="muokkaustiedot" ng-hide="editEnabled">
-  <ul ng-show="versiot.chosen">
-    <li><span>{{'muokattu-viimeksi' | translate}}</span>: {{lastModified() | aikaleima}}</li>
-    <li><span>{{'muokkaaja' | translate}}</span>: Erkki Esimerkki</li>
-  </ul>
-  <ul class="version-valinta">
-    <li>
-      <span>{{'versio' | translate}}</span>: <select ng-model="versiot.chosen" ng-options="ver.index for ver in versiot.list" ng-change="vaihdaVersio()"></select>
-    </li>
-    <li><a href="" translate ng-click="history()">nayta-versiohistoria</a></li>
-  </ul>
-  <hr>
+<div>
+  <div ng-show="versiot.chosen" class="muokkaustiedot" ng-hide="editEnabled">
+    <div class="muokattu-viimeksi">
+      <span ng-show="versiot.chosen.index > 1" kaanna>muokattu-viimeksi</span><span ng-show="versiot.chosen.index === 1" kaanna>luotu</span>: {{lastModified() | aikaleima:'ago'}}
+    </div>
+    <div class="versiotiedot">
+      <ul>
+        <li ng-show="versiot.list.length > 1">
+          <span kaanna>versio</span>: <select ng-model="versiot.chosen" ng-options="ver.index for ver in versiot.list" ng-change="vaihdaVersio()"></select>
+        </li>
+        <li ng-show="versiot.list.length === 1"><span kaanna>versio</span>: 1</li>
+        <li ng-show="versiot.list.length > 1"><a href="" kaanna ng-click="history()">nayta-versiohistoria</a></li>
+      </ul>
+    </div>
+    <div class="muokkaaja">
+      <span ng-show="versiot.chosen.index > 1" kaanna>muokkaaja</span><span ng-show="versiot.chosen.index === 1" kaanna>luoja</span>: Erkki Esimerkki
+    </div>
+    <div class="clearfix"></div>
+  </div>
+  <hr class="versioraja">
 </div>

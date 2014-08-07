@@ -48,7 +48,7 @@ angular.module('eperusteApp')
         removeField: '&?',
         editEnabled: '='
       },
-      link: function(scope, element, attrs) {
+      link: function(scope, element) {
 
         scope.$watch('objectReady', function(newObjectReadyPromise) {
           newObjectReadyPromise.then(function(newObject) {
@@ -105,6 +105,21 @@ angular.module('eperusteApp')
         });
 
         function getElementContent(elementType) {
+          function addEditorAttributesFor(element) {
+            return element
+            .addClass('list-group-item-text')
+            .attr('ng-model', 'object.' + scope.field.path)
+            .attr('ckeditor', '')
+            .attr('editing-enabled', '{{editMode}}')
+            .attr('editor-placeholder', 'muokkaus-' + scope.field.localeKey + '-placeholder');
+          }
+
+          function addInputAttributesFor(element) {
+            return element
+            .addClass('form-control')
+            .attr('ng-model', 'object.' + scope.field.path)
+            .attr('placeholder','{{ \'muokkaus-' + scope.field.localeKey + '-placeholder\' | kaanna }}');
+          }
 
           var element = null;
           if(elementType === 'editor-header') {
@@ -135,49 +150,16 @@ angular.module('eperusteApp')
             .attr('edit-enabled', 'editEnabled');
           }
 
-          else if (elementType === 'koodisto-select') {
-            scope.tuoKoodi = function(koodisto) {
-              MuokkausUtils.nestedSet(scope.object, scope.field.path, ',', koodisto.koodi);
-            };
-            element = angular.element('<div></div>').addClass('input-group')
-            .append(
-                angular.element('<input/>')
-                .addClass('form-control')
-                .attr('type', 'text')
-                .attr('ng-model', 'object.' + scope.field.path)
-                .attr('editointi-kontrolli', ''))
-            .append(
-                angular.element('<koodisto-select></koodisto-select>')
-                .addClass('input-group-btn')
-                .attr('valmis', 'tuoKoodi'));
-          }
-
           if(element !== null && scope.field.localized) {
             element.attr('localized', '');
           }
           return element;
-
-          function addEditorAttributesFor(element) {
-            return element
-            .addClass('list-group-item-text')
-            .attr('ng-model', 'object.' + scope.field.path)
-            .attr('ckeditor', '')
-            .attr('editing-enabled', '{{editMode}}')
-            .attr('editor-placeholder', 'muokkaus-' + scope.field.localeKey + '-placeholder');
-          }
-
-          function addInputAttributesFor(element) {
-            return element
-            .addClass('form-control')
-            .attr('ng-model', 'object.' + scope.field.path)
-            .attr('placeholder','{{\'muokkaus-' + scope.field.localeKey + '-placeholder\' | translate}}');
-          }
         }
 
-        function replaceElementContent(content) {
-          element.empty();
-          populateElementContent(content);
-        }
+        // function replaceElementContent(content) {
+        //   element.empty();
+        //   populateElementContent(content);
+        // }
 
         function populateElementContent(content) {
           element.append(content);
@@ -186,18 +168,26 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('vaihtoehtoisenKentanRaami', function($rootScope) {
+  .directive('vaihtoehtoisenKentanRaami', function() {
     return {
       template:
         '<div ng-transclude></div>' +
-        '<button ng-if="$parent.editEnabled" editointi-kontrolli type="button" class="btn btn-default btn-xs" ng-click="suljeOsio()">' +
-        '<span class="glyphicon glyphicon-remove"></span>{{\'poista-osio\' | translate}}</button>',
+        '<button icon-role="remove" ng-if="$parent.editEnabled" editointi-kontrolli type="button"' +
+        ' class="pull-right poista-osio btn btn-default btn-xs" ng-click="suljeOsio($event)">' +
+        '{{ \'poista-osio\' | kaanna }}</button>',
       restrict: 'E',
       transclude: true,
       scope: {
         osionNimi: '@',
-        suljeOsio: '&',
+        suljeOsio: '&'
       },
+      link: function (scope, element) {
+        scope.$watch('$parent.editEnabled', function () {
+          var button = element.find('button.poista-osio');
+          var header = angular.element('li[otsikko='+scope.$parent.field.localeKey+'] .osio-otsikko');
+          button.detach().appendTo(header);
+        });
+      }
     };
   })
   .directive('localized', function($rootScope, YleinenData)  {
@@ -208,8 +198,8 @@ angular.module('eperusteApp')
       link: function(scope, element, attrs, ngModelCtrl) {
 
         ngModelCtrl.$formatters.push(function(modelValue) {
-          if(angular.isUndefined(modelValue)) return;
-          if(modelValue === null) return;
+          if(angular.isUndefined(modelValue)) { return; }
+          if(modelValue === null) { return; }
           return modelValue[YleinenData.kieli];
         });
 
@@ -226,7 +216,7 @@ angular.module('eperusteApp')
           return localizedModelValue;
         });
 
-        $rootScope.$on('$translateChangeSuccess', function() {
+        scope.$on('$translateChangeSuccess', function() {
           if(!angular.isUndefined(ngModelCtrl.$modelValue) && !_.isEmpty(ngModelCtrl.$modelValue[YleinenData.kieli])) {
             ngModelCtrl.$setViewValue(ngModelCtrl.$modelValue[YleinenData.kieli]);
           } else {

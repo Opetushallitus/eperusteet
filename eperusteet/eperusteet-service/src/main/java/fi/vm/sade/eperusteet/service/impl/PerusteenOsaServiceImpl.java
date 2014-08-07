@@ -16,11 +16,17 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.Tila;
+import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.UpdateDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
+import fi.vm.sade.eperusteet.service.KommenttiService;
 import fi.vm.sade.eperusteet.service.LockManager;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -41,6 +47,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteenOsaServiceImpl.class);
+
+    @Autowired
+    private KommenttiService kommenttiService;
 
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepo;
@@ -68,13 +77,19 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     @Transactional(readOnly = true)
+    public Integer getLatestRevision(final Long id) {
+        return perusteenOsaRepo.getLatestRevisionId(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<PerusteenOsaDto> getAllByKoodiUri(final String koodiUri) {
         return mapper.mapAsList(tutkinnonOsaRepo.findByKoodiUri(koodiUri), PerusteenOsaDto.class);
     }
 
     @Override
     @Transactional(readOnly = false)
-    public <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
+    public <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(T perusteenOsaDto, Class<T> dtoClass) {
         assertExists(perusteenOsaDto.getId());
         lockManager.ensureLockedByAuthenticatedUser(perusteenOsaDto.getId());
         PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
@@ -83,6 +98,17 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         current = perusteenOsaRepo.save(current);
 
         return mapper.map(current, dtoClass);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(UpdateDto<T> perusteenOsaDto, Class<T> dtoClass) {
+        T updated = update(perusteenOsaDto.getDto(), dtoClass);
+
+        if (perusteenOsaDto.getMetadata() != null) {
+            perusteenOsaRepo.setRevisioKommentti(perusteenOsaDto.getMetadata().getKommentti());
+        }
+        return updated;
     }
 
     @Override
@@ -98,6 +124,10 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         assertExists(id);
         lockManager.lock(id);
         try {
+            List<KommenttiDto> allByPerusteenOsa = kommenttiService.getAllByPerusteenOsa(id);
+            for (KommenttiDto kommentti : allByPerusteenOsa) {
+                kommenttiService.deleteReally(kommentti.getId());
+            }
             perusteenOsaRepo.delete(id);
         } finally {
             lockManager.unlock(id);
@@ -113,7 +143,6 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     @Transactional(readOnly = true)
     public List<Revision> getVersiot(Long id) {
-        PerusteenOsa perusteenOsa = perusteenOsaRepo.findOne(id);
         return perusteenOsaRepo.getRevisions(id);
     }
 
@@ -121,6 +150,13 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Transactional(readOnly = true)
     public PerusteenOsaDto getVersio(Long id, Integer versioId) {
         return mapper.map(perusteenOsaRepo.findRevision(id, versioId), PerusteenOsaDto.class);
+    }
+
+    @Override
+    @Transactional
+    public PerusteenOsaDto revertToVersio(Long id, Integer versioId) {
+        PerusteenOsa revision = perusteenOsaRepo.findRevision(id, versioId);
+        return update(mapper.map(revision, PerusteenOsaDto.class), PerusteenOsaDto.class);
     }
 
     @Override
