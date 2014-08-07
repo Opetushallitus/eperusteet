@@ -39,16 +39,6 @@ angular.module('eperusteApp')
       controller: 'TutkinnonOsatPikamenu'
     };
   })
-  .controller('TutkinnonOsatPikamenu', function($scope, $state) {
-    $scope.pikamenu = {
-      opened: false
-    };
-    $scope.navigoiTutkinnonosaan = function (osa) {
-      $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
-        perusteenOsaId: osa._tutkinnonOsa,
-        perusteenOsanTyyppi: 'tutkinnonosa',
-        versio: null
-      });
-    };
+  .controller('TutkinnonOsatPikamenu', function($scope) {
+    $scope.pikamenu = { opened: false };
   });
-

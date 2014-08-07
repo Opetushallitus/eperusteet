@@ -1,25 +1,27 @@
 <div class="sisalto">
   <script type="text/ng-template" id="psisaltosolmu.html">
     <div ng-show="sisalto.$filtered || rajaus.length === 0">
-      <div ng-style="{ 'margin-left': 40 * indent + 'px' }" class="list-element" ng-class="{ 'striped': indent === 0 }">
+      <div ng-style="{ 'margin-left': 40 * indent + 'px' }" class="list-element" ng-class="{ 'striped': indent === 0 }" >
         <div ng-show="sisalto.lapset.length > 0" ng-click="sisalto.$opened = !sisalto.$opened" class="chevron">
           <span ng-hide="sisalto.$opened" class="glyphicon glyphicon-chevron-right"></span>
           <span ng-show="sisalto.$opened" class="glyphicon glyphicon-chevron-down"></span>
         </div>
 
-        <div class="otsikko" ng-click="navigoi('root.perusteprojekti.suoritustapa.perusteenosa', { perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id})">
-          <h3>
-            <span ng-class="{ 'otsikko-pieni': indent !== 0 }">
-              <a href="">{{ sisalto.perusteenOsa.nimi | kaanna }}</a>
-            </span>
-          </h3>
-          <div ng-show="!muokkausTutkintokohtaisetOsat" class="list-element-info">
-            <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ sisalto.perusteenOsa.muokattu | aikaleima }}</div>
-            <div>{{ 'muokkaaja' | kaanna }}: Erkki Esimerkki</div>
-            <div lukko ng-show="lukot[sisalto.perusteenOsa.id] && lukot[sisalto.perusteenOsa.id].voimassa"
-                 title="{{ 'lukko-käyttäjällä' | kaanna }} '{{ lukot[sisalto.perusteenOsa.id].haltija }}'
-                 {{ lukot[sisalto.perusteenOsa.id].luotu | aikaleima:'ago' }}" class="lukko"></div>
-          </div>
+        <div ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id })" class="otsikko">
+          <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id })">
+            <h3>
+              <span ng-class="{ 'otsikko-pieni': indent !== 0 }">
+                {{ sisalto.perusteenOsa.nimi | kaanna }}
+              </span>
+            </h3>
+            <div ng-show="!muokkausTutkintokohtaisetOsat" class="list-element-info">
+              <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ sisalto.perusteenOsa.muokattu | aikaleima }}</div>
+              <div>{{ 'muokkaaja' | kaanna }}: Erkki Esimerkki</div>
+              <div lukko ng-show="lukot[sisalto.perusteenOsa.id] && lukot[sisalto.perusteenOsa.id].voimassa"
+                  title="{{ 'lukko-käyttäjällä' | kaanna }} '{{ lukot[sisalto.perusteenOsa.id].haltija }}'
+                  {{ lukot[sisalto.perusteenOsa.id].luotu | aikaleima:'ago' }}" class="lukko"></div>
+            </div>
+          </a>
         </div>
       </div>
     </div>

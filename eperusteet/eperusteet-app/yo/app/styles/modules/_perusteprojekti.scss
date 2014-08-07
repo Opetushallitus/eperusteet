@@ -117,6 +117,8 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
     margin: 0px;
     margin-top: 2px;
     cursor: pointer;
+    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
     h3 {
       font-size: 14px;
       font-weight: bold;
@@ -127,10 +129,22 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
     }
     .otsikko {
       margin-left: 28px;
+
+      a {
+        color: rgb(51,51,51);
+      }
+
       .lukko {
         top: -20px;
         position: relative;
         float: right;
+      }
+
+      a:hover {
+        text-decoration: none;
+      }
+      a *:hover {
+        text-decoration: none;
       }
     }
     .chevron {

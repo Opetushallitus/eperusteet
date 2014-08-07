@@ -20,6 +20,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.dto.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.generic.rest.CachingRestClient;
+import java.io.IOException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -32,21 +35,39 @@ import org.springframework.web.client.RestTemplate;
 public class KayttajanTietoServiceImpl implements KayttajanTietoService {
     private static final String KAYTTAJA_API = "https://itest-virkailija.oph.ware.fi/authentication-service/resources/henkilo/";
 
+    @Value("${fi.vm.sade.eperusteet.oph_username}")
+    private String username;
+
+    @Value("${fi.vm.sade.eperusteet.oph_password}")
+    private String password;
+
     @Override
 //    @Cacheable("kayttajantiedot")
     public KayttajanTietoDto hae(String oid) {
         if (oid == null || oid.isEmpty()) {
             throw new BusinessRuleViolationException("Päivitettävää perustetta ei ole olemassa");
         }
-        RestTemplate rt = new RestTemplate();
-        ObjectNode json = rt.getForObject(KAYTTAJA_API, ObjectNode.class);
-        KayttajanTietoDto ktd = new KayttajanTietoDto();
 
-        ktd.setUsername(json.get("kayttajatiedot").get("username").toString());
-        ktd.setEtunimet(json.get("etunimet").toString());
-        ktd.setKieliKoodi(json.get("asiointiKieli").get("kielikoodi").toString());
-        ktd.setKutsumanimi(json.get("kayttajatiedot").toString());
-        ktd.setSukunimi(json.get("kayttajatiedot").toString());
+        CachingRestClient crc = new CachingRestClient();
+        crc.setUsername(username);
+        crc.setPassword(password);
+        crc.setWebCasUrl("https://itest-virkailija.oph.ware.fi/cas");
+        crc.setCasService(KAYTTAJA_API);
+        KayttajanTietoDto ktd = new KayttajanTietoDto();
+        String res;
+
+        try {
+            res = crc.getAsString(KAYTTAJA_API);
+        } catch (IOException e) {
+            throw new BusinessRuleViolationException("Käyttäjän tietojen hakeminen epäonnistui");
+        }
+
+//        ktd.setUsername(json.get("kayttajatiedot").get("username").toString());
+//        ktd.setEtunimet(json.get("etunimet").toString());
+//        ktd.setKieliKoodi(json.get("asiointiKieli").get("kielikoodi").toString());
+//        ktd.setKutsumanimi(json.get("kayttajatiedot").toString());
+//        ktd.setSukunimi(json.get("kayttajatiedot").toString());
         return ktd;
     }
+
 }

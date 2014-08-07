@@ -85,13 +85,6 @@ angular.module('eperusteApp')
       });
     });
 
-    $scope.navigoiTutkinnonosaan = function (osa) {
-      $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
-        perusteenOsaId: osa._tutkinnonOsa,
-        perusteenOsanTyyppi: 'tutkinnonosa'
-      });
-    };
-
     $scope.lisaaTutkinnonOsaSuoraan = function(osa) {
       PerusteTutkinnonosa.save({
         perusteId: $scope.peruste.id,
@@ -114,11 +107,20 @@ angular.module('eperusteApp')
         $scope.tutkinnonOsat.unshift(res);
         cb();
         TutkinnonOsaEditMode.setMode(true);
-        $scope.navigoiTutkinnonosaan(res);
+        $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
+          perusteenOsaId: res._tutkinnonOsa,
+          perusteenOsanTyyppi: 'tutkinnonosa'
+        });
       },
       function(err) {
         Notifikaatiot.serverCb(err);
         cb();
       });
+    };
+
+    $scope.getHref = function(valittu) {
+      var url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', { perusteenOsaId: valittu._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' });
+      console.log(url);
+      return url;
     };
   });
