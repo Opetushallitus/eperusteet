@@ -62,10 +62,10 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @Column
     private Long opintoluokitus;
 
-    @Column
+    @Column(name = "koodi_uri")
     private String koodiUri;
     
-    @Column
+    @Column(name = "koodi_arvo")
     private String koodiArvo;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)

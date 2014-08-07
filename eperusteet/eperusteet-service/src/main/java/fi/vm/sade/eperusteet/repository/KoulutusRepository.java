@@ -26,5 +26,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface KoulutusRepository extends JpaRepository<Koulutus, Long>{
-    Koulutus findOneByKoulutuskoodi(String koodi);
+    Koulutus findOneByKoulutuskoodiArvo(String koodi);
 }

@@ -37,5 +37,5 @@ public class PerusteQuery {
     private List<String> opintoala;
     private String suoritustapa;
     private String tila;
-    private String koodiUri;
+    private String koodiArvo;
 }
