@@ -22,6 +22,9 @@ $sivunavi-level-padding: 20px;
   padding-left: $sivunavi-level-zero + $level*$sivunavi-level-padding;
 }
 .sivunavi-box {
+  .list-group {
+    margin-bottom: 0px;
+  }
   .list-group-item {
     border-radius: 0 !important;
   }
