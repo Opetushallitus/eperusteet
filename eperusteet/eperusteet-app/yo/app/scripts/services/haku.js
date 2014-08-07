@@ -19,23 +19,7 @@
 
 angular.module('eperusteApp')
   .service('Haku', function Haku(YleinenData) {
-
-    var self = this;
-
-    this.getHakuparametrit = function (stateName) {
-      return _.clone(self.hakuparametrit[stateName]);
-    };
-
-    this.setHakuparametrit = function (stateName, hakuparametrit) {
-      self.hakuparametrit[stateName] = _.merge(hakuparametrit);
-    };
-
-    this.resetHakuparametrit = function (stateName) {
-      self.hakuparametrit[stateName] = _.clone(self.hakuparametritOrg[stateName]);
-      return self.hakuparametrit[stateName];
-    };
-
-    this.hakuparametritOrg = {
+    var DEFAULTS = {
       'root.selaus.ammatillinenperuskoulutus': {
         nimi: '',
         koulutusala: '',
@@ -64,6 +48,18 @@ angular.module('eperusteApp')
       }
     };
 
-    this.hakuparametrit = _.clone(self.hakuparametritOrg);
+    this.hakuparametrit = _.clone(DEFAULTS);
 
+    this.getHakuparametrit = function (stateName) {
+      return _.clone(this.hakuparametrit[stateName]);
+    };
+
+    this.setHakuparametrit = function (stateName, hakuparametrit) {
+      this.hakuparametrit[stateName] = _.merge(hakuparametrit);
+    };
+
+    this.resetHakuparametrit = function (stateName) {
+      this.hakuparametrit[stateName] = _.clone(DEFAULTS[stateName]);
+      return this.hakuparametrit[stateName];
+    };
   });
