@@ -50,7 +50,7 @@ angular.module('eperusteApp')
       },
       {
         'label': 'perusopetus',
-        'state': '',
+        'state': 'root.selaus.perusopetus',
         'helper': 'selaa-perusteita'
       },
       {

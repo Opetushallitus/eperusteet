@@ -35,6 +35,12 @@ angular.module('eperusteApp')
         templateUrl: 'views/haku.html',
         controller: 'HakuCtrl',
         resolve: {'koulutusalaService': 'Koulutusalat'}
+      })
+      .state('root.selaus.perusopetus', {
+        url: '/perusopetus',
+        templateUrl: 'views/perusopetus.html',
+        controller: 'PerusopetusController',
+        //resolve: {'koulutusalaService': 'Koulutusalat'}
       });
   })
   .controller('HakuCtrl', function($scope, $rootScope, $state, Perusteet, Haku,
