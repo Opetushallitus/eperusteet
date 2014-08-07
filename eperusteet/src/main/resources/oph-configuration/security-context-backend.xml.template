@@ -29,9 +29,9 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:p="http://www.springframework.org/schema/p"
              xsi:schemaLocation="http://www.springframework.org/schema/beans
-                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                    http://www.springframework.org/schema/beans/spring-beans.xsd
                     http://www.springframework.org/schema/security
-                    http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+                    http://www.springframework.org/schema/security/spring-security.xsd">
 
     <global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
       <expression-handler ref="expressionHandler"/>
@@ -69,20 +69,6 @@
         <custom-filter ref="casFilter" position="CAS_FILTER"/>
         <logout logout-success-url="/user/logout"/> <!-- huom! vain haku tarvitsee tata? -->
     </http>
-    <!--
-        Workaround viestintapalvelun suojaamiseksi kunnes Guice-konteksti vaihdetaan Springiin ja tietoturva voidaan hoitaa samoin kuin muissa palveluissa!
-    -->
-    <http entry-point-ref="casEntryPoint" use-expressions="true" request-matcher="regex" pattern="/api/v1/download">
-        <intercept-url pattern="/**" access="hasAnyRole('ROLE_APP_VALINTAPERUSTEET_CRUD_1.2.246.562.10.00000000001')"/>
-        <custom-filter ref="casFilter" position="CAS_FILTER"/>
-    </http>
-    <http entry-point-ref="casEntryPoint" use-expressions="true" request-matcher="regex" pattern="/api/v1/download/">
-        <intercept-url pattern="/**" access="hasAnyRole('ROLE_APP_VALINTAPERUSTEET_CRUD_1.2.246.562.10.00000000001')"/>
-        <custom-filter ref="casFilter" position="CAS_FILTER"/>
-    </http>
-    <!--
-        Workaround loppuu!
-    -->
 
     <!--
     actual application, calls will be forwared to cas when needed, mappings:
@@ -104,7 +90,7 @@
     <!--<custom-filter ref="singleLogoutFilter" before="CAS_FILTER" />-->
 
     <!--  ===== end of mappings ===== -->
-
+    
     <beans:bean id="casFilter" class="fi.vm.sade.security.CustomCasAuthenticationFilter">
         <beans:property name="authenticationManager" ref="authenticationManager"/>
         <beans:property name="serviceProperties" ref="casServiceProperties"/>
@@ -162,7 +148,7 @@
     <authentication-manager alias="authenticationManager">
         <authentication-provider ref="casAuthenticationProvider" />
     </authentication-manager>
-
+    
     <beans:bean id="casTicketsCacheBean" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
         <beans:property name="cacheManager" ref="casTicketCache" />
         <beans:property name="diskExpiryThreadIntervalSeconds" value="120" />
@@ -179,9 +165,7 @@
     </beans:bean>
 
     <beans:bean id="ehCacheBasedTicketCache" class="org.springframework.security.cas.authentication.EhCacheBasedTicketCache">
-        <beans:property name="cache">
-                <beans:ref local="casTicketsCacheBean"/>
-        </beans:property>
+        <beans:property name="cache" ref="casTicketsCacheBean"/>
     </beans:bean>
 
     <beans:bean id="casAuthenticationProvider" class="org.springframework.security.cas.authentication.CasAuthenticationProvider">
@@ -190,11 +174,9 @@
         <beans:property name="ticketValidator" ref="casTicketValidator"/>
         <beans:property name="key" value="${cas_key}"/>
         <!-- enable proxy authentication (in backend) -->
-        <beans:property name="statelessTicketCache">
-            <beans:ref local="ehCacheBasedTicketCache" />
-        </beans:property>
+        <beans:property name="statelessTicketCache" ref="ehCacheBasedTicketCache" />
     </beans:bean>
-
+    
     <beans:bean id="jgroupsEventListener" class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicator">
         <beans:constructor-arg name="replicatePuts" value="true"/> <!-- replicatePuts -->
         <beans:constructor-arg name="replicateUpdates" value="true"/> <!-- replicateUpdates -->
@@ -211,13 +193,13 @@
 
 
     <!-- enable proxy authentication (in backend) -->
-    <!-- TODO: cacheasetukset ihan arvalla nyt, statelessTicketCache kuitenkin sallii saman proxytiketin kayttamisen, joka vahentaa huomattavasti cas-liikennetta -->
+    <!-- TODO: cacheasetukset ihan arvalla nyt, statelessTicketCache kuitenkin sallii saman proxytiketin kayttamisen, joka vahentaa huomattavasti cas-liikennetta -->   
     <beans:bean id="casTicketCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
         <beans:property name="configLocation" value="file://${user.home}/oph-configuration/ehcache.xml" />
-        <beans:property name="shared" value="false" />
+        <beans:property name="shared" value="true" />
         <beans:property name="cacheManagerName" value="casTicketCache" />
     </beans:bean>
-
+    
     <!--p:configLocation="classpath:ehcacheClearPass.xml"-->
 
     <!-- NOTE! role-prefix means that every role fetched from ldap will be prefixed with the prefix. so role 'X' in ldap will be 'ROLE_X' in code eg when used in @Secured-annotation -->
