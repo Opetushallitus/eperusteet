@@ -7,6 +7,10 @@ $sivunavi-shadow: 6px;
 
 .sivunavi-outer {
   clear: both;
+  .no-results {
+    color: $secondary-lighter;
+    font-style: italic;
+  }
 }
 .sivunavi-hidden {
   .sivunavi-outer {

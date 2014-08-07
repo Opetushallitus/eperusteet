@@ -31,7 +31,7 @@
         <span class="linktext" ng-class="{'action-link': !!item.href}" ep-highlight="search.term">{{item.label|kaanna}}</span>
       </a>
       <div class="list-group-item" ng-show="!hasResults">
-        <p>{{ ei-tuloksia | kaanna }}</p>
+        <p class="no-results">{{ 'ei-tuloksia' | kaanna }}</p>
       </div>
     </div>
   </div>
