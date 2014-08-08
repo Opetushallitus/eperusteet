@@ -140,7 +140,6 @@ angular.module('eperusteApp')
 
     $scope.tallennaPerusteprojekti = function() {
       var projekti = PerusteProjektiService.get();
-      console.log('tallennettu projekti', projekti);
       if (projekti.id) {
         delete projekti.koulutustyyppi;
         delete projekti.laajuusYksikko;
