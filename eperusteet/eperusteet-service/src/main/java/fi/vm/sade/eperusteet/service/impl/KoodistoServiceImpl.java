@@ -26,6 +26,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -36,9 +37,11 @@ import org.springframework.web.client.RestTemplate;
  */
 @Service
 public class KoodistoServiceImpl implements KoodistoService {
+    @Value("https://virkailija.opintopolku.fi/koodisto-service")
+    private String koodistoServiceUrl;
 
     private static final Logger LOG = LoggerFactory.getLogger(KoodistoServiceImpl.class);
-    private static final String KOODISTO_API = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
+    private static final String KOODISTO_API = "/rest/json/";
     private static final String YLARELAATIO = "relaatio/sisaltyy-ylakoodit/";
     private static final String ALARELAATIO = "relaatio/sisaltyy-alakoodit/";
 
@@ -50,7 +53,7 @@ public class KoodistoServiceImpl implements KoodistoService {
     @Cacheable("koodistot")
     public List<KoodistoKoodiDto> getAll(String koodisto) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = KOODISTO_API + koodisto + "/koodi/";
+        String url = koodistoServiceUrl + KOODISTO_API + koodisto + "/koodi/";
         KoodistoKoodiDto[] koodistot = restTemplate.getForObject(url, KoodistoKoodiDto[].class);
         List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(koodistot), KoodistoKoodiDto.class);
         return koodistoDtot;
@@ -60,7 +63,7 @@ public class KoodistoServiceImpl implements KoodistoService {
     @Cacheable("koodistot")
     public KoodistoKoodiDto get(String koodisto, String koodi) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = KOODISTO_API + koodisto + "/koodi/" + koodi;
+        String url = koodistoServiceUrl + KOODISTO_API + koodisto + "/koodi/" + koodi;
         LOG.debug(url);
         KoodistoKoodiDto re = restTemplate.getForObject(url, KoodistoKoodiDto.class);
         return re;
@@ -92,7 +95,7 @@ public class KoodistoServiceImpl implements KoodistoService {
     @Cacheable("koodistot")
     public List<KoodistoKoodiDto> getAlarelaatio(String koodi) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = KOODISTO_API + ALARELAATIO + koodi;
+        String url = koodistoServiceUrl + KOODISTO_API + ALARELAATIO + koodi;
         KoodistoKoodiDto[] koodistot = restTemplate.getForObject(url, KoodistoKoodiDto[].class);
         List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(koodistot), KoodistoKoodiDto.class);
         return koodistoDtot;
@@ -102,7 +105,7 @@ public class KoodistoServiceImpl implements KoodistoService {
     @Cacheable("koodistot")
     public List<KoodistoKoodiDto> getYlarelaatio(String koodi) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = KOODISTO_API + YLARELAATIO + koodi;
+        String url = koodistoServiceUrl + KOODISTO_API + YLARELAATIO + koodi;
         KoodistoKoodiDto[] koodistot = restTemplate.getForObject(url, KoodistoKoodiDto[].class);
         List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(koodistot), KoodistoKoodiDto.class);
         return koodistoDtot;

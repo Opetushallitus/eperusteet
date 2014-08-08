@@ -72,7 +72,7 @@
   </table>
 
   <ul ng-if="preferenssit.nakymatyyli === 'palikka'" class="tutkinnonosat">
-    <li ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })"
+    <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })"
         class="tutkinnonosa-laatikko list-group-item" ng-repeat="v in tutkinnonOsat | orderBy:jarjestys:jarjestysOrder | mapFilter:rajaaTutkinnonOsia">
       <div ng-hide="editoi" class="muokkaus" icon-role="forward"></div>
       <div class="otsikko">
@@ -82,7 +82,7 @@
             <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ v.muokattu | aikaleima }}</div>
         </div>
       </div>
-    </li>
+    </a>
   </ul>
 
   <div class="info-box" ng-show="tutkinnonOsat.length === 0">

@@ -34,13 +34,15 @@ angular.module('eperusteApp')
       restrict: 'AE',
       scope: {
         items: '=',
-        header: '='
+        header: '=',
+        sections: '=',
       },
       controller: 'SivuNaviController',
       transclude: true,
       link: function (scope, element) {
         var transcluded = element.find('#sivunavi-tc').contents();
         scope.hasTransclude = transcluded.length > 0;
+        scope.oneAtATime = true;
       }
     };
   })
@@ -65,26 +67,26 @@ angular.module('eperusteApp')
           }
         });
         $scope.hasResults = matchCount > 1; // root matches always
-        updateModel();
+        updateModel($scope.items);
       }
     };
 
     $scope.$watch('search.term', $scope.search.update);
 
-    function unCollapse(item) {
+    function unCollapse(items, item) {
       item.$hidden = false;
       // Open up
-      var parent = $scope.items[item.$parent];
+      var parent = items[item.$parent];
       while (parent) {
         parent.$hidden = false;
-        parent = $scope.items[parent.$parent];
+        parent = items[parent.$parent];
       }
       // Open down one level
-      var index = _.indexOf($scope.items, item);
+      var index = _.indexOf(items, item);
       if (index > 0) {
-        var children = getChildren(index);
+        var children = getChildren(items, index);
         _.each(children, function (child) {
-          $scope.items[child].$hidden = false;
+          items[child].$hidden = false;
         });
       }
     }
@@ -108,12 +110,12 @@ angular.module('eperusteApp')
       return classes;
     };
 
-    $scope.refresh = function () {
+    var doRefresh = function (items) {
       var levels = {};
-      if ($scope.items.length && !$scope.items[0].root) {
-        $scope.items.unshift({root: true, depth: -1});
+      if (items.length && !items[0].root) {
+        items.unshift({root: true, depth: -1});
       }
-      _.each($scope.items, function (item, index) {
+      _.each(items, function (item, index) {
         item.depth = item.depth || 0;
         levels[item.depth] = index;
         if (_.isArray(item.link)) {
@@ -129,16 +131,28 @@ angular.module('eperusteApp')
         item.$hidden = item.depth > 0;
         item.$matched = true;
       });
-      updateModel();
+      updateModel(items);
     };
 
-    function getChildren(index) {
+    $scope.refresh = function () {
+      if (!_.isUndefined($scope.items)) {
+        doRefresh($scope.items);
+      } else {
+        _.each($scope.sections, function (section) {
+          if (section.items) {
+            doRefresh(section.items);
+          }
+        });
+      }
+    };
+
+    function getChildren(items, index) {
       var children = [];
-      var level = $scope.items[index].depth;
+      var level = items[index].depth;
       index = index + 1;
       var depth = level + 1;
-      for (; index < $scope.items.length && depth > level; ++index) {
-        depth = $scope.items[index].depth;
+      for (; index < items.length && depth > level; ++index) {
+        depth = items[index].depth;
         if (depth === level + 1) {
           children.push(index);
         }
@@ -146,78 +160,81 @@ angular.module('eperusteApp')
       return children;
     }
 
-    function traverse(index) {
-      if (index >= $scope.items.length) {
+    function traverse(items, index) {
+      if (index >= items.length) {
         return;
       }
-      var item = $scope.items[index];
-      var children = getChildren(index);
+      var item = items[index];
+      var children = getChildren(items, index);
       var hidden = [];
       for (var i = 0; i < children.length; ++i) {
-        traverse(children[i]);
-        hidden.push($scope.items[children[i]].$hidden);
+        traverse(items, children[i]);
+        hidden.push(items[children[i]].$hidden);
       }
       item.$leaf = hidden.length === 0;
       item.$collapsed = _.all(hidden);
       if (!item.$collapsed) {
         // Reveal all children of uncollapsed node
         for (i = 0; i < children.length; ++i) {
-          $scope.items[children[i]].$hidden = false;
+          items[children[i]].$hidden = false;
         }
       }
       item.$impHidden = false;
     }
 
-    function hideNodeOrphans(index) {
+    function hideNodeOrphans(items, index) {
       // If the parent is hidden, then the child is implicitly hidden
-      var item = $scope.items[index];
-      for (index++; index < $scope.items.length &&
-           $scope.items[index].depth > item.depth; ++index) {
-        if (!$scope.items[index].$hidden) {
-          $scope.items[index].$impHidden = true;
+      var item = items[index];
+      for (index++; index < items.length &&
+           items[index].depth > item.depth; ++index) {
+        if (!items[index].$hidden) {
+          items[index].$impHidden = true;
         }
       }
     }
 
-    function hideOrphans() {
-      for (var i = 0; i < $scope.items.length; ++i) {
-        if ($scope.items[i].$collapsed) {
-          hideNodeOrphans(i);
+    function hideOrphans(items) {
+      for (var i = 0; i < items.length; ++i) {
+        if (items[i].$collapsed) {
+          hideNodeOrphans(items, i);
         }
       }
     }
 
-    function updateModel(doUncollapse) {
+    function updateModel(items, doUncollapse) {
+      if (!items) {
+        return;
+      }
       doUncollapse = _.isUndefined(doUncollapse) ? true : doUncollapse;
       if (doUncollapse) {
-        var active = _.find($scope.items, function (item) {
+        var active = _.find(items, function (item) {
           return isActive(item);
         });
         if (active) {
-          unCollapse(active);
+          unCollapse(items, active);
         }
       }
-      traverse(0);
-      hideOrphans();
+      traverse(items, 0);
+      hideOrphans(items);
     }
 
-    $scope.toggle = function (item, $event, state) {
+    $scope.toggle = function (items, item, $event, state) {
       if ($event) {
         $event.preventDefault();
       }
-      var index = _.indexOf($scope.items, item);
+      var index = _.indexOf(items, item);
       state = _.isUndefined(state) ? !item.$collapsed : state;
-      if (index >= 0 && index < ($scope.items.length - 1)) {
+      if (index >= 0 && index < (items.length - 1)) {
         index = index + 1;
-        while(index < $scope.items.length &&
-              $scope.items[index].depth > item.depth) {
-          if ($scope.items[index].depth === item.depth + 1) {
-            $scope.items[index].$hidden = state;
+        while(index < items.length &&
+              items[index].depth > item.depth) {
+          if (items[index].depth === item.depth + 1) {
+            items[index].$hidden = state;
           }
           index++;
         }
       }
-      updateModel(false);
+      updateModel(items, false);
     };
 
     $scope.toggleSideMenu = function () {
@@ -230,10 +247,13 @@ angular.module('eperusteApp')
 
     $scope.$on('$stateChangeSuccess', function() {
       Utils.scrollTo('#ylasivuankkuri');
-      updateModel();
+      updateModel($scope.items);
     });
 
     $scope.$watch('items', function () {
+      $scope.refresh();
+    }, true);
+    $scope.$watch('sections', function () {
       $scope.refresh();
     }, true);
   })

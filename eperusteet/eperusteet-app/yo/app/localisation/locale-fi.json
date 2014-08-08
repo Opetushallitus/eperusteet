@@ -40,6 +40,8 @@
     "sulje": "Sulje",
     "muokattu": "Muokattu",
 
+    "ops-ja-tutkintojen-perusteet": "Opetussuunnitelmien ja tutkintojen perusteet",
+
     "suosikit-otsikko": "Suosikit",
     "suosikki": "Lisää suosikiksi",
     "ei-suosikkeja": "Et ole lisännyt vielä suosikkeja.",
@@ -568,6 +570,7 @@
 
     "sivunavigointi-avaa-menu": "Avaa navigointimenu",
     "sivunavigointi-sulje-menu": "Sulje navigointimenu",
+    "ei-tuloksia": "Ei tuloksia rajauksellasi",
 
     "perusteprojekti-tila-aseta": "Aseta perusteprojektin tila",
     "luonnos": "Luonnos",

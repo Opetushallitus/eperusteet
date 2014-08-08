@@ -1,0 +1,18 @@
+<div>
+
+  <accordion close-others="$parent.section.model.oneAtATime">
+
+    <accordion-group class="inner-accordion" ng-repeat="section in $parent.section.model.sections" is-open="section.$open">
+      <accordion-heading>
+        <span class="glyphicon" ng-class="{'glyphicon-chevron-down': section.$open, 'glyphicon-chevron-right': !section.$open}"></span>
+        {{section.title | kaanna}}
+      </accordion-heading>
+      <div ng-if="section.items && section.items.length > 0">
+        <multichoice items="section.items"></multichoice>
+      </div>
+      <div ng-if="section.include" ng-include="section.include"></div>
+    </accordion-group>
+
+  </accordion>
+
+</div>

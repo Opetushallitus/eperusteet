@@ -65,7 +65,6 @@ angular.module('eperusteApp')
           }
         });
         $scope.lukot = res[0];
-        console.log(res[0]);
       });
     };
     $scope.paivitaLukot();
@@ -131,7 +130,7 @@ angular.module('eperusteApp')
     $scope.createSisalto = function() {
       lisaaSisalto('save', {}, function(response) {
         TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
-        $scope.navigoi('root.perusteprojekti.suoritustapa.perusteenosa', {
+        $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
           perusteenOsanTyyppi: 'tekstikappale',
           perusteenOsaId: response._perusteenOsa
         });
@@ -182,12 +181,6 @@ angular.module('eperusteApp')
         perusteProjektiId: $stateParams.perusteProjektiId,
         suoritustapa: suoritustapakoodi
       });
-    };
-
-    $scope.navigoi = function(state, params) {
-      if (!$scope.muokkausTutkintokohtaisetOsat ) {
-        $state.go(state, params);
-      }
     };
 
     (function() {

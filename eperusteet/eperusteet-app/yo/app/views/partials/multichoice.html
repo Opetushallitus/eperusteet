@@ -1,0 +1,6 @@
+<ul>
+  <li><label><input type="checkbox" ng-model="model.all" ng-change="toggle()">{{'Valitse kaikki' | kaanna }}</label></li>
+  <li ng-repeat="item in items">
+    <label><input type="checkbox" ng-model="item.$selected" ng-change="update()">{{item.label | kaanna}}</label>
+  </li>
+</ul>

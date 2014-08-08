@@ -16,13 +16,17 @@
 
 package fi.vm.sade.eperusteet.service.impl;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.dto.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.util.RestClientFactory;
+import fi.vm.sade.generic.rest.CachingRestClient;
+import java.io.IOException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 /**
  *
@@ -30,23 +34,33 @@ import org.springframework.web.client.RestTemplate;
  */
 @Service
 public class KayttajanTietoServiceImpl implements KayttajanTietoService {
-    private static final String KAYTTAJA_API = "https://itest-virkailija.oph.ware.fi/authentication-service/resources/henkilo/";
+    @Value("${cas.service.authentication-service:default}")
+    private String serviceUrl;
 
+    private static final String KAYTTAJA_API = "/resources/henkilo/";
+
+    private final ObjectMapper mapper = new ObjectMapper();
     @Override
-//    @Cacheable("kayttajantiedot")
+    @Cacheable("kayttajat")
     public KayttajanTietoDto hae(String oid) {
         if (oid == null || oid.isEmpty()) {
             throw new BusinessRuleViolationException("Päivitettävää perustetta ei ole olemassa");
         }
-        RestTemplate rt = new RestTemplate();
-        ObjectNode json = rt.getForObject(KAYTTAJA_API, ObjectNode.class);
+
+        CachingRestClient crc = RestClientFactory.create(serviceUrl);
         KayttajanTietoDto ktd = new KayttajanTietoDto();
 
-        ktd.setUsername(json.get("kayttajatiedot").get("username").toString());
-        ktd.setEtunimet(json.get("etunimet").toString());
-        ktd.setKieliKoodi(json.get("asiointiKieli").get("kielikoodi").toString());
-        ktd.setKutsumanimi(json.get("kayttajatiedot").toString());
-        ktd.setSukunimi(json.get("kayttajatiedot").toString());
+        try {
+            JsonNode json = mapper.readTree(crc.getAsString(serviceUrl + KAYTTAJA_API + oid));
+            ktd.setUsername(json.get("kayttajatiedot").get("username").asText());
+            ktd.setEtunimet(json.get("etunimet").asText());
+            ktd.setKieliKoodi(json.get("asiointiKieli").get("kieliKoodi").asText());
+            ktd.setKutsumanimi(json.get("kayttajatiedot").asText());
+            ktd.setSukunimi(json.get("kayttajatiedot").asText());
+            ktd.setOidHenkilo(json.get("oidHenkilo").asText());
+        } catch (IOException e) {
+            throw new BusinessRuleViolationException("Käyttäjän tietojen hakeminen epäonnistui");
+        }
         return ktd;
     }
 }
