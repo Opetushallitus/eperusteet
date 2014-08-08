@@ -17,9 +17,11 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteInfoDto;
@@ -107,9 +109,9 @@ public interface PerusteService {
 
     public TutkinnonOsaViiteDto updateTutkinnonOsaViite(Long osaId, TutkinnonOsaViiteDto tov);
 
-    Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, Tila tila);
+    Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, PerusteTila tila, PerusteTyyppi tyyppi);
 
-    Peruste luoPerusteRunkoToisestaPerusteesta(Long perusteId);
+    Peruste luoPerusteRunkoToisestaPerusteesta(Long perusteId, PerusteTyyppi tyyppi);
 
     Page<PerusteInfoDto> findByInfo(PageRequest page, PerusteQuery pquery);
 

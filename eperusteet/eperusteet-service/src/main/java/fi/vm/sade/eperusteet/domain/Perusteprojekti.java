@@ -97,5 +97,5 @@ public class Perusteprojekti extends AbstractAuditedEntity {
     @Setter
     @Enumerated(EnumType.STRING)
     @NotNull
-    private Tila tila = Tila.LAADINTA;
+    private ProjektiTila tila = ProjektiTila.LAADINTA;
 }

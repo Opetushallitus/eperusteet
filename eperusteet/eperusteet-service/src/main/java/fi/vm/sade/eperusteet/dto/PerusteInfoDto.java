@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.domain.Tila;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,5 +31,5 @@ public class PerusteInfoDto {
     private Long id;
     private LokalisoituTekstiDto nimi;
     private Date voimassaoloLoppuu;
-    private Tila tila;
+    private PerusteTila tila;
 }
