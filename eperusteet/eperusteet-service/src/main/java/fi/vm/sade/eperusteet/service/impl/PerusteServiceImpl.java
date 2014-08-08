@@ -18,12 +18,13 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
-import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -489,7 +490,7 @@ public class PerusteServiceImpl implements PerusteService {
         TutkinnonOsaViite viite = mapper.map(osa, TutkinnonOsaViite.class);
         if (viite.getTutkinnonOsa() == null) {
             TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
-            tutkinnonOsa.setTila(Tila.LUONNOS);
+            tutkinnonOsa.setTila(PerusteTila.LUONNOS);
             tutkinnonOsa = perusteenOsaRepository.save(tutkinnonOsa);
             viite.setTutkinnonOsa(tutkinnonOsa);
         }
@@ -545,7 +546,7 @@ public class PerusteServiceImpl implements PerusteService {
         PerusteenOsaViite uusiViite = new PerusteenOsaViite();
         if (viite == null) {
             TekstiKappale uusiKappale = new TekstiKappale();
-            uusiKappale.setTila(Tila.LUONNOS);
+            uusiKappale.setTila(PerusteTila.LUONNOS);
             em.persist(uusiKappale);
             uusiViite.setPerusteenOsa(uusiKappale);
         } else {
@@ -573,7 +574,7 @@ public class PerusteServiceImpl implements PerusteService {
         perusteenOsaViiteRepo.lock(viiteEntity);
         PerusteenOsaViite uusiViite = new PerusteenOsaViite();
         TekstiKappale uusiKappale = new TekstiKappale();
-        uusiKappale.setTila(Tila.LUONNOS);
+        uusiKappale.setTila(PerusteTila.LUONNOS);
         em.persist(uusiKappale);
         uusiViite.setPerusteenOsa(uusiKappale);
         uusiViite.setVanhempi(viiteEntity);
@@ -680,7 +681,7 @@ public class PerusteServiceImpl implements PerusteService {
                         peruste.setVoimassaoloAlkaa(new GregorianCalendar(3000, 0, 1).getTime());
                         peruste.setKoulutukset(new HashSet<Koulutus>());
                         peruste.setSuoritustavat(luoSuoritustavat(koulutustyyppiUri, null));
-                        peruste.setTila(Tila.VALMIS);
+                        peruste.setTila(PerusteTila.VALMIS);
                     }
                     peruste.getKoulutukset().add(luoKoulutus(tutkinto));
 
@@ -782,10 +783,11 @@ public class PerusteServiceImpl implements PerusteService {
      */
     @Override
     // FIXME: Luo vain ammatillisen puolen perusteita. Refactoroi, kun tulee lisää koulutustyyppejä.
-    public Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, Tila tila) {
+    public Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, PerusteTila tila, PerusteTyyppi tyyppi) {
         Peruste peruste = new Peruste();
         peruste.setKoulutustyyppi(koulutustyyppi);
         peruste.setTila(tila);
+        peruste.setTyyppi(tyyppi);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
         suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO, null));
         if (koulutustyyppi != null && koulutustyyppi.equals(KOULUTUSTYYPPI_URIT[0])) {
@@ -796,10 +798,11 @@ public class PerusteServiceImpl implements PerusteService {
     }
 
     @Override
-    public Peruste luoPerusteRunkoToisestaPerusteesta(Long perusteId) {
+    public Peruste luoPerusteRunkoToisestaPerusteesta(Long perusteId, PerusteTyyppi tyyppi) {
         Peruste vanha = perusteet.getOne(perusteId);
         Peruste peruste = new Peruste();
-        peruste.setTila(Tila.LUONNOS);
+        peruste.setTila(PerusteTila.LUONNOS);
+        peruste.setTyyppi(tyyppi);
         peruste.setKuvaus(vanha.getKuvaus());
         peruste.setNimi(vanha.getNimi());
         peruste.setKoulutustyyppi(vanha.getKoulutustyyppi());

@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.resource;
 import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.domain.Henkilo;
 import fi.vm.sade.eperusteet.domain.Rooli;
-import fi.vm.sade.eperusteet.domain.Tila;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiInfoDto;
@@ -96,7 +96,7 @@ public class PerusteprojektiController {
 
     @RequestMapping(value = "/{id}/tilat", method = GET)
     @ResponseBody
-    public ResponseEntity<Set<Tila>> getTilat(@PathVariable("id") final long id) {
+    public ResponseEntity<Set<ProjektiTila>> getTilat(@PathVariable("id") final long id) {
         return new ResponseEntity<>(service.getTilat(id), HttpStatus.OK);
     }
 
@@ -112,7 +112,7 @@ public class PerusteprojektiController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public TilaUpdateStatus updateTila(@PathVariable("id") final long id, @PathVariable("tila") final String tila) {
-        return service.updateTila(id, Tila.of(tila));
+        return service.updateTila(id, ProjektiTila.of(tila));
 
     }
 

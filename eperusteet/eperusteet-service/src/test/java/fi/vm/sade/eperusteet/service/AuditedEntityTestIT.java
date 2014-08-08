@@ -16,27 +16,11 @@
 
 package fi.vm.sade.eperusteet.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.annotation.DirtiesContext;
-
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.ArvioinninKohdealueDto;
 import fi.vm.sade.eperusteet.dto.ArviointiDto;
@@ -46,6 +30,24 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.annotation.DirtiesContext;
 
 /**
  *
@@ -70,7 +72,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         TekstiKappale teksti = new TekstiKappale();
         teksti.setNimi(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi")));
         teksti.setTeksti(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi")));
-        teksti.setTila(Tila.LUONNOS);
+        teksti.setTila(PerusteTila.LUONNOS);
         teksti = perusteenOsaRepository.save(teksti);
 
         assertEquals(user1, teksti.getLuoja());
@@ -107,7 +109,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         TekstiKappale teksti = new TekstiKappale();
         teksti.setNimi(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi")));
         teksti.setTeksti(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Teksti")));
-        teksti.setTila(Tila.LUONNOS);
+        teksti.setTila(PerusteTila.LUONNOS);
         teksti = perusteenOsaRepository.save(teksti);
 
         teksti.getNimi().getTeksti().put(Kieli.FI, "nimi, muokattu");
@@ -124,7 +126,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
     public void testTutkinnonOsaRevisions() {
     	TutkinnonOsaDto tutkinnonOsaDto = new TutkinnonOsaDto();
     	tutkinnonOsaDto.setNimi(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Nimi")));
-        tutkinnonOsaDto.setTila(Tila.LUONNOS);
+        tutkinnonOsaDto.setTila(PerusteTila.LUONNOS);
     	tutkinnonOsaDto = perusteenOsaService.add(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
 
         perusteenOsaService.lock(tutkinnonOsaDto.getId());

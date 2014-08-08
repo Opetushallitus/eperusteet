@@ -16,9 +16,10 @@
 
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
-import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -26,6 +27,8 @@ import java.util.ArrayList;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotEquals;
 import org.junit.Before;
 import org.junit.Rule;
@@ -72,7 +75,7 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
         
         PerusteenOsaViite lapsi = new PerusteenOsaViite();
         TekstiKappale tekstikappale = new TekstiKappale();
-        tekstikappale.setTila(Tila.LUONNOS);
+        tekstikappale.setTila(PerusteTila.LUONNOS);
         em.persist(tekstikappale);
         
         tekstikappaleId = tekstikappale.getId();
@@ -84,7 +87,7 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
         
         PerusteenOsaViite lapsenlapsi = new PerusteenOsaViite();
         tekstikappale = new TekstiKappale();
-        tekstikappale.setTila(Tila.LUONNOS);
+        tekstikappale.setTila(PerusteTila.LUONNOS);
         em.persist(tekstikappale);
         
         tekstikappaleLapsenlapsiId = tekstikappale.getId();

@@ -73,7 +73,7 @@ angular.module('eperusteApp')
     });
 
     $scope.palauta = function(pp) {
-      var uusiTila = pp.tila === 'poistettupohja' ? 'pohja' : 'laadinta';
+      var uusiTila = 'laadinta';
       Varmistusdialogi.dialogi({
         otsikko: Kaanna.kaanna('vahvista-palautus'),
         teksti: Kaanna.kaanna('vahvista-palautus-sisältö', {
