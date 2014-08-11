@@ -533,6 +533,7 @@
     "perusteprojekti-perustenimi-placeholder": "<Anna perusteen nimi>",
     "perusteprojekti-koulutusala-placeholder": "<Anna koulutusala>",
     "perusteprojekti-nimi-placeholder": "<Anna projektin nimi>",
+    "perusteprojekti-koulutustyyppi-placeholder": "<Aseta perusteen koulutustyyppi>",
     "projekti-header-peruste": "Peruste",
     "projekti-header-koulutusala": "Koulutusala",
     "projekti-header-paatosPvm": "Päätöspäivämäärä",
