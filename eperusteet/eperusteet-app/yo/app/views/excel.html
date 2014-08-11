@@ -16,9 +16,13 @@
       <div class="form-group col-xs-12">
         <div class="clearfix"></div>
         <label>{{ 'tiedosto' | kaanna }} (.xslx)</label>
-        <file-select id="fileselect-button" flabel="lataa" before-select="clearSelect" on-select="onFileSelect" on-progress="onProgress" read-type="binary"></file-select>
+        <file-select id="fileselect-button" before-select="clearSelect" on-select="onFileSelect" on-progress="onProgress" read-type="binary"></file-select>
       </div>
     </form>
+  </div>
+
+  <div ng-hide="alussa" class="excel-alkuun">
+    <a icon-role="back" class="action-link" ng-click="alussa = true; clearSelect();" kaanna>Alkuun</a>
   </div>
 
   <!-- virheet -->

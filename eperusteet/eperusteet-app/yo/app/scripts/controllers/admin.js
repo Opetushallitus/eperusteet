@@ -34,7 +34,7 @@ angular.module('eperusteApp')
     $scope.tilat = YleinenData.tilakuvaukset;
 
     $scope.filteredPp = [];
-    $scope.itemsPerPage = 5;
+    $scope.itemsPerPage = 10;
     $scope.nykyinen = 1;
     $scope.alaraja = 0;
     $scope.ylaraja = $scope.alaraja + $scope.itemsPerPage;
