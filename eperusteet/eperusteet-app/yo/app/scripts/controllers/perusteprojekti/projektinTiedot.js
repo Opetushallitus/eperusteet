@@ -91,12 +91,18 @@ angular.module('eperusteApp')
     $scope.muokkaa = function () {
       Editointikontrollit.startEditing();
     };
-
-    PerusteProjektiService.clean();
-    if ($scope.wizardissa()) {
-      perusteprojektiTiedot.cleanData();
-    }
-
+    
+    $scope.puhdistaValinta = function() {
+      PerusteProjektiService.clean();
+      if ($scope.wizardissa()) {
+        perusteprojektiTiedot.cleanData();
+        $scope.peruste = undefined;
+        $scope.projekti = {};
+      }
+    };
+    $scope.puhdistaValinta();
+    
+    
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.projekti.laajuusYksikko = $scope.projekti.laajuusYksikko || 'OSAAMISPISTE';
 
@@ -133,11 +139,7 @@ angular.module('eperusteApp')
       angular.noop);
     };
 
-    $scope.puhdistaValinta = function() {
-      $scope.peruste = undefined;
-      $scope.projekti = {};
-    };
-
+    
     $scope.tallennaPerusteprojekti = function() {
       var projekti = PerusteProjektiService.get();
       if (projekti.id) {
@@ -151,7 +153,9 @@ angular.module('eperusteApp')
           tyyppi: 'pohja'
         });
       } else {
-        projekti.tyyppi = 'normaali';
+        if ($scope.wizardissa()) {
+          projekti.tyyppi = 'normaali';
+        }
       }
 
       PerusteprojektiResource.update(projekti, function(vastaus) {
