@@ -59,7 +59,7 @@ angular.module('eperusteApp')
                 $open: true,
                 $condensed: true,
                 items: _.map(PerusOpetusTiedot.luokat, function (luokka) {
-                  return {label: '' + luokka, value: luokka};
+                  return {label: 'Vuosiluokka ' + luokka, value: luokka};
                 })
               },
               {

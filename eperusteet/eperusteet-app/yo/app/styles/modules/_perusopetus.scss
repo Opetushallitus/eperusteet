@@ -12,10 +12,11 @@
 }
 
 .multichoice {
+  margin-bottom: 0;
   &.condensed {
-    li {
-      display: inline;
-    }
+    column-count: 2;
+    -moz-column-count: 2;
+    -webkit-column-count: 2;
   }
   .toggle-all {
     display: block !important;

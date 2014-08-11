@@ -1,5 +1,6 @@
-<ul class="multichoice" ng-class="{condensed: condensed}">
+<ul class="multichoice">
   <li class="toggle-all"><label><input type="checkbox" ng-model="model.all" ng-change="toggle()">{{'Valitse kaikki' | kaanna }}</label></li>
+</ul><ul class="multichoice" ng-class="{condensed: condensed}">
   <li ng-repeat="item in items" ng-class="'level' + (item.depth || 0)">
     <label><input type="checkbox" ng-model="item.$selected" ng-change="update()">{{item.label | kaanna}}</label>
   </li>
