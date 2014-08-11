@@ -90,7 +90,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         String koulutustyyppi = perusteprojektiDto.getKoulutustyyppi();
         LaajuusYksikko yksikko = perusteprojektiDto.getLaajuusYksikko();
-        PerusteTyyppi tyyppi = perusteprojektiDto.getTyyppi();
+        PerusteTyyppi tyyppi = perusteprojektiDto.getTyyppi() == null ? PerusteTyyppi.NORMAALI : perusteprojektiDto.getTyyppi();
         perusteprojekti.setTila(ProjektiTila.LAADINTA);
 
         if (tyyppi != PerusteTyyppi.POHJA) {

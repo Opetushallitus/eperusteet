@@ -152,10 +152,6 @@ angular.module('eperusteApp')
         projekti = _.merge(_.pick(projekti, 'id', 'nimi', 'koulutustyyppi'), {
           tyyppi: 'pohja'
         });
-      } else {
-        if ($scope.wizardissa()) {
-          projekti.tyyppi = 'normaali';
-        }
       }
 
       PerusteprojektiResource.update(projekti, function(vastaus) {
