@@ -196,7 +196,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         if (tila == ProjektiTila.POISTETTU) {
-            projekti.getPeruste().setTila(PerusteTila.POISTETTU);
+            setPerusteTila(projekti.getPeruste(), PerusteTila.POISTETTU);
         }
         
         if (tila == ProjektiTila.LAADINTA && projekti.getTila() == ProjektiTila.POISTETTU) {
