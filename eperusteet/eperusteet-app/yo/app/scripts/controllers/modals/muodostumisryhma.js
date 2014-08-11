@@ -34,18 +34,21 @@ angular.module('eperusteApp')
     };
 
     $scope.luonti = !_.isObject(ryhma);
-    $scope.ryhma = ryhma ? angular.copy(ryhma) : {};
-    $scope.ryhma.rooli = $scope.ryhma.rooli || YleinenData.rakenneRyhmaRoolit[0];
 
-    if (!$scope.ryhma.muodostumisSaanto) {
-      $scope.ryhma.muodostumisSaanto = {};
-    }
-    if (!$scope.ryhma.nimi) {
-      $scope.ryhma.nimi = {};
-    }
-    if (!$scope.ryhma.kuvaus) {
-      $scope.ryhma.kuvaus = {};
-    }
+    var setupRyhma = function (ryhma) {
+      $scope.ryhma = ryhma ? angular.copy(ryhma) : {};
+      $scope.ryhma.rooli = $scope.ryhma.rooli || YleinenData.rakenneRyhmaRoolit[0];
+      if (!$scope.ryhma.muodostumisSaanto) {
+        $scope.ryhma.muodostumisSaanto = {};
+      }
+      if (!$scope.ryhma.nimi) {
+        $scope.ryhma.nimi = {};
+      }
+      if (!$scope.ryhma.kuvaus) {
+        $scope.ryhma.kuvaus = {};
+      }
+    };
+    setupRyhma(ryhma);
 
     $scope.ok = function(uusiryhma) {
       if (uusiryhma) {
