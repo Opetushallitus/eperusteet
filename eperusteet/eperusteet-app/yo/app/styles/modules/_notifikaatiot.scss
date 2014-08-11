@@ -36,6 +36,8 @@
   vertical-align: center;
   -webkit-box-shadow:0 1px 3px rgba(0, 0, 0, 0.49);
   box-shadow:0 1px 3px rgba(0, 0, 0, 0.49);
+  background-repeat: no-repeat;
+  background-position: 7px 6px;
 }
 
 .notification-body {
@@ -51,26 +53,29 @@
 }
 
 .notification-message {
-  margin: 6px 0px 0px 5px;
+  margin: 6px 0px 0px 37px;
   float: left;
   font-weight: normal;
 }
 
 .notification-normal {
   @include notification();
-  background: #e4f4f9;
+  background-color: #e4f4f9;
+  background-image: url("../images/notify-info.png");
   color: #4987b3;
 }
 
 .notification-success {
   @include notification();
-  background: #e3f4e5;
+  background-color: #e3f4e5;
+  background-image: url("../images/notify-success.png");
   color: #4b8947;
 }
 
 .notification-warning {
   @include notification();
-  background: #fcf3d3;
+  background-color: #fcf3d3;
+  background-image: url("../images/notify-alert.png");
   color: #a07c3a;
 }
 

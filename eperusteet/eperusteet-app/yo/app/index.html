@@ -48,11 +48,6 @@
           <div ng-if="viestit" ng-click="poistaNotifikaatio(viesti)" ng-model="viestit" ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }" ng-repeat="viesti in viestit">
             <div class="notification-body">
               <span class="close">×</span>
-              <span ng-hide="viesti.ilmanKuvaa" class="notification-picture ng-cloak">
-                <img ng-if="viesti.tyyppi === 0" src="images/notify-info.png" alt="">
-                <img ng-if="viesti.tyyppi === 1" src="images/notify-success.png" alt="">
-                <img ng-if="viesti.tyyppi === 2" src="images/notify-alert.png" alt="">
-              </span>
               <span class="notification-message" ng-bind="viesti.viesti | kaanna"></span>
             </div>
           </div>
