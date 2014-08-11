@@ -7,6 +7,9 @@
   </div>
   <div ng-if="!lisataanUuttaOsaa" class="tree col-lg-6 col-md-8 col-xs-12">
     <div class="tree-con" ng-show="muokkaus || rakenne.rakenne.osat.length > 0">
+      <div class="puun-rajaus">
+        <input class="form-control input-sm" ng-model="apumuuttujat.haku" placeholder="{{'Etsi rakenteesta...'|kaanna}}">
+      </div>
       <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" ng-if="rakenne.$resolved" rakenne="rakenne.rakenne" tutkinnon-osa-viitteet="rakenne.tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" poisto-tehty-cb="poistoTehtyCb"></tree>
     </div>
   </div>
