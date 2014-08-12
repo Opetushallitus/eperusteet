@@ -17,13 +17,15 @@ package fi.vm.sade.eperusteet.resource;
 
 import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.domain.Henkilo;
-import fi.vm.sade.eperusteet.domain.Rooli;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.domain.Rooli;
+import fi.vm.sade.eperusteet.dto.BooleanDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
+import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.ArrayList;
@@ -120,6 +122,8 @@ public class PerusteprojektiController {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public ResponseEntity<PerusteprojektiDto> add(@RequestBody PerusteprojektiLuontiDto perusteprojektiLuontiDto, UriComponentsBuilder ucb) {
+        service.onkoDiaarinumeroKaytossa(perusteprojektiLuontiDto.getDiaarinumero());
+        
         PerusteprojektiDto perusteprojektiDto = service.save(perusteprojektiLuontiDto);
         return new ResponseEntity<>(perusteprojektiDto, buildHeadersFor(perusteprojektiDto.getId(), ucb), HttpStatus.CREATED);
     }
@@ -128,5 +132,18 @@ public class PerusteprojektiController {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucb.path("/perusteprojektit/{id}").buildAndExpand(id).toUri());
         return headers;
+    }
+    
+    @RequestMapping(value = "/diaarinumero/uniikki/{diaarinumero}", method = GET)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ResponseEntity<BooleanDto> get(@PathVariable("diaarinumero") final String diaarinumero) {
+        try {
+            service.onkoDiaarinumeroKaytossa(diaarinumero);
+        } catch (BusinessRuleViolationException ex) {
+            return new ResponseEntity<>(new BooleanDto(false), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(new BooleanDto(true), HttpStatus.OK);
     }
 }

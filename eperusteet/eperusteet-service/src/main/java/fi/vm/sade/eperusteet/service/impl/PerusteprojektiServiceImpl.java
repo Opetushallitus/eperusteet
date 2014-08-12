@@ -116,6 +116,16 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public void onkoDiaarinumeroKaytossa(String diaarinumero) {
+        Perusteprojekti projekti = repository.findOneByDiaarinumero(diaarinumero);
+        if (projekti != null) {
+            // TODO: Poikkeusten virheilmoituksetkin pitäisi lokalisoida
+            throw new BusinessRuleViolationException("Diaarinumero on jo käytössä");
+        }
+    }
 
     @Override
     @Transactional(readOnly = false)
