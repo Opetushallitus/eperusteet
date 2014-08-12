@@ -1,16 +1,35 @@
 'use strict';
 
-// TODO disabloitu, päivitä testit
-xdescribe('Directive: arviointi', function () {
+describe('Directive: arviointi', function () {
+
+  var ASTEIKOT = _.indexBy([{"id" : 2,
+    "osaamistasot" : [ {
+      "id" : 2,
+      "otsikko" : {
+        "_id" : "48",
+        "fi" : "Tyydyttävä T1",
+        "sv" : "[Tyydyttävä T1]"
+      }
+    }]
+  }], 'id');
 
   // load the directive's module
   beforeEach(module('eperusteApp',
+                    'views/aloitussivu.html',
                     'views/partials/arviointi.html',
-                    'views/partials/arvioinninTekstikentta.html'));
+                    'views/partials/arvioinninTekstikentta.html', function ($provide) {
+      $provide.value('YleinenData', {
+        arviointiasteikot: ASTEIKOT,
+        haeArviointiasteikot: angular.noop,
+        vaihdaKieli: angular.noop
+      });
+    }));
 
-  var element, scope, $compile;
+  var element, scope, $compile, $http;
+
 
   beforeEach(inject(function ($rootScope, _$compile_, $httpBackend) {
+    $http = $httpBackend;
     $httpBackend.when('GET', /localisation.+/).respond({});
     $httpBackend.when('GET', /eperusteet-service\/api.+/).respond({});
     scope = $rootScope.$new();
@@ -18,32 +37,15 @@ xdescribe('Directive: arviointi', function () {
   }));
 
   function kaannaElementti() {
-    element = angular.element('<arviointi arviointi="arviointi"></arviointi>');
+    element = angular.element('<arviointi arviointi="arviointi.arvioinninKohdealueet"></arviointi>');
     $compile(element)(scope);
     scope.$digest();
   };
 
-  it('näyttää tekstin jos teksti on olemassa ja kohdealueita ei ole', function () {
+  it('näyttää kohdealueet ja kriteerit', function () {
     scope.arviointi = {
       id: 2276,
-      lisatiedot: {
-        _id: '2277',
-        fi: 'Arviointi tekstinä'
-      },
-      arvioinninKohdealueet: []
-    };
-    kaannaElementti();
-    expect(element.html()).toContain('Arviointi tekstinä');
-  });
-
-  it('näyttää kohdealueet eikä tekstiä jos teksti on tyhjä', function () {
-    scope.arviointi = {
-      id: 2276,
-      lisatiedot: {
-        _id: '2277',
-        fi: '',
-        se: ''
-      },
+      lisatiedot: null,
       arvioinninKohdealueet: [{
         otsikko: {fi: 'Työprosessin hallinta'},
         arvioinninKohteet: [{
@@ -60,9 +62,11 @@ xdescribe('Directive: arviointi', function () {
         }]
       }]
     };
+    $http.flush();
     kaannaElementti();
     var html = element.html();
     expect(html).toContain('Työprosessin hallinta');
     expect(html).toContain('Suunnittelu');
+    expect(html).toContain('kriteeri 2');
   });
 });
