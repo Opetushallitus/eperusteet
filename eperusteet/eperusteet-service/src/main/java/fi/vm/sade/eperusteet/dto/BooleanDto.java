@@ -1,32 +1,36 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
+ * 
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
+ * 
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.repository;
+package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author harrik
  */
-@Repository
-public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti, Long> {
+@Getter
+@Setter
+public class BooleanDto {
 
-    public Perusteprojekti findOneByDiaarinumero(String diaarinumero);
-    /*@Query("SELECT pp FROM Perusteprojekti pp LEFT JOIN FETCH pp.peruste WHERE pp.id = ?1")
-    Perusteprojekti findOneFetchPerusteEagerly(Long id);*/
+    public BooleanDto(boolean vastaus) {
+        this.vastaus = vastaus;
+    }
+    
+    
+    boolean vastaus;
 }

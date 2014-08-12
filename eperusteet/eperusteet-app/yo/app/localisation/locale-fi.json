@@ -617,5 +617,7 @@
     "liittamattomia-tutkinnon-osia": "Projektissa on rakenteeseen liittämättömiä tutkinnon osia.",
     "korjaa-virheet": "Korjaa seuraavat virheet",
     "viesti": "Viesti",
-    "lisatieto": "Lisätieto"
+    "lisatieto": "Lisätieto",
+    
+    "diaarinumero-kaytossa": "Diaarinumero on jo käytössä"
 }

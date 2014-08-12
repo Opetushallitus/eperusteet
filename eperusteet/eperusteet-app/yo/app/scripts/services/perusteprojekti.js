@@ -37,6 +37,9 @@ angular.module('eperusteApp')
       update: {method: 'POST', isArray: false}
     });
   })
+  .factory('DiaarinumeroUniqueResource', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteprojektit/diaarinumero/uniikki/:diaarinumero');
+  })
   .service('PerusteProjektit', function($http, SERVICE_LOC, Notifikaatiot) {
     function hae(query, success, failure) {
       success = success || angular.noop;

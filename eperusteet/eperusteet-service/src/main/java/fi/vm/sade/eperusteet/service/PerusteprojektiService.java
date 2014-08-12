@@ -41,4 +41,6 @@ public interface PerusteprojektiService {
     Set<ProjektiTila> getTilat(final Long id);
 
     TilaUpdateStatus updateTila(final Long id, ProjektiTila tila);
+
+    void onkoDiaarinumeroKaytossa(String diaarinumero);
 }

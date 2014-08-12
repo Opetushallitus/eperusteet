@@ -81,7 +81,7 @@ angular.module('eperusteApp')
           element.find('label').attr('for', scope.inputElId);
         }
 
-        if (scope.type === 'text' && attrs.max) {
+        if ((scope.type === 'text' || scope.type === 'diaari') && attrs.max) {
           $timeout(function () {
             element.find('input').attr('maxlength', attrs.max);
           });
