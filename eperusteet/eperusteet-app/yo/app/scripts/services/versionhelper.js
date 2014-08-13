@@ -20,6 +20,16 @@
 angular.module('eperusteApp')
   .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot,
     RakenneVersio, Notifikaatiot, $state, $location, $stateParams) {
+
+    function rakennaNimi(v) {
+        var nimi = (v.kutsumanimi || '') + ' ' + (v.sukunimi || '');
+        v.$nimi = nimi === ' ' ? v.muokkaajaOid : nimi;
+    }
+
+    function rakennaNimet(list) {
+      _.forEach(list, rakennaNimi);
+    }
+
     function getVersions(data, tunniste, tyyppi, force, cb) {
       cb = cb || angular.noop;
       if (!_.isObject(data)) {
@@ -28,6 +38,7 @@ angular.module('eperusteApp')
       if (force || !data.list) {
         if (tyyppi === 'perusteenosa') {
           PerusteenOsat.versiot({osanId: tunniste.id}, function(res) {
+            rakennaNimet(res);
             data.list = res;
             versiotListHandler(data);
             cb();
@@ -35,6 +46,7 @@ angular.module('eperusteApp')
         }
         else if (tyyppi === 'rakenne') {
           RakenneVersiot.query({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa}, function(res) {
+            rakennaNimet(res);
             data.list = res;
             versiotListHandler(data);
             cb();

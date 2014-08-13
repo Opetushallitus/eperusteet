@@ -12,7 +12,7 @@
     </tr>
     <tr ng-repeat="ver in versions.list">
       <td><a href="" ng-click="close(ver)">{{ ver.index }}</a></td>
-      <td>Erkki Esimerkki</td>
+      <td>{{ ver.$nimi }}</td>
       <td>{{ ver.kommentti || '-' }}</td>
       <td>{{ ver.pvm | aikaleima:'time' }}</td>
     </tr>

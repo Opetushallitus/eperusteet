@@ -17,14 +17,19 @@ package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.dto.HenkiloTietoDto;
+import fi.vm.sade.eperusteet.dto.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.UpdateDto;
+import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
+import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -38,15 +43,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 @RequestMapping("/perusteenosat")
@@ -56,6 +60,9 @@ public class PerusteenOsaController {
 
     @Autowired
     private PerusteenOsaService service;
+
+    @Autowired
+    private KayttajanTietoService kayttajanTietoService;
 
     @RequestMapping(method = GET)
     @ResponseBody
@@ -84,9 +91,13 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/{id}/versiot", method = GET)
     @ResponseBody
-    public List<Revision> getVersiot(@PathVariable("id") final Long id) {
-    	LOG.debug("get revisions");
-    	return service.getVersiot(id);
+    public List<CombinedDto<Revision, HenkiloTietoDto>> getVersiot(@PathVariable("id") final Long id) {
+        List<Revision> versiot = service.getVersiot(id);
+        List<CombinedDto<Revision, HenkiloTietoDto>> laajennetut = new ArrayList<>();
+        for (Revision r : versiot) {
+            laajennetut.add(new CombinedDto<>(r, new HenkiloTietoDto(kayttajanTietoService.hae(r.getMuokkaajaOid()))));
+        }
+    	return laajennetut;
     }
 
     @RequestMapping(value = "/{id}/versio/{versioId}", method = GET)

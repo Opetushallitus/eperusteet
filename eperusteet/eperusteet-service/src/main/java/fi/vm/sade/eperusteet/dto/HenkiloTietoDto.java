@@ -16,18 +16,23 @@
 
 package fi.vm.sade.eperusteet.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import fi.vm.sade.eperusteet.domain.Rooli;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author nkala
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class HenkiloDto {
-    private String henkiloId;
-    private String nimi;
-    private String puhelinnumero;
-    private String email;
-    private Rooli rooli;
+@Getter
+@Setter
+public class HenkiloTietoDto {
+    String kutsumanimi;
+    String sukunimi;
+
+    public HenkiloTietoDto(KayttajanTietoDto ktd) {
+        if (ktd != null) {
+            this.kutsumanimi = ktd.getKutsumanimi();
+            this.sukunimi = ktd.getSukunimi();
+        }
+    }
 }
