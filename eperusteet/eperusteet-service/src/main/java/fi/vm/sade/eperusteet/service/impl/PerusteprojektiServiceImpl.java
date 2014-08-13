@@ -15,6 +15,8 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -25,12 +27,16 @@ import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.dto.KayttajanProjektitiedotDto;
+import fi.vm.sade.eperusteet.dto.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.util.DtoCombiner;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
@@ -39,12 +45,16 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
+import fi.vm.sade.eperusteet.service.util.RestClientFactory;
+import fi.vm.sade.generic.rest.CachingRestClient;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +66,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PerusteprojektiServiceImpl.class);
+
+    private final String authQueryPath = "/resources/henkilo?count=9999&index=0&org=";
+
+    @Value("${cas.service.authentication-service}")
+    private String authServiceUrl;
 
     @Autowired
     @Dto
@@ -70,6 +85,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Autowired
     private PerusteService perusteService;
 
+    @Autowired
+    private KayttajanTietoService kayttajanTietoService;
+
+    @Autowired
+    RestClientFactory restClientFactory;
+
     @Override
     @Transactional(readOnly = true)
     public List<PerusteprojektiInfoDto> getBasicInfo() {
@@ -81,6 +102,58 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     public PerusteprojektiDto get(Long id) {
         Perusteprojekti p = repository.findOne(id);
         return mapper.map(p, PerusteprojektiDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<KayttajanTietoDto> getJasenet(Long id) {
+        CachingRestClient crc = restClientFactory.create(authServiceUrl);
+        Perusteprojekti p = repository.findOne(id);
+        List<KayttajanTietoDto> kayttajat = null;
+        ObjectMapper omapper = new ObjectMapper();
+
+        if (p == null || p.getOid() == null | p.getOid().isEmpty()) {
+            throw new BusinessRuleViolationException("Perusteprojektilla ei ole oid:a");
+        }
+
+        try {
+            String url = authServiceUrl + authQueryPath + p.getOid();
+            String json = crc.getAsString(url);
+            kayttajat = kayttajanTietoService.parsiKayttajat(omapper.readTree(json).get("results"));
+        } catch (IOException ex) {
+            throw new BusinessRuleViolationException("Käyttäjien tietojen hakeminen epäonnistui");
+        }
+        return kayttajat;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DtoCombiner<KayttajanTietoDto, KayttajanProjektitiedotDto>> getJasenetTiedot(Long id) {
+        CachingRestClient crc = restClientFactory.create(authServiceUrl);
+        Perusteprojekti p = repository.findOne(id);
+
+        if (p == null || p.getOid() == null | p.getOid().isEmpty()) {
+            throw new BusinessRuleViolationException("Perusteprojektilla ei ole oid:a");
+        }
+
+        List<DtoCombiner<KayttajanTietoDto, KayttajanProjektitiedotDto>> kayttajat = new ArrayList<>();
+
+        try {
+            String url = authServiceUrl + authQueryPath + p.getOid();
+            ObjectMapper omapper = new ObjectMapper();
+            JsonNode tree = omapper.readTree(crc.getAsString(url));
+            for (JsonNode node : tree.get("results")) {
+                String oid = node.get("oidHenkilo").asText();
+                DtoCombiner<KayttajanTietoDto, KayttajanProjektitiedotDto> combined = new DtoCombiner<>(
+                    kayttajanTietoService.hae(oid),
+                    kayttajanTietoService.haePerusteprojekti(oid, id)
+                );
+                kayttajat.add(combined);
+            }
+        } catch (IOException ex) {
+            throw new BusinessRuleViolationException("Käyttäjien tietojen hakeminen epäonnistui");
+        }
+        return kayttajat;
     }
 
     @Override
@@ -101,6 +174,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             if (perusteprojektiDto.getDiaarinumero() == null) {
                 throw new BusinessRuleViolationException("Diaarinumeroa ei ole asetettu");
             }
+//            FIXME: Ota käyttöön kun aika koittaa
+//            if (perusteprojektiDto.getOid() == null) {
+//                throw new BusinessRuleViolationException("Organisaatioryhmää ei ole asetettu");
+//            }
         }
 
         Peruste peruste;

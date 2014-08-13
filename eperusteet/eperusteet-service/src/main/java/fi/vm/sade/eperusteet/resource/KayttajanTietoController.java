@@ -16,8 +16,10 @@
 
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.dto.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +42,33 @@ public class KayttajanTietoController {
     @RequestMapping(value = "/{oid:.+}", method = GET)
     @ResponseBody
     public ResponseEntity<KayttajanTietoDto> get(@PathVariable("oid") final String oid) {
+        return new ResponseEntity<>(service.hae(oid), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{oid:.+}/perusteprojektit", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<KayttajanProjektitiedotDto>> getPerusteprojektit(@PathVariable("oid") final String oid) {
+        return new ResponseEntity<>(service.haePerusteprojektit(oid), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{oid:.+}/perusteprojektit/{projektiId}", method = GET)
+    @ResponseBody
+    public ResponseEntity<KayttajanProjektitiedotDto> getPerusteprojekti(
+            @PathVariable("oid") final String oid,
+            @PathVariable("projektiId") final Long projektiId
+    ) {
+        return new ResponseEntity<>(service.haePerusteprojekti(oid, projektiId), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{oid:.+}/kaikki", method = GET)
+    @ResponseBody
+    public ResponseEntity<KayttajanTietoDto> getKaikki(@PathVariable("oid") final String oid) {
+        return new ResponseEntity<>(service.hae(oid), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{oid:.+}/yhteystiedot", method = GET)
+    @ResponseBody
+    public ResponseEntity<KayttajanTietoDto> getYhteystiedot(@PathVariable("oid") final String oid) {
         return new ResponseEntity<>(service.hae(oid), HttpStatus.OK);
     }
 }

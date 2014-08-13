@@ -14,24 +14,15 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import lombok.Getter;
-import lombok.Setter;
+package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 /**
  *
  * @author nkala
  */
-@Getter
-@Setter
-public class KayttajanTietoDto {
-    String username;
-    String kutsumanimi;
-    String etunimet;
-    String sukunimi;
-    String oidHenkilo;
-    String kieliKoodi;
-    JsonNode yhteystiedot;
+public class KayttajanPerusteprojektiDto {
+    Boolean passivoitu;
+    String tehtavanimike;
+    String organisaatioOid;
+    Long id;
 }

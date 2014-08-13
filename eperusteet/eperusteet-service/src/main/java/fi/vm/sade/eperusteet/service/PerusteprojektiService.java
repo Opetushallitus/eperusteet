@@ -17,18 +17,26 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.dto.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
-import java.util.Set;
+import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.util.DtoCombiner;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
  * @author harrik
  */
 public interface PerusteprojektiService {
+
+    List<KayttajanTietoDto> getJasenet(Long id);
+
+    List<DtoCombiner<KayttajanTietoDto, KayttajanProjektitiedotDto>> getJasenetTiedot(Long id);
 
     PerusteprojektiDto get(final Long id);
 

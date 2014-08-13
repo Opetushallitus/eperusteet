@@ -14,9 +14,8 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.domain;
+package fi.vm.sade.eperusteet.dto;
 
-import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,21 +25,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class Henkilo implements Serializable {
-    private String henkiloId;
-    private String nimi;
-    private String puhelinnumero;
-    private String email;
-    private Rooli rooli;
-
-    public Henkilo() {
-    }
-
-    public Henkilo(String henkiloId, String nimi, String puhelinnumero, String email, Rooli rooli) {
-        this.henkiloId = henkiloId;
-        this.nimi = nimi;
-        this.puhelinnumero = puhelinnumero;
-        this.email = email;
-        this.rooli = rooli;
-    }
+public class KayttajanProjektitiedotDto {
+    Long perusteprojekti;
+    String organisaatioOid;
+    String tehtavanimike;
+    Boolean passivoitu;
 }
