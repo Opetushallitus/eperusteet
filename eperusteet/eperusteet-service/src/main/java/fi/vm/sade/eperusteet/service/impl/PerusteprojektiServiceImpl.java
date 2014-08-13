@@ -34,7 +34,7 @@ import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.dto.util.DtoCombiner;
+import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
@@ -128,7 +128,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DtoCombiner<KayttajanTietoDto, KayttajanProjektitiedotDto>> getJasenetTiedot(Long id) {
+    public List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> getJasenetTiedot(Long id) {
         CachingRestClient crc = restClientFactory.create(authServiceUrl);
         Perusteprojekti p = repository.findOne(id);
 
@@ -136,7 +136,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             throw new BusinessRuleViolationException("Perusteprojektilla ei ole oid:a");
         }
 
-        List<DtoCombiner<KayttajanTietoDto, KayttajanProjektitiedotDto>> kayttajat = new ArrayList<>();
+        List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> kayttajat = new ArrayList<>();
 
         try {
             String url = authServiceUrl + authQueryPath + p.getOid();
@@ -144,7 +144,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             JsonNode tree = omapper.readTree(crc.getAsString(url));
             for (JsonNode node : tree.get("results")) {
                 String oid = node.get("oidHenkilo").asText();
-                DtoCombiner<KayttajanTietoDto, KayttajanProjektitiedotDto> combined = new DtoCombiner<>(
+                CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto> combined = new CombinedDto<>(
                     kayttajanTietoService.hae(oid),
                     kayttajanTietoService.haePerusteprojekti(oid, id)
                 );

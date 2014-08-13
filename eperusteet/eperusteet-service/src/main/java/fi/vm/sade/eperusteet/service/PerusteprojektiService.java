@@ -24,7 +24,7 @@ import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.dto.util.DtoCombiner;
+import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import java.util.List;
 import java.util.Set;
 
@@ -36,7 +36,7 @@ public interface PerusteprojektiService {
 
     List<KayttajanTietoDto> getJasenet(Long id);
 
-    List<DtoCombiner<KayttajanTietoDto, KayttajanProjektitiedotDto>> getJasenetTiedot(Long id);
+    List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> getJasenetTiedot(Long id);
 
     PerusteprojektiDto get(final Long id);
 

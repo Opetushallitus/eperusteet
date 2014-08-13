@@ -16,9 +16,7 @@
 package fi.vm.sade.eperusteet.resource;
 
 import com.wordnik.swagger.annotations.Api;
-import fi.vm.sade.eperusteet.domain.Henkilo;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.domain.Rooli;
 import fi.vm.sade.eperusteet.dto.BooleanDto;
 import fi.vm.sade.eperusteet.dto.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.KayttajanTietoDto;
@@ -26,12 +24,9 @@ import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.dto.util.DtoCombiner;
+import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
-import fi.vm.sade.eperusteet.service.mapping.Dto;
-import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -89,7 +84,7 @@ public class PerusteprojektiController {
 
     @RequestMapping(value = "/{id}/jasenet/tiedot", method = GET)
     @ResponseBody
-    public ResponseEntity<List<DtoCombiner<KayttajanTietoDto, KayttajanProjektitiedotDto>>> getJasenetTiedot(@PathVariable("id") final long id) {
+    public ResponseEntity<List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>>> getJasenetTiedot(@PathVariable("id") final long id) {
         return new ResponseEntity<>(service.getJasenetTiedot(id), HttpStatus.OK);
     }
 

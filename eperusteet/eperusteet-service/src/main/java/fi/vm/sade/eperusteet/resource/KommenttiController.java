@@ -15,7 +15,9 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.dto.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
+import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KommenttiService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,39 +44,55 @@ public class KommenttiController {
     @Autowired
     KommenttiService service;
 
+    @Autowired
+    KayttajanTietoService kayttajanTietoService;
+
+    private List<KommenttiDto> rikastaKommentit(List<KommenttiDto> kommentit) {
+        for (KommenttiDto k : kommentit) {
+            KayttajanTietoDto kayttaja = kayttajanTietoService.hae(k.getMuokkaaja());
+            if (kayttaja != null) {
+                String kutsumanimi = kayttaja.getKutsumanimi();
+                String etunimet = kayttaja.getEtunimet();
+                String etunimi = kutsumanimi != null ? kutsumanimi : etunimet;
+                k.setNimi(etunimi + " " + kayttaja.getSukunimi());
+            }
+        }
+        return kommentit;
+    }
+
     @RequestMapping(value = "/perusteprojekti/{id}/suoritustapa/{suoritustapa}", method = GET)
     @ResponseBody
     public ResponseEntity<List<KommenttiDto>> getAll(@PathVariable("id") final long id, @PathVariable("suoritustapa") final String suoritustapa) {
         List<KommenttiDto> t = service.getAllBySuoritustapa(id, suoritustapa);
-        return new ResponseEntity<>(t, HttpStatus.OK);
+        return new ResponseEntity<>(rikastaKommentit(t), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/perusteprojekti/{id}/perusteenosa/{perusteenOsaId}", method = GET)
     @ResponseBody
     public ResponseEntity<List<KommenttiDto>> getAll(@PathVariable("id") final long id, @PathVariable("perusteenOsaId") final long perusteenOsaId) {
         List<KommenttiDto> t = service.getAllByPerusteenOsa(id, perusteenOsaId);
-        return new ResponseEntity<>(t, HttpStatus.OK);
+        return new ResponseEntity<>(rikastaKommentit(t), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/perusteprojekti/{id}", method = GET)
     @ResponseBody
     public ResponseEntity<List<KommenttiDto>> getAll(@PathVariable("id") final long id) {
         List<KommenttiDto> t = service.getAllByPerusteprojekti(id);
-        return new ResponseEntity<>(t, HttpStatus.OK);
+        return new ResponseEntity<>(rikastaKommentit(t), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/ylin/{id}", method = GET)
     @ResponseBody
     public ResponseEntity<List<KommenttiDto>> getAllByYlin(@PathVariable("id") final long id) {
         List<KommenttiDto> t = service.getAllByYlin(id);
-        return new ResponseEntity<>(t, HttpStatus.OK);
+        return new ResponseEntity<>(rikastaKommentit(t), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/parent/{id}", method = GET)
     @ResponseBody
     public ResponseEntity<List<KommenttiDto>> getAllByParent(@PathVariable("id") final long id) {
         List<KommenttiDto> t = service.getAllByParent(id);
-        return new ResponseEntity<>(t, HttpStatus.OK);
+        return new ResponseEntity<>(rikastaKommentit(t), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = GET)

@@ -18,6 +18,11 @@
 /* global _ */
 
 angular.module('eperusteApp')
+  .factory('Kayttajatiedot', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/kayttajatiedot/:oid', {
+      oid: '@oid'
+    });
+  })
   .factory('Kayttajaprofiilit', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/kayttajaprofiili/:id', {
       id: '@id'

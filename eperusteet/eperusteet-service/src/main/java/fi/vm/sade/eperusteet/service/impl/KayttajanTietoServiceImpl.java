@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.dto.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.KayttajanTietoDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KayttajanPerusteprojektiDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -29,10 +28,7 @@ import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -95,21 +91,15 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
     @Override
     @Cacheable("kayttajat")
     public KayttajanTietoDto hae(String oid) {
-        if (oid == null || oid.isEmpty()) {
-            throw new BusinessRuleViolationException("Haettua käyttäjää ei ole olemassa");
-        }
-
         CachingRestClient crc = restClientFactory.create(serviceUrl);
-        KayttajanTietoDto ktd;
 
         try {
-            String url = serviceUrl + oid == null ? OMAT_TIEDOT_API : KAYTTAJA_API + oid;
+            String url = serviceUrl + (oid == null ? OMAT_TIEDOT_API : KAYTTAJA_API + oid);
             JsonNode json = mapper.readTree(crc.getAsString(url));
-            ktd = parsiKayttaja(json);
+            return parsiKayttaja(json);
         } catch (IOException e) {
-            throw new BusinessRuleViolationException("Käyttäjän tietojen hakeminen epäonnistui");
+            return null;
         }
-        return ktd;
     }
 
     @Override
@@ -120,9 +110,9 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
 
         CachingRestClient crc = restClientFactory.create(serviceUrl);
         String url = serviceUrl + KAYTTAJA_API + oid + "/organisaatiohenkilo";
-        List<KayttajanProjektitiedotDto> kpp = new ArrayList<>();
 
         try {
+            List<KayttajanProjektitiedotDto> kpp = new ArrayList<>();
             List<KayttajanProjektitiedotDto> unfiltered = Arrays.asList(crc.get(url, KayttajanProjektitiedotDto[].class));
             for (KayttajanProjektitiedotDto kp : unfiltered) {
                 Perusteprojekti pp = perusteprojektiRepository.findOneByOid(kp.getOrganisaatioOid());
@@ -131,10 +121,10 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
                     kpp.add(kp);
                 }
             }
+            return kpp;
         } catch (IOException ex) {
             throw new BusinessRuleViolationException("Käyttäjän perusteprojektitietojen hakeminen epäonnistui");
         }
-        return kpp;
     }
 
     @Override
