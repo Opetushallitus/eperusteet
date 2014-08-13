@@ -1,6 +1,6 @@
 #
 # TÄHÄN TIEDOSTOON EI SAA TALLENTAA YMPÄRISTÖKOHTAISIA ARVOJA MUUTOIN KUIN MUUTTUJINA!!!
-# 
+#
 # Tämä tiedosto toimii pohjana oph-configuration/common.properties tiedostolle,
 # joka asettaa tomcatin ympäristökohtaiset arvot.
 #
@@ -12,6 +12,7 @@ auth.mode={{auth_mode}}
 env.loglevel={{env_loglevel}}
 host.cas={{host_cas}}
 host.ilb={{host_ilb}}
+host.ldap={{host_ldap}}
 host.virkailija={{host_virkailija}}
 ldap.manager.password={{ldap_manager_password}}
 ldap.manager-password={{ldap_manager_password}}
