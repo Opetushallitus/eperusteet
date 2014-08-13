@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,6 +29,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,7 +41,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
  * @author harrik
  */
 @Entity
-@Table(name = "osaalue")
+@Table(name = "tutkinnonosa_osaalue")
 @Audited
 public class OsaAlue implements Serializable {
 
@@ -60,9 +61,9 @@ public class OsaAlue implements Serializable {
     @Getter
     @Setter
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "osaalue_osaamistavoite",
-               joinColumns = @JoinColumn(name = "osaalue_id"),
+    @JoinTable(name = "tutkinnonosa_osaalue_osaamistavoite",
+               joinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"),
                inverseJoinColumns = @JoinColumn(name = "osaamistavoite_id"))
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private Set<Osaamistavoite> osaamistavoitteet;
+    @OrderColumn
+    private List<Osaamistavoite> osaamistavoitteet;
 }

@@ -1,10 +1,10 @@
-create table osaalue (
+create table tutkinnonosa_osaalue (
     id bigint not null,
     nimi_id bigint,
     primary key (id)
 );
 
-create table osaalue_AUD (
+create table tutkinnonosa_osaalue_AUD (
     id int8 not null,
     REV int4 not null,
     REVTYPE int2,
@@ -38,66 +38,70 @@ create table osaamistavoite_AUD (
     primary key (id, REV)
 );
 
-create table tutkinnonosa_osaalue (
+create table tutkinnonosa_tutkinnonosa_osaalue (
     tutkinnonosa_id int8 REFERENCES tutkinnonosa(id),
-    osaalue_id int8 REFERENCES osaalue(id)
+    tutkinnonosa_osaalue_id int8 REFERENCES tutkinnonosa_osaalue(id),
+    osaAlueet_ORDER int4 not null
 );
 
-create table tutkinnonosa_osaalue_AUD (
+create table tutkinnonosa_tutkinnonosa_osaalue_AUD (
     REV int4 not null,
     tutkinnonosa_id int8 not null,
-    osaalue_id int8 not null,
+    tutkinnonosa_osaalue_id int8 not null,
+    osaAlueet_ORDER int4 not null,
     REVTYPE int2,
     REVEND int4,
-    primary key (REV, tutkinnonosa_id, osaalue_id)
+    primary key (REV, tutkinnonosa_id, tutkinnonosa_osaalue_id)
 );
 
-create table osaalue_osaamistavoite (
-    osaalue_id int8 REFERENCES osaalue(id),
-    osaamistavoite_id int8 REFERENCES osaamistavoite(id)
+create table tutkinnonosa_osaalue_osaamistavoite (
+    tutkinnonosa_osaalue_id int8 REFERENCES tutkinnonosa_osaalue(id),
+    osaamistavoite_id int8 REFERENCES osaamistavoite(id),
+    osaamistavoitteet_ORDER int4 not null
 );
 
-create table osaalue_osaamistavoite_AUD (
+create table tutkinnonosa_osaalue_osaamistavoite_AUD (
     REV int4 not null,
-    osaalue_id int8 not null,
+    tutkinnonosa_osaalue_id int8 not null,
     osaamistavoite_id int8 not null,
+    osaamistavoitteet_ORDER int4 not null,
     REVTYPE int2,
     REVEND int4,
-    primary key (REV, osaalue_id, osaamistavoite_id)
+    primary key (REV, tutkinnonosa_osaalue_id, osaamistavoite_id)
 );
 
-alter table only osaalue 
-    add constraint FK_osaalue_nimi_tekstipalanen 
+alter table only tutkinnonosa_osaalue 
+    add constraint FK_tutkinnonosa_osaalue_nimi_tekstipalanen 
     foreign key (nimi_id) 
     references tekstipalanen;
 
-alter table osaalue_AUD 
-    add constraint FK_osaalue_AUD_REVINFO_REV 
-    foreign key (REV) 
-    references revinfo;
-
-alter table osaalue_AUD 
-    add constraint FK_osaalue_AUD_REVINFO_REVEND
-    foreign key (REVEND) 
-    references revinfo;
-
-alter table osaalue_osaamistavoite_AUD 
-    add constraint FK_osaalue_osaamistavoite_AUD_REVINFO_REV 
-    foreign key (REV) 
-    references revinfo;
-
-alter table osaalue_osaamistavoite_AUD 
-    add constraint FK_osaalue_osaamistavoite_AUD_REVINFO_REVEND 
-    foreign key (REVEND) 
-    references revinfo;
-
-alter table tutkinnonosa_osaalue_AUD 
+alter table tutkinnonosa_osaalue_AUD
     add constraint FK_tutkinnonosa_osaalue_AUD_REVINFO_REV 
     foreign key (REV) 
     references revinfo;
 
 alter table tutkinnonosa_osaalue_AUD 
     add constraint FK_tutkinnonosa_osaalue_AUD_REVINFO_REVEND
+    foreign key (REVEND) 
+    references revinfo;
+
+alter table tutkinnonosa_osaalue_osaamistavoite_AUD 
+    add constraint FK_tutkinnonosa_osaalue_osaamistavoite_AUD_REVINFO_REV 
+    foreign key (REV) 
+    references revinfo;
+
+alter table tutkinnonosa_osaalue_osaamistavoite_AUD 
+    add constraint FK_tutkinnonosa_osaalue_osaamistavoite_AUD_REVINFO_REVEND 
+    foreign key (REVEND) 
+    references revinfo;
+
+alter table tutkinnonosa_tutkinnonosa_osaalue_AUD 
+    add constraint FK_tutkinnonosa_tutkinnonosa_osaalue_AUD_REVINFO_REV 
+    foreign key (REV) 
+    references revinfo;
+
+alter table tutkinnonosa_tutkinnonosa_osaalue_AUD 
+    add constraint FK_tutkinnonosa_tutkinnonosa_osaalue_AUD_REVINFO_REVEND
     foreign key (REVEND) 
     references revinfo;
 

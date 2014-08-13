@@ -16,9 +16,10 @@
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import fi.vm.sade.eperusteet.dto.EntityReference;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.dto.EntityReference;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -30,6 +31,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -82,12 +84,12 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @Getter
     @Setter
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "tutkinnonosa_osaalue",
+    @JoinTable(name = "tutkinnonosa_tutkinnonosa_osaalue",
                joinColumns = @JoinColumn(name = "tutkinnonosa_id"),
-               inverseJoinColumns = @JoinColumn(name = "osaalue_id"))
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+               inverseJoinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"))
+    @OrderColumn
     // TUTKE2:n mukainen osa-alue
-    private Set<OsaAlue> osaAlueet;
+    private List<OsaAlue> osaAlueet;
 
     @Override
     public EntityReference getReference() {
