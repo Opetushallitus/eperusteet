@@ -20,12 +20,19 @@ import fi.vm.sade.eperusteet.dto.EntityReference;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -71,6 +78,16 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     //Hibernate bug: orphanRemoval ei toimi jos fetchMode = Lazy
     private Arviointi arviointi;
+    
+    @Getter
+    @Setter
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "tutkinnonosa_osaalue",
+               joinColumns = @JoinColumn(name = "tutkinnonosa_id"),
+               inverseJoinColumns = @JoinColumn(name = "osaalue_id"))
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    // TUTKE2:n mukainen osa-alue
+    private Set<OsaAlue> osaAlueet;
 
     @Override
     public EntityReference getReference() {
