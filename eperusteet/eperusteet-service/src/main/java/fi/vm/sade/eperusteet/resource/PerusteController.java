@@ -57,8 +57,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RequestMapping("/perusteet")
 public class PerusteController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteController.class);
-
     @Autowired
     private PerusteService service;
 
@@ -87,7 +85,6 @@ public class PerusteController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public PerusteDto update(@PathVariable("id") final long id, @RequestBody PerusteDto perusteDto) {
-        LOG.info("update {}", perusteDto);
         perusteDto = service.update(id, perusteDto);
         return perusteDto;
     }
@@ -126,7 +123,6 @@ public class PerusteController {
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne/versiot", method = GET)
     @ResponseBody
     public List<Revision> getRakenneVersiot(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
-        LOG.debug("get rakenne versiot: " + id + ", " + suoritustapakoodi);
         return service.getRakenneVersiot(id, Suoritustapakoodi.of(suoritustapakoodi));
     }
 
@@ -135,7 +131,6 @@ public class PerusteController {
     @CacheControl(age = CacheControl.ONE_YEAR)
     public ResponseEntity<RakenneModuuliDto> getRakenneVersio(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
             @PathVariable("versioId") final Integer versioId) {
-        LOG.debug("get peruste #{} suoritustapa #{} versio #{}", id, suoritustapakoodi, versioId);
         RakenneModuuliDto t = service.getRakenneVersio(id, Suoritustapakoodi.of(suoritustapakoodi), versioId);
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -163,7 +158,6 @@ public class PerusteController {
             @PathVariable("id") final Long id,
             @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
             @RequestBody UpdateDto<RakenneModuuliDto> rakenne) {
-        LOG.info("Kommentti: " + rakenne.getMetadata());
         return service.updateTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), rakenne);
     }
 
@@ -393,7 +387,6 @@ public class PerusteController {
     @RequestMapping(value = "/lammitys", method = GET)
     @ResponseBody
     public ResponseEntity<String> lammitys() {
-
         return new ResponseEntity<>(service.lammitys(), HttpStatus.OK);
     }
 

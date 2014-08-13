@@ -45,16 +45,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KayttajaprofiiliServiceImpl.class);
-
     @Autowired
     KayttajaprofiiliRepository kayttajaprofiiliRepo;
+
     @Autowired
     PerusteRepository perusteRepo;
+
     @Autowired
     SuosikkiRepository suosikkiRepo;
+
     @Autowired
     PerusteprojektiRepository perusteprojektiRepo;
+
     @Autowired
     @Dto
     private DtoMapper mapper;
@@ -71,8 +73,6 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
     @Transactional
     @PreAuthorize("isAuthenticated()")
     public KayttajaProfiiliDto addSuosikki(final SuosikkiDto suosikkiDto) {
-        LOG.info("addSuosikki " + suosikkiDto);
-
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String oid = auth.getName();
         Kayttajaprofiili kayttajaprofiili = kayttajaprofiiliRepo.findOneByOid(oid);
@@ -99,8 +99,6 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
     @Transactional
     @PreAuthorize("isAuthenticated()")
     public KayttajaProfiiliDto deleteSuosikki(Long suosikkiId) throws IllegalArgumentException {
-        LOG.info("deleteSuosikki " + suosikkiId);
-
         String oid = SecurityContextHolder.getContext().getAuthentication().getName();
         Kayttajaprofiili kayttajaprofiili = kayttajaprofiiliRepo.findOneEager(oid);
 
@@ -131,8 +129,6 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
     @Transactional
     @PreAuthorize("isAuthenticated()")
     public KayttajaProfiiliDto addPerusteprojekti(final Long perusteprojektiId) {
-        LOG.info("addPerusteprojekti " + perusteprojektiId);
-
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String oid = auth.getName();
         Kayttajaprofiili kayttajaprofiili = kayttajaprofiiliRepo.findOneEager(oid);

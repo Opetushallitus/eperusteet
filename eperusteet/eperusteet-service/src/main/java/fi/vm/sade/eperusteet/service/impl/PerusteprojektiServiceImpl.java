@@ -65,8 +65,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteprojektiServiceImpl.class);
-
     private final String authQueryPath = "/resources/henkilo?count=9999&index=0&org=";
 
     @Value("${cas.service.authentication-service}")
@@ -194,7 +192,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
     }
-    
+
     @Override
     @Transactional(readOnly = true)
     public void onkoDiaarinumeroKaytossa(String diaarinumero) {

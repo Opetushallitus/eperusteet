@@ -44,8 +44,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/kayttajaprofiili")
 public class KayttajaprofiiliController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KayttajaprofiiliController.class);
-
     @Autowired
     private KayttajaprofiiliService service;
 

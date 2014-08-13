@@ -37,8 +37,6 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class KoulutusalaServiceImpl implements KoulutusalaService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KoulutusalaServiceImpl.class);
-
     private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
     private static final String KOODISTO_RELAATIO_ALA = "relaatio/sisaltyy-alakoodit/";
     private static final String KOULUTUSALA_URI = "koulutusalaoph2002";

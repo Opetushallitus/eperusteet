@@ -55,8 +55,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Api(value = "perusteprojektit")
 public class PerusteprojektiController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteprojektiController.class);
-
     @Autowired
     private PerusteprojektiService service;
 

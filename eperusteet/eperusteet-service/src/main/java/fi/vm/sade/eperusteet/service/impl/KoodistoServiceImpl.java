@@ -40,7 +40,6 @@ public class KoodistoServiceImpl implements KoodistoService {
     @Value("https://virkailija.opintopolku.fi/koodisto-service")
     private String koodistoServiceUrl;
 
-    private static final Logger LOG = LoggerFactory.getLogger(KoodistoServiceImpl.class);
     private static final String KOODISTO_API = "/rest/json/";
     private static final String YLARELAATIO = "relaatio/sisaltyy-ylakoodit/";
     private static final String ALARELAATIO = "relaatio/sisaltyy-alakoodit/";
@@ -64,7 +63,6 @@ public class KoodistoServiceImpl implements KoodistoService {
     public KoodistoKoodiDto get(String koodisto, String koodi) {
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + KOODISTO_API + koodisto + "/koodi/" + koodi;
-        LOG.debug(url);
         KoodistoKoodiDto re = restTemplate.getForObject(url, KoodistoKoodiDto.class);
         return re;
     }

@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.resource;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.HenkiloTietoDto;
-import fi.vm.sade.eperusteet.dto.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
@@ -32,8 +31,6 @@ import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -56,8 +53,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequestMapping("/perusteenosat")
 public class PerusteenOsaController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteenOsaController.class);
-
     @Autowired
     private PerusteenOsaService service;
 
@@ -67,21 +62,18 @@ public class PerusteenOsaController {
     @RequestMapping(method = GET)
     @ResponseBody
     public List<? extends PerusteenOsaDto> getAll() {
-        LOG.info("FINDALL");
         return service.getAll();
     }
 
     @RequestMapping(method = GET, params = "nimi")
     @ResponseBody
     public List<? extends PerusteenOsaDto> getAllWithName(@RequestParam("nimi") final String name) {
-    	LOG.debug("find with nimi: {}", name);
     	return service.getAllWithName(name);
     }
 
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
     public ResponseEntity<PerusteenOsaDto> get(@PathVariable("id") final Long id) {
-        LOG.info("get {}", id);
     	PerusteenOsaDto t = service.get(id);
         if (t == null) {
         	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -103,7 +95,6 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/versio/{versioId}", method = GET)
     @ResponseBody
     public ResponseEntity<PerusteenOsaDto> getVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
-    	LOG.debug("get #{} revision #{}", id, versioId);
     	PerusteenOsaDto t = service.getVersio(id, versioId);
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -121,7 +112,6 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{koodiUri}", method = GET, params = "koodi=true")
     @ResponseBody
     public ResponseEntity<List<PerusteenOsaDto>> get(@PathVariable("koodiUri") final String koodiUri) {
-    	LOG.info("get by koodi {}", koodiUri);
     	List<PerusteenOsaDto> t = service.getAllByKoodiUri(koodiUri);
         return new ResponseEntity<>(t, HttpStatus.OK);
     }

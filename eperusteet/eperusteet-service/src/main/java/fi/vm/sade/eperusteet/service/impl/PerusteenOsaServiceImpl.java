@@ -42,9 +42,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class PerusteenOsaServiceImpl implements PerusteenOsaService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteenOsaServiceImpl.class);
-
     @Autowired
     private KommenttiService kommenttiService;
 

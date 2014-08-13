@@ -92,7 +92,6 @@ import org.springframework.web.client.RestTemplate;
 @Transactional
 public class PerusteServiceImpl implements PerusteService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceImpl.class);
     private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
     private static final String KOODISTO_RELAATIO_YLA = "relaatio/sisaltyy-ylakoodit/";
     private static final String KOODISTO_RELAATIO_ALA = "relaatio/sisaltyy-alakoodit/";
@@ -262,7 +261,6 @@ public class PerusteServiceImpl implements PerusteService {
     @Override
     @Transactional
     public PerusteenOsaViite addViite(final Long parentId, final Long seuraavaViite, PerusteenOsaViite viite) {
-        LOG.info("ennen = " + seuraavaViite);
         throw new RuntimeException("not implemented yet!");
 //        PerusteenOsaViite v = viitteet.findOne(parentId);
 //        viite.setVanhempi(v);
@@ -688,7 +686,6 @@ public class PerusteServiceImpl implements PerusteService {
                     if (!perusteEntityt.contains(peruste)) {
                         perusteEntityt.add(peruste);
                     }
-                    LOG.info(++i + " perustetta lisätty.");
                 }
             }
         }

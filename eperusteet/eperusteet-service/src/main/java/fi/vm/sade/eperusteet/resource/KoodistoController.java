@@ -40,8 +40,6 @@ import org.slf4j.LoggerFactory;
 @Controller
 @RequestMapping("/koodisto")
 public class KoodistoController {
-    private static final Logger LOG = LoggerFactory.getLogger(KoodistoController.class);
-
     @Autowired
     KoodistoService service;
 

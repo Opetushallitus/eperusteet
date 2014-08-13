@@ -36,7 +36,6 @@ import org.springframework.web.client.RestTemplate;
  */
 @Service
 public class OpintoalaServiceImpl implements OpintoalaService {
-    private static final Logger LOG = LoggerFactory.getLogger(KoulutusalaServiceImpl.class);
 
     @Autowired
     @Koodisto
