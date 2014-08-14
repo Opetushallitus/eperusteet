@@ -1,0 +1,53 @@
+.tag-action-buttons {
+  position: relative;
+}
+
+#tag-filter-add-dialog {
+  border: 1px solid #ccc;
+  background-color: white;
+  min-width: 300px;
+  min-height: 300px;
+  top: -300px;
+  position: absolute;
+}
+
+.multichoice {
+  margin-bottom: 0;
+  &.condensed {
+    column-count: 2;
+    -moz-column-count: 2;
+    -webkit-column-count: 2;
+  }
+  .toggle-all {
+    display: block !important;
+    label {
+      font-style: italic;
+    }
+  }
+  .level1 {
+    padding-left: 1.5em;
+  }
+  .level2 {
+    padding-left: 3em;
+  }
+}
+
+.inner-accordion {
+  .panel-heading .badge {
+    margin-right: -15px;
+  }
+}
+
+.oppiaine {
+  color: $brand-primary;
+  font-weight: 700;
+}
+
+.perusopetus {
+  .nav-pills {
+    margin-bottom: 15px;
+  }
+  .moodit {
+    margin-top: -40px;
+  }
+}

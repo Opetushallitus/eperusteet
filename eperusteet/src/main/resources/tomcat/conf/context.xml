@@ -31,6 +31,7 @@
     username="{{ host_postgresql_eperusteet_user }}" 
     password="{{ host_postgresql_eperusteet_password }}"
     driverClassName="org.postgresql.Driver"
+    validationQuery="select 1"
     url="jdbc:postgresql://{{host_postgresql_eperusteet}}:{{port_postgresql}}/eperusteet" />
 
 </Context>

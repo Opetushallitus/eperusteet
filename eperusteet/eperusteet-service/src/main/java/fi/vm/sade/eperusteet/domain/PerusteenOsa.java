@@ -78,7 +78,7 @@ public abstract class PerusteenOsa extends AbstractAuditedEntity implements Seri
     @Setter
     @Enumerated(EnumType.STRING)
     @NotNull
-    private Tila tila;
+    private PerusteTila tila;
 
     @Override
     public void mergeState(PerusteenOsa updated) {

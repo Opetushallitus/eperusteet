@@ -45,13 +45,18 @@ angular.module('eperusteApp')
           }
         }
 
+        function shouldBeShown() {
+          return (!attrs.ngShow || scope.$eval(attrs.ngShow)) &&
+                 (!attrs.ngHide || !scope.$eval(attrs.ngHide));
+        }
+
         function showOrEnableElement() {
           if(element.is('input, textarea, button')) {
             if(!attrs.ngDisabled || !scope.$eval(attrs.ngDisabled)) {
               element.removeAttr('disabled');
             }
           } else {
-            if((!attrs.ngShow || scope.$eval(attrs.ngShow)) && (!attrs.ngHide || !scope.$eval(attrs.ngHide))) {
+            if (shouldBeShown()) {
               if(attrs.ngShow || attrs.ngHide) {
                 element.removeClass('ng-hide');
               } else {

@@ -1,14 +1,11 @@
-<!-- FIXME: Lokalisaatio -->
 <div>
   <input class="hidden" id="fileDirectiveSelectInput" type="file">
-  <div class="input-group">
-    <div class="input-group-addon"><span class="glyphicon glyphicon-file"></span></div>
-    <input type="text" class="form-control" value="{{ file.name }}" readonly>
-    <div ng-show="file" class="input-group-btn">
-      <button id="reloadFile" type="button" class="btn btn-default"><span id="reloadFile" class="glyphicon glyphicon-refresh"></span></button>
-    </div>
-    <div class="input-group-btn">
-      <button id="addFile" type="button" class="btn btn-primary">{{ flabel | kaanna }}</button>
-    </div>
+
+  <button icon-role="file" id="addFile" type="button" class="btn btn-default">{{ flabel | kaanna }}</button>
+
+  <div ng-show="file">
+    {{file.name}}
+    <button id="reloadFile" type="button" class="btn btn-default" icon-role="refresh"></button>
   </div>
+
 </div>

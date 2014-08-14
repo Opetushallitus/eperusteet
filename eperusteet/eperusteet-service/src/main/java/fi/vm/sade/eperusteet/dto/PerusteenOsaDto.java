@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.domain.Tila;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import java.util.Date;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
@@ -36,5 +36,5 @@ public abstract class PerusteenOsaDto {
     private Date luotu;
     private Date muokattu;
     private LokalisoituTekstiDto nimi;
-    private Tila tila;
+    private PerusteTila tila;
 }

@@ -16,6 +16,9 @@ $tree-container-width: 800px;
 
 .tree-con {
   min-width: $tree-container-width;
+  .puun-rajaus {
+    max-width: $tree-container-width*0.3;
+  }
 }
 
 .tree-anchor {

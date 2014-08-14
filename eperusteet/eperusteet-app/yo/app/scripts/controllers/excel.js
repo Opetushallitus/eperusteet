@@ -70,6 +70,7 @@ angular.module('eperusteApp')
     $scope.rajaaKoodit = function(koodi) { return koodi.koodi.indexOf('_3') !== -1; };
 
     $scope.tallennaPerusteprojekti = function(perusteprojekti) {
+      perusteprojekti.tyyppi = perusteprojekti.tyyppi || 'normaali';
       if (perusteprojekti.koulutustyyppi !== 'koulutustyyppi_1') { delete perusteprojekti.laajuusYksikko; }
       PerusteprojektiResource.save(perusteprojekti, function(resPerusteprojekti) {
         $scope.haettuProjekti = resPerusteprojekti;

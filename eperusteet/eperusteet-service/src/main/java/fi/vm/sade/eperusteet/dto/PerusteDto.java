@@ -15,7 +15,8 @@
  */
 package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.domain.Tila;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -38,5 +39,6 @@ public class PerusteDto implements Serializable {
     private Date voimassaoloLoppuu;
     private Date siirtymaAlkaa;
     private Set<SuoritustapaDto> suoritustavat;
-    private Tila tila;
+    private PerusteTila tila;
+    private PerusteTyyppi tyyppi;
 }

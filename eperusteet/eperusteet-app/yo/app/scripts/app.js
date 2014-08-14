@@ -154,6 +154,7 @@ angular.module('eperusteApp', [
       }
 
       var casurl = getCasURL();
+      console.log(casurl);
 
       var uudelleenohjausModaali = $modal.open({
         templateUrl: 'views/modals/uudelleenohjaus.html',

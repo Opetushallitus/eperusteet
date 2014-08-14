@@ -17,7 +17,7 @@
 package fi.vm.sade.eperusteet.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import fi.vm.sade.eperusteet.domain.Tila;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Getter;
@@ -42,5 +42,5 @@ public class PerusteprojektiDto implements Serializable {
     private String tehtavaluokka;
     private String tehtava;
     private String yhteistyotaho;
-    private Tila tila;
+    private ProjektiTila tila;
 }

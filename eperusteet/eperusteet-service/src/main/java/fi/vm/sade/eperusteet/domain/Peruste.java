@@ -117,7 +117,13 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Setter
     @Enumerated(EnumType.STRING)
     @NotNull
-    private Tila tila = Tila.LUONNOS;
+    private PerusteTila tila = PerusteTila.LUONNOS;
+    
+    @Getter
+    @Setter
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private PerusteTyyppi tyyppi = PerusteTyyppi.NORMAALI;
 
     public Suoritustapa getSuoritustapa(Suoritustapakoodi koodi) {
         for (Suoritustapa s : suoritustavat) {

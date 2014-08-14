@@ -16,11 +16,11 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
-import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
@@ -55,7 +55,7 @@ public class SuoritustapaServiceIT extends AbstractIntegrationTest {
 
     private TutkinnonOsaViite uusiTutkinnonOsaViite(Suoritustapa st) {
         TutkinnonOsa tosa = new TutkinnonOsa();
-        tosa.setTila(Tila.LUONNOS);
+        tosa.setTila(PerusteTila.LUONNOS);
         tosa = tutkinnonOsaRepository.save(tosa);
         TutkinnonOsaViite tov = new TutkinnonOsaViite();
         tov.setTutkinnonOsa(tosa);

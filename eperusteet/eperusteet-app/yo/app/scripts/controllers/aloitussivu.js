@@ -50,7 +50,7 @@ angular.module('eperusteApp')
       },
       {
         'label': 'perusopetus',
-        'state': '',
+        'state': 'root.selaus.perusopetus',
         'helper': 'selaa-perusteita'
       },
       {
@@ -69,7 +69,5 @@ angular.module('eperusteApp')
         'helper': 'hae-perusteita'
       },
     ];
-    $scope.getHref = function (valinta) {
-      return $state.href(valinta.state);
-    };
+    $scope.getHref = function(valinta) { return $state.href(valinta.state); };
   });

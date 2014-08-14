@@ -37,7 +37,7 @@ public class KayttajanTietoController {
     @Autowired
     KayttajanTietoService service;
 
-    @RequestMapping(value = "/{oid}", method = GET)
+    @RequestMapping(value = "/{oid:.+}", method = GET)
     @ResponseBody
     public ResponseEntity<KayttajanTietoDto> get(@PathVariable("oid") final String oid) {
         return new ResponseEntity<>(service.hae(oid), HttpStatus.OK);

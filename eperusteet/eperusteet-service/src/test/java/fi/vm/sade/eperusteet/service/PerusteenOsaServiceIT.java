@@ -15,17 +15,14 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import javax.validation.ConstraintViolationException;
-
-
 import com.google.common.collect.Lists;
-
 import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
@@ -36,13 +33,11 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
-
 import java.util.Collections;
 import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
+import javax.validation.ConstraintViolationException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -95,7 +90,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     public void testSaveWithArviointi() {
         TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
         tutkinnonOsa.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "Nimi"));
-        tutkinnonOsa.setTila(Tila.LUONNOS);
+        tutkinnonOsa.setTila(PerusteTila.LUONNOS);
         tutkinnonOsa.setArviointi(TestUtils.createArviointi(arviointiasteikko));
         tutkinnonOsa = (TutkinnonOsa) perusteenOsaRepository.saveAndFlush(tutkinnonOsa);
         List<PerusteenOsaDto> perusteenOsat = perusteenOsaService.getAll();
@@ -114,12 +109,12 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     public void testFindTutkinnonOsaByName() {
     	TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
     	tutkinnonOsa.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "Nimi"));
-        tutkinnonOsa.setTila(Tila.LUONNOS);
+        tutkinnonOsa.setTila(PerusteTila.LUONNOS);
     	tutkinnonOsa = tutkinnonOsaRepository.saveAndFlush(tutkinnonOsa);
 
     	tutkinnonOsa = new TutkinnonOsa();
     	tutkinnonOsa.setNimi(TestUtils.tekstiPalanenOf(Kieli.SV, "Namnet"));
-        tutkinnonOsa.setTila(Tila.LUONNOS);
+        tutkinnonOsa.setTila(PerusteTila.LUONNOS);
     	tutkinnonOsa = tutkinnonOsaRepository.saveAndFlush(tutkinnonOsa);
 
     	List<TutkinnonOsa> tutkinnonOsat = tutkinnonOsaRepository.findByNimiTekstiTekstiContainingIgnoreCase("nim");

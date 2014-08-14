@@ -23,7 +23,7 @@
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
         <buildhelper.skipAttach>true</buildhelper.skipAttach>
         <jsoup.version>1.7.3</jsoup.version>
-        <ehcache.version>2.6.8</ehcache.version>
+        <ehcache.version>2.5.1</ehcache.version>
         <slf4j.version>1.7.7</slf4j.version>
         <swagger.version>0.8.5</swagger.version>
     </properties>
@@ -57,6 +57,26 @@
             <groupId>com.googlecode.flyway</groupId>
             <artifactId>flyway-core</artifactId>
             <version>2.3.1</version>
+        </dependency>
+        <dependency>
+           <groupId>org.apache.httpcomponents</groupId>
+           <artifactId>httpclient</artifactId>
+           <version>4.2.5</version>
+        </dependency>
+        <dependency>
+           <groupId>org.apache.httpcomponents</groupId>
+           <artifactId>httpclient-cache</artifactId>
+           <version>4.2.5</version>
+        </dependency>
+        <dependency>
+           <groupId>com.google.code.gson</groupId>
+           <artifactId>gson</artifactId>
+           <version>2.2.4</version>
+        </dependency>
+        <dependency>
+           <groupId>commons-httpclient</groupId>
+           <artifactId>commons-httpclient</artifactId>
+           <version>3.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -260,7 +280,7 @@
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-jgroupsreplication</artifactId>
-            <version>1.7</version>
+            <version>1.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
@@ -286,11 +306,11 @@
         <dependency>
             <groupId>org.jasig.cas.client</groupId>
             <artifactId>cas-client-support-distributed-ehcache</artifactId>
-            <version>3.3.1</version>
+            <version>3.2.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>net.sf.ehcache</groupId>
-                    <artifactId>ehcache</artifactId>
+                    <artifactId>ehcache-core</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

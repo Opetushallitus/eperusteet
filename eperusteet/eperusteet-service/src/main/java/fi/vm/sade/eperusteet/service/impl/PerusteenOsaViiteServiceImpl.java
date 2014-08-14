@@ -17,10 +17,11 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.Arviointi;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
-import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaViiteDto;
@@ -94,7 +95,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
             throw new BusinessRuleViolationException("Sisällöllä on lapsia, ei voida poistaa");
         }
 
-        if (viite.getPerusteenOsa() != null && viite.getPerusteenOsa().getTila().equals(Tila.LUONNOS)) {
+        if (viite.getPerusteenOsa() != null && viite.getPerusteenOsa().getTila().equals(PerusteTila.LUONNOS)) {
             PerusteenOsa perusteenOsa = viite.getPerusteenOsa();
             perusteenOsaService.delete(perusteenOsa.getId());
 
@@ -131,7 +132,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         PerusteenOsa perusteenOsa = pov.getPerusteenOsa();
         TekstiKappale from = (TekstiKappale)perusteenOsaRepository.findOne(id);
         TekstiKappale uusi = new TekstiKappale();
-        uusi.setTila(Tila.LUONNOS);
+        uusi.setTila(PerusteTila.LUONNOS);
         uusi.setNimi(from.getNimi());
         uusi.setTeksti(from.getTeksti());
         pov.setPerusteenOsa(perusteenOsaRepository.save(uusi));
@@ -147,7 +148,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         TutkinnonOsaViite tov = tutkinnonOsaViiteRepository.getOne(id);
         TutkinnonOsa to = tov.getTutkinnonOsa();
         TutkinnonOsa uusi = new TutkinnonOsa();
-        uusi.setTila(Tila.LUONNOS);
+        uusi.setTila(PerusteTila.LUONNOS);
         uusi.setNimi(to.getNimi());
         uusi.setAmmattitaidonOsoittamistavat(to.getAmmattitaidonOsoittamistavat());
         uusi.setAmmattitaitovaatimukset(to.getAmmattitaitovaatimukset());

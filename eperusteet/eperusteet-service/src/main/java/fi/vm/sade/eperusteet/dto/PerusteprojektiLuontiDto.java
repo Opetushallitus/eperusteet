@@ -18,7 +18,8 @@ package fi.vm.sade.eperusteet.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
-import fi.vm.sade.eperusteet.domain.Tila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,5 +34,6 @@ public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
     private String koulutustyyppi;
     private LaajuusYksikko laajuusYksikko;
     private Long perusteId;
-    private Tila tila;
+    private ProjektiTila tila;
+    private PerusteTyyppi tyyppi;
 }

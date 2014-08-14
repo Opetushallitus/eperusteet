@@ -94,6 +94,12 @@ angular.module('eperusteApp')
 
     $scope.koodistoHaku = function(koodisto) {
       var added = {nimi: koodisto.nimi, koulutuskoodiArvo: koodisto.koodiArvo, koulutuskoodiUri: koodisto.koodiUri};
+      // Kun ensimmäinen koodi lisätään, perusteen nimi kopioidaan koodistosta
+      if ($scope.editablePeruste.koulutukset.length === 0) {
+        _.each(_.values(YleinenData.kielet), function (kieli) {
+          $scope.editablePeruste.nimi[kieli] = koodisto.nimi[kieli];
+        });
+      }
       $scope.editablePeruste.koulutukset.push(added);
 
       //$scope.open[koodisto.koodi] = true;

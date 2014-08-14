@@ -81,20 +81,11 @@ angular.module('eperusteApp')
 
         scope.togglaaPolut = function() {
           var avaamattomat = _(scope.rakenne.osat).reject(function(osa) { return osa._tutkinnonOsaViite || osa.$collapsed || osa.osat.length === 0; }).size();
-          if (avaamattomat !== 0) {
-            _.forEach(scope.rakenne.osat, function(r) {
-              if (r.osat && _.size(r.osat) > 0) {
-                r.$collapsed = true;
-              }
-            });
-          }
-          else {
-            _.forEach(scope.rakenne.osat, function(r) {
-              if (r.osat && _.size(r.osat) > 0) {
-                r.$collapsed = false;
-              }
-            });
-          }
+          _.forEach(scope.rakenne.osat, function(r) {
+            if (r.osat && _.size(r.osat) > 0) {
+              r.$collapsed = avaamattomat !== 0;
+            }
+          });
         };
 
         scope.tkaanna = function(input) {
@@ -183,11 +174,13 @@ angular.module('eperusteApp')
           '  <span class="tree-item">' + generoiOtsikko() + '</span>' +
           '</div>';
 
-        var kentta = '<div ng-if="rakenne._tutkinnonOsaViite" ng-class="{ \'pointer\': muokkaus, \'huomio\': tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].$elevate }" class="bubble-osa">' + optiot + '</div>';
-        kentta += '<div ng-if="!rakenne._tutkinnonOsaViite" ng-class="{ \'pointer\': muokkaus }" class="bubble">' + optiot + '</div>';
-        kentta += '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="virhe">' +
-                  '  <span>{{ tkaanna(rakenne.$virhe.selite) }}<span ng-show="rakenne.$virhe.selite.length > 0">. </span>{{ rakenne.$virhe.virhe | kaanna }}.</span>' +
-                  '</div>';
+        var kentta = '<div ng-if="rakenne._tutkinnonOsaViite" ' +
+          'ng-class="{ \'pointer\': muokkaus, \'huomio\': tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].$elevate || (apumuuttujat.haku && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].$matched) }" class="bubble-osa">' +
+          optiot + '</div>' +
+          '<div ng-if="!rakenne._tutkinnonOsaViite" ng-class="{ \'pointer\': muokkaus }" class="bubble">' + optiot + '</div>' +
+          '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="virhe">' +
+          '  <span>{{ tkaanna(rakenne.$virhe.selite) }}<span ng-show="rakenne.$virhe.selite.length > 0">. </span>{{ rakenne.$virhe.virhe | kaanna }}.</span>' +
+          '</div>';
 
         var avaaKaikki = '<div class="pull-right">' +
                          '  <a ng-show="muokkaus" style="margin-right: 10px;" href="" ng-click="piilotaVirheet()" class="group-toggler">' +
@@ -239,7 +232,8 @@ angular.module('eperusteApp')
     };
   })
   .directive('treeWrapper', function($stateParams, $state, Editointikontrollit, TutkinnonOsanTuonti, Kaanna,
-                                     PerusteTutkinnonosa, Notifikaatiot, PerusteenRakenne, Muodostumissaannot) {
+                                     PerusteTutkinnonosa, Notifikaatiot, PerusteenRakenne, Muodostumissaannot,
+                                     Algoritmit) {
     return {
       restrict: 'AE',
       transclude: true,
@@ -266,6 +260,37 @@ angular.module('eperusteApp')
           rajaus: '',
           multiPage: false,
           sivu: 1
+        };
+
+        scope.paivitaTekstiRajaus = function (value) {
+          if (!_.isEmpty(value)) {
+            PerusteenRakenne.kaikilleRakenteille(scope.rakenne.rakenne, function(item) {
+              // 1. Find matches
+              item.$collapsed = true;
+              var osa = scope.rakenne.tutkinnonOsaViitteet[item._tutkinnonOsaViite];
+              if (osa) {
+                osa.$matched = Algoritmit.rajausVertailu(value, osa, 'nimi');
+              }
+            });
+            PerusteenRakenne.kaikilleRakenteille(scope.rakenne.rakenne, function(item) {
+              // 2. Uncollapse parents of matched
+              var osa = scope.rakenne.tutkinnonOsaViitteet[item._tutkinnonOsaViite];
+              if (osa && osa.$matched) {
+                var parent = item.$parent;
+                while (parent) {
+                  if (parent.$parent) {
+                    parent.$collapsed = false;
+                  }
+                  parent = parent.$parent;
+                }
+              }
+            });
+          } else {
+            // Uncollapse all when search is cleared
+            PerusteenRakenne.kaikilleRakenteille(scope.rakenne.rakenne, function(item) {
+              item.$collapsed = false;
+            });
+          }
         };
 
         scope.paivitaRajaus = function(input) {
@@ -389,6 +414,10 @@ angular.module('eperusteApp')
         scope.$watch('muokkaus', function() {
           scope.sortableOptions.disabled = !scope.muokkaus;
           scope.sortableOptionsUnique.disabled = !scope.muokkaus;
+        });
+
+        scope.$watch('apumuuttujat.haku', function (value) {
+          scope.paivitaTekstiRajaus(value);
         });
       }
     };

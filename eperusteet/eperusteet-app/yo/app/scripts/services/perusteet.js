@@ -139,6 +139,7 @@ angular.module('eperusteApp')
     function kaikilleRakenteille(rakenne, f) {
       if (!rakenne || !f) { return; }
       _.forEach(rakenne.osat, function(r) {
+        r.$parent = rakenne;
         kaikilleRakenteille(r, f);
         f(r);
       });

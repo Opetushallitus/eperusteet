@@ -39,12 +39,23 @@ ul.tutkinnonosat {
     margin: 0 0 10px 0;
     cursor: pointer;
     overflow: hidden;
+    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+
     &:nth-child(odd) {
       margin-right: 10px;
     }
 
+    & *:hover {
+      text-decoration: none;
+    }
+
     &:hover {
-      border-color: black;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+      border: 1px solid #aaa;
+      text-decoration: none;
+      background: white;
+
       .muokkaus {
         color: black;
       }
@@ -54,12 +65,14 @@ ul.tutkinnonosat {
       padding: 0;
       float: left;
       width: 80%;
+
       h3 {
         margin: 0px;
         max-width: 420px;
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
+        color: rgb(51,51,51);
       }
 
       .pienet-tiedot {

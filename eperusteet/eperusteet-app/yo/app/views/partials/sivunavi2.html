@@ -13,25 +13,45 @@
 
     <div class="list-group">
       <div class="list-group-item header" ng-show="header">{{header | kaanna}}</div>
-      <div class="list-group-item">
-        <div class="sivunavi-tc-item" ng-show="hasTransclude">
+      <div class="list-group-item" ng-show="hasTransclude">
+        <div class="sivunavi-tc-item">
           <div id="sivunavi-tc" ng-transclude></div>
         </div>
-        <div class="input-group">
+        <div class="input-group" ng-if="!sections">
           <span class="input-group-addon input-sm" icon-role="search"></span>
           <input ng-model="search.term" placeholder="{{ 'etsi-sisällöstä' | kaanna }}" class="form-control input-sm">
         </div>
       </div>
+
+      <div ng-if="sections">
+        <accordion close-others="oneAtATime">
+        <accordion-group ng-repeat="section in sections" is-open="section.$open" ng-class="{'panel-chosen': section.$open, 'menu': !section.include}">
+        <accordion-heading>{{section.title | kaanna}}</accordion-heading>
+        <div ng-if="section.include" ng-include="section.include"></div>
+        <div ng-if="!section.include" class="list-group">
+          <a class="list-group-item item" ng-repeat="item in section.items" ng-class="itemClasses(item)" ng-href="{{item.href}}"
+             ng-hide="!item.$matched || item.root || (!search.term && (item.$hidden || item.$impHidden))">
+            <div class="toggler">
+              <span ng-show="!item.$leaf" ng-click="toggle(section.items, item, $event)" class="glyphicon"
+                    ng-class="{'glyphicon-chevron-right': item.$collapsed, 'glyphicon-chevron-down': !item.$collapsed}"></span>
+            </div>
+            <span class="linktext" ng-class="{'action-link': !!item.href}" ep-highlight="search.term">{{item.label|kaanna}}</span>
+          </a>
+        </div>
+        </accordion-group>
+        </accordion>
+      </div>
+
       <a class="list-group-item item" ng-repeat="item in items" ng-class="itemClasses(item)" ng-href="{{item.href}}"
         ng-hide="!item.$matched || item.root || (!search.term && (item.$hidden || item.$impHidden))">
         <div class="toggler">
-          <span ng-show="!item.$leaf" ng-click="toggle(item, $event)" class="glyphicon"
+          <span ng-show="!item.$leaf" ng-click="toggle(items, item, $event)" class="glyphicon"
                 ng-class="{'glyphicon-chevron-right': item.$collapsed, 'glyphicon-chevron-down': !item.$collapsed}"></span>
         </div>
         <span class="linktext" ng-class="{'action-link': !!item.href}" ep-highlight="search.term">{{item.label|kaanna}}</span>
       </a>
-      <div class="list-group-item" ng-show="!hasResults">
-        <p>{{ ei-tuloksia | kaanna }}</p>
+      <div class="list-group-item" ng-if="!sections" ng-show="!hasResults">
+        <p class="no-results">{{ 'ei-tuloksia' | kaanna }}</p>
       </div>
     </div>
   </div>
