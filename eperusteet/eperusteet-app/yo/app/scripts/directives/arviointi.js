@@ -50,6 +50,15 @@ angular.module('eperusteApp')
       }
     };
 
+    var valmisteleKriteerit = function (arr, tasot) {
+      _.each(tasot, function(taso) {
+        arr.push({
+          _osaamistaso: taso.id,
+          kriteerit: [{}]
+        });
+      });
+    };
+
     $scope.kohde = {
       muokkaa: function (kohde, event) {
         if (event) {
@@ -58,6 +67,10 @@ angular.module('eperusteApp')
         $scope.originalKohde = kohde;
         kohde._editointi = true;
         $scope.editableKohde = angular.copy(kohde);
+        var kriteerit = $scope.editableKohde.osaamistasonKriteerit;
+        if (_.isArray(kriteerit) && _.isEmpty(kriteerit)) {
+          valmisteleKriteerit(kriteerit, $scope.arviointiasteikot[kohde._arviointiAsteikko].osaamistasot);
+        }
       },
       poista: function (list, item, event) {
         if (event) {
@@ -85,12 +98,7 @@ angular.module('eperusteApp')
         };
         kohde.otsikko[YleinenData.kieli] = uudenKohteenTiedot.nimi;
 
-        angular.forEach(uudenKohteenTiedot.arviointiasteikko.osaamistasot, function(taso) {
-          kohde.osaamistasonKriteerit.push({
-            _osaamistaso: taso.id,
-            kriteerit: [{}]
-          });
-        });
+        valmisteleKriteerit(kohde.osaamistasonKriteerit, uudenKohteenTiedot.arviointiasteikko.osaamistasot);
 
         kohdealue.arvioinninKohteet.push(kohde);
         uudenKohteenTiedot.nimi = null;
