@@ -86,7 +86,7 @@ angular.module('eperusteApp')
              type: 'editor-area',
              localized: true,
              collapsible: true,
-             order: 6
+             order: 4
            },{
              path: 'ammattitaidonOsoittamistavat',
              localeKey: 'tutkinnon-osan-ammattitaidon-osoittamistavat',
@@ -107,13 +107,13 @@ angular.module('eperusteApp')
              type: 'editor-text',
              localized: true,
              collapsible: true,
-             order: 4
+             order: 5
            },{
              path: 'arviointi.arvioinninKohdealueet',
              localeKey: 'tutkinnon-osan-arviointi-taulukko',
              type: 'arviointi',
              collapsible: true,
-             order: 5
+             order: 6
            });
 
         $scope.koodistoClick = Koodisto.modaali(function(koodisto) {
