@@ -10,24 +10,24 @@ angular.module('eperusteApp')
 
         ngModel.$parsers.push(function(viewValue) {
           if (!_.isEmpty(viewValue)) {
-            return validate(viewValue);
+            validate(viewValue);
           } else {
             ngModel.$setValidity('diaarinumerouniikki', true);
-            return viewValue;
           }
+          return viewValue;
         });
 
-        var validate = _.debounce(function(viewValue) {
+        function doValidate(viewValue) {
           DiaarinumeroUniqueResource.get({
             diaarinumero: viewValue,
           }, function(vastaus) {
-            if (vastaus.vastaus === true) {
-              ngModel.$setValidity('diaarinumerouniikki', true);
-              return viewValue;
-            } else {
-              ngModel.$setValidity('diaarinumerouniikki', false);
-              return viewValue;
-            }
+            ngModel.$setValidity('diaarinumerouniikki', vastaus.vastaus === true);
+          });
+        }
+
+        var validate = _.debounce(function(viewValue) {
+          scope.$apply(function () {
+            doValidate(viewValue);
           });
         }, 300);
       }

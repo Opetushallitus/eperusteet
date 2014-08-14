@@ -3,7 +3,8 @@
   <div class="input-group col-sm-9" ng-if="!isDate">
     <numberinput luokka="form-control" ng-if="isNumber" type="{{type}}" model="input.model" min="{{min}}" max="{{max}}" form="form" step="{{step}}"></numberinput>
     <input id="{{inputElId}}" ng-if="isText && type !== 'diaari'" ng-class="inputClasses()" ng-model="input.model" type="{{type}}" placeholder="{{placeholder | kaanna}}" ng-required="!!postfix">
-    <input id="{{inputElId}}" ng-if="isText && type === 'diaari'" name="diaari"  ng-class="inputClasses()" ng-model="input.model" type="{{type}}" placeholder="{{placeholder | kaanna}}"  ng-required="!!postfix">
+    <input id="{{inputElId}}" ng-if="isText && type === 'diaari'" name="diaari"  ng-class="inputClasses()" ng-model="input.model"
+           type="{{type}}" placeholder="{{placeholder | kaanna}}"  ng-required="!!postfix" diaarinumerouniikki>
     <p class="alert alert-error" ng-show="form.diaari.$error.diaarinumerouniikki" kaanna>diaarinumero-kaytossa</p>
     <ml-input ng-if="isMultiText" ml-data="input.model" ng-model="input.model" type="{{type}}"></ml-input>
     <select id="{{inputElId}}" ng-if="options && !flatOptions" class="form-control" ng-model="input.model" ng-required="!!postfix"
