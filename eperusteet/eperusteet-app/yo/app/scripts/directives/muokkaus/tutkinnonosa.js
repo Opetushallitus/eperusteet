@@ -345,4 +345,145 @@ angular.module('eperusteApp')
 
       }
     };
+  })
+
+  .directive('muokkausTutkinnonosa2', function () {
+    return {
+      templateUrl: 'views/partials/muokkaus/tutkinnonosa2.html',
+      restrict: 'E',
+      scope: {
+        tutkinnonOsa: '=',
+        versiot: '='
+      },
+      controller: 'Tutkinnonosa2Controller'
+    };
+  })
+
+  .controller('Tutkinnonosa2Controller', function ($scope, Editointikontrollit,
+      PerusteenOsat, $stateParams, Lukitus) {
+    function fetch(cb) {
+      cb = cb || angular.noop;
+      PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, function(res) {
+        $scope.tutkinnonOsa = res;
+        cb(res);
+      });
+    }
+
+    function lukitse(cb) {
+      Lukitus.lukitsePerusteenosa($scope.tutkinnonOsa.id, cb);
+    }
+
+    function vapauta() {
+      Lukitus.vapautaPerusteenosa($scope.tutkinnonOsa.id);
+    }
+
+    $scope.editableTutkinnonOsa = $scope.tutkinnonOsa;
+    $scope.editableOsaAlue = null;
+    $scope.editableTavoite = null;
+    $scope.pakollisuusoptions = [
+      {label: 'pakollinen', value: true},
+      {label: 'valinnainen', value: false},
+    ];
+
+    var _remove = function (arr, value) {
+      var index = _.indexOf(arr, value);
+      if (index > -1) {
+        arr.splice(index, 1);
+      }
+    };
+
+    var editingCallbacks = {
+      edit: function () {
+        lukitse(function () {
+          fetch(function (res) {
+            $scope.editableTutkinnonOsa = res;
+          });
+        });
+      },
+      save: function () {
+        $scope.editableTutkinnonOsa.$saveTutkinnonOsa(function(response) {
+          $scope.editableTutkinnonOsa = angular.copy(response);
+          $scope.tutkinnonOsa = angular.copy(response);
+        });
+        vapauta();
+      },
+      cancel: function () {
+        vapauta();
+        fetch(function (res) {
+          $scope.editableTutkinnonOsa = res;
+        });
+      },
+      asyncValidate: function(cb) {
+        lukitse(function () {
+          cb();
+        });
+      },
+      notify: function (mode) {
+        $scope.editEnabled = mode;
+      }
+    };
+    Editointikontrollit.registerCallback(editingCallbacks);
+
+    $scope.muokkaa = function () {
+      Editointikontrollit.startEditing();
+    };
+
+    $scope.osaAlue = {
+      add: function () {
+        if (!$scope.editableTutkinnonOsa.osaAlueet) {
+          $scope.editableTutkinnonOsa.osaAlueet = [];
+        }
+        $scope.editableOsaAlue = {
+          nimi: {},
+          osaamistavoitteet: [],
+          $editing: true
+        };
+        $scope.editableTutkinnonOsa.osaAlueet.push($scope.editableOsaAlue);
+      },
+      remove: function (osaAlue) {
+        _remove($scope.editableTutkinnonOsa.osaAlueet, osaAlue);
+      },
+      edit: function (osaAlue) {
+        osaAlue.$editing = true;
+        $scope.editableOsaAlue = osaAlue;
+      },
+      save: function ($index) {
+        $scope.editableOsaAlue.$editing = false;
+        $scope.editableTutkinnonOsa.osaAlueet[$index] = $scope.editableOsaAlue;
+        $scope.editableOsaAlue = null;
+      }
+    };
+
+    $scope.osaamistavoite = {
+      add: function () {
+        if (!$scope.editableOsaAlue.osaamistavoitteet) {
+          $scope.editableOsaAlue.osaamistavoitteet = [];
+        }
+        $scope.editableTavoite = {
+          nimi: {},
+          laajuus: null,
+          pakollisuus: true,
+          tunnustaminen: {},
+          tavoitteet: {},
+          arviointi: {
+            lisatiedot: null,
+            arvioinninKohdealueet: []
+          },
+          $editing: true
+        };
+        $scope.editableOsaAlue.osaamistavoitteet.push($scope.editableTavoite);
+      },
+      remove: function (tavoite) {
+        _remove($scope.editableOsaAlue.osaamistavoitteet, tavoite);
+      },
+      edit: function (tavoite) {
+        tavoite.$editing = true;
+        $scope.editableTavoite = tavoite;
+      },
+      save: function ($index) {
+        $scope.editableTavoite.$editing = false;
+        $scope.editableOsaAlue.osaamistavoitteet[$index] = $scope.editableTavoite;
+        $scope.editableTavoite = null;
+      }
+    };
   });

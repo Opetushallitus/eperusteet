@@ -1,0 +1,69 @@
+<div class="tutke2muokkaus">
+  <h1>{{editableTutkinnonOsa.nimi | kaanna:true}}</h1>
+  <div class="action-buttons">
+    <button icon-role="edit" ng-hide="editEnabled" ng-click="muokkaa()" class="btn btn-default" kaanna>muokkaa</button>
+  </div>
+  <h2 kaanna>Osa-alueet</h2>
+    <ul>
+        <li ng-repeat="alue in editableTutkinnonOsa.osaAlueet">
+          <div ng-show="editEnabled && editableOsaAlue === alue">
+              <button class="btn btn-primary" ng-click="osaAlue.save($index)" ng-disabled="editableTavoite" kaanna>ok</button>
+
+              <formfield model="editableOsaAlue" model-var="nimi" label="nimi"></formfield>
+
+              <h3 kaanna>Osaamistavoitteet</h3>
+              <ul class="tavoitteet">
+                <li ng-repeat="tavoite in editableOsaAlue.osaamistavoitteet">
+                    <div ng-if="editableTavoite === tavoite">
+                      <button class="btn btn-primary" ng-click="osaamistavoite.save($index)" kaanna>ok</button>
+
+                      <formfield model="editableTavoite" model-var="nimi" label="nimi"></formfield>
+                      <formfield model="editableTavoite" model-var="pakollisuus" label="pakollisuus" options="pakollisuusoptions"></formfield>
+                      <formfield model="editableTavoite" model-var="laajuus" label="laajuus" type="float" step="0.5"></formfield>
+                      <formfield model="editableTavoite" model-var="tavoitteet" label="tavoitteet" type="textarea"></formfield>
+                      <formfield model="editableTavoite" model-var="tunnustaminen" label="tunnustaminen" type="textarea"></formfield>
+                      <p>Arviointi</p>
+                      <arviointi ng-if="editableTavoite" arviointi="editableTavoite.arviointi.arvioinninKohdealueet"
+                         edit-enabled="editableTavoite.$editing" editointi-sallittu="true"></arviointi>
+
+                      <button class="btn btn-primary" ng-click="osaamistavoite.save($index)" kaanna>ok</button>
+                    </div>
+                    <div ng-show="editableTavoite !== tavoite">
+                      <h4>{{tavoite.nimi | kaanna:true}} <a editointi-kontrolli class="action-link badge" ng-click="osaamistavoite.edit(tavoite)" icon-role="edit"></a></h4>
+                      <p>Pakollisuus: {{(tavoite.pakollisuus && 'pakollinen' || 'valinnainen')|kaanna}}</p>
+                      <p>Laajuus: {{tavoite.laajuus}}</p>
+                      <p>Tavoitteet: {{tavoite.tavoitteet | kaanna}}</p>
+                      <p>Tunnustaminen: {{tavoite.tunnustaminen | kaanna}}</p>
+                      <p>Arviointi</p>
+                      <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet" editEnabled="tavoite.$editing"></arviointi>
+                    </div>
+                  <button ng-show="editEnabled" class="btn btn-default" ng-click="osaamistavoite.remove(tavoite)" icon-role="remove" kaanna>Poista osaamistavoite</button>
+                </li>
+              </ul>
+
+            <button ng-show="editEnabled" class="btn btn-default" ng-click="osaamistavoite.add()" icon-role="add" kaanna>Lisää osaamistavoite</button>
+            <br>
+            <button class="btn btn-primary" ng-click="osaAlue.save($index)" ng-disabled="editableTavoite" kaanna>ok</button>
+
+          </div>
+          <div ng-show="editableOsaAlue !== alue">
+            <h3>{{alue.nimi | kaanna:true}} <a editointi-kontrolli class="action-link badge" ng-click="osaAlue.edit(alue)"icon-role="edit"></a></h3>
+            <h3 kaanna>Osaamistavoitteet</h3>
+            <ul class="tavoitteet">
+              <li ng-repeat="tavoite in alue.osaamistavoitteet">
+                <h4>{{tavoite.nimi | kaanna:true}}</h4>
+                <p>Pakollisuus: {{(tavoite.pakollisuus && 'pakollinen' || 'valinnainen')|kaanna}}</p>
+                <p>Laajuus: {{tavoite.laajuus}}</p>
+                <p>Tavoitteet: {{tavoite.tavoitteet | kaanna}}</p>
+                <p>Tunnustaminen: {{tavoite.tunnustaminen | kaanna}}</p>
+                <p>Arviointi</p>
+                <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet" editEnabled="tavoite.$editing"></arviointi>
+              </li>
+            </ul>
+          </div>
+
+          <button ng-show="editEnabled" class="btn btn-default" ng-click="osaAlue.remove(alue)" icon-role="remove" kaanna>Poista osa-alue</button>
+        </li>
+    </ul>
+    <button ng-show="editEnabled" class="btn btn-default" ng-click="osaAlue.add()" icon-role="add" kaanna>Lisää osa-alue</button>
+</div>
