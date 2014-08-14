@@ -5,6 +5,7 @@
     <div>
         <h2 kaanna>perusteprojektit</h2>
         <div class="hallintapainikkeet">
+            <a ui-sref="root.excel" kaanna>Tuo Excel-tiedostosta...</a>
             <button ui-sref="root.perusteprojektiwizard.tiedot" class="btn" icon-role="plus" kaanna>uusi-perusteprojekti</button>
             <button ui-sref="root.perusteprojektiwizard.pohja" class="btn" icon-role="plus" kaanna>uusi-perustepohja</button>
         </div>
@@ -41,7 +42,7 @@
                         {{ 'tila-' + pp.tila | kaanna }}
                     </td>
                     <td>
-                        <button type="button" class="btn btn-primary" ng-click="palauta(pp)" ng-if="pp.tila === 'poistettu' || pp.tila === 'poistettupohja'"><span kaanna>palauta</span></button>
+                        <button type="button" class="btn btn-primary" ng-click="palauta(pp)" ng-if="pp.tila === 'poistettu'"><span kaanna>palauta</span></button>
                     </td>
                 </tr>
             </table>

@@ -36,6 +36,25 @@
 angular.module('eperusteApp')
   .directive('formfield', function ($parse, Kaanna, $timeout, YleinenData) {
     var uniqueId = 0;
+    var checkInputType = function (scope) {
+      scope.isObject = _.isObject(scope.input.model);
+        scope.isNumber = !scope.options && !scope.isObject &&
+          (scope.type === 'number' || scope.type === 'float' || scope.type === 'integer');
+        scope.isDate = !scope.options && scope.type === 'date';
+        scope.isText = !scope.options && !scope.isObject &&
+          !(scope.type === 'number' || scope.type === 'float' || scope.type === 'integer');
+        scope.isMultiText = !scope.options && scope.isObject;
+        scope.datePicker = {
+          options: YleinenData.dateOptions,
+          format: YleinenData.dateFormatDatepicker,
+          state: false,
+          open: function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            scope.datePicker.state = !scope.datePicker.state;
+          }
+        };
+    };
     return {
       templateUrl: 'views/partials/formfield.html',
       restrict: 'E',
@@ -81,7 +100,7 @@ angular.module('eperusteApp')
           element.find('label').attr('for', scope.inputElId);
         }
 
-        if (scope.type === 'text' && attrs.max) {
+        if ((scope.type === 'text' || scope.type === 'diaari') && attrs.max) {
           $timeout(function () {
             element.find('input').attr('maxlength', attrs.max);
           });
@@ -120,23 +139,7 @@ angular.module('eperusteApp')
           scope.input.model = value;
         });
 
-        scope.isObject = _.isObject(scope.input.model);
-        scope.isNumber = !scope.options && !scope.isObject &&
-          (scope.type === 'number' || scope.type === 'float' || scope.type === 'integer');
-        scope.isDate = !scope.options && scope.type === 'date';
-        scope.isText = !scope.options && !scope.isObject &&
-          !(scope.type === 'number' || scope.type === 'float' || scope.type === 'integer');
-        scope.isMultiText = !scope.options && scope.isObject;
-        scope.datePicker = {
-          options: YleinenData.dateOptions,
-          format: YleinenData.dateFormatDatepicker,
-          state: false,
-          open: function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-            scope.datePicker.state = !scope.datePicker.state;
-          }
-        };
+        checkInputType(scope);
       }
     };
   });

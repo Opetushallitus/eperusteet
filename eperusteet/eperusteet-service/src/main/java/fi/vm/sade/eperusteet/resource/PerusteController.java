@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
@@ -31,7 +32,6 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
@@ -68,6 +68,8 @@ public class PerusteController {
     @RequestMapping(value = "/info", method = GET)
     @ResponseBody
     public Page<PerusteInfoDto> getAllInfo(PerusteQuery pquery) {
+        // Vain valmiita perusteita voi hakea tämän rajapinnan avulla
+        pquery.setTila(PerusteTila.VALMIS.toString());
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findByInfo(p, pquery);
     }
@@ -75,6 +77,8 @@ public class PerusteController {
     @RequestMapping(method = GET)
     @ResponseBody
     public Page<PerusteDto> getAll(PerusteQuery pquery) {
+        // Vain valmiita perusteita voi hakea tämän rajapinnan avulla
+        pquery.setTila(PerusteTila.VALMIS.toString());
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findBy(p, pquery);
     }
@@ -203,6 +207,7 @@ public class PerusteController {
             @RequestBody TutkinnonOsaViiteDto osa) {
         return service.addTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osa);
     }
+    
 
     /**
      * Liitää olemassa olevan tutkinnon osan perusteeseen

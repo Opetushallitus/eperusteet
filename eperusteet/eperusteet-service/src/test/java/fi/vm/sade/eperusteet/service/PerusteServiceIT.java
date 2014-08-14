@@ -19,9 +19,10 @@ import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.dto.EntityReference;
 import fi.vm.sade.eperusteet.dto.PerusteDto;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
@@ -35,12 +36,15 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.junit.After;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -52,9 +56,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-
-import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Integraatiotesti muistinvaraista kantaa vasten.
@@ -92,7 +93,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         Peruste p = TestUtils.createPeruste();
         p.setSiirtymaAlkaa(new GregorianCalendar(2000, Calendar.MARCH, 12).getTime());
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
-        p.setTila(Tila.VALMIS);
+        p.setTila(PerusteTila.VALMIS);
         Suoritustapa s = new Suoritustapa();
         s.setSuoritustapakoodi(Suoritustapakoodi.OPS);
         p.setSuoritustavat(Sets.newHashSet(s));
@@ -102,16 +103,16 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         p = TestUtils.createPeruste();
         p.setSiirtymaAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 4, Calendar.MARCH, 12).getTime());
-        p.setTila(Tila.VALMIS);
+        p.setTila(PerusteTila.VALMIS);
         repo.save(p);
 
         p = TestUtils.createPeruste();
-        p.setTila(Tila.VALMIS);
+        p.setTila(PerusteTila.VALMIS);
         repo.save(p);
 
         p = TestUtils.createPeruste();
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
-        p.setTila(Tila.VALMIS);
+        p.setTila(PerusteTila.VALMIS);
         repo.save(p);
 
         perusteService.lock(peruste.getId(), Suoritustapakoodi.OPS);

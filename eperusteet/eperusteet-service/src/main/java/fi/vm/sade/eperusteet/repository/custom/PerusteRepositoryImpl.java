@@ -24,13 +24,14 @@ import fi.vm.sade.eperusteet.domain.Koulutus_;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti_;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Peruste_;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapa_;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen_;
-import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.dto.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
 import java.util.Date;
@@ -131,6 +132,7 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         final List<String> opintoala = pquery.getOpintoala();
         final boolean siirtyma = pquery.isSiirtyma();
         final String tilaStr = pquery.getTila();
+        final String perusteTyyppiStr = pquery.getPerusteTyyppi();
         final Expression<Date> siirtymaAlkaa = root.get(Peruste_.siirtymaAlkaa);
         final Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
 
@@ -174,7 +176,11 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         }
 
         if (!Strings.isNullOrEmpty(tilaStr)) {
-            pred = cb.and(pred, cb.equal(root.get(Peruste_.tila), Tila.of(tilaStr)));
+            pred = cb.and(pred, cb.equal(root.get(Peruste_.tila), PerusteTila.of(tilaStr)));
+        }
+        
+        if (!Strings.isNullOrEmpty(perusteTyyppiStr)) {
+            pred = cb.and(pred, cb.equal(root.get(Peruste_.tyyppi), PerusteTyyppi.of(perusteTyyppiStr)));
         }
 
         return pred;

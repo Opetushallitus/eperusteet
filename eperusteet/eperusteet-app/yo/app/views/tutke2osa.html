@@ -1,0 +1,89 @@
+<div class="row">
+    <div class="col-md-12">
+
+        <a ng-click="changeOsa()">Vaihda tutkinnon osaa</a>
+
+        <h1>{{model.tutkinnonosa.nimi | kaanna}} {{model.tutkinnonosa.laajuus[0].yhteensa}} osp</h1>
+
+            <table class="navitable" ng-repeat="osaAlue in model.tutkinnonosa.osaAlueet">
+              <tr ng-class="{collapsed: osaAlue.$collapsed}">
+                <td ng-click="osaAlue.$collapsed = !osaAlue.$collapsed" class="osaalue-otsikko" ng-class="{active: osaAlue.$shown && !osaAlue.$collapsed}">
+                    <span class="glyphicon" ng-class="{'glyphicon-chevron-right': osaAlue.$collapsed, 'glyphicon-chevron-down': !osaAlue.$collapsed}"></span>
+                    <a class="action-link" ng-click="$event.stopPropagation(); show(osaAlue);">{{osaAlue.nimi | kaanna}}</a>
+                    <div ng-if="hasChoices(osaAlue)" class="vaihtoehdot pull-right" ng-hide="osaAlue.$collapsed">
+                      <ul>
+                      <li ng-repeat="(key, vaihtoehto) in osaAlue.vaihtoehdot">
+                          <label><input type="radio" ng-model="osaAlue.$vaihtoehto" ng-value="key" ng-change="show(osaAlue)">{{vaihtoehto.nimi | kaanna}}</label>
+                      </li>
+                      </ul>
+                    </div>
+                </td>
+                <td class="osaalue-tiedot">
+                    <table ng-hide="osaAlue.$collapsed">
+                        <tr ng-repeat="osaamistavoite in osaAlue.vaihtoehdot[osaAlue.$vaihtoehto || 0].osaamistavoitteet">
+                            <td class="pakollisuus" ng-class="{active: osaamistavoite.$shown}">
+                                <a class="action-link" ng-click="show(osaAlue, osaamistavoite)">{{osaamistavoite.pakollisuus}} {{osaamistavoite.laajuus}} osp</a>
+                            </td>
+                            <td class="osiot">
+                                <ul>
+                                  <li ng-class="{active: osaamistavoite.tavoitteet.$shown}">
+                                      <a class="action-link" ng-click="show(osaAlue, osaamistavoite, 'tavoitteet')" kaanna>Tavoitteet</a>
+                                  </li>
+                                  <li ng-class="{active: osaamistavoite.tunnustaminen.$shown}">
+                                      <a class="action-link" ng-click="show(osaAlue, osaamistavoite, 'tunnustaminen')" kaanna>Tunnustaminen</a>
+                                  </li>
+                                  <li ng-class="{active: osaamistavoite.arviointi.$shown}">
+                                      <a class="action-link" ng-click="show(osaAlue, osaamistavoite, 'arviointi')" kaanna>Arviointi</a>
+                                  </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+              </tr>
+              <tr ng-show="osaAlue.$shown && !osaAlue.$collapsed">
+                <td colspan="2">
+                    <div class="alue-content">
+                        <div ng-repeat="osaamistavoite in osaAlue.vaihtoehdot[osaAlue.$vaihtoehto || 0].osaamistavoitteet">
+                            <div ng-if="osaamistavoite.$shown">
+                                <h3>{{osaamistavoite.pakollisuus}} {{osaamistavoite.laajuus}} osp</h3>
+                                <div ng-if="osaamistavoite.tavoitteet.$shown">
+                                    <h4 kaanna>Tavoitteet</h4>
+                                    <p>{{osaamistavoite.tavoitteet | kaanna}}</p>
+                                </div>
+                                <div ng-if="osaamistavoite.tunnustaminen.$shown">
+                                    <h4 kaanna>Tunnustaminen</h4>
+                                    <p>{{osaamistavoite.tunnustaminen | kaanna}}</p>
+                                </div>
+                                <div ng-if="osaamistavoite.arviointi.$shown">
+                                    <h4 kaanna>Arviointi</h4>
+                                    <p>{{osaamistavoite.arviointi | kaanna}}</p>
+                                </div>
+                            </div>
+                        </div>
+                      <a class="action-link" ng-click="close(osaAlue)" kaanna>sulje</a>
+                    </div>
+                </td>
+              </tr>
+        </table>
+    </div>
+</div>
+
+<!-- <div class="row">
+    <div class="col-md-12">
+        <h1>{{model.tutkinnonosa.nimi | kaanna}} {{model.tutkinnonosa.laajuus.yhteensa}} osp</h1>
+
+        <div ng-repeat="osaAlue in model.tutkinnonosa.osaAlueet">
+            <h2>{{osaAlue.nimi | kaanna}}</h2>
+            <div ng-repeat="osaamistavoite in osaAlue.osaamistavoitteet">
+                <h3>{{osaamistavoite.pakollisuus}} {{osaamistavoite.laajuus}} osp</h3>
+                <h4 kaanna>Tavoitteet</h4>
+                <p>{{osaamistavoite.tavoitteet | kaanna}}</p>
+                <h4 kaanna>Tunnustaminen</h4>
+                <p>{{osaamistavoite.tunnustaminen | kaanna}}</p>
+                <h4 kaanna>Arviointi</h4>
+                <p>{{osaamistavoite.arviointi | kaanna}}</p>
+            </div>
+        </div>
+    </div>
+</div> -->

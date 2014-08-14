@@ -62,7 +62,6 @@ angular.module('eperusteApp')
       valmis: 'thumbs-up',
       julkaistu: 'glass',
       poistettu: 'folder-open',
-      poistettupohja: 'folder-open'
     };
 
     $scope.appliedClasses = function () {

@@ -17,10 +17,12 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
-import fi.vm.sade.eperusteet.domain.Tila;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
@@ -88,12 +90,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         String koulutustyyppi = perusteprojektiDto.getKoulutustyyppi();
         LaajuusYksikko yksikko = perusteprojektiDto.getLaajuusYksikko();
-        perusteprojekti.setTila(Tila.LAADINTA);
+        PerusteTyyppi tyyppi = perusteprojektiDto.getTyyppi() == null ? PerusteTyyppi.NORMAALI : perusteprojektiDto.getTyyppi();
+        perusteprojekti.setTila(ProjektiTila.LAADINTA);
 
-        if (perusteprojektiDto.getTila() == Tila.POHJA) {
-            perusteprojekti.setTila(Tila.POHJA);
-        }
-        else {
+        if (tyyppi != PerusteTyyppi.POHJA) {
             if (koulutustyyppi.equals("koulutustyyppi_1") && yksikko == null) {
                 throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
             }
@@ -104,10 +104,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         Peruste peruste;
         if (perusteprojektiDto.getPerusteId() == null) {
-            peruste = perusteService.luoPerusteRunko(koulutustyyppi, yksikko, perusteprojektiDto.getTila() == Tila.POHJA ? Tila.POHJA : Tila.LUONNOS);
+            peruste = perusteService.luoPerusteRunko(koulutustyyppi, yksikko, PerusteTila.LUONNOS, tyyppi);
         }
         else {
-            peruste = perusteService.luoPerusteRunkoToisestaPerusteesta(perusteprojektiDto.getPerusteId());
+            peruste = perusteService.luoPerusteRunkoToisestaPerusteesta(perusteprojektiDto.getPerusteId(), tyyppi);
         }
 
         perusteprojekti.setPeruste(peruste);
@@ -115,6 +115,16 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         kayttajaprofiiliService.addPerusteprojekti(perusteprojekti.getId());
 
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public void onkoDiaarinumeroKaytossa(String diaarinumero) {
+        Perusteprojekti projekti = repository.findOneByDiaarinumero(diaarinumero);
+        if (projekti != null) {
+            // TODO: Poikkeusten virheilmoituksetkin pitäisi lokalisoida
+            throw new BusinessRuleViolationException("Diaarinumero on jo käytössä");
+        }
     }
 
     @Override
@@ -134,18 +144,18 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @Transactional(readOnly = true)
-    public Set<Tila> getTilat(Long id) {
+    public Set<ProjektiTila> getTilat(Long id) {
         Perusteprojekti p = repository.findOne(id);
         if (p == null) {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
         }
 
-        return p.getTila().mahdollisetTilat();
+        return p.getTila().mahdollisetTilat(p.getPeruste().getTyyppi());
     }
 
     @Override
     @Transactional(readOnly = false)
-    public TilaUpdateStatus updateTila(Long id, Tila tila) {
+    public TilaUpdateStatus updateTila(Long id, ProjektiTila tila) {
         TilaUpdateStatus updateStatus = new TilaUpdateStatus();
         updateStatus.setVaihtoOk(true);
 
@@ -154,7 +164,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (projekti == null) {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
         }
-        updateStatus.setVaihtoOk(projekti.getTila().mahdollisetTilat().contains(tila));
+        updateStatus.setVaihtoOk(projekti.getTila().mahdollisetTilat(projekti.getPeruste().getTyyppi()).contains(tila));
         if ( !updateStatus.isVaihtoOk() ) {
             String viesti = "Tilasiirtymä tilasta '" + projekti.getTila().toString() + "' tilaan '" + tila.toString() + "' ei mahdollinen";
             updateStatus.addStatus(viesti);
@@ -162,7 +172,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         if (projekti.getPeruste() != null && projekti.getPeruste().getSuoritustavat() != null
-            && tila == Tila.VIIMEISTELY && projekti.getTila() == Tila.LAADINTA) {
+            && tila == ProjektiTila.VIIMEISTELY && projekti.getTila() == ProjektiTila.LAADINTA) {
             Validointi validointi;
             for (Suoritustapa suoritustapa : projekti.getPeruste().getSuoritustavat()) {
                 if (suoritustapa.getRakenne() != null) {
@@ -191,18 +201,21 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             return updateStatus;
         }
 
-        if (tila == Tila.JULKAISTU && projekti.getTila() == Tila.VALMIS) {
-            for (Suoritustapa suoritustapa : projekti.getPeruste().getSuoritustavat()) {
-                setSisaltoValmis(suoritustapa.getSisalto());
-                for (TutkinnonOsaViite tutkinnonosaViite : suoritustapa.getTutkinnonOsat()) {
-                    setOsatValmis(tutkinnonosaViite);
-                }
-            }
-            projekti.getPeruste().setTila(Tila.VALMIS);
+        if (tila == ProjektiTila.JULKAISTU && projekti.getTila() == ProjektiTila.VALMIS) {
+            setPerusteTila(projekti.getPeruste(), PerusteTila.VALMIS);
         }
 
-        if (tila == Tila.POISTETTU) {
-            projekti.getPeruste().setTila(Tila.POISTETTU);
+        if (tila == ProjektiTila.POISTETTU) {
+            setPerusteTila(projekti.getPeruste(), PerusteTila.POISTETTU);
+        }
+        
+        if (tila == ProjektiTila.LAADINTA && projekti.getTila() == ProjektiTila.POISTETTU) {
+            setPerusteTila(projekti.getPeruste(), PerusteTila.LUONNOS);
+        }
+        
+        if (projekti.getPeruste().getTyyppi() == PerusteTyyppi.POHJA && tila == ProjektiTila.VALMIS
+            && projekti.getTila() == ProjektiTila.LAADINTA) {
+            setPerusteTila(projekti.getPeruste(), PerusteTila.VALMIS);
         }
 
         projekti.setTila(tila);
@@ -210,21 +223,31 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         return updateStatus;
     }
 
-    private PerusteenOsaViite setSisaltoValmis(PerusteenOsaViite sisaltoRoot) {
+    private void setPerusteTila(Peruste peruste, PerusteTila tila) {
+        for (Suoritustapa suoritustapa : peruste.getSuoritustavat()) {
+                setSisaltoTila(suoritustapa.getSisalto(), tila);
+                for (TutkinnonOsaViite tutkinnonosaViite : suoritustapa.getTutkinnonOsat()) {
+                    setOsatTila(tutkinnonosaViite, tila);
+                }
+            }
+            peruste.setTila(tila);
+    }
+            
+    private PerusteenOsaViite setSisaltoTila(PerusteenOsaViite sisaltoRoot, PerusteTila tila) {
         if (sisaltoRoot.getPerusteenOsa() != null) {
-            sisaltoRoot.getPerusteenOsa().setTila(Tila.VALMIS);
+            sisaltoRoot.getPerusteenOsa().setTila(tila);
         }
         if (sisaltoRoot.getLapset() != null) {
             for (PerusteenOsaViite lapsi : sisaltoRoot.getLapset()) {
-               setSisaltoValmis(lapsi);
+               setSisaltoTila(lapsi, tila);
             }
         }
         return sisaltoRoot;
     }
 
-    private TutkinnonOsaViite setOsatValmis(TutkinnonOsaViite osa) {
+    private TutkinnonOsaViite setOsatTila(TutkinnonOsaViite osa, PerusteTila tila) {
         if (osa.getTutkinnonOsa()!= null) {
-            osa.getTutkinnonOsa().setTila(Tila.VALMIS);
+            osa.getTutkinnonOsa().setTila(tila);
         }
         return osa;
     }

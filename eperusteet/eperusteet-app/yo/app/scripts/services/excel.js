@@ -456,6 +456,14 @@ angular.module('eperusteApp')
             return cell ? suodataTekstipala(cell.v) : '';
           }
 
+          function lisaaKriteeri(kriteeristo, id) {
+            //jos kriteeri on tyhjä, ei lisätä sitä
+            var k = filtteroituKentta(id);
+            if ( k ) {
+              kriteeristo.push({fi : k});
+            }
+          }
+
           // Kriteereiden parsiminen kohteille
           if (!_.isEmpty(arvioinninKohdealue.arvioinninKohteet)) {
             var okt = _.last(arvioinninKohdealue.arvioinninKohteet).osaamistasonKriteerit;
@@ -476,9 +484,9 @@ angular.module('eperusteApp')
               }
             }
             else {
-              tyydyttavat.push({ fi: filtteroituKentta(9) });
-              hyvat.push({ fi: filtteroituKentta(10) });
-              kiitettavat.push({ fi: filtteroituKentta(11) });
+              lisaaKriteeri(tyydyttavat, 9);
+              lisaaKriteeri(hyvat, 10);
+              lisaaKriteeri(kiitettavat, 11);
             }
           }
           else {

@@ -1,5 +1,8 @@
 .admin {
   .hallintapainikkeet {
+    a {
+      padding: 10px;
+    }
     position: relative;
     float: right;
     top: -32px;
@@ -15,4 +18,8 @@
     margin-bottom: 10px;
     width: 40%
   }
+}
+
+.excel-alkuun {
+  padding: 10px 0px;
 }

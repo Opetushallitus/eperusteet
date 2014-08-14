@@ -25,6 +25,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti, Long> {
+
+    public Perusteprojekti findOneByDiaarinumero(String diaarinumero);
     /*@Query("SELECT pp FROM Perusteprojekti pp LEFT JOIN FETCH pp.peruste WHERE pp.id = ?1")
     Perusteprojekti findOneFetchPerusteEagerly(Long id);*/
 }

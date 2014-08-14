@@ -24,53 +24,43 @@ import java.util.Set;
  *
  * @author harrik
  */
-public enum Tila {
-    POHJA("pohja") {
-        @Override
-        public Set<Tila> mahdollisetTilat() {
-            return EnumSet.of(POISTETTUPOHJA);
-        }
-    },
-    POISTETTUPOHJA("poistettupohja") {
-        @Override
-        public Set<Tila> mahdollisetTilat() {
-            return EnumSet.of(POHJA);
-        }
-    },
+public enum ProjektiTila {
     POISTETTU("poistettu") {
         @Override
-        public Set<Tila> mahdollisetTilat() {
+        public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
             return EnumSet.of(LAADINTA);
-        }
-    },
-    LUONNOS("luonnos") {
-        @Override
-        public Set<Tila> mahdollisetTilat() {
-            return EnumSet.of(POISTETTU);
         }
     },
     LAADINTA("laadinta") {
         @Override
-        public Set<Tila> mahdollisetTilat() {
-            return EnumSet.of(KOMMENTOINTI, VIIMEISTELY, POISTETTU);
+        public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
+            if (tyyppi.equals(PerusteTyyppi.POHJA)) {
+                return EnumSet.of(VALMIS);
+            } else {
+                return EnumSet.of(KOMMENTOINTI, VIIMEISTELY, POISTETTU);
+            }
         }
     },
     KOMMENTOINTI("kommentointi"){
         @Override
-        public Set<Tila> mahdollisetTilat() {
+        public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
             return EnumSet.of(LAADINTA, POISTETTU);
         }
     },
     VIIMEISTELY("viimeistely"){
         @Override
-        public Set<Tila> mahdollisetTilat() {
+        public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
             return EnumSet.of(LAADINTA, VALMIS, POISTETTU);
         }
     },
     VALMIS("valmis"){
         @Override
-        public Set<Tila> mahdollisetTilat() {
-            return EnumSet.of(VIIMEISTELY, JULKAISTU, POISTETTU);
+        public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
+            if (tyyppi.equals(PerusteTyyppi.POHJA)) {
+                return EnumSet.of(LAADINTA, POISTETTU);
+            } else {
+                return EnumSet.of(VIIMEISTELY, JULKAISTU, POISTETTU);
+            }
         }
     },
     JULKAISTU("julkaistu");
@@ -78,7 +68,7 @@ public enum Tila {
 
     private final String tila;
 
-    private Tila(String tila) {
+    private ProjektiTila(String tila) {
         this.tila = tila;
     }
 
@@ -88,8 +78,8 @@ public enum Tila {
     }
 
     @JsonCreator
-    public static Tila of(String tila) {
-        for (Tila s : values()) {
+    public static ProjektiTila of(String tila) {
+        for (ProjektiTila s : values()) {
             if (s.tila.equalsIgnoreCase(tila)) {
                 return s;
             }
@@ -97,7 +87,7 @@ public enum Tila {
         throw new IllegalArgumentException(tila + " ei ole kelvollinen tila");
     }
 
-    public Set<Tila> mahdollisetTilat() {
-        return EnumSet.noneOf(Tila.class);
+    public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
+        return EnumSet.noneOf(ProjektiTila.class);
     }
 }

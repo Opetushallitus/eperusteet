@@ -28,11 +28,15 @@ angular.module('eperusteApp')
       }
     });
   })
-  .service('Lokalisointi', function(LokalisointiResource) {
+  .service('Lokalisointi', function(LokalisointiResource, $window) {
     var lokaalit = {};
 
     return {
       valitseKieli: function(lang) {
+        // Ohita lokalisointipalvelu localhostilla
+        if ($window.location.host.indexOf('localhost') === 0) {
+          return;
+        }
         return LokalisointiResource.get({ locale: lang }, function(res) {
           lokaalit = _.zipObject(_.map(res, 'key'), _.map(res, 'value'));
         }).$promise;

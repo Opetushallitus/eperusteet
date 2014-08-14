@@ -32,7 +32,7 @@ angular.module('eperusteApp')
       var deferred = $q.defer();
       var reader = createReader(deferred);
       if (type === 'binary') {
-        reader.readAsBinaryString(fileurl);
+        reader.readAsArrayBuffer(fileurl);
       } else {
         reader.readAsText(fileurl);
       }
@@ -48,7 +48,7 @@ angular.module('eperusteApp')
       templateUrl: 'views/partials/fileselect.html',
       restrict: 'E',
       link: function($scope, el, attrs) {
-        $scope.flabel = attrs.flabel || 'lataa';
+        $scope.flabel = attrs.flabel || 'selaa';
         function loadFile(file) {
           if (!file) {
             return;

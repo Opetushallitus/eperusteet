@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Tila;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.PerusteprojektiInfoDto;
@@ -38,7 +38,9 @@ public interface PerusteprojektiService {
 
     PerusteprojektiDto update(final Long id, PerusteprojektiDto perusteprojektiDto);
 
-    Set<Tila> getTilat(final Long id);
+    Set<ProjektiTila> getTilat(final Long id);
 
-    TilaUpdateStatus updateTila(final Long id, Tila tila);
+    TilaUpdateStatus updateTila(final Long id, ProjektiTila tila);
+
+    void onkoDiaarinumeroKaytossa(String diaarinumero);
 }

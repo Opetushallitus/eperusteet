@@ -31,7 +31,8 @@ angular.module('eperusteApp')
         nimi: haku,
         sivu: $scope.nykyinen - 1,
         sivukoko: $scope.itemsPerPage,
-        tila: pohja ? 'pohja' : 'valmis',
+        tila: 'valmis',
+        perusteTyyppi: pohja ? 'pohja' : 'normaali',
       }, function(perusteet) {
         $scope.perusteet = perusteet.data;
         $scope.totalItems = perusteet['kokonaismäärä'];
@@ -76,7 +77,7 @@ angular.module('eperusteApp')
     Editointikontrollit.registerCallback(editingCallbacks);
 
     $scope.pohja = function () {
-      return $state.is('root.perusteprojektiwizard.pohja') || ($scope.peruste && $scope.peruste.tila === 'pohja');
+      return $state.is('root.perusteprojektiwizard.pohja') || ($scope.peruste && $scope.peruste.tyyppi === 'pohja');
     };
     $scope.wizardissa = function () {
       return $state.is('root.perusteprojektiwizard.tiedot') || $state.is('root.perusteprojektiwizard.pohja');
@@ -90,12 +91,18 @@ angular.module('eperusteApp')
     $scope.muokkaa = function () {
       Editointikontrollit.startEditing();
     };
-
-    PerusteProjektiService.clean();
-    if ($scope.wizardissa()) {
-      perusteprojektiTiedot.cleanData();
-    }
-
+    
+    $scope.puhdistaValinta = function() {
+      PerusteProjektiService.clean();
+      if ($scope.wizardissa()) {
+        perusteprojektiTiedot.cleanData();
+        $scope.peruste = undefined;
+        $scope.projekti = {};
+      }
+    };
+    $scope.puhdistaValinta();
+    
+    
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.projekti.laajuusYksikko = $scope.projekti.laajuusYksikko || 'OSAAMISPISTE';
 
@@ -116,6 +123,7 @@ angular.module('eperusteApp')
       })
       .result.then(function(peruste) {
         peruste.tila = 'laadinta';
+        peruste.tyyppi = 'normaali';
         $scope.peruste = peruste;
         var onOps = false;
         $scope.projekti.perusteId = peruste.id;
@@ -131,11 +139,7 @@ angular.module('eperusteApp')
       angular.noop);
     };
 
-    $scope.puhdistaValinta = function() {
-      $scope.peruste = undefined;
-      $scope.projekti = {};
-    };
-
+    
     $scope.tallennaPerusteprojekti = function() {
       var projekti = PerusteProjektiService.get();
       if (projekti.id) {
@@ -146,7 +150,7 @@ angular.module('eperusteApp')
 
       if ($scope.pohja()) {
         projekti = _.merge(_.pick(projekti, 'id', 'nimi', 'koulutustyyppi'), {
-          tila: 'pohja'
+          tyyppi: 'pohja'
         });
       }
 

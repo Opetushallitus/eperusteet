@@ -56,7 +56,7 @@ angular.module('eperusteApp')
 
       this.tilakuvaukset = [
         'poistettu',
-        'pohja',
+        //'pohja',
         'laadinta',
         'kommentointi',
         'viimeistely',

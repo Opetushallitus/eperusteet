@@ -23,6 +23,7 @@
     "tyhjä": "Tyhjä",
     "tyyppi": "Tyyppi",
     "lataa": "Lataa",
+    "selaa": "Selaa...",
     "haku": "Haku",
     "esitys": "Esitys",
     "peruuta": "Peruuta",
@@ -164,7 +165,7 @@
     "tila-kaannos": "Käännös",
     "tila-hyvaksytty": "Hyväksytty",
 
-    "ei-koulutuksia": "Ei koulutuksia",
+    "ei-koulutuksia": "Ei koulutuskoodeja",
 
     "muokkaa-rakennetta": "Muokkaa rakennetta",
 
@@ -499,7 +500,7 @@
     "anna-perusteen-nimi": "Syötä perusteen nimi",
     "koulutuksen-nimi": "Koulutuksen nimi",
     "vahvista-poisto": "Vahvista poisto",
-    "poistetaanko-koulutus": "Poistetaanko koulutus?",
+    "poistetaanko-koulutus": "Poistetaanko koulutuskoodi?",
 
     "ok": "OK",
 
@@ -511,7 +512,7 @@
     "perusteen-koodi": "Tutkinnon koodi",
     "projektin-tiedot": "Projektin tiedot",
     "uusi-projekti-otsikko": "Uusi perusteprojekti",
-    "peruste-koulutukset": "Koulutukset",
+    "peruste-koulutukset": "Koulutuskoodit",
     "ei-tiivistelmaa": "Ei tiivistelmää",
 
     "kaikki": "Kaikki",
@@ -533,6 +534,7 @@
     "perusteprojekti-perustenimi-placeholder": "<Anna perusteen nimi>",
     "perusteprojekti-koulutusala-placeholder": "<Anna koulutusala>",
     "perusteprojekti-nimi-placeholder": "<Anna projektin nimi>",
+    "perusteprojekti-koulutustyyppi-placeholder": "<Aseta perusteen koulutustyyppi>",
     "projekti-header-peruste": "Peruste",
     "projekti-header-koulutusala": "Koulutusala",
     "projekti-header-paatosPvm": "Päätöspäivämäärä",
@@ -589,8 +591,7 @@
     "poista-tekstikappale-otsikko": "Poista tekstikappale",
     "poista-tekstikappale-teksti": "Tekstikappale \"{{nimi}}\" poistetaan. Oletko varma?",
 
-    "lisaa-koulutus": "Lisää koulutus",
-    "poista-koulutus": "Poista koulutus",
+    "lisaa-koulutus": "Lisää koulutuskoodi",
 
     "järjestelmävirhe-alku": "Tapahtui järjestelmävirhe ",
     "järjestelmävirhe-loppu": ". Ole hyvä ja yritä uudelleen. Jos ongelma toistuu ota yhteyttä palvelun ylläpitäjään.",
@@ -616,5 +617,7 @@
     "liittamattomia-tutkinnon-osia": "Projektissa on rakenteeseen liittämättömiä tutkinnon osia.",
     "korjaa-virheet": "Korjaa seuraavat virheet",
     "viesti": "Viesti",
-    "lisatieto": "Lisätieto"
+    "lisatieto": "Lisätieto",
+    
+    "diaarinumero-kaytossa": "Diaarinumero on jo käytössä"
 }
