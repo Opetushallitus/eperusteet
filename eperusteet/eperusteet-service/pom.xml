@@ -26,6 +26,7 @@
         <ehcache.version>2.5.1</ehcache.version>
         <slf4j.version>1.7.7</slf4j.version>
         <swagger.version>0.8.5</swagger.version>
+        <schema.file>${project.basedir}/target/schema.ddl</schema.file>
     </properties>
 
     <repositories>
@@ -35,7 +36,7 @@
         </repository>
     </repositories>
 
-   <dependencyManagement>
+    <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -59,24 +60,24 @@
             <version>2.3.1</version>
         </dependency>
         <dependency>
-           <groupId>org.apache.httpcomponents</groupId>
-           <artifactId>httpclient</artifactId>
-           <version>4.2.5</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.2.5</version>
         </dependency>
         <dependency>
-           <groupId>org.apache.httpcomponents</groupId>
-           <artifactId>httpclient-cache</artifactId>
-           <version>4.2.5</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient-cache</artifactId>
+            <version>4.2.5</version>
         </dependency>
         <dependency>
-           <groupId>com.google.code.gson</groupId>
-           <artifactId>gson</artifactId>
-           <version>2.2.4</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.4</version>
         </dependency>
         <dependency>
-           <groupId>commons-httpclient</groupId>
-           <artifactId>commons-httpclient</artifactId>
-           <version>3.1</version>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -409,7 +410,7 @@
                 <plugin>
                     <groupId>de.juplo</groupId>
                     <artifactId>hibernate4-maven-plugin</artifactId>
-                    <version>1.0.3</version>
+                    <version>1.0.4</version>
                     <executions>
                         <execution>
                             <goals>
@@ -427,6 +428,8 @@
                         <username></username>
                         <password></password>
                         <hibernateProperties>src/test/config/hibernate.properties</hibernateProperties>
+                        <outputFile>${schema.file}</outputFile>
+                        <scanDependencies>NONE</scanDependencies>
                     </configuration>
                     <dependencies>
                         <dependency>
@@ -440,4 +443,25 @@
         </pluginManagement>
         <finalName>eperusteet-service</finalName>
     </build>
+    <profiles>
+        <profile>
+            <id>generate-db-diagram</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>de.juplo</groupId>
+                        <artifactId>hibernate4-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                                <phase>process-classes</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
