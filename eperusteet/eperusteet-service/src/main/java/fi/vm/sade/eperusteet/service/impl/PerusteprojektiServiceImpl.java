@@ -25,6 +25,7 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.KayttajanProjektitiedotDto;
@@ -268,6 +269,19 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     updateStatus.addStatus("liittamattomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);
                     updateStatus.setVaihtoOk(false);
                 }
+                
+                List<TutkinnonOsa> koodittomatTutkinnonOsat = koodittomatTutkinnonosat(suoritustapa);
+                if (!koodittomatTutkinnonOsat.isEmpty()) {
+                    List<LokalisoituTekstiDto> nimet = new ArrayList<>();
+                    for (TutkinnonOsa tutkinnonOsa : koodittomatTutkinnonOsat) {
+                        if (tutkinnonOsa.getNimi() != null) {
+                           nimet.add(new LokalisoituTekstiDto(tutkinnonOsa.getNimi().getId(), tutkinnonOsa.getNimi().getTeksti()));
+                        }
+                    }
+                    updateStatus.addStatus("koodittomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);
+                    updateStatus.setVaihtoOk(false);
+                }
+                
             }
         }
 
@@ -339,6 +353,19 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             }
         }
         return viiteList;
+    }
+    
+    private List<TutkinnonOsa> koodittomatTutkinnonosat(Suoritustapa suoritustapa) {
+        List<TutkinnonOsa> koodittomatTutkinnonOsat = new ArrayList<>();
+
+        if (suoritustapa.getTutkinnonOsat() != null) {
+            for (TutkinnonOsaViite viite : suoritustapa.getTutkinnonOsat()) {
+                if (viite.getTutkinnonOsa().getKoodiArvo() == null || viite.getTutkinnonOsa().getKoodiArvo().trim().equals("")) {
+                    koodittomatTutkinnonOsat.add(viite.getTutkinnonOsa());
+                }
+            }
+        }
+        return koodittomatTutkinnonOsat;
     }
 
 }
