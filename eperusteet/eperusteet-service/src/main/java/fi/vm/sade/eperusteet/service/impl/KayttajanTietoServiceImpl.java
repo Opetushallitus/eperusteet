@@ -41,7 +41,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class KayttajanTietoServiceImpl implements KayttajanTietoService {
 
-    @Value("${cas.service.authentication-service}")
+    @Value("${cas.service.authentication-service:''}")
     private String serviceUrl;
 
     private static final String KAYTTAJA_API = "/resources/henkilo/";

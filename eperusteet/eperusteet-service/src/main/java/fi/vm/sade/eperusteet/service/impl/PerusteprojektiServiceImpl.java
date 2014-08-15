@@ -51,8 +51,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -67,7 +65,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     private final String authQueryPath = "/resources/henkilo?count=9999&index=0&org=";
 
-    @Value("${cas.service.authentication-service}")
+    @Value("${cas.service.authentication-service:''}")
     private String authServiceUrl;
 
     @Autowired

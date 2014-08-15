@@ -26,13 +26,13 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RestClientFactory {
-    @Value("${fi.vm.sade.eperusteet.oph_username}")
+    @Value("${fi.vm.sade.eperusteet.oph_username:''}")
     private String username;
 
-    @Value("${fi.vm.sade.eperusteet.oph_password}")
+    @Value("${fi.vm.sade.eperusteet.oph_password:''}")
     private String password;
 
-    @Value("${web.url.cas}")
+    @Value("${web.url.cas:''}")
     private String casUrl;
 
     public CachingRestClient create(String service) {
