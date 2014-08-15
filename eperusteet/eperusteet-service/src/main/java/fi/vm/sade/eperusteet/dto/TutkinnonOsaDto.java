@@ -36,4 +36,5 @@ public class TutkinnonOsaDto extends PerusteenOsaDto {
     private String koodiUri;
     private String koodiArvo;
     private LokalisoituTekstiDto osaamisala;
+    private List<OsaAlueDto> osaAlueet;
 }
