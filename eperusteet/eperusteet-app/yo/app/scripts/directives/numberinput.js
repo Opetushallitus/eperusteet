@@ -83,13 +83,36 @@ angular.module('eperusteApp')
     function isValid(value) {
       return !value || FLOAT_PATTERN.test(value);
     }
+    function validateMinMax(value, attrs, ctrl) {
+      if (typeof value === 'number') {
+        if (attrs.min) {
+          ctrl.$setValidity('min', value >= parseFloat(attrs.min));
+        }
+        if (attrs.max) {
+          ctrl.$setValidity('max', value <= parseFloat(attrs.max));
+        }
+      }
+      if (value === undefined || value === '') {
+        if (attrs.max) {
+          ctrl.$setValidity('max', true);
+        }
+        if (attrs.min) {
+          ctrl.$setValidity('min', true);
+        }
+      }
+    }
     return {
       require: 'ngModel',
       link: function(scope, element, attrs, ctrl) {
         ctrl.$parsers.unshift(function(viewValue) {
           var valid = isValid(viewValue);
           ctrl.$setValidity('float', valid);
-          return valid ? (viewValue === '' ? viewValue : parseFloat(viewValue.replace(',', '.'))) : undefined;
+          var value;
+          if (valid) {
+            value = viewValue === '' ? viewValue : parseFloat(viewValue.replace(',', '.'));
+          }
+          validateMinMax(value, attrs, ctrl);
+          return value;
         });
 
         ctrl.$formatters.unshift(function(value) {
@@ -102,7 +125,7 @@ angular.module('eperusteApp')
 
   .directive('stepValidate', function() {
     function isValid(value, step) {
-      return !value || value % step === 0;
+      return !value || (((value*100) % (step*100))/100) === 0;
     }
     return {
       require: 'ngModel',
