@@ -347,6 +347,10 @@ angular.module('eperusteApp')
     };
   })
 
+
+  /**
+   * TUTKE2:n mukaisen tutkinnon osan muokkaus, proto
+   */
   .directive('muokkausTutkinnonosa2', function () {
     return {
       templateUrl: 'views/partials/muokkaus/tutkinnonosa2.html',
@@ -360,14 +364,42 @@ angular.module('eperusteApp')
   })
 
   .controller('Tutkinnonosa2Controller', function ($scope, Editointikontrollit,
-      PerusteenOsat, $stateParams, Lukitus) {
-    function fetch(cb) {
-      cb = cb || angular.noop;
-      PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, function(res) {
-        $scope.tutkinnonOsa = res;
-        cb(res);
+      PerusteenOsat, $stateParams, Lukitus, $q, TutkinnonOsanOsaAlue, Osaamistavoite) {
+    var PARAMS = { osanId: $stateParams.perusteenOsaId };
+
+    function getTavoitteet(osaAlue, arr) {
+      Osaamistavoite.list({
+        osanId: $stateParams.perusteenOsaId,
+        osaalueenId: osaAlue.id,
+      }, function (res) {
+        _.each(res, function (tavoite) {
+          fixTavoite(tavoite);
+        });
+        arr.osaamistavoitteet = res;
       });
     }
+
+    function fetch(cb) {
+      cb = cb || angular.noop;
+      $q.all([
+        PerusteenOsat.get(PARAMS).$promise,
+        TutkinnonOsanOsaAlue.list(PARAMS).$promise
+      ]).then(function (data) {
+        $scope.tutkinnonOsa = data[0];
+        $scope.tutkinnonOsa.osaAlueet = data[1];
+        _.each($scope.tutkinnonOsa.osaAlueet, function (alue) {
+          if (alue.nimi === null) {
+            alue.nimi = {};
+          }
+          getTavoitteet(alue, alue);
+        });
+        cb($scope.tutkinnonOsa);
+      });
+    }
+
+    fetch(function (res) {
+      $scope.editableTutkinnonOsa = res;
+    });
 
     function lukitse(cb) {
       Lukitus.lukitsePerusteenosa($scope.tutkinnonOsa.id, cb);
@@ -401,11 +433,10 @@ angular.module('eperusteApp')
         });
       },
       save: function () {
-        $scope.editableTutkinnonOsa.$saveTutkinnonOsa(function(response) {
-          $scope.editableTutkinnonOsa = angular.copy(response);
-          $scope.tutkinnonOsa = angular.copy(response);
-        });
         vapauta();
+        fetch(function (res) {
+          $scope.editableTutkinnonOsa = res;
+        });
       },
       cancel: function () {
         vapauta();
@@ -441,18 +472,53 @@ angular.module('eperusteApp')
         $scope.editableTutkinnonOsa.osaAlueet.push($scope.editableOsaAlue);
       },
       remove: function (osaAlue) {
+        if (osaAlue.id) {
+          //console.log("delete osaalue");
+          osaAlue.$delete(PARAMS);
+        }
         _remove($scope.editableTutkinnonOsa.osaAlueet, osaAlue);
       },
       edit: function (osaAlue) {
         osaAlue.$editing = true;
         $scope.editableOsaAlue = osaAlue;
+        getTavoitteet(osaAlue, $scope.editableOsaAlue);
       },
       save: function ($index) {
+        var saveCb = function (/*res*/) {
+          //console.log("save osaalue", res);
+        };
         $scope.editableOsaAlue.$editing = false;
         $scope.editableTutkinnonOsa.osaAlueet[$index] = $scope.editableOsaAlue;
+        if ($scope.editableOsaAlue.id) {
+          //console.log("update osaalue");
+          TutkinnonOsanOsaAlue.save(_.extend({
+            osaalueenId: $scope.editableOsaAlue.id
+          }, PARAMS), _.omit($scope.editableOsaAlue, 'osaamistavoitteet'), saveCb);
+        } else {
+          //console.log("create osaalue");
+          TutkinnonOsanOsaAlue.save(PARAMS, _.omit($scope.editableOsaAlue, 'osaamistavoitteet'), saveCb);
+        }
         $scope.editableOsaAlue = null;
       }
     };
+
+    function fixTavoite(tavoite) {
+      if (_.isEmpty(tavoite)) {
+        tavoite = {};
+      }
+      _.each(['nimi', 'tunnustaminen', 'tavoitteet'], function (key) {
+        if (_.isEmpty(tavoite[key])) {
+          tavoite[key] = {};
+        }
+      });
+
+      if (_.isEmpty(tavoite.arviointi)) {
+        tavoite.arviointi = {
+          lisatiedot: null,
+          arvioinninKohdealueet: []
+        };
+      }
+    }
 
     $scope.osaamistavoite = {
       add: function () {
@@ -460,20 +526,19 @@ angular.module('eperusteApp')
           $scope.editableOsaAlue.osaamistavoitteet = [];
         }
         $scope.editableTavoite = {
-          nimi: {},
           laajuus: null,
-          pakollisuus: true,
-          tunnustaminen: {},
-          tavoitteet: {},
-          arviointi: {
-            lisatiedot: null,
-            arvioinninKohdealueet: []
-          },
+          pakollinen: true,
           $editing: true
         };
+        fixTavoite($scope.editableTavoite);
         $scope.editableOsaAlue.osaamistavoitteet.push($scope.editableTavoite);
       },
       remove: function (tavoite) {
+        if (tavoite.id) {
+          //console.log("delete tavoite");
+          var params = _.extend({osaalueenId: $scope.editableOsaAlue.id}, PARAMS);
+          tavoite.$delete(params);
+        }
         _remove($scope.editableOsaAlue.osaamistavoitteet, tavoite);
       },
       edit: function (tavoite) {
@@ -481,8 +546,19 @@ angular.module('eperusteApp')
         $scope.editableTavoite = tavoite;
       },
       save: function ($index) {
+        var saveCb = function (/*res*/) {
+          //console.log("save tavoite", res);
+        };
         $scope.editableTavoite.$editing = false;
         $scope.editableOsaAlue.osaamistavoitteet[$index] = $scope.editableTavoite;
+        var params = _.extend({osaalueenId: $scope.editableOsaAlue.id}, PARAMS);
+        if ($scope.editableTavoite.id) {
+          //console.log("update tavoite");
+          $scope.editableTavoite.$save(params, saveCb);
+        } else {
+          //console.log("create tavoite");
+          Osaamistavoite.save(params, angular.copy($scope.editableTavoite), saveCb);
+        }
         $scope.editableTavoite = null;
       }
     };

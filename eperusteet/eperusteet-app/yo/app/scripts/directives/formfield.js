@@ -128,6 +128,7 @@ angular.module('eperusteApp')
         scope.input.model = getter(scope.model);
         // inner => outside
         scope.$watch('input.model', function () {
+          checkInputType(scope);
           if (scope.input && !_.isUndefined(scope.input.model)) {
             setter(scope.model, scope.input.model);
           }
@@ -136,6 +137,7 @@ angular.module('eperusteApp')
         scope.$watch(function () {
           return getter(scope.model);
         }, function (value) {
+          checkInputType(scope);
           scope.input.model = value;
         });
 

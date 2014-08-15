@@ -12,13 +12,14 @@
               <formfield model="editableOsaAlue" model-var="nimi" label="nimi"></formfield>
 
               <h3 kaanna>Osaamistavoitteet</h3>
+              <p ng-show="!editableOsaAlue.osaamistavoitteet || editableOsaAlue.osaamistavoitteet.length === 0" kaanna>Ei osaamistavoitteita</p>
               <ul class="tavoitteet">
                 <li ng-repeat="tavoite in editableOsaAlue.osaamistavoitteet">
                     <div ng-if="editableTavoite === tavoite">
                       <button class="btn btn-primary" ng-click="osaamistavoite.save($index)" kaanna>ok</button>
 
                       <formfield model="editableTavoite" model-var="nimi" label="nimi"></formfield>
-                      <formfield model="editableTavoite" model-var="pakollisuus" label="pakollisuus" options="pakollisuusoptions"></formfield>
+                      <formfield model="editableTavoite" model-var="pakollinen" label="pakollisuus" options="pakollisuusoptions"></formfield>
                       <formfield model="editableTavoite" model-var="laajuus" label="laajuus" type="float" step="0.5"></formfield>
                       <formfield model="editableTavoite" model-var="tavoitteet" label="tavoitteet" type="textarea"></formfield>
                       <formfield model="editableTavoite" model-var="tunnustaminen" label="tunnustaminen" type="textarea"></formfield>
@@ -30,7 +31,7 @@
                     </div>
                     <div ng-show="editableTavoite !== tavoite">
                       <h4>{{tavoite.nimi | kaanna:true}} <a editointi-kontrolli class="action-link badge" ng-click="osaamistavoite.edit(tavoite)" icon-role="edit"></a></h4>
-                      <p>Pakollisuus: {{(tavoite.pakollisuus && 'pakollinen' || 'valinnainen')|kaanna}}</p>
+                      <p>Pakollisuus: {{(tavoite.pakollinen && 'pakollinen' || 'valinnainen')|kaanna}}</p>
                       <p>Laajuus: {{tavoite.laajuus}}</p>
                       <p>Tavoitteet: {{tavoite.tavoitteet | kaanna}}</p>
                       <p>Tunnustaminen: {{tavoite.tunnustaminen | kaanna}}</p>
@@ -47,12 +48,15 @@
 
           </div>
           <div ng-show="editableOsaAlue !== alue">
-            <h3>{{alue.nimi | kaanna:true}} <a editointi-kontrolli class="action-link badge" ng-click="osaAlue.edit(alue)"icon-role="edit"></a></h3>
-            <h3 kaanna>Osaamistavoitteet</h3>
-            <ul class="tavoitteet">
+            <h3>{{alue.nimi | kaanna:true}} <a editointi-kontrolli class="action-link badge" ng-click="osaAlue.edit(alue)" icon-role="edit"></a></h3>
+            <h3>{{'Osaamistavoitteet' | kaanna}} <a class="action-link badge" ng-click="alue.$collapsed = !alue.$collapsed">
+              <span class="glyphicon" ng-class="alue.$collapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
+            </a></h3>
+            <p ng-show="!alue.osaamistavoitteet || alue.osaamistavoitteet.length === 0" kaanna>Ei osaamistavoitteita</p>
+            <ul class="tavoitteet" ng-hide="alue.$collapsed">
               <li ng-repeat="tavoite in alue.osaamistavoitteet">
                 <h4>{{tavoite.nimi | kaanna:true}}</h4>
-                <p>Pakollisuus: {{(tavoite.pakollisuus && 'pakollinen' || 'valinnainen')|kaanna}}</p>
+                <p>Pakollisuus: {{(tavoite.pakollinen && 'pakollinen' || 'valinnainen')|kaanna}}</p>
                 <p>Laajuus: {{tavoite.laajuus}}</p>
                 <p>Tavoitteet: {{tavoite.tavoitteet | kaanna}}</p>
                 <p>Tunnustaminen: {{tavoite.tunnustaminen | kaanna}}</p>
