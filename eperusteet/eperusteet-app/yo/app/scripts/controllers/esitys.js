@@ -98,8 +98,10 @@ angular.module('eperusteApp')
     }
     Lokalisointi.valitseKieli($stateParams.lang);
   })
-  .controller('EsitysCtrl', function($q, $scope, $stateParams, sisalto, peruste, Kayttajaprofiilit, Suosikit, YleinenData,
-                                     Navigaatiopolku, $state, virheService, Algoritmit, PerusteenRakenne, tutkinnonOsat, Kaanna, arviointiasteikot, Profiili) {
+  .controller('EsitysCtrl', function($q, $scope, $stateParams, sisalto, peruste,
+      Kayttajaprofiilit, Suosikit, YleinenData, Navigaatiopolku, $state, virheService,
+      Algoritmit, PerusteenRakenne, tutkinnonOsat, Kaanna, arviointiasteikot, Profiili,
+      PdfCreation) {
     $scope.navi = {
       items: [
         {label: 'tutkinnonosat', link: ['root.esitys.peruste.tutkinnonosat', {}]},
@@ -184,5 +186,10 @@ angular.module('eperusteApp')
                            '</body></html>');
       print.print();
       print.close();
+    };
+
+    $scope.luoPdf = function () {
+      PdfCreation.setPerusteId($scope.peruste.id);
+      PdfCreation.openModal();
     };
   });
