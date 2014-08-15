@@ -15,11 +15,18 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.OsaAlue;
+import fi.vm.sade.eperusteet.domain.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.OsaAlueDto;
+import fi.vm.sade.eperusteet.dto.OsaamistavoiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.UpdateDto;
+import fi.vm.sade.eperusteet.repository.OsaAlueRepository;
+import fi.vm.sade.eperusteet.repository.OsaamistavoiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
@@ -30,6 +37,9 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +60,15 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Autowired
     private TutkinnonOsaRepository tutkinnonOsaRepo;
+    
+    @Autowired
+    private OsaAlueRepository osaAlueRepository;
+    
+    @Autowired
+    private OsaamistavoiteRepository osaamistavoiteRepository;
+    
+    @PersistenceContext
+    private EntityManager em;
 
     @Autowired
     @Dto
@@ -112,7 +131,128 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         perusteenOsa = perusteenOsaRepo.save(perusteenOsa);
         return mapper.map(perusteenOsa, dtoClass);
     }
+    
+    @Override
+    @Transactional(readOnly = false)
+    public OsaAlueDto addTutkinnonOsaOsaAlue(Long id) {
+        assertExists(id);
+        lockManager.ensureLockedByAuthenticatedUser(id);
+        TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
+        if (tutkinnonOsa == null) {
+            throw new EntityNotFoundException("Tutkinnon osaa ei löytynyt id:llä: " + id);
+        }
+        OsaAlue osaAlue = new OsaAlue();
+        osaAlueRepository.save(osaAlue);
+        tutkinnonOsa.getOsaAlueet().add(osaAlue);
+        tutkinnonOsaRepo.save(tutkinnonOsa);
+        
+        return mapper.map(osaAlue, OsaAlueDto.class);
+    }
+    
+    @Override
+    @Transactional(readOnly = false)
+    public OsaAlueDto updateTutkinnonOsaOsaAlue(Long id, Long osaAlueId, OsaAlueDto osaAlue) {
+        assertExists(id);
+        lockManager.ensureLockedByAuthenticatedUser(id);
+        OsaAlue osaAlueEntity = osaAlueRepository.findOne(osaAlueId);
+        if (osaAlueEntity == null) {
+            throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
+        }
+        OsaAlue osaAlueTmp = mapper.map(osaAlue, OsaAlue.class);
+        osaAlueEntity.mergeState(osaAlueTmp);
+        osaAlueRepository.save(osaAlueEntity);
+        
+        return mapper.map(osaAlueEntity, OsaAlueDto.class);
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<OsaAlueDto> getTutkinnonOsaOsaAlueet(Long id) {
+        TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
+        if (tutkinnonOsa == null) {
+            throw new EntityNotFoundException("Tutkinnon osaa ei löytynyt id:llä: " + id);
+        }
+        
+        return mapper.mapAsList(tutkinnonOsa.getOsaAlueet(), OsaAlueDto.class);
+    }
+    
+    @Override
+    @Transactional(readOnly = false)
+    public void removeOsaAlue(Long id, Long osaAlueId) {
+        assertExists(id);
+        lockManager.ensureLockedByAuthenticatedUser(id);
+        OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
+        if (osaAlue == null) {
+            throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
+        }        
+        TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
+        tutkinnonOsa.getOsaAlueet().remove(osaAlue);
+         osaAlueRepository.delete(osaAlue);
+    }
+    
 
+    @Override
+    @Transactional(readOnly = false)
+    public OsaamistavoiteDto addOsaamistavoite(Long id, Long osaAlueId) {
+        assertExists(id);
+        lockManager.ensureLockedByAuthenticatedUser(id);
+        OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
+        if (osaAlue == null) {
+            throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
+        }
+        Osaamistavoite osaamistavoite = new Osaamistavoite();
+        osaamistavoiteRepository.save(osaamistavoite);
+        osaAlue.getOsaamistavoitteet().add(osaamistavoite);
+        osaAlueRepository.save(osaAlue);
+        
+        return mapper.map(osaamistavoite, OsaamistavoiteDto.class);
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<OsaamistavoiteDto> getOsaamistavoitteet(Long id, Long osaAlueId) {
+        assertExists(id);
+        OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
+        return mapper.mapAsList(osaAlue.getOsaamistavoitteet(), OsaamistavoiteDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void removeOsaamistavoite(Long id, Long osaAlueId, Long osaamistavoiteId) {
+        assertExists(id);
+        lockManager.ensureLockedByAuthenticatedUser(id);
+        OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
+        if (osaAlue == null) {
+            throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
+        }        
+        Osaamistavoite osaamistavoiteEntity = osaamistavoiteRepository.findOne(osaamistavoiteId);
+        if (osaamistavoiteEntity == null) {
+            throw new EntityNotFoundException("Osaamistavoitetta ei löytynyt id:llä: " + osaamistavoiteId);
+        }
+        osaAlue.getOsaamistavoitteet().remove(osaamistavoiteEntity);       
+        osaamistavoiteRepository.delete(osaamistavoiteEntity);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public OsaamistavoiteDto updateOsaamistavoite(Long id, Long osaAlueId, Long osaamistavoiteId, OsaamistavoiteDto osaamistavoite) {
+        assertExists(id);
+        lockManager.ensureLockedByAuthenticatedUser(id);
+        OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
+        if (osaAlue == null) {
+            throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
+        }
+        Osaamistavoite osaamistavoiteEntity = osaamistavoiteRepository.findOne(osaamistavoiteId);
+        if (osaamistavoiteEntity == null) {
+            throw new EntityNotFoundException("Osaamistavoitetta ei löytynyt id:llä: " + osaamistavoiteId);
+        }
+        Osaamistavoite osaamistavoiteUusi = mapper.map(osaamistavoite, Osaamistavoite.class);
+        osaamistavoiteEntity.mergeState(osaamistavoiteUusi);
+        
+        return mapper.map(osaamistavoiteEntity, OsaamistavoiteDto.class);
+    }
+    
+    
     @Override
     public void delete(final Long id) {
         assertExists(id);

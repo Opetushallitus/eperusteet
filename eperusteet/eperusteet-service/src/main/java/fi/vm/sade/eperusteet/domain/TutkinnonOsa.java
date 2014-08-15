@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.EntityReference;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -83,7 +84,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     
     @Getter
     @Setter
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinTable(name = "tutkinnonosa_tutkinnonosa_osaalue",
                joinColumns = @JoinColumn(name = "tutkinnonosa_id"),
                inverseJoinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"))
@@ -175,7 +176,24 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setKoodiArvo(other.getKoodiArvo());
             this.setOpintoluokitus(other.getOpintoluokitus());
             this.setOsaamisala(other.getOsaamisala());
+            if (other.getOsaAlueet() != null) {
+                mergeOsaAlueet(this.getOsaAlueet(), other.getOsaAlueet());
+            }
         }
+    }
+    
+    private List<OsaAlue> mergeOsaAlueet(List<OsaAlue> current, List<OsaAlue> other){
+        List<OsaAlue> uusi = new ArrayList<>();
+        
+        for (OsaAlue otherOsaAlue : other) {
+            for (OsaAlue currentOsaAlue : current) {
+                if (otherOsaAlue.getId().equals(currentOsaAlue.getId())) {
+                    currentOsaAlue.mergeState(otherOsaAlue);
+                    uusi.add(currentOsaAlue);
+                }
+            }
+        }
+        return uusi;
     }
 
 }

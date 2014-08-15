@@ -19,6 +19,8 @@ import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.OsaAlueDto;
+import fi.vm.sade.eperusteet.dto.OsaamistavoiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
@@ -145,6 +147,120 @@ public class PerusteenOsaController {
         tutkinnonOsaDto.getDto().setId(id);
         return service.update(tutkinnonOsaDto, TutkinnonOsaDto.class);
     }
+    
+     /**
+     * Luo ja liittää uuden osa-alueen tutkinnon osaan.
+     *
+     * @param id
+     * @return Uusi tutkinnon osan osa-alue
+     */
+    @RequestMapping(value = "/{id}/osaalue", method = POST)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public OsaAlueDto addTutkinnonOsaOsaAlue(@PathVariable("id") final Long id) {
+        return service.addTutkinnonOsaOsaAlue(id);
+    }
+    
+    /**
+     * Päivittää tutkinnon osan osa-alueen tietoja.
+     *
+     * @param id
+     * @param osaAlueId
+     * @param osaAlue
+     * @return Päivitetty tutkinnon osan osa-alue
+     */
+    @RequestMapping(value = "{id}/osaalue/{osaAlueId}", method = POST)
+    @ResponseBody
+    public ResponseEntity<OsaAlueDto> updateTutkinnonOsaOsaAlue(@PathVariable("id") final Long id, @PathVariable("osaAlueId") final Long osaAlueId, @RequestBody OsaAlueDto osaAlue) {
+        return new ResponseEntity<>(service.updateTutkinnonOsaOsaAlue(id, osaAlueId, osaAlue), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/{id}/osaalueet", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<OsaAlueDto>> getTutkinnonOsaOsaAlueet(@PathVariable("id") final Long id) {
+        return new ResponseEntity<>(service.getTutkinnonOsaOsaAlueet(id), HttpStatus.OK);
+    }
+    
+    /**
+     * Poistaa tutkinnon osan osa-alueen
+     * 
+     * @param id
+     * @param osaAlueId
+     */
+    @RequestMapping(value = "/{id}/osaalue/{osaAlueId}", method = DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeOsaAlue(
+            @PathVariable("id") final Long id,
+            @PathVariable("osaAlueId") final Long osaAlueId) {
+        service.removeOsaAlue(id, osaAlueId);
+    }
+    
+    /**
+     * Luo ja liittää uuden osaamistavoitteen tutkinnon osa osa-alueeseen.
+     *
+     * @param id
+     * @param osaAlueId
+     * @return Uusi osaamistavoiteDto
+     */
+    @RequestMapping(value = "/{id}/osaalue/{osaAlueId}/osaamistavoite", method = POST)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
+    public OsaamistavoiteDto addOsaamistavoite(
+            @PathVariable("id") final Long id,
+            @PathVariable("osaAlueId") final Long osaAlueId) {
+        return service.addOsaamistavoite(id, osaAlueId);
+    }
+    
+    /**
+     * Päivittää osaamistavoitteen tutkinnon osa osa-alueeseen.
+     *
+     * @param id
+     * @param osaAlueId 
+     * @param osaamistavoiteId 
+     * @param osaamistavoite requestBody
+     * @return Päivitetty osaamistavoiteDto
+     */
+    @RequestMapping(value = "/{id}/osaalue/{osaAlueId}/osaamistavoite/{osaamistavoiteId}", method = POST)
+    @ResponseBody
+    public OsaamistavoiteDto updateOsaamistavoite(
+            @PathVariable("id") final Long id,
+            @PathVariable("osaAlueId") final Long osaAlueId,
+            @PathVariable("osaamistavoiteId") final Long osaamistavoiteId,
+            @RequestBody OsaamistavoiteDto osaamistavoite) {
+        osaamistavoite.setId(osaamistavoiteId);
+        return service.updateOsaamistavoite(id, osaAlueId, osaamistavoiteId, osaamistavoite);
+    }
+    
+    /**
+     * Listaa tutkinnon osa osa-alueen osaamistavoitteet
+     * @param id
+     * @param osaAlueId
+     * @return 
+     */
+    @RequestMapping(value = "/{id}/osaalue/{osaAlueId}/osaamistavoitteet", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<OsaamistavoiteDto>> getOsaamistavoitteet(
+            @PathVariable("id") final Long id,
+            @PathVariable("osaAlueId") final Long osaAlueId) {
+        return new ResponseEntity<>(service.getOsaamistavoitteet(id, osaAlueId), HttpStatus.OK);
+    }
+    
+    /**
+     * Poistaa tutkinnon osan osa-alueen osaamistavoitteen
+     * 
+     * @param id
+     * @param osaAlueId
+     * @param osaamistavoiteId
+     */
+    @RequestMapping(value = "/{id}/osaalue/{osaAlueId}/osaamistavoite/{osaamistavoiteId}", method = DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeOsaamistavoite(
+            @PathVariable("id") final Long id,
+            @PathVariable("osaAlueId") final Long osaAlueId,
+            @PathVariable("osaamistavoiteId") final Long osaamistavoiteId) {
+        service.removeOsaamistavoite(id, osaAlueId, osaamistavoiteId);
+    }
+
 
     @RequestMapping(value = "/{id}/lukko", method = GET)
     @ResponseBody

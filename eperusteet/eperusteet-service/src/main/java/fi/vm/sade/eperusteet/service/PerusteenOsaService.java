@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.OsaAlueDto;
+import fi.vm.sade.eperusteet.dto.OsaamistavoiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.UpdateDto;
@@ -58,4 +60,20 @@ public interface PerusteenOsaService {
     void unlock(final Long id);
 
     LukkoDto getLock(final Long id);
+    
+    OsaAlueDto addTutkinnonOsaOsaAlue(final Long id);
+    
+    OsaAlueDto updateTutkinnonOsaOsaAlue(final Long id, final Long osaAlueId, OsaAlueDto osaAlue);
+    
+    List<OsaAlueDto> getTutkinnonOsaOsaAlueet(final Long id);
+
+    public OsaamistavoiteDto addOsaamistavoite(final Long id, final Long osaAlueId);
+
+    public OsaamistavoiteDto updateOsaamistavoite(final Long id, final Long osaAlueId, final Long osaamistavoiteId, OsaamistavoiteDto osaamistavoite);
+    
+    public List<OsaamistavoiteDto> getOsaamistavoitteet(final Long id, final Long osaAlueId);
+
+    public void removeOsaamistavoite(final Long id, final Long osaAlueId, final Long osaamistavoiteId);
+
+    public void removeOsaAlue(final Long id, final Long osaAlueId);
 }

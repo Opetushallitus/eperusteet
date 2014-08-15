@@ -41,7 +41,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "osaamistavoite")
 @Audited
-public class Osaamistavoite implements Serializable {
+public class Osaamistavoite implements Serializable, Mergeable<Osaamistavoite>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -84,4 +84,17 @@ public class Osaamistavoite implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     //Hibernate bug: orphanRemoval ei toimi jos fetchMode = Lazy
     private Arviointi arviointi;
+
+    @Override
+    public void mergeState(Osaamistavoite updated) {
+
+        if (updated !=null) {
+            this.setNimi(updated.getNimi());
+            this.setPakollinen(updated.isPakollinen());
+            this.setLaajuus(updated.getLaajuus());
+            this.setTavoitteet(updated.getTavoitteet());
+            this.setTunnustaminen(updated.getTunnustaminen());
+            this.setArviointi(updated.getArviointi());
+        }
+    }
 }
