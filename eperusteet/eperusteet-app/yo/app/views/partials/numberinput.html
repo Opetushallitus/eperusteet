@@ -2,7 +2,7 @@
   <div ng-form="innerForm">
     <input ng-if="type !== 'float' && type !== 'integer'" class="{{luokka}}" ng-model="$parent.model" type="number" min="{{min}}" max="{{max}}"
            name="tmpName" step="{{step}}">
-    <input ng-if="type === 'float'" class="{{luokka}}" ng-model="$parent.model" type="text" name="tmpName" validate-float>
+    <input ng-if="type === 'float'" class="{{luokka}}" ng-model="$parent.model" type="text" name="tmpName" validate-float min="{{min}}" max="{{max}}">
     <input ng-if="type === 'integer'" class="{{luokka}}" ng-model="$parent.model" type="number" min="{{min}}" max="{{max}}"
            name="tmpName" validate-integer step="{{step}}">
     <p class="alert alert-error" ng-show="innerForm.tmpName.$error.min || innerForm.tmpName.$error.max" kaanna kaanna-values="{min:min, max:max}">
