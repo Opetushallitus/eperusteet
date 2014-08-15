@@ -17,7 +17,6 @@
 package fi.vm.sade.eperusteet.dto.util;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -16,12 +16,12 @@
 
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.ArvioinninKohde;
-import fi.vm.sade.eperusteet.domain.ArvioinninKohdealue;
-import fi.vm.sade.eperusteet.domain.Arviointi;
+import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohde;
+import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohdealue;
+import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
-import fi.vm.sade.eperusteet.dto.ArviointiDto;
+import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.repository.ArviointiRepository;
 import fi.vm.sade.eperusteet.service.ArviointiService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;

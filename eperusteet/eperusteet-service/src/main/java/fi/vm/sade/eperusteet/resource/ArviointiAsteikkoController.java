@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
-import fi.vm.sade.eperusteet.dto.ArviointiAsteikkoDto;
+import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.service.ArviointiAsteikkoService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

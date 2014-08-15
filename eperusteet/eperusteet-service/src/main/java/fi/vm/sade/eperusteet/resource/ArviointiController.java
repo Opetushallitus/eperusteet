@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.resource;
 
-import fi.vm.sade.eperusteet.dto.ArviointiDto;
+import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.service.ArviointiService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

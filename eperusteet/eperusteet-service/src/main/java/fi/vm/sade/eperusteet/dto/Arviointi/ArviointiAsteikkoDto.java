@@ -14,8 +14,9 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.dto.Arviointi;
 
+import fi.vm.sade.eperusteet.dto.OsaamistasoDto;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +27,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ArvioinninKohdealueDto {
-    private LokalisoituTekstiDto otsikko;
-    private List<ArvioinninKohdeDto> arvioinninKohteet;
+public class ArviointiAsteikkoDto {
+    private Long id;
+    private List<OsaamistasoDto> osaamistasot;
 }

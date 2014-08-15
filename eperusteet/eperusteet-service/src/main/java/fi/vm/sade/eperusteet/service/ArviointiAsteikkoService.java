@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.dto.ArviointiAsteikkoDto;
+import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiAsteikkoDto;
 import java.util.List;
 
 /**

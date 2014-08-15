@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.resource;
 
-import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.service.KoodistoService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

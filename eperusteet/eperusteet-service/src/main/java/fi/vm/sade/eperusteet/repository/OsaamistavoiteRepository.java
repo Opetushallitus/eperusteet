@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.domain.Osaamistavoite;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.Osaamistavoite;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import org.springframework.stereotype.Repository;
 

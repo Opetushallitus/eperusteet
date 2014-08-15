@@ -14,23 +14,30 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.dto.tutkinnonOsa;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
+import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author harrik
+ * @author jhyoty
  */
 @Getter
 @Setter
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class KoodistoKoodiDto {
+//@JsonTypeName("tutkinnonosa")
+public class TutkinnonOsaDto extends PerusteenOsaDto {
+    private LokalisoituTekstiDto tavoitteet;
+    private ArviointiDto arviointi;
+    private LokalisoituTekstiDto ammattitaitovaatimukset;
+    private LokalisoituTekstiDto ammattitaidonOsoittamistavat;
+    private Long opintoluokitus;
     private String koodiUri;
     private String koodiArvo;
-    private String versio;
-    private KoodistoMetadataDto[] metadata;
-    private KoodistoDto koodisto;
+    private LokalisoituTekstiDto osaamisala;
+    private List<OsaAlueDto> osaAlueet;
 }

@@ -13,8 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.domain;
+package fi.vm.sade.eperusteet.domain.Arviointi;
 
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import java.io.Serializable;
 import java.util.List;
 

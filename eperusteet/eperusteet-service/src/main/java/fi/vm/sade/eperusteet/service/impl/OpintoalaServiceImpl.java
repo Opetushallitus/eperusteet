@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.OpintoalaDto;
 import fi.vm.sade.eperusteet.service.OpintoalaService;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;

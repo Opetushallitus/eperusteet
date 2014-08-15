@@ -14,8 +14,11 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.dto.tutkinnonOsa;
 
+import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
+import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
+import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,7 +28,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class OsaAlueDto {
+public class OsaamistavoiteDto {
     private Long id;
     private LokalisoituTekstiDto nimi;
+    private boolean pakollinen;
+    private BigDecimal laajuus;
+    private LokalisoituTekstiDto tavoitteet;
+    private LokalisoituTekstiDto tunnustaminen;
+    private ArviointiDto arviointi;
 }

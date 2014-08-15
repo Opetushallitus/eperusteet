@@ -15,14 +15,14 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.OsaAlue;
-import fi.vm.sade.eperusteet.domain.Osaamistavoite;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.OsaAlue;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
-import fi.vm.sade.eperusteet.dto.OsaAlueDto;
-import fi.vm.sade.eperusteet.dto.OsaamistavoiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.UpdateDto;
 import fi.vm.sade.eperusteet.repository.OsaAlueRepository;
