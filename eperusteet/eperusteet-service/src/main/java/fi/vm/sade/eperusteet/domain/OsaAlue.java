@@ -43,7 +43,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "tutkinnonosa_osaalue")
 @Audited
-public class OsaAlue implements Serializable {
+public class OsaAlue implements Serializable, Mergeable<OsaAlue> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -59,11 +59,27 @@ public class OsaAlue implements Serializable {
     private TekstiPalanen nimi;
     
     @Getter
-    @Setter
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinTable(name = "tutkinnonosa_osaalue_osaamistavoite",
                joinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"),
                inverseJoinColumns = @JoinColumn(name = "osaamistavoite_id"))
     @OrderColumn
     private List<Osaamistavoite> osaamistavoitteet;
+    
+    public void setOsaamistavoitteet(List<Osaamistavoite> osaamistavoitteet) {
+        this.osaamistavoitteet.clear();
+        if (osaamistavoitteet != null) {
+            this.osaamistavoitteet.addAll(osaamistavoitteet);
+        }
+    }
+
+    @Override
+    public void mergeState(OsaAlue updated) {
+        if (updated != null) {
+            this.setNimi(updated.getNimi());
+            if (updated.getOsaamistavoitteet() != null) {
+                this.setOsaamistavoitteet(updated.getOsaamistavoitteet());
+            }
+        }
+    }
 }

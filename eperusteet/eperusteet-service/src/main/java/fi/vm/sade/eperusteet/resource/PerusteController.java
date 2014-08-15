@@ -201,7 +201,7 @@ public class PerusteController {
             @RequestBody TutkinnonOsaViiteDto osa) {
         return service.addTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osa);
     }
-    
+     
 
     /**
      * Liitää olemassa olevan tutkinnon osan perusteeseen
