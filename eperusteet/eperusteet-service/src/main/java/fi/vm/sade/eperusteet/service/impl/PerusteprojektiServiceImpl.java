@@ -130,7 +130,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         CachingRestClient crc = restClientFactory.create(authServiceUrl);
         Perusteprojekti p = repository.findOne(id);
 
-        if (p == null || p.getOid() == null | p.getOid().isEmpty()) {
+        if (p == null || p.getOid() == null || p.getOid().isEmpty()) {
             throw new BusinessRuleViolationException("Perusteprojektilla ei ole oid:a");
         }
 
