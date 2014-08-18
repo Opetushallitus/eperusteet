@@ -138,7 +138,12 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         assertExists(id);
         lockManager.ensureLockedByAuthenticatedUser(id);
         TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
-        OsaAlue osaAlue = mapper.map(osaAlueDto, OsaAlue.class);
+        OsaAlue osaAlue;
+        if (osaAlueDto != null) {
+            osaAlue = mapper.map(osaAlueDto, OsaAlue.class);
+        } else {
+            osaAlue = new OsaAlue();
+        }
         osaAlueRepository.save(osaAlue);
         tutkinnonOsa.getOsaAlueet().add(osaAlue);
         tutkinnonOsaRepo.save(tutkinnonOsa);
@@ -197,7 +202,12 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         if (osaAlue == null) {
             throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
         }
-        Osaamistavoite osaamistavoite = mapper.map(osaamistavoiteDto, Osaamistavoite.class);
+        Osaamistavoite osaamistavoite;
+        if (osaamistavoiteDto != null) {
+            osaamistavoite = mapper.map(osaamistavoiteDto, Osaamistavoite.class);
+        } else {
+            osaamistavoite = new Osaamistavoite();
+        }
         osaamistavoiteRepository.save(osaamistavoite);
         osaAlue.getOsaamistavoitteet().add(osaamistavoite);
         osaAlueRepository.save(osaAlue);

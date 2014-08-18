@@ -158,7 +158,7 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/osaalue", method = POST)
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public OsaAlueDto addTutkinnonOsaOsaAlue(@PathVariable("id") final Long id, @RequestBody OsaAlueDto osaAlueDto) {
+    public OsaAlueDto addTutkinnonOsaOsaAlue(@PathVariable("id") final Long id, @RequestBody(required = false)  OsaAlueDto osaAlueDto) {
         return service.addTutkinnonOsaOsaAlue(id, osaAlueDto);
     }
     
@@ -210,7 +210,7 @@ public class PerusteenOsaController {
     public OsaamistavoiteDto addOsaamistavoite(
             @PathVariable("id") final Long id,
             @PathVariable("osaAlueId") final Long osaAlueId, 
-            @RequestBody OsaamistavoiteDto osaamistavoiteDto) {
+            @RequestBody(required = false) OsaamistavoiteDto osaamistavoiteDto) {
         return service.addOsaamistavoite(id, osaAlueId, osaamistavoiteDto);
     }
     
