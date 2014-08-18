@@ -61,13 +61,13 @@ public interface PerusteenOsaService {
 
     LukkoDto getLock(final Long id);
     
-    OsaAlueDto addTutkinnonOsaOsaAlue(final Long id);
+    OsaAlueDto addTutkinnonOsaOsaAlue(final Long id, OsaAlueDto osaAlueDto);
     
     OsaAlueDto updateTutkinnonOsaOsaAlue(final Long id, final Long osaAlueId, OsaAlueDto osaAlue);
     
     List<OsaAlueDto> getTutkinnonOsaOsaAlueet(final Long id);
 
-    public OsaamistavoiteDto addOsaamistavoite(final Long id, final Long osaAlueId);
+    public OsaamistavoiteDto addOsaamistavoite(final Long id, final Long osaAlueId, OsaamistavoiteDto osaamistavoiteDto);
 
     public OsaamistavoiteDto updateOsaamistavoite(final Long id, final Long osaAlueId, final Long osaamistavoiteId, OsaamistavoiteDto osaamistavoite);
     
