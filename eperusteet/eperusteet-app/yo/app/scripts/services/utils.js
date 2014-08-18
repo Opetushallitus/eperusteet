@@ -15,6 +15,8 @@
  */
 
 'use strict';
+/* global _ */
+
 
 angular.module('eperusteApp')
   .service('Utils', function($window) {
@@ -23,5 +25,18 @@ angular.module('eperusteApp')
       if (element.length) {
         $window.scrollTo(0, element[0].offsetTop);
       }
+    };
+
+    this.hasLocalizedText = function (field) {
+      if (!_.isObject(field)) {
+        return false;
+      }
+      var hasContent = false;
+      _.each(field, function (value) {
+        if (!_.isEmpty(value)) {
+          hasContent = true;
+        }
+      });
+      return hasContent;
     };
   });

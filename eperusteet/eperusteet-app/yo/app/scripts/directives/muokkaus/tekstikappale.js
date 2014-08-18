@@ -176,6 +176,9 @@ angular.module('eperusteApp')
             },
             notify: function(mode) {
               $scope.editEnabled = mode;
+            },
+            validate: function() {
+              return Utils.hasLocalizedText($scope.editableTekstikappale.nimi);
             }
           });
 

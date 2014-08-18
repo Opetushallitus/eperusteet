@@ -107,8 +107,11 @@ angular.module('eperusteApp')
         }
 
         attrs.$observe('required', function(value) {
-          if (value === 'required' || value === 'true') {
+          if (value === 'required' || value === 'true' || value === '') {
             scope.postfix = '*';
+            $timeout(function () {
+              element.find('input').attr('required', '');
+            });
           } else if (value) {
             var parsed = $parse(value);
             scope.$watch(function () {

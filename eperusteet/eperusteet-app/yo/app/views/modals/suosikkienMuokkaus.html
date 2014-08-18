@@ -20,7 +20,7 @@
         </div>
         <div ng-show="editing.id === suosikki.id">
           <button class="btn btn-default" ng-click="cancel()" kaanna>peruuta</button>
-          <button class="btn btn-primary" ng-click="save(suosikki)" kaanna>tallenna</button>
+          <button class="btn btn-primary" ng-click="save(suosikki)" ng-disabled="editing.nimi === ''" kaanna>tallenna</button>
         </div>
       </td>
     </tr>
