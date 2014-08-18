@@ -134,14 +134,11 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     
     @Override
     @Transactional(readOnly = false)
-    public OsaAlueDto addTutkinnonOsaOsaAlue(Long id) {
+    public OsaAlueDto addTutkinnonOsaOsaAlue(Long id, OsaAlueDto osaAlueDto) {
         assertExists(id);
         lockManager.ensureLockedByAuthenticatedUser(id);
         TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
-        if (tutkinnonOsa == null) {
-            throw new EntityNotFoundException("Tutkinnon osaa ei löytynyt id:llä: " + id);
-        }
-        OsaAlue osaAlue = new OsaAlue();
+        OsaAlue osaAlue = mapper.map(osaAlueDto, OsaAlue.class);
         osaAlueRepository.save(osaAlue);
         tutkinnonOsa.getOsaAlueet().add(osaAlue);
         tutkinnonOsaRepo.save(tutkinnonOsa);
@@ -193,14 +190,14 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     @Transactional(readOnly = false)
-    public OsaamistavoiteDto addOsaamistavoite(Long id, Long osaAlueId) {
+    public OsaamistavoiteDto addOsaamistavoite(Long id, Long osaAlueId, OsaamistavoiteDto osaamistavoiteDto) {
         assertExists(id);
         lockManager.ensureLockedByAuthenticatedUser(id);
         OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
         if (osaAlue == null) {
             throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
         }
-        Osaamistavoite osaamistavoite = new Osaamistavoite();
+        Osaamistavoite osaamistavoite = mapper.map(osaamistavoiteDto, Osaamistavoite.class);
         osaamistavoiteRepository.save(osaamistavoite);
         osaAlue.getOsaamistavoitteet().add(osaamistavoite);
         osaAlueRepository.save(osaAlue);

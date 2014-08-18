@@ -152,13 +152,14 @@ public class PerusteenOsaController {
      * Luo ja liittää uuden osa-alueen tutkinnon osaan.
      *
      * @param id
+     * @param osaAlueDto
      * @return Uusi tutkinnon osan osa-alue
      */
     @RequestMapping(value = "/{id}/osaalue", method = POST)
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public OsaAlueDto addTutkinnonOsaOsaAlue(@PathVariable("id") final Long id) {
-        return service.addTutkinnonOsaOsaAlue(id);
+    public OsaAlueDto addTutkinnonOsaOsaAlue(@PathVariable("id") final Long id, @RequestBody OsaAlueDto osaAlueDto) {
+        return service.addTutkinnonOsaOsaAlue(id, osaAlueDto);
     }
     
     /**
@@ -200,6 +201,7 @@ public class PerusteenOsaController {
      *
      * @param id
      * @param osaAlueId
+     * @param osaamistavoiteDto
      * @return Uusi osaamistavoiteDto
      */
     @RequestMapping(value = "/{id}/osaalue/{osaAlueId}/osaamistavoite", method = POST)
@@ -207,8 +209,9 @@ public class PerusteenOsaController {
     @ResponseStatus(HttpStatus.CREATED)
     public OsaamistavoiteDto addOsaamistavoite(
             @PathVariable("id") final Long id,
-            @PathVariable("osaAlueId") final Long osaAlueId) {
-        return service.addOsaamistavoite(id, osaAlueId);
+            @PathVariable("osaAlueId") final Long osaAlueId, 
+            @RequestBody OsaamistavoiteDto osaamistavoiteDto) {
+        return service.addOsaamistavoite(id, osaAlueId, osaamistavoiteDto);
     }
     
     /**
