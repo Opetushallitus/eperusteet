@@ -3,15 +3,15 @@
 </div>
 
 <div class="modal-body">
-  <table class="table table-striped">
+  <table class="table table-hover versiohistoria">
     <tr>
-      <th width="10%" kaanna>versio</th>
+      <th class="versio" kaanna>versio</th>
       <th kaanna>muokkaaja</th>
-      <th width="50%" kaanna>kommentti</th>
-      <th width="20%" kaanna>muokattu</th>
+      <th class="kommentti" kaanna>kommentti</th>
+      <th class="muokattu" kaanna>muokattu</th>
     </tr>
-    <tr ng-repeat="ver in versions.list">
-      <td><a href="" ng-click="close(ver)">{{ ver.index }}</a></td>
+    <tr ng-repeat="ver in versions.list" ng-click="close(ver)" class="navigoitava" title="{{'Tarkastele versiota' | kaanna}}">
+      <td><a href="" ng-click="$event.stopPropagation(); close(ver);">{{ ver.index }}</a></td>
       <td>{{ ver.$nimi }}</td>
       <td>{{ ver.kommentti || '-' }}</td>
       <td>{{ ver.pvm | aikaleima:'time' }}</td>

@@ -148,3 +148,12 @@ $lukko-inner: 1.4em;
     }
   }
 }
+
+.versiohistoria {
+  .navigoitava {
+    cursor: pointer;
+  }
+  .versio { width: 10%; }
+  .kommentti { width: 50%; }
+  .muokattu { width: 20%; }
+}
