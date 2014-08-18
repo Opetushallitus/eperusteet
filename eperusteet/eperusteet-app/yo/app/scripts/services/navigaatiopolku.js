@@ -18,7 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('Navigaatiopolku', function($rootScope, $state, YleinenData) {
+  .service('Navigaatiopolku', function($rootScope, $state, YleinenData, Kaanna) {
     var naviElementit = {};
     var naviPolku = [];
     var params = {};
@@ -34,6 +34,12 @@ angular.module('eperusteApp')
         }
       }
       return olio;
+    }
+
+    function updateTitle() {
+      var title = Kaanna.kaanna('ePerusteet') + ': ' +
+        (naviPolku.length === 0 ? Kaanna.kaanna('Etusivu') :  Kaanna.kaanna(_.last(naviPolku).arvo));
+      angular.element('head > title').html(title);
     }
 
     function päivitä() {
@@ -52,6 +58,7 @@ angular.module('eperusteApp')
           };
         })
         .value();
+      updateTitle();
       $rootScope.$broadcast('update:navipolku');
     }
 
