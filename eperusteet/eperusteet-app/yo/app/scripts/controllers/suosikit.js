@@ -44,10 +44,25 @@ angular.module('eperusteApp')
 
   .controller('SuosikkienMuokkausController', function ($scope, Profiili,
       Varmistusdialogi) {
+    $scope.search = {
+      term: '',
+      update: function () {
+       if (_.isEmpty($scope.search.term)) {
+         $scope.suosikit = $scope.originals;
+       } else {
+         $scope.suosikit = _.filter($scope.originals, function (item) {
+           return item.nimi.toLowerCase().indexOf($scope.search.term.toLowerCase()) > -1;
+         });
+       }
+      }
+    };
+
     function refresh() {
       $scope.suosikit = Profiili.listaaSuosikit().reverse();
+      $scope.originals = angular.copy($scope.suosikit);
     }
     refresh();
+
     $scope.$on('suosikitMuuttuivat', refresh);
 
     $scope.edit = function (suosikki) {
