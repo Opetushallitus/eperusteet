@@ -96,7 +96,6 @@ angular.module('eperusteApp')
     };
 
     $scope.lisaaTutkinnonOsa = function(osa, cb) {
-      console.log('lisaaTutkinnonOsa osa', osa);
       osa = osa ? {_tutkinnonOsa: osa._tutkinnonOsa} : {};
       cb = cb || angular.noop;
 
@@ -105,7 +104,6 @@ angular.module('eperusteApp')
         suoritustapa: $stateParams.suoritustapa
       }, osa,
       function(res) {
-        console.log('lisaaTutkinnonosa res', res);
         $scope.tutkinnonOsat.unshift(res);
         cb();
         TutkinnonOsaEditMode.setMode(true);
