@@ -21,13 +21,13 @@ European Union Public Licence for more details.
       <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi">
         <accordion-group class="arvioinnin-kohdealue" heading="{{kohdealue.otsikko | kaanna}}" ng-repeat="kohdealue in arviointi" is-open="kohdealue.$accordionOpen">
         <accordion-heading>
-          <h3 class="panel-title"><arvioinnin-tekstikentta sisalto="kohdealue" sisaltoteksti="kohdealue.otsikko" sisaltoalue="$parent.arviointi.arvioinninKohdealueet" edit-allowed="editAllowed"/></h3>
+          <h3 class="panel-title" ng-hide="eiKohdealueita"><arvioinnin-tekstikentta sisalto="kohdealue" sisaltoteksti="kohdealue.otsikko" sisaltoalue="$parent.arviointi.arvioinninKohdealueet" edit-allowed="editAllowed"/></h3>
         </accordion-heading>
 
         <accordion close-others="false">
         <div id="sortableKohteet" ui-sortable="sortableOptions" ng-model="kohdealue.arvioinninKohteet">
 
-          <accordion-group class="arvioinnin-kohde" ng-class="{'kohde-edit': arvioinninkohde === originalKohde}" heading="{{arvioinninkohde.otsikko | kaanna}}"
+          <accordion-group class="arvioinnin-kohde" ng-class="{'kohde-edit': arvioinninkohde === originalKohde}"
                            ng-repeat="arvioinninkohde in kohdealue.arvioinninKohteet" is-open="arvioinninkohde.$accordionOpen" is-disabled="editableKohde">
           <accordion-heading>
             <span ng-show="arvioinninkohde !== originalKohde">

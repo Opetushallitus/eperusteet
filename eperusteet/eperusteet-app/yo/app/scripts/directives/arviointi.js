@@ -155,10 +155,12 @@ angular.module('eperusteApp')
       scope: {
         arviointi: '=',
         editAllowed: '@?editointiSallittu',
-        editEnabled: '='
+        editEnabled: '=',
+        eiKohdealueita: '@'
       },
       controller: 'arviointiCtrl',
       link: function(scope) {
+        scope.eiKohdealueita = (scope.eiKohdealueita === 'true' || scope.eiKohdealueita === true);
         scope.editAllowed = (scope.editAllowed === 'true' || scope.editAllowed === true);
 
         scope.arviointiasteikot = YleinenData.arviointiasteikot || {};

@@ -79,3 +79,24 @@ $borderspec: 2px solid #777;
     }
   }
 }
+
+
+/* ei-proto -> */
+.tutke2 {
+  .panel-heading {
+    .glyphicon, .otsikko {
+      cursor: pointer;
+    }
+    .otsikko {
+      font-size: 120%;
+    }
+    select {
+      margin-left: 10px;
+    }
+    a {
+      &:hover, &:focus, &:active, & *:hover, & *:focus, & *:active {
+        text-decoration: none;
+      }
+    }
+  }
+}

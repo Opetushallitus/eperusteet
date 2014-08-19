@@ -1,0 +1,24 @@
+<div class="tutke2">
+  <p class="info-placeholder" ng-show="!tutke2osa.osaAlueet || tutke2osa.osaAlueet.length === 0" kaanna>Ei osa-alueita.</p>
+  <accordion close-others="viewOptions.oneAtATime">
+    <accordion-group ng-repeat="alue in tutke2osa.osaAlueet" is-open="alue.$open" class="panel-clean">
+      <accordion-heading>
+        <span class="glyphicon" ng-class="alue.$open ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
+        <span class="otsikko">{{alue.nimi | kaanna}}</span>
+        <select ng-if="osaAlue.hasChoices(alue)" ng-options="item.value as item.label|kaanna for item in osaAlue.groups(alue)"
+                ng-model="alue.$chosen" ng-click="$event.stopPropagation();"></select>
+      </accordion-heading>
+      <p class="info-placeholder" ng-show="!alue.osaamistavoitteet || alue.osaamistavoitteet.length === 0"
+         kaanna>Ei osaamistavoitteita.</p>
+      <div ng-repeat="pakollisuus in [true, false]">
+        <div ng-repeat="tavoite in getTavoitteet(alue, pakollisuus)">
+          <h3>{{pakollisuus && ('Pakolliset osaamistavoitteet' | kaanna) || ('Valinnaiset osaamistavoitteet' | kaanna)}}, {{tavoite.laajuus}} {{'osp' | kaanna}}</h3>
+          <p>{{tavoite.tavoitteet | kaanna}}</p>
+          <h4 kaanna>arviointi</h4>
+          <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet" editEnabled="editEnabled" ei-kohdealueita="true"></arviointi>
+          <p>{{tavoite.tunnustaminen | kaanna}}</p>
+        </div>
+      </div>
+    </accordion-group>
+  </accordion>
+</div>

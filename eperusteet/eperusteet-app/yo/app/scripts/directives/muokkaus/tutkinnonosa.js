@@ -34,6 +34,7 @@ angular.module('eperusteApp')
 
         Utils.scrollTo('#ylasivuankkuri');
 
+        $scope.tutke2mode = false;
         $scope.suoritustapa = $stateParams.suoritustapa;
         $scope.rakenne = {};
         $scope.test = angular.noop;

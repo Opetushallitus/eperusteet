@@ -81,15 +81,19 @@ $pikamenu-max-height: 400px;
   }
 }
 
-#tutkinnon-osa-ei-sisaltoa {
+.info-placeholder {
   color: #777;
   background: #fcfcfc;
   margin: 0px;
   text-align: center;
   padding: 16px;
-  min-width: $tree-container-width;
   border: 1px dashed #ddd;
   margin-top: 40px;
+  width: 100%;
+}
+
+#tutkinnon-osa-ei-sisaltoa {
+  min-width: $tree-container-width;
 }
 
 #tutkinnon-osa-tiedot {

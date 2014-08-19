@@ -7,10 +7,12 @@
               class="btn btn-default" kaanna>muokkaa</button>
     </div>
     <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
+    <!-- Väliaikainen ratkaisu TUTKE2 vs. normaali tutkinnon osa valintaan -->
+    <div class="floater" ng-hide="editEnabled"><label><input style="top: 0px;" type="checkbox" ng-model="tutke2mode">TUTKE2</label></div>
 
     <div ng-if="editEnabled">
       <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsa.id].id)" kaanna>poista-tutkinnonosa</button>
-      <div class="floater">
+      <div class="floater" ng-show="!tutke2mode">
         <div class="dropdown">
           <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add" kaanna>muokkaus-lisaa-osio</button>
           <ul class="pull-right dropdown-menu">
@@ -64,6 +66,11 @@
     <label kaanna>muokkaus-tutkinnon-osan-koodi-header</label>:<span> {{ tutkinnonOsa.koodiArvo }}</span>
   </div>
 
-  <kenttalistaus edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields"></kenttalistaus>
+  <div ng-if="!tutke2mode">
+    <kenttalistaus edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields"></kenttalistaus>
+  </div>
+  <div ng-if="tutke2mode">
+    <tutke2kentat edit-enabled="editEnabled" tutkinnonosa="tutkinnonOsaPromise"></tutke2kentat>
+  </div>
   <!-- <kommentit depth="0"></kommentit> -->
 </div>
