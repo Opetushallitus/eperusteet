@@ -1,3 +1,8 @@
+/* normalisoi ie10+:n scrollbar */
+html {
+  -ms-overflow-style: scrollbar;
+}
+
 .max-sm-leveys {
   @media (min-width: $screen-sm-min) {
     max-width: $screen-sm-min;
@@ -156,4 +161,34 @@ $lukko-inner: 1.4em;
   .versio { width: 10%; }
   .kommentti { width: 50%; }
   .muokattu { width: 20%; }
+}
+
+$backtotop-size: 48px;
+#backtotop {
+  &.ng-hide-add, &.ng-hide-remove {
+    transition: 0.2s linear all;
+  }
+  &.ng-hide-add.ng-hide-add-active, &.ng-hide-remove {
+    opacity: 0;
+  }
+  &.ng-hide-add, &.ng-hide-remove.ng-hide-remove-active {
+    opacity: 1;
+  }
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  background-color: rgba(255, 255, 255, 0.5);
+  a {
+    display: block;
+    text-align: center;
+    border: 2px solid rgba(0,0,0,0.8);
+    border-radius: 5px;
+    font-size: $backtotop-size*0.6;
+    line-height: $backtotop-size;
+    width: $backtotop-size;
+    height: $backtotop-size;
+    &:hover, &:focus, &:active, & *:hover, & *:focus, & *:active {
+      text-decoration: none;
+    }
+  }
 }
