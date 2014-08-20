@@ -14,28 +14,28 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.tutkinnonOsa;
+package fi.vm.sade.eperusteet.domain.validation;
 
-import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
-import fi.vm.sade.eperusteet.dto.EntityReference;
-import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
-import java.math.BigDecimal;
-import lombok.Getter;
-import lombok.Setter;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.Osaamistavoite;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 /**
  *
  * @author harrik
  */
-@Getter
-@Setter
-public class OsaamistavoiteDto {
-    private Long id;
-    private LokalisoituTekstiDto nimi;
-    private boolean pakollinen;
-    private BigDecimal laajuus;
-    private LokalisoituTekstiDto tavoitteet;
-    private LokalisoituTekstiDto tunnustaminen;
-    private ArviointiDto arviointi;
-    private EntityReference esitieto;
+public class ValidOsaamistavoiteEsitietoValidator implements ConstraintValidator<ValidOsaamistavoiteEsitieto, Osaamistavoite> {
+
+    @Override
+    public void initialize(ValidOsaamistavoiteEsitieto a) {
+    }
+
+    @Override
+    public boolean isValid(Osaamistavoite osaamistavoite, ConstraintValidatorContext cvc) {
+        if (osaamistavoite.getEsitieto() != null) {
+            return osaamistavoite.getEsitieto().isPakollinen();
+        }
+        return true;
+    }
+    
 }
