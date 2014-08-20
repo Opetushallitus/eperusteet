@@ -17,8 +17,11 @@ package fi.vm.sade.eperusteet.domain.tutkinnonOsa;
 
 import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.Mergeable;
+import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.validation.ValidOsaamistavoiteEsitieto;
+import fi.vm.sade.eperusteet.dto.EntityReference;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.persistence.CascadeType;
@@ -43,7 +46,8 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "osaamistavoite")
 @Audited
-public class Osaamistavoite implements Serializable, Mergeable<Osaamistavoite>{
+@ValidOsaamistavoiteEsitieto
+public class Osaamistavoite implements Serializable, Mergeable<Osaamistavoite>, ReferenceableEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -86,6 +90,11 @@ public class Osaamistavoite implements Serializable, Mergeable<Osaamistavoite>{
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     //Hibernate bug: orphanRemoval ei toimi jos fetchMode = Lazy
     private Arviointi arviointi;
+    
+    @ManyToOne
+    @Getter
+    @Setter
+    private Osaamistavoite esitieto;
 
     @Override
     public void mergeState(Osaamistavoite updated) {
@@ -98,5 +107,10 @@ public class Osaamistavoite implements Serializable, Mergeable<Osaamistavoite>{
             this.setTunnustaminen(updated.getTunnustaminen());
             this.setArviointi(updated.getArviointi());
         }
+    }
+
+    @Override
+    public EntityReference getReference() {
+        return new EntityReference(id);
     }
 }
