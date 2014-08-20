@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.dto.Arviointi.ArvioinninKohdealueDto;
 import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
@@ -127,6 +128,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
     	TutkinnonOsaDto tutkinnonOsaDto = new TutkinnonOsaDto();
     	tutkinnonOsaDto.setNimi(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Nimi")));
         tutkinnonOsaDto.setTila(PerusteTila.LUONNOS);
+        tutkinnonOsaDto.setTyyppi(TutkinnonOsaTyyppi.NORMAALI);
     	tutkinnonOsaDto = perusteenOsaService.add(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
 
         perusteenOsaService.lock(tutkinnonOsaDto.getId());

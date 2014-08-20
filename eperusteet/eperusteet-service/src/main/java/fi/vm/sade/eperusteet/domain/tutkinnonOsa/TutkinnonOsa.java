@@ -15,8 +15,8 @@
  */
 package fi.vm.sade.eperusteet.domain.tutkinnonOsa;
 
-import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -28,6 +28,8 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -36,6 +38,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -93,6 +96,12 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @OrderColumn
     // TUTKE2:n mukainen osa-alue
     private List<OsaAlue> osaAlueet;
+    
+    @Getter
+    @Setter
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private TutkinnonOsaTyyppi tyyppi = TutkinnonOsaTyyppi.NORMAALI;
 
     @Override
     public EntityReference getReference() {
@@ -181,6 +190,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             if (other.getOsaAlueet() != null) {
                 mergeOsaAlueet(this.getOsaAlueet(), other.getOsaAlueet());
             }
+            this.setTyyppi(other.getTyyppi());
         }
     }
     

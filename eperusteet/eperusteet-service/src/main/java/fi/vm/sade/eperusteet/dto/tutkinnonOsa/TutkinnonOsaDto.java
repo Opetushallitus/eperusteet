@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonOsa;
 
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
@@ -40,4 +41,5 @@ public class TutkinnonOsaDto extends PerusteenOsaDto {
     private String koodiArvo;
     private LokalisoituTekstiDto osaamisala;
     private List<OsaAlueDto> osaAlueet;
+    private TutkinnonOsaTyyppi tyyppi;
 }
