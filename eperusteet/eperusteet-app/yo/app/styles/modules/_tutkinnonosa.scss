@@ -183,12 +183,15 @@ $pikamenu-max-height: 400px;
   }
 }
 
+.kohde-edit {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.49) !important;
+}
+
 .arvioinnin-kohde {
   border: 0px none;
   box-shadow: none;
   margin-left: 0px !important;
   &.kohde-edit {
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.49) !important;
     padding-top: 10px;
   }
   .panel-body {

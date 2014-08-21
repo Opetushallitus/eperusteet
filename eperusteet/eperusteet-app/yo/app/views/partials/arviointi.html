@@ -32,8 +32,8 @@ European Union Public Licence for more details.
           <accordion-heading>
             <span ng-show="arvioinninkohde !== originalKohde">
               {{arvioinninkohde.otsikko | kaanna}}
-              <a href="" editointi-kontrolli ng-click="kohde.poista(kohdealue.arvioinninKohteet, arvioinninkohde, $event)" class="muokkausnappi" icon-role="remove"></a>
-              <a href="" editointi-kontrolli ng-click="kohde.muokkaa(arvioinninkohde, $event)" class="muokkausnappi" icon-role="edit"></a>
+              <a ng-show="editEnabled" href="" ng-click="kohde.poista(kohdealue.arvioinninKohteet, arvioinninkohde, $event)" class="muokkausnappi" icon-role="remove"></a>
+              <a ng-show="editEnabled" href="" ng-click="kohde.muokkaa(arvioinninkohde, $event)" class="muokkausnappi" icon-role="edit"></a>
             </span>
             <span ng-show="arvioinninkohde === originalKohde">
               <input class="form-control kohdeotsikko" ng-model="editableKohde.otsikko" localized>
