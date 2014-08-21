@@ -70,11 +70,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen ammattitaidonOsoittamistavat;
 
-    @ValidHtml
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen osaamisala;
-
     @Column
     private Long opintoluokitus;
 
@@ -132,14 +127,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         this.ammattitaidonOsoittamistavat = ammattitaidonOsoittamistavat;
     }
 
-    public TekstiPalanen getOsaamisala() {
-        return osaamisala;
-    }
-
-    public void setOsaamisala(TekstiPalanen osaamisala) {
-        this.osaamisala = osaamisala;
-    }
-
     public Long getOpintoluokitus() {
         return opintoluokitus;
     }
@@ -186,7 +173,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setKoodiUri(other.getKoodiUri());
             this.setKoodiArvo(other.getKoodiArvo());
             this.setOpintoluokitus(other.getOpintoluokitus());
-            this.setOsaamisala(other.getOsaamisala());
             if (other.getOsaAlueet() != null) {
                 mergeOsaAlueet(this.getOsaAlueet(), other.getOsaAlueet());
             }

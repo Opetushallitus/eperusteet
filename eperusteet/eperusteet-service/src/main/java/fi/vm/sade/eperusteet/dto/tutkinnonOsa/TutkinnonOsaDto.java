@@ -39,7 +39,6 @@ public class TutkinnonOsaDto extends PerusteenOsaDto {
     private Long opintoluokitus;
     private String koodiUri;
     private String koodiArvo;
-    private LokalisoituTekstiDto osaamisala;
     private List<OsaAlueDto> osaAlueet;
     private TutkinnonOsaTyyppi tyyppi;
 }
