@@ -1,6 +1,6 @@
 <div ng-show="!alussa && !lukeeTiedostoa && errors.length === 0">
   <div ng-repeat="tk in tekstikentat">
-    <h3 ng-hide="tk.id">{{ tk.nimi | kaanna }} (<a href="" ng-click="poistaTekstikentta(tk)">Poista</a>)</h3>
+    <h3 ng-hide="tk.id">{{ tk.nimi | kaanna }} (<a href="" ng-click="poistaTekstikentta(tk)" kaanna>poista</a>)</h3>
     <h3 ng-show="tk.id">{{ tk.nimi | kaanna }}</h3>
     <div class="well">
       <div class="alert alert-danger" ng-show="tk.$syy.length > 0">

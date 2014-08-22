@@ -112,7 +112,9 @@ angular.module('eperusteApp')
       });
     };
 
-    $scope.poistaTekstikentta = function(tekstikentta) { _.remove($scope.peruste.tekstikentat, tekstikentta); };
+    $scope.poistaTekstikentta = function(tekstikentta) {
+      _.remove($scope.tekstikentat, tekstikentta);
+    };
 
     $scope.tallennaOsatutkinnot = function() {
       var filtered = _.filter($scope.osatutkinnot, function(ot) { return ot.$ladattu !== 0; });
