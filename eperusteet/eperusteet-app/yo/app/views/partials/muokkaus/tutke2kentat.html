@@ -1,14 +1,15 @@
 <div class="tutke2">
-  <p class="info-placeholder" ng-show="!tutke2osa.osaAlueet || tutke2osa.osaAlueet.length === 0" kaanna>Ei osa-alueita.</p>
+  <div ng-if="tutke2osa.$fetching">{{'Ladataan tutkinnon osaa...'|kaanna}} <small-spinner></small-spinner></div>
+  <p class="info-placeholder" ng-show="!tutke2osa.$fetching && (!tutke2osa.osaAlueet || tutke2osa.osaAlueet.length === 0)" kaanna>Ei osa-alueita.</p>
   <accordion close-others="viewOptions.oneAtATime">
 
     <!-- osa-alueet -->
-    <accordion-group ng-repeat="alue in tutke2osa.osaAlueet" is-open="alue.$open" class="panel-clean" ng-class="{'kohde-edit': alue.$editing}">
+    <accordion-group ng-show="!tutke2osa.$fetching" ng-repeat="alue in tutke2osa.osaAlueet" is-open="alue.$open" class="panel-clean" ng-class="{'kohde-edit': alue.$editing}">
       <accordion-heading>
         <span class="glyphicon" ng-class="alue.$open ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
         <span ng-show="!alue.$editing" class="otsikko">{{alue.nimi | kaanna}}</span>
         <input ng-show="alue.$editing" class="" ng-model="alue.nimi" localized ng-click="$event.stopPropagation()">
-        <span ng-show="editEnabled && !alue.$editing">
+        <span ng-show="editEnabled && !alue.$editing && osaAlue.$editing === null">
           <a editointi-kontrolli ng-click="osaAlue.remove(alue, $event)" class="muokkausnappi action-link" icon-role="remove"></a>
           <a editointi-kontrolli ng-click="osaAlue.edit(alue, $event)" class="muokkausnappi action-link" icon-role="edit"></a>
         </span>
@@ -28,10 +29,10 @@
       <div ng-if="!editEnabled" ng-repeat="pakollisuus in [true, false]">
         <div ng-repeat="tavoite in getTavoitteet(alue, pakollisuus)">
           <h3>{{pakollisuus && ('Pakolliset osaamistavoitteet' | kaanna) || ('Valinnaiset osaamistavoitteet' | kaanna)}}, {{tavoite.laajuus}} {{'osp' | kaanna}}</h3>
-          <p>{{tavoite.tavoitteet | kaanna}}</p>
+          <div ckeditor localized ng-model="tavoite.tavoitteet" editing-enabled="false"></div>
           <h4 kaanna>arviointi</h4>
           <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet" editEnabled="tavoite.$editing" ei-kohdealueita="true"></arviointi>
-          <p>{{tavoite.tunnustaminen | kaanna}}</p>
+          <div ckeditor localized ng-model="tavoite.tunnustaminen" editing-enabled="false"></div>
         </div>
       </div>
 
@@ -48,7 +49,7 @@
                   <button class="btn btn-primary btn-xs" ng-click="osaamistavoite.save(alue, tavoite, $event)" kaanna>ok</button>
                 </div>
               </span>
-              <span ng-show="!tavoite.$editing">{{tavoite.nimi | kaanna}}
+              <span ng-show="!tavoite.$editing && osaamistavoite.$editing === null">{{tavoite.nimi | kaanna}}
                 <a editointi-kontrolli ng-click="osaamistavoite.remove(alue, tavoite, $event)" class="muokkausnappi action-link" icon-role="remove"></a>
                 <a editointi-kontrolli ng-click="osaamistavoite.edit(alue, tavoite, $event)" class="muokkausnappi action-link" icon-role="edit"></a>
               </span>
@@ -59,8 +60,10 @@
                 <formfield model="tavoite" model-var="pakollinen" label="pakollisuus" options="pakollisuusoptions"></formfield>
                 <formfield model="tavoite" model-var="_esitieto" label="esitieto" options="alue.$esitietoOptions" ng-if="!tavoite.pakollinen"></formfield>
                 <formfield model="tavoite" model-var="laajuus" label="laajuus" type="float" step="0.5"></formfield>
-                <formfield model="tavoite" model-var="tavoitteet" label="tavoitteet" type="textarea"></formfield>
-                <formfield model="tavoite" model-var="tunnustaminen" label="Tunnustaminen" type="textarea"></formfield>
+                <label kaanna>tavoitteet</label>
+                <div ng-model="tavoite.tavoitteet" localized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
+                <label kaanna>Tunnustaminen</label>
+                <div ng-model="tavoite.tunnustaminen" localized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tunnustaminen"></div>
               </div>
               <div ng-if="!tavoite.$editing">
                 <p class="lead">{{(tavoite.pakollinen && 'Pakollinen' || 'Valinnainen')|kaanna}}, {{tavoite.laajuus}} {{'osp' | kaanna}}</p>
@@ -68,8 +71,10 @@
                   <h4 kaanna>esitieto</h4>
                   <p>{{alue.$groups.grouped[tavoite._esitieto][0].nimi | kaanna}}</p>
                 </div>
-                <h4 kaanna>tavoitteet</h4><p>{{tavoite.tavoitteet | kaanna}}</p>
-                <h4 kaanna>Tunnustaminen</h4><p>{{tavoite.tunnustaminen | kaanna}}</p>
+                <h4 kaanna>tavoitteet</h4>
+                <div ckeditor localized ng-model="tavoite.tavoitteet" editing-enabled="false"></div>
+                <h4 kaanna>Tunnustaminen</h4>
+                <div ckeditor localized ng-model="tavoite.tunnustaminen" editing-enabled="false"></div>
               </div>
               <h4 kaanna>arviointi</h4>
               <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet" ei-kohdealueita="true"
@@ -80,12 +85,12 @@
       </div>
 
       <!-- lisää osaamistavoite -->
-      <button ng-if="editEnabled" class="btn btn-default" icon-role="add" ng-click="osaamistavoite.add(alue)" kaanna>Lisää osaamistavoite</button>
+      <button ng-if="editEnabled && osaamistavoite.$editing === null" class="btn btn-default" icon-role="add" ng-click="osaamistavoite.add(alue)" kaanna>Lisää osaamistavoite</button>
 
     </accordion-group>
   </accordion>
 
   <!-- lisää osa-alue -->
-  <button ng-if="editEnabled" class="btn btn-default" icon-role="add" ng-click="osaAlue.add()" kaanna>Lisää osa-alue</button>
+  <button ng-if="editEnabled && osaAlue.$editing === null" class="btn btn-default" icon-role="add" ng-click="osaAlue.add()" kaanna>Lisää osa-alue</button>
 
 </div>

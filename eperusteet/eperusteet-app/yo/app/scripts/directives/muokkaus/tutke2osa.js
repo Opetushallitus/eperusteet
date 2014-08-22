@@ -41,7 +41,7 @@ angular.module('eperusteApp')
   })
 
   .controller('Tutke2KentatController', function ($scope, Tutke2Osa, Tutke2OsaData,
-    TutkinnonOsanOsaAlue, Osaamistavoite, Varmistusdialogi) {
+    TutkinnonOsanOsaAlue, Osaamistavoite, Varmistusdialogi, $rootScope) {
     $scope.viewOptions = {
       oneAtATime: false
     };
@@ -77,6 +77,7 @@ angular.module('eperusteApp')
     }
 
     $scope.osaAlue = {
+      $editing: null,
       hasChoices: function (alue) {
         return !_.isEmpty(alue.$groups) && _.keys(alue.$groups.grouped).length > 1;
       },
@@ -101,6 +102,7 @@ angular.module('eperusteApp')
         } else {
           $scope.tutke2osa.fetch();
         }
+        $scope.osaAlue.$editing = state ? alue : null;
         alue.$editing = state;
       },
       remove: function (alue, $event) {
@@ -133,6 +135,7 @@ angular.module('eperusteApp')
     };
 
     $scope.osaamistavoite = {
+      $editing: null,
       add: function (alue) {
         var newTavoite = {pakollinen: true};
         Tutke2Osa.fixTavoite(newTavoite);
@@ -146,6 +149,7 @@ angular.module('eperusteApp')
         stopEvent($event);
         state = _.isUndefined(state) || state;
         tavoite.$editing = state;
+        $scope.osaamistavoite.$editing = state ? tavoite : null;
         if (!state && $event) {
           $scope.tutke2osa.getTavoitteet(alue, alue);
         }
@@ -161,6 +165,8 @@ angular.module('eperusteApp')
         });
       },
       save: function (alue, tavoite, $event) {
+        $rootScope.$broadcast('notifyCKEditor');
+
         stopEvent($event);
         if (tavoite.pakollinen) {
           tavoite._esitieto = null;
@@ -199,6 +205,7 @@ angular.module('eperusteApp')
 
     Tutke2OsaImpl.prototype.fetch = function (skipTavoitteet) {
       var that = this;
+      this.$fetching = true;
       $q.all([
         TutkinnonOsanOsaAlue.list(this.params).$promise
       ]).then(function (data) {
@@ -210,8 +217,12 @@ angular.module('eperusteApp')
           alue.$open = true;
           if (!skipTavoitteet) {
             that.getTavoitteet(alue, alue);
+          } else {
+            that.$fetching = false;
           }
         });
+      }, function () {
+        that.$fetching = false;
       });
     };
 
@@ -231,6 +242,9 @@ angular.module('eperusteApp')
         });
         osaAlue.$esitietoOptions.unshift({value: null, label: '<ei asetettu>'});
         osaAlue.$chosen = _.first(pakollinenIds);
+        that.$fetching = false;
+      }, function () {
+        that.$fetching = false;
       });
     };
 
