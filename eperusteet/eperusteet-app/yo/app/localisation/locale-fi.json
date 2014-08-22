@@ -128,6 +128,7 @@
     "avaa-sulje-kaikki": "Avaa / sulje kaikki",
 
     "poista-tutkinnonosa": "Poista tutkinnon osa",
+    "lisaa-tutkinnonosa": "Lisää tutkinnon osa",
     "poistetaanko-tutkinnonosa": "Poistetaanko tutkinnon osa?",
     "tutkinnon-osa-rakenteessa-ei-voi-poistaa": "Tutkinnon osaa ei voi poistaa, koska se on käytössä tutkinnon rakenteessa. Poista viite puusta ensin.",
     "tutkinnon-osa-rakenteesta-poistettu": "Tutkinnon osa poistettu onnistuneesti.",
@@ -620,6 +621,6 @@
     "korjaa-virheet": "Korjaa seuraavat virheet",
     "viesti": "Viesti",
     "lisatieto": "Lisätieto",
-    
+
     "diaarinumero-kaytossa": "Diaarinumero on jo käytössä"
 }

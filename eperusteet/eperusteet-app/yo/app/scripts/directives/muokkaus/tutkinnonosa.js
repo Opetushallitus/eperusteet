@@ -39,7 +39,6 @@ angular.module('eperusteApp')
 
     Utils.scrollTo('#ylasivuankkuri');
 
-    $scope.tutke2mode = false;
     $scope.suoritustapa = $stateParams.suoritustapa;
     $scope.rakenne = {};
     $scope.test = angular.noop;
@@ -169,7 +168,7 @@ angular.module('eperusteApp')
 
     var tutke2 = {
       fetch: function () {
-        if ($scope.tutke2mode) {
+        if ($scope.tutkinnonOsa.tyyppi === 'tutke2') {
           Tutke2OsaData.get().fetch();
         }
       }
