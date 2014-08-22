@@ -106,6 +106,7 @@ public class Osaamistavoite implements Serializable, Mergeable<Osaamistavoite>, 
             this.setTavoitteet(updated.getTavoitteet());
             this.setTunnustaminen(updated.getTunnustaminen());
             this.setArviointi(updated.getArviointi());
+            this.setEsitieto(updated.getEsitieto());
         }
     }
 
