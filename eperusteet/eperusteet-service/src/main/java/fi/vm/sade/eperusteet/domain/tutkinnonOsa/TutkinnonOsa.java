@@ -39,6 +39,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.DefaultValue;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -79,14 +80,14 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     @Column(name = "koodi_uri")
     private String koodiUri;
-    
+
     @Column(name = "koodi_arvo")
     private String koodiArvo;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     //Hibernate bug: orphanRemoval ei toimi jos fetchMode = Lazy
     private Arviointi arviointi;
-    
+
     @Getter
     @Setter
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
@@ -96,9 +97,8 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @OrderColumn
     // TUTKE2:n mukainen osa-alue
     private List<OsaAlue> osaAlueet;
-    
+
     @Getter
-    @Setter
     @Enumerated(EnumType.STRING)
     @NotNull
     private TutkinnonOsaTyyppi tyyppi = TutkinnonOsaTyyppi.NORMAALI;
@@ -155,7 +155,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     public void setKoodiUri(String koodiUri) {
         this.koodiUri = koodiUri;
     }
-    
+
     public String getKoodiArvo() {
         return koodiArvo;
     }
@@ -192,10 +192,10 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             }
         }
     }
-    
+
     private List<OsaAlue> mergeOsaAlueet(List<OsaAlue> current, List<OsaAlue> other){
         List<OsaAlue> uusi = new ArrayList<>();
-        
+
         for (OsaAlue otherOsaAlue : other) {
             for (OsaAlue currentOsaAlue : current) {
                 if (otherOsaAlue.getId().equals(currentOsaAlue.getId())) {
@@ -207,4 +207,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         return uusi;
     }
 
+    public void setTyyppi(TutkinnonOsaTyyppi tyyppi) {
+        this.tyyppi = tyyppi == null ? TutkinnonOsaTyyppi.NORMAALI : tyyppi;
+    }
 }
