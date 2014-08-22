@@ -16,9 +16,12 @@
 }
 
 $pikamenu-max-height: 400px;
+#pikamenu-wrapper {
+ position: absolute;
+}
 #tutkinnonosat-pikamenu {
   display: block;
-  position: absolute;
+  position: relative;
   max-width: 400px;
   max-height: $pikamenu-max-height;
   z-index: 1050;
@@ -34,11 +37,22 @@ $pikamenu-max-height: 400px;
     clip: rect(auto, auto, $pikamenu-max-height, auto);
   }
 }
+$pikamenu-size: 22px;
 #tutkinnonosat-pikamenu-button {
   display: inline-block;
-  font-size: 80%;
+  font-size: $pikamenu-size * 0.5;
+  text-align: center;
+  line-height: $pikamenu-size;
+  width: $pikamenu-size;
+  height: $pikamenu-size;
   margin-left: 5px;
   cursor: pointer;
+  border: 1px solid #999;
+  border-radius: 4px;
+  background-color: $nappi-vari;
+  &.pikamenu-opened {
+    background-color: $nappi-active-vari;
+  }
 }
 #tutkinnonosat-pikamenu-list {
   ul {

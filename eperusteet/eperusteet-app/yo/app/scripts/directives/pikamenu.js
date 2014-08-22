@@ -16,15 +16,15 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .directive('pikamenu', function ($document) {
+  .directive('pikamenu', function ($document, $window) {
     return {
       restrict: 'EA',
       transclude: true,
       templateUrl: 'views/partials/perusteprojekti/pikamenu.html',
       link: function (scope, element) {
         // Pop the button next to the header after transclusion
-        var header = angular.element('#pikamenu-header');
-        var button = angular.element('#tutkinnonosat-pikamenu-button');
+        var header = element.find('#pikamenu-header');
+        var button = element.find('#tutkinnonosat-pikamenu-button');
         button.detach().appendTo(header);
 
         // Clicking outside of menu closes it
@@ -35,6 +35,35 @@ angular.module('eperusteApp')
           scope.pikamenu.opened = false;
           scope.$apply();
         });
+
+        function updatePosition () {
+          var header = element.find('#pikamenu-header');
+          var button = element.find('#tutkinnonosat-pikamenu-button');
+          var menu = element.find('#tutkinnonosat-pikamenu').filter(':visible');
+          if (menu.length === 0) {
+            return;
+          }
+          menu.css('top', 0);
+          var buttonOffset = button.offset();
+          var relButtonOffset = buttonOffset.left - header.offset().left;
+          var menuWidth = menu.width();
+          menu.css('left', relButtonOffset + button.width() - menuWidth + 1);
+          if (menu.offset().left < header.offset().left) {
+            menu.css('left', 0);
+          }
+          menu.css('top', buttonOffset.top - menu.offset().top + button.height() + 2);
+        }
+
+        // update position on 1. header text change 2. when opened 3. resize viewport
+        scope.$watch(function () {
+          return element.find('#pikamenu-header').text();
+        }, updatePosition);
+        scope.$watch('pikamenu.opened', function (value) {
+          if (value) {
+            updatePosition();
+          }
+        });
+        angular.element($window).on('resize', updatePosition);
       },
       controller: 'TutkinnonOsatPikamenu'
     };
