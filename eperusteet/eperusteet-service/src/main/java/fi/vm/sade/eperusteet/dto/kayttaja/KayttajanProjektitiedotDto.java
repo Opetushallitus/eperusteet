@@ -14,20 +14,20 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.dto.kayttaja;
 
-import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author harrik
+ * @author nkala
  */
 @Getter
 @Setter
-public class SuoritustapaDto {
-    private Suoritustapakoodi suoritustapakoodi;
-    private LaajuusYksikko laajuusYksikko;
+public class KayttajanProjektitiedotDto {
+    Long perusteprojekti;
+    String organisaatioOid;
+    String tehtavanimike;
+    Boolean passivoitu;
 }

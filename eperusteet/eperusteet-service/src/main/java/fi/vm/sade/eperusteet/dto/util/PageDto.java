@@ -14,7 +14,7 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.dto.util;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;

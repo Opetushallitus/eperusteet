@@ -17,7 +17,7 @@
 package fi.vm.sade.eperusteet.service.mapping;
 
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
-import fi.vm.sade.eperusteet.dto.EntityReference;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;

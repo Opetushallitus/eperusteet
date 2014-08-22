@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
-import fi.vm.sade.eperusteet.dto.EntityReference;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;

@@ -18,8 +18,8 @@ package fi.vm.sade.eperusteet.dto.tutkinnonOsa;
 
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
-import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;

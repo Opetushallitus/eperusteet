@@ -14,10 +14,10 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.dto.peruste;
 
-import java.io.Serializable;
-import java.util.Date;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,9 +27,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class SuosikkiDto implements Serializable {
-    private Long id;
-    private String nimi;
-    private String sisalto;
-    private Date lisatty;
+public class SuoritustapaDto {
+    private Suoritustapakoodi suoritustapakoodi;
+    private LaajuusYksikko laajuusYksikko;
 }

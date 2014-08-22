@@ -28,13 +28,13 @@ import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.dto.KayttajanProjektitiedotDto;
-import fi.vm.sade.eperusteet.dto.KayttajanTietoDto;
-import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
-import fi.vm.sade.eperusteet.dto.PerusteprojektiInfoDto;
-import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
@@ -269,7 +269,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     updateStatus.addStatus("liittamattomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);
                     updateStatus.setVaihtoOk(false);
                 }
-                
+
                 List<TutkinnonOsa> koodittomatTutkinnonOsat = koodittomatTutkinnonosat(suoritustapa);
                 if (!koodittomatTutkinnonOsat.isEmpty()) {
                     List<LokalisoituTekstiDto> nimet = new ArrayList<>();
@@ -281,7 +281,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     updateStatus.addStatus("koodittomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);
                     updateStatus.setVaihtoOk(false);
                 }
-                
+
             }
         }
 
@@ -354,7 +354,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
         return viiteList;
     }
-    
+
     private List<TutkinnonOsa> koodittomatTutkinnonosat(Suoritustapa suoritustapa) {
         List<TutkinnonOsa> koodittomatTutkinnonOsat = new ArrayList<>();
 

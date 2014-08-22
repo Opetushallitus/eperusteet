@@ -14,26 +14,28 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.dto.peruste;
 
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
-import java.util.List;
-import java.util.Map;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import java.util.Date;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author nkala
+ * @author jhyoty
  */
 @Getter
 @Setter
-public class PerusteKaikkiDto extends PerusteDto {
-    Map<Suoritustapakoodi, RakenneModuuliDto> rakenteet;
-    Map<Suoritustapakoodi, List<TutkinnonOsaDto>> tutkinnonOsat;
-    Map<Suoritustapakoodi, List<TutkinnonOsaViiteDto>> tutkinnonOsaViitteet;
-    Map<Suoritustapakoodi, PerusteenOsaViiteDto> sisallot;
+public abstract class PerusteenOsaDto {
+    @NotNull
+    private Long id;
+    private Date luotu;
+    private Date muokattu;
+    private String muokkaaja;
+    private String muokkaajanNimi;
+    private LokalisoituTekstiDto nimi;
+    private PerusteTila tila;
 }

@@ -17,8 +17,8 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonOsa;
 
 import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
-import fi.vm.sade.eperusteet.dto.EntityReference;
-import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;

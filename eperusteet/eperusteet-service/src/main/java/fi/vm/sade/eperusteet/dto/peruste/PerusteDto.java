@@ -13,28 +13,34 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+package fi.vm.sade.eperusteet.dto.peruste;
 
-package fi.vm.sade.eperusteet.dto;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.dto.KoulutusDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author harrik
+ * @author jhyoty
  */
 @Getter
 @Setter
-@JsonIgnoreProperties(ignoreUnknown=true)
-public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
+public class PerusteDto implements Serializable {
+    private Long id;
+    private LokalisoituTekstiDto nimi;
+    private LokalisoituTekstiDto kuvaus;
     private String koulutustyyppi;
-    private LaajuusYksikko laajuusYksikko;
-    private Long perusteId;
-    private ProjektiTila tila;
+    private Set<KoulutusDto> koulutukset;
+    private Date voimassaoloAlkaa;
+    private Date voimassaoloLoppuu;
+    private Date siirtymaAlkaa;
+    private Set<SuoritustapaDto> suoritustavat;
+    private PerusteTila tila;
     private PerusteTyyppi tyyppi;
-    private String oid;
 }

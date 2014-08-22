@@ -14,22 +14,27 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.dto.util;
 
-import fi.vm.sade.eperusteet.domain.PerusteTila;
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author nkala
+ * @author jhyoty
  */
 @Getter
 @Setter
-public class PerusteInfoDto {
-    private Long id;
-    private LokalisoituTekstiDto nimi;
-    private Date voimassaoloLoppuu;
-    private PerusteTila tila;
+public class UpdateDto<T> {
+
+    @JsonUnwrapped
+    private T dto;
+    private MetaData metadata;
+
+    @Getter
+    @Setter
+    public static class MetaData {
+        private String kommentti;
+    }
 }

@@ -17,8 +17,8 @@
 package fi.vm.sade.eperusteet.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import fi.vm.sade.eperusteet.dto.KayttajanProjektitiedotDto;
-import fi.vm.sade.eperusteet.dto.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import java.util.List;
 
 /**

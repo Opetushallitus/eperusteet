@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.dto.peruste;
 
 import java.util.List;
 import lombok.Getter;

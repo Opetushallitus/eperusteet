@@ -14,27 +14,27 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.dto.perusteprojekti;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author jhyoty
+ * @author harrik
  */
 @Getter
 @Setter
-public class UpdateDto<T> {
-
-    @JsonUnwrapped
-    private T dto;
-    private MetaData metadata;
-
-    @Getter
-    @Setter
-    public static class MetaData {
-        private String kommentti;
-    }
+@JsonIgnoreProperties(ignoreUnknown=true)
+public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
+    private String koulutustyyppi;
+    private LaajuusYksikko laajuusYksikko;
+    private Long perusteId;
+    private ProjektiTila tila;
+    private PerusteTyyppi tyyppi;
+    private String oid;
 }

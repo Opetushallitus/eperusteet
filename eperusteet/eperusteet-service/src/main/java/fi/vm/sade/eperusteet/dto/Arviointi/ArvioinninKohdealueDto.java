@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.Arviointi;
 
-import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;

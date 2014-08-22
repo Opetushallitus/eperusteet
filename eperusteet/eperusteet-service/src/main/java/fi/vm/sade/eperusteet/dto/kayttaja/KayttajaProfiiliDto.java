@@ -14,26 +14,22 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.dto.kayttaja;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import java.io.Serializable;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author nkala
+ * @author jhyoty
  */
 @Getter
 @Setter
-@JsonIgnoreProperties
-public class PerusteprojektiInfoDto implements Serializable {
-    private Long id;
-    private String nimi;
-    private ProjektiTila tila;
-    private EntityReference peruste;
-    private String diaarinumero;
+public class KayttajaProfiiliDto {
+    private long id;
     private String oid;
+    private List<SuosikkiDto> suosikit;
+    private List<PerusteprojektiDto> perusteprojektit;
 }

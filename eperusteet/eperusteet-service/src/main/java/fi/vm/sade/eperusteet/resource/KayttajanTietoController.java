@@ -16,8 +16,8 @@
 
 package fi.vm.sade.eperusteet.resource;
 
-import fi.vm.sade.eperusteet.dto.KayttajanProjektitiedotDto;
-import fi.vm.sade.eperusteet.dto.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

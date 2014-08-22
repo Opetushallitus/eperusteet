@@ -13,32 +13,24 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.dto;
+
+package fi.vm.sade.eperusteet.dto.peruste;
 
 import fi.vm.sade.eperusteet.domain.PerusteTila;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import java.io.Serializable;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.Date;
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author jhyoty
+ * @author nkala
  */
 @Getter
 @Setter
-public class PerusteDto implements Serializable {
+public class PerusteInfoDto {
     private Long id;
     private LokalisoituTekstiDto nimi;
-    private LokalisoituTekstiDto kuvaus;
-    private String koulutustyyppi;
-    private Set<KoulutusDto> koulutukset;
-    private Date voimassaoloAlkaa;
     private Date voimassaoloLoppuu;
-    private Date siirtymaAlkaa;
-    private Set<SuoritustapaDto> suoritustavat;
     private PerusteTila tila;
-    private PerusteTyyppi tyyppi;
 }

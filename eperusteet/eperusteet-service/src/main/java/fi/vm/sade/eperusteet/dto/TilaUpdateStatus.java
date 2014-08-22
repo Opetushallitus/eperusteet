@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.dto;
 
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import java.util.ArrayList;
