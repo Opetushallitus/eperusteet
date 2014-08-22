@@ -489,6 +489,9 @@ public class PerusteServiceImpl implements PerusteService {
         if (viite.getTutkinnonOsa() == null) {
             TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
             tutkinnonOsa.setTila(PerusteTila.LUONNOS);
+            if (osa.getTyyppi() != null) {
+                tutkinnonOsa.setTyyppi(osa.getTyyppi());
+            }
             tutkinnonOsa = perusteenOsaRepository.save(tutkinnonOsa);
             viite.setTutkinnonOsa(tutkinnonOsa);
         }

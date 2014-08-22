@@ -190,7 +190,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             if (other.getOsaAlueet() != null) {
                 mergeOsaAlueet(this.getOsaAlueet(), other.getOsaAlueet());
             }
-            this.setTyyppi(other.getTyyppi());
         }
     }
     

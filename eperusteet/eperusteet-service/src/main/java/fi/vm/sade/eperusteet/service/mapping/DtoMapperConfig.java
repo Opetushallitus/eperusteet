@@ -93,6 +93,7 @@ public class DtoMapperConfig {
                 .register();
         factory.classMap(TutkinnonOsaViiteDto.class, TutkinnonOsaViite.class)
                 .fieldBToA("tutkinnonOsa.nimi", "nimi")
+                .fieldBToA("tutkinnonOsa.tyyppi", "tyyppi")
                 .byDefault()
                 .register();
         factory.classMap(SuoritustapaDto.class, Suoritustapa.class)

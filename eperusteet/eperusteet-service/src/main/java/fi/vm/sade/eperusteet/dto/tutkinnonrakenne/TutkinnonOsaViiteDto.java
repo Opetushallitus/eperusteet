@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.dto.EntityReference;
 import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
 import java.math.BigDecimal;
@@ -33,4 +34,5 @@ public class TutkinnonOsaViiteDto {
     private Date muokattu;
     private Boolean poistettu;
     private EntityReference tutkinnonOsa;
+    private TutkinnonOsaTyyppi tyyppi;
 }
