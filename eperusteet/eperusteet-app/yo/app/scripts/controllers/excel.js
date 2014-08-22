@@ -63,8 +63,16 @@ angular.module('eperusteApp')
 
     $scope.liitaKoodiOT = function(ot) {
       Koodisto.modaali(function(koodi) {
-        ot.koodiUri = koodi.koodi;
-      }, { tyyppi: function() { return 'tutkinnonosat'; }, ylarelaatioTyyppi: function() {return '';} })();
+        ot.koodiUri = koodi.koodiUri;
+        ot.$koodiArvo = koodi.koodiArvo;
+      }, {
+        tyyppi: function() {
+          return 'tutkinnonosat';
+        },
+        ylarelaatioTyyppi: function() {
+          return '';
+        }
+      })();
     };
 
     $scope.rajaaKoodit = function(koodi) { return koodi.koodi.indexOf('_3') !== -1; };
