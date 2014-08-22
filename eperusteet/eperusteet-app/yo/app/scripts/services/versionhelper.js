@@ -172,6 +172,9 @@ angular.module('eperusteApp')
       // We want to update the url only when user changes the version.
       // If we enter with versionless url don't rewrite it.
       // This function will currently navigate to a new state if version has changed.
+      if (_.isEmpty(data)) {
+        return;
+      }
       data.latest = data.chosen.index === latest(data.list).index;
       var state = isRakenne ? 'root.perusteprojekti.suoritustapa.muodostumissaannot' : 'root.perusteprojekti.suoritustapa.perusteenosa';
       var versionlessUrl = $state.href(state, {versio: null}, {inherit:true}).replace(/#/g, '');
