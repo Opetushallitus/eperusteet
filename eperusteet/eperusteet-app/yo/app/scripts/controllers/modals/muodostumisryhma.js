@@ -18,7 +18,9 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .controller('MuodostumisryhmaModalCtrl', function($scope, $modalInstance, ryhma, vanhempi, suoritustapa, Varmistusdialogi, YleinenData) {
+  .controller('MuodostumisryhmaModalCtrl', function($scope, $modalInstance, ryhma,
+    vanhempi, suoritustapa, Varmistusdialogi, YleinenData, Koodisto, Utils) {
+
     $scope.vanhempi = vanhempi;
     $scope.suoritustapa = suoritustapa;
     $scope.roolit = _.map(YleinenData.rakenneRyhmaRoolit, function(rooli) {
@@ -36,7 +38,10 @@ angular.module('eperusteApp')
     $scope.luonti = !_.isObject(ryhma);
 
     var setupRyhma = function (ryhma) {
+      console.log('setupRyhma', _.clone(ryhma));
+
       $scope.ryhma = ryhma ? angular.copy(ryhma) : {};
+      $scope.osaamisala = ryhma && ryhma.osaamisala ? angular.copy(ryhma.osaamisala) : {};
       $scope.ryhma.rooli = $scope.ryhma.rooli || YleinenData.rakenneRyhmaRoolit[0];
       if (!$scope.ryhma.muodostumisSaanto) {
         $scope.ryhma.muodostumisSaanto = {};
@@ -47,8 +52,31 @@ angular.module('eperusteApp')
       if (!$scope.ryhma.kuvaus) {
         $scope.ryhma.kuvaus = {};
       }
+      console.log('setupRyhma2', _.clone(ryhma));
+      console.log('setupRyhma2 $scope.ryhma', _.clone($scope.ryhma));
     };
     setupRyhma(ryhma);
+
+
+    var koodistoHaku = function (koodisto) {
+      $scope.osaamisala = $scope.ryhma.osaamisala || {};
+      $scope.osaamisala.nimi = koodisto.nimi;
+      $scope.osaamisala.osaamisalakoodiArvo = koodisto.koodiArvo;
+      $scope.osaamisala.osaamisalakoodiUri = koodisto.koodiUri;
+      if (!Utils.hasLocalizedText($scope.ryhma.nimi)) {
+        $scope.ryhma.nimi = $scope.osaamisala.nimi;
+      }
+
+    };
+
+    $scope.avaaKoodistoModaali = function() {
+      Koodisto.modaali(function(koodi) {
+        koodistoHaku(koodi);
+      }, {
+        tyyppi: function() {return 'osaamisala'; },
+        ylarelaatioTyyppi: function() { return ''; }
+      }, angular.noop, null)();
+    };
 
     $scope.ok = function(uusiryhma) {
       if (uusiryhma) {
@@ -62,6 +90,11 @@ angular.module('eperusteApp')
           delete uusiryhma.muodostumisSaanto.koko;
         }
       }
+
+      if ($scope.osaamisala) {
+        uusiryhma.osaamisala = $scope.osaamisala;
+      }
+
       $modalInstance.close(uusiryhma);
     };
 
@@ -77,4 +110,8 @@ angular.module('eperusteApp')
     $scope.peruuta = function() {
       $modalInstance.dismiss();
     };
+
+    $scope.$watch('ryhma.rooli', function () {
+      $scope.ryhma.osaamisala = {};
+    });
   });

@@ -61,7 +61,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
     @Setter
     @Enumerated(EnumType.STRING)
     private RakenneModuuliRooli rooli;
-    
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter
     @Setter
@@ -98,6 +98,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             } else {
                 this.muodostumisSaanto = moduuli.getMuodostumisSaanto();
             }
+            this.osaamisala = moduuli.osaamisala;
         }
     }
 
@@ -146,9 +147,9 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
 
         return true;
     }
-    
+
     public boolean isInRakenne (TutkinnonOsaViite viite, boolean ylinTaso) {
-        
+
         for (AbstractRakenneOsa rakenneosa : osat) {
             if (rakenneosa instanceof RakenneModuuli) {
                 if (((RakenneModuuli)rakenneosa).isInRakenne(viite, false)) {
@@ -161,7 +162,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             }
         }
 
-        return false;  
+        return false;
     }
 
 }

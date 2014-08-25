@@ -369,6 +369,9 @@ angular.module('eperusteApp')
         };
 
         scope.ryhmaModaali = Muodostumissaannot.ryhmaModaali(function(ryhma, vanhempi, uusiryhma) {
+          console.log('ryhma', _.clone(ryhma));
+          console.log('vanhempi', vanhempi);
+          console.log('uusiryhma', uusiryhma);
           if (uusiryhma) {
             if (ryhma === undefined) {
               uusiryhma.$uusi = true;
@@ -377,6 +380,7 @@ angular.module('eperusteApp')
             else {
               ryhma = _.merge(ryhma, uusiryhma);
             }
+            console.log('ryhma mergen jälkeen', _.clone(ryhma));
           }
           else { _.remove(scope.skratchpad, ryhma); }
         });

@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .service('Koodisto', function($http, $modal, SERVICE_LOC, $resource, Kaanna, Notifikaatiot) {
     var taydennykset = [];
-    var koodistoVaihtoehdot = ['tutkinnonosat', 'koulutus'];
+    var koodistoVaihtoehdot = ['tutkinnonosat', 'koulutus', 'osaamisala'];
     var nykyinenKoodisto = _.first(koodistoVaihtoehdot);
     var lisaFiltteri = function() {
       return true;
@@ -166,7 +166,7 @@ angular.module('eperusteApp')
   })
   .directive('koodistoSelect', function(Koodisto) {
     return {
-      template: '<button class="btn btn-default" type="text" ng-click="activate()">{{ "hae-koodi-koodistosta" | kaanna }}</button>',
+      template: '<button class="btn btn-default" type="text" ng-click="activate()">{{ "hae-koodistosta" | kaanna }}</button>',
       restrict: 'E',
       link: function($scope, el, attrs) {
         var valmis = $scope.$eval(attrs.valmis);

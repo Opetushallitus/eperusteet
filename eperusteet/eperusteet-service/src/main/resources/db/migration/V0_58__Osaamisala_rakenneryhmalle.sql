@@ -7,8 +7,8 @@ ALTER TABLE ONLY tutkinnonosa
 CREATE TABLE osaamisala (
     id bigint NOT NULL PRIMARY KEY,
     nimi_id bigint,
-    osaamisalakoodi_arvo VARCHAR(255),
-    osaamisalakoodi_uri VARCHAR(255)
+    osaamisalakoodi_arvo VARCHAR(255) NOT NULL UNIQUE,
+    osaamisalakoodi_uri VARCHAR(255) NOT NULL UNIQUE
 );
 
 ALTER TABLE ONLY osaamisala

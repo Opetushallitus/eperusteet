@@ -27,10 +27,10 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.Osaamisala;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
@@ -42,10 +42,13 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
+import fi.vm.sade.eperusteet.repository.OsaamisalaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
@@ -124,6 +127,9 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Autowired
     PerusteenOsaViiteRepository perusteenOsaViiteRepo;
+
+    @Autowired
+    OsaamisalaRepository osaamisalaRepo;
 
     @Autowired
     @Dto
@@ -441,6 +447,7 @@ public class PerusteServiceImpl implements PerusteService {
 
         if (!moduuli.isSame(suoritustapa.getRakenne())) {
             RakenneModuuli current = suoritustapa.getRakenne();
+            current = checkIfOsaamisalatAlreadyExists(current);
             if (current != null) {
                 current.mergeState(moduuli);
             } else {
@@ -451,6 +458,27 @@ public class PerusteServiceImpl implements PerusteService {
         }
 
         return mapper.map(moduuli, RakenneModuuliDto.class);
+    }
+
+    private RakenneModuuli checkIfOsaamisalatAlreadyExists(RakenneModuuli rakenneModuuli) {
+        Osaamisala osaamisalaTemp;
+
+        if (rakenneModuuli.getOsaamisala() != null) {
+            osaamisalaTemp = osaamisalaRepo.findOneByOsaamisalakoodiArvo(rakenneModuuli.getOsaamisala().getOsaamisalakoodiArvo());
+            if (osaamisalaTemp != null) {
+                rakenneModuuli.setOsaamisala(osaamisalaTemp);
+            } else {
+                rakenneModuuli.setOsaamisala(osaamisalaRepo.save(rakenneModuuli.getOsaamisala()));
+            }
+        }
+
+        for (AbstractRakenneOsa osa : rakenneModuuli.getOsat()) {
+            if (osa instanceof RakenneModuuli) {
+                checkIfOsaamisalatAlreadyExists(rakenneModuuli);
+            }
+        }
+
+        return rakenneModuuli;
     }
 
     @Override
