@@ -83,6 +83,18 @@ $borderspec: 2px solid #777;
 
 /* ei-proto -> */
 .tutke2 {
+  .osa-alue {
+    .panel-title {
+      line-height: 1.75em;
+      input {
+        font-size: 20px;
+        height: 34px;
+      }
+    }
+    .muokkaus-napit {
+      padding-top: 4px;
+    }
+  }
   .panel-heading {
     .glyphicon, .otsikko {
       cursor: pointer;

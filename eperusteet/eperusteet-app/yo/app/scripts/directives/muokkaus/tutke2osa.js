@@ -23,8 +23,9 @@ angular.module('eperusteApp')
       restrict: 'AE',
       templateUrl: 'views/partials/muokkaus/tutke2kentat.html',
       scope: {
-        editEnabled: '=',
-        tutkinnonosa: '='
+        mainLevelEditing: '=editEnabled',
+        tutkinnonosa: '=',
+        kontrollit: '='
       },
       controller: 'Tutke2KentatController'
     };
@@ -41,7 +42,19 @@ angular.module('eperusteApp')
   })
 
   .controller('Tutke2KentatController', function ($scope, Tutke2Osa, Tutke2OsaData,
-    TutkinnonOsanOsaAlue, Osaamistavoite, Varmistusdialogi, $rootScope) {
+    TutkinnonOsanOsaAlue, Osaamistavoite, Varmistusdialogi, $rootScope, $timeout,
+    Utils, Notifikaatiot, Lukitus, $q) {
+    var Editointikontrollit = $scope.kontrollit;
+    var tutke2osaDefer = $q.defer();
+
+    function lukitse(cb) {
+      Lukitus.lukitsePerusteenosa($scope.tutke2osa.tutkinnonOsaId, cb);
+    }
+
+    function vapauta() {
+      Lukitus.vapautaPerusteenosa($scope.tutke2osa.tutkinnonOsaId);
+    }
+
     $scope.viewOptions = {
       oneAtATime: false
     };
@@ -53,9 +66,14 @@ angular.module('eperusteApp')
 
     $scope.tutkinnonosa.then(function (res) {
       $scope.tutke2osa = Tutke2Osa.init(res.id);
+      tutke2osaDefer.resolve();
       $scope.tutke2osa.fetch();
       Tutke2OsaData.set($scope.tutke2osa);
     });
+
+    $scope.isEditingInProgress = function () {
+      return $scope.osaAlue.$editing || $scope.osaamistavoite.$editing;
+    };
 
     function getChoiceName(key) {
       return $scope.tutke2osa.tavoiteMap[key].nimi;
@@ -76,6 +94,11 @@ angular.module('eperusteApp')
       })();
     }
 
+    function saveCb() {
+      $scope.tutke2osa.fetch();
+      vapauta();
+    }
+
     $scope.osaAlue = {
       $editing: null,
       hasChoices: function (alue) {
@@ -91,51 +114,91 @@ angular.module('eperusteApp')
         var newAlue = {
           nimi: {}
         };
-        $scope.tutke2osa.osaAlueet.push(newAlue);
-        $scope.osaAlue.edit(newAlue);
+        $scope.tutke2osa.$editing.push(newAlue);
       },
       edit: function (alue, $event, state) {
         stopEvent($event);
         state = _.isUndefined(state) || state;
         if (state) {
+          Editointikontrollit.registerCallback($scope.osaAlue.callbacks);
+          lukitse(function () {
+            Editointikontrollit.startEditing();
+          });
           alue.$open = true;
+          alue.$editing = true;
+          $scope.osaAlue.$editing = angular.copy(alue);
+          $scope.original = alue;
         } else {
-          $scope.tutke2osa.fetch();
+          if ($scope.original) {
+            $scope.original.$editing = false;
+          }
+          $scope.osaAlue.$editing = null;
         }
-        $scope.osaAlue.$editing = state ? alue : null;
-        alue.$editing = state;
       },
-      remove: function (alue, $event) {
+      remove: function (alue) {
+        if (alue.id) {
+          verifyRemove(function () {
+            _.remove($scope.tutke2osa.$editing, alue);
+          });
+        } else {
+          _.remove($scope.tutke2osa.$editing, alue);
+        }
+      },
+      removeDirect: function (alue, $event) {
         stopEvent($event);
         verifyRemove(function () {
           if (alue.id) {
             alue.$delete($scope.tutke2osa.params);
           }
           $scope.tutke2osa.fetch();
+          Editointikontrollit.cancelEditing();
         });
       },
-      save: function (alue, $event) {
+      save: function (alue, $event, kommentti) {
         stopEvent($event);
+        alue = alue || $scope.osaAlue.$editing;
+        var stripped = _.omit(alue, 'osaamistavoitteet');
+        stripped.osaamistavoitteet = _.map(alue.osaamistavoitteet, function (tavoite) {
+          return _.omit(tavoite, 'tunnustaminen', 'tavoitteet', 'arviointi', '_esitieto');
+        });
+        if (kommentti) {
+          // TODO kommentille tuki
+          //stripped.metadata = {kommentti: kommentti};
+        }
         $scope.osaAlue.edit(alue, null, false);
 
-        var stripped = _.omit(alue, 'osaamistavoitteet');
         if (alue.id) {
           TutkinnonOsanOsaAlue.save(_.extend({
             osaalueenId: alue.id
-          }, $scope.tutke2osa.params), stripped, function () {
-            $scope.tutke2osa.fetch();
-          });
+          }, $scope.tutke2osa.params), stripped, saveCb, Notifikaatiot.fataali);
         } else {
-          TutkinnonOsanOsaAlue.save($scope.tutke2osa.params, stripped, function () {
-            $scope.tutke2osa.fetch();
-          });
+          TutkinnonOsanOsaAlue.save($scope.tutke2osa.params, stripped, saveCb, Notifikaatiot.fataali);
         }
 
+      },
+      callbacks: {
+        edit: angular.noop,
+        save: function(kommentti) {
+          $scope.osaAlue.save(null, null, kommentti);
+        },
+        cancel: function() {
+          $scope.osaAlue.edit(null, null, false);
+          vapauta();
+        },
+        validate: function() {
+          return Utils.hasLocalizedText($scope.osaAlue.$editing.nimi);
+        }
       }
     };
 
     $scope.osaamistavoite = {
       $editing: null,
+      isLinked: function (alue, tavoite) {
+        var linked = _.find(alue.osaamistavoitteet, function (item) {
+          return '' + item._esitieto === '' + tavoite.id;
+        });
+        return !!linked;
+      },
       add: function (alue) {
         var newTavoite = {pakollinen: true};
         Tutke2Osa.fixTavoite(newTavoite);
@@ -143,18 +206,34 @@ angular.module('eperusteApp')
           alue.osaamistavoitteet = [];
         }
         alue.osaamistavoitteet.push(newTavoite);
-        $scope.osaamistavoite.edit(alue, newTavoite);
       },
       edit: function (alue, tavoite, $event, state) {
         stopEvent($event);
         state = _.isUndefined(state) || state;
-        tavoite.$editing = state;
-        $scope.osaamistavoite.$editing = state ? tavoite : null;
-        if (!state && $event) {
-          $scope.tutke2osa.getTavoitteet(alue, alue);
+        if (state) {
+          Editointikontrollit.registerCallback($scope.osaamistavoite.callbacks);
+          lukitse(function () {
+            Editointikontrollit.startEditing();
+          });
+          $scope.tavoitteenAlue = alue;
+          tavoite.$editing = true;
+          $scope.osaamistavoite.$editing = angular.copy(tavoite);
+          $scope.original = tavoite;
+        } else {
+          $scope.original.$editing = false;
+          $scope.osaamistavoite.$editing = null;
         }
       },
-      remove: function (alue, tavoite, $event) {
+      remove: function (tavoite) {
+        if (tavoite.id) {
+          verifyRemove(function () {
+            _.remove($scope.osaAlue.$editing.osaamistavoitteet, tavoite);
+          });
+        } else {
+          _.remove($scope.osaAlue.$editing.osaamistavoitteet, tavoite);
+        }
+      },
+      removeDirect: function (alue, tavoite, $event) {
         stopEvent($event);
         verifyRemove(function () {
           if (tavoite.id) {
@@ -164,27 +243,55 @@ angular.module('eperusteApp')
           $scope.tutke2osa.getTavoitteet(alue, alue);
         });
       },
-      save: function (alue, tavoite, $event) {
+      save: function () {
+        var alue = $scope.tavoitteenAlue;
+        var tavoite = $scope.osaamistavoite.$editing;
+        var payload;
+        if (!tavoite.id) {
+          payload = angular.copy(tavoite);
+        }
+        $scope.osaamistavoite.edit(null, null, null, false);
         $rootScope.$broadcast('notifyCKEditor');
 
-        stopEvent($event);
         if (tavoite.pakollinen) {
           tavoite._esitieto = null;
         }
-        $scope.osaamistavoite.edit(alue, tavoite, null, false);
-
         var params = _.extend({osaalueenId: alue.id}, $scope.tutke2osa.params);
         if (tavoite.id) {
           tavoite.$save(params, function () {
             $scope.tutke2osa.getTavoitteet(alue, alue);
-          });
+          }, Notifikaatiot.fataali);
         } else {
-          Osaamistavoite.save(params, angular.copy(tavoite), function () {
+          Osaamistavoite.save(params, payload, function () {
             $scope.tutke2osa.getTavoitteet(alue, alue);
-          });
+          }, Notifikaatiot.fataali);
+        }
+      },
+      callbacks: {
+        edit: angular.noop,
+        save: function(/*kommentti*/) {
+          // TODO kommentille tuki
+          $scope.osaamistavoite.save();
+        },
+        cancel: function() {
+          $scope.osaamistavoite.edit(null, null, null, false);
+          vapauta();
+        },
+        validate: function() {
+          return Utils.hasLocalizedText($scope.osaamistavoite.$editing.nimi);
         }
       }
     };
+
+    $scope.$watch('mainLevelEditing', function (editing) {
+      if (editing) {
+        tutke2osaDefer.promise.then(function () {
+          $scope.tutke2osa.$editing = angular.copy($scope.tutke2osa.osaAlueet);
+        });
+      } else {
+        $scope.tutke2osa.$editing = null;
+      }
+    });
 
     $scope.getTavoitteet = function (alue, pakollinen) {
       if (pakollinen) {
@@ -205,7 +312,7 @@ angular.module('eperusteApp')
 
     Tutke2OsaImpl.prototype.fetch = function (skipTavoitteet) {
       var that = this;
-      this.$fetching = true;
+      //this.$fetching = true;
       $q.all([
         TutkinnonOsanOsaAlue.list(this.params).$promise
       ]).then(function (data) {
@@ -218,11 +325,11 @@ angular.module('eperusteApp')
           if (!skipTavoitteet) {
             that.getTavoitteet(alue, alue);
           } else {
-            that.$fetching = false;
+            //that.$fetching = false;
           }
         });
       }, function () {
-        that.$fetching = false;
+        //that.$fetching = false;
       });
     };
 
@@ -242,9 +349,9 @@ angular.module('eperusteApp')
         });
         osaAlue.$esitietoOptions.unshift({value: null, label: '<ei asetettu>'});
         osaAlue.$chosen = _.first(pakollinenIds);
-        that.$fetching = false;
+        //that.$fetching = false;
       }, function () {
-        that.$fetching = false;
+        //that.$fetching = false;
       });
     };
 
@@ -276,7 +383,8 @@ angular.module('eperusteApp')
         }
       });
       _.each(tavoitteet, function (tavoite) {
-        if (!tavoite.pakollinen && tavoite._esitieto) {
+        if (!tavoite.pakollinen && tavoite._esitieto &&
+            _.has(groups.grouped, tavoite._esitieto)) {
           groups.grouped[tavoite._esitieto].push(tavoite);
           processed.push(tavoite);
         }

@@ -45,6 +45,7 @@ angular.module('eperusteApp')
     $scope.menuItems = [];
     $scope.editableTutkinnonOsa = {};
     $scope.editEnabled = false;
+    $scope.editointikontrollit = Editointikontrollit;
 
     function getRakenne() {
       // FIXME: Vaihda käyttämään parempaa endpointtia
@@ -149,6 +150,7 @@ angular.module('eperusteApp')
       $scope.haeVersiot(true, function () {
         VersionHelper.setUrl($scope.versiot);
       });
+      tutke2.fetch();
     }
 
     function doDelete(osaId) {
@@ -164,6 +166,17 @@ angular.module('eperusteApp')
         if ($scope.tutkinnonOsa.tyyppi === 'tutke2') {
           Tutke2OsaData.get().fetch();
         }
+      },
+      mergeOsaAlueet: function (tutkinnonOsa) {
+        if ($scope.tutkinnonOsa.tyyppi === 'tutke2') {
+          tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, function (osaAlue) {
+            var item = {nimi: osaAlue.nimi};
+            if (osaAlue.id) {
+              item.id = osaAlue.id;
+            }
+            return item;
+          });
+        }
       }
     };
 
@@ -177,6 +190,7 @@ angular.module('eperusteApp')
         }
       },
       save: function(kommentti) {
+        tutke2.mergeOsaAlueet($scope.editableTutkinnonOsa);
         $scope.editableTutkinnonOsa.metadata = { kommentti: kommentti };
         if ($scope.editableTutkinnonOsa.id) {
           $scope.editableTutkinnonOsa.$saveTutkinnonOsa(function(response) {
@@ -197,18 +211,14 @@ angular.module('eperusteApp')
             perusteId: $scope.rakenne.$peruste.id,
             suoritustapa: $stateParams.suoritustapa,
             osanId: $scope.editableViiteosa.id
-          },
-                                   $scope.editableViiteosa,
-                                   angular.noop,
-                                   Notifikaatiot.serverCb);
+          }, $scope.editableViiteosa, angular.noop, Notifikaatiot.serverCb);
         }
         else {
           PerusteenOsat.saveTutkinnonOsa($scope.editableTutkinnonOsa, function(response) {
             Editointikontrollit.lastModified = response;
             saveCb(response);
             getRakenne();
-          },
-                                         Notifikaatiot.serverCb);
+          }, Notifikaatiot.serverCb);
         }
         $scope.isNew = false;
       },
@@ -274,6 +284,7 @@ angular.module('eperusteApp')
     };
 
     $scope.muokkaa = function () {
+      Editointikontrollit.registerCallback(normalCallbacks);
       lukitse(function() {
         fetch(function() {
           Editointikontrollit.startEditing();
@@ -343,13 +354,13 @@ angular.module('eperusteApp')
 
     $scope.$watch('arviointiFields.teksti.visible', $scope.updateMenu);
     $scope.$watch('arviointiFields.taulukko.visible', $scope.updateMenu);
-  })
+  });
 
 
   /**
    * TUTKE2:n mukaisen tutkinnon osan muokkaus, proto
    */
-  .directive('muokkausTutkinnonosa2', function () {
+/*  .directive('muokkausTutkinnonosa2', function () {
     return {
       templateUrl: 'views/partials/muokkaus/tutkinnonosa2.html',
       restrict: 'E',
@@ -482,7 +493,7 @@ angular.module('eperusteApp')
         getTavoitteet(osaAlue, $scope.editableOsaAlue);
       },
       save: function ($index) {
-        var saveCb = function (/*res*/) {
+        var saveCb = function () {
           //console.log("save osaalue", res);
         };
         $scope.editableOsaAlue.$editing = false;
@@ -544,7 +555,7 @@ angular.module('eperusteApp')
         $scope.editableTavoite = tavoite;
       },
       save: function ($index) {
-        var saveCb = function (/*res*/) {
+        var saveCb = function () {
           //console.log("save tavoite", res);
         };
         $scope.editableTavoite.$editing = false;
@@ -561,3 +572,4 @@ angular.module('eperusteApp')
       }
     };
   });
+*/
