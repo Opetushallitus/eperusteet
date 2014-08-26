@@ -17,7 +17,7 @@
 package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.Osaamisala;
-import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -25,6 +25,6 @@ import org.springframework.stereotype.Repository;
  * @author harrik
  */
 @Repository
-public interface OsaamisalaRepository extends JpaWithVersioningRepository<Osaamisala, Long>{
+public interface OsaamisalaRepository extends JpaRepository<Osaamisala, Long>{
     Osaamisala findOneByOsaamisalakoodiArvo(String koodi);
 }

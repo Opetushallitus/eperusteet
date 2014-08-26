@@ -48,6 +48,7 @@ public class PerusteenRakenne {
     static public class Validointi {
         public List<Ongelma> ongelmat = new ArrayList<>();
         public BigDecimal laskettuLaajuus = new BigDecimal(0);
+        public Integer sisakkaisiaOsaamisalaryhmia = 0;
     }
 
     static public Validointi validoiRyhma(RakenneModuuli rakenne) {
@@ -67,6 +68,7 @@ public class PerusteenRakenne {
         Integer ryhmienMäärä = 0;
         Set<Long> uniikit = new HashSet<>();
 
+
         for (AbstractRakenneOsa x : osat) {
             if (x instanceof RakenneOsa) {
                 RakenneOsa ro = (RakenneOsa)x;
@@ -82,9 +84,18 @@ public class PerusteenRakenne {
                 Validointi validoitu = validoiRyhma(rm, syvyys + 1);
                 validointi.ongelmat.addAll(validoitu.ongelmat);
                 validointi.laskettuLaajuus = validointi.laskettuLaajuus.add(validoitu.laskettuLaajuus);
+                validointi.sisakkaisiaOsaamisalaryhmia = validoitu.sisakkaisiaOsaamisalaryhmia;
                 laajuusSummaMin = laajuusSummaMin.add(validoitu.laskettuLaajuus);
                 laajuusSummaMax = laajuusSummaMax.add(validoitu.laskettuLaajuus);
             }
+        }
+
+        if (rooli != null && rooli.equals(RakenneModuuliRooli.OSAAMISALA)) {
+            validointi.sisakkaisiaOsaamisalaryhmia = validointi.sisakkaisiaOsaamisalaryhmia + 1;
+        }
+
+        if (syvyys == 0 && validointi.sisakkaisiaOsaamisalaryhmia > 1) {
+            validointi.ongelmat.add(new Ongelma("Rakenteessa sisäkkäisiä osaamisalaryhmiä", nimi, syvyys));
         }
 
         if (rooli == RakenneModuuliRooli.NORMAALI && uniikit.size() + ryhmienMäärä != osat.size()) {

@@ -447,7 +447,7 @@ public class PerusteServiceImpl implements PerusteService {
 
         if (!moduuli.isSame(suoritustapa.getRakenne())) {
             RakenneModuuli current = suoritustapa.getRakenne();
-            current = checkIfOsaamisalatAlreadyExists(current);
+            moduuli = checkIfOsaamisalatAlreadyExists(moduuli);
             if (current != null) {
                 current.mergeState(moduuli);
             } else {
@@ -462,22 +462,24 @@ public class PerusteServiceImpl implements PerusteService {
 
     private RakenneModuuli checkIfOsaamisalatAlreadyExists(RakenneModuuli rakenneModuuli) {
         Osaamisala osaamisalaTemp;
-
-        if (rakenneModuuli.getOsaamisala() != null) {
-            osaamisalaTemp = osaamisalaRepo.findOneByOsaamisalakoodiArvo(rakenneModuuli.getOsaamisala().getOsaamisalakoodiArvo());
-            if (osaamisalaTemp != null) {
-                rakenneModuuli.setOsaamisala(osaamisalaTemp);
+        if (rakenneModuuli != null) {
+            if (rakenneModuuli.getOsaamisala() != null && rakenneModuuli.getOsaamisala().getOsaamisalakoodiArvo() != null) {
+                osaamisalaTemp = osaamisalaRepo.findOneByOsaamisalakoodiArvo(rakenneModuuli.getOsaamisala().getOsaamisalakoodiArvo());
+                if (osaamisalaTemp != null) {
+                    rakenneModuuli.setOsaamisala(osaamisalaTemp);
+                } else {
+                    rakenneModuuli.setOsaamisala(osaamisalaRepo.save(rakenneModuuli.getOsaamisala()));
+                }
             } else {
-                rakenneModuuli.setOsaamisala(osaamisalaRepo.save(rakenneModuuli.getOsaamisala()));
+                rakenneModuuli.setOsaamisala(null);
+            }
+            for (AbstractRakenneOsa osa : rakenneModuuli.getOsat()) {
+                if (osa instanceof RakenneModuuli) {
+                    System.out.println("osa looppi");
+                    osa = checkIfOsaamisalatAlreadyExists((RakenneModuuli)osa);
+                }
             }
         }
-
-        for (AbstractRakenneOsa osa : rakenneModuuli.getOsat()) {
-            if (osa instanceof RakenneModuuli) {
-                checkIfOsaamisalatAlreadyExists(rakenneModuuli);
-            }
-        }
-
         return rakenneModuuli;
     }
 
