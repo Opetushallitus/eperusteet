@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .directive('tree', function($compile, $state, Muodostumissaannot, Kaanna) {
+  .directive('tree', function($compile, $state, Muodostumissaannot, Kaanna, TreeDragAndDrop) {
     function generoiOtsikko() {
       var tosa = '{{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].nimi || "nimetön" | kaanna }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">, <b>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</b>{{ apumuuttujat.laajuusYksikko | kaanna }}</span>';
       var editointiIkoni =
@@ -103,6 +103,7 @@ angular.module('eperusteApp')
           });
         };
 
+        // Drag & drop: puun sisällä
         scope.sortableOptions = {
           connectWith: '.tree-group',
           cursor: 'move',
@@ -115,6 +116,7 @@ angular.module('eperusteApp')
             ui.placeholder.html('<div class="group-placeholder"></div>');
           },
           cancel: '.ui-state-disabled',
+          update: TreeDragAndDrop.update
         };
 
         scope.$watch('muokkaus', function() {
@@ -216,7 +218,7 @@ angular.module('eperusteApp')
           '<div ng-if="vanhempi">' + kentta + '</div>' +
           '<div ng-if="rakenne.rooli !== \'määrittelemätön\'" class="collapser" ng-show="!rakenne.$collapsed">' +
           '  <ul ng-if="rakenne.osat !== undefined" ui-sortable="sortableOptions" id="tree-sortable" class="tree-group" ng-model="rakenne.osat">' +
-          '    <li ng-repeat="osa in rakenne.osat">' +
+          '    <li ng-repeat="osa in rakenne.osat" class="tree-list-item">' +
           '      <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" rakenne="osa" vanhempi="rakenne" tutkinnon-osa-viitteet="tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" ng-init="notfirst = true" poisto-tehty-cb="poistoTehtyCb"></tree>' +
           '    </li>' +
           '    <li class="ui-state-disabled" ng-if="muokkaus && !vanhempi && rakenne.osat.length > 0">' +
@@ -233,7 +235,7 @@ angular.module('eperusteApp')
   })
   .directive('treeWrapper', function($stateParams, $state, Editointikontrollit, TutkinnonOsanTuonti, Kaanna,
                                      PerusteTutkinnonosa, Notifikaatiot, PerusteenRakenne, Muodostumissaannot,
-                                     Algoritmit) {
+                                     Algoritmit, TreeDragAndDrop) {
     return {
       restrict: 'AE',
       transclude: true,
@@ -332,6 +334,7 @@ angular.module('eperusteApp')
         }
         paivitaUniikit();
 
+        // Drag & drop: Leikelauta <-> puu
         scope.sortableOptions = {
           connectWith: '.tree-group',
           cursor: 'move',
@@ -347,9 +350,11 @@ angular.module('eperusteApp')
           },
           start: function(e, ui) {
             ui.placeholder.html('<div class="group-placeholder"></div>');
-          }
+          },
+          update: TreeDragAndDrop.update
         };
 
+        // Drag & drop: Tutkinnon osat <-> puu
         scope.sortableOptionsUnique = {
           connectWith: '.tree-group',
           cursor: 'move',
@@ -423,6 +428,50 @@ angular.module('eperusteApp')
         scope.$watch('apumuuttujat.haku', function (value) {
           scope.paivitaTekstiRajaus(value);
         });
+      }
+    };
+  })
+
+  .config(function ($tooltipProvider) {
+    $tooltipProvider.setTriggers({
+        'mouseenter': 'mouseleave',
+        'click': 'click',
+        'focus': 'blur',
+        'never': 'mouseleave',
+        'show': 'hide'
+    });
+  })
+
+  .service('TreeDragAndDrop', function (Notifikaatiot, $timeout) {
+    this.update = function(e, ui) {
+      /*
+         Aito osaamisalaryhmä on ryhmä, joka on itse tyyppiä osaamisala.
+         Osaamisalaryhmä on joko aito osaamisalaryhmä tai mikä tahansa sen lapsista on aito osaamisalaryhmä.
+         Osaamisalaryhmää ei voida asettaa puuhun jos
+         1. Mikä tahansa lisäämiskohdan esivanhempi on aito osaamisalaryhmä
+
+      */
+      var itemScope = ui.item.scope();
+      // TODO: tämä tarkistaa vain välittömän lapsi-parent-suhteen, toteuta ylläoleva sääntö
+      var draggedHasOsaamisala = itemScope && itemScope.osa && !_.isEmpty(itemScope.osa.osaamisala);
+      if (draggedHasOsaamisala) {
+        var target = ui.item.sortable.droptarget;
+        var listItem = target.closest('.tree-list-item');
+        var parent = listItem.find('.bubble').first();
+        var parentScope = parent ? parent.scope() : null;
+        var droppedParentHasOsaamisala = parentScope && parentScope.rakenne &&
+            !_.isEmpty(parentScope.rakenne.osaamisala);
+        //console.log(listItem.closest('.tree-list-item'));
+        if (droppedParentHasOsaamisala) {
+          var el = angular.element('#osaamisala-varoitus');
+          var pos = parent.offset();
+          el.offset({top: pos.top, left: pos.left + 200});
+          el.trigger('show');
+          $timeout(function () {
+           el.trigger('hide');
+          }, 5000);
+          ui.item.sortable.cancel();
+        }
       }
     };
   });
