@@ -93,8 +93,8 @@ public class PerusteenRakenne {
         if (rooli != null && rooli.equals(RakenneModuuliRooli.OSAAMISALA)) {
             validointi.sisakkaisiaOsaamisalaryhmia = validointi.sisakkaisiaOsaamisalaryhmia + 1;
         }
-
-        if (syvyys == 0 && validointi.sisakkaisiaOsaamisalaryhmia > 1) {
+        if (validointi.sisakkaisiaOsaamisalaryhmia > 1) {
+            validointi.sisakkaisiaOsaamisalaryhmia = 1;
             validointi.ongelmat.add(new Ongelma("Rakenteessa sisäkkäisiä osaamisalaryhmiä", nimi, syvyys));
         }
 

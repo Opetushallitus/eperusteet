@@ -475,7 +475,6 @@ public class PerusteServiceImpl implements PerusteService {
             }
             for (AbstractRakenneOsa osa : rakenneModuuli.getOsat()) {
                 if (osa instanceof RakenneModuuli) {
-                    System.out.println("osa looppi");
                     osa = checkIfOsaamisalatAlreadyExists((RakenneModuuli)osa);
                 }
             }
