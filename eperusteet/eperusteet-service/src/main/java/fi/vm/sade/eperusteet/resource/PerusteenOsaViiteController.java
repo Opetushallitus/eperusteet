@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.resource;
 
+import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
@@ -27,7 +28,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import static org.springframework.web.bind.annotation.RequestMethod.*;
+
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -36,7 +39,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author harrik
  */
 @Controller
-@RequestMapping("/perusteenosaviitteet")
+@RequestMapping("/perusteet/perusteenosaviitteet")
+@Api(value="Perusteet")
 public class PerusteenOsaViiteController {
 
     @Autowired

@@ -15,17 +15,18 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
+import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
-import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
+import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
@@ -42,17 +43,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+
 @Controller
 @RequestMapping("/perusteenosat")
+@Api(value="Perusteenosat", description = "Perusteen osien hallinta")
 public class PerusteenOsaController {
 
     @Autowired
@@ -147,7 +150,7 @@ public class PerusteenOsaController {
         tutkinnonOsaDto.getDto().setId(id);
         return service.update(tutkinnonOsaDto, TutkinnonOsaDto.class);
     }
-    
+
      /**
      * Luo ja liittää uuden osa-alueen tutkinnon osaan.
      *
@@ -161,7 +164,7 @@ public class PerusteenOsaController {
     public OsaAlueDto addTutkinnonOsaOsaAlue(@PathVariable("id") final Long id, @RequestBody(required = false)  OsaAlueDto osaAlueDto) {
         return service.addTutkinnonOsaOsaAlue(id, osaAlueDto);
     }
-    
+
     /**
      * Päivittää tutkinnon osan osa-alueen tietoja.
      *
@@ -175,16 +178,16 @@ public class PerusteenOsaController {
     public ResponseEntity<OsaAlueDto> updateTutkinnonOsaOsaAlue(@PathVariable("id") final Long id, @PathVariable("osaAlueId") final Long osaAlueId, @RequestBody OsaAlueDto osaAlue) {
         return new ResponseEntity<>(service.updateTutkinnonOsaOsaAlue(id, osaAlueId, osaAlue), HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/{id}/osaalueet", method = GET)
     @ResponseBody
     public ResponseEntity<List<OsaAlueDto>> getTutkinnonOsaOsaAlueet(@PathVariable("id") final Long id) {
         return new ResponseEntity<>(service.getTutkinnonOsaOsaAlueet(id), HttpStatus.OK);
     }
-    
+
     /**
      * Poistaa tutkinnon osan osa-alueen
-     * 
+     *
      * @param id
      * @param osaAlueId
      */
@@ -195,7 +198,7 @@ public class PerusteenOsaController {
             @PathVariable("osaAlueId") final Long osaAlueId) {
         service.removeOsaAlue(id, osaAlueId);
     }
-    
+
     /**
      * Luo ja liittää uuden osaamistavoitteen tutkinnon osa osa-alueeseen.
      *
@@ -209,17 +212,17 @@ public class PerusteenOsaController {
     @ResponseStatus(HttpStatus.CREATED)
     public OsaamistavoiteDto addOsaamistavoite(
             @PathVariable("id") final Long id,
-            @PathVariable("osaAlueId") final Long osaAlueId, 
+            @PathVariable("osaAlueId") final Long osaAlueId,
             @RequestBody(required = false) OsaamistavoiteDto osaamistavoiteDto) {
         return service.addOsaamistavoite(id, osaAlueId, osaamistavoiteDto);
     }
-    
+
     /**
      * Päivittää osaamistavoitteen tutkinnon osa osa-alueeseen.
      *
      * @param id
-     * @param osaAlueId 
-     * @param osaamistavoiteId 
+     * @param osaAlueId
+     * @param osaamistavoiteId
      * @param osaamistavoite requestBody
      * @return Päivitetty osaamistavoiteDto
      */
@@ -233,12 +236,12 @@ public class PerusteenOsaController {
         osaamistavoite.setId(osaamistavoiteId);
         return service.updateOsaamistavoite(id, osaAlueId, osaamistavoiteId, osaamistavoite);
     }
-    
+
     /**
      * Listaa tutkinnon osa osa-alueen osaamistavoitteet
      * @param id
      * @param osaAlueId
-     * @return 
+     * @return
      */
     @RequestMapping(value = "/{id}/osaalue/{osaAlueId}/osaamistavoitteet", method = GET)
     @ResponseBody
@@ -247,10 +250,10 @@ public class PerusteenOsaController {
             @PathVariable("osaAlueId") final Long osaAlueId) {
         return new ResponseEntity<>(service.getOsaamistavoitteet(id, osaAlueId), HttpStatus.OK);
     }
-    
+
     /**
      * Poistaa tutkinnon osan osa-alueen osaamistavoitteen
-     * 
+     *
      * @param id
      * @param osaAlueId
      * @param osaamistavoiteId

@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
+import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
@@ -35,8 +36,6 @@ import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -49,12 +48,14 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
+
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 @Controller
 @RequestMapping("/perusteet")
+@Api(value="Perusteet", description = "Perusteiden hallintaan liittyvät operaatiot")
 public class PerusteController {
 
     @Autowired
@@ -201,7 +202,7 @@ public class PerusteController {
             @RequestBody TutkinnonOsaViiteDto osa) {
         return service.addTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osa);
     }
-     
+
 
     /**
      * Liitää olemassa olevan tutkinnon osan perusteeseen

@@ -29,8 +29,6 @@ import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import java.util.List;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -52,7 +50,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 @Controller
 @RequestMapping("/perusteprojektit")
-@Api(value = "perusteprojektit")
+@Api(value = "perusteprojektit", description = "Perusteprojektien hallinta")
 public class PerusteprojektiController {
 
     @Autowired
