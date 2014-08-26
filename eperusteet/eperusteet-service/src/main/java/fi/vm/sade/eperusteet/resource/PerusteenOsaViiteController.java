@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author harrik
  */
 @Controller
-@RequestMapping("/perusteet/perusteenosaviitteet")
+@RequestMapping("/perusteenosaviitteet")
 @Api(value="Perusteet")
 public class PerusteenOsaViiteController {
 
