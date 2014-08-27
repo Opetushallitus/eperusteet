@@ -117,10 +117,10 @@ public interface PerusteService {
     @PreAuthorize("isAuthenticated()")
     String lammitys();
 
-    LukkoDto lock(final Long id, Suoritustapakoodi suoritustapakoodi);
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    LukkoDto lock(@P("perusteId") final Long id, Suoritustapakoodi suoritustapakoodi);
 
     void unlock(final Long id, Suoritustapakoodi suoritustapakoodi);
-
     LukkoDto getLock(final Long id, Suoritustapakoodi suoritustapakoodi);
 
     public Map<Long, LukkoDto> getLocksTutkinnonOsat(Long id, Suoritustapakoodi suoritustapakoodi);

@@ -16,15 +16,16 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import java.util.List;
+import org.springframework.security.access.method.P;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  *
@@ -32,18 +33,24 @@ import java.util.List;
  */
 public interface PerusteenOsaService {
 
-    <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(UpdateDto<T> perusteenOsaDto, Class<T> dtoClass);
-    <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(T perusteenOsaDto, Class<T> dtoClass);
+
+    @PreAuthorize("hasPermission(#po.dto.id, 'perusteenosa', 'MUOKKAUS')")
+    <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(@P("po") UpdateDto<T> perusteenOsaDto, Class<T> dtoClass);
+    @PreAuthorize("hasPermission(#po.id, 'perusteenosa', 'MUOKKAUS')")
+    <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(@P("po") T perusteenOsaDto, Class<T> dtoClass);
 
     <T extends PerusteenOsaDto, D extends PerusteenOsa> T add(T perusteenOsaDto, Class<T> dtoClass, Class<D> destinationClass);
 
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'POISTO')")
     void delete(final Long id);
 
     Integer getLatestRevision(final Long id);
 
-    PerusteenOsaDto revertToVersio(Long id, Integer versioId);
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
+    PerusteenOsaDto revertToVersio(@P("id") Long id, Integer versioId);
 
-    PerusteenOsaDto get(final Long id);
+    @PostAuthorize("returnObject.tila == T(fi.vm.sade.eperusteet.domain.PerusteTila).VALMIS or hasPermission(#id, 'perusteenosa', 'LUKU')")
+    PerusteenOsaDto get(@P("id") final Long id);
 
     List<PerusteenOsaDto> getAllByKoodiUri(final String koodiUri);
 
@@ -53,24 +60,27 @@ public interface PerusteenOsaService {
 
     List<Revision> getVersiot(Long id);
 
-    PerusteenOsaDto getVersio(final Long id, final Integer versioId);
+    @PostAuthorize("returnObject.tila == T(fi.vm.sade.eperusteet.domain.PerusteTila).VALMIS or hasPermission(#id, 'perusteenosa', 'LUKU')")
+    PerusteenOsaDto getVersio(@P("id") final Long id, final Integer versioId);
 
-    LukkoDto lock(final Long id);
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
+    LukkoDto lock(@P("id") final Long id);
 
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
     void unlock(final Long id);
 
     LukkoDto getLock(final Long id);
-    
+
     OsaAlueDto addTutkinnonOsaOsaAlue(final Long id, OsaAlueDto osaAlueDto);
-    
+
     OsaAlueDto updateTutkinnonOsaOsaAlue(final Long id, final Long osaAlueId, OsaAlueDto osaAlue);
-    
+
     List<OsaAlueDto> getTutkinnonOsaOsaAlueet(final Long id);
 
     public OsaamistavoiteDto addOsaamistavoite(final Long id, final Long osaAlueId, OsaamistavoiteDto osaamistavoiteDto);
 
     public OsaamistavoiteDto updateOsaamistavoite(final Long id, final Long osaAlueId, final Long osaamistavoiteId, OsaamistavoiteDto osaamistavoite);
-    
+
     public List<OsaamistavoiteDto> getOsaamistavoitteet(final Long id, final Long osaAlueId);
 
     public void removeOsaamistavoite(final Long id, final Long osaAlueId, final Long osaamistavoiteId);

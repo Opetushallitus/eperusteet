@@ -17,6 +17,8 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -28,14 +30,14 @@ import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
@@ -50,6 +52,7 @@ import fi.vm.sade.eperusteet.service.util.RestClientFactory;
 import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -346,7 +349,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         RakenneModuuli rakenne = suoritustapa.getRakenne();
         if (rakenne != null) {
-            for (TutkinnonOsaViite viite : suoritustapa.getTutkinnonOsat()) {
+            for (TutkinnonOsaViite viite : getViitteet(suoritustapa)) {
                 if (!rakenne.isInRakenne(viite, true) && (viite.getPoistettu() == null || !viite.getPoistettu())) {
                     viiteList.add(viite);
                 }
@@ -359,13 +362,24 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         List<TutkinnonOsa> koodittomatTutkinnonOsat = new ArrayList<>();
 
         if (suoritustapa.getTutkinnonOsat() != null) {
-            for (TutkinnonOsaViite viite : suoritustapa.getTutkinnonOsat()) {
+            for (TutkinnonOsaViite viite : getViitteet(suoritustapa)) {
                 if (viite.getTutkinnonOsa().getKoodiArvo() == null || viite.getTutkinnonOsa().getKoodiArvo().trim().equals("")) {
                     koodittomatTutkinnonOsat.add(viite.getTutkinnonOsa());
                 }
             }
         }
         return koodittomatTutkinnonOsat;
+    }
+
+    private Collection<TutkinnonOsaViite> getViitteet(Suoritustapa suoritustapa) {
+        return Collections2.filter(suoritustapa.getTutkinnonOsat(), new Predicate<TutkinnonOsaViite>() {
+
+            @Override
+            public boolean apply(TutkinnonOsaViite input) {
+                return Boolean.FALSE.equals(input.getPoistettu());
+            }
+
+        });
     }
 
 }
