@@ -65,7 +65,7 @@ angular.module('eperusteApp')
           event.stopPropagation();
         }
         $scope.originalKohde = kohde;
-        kohde._editointi = true;
+        kohde.$editointi = true;
         $scope.editableKohde = angular.copy(kohde);
         var kriteerit = $scope.editableKohde.osaamistasonKriteerit;
         if (_.isArray(kriteerit) && _.isEmpty(kriteerit)) {
@@ -115,14 +115,14 @@ angular.module('eperusteApp')
         uudenKohteenTiedot.showInputArea = false;
       },
       poistuMuokkauksesta: function (list, index) {
-        delete $scope.editableKohde._editointi;
+        delete $scope.editableKohde.$editointi;
         list[index] = angular.copy($scope.editableKohde);
         $scope.kohde.peruMuokkaus();
       },
       peruMuokkaus: function () {
         $timeout(function () {
           $scope.editableKohde = null;
-          delete $scope.originalKohde._editointi;
+          delete $scope.originalKohde.$editointi;
           $scope.originalKohde = null;
         });
       }
