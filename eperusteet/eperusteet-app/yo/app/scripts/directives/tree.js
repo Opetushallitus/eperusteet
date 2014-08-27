@@ -174,10 +174,16 @@ angular.module('eperusteApp')
           '  <span class="tree-item">' + generoiOtsikko() + '</span>' +
           '</div>';
 
-        var kentta = '<div ng-if="rakenne._tutkinnonOsaViite" ' +
-          'ng-class="{ \'pointer\': muokkaus, \'huomio\': tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].$elevate || (apumuuttujat.haku && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].$matched) }" class="bubble-osa">' +
-          optiot + '</div>' +
+        var kentta =
+          '<div ng-if="rakenne._tutkinnonOsaViite" ' +
+          '     ng-class="{ \'pointer\': muokkaus, \'huomio\': tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].$elevate || (apumuuttujat.haku && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].$matched) }" class="bubble-osa">' +
+            optiot +
+          '</div>' +
           '<div ng-if="!rakenne._tutkinnonOsaViite" ng-class="{ \'pointer\': muokkaus }" class="bubble">' + optiot + '</div>' +
+          '<div ng-model="rakenne" ng-show="!muokkaus && rakenne.kuvaus && rakenne.kuvaus !== \'\'" class="kuvaus">' +
+          '  <div ng-class="{ \'text-truncated\': !rakenne.$showKuvaus }">{{ rakenne.kuvaus | kaanna }}</div>' +
+          '  <div class="avausnappi" ng-click="rakenne.$showKuvaus = !rakenne.$showKuvaus"><div class="avausnappi-painike">&hellip;</div></div>' +
+          '</div>' +
           '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="virhe">' +
           '  <span>{{ tkaanna(rakenne.$virhe.selite) }}<span ng-show="rakenne.$virhe.selite.length > 0">. </span>{{ rakenne.$virhe.virhe | kaanna }}.</span>' +
           '</div>';

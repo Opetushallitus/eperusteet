@@ -87,6 +87,9 @@
     "rakennetta-ei-vielä-muodostettu": "Tutkinnon rakennetta ei ole vielä muodostettu tai se on tyhjä. Luo uusi rakenne muokkaamalla sivua.",
     "rakennetta-ei-ole": "Suoritustavalle ei ole määritetty rakennetta",
 
+    "näytä-enemmän": "Lisää",
+    "näytä-vähemmän": "Piilota",
+
     "virhe-suoritustapasisältöä-ei-löytynyt": "Suoritustavan sisältöä ei löytynyt",
     "virhe-tiedosto-epäonnistui": "Tiedoston avaaminen epäonnistui",
     "virhe-perustetta-ei-löytynyt": "Hakemaasi perustetta ei löytynyt",

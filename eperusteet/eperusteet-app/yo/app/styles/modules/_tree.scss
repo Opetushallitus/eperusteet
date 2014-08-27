@@ -2,10 +2,12 @@ $colorbox-vari: #06526c;
 $colorbox-open-vari: #29ABE2;
 $colorbox-empty-vari: #FDBB07;
 $reunus-vari: #ccc;
+$kuvaus-vari: #fff;
 $yla-reunus-vari: #ddd;
 $placeholder-vari: #777;
 $puuviiva-vari: #ccc;
 $tree-container-width: 800px;
+$tree-group-width: 480px;
 
 .group-toggler, .group-toggler span {
   &:hover, &:active, &:focus {
@@ -102,7 +104,7 @@ $tree-container-width: 800px;
   background: $placeholder-vari;
   margin: 0px;
   height: 32px;
-  width: 480px;
+  width: $tree-group-width;
 }
 
 .tree .pointer {
@@ -332,15 +334,56 @@ $tree-container-width: 800px;
     padding: 3px;
     background-color: $error-vari;
   }
+  .kuvaus {
+    margin: 0px;
+    width: $tree-group-width;
+    padding: 0px;
+    background: $kuvaus-vari;
+    border: 1px solid $reunus-vari;
+    border-top: 0;
+
+    .avausnappi {
+      border-top: 0;
+      background-color: #f7f7f7;
+      text-align: center;
+      height: 7px;
+      position: relative;
+      cursor: pointer;
+
+      transition: all 0.5s ease;
+
+      &:hover {
+        background-color: #fcfcfc;
+      }
+    }
+    .avausnappi-painike {
+      height: 10px;
+      width: $tree-group-width;
+      content: "";
+      cursor: pointer;
+      top: -9px;
+      color: #bbb;
+      font-weight: bold;
+      position: absolute;
+    }
+
+    .text-truncated {
+      width: $tree-group-width;
+      height: 0px;
+      padding: 0px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
   .virhe {
     margin: 0px;
-    width: 480px;
+    width: $tree-group-width;
     padding: 3px;
     background-color: $error-vari;
   }
   .beef {
     margin: 0px;
-    width: 480px;
+    width: $tree-group-width;
     padding: 10px;
   }
   .tutkinnonosa {
@@ -385,7 +428,7 @@ $tree-container-width: 800px;
     }
   }
   .bubble, li .textbox {
-    min-width: 480px;
+    min-width: $tree-group-width;
     min-height: 32px;
     border: 1px solid #ccc;
     background-color: #f2f2f2;
@@ -426,7 +469,7 @@ $tree-container-width: 800px;
 }
 
 .bubble-osa {
-  width: 480px;
+  width: $tree-group-width;
   min-height: 32px;
   border: 1px solid #cccccc;
   background-color: #fff;
