@@ -85,6 +85,7 @@
     "tutkinnon-osia-ei-löytynyt": "Tutkinnon osia ei löytynyt",
     "aloita-raahaamalla-puuhun": "Raahaa ryhmiä tai tutkinnon osia tähän.",
     "rakennetta-ei-vielä-muodostettu": "Tutkinnon rakennetta ei ole vielä muodostettu tai se on tyhjä. Luo uusi rakenne muokkaamalla sivua.",
+    "rakennetta-ei-ole": "Suoritustavalle ei ole määritetty rakennetta",
 
     "virhe-suoritustapasisältöä-ei-löytynyt": "Suoritustavan sisältöä ei löytynyt",
     "virhe-tiedosto-epäonnistui": "Tiedoston avaaminen epäonnistui",

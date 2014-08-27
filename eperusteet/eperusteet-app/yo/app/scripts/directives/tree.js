@@ -243,7 +243,8 @@ angular.module('eperusteApp')
         rakenne: '=',
         voiLiikuttaa: '=',
         ajaKaikille: '=',
-        muokkaus: '='
+        muokkaus: '=',
+        esitys: '=?'
       },
       link: function(scope) {
         scope.suljettuViimeksi = true;

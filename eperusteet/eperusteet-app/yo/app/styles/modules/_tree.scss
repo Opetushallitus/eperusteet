@@ -38,15 +38,20 @@ $tree-container-width: 800px;
   .empty-bubble {
     color: #777;
     background: #fcfcfc;
-    margin: 0px;
+    margin: 0;
     text-align: center;
-    padding: 16px;
+    padding: 14px;
     min-width: $tree-container-width;
     position: absolute;
     z-index: -1;
     overflow: hidden;
     border: 1px dashed #ddd;
-    top: 55px;
+  }
+  .distance {
+    top: 0px;
+  }
+  .distance-editing {
+    top: 85px;
   }
 }
 
