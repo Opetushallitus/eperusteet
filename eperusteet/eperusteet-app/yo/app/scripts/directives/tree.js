@@ -374,9 +374,6 @@ angular.module('eperusteApp')
         };
 
         scope.ryhmaModaali = Muodostumissaannot.ryhmaModaali(function(ryhma, vanhempi, uusiryhma) {
-          console.log('ryhma', _.clone(ryhma));
-          console.log('vanhempi', vanhempi);
-          console.log('uusiryhma', uusiryhma);
           if (uusiryhma) {
             if (ryhma === undefined) {
               uusiryhma.$uusi = true;
@@ -385,7 +382,6 @@ angular.module('eperusteApp')
             else {
               ryhma = _.merge(ryhma, uusiryhma);
             }
-            console.log('ryhma mergen jälkeen', _.clone(ryhma));
           }
           else { _.remove(scope.skratchpad, ryhma); }
         });
@@ -443,26 +439,45 @@ angular.module('eperusteApp')
   })
 
   .service('TreeDragAndDrop', function (Notifikaatiot, $timeout) {
-    this.update = function(e, ui) {
-      /*
-         Aito osaamisalaryhmä on ryhmä, joka on itse tyyppiä osaamisala.
-         Osaamisalaryhmä on joko aito osaamisalaryhmä tai mikä tahansa sen lapsista on aito osaamisalaryhmä.
-         Osaamisalaryhmää ei voida asettaa puuhun jos
-         1. Mikä tahansa lisäämiskohdan esivanhempi on aito osaamisalaryhmä
+    var NODESELECTOR = '.tree-list-item';
+    /*
+     * Aito osaamisalaryhmä: ryhmä, joka on itse tyyppiä osaamisala
+     * Osaamisalaryhmä: aito osaamisalaryhmä tai ryhmä, jonka mikä tahansa jälkeläinen on aito osaamisalaryhmä.
+     * Osaamisalaryhmää ei voida asettaa puuhun jos mikä tahansa lisäämiskohdan edeltäjä on aito osaamisalaryhmä
+     */
+    function hasOsaamisala(item) {
+      return !_.isEmpty(item.osaamisala);
+    }
 
-      */
+    function isOsaamisalaRyhma(item) {
+      if (hasOsaamisala(item)) {
+        return true;
+      }
+      return _.any(item.osat, function (child) {
+        return isOsaamisalaRyhma(child);
+      });
+    }
+
+    function parentsOrSelfHaveOsaamisala(node, item) {
+      if (!item || !item.osa) {
+        return false;
+      }
+      if (hasOsaamisala(item.osa)) {
+        return true;
+      }
+      var parent = node.parent().closest(NODESELECTOR);
+      return parentsOrSelfHaveOsaamisala(parent, parent ? parent.scope() : null);
+    }
+
+    this.update = function(e, ui) {
       var itemScope = ui.item.scope();
-      // TODO: tämä tarkistaa vain välittömän lapsi-parent-suhteen, toteuta ylläoleva sääntö
-      var draggedHasOsaamisala = itemScope && itemScope.osa && !_.isEmpty(itemScope.osa.osaamisala);
+      var draggedHasOsaamisala = itemScope && itemScope.osa && isOsaamisalaRyhma(itemScope.osa);
       if (draggedHasOsaamisala) {
         var target = ui.item.sortable.droptarget;
-        var listItem = target.closest('.tree-list-item');
-        var parent = listItem.find('.bubble').first();
-        var parentScope = parent ? parent.scope() : null;
-        var droppedParentHasOsaamisala = parentScope && parentScope.rakenne &&
-            !_.isEmpty(parentScope.rakenne.osaamisala);
-        //console.log(listItem.closest('.tree-list-item'));
-        if (droppedParentHasOsaamisala) {
+        var listItem = target.closest(NODESELECTOR);
+        var parentScope = listItem ? listItem.scope() : null;
+        if (parentsOrSelfHaveOsaamisala(listItem, parentScope)) {
+          var parent = listItem.find('.bubble').first();
           var el = angular.element('#osaamisala-varoitus');
           var pos = parent.offset();
           el.offset({top: pos.top, left: pos.left + 200});
