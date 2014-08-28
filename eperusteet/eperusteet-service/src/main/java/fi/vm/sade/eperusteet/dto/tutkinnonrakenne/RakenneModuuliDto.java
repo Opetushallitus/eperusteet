@@ -30,6 +30,7 @@ public class RakenneModuuliDto extends AbstractRakenneOsaDto implements Versione
     private LokalisoituTekstiDto kuvaus;
     private RakenneModuuliRooli rooli;
     private MuodostumisSaantoDto muodostumisSaanto;
+    private OsaamisalaDto osaamisala;
     private List<AbstractRakenneOsaDto> osat;
     private Integer versioId;
     

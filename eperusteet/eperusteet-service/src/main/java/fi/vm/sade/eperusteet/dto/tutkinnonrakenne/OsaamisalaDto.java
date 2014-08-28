@@ -14,31 +14,20 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.tutkinnonOsa;
+package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
-import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
-import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author jhyoty
+ * @author harrik
  */
 @Getter
 @Setter
-//@JsonTypeName("tutkinnonosa")
-public class TutkinnonOsaDto extends PerusteenOsaDto {
-    private LokalisoituTekstiDto tavoitteet;
-    private ArviointiDto arviointi;
-    private LokalisoituTekstiDto ammattitaitovaatimukset;
-    private LokalisoituTekstiDto ammattitaidonOsoittamistavat;
-    private Long opintoluokitus;
-    private String koodiUri;
-    private String koodiArvo;
-    private List<OsaAlueDto> osaAlueet;
-    private TutkinnonOsaTyyppi tyyppi;
+public class OsaamisalaDto {
+    private LokalisoituTekstiDto nimi;
+    private String osaamisalakoodiArvo;
+    private String osaamisalakoodiUri;
 }

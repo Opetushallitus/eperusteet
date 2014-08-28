@@ -149,6 +149,7 @@
 
     "ryhmä-rooli-selite-määritelty": "Ryhmän sisältö määritellään perustepuun luonnin yhteydessä",
     "ryhmä-rooli-selite-määrittelemätön": "Ryhmälle annetaan vain muodostumissäännöt ja sen sisältö määritellään paikallisen laadinnan puolella",
+    "ryhmä-rooli-selite-osaamisala": "Ryhmälle täytyy määrittää osaamisala",
 
     "otsikko": "otsikko",
     "osien-määrä": "Osien määrä",
@@ -190,7 +191,6 @@
     "haku-hakuehdot" : "Hakuehdot",
     "haku-opintoala" : "Opintoala",
     "haku-kaikki-opintoalat" : "Kaikki opintoalat",
-    "hae-koodi-koodistosta": "Hae koodistosta",
     "hae-koodistosta": "Hae koodistosta",
 
     "rakenne-validointi-maara-laajuus-minimi": "Minimikoon kattavat osat eivät riitä kattamaan vaadittua minimilaajuutta",

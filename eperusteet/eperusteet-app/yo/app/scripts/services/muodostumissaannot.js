@@ -176,7 +176,10 @@ angular.module('eperusteApp')
             suoritustapa: function() { return suoritustapa; }
           }
         })
-        .result.then(function(res) { thenCb(ryhma, vanhempi, res); });
+        .result.then(function(res) {
+          console.log('ryhma', res);
+          thenCb(ryhma, vanhempi, res);
+        });
       };
     }
 

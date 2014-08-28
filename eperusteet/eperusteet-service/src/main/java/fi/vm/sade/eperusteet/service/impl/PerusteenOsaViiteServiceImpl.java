@@ -154,7 +154,6 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         uusi.setAmmattitaitovaatimukset(to.getAmmattitaitovaatimukset());
         uusi.setArviointi(arviointiService.kopioi(to.getArviointi()));
         uusi.setOpintoluokitus(to.getOpintoluokitus());
-        uusi.setOsaamisala(to.getOsaamisala());
         uusi.setTavoitteet(to.getTavoitteet());
         tov.setTutkinnonOsa(tutkinnonOsaRepository.save(uusi));
         return mapper.map(tov, TutkinnonOsaViiteDto.class);
