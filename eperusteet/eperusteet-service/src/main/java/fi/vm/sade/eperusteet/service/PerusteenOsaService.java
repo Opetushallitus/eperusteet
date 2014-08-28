@@ -17,9 +17,14 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteDto;
+
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteLaajaDto;
+
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import java.util.List;
@@ -71,17 +76,17 @@ public interface PerusteenOsaService {
 
     LukkoDto getLock(final Long id);
 
-    OsaAlueDto addTutkinnonOsaOsaAlue(final Long id, OsaAlueDto osaAlueDto);
+    OsaAlueLaajaDto addTutkinnonOsaOsaAlue(final Long id, OsaAlueLaajaDto osaAlueDto);
 
-    OsaAlueDto updateTutkinnonOsaOsaAlue(final Long id, final Long osaAlueId, OsaAlueDto osaAlue);
+    OsaAlueLaajaDto updateTutkinnonOsaOsaAlue(final Long id, final Long osaAlueId, OsaAlueLaajaDto osaAlue);
 
-    List<OsaAlueDto> getTutkinnonOsaOsaAlueet(final Long id);
+    List<OsaAlueLaajaDto> getTutkinnonOsaOsaAlueet(final Long id);
 
-    public OsaamistavoiteDto addOsaamistavoite(final Long id, final Long osaAlueId, OsaamistavoiteDto osaamistavoiteDto);
+    public OsaamistavoiteLaajaDto addOsaamistavoite(final Long id, final Long osaAlueId, OsaamistavoiteLaajaDto osaamistavoiteDto);
 
-    public OsaamistavoiteDto updateOsaamistavoite(final Long id, final Long osaAlueId, final Long osaamistavoiteId, OsaamistavoiteDto osaamistavoite);
+    public OsaamistavoiteLaajaDto updateOsaamistavoite(final Long id, final Long osaAlueId, final Long osaamistavoiteId, OsaamistavoiteLaajaDto osaamistavoite);
 
-    public List<OsaamistavoiteDto> getOsaamistavoitteet(final Long id, final Long osaAlueId);
+    public List<OsaamistavoiteLaajaDto> getOsaamistavoitteet(final Long id, final Long osaAlueId);
 
     public void removeOsaamistavoite(final Long id, final Long osaAlueId, final Long osaamistavoiteId);
 
