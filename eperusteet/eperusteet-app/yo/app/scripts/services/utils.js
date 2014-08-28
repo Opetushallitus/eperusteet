@@ -19,7 +19,7 @@
 
 
 angular.module('eperusteApp')
-  .service('Utils', function($window) {
+  .service('Utils', function($window, YleinenData) {
     this.scrollTo = function (selector) {
       var element = angular.element(selector);
       if (element.length) {
@@ -32,8 +32,9 @@ angular.module('eperusteApp')
         return false;
       }
       var hasContent = false;
-      _.each(field, function (value) {
-        if (!_.isEmpty(value)) {
+      var langs = _.values(YleinenData.kielet);
+      _.each(langs, function (key) {
+        if (!_.isEmpty(field[key])) {
           hasContent = true;
         }
       });

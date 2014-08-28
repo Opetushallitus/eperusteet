@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('arviointiCtrl', function ($scope, YleinenData, Varmistusdialogi, $timeout) {
+  .controller('arviointiCtrl', function ($scope, YleinenData, Varmistusdialogi, $timeout, Utils) {
     $scope.showNewKohdealueInput = false;
 
     $scope.kohdealue = {
@@ -116,6 +116,11 @@ angular.module('eperusteApp')
       },
       poistuMuokkauksesta: function (list, index) {
         delete $scope.editableKohde.$editointi;
+        _.each($scope.editableKohde.osaamistasonKriteerit, function (kriteeri) {
+          if (kriteeri.kriteerit.length === 1 && !Utils.hasLocalizedText(kriteeri.kriteerit[0])) {
+            kriteeri.kriteerit = [];
+          }
+        });
         list[index] = angular.copy($scope.editableKohde);
         $scope.kohde.peruMuokkaus();
       },
