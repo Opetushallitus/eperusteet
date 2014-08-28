@@ -18,8 +18,6 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteDto;
 
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
