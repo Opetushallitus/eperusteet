@@ -129,8 +129,8 @@ angular.module('eperusteApp')
         2: 'Ammattitaitovaatimuksien kuvausta ei ole määritetty.',
         3: 'Opintoluokitusta ei ole määritetty.',
       },
-      info: [1, 2, 3, 4, 13],
-      lokalisointi: [1, 2, 4],
+      info: [1, 2, 3, 13],
+      lokalisointi: [1, 2],
       ammattitutkinto: {
         kentat: {
           1: 'V',
