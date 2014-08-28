@@ -112,7 +112,6 @@ angular.module('eperusteApp')
         1: 'nimi',
         2: 'ammattitaitovaatimukset',
         3: 'opintoluokitus',
-        4: 'osaamisala',
         5: 'osoittamistavat',
         6: 'kohdealueet',
         7: 'kohteet',
@@ -129,7 +128,6 @@ angular.module('eperusteApp')
       varoitukset: {
         2: 'Ammattitaitovaatimuksien kuvausta ei ole määritetty.',
         3: 'Opintoluokitusta ei ole määritetty.',
-        4: 'Osaamisalaa ei ole määritetty.'
       },
       info: [1, 2, 3, 4, 13],
       lokalisointi: [1, 2, 4],
@@ -155,7 +153,6 @@ angular.module('eperusteApp')
           AF1: 'Ammattitaidon osoittamistavat',
           U1: 'Tutkinnon osan opintoluokituskoodi',
           V1: 'Tutkinnon osan nimi',
-          X1: 'Osaamisala',
           Y1: 'Ammattitaitovaatimukset (tiivistelmä/kuvaus ammattitaitovaatimuksista)',
           Z1: 'Erillispätevyys',
         }
