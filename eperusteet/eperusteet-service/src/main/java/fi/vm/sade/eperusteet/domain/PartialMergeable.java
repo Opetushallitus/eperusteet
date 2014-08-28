@@ -14,19 +14,12 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.tutkinnonOsa;
-
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import lombok.Getter;
-import lombok.Setter;
+package fi.vm.sade.eperusteet.domain;
 
 /**
  *
- * @author harrik
+ * @author jhyoty
  */
-@Getter
-@Setter
-public class OsaAlueDto {
-    private Long id;
-    private LokalisoituTekstiDto nimi;
+public interface PartialMergeable<T> extends Mergeable<T> {
+    void partialMergeState(T updated);
 }

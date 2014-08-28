@@ -16,6 +16,8 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonOsa;
 
+import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +28,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class OsaAlueDto {
-    private Long id;
-    private LokalisoituTekstiDto nimi;
+public class OsaamistavoiteLaajaDto extends OsaamistavoiteDto {
+    private LokalisoituTekstiDto tavoitteet;
+    private LokalisoituTekstiDto tunnustaminen;
+    private ArviointiDto arviointi;
+    private EntityReference esitieto;
 }

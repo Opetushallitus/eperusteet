@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonOsa;
 
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +26,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class OsaAlueDto {
-    private Long id;
-    private LokalisoituTekstiDto nimi;
+public class OsaAlueLaajaDto extends OsaAlueDto {
+    private List<OsaamistavoiteDto> osaamistavoitteet;
 }

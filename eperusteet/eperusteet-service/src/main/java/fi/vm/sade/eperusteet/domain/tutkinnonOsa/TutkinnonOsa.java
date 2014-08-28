@@ -90,7 +90,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     @Getter
     @Setter
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinTable(name = "tutkinnonosa_tutkinnonosa_osaalue",
                joinColumns = @JoinColumn(name = "tutkinnonosa_id"),
                inverseJoinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"))
@@ -188,23 +188,36 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setOpintoluokitus(other.getOpintoluokitus());
             this.setOsaamisala(other.getOsaamisala());
             if (other.getOsaAlueet() != null) {
-                mergeOsaAlueet(this.getOsaAlueet(), other.getOsaAlueet());
+                this.setOsaAlueet(mergeOsaAlueet(this.getOsaAlueet(), other.getOsaAlueet()));
             }
+
+
+
         }
     }
 
-    private List<OsaAlue> mergeOsaAlueet(List<OsaAlue> current, List<OsaAlue> other){
-        List<OsaAlue> uusi = new ArrayList<>();
-
-        for (OsaAlue otherOsaAlue : other) {
-            for (OsaAlue currentOsaAlue : current) {
-                if (otherOsaAlue.getId().equals(currentOsaAlue.getId())) {
-                    currentOsaAlue.mergeState(otherOsaAlue);
-                    uusi.add(currentOsaAlue);
+    private List<OsaAlue> mergeOsaAlueet(List<OsaAlue> current, List<OsaAlue> other) {
+        List<OsaAlue> tempList = new ArrayList<>();
+        boolean loyty = false;
+        if (other != null) {
+            for (OsaAlue osaAlueOther : other) {
+                for (OsaAlue osaAlueCurrent : current) {
+                    if (osaAlueCurrent.getId().equals(osaAlueOther.getId())) {
+                    // Jos tutkinnon osalla osa-aluelista mergessä, niin kyseessä on kevyempi
+                        // osa-alue objekteja. Joten käytetään partialMergeStatea.
+                        osaAlueCurrent.partialMergeState(osaAlueOther);
+                        tempList.add(osaAlueCurrent);
+                        loyty = true;
+                    }
                 }
+                if (!loyty) {
+                    tempList.add(osaAlueOther);
+                }
+                loyty = false;
             }
         }
-        return uusi;
+
+        return tempList;
     }
 
     public void setTyyppi(TutkinnonOsaTyyppi tyyppi) {

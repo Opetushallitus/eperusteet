@@ -22,8 +22,9 @@ import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
@@ -43,15 +44,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 @RequestMapping("/perusteenosat")
@@ -161,7 +161,7 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/osaalue", method = POST)
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public OsaAlueDto addTutkinnonOsaOsaAlue(@PathVariable("id") final Long id, @RequestBody(required = false)  OsaAlueDto osaAlueDto) {
+    public OsaAlueLaajaDto addTutkinnonOsaOsaAlue(@PathVariable("id") final Long id, @RequestBody(required = false)  OsaAlueLaajaDto osaAlueDto) {
         return service.addTutkinnonOsaOsaAlue(id, osaAlueDto);
     }
 
@@ -175,13 +175,13 @@ public class PerusteenOsaController {
      */
     @RequestMapping(value = "{id}/osaalue/{osaAlueId}", method = POST)
     @ResponseBody
-    public ResponseEntity<OsaAlueDto> updateTutkinnonOsaOsaAlue(@PathVariable("id") final Long id, @PathVariable("osaAlueId") final Long osaAlueId, @RequestBody OsaAlueDto osaAlue) {
+    public ResponseEntity<OsaAlueLaajaDto> updateTutkinnonOsaOsaAlue(@PathVariable("id") final Long id, @PathVariable("osaAlueId") final Long osaAlueId, @RequestBody OsaAlueLaajaDto osaAlue) {
         return new ResponseEntity<>(service.updateTutkinnonOsaOsaAlue(id, osaAlueId, osaAlue), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/osaalueet", method = GET)
     @ResponseBody
-    public ResponseEntity<List<OsaAlueDto>> getTutkinnonOsaOsaAlueet(@PathVariable("id") final Long id) {
+    public ResponseEntity<List<OsaAlueLaajaDto>> getTutkinnonOsaOsaAlueet(@PathVariable("id") final Long id) {
         return new ResponseEntity<>(service.getTutkinnonOsaOsaAlueet(id), HttpStatus.OK);
     }
 
@@ -210,10 +210,10 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/osaalue/{osaAlueId}/osaamistavoite", method = POST)
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public OsaamistavoiteDto addOsaamistavoite(
+    public OsaamistavoiteLaajaDto addOsaamistavoite(
             @PathVariable("id") final Long id,
             @PathVariable("osaAlueId") final Long osaAlueId,
-            @RequestBody(required = false) OsaamistavoiteDto osaamistavoiteDto) {
+            @RequestBody(required = false) OsaamistavoiteLaajaDto osaamistavoiteDto) {
         return service.addOsaamistavoite(id, osaAlueId, osaamistavoiteDto);
     }
 
@@ -228,11 +228,11 @@ public class PerusteenOsaController {
      */
     @RequestMapping(value = "/{id}/osaalue/{osaAlueId}/osaamistavoite/{osaamistavoiteId}", method = POST)
     @ResponseBody
-    public OsaamistavoiteDto updateOsaamistavoite(
+    public OsaamistavoiteLaajaDto updateOsaamistavoite(
             @PathVariable("id") final Long id,
             @PathVariable("osaAlueId") final Long osaAlueId,
             @PathVariable("osaamistavoiteId") final Long osaamistavoiteId,
-            @RequestBody OsaamistavoiteDto osaamistavoite) {
+            @RequestBody OsaamistavoiteLaajaDto osaamistavoite) {
         osaamistavoite.setId(osaamistavoiteId);
         return service.updateOsaamistavoite(id, osaAlueId, osaamistavoiteId, osaamistavoite);
     }
@@ -245,7 +245,7 @@ public class PerusteenOsaController {
      */
     @RequestMapping(value = "/{id}/osaalue/{osaAlueId}/osaamistavoitteet", method = GET)
     @ResponseBody
-    public ResponseEntity<List<OsaamistavoiteDto>> getOsaamistavoitteet(
+    public ResponseEntity<List<OsaamistavoiteLaajaDto>> getOsaamistavoitteet(
             @PathVariable("id") final Long id,
             @PathVariable("osaAlueId") final Long osaAlueId) {
         return new ResponseEntity<>(service.getOsaamistavoitteet(id, osaAlueId), HttpStatus.OK);

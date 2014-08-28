@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.Osaamistavoite;
@@ -23,9 +22,11 @@ import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteLaajaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteDto;
 import fi.vm.sade.eperusteet.repository.OsaAlueRepository;
 import fi.vm.sade.eperusteet.repository.OsaamistavoiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
@@ -37,12 +38,11 @@ import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,6 +108,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         lockManager.ensureLockedByAuthenticatedUser(perusteenOsaDto.getId());
         PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
         PerusteenOsa updated = mapper.map(perusteenOsaDto, current.getClass());
+        if (dtoClass.equals(TutkinnonOsaDto.class)) {
+            ((TutkinnonOsa)updated).setOsaAlueet(createOsaAlueIfNotExist(((TutkinnonOsa)updated).getOsaAlueet()));
+        }
         current.mergeState(updated);
         current = perusteenOsaRepo.save(current);
 
@@ -133,9 +136,24 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         return mapper.map(perusteenOsa, dtoClass);
     }
 
+    private List<OsaAlue> createOsaAlueIfNotExist(List<OsaAlue> osaAlueet) {
+
+        List<OsaAlue> osaAlueTemp = new ArrayList<>();
+        if (osaAlueet != null) {
+            for (OsaAlue osaAlue : osaAlueet) {
+                if (osaAlue.getId() == null) {
+                    osaAlueTemp.add(osaAlueRepository.save(osaAlue));
+                } else {
+                    osaAlueTemp.add(osaAlue);
+                }
+            }
+        }
+        return osaAlueTemp;
+    }
+
     @Override
     @Transactional(readOnly = false)
-    public OsaAlueDto addTutkinnonOsaOsaAlue(Long id, OsaAlueDto osaAlueDto) {
+    public OsaAlueLaajaDto addTutkinnonOsaOsaAlue(Long id, OsaAlueLaajaDto osaAlueDto) {
         assertExists(id);
         lockManager.ensureLockedByAuthenticatedUser(id);
         TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
@@ -149,12 +167,12 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         tutkinnonOsa.getOsaAlueet().add(osaAlue);
         tutkinnonOsaRepo.save(tutkinnonOsa);
 
-        return mapper.map(osaAlue, OsaAlueDto.class);
+        return mapper.map(osaAlue, OsaAlueLaajaDto.class);
     }
 
     @Override
     @Transactional(readOnly = false)
-    public OsaAlueDto updateTutkinnonOsaOsaAlue(Long id, Long osaAlueId, OsaAlueDto osaAlue) {
+    public OsaAlueLaajaDto updateTutkinnonOsaOsaAlue(Long id, Long osaAlueId, OsaAlueLaajaDto osaAlue) {
         assertExists(id);
         lockManager.ensureLockedByAuthenticatedUser(id);
         OsaAlue osaAlueEntity = osaAlueRepository.findOne(osaAlueId);
@@ -162,21 +180,38 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
         }
         OsaAlue osaAlueTmp = mapper.map(osaAlue, OsaAlue.class);
+        osaAlueTmp.setOsaamistavoitteet(createOsaamistavoiteIfNotExist(osaAlueTmp.getOsaamistavoitteet()));
         osaAlueEntity.mergeState(osaAlueTmp);
         osaAlueRepository.save(osaAlueEntity);
 
-        return mapper.map(osaAlueEntity, OsaAlueDto.class);
+        return mapper.map(osaAlueEntity, OsaAlueLaajaDto.class);
+    }
+
+
+    private List<Osaamistavoite> createOsaamistavoiteIfNotExist(List<Osaamistavoite> osaamistavoitteet) {
+
+        List<Osaamistavoite> osaamistavoiteTemp = new ArrayList<>();
+        if (osaamistavoitteet != null) {
+            for (Osaamistavoite osaamistavoite : osaamistavoitteet) {
+                if (osaamistavoite.getId() == null) {
+                    osaamistavoiteTemp.add(osaamistavoiteRepository.save(osaamistavoite));
+                } else {
+                    osaamistavoiteTemp.add(osaamistavoite);
+                }
+            }
+        }
+        return osaamistavoiteTemp;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<OsaAlueDto> getTutkinnonOsaOsaAlueet(Long id) {
+    public List<OsaAlueLaajaDto> getTutkinnonOsaOsaAlueet(Long id) {
         TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
         if (tutkinnonOsa == null) {
             throw new EntityNotFoundException("Tutkinnon osaa ei löytynyt id:llä: " + id);
         }
 
-        return mapper.mapAsList(tutkinnonOsa.getOsaAlueet(), OsaAlueDto.class);
+        return mapper.mapAsList(tutkinnonOsa.getOsaAlueet(), OsaAlueLaajaDto.class);
     }
 
     @Override
@@ -190,13 +225,13 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         }
         TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
         tutkinnonOsa.getOsaAlueet().remove(osaAlue);
-         osaAlueRepository.delete(osaAlue);
+        osaAlueRepository.delete(osaAlue);
     }
 
 
     @Override
     @Transactional(readOnly = false)
-    public OsaamistavoiteDto addOsaamistavoite(Long id, Long osaAlueId, OsaamistavoiteDto osaamistavoiteDto) {
+    public OsaamistavoiteLaajaDto addOsaamistavoite(Long id, Long osaAlueId, OsaamistavoiteLaajaDto osaamistavoiteDto) {
         assertExists(id);
         lockManager.ensureLockedByAuthenticatedUser(id);
         OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
@@ -213,15 +248,15 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         osaAlue.getOsaamistavoitteet().add(osaamistavoite);
         osaAlueRepository.save(osaAlue);
 
-        return mapper.map(osaamistavoite, OsaamistavoiteDto.class);
+        return mapper.map(osaamistavoite, OsaamistavoiteLaajaDto.class);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<OsaamistavoiteDto> getOsaamistavoitteet(Long id, Long osaAlueId) {
+    public List<OsaamistavoiteLaajaDto> getOsaamistavoitteet(Long id, Long osaAlueId) {
         assertExists(id);
         OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
-        return mapper.mapAsList(osaAlue.getOsaamistavoitteet(), OsaamistavoiteDto.class);
+        return mapper.mapAsList(osaAlue.getOsaamistavoitteet(), OsaamistavoiteLaajaDto.class);
     }
 
     @Override
@@ -243,7 +278,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     @Transactional(readOnly = false)
-    public OsaamistavoiteDto updateOsaamistavoite(Long id, Long osaAlueId, Long osaamistavoiteId, OsaamistavoiteDto osaamistavoite) {
+    public OsaamistavoiteLaajaDto updateOsaamistavoite(Long id, Long osaAlueId, Long osaamistavoiteId, OsaamistavoiteLaajaDto osaamistavoite) {
         assertExists(id);
         lockManager.ensureLockedByAuthenticatedUser(id);
         OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
@@ -257,7 +292,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         Osaamistavoite osaamistavoiteUusi = mapper.map(osaamistavoite, Osaamistavoite.class);
         osaamistavoiteEntity.mergeState(osaamistavoiteUusi);
 
-        return mapper.map(osaamistavoiteEntity, OsaamistavoiteDto.class);
+        return mapper.map(osaamistavoiteEntity, OsaamistavoiteLaajaDto.class);
     }
 
 
