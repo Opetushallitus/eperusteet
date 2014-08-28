@@ -198,9 +198,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @Transactional(readOnly = true)
     public void onkoDiaarinumeroKaytossa(String diaarinumero) {
-        Perusteprojekti projekti = repository.findOneByDiaarinumero(diaarinumero);
-        if (projekti != null) {
-            // TODO: Poikkeusten virheilmoituksetkin pitäisi lokalisoida
+        if (repository.findOneByDiaarinumero(diaarinumero) != null) {
             throw new BusinessRuleViolationException("Diaarinumero on jo käytössä");
         }
     }

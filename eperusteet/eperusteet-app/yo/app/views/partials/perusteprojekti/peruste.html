@@ -37,6 +37,16 @@ European Union Public Licence for more details.
 
     <div class="panel panel-default panel-clean">
       <div class="panel-heading">
+        <h3 class="panel-title" kaanna>määräyksen-diaarinumero</h3>
+      </div>
+      <div class="panel-body">
+        <input class="form-control" ng-show="editEnabled" ng-model="editablePeruste.diaarinumero"></input>
+        <p ng-hide="editEnabled">{{ editablePeruste.diaarinumero | kaanna }}</p>
+      </div>
+    </div>
+
+    <div class="panel panel-default panel-clean">
+      <div class="panel-heading">
         <h3 class="panel-title" kaanna>peruste-koulutukset</h3>
       </div>
       <div class="panel-body">

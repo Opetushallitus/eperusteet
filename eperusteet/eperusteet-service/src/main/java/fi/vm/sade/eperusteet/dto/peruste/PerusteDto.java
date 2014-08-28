@@ -40,6 +40,7 @@ public class PerusteDto implements Serializable {
     private Date voimassaoloAlkaa;
     private Date voimassaoloLoppuu;
     private Date siirtymaAlkaa;
+    private String diaarinumero;
     private Set<SuoritustapaDto> suoritustavat;
     private PerusteTila tila;
     private PerusteTyyppi tyyppi;

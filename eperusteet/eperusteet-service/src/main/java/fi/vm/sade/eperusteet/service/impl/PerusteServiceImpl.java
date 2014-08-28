@@ -47,6 +47,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.DiaarinumeroDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.OsaamisalaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -239,9 +240,11 @@ public class PerusteServiceImpl implements PerusteService {
 
         perusteet.lock(perusteVanha);
         perusteDto.setId(id);
+
         Peruste peruste = mapper.map(perusteDto, Peruste.class);
         peruste = checkIfKoulutuksetAlreadyExists(peruste);
         peruste.setSuoritustavat(perusteVanha.getSuoritustavat());
+
         peruste = perusteet.save(peruste);
         return mapper.map(peruste, PerusteDto.class);
     }

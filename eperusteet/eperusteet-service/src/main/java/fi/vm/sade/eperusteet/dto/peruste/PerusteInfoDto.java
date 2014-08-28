@@ -31,6 +31,7 @@ import lombok.Setter;
 public class PerusteInfoDto {
     private Long id;
     private LokalisoituTekstiDto nimi;
+    private String diaarinumero;
     private Date voimassaoloLoppuu;
     private PerusteTila tila;
 }
