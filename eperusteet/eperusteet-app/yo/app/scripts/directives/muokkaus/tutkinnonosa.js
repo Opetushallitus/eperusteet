@@ -100,13 +100,6 @@ angular.module('eperusteApp')
         collapsible: true,
         order: 7
       },{
-        path: 'osaamisala',
-        localeKey: 'tutkinnon-osan-osaamisala',
-        type: 'editor-text',
-        localized: true,
-        collapsible: true,
-        order: 8
-      },{
         path: 'arviointi.lisatiedot',
         localeKey: 'tutkinnon-osan-arviointi-teksti',
         type: 'editor-text',
