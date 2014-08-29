@@ -81,7 +81,8 @@ European Union Public Licence for more details.
               <input focus-me="uudenKohteenTiedot.showInputArea" class="form-control" type="text" ng-model="uudenKohteenTiedot.nimi" placeholder="{{'arviointi-uusi-kohde-placeholder' | kaanna}}"/><br/>
               <h4 kaanna>arviointi-asteikon-valinta</h4>
               <label ng-repeat="arviointiasteikko in arviointiasteikot">
-                <input type="radio" ng-model="uudenKohteenTiedot.arviointiasteikko" ng-value="arviointiasteikko" name="{{arviointiasteikko}}" />
+                <input type="radio" ng-model="uudenKohteenTiedot.arviointiasteikko" ng-value="arviointiasteikko"
+                       name="{{arviointiasteikko}}" ng-change="arviointiasteikkoChanged(arviointiasteikko)">
                 <span ng-repeat="osaamistaso in arviointiasteikko.osaamistasot">{{osaamistaso.otsikko | kaanna}}{{$index + 1 !== arviointiasteikko.osaamistasot.length ? '&nbsp;/&nbsp;': ''}}</span>
               </label>
               <div class="muokkaus-napit">
@@ -90,7 +91,7 @@ European Union Public Licence for more details.
               </div>
             </div>
             <button type="button" class="btn btn-default btn-xs" ng-show="!uudenKohteenTiedot.showInputArea"
-              ng-click="uudenKohteenTiedot.showInputArea = true" icon-role="add" kaanna>arviointi-uusi-kohde</button>
+              ng-click="kohde.uusiWizard()" icon-role="add" kaanna>arviointi-uusi-kohde</button>
           </div>
         </div>
 

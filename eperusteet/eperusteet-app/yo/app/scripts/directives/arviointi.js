@@ -18,8 +18,13 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('arviointiCtrl', function ($scope, YleinenData, Varmistusdialogi, $timeout, Utils) {
+  .controller('arviointiCtrl', function ($scope, YleinenData, Varmistusdialogi, $timeout,
+    Utils, ArviointiPreferences) {
     $scope.showNewKohdealueInput = false;
+
+    $scope.arviointiasteikkoChanged = function (value) {
+      ArviointiPreferences.setting('asteikko', value);
+    };
 
     $scope.kohdealue = {
       uusi: function () {
@@ -84,6 +89,12 @@ angular.module('eperusteApp')
             _.remove(list, item);
           }
         })();
+      },
+      uusiWizard: function () {
+        $scope.uudenKohteenTiedot = {
+          showInputArea: true,
+          arviointiasteikko: ArviointiPreferences.setting('asteikko')
+        };
       },
       uusi: function(kohdealue, uudenKohteenTiedot) {
         if(angular.isUndefined(kohdealue.arvioinninKohteet) || kohdealue.arvioinninKohteet === null) {
@@ -336,6 +347,16 @@ angular.module('eperusteApp')
         clickable: '@?'
       },
       controller: 'arvioinninTekstiKenttaCtrl'
+    };
+  })
+
+  .service('ArviointiPreferences', function () {
+    this.data = {};
+    this.setting = function (key, value) {
+      if (arguments.length === 1) {
+        return this.data[key];
+      }
+      this.data[key] = value;
     };
   });
 
