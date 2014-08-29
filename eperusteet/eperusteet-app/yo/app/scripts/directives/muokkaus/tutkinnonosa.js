@@ -177,6 +177,15 @@ angular.module('eperusteApp')
             return item;
           });
         }
+      },
+      validate: function() {
+        if ($scope.tutkinnonOsa.tyyppi === 'tutke2') {
+          return _.all(_.map(Tutke2OsaData.get().$editing, function (item) {
+            return Utils.hasLocalizedText(item.nimi);
+          }));
+        } else {
+          return true;
+        }
       }
     };
 
@@ -237,6 +246,9 @@ angular.module('eperusteApp')
       },
       notify: function (mode) {
         $scope.editEnabled = mode;
+      },
+      validate: function () {
+        return tutke2.validate();
       }
     };
 
