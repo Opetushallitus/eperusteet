@@ -16,16 +16,25 @@
 
 package fi.vm.sade.eperusteet.service.util;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 /**
- *
+ * Yksinkertainen "pari"
  * @author jhyoty
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-public @interface Test {
+@Getter
+@EqualsAndHashCode
+public final class Pair<F,S> {
+    private final F first;
+    private final S second;
+
+    public Pair(F first, S second) {
+        this.first = first;
+        this.second = second;
+    }
+
+    public static <F,S> Pair<F,S> of(F f, S s) {
+        return new Pair<>(f,s);
+    }
 }

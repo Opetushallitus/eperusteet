@@ -19,6 +19,7 @@ import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
+import fi.vm.sade.eperusteet.service.util.Pair;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -39,6 +40,7 @@ public class PermissionEvaluator implements org.springframework.security.access.
     private PerusteprojektiPermissionRepository perusteProjektit;
 
     private static final Logger LOG = LoggerFactory.getLogger(PermissionEvaluator.class);
+
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
         //TODO
@@ -46,34 +48,37 @@ public class PermissionEvaluator implements org.springframework.security.access.
         return false;
     }
 
+    private static final EnumSet<ProjektiTila> MUOKKAUS_TILAT = EnumSet.complementOf(EnumSet.of(ProjektiTila.JULKAISTU, ProjektiTila.POISTETTU));
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
-
-        final EnumSet<ProjektiTila> muokkausTilat = EnumSet.complementOf(EnumSet.of(ProjektiTila.JULKAISTU, ProjektiTila.POISTETTU));
-        Set<ProjektiTila> tila = findPerusteProjektiTila(targetType, targetId);
-        tila.retainAll(muokkausTilat);
-        boolean verdict = !tila.isEmpty() && authentication.isAuthenticated();
+        boolean verdict = false;
+        if (authentication.isAuthenticated()) {
+            for (Pair<String, ProjektiTila> p : findPerusteProjektiTila(targetType, targetId)) {
+                if (MUOKKAUS_TILAT.contains(p.getSecond())) {
+                    verdict = true;
+                    break;
+                }
+            }
+        }
         LOG.warn(String.format("%s to %s{id=%s} by %s: verdict: %s", permission, targetType, targetId, authentication, verdict));
         return verdict;
     }
 
-    private Set<ProjektiTila> findPerusteProjektiTila(String targetType, Serializable targetId) {
+    private Set<Pair<String, ProjektiTila>> findPerusteProjektiTila(String targetType, Serializable targetId) {
 
         if (!(targetId instanceof Long)) {
             throw new IllegalArgumentException("Expected Long");
         }
         final Long id = (Long) targetId;
 
-        // keskeneräiset perusteprojektit joihin käyttäjällä on jokin oikeus
-        // näistä tarvitaan projektin tila
+        final Set<Pair<String, ProjektiTila>> empty = Collections.emptySet();
         switch (targetType.toLowerCase()) {
             case "peruste": {
-                Perusteprojekti pp = perusteProjektit.findByPeruste(id);
-                return pp == null ? Collections.<ProjektiTila>emptySet() : Collections.singleton(pp.getTila());
+                return Sets.newHashSet(perusteProjektit.findByPeruste(id));
             }
             case "perusteprojekti": {
                 Perusteprojekti pp = perusteProjektit.findOne(id);
-                return pp == null ? Collections.<ProjektiTila>emptySet() : Collections.singleton(pp.getTila());
+                return pp == null ? empty : Collections.singleton(Pair.of(pp.getOid(), pp.getTila()));
             }
             case "perusteenosa": {
                 return Sets.newHashSet(perusteProjektit.findTilaByPerusteenOsaId(id));

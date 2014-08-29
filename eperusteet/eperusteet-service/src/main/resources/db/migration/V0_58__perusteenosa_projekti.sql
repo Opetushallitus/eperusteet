@@ -1,12 +1,12 @@
 -- perusteenosaan liittyvät käynnissä olevat perusteprojektit
 create or replace view perusteenosa_projekti as
 with recursive vanhemmat as (
-    select v.id, v.vanhempi_id from perusteenosaviite v, perusteenosa p
+    select p.id, v.vanhempi_id, v.perusteenosa_id from perusteenosaviite v, perusteenosa p
     where v.perusteenosa_id = p.id and p.tila='LUONNOS'
     union all
-    select p.id, p.vanhempi_id
+    select p.id, p.vanhempi_id, v.perusteenosa_id
     from perusteenosaviite p, vanhemmat v where p.id = v.vanhempi_id)
-select distinct v.id, pp.id as perusteprojekti_id, pp.ryhmaoid, pp.tila from
+select distinct v.perusteenosa_id as id, pp.id as perusteprojekti_id, pp.ryhmaoid, pp.tila from
     vanhemmat v
     ,suoritustapa s
     ,peruste_suoritustapa ps
