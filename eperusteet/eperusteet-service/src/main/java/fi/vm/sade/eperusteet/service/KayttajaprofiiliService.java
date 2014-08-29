@@ -15,8 +15,8 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.dto.KayttajaProfiiliDto;
-import fi.vm.sade.eperusteet.dto.SuosikkiDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajaProfiiliDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.SuosikkiDto;
 
 /**
  *

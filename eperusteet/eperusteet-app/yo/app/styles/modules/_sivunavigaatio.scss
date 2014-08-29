@@ -97,13 +97,20 @@ $sivunavi-level-padding: 20px;
     font-weight: 700;
     color: white;
     border-bottom: none;
+    text-align: center;
   }
   .sivunavi-tc-item {
     margin-bottom: 20px;
   }
   .active, .active a {
-    background-color: $brand-primary;
-    color: white;
+    background-color: #e6e6e6;
+    color: $brand-primary;
+  }
+  .list-group-item {
+    &.active, &.active:focus, &.active:hover {
+      background-color: #e6e6e6;
+      color: $brand-primary;
+    }
   }
   .item {
     .toggler {
@@ -121,7 +128,7 @@ $sivunavi-level-padding: 20px;
       margin-left: 22px;
     }
     &:hover:not(.active) {
-      background-color: #eee;
+      background-color: #f2f2f2;
     }
     &:active, &:focus {
       outline: 0;
@@ -204,6 +211,7 @@ $sivunavi-level-padding: 20px;
     }
   }
   .sivunavi-sisalto {
+    margin-top: 15px;
     margin-left: 10px;
   }
   .sivunavi-takaisin {

@@ -38,8 +38,15 @@ angular.module('eperusteApp')
   .directive('kaanna', function(Kaanna) {
     return {
       restrict: 'A',
-      link: function(scope, el) {
-        el.text(Kaanna.kaanna(el.text()));
+      link: function(scope, el, attrs) {
+        var translated = '';
+        var original = el.text();
+        if (attrs.kaannaValues) {
+          translated = Kaanna.kaanna(original, scope.$eval(attrs.kaannaValues));
+        } else {
+          translated = Kaanna.kaanna(original);
+        }
+        el.text(translated);
       }
     };
   })

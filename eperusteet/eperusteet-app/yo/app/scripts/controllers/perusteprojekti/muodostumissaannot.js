@@ -20,9 +20,8 @@ angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams,
     PerusteenRakenne, Notifikaatiot, Editointikontrollit, PerusteProjektiService,
     Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot,
-    virheService, PerusteProjektiSivunavi) {
+    virheService, PerusteProjektiSivunavi, perusteprojektiTiedot) {
     $scope.editoi = false;
-    // $scope.peruste = PerusteProjektiService.getPeruste();
     $scope.suoritustapa = $stateParams.suoritustapa;
     $scope.rakenne = {
       $resolved: false,
@@ -31,6 +30,7 @@ angular.module('eperusteApp')
     };
     $scope.versiot = {};
     $scope.isLocked = false;
+    $scope.peruste = perusteprojektiTiedot.getPeruste();
 
     Kommentit.haeKommentit(KommentitBySuoritustapa, {id: $stateParams.perusteProjektiId, suoritustapa: $scope.suoritustapa});
 
@@ -52,21 +52,36 @@ angular.module('eperusteApp')
 
     function haeRakenne(cb, versio) {
       cb = cb || angular.noop;
-      PerusteenRakenne.haeByPerusteprojekti($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
-        successCb(res);
-        if (versio) {
-          haeVersiot(true, function () {
-            var revNumber = VersionHelper.select($scope.versiot, versio);
-            if (!revNumber) {
-              errorCb();
-            } else {
-              $scope.vaihdaVersio(cb);
-            }
-          });
+      haeVersiot(true, function() {
+        var revNumber = VersionHelper.select($scope.versiot, versio);
+        if (versio && !$scope.versiot.latest) {
+          
+          if (!revNumber) {
+            errorCb();
+          } else {
+            PerusteenRakenne.haeTutkinnonosatByPeruste($scope.peruste.id, $scope.suoritustapa, function(tutkinnonOsat) {
+              var vastaus = PerusteenRakenne.pilkoTutkinnonOsat(tutkinnonOsat, {});
+              $scope.tutkinnonOsat = vastaus.tutkinnonOsat;
+              VersionHelper.changeRakenne($scope.versiot, {id: $scope.peruste.id, suoritustapa: $scope.suoritustapa}, function(response) {
+                $scope.rakenne.rakenne = response;
+                $scope.rakenne.$resolved = true;
+                $scope.rakenne.$suoritustapa = $scope.suoritustapa;
+                $scope.rakenne.$peruste = $scope.peruste;
+                $scope.rakenne.tutkinnonOsat = vastaus.tutkinnonOsat;
+                $scope.rakenne.tutkinnonOsaViitteet = vastaus.tutkinnonOsaViitteet;
+                cb();
+              });
+            });
+            
+          }
         } else {
-          cb();
+          PerusteenRakenne.haeByPerusteprojekti($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
+            successCb(res);
+            cb();
+          });
         }
       });
+
     }
     $scope.haeRakenne = haeRakenne;
     var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, '') : null;
@@ -79,7 +94,9 @@ angular.module('eperusteApp')
         $scope.suoritustapa,
         function() {
           Notifikaatiot.onnistui('tallennus-onnistui');
-          haeVersiot(true);
+          haeVersiot(true, function() {
+            VersionHelper.setUrl($scope.versiot, true);
+          });
           Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
         },
         function() {
@@ -98,11 +115,13 @@ angular.module('eperusteApp')
       $scope.versiot.hasChanged = true;
       // Ideally we would reload the data and rewrite version to url without changing state
       VersionHelper.setUrl($scope.versiot, true);
-      /*VersionHelper.changeRakenne($scope.versiot, {id: $scope.rakenne.$peruste.id, suoritustapa: $scope.suoritustapa}, function(response) {
-        $scope.rakenne.rakenne = response;
-        VersionHelper.setUrl($scope.versiot, true);
-        cb();
-      });*/
+//      VersionHelper.changeRakenne($scope.versiot, {id: $scope.peruste.id, suoritustapa: $scope.suoritustapa}, function(response) {
+//        console.log('cb kutsuttu', response);
+//        $scope.rakenne.rakenne = response;
+//        $scope.rakenne.$resolved = true;
+//        //VersionHelper.setUrl($scope.versiot, true);
+//        cb();
+//      });
     };
 
     $scope.revert = function () {

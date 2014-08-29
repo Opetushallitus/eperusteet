@@ -17,12 +17,10 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .factory('Arviointi', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/arvioinnit/:arviointiId', {
-      arviointiId: '@id'
-    });
-  }).factory('Arviointiasteikot', function($resource, SERVICE_LOC) {
+  .factory('Arviointiasteikot', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/arviointiasteikot/:asteikkoId', {
       asteikkoId: '@id'
+    }, {
+      list: {method: 'GET', isArray: true, cache: true},
     });
   });

@@ -16,23 +16,19 @@
 package fi.vm.sade.eperusteet.resource;
 
 import com.wordnik.swagger.annotations.Api;
-import fi.vm.sade.eperusteet.domain.Henkilo;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.domain.Rooli;
-import fi.vm.sade.eperusteet.dto.BooleanDto;
-import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
-import fi.vm.sade.eperusteet.dto.PerusteprojektiInfoDto;
-import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
+import fi.vm.sade.eperusteet.dto.util.BooleanDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
-import fi.vm.sade.eperusteet.service.mapping.Dto;
-import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -54,15 +50,8 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 @Controller
 @RequestMapping("/perusteprojektit")
-@Api(value = "perusteprojektit")
+@Api(value = "perusteprojektit", description = "Perusteprojektien hallinta")
 public class PerusteprojektiController {
-
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteprojektiController.class);
-
-    // FIXME: poista kun on aika
-    @Autowired
-    @Dto
-    private DtoMapper mapper;
 
     @Autowired
     private PerusteprojektiService service;
@@ -85,15 +74,14 @@ public class PerusteprojektiController {
 
     @RequestMapping(value = "/{id}/jasenet", method = GET)
     @ResponseBody
-    public ResponseEntity<List<Henkilo>> getJasenet(@PathVariable("id") final long id) {
-        List<Henkilo> t = new ArrayList<>();
-        t.add(new Henkilo("1.1.1.1.1", "Olaf Omistaja", "040-1234567", "email.omistaja@joku.fi", Rooli.of("omistaja")));
-        t.add(new Henkilo("1.1.1.1.1", "Sirkku Sihteeri", "040-1234567", "email.email@joku.fi", Rooli.of("sihteeri")));
-        t.add(new Henkilo("1.1.1.1.1", "Jetro Jäsen", "040-1234567", "email.email@joku.fi", Rooli.of("jasen")));
-        t.add(new Henkilo("1.1.1.1.1", "Jaana Jäsen", "040-1234567", "email.email@joku.fi", Rooli.of("jasen")));
-        t.add(new Henkilo("1.1.1.1.1", "Erkki Esimerkki", "040-1234567", "erkkimail@joku.fi", Rooli.of("jasen")));
-        t.add(new Henkilo("1.1.1.1.1", "Kalle Kommentoija", "040-1234567", "kalle@kommentoija.fi", Rooli.of("kommentoija")));
-        return new ResponseEntity<>(t, HttpStatus.OK);
+    public ResponseEntity<List<KayttajanTietoDto>> getJasenet(@PathVariable("id") final long id) {
+        return new ResponseEntity<>(service.getJasenet(id), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/jasenet/tiedot", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>>> getJasenetTiedot(@PathVariable("id") final long id) {
+        return new ResponseEntity<>(service.getJasenetTiedot(id), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/tilat", method = GET)
@@ -115,7 +103,6 @@ public class PerusteprojektiController {
     @ResponseBody
     public TilaUpdateStatus updateTila(@PathVariable("id") final long id, @PathVariable("tila") final String tila) {
         return service.updateTila(id, ProjektiTila.of(tila));
-
     }
 
     @RequestMapping(method = POST)
@@ -123,7 +110,7 @@ public class PerusteprojektiController {
     @ResponseBody
     public ResponseEntity<PerusteprojektiDto> add(@RequestBody PerusteprojektiLuontiDto perusteprojektiLuontiDto, UriComponentsBuilder ucb) {
         service.onkoDiaarinumeroKaytossa(perusteprojektiLuontiDto.getDiaarinumero());
-        
+
         PerusteprojektiDto perusteprojektiDto = service.save(perusteprojektiLuontiDto);
         return new ResponseEntity<>(perusteprojektiDto, buildHeadersFor(perusteprojektiDto.getId(), ucb), HttpStatus.CREATED);
     }
@@ -133,7 +120,7 @@ public class PerusteprojektiController {
         headers.setLocation(ucb.path("/perusteprojektit/{id}").buildAndExpand(id).toUri());
         return headers;
     }
-    
+
     @RequestMapping(value = "/diaarinumero/uniikki/{diaarinumero}", method = GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

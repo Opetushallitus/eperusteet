@@ -18,26 +18,29 @@ package fi.vm.sade.eperusteet.service.util;
 
 import fi.vm.sade.generic.rest.CachingRestClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author nkala
  */
+@Component
 public class RestClientFactory {
-    @Value("${fi.vm.sade.eperusteet.oph_username:default}")
-    private static String username;
+    @Value("${fi.vm.sade.eperusteet.oph_username:''}")
+    private String username;
 
-    @Value("${fi.vm.sade.eperusteet.oph_password:default}")
-    private static String password;
+    @Value("${fi.vm.sade.eperusteet.oph_password:''}")
+    private String password;
 
-    @Value("${web.url.cas:default}")
-    private static String casUrl;
+    @Value("${web.url.cas:''}")
+    private String casUrl;
 
-    public static CachingRestClient create(String serice) {
+    public CachingRestClient create(String service) {
         CachingRestClient crc = new CachingRestClient();
         crc.setUsername(username);
         crc.setPassword(password);
-        crc.setWebCasUrl(casUrl + "/j_spring_cas_security_check");
+        crc.setWebCasUrl(casUrl);
+        crc.setCasService(service + "/j_spring_cas_security_check");
         return crc;
     }
 }

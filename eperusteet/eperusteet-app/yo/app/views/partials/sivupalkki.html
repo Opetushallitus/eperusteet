@@ -19,7 +19,7 @@ European Union Public Licence for more details.
     <div ng-controller="SuosikitCtrl">
       <div class="panel panel-default">
         <div class="panel-heading">{{'suosikit-otsikko' | kaanna}}
-          <button class="btn btn-default btn-sm suosikit-muokkaus" ng-click="edit()" icon-role="edit" kaanna>muokkaa</button>
+          <button class="btn btn-default btn-sm suosikit-muokkaus" ng-show="suosikit.length > 0" ng-click="edit()" icon-role="edit" kaanna>muokkaa</button>
         </div>
         <div class="panel-body">
           <p ng-show="suosikit.length === 0" kaanna>ei-suosikkeja</p>

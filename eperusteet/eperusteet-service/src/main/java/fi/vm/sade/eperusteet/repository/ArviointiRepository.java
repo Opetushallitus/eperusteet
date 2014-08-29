@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.repository;
 
 import org.springframework.stereotype.Repository;
 
-import fi.vm.sade.eperusteet.domain.Arviointi;
+import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 
 /**

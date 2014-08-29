@@ -18,85 +18,43 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('ProjektiryhmaCtrl', function($scope, $modal, $stateParams, PerusteprojektiJasenet, PerusteProjektiService, VariHyrra) {
+  .controller('ProjektiryhmaCtrl', function($scope, $modal, $stateParams, PerusteprojektiJasenet,
+                                            PerusteProjektiService, ColorCalculator, VariHyrra, kayttajaToiminnot) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
-    $scope.ryhma = [];
+    $scope.ryhma = {};
 
     PerusteprojektiJasenet.get({
       id: $stateParams.perusteProjektiId
     }, function(jasenet) {
-      $scope.ryhma = jasenet;
       VariHyrra.reset();
-      _.each($scope.ryhma, function (member) {
-        member.color = VariHyrra.next();
+      _.forEach(jasenet, function(j) {
+        // Käyttäjän nimi
+        j.$nimi = (!_.isEmpty(j.kutsumanimi) ? j.kutsumanimi : j.etunimet) + ' ' + j.sukunimi;
+        j.color = VariHyrra.next();
+
+        // Yhteystietotyyppit
+        _.forEach(_.first(j.yhteystiedot).yhteystiedot, function(yt) {
+          if (yt.yhteystietoTyyppi === 'YHTEYSTIETO_SAHKOPOSTI') { j.$sahkoposti = yt.yhteystietoArvo; }
+          else if (yt.yhteystietoTyyppi === 'YHTEYSTIETO_MATKAPUHELINNUMERO' &&
+                   !_.isEmpty(yt.yhteystietoArvo)) { j.$puhelinnumero = yt.yhteystietoArvo; }
+          else if (_.isEmpty(j.$puhelinnumero) &&
+                   yt.yhteystietoTyyppi === 'YHTEYSTIETO_PUHELINNUMERO' &&
+                   !_.isEmpty(yt.yhteystietoArvo)) { j.$puhelinnumero = yt.yhteystietoArvo; }
+        });
       });
+      $scope.ryhma = _.groupBy(jasenet, 'tehtavanimike');
     });
 
-    $scope.kutsuUusi = function () {
-      $modal.open({
-        template: '<div class="modal-header"><h2>Lisää jäsen</h2></div>' +
-          '<div class="modal-body"><jasenkortti jasen="jasen" muokkaus-moodi="true"></jasenkortti></div>' +
-          '<div class="modal-footer">' +
-          '<button class="btn btn-default" ng-click="peruuta()">{{ \'peruuta\' | kaanna }}</button>' +
-          '<button class="btn btn-primary" ng-click="tallenna()">{{ \'tallenna\' | kaanna }}</button>' +
-          '</div>',
-        controller: 'uusiJasenCtrl',
-        resolve: {
-          data: function () { return { ryhma: $scope.ryhma }; }
-        }
-      });
+    $scope.nimikirjaimet = kayttajaToiminnot.nimikirjaimet;
+
+    $scope.styleFor = function (jasen) {
+      return jasen.color ? {
+        'background-color': '#' + jasen.color,
+        'color': ColorCalculator.readableTextColorForBg(jasen.color)
+      } : {};
     };
   })
-
-  .controller('uusiJasenCtrl', function ($scope, $modalInstance, kayttajaToiminnot, data, VariHyrra) {
-    $scope.jasen = {nimi: '', email: '', puhelin: '', rooli: 'jasen'};
-    $scope.kayttajaToiminnot = kayttajaToiminnot;
-    $scope.tallenna = function () {
-      $scope.jasen.color = VariHyrra.next();
-      data.ryhma.push($scope.jasen);
-      $modalInstance.close();
-    };
-    $scope.peruuta = function () {
-      $modalInstance.close();
-    };
-  })
-
-  .directive('ryhmanjasenet', function () {
-    return {
-      restrict: 'E',
-      template: '<div class="ryhma-rooli">' +
-        '<h3>{{\'projektiryhma-otsikko-\' + rooli | kaanna}}</h3>' +
-        '<jasenkortti ng-repeat="jasen in ryhma | filter:{rooli: rooli}:true" ryhma="ryhma" jasen="jasen" voi-muokata="true"></jasenkortti>' +
-        '</div>',
-      controller: 'ryhmanjasenetCtrl',
-      scope: {
-        ryhma: '=',
-        rooli: '@'
-      }
-    };
-  })
-
-  .controller('ryhmanjasenetCtrl', function ($scope, kayttajaToiminnot) {
-    $scope.kayttajaToiminnot = kayttajaToiminnot;
-  })
-
-  .directive('jasenkortti', function () {
-    return {
-      restrict: 'E',
-      templateUrl: 'views/partials/jasenkortti.html',
-      controller: 'jasenkorttiCtrl',
-      scope: {
-        ryhma: '=',
-        jasen: '='
-      },
-      link: function (scope, element, attrs) {
-        scope.voiMuokata = (attrs.voiMuokata === 'true');
-        scope.muokkausMoodi = (attrs.muokkausMoodi === 'true');
-      }
-    };
-  })
-
   .service('kayttajaToiminnot', function () {
     this.nimikirjaimet = function (nimi) {
       return _.reduce(nimi.split(' '), function (memo, osa) {

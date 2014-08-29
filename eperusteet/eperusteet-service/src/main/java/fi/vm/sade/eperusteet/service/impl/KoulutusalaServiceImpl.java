@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.KoulutusalaDto;
 import fi.vm.sade.eperusteet.dto.OpintoalaDto;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
@@ -36,8 +36,6 @@ import org.springframework.web.client.RestTemplate;
  */
 @Service
 public class KoulutusalaServiceImpl implements KoulutusalaService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(KoulutusalaServiceImpl.class);
 
     private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
     private static final String KOODISTO_RELAATIO_ALA = "relaatio/sisaltyy-alakoodit/";

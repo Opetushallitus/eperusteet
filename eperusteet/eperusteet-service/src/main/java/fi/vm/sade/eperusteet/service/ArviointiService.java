@@ -16,8 +16,8 @@
 
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Arviointi;
-import fi.vm.sade.eperusteet.dto.ArviointiDto;
+import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
+import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
 import java.util.List;
 
 /**

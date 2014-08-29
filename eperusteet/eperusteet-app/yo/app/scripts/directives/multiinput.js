@@ -24,7 +24,8 @@ angular.module('eperusteApp')
       scope: {
         mlData: '=',
         mlAdditionalLanguages: '=',
-        type: '@'
+        type: '@',
+        required: '='
       },
       templateUrl: 'views/multiinput.html',
       replace: true,
@@ -58,6 +59,7 @@ angular.module('eperusteApp')
             element.find('input, textarea').attr('id', scope.$parent.inputElId);
           });
         }
+
       }
     };
   });

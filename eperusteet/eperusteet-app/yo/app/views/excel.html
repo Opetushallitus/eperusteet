@@ -72,37 +72,43 @@
   <div ng-show="!lukeeTiedostoa && !alussa && errors.length === 0 && !peruste.$perusteTallennettu">
     <form class="form-horizontal projekti-form" name="perusteprojektiForm" role="form" novalidate>
       <div class="form-area">
-        <div ng-form="projektinPerusteForm">
-          <div class="form-group">
-            <label class="col-sm-3">{{ 'projektin-nimi-label' | kaanna }}<span>*</span></label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control" ng-model="projekti.nimi" placeholder="{{ 'valitse-nimi' | kaanna }}"/>
-            </div>
+        <div class="form-group">
+          <label class="col-sm-3">{{ 'projektin-nimi-label' | kaanna }}<span>*</span></label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" ng-model="projekti.nimi" placeholder="{{ 'valitse-nimi' | kaanna }}"/>
           </div>
-          <div class="form-group">
-            <label class="col-sm-3">{{ 'diaarinumero-label' | kaanna }}<span>*</span></label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control" ng-model="projekti.diaarinumero" placeholder="{{'valitse-diaarinumero' | kaanna}}"/>
-            </div>
-          </div>
-          <div class="form-group" ng-show="projekti.koulutustyyppi === 'koulutustyyppi_1'">
-            <label for="koulutustyyppi" class="col-sm-3">{{ 'laajuuden-yksikkö' | kaanna }}<span>*</span></label>
-            <div class="col-md-9">
-              <select id="koulutustyyppi" ng-model="projekti.laajuusYksikko" class="form-control" ng-required="projekti.koulutustyyppi === 'koulutustyyppi_1'">
-                <option ng-repeat="yk in yksikot" value="{{ yk }}" ng-selected="projekti.laajuusYksikko === yk">{{ yk | kaanna }}</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group" ng-show="projekti.koulutustyyppi === 'koulutustyyppi_1'">
-            <label for="koulutustyyppi" class="col-sm-3">{{ 'liitä-suoritustapaan' | kaanna }}<span>*</span></label>
-            <div class="col-md-9">
-              <select id="koulutustyyppi" ng-model="suoritustapa" class="form-control" ng-required="projekti.koulutustyyppi === 'koulutustyyppi_1'">
-                <option ng-repeat="st in suoritustavat" value="{{ st }}" ng-selected="suoritustapa === st">{{ st | kaanna }}</option>
-              </select>
-            </div>
-          </div>
-          <button ng-click="tallennaPerusteprojekti(projekti)" class="btn btn-primary" kaanna>luo-perusteprojekti-nappi</button>
         </div>
+        <div class="form-group">
+          <label class="col-sm-3">{{ 'projektin-oid-label' | kaanna }}<span>*</span></label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" ng-model="projekti.oid" placeholder="Kirjoita oid"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3">{{ 'diaarinumero-label' | kaanna }}<span>*</span></label>
+          <div class="col-sm-9">
+            <input name="diaarinumero" type="text" class="form-control" ng-model="projekti.diaarinumero" placeholder="{{'valitse-diaarinumero' | kaanna}}" diaarinumerouniikki></input>
+          </div>
+        </div>
+        <p class="alert alert-error" ng-show="perusteprojektiForm.diaarinumero.$error.diaarinumerouniikki" kaanna>diaarinumero-kaytossa</p>
+
+        <div class="form-group" ng-show="projekti.koulutustyyppi === 'koulutustyyppi_1'">
+          <label for="koulutustyyppi" class="col-sm-3">{{ 'laajuuden-yksikkö' | kaanna }}<span>*</span></label>
+          <div class="col-md-9">
+            <select id="koulutustyyppi" ng-model="projekti.laajuusYksikko" class="form-control" ng-required="projekti.koulutustyyppi === 'koulutustyyppi_1'">
+              <option ng-repeat="yk in yksikot" value="{{ yk }}" ng-selected="projekti.laajuusYksikko === yk">{{ yk | kaanna }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" ng-show="projekti.koulutustyyppi === 'koulutustyyppi_1'">
+          <label for="koulutustyyppi" class="col-sm-3">{{ 'liitä-suoritustapaan' | kaanna }}<span>*</span></label>
+          <div class="col-md-9">
+            <select id="koulutustyyppi" ng-model="suoritustapa" class="form-control" ng-required="projekti.koulutustyyppi === 'koulutustyyppi_1'">
+              <option ng-repeat="st in suoritustavat" value="{{ st }}" ng-selected="suoritustapa === st">{{ st | kaanna }}</option>
+            </select>
+          </div>
+        </div>
+        <button ng-click="tallennaPerusteprojekti(projekti)" class="btn btn-primary" ng-disabled="perusteprojektiForm.$invalid" kaanna>luo-perusteprojekti-nappi</button>
       </div>
     </form>
   </div>
@@ -129,10 +135,10 @@
 
     <tabset justified="true">
       <tab heading="{{ 'tekstikappaleet' | kaanna }}">
-        <div ng-include src="'views/partials/excelPeruste.html'"></div>
+        <div ng-include src="'views/partials/excelTekstikappale.html'"></div>
       </tab>
       <tab heading="{{ 'tutkinnonosat' | kaanna }}">
-        <div ng-include src="'views/partials/excelOsaperuste.html'"></div>
+        <div ng-include src="'views/partials/excelTutkinnonOsat.html'"></div>
       </tab>
     </tabset>
   </div>

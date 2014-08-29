@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.dto.SuosikkiDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.SuosikkiDto;
 import fi.vm.sade.eperusteet.repository.SuosikkiRepository;
 import fi.vm.sade.eperusteet.service.SuosikkiService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;

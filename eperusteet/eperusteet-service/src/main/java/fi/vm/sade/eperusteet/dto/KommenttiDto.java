@@ -29,6 +29,7 @@ import lombok.Setter;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KommenttiDto {
+    private String nimi;
     private String muokkaaja;
     private String sisalto;
     private Date luotu;

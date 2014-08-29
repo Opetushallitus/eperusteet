@@ -16,6 +16,8 @@
 
 package fi.vm.sade.eperusteet.dto;
 
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -15,6 +15,10 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -23,14 +27,19 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.dto.PerusteprojektiDto;
-import fi.vm.sade.eperusteet.dto.PerusteprojektiInfoDto;
-import fi.vm.sade.eperusteet.dto.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
+import fi.vm.sade.eperusteet.dto.util.CombinedDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
@@ -39,12 +48,15 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
+import fi.vm.sade.eperusteet.service.util.RestClientFactory;
+import fi.vm.sade.generic.rest.CachingRestClient;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,7 +67,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteprojektiServiceImpl.class);
+    private final String authQueryPath = "/resources/henkilo?count=9999&index=0&org=";
+
+    @Value("${cas.service.authentication-service:''}")
+    private String authServiceUrl;
 
     @Autowired
     @Dto
@@ -69,6 +84,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private PerusteService perusteService;
+
+    @Autowired
+    private KayttajanTietoService kayttajanTietoService;
+
+    @Autowired
+    RestClientFactory restClientFactory;
 
     @Override
     @Transactional(readOnly = true)
@@ -84,6 +105,58 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<KayttajanTietoDto> getJasenet(Long id) {
+        CachingRestClient crc = restClientFactory.create(authServiceUrl);
+        Perusteprojekti p = repository.findOne(id);
+        List<KayttajanTietoDto> kayttajat = null;
+        ObjectMapper omapper = new ObjectMapper();
+
+        if (p == null || p.getOid() == null | p.getOid().isEmpty()) {
+            throw new BusinessRuleViolationException("Perusteprojektilla ei ole oid:a");
+        }
+
+        try {
+            String url = authServiceUrl + authQueryPath + p.getOid();
+            String json = crc.getAsString(url);
+            kayttajat = kayttajanTietoService.parsiKayttajat(omapper.readTree(json).get("results"));
+        } catch (IOException ex) {
+            throw new BusinessRuleViolationException("Käyttäjien tietojen hakeminen epäonnistui");
+        }
+        return kayttajat;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> getJasenetTiedot(Long id) {
+        CachingRestClient crc = restClientFactory.create(authServiceUrl);
+        Perusteprojekti p = repository.findOne(id);
+
+        if (p == null || p.getOid() == null || p.getOid().isEmpty()) {
+            throw new BusinessRuleViolationException("Perusteprojektilla ei ole oid:a");
+        }
+
+        List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> kayttajat = new ArrayList<>();
+
+        try {
+            String url = authServiceUrl + authQueryPath + p.getOid();
+            ObjectMapper omapper = new ObjectMapper();
+            JsonNode tree = omapper.readTree(crc.getAsString(url));
+            for (JsonNode node : tree.get("results")) {
+                String oid = node.get("oidHenkilo").asText();
+                CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto> combined = new CombinedDto<>(
+                    kayttajanTietoService.hae(oid),
+                    kayttajanTietoService.haePerusteprojekti(oid, id)
+                );
+                kayttajat.add(combined);
+            }
+        } catch (IOException ex) {
+            throw new BusinessRuleViolationException("Käyttäjien tietojen hakeminen epäonnistui");
+        }
+        return kayttajat;
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto) {
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
@@ -92,6 +165,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         LaajuusYksikko yksikko = perusteprojektiDto.getLaajuusYksikko();
         PerusteTyyppi tyyppi = perusteprojektiDto.getTyyppi() == null ? PerusteTyyppi.NORMAALI : perusteprojektiDto.getTyyppi();
         perusteprojekti.setTila(ProjektiTila.LAADINTA);
+        perusteprojekti.setOid(perusteprojektiDto.getOid());
 
         if (tyyppi != PerusteTyyppi.POHJA) {
             if (koulutustyyppi.equals("koulutustyyppi_1") && yksikko == null) {
@@ -100,6 +174,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             if (perusteprojektiDto.getDiaarinumero() == null) {
                 throw new BusinessRuleViolationException("Diaarinumeroa ei ole asetettu");
             }
+//            FIXME: Ota käyttöön kun aika koittaa
+//            if (perusteprojektiDto.getOid() == null) {
+//                throw new BusinessRuleViolationException("Organisaatioryhmää ei ole asetettu");
+//            }
         }
 
         Peruste peruste;
@@ -116,13 +194,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
     }
-    
+
     @Override
     @Transactional(readOnly = true)
     public void onkoDiaarinumeroKaytossa(String diaarinumero) {
-        Perusteprojekti projekti = repository.findOneByDiaarinumero(diaarinumero);
-        if (projekti != null) {
-            // TODO: Poikkeusten virheilmoituksetkin pitäisi lokalisoida
+        if (repository.findOneByDiaarinumero(diaarinumero) != null) {
             throw new BusinessRuleViolationException("Diaarinumero on jo käytössä");
         }
     }
@@ -194,6 +270,19 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     updateStatus.addStatus("liittamattomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);
                     updateStatus.setVaihtoOk(false);
                 }
+
+                List<TutkinnonOsa> koodittomatTutkinnonOsat = koodittomatTutkinnonosat(suoritustapa);
+                if (!koodittomatTutkinnonOsat.isEmpty()) {
+                    List<LokalisoituTekstiDto> nimet = new ArrayList<>();
+                    for (TutkinnonOsa tutkinnonOsa : koodittomatTutkinnonOsat) {
+                        if (tutkinnonOsa.getNimi() != null) {
+                           nimet.add(new LokalisoituTekstiDto(tutkinnonOsa.getNimi().getId(), tutkinnonOsa.getNimi().getTeksti()));
+                        }
+                    }
+                    updateStatus.addStatus("koodittomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);
+                    updateStatus.setVaihtoOk(false);
+                }
+
             }
         }
 
@@ -208,11 +297,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (tila == ProjektiTila.POISTETTU) {
             setPerusteTila(projekti.getPeruste(), PerusteTila.POISTETTU);
         }
-        
+
         if (tila == ProjektiTila.LAADINTA && projekti.getTila() == ProjektiTila.POISTETTU) {
             setPerusteTila(projekti.getPeruste(), PerusteTila.LUONNOS);
         }
-        
+
         if (projekti.getPeruste().getTyyppi() == PerusteTyyppi.POHJA && tila == ProjektiTila.VALMIS
             && projekti.getTila() == ProjektiTila.LAADINTA) {
             setPerusteTila(projekti.getPeruste(), PerusteTila.VALMIS);
@@ -232,7 +321,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             }
             peruste.setTila(tila);
     }
-            
+
     private PerusteenOsaViite setSisaltoTila(PerusteenOsaViite sisaltoRoot, PerusteTila tila) {
         if (sisaltoRoot.getPerusteenOsa() != null) {
             sisaltoRoot.getPerusteenOsa().setTila(tila);
@@ -258,13 +347,37 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         RakenneModuuli rakenne = suoritustapa.getRakenne();
         if (rakenne != null) {
-            for (TutkinnonOsaViite viite : suoritustapa.getTutkinnonOsat()) {
+            for (TutkinnonOsaViite viite : getViitteet(suoritustapa)) {
                 if (!rakenne.isInRakenne(viite, true) && (viite.getPoistettu() == null || !viite.getPoistettu())) {
                     viiteList.add(viite);
                 }
             }
         }
         return viiteList;
+    }
+
+    private List<TutkinnonOsa> koodittomatTutkinnonosat(Suoritustapa suoritustapa) {
+        List<TutkinnonOsa> koodittomatTutkinnonOsat = new ArrayList<>();
+
+        if (suoritustapa.getTutkinnonOsat() != null) {
+            for (TutkinnonOsaViite viite : getViitteet(suoritustapa)) {
+                if (viite.getTutkinnonOsa().getKoodiArvo() == null || viite.getTutkinnonOsa().getKoodiArvo().trim().equals("")) {
+                    koodittomatTutkinnonOsat.add(viite.getTutkinnonOsa());
+                }
+            }
+        }
+        return koodittomatTutkinnonOsat;
+    }
+
+    private Collection<TutkinnonOsaViite> getViitteet(Suoritustapa suoritustapa) {
+        return Collections2.filter(suoritustapa.getTutkinnonOsat(), new Predicate<TutkinnonOsaViite>() {
+
+            @Override
+            public boolean apply(TutkinnonOsaViite input) {
+                return Boolean.FALSE.equals(input.getPoistettu());
+            }
+
+        });
     }
 
 }

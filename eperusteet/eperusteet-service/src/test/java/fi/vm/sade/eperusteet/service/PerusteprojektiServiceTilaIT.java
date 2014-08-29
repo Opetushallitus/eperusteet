@@ -27,7 +27,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
@@ -35,6 +35,7 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -301,6 +302,10 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         TutkinnonOsaViite osaViite = new TutkinnonOsaViite();
         TutkinnonOsa tutkinnonosa = new TutkinnonOsa();
         tutkinnonosa.setTila(PerusteTila.LUONNOS);
+        tutkinnonosa.setKoodiArvo("123456");
+        Map<Kieli,String> tekstiMap = new HashMap<>();
+        tekstiMap.put(Kieli.FI, "Teksti");
+        tutkinnonosa.setNimi(TekstiPalanen.of(tekstiMap));
         em.persist(tutkinnonosa);
         osaViite.setSuoritustapa(naytto);
         osaViite.setTutkinnonOsa(tutkinnonosa);
@@ -315,6 +320,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         
         osa = new TutkinnonOsa();
         osa.setTila(PerusteTila.LUONNOS);
+        osa.setKoodiArvo("12345");
         Map<Kieli,String> tekstiMap = new HashMap<>();
         tekstiMap.put(Kieli.FI, "Teksti");
         osa.setNimi(TekstiPalanen.of(tekstiMap));

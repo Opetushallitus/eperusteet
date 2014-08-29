@@ -180,4 +180,23 @@ public class PerusteenRakenneTest {
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(rakenne);
         assertTrue(validoitu.ongelmat.size() == 2);
     }
+
+    @Test
+    public void testValidoiSisakkaisetOsaamisalaRyhmat() {
+        RakenneModuuli rakenne = TestUtils.teeRyhma(
+            -1, -1, -1, -1,
+            TestUtils.teeRakenneOsa(4, 40),
+            TestUtils.teeOsaamisalaRyhma(
+                180, 180, -1, -1,
+                TestUtils.teeOsaamisalaRyhma(
+                    -1, -1, -1, -1
+                )
+            ),
+            TestUtils.teeOsaamisalaRyhma(-1, -1, -1, -1),
+            TestUtils.teeRyhma(-1, -1, -1, -1)
+        );
+
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(rakenne);
+        assertTrue(validoitu.ongelmat.size() == 1);
+    }
 }

@@ -1,6 +1,6 @@
 <div class="input-group">
   <textarea class="form-control msd-elastic" ng-if="type === 'textarea'" ng-model="mlData[activeLang]"></textarea>
-  <input ng-if="type !== 'textarea'" ng-model="mlData[activeLang]" class="form-control" type="text">
+  <input ng-if="type !== 'textarea'" ng-model="mlData[activeLang]" class="form-control" type="text" ng-required="required">
     <div class="input-group-btn" dropdown is-open="kielivalintaAuki" ng-class="{'textarea-selector': type === 'textarea'}">
         <button type="button" class="btn btn-default dropdown-toggle">
             {{ activeLang | kaanna }} <span class="caret"></span>

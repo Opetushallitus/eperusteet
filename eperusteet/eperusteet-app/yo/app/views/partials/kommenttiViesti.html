@@ -7,11 +7,11 @@
 
       <div ng-if="!viesti.poistettu">
         <div class="pull-left ryhma-jasen-avatar kommentti-avatar">
-          <div class="nimikirjain-avatar">{{ nimikirjaimet(viesti.muokkaaja) }}</div>
+          <div class="nimikirjain-avatar">{{ nimikirjaimet(viesti.nimi || viesti.muokkaaja) }}</div>
         </div>
         <div class="kommentti-sisalto">
           <h3>
-            {{ viesti.muokkaaja }}
+            {{ viesti.nimi || viesti.muokkaaja }}
             <span class="pull-right">
               <a href="" ng-click="editoi = true; editoitava = viesti.sisalto" icon-role="edit"></a>
               <a href="" ng-click="poistaKommentti(viesti)" icon-role="remove"></a>

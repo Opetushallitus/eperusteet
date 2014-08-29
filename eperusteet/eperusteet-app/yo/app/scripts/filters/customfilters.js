@@ -50,6 +50,9 @@ angular.module('eperusteApp')
   .filter('aikaleima', function ($filter) {
     return function (input, options, format) {
       var date = null;
+      if (!input) {
+        return '';
+      }
       if (format === 'date') {
         date = $filter('date')(input, 'd.M.yyyy');
       }

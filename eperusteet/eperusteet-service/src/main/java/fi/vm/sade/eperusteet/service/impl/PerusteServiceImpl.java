@@ -25,27 +25,29 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
-import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.Osaamisala;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
-import fi.vm.sade.eperusteet.dto.PageDto;
-import fi.vm.sade.eperusteet.dto.PerusteDto;
-import fi.vm.sade.eperusteet.dto.PerusteInfoDto;
-import fi.vm.sade.eperusteet.dto.PerusteKaikkiDto;
-import fi.vm.sade.eperusteet.dto.PerusteQuery;
-import fi.vm.sade.eperusteet.dto.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
-import fi.vm.sade.eperusteet.dto.SuoritustapaDto;
-import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.dto.UpdateDto;
+import fi.vm.sade.eperusteet.dto.util.PageDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
+import fi.vm.sade.eperusteet.repository.OsaamisalaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
@@ -74,8 +76,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -92,7 +92,6 @@ import org.springframework.web.client.RestTemplate;
 @Transactional
 public class PerusteServiceImpl implements PerusteService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceImpl.class);
     private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
     private static final String KOODISTO_RELAATIO_YLA = "relaatio/sisaltyy-ylakoodit/";
     private static final String KOODISTO_RELAATIO_ALA = "relaatio/sisaltyy-alakoodit/";
@@ -125,6 +124,9 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Autowired
     PerusteenOsaViiteRepository perusteenOsaViiteRepo;
+
+    @Autowired
+    OsaamisalaRepository osaamisalaRepo;
 
     @Autowired
     @Dto
@@ -234,9 +236,11 @@ public class PerusteServiceImpl implements PerusteService {
 
         perusteet.lock(perusteVanha);
         perusteDto.setId(id);
+
         Peruste peruste = mapper.map(perusteDto, Peruste.class);
         peruste = checkIfKoulutuksetAlreadyExists(peruste);
         peruste.setSuoritustavat(perusteVanha.getSuoritustavat());
+
         peruste = perusteet.save(peruste);
         return mapper.map(peruste, PerusteDto.class);
     }
@@ -262,7 +266,6 @@ public class PerusteServiceImpl implements PerusteService {
     @Override
     @Transactional
     public PerusteenOsaViite addViite(final Long parentId, final Long seuraavaViite, PerusteenOsaViite viite) {
-        LOG.info("ennen = " + seuraavaViite);
         throw new RuntimeException("not implemented yet!");
 //        PerusteenOsaViite v = viitteet.findOne(parentId);
 //        viite.setVanhempi(v);
@@ -443,6 +446,7 @@ public class PerusteServiceImpl implements PerusteService {
 
         if (!moduuli.isSame(suoritustapa.getRakenne())) {
             RakenneModuuli current = suoritustapa.getRakenne();
+            moduuli = checkIfOsaamisalatAlreadyExists(moduuli);
             if (current != null) {
                 current.mergeState(moduuli);
             } else {
@@ -453,6 +457,28 @@ public class PerusteServiceImpl implements PerusteService {
         }
 
         return mapper.map(moduuli, RakenneModuuliDto.class);
+    }
+
+    private RakenneModuuli checkIfOsaamisalatAlreadyExists(RakenneModuuli rakenneModuuli) {
+        Osaamisala osaamisalaTemp;
+        if (rakenneModuuli != null) {
+            if (rakenneModuuli.getOsaamisala() != null && rakenneModuuli.getOsaamisala().getOsaamisalakoodiArvo() != null) {
+                osaamisalaTemp = osaamisalaRepo.findOneByOsaamisalakoodiArvo(rakenneModuuli.getOsaamisala().getOsaamisalakoodiArvo());
+                if (osaamisalaTemp != null) {
+                    rakenneModuuli.setOsaamisala(osaamisalaTemp);
+                } else {
+                    rakenneModuuli.setOsaamisala(osaamisalaRepo.save(rakenneModuuli.getOsaamisala()));
+                }
+            } else {
+                rakenneModuuli.setOsaamisala(null);
+            }
+            for (AbstractRakenneOsa osa : rakenneModuuli.getOsat()) {
+                if (osa instanceof RakenneModuuli) {
+                    osa = checkIfOsaamisalatAlreadyExists((RakenneModuuli)osa);
+                }
+            }
+        }
+        return rakenneModuuli;
     }
 
     @Override
@@ -491,6 +517,9 @@ public class PerusteServiceImpl implements PerusteService {
         if (viite.getTutkinnonOsa() == null) {
             TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
             tutkinnonOsa.setTila(PerusteTila.LUONNOS);
+            if (osa.getTyyppi() != null) {
+                tutkinnonOsa.setTyyppi(osa.getTyyppi());
+            }
             tutkinnonOsa = perusteenOsaRepository.save(tutkinnonOsa);
             viite.setTutkinnonOsa(tutkinnonOsa);
         }
@@ -688,7 +717,6 @@ public class PerusteServiceImpl implements PerusteService {
                     if (!perusteEntityt.contains(peruste)) {
                         perusteEntityt.add(peruste);
                     }
-                    LOG.info(++i + " perustetta lisätty.");
                 }
             }
         }

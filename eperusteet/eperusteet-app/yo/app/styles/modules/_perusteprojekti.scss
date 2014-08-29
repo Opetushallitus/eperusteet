@@ -181,6 +181,12 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   }
 }
 
+.ryhma-johto {
+  h2 {
+    border-bottom: $project-header-border;
+  }
+}
+
 .main-content .list-element:hover,
 .main-content .li:hover {
   background: #fafafa;

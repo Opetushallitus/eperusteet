@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.service.mapping;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import ma.glasnost.orika.converter.BidirectionalConverter;
-import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.TekstiPalanenRepository;
 import java.util.Map;
 import ma.glasnost.orika.metadata.Type;

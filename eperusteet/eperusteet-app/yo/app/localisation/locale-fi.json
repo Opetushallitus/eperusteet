@@ -85,6 +85,10 @@
     "tutkinnon-osia-ei-löytynyt": "Tutkinnon osia ei löytynyt",
     "aloita-raahaamalla-puuhun": "Raahaa ryhmiä tai tutkinnon osia tähän.",
     "rakennetta-ei-vielä-muodostettu": "Tutkinnon rakennetta ei ole vielä muodostettu tai se on tyhjä. Luo uusi rakenne muokkaamalla sivua.",
+    "rakennetta-ei-ole": "Suoritustavalle ei ole määritetty rakennetta",
+
+    "näytä-enemmän": "Lisää",
+    "näytä-vähemmän": "Piilota",
 
     "virhe-suoritustapasisältöä-ei-löytynyt": "Suoritustavan sisältöä ei löytynyt",
     "virhe-tiedosto-epäonnistui": "Tiedoston avaaminen epäonnistui",
@@ -128,6 +132,7 @@
     "avaa-sulje-kaikki": "Avaa / sulje kaikki",
 
     "poista-tutkinnonosa": "Poista tutkinnon osa",
+    "lisaa-tutkinnonosa": "Lisää tutkinnon osa",
     "poistetaanko-tutkinnonosa": "Poistetaanko tutkinnon osa?",
     "tutkinnon-osa-rakenteessa-ei-voi-poistaa": "Tutkinnon osaa ei voi poistaa, koska se on käytössä tutkinnon rakenteessa. Poista viite puusta ensin.",
     "tutkinnon-osa-rakenteesta-poistettu": "Tutkinnon osa poistettu onnistuneesti.",
@@ -144,6 +149,7 @@
 
     "ryhmä-rooli-selite-määritelty": "Ryhmän sisältö määritellään perustepuun luonnin yhteydessä",
     "ryhmä-rooli-selite-määrittelemätön": "Ryhmälle annetaan vain muodostumissäännöt ja sen sisältö määritellään paikallisen laadinnan puolella",
+    "ryhmä-rooli-selite-osaamisala": "Ryhmälle täytyy määrittää osaamisala",
 
     "otsikko": "otsikko",
     "osien-määrä": "Osien määrä",
@@ -185,7 +191,6 @@
     "haku-hakuehdot" : "Hakuehdot",
     "haku-opintoala" : "Opintoala",
     "haku-kaikki-opintoalat" : "Kaikki opintoalat",
-    "hae-koodi-koodistosta": "Hae koodistosta",
     "hae-koodistosta": "Hae koodistosta",
 
     "rakenne-validointi-maara-laajuus-minimi": "Minimikoon kattavat osat eivät riitä kattamaan vaadittua minimilaajuutta",
@@ -419,6 +424,7 @@
     "excel-tiedostossasi-oli-virheitä": "Excel-tiedostossasi oli virheitä",
     "valitse-nimi": "Valitse nimi",
     "valitse-diaarinumero": "Valitse diaarinumero",
+    "määräyksen-diaarinumero": "Määräyksen diaarinumero",
     "suoritustapa": "Suoritustapa",
     "liita-perusteeseen": "Liitä perusteeseen",
     "excel-avataan-tiedostoa": "Avataan tiedostoa",
@@ -471,6 +477,7 @@
     "tuo-peruste": "Tuo peruste",
     "tuo-perustepohja": "Tuo perustepohja",
     "projektin-nimi-label": "Projektin nimi",
+    "projektin-oid-label": "Projektin uniikki tunnus",
     "anna-projektin-nimi-placeholder": "Syötä projektin nimi",
     "diaarinumero-label": "Diaarinumero",
     "anna-diaarinumero-placeholder": "Syötä diaarinumero",
@@ -615,9 +622,10 @@
 
     "tilanvaihtovirhe-header": "Projektin tilan vaihtaminen ei onnistunut",
     "liittamattomia-tutkinnon-osia": "Projektissa on rakenteeseen liittämättömiä tutkinnon osia.",
+    "koodittomia-tutkinnon-osia": "Projektissa on koodittomia tutkinnon osia",
     "korjaa-virheet": "Korjaa seuraavat virheet",
     "viesti": "Viesti",
     "lisatieto": "Lisätieto",
-    
+
     "diaarinumero-kaytossa": "Diaarinumero on jo käytössä"
 }

@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.dto.ArviointiAsteikkoDto;
+import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.repository.ArviointiAsteikkoRepository;
 import fi.vm.sade.eperusteet.service.ArviointiAsteikkoService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;

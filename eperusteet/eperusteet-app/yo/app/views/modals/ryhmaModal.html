@@ -4,17 +4,28 @@
 
 <div class="modal-body">
   <form class="form-horizontal" name="ryhmaForm">
-    <h3 ng-if="vanhempi || luonti" kaanna>perustiedot</h3>
-    <formfield ng-if="vanhempi || luonti" model="ryhma" model-var="nimi" label="nimi" type="text" required></formfield>
-    <formfield ng-if="vanhempi || luonti" model="ryhma" model-var="kuvaus" label="kuvaus" type="text"></formfield>
-    <formfield ng-if="luonti" model="ryhma" model-var="rooli" label="erikoisrooli" options="roolit"></formfield>
-    <div ng-if="luonti">
-      <div class="col-sm-3"></div>
-      <div class="col-sm-9 alert alert-info">
-        <span ng-show="ryhma.rooli === 'määritelty'" kaanna>ryhmä-rooli-selite-määritelty</span>.
-        <span ng-show="ryhma.rooli === 'määrittelemätön'" kaanna>ryhmä-rooli-selite-määrittelemätön</span>.
+    <div class="form-group">
+      <h3 ng-if="vanhempi || luonti" kaanna>perustiedot</h3>
+      <formfield ng-if="vanhempi || luonti" model="ryhma" model-var="nimi" label="nimi" type="text" required></formfield>
+      <formfield ng-if="vanhempi || luonti" model="ryhma" model-var="kuvaus" label="kuvaus" type="text"></formfield>
+      <formfield ng-if="luonti" model="ryhma" model-var="rooli" label="erikoisrooli" options="roolit"></formfield>
+      <div ng-if="luonti">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-9 alert alert-info">
+          <span ng-show="ryhma.rooli === 'määritelty'" kaanna>ryhmä-rooli-selite-määritelty</span>
+          <span ng-show="ryhma.rooli === 'määrittelemätön'" kaanna>ryhmä-rooli-selite-määrittelemätön</span>
+        </div>           
       </div>
+      <div ng-if="ryhma.rooli === 'osaamisala'">
+            <h3 kaanna>osaamisala</h3>
+            <div class="col-sm-offset-3" >
+                <button icon-role="add" class="btn btn-default" type="button" ng-click="avaaKoodistoModaali()">{{ "hae-koodistosta" | kaanna }}</button>
+            </div>
+            <formfield model="osaamisala" model-var="nimi" label="nimi" type="text"></formfield>
+            <formfield model="osaamisala" model-var="osaamisalakoodiArvo" label="koodi" type="text"></formfield>
+        </div>
     </div>
+    
 
     <h3 ng-if="vanhempi" kaanna>tutkinnon-rakenne</h3>
     <div class="form-group">

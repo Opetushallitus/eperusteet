@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .directive('tree', function($compile, $state, Muodostumissaannot, Kaanna) {
+  .directive('tree', function($compile, $state, Muodostumissaannot, Kaanna, TreeDragAndDrop) {
     function generoiOtsikko() {
       var tosa = '{{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].nimi || "nimetön" | kaanna }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">, <b>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</b>{{ apumuuttujat.laajuusYksikko | kaanna }}</span>';
       var editointiIkoni =
@@ -103,6 +103,7 @@ angular.module('eperusteApp')
           });
         };
 
+        // Drag & drop: puun sisällä
         scope.sortableOptions = {
           connectWith: '.tree-group',
           cursor: 'move',
@@ -115,6 +116,7 @@ angular.module('eperusteApp')
             ui.placeholder.html('<div class="group-placeholder"></div>');
           },
           cancel: '.ui-state-disabled',
+          update: TreeDragAndDrop.update
         };
 
         scope.$watch('muokkaus', function() {
@@ -125,13 +127,8 @@ angular.module('eperusteApp')
           scope.apumuuttujat.piilotaVirheet = !scope.apumuuttujat.piilotaVirheet;
         };
 
-        var varivalinta = '{ \'background\': rakenne.rooli === \'määrittelemätön\'' +
-                                              '? \'#93278F\'' +
-                                              ': rakenne.osat.length === 0' +
-                                                '? \'#FDBB07\'' +
-                                                ': rakenne.$collapsed' +
-                                                  '? \'#06526c\'' +
-                                                  ': \'#29ABE2\' }';
+        var varivalinta = 'ng-class="{maarittelematon: rakenne.rooli === \'määrittelemätön\', tyhja: rakenne.osat.length === 0, ' +
+            'suljettu: rakenne.$collapsed, osaamisala: rakenne.rooli === \'osaamisala\'}"';
 
         var koonIlmaisu = '<span ng-show="rakenne.muodostumisSaanto.koko.minimi === rakenne.muodostumisSaanto.koko.maksimi">' +
                           '  {{ rakenne.muodostumisSaanto.koko.minimi || 0 }} {{ \'kpl\' | kaanna }}' +
@@ -148,7 +145,7 @@ angular.module('eperusteApp')
                                '</span>';
 
         var optiot = '' +
-          '<span ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" ng-if="!rakenne._tutkinnonOsaViite" class="colorbox" ng-style="' + varivalinta + '">' +
+          '<span ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" ng-if="!rakenne._tutkinnonOsaViite" class="colorbox" ' + varivalinta + '>' +
           '  <span ng-show="rakenne.rooli !== \'määrittelemätön\'">' +
           '    <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
           '    <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
@@ -174,10 +171,16 @@ angular.module('eperusteApp')
           '  <span class="tree-item">' + generoiOtsikko() + '</span>' +
           '</div>';
 
-        var kentta = '<div ng-if="rakenne._tutkinnonOsaViite" ' +
-          'ng-class="{ \'pointer\': muokkaus, \'huomio\': tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].$elevate || (apumuuttujat.haku && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].$matched) }" class="bubble-osa">' +
-          optiot + '</div>' +
+        var kentta =
+          '<div ng-if="rakenne._tutkinnonOsaViite" ' +
+          '     ng-class="{ \'pointer\': muokkaus, \'huomio\': tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].$elevate || (apumuuttujat.haku && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].$matched) }" class="bubble-osa">' +
+            optiot +
+          '</div>' +
           '<div ng-if="!rakenne._tutkinnonOsaViite" ng-class="{ \'pointer\': muokkaus }" class="bubble">' + optiot + '</div>' +
+          '<div ng-model="rakenne" ng-show="!muokkaus && rakenne.kuvaus && rakenne.kuvaus !== \'\'" class="kuvaus">' +
+          '  <div ng-class="{ \'text-truncated\': !rakenne.$showKuvaus }">{{ rakenne.kuvaus | kaanna }}</div>' +
+          '  <div class="avausnappi" ng-click="rakenne.$showKuvaus = !rakenne.$showKuvaus"><div class="avausnappi-painike">&hellip;</div></div>' +
+          '</div>' +
           '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="virhe">' +
           '  <span>{{ tkaanna(rakenne.$virhe.selite) }}<span ng-show="rakenne.$virhe.selite.length > 0">. </span>{{ rakenne.$virhe.virhe | kaanna }}.</span>' +
           '</div>';
@@ -216,7 +219,7 @@ angular.module('eperusteApp')
           '<div ng-if="vanhempi">' + kentta + '</div>' +
           '<div ng-if="rakenne.rooli !== \'määrittelemätön\'" class="collapser" ng-show="!rakenne.$collapsed">' +
           '  <ul ng-if="rakenne.osat !== undefined" ui-sortable="sortableOptions" id="tree-sortable" class="tree-group" ng-model="rakenne.osat">' +
-          '    <li ng-repeat="osa in rakenne.osat">' +
+          '    <li ng-repeat="osa in rakenne.osat" class="tree-list-item">' +
           '      <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" rakenne="osa" vanhempi="rakenne" tutkinnon-osa-viitteet="tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" ng-init="notfirst = true" poisto-tehty-cb="poistoTehtyCb"></tree>' +
           '    </li>' +
           '    <li class="ui-state-disabled" ng-if="muokkaus && !vanhempi && rakenne.osat.length > 0">' +
@@ -233,7 +236,7 @@ angular.module('eperusteApp')
   })
   .directive('treeWrapper', function($stateParams, $state, Editointikontrollit, TutkinnonOsanTuonti, Kaanna,
                                      PerusteTutkinnonosa, Notifikaatiot, PerusteenRakenne, Muodostumissaannot,
-                                     Algoritmit) {
+                                     Algoritmit, TreeDragAndDrop) {
     return {
       restrict: 'AE',
       transclude: true,
@@ -243,7 +246,8 @@ angular.module('eperusteApp')
         rakenne: '=',
         voiLiikuttaa: '=',
         ajaKaikille: '=',
-        muokkaus: '='
+        muokkaus: '=',
+        esitys: '=?'
       },
       link: function(scope) {
         scope.suljettuViimeksi = true;
@@ -332,6 +336,7 @@ angular.module('eperusteApp')
         }
         paivitaUniikit();
 
+        // Drag & drop: Leikelauta <-> puu
         scope.sortableOptions = {
           connectWith: '.tree-group',
           cursor: 'move',
@@ -347,9 +352,11 @@ angular.module('eperusteApp')
           },
           start: function(e, ui) {
             ui.placeholder.html('<div class="group-placeholder"></div>');
-          }
+          },
+          update: TreeDragAndDrop.update
         };
 
+        // Drag & drop: Tutkinnon osat <-> puu
         scope.sortableOptionsUnique = {
           connectWith: '.tree-group',
           cursor: 'move',
@@ -419,6 +426,69 @@ angular.module('eperusteApp')
         scope.$watch('apumuuttujat.haku', function (value) {
           scope.paivitaTekstiRajaus(value);
         });
+      }
+    };
+  })
+
+  .config(function ($tooltipProvider) {
+    $tooltipProvider.setTriggers({
+        'mouseenter': 'mouseleave',
+        'click': 'click',
+        'focus': 'blur',
+        'never': 'mouseleave',
+        'show': 'hide'
+    });
+  })
+
+  .service('TreeDragAndDrop', function (Notifikaatiot, $timeout) {
+    var NODESELECTOR = '.tree-list-item';
+    /*
+     * Aito osaamisalaryhmä: ryhmä, joka on itse tyyppiä osaamisala
+     * Osaamisalaryhmä: aito osaamisalaryhmä tai ryhmä, jonka mikä tahansa jälkeläinen on aito osaamisalaryhmä.
+     * Osaamisalaryhmää ei voida asettaa puuhun jos mikä tahansa lisäämiskohdan edeltäjä on aito osaamisalaryhmä
+     */
+    function hasOsaamisala(item) {
+      return !_.isEmpty(item.osaamisala);
+    }
+
+    function isOsaamisalaRyhma(item) {
+      if (hasOsaamisala(item)) {
+        return true;
+      }
+      return _.any(item.osat, function (child) {
+        return isOsaamisalaRyhma(child);
+      });
+    }
+
+    function parentsOrSelfHaveOsaamisala(node, item) {
+      if (!item || !item.osa) {
+        return false;
+      }
+      if (hasOsaamisala(item.osa)) {
+        return true;
+      }
+      var parent = node.parent().closest(NODESELECTOR);
+      return parentsOrSelfHaveOsaamisala(parent, parent ? parent.scope() : null);
+    }
+
+    this.update = function(e, ui) {
+      var itemScope = ui.item.scope();
+      var draggedHasOsaamisala = itemScope && itemScope.osa && isOsaamisalaRyhma(itemScope.osa);
+      if (draggedHasOsaamisala) {
+        var target = ui.item.sortable.droptarget;
+        var listItem = target.closest(NODESELECTOR);
+        var parentScope = listItem ? listItem.scope() : null;
+        if (parentsOrSelfHaveOsaamisala(listItem, parentScope)) {
+          var parent = listItem.find('.bubble').first();
+          var el = angular.element('#osaamisala-varoitus');
+          var pos = parent.offset();
+          el.offset({top: pos.top, left: pos.left + 200});
+          el.trigger('show');
+          $timeout(function () {
+           el.trigger('hide');
+          }, 5000);
+          ui.item.sortable.cancel();
+        }
       }
     };
   });

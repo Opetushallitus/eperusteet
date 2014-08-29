@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.dto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.OpintoalaDto;
 import fi.vm.sade.eperusteet.service.OpintoalaService;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -36,7 +36,6 @@ import org.springframework.web.client.RestTemplate;
  */
 @Service
 public class OpintoalaServiceImpl implements OpintoalaService {
-    private static final Logger LOG = LoggerFactory.getLogger(KoulutusalaServiceImpl.class);
 
     @Autowired
     @Koodisto

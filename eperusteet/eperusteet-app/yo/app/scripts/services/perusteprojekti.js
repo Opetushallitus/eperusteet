@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .factory('PerusteprojektiJasenet', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteprojektit/:id/jasenet', {
+    return $resource(SERVICE_LOC + '/perusteprojektit/:id/jasenet/tiedot', {
       id: '@id'
     }, {
       get: {method: 'GET', isArray: true}

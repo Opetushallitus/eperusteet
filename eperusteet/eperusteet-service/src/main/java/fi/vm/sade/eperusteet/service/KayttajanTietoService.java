@@ -16,7 +16,10 @@
 
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.dto.KayttajanTietoDto;
+import com.fasterxml.jackson.databind.JsonNode;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import java.util.List;
 
 /**
  *
@@ -24,4 +27,12 @@ import fi.vm.sade.eperusteet.dto.KayttajanTietoDto;
  */
 public interface KayttajanTietoService {
     KayttajanTietoDto hae(String oid);
+
+    KayttajanTietoDto parsiKayttaja(JsonNode json);
+
+    List<KayttajanTietoDto> parsiKayttajat(JsonNode jsonList);
+
+    List<KayttajanProjektitiedotDto> haePerusteprojektit(String oid);
+
+    KayttajanProjektitiedotDto haePerusteprojekti(String oid, Long projektiId);
 }

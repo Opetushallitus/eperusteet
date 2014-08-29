@@ -1,0 +1,5 @@
+ALTER TABLE ONLY tutkinnonosa_tutkinnonosa_osaalue
+ADD CONSTRAINT tutkinnonosa_tutkinnonosa_osaalue_pkey PRIMARY KEY (tutkinnonosa_id, osaAlueet_ORDER);
+
+ALTER TABLE ONLY tutkinnonosa_osaalue_osaamistavoite
+ADD CONSTRAINT tutkinnonosa_osaalue_osaamistavoite_pkey PRIMARY KEY (tutkinnonosa_osaalue_id, osaamistavoitteet_ORDER);

@@ -17,6 +17,8 @@
 package fi.vm.sade.eperusteet.resource;
 
 import com.google.code.docbook4j.Docbook4JException;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import fi.vm.sade.eperusteet.domain.DokumenttiTila;
 import fi.vm.sade.eperusteet.domain.Kieli;
@@ -47,6 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/dokumentti")
+@Api(value="Dokumentit", description = "Perustedokumentin luonti")
 public class DokumenttiController {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiController.class);
@@ -59,6 +62,7 @@ public class DokumenttiController {
 
     @RequestMapping(value="/create/{perusteId}", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation("luo dokumentti")
     public ResponseEntity<DokumenttiDto> create(
             @PathVariable("perusteId") final long perusteId) {
 
@@ -67,6 +71,7 @@ public class DokumenttiController {
 
     @RequestMapping(value="/create/{perusteId}/{kieli}", method = RequestMethod.GET)
     @ResponseBody
+    @ApiOperation("luo dokumentti")
     public ResponseEntity<DokumenttiDto> create(
             @PathVariable("perusteId") final long perusteId,
             @PathVariable("kieli") final String kieli) {
