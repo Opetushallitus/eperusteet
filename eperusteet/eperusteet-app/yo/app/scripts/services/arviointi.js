@@ -20,5 +20,7 @@ angular.module('eperusteApp')
   .factory('Arviointiasteikot', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/arviointiasteikot/:asteikkoId', {
       asteikkoId: '@id'
+    }, {
+      list: {method: 'GET', isArray: true, cache: true},
     });
   });

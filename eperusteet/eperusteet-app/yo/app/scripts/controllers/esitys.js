@@ -36,7 +36,7 @@ angular.module('eperusteApp')
             return SuoritustapaSisalto.get({ perusteId: $stateParams.perusteId, suoritustapa: $stateParams.suoritustapa }).$promise;
           },
           arviointiasteikot: function($stateParams, Arviointiasteikot) {
-            return Arviointiasteikot.query({}).$promise;
+            return Arviointiasteikot.list({}).$promise;
           },
           tutkinnonOsat: function($stateParams, PerusteTutkinnonosat) {
             return PerusteTutkinnonosat.query({ perusteId: $stateParams.perusteId, suoritustapa: $stateParams.suoritustapa }).$promise;
