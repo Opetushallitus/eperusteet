@@ -173,7 +173,10 @@ angular.module('eperusteApp')
           vapauta();
         },
         validate: function() {
-          return Utils.hasLocalizedText($scope.osaAlue.$editing.nimi);
+          return Utils.hasLocalizedText($scope.osaAlue.$editing.nimi) &&
+            _.all(_.map($scope.osaAlue.$editing.osaamistavoitteet, function (tavoite) {
+            return Utils.hasLocalizedText(tavoite.nimi);
+          }));
         }
       }
     };
