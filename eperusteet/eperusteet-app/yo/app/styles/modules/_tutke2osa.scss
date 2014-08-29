@@ -1,60 +1,37 @@
-$borderspec: 2px solid #777;
-.navitable {
-  margin-top: -2px;
-  label {
-    font-weight: 300;
-  }
-  tr.collapsed {
-    background-color: #bbb;
-  }
-  .active {
-    background-color: lighten($brand-primary, 50%);
-  }
-  width: 1000px;
-  font-size: 20px;
-  border: $borderspec;
-  ul {
-    list-style-type: none;
-  }
-  td {
-    border: $borderspec;
-    vertical-align: middle;
-    &.osaalue-otsikko {
-      padding-left: 1em;
-      padding-right: 1em;
-    }
-    &.osaalue-tiedot {
-      width: 50%;
-    }
-    .osiot {
-      padding: 0;
-      ul {
-        margin: 0;
-        padding: 0;
-        li {
-          padding: 0.3em 1em;
-        }
+.tutke2 {
+  .osa-alue {
+    .panel-title {
+      line-height: 1.75em;
+      input {
+        font-size: 20px;
+        height: 34px;
       }
     }
-    table {
-      width: 100%;
-      border: none;
-      td {
-        border: none;
-        padding: 0.3em 1em;
-        &:not(:last-child) {
-          border-right: $borderspec;
-        }
-      }
-      tr:not(:last-child) {
-        td {
-          border-bottom: $borderspec;
-        }
+    .muokkaus-napit {
+      padding-top: 4px;
+    }
+  }
+  .panel-heading {
+    .glyphicon, .otsikko {
+      cursor: pointer;
+    }
+    .otsikko {
+      font-size: 120%;
+    }
+    select {
+      margin-left: 10px;
+    }
+    a {
+      &:hover, &:focus, &:active, & *:hover, & *:focus, & *:active {
+        text-decoration: none;
       }
     }
   }
-  .alue-content {
-    padding: 1em;
-    font-size: 14px;
+  .kohde-edit {
+    padding: 10px;
+  }
+  .lead {
+    font-size: 110%;
+    font-style: italic;
   }
 }

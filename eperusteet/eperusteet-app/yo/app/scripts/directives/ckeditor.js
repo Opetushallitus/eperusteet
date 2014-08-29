@@ -163,7 +163,7 @@ angular.module('eperusteApp')
             var data = editor.getData();
             scope.$apply(function() {
               ctrl.$setViewValue(data);
-              scope.$broadcast('edited');
+              //scope.$broadcast('edited');
             });
             if(_.isEmpty(data)) {
               element.addClass('has-placeholder');

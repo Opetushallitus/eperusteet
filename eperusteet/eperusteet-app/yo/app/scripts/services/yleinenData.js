@@ -36,7 +36,8 @@ angular.module('eperusteApp')
 
     this.rakenneRyhmaRoolit = [
       'määritelty',
-      'määrittelemätön'
+      'määrittelemätön',
+      'osaamisala'
     ];
 
     this.yksikot = [
@@ -92,7 +93,7 @@ angular.module('eperusteApp')
     this.haeArviointiasteikot = function() {
       if (this.arviointiasteikot === undefined) {
         var self = this;
-        Arviointiasteikot.query({}, function(tulos) {
+        Arviointiasteikot.list({}, function(tulos) {
 
           self.arviointiasteikot = _.indexBy(tulos, 'id');
           $rootScope.$broadcast('arviointiasteikot');

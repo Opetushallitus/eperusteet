@@ -92,7 +92,9 @@ describe('Directive: numberinput', function () {
     var input;
     beforeEach(function () {
       scope.data = {number: 1};
-      var html = '<form name="myform"><numberinput type="float" step="0.2" name="numero" model="data.number" form="myform"></numberinput></form>';
+      var html = '<form name="myform">' +
+          '<numberinput type="float" step="0.2" name="numero" model="data.number" form="myform" min="0" max="200">' +
+          '</numberinput></form>';
       kaanna(html);
       input = element.find('input');
     });
@@ -120,6 +122,18 @@ describe('Directive: numberinput', function () {
       scope.data.number = 123.3;
       scope.$digest();
       expect(scope.myform.$error.step).toBeTruthy();
+    });
+
+    it('should respect min/max limits', function () {
+      $timeout.flush();
+      var field = scope.myform.innerForm.tmpName;
+      field.$setViewValue('-1');
+      expect(scope.myform.$error.min).toBeTruthy();
+      field.$setViewValue('201');
+      expect(scope.myform.$error.max).toBeTruthy();
+      field.$setViewValue('199');
+      expect(scope.myform.$error.min).toBeFalsy();
+      expect(scope.myform.$error.max).toBeFalsy();
     });
   });
 });

@@ -20,17 +20,16 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
-import fi.vm.sade.eperusteet.dto.PerusteDto;
-import fi.vm.sade.eperusteet.dto.PerusteInfoDto;
-import fi.vm.sade.eperusteet.dto.PerusteKaikkiDto;
-import fi.vm.sade.eperusteet.dto.PerusteQuery;
-import fi.vm.sade.eperusteet.dto.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
-import fi.vm.sade.eperusteet.dto.SuoritustapaDto;
-import fi.vm.sade.eperusteet.dto.UpdateDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
@@ -118,10 +117,10 @@ public interface PerusteService {
     @PreAuthorize("isAuthenticated()")
     String lammitys();
 
-    LukkoDto lock(final Long id, Suoritustapakoodi suoritustapakoodi);
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    LukkoDto lock(@P("perusteId") final Long id, Suoritustapakoodi suoritustapakoodi);
 
     void unlock(final Long id, Suoritustapakoodi suoritustapakoodi);
-
     LukkoDto getLock(final Long id, Suoritustapakoodi suoritustapakoodi);
 
     public Map<Long, LukkoDto> getLocksTutkinnonOsat(Long id, Suoritustapakoodi suoritustapakoodi);

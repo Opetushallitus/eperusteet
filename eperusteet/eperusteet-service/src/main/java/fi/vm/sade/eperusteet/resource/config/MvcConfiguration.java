@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import fi.vm.sade.eperusteet.dto.EntityReference;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.resource.util.CacheHeaderInterceptor;
 import fi.vm.sade.eperusteet.resource.util.LoggingInterceptor;

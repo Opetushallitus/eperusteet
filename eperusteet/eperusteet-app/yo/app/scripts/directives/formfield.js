@@ -107,8 +107,11 @@ angular.module('eperusteApp')
         }
 
         attrs.$observe('required', function(value) {
-          if (value === 'required' || value === 'true') {
+          if (value === 'required' || value === 'true' || value === '') {
             scope.postfix = '*';
+            $timeout(function () {
+              element.find('input').attr('required', '');
+            });
           } else if (value) {
             var parsed = $parse(value);
             scope.$watch(function () {
@@ -128,7 +131,8 @@ angular.module('eperusteApp')
         scope.input.model = getter(scope.model);
         // inner => outside
         scope.$watch('input.model', function () {
-          if (scope.input && scope.input.model) {
+          checkInputType(scope);
+          if (scope.input && !_.isUndefined(scope.input.model)) {
             setter(scope.model, scope.input.model);
           }
         });
@@ -136,6 +140,7 @@ angular.module('eperusteApp')
         scope.$watch(function () {
           return getter(scope.model);
         }, function (value) {
+          checkInputType(scope);
           scope.input.model = value;
         });
 

@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
-import fi.vm.sade.eperusteet.dto.EntityReference;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import lombok.Getter;
 import lombok.Setter;
 

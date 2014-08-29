@@ -32,6 +32,7 @@ import javax.persistence.OrderColumn;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 
@@ -60,6 +61,12 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
     @Setter
     @Enumerated(EnumType.STRING)
     private RakenneModuuliRooli rooli;
+
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private Osaamisala osaamisala;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "rakennemoduuli_rakenneosa",
@@ -91,6 +98,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             } else {
                 this.muodostumisSaanto = moduuli.getMuodostumisSaanto();
             }
+            this.osaamisala = moduuli.osaamisala;
         }
     }
 
@@ -139,9 +147,9 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
 
         return true;
     }
-    
+
     public boolean isInRakenne (TutkinnonOsaViite viite, boolean ylinTaso) {
-        
+
         for (AbstractRakenneOsa rakenneosa : osat) {
             if (rakenneosa instanceof RakenneModuuli) {
                 if (((RakenneModuuli)rakenneosa).isInRakenne(viite, false)) {
@@ -154,7 +162,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             }
         }
 
-        return false;  
+        return false;
     }
 
 }

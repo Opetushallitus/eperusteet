@@ -18,19 +18,6 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('Editointicatcher', function() {
-    var f = angular.noop;
-
-    return {
-      register: function(cb) {
-        f = cb;
-      },
-      give: function(osa) {
-        f(osa);
-        f = angular.noop;
-      }
-    };
-  })
   .factory('Editointikontrollit', function($rootScope, $q, $timeout) {
     var scope = $rootScope.$new(true);
     scope.editingCallback = null;

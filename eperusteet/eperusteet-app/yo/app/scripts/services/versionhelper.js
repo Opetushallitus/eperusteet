@@ -20,6 +20,16 @@
 angular.module('eperusteApp')
   .service('VersionHelper', function(PerusteenOsat, $modal, RakenneVersiot,
     RakenneVersio, Notifikaatiot, $state, $location, $stateParams) {
+
+    function rakennaNimi(v) {
+        var nimi = (v.kutsumanimi || '') + ' ' + (v.sukunimi || '');
+        v.$nimi = nimi === ' ' ? v.muokkaajaOid : nimi;
+    }
+
+    function rakennaNimet(list) {
+      _.forEach(list, rakennaNimi);
+    }
+
     function getVersions(data, tunniste, tyyppi, force, cb) {
       cb = cb || angular.noop;
       if (!_.isObject(data)) {
@@ -28,6 +38,7 @@ angular.module('eperusteApp')
       if (force || !data.list) {
         if (tyyppi === 'perusteenosa') {
           PerusteenOsat.versiot({osanId: tunniste.id}, function(res) {
+            rakennaNimet(res);
             data.list = res;
             versiotListHandler(data);
             cb();
@@ -35,6 +46,7 @@ angular.module('eperusteApp')
         }
         else if (tyyppi === 'rakenne') {
           RakenneVersiot.query({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa}, function(res) {
+            rakennaNimet(res);
             data.list = res;
             versiotListHandler(data);
             cb();
@@ -160,15 +172,21 @@ angular.module('eperusteApp')
       // We want to update the url only when user changes the version.
       // If we enter with versionless url don't rewrite it.
       // This function will currently navigate to a new state if version has changed.
+      if (_.isEmpty(data)) {
+        return;
+      }
+      data.latest = data.chosen.index === latest(data.list).index;
       var state = isRakenne ? 'root.perusteprojekti.suoritustapa.muodostumissaannot' : 'root.perusteprojekti.suoritustapa.perusteenosa';
       var versionlessUrl = $state.href(state, {versio: null}, {inherit:true}).replace(/#/g, '');
       var currentVersion = this.currentIndex(data);
       var isValid = _.isNumber(currentVersion);
       var urlHasVersion = $location.url() !== versionlessUrl;
-      if ((urlHasVersion || data.hasChanged) && isValid) {
+      if ((urlHasVersion || data.hasChanged) && isValid && !data.latest) {
         data.hasChanged = false;
         var versionUrl = $state.href(state, {versio: '/' + currentVersion}, {inherit:true}).replace(/#/g, '');
         $location.url(versionUrl);
+      } else {
+        $location.url(versionlessUrl);
       }
     };
 

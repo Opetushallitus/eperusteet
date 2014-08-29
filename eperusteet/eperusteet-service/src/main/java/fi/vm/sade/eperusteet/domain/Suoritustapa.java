@@ -37,6 +37,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 
 /**
@@ -80,6 +81,7 @@ public class Suoritustapa implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "suoritustapa")
     @Getter
     @OrderBy("jarjestys,id")
+    @BatchSize(size = 10)
     private Set<TutkinnonOsaViite> tutkinnonOsat = new HashSet<>();
 
     public void setTutkinnonOsat(Set<TutkinnonOsaViite> osat) {

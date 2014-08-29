@@ -43,6 +43,7 @@
         </div>
       </div>
       <spinner></spinner>
+      <backtotop></backtotop>
       <div class="notification-wrapper" ng-cloak>
         <div class="notifications" ng-model="viestit" ng-controller="NotifikaatioCtrl">
           <div ng-if="viestit" ng-click="poistaNotifikaatio(viesti)" ng-model="viestit" ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }" ng-repeat="viesti in viestit">
@@ -88,7 +89,7 @@
     <script src="scripts/app.js"></script>
     <script src="scripts/controllers/virhe.js"></script>
     <script src="scripts/controllers/tuotekstikappale.js"></script>
-    <script src="scripts/controllers/tutke2osa.js"></script>
+    <script src="scripts/directives/muokkaus/tutke2osa.js"></script>
     <script src="scripts/services/utils.js"></script>
     <script src="scripts/services/algoritmit.js"></script>
     <script src="scripts/services/pagination.js"></script>
@@ -154,7 +155,6 @@
     <script src="scripts/controllers/perusteprojekti/projektinTiedot.js"></script>
     <script src="scripts/controllers/perusteprojekti/muodostumissaannot.js"></script>
     <script src="scripts/controllers/perusteprojekti/tutkinnonosat.js"></script>
-    <script src="scripts/controllers/perusteprojekti/projektiryhmanJasen.js"></script>
     <script src="scripts/controllers/perusteprojekti/projektiryhma.js"></script>
     <script src="scripts/controllers/perusteprojekti/projektinperustiedot.js"></script>
     <script src="scripts/controllers/omatperusteprojektit.js"></script>

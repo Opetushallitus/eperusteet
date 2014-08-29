@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.dto.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.test.AbstractDbIntegrationTest;
 import java.util.Collections;

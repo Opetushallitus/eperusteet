@@ -13,28 +13,26 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
-<div class="row">
-<div class="col-md-12">
-
-<h1>
-  {{'projekti-projektiryhmä' | kaanna}}
-  <button class="btn btn-default" ng-click="kutsuUusi(rooli)" icon-role="add" kaanna>kutsu-uusi</button>
-</h1>
-
-
 
 <div class="row">
-  <div class="col-md-12 ryhma-johto">
-    <ryhmanjasenet rooli="omistaja" ryhma="ryhma"></ryhmanjasenet>
-    <ryhmanjasenet rooli="sihteeri" ryhma="ryhma"></ryhmanjasenet>
+  <div class="col-md-12">
+    <h1 kaanna>projekti-projektiryhmä</h1>
+
+    <div class="row">
+      <div class="col-md-12 ryhma-johto" ng-repeat="(k, v) in ryhma">
+        <h2>{{ k | kaanna }}</h2>
+        <div class="ryhma-jasen" ng-repeat="jasen in v">
+          <div class="ryhma-jasen-avatar">
+            <div ng-show="!jasen.kuva" class="nimikirjain-avatar"
+                 ng-style="styleFor(jasen)">{{ nimikirjaimet(jasen.$nimi) }}</div>
+          </div>
+          <div ng-if="!muokkausMoodi" class="ryhma-jasen-tiedot">
+            <h4>{{ jasen.$nimi }}</h4>
+            <p>{{ 'puhelin' | kaanna }}: {{ jasen.$puhelinnumero || '-' }}</p>
+            <p>{{ 'email' | kaanna }}: <a href="mailto:{{ jasen.$sahkoposti }}">{{ jasen.$sahkoposti }}</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-<div class="row">
-  <div class="col-md-12 ryhma-jasenet"><ryhmanjasenet rooli="jasen" ryhma="ryhma"></ryhmanjasenet></div>
-</div>
-<div class="row">
-  <div class="col-md-12 ryhma-jasenet"><ryhmanjasenet rooli="kommentoija" ryhma="ryhma"></ryhmanjasenet></div>
-</div>
-
-</div>
 </div>

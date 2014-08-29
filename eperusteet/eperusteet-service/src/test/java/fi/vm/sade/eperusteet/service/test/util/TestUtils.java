@@ -15,17 +15,17 @@
  */
 package fi.vm.sade.eperusteet.service.test.util;
 
-import fi.vm.sade.eperusteet.domain.ArvioinninKohde;
-import fi.vm.sade.eperusteet.domain.ArvioinninKohdealue;
-import fi.vm.sade.eperusteet.domain.Arviointi;
-import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
+import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohde;
+import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohdealue;
+import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
+import fi.vm.sade.eperusteet.domain.Arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -106,6 +106,21 @@ public abstract class TestUtils {
         rakenne.setOsat(aosat);
         rakenne.setMuodostumisSaanto(ms);
         rakenne.setRooli(RakenneModuuliRooli.NORMAALI);
+        return rakenne;
+    }
+
+    static public RakenneModuuli teeOsaamisalaRyhma(Integer laajuusMinimi, Integer laajuusMaksimi, Integer kokoMinimi, Integer kokoMaksimi, AbstractRakenneOsa... osat) {
+        RakenneModuuli rakenne = new RakenneModuuli();
+
+        MuodostumisSaanto.Laajuus msl = laajuusMinimi != null && laajuusMinimi != -1 ? new MuodostumisSaanto.Laajuus(laajuusMinimi, laajuusMaksimi, LaajuusYksikko.OPINTOVIIKKO) : null;
+        MuodostumisSaanto.Koko msk = kokoMinimi != null && kokoMinimi != -1 ? new MuodostumisSaanto.Koko(kokoMinimi, kokoMaksimi) : null;
+        MuodostumisSaanto ms = (msl != null || msk != null) ? new MuodostumisSaanto(msl, msk) : null;
+
+        ArrayList<AbstractRakenneOsa> aosat = new ArrayList<>();
+        aosat.addAll(Arrays.asList(osat));
+        rakenne.setOsat(aosat);
+        rakenne.setMuodostumisSaanto(ms);
+        rakenne.setRooli(RakenneModuuliRooli.OSAAMISALA);
         return rakenne;
     }
 }

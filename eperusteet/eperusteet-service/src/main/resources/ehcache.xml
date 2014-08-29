@@ -304,4 +304,9 @@
          eternal="false"
          timeToLiveSeconds="86400"
          overflowToDisk="false" />
+  <cache name="kayttajan_projekti"
+         maxElementsInMemory="10000"
+         eternal="false"
+         timeToLiveSeconds="86400"
+         overflowToDisk="false" />
 </ehcache>

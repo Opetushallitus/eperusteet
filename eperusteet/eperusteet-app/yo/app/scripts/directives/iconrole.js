@@ -50,7 +50,7 @@ angular.module('eperusteApp')
       next: 'forward',
       previous: 'backward',
       remove: 'remove',
-      save: 'cloud-upload',
+      save: 'save',
       search: 'search',
       settings: 'cog',
     };

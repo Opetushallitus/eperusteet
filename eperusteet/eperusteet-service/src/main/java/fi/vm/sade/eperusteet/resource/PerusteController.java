@@ -15,17 +15,18 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
+import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
-import fi.vm.sade.eperusteet.dto.PerusteDto;
-import fi.vm.sade.eperusteet.dto.PerusteInfoDto;
-import fi.vm.sade.eperusteet.dto.PerusteKaikkiDto;
-import fi.vm.sade.eperusteet.dto.PerusteQuery;
-import fi.vm.sade.eperusteet.dto.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
-import fi.vm.sade.eperusteet.dto.SuoritustapaDto;
-import fi.vm.sade.eperusteet.dto.UpdateDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
@@ -35,8 +36,6 @@ import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -49,15 +48,15 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
+
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 @Controller
 @RequestMapping("/perusteet")
+@Api(value="Perusteet", description = "Perusteiden hallintaan liittyvät operaatiot")
 public class PerusteController {
-
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteController.class);
 
     @Autowired
     private PerusteService service;
@@ -87,7 +86,6 @@ public class PerusteController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public PerusteDto update(@PathVariable("id") final long id, @RequestBody PerusteDto perusteDto) {
-        LOG.info("update {}", perusteDto);
         perusteDto = service.update(id, perusteDto);
         return perusteDto;
     }
@@ -126,7 +124,6 @@ public class PerusteController {
     @RequestMapping(value = "/{id}/suoritustavat/{suoritustapakoodi}/rakenne/versiot", method = GET)
     @ResponseBody
     public List<Revision> getRakenneVersiot(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
-        LOG.debug("get rakenne versiot: " + id + ", " + suoritustapakoodi);
         return service.getRakenneVersiot(id, Suoritustapakoodi.of(suoritustapakoodi));
     }
 
@@ -135,7 +132,6 @@ public class PerusteController {
     @CacheControl(age = CacheControl.ONE_YEAR)
     public ResponseEntity<RakenneModuuliDto> getRakenneVersio(@PathVariable("id") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
             @PathVariable("versioId") final Integer versioId) {
-        LOG.debug("get peruste #{} suoritustapa #{} versio #{}", id, suoritustapakoodi, versioId);
         RakenneModuuliDto t = service.getRakenneVersio(id, Suoritustapakoodi.of(suoritustapakoodi), versioId);
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -163,7 +159,6 @@ public class PerusteController {
             @PathVariable("id") final Long id,
             @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
             @RequestBody UpdateDto<RakenneModuuliDto> rakenne) {
-        LOG.info("Kommentti: " + rakenne.getMetadata());
         return service.updateTutkinnonRakenne(id, Suoritustapakoodi.of(suoritustapakoodi), rakenne);
     }
 
@@ -207,7 +202,7 @@ public class PerusteController {
             @RequestBody TutkinnonOsaViiteDto osa) {
         return service.addTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osa);
     }
-    
+
 
     /**
      * Liitää olemassa olevan tutkinnon osan perusteeseen
@@ -393,7 +388,6 @@ public class PerusteController {
     @RequestMapping(value = "/lammitys", method = GET)
     @ResponseBody
     public ResponseEntity<String> lammitys() {
-
         return new ResponseEntity<>(service.lammitys(), HttpStatus.OK);
     }
 

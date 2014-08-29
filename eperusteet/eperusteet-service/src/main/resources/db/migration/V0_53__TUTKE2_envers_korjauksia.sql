@@ -1,0 +1,11 @@
+ALTER TABLE ONLY tutkinnonosa_tutkinnonosa_osaalue_AUD
+DROP CONSTRAINT IF EXISTS tutkinnonosa_tutkinnonosa_osaalue_aud_pkey;
+
+ALTER TABLE ONLY tutkinnonosa_tutkinnonosa_osaalue_AUD
+ADD CONSTRAINT tutkinnonosa_tutkinnonosa_osaalue_aud_pkey PRIMARY KEY (REV, tutkinnonosa_id, tutkinnonosa_osaalue_id, osaAlueet_ORDER);
+
+ALTER TABLE ONLY tutkinnonosa_osaalue_osaamistavoite_AUD
+DROP CONSTRAINT IF EXISTS tutkinnonosa_osaalue_osaamistavoite_aud_pkey;
+
+ALTER TABLE ONLY tutkinnonosa_osaalue_osaamistavoite_AUD
+ADD CONSTRAINT tutkinnonosa_osaalue_osaamistavoite_aud_pkey PRIMARY KEY (REV, tutkinnonosa_osaalue_id, osaamistavoite_id, osaamistavoitteet_ORDER);

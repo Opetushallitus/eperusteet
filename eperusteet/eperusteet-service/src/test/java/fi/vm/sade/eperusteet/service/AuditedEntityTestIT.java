@@ -21,11 +21,12 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
-import fi.vm.sade.eperusteet.dto.ArvioinninKohdealueDto;
-import fi.vm.sade.eperusteet.dto.ArviointiDto;
-import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
+import fi.vm.sade.eperusteet.dto.Arviointi.ArvioinninKohdealueDto;
+import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -127,6 +128,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
     	TutkinnonOsaDto tutkinnonOsaDto = new TutkinnonOsaDto();
     	tutkinnonOsaDto.setNimi(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Nimi")));
         tutkinnonOsaDto.setTila(PerusteTila.LUONNOS);
+        tutkinnonOsaDto.setTyyppi(TutkinnonOsaTyyppi.NORMAALI);
     	tutkinnonOsaDto = perusteenOsaService.add(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
 
         perusteenOsaService.lock(tutkinnonOsaDto.getId());

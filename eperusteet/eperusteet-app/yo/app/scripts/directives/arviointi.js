@@ -18,8 +18,13 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('arviointiCtrl', function ($scope, YleinenData, Varmistusdialogi, $timeout) {
+  .controller('arviointiCtrl', function ($scope, YleinenData, Varmistusdialogi, $timeout,
+    Utils, ArviointiPreferences) {
     $scope.showNewKohdealueInput = false;
+
+    $scope.arviointiasteikkoChanged = function (value) {
+      ArviointiPreferences.setting('asteikko', value);
+    };
 
     $scope.kohdealue = {
       uusi: function () {
@@ -50,14 +55,27 @@ angular.module('eperusteApp')
       }
     };
 
+    var valmisteleKriteerit = function (arr, tasot) {
+      _.each(tasot, function(taso) {
+        arr.push({
+          _osaamistaso: taso.id,
+          kriteerit: [{}]
+        });
+      });
+    };
+
     $scope.kohde = {
       muokkaa: function (kohde, event) {
         if (event) {
           event.stopPropagation();
         }
         $scope.originalKohde = kohde;
-        kohde._editointi = true;
+        kohde.$editointi = true;
         $scope.editableKohde = angular.copy(kohde);
+        var kriteerit = $scope.editableKohde.osaamistasonKriteerit;
+        if (_.isArray(kriteerit) && _.isEmpty(kriteerit)) {
+          valmisteleKriteerit(kriteerit, $scope.arviointiasteikot[kohde._arviointiAsteikko].osaamistasot);
+        }
       },
       poista: function (list, item, event) {
         if (event) {
@@ -72,6 +90,12 @@ angular.module('eperusteApp')
           }
         })();
       },
+      uusiWizard: function () {
+        $scope.uudenKohteenTiedot = {
+          showInputArea: true,
+          arviointiasteikko: ArviointiPreferences.setting('asteikko')
+        };
+      },
       uusi: function(kohdealue, uudenKohteenTiedot) {
         if(angular.isUndefined(kohdealue.arvioinninKohteet) || kohdealue.arvioinninKohteet === null) {
           kohdealue.arvioinninKohteet = [];
@@ -85,12 +109,7 @@ angular.module('eperusteApp')
         };
         kohde.otsikko[YleinenData.kieli] = uudenKohteenTiedot.nimi;
 
-        angular.forEach(uudenKohteenTiedot.arviointiasteikko.osaamistasot, function(taso) {
-          kohde.osaamistasonKriteerit.push({
-            _osaamistaso: taso.id,
-            kriteerit: [{}]
-          });
-        });
+        valmisteleKriteerit(kohde.osaamistasonKriteerit, uudenKohteenTiedot.arviointiasteikko.osaamistasot);
 
         kohdealue.arvioinninKohteet.push(kohde);
         uudenKohteenTiedot.nimi = null;
@@ -107,14 +126,19 @@ angular.module('eperusteApp')
         uudenKohteenTiedot.showInputArea = false;
       },
       poistuMuokkauksesta: function (list, index) {
-        delete $scope.editableKohde._editointi;
+        delete $scope.editableKohde.$editointi;
+        _.each($scope.editableKohde.osaamistasonKriteerit, function (kriteeri) {
+          if (kriteeri.kriteerit.length === 1 && !Utils.hasLocalizedText(kriteeri.kriteerit[0])) {
+            kriteeri.kriteerit = [];
+          }
+        });
         list[index] = angular.copy($scope.editableKohde);
         $scope.kohde.peruMuokkaus();
       },
       peruMuokkaus: function () {
         $timeout(function () {
           $scope.editableKohde = null;
-          delete $scope.originalKohde._editointi;
+          delete $scope.originalKohde.$editointi;
           $scope.originalKohde = null;
         });
       }
@@ -147,10 +171,12 @@ angular.module('eperusteApp')
       scope: {
         arviointi: '=',
         editAllowed: '@?editointiSallittu',
-        editEnabled: '='
+        editEnabled: '=',
+        eiKohdealueita: '@'
       },
       controller: 'arviointiCtrl',
       link: function(scope) {
+        scope.eiKohdealueita = (scope.eiKohdealueita === 'true' || scope.eiKohdealueita === true);
         scope.editAllowed = (scope.editAllowed === 'true' || scope.editAllowed === true);
 
         scope.arviointiasteikot = YleinenData.arviointiasteikot || {};
@@ -321,6 +347,16 @@ angular.module('eperusteApp')
         clickable: '@?'
       },
       controller: 'arvioinninTekstiKenttaCtrl'
+    };
+  })
+
+  .service('ArviointiPreferences', function () {
+    this.data = {};
+    this.setting = function (key, value) {
+      if (arguments.length === 1) {
+        return this.data[key];
+      }
+      this.data[key] = value;
     };
   });
 

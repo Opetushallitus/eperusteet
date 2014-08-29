@@ -16,8 +16,8 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
-import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.dto.VersionedDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.util.VersionedDto;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,6 +30,7 @@ public class RakenneModuuliDto extends AbstractRakenneOsaDto implements Versione
     private LokalisoituTekstiDto kuvaus;
     private RakenneModuuliRooli rooli;
     private MuodostumisSaantoDto muodostumisSaanto;
+    private OsaamisalaDto osaamisala;
     private List<AbstractRakenneOsaDto> osat;
     private Integer versioId;
     

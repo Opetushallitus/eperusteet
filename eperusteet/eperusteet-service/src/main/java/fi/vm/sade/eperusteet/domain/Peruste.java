@@ -17,7 +17,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
-import fi.vm.sade.eperusteet.dto.EntityReference;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -35,6 +35,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -52,7 +53,6 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Table(name = "peruste")
 @Audited
 public class Peruste extends AbstractAuditedEntity implements Serializable, ReferenceableEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
@@ -72,6 +72,11 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
+
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private String diaarinumero;
 
     @Getter
     @Setter
@@ -118,7 +123,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Enumerated(EnumType.STRING)
     @NotNull
     private PerusteTila tila = PerusteTila.LUONNOS;
-    
+
     @Getter
     @Setter
     @Enumerated(EnumType.STRING)

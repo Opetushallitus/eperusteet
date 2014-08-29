@@ -40,6 +40,20 @@ angular.module('eperusteApp')
       update: { method: 'POST', url: SERVICE_LOC + '/perusteenosaviitteet/sisalto/:viiteId' }
     });
   })
+  .factory('TutkinnonOsanOsaAlue', function ($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteenosat/:osanId/osaalue/:osaalueenId', {
+      osaalueenId: '@id'
+    }, {
+      list: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/osaalueet'}
+    });
+  })
+  .factory('Osaamistavoite', function ($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteenosat/:osanId/osaalue/:osaalueenId/osaamistavoite/:osaamistavoiteId', {
+      osaamistavoiteId: '@id'
+    }, {
+      list: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/osaalue/:osaalueenId/osaamistavoitteet'}
+    });
+  })
   .service('TutkinnonOsanValidointi', function($q, PerusteenOsat) {
     function validoi(tutkinnonOsa) {
       var virheet = [];

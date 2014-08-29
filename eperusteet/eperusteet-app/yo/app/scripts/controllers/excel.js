@@ -63,8 +63,16 @@ angular.module('eperusteApp')
 
     $scope.liitaKoodiOT = function(ot) {
       Koodisto.modaali(function(koodi) {
-        ot.koodiUri = koodi.koodi;
-      }, { tyyppi: function() { return 'tutkinnonosat'; }, ylarelaatioTyyppi: function() {return '';} })();
+        ot.koodiUri = koodi.koodiUri;
+        ot.$koodiArvo = koodi.koodiArvo;
+      }, {
+        tyyppi: function() {
+          return 'tutkinnonosat';
+        },
+        ylarelaatioTyyppi: function() {
+          return '';
+        }
+      })();
     };
 
     $scope.rajaaKoodit = function(koodi) { return koodi.koodi.indexOf('_3') !== -1; };
@@ -112,7 +120,9 @@ angular.module('eperusteApp')
       });
     };
 
-    $scope.poistaTekstikentta = function(tekstikentta) { _.remove($scope.peruste.tekstikentat, tekstikentta); };
+    $scope.poistaTekstikentta = function(tekstikentta) {
+      _.remove($scope.tekstikentat, tekstikentta);
+    };
 
     $scope.tallennaOsatutkinnot = function() {
       var filtered = _.filter($scope.osatutkinnot, function(ot) { return ot.$ladattu !== 0; });

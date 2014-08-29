@@ -16,25 +16,21 @@
 
 package fi.vm.sade.eperusteet.resource;
 
-import fi.vm.sade.eperusteet.dto.EntityReference;
-import fi.vm.sade.eperusteet.dto.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.PerusteenSisaltoViiteDto;
+import com.wordnik.swagger.annotations.Api;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
-import fi.vm.sade.eperusteet.service.mapping.Dto;
-import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import static org.springframework.web.bind.annotation.RequestMethod.*;
+
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -44,8 +40,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @Controller
 @RequestMapping("/perusteenosaviitteet")
+@Api(value="Perusteet")
 public class PerusteenOsaViiteController {
-    private static final Logger LOG = LoggerFactory.getLogger(PerusteenOsaViiteController.class);
 
     @Autowired
     private PerusteenOsaViiteService service;

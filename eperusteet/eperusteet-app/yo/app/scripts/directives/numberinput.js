@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+ *
+ * This program is free software: Licensed under the EUPL, Version 1.1 or - as
+ * soon as they will be approved by the European Commission - subsequent versions
+ * of the EUPL (the "Licence");
+ *
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * European Union Public Licence for more details.
+ */
+
 'use strict';
 
 /**
@@ -67,13 +83,36 @@ angular.module('eperusteApp')
     function isValid(value) {
       return !value || FLOAT_PATTERN.test(value);
     }
+    function validateMinMax(value, attrs, ctrl) {
+      if (typeof value === 'number') {
+        if (attrs.min) {
+          ctrl.$setValidity('min', value >= parseFloat(attrs.min));
+        }
+        if (attrs.max) {
+          ctrl.$setValidity('max', value <= parseFloat(attrs.max));
+        }
+      }
+      if (value === undefined || value === '') {
+        if (attrs.max) {
+          ctrl.$setValidity('max', true);
+        }
+        if (attrs.min) {
+          ctrl.$setValidity('min', true);
+        }
+      }
+    }
     return {
       require: 'ngModel',
       link: function(scope, element, attrs, ctrl) {
         ctrl.$parsers.unshift(function(viewValue) {
           var valid = isValid(viewValue);
           ctrl.$setValidity('float', valid);
-          return valid ? (viewValue === '' ? viewValue : parseFloat(viewValue.replace(',', '.'))) : undefined;
+          var value;
+          if (valid) {
+            value = viewValue === '' ? viewValue : parseFloat(viewValue.replace(',', '.'));
+          }
+          validateMinMax(value, attrs, ctrl);
+          return value;
         });
 
         ctrl.$formatters.unshift(function(value) {
@@ -86,7 +125,7 @@ angular.module('eperusteApp')
 
   .directive('stepValidate', function() {
     function isValid(value, step) {
-      return !value || value % step === 0;
+      return !value || (((value*100) % (step*100))/100) === 0;
     }
     return {
       require: 'ngModel',

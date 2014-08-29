@@ -259,7 +259,7 @@ angular.module('eperusteApp')
     var buildTree = function () {
       items = [
         {label: 'tutkinnonosat', link: ['root.perusteprojekti.suoritustapa.tutkinnonosat', {}]},
-        {label: 'tutkinnon-rakenne', link: ['root.perusteprojekti.suoritustapa.muodostumissaannot', {}]},
+        {label: 'tutkinnon-rakenne', link: ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: null}]},
       ];
       processNode(data.projekti.peruste.sisalto);
       callbacks.changed(items);

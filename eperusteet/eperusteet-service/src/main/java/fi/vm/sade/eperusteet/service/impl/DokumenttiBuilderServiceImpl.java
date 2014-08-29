@@ -15,9 +15,9 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.ArvioinninKohde;
-import fi.vm.sade.eperusteet.domain.ArvioinninKohdealue;
-import fi.vm.sade.eperusteet.domain.Arviointi;
+import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohde;
+import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohdealue;
+import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Peruste;
@@ -26,7 +26,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;

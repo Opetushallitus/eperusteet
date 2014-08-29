@@ -24,14 +24,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  */
 public enum RakenneModuuliRooli {
     NORMAALI("määritelty"),
-    VIRTUAALINEN("määrittelemätön");
+    VIRTUAALINEN("määrittelemätön"),
+    OSAAMISALA("osaamisala");
 
     private final String rooli;
 
     private RakenneModuuliRooli(String rooli) {
         this.rooli = rooli;
     }
-
 
     @Override
     public String toString() {

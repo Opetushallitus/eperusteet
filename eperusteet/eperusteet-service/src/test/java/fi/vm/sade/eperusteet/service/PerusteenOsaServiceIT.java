@@ -16,18 +16,18 @@
 package fi.vm.sade.eperusteet.service;
 
 import com.google.common.collect.Lists;
-import fi.vm.sade.eperusteet.domain.ArviointiAsteikko;
+import fi.vm.sade.eperusteet.domain.Arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
-import fi.vm.sade.eperusteet.dto.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.dto.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
-import fi.vm.sade.eperusteet.dto.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.repository.ArviointiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;

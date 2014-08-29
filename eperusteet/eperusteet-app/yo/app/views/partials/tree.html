@@ -1,9 +1,11 @@
 <div>
-  <div ng-show="!muokkaus && rakenne.$resolved && rakenne.rakenne.osat.length === 0" class="tree-con-empty">
-    <div class="empty-bubble" kaanna>rakennetta-ei-vielä-muodostettu</div>
-  </div>
-  <div ng-show="muokkaus && rakenne.$resolved && rakenne.rakenne.osat.length === 0" class="tree-con-empty">
-    <div class="empty-bubble" kaanna>aloita-raahaamalla-puuhun</div>
+  <div id="osaamisala-varoitus" tooltip="{{'Osaamisalaryhmän alla ei voi olla toista osaamisalaryhmää.' | kaanna}}" tooltip-trigger="show"></div>
+  <div ng-show="rakenne.$resolved && rakenne.rakenne.osat.length === 0" class="tree-con-empty">
+    <span ng-if="!esitys">
+      <div ng-show="muokkaus" class="empty-bubble distance-editing" kaanna>aloita-raahaamalla-puuhun</div>
+      <div ng-hide="muokkaus" class="empty-bubble distance" kaanna>rakennetta-ei-vielä-muodostettu</div>
+    </span>
+    <div ng-show="esitys" class="empty-bubble distance" kaanna>rakennetta-ei-ole</div>
   </div>
   <div ng-if="!lisataanUuttaOsaa" class="tree col-lg-6 col-md-8 col-xs-12">
     <div class="tree-con" ng-show="muokkaus || rakenne.rakenne.osat.length > 0">

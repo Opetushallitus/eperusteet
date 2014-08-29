@@ -15,16 +15,16 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.ArvioinninKohdealue;
-import fi.vm.sade.eperusteet.domain.Arviointi;
+import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohdealue;
+import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
-import fi.vm.sade.eperusteet.domain.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.dto.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
@@ -154,7 +154,6 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         uusi.setAmmattitaitovaatimukset(to.getAmmattitaitovaatimukset());
         uusi.setArviointi(arviointiService.kopioi(to.getArviointi()));
         uusi.setOpintoluokitus(to.getOpintoluokitus());
-        uusi.setOsaamisala(to.getOsaamisala());
         uusi.setTavoitteet(to.getTavoitteet());
         tov.setTutkinnonOsa(tutkinnonOsaRepository.save(uusi));
         return mapper.map(tov, TutkinnonOsaViiteDto.class);
