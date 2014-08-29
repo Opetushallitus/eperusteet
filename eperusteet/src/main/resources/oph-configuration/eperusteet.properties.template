@@ -18,7 +18,8 @@ ldap.manager.password={{ldap_manager_password}}
 ldap.manager-password={{ldap_manager_password}}
 ldap.manager.userdn={{ldap_manager_userdn}}
 server.name={{ansible_hostname}}
-
+fi.vm.sade.eperusteet.oph_username={{haku_app_username_to_valintalaskenta}}
+fi.vm.sade.eperusteet.oph_password={{haku_app_password_to_valintalaskenta}}
 # Oletusarvoja
 accessRight.webservice.url.backend=https\://${host.virkailija}/authentication-service/services/accessRightService
 accessRightAdmin.webservice.url.backend=https\://${host.virkailija}/authentication-service/services/accessRightAdminService
