@@ -28,7 +28,7 @@
         <span ng-show="!alue.$editing" class="otsikko">{{alue.nimi | kaanna}}</span>
         <input ng-show="alue.$editing" class="" ng-model="osaAlue.$editing.nimi" localized ng-click="$event.stopPropagation()">
         <span ng-hide="isEditingInProgress()">
-          <select ng-if="osaAlue.hasChoices(alue)" ng-options="item.value as item.label|kaanna for item in osaAlue.groups(alue)"
+          <select ng-if="alue.$groups.$size > 1" ng-options="item.value as item.label|kaanna for item in alue.$groups.$options"
                   ng-model="alue.$chosen" ng-click="$event.stopPropagation()"></select>
         </span>
         <div class="muokkaus-napit pull-right" ng-hide="alue.$editing || isEditingInProgress()">

@@ -75,10 +75,6 @@ angular.module('eperusteApp')
       return $scope.osaAlue.$editing || $scope.osaamistavoite.$editing;
     };
 
-    function getChoiceName(key) {
-      return $scope.tutke2osa.tavoiteMap[key].nimi;
-    }
-
     function stopEvent(event) {
       if (event) {
         event.stopPropagation();
@@ -101,15 +97,6 @@ angular.module('eperusteApp')
 
     $scope.osaAlue = {
       $editing: null,
-      hasChoices: function (alue) {
-        return !_.isEmpty(alue.$groups) && _.keys(alue.$groups.grouped).length > 1;
-      },
-      groups: function (alue) {
-        var ret = _.map(_.keys(alue.$groups.grouped), function (key) {
-          return {label: getChoiceName(key), value: key};
-        });
-        return ret;
-      },
       add: function () {
         var newAlue = {
           nimi: {}
@@ -284,6 +271,9 @@ angular.module('eperusteApp')
     };
 
     $scope.$watch('mainLevelEditing', function (editing) {
+      if (!$scope.tutke2osa) {
+        return;
+      }
       if (editing) {
         tutke2osaDefer.promise.then(function () {
           $scope.tutke2osa.$editing = angular.copy($scope.tutke2osa.osaAlueet);
@@ -342,7 +332,7 @@ angular.module('eperusteApp')
           that.tavoiteMap[tavoite.id] = tavoite;
         });
         arr.osaamistavoitteet = res;
-        osaAlue.$groups = groupTavoitteet(res);
+        osaAlue.$groups = groupTavoitteet(res, that.tavoiteMap);
         var pakollinenIds = _.keys(osaAlue.$groups.grouped);
         osaAlue.$esitietoOptions = _.map(pakollinenIds, function (id) {
           return {value: id, label: osaAlue.$groups.grouped[id][0].nimi};
@@ -370,7 +360,7 @@ angular.module('eperusteApp')
       }
     }
 
-    function groupTavoitteet(tavoitteet) {
+    function groupTavoitteet(tavoitteet, tavoiteMap) {
       var groups = {
         grouped: {},
         ungrouped: {}
@@ -390,6 +380,10 @@ angular.module('eperusteApp')
         }
       });
       groups.ungrouped = _.difference(tavoitteet, processed);
+      groups.$size = _.size(groups.grouped);
+      groups.$options = _.map(_.keys(groups.grouped), function (key) {
+        return {label: tavoiteMap[key].nimi, value: key};
+      });
       return groups;
     }
 
