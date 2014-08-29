@@ -127,13 +127,8 @@ angular.module('eperusteApp')
           scope.apumuuttujat.piilotaVirheet = !scope.apumuuttujat.piilotaVirheet;
         };
 
-        var varivalinta = '{ \'background\': rakenne.rooli === \'määrittelemätön\'' +
-                                              '? \'#93278F\'' +
-                                              ': rakenne.osat.length === 0' +
-                                                '? \'#FDBB07\'' +
-                                                ': rakenne.$collapsed' +
-                                                  '? \'#06526c\'' +
-                                                  ': \'#29ABE2\' }';
+        var varivalinta = 'ng-class="{maarittelematon: rakenne.rooli === \'määrittelemätön\', tyhja: rakenne.osat.length === 0, ' +
+            'suljettu: rakenne.$collapsed, osaamisala: rakenne.rooli === \'osaamisala\'}"';
 
         var koonIlmaisu = '<span ng-show="rakenne.muodostumisSaanto.koko.minimi === rakenne.muodostumisSaanto.koko.maksimi">' +
                           '  {{ rakenne.muodostumisSaanto.koko.minimi || 0 }} {{ \'kpl\' | kaanna }}' +
@@ -150,7 +145,7 @@ angular.module('eperusteApp')
                                '</span>';
 
         var optiot = '' +
-          '<span ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" ng-if="!rakenne._tutkinnonOsaViite" class="colorbox" ng-style="' + varivalinta + '">' +
+          '<span ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" ng-if="!rakenne._tutkinnonOsaViite" class="colorbox" ' + varivalinta + '>' +
           '  <span ng-show="rakenne.rooli !== \'määrittelemätön\'">' +
           '    <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
           '    <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +

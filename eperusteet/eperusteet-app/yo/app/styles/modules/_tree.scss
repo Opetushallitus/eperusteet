@@ -1,6 +1,8 @@
 $colorbox-vari: #06526c;
 $colorbox-open-vari: #29ABE2;
 $colorbox-empty-vari: #FDBB07;
+$colorbox-osaamisala-vari: #6d9aa8;
+$colorbox-maarittelematon-vari: #93278F;
 $reunus-vari: #ccc;
 $kuvaus-vari: #fff;
 $yla-reunus-vari: #ddd;
@@ -413,11 +415,26 @@ $tree-group-width: 480px;
       display: inline-block;
       margin-right: 10px;
       float: left;
-      // background: $colorbox-vari;
+      background: $colorbox-open-vari;
       color: white;
       text-decoration: none;
       a:link, a:visited, a:hover, a:active {
         color: #FFF;
+      }
+      &.suljettu {
+        background: $colorbox-vari;
+      }
+      &.tyhja {
+        background: $colorbox-empty-vari;
+      }
+      &.osaamisala {
+        background: $colorbox-osaamisala-vari;
+      }
+      &.osaamisala.suljettu {
+        background: darken($colorbox-osaamisala-vari, 10%);
+      }
+      &.maarittelematon {
+        background: $colorbox-maarittelematon-vari;
       }
     }
     .right-item {
