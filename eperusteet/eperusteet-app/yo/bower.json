@@ -21,7 +21,7 @@
     "json3": "~3.2.4",
     "lodash": "~2.4.0",
     "momentjs": "~2.5.1",
-    "angular-ui-router": "~0.2.10",
+    "angular-ui-router": "0.2.10",
     "ng-file-upload": "~1.2.6",
     "angular-ui-sortable": "~0.12.8",
     "bootstrap-sass-official": "~3.1.1",
