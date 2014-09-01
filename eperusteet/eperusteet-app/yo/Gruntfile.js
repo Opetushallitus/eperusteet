@@ -20,7 +20,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-connect-proxy');
   grunt.loadNpmTasks('grunt-angular-templates');
   require('load-grunt-tasks')(grunt);
-  require('time-grunt')(grunt);
+//  require('time-grunt')(grunt);
 
   // configurable paths
   var yeomanConfig = {
