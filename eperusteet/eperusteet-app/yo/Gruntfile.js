@@ -20,7 +20,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-connect-proxy');
   grunt.loadNpmTasks('grunt-angular-templates');
   require('load-grunt-tasks')(grunt);
-//  require('time-grunt')(grunt);
+//require('time-grunt')(grunt);
 
   // configurable paths
   var yeomanConfig = {
@@ -109,7 +109,7 @@ module.exports = function(grunt) {
       },
       test: {
         options: {
-          port: 9001,
+          port: 0,
           middleware: function(connect) {
             return [
               mountFolder(connect, '.tmp'),
@@ -406,7 +406,7 @@ module.exports = function(grunt) {
     'clean:server',
     'concurrent:test',
     'autoprefixer',
-    'connect:test',
+//  'connect:test',
     'regex-check',
     'jshint',
     'karma'
@@ -420,7 +420,7 @@ module.exports = function(grunt) {
     'ngtemplates',
     'concat',
     'copy:dist',
-//    'ngmin',
+//  'ngmin',
     'cssmin',
     'uglify',
     'rev',
