@@ -398,22 +398,6 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Override
     @Transactional(readOnly = true)
-    public TutkinnonOsaViiteDto getTutkinnonOsaViite(Long osaId) {
-        TutkinnonOsaViite re = tutkinnonOsaViiteRepository.findOne(osaId);
-        return mapper.map(re, TutkinnonOsaViiteDto.class);
-    }
-
-    @Override
-    public TutkinnonOsaViiteDto updateTutkinnonOsaViite(Long osaId, TutkinnonOsaViiteDto tov) {
-        TutkinnonOsaViite to = tutkinnonOsaViiteRepository.findOne(osaId);
-        to.setJarjestys(tov.getJarjestys());
-        to.setLaajuus(tov.getLaajuus());
-        to.setMuokattu(new Date());
-        return mapper.map(to, TutkinnonOsaViiteDto.class);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public List<TutkinnonOsaViiteDto> getTutkinnonOsat(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
         Peruste peruste = perusteet.findOne(perusteid);
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
@@ -807,6 +791,7 @@ public class PerusteServiceImpl implements PerusteService {
      * @param koulutustyyppi
      * @param yksikko
      * @param tila
+     * @param tyyppi
      * @return Palauttaa 'tyhjän' perusterungon
      */
     @Override

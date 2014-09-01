@@ -170,20 +170,6 @@ public class PerusteController {
         return service.getTutkinnonOsat(id, Suoritustapakoodi.of(suoritustapakoodi));
     }
 
-    @RequestMapping(value = "/tutkinnonosa/{osaId}", method = GET)
-    @ResponseBody
-    public TutkinnonOsaViiteDto getTutkinnonOsaViite(@PathVariable("osaId") final Long osaId) {
-        TutkinnonOsaViiteDto to = service.getTutkinnonOsaViite(osaId);
-        return to;
-    }
-
-    @RequestMapping(value = "/tutkinnonosa/{osaId}", method = {PUT, POST})
-    @ResponseBody
-    public TutkinnonOsaViiteDto updateTutkinnonOsaViite(
-            @PathVariable("osaId") final Long osaId,
-            @RequestBody TutkinnonOsaViiteDto osa) {
-        return service.updateTutkinnonOsaViite(osaId, osa);
-    }
 
     /**
      * Luo ja liittää uuden tutkinnon osa perusteeseen.
