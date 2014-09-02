@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.resource.config;
 
 import com.fasterxml.classmate.GenericType;
 import com.fasterxml.classmate.TypeResolver;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
 import com.mangofactory.swagger.models.alternates.Alternates;
 import com.mangofactory.swagger.paths.RelativeSwaggerPathProvider;
@@ -24,6 +25,7 @@ import com.mangofactory.swagger.plugin.EnableSwagger;
 import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import com.wordnik.swagger.model.ApiInfo;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.util.concurrent.Callable;
 import javax.servlet.ServletContext;
 import lombok.Getter;
@@ -55,6 +57,8 @@ public class SwaggerConfig {
             .apiInfo(apiInfo())
             .pathProvider(relativeSwaggerPathProvider)
             .directModelSubstitute(fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.class, LokalisoituTekstiDto.class)
+            .directModelSubstitute(EntityReference.class, Long.class)
+            .directModelSubstitute(JsonNode.class, Object.class)
             .genericModelSubstitutes(ResponseEntity.class)
             .alternateTypeRules(
                 Alternates.newRule(typeResolver.resolve(new GenericType<Callable<ResponseEntity<Object>>>() {
