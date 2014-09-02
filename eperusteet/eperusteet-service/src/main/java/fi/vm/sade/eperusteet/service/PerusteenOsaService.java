@@ -42,6 +42,8 @@ public interface PerusteenOsaService {
     @PreAuthorize("hasPermission(#po.id, 'perusteenosa', 'MUOKKAUS')")
     <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(@P("po") T perusteenOsaDto, Class<T> dtoClass);
 
+    @PreAuthorize("isAuthenticated()")
+    @PostAuthorize("hasPermission(returnObject.id, 'perusteenosa', 'MUOKKAUS')")
     <T extends PerusteenOsaDto, D extends PerusteenOsa> T add(T perusteenOsaDto, Class<T> dtoClass, Class<D> destinationClass);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'POISTO')")
