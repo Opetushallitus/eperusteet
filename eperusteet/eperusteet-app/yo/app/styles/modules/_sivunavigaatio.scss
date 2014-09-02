@@ -153,6 +153,16 @@ $sivunavi-level-padding: 20px;
   width: $sivunavi-leveys;
 }
 
+.sivunavi-takaisin {
+  a {
+    font-size: 140%;
+    .glyphicon {
+      font-size: 25px;
+      top: 4px;
+    }
+  }
+}
+
 .sivunavi-toggler-wrapper {
   position: relative;
 }
