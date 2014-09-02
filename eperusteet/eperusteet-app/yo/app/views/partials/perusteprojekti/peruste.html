@@ -44,8 +44,7 @@ European Union Public Licence for more details.
         <p ng-hide="editEnabled">{{ editablePeruste.diaarinumero | kaanna }}</p>
       </div>
     </div>
-
-    <div class="panel panel-default panel-clean">
+    <div class="panel panel-default panel-clean" ng-hide="editablePeruste.koulutustyyppi === 'koulutustyyppi_9999'">
       <div class="panel-heading">
         <h3 class="panel-title" kaanna>peruste-koulutukset</h3>
       </div>

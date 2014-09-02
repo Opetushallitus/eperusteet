@@ -25,7 +25,6 @@ European Union Public Licence for more details.
                 </li>
             </ul>
         </div>
-
         <div class="tutkinto">
             <div ng-hide="muokkausTutkintokohtaisetOsat">
                 <div class="toolbar-input">
@@ -40,7 +39,7 @@ European Union Public Licence for more details.
 
             <div class="clearfix"></div>
 
-            <div style="margin-bottom: 40px" ng-hide="muokkausTutkintokohtaisetOsat">
+            <div style="margin-bottom: 40px" ng-hide="muokkausTutkintokohtaisetOsat || peruste.koulutustyyppi === 'koulutustyyppi_9999'">
                 <h2 ng-show="naytaTutkinnonOsat || naytaRakenne">Tutkinnon muodostuminen</h2>
                 <div ng-show="naytaTutkinnonOsat" class="list-element striped" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat">
                     <h3><a href="" kaanna>tutkinnonosat</a></h3>

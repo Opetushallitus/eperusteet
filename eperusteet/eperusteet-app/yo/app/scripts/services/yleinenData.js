@@ -73,7 +73,8 @@ angular.module('eperusteApp')
     this.koulutustyypit = [
       'koulutustyyppi_1',
       'koulutustyyppi_11',
-      'koulutustyyppi_12'
+      'koulutustyyppi_12',
+      'koulutustyyppi_9999'
     ];
 
     this.kielet = {
