@@ -192,3 +192,7 @@ $backtotop-size: 48px;
     }
   }
 }
+
+*[contenteditable="false"].cke_focus {
+  outline: none;
+}

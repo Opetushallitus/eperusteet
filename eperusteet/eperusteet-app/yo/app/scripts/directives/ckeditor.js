@@ -99,7 +99,8 @@ angular.module('eperusteApp')
           sharedSpaces: {
             top: 'ck-toolbar-top'
           },
-          readOnly: !editingEnabled
+          readOnly: !editingEnabled,
+          title: false
         });
 
         // poistetaan enterin käyttö, jos kyseessä on yhden rivin syöttö
