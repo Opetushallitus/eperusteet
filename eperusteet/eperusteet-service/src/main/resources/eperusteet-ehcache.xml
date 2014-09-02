@@ -25,7 +25,7 @@
     Subdirectories can be specified below the property e.g. java.io.tmpdir/one
 
     -->
-    <diskStore path="java.io.tmpdir"/>
+    <diskStore path="java.io.tmpdir/eperusteetcache"/>
 
     <!--
     Specifies a CacheManagerEventListenerFactory, be used to create a CacheManagerPeerProvider,
@@ -278,7 +278,7 @@
     eternal="false"
     timeToIdleSeconds="3600"
     timeToLiveSeconds="3600"
-    overflowToDisk="false"
+    overflowToDisk="true"
     maxElementsOnDisk="10000"
     diskPersistent="false"
     diskExpiryThreadIntervalSeconds="120"
