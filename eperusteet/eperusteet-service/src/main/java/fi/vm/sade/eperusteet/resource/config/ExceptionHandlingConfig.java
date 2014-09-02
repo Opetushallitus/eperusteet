@@ -15,24 +15,29 @@
  */
 package fi.vm.sade.eperusteet.resource.config;
 
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import fi.vm.sade.eperusteet.service.exception.LockingException;
+import fi.vm.sade.eperusteet.service.exception.ServiceException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import javax.servlet.ServletException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-
+import javax.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.core.NestedCheckedException;
+import org.springframework.core.NestedRuntimeException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
@@ -43,15 +48,11 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.UnsatisfiedServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
-
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import fi.vm.sade.eperusteet.service.exception.LockingException;
-import fi.vm.sade.eperusteet.service.exception.ServiceException;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
@@ -62,14 +63,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExceptionHandlingConfig.class);
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public void rethrowAccessDeniedException(AccessDeniedException ex) {
-        // Spring Security autentikoi käyttäjän service-kerroksessa ja heittää AccessDeniedException-poikkeuksen, jos käyttäjä ei ole kirjautunut, tai
-        // hänellä ei ole oikeuksia kyseisiin resursseihin. Tätä poikkeusta ei saa ottaa kiinni, vaan se pitää heittää eteenpäin, jotta SS osaa tehdä
-        // tarvittavat toimenpiteet käyttäjän autentikoimiseen.
-        throw ex;
-    }
 
     @ExceptionHandler(TransactionSystemException.class)
     public ResponseEntity<Object> handleTransactionExceptions(TransactionSystemException e, WebRequest request) {
@@ -91,7 +84,12 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
         }
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(value = {
+        NestedRuntimeException.class,
+        NestedCheckedException.class,
+        IOException.class,
+        ServletException.class,
+        ValidationException.class})
     public ResponseEntity<Object> handleAllExceptions(Exception e, WebRequest request) throws Exception {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         ResponseStatus rs = e.getClass().getAnnotation(ResponseStatus.class);
