@@ -38,8 +38,6 @@ angular.module('eperusteApp')
     $scope.luonti = !_.isObject(ryhma);
 
     var setupRyhma = function (ryhma) {
-      console.log('setupRyhma', _.clone(ryhma));
-
       $scope.ryhma = ryhma ? angular.copy(ryhma) : {};
       $scope.osaamisala = ryhma && ryhma.osaamisala ? angular.copy(ryhma.osaamisala) : {};
       $scope.ryhma.rooli = $scope.ryhma.rooli || YleinenData.rakenneRyhmaRoolit[0];
@@ -52,8 +50,6 @@ angular.module('eperusteApp')
       if (!$scope.ryhma.kuvaus) {
         $scope.ryhma.kuvaus = {};
       }
-      console.log('setupRyhma2', _.clone(ryhma));
-      console.log('setupRyhma2 $scope.ryhma', _.clone($scope.ryhma));
     };
     setupRyhma(ryhma);
 
@@ -89,10 +85,9 @@ angular.module('eperusteApp')
         if (!$scope.ms.koko) {
           delete uusiryhma.muodostumisSaanto.koko;
         }
-      }
-
-      if ($scope.osaamisala) {
-        uusiryhma.osaamisala = $scope.osaamisala;
+        if ($scope.osaamisala) {
+          uusiryhma.osaamisala = $scope.osaamisala;
+        }
       }
 
       $modalInstance.close(uusiryhma);
