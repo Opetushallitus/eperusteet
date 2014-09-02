@@ -81,10 +81,10 @@
               </h3>
             </div>
             <div class="panel-body">
-            <div ckeditor localized ng-model="tavoite.tavoitteet" editing-enabled="false"></div>
+            <div ng-bind-html="valitseKieli(tavoite.tavoitteet)"></div>
             <h4 kaanna>arviointi</h4>
             <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet" mainLevelEditing="tavoite.$editing" ei-kohdealueita="true"></arviointi>
-            <div ckeditor localized ng-model="tavoite.tunnustaminen" editing-enabled="false"></div>
+            <div ng-bind-html="valitseKieli(tavoite.tunnustaminen)"></div>
             </div>
           </div>
 

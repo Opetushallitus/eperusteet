@@ -30,12 +30,13 @@ angular.module('eperusteApp')
         Notifikaatiot, VersionHelper, Lukitus, $state,
         TutkinnonOsaEditMode, PerusteenOsaViitteet, Varmistusdialogi, $timeout,
         Kaanna, PerusteprojektiTiedotService, $stateParams, SuoritustapaSisalto,
-        Utils, PerusteProjektiSivunavi) {
+        Utils, PerusteProjektiSivunavi, YleinenData) {
 
         Utils.scrollTo('#ylasivuankkuri');
 
         $scope.sisalto = {};
         $scope.viitteet = {};
+        $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
 
         PerusteprojektiTiedotService.then(function(instance) {
           instance.haeSisalto($scope.$parent.peruste.id, $stateParams.suoritustapa).then(function(res) {

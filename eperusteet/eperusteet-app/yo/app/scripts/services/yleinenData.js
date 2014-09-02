@@ -127,7 +127,6 @@ angular.module('eperusteApp')
     };
 
     this.valitseKieli = function(teksti) {
-
       if (teksti && teksti.hasOwnProperty(this.kieli)) {
         return teksti[this.kieli];
       } else {
