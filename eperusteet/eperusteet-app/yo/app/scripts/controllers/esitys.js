@@ -102,6 +102,7 @@ angular.module('eperusteApp')
       Kayttajaprofiilit, Suosikit, YleinenData, Navigaatiopolku, $state, virheService,
       Algoritmit, PerusteenRakenne, tutkinnonOsat, Kaanna, arviointiasteikot, Profiili,
       PdfCreation) {
+    $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
     $scope.navi = {
       items: [
         {label: 'tutkinnonosat', link: ['root.esitys.peruste.tutkinnonosat', {}]},

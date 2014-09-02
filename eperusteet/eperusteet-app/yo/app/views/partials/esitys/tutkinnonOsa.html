@@ -21,22 +21,11 @@
     </div>
 </div>
 
-<!-- FIXME: korvaa ckeditorit jollain järkevällä ratkaisulla -->
+<!-- TODO: kenttien oikea järjestys -->
 <div ng-repeat="(k, v) in tutkinnonOsa">
-    <div ng-if="k === 'ammattitaidonOsoittamistavat' && v">
+    <div ng-if="v && (k === 'tavoitteet' || k === 'ammattitaidonOsoittamistavat' || k === 'ammattitaitovaatimukset')">
         <h3>{{ k | kaanna }}</h3>
-        <div class="cke_contents_ltr" ng-model="v" ckeditor="" editing-enabled="false" localized=""
-             contenteditable="false" tabindex="0" spellcheck="false" style="position: relative;" role="textbox"></div>
-    </div>
-    <div ng-if="k === 'ammattitaitovaatimukset' && v">
-        <h3>{{ k | kaanna }}</h3>
-        <div class="cke_contents_ltr" ng-model="v" ckeditor="" editing-enabled="false" localized=""
-             contenteditable="false" tabindex="0" spellcheck="false" style="position: relative;" role="textbox"></div>
-    </div>
-    <div ng-if="k === 'tavoitteet' && v">
-        <h3>{{ k | kaanna }}</h3>
-        <div class="cke_contents_ltr" ng-model="v" ckeditor="" editing-enabled="false" localized=""
-             contenteditable="false" tabindex="0" spellcheck="false" style="position: relative;" role="textbox"></div>
+        <div ng-bind-html="valitseKieli(v)"></div>
     </div>
     <div ng-if="k === 'arviointi' && v">
         <h3>{{ k | kaanna }}</h3>
