@@ -9,11 +9,11 @@
     <ml-input ng-if="isMultiText" ml-data="input.model" ng-model="input.model" type="{{type}}" required="!!postfix"></ml-input>
     <select id="{{inputElId}}" ng-if="options && !flatOptions" class="form-control" ng-model="input.model" ng-required="!!postfix"
       ng-options="obj.value as obj.label for obj in options">
-      <option value="" ng-show="placeholder">{{placeholder | kaanna}}</option>
+      <option value="" ng-if="placeholder">{{placeholder | kaanna}}</option>
     </select>
     <select id="{{inputElId}}" ng-if="options && flatOptions" class="form-control" ng-model="input.model" ng-required="!!postfix"
       ng-options="kaanna(obj) for obj in options">
-      <option value="" ng-show="placeholder">{{placeholder | kaanna}}</option>
+      <option value="" ng-if="placeholder">{{placeholder | kaanna}}</option>
     </select>
   </div>
   <div class="col-sm-9 form-clear" ng-if="isDate">
