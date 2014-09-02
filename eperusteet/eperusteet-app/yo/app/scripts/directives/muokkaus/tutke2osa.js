@@ -97,6 +97,9 @@ angular.module('eperusteApp')
 
     $scope.osaAlue = {
       $editing: null,
+      jumpTo: function (alue) {
+        Utils.scrollTo('#' + alue.$uniqueId);
+      },
       add: function () {
         var newAlue = {
           nimi: {}
@@ -297,6 +300,7 @@ angular.module('eperusteApp')
   })
 
   .factory('Tutke2Osa', function ($q, TutkinnonOsanOsaAlue, Osaamistavoite) {
+    var unique = 0;
     function Tutke2OsaImpl(tutkinnonOsaId) {
       this.tutkinnonOsaId = tutkinnonOsaId;
       this.params = { osanId: tutkinnonOsaId };
@@ -315,6 +319,7 @@ angular.module('eperusteApp')
             alue.nimi = {};
           }
           alue.$open = true;
+          alue.$uniqueId = 'osa-alue-' + unique++;
           if (!skipTavoitteet) {
             that.getTavoitteet(alue, alue);
           } else {
