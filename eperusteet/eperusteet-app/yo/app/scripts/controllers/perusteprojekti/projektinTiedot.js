@@ -91,7 +91,7 @@ angular.module('eperusteApp')
     $scope.muokkaa = function () {
       Editointikontrollit.startEditing();
     };
-    
+
     $scope.puhdistaValinta = function() {
       PerusteProjektiService.clean();
       if ($scope.wizardissa()) {
@@ -101,8 +101,8 @@ angular.module('eperusteApp')
       }
     };
     $scope.puhdistaValinta();
-    
-    
+
+
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.projekti.laajuusYksikko = $scope.projekti.laajuusYksikko || 'OSAAMISPISTE';
 
@@ -139,7 +139,7 @@ angular.module('eperusteApp')
       angular.noop);
     };
 
-    
+
     $scope.tallennaPerusteprojekti = function() {
       var projekti = PerusteProjektiService.get();
       if (projekti.id) {

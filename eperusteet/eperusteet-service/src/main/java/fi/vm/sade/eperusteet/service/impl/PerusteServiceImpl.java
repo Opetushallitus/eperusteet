@@ -95,7 +95,8 @@ public class PerusteServiceImpl implements PerusteService {
     private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
     private static final String KOODISTO_RELAATIO_YLA = "relaatio/sisaltyy-ylakoodit/";
     private static final String KOODISTO_RELAATIO_ALA = "relaatio/sisaltyy-alakoodit/";
-    private static final String[] KOULUTUSTYYPPI_URIT = {"koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"};
+    private static final String[] AMMATILLISET_KOULUTUSTYYPPI_URIT = {"koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12", "koulutustyyppi_9999"};
+    private static final String PERUSOPETUKSEN_KOULUTUSTYYPPI = "koulutustyyppi_9999";
     private static final String KOULUTUSALALUOKITUS = "koulutusalaoph2002";
     private static final String OPINTOALALUOKITUS = "opintoalaoph2002";
 
@@ -679,7 +680,7 @@ public class PerusteServiceImpl implements PerusteService {
         Map<String, String> erikoistapausMap = alustaErikoistapausMap();
 
         int i = 0;
-        for (String koulutustyyppiUri : KOULUTUSTYYPPI_URIT) {
+        for (String koulutustyyppiUri : AMMATILLISET_KOULUTUSTYYPPI_URIT) {
             tutkinnot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_YLA + koulutustyyppiUri, KoodistoKoodiDto[].class);
             Peruste peruste;
 
@@ -778,8 +779,10 @@ public class PerusteServiceImpl implements PerusteService {
      */
     private Set<Suoritustapa> luoSuoritustavat(String koulutustyyppiUri, LaajuusYksikko yksikko) {
         Set<Suoritustapa> suoritustavat = new HashSet<>();
-        suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO, null));
-        if (koulutustyyppiUri.equals(KOULUTUSTYYPPI_URIT[0])) {
+        if (Arrays.asList(AMMATILLISET_KOULUTUSTYYPPI_URIT).indexOf(koulutustyyppiUri) != -1) {
+            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO, null));
+        }
+        if (koulutustyyppiUri.equals(AMMATILLISET_KOULUTUSTYYPPI_URIT[0]) || koulutustyyppiUri.equals(PERUSOPETUKSEN_KOULUTUSTYYPPI)) {
             suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko));
         }
         return suoritustavat;
@@ -795,16 +798,21 @@ public class PerusteServiceImpl implements PerusteService {
      * @return Palauttaa 'tyhjän' perusterungon
      */
     @Override
-    // FIXME: Luo vain ammatillisen puolen perusteita. Refactoroi, kun tulee lisää koulutustyyppejä.
     public Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, PerusteTila tila, PerusteTyyppi tyyppi) {
         Peruste peruste = new Peruste();
         peruste.setKoulutustyyppi(koulutustyyppi);
         peruste.setTila(tila);
         peruste.setTyyppi(tyyppi);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
-        suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO, null));
-        if (koulutustyyppi != null && koulutustyyppi.equals(KOULUTUSTYYPPI_URIT[0])) {
-            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko != null ? yksikko : LaajuusYksikko.OSAAMISPISTE));
+        if (Arrays.asList(AMMATILLISET_KOULUTUSTYYPPI_URIT).indexOf(koulutustyyppi) != -1) {
+            suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO, null));
+        }
+        if (koulutustyyppi != null) {
+            if (koulutustyyppi.equals(AMMATILLISET_KOULUTUSTYYPPI_URIT[0])) {
+                suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko != null ? yksikko : LaajuusYksikko.OSAAMISPISTE));
+            } else if (koulutustyyppi.equals(PERUSOPETUKSEN_KOULUTUSTYYPPI)) {
+                suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, null));
+            }
         }
         peruste.setSuoritustavat(suoritustavat);
         return peruste;
