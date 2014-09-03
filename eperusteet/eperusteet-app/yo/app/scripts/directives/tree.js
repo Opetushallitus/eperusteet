@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .directive('tree', function($compile, $state, Muodostumissaannot, Kaanna, TreeDragAndDrop) {
+  .directive('tree', function($compile, $state, Muodostumissaannot, Kaanna, TreeDragAndDrop, $translate) {
     function generoiOtsikko() {
       var tosa = '{{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].nimi || "nimetön" | kaanna }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">, <b>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</b>{{ apumuuttujat.laajuusYksikko | kaanna }}</span>';
       var editointiIkoni =
@@ -57,6 +57,7 @@ angular.module('eperusteApp')
         scope.scratchpad = [];
         scope.roskakori = [];
         scope.esitystilassa = $state.includes('**.esitys.**');
+        scope.lang = $translate.use() || $translate.preferredLanguage();
 
         scope.poista = function(i, a) {
           _.remove(a.osat, i);
@@ -177,7 +178,7 @@ angular.module('eperusteApp')
             optiot +
           '</div>' +
           '<div ng-if="!rakenne._tutkinnonOsaViite" ng-class="{ \'pointer\': muokkaus }" class="bubble">' + optiot + '</div>' +
-          '<div ng-model="rakenne" ng-show="!muokkaus && rakenne.kuvaus && rakenne.kuvaus !== \'\'" class="kuvaus">' +
+          '<div ng-model="rakenne" ng-show="!muokkaus && rakenne.kuvaus && rakenne.kuvaus[lang].length > 0" class="kuvaus">' +
           '  <div ng-class="{ \'text-truncated\': !rakenne.$showKuvaus }">{{ rakenne.kuvaus | kaanna }}</div>' +
           '  <div class="avausnappi" ng-click="rakenne.$showKuvaus = !rakenne.$showKuvaus"><div class="avausnappi-painike">&hellip;</div></div>' +
           '</div>' +
