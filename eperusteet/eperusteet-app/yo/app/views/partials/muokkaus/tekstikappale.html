@@ -22,9 +22,9 @@ European Union Public Licence for more details.
       <button ng-disabled="isLocked" ng-hide="editableTekstikappale.tila !== 'luonnos' || editEnabled || !versiot.latest"
               ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna>muokkaa</button>
     </div>
-    <button ng-if="canAddLapsi() && tekstikappale.tila !== 'julkaistu'" ng-hide="editEnabled || !versiot.latest"
+    <button ng-if="canAddLapsi() && tekstikappale.tila !== 'valmis'" ng-hide="editEnabled || !versiot.latest"
             ng-click="addLapsi()" class="floater btn btn-default" icon-role="add" kaanna>lisaa-aliotsikko</button>
-    <button ng-show="!editEnabled && tekstikappale.tila === 'julkaistu'" ng-click="kopioiMuokattavaksi()"
+    <button ng-show="!editEnabled && tekstikappale.tila === 'valmis'" ng-click="kopioiMuokattavaksi()"
             class="floater btn btn-danger" icon-role="fire" kaanna>kopioi-muokattavaksi</button>
 
     <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
