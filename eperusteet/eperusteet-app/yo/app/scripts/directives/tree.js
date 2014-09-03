@@ -169,7 +169,7 @@ angular.module('eperusteApp')
           '  </div>' +
           '</div>' +
           '<div class="left">' +
-          '  <span class="tree-item">' + generoiOtsikko() + '</span>' +
+          '  <span ng-class="{ \'pointer\': muokkaus }">' + generoiOtsikko() + '</span>' +
           '</div>';
 
         var kentta =
