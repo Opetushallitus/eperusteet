@@ -107,113 +107,11 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
     background: #ccc;
   }
 }
-.main-content {
-  .striped {
-    background: #fcfcfc;
-  }
-  .list-element {
-    border: 1px solid #eee;
-    padding: 4px 10px 4px 0;
-    margin: 0px;
-    margin-top: 2px;
-    cursor: pointer;
-    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-    h3 {
-      font-size: 14px;
-      font-weight: bold;
-      display: inline;
-      padding: 4px;
-      // padding-left: 20px;
-      // margin-top: 15px;
-    }
-    .otsikko {
-      margin-left: 28px;
-
-      a {
-        color: rgb(51,51,51);
-      }
-
-      .lukko {
-        top: -20px;
-        position: relative;
-        float: right;
-      }
-
-      a:hover {
-        text-decoration: none;
-      }
-      a *:hover {
-        text-decoration: none;
-      }
-    }
-    .chevron {
-      left: -1px;
-      top: -4px;
-      position: relative;
-      width: 27px;
-      height: 26px;
-      float: left;
-      // border-left: 1px solid #ccc;
-      padding: 4px 0 0 6px;
-      text-decoration: none;
-      color: #222;
-    }
-  }
-  .list-element-info {
-    margin: 5px 0 0 5px;
-    color: #777;
-    font-weight: normal;
-    font-size: x-small;
-  }
-  .ceiling {
-    border-top: 1px solid #ccc;
-  }
-  ul.sub-items {
-    margin-left: 140px;
-    background-color: #fff;
-    li {
-      position: relative;
-      padding: 10px inherit 10px 20px;
-      border: 1px solid #ddd;
-      border-top: none;
-    }
-  }
-}
 
 .ryhma-johto {
   h2 {
     border-bottom: $project-header-border;
   }
-}
-
-.main-content .list-element:hover,
-.main-content .li:hover {
-  background: #fafafa;
-  border: 1px solid #c9c9c9;
-}
-.main-content .list-element
-.main-content .list-element-child h6 {
-  font-weight: bold;
-  padding-top: 8px;
-  margin-left: 5px;
-}
-.main-content .list-element a.next,
-.main-content a.next {
-  cursor: pointer;
-  position: absolute;
-  top: 50%;
-  margin-top: -9px;
-  right: 10px;
-}
-.main-content .list-element a.next span,
-.main-content a.next span {
-  margin-left: 4px;
-}
-.main-content .list-element span.glyphicon.next,
-.main-content ul.sub-items li span.glyphicon.next {
-  position: relative;
-  right: 10px;
 }
 
 .form-group-wrapper {
@@ -300,66 +198,6 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   }
   .confirmation {
     font-size: 125%;
-  }
-}
-
-.tutkinto-sisalto {
-  margin: -30px auto 100px auto;
-
-  .selite {
-    font-size: 18px;
-    text-align: center;
-    margin: 40px;
-  }
-
-  .suoritustapa {
-    font-size: 16px;
-  }
-
-  .actions {
-    height: 50px;
-  }
-
-  .tutkinto {
-    .toolbar-input {
-      margin-top: 40px;
-      margin-left: auto;
-      margin-right: auto;
-      width: 40%;
-    }
-    h2 {
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 7px;
-      margin-bottom: 20px;
-
-      .buttons {
-        position: relative;
-        top: -8px;
-      }
-    }
-  }
-
-  .nav {
-    margin-bottom: 22px;
-  }
-
-  .nav-tabs>li>a {
-    padding: 20px;
-    background: none;
-    filter: none;
-    background: #fafafa;
-  }
-
-  .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
-    padding: 20px;
-    background: none;
-    background: #fff;
-  }
-
-  .nav-tabs>li>a:hover {
-    padding: 20px;
-    background: none;
-    background: #fff;
   }
 }
 

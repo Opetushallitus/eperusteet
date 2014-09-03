@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <!--
 Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
 
@@ -21,7 +20,7 @@ European Union Public Licence for more details.
             <ul style="margin-bottom: 5px" class="nav nav-tabs nav-justified">
                 <li ng-class="{ active: valittuSuoritustapa === st.suoritustapakoodi }" ng-repeat="st in peruste.suoritustavat | orderBy:'suoritustapakoodi'"
                     ng-click="vaihdaSuoritustapa(st.suoritustapakoodi)">
-                    <a href="" class="suoritustapa">{{ st.suoritustapakoodi | kaanna }}</a>
+                    <a class="action-link suoritustapa">{{ st.suoritustapakoodi | kaanna }}</a>
                 </li>
             </ul>
         </div>
@@ -41,14 +40,23 @@ European Union Public Licence for more details.
 
             <div style="margin-bottom: 40px" ng-hide="muokkausTutkintokohtaisetOsat || peruste.koulutustyyppi === 'koulutustyyppi_9999'">
                 <h2 ng-show="naytaTutkinnonOsat || naytaRakenne">Tutkinnon muodostuminen</h2>
-                <div ng-show="naytaTutkinnonOsat" class="list-element striped" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat">
-                    <h3><a href="" kaanna>tutkinnonosat</a></h3>
+                <div ng-show="naytaTutkinnonOsat" class="list-element striped">
+                  <a class="otsikko" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat">
+                    <h3 kaanna>tutkinnonosat</h3>
+                  </a>
                 </div>
-                <div ng-show="naytaRakenne" class="list-element striped" ui-sref="root.perusteprojekti.suoritustapa.muodostumissaannot">
-                    <h3><a href="" kaanna>tutkinnon-rakenne</a></h3>
-                    <div lukko ng-show="lukot[peruste.id] && lukot[peruste.id].voimassa"
+                <div ng-show="naytaRakenne" class="list-element striped">
+                  <a class="otsikko" ui-sref="root.perusteprojekti.suoritustapa.muodostumissaannot">
+                    <h3 kaanna>tutkinnon-rakenne</h3>
+                    <div class="list-element-info">
+                        <!-- TODO oikea aikaleima/muokkaaja, myös tutkinnon osat -laatikkoon -->
+                      <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ 1 | aikaleima }}</div>
+                      <div>{{ 'muokkaaja' | kaanna }}: Erkki Esimerkki</div>
+                      <div lukko ng-show="lukot[peruste.id] && lukot[peruste.id].voimassa"
                          title="{{ 'lukko-käyttäjällä' | kaanna }} '{{ lukot[peruste.id].haltija }}'
                          {{ lukot[peruste.id].luotu | aikaleima:'ago' }}" class="lukko"></div>
+                    </div>
+                  </a>
                 </div>
             </div>
 

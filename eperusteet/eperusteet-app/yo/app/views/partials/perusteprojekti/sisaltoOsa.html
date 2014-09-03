@@ -7,8 +7,7 @@
           <span ng-show="sisalto.$opened" class="glyphicon glyphicon-chevron-down"></span>
         </div>
 
-        <div ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id })" class="otsikko">
-          <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id })">
+        <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id })" class="otsikko">
             <h3>
               <span ng-class="{ 'otsikko-pieni': indent !== 0 }">
                 {{ sisalto.perusteenOsa.nimi | kaanna }}
@@ -21,8 +20,7 @@
                   title="{{ 'lukko-käyttäjällä' | kaanna }} '{{ lukot[sisalto.perusteenOsa.id].haltija }}'
                   {{ lukot[sisalto.perusteenOsa.id].luotu | aikaleima:'ago' }}" class="lukko"></div>
             </div>
-          </a>
-        </div>
+        </a>
       </div>
     </div>
     <div ng-show="sisalto.lapset.length === 0 || sisalto.$opened || (sisalto.$filtered && rajaus.length !== 0)">

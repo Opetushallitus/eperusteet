@@ -1,0 +1,112 @@
+$sisalto-chevron-color: $brand-primary;
+$sisalto-chevron-size: 25px;
+.main-content {
+  .striped {
+    background: #fcfcfc;
+  }
+  .list-element {
+    min-height: 60px;
+    border: 1px solid #ccc;
+    padding: 4px 10px 4px 0;
+    margin: 0px;
+    margin-top: 2px;
+    cursor: pointer;
+    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    h3 {
+      font-size: 14px;
+      font-weight: bold;
+      display: inline;
+    }
+    .otsikko {
+      display: block;
+      margin-left: $sisalto-chevron-size * 1.6;
+      color: rgb(51,51,51);
+      &:hover, & *:hover {
+        text-decoration: none;
+      }
+
+      .lukko {
+        top: -20px;
+        position: relative;
+        float: right;
+      }
+    }
+    .chevron {
+      font-size: $sisalto-chevron-size;
+      width: $sisalto-chevron-size * 1.6;
+      float: left;
+      padding: 0 0 0 6px;
+      color: $sisalto-chevron-color;
+    }
+  }
+  .list-element-info {
+    margin: 5px 0 0 0;
+    color: #777;
+    font-weight: normal;
+    font-size: x-small;
+  }
+  .list-element:hover, .li:hover {
+    background: #fafafa;
+    border: 1px solid #888;
+  }
+}
+
+.tutkinto-sisalto {
+  margin: -30px auto 100px auto;
+
+  .selite {
+    font-size: 18px;
+    text-align: center;
+    margin: 40px;
+  }
+
+  .suoritustapa {
+    font-size: 16px;
+  }
+
+  .actions {
+    height: 50px;
+  }
+
+  .tutkinto {
+    .toolbar-input {
+      margin-top: 40px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 40%;
+    }
+    h2 {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 7px;
+      margin-bottom: 20px;
+
+      .buttons {
+        position: relative;
+        top: -8px;
+      }
+    }
+  }
+
+  .nav {
+    margin-bottom: 22px;
+  }
+
+  .nav-tabs>li>a {
+    cursor: pointer;
+    padding: 20px;
+    background: none;
+    filter: none;
+    background: #fafafa;
+    &:hover {
+      background: #fff;
+    }
+  }
+
+  .nav-tabs>li.active {
+    &>a, &>a:hover, &>a:focus {
+      padding: 20px;
+      background: #fff;
+    }
+  }
+}
