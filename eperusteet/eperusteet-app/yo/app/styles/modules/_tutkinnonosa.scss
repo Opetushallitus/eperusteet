@@ -278,8 +278,8 @@ $pikamenu-size: 22px;
 .muokkaustiedot {
   color: $secondary-lighter;
   & > div:not(.clearfix) {
-    height: 50px;
-    line-height: 2.8em;
+    height: 2.7em;
+    line-height: 2.7em;
     overflow: hidden;
   }
   span {
@@ -296,6 +296,9 @@ $pikamenu-size: 22px;
       li {
         display: inline-block;
         list-style-type: none;
+        &:not(:first-child) {
+          margin-left: 15px;
+        }
       }
     }
   }
@@ -307,8 +310,8 @@ $pikamenu-size: 22px;
   }
 }
 hr.versioraja {
-  margin-top: 0;
-  margin-bottom: 15px;
+  margin-top: 0px;
+  margin-bottom: 20px;
 }
 .tekstikappale {
   h3 {
