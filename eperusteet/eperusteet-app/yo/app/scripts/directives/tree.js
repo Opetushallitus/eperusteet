@@ -163,9 +163,6 @@ angular.module('eperusteApp')
           '    <span class="right-item" ng-if="rakenne.muodostumisSaanto.koko.minimi">' +
           koonIlmaisu +
           '    </span>' +
-          // '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus || 0 }}</b>/<b>{{ rakenne.$vaadittuLaajuus || 0 }}</b>{{ apumuuttujat.laajuusYksikko | kaanna }}</span>' +
-          // '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\' && !rakenne.$vaadittuLaajuus"><b>{{ rakenne.$laajuus || 0 }}</b>{{ apumuuttujat.laajuusYksikko | kaanna }}</span>' +
-          // '    <span class="right-item"><b>{{ rakenne.osat.length }}kpl</b></span>' +
           '  </div>' +
           '</div>' +
           '<div class="left">' +

@@ -81,6 +81,10 @@ angular.module('eperusteApp')
         if (!$scope.ms.laajuus) {
           delete uusiryhma.muodostumisSaanto.laajuus;
         }
+        else {
+          var ml = uusiryhma.muodostumisSaanto.laajuus;
+          ml.maksimi = ml.minimi && (!ml.maksimi || ml.minimi > ml.maksimi) ? ml.minimi : ml.maksimi;
+        }
         if (!$scope.ms.koko) {
           delete uusiryhma.muodostumisSaanto.koko;
         }

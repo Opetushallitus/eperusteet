@@ -66,7 +66,6 @@ angular.module('eperusteApp')
     /* TODO (jshint complexity/W074) simplify/split ---> */
     function validoiRyhma(rakenne, viitteet) {
       var virheet = 0;
-      console.log('validoidaan');
 
       function lajittele(osat) {
         var buckets = {};
@@ -183,7 +182,6 @@ angular.module('eperusteApp')
           }
         })
         .result.then(function(res) {
-          console.log('ryhma', res);
           thenCb(ryhma, vanhempi, res);
         });
       };
