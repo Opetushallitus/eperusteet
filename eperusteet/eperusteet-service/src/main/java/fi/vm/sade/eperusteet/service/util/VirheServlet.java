@@ -38,6 +38,10 @@ public class VirheServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
+        if ( response.isCommitted() ) {
+            return;
+        }
+        response.reset();
         response.setContentType("application/json;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             JsonGenerator json = jsonFactory.createGenerator(out);
@@ -46,6 +50,8 @@ public class VirheServlet extends HttpServlet {
             json.writeStringField("syy", getErrorMessage(request));
             json.writeEndObject();
             json.flush();
+        } catch ( IllegalStateException e ) {
+            //NOP
         }
     }
 
@@ -53,6 +59,31 @@ public class VirheServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         processRequest(request, response);
+    }
+
+    @Override
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        //NOP
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        processRequest(req, resp);
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        processRequest(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        processRequest(req, resp);
+    }
+
+    @Override
+    protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        //NOP
     }
 
     private static String getErrorMessage(HttpServletRequest request) {
