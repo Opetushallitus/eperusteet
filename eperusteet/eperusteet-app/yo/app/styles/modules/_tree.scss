@@ -3,6 +3,7 @@ $colorbox-open-vari: #29ABE2;
 $colorbox-empty-vari: #FDBB07;
 $colorbox-osaamisala-vari: #6d9aa8;
 $colorbox-maarittelematon-vari: #93278F;
+$sp-uusi-vari: #feba00;
 $reunus-vari: #ccc;
 $kuvaus-vari: #fff;
 $yla-reunus-vari: #ddd;
@@ -117,35 +118,79 @@ $tree-group-width: 480px;
   cursor: move;
 }
 
+$sp-bg-color: #f9f9f9;
+$sp-header-bg-color: #e7f6fb;
+$sp-header-color: #06526b;
+$sp-badge-size: 16px;
+
 .skratchpad-wrapper {
-  background: #fefefe;
+  background: $sp-bg-color;
   transition: none;
   margin: 0;
   width: 280px;
   height: 100%;
   padding: 8px;
   border: 1px solid $yla-reunus-vari;
-  h3 {
-    text-align: center;
-  }
   .skratchpad-button {
     margin: 3px auto 10px auto;
     text-align: center;
   }
   .skratchpad-list-header {
-    background: #f2f2f2;
-    padding: 2px 0px 2px 0px;
-    margin: 0px auto 0px auto;
+    background: $sp-header-bg-color;
+    color: $sp-header-color;
+    padding: 4px 0px 4px 0px;
+    margin: 0;
     text-align: center;
     text-transform: uppercase;
-    color: #555;
     text-shadow: 0px 1px 1px #ccc;
+  }
+  .skratchpad-list-body {
+    padding: 8px;
+  }
+  .skratchpad-item {
+    background-color: white;
+    margin: 5px;
+    padding: 4px;
+    cursor: pointer;
+    overflow: hidden;
+    .sp-name {
+      margin-left: $sp-badge-size + 8px;
+      margin-right: $sp-badge-size + 3px;
+    }
+    .sp-badge {
+      float: left;
+    }
+    .sp-action-icon {
+      float: right;
+      width: $sp-badge-size;
+    }
+  }
+  .skratchpad-item-ryhma {
+    background: #f5f5f5;
+    border: 1px solid #cccccc;
+    padding: 5px;
+  }
+  .skratchpad-item-virhe {
+    border: 1px solid #cccccc;
+    background-color: $error-vari;
   }
   .skratchpad-badge {
     display: inline-block;
-    width: 16px;
-    height: 16px;
+    width: $sp-badge-size;
+    height: $sp-badge-size;
     background-repeat: no-repeat;
+  }
+  .sp-uusi {
+    text-transform: uppercase;
+    border-radius: 3px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 3px 5px;
+    font-weight: 300;
+    font-size: 75%;
+    letter-spacing: 0.06em;
+    color: black;
+    background-color: $sp-uusi-vari;
   }
   .ei-kaytetty {
     background-image: url("../images/tutkinnonosa-eikaytetty.png");
@@ -156,13 +201,13 @@ $tree-group-width: 480px;
   .skratchpad-list {
     background: #fff;
     border: 1px solid $reunus-vari;
-    padding: 3px;
     margin-top: 8px;
     margin-bottom: 6px;
 
     .optiolaatikko {
-      padding: 5px;
-      padding-top: 0;
+      text-align: center;
+      margin: 0;
+      padding: 1px 0 6px 0;
       border-bottom: 1px solid #ddd;
     }
   }
@@ -179,9 +224,7 @@ $tree-group-width: 480px;
   .uniikit {
     min-height: 280px;
   }
-  .pagination {
-    margin: 0;
-  }
+
   .group-placeholder {
     background: $placeholder-vari;
     margin: 4px;
@@ -194,9 +237,26 @@ $tree-group-width: 480px;
     width: 0px;
   }
   .tutkinnonosa-rajaus {
-    margin: 5px;
+    margin-bottom: 5px;
     input {
       margin: 0 auto;
+      font-size: 100%;
+      height: 2em;
+      padding: 3px 8px;
+      text-align: center;
+    }
+  }
+  .sp-pagination {
+    margin-top: 15px;
+    text-align: center;
+    .pagination {
+      margin: 0;
+      li, li > * {
+        border: 0;
+      }
+      li > * {
+        padding: 3px 8px;
+      }
     }
   }
 }
@@ -209,25 +269,6 @@ $tree-group-width: 480px;
 .skratchpad-separator {
   height: 0px;
   border-bottom: 1px solid #cccccc;
-}
-
-.skratchpad-item {
-  list-style-type:none;
-  margin: 5px;
-  padding: 4px;
-  background-color: #ffffff;
-  cursor: pointer;
-}
-
-.skratchpad-item-ryhma {
-  background: #f5f5f5;
-  border: 1px solid #cccccc;
-  padding: 5px;
-}
-
-.skratchpad-item-virhe {
-  border: 1px solid #cccccc;
-  background-color: $error-vari;
 }
 
 .skratchpad-btn {
