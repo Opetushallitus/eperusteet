@@ -21,7 +21,7 @@ angular.module('eperusteApp')
   .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams,
     $modal, PerusteenOsat, PerusteenOsaViitteet, SuoritustapaSisalto, PerusteProjektiService,
     perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit,
-    Editointikontrollit, LukkoSisalto, $q) {
+    Editointikontrollit) {
 
     function kaikilleTutkintokohtaisilleOsille(juuri, cb) {
       var lapsellaOn = false;
@@ -47,28 +47,6 @@ angular.module('eperusteApp')
     $scope.naytaTutkinnonOsat = true;
     $scope.naytaRakenne = true;
     $scope.muokkausTutkintokohtaisetOsat = false;
-    $scope.lukot = {};
-
-    $scope.paivitaLukot = function() {
-      $q.all([LukkoSisalto.multiple({
-          osanId: $scope.peruste.id,
-          suoritustapa: $scope.valittuSuoritustapa,
-          tyyppi: 'perusteenosat'
-      }).$promise, LukkoSisalto.get({
-          osanId: $scope.peruste.id,
-          suoritustapa: $scope.valittuSuoritustapa
-      }).$promise]).then(function(res) {
-        if (res[1]) { res[0][$scope.peruste.id] = res[1]; }
-        _.forEach(res[0], function(v) {
-          if (v.haltijaOid) {
-            v.voimassa = new Date() <= new Date(v.vanhentuu);
-          }
-        });
-        $scope.lukot = res[0];
-      });
-    };
-    $scope.paivitaLukot();
-    $scope.$on('poll:mousemove', $scope.paivitaLukot);
 
     $scope.aakkosJarjestys = function(data) { return Kaanna.kaanna(data.perusteenOsa.nimi); };
 

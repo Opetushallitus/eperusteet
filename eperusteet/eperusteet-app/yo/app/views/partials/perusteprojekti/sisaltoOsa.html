@@ -15,9 +15,6 @@
             </h3>
             <div ng-show="!muokkausTutkintokohtaisetOsat" class="list-element-info">
               <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ sisalto.perusteenOsa.muokattu | aikaleima }}</div>
-              <div lukko ng-show="lukot[sisalto.perusteenOsa.id] && lukot[sisalto.perusteenOsa.id].voimassa"
-                  title="{{ 'lukko-käyttäjällä' | kaanna }} '{{ lukot[sisalto.perusteenOsa.id].haltija }}'
-                  {{ lukot[sisalto.perusteenOsa.id].luotu | aikaleima:'ago' }}" class="lukko"></div>
             </div>
         </a>
       </div>
