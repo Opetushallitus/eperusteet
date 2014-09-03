@@ -15,17 +15,13 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohdealue;
-import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
@@ -38,9 +34,7 @@ import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,15 +123,14 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     @Transactional
     public PerusteenOsaViiteDto kloonaaTekstiKappale(Long id) {
         PerusteenOsaViite pov = repository.findOne(id);
-        PerusteenOsa perusteenOsa = pov.getPerusteenOsa();
-        TekstiKappale from = (TekstiKappale)perusteenOsaRepository.findOne(id);
-        TekstiKappale uusi = new TekstiKappale();
-        uusi.setTila(PerusteTila.LUONNOS);
-        uusi.setNimi(from.getNimi());
-        uusi.setTeksti(from.getTeksti());
-        pov.setPerusteenOsa(perusteenOsaRepository.save(uusi));
-        for (PerusteenOsaViite lpov : pov.getLapset()) {
-            kloonaaTekstiKappale(lpov.getId());
+        PerusteenOsa from = pov.getPerusteenOsa();
+        if (from instanceof TekstiKappale) {
+
+            TekstiKappale uusi = new TekstiKappale();
+            uusi.setTila(PerusteTila.LUONNOS);
+            uusi.setNimi(from.getNimi());
+            uusi.setTeksti(((TekstiKappale)from).getTeksti());
+            pov.setPerusteenOsa(perusteenOsaRepository.save(uusi));
         }
         return mapper.map(pov, PerusteenOsaViiteDto.class);
     }
