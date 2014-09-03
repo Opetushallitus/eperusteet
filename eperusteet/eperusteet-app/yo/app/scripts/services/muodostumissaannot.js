@@ -21,6 +21,7 @@
 
 angular.module('eperusteApp')
   .service('Muodostumissaannot', function($modal) {
+    var skratchpadHasContent = false;
     function osienLaajuudenSumma(rakenneOsat) {
       return _(rakenneOsat ? rakenneOsat : [])
         .map(function(osa) { return osa ? osa.$laajuus : 0; })
@@ -187,7 +188,14 @@ angular.module('eperusteApp')
       validoiRyhma: validoiRyhma,
       laskeLaajuudet: laskeLaajuudet,
       ryhmaModaali: ryhmaModaali,
-      kaannaSaanto: kaannaSaanto
+      kaannaSaanto: kaannaSaanto,
+      skratchpadNotEmpty: function (value) {
+        if (arguments.length > 0) {
+          skratchpadHasContent = value;
+        } else {
+          return skratchpadHasContent;
+        }
+      }
     };
   });
 

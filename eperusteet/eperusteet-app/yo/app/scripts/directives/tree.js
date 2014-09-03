@@ -389,6 +389,10 @@ angular.module('eperusteApp')
           else { _.remove(scope.skratchpad, ryhma); }
         });
 
+        scope.$watch('skratchpad.length', function (value) {
+          Muodostumissaannot.skratchpadNotEmpty(value > 0);
+        });
+
         scope.poista = function(i, a) {
           _.remove(i, a);
           scope.kaytetytUniikit = PerusteenRakenne.puustaLoytyy(scope.rakenne.rakenne);
@@ -422,6 +426,9 @@ angular.module('eperusteApp')
         scope.$watch('muokkaus', function() {
           scope.sortableOptions.disabled = !scope.muokkaus;
           scope.sortableOptionsUnique.disabled = !scope.muokkaus;
+          if (!scope.muokkaus) {
+            scope.skratchpad = [];
+          }
         });
 
         scope.$watch('apumuuttujat.haku', function (value) {
