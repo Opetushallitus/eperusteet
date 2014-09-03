@@ -41,7 +41,7 @@ public class VirheServlet extends HttpServlet {
         if ( response.isCommitted() ) {
             return;
         }
-        response.reset();
+        response.resetBuffer();
         response.setContentType("application/json;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             JsonGenerator json = jsonFactory.createGenerator(out);
