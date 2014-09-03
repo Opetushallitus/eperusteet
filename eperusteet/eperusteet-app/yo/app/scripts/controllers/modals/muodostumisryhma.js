@@ -62,7 +62,6 @@ angular.module('eperusteApp')
       if (!Utils.hasLocalizedText($scope.ryhma.nimi)) {
         $scope.ryhma.nimi = $scope.osaamisala.nimi;
       }
-
     };
 
     $scope.avaaKoodistoModaali = function() {

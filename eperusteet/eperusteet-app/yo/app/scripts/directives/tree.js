@@ -187,7 +187,7 @@ angular.module('eperusteApp')
           '</div>';
 
         var avaaKaikki = '<div class="pull-right">' +
-                         '  <a ng-show="muokkaus" style="margin-right: 10px;" href="" ng-click="piilotaVirheet()" class="group-toggler">' +
+                         '  <a ng-show="muokkaus && rakenne.$virheetMaara > 0" style="margin-right: 10px;" href="" ng-click="piilotaVirheet()" class="group-toggler">' +
                          '    <span ng-hide="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "piilota-virheet" | kaanna }}</span>' +
                          '    <span ng-show="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "nayta-virheet" | kaanna }}</span>' +
                          '  </a>' +

@@ -65,6 +65,9 @@ angular.module('eperusteApp')
 
     /* TODO (jshint complexity/W074) simplify/split ---> */
     function validoiRyhma(rakenne, viitteet) {
+      var virheet = 0;
+      console.log('validoidaan');
+
       function lajittele(osat) {
         var buckets = {};
         _.forEach(osat, function(osa) {
@@ -79,6 +82,7 @@ angular.module('eperusteApp')
           virhe: virhe,
           selite: kaannaSaanto(ms)
         };
+        virheet += 1;
       }
 
       function avaintenSumma(osat, n, avaimetCb) {
@@ -91,13 +95,13 @@ angular.module('eperusteApp')
         return res;
       }
 
-      if (!rakenne || !rakenne.osat) { return; }
+      if (!rakenne || !rakenne.osat) { return 0; }
 
       delete rakenne.$virhe;
 
       _.forEach(rakenne.osat, function(tosa) {
         if (!tosa._tutkinnonOsaViite) {
-          validoiRyhma(tosa, viitteet);
+          virheet += validoiRyhma(tosa, viitteet) || 0;
         }
       });
 
@@ -129,7 +133,6 @@ angular.module('eperusteApp')
             asetaVirhe('muodostumis-rakenne-validointi-maara', ms);
           }
         }
-
       }
 
       var tosat = _(rakenne.osat)
@@ -139,6 +142,8 @@ angular.module('eperusteApp')
       if (_.size(tosat) !== _(tosat).uniq('_tutkinnonOsaViite').size()) {
         asetaVirhe('muodostumis-rakenne-validointi-uniikit');
       }
+
+      return virheet;
     }
     /* <--- */
 
