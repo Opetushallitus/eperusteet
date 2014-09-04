@@ -145,7 +145,6 @@ angular.module('eperusteApp')
 
         function setupTekstikappale(kappale) {
           $scope.editableTekstikappale = angular.copy(kappale);
-          $scope.isNew = !$scope.editableTekstikappale.id;
 
           Editointikontrollit.registerCallback({
             edit: function() {
@@ -171,9 +170,9 @@ angular.module('eperusteApp')
               else {
                 fetch(function() {
                   refreshPromise();
-                  $scope.isNew = false;
                 });
               }
+              $scope.isNew = false;
               Lukitus.vapautaPerusteenosa($scope.tekstikappale.id);
             },
             notify: function(mode) {
@@ -285,17 +284,18 @@ angular.module('eperusteApp')
           })();
         };
 
-        // Odota tekstikenttien alustus ennen siirtymistä editointitilaan
+        if (TutkinnonOsaEditMode.getMode()) {
+          $scope.isNew = true;
+          $timeout(function() {
+            $scope.muokkaa();
+          }, 50);
+        }
+
+        // Odota tekstikenttien alustus ja päivitä editointipalkin sijainti
         var received = 0;
         $scope.$on('ckEditorInstanceReady', function() {
           if (++received === $scope.fields.length) {
             $rootScope.$broadcast('editointikontrollitRefresh');
-            if (TutkinnonOsaEditMode.getMode()) {
-              $scope.isNew = true;
-              $timeout(function() {
-                $scope.muokkaa();
-              }, 50);
-            }
           }
         });
       }
