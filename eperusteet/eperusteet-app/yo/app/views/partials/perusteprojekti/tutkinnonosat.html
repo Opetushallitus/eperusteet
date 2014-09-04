@@ -79,7 +79,7 @@
         <h3>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</h3>
         <div class="pienet-tiedot">
             <div class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && v.laajuus">{{ v.laajuus }} {{ yksikko || '' | kaanna }}</div>
-            <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ v.muokattu | aikaleima }}</div>
+            <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ v.muokattu | aikaleima:'ago' }}</div>
         </div>
       </div>
     </a>
