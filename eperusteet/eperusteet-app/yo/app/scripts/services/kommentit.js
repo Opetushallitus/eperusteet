@@ -61,6 +61,7 @@ angular.module('eperusteApp')
   .service('Kommentit', function($stateParams, $location, $timeout, $rootScope, Notifikaatiot, KommenttiSivuCache, KommentitCRUD) {
     var nykyinen = {};
     var nykyinenParams = {};
+    var stored = {};
 
     function rakennaKommenttiPuu(viestit) {
       viestit = _(viestit).map(function(viesti) {
@@ -102,6 +103,7 @@ angular.module('eperusteApp')
         },
         Notifikaatiot.serverCb);
       };
+      stored = {url: url, lataaja: lataaja};
       $timeout(function() {
         $rootScope.$broadcast('update:kommentit', url, lataaja);
       }, 100);
@@ -151,6 +153,11 @@ angular.module('eperusteApp')
       haeKommentit: haeKommentit,
       lisaaKommentti: lisaaKommentti,
       poistaKommentti: poistaKommentti,
-      muokkaaKommenttia: muokkaaKommenttia
+      muokkaaKommenttia: muokkaaKommenttia,
+      stored: function () {
+        var ret = _.clone(stored);
+        stored = {};
+        return ret;
+      }
     };
   });

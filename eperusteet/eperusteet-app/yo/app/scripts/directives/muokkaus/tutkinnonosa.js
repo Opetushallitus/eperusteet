@@ -35,9 +35,11 @@ angular.module('eperusteApp')
     PerusteTutkinnonosa, TutkinnonOsaEditMode, $timeout, Varmistusdialogi,
     VersionHelper, Lukitus, MuokkausUtils, PerusteenOsaViitteet,
     Utils, ArviointiHelper, PerusteProjektiSivunavi, Notifikaatiot, Koodisto,
-    Tutke2OsaData) {
+    Tutke2OsaData, Kommentit, KommentitByPerusteenOsa) {
 
     Utils.scrollTo('#ylasivuankkuri');
+
+    Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });
 
     $scope.suoritustapa = $stateParams.suoritustapa;
     $scope.rakenne = {};

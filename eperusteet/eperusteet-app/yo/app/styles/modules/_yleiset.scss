@@ -66,11 +66,6 @@ label input[type=radio] {
   display: block !important;
 }
 
-.editointi-wrapper {
-  margin-top: 20px;
-  margin-bottom: 50px;
-}
-
 .stack {
   clear: both;
   margin-bottom: 15px;
@@ -202,4 +197,8 @@ $backtotop-size: 48px;
 
 input.form-control::-ms-clear {
   display: none;
+}
+
+.ep-sisalto-inner {
+  padding-bottom: 100px;
 }

@@ -48,6 +48,15 @@ angular.module('eperusteApp')
         });
 
         scope.updatePosition();
+
+        scope.setMargins = function () {
+          if (scope.editStarted) {
+            wrapper.css('margin-bottom', '50px').css('margin-top', '20px');
+          } else {
+            wrapper.css('margin-bottom', 0).css('margin-top', 0);
+          }
+        };
+        scope.setMargins();
       }
     };
   })
@@ -79,6 +88,7 @@ angular.module('eperusteApp')
 
     $scope.$on('enableEditing', function () {
       $scope.editStarted = true;
+      $scope.setMargins();
       $scope.kommentti = '';
       $timeout(function () {
         $scope.updatePosition();
@@ -86,6 +96,7 @@ angular.module('eperusteApp')
     });
     $scope.$on('disableEditing', function () {
       $scope.editStarted = false;
+      $scope.setMargins();
     });
 
     $scope.start = function() {

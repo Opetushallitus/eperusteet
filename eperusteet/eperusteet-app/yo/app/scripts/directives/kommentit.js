@@ -16,7 +16,7 @@
 
 'use strict';
 
-// /* global _ */
+/* global _ */
 
 angular.module('eperusteApp')
   .directive('kommentit', function ($timeout, $location, $state, $rootScope, YleinenData, Kommentit) {
@@ -52,11 +52,20 @@ angular.module('eperusteApp')
           $scope.onLataaja = false;
         });
 
-        $scope.$on('update:kommentit', function(event, url, lataaja) {
+        function lataajaCb(url, lataaja) {
           if (!$scope.urlit[url]) {
             $scope.onLataaja = true;
             $scope.urlit[url] = lataaja;
           }
+        }
+
+        var stored = Kommentit.stored();
+        if (!_.isEmpty(stored)) {
+          lataajaCb(stored.url, stored.lataaja);
+        }
+
+        $scope.$on('update:kommentit', function(event, url, lataaja) {
+          lataajaCb(url, lataaja);
         });
 
         $scope.naytaKommentit = function() { lataaKommentit($location.url()); };
@@ -72,6 +81,9 @@ angular.module('eperusteApp')
         });
         $scope.$on('disableEditing', function() {
           $scope.editointi = false;
+        });
+        $timeout(function () {
+          $scope.naytaKommentit();
         });
       }
     };

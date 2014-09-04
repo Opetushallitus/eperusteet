@@ -7,6 +7,7 @@ $sivunavi-shadow: 6px;
 
 .sivunavi-outer {
   clear: both;
+  width: $sivunavi-leveys;
   .no-results {
     color: $secondary-lighter;
     font-style: italic;
@@ -105,6 +106,7 @@ $sivunavi-level-padding: 20px;
   .active, .active a {
     background-color: #e6e6e6;
     color: $brand-primary;
+    font-weight: 700;
   }
   .list-group-item {
     &.active, &.active:focus, &.active:hover {
@@ -249,7 +251,7 @@ $sivunavi-level-padding: 20px;
     overflow: visible;
   }
   .sivunavi-takaisin {
-    margin-top: -46px;
+    margin-top: -50px;
     height: $sivunavi-takaisin-korkeus;
   }
   .sivunavi-clear {
