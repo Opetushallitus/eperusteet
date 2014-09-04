@@ -30,7 +30,7 @@ angular.module('eperusteApp')
         Notifikaatiot, VersionHelper, Lukitus, $state,
         TutkinnonOsaEditMode, PerusteenOsaViitteet, Varmistusdialogi, $timeout,
         Kaanna, PerusteprojektiTiedotService, $stateParams, SuoritustapaSisalto,
-        Utils, PerusteProjektiSivunavi, YleinenData) {
+        Utils, PerusteProjektiSivunavi, YleinenData, $rootScope) {
 
         Utils.scrollTo('#ylasivuankkuri');
 
@@ -101,7 +101,7 @@ angular.module('eperusteApp')
         $scope.fields =
           new Array({
              path: 'nimi',
-             hideHeader: true,
+             hideHeader: false,
              localeKey: 'teksikappaleen-nimi',
              type: 'editor-header',
              localized: true,
@@ -109,6 +109,7 @@ angular.module('eperusteApp')
              order: 1
            },{
              path: 'teksti',
+             hideHeader: false,
              localeKey: 'tekstikappaleen-teksti',
              type: 'editor-area',
              localized: true,
@@ -288,6 +289,7 @@ angular.module('eperusteApp')
         var received = 0;
         $scope.$on('ckEditorInstanceReady', function() {
           if (++received === $scope.fields.length) {
+            $rootScope.$broadcast('editointikontrollitRefresh');
             if (TutkinnonOsaEditMode.getMode()) {
               $scope.isNew = true;
               $timeout(function() {

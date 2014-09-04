@@ -73,6 +73,10 @@ angular.module('eperusteApp')
 
     Editointikontrollit.registerCallbackListener(setEditControls);
 
+    $scope.$on('editointikontrollitRefresh', function () {
+      $scope.updatePosition();
+    });
+
     $scope.$on('enableEditing', function () {
       $scope.editStarted = true;
       $scope.kommentti = '';
