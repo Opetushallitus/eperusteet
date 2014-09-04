@@ -8,17 +8,28 @@
 
 <h1>
   {{'tutkinnonosat' | kaanna}} ({{ tutkinnonOsat.length }} {{ 'kpl' | kaanna }})
-  <div class="btn-group">
-    <label class="btn" ng-model="preferenssit.nakymatyyli" btn-radio="'lista'" icon-role="list"></label>
-    <label class="btn" ng-model="preferenssit.nakymatyyli" btn-radio="'palikka'" icon-role="th"></label>
-  </div>
+
 </h1>
 
 <div class="tutkinnonosa-lista-toolbar">
-  <div class="pull-right">
-    <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="tosarajaus form-control input-sm" placeholder="Rajaa tutkinnon osia...">
+  <div class="toolbar-input">
+    <div class="input-group">
+      <span class="input-group-addon" icon-role="search"></span>
+      <input ng-model="tosarajaus" ng-change="paivitaRajaus(tosarajaus)"
+             placeholder="{{ 'Rajaa tutkinnon osia...' | kaanna }}" class="form-control rajauslaatikko">
+    </div>
+    <div class="pull-right">
+      <div class="btn-group">
+        <label class="btn" ng-model="preferenssit.nakymatyyli" btn-radio="'palikka'" icon-role="th" title="{{'Ruudukko'|kaanna}}"></label>
+        <label class="btn" ng-model="preferenssit.nakymatyyli" btn-radio="'lista'" icon-role="list" title="{{'Lista'|kaanna}}"></label>
+      </div>
+    </div>
+    <div class="clearfix"></div>
   </div>
-  <div ng-show="preferenssit.nakymatyyli === 'palikka'">
+</div>
+
+<div>
+  <div ng-show="preferenssit.nakymatyyli === 'palikka'" class="tosat-sort-selector">
     <select class="jarjestys-select form-control" ng-model="jarjestysTapa">
       <option value="nimi" kaanna>nimi</option>
       <option value="muokattu" kaanna>muokattu-viimeksi</option>
@@ -31,9 +42,7 @@
       </a>
     </div>
   </div>
-</div>
 
-<div>
   <table ng-show="preferenssit.nakymatyyli === 'lista'" class="table table-striped" style="margin-top: 0px">
     <tr>
       <th width="50%">
