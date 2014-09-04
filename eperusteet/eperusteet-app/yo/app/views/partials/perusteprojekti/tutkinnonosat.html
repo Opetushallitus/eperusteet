@@ -13,11 +13,7 @@
 
 <div class="tutkinnonosa-lista-toolbar">
   <div class="toolbar-input">
-    <div class="input-group">
-      <span class="input-group-addon" icon-role="search"></span>
-      <input ng-model="tosarajaus" ng-change="paivitaRajaus(tosarajaus)"
-             placeholder="{{ 'Rajaa tutkinnon osia...' | kaanna }}" class="form-control rajauslaatikko">
-    </div>
+    <rajaus model="tosarajaus" callback="paivitaRajaus(value)" placeholder="Rajaa tutkinnon osia..."></rajaus>
     <div class="pull-right">
       <div class="btn-group">
         <label class="btn" ng-model="preferenssit.nakymatyyli" btn-radio="'palikka'" icon-role="th" title="{{'Ruudukko'|kaanna}}"></label>

@@ -17,9 +17,7 @@
         <div class="sivunavi-tc-item">
           <div id="sivunavi-tc" ng-transclude></div>
         </div>
-        <div class="input-group" ng-if="!sections">
-          <span class="input-group-addon input-sm" icon-role="search"></span>
-          <input ng-model="search.term" placeholder="{{ 'etsi-sisällöstä' | kaanna }}" class="form-control input-sm">
+          <rajaus ng-if="!sections" size="small" model="search.term" placeholder="etsi-sisällöstä"></rajaus>
         </div>
       </div>
 

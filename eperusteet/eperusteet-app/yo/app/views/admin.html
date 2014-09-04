@@ -17,12 +17,7 @@
                     <option ng-repeat="tila in tilat" value="{{ tila }}">{{ 'tila-' + tila | kaanna }}</option>
                 </select>
             </div>
-            <div class="input-group rajauslaatikko">
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-search"></span>
-                </span>
-                <input ng-model="rajaus" placeholder="{{ 'etsi-perusteprojekteista' | kaanna }}" type="input" class="form-control">
-            </div>
+            <rajaus model="rajaus" placeholder="etsi-perusteprojekteista"></rajaus>
         </div>
 
         <div>

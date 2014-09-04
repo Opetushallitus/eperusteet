@@ -195,3 +195,11 @@ $backtotop-size: 48px;
 *[contenteditable="false"].cke_focus {
   outline: none;
 }
+
+.rajaus-clear {
+  cursor: pointer;
+}
+
+input.form-control::-ms-clear {
+  display: none;
+}
