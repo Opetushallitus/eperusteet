@@ -176,8 +176,9 @@ angular.module('eperusteApp')
           '</div>' +
           '<div ng-if="!rakenne._tutkinnonOsaViite" ng-class="{ \'pointer\': muokkaus }" class="bubble">' + optiot + '</div>' +
           '<div ng-model="rakenne" ng-show="rakenne.kuvaus && rakenne.kuvaus[lang].length > 0" class="kuvaus">' +
-          '  <div ng-class="{ \'text-truncated\': !rakenne.$showKuvaus }">{{ rakenne.kuvaus | kaanna }}</div>' +
-          '  <div class="avausnappi" ng-click="rakenne.$showKuvaus = !rakenne.$showKuvaus"><div class="avausnappi-painike">&hellip;</div></div>' +
+          '  <div class="kuvausteksti" ng-class="{ \'text-truncated\': !rakenne.$showKuvaus }">{{ rakenne.kuvaus | kaanna }}</div>' +
+          '  <div class="avausnappi" ng-click="rakenne.$showKuvaus = !rakenne.$showKuvaus" ng-attr-title="{{rakenne.$showKuvaus && (\'Piilota ryhmän kuvaus\'|kaanna) || (\'Näytä ryhmän kuvaus\'|kaanna)}}">' +
+          '  <div class="avausnappi-painike">&hellip;</div></div>' +
           '</div>' +
           '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="virhe">' +
           '  <span>{{ tkaanna(rakenne.$virhe.selite) }}<span ng-show="rakenne.$virhe.selite.length > 0">. </span>{{ rakenne.$virhe.virhe | kaanna }}.</span>' +
@@ -196,7 +197,7 @@ angular.module('eperusteApp')
         var template =
           '<div ng-if="!vanhempi">' +
           '  <div class="ylapainikkeet">' +
-          '    {{ apumuuttujat.peruste.nimi | kaanna }}' +
+          '    <span class="rakenne-nimi">{{ apumuuttujat.peruste.nimi | kaanna }}' +
           '    <span ng-if="rakenne.muodostumisSaanto && rakenne.muodostumisSaanto.laajuus">' +
           '      <span ng-if="rakenne.$laajuus">{{ rakenne.$laajuus }} / </span>' +
           '      <span ng-if="rakenne.muodostumisSaanto.laajuus.minimi">' +
@@ -206,7 +207,7 @@ angular.module('eperusteApp')
           '        - {{ rakenne.muodostumisSaanto.laajuus.maksimi }}' +
           '      </span>' +
           '      {{ apumuuttujat.laajuusYksikko | kaanna }}' +
-          '    </span>' +
+          '    </span></span>' +
           '    <a href="" ng-show="muokkaus" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)" kaanna>muokkaa-muodostumissääntöjä</button>' +
           '    <a ng-if="zoomaus" icon-role="back" class="back" href=""></a>' +
           avaaKaikki +
