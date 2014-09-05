@@ -156,7 +156,7 @@ angular.module('eperusteApp')
     $scope.$on('$stateChangeSuccess', function() {
       var newSuoritustapa = PerusteProjektiService.getSuoritustapa();
       if (newSuoritustapa !== $scope.sivunavi.suoritustapa) {
-        PerusteProjektiSivunavi.refresh();
+        PerusteProjektiSivunavi.refresh(true);
       }
       $scope.sivunavi.suoritustapa = newSuoritustapa;
     });
@@ -291,16 +291,20 @@ angular.module('eperusteApp')
       callbacks.changed = cb;
     };
 
-    this.refresh = function () {
+    this.refresh = function (light) {
       if (!service) {
         PerusteprojektiTiedotService.then(function(res) {
           service = res;
           load();
         });
       } else {
-        service.alustaPerusteenSisalto($stateParams, true).then(function () {
+        if (light) {
+          load();
+        } else {
+          service.alustaPerusteenSisalto($stateParams, true).then(function () {
           load();
         });
+        }
       }
     };
 
