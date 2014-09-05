@@ -23,7 +23,6 @@ import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
@@ -79,6 +78,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     private LockManager lockManager;
 
     @Override
+    @Transactional(readOnly = true)
     public List<PerusteenOsaDto> getAll() {
         return mapper.mapAsList(perusteenOsaRepo.findAll(), PerusteenOsaDto.class);
     }
@@ -103,24 +103,25 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     @Transactional(readOnly = false)
-    public <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(T perusteenOsaDto, Class<T> dtoClass) {
+    public <T extends PerusteenOsaDto> T update(T perusteenOsaDto) {
         assertExists(perusteenOsaDto.getId());
         lockManager.ensureLockedByAuthenticatedUser(perusteenOsaDto.getId());
         PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
         PerusteenOsa updated = mapper.map(perusteenOsaDto, current.getClass());
-        if (dtoClass.equals(TutkinnonOsaDto.class)) {
+        if (perusteenOsaDto.getClass().equals(TutkinnonOsaDto.class)) {
             ((TutkinnonOsa)updated).setOsaAlueet(createOsaAlueIfNotExist(((TutkinnonOsa)updated).getOsaAlueet()));
         }
         current.mergeState(updated);
         current = perusteenOsaRepo.save(current);
 
-        return mapper.map(current, dtoClass);
+        mapper.map(current, perusteenOsaDto);
+        return perusteenOsaDto;
     }
 
     @Override
     @Transactional(readOnly = false)
-    public <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(UpdateDto<T> perusteenOsaDto, Class<T> dtoClass) {
-        T updated = update(perusteenOsaDto.getDto(), dtoClass);
+    public <T extends PerusteenOsaDto> T update(UpdateDto<T> perusteenOsaDto) {
+        T updated = update(perusteenOsaDto.getDto());
 
         if (perusteenOsaDto.getMetadata() != null) {
             perusteenOsaRepo.setRevisioKommentti(perusteenOsaDto.getMetadata().getKommentti());
@@ -130,10 +131,11 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     @Transactional(readOnly = false)
-    public <T extends PerusteenOsaDto, D extends PerusteenOsa> T add(T perusteenOsaDto, Class<T> dtoClass, Class<D> entityClass) {
-        D perusteenOsa = mapper.map(perusteenOsaDto, entityClass);
+    public <T extends PerusteenOsaDto> T add(T perusteenOsaDto) {
+        PerusteenOsa perusteenOsa = mapper.map(perusteenOsaDto, PerusteenOsa.class);
         perusteenOsa = perusteenOsaRepo.save(perusteenOsa);
-        return mapper.map(perusteenOsa, dtoClass);
+        mapper.map(perusteenOsa, perusteenOsaDto);
+        return perusteenOsaDto;
     }
 
     private List<OsaAlue> createOsaAlueIfNotExist(List<OsaAlue> osaAlueet) {
@@ -333,7 +335,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Transactional
     public PerusteenOsaDto revertToVersio(Long id, Integer versioId) {
         PerusteenOsa revision = perusteenOsaRepo.findRevision(id, versioId);
-        return update(mapper.map(revision, PerusteenOsaDto.class), PerusteenOsaDto.class);
+        return update(mapper.map(revision, PerusteenOsaDto.class));
     }
 
     @Override

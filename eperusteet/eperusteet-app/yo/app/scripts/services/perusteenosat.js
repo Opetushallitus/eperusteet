@@ -23,8 +23,8 @@ angular.module('eperusteApp')
       osanId: '@id'
     }, {
       byKoodiUri: {method: 'GET', isArray: true, params: {koodi: true}},
-      saveTekstikappale: {method: 'POST', params: {tyyppi: 'perusteen-osat-tekstikappale'}},
-      saveTutkinnonOsa: {method: 'POST', params: {tyyppi: 'perusteen-osat-tutkinnon-osa'}},
+      saveTekstikappale: {method: 'POST'},
+      saveTutkinnonOsa: {method: 'POST'},
       versiot: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/versiot'},
       getVersio: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/:osanId/versio/:versioId'},
       palauta: {method: 'POST', url: SERVICE_LOC + '/perusteenosat/:osanId/palauta/:versioId'},

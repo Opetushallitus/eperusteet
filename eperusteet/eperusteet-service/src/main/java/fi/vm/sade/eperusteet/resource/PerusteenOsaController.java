@@ -16,20 +16,16 @@
 package fi.vm.sade.eperusteet.resource;
 
 import com.wordnik.swagger.annotations.Api;
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
-import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
-import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteLaajaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
-import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+import fi.vm.sade.eperusteet.dto.util.PerusteenOsaUpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
+import fi.vm.sade.eperusteet.resource.util.WrappedList;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import java.util.ArrayList;
@@ -44,18 +40,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+
 @Controller
 @RequestMapping("/perusteenosat")
-@Api(value="Perusteenosat", description = "Perusteen osien hallinta")
+@Api(value = "Perusteenosat", description = "Perusteen osien hallinta")
 public class PerusteenOsaController {
 
     @Autowired
@@ -64,24 +61,25 @@ public class PerusteenOsaController {
     @Autowired
     private KayttajanTietoService kayttajanTietoService;
 
+
     @RequestMapping(method = GET)
     @ResponseBody
-    public List<? extends PerusteenOsaDto> getAll() {
-        return service.getAll();
+    public List<PerusteenOsaDto> getAll() {
+        return PerusteenOsaDtoList.wrap(service.getAll());
     }
 
     @RequestMapping(method = GET, params = "nimi")
     @ResponseBody
-    public List<? extends PerusteenOsaDto> getAllWithName(@RequestParam("nimi") final String name) {
-    	return service.getAllWithName(name);
+    public List<PerusteenOsaDto> getAllWithName(@RequestParam("nimi") final String name) {
+        return PerusteenOsaDtoList.wrap(service.getAllWithName(name));
     }
 
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
     public ResponseEntity<PerusteenOsaDto> get(@PathVariable("id") final Long id) {
-    	PerusteenOsaDto t = service.get(id);
+        PerusteenOsaDto t = service.get(id);
         if (t == null) {
-        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
@@ -94,13 +92,13 @@ public class PerusteenOsaController {
         for (Revision r : versiot) {
             laajennetut.add(new CombinedDto<>(r, new HenkiloTietoDto(kayttajanTietoService.hae(r.getMuokkaajaOid()))));
         }
-    	return laajennetut;
+        return laajennetut;
     }
 
     @RequestMapping(value = "/{id}/versio/{versioId}", method = GET)
     @ResponseBody
     public ResponseEntity<PerusteenOsaDto> getVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
-    	PerusteenOsaDto t = service.getVersio(id, versioId);
+        PerusteenOsaDto t = service.getVersio(id, versioId);
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -110,48 +108,32 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/palauta/{versioId}", method = POST)
     @ResponseBody
     public ResponseEntity<PerusteenOsaDto> revertToVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
-    	PerusteenOsaDto t = service.revertToVersio(id, versioId);
+        PerusteenOsaDto t = service.revertToVersio(id, versioId);
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{koodiUri}", method = GET, params = "koodi=true")
     @ResponseBody
-    public ResponseEntity<List<PerusteenOsaDto>> get(@PathVariable("koodiUri") final String koodiUri) {
-    	List<PerusteenOsaDto> t = service.getAllByKoodiUri(koodiUri);
-        return new ResponseEntity<>(t, HttpStatus.OK);
+    public List<PerusteenOsaDto> get(@PathVariable("koodiUri") final String koodiUri) {
+        List<PerusteenOsaDto> t = service.getAllByKoodiUri(koodiUri);
+        return PerusteenOsaDtoList.wrap(t);
     }
 
-    @RequestMapping(method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
+    @RequestMapping(method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public ResponseEntity<TutkinnonOsaDto> add(@RequestBody TutkinnonOsaDto tutkinnonOsaDto, UriComponentsBuilder ucb) {
-        tutkinnonOsaDto = service.add(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
-        return new ResponseEntity<>(tutkinnonOsaDto, buildHeadersFor(tutkinnonOsaDto.getId(), ucb), HttpStatus.CREATED);
+    public ResponseEntity<PerusteenOsaDto> add(@RequestBody PerusteenOsaDto perusteenOsaDto, UriComponentsBuilder ucb) {
+        PerusteenOsaDto dto = service.add(perusteenOsaDto);
+        return new ResponseEntity<>(dto, buildHeadersFor(dto.getId(), ucb), HttpStatus.CREATED);
     }
 
-    @RequestMapping(method = POST, params = PerusteenOsaMappings.IS_TEKSTIKAPPALE_PARAM)
-    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(value = "/{id}", method = POST)
     @ResponseBody
-    public ResponseEntity<TekstiKappaleDto> add(@RequestBody TekstiKappaleDto tekstikappaleDto, UriComponentsBuilder ucb) {
-        tekstikappaleDto = service.add(tekstikappaleDto, TekstiKappaleDto.class, TekstiKappale.class);
-        return new ResponseEntity<>(tekstikappaleDto, buildHeadersFor(tekstikappaleDto.getId(), ucb), HttpStatus.CREATED);
+    public PerusteenOsaDto update(@PathVariable("id") final Long id, @RequestBody PerusteenOsaUpdateDto dto) {
+        return service.update(dto);
     }
 
-    @RequestMapping(value = "/{id}", method = POST, params = PerusteenOsaMappings.IS_TEKSTIKAPPALE_PARAM)
-    @ResponseBody
-    public TekstiKappaleDto updateTekstikappale(@PathVariable("id") final Long id, @RequestBody UpdateDto<TekstiKappaleDto> tekstiKappaleDto) {
-        tekstiKappaleDto.getDto().setId(id);
-        return service.update(tekstiKappaleDto, TekstiKappaleDto.class);
-    }
-
-    @RequestMapping(value = "/{id}", method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
-    @ResponseBody
-    public TutkinnonOsaDto updateTutkinnonOsa(@PathVariable("id") final Long id, @RequestBody UpdateDto<TutkinnonOsaDto> tutkinnonOsaDto) {
-        tutkinnonOsaDto.getDto().setId(id);
-        return service.update(tutkinnonOsaDto, TutkinnonOsaDto.class);
-    }
-
-     /**
+    /**
      * Luo ja liittää uuden osa-alueen tutkinnon osaan.
      *
      * @param id
@@ -161,7 +143,7 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/osaalue", method = POST)
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public OsaAlueLaajaDto addTutkinnonOsaOsaAlue(@PathVariable("id") final Long id, @RequestBody(required = false)  OsaAlueLaajaDto osaAlueDto) {
+    public OsaAlueLaajaDto addTutkinnonOsaOsaAlue(@PathVariable("id") final Long id, @RequestBody(required = false) OsaAlueLaajaDto osaAlueDto) {
         return service.addTutkinnonOsaOsaAlue(id, osaAlueDto);
     }
 
@@ -194,8 +176,8 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/osaalue/{osaAlueId}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeOsaAlue(
-            @PathVariable("id") final Long id,
-            @PathVariable("osaAlueId") final Long osaAlueId) {
+        @PathVariable("id") final Long id,
+        @PathVariable("osaAlueId") final Long osaAlueId) {
         service.removeOsaAlue(id, osaAlueId);
     }
 
@@ -211,9 +193,9 @@ public class PerusteenOsaController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public OsaamistavoiteLaajaDto addOsaamistavoite(
-            @PathVariable("id") final Long id,
-            @PathVariable("osaAlueId") final Long osaAlueId,
-            @RequestBody(required = false) OsaamistavoiteLaajaDto osaamistavoiteDto) {
+        @PathVariable("id") final Long id,
+        @PathVariable("osaAlueId") final Long osaAlueId,
+        @RequestBody(required = false) OsaamistavoiteLaajaDto osaamistavoiteDto) {
         return service.addOsaamistavoite(id, osaAlueId, osaamistavoiteDto);
     }
 
@@ -229,16 +211,17 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/osaalue/{osaAlueId}/osaamistavoite/{osaamistavoiteId}", method = POST)
     @ResponseBody
     public OsaamistavoiteLaajaDto updateOsaamistavoite(
-            @PathVariable("id") final Long id,
-            @PathVariable("osaAlueId") final Long osaAlueId,
-            @PathVariable("osaamistavoiteId") final Long osaamistavoiteId,
-            @RequestBody OsaamistavoiteLaajaDto osaamistavoite) {
+        @PathVariable("id") final Long id,
+        @PathVariable("osaAlueId") final Long osaAlueId,
+        @PathVariable("osaamistavoiteId") final Long osaamistavoiteId,
+        @RequestBody OsaamistavoiteLaajaDto osaamistavoite) {
         osaamistavoite.setId(osaamistavoiteId);
         return service.updateOsaamistavoite(id, osaAlueId, osaamistavoiteId, osaamistavoite);
     }
 
     /**
      * Listaa tutkinnon osa osa-alueen osaamistavoitteet
+     *
      * @param id
      * @param osaAlueId
      * @return
@@ -246,8 +229,8 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/osaalue/{osaAlueId}/osaamistavoitteet", method = GET)
     @ResponseBody
     public ResponseEntity<List<OsaamistavoiteLaajaDto>> getOsaamistavoitteet(
-            @PathVariable("id") final Long id,
-            @PathVariable("osaAlueId") final Long osaAlueId) {
+        @PathVariable("id") final Long id,
+        @PathVariable("osaAlueId") final Long osaAlueId) {
         return new ResponseEntity<>(service.getOsaamistavoitteet(id, osaAlueId), HttpStatus.OK);
     }
 
@@ -261,18 +244,17 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/osaalue/{osaAlueId}/osaamistavoite/{osaamistavoiteId}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeOsaamistavoite(
-            @PathVariable("id") final Long id,
-            @PathVariable("osaAlueId") final Long osaAlueId,
-            @PathVariable("osaamistavoiteId") final Long osaamistavoiteId) {
+        @PathVariable("id") final Long id,
+        @PathVariable("osaAlueId") final Long osaAlueId,
+        @PathVariable("osaamistavoiteId") final Long osaamistavoiteId) {
         service.removeOsaamistavoite(id, osaAlueId, osaamistavoiteId);
     }
-
 
     @RequestMapping(value = "/{id}/lukko", method = GET)
     @ResponseBody
     public ResponseEntity<LukkoDto> checkLock(@PathVariable("id") final Long id,
-                                              @RequestHeader(value="If-None-Match", required=false) Integer eTag,
-                                              HttpServletResponse response) {
+        @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
+        HttpServletResponse response) {
         LukkoDto lock = service.getLock(id);
         response.addHeader("ETag", String.valueOf(service.getLatestRevision(id)));
         return new ResponseEntity<>(lock, HttpStatus.OK);
@@ -281,8 +263,8 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/lukko", method = {POST, PUT})
     @ResponseBody
     public ResponseEntity<LukkoDto> lock(@PathVariable("id") final Long id,
-                                         @RequestHeader(value="If-None-Match", required=false) Integer eTag,
-                                         HttpServletResponse response) {
+        @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
+        HttpServletResponse response) {
         LukkoDto lock = service.lock(id);
         response.addHeader("ETag", String.valueOf(service.getLatestRevision(id)));
         return new ResponseEntity<>(lock, HttpStatus.OK);
@@ -312,4 +294,12 @@ public class PerusteenOsaController {
         headers.setLocation(ucb.path("/perusteenosat/{id}").buildAndExpand(id).toUri());
         return headers;
     }
+
+    //apuluokka listan tyyppi-informaation säilyttämiseen.
+    private static class PerusteenOsaDtoList extends WrappedList<PerusteenOsaDto> {
+        public PerusteenOsaDtoList(List<PerusteenOsaDto> c) {
+            super(c);
+        }
+    };
+
 }

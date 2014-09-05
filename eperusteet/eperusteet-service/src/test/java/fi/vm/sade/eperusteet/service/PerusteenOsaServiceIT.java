@@ -20,8 +20,6 @@ import fi.vm.sade.eperusteet.domain.Arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -133,7 +131,6 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     public void testWithInvalidHtml() {
     	TekstiKappaleDto dto = new TekstiKappaleDto();
     	dto.setNimi(new LokalisoituTekstiDto(Collections.singletonMap("fi", "<i>otsikko</i>")));
-
-    	perusteenOsaService.add(dto, TekstiKappaleDto.class, TekstiKappale.class);
+    	perusteenOsaService.add(dto);
     }
 }

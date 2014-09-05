@@ -21,8 +21,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.util.PerusteenOsaUpdateDto;
 import fi.vm.sade.eperusteet.resource.util.CacheHeaderInterceptor;
 import fi.vm.sade.eperusteet.resource.util.LoggingInterceptor;
 import java.util.List;
@@ -68,8 +69,8 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-       converters.add(byteArrayConverter());
-       converters.add(converter()); // keep last, will override any non-explicitely declared media types
+        converters.add(byteArrayConverter());
+        converters.add(converter()); // keep last, will override any non-explicitely declared media types
     }
 
     @Override
@@ -118,7 +119,9 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
         });
         converter.getObjectMapper().registerModule(new JodaModule());
         EPerusteetMappingModule module = new EPerusteetMappingModule();
-        module.addDeserializer(AbstractRakenneOsaDto.class, new AbstractRakenneOsaDeserializer());
+        module
+            .addDeserializer(AbstractRakenneOsaDto.class, new AbstractRakenneOsaDeserializer())
+            .addDeserializer(PerusteenOsaUpdateDto.class, new PerusteenOsaUpdateDtoDeserializer());
         converter.getObjectMapper().registerModule(module);
         return converter;
     }

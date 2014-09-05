@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 
 
@@ -36,15 +35,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public interface PerusteenOsaService {
 
-
     @PreAuthorize("hasPermission(#po.dto.id, 'perusteenosa', 'MUOKKAUS')")
-    <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(@P("po") UpdateDto<T> perusteenOsaDto, Class<T> dtoClass);
+    <T extends PerusteenOsaDto> T update(@P("po") UpdateDto<T> perusteenOsaDto);
     @PreAuthorize("hasPermission(#po.id, 'perusteenosa', 'MUOKKAUS')")
-    <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(@P("po") T perusteenOsaDto, Class<T> dtoClass);
+    <T extends PerusteenOsaDto> T update(@P("po") T perusteenOsaDto);
 
     @PreAuthorize("isAuthenticated()")
     @PostAuthorize("hasPermission(returnObject.id, 'perusteenosa', 'MUOKKAUS')")
-    <T extends PerusteenOsaDto, D extends PerusteenOsa> T add(T perusteenOsaDto, Class<T> dtoClass, Class<D> destinationClass);
+    <T extends PerusteenOsaDto> T add(T perusteenOsaDto);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'POISTO')")
     void delete(final Long id);

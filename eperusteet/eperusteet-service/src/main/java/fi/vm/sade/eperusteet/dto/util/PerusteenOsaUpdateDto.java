@@ -13,22 +13,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+package fi.vm.sade.eperusteet.dto.util;
 
-package fi.vm.sade.eperusteet.dto;
-
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  *
  * @author jhyoty
  */
-@Getter
-@Setter
-@JsonTypeName("tekstiosa")
-public class TekstiKappaleDto extends PerusteenOsaDto {
-    private LokalisoituTekstiDto teksti;
+public class PerusteenOsaUpdateDto extends UpdateDto<PerusteenOsaDto> {
 }

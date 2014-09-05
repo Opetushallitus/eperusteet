@@ -13,10 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.dto.peruste;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.Date;
 import javax.validation.constraints.NotNull;
@@ -29,7 +34,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@JsonTypeInfo(use = Id.NAME, include = As.PROPERTY, property = "osanTyyppi")
+@JsonSubTypes({
+    @JsonSubTypes.Type(TekstiKappaleDto.class),
+    @JsonSubTypes.Type(TutkinnonOsaDto.class)})
 public abstract class PerusteenOsaDto {
+
     @NotNull
     private Long id;
     private Date luotu;
@@ -38,4 +48,5 @@ public abstract class PerusteenOsaDto {
     private String muokkaajanNimi;
     private LokalisoituTekstiDto nimi;
     private PerusteTila tila;
+    
 }
