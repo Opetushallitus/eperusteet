@@ -385,11 +385,15 @@ $sp-badge-size: 16px;
     border: 1px solid $reunus-vari;
     border-top: 0;
 
+    .kuvausteksti {
+      padding: 5px 8px;
+    }
+
     .avausnappi {
-      border-top: 0;
-      background-color: #f7f7f7;
+      border-top: 1px solid $reunus-vari;
+      background-color: #f4f4f4;
       text-align: center;
-      height: 7px;
+      height: 10px;
       position: relative;
       cursor: pointer;
 
@@ -399,13 +403,16 @@ $sp-badge-size: 16px;
         background-color: #fcfcfc;
       }
     }
+    .text-truncated + .avausnappi {
+      border-top: 0;
+    }
     .avausnappi-painike {
       height: 10px;
       width: $tree-group-width;
       content: "";
       cursor: pointer;
-      top: -9px;
-      color: #bbb;
+      top: -8px;
+      color: #888;
       font-weight: bold;
       position: absolute;
     }
