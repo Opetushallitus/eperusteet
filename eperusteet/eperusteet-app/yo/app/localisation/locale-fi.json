@@ -60,9 +60,9 @@
     "OPINTOVIIKKO": "ov",
     "OSAAMISPISTE": "osp",
 
-    "erikoisrooli": "Erikoisrooli",
-    "määritelty": "Määritelty",
-    "määrittelemätön": "Määrittelemätön",
+    "rooli": "Rooli",
+    "määritelty": "Perusteessa määriteltävä",
+    "määrittelemätön": "Tutkinnossa määriteltävä",
 
     "yhteys-palvelimeen-timeout": "Yhteys palveluun on aikakatkaistu.",
     "yhteys-palvelimeen-poikki": "Yhteys palveluun on katkennut.",
@@ -629,5 +629,7 @@
     "viesti": "Viesti",
     "lisatieto": "Lisätieto",
 
-    "diaarinumero-kaytossa": "Diaarinumero on jo käytössä"
+    "diaarinumero-kaytossa": "Diaarinumero on jo käytössä",
+    
+    "hae-osaamisala": "Hae osaamisala"
 }

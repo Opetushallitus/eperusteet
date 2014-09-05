@@ -95,7 +95,7 @@ public class PerusteServiceImpl implements PerusteService {
     private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
     private static final String KOODISTO_RELAATIO_YLA = "relaatio/sisaltyy-ylakoodit/";
     private static final String KOODISTO_RELAATIO_ALA = "relaatio/sisaltyy-alakoodit/";
-    private static final String[] AMMATILLISET_KOULUTUSTYYPPI_URIT = {"koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12", "koulutustyyppi_9999"};
+    private static final String[] AMMATILLISET_KOULUTUSTYYPPI_URIT = {"koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"};
     private static final String PERUSOPETUKSEN_KOULUTUSTYYPPI = "koulutustyyppi_9999";
     private static final String KOULUTUSALALUOKITUS = "koulutusalaoph2002";
     private static final String OPINTOALALUOKITUS = "opintoalaoph2002";
