@@ -55,7 +55,7 @@ angular.module('eperusteApp')
 
 
     var koodistoHaku = function (koodisto) {
-      $scope.osaamisala = $scope.ryhma.osaamisala || {};
+      $scope.osaamisala = {};
       $scope.osaamisala.nimi = koodisto.nimi;
       $scope.osaamisala.osaamisalakoodiArvo = koodisto.koodiArvo;
       $scope.osaamisala.osaamisalakoodiUri = koodisto.koodiUri;
@@ -73,6 +73,10 @@ angular.module('eperusteApp')
       }, angular.noop, null)();
     };
 
+    $scope.tyhjennaOsaamisala = function () {
+      $scope.osaamisala = {};
+    };
+
     $scope.ok = function(uusiryhma) {
       if (uusiryhma) {
         if (uusiryhma.osat === undefined) {
@@ -88,11 +92,12 @@ angular.module('eperusteApp')
         if (!$scope.ms.koko) {
           delete uusiryhma.muodostumisSaanto.koko;
         }
-        if ($scope.osaamisala) {
+        if (!_.isEmpty($scope.osaamisala)) {
+          uusiryhma.rooli = YleinenData.osaamisalaRooli;
           uusiryhma.osaamisala = $scope.osaamisala;
+
         }
       }
-
       $modalInstance.close(uusiryhma);
     };
 
@@ -109,7 +114,10 @@ angular.module('eperusteApp')
       $modalInstance.dismiss();
     };
 
-    $scope.$watch('ryhma.rooli', function () {
-      $scope.ryhma.osaamisala = {};
+    $scope.$watch('ryhma.rooli', function(rooli) {
+      if (rooli !== YleinenData.osaamisalaRooli) {
+        $scope.ryhma.osaamisala = {};
+        $scope.osaamisala = {};
+      }
     });
   });

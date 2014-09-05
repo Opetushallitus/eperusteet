@@ -36,9 +36,10 @@ angular.module('eperusteApp')
 
     this.rakenneRyhmaRoolit = [
       'määritelty',
-      'määrittelemätön',
-      'osaamisala'
+      'määrittelemätön'
     ];
+
+    this.osaamisalaRooli = 'osaamisala';
 
     this.yksikot = [
       'OSAAMISPISTE',

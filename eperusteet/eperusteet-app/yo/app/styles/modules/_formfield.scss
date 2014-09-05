@@ -1,0 +1,9 @@
+.formfield-label {
+    padding-top: 7px;
+    font-weight: normal;
+    margin: 0;
+}
+
+.formfield-label.placeholder {
+    color: $placeholder-color;
+}
