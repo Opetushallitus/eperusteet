@@ -99,37 +99,47 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e, null, new HttpHeaders(), status, request);
     }
 
+    private void describe(Map<String, Object> map, String koodi) {
+        describe(map, koodi, "");
+    }
+
+    private void describe(Map<String, Object> map, String koodi, String selkokielinen) {
+        map.put("syy", selkokielinen);
+        map.put("avain", koodi);
+    }
+
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
         Map<String, Object> map = new HashMap<>();
         LOG.debug("Virhe", ex);
+        map.put("koodi", status);
 
         if (ex instanceof BindException) {
-            map.put("syy", "Virhe datan kytkemisessä.");
+            describe(map, "server-virhe-datan-kytkemisessä", "Virhe datan kytkemisessä.");
         } else if (ex instanceof ConversionNotSupportedException) {
-            map.put("syy", "Datamuunnos ei ole tuettu.");
+            describe(map, "datamuunnos-ei-ole-tuettu", "Datamuunnos ei ole tuettu.");
         } else if (ex instanceof HttpMediaTypeNotAcceptableException) {
-            map.put("syy", "Mediatyyppi ei ole hyväksytty.");
+            describe(map, "mediatyyppi-ei-ole-hyväksytty", "Mediatyyppi ei ole hyväksytty.");
         } else if (ex instanceof HttpMediaTypeNotSupportedException) {
-            map.put("syy", "Mediatyyppi ei ole tuettu.");
+            describe(map, "mediatyyppi-ei-ole-tuettu", "Mediatyyppi ei ole tuettu.");
         } else if (ex instanceof HttpMessageNotWritableException) {
-            map.put("syy", "Http-viestiä ei pystytty kirjoittamaan.");
+            describe(map, "http-viestiä-ei-pystytty-kirjoittamaan", "Http-viestiä ei pystytty kirjoittamaan.");
         } else if (ex instanceof HttpRequestMethodNotSupportedException) {
-            map.put("syy", "Palvelin ei pystynyt käsittelemään http-pyyntöä.");
+            describe(map, "palvelin-ei-pystynyt-käsittelemään-pyyntöä", "Palvelin ei pystynyt käsittelemään http-pyyntöä.");
         } else if (ex instanceof MethodArgumentNotValidException) {
-            map.put("syy", "Palvelin ei pystynyt käsittelemään http-pyyntöä.");
+            describe(map, "palvelin-ei-pystynyt-käsittelemään-pyyntöä", "Palvelin ei pystynyt käsittelemään http-pyyntöä.");
         } else if (ex instanceof MissingServletRequestParameterException) {
-            map.put("syy", "Pyynnöstä puuttui parametri, eikä sitä voitu tästä syystä käsitellä.");
+            describe(map, "pyynnöstä-puuttui-parametri", "Pyynnöstä puuttui parametri, eikä sitä voitu tästä syystä käsitellä.");
         } else if (ex instanceof MissingServletRequestPartException) {
-            map.put("syy", "Pyynnöstä puuttui osa, eikä sitä voitu tästä syystä käsitellä.");
+            describe(map, "pyynnöstä-puuttui-osa", "Pyynnöstä puuttui osa, eikä sitä voitu tästä syystä käsitellä.");
         } else if (ex instanceof NoSuchRequestHandlingMethodException) {
-            map.put("syy", "Palvelimelta ei löytynyt http-pyynnölle käsittelijää.");
+            describe(map, "palvelimelta-ei-löytynyt-käsittelijää", "Palvelimelta ei löytynyt http-pyynnölle käsittelijää.");
         } else if (ex instanceof TypeMismatchException) {
-            map.put("syy", "Tyypin yhteensopivuusongelma.");
+            describe(map, "tyypin-yhteensopivuusongelma", "Tyypin yhteensopivuusongelma.");
         } else if (ex instanceof TransactionSystemException) {
-            map.put("syy", "Datan käsittelyssä tapahtui odottamaton virhe.");
+            describe(map, "datan-käsittelyssä-odottamaton-virhe", "Datan käsittelyssä tapahtui odottamaton virhe.");
         } else if (ex instanceof UnrecognizedPropertyException) {
-            map.put("syy", "Dataa ei pystytty käsittelemään. Lähetetyssä datassa esiintyi tuntematon kenttä \""
+            describe(map, "datassa-tuntematon-kenttä", "Dataa ei pystytty käsittelemään. Lähetetyssä datassa esiintyi tuntematon kenttä \""
                     + ((UnrecognizedPropertyException) ex).getPropertyName() + "\"");
         } else if (ex instanceof ConstraintViolationException) {
             List<String> reasons = new ArrayList<>();
@@ -153,9 +163,9 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             LOG.error("Creating common error response for exception", ex);
             status = HttpStatus.INTERNAL_SERVER_ERROR;
             map.put("syy", "Sovelluspalvelimessa tapahtui odottamaton virhe");
+            map.put("avain", "server-odottamaton-virhe");
         }
 
-        map.put("koodi", status);
         return super.handleExceptionInternal(ex, map, headers, status, request);
     }
 }
