@@ -101,6 +101,7 @@ angular.module('eperusteApp')
 
       _.forEach(filtered, function(tk) {
         tk.tila = 'luonnos';
+        tk.osanTyyppi='tekstikappale';
         PerusteenOsat.saveTekstikappale(tk, function(re) {
           SuoritustapaSisalto.add({
             perusteId: $scope.haettuPeruste.id,
@@ -142,6 +143,7 @@ angular.module('eperusteApp')
           var cop = _.clone(ot);
           cop.tavoitteet = {};
           cop.tila = 'luonnos';
+          cop.osanTyyppi='tutkinnonosa';
           cop.$laajuus = cop.laajuus;
           delete cop.laajuus;
           PerusteenOsat.saveTutkinnonOsa(cop, function(re) {

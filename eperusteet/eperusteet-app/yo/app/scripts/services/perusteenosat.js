@@ -28,7 +28,6 @@ angular.module('eperusteApp')
       versiot: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/versiot'},
       getVersio: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/:osanId/versio/:versioId'},
       palauta: {method: 'POST', url: SERVICE_LOC + '/perusteenosat/:osanId/palauta/:versioId'},
-      kloonaa: {method: 'POST', url: SERVICE_LOC + '/perusteenosat/:osanId/kloonaa'}
     });
   })
   .factory('PerusteenOsaViitteet', function($resource, SERVICE_LOC, $stateParams, PerusteprojektiTiedotService) {
@@ -50,8 +49,7 @@ angular.module('eperusteApp')
     }, {
       kloonaaTekstikappale: {
         method: 'POST',
-        url: baseUrl + '/muokattavakopio',
-        params: {tyyppi: 'perusteen-osat-tekstikappale'}
+        url: baseUrl + '/muokattavakopio'
       },
       //FIXME
       kloonaaTutkinnonOsa: {method: 'POST', url: SERVICE_LOC + '/perusteenosaviitteet/kloonaa/:viiteId', params: {tyyppi: 'perusteen-osat-tutkinnon-osa'}},
