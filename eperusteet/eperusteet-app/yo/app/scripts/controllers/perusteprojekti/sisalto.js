@@ -50,13 +50,14 @@ angular.module('eperusteApp')
 
     $scope.aakkosJarjestys = function(data) { return Kaanna.kaanna(data.perusteenOsa.nimi); };
 
-    $scope.rajaaSisaltoa = function() {
+    $scope.rajaaSisaltoa = function(value) {
+      if (_.isUndefined(value)) { return; }
       kaikilleTutkintokohtaisilleOsille($scope.peruste.sisalto, function(osa, lapsellaOn) {
-        osa.$filtered = lapsellaOn || Algoritmit.rajausVertailu($scope.rajaus, osa, 'perusteenOsa', 'nimi');
+        osa.$filtered = lapsellaOn || Algoritmit.rajausVertailu(value, osa, 'perusteenOsa', 'nimi');
         return osa.$filtered;
       });
-      $scope.naytaTutkinnonOsat = Kaanna.kaanna('tutkinnonosat').toLowerCase().indexOf($scope.rajaus.toLowerCase()) !== -1;
-      $scope.naytaRakenne = Kaanna.kaanna('tutkinnon-rakenne').toLowerCase().indexOf($scope.rajaus.toLowerCase()) !== -1;
+      $scope.naytaTutkinnonOsat = Kaanna.kaanna('tutkinnonosat').toLowerCase().indexOf(value.toLowerCase()) !== -1;
+      $scope.naytaRakenne = Kaanna.kaanna('tutkinnon-rakenne').toLowerCase().indexOf(value.toLowerCase()) !== -1;
     };
 
     $scope.tuoSisalto = function() {
