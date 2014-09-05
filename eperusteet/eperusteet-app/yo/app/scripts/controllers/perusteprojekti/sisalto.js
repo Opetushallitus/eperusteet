@@ -124,11 +124,14 @@ angular.module('eperusteApp')
     $scope.sortableOptions = {
       connectWith: '.sisalto-group',
       cursor: 'move',
-      cursorAt: { top : 2, left: 2 },
+      cursorAt: {top: 2, left: 2},
       delay: 100,
       disabled: true,
+      handle: '.draghandle',
       placeholder: 'list-element-placeholder',
       tolerance: 'pointer',
+      opacity: 0.9,
+      revert: 100,
       change: function(event) {
         function endCondition(el) {
           return !el || _.some(el.classList, function(c) { return c === 'sisalto'; });

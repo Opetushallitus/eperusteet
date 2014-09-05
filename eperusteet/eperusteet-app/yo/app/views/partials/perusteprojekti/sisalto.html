@@ -51,19 +51,23 @@ European Union Public Licence for more details.
                 </div>
             </div>
 
-            <h2>
+            <h2 ng-hide="muokkausTutkintokohtaisetOsat">
                 {{ 'tekstikappaleet' | kaanna }} ({{ peruste.sisalto.lapset.length }})
-                <a style="margin-left: 10px" ng-click="avaaSuljeKaikki(peruste.sisalto)" href=""><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
+                <a style="margin-left: 10px" ng-click="avaaSuljeKaikki(peruste.sisalto)" class="action-link"><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
                 <div class="pull-right buttons">
-                    <button ng-hide="muokkausTutkintokohtaisetOsat" type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="cloud-download" kaanna>tuo-tutkintokohtainen-osa</button>
-                    <button ng-hide="muokkausTutkintokohtaisetOsat" type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="add" kaanna>lisaa-tutkintokohtainen-osa</button>
-                    <button ng-hide="muokkausTutkintokohtaisetOsat" class="btn btn-default btn-sm"
+                    <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="cloud-download" kaanna>tuo-tutkintokohtainen-osa</button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="add" kaanna>lisaa-tutkintokohtainen-osa</button>
+                    <button class="btn btn-default btn-sm"
                             ng-class="{ 'btn-primary': muokkausTutkintokohtaisetOsat }" ng-click="aloitaMuokkaus()"
                             ng-show="valittuSuoritustapa !== ''">
                         <span icon-role="edit" kaanna>muokkaa-rakennetta</span>
                     </button>
                 </div>
             </h2>
+            <div ng-show="muokkausTutkintokohtaisetOsat" class="rakenteen-muokkaus">
+                <h2 kaanna>Muokkaa tekstikappaleiden rakennetta</h2>
+                <a ng-click="avaaSuljeKaikki(peruste.sisalto)" class="action-link"><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
+            </div>
             <div class="clearfix"></div>
             <div ng-include="'views/partials/perusteprojekti/sisaltoOsa.html'"></div>
             <div class="info-box" ng-show="peruste.sisalto.lapset.length === 0">

@@ -2,6 +2,7 @@
   <script type="text/ng-template" id="psisaltosolmu.html">
     <div ng-show="sisalto.$filtered || rajaus.length === 0">
       <div ng-style="{ 'margin-left': 40 * indent + 'px' }" class="list-element" ng-class="{ 'striped': indent === 0 }" >
+        <div ng-show="muokkausTutkintokohtaisetOsat" icon-role="resize-vertical" class="draghandle"></div>
         <div ng-show="sisalto.lapset.length > 0" ng-click="sisalto.$opened = !sisalto.$opened" class="chevron">
           <span ng-hide="sisalto.$opened" class="glyphicon glyphicon-chevron-right"></span>
           <span ng-show="sisalto.$opened" class="glyphicon glyphicon-chevron-down"></span>

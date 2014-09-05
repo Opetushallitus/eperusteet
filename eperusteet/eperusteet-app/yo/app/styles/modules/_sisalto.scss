@@ -1,9 +1,7 @@
 $sisalto-chevron-color: $brand-primary;
 $sisalto-chevron-size: 25px;
 .main-content {
-  .striped {
-    background: #fcfcfc;
-  }
+
   .list-element {
     min-height: 40px;
     border: 1px solid #ccc;
@@ -13,10 +11,21 @@ $sisalto-chevron-size: 25px;
     cursor: pointer;
     -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
     transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    background-color: white;
+    &.striped {
+      background: #fcfcfc;
+    }
     h3 {
       font-size: 14px;
       font-weight: bold;
       display: inline;
+    }
+    .draghandle {
+      float: left;
+      font-size: $sisalto-chevron-size;
+      width: $sisalto-chevron-size * 1.2;
+      cursor: move;
+      color: #999;
     }
     .otsikko {
       display: block;
@@ -86,6 +95,13 @@ $sisalto-chevron-size: 25px;
         top: -8px;
       }
     }
+  }
+  .rakenteen-muokkaus {
+    h2 {
+      border-bottom: none;
+      margin-bottom: 5px;
+    }
+    margin-bottom: 20px;
   }
 
   .nav {
