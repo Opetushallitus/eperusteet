@@ -196,7 +196,7 @@ angular.module('eperusteApp')
         var template =
           '<div ng-if="!vanhempi">' +
           '  <div class="ylapainikkeet">' +
-          '    {{ apumuuttujat.peruste.nimi | kaanna }}' +
+          '    <span class="rakenne-nimi">{{ apumuuttujat.peruste.nimi | kaanna }}' +
           '    <span ng-if="rakenne.muodostumisSaanto && rakenne.muodostumisSaanto.laajuus">' +
           '      <span ng-if="rakenne.$laajuus">{{ rakenne.$laajuus }} / </span>' +
           '      <span ng-if="rakenne.muodostumisSaanto.laajuus.minimi">' +
@@ -206,7 +206,7 @@ angular.module('eperusteApp')
           '        - {{ rakenne.muodostumisSaanto.laajuus.maksimi }}' +
           '      </span>' +
           '      {{ apumuuttujat.laajuusYksikko | kaanna }}' +
-          '    </span>' +
+          '    </span></span>' +
           '    <a href="" ng-show="muokkaus" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)" kaanna>muokkaa-muodostumissääntöjä</button>' +
           '    <a ng-if="zoomaus" icon-role="back" class="back" href=""></a>' +
           avaaKaikki +
