@@ -424,7 +424,7 @@ angular.module('eperusteApp')
         }
       }
 
-      function lisaaKohde(arvioinninKohdealue, index) {
+      function lisaaKohdealue(arvioinninKohdealue, index) {
         var kohde = data[kentat[7] + index];
         if (kohde && kohde.v) {
           if (!_.isEmpty(arvioinninKohdealue)) {
@@ -460,6 +460,7 @@ angular.module('eperusteApp')
 
           var virhe = osatutkintoMap.virheet[key];
           var varoitus = osatutkintoMap.varoitukset[key];
+
           if (!arvo || !value) {
             var nimi = suodataTekstipala(osa.nimi);
             if (virhe) {
@@ -506,7 +507,7 @@ angular.module('eperusteApp')
             };
           }
 
-          lisaaKohde(arvioinninKohdealue, j);
+          lisaaKohdealue(arvioinninKohdealue, j);
           lisaaKriteeri(osa, j);
         });
 
@@ -514,7 +515,9 @@ angular.module('eperusteApp')
           lisaaOsaamistasonKriteeri(viimeinenKohde);
           arvioinninKohdealue.arvioinninKohteet.push(viimeinenKohde);
           viimeinenKohde = {};
-          osa.arviointi.arvioinninKohdealueet.push(_.clone(arvioinninKohdealue));
+          if (index === _.size(anchors) - 1) {
+            osa.arviointi.arvioinninKohdealueet.push(_.clone(arvioinninKohdealue));
+          }
         }
         osaperusteet.push(_.clone(osa));
       });
