@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('ProjektiryhmaCtrl', function($scope, $modal, $stateParams, PerusteprojektiJasenet,
-                                            PerusteProjektiService, ColorCalculator, VariHyrra, kayttajaToiminnot) {
+    PerusteProjektiService, ColorCalculator, VariHyrra, kayttajaToiminnot) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
     $scope.ryhma = {};
@@ -33,31 +33,39 @@ angular.module('eperusteApp')
         j.$nimi = (!_.isEmpty(j.kutsumanimi) ? j.kutsumanimi : j.etunimet) + ' ' + j.sukunimi;
         j.color = VariHyrra.next();
 
-        // Yhteystietotyyppit
-        _.forEach(_.first(j.yhteystiedot).yhteystiedot, function(yt) {
-          if (yt.yhteystietoTyyppi === 'YHTEYSTIETO_SAHKOPOSTI') { j.$sahkoposti = yt.yhteystietoArvo; }
-          else if (yt.yhteystietoTyyppi === 'YHTEYSTIETO_MATKAPUHELINNUMERO' &&
-                   !_.isEmpty(yt.yhteystietoArvo)) { j.$puhelinnumero = yt.yhteystietoArvo; }
-          else if (_.isEmpty(j.$puhelinnumero) &&
-                   yt.yhteystietoTyyppi === 'YHTEYSTIETO_PUHELINNUMERO' &&
-                   !_.isEmpty(yt.yhteystietoArvo)) { j.$puhelinnumero = yt.yhteystietoArvo; }
-        });
+        if (!_.isEmpty(j.yhteystiedot)) {
+          // Yhteystietotyyppit
+          _.forEach(_.first(j.yhteystiedot).yhteystiedot, function(yt) {
+            if (yt.yhteystietoTyyppi === 'YHTEYSTIETO_SAHKOPOSTI') {
+              j.$sahkoposti = yt.yhteystietoArvo;
+            }
+            else if (yt.yhteystietoTyyppi === 'YHTEYSTIETO_MATKAPUHELINNUMERO' &&
+              !_.isEmpty(yt.yhteystietoArvo)) {
+              j.$puhelinnumero = yt.yhteystietoArvo;
+            }
+            else if (_.isEmpty(j.$puhelinnumero) &&
+              yt.yhteystietoTyyppi === 'YHTEYSTIETO_PUHELINNUMERO' &&
+              !_.isEmpty(yt.yhteystietoArvo)) {
+              j.$puhelinnumero = yt.yhteystietoArvo;
+            }
+          });
+        }
       });
       $scope.ryhma = _.groupBy(jasenet, 'tehtavanimike');
     });
 
     $scope.nimikirjaimet = kayttajaToiminnot.nimikirjaimet;
 
-    $scope.styleFor = function (jasen) {
+    $scope.styleFor = function(jasen) {
       return jasen.color ? {
         'background-color': '#' + jasen.color,
         'color': ColorCalculator.readableTextColorForBg(jasen.color)
       } : {};
     };
   })
-  .service('kayttajaToiminnot', function () {
-    this.nimikirjaimet = function (nimi) {
-      return _.reduce(nimi.split(' '), function (memo, osa) {
+  .service('kayttajaToiminnot', function() {
+    this.nimikirjaimet = function(nimi) {
+      return _.reduce(nimi.split(' '), function(memo, osa) {
         return memo + (osa ? osa[0] : '');
       }, '').toUpperCase();
     };
