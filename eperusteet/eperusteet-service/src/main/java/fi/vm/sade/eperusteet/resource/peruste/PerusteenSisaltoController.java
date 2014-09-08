@@ -17,10 +17,12 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
 import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,18 +53,36 @@ public class PerusteenSisaltoController {
     @Autowired
     private PerusteenOsaViiteService perusteenOsaViiteService;
 
-        /**
-     * Luo perusteeseen suoritustavan alle tyhjän perusteenosan
+    @Autowired
+    private PerusteenOsaService perusteenOsaService;
+
+    /**
+     * Luo perusteeseen suoritustavan alle uuden perusteenosan
      *
      * @param perusteId
      * @param suoritustapa
+     * @param tekstiKappale perusteenosa (valinnainen, luodaan tyhjänä jos puuttuu)
      * @return Luodun perusteenOsaViite entityReferencen
      */
     @RequestMapping(value = "/sisalto", method = POST)
-    public ResponseEntity<PerusteenSisaltoViiteDto> addSisalto(
+    @ResponseStatus(HttpStatus.CREATED)
+    public PerusteenSisaltoViiteDto addSisalto(
         @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("suoritustapa") final String suoritustapa) {
-        return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), null), HttpStatus.CREATED);
+        @PathVariable("suoritustapa") final String suoritustapa,
+        @RequestBody(required = false) final TekstiKappaleDto tekstiKappale
+    ) {
+        PerusteenSisaltoViiteDto viite = service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), null);
+        if (tekstiKappale != null) {
+            Long id = Long.valueOf(viite.getPerusteenOsa().getId());
+            perusteenOsaService.lock(id);
+            try {
+                tekstiKappale.setId(id);
+                perusteenOsaService.update(tekstiKappale);
+            } finally {
+                perusteenOsaService.unlock(id);
+            }
+        }
+        return viite;
     }
 
     @RequestMapping(value = "/sisalto", method = PUT)
@@ -120,8 +140,8 @@ public class PerusteenSisaltoController {
 
     @RequestMapping(value = "/sisalto/{id}", method = POST)
     public void updateSisaltoViite(
-            @PathVariable("id") final Long id,
-            @RequestBody final PerusteenOsaViiteDto pov) {
+        @PathVariable("id") final Long id,
+        @RequestBody final PerusteenOsaViiteDto pov) {
         perusteenOsaViiteService.update(id, pov);
     }
 

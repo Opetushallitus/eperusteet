@@ -48,5 +48,5 @@ public abstract class PerusteenOsaDto {
     private String muokkaajanNimi;
     private LokalisoituTekstiDto nimi;
     private PerusteTila tila;
-    
+
 }
