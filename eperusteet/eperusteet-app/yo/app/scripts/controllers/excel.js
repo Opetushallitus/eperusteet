@@ -151,24 +151,16 @@ angular.module('eperusteApp')
           cop.osanTyyppi = 'tutkinnonosa';
           cop.$laajuus = cop.laajuus;
           delete cop.laajuus;
-          PerusteenOsat.saveTutkinnonOsa(cop, function(re) {
-            PerusteTutkinnonosat.save({
-              perusteId: $scope.haettuPeruste.id,
-              suoritustapa: $scope.suoritustapa || $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi
-            }, {
-              _tutkinnonOsa: re.id,
-              laajuus: cop.$laajuus
-            }, function() {
-              ot.$ladattu = 0;
-              ot.id = re.id;
-              ot.koodiUri = re.koodiUri;
-              doneSuccess();
-            }, function(err) {
-              if (err) {
-                ot.$syy = [err.data.syy];
-                ot.$ladattu = 1;
-              }
-            });
+          PerusteTutkinnonosat.save({
+            perusteId: $scope.haettuPeruste.id,
+            suoritustapa: $scope.suoritustapa || $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi
+          }, {
+            tutkinnonOsa: cop,
+            laajuus: cop.$laajuus
+          }, function(re) {
+            ot.$ladattu = 0;
+            ot.id = re._tutkinnonOsa;
+            doneSuccess();
           }, function(err) {
             if (err) {
               ot.$syy = [err.data.syy];

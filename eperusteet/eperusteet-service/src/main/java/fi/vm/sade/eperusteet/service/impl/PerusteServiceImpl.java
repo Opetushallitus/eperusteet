@@ -32,7 +32,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
-import fi.vm.sade.eperusteet.dto.util.PageDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -40,12 +40,13 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
-import fi.vm.sade.eperusteet.dto.util.UpdateDto;
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteLaajaDto;
+import fi.vm.sade.eperusteet.dto.util.PageDto;
+import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.OsaamisalaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -459,7 +460,7 @@ public class PerusteServiceImpl implements PerusteService {
             }
             for (AbstractRakenneOsa osa : rakenneModuuli.getOsat()) {
                 if (osa instanceof RakenneModuuli) {
-                    osa = checkIfOsaamisalatAlreadyExists((RakenneModuuli)osa);
+                    osa = checkIfOsaamisalatAlreadyExists((RakenneModuuli) osa);
                 }
             }
         }
@@ -486,14 +487,7 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Override
     @Transactional
-    public TutkinnonOsaViiteDto attachTutkinnonOsa(Long id, Suoritustapakoodi koodi, TutkinnonOsaViiteDto osa) {
-        //XXX
-        return addTutkinnonOsa(id, koodi, osa);
-    }
-
-    @Override
-    @Transactional
-    public TutkinnonOsaViiteDto addTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteDto osa) {
+    public TutkinnonOsaViiteDto addTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteLaajaDto osa) {
         final Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
         //workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
         em.refresh(suoritustapa, LockModeType.PESSIMISTIC_WRITE);
@@ -505,11 +499,29 @@ public class PerusteServiceImpl implements PerusteService {
             if (osa.getTyyppi() != null) {
                 tutkinnonOsa.setTyyppi(osa.getTyyppi());
             }
-            tutkinnonOsa = perusteenOsaRepository.save(tutkinnonOsa);
             viite.setTutkinnonOsa(tutkinnonOsa);
         }
         viite.setSuoritustapa(suoritustapa);
         viite.setMuokattu(new Date());
+        if (suoritustapa.getTutkinnonOsat().add(viite)) {
+            viite = tutkinnonOsaViiteRepository.save(viite);
+        } else {
+            throw new BusinessRuleViolationException("Viite tutkinnon osaan on jo olemassa");
+        }
+        return mapper.map(viite, TutkinnonOsaViiteDto.class);
+
+    }
+
+    @Override
+    @Transactional
+    public TutkinnonOsaViiteDto attachTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteDto osa) {
+        final Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
+        //workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
+        em.refresh(suoritustapa, LockModeType.PESSIMISTIC_WRITE);
+        TutkinnonOsaViite viite = mapper.map(osa, TutkinnonOsaViite.class);
+        viite.setSuoritustapa(suoritustapa);
+        viite.setMuokattu(new Date());
+        viite.setPoistettu(Boolean.FALSE);
         if (suoritustapa.getTutkinnonOsat().add(viite)) {
             viite = tutkinnonOsaViiteRepository.save(viite);
         } else {
@@ -525,12 +537,14 @@ public class PerusteServiceImpl implements PerusteService {
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osa.getId());
 
         if (viite == null || !viite.getSuoritustapa().equals(suoritustapa)
-                || !viite.getTutkinnonOsa().getReference().equals(osa.getTutkinnonOsa())) {
+            || !viite.getTutkinnonOsa().getReference().equals(osa.getTutkinnonOsa())) {
             throw new BusinessRuleViolationException("Virheellinen viite");
         }
         viite.setJarjestys(osa.getJarjestys());
         viite.setLaajuus(osa.getLaajuus());
         viite.setMuokattu(new Date());
+
+        viite = tutkinnonOsaViiteRepository.save(viite);
         return mapper.map(viite, TutkinnonOsaViiteDto.class);
     }
 
@@ -542,7 +556,7 @@ public class PerusteServiceImpl implements PerusteService {
         final Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         if (suoritustapa == null) {
             throw new BusinessRuleViolationException("Perusteella " + peruste + " + ei ole suoritustapaa "
-                    + suoritustapa);
+                + suoritustapa);
         }
         return suoritustapa;
     }
@@ -553,8 +567,8 @@ public class PerusteServiceImpl implements PerusteService {
         Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
         if (suoritustapa.getSisalto() == null) {
             throw new BusinessRuleViolationException("Perusteen " + perusteId + " + suoritustavalla "
-                    + suoritustapakoodi
-                    + " ei ole sisältöä");
+                + suoritustapakoodi
+                + " ei ole sisältöä");
         }
 
         PerusteenOsaViite uusiViite = new PerusteenOsaViite();
@@ -686,7 +700,7 @@ public class PerusteServiceImpl implements PerusteService {
 
             for (KoodistoKoodiDto tutkinto : tutkinnot) {
                 if (tutkinto.getKoodisto().getKoodistoUri().equals("koulutus")
-                        && (koulutusRepo.findOneByKoulutuskoodiArvo(tutkinto.getKoodiArvo()) == null)) {
+                    && (koulutusRepo.findOneByKoulutuskoodiArvo(tutkinto.getKoodiArvo()) == null)) {
                     // Haetaan erikoistapausperusteet, jotka kuvaavat kahden eri koulutusalan tutkinnot
                     peruste = haeErikoistapaus(tutkinto.getKoodiUri(), perusteEntityt, erikoistapausMap);
                     if (peruste == null) {
@@ -744,7 +758,7 @@ public class PerusteServiceImpl implements PerusteService {
         koulutus.setKoulutuskoodiArvo(tutkinto.getKoodiArvo());
         // Haetaan joka tutkinnolle alarelaatiot ja lisätään tarvittavat tiedot koulutus entityyn
         koulutusAlarelaatiot = restTemplate.getForObject(KOODISTO_REST_URL + KOODISTO_RELAATIO_ALA + "/"
-                + tutkinto.getKoodiUri(), KoodistoKoodiDto[].class);
+            + tutkinto.getKoodiUri(), KoodistoKoodiDto[].class);
         koulutus.setKoulutusalakoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, KOULUTUSALALUOKITUS));
         koulutus.setOpintoalakoodi(parseAlarelaatiokoodi(koulutusAlarelaatiot, OPINTOALALUOKITUS));
         return koulutus;
@@ -809,7 +823,8 @@ public class PerusteServiceImpl implements PerusteService {
         }
         if (koulutustyyppi != null) {
             if (koulutustyyppi.equals(AMMATILLISET_KOULUTUSTYYPPI_URIT[0])) {
-                suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko != null ? yksikko : LaajuusYksikko.OSAAMISPISTE));
+                suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko != null ? yksikko
+                                                                                                   : LaajuusYksikko.OSAAMISPISTE));
             } else if (koulutustyyppi.equals(PERUSOPETUKSEN_KOULUTUSTYYPPI)) {
                 suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, null));
             }

@@ -55,7 +55,8 @@ public interface PerusteService {
     TutkinnonOsaViiteDto attachTutkinnonOsa(@P("perusteId") Long perusteId, Suoritustapakoodi of, TutkinnonOsaViiteDto osa);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    TutkinnonOsaViiteDto addTutkinnonOsa(@P("perusteId") Long perusteId, Suoritustapakoodi suoritustapa, TutkinnonOsaViiteDto osa);
+    TutkinnonOsaViiteDto addTutkinnonOsa(@P(value = "perusteId")
+        Long id, Suoritustapakoodi koodi, fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteLaajaDto osa);
 
     PerusteDto get(final Long id);
 
