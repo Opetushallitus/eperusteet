@@ -72,7 +72,7 @@ angular.module('eperusteApp')
         $scope.muokkaaKommenttia = function(uusikommentti) { Kommentit.muokkaaKommenttia(uusikommentti); };
         $scope.lisaaKommentti = function(parent, kommentti) {
           Kommentit.lisaaKommentti(parent, kommentti, function() {
-            $scope.sisalto.yhteensa += 1;
+            $scope.sisalto.$yhteensa += 1;
           });
         };
 

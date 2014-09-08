@@ -3,7 +3,7 @@
     <div>
         <div class="kommentti-alue">
             <div>
-                <h2>Keskustelu <span ng-if="sisalto">({{ sisalto.yhteensa }} {{ 'kommenttia' | kaanna }})</span>
+                <h2>Keskustelu <span ng-if="sisalto">({{ sisalto.$yhteensa }} {{ 'kommenttia' | kaanna }})</span>
                 <small-spinner ng-hide="nayta"></small-spinner>
                 <!-- <a ng-hide="nayta" ng-click="naytaKommentit()" class="action-link" icon-role="comment">{{ 'näytä-kommentit' | kaanna }}</a> -->
                 </h2>

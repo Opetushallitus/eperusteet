@@ -82,7 +82,7 @@ angular.module('eperusteApp')
 
       var sisaltoObject = {
         $resolved: true,
-        yhteensa: _.size(viestit),
+        $yhteensa: _.size(viestit),
         seuraajat: [],
         viestit: _(viestiMap).values()
                              .reject(function(viesti) { return viesti.parentId !== null; })

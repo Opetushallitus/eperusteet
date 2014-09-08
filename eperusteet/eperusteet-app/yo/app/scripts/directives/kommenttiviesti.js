@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .directive('kommenttiViesti', function (Kommentit, kayttajaToiminnot) {
+  .directive('kommenttiViesti', function() {
     return {
       templateUrl: 'views/partials/kommenttiViesti.html',
       restrict: 'E',
@@ -32,10 +32,10 @@ angular.module('eperusteApp')
         scope.editoitava = '';
         scope.indent = (scope.depth * 60) + 'px';
 
-        scope.poistaKommentti = Kommentit.poistaKommentti;
-        scope.tallennaKommentti = Kommentit.muokkaaKommenttia;
-        scope.lisaaKommentti = Kommentit.lisaaKommentti;
-        scope.nimikirjaimet = kayttajaToiminnot.nimikirjaimet;
+        scope.poistaKommentti = scope.$parent.poistaKommentti;
+        scope.tallennaKommentti = scope.$parent.muokkaaKommenttia;
+        scope.lisaaKommentti = scope.$parent.lisaaKommentti;
+        scope.nimikirjaimet = scope.$parent.nimikirjaimet;
       }
     };
   });
