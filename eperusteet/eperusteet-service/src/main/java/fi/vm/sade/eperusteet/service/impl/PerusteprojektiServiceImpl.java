@@ -112,12 +112,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         List<KayttajanTietoDto> kayttajat = null;
         ObjectMapper omapper = new ObjectMapper();
 
-        if (p == null || p.getOid() == null | p.getOid().isEmpty()) {
+        if (p == null || p.getRyhmaOid() == null | p.getRyhmaOid().isEmpty()) {
             throw new BusinessRuleViolationException("Perusteprojektilla ei ole oid:a");
         }
 
         try {
-            String url = authServiceUrl + authQueryPath + p.getOid();
+            String url = authServiceUrl + authQueryPath + p.getRyhmaOid();
             String json = crc.getAsString(url);
             kayttajat = kayttajanTietoService.parsiKayttajat(omapper.readTree(json).get("results"));
         } catch (IOException ex) {
@@ -132,14 +132,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         CachingRestClient crc = restClientFactory.create(authServiceUrl);
         Perusteprojekti p = repository.findOne(id);
 
-        if (p == null || p.getOid() == null || p.getOid().isEmpty()) {
+        if (p == null || p.getRyhmaOid() == null || p.getRyhmaOid().isEmpty()) {
             throw new BusinessRuleViolationException("Perusteprojektilla ei ole oid:a");
         }
 
         List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> kayttajat = new ArrayList<>();
 
         try {
-            String url = authServiceUrl + authQueryPath + p.getOid();
+            String url = authServiceUrl + authQueryPath + p.getRyhmaOid();
             ObjectMapper omapper = new ObjectMapper();
             JsonNode tree = omapper.readTree(crc.getAsString(url));
             for (JsonNode node : tree.get("results")) {
@@ -165,7 +165,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         LaajuusYksikko yksikko = perusteprojektiDto.getLaajuusYksikko();
         PerusteTyyppi tyyppi = perusteprojektiDto.getTyyppi() == null ? PerusteTyyppi.NORMAALI : perusteprojektiDto.getTyyppi();
         perusteprojekti.setTila(ProjektiTila.LAADINTA);
-        perusteprojekti.setOid(perusteprojektiDto.getOid());
+        perusteprojekti.setRyhmaOid(perusteprojektiDto.getRyhmaOid());
 
         if (tyyppi != PerusteTyyppi.POHJA) {
             if (koulutustyyppi.equals("koulutustyyppi_1") && yksikko == null) {
@@ -175,7 +175,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 throw new BusinessRuleViolationException("Diaarinumeroa ei ole asetettu");
             }
 //            FIXME: Ota käyttöön kun aika koittaa
-//            if (perusteprojektiDto.getOid() == null) {
+//            if (perusteprojektiDto.getRyhmaOid() == null) {
 //                throw new BusinessRuleViolationException("Organisaatioryhmää ei ole asetettu");
 //            }
         }

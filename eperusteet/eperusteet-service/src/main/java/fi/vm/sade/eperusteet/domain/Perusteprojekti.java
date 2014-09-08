@@ -87,8 +87,8 @@ public class Perusteprojekti extends AbstractAuditedEntity {
 
     @Getter
     @Setter
-    @Column(unique = true)
-    private String oid;
+    @Column(name = "ryhmaoid")
+    private String ryhmaOid;
 
     @Getter
     @Setter

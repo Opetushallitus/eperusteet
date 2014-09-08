@@ -44,5 +44,5 @@ public class PerusteprojektiDto implements Serializable {
     private String tehtava;
     private String yhteistyotaho;
     private ProjektiTila tila;
-    private String oid;
+    private String ryhmaOid;
 }

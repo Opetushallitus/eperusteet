@@ -36,5 +36,5 @@ public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
     private Long perusteId;
     private ProjektiTila tila;
     private PerusteTyyppi tyyppi;
-    private String oid;
+    private String ryhmaOid;
 }

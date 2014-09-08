@@ -28,6 +28,6 @@ public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti
 
     Perusteprojekti findOneByDiaarinumero(String diaarinumero);
 
-    Perusteprojekti findOneByOid(String oid);
+    Perusteprojekti findOneByRyhmaOid(String ryhmaOid);
 
 }

@@ -78,7 +78,7 @@ public class PermissionEvaluator implements org.springframework.security.access.
             }
             case "perusteprojekti": {
                 Perusteprojekti pp = perusteProjektit.findOne(id);
-                return pp == null ? empty : Collections.singleton(Pair.of(pp.getOid(), pp.getTila()));
+                return pp == null ? empty : Collections.singleton(Pair.of(pp.getRyhmaOid(), pp.getTila()));
             }
             case "perusteenosa": {
                 return Sets.newHashSet(perusteProjektit.findTilaByPerusteenOsaId(id));

@@ -115,7 +115,7 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
             List<KayttajanProjektitiedotDto> kpp = new ArrayList<>();
             List<KayttajanProjektitiedotDto> unfiltered = Arrays.asList(crc.get(url, KayttajanProjektitiedotDto[].class));
             for (KayttajanProjektitiedotDto kp : unfiltered) {
-                Perusteprojekti pp = perusteprojektiRepository.findOneByOid(kp.getOrganisaatioOid());
+                Perusteprojekti pp = perusteprojektiRepository.findOneByRyhmaOid(kp.getOrganisaatioOid());
                 if (pp != null) {
                     kp.setPerusteprojekti(pp.getId());
                     kpp.add(kp);
@@ -141,7 +141,7 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
         }
 
         CachingRestClient crc = restClientFactory.create(serviceUrl);
-        String url = serviceUrl + KAYTTAJA_API + oid + "/organisaatiohenkilo/" + pp.getOid();
+        String url = serviceUrl + KAYTTAJA_API + oid + "/organisaatiohenkilo/" + pp.getRyhmaOid();
 
         try {
             KayttajanProjektitiedotDto ppt = crc.get(url, KayttajanProjektitiedotDto.class);
