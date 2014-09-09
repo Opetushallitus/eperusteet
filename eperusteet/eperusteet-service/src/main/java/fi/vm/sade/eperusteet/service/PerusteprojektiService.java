@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import java.util.List;
 import java.util.Set;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  *
@@ -33,21 +34,30 @@ import java.util.Set;
  */
 public interface PerusteprojektiService {
 
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
     List<KayttajanTietoDto> getJasenet(Long id);
 
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
     List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> getJasenetTiedot(Long id);
 
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
     PerusteprojektiDto get(final Long id);
 
+    @PreAuthorize("isAuthenticated()") //XXX
     List<PerusteprojektiInfoDto> getBasicInfo();
 
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto);
 
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
     PerusteprojektiDto update(final Long id, PerusteprojektiDto perusteprojektiDto);
 
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
     Set<ProjektiTila> getTilat(final Long id);
 
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'TILANVAIHTO')")
     TilaUpdateStatus updateTila(final Long id, ProjektiTila tila);
 
+    @PreAuthorize("isAuthenticated()")
     void onkoDiaarinumeroKaytossa(String diaarinumero);
 }

@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service;
 
 import com.google.code.docbook4j.Docbook4JException;
@@ -22,6 +21,7 @@ import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  *
@@ -29,15 +29,26 @@ import javax.xml.transform.TransformerException;
  */
 public interface DokumenttiService {
 
+    @PreAuthorize("isAuthenticated()")
     public byte[] generateFor(DokumenttiDto dto) throws IOException,
-            TransformerException, ParserConfigurationException,
-            Docbook4JException;
+        TransformerException, ParserConfigurationException,
+        Docbook4JException;
 
+    @PreAuthorize("isAuthenticated()")
     public void setStarted(DokumenttiDto dto);
+
+    @PreAuthorize("isAuthenticated()")
     public void generateWithDto(DokumenttiDto dto);
+
+    @PreAuthorize("isAuthenticated()")
     public DokumenttiDto createDtoFor(final long id, Kieli kieli);
 
+    @PreAuthorize("isAuthenticated()")
     public byte[] get(Long id);
+
+    @PreAuthorize("isAuthenticated()")
     public DokumenttiDto query(Long id);
+
+    @PreAuthorize("isAuthenticated()")
     public DokumenttiDto findLatest(Long id, Kieli kieli);
 }

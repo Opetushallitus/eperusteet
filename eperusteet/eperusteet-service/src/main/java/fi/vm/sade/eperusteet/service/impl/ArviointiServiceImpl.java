@@ -23,7 +23,7 @@ import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.repository.ArviointiRepository;
-import fi.vm.sade.eperusteet.service.ArviointiService;
+import fi.vm.sade.eperusteet.service.internal.ArviointiService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.ArrayList;

@@ -14,24 +14,17 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service;
+package fi.vm.sade.eperusteet.service.internal;
 
-import fi.vm.sade.eperusteet.domain.Lukko;
-import fi.vm.sade.eperusteet.service.exception.LockingException;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 
 /**
  *
- * @author jhyoty
+ * @author harrik
  */
-public interface LockManager {
-    Lukko lock(Long id);
-    boolean isLockedByAuthenticatedUser(Long id);
-    /**
-     * Varmistaa että tunnistettu käyttäjä omistaa lukon,
-     * @param id lukon tunniste
-     * @throws LockingException jos lukkoa ei ole tai sen omistaa toinen käyttäjä
-     */
-    void ensureLockedByAuthenticatedUser(Long id);
-    Lukko getLock(Long id);
-    boolean unlock(Long id);
+public interface SuoritustapaService {
+    Suoritustapa createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi suoritustapakoodi, LaajuusYksikko yksikko);
+    Suoritustapa createFromOther(final Long suoritustapaId);
 }

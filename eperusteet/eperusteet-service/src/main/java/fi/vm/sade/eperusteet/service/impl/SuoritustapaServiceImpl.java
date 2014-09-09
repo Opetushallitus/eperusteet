@@ -31,7 +31,7 @@ import fi.vm.sade.eperusteet.repository.RakenneRepository;
 import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
-import fi.vm.sade.eperusteet.service.SuoritustapaService;
+import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

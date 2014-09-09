@@ -26,7 +26,7 @@ import fi.vm.sade.eperusteet.domain.DokumenttiVirhe;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.service.DokumenttiBuilderService;
+import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;

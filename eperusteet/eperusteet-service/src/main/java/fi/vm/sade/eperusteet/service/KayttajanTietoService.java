@@ -16,23 +16,23 @@
 
 package fi.vm.sade.eperusteet.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import java.util.List;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  *
  * @author nkala
  */
 public interface KayttajanTietoService {
+
+    @PreAuthorize("isAuthenticated()")
     KayttajanTietoDto hae(String oid);
 
-    KayttajanTietoDto parsiKayttaja(JsonNode json);
-
-    List<KayttajanTietoDto> parsiKayttajat(JsonNode jsonList);
-
+    @PreAuthorize("isAuthenticated()")
     List<KayttajanProjektitiedotDto> haePerusteprojektit(String oid);
 
+    @PreAuthorize("isAuthenticated()")
     KayttajanProjektitiedotDto haePerusteprojekti(String oid, Long projektiId);
 }

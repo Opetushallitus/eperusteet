@@ -14,17 +14,12 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service;
-
-import fi.vm.sade.eperusteet.dto.OpintoalaDto;
-import java.util.List;
-import org.springframework.security.access.prepost.PreAuthorize;
+package fi.vm.sade.eperusteet.domain;
 
 /**
  *
- * @author harrik
+ * @author jhyoty
  */
-public interface OpintoalaService {
-    @PreAuthorize("permitAll()")
-    public List<OpintoalaDto> getAll();
+public interface WithPerusteTila {
+    PerusteTila getTila();
 }

@@ -46,8 +46,9 @@ import lombok.Setter;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Audited
 @Table(name = "perusteenosa")
-public abstract class PerusteenOsa extends AbstractAuditedEntity implements Serializable, Mergeable<PerusteenOsa>,
-    ReferenceableEntity {
+public abstract class PerusteenOsa
+    extends AbstractAuditedEntity
+    implements Serializable, Mergeable<PerusteenOsa>, WithPerusteTila, ReferenceableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

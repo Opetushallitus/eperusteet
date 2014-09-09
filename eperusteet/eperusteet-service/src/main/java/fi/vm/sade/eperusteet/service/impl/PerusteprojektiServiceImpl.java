@@ -46,6 +46,7 @@ import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
@@ -119,7 +120,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         try {
             String url = authServiceUrl + authQueryPath + p.getRyhmaOid();
             String json = crc.getAsString(url);
-            kayttajat = kayttajanTietoService.parsiKayttajat(omapper.readTree(json).get("results"));
+            kayttajat = KayttajanTietoParser.parsiKayttajat(omapper.readTree(json).get("results"));
         } catch (IOException ex) {
             throw new BusinessRuleViolationException("Käyttäjien tietojen hakeminen epäonnistui");
         }

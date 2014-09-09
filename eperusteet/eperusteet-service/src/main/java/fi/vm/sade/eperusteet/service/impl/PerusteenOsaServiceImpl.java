@@ -32,7 +32,7 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.KommenttiService;
-import fi.vm.sade.eperusteet.service.LockManager;
+import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;

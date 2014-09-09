@@ -48,7 +48,6 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("isAuthenticated()")
     public KommenttiDto get(Long kommenttiId) {
         Kommentti kommentti = kommentit.findOne(kommenttiId);
         return mapper.map(kommentti, KommenttiDto.class);
@@ -64,7 +63,6 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllByPerusteenOsa(Long id, Long perusteenOsaId) {
         List<Kommentti> re = kommentit.findAllByPerusteenOsa(id, perusteenOsaId);
         return mapper.mapAsList(re, KommenttiDto.class);
@@ -72,7 +70,6 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllBySuoritustapa(Long id, String suoritustapa) {
         List<Kommentti> re = kommentit.findAllBySuoritustapa(id, suoritustapa);
         return mapper.mapAsList(re, KommenttiDto.class);
@@ -80,7 +77,6 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllByPerusteprojekti(Long id) {
         List<Kommentti> re = kommentit.findAllByPerusteprojekti(id);
         return mapper.mapAsList(re, KommenttiDto.class);
@@ -88,7 +84,6 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllByParent(Long id) {
         List<Kommentti> re = kommentit.findAllByParent(id);
         return mapper.mapAsList(re, KommenttiDto.class);
@@ -96,7 +91,6 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllByYlin(Long id) {
         List<Kommentti> re = kommentit.findAllByYlin(id);
         return mapper.mapAsList(re, KommenttiDto.class);
@@ -104,7 +98,6 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasPermission(#kommenttidto.perusteprojektiId, 'perusteProjekti', 'KOMMENTOINTI')")
     public KommenttiDto add(final KommenttiDto kommenttidto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Kommentti kommentti = new Kommentti();
@@ -143,7 +136,6 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional
-    @PreAuthorize("isAuthenticated()")
     public void deleteReally(Long kommenttiId) {
         kommentit.delete(kommenttiId);
     }

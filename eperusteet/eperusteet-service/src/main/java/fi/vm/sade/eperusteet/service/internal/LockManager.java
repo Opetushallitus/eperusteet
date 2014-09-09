@@ -14,25 +14,24 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service;
+package fi.vm.sade.eperusteet.service.internal;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import java.io.IOException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
+import fi.vm.sade.eperusteet.domain.Lukko;
+import fi.vm.sade.eperusteet.service.exception.LockingException;
 
 /**
  *
- * @author jussi
+ * @author jhyoty
  */
-public interface DokumenttiBuilderService {
-
-    public String generateXML(Peruste peruste, Kieli kieli) throws
-            TransformerConfigurationException,
-            IOException,
-            TransformerException,
-            ParserConfigurationException;
-    
+public interface LockManager {
+    Lukko lock(Long id);
+    boolean isLockedByAuthenticatedUser(Long id);
+    /**
+     * Varmistaa että tunnistettu käyttäjä omistaa lukon,
+     * @param id lukon tunniste
+     * @throws LockingException jos lukkoa ei ole tai sen omistaa toinen käyttäjä
+     */
+    void ensureLockedByAuthenticatedUser(Long id);
+    Lukko getLock(Long id);
+    boolean unlock(Long id);
 }

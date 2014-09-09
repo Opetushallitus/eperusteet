@@ -31,7 +31,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.service.DokumenttiBuilderService;
+import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import java.io.File;
 import java.io.IOException;
@@ -595,7 +595,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     }
 
     private List<String> asStringList(List<TekstiPalanen> palaset, Kieli kieli) {
-        List<String> list = new ArrayList();
+        List<String> list = new ArrayList<>();
         for (TekstiPalanen palanen : palaset) {
             list.add(getTextString(palanen, kieli));
         }
@@ -604,7 +604,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     private <T> List<T> sanitizeList(List<T> list) {
         if (list == null) {
-            return new ArrayList();
+            return new ArrayList<>();
         }
         return list;
     }

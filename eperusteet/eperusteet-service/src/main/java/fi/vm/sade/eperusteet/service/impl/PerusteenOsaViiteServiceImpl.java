@@ -28,7 +28,7 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import fi.vm.sade.eperusteet.service.ArviointiService;
+import fi.vm.sade.eperusteet.service.internal.ArviointiService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;

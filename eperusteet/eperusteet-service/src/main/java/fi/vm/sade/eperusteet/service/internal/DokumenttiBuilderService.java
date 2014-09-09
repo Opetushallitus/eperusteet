@@ -14,17 +14,25 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service;
+package fi.vm.sade.eperusteet.service.internal;
 
-import fi.vm.sade.eperusteet.dto.OpintoalaDto;
-import java.util.List;
-import org.springframework.security.access.prepost.PreAuthorize;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import java.io.IOException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 
 /**
  *
- * @author harrik
+ * @author jussi
  */
-public interface OpintoalaService {
-    @PreAuthorize("permitAll()")
-    public List<OpintoalaDto> getAll();
+public interface DokumenttiBuilderService {
+
+    public String generateXML(Peruste peruste, Kieli kieli) throws
+            TransformerConfigurationException,
+            IOException,
+            TransformerException,
+            ParserConfigurationException;
+    
 }

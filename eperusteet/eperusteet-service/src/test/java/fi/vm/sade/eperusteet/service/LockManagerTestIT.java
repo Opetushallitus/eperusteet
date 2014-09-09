@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.domain.Lukko;
 import fi.vm.sade.eperusteet.service.exception.LockingException;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -82,7 +83,7 @@ public class LockManagerTestIT extends AbstractIntegrationTest {
                 public Lukko call() throws Exception {
                     latch.await();
                     SecurityContext ctx = SecurityContextHolder.createEmptyContext();
-                    ctx.setAuthentication(new UsernamePasswordAuthenticationToken("test" + id, "test"));
+                    ctx.setAuthentication(new UsernamePasswordAuthenticationToken("test" + (id+1), "test"));
                     SecurityContextHolder.setContext(ctx);
                     return lockManager.lock(42L);
                 }
@@ -101,10 +102,12 @@ public class LockManagerTestIT extends AbstractIntegrationTest {
             String haltijaOid = "";
             try {
                 haltijaOid = f.get().getHaltijaOid();
-            } catch (ExecutionException l) {
-                if (l.getCause() instanceof LockingException) {
+            } catch (ExecutionException ee) {
+                if (ee.getCause() instanceof LockingException) {
                     locked++;
-                    haltijaOid = ((LockingException) l.getCause()).getLukko().getHaltijaOid();
+                    haltijaOid = ((LockingException) ee.getCause()).getLukko().getHaltijaOid();
+                } else {
+                    throw ee;
                 }
             }
             if (lockedBy == null) {

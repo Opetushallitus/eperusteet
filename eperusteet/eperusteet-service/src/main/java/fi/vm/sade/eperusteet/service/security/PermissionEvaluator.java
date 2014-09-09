@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.service.security;
 
 import com.google.common.collect.Sets;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
@@ -39,6 +40,9 @@ public class PermissionEvaluator implements org.springframework.security.access.
     @Autowired
     private PerusteprojektiPermissionRepository perusteProjektit;
 
+    @Autowired
+    private PermissionHelper helper;
+
     private static final Logger LOG = LoggerFactory.getLogger(PermissionEvaluator.class);
 
     @Override
@@ -49,8 +53,24 @@ public class PermissionEvaluator implements org.springframework.security.access.
     }
 
     private static final EnumSet<ProjektiTila> MUOKKAUS_TILAT = EnumSet.complementOf(EnumSet.of(ProjektiTila.JULKAISTU, ProjektiTila.POISTETTU));
+
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
+        LOG.warn(String.format("Checking permission %s to %s{id=%s} by %s", permission, targetType, targetId, authentication));
+
+        if ( targetId == null ) {
+            //yleiset oikeudet jotka eivät kohdistu mihinkään objektiin; esim. perusteprojektin luonti
+            LOG.warn("*** yleisten oikeuksien tarkistusta ei ole vielä toteutettu ***");
+            return true;
+        }
+
+        if ("LUKU".equals(permission) && targetId != null) {
+            //tarkistetaan onko lukuoikeus suoraan julkaistu -statuksen perusteella
+            if (PerusteTila.VALMIS == helper.findPerusteTilaFor(targetType, targetId)) {
+                return true;
+            }
+        }
+
         boolean verdict = false;
         if (authentication.isAuthenticated()) {
             for (Pair<String, ProjektiTila> p : findPerusteProjektiTila(targetType, targetId)) {
@@ -60,7 +80,6 @@ public class PermissionEvaluator implements org.springframework.security.access.
                 }
             }
         }
-        LOG.warn(String.format("%s to %s{id=%s} by %s: verdict: %s", permission, targetType, targetId, authentication, verdict));
         return verdict;
     }
 

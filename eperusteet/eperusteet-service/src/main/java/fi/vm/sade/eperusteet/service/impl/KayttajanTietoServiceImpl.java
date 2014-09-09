@@ -34,6 +34,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import static fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser.parsiKayttaja;
+
 /**
  *
  * @author nkala
@@ -54,39 +56,6 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
 
     @Autowired
     RestClientFactory restClientFactory;
-
-    private String getField(JsonNode json, String... fields) {
-        for (String field : fields) {
-            if (json != null) {
-                json = json.get(field);
-            } else {
-                return null;
-            }
-        }
-        return json != null ? json.asText() : null;
-    }
-
-    @Override
-    public KayttajanTietoDto parsiKayttaja(JsonNode json) {
-        KayttajanTietoDto ktd = new KayttajanTietoDto();
-        ktd.setUsername(getField(json, "kayttajatiedot", "username"));
-        ktd.setEtunimet(getField(json, "etunimet"));
-        ktd.setKieliKoodi(getField(json, "asiointiKieli", "kieliKoodi"));
-        ktd.setKutsumanimi(getField(json, "kutsumanimi"));
-        ktd.setSukunimi(getField(json, "sukunimi"));
-        ktd.setOidHenkilo(getField(json, "oidHenkilo"));
-        ktd.setYhteystiedot(json.get("yhteystiedotRyhma"));
-        return ktd;
-    }
-
-    @Override
-    public List<KayttajanTietoDto> parsiKayttajat(JsonNode jsonList) {
-        List<KayttajanTietoDto> ktds = new ArrayList<>();
-        for (JsonNode json : jsonList) {
-            ktds.add(parsiKayttaja(json));
-        }
-        return ktds;
-    }
 
     @Override
     @Cacheable("kayttajat")
