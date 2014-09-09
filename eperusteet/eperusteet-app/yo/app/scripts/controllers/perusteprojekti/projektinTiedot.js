@@ -60,11 +60,12 @@ angular.module('eperusteApp')
     };
     $scope.peruuta = function() { $modalInstance.dismiss(); };
   })
-  .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams, $modal, $timeout,
-    PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, perusteprojektiTiedot,
-    Notifikaatiot, Perusteet, Editointikontrollit, YleinenData) {
+  .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams, $modal, $timeout, $translate,
+    PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, perusteprojektiTiedot, Notifikaatiot,
+    Perusteet, Editointikontrollit, YleinenData) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
+    $scope.lang = $translate.use() || $translate.preferredLanguage();
     $scope.editEnabled = false;
     var originalProjekti = null;
 
@@ -113,6 +114,17 @@ angular.module('eperusteApp')
     if (!$scope.pohja()) {
       $scope.tabs.push({otsikko: 'projekti-toimikausi', url: 'views/partials/perusteprojekti/toimikausi.html'});
     }
+
+    $scope.haeRyhma = function() {
+      $modal.open({
+        templateUrl: 'views/modals/tuotyoryhma.html',
+        controller: 'TyoryhmanTuontiModalCtrl'
+      })
+      .result.then(function(ryhma) {
+        $scope.projekti.ryhmaOid = ryhma.oid;
+        $scope.projekti.$ryhmaNimi = ryhma.nimi;
+      });
+    };
 
     $scope.mergeProjekti = function(tuoPohja) {
       $modal.open({
@@ -174,4 +186,41 @@ angular.module('eperusteApp')
         suoritustapa: suoritustapa
       } );
     };
+  })
+  .controller('TyoryhmanTuontiModalCtrl', function($scope, $modalInstance, $translate, Organisaatioryhmat, Algoritmit) {
+    $scope.haetaan = true;
+    $scope.moro = 'moro';
+    $scope.error = false;
+    $scope.rajaus = '';
+    $scope.lang = 'nimi.' + $translate.use() || $translate.preferredLanguage();
+
+    $scope.totalItems = 0;
+    $scope.itemsPerPage = 10;
+    $scope.nykyinen = 1;
+
+    Organisaatioryhmat.get(function(res) {
+      $scope.haetaan = false;
+      $scope.ryhmat = _(res).value();
+      $scope.totalItems = _.size($scope.ryhmat);
+    }, function() {
+      $scope.haetaan = false;
+      $scope.error = true;
+    });
+
+    $scope.paivitaRajaus = function(rajaus) {
+      $scope.rajaus = rajaus;
+    };
+
+    $scope.rajaa = function(ryhma) {
+      return Algoritmit.match($scope.rajaus, ryhma.nimi);
+    };
+
+    $scope.valitseSivu = function(sivu) {
+      if (sivu > 0 && sivu <= Math.ceil($scope.totalItems / $scope.itemsPerPage)) {
+        $scope.nykyinen = sivu;
+      }
+    };
+
+    $scope.valitse = $modalInstance.close;
+    $scope.peruuta = $modalInstance.dismiss;
   });

@@ -26,7 +26,7 @@ angular.module('eperusteApp')
         controller: 'ExcelCtrl',
       });
   })
-  .controller('ExcelCtrl', function($scope, ExcelService, PerusteenOsat, TutkinnonOsanValidointi,
+  .controller('ExcelCtrl', function($scope, $modal, ExcelService, PerusteenOsat, TutkinnonOsanValidointi,
     Koodisto, PerusteprojektiResource, PerusteTutkinnonosat,
     SuoritustapaSisalto, Perusteet, Notifikaatiot, YleinenData, Utils) {
     $scope.alussa = true;
@@ -171,6 +171,17 @@ angular.module('eperusteApp')
             }
           });
         }
+      });
+    };
+
+    $scope.haeRyhma = function() {
+      $modal.open({
+        templateUrl: 'views/modals/tuotyoryhma.html',
+        controller: 'TyoryhmanTuontiModalCtrl'
+      })
+      .result.then(function(ryhma) {
+        $scope.projekti.ryhmaOid = ryhma.oid;
+        $scope.projekti.$ryhmaNimi = ryhma.nimi;
       });
     };
 

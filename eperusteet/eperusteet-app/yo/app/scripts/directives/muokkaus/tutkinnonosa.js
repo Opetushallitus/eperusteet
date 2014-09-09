@@ -56,8 +56,7 @@ angular.module('eperusteApp')
         $scope.viiteosa = _.find($scope.rakenne.tutkinnonOsat, {'_tutkinnonOsa': $scope.editableTutkinnonOsa.id.toString()}) || {};
         $scope.viiteosa.laajuus = $scope.viiteosa.laajuus || 0;
         $scope.yksikko = _.zipObject(_.map(res.$peruste.suoritustavat, 'suoritustapakoodi'),
-                                     _.map(res.$peruste.suoritustavat, 'laajuusYksikko'))
-        [$scope.suoritustapa];
+                                     _.map(res.$peruste.suoritustavat, 'laajuusYksikko'))[$scope.suoritustapa];
         if (TutkinnonOsaEditMode.getMode()) {
           $scope.isNew = true;
           $timeout(function () {
@@ -157,11 +156,10 @@ angular.module('eperusteApp')
     }
 
     function doDelete(osaId) {
-      PerusteenRakenne.poistaTutkinnonOsaViite(osaId, $scope.rakenne.$peruste.id,
-                                               $stateParams.suoritustapa, function() {
-                                                 Notifikaatiot.onnistui('tutkinnon-osa-rakenteesta-poistettu');
-                                                 $state.go('root.perusteprojekti.suoritustapa.tutkinnonosat');
-                                               });
+      PerusteenRakenne.poistaTutkinnonOsaViite(osaId, $scope.rakenne.$peruste.id, $stateParams.suoritustapa, function() {
+        Notifikaatiot.onnistui('tutkinnon-osa-rakenteesta-poistettu');
+        $state.go('root.perusteprojekti.suoritustapa.tutkinnonosat');
+      });
     }
 
     var tutke2 = {

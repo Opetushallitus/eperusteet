@@ -25,6 +25,7 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import fi.vm.sade.eperusteet.domain.PerusteprojektiTyoryhma;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
@@ -36,9 +37,11 @@ import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.repository.PerusteprojektiTyoryhmaRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -87,7 +90,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     private KayttajanTietoService kayttajanTietoService;
 
     @Autowired
-    RestClientFactory restClientFactory;
+    private RestClientFactory restClientFactory;
+
+    @Autowired
+    private PerusteprojektiTyoryhmaRepository perusteprojektiTyoryhmaRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -317,12 +323,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     private void setPerusteTila(Peruste peruste, PerusteTila tila) {
         for (Suoritustapa suoritustapa : peruste.getSuoritustavat()) {
-                setSisaltoTila(suoritustapa.getSisalto(), tila);
-                for (TutkinnonOsaViite tutkinnonosaViite : suoritustapa.getTutkinnonOsat()) {
-                    setOsatTila(tutkinnonosaViite, tila);
-                }
+            setSisaltoTila(suoritustapa.getSisalto(), tila);
+            for (TutkinnonOsaViite tutkinnonosaViite : suoritustapa.getTutkinnonOsat()) {
+                setOsatTila(tutkinnonosaViite, tila);
             }
-            peruste.setTila(tila);
+        }
+        peruste.setTila(tila);
     }
 
     private PerusteenOsaViite setSisaltoTila(PerusteenOsaViite sisaltoRoot, PerusteTila tila) {
@@ -383,6 +389,34 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         });
     }
 
+    @Transactional
+    @Override
+    public TyoryhmaDto saveTyoryhma(Long perusteProjektiId, TyoryhmaDto tr) {
+        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        PerusteprojektiTyoryhma ppt = perusteprojektiTyoryhmaRepository.save(new PerusteprojektiTyoryhma(pp, tr.getKayttajaOid(), tr.getTyoryhmaOid()));
+        return mapper.map(ppt, TyoryhmaDto.class);
+    }
 
+    @Transactional
+    @Override
+    public List<TyoryhmaDto> getTyoryhmat(Long perusteProjektiId) {
+        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        List<PerusteprojektiTyoryhma> tr = perusteprojektiTyoryhmaRepository.findByPerusteprojekti(pp);
+        return mapper.mapAsList(tr, TyoryhmaDto.class);
+    }
+
+    @Transactional
+    @Override
+    public List<TyoryhmaDto> getTyoryhmat(Long perusteProjektiId, String tyoryhmaOid) {
+        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        List<PerusteprojektiTyoryhma> tr = perusteprojektiTyoryhmaRepository.findAllByPerusteprojektiAndTyoryhmaOid(pp, tyoryhmaOid);
+        return mapper.mapAsList(tr, TyoryhmaDto.class);
+    }
+
+    @Transactional
+    @Override
+    public void removeTyoryhma(Long trId) {
+        perusteprojektiTyoryhmaRepository.delete(trId);
+    }
 
 }

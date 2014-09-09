@@ -24,7 +24,7 @@ angular.module('eperusteApp')
         var lang = $translate.use() || $translate.preferredLanguage();
 
         if (_.isObject(input)) {
-          return input[lang];
+          return input[lang] || input['kieli_' + lang + '#1'];
         }
         else if (_.isString(input)) {
           return Lokalisointi.hae(input) || $translate.instant(input, config);

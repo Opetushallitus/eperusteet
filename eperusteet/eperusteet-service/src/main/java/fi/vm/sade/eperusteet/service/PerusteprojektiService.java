@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import java.util.List;
 import java.util.Set;
@@ -66,4 +67,16 @@ public interface PerusteprojektiService {
     @PreAuthorize("isAuthenticated()")
     @PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")
     List<PerusteprojektiInfoDto> getOmatProjektit();
+
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
+    List<TyoryhmaDto> getTyoryhmat(Long perusteProjektiId);
+
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
+    List<TyoryhmaDto> getTyoryhmat(Long perusteProjektiId, String tyoryhmaOid);
+
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
+    TyoryhmaDto saveTyoryhma(Long id, TyoryhmaDto tyoryhma);
+
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
+    void removeTyoryhma(Long trId);
 }

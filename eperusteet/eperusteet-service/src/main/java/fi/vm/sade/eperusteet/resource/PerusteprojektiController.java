@@ -17,16 +17,18 @@ package fi.vm.sade.eperusteet.resource;
 
 import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.dto.util.BooleanDto;
+import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
-import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaDto;
+import fi.vm.sade.eperusteet.dto.util.BooleanDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,4 +141,40 @@ public class PerusteprojektiController {
 
         return new ResponseEntity<>(new BooleanDto(true), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/{id}/tyoryhma", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<TyoryhmaDto>> getTyoryhma(@PathVariable("id") final Long id) {
+        List<TyoryhmaDto> tyoryhmat = service.getTyoryhmat(id);
+        return new ResponseEntity<>(tyoryhmat, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/tyoryhma/{nimi}", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<TyoryhmaDto>> getTyoryhmaByNimi(
+            @PathVariable("nimi") final String nimi,
+            @PathVariable("id") final Long id
+    ) {
+        List<TyoryhmaDto> tyoryhmat = service.getTyoryhmat(id, nimi);
+        return new ResponseEntity<>(tyoryhmat, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/tyoryhma", method = POST)
+    @ResponseBody
+    public ResponseEntity<TyoryhmaDto> postTyoryhma(
+            @PathVariable("id") final Long id,
+            @RequestBody TyoryhmaDto tyoryhma
+    ) {
+        TyoryhmaDto td = service.saveTyoryhma(id, tyoryhma);
+        return new ResponseEntity<>(td, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/tyoryhma/{trId}", method = DELETE)
+    public ResponseEntity<TyoryhmaDto> removeTyoryhma(
+            @PathVariable("trId") final Long trId
+    ) {
+        service.removeTyoryhma(trId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

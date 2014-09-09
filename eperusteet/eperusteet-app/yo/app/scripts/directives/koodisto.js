@@ -128,9 +128,9 @@ angular.module('eperusteApp')
     $scope.loydetyt = [];
     $scope.totalItems = 0;
     $scope.itemsPerPage = 10;
+    $scope.nykyinen = 1;
     $scope.lataa = true;
     $scope.syote = '';
-    $scope.nykyinen = 1;
 
     $scope.valitseSivu = function(sivu) {
       if (sivu > 0 && sivu <= Math.ceil($scope.totalItems / $scope.itemsPerPage)) {
