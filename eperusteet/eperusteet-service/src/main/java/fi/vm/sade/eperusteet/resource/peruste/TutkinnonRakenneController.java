@@ -20,8 +20,6 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteLaajaDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
@@ -72,13 +70,9 @@ public class TutkinnonRakenneController {
     @RequestMapping(value = "/tutkinnonosat", method = POST)
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public TutkinnonOsaViiteDto addTutkinnonOsa(@PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi, @RequestBody TutkinnonOsaViiteLaajaDto osa) {
-        if ( osa.get_tutkinnonOsa() != null ) {
-            TutkinnonOsaViiteDto dto = new TutkinnonOsaViiteDto();
-            dto.setTutkinnonOsa(new EntityReference(osa.get_tutkinnonOsa()));
-            dto.setJarjestys(osa.getJarjestys());
-            dto.setLaajuus(osa.getLaajuus());
-            return perusteService.attachTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), dto);
+    public TutkinnonOsaViiteDto addTutkinnonOsa(@PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi, @RequestBody TutkinnonOsaViiteDto osa) {
+        if ( osa.getTutkinnonOsa() != null ) {
+            return perusteService.attachTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osa);
         }
         return perusteService.addTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osa);
     }

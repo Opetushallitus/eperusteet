@@ -44,7 +44,6 @@ import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteLaajaDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
@@ -487,12 +486,18 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Override
     @Transactional
-    public TutkinnonOsaViiteDto addTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteLaajaDto osa) {
+    public TutkinnonOsaViiteDto addTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteDto osa) {
         final Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
         //workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
         em.refresh(suoritustapa, LockModeType.PESSIMISTIC_WRITE);
 
         TutkinnonOsaViite viite = mapper.map(osa, TutkinnonOsaViite.class);
+
+        if ( viite.getTutkinnonOsa() == null && osa.getTutkinnonOsaDto() != null ) {
+            viite.setTutkinnonOsa(mapper.map(osa.getTutkinnonOsaDto(), TutkinnonOsa.class));
+            viite.getTutkinnonOsa().setId(null);
+        }
+        
         if (viite.getTutkinnonOsa() == null) {
             TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
             tutkinnonOsa.setTila(PerusteTila.LUONNOS);

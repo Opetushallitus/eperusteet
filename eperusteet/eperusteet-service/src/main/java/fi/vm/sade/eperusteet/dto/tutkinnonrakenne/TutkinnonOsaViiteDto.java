@@ -16,7 +16,9 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.math.BigDecimal;
@@ -33,6 +35,9 @@ public class TutkinnonOsaViiteDto {
     private LokalisoituTekstiDto nimi;
     private Date muokattu;
     private Boolean poistettu;
+    @JsonProperty("_tutkinnonOsa")
     private EntityReference tutkinnonOsa;
     private TutkinnonOsaTyyppi tyyppi;
+    @JsonProperty("tutkinnonOsa")
+    private TutkinnonOsaDto tutkinnonOsaDto;
 }

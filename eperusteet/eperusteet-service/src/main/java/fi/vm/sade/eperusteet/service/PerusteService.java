@@ -56,7 +56,7 @@ public interface PerusteService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     TutkinnonOsaViiteDto addTutkinnonOsa(@P(value = "perusteId")
-        Long id, Suoritustapakoodi koodi, fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteLaajaDto osa);
+        Long id, Suoritustapakoodi koodi, fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto osa);
 
     PerusteDto get(final Long id);
 
