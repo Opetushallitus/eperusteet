@@ -52,6 +52,7 @@ import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.RakenneRepository;
+import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
@@ -72,10 +73,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.LockModeType;
-import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -137,8 +135,8 @@ public class PerusteServiceImpl implements PerusteService {
     @Koodisto
     private DtoMapper koodistoMapper;
 
-    @PersistenceContext
-    private EntityManager em;
+    @Autowired
+    private SuoritustapaRepository suoritustapaRepository;
 
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
@@ -438,7 +436,7 @@ public class PerusteServiceImpl implements PerusteService {
                 current = moduuli;
                 suoritustapa.setRakenne(current);
             }
-            em.persist(current);
+            rakenneRepository.save(current);
         }
 
         return mapper.map(moduuli, RakenneModuuliDto.class);
@@ -473,7 +471,7 @@ public class PerusteServiceImpl implements PerusteService {
         //varmistetaan että rakenteen muokkaus ei ole käynnissä.
         lockManager.lock(suoritustapa.getId());
         //workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
-        em.refresh(suoritustapa, LockModeType.PESSIMISTIC_WRITE);
+        suoritustapaRepository.lock(suoritustapa);
         try {
             Set<TutkinnonOsaViite> tutkinnonOsat = suoritustapa.getTutkinnonOsat();
             TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osaId);
@@ -489,15 +487,14 @@ public class PerusteServiceImpl implements PerusteService {
     public TutkinnonOsaViiteDto addTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteDto osa) {
         final Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
         //workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
-        em.refresh(suoritustapa, LockModeType.PESSIMISTIC_WRITE);
-
+        suoritustapaRepository.lock(suoritustapa);
         TutkinnonOsaViite viite = mapper.map(osa, TutkinnonOsaViite.class);
 
-        if ( viite.getTutkinnonOsa() == null && osa.getTutkinnonOsaDto() != null ) {
+        if (viite.getTutkinnonOsa() == null && osa.getTutkinnonOsaDto() != null) {
             viite.setTutkinnonOsa(mapper.map(osa.getTutkinnonOsaDto(), TutkinnonOsa.class));
             viite.getTutkinnonOsa().setId(null);
         }
-        
+
         if (viite.getTutkinnonOsa() == null) {
             TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
             tutkinnonOsa.setTila(PerusteTila.LUONNOS);
@@ -522,7 +519,7 @@ public class PerusteServiceImpl implements PerusteService {
     public TutkinnonOsaViiteDto attachTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteDto osa) {
         final Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
         //workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
-        em.refresh(suoritustapa, LockModeType.PESSIMISTIC_WRITE);
+        suoritustapaRepository.lock(suoritustapa);
         TutkinnonOsaViite viite = mapper.map(osa, TutkinnonOsaViite.class);
         viite.setSuoritustapa(suoritustapa);
         viite.setMuokattu(new Date());
@@ -545,22 +542,21 @@ public class PerusteServiceImpl implements PerusteService {
             || !viite.getTutkinnonOsa().getReference().equals(osa.getTutkinnonOsa())) {
             throw new BusinessRuleViolationException("Virheellinen viite");
         }
+        tutkinnonOsaViiteRepository.lock(viite);
         viite.setJarjestys(osa.getJarjestys());
         viite.setLaajuus(osa.getLaajuus());
         viite.setMuokattu(new Date());
-
         viite = tutkinnonOsaViiteRepository.save(viite);
         return mapper.map(viite, TutkinnonOsaViiteDto.class);
     }
 
     private Suoritustapa getSuoritustapaEntity(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
-        final Peruste peruste = perusteet.findOne(perusteid);
-        if (peruste == null) {
+        if (!perusteet.exists(perusteid)) {
             throw new BusinessRuleViolationException("Perustetta ei ole olemassa");
         }
-        final Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+        Suoritustapa suoritustapa = suoritustapaRepository.findByPerusteAndKoodi(perusteid, suoritustapakoodi);
         if (suoritustapa == null) {
-            throw new BusinessRuleViolationException("Perusteella " + peruste + " + ei ole suoritustapaa "
+            throw new BusinessRuleViolationException("Perusteella " + perusteid + " + ei ole suoritustapaa "
                 + suoritustapa);
         }
         return suoritustapa;
@@ -580,7 +576,7 @@ public class PerusteServiceImpl implements PerusteService {
         if (viite == null) {
             TekstiKappale uusiKappale = new TekstiKappale();
             uusiKappale.setTila(PerusteTila.LUONNOS);
-            em.persist(uusiKappale);
+            uusiKappale = perusteenOsaRepository.save(uusiKappale);
             uusiViite.setPerusteenOsa(uusiKappale);
         } else {
             PerusteenOsaViite viiteEntity = mapper.map(viite, PerusteenOsaViite.class);
@@ -588,11 +584,11 @@ public class PerusteServiceImpl implements PerusteService {
             uusiViite.setPerusteenOsa(viiteEntity.getPerusteenOsa());
         }
 
-        em.refresh(suoritustapa, LockModeType.PESSIMISTIC_WRITE);
+        suoritustapaRepository.lock(suoritustapa);
         final PerusteenOsaViite sisalto = suoritustapa.getSisalto();
         uusiViite.setVanhempi(sisalto);
         sisalto.getLapset().add(uusiViite);
-        em.persist(uusiViite);
+        uusiViite = perusteenOsaViiteRepo.save(uusiViite);
         return mapper.map(uusiViite, PerusteenSisaltoViiteDto.class);
     }
 
@@ -608,10 +604,10 @@ public class PerusteServiceImpl implements PerusteService {
         PerusteenOsaViite uusiViite = new PerusteenOsaViite();
         TekstiKappale uusiKappale = new TekstiKappale();
         uusiKappale.setTila(PerusteTila.LUONNOS);
-        em.persist(uusiKappale);
+        uusiKappale = perusteenOsaRepository.save(uusiKappale);
         uusiViite.setPerusteenOsa(uusiKappale);
         uusiViite.setVanhempi(viiteEntity);
-        em.persist(uusiViite);
+        uusiViite = perusteenOsaViiteRepo.save(uusiViite);
         viiteEntity.getLapset().add(uusiViite);
 
         return mapper.map(uusiViite, PerusteenSisaltoViiteDto.class);
@@ -629,7 +625,7 @@ public class PerusteServiceImpl implements PerusteService {
         PerusteenOsa kappale = perusteenOsaRepository.findOne(tekstikappaleId);
         uusiViite.setPerusteenOsa(kappale);
         uusiViite.setVanhempi(viiteEntity);
-        em.persist(uusiViite);
+        uusiViite = perusteenOsaViiteRepo.save(uusiViite);
         viiteEntity.getLapset().add(uusiViite);
 
         return mapper.map(uusiViite, PerusteenSisaltoViiteDto.class);
