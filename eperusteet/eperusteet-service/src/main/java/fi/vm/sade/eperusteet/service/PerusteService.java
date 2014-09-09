@@ -118,8 +118,10 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<TutkinnonOsaViiteDto> getTutkinnonOsat(@P("perusteId") Long perusteid, Suoritustapakoodi suoritustapakoodi);
 
+    @PreAuthorize("isAuthenticated()") //XXX ei julkinen rajapinta
     Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, PerusteTila tila, PerusteTyyppi tyyppi);
 
+    @PreAuthorize("isAuthenticated()") //XXX ei julkinen rajapinta
     Peruste luoPerusteRunkoToisestaPerusteesta(Long perusteId, PerusteTyyppi tyyppi);
 
     @PreAuthorize("permitAll()")
