@@ -39,7 +39,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.DefaultValue;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -56,17 +55,17 @@ import org.hibernate.envers.RelationTargetAuditMode;
 public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     @ValidHtml
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen tavoitteet;
 
     @ValidHtml
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen ammattitaitovaatimukset;
 
     @ValidHtml
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen ammattitaidonOsoittamistavat;
 
@@ -85,7 +84,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     @Getter
     @Setter
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "tutkinnonosa_tutkinnonosa_osaalue",
                joinColumns = @JoinColumn(name = "tutkinnonosa_id"),
                inverseJoinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"))
