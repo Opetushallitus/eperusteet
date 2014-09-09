@@ -4,15 +4,15 @@
 
 <div class="modal-body">
     <form class="form-horizontal" name="ryhmaForm">
-        <h3 ng-if="vanhempi || luonti" kaanna>perustiedot</h3>
-        <formfield ng-if="vanhempi || luonti" model="ryhma" model-var="nimi" label="nimi" type="text" required></formfield>
-        <formfield ng-if="vanhempi || luonti" model="ryhma" model-var="kuvaus" label="kuvaus" type="text"></formfield>
+        <h3 ng-if="vanhempi || luonti || leikelauta" kaanna>perustiedot</h3>
+        <formfield ng-if="vanhempi || luonti || leikelauta" model="ryhma" model-var="nimi" label="nimi" type="text" required></formfield>
+        <formfield ng-if="vanhempi || luonti || leikelauta" model="ryhma" model-var="kuvaus" label="kuvaus" type="text"></formfield>
         <formfield ng-if="luonti" model="ryhma" model-var="rooli" label="rooli" options="roolit"></formfield>
         <div class="row" ng-if="luonti">
             <div class="col-sm-offset-3 alert alert-info">
                 <span ng-show="ryhma.rooli === 'määritelty'" kaanna>ryhmä-rooli-selite-määritelty</span>
                 <span ng-show="ryhma.rooli === 'määrittelemätön'" kaanna>ryhmä-rooli-selite-määrittelemätön</span>
-            </div>           
+            </div>
         </div>
         <div ng-if="ryhma.rooli === 'määritelty' && luonti">
             <h3  kaanna>osaamisala</h3>

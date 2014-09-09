@@ -171,14 +171,15 @@ angular.module('eperusteApp')
     }
 
     function ryhmaModaali(thenCb) {
-      return function(suoritustapa, ryhma, vanhempi) {
+      return function(suoritustapa, ryhma, vanhempi, leikelauta) {
         $modal.open({
           templateUrl: 'views/modals/ryhmaModal.html',
           controller: 'MuodostumisryhmaModalCtrl',
           resolve: {
             ryhma: function() { return ryhma; },
             vanhempi: function() { return vanhempi; },
-            suoritustapa: function() { return suoritustapa; }
+            suoritustapa: function() { return suoritustapa; },
+            leikelauta: function() { return leikelauta; }
           }
         })
         .result.then(function(res) {

@@ -19,9 +19,10 @@
 
 angular.module('eperusteApp')
   .controller('MuodostumisryhmaModalCtrl', function($scope, $modalInstance, ryhma,
-    vanhempi, suoritustapa, Varmistusdialogi, YleinenData, Koodisto, Utils) {
+    vanhempi, suoritustapa, leikelauta, Varmistusdialogi, YleinenData, Koodisto, Utils) {
 
     $scope.vanhempi = vanhempi;
+    $scope.leikelauta = leikelauta;
     $scope.suoritustapa = suoritustapa;
     $scope.roolit = _.map(YleinenData.rakenneRyhmaRoolit, function(rooli) {
       return { value: rooli, label: rooli };
