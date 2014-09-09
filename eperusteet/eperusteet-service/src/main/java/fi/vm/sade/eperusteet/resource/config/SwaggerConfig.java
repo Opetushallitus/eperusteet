@@ -33,6 +33,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -41,6 +42,7 @@ import org.springframework.http.ResponseEntity;
  */
 @Configuration
 @EnableSwagger
+@Profile("default")
 public class SwaggerConfig {
 
     @Autowired
