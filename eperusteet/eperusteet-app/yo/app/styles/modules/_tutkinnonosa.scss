@@ -86,7 +86,26 @@ $pikamenu-size: 22px;
   padding-left: 15px;
   padding-right: 15px;
   margin-bottom: 20px;
-  label {
+  .btn-group {
+    display: block;
+  }
+  .fixed-group {
+    max-width: 300px;
+    overflow: hidden;
+    input {
+      float: left;
+      max-width: 100px;
+      margin-right: 15px;
+    }
+    .addon p {
+      padding-top: 7px;
+    }
+    .alert {
+      position: absolute;
+      margin-top: 35px;
+    }
+  }
+  label:not(.btn) {
     font-weight: 700;
     padding-top: 15px;
     padding-bottom: 10px;

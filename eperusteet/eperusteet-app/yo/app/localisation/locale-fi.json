@@ -39,7 +39,6 @@
     "haluatko-jatkaa": "Haluatko jatkaa?",
     "tuo-valitut": "Tuo valitut",
     "sulje": "Sulje",
-    "muokattu": "Muokattu",
 
     "ops-ja-tutkintojen-perusteet": "Opetussuunnitelmien ja tutkintojen perusteet",
 
@@ -442,7 +441,6 @@
     "ei-asetettu": "Ei asetettu",
 
     "tekstisisällön-tuonti": "Tekstisisällön tuonti",
-    "hae-perusteita": "Hae perusteita",
 
     "perusteella-ei-vielä-tutkinnonosia": "Perusteella ei ole vielä tutkinnon osia",
     "editoimasi-sisältö-on-muuttunut": "Muokkaamasi sisältö on muuttunut",
@@ -509,8 +507,6 @@
     "koulutuksen-nimi": "Koulutuksen nimi",
     "vahvista-poisto": "Vahvista poisto",
     "poistetaanko-koulutus": "Poistetaanko koulutuskoodi?",
-
-    "ok": "OK",
 
     "projekti-perustiedot": "Perustiedot",
     "projekti-projektiryhmä": "Perustetyöryhmä",
@@ -609,7 +605,6 @@
 
     "poistu-sivulta": "Poistu sivulta",
     "tallentamattomia-muutoksia": "Sinulla on tallentamattomia muutoksia. Jos poistut sivulta muutokset menetetään.",
-    "haluatko-jatkaa": "Haluatko jatkaa?",
     "vahvista-liikkuminen": "Vahvista liikkuminen",
     "leikelauta-varoitus": "Leikelaudalle on sijoitettu rakenteen osia. Jos poistut rakenteen muokkaustilasta, leikelauta tyhjennetään ja sen sisältö menetetään.",
 
@@ -630,6 +625,8 @@
     "lisatieto": "Lisätieto",
 
     "diaarinumero-kaytossa": "Diaarinumero on jo käytössä",
-    
-    "hae-osaamisala": "Hae osaamisala"
+
+    "hae-osaamisala": "Hae osaamisala",
+
+    "ohje-tutkinnonosa-tyyppi": "Valitse tutkinnon osan tyyppi"
 }

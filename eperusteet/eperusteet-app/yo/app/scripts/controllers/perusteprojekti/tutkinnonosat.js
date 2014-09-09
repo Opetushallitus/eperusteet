@@ -27,7 +27,7 @@ angular.module('eperusteApp')
   .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $state, $stateParams,
     perusteprojektiTiedot, PerusteProjektiService, PerusteenRakenne, Notifikaatiot,
     Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode, Algoritmit,
-    Preferenssit, $modal) {
+    Preferenssit) {
 
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
@@ -93,14 +93,6 @@ angular.module('eperusteApp')
       function(res) {
         $scope.tutkinnonOsat.unshift(res);
       }, Notifikaatiot.serverCb);
-    };
-
-    $scope.lisaaTutkinnonOsaDialog = function () {
-      $modal.open({
-        templateUrl: 'views/modals/lisaatutkinnonosa.html',
-      }).result.then(function (value) {
-        $scope.lisaaTutkinnonOsa(value);
-      });
     };
 
     $scope.lisaaTutkinnonOsa = function(tyyppi) {

@@ -172,6 +172,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setKoodiUri(other.getKoodiUri());
             this.setKoodiArvo(other.getKoodiArvo());
             this.setOpintoluokitus(other.getOpintoluokitus());
+            this.setTyyppi(other.getTyyppi());
             if (other.getOsaAlueet() != null) {
                 this.setOsaAlueet(mergeOsaAlueet(this.getOsaAlueet(), other.getOsaAlueet()));
             }

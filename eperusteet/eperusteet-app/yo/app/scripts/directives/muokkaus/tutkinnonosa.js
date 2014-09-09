@@ -165,12 +165,12 @@ angular.module('eperusteApp')
 
     var tutke2 = {
       fetch: function () {
-        if ($scope.tutkinnonOsa.tyyppi === 'tutke2') {
+        if ($scope.editableTutkinnonOsa.tyyppi === 'tutke2') {
           Tutke2OsaData.get().fetch();
         }
       },
       mergeOsaAlueet: function (tutkinnonOsa) {
-        if ($scope.tutkinnonOsa.tyyppi === 'tutke2') {
+        if ($scope.editableTutkinnonOsa.tyyppi === 'tutke2') {
           tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, function (osaAlue) {
             var item = {nimi: osaAlue.nimi};
             if (osaAlue.id) {
@@ -181,7 +181,7 @@ angular.module('eperusteApp')
         }
       },
       validate: function() {
-        if ($scope.tutkinnonOsa.tyyppi === 'tutke2') {
+        if ($scope.editableTutkinnonOsa.tyyppi === 'tutke2') {
           return _.all(_.map(Tutke2OsaData.get().$editing, function (item) {
             return Utils.hasLocalizedText(item.nimi);
           }));
@@ -196,9 +196,7 @@ angular.module('eperusteApp')
         tutke2.fetch();
       },
       asyncValidate: function(cb) {
-        if ($scope.tutkinnonOsaHeaderForm.$valid) {
-          lukitse(function() { cb(); });
-        }
+        lukitse(function() { cb(); });
       },
       save: function(kommentti) {
         tutke2.mergeOsaAlueet($scope.editableTutkinnonOsa);
@@ -250,7 +248,10 @@ angular.module('eperusteApp')
         $scope.editEnabled = mode;
       },
       validate: function () {
-        return tutke2.validate();
+        if (!Utils.hasLocalizedText($scope.editableTutkinnonOsa.nimi)) {
+          $scope.nimiValidationError = true;
+        }
+        return $scope.tutkinnonOsaHeaderForm.$valid && tutke2.validate();
       }
     };
 
