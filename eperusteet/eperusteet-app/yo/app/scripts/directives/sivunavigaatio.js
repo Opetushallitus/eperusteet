@@ -52,10 +52,12 @@ angular.module('eperusteApp')
         scope.refreshView = function () {
           var el = angular.element('.sivunavi-navigaatio');
           var hiddenOrCollapsed = (angular.element('.sivunavi-hidden').length > 0) || window.width() < SCREEN_MD_MAX;
+          var sisalto = angular.element('.ep-sisalto-inner');
           if (hiddenOrCollapsed) {
             el.height('auto').css('border-right', '0');
+            sisalto.hide().show(0); // Webkit bug: force redraw
           } else {
-            var sisaltoHeight = angular.element('.ep-sisalto-inner').outerHeight();
+            var sisaltoHeight = sisalto.outerHeight();
             var naviElement = angular.element('.sivunavi-box');
             var windowHeight = window.innerHeight();
             var longSisalto = sisaltoHeight > windowHeight;
