@@ -51,6 +51,9 @@ angular.module('eperusteApp')
          */
         scope.refreshView = function () {
           var el = angular.element('.sivunavi-navigaatio');
+          if (el.length === 0) {
+            return;
+          }
           var hiddenOrCollapsed = (angular.element('.sivunavi-hidden').length > 0) || window.width() < SCREEN_MD_MAX;
           var sisalto = angular.element('.ep-sisalto-inner');
           if (hiddenOrCollapsed) {

@@ -46,8 +46,7 @@
   <form name="tutkinnonOsaHeaderForm" role="form">
     <div class="non-collapsibles" ng-if="editEnabled">
       <div ng-show="isNew">
-        <label>{{'Tyyppi'|kaanna}} <span class="badge" popover="{{'ohje-tutkinnonosa-tyyppi'|kaanna}}"
-                                       popover-trigger="mouseenter" popover-placement="right">?</span></label>
+        <label>{{'Tyyppi'|kaanna}} <ohje teksti="ohje-tutkinnonosa-tyyppi"></ohje></label>
         <div class="btn-group">
           <label class="btn btn-default" ng-model="editableTutkinnonOsa.tyyppi" btn-radio="'normaali'">{{'Tutkintokohtainen'|kaanna}}</label>
           <label class="btn btn-default" ng-model="editableTutkinnonOsa.tyyppi" btn-radio="'tutke2'">{{'Yhteinen'|kaanna}}</label>
