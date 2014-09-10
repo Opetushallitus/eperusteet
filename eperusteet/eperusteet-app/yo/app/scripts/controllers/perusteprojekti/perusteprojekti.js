@@ -151,7 +151,7 @@ angular.module('eperusteApp')
       $scope.sivunavi.items = items;
     };
     PerusteProjektiSivunavi.register(sivunaviItemsChanged);
-    PerusteProjektiSivunavi.refresh();
+    PerusteProjektiSivunavi.refresh(true);
 
     $scope.$on('$stateChangeSuccess', function() {
       var newSuoritustapa = PerusteProjektiService.getSuoritustapa();
