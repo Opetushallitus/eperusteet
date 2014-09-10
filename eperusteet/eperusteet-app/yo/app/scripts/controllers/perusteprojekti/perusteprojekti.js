@@ -273,7 +273,7 @@ angular.module('eperusteApp')
         },
         {
           label: 'tutkinnon-rakenne',
-          link: ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: null}]
+          link: ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: ''}]
         },
       ];
       processNode(data.projekti.peruste.sisalto);
