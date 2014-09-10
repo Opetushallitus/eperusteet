@@ -47,6 +47,7 @@ angular.module('eperusteApp')
         };
         $scope.clear = function () {
           $scope.model = '';
+          $scope.changed();
         };
       }
     };

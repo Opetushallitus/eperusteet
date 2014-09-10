@@ -1,0 +1,24 @@
+<div ng-show="sisalto.$filtered || rajaus.length === 0">
+  <div class="sisalto-list-element" ng-class="{ 'striped': indent === 0 }" >
+    <div ng-show="muokkausTutkintokohtaisetOsat" icon-role="resize-vertical" class="draghandle" ui-tree-handle></div>
+    <div ng-show="sisalto.lapset.length > 0" ng-click="sisalto.$opened = !sisalto.$opened" class="chevron">
+      <span ng-hide="sisalto.$opened" class="glyphicon glyphicon-chevron-right"></span>
+      <span ng-show="sisalto.$opened" class="glyphicon glyphicon-chevron-down"></span>
+    </div>
+
+    <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id })" class="otsikko">
+      <h3>
+        <span ng-class="{ 'otsikko-pieni': indent !== 0 }">{{ sisalto.perusteenOsa.nimi | kaanna }}</span>
+      </h3>
+      <div ng-show="!muokkausTutkintokohtaisetOsat" class="list-element-info">
+        <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ sisalto.perusteenOsa.muokattu | aikaleima }}</div>
+      </div>
+    </a>
+  </div>
+</div>
+<div ng-show="sisalto.lapset.length === 0 || sisalto.$opened || (sisalto.$filtered && rajaus.length !== 0)">
+  <div ui-tree-nodes class="sisalto-group" ng-model="sisalto.lapset">
+    <div ui-tree-node ng-init="indent = (indent || 0) + 1" ng-repeat="sisalto in sisalto.lapset"
+         ng-include="'views/partials/perusteprojekti/sisaltosolmu.html'"></div>
+  </div>
+</div>

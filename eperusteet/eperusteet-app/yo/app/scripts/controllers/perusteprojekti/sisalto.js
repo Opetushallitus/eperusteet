@@ -15,7 +15,7 @@
  */
 
 'use strict';
-/* global _, $ */
+/* global _ */
 
 angular.module('eperusteApp')
   .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams,
@@ -122,39 +122,6 @@ angular.module('eperusteApp')
       Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) { lapsi.$opened = !open; });
     };
 
-    $scope.sortableOptions = {
-      connectWith: '.sisalto-group',
-      cursor: 'move',
-      cursorAt: {top: 2, left: 2},
-      delay: 100,
-      disabled: true,
-      handle: '.draghandle',
-      placeholder: 'list-element-placeholder',
-      tolerance: 'pointer',
-      opacity: 0.9,
-      revert: 100,
-      change: function(event) {
-        function endCondition(el) {
-          return !el || _.some(el.classList, function(c) { return c === 'sisalto'; });
-        }
-
-        function isGroup(el) {
-          return _.some(el.classList, function(c) { return c === 'sisalto-group'; });
-        }
-
-        var depth = 0;
-        var el = event.target;
-        while (depth < 50 && !endCondition(el)) {
-          if (isGroup(el)) {
-            depth += 1;
-          }
-          el = el.parentNode;
-        }
-        depth -= 1;
-        $('.list-element-placeholder').css('margin-left', depth * 40);
-      }
-    };
-
     $scope.vaihdaSuoritustapa = function(suoritustapakoodi) {
       $scope.valittuSuoritustapa = suoritustapakoodi;
       PerusteProjektiService.setSuoritustapa(suoritustapakoodi);
@@ -175,7 +142,7 @@ angular.module('eperusteApp')
     Editointikontrollit.registerCallback({
       edit: function() {
         $scope.muokkausTutkintokohtaisetOsat = true;
-        $scope.sortableOptions.disabled = false;
+        $scope.rajaus = '';
       },
       save: function() {
         function mapSisalto(sisalto) {
@@ -191,7 +158,6 @@ angular.module('eperusteApp')
         mapSisalto($scope.peruste.sisalto),
         function() {
           $scope.muokkausTutkintokohtaisetOsat = false;
-          $scope.sortableOptions.disabled = true;
           Notifikaatiot.onnistui('osien-rakenteen-päivitys-onnistui');
         }, Notifikaatiot.serverCb);
       },
