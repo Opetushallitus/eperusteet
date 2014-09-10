@@ -1,0 +1,32 @@
+$ohje-badge-size: 22px;
+.ohje {
+  margin-left: 5px;
+  font-size: 13px;
+  font-weight: normal;
+  color: rgb(51, 51, 51);
+  .badge {
+    background-color: #ccc;
+    color: white;
+    text-shadow: 1px 1px 2px #444;
+    font-size: 15px;
+    width: $ohje-badge-size;
+    height: $ohje-badge-size;
+    border-radius: $ohje-badge-size / 2;
+    padding: 3px 6px;
+    cursor: pointer;
+    &:hover {
+      background-color: #bbb;
+    }
+    &.open {
+      background-color: darken($nappi-vari, 10%);
+    }
+    &.open:hover {
+      background-color: darken($nappi-vari, 20%);
+    }
+
+  }
+  .popover-title .closer {
+    font-size: 130%;
+    cursor: pointer;
+  }
+}
