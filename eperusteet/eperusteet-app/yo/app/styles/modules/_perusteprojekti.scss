@@ -124,10 +124,6 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   border-radius: 2px;
   padding: 10px;
   max-width: 1024px;
-  .form-clear {
-    margin: 0;
-    padding: 0;
-  }
   &.koulutukset {
     margin-bottom: 10px;
   }
@@ -148,6 +144,10 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
   }
 }
 
+form[name="perusteForm"] {
+  margin-bottom: 240px;
+}
+
 .projekti-form {
   margin: 20px;
 }
@@ -159,7 +159,7 @@ $project-header-border: 1px solid rgba(6, 82, 107, 0.12);
 
 .uusi-projekti-content {
   /* Tilaa päivämäärän valitsimelle ettei se piiloudu overflown alle. */
-  margin: 0 20px 200px 0;
+  margin: 0 20px 240px 0;
 }
 
 .projekti-form-buttons {
