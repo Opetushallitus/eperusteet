@@ -17,7 +17,6 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
@@ -61,7 +60,7 @@ public class PerusteenSisaltoController {
      *
      * @param perusteId
      * @param suoritustapa
-     * @param tekstiKappale perusteenosa (valinnainen, luodaan tyhjänä jos puuttuu)
+     * @param dto perusteenosaviite (valinnainen, luodaan tyhjänä jos puuttuu)
      * @return Luodun perusteenOsaViite entityReferencen
      */
     @RequestMapping(value = "/sisalto", method = POST)
@@ -69,15 +68,15 @@ public class PerusteenSisaltoController {
     public PerusteenSisaltoViiteDto addSisalto(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa,
-        @RequestBody(required = false) final TekstiKappaleDto tekstiKappale
+        @RequestBody(required = false) final PerusteenSisaltoViiteDto dto
     ) {
         PerusteenSisaltoViiteDto viite = service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), null);
-        if (tekstiKappale != null) {
+        if (dto != null && dto.getPerusteenOsaDto() != null) {
             Long id = Long.valueOf(viite.getPerusteenOsa().getId());
             perusteenOsaService.lock(id);
             try {
-                tekstiKappale.setId(id);
-                perusteenOsaService.update(tekstiKappale);
+                dto.getPerusteenOsaDto().setId(id);
+                perusteenOsaService.update(dto.getPerusteenOsaDto());
             } finally {
                 perusteenOsaService.unlock(id);
             }

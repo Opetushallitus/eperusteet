@@ -35,12 +35,12 @@ European Union Public Licence for more details.
 
             <div style="margin-bottom: 40px" ng-hide="muokkausTutkintokohtaisetOsat || peruste.koulutustyyppi === 'koulutustyyppi_9999'">
                 <h2 ng-show="naytaTutkinnonOsat || naytaRakenne">Tutkinnon muodostuminen</h2>
-                <div ng-show="naytaTutkinnonOsat" class="list-element striped">
+                <div ng-show="naytaTutkinnonOsat" class="sisalto-list-element striped">
                   <a class="otsikko" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat">
                     <h3 kaanna>tutkinnonosat</h3>
                   </a>
                 </div>
-                <div ng-show="naytaRakenne" class="list-element striped">
+                <div ng-show="naytaRakenne" class="sisalto-list-element striped">
                   <a class="otsikko" ui-sref="root.perusteprojekti.suoritustapa.muodostumissaannot({ versio: '' })">
                     <h3 kaanna>tutkinnon-rakenne</h3>
                     <div class="list-element-info">

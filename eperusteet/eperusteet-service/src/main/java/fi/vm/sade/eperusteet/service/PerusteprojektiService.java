@@ -43,7 +43,8 @@ public interface PerusteprojektiService {
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
     PerusteprojektiDto get(final Long id);
 
-    @PreAuthorize("isAuthenticated()") //XXX
+    @PreAuthorize("isAuthenticated()")
+    //@PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")
     List<PerusteprojektiInfoDto> getBasicInfo();
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")

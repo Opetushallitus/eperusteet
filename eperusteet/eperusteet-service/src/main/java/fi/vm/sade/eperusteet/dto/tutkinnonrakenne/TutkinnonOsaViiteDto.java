@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
@@ -28,6 +29,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TutkinnonOsaViiteDto {
     private Long id;
     private BigDecimal laajuus;

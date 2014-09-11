@@ -19,7 +19,6 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
@@ -87,9 +86,6 @@ public interface PerusteService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     PerusteenSisaltoViiteDto attachSisaltoLapsi(@P("perusteId") Long perusteId, Long parentViiteId, Long tekstikappaleId);
-
-    @PreAuthorize("isAuthenticated()")
-    PerusteenOsaViite addViite(final Long parentId, final Long seuraavaViite, PerusteenOsaViite viite);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     PerusteenOsaViiteDto getSuoritustapaSisalto(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapakoodi);
