@@ -133,7 +133,8 @@ angular.module('eperusteApp')
         Notifikaatiot.onnistui('tutkinnonosa-kopioitu-onnistuneesti');
         $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
           perusteenOsanTyyppi: 'tutkinnonosa',
-          perusteenOsaId: tk._tutkinnonOsa
+          perusteenOsaId: tk._tutkinnonOsa,
+          versio: ''
         });
       });
     };

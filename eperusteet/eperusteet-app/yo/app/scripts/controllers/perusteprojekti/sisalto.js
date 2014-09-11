@@ -111,7 +111,8 @@ angular.module('eperusteApp')
         TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
         $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
           perusteenOsanTyyppi: 'tekstikappale',
-          perusteenOsaId: response._perusteenOsa
+          perusteenOsaId: response._perusteenOsa,
+          versio: ''
         });
       });
     };

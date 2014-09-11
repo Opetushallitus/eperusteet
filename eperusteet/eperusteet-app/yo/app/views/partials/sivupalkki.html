@@ -39,9 +39,6 @@ European Union Public Licence for more details.
         <div class="panel-heading" kaanna>perusteprojektit-otsikko</div>
         <div class="panel-body">
           <p ng-show="projektit.length === 0" kaanna>ei-projekteja</p>
-          <a ui-sref="root.perusteprojektiwizard.tiedot">
-            <button class="btn btn-default btn-xs" title="{{'uusi-projekti'| kaanna}}" kaanna>uusi-projekti</button>
-          </a>
           <ul class="list-unstyled projektit">
             <li class="ellipsis-no-wrap" ng-repeat="projekti in projektit| limitTo:naytto.shown" >
               <a title="{{projekti.nimi}}" href="{{ projekti.url}}">{{projekti.diaarinumero}}: {{projekti.nimi}}</a>

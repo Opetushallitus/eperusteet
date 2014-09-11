@@ -213,7 +213,8 @@ angular.module('eperusteApp')
             Notifikaatiot.onnistui('tekstikappale-kopioitu-onnistuneesti');
             $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
               perusteenOsanTyyppi: 'tekstikappale',
-              perusteenOsaId: tk.perusteenOsa.id
+              perusteenOsaId: tk.perusteenOsa.id,
+              versio: ''
             });
           });
         };
@@ -237,7 +238,8 @@ angular.module('eperusteApp')
             TutkinnonOsaEditMode.setMode(true);
             $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
               perusteenOsanTyyppi: 'tekstikappale',
-              perusteenOsaId: response._perusteenOsa
+              perusteenOsaId: response._perusteenOsa,
+              versio: ''
             });
           }, function(virhe) {
             Notifikaatiot.varoitus(virhe);
