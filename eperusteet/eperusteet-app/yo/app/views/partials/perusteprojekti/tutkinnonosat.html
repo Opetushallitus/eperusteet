@@ -65,7 +65,7 @@
     </tr>
     <tr ng-repeat="v in tutkinnonOsat | orderBy:jarjestys:jarjestysOrder | mapFilter:rajaaTutkinnonOsia">
       <td>
-        <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })" href="">{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</a>
+        <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa', versio: '' })" href="">{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</a>
       </td>
       <td ng-if="suoritustapa !== 'naytto'">
         <span ng-show="v.laajuus">{{ v.laajuus }} {{ yksikko || '' | kaanna }}</span>
@@ -77,7 +77,7 @@
   </table>
 
   <ul ng-if="preferenssit.nakymatyyli === 'palikka'" class="tutkinnonosat">
-    <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })"
+    <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa', versio: '' })"
         class="tutkinnonosa-laatikko list-group-item" ng-repeat="v in tutkinnonOsat | orderBy:jarjestys:jarjestysOrder | mapFilter:rajaaTutkinnonOsia">
       <div ng-hide="editoi" class="muokkaus" icon-role="forward"></div>
       <div class="otsikko">
