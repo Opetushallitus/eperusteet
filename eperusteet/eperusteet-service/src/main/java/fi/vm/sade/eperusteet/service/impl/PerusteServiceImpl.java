@@ -263,27 +263,6 @@ public class PerusteServiceImpl implements PerusteService {
     }
 
     @Override
-    @Transactional
-    public PerusteenOsaViite addViite(final Long parentId, final Long seuraavaViite, PerusteenOsaViite viite) {
-        throw new RuntimeException("not implemented yet!");
-//        PerusteenOsaViite v = viitteet.findOne(parentId);
-//        viite.setVanhempi(v);
-//        int i = 0;
-//        if (seuraavaViite != null) {
-//            for (PerusteenOsaViite o : v.getLapset()) {
-//                if (o.getId().equals(seuraavaViite)) {
-//                   break;
-//                }
-//                i++;
-//            }
-//        } else {
-//            v.getLapset().size();
-//        }
-//        v.getLapset().add(i, viite);
-//        return viitteet.save(viite);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public PerusteenOsaViiteDto getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi) {
         PerusteenOsaViite entity = perusteet.findSisaltoByIdAndSuoritustapakoodi(perusteId, suoritustapakoodi);

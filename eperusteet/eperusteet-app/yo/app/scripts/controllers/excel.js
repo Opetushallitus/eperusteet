@@ -110,12 +110,13 @@ angular.module('eperusteApp')
       _.forEach(filtered, function(tk) {
         tk.tila = 'luonnos';
         tk.osanTyyppi = 'tekstiosa';
+        var viite = { perusteenOsa: tk };
         SuoritustapaSisalto.save({
           perusteId: $scope.haettuPeruste.id,
           suoritustapa: $scope.suoritustapa || $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi
-        }, _.clone(tk), function(re) {
+        }, viite, function(re) {
           tk.$ladattu = true;
-          tk.id = re.id;
+          tk.id = re._perusteenOsa;
           doneSuccess();
         }, function(err) {
           tk.$syy = err.data.syy;
