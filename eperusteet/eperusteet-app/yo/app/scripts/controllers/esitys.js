@@ -123,6 +123,9 @@ angular.module('eperusteApp')
       });
       return flattened;
     }
+    $scope.kaanna = function (val) {
+      return Kaanna.kaanna(val);
+    };
 
     $scope.peruste = peruste;
     $scope.sisalto = mapSisalto(sisalto);
