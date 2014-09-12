@@ -564,3 +564,15 @@ $sp-badge-size: 16px;
 #osaamisala-varoitus {
   position: absolute;
 }
+
+// hack for IE10+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .tree .kuvaus {
+    margin-top: -5px;
+  }
+}
+
+// hack for <IE10
+.lt-ie10 .tree .kuvaus {
+  margin-top: -5px;
+}
