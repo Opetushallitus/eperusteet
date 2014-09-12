@@ -69,6 +69,9 @@ angular.module('eperusteApp')
     };
 
     PerusteProjektit.hae({}, function(res) {
+      angular.forEach(res, function(projekti) {
+        projekti.suoritustapa = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
+      });
       $scope.perusteprojektit = res;
     });
 
