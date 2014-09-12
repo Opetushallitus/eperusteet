@@ -1,6 +1,7 @@
 <div>
   <h2 kaanna>tuo-excel</h2>
-  <div ng-show="alussa || errors.length !== 0" class="panel panel-default">
+  <p ng-show="!supportsFileReader" kaanna>Ominaisuus ei ole tuettu käyttämälläsi selaimella.</p>
+  <div ng-show="supportsFileReader && alussa || errors.length !== 0" class="panel panel-default">
     <div class="clearfix"></div>
     <form class="panel-body">
       <div class="clearfix"></div>

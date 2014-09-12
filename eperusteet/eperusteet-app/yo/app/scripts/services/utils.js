@@ -40,6 +40,10 @@ angular.module('eperusteApp')
       });
       return hasContent;
     };
+
+    this.supportsFileReader = function () {
+      return !_.isUndefined($window.FormData);
+    };
   })
 
   /* Shows "back to top" link when scrolled beyond cutoff point */

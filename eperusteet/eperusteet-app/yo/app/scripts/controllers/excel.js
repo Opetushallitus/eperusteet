@@ -28,7 +28,7 @@ angular.module('eperusteApp')
   })
   .controller('ExcelCtrl', function($scope, ExcelService, PerusteenOsat, TutkinnonOsanValidointi,
     Koodisto, PerusteprojektiResource, PerusteTutkinnonosat,
-    SuoritustapaSisalto, Perusteet, Notifikaatiot, YleinenData) {
+    SuoritustapaSisalto, Perusteet, Notifikaatiot, YleinenData, Utils) {
     $scope.alussa = true;
     $scope.filename = '';
     $scope.naytaVirheet = false;
@@ -43,6 +43,8 @@ angular.module('eperusteApp')
     $scope.yksikot = YleinenData.yksikot;
     $scope.suoritustavat = YleinenData.suoritustavat;
     $scope.suoritustapa = 'naytto';
+
+    $scope.supportsFileReader = Utils.supportsFileReader();
 
     $scope.clearSelect = function() {
       $scope.parsinnanTila = [];
