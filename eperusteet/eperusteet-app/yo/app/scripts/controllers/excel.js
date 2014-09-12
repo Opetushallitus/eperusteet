@@ -109,7 +109,7 @@ angular.module('eperusteApp')
 
       _.forEach(filtered, function(tk) {
         tk.tila = 'luonnos';
-        tk.osanTyyppi = 'tekstiosa';
+        tk.osanTyyppi = 'tekstikappale';
         var viite = { perusteenOsa: tk };
         SuoritustapaSisalto.save({
           perusteId: $scope.haettuPeruste.id,

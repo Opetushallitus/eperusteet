@@ -14,7 +14,7 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.dto.peruste;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
@@ -28,7 +28,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@JsonTypeName("tekstiosa")
-public class TekstiKappaleDto extends PerusteenOsaDto {
+@JsonTypeName("tekstikappale")
+public class TekstiKappaleDto extends PerusteenOsaDto.Laaja {
     private LokalisoituTekstiDto teksti;
 }

@@ -118,9 +118,7 @@ public class KommenttiController {
     }
 
     @RequestMapping(value = "/{id}", method = DELETE)
-    @ResponseBody
-    public ResponseEntity delete(@PathVariable("id") final long id) {
+    public void delete(@PathVariable("id") final long id) {
         service.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

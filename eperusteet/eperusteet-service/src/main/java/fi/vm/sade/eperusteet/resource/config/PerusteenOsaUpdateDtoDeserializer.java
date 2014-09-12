@@ -42,7 +42,7 @@ public class PerusteenOsaUpdateDtoDeserializer extends StdDeserializer<Perusteen
         if (tree.get("metadata") != null) {
             dto.setMetadata(codec.treeToValue(tree.get("metadata"), UpdateDto.MetaData.class));
         }
-        dto.setDto(codec.treeToValue(((ObjectNode)tree).without("metadata"), PerusteenOsaDto.class));
+        dto.setDto(codec.treeToValue(((ObjectNode)tree).without("metadata"), PerusteenOsaDto.Laaja.class));
         return dto;
     }
 

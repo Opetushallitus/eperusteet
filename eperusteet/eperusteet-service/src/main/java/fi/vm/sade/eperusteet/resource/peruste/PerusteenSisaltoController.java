@@ -29,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -94,11 +95,11 @@ public class PerusteenSisaltoController {
 
 //    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{perusteenosaViiteId}/kloonaa", method = POST)
 //    @ResponseBody
-//    public PerusteenOsaViiteDto kloonaa(
+//    public Laaja kloonaa(
 //            @PathVariable("perusteId") final Long perusteId,
 //            @PathVariable("suoritustapa") final String suoritustapa,
 //            @PathVariable("perusteenosaViiteId") final Long id) {
-//        PerusteenOsaViiteDto re = PerusteenOsaViiteService.kloonaa(perusteId, suoritustapa, id);
+//        Laaja re = PerusteenOsaViiteService.kloonaa(perusteId, suoritustapa, id);
 //        return re;
 //    }
     @RequestMapping(value = "/sisalto/{perusteenosaViiteId}/lapsi", method = POST)
@@ -119,15 +120,15 @@ public class PerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/sisalto", method = GET)
-    public ResponseEntity<PerusteenOsaViiteDto> getSuoritustapaSisalto(
+    public ResponseEntity<PerusteenOsaViiteDto.Suppea> getSuoritustapaSisalto(
+        @RequestParam(value = "muoto", required = false, defaultValue = "suppea") String view,
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapakoodi) {
 
-        PerusteenOsaViiteDto dto = service.getSuoritustapaSisalto(perusteId, Suoritustapakoodi.of(suoritustapakoodi));
+        PerusteenOsaViiteDto.Suppea dto = service.getSuoritustapaSisalto(perusteId, Suoritustapakoodi.of(suoritustapakoodi), PerusteenOsaViiteDto.Suppea.class);
         if (dto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
@@ -140,12 +141,12 @@ public class PerusteenSisaltoController {
     @RequestMapping(value = "/sisalto/{id}", method = POST)
     public void updateSisaltoViite(
         @PathVariable("id") final Long id,
-        @RequestBody final PerusteenOsaViiteDto pov) {
+        @RequestBody final fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja pov) {
         perusteenOsaViiteService.update(id, pov);
     }
 
     @RequestMapping(value = "/sisalto/{id}/muokattavakopio", method = POST, params = PerusteenOsaMappings.IS_TEKSTIKAPPALE_PARAM)
-    public PerusteenOsaViiteDto kloonaaTekstiKappale(
+    public fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
         return perusteenOsaViiteService.kloonaaTekstiKappale(id);

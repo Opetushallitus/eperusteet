@@ -386,7 +386,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
         // only distinct TutkinnonOsa
         Set<Suoritustapa> suoritustavat = peruste.getSuoritustavat();
-        Set<TutkinnonOsa> osat = new HashSet();
+        Set<TutkinnonOsa> osat = new HashSet<>();
         for (Suoritustapa suoritustapa : suoritustavat) {
             for (TutkinnonOsaViite viite : suoritustapa.getTutkinnonOsat()) {
                 osat.add(viite.getTutkinnonOsa());

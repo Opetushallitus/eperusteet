@@ -32,20 +32,20 @@ public interface PerusteenOsaViiteService {
     void removeSisalto(Long id);
 
     @PreAuthorize("isAuthenticated()")
-    public PerusteenOsaViiteDto getVersio(Long id, Integer versioId);
+    public PerusteenOsaViiteDto.Laaja getVersio(Long id, Integer versioId);
 
     @PreAuthorize("isAuthenticated()")
-    public PerusteenOsaViiteDto revertToVersio(Long id, Integer versioId);
+    public PerusteenOsaViiteDto.Laaja revertToVersio(Long id, Integer versioId);
 
     @PreAuthorize("isAuthenticated()")
     List<Revision> getVersiot(Long id);
 
     @PreAuthorize("isAuthenticated()")
-    PerusteenOsaViiteDto kloonaaTekstiKappale(Long id);
+    PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(Long id);
 
     @PreAuthorize("isAuthenticated()")
     TutkinnonOsaViiteDto kloonaaTutkinnonOsa(Long id);
 
     @PreAuthorize("isAuthenticated()")
-    void update(Long id, PerusteenOsaViiteDto uusi);
+    void update(Long id, PerusteenOsaViiteDto.Puu<?> uusi);
 }

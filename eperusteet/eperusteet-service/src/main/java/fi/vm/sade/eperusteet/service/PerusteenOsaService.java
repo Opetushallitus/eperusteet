@@ -16,11 +16,9 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.dto.LukkoDto;
-
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteLaajaDto;
-
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import java.util.List;
@@ -36,23 +34,23 @@ public interface PerusteenOsaService {
 
     //yleiset haut sallittu kaikille -- palauttaa vain julkaistuja osia
     @PreAuthorize("permitAll()")
-    List<PerusteenOsaDto> getAllByKoodiUri(final String koodiUri);
+    List<PerusteenOsaDto.Laaja> getAllByKoodiUri(final String koodiUri);
 
     @PreAuthorize("permitAll()")
-    List<PerusteenOsaDto> getAll();
+    List<PerusteenOsaDto.Suppea> getAll();
 
     @PreAuthorize("permitAll()")
-    List<PerusteenOsaDto> getAllWithName(final String name);
+    List<PerusteenOsaDto.Suppea> getAllWithName(final String name);
 
     @PreAuthorize("hasPermission(#po.dto.id, 'perusteenosa', 'MUOKKAUS')")
-    <T extends PerusteenOsaDto> T update(@P("po") UpdateDto<T> perusteenOsaDto);
+    <T extends PerusteenOsaDto.Laaja> T update(@P("po") UpdateDto<T> perusteenOsaDto);
 
     @PreAuthorize("hasPermission(#po.id, 'perusteenosa', 'MUOKKAUS')")
-    <T extends PerusteenOsaDto> T update(@P("po") T perusteenOsaDto);
+    <T extends PerusteenOsaDto.Laaja> T update(@P("po") T perusteenOsaDto);
 
     @PreAuthorize("isAuthenticated()")
     @PostAuthorize("hasPermission(returnObject.id, 'perusteenosa', 'MUOKKAUS')")
-    <T extends PerusteenOsaDto> T add(T perusteenOsaDto);
+    <T extends PerusteenOsaDto.Laaja> T add(T perusteenOsaDto);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'POISTO')")
     void delete(final Long id);
@@ -61,17 +59,17 @@ public interface PerusteenOsaService {
     Integer getLatestRevision(final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
-    PerusteenOsaDto revertToVersio(@P("id") Long id, Integer versioId);
+    PerusteenOsaDto.Laaja revertToVersio(@P("id") Long id, Integer versioId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
-    PerusteenOsaDto get(@P("id") final Long id);
+    PerusteenOsaDto.Laaja get(@P("id") final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
     List<Revision> getVersiot(Long id);
 
     //TODO: versiotietojen lukuoikeus?
     @PreAuthorize("returnObject?.tila == T(fi.vm.sade.eperusteet.domain.PerusteTila).VALMIS or hasPermission(#id, 'perusteenosa', 'LUKU')")
-    PerusteenOsaDto getVersio(@P("id") final Long id, final Integer versioId);
+    PerusteenOsaDto.Laaja getVersio(@P("id") final Long id, final Integer versioId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
     LukkoDto lock(@P("id") final Long id);

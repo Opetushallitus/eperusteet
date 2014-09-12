@@ -22,10 +22,10 @@ import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.ArviointiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
@@ -91,13 +91,12 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         tutkinnonOsa.setTila(PerusteTila.LUONNOS);
         tutkinnonOsa.setArviointi(TestUtils.createArviointi(arviointiasteikko));
         tutkinnonOsa = (TutkinnonOsa) perusteenOsaRepository.saveAndFlush(tutkinnonOsa);
-        List<PerusteenOsaDto> perusteenOsat = perusteenOsaService.getAll();
+        PerusteenOsaDto.Laaja dto = perusteenOsaService.get(tutkinnonOsa.getId());
 
-        Assert.assertNotNull(perusteenOsat);
-        Assert.assertEquals(1, perusteenOsat.size());
-
-        Assert.assertTrue(TutkinnonOsaDto.class.isInstance(perusteenOsat.get(0)));
-        TutkinnonOsaDto to = (TutkinnonOsaDto) perusteenOsat.get(0);
+        Assert.assertNotNull(dto);
+        
+        Assert.assertTrue(TutkinnonOsaDto.class.isInstance(dto));
+        TutkinnonOsaDto to = (TutkinnonOsaDto) dto;
         to.getArviointi();
         Assert.assertNotNull(tutkinnonOsa.getArviointi());
     }

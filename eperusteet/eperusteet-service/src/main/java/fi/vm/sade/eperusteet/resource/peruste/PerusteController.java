@@ -96,7 +96,7 @@ public class PerusteController {
     @ResponseBody
     public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(@PathVariable("perusteId") final long id) {
         PerusteKaikkiDto kokoSisalto = service.getKokoSisalto(id);
-        return new ResponseEntity(kokoSisalto, HttpStatus.OK);
+        return new ResponseEntity<>(kokoSisalto, HttpStatus.OK);
     }
 
 
@@ -130,7 +130,7 @@ public class PerusteController {
         @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
         @RequestHeader(value = "If-None-Match", required = false) Integer eTag, HttpServletResponse response) {
         LukkoDto lock = service.getLock(id, Suoritustapakoodi.of(suoritustapakoodi));
-        return new ResponseEntity(lock, HttpStatus.OK);
+        return new ResponseEntity<>(lock, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}/lukko", method = {POST, PUT})

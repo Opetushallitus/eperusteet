@@ -27,6 +27,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import javax.persistence.FetchType;
 
 /**
  *
@@ -38,7 +39,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 public class TekstiKappale extends PerusteenOsa implements Serializable {
 
     @ValidHtml
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen teksti;
 

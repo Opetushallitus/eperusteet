@@ -36,6 +36,6 @@ public class PerusteenSisaltoViiteDto {
     @JsonProperty("_perusteenOsa")
     private EntityReference perusteenOsa;
     @JsonProperty("perusteenOsa")
-    private PerusteenOsaDto perusteenOsaDto;
+    private PerusteenOsaDto.Laaja perusteenOsaDto;
     private List<EntityReference> lapset;
 }
