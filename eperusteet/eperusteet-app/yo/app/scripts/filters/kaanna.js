@@ -36,11 +36,17 @@ angular.module('eperusteApp')
     };
   })
   .directive('kaanna', function(Kaanna) {
+    function getAttr(attr, scope) {
+      if (!_.isString(attr) || _.size(attr) === 0) {
+        return;
+      }
+      return scope.$eval(attr) || attr;
+    }
     return {
       restrict: 'A',
       link: function(scope, el, attrs) {
         var translated = '';
-        var original = el.text();
+        var original = getAttr(attrs.kaanna, scope) || el.text();
         if (attrs.kaannaValues) {
           translated = Kaanna.kaanna(original, scope.$eval(attrs.kaannaValues));
         } else {
