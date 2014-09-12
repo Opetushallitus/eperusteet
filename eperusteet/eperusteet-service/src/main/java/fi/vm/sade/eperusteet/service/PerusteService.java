@@ -91,7 +91,7 @@ public interface PerusteService {
     PerusteenOsaViiteDto.Laaja getSuoritustapaSisalto(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapakoodi);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    <T extends PerusteenOsaViiteDto<?,?>> T getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, Class<T> view);
+    <T extends PerusteenOsaViiteDto<?>> T getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, Class<T> view);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     SuoritustapaDto getSuoritustapa(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapakoodi);

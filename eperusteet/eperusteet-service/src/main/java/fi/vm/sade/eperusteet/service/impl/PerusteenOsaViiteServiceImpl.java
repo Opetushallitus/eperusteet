@@ -150,7 +150,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
 
     @Override
     @Transactional
-    public void update(Long id, PerusteenOsaViiteDto.Puu<?> uusi) {
+    public void update(Long id, PerusteenOsaViiteDto<?> uusi) {
         PerusteenOsaViite viite = repository.getOne(id);
         clearChildren(viite);
         PerusteenOsaViite parent = viite.getVanhempi();
@@ -165,14 +165,14 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         pov.getLapset().clear();
     }
 
-    private PerusteenOsaViite updateTraverse(PerusteenOsaViite parent, PerusteenOsaViiteDto.Puu<?> uusi) {
+    private PerusteenOsaViite updateTraverse(PerusteenOsaViite parent, PerusteenOsaViiteDto<?> uusi) {
         PerusteenOsaViite pov = repository.getOne(uusi.getId());
         pov.setVanhempi(parent);
 
         List<PerusteenOsaViite> lapset = pov.getLapset();
         lapset.clear();
 
-        for (PerusteenOsaViiteDto.Puu<?> x : uusi.getLapset()) {
+        for (PerusteenOsaViiteDto<?> x : uusi.getLapset()) {
             lapset.add(updateTraverse(pov, x));
         }
         return repository.save(pov);
