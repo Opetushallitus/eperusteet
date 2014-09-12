@@ -28,15 +28,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(Include.NON_NULL)
-public class PerusteenOsaViiteDto<R extends PerusteenOsaDto> {
+public class PerusteenOsaViiteDto<R extends PerusteenOsaDto, L extends PerusteenOsaViiteDto<R,L>> {
 
     private Long id;
     private R perusteenOsa;
-    private List<? extends PerusteenOsaViiteDto<R>> lapset;
+    private List<L> lapset;
 
-    public static class Laaja extends PerusteenOsaViiteDto<PerusteenOsaDto.Laaja> {
+    public static class Laaja extends PerusteenOsaViiteDto<PerusteenOsaDto.Laaja, Laaja> {
     }
 
-    public static class Suppea extends PerusteenOsaViiteDto<PerusteenOsaDto.Suppea> {
+    public static class Suppea extends PerusteenOsaViiteDto<PerusteenOsaDto.Suppea, Suppea> {
     }
 }
