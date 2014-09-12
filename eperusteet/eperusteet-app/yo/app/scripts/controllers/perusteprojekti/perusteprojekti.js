@@ -194,7 +194,7 @@ angular.module('eperusteApp')
     $scope.$on('update:perusteprojekti', function () {
       perusteprojektiTiedot.alustaProjektinTiedot($stateParams).then(function () {
         init();
-        PerusteProjektiSivunavi.refresh();
+        PerusteProjektiSivunavi.refresh(true);
       });
     });
 

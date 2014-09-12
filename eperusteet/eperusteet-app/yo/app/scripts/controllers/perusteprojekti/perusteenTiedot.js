@@ -122,6 +122,7 @@ angular.module('eperusteApp')
       Perusteet.save({perusteId: $scope.peruste.id}, $scope.editablePeruste, function(vastaus) {
         $scope.peruste = vastaus;
         PerusteProjektiService.update();
+        Notifikaatiot.onnistui('tallennettu');
       }, function() {
         Notifikaatiot.fataali('tallentaminen-epäonnistui');
       });
