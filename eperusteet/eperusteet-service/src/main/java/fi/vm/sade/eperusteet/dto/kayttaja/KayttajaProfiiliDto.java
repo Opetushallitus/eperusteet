@@ -31,5 +31,4 @@ public class KayttajaProfiiliDto {
     private long id;
     private String oid;
     private List<SuosikkiDto> suosikit;
-    private List<PerusteprojektiDto> perusteprojektit;
 }

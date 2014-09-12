@@ -31,6 +31,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
@@ -83,6 +84,10 @@ public class DtoMapperConfig {
         factory.classMap(PerusteprojektiDto.class, Perusteprojekti.class)
             .byDefault()
             .register();
+        factory.classMap(PerusteprojektiInfoDto.class, Perusteprojekti.class)
+                .fieldBToA("peruste.koulutustyyppi", "koulutustyyppi")
+                .byDefault()
+                .register();
         factory.classMap(AbstractRakenneOsaDto.class, AbstractRakenneOsa.class)
             .byDefault()
             .register();

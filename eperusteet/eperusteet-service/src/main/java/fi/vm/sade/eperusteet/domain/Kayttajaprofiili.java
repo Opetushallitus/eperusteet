@@ -23,9 +23,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
@@ -56,15 +53,6 @@ public class Kayttajaprofiili implements Serializable {
     @Getter
     @Setter
     private List<Suosikki> suosikit;
-
-    @ManyToMany
-    @OrderColumn(name = "projekti_order")
-    @JoinTable(name = "kayttajaprofiili_perusteprojekti",
-            joinColumns = @JoinColumn(name = "kayttajaprofiili_id"),
-            inverseJoinColumns = @JoinColumn(name = "perusteprojekti_id"))
-    @Getter
-    @Setter
-    private List<Perusteprojekti> perusteprojektit;
 
     public Kayttajaprofiili() {
     }
