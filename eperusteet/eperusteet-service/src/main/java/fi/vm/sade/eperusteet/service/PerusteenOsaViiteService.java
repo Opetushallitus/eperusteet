@@ -47,5 +47,5 @@ public interface PerusteenOsaViiteService {
     TutkinnonOsaViiteDto kloonaaTutkinnonOsa(Long id);
 
     @PreAuthorize("isAuthenticated()")
-    void update(Long id, PerusteenOsaViiteDto.Puu<?> uusi);
+    void update(Long id, PerusteenOsaViiteDto<?,?> uusi);
 }

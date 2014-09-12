@@ -15,7 +15,8 @@
  */
 package fi.vm.sade.eperusteet.dto.peruste;
 
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,21 +27,16 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class PerusteenOsaViiteDto<R extends PerusteenOsaDto, C> {
+@JsonInclude(Include.NON_NULL)
+public class PerusteenOsaViiteDto<R extends PerusteenOsaDto, L extends PerusteenOsaViiteDto<R,L>> {
 
     private Long id;
     private R perusteenOsa;
-    private List<C> lapset;
+    private List<L> lapset;
 
-    public static class Puu<T extends PerusteenOsaDto> extends PerusteenOsaViiteDto<T, Puu<T>> {
+    public static class Laaja extends PerusteenOsaViiteDto<PerusteenOsaDto.Laaja, Laaja> {
     }
 
-    public static class Laaja extends Puu<PerusteenOsaDto.Laaja> {
-    }
-
-    public static class Suppea extends Puu<PerusteenOsaDto.Suppea> {
-    }
-
-    public static class Matala extends PerusteenOsaViiteDto<PerusteenOsaDto.Laaja, EntityReference> {
+    public static class Suppea extends PerusteenOsaViiteDto<PerusteenOsaDto.Suppea, Suppea> {
     }
 }
