@@ -92,6 +92,14 @@ angular.module('eperusteApp')
     this.dateFormatDatepicker = 'd.M.yyyy';
     this.dateFormatMomentJS = 'D.M.YYYY';
 
+    this.valitseSuoritustapaKoulutustyypille = function(koulutustyyppi) {
+      if (koulutustyyppi === 'koulutustyyppi_9999') {
+        return 'ops';
+      } else {
+        return 'naytto';
+      }
+    };
+
     this.haeArviointiasteikot = function() {
       if (this.arviointiasteikot === undefined) {
         var self = this;

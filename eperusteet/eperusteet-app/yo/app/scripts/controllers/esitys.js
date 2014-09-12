@@ -98,10 +98,9 @@ angular.module('eperusteApp')
     }
     Lokalisointi.valitseKieli($stateParams.lang);
   })
-  .controller('EsitysCtrl', function($q, $scope, $stateParams, sisalto, peruste,
-      Kayttajaprofiilit, Suosikit, YleinenData, Navigaatiopolku, $state, virheService,
-      Algoritmit, PerusteenRakenne, tutkinnonOsat, Kaanna, arviointiasteikot, Profiili,
-      PdfCreation) {
+  .controller('EsitysCtrl', function($scope, $stateParams, sisalto, peruste,
+      YleinenData, $state, Algoritmit, tutkinnonOsat, Kaanna, arviointiasteikot,
+      Profiili, PdfCreation) {
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
     $scope.navi = {
       items: [

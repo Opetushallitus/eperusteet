@@ -81,9 +81,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     private PerusteprojektiRepository repository;
 
     @Autowired
-    private KayttajaprofiiliService kayttajaprofiiliService;
-
-    @Autowired
     private PerusteService perusteService;
 
     @Autowired
@@ -96,6 +93,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional(readOnly = true)
     public List<PerusteprojektiInfoDto> getBasicInfo() {
         return mapper.mapAsList(repository.findAll(), PerusteprojektiInfoDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PerusteprojektiInfoDto> getOmatProjektit() {
+        return mapper.mapAsList(repository.findAllKeskeneraiset(), PerusteprojektiInfoDto.class);
     }
 
     @Override
@@ -191,7 +194,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         perusteprojekti.setPeruste(peruste);
         perusteprojekti = repository.save(perusteprojekti);
-        kayttajaprofiiliService.addPerusteprojekti(perusteprojekti.getId());
 
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
     }
@@ -380,5 +382,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         });
     }
+
+
 
 }

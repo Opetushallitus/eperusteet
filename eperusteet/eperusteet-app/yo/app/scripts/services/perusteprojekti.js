@@ -30,6 +30,9 @@ angular.module('eperusteApp')
       id: '@id'
     });
   })
+  .factory('OmatPerusteprojektit', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteprojektit/omat');
+  })
   .factory('PerusteprojektiResource', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteprojektit/:id', {
       id: '@id'

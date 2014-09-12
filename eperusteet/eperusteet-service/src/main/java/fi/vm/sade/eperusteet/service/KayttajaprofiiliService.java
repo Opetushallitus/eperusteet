@@ -28,8 +28,6 @@ public interface KayttajaprofiiliService {
     @PreAuthorize("isAuthenticated()")
     KayttajaProfiiliDto get();
 
-    //KayttajaProfiiliDto addSuosikki(final Long perusteId);
-
     @PreAuthorize("isAuthenticated()")
     KayttajaProfiiliDto addSuosikki(final SuosikkiDto suosikkiDto);
 
@@ -38,7 +36,4 @@ public interface KayttajaprofiiliService {
 
     @PreAuthorize("isAuthenticated()")
     KayttajaProfiiliDto updateSuosikki(Long suosikkiId, SuosikkiDto suosikkiDto) throws IllegalArgumentException;
-
-    @PreAuthorize("isAuthenticated()")
-    KayttajaProfiiliDto addPerusteprojekti(final Long perusteprojektiId);
 }

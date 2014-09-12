@@ -124,28 +124,4 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
 
         return mapper.map(kayttajaprofiili, KayttajaProfiiliDto.class);
     }
-
-    @Override
-    @Transactional
-    @PreAuthorize("isAuthenticated()")
-    public KayttajaProfiiliDto addPerusteprojekti(final Long perusteprojektiId) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String oid = auth.getName();
-        Kayttajaprofiili kayttajaprofiili = kayttajaprofiiliRepo.findOneEager(oid);
-        Perusteprojekti perusteprojekti = perusteprojektiRepo.findOne(perusteprojektiId);
-
-        if (kayttajaprofiili == null) {
-            kayttajaprofiili = new Kayttajaprofiili();
-            kayttajaprofiili.setOid(oid);
-            kayttajaprofiili.setSuosikit(new ArrayList<Suosikki>());
-            kayttajaprofiili.setPerusteprojektit(new ArrayList<Perusteprojekti>());
-            kayttajaprofiili = kayttajaprofiiliRepo.save(kayttajaprofiili);
-        }
-
-        if (!kayttajaprofiili.getPerusteprojektit().contains(perusteprojekti)) {
-            kayttajaprofiili.getPerusteprojektit().add(perusteprojekti);
-        }
-
-        return mapper.map(kayttajaprofiili, KayttajaProfiiliDto.class);
-    }
 }

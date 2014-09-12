@@ -62,6 +62,12 @@ public class PerusteprojektiController {
         return new ResponseEntity<>(service.getBasicInfo(), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/omat", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<PerusteprojektiInfoDto>> getOmat() {
+        return new ResponseEntity<>(service.getOmatProjektit(), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
     public ResponseEntity<PerusteprojektiDto> get(@PathVariable("id") final long id) {

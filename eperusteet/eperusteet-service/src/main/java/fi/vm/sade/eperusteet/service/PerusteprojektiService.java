@@ -17,15 +17,16 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
-import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import java.util.List;
 import java.util.Set;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -61,4 +62,8 @@ public interface PerusteprojektiService {
 
     @PreAuthorize("isAuthenticated()")
     void onkoDiaarinumeroKaytossa(String diaarinumero);
+
+    @PreAuthorize("isAuthenticated()")
+    @PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")
+    List<PerusteprojektiInfoDto> getOmatProjektit();
 }

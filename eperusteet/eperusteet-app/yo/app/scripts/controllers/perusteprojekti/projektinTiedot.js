@@ -61,7 +61,8 @@ angular.module('eperusteApp')
     $scope.peruuta = function() { $modalInstance.dismiss(); };
   })
   .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams, $modal, $timeout,
-    PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, perusteprojektiTiedot, Notifikaatiot, Perusteet, Editointikontrollit) {
+    PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, perusteprojektiTiedot,
+    Notifikaatiot, Perusteet, Editointikontrollit, YleinenData) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
     $scope.editEnabled = false;
@@ -154,10 +155,9 @@ angular.module('eperusteApp')
         });
       }
 
-      var suoritustapa = projekti.koulutustyyppi === 'koulutustyyppi_9999' ? 'ops' : 'naytto';
+      var suoritustapa = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
 
       PerusteprojektiResource.update(projekti, function(vastaus) {
-        console.log('perusteprojekti update', vastaus);
         $scope.puhdistaValinta();
         if ($scope.wizardissa()) {
           avaaProjektinSisalto(vastaus.id, suoritustapa);
