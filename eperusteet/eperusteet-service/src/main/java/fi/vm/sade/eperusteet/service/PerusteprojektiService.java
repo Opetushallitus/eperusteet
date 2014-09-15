@@ -68,21 +68,21 @@ public interface PerusteprojektiService {
     @PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")
     List<PerusteprojektiInfoDto> getOmatProjektit();
 
-    List<TyoryhmaDto> getTyoryhmat(Long perusteProjektiId);
-
-    List<TyoryhmaDto> getTyoryhmat(Long perusteProjektiId, String tyoryhmaOid);
-
-    TyoryhmaDto saveTyoryhma(Long id, TyoryhmaDto tyoryhma);
-
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
     List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(Long perusteProjektiId);
 
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
     List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(Long perusteProjektiId, String nimi);
 
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
     List<TyoryhmaHenkiloDto> saveTyoryhma(Long perusteProjektiId, String tyoryhma, List<TyoryhmaHenkiloDto> henkilot);
 
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
     TyoryhmaHenkiloDto saveTyoryhma(Long id, TyoryhmaHenkiloDto tyoryhma);
 
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
     void removeTyoryhma(Long trId);
 
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
     void removeTyoryhma(Long perusteProjektiId, String nimi);
 }
