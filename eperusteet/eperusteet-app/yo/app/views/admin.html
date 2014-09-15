@@ -1,13 +1,13 @@
 <div class="admin">
     <div>
-        <h1 kaanna>hallintapaneeli</h1>
+        <h1 kaanna="hallintapaneeli"></h1>
     </div>
     <div>
-        <h2 kaanna>perusteprojektit</h2>
+        <h2 kaanna="perusteprojektit"></h2>
         <div class="hallintapainikkeet">
-            <a ui-sref="root.excel" kaanna>Tuo Excel-tiedostosta...</a>
-            <button ui-sref="root.perusteprojektiwizard.tiedot" class="btn" icon-role="plus" kaanna>uusi-perusteprojekti</button>
-            <button ui-sref="root.perusteprojektiwizard.pohja" class="btn" icon-role="plus" kaanna>uusi-perustepohja</button>
+            <a ui-sref="root.excel" kaanna="tuo-excel-tiedostosta"></a>
+            <button ui-sref="root.perusteprojektiwizard.tiedot" class="btn" icon-role="plus" kaanna="uusi-perusteprojekti"></button>
+            <button ui-sref="root.perusteprojektiwizard.pohja" class="btn" icon-role="plus" kaanna="uusi-perustepohja"></button>
         </div>
 
         <div>
@@ -23,13 +23,13 @@
         <div>
             <table class="table table-striped">
                 <tr>
-                    <th><a href="" ng-click="asetaJarjestys('nimi')" kaanna>nimi</a></th>
-                    <th><a href="" ng-click="asetaJarjestys('diaarinumero')" kaanna>diaarinumero-label</a></th>
-                    <th><a href="" ng-click="asetaJarjestys('tila')" kaanna>tila</a></th>
+                    <th><a class="action-link" ng-click="asetaJarjestys('nimi')" kaanna>nimi</a></th>
+                    <th><a class="action-link" ng-click="asetaJarjestys('diaarinumero')" kaanna>diaarinumero-label</a></th>
+                    <th><a class="action-link" ng-click="asetaJarjestys('tila')" kaanna>tila</a></th>
                     <th kaanna>toiminto</th>
                 </tr>
                 <tr ng-show="$index >= alaraja && $index < ylaraja" ng-repeat="pp in filteredPp = (perusteprojektit | orderBy:jarjestys:jarjestysOrder | filter:rajaaSisaltoa)">
-                    <td><a href="" ui-sref="root.perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: pp.id, suoritustapa: pp.suoritustapa })">{{ pp.nimi | kaanna }}</a></td>
+                    <td><a ui-sref="root.perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: pp.id, suoritustapa: pp.suoritustapa })">{{ pp.nimi | kaanna }}</a></td>
                     <td>{{ pp.diaarinumero }}</td>
                     <td>
                         {{ 'tila-' + pp.tila | kaanna }}

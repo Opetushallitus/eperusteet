@@ -28,13 +28,13 @@
       <div class="row">
         <div class="col-md-12">
           <div class="pull-right admin-cog">
-            <a ng-cloak href="" ui-sref="root.admin" icon-role="settings">{{'hallinta' | kaanna}}</a>
+            <a ng-cloak ui-sref="root.admin" icon-role="settings" kaanna="hallinta"></a>
           </div>
           <div ng-controller="KieliCtrl" id="kielen-vaihto" class="pull-right ng-cloak">
             <ul>
               <li ng-repeat="item in koodit | filter:{koodi: '!'+kieli}" ng-click="vaihdaKieli(item.koodi)">
                 <span ng-if="!$first">|</span>
-                <a class="action-link" ng-click="vaihdaKieli(item.koodi)" translate>{{item.nimi}}</a>
+                <a class="action-link" ng-click="vaihdaKieli(item.koodi)" kaanna="item.nimi"></a>
               </li>
             </ul>
           </div>
@@ -50,7 +50,7 @@
           <div ng-if="viestit" ng-click="poistaNotifikaatio(viesti)" ng-model="viestit" ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }" ng-repeat="viesti in viestit">
             <div class="notification-body">
               <span class="close">×</span>
-              <span class="notification-message" ng-bind="viesti.viesti | kaanna"></span>
+              <span class="notification-message" kaanna="viesti.viesti"></span>
             </div>
           </div>
         </div>

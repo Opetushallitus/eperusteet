@@ -24,9 +24,6 @@ angular.module('eperusteApp')
         template: '<div ui-view></div>',
         abstract: true,
         resolve: {
-          lokalisointi: function($stateParams, Lokalisointi) {
-            return Lokalisointi.valitseKieli($stateParams.lang);
-          },
           suosikit: function(Profiili) {
             return Profiili;
           }

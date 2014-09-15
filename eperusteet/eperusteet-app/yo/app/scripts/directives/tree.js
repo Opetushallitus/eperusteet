@@ -32,7 +32,7 @@ angular.module('eperusteApp')
         '  <a ng-if="esitystilassa" href="" ui-sref="root.esitys.peruste.tutkinnonosa({ id: rakenne._tutkinnonOsaViite, suoritustapa: apumuuttujat.suoritustapa })">' + tosa + '</a>' +
         '  <a ng-if="!esitystilassa" href="" ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite]._tutkinnonOsa, suoritustapa: apumuuttujat.suoritustapa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a>' +
         '</span>' +
-        '<span class="pull-right" ng-if="rakenne._tutkinnonOsaViite && muokkaus"><a href="" icon-role="remove" ng-click="poista(rakenne, vanhempi)"></a></span>' +
+        '<span class="pull-right" ng-if="rakenne._tutkinnonOsaViite && muokkaus"><a class="action-link" icon-role="remove" ng-click="poista(rakenne, vanhempi)"></a></span>' +
         '<span ng-if="!rakenne._tutkinnonOsaViite && rakenne.nimi">' +
         '  <b>{{ rakenne.nimi || "nimetön" | kaanna }}</b>' +
         '</span>';
@@ -154,7 +154,7 @@ angular.module('eperusteApp')
           '</span>' +
           '<div class="right">' +
           '  <div ng-if="!rakenne._tutkinnonOsaViite && muokkaus" class="right-item">' +
-          '    <a href="" icon-role="edit" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)"></a>' +
+          '    <a class="action-link" icon-role="edit" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)"></a>' +
           '  </div>' +
           '  <div class="pull-right" ng-if="!rakenne._tutkinnonOsaViite">' +
           '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.muodostumisSaanto.laajuus.minimi">' +

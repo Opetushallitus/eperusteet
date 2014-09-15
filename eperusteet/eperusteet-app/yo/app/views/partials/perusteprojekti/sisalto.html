@@ -27,7 +27,7 @@ European Union Public Licence for more details.
         <div class="tutkinto">
             <div ng-hide="muokkausTutkintokohtaisetOsat">
                 <div class="toolbar-input">
-                    <rajaus model="rajaus" placeholder="etsi-sisällöstä" callback="rajaaSisaltoa(value)"></rajaus>
+                    <rajaus model="rajaus" placeholder="etsi-sisallosta" callback="rajaaSisaltoa(value)"></rajaus>
                 </div>
             </div>
 
@@ -55,12 +55,12 @@ European Union Public Licence for more details.
                 {{ 'tekstikappaleet' | kaanna }} ({{ peruste.sisalto.lapset.length }})
                 <a style="margin-left: 10px" ng-click="avaaSuljeKaikki(peruste.sisalto)" class="action-link"><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
                 <div class="pull-right buttons">
-                    <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="cloud-download" kaanna>tuo-tutkintokohtainen-osa</button>
-                    <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="add" kaanna>lisaa-tutkintokohtainen-osa</button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="cloud-download" kaanna="tuo-tutkintokohtainen-osa"></button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="add" kaanna="lisaa-tutkintokohtainen-osa"></button>
                     <button class="btn btn-default btn-sm"
                             ng-class="{ 'btn-primary': muokkausTutkintokohtaisetOsat }" ng-click="aloitaMuokkaus()"
                             ng-show="valittuSuoritustapa !== ''">
-                        <span icon-role="edit" kaanna>muokkaa-rakennetta</span>
+                        <span icon-role="edit" kaanna="muokkaa-rakennetta"></span>
                     </button>
                 </div>
             </h2>

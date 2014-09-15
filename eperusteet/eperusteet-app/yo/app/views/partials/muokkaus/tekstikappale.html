@@ -20,15 +20,15 @@ European Union Public Licence for more details.
   <div class="action-buttons">
     <div class="floater" ng-attr-title="{{lockNotification}}">
       <button ng-disabled="isLocked" ng-hide="editableTekstikappale.tila !== 'luonnos' || editEnabled || !versiot.latest"
-              ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna>muokkaa</button>
+              ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"></button>
     </div>
     <button ng-if="canAddLapsi() && tekstikappale.tila !== 'valmis'" ng-hide="editEnabled || !versiot.latest"
-            ng-click="addLapsi()" class="floater btn btn-default" icon-role="add" kaanna>lisaa-aliotsikko</button>
+            ng-click="addLapsi()" class="floater btn btn-default" icon-role="add" kaanna="lisaa-aliotsikko"></button>
     <button ng-show="!editEnabled && tekstikappale.tila === 'valmis'" ng-click="kopioiMuokattavaksi()"
-            class="floater btn btn-danger" icon-role="fire" kaanna>kopioi-muokattavaksi</button>
+            class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"></button>
 
     <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
-    <button ng-if="editEnabled && !isNew" class="btn btn-danger floater" ng-click="poista()" icon-role="remove" kaanna>poista</button>
+    <button ng-if="editEnabled && !isNew" class="btn btn-danger floater" ng-click="poista()" icon-role="remove" kaanna="'poista'"></button>
   </div>
 
   <div id="tekstikappale-crumbs" ng-if="!editEnabled">

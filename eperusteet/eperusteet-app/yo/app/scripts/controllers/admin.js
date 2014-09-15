@@ -86,7 +86,7 @@ angular.module('eperusteApp')
       })(function() {
         PerusteprojektiTila.save({ id: pp.id, tila: uusiTila }, {}, function(vastaus) {
           if (vastaus.vaihtoOk) { pp.tila = uusiTila; }
-          else { Notifikaatiot.varoitus('tilan-vaihto-epäonnistui'); }
+          else { Notifikaatiot.varoitus('tilan-vaihto-epaonnistui'); }
         }, Notifikaatiot.serverCb);
       });
     };

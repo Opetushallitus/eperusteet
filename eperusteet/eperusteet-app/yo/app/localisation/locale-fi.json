@@ -1,14 +1,14 @@
 {
     "edellinen": "Edellinen",
     "kieli": "Kieli",
-    "näytä": "Näytä",
     "koodi": "Koodi",
-    "lisää": "Lisää",
+    "lisaa": "Lisää",
     "nimi": "Nimi",
     "ok": "OK",
     "vahvista": "Vahvista",
     "aseta-tila": "Aseta tila",
     "palauta" : "Palauta",
+    "paivita": "Päivitä",
     "peru": "Peruuta",
     "poista": "Poista",
     "rajaa-tuloksia": "Rajaa...",
@@ -16,11 +16,10 @@
     "ei-tiedotteita": "Ei tiedotteita.",
     "takaisin": "Takaisin",
     "tallennettu": "Tallennettu",
-    "tallennus-epäonnistui": "Tallennus epäonnistui",
+    "tallennus-epaonnistui": "Tallennus epäonnistui",
     "tallennus-onnistui": "Tallennus onnistui",
     "tiedosto": "Tiedosto",
     "tila": "Tila",
-    "tyhjä": "Tyhjä",
     "tyyppi": "Tyyppi",
     "lataa": "Lataa",
     "selaa": "Selaa...",
@@ -140,23 +139,20 @@
 
     "viesti-poistettu": "Viesti poistettu",
     "kommentti-poistettu": "Kommentti poistettiin onnistuneesti",
-    "näytä-kommentit": "Näytä kommentit",
     "nayta-aliviestit": "Näytä vastaukset",
     "piilota-aliviestit": "Piilota vastaukset",
 
     "lopeta-muokkaus": "Lopeta muokkaus",
 
-    "ryhmä-rooli-selite-määritelty": "Ryhmän sisältö määritellään perustepuun luonnin yhteydessä",
-    "ryhmä-rooli-selite-määrittelemätön": "Ryhmälle annetaan vain muodostumissäännöt ja sen sisältö määritellään paikallisen laadinnan puolella",
-    "ryhmä-rooli-selite-osaamisala": "Ryhmälle täytyy määrittää osaamisala",
+    "ryhma-rooli-selite-maaritelty": "Ryhmän sisältö määritellään perustepuun luonnin yhteydessä",
+    "ryhma-rooli-selite-maarittelematon": "Ryhmälle annetaan vain muodostumissäännöt ja sen sisältö määritellään paikallisen laadinnan puolella",
 
     "otsikko": "otsikko",
-    "osien-määrä": "Osien määrä",
     "kopioi-muokattavaksi": "Kopioi muokattavaksi",
     "tutkinnonosa-kopioitu-onnistuneesti": "Tutkinnon osa kopioitu onnistuneesti",
     "tekstikappale-kopioitu-onnistuneesti": "Tekstikappale kopioitu onnistuneesti",
 
-    "tilan-vaihto-epäonnistui": "Tilan vaihto epäonnistui",
+    "tilan-vaihto-epaonnistui": "Tilan vaihto epäonnistui",
 
     "tila-poistettu": "Arkistoitu",
     "tila-poistettupohja": "Arkistoitu",
@@ -181,9 +177,9 @@
     "haku-nimi": "Nimi",
     "haku-kaikki-alat": "Kaikki koulutusalat",
     "haku-kaikki-tutkinnot": "Kaikki tutkinnot",
-    "haku-näytä-siirtymäajalla-olevat": "Näytä siirtymäajalla olevat",
+    "haku-nayta-siirtymaajalla-olevat": "Näytä siirtymäajalla olevat",
     "haku-tutkinnon-nimi-placeholder": "Tutkinnon nimi",
-    "haku-tulosten-määrä": "Löydettyjen perusteiden määrä:",
+    "haku-tulosten-maara": "Löydettyjen perusteiden määrä:",
     "sivupalkki-näytä-kaikki" : "Näytä kaikki",
     "sivupalkki-piilota" : "Näytä vähemmän",
     "haku-kieli": "Kieli",
@@ -208,12 +204,12 @@
     "poistetaanko-ryhma": "Poistetaanko ryhmä?",
     "leikelauta": "Leikelauta",
     "tutkinnon-osa-haku-placeholder": "Rajaa tutkinnon osia...",
-    "etsi-sisällöstä": "Rajaa sisältöä...",
+    "etsi-sisallosta": "Rajaa sisältöä...",
     "etsi-perusteprojekteista": "Etsi perusteprojekteista...",
 
     "haltija": "Haltija",
 
-    "perusteen-sisältö": "Perusteen sisältö",
+    "perusteen-sisalto": "Perusteen sisältö",
 
     "muodostumis-rakenne-validointi-laajuus": "Ryhmän osien yhteenlaskettu laajuus ei riitä kattamaan tarvittavaa laajuutta",
     "muodostumis-rakenne-validointi-maara": "Ryhmän osien yhteenlaskettu määrä ei riitä kattamaan tarvittavaa määrää",
@@ -333,7 +329,6 @@
     "tuo": "Tuo",
 
     "valitse-kaikki": "Valitse kaikki",
-    "perusteeseen-liitetään-seuraavat": "Perusteeseen liitetään seuraavat",
     "koulutukset": "Koulutukset",
     "suoritustavat": "Suoritustavat",
 
@@ -341,7 +336,6 @@
 
     "tallennettiin-onnistuneesti": "tallennettiin onnistuneesti",
     "tekstikappale-tallennettiin-onnistuneesti": "Tekstikappale tallennettiin onnistuneesti",
-    "antamassasi-tiedostossa-oli-virheitä": "Antamassasi tiedostossa oli virheitä, jotka estävät tiedoston lukemisen eteenpäin. Korjaa seuraavat virheet ja lähetä tiedosto uudestaan.",
 
     "koodi-virhe-1": "Koodia ei ole asetettu.",
     "koodi-virhe-2": "Käyttämälläsi koodilla löytyi jo tutkinnon osa.",
@@ -375,6 +369,8 @@
     "poista-osio": "Poista osio",
     "varmista-osion-poisto-otsikko": "Varmista osion poisto",
     "varmista-osion-poisto-teksti": "Haluatko poistaa osion? Kaikki osion sisältö menetetään.",
+    "lisaa-osa-alue": "Lisää osa-alue",
+    "lisaa-osaamistavoite": "Lisää osaamistavoite",
 
     "ota-versio-kayttoon": "Ota tämä versio käyttöön",
     "katso-uusin-versio": "Katso uusin versio",
@@ -402,7 +398,6 @@
     "arviointi-poista-kriteeri": "Poista rivi",
     "arviointi-asteikon-valinta": "Valitse arviointiasteikko",
 
-    "arviointi-muokkaa-tekstikenttänä": "Muokkaa tekstikenttänä",
     "arviointi-muokkaa-taulukkona": "Muokkaa taulukkona",
     "arviointi-kohdealueet": "Arvioinnin kohdealueet",
 
@@ -420,6 +415,7 @@
     "et-ole-vielä-tallentanut-tutkinnonosia": "Et ole vielä liittänyt kaikkia tutkinnon osia perusteeseen",
     "et-ole-vielä-tallentanut-tekstikappaleita": "Et ole vielä liittänyt kaikkia tekstikappaleita perusteeseen",
     "tuo-excel": "Tuo Excel",
+    "tuo-excel-tiedostosta": "Tuo Excel-tiedostosta...",
     "tutkinnon-tyyppi": "Tutkinnon tyyppi",
     "excel-tiedostossasi-oli-virheitä": "Excel-tiedostossasi oli virheitä",
     "valitse-nimi": "Valitse nimi",
@@ -509,7 +505,7 @@
     "poistetaanko-koulutus": "Poistetaanko koulutuskoodi?",
 
     "projekti-perustiedot": "Perustiedot",
-    "projekti-projektiryhmä": "Perustetyöryhmä",
+    "projekti-projektiryhma": "Perustetyöryhmä",
     "projekti-peruste": "Perusteen tiedot",
     "projekti-toimikausi": "Toimikausi",
     "valitse-peruste": "Valitse peruste",

@@ -5,11 +5,10 @@
             <div>
                 <h2>Keskustelu <span ng-if="sisalto">({{ sisalto.$yhteensa }} {{ 'kommenttia' | kaanna }})</span>
                 <small-spinner ng-hide="nayta"></small-spinner>
-                <!-- <a ng-hide="nayta" ng-click="naytaKommentit()" class="action-link" icon-role="comment">{{ 'näytä-kommentit' | kaanna }}</a> -->
                 </h2>
             </div>
             <div ng-show="nayta && sisalto">
-            <a ng-model="editoi" ng-hide="editoi" class="action-link" ng-click="editoi = true"><h3 icon-role="add" kaanna>lisaa-kommentti</h3></a>
+            <a ng-model="editoi" ng-hide="editoi" class="action-link" ng-click="editoi = true"><h3 icon-role="add" kaanna="lisaa-kommentti"></h3></a>
             <div ng-show="editoi" class="kommentti-uusi">
                 <textarea class="form-control msd-elastic" ng-model="editoitava"></textarea>
                 <div class="kommentti-painikkeet">

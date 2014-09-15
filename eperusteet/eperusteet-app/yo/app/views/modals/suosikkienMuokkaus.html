@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h2 kaanna>omat-suosikit</h2>
+  <h2 kaanna="omat-suosikit"></h2>
 </div>
 
 <div class="modal-body suosikki-muokkaus">
@@ -10,7 +10,7 @@
 
   <table class="table table-striped table-hover">
     <tr>
-        <th kaanna>suosikin-nimi</th><th kaanna>luotu</th><th class="actions"></th>
+        <th kaanna="suosikin-nimi"></th><th kaanna="luotu"></th><th class="actions"></th>
     </tr>
     <tr ng-repeat="suosikki in suosikit">
       <td>
@@ -20,12 +20,12 @@
       <td>{{suosikki.lisatty | aikaleima}}</td>
       <td>
         <div ng-show="!editing">
-          <button class="btn btn-default" ng-click="edit(suosikki)" icon-role="edit" kaanna>muokkaa</button>
+          <button class="btn btn-default" ng-click="edit(suosikki)" icon-role="edit" kaanna="'muokkaa'"></button>
           <button class="btn btn-default" ng-click="remove(suosikki)" icon-role="remove" ng-attr-title="{{'poista' | kaanna}}"></button>
         </div>
         <div ng-show="editing.id === suosikki.id">
-          <button class="btn btn-default" ng-click="cancel()" kaanna>peruuta</button>
-          <button class="btn btn-primary" ng-click="save(suosikki)" ng-disabled="editing.nimi === ''" kaanna>tallenna</button>
+          <button class="btn btn-default" ng-click="cancel()" kaanna="peruuta"></button>
+          <button class="btn btn-primary" ng-click="save(suosikki)" ng-disabled="editing.nimi === ''" kaanna="tallenna"></button>
         </div>
       </td>
     </tr>
@@ -33,5 +33,5 @@
 </div>
 
 <div class="modal-footer">
-  <button class="btn btn-default" ng-click="$close()" kaanna>sulje</button>
+  <button class="btn btn-default" ng-click="$close()" kaanna="sulje"></button>
 </div>

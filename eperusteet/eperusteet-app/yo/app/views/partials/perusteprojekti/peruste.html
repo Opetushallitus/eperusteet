@@ -17,7 +17,7 @@ European Union Public Licence for more details.
 <div class="row">
 <div class="col-md-12">
 <div class="action-buttons">
-  <button ng-if="voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit" kaanna>muokkaa</button>
+  <button ng-if="voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit" kaanna="'muokkaa'"></button>
 </div>
 
 <h1 kaanna>projekti-peruste</h1>
@@ -53,7 +53,7 @@ European Union Public Licence for more details.
         <div class="koulutukset" ng-show="editablePeruste.koulutukset.length > 0">
           <div class="koulutus" ng-repeat="koulutus in editablePeruste.koulutukset">
             <div class="poisto" ng-if="editEnabled">
-              <button icon-role="remove" class="btn btn-default btn-xs" ng-click="poistaKoulutus(koulutus.koulutuskoodiArvo)">{{'poista' | kaanna}}</button>
+              <button icon-role="remove" class="btn btn-default btn-xs" ng-click="poistaKoulutus(koulutus.koulutuskoodiArvo)" kaanna="poista"></button>
             </div>
             <table class="aligned">
               <tr>
@@ -78,7 +78,7 @@ European Union Public Licence for more details.
 
         <div>
           <button ng-if="editEnabled" icon-role="add" class="btn btn-default" type="button"
-                  ng-click="avaaKoodistoModaali()" ng-disabled="hakemassa">{{ "lisaa-koulutus" | kaanna }}</button>
+                  ng-click="avaaKoodistoModaali()" ng-disabled="hakemassa" kaanna="lisaa-koulutus"></button>
         </div>
       </div>
     </div>
@@ -89,8 +89,8 @@ European Union Public Licence for more details.
       </div>
       <div class="panel-body">
         <ml-input ng-show="editEnabled" ml-data="editablePeruste.kuvaus" type="textarea"></ml-input>
-        <p ng-show="hasContent(peruste.kuvaus) && !editEnabled">{{ peruste.kuvaus | kaanna }}</p>
-        <p ng-show="!hasContent(peruste.kuvaus) && !editEnabled" kaanna>ei-tiivistelmaa</p>
+        <p ng-show="hasContent(peruste.kuvaus) && !editEnabled" kaanna="peruste.kuvaus"></p>
+        <p ng-show="!hasContent(peruste.kuvaus) && !editEnabled" kaanna="ei-tiivistelmaa"></p>
       </div>
     </div>
 

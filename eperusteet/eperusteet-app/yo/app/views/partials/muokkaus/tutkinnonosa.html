@@ -3,17 +3,17 @@
   <div class="action-buttons">
     <div class="floater" ng-attr-title="{{lockNotification}}">
       <button ng-disabled="isLocked" ng-if="tekstikappale.tila !== 'julkaistu'" icon-role="edit"
-              ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="btn btn-default" kaanna>muokkaa</button>
+              ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="btn btn-default" kaanna="'muokkaa'"></button>
     </div>
     <button ng-show="tutkinnonOsa.tila === 'julkaistu' && !editEnabled" ng-click="kopioiMuokattavaksi()"
-            class="floater btn btn-danger" icon-role="fire" kaanna>kopioi-muokattavaksi</button>
+            class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"></button>
     <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
 
     <div ng-if="editEnabled">
-      <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsa.id].id)" kaanna>poista-tutkinnonosa</button>
+      <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsa.id].id)" kaanna="poista-tutkinnonosa"></button>
       <div class="floater" ng-show="editableTutkinnonOsa.tyyppi === 'normaali'">
         <div class="dropdown">
-          <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add" kaanna>muokkaus-lisaa-osio</button>
+          <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add" kaanna="muokkaus-lisaa-osio"></button>
           <ul class="pull-right dropdown-menu">
             <li ng-repeat="field in menuItems | orderBy:'order'">
               <a ng-show="field.visible" class="disabled-link">{{'muokkaus-' + field.localeKey + '-header' | kaanna}}</a>
@@ -25,7 +25,7 @@
     </div>
   </div>
 
-  <a ng-show="!editEnabled" icon-role="back" href="" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat" kaanna>tutkinnonosat</a>
+  <a ng-show="!editEnabled" icon-role="back" href="" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat" kaanna="tutkinnonosat"></a>
   <h1 ng-show="editEnabled">
     <span ng-show="!isNew" kaanna>muokkaus-tutkinnon-osa</span>
     <span ng-show="isNew" kaanna>luonti-tutkinnon-osa</span>

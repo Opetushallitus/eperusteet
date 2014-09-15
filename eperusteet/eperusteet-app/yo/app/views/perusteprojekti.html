@@ -41,15 +41,15 @@ European Union Public Licence for more details.
       <ul>
         <li>
           <a ui-sref="root.perusteprojekti.tiedot({ perusteProjektiId: projekti.id })"
-             ui-sref-active="headernavi-active" icon-role="info" kaanna>projektin-tiedot</a>
+             ui-sref-active="headernavi-active" icon-role="info" kaanna="projektin-tiedot"></a>
         </li>
         <li>
           <a ui-sref="root.perusteprojekti.peruste({ perusteProjektiId: projekti.id })"
-             ui-sref-active="headernavi-active" icon-role="list-alt" kaanna>projekti-peruste</a>
+             ui-sref-active="headernavi-active" icon-role="list-alt" kaanna="projekti-peruste"></a>
         </li>
         <li>
           <a ui-sref="root.perusteprojekti.projektiryhma({perusteProjektiId: projekti.id})"
-             ui-sref-active="headernavi-active" icon-role="user" kaanna>projekti-projektiryhmä</a>
+             ui-sref-active="headernavi-active" icon-role="user" kaanna="projekti-projektiryhma"></a>
         </li>
       </ul>
     </div>
@@ -59,7 +59,7 @@ European Union Public Licence for more details.
 <div id="sivunavi-sisalto-wrapper" ng-class="{'sivunavi-hidden': !isNaviVisible()}">
   <div class="sivunavi-navigaatio">
     <div class="sivunavi-takaisin" ng-if="showBackLink()">
-      <a ng-href="{{getBackLink()}}" icon-role="back" kaanna>takaisin-paanakymaan</a>
+      <a ng-href="{{getBackLink()}}" icon-role="back" kaanna="takaisin-paanakymaan"></a>
     </div>
     <sivunavigaatio2 items="sivunavi.items" header="sivunavi.suoritustapa">
     </sivunavigaatio2>

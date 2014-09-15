@@ -31,14 +31,14 @@
     <div class="form-group col-xs-12">
       <label class="ep-label-input">
         <input type="checkbox" ng-model="hakuparametrit.siirtyma" ng-change="hakuMuuttui()"></input>
-        {{ 'haku-näytä-siirtymäajalla-olevat' | kaanna }}
+        {{ 'haku-nayta-siirtymaajalla-olevat' | kaanna }}
       </label>
       <button class="btn btn-default btn-sm pull-right" ng-click="tyhjenna()" kaanna>palauta</button>
     </div>
   </form>
 </div>
 <div>
-  <p>{{'haku-tulosten-määrä'| kaanna}} {{kokonaismaara}}</p>
+  <p>{{'haku-tulosten-maara'| kaanna}} {{kokonaismaara}}</p>
 </div>
 <div>
   <table class="table table-condensed table-striped" ng-show="kokonaismaara > 0">

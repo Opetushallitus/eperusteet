@@ -4,7 +4,7 @@
   <div class="action-buttons">
     <div class="floater" ng-attr-title="{{lockNotification}}">
       <button ng-disabled="isLocked" ng-hide="editoi || !versiot.latest" ng-click="muokkaa()"
-              class="btn btn-default" icon-role="edit" kaanna>muokkaa</button>
+              class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"></button>
     </div>
     <div class="floater" ng-if="!editoi && isLocked"><lukko tip="lockNotification"></lukko></div>
   </div>

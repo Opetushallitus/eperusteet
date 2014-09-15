@@ -18,7 +18,7 @@ European Union Public Licence for more details.
     <div class="row esitys">
         <div class="sivunavi-navigaatio">
             <div class="sivunavi-takaisin">
-              <a ui-sref="root.selaus.ammatillinenperuskoulutus" icon-role="back">{{ 'takaisin-hakuun' | kaanna }}</a>
+              <a ui-sref="root.selaus.ammatillinenperuskoulutus" icon-role="back" kaanna="takaisin-hakuun"></a>
             </div>
             <sivunavigaatio2 items="navi.items" header="navi.header">
               <select class="form-control input-sm" ng-model="suoritustapa" ng-change="vaihdaSuoritustapa(suoritustapa)"
@@ -34,7 +34,7 @@ European Union Public Licence for more details.
                     <span ng-hide="naytaPerusteenTiedot" class="glyphicon glyphicon-chevron-right"></span>
                     <span kaanna="perusteen-tiedot"></span>
                 </a>
-                <a class="left-space action-link" ng-click="luoPdf()" icon-role="save" kaanna>lataa-peruste-pdf-muodossa</a>
+                <a class="left-space action-link" ng-click="luoPdf()" icon-role="save" kaanna="lataa-peruste-pdf-muodossa"></a>
             </div>
             <div ng-show="naytaPerusteenTiedot">
                 <div><span kaanna="tutkintokoodi"></span>: <span kaanna="peruste.tutkintokoodi"></span></div>
