@@ -62,7 +62,6 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.proxy.HibernateProxy;
 import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -341,15 +340,6 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    //hibernate lazy proxy korjaussarja
-    private static <T> T unproxy(T entity) {
-        if ( entity instanceof HibernateProxy ) {
-            return (T) ((HibernateProxy)entity).getHibernateLazyInitializer().getImplementation();
-        }
-        return null;
-    }
-
     private void addSisaltoElement(Document doc, Peruste peruste, Element parentElement, PerusteenOsaViite sisalto, int depth, Suoritustapa tapa, Kieli kieli) {
 
         for (PerusteenOsaViite lapsi : sisalto.getLapset()) {
@@ -357,9 +347,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 continue;
             }
 
-            //TODO: refaktoroi --> ilman instanceof, ei toimi hibernate laiskojen proxyjen kanssa)
-
-            PerusteenOsa po = unproxy(lapsi.getPerusteenOsa());
+            PerusteenOsa po = lapsi.getPerusteenOsa();
             TekstiKappale tk = null;
             if ( po instanceof TekstiKappale ){
                 tk = (TekstiKappale)po;

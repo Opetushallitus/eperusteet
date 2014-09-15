@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.resource.peruste;
 import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
@@ -144,7 +143,7 @@ public class PerusteenSisaltoController {
         perusteenOsaViiteService.update(id, pov);
     }
 
-    @RequestMapping(value = "/sisalto/{id}/muokattavakopio", method = POST, params = PerusteenOsaMappings.IS_TEKSTIKAPPALE_PARAM)
+    @RequestMapping(value = "/sisalto/{id}/muokattavakopio", method = POST)
     public PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {

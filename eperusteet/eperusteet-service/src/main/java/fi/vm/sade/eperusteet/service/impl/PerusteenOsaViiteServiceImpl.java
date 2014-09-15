@@ -34,6 +34,7 @@ import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.security.PermissionChecker;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -71,6 +72,9 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     @Autowired
     private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
 
+    @Autowired
+    private PermissionChecker permissionChecker;
+
     @Override
     public PerusteenOsaViiteDto.Laaja getVersio(Long id, Integer versioId) {
         return mapper.map(repository.findRevision(id, versioId), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja.class);
@@ -86,12 +90,10 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     public PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(Long id) {
         PerusteenOsaViite pov = repository.findOne(id);
         PerusteenOsa from = pov.getPerusteenOsa();
+        permissionChecker.checkPermission(from, "LUKU");
         if (from instanceof TekstiKappale) {
-
-            TekstiKappale uusi = new TekstiKappale();
+            PerusteenOsa uusi = from.copy();
             uusi.setTila(PerusteTila.LUONNOS);
-            uusi.setNimi(from.getNimi());
-            uusi.setTeksti(((TekstiKappale) from).getTeksti());
             pov.setPerusteenOsa(perusteenOsaRepository.save(uusi));
         }
         return mapper.map(pov, fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja.class);

@@ -13,17 +13,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+package fi.vm.sade.eperusteet.service.security;
 
-package fi.vm.sade.eperusteet.domain;
-
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import org.springframework.security.access.method.P;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
 
 /**
  *
- * @author teele1
+ * @author jhyoty
  */
-public interface ReferenceableEntity {
+@Service
+public class PermissionChecker {
 
-    EntityReference getReference();
-    Long getId();
+    @PreAuthorize("hasPermission(#o,#p)")
+    public void checkPermission(@P("o") Object entity, @P("p") String permission) {
+        //this function is intentionally left blank
+    }
 }

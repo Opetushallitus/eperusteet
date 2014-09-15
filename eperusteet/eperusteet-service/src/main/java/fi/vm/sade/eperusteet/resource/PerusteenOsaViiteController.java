@@ -21,16 +21,13 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
@@ -43,26 +40,6 @@ public class PerusteenOsaViiteController {
 
     @Autowired
     private PerusteenOsaViiteService service;
-
-    @RequestMapping(value = "/sisalto/{id}", method = DELETE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeSisaltoViite(@PathVariable("id") final Long id) {
-        service.removeSisalto(id);
-    }
-
-    @RequestMapping(value = "/sisalto/{id}", method = POST)
-    @ResponseBody
-    public void updateSisaltoViite(
-            @PathVariable("id") final Long id,
-            @RequestBody final fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja pov) {
-        service.update(id, pov);
-    }
-
-    @RequestMapping(value = "/kloonaa/{id}", method = POST, params = PerusteenOsaMappings.IS_TEKSTIKAPPALE_PARAM)
-    @ResponseBody
-    public fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(@PathVariable("id") final Long id) {
-        return service.kloonaaTekstiKappale(id);
-    }
 
     @RequestMapping(value = "/kloonaa/{id}", method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
     @ResponseBody

@@ -17,8 +17,10 @@ package fi.vm.sade.eperusteet.service.security;
 
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
 import fi.vm.sade.eperusteet.service.util.Pair;
 import java.io.Serializable;
@@ -47,8 +49,15 @@ public class PermissionEvaluator implements org.springframework.security.access.
 
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
-        //TODO
-        LOG.error("ei toteutettu");
+        if ( targetDomainObject instanceof ReferenceableEntity ) {
+           String targetType;
+           if ( targetDomainObject instanceof PerusteenOsa ) {
+               targetType = "perusteenosa";
+           } else {
+               targetType = targetDomainObject.getClass().getSimpleName();
+           }
+           return hasPermission(authentication, ((ReferenceableEntity)targetDomainObject).getId(), targetType, permission);
+        }
         return false;
     }
 

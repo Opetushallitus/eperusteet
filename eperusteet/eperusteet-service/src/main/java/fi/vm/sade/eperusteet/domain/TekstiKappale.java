@@ -43,6 +43,14 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen teksti;
 
+    public TekstiKappale() {
+    }
+
+    public TekstiKappale(TekstiKappale other) {
+        super(other);
+        copyState(other);
+    }
+
     @Override
     public EntityReference getReference() {
 	return new EntityReference(getId());
@@ -60,9 +68,19 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
     public void mergeState(PerusteenOsa perusteenOsa) {
         super.mergeState(perusteenOsa);
         if (perusteenOsa instanceof TekstiKappale) {
-            TekstiKappale other = (TekstiKappale) perusteenOsa;
-            this.setTeksti(other.getTeksti());
+            copyState((TekstiKappale) perusteenOsa);
         }
+    }
+
+    @Override
+    public TekstiKappale copy() {
+        return new TekstiKappale(this);
+    }
+
+
+
+    private void copyState(TekstiKappale other) {
+        this.setTeksti(other.getTeksti());
     }
 
 }

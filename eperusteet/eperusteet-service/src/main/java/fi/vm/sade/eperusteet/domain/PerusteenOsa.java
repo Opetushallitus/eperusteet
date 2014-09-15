@@ -65,6 +65,17 @@ public abstract class PerusteenOsa
     @NotNull
     private PerusteTila tila = PerusteTila.LUONNOS;
 
+    public PerusteenOsa() {
+        //JPA
+    }
+
+    //copy constuctor
+    public PerusteenOsa(PerusteenOsa other) {
+        copyState(other);
+    }
+
+
+    @Override
     public Long getId() {
         return id;
     }
@@ -86,7 +97,13 @@ public abstract class PerusteenOsa
         if (this.getClass().isAssignableFrom(updated.getClass()) && getId() == null || !getId().equals(updated.getId())) {
             throw new IllegalArgumentException("Vain kahden saman entiteetin tilan voi yhdistää");
         }
-        this.nimi = updated.getNimi();
+        copyState(updated);
+    }
+
+    public abstract PerusteenOsa copy();
+
+    private void copyState(PerusteenOsa other) {
+        this.nimi = other.getNimi();
     }
 
 }

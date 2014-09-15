@@ -101,6 +101,11 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         return new EntityReference(getId());
     }
 
+    @Override
+    public TutkinnonOsa copy() {
+        throw new UnsupportedOperationException("Tutkinnonosan kopiointia ei ole toteutettu");
+    }
+
     public TekstiPalanen getTavoitteet() {
         return tavoitteet;
     }
