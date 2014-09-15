@@ -26,7 +26,6 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
@@ -79,19 +78,19 @@ public interface PerusteService {
     Page<PerusteDto> findBy(PageRequest page, PerusteQuery pquery);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    PerusteenSisaltoViiteDto addSisalto(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapakoodi, PerusteenSisaltoViiteDto viite);
+    PerusteenOsaViiteDto.Matala addSisalto(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapakoodi, PerusteenOsaViiteDto.Matala viite);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    PerusteenSisaltoViiteDto addSisaltoLapsi(@P("perusteId") final Long perusteId, final Long perusteenosaViiteId);
+    PerusteenOsaViiteDto.Matala addSisaltoLapsi(@P("perusteId") final Long perusteId, final Long perusteenosaViiteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    PerusteenSisaltoViiteDto attachSisaltoLapsi(@P("perusteId") Long perusteId, Long parentViiteId, Long tekstikappaleId);
+    PerusteenOsaViiteDto.Matala attachSisaltoLapsi(@P("perusteId") Long perusteId, Long parentViiteId, Long tekstikappaleId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     PerusteenOsaViiteDto.Laaja getSuoritustapaSisalto(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapakoodi);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    <T extends PerusteenOsaViiteDto<?,?>> T getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, Class<T> view);
+    <T extends PerusteenOsaViiteDto.Puu<?, ?>> T getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, Class<T> view);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     SuoritustapaDto getSuoritustapa(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapakoodi);

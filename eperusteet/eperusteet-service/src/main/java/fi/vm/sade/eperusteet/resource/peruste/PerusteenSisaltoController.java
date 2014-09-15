@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.resource.peruste;
 import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
@@ -66,18 +65,18 @@ public class PerusteenSisaltoController {
      */
     @RequestMapping(value = "/sisalto", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public PerusteenSisaltoViiteDto addSisalto(
+    public PerusteenOsaViiteDto.Matala addSisalto(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa,
-        @RequestBody(required = false) final PerusteenSisaltoViiteDto dto
+        @RequestBody(required = false) final PerusteenOsaViiteDto.Matala dto
     ) {
-        PerusteenSisaltoViiteDto viite = service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), null);
-        if (dto != null && dto.getPerusteenOsaDto() != null) {
-            Long id = Long.valueOf(viite.getPerusteenOsa().getId());
+        PerusteenOsaViiteDto.Matala viite = service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), null);
+        if (dto != null && dto.getPerusteenOsa() != null) {
+            Long id = viite.getPerusteenOsa().getId();
             perusteenOsaService.lock(id);
             try {
-                dto.getPerusteenOsaDto().setId(id);
-                perusteenOsaService.update(dto.getPerusteenOsaDto());
+                dto.getPerusteenOsa().setId(id);
+                perusteenOsaService.update(dto.getPerusteenOsa());
             } finally {
                 perusteenOsaService.unlock(id);
             }
@@ -86,10 +85,10 @@ public class PerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/sisalto", method = PUT)
-    public ResponseEntity<PerusteenSisaltoViiteDto> addSisaltoViite(
+    public ResponseEntity<PerusteenOsaViiteDto.Matala> addSisaltoViite(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa,
-        @RequestBody PerusteenSisaltoViiteDto sisaltoViite) {
+        @RequestBody PerusteenOsaViiteDto.Matala sisaltoViite) {
         return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), sisaltoViite), HttpStatus.CREATED);
     }
 
@@ -103,7 +102,7 @@ public class PerusteenSisaltoController {
 //        return re;
 //    }
     @RequestMapping(value = "/sisalto/{perusteenosaViiteId}/lapsi", method = POST)
-    public ResponseEntity<PerusteenSisaltoViiteDto> addSisaltoLapsi(
+    public ResponseEntity<PerusteenOsaViiteDto.Matala> addSisaltoLapsi(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa,
         @PathVariable("perusteenosaViiteId") final Long perusteenosaViiteId) {
@@ -111,7 +110,7 @@ public class PerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/sisalto/{parentId}/lapsi/{childId}", method = POST)
-    public ResponseEntity<PerusteenSisaltoViiteDto> addSisaltoLapsi(
+    public ResponseEntity<PerusteenOsaViiteDto.Matala> addSisaltoLapsi(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa,
         @PathVariable("parentId") final Long parentId,
@@ -146,7 +145,7 @@ public class PerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/sisalto/{id}/muokattavakopio", method = POST, params = PerusteenOsaMappings.IS_TEKSTIKAPPALE_PARAM)
-    public fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(
+    public PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
         return perusteenOsaViiteService.kloonaaTekstiKappale(id);

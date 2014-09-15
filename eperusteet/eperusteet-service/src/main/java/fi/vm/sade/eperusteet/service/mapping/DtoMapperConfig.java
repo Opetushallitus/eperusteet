@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.mapping;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
@@ -28,6 +29,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
@@ -108,7 +110,22 @@ public class DtoMapperConfig {
             .byDefault()
             .register();
 
+        perusteenOsaViiteMapping(factory, PerusteenOsaViiteDto.Matala.class);
+        perusteenOsaViiteMapping(factory, PerusteenOsaViiteDto.Suppea.class);
+        perusteenOsaViiteMapping(factory, PerusteenOsaViiteDto.Laaja.class);
+
         return new DtoMapperImpl(factory.getMapperFacade());
+    }
+
+    private static void perusteenOsaViiteMapping(DefaultMapperFactory factory, Class<? extends PerusteenOsaViiteDto<?>> dtoClass) {
+        //pelkästään yliluokan mappauksen konffaus ei toiminut
+        factory.classMap(dtoClass, PerusteenOsaViite.class)
+            .mapNulls(false)
+            .field("perusteenOsaRef", "perusteenOsa")
+            .field("perusteenOsa", "perusteenOsa")
+            .mapNulls(true)
+            .byDefault()
+            .register();
     }
 
 }

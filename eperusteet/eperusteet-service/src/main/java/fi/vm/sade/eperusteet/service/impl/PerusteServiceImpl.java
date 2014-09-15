@@ -38,7 +38,6 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
@@ -73,6 +72,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -107,16 +107,16 @@ public class PerusteServiceImpl implements PerusteService {
         "koulutus_324123", "koulutus_357707", "koulutus_327122"}));
 
     @Autowired
-    PerusteRepository perusteet;
+    private PerusteRepository perusteet;
 
     @Autowired
-    KoulutusRepository koulutusRepo;
+    private KoulutusRepository koulutusRepo;
 
     @Autowired
-    PerusteenOsaViiteRepository rakenteenOsaRepository;
+    private PerusteenOsaViiteRepository rakenteenOsaRepository;
 
     @Autowired
-    KoulutusalaService koulutusalaService;
+    private KoulutusalaService koulutusalaService;
 
     @Autowired
     private SuoritustapaService suoritustapaService;
@@ -228,7 +228,7 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Override
     @Transactional(readOnly = true)
-    public <T extends PerusteenOsaViiteDto<?,?>> T getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, Class<T> view) {
+    public <T extends PerusteenOsaViiteDto.Puu<?,?>> T getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, Class<T> view) {
         PerusteenOsaViite entity = perusteet.findSisaltoByIdAndSuoritustapakoodi(perusteId, suoritustapakoodi);
         return mapper.map(entity, view);
     }
@@ -547,9 +547,12 @@ public class PerusteServiceImpl implements PerusteService {
         return suoritustapa;
     }
 
+    @Autowired
+    EntityManager em;
+
     @Override
     @Transactional
-    public PerusteenSisaltoViiteDto addSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, PerusteenSisaltoViiteDto viite) {
+    public PerusteenOsaViiteDto.Matala addSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, PerusteenOsaViiteDto.Matala viite) {
         Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
         if (suoritustapa.getSisalto() == null) {
             throw new BusinessRuleViolationException("Perusteen " + perusteId + " + suoritustavalla "
@@ -574,12 +577,12 @@ public class PerusteServiceImpl implements PerusteService {
         uusiViite.setVanhempi(sisalto);
         sisalto.getLapset().add(uusiViite);
         uusiViite = perusteenOsaViiteRepo.save(uusiViite);
-        return mapper.map(uusiViite, PerusteenSisaltoViiteDto.class);
+        return mapper.map(uusiViite, PerusteenOsaViiteDto.Matala.class);
     }
 
     @Override
     @Transactional
-    public PerusteenSisaltoViiteDto addSisaltoLapsi(Long perusteId, Long perusteenosaViiteId) {
+    public PerusteenOsaViiteDto.Matala addSisaltoLapsi(Long perusteId, Long perusteenosaViiteId) {
 
         PerusteenOsaViite viiteEntity = perusteenOsaViiteRepo.findOne(perusteenosaViiteId);
         if (viiteEntity == null) {
@@ -595,12 +598,12 @@ public class PerusteServiceImpl implements PerusteService {
         uusiViite = perusteenOsaViiteRepo.save(uusiViite);
         viiteEntity.getLapset().add(uusiViite);
 
-        return mapper.map(uusiViite, PerusteenSisaltoViiteDto.class);
+        return mapper.map(uusiViite, PerusteenOsaViiteDto.Matala.class);
     }
 
     @Override
     @Transactional
-    public PerusteenSisaltoViiteDto attachSisaltoLapsi(Long perusteId, Long parentViiteId, Long tekstikappaleId) {
+    public PerusteenOsaViiteDto.Matala attachSisaltoLapsi(Long perusteId, Long parentViiteId, Long tekstikappaleId) {
         PerusteenOsaViite viiteEntity = perusteenOsaViiteRepo.findOne(parentViiteId);
         if (viiteEntity == null) {
             throw new BusinessRuleViolationException("Perusteenosaviitettä ei ole olemassa");
@@ -613,7 +616,7 @@ public class PerusteServiceImpl implements PerusteService {
         uusiViite = perusteenOsaViiteRepo.save(uusiViite);
         viiteEntity.getLapset().add(uusiViite);
 
-        return mapper.map(uusiViite, PerusteenSisaltoViiteDto.class);
+        return mapper.map(uusiViite, PerusteenOsaViiteDto.Matala.class);
     }
 
     @Override

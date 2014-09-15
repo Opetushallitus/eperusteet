@@ -145,12 +145,12 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     @Transactional
     public PerusteenOsaViiteDto.Laaja revertToVersio(Long id, Integer versioId) {
         PerusteenOsaViite revision = repository.findRevision(id, versioId);
-        return mapper.map(repository.save(revision), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja.class);
+        return mapper.map(repository.save(revision), PerusteenOsaViiteDto.Laaja.class);
     }
 
     @Override
     @Transactional
-    public void update(Long id, PerusteenOsaViiteDto<?,?> uusi) {
+    public void update(Long id, PerusteenOsaViiteDto.Puu<?,?> uusi) {
         PerusteenOsaViite viite = repository.getOne(id);
         clearChildren(viite);
         PerusteenOsaViite parent = viite.getVanhempi();
@@ -165,14 +165,14 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         pov.getLapset().clear();
     }
 
-    private PerusteenOsaViite updateTraverse(PerusteenOsaViite parent, PerusteenOsaViiteDto<?,?> uusi) {
+    private PerusteenOsaViite updateTraverse(PerusteenOsaViite parent, PerusteenOsaViiteDto.Puu<?,?> uusi) {
         PerusteenOsaViite pov = repository.getOne(uusi.getId());
         pov.setVanhempi(parent);
 
         List<PerusteenOsaViite> lapset = pov.getLapset();
         lapset.clear();
 
-        for (PerusteenOsaViiteDto<?,?> x : uusi.getLapset()) {
+        for (PerusteenOsaViiteDto.Puu<?,?> x : uusi.getLapset()) {
             lapset.add(updateTraverse(pov, x));
         }
         return repository.save(pov);
