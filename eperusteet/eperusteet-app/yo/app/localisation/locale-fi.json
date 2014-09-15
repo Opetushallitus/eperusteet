@@ -642,5 +642,6 @@
     "muokkaa-ryhmää": "Muokkaa ryhmää",
     "tallenna-työryhmä": "Tallenna muutokset",
     "tallenna-muutokset": "Tallenna työryhmä",
-    "poistetaanko-työryhmä": "Poistetaanko työryhmä?"
+    "poistetaanko-työryhmä": "Poistetaanko työryhmä?",
+    "nimi-on-jo-käytössä": "Työryhmä on jo olemassa. Valitse toinen nimi."
 }

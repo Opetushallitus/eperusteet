@@ -5,7 +5,9 @@
 
 <div class="modal-body tyoryhma-modal">
   <label for="nimi" kaanna>työryhmän-nimi</label>*
-  <input id="nimi" ng-model="ryhma.nimi" type="text" class="form-control">
+  <input ng-change="validoiRyhma(ryhma.nimi)" id="nimi" ng-model="ryhma.nimi" type="text" class="form-control">
+
+  <div ng-show="virheellinenNimi" class="talert alert alert-error" kaanna>nimi-on-jo-käytössä</div>
 
   <div class="tjasenet">
     <label kaanna>valitse-jäsenet</label>
@@ -35,7 +37,7 @@
     <button class="btn btn-danger" ng-click="poista()" kaanna>poista</button>
   </div>
   <button class="btn btn-danger" ng-click="peruuta()" kaanna>peru</button>
-  <button class="btn btn-danger" ng-disabled="ryhma.jasenet.length === 0 || ryhma.nimi.length < 1" ng-click="ok()">
+  <button class="btn btn-danger" ng-disabled="virheellinenNimi || ryhma.jasenet.length === 0 || ryhma.nimi.length < 1" ng-click="ok()">
     <span ng-if="!uusi" kaanna>tallenna-työryhmä</span>
     <span ng-if="uusi" kaanna>tallenna-muutokset</span>
   </button>

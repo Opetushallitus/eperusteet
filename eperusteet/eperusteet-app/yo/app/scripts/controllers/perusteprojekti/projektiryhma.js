@@ -62,6 +62,7 @@ angular.module('eperusteApp')
         templateUrl: 'views/modals/lisaaTyoryhma.html',
         controller: 'LuoTyoryhmaModalCtrl',
         resolve: {
+          ryhmat: function() { return _.clone($scope.tyoryhmat) || {}; },
           ryhma: function() { return _.clone($scope.tyoryhmat[ryhma]) || null; },
           jasenet: function() { return _.clone($scope.jasenet); }
         }
@@ -95,12 +96,16 @@ angular.module('eperusteApp')
     };
 
   })
-  .controller('LuoTyoryhmaModalCtrl', function($scope, $modalInstance, Varmistusdialogi, ryhma, jasenet) {
+  .controller('LuoTyoryhmaModalCtrl', function($scope, $modalInstance, Varmistusdialogi, ryhma, ryhmat, jasenet) {
     $scope.uusi = ryhma ? false : true;
 
     $scope.ryhma = {
       nimi: ryhma ? _.first(_.values(ryhma)).nimi : '',
       jasenet: ryhma ? _.keys(ryhma) : []
+    };
+
+    $scope.validoiRyhma = function(nimi) {
+      $scope.virheellinenNimi = ryhmat[nimi] ? true : false;
     };
 
     $scope.jasenet = jasenet || [];
