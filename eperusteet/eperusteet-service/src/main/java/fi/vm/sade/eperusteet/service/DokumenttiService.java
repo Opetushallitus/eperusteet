@@ -15,12 +15,9 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import com.google.code.docbook4j.Docbook4JException;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
-import java.io.IOException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -29,18 +26,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public interface DokumenttiService {
 
-    @PreAuthorize("isAuthenticated()")
-    public byte[] generateFor(DokumenttiDto dto) throws IOException,
-        TransformerException, ParserConfigurationException,
-        Docbook4JException;
-
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasPermission(#dto.perusteId, 'peruste', 'LUKU')")
     public void setStarted(DokumenttiDto dto);
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasPermission(#dto.perusteId, 'peruste', 'LUKU')")
+    @Async(value = "docTaskExecutor")
     public void generateWithDto(DokumenttiDto dto);
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasPermission(#dto.perusteId, 'peruste', 'LUKU')")
     public DokumenttiDto createDtoFor(final long id, Kieli kieli);
 
     @PreAuthorize("isAuthenticated()")

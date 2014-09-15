@@ -59,6 +59,12 @@ public abstract class PerusteenOsa
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen nimi;
 
+    @Getter
+    @Setter
+    @Enumerated(value = EnumType.STRING)
+    @NotNull
+    private PerusteTila tila = PerusteTila.LUONNOS;
+
     public Long getId() {
         return id;
     }
@@ -74,12 +80,6 @@ public abstract class PerusteenOsa
     public void setNimi(TekstiPalanen nimi) {
         this.nimi = nimi;
     }
-
-    @Getter
-    @Setter
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    private PerusteTila tila;
 
     @Override
     public void mergeState(PerusteenOsa updated) {

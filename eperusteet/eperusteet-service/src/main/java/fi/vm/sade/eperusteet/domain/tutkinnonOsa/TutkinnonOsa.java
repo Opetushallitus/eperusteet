@@ -78,8 +78,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @Column(name = "koodi_arvo")
     private String koodiArvo;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    //Hibernate bug: orphanRemoval ei toimi jos fetchMode = Lazy
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Arviointi arviointi;
 
     @Getter

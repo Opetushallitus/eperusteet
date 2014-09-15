@@ -20,91 +20,69 @@
 angular.module('eperusteApp')
   .factory('Dokumentti', function($resource, SERVICE_LOC) {
 
-      // api:
-      //
-      // Generointi:
-      // /dokumentti/create/:id/:kieli
-      // /dokumentti/create/:id // oletuskieli
-      //
-      // Luonnin seuranta/tilakysely:
-      // /dokumentti/query/:token
-      //
-      // Valmiin dokumentin hakeminen:
-      // /dokumentti/get/:token
-      //
-      // Yksivaiheinen luominen
-      // /dokumentti/:id/:kieli
-      // /dokumentti/:id // oletuskieli
+    // api:
+    //
+    // Generointi:
+    // POST /dokumentit?perusteId=<id>&kieli=fi
+    // GET  /dokumentit/:token/tila
+    // Valmiin dokumentin hakeminen:
+    // GET /dokumentit/:token
 
-    return $resource(SERVICE_LOC + '/dokumentti/create/:id/:kieli', {
-      id: '@id',
-      kieli: '@kieli'
+    var baseUrl = SERVICE_LOC+'/dokumentit/:id';
+    return $resource(baseUrl, {
+      id: '@id'
+    }, {
+      'tila': {
+        method: 'GET', url: baseUrl+'/tila'
+      }
     });
   })
-  .factory('DokumenttiHaku', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/dokumentti/:tapa/:token', {
-      tapa: '@tapa', // query | get
-      token: '@token'
-    },
-    {
-        hae: {method: 'GET', responseType: 'arraybuffer'}
-    });
-  })
-  .factory('DokumenttiKysely', function($resource, SERVICE_LOC) {
-
-    return $resource(SERVICE_LOC + '/dokumentti/uusin/:perusteId/:kieli', {
-      perusteId: '@id',
-      kieli: '@kieli'
-    });
-  })
-  .service('Pdf', function(Dokumentti, DokumenttiHaku, DokumenttiKysely, SERVICE_LOC) {
+  .service('Pdf', function(Dokumentti, SERVICE_LOC) {
 
     function generoiPdf(perusteId, kieli, success, failure) {
       success = success || angular.noop;
       failure = failure || angular.noop;
 
-      Dokumentti.get({
-        id: perusteId,
-        kieli: kieli
-      }, success, failure);
+      Dokumentti.save({
+        'perusteId': perusteId,
+        'kieli': kieli
+      }, null, success, failure);
     }
 
     function haeTila(tokenId, success, failure) {
       success = success || angular.noop;
       failure = failure || angular.noop;
 
-      DokumenttiHaku.get({
-        tapa: 'query',
-        token: tokenId
+      Dokumentti.tila({
+        id: tokenId
       }, success);
     }
 
     function haeDokumentti(tokenId, success, failure) {
-        success = success || angular.noop;
-        failure = failure || angular.noop;
+      success = success || angular.noop;
+      failure = failure || angular.noop;
 
-        return DokumenttiHaku.hae({
-            tapa: 'get',
-            token: tokenId
-        }, success);
+      return Dokumentti.get({
+        id: tokenId
+      }, success);
     }
 
     function haeLinkki(tokenId) {
-        // dis like, ewwww
-        return SERVICE_LOC + '/dokumentti/get/'+tokenId;
+      console.log(new Dokumentti({id:tokenId}));
+      // dis like, ewwww
+      return SERVICE_LOC + '/dokumentit/' + tokenId;
     }
 
     function haeUusin(perusteId, kieli, success, failure) {
       success = success || angular.noop;
       failure = failure || angular.noop;
 
-      return DokumenttiKysely.get({
+      return Dokumentti.get({
         perusteId: perusteId,
         kieli: kieli
       }, success);
 
     }
-
     return {
       generoiPdf: generoiPdf,
       haeDokumentti: haeDokumentti,
@@ -114,21 +92,23 @@ angular.module('eperusteApp')
     };
   })
 
-  .factory('PdfCreation', function ($modal, YleinenData) {
+  .factory('PdfCreation', function($modal, YleinenData) {
     var service = {};
     var perusteId = null;
 
-    service.setPerusteId = function (id) {
+    service.setPerusteId = function(id) {
       perusteId = id;
     };
 
-    service.openModal = function () {
+    service.openModal = function() {
       $modal.open({
         templateUrl: 'views/modals/pdfcreation.html',
         controller: 'PdfCreationController',
         resolve: {
-          perusteId: function () { return perusteId; },
-          kielet: function () {
+          perusteId: function() {
+            return perusteId;
+          },
+          kielet: function() {
             return {
               lista: _.sortBy(YleinenData.kielet),
               valittu: YleinenData.kieli
@@ -140,13 +120,13 @@ angular.module('eperusteApp')
 
     return service;
   })
-  .controller('PdfCreationController', function ($scope, kielet, Pdf, perusteId,
+  .controller('PdfCreationController', function($scope, kielet, Pdf, perusteId,
     $timeout, Notifikaatiot, Kaanna) {
     $scope.kielet = kielet;
     $scope.docs = {};
     var pdfToken = null;
 
-    $scope.hasPdf = function () {
+    $scope.hasPdf = function() {
       return !!$scope.docs[$scope.kielet.valittu];
     };
 
@@ -157,7 +137,7 @@ angular.module('eperusteApp')
       } else {
         kielet = kielet.lista;
       }
-      _.each(kielet, function (kieli) {
+      _.each(kielet, function(kieli) {
         Pdf.haeUusin(perusteId, kieli, function(res) {
           if (kieli === $scope.kielet.valittu) {
             $scope.tila = res.tila;
@@ -177,7 +157,7 @@ angular.module('eperusteApp')
     function getStatus(id) {
       Pdf.haeTila(id, function(res) {
         $scope.tila = res.tila;
-        switch(res.tila) {
+        switch (res.tila) {
           case 'luodaan':
           case 'ei_ole':
             startPolling(res.id);
@@ -198,7 +178,7 @@ angular.module('eperusteApp')
     }
 
     function startPolling(id) {
-      $scope.poller = $timeout(function () {
+      $scope.poller = $timeout(function() {
         getStatus(id);
       }, 3000);
     }
@@ -207,7 +187,7 @@ angular.module('eperusteApp')
       $timeout.cancel($scope.poller);
     });
 
-    $scope.generate = function () {
+    $scope.generate = function() {
       enableActions(false);
       $scope.docs[$scope.kielet.valittu] = null;
       $scope.tila = 'luodaan';
@@ -216,13 +196,13 @@ angular.module('eperusteApp')
           pdfToken = res.id;
           startPolling(res.id);
         }
-      }, function () {
+      }, function() {
         enableActions();
         $scope.tila = 'ei_ole';
       });
     };
 
-    $scope.$watch('kielet.valittu', function (value) {
+    $scope.$watch('kielet.valittu', function(value) {
       fetchLatest(value);
     });
   });
