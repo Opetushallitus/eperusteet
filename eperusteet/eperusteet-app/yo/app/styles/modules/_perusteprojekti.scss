@@ -270,3 +270,31 @@ $napin-leveys: 250px;
     width: $napin-leveys;
   }
 }
+
+.tyoryhma {
+  .ryhmapalkki {
+    font-size: medium;
+    margin-left: 20px;
+  }
+}
+
+.tyoryhma-modal {
+  .tjasenet {
+    margin-top: 20px;
+    min-height: 400px;
+
+    .painikkeet {
+      text-align: center;
+      margin-top: 120px;
+
+      button {
+        margin-top: 10px;
+        padding: 10px;
+      }
+    }
+
+    select {
+      height: 360px;
+    }
+  }
+}

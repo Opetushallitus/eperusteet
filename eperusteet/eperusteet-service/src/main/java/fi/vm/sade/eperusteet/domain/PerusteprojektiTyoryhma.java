@@ -55,14 +55,14 @@ public class PerusteprojektiTyoryhma implements Serializable {
 
     @Getter
     @Setter
-    @NotNull(message = "Työryhmän oid ei voi olla tyhjä")
-    @Column(name = "tyoryhma_oid")
-    private String tyoryhmaOid;
+    @NotNull(message = "Työryhmän nimi ei voi olla tyhjä")
+    @Column(name = "nimi")
+    private String nimi;
 
-    public PerusteprojektiTyoryhma(Perusteprojekti perusteprojekti, String kayttajaOid, String tyoryhmaOid) {
+    public PerusteprojektiTyoryhma(Perusteprojekti perusteprojekti, String kayttajaOid, String nimi) {
         this.perusteprojekti = perusteprojekti;
         this.kayttajaOid = kayttajaOid;
-        this.tyoryhmaOid = tyoryhmaOid;
+        this.nimi = nimi;
     }
 
     public PerusteprojektiTyoryhma() {

@@ -628,5 +628,18 @@
 
     "hae-osaamisala": "Hae osaamisala",
 
-    "ohje-tutkinnonosa-tyyppi": "<p>Tutkinnon osan tyyppi määrittää osalle täytettävät sisällöt.</p><p><strong>Tutkintokohtainen</strong>: Tutkinnon osalle määritetään sisältö ja arviointikriteerit.</p><p><strong>Yhteinen</strong>: Tutkinnon osalle määritetään osakohtaiset osa-alueet, joille kullekin määritellään oma sisältö ja arviointikriteerit.</p>"
+    "ohje-tutkinnonosa-tyyppi": "<p>Tutkinnon osan tyyppi määrittää osalle täytettävät sisällöt.</p><p><strong>Tutkintokohtainen</strong>: Tutkinnon osalle määritetään sisältö ja arviointikriteerit.</p><p><strong>Yhteinen</strong>: Tutkinnon osalle määritetään osakohtaiset osa-alueet, joille kullekin määritellään oma sisältö ja arviointikriteerit.</p>",
+    "hae-työryhmä": "Hae työryhmä",
+    "rajaa-ryhmiä": "Rajaa ryhmiä",
+    "hae-ryhmä": "Hae ryhmä",
+    "haetaan-työryhmiä": "Haetaan työryhmiä",
+    "ladataan-työryhmän-tietoja": "Haetaan työryhmien tietoja",
+    "luo-uusi": "Luo uusi",
+    "luo-työryhmä": "Luo työryhmä",
+    "työryhmän-nimi": "Työryhmän nimi",
+    "valitse-jäsenet": "Valitse jäsenet",
+    "muokkaa-työryhmää": "Muokkaa työryhmää",
+    "muokkaa-ryhmää": "Muokkaa ryhmää",
+    "tallenna-työryhmä": "Tallenna muutokset",
+    "tallenna-muutokset": "Tallenna työryhmä"
 }

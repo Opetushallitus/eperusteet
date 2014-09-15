@@ -26,7 +26,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author nkala
  */
 public interface PerusteprojektiTyoryhmaRepository extends JpaRepository<PerusteprojektiTyoryhma, Long> {
-    List<PerusteprojektiTyoryhma> findAllByPerusteprojektiAndTyoryhmaOid(Perusteprojekti perusteprojekti, String tyoryhmaOid);
+    List<PerusteprojektiTyoryhma> findAllByPerusteprojektiAndNimi(Perusteprojekti perusteprojekti, String nimi);
+
+    List<PerusteprojektiTyoryhma> deleteAllByPerusteprojektiAndNimi(Perusteprojekti perusteprojekti, String nimi);
 
     List<PerusteprojektiTyoryhma> findByPerusteprojekti(Perusteprojekti perusteprojekti);
 }

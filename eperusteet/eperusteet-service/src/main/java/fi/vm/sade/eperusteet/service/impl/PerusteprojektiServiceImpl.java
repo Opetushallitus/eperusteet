@@ -37,7 +37,7 @@ import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
@@ -391,32 +391,53 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Transactional
     @Override
-    public TyoryhmaDto saveTyoryhma(Long perusteProjektiId, TyoryhmaDto tr) {
+    public List<TyoryhmaHenkiloDto> saveTyoryhma(Long perusteProjektiId, String tyoryhma, List<TyoryhmaHenkiloDto> henkilot) {
         Perusteprojekti pp = repository.findOne(perusteProjektiId);
-        PerusteprojektiTyoryhma ppt = perusteprojektiTyoryhmaRepository.save(new PerusteprojektiTyoryhma(pp, tr.getKayttajaOid(), tr.getTyoryhmaOid()));
-        return mapper.map(ppt, TyoryhmaDto.class);
+        removeTyoryhma(perusteProjektiId, tyoryhma);
+        perusteprojektiTyoryhmaRepository.flush();
+        List<PerusteprojektiTyoryhma> res = new ArrayList<>();
+
+        for (TyoryhmaHenkiloDto trh : henkilot) {
+            res.add(perusteprojektiTyoryhmaRepository.save(new PerusteprojektiTyoryhma(pp, trh.getKayttajaOid(), trh.getNimi())));
+        }
+        return mapper.mapAsList(res, TyoryhmaHenkiloDto.class);
     }
 
     @Transactional
     @Override
-    public List<TyoryhmaDto> getTyoryhmat(Long perusteProjektiId) {
+    public TyoryhmaHenkiloDto saveTyoryhma(Long perusteProjektiId, TyoryhmaHenkiloDto tr) {
+        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        PerusteprojektiTyoryhma ppt = perusteprojektiTyoryhmaRepository.save(new PerusteprojektiTyoryhma(pp, tr.getKayttajaOid(), tr.getNimi()));
+        return mapper.map(ppt, TyoryhmaHenkiloDto.class);
+    }
+
+    @Transactional
+    @Override
+    public List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(Long perusteProjektiId) {
         Perusteprojekti pp = repository.findOne(perusteProjektiId);
         List<PerusteprojektiTyoryhma> tr = perusteprojektiTyoryhmaRepository.findByPerusteprojekti(pp);
-        return mapper.mapAsList(tr, TyoryhmaDto.class);
+        return mapper.mapAsList(tr, TyoryhmaHenkiloDto.class);
     }
 
     @Transactional
     @Override
-    public List<TyoryhmaDto> getTyoryhmat(Long perusteProjektiId, String tyoryhmaOid) {
+    public List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(Long perusteProjektiId, String nimi) {
         Perusteprojekti pp = repository.findOne(perusteProjektiId);
-        List<PerusteprojektiTyoryhma> tr = perusteprojektiTyoryhmaRepository.findAllByPerusteprojektiAndTyoryhmaOid(pp, tyoryhmaOid);
-        return mapper.mapAsList(tr, TyoryhmaDto.class);
+        List<PerusteprojektiTyoryhma> tr = perusteprojektiTyoryhmaRepository.findAllByPerusteprojektiAndNimi(pp, nimi);
+        return mapper.mapAsList(tr, TyoryhmaHenkiloDto.class);
     }
 
     @Transactional
     @Override
     public void removeTyoryhma(Long trId) {
         perusteprojektiTyoryhmaRepository.delete(trId);
+    }
+
+    @Transactional
+    @Override
+    public void removeTyoryhma(Long perusteProjektiId, String nimi) {
+        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        perusteprojektiTyoryhmaRepository.deleteAllByPerusteprojektiAndNimi(pp, nimi);
     }
 
 }

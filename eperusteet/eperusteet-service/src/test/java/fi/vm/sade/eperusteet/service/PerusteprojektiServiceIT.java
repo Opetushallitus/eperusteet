@@ -14,20 +14,23 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.perusteprojekti;
+package fi.vm.sade.eperusteet.service;
 
-import java.io.Serializable;
-import lombok.Getter;
-import lombok.Setter;
+import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
  * @author nkala
  */
-@Getter
-@Setter
-public class TyoryhmaDto implements Serializable {
-    private Long id;
-    private String kayttajaOid;
-    private String tyoryhmaOid;
+public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
+
+    @Autowired
+    private PerusteprojektiService service;
+
+    @Test
+    public void testTyoryhmat() {
+        
+    }
 }

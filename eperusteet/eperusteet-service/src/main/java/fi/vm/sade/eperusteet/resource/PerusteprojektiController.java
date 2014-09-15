@@ -23,7 +23,7 @@ import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.util.BooleanDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
@@ -144,36 +144,51 @@ public class PerusteprojektiController {
 
     @RequestMapping(value = "/{id}/tyoryhma", method = GET)
     @ResponseBody
-    public ResponseEntity<List<TyoryhmaDto>> getTyoryhma(@PathVariable("id") final Long id) {
-        List<TyoryhmaDto> tyoryhmat = service.getTyoryhmat(id);
+    public ResponseEntity<List<TyoryhmaHenkiloDto>> getTyoryhmat(@PathVariable("id") final Long id) {
+        List<TyoryhmaHenkiloDto> tyoryhmat = service.getTyoryhmaHenkilot(id);
         return new ResponseEntity<>(tyoryhmat, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/tyoryhma/{nimi}", method = GET)
     @ResponseBody
-    public ResponseEntity<List<TyoryhmaDto>> getTyoryhmaByNimi(
+    public ResponseEntity<List<TyoryhmaHenkiloDto>> getTyoryhmaByNimi(
             @PathVariable("nimi") final String nimi,
             @PathVariable("id") final Long id
     ) {
-        List<TyoryhmaDto> tyoryhmat = service.getTyoryhmat(id, nimi);
+        List<TyoryhmaHenkiloDto> tyoryhmat = service.getTyoryhmaHenkilot(id, nimi);
         return new ResponseEntity<>(tyoryhmat, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/tyoryhma", method = POST)
     @ResponseBody
-    public ResponseEntity<TyoryhmaDto> postTyoryhma(
+    public ResponseEntity<List<TyoryhmaHenkiloDto>> postMultipleTyoryhmaHenkilot(
             @PathVariable("id") final Long id,
-            @RequestBody TyoryhmaDto tyoryhma
+            @RequestBody List<TyoryhmaHenkiloDto> tyoryhma
     ) {
-        TyoryhmaDto td = service.saveTyoryhma(id, tyoryhma);
-        return new ResponseEntity<>(td, HttpStatus.OK);
+        List<TyoryhmaHenkiloDto> res = new ArrayList<>();
+        for (TyoryhmaHenkiloDto thd : tyoryhma) {
+            res.add(service.saveTyoryhma(id, thd));
+        }
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}/tyoryhma/{trId}", method = DELETE)
-    public ResponseEntity<TyoryhmaDto> removeTyoryhma(
-            @PathVariable("trId") final Long trId
+    @RequestMapping(value = "/{id}/tyoryhma/{nimi}", method = POST)
+    @ResponseBody
+    public ResponseEntity<List<TyoryhmaHenkiloDto>> postMultipleTyoryhmaHenkilotToTyoryhma(
+            @PathVariable("id") final Long id,
+            @PathVariable("nimi") final String nimi,
+            @RequestBody List<TyoryhmaHenkiloDto> tyoryhma
     ) {
-        service.removeTyoryhma(trId);
+        List<TyoryhmaHenkiloDto> res = service.saveTyoryhma(id, nimi, tyoryhma);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/tyoryhma/{nimi}", method = DELETE)
+    public ResponseEntity<TyoryhmaHenkiloDto> removeTyoryhmat(
+            @PathVariable("id") final Long id,
+            @PathVariable("nimi") final String nimi
+    ) {
+        service.removeTyoryhma(id, nimi);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

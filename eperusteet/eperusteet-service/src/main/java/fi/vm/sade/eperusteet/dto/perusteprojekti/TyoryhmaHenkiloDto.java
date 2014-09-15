@@ -14,10 +14,9 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.dto.perusteprojekti;
 
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.util.List;
+import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,9 +26,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class RyhmanTietoDto {
-    private String oid;
-//    private LokalisoituTekstiDto nimi;
-    private List<String> ryhmatyypit;
-//    private List<String> kayttoryhmat;
+public class TyoryhmaHenkiloDto implements Serializable {
+    private Long id;
+    private String kayttajaOid;
+    private String nimi;
 }

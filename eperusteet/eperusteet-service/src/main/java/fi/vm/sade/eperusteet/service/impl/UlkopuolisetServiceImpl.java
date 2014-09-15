@@ -18,15 +18,11 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fi.vm.sade.eperusteet.dto.RyhmanTietoDto;
 import fi.vm.sade.eperusteet.service.UlkopuolisetService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
 import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -55,7 +51,6 @@ public class UlkopuolisetServiceImpl implements UlkopuolisetService {
         CachingRestClient crc = restClientFactory.create(serviceUrl);
         try {
             String url = serviceUrl + OMAT_TIEDOT_API;
-            ArrayList<RyhmanTietoDto> res = new ArrayList<>();
             JsonNode tree = mapper.readTree(crc.getAsString(url));
             return tree;
         } catch (IOException ex) {
