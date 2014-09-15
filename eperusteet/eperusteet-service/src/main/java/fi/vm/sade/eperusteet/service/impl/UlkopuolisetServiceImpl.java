@@ -35,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UlkopuolisetServiceImpl implements UlkopuolisetService {
 
-    @Value("${cas.service.organisaatio-service}")
+    @Value("${cas.service.organisaatio-service:''}")
     private String serviceUrl;
 
     private static final String OMAT_TIEDOT_API = "/rest/organisaatio/1.2.246.562.10.00000000001/ryhmat";
