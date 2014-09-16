@@ -624,6 +624,9 @@
 
     "hae-osaamisala": "Hae osaamisala",
 
+    "nayta-kuvaukset": "Näytä kuvaukset",
+    "piilota-kuvaukset": "Piilota kuvaukset",
+
     "ohje-tutkinnonosa-tyyppi": "<p>Tutkinnon osan tyyppi määrittää osalle täytettävät sisällöt.</p><p><strong>Tutkintokohtainen</strong>: Tutkinnon osalle määritetään sisältö ja arviointikriteerit.</p><p><strong>Yhteinen</strong>: Tutkinnon osalle määritetään osakohtaiset osa-alueet, joille kullekin määritellään oma sisältö ja arviointikriteerit.</p>",
     "hae-tyoryhma": "Hae työryhmä",
     "rajaa-ryhmia": "Rajaa ryhmiä",

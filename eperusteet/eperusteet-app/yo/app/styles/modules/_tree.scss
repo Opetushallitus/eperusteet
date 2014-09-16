@@ -13,9 +13,22 @@ $tree-container-width: 800px;
 $tree-group-width: 480px;
 
 .group-toggler, .group-toggler span {
+  margin-left: 10px;
+
   &:hover, &:active, &:focus {
     text-decoration: none;
     outline: 0;
+  }
+
+  .kuvaus-box {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: #005493;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    left: 5px;
   }
 }
 

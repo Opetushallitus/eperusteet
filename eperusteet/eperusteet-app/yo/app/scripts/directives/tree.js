@@ -80,14 +80,21 @@ angular.module('eperusteApp')
           }
         });
 
-        scope.togglaaPolut = function() {
-          var avaamattomat = _(scope.rakenne.osat).reject(function(osa) { return osa._tutkinnonOsaViite || osa.$collapsed || osa.osat.length === 0; }).size();
-          _.forEach(scope.rakenne.osat, function(r) {
-            if (r.osat && _.size(r.osat) > 0) {
-              r.$collapsed = avaamattomat !== 0;
-            }
-          });
-        };
+        function genericToggle(field) {
+          return function() {
+            var avaamattomat = _(scope.rakenne.osat).reject(function(osa) {
+              return osa._tutkinnonOsaViite || osa[field] || osa.osat.length === 0;
+            }).size();
+
+            _.forEach(scope.rakenne.osat, function(r) {
+              if (r.osat && _.size(r.osat) > 0) {
+                r[field] = avaamattomat !== 0;
+              }
+            });
+          };
+        }
+        scope.togglaaKuvaukset = genericToggle('$showKuvaus');
+        scope.togglaaPolut = genericToggle('$collapsed');
 
         scope.tkaanna = function(input) {
           return _.reduce(_.map(input, function(str) {
@@ -189,8 +196,12 @@ angular.module('eperusteApp')
                          '    <span ng-hide="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "piilota-virheet" | kaanna }}</span>' +
                          '    <span ng-show="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "nayta-virheet" | kaanna }}</span>' +
                          '  </a>' +
+                         '  <a href="" ng-click="togglaaKuvaukset()" class="group-toggler">' +
+                         '    <span><span class="kuvaus-box" kaanna></span><span class="avaa-sulje" kaanna>nayta-kuvaukset</span></span>' +
+                         '    ' +
+                         '  </a>' +
                          '  <a href="" ng-click="togglaaPolut()" class="group-toggler">' +
-                         '    <span class="avaa-sulje"><img src="images/expander.png" alt=""> {{ "avaa-sulje-kaikki" | kaanna }}</span>' +
+                         '    <span class="avaa-sulje"><img src="images/expander.png" alt="">{{ "avaa-sulje-kaikki" | kaanna }}</span>' +
                          '  </a>' +
                          '</div>';
 
