@@ -96,6 +96,14 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @NotNull
     private TutkinnonOsaTyyppi tyyppi = TutkinnonOsaTyyppi.NORMAALI;
 
+    public TutkinnonOsa() {
+    }
+
+    public TutkinnonOsa(TutkinnonOsa other) {
+        super(other);
+        copyState(other);
+    }
+
     @Override
     public EntityReference getReference() {
         return new EntityReference(getId());
@@ -103,7 +111,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     @Override
     public TutkinnonOsa copy() {
-        throw new UnsupportedOperationException("Tutkinnonosan kopiointia ei ole toteutettu");
+        return new TutkinnonOsa(this);
     }
 
     public TekstiPalanen getTavoitteet() {
@@ -180,9 +188,23 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             if (other.getOsaAlueet() != null) {
                 this.setOsaAlueet(mergeOsaAlueet(this.getOsaAlueet(), other.getOsaAlueet()));
             }
+        }
+    }
 
-
-
+    private void copyState(TutkinnonOsa other) {
+        this.arviointi = other.arviointi == null ? null : new Arviointi(other.getArviointi());
+        this.ammattitaitovaatimukset = other.getAmmattitaitovaatimukset();
+        this.ammattitaidonOsoittamistavat = other.getAmmattitaidonOsoittamistavat();
+        this.tavoitteet = other.getTavoitteet();
+        this.koodiUri = other.getKoodiUri();
+        this.koodiArvo = other.getKoodiArvo();
+        this.opintoluokitus = other.getOpintoluokitus();
+        this.tyyppi = other.getTyyppi();
+        if ( this.tyyppi == TutkinnonOsaTyyppi.TUTKE2 && other.getOsaAlueet() != null) {
+            this.osaAlueet = new ArrayList<>();
+            for ( OsaAlue o : other.getOsaAlueet() ) {
+                this.osaAlueet.add(new OsaAlue(o));
+            }
         }
     }
 
@@ -193,7 +215,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             for (OsaAlue osaAlueOther : other) {
                 for (OsaAlue osaAlueCurrent : current) {
                     if (osaAlueCurrent.getId().equals(osaAlueOther.getId())) {
-                    // Jos tutkinnon osalla osa-aluelista mergessä, niin kyseessä on kevyempi
+                        // Jos tutkinnon osalla osa-aluelista mergessä, niin kyseessä on kevyempi
                         // osa-alue objekteja. Joten käytetään partialMergeStatea.
                         osaAlueCurrent.partialMergeState(osaAlueOther);
                         tempList.add(osaAlueCurrent);

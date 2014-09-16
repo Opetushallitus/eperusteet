@@ -68,6 +68,13 @@ public class Arviointi implements Serializable {
     @Getter
     private List<ArvioinninKohdealue> arvioinninKohdealueet = new ArrayList<>();
 
+    public Arviointi() {
+    }
+
+    public Arviointi(Arviointi other) {
+        copyState(other);
+    }
+
     public void setArvioinninKohdealueet(List<ArvioinninKohdealue> arvioinninKohdealueet) {
         this.arvioinninKohdealueet.clear();
         if (arvioinninKohdealueet != null) {
@@ -96,6 +103,13 @@ public class Arviointi implements Serializable {
             return Objects.equals(this.arvioinninKohdealueet, other.arvioinninKohdealueet);
         }
         return false;
+    }
+
+    private void copyState(Arviointi other) {
+        this.setLisatiedot(other.getLisatiedot());
+        for (ArvioinninKohdealue aka : other.getArvioinninKohdealueet()) {
+            this.arvioinninKohdealueet.add(new ArvioinninKohdealue(aka));
+        }
     }
 
 }

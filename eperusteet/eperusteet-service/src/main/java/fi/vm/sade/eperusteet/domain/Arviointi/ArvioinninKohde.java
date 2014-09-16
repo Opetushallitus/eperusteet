@@ -52,7 +52,6 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Audited
 public class ArvioinninKohde implements Serializable {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter
@@ -77,9 +76,20 @@ public class ArvioinninKohde implements Serializable {
     @Getter
     private Set<OsaamistasonKriteeri> osaamistasonKriteerit = new HashSet<>();
 
+    public ArvioinninKohde() {
+    }
+
+    public ArvioinninKohde(ArvioinninKohde other) {
+        this.otsikko = other.getOtsikko();
+        this.arviointiAsteikko = other.getArviointiAsteikko();
+        for ( OsaamistasonKriteeri k : other.getOsaamistasonKriteerit() ) {
+            this.osaamistasonKriteerit.add(new OsaamistasonKriteeri(k));
+        }
+    }
+
     public void setOsaamistasonKriteerit(Set<OsaamistasonKriteeri> osaamistasonKriteerit) {
         this.osaamistasonKriteerit.clear();
-        if ( osaamistasonKriteerit != null ) {
+        if (osaamistasonKriteerit != null) {
             this.osaamistasonKriteerit.addAll(osaamistasonKriteerit);
         }
     }

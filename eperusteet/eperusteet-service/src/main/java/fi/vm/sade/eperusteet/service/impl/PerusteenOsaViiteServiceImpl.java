@@ -104,14 +104,8 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     public TutkinnonOsaViiteDto kloonaaTutkinnonOsa(Long id) {
         TutkinnonOsaViite tov = tutkinnonOsaViiteRepository.getOne(id);
         TutkinnonOsa to = tov.getTutkinnonOsa();
-        TutkinnonOsa uusi = new TutkinnonOsa();
+        TutkinnonOsa uusi = new TutkinnonOsa(to);
         uusi.setTila(PerusteTila.LUONNOS);
-        uusi.setNimi(to.getNimi());
-        uusi.setAmmattitaidonOsoittamistavat(to.getAmmattitaidonOsoittamistavat());
-        uusi.setAmmattitaitovaatimukset(to.getAmmattitaitovaatimukset());
-        uusi.setArviointi(arviointiService.kopioi(to.getArviointi()));
-        uusi.setOpintoluokitus(to.getOpintoluokitus());
-        uusi.setTavoitteet(to.getTavoitteet());
         tov.setTutkinnonOsa(tutkinnonOsaRepository.save(uusi));
         return mapper.map(tov, TutkinnonOsaViiteDto.class);
     }

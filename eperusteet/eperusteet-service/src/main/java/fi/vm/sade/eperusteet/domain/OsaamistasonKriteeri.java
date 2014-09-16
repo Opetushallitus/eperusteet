@@ -71,6 +71,14 @@ public class OsaamistasonKriteeri implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private List<TekstiPalanen> kriteerit = new ArrayList<>();
 
+    public OsaamistasonKriteeri() {
+    }
+
+    public OsaamistasonKriteeri(OsaamistasonKriteeri other) {
+        this.osaamistaso = other.osaamistaso;
+        this.kriteerit.addAll(other.getKriteerit());
+    }
+    
     public void setKriteerit(List<TekstiPalanen> kriteerit) {
         this.kriteerit.clear();
         if (kriteerit != null) {

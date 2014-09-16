@@ -16,19 +16,13 @@
 
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohde;
-import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
-import fi.vm.sade.eperusteet.domain.Osaamistaso;
-import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.repository.ArviointiRepository;
 import fi.vm.sade.eperusteet.service.internal.ArviointiService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,26 +64,7 @@ public class ArviointiServiceImpl implements ArviointiService{
         if (arviointi == null) {
             return null;
         }
-        Arviointi uusiArviointi = new Arviointi();
-        uusiArviointi.setLisatiedot(arviointi.getLisatiedot());
-        List<ArvioinninKohdealue> arvioinninKohdealueet = arviointi.getArvioinninKohdealueet();
-        List<ArvioinninKohdealue> uudetKohdealueet = new ArrayList<>();
-        for (ArvioinninKohdealue aka : arvioinninKohdealueet) {
-            ArvioinninKohdealue uusiAka = new ArvioinninKohdealue();
-            uusiAka.setOtsikko(aka.getOtsikko());
-            List<ArvioinninKohde> arvioinninKohteet = aka.getArvioinninKohteet();
-            List<ArvioinninKohde> uusiArvoinninKohteet = new ArrayList<>();
-            for (ArvioinninKohde ak : arvioinninKohteet) {
-                ArvioinninKohde uusiAk = new ArvioinninKohde();
-                uusiAk.setOtsikko(ak.getOtsikko());
-                uusiAk.setArviointiAsteikko(ak.getArviointiAsteikko());
-                uusiAk.setOsaamistasonKriteerit(ak.getOsaamistasonKriteerit());
-                uusiArvoinninKohteet.add(uusiAk);
-            }
-            uusiAka.setArvioinninKohteet(uusiArvoinninKohteet);
-            uudetKohdealueet.add(uusiAka);
-        }
-        uusiArviointi.setArvioinninKohdealueet(uudetKohdealueet);
+        Arviointi uusiArviointi = new Arviointi(arviointi);
         return arviointiRepository.save(uusiArviointi);
     }
 }
