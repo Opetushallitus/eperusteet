@@ -145,7 +145,7 @@ angular.module('eperusteApp')
     $scope.peruuta = $modalInstance.dismiss;
     $scope.poista = function() {
       Varmistusdialogi.dialogi({
-        otsikko: 'poistetaanko-työryhmä',
+        otsikko: 'poistetaanko-tyoryhma',
         successCb: _.partial($modalInstance.close, null)
       })();
     };

@@ -1,16 +1,16 @@
 <div class="modal-header">
-  <h1 ng-if="uusi" kaanna>luo-työryhmä</h1>
-  <h1 ng-if="!uusi" kaanna>muokkaa-työryhmää</h1>
+  <h1 ng-if="uusi" kaanna>luo-tyoryhma</h1>
+  <h1 ng-if="!uusi" kaanna>muokkaa-tyoryhmaa</h1>
 </div>
 
 <div class="modal-body tyoryhma-modal">
-  <label for="nimi" kaanna>työryhmän-nimi</label>*
+  <label for="nimi" kaanna>tyoryhman-nimi</label>*
   <input ng-change="validoiRyhma(ryhma.nimi)" id="nimi" ng-model="ryhma.nimi" type="text" class="form-control">
 
-  <div ng-show="virheellinenNimi" class="talert alert alert-error" kaanna>nimi-on-jo-käytössä</div>
+  <div ng-show="virheellinenNimi" class="talert alert alert-error" kaanna>nimi-on-jo-kaytossa</div>
 
   <div class="tjasenet">
-    <label kaanna>valitse-jäsenet</label>
+    <label kaanna>valitse-jasenet</label>
     <div class="row">
       <div class="col-xs-5">
         <select class="form-control" ng-multiple="true" ng-model="from" id="" name="" multiple
@@ -38,7 +38,7 @@
   </div>
   <button class="btn btn-danger" ng-click="peruuta()" kaanna>peru</button>
   <button class="btn btn-danger" ng-disabled="virheellinenNimi || ryhma.jasenet.length === 0 || ryhma.nimi.length < 1" ng-click="ok()">
-    <span ng-if="!uusi" kaanna>tallenna-työryhmä</span>
+    <span ng-if="!uusi" kaanna>tallenna-tyoryhma</span>
     <span ng-if="uusi" kaanna>tallenna-muutokset</span>
   </button>
 </div>

@@ -1,15 +1,15 @@
 <div class="modal-header">
-    <h1 kaanna>hae-työryhmä</h1>
+    <h1 kaanna>hae-tyoryhma</h1>
 </div>
 
 <div class="modal-body">
     <div ng-show="haetaan">
         <small-spinner></small-spinner>
-        <span kaanna>haetaan-työryhmiä</span>
+        <span kaanna>haetaan-tyoryhmia</span>
     </div>
     <div ng-if="!haetaan && !error">
         <div style="margin-bottom: 10px">
-            <rajaus style="" model="rajaus" placeholder="rajaa-ryhmiä" callback="paivitaRajaus(value)"></rajaus>
+            <rajaus style="" model="rajaus" placeholder="rajaa-ryhmia" callback="paivitaRajaus(value)"></rajaus>
         </div>
         <table class="table table-striped">
             <tr>
@@ -23,7 +23,7 @@
         </table>
         <pagination ng-model="nykyinen" ng-change="valitseSivu(nykyinen)" total-items="fryhmat.length" items-per-page="itemsPerPage"></pagination>
     </div>
-    <div class="alert alert-error" ng-show="error" kaanna>ryhmien-hakeminen-epäonnistui</div>
+    <div class="alert alert-error" ng-show="error" kaanna>ryhmien-hakeminen-epaonnistui</div>
 </div>
 
 <div class="modal-footer">
