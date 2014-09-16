@@ -24,6 +24,7 @@
  *  - depth: solmun syvyys hierarkiassa, oletuksena 0 (päätaso)
  *  - link: linkin osoite, array: [tilan nimi, tilan parametrit]
  * @param header Otsikko elementille
+ * @param footer Sisältö lisätään menun alapuolelle
  * Valinnainen transclude sijoitetaan ensimmäiseksi otsikon alle.
  */
 angular.module('eperusteApp')

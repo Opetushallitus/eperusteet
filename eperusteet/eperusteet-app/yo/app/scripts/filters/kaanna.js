@@ -49,23 +49,19 @@ angular.module('eperusteApp')
             IconMapping.addIcon(attrs.iconRole, el);
           }
         } else {
+          var textEl = angular.element('<span>').attr('translate', original);
+          if (attrs.kaannaValues) {
+            textEl.attr('translate-values', attrs.kaannaValues);
+          }
+          el.html('').append(textEl);
           if (attrs.iconRole) {
             var iconEl = angular.element('<span>').attr('icon-role', attrs.iconRole);
-            var textEl = angular.element('<span>').attr('translate', original);
             el.removeAttr('icon-role');
-            if (attrs.kaannaValues) {
-              textEl.attr('translate-values', attrs.kaannaValues);
-            }
-            el.html('').append(iconEl).append(textEl);
-          } else {
-            el.attr('translate', original);
-            if (attrs.kaannaValues) {
-              el.attr('translate-values', attrs.kaannaValues);
-            }
+            el.prepend(iconEl);
           }
           el.removeAttr('kaanna');
           el.removeAttr('kaanna-values');
-          $compile(el)(scope);
+          $compile(el.contents())(scope);
         }
       }
     };

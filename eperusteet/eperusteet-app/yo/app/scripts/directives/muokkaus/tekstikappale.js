@@ -166,16 +166,17 @@ angular.module('eperusteApp')
               $scope.isNew = false;
             },
             cancel: function() {
-              if ($scope.isNew) {
-                doDelete();
-              }
-              else {
-                fetch(function() {
-                  refreshPromise();
-                });
-              }
-              $scope.isNew = false;
-              Lukitus.vapautaPerusteenosa($scope.tekstikappale.id);
+              Lukitus.vapautaPerusteenosa($scope.tekstikappale.id, function () {
+                if ($scope.isNew) {
+                  doDelete();
+                }
+                else {
+                  fetch(function() {
+                    refreshPromise();
+                  });
+                }
+                $scope.isNew = false;
+              });
             },
             notify: function(mode) {
               $scope.editEnabled = mode;
