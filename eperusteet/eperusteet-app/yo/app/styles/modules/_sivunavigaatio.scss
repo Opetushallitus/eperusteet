@@ -208,6 +208,9 @@ $sivunavi-level-padding: 20px;
     width: $sivunavi-leveys;
     z-index: 1030;
     box-shadow: 0 0 $sivunavi-shadow black;
+    #sivunavi-footer-content.has-content button {
+      margin: 10px 15px;
+    }
     .header {
       border: 0;
     }
@@ -256,5 +259,13 @@ $sivunavi-level-padding: 20px;
   }
   .sivunavi-clear {
     display: none;
+  }
+}
+
+#sivunavi-footer-content.has-content {
+  background-color: white;
+  border-right: 1px solid #ddd;
+  button {
+    margin: 10px 0px;
   }
 }

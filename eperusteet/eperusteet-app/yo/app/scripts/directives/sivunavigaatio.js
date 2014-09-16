@@ -28,7 +28,7 @@
  */
 angular.module('eperusteApp')
 
-  .directive('sivunavigaatio2', function ($window, $document, $timeout) {
+  .directive('sivunavigaatio2', function ($window, $document, $timeout, $compile) {
     var SCREEN_MD_MAX = 1200;
     return {
       templateUrl: 'views/partials/sivunavi2.html',
@@ -37,6 +37,7 @@ angular.module('eperusteApp')
         items: '=',
         header: '=',
         sections: '=',
+        footer: '='
       },
       controller: 'SivuNaviController',
       transclude: true,
@@ -45,6 +46,10 @@ angular.module('eperusteApp')
         var transcluded = element.find('#sivunavi-tc').contents();
         scope.hasTransclude = transcluded.length > 0;
         scope.oneAtATime = true;
+        scope.footerContent = scope.footer ? $compile(scope.footer)(scope) : '';
+        if (scope.footer) {
+          element.find('#sivunavi-footer-content').append(scope.footerContent).addClass('has-content');
+        }
 
         /**
          * All this just to get a divider line to expand to the bottom of the page

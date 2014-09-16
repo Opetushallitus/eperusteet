@@ -125,7 +125,8 @@ angular.module('eperusteApp')
   })
   .controller('PerusteprojektiCtrl', function($scope, $state, $stateParams,
     Navigaatiopolku, koulutusalaService, opintoalaService,
-    PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation) {
+    PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation,
+    SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode) {
 
     $scope.muokkausEnabled = false;
 
@@ -145,7 +146,8 @@ angular.module('eperusteApp')
     $scope.Opintoalat = opintoalaService;
     $scope.sivunavi = {
       suoritustapa: PerusteProjektiService.getSuoritustapa(),
-      items: []
+      items: [],
+      footer: '<button class="btn btn-default" kaanna="lisaa-tutkintokohtainen-osa" icon-role="add" ng-click="$parent.lisaaTekstikappale()"></button>'
     };
     var sivunaviItemsChanged = function (items) {
       $scope.sivunavi.items = items;
@@ -197,6 +199,24 @@ angular.module('eperusteApp')
         PerusteProjektiSivunavi.refresh(true);
       });
     });
+
+    $scope.lisaaTekstikappale = function () {
+      function lisaaSisalto(method, sisalto, cb) {
+        cb = cb || angular.noop;
+        SuoritustapaSisalto[method]({
+          perusteId: $scope.projekti._peruste,
+          suoritustapa: PerusteProjektiService.getSuoritustapa()
+        }, sisalto, cb, Notifikaatiot.serverCb);
+      }
+      lisaaSisalto('save', {}, function(response) {
+        TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
+        $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
+          perusteenOsanTyyppi: 'tekstikappale',
+          perusteenOsaId: response._perusteenOsa,
+          versio: ''
+        });
+      });
+    };
 
     $scope.$on('enableEditing', function() {
       $scope.muokkausEnabled = true;
