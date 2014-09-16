@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -190,6 +191,24 @@ public class PerusteprojektiController {
     ) {
         service.removeTyoryhma(id, nimi);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/perusteenosat/{pid}/tyoryhmat", method = POST)
+    @ResponseBody
+    public ResponseEntity<List<String>> postPerusteenOsaTyoryhma(
+            @PathVariable("id") final Long id,
+            @PathVariable("pid") final Long pid,
+            @RequestBody List<String> tyoryhmat
+    ) {
+        return new ResponseEntity<>(service.setPerusteenOsaViiteTyoryhmat(id, pid, tyoryhmat), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/perusteenosat/{pid}/tyoryhmat", method = GET)
+    public ResponseEntity<List<String>> getPerusteenOsaTyoryhma(
+            @PathVariable("id") final Long id,
+            @PathVariable("pid") final Long pid
+    ) {
+        return new ResponseEntity<>(service.getPerusteenOsaViiteTyoryhmat(id, pid), HttpStatus.OK);
     }
 
 }

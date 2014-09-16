@@ -37,16 +37,18 @@ angular.module('eperusteApp')
       return $scope.tyyppi === 'kaikki' || $scope.tyoryhmat[$scope.tyyppi][jasen.oidHenkilo];
     };
 
+    function errorCb(err) {
+      Notifikaatiot.serverCb(err);
+      $scope.error = true;
+      $scope.lataa = false;
+    }
+
     Projektiryhma.jasenetJaTyoryhmat($stateParams.perusteProjektiId, function(re) {
       $scope.jasenet = re.jasenet;
       $scope.tyoryhmat = re.tyoryhmat;
       $scope.ryhma = re.ryhma;
       $scope.lataa = false;
-    }, function(err) {
-      Notifikaatiot.serverCb(err);
-      $scope.error = true;
-      $scope.lataa = false;
-    });
+    }, errorCb);
 
     $scope.nimikirjaimet = kayttajaToiminnot.nimikirjaimet;
 
@@ -81,7 +83,7 @@ angular.module('eperusteApp')
             delete $scope.tyoryhmat[ryhma];
             $scope.tyyppi = _.first(lisatyt).nimi;
             $scope.tyoryhmat[$scope.tyyppi] = _.zipObject(_.map(lisatyt, 'kayttajaOid'), lisatyt);
-          }, Notifikaatiot.serverCb);
+          }, errorCb);
         }
         else {
           PerusteprojektiTyoryhmat.delete({

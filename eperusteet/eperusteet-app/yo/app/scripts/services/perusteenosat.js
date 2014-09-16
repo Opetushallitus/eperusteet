@@ -62,6 +62,15 @@ angular.module('eperusteApp')
       list: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/osaalueet'}
     });
   })
+  .factory('PerusteenOsanTyoryhmat', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteprojektit/:projektiId/perusteenosat/:osaId/tyoryhmat', {
+      projektiId: '@projektiId',
+      osaId: '@osaId'
+    }, {
+      get: {method: 'GET', isArray: true },
+      save: {method: 'POST', isArray: true }
+    });
+  })
   .factory('Osaamistavoite', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteenosat/:osanId/osaalue/:osaalueenId/osaamistavoite/:osaamistavoiteId', {
       osaamistavoiteId: '@id'

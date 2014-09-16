@@ -23,6 +23,8 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaTyoryhma;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.PerusteprojektiTyoryhma;
@@ -34,16 +36,19 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaTyoryhmaRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiTyoryhmaRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
-import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -57,6 +62,7 @@ import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +100,15 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private PerusteprojektiTyoryhmaRepository perusteprojektiTyoryhmaRepository;
+
+    @Autowired
+    private PerusteenOsaTyoryhmaRepository perusteenOsaTyoryhmaRepository;
+
+    @Autowired
+    private PerusteenOsaViiteRepository perusteenOsaViiteRepository;
+
+    @Autowired
+    private PerusteenOsaRepository perusteenOsaRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -438,6 +453,41 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     public void removeTyoryhma(Long perusteProjektiId, String nimi) {
         Perusteprojekti pp = repository.findOne(perusteProjektiId);
         perusteprojektiTyoryhmaRepository.deleteAllByPerusteprojektiAndNimi(pp, nimi);
+    }
+
+    @Transactional
+    @Override
+    public List<String> setPerusteenOsaViiteTyoryhmat(Long perusteProjektiId, Long perusteenOsaId, List<String> nimet) {
+        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        PerusteenOsa po = perusteenOsaRepository.findOne(perusteenOsaId);
+        Set<String> uniques = new HashSet<>(nimet);
+        perusteenOsaTyoryhmaRepository.deleteAllByIdAndPerusteprojekti(perusteenOsaId, pp);
+        perusteenOsaTyoryhmaRepository.flush();
+        List<String> res = new ArrayList<>();
+
+        for (String nimi : uniques) {
+            PerusteenOsaTyoryhma pot = new PerusteenOsaTyoryhma();
+            pot.setNimi(nimi);
+            pot.setPerusteprojekti(pp);
+            pot.setPerusteenosa(po);
+            if (perusteprojektiTyoryhmaRepository.findAllByPerusteprojektiAndNimi(pp, nimi).isEmpty()) {
+                throw new BusinessRuleViolationException("Perusteprojekti ryhmää ei ole olemassa: "  + nimi);
+            }
+            res.add(perusteenOsaTyoryhmaRepository.save(pot).getNimi());
+       }
+        return res;
+    }
+
+    @Transactional
+    @Override
+    public List<String> getPerusteenOsaViiteTyoryhmat(Long perusteProjektiId, Long perusteenOsaId) {
+        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        List<PerusteenOsaTyoryhma> tyoryhmat = perusteenOsaTyoryhmaRepository.findAllByIdAndPerusteprojekti(perusteenOsaId, pp);
+        List<String> res = new ArrayList<>();
+        for (PerusteenOsaTyoryhma s : tyoryhmat) {
+            res.add(s.getNimi());
+        }
+        return res;
     }
 
 }

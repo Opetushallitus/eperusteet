@@ -67,6 +67,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
 
     @Autowired
     private PerusteenOsaService perusteenOsaService;
+
     @Autowired
     private PerusteenOsaViiteRepository repository;
 
@@ -190,4 +191,5 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         }
         return repository.save(pov);
     }
+
 }

@@ -31,7 +31,14 @@ angular.module('eperusteApp')
         TutkinnonOsaEditMode, PerusteenOsaViitteet, Varmistusdialogi, $timeout,
         Kaanna, PerusteprojektiTiedotService, $stateParams, SuoritustapaSisalto,
         Utils, PerusteProjektiSivunavi, YleinenData, $rootScope, Kommentit,
-        KommentitByPerusteenOsa) {
+        KommentitByPerusteenOsa, PerusteenOsanTyoryhmat) {
+
+        PerusteenOsanTyoryhmat.get({
+          projektiId: $stateParams.perusteProjektiId,
+          osaId: $stateParams.perusteenOsaId
+        }, function(data) {
+          $scope.tyoryhmat = data;
+        }, Notifikaatiot.serverCb);
 
         Utils.scrollTo('#ylasivuankkuri');
         Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });

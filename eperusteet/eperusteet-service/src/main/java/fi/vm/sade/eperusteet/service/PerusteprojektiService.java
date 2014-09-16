@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -85,4 +86,10 @@ public interface PerusteprojektiService {
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
     void removeTyoryhma(Long perusteProjektiId, String nimi);
+
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
+    List<String> setPerusteenOsaViiteTyoryhmat(Long perusteProjektiId, Long perusteenOsaId, List<String> nimet);
+
+    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
+    List<String> getPerusteenOsaViiteTyoryhmat(Long perusteProjektiId, Long perusteenOsaId);
 }
