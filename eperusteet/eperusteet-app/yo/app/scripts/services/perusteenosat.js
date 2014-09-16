@@ -51,8 +51,7 @@ angular.module('eperusteApp')
         method: 'POST',
         url: baseUrl + '/muokattavakopio'
       },
-      //FIXME
-      kloonaaTutkinnonOsa: {method: 'POST', url: SERVICE_LOC + '/perusteenosaviitteet/kloonaa/:viiteId', params: {tyyppi: 'perusteen-osat-tutkinnon-osa'}},
+      kloonaaTutkinnonOsa: {method: 'POST', url: SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat/:viiteId/muokattavakopio'},
       update: {method: 'POST'}
     });
   })

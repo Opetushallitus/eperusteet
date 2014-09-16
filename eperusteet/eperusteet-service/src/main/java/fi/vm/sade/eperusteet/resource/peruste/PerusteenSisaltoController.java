@@ -132,22 +132,28 @@ public class PerusteenSisaltoController {
 
     @RequestMapping(value = "/sisalto/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeSisaltoViite(@PathVariable("id") final Long id) {
-        perusteenOsaViiteService.removeSisalto(id);
+    public void removeSisaltoViite(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("suoritustapa") final String suoritustapa,
+        @PathVariable("id") final Long id) {
+        perusteenOsaViiteService.removeSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), id);
     }
 
     @RequestMapping(value = "/sisalto/{id}", method = POST)
     public void updateSisaltoViite(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("suoritustapa") final String suoritustapa,
         @PathVariable("id") final Long id,
         @RequestBody final fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja pov) {
-        perusteenOsaViiteService.update(id, pov);
+        perusteenOsaViiteService.reorderSubTree(perusteId, Suoritustapakoodi.of(suoritustapa),id, pov);
     }
 
     @RequestMapping(value = "/sisalto/{id}/muokattavakopio", method = POST)
     public PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(
         @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("suoritustapa") final String suoritustapa,
         @PathVariable("id") final Long id) {
-        return perusteenOsaViiteService.kloonaaTekstiKappale(id);
+        return perusteenOsaViiteService.kloonaaTekstiKappale(perusteId, Suoritustapakoodi.of(suoritustapa),id);
     }
 
 }

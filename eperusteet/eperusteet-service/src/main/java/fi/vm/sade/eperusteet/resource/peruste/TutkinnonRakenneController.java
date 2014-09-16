@@ -71,7 +71,7 @@ public class TutkinnonRakenneController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public TutkinnonOsaViiteDto addTutkinnonOsa(@PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi, @RequestBody TutkinnonOsaViiteDto osa) {
-        if ( osa.getTutkinnonOsa() != null ) {
+        if (osa.getTutkinnonOsa() != null) {
             return perusteService.attachTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osa);
         }
         return perusteService.addTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osa);
@@ -140,8 +140,10 @@ public class TutkinnonRakenneController {
 
     @RequestMapping(value = "/tutkinnonosat/{osanId}/muokattavakopio", method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
     public TutkinnonOsaViiteDto kloonaaTutkinnonOsa(
-        @PathVariable("perusteId") final Long perusteId, @PathVariable("osanId") final Long id) {
-        return perusteenOsaViiteService.kloonaaTutkinnonOsa(id);
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
+        @PathVariable("osanId") final Long id) {
+        return perusteenOsaViiteService.kloonaaTutkinnonOsa(perusteId, Suoritustapakoodi.of(suoritustapakoodi), id);
     }
 
     @RequestMapping(value = "/tutkinnonosat/{osanId}", method = DELETE)
