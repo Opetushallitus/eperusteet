@@ -78,6 +78,13 @@ angular.module('eperusteApp')
     }
 
     return {
+      tyoryhmat: function(perusteprojektiId) {
+        var deferred = $q.defer();
+        PerusteprojektiTyoryhmat.get({ id: perusteprojektiId }, function(res) {
+          deferred.resolve(_.unique(_.map(res, 'nimi')));
+        }, deferred.reject);
+        return deferred.promise;
+      },
       jasenetJaTyoryhmat: function(perusteprojektiId, successCb, failureCb) {
         successCb = successCb || angular.noop;
         failureCb = failureCb || angular.noop;
