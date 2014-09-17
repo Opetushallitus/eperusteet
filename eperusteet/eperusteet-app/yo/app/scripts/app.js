@@ -109,6 +109,21 @@ angular.module('eperusteApp', [
         };
       }]);
   })
+  // Lodash mixins and other stuff
+  .run(function() {
+    _.mixin({ set: function(obj, field) {
+      return function(value) {
+        obj[field] = value;
+      };
+    }});
+    _.mixin({ setWithCallback: function(obj, field, cb) {
+      return function(value) {
+        cb = cb || angular.noop;
+        obj[field] = value;
+        cb(value);
+      };
+    }});
+  })
   .run(function($rootScope) {
     var f = _.debounce(function() {
       $rootScope.$broadcast('poll:mousemove');

@@ -91,11 +91,7 @@ angular.module('eperusteApp')
         }
 
         function fetch(cb) {
-          cb = cb || angular.noop;
-          PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, function(res) {
-            $scope.tekstikappale = res;
-            cb(res);
-          });
+          PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, _.setWithCallback($scope, 'tekstikappale', cb));
         }
 
         function storeTree (sisalto, level) {
@@ -275,9 +271,7 @@ angular.module('eperusteApp')
               perusteenOsaId: response._perusteenOsa,
               versio: ''
             });
-          }, function(virhe) {
-            Notifikaatiot.varoitus(virhe);
-          });
+          }, Notifikaatiot.varoitus);
         };
 
         $scope.setCrumbs = function(crumbs) {
