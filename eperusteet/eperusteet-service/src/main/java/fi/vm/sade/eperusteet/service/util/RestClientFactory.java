@@ -17,8 +17,8 @@
 package fi.vm.sade.eperusteet.service.util;
 
 import fi.vm.sade.generic.rest.CachingRestClient;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -37,9 +37,9 @@ public class RestClientFactory {
     @Value("${web.url.cas:''}")
     private String casUrl;
 
-    private final Map<String, CachingRestClient> cache = new HashMap<>();
+    private final ConcurrentMap<String, CachingRestClient> cache = new ConcurrentHashMap<>();
 
-    public CachingRestClient create(String service) {
+    public CachingRestClient get(String service) {
         if (cache.containsKey(service)) {
             return cache.get(service);
         }
@@ -49,8 +49,8 @@ public class RestClientFactory {
             crc.setPassword(password);
             crc.setWebCasUrl(casUrl);
             crc.setCasService(service + "/j_spring_cas_security_check");
-            cache.put(service, crc);
-            return crc;
+            cache.putIfAbsent(service, crc);
+            return cache.get(service);
         }
     }
 }

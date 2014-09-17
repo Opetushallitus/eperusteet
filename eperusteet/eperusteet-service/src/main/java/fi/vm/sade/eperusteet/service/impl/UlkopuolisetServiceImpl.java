@@ -48,7 +48,7 @@ public class UlkopuolisetServiceImpl implements UlkopuolisetService {
     @Override
     @Transactional
     public JsonNode getRyhmat() {
-        CachingRestClient crc = restClientFactory.create(serviceUrl);
+        CachingRestClient crc = restClientFactory.get(serviceUrl);
         try {
             String url = serviceUrl + OMAT_TIEDOT_API;
             JsonNode tree = mapper.readTree(crc.getAsString(url));

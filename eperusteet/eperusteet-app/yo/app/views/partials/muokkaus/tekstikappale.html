@@ -49,10 +49,11 @@ European Union Public Licence for more details.
       <h1>{{tekstikappale.nimi | kaanna}}</h1>
       <versiotiedot ng-hide="editEnabled"></versiotiedot>
       <div class="tyoryhma-rivi">
-        <span class="" ng-repeat="tr in tyoryhmat">
+        <span class="tyoryhma" ng-repeat="tr in tyoryhmat">
+          <a ng-click="poistaTyoryhma(tr)" href="" icon-role="remove"></a>
           {{ tr }}
         </span>
-        <button icon-role="plus" class="btn btn-default" kaanna="lisaa-tyoryhma"></button>
+        <button ng-disabled="kaikkiTyoryhmat.length === 0 || kaikkiTyoryhmat.length === tyoryhmat.length" ng-click="lisaaTyoryhma()" icon-role="plus" class="btn btn-default" kaanna="lisaa-tyoryhma"></button>
       </div>
       <div ng-bind-html="valitseKieli(tekstikappale.teksti)"></div>
     </div>

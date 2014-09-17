@@ -31,14 +31,40 @@ angular.module('eperusteApp')
         TutkinnonOsaEditMode, PerusteenOsaViitteet, Varmistusdialogi, $timeout,
         Kaanna, PerusteprojektiTiedotService, $stateParams, SuoritustapaSisalto,
         Utils, PerusteProjektiSivunavi, YleinenData, $rootScope, Kommentit,
-        KommentitByPerusteenOsa, PerusteenOsanTyoryhmat) {
+        KommentitByPerusteenOsa, PerusteenOsanTyoryhmat, Tyoryhmat, PerusteprojektiTyoryhmat) {
 
-        PerusteenOsanTyoryhmat.get({
-          projektiId: $stateParams.perusteProjektiId,
-          osaId: $stateParams.perusteenOsaId
-        }, function(data) {
-          $scope.tyoryhmat = data;
+        $scope.kaikkiTyoryhmat = [];
+
+        $q.all([PerusteenOsanTyoryhmat.get({ projektiId: $stateParams.perusteProjektiId, osaId: $stateParams.perusteenOsaId }).$promise,
+                PerusteprojektiTyoryhmat.get({ id: $stateParams.perusteProjektiId }).$promise]).then(function(data) {
+          $scope.tyoryhmat = data[0];
+          $scope.kaikkiTyoryhmat = _.unique(_.map(data[1], 'nimi'));
         }, Notifikaatiot.serverCb);
+
+        function paivitaRyhmat(uudet, cb) {
+          PerusteenOsanTyoryhmat.save({
+            projektiId: $stateParams.perusteProjektiId,
+            osaId: $stateParams.perusteenOsaId
+          }, uudet, cb, Notifikaatiot.serverCb);
+        }
+
+        $scope.poistaTyoryhma = function(tr) {
+          Varmistusdialogi.dialogi({
+            successCb: function() {
+              var uusi = _.remove(_.clone($scope.tyoryhmat), function(vanha) { return vanha !== tr; });
+              paivitaRyhmat(uusi, function() { $scope.tyoryhmat = uusi; });
+            },
+            otsikko: 'poista-tyoryhma-perusteenosasta',
+            teksti: Kaanna.kaanna('poista-tyoryhma-teksti', { nimi: tr })
+          })();
+        };
+
+        $scope.lisaaTyoryhma = function() {
+          Tyoryhmat.valitse(_.clone($scope.kaikkiTyoryhmat), _.clone($scope.tyoryhmat), function(uudet) {
+            var uusi = _.clone($scope.tyoryhmat).concat(uudet);
+            paivitaRyhmat(uusi, function() { $scope.tyoryhmat = uusi; });
+          });
+        };
 
         Utils.scrollTo('#ylasivuankkuri');
         Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });
@@ -313,4 +339,3 @@ angular.module('eperusteApp')
       }
     };
   });
-

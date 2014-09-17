@@ -19,6 +19,33 @@
 
 angular.module('eperusteApp')
   .service('Tyoryhmat', function($modal) {
+    return {
+      valitse: function(valittavat, valitut, successCb) {
+        $modal.open({
+          templateUrl: 'views/modals/tyoryhmavalitsin.html',
+          controller: 'valitseTyoryhmatModalCtrl',
+          resolve: {
+            valittavat: function() { return valittavat; },
+            valitut: function() { return valitut; }
+          }
+        })
+        .result.then(successCb);
+      }
+    };
   })
-  .controller('valitseTyoryhmatModalCtrl', function($scope, $modalInstance) {
+  .controller('valitseTyoryhmatModalCtrl', function($scope, $modalInstance, valittavat, valitut) {
+    $scope.valitut = valitut;
+    $scope.valittavat = _.difference(valittavat, valitut);
+    $scope.uudet = {};
+
+    $scope.valitse = function(tyoryhma) {
+      $scope.uudet[tyoryhma] = !$scope.uudet[tyoryhma];
+    };
+
+    $scope.ok = function() {
+      $modalInstance.close(_.filter(_.keys($scope.uudet), function(k) {
+        return $scope.uudet[k];
+      }));
+    };
+    $scope.peruuta = $modalInstance.dismiss;
   });

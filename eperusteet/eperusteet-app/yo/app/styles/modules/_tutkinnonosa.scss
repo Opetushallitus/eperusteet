@@ -407,4 +407,36 @@ hr.versioraja {
 .tyoryhma-rivi {
   margin: 0 0 16px 0;
   padding: 0;
+
+  .tyoryhma {
+    background: #D2ECF5;
+    padding: 9px 8px 8px 8px;
+    margin-right: 8px;
+    border-radius: 2px;
+  }
+
+  button {
+    margin-left: 6px;
+    margin-bottom: 4px;
+  }
+}
+
+.tyoryhma-modal-button {
+  border: 1px solid #999;
+  padding: 6px 20px 6px 20px;
+  text-align: center;
+  transition: all 0.2s linear;
+  background: #fff;
+
+  &:hover {
+    border: 1px solid #555;
+    cursor: pointer;
+    box-shadow: inset 0 0 2px #999;
+  }
+}
+
+.tyoryhma-modal-button-selected {
+  font-weight: bold;
+  border: 1px solid #24A4CC;
+  box-shadow: inset 0 0 5px #24A4CC;
 }

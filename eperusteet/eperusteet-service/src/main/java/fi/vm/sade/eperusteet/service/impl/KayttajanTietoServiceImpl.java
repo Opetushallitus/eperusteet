@@ -60,7 +60,7 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
     @Override
     @Cacheable("kayttajat")
     public KayttajanTietoDto hae(String oid) {
-        CachingRestClient crc = restClientFactory.create(serviceUrl);
+        CachingRestClient crc = restClientFactory.get(serviceUrl);
 
         try {
             String url = serviceUrl + (oid == null ? OMAT_TIEDOT_API : KAYTTAJA_API + oid);
@@ -77,7 +77,7 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
             throw new BusinessRuleViolationException("Haettua käyttäjää ei ole olemassa");
         }
 
-        CachingRestClient crc = restClientFactory.create(serviceUrl);
+        CachingRestClient crc = restClientFactory.get(serviceUrl);
         String url = serviceUrl + KAYTTAJA_API + oid + "/organisaatiohenkilo";
 
         try {
@@ -109,7 +109,7 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
             throw new BusinessRuleViolationException("Käyttäjällä ei ole kyseistä perusteprojektia");
         }
 
-        CachingRestClient crc = restClientFactory.create(serviceUrl);
+        CachingRestClient crc = restClientFactory.get(serviceUrl);
         String url = serviceUrl + KAYTTAJA_API + oid + "/organisaatiohenkilo/" + pp.getRyhmaOid();
 
         try {

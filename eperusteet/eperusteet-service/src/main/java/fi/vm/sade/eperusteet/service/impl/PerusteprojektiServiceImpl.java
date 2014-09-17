@@ -132,7 +132,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @Transactional(readOnly = true)
     public List<KayttajanTietoDto> getJasenet(Long id) {
-        CachingRestClient crc = restClientFactory.create(authServiceUrl);
+        CachingRestClient crc = restClientFactory.get(authServiceUrl);
         Perusteprojekti p = repository.findOne(id);
         List<KayttajanTietoDto> kayttajat = null;
         ObjectMapper omapper = new ObjectMapper();
@@ -154,7 +154,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @Transactional(readOnly = true)
     public List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> getJasenetTiedot(Long id) {
-        CachingRestClient crc = restClientFactory.create(authServiceUrl);
+        CachingRestClient crc = restClientFactory.get(authServiceUrl);
         Perusteprojekti p = repository.findOne(id);
 
         if (p == null || p.getRyhmaOid() == null || p.getRyhmaOid().isEmpty()) {
@@ -461,7 +461,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         Perusteprojekti pp = repository.findOne(perusteProjektiId);
         PerusteenOsa po = perusteenOsaRepository.findOne(perusteenOsaId);
         Set<String> uniques = new HashSet<>(nimet);
-        perusteenOsaTyoryhmaRepository.deleteAllByIdAndPerusteprojekti(perusteenOsaId, pp);
+        perusteenOsaTyoryhmaRepository.deleteAllByPerusteenosaAndPerusteprojekti(po, pp);
         perusteenOsaTyoryhmaRepository.flush();
         List<String> res = new ArrayList<>();
 
@@ -474,7 +474,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 throw new BusinessRuleViolationException("Perusteprojekti ryhmää ei ole olemassa: "  + nimi);
             }
             res.add(perusteenOsaTyoryhmaRepository.save(pot).getNimi());
-       }
+        }
         return res;
     }
 
@@ -482,7 +482,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     public List<String> getPerusteenOsaViiteTyoryhmat(Long perusteProjektiId, Long perusteenOsaId) {
         Perusteprojekti pp = repository.findOne(perusteProjektiId);
-        List<PerusteenOsaTyoryhma> tyoryhmat = perusteenOsaTyoryhmaRepository.findAllByIdAndPerusteprojekti(perusteenOsaId, pp);
+        PerusteenOsa po = perusteenOsaRepository.findOne(perusteenOsaId);
+        List<PerusteenOsaTyoryhma> tyoryhmat = perusteenOsaTyoryhmaRepository.findAllByPerusteenosaAndPerusteprojekti(po, pp);
         List<String> res = new ArrayList<>();
         for (PerusteenOsaTyoryhma s : tyoryhmat) {
             res.add(s.getNimi());

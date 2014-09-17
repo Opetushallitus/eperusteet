@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .controller('JarjestelmaVirheModalCtrl', function($scope, $modalInstance, $state, viesti) {
     $scope.viesti = viesti;
-    $scope.ok = function() { $modalInstance.close(); };
+    $scope.ok = $modalInstance.close;
   })
   .service('Notifikaatiot', function($rootScope, $timeout, NOTIFICATION_DELAY_SUCCESS, NOTIFICATION_DELAY_WARNING, $modal, $state, Kaanna) {
     var viestit = [];

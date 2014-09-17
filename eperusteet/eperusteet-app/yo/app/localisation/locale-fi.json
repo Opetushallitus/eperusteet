@@ -642,5 +642,8 @@
     "poistetaanko-tyoryhma": "Poistetaanko työryhmä?",
     "nimi-on-jo-kaytossa": "Työryhmä on jo olemassa. Valitse toinen nimi.",
     "perustetyoryhman-tietojen-hakeminen-epaonnistui": "Perustetyöryhmän tietojen hakeminen epäonnistui.",
-    "ryhmien-hakeminen-epaonnistui": "Ryhmien hakeminen epäonnistui."
+    "lisaa-tyoryhma": "Lisää työryhmä",
+    "ryhmien-hakeminen-epaonnistui": "Ryhmien hakeminen epäonnistui.",
+    "poista-tyoryhma-perusteenosasta": "Poista työryhmä perusteenosasta",
+    "poista-tyoryhma-teksti": "Työryhmä \"{{nimi}}\" poistetaan. Oletko varma?"
 }
