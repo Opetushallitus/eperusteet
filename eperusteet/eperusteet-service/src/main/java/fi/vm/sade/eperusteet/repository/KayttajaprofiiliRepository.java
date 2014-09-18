@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.Kayttajaprofiili;
@@ -26,9 +25,10 @@ import org.springframework.stereotype.Repository;
  * @author harrik
  */
 @Repository
-public interface KayttajaprofiiliRepository extends JpaRepository<Kayttajaprofiili, Long>{
+public interface KayttajaprofiiliRepository extends JpaRepository<Kayttajaprofiili, Long> {
 
-    @Query("SELECT k FROM Kayttajaprofiili k LEFT JOIN FETCH k.suosikit")
+    @Query("SELECT k FROM Kayttajaprofiili k LEFT JOIN FETCH k.suosikit where k.oid = ?1")
     Kayttajaprofiili findOneEager(String oid);
+
     Kayttajaprofiili findOneByOid(String oid);
 }
