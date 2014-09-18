@@ -206,14 +206,15 @@ public class PermissionEvaluator implements org.springframework.security.access.
 
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
+        return hasPermission(authentication, targetId, Target.valueOf(targetType.toUpperCase()), Permission.valueOf(permission.toString().toUpperCase()));
+    }
+
+    private boolean hasPermission(Authentication authentication, Serializable targetId, Target targetType, Permission permission) {
         LOG.warn(String.format("Checking permission %s to %s{id=%s} by %s", permission, targetType, targetId, authentication));
 
         if (!authentication.isAuthenticated()) {
             return false;
         }
-
-        Permission p = permission == null ? null : Permission.valueOf(permission.toString().toUpperCase());
-        Target t = targetType == null ? null : Target.valueOf(targetType.toUpperCase());
 
         if (LUKU.equals(permission)) {
             //tarkistetaan onko lukuoikeus suoraan julkaistu -statuksen perusteella
@@ -223,10 +224,10 @@ public class PermissionEvaluator implements org.springframework.security.access.
         }
 
         //tarkistataan ensin "any" oikeudet.
-        boolean allowed = hasAnyRole(authentication, null, getAllowedRoles(t, null, p));
+        boolean allowed = hasAnyRole(authentication, null, getAllowedRoles(targetType, null, permission));
         if (!allowed && targetId != null) {
             for (Pair<String, ProjektiTila> ppt : findPerusteProjektiTila(targetType, targetId)) {
-                allowed = allowed | hasAnyRole(authentication, ppt.getFirst(), getAllowedRoles(t, ppt.getSecond(), p));
+                allowed = allowed | hasAnyRole(authentication, ppt.getFirst(), getAllowedRoles(targetType, ppt.getSecond(), permission));
             }
         }
         return allowed;
@@ -243,7 +244,7 @@ public class PermissionEvaluator implements org.springframework.security.access.
         return false;
     }
 
-    private Set<Pair<String, ProjektiTila>> findPerusteProjektiTila(String targetType, Serializable targetId) {
+    private Set<Pair<String, ProjektiTila>> findPerusteProjektiTila(Target targetType, Serializable targetId) {
 
         if (!(targetId instanceof Long)) {
             throw new IllegalArgumentException("Expected Long");
@@ -251,19 +252,21 @@ public class PermissionEvaluator implements org.springframework.security.access.
         final Long id = (Long) targetId;
 
         final Set<Pair<String, ProjektiTila>> empty = Collections.emptySet();
-        switch (targetType.toLowerCase()) {
-            case "peruste": {
+        switch (targetType) {
+
+            case PERUSTEENMETATIEDOT:
+            case PERUSTE: {
                 return Sets.newHashSet(perusteProjektit.findByPeruste(id));
             }
-            case "perusteprojekti": {
+            case PERUSTEPROJEKTI: {
                 Perusteprojekti pp = perusteProjektit.findOne(id);
                 return pp == null ? empty : Collections.singleton(Pair.of(pp.getRyhmaOid(), pp.getTila()));
             }
-            case "perusteenosa": {
+            case PERUSTEENOSA: {
                 return Sets.newHashSet(perusteProjektit.findTilaByPerusteenOsaId(id));
             }
             default:
-                throw new IllegalArgumentException(targetType);
+                throw new IllegalArgumentException(targetType.toString());
         }
     }
 

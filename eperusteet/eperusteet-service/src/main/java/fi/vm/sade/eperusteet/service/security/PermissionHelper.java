@@ -37,11 +37,11 @@ public class PermissionHelper {
     private EntityManager em;
 
     @Cacheable(value = "tila",unless = "#result != T(fi.vm.sade.eperusteet.domain.PerusteTila).VALMIS")
-    public PerusteTila findPerusteTilaFor(String targetType, Serializable id) {
+    public PerusteTila findPerusteTilaFor(PermissionEvaluator.Target targetType, Serializable id) {
         switch (targetType) {
-            case "perusteenosa" :
+            case PERUSTEENOSA :
                 return findPerusteTilaFor(PerusteenOsa.class, id);
-            case "peruste" :
+            case PERUSTE :
                 return findPerusteTilaFor(Peruste.class, id);
             default:
                 return null;
