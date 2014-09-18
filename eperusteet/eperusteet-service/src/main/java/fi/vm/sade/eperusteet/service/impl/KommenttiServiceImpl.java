@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Kommentti;
@@ -22,6 +21,8 @@ import fi.vm.sade.eperusteet.repository.KommenttiRepository;
 import fi.vm.sade.eperusteet.service.KommenttiService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.security.PermissionChecker;
+import fi.vm.sade.eperusteet.service.security.PermissionEvaluator;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,9 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Autowired
     KommenttiRepository kommentit;
+
+    @Autowired
+    private PermissionChecker permissionChecker;
 
     @Autowired
     @Dto
@@ -116,20 +120,20 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasPermission(#kommenttidto.perusteprojektiId, 'perusteProjekti', 'KOMMENTOINTI')")
     public KommenttiDto update(Long kommenttiId, @P("kommenttidto") final KommenttiDto kommenttidto) {
         Kommentti kommentti = kommentit.findOne(kommenttiId);
         SecurityUtil.allow(kommentti.getLuoja());
+        permissionChecker.checkPermission(kommentti.getPerusteprojektiId(), PermissionEvaluator.Target.PERUSTEPROJEKTI, PermissionEvaluator.Permission.KOMMENTOINTI);
         kommentti.setSisalto(kommenttidto.getSisalto());
         return mapper.map(kommentit.save(kommentti), KommenttiDto.class);
     }
 
     @Override
     @Transactional
-    //@PreAuthorize("hasPermission(#kommenttidto.perusteprojektiId, 'perusteProjekti', 'KOMMENTOINTI')")
     public void delete(Long kommenttiId) {
         Kommentti kommentti = kommentit.findOne(kommenttiId);
         SecurityUtil.allow(kommentti.getLuoja());
+        permissionChecker.checkPermission(kommentti.getPerusteprojektiId(),PermissionEvaluator.Target.PERUSTEPROJEKTI, PermissionEvaluator.Permission.KOMMENTOINTI);
         kommentti.setSisalto(null);
         kommentti.setPoistettu(true);
     }

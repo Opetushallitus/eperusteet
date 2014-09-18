@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import static fi.vm.sade.eperusteet.service.security.PermissionEvaluator.Permission.*;
 
@@ -233,7 +233,7 @@ public class PermissionEvaluator implements org.springframework.security.access.
     }
 
     private boolean hasAnyRole(Authentication authentication, String perusteProjektiRyhmaOid, Collection<String> roles) {
-        User user = (User) authentication.getPrincipal();
+        UserDetails user = (UserDetails)authentication.getPrincipal();
         for (String role : roles) {
             SimpleGrantedAuthority auth = new SimpleGrantedAuthority(perusteProjektiRyhmaOid == null ? role : role.replace("<oid>", perusteProjektiRyhmaOid));
             if (user.getAuthorities().contains(auth)) {

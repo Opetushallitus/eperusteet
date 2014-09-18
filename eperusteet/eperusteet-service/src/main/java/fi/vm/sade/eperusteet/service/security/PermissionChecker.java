@@ -15,12 +15,13 @@
  */
 package fi.vm.sade.eperusteet.service.security;
 
+import java.io.Serializable;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 /**
- *
+ * Apuluokka oikeuksien ohjelmalliseen tarkisteluun tilanteissa joissa annotaatiot eivät riitä.
  * @author jhyoty
  */
 @Service
@@ -28,6 +29,11 @@ public class PermissionChecker {
 
     @PreAuthorize("hasPermission(#o,#p)")
     public void checkPermission(@P("o") Object entity, @P("p") String permission) {
+        //this function is intentionally left blank
+    }
+
+    @PreAuthorize("hasPermission(#tid, #t.toString(), #p.toString())")
+    public void checkPermission(@P("tid") Serializable targetId, @P("t") PermissionEvaluator.Target targetType, @P("p") PermissionEvaluator.Permission perm) {
         //this function is intentionally left blank
     }
 }
