@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -27,14 +28,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public interface DokumenttiService {
 
     @PreAuthorize("hasPermission(#dto.perusteId, 'peruste', 'LUKU')")
-    public void setStarted(DokumenttiDto dto);
+    public void setStarted(@P("dto") DokumenttiDto dto);
 
     @PreAuthorize("hasPermission(#dto.perusteId, 'peruste', 'LUKU')")
     @Async(value = "docTaskExecutor")
-    public void generateWithDto(DokumenttiDto dto);
+    public void generateWithDto(@P("dto") DokumenttiDto dto);
 
-    @PreAuthorize("hasPermission(#dto.perusteId, 'peruste', 'LUKU')")
-    public DokumenttiDto createDtoFor(final long id, Kieli kieli);
+    @PreAuthorize("hasPermission(#id, 'peruste', 'LUKU')")
+    public DokumenttiDto createDtoFor(@P("id") final long id, Kieli kieli);
 
     @PreAuthorize("isAuthenticated()")
     public byte[] get(Long id);

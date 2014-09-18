@@ -36,7 +36,7 @@ public class PermissionHelper {
     @Autowired
     private EntityManager em;
 
-    @Cacheable(value = "tila",unless = "#result == T(fi.vm.sade.eperusteet.domain.PerusteTila).LUONNOS")
+    @Cacheable(value = "tila",unless = "#result != T(fi.vm.sade.eperusteet.domain.PerusteTila).VALMIS")
     public PerusteTila findPerusteTilaFor(String targetType, Serializable id) {
         switch (targetType) {
             case "perusteenosa" :
@@ -49,6 +49,7 @@ public class PermissionHelper {
     }
 
     private PerusteTila findPerusteTilaFor(Class<? extends WithPerusteTila> entity, Serializable id) {
+        if ( id == null ) return null;
         WithPerusteTila e = em.find(entity, id);
         return e == null ? null : e.getTila();
     }

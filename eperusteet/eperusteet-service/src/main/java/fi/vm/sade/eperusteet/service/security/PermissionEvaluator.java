@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.security;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
@@ -24,13 +25,22 @@ import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
 import fi.vm.sade.eperusteet.service.util.Pair;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+
+import static fi.vm.sade.eperusteet.service.security.PermissionEvaluator.Permission.*;
 
 /**
  * Oikeuksien tarkistelu.
@@ -49,47 +59,188 @@ public class PermissionEvaluator implements org.springframework.security.access.
 
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
-        if ( targetDomainObject instanceof ReferenceableEntity ) {
-           String targetType;
-           if ( targetDomainObject instanceof PerusteenOsa ) {
-               targetType = "perusteenosa";
-           } else {
-               targetType = targetDomainObject.getClass().getSimpleName();
-           }
-           return hasPermission(authentication, ((ReferenceableEntity)targetDomainObject).getId(), targetType, permission);
+        if (targetDomainObject instanceof ReferenceableEntity) {
+            String targetType;
+            if (targetDomainObject instanceof PerusteenOsa) {
+                targetType = "perusteenosa";
+            } else {
+                targetType = targetDomainObject.getClass().getSimpleName();
+            }
+            return hasPermission(authentication, ((ReferenceableEntity) targetDomainObject).getId(), targetType, permission);
         }
         return false;
     }
 
-    private static final EnumSet<ProjektiTila> MUOKKAUS_TILAT = EnumSet.complementOf(EnumSet.of(ProjektiTila.JULKAISTU, ProjektiTila.POISTETTU));
+    public enum Permission {
+
+        LUKU,
+        POISTO,
+        MUOKKAUS,
+        KOMMENTOINTI,
+        LUONTI,
+        TILANVAIHTO
+    }
+
+    public enum Target {
+
+        PERUSTEPROJEKTI,
+        PERUSTE,
+        PERUSTEENMETATIEDOT,
+        PERUSTEENOSA
+    }
+
+    //TODO: oikeidet kovakodattua, oikeuksien tarkastaus.
+    private static final Map<Target, Map<ProjektiTila, Map<Permission, Set<String>>>> allowedRoles;
+
+    static {
+        Map<Target, Map<ProjektiTila, Map<Permission, Set<String>>>> allowedRolesTmp = new EnumMap<>(Target.class);
+
+        Set<String> r1 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_<oid>");
+        Set<String> r2 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_<oid>", "ROLE_APP_EPERUSTEET_READ_UPDATE_<oid>");
+        Set<String> r3 = Sets.newHashSet("ROLE_APP_EPERUSTEET_READ_<oid>", "ROLE_APP_EPERUSTEET_CRUD_<oid>", "ROLE_APP_EPERUSTEET_READ_UPDATE_<oid>");
+
+        //perusteenosa, peruste (näiden osalta oletetaan että peruste tai sen osa on tilassa LUONNOS
+        {
+            EnumMap<ProjektiTila, Map<Permission, Set<String>>> tmp = new EnumMap<>(ProjektiTila.class);
+            Map<Permission, Set<String>> perm;
+            perm = Maps.newHashMap();
+            perm.put(LUKU, r3);
+            perm.put(MUOKKAUS, r2);
+            perm.put(KOMMENTOINTI, r3);
+            tmp.put(ProjektiTila.LAADINTA, perm);
+            perm = Maps.newHashMap();
+            perm.put(LUKU, r3);
+            perm.put(KOMMENTOINTI, r3);
+            tmp.put(ProjektiTila.KOMMENTOINTI, perm);
+            perm = Maps.newHashMap();
+            perm.put(LUKU, r3);
+            perm.put(KOMMENTOINTI, r2);
+            tmp.put(ProjektiTila.VIIMEISTELY, perm);
+            perm = Maps.newHashMap();
+            perm.put(LUKU, r3);
+            tmp.put(ProjektiTila.VALMIS, perm);
+            perm = Maps.newHashMap();
+            perm.put(LUKU, r3);
+            tmp.put(ProjektiTila.JULKAISTU, perm);
+            tmp.put(ProjektiTila.POISTETTU, Collections.<Permission, Set<String>>emptyMap());
+            allowedRolesTmp.put(Target.PERUSTE, tmp);
+            allowedRolesTmp.put(Target.PERUSTEENOSA, tmp);
+        }
+        {
+            Map<ProjektiTila, Map<Permission, Set<String>>> tmp = new IdentityHashMap<>();
+            Map<Permission, Set<String>> perm = Maps.newHashMap();
+            perm.put(LUONTI, Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD"));
+            tmp.put(null, perm);
+            perm = Maps.newHashMap();
+            perm.put(TILANVAIHTO, r1);
+            perm.put(LUKU, r3);
+            perm.put(MUOKKAUS, r2);
+            perm.put(KOMMENTOINTI, r3);
+            tmp.put(ProjektiTila.LAADINTA, perm);
+            perm = Maps.newHashMap();
+            perm.put(TILANVAIHTO, r1);
+            perm.put(LUKU, r3);
+            perm.put(MUOKKAUS, r1);
+            perm.put(KOMMENTOINTI, r3);
+            tmp.put(ProjektiTila.KOMMENTOINTI, perm);
+            perm.put(TILANVAIHTO, r1);
+            perm.put(LUKU, r3);
+            perm.put(MUOKKAUS, r1);
+            perm.put(KOMMENTOINTI, r3);
+            tmp.put(ProjektiTila.VIIMEISTELY, perm);
+            perm.put(LUKU, r3);
+            perm.put(TILANVAIHTO, r1);
+            tmp.put(ProjektiTila.VALMIS, perm);
+            tmp.put(ProjektiTila.POISTETTU, Collections.<Permission, Set<String>>emptyMap());
+            allowedRolesTmp.put(Target.PERUSTEPROJEKTI, tmp);
+        }
+        {
+            Map<ProjektiTila, Map<Permission, Set<String>>> tmp = new IdentityHashMap<>();
+            Map<Permission, Set<String>> perm = Maps.newHashMap();
+            perm.put(LUKU, r3);
+            perm.put(MUOKKAUS, r2);
+            perm.put(KOMMENTOINTI, r3);
+            tmp.put(ProjektiTila.LAADINTA, perm);
+            perm = Maps.newHashMap();
+            perm.put(LUKU, r3);
+            perm.put(MUOKKAUS, r1);
+            perm.put(KOMMENTOINTI, r3);
+            tmp.put(ProjektiTila.KOMMENTOINTI, perm);
+            perm.put(LUKU, r3);
+            perm.put(MUOKKAUS, r1);
+            perm.put(KOMMENTOINTI, r3);
+            tmp.put(ProjektiTila.VIIMEISTELY, perm);
+            perm.put(LUKU, r3);
+            perm.put(MUOKKAUS, r1);
+            tmp.put(ProjektiTila.VALMIS, perm);
+            perm = Maps.newHashMap();
+            perm.put(LUKU, Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD"));
+            perm.put(MUOKKAUS, Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD"));
+            tmp.put(null, perm);
+            allowedRolesTmp.put(Target.PERUSTEENMETATIEDOT, tmp);
+        }
+        //XXX:debug
+        LOG.debug("Oikeusmappaukset:");
+        assert (allowedRolesTmp.keySet().containsAll(EnumSet.allOf(Target.class)));
+        for (Map.Entry<Target, Map<ProjektiTila, Map<Permission, Set<String>>>> t : allowedRolesTmp.entrySet()) {
+            for (Map.Entry<ProjektiTila, Map<Permission, Set<String>>> p : t.getValue().entrySet()) {
+                for (Map.Entry<Permission, Set<String>> per : p.getValue().entrySet()) {
+                    LOG.debug(t.getKey() + ":" + p.getKey() + ":" + per.getKey() + ":" + Arrays.toString(per.getValue().toArray()));
+                }
+            }
+        }
+
+        allowedRoles = Collections.unmodifiableMap(allowedRolesTmp);
+    }
+
+    private static Set<String> getAllowedRoles(Target target, ProjektiTila tila, Permission permission) {
+        Map<Permission, Set<String>> t = allowedRoles.get(target).get(tila);
+        if (t != null) {
+            Set<String> r = t.get(permission);
+            if (r != null) {
+                return r;
+            }
+        }
+        return Collections.emptySet();
+    }
 
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
         LOG.warn(String.format("Checking permission %s to %s{id=%s} by %s", permission, targetType, targetId, authentication));
 
-        if ( targetId == null ) {
-            //yleiset oikeudet jotka eivät kohdistu mihinkään objektiin; esim. perusteprojektin luonti
-            LOG.warn("*** yleisten oikeuksien tarkistusta ei ole vielä toteutettu ***");
-            return true;
+        if (!authentication.isAuthenticated()) {
+            return false;
         }
 
-        if ("LUKU".equals(permission) && targetId != null) {
+        Permission p = permission == null ? null : Permission.valueOf(permission.toString().toUpperCase());
+        Target t = targetType == null ? null : Target.valueOf(targetType.toUpperCase());
+
+        if (LUKU.equals(permission)) {
             //tarkistetaan onko lukuoikeus suoraan julkaistu -statuksen perusteella
             if (PerusteTila.VALMIS == helper.findPerusteTilaFor(targetType, targetId)) {
                 return true;
             }
         }
 
-        boolean verdict = false;
-        if (authentication.isAuthenticated()) {
-            for (Pair<String, ProjektiTila> p : findPerusteProjektiTila(targetType, targetId)) {
-                if (MUOKKAUS_TILAT.contains(p.getSecond())) {
-                    verdict = true;
-                    break;
-                }
+        //tarkistataan ensin "any" oikeudet.
+        boolean allowed = hasAnyRole(authentication, null, getAllowedRoles(t, null, p));
+        if (!allowed && targetId != null) {
+            for (Pair<String, ProjektiTila> ppt : findPerusteProjektiTila(targetType, targetId)) {
+                allowed = allowed | hasAnyRole(authentication, ppt.getFirst(), getAllowedRoles(t, ppt.getSecond(), p));
             }
         }
-        return verdict;
+        return allowed;
+    }
+
+    private boolean hasAnyRole(Authentication authentication, String perusteProjektiRyhmaOid, Collection<String> roles) {
+        User user = (User) authentication.getPrincipal();
+        for (String role : roles) {
+            SimpleGrantedAuthority auth = new SimpleGrantedAuthority(perusteProjektiRyhmaOid == null ? role : role.replace("<oid>", perusteProjektiRyhmaOid));
+            if (user.getAuthorities().contains(auth)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Set<Pair<String, ProjektiTila>> findPerusteProjektiTila(String targetType, Serializable targetId) {

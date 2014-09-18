@@ -53,10 +53,10 @@ public interface PerusteenOsaService {
     <T extends PerusteenOsaDto.Laaja> T add(T perusteenOsaDto);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'POISTO')")
-    void delete(final Long id);
+    void delete(@P("id") final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
-    Integer getLatestRevision(final Long id);
+    Integer getLatestRevision(@P("id") final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
     PerusteenOsaDto.Laaja revertToVersio(@P("id") Long id, Integer versioId);
@@ -65,7 +65,7 @@ public interface PerusteenOsaService {
     PerusteenOsaDto.Laaja get(@P("id") final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
-    List<Revision> getVersiot(Long id);
+    List<Revision> getVersiot(@P("id") Long id);
 
     //TODO: versiotietojen lukuoikeus?
     @PreAuthorize("returnObject?.tila == T(fi.vm.sade.eperusteet.domain.PerusteTila).VALMIS or hasPermission(#id, 'perusteenosa', 'LUKU')")
@@ -87,7 +87,7 @@ public interface PerusteenOsaService {
     OsaAlueLaajaDto updateTutkinnonOsaOsaAlue(@P("id") final Long id, final Long osaAlueId, OsaAlueLaajaDto osaAlue);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
-    List<OsaAlueLaajaDto> getTutkinnonOsaOsaAlueet(final Long id);
+    List<OsaAlueLaajaDto> getTutkinnonOsaOsaAlueet(@P("id") final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
     public OsaamistavoiteLaajaDto addOsaamistavoite(@P("id") final Long id, final Long osaAlueId, OsaamistavoiteLaajaDto osaamistavoiteDto);

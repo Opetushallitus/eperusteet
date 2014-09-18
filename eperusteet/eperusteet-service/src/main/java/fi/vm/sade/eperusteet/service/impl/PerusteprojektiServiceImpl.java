@@ -36,7 +36,6 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -440,12 +439,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         Perusteprojekti pp = repository.findOne(perusteProjektiId);
         List<PerusteprojektiTyoryhma> tr = perusteprojektiTyoryhmaRepository.findAllByPerusteprojektiAndNimi(pp, nimi);
         return mapper.mapAsList(tr, TyoryhmaHenkiloDto.class);
-    }
-
-    @Transactional
-    @Override
-    public void removeTyoryhma(Long trId) {
-        perusteprojektiTyoryhmaRepository.delete(trId);
     }
 
     @Transactional

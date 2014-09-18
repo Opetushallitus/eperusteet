@@ -54,7 +54,7 @@ public interface PerusteService {
     TutkinnonOsaViiteDto attachTutkinnonOsa(@P("perusteId") Long perusteId, Suoritustapakoodi of, TutkinnonOsaViiteDto osa);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    TutkinnonOsaViiteDto addTutkinnonOsa(@P("perusteId") Long id, Suoritustapakoodi koodi, fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto osa);
+    TutkinnonOsaViiteDto addTutkinnonOsa(@P("perusteId") Long id, Suoritustapakoodi koodi, TutkinnonOsaViiteDto osa);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     PerusteDto get(@P("perusteId") final Long id);
@@ -62,11 +62,11 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     PerusteKaikkiDto getKokoSisalto(@P("perusteId") final Long id);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
     PerusteDto update(@P("perusteId") long perusteId, PerusteDto perusteDto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    PerusteDto getByIdAndSuoritustapa(final Long id, Suoritustapakoodi suoritustapakoodi);
+    PerusteDto getByIdAndSuoritustapa(@P("perusteId") final Long id, Suoritustapakoodi suoritustapakoodi);
 
     @PreAuthorize("permitAll()")
     Page<PerusteDto> getAll(PageRequest page, String kieli);
@@ -90,7 +90,7 @@ public interface PerusteService {
     PerusteenOsaViiteDto.Laaja getSuoritustapaSisalto(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapakoodi);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    <T extends PerusteenOsaViiteDto.Puu<?, ?>> T getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, Class<T> view);
+    <T extends PerusteenOsaViiteDto.Puu<?, ?>> T getSuoritustapaSisalto(@P("perusteId") Long perusteId, Suoritustapakoodi suoritustapakoodi, Class<T> view);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     SuoritustapaDto getSuoritustapa(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapakoodi);
@@ -132,14 +132,14 @@ public interface PerusteService {
     LukkoDto lock(@P("perusteId") final Long id, Suoritustapakoodi suoritustapakoodi);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void unlock(final Long id, Suoritustapakoodi suoritustapakoodi);
+    void unlock(@P("perusteId") final Long id, Suoritustapakoodi suoritustapakoodi);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    LukkoDto getLock(final Long id, Suoritustapakoodi suoritustapakoodi);
+    LukkoDto getLock(@P("perusteId") final Long id, Suoritustapakoodi suoritustapakoodi);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    public Map<Long, LukkoDto> getLocksTutkinnonOsat(Long id, Suoritustapakoodi suoritustapakoodi);
+    public Map<Long, LukkoDto> getLocksTutkinnonOsat(@P("perusteId") Long id, Suoritustapakoodi suoritustapakoodi);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    public Map<Long, LukkoDto> getLocksPerusteenOsat(Long id, Suoritustapakoodi suoritustapakoodi);
+    public Map<Long, LukkoDto> getLocksPerusteenOsat(@P("perusteId") Long id, Suoritustapakoodi suoritustapakoodi);
 }

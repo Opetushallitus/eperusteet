@@ -20,7 +20,6 @@ import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -28,6 +27,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import java.util.List;
 import java.util.Set;
+import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -38,13 +38,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public interface PerusteprojektiService {
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
-    List<KayttajanTietoDto> getJasenet(Long id);
+    List<KayttajanTietoDto> getJasenet(@P("id") Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
-    List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> getJasenetTiedot(Long id);
+    List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> getJasenetTiedot(@P("id") Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
-    PerusteprojektiDto get(final Long id);
+    PerusteprojektiDto get(@P("id") final Long id);
 
     @PreAuthorize("isAuthenticated()")
     //@PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")
@@ -54,13 +54,13 @@ public interface PerusteprojektiService {
     PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
-    PerusteprojektiDto update(final Long id, PerusteprojektiDto perusteprojektiDto);
+    PerusteprojektiDto update(@P("id") final Long id, PerusteprojektiDto perusteprojektiDto);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
-    Set<ProjektiTila> getTilat(final Long id);
+    Set<ProjektiTila> getTilat(@P("id") final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'TILANVAIHTO')")
-    TilaUpdateStatus updateTila(final Long id, ProjektiTila tila);
+    TilaUpdateStatus updateTila(@P("id") final Long id, ProjektiTila tila);
 
     @PreAuthorize("isAuthenticated()")
     void onkoDiaarinumeroKaytossa(String diaarinumero);
@@ -70,26 +70,23 @@ public interface PerusteprojektiService {
     List<PerusteprojektiInfoDto> getOmatProjektit();
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
-    List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(Long perusteProjektiId);
+    List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(@P("id") Long perusteProjektiId);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
-    List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(Long perusteProjektiId, String nimi);
+    List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(@P("id") Long perusteProjektiId, String nimi);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
-    List<TyoryhmaHenkiloDto> saveTyoryhma(Long perusteProjektiId, String tyoryhma, List<TyoryhmaHenkiloDto> henkilot);
+    List<TyoryhmaHenkiloDto> saveTyoryhma(@P("id") Long perusteProjektiId, String tyoryhma, List<TyoryhmaHenkiloDto> henkilot);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
-    TyoryhmaHenkiloDto saveTyoryhma(Long id, TyoryhmaHenkiloDto tyoryhma);
+    TyoryhmaHenkiloDto saveTyoryhma(@P("id") Long id, TyoryhmaHenkiloDto tyoryhma);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
-    void removeTyoryhma(Long trId);
+    void removeTyoryhma(@P("id") Long perusteProjektiId, String nimi);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
-    void removeTyoryhma(Long perusteProjektiId, String nimi);
-
-    @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
-    List<String> setPerusteenOsaViiteTyoryhmat(Long perusteProjektiId, Long perusteenOsaId, List<String> nimet);
+    List<String> setPerusteenOsaViiteTyoryhmat(@P("id") Long perusteProjektiId, Long perusteenOsaId, List<String> nimet);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
-    List<String> getPerusteenOsaViiteTyoryhmat(Long perusteProjektiId, Long perusteenOsaId);
+    List<String> getPerusteenOsaViiteTyoryhmat(@P("id") Long perusteProjektiId, Long perusteenOsaId);
 }
