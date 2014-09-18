@@ -1,0 +1,138 @@
+$sisalto-chevron-color: $brand-primary;
+$sisalto-chevron-size: 25px;
+.main-content {
+  .list-element-info {
+    margin: 5px 0 0 0;
+    color: #777;
+    font-weight: normal;
+    font-size: x-small;
+  }
+  .sisalto-list-element:hover, .li:hover {
+    background: #fafafa;
+    border: 1px solid #888;
+  }
+  .angular-ui-tree-placeholder {
+    border: 2px dashed #888;
+    background-color: #ddd;
+  }
+  .angular-ui-tree-nodes .angular-ui-tree-nodes {
+    padding-left: 40px;
+  }
+  .angular-ui-tree-node {
+    min-height: 0px;
+  }
+}
+
+.sisalto-list-element {
+  min-height: 40px;
+  border: 1px solid #ccc;
+  padding: 4px 10px 4px 0;
+  margin: 0px;
+  margin-top: 4px;
+  cursor: pointer;
+  -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  background-color: white;
+  &.striped {
+    background: #fcfcfc;
+  }
+  h3 {
+    font-size: 14px;
+    font-weight: bold;
+    display: inline;
+  }
+  .draghandle {
+    float: left;
+    font-size: $sisalto-chevron-size;
+    width: $sisalto-chevron-size * 1.2;
+    cursor: move;
+    color: #999;
+  }
+  .otsikko {
+    display: block;
+    margin-left: $sisalto-chevron-size * 1.6;
+    color: rgb(51,51,51);
+    &:hover, & *:hover {
+      text-decoration: none;
+    }
+
+    .lukko {
+      top: -20px;
+      position: relative;
+      float: right;
+    }
+  }
+  .chevron {
+    font-size: $sisalto-chevron-size;
+    width: $sisalto-chevron-size * 1.6;
+    float: left;
+    padding: 0 0 0 6px;
+    color: $sisalto-chevron-color;
+  }
+}
+
+.tutkinto-sisalto {
+  margin: -30px auto 100px auto;
+
+  .selite {
+    font-size: 18px;
+    text-align: center;
+    margin: 40px;
+  }
+
+  .suoritustapa {
+    font-size: 16px;
+  }
+
+  .actions {
+    height: 50px;
+  }
+
+  .tutkinto {
+    .toolbar-input {
+      margin-top: 40px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 40%;
+    }
+    h2 {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 7px;
+      margin-bottom: 20px;
+
+      .buttons {
+        position: relative;
+        top: -8px;
+      }
+    }
+  }
+  .rakenteen-muokkaus {
+    h2 {
+      border-bottom: none;
+      margin-bottom: 5px;
+    }
+    margin-bottom: 20px;
+  }
+
+  .nav {
+    margin-bottom: 22px;
+  }
+
+  .nav-tabs>li>a {
+    cursor: pointer;
+    padding: 20px;
+    background: none;
+    filter: none;
+    background: #fafafa;
+    &:hover {
+      background: #fff;
+    }
+  }
+
+  .nav-tabs>li.active {
+    &>a, &>a:hover, &>a:focus {
+      padding: 20px;
+      background: #fff;
+    }
+  }
+}

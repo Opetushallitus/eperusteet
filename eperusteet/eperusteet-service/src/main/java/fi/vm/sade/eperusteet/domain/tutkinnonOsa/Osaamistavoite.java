@@ -16,7 +16,6 @@
 package fi.vm.sade.eperusteet.domain.tutkinnonOsa;
 
 import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
-import fi.vm.sade.eperusteet.domain.Mergeable;
 import fi.vm.sade.eperusteet.domain.PartialMergeable;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
@@ -25,6 +24,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidOsaamistavoiteEsitieto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -88,14 +88,31 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
 
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    //Hibernate bug: orphanRemoval ei toimi jos fetchMode = Lazy
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Arviointi arviointi;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @Getter
-    @Setter
     private Osaamistavoite esitieto;
+
+    public Osaamistavoite() {
+    }
+
+    Osaamistavoite(Osaamistavoite ot, Map<Osaamistavoite, Osaamistavoite> esitiedot) {
+        this.nimi = ot.getNimi();
+        this.pakollinen = ot.isPakollinen();
+        this.laajuus = ot.getLaajuus();
+        this.tunnustaminen = ot.getTunnustaminen();
+        this.arviointi = ot.getArviointi() == null ? null : new Arviointi(ot.getArviointi());
+
+        if ( ot.getEsitieto() != null ) {
+            this.esitieto = esitiedot.get(ot.getEsitieto());
+            if ( this.esitieto == null ) {
+                this.esitieto = new Osaamistavoite(ot.getEsitieto(), esitiedot);
+                esitiedot.put(ot.getEsitieto(), this.esitieto);
+            }
+        }
+    }
 
     @Override
     public void mergeState(Osaamistavoite updated) {
@@ -119,11 +136,20 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
             this.setLaajuus(updated.getLaajuus());
         }
     }
-    
+
 
     @Override
     public EntityReference getReference() {
         return new EntityReference(id);
     }
+
+    public void setEsitieto(Osaamistavoite esitieto) {
+        if ( this == esitieto ) {
+            throw new IllegalArgumentException("Osaamistavoite ei voi olla oma esitietonsa");
+        }
+        this.esitieto = esitieto;
+    }
+
+
 
 }

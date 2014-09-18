@@ -116,3 +116,10 @@
     width: 60px;
   }
 }
+
+.alert-error {
+  background-repeat: no-repeat;
+  background-position: 8px 10px;
+  background-image: url("../images/notify-alert.png");
+  padding-left: 46px;
+}

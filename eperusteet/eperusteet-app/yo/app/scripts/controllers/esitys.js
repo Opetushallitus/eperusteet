@@ -87,7 +87,7 @@ angular.module('eperusteApp')
     $scope.rajaaTutkinnonOsia = function(haku) { return Algoritmit.rajausVertailu($scope.tosarajaus, haku, 'nimi'); };
     $scope.suosikkiHelper($state, $stateParams, 'tutkinnonosat');
   })
-  .controller('EsitysSisaltoCtrl', function($scope, $state, $stateParams, Lokalisointi) {
+  .controller('EsitysSisaltoCtrl', function($scope, $state, $stateParams) {
     $scope.$parent.valittu.sisalto = $stateParams.osanId;
     $scope.valittuSisalto = $scope.$parent.sisalto[$stateParams.osanId];
     if (!$scope.valittuSisalto) {
@@ -96,18 +96,17 @@ angular.module('eperusteApp')
     else {
       $scope.suosikkiHelper($state, $stateParams, $scope.valittuSisalto.nimi);
     }
-    Lokalisointi.valitseKieli($stateParams.lang);
   })
-  .controller('EsitysCtrl', function($q, $scope, $stateParams, sisalto, peruste,
-      Kayttajaprofiilit, Suosikit, YleinenData, Navigaatiopolku, $state, virheService,
-      Algoritmit, PerusteenRakenne, tutkinnonOsat, Kaanna, arviointiasteikot, Profiili,
-      PdfCreation) {
+  .controller('EsitysCtrl', function($scope, $stateParams, sisalto, peruste,
+      YleinenData, $state, Algoritmit, tutkinnonOsat, Kaanna, arviointiasteikot,
+      Profiili, PdfCreation) {
+    $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
     $scope.navi = {
       items: [
         {label: 'tutkinnonosat', link: ['root.esitys.peruste.tutkinnonosat', {}]},
         {label: 'tutkinnon-rakenne', link: ['root.esitys.peruste.rakenne', {}]},
       ],
-      header: 'perusteen-sisältö'
+      header: 'perusteen-sisalto'
     };
 
     function mapSisalto(sisalto) {
@@ -123,6 +122,9 @@ angular.module('eperusteApp')
       });
       return flattened;
     }
+    $scope.kaanna = function (val) {
+      return Kaanna.kaanna(val);
+    };
 
     $scope.peruste = peruste;
     $scope.sisalto = mapSisalto(sisalto);

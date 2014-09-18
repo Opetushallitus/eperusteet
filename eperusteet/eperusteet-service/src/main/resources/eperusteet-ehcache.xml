@@ -25,7 +25,7 @@
     Subdirectories can be specified below the property e.g. java.io.tmpdir/one
 
     -->
-    <diskStore path="java.io.tmpdir"/>
+    <diskStore path="java.io.tmpdir/eperusteetcache"/>
 
     <!--
     Specifies a CacheManagerEventListenerFactory, be used to create a CacheManagerPeerProvider,
@@ -267,44 +267,49 @@
       memory limits of the VM. This property allows the bootstraper to fetched elements in
       chunks. The default chunk size is 5000000 (5MB).
 
-  -->
+    -->
 
-  <!--
-  Mandatory Default Cache configuration. These settings will be applied to caches
-  created programmtically using CacheManager.add(String cacheName)
-  -->
-  <defaultCache
-    maxElementsInMemory="10000"
-    eternal="false"
-    timeToIdleSeconds="3600"
-    timeToLiveSeconds="3600"
-    overflowToDisk="false"
-    maxElementsOnDisk="10000"
-    diskPersistent="false"
-    diskExpiryThreadIntervalSeconds="120"
-    memoryStoreEvictionPolicy="LRU"
-  />
-  <cache name="koulutusalat"
+    <!--
+    Mandatory Default Cache configuration. These settings will be applied to caches
+    created programmtically using CacheManager.add(String cacheName)
+    -->
+    <defaultCache
+        maxElementsInMemory="10000"
+        eternal="false"
+        timeToIdleSeconds="3600"
+        timeToLiveSeconds="3600"
+        overflowToDisk="true"
+        maxElementsOnDisk="10000"
+        diskPersistent="false"
+        diskExpiryThreadIntervalSeconds="120"
+        memoryStoreEvictionPolicy="LRU"
+    />
+    <cache name="tila"
+           maxElementsInMemory="10000"
+           eternal="false"
+           timeToLiveSeconds="3600"
+           overflowToDisk="false" />
+    <cache name="koulutusalat"
          maxElementsInMemory="10"
          eternal="false"
          timeToLiveSeconds="86400"
          overflowToDisk="false" />
-  <cache name="koodistot"
+    <cache name="koodistot"
          maxElementsInMemory="1000"
          eternal="false"
          timeToLiveSeconds="86400"
          overflowToDisk="false" />
-  <cache name="opintoalat"
+    <cache name="opintoalat"
          maxElementsInMemory="10"
          eternal="false"
          timeToLiveSeconds="86400"
          overflowToDisk="false" />
-  <cache name="kayttajat"
+    <cache name="kayttajat"
          maxElementsInMemory="10000"
          eternal="false"
          timeToLiveSeconds="86400"
          overflowToDisk="false" />
-  <cache name="kayttajan_projekti"
+    <cache name="kayttajan_projekti"
          maxElementsInMemory="10000"
          eternal="false"
          timeToLiveSeconds="86400"

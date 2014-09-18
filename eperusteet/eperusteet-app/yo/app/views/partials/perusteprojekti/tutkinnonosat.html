@@ -1,24 +1,31 @@
 <div class="row">
-<div class="col-md-12">
+<div class="col-md-12 ep-sisalto-inner">
 <div class="action-buttons">
-  <button class="floater btn" href="" icon-role="import" ng-click="tuoTutkinnonosa()" kaanna>tuo-tutkinnonosa</button>
-  <button ng-show="naytaToisestaSuoritustavastaTuonti" class="floater btn" href="" icon-role="import" ng-click="tuoSuoritustavasta()" kaanna>tuo-toisesta-suoritustavasta</button>
-  <button icon-role="add" class="floater btn" href="" ng-click="lisaaTutkinnonOsaDialog()" kaanna>lisää</button>
+  <button class="floater btn" icon-role="import" ng-click="tuoTutkinnonosa()" kaanna="tuo-tutkinnonosa"></button>
+  <button ng-show="naytaToisestaSuoritustavastaTuonti" class="floater btn" icon-role="import" ng-click="tuoSuoritustavasta()" kaanna="tuo-toisesta-suoritustavasta"></button>
+  <button icon-role="add" class="floater btn" ng-click="lisaaTutkinnonOsa()" kaanna="lisaa"></button>
 </div>
 
 <h1>
   {{'tutkinnonosat' | kaanna}} ({{ tutkinnonOsat.length }} {{ 'kpl' | kaanna }})
-  <div class="btn-group">
-    <label class="btn" ng-model="preferenssit.nakymatyyli" btn-radio="'lista'" icon-role="list"></label>
-    <label class="btn" ng-model="preferenssit.nakymatyyli" btn-radio="'palikka'" icon-role="th"></label>
-  </div>
+
 </h1>
 
 <div class="tutkinnonosa-lista-toolbar">
-  <div class="pull-right">
-    <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="tosarajaus form-control input-sm" placeholder="Rajaa tutkinnon osia...">
+  <div class="toolbar-input">
+    <rajaus model="tosarajaus" callback="paivitaRajaus(value)" placeholder="Rajaa tutkinnon osia..."></rajaus>
+    <div class="pull-right">
+      <div class="btn-group">
+        <label class="btn" ng-model="preferenssit.nakymatyyli" btn-radio="'palikka'" icon-role="th" title="{{'Ruudukko'|kaanna}}"></label>
+        <label class="btn" ng-model="preferenssit.nakymatyyli" btn-radio="'lista'" icon-role="list" title="{{'Lista'|kaanna}}"></label>
+      </div>
+    </div>
+    <div class="clearfix"></div>
   </div>
-  <div ng-show="preferenssit.nakymatyyli === 'palikka'">
+</div>
+
+<div>
+  <div ng-show="preferenssit.nakymatyyli === 'palikka'" class="tosat-sort-selector">
     <select class="jarjestys-select form-control" ng-model="jarjestysTapa">
       <option value="nimi" kaanna>nimi</option>
       <option value="muokattu" kaanna>muokattu-viimeksi</option>
@@ -31,9 +38,7 @@
       </a>
     </div>
   </div>
-</div>
 
-<div>
   <table ng-show="preferenssit.nakymatyyli === 'lista'" class="table table-striped" style="margin-top: 0px">
     <tr>
       <th width="50%">
@@ -60,7 +65,7 @@
     </tr>
     <tr ng-repeat="v in tutkinnonOsat | orderBy:jarjestys:jarjestysOrder | mapFilter:rajaaTutkinnonOsia">
       <td>
-        <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })" href="">{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</a>
+        <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa', versio: '' })" href="">{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</a>
       </td>
       <td ng-if="suoritustapa !== 'naytto'">
         <span ng-show="v.laajuus">{{ v.laajuus }} {{ yksikko || '' | kaanna }}</span>
@@ -72,14 +77,14 @@
   </table>
 
   <ul ng-if="preferenssit.nakymatyyli === 'palikka'" class="tutkinnonosat">
-    <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' })"
+    <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: v._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa', versio: '' })"
         class="tutkinnonosa-laatikko list-group-item" ng-repeat="v in tutkinnonOsat | orderBy:jarjestys:jarjestysOrder | mapFilter:rajaaTutkinnonOsia">
       <div ng-hide="editoi" class="muokkaus" icon-role="forward"></div>
       <div class="otsikko">
         <h3>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</h3>
         <div class="pienet-tiedot">
             <div class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && v.laajuus">{{ v.laajuus }} {{ yksikko || '' | kaanna }}</div>
-            <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ v.muokattu | aikaleima }}</div>
+            <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ v.muokattu | aikaleima:'ago' }}</div>
         </div>
       </div>
     </a>

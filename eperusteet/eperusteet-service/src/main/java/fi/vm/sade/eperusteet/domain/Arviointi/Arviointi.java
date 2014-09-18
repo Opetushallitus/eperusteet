@@ -54,7 +54,7 @@ public class Arviointi implements Serializable {
     private Long id;
 
     @ValidHtml(whitelist = WhitelistType.SIMPLIFIED)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @Getter
     @Setter
@@ -67,6 +67,13 @@ public class Arviointi implements Serializable {
     @OrderColumn
     @Getter
     private List<ArvioinninKohdealue> arvioinninKohdealueet = new ArrayList<>();
+
+    public Arviointi() {
+    }
+
+    public Arviointi(Arviointi other) {
+        copyState(other);
+    }
 
     public void setArvioinninKohdealueet(List<ArvioinninKohdealue> arvioinninKohdealueet) {
         this.arvioinninKohdealueet.clear();
@@ -96,6 +103,13 @@ public class Arviointi implements Serializable {
             return Objects.equals(this.arvioinninKohdealueet, other.arvioinninKohdealueet);
         }
         return false;
+    }
+
+    private void copyState(Arviointi other) {
+        this.setLisatiedot(other.getLisatiedot());
+        for (ArvioinninKohdealue aka : other.getArvioinninKohdealueet()) {
+            this.arvioinninKohdealueet.add(new ArvioinninKohdealue(aka));
+        }
     }
 
 }

@@ -28,21 +28,33 @@ angular.module('eperusteApp')
       }
     });
   })
-  .service('Lokalisointi', function(LokalisointiResource, $window) {
-    var lokaalit = {};
-
-    return {
-      valitseKieli: function(lang) {
-        // Ohita lokalisointipalvelu localhostilla
-        if ($window.location.host.indexOf('localhost') === 0) {
-          return;
+  .factory('LokalisointiLoader', function ($q, $http, LokalisointiResource, $window) {
+    var PREFIX = 'localisation/locale-',
+        SUFFIX = '.json',
+        BYPASS_REMOTE = $window.location.host.indexOf('localhost') === 0;
+    return function (options) {
+      var deferred = $q.defer();
+      var translations = {};
+      $http({
+        url: PREFIX + options.key + SUFFIX,
+        method: 'GET',
+        params: ''
+      }).success(function (data) {
+        _.extend(translations, data);
+        if (BYPASS_REMOTE) {
+          deferred.resolve(translations);
+        } else {
+          LokalisointiResource.get({locale: options.key}, function (res) {
+            var remotes = _.zipObject(_.map(res, 'key'), _.map(res, 'value'));
+            _.extend(translations, remotes);
+            deferred.resolve(translations);
+          }, function () {
+            deferred.reject(options.key);
+          });
         }
-        return LokalisointiResource.get({ locale: lang }, function(res) {
-          lokaalit = _.zipObject(_.map(res, 'key'), _.map(res, 'value'));
-        }).$promise;
-      },
-      hae: function(avain) {
-        return lokaalit[avain];
-      }
+      }).error(function () {
+        deferred.reject(options.key);
+      });
+      return deferred.promise;
     };
   });

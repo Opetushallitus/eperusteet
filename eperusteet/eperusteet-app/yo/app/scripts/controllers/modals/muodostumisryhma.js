@@ -19,9 +19,10 @@
 
 angular.module('eperusteApp')
   .controller('MuodostumisryhmaModalCtrl', function($scope, $modalInstance, ryhma,
-    vanhempi, suoritustapa, Varmistusdialogi, YleinenData, Koodisto, Utils) {
+    vanhempi, suoritustapa, leikelauta, Varmistusdialogi, YleinenData, Koodisto, Utils) {
 
     $scope.vanhempi = vanhempi;
+    $scope.leikelauta = leikelauta;
     $scope.suoritustapa = suoritustapa;
     $scope.roolit = _.map(YleinenData.rakenneRyhmaRoolit, function(rooli) {
       return { value: rooli, label: rooli };
@@ -38,8 +39,6 @@ angular.module('eperusteApp')
     $scope.luonti = !_.isObject(ryhma);
 
     var setupRyhma = function (ryhma) {
-      console.log('setupRyhma', _.clone(ryhma));
-
       $scope.ryhma = ryhma ? angular.copy(ryhma) : {};
       $scope.osaamisala = ryhma && ryhma.osaamisala ? angular.copy(ryhma.osaamisala) : {};
       $scope.ryhma.rooli = $scope.ryhma.rooli || YleinenData.rakenneRyhmaRoolit[0];
@@ -52,21 +51,18 @@ angular.module('eperusteApp')
       if (!$scope.ryhma.kuvaus) {
         $scope.ryhma.kuvaus = {};
       }
-      console.log('setupRyhma2', _.clone(ryhma));
-      console.log('setupRyhma2 $scope.ryhma', _.clone($scope.ryhma));
     };
     setupRyhma(ryhma);
 
 
     var koodistoHaku = function (koodisto) {
-      $scope.osaamisala = $scope.ryhma.osaamisala || {};
+      $scope.osaamisala = {};
       $scope.osaamisala.nimi = koodisto.nimi;
       $scope.osaamisala.osaamisalakoodiArvo = koodisto.koodiArvo;
       $scope.osaamisala.osaamisalakoodiUri = koodisto.koodiUri;
       if (!Utils.hasLocalizedText($scope.ryhma.nimi)) {
         $scope.ryhma.nimi = $scope.osaamisala.nimi;
       }
-
     };
 
     $scope.avaaKoodistoModaali = function() {
@@ -78,6 +74,10 @@ angular.module('eperusteApp')
       }, angular.noop, null)();
     };
 
+    $scope.tyhjennaOsaamisala = function () {
+      $scope.osaamisala = {};
+    };
+
     $scope.ok = function(uusiryhma) {
       if (uusiryhma) {
         if (uusiryhma.osat === undefined) {
@@ -86,15 +86,19 @@ angular.module('eperusteApp')
         if (!$scope.ms.laajuus) {
           delete uusiryhma.muodostumisSaanto.laajuus;
         }
+        else {
+          var ml = uusiryhma.muodostumisSaanto.laajuus;
+          ml.maksimi = ml.minimi && (!ml.maksimi || ml.minimi > ml.maksimi) ? ml.minimi : ml.maksimi;
+        }
         if (!$scope.ms.koko) {
           delete uusiryhma.muodostumisSaanto.koko;
         }
-      }
+        if (!_.isEmpty($scope.osaamisala)) {
+          uusiryhma.rooli = YleinenData.osaamisalaRooli;
+          uusiryhma.osaamisala = $scope.osaamisala;
 
-      if ($scope.osaamisala) {
-        uusiryhma.osaamisala = $scope.osaamisala;
+        }
       }
-
       $modalInstance.close(uusiryhma);
     };
 
@@ -111,7 +115,10 @@ angular.module('eperusteApp')
       $modalInstance.dismiss();
     };
 
-    $scope.$watch('ryhma.rooli', function () {
-      $scope.ryhma.osaamisala = {};
+    $scope.$watch('ryhma.rooli', function(rooli) {
+      if (rooli !== YleinenData.osaamisalaRooli) {
+        $scope.ryhma.osaamisala = {};
+        $scope.osaamisala = {};
+      }
     });
   });

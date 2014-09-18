@@ -15,14 +15,10 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
-
-
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteLaajaDto;
-
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import java.util.List;
@@ -36,57 +32,75 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public interface PerusteenOsaService {
 
+    //yleiset haut sallittu kaikille -- palauttaa vain julkaistuja osia
+    @PreAuthorize("permitAll()")
+    List<PerusteenOsaDto.Laaja> getAllByKoodiUri(final String koodiUri);
+
+    @PreAuthorize("permitAll()")
+    List<PerusteenOsaDto.Suppea> getAll();
+
+    @PreAuthorize("permitAll()")
+    List<PerusteenOsaDto.Suppea> getAllWithName(final String name);
 
     @PreAuthorize("hasPermission(#po.dto.id, 'perusteenosa', 'MUOKKAUS')")
-    <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(@P("po") UpdateDto<T> perusteenOsaDto, Class<T> dtoClass);
-    @PreAuthorize("hasPermission(#po.id, 'perusteenosa', 'MUOKKAUS')")
-    <T extends PerusteenOsaDto, D extends PerusteenOsa> T update(@P("po") T perusteenOsaDto, Class<T> dtoClass);
+    <T extends PerusteenOsaDto.Laaja> T update(@P("po") UpdateDto<T> perusteenOsaDto);
 
-    <T extends PerusteenOsaDto, D extends PerusteenOsa> T add(T perusteenOsaDto, Class<T> dtoClass, Class<D> destinationClass);
+    @PreAuthorize("hasPermission(#po.id, 'perusteenosa', 'MUOKKAUS')")
+    <T extends PerusteenOsaDto.Laaja> T update(@P("po") T perusteenOsaDto);
+
+    @PreAuthorize("isAuthenticated()")
+    @PostAuthorize("hasPermission(returnObject.id, 'perusteenosa', 'MUOKKAUS')")
+    <T extends PerusteenOsaDto.Laaja> T add(T perusteenOsaDto);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'POISTO')")
-    void delete(final Long id);
+    void delete(@P("id") final Long id);
 
-    Integer getLatestRevision(final Long id);
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
+    Integer getLatestRevision(@P("id") final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
-    PerusteenOsaDto revertToVersio(@P("id") Long id, Integer versioId);
+    PerusteenOsaDto.Laaja revertToVersio(@P("id") Long id, Integer versioId);
 
-    @PostAuthorize("returnObject.tila == T(fi.vm.sade.eperusteet.domain.PerusteTila).VALMIS or hasPermission(#id, 'perusteenosa', 'LUKU')")
-    PerusteenOsaDto get(@P("id") final Long id);
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
+    PerusteenOsaDto.Laaja get(@P("id") final Long id);
 
-    List<PerusteenOsaDto> getAllByKoodiUri(final String koodiUri);
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
+    List<Revision> getVersiot(@P("id") Long id);
 
-    List<PerusteenOsaDto> getAll();
-
-    List<PerusteenOsaDto> getAllWithName(final String name);
-
-    List<Revision> getVersiot(Long id);
-
-    @PostAuthorize("returnObject.tila == T(fi.vm.sade.eperusteet.domain.PerusteTila).VALMIS or hasPermission(#id, 'perusteenosa', 'LUKU')")
-    PerusteenOsaDto getVersio(@P("id") final Long id, final Integer versioId);
+    //TODO: versiotietojen lukuoikeus?
+    @PreAuthorize("returnObject?.tila == T(fi.vm.sade.eperusteet.domain.PerusteTila).VALMIS or hasPermission(#id, 'perusteenosa', 'LUKU')")
+    PerusteenOsaDto.Laaja getVersio(@P("id") final Long id, final Integer versioId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
     LukkoDto lock(@P("id") final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
-    void unlock(final Long id);
+    void unlock(@P("id") final Long id);
 
-    LukkoDto getLock(final Long id);
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
+    LukkoDto getLock(@P("id") final Long id);
 
-    OsaAlueLaajaDto addTutkinnonOsaOsaAlue(final Long id, OsaAlueLaajaDto osaAlueDto);
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
+    OsaAlueLaajaDto addTutkinnonOsaOsaAlue(@P("id") final Long id, OsaAlueLaajaDto osaAlueDto);
 
-    OsaAlueLaajaDto updateTutkinnonOsaOsaAlue(final Long id, final Long osaAlueId, OsaAlueLaajaDto osaAlue);
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
+    OsaAlueLaajaDto updateTutkinnonOsaOsaAlue(@P("id") final Long id, final Long osaAlueId, OsaAlueLaajaDto osaAlue);
 
-    List<OsaAlueLaajaDto> getTutkinnonOsaOsaAlueet(final Long id);
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
+    List<OsaAlueLaajaDto> getTutkinnonOsaOsaAlueet(@P("id") final Long id);
 
-    public OsaamistavoiteLaajaDto addOsaamistavoite(final Long id, final Long osaAlueId, OsaamistavoiteLaajaDto osaamistavoiteDto);
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
+    public OsaamistavoiteLaajaDto addOsaamistavoite(@P("id") final Long id, final Long osaAlueId, OsaamistavoiteLaajaDto osaamistavoiteDto);
 
-    public OsaamistavoiteLaajaDto updateOsaamistavoite(final Long id, final Long osaAlueId, final Long osaamistavoiteId, OsaamistavoiteLaajaDto osaamistavoite);
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
+    public OsaamistavoiteLaajaDto updateOsaamistavoite(@P("id") final Long id, final Long osaAlueId, final Long osaamistavoiteId, OsaamistavoiteLaajaDto osaamistavoite);
 
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
     public List<OsaamistavoiteLaajaDto> getOsaamistavoitteet(final Long id, final Long osaAlueId);
 
-    public void removeOsaamistavoite(final Long id, final Long osaAlueId, final Long osaamistavoiteId);
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
+    public void removeOsaamistavoite(@P("id") final Long id, final Long osaAlueId, final Long osaamistavoiteId);
 
-    public void removeOsaAlue(final Long id, final Long osaAlueId);
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
+    public void removeOsaAlue(@P("id") final Long id, final Long osaAlueId);
 }

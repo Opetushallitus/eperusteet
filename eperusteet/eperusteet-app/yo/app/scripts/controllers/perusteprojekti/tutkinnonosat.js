@@ -27,7 +27,7 @@ angular.module('eperusteApp')
   .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $state, $stateParams,
     perusteprojektiTiedot, PerusteProjektiService, PerusteenRakenne, Notifikaatiot,
     Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode, Algoritmit,
-    Preferenssit, $modal) {
+    Preferenssit) {
 
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
@@ -95,14 +95,6 @@ angular.module('eperusteApp')
       }, Notifikaatiot.serverCb);
     };
 
-    $scope.lisaaTutkinnonOsaDialog = function () {
-      $modal.open({
-        templateUrl: 'views/modals/lisaatutkinnonosa.html',
-      }).result.then(function (value) {
-        $scope.lisaaTutkinnonOsa(value);
-      });
-    };
-
     $scope.lisaaTutkinnonOsa = function(tyyppi) {
       var osa = tyyppi ? {tyyppi: tyyppi} : {};
 
@@ -115,7 +107,8 @@ angular.module('eperusteApp')
         TutkinnonOsaEditMode.setMode(true);
         $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
           perusteenOsaId: res._tutkinnonOsa,
-          perusteenOsanTyyppi: 'tutkinnonosa'
+          perusteenOsanTyyppi: 'tutkinnonosa',
+          versio: ''
         });
       },
       function(err) {
@@ -124,6 +117,6 @@ angular.module('eperusteApp')
     };
 
     $scope.getHref = function(valittu) {
-      return $state.href('root.perusteprojekti.suoritustapa.perusteenosa', { perusteenOsaId: valittu._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa' });
+      return $state.href('root.perusteprojekti.suoritustapa.perusteenosa', { perusteenOsaId: valittu._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa', versio: '' });
     };
   });

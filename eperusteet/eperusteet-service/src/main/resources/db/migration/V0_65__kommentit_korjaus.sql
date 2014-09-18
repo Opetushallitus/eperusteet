@@ -1,0 +1,2 @@
+ALTER TABLE kommentti
+    ALTER COLUMN sisalto DROP NOT NULL;

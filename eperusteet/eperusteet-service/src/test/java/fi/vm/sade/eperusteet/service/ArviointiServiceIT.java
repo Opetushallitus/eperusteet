@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.service.internal.ArviointiService;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;

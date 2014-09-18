@@ -21,6 +21,7 @@
 
 angular.module('eperusteApp')
   .service('Muodostumissaannot', function($modal) {
+    var skratchpadHasContent = false;
     function osienLaajuudenSumma(rakenneOsat) {
       return _(rakenneOsat ? rakenneOsat : [])
         .map(function(osa) { return osa ? osa.$laajuus : 0; })
@@ -64,6 +65,8 @@ angular.module('eperusteApp')
 
     /* TODO (jshint complexity/W074) simplify/split ---> */
     function validoiRyhma(rakenne, viitteet) {
+      var virheet = 0;
+
       function lajittele(osat) {
         var buckets = {};
         _.forEach(osat, function(osa) {
@@ -78,6 +81,7 @@ angular.module('eperusteApp')
           virhe: virhe,
           selite: kaannaSaanto(ms)
         };
+        virheet += 1;
       }
 
       function avaintenSumma(osat, n, avaimetCb) {
@@ -90,13 +94,13 @@ angular.module('eperusteApp')
         return res;
       }
 
-      if (!rakenne || !rakenne.osat) { return; }
+      if (!rakenne || !rakenne.osat) { return 0; }
 
       delete rakenne.$virhe;
 
       _.forEach(rakenne.osat, function(tosa) {
         if (!tosa._tutkinnonOsaViite) {
-          validoiRyhma(tosa, viitteet);
+          virheet += validoiRyhma(tosa, viitteet) || 0;
         }
       });
 
@@ -128,7 +132,6 @@ angular.module('eperusteApp')
             asetaVirhe('muodostumis-rakenne-validointi-maara', ms);
           }
         }
-
       }
 
       var tosat = _(rakenne.osat)
@@ -138,6 +141,8 @@ angular.module('eperusteApp')
       if (_.size(tosat) !== _(tosat).uniq('_tutkinnonOsaViite').size()) {
         asetaVirhe('muodostumis-rakenne-validointi-uniikit');
       }
+
+      return virheet;
     }
     /* <--- */
 
@@ -166,18 +171,18 @@ angular.module('eperusteApp')
     }
 
     function ryhmaModaali(thenCb) {
-      return function(suoritustapa, ryhma, vanhempi) {
+      return function(suoritustapa, ryhma, vanhempi, leikelauta) {
         $modal.open({
           templateUrl: 'views/modals/ryhmaModal.html',
           controller: 'MuodostumisryhmaModalCtrl',
           resolve: {
             ryhma: function() { return ryhma; },
             vanhempi: function() { return vanhempi; },
-            suoritustapa: function() { return suoritustapa; }
+            suoritustapa: function() { return suoritustapa; },
+            leikelauta: function() { return leikelauta; }
           }
         })
         .result.then(function(res) {
-          console.log('ryhma', res);
           thenCb(ryhma, vanhempi, res);
         });
       };
@@ -187,7 +192,14 @@ angular.module('eperusteApp')
       validoiRyhma: validoiRyhma,
       laskeLaajuudet: laskeLaajuudet,
       ryhmaModaali: ryhmaModaali,
-      kaannaSaanto: kaannaSaanto
+      kaannaSaanto: kaannaSaanto,
+      skratchpadNotEmpty: function (value) {
+        if (arguments.length > 0) {
+          skratchpadHasContent = value;
+        } else {
+          return skratchpadHasContent;
+        }
+      }
     };
   });
 

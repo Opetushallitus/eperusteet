@@ -13,10 +13,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  *
@@ -24,7 +24,10 @@ import fi.vm.sade.eperusteet.domain.Kieli;
  */
 public interface LocalizedMessagesService {
 
+    @PreAuthorize("permitAll()")
     public String translate(String key, Kieli kieli);
+
+    @PreAuthorize("permitAll()")
     public String translate(String key, Object[] args, Kieli kieli);
 
 }

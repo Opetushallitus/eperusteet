@@ -36,5 +36,6 @@ public class PerusteprojektiInfoDto implements Serializable {
     private ProjektiTila tila;
     private EntityReference peruste;
     private String diaarinumero;
-    private String oid;
+    private String ryhmaOid;
+    private String koulutustyyppi;
 }

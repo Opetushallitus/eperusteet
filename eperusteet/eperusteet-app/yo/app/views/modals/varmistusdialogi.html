@@ -17,7 +17,7 @@ European Union Public Licence for more details.
 <div class="modal-header">
   <h3>{{otsikko | kaanna}}</h3>
 </div>
-<div class="modal-body">
+<div ng-show="teksti.length > 0 || lisaTeksti.length > 0" class="modal-body">
   <p>{{teksti | kaanna}}</p>
   <p>{{lisaTeksti | kaanna}}</p>
 </div>

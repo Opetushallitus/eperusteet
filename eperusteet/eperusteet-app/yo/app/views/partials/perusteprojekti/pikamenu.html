@@ -9,7 +9,7 @@
     <div id="tutkinnonosat-pikamenu-list">
       <ul class="list-group">
         <li class="list-group-item" ng-repeat="(key, value) in rakenne.tutkinnonOsat" ng-hide="value.poistettu">
-          <a ng-show="tutkinnonOsa.id != key" href="" ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: value._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa', versio: null })">{{value.nimi || 'nimetön' | kaanna}}</a>
+          <a ng-show="tutkinnonOsa.id != key" href="" ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: value._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa', versio: '' })">{{value.nimi || 'nimetön' | kaanna}}</a>
           <span class="active" ng-show="tutkinnonOsa.id == key">{{value.nimi || 'nimetön' | kaanna}}</span>
         </li>
       </ul>

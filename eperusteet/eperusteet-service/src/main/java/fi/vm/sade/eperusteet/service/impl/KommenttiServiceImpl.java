@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Kommentti;
@@ -22,6 +21,8 @@ import fi.vm.sade.eperusteet.repository.KommenttiRepository;
 import fi.vm.sade.eperusteet.service.KommenttiService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.security.PermissionChecker;
+import fi.vm.sade.eperusteet.service.security.PermissionEvaluator;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,12 +44,14 @@ public class KommenttiServiceImpl implements KommenttiService {
     KommenttiRepository kommentit;
 
     @Autowired
+    private PermissionChecker permissionChecker;
+
+    @Autowired
     @Dto
     private DtoMapper mapper;
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("isAuthenticated()")
     public KommenttiDto get(Long kommenttiId) {
         Kommentti kommentti = kommentit.findOne(kommenttiId);
         return mapper.map(kommentti, KommenttiDto.class);
@@ -64,7 +67,6 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllByPerusteenOsa(Long id, Long perusteenOsaId) {
         List<Kommentti> re = kommentit.findAllByPerusteenOsa(id, perusteenOsaId);
         return mapper.mapAsList(re, KommenttiDto.class);
@@ -72,7 +74,6 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllBySuoritustapa(Long id, String suoritustapa) {
         List<Kommentti> re = kommentit.findAllBySuoritustapa(id, suoritustapa);
         return mapper.mapAsList(re, KommenttiDto.class);
@@ -80,7 +81,6 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllByPerusteprojekti(Long id) {
         List<Kommentti> re = kommentit.findAllByPerusteprojekti(id);
         return mapper.mapAsList(re, KommenttiDto.class);
@@ -88,7 +88,6 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllByParent(Long id) {
         List<Kommentti> re = kommentit.findAllByParent(id);
         return mapper.mapAsList(re, KommenttiDto.class);
@@ -96,7 +95,6 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllByYlin(Long id) {
         List<Kommentti> re = kommentit.findAllByYlin(id);
         return mapper.mapAsList(re, KommenttiDto.class);
@@ -104,7 +102,6 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasPermission(#kommenttidto.perusteprojektiId, 'perusteProjekti', 'KOMMENTOINTI')")
     public KommenttiDto add(final KommenttiDto kommenttidto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Kommentti kommentti = new Kommentti();
@@ -123,27 +120,26 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasPermission(#kommenttidto.perusteprojektiId, 'perusteProjekti', 'KOMMENTOINTI')")
     public KommenttiDto update(Long kommenttiId, @P("kommenttidto") final KommenttiDto kommenttidto) {
         Kommentti kommentti = kommentit.findOne(kommenttiId);
         SecurityUtil.allow(kommentti.getLuoja());
+        permissionChecker.checkPermission(kommentti.getPerusteprojektiId(), PermissionEvaluator.Target.PERUSTEPROJEKTI, PermissionEvaluator.Permission.KOMMENTOINTI);
         kommentti.setSisalto(kommenttidto.getSisalto());
         return mapper.map(kommentit.save(kommentti), KommenttiDto.class);
     }
 
     @Override
     @Transactional
-    //@PreAuthorize("hasPermission(#kommenttidto.perusteprojektiId, 'perusteProjekti', 'KOMMENTOINTI')")
     public void delete(Long kommenttiId) {
         Kommentti kommentti = kommentit.findOne(kommenttiId);
         SecurityUtil.allow(kommentti.getLuoja());
+        permissionChecker.checkPermission(kommentti.getPerusteprojektiId(),PermissionEvaluator.Target.PERUSTEPROJEKTI, PermissionEvaluator.Permission.KOMMENTOINTI);
         kommentti.setSisalto(null);
         kommentti.setPoistettu(true);
     }
 
     @Override
     @Transactional
-    @PreAuthorize("isAuthenticated()")
     public void deleteReally(Long kommenttiId) {
         kommentit.delete(kommenttiId);
     }

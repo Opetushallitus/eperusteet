@@ -7,6 +7,7 @@ $sivunavi-shadow: 6px;
 
 .sivunavi-outer {
   clear: both;
+  width: $sivunavi-leveys;
   .no-results {
     color: $secondary-lighter;
     font-style: italic;
@@ -105,6 +106,7 @@ $sivunavi-level-padding: 20px;
   .active, .active a {
     background-color: #e6e6e6;
     color: $brand-primary;
+    font-weight: 700;
   }
   .list-group-item {
     &.active, &.active:focus, &.active:hover {
@@ -153,6 +155,16 @@ $sivunavi-level-padding: 20px;
   width: $sivunavi-leveys;
 }
 
+.sivunavi-takaisin {
+  a {
+    font-size: 140%;
+    .glyphicon {
+      font-size: 25px;
+      top: 4px;
+    }
+  }
+}
+
 .sivunavi-toggler-wrapper {
   position: relative;
 }
@@ -196,6 +208,9 @@ $sivunavi-level-padding: 20px;
     width: $sivunavi-leveys;
     z-index: 1030;
     box-shadow: 0 0 $sivunavi-shadow black;
+    #sivunavi-footer-content.has-content button {
+      margin: 10px 15px;
+    }
     .header {
       border: 0;
     }
@@ -239,10 +254,18 @@ $sivunavi-level-padding: 20px;
     overflow: visible;
   }
   .sivunavi-takaisin {
-    margin-top: -46px;
+    margin-top: -50px;
     height: $sivunavi-takaisin-korkeus;
   }
   .sivunavi-clear {
     display: none;
+  }
+}
+
+#sivunavi-footer-content.has-content {
+  background-color: white;
+  border-right: 1px solid #ddd;
+  button {
+    margin: 10px 0px;
   }
 }

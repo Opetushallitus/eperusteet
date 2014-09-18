@@ -30,7 +30,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PerusteprojektiPermissionRepository extends JpaRepository<Perusteprojekti, Long> {
 
-    @Query("SELECT DISTINCT NEW fi.vm.sade.eperusteet.service.util.Pair(pp.oid,pp.tila) FROM Perusteprojekti pp WHERE pp.peruste.id = ?1")
+    @Query("SELECT DISTINCT NEW fi.vm.sade.eperusteet.service.util.Pair(pp.ryhmaOid, pp.tila) FROM Perusteprojekti pp WHERE pp.peruste.id = ?1")
     List<Pair<String,ProjektiTila>> findByPeruste(Long id);
 
     /**
@@ -42,7 +42,7 @@ public interface PerusteprojektiPermissionRepository extends JpaRepository<Perus
      * @param perusteenOsaId
      * @return
      */
-    @Query("SELECT DISTINCT NEW fi.vm.sade.eperusteet.service.util.Pair(pp.ryhmaOid,pp.tila) FROM PerusteenosanProjekti pp WHERE pp.id = ?1")
+    @Query("SELECT DISTINCT NEW fi.vm.sade.eperusteet.service.util.Pair(pp.ryhmaOid, pp.tila) FROM PerusteenosanProjekti pp WHERE pp.id = ?1")
     List<Pair<String,ProjektiTila>> findTilaByPerusteenOsaId(Long perusteenOsaId);
 
 }

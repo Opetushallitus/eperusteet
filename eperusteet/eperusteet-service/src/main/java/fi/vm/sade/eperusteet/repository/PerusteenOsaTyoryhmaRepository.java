@@ -1,33 +1,33 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto;
+package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
-import lombok.Getter;
-import lombok.Setter;
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaTyoryhma;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
- * @author jhyoty
+ * @author nkala
  */
-@Getter
-@Setter
-//@JsonTypeName("tekstiosa")
-public class TekstiKappaleDto extends PerusteenOsaDto {
-    private LokalisoituTekstiDto teksti;
+public interface PerusteenOsaTyoryhmaRepository extends JpaRepository<PerusteenOsaTyoryhma, Long> {
+    List<PerusteenOsaTyoryhma> findAllByPerusteenosaAndPerusteprojekti(PerusteenOsa perusteenosa, Perusteprojekti perusteprojekti);
+
+    void deleteAllByPerusteenosaAndPerusteprojekti(PerusteenOsa perusteenosa, Perusteprojekti perusteprojekti);
 }

@@ -26,9 +26,9 @@ angular.module('eperusteApp')
         controller: 'ExcelCtrl',
       });
   })
-  .controller('ExcelCtrl', function($scope, ExcelService, PerusteenOsat, TutkinnonOsanValidointi,
-                                    Koodisto, PerusteprojektiResource, PerusteTutkinnonosat,
-                                    SuoritustapaSisalto, Perusteet, Notifikaatiot, YleinenData) {
+  .controller('ExcelCtrl', function($scope, $modal, ExcelService, PerusteenOsat, TutkinnonOsanValidointi,
+    Koodisto, PerusteprojektiResource, PerusteTutkinnonosat,
+    SuoritustapaSisalto, Perusteet, Notifikaatiot, YleinenData, Utils) {
     $scope.alussa = true;
     $scope.filename = '';
     $scope.naytaVirheet = false;
@@ -43,6 +43,8 @@ angular.module('eperusteApp')
     $scope.yksikot = YleinenData.yksikot;
     $scope.suoritustavat = YleinenData.suoritustavat;
     $scope.suoritustapa = 'naytto';
+
+    $scope.supportsFileReader = Utils.supportsFileReader();
 
     $scope.clearSelect = function() {
       $scope.parsinnanTila = [];
@@ -59,7 +61,9 @@ angular.module('eperusteApp')
     $scope.editoiOsatutkintoa = function() {
     };
 
-    $scope.poistaOsatutkinto = function(ot) { _.remove($scope.osatutkinnot, ot); };
+    $scope.poistaOsatutkinto = function(ot) {
+      _.remove($scope.osatutkinnot, ot);
+    };
 
     $scope.liitaKoodiOT = function(ot) {
       Koodisto.modaali(function(koodi) {
@@ -75,11 +79,15 @@ angular.module('eperusteApp')
       })();
     };
 
-    $scope.rajaaKoodit = function(koodi) { return koodi.koodi.indexOf('_3') !== -1; };
+    $scope.rajaaKoodit = function(koodi) {
+      return koodi.koodi.indexOf('_3') !== -1;
+    };
 
     $scope.tallennaPerusteprojekti = function(perusteprojekti) {
       perusteprojekti.tyyppi = perusteprojekti.tyyppi || 'normaali';
-      if (perusteprojekti.koulutustyyppi !== 'koulutustyyppi_1') { delete perusteprojekti.laajuusYksikko; }
+      if (perusteprojekti.koulutustyyppi !== 'koulutustyyppi_1') {
+        delete perusteprojekti.laajuusYksikko;
+      }
       PerusteprojektiResource.save(perusteprojekti, function(resPerusteprojekti) {
         $scope.haettuProjekti = resPerusteprojekti;
         Perusteet.get({
@@ -93,7 +101,9 @@ angular.module('eperusteApp')
     };
 
     $scope.tallennaTekstikappaleet = function(tekstikentat) {
-      var filtered = _.filter(tekstikentat, function(tk) { return tk.$ladattu !== 0; });
+      var filtered = _.filter(tekstikentat, function(tk) {
+        return tk.$ladattu !== 0;
+      });
       var doneSuccess = _.after(_.size(filtered), function() {
         Notifikaatiot.onnistui('tallennus-onnistui');
         $scope.uploadSuccessTekstikappaleet = true;
@@ -101,22 +111,19 @@ angular.module('eperusteApp')
 
       _.forEach(filtered, function(tk) {
         tk.tila = 'luonnos';
-        PerusteenOsat.saveTekstikappale(tk, function(re) {
-          SuoritustapaSisalto.add({
-            perusteId: $scope.haettuPeruste.id,
-            suoritustapa: $scope.suoritustapa || $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi
-          }, {
-            _perusteenOsa: re.id
-          }, function() {
-            tk.$ladattu = true;
-            tk.id = re.id;
-            doneSuccess();
-          }, function(err) {
-            tk.$syy = err.data.syy;
-          });
+        tk.osanTyyppi = 'tekstikappale';
+        var viite = { perusteenOsa: tk };
+        SuoritustapaSisalto.save({
+          perusteId: $scope.haettuPeruste.id,
+          suoritustapa: $scope.suoritustapa || $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi
+        }, viite, function(re) {
+          tk.$ladattu = true;
+          tk.id = re._perusteenOsa;
+          doneSuccess();
         }, function(err) {
           tk.$syy = err.data.syy;
         });
+
       });
     };
 
@@ -125,7 +132,9 @@ angular.module('eperusteApp')
     };
 
     $scope.tallennaOsatutkinnot = function() {
-      var filtered = _.filter($scope.osatutkinnot, function(ot) { return ot.$ladattu !== 0; });
+      var filtered = _.filter($scope.osatutkinnot, function(ot) {
+        return ot.$ladattu !== 0;
+      });
       var doneSuccess = _.after(_.size(filtered), function() {
         $scope.uploadSuccessTutkinnonosat = true;
         Notifikaatiot.onnistui('tallennus-onnistui');
@@ -142,26 +151,19 @@ angular.module('eperusteApp')
           var cop = _.clone(ot);
           cop.tavoitteet = {};
           cop.tila = 'luonnos';
+          cop.osanTyyppi = 'tutkinnonosa';
           cop.$laajuus = cop.laajuus;
           delete cop.laajuus;
-          PerusteenOsat.saveTutkinnonOsa(cop, function(re) {
-            PerusteTutkinnonosat.save({
-              perusteId: $scope.haettuPeruste.id,
-              suoritustapa: $scope.suoritustapa || $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi
-            }, {
-              _tutkinnonOsa: re.id,
-              laajuus: cop.$laajuus
-            }, function() {
-              ot.$ladattu = 0;
-              ot.id = re.id;
-              ot.koodiUri = re.koodiUri;
-              doneSuccess();
-            }, function(err) {
-              if (err) {
-                ot.$syy = [err.data.syy];
-                ot.$ladattu = 1;
-              }
-            });
+          PerusteTutkinnonosat.save({
+            perusteId: $scope.haettuPeruste.id,
+            suoritustapa: $scope.suoritustapa || $scope.haettuPeruste.suoritustavat[0].suoritustapakoodi
+          }, {
+            tutkinnonOsa: cop,
+            laajuus: cop.$laajuus
+          }, function(re) {
+            ot.$ladattu = 0;
+            ot.id = re._tutkinnonOsa;
+            doneSuccess();
           }, function(err) {
             if (err) {
               ot.$syy = [err.data.syy];
@@ -169,6 +171,17 @@ angular.module('eperusteApp')
             }
           });
         }
+      });
+    };
+
+    $scope.haeRyhma = function() {
+      $modal.open({
+        templateUrl: 'views/modals/tuotyoryhma.html',
+        controller: 'TyoryhmanTuontiModalCtrl'
+      })
+      .result.then(function(ryhma) {
+        $scope.projekti.ryhmaOid = ryhma.oid;
+        $scope.projekti.$ryhmaNimi = ryhma.nimi;
       });
     };
 
@@ -189,32 +202,32 @@ angular.module('eperusteApp')
           file,
           $scope.projekti.koulutustyyppi === 'koulutustyyppi_1' ? 'perustutkinto' : 'ammattitutkinto',
           $scope.paivitaTilaa
-        )
-        .then(function(resolve) {
-          $scope.warnings = resolve.osatutkinnot.varoitukset;
-          $scope.peruste = _.omit(resolve.peruste, 'tekstikentat');
-          $scope.tekstikentat = _.map(resolve.peruste.tekstikentat, function(tk) {
-            return _.merge(tk, {
-              $ladattu: -1,
-              $syy: []
+          )
+          .then(function(resolve) {
+            $scope.warnings = resolve.osatutkinnot.varoitukset;
+            $scope.peruste = _.omit(resolve.peruste, 'tekstikentat');
+            $scope.tekstikentat = _.map(resolve.peruste.tekstikentat, function(tk) {
+              return _.merge(tk, {
+                $ladattu: -1,
+                $syy: []
+              });
             });
-          });
 
-          $scope.osatutkinnot = _.map(resolve.osatutkinnot.osaperusteet, function(ot) {
-            return _.merge(ot, {
-              $ladattu: -1,
-              koodiUri: '',
-              $syy: []
+            $scope.osatutkinnot = _.map(resolve.osatutkinnot.osaperusteet, function(ot) {
+              return _.merge(ot, {
+                $ladattu: -1,
+                koodiUri: '',
+                $syy: []
+              });
             });
-          });
 
-          $scope.projekti.diaarinumero = $scope.peruste.diaarinumero || '';
-          $scope.projekti.laajuusYksikko = YleinenData.yksikotMap[$scope.peruste.laajuusYksikko] || '';
-          $scope.lukeeTiedostoa = false;
-        }, function(errors) {
-          $scope.errors = errors;
-          $scope.lukeeTiedostoa = false;
-        });
+            $scope.projekti.diaarinumero = $scope.peruste.diaarinumero || '';
+            $scope.projekti.laajuusYksikko = YleinenData.yksikotMap[$scope.peruste.laajuusYksikko] || '';
+            $scope.lukeeTiedostoa = false;
+          }, function(errors) {
+            $scope.errors = errors;
+            $scope.lukeeTiedostoa = false;
+          });
       }
     };
   });

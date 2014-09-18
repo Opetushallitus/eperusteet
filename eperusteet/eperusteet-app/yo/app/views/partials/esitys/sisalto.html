@@ -1,5 +1,5 @@
 <h2>
-    {{ valittuSisalto.nimi | kaanna }}
+    <span ng-bind="valittuSisalto.nimi | kaanna"></span>
     <div class="painikkeet pull-right">
         <a href="" ng-click="asetaSuosikki()">
             <span class="glyphicon" ng-class="{'glyphicon-star': onSuosikki, 'glyphicon-star-empty': !onSuosikki}"></span>
@@ -11,8 +11,4 @@
         </a>
     </div>
 </h2>
-<!-- <p class="cke_contents_ltr" ng&#45;model="valittuSisalto.teksti" ckeditor>{{ valittuSisalto.teksti | kaanna }}</p> -->
-<div class="cke_contents_ltr max-sm-leveys"
-     ng-model="valittuSisalto.teksti" ckeditor="" editing-enabled="false" localized=""
-     contenteditable="false" tabindex="0" spellcheck="false" style="position: relative;" role="textbox" aria-label="Rikastekstieditori, editor2"
-     title="Rikastekstieditori, editor2" aria-describedby="cke_64"></div>
+<div class="sisalto max-sm-leveys" ng-bind-html="valitseKieli(valittuSisalto.teksti)"></div>

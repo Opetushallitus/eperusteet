@@ -12,11 +12,11 @@
     <filter>
         <filter-name>encodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <async-supported>true</async-supported>
         <init-param>
             <param-name>encoding</param-name>
             <param-value>UTF-8</param-value>
         </init-param>
-        <async-supported>true</async-supported>
     </filter>
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
@@ -39,22 +39,28 @@
         <load-on-startup>1</load-on-startup>
         <async-supported>true</async-supported>
     </servlet>
+    <servlet>
+        <servlet-name>VirheServlet</servlet-name>
+        <servlet-class>fi.vm.sade.eperusteet.service.util.VirheServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VirheServlet</servlet-name>
+        <url-pattern>/WEB-INF/VirheServlet</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
-    <!--
     <error-page>
-        <location>/WEB-INF/virhe</location>
+        <location>/WEB-INF/VirheServlet</location>
     </error-page>
-    -->
     <resource-ref>
         <description>ePeruseet datasource</description>
         <res-ref-name>jdbc/eperusteet</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
     </resource-ref>
-</web-app>
+    </web-app>

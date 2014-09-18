@@ -35,7 +35,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -52,7 +51,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "peruste")
 @Audited
-public class Peruste extends AbstractAuditedEntity implements Serializable, ReferenceableEntity {
+public class Peruste extends AbstractAuditedEntity implements Serializable, ReferenceableEntity, WithPerusteTila {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter

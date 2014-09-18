@@ -37,7 +37,7 @@ angular.module('eperusteApp')
     };
 
     $scope.navi = {
-      header: 'perusteen-sisältö',
+      header: 'perusteen-sisalto',
       oneAtATime: true,
       sections: [
         {

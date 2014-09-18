@@ -13,26 +13,25 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+package fi.vm.sade.eperusteet.service.test;
 
-package fi.vm.sade.eperusteet.service;
-
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import java.io.IOException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
+import java.io.Serializable;
+import org.springframework.security.core.Authentication;
 
 /**
+ * Oikeuksien tarkistelu.
  *
- * @author jussi
+ * @author jhyoty
  */
-public interface DokumenttiBuilderService {
+public class TestPermissionEvaluator implements org.springframework.security.access.PermissionEvaluator {
 
-    public String generateXML(Peruste peruste, Kieli kieli) throws
-            TransformerConfigurationException,
-            IOException,
-            TransformerException,
-            ParserConfigurationException;
-    
+    @Override
+    public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
+        return authentication.isAuthenticated();
+    }
+
+    @Override
+    public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
+        return authentication.isAuthenticated();
+    }
 }

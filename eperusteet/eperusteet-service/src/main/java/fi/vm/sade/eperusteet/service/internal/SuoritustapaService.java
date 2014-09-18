@@ -14,20 +14,17 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service;
+package fi.vm.sade.eperusteet.service.internal;
 
-import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
-import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
-import java.util.List;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 
 /**
  *
- * @author teele1
+ * @author harrik
  */
-public interface ArviointiService {
-
-    List<ArviointiDto> findAll();
-    ArviointiDto findById(Long id);
-    ArviointiDto add(ArviointiDto arviointiDto);
-    Arviointi kopioi(Arviointi arviointi);
+public interface SuoritustapaService {
+    Suoritustapa createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi suoritustapakoodi, LaajuusYksikko yksikko);
+    Suoritustapa createFromOther(final Long suoritustapaId);
 }

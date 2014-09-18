@@ -18,8 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('SuosikitCtrl', function($scope, Kayttajaprofiilit, YleinenData,
-      $rootScope, $state, Navigaatiopolku, Profiili, $modal) {
+  .controller('SuosikitCtrl', function($scope, Navigaatiopolku, Profiili, $modal) {
     $scope.suosikit = {};
     $scope.naytto = {limit: 5, shown: 5};
     $scope.resetNavi = Navigaatiopolku.clear;

@@ -42,8 +42,8 @@ angular.module('eperusteApp')
           (scope.type === 'number' || scope.type === 'float' || scope.type === 'integer');
         scope.isDate = !scope.options && scope.type === 'date';
         scope.isText = !scope.options && !scope.isObject &&
-          !(scope.type === 'number' || scope.type === 'float' || scope.type === 'integer');
-        scope.isMultiText = !scope.options && scope.isObject;
+          !(scope.type === 'number' || scope.type === 'float' || scope.type === 'integer' || scope.type === 'label');
+        scope.isMultiText = !scope.options && scope.isObject && scope.type !== 'label';
         scope.datePicker = {
           options: YleinenData.dateOptions,
           format: YleinenData.dateFormatDatepicker,
@@ -54,6 +54,7 @@ angular.module('eperusteApp')
             scope.datePicker.state = !scope.datePicker.state;
           }
         };
+        scope.isLabel = scope.type === 'label';
     };
     return {
       templateUrl: 'views/partials/formfield.html',

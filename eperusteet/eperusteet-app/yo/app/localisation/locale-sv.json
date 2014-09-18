@@ -1,5 +1,5 @@
 {
-    "lisää": "[Lisää]",
+    "lisaa": "[Lisää]",
     "poista": "[Poista]",
     "takaisin": "[Takaisin]",
     "suosikki": "[Lisää suosikiksi]",
@@ -9,7 +9,6 @@
     "uusi-projekti": "[Uusi projekti]",
     "ok": "[OK]",
     "tallennettu": "[Tallennettu]",
-    "tyhjä": "[Tyhjä]",
     "haku": "[Haku]",
     "peruuta": "[Peruuta]",
     "tallenna-nappi": "[Tallenna]",
@@ -24,9 +23,9 @@
     "haku-nimi": "[Nimi]",
     "haku-kaikki-alat": "[Kaikki koulutusalat]",
     "haku-kaikki-tutkinnot": "[Kaikki tutkinnot]",
-    "haku-näytä-siirtymäajalla-olevat": "[Näytä siirtymäajalla olevat]",
+    "haku-nayta-siirtymaajalla-olevat": "[Näytä siirtymäajalla olevat]",
     "haku-tutkinnon-nimi-placeholder": "[Tutkinnon nimi]",
-    "haku-tulosten-määrä": "[Löydettyjen perusteiden määrä:]",
+    "haku-tulosten-maara": "[Löydettyjen perusteiden määrä:]",
     "sivupalkki-näytä-kaikki" : "[Näytä kaikki]",
     "sivupalkki-piilota" : "[Piilota]",
     "haku-kieli": "[Kieli]",
@@ -146,7 +145,6 @@
     "arviointi-uusi-kriteeri-placeholder": "[Kriteerin teksti]",
     "arviointi-asteikon-valinta": "[Valitse arviointiasteikko]",
     
-    "arviointi-muokkaa-tekstikenttänä": "[Muokkaa tekstikenttänä]",
     "arviointi-muokkaa-taulukkona": "[Muokkaa taulukkona]",
 
     "muokkaus-lisaa-osio": "[Lisää osio]",

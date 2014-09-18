@@ -19,11 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('MuokkausCtrl', function($scope, $stateParams, $compile, Navigaatiopolku, PerusteenOsat,
-                                       Kommentit, KommentitByPerusteenOsa, virheService, VersionHelper) {
-    if ($stateParams.perusteProjektiId && $stateParams.perusteenOsaId) {
-      Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });
-    }
-
+                                       virheService, VersionHelper) {
     $scope.tyyppi = $stateParams.perusteenOsanTyyppi;
     $scope.objekti = null;
     $scope.versiot = {};

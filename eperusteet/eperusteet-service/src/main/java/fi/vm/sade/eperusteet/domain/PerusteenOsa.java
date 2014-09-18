@@ -46,8 +46,9 @@ import lombok.Setter;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Audited
 @Table(name = "perusteenosa")
-public abstract class PerusteenOsa extends AbstractAuditedEntity implements Serializable, Mergeable<PerusteenOsa>,
-    ReferenceableEntity {
+public abstract class PerusteenOsa
+    extends AbstractAuditedEntity
+    implements Serializable, Mergeable<PerusteenOsa>, WithPerusteTila, ReferenceableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -58,6 +59,23 @@ public abstract class PerusteenOsa extends AbstractAuditedEntity implements Seri
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen nimi;
 
+    @Getter
+    @Setter
+    @Enumerated(value = EnumType.STRING)
+    @NotNull
+    private PerusteTila tila = PerusteTila.LUONNOS;
+
+    public PerusteenOsa() {
+        //JPA
+    }
+
+    //copy constuctor
+    public PerusteenOsa(PerusteenOsa other) {
+        copyState(other);
+    }
+
+
+    @Override
     public Long getId() {
         return id;
     }
@@ -74,18 +92,18 @@ public abstract class PerusteenOsa extends AbstractAuditedEntity implements Seri
         this.nimi = nimi;
     }
 
-    @Getter
-    @Setter
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    private PerusteTila tila;
-
     @Override
     public void mergeState(PerusteenOsa updated) {
         if (this.getClass().isAssignableFrom(updated.getClass()) && getId() == null || !getId().equals(updated.getId())) {
             throw new IllegalArgumentException("Vain kahden saman entiteetin tilan voi yhdistää");
         }
-        this.nimi = updated.getNimi();
+        copyState(updated);
+    }
+
+    public abstract PerusteenOsa copy();
+
+    private void copyState(PerusteenOsa other) {
+        this.nimi = other.getNimi();
     }
 
 }

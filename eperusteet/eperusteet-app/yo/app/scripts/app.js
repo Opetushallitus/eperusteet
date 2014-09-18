@@ -27,7 +27,8 @@ angular.module('eperusteApp', [
   'ui.bootstrap',
   'ui.utils',
   'ui.sortable',
-  'monospaced.elastic'
+  'monospaced.elastic',
+  'ui.tree'
 ])
   .constant('SERVICE_LOC', '/eperusteet-service/api')
   // .constant('ORGANISATION_SERVICE_LOC', '/organisaatio-service/rest')
@@ -51,10 +52,7 @@ angular.module('eperusteApp', [
   .config(function($translateProvider, $urlRouterProvider) {
     var preferred = 'fi';
     $urlRouterProvider.when('/', '/' + preferred);
-    $translateProvider.useStaticFilesLoader({
-      prefix: 'localisation/locale-',
-      suffix: '.json'
-    });
+    $translateProvider.useLoader('LokalisointiLoader');
     $translateProvider.preferredLanguage(preferred);
     moment.lang(preferred);
   })
@@ -110,6 +108,21 @@ angular.module('eperusteApp', [
           }
         };
       }]);
+  })
+  // Lodash mixins and other stuff
+  .run(function() {
+    _.mixin({ set: function(obj, field) {
+      return function(value) {
+        obj[field] = value;
+      };
+    }});
+    _.mixin({ setWithCallback: function(obj, field, cb) {
+      return function(value) {
+        cb = cb || angular.noop;
+        obj[field] = value;
+        cb(value);
+      };
+    }});
   })
   .run(function($rootScope) {
     var f = _.debounce(function() {

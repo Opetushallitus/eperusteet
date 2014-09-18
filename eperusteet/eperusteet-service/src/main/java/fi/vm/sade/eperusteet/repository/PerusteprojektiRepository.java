@@ -16,7 +16,9 @@
 package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -28,6 +30,9 @@ public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti
 
     Perusteprojekti findOneByDiaarinumero(String diaarinumero);
 
-    Perusteprojekti findOneByOid(String oid);
+    Perusteprojekti findOneByRyhmaOid(String ryhmaOid);
+
+    @Query("SELECT p from Perusteprojekti p WHERE p.tila <> 'POISTETTU' AND p.tila <> 'JULKAISTU' ")
+    List<Perusteprojekti> findAllKeskeneraiset();
 
 }

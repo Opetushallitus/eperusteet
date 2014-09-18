@@ -3,7 +3,8 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<!--[if IE 9]>         <html class="no-js lt-ie10"> <![endif]-->
+<!--[if !(IE)]><!--> <html class="no-js"> <!--<![endif]-->
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -27,13 +28,13 @@
       <div class="row">
         <div class="col-md-12">
           <div class="pull-right admin-cog">
-            <a ng-cloak href="" ui-sref="root.admin" icon-role="settings">{{'hallinta' | kaanna}}</a>
+            <a ng-cloak ui-sref="root.admin" icon-role="settings" kaanna="hallinta"></a>
           </div>
           <div ng-controller="KieliCtrl" id="kielen-vaihto" class="pull-right ng-cloak">
             <ul>
               <li ng-repeat="item in koodit | filter:{koodi: '!'+kieli}" ng-click="vaihdaKieli(item.koodi)">
                 <span ng-if="!$first">|</span>
-                <a class="action-link" ng-click="vaihdaKieli(item.koodi)" translate>{{item.nimi}}</a>
+                <a class="action-link" ng-click="vaihdaKieli(item.koodi)" kaanna="item.nimi"></a>
               </li>
             </ul>
           </div>
@@ -49,7 +50,7 @@
           <div ng-if="viestit" ng-click="poistaNotifikaatio(viesti)" ng-model="viestit" ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }" ng-repeat="viesti in viestit">
             <div class="notification-body">
               <span class="close">×</span>
-              <span class="notification-message" ng-bind="viesti.viesti | kaanna"></span>
+              <span class="notification-message" kaanna="viesti.viesti"></span>
             </div>
           </div>
         </div>
@@ -73,6 +74,7 @@
     <script src="bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>
     <script src="bower_components/angular-ui-utils/ui-utils.min.js"></script>
     <script src="bower_components/angular-ui-sortable/sortable.min.js"></script>
+    <script src="bower_components/angular-ui-tree/dist/angular-ui-tree.min.js"></script>
     <script src="bower_components/angular-elastic/elastic.js"></script>
     <script src="bower_components/lodash/dist/lodash.min.js"></script>
     <script src="bower_components/js-xlsx/jszip.js"></script>
@@ -91,7 +93,10 @@
     <script src="scripts/controllers/tuotekstikappale.js"></script>
     <script src="scripts/directives/muokkaus/tutke2osa.js"></script>
     <script src="scripts/services/utils.js"></script>
+    <script src="scripts/services/ulkopuoliset.js"></script>
     <script src="scripts/services/algoritmit.js"></script>
+    <script src="scripts/services/tyoryhmat.js"></script>
+    <script src="scripts/services/projektiryhma.js"></script>
     <script src="scripts/services/pagination.js"></script>
     <script src="scripts/services/pdf.js"></script>
     <script src="scripts/services/excel.js"></script>
@@ -99,6 +104,8 @@
     <script src="scripts/services/muodostumissaannot.js"></script>
     <script src="scripts/services/lokalisointi.js"></script>
     <script src="scripts/directives/iconrole.js"></script>
+    <script src="scripts/directives/rajaus.js"></script>
+    <script src="scripts/directives/ohje.js"></script>
     <script src="scripts/directives/muokkaus/versiotiedot.js"></script>
     <script src="scripts/directives/multiinput.js"></script>
     <script src="scripts/directives/kommentit.js"></script>

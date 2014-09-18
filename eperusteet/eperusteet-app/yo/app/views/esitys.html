@@ -18,29 +18,26 @@ European Union Public Licence for more details.
     <div class="row esitys">
         <div class="sivunavi-navigaatio">
             <div class="sivunavi-takaisin">
-              <a ui-sref="root.selaus.ammatillinenperuskoulutus" icon-role="back">{{ 'takaisin-hakuun' | kaanna }}</a>
+              <a ui-sref="root.selaus.ammatillinenperuskoulutus" icon-role="back" kaanna="takaisin-hakuun"></a>
             </div>
             <sivunavigaatio2 items="navi.items" header="navi.header">
-              <select class="form-control input-sm" ng-model="suoritustapa" ng-change="vaihdaSuoritustapa(suoritustapa)">
-                <option ng-selected="suoritustapa === st" ng-repeat="st in suoritustavat" value="{{ st }}">{{ st | kaanna }}</option>
-              </select>
+              <select class="form-control input-sm" ng-model="suoritustapa" ng-change="vaihdaSuoritustapa(suoritustapa)"
+                      ng-options="kaanna(st) for st in suoritustavat"></select>
             </sivunavigaatio2>
         </div>
         <div class="sivunavi-clear"></div>
-        <div class="sivunavi-sisalto">
-            <h1>
-                {{ peruste.nimi | kaanna }}
-            </h1>
+        <div class="sivunavi-sisalto" ng-cloak>
+            <h1 kaanna="peruste.nimi"></h1>
             <div class="tiedot">
                 <a class="action-link" ng-click="naytaPerusteenTiedot = !naytaPerusteenTiedot">
                     <span ng-show="naytaPerusteenTiedot" class="glyphicon glyphicon-chevron-down"></span>
                     <span ng-hide="naytaPerusteenTiedot" class="glyphicon glyphicon-chevron-right"></span>
-                    {{ 'perusteen-tiedot' | kaanna }}
+                    <span kaanna="perusteen-tiedot"></span>
                 </a>
-                <a class="left-space action-link" ng-click="luoPdf()" icon-role="save" kaanna>lataa-peruste-pdf-muodossa</a>
+                <a class="left-space action-link" ng-click="luoPdf()" icon-role="save" kaanna="lataa-peruste-pdf-muodossa"></a>
             </div>
             <div ng-show="naytaPerusteenTiedot">
-                <div>{{ 'tutkintokoodi' | kaanna }}: {{ peruste.tutkintokoodi | kaanna }}</div>
+                <div><span kaanna="tutkintokoodi"></span>: <span kaanna="peruste.tutkintokoodi"></span></div>
                 <div ng-show="peruste.koulutukset.length === 1">
                     {{ 'koulutusalakoodi' | kaanna }}: {{ peruste.koulutukset[0].koulutusalakoodi }} ({{ peruste.koulutukset[0].nimi | kaanna }})
                 </div>
@@ -50,9 +47,7 @@ European Union Public Licence for more details.
                         {{ 'koulutusalakoodi' | kaanna }}: {{ koulutus.koulutusalakoodi || '-' }} ({{ peruste.koulutukset[0].nimi | kaanna }})<span ng-hide="$last">, </span>
                     </span>
                 </div>
-                <div class="kuvaus">
-                    {{ peruste.kuvaus | kaanna }}
-                </div>
+                <div class="kuvaus" kaanna="peruste.kuvaus"></div>
             </div>
             <div id="esitysPrintSisalto" ui-view></div>
         </div>

@@ -86,7 +86,26 @@ $pikamenu-size: 22px;
   padding-left: 15px;
   padding-right: 15px;
   margin-bottom: 20px;
-  label {
+  .btn-group {
+    display: block;
+  }
+  .fixed-group {
+    max-width: 300px;
+    overflow: hidden;
+    input {
+      float: left;
+      max-width: 100px;
+      margin-right: 15px;
+    }
+    .addon p {
+      padding-top: 7px;
+    }
+    .alert {
+      position: absolute;
+      margin-top: 35px;
+    }
+  }
+  label:not(.btn) {
     font-weight: 700;
     padding-top: 15px;
     padding-bottom: 10px;
@@ -278,8 +297,8 @@ $pikamenu-size: 22px;
 .muokkaustiedot {
   color: $secondary-lighter;
   & > div:not(.clearfix) {
-    height: 50px;
-    line-height: 2.8em;
+    height: 2.7em;
+    line-height: 2.7em;
     overflow: hidden;
   }
   span {
@@ -296,6 +315,9 @@ $pikamenu-size: 22px;
       li {
         display: inline-block;
         list-style-type: none;
+        &:not(:first-child) {
+          margin-left: 15px;
+        }
       }
     }
   }
@@ -307,12 +329,15 @@ $pikamenu-size: 22px;
   }
 }
 hr.versioraja {
-  margin-top: 0;
-  margin-bottom: 15px;
+  margin-top: 0px;
+  margin-bottom: 20px;
 }
 .tekstikappale {
   h3 {
     margin-top: 0;
+  }
+  .list-group-item {
+    border: 0;
   }
 }
 .edit-tekstikappale {
@@ -377,4 +402,41 @@ hr.versioraja {
     left: 150px;
     width: 60%;
   }
+}
+
+.tyoryhma-rivi {
+  margin: 0 0 16px 0;
+  padding: 0;
+
+  .tyoryhma {
+    background: #D2ECF5;
+    padding: 9px 8px 8px 8px;
+    margin-right: 8px;
+    border-radius: 2px;
+  }
+
+  button {
+    margin-left: 6px;
+    margin-bottom: 4px;
+  }
+}
+
+.tyoryhma-modal-button {
+  border: 1px solid #999;
+  padding: 6px 20px 6px 20px;
+  text-align: center;
+  transition: all 0.2s linear;
+  background: #fff;
+
+  &:hover {
+    border: 1px solid #555;
+    cursor: pointer;
+    box-shadow: inset 0 0 2px #999;
+  }
+}
+
+.tyoryhma-modal-button-selected {
+  font-weight: bold;
+  border: 1px solid #24A4CC;
+  box-shadow: inset 0 0 5px #24A4CC;
 }

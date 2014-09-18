@@ -75,4 +75,16 @@ angular.module('eperusteApp')
     return function (input) {
       return _.isEmpty(input) ? Kaanna.kaanna('ei-asetettu') : input;
     };
+  })
+
+  .filter('unsafe', ['$sce', function ($sce) {
+    return function (val) {
+      return $sce.trustAsHtml(val);
+    };
+  }])
+
+  .filter('paragraphsplit', function() {
+    return function(text) {
+      return text.split('\n');
+    };
   });

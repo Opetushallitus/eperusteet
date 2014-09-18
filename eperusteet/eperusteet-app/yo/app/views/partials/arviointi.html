@@ -87,11 +87,11 @@ European Union Public Licence for more details.
               </label>
               <div class="muokkaus-napit">
                 <button class="btn btn-default btn-xs" ng-click="kohde.cancel(uudenKohteenTiedot)" kaanna>peru</button>
-                <button class="btn btn-primary btn-xs" ng-disabled="!(uudenKohteenTiedot.nimi && uudenKohteenTiedot.arviointiasteikko)" ng-click="kohde.uusi($parent.kohdealue, uudenKohteenTiedot);" kaanna>lisää</button>
+                <button class="btn btn-primary btn-xs" ng-disabled="!(uudenKohteenTiedot.nimi && uudenKohteenTiedot.arviointiasteikko)" ng-click="kohde.uusi($parent.kohdealue, uudenKohteenTiedot);" kaanna>lisaa</button>
               </div>
             </div>
             <button type="button" class="btn btn-default btn-xs" ng-show="!uudenKohteenTiedot.showInputArea"
-              ng-click="kohde.uusiWizard()" icon-role="add" kaanna>arviointi-uusi-kohde</button>
+              ng-click="kohde.uusiWizard()" icon-role="add" kaanna="arviointi-uusi-kohde"></button>
           </div>
         </div>
 
@@ -106,10 +106,10 @@ European Union Public Licence for more details.
             on-esc="$parent.cancelNewKohdealue()" focus-me="$parent.showNewKohdealueInput" placeholder="{{'arviointi-uusi-kohdealue-placeholder' | kaanna}}"/>
           <div class="muokkaus-napit" ng-show="$parent.showNewKohdealueInput">
             <button class="btn btn-default btn-xs" ng-click="$parent.kohdealue.cancel()" kaanna>peru</button>
-            <button class="btn btn-primary btn-xs" ng-disabled="!$parent.uudenKohdealueenNimi" ng-click="$parent.kohdealue.uusi()" kaanna>lisää</button>
+            <button class="btn btn-primary btn-xs" ng-disabled="!$parent.uudenKohdealueenNimi" ng-click="$parent.kohdealue.uusi()" kaanna>lisaa</button>
           </div>
           <button type="button" class="btn btn-default btn-xs" ng-show="!$parent.showNewKohdealueInput"
-            ng-click="$parent.showNewKohdealueInput = true" icon-role="add">{{'arviointi-uusi-kohdealue' | kaanna}}</button>
+            ng-click="$parent.showNewKohdealueInput = true" icon-role="add" kaanna="arviointi-uusi-kohdealue"></button>
         </div>
       </div>
 

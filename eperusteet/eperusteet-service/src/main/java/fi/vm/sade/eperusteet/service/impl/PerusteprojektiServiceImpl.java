@@ -23,8 +23,11 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaTyoryhma;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import fi.vm.sade.eperusteet.domain.PerusteprojektiTyoryhma;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
@@ -36,16 +39,21 @@ import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaTyoryhmaRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.repository.PerusteprojektiTyoryhmaRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
-import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
@@ -53,6 +61,7 @@ import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,21 +89,36 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     private PerusteprojektiRepository repository;
 
     @Autowired
-    private KayttajaprofiiliService kayttajaprofiiliService;
-
-    @Autowired
     private PerusteService perusteService;
 
     @Autowired
     private KayttajanTietoService kayttajanTietoService;
 
     @Autowired
-    RestClientFactory restClientFactory;
+    private RestClientFactory restClientFactory;
+
+    @Autowired
+    private PerusteprojektiTyoryhmaRepository perusteprojektiTyoryhmaRepository;
+
+    @Autowired
+    private PerusteenOsaTyoryhmaRepository perusteenOsaTyoryhmaRepository;
+
+    @Autowired
+    private PerusteenOsaViiteRepository perusteenOsaViiteRepository;
+
+    @Autowired
+    private PerusteenOsaRepository perusteenOsaRepository;
 
     @Override
     @Transactional(readOnly = true)
     public List<PerusteprojektiInfoDto> getBasicInfo() {
         return mapper.mapAsList(repository.findAll(), PerusteprojektiInfoDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PerusteprojektiInfoDto> getOmatProjektit() {
+        return mapper.mapAsList(repository.findAllKeskeneraiset(), PerusteprojektiInfoDto.class);
     }
 
     @Override
@@ -107,19 +131,19 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @Transactional(readOnly = true)
     public List<KayttajanTietoDto> getJasenet(Long id) {
-        CachingRestClient crc = restClientFactory.create(authServiceUrl);
+        CachingRestClient crc = restClientFactory.get(authServiceUrl);
         Perusteprojekti p = repository.findOne(id);
         List<KayttajanTietoDto> kayttajat = null;
         ObjectMapper omapper = new ObjectMapper();
 
-        if (p == null || p.getOid() == null | p.getOid().isEmpty()) {
+        if (p == null || p.getRyhmaOid() == null | p.getRyhmaOid().isEmpty()) {
             throw new BusinessRuleViolationException("Perusteprojektilla ei ole oid:a");
         }
 
         try {
-            String url = authServiceUrl + authQueryPath + p.getOid();
+            String url = authServiceUrl + authQueryPath + p.getRyhmaOid();
             String json = crc.getAsString(url);
-            kayttajat = kayttajanTietoService.parsiKayttajat(omapper.readTree(json).get("results"));
+            kayttajat = KayttajanTietoParser.parsiKayttajat(omapper.readTree(json).get("results"));
         } catch (IOException ex) {
             throw new BusinessRuleViolationException("Käyttäjien tietojen hakeminen epäonnistui");
         }
@@ -129,17 +153,17 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @Transactional(readOnly = true)
     public List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> getJasenetTiedot(Long id) {
-        CachingRestClient crc = restClientFactory.create(authServiceUrl);
+        CachingRestClient crc = restClientFactory.get(authServiceUrl);
         Perusteprojekti p = repository.findOne(id);
 
-        if (p == null || p.getOid() == null || p.getOid().isEmpty()) {
+        if (p == null || p.getRyhmaOid() == null || p.getRyhmaOid().isEmpty()) {
             throw new BusinessRuleViolationException("Perusteprojektilla ei ole oid:a");
         }
 
         List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> kayttajat = new ArrayList<>();
 
         try {
-            String url = authServiceUrl + authQueryPath + p.getOid();
+            String url = authServiceUrl + authQueryPath + p.getRyhmaOid();
             ObjectMapper omapper = new ObjectMapper();
             JsonNode tree = omapper.readTree(crc.getAsString(url));
             for (JsonNode node : tree.get("results")) {
@@ -165,7 +189,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         LaajuusYksikko yksikko = perusteprojektiDto.getLaajuusYksikko();
         PerusteTyyppi tyyppi = perusteprojektiDto.getTyyppi() == null ? PerusteTyyppi.NORMAALI : perusteprojektiDto.getTyyppi();
         perusteprojekti.setTila(ProjektiTila.LAADINTA);
-        perusteprojekti.setOid(perusteprojektiDto.getOid());
+        perusteprojekti.setRyhmaOid(perusteprojektiDto.getRyhmaOid());
 
         if (tyyppi != PerusteTyyppi.POHJA) {
             if (koulutustyyppi.equals("koulutustyyppi_1") && yksikko == null) {
@@ -175,7 +199,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 throw new BusinessRuleViolationException("Diaarinumeroa ei ole asetettu");
             }
 //            FIXME: Ota käyttöön kun aika koittaa
-//            if (perusteprojektiDto.getOid() == null) {
+//            if (perusteprojektiDto.getRyhmaOid() == null) {
 //                throw new BusinessRuleViolationException("Organisaatioryhmää ei ole asetettu");
 //            }
         }
@@ -190,7 +214,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         perusteprojekti.setPeruste(peruste);
         perusteprojekti = repository.save(perusteprojekti);
-        kayttajaprofiiliService.addPerusteprojekti(perusteprojekti.getId());
 
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
     }
@@ -314,12 +337,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     private void setPerusteTila(Peruste peruste, PerusteTila tila) {
         for (Suoritustapa suoritustapa : peruste.getSuoritustavat()) {
-                setSisaltoTila(suoritustapa.getSisalto(), tila);
-                for (TutkinnonOsaViite tutkinnonosaViite : suoritustapa.getTutkinnonOsat()) {
-                    setOsatTila(tutkinnonosaViite, tila);
-                }
+            setSisaltoTila(suoritustapa.getSisalto(), tila);
+            for (TutkinnonOsaViite tutkinnonosaViite : suoritustapa.getTutkinnonOsat()) {
+                setOsatTila(tutkinnonosaViite, tila);
             }
-            peruste.setTila(tila);
+        }
+        peruste.setTila(tila);
     }
 
     private PerusteenOsaViite setSisaltoTila(PerusteenOsaViite sisaltoRoot, PerusteTila tila) {
@@ -378,6 +401,87 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             }
 
         });
+    }
+
+    @Transactional
+    @Override
+    public List<TyoryhmaHenkiloDto> saveTyoryhma(Long perusteProjektiId, String tyoryhma, List<TyoryhmaHenkiloDto> henkilot) {
+        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        removeTyoryhma(perusteProjektiId, tyoryhma);
+        perusteprojektiTyoryhmaRepository.flush();
+        List<PerusteprojektiTyoryhma> res = new ArrayList<>();
+
+        for (TyoryhmaHenkiloDto trh : henkilot) {
+            res.add(perusteprojektiTyoryhmaRepository.save(new PerusteprojektiTyoryhma(pp, trh.getKayttajaOid(), trh.getNimi())));
+        }
+        return mapper.mapAsList(res, TyoryhmaHenkiloDto.class);
+    }
+
+    @Transactional
+    @Override
+    public TyoryhmaHenkiloDto saveTyoryhma(Long perusteProjektiId, TyoryhmaHenkiloDto tr) {
+        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        PerusteprojektiTyoryhma ppt = perusteprojektiTyoryhmaRepository.save(new PerusteprojektiTyoryhma(pp, tr.getKayttajaOid(), tr.getNimi()));
+        return mapper.map(ppt, TyoryhmaHenkiloDto.class);
+    }
+
+    @Transactional
+    @Override
+    public List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(Long perusteProjektiId) {
+        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        List<PerusteprojektiTyoryhma> tr = perusteprojektiTyoryhmaRepository.findByPerusteprojekti(pp);
+        return mapper.mapAsList(tr, TyoryhmaHenkiloDto.class);
+    }
+
+    @Transactional
+    @Override
+    public List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(Long perusteProjektiId, String nimi) {
+        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        List<PerusteprojektiTyoryhma> tr = perusteprojektiTyoryhmaRepository.findAllByPerusteprojektiAndNimi(pp, nimi);
+        return mapper.mapAsList(tr, TyoryhmaHenkiloDto.class);
+    }
+
+    @Transactional
+    @Override
+    public void removeTyoryhma(Long perusteProjektiId, String nimi) {
+        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        perusteprojektiTyoryhmaRepository.deleteAllByPerusteprojektiAndNimi(pp, nimi);
+    }
+
+    @Transactional
+    @Override
+    public List<String> setPerusteenOsaViiteTyoryhmat(Long perusteProjektiId, Long perusteenOsaId, List<String> nimet) {
+        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        PerusteenOsa po = perusteenOsaRepository.findOne(perusteenOsaId);
+        Set<String> uniques = new HashSet<>(nimet);
+        perusteenOsaTyoryhmaRepository.deleteAllByPerusteenosaAndPerusteprojekti(po, pp);
+        perusteenOsaTyoryhmaRepository.flush();
+        List<String> res = new ArrayList<>();
+
+        for (String nimi : uniques) {
+            PerusteenOsaTyoryhma pot = new PerusteenOsaTyoryhma();
+            pot.setNimi(nimi);
+            pot.setPerusteprojekti(pp);
+            pot.setPerusteenosa(po);
+            if (perusteprojektiTyoryhmaRepository.findAllByPerusteprojektiAndNimi(pp, nimi).isEmpty()) {
+                throw new BusinessRuleViolationException("Perusteprojekti ryhmää ei ole olemassa: "  + nimi);
+            }
+            res.add(perusteenOsaTyoryhmaRepository.save(pot).getNimi());
+        }
+        return res;
+    }
+
+    @Transactional
+    @Override
+    public List<String> getPerusteenOsaViiteTyoryhmat(Long perusteProjektiId, Long perusteenOsaId) {
+        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        PerusteenOsa po = perusteenOsaRepository.findOne(perusteenOsaId);
+        List<PerusteenOsaTyoryhma> tyoryhmat = perusteenOsaTyoryhmaRepository.findAllByPerusteenosaAndPerusteprojekti(po, pp);
+        List<String> res = new ArrayList<>();
+        for (PerusteenOsaTyoryhma s : tyoryhmat) {
+            res.add(s.getNimi());
+        }
+        return res;
     }
 
 }

@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
-import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
@@ -23,6 +22,7 @@ import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -75,7 +75,7 @@ public class TutkinnonOsaViite implements ReferenceableEntity {
 
     @Getter
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @NotNull
     private TutkinnonOsa tutkinnonOsa;
 

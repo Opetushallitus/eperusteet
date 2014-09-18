@@ -16,7 +16,8 @@
        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
-       http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+       http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
     <!-- Enables the caching through annotations -->
     <cache:annotation-driven />
 
@@ -45,7 +46,7 @@
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
     <bean id="dataSource"
-        class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" destroy-method="close">
+          class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.h2.Driver"/>
         <property name="url" value="jdbc:h2:mem:test"/>
     </bean>
@@ -74,5 +75,41 @@
     </bean>
 
     <jpa:repositories base-package="fi.vm.sade.eperusteet.repository" factory-class="fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepositoryFactoryBean"/>
+
+    <bean id="testPermissionEvaluator" class="fi.vm.sade.eperusteet.service.test.TestPermissionEvaluator"/>
+
+    <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+        <property name="permissionEvaluator" ref="testPermissionEvaluator"/>
+    </bean>
+
+    <security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled" >
+        <security:expression-handler ref="expressionHandler"/>
+        <security:protect-pointcut expression="execution(* fi.vm.sade.eperusteet.service.*.*(..))" access="ROLE_DENY_ALL"/>
+    </security:global-method-security>
+
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider>
+            <security:user-service>
+                <security:user name="test" password="test" authorities="ROLE_USER"/>
+                <security:user name="test1" password="test" authorities="ROLE_USER"/>
+                <security:user name="test2" password="test" authorities="ROLE_USER"/>
+                <security:user name="test3" password="test" authorities="ROLE_USER"/>
+                <security:user name="test4" password="test" authorities="ROLE_USER"/>
+                <security:user name="test5" password="test" authorities="ROLE_USER"/>
+                <security:user name="test6" password="test" authorities="ROLE_USER"/>
+                <security:user name="test7" password="test" authorities="ROLE_USER"/>
+                <security:user name="test8" password="test" authorities="ROLE_USER"/>
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+        <property name="allowIfAllAbstainDecisions" value="true"/>
+        <property name="decisionVoters">
+            <list>
+                <bean class="org.springframework.security.access.vote.RoleVoter"/>
+            </list>
+        </property>
+    </bean>
 
 </beans>

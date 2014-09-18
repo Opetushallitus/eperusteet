@@ -3,12 +3,7 @@
 </div>
 
 <div class="modal-body">
-  <div ng-hide="valittuPeruste" class="input-group">
-    <span class="input-group-addon">
-      <span class="glyphicon glyphicon-search"></span>
-    </span>
-    <input ng-hide="lataa" ng-change="haku(syote)" type="text" ng-model="syote" class="form-control" placeholder="{{ 'hae-perusteita' | kaanna }}..." />
-  </div>
+  <rajaus ng-hide="valittuPeruste || lataa" model="syote" placeholder="hae-perusteita" callback="haku(value)"></rajaus>
   <div ng-show="!valittuPeruste" style="margin-top: 8px" class="results">
     <table class="table table-striped">
       <tr>

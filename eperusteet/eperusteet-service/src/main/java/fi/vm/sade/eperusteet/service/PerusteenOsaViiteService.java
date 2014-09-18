@@ -16,10 +16,10 @@
 
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
-import fi.vm.sade.eperusteet.repository.version.Revision;
-import java.util.List;
+import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -28,24 +28,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public interface PerusteenOsaViiteService {
 
-    @PreAuthorize("isAuthenticated()")
-    void removeSisalto(Long id);
+    @PreAuthorize("hasPermission(#peruste,'peruste','MUOKKAUS')")
+    void removeSisalto(@P("peruste") Long perusteId, Suoritustapakoodi tapa, Long id);
 
-    @PreAuthorize("isAuthenticated()")
-    public PerusteenOsaViiteDto getVersio(Long id, Integer versioId);
+    @PreAuthorize("hasPermission(#peruste,'peruste','MUOKKAUS')")
+    PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(@P("peruste") Long perusteId, Suoritustapakoodi tapa, Long id);
 
-    @PreAuthorize("isAuthenticated()")
-    public PerusteenOsaViiteDto revertToVersio(Long id, Integer versioId);
+    @PreAuthorize("hasPermission(#peruste,'peruste','MUOKKAUS')")
+    TutkinnonOsaViiteDto kloonaaTutkinnonOsa(@P("peruste") Long perusteId, Suoritustapakoodi tapa,Long id);
 
-    @PreAuthorize("isAuthenticated()")
-    List<Revision> getVersiot(Long id);
-
-    @PreAuthorize("isAuthenticated()")
-    PerusteenOsaViiteDto kloonaaTekstiKappale(Long id);
-
-    @PreAuthorize("isAuthenticated()")
-    TutkinnonOsaViiteDto kloonaaTutkinnonOsa(Long id);
-
-    @PreAuthorize("isAuthenticated()")
-    void update(Long id, PerusteenOsaViiteDto uusi);
+    @PreAuthorize("hasPermission(#peruste,'peruste','MUOKKAUS')")
+    void reorderSubTree(@P("peruste") Long perusteId, Suoritustapakoodi tapa, Long id, PerusteenOsaViiteDto.Puu<?,?> uusi);
 }

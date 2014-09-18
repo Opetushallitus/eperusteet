@@ -59,9 +59,6 @@ angular.module('eperusteApp')
       info: { method: 'GET', url: SERVICE_LOC + '/perusteet/info' }
     });
   })
-  .factory('PerusteenOsaviitteet', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteenosaviitteet/:viiteId');
-  })
   .factory('Suoritustapa', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa');
   })
