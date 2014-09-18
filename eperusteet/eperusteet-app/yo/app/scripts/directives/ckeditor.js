@@ -39,7 +39,6 @@ angular.module('eperusteApp')
       [
         { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
         { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
-        '/',
         { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
         { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link' ] },
         { name: 'styles', items : [ 'Format' ] },
