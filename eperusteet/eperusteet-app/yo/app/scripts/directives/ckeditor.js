@@ -39,7 +39,6 @@ angular.module('eperusteApp')
       [
         { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
         { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
-        '/',
         { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
         { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link' ] },
         { name: 'styles', items : [ 'Format' ] },
@@ -89,6 +88,8 @@ angular.module('eperusteApp')
           }
         }
 
+        var ready = false;
+        var deferredcall = null;
         editor = CKEDITOR.inline(element[0], {
           toolbar: toolbarLayout,
           removePlugins: 'resize,elementspath,scayt,wsc',
@@ -99,7 +100,8 @@ angular.module('eperusteApp')
           sharedSpaces: {
             top: 'ck-toolbar-top'
           },
-          readOnly: !editingEnabled
+          readOnly: !editingEnabled,
+          title: false
         });
 
         // poistetaan enterin käyttö, jos kyseessä on yhden rivin syöttö
@@ -116,9 +118,17 @@ angular.module('eperusteApp')
           ctrl.$render();
         });
 
+        function setReadOnly(state) {
+          editor.setReadOnly(state);
+        }
+
         scope.$on('enableEditing', function() {
           editingEnabled = true;
-          editor.setReadOnly(!editingEnabled);
+          if (ready) {
+            setReadOnly(!editingEnabled);
+          } else {
+            deferredcall = _.partial(setReadOnly, !editingEnabled);
+          }
           element.addClass('edit-mode');
         });
 
@@ -174,6 +184,11 @@ angular.module('eperusteApp')
         });
 
         editor.on('instanceReady', function () {
+          ready = true;
+          if (deferredcall) {
+            deferredcall();
+            deferredcall = null;
+          }
           $rootScope.$broadcast('ckEditorInstanceReady');
         });
 

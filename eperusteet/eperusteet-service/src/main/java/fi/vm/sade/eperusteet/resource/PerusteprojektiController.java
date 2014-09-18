@@ -17,16 +17,19 @@ package fi.vm.sade.eperusteet.resource;
 
 import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.dto.util.BooleanDto;
+import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
-import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
+import fi.vm.sade.eperusteet.dto.util.BooleanDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +63,12 @@ public class PerusteprojektiController {
     @ResponseBody
     public ResponseEntity<List<PerusteprojektiInfoDto>> getAll() {
         return new ResponseEntity<>(service.getBasicInfo(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/omat", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<PerusteprojektiInfoDto>> getOmat() {
+        return new ResponseEntity<>(service.getOmatProjektit(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = GET)
@@ -133,4 +142,73 @@ public class PerusteprojektiController {
 
         return new ResponseEntity<>(new BooleanDto(true), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/{id}/tyoryhma", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<TyoryhmaHenkiloDto>> getTyoryhmat(@PathVariable("id") final Long id) {
+        List<TyoryhmaHenkiloDto> tyoryhmat = service.getTyoryhmaHenkilot(id);
+        return new ResponseEntity<>(tyoryhmat, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/tyoryhma/{nimi}", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<TyoryhmaHenkiloDto>> getTyoryhmaByNimi(
+            @PathVariable("nimi") final String nimi,
+            @PathVariable("id") final Long id
+    ) {
+        List<TyoryhmaHenkiloDto> tyoryhmat = service.getTyoryhmaHenkilot(id, nimi);
+        return new ResponseEntity<>(tyoryhmat, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/tyoryhma", method = POST)
+    @ResponseBody
+    public ResponseEntity<List<TyoryhmaHenkiloDto>> postMultipleTyoryhmaHenkilot(
+            @PathVariable("id") final Long id,
+            @RequestBody List<TyoryhmaHenkiloDto> tyoryhma
+    ) {
+        List<TyoryhmaHenkiloDto> res = new ArrayList<>();
+        for (TyoryhmaHenkiloDto thd : tyoryhma) {
+            res.add(service.saveTyoryhma(id, thd));
+        }
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/tyoryhma/{nimi}", method = POST)
+    @ResponseBody
+    public ResponseEntity<List<TyoryhmaHenkiloDto>> postMultipleTyoryhmaHenkilotToTyoryhma(
+            @PathVariable("id") final Long id,
+            @PathVariable("nimi") final String nimi,
+            @RequestBody List<TyoryhmaHenkiloDto> tyoryhma
+    ) {
+        List<TyoryhmaHenkiloDto> res = service.saveTyoryhma(id, nimi, tyoryhma);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/tyoryhma/{nimi}", method = DELETE)
+    public ResponseEntity<TyoryhmaHenkiloDto> removeTyoryhmat(
+            @PathVariable("id") final Long id,
+            @PathVariable("nimi") final String nimi
+    ) {
+        service.removeTyoryhma(id, nimi);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/perusteenosat/{pid}/tyoryhmat", method = POST)
+    @ResponseBody
+    public ResponseEntity<List<String>> postPerusteenOsaTyoryhma(
+            @PathVariable("id") final Long id,
+            @PathVariable("pid") final Long pid,
+            @RequestBody List<String> tyoryhmat
+    ) {
+        return new ResponseEntity<>(service.setPerusteenOsaViiteTyoryhmat(id, pid, tyoryhmat), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/perusteenosat/{pid}/tyoryhmat", method = GET)
+    public ResponseEntity<List<String>> getPerusteenOsaTyoryhma(
+            @PathVariable("id") final Long id,
+            @PathVariable("pid") final Long pid
+    ) {
+        return new ResponseEntity<>(service.getPerusteenOsaViiteTyoryhmat(id, pid), HttpStatus.OK);
+    }
+
 }

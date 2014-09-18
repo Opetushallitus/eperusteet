@@ -16,12 +16,12 @@
 
 package fi.vm.sade.eperusteet.domain.tutkinnonOsa;
 
-import fi.vm.sade.eperusteet.domain.Mergeable;
 import fi.vm.sade.eperusteet.domain.PartialMergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -70,6 +70,24 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
                inverseJoinColumns = @JoinColumn(name = "osaamistavoite_id"))
     @OrderColumn
     private List<Osaamistavoite> osaamistavoitteet;
+
+    public OsaAlue() {
+    }
+
+    public OsaAlue(OsaAlue o) {
+        this.nimi = o.nimi;
+        this.osaamistavoitteet = new ArrayList<>();
+        IdentityHashMap<Osaamistavoite, Osaamistavoite> identityMap = new IdentityHashMap<>();
+        for ( Osaamistavoite ot : o.getOsaamistavoitteet() ) {
+            if ( identityMap.containsKey(ot) ) {
+                this.osaamistavoitteet.add(identityMap.get(ot));
+            } else {
+                Osaamistavoite t = new Osaamistavoite(ot, identityMap);
+                identityMap.put(ot, t);
+                this.osaamistavoitteet.add(t);
+            }
+        }
+    }
 
     public void setOsaamistavoitteet(List<Osaamistavoite> osaamistavoitteet) {
         if (this.osaamistavoitteet == null) {

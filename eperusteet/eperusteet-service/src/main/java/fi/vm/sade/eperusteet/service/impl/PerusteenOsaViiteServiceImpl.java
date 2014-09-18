@@ -15,32 +15,31 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohdealue;
-import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
+import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
-import fi.vm.sade.eperusteet.repository.version.Revision;
-import fi.vm.sade.eperusteet.service.ArviointiService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.internal.ArviointiService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import java.util.ArrayList;
+import fi.vm.sade.eperusteet.service.security.PermissionChecker;
 import java.util.List;
-import java.util.Objects;
+import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,13 +55,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
 
     @Autowired
-    private PerusteenOsaViiteRepository repository;
+    private ArviointiService arviointiService;
 
     @PersistenceContext
     private EntityManager em;
+    @Autowired
+    @Dto
+    private DtoMapper mapper;
+    @Autowired
+    private PerusteenOsaRepository perusteenOsaRepository;
 
     @Autowired
     private PerusteenOsaService perusteenOsaService;
+
+    @Autowired
+    private PerusteenOsaViiteRepository repository;
 
     @Autowired
     private TutkinnonOsaRepository tutkinnonOsaRepository;
@@ -71,18 +78,43 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
 
     @Autowired
-    private ArviointiService arviointiService;
-
-    @Autowired
-    private PerusteenOsaRepository perusteenOsaRepository;
-
-    @Autowired
-    @Dto
-    private DtoMapper mapper;
+    private PermissionChecker permissionChecker;
 
     @Override
-    public void removeSisalto(Long id) {
-        PerusteenOsaViite viite = repository.findOne(id);
+    @Transactional(readOnly = false)
+    public PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(Long perusteId, Suoritustapakoodi tapa, Long id) {
+        PerusteenOsaViite pov = findViite(perusteId, tapa, id);
+        PerusteenOsa from = pov.getPerusteenOsa();
+        permissionChecker.checkPermission(from, "LUKU");
+        if (from instanceof TekstiKappale) {
+            PerusteenOsa uusi = from.copy();
+            uusi.setTila(PerusteTila.LUONNOS);
+            pov.setPerusteenOsa(perusteenOsaRepository.save(uusi));
+        }
+        return mapper.map(pov, fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja.class);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public TutkinnonOsaViiteDto kloonaaTutkinnonOsa(Long perusteId, Suoritustapakoodi tapa, Long id) {
+        Suoritustapa suoritustapa = perusteet.findSuoritustapaByIdAndSuoritustapakoodi(perusteId, tapa);
+        if (suoritustapa != null) {
+            TutkinnonOsaViite tov = tutkinnonOsaViiteRepository.getOne(id);
+            if (suoritustapa.getTutkinnonOsat().contains(tov)) {
+                TutkinnonOsa to = tov.getTutkinnonOsa();
+                TutkinnonOsa uusi = new TutkinnonOsa(to);
+                uusi.setTila(PerusteTila.LUONNOS);
+                tov.setTutkinnonOsa(tutkinnonOsaRepository.save(uusi));
+                return mapper.map(tov, TutkinnonOsaViiteDto.class);
+            }
+        }
+        throw new BusinessRuleViolationException("virheellinen viite");
+    }
+
+    @Override
+    @Transactional
+    public void removeSisalto(Long perusteId, Suoritustapakoodi tapa, Long id) {
+        PerusteenOsaViite viite = findViite(perusteId, tapa, id);
         if (viite == null) {
             throw new BusinessRuleViolationException("Perusteenosaviitettä ei ole olemassa");
         }
@@ -107,87 +139,57 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Revision> getVersiot(Long id) {
-        return repository.getRevisions(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public PerusteenOsaViiteDto getVersio(Long id, Integer versioId) {
-        return mapper.map(repository.findRevision(id, versioId), PerusteenOsaViiteDto.class);
-    }
-
-    @Override
     @Transactional
-    public PerusteenOsaViiteDto revertToVersio(Long id, Integer versioId) {
-        PerusteenOsaViite revision = repository.findRevision(id, versioId);
-        return mapper.map(repository.save(revision), PerusteenOsaViiteDto.class);
+    public void reorderSubTree(Long perusteId, Suoritustapakoodi suoritustapa, Long id, PerusteenOsaViiteDto.Puu<?, ?> uusi) {
+        PerusteenOsaViite viite = findViite(perusteId, suoritustapa, id);
+        Set<PerusteenOsaViite> refs = Sets.newIdentityHashSet();
+        refs.add(viite);
+        clearChildren(viite, refs);
+        PerusteenOsaViite parent = viite.getVanhempi();
+        updateTraverse(parent, uusi, refs);
     }
 
-    @Override
-    @Transactional
-    public PerusteenOsaViiteDto kloonaaTekstiKappale(Long id) {
-        PerusteenOsaViite pov = repository.findOne(id);
-        PerusteenOsa perusteenOsa = pov.getPerusteenOsa();
-        TekstiKappale from = (TekstiKappale)perusteenOsaRepository.findOne(id);
-        TekstiKappale uusi = new TekstiKappale();
-        uusi.setTila(PerusteTila.LUONNOS);
-        uusi.setNimi(from.getNimi());
-        uusi.setTeksti(from.getTeksti());
-        pov.setPerusteenOsa(perusteenOsaRepository.save(uusi));
-        for (PerusteenOsaViite lpov : pov.getLapset()) {
-            kloonaaTekstiKappale(lpov.getId());
+    @Autowired
+    private PerusteRepository perusteet;
+
+    private PerusteenOsaViite findViite(Long perusteId, Suoritustapakoodi suoritusTapa, Long viiteId) {
+        Suoritustapa suoritustapa = perusteet.findSuoritustapaByIdAndSuoritustapakoodi(perusteId, suoritusTapa);
+        if (suoritustapa != null) {
+            PerusteenOsaViite viite = repository.findOne(viiteId);
+            PerusteenOsaViite root = viite;
+            while (root != null && root.getVanhempi() != null) {
+                root = root.getVanhempi();
+            }
+            if (root != null && root.equals(suoritustapa.getSisalto())) {
+                return viite;
+            }
         }
-        return mapper.map(pov, PerusteenOsaViiteDto.class);
+        throw new BusinessRuleViolationException("virheellinen viite");
     }
 
-    @Override
-    @Transactional
-    public TutkinnonOsaViiteDto kloonaaTutkinnonOsa(Long id) {
-        TutkinnonOsaViite tov = tutkinnonOsaViiteRepository.getOne(id);
-        TutkinnonOsa to = tov.getTutkinnonOsa();
-        TutkinnonOsa uusi = new TutkinnonOsa();
-        uusi.setTila(PerusteTila.LUONNOS);
-        uusi.setNimi(to.getNimi());
-        uusi.setAmmattitaidonOsoittamistavat(to.getAmmattitaidonOsoittamistavat());
-        uusi.setAmmattitaitovaatimukset(to.getAmmattitaitovaatimukset());
-        uusi.setArviointi(arviointiService.kopioi(to.getArviointi()));
-        uusi.setOpintoluokitus(to.getOpintoluokitus());
-        uusi.setTavoitteet(to.getTavoitteet());
-        tov.setTutkinnonOsa(tutkinnonOsaRepository.save(uusi));
-        return mapper.map(tov, TutkinnonOsaViiteDto.class);
-    }
-
-    @Transactional
-    private PerusteenOsaViite updateTraverse(PerusteenOsaViite parent, PerusteenOsaViiteDto uusi) {
-        PerusteenOsaViite pov = repository.getOne(uusi.getId());
-        pov.setVanhempi(parent);
-
-        List<PerusteenOsaViite> lapset = pov.getLapset();
-        lapset.clear();
-
-        for (PerusteenOsaViiteDto x : uusi.getLapset()) {
-            lapset.add(updateTraverse(pov, x));
-        }
-        return repository.save(pov);
-    }
-
-    @Transactional
-    private void clearChildren(PerusteenOsaViite pov) {
+    private void clearChildren(PerusteenOsaViite pov, Set<PerusteenOsaViite> refs) {
         for (PerusteenOsaViite lapsi : pov.getLapset()) {
-            clearChildren(lapsi);
+            refs.add(lapsi);
+            clearChildren(lapsi, refs);
         }
         pov.setVanhempi(null);
         pov.getLapset().clear();
     }
 
-    @Override
-    @Transactional
-    public void update(Long id, PerusteenOsaViiteDto uusi) {
-        PerusteenOsaViite viite = repository.getOne(id);
-        clearChildren(viite);
-        PerusteenOsaViite parent = viite.getVanhempi();
-        updateTraverse(parent, uusi);
+    private PerusteenOsaViite updateTraverse(PerusteenOsaViite parent, PerusteenOsaViiteDto.Puu<?, ?> uusi, Set<PerusteenOsaViite> refs) {
+        PerusteenOsaViite pov = repository.getOne(uusi.getId());
+        if (!refs.remove(pov)) {
+            throw new BusinessRuleViolationException("viitepuun päivitysvirhe");
+        }
+        pov.setVanhempi(parent);
+
+        List<PerusteenOsaViite> lapset = pov.getLapset();
+        lapset.clear();
+
+        for (PerusteenOsaViiteDto.Puu<?, ?> x : uusi.getLapset()) {
+            lapset.add(updateTraverse(pov, x, refs));
+        }
+        return repository.save(pov);
     }
+
 }

@@ -30,12 +30,48 @@ angular.module('eperusteApp')
         Notifikaatiot, VersionHelper, Lukitus, $state,
         TutkinnonOsaEditMode, PerusteenOsaViitteet, Varmistusdialogi, $timeout,
         Kaanna, PerusteprojektiTiedotService, $stateParams, SuoritustapaSisalto,
-        Utils, PerusteProjektiSivunavi) {
+        Utils, PerusteProjektiSivunavi, YleinenData, $rootScope, Kommentit,
+        KommentitByPerusteenOsa, PerusteenOsanTyoryhmat, Tyoryhmat, PerusteprojektiTyoryhmat) {
+
+        $scope.kaikkiTyoryhmat = [];
+
+        $q.all([PerusteenOsanTyoryhmat.get({ projektiId: $stateParams.perusteProjektiId, osaId: $stateParams.perusteenOsaId }).$promise,
+                PerusteprojektiTyoryhmat.get({ id: $stateParams.perusteProjektiId }).$promise]).then(function(data) {
+          $scope.tyoryhmat = data[0];
+          $scope.kaikkiTyoryhmat = _.unique(_.map(data[1], 'nimi'));
+        }, Notifikaatiot.serverCb);
+
+        function paivitaRyhmat(uudet, cb) {
+          PerusteenOsanTyoryhmat.save({
+            projektiId: $stateParams.perusteProjektiId,
+            osaId: $stateParams.perusteenOsaId
+          }, uudet, cb, Notifikaatiot.serverCb);
+        }
+
+        $scope.poistaTyoryhma = function(tr) {
+          Varmistusdialogi.dialogi({
+            successCb: function() {
+              var uusi = _.remove(_.clone($scope.tyoryhmat), function(vanha) { return vanha !== tr; });
+              paivitaRyhmat(uusi, function() { $scope.tyoryhmat = uusi; });
+            },
+            otsikko: 'poista-tyoryhma-perusteenosasta',
+            teksti: Kaanna.kaanna('poista-tyoryhma-teksti', { nimi: tr })
+          })();
+        };
+
+        $scope.lisaaTyoryhma = function() {
+          Tyoryhmat.valitse(_.clone($scope.kaikkiTyoryhmat), _.clone($scope.tyoryhmat), function(uudet) {
+            var uusi = _.clone($scope.tyoryhmat).concat(uudet);
+            paivitaRyhmat(uusi, function() { $scope.tyoryhmat = uusi; });
+          });
+        };
 
         Utils.scrollTo('#ylasivuankkuri');
+        Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });
 
         $scope.sisalto = {};
         $scope.viitteet = {};
+        $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
 
         PerusteprojektiTiedotService.then(function(instance) {
           instance.haeSisalto($scope.$parent.peruste.id, $stateParams.suoritustapa).then(function(res) {
@@ -55,11 +91,7 @@ angular.module('eperusteApp')
         }
 
         function fetch(cb) {
-          cb = cb || angular.noop;
-          PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, function(res) {
-            $scope.tekstikappale = res;
-            cb(res);
-          });
+          PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, _.setWithCallback($scope, 'tekstikappale', cb));
         }
 
         function storeTree (sisalto, level) {
@@ -100,7 +132,7 @@ angular.module('eperusteApp')
         $scope.fields =
           new Array({
              path: 'nimi',
-             hideHeader: true,
+             hideHeader: false,
              localeKey: 'teksikappaleen-nimi',
              type: 'editor-header',
              localized: true,
@@ -108,6 +140,7 @@ angular.module('eperusteApp')
              order: 1
            },{
              path: 'teksti',
+             hideHeader: false,
              localeKey: 'tekstikappaleen-teksti',
              type: 'editor-area',
              localized: true,
@@ -143,7 +176,6 @@ angular.module('eperusteApp')
 
         function setupTekstikappale(kappale) {
           $scope.editableTekstikappale = angular.copy(kappale);
-          $scope.isNew = !$scope.editableTekstikappale.id;
 
           Editointikontrollit.registerCallback({
             edit: function() {
@@ -163,16 +195,17 @@ angular.module('eperusteApp')
               $scope.isNew = false;
             },
             cancel: function() {
-              if ($scope.isNew) {
-                doDelete();
-              }
-              else {
-                fetch(function() {
-                  refreshPromise();
-                  $scope.isNew = false;
-                });
-              }
-              Lukitus.vapautaPerusteenosa($scope.tekstikappale.id);
+              Lukitus.vapautaPerusteenosa($scope.tekstikappale.id, function () {
+                if ($scope.isNew) {
+                  doDelete();
+                }
+                else {
+                  fetch(function() {
+                    refreshPromise();
+                  });
+                }
+                $scope.isNew = false;
+              });
             },
             notify: function(mode) {
               $scope.editEnabled = mode;
@@ -210,7 +243,8 @@ angular.module('eperusteApp')
             Notifikaatiot.onnistui('tekstikappale-kopioitu-onnistuneesti');
             $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
               perusteenOsanTyyppi: 'tekstikappale',
-              perusteenOsaId: tk.perusteenOsa.id
+              perusteenOsaId: tk.perusteenOsa.id,
+              versio: ''
             });
           });
         };
@@ -234,11 +268,10 @@ angular.module('eperusteApp')
             TutkinnonOsaEditMode.setMode(true);
             $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
               perusteenOsanTyyppi: 'tekstikappale',
-              perusteenOsaId: response._perusteenOsa
+              perusteenOsaId: response._perusteenOsa,
+              versio: ''
             });
-          }, function(virhe) {
-            Notifikaatiot.varoitus(virhe);
-          });
+          }, Notifikaatiot.varoitus);
         };
 
         $scope.setCrumbs = function(crumbs) {
@@ -283,19 +316,20 @@ angular.module('eperusteApp')
           })();
         };
 
-        // Odota tekstikenttien alustus ennen siirtymistä editointitilaan
+        if (TutkinnonOsaEditMode.getMode()) {
+          $scope.isNew = true;
+          $timeout(function() {
+            $scope.muokkaa();
+          }, 50);
+        }
+
+        // Odota tekstikenttien alustus ja päivitä editointipalkin sijainti
         var received = 0;
         $scope.$on('ckEditorInstanceReady', function() {
           if (++received === $scope.fields.length) {
-            if (TutkinnonOsaEditMode.getMode()) {
-              $scope.isNew = true;
-              $timeout(function() {
-                $scope.muokkaa();
-              }, 50);
-            }
+            $rootScope.$broadcast('editointikontrollitRefresh');
           }
         });
       }
     };
   });
-

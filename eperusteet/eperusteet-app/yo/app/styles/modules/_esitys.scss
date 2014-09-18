@@ -29,10 +29,20 @@ $border-color: #0C566E;
     .painikkeet {
       padding-top: 8px;
       font-size: small;
+      margin-bottom: 12px;
     }
 
     .left-space {
       margin-left: 8px;
+    }
+
+    .sisalto {
+      clear: right;
+      -ms-hyphens: manual;
+      -moz-hyphens: manual;
+      -webkit-hyphens: manual;
+      hyphens: manual;
+      text-align: justify;
     }
 
     .arviointi {

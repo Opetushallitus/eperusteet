@@ -14,24 +14,20 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service;
+package fi.vm.sade.eperusteet.service.internal;
 
-import fi.vm.sade.eperusteet.domain.Lukko;
-import fi.vm.sade.eperusteet.service.exception.LockingException;
+import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
+import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
+import java.util.List;
 
 /**
  *
- * @author jhyoty
+ * @author teele1
  */
-public interface LockManager {
-    Lukko lock(Long id);
-    boolean isLockedByAuthenticatedUser(Long id);
-    /**
-     * Varmistaa että tunnistettu käyttäjä omistaa lukon,
-     * @param id lukon tunniste
-     * @throws LockingException jos lukkoa ei ole tai sen omistaa toinen käyttäjä
-     */
-    void ensureLockedByAuthenticatedUser(Long id);
-    Lukko getLock(Long id);
-    boolean unlock(Long id);
+public interface ArviointiService {
+
+    List<ArviointiDto> findAll();
+    ArviointiDto findById(Long id);
+    ArviointiDto add(ArviointiDto arviointiDto);
+    Arviointi kopioi(Arviointi arviointi);
 }

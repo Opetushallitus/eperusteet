@@ -23,7 +23,7 @@ angular.module('eperusteApp')
     this.scrollTo = function (selector) {
       var element = angular.element(selector);
       if (element.length) {
-        $window.scrollTo(0, element[0].offsetTop);
+        $window.scrollTo(0, element.eq(0).offset().top);
       }
     };
 
@@ -39,6 +39,10 @@ angular.module('eperusteApp')
         }
       });
       return hasContent;
+    };
+
+    this.supportsFileReader = function () {
+      return !_.isUndefined($window.FormData);
     };
   })
 

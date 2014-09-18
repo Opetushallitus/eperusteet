@@ -35,7 +35,7 @@ button {
 }
 
 a {
-  img {
+  img, .glyphicon {
     margin-right: 5px;
   }
 }
@@ -66,11 +66,6 @@ label input[type=radio] {
   display: block !important;
 }
 
-.editointi-wrapper {
-  margin-top: 20px;
-  margin-bottom: 50px;
-}
-
 .stack {
   clear: both;
   margin-bottom: 15px;
@@ -87,7 +82,6 @@ label input[type=radio] {
 
 .action-buttons {
   position: absolute;
-  top: -35px;
   right: 15px;
 }
 
@@ -191,4 +185,20 @@ $backtotop-size: 48px;
       text-decoration: none;
     }
   }
+}
+
+*[contenteditable="false"].cke_focus {
+  outline: none;
+}
+
+.rajaus-clear {
+  cursor: pointer;
+}
+
+input.form-control::-ms-clear {
+  display: none;
+}
+
+.ep-sisalto-inner {
+  padding-bottom: 100px;
 }

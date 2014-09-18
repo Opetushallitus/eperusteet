@@ -17,8 +17,17 @@ European Union Public Licence for more details.
   <div ng-form="perustiedotForm" name="perustiedotForm" class="form-group-wrapper" ng-if="$parent.wizardissa() || $parent.editEnabled">
     <formfield label="projektin-nimi-label" model="projekti" model-var="nimi" form="form"
                name="projektinNimi" required="required" placeholder="anna-projektin-nimi-placeholder" max="255"></formfield>
-    <formfield ng-if="wizardissa()" label="projektin-oid-label" model="projekti" model-var="oid" form="form"
-               name="oid" placeholder="anna-projektin-nimi-placeholder" max="255"></formfield>
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label" kaanna>projektin-oid-label</label>
+      <div class="col-sm-9 input-group">
+        <input ng-model="projekti.$ryhmaNimi[lang]" type="" class="form-control" disabled>
+        <span class="input-group-btn">
+          <button class="btn btn-default" ng-click="haeRyhma()" kaanna>hae-ryhma</button>
+        </span>
+      </div>
+    </div>
+
     <formfield label="diaarinumero-label" model="projekti" model-var="diaarinumero" form="perustiedotForm" ng-if="!$parent.pohja()"
                name="diaarinumero" required="required" placeholder="anna-diaarinumero-placeholder" max="255" type="diaari"></formfield>
     <formfield ng-if="$parent.wizardissa()" label="koulutustyyppi-label" ng-hide="projekti.perusteId"

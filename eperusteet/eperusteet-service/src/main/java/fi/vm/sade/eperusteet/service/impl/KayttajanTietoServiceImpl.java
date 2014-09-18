@@ -34,6 +34,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import static fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser.parsiKayttaja;
+
 /**
  *
  * @author nkala
@@ -55,43 +57,10 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
     @Autowired
     RestClientFactory restClientFactory;
 
-    private String getField(JsonNode json, String... fields) {
-        for (String field : fields) {
-            if (json != null) {
-                json = json.get(field);
-            } else {
-                return null;
-            }
-        }
-        return json != null ? json.asText() : null;
-    }
-
-    @Override
-    public KayttajanTietoDto parsiKayttaja(JsonNode json) {
-        KayttajanTietoDto ktd = new KayttajanTietoDto();
-        ktd.setUsername(getField(json, "kayttajatiedot", "username"));
-        ktd.setEtunimet(getField(json, "etunimet"));
-        ktd.setKieliKoodi(getField(json, "asiointiKieli", "kieliKoodi"));
-        ktd.setKutsumanimi(getField(json, "kutsumanimi"));
-        ktd.setSukunimi(getField(json, "sukunimi"));
-        ktd.setOidHenkilo(getField(json, "oidHenkilo"));
-        ktd.setYhteystiedot(json.get("yhteystiedotRyhma"));
-        return ktd;
-    }
-
-    @Override
-    public List<KayttajanTietoDto> parsiKayttajat(JsonNode jsonList) {
-        List<KayttajanTietoDto> ktds = new ArrayList<>();
-        for (JsonNode json : jsonList) {
-            ktds.add(parsiKayttaja(json));
-        }
-        return ktds;
-    }
-
     @Override
     @Cacheable("kayttajat")
     public KayttajanTietoDto hae(String oid) {
-        CachingRestClient crc = restClientFactory.create(serviceUrl);
+        CachingRestClient crc = restClientFactory.get(serviceUrl);
 
         try {
             String url = serviceUrl + (oid == null ? OMAT_TIEDOT_API : KAYTTAJA_API + oid);
@@ -108,14 +77,14 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
             throw new BusinessRuleViolationException("Haettua käyttäjää ei ole olemassa");
         }
 
-        CachingRestClient crc = restClientFactory.create(serviceUrl);
+        CachingRestClient crc = restClientFactory.get(serviceUrl);
         String url = serviceUrl + KAYTTAJA_API + oid + "/organisaatiohenkilo";
 
         try {
             List<KayttajanProjektitiedotDto> kpp = new ArrayList<>();
             List<KayttajanProjektitiedotDto> unfiltered = Arrays.asList(crc.get(url, KayttajanProjektitiedotDto[].class));
             for (KayttajanProjektitiedotDto kp : unfiltered) {
-                Perusteprojekti pp = perusteprojektiRepository.findOneByOid(kp.getOrganisaatioOid());
+                Perusteprojekti pp = perusteprojektiRepository.findOneByRyhmaOid(kp.getOrganisaatioOid());
                 if (pp != null) {
                     kp.setPerusteprojekti(pp.getId());
                     kpp.add(kp);
@@ -140,8 +109,8 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
             throw new BusinessRuleViolationException("Käyttäjällä ei ole kyseistä perusteprojektia");
         }
 
-        CachingRestClient crc = restClientFactory.create(serviceUrl);
-        String url = serviceUrl + KAYTTAJA_API + oid + "/organisaatiohenkilo/" + pp.getOid();
+        CachingRestClient crc = restClientFactory.get(serviceUrl);
+        String url = serviceUrl + KAYTTAJA_API + oid + "/organisaatiohenkilo/" + pp.getRyhmaOid();
 
         try {
             KayttajanProjektitiedotDto ppt = crc.get(url, KayttajanProjektitiedotDto.class);

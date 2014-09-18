@@ -20,7 +20,7 @@ angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams,
     PerusteenRakenne, Notifikaatiot, Editointikontrollit, PerusteProjektiService,
     Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot,
-    virheService, PerusteProjektiSivunavi, perusteprojektiTiedot) {
+    virheService, PerusteProjektiSivunavi, perusteprojektiTiedot, $q, Varmistusdialogi) {
     $scope.editoi = false;
     $scope.suoritustapa = $stateParams.suoritustapa;
     $scope.rakenne = {
@@ -55,7 +55,7 @@ angular.module('eperusteApp')
       haeVersiot(true, function() {
         var revNumber = VersionHelper.select($scope.versiot, versio);
         if (versio && !$scope.versiot.latest) {
-          
+
           if (!revNumber) {
             errorCb();
           } else {
@@ -72,7 +72,7 @@ angular.module('eperusteApp')
                 cb();
               });
             });
-            
+
           }
         } else {
           PerusteenRakenne.haeByPerusteprojekti($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
@@ -134,11 +134,22 @@ angular.module('eperusteApp')
     $scope.muokkaa = function() {
       lukitse(function() {
         haeRakenne(function() {
-          Muodostumissaannot.validoiRyhma($scope.rakenne.rakenne, $scope.rakenne.tutkinnonOsaViitteet, $scope.tutkinnonOsat);
+          $scope.rakenne.rakenne.$virheetMaara = Muodostumissaannot.validoiRyhma($scope.rakenne.rakenne, $scope.rakenne.tutkinnonOsaViitteet, $scope.tutkinnonOsat);
           Editointikontrollit.startEditing();
           $scope.editoi = true;
         });
       });
+    };
+
+    var leikelautaDialogi = function (successCb, failureCb) {
+      Varmistusdialogi.dialogi({
+        otsikko: 'vahvista-liikkuminen',
+        teksti: 'leikelauta-varoitus',
+        lisaTeksti: 'haluatko-jatkaa',
+        successCb: successCb,
+        failureCb: failureCb || angular.noop,
+        primaryBtn: 'poistu-sivulta'
+      })();
     };
 
     Editointikontrollit.registerCallback({
@@ -147,7 +158,11 @@ angular.module('eperusteApp')
       },
       asyncValidate: function(cb) {
         lukitse(function() {
-          cb();
+          if (Muodostumissaannot.skratchpadNotEmpty()) {
+            leikelautaDialogi(cb);
+          } else {
+            cb();
+          }
         });
       },
       save: function(kommentti) {
@@ -160,13 +175,26 @@ angular.module('eperusteApp')
         haeRakenne(function() {
           $scope.editoi = false;
         });
+      },
+      canCancel: function () {
+        var deferred = $q.defer();
+        if (Muodostumissaannot.skratchpadNotEmpty()) {
+          leikelautaDialogi(function () {
+            deferred.resolve();
+          }, function () {
+            deferred.reject();
+          });
+        } else {
+          deferred.resolve();
+        }
+        return deferred.promise;
       }
     });
 
     $scope.$watch('rakenne.rakenne', function(uusirakenne) {
       if ($scope.editoi) {
         Muodostumissaannot.laskeLaajuudet(uusirakenne, $scope.rakenne.tutkinnonOsaViitteet);
-        Muodostumissaannot.validoiRyhma(uusirakenne, $scope.rakenne.tutkinnonOsaViitteet);
+        uusirakenne.$virheetMaara = Muodostumissaannot.validoiRyhma(uusirakenne, $scope.rakenne.tutkinnonOsaViitteet);
       }
     }, true);
 

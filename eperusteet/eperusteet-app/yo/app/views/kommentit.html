@@ -1,12 +1,14 @@
-<div ng-hide="editointi || !onLataaja">
-    <a ng-hide="nayta" ng-click="naytaKommentit()" href=""><span class="glyphicon glyphicon-comment"></span> {{ 'näytä-kommentit' | kaanna }}</a>
-    <div ng-show="nayta && sisalto">
-        <div class="kommentti-alue" ng-if="sisalto" ng-cloak>
-            <hr>
+<div ng-hide="editointi || !onLataaja" class="kommentit">
+    <hr>
+    <div>
+        <div class="kommentti-alue">
             <div>
-                <h2>Keskustelu ({{ sisalto.yhteensa }} {{ 'kommenttia' | kaanna }})</h2>
+                <h2>Keskustelu <span ng-if="sisalto">({{ sisalto.$yhteensa }} {{ 'kommenttia' | kaanna }})</span>
+                <small-spinner ng-hide="nayta"></small-spinner>
+                </h2>
             </div>
-            <a ng-model="editoi" ng-hide="editoi" href="" ng-click="editoi = true"><h3 icon-role="add" kaanna>lisaa-kommentti</h3></a>
+            <div ng-show="nayta && sisalto">
+            <a ng-model="editoi" ng-hide="editoi" class="action-link" ng-click="editoi = true"><h3 icon-role="add" kaanna="lisaa-kommentti"></h3></a>
             <div ng-show="editoi" class="kommentti-uusi">
                 <textarea class="form-control msd-elastic" ng-model="editoitava"></textarea>
                 <div class="kommentti-painikkeet">
@@ -16,6 +18,7 @@
                 <div class="clearfix"></div>
             </div>
             <kommentti-viesti depth="0" sisalto="sisalto"></kommentti-viesti>
+            </div>
         </div>
     </div>
 </div>

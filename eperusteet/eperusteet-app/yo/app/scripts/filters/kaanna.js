@@ -18,35 +18,51 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('Kaanna', function($translate, Lokalisointi) {
+  .service('Kaanna', function($translate) {
     return {
       kaanna: function(input, config) {
         var lang = $translate.use() || $translate.preferredLanguage();
 
         if (_.isObject(input)) {
-          return input[lang];
+          return input[lang] || input['kieli_' + lang + '#1'];
+        } else if (_.isString(input)) {
+          return $translate.instant(input, config);
         }
-        else if (_.isString(input)) {
-          return Lokalisointi.hae(input) || $translate.instant(input, config);
-        }
-        else {
-          return '';
-        }
+        return '';
       }
     };
   })
-  .directive('kaanna', function(Kaanna) {
+  .directive('kaanna', function(Kaanna, $compile, IconMapping) {
+    function getAttr(attr, scope) {
+      if (!_.isString(attr) || _.size(attr) === 0) {
+        return;
+      }
+      return scope.$eval(attr) || attr;
+    }
     return {
       restrict: 'A',
-      link: function(scope, el, attrs) {
-        var translated = '';
-        var original = el.text();
-        if (attrs.kaannaValues) {
-          translated = Kaanna.kaanna(original, scope.$eval(attrs.kaannaValues));
+      link: function (scope, el, attrs) {
+        var original = getAttr(attrs.kaanna, scope) || el.text();
+        if (_.isObject(original)) {
+          el.text(Kaanna.kaanna(original));
+          if (attrs.iconRole) {
+            IconMapping.addIcon(attrs.iconRole, el);
+          }
         } else {
-          translated = Kaanna.kaanna(original);
+          var textEl = angular.element('<span>').attr('translate', original);
+          if (attrs.kaannaValues) {
+            textEl.attr('translate-values', attrs.kaannaValues);
+          }
+          el.html('').append(textEl);
+          if (attrs.iconRole) {
+            var iconEl = angular.element('<span>').attr('icon-role', attrs.iconRole);
+            el.removeAttr('icon-role');
+            el.prepend(iconEl);
+          }
+          el.removeAttr('kaanna');
+          el.removeAttr('kaanna-values');
+          $compile(el.contents())(scope);
         }
-        el.text(translated);
       }
     };
   })

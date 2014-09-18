@@ -24,18 +24,29 @@ angular.module('eperusteApp')
   .directive('iconRole', function (IconMapping) {
     return {
       restrict: 'A',
-      link: function (scope, element, attrs) {
-        var suffix = IconMapping.icons[attrs.iconRole] || attrs.iconRole;
-        var iconEl = angular.element('<span>')
-          .addClass('glyphicon').addClass('glyphicon-' + suffix);
-        if (element.text()) {
-          element.addClass('iconlink');
-        }
-        element.prepend(iconEl);
+      compile: function() {
+        return function postLink(scope, element, attrs) {
+          if (attrs.kaanna) {
+            return;
+          }
+          IconMapping.addIcon(attrs.iconRole, element);
+        };
       }
     };
   })
   .service('IconMapping', function () {
+    this.addIcon = function (key, el) {
+      var iconEl = this.getIconEl(key);
+      if (el.text()) {
+        el.addClass('iconlink');
+      }
+      el.prepend(iconEl);
+    };
+    this.getIconEl = function (key) {
+      var suffix = this.icons[key] || key;
+      return angular.element('<span>')
+            .addClass('glyphicon').addClass('glyphicon-' + suffix);
+    };
     this.icons = {
       add: 'plus',
       back: 'chevron-left',

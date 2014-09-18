@@ -14,45 +14,20 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service.impl;
+package fi.vm.sade.eperusteet.dto.perusteprojekti;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import java.io.Serializable;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author nkala
  */
-public class KommenttiServiceImplTest {
-
-    public KommenttiServiceImplTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getKommentti method, of class KommenttiServiceImpl.
-     */
-    @Test
-    public void testGetKommentti() {
-        System.out.println("getKommentti");
-    }
-
+@Getter
+@Setter
+public class TyoryhmaHenkiloDto implements Serializable {
+    private Long id;
+    private String kayttajaOid;
+    private String nimi;
 }

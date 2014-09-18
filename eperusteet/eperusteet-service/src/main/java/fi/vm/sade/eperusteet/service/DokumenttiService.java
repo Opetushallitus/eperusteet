@@ -13,15 +13,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service;
 
-import com.google.code.docbook4j.Docbook4JException;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
-import java.io.IOException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.access.method.P;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  *
@@ -29,15 +27,22 @@ import javax.xml.transform.TransformerException;
  */
 public interface DokumenttiService {
 
-    public byte[] generateFor(DokumenttiDto dto) throws IOException,
-            TransformerException, ParserConfigurationException,
-            Docbook4JException;
+    @PreAuthorize("hasPermission(#dto.perusteId, 'peruste', 'LUKU')")
+    public void setStarted(@P("dto") DokumenttiDto dto);
 
-    public void setStarted(DokumenttiDto dto);
-    public void generateWithDto(DokumenttiDto dto);
-    public DokumenttiDto createDtoFor(final long id, Kieli kieli);
+    @PreAuthorize("hasPermission(#dto.perusteId, 'peruste', 'LUKU')")
+    @Async(value = "docTaskExecutor")
+    public void generateWithDto(@P("dto") DokumenttiDto dto);
 
+    @PreAuthorize("hasPermission(#id, 'peruste', 'LUKU')")
+    public DokumenttiDto createDtoFor(@P("id") final long id, Kieli kieli);
+
+    @PreAuthorize("isAuthenticated()")
     public byte[] get(Long id);
+
+    @PreAuthorize("isAuthenticated()")
     public DokumenttiDto query(Long id);
+
+    @PreAuthorize("isAuthenticated()")
     public DokumenttiDto findLatest(Long id, Kieli kieli);
 }

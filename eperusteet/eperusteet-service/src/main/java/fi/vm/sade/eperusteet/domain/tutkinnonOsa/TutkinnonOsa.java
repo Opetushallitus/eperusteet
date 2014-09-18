@@ -39,7 +39,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.DefaultValue;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -56,17 +55,17 @@ import org.hibernate.envers.RelationTargetAuditMode;
 public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     @ValidHtml
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen tavoitteet;
 
     @ValidHtml
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen ammattitaitovaatimukset;
 
     @ValidHtml
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen ammattitaidonOsoittamistavat;
 
@@ -79,13 +78,12 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @Column(name = "koodi_arvo")
     private String koodiArvo;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    //Hibernate bug: orphanRemoval ei toimi jos fetchMode = Lazy
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Arviointi arviointi;
 
     @Getter
     @Setter
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "tutkinnonosa_tutkinnonosa_osaalue",
                joinColumns = @JoinColumn(name = "tutkinnonosa_id"),
                inverseJoinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"))
@@ -98,9 +96,22 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @NotNull
     private TutkinnonOsaTyyppi tyyppi = TutkinnonOsaTyyppi.NORMAALI;
 
+    public TutkinnonOsa() {
+    }
+
+    public TutkinnonOsa(TutkinnonOsa other) {
+        super(other);
+        copyState(other);
+    }
+
     @Override
     public EntityReference getReference() {
         return new EntityReference(getId());
+    }
+
+    @Override
+    public TutkinnonOsa copy() {
+        return new TutkinnonOsa(this);
     }
 
     public TekstiPalanen getTavoitteet() {
@@ -173,12 +184,27 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setKoodiUri(other.getKoodiUri());
             this.setKoodiArvo(other.getKoodiArvo());
             this.setOpintoluokitus(other.getOpintoluokitus());
+            this.setTyyppi(other.getTyyppi());
             if (other.getOsaAlueet() != null) {
                 this.setOsaAlueet(mergeOsaAlueet(this.getOsaAlueet(), other.getOsaAlueet()));
             }
+        }
+    }
 
-
-
+    private void copyState(TutkinnonOsa other) {
+        this.arviointi = other.arviointi == null ? null : new Arviointi(other.getArviointi());
+        this.ammattitaitovaatimukset = other.getAmmattitaitovaatimukset();
+        this.ammattitaidonOsoittamistavat = other.getAmmattitaidonOsoittamistavat();
+        this.tavoitteet = other.getTavoitteet();
+        this.koodiUri = other.getKoodiUri();
+        this.koodiArvo = other.getKoodiArvo();
+        this.opintoluokitus = other.getOpintoluokitus();
+        this.tyyppi = other.getTyyppi();
+        if ( this.tyyppi == TutkinnonOsaTyyppi.TUTKE2 && other.getOsaAlueet() != null) {
+            this.osaAlueet = new ArrayList<>();
+            for ( OsaAlue o : other.getOsaAlueet() ) {
+                this.osaAlueet.add(new OsaAlue(o));
+            }
         }
     }
 
@@ -189,7 +215,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             for (OsaAlue osaAlueOther : other) {
                 for (OsaAlue osaAlueCurrent : current) {
                     if (osaAlueCurrent.getId().equals(osaAlueOther.getId())) {
-                    // Jos tutkinnon osalla osa-aluelista mergessä, niin kyseessä on kevyempi
+                        // Jos tutkinnon osalla osa-aluelista mergessä, niin kyseessä on kevyempi
                         // osa-alue objekteja. Joten käytetään partialMergeStatea.
                         osaAlueCurrent.partialMergeState(osaAlueOther);
                         tempList.add(osaAlueCurrent);

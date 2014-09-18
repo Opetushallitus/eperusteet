@@ -26,7 +26,7 @@ import fi.vm.sade.eperusteet.domain.DokumenttiVirhe;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.service.DokumenttiBuilderService;
+import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
@@ -55,48 +55,16 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiServiceImpl.class);
 
     @Autowired
-    private PerusteRepository perusteRepository;
-
-    @Autowired
     private DokumenttiRepository dokumenttiRepository;
 
     @Autowired
     @Dto
     private DtoMapper mapper;
+    @Autowired
+    private PerusteRepository perusteRepository;
 
     @Autowired
     DokumenttiBuilderService builder;
-
-    @Override
-    @Transactional
-    public void setStarted(DokumenttiDto dto) {
-        Dokumentti doc = dokumenttiRepository.findById(dto.getId());
-        doc.setTila(DokumenttiTila.LUODAAN);
-        dokumenttiRepository.save(doc);
-    }
-
-    @Override
-    @Transactional
-    public void generateWithDto(DokumenttiDto dto){
-        LOG.debug("generate with dto {}", dto);
-
-        Dokumentti doc = dokumenttiRepository.findById(dto.getId());
-
-        try {
-            byte[] data = generateFor(dto);
-
-            doc.setData(data);
-            doc.setTila(DokumenttiTila.VALMIS);
-            doc.setValmistumisaika(new Date());
-            dokumenttiRepository.save(doc);
-
-        } catch (TransformerException | ParserConfigurationException | Docbook4JException | IOException | RuntimeException ex) {
-            LOG.error("Exception during document generation:", ex);
-            doc.setTila(DokumenttiTila.EPAONNISTUI);
-            doc.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);
-            dokumenttiRepository.save(doc);
-        }
-    }
 
     @Override
     @Transactional
@@ -125,6 +93,46 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional(readOnly = true)
+    public DokumenttiDto findLatest(Long id, Kieli kieli) {
+        Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
+        List<Dokumentti> documents = dokumenttiRepository.findByPerusteIdAndKieliAndTila(id, kieli, DokumenttiTila.VALMIS, sort);
+        if (documents.size() > 0) {
+            return mapper.map(documents.get(0), DokumenttiDto.class);
+        } else {
+            DokumenttiDto dto = new DokumenttiDto();
+            dto.setPerusteId(id);
+            dto.setKieli(kieli);
+            dto.setTila(DokumenttiTila.EI_OLE);
+            return dto;
+        }
+    }
+
+    @Override
+    @Transactional
+    public void generateWithDto(DokumenttiDto dto) {
+        LOG.debug("generate with dto {}", dto);
+
+        Dokumentti doc = dokumenttiRepository.findById(dto.getId());
+
+        //TODO pitäisi tarkistaa että luonti ei ole jo käynnissä
+        try {
+            byte[] data = generateFor(dto);
+
+            doc.setData(data);
+            doc.setTila(DokumenttiTila.VALMIS);
+            doc.setValmistumisaika(new Date());
+            dokumenttiRepository.save(doc);
+
+        } catch (TransformerException | ParserConfigurationException | Docbook4JException | IOException | RuntimeException ex) {
+            LOG.error("Exception during document generation:", ex);
+            doc.setTila(DokumenttiTila.EPAONNISTUI);
+            doc.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);
+            dokumenttiRepository.save(doc);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public byte[] get(Long id) {
         Dokumentti dokumentti = dokumenttiRepository.findById(id);
         if (dokumentti != null) {
@@ -135,18 +143,21 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     }
 
     @Override
+    @Transactional
+    public void setStarted(DokumenttiDto dto) {
+        Dokumentti doc = dokumenttiRepository.findById(dto.getId());
+        doc.setTila(DokumenttiTila.LUODAAN);
+        dokumenttiRepository.save(doc);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public DokumenttiDto query(Long id) {
         Dokumentti findById = dokumenttiRepository.findById(id);
         return mapper.map(findById, DokumenttiDto.class);
     }
 
-    @Override
-    @Transactional
-    public byte[] generateFor(DokumenttiDto dto)
-            throws IOException, TransformerException,
-            ParserConfigurationException, Docbook4JException
-    {
+    private byte[] generateFor(DokumenttiDto dto) throws IOException, TransformerException, ParserConfigurationException, Docbook4JException {
 
         Peruste peruste = perusteRepository.findOne(dto.getPerusteId());
         Kieli kieli = dto.getKieli();
@@ -174,22 +185,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         is.close();
 
         return baos.toByteArray();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public DokumenttiDto findLatest(Long id, Kieli kieli) {
-        Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
-        List<Dokumentti> documents= dokumenttiRepository.findByPerusteIdAndKieliAndTila(id, kieli, DokumenttiTila.VALMIS, sort);
-        if (documents.size() > 0) {
-            return mapper.map(documents.get(0), DokumenttiDto.class);
-        } else {
-            DokumenttiDto dto = new DokumenttiDto();
-            dto.setPerusteId(id);
-            dto.setKieli(kieli);
-            dto.setTila(DokumenttiTila.EI_OLE);
-            return dto;
-        }
     }
 
 }

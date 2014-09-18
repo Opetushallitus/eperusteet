@@ -14,17 +14,19 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service;
+package fi.vm.sade.eperusteet.dto.peruste;
 
-import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
-import fi.vm.sade.eperusteet.domain.Suoritustapa;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
- * @author harrik
+ * @author nkala
  */
-public interface SuoritustapaService {
-    Suoritustapa createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi suoritustapakoodi, LaajuusYksikko yksikko);
-    Suoritustapa createFromOther(final Long suoritustapaId);
+@Getter
+@Setter
+public class PerusteenOsaTyoryhmaDto {
+    private Long id;
+    private Long perusteprojekti;
+    private String nimi;
 }

@@ -22,32 +22,56 @@ angular.module('eperusteApp')
     return $resource(SERVICE_LOC + '/perusteenosat/:osanId', {
       osanId: '@id'
     }, {
-      byKoodiUri: { method: 'GET', isArray: true, params: { koodi: true } },
-      saveTekstikappale: {method:'POST', params:{tyyppi:'perusteen-osat-tekstikappale'}},
-      saveTutkinnonOsa: {method:'POST', params:{tyyppi:'perusteen-osat-tutkinnon-osa'}},
+      byKoodiUri: {method: 'GET', isArray: true, params: {koodi: true}},
+      saveTekstikappale: {method: 'POST'},
+      saveTutkinnonOsa: {method: 'POST'},
       versiot: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/versiot'},
       getVersio: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/:osanId/versio/:versioId'},
       palauta: {method: 'POST', url: SERVICE_LOC + '/perusteenosat/:osanId/palauta/:versioId'},
-      kloonaa: {method: 'POST', url: SERVICE_LOC + '/perusteenosat/:osanId/kloonaa'}
     });
   })
-  .factory('PerusteenOsaViitteet', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteenosaviitteet/sisalto/:viiteId', {
-      viiteId: '@viiteId'
+  .factory('PerusteenOsaViitteet', function($resource, SERVICE_LOC, $stateParams, PerusteprojektiTiedotService) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/sisalto/:viiteId';
+    //FIXME
+    var pleaseFixMe;
+    PerusteprojektiTiedotService.then(function(value) {
+      pleaseFixMe = value;
+    });
+    return $resource(baseUrl, {
+      viiteId: '@viiteId',
+      perusteId: function() {
+        //FIXME (parempi tapa perusteen id:n hakemiseen)
+        return pleaseFixMe.getPeruste().id;
+      },
+      suoritustapa: function() {
+        return $stateParams.suoritustapa;
+      }
     }, {
-      kloonaaTekstikappale: { method: 'POST', url: SERVICE_LOC + '/perusteenosaviitteet/kloonaa/:viiteId', params:{tyyppi:'perusteen-osat-tekstikappale'} },
-      kloonaaTutkinnonOsa: { method: 'POST', url: SERVICE_LOC + '/perusteenosaviitteet/kloonaa/:viiteId', params:{tyyppi:'perusteen-osat-tutkinnon-osa'} },
-      update: { method: 'POST', url: SERVICE_LOC + '/perusteenosaviitteet/sisalto/:viiteId' }
+      kloonaaTekstikappale: {
+        method: 'POST',
+        url: baseUrl + '/muokattavakopio'
+      },
+      kloonaaTutkinnonOsa: {method: 'POST', url: SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat/:viiteId/muokattavakopio'},
+      update: {method: 'POST'}
     });
   })
-  .factory('TutkinnonOsanOsaAlue', function ($resource, SERVICE_LOC) {
+  .factory('TutkinnonOsanOsaAlue', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteenosat/:osanId/osaalue/:osaalueenId', {
       osaalueenId: '@id'
     }, {
       list: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/osaalueet'}
     });
   })
-  .factory('Osaamistavoite', function ($resource, SERVICE_LOC) {
+  .factory('PerusteenOsanTyoryhmat', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteprojektit/:projektiId/perusteenosat/:osaId/tyoryhmat', {
+      projektiId: '@projektiId',
+      osaId: '@osaId'
+    }, {
+      get: {method: 'GET', isArray: true },
+      save: {method: 'POST', isArray: true }
+    });
+  })
+  .factory('Osaamistavoite', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteenosat/:osanId/osaalue/:osaalueenId/osaamistavoite/:osaamistavoiteId', {
       osaamistavoiteId: '@id'
     }, {

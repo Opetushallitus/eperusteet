@@ -35,9 +35,11 @@ angular.module('eperusteApp')
     PerusteTutkinnonosa, TutkinnonOsaEditMode, $timeout, Varmistusdialogi,
     VersionHelper, Lukitus, MuokkausUtils, PerusteenOsaViitteet,
     Utils, ArviointiHelper, PerusteProjektiSivunavi, Notifikaatiot, Koodisto,
-    Tutke2OsaData) {
+    Tutke2OsaData, Kommentit, KommentitByPerusteenOsa) {
 
     Utils.scrollTo('#ylasivuankkuri');
+
+    Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });
 
     $scope.suoritustapa = $stateParams.suoritustapa;
     $scope.rakenne = {};
@@ -54,8 +56,7 @@ angular.module('eperusteApp')
         $scope.viiteosa = _.find($scope.rakenne.tutkinnonOsat, {'_tutkinnonOsa': $scope.editableTutkinnonOsa.id.toString()}) || {};
         $scope.viiteosa.laajuus = $scope.viiteosa.laajuus || 0;
         $scope.yksikko = _.zipObject(_.map(res.$peruste.suoritustavat, 'suoritustapakoodi'),
-                                     _.map(res.$peruste.suoritustavat, 'laajuusYksikko'))
-        [$scope.suoritustapa];
+                                     _.map(res.$peruste.suoritustavat, 'laajuusYksikko'))[$scope.suoritustapa];
         if (TutkinnonOsaEditMode.getMode()) {
           $scope.isNew = true;
           $timeout(function () {
@@ -131,7 +132,8 @@ angular.module('eperusteApp')
         Notifikaatiot.onnistui('tutkinnonosa-kopioitu-onnistuneesti');
         $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
           perusteenOsanTyyppi: 'tutkinnonosa',
-          perusteenOsaId: tk._tutkinnonOsa
+          perusteenOsaId: tk._tutkinnonOsa,
+          versio: ''
         });
       });
     };
@@ -154,21 +156,20 @@ angular.module('eperusteApp')
     }
 
     function doDelete(osaId) {
-      PerusteenRakenne.poistaTutkinnonOsaViite(osaId, $scope.rakenne.$peruste.id,
-                                               $stateParams.suoritustapa, function() {
-                                                 Notifikaatiot.onnistui('tutkinnon-osa-rakenteesta-poistettu');
-                                                 $state.go('root.perusteprojekti.suoritustapa.tutkinnonosat');
-                                               });
+      PerusteenRakenne.poistaTutkinnonOsaViite(osaId, $scope.rakenne.$peruste.id, $stateParams.suoritustapa, function() {
+        Notifikaatiot.onnistui('tutkinnon-osa-rakenteesta-poistettu');
+        $state.go('root.perusteprojekti.suoritustapa.tutkinnonosat');
+      });
     }
 
     var tutke2 = {
       fetch: function () {
-        if ($scope.tutkinnonOsa.tyyppi === 'tutke2') {
+        if ($scope.editableTutkinnonOsa.tyyppi === 'tutke2') {
           Tutke2OsaData.get().fetch();
         }
       },
       mergeOsaAlueet: function (tutkinnonOsa) {
-        if ($scope.tutkinnonOsa.tyyppi === 'tutke2') {
+        if ($scope.editableTutkinnonOsa.tyyppi === 'tutke2') {
           tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, function (osaAlue) {
             var item = {nimi: osaAlue.nimi};
             if (osaAlue.id) {
@@ -179,7 +180,7 @@ angular.module('eperusteApp')
         }
       },
       validate: function() {
-        if ($scope.tutkinnonOsa.tyyppi === 'tutke2') {
+        if ($scope.editableTutkinnonOsa.tyyppi === 'tutke2') {
           return _.all(_.map(Tutke2OsaData.get().$editing, function (item) {
             return Utils.hasLocalizedText(item.nimi);
           }));
@@ -194,9 +195,7 @@ angular.module('eperusteApp')
         tutke2.fetch();
       },
       asyncValidate: function(cb) {
-        if ($scope.tutkinnonOsaHeaderForm.$valid) {
-          lukitse(function() { cb(); });
-        }
+        lukitse(function() { cb(); });
       },
       save: function(kommentti) {
         tutke2.mergeOsaAlueet($scope.editableTutkinnonOsa);
@@ -248,7 +247,10 @@ angular.module('eperusteApp')
         $scope.editEnabled = mode;
       },
       validate: function () {
-        return tutke2.validate();
+        if (!Utils.hasLocalizedText($scope.editableTutkinnonOsa.nimi)) {
+          $scope.nimiValidationError = true;
+        }
+        return $scope.tutkinnonOsaHeaderForm.$valid && tutke2.validate();
       }
     };
 

@@ -125,15 +125,16 @@ angular.module('eperusteApp')
   })
   .controller('PerusteprojektiCtrl', function($scope, $state, $stateParams,
     Navigaatiopolku, koulutusalaService, opintoalaService,
-    PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation) {
+    PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation,
+    SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode) {
 
     $scope.muokkausEnabled = false;
-    
+
     $scope.luoPdf = function () {
       PdfCreation.setPerusteId($scope.projekti._peruste);
       PdfCreation.openModal();
     };
-    
+
     function init() {
       $scope.projekti = perusteprojektiTiedot.getProjekti();
       $scope.peruste = perusteprojektiTiedot.getPeruste();
@@ -145,18 +146,19 @@ angular.module('eperusteApp')
     $scope.Opintoalat = opintoalaService;
     $scope.sivunavi = {
       suoritustapa: PerusteProjektiService.getSuoritustapa(),
-      items: []
+      items: [],
+      footer: '<button class="btn btn-default" kaanna="lisaa-tutkintokohtainen-osa" icon-role="add" ng-click="$parent.lisaaTekstikappale()"></button>'
     };
     var sivunaviItemsChanged = function (items) {
       $scope.sivunavi.items = items;
     };
     PerusteProjektiSivunavi.register(sivunaviItemsChanged);
-    PerusteProjektiSivunavi.refresh();
+    PerusteProjektiSivunavi.refresh(true);
 
     $scope.$on('$stateChangeSuccess', function() {
       var newSuoritustapa = PerusteProjektiService.getSuoritustapa();
       if (newSuoritustapa !== $scope.sivunavi.suoritustapa) {
-        PerusteProjektiSivunavi.refresh();
+        PerusteProjektiSivunavi.refresh(true);
       }
       $scope.sivunavi.suoritustapa = newSuoritustapa;
     });
@@ -194,10 +196,28 @@ angular.module('eperusteApp')
     $scope.$on('update:perusteprojekti', function () {
       perusteprojektiTiedot.alustaProjektinTiedot($stateParams).then(function () {
         init();
-        PerusteProjektiSivunavi.refresh();
+        PerusteProjektiSivunavi.refresh(true);
       });
     });
-    
+
+    $scope.lisaaTekstikappale = function () {
+      function lisaaSisalto(method, sisalto, cb) {
+        cb = cb || angular.noop;
+        SuoritustapaSisalto[method]({
+          perusteId: $scope.projekti._peruste,
+          suoritustapa: PerusteProjektiService.getSuoritustapa()
+        }, sisalto, cb, Notifikaatiot.serverCb);
+      }
+      lisaaSisalto('save', {}, function(response) {
+        TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
+        $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
+          perusteenOsanTyyppi: 'tekstikappale',
+          perusteenOsaId: response._perusteenOsa,
+          versio: ''
+        });
+      });
+    };
+
     $scope.$on('enableEditing', function() {
       $scope.muokkausEnabled = true;
     });
@@ -207,6 +227,9 @@ angular.module('eperusteApp')
   })
   .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams,
                                                 $state, $location) {
+    var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
+    var STATE_OSA = 'root.perusteprojekti.suoritustapa.perusteenosa';
+
     var service = null;
     var _isVisible = false;
     var items = [];
@@ -231,7 +254,7 @@ angular.module('eperusteApp')
           id: lapsi.perusteenOsa.id,
           depth: level,
           link: [
-            'root.perusteprojekti.suoritustapa.perusteenosa',
+            STATE_OSA,
             {
               perusteenOsanTyyppi: 'tekstikappale',
               perusteenOsaId: lapsi.perusteenOsa.id,
@@ -249,17 +272,29 @@ angular.module('eperusteApp')
       // ui-sref-active doesn't work directly in ui-router 0.2.*
       // with optional parameters.
       // Versionless url should be considered same as specific version url.
-      var url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', {
+      var url = $state.href(STATE_OSA, {
         perusteenOsaId: item.id,
         versio: null
       }, {inherit:true}).replace(/#/g, '');
       return $location.url().indexOf(url) > -1;
     };
 
+    var isTutkinnonosatActive = function () {
+      return $state.is(STATE_OSAT) || ($state.is(STATE_OSA) &&
+        $stateParams.perusteenOsanTyyppi === 'tutkinnonosa');
+    };
+
     var buildTree = function () {
       items = [
-        {label: 'tutkinnonosat', link: ['root.perusteprojekti.suoritustapa.tutkinnonosat', {}]},
-        {label: 'tutkinnon-rakenne', link: ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: null}]},
+        {
+          label: 'tutkinnonosat',
+          link: [STATE_OSAT, {}],
+          isActive: isTutkinnonosatActive
+        },
+        {
+          label: 'tutkinnon-rakenne',
+          link: ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: ''}]
+        },
       ];
       processNode(data.projekti.peruste.sisalto);
       callbacks.changed(items);
@@ -276,16 +311,20 @@ angular.module('eperusteApp')
       callbacks.changed = cb;
     };
 
-    this.refresh = function () {
+    this.refresh = function (light) {
       if (!service) {
         PerusteprojektiTiedotService.then(function(res) {
           service = res;
           load();
         });
       } else {
-        service.alustaPerusteenSisalto($stateParams, true).then(function () {
+        if (light) {
+          load();
+        } else {
+          service.alustaPerusteenSisalto($stateParams, true).then(function () {
           load();
         });
+        }
       }
     };
 

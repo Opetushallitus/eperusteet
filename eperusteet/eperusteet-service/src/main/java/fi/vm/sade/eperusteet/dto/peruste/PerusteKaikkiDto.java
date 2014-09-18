@@ -35,5 +35,5 @@ public class PerusteKaikkiDto extends PerusteDto {
     Map<Suoritustapakoodi, RakenneModuuliDto> rakenteet;
     Map<Suoritustapakoodi, List<TutkinnonOsaDto>> tutkinnonOsat;
     Map<Suoritustapakoodi, List<TutkinnonOsaViiteDto>> tutkinnonOsaViitteet;
-    Map<Suoritustapakoodi, PerusteenOsaViiteDto> sisallot;
+    Map<Suoritustapakoodi, fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja> sisallot;
 }

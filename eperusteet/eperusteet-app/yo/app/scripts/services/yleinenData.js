@@ -36,9 +36,10 @@ angular.module('eperusteApp')
 
     this.rakenneRyhmaRoolit = [
       'määritelty',
-      'määrittelemätön',
-      'osaamisala'
+      'määrittelemätön'
     ];
+
+    this.osaamisalaRooli = 'osaamisala';
 
     this.yksikot = [
       'OSAAMISPISTE',
@@ -73,7 +74,8 @@ angular.module('eperusteApp')
     this.koulutustyypit = [
       'koulutustyyppi_1',
       'koulutustyyppi_11',
-      'koulutustyyppi_12'
+      'koulutustyyppi_12',
+      'koulutustyyppi_9999'
     ];
 
     this.kielet = {
@@ -89,6 +91,14 @@ angular.module('eperusteApp')
 
     this.dateFormatDatepicker = 'd.M.yyyy';
     this.dateFormatMomentJS = 'D.M.YYYY';
+
+    this.valitseSuoritustapaKoulutustyypille = function(koulutustyyppi) {
+      if (koulutustyyppi === 'koulutustyyppi_9999') {
+        return 'ops';
+      } else {
+        return 'naytto';
+      }
+    };
 
     this.haeArviointiasteikot = function() {
       if (this.arviointiasteikot === undefined) {
@@ -126,7 +136,6 @@ angular.module('eperusteApp')
     };
 
     this.valitseKieli = function(teksti) {
-
       if (teksti && teksti.hasOwnProperty(this.kieli)) {
         return teksti[this.kieli];
       } else {

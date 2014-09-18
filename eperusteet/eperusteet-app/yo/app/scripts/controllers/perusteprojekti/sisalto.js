@@ -15,13 +15,13 @@
  */
 
 'use strict';
-/* global _, $ */
+/* global _ */
 
 angular.module('eperusteApp')
   .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams,
     $modal, PerusteenOsat, PerusteenOsaViitteet, SuoritustapaSisalto, PerusteProjektiService,
     perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit,
-    Editointikontrollit, LukkoSisalto, $q) {
+    Editointikontrollit) {
 
     function kaikilleTutkintokohtaisilleOsille(juuri, cb) {
       var lapsellaOn = false;
@@ -47,38 +47,17 @@ angular.module('eperusteApp')
     $scope.naytaTutkinnonOsat = true;
     $scope.naytaRakenne = true;
     $scope.muokkausTutkintokohtaisetOsat = false;
-    $scope.lukot = {};
-
-    $scope.paivitaLukot = function() {
-      $q.all([LukkoSisalto.multiple({
-          osanId: $scope.peruste.id,
-          suoritustapa: $scope.valittuSuoritustapa,
-          tyyppi: 'perusteenosat'
-      }).$promise, LukkoSisalto.get({
-          osanId: $scope.peruste.id,
-          suoritustapa: $scope.valittuSuoritustapa
-      }).$promise]).then(function(res) {
-        if (res[1]) { res[0][$scope.peruste.id] = res[1]; }
-        _.forEach(res[0], function(v) {
-          if (v.haltijaOid) {
-            v.voimassa = new Date() <= new Date(v.vanhentuu);
-          }
-        });
-        $scope.lukot = res[0];
-      });
-    };
-    $scope.paivitaLukot();
-    $scope.$on('poll:mousemove', $scope.paivitaLukot);
 
     $scope.aakkosJarjestys = function(data) { return Kaanna.kaanna(data.perusteenOsa.nimi); };
 
-    $scope.rajaaSisaltoa = function() {
+    $scope.rajaaSisaltoa = function(value) {
+      if (_.isUndefined(value)) { return; }
       kaikilleTutkintokohtaisilleOsille($scope.peruste.sisalto, function(osa, lapsellaOn) {
-        osa.$filtered = lapsellaOn || Algoritmit.rajausVertailu($scope.rajaus, osa, 'perusteenOsa', 'nimi');
+        osa.$filtered = lapsellaOn || Algoritmit.rajausVertailu(value, osa, 'perusteenOsa', 'nimi');
         return osa.$filtered;
       });
-      $scope.naytaTutkinnonOsat = Kaanna.kaanna('tutkinnonosat').toLowerCase().indexOf($scope.rajaus.toLowerCase()) !== -1;
-      $scope.naytaRakenne = Kaanna.kaanna('tutkinnon-rakenne').toLowerCase().indexOf($scope.rajaus.toLowerCase()) !== -1;
+      $scope.naytaTutkinnonOsat = Kaanna.kaanna('tutkinnonosat').toLowerCase().indexOf(value.toLowerCase()) !== -1;
+      $scope.naytaRakenne = Kaanna.kaanna('tutkinnon-rakenne').toLowerCase().indexOf(value.toLowerCase()) !== -1;
     };
 
     $scope.tuoSisalto = function() {
@@ -132,7 +111,8 @@ angular.module('eperusteApp')
         TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
         $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
           perusteenOsanTyyppi: 'tekstikappale',
-          perusteenOsaId: response._perusteenOsa
+          perusteenOsaId: response._perusteenOsa,
+          versio: ''
         });
       });
     };
@@ -141,36 +121,6 @@ angular.module('eperusteApp')
       var open = false;
       Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) { open = open || lapsi.$opened; });
       Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) { lapsi.$opened = !open; });
-    };
-
-    $scope.sortableOptions = {
-      connectWith: '.sisalto-group',
-      cursor: 'move',
-      cursorAt: { top : 2, left: 2 },
-      delay: 100,
-      disabled: true,
-      placeholder: 'list-element-placeholder',
-      tolerance: 'pointer',
-      change: function(event) {
-        function endCondition(el) {
-          return !el || _.some(el.classList, function(c) { return c === 'sisalto'; });
-        }
-
-        function isGroup(el) {
-          return _.some(el.classList, function(c) { return c === 'sisalto-group'; });
-        }
-
-        var depth = 0;
-        var el = event.target;
-        while (depth < 50 && !endCondition(el)) {
-          if (isGroup(el)) {
-            depth += 1;
-          }
-          el = el.parentNode;
-        }
-        depth -= 1;
-        $('.list-element-placeholder').css('margin-left', depth * 40);
-      }
     };
 
     $scope.vaihdaSuoritustapa = function(suoritustapakoodi) {
@@ -193,7 +143,7 @@ angular.module('eperusteApp')
     Editointikontrollit.registerCallback({
       edit: function() {
         $scope.muokkausTutkintokohtaisetOsat = true;
-        $scope.sortableOptions.disabled = false;
+        $scope.rajaus = '';
       },
       save: function() {
         function mapSisalto(sisalto) {
@@ -209,7 +159,6 @@ angular.module('eperusteApp')
         mapSisalto($scope.peruste.sisalto),
         function() {
           $scope.muokkausTutkintokohtaisetOsat = false;
-          $scope.sortableOptions.disabled = true;
           Notifikaatiot.onnistui('osien-rakenteen-päivitys-onnistui');
         }, Notifikaatiot.serverCb);
       },

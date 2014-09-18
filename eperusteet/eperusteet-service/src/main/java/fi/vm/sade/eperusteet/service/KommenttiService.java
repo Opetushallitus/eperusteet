@@ -13,26 +13,49 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import java.util.List;
+import org.springframework.security.access.method.P;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  *
  * @author nkala
  */
 public interface KommenttiService {
+
+    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllByPerusteenOsa(Long id, Long perusteeonOsaId);
+
+    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllByPerusteenOsa(Long perusteenOsaId);
+
+    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllBySuoritustapa(Long id, String suoritustapa);
+
+    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllByPerusteprojekti(Long id);
+
+    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllByParent(Long id);
+
+    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllByYlin(Long id);
+
+    @PreAuthorize("isAuthenticated()")
     public KommenttiDto get(Long kommenttiId);
-    public KommenttiDto add(final KommenttiDto kommenttidto);
+
+    @PreAuthorize("hasPermission(#k.perusteprojektiId, 'perusteProjekti', 'KOMMENTOINTI')")
+    public KommenttiDto add(@P("k") final KommenttiDto kommenttidto);
+
+    @PreAuthorize("isAuthenticated()")
     public KommenttiDto update(Long kommenttiId, final KommenttiDto kommenttidto);
+
+    @PreAuthorize("isAuthenticated()")
     public void delete(Long kommenttiId);
+
+    @PreAuthorize("isAuthenticated()")
     public void deleteReally(Long kommenttiId);
 }

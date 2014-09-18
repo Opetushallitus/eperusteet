@@ -31,6 +31,7 @@ module.exports = function(config) {
       'app/bower_components/angular-ui-sortable/sortable.js',
       'app/bower_components/angular-elastic/elastic.js',
       'app/bower_components/angular-ui-router/release/angular-ui-router.js',
+      'app/bower_components/angular-ui-tree/dist/angular-ui-tree.min.js',
       'app/bower_components/ckeditor/ckeditor.js',
       'app/bower_components/lodash/dist/lodash.js',
       'app/bower_components/momentjs/moment.js',

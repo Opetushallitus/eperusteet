@@ -1,28 +1,30 @@
 .tutkinnonosa-lista-toolbar {
   padding: 0;
-  margin: 0px 0 0 0;
+  margin: 0px 0 20px 0;
   border-bottom: 1px solid #ddd;
   position: relative;
-
-  .tosarajaus {
-    width: 400px;
-    position: absolute;
-    bottom: -1px;
-    right: 0px;
-    border-radius: 0px;
+  .toolbar-input {
+    height: 40px;
+    overflow: hidden;
+    .input-group {
+      float: left;
+      max-width: 32em;
+    }
   }
+}
+
+.tosat-sort-selector {
+  clear: both;
+  height: 32px;
   .jarjestys-select {
+    float: left;
     width: auto !important;
-    position: absolute;
-    bottom: -1px;
     height: 30px;
   }
   .lista-linkit {
-    margin-left: 165px;
-    padding: 0 0 4px 0;
-  }
-  a {
-    margin: 0px;
+    font-size: 130%;
+    float: left;
+    padding: 5px 0 0 5px;
   }
 }
 

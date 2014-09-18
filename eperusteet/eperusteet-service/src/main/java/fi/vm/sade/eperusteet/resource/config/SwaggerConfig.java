@@ -17,18 +17,23 @@ package fi.vm.sade.eperusteet.resource.config;
 
 import com.fasterxml.classmate.GenericType;
 import com.fasterxml.classmate.TypeResolver;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
 import com.mangofactory.swagger.models.alternates.Alternates;
-import com.mangofactory.swagger.models.alternates.WildcardType;
+import com.mangofactory.swagger.paths.RelativeSwaggerPathProvider;
 import com.mangofactory.swagger.plugin.EnableSwagger;
 import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import com.wordnik.swagger.model.ApiInfo;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.util.concurrent.Callable;
+import javax.servlet.ServletContext;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -37,22 +42,31 @@ import org.springframework.http.ResponseEntity;
  */
 @Configuration
 @EnableSwagger
+@Profile("default")
 public class SwaggerConfig {
 
     @Autowired
     private SpringSwaggerConfig springSwaggerConfig;
-    private static final String SWAGGER_GROUP = "eperusteet";
 
     @Bean
-    public SwaggerSpringMvcPlugin swaggerPlugin() {
+    public SwaggerSpringMvcPlugin swaggerPlugin(ServletContext ctx) {
+
+        RelativeSwaggerPathProvider relativeSwaggerPathProvider = new RelativeSwaggerPathProvider(ctx);
+        relativeSwaggerPathProvider.setApiResourcePrefix("api");
         final TypeResolver typeResolver = new TypeResolver();
-        return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+        SwaggerSpringMvcPlugin plugin = new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+            .pathProvider(null)
             .apiInfo(apiInfo())
+            .pathProvider(relativeSwaggerPathProvider)
+            .directModelSubstitute(fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.class, LokalisoituTekstiDto.class)
+            .directModelSubstitute(EntityReference.class, Long.class)
+            .directModelSubstitute(JsonNode.class, Object.class)
+            .genericModelSubstitutes(ResponseEntity.class)
             .alternateTypeRules(
-                Alternates.newRule(typeResolver.resolve(ResponseEntity.class, WildcardType.class), typeResolver.resolve(WildcardType.class)),
-                Alternates.newRule(typeResolver.resolve(Page.class, WildcardType.class), typeResolver.resolve(PageImpl.class, WildcardType.class)),
-                Alternates.newRule(typeResolver.resolve(new GenericType<Callable<ResponseEntity<Object>>>(){}), typeResolver.resolve(Object.class))
+                Alternates.newRule(typeResolver.resolve(new GenericType<Callable<ResponseEntity<Object>>>() {
+                }), typeResolver.resolve(Object.class))
             );
+        return plugin;
 
     }
 
@@ -69,6 +83,17 @@ public class SwaggerConfig {
             "http://ec.europa.eu/idabc/eupl"
         );
         return apiInfo;
+    }
+
+    //swagger ei osaa esittää tätä järkevästi.
+    @Getter
+    @Setter
+    public static class LokalisoituTekstiDto {
+        @ApiModelProperty(required = false)
+        private Long _id;
+        @ApiModelProperty(required = true)
+        private String fi;
+        private String sv;
     }
 
 }

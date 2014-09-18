@@ -18,19 +18,16 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('OmatperusteprojektitCtrl', function ($scope, $state, Kayttajaprofiilit) {
+  .controller('OmatperusteprojektitCtrl', function ($scope, $state, OmatPerusteprojektit, YleinenData) {
     $scope.projektit = {};
     $scope.naytto = {limit: 5, shown: 5};
 
     var paivitaOmatProjektit = function() {
-      Kayttajaprofiilit.get({}, function(vastaus) {
-        $scope.projektit = _(vastaus.perusteprojektit)
-          .reject(function(pp) {
-            return pp.tila === 'poistettu' || pp.tila === 'julkaistu';
-          })
+      OmatPerusteprojektit.query({}, function(vastaus) {
+        $scope.projektit = _(vastaus)
           .forEach(function(pp) {
             // TODO: Omat perusteprojektit linkin suoritustapa pitäisi varmaankin olla jotain muuta kuin kovakoodattu 'naytto'
-            pp.url = $state.href('root.perusteprojekti.suoritustapa.sisalto', { perusteProjektiId: pp.id, suoritustapa: 'naytto' });
+            pp.url = $state.href('root.perusteprojekti.suoritustapa.sisalto', { perusteProjektiId: pp.id, suoritustapa: YleinenData.valitseSuoritustapaKoulutustyypille(pp.koulutustyyppi) });
           })
           .reverse()
           .value();

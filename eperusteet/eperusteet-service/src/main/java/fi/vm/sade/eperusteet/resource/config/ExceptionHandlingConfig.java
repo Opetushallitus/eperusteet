@@ -15,24 +15,29 @@
  */
 package fi.vm.sade.eperusteet.resource.config;
 
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import fi.vm.sade.eperusteet.service.exception.LockingException;
+import fi.vm.sade.eperusteet.service.exception.ServiceException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import javax.servlet.ServletException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-
+import javax.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.core.NestedCheckedException;
+import org.springframework.core.NestedRuntimeException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
@@ -43,15 +48,11 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.UnsatisfiedServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
-
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import fi.vm.sade.eperusteet.service.exception.LockingException;
-import fi.vm.sade.eperusteet.service.exception.ServiceException;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
@@ -62,14 +63,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExceptionHandlingConfig.class);
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public void rethrowAccessDeniedException(AccessDeniedException ex) {
-        // Spring Security autentikoi käyttäjän service-kerroksessa ja heittää AccessDeniedException-poikkeuksen, jos käyttäjä ei ole kirjautunut, tai
-        // hänellä ei ole oikeuksia kyseisiin resursseihin. Tätä poikkeusta ei saa ottaa kiinni, vaan se pitää heittää eteenpäin, jotta SS osaa tehdä
-        // tarvittavat toimenpiteet käyttäjän autentikoimiseen.
-        throw ex;
-    }
 
     @ExceptionHandler(TransactionSystemException.class)
     public ResponseEntity<Object> handleTransactionExceptions(TransactionSystemException e, WebRequest request) {
@@ -91,7 +84,12 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
         }
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(value = {
+        NestedRuntimeException.class,
+        NestedCheckedException.class,
+        IOException.class,
+        ServletException.class,
+        ValidationException.class})
     public ResponseEntity<Object> handleAllExceptions(Exception e, WebRequest request) throws Exception {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         ResponseStatus rs = e.getClass().getAnnotation(ResponseStatus.class);
@@ -101,37 +99,47 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e, null, new HttpHeaders(), status, request);
     }
 
+    private void describe(Map<String, Object> map, String koodi) {
+        describe(map, koodi, "");
+    }
+
+    private void describe(Map<String, Object> map, String koodi, String selkokielinen) {
+        map.put("syy", selkokielinen);
+        map.put("avain", koodi);
+    }
+
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
         Map<String, Object> map = new HashMap<>();
         LOG.debug("Virhe", ex);
+        map.put("koodi", status);
 
         if (ex instanceof BindException) {
-            map.put("syy", "Virhe datan kytkemisessä.");
+            describe(map, "server-virhe-datan-kytkemisessä", "Virhe datan kytkemisessä.");
         } else if (ex instanceof ConversionNotSupportedException) {
-            map.put("syy", "Datamuunnos ei ole tuettu.");
+            describe(map, "datamuunnos-ei-ole-tuettu", "Datamuunnos ei ole tuettu.");
         } else if (ex instanceof HttpMediaTypeNotAcceptableException) {
-            map.put("syy", "Mediatyyppi ei ole hyväksytty.");
+            describe(map, "mediatyyppi-ei-ole-hyväksytty", "Mediatyyppi ei ole hyväksytty.");
         } else if (ex instanceof HttpMediaTypeNotSupportedException) {
-            map.put("syy", "Mediatyyppi ei ole tuettu.");
+            describe(map, "mediatyyppi-ei-ole-tuettu", "Mediatyyppi ei ole tuettu.");
         } else if (ex instanceof HttpMessageNotWritableException) {
-            map.put("syy", "Http-viestiä ei pystytty kirjoittamaan.");
+            describe(map, "http-viestiä-ei-pystytty-kirjoittamaan", "Http-viestiä ei pystytty kirjoittamaan.");
         } else if (ex instanceof HttpRequestMethodNotSupportedException) {
-            map.put("syy", "Palvelin ei pystynyt käsittelemään http-pyyntöä.");
+            describe(map, "palvelin-ei-pystynyt-käsittelemään-pyyntöä", "Palvelin ei pystynyt käsittelemään http-pyyntöä.");
         } else if (ex instanceof MethodArgumentNotValidException) {
-            map.put("syy", "Palvelin ei pystynyt käsittelemään http-pyyntöä.");
+            describe(map, "palvelin-ei-pystynyt-käsittelemään-pyyntöä", "Palvelin ei pystynyt käsittelemään http-pyyntöä.");
         } else if (ex instanceof MissingServletRequestParameterException) {
-            map.put("syy", "Pyynnöstä puuttui parametri, eikä sitä voitu tästä syystä käsitellä.");
+            describe(map, "pyynnöstä-puuttui-parametri", "Pyynnöstä puuttui parametri, eikä sitä voitu tästä syystä käsitellä.");
         } else if (ex instanceof MissingServletRequestPartException) {
-            map.put("syy", "Pyynnöstä puuttui osa, eikä sitä voitu tästä syystä käsitellä.");
+            describe(map, "pyynnöstä-puuttui-osa", "Pyynnöstä puuttui osa, eikä sitä voitu tästä syystä käsitellä.");
         } else if (ex instanceof NoSuchRequestHandlingMethodException) {
-            map.put("syy", "Palvelimelta ei löytynyt http-pyynnölle käsittelijää.");
+            describe(map, "palvelimelta-ei-löytynyt-käsittelijää", "Palvelimelta ei löytynyt http-pyynnölle käsittelijää.");
         } else if (ex instanceof TypeMismatchException) {
-            map.put("syy", "Tyypin yhteensopivuusongelma.");
+            describe(map, "tyypin-yhteensopivuusongelma", "Tyypin yhteensopivuusongelma.");
         } else if (ex instanceof TransactionSystemException) {
-            map.put("syy", "Datan käsittelyssä tapahtui odottamaton virhe.");
+            describe(map, "datan-käsittelyssä-odottamaton-virhe", "Datan käsittelyssä tapahtui odottamaton virhe.");
         } else if (ex instanceof UnrecognizedPropertyException) {
-            map.put("syy", "Dataa ei pystytty käsittelemään. Lähetetyssä datassa esiintyi tuntematon kenttä \""
+            describe(map, "datassa-tuntematon-kenttä", "Dataa ei pystytty käsittelemään. Lähetetyssä datassa esiintyi tuntematon kenttä \""
                     + ((UnrecognizedPropertyException) ex).getPropertyName() + "\"");
         } else if (ex instanceof ConstraintViolationException) {
             List<String> reasons = new ArrayList<>();
@@ -155,9 +163,9 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             LOG.error("Creating common error response for exception", ex);
             status = HttpStatus.INTERNAL_SERVER_ERROR;
             map.put("syy", "Sovelluspalvelimessa tapahtui odottamaton virhe");
+            map.put("avain", "server-odottamaton-virhe");
         }
 
-        map.put("koodi", status);
         return super.handleExceptionInternal(ex, map, headers, status, request);
     }
 }

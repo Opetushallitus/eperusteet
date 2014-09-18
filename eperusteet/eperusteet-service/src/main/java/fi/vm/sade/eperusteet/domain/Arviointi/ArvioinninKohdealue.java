@@ -64,6 +64,16 @@ public class ArvioinninKohdealue implements Serializable {
     @OrderColumn
     private List<ArvioinninKohde> arvioinninKohteet = new ArrayList<>();
 
+    public ArvioinninKohdealue() {
+    }
+
+    public ArvioinninKohdealue(ArvioinninKohdealue other) {
+        this.otsikko = other.getOtsikko();
+        for (ArvioinninKohde ak : other.getArvioinninKohteet()) {
+            this.arvioinninKohteet.add(new ArvioinninKohde(ak));
+        }
+    }
+
     public Long getId() {
         return id;
     }

@@ -54,7 +54,7 @@ public class PerusteenOsaViite implements ReferenceableEntity{
     @Setter
     private PerusteenOsaViite vanhempi;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @Getter
     @Setter
     private PerusteenOsa perusteenOsa;

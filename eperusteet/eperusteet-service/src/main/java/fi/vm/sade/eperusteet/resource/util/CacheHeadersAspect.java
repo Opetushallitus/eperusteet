@@ -19,6 +19,7 @@ import java.util.Date;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -35,7 +36,10 @@ public class CacheHeadersAspect {
 
     private static final Logger LOG = LoggerFactory.getLogger(CacheHeadersAspect.class);
 
-    @Around("execution(org.springframework.http.ResponseEntity fi.vm.sade.eperusteet.resource.*.*(..)) && !@annotation(fi.vm.sade.eperusteet.resource.util.CacheControl)")
+    @Pointcut("execution(org.springframework.http.ResponseEntity fi.vm.sade.eperusteet.resource..*Controller.*(..))")
+    public void controller() {}
+
+    @Around("controller() && !@annotation(fi.vm.sade.eperusteet.resource.util.CacheControl)")
     public Object aroundResponse(ProceedingJoinPoint jp) throws Throwable {
         Object rv = jp.proceed();
         if (rv instanceof ResponseEntity) {
@@ -45,7 +49,7 @@ public class CacheHeadersAspect {
         }
     }
 
-    @Around("execution(org.springframework.http.ResponseEntity fi.vm.sade.eperusteet.resource.*.*(..)) && @annotation(cacheControl)")
+    @Around("controller() && @annotation(cacheControl)")
     public Object aroundResponse(ProceedingJoinPoint jp, CacheControl cacheControl) throws Throwable {
         Object rv = jp.proceed();
         if (rv instanceof ResponseEntity) {

@@ -1,6 +1,7 @@
 <div>
   <h2 kaanna>tuo-excel</h2>
-  <div ng-show="alussa || errors.length !== 0" class="panel panel-default">
+  <p ng-show="!supportsFileReader" kaanna>Ominaisuus ei ole tuettu käyttämälläsi selaimella.</p>
+  <div ng-show="supportsFileReader && alussa || errors.length !== 0" class="panel panel-default">
     <div class="clearfix"></div>
     <form class="panel-body">
       <div class="clearfix"></div>
@@ -22,7 +23,7 @@
   </div>
 
   <div ng-hide="alussa" class="excel-alkuun">
-    <a icon-role="back" class="action-link" ng-click="alussa = true; clearSelect();" kaanna>Alkuun</a>
+    <a icon-role="back" class="action-link" ng-click="alussa = true; clearSelect();" kaanna="Alkuun"></a>
   </div>
 
   <!-- virheet -->
@@ -76,6 +77,15 @@
           <label class="col-sm-3">{{ 'projektin-nimi-label' | kaanna }}<span>*</span></label>
           <div class="col-sm-9">
             <input type="text" class="form-control" ng-model="projekti.nimi" placeholder="{{ 'valitse-nimi' | kaanna }}"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3" kaanna>projektin-oid-label</label>
+          <div class="col-sm-9 input-group">
+            <input ng-model="projekti.$ryhmaNimi[lang]" type="" class="form-control" disabled>
+            <span class="input-group-btn">
+              <button class="btn btn-default" ng-click="haeRyhma()" kaanna>hae-ryhma</button>
+            </span>
           </div>
         </div>
         <div class="form-group">

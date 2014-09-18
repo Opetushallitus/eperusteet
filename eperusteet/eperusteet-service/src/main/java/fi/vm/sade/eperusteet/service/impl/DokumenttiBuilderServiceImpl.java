@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
@@ -31,7 +32,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.service.DokumenttiBuilderService;
+import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import java.io.File;
 import java.io.IOException;
@@ -346,8 +347,14 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 continue;
             }
 
-            TekstiKappale tk = (TekstiKappale) lapsi.getPerusteenOsa();
+            PerusteenOsa po = lapsi.getPerusteenOsa();
+            TekstiKappale tk = null;
+            if ( po instanceof TekstiKappale ){
+                tk = (TekstiKappale)po;
+            }
+
             if (tk == null) {
+                LOG.error("*** eipä ole tekstikappale? " + po);
                 continue;
             }
 
@@ -386,7 +393,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
         // only distinct TutkinnonOsa
         Set<Suoritustapa> suoritustavat = peruste.getSuoritustavat();
-        Set<TutkinnonOsa> osat = new HashSet();
+        Set<TutkinnonOsa> osat = new HashSet<>();
         for (Suoritustapa suoritustapa : suoritustavat) {
             for (TutkinnonOsaViite viite : suoritustapa.getTutkinnonOsat()) {
                 osat.add(viite.getTutkinnonOsa());
@@ -595,7 +602,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     }
 
     private List<String> asStringList(List<TekstiPalanen> palaset, Kieli kieli) {
-        List<String> list = new ArrayList();
+        List<String> list = new ArrayList<>();
         for (TekstiPalanen palanen : palaset) {
             list.add(getTextString(palanen, kieli));
         }
@@ -604,7 +611,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     private <T> List<T> sanitizeList(List<T> list) {
         if (list == null) {
-            return new ArrayList();
+            return new ArrayList<>();
         }
         return list;
     }

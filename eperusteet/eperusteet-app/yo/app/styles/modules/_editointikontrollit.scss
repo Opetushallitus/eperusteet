@@ -2,6 +2,12 @@ $edit-control-header-width: 200px;
 $edit-control-buttons-width: 180px;
 $edit-control-height: 60px;
 
+/* changed in code */
+.editointi-wrapper {
+  margin-top: 20px;
+  margin-bottom: 50px;
+}
+
 .edit-controls {
   background: transparentize($valinta-vari, 0.3);
   height: $edit-control-height;
@@ -78,6 +84,6 @@ $edit-control-height: 60px;
       margin-left: $edit-control-header-width;
       margin-right: $edit-control-buttons-width;
       width: auto;
-    }  
+    }
   }
 }

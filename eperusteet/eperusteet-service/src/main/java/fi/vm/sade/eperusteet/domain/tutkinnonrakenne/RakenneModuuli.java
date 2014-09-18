@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.Mergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -33,8 +34,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
-import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
+import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
 @DiscriminatorValue("RM")
@@ -99,7 +100,10 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
                 this.muodostumisSaanto = moduuli.getMuodostumisSaanto();
             }
             this.osaamisala = moduuli.osaamisala;
+
+            assert (isSame(moduuli));
         }
+
     }
 
     public boolean isSame(RakenneModuuli moduuli) {
@@ -109,14 +113,15 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
         }
 
         TekstiPalanen moduuliNimi = moduuli.getNimi();
-        if (this.nimi == moduuliNimi) {
+        if (!Objects.equals(this.nimi,moduuliNimi)) {
             return false;
         }
 
-        if ( (this.osat == null && moduuli.getOsat() != null) || (this.osat != null && moduuli.getOsat() == null) ) {
+        if ((this.osat == null && moduuli.getOsat() != null) || (this.osat != null && moduuli.getOsat() == null)) {
             return false;
         }
-        if ( (this.muodostumisSaanto == null && moduuli.getMuodostumisSaanto() != null) || (this.muodostumisSaanto != null && moduuli.getMuodostumisSaanto() == null) ) {
+        if ((this.muodostumisSaanto == null && moduuli.getMuodostumisSaanto() != null) || (this.muodostumisSaanto != null && moduuli.getMuodostumisSaanto()
+            == null)) {
             return false;
         }
 
@@ -126,7 +131,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             } else {
                 for (int i = 0; i < this.osat.size(); i++) {
                     if (this.osat.get(i) instanceof RakenneModuuli && moduuli.getOsat().get(i) instanceof RakenneModuuli) {
-                        if ( ((RakenneModuuli) this.osat.get(i)).isSame((RakenneModuuli) moduuli.getOsat().get(i)) == false) {
+                        if (((RakenneModuuli) this.osat.get(i)).isSame((RakenneModuuli) moduuli.getOsat().get(i)) == false) {
                             return false;
                         }
                     } else if (this.osat.get(i) instanceof RakenneOsa && moduuli.getOsat().get(i) instanceof RakenneOsa) {
@@ -148,15 +153,15 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
         return true;
     }
 
-    public boolean isInRakenne (TutkinnonOsaViite viite, boolean ylinTaso) {
+    public boolean isInRakenne(TutkinnonOsaViite viite, boolean ylinTaso) {
 
         for (AbstractRakenneOsa rakenneosa : osat) {
             if (rakenneosa instanceof RakenneModuuli) {
-                if (((RakenneModuuli)rakenneosa).isInRakenne(viite, false)) {
+                if (((RakenneModuuli) rakenneosa).isInRakenne(viite, false)) {
                     return true;
                 }
             } else if (rakenneosa instanceof RakenneOsa) {
-                if ( ((RakenneOsa)rakenneosa).getTutkinnonOsaViite().equals(viite) ) {
+                if (((RakenneOsa) rakenneosa).getTutkinnonOsaViite().equals(viite)) {
                     return true;
                 }
             }

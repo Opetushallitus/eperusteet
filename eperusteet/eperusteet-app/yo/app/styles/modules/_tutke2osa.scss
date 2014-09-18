@@ -1,4 +1,20 @@
 .tutke2 {
+  .osa-alue-navi {
+    margin-bottom: 15px;
+    ul {
+      list-style-type: none;
+      display: inline;
+      padding-left: 1em;
+      li {
+        display: inline-block;
+        margin-right: 0.4em;
+        &:not(:first-child):before {
+          content: "|";
+          margin-right: 0.4em;
+        }
+      }
+    }
+  }
   .osa-alue {
     .panel-title {
       line-height: 1.75em;

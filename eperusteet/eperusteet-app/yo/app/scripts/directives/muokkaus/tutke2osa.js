@@ -43,9 +43,11 @@ angular.module('eperusteApp')
 
   .controller('Tutke2KentatController', function ($scope, Tutke2Osa, Tutke2OsaData,
     TutkinnonOsanOsaAlue, Osaamistavoite, Varmistusdialogi, $rootScope, $timeout,
-    Utils, Notifikaatiot, Lukitus, $q) {
+    Utils, Notifikaatiot, Lukitus, $q, YleinenData) {
     var Editointikontrollit = $scope.kontrollit;
     var tutke2osaDefer = $q.defer();
+
+    $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
 
     function lukitse(cb) {
       Lukitus.lukitsePerusteenosa($scope.tutke2osa.tutkinnonOsaId, cb);
@@ -66,9 +68,11 @@ angular.module('eperusteApp')
 
     $scope.tutkinnonosa.then(function (res) {
       $scope.tutke2osa = Tutke2Osa.init(res.id);
-      tutke2osaDefer.resolve();
-      $scope.tutke2osa.fetch();
+      $scope.tutke2osa.fetch().then(function () {
+        tutke2osaDefer.resolve();
+      });
       Tutke2OsaData.set($scope.tutke2osa);
+      editModeCallback($scope.mainLevelEditing);
     });
 
     $scope.isEditingInProgress = function () {
@@ -97,11 +101,14 @@ angular.module('eperusteApp')
 
     $scope.osaAlue = {
       $editing: null,
+      jumpTo: function (alue) {
+        Utils.scrollTo('#' + alue.$uniqueId);
+      },
       add: function () {
         var newAlue = {
           nimi: {}
         };
-        $scope.tutke2osa.$editing.push(newAlue);
+      $scope.tutke2osa.$editing.push(newAlue);
       },
       edit: function (alue, $event, state) {
         stopEvent($event);
@@ -273,7 +280,7 @@ angular.module('eperusteApp')
       }
     };
 
-    $scope.$watch('mainLevelEditing', function (editing) {
+    function editModeCallback(editing) {
       if (!$scope.tutke2osa) {
         return;
       }
@@ -284,7 +291,9 @@ angular.module('eperusteApp')
       } else {
         $scope.tutke2osa.$editing = null;
       }
-    });
+    }
+
+    $scope.$watch('mainLevelEditing', editModeCallback);
 
     $scope.getTavoitteet = function (alue, pakollinen) {
       if (pakollinen) {
@@ -297,6 +306,7 @@ angular.module('eperusteApp')
   })
 
   .factory('Tutke2Osa', function ($q, TutkinnonOsanOsaAlue, Osaamistavoite) {
+    var unique = 0;
     function Tutke2OsaImpl(tutkinnonOsaId) {
       this.tutkinnonOsaId = tutkinnonOsaId;
       this.params = { osanId: tutkinnonOsaId };
@@ -306,7 +316,7 @@ angular.module('eperusteApp')
     Tutke2OsaImpl.prototype.fetch = function (skipTavoitteet) {
       var that = this;
       //this.$fetching = true;
-      $q.all([
+      var deferred = $q.all([
         TutkinnonOsanOsaAlue.list(this.params).$promise
       ]).then(function (data) {
         that.osaAlueet = data[0];
@@ -315,6 +325,7 @@ angular.module('eperusteApp')
             alue.nimi = {};
           }
           alue.$open = true;
+          alue.$uniqueId = 'osa-alue-' + unique++;
           if (!skipTavoitteet) {
             that.getTavoitteet(alue, alue);
           } else {
@@ -324,6 +335,7 @@ angular.module('eperusteApp')
       }, function () {
         //that.$fetching = false;
       });
+      return deferred;
     };
 
     Tutke2OsaImpl.prototype.getTavoitteet = function (osaAlue, arr) {

@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;

@@ -18,10 +18,8 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.dto.Arviointi.ArvioinninKohdealueDto;
 import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
@@ -34,11 +32,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import static org.junit.Assert.assertEquals;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -129,7 +125,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
     	tutkinnonOsaDto.setNimi(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Nimi")));
         tutkinnonOsaDto.setTila(PerusteTila.LUONNOS);
         tutkinnonOsaDto.setTyyppi(TutkinnonOsaTyyppi.NORMAALI);
-    	tutkinnonOsaDto = perusteenOsaService.add(tutkinnonOsaDto, TutkinnonOsaDto.class, TutkinnonOsa.class);
+    	tutkinnonOsaDto = perusteenOsaService.add(tutkinnonOsaDto);;
 
         perusteenOsaService.lock(tutkinnonOsaDto.getId());
 
@@ -139,14 +135,14 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         ArvioinninKohdealueDto ke = new ArvioinninKohdealueDto();
         ke.setOtsikko(new LokalisoituTekstiDto(Collections.singletonMap("fi", "kohdealue")));
         tutkinnonOsaDto.getArviointi().getArvioinninKohdealueet().add(ke);
-    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto, TutkinnonOsaDto.class);
+    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto);
 
     	tutkinnonOsaDto.getArviointi().setLisatiedot(new LokalisoituTekstiDto(Collections.singletonMap("fi", "lisätiedot, muokattu")));
         tutkinnonOsaDto.getArviointi().getArvioinninKohdealueet().get(0).setOtsikko(new LokalisoituTekstiDto(Collections.singletonMap("fi", "kohdealue, muokattu")));
-    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto, TutkinnonOsaDto.class);
+    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto);
 
     	tutkinnonOsaDto.setAmmattitaitovaatimukset(new LokalisoituTekstiDto(Collections.singletonMap("fi", "Ammattitaitovaatimukset")));
-    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto, TutkinnonOsaDto.class);
+    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto);
 
     	List<Revision> tutkinnonOsaRevisions = perusteenOsaService.getVersiot(tutkinnonOsaDto.getId());
 
