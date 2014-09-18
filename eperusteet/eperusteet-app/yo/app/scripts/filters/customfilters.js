@@ -81,4 +81,10 @@ angular.module('eperusteApp')
     return function (val) {
       return $sce.trustAsHtml(val);
     };
-  }]);
+  }])
+
+  .filter('paragraphsplit', function() {
+    return function(text) {
+      return text.split('\n');
+    };
+  });
