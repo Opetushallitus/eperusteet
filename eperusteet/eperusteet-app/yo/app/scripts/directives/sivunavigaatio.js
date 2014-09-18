@@ -78,7 +78,7 @@ angular.module('eperusteApp')
             } else if ((naviHeight > windowHeight) || (longSisalto && naviOverflow)) {
               el.height('auto');
             } else {
-              el.height(windowHeight - el.offset().top - 20);
+              el.height(Math.max(windowHeight - el.offset().top - 20, naviHeight));
             }
             el.css('border-right', '1px solid #ddd');
           }
