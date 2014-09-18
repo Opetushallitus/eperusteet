@@ -54,7 +54,7 @@ public class UlkopuolisetServiceImpl implements UlkopuolisetService {
             JsonNode tree = mapper.readTree(crc.getAsString(url));
             return tree;
         } catch (IOException ex) {
-            throw new BusinessRuleViolationException("Työryhmätietojen hakeminen epäonnistui");
+            throw new BusinessRuleViolationException("Työryhmätietojen hakeminen epäonnistui", ex);
         }
     }
 }
