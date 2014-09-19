@@ -90,3 +90,15 @@ $avatar-koko: 64px;
     }
   }
 }
+
+.projektiryhma-haku-rivi {
+  padding: 5px;
+
+  .block {
+    display: inline-block;
+    padding: 2px;
+    background: #00628a;
+    margin-left: 3px;
+    margin-bottom: 3px;
+  }
+}

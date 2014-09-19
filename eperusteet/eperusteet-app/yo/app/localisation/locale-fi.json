@@ -646,5 +646,6 @@
     "ryhmien-hakeminen-epaonnistui": "Ryhmien hakeminen epäonnistui.",
     "poista-tyoryhma-perusteenosasta": "Poista työryhmä perusteenosasta",
     "valitse-tyoryhmat": "Valitse tyoryhmat",
+    "haetaan-ryhmia": "Haetaan ryhmiä",
     "poista-tyoryhma-teksti": "Työryhmä \"{{nimi}}\" poistetaan. Oletko varma?"
 }
