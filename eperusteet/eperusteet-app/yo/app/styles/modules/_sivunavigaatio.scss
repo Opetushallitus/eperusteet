@@ -79,11 +79,19 @@ $sivunavi-level-padding: 20px;
   .list-group-item {
     border-radius: 0 !important;
   }
-  .level { @include sn-padding(0); }
-  .level1 { @include sn-padding(1); }
-  .level2 { @include sn-padding(2); }
-  .level3 { @include sn-padding(3); }
-  .level4, .level5, .level6 { @include sn-padding(4); }
+  .list-group-item:not(.active) {
+    border-top: none;
+  }
+  .level, .level0 {
+    border-top: 1px solid #ddd !important;
+    &.active {
+      border-color: $brand-primary !important;
+    }
+  }
+  $sn-levels: 0, 1, 2, 3, 4, 5, 6, 7, 8;
+  @each $i in $sn-levels {
+    .level#{$i} { @include sn-padding($i); }
+  }
   .matched {
     background-color: lighten($nappi-vari, 5);
   }
