@@ -81,10 +81,10 @@
               </h3>
             </div>
             <div class="panel-body">
-            <div ng-bind-html="valitseKieli(tavoite.tavoitteet)"></div>
+            <div ng-bind-html="valitseKieli(tavoite.tavoitteet) | unsafe"></div>
             <h4 kaanna>arviointi</h4>
             <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet" mainLevelEditing="tavoite.$editing" ei-kohdealueita="true"></arviointi>
-            <div ng-bind-html="valitseKieli(tavoite.tunnustaminen)"></div>
+            <div ng-bind-html="valitseKieli(tavoite.tunnustaminen) | unsafe"></div>
             </div>
           </div>
 

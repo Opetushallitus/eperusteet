@@ -55,7 +55,7 @@ European Union Public Licence for more details.
         </span>
         <button ng-disabled="kaikkiTyoryhmat.length === 0 || kaikkiTyoryhmat.length === tyoryhmat.length" ng-click="lisaaTyoryhma()" icon-role="plus" class="btn btn-default" kaanna="lisaa-tyoryhma"></button>
       </div>
-      <div ng-bind-html="valitseKieli(tekstikappale.teksti)"></div>
+      <div ng-bind-html="valitseKieli(tekstikappale.teksti) | unsafe"></div>
     </div>
     <div ng-if="editEnabled" ng-repeat="field in fields | orderBy:'order'" otsikko="{{field.localeKey}}"
          kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}" muokkauskentta-raamit>
