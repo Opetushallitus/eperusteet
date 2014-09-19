@@ -31,6 +31,11 @@ angular.module('eperusteApp')
 
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
+    $scope.jarjestysOptions = [
+      {value: 'nimi', label: 'nimi'},
+      {value: 'muokattu', label: 'muokattu-viimeksi'},
+      {value: 'laajuus', label: 'laajuus'}
+    ];
     $scope.tutkinnonOsat = [];
     $scope.tosarajaus = '';
     $scope.editoi = false;

@@ -26,11 +26,7 @@
 
 <div>
   <div ng-show="preferenssit.nakymatyyli === 'palikka'" class="tosat-sort-selector">
-    <select class="jarjestys-select form-control" ng-model="jarjestysTapa">
-      <option value="nimi" kaanna>nimi</option>
-      <option value="muokattu" kaanna>muokattu-viimeksi</option>
-      <option value="laajuus" kaanna>laajuus</option>
-    </select>
+    <select class="jarjestys-select form-control" ng-model="jarjestysTapa" ng-options="opt.value as opt.label|kaanna for opt in jarjestysOptions"></select>
     <div class="lista-linkit">
       <a class="action-link" ng-click="jarjestysOrder = !jarjestysOrder">
         <span ng-hide="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes"></span>
