@@ -30,9 +30,8 @@ angular.module('eperusteApp')
                                     Kaanna, YleinenData, Varmistusdialogi) {
     $scope.jarjestysTapa = 'nimi';
     $scope.jarjestysOrder = false;
-    $scope.tilaRajain = 'kaikki';
+    $scope.tilaRajain = null;
     $scope.tilat = YleinenData.tilakuvaukset;
-
     $scope.filteredPp = [];
     $scope.itemsPerPage = 10;
     $scope.nykyinen = 1;
@@ -92,7 +91,7 @@ angular.module('eperusteApp')
     };
 
     $scope.rajaaSisaltoa = function(pp) {
-      return ($scope.tilaRajain === 'kaikki' || $scope.tilaRajain === pp.tila) && (_.isEmpty($scope.rajaus) ||
+      return (!$scope.tilaRajain || $scope.tilaRajain === pp.tila) && (_.isEmpty($scope.rajaus) ||
               Algoritmit.match($scope.rajaus, pp.nimi) ||
               Algoritmit.match($scope.rajaus, 'tila-' + pp.tila) ||
               Algoritmit.match($scope.rajaus, pp.diaarinumero));

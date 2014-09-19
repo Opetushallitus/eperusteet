@@ -12,9 +12,9 @@
 
         <div>
             <div class="tilarajaus">
-                <select ng-model="tilaRajain" ng-change="rajaaTilat(tilaRajain)" class="form-control">
-                    <option value="kaikki" selected kaanna>kaikki</option>
-                    <option ng-repeat="tila in tilat" value="{{ tila }}">{{ 'tila-' + tila | kaanna }}</option>
+                <select ng-model="tilaRajain" ng-change="rajaaTilat(tilaRajain)" class="form-control"
+                        ng-options="tila as ('tila-'+tila)|kaanna for tila in tilat">
+                    <option value="">{{'kaikki'|kaanna}}</option>
                 </select>
             </div>
             <rajaus model="rajaus" placeholder="etsi-perusteprojekteista"></rajaus>
