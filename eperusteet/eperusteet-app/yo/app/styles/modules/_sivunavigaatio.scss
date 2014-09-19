@@ -14,7 +14,7 @@ $sivunavi-shadow: 6px;
   }
 }
 .sivunavi-hidden {
-  .sivunavi-outer {
+  .sivunavi-outer, .sivunavi-navigaatio {
     display: none !important;
   }
   .sivunavi-sisalto {
