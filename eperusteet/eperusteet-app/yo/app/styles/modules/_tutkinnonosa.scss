@@ -340,6 +340,13 @@ hr.versioraja {
     border: 0;
   }
 }
+$sisalto-min-height: 450px;
+.tekstikappale, .tutkinnonosa-sisalto {
+  min-height: $sisalto-min-height;
+}
+.tutkinnonosa-sisalto {
+  min-height: $sisalto-min-height - 240px;
+}
 .edit-tekstikappale {
   max-width: 1000px;
   margin-left: auto;
