@@ -19,12 +19,11 @@
 
 angular.module('eperusteApp')
   .factory('LokalisointiResource', function(LOKALISOINTI_SERVICE_LOC, $resource) {
-    // FIXME: Korjaa linkki!!
-    return $resource('https://itest-virkailija.oph.ware.fi/lokalisointi/cxf/rest/v1/localisation?category=eperusteet', {}, {
+    return $resource('/lokalisointi/cxf/rest/v1/localisation?category=eperusteet', {}, {
       get: {
         method: 'GET',
         isArray: true,
-        cache: true,
+        cache: true
       }
     });
   })
