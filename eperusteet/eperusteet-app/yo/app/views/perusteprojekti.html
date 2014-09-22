@@ -55,7 +55,7 @@ European Union Public Licence for more details.
   </div>
 </div>
 
-<div id="sivunavi-sisalto-wrapper" ng-class="{'sivunavi-hidden': !isNaviVisible()}">
+<div id="sivunavi-sisalto-wrapper" ng-class="{'sivunavi-hidden': !isNaviVisible(), 'show-back': showBackLink()}">
   <div class="sivunavi-navigaatio">
     <div class="sivunavi-takaisin" ng-if="showBackLink()">
       <a ng-href="{{getBackLink()}}" icon-role="back" kaanna="takaisin-paanakymaan"></a>

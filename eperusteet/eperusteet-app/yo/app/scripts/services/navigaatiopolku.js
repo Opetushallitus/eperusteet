@@ -18,7 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('Navigaatiopolku', function($rootScope, $state, YleinenData, Kaanna) {
+  .service('Navigaatiopolku', function($rootScope, $state, YleinenData, Kaanna, PerusteProjektiService) {
     var naviElementit = {};
     var naviPolku = [];
     var params = {};
@@ -43,6 +43,7 @@ angular.module('eperusteApp')
     }
 
     function päivitä() {
+      params.suoritustapa = PerusteProjektiService.getSuoritustapa() || 'naytto';
       if (!state.name) {
         return;
       }

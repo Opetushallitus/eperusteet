@@ -21,7 +21,8 @@ angular.module('eperusteApp')
   .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams,
     $modal, PerusteenOsat, PerusteenOsaViitteet, SuoritustapaSisalto, PerusteProjektiService,
     perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit,
-    Editointikontrollit) {
+    Editointikontrollit, TEXT_HIERARCHY_MAX_DEPTH) {
+    $scope.textMaxDepth = TEXT_HIERARCHY_MAX_DEPTH;
 
     function kaikilleTutkintokohtaisilleOsille(juuri, cb) {
       var lapsellaOn = false;
@@ -117,10 +118,14 @@ angular.module('eperusteApp')
       });
     };
 
-    $scope.avaaSuljeKaikki = function() {
+    $scope.avaaSuljeKaikki = function(state) {
       var open = false;
-      Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) { open = open || lapsi.$opened; });
-      Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) { lapsi.$opened = !open; });
+      Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) {
+        open = open || lapsi.$opened;
+      });
+      Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) {
+        lapsi.$opened = _.isUndefined(state) ? !open : state;
+      });
     };
 
     $scope.vaihdaSuoritustapa = function(suoritustapakoodi) {
@@ -144,6 +149,7 @@ angular.module('eperusteApp')
       edit: function() {
         $scope.muokkausTutkintokohtaisetOsat = true;
         $scope.rajaus = '';
+        $scope.avaaSuljeKaikki(true);
       },
       save: function() {
         function mapSisalto(sisalto) {
