@@ -77,7 +77,7 @@ angular.module('eperusteApp')
 
         $rootScope.$broadcast('notifyCKEditor');
       },
-      cancelEditing: function() {
+      cancelEditing: function(tilanvaihto) {
         function doCancel() {
           setEditMode(false);
           if (scope.editingCallback) {
@@ -87,7 +87,7 @@ angular.module('eperusteApp')
           $rootScope.$broadcast('notifyCKEditor');
         }
         if (scope.editingCallback) {
-          if (_.isFunction(scope.editingCallback.canCancel)) {
+          if (_.isFunction(scope.editingCallback.canCancel) && !tilanvaihto) {
             scope.editingCallback.canCancel().then(function () {
               doCancel();
             });
