@@ -14,12 +14,15 @@ $sivunavi-shadow: 6px;
   }
 }
 .sivunavi-hidden {
-  .sivunavi-outer, .sivunavi-navigaatio {
+  .sivunavi-outer {
     display: none !important;
   }
   .sivunavi-sisalto {
     margin-left: 0;
   }
+}
+.sivunavi-hidden:not(.show-back) .sivunavi-navigaatio {
+  display: none !important;
 }
 $sivunavi-level-zero: 15px;
 $sivunavi-level-padding: 20px;
