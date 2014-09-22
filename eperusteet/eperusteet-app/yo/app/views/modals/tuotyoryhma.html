@@ -1,26 +1,23 @@
 <div class="modal-header">
-    <h1 kaanna>hae-tyoryhma</h1>
+    <h1 kaanna="hae-ryhma"></h1>
 </div>
 
 <div class="modal-body">
     <div ng-show="haetaan">
         <small-spinner></small-spinner>
-        <span kaanna>haetaan-tyoryhmia</span>
+        <span kaanna>haetaan-ryhmia</span>
     </div>
     <div ng-if="!haetaan && !error">
         <div style="margin-bottom: 10px">
             <rajaus style="" model="rajaus" placeholder="rajaa-ryhmia" callback="paivitaRajaus(value)"></rajaus>
         </div>
-        <table class="table table-striped">
-            <tr>
-                <th kaanna>nimi</th>
-                <th kaanna>kuvaus</th>
-            </tr>
-            <tr ng-repeat="r in fryhmat = (ryhmat | filter:rajaa) | orderBy:lang | startFrom:itemsPerPage*(nykyinen-1) | limitTo:itemsPerPage">
-                <td><a href="" ng-click="valitse(r)">{{ r.nimi | kaanna }}</a></td>
-                <td>{{ r.kuvaus2 | kaanna }}</td>
-            </tr>
-        </table>
+        <div class="projektiryhma-haku-rivi" ng-repeat="r in fryhmat = (ryhmat | filter:rajaa) | orderBy:lang | startFrom:itemsPerPage*(nykyinen-1) | limitTo:itemsPerPage">
+            <span class="block"></span>
+            <a href="" ng-click="valitse(r)" title="{{ r.kuvaus2 | kaanna }}">
+                {{ r.nimi | kaanna }}
+            </a>
+        </div>
+        <div class="clearfix"></div>
         <pagination ng-model="nykyinen" ng-change="valitseSivu(nykyinen)" total-items="fryhmat.length" items-per-page="itemsPerPage"></pagination>
     </div>
     <div class="alert alert-error" ng-show="error" kaanna>ryhmien-hakeminen-epaonnistui</div>

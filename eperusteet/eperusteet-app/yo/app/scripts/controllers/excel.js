@@ -27,7 +27,7 @@ angular.module('eperusteApp')
       });
   })
   .controller('ExcelCtrl', function($scope, $modal, ExcelService, PerusteenOsat, TutkinnonOsanValidointi,
-    Koodisto, PerusteprojektiResource, PerusteTutkinnonosat,
+    Koodisto, PerusteprojektiResource, PerusteTutkinnonosat, $translate,
     SuoritustapaSisalto, Perusteet, Notifikaatiot, YleinenData, Utils) {
     $scope.alussa = true;
     $scope.filename = '';
@@ -45,6 +45,7 @@ angular.module('eperusteApp')
     $scope.suoritustapa = 'naytto';
 
     $scope.supportsFileReader = Utils.supportsFileReader();
+    $scope.lang = $translate.use() || $translate.preferredLanguage();
 
     $scope.clearSelect = function() {
       $scope.parsinnanTila = [];

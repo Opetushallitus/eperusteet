@@ -141,6 +141,7 @@
     "kommentti-poistettu": "Kommentti poistettiin onnistuneesti",
     "nayta-aliviestit": "Näytä vastaukset",
     "piilota-aliviestit": "Piilota vastaukset",
+    "poistetaanko-kommentti": "Poistetaanko kommentti?",
 
     "lopeta-muokkaus": "Lopeta muokkaus",
 
@@ -646,5 +647,6 @@
     "ryhmien-hakeminen-epaonnistui": "Ryhmien hakeminen epäonnistui.",
     "poista-tyoryhma-perusteenosasta": "Poista työryhmä perusteenosasta",
     "valitse-tyoryhmat": "Valitse tyoryhmat",
+    "haetaan-ryhmia": "Haetaan ryhmiä",
     "poista-tyoryhma-teksti": "Työryhmä \"{{nimi}}\" poistetaan. Oletko varma?"
 }

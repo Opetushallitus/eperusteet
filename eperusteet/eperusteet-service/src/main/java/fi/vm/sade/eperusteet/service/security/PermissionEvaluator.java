@@ -106,6 +106,7 @@ public class PermissionEvaluator implements org.springframework.security.access.
             perm = Maps.newHashMap();
             perm.put(LUKU, r3);
             perm.put(MUOKKAUS, r2);
+            perm.put(POISTO, r2);
             perm.put(KOMMENTOINTI, r3);
             tmp.put(ProjektiTila.LAADINTA, perm);
             perm = Maps.newHashMap();

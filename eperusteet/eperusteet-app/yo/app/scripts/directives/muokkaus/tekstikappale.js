@@ -31,7 +31,8 @@ angular.module('eperusteApp')
         TutkinnonOsaEditMode, PerusteenOsaViitteet, Varmistusdialogi, $timeout,
         Kaanna, PerusteprojektiTiedotService, $stateParams, SuoritustapaSisalto,
         Utils, PerusteProjektiSivunavi, YleinenData, $rootScope, Kommentit,
-        KommentitByPerusteenOsa, PerusteenOsanTyoryhmat, Tyoryhmat, PerusteprojektiTyoryhmat) {
+        KommentitByPerusteenOsa, PerusteenOsanTyoryhmat, Tyoryhmat, PerusteprojektiTyoryhmat,
+        TEXT_HIERARCHY_MAX_DEPTH) {
 
         $scope.kaikkiTyoryhmat = [];
 
@@ -256,7 +257,9 @@ angular.module('eperusteApp')
         };
 
         $scope.canAddLapsi = function() {
-          return $scope.tekstikappale.id && $scope.viitteet[$scope.tekstikappale.id];
+          return $scope.tekstikappale.id &&
+            $scope.viitteet[$scope.tekstikappale.id] &&
+            $scope.viitteet[$scope.tekstikappale.id].level < (TEXT_HIERARCHY_MAX_DEPTH - 1);
         };
 
         $scope.addLapsi = function() {

@@ -19,7 +19,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .directive('kommentit', function (Kommentit, $timeout, $location, kayttajaToiminnot) {
+  .directive('kommentit', function (Kommentit, $timeout, $location, kayttajaToiminnot, Varmistusdialogi) {
     return {
       restrict: 'AE',
       templateUrl: 'views/kommentit.html',
@@ -67,7 +67,16 @@ angular.module('eperusteApp')
 
         $scope.naytaKommentit = function() { lataaKommentit($location.url()); };
         $scope.muokkaaKommenttia = function(kommentti, uusikommentti) { Kommentit.muokkaaKommenttia(kommentti, uusikommentti); };
-        $scope.poistaKommentti = function(kommentti) { Kommentit.poistaKommentti(kommentti); };
+        $scope.poistaKommentti = function(kommentti) {
+          Varmistusdialogi.dialogi({
+            otsikko: 'vahvista-poisto',
+            teksti: 'poistetaanko-kommentti',
+            primaryBtn: 'poista',
+            successCb: function () {
+              Kommentit.poistaKommentti(kommentti);
+            }
+          })();
+        };
         $scope.lisaaKommentti = function(parent, kommentti) {
           Kommentit.lisaaKommentti(parent, kommentti, function() {
             $scope.sisalto.$yhteensa += 1;

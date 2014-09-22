@@ -87,14 +87,14 @@ angular.module('eperusteApp')
     $scope.rajaaTutkinnonOsia = function(haku) { return Algoritmit.rajausVertailu($scope.tosarajaus, haku, 'nimi'); };
     $scope.suosikkiHelper($state, $stateParams, 'tutkinnonosat');
   })
-  .controller('EsitysSisaltoCtrl', function($scope, $state, $stateParams) {
+  .controller('EsitysSisaltoCtrl', function($scope, $state, $stateParams, PerusteenOsat) {
     $scope.$parent.valittu.sisalto = $stateParams.osanId;
     $scope.valittuSisalto = $scope.$parent.sisalto[$stateParams.osanId];
     if (!$scope.valittuSisalto) {
       $state.go('root.esitys.peruste.rakenne');
-    }
-    else {
+    } else {
       $scope.suosikkiHelper($state, $stateParams, $scope.valittuSisalto.nimi);
+      PerusteenOsat.get({ osanId: $scope.valittuSisalto.id }, _.setWithCallback($scope, 'valittuSisalto'));
     }
   })
   .controller('EsitysCtrl', function($scope, $stateParams, sisalto, peruste,

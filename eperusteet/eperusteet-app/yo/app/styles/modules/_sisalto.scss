@@ -1,14 +1,16 @@
 $sisalto-chevron-color: $brand-primary;
 $sisalto-chevron-size: 25px;
+$first-level-bg: #f1f1f1;
+$sisalto-hover-bg: #eee;
 .main-content {
   .list-element-info {
     margin: 5px 0 0 0;
     color: #777;
     font-weight: normal;
-    font-size: x-small;
+    font-size: 95%;
   }
   .sisalto-list-element:hover, .li:hover {
-    background: #fafafa;
+    background: $sisalto-hover-bg;
     border: 1px solid #888;
   }
   .angular-ui-tree-placeholder {
@@ -28,18 +30,22 @@ $sisalto-chevron-size: 25px;
   border: 1px solid #ccc;
   padding: 4px 10px 4px 0;
   margin: 0px;
-  margin-top: 4px;
-  cursor: pointer;
+  margin-top: -1px;
   -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   background-color: white;
   &.striped {
-    background: #fcfcfc;
+    background: $first-level-bg;
+    margin-top: 8px;
   }
   h3 {
-    font-size: 14px;
+    margin: 0;
+    font-size: 120%;
     font-weight: bold;
     display: inline;
+    strong {
+      color: lighten($brand-primary, 15%);
+    }
   }
   .draghandle {
     float: left;
@@ -68,6 +74,7 @@ $sisalto-chevron-size: 25px;
     float: left;
     padding: 0 0 0 6px;
     color: $sisalto-chevron-color;
+    cursor: pointer;
   }
 }
 

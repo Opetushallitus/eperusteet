@@ -77,10 +77,10 @@
     <label kaanna>muokkaus-tutkinnon-osan-koodi-header</label>:<span> {{ tutkinnonOsa.koodiArvo }}</span>
   </div>
 
-  <div ng-if="editableTutkinnonOsa.tyyppi === 'normaali'">
+  <div class="tutkinnonosa-sisalto" ng-if="editableTutkinnonOsa.tyyppi === 'normaali'">
     <kenttalistaus edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields"></kenttalistaus>
   </div>
-  <div ng-if="editableTutkinnonOsa.tyyppi === 'tutke2'">
+  <div class="tutkinnonosa-sisalto" ng-if="editableTutkinnonOsa.tyyppi === 'tutke2'">
     <tutke2kentat edit-enabled="editEnabled" tutkinnonosa="tutkinnonOsaPromise" kontrollit="editointikontrollit"></tutke2kentat>
   </div>
   <kommentit></kommentit>

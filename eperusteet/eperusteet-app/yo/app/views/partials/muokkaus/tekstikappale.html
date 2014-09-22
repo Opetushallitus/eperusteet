@@ -22,7 +22,7 @@ European Union Public Licence for more details.
       <button ng-disabled="isLocked" ng-hide="editableTekstikappale.tila !== 'luonnos' || editEnabled || !versiot.latest"
               ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"></button>
     </div>
-    <button ng-if="canAddLapsi() && tekstikappale.tila !== 'valmis'" ng-hide="editEnabled || !versiot.latest"
+    <button ng-disabled="!canAddLapsi() && tekstikappale.tila !== 'valmis'" ng-hide="editEnabled || !versiot.latest"
             ng-click="addLapsi()" class="floater btn btn-default" icon-role="add" kaanna="lisaa-aliotsikko"></button>
     <button ng-show="!editEnabled && tekstikappale.tila === 'valmis'" ng-click="kopioiMuokattavaksi()"
             class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"></button>
@@ -55,7 +55,7 @@ European Union Public Licence for more details.
         </span>
         <button ng-disabled="kaikkiTyoryhmat.length === 0 || kaikkiTyoryhmat.length === tyoryhmat.length" ng-click="lisaaTyoryhma()" icon-role="plus" class="btn btn-default" kaanna="lisaa-tyoryhma"></button>
       </div>
-      <div ng-bind-html="valitseKieli(tekstikappale.teksti)"></div>
+      <div ng-bind-html="valitseKieli(tekstikappale.teksti) | unsafe"></div>
     </div>
     <div ng-if="editEnabled" ng-repeat="field in fields | orderBy:'order'" otsikko="{{field.localeKey}}"
          kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}" muokkauskentta-raamit>

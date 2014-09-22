@@ -8,7 +8,7 @@
 
     <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: sisalto.perusteenOsa.id, versio: '' })" class="otsikko">
       <h3>
-        <span ng-class="{ 'otsikko-pieni': indent !== 0 }">{{ sisalto.perusteenOsa.nimi | kaanna }}</span>
+        <span ng-class="{ 'otsikko-pieni': indent !== 0 }" ep-highlight="rajaus">{{ sisalto.perusteenOsa.nimi | kaanna }}</span>
       </h3>
       <div ng-show="!muokkausTutkintokohtaisetOsat" class="list-element-info">
         <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ sisalto.perusteenOsa.muokattu | aikaleima }}</div>
