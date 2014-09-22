@@ -53,7 +53,7 @@ European Union Public Licence for more details.
 
             <h2 ng-hide="muokkausTutkintokohtaisetOsat">
                 {{ 'tekstikappaleet' | kaanna }} ({{ peruste.sisalto.lapset.length }})
-                <a style="margin-left: 10px" ng-click="avaaSuljeKaikki(peruste.sisalto)" class="action-link"><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
+                <a style="margin-left: 10px" ng-click="avaaSuljeKaikki()" class="action-link"><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
                 <div class="pull-right buttons">
                     <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="cloud-download" kaanna="tuo-tutkintokohtainen-osa"></button>
                     <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="add" kaanna="lisaa-tutkintokohtainen-osa"></button>
