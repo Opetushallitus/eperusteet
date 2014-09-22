@@ -21,7 +21,7 @@ angular.module('eperusteApp')
   .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams,
     $modal, PerusteenOsat, PerusteenOsaViitteet, SuoritustapaSisalto, PerusteProjektiService,
     perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit,
-    Editointikontrollit, TEXT_HIERARCHY_MAX_DEPTH) {
+    Editointikontrollit, TEXT_HIERARCHY_MAX_DEPTH, PerusteProjektiSivunavi) {
     $scope.textMaxDepth = TEXT_HIERARCHY_MAX_DEPTH;
 
     function kaikilleTutkintokohtaisilleOsille(juuri, cb) {
@@ -166,6 +166,7 @@ angular.module('eperusteApp')
         function() {
           $scope.muokkausTutkintokohtaisetOsat = false;
           Notifikaatiot.onnistui('osien-rakenteen-päivitys-onnistui');
+          PerusteProjektiSivunavi.refresh(true);
         }, Notifikaatiot.serverCb);
       },
       cancel: function() {
