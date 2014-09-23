@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.dto.kayttaja;
 
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;

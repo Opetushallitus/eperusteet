@@ -34,7 +34,6 @@ import lombok.Setter;
 public class PerusteprojektiDto implements Serializable {
     private Long id;
     private String nimi;
-    private String koulutustyyppi;
     private EntityReference peruste;
     private String diaarinumero;
     private Date paatosPvm;
