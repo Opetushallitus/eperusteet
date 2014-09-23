@@ -18,6 +18,64 @@
 /*global _*/
 
 angular.module('eperusteApp')
+  .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit) {
+    $scope.projekti = perusteprojektiTiedot.getProjekti();
+    $scope.peruste = perusteprojektiTiedot.getPeruste();
+    $scope.rajaus = '';
+
+    // TODO oikea data
+    //$scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
+    $scope.datat = {
+      opetus: {
+        lapset: [
+          {perusteenOsa: {nimi: {fi: 'Laaja-alainen osaaminen'}}},
+          {perusteenOsa: {nimi: {fi: 'Ajattelu ja oppimaan oppiminen'}}},
+          {perusteenOsa: {nimi: {fi: 'Kulttuurinen osaaminen, vuorovaikutus ja ilmaisu'}}},
+        ]
+      },
+      sisalto: {
+        lapset: [
+          {
+            perusteenOsa: {nimi: {fi: 'Paikallisen opetussuunnitelman merkitys ja laadinta'}},
+            lapset: [
+              {perusteenOsa: {nimi: {fi: 'Opetussuunnitelman perusteet ja paikallinen opetussuunnitelma'}}},
+              {perusteenOsa: {nimi: {fi: 'Opetussuunnitelman laatimista ohjaavat periaatteet'}}},
+            ]
+          },
+          {
+            perusteenOsa: {nimi: {fi: 'Perusopetus yleissivistyksen perustana'}},
+            lapset: [
+              {perusteenOsa: {nimi: {fi: 'Opetuksen järjestämistä ohjaavat velvoitteet'}}},
+              {perusteenOsa: {nimi: {fi: 'Perusopetuksen arvoperusta'}}},
+            ]
+          }
+        ]
+      }
+    };
+    $scope.peruste.sisalto = $scope.datat.sisalto;
+
+    $scope.rajaaSisaltoa = function(value) {
+      if (_.isUndefined(value)) { return; }
+      var filterer = function(osa, lapsellaOn) {
+        osa.$filtered = lapsellaOn || Algoritmit.rajausVertailu(value, osa, 'perusteenOsa', 'nimi');
+        return osa.$filtered;
+      };
+      Algoritmit.kaikilleTutkintokohtaisilleOsille($scope.datat.opetus, filterer);
+      Algoritmit.kaikilleTutkintokohtaisilleOsille($scope.datat.sisalto, filterer);
+    };
+
+    $scope.avaaSuljeKaikki = function(sisalto, state) {
+      var open = false;
+      Algoritmit.kaikilleLapsisolmuille(sisalto, 'lapset', function(lapsi) {
+        open = open || lapsi.$opened;
+      });
+      Algoritmit.kaikilleLapsisolmuille(sisalto, 'lapset', function(lapsi) {
+        lapsi.$opened = _.isUndefined(state) ? !open : state;
+      });
+    };
+  })
+
+  /* protokoodia --> */
   .controller('PerusopetusController', function($scope, FilterWatcher, PerusOpetusTiedot, $timeout) {
     $scope.isNaviVisible = function () { return true; };
 

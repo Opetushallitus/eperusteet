@@ -92,6 +92,10 @@ angular.module('eperusteApp')
     this.dateFormatDatepicker = 'd.M.yyyy';
     this.dateFormatMomentJS = 'D.M.YYYY';
 
+    this.isPerusopetus = function (peruste) {
+      return peruste.koulutustyyppi === 'koulutustyyppi_9999';
+    };
+
     this.valitseSuoritustapaKoulutustyypille = function(koulutustyyppi) {
       if (koulutustyyppi === 'koulutustyyppi_9999') {
         return 'ops';
@@ -141,7 +145,6 @@ angular.module('eperusteApp')
       } else {
         return '';
       }
-
     };
 
   });

@@ -17,7 +17,7 @@ European Union Public Licence for more details.
     <div class="row tutkinto-sisalto">
 
         <div ng-show="peruste.suoritustavat.length > 1 && !muokkausTutkintokohtaisetOsat">
-            <ul style="margin-bottom: 5px" class="nav nav-tabs nav-justified">
+            <ul class="nav nav-tabs nav-justified suoritustapa-valinta">
                 <li ng-class="{ active: valittuSuoritustapa === st.suoritustapakoodi }" ng-repeat="st in peruste.suoritustavat | orderBy:'suoritustapakoodi'"
                     ng-click="vaihdaSuoritustapa(st.suoritustapakoodi)">
                     <a class="action-link suoritustapa">{{ st.suoritustapakoodi | kaanna }}</a>

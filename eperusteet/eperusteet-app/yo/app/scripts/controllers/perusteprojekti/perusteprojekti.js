@@ -29,10 +29,27 @@ angular.module('eperusteApp')
           'opintoalaService': 'Opintoalat',
           'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
           'perusteprojektiAlustus': ['perusteprojektiTiedot', '$stateParams', function(perusteprojektiTiedot, $stateParams) {
-              return perusteprojektiTiedot.alustaProjektinTiedot($stateParams);
+            return perusteprojektiTiedot.alustaProjektinTiedot($stateParams);
             }]
         },
         abstract: true
+      })
+      .state('root.perusteprojekti.perusopetus', {
+        url: '/perusopetus',
+        templateUrl: 'views/partials/perusteprojekti/perusopetus.html',
+        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
+          'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
+              return perusteprojektiTiedot.projektinTiedotAlustettu();
+            }],
+          'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
+            function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
+              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
+            }]
+        },
+        controller: 'PerusopetusSisaltoController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(false);
+        }]
       })
       .state('root.perusteprojekti.suoritustapa', {
         url: '/:suoritustapa',
@@ -180,13 +197,12 @@ angular.module('eperusteApp')
     };
 
     $scope.showBackLink = function () {
-      return !$state.is('root.perusteprojekti.suoritustapa.sisalto');
+      return !($state.is('root.perusteprojekti.suoritustapa.sisalto') ||
+               $state.is('root.perusteprojekti.perusopetus'));
     };
 
     $scope.getBackLink = function () {
-      return $state.href('root.perusteprojekti.suoritustapa.sisalto', {
-        suoritustapa: PerusteProjektiService.getSuoritustapa() || 'naytto'
-      });
+      return PerusteProjektiService.getUrl($scope.projekti, $scope.peruste);
     };
 
     $scope.isNaviVisible = function () {

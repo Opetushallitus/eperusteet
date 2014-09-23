@@ -24,14 +24,6 @@ angular.module('eperusteApp')
     Editointikontrollit, TEXT_HIERARCHY_MAX_DEPTH, PerusteProjektiSivunavi) {
     $scope.textMaxDepth = TEXT_HIERARCHY_MAX_DEPTH;
 
-    function kaikilleTutkintokohtaisilleOsille(juuri, cb) {
-      var lapsellaOn = false;
-      _.forEach(juuri.lapset, function(osa) {
-        lapsellaOn = kaikilleTutkintokohtaisilleOsille(osa, cb) || lapsellaOn;
-      });
-      return cb(juuri, lapsellaOn) || lapsellaOn;
-    }
-
     function lisaaSisalto(method, sisalto, cb) {
       cb = cb || angular.noop;
       SuoritustapaSisalto[method]({
@@ -53,7 +45,7 @@ angular.module('eperusteApp')
 
     $scope.rajaaSisaltoa = function(value) {
       if (_.isUndefined(value)) { return; }
-      kaikilleTutkintokohtaisilleOsille($scope.peruste.sisalto, function(osa, lapsellaOn) {
+      Algoritmit.kaikilleTutkintokohtaisilleOsille($scope.peruste.sisalto, function(osa, lapsellaOn) {
         osa.$filtered = lapsellaOn || Algoritmit.rajausVertailu(value, osa, 'perusteenOsa', 'nimi');
         return osa.$filtered;
       });
@@ -139,7 +131,7 @@ angular.module('eperusteApp')
     };
 
     (function() {
-      kaikilleTutkintokohtaisilleOsille($scope.peruste.sisalto, function(osa) {
+      Algoritmit.kaikilleTutkintokohtaisilleOsille($scope.peruste.sisalto, function(osa) {
         osa.$opened = false;
       });
       $scope.rajaaSisaltoa();

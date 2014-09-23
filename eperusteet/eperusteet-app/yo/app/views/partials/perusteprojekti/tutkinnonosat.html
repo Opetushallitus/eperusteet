@@ -29,8 +29,7 @@
     <select class="jarjestys-select form-control" ng-model="jarjestysTapa" ng-options="opt.value as opt.label|kaanna for opt in jarjestysOptions"></select>
     <div class="lista-linkit">
       <a class="action-link" ng-click="jarjestysOrder = !jarjestysOrder">
-        <span ng-hide="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes"></span>
-        <span ng-show="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+        <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
       </a>
     </div>
   </div>
@@ -38,24 +37,21 @@
   <table ng-show="preferenssit.nakymatyyli === 'lista'" class="table table-striped" style="margin-top: 0px">
     <tr>
       <th width="50%">
-        <a href="" ng-click="asetaJarjestys('nimi')" kaanna>nimi</a>
+        <a class="action-link" ng-click="asetaJarjestys('nimi')" kaanna>nimi</a>
         <span ng-show="jarjestysTapa === 'nimi'">
-          <span ng-hide="jarjestysOrder" class="glyphicon glyphicon-sort-by-alphabet"></span>
-          <span ng-show="jarjestysOrder" class="glyphicon glyphicon-sort-by-alphabet-alt"></span>
+          <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
         </span>
       </th>
       <th width="10%" ng-if="suoritustapa !== 'naytto'">
-        <a href="" ng-click="asetaJarjestys('laajuus')" kaanna>laajuus</a>
+        <a class="action-link" ng-click="asetaJarjestys('laajuus')" kaanna>laajuus</a>
         <span ng-show="jarjestysTapa === 'laajuus'">
-          <span ng-hide="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes"></span>
-          <span ng-show="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+          <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
         </span>
       </th>
       <th width="30%">
-        <a href="" ng-click="asetaJarjestys('muokattu')" kaanna>muokattu-viimeksi</a>
+        <a class="action-link" ng-click="asetaJarjestys('muokattu')" kaanna>muokattu-viimeksi</a>
         <span ng-show="jarjestysTapa === 'muokattu'">
-          <span ng-hide="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
-          <span ng-show="jarjestysOrder" class="glyphicon glyphicon-sort-by-attributes"></span>
+          <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
         </span>
       </th>
     </tr>

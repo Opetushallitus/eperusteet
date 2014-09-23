@@ -70,6 +70,14 @@ angular.module('eperusteApp')
       return st.laajuusYksikko;
     }
 
+    function kaikilleTutkintokohtaisilleOsille(juuri, cb) {
+      var lapsellaOn = false;
+      _.forEach(juuri.lapset, function(osa) {
+        lapsellaOn = kaikilleTutkintokohtaisilleOsille(osa, cb) || lapsellaOn;
+      });
+      return cb(juuri, lapsellaOn) || lapsellaOn;
+    }
+
     return {
       rajausVertailu: rajausVertailu,
       mapLapsisolmut: mapLapsisolmut,
@@ -78,6 +86,7 @@ angular.module('eperusteApp')
       match: match,
       access: access,
       perusteenSuoritustavanYksikko: perusteenSuoritustavanYksikko,
+      kaikilleTutkintokohtaisilleOsille: kaikilleTutkintokohtaisilleOsille
     };
   });
 

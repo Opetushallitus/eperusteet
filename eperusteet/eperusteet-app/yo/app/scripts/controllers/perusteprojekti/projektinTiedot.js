@@ -62,7 +62,7 @@ angular.module('eperusteApp')
   })
   .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams, $modal, $timeout, $translate,
     PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, perusteprojektiTiedot, Notifikaatiot,
-    Perusteet, Editointikontrollit, YleinenData) {
+    Perusteet, Editointikontrollit) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
     $scope.lang = $translate.use() || $translate.preferredLanguage();
@@ -167,24 +167,15 @@ angular.module('eperusteApp')
         });
       }
 
-      var suoritustapa = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
-
       PerusteprojektiResource.update(projekti, function(vastaus) {
         $scope.puhdistaValinta();
         if ($scope.wizardissa()) {
-          avaaProjektinSisalto(vastaus.id, suoritustapa);
+          PerusteProjektiService.goToProjektiState(vastaus, projekti);
         }
         else {
           Notifikaatiot.onnistui('tallennettu');
         }
       }, Notifikaatiot.serverCb);
-    };
-
-    var avaaProjektinSisalto = function(projektiId, suoritustapa) {
-      $state.go('root.perusteprojekti.suoritustapa.sisalto', {
-        perusteProjektiId: projektiId,
-        suoritustapa: suoritustapa
-      } );
     };
   })
   .controller('TyoryhmanTuontiModalCtrl', function($scope, $modalInstance, $translate, Organisaatioryhmat, Algoritmit) {

@@ -49,7 +49,7 @@ angular.module('eperusteApp')
       hae: hae
     };
   })
-  .service('PerusteProjektiService', function($rootScope) {
+  .service('PerusteProjektiService', function($rootScope, $state, YleinenData) {
     var pp = {};
     var suoritustapa = '';
 
@@ -88,6 +88,28 @@ angular.module('eperusteApp')
       suoritustapa = '';
     }
 
+    /**
+     * Luo oikea url perusteprojektille
+     * @param peruste optional
+     */
+    function urlFn(method, projekti, peruste) {
+      projekti = _.clone(projekti) || get();
+        if (peruste && !projekti.koulutustyyppi) {
+          projekti.koulutustyyppi = peruste.koulutustyyppi;
+        }
+        if (YleinenData.isPerusopetus(projekti)) {
+          return $state[method]('root.perusteprojekti.perusopetus', {
+            perusteProjektiId: projekti.id
+          });
+        } else {
+          // TODO: Omat perusteprojektit linkin suoritustapa pitäisi varmaankin olla jotain muuta kuin kovakoodattu 'naytto'
+          return $state[method]('root.perusteprojekti.suoritustapa.sisalto', {
+            perusteProjektiId: projekti.id,
+            suoritustapa: YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi)
+          });
+        }
+    }
+
     return {
       save: save,
       get: get,
@@ -96,7 +118,9 @@ angular.module('eperusteApp')
       update: update,
       getSuoritustapa: getSuoritustapa,
       setSuoritustapa: setSuoritustapa,
-      cleanSuoritustapa: cleanSuoritustapa
+      cleanSuoritustapa: cleanSuoritustapa,
+      getUrl: _.partial(urlFn, 'href'),
+      goToProjektiState: _.partial(urlFn, 'go')
     };
   })
   .service('TutkinnonOsaEditMode', function () {
@@ -110,7 +134,8 @@ angular.module('eperusteApp')
       return ret;
     };
   })
-  .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet, SuoritustapaSisalto, PerusteProjektiService, Notifikaatiot) {
+  .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet,
+      SuoritustapaSisalto, PerusteProjektiService, Notifikaatiot, YleinenData) {
 
     var deferred = $q.defer();
     var projekti = {};
@@ -181,10 +206,12 @@ angular.module('eperusteApp')
 
       // NOTE: Jos ei löydy suoritustapaa stateParams:ista niin käytetään suoritustapaa 'naytto'.
       //       Tämä toimii ammatillisen puolen projekteissa, mutta ei yleissivistävän puolella.
-      //       Korjataan kun keksitään parempi suoritustavan valinta-algoritmi.
+      // TODO: Korjataan kun keksitään parempi suoritustavan valinta-algoritmi.
       if (angular.isUndefined(stateParams.suoritustapa) || stateParams.suoritustapa === null || stateParams.suoritustapa === '') {
-        stateParams.suoritustapa = 'naytto';
-        $state.reload();
+        stateParams.suoritustapa = YleinenData.valitseSuoritustapaKoulutustyypille(peruste.koulutustyyppi);
+        if (!YleinenData.isPerusopetus(peruste)) {
+          $state.reload();
+        }
       }
       PerusteProjektiService.setSuoritustapa(stateParams.suoritustapa);
       var perusteenSisaltoDeferred = $q.defer();
