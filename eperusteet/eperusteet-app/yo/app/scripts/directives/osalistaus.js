@@ -45,6 +45,9 @@ angular.module('eperusteApp')
           scope.hasLaajuus = value === 'true';
           scope.jarjestysOptions = OrderHelper.get(scope.hasLaajuus);
         });
+        attrs.$observe('yksikko', function (value) {
+          scope.unit = value;
+        });
       }
     };
   })

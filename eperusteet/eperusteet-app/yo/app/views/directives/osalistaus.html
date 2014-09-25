@@ -26,22 +26,25 @@
   <table ng-show="preferenssit.nakymatyyli === 'lista'" class="table table-striped" style="margin-top: 0px">
     <tr>
       <th width="50%">
-        <a class="action-link" ng-click="asetaJarjestys('nimi')" kaanna>nimi</a>
-        <span ng-show="jarjestysTapa === 'nimi'">
-          <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
-        </span>
+        <a class="action-link" ng-click="asetaJarjestys('nimi')">{{'nimi' | kaanna}}
+          <span ng-show="jarjestysTapa === 'nimi'">
+            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
+          </span>
+        </a>
       </th>
       <th width="10%" ng-if="hasLaajuus">
-        <a class="action-link" ng-click="asetaJarjestys('laajuus')" kaanna>laajuus</a>
-        <span ng-show="jarjestysTapa === 'laajuus'">
-          <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
-        </span>
+        <a class="action-link" ng-click="asetaJarjestys('laajuus')">{{'laajuus' | kaanna}}
+          <span ng-show="jarjestysTapa === 'laajuus'">
+            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
+          </span>
+        </a>
       </th>
       <th width="30%">
-        <a class="action-link" ng-click="asetaJarjestys('muokattu')" kaanna>muokattu-viimeksi</a>
-        <span ng-show="jarjestysTapa === 'muokattu'">
-          <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
-        </span>
+        <a class="action-link" ng-click="asetaJarjestys('muokattu')">{{'muokattu-viimeksi' | kaanna}}
+          <span ng-show="jarjestysTapa === 'muokattu'">
+            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
+          </span>
+        </a>
       </th>
     </tr>
     <tr ng-repeat="v in model | orderBy:jarjestys:jarjestysOrder | mapFilter:comparisonFn">
@@ -49,7 +52,7 @@
         <a ng-href="{{urlGenerator({value: v})}}">{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</a>
       </td>
       <td ng-if="hasLaajuus">
-        <span ng-show="v.laajuus">{{ v.laajuus }} {{ yksikko || '' | kaanna }}</span>
+        <span ng-show="v.laajuus">{{ v.laajuus }} {{ unit || '' | kaanna }}</span>
       </td>
       <td>
         {{ v.muokattu || 0 | aikaleima }}
@@ -64,7 +67,7 @@
       <div class="otsikko">
         <h3>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</h3>
         <div class="pienet-tiedot">
-            <div class="osan-laajuus" ng-if="hasLaajuus && v.laajuus">{{ v.laajuus }} {{ yksikko || '' | kaanna }}</div>
+            <div class="osan-laajuus" ng-if="hasLaajuus && v.laajuus">{{ v.laajuus }} {{ unit || '' | kaanna }}</div>
             <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ v.muokattu | aikaleima:'ago' }}</div>
         </div>
       </div>
