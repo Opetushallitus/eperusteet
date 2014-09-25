@@ -28,9 +28,12 @@ angular.module('eperusteApp')
     $scope.datat = {
       opetus: {
         lapset: [
-          {perusteenOsa: {nimi: {fi: 'Laaja-alainen osaaminen'}}},
-          {perusteenOsa: {nimi: {fi: 'Ajattelu ja oppimaan oppiminen'}}},
-          {perusteenOsa: {nimi: {fi: 'Kulttuurinen osaaminen, vuorovaikutus ja ilmaisu'}}},
+          {perusteenOsa: {nimi: {fi: 'Laaja-alainen osaaminen'}}, lapset: [
+            {perusteenOsa: {nimi: {fi: 'Ajattelu ja oppimaan oppiminen'}}},
+            {perusteenOsa: {nimi: {fi: 'Kulttuurinen osaaminen, vuorovaikutus ja ilmaisu'}}},
+          ]},
+          {perusteenOsa: {nimi: {fi: 'Vuosiluokkakokonaisuudet'}}},
+          {perusteenOsa: {nimi: {fi: 'Oppiaineet'}}},
         ]
       },
       sisalto: {
@@ -72,6 +75,16 @@ angular.module('eperusteApp')
       Algoritmit.kaikilleLapsisolmuille(sisalto, 'lapset', function(lapsi) {
         lapsi.$opened = _.isUndefined(state) ? !open : state;
       });
+    };
+  })
+
+  .controller('OsalistausController', function ($scope, $state) {
+    $scope.osaAlueet = [
+      {nimi: {fi: 'Ajattelu ja oppimaan oppiminen'}},
+      {nimi: {fi: 'Monilukutaito'}},
+    ];
+    $scope.createUrl = function (/*value*/) {
+      return $state.href('root.aloitussivu');
     };
   })
 

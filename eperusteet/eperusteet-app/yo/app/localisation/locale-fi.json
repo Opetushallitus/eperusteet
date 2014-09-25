@@ -650,5 +650,7 @@
     "haetaan-ryhmia": "Haetaan ryhmiä",
     "poista-tyoryhma-teksti": "Työryhmä \"{{nimi}}\" poistetaan. Oletko varma?",
 
-    "opetuksen-sisallot": "Opetuksen sisällöt"
+    "opetuksen-sisallot": "Opetuksen sisällöt",
+    "laaja-alainen-osaaminen": "Laaja-alainen osaaminen",
+    "tyhja-placeholder-osaalueet": "Osa-alueita ei ole vielä lisätty."
 }

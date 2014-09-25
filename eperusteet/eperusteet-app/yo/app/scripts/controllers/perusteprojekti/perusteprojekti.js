@@ -51,6 +51,14 @@ angular.module('eperusteApp')
           PerusteProjektiSivunavi.setVisible(false);
         }]
       })
+      .state('root.perusteprojekti.osalistaus', {
+        url: '/osat/:osanTyyppi',
+        templateUrl: 'views/partials/perusteprojekti/osalistaus.html',
+        controller: 'OsalistausController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible();
+        }]
+      })
       .state('root.perusteprojekti.suoritustapa', {
         url: '/:suoritustapa',
         template: '<div ui-view></div>',

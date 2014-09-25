@@ -21,6 +21,7 @@
  * callback: optional, called on change
  *           usage callback="mycallback()" or callback="mycallback(value)"
  * size: 'small' or default
+ * placeholder: optional, string or {{expression}}
  */
 angular.module('eperusteApp')
   .directive('rajaus', function () {
@@ -49,6 +50,11 @@ angular.module('eperusteApp')
           $scope.model = '';
           $scope.changed();
         };
+      },
+      link: function (scope, element, attrs) {
+        attrs.$observe('placeholder', function (value) {
+          scope.placeholderstring = value;
+        });
       }
     };
   });
