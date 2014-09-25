@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit) {
+  .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state) {
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.rajaus = '';
@@ -57,6 +57,10 @@ angular.module('eperusteApp')
     };
     $scope.peruste.sisalto = $scope.datat.sisalto;
 
+    $scope.opetusHref = function (/*sisalto*/) {
+      return $state.href('root.perusteprojekti.osalistaus', {osanTyyppi: 'osaaminen'});
+    };
+
     $scope.rajaaSisaltoa = function(value) {
       if (_.isUndefined(value)) { return; }
       var filterer = function(osa, lapsellaOn) {
@@ -79,13 +83,28 @@ angular.module('eperusteApp')
   })
 
   .controller('OsalistausController', function ($scope, $state) {
+    // TODO real data
     $scope.osaAlueet = [
       {nimi: {fi: 'Ajattelu ja oppimaan oppiminen'}},
       {nimi: {fi: 'Monilukutaito'}},
     ];
+
     $scope.createUrl = function (/*value*/) {
-      return $state.href('root.aloitussivu');
+      // TODO proper parameters
+      return $state.href('root.perusteprojekti.osaalue', {osanTyyppi: '', osanId: ''});
     };
+  })
+
+  .controller('OsaAlueController', function ($scope, $q) {
+    // TODO real data
+    $scope.versiot = {};
+    var tekstikappale = {
+      nimi: {fi: 'Tekstikappaleen otsikko'},
+      teksti: {fi: '<p>Tekstikappaleen tekstiä lorem ipsum.</p>'}
+    };
+    $scope.dataObject = $q.defer();
+    _.extend($scope.dataObject, tekstikappale);
+    $scope.dataObject.resolve(tekstikappale);
   })
 
   /* protokoodia --> */

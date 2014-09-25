@@ -74,12 +74,14 @@ angular.module('eperusteApp')
         $scope.viitteet = {};
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
 
-        PerusteprojektiTiedotService.then(function(instance) {
-          instance.haeSisalto($scope.$parent.peruste.id, $stateParams.suoritustapa).then(function(res) {
-            $scope.sisalto = res;
-            $scope.setNavigation();
+        if ($stateParams.suoritustapa) {
+          PerusteprojektiTiedotService.then(function(instance) {
+            instance.haeSisalto($scope.$parent.peruste.id, $stateParams.suoritustapa).then(function(res) {
+              $scope.sisalto = res;
+              $scope.setNavigation();
+            });
           });
-        });
+        }
 
         $scope.setNavigation = function() {
           $scope.tree.init();
@@ -222,7 +224,8 @@ angular.module('eperusteApp')
         }
 
         if ($scope.tekstikappale) {
-          $scope.tekstikappalePromise = $scope.tekstikappale.$promise.then(function(response) {
+          var promiseVar = $scope.tekstikappale.promise ? 'promise' : '$promise';
+          $scope.tekstikappalePromise = $scope.tekstikappale[promiseVar].then(function(response) {
             setupTekstikappale(response);
             return $scope.editableTekstikappale;
           });

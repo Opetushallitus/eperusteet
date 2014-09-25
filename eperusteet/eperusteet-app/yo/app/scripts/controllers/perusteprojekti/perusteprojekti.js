@@ -43,8 +43,8 @@ angular.module('eperusteApp')
         templateUrl: 'views/partials/perusteprojekti/perusopetus.html',
         resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
           'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
-              return perusteprojektiTiedot.projektinTiedotAlustettu();
-            }],
+            return perusteprojektiTiedot.projektinTiedotAlustettu();
+          }],
           'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
             function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
               return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
@@ -63,14 +63,22 @@ angular.module('eperusteApp')
           PerusteProjektiSivunavi.setVisible();
         }]
       })
+      .state('root.perusteprojekti.osaalue', {
+        url: '/osat/:osanTyyppi/:osanId',
+        templateUrl: 'views/partials/perusteprojekti/osaalue.html',
+        controller: 'OsaAlueController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible();
+        }]
+      })
       .state('root.perusteprojekti.suoritustapa', {
         url: '/:suoritustapa',
         template: '<div ui-view></div>',
         navigaationimi: 'navi-perusteprojekti',
         resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
           'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
-              return perusteprojektiTiedot.projektinTiedotAlustettu();
-            }],
+            return perusteprojektiTiedot.projektinTiedotAlustettu();
+          }],
           'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
             function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
               return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
