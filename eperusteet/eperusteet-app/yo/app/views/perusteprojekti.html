@@ -16,7 +16,9 @@ European Union Public Licence for more details.
 
 <div class="project-header">
   <div class="row">
-    <button class="btn btn-primary btn-header-pdf" ng-hide="muokkausEnabled" ng-click="luoPdf()"><img src="images/pdf-file-24.png" alt="">{{'luo-pdf' | kaanna}}</button>
+    <button class="btn btn-primary btn-header-pdf" ng-hide="muokkausEnabled" ng-click="luoPdf()" oikeustarkastelu="{ target: 'peruste', permission: 'luku' }">
+        <img src="images/pdf-file-24.png" alt="">{{'luo-pdf' | kaanna}}
+    </button>
     <div class="project-otsikkotiedot">
       <statusbadge status="projekti.tila" editable="canChangePerusteprojektiStatus()" projekti-id="projekti.id"></statusbadge>
       <h2>{{ projekti.nimi || 'perusteprojekti-nimi-placeholder' | kaanna }}</h2>
@@ -44,7 +46,7 @@ European Union Public Licence for more details.
         </li>
         <li>
           <a ui-sref="root.perusteprojekti.peruste({ perusteProjektiId: projekti.id })"
-             ui-sref-active="headernavi-active" icon-role="list-alt" kaanna="projekti-peruste"></a>
+             ui-sref-active="headernavi-active" icon-role="list-alt" kaanna="projekti-peruste" oikeustarkastelu="{ target: 'perusteenmetatiedot', permission: 'luku' }"></a>
         </li>
         <li>
           <a ui-sref="root.perusteprojekti.projektiryhma({perusteProjektiId: projekti.id})"
