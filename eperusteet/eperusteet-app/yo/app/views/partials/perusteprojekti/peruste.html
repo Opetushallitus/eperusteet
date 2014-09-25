@@ -17,7 +17,8 @@ European Union Public Licence for more details.
 <div class="row">
 <div class="col-md-12">
 <div class="action-buttons">
-  <button ng-if="voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit" kaanna="'muokkaa'"></button>
+  <button ng-if="voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default"
+          icon-role="edit" kaanna="'muokkaa'" oikeustarkastelu="{ target: 'perusteenmetatiedot', permission: 'muokkaus' }"></button>
 </div>
 
 <h1 kaanna>projekti-peruste</h1>

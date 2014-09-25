@@ -8,11 +8,13 @@
                 </h2>
             </div>
             <div ng-show="nayta && sisalto">
-            <a ng-model="editoi" ng-hide="editoi" class="action-link" ng-click="editoi = true"><h3 icon-role="add" kaanna="lisaa-kommentti"></h3></a>
+            <a ng-model="editoi" ng-hide="editoi" class="action-link" ng-click="editoi = true" oikeustarkastelu="{ target: 'peruste', permission: 'kommentointi' }">
+                <h3 icon-role="add" kaanna="lisaa-kommentti"></h3>
+            </a>
             <div ng-show="editoi" class="kommentti-uusi">
                 <textarea class="form-control msd-elastic" ng-model="editoitava"></textarea>
                 <div class="kommentti-painikkeet">
-                    <button class="btn" ng-click="editoi = false" kaanna>peruuta</button>
+                    <button class="btn" ng-click="editoi = false"  kaanna>peruuta</button>
                     <button class="btn btn-primary" ng-click="lisaaKommentti(sisalto, editoitava); editoi = false; editoitava = ''" kaanna>tallenna</button>
                 </div>
                 <div class="clearfix"></div>

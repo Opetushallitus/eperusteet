@@ -33,6 +33,11 @@ angular.module('eperusteApp')
       update: {method: 'POST', isArray: false}
     });
   })
+  .factory('PerusteprojektiOikeudet', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteprojektit/:id/oikeudet', {
+      id: '@id'
+    });
+  })
   .factory('DiaarinumeroUniqueResource', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteprojektit/diaarinumero/uniikki/:diaarinumero');
   })
@@ -231,4 +236,41 @@ angular.module('eperusteApp')
 
     deferred.resolve(this);
     return deferred.promise;
+  })
+  .service('PerusteprojektiOikeudetService', function (PerusteprojektiOikeudet) {
+
+    var oikeudet;
+
+    function noudaOikeudet(stateParams) {
+      var vastaus = PerusteprojektiOikeudet.get({id: stateParams.perusteProjektiId}, function(vastaus) {
+        oikeudet = vastaus;
+      });
+
+      return vastaus.$promise;
+    }
+
+    function getOikeudet() {
+      return _.clone(oikeudet);
+    }
+
+    function onkoOikeudet(target, permission) {
+      if (oikeudet) {
+       if (_.contains(oikeudet[target], permission)) {
+         return true;
+       } else {
+         return false;
+       }
+     } else {
+       console.log('virhe oikeuksien haussa');
+       return false;
+     }
+    }
+
+
+    return {
+      noudaOikeudet: noudaOikeudet,
+      getOikeudet: getOikeudet,
+      onkoOikeudet: onkoOikeudet
+    };
+
   });

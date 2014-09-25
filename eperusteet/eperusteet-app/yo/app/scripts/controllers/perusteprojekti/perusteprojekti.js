@@ -29,8 +29,12 @@ angular.module('eperusteApp')
           'opintoalaService': 'Opintoalat',
           'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
           'perusteprojektiAlustus': ['perusteprojektiTiedot', '$stateParams', function(perusteprojektiTiedot, $stateParams) {
-            return perusteprojektiTiedot.alustaProjektinTiedot($stateParams);
-            }]
+              return perusteprojektiTiedot.alustaProjektinTiedot($stateParams);
+            }],
+          'perusteprojektiOikeudet': 'PerusteprojektiOikeudetService',
+          'perusteprojektiOikeudetNouto': ['perusteprojektiOikeudet', '$stateParams', function(perusteprojektiOikeudet, $stateParams) {
+              perusteprojektiOikeudet.noudaOikeudet($stateParams);
+          }]
         },
         abstract: true
       })
@@ -151,9 +155,11 @@ angular.module('eperusteApp')
   .controller('PerusteprojektiCtrl', function($scope, $state, $stateParams,
     Navigaatiopolku, koulutusalaService, opintoalaService,
     PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation,
-    SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode) {
+    SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet) {
 
     $scope.muokkausEnabled = false;
+
+
 
     $scope.luoPdf = function () {
       PdfCreation.setPerusteId($scope.projekti._peruste);
@@ -167,12 +173,13 @@ angular.module('eperusteApp')
       //$scope.projekti.tila = 'luonnos';
     }
     init();
+
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
     $scope.sivunavi = {
       suoritustapa: PerusteProjektiService.getSuoritustapa(),
       items: [],
-      footer: '<button class="btn btn-default" kaanna="lisaa-tutkintokohtainen-osa" icon-role="add" ng-click="$parent.lisaaTekstikappale()"></button>'
+      footer: '<button class="btn btn-default" kaanna="lisaa-tutkintokohtainen-osa" icon-role="add" ng-click="$parent.lisaaTekstikappale()" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }"></button>'
     };
     var sivunaviItemsChanged = function (items) {
       $scope.sivunavi.items = items;
@@ -201,7 +208,8 @@ angular.module('eperusteApp')
 
     $scope.canChangePerusteprojektiStatus = function() {
       // TODO vain omistaja voi vaihtaa tilaa
-      return true;
+      return perusteprojektiOikeudet.onkoOikeudet('perusteprojekti', 'tilanvaihto');
+      //return true;
     };
 
     $scope.showBackLink = function () {

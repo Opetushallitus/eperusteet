@@ -40,7 +40,9 @@ European Union Public Licence for more details.
   </div>
 
   <div class="action-buttons">
-    <button ng-if="!wizardissa() && voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()" class="floater btn btn-default" icon-role="edit" kaanna="'muokkaa'"></button>
+    <button ng-if="!wizardissa() && voiMuokata()" ng-hide="editEnabled" ng-click="muokkaa()"
+            class="floater btn btn-default" icon-role="edit" kaanna="'muokkaa'"
+            oikeustarkastelu="{ target: 'perusteprojekti', permission: 'muokkaus' }"></button>
   </div>
 
   <h1 kaanna>projektin-tiedot</h1>

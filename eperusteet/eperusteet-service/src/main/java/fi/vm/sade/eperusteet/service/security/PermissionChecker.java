@@ -33,7 +33,7 @@ public class PermissionChecker {
     }
 
     @PreAuthorize("hasPermission(#tid, #t.toString(), #p.toString())")
-    public void checkPermission(@P("tid") Serializable targetId, @P("t") PermissionEvaluator.Target targetType, @P("p") PermissionEvaluator.Permission perm) {
+    public void checkPermission(@P("tid") Serializable targetId, @P("t") PermissionManager.Target targetType, @P("p") PermissionManager.Permission perm) {
         //this function is intentionally left blank
     }
 }

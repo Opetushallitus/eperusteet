@@ -20,7 +20,6 @@ import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -29,8 +28,10 @@ import fi.vm.sade.eperusteet.dto.util.BooleanDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -58,6 +59,9 @@ public class PerusteprojektiController {
 
     @Autowired
     private PerusteprojektiService service;
+
+    @Autowired
+    private PermissionManager permission;
 
     @RequestMapping(value = "/info", method = GET)
     @ResponseBody
@@ -211,4 +215,10 @@ public class PerusteprojektiController {
         return new ResponseEntity<>(service.getPerusteenOsaViiteTyoryhmat(id, pid), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{id}/oikeudet", method = GET)
+    public ResponseEntity<Map<PermissionManager.Target,Set<PermissionManager.Permission>>> getOikeudet(
+            @PathVariable("id") final Long id
+    ) {
+        return new ResponseEntity<>(permission.getProjectPermissions(id), HttpStatus.OK);
+    }
 }
