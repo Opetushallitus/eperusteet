@@ -18,7 +18,7 @@ European Union Public Licence for more details.
     <div class="row esitys">
         <div class="sivunavi-navigaatio">
             <div class="sivunavi-takaisin">
-              <a ui-sref="root.selaus.ammatillinenperuskoulutus" icon-role="back" kaanna="takaisin-hakuun"></a>
+              <a ng-href="{{getBackLink(peruste)}}" icon-role="back" kaanna="takaisin-hakuun"></a>
             </div>
             <sivunavigaatio2 items="navi.items" header="navi.header">
               <select class="form-control input-sm" ng-model="suoritustapa" ng-change="vaihdaSuoritustapa(suoritustapa)"

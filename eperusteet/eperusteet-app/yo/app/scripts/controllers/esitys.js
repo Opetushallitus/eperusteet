@@ -194,4 +194,18 @@ angular.module('eperusteApp')
       PdfCreation.setPerusteId($scope.peruste.id);
       PdfCreation.openModal();
     };
+
+     $scope.getBackLink = function (peruste) {
+       switch (peruste.koulutustyyppi) {
+         case 'koulutustyyppi_1':
+           return $state.href('root.selaus.ammatillinenperuskoulutus');
+         case 'koulutustyyppi_11':
+         case 'koulutustyyppi_12':
+           return $state.href('root.selaus.ammatillinenaikuiskoulutus');
+         case 'koulutustyyppi_9999':
+           return $state.href('root.selaus.perusopetus');
+         default:
+           return $state.href('root.selaus.ammatillinenperuskoulutus');
+       }
+    };
   });
