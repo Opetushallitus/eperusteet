@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service.security;
 
 import com.google.common.collect.Maps;
@@ -49,6 +48,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 /**
  *
  * @author harrik
@@ -249,11 +249,14 @@ public class PermissionManager {
     }
 
     private boolean hasAnyRole(Authentication authentication, String perusteProjektiRyhmaOid, Collection<String> roles) {
-        UserDetails user = (UserDetails)authentication.getPrincipal();
-        for (String role : roles) {
-            SimpleGrantedAuthority auth = new SimpleGrantedAuthority(perusteProjektiRyhmaOid == null ? role : role.replace("<oid>", perusteProjektiRyhmaOid));
-            if (user.getAuthorities().contains(auth)) {
-                return true;
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof UserDetails) {
+            UserDetails user = (UserDetails) principal;
+            for (String role : roles) {
+                SimpleGrantedAuthority auth = new SimpleGrantedAuthority(perusteProjektiRyhmaOid == null ? role : role.replace("<oid>", perusteProjektiRyhmaOid));
+                if (user.getAuthorities().contains(auth)) {
+                    return true;
+                }
             }
         }
         return false;

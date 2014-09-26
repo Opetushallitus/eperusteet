@@ -46,7 +46,10 @@ angular.module('eperusteApp')
           }
           return classes;
         };
-        $scope.clear = function () {
+        $scope.clear = function ($event) {
+          if ($event) {
+            $event.preventDefault();
+          }
           $scope.model = '';
           $scope.changed();
         };
