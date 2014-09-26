@@ -18,26 +18,34 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state) {
-    $scope.projekti = perusteprojektiTiedot.getProjekti();
-    $scope.peruste = perusteprojektiTiedot.getPeruste();
-    $scope.rajaus = '';
-
-    // TODO oikea data
-    //$scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
-    $scope.datat = {
-      opetus: {
-        lapset: [
-          {perusteenOsa: {nimi: {fi: 'Laaja-alainen osaaminen'}}, lapset: [
-            {perusteenOsa: {nimi: {fi: 'Ajattelu ja oppimaan oppiminen'}}},
-            {perusteenOsa: {nimi: {fi: 'Kulttuurinen osaaminen, vuorovaikutus ja ilmaisu'}}},
-          ]},
-          {perusteenOsa: {nimi: {fi: 'Vuosiluokkakokonaisuudet'}}},
-          {perusteenOsa: {nimi: {fi: 'Oppiaineet'}}},
-        ]
+  .service('PerusopetusService', function () {
+    this.OSAAMINEN = 'osaaminen';
+    this.VUOSILUOKAT = 'vuosiluokat';
+    this.OPPIAINEET = 'oppiaineet';
+    this.sisallot = [
+      {
+        tyyppi: this.OSAAMINEN,
+        label: 'laaja-alainen-osaaminen',
+        emptyPlaceholder: 'tyhja-placeholder-osaaminen',
+        addLabel: 'lisaa-osaamiskokonaisuus'
       },
-      sisalto: {
-        lapset: [
+      {
+        tyyppi: this.VUOSILUOKAT,
+        label: 'vuosiluokkakokonaisuudet',
+        emptyPlaceholder: 'tyhja-placeholder-vuosiluokat',
+        addLabel: 'lisaa-vuosiluokkakokonaisuus'
+      },
+      {
+        tyyppi: this.OPPIAINEET,
+        label: 'oppiaineet',
+        emptyPlaceholder: 'tyhja-placeholder-oppiaineet',
+        addLabel: 'lisaa-oppiaine'
+      },
+    ];
+
+    this.getTekstikappaleet = function () {
+      // TODO oikea data
+      return [
           {
             perusteenOsa: {nimi: {fi: 'Paikallisen opetussuunnitelman merkitys ja laadinta'}},
             lapset: [
@@ -52,13 +60,60 @@ angular.module('eperusteApp')
               {perusteenOsa: {nimi: {fi: 'Perusopetuksen arvoperusta'}}},
             ]
           }
-        ]
+      ];
+    };
+
+    this.getOsat = function (tyyppi) {
+      // TODO oikea data
+      switch(tyyppi) {
+        case this.OSAAMINEN:
+          return [
+            {perusteenOsa: {id: 1, nimi: {fi: 'Ajattelu ja oppimaan oppiminen'}, teksti: {fi: 'Yleinen kuvaus ajattelu lorem ipsum.'}}},
+            {perusteenOsa: {id: 2, nimi: {fi: 'Kulttuurinen osaaminen, vuorovaikutus ja ilmaisu'}, teksti: {fi: 'Yleinen kuvaus kulttuuriselle osaamiselle.'}}},
+          ];
+        case this.VUOSILUOKAT:
+          return [
+            {
+              nimi: {fi: 'Vuosiluokat 7-9'},
+              vuosiluokat: [7, 8, 9],
+              osaamisenkuvaukset: [
+                {osaaminen: 1, teksti: {fi: 'Kuvaus osaamiskokonaisuudelle 1.'}}
+              ],
+              tekstikappaleet: [
+                {nimi: {fi: 'Joku tekstikappale'}, teksti: {fi: 'Tekstikappaleen tekstiä.'}},
+                {nimi: {fi: 'Toinen tekstikappale'}, teksti: {fi: 'Lisää tekstikappaleen tekstiä.'}}
+              ]
+            }
+          ];
+        default:
+          return [];
       }
     };
+  })
+
+  .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state,
+      PerusopetusService) {
+    $scope.projekti = perusteprojektiTiedot.getProjekti();
+    $scope.peruste = perusteprojektiTiedot.getPeruste();
+    $scope.rajaus = '';
+
+    //$scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
+    $scope.datat = {
+      opetus: {lapset: []},
+      sisalto: {lapset: PerusopetusService.getTekstikappaleet()}
+    };
+    _.each(PerusopetusService.sisallot, function (item) {
+      var data = {
+        perusteenOsa: {nimi: item.label},
+        tyyppi: item.tyyppi,
+        lapset: PerusopetusService.getOsat(item.tyyppi)
+      };
+      $scope.datat.opetus.lapset.push(data);
+    });
     $scope.peruste.sisalto = $scope.datat.sisalto;
 
-    $scope.opetusHref = function (/*sisalto*/) {
-      return $state.href('root.perusteprojekti.osalistaus', {osanTyyppi: 'osaaminen'});
+    $scope.opetusHref = function (sisalto) {
+      return $state.href('root.perusteprojekti.osalistaus', {osanTyyppi: sisalto.tyyppi});
     };
 
     $scope.rajaaSisaltoa = function(value) {
@@ -82,29 +137,36 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('OsalistausController', function ($scope, $state) {
+  .controller('OsalistausController', function ($scope, $state, $stateParams, PerusopetusService,
+      virheService) {
+    $scope.sisaltoState = _.find(PerusopetusService.sisallot, {tyyppi: $stateParams.osanTyyppi});
+    if (!$scope.sisaltoState) {
+      virheService.virhe('virhe-sivua-ei-löytynyt');
+      return;
+    }
     // TODO real data
-    $scope.osaAlueet = [
-      {nimi: {fi: 'Ajattelu ja oppimaan oppiminen'}},
-      {nimi: {fi: 'Monilukutaito'}},
-    ];
+    $scope.osaAlueet = _.map(PerusopetusService.getOsat($stateParams.osanTyyppi), function (osa) {
+      return $stateParams.osanTyyppi === 'osaaminen' ? osa.perusteenOsa : osa;
+    });
 
     $scope.createUrl = function (/*value*/) {
       // TODO proper parameters
-      return $state.href('root.perusteprojekti.osaalue', {osanTyyppi: '', osanId: ''});
+      return $state.href('root.perusteprojekti.osaalue', {osanTyyppi: $stateParams.osanTyyppi, osanId: ''});
     };
   })
 
-  .controller('OsaAlueController', function ($scope, $q) {
+  .controller('OsaAlueController', function ($scope, $q, $stateParams, PerusopetusService) {
+    $scope.isVuosiluokka = $stateParams.osanTyyppi === PerusopetusService.VUOSILUOKAT;
     // TODO real data
-    $scope.versiot = {};
+    $scope.versiot = {latest: true};
     var tekstikappale = {
       nimi: {fi: 'Tekstikappaleen otsikko'},
       teksti: {fi: '<p>Tekstikappaleen tekstiä lorem ipsum.</p>'}
     };
     $scope.dataObject = $q.defer();
-    _.extend($scope.dataObject, tekstikappale);
-    $scope.dataObject.resolve(tekstikappale);
+    var data = $scope.isVuosiluokka ? PerusopetusService.getOsat($stateParams.osanTyyppi)[0] : tekstikappale;
+    _.extend($scope.dataObject, data);
+    $scope.dataObject.resolve(data);
   })
 
   /* protokoodia --> */

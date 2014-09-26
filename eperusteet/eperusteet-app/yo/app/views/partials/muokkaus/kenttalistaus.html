@@ -17,8 +17,8 @@ European Union Public Licence for more details.
 <div id="muokattavat-kentat">
   <div class="panel panel-default">
     <ul class="list-group muokkaus">
-      <li ng-repeat="field in fields | filter:{'visible':true}:true | orderBy:'order'"
-          muokkauskentta-raamit otsikko="{{field.localeKey}}" piilota-otsikko="{{field.hideHeader}}"
+      <li ng-repeat="field in expandedFields | filter:{'visible':true}:true | orderBy:'order'"
+          muokkauskentta-raamit otsikko="field.localeKey" piilota-otsikko="{{field.hideHeader}}"
           collapsible="{{field.collapsible}}">
         <muokattava-kentta edit-enabled="editEnabled" field-info="field" object-promise="innerObjectPromise"
                            remove-field="removeField(fieldToRemove)"></muokattava-kentta>

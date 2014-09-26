@@ -653,6 +653,16 @@
 
     "opetuksen-sisallot": "Opetuksen sisällöt",
     "laaja-alainen-osaaminen": "Laaja-alainen osaaminen",
-    "tyhja-placeholder-osaalueet": "Osa-alueita ei ole vielä lisätty.",
-    "lisaa-osaamiskokonaisuus": "Lisää osaamiskokonaisuus"
+    "muokkaus-laaja-alainen-osaaminen-header": "Laaja-alainen osaaminen",
+    "vuosiluokkakokonaisuudet": "Vuosiluokkakokonaisuudet",
+    "oppiaineet": "Oppiaineet",
+    "tyhja-placeholder-osaaminen": "Osaamiskokonaisuuksia ei ole lisätty.",
+    "tyhja-placeholder-vuosiluokat": "Vuosiluokkakokonaisuuksia ei ole lisätty.",
+    "tyhja-placeholder-oppiaineet": "Oppiaineita ei ole lisätty.",
+    "lisaa-osaamiskokonaisuus": "Lisää osaamiskokonaisuus",
+    "lisaa-vuosiluokkakokonaisuus": "Lisää vuosiluokkakokonaisuus",
+    "lisaa-oppiaine": "Lisää oppiaine",
+    "vuosiluokat": "Vuosiluokat",
+    "nayta-osaamiskokonaisuuden-kuvaus": "Näytä osaamiskokonaisuuden yleiskuvaus",
+    "piilota-osaamiskokonaisuuden-kuvaus": "Piilota osaamiskokonaisuuden yleiskuvaus"
 }

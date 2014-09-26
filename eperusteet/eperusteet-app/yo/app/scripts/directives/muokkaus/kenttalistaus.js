@@ -29,37 +29,52 @@ angular.module('eperusteApp')
         editEnabled: '='
       },
       link: function(scope, element) {
-        scope.noContent = false;
-
         scope.updateContentTip = function () {
           scope.noContent = element.find('ul.muokkaus').children().length === 0;
         };
         $timeout(function () {
           scope.updateContentTip();
         }, 3000);
-
-        scope.innerObjectPromise = scope.objectPromise.then(function() {
-          setInnerObjectPromise();
-        });
-
-        scope.$watch('objectPromise', function() {
-          setInnerObjectPromise();
-        });
-
-        scope.removeField = function(fieldToRemove) {
+      },
+      controller: function ($scope) {
+        $scope.noContent = false;
+        $scope.expandedFields = $scope.fields;
+        $scope.removeField = function(fieldToRemove) {
           fieldToRemove.visible = false;
         };
 
+        $scope.$watch('objectPromise', function() {
+          setInnerObjectPromise();
+        });
+
+        $scope.innerObjectPromise = $scope.objectPromise.then(function() {
+          setInnerObjectPromise();
+        });
+
         function splitFields(object) {
-          _.each(scope.fields, function (field) {
-            field.inMenu = field.path !== 'nimi' && field.path !== 'koodiUri';
-            field.visible = field.mandatory || MuokkausUtils.hasValue(object, field.path);
+          $scope.expandedFields = [];
+          _.each($scope.fields, function (field) {
+            var parts = field.path.split('[');
+            if (parts.length === 2) {
+              // Expand array to individual fields
+              _.each(object[parts[0]], function (item, index) {
+                var newfield = angular.copy(field);
+                newfield.path = parts[0] + '[' + index + parts[1];
+                newfield.localeKey = item[field.localeKey];
+                newfield.visible = true;
+                $scope.expandedFields.push(newfield);
+              });
+            } else {
+              field.inMenu = field.path !== 'nimi' && field.path !== 'koodiUri';
+              field.visible = field.mandatory || MuokkausUtils.hasValue(object, field.path);
+              $scope.expandedFields.push(field);
+            }
           });
-          scope.updateContentTip();
+          $scope.updateContentTip();
         }
 
         function setInnerObjectPromise() {
-          scope.innerObjectPromise = scope.objectPromise.then(function(object) {
+          $scope.innerObjectPromise = $scope.objectPromise.then(function(object) {
             splitFields(object);
             return object;
           });

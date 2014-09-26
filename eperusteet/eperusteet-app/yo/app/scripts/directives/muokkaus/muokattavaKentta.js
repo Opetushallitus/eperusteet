@@ -24,11 +24,11 @@ angular.module('eperusteApp')
       restrict: 'A',
       transclude: true,
       scope: {
-        localeKey: '@otsikko',
+        localeKey: '=otsikko',
         piilotaOtsikko: '@?'
       },
       link: function(scope, element, attrs) {
-        scope.otsikko = 'muokkaus-' + scope.localeKey + '-header';
+        scope.otsikko = _.isString(scope.localeKey) ? ('muokkaus-' + scope.localeKey + '-header') : scope.localeKey;
         element.addClass('list-group-item ');
         element.attr('ng-class', '');
 
@@ -38,7 +38,7 @@ angular.module('eperusteApp')
     };
   })
   .directive('muokattavaKentta', function($compile, $rootScope, MuokkausUtils,
-    YleinenData, Editointikontrollit, $q, Varmistusdialogi) {
+    YleinenData, Editointikontrollit, $q, Varmistusdialogi, $timeout) {
     return {
       restrict: 'E',
       replace: true,
@@ -106,12 +106,15 @@ angular.module('eperusteApp')
 
         function getElementContent(elementType) {
           function addEditorAttributesFor(element) {
-            return element
+            element
             .addClass('list-group-item-text')
             .attr('ng-model', 'object.' + scope.field.path)
             .attr('ckeditor', '')
-            .attr('editing-enabled', '{{editMode}}')
-            .attr('editor-placeholder', 'muokkaus-' + scope.field.localeKey + '-placeholder');
+            .attr('editing-enabled', '{{editMode}}');
+            if (_.isString(scope.field.localeKey)) {
+              element.attr('editor-placeholder', 'muokkaus-' + scope.field.localeKey + '-placeholder');
+            }
+            return element;
           }
 
           function addInputAttributesFor(element) {
@@ -122,32 +125,37 @@ angular.module('eperusteApp')
           }
 
           var element = null;
-          if(elementType === 'editor-header') {
-            element = addEditorAttributesFor(angular.element('<h3></h3>'));
-          }
+          switch (elementType) {
+            case 'editor-header':
+              element = addEditorAttributesFor(angular.element('<h3>'));
+              break;
+            case 'text-input':
+              element = addInputAttributesFor(angular.element('<input>').attr('editointi-kontrolli', ''));
+              break;
+            case 'input-area':
+              element = addInputAttributesFor(angular.element('<textarea>').attr('editointi-kontrolli', ''));
+              break;
+            case 'editor-text':
+              element = addEditorAttributesFor(angular.element('<p>'));
+              break;
+            case 'editor-area':
+              element = addEditorAttributesFor(angular.element('<div>'));
+              break;
+            case 'arviointi':
+              element = angular.element('<arviointi>')
+                .attr('arviointi', 'object.' + scope.field.path)
+                .attr('editointi-sallittu', 'true')
+                .attr('edit-enabled', 'editEnabled');
+              break;
+            case 'osaaminen':
+              element = angular.element('<div>')
+                .attr('osaaminen', 'object.' + scope.field.path)
+                .attr('editointi-sallittu', 'true')
+                .attr('edit-enabled', 'editEnabled');
+              break;
+            default:
+              break;
 
-          else if(elementType === 'text-input') {
-            element = addInputAttributesFor(angular.element('<input></input>').attr('editointi-kontrolli', ''));
-          }
-
-          else if(elementType === 'input-area') {
-            element = addInputAttributesFor(angular.element('<textarea></textarea>').attr('editointi-kontrolli', ''));
-          }
-
-          else if(elementType === 'editor-text') {
-            element = addEditorAttributesFor(angular.element('<p></p>'));
-          }
-
-          else if(elementType === 'editor-area') {
-            element = addEditorAttributesFor(angular.element('<div></div>'));
-          }
-
-          else if(elementType === 'arviointi') {
-            element =
-            angular.element('<arviointi></arviointi>')
-            .attr('arviointi', 'object.' + scope.field.path)
-            .attr('editointi-sallittu', 'true')
-            .attr('edit-enabled', 'editEnabled');
           }
 
           if(element !== null && scope.field.localized) {
@@ -163,7 +171,10 @@ angular.module('eperusteApp')
 
         function populateElementContent(content) {
           element.append(content);
-          $compile(element.contents())(scope);
+          $timeout(function () {
+            $compile(element.contents())(scope);
+          });
+
         }
       }
     };
@@ -184,8 +195,11 @@ angular.module('eperusteApp')
       link: function (scope, element) {
         scope.$watch('$parent.editEnabled', function () {
           var button = element.find('button.poista-osio');
-          var header = angular.element('li[otsikko='+scope.$parent.field.localeKey+'] .osio-otsikko');
-          button.detach().appendTo(header);
+          // TODO parempi metodi kuin stringillä matchaus
+          if (_.isString(scope.$parent.field.localeKey)) {
+            var header = angular.element('li[otsikko='+scope.$parent.field.localeKey+'] .osio-otsikko');
+            button.detach().appendTo(header);
+          }
         });
       }
     };

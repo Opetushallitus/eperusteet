@@ -1,3 +1,30 @@
+.osaaminen {
+  .editing {
+    .panel-body {
+      border: 1px solid #ccc;
+      border-top: none !important;
+    }
+    .panel-heading {
+      border: 1px solid #ccc !important;
+    }
+  }
+  .yleiskuvaus-toggle {
+    margin: 15px 0 10px;
+    display: block;
+  }
+
+  .yleiskuvaus {
+    padding: 10px;
+    border: 1px solid #ccc;
+    //background-color: #f6f6f6;
+  }
+  .panel + .panel {
+    margin-top: 15px;
+  }
+}
+
+/* PROTO --> */
+
 .tag-action-buttons {
   position: relative;
 }

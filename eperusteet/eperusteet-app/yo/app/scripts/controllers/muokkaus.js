@@ -110,7 +110,6 @@ angular.module('eperusteApp')
     };
 
     this.nestedSet = function(obj, path, delimiter, value) {
-
       function innerNestedSet(obj, names, newValue) {
         if(names.length > 1) {
           if(!_.has(obj, names[0]) || obj[names[0]] === null) {
