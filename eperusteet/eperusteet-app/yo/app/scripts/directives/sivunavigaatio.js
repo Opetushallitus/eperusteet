@@ -101,7 +101,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('SivuNaviController', function ($scope, $state, Algoritmit, Utils, $timeout) {
+  .controller('SivuNaviController', function ($scope, $state, Algoritmit, Utils, $timeout, $stateParams) {
     $scope.menuCollapsed = true;
 
     $scope.search = {
@@ -150,7 +150,7 @@ angular.module('eperusteApp')
         return item.isActive(item);
       }
       return (!_.isEmpty(item.link) && _.isArray(item.link) &&
-        $state.is(item.link[0], _.extend(_.clone($state.params), item.link[1])));
+        $state.is(item.link[0], _.extend(_.clone($stateParams), item.link[1])));
     }
 
     $scope.itemClasses = function (item) {
