@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .directive('tree', function($compile, $state, Muodostumissaannot, Kaanna, TreeDragAndDrop, $translate) {
+  .directive('tree', function($compile, $state, Muodostumissaannot, Kaanna, TreeDragAndDrop, $translate, Algoritmit) {
     function generoiOtsikko() {
       var tosa = '{{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].nimi || "nimetön" | kaanna }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">, <b>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</b>{{ apumuuttujat.laajuusYksikko | kaanna }}</span>';
       var editointiIkoni =
@@ -80,21 +80,28 @@ angular.module('eperusteApp')
           }
         });
 
-        function genericToggle(field) {
-          return function() {
-            var avaamattomat = _(scope.rakenne.osat).reject(function(osa) {
-              return osa._tutkinnonOsaViite || osa[field] || osa.osat.length === 0;
-            }).size();
+        scope.togglaaKuvaukset = function() {
+          var jokuAuki = false;
+          Algoritmit.kaikilleLapsisolmuille(scope.rakenne, 'osat', function(osa) {
+            if (osa.$showKuvaus) {
+              jokuAuki = true;
+              return true;
+            }
+          });
+          Algoritmit.kaikilleLapsisolmuille(scope.rakenne, 'osat', function(osa) { osa.$showKuvaus = !jokuAuki; });
+        };
 
-            _.forEach(scope.rakenne.osat, function(r) {
-              if (r.osat && _.size(r.osat) > 0) {
-                r[field] = avaamattomat !== 0;
-              }
-            });
-          };
-        }
-        scope.togglaaKuvaukset = genericToggle('$showKuvaus');
-        scope.togglaaPolut = genericToggle('$collapsed');
+        scope.togglaaPolut = function() {
+          var avaamattomat = _(scope.rakenne.osat).reject(function(osa) {
+            return osa._tutkinnonOsaViite || osa.$collapsed || osa.osat.length === 0;
+          }).size();
+
+          _.forEach(scope.rakenne.osat, function(r) {
+            if (r.osat && _.size(r.osat) > 0) {
+              r.$collapsed = avaamattomat !== 0;
+            }
+          });
+        };
 
         scope.tkaanna = function(input) {
           return _.reduce(_.map(input, function(str) {
@@ -197,7 +204,7 @@ angular.module('eperusteApp')
                          '    <span ng-show="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "nayta-virheet" | kaanna }}</span>' +
                          '  </a>' +
                          '  <a href="" ng-click="togglaaKuvaukset()" class="group-toggler">' +
-                         '    <span><span class="kuvaus-box" kaanna></span><span class="avaa-sulje" kaanna>nayta-kuvaukset</span></span>' +
+                         '    <span><span icon-role="book"></span>{{ "nayta-kuvaukset" | kaanna }}</span>' +
                          '    ' +
                          '  </a>' +
                          '  <a href="" ng-click="togglaaPolut()" class="group-toggler">' +
