@@ -15,7 +15,7 @@
  */
 
 'use strict';
-/* global _ */
+/* global _, $ */
 
 angular.module('eperusteApp')
   .service('Koodisto', function($http, $modal, SERVICE_LOC, $resource, Kaanna, Notifikaatiot) {
@@ -144,17 +144,19 @@ angular.module('eperusteApp')
       $scope.valitseSivu(1);
     };
 
+    function hakuCb() {
+      $scope.lataa = false;
+      $scope.haku('');
+      $timeout(function() {
+        $('#koodisto_modal_autofocus').focus();
+      }, 0);
+    }
+
     if ($scope.ylarelaatioTyyppi === '') {
-      Koodisto.hae($scope.tyyppi, function() {
-        $scope.lataa = false;
-        $scope.haku('');
-      });
+      Koodisto.hae($scope.tyyppi, hakuCb);
     }
     else {
-      Koodisto.haeYlarelaatiot($scope.ylarelaatioTyyppi, $scope.tyyppi, function() {
-        $scope.lataa = false;
-        $scope.haku('');
-      });
+      Koodisto.haeYlarelaatiot($scope.ylarelaatioTyyppi, $scope.tyyppi, hakuCb);
     }
 
     $scope.ok = function(koodi) {
