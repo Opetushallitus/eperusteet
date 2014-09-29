@@ -67,6 +67,11 @@
           <div class="addon"><p kaanna>osp</p></div>
         </div>
       </div>
+      <label for="jarjestys-input" kaanna>tutkinnonosa-jarjestysnumero</label>
+      <div class="fixed-group">
+        <input label-id="laajuus-input" luokka="form-control" ng-model="editableViiteosa.jarjestys" min="0" max="9999"
+               type="number" form="tutkinnonOsaHeaderForm" class="form-control">
+      </div>
       <label for="koodi-input" kaanna>muokkaus-tutkinnon-osan-koodi-header</label>
       <div class="fixed-group">
         <input id="koodi-input" class="form-control" type="text" ng-model="editableTutkinnonOsa.koodiArvo" editointi-kontrolli>

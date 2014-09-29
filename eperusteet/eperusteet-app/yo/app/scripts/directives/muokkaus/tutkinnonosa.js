@@ -55,6 +55,7 @@ angular.module('eperusteApp')
         $scope.rakenne = res;
         $scope.viiteosa = _.find($scope.rakenne.tutkinnonOsat, {'_tutkinnonOsa': $scope.editableTutkinnonOsa.id.toString()}) || {};
         $scope.viiteosa.laajuus = $scope.viiteosa.laajuus || 0;
+        console.log($scope.viiteosa);
         $scope.yksikko = _.zipObject(_.map(res.$peruste.suoritustavat, 'suoritustapakoodi'),
                                      _.map(res.$peruste.suoritustavat, 'laajuusYksikko'))[$scope.suoritustapa];
         if (TutkinnonOsaEditMode.getMode()) {
@@ -211,8 +212,7 @@ angular.module('eperusteApp')
             var tutkinnonOsaDefer = $q.defer();
             $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
             tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
-          },
-                                                        Notifikaatiot.serverCb);
+          }, Notifikaatiot.serverCb);
 
           // Viiteosa (laajuus) tallennetaan erikseen
           PerusteTutkinnonosa.save({
