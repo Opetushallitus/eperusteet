@@ -39,8 +39,9 @@ angular.module('eperusteApp')
     function kaikilleLapsisolmuille(objekti, lapsienAvain, cb, depth) {
       depth = depth || 0;
       _.forEach(objekti[lapsienAvain], function(solmu) {
-        cb(solmu, depth);
-        kaikilleLapsisolmuille(solmu, lapsienAvain, cb, depth + 1);
+        if (!cb(solmu, depth)) {
+          kaikilleLapsisolmuille(solmu, lapsienAvain, cb, depth + 1);
+        }
       });
     }
 
