@@ -27,6 +27,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
@@ -39,6 +40,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.context.annotation.Bean;
@@ -64,6 +66,8 @@ public class DtoMapperConfig {
         factory.getConverterFactory().registerConverter("koodistokoodiConverter", koodistokoodiConverter);
         factory.getConverterFactory().registerConverter(new PassThroughConverter(TekstiPalanen.class));
         factory.getConverterFactory().registerConverter(new TypeNameConverter());
+        factory.getConverterFactory().registerConverter(new OptionalConverter());
+        factory.getConverterFactory().registerConverter(new ToOptionalConverter());
 
         factory.classMap(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
             .fieldBToA("class", "osanTyyppi")
@@ -109,6 +113,11 @@ public class DtoMapperConfig {
         factory.classMap(SuoritustapaDto.class, Suoritustapa.class)
             .byDefault()
             .register();
+        factory.classMap(OppiaineDto.class,Oppiaine.class)
+            .mapNulls(false)
+            .byDefault()
+            .register();
+
 
         perusteenOsaViiteMapping(factory, PerusteenOsaViiteDto.Matala.class);
         perusteenOsaViiteMapping(factory, PerusteenOsaViiteDto.Suppea.class);

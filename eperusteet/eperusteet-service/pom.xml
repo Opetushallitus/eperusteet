@@ -18,7 +18,7 @@
         <spring.data.jpa.version>1.7.0.RELEASE</spring.data.jpa.version>
         <logback.version>1.1.1</logback.version>
         <postgresql.version>9.3-1100-jdbc41</postgresql.version>
-        <jackson.version>2.4.2</jackson.version>
+        <jackson.version>2.4.3</jackson.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
         <buildhelper.skipAttach>true</buildhelper.skipAttach>
@@ -130,6 +130,11 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-hibernate4</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-guava</artifactId>
             <version>${jackson.version}</version>
         </dependency>
         <dependency>
