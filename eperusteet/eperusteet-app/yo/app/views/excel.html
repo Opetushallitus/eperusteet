@@ -80,18 +80,12 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-3" kaanna>projektin-oid-label</label>
+          <label class="col-sm-3">{{ 'projektin-oid-label' | kaanna }}<span>*</span></label>
           <div class="col-sm-9 input-group">
             <input ng-model="projekti.$ryhmaNimi[lang]" type="" class="form-control" disabled>
             <span class="input-group-btn">
               <button class="btn btn-default" ng-click="haeRyhma()" kaanna>hae-ryhma</button>
             </span>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-3">{{ 'projektin-oid-label' | kaanna }}<span>*</span></label>
-          <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="projekti.oid" placeholder="Kirjoita oid"/>
           </div>
         </div>
         <div class="form-group">
