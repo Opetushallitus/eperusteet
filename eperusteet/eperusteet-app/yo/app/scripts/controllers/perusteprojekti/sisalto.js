@@ -41,6 +41,16 @@ angular.module('eperusteApp')
     $scope.naytaRakenne = true;
     $scope.muokkausTutkintokohtaisetOsat = false;
 
+    Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) {
+      switch (lapsi.perusteenOsa.tunniste) {
+        case 'rakenne':
+          lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.muodostumissaannot');
+          break;
+        default:
+          lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', { perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: lapsi.perusteenOsa.id, versio: '' });
+      }
+    });
+
     $scope.aakkosJarjestys = function(data) { return Kaanna.kaanna(data.perusteenOsa.nimi); };
 
     $scope.rajaaSisaltoa = function(value) {

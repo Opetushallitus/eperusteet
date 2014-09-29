@@ -65,6 +65,11 @@ public abstract class PerusteenOsa
     @NotNull
     private PerusteTila tila = PerusteTila.LUONNOS;
 
+    @Getter
+    @Setter
+    @Enumerated(value = EnumType.STRING)
+    private PerusteenOsaTunniste tunniste;
+
     public PerusteenOsa() {
         //JPA
     }

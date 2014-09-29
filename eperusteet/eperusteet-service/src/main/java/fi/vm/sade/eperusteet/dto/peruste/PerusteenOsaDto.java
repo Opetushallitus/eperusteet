@@ -38,6 +38,7 @@ public abstract class PerusteenOsaDto {
     private String muokkaajanNimi;
     private LokalisoituTekstiDto nimi;
     private PerusteTila tila;
+    private String tunniste;
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "osanTyyppi")
     @JsonSubTypes(value = {

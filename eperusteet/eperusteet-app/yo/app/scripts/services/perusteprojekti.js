@@ -194,7 +194,6 @@ angular.module('eperusteApp')
             peruste.suoritustavat = _.sortBy(peruste.suoritustavat, 'suoritustapakoodi');
           }
           projektinTiedotDeferred.resolve();
-
         }, function(virhe) {
           projektinTiedotDeferred.reject();
           Notifikaatiot.serverCb(virhe);

@@ -33,24 +33,6 @@ European Union Public Licence for more details.
 
             <div class="clearfix"></div>
 
-            <div style="margin-bottom: 40px" ng-hide="muokkausTutkintokohtaisetOsat || peruste.koulutustyyppi === 'koulutustyyppi_9999'">
-                <h2 ng-show="naytaTutkinnonOsat || naytaRakenne">Tutkinnon muodostuminen</h2>
-                <div ng-show="naytaTutkinnonOsat" class="sisalto-list-element striped">
-                  <a class="otsikko" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat">
-                    <h3 kaanna>tutkinnonosat</h3>
-                  </a>
-                </div>
-                <div ng-show="naytaRakenne" class="sisalto-list-element striped">
-                  <a class="otsikko" ui-sref="root.perusteprojekti.suoritustapa.muodostumissaannot({ versio: '' })">
-                    <h3 kaanna>tutkinnon-rakenne</h3>
-                    <div class="list-element-info">
-                        <!-- TODO oikea aikaleima/muokkaaja, myös tutkinnon osat -laatikkoon -->
-                      <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ 1 | aikaleima }}</div>
-                    </div>
-                  </a>
-                </div>
-            </div>
-
             <h2 ng-hide="muokkausTutkintokohtaisetOsat">
                 {{ 'tekstikappaleet' | kaanna }} ({{ peruste.sisalto.lapset.length }})
                 <a style="margin-left: 10px" ng-click="avaaSuljeKaikki()" class="action-link"><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
@@ -73,6 +55,15 @@ European Union Public Licence for more details.
             <div class="info-box" ng-show="peruste.sisalto.lapset.length === 0">
                 {{ 'suoritustavalle-ei-ole-vielä-sisältöä' | kaanna }}.
             </div>
+
+            <div style="margin-bottom: 40px" ng-hide="muokkausTutkintokohtaisetOsat || peruste.koulutustyyppi === 'koulutustyyppi_9999'">
+                <div ng-show="naytaTutkinnonOsat" class="sisalto-list-element striped">
+                  <a class="otsikko" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat">
+                    <h3 kaanna>tutkinnonosat</h3>
+                  </a>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
