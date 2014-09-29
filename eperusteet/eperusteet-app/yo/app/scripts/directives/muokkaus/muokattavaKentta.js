@@ -104,8 +104,26 @@ angular.module('eperusteApp')
           }
         });
 
-        function getElementContent(elementType) {
-          function addEditorAttributesFor(element) {
+        var ELEMENT_MAP = {
+          'editor-header': ['addEditorAttributesFor', '<h3>'],
+          'text-input': ['addInputAttributesFor', '<input>', {'editointi-kontrolli': ''}],
+          'input-area': ['addInputAttributesFor', '<textarea>', {'editointi-kontrolli': ''}],
+          'editor-text': ['addEditorAttributesFor', '<p>'],
+          'editor-area': ['addEditorAttributesFor', '<div>'],
+          'arviointi': ['', '<arviointi>', {
+            'editointi-sallittu': 'true',
+            'arviointi': 'object.' + scope.field.path,
+            'edit-enabled': 'editEnabled'
+          }],
+          'osaaminen': ['', '<div>', {
+            'editointi-sallittu': 'true',
+            'osaaminen': 'object.' + scope.field.path,
+            'edit-enabled': 'editEnabled'
+          }]
+        };
+
+        var mapperFns = {
+          addEditorAttributesFor: function (element) {
             element
             .addClass('list-group-item-text')
             .attr('ng-model', 'object.' + scope.field.path)
@@ -115,48 +133,25 @@ angular.module('eperusteApp')
               element.attr('editor-placeholder', 'muokkaus-' + scope.field.localeKey + '-placeholder');
             }
             return element;
-          }
-
-          function addInputAttributesFor(element) {
+          },
+          addInputAttributesFor: function (element) {
             return element
             .addClass('form-control')
             .attr('ng-model', 'object.' + scope.field.path)
             .attr('placeholder','{{ \'muokkaus-' + scope.field.localeKey + '-placeholder\' | kaanna }}');
           }
+        };
 
+        function getElementContent(elementType) {
           var element = null;
-          switch (elementType) {
-            case 'editor-header':
-              element = addEditorAttributesFor(angular.element('<h3>'));
-              break;
-            case 'text-input':
-              element = addInputAttributesFor(angular.element('<input>').attr('editointi-kontrolli', ''));
-              break;
-            case 'input-area':
-              element = addInputAttributesFor(angular.element('<textarea>').attr('editointi-kontrolli', ''));
-              break;
-            case 'editor-text':
-              element = addEditorAttributesFor(angular.element('<p>'));
-              break;
-            case 'editor-area':
-              element = addEditorAttributesFor(angular.element('<div>'));
-              break;
-            case 'arviointi':
-              element = angular.element('<arviointi>')
-                .attr('arviointi', 'object.' + scope.field.path)
-                .attr('editointi-sallittu', 'true')
-                .attr('edit-enabled', 'editEnabled');
-              break;
-            case 'osaaminen':
-              element = angular.element('<div>')
-                .attr('osaaminen', 'object.' + scope.field.path)
-                .attr('editointi-sallittu', 'true')
-                .attr('edit-enabled', 'editEnabled');
-              break;
-            default:
-              break;
-
+          var mapped = ELEMENT_MAP[elementType];
+          if (!mapped) {
+            return null;
           }
+          element = (mapped[0] ? mapperFns[mapped[0]] : _.identity )(angular.element(mapped[1]));
+          _.each(mapped[2], function (value, key) {
+            element.attr(key, value);
+          });
 
           if(element !== null && scope.field.localized) {
             element.attr('localized', '');

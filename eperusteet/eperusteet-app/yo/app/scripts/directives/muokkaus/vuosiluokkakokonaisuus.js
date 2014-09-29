@@ -132,7 +132,7 @@ angular.module('eperusteApp')
       //VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tutkinnonOsa.id}, responseFn);
     };
 
-    $scope.revertCb = function (response) {
+    $scope.revertCb = function (/*response*/) {
       // TODO
       //responseFn(response);
       //saveCb(response);
