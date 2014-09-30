@@ -663,11 +663,14 @@
     "tyhja-placeholder-oppiaineet": "Oppiaineita ei ole lisätty.",
     "lisaa-osaamiskokonaisuus": "Lisää osaamiskokonaisuus",
     "lisaa-vuosiluokkakokonaisuus": "Lisää vuosiluokkakokonaisuus",
+    "poista-vuosiluokkakokonaisuus": "Poista vuosiluokkakokonaisuus",
+    "poistetaanko-vuosiluokkakokonaisuus": "Poistetaanko vuosiluokkakokonaisuus?",
     "lisaa-oppiaine": "Lisää oppiaine",
     "vuosiluokat": "Vuosiluokat",
+    "vuosiluokka": "Vuosiluokka",
     "nayta-osaamiskokonaisuuden-kuvaus": "Näytä osaamiskokonaisuuden yleiskuvaus",
     "piilota-osaamiskokonaisuuden-kuvaus": "Piilota osaamiskokonaisuuden yleiskuvaus",
-
+    "tekstikappale": "Tekstikappale",
     "tyhja-placeholder-osaalueet": "Osa-alueita ei ole vielä lisätty.",
     "lisaa-osaamiskokonaisuus": "Lisää osaamiskokonaisuus",
     

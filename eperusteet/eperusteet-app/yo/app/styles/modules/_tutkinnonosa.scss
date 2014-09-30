@@ -76,7 +76,10 @@ $pikamenu-size: 22px;
   font-weight: 700;
   color: $brand-primary;
   border-top: 2px solid #ddd;
-  .poista-osio {
+  .field-buttons {
+    button {
+      margin-left: 5px;
+    }
     margin-top: -5px;
   }
 }
@@ -105,7 +108,7 @@ $pikamenu-size: 22px;
       margin-top: 35px;
     }
   }
-  label:not(.btn) {
+  label.header {
     font-weight: 700;
     padding-top: 15px;
     padding-bottom: 10px;

@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .directive('kenttalistaus', function($q, MuokkausUtils, $timeout) {
+  .directive('kenttalistaus', function($q, MuokkausUtils, $timeout, FieldSplitter) {
     return {
       templateUrl: 'views/partials/muokkaus/kenttalistaus.html',
       restrict: 'E',
@@ -43,9 +43,15 @@ angular.module('eperusteApp')
           fieldToRemove.visible = false;
         };
 
-        $scope.$watch('objectPromise', function() {
-          setInnerObjectPromise();
-        });
+        function setInnerObjectPromise() {
+          $scope.innerObjectPromise = $scope.objectPromise.then(function(object) {
+            splitFields(object);
+            return object;
+          });
+        }
+
+        $scope.$watch('objectPromise', setInnerObjectPromise);
+        $scope.$on('osafield:update', setInnerObjectPromise);
 
         $scope.innerObjectPromise = $scope.objectPromise.then(function() {
           setInnerObjectPromise();
@@ -54,12 +60,12 @@ angular.module('eperusteApp')
         function splitFields(object) {
           $scope.expandedFields = [];
           _.each($scope.fields, function (field) {
-            var parts = field.path.split('[');
-            if (parts.length === 2) {
+            var splitfield = FieldSplitter.process(field);
+            if (splitfield.isMulti()) {
               // Expand array to individual fields
-              _.each(object[parts[0]], function (item, index) {
+              splitfield.each(object, function (item, index) {
                 var newfield = angular.copy(field);
-                newfield.path = parts[0] + '[' + index + parts[1];
+                newfield.path = splitfield.getPath(index);
                 newfield.localeKey = item[field.localeKey];
                 newfield.visible = true;
                 $scope.expandedFields.push(newfield);
@@ -72,14 +78,45 @@ angular.module('eperusteApp')
           });
           $scope.updateContentTip();
         }
-
-        function setInnerObjectPromise() {
-          $scope.innerObjectPromise = $scope.objectPromise.then(function(object) {
-            splitFields(object);
-            return object;
-          });
-        }
       }
+    };
+  })
+
+  .service('FieldSplitter', function () {
+    function SplitField(data) {
+      this.original = data;
+      this.parts = [];
+    }
+
+    SplitField.prototype.split = function () {
+      this.parts = this.original.path.split('[');
+    };
+
+    SplitField.prototype.isMulti = function () {
+      return this.parts.length === 2;
+    };
+
+    SplitField.prototype.each = function (obj, cb) {
+      return _.each(this.getObject(obj), cb);
+    };
+
+    SplitField.prototype.getPath = function (index) {
+      return this.parts[0] + '[' + index + this.parts[1];
+    };
+
+    SplitField.prototype.getObject = function (obj) {
+      return obj[this.parts[0]];
+    };
+
+    SplitField.prototype.addArrayItem = function (obj) {
+      // TODO oletettu tekstikappale
+      this.getObject(obj).push({nimi: {}, teksti: {}});
+    };
+
+    this.process = function (field) {
+      var obj = new SplitField(field);
+      obj.split();
+      return obj;
     };
   })
 
