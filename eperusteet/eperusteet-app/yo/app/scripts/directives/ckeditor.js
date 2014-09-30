@@ -94,7 +94,7 @@ angular.module('eperusteApp')
           toolbar: toolbarLayout,
           removePlugins: 'resize,elementspath,scayt,wsc',
           extraPlugins: 'divarea,sharedspace',
-          extraAllowedContent: '*[contenteditable]',
+          disallowedContent: 'br',
           language: 'fi',
           'entities_latin': false,
           sharedSpaces: {
