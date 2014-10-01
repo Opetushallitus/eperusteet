@@ -1,11 +1,11 @@
 <div class="tutke2">
-    <div class="osa-alue-navi" ng-show="!mainLevelEditing && tutke2osa.osaAlueet.length > 1"><span kaanna>Osa-alueet:</span>
+    <div class="osa-alue-navi" ng-show="!mainLevelEditing && tutke2osa.osaAlueet.length > 1"><span kaanna>osa-alueet</span>
       <ul><li ng-repeat="alue in tutke2osa.osaAlueet"><a class="action-link" ng-click="osaAlue.jumpTo(alue)">{{alue.nimi | kaanna}}</a></li></ul>
     </div>
   <div ng-if="tutke2osa.$fetching">{{'Ladataan tutkinnon osaa...'|kaanna}} <small-spinner></small-spinner></div>
-  <p class="info-placeholder" ng-show="!tutke2osa.$fetching && (!tutke2osa.osaAlueet || tutke2osa.osaAlueet.length === 0)" kaanna>Ei osa-alueita.</p>
-
+  <p class="info-placeholder" ng-show="!tutke2osa.$fetching && (!tutke2osa.osaAlueet || tutke2osa.osaAlueet.length === 0) && !mainLevelEditing" kaanna>ei-osa-alueita</p>
   <div class="non-collapsibles" ng-if="mainLevelEditing">
+    <p class="info-placeholder" ng-show="!tutke2osa.$fetching && (!tutke2osa.$editing || tutke2osa.$editing.length === 0)" kaanna>ei-osa-alueita</p>
     <div ng-show="tutke2osa.$editing.length > 0">
         <label kaanna>Osa-alueet</label>
         <div class="input-group" ng-repeat="alue in tutke2osa.$editing">

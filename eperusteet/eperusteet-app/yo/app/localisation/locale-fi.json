@@ -672,6 +672,9 @@
     "lisaa-osaamiskokonaisuus": "Lisää osaamiskokonaisuus",
     
     "poista-osa-alue": "Poista osa-alue",
-    "poista-osaamistavoite": "Poista osaamistavoite"
+    "poista-osaamistavoite": "Poista osaamistavoite",
+    
+    "ei-osa-alueita": "Ei osa-alueita.",
+    "osa-alueet": "Osa-alueet:"
 
 }
