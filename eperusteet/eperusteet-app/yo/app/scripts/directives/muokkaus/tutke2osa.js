@@ -143,10 +143,12 @@ angular.module('eperusteApp')
         stopEvent($event);
         verifyRemove(function () {
           if (alue.id) {
-            alue.$delete($scope.tutke2osa.params);
+            alue.$delete($scope.tutke2osa.params,  function() {
+              $scope.tutke2osa.fetch();
+              Editointikontrollit.cancelEditing();
+            }, Notifikaatiot.serverCb);
           }
-          $scope.tutke2osa.fetch();
-          Editointikontrollit.cancelEditing();
+
         });
       },
       save: function (alue, $event, kommentti) {
@@ -236,9 +238,11 @@ angular.module('eperusteApp')
         verifyRemove(function () {
           if (tavoite.id) {
             var params = _.extend({osaalueenId: alue.id}, $scope.tutke2osa.params);
-            tavoite.$delete(params);
+            tavoite.$delete(params, function() {
+              $scope.tutke2osa.getTavoitteet(alue, alue);
+              Editointikontrollit.cancelEditing();
+            }, Notifikaatiot.serverCb);
           }
-          $scope.tutke2osa.getTavoitteet(alue, alue);
         });
       },
       save: function () {
