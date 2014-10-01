@@ -165,9 +165,9 @@ angular.module('eperusteApp')
         if (alue.id) {
           TutkinnonOsanOsaAlue.save(_.extend({
             osaalueenId: alue.id
-          }, $scope.tutke2osa.params), stripped, saveCb, Notifikaatiot.fataali);
+          }, $scope.tutke2osa.params), stripped, saveCb, Notifikaatiot.serverCb);
         } else {
-          TutkinnonOsanOsaAlue.save($scope.tutke2osa.params, stripped, saveCb, Notifikaatiot.fataali);
+          TutkinnonOsanOsaAlue.save($scope.tutke2osa.params, stripped, saveCb, Notifikaatiot.serverCb);
         }
 
       },
@@ -258,11 +258,11 @@ angular.module('eperusteApp')
         if (tavoite.id) {
           tavoite.$save(params, function () {
             $scope.tutke2osa.getTavoitteet(alue, alue);
-          }, Notifikaatiot.fataali);
+          }, Notifikaatiot.serverCb);
         } else {
           Osaamistavoite.save(params, payload, function () {
             $scope.tutke2osa.getTavoitteet(alue, alue);
-          }, Notifikaatiot.fataali);
+          }, Notifikaatiot.serverCb);
         }
       },
       callbacks: {

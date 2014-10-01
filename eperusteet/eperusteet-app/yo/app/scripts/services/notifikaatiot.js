@@ -96,13 +96,14 @@ angular.module('eperusteApp')
       console.log(response, b, c, d);
       if (response) {
         if (response.status >= 500) {
+
           fataali(Kaanna.kaanna('järjestelmävirhe-alku') + response.status + Kaanna.kaanna('järjestelmävirhe-loppu'), function() {
             // TODO Ota käyttöön möyhemmin
             // $state.go('root.aloitussivu');
           });
         }
         else if (response.data && response.data.syy) {
-          uusiViesti(2, response.data.syy);
+          uusiViesti(2, response.data.syy[0]);
         }
         else {
           uusiViesti(2, Kaanna.kaanna('odottamaton-virhe'));
