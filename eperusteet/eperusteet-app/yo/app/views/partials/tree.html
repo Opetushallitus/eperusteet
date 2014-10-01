@@ -66,7 +66,7 @@
             <div class="sp-badge">
               <span class="skratchpad-badge" ng-class="{'ei-kaytetty': !kaytetytUniikit[osa._tutkinnonOsaViite], 'kaytetty': kaytetytUniikit[osa._tutkinnonOsaViite]}"></span>
             </div>
-            <div class="sp-name">
+            <div class="sp-name ellipsis-no-wrap" title="{{rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna:true}}">
               {{ rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== 'naytto' && rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus">, {{ + rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus || 0 }}{{ apumuuttujat.laajuusYksikko | kaanna }}</span>
             </div>
           </li>
