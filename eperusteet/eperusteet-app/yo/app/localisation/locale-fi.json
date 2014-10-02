@@ -664,6 +664,8 @@
     "lisaa-osaamiskokonaisuus": "Lisää osaamiskokonaisuus",
     "lisaa-vuosiluokkakokonaisuus": "Lisää vuosiluokkakokonaisuus",
     "poista-vuosiluokkakokonaisuus": "Poista vuosiluokkakokonaisuus",
+    "muokkaa-vuosiluokkakokonaisuutta": "Muokkaa vuosiluokkakokonaisuutta",
+    "uusi-vuosiluokkakokonaisuus": "Uusi vuosiluokkakokonaisuus",
     "poistetaanko-vuosiluokkakokonaisuus": "Poistetaanko vuosiluokkakokonaisuus?",
     "lisaa-oppiaine": "Lisää oppiaine",
     "vuosiluokat": "Vuosiluokat",
@@ -671,12 +673,12 @@
     "nayta-osaamiskokonaisuuden-kuvaus": "Näytä osaamiskokonaisuuden yleiskuvaus",
     "piilota-osaamiskokonaisuuden-kuvaus": "Piilota osaamiskokonaisuuden yleiskuvaus",
     "tekstikappale": "Tekstikappale",
+
     "tyhja-placeholder-osaalueet": "Osa-alueita ei ole vielä lisätty.",
-    "lisaa-osaamiskokonaisuus": "Lisää osaamiskokonaisuus",
-    
+
     "poista-osa-alue": "Poista osa-alue",
     "poista-osaamistavoite": "Poista osaamistavoite",
-    
+
     "ei-osa-alueita": "Ei osa-alueita.",
     "osa-alueet": "Osa-alueet:"
 

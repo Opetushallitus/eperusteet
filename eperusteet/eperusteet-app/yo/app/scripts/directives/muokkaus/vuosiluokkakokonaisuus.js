@@ -31,7 +31,7 @@ angular.module('eperusteApp')
   })
 
   .controller('VuosiluokkakokonaisuusController', function ($scope, PerusopetusService,
-      Editointikontrollit, Kaanna) {
+      Editointikontrollit, Kaanna, PerusteProjektiSivunavi) {
     $scope.editEnabled = false;
     $scope.editableModel = angular.copy($scope.model);
     $scope.vuosiluokkaOptions = _.map(_.range(1, 10), function (item) {
@@ -46,6 +46,10 @@ angular.module('eperusteApp')
       $scope.editableModel.vuosiluokat = _($scope.vuosiluokkaOptions)
         .filter('selected').map('value').value();
     };
+
+    $scope.$watch('editEnabled', function(editEnabled) {
+      PerusteProjektiSivunavi.setVisible(!editEnabled);
+    });
 
     var editingCallbacks = {
       edit: function() {
@@ -72,6 +76,8 @@ angular.module('eperusteApp')
     $scope.data = {
       options: {
         title: $scope.model.nimi,
+        editTitle: 'muokkaa-vuosiluokkakokonaisuutta',
+        newTitle: 'uusi-vuosiluokkakokonaisuus',
         backLabel: 'vuosiluokkakokonaisuudet',
         backState: ['root.perusteprojekti.osalistaus', {osanTyyppi: PerusopetusService.VUOSILUOKAT}],
         removeWholeLabel: 'poista-vuosiluokkakokonaisuus',

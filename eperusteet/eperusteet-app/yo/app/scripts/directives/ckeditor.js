@@ -164,11 +164,7 @@ angular.module('eperusteApp')
           $('#toolbar').hide();
         });
 
-        editor.on('blur', function() {
-          if (dataSavedOnNotification) {
-            dataSavedOnNotification = false;
-            return;
-          }
+        function updateModel () {
           if (editor.checkDirty()) {
             var data = editor.getData();
             scope.$apply(function() {
@@ -180,6 +176,15 @@ angular.module('eperusteApp')
               editor.setData(placeholderText);
             }
           }
+
+        }
+
+        editor.on('blur', function() {
+          if (dataSavedOnNotification) {
+            dataSavedOnNotification = false;
+            return;
+          }
+          updateModel();
           $('#toolbar').hide();
         });
 

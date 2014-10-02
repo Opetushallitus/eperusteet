@@ -67,6 +67,7 @@ angular.module('eperusteApp')
                 var newfield = angular.copy(field);
                 newfield.path = splitfield.getPath(index);
                 newfield.localeKey = item[field.localeKey];
+                newfield.originalLocaleKey = field.localeKey;
                 newfield.visible = true;
                 $scope.expandedFields.push(newfield);
               });
