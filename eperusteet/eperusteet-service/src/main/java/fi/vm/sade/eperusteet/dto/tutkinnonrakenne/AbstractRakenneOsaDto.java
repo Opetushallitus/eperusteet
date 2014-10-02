@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +24,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class AbstractRakenneOsaDto {
+
+    private LokalisoituTekstiDto kuvaus;
 
     public final void foreach(final Visitor visitor) {
         foreach(visitor, 0);

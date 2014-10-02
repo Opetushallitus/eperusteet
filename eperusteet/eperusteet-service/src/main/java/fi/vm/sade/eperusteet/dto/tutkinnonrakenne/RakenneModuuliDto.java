@@ -27,13 +27,12 @@ import lombok.Setter;
 public class RakenneModuuliDto extends AbstractRakenneOsaDto implements VersionedDto{
 
     private LokalisoituTekstiDto nimi;
-    private LokalisoituTekstiDto kuvaus;
     private RakenneModuuliRooli rooli;
     private MuodostumisSaantoDto muodostumisSaanto;
     private OsaamisalaDto osaamisala;
     private List<AbstractRakenneOsaDto> osat;
     private Integer versioId;
-    
+
     @Override
     public Integer getVersioId() {
         return versioId;

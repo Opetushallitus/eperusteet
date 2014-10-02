@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
@@ -46,7 +47,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Table(name = "tutkinnonosaviite")
 @Audited
-public class TutkinnonOsaViite implements ReferenceableEntity {
+public class TutkinnonOsaViite implements ReferenceableEntity, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

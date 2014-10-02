@@ -188,10 +188,26 @@ angular.module('eperusteApp')
       };
     }
 
+    function rakenneosaModaali(thenCb) {
+      return function(rakenneosa) {
+        $modal.open({
+          templateUrl: 'views/modals/rakenneosaModal.html',
+          controller: 'RakenneosaModalCtrl',
+          resolve: {
+            rakenneosa: function() { return rakenneosa; }
+          }
+        })
+        .result.then(function(res) {
+          thenCb(res);
+        });
+      };
+    }
+
     return {
       validoiRyhma: validoiRyhma,
       laskeLaajuudet: laskeLaajuudet,
       ryhmaModaali: ryhmaModaali,
+      rakenneosaModaali: rakenneosaModaali,
       kaannaSaanto: kaannaSaanto,
       skratchpadNotEmpty: function (value) {
         if (arguments.length > 0) {

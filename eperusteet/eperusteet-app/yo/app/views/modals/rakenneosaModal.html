@@ -1,0 +1,15 @@
+<div class="modal-header">
+    <h2 kaanna="muokkaa-tutkinnon-osaa"></h2>
+</div>
+
+<div class="modal-body">
+    <form class="form-horizontal" name="ryhmaForm">
+        <formfield model="rakenneosa" model-var="kuvaus" label="kuvaus" type="text"></formfield>
+        <formfield model="rakenneosa" model-var="pakollinen" label="pakollinen" type="checkbox"></formfield>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-danger" ng-click="peruuta()" kaanna>peru</button>
+    <button class="btn btn-primary" ng-click="ok(rakenneosa)" kaanna>tallenna</button>
+</div>
