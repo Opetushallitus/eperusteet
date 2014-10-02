@@ -37,8 +37,8 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('muokattavaKentta', function($compile, $rootScope, MuokkausUtils,
-    YleinenData, Editointikontrollit, $q, Varmistusdialogi, $timeout) {
+  .directive('muokattavaKentta', function($compile, $rootScope,
+    Editointikontrollit, $q, $timeout) {
     return {
       restrict: 'E',
       replace: true,
@@ -48,30 +48,29 @@ angular.module('eperusteApp')
         removeField: '&?',
         editEnabled: '='
       },
-      link: function(scope, element) {
+      controller: function ($scope, YleinenData, MuokkausUtils, Varmistusdialogi) {
+        $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
 
-        scope.$watch('objectReady', function(newObjectReadyPromise) {
+        $scope.$watch('objectReady', function(newObjectReadyPromise) {
           newObjectReadyPromise.then(function(newObject) {
-            scope.object = newObject;
+            $scope.object = newObject;
           });
         });
 
-        var typeParams = scope.field.type.split('.');
-
         function poistaOsio(value) {
           if(angular.isString(value)) {
-            MuokkausUtils.nestedSet(scope.object, scope.field.path, '.', '');
+            MuokkausUtils.nestedSet($scope.object, $scope.field.path, '.', '');
           } else {
-            MuokkausUtils.nestedSet(scope.object, scope.field.path, '.', undefined);
+            MuokkausUtils.nestedSet($scope.object, $scope.field.path, '.', undefined);
           }
-          if(!scope.mandatory) {
-            scope.removeField({fieldToRemove: scope.field});
+          if(!$scope.mandatory) {
+            $scope.removeField({fieldToRemove: $scope.field});
           }
         }
 
-        scope.suljeOsio = function() {
+        $scope.suljeOsio = function() {
           // Jos kentässä on dataa, kysytään varmistus.
-          var getValue = MuokkausUtils.nestedGet(scope.object, scope.field.path, '.');
+          var getValue = MuokkausUtils.nestedGet($scope.object, $scope.field.path, '.');
           if (!_.isEmpty(getValue)) {
             Varmistusdialogi.dialogi({
               otsikko: 'varmista-osion-poisto-otsikko',
@@ -87,16 +86,28 @@ angular.module('eperusteApp')
           }
         };
 
+        $scope.editOsio = function () {
+          $scope.field.$editing = true;
+        };
+
+        $scope.cancelEdit = function () {
+          $scope.field.$editing = false;
+        };
+
+        $scope.okEdit = function () {
+          $scope.field.$editing = false;
+        };
+      },
+      link: function(scope, element) {
+        var typeParams = scope.field.type.split('.');
+
         $q.all({object: scope.objectReady, editMode: Editointikontrollit.getEditModePromise()}).then(function(values) {
           scope.object = values.object;
           scope.editMode = values.editMode;
 
           if(!scope.field.mandatory) {
             var contentFrame = angular.element('<vaihtoehtoisen-kentan-raami></vaihtoehtoisen-kentan-raami>')
-            .attr('osion-nimi', scope.field.header)
-            .append(getElementContent(typeParams[0]));
-
-            contentFrame.attr('sulje-osio', 'suljeOsio()');
+              .append(getElementContent(typeParams[0]));
 
             populateElementContent(contentFrame);
           } else {
@@ -142,6 +153,16 @@ angular.module('eperusteApp')
           }
         };
 
+        function wrapEditor(element) {
+          var editWrapper = angular.element('<div ng-if="field.$editing"></div>');
+          editWrapper.append(element);
+          var viewWrapper = angular.element('<div ng-if="!field.$editing" ng-bind-html="valitseKieli(object.' +
+                                            scope.field.path + ') | unsafe"></div>');
+          var wrapper = angular.element('<div>');
+          wrapper.append(editWrapper, viewWrapper);
+          return wrapper;
+        }
+
         function getElementContent(elementType) {
           var element = null;
           var mapped = ELEMENT_MAP[elementType];
@@ -156,13 +177,11 @@ angular.module('eperusteApp')
           if(element !== null && scope.field.localized) {
             element.attr('localized', '');
           }
+          if (scope.field.isolateEdit) {
+            element = wrapEditor(element);
+          }
           return element;
         }
-
-        // function replaceElementContent(content) {
-        //   element.empty();
-        //   populateElementContent(content);
-        // }
 
         function populateElementContent(content) {
           element.append(content);
@@ -176,26 +195,24 @@ angular.module('eperusteApp')
   })
   .directive('vaihtoehtoisenKentanRaami', function() {
     return {
-      template:
-        '<div ng-transclude></div>' +
-        '<button icon-role="remove" ng-if="$parent.editEnabled" editointi-kontrolli type="button"' +
-        ' class="pull-right poista-osio btn btn-default btn-xs" ng-click="suljeOsio($event)">' +
-        '{{ \'poista-osio\' | kaanna }}</button>',
+      templateUrl: 'views/directives/vaihtoehtoisenkentanraami.html',
       restrict: 'E',
       transclude: true,
-      scope: {
-        osionNimi: '@',
-        suljeOsio: '&'
-      },
       link: function (scope, element) {
-        scope.$watch('$parent.editEnabled', function () {
-          var button = element.find('button.poista-osio');
-          // TODO parempi metodi kuin stringillä matchaus
-          if (_.isString(scope.$parent.field.localeKey)) {
-            var header = angular.element('li[otsikko='+scope.$parent.field.localeKey+'] .osio-otsikko');
-            button.detach().appendTo(header);
-          }
+        scope.$watch('editEnabled', function () {
+          var buttons = element.find('.field-buttons');
+          var header = element.closest('li.kentta').find('.osio-otsikko');
+          buttons.detach().appendTo(header);
         });
+      },
+      controller: function ($scope) {
+        $scope.callFn = function ($event, fn) {
+          if ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+          }
+          $scope[fn]();
+        };
       }
     };
   })

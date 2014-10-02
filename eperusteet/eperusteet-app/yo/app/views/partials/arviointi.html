@@ -62,11 +62,9 @@ European Union Public Licence for more details.
                   <tr class="row-adder"><td></td><td></td><td class="toiminnot"><a href="" ng-click="rivi.uusi(osaamistasonKriteeri, $event)" icon-role="add" title="{{'arviointi-uusi-kriteeri' | kaanna}}"></a></td></tr>
                   </tbody>
                 </table>
-                <table ng-if="arvioinninkohde !== originalKohde" ng-repeat="osaamistasonKriteeri in arvioinninkohde.osaamistasonKriteerit | filter:{_osaamistaso: taso.id}">
-                  <tr ng-repeat="kriteeri in osaamistasonKriteeri.kriteerit">
-                    <td class="rivi"><p>{{kriteeri | kaanna}}</p></td><td></td>
-                  </tr>
-                </table>
+                <ul ng-if="arvioinninkohde !== originalKohde" ng-repeat="osaamistasonKriteeri in arvioinninkohde.osaamistasonKriteerit | filter:{_osaamistaso: taso.id}">
+                  <li ng-repeat="kriteeri in osaamistasonKriteeri.kriteerit">{{kriteeri | kaanna}}</li>
+                </ul>
               </td>
             </tr>
           </table>

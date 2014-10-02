@@ -139,7 +139,7 @@ angular.module('eperusteApp')
         });
 
         scope.$on('$destroy', function() {
-          if (editor) {
+          if (editor && editor.status !== 'destroyed') {
             editor.destroy(false);
           }
         });

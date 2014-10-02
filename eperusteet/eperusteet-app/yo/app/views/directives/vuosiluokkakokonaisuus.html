@@ -1,4 +1,21 @@
-<osallinen-osa editEnabled="editEnabled" model="model" config="data.options" versiot="versiot">
-    <label kaanna="vuosiluokat">
-    </label>: <span ng-repeat="vuosiluokka in model.vuosiluokat">{{vuosiluokka}}<span ng-if="!$last">, </span></span>
+<osallinen-osa model="model" editable-model="editableModel" config="data.options" versiot="versiot">
+  <div ng-if="!editEnabled">
+    <label kaanna="vuosiluokat" class="header">
+    </label>: <span ng-repeat="vuosiluokka in editableModel.vuosiluokat">{{vuosiluokka}}<span ng-if="!$last">, </span></span>
+  </div>
+  <div class="non-collapsibles" ng-if="editEnabled">
+    <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header'|kaanna}}*</label>
+    <input id="nimi-input" class="form-control" ng-model="editableModel.nimi" localized required ng-change="nimiValidationError = false">
+    <p class="alert alert-error" ng-show="(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError"
+       kaanna>Nimi on pakollinen tieto</p>
+    <label kaanna="vuosiluokat" class="header"></label>
+    <ul class="vuosiluokat">
+      <li ng-repeat="vuosiluokka in vuosiluokkaOptions">
+        <label>
+          <input type="checkbox" name="selectedVuosiluokat" value="{{vuosiluokka.value}}"
+                 ng-model="vuosiluokka.selected" ng-change="updateVuosiluokatModel()"> {{vuosiluokka.label}}
+        </label>
+      </li>
+    </ul>
+  </div>
 </osallinen-osa>

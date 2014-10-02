@@ -12,15 +12,15 @@
     <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
 
     <div ng-if="editEnabled">
-      <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="removeWhole()">{{config.removeWholeLabel | kaanna}}</button>
+      <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="removeWhole()">{{config.removeWholeLabel || 'poista' | kaanna}}</button>
       <div class="floater">
         <div class="dropdown">
           <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!canAdd()"
-                  icon-role="add">{{config.addPartLabel | kaanna}}</button>
+                  icon-role="add">{{config.addPartLabel || 'muokkaus-lisaa-osio' | kaanna}}</button>
           <ul class="pull-right dropdown-menu">
-            <li ng-repeat="field in config.menuItems | orderBy:'order'">
-              <a ng-show="field.visible" class="disabled-link">{{'muokkaus-' + field.localeKey + '-header' | kaanna}}</a>
-              <a href="" ng-show="!field.visible" ng-click="addFieldToVisible(field)">{{'muokkaus-' + field.localeKey + '-header' | kaanna}}</a>
+            <li ng-repeat="field in config.fields | orderBy:'order'">
+              <a ng-show="field.visible" class="disabled-link">{{field.menuLabel || field.localeKey | kaanna}}</a>
+              <a ng-show="!field.visible" ng-click="addField(field)">{{field.menuLabel || field.localeKey | kaanna}}</a>
             </li>
           </ul>
         </div>
