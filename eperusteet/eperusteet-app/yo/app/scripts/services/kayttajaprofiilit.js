@@ -79,7 +79,10 @@ angular.module('eperusteApp')
       profiili: function() { return info; },
       isResolved: function() { return info.resolved; },
 
-      setPreferenssi: function(avain, arvo) {
+      setPreferenssi: function(avain, arvo, successCb, failureCb) {
+        successCb = successCb || angular.noop;
+        failureCb = failureCb || angular.noop;
+
         if (arvo !== info.preferenssit[avain]) {
           Kayttajaprofiilit.lisaaPreferenssi({
             avain: avain,
@@ -87,7 +90,11 @@ angular.module('eperusteApp')
           }, function() {
             info.preferenssit[avain] = arvo;
             $rootScope.$broadcast('suosikitMuuttuivat');
-          }, Notifikaatiot.serverCb);
+            successCb();
+          }, function(err) {
+            failureCb();
+            Notifikaatiot.serverCb(err);
+          });
         }
       },
 
