@@ -37,7 +37,7 @@ angular.module('eperusteApp')
   })
 
   .controller('OsallinenOsaController', function ($scope, $state, VersionHelper, $q,
-      Editointikontrollit, FieldSplitter, Varmistusdialogi, $rootScope) {
+      Editointikontrollit, FieldSplitter, Varmistusdialogi, $rootScope, Utils, $timeout) {
     $scope.isLocked = false;
     $scope.isNew = false;
     $scope.editEnabled = false;
@@ -89,10 +89,19 @@ angular.module('eperusteApp')
 
     $scope.addField = function (field) {
       var splitfield = FieldSplitter.process(field);
+      var cssClass;
       if (splitfield.isMulti()) {
-        splitfield.addArrayItem($scope.editableModel);
+        var index = splitfield.addArrayItem($scope.editableModel);
         $rootScope.$broadcast('osafield:update');
+        cssClass = splitfield.getClass(index);
+      } else {
+        field.visible = true;
+        cssClass = FieldSplitter.getClass(field);
       }
+      ($scope.config.addFieldCb || angular.noop)(field);
+      $timeout(function () {
+        Utils.scrollTo('li.' + cssClass);
+      }, 200);
     };
 
     $scope.removeWhole = function () {

@@ -45,7 +45,7 @@ angular.module('eperusteApp')
         { name: 'tools', items : [ 'About' ] }
       ]
   })
-  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts) {
+  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts, $timeout) {
     return {
       priority: 10,
       restrict: 'A',
@@ -139,9 +139,12 @@ angular.module('eperusteApp')
         });
 
         scope.$on('$destroy', function() {
-          if (editor && editor.status !== 'destroyed') {
-            editor.destroy(false);
-          }
+          $timeout(function () {
+            if (editor && editor.status !== 'destroyed') {
+              editor.destroy(false);
+            }
+          });
+
         });
 
         editor.on('focus', function() {

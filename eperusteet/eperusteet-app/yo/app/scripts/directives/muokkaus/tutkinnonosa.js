@@ -35,7 +35,7 @@ angular.module('eperusteApp')
     PerusteTutkinnonosa, TutkinnonOsaEditMode, $timeout, Varmistusdialogi,
     VersionHelper, Lukitus, MuokkausUtils, PerusteenOsaViitteet,
     Utils, ArviointiHelper, PerusteProjektiSivunavi, Notifikaatiot, Koodisto,
-    Tutke2OsaData, Kommentit, KommentitByPerusteenOsa) {
+    Tutke2OsaData, Kommentit, KommentitByPerusteenOsa, FieldSplitter) {
 
     Utils.scrollTo('#ylasivuankkuri');
 
@@ -55,7 +55,6 @@ angular.module('eperusteApp')
         $scope.rakenne = res;
         $scope.viiteosa = _.find($scope.rakenne.tutkinnonOsat, {'_tutkinnonOsa': $scope.editableTutkinnonOsa.id.toString()}) || {};
         $scope.viiteosa.laajuus = $scope.viiteosa.laajuus || 0;
-        console.log($scope.viiteosa);
         $scope.yksikko = _.zipObject(_.map(res.$peruste.suoritustavat, 'suoritustapakoodi'),
                                      _.map(res.$peruste.suoritustavat, 'laajuusYksikko'))[$scope.suoritustapa];
         if (TutkinnonOsaEditMode.getMode()) {
@@ -341,7 +340,7 @@ angular.module('eperusteApp')
         angular.element('h1').click();
         // TODO ei toimi koska localeKey voi olla muu kuin string,
         //     joku muu tapa yksilöidä/löytää juuri lisätty kenttä?
-        Utils.scrollTo('li[otsikko='+field.localeKey+']');
+        Utils.scrollTo('li.' + FieldSplitter.getClass(field));
       });
     };
 

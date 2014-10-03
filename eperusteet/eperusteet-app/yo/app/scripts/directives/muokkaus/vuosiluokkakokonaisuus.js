@@ -85,6 +85,20 @@ angular.module('eperusteApp')
         removeWholeFn: function () {
           // TODO delete
         },
+        addFieldCb: function (field) {
+          if (field.path === 'osaamisenkuvaukset') {
+            if (!$scope.editableModel.osaamisenkuvaukset) {
+              $scope.editableModel.osaamisenkuvaukset = [];
+            }
+            // TODO don't fetch the real data here
+            var yleiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN);
+            _.each(yleiset, function (yleinen) {
+              $scope.editableModel.osaamisenkuvaukset.push({
+                osaaminen: yleinen.perusteenOsa.id, teksti: {}
+              });
+            });
+          }
+        },
         fieldRenderer: '<kenttalistaus edit-enabled="editEnabled" object-promise="modelPromise" fields="config.fields"></kenttalistaus>',
         fields: [
           {
@@ -92,7 +106,7 @@ angular.module('eperusteApp')
             localeKey: 'laaja-alainen-osaaminen',
             type: 'osaaminen',
             collapsible: true,
-            order: 1,
+            order: 1
           },
           {
             path: 'tekstikappaleet[].teksti',

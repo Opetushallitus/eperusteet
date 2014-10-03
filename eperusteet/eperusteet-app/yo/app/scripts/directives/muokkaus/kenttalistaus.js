@@ -42,6 +42,7 @@ angular.module('eperusteApp')
         $scope.removeField = function(fieldToRemove) {
           fieldToRemove.visible = false;
         };
+        $scope.getClass = FieldSplitter.getClass;
 
         function setInnerObjectPromise() {
           $scope.innerObjectPromise = $scope.objectPromise.then(function(object) {
@@ -84,6 +85,10 @@ angular.module('eperusteApp')
   })
 
   .service('FieldSplitter', function () {
+    function getCssClass(path) {
+      return path.replace(/\[/, '').replace(/\]/, '').replace(/\./, '');
+    }
+
     function SplitField(data) {
       this.original = data;
       this.parts = [];
@@ -111,13 +116,23 @@ angular.module('eperusteApp')
 
     SplitField.prototype.addArrayItem = function (obj) {
       // TODO oletettu tekstikappale
-      this.getObject(obj).push({nimi: {}, teksti: {}});
+      var object = this.getObject(obj);
+      object.push({nimi: {}, teksti: {}});
+      return object.length - 1;
+    };
+
+    SplitField.prototype.getClass = function (index) {
+      return getCssClass(this.getPath(index));
     };
 
     this.process = function (field) {
       var obj = new SplitField(field);
       obj.split();
       return obj;
+    };
+
+    this.getClass = function (field) {
+      return getCssClass(field.path);
     };
   })
 
