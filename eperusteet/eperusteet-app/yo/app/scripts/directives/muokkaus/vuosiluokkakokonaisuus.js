@@ -113,6 +113,8 @@ angular.module('eperusteApp')
             menuLabel: 'tekstikappale',
             localeKey: 'nimi',
             type: 'editor-area',
+            placeholder: 'muokkaus-tekstikappaleen-teksti-placeholder',
+            titleplaceholder: 'muokkaus-teksikappaleen-nimi-placeholder',
             localized: true,
             collapsible: true,
             isolateEdit: true,

@@ -6,7 +6,7 @@
       </accordion-heading>
       <div ng-if="!editEnabled" ng-bind-html="valitseKieli(osa.$model.teksti) | unsafe"></div>
       <div ng-if="editEnabled">
-        <div ckeditor ng-model="osa.$model.teksti" localized></div>
+        <div ckeditor ng-model="osa.$model.teksti" localized editor-placeholder="muokkaus-tekstikappaleen-teksti-placeholder"></div>
         <a class="action-link yleiskuvaus-toggle" ng-click="osa.$showkuvaus = !osa.$showkuvaus">
           {{osa.$showkuvaus ? 'piilota-osaamiskokonaisuuden-kuvaus' : 'nayta-osaamiskokonaisuuden-kuvaus' | kaanna}}
         </a>

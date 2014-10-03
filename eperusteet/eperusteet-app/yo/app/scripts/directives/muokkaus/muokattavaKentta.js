@@ -18,14 +18,15 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .directive('muokkauskenttaRaamit', function() {
+  .directive('muokkauskenttaRaamit', function(Utils) {
     return {
       templateUrl: 'views/partials/muokkaus/muokattavaKentta.html',
       restrict: 'A',
       transclude: true,
       scope: {
         model: '=',
-        piilotaOtsikko: '@?'
+        piilotaOtsikko: '@?',
+        field: '='
       },
       link: function(scope, element, attrs) {
         scope.otsikko = _.isString(scope.model) ? 'muokkaus-' + scope.model + '-header' : scope.model;
@@ -35,6 +36,14 @@ angular.module('eperusteApp')
 
         scope.canCollapse = attrs.collapsible || false;
         scope.collapsed = false;
+        scope.isEmpty = function (model) {
+          return !Utils.hasLocalizedText(model);
+        };
+        scope.$watch('field.$editing', function (value) {
+          if (value) {
+            scope.collapsed = false;
+          }
+        });
       }
     };
   })
@@ -49,7 +58,7 @@ angular.module('eperusteApp')
         removeField: '&?',
         editEnabled: '='
       },
-      controller: function ($scope, YleinenData, MuokkausUtils, Varmistusdialogi) {
+      controller: function ($scope, YleinenData, MuokkausUtils, Varmistusdialogi, Utils) {
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
 
         $scope.$watch('objectReady', function(newObjectReadyPromise) {
@@ -87,28 +96,41 @@ angular.module('eperusteApp')
           }
         };
 
+        function getTitlePath() {
+          return _.initial($scope.field.path.split('.'), 1).join('.') + '.' + $scope.field.originalLocaleKey;
+        }
+
         $scope.editOsio = function () {
           // Assumed that field has a title at upper level in hierarchy
-          $scope.titlePath = _.initial($scope.field.path.split('.'), 1).join('.') + '.' + $scope.field.originalLocaleKey;
+          $scope.titlePath = getTitlePath();
           $scope.originalContent = angular.copy(MuokkausUtils.nestedGet($scope.object, $scope.field.path, '.'));
           $scope.originalTitle = angular.copy(MuokkausUtils.nestedGet($scope.object, $scope.titlePath, '.'));
           $scope.field.$editing = true;
         };
 
         $scope.okEdit = function () {
-          // Force model update
-          $rootScope.$broadcast('notifyCKEditor');
+          $scope.titlePath = $scope.titlePath || getTitlePath();
+          var title = MuokkausUtils.nestedGet($scope.object, $scope.titlePath, '.');
+          if (Utils.hasLocalizedText(title)) {
+            // Force model update
+            $rootScope.$broadcast('notifyCKEditor');
 
-          $scope.originalContent = null;
-          $scope.originalTitle = null;
-          $scope.field.$editing = false;
+            $scope.originalContent = null;
+            $scope.originalTitle = null;
+            $scope.field.$editing = false;
+          }
         };
 
 
         $scope.cancelEdit = function () {
-          MuokkausUtils.nestedSet($scope.object, $scope.field.path, '.', $scope.originalContent, true);
-          MuokkausUtils.nestedSet($scope.object, $scope.titlePath, '.', $scope.originalTitle, true);
-          $scope.field.$editing = false;
+          if (!$scope.originalContent) {
+            // New, can delete
+            poistaOsio(MuokkausUtils.nestedGet($scope.object, $scope.field.path, '.'));
+          } else {
+            MuokkausUtils.nestedSet($scope.object, $scope.field.path, '.', $scope.originalContent, true);
+            MuokkausUtils.nestedSet($scope.object, $scope.titlePath, '.', $scope.originalTitle, true);
+            $scope.field.$editing = false;
+          }
         };
 
       },
@@ -154,9 +176,9 @@ angular.module('eperusteApp')
             .attr('ng-model', 'object.' + scope.field.path)
             .attr('ckeditor', '')
             .attr('editing-enabled', '{{editMode}}');
-            if (_.isString(scope.field.localeKey)) {
-              element.attr('editor-placeholder', 'muokkaus-' + scope.field.localeKey + '-placeholder');
-            }
+            var placeholder = scope.field.placeholder ? scope.field.placeholder :
+              'muokkaus-' + scope.field.localeKey + '-placeholder';
+            element.attr('editor-placeholder', placeholder);
             return element;
           },
           addInputAttributesFor: function (element) {

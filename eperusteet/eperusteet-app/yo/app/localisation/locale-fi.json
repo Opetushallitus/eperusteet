@@ -681,6 +681,8 @@
     "poista-osaamistavoite": "Poista osaamistavoite",
 
     "ei-osa-alueita": "Ei osa-alueita.",
-    "osa-alueet": "Osa-alueet:"
+    "osa-alueet": "Osa-alueet:",
+
+    "nimi-on-pakollinen": "Otsikko on pakollinen."
 
 }

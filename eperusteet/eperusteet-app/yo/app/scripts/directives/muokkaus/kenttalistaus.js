@@ -37,16 +37,26 @@ angular.module('eperusteApp')
         }, 3000);
       },
       controller: function ($scope) {
+        var model;
         $scope.noContent = false;
         $scope.expandedFields = $scope.fields;
+
         $scope.removeField = function(fieldToRemove) {
-          fieldToRemove.visible = false;
+          var splitfield = FieldSplitter.process(fieldToRemove);
+          if (splitfield.isMulti()) {
+            splitfield.remove(model);
+          } else {
+            fieldToRemove.visible = false;
+          }
+          setInnerObjectPromise();
         };
+
         $scope.getClass = FieldSplitter.getClass;
 
         function setInnerObjectPromise() {
           $scope.innerObjectPromise = $scope.objectPromise.then(function(object) {
             splitFields(object);
+            model = object;
             return object;
           });
         }
@@ -70,6 +80,10 @@ angular.module('eperusteApp')
                 newfield.localeKey = item[field.localeKey];
                 newfield.originalLocaleKey = field.localeKey;
                 newfield.visible = true;
+                if (field.isolateEdit && index === field.$setEditable) {
+                  newfield.$editing = true;
+                  delete field.$setEditable;
+                }
                 $scope.expandedFields.push(newfield);
               });
             } else {
@@ -119,6 +133,11 @@ angular.module('eperusteApp')
       var object = this.getObject(obj);
       object.push({nimi: {}, teksti: {}});
       return object.length - 1;
+    };
+
+    SplitField.prototype.remove = function (obj) {
+      var index = parseInt(this.parts[1], 10);
+      obj[this.parts[0]].splice(index, 1);
     };
 
     SplitField.prototype.getClass = function (index) {

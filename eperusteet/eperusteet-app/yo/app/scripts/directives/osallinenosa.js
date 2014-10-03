@@ -94,6 +94,7 @@ angular.module('eperusteApp')
         var index = splitfield.addArrayItem($scope.editableModel);
         $rootScope.$broadcast('osafield:update');
         cssClass = splitfield.getClass(index);
+        field.$setEditable = index;
       } else {
         field.visible = true;
         cssClass = FieldSplitter.getClass(field);
