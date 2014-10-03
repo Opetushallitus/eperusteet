@@ -77,6 +77,7 @@ angular.module('eperusteApp')
       // Perustiedot
       oid: function() { return info.oid; },
       profiili: function() { return info; },
+      isResolved: function() { return info.resolved; },
 
       setPreferenssi: function(avain, arvo) {
         if (arvo !== info.preferenssit[avain]) {

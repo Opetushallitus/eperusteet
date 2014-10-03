@@ -65,6 +65,12 @@ angular.module('eperusteApp')
       $scope.preferenssit = _.merge($scope.preferenssit, Profiili.profiili().preferenssit);
     });
 
+    $scope.$watch('preferenssit.nakymatyyli', function(uusi) {
+      if (Profiili.isResolved()) {
+        Profiili.setPreferenssi('nakymatyyli', uusi);
+      }
+    }, true);
+
     $scope.search = {
       term: '',
       placeholder: $scope.searchPlaceholder || ''
@@ -74,8 +80,6 @@ angular.module('eperusteApp')
     $scope.searchChanged = function(term) {
       $scope.search.term = term;
     };
-
-    $scope.$watch('preferenssit.nakymatyyli', _.partial(Profiili.setPreferenssi, 'nakymatyyli'), true);
 
     $scope.asetaJarjestys = function(tyyppi, suunta) {
       if ($scope.jarjestysTapa === tyyppi) {
