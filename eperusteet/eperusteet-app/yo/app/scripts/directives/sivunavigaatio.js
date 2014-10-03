@@ -65,6 +65,7 @@ angular.module('eperusteApp')
           if (hiddenOrCollapsed) {
             el.height('auto').css('border-right', '0');
             sisalto.hide().show(0); // Webkit bug: force redraw
+            el.hide().show(0);
           } else {
             var sisaltoHeight = sisalto.outerHeight();
             var naviElement = angular.element('.sivunavi-box');
