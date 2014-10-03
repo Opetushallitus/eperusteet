@@ -13,57 +13,48 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author harrik
+ * @author nkala
  */
 @Entity
-@Table(name = "kayttajaprofiili")
-public class Kayttajaprofiili implements Serializable {
+@Table(name = "kayttajaprofiili_preferenssi")
+@Getter
+@Setter
+public class KayttajaprofiiliPreferenssi implements Serializable {
 
+    public KayttajaprofiiliPreferenssi(Kayttajaprofiili kayttajaprofiili, String avain, String arvo) {
+        this.kayttajaprofiili = kayttajaprofiili;
+        this.avain = avain;
+        this.arvo = arvo;
+    }
+
+    public KayttajaprofiiliPreferenssi() {
+    }
+    
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Getter
-    @Setter
     private Long id;
 
-    @Getter
-    @Setter
-    private String oid;
+    @ManyToOne
+    @JoinColumn(name = "kayttajaprofiili_id")
+    private Kayttajaprofiili kayttajaprofiili;
 
-    @OrderColumn(name = "suosikki_order")
-    @OneToMany(mappedBy = "kayttajaprofiili", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Getter
-    @Setter
-    private List<Suosikki> suosikit;
+    private String avain;
 
-    @OneToMany(mappedBy = "kayttajaprofiili", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Getter
-    @Setter
-    private List<KayttajaprofiiliPreferenssi> preferenssit;
-
-    public Kayttajaprofiili() {
-    }
-
-    public Kayttajaprofiili(Long id) {
-        this.id = id;
-    }
-
+    private String arvo;
 }

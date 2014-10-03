@@ -15,6 +15,7 @@
  */
 
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .service('OrderHelper', function () {
@@ -51,10 +52,19 @@ angular.module('eperusteApp')
       }
     };
   })
-  .controller('OsalistausDirectiveController', function($scope, Preferenssit, Kaanna, Algoritmit, OrderHelper) {
-    $scope.preferenssit = Preferenssit.data;
+  .controller('OsalistausDirectiveController', function($scope, Preferenssit, Kaanna, Algoritmit, OrderHelper, Profiili) {
+    var defaultPreferences = {
+      nakymatyyli: 'palikka'
+    };
+
     $scope.jarjestysTapa = 'nimi';
     $scope.jarjestysOrder = false;
+    $scope.preferenssit = Profiili.profiili().resolved ? _.merge(defaultPreferences, Profiili.profiili().preferenssit) : defaultPreferences;
+
+    $scope.$on('suosikitMuuttuivat', function() {
+      $scope.preferenssit = _.merge($scope.preferenssit, Profiili.profiili().preferenssit);
+    });
+
     $scope.search = {
       term: '',
       placeholder: $scope.searchPlaceholder || ''
@@ -64,6 +74,8 @@ angular.module('eperusteApp')
     $scope.searchChanged = function(term) {
       $scope.search.term = term;
     };
+
+    $scope.$watch('preferenssit.nakymatyyli', _.partial(Profiili.setPreferenssi, 'nakymatyyli'), true);
 
     $scope.asetaJarjestys = function(tyyppi, suunta) {
       if ($scope.jarjestysTapa === tyyppi) {

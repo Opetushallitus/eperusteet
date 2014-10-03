@@ -32,4 +32,14 @@ public class SuosikkiDto implements Serializable {
     private String nimi;
     private String sisalto;
     private Date lisatty;
+
+    public SuosikkiDto(Long id, String nimi, String sisalto, Date lisatty) {
+        this.id = id;
+        this.nimi = nimi;
+        this.sisalto = sisalto;
+        this.lisatty = lisatty;
+    }
+
+    public SuosikkiDto() {
+    }
 }

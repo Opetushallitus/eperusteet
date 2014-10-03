@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.resource;
 
 import com.mangofactory.swagger.annotations.ApiIgnore;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajaProfiiliDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajaprofiiliPreferenssiDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.SuosikkiDto;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -28,12 +29,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
-
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -71,6 +70,13 @@ public class KayttajaprofiiliController {
     public ResponseEntity<KayttajaProfiiliDto> addSuosikki(@RequestBody SuosikkiDto suosikkiDto) {
         KayttajaProfiiliDto profiiliDto = service.addSuosikki(suosikkiDto);
         return new ResponseEntity<>(profiiliDto, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/preferenssi", method = POST, consumes="application/json")
+    @ResponseBody
+    public ResponseEntity setPreferenssi(@RequestBody KayttajaprofiiliPreferenssiDto preferenssiDto) {
+        KayttajaProfiiliDto uusi = service.setPreference(preferenssiDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/suosikki/{suosikkiId}", method = DELETE)

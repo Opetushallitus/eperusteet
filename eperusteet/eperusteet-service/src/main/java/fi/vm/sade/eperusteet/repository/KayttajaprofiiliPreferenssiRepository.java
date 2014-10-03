@@ -14,21 +14,16 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.dto.kayttaja;
+package fi.vm.sade.eperusteet.repository;
 
-import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
+import fi.vm.sade.eperusteet.domain.Kayttajaprofiili;
+import fi.vm.sade.eperusteet.domain.KayttajaprofiiliPreferenssi;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
- * @author jhyoty
+ * @author nkala
  */
-@Getter
-@Setter
-public class KayttajaProfiiliDto {
-    private long id;
-    private String oid;
-    private List<SuosikkiDto> suosikit;
-    private List<KayttajaprofiiliPreferenssiDto> preferenssit;
+public interface KayttajaprofiiliPreferenssiRepository extends JpaRepository<KayttajaprofiiliPreferenssi, Long> {
+    KayttajaprofiiliPreferenssi findOneByKayttajaprofiiliAndAvain(Kayttajaprofiili kp, String avain);
 }

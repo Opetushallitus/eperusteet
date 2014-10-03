@@ -16,19 +16,25 @@
 
 package fi.vm.sade.eperusteet.dto.kayttaja;
 
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author jhyoty
+ * @author nkala
  */
 @Getter
 @Setter
-public class KayttajaProfiiliDto {
-    private long id;
-    private String oid;
-    private List<SuosikkiDto> suosikit;
-    private List<KayttajaprofiiliPreferenssiDto> preferenssit;
+public class KayttajaprofiiliPreferenssiDto {
+    Long id;
+    String avain;
+    String arvo;
+
+    public KayttajaprofiiliPreferenssiDto(String avain, String arvo) {
+        this.avain = avain;
+        this.arvo = arvo;
+    }
+
+    public KayttajaprofiiliPreferenssiDto() {
+    }
 }
