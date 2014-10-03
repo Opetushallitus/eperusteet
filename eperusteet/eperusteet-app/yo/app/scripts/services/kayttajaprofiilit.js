@@ -61,7 +61,7 @@ angular.module('eperusteApp')
       info.suosikit = transformSuosikit(res.suosikit);
       info.preferenssit = transformPreferenssit(res.preferenssit);
       (cb || angular.noop)();
-      $rootScope.$broadcast('suosikitMuuttuivat');
+      $rootScope.$broadcast('kayttajaProfiiliPaivittyi');
     }
 
     Kayttajaprofiilit.get({}, function(res) {
@@ -70,7 +70,7 @@ angular.module('eperusteApp')
       info.suosikit = transformSuosikit(res.suosikit);
       info.preferenssit = transformPreferenssit(res.preferenssit);
       info.resolved = true;
-      $rootScope.$broadcast('suosikitMuuttuivat');
+      $rootScope.$broadcast('kayttajaProfiiliPaivittyi');
     });
 
     return {
@@ -89,7 +89,7 @@ angular.module('eperusteApp')
             arvo: arvo
           }, function() {
             info.preferenssit[avain] = arvo;
-            $rootScope.$broadcast('suosikitMuuttuivat');
+            $rootScope.$broadcast('kayttajaProfiiliPaivittyi');
             successCb();
           }, function(err) {
             failureCb();
@@ -111,7 +111,7 @@ angular.module('eperusteApp')
           _.remove(info.suosikit, vanha);
           Suosikit.delete({ suosikkiId: vanha.id }, function() {
             success(_.clone(info.suosikit));
-            $rootScope.$broadcast('suosikitMuuttuivat');
+            $rootScope.$broadcast('kayttajaProfiiliPaivittyi');
           }, Notifikaatiot.serverCb);
         }
         else {

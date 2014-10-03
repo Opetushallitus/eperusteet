@@ -66,7 +66,7 @@ angular.module('eperusteApp')
     $scope.jarjestysOrder = false;
     $scope.preferenssit = Profiili.profiili().resolved ? _.merge(defaultPreferences, Profiili.profiili().preferenssit) : defaultPreferences;
 
-    $scope.$on('suosikitMuuttuivat', function() {
+    $scope.$on('kayttajaProfiiliPaivittyi', function() {
       $scope.preferenssit = _.merge($scope.preferenssit, Profiili.profiili().preferenssit);
     });
 
