@@ -339,6 +339,8 @@ angular.module('eperusteApp')
       // Varmista että menu sulkeutuu klikin jälkeen
       $timeout(function () {
         angular.element('h1').click();
+        // TODO ei toimi koska localeKey voi olla muu kuin string,
+        //     joku muu tapa yksilöidä/löytää juuri lisätty kenttä?
         Utils.scrollTo('li[otsikko='+field.localeKey+']');
       });
     };

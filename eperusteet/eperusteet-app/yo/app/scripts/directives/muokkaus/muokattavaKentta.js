@@ -24,11 +24,12 @@ angular.module('eperusteApp')
       restrict: 'A',
       transclude: true,
       scope: {
-        localeKey: '=otsikko',
+        model: '=',
         piilotaOtsikko: '@?'
       },
       link: function(scope, element, attrs) {
-        scope.otsikko = _.isString(scope.localeKey) ? ('muokkaus-' + scope.localeKey + '-header') : scope.localeKey;
+        scope.otsikko = _.isString(scope.model) ? 'muokkaus-' + scope.model + '-header' : scope.model;
+        scope.hasModel = !_.isString(scope.model);
         element.addClass('list-group-item ');
         element.attr('ng-class', '');
 
@@ -87,16 +88,29 @@ angular.module('eperusteApp')
         };
 
         $scope.editOsio = function () {
+          // Assumed that field has a title at upper level in hierarchy
+          $scope.titlePath = _.initial($scope.field.path.split('.'), 1).join('.') + '.' + $scope.field.originalLocaleKey;
+          $scope.originalContent = angular.copy(MuokkausUtils.nestedGet($scope.object, $scope.field.path, '.'));
+          $scope.originalTitle = angular.copy(MuokkausUtils.nestedGet($scope.object, $scope.titlePath, '.'));
           $scope.field.$editing = true;
         };
 
-        $scope.cancelEdit = function () {
+        $scope.okEdit = function () {
+          // Force model update
+          $rootScope.$broadcast('notifyCKEditor');
+
+          $scope.originalContent = null;
+          $scope.originalTitle = null;
           $scope.field.$editing = false;
         };
 
-        $scope.okEdit = function () {
+
+        $scope.cancelEdit = function () {
+          MuokkausUtils.nestedSet($scope.object, $scope.field.path, '.', $scope.originalContent, true);
+          MuokkausUtils.nestedSet($scope.object, $scope.titlePath, '.', $scope.originalTitle, true);
           $scope.field.$editing = false;
         };
+
       },
       link: function(scope, element) {
         var typeParams = scope.field.type.split('.');
