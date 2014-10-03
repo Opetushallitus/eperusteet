@@ -29,7 +29,7 @@ angular.module('eperusteApp')
       return ret;
     };
   })
-  .directive('osalistaus', function(OrderHelper) {
+  .directive('osalistaus', function(OrderHelper, $compile) {
     return {
       templateUrl: 'views/directives/osalistaus.html',
       restrict: 'A',
@@ -38,10 +38,15 @@ angular.module('eperusteApp')
         searchPlaceholder: '@?',
         emptyPlaceholder: '@?',
         showLaajuus: '@?',
-        urlGenerator: '&'
+        urlGenerator: '&',
+        options: '='
       },
       controller: 'OsalistausDirectiveController',
       link: function (scope, element, attrs) {
+        if (scope.options.extrafilter) {
+          var el = $compile(scope.options.extrafilter)(scope);
+          element.find('#osalistausextrafilter').empty().append(el);
+        }
         attrs.$observe('showLaajuus', function (value) {
           scope.hasLaajuus = value === 'true';
           scope.jarjestysOptions = OrderHelper.get(scope.hasLaajuus);
@@ -104,4 +109,8 @@ angular.module('eperusteApp')
     $scope.comparisonFn = function(value) {
       return Algoritmit.rajausVertailu($scope.search.term, value, 'nimi');
     };
+
+    $scope.$watch('options.extrafiltermodel', function (/*value*/) {
+      // TODO filtering based on extra filter
+    });
   });

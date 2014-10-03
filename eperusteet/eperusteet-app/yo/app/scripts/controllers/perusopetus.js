@@ -85,6 +85,15 @@ angular.module('eperusteApp')
               ]
             }
           ];
+        case this.OPPIAINEET:
+          return [
+            {
+              nimi: {fi: 'Matematiikka'}
+            },
+            {
+              nimi: {fi: 'Liikunta'}
+            }
+          ];
         default:
           return [];
       }
@@ -146,8 +155,20 @@ angular.module('eperusteApp')
     }
     // TODO real data
     $scope.osaAlueet = _.map(PerusopetusService.getOsat($stateParams.osanTyyppi), function (osa) {
-      return $stateParams.osanTyyppi === 'osaaminen' ? osa.perusteenOsa : osa;
+      return $stateParams.osanTyyppi === PerusopetusService.OSAAMINEN ? osa.perusteenOsa : osa;
     });
+    var vuosiluokkakokonaisuudet = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT);
+
+    $scope.options = {
+      extrafilter: $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET ?
+        '<label>{{\'vuosiluokkakokonaisuus\'|kaanna}}' +
+        '<select class="form-control" ng-model="options.extrafiltermodel"' +
+        ' ng-options="obj as obj.nimi|kaanna for obj in options.extrafilteroptions">' +
+        '<option value="">{{\'kaikki\'|kaanna}}</option>' +
+        '</select></label>' : null,
+      extrafilteroptions: vuosiluokkakokonaisuudet,
+      extrafiltermodel: null
+    };
 
     $scope.createUrl = function (/*value*/) {
       // TODO proper parameters
@@ -157,6 +178,7 @@ angular.module('eperusteApp')
 
   .controller('OsaAlueController', function ($scope, $q, $stateParams, PerusopetusService) {
     $scope.isVuosiluokka = $stateParams.osanTyyppi === PerusopetusService.VUOSILUOKAT;
+    $scope.isOppiaine = $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET;
     // TODO real data
     $scope.versiot = {latest: true};
     var tekstikappale = {
@@ -164,7 +186,8 @@ angular.module('eperusteApp')
       teksti: {fi: '<p>Tekstikappaleen tekstiä lorem ipsum.</p>'}
     };
     $scope.dataObject = $q.defer();
-    var data = $scope.isVuosiluokka ? PerusopetusService.getOsat($stateParams.osanTyyppi)[0] : tekstikappale;
+    var data = ($scope.isVuosiluokka || $scope.isOppiaine) ?
+      PerusopetusService.getOsat($stateParams.osanTyyppi)[0] : tekstikappale;
     _.extend($scope.dataObject, data);
     $scope.dataObject.resolve(data);
   })

@@ -7,7 +7,10 @@
     <div ng-if="isVuosiluokka">
       <muokkaus-vuosiluokka model="dataObject" versiot="versiot"></muokkaus-vuosiluokka>
     </div>
-    <div ng-if="!isVuosiluokka">
+    <div ng-if="isOppiaine">
+      <muokkaus-oppiaine model="dataObject" versiot="versiot"></muokkaus-oppiaine>
+    </div>
+    <div ng-if="!isVuosiluokka && !isOppiaine">
       <muokkaus-tekstikappale tekstikappale="dataObject" versiot="versiot"></muokkaus-tekstikappale>
     </div>
   </div>
