@@ -152,7 +152,7 @@ angular.module('eperusteApp')
     $scope.yksikko = Algoritmit.perusteenSuoritustavanYksikko(peruste, $scope.suoritustapa);
 
     $scope.vaihdaSuoritustapa = function(suoritustapa) {
-      $state.go('root.esitys.peruste', _.merge(_.clone($stateParams), { suoritustapa: suoritustapa }));
+      $state.go('root.esitys.peruste', _.merge(_.clone($stateParams), { suoritustapa: suoritustapa }), { reload: true });
     };
 
     if ($state.current.name === 'root.esitys.peruste') {
