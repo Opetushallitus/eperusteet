@@ -15,6 +15,7 @@
 */
 
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .directive('muokkausOppiaine', function() {
@@ -25,12 +26,32 @@ angular.module('eperusteApp')
         model: '=',
         versiot: '='
       },
-      controller: 'OppiaineController'
+      controller: 'OppiaineController',
+      link: function (scope, element) {
+        scope.$watch('editEnabled', function (value) {
+          if (!value) {
+            element.find('.info-placeholder').hide();
+          }
+        });
+      }
     };
   })
 
   .controller('OppiaineController', function ($scope, PerusopetusService) {
     $scope.editableModel = angular.copy($scope.model);
+    $scope.editEnabled = false;
+    $scope.mappedVuosiluokat = [];
+
+    var callbacks = {
+      edit: function () {},
+      save: function () {},
+      cancel: function () {},
+      notify: function (value) {
+        $scope.editEnabled = value;
+      },
+      validate: function () { return true; }
+    };
+
     $scope.data = {
       options: {
         title: $scope.model.nimi,
@@ -46,11 +67,69 @@ angular.module('eperusteApp')
         addFieldCb: function (/*field*/) {
 
         },
-        fieldRenderer: '<div></div>',
+        fieldRenderer: '<kenttalistaus mode="sortable" edit-enabled="editEnabled" ' +
+          'object-promise="modelPromise" fields="config.fields" hide-empty-placeholder="true"></kenttalistaus>',
         fields: [
+          {
+            path: 'tekstikappaleet[].teksti',
+            menuLabel: 'tekstikappale',
+            localeKey: 'nimi',
+            type: 'editor-area',
+            placeholder: 'muokkaus-tekstikappaleen-teksti-placeholder',
+            titleplaceholder: 'muokkaus-teksikappaleen-nimi-placeholder',
+            localized: true,
+            collapsible: true,
+            isolateEdit: true,
+            order: 300
+          },
+          {
+            path: 'tehtava',
+            localeKey: 'oppiaineen-tehtava',
+            type: 'editor-area',
+            placeholder: 'muokkaus-tekstikappaleen-teksti-placeholder',
+            localized: true,
+            collapsible: true,
+            isolateEdit: true,
+            order: 100
+          },
+          {
+            path: 'osaalue',
+            localeKey: 'osaalue',
+            type: 'editor-area',
+            placeholder: 'muokkaus-tekstikappaleen-teksti-placeholder',
+            localized: true,
+            collapsible: true,
+            isolateEdit: true,
+            order: 200
+          },
+
         ],
-        editingCallbacks: null
+        editingCallbacks: callbacks
       }
     };
 
+    $scope.getVuosiluokkakokonaisuus = function (oppiaineenVuosiluokkakokonaisuus) {
+      return _.find($scope.vuosiluokkakokonaisuudet, function (item) {
+        return item.id === oppiaineenVuosiluokkakokonaisuus._id;
+      });
+    };
+
+
+    $scope.$watch('model.vuosiluokkakokonaisuudet', function () {
+      $scope.mappedVuosiluokat = _.map($scope.model.vuosiluokkakokonaisuudet, function (item) {
+        return $scope.getVuosiluokkakokonaisuus(item);
+      });
+    }, true);
+
+    $scope.vuosiluokkakokonaisuudet = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT);
+    if (_.size($scope.vuosiluokkakokonaisuudet) > 0) {
+      $scope.data.options.fields.push({divider: true, order: 99});
+    }
+    _.each($scope.vuosiluokkakokonaisuudet, function (item, index) {
+      $scope.data.options.fields.unshift({
+        path: 'vuosiluokkakokonaisuudet['+index+']',
+        localeKey: item.nimi,
+        order: 10
+      });
+    });
   });

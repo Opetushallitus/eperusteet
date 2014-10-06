@@ -1,7 +1,8 @@
 <div id="muokattavat-kentat">
   <div class="panel panel-default">
-    <ul class="list-group muokkaus">
-      <li class="kentta" ng-class="getClass(field)" ng-repeat="field in expandedFields | filter:{'visible':true}:true | orderBy:'order'"
+    <ul ng-if="mode !== 'sortable'" class="list-group muokkaus">
+      <li class="kentta" ng-class="getClass(field)"
+          ng-repeat="field in expandedFields | filter:{'visible':true}:true | orderBy:'order'"
           muokkauskentta-raamit model="field.localeKey" field="field" piilota-otsikko="{{field.hideHeader}}"
           collapsible="{{field.collapsible}}">
         <muokattava-kentta edit-enabled="editEnabled"
@@ -9,7 +10,24 @@
                            remove-field="removeField(fieldToRemove)"></muokattava-kentta>
       </li>
     </ul>
-    <p class="info-placeholder" ng-show="noContent" id="tutkinnon-osa-ei-sisaltoa">{{'tutkinnon-osa-ei-sisaltoa'|kaanna}}
+    <div ng-if="mode === 'sortable' && editEnabled" ui-tree>
+    <ul class="list-group muokkaus" ui-tree-nodes ng-model="expandedFields">
+      <li class="sortable-box" ui-tree-node
+          ng-repeat="field in expandedFields | filter:{'visible':true}:true">
+        <div class="closer">
+          <a class="action-link" icon-role="remove" ng-click="removeField(field)"></a>
+        </div>
+        <div class="pull-left draghandle" ui-tree-handle icon-role="drag"></div>
+        <div class="content">
+          <div ng-if="hasEditableTitle(field)" class="input-wrapper">
+            <input class="form-control" ng-model="field.localeKey" localized placeholder="{{field.titleplaceholder|kaanna}}">
+          </div>
+          <span ng-if="!hasEditableTitle(field)">{{field.localeKey | kaanna}}</span>
+        </div>
+      </li>
+    </ul>
+    </div>
+    <p class="info-placeholder" ng-show="!hideEmptyPlaceholder && noContent" id="tutkinnon-osa-ei-sisaltoa">{{'tutkinnon-osa-ei-sisaltoa'|kaanna}}
     <span ng-show="editEnabled" kaanna>tutkinnon-osa-ei-sisaltoa-ohje</span>
     </p>
   </div>

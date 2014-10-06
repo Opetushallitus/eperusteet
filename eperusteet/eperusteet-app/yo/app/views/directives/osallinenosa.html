@@ -18,9 +18,9 @@
           <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!canAdd()"
                   icon-role="add">{{config.addPartLabel || 'muokkaus-lisaa-osio' | kaanna}}</button>
           <ul class="pull-right dropdown-menu">
-            <li ng-repeat="field in config.fields | orderBy:'order'">
-              <a ng-show="field.visible" class="disabled-link">{{field.menuLabel || field.localeKey | kaanna}}</a>
-              <a ng-show="!field.visible" ng-click="addField(field)">{{field.menuLabel || field.localeKey | kaanna}}</a>
+            <li ng-repeat="field in config.fields | orderBy:'order'" ng-class="{divider: field.divider}">
+              <a ng-if="!field.divider" ng-class="{'disabled-link': field.visible}"
+                 ng-click="field.visible ? void(0) : addField(field)">{{field.menuLabel || field.localeKey | kaanna}}</a>
             </li>
           </ul>
         </div>

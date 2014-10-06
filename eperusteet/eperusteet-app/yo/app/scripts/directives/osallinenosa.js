@@ -97,6 +97,7 @@ angular.module('eperusteApp')
         field.$setEditable = index;
       } else {
         field.visible = true;
+        field.$added = true;
         cssClass = FieldSplitter.getClass(field);
       }
       ($scope.config.addFieldCb || angular.noop)(field);

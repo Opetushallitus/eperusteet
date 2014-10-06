@@ -685,6 +685,11 @@
     "ei-osa-alueita": "Ei osa-alueita.",
     "osa-alueet": "Osa-alueet:",
 
-    "nimi-on-pakollinen": "Otsikko on pakollinen."
+    "nimi-on-pakollinen": "Otsikko on pakollinen.",
+
+    "osaalue": "Osa-alue",
+    "oppiaineen-tehtava": "Oppiaineen tehtävä",
+    "poista-oppiaine": "Poista oppiaine",
+    "muokkaa-oppiainetta": "Muokkaa oppiainetta"
 
 }

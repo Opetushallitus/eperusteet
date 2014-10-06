@@ -74,6 +74,7 @@ angular.module('eperusteApp')
         case this.VUOSILUOKAT:
           return [
             {
+              id: 1000,
               nimi: {fi: 'Vuosiluokat 7-9'},
               vuosiluokat: [7, 8, 9],
               osaamisenkuvaukset: [
@@ -83,15 +84,52 @@ angular.module('eperusteApp')
                 {nimi: {fi: 'Joku tekstikappale'}, teksti: {fi: 'Tekstikappaleen tekstiä.'}},
                 {nimi: {fi: 'Toinen tekstikappale'}, teksti: {fi: 'Lisää tekstikappaleen tekstiä.'}}
               ]
-            }
+            },
+            {
+              id: 1001,
+              nimi: {fi: 'Vuosiluokat 1-2'},
+              vuosiluokat: [1, 2],
+              osaamisenkuvaukset: [],
+              tekstikappaleet: []
+            },
+            {
+              id: 1002,
+              nimi: {fi: 'Vuosiluokat 3-6'},
+              vuosiluokat: [3, 4, 5, 6],
+              osaamisenkuvaukset: [],
+              tekstikappaleet: []
+            },
+
           ];
         case this.OPPIAINEET:
           return [
             {
-              nimi: {fi: 'Matematiikka'}
+              nimi: {fi: 'Matematiikka'},
+              vuosiluokkakokonaisuudet: [
+                {
+                  _id: 1000
+                },
+                {
+                  _id: 1001
+                },
+                {
+                  _id: 1002
+                },
+              ],
+              tekstikappaleet: [],
+              tehtava: {},
+              osaalue: {},
             },
             {
-              nimi: {fi: 'Liikunta'}
+              nimi: {fi: 'Liikunta'},
+              vuosiluokkakokonaisuudet: [
+                {
+                  _id: 1000,
+                }
+              ],
+              tekstikappaleet: [],
+              tehtava: {},
+              osaalue: {},
             }
           ];
         default:
@@ -159,15 +197,23 @@ angular.module('eperusteApp')
     });
     var vuosiluokkakokonaisuudet = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT);
 
-    $scope.options = {
-      extrafilter: $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET ?
-        '<label>{{\'vuosiluokkakokonaisuus\'|kaanna}}' +
-        '<select class="form-control" ng-model="options.extrafiltermodel"' +
-        ' ng-options="obj as obj.nimi|kaanna for obj in options.extrafilteroptions">' +
+    var oppiaineFilter = {
+      template: '<label>{{\'vuosiluokkakokonaisuus\'|kaanna}}' +
+        '<select class="form-control" ng-model="options.extrafilter.model"' +
+        ' ng-options="obj as obj.nimi|kaanna for obj in options.extrafilter.options">' +
         '<option value="">{{\'kaikki\'|kaanna}}</option>' +
-        '</select></label>' : null,
-      extrafilteroptions: vuosiluokkakokonaisuudet,
-      extrafiltermodel: null
+        '</select></label>',
+      model : null,
+      options: vuosiluokkakokonaisuudet,
+      fn: function (query, value) {
+        return !!_.find(value.vuosiluokkakokonaisuudet, function (item) {
+          return item._id === query.id;
+        });
+      }
+    };
+
+    $scope.options = {
+      extrafilter: $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET ? oppiaineFilter : null,
     };
 
     $scope.createUrl = function (/*value*/) {

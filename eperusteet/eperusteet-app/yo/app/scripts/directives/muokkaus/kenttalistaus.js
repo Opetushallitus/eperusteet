@@ -26,15 +26,23 @@ angular.module('eperusteApp')
       scope: {
         fields: '=',
         objectPromise: '=',
-        editEnabled: '='
+        editEnabled: '=',
+        mode: '@?',
+        hideEmptyPlaceholder: '@?'
       },
       link: function(scope, element) {
         scope.updateContentTip = function () {
-          scope.noContent = element.find('ul.muokkaus').children().length === 0;
+          $timeout(function () {
+            scope.noContent = element.find('ul.muokkaus').children().length === 0;
+          });
         };
-        $timeout(function () {
+        scope.updateContentTip();
+        scope.$watch('editEnabled', function () {
           scope.updateContentTip();
-        }, 3000);
+        });
+        scope.$watch('fields', function () {
+          scope.updateContentTip();
+        }, true);
       },
       controller: function ($scope) {
         var model;
@@ -47,11 +55,16 @@ angular.module('eperusteApp')
             splitfield.remove(model);
           } else {
             fieldToRemove.visible = false;
+            fieldToRemove.$added = false;
           }
           setInnerObjectPromise();
         };
 
         $scope.getClass = FieldSplitter.getClass;
+
+        $scope.hasEditableTitle = function (field) {
+          return _.has(field, 'titleplaceholder');
+        };
 
         function setInnerObjectPromise() {
           $scope.innerObjectPromise = $scope.objectPromise.then(function(object) {
@@ -72,7 +85,7 @@ angular.module('eperusteApp')
           $scope.expandedFields = [];
           _.each($scope.fields, function (field) {
             var splitfield = FieldSplitter.process(field);
-            if (splitfield.isMulti()) {
+            if (splitfield.isMulti() && splitfield.needsSplit()) {
               // Expand array to individual fields
               splitfield.each(object, function (item, index) {
                 var newfield = angular.copy(field);
@@ -88,7 +101,8 @@ angular.module('eperusteApp')
               });
             } else {
               field.inMenu = field.path !== 'nimi' && field.path !== 'koodiUri';
-              field.visible = field.mandatory || MuokkausUtils.hasValue(object, field.path);
+              field.visible = field.divider ? false :
+                (field.$added || field.mandatory || MuokkausUtils.hasValue(object, field.path));
               $scope.expandedFields.push(field);
             }
           });
@@ -109,11 +123,20 @@ angular.module('eperusteApp')
     }
 
     SplitField.prototype.split = function () {
+      if (!this.original.path) {
+        return;
+      }
       this.parts = this.original.path.split('[');
+      var index = this.original.path.match(/\[(\d+)\]/);
+      this.index = index ? index[1] : null;
     };
 
     SplitField.prototype.isMulti = function () {
       return this.parts.length === 2;
+    };
+
+    SplitField.prototype.needsSplit = function () {
+      return this.index === null;
     };
 
     SplitField.prototype.each = function (obj, cb) {

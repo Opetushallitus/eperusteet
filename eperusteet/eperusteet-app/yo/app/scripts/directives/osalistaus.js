@@ -43,8 +43,8 @@ angular.module('eperusteApp')
       },
       controller: 'OsalistausDirectiveController',
       link: function (scope, element, attrs) {
-        if (scope.options.extrafilter) {
-          var el = $compile(scope.options.extrafilter)(scope);
+        if (scope.options && scope.options.extrafilter) {
+          var el = $compile(scope.options.extrafilter.template)(scope);
           element.find('#osalistausextrafilter').empty().append(el);
         }
         attrs.$observe('showLaajuus', function (value) {
@@ -107,10 +107,11 @@ angular.module('eperusteApp')
     };
 
     $scope.comparisonFn = function(value) {
-      return Algoritmit.rajausVertailu($scope.search.term, value, 'nimi');
+      var rajaus = Algoritmit.rajausVertailu($scope.search.term, value, 'nimi');
+      var extrarajaus = true;
+      if ($scope.options && $scope.options.extrafilter && $scope.options.extrafilter.model) {
+        extrarajaus = $scope.options.extrafilter.fn($scope.options.extrafilter.model, value);
+      }
+      return extrarajaus && rajaus;
     };
-
-    $scope.$watch('options.extrafiltermodel', function (/*value*/) {
-      // TODO filtering based on extra filter
-    });
   });
