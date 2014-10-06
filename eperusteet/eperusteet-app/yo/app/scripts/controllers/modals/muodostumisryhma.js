@@ -21,20 +21,14 @@ angular.module('eperusteApp')
   .controller('MuodostumisryhmaModalCtrl', function($scope, $modalInstance, ryhma,
     vanhempi, suoritustapa, leikelauta, Varmistusdialogi, YleinenData, Koodisto, Utils) {
 
+    ryhma.muodostumisSaanto = ryhma.muodostumisSaanto || {};
+
     $scope.vanhempi = vanhempi;
     $scope.leikelauta = leikelauta;
     $scope.suoritustapa = suoritustapa;
     $scope.roolit = _.map(YleinenData.rakenneRyhmaRoolit, function(rooli) {
       return { value: rooli, label: rooli };
     });
-
-    var msl = ryhma && ryhma.muodostumisSaanto && ryhma.muodostumisSaanto.laajuus ? ryhma.muodostumisSaanto.laajuus : null;
-    var msk = ryhma && ryhma.muodostumisSaanto && ryhma.muodostumisSaanto.koko ? ryhma.muodostumisSaanto.koko : null;
-
-    $scope.ms = {
-      laajuus: msl ? true : false,
-      koko: msk ? true : false
-    };
 
     $scope.luonti = !_.isObject(ryhma);
 
@@ -83,15 +77,9 @@ angular.module('eperusteApp')
         if (uusiryhma.osat === undefined) {
           uusiryhma.osat = [];
         }
-        if (!$scope.ms.laajuus) {
-          delete uusiryhma.muodostumisSaanto.laajuus;
-        }
-        else {
+        if (uusiryhma.muodostumisSaanto.laajuus) {
           var ml = uusiryhma.muodostumisSaanto.laajuus;
           ml.maksimi = ml.minimi && (!ml.maksimi || ml.minimi > ml.maksimi) ? ml.minimi : ml.maksimi;
-        }
-        if (!$scope.ms.koko) {
-          delete uusiryhma.muodostumisSaanto.koko;
         }
         if (!_.isEmpty($scope.osaamisala)) {
           uusiryhma.rooli = YleinenData.osaamisalaRooli;
