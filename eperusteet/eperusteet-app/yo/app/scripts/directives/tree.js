@@ -330,7 +330,7 @@ angular.module('eperusteApp')
           scope.tosarajaus = input;
           var filtered = !_.isEmpty(input);
           scope.uniikit = _.reject(scope.kaikkiUniikit, function(yksi) {
-            var nimi = Kaanna.kaanna(scope.rakenne.tutkinnonOsaViitteet[yksi._tutkinnonOsaViite].nimi).toLowerCase();
+            var nimi = (Kaanna.kaanna(scope.rakenne.tutkinnonOsaViitteet[yksi._tutkinnonOsaViite].nimi) || '').toLowerCase();
             return (filtered && nimi.indexOf(input.toLowerCase()) === -1) ||
                    (scope.piilotaKaikki && scope.kaytetytUniikit[yksi._tutkinnonOsaViite]);
           });
@@ -356,7 +356,7 @@ angular.module('eperusteApp')
             .value();
           scope.tutkinnonOsat.multiPage = _.size(scope.uniikit) > scope.tutkinnonOsat.perSivu;
           scope.kaikkiUniikit = _.sortBy(scope.uniikit, function(osa) {
-            return Kaanna.kaanna(scope.rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi).toLowerCase();
+            return (Kaanna.kaanna(scope.rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi) || '').toLowerCase();
           });
           scope.uniikit = scope.kaikkiUniikit;
           scope.paivitaRajaus();
