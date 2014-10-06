@@ -18,7 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('KieliCtrl', function($scope, YleinenData, $state) {
+  .controller('KieliCtrl', function($scope, $stateParams, YleinenData, $state) {
 
     $scope.koodit = _.map(_.pairs(YleinenData.kielet), function (item) {
       return {koodi: item[1], nimi: item[0]};
@@ -30,7 +30,7 @@ angular.module('eperusteApp')
     });
 
     $scope.vaihdaKieli = function(kielikoodi) {
-      $state.go($state.current.name, _.extend($state.params, {lang: kielikoodi}), {reload: true});
+      $state.go($state.current.name, _.merge($stateParams, {lang: kielikoodi}), {reload: true});
     };
 
   });
