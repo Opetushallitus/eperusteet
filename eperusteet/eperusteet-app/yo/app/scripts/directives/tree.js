@@ -52,14 +52,15 @@ angular.module('eperusteApp')
         muokkaus: '=',
         poistoTehtyCb: '='
       },
+      controller: function($scope) {
+        $scope.lisaaUusi = 0;
+        $scope.lisataanUuttaPerusteenOsaa = false;
+        $scope.scratchpad = [];
+        $scope.roskakori = [];
+        $scope.esitystilassa = $state.includes('**.esitys.**');
+        $scope.lang = $translate.use() || $translate.preferredLanguage();
+      },
       link: function(scope, el) {
-        scope.lisaaUusi = 0;
-        scope.lisataanUuttaPerusteenOsaa = false;
-        scope.scratchpad = [];
-        scope.roskakori = [];
-        scope.esitystilassa = $state.includes('**.esitys.**');
-        scope.lang = $translate.use() || $translate.preferredLanguage();
-
         scope.poista = function(i, a) {
           _.remove(a.osat, i);
           scope.poistoTehtyCb();
@@ -219,7 +220,8 @@ angular.module('eperusteApp')
                          '  </a>' +
                          '</div>';
 
-        var template =
+        var template = '' +
+          // generoiKuvauksetAsetin() +
           '<div ng-if="!vanhempi">' +
           '  <div class="ylapainikkeet">' +
           '    <span class="rakenne-nimi">{{ apumuuttujat.peruste.nimi | kaanna }}' +
@@ -273,23 +275,25 @@ angular.module('eperusteApp')
         muokkaus: '=',
         esitys: '=?'
       },
-      link: function(scope) {
-        scope.suljettuViimeksi = true;
-        scope.lisataanUuttaOsaa = false;
-        scope.uusiOsa = null;
-        scope.skratchpad = [];
-        scope.uniikit = [];
-        scope.kaytetytUniikit = {};
-        scope.kaikkiUniikit = [];
-        scope.topredicate = 'nimi.fi';
-        scope.tosarajaus = '';
-        scope.tutkinnonOsat = {
+      controller: function($scope) {
+        $scope.suljettuViimeksi = true;
+        $scope.lisataanUuttaOsaa = false;
+        $scope.uusiOsa = null;
+        $scope.skratchpad = [];
+        $scope.uniikit = [];
+        $scope.kaytetytUniikit = {};
+        $scope.kaikkiUniikit = [];
+        $scope.topredicate = 'nimi.fi';
+        $scope.tosarajaus = '';
+
+        $scope.tutkinnonOsat = {
           perSivu: 8,
           rajaus: '',
           multiPage: false,
           sivu: 1
         };
-
+      },
+      link: function(scope) {
         scope.paivitaTekstiRajaus = function (value) {
           if (!_.isEmpty(value)) {
             PerusteenRakenne.kaikilleRakenteille(scope.rakenne.rakenne, function(item) {

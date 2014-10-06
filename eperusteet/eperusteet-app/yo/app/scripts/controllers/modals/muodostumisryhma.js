@@ -21,8 +21,6 @@ angular.module('eperusteApp')
   .controller('MuodostumisryhmaModalCtrl', function($scope, $modalInstance, ryhma,
     vanhempi, suoritustapa, leikelauta, Varmistusdialogi, YleinenData, Koodisto, Utils) {
 
-    ryhma.muodostumisSaanto = ryhma.muodostumisSaanto || {};
-
     $scope.vanhempi = vanhempi;
     $scope.leikelauta = leikelauta;
     $scope.suoritustapa = suoritustapa;
@@ -32,22 +30,22 @@ angular.module('eperusteApp')
 
     $scope.luonti = !_.isObject(ryhma);
 
-    var setupRyhma = function (ryhma) {
+    (function setupRyhma() {
       $scope.ryhma = ryhma ? angular.copy(ryhma) : {};
       $scope.osaamisala = ryhma && ryhma.osaamisala ? angular.copy(ryhma.osaamisala) : {};
       $scope.ryhma.rooli = $scope.ryhma.rooli || YleinenData.rakenneRyhmaRoolit[0];
+      $scope.ryhma.muodostumisSaanto = $scope.ryhma.muodostumisSaanto || {};
+
       if (!$scope.ryhma.muodostumisSaanto) {
         $scope.ryhma.muodostumisSaanto = {};
       }
       if (!$scope.ryhma.nimi) {
         $scope.ryhma.nimi = {};
       }
-      if (!$scope.ryhma.kuvaus) {
-        $scope.ryhma.kuvaus = {};
-      }
-    };
-    setupRyhma(ryhma);
-
+      // if (!$scope.ryhma.kuvaus) {
+      //   $scope.ryhma.kuvaus = {};
+      // }
+    })();
 
     var koodistoHaku = function (koodisto) {
       $scope.osaamisala = {};
@@ -84,7 +82,6 @@ angular.module('eperusteApp')
         if (!_.isEmpty($scope.osaamisala)) {
           uusiryhma.rooli = YleinenData.osaamisalaRooli;
           uusiryhma.osaamisala = $scope.osaamisala;
-
         }
       }
       $modalInstance.close(uusiryhma);
