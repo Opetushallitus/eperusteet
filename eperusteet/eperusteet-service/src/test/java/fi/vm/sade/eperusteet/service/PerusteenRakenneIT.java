@@ -14,10 +14,11 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service.util;
+package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;
@@ -29,9 +30,9 @@ import org.junit.Test;
  *
  * @author nkala
  */
-public class PerusteenRakenneTest {
+public class PerusteenRakenneIT {
 
-    public PerusteenRakenneTest() {
+    public PerusteenRakenneIT() {
     }
 
     @BeforeClass
