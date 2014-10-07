@@ -28,10 +28,12 @@ import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.ArrayList;
@@ -63,8 +65,6 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Autowired
     private PerusteprojektiService service;
 
-    private final String nimi = TestUtils.uniikkiString();
-    private final String diaarinumero = TestUtils.uniikkiString();
     private final String ryhmaId = "1.2.246.562.28.11287634288";
     private final LaajuusYksikko yksikko = LaajuusYksikko.OSAAMISPISTE;
     private final String yhteistyotaho = TestUtils.uniikkiString();
@@ -74,7 +74,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         PerusteprojektiLuontiDto ppldto = null;
         if (tyyppi == PerusteTyyppi.NORMAALI) {
             ppldto = new PerusteprojektiLuontiDto(koulutustyyppi, yksikko, null, null, tyyppi, ryhmaId);
-            ppldto.setDiaarinumero(diaarinumero);
+            ppldto.setDiaarinumero(TestUtils.uniikkiString());
             ppldto.setYhteistyotaho(yhteistyotaho);
             ppldto.setTehtava(tehtava);
         } else if (tyyppi == PerusteTyyppi.POHJA) {
@@ -83,7 +83,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
         Assert.assertNotNull(ppldto);
 
-        ppldto.setNimi(nimi);
+        ppldto.setNimi(TestUtils.uniikkiString());
         return service.save(ppldto);
     }
 
@@ -93,8 +93,8 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
         Perusteprojekti pp = repository.findOne(ppdto.getId());
         Assert.assertNotNull(pp);
-        Assert.assertEquals(pp.getNimi(), nimi);
-        Assert.assertEquals(pp.getDiaarinumero(), diaarinumero);
+        Assert.assertEquals(pp.getNimi(), ppdto.getNimi());
+        Assert.assertEquals(pp.getDiaarinumero(), ppdto.getDiaarinumero());
         Assert.assertEquals(ryhmaId, pp.getRyhmaOid());
         Assert.assertEquals(pp.getTila(), ProjektiTila.LAADINTA);
         Assert.assertEquals(pp.getYhteistyotaho(), yhteistyotaho);
@@ -107,7 +107,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_12");
         Perusteprojekti pp = repository.findOne(ppdto.getId());
         Assert.assertNotNull(pp);
-        Assert.assertEquals(pp.getNimi(), nimi);
+        Assert.assertEquals(pp.getNimi(), ppdto.getNimi());
         Assert.assertNull(pp.getDiaarinumero());
         Assert.assertEquals(ryhmaId, pp.getRyhmaOid());
         Assert.assertEquals(pp.getTila(), ProjektiTila.LAADINTA);
@@ -171,6 +171,29 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertEquals(0, tyoryhma.size());
         tyoryhma = service.getTyoryhmaHenkilot(pp.getId(), ryhmaB);
         Assert.assertEquals(1, tyoryhma.size());
+    }
+
+    @Test
+    @Transactional
+    public void testPerusteenOsaViiteTyoryhmat() {
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_1");
+        Perusteprojekti pp = repository.findOne(ppdto.getId());
+        Suoritustapa st = pp.getPeruste().getSuoritustapa(Suoritustapakoodi.OPS);
+        Long perusteenOsaId = st.getSisalto().getLapset().get(0).getPerusteenOsa().getId();
+
+        String ryhma = TestUtils.uniikkiString();
+        String henkilo = TestUtils.uniikkiString();
+        service.saveTyoryhma(pp.getId(), new TyoryhmaHenkiloDto(ryhma, henkilo));
+
+        // Lisäys
+        List<String> ryhmat = new ArrayList<>();
+        ryhmat.add(ryhma);
+        List<String> tagit = service.setPerusteenOsaViiteTyoryhmat(pp.getId(), perusteenOsaId, ryhmat);
+        Assert.assertEquals(1, tagit.size());
+
+        // Haku
+        tagit = service.getPerusteenOsaViiteTyoryhmat(pp.getId(), perusteenOsaId);
+        Assert.assertEquals(1, tagit.size());
     }
 
     @Test
@@ -262,6 +285,55 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Test
     @Transactional
     public void testMisc() {
-        
+        PerusteprojektiDto tpp = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_1");
+        teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
+        teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_11");
+
+        List<PerusteprojektiInfoDto> info = service.getBasicInfo();
+        Assert.assertEquals(3, info.size());
+
+        info = service.getOmatProjektit();
+        Assert.assertEquals(3, info.size());
+
+        PerusteprojektiDto ppdto = service.get(tpp.getId());
+        Assert.assertNotNull(ppdto);
+    }
+
+    @Test(expected = BusinessRuleViolationException.class)
+    @Transactional
+    public void testOnkoDiaarinumeroKaytossa() {
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
+        service.onkoDiaarinumeroKaytossa(ppdto.getDiaarinumero());
+    }
+
+    @Test
+    @Transactional
+    public void testUpdate() {
+        PerusteprojektiDto vanhaDto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_1");
+        PerusteprojektiDto update = new PerusteprojektiDto(
+                "uusinimi",
+                vanhaDto.getPeruste(),
+                "uusidiaari",
+                null,
+                null,
+                null,
+                "uusitehtavaluokka",
+                "uusitehtava",
+                "uusiyhteistyotaho",
+                vanhaDto.getTila(),
+                "uusioid"
+        );
+        PerusteprojektiDto updated = service.update(vanhaDto.getId(), update);
+        Assert.assertEquals("uusinimi", updated.getNimi());
+        Assert.assertEquals(vanhaDto.getPeruste(), updated.getPeruste());
+        Assert.assertEquals("uusidiaari", updated.getDiaarinumero());
+        Assert.assertEquals(null, updated.getPaatosPvm());
+        Assert.assertEquals(null, updated.getToimikausiAlku());
+        Assert.assertEquals(null, updated.getToimikausiLoppu());
+        Assert.assertEquals("uusitehtavaluokka", updated.getTehtavaluokka());
+        Assert.assertEquals("uusitehtava", updated.getTehtava());
+        Assert.assertEquals("uusiyhteistyotaho", updated.getYhteistyotaho());
+        Assert.assertEquals(vanhaDto.getTila(), updated.getTila());
+        Assert.assertEquals("uusioid", updated.getRyhmaOid());
     }
 }
