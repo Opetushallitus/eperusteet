@@ -24,6 +24,12 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti_;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
@@ -32,12 +38,18 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.PerusteenOsaService;
+import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -45,14 +57,13 @@ import java.util.Set;
  */
 public abstract class TestUtils {
 
-    public static Peruste createPeruste() {
+    public static Peruste teePeruste() {
         Peruste p = new Peruste();
         p.setNimi(tekstiPalanenOf(Kieli.FI, "Nimi"));
-
         return p;
     }
 
-    public static Arviointi createArviointi(ArviointiAsteikko arviointiasteikko) {
+    public static Arviointi teeArviointi(ArviointiAsteikko arviointiasteikko) {
         Arviointi arviointi = new Arviointi();
         arviointi.setLisatiedot(tekstiPalanenOf(Kieli.FI, "lisätieto"));
 
@@ -122,5 +133,19 @@ public abstract class TestUtils {
         rakenne.setMuodostumisSaanto(ms);
         rakenne.setRooli(RakenneModuuliRooli.OSAAMISALA);
         return rakenne;
+    }
+
+    static public PerusteenOsaViite teePerusteenOsaViite() {
+        PerusteenOsaViite pov = new PerusteenOsaViite();
+        return pov;
+    }
+
+    static Long uniikki = (long)0;
+    static public String uniikkiString() {
+        return "uniikki" + (++uniikki).toString();
+    }
+
+    static public Long uniikkiId() {
+        return ++uniikki;
     }
 }

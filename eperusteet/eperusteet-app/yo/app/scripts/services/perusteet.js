@@ -113,8 +113,8 @@ angular.module('eperusteApp')
       response.rakenne = rakenne;
       response.$peruste = peruste;
       response.tutkinnonOsaViitteet = _(tutkinnonOsat).pluck('id')
-                                              .zipObject(tutkinnonOsat)
-                                              .value();
+                                                      .zipObject(tutkinnonOsat)
+                                                      .value();
       response.tutkinnonOsat = _.zipObject(_.map(tutkinnonOsat, '_tutkinnonOsa'), tutkinnonOsat);
       return response;
     }

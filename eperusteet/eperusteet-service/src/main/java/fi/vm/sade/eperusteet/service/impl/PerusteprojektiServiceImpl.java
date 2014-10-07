@@ -192,7 +192,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         perusteprojekti.setRyhmaOid(perusteprojektiDto.getRyhmaOid());
 
         if (tyyppi != PerusteTyyppi.POHJA) {
-            if (koulutustyyppi.equals("koulutustyyppi_1") && yksikko == null) {
+            if (koulutustyyppi != null && koulutustyyppi.equals("koulutustyyppi_1") && yksikko == null) {
                 throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
             }
             if (perusteprojektiDto.getDiaarinumero() == null) {
@@ -405,14 +405,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Transactional
     @Override
-    public List<TyoryhmaHenkiloDto> saveTyoryhma(Long perusteProjektiId, String tyoryhma, List<TyoryhmaHenkiloDto> henkilot) {
+    public List<TyoryhmaHenkiloDto> saveTyoryhma(Long perusteProjektiId, String tyoryhma, List<String> henkilot) {
         Perusteprojekti pp = repository.findOne(perusteProjektiId);
         removeTyoryhma(perusteProjektiId, tyoryhma);
         perusteprojektiTyoryhmaRepository.flush();
         List<PerusteprojektiTyoryhma> res = new ArrayList<>();
 
-        for (TyoryhmaHenkiloDto trh : henkilot) {
-            res.add(perusteprojektiTyoryhmaRepository.save(new PerusteprojektiTyoryhma(pp, trh.getKayttajaOid(), trh.getNimi())));
+        for (String trh : henkilot) {
+            res.add(perusteprojektiTyoryhmaRepository.save(new PerusteprojektiTyoryhma(pp, trh, tyoryhma)));
         }
         return mapper.mapAsList(res, TyoryhmaHenkiloDto.class);
     }

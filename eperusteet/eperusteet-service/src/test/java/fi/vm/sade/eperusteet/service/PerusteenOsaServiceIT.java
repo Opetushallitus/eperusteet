@@ -89,7 +89,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
         tutkinnonOsa.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "Nimi"));
         tutkinnonOsa.setTila(PerusteTila.LUONNOS);
-        tutkinnonOsa.setArviointi(TestUtils.createArviointi(arviointiasteikko));
+        tutkinnonOsa.setArviointi(TestUtils.teeArviointi(arviointiasteikko));
         tutkinnonOsa = (TutkinnonOsa) perusteenOsaRepository.saveAndFlush(tutkinnonOsa);
         PerusteenOsaDto.Laaja dto = perusteenOsaService.get(tutkinnonOsa.getId());
 

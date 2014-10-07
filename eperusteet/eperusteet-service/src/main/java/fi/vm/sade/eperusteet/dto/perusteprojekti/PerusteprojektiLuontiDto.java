@@ -37,4 +37,16 @@ public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
     private ProjektiTila tila;
     private PerusteTyyppi tyyppi;
     private String ryhmaOid;
+
+    public PerusteprojektiLuontiDto(String koulutustyyppi, LaajuusYksikko laajuusYksikko, Long perusteId, ProjektiTila tila, PerusteTyyppi tyyppi, String ryhmaOid) {
+        this.koulutustyyppi = koulutustyyppi;
+        this.laajuusYksikko = laajuusYksikko;
+        this.perusteId = perusteId;
+        this.tila = tila;
+        this.tyyppi = tyyppi;
+        this.ryhmaOid = ryhmaOid;
+    }
+
+    public PerusteprojektiLuontiDto() {
+    }
 }
