@@ -87,6 +87,13 @@
   <div class="tutkinnonosa-sisalto" ng-if="editableTutkinnonOsa.tyyppi === 'normaali'">
     <kenttalistaus edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields"></kenttalistaus>
   </div>
+  
+  <div class="non-collapsibles" ng-if="editableTutkinnonOsa.tyyppi === 'tutke2'">
+    <label class="header" kaanna>kuvaus</label>
+    <ml-input ng-show="editEnabled" ml-data="editableTutkinnonOsa.kuvaus" type="textarea"></ml-input>
+    <p ng-show="!editEnabled">{{tutkinnonOsa.kuvaus | kaanna}}</p>
+  </div>
+    
   <div class="tutkinnonosa-sisalto" ng-if="editableTutkinnonOsa.tyyppi === 'tutke2'">
     <tutke2kentat edit-enabled="editEnabled" tutkinnonosa="tutkinnonOsaPromise" kontrollit="editointikontrollit"></tutke2kentat>
   </div>
