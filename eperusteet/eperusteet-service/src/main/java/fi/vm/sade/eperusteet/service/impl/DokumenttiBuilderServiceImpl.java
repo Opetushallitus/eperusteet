@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
@@ -244,7 +245,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 new StreamResult(new OutputStreamWriter(out, "UTF-8")));
     }
 
-    private void addTutkinnonMuodostuminen(Document doc, Element parentElement, Peruste peruste, Suoritustapa tapa, Kieli kieli) {
+    private void addTutkinnonMuodostuminen(Document doc, Element parentElement, Peruste peruste, int depth, Suoritustapa tapa, Kieli kieli) {
 
         // ew, dodgy trycatching
         try {
@@ -255,6 +256,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                             // TODO: jostain muualta???
                             messages.translate("docgen.tutkinnon_muodostuminen.title", kieli)
                              + tapa.getSuoritustapakoodi(),
+                            depth,
                             tapa.getSuoritustapakoodi(),
                             kieli));
         } catch (Exception ex) {
@@ -263,35 +265,28 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     }
 
     private Element getTutkinnonMuodostuminenGeneric(
-            Document doc, Peruste peruste, String title,
+            Document doc, Peruste peruste, String title, int depth,
             Suoritustapakoodi suoritustapakoodi,
             Kieli kieli)
     {
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         RakenneModuuli rakenne = suoritustapa.getRakenne();
-        String nimi = getTextString(rakenne.getNimi(), kieli);
-        String kuvaus = getTextString(rakenne.getKuvaus(), kieli);
 
-        Element sectionElement = doc.createElement("section");
-        Element sectionTitleElement = doc.createElement("title");
-        sectionTitleElement.appendChild(doc.createTextNode(title));
+        Element returnElement;
+        if (depth == 0) {
+            returnElement = doc.createElement("chapter");
+        } else {
+            returnElement = doc.createElement("section");
+        }
 
-        Element rakenneSectionElement = doc.createElement("section");
-        Element rakenneSectionTitleElement = doc.createElement("title");
-        rakenneSectionTitleElement.appendChild(doc.createTextNode(nimi));
-        Element rakenneSectionParaElement = doc.createElement("para");
-        rakenneSectionParaElement.appendChild(doc.createTextNode(kuvaus));
-
-        rakenneSectionElement.appendChild(rakenneSectionTitleElement);
-        rakenneSectionElement.appendChild(rakenneSectionParaElement);
+        Element titleElement = doc.createElement("title");
+        titleElement.appendChild(doc.createTextNode(title));
+        returnElement.appendChild(titleElement);
 
         List<AbstractRakenneOsa> osat = rakenne.getOsat();
-        addRakenneOsatRec(rakenneSectionElement, osat, doc, kieli);
+        addRakenneOsatRec(returnElement, osat, doc, kieli);
 
-        sectionElement.appendChild(sectionTitleElement);
-        sectionElement.appendChild(rakenneSectionElement);
-
-        return sectionElement;
+        return returnElement;
     }
 
     private void addRakenneOsatRec(Element parent,
@@ -365,13 +360,12 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 element = doc.createElement("section");
             }
 
-            String nimi = getTextString(tk.getNimi(), kieli);
-            // special case, render TutkinnonRakenne here and continue with
-            // rest of the sibligs
-            // TODO: compare to class instead of name
-            if ("__TutkinnonRakenne__".equals(nimi)) {
-                addTutkinnonMuodostuminen(doc, parentElement, peruste, tapa, kieli);
+            if (po.getTunniste() == PerusteenOsaTunniste.RAKENNE) {
+                // special case, render TutkinnonRakenne here and continue with
+                // rest of the sibligs
+                addTutkinnonMuodostuminen(doc, parentElement, peruste, depth, tapa, kieli);
             } else {
+                String nimi = getTextString(tk.getNimi(), kieli);
                 Element titleElement = doc.createElement("title");
                 titleElement.appendChild(doc.createTextNode(nimi));
                 String teksti = getTextString(tk.getTeksti(), kieli);
