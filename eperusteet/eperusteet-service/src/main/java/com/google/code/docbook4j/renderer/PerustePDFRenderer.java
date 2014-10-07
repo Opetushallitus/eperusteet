@@ -39,6 +39,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.fop.apps.FOPException;
+import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
@@ -169,6 +170,15 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer>{
             LOG.error("", ex);
         }
         return null;
+    }
+
+    @Override
+    protected void enhanceFOUserAgent(FOUserAgent agent) {
+        if (StringUtils.isEmpty(this.fopDirectory)) {
+            LOG.warn("Fop directory not set, won't use pdf/a mode");
+        } else {
+            agent.getRendererOptions().put("pdf-a-mode", "PDF/A-1a");
+        }
     }
 
     protected void enhanceFopFactory(FopFactory factory) {
