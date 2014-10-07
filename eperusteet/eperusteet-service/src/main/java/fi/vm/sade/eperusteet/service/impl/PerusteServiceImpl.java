@@ -881,10 +881,13 @@ public class PerusteServiceImpl implements PerusteService {
 
         Set<Koulutus> vanhatKoulutukset = vanha.getKoulutukset();
         Set<Koulutus> koulutukset = new HashSet<>();
-        for (Koulutus vanhaKoulutus : vanhatKoulutukset) {
-            koulutukset.add(vanhaKoulutus);
+
+        if (vanhatKoulutukset != null) {
+            for (Koulutus vanhaKoulutus : vanhatKoulutukset) {
+                koulutukset.add(vanhaKoulutus);
+            }
+            peruste.setKoulutukset(koulutukset);
         }
-        peruste.setKoulutukset(koulutukset);
 
         Set<Suoritustapa> suoritustavat = vanha.getSuoritustavat();
         Set<Suoritustapa> uudetSuoritustavat = new HashSet<>();
@@ -896,7 +899,7 @@ public class PerusteServiceImpl implements PerusteService {
         peruste.setSuoritustavat(uudetSuoritustavat);
 
         peruste = perusteet.save(peruste);
-//        lisaaTutkinnonMuodostuminen(peruste);
+        lisaaTutkinnonMuodostuminen(peruste);
         return peruste;
     }
 

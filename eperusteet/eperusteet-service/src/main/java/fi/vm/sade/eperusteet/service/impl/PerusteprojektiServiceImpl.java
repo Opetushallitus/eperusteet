@@ -198,10 +198,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             if (perusteprojektiDto.getDiaarinumero() == null) {
                 throw new BusinessRuleViolationException("Diaarinumeroa ei ole asetettu");
             }
-//            FIXME: Ota käyttöön kun aika koittaa
-//            if (perusteprojektiDto.getRyhmaOid() == null) {
-//                throw new BusinessRuleViolationException("Organisaatioryhmää ei ole asetettu");
-//            }
+            if (perusteprojektiDto.getRyhmaOid() == null) {
+                throw new BusinessRuleViolationException("Organisaatioryhmää ei ole asetettu");
+            }
         }
 
         Peruste peruste;
