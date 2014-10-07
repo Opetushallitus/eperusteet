@@ -72,7 +72,9 @@
   <!-- Something else? para?-->
   <xsl:template match="h:pre">
     <doc:literallayout>
-      <xsl:apply-templates select="node()|@*"/>
+      <doc:literal>
+         <xsl:apply-templates select="node()|@*"/>
+      </doc:literal>
     </doc:literallayout>
   </xsl:template>
 
