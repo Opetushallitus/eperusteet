@@ -68,11 +68,24 @@ angular.module('eperusteApp')
       switch(tyyppi) {
         case this.OSAAMINEN:
           return [
-            {perusteenOsa: {id: 1, nimi: {fi: 'Ajattelu ja oppimaan oppiminen'}, teksti: {fi: 'Yleinen kuvaus ajattelu lorem ipsum.'}}},
+            {perusteenOsa: {id: 1, nimi: {fi: 'Ajattelu ja oppimaan oppiminen'}, teksti: {fi: 'Yleinen kuvaus ajattelulle.'}}},
             {perusteenOsa: {id: 2, nimi: {fi: 'Kulttuurinen osaaminen, vuorovaikutus ja ilmaisu'}, teksti: {fi: 'Yleinen kuvaus kulttuuriselle osaamiselle.'}}},
+            {perusteenOsa: {id: 3, nimi: {fi: 'Itsestä huolehtiminen ja arjenhallinta'}, teksti: {fi: 'Yleinen kuvaus itsestä huolehtimiselle.'}}},
           ];
         case this.VUOSILUOKAT:
           return [
+            {
+              id: 1001,
+              nimi: {fi: 'Vuosiluokat 1-2'},
+              vuosiluokat: [1, 2],
+              osaamisenkuvaukset: [
+                {osaaminen: 1, teksti: {fi: 'Työskentelyn lähtökohtana ovat oppilaiden omat kokemukset ja kysymykset. Ihmettelylle, oivaltamiselle, uuden löytämiselle ja oppimisen ilolle jätetään tilaa. Oppilaita kannustetaan kysymiseen ja kuuntelemiseen sekä pienimuotoiseen tiedon etsintään, omien ideoiden tuottamiseen ja työn tulosten esittämiseen. Leikinomaisten ongelmanratkaisu- ja tutkimustehtävien avulla viritetään uteliaisuutta ja kiinnostusta ympäröivän maailman ilmiöitä kohtaan sekä vahvistetaan taitoa jäsentää, nimetä ja kuvailla ympäristöä. Oman ja yhteisen työn suunnittelemista, tavoitteiden asettamista ja työskentelyn arviointia harjoitellaan. Monipuolinen liikkuminen ja motoriset harjoitukset tukevat ajattelun kehittymistä. Muistin, mielikuvituksen sekä eettisen ja esteettisen ajattelun kehittymistä tuetaan satujen ja tarinoiden, pelien, lorujen, laulujen ja leikkien, taiteen eri muotojen sekä monipuolisen vuorovaikutuksen avulla. Oppilaiden kanssa pohditaan opintoihin liittyviä mahdollisia valintoja ja autetaan ymmärtämään erilaisten vaihtoehtojen merkitys.'}}
+              ],
+              tekstikappaleet: [
+                {nimi: {fi: 'Vapaa tekstikappale'}, teksti: {fi: 'Vapaasisältöinen tekstikappale, tekstiä.'}},
+                {nimi: {fi: 'Toinen tekstikappale'}, teksti: {fi: 'Lisää tekstikappaleen tekstiä.'}}
+              ]
+            },
             {
               id: 1000,
               nimi: {fi: 'Vuosiluokat 7-9'},
@@ -84,13 +97,6 @@ angular.module('eperusteApp')
                 {nimi: {fi: 'Joku tekstikappale'}, teksti: {fi: 'Tekstikappaleen tekstiä.'}},
                 {nimi: {fi: 'Toinen tekstikappale'}, teksti: {fi: 'Lisää tekstikappaleen tekstiä.'}}
               ]
-            },
-            {
-              id: 1001,
-              nimi: {fi: 'Vuosiluokat 1-2'},
-              vuosiluokat: [1, 2],
-              osaamisenkuvaukset: [],
-              tekstikappaleet: []
             },
             {
               id: 1002,
@@ -107,17 +113,68 @@ angular.module('eperusteApp')
               nimi: {fi: 'Matematiikka'},
               vuosiluokkakokonaisuudet: [
                 {
-                  _id: 1000
+                  _id: 1000,
                 },
                 {
-                  _id: 1001
+                  _id: 1001,
+                  sisaltoalueet: [
+                    {id: 2000, nimi: {fi: 'Ajattelun taidot'}, teksti: {fi: 'Tarjotaan oppilaalle mahdollisuuksia löytää yhtäläisyyksiä, eroja ja säännönmukaisuuksia sekä käyttää käänteisyyden periaatetta. Vertaillaan, luokitellaan ja asetetaan järjestykseen sekä havaitaan syy- ja seuraussuhteita. Tutustuttaminen ohjelmoinnin alkeisiin alkaa laatimalla toimintaohjeita, joita myös testataan.'}},
+                    {id: 2001, nimi: {fi: 'Luvut ja laskutoimitukset sekä algebra'}, teksti: {fi: '<p>Laskutoimituksissa käytetään luonnollisia lukuja. Varmistetaan, että oppilas hallitsee lukumäärän, lukusanan ja numeromerkinnän välisen yhteyden. Ymmärrystä luvuista laajennetaan laskemalla, hahmottamalla ja arvioimalla lukumääriä. Kehitetään oppilaan lukujonotaitoja sekä taitoa vertailla lukuja ja asettaa niitä järjestykseen. Tutkitaan lukujen ominaisuuksia kuten parillisuutta, monikertoja ja puolittamista. Laskutaidon perustaksi varmistetaan, että oppilaat tuntevat ja osaavat käyttää lukujen 2 – 10 hajotelmia.</p><p>Ohjataan oppilaita käyttämään lukuja tarkoituksenmukaisella tavalla eri tilanteissa, lukumäärän ja järjestyksen ilmaisemisessa, laskutoimituksissa sekä mittaamisen tuloksissa.</p>'}},
+                    {id: 2002, nimi: {fi: 'Geometria ja mittaaminen'}, teksti: {fi: '<p>Kehitetään oppilaan taitoa hahmottaa kolmiulotteista ympäristöä ja tasoa sekä taitoa käyttää suunta- ja sijaintikäsitteitä.</p><p>Tutkitaan yhdessä kappaleita ja tasokuvioita. Tunnistamisen lisäksi rakennetaan ja piirretään. Ohjataan oppilasta löytämään ja nimeämään ominaisuuksia, joiden mukaan kappaleita ja tasokuviota myös luokitellaan.</p>'}}
+                  ],
+                  kohdealueet: [
+                    {
+                      nimi: {fi: 'Merkitys, arvot ja asenteet'},
+                      tavoitteet: [
+                        {
+                          kuvaus: {fi: 'Tukea oppilaan innostusta ja kiinnostusta matematiikkaa kohtaan sekä positiivisen minäkuvan ja itseluottamuksen kehittymistä'},
+                          sisaltoalueet: [2000, 2001, 2002],
+                          osaaminen: [1, 2, 3]
+                        }
+                      ]
+                    },
+                    {
+                      nimi: {fi: 'Työskentelyn taidot'},
+                      tavoitteet: [
+                        {
+                          kuvaus: {fi: 'kehittää oppilaan taitoa tehdä havaintoja matematiikan näkökulmasta sekä tulkita ja hyödyntää niitä eri tilanteissa'},
+                          sisaltoalueet: [2000, 2001, 2002],
+                          osaaminen: [1, 2]
+                        }
+                      ]
+                    },
+                    {
+                      nimi: {fi: 'Käsitteelliset ja tiedonalakohtaiset tavoitteet'},
+                      tavoitteet: [
+                        {
+                          kuvaus: {fi: 'ohjaa oppilasta ymmärtämään matematiikan käsitteitä ja merkintätapoja'},
+                          sisaltoalueet: [2000, 2001],
+                          osaaminen: [1, 2]
+                        },
+                        {
+                          kuvaus: {fi: 'ohjaa ymmärtämään lukukäsitteen ja kymmenjärjestelmän periaatteita'},
+                          sisaltoalueet: [2001],
+                          osaaminen: [1, 2]
+                        },
+                        {
+                          kuvaus: {fi: 'tutustuttaa oppilasta peruslaskutoimitusten ominaisuuksiin ja periaatteisiin'},
+                          sisaltoalueet: [2001],
+                          osaaminen: [1, 2]
+                        }
+                      ]
+                    }
+                  ],
+                  tekstikappaleet: [
+                    {nimi: {fi: 'Oppiaineen tehtävä'}, teksti: {fi: 'Matematiikan opetuksen tehtävänä on kehittää oppilaan loogista, täsmällistä ja luovaa matemaattista ajattelua. Opetus luo pohjan matemaattisten käsitteiden ja rakenteiden ymmärtämiselle sekä kehittää oppilaan kykyä käsitellä tietoa ja ratkaista ongelmia. Matematiikan kumulatiivisesta luonteesta johtuen opetus etenee systemaattisesti. Konkretia ja toiminnallisuus ovat keskeinen osa matematiikan opetusta ja opiskelua. Oppimista tuetaan hyödyntämällä tieto- ja viestintäteknologiaa.'}},
+                    {nimi: {fi: 'Ohjaus ja tuki'}, teksti: {fi: 'Oppilaiden osaamisessa on huomattavia eroja jo ennen koulun alkamista. Hierarkkisena oppiaineena matematiikan perusasioiden hallinta on välttämätön edellytys uusien sisältöjen oppimiselle. Tarjottavan tuen tulee kohdentua sekä edeltävien tieto- ja taitopuutteiden korjaamiseen että uusien sisältöjen oppimiseen. Matematiikan oppimisen valmiuksille ja matematiikan oppimiselle on varattava riittävästi aikaa ja tuen on oltava systemaattista. Oppilaan matematiikan osaamista ja taitojen kehittymistä seurataan ja tarvittaessa annetaan lisätukea heti tuen tarpeen ilmetessä. Tarjottava tuki antaa oppilaalle mahdollisuuden ymmärtää matematiikkaa ikätasonsa mukaisesti ja kehittää taitojaan niin, että oppimisen ja osaamisen ilo säilyvät. Oppilaille tarjotaan sopivia välineitä oppimisen tueksi ja hänelle tarjotaan mahdollisuuksia oivaltaa ja ymmärtää itse. Opiskelussa hyödynnetään arjen kokemuksia, ohjattuja pedagogisia leikkejä, pelejä, toimintamateriaaleja ja kuvia. Lisäksi moniaistillisuus ja kehollisuus luovat pohjaa oppimiselle. Oppilaalle turvataan mahdollisuus riittävään harjoitteluun.'}},
+                  ]
                 },
                 {
                   _id: 1002
                 },
               ],
               tekstikappaleet: [],
-              tehtava: {},
+              tehtava: {nimi: {fi: 'Oppiaineen tehtävä'}, teksti: {fi: 'Oppiaineen tehtävän kuvaus yleisellä tasolla.'}},
               osaalue: {},
             },
             {

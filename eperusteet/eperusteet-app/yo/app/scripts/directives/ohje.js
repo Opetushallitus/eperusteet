@@ -21,21 +21,34 @@
  * Ikoni tooltipille ja siihen liittyvä kelluva ohjeteksti.
  * Tukee sekä hiirtä (mouse enter) että touch/click-eventtejä.
  *
-  * suunta: left|right(default)|top|bottom
+ * Kaksi eri toimintamoodia:
+ * <ohje ...></ohje>
+ *   luo kysymysmerkki-badgen, toimii mouseoverilla (ja klikillä)
+ * <span ohje="false" ...><div>omaa sisältöä</div></span>
+ *   kiinnittää popoverin olemassaolevaan sisältöön, avautuu klikillä
+ *
+ * suunta: left|right(default)|top|bottom
+ * otsikko: optional 
  */
 angular.module('eperusteApp')
   .directive('ohje', function ($timeout, $compile, $document) {
     return {
       templateUrl: 'views/partials/ohje.html',
       restrict: 'EA',
+      transclude: true,
       scope: {
         teksti: '@',
-        suunta: '@?'
+        otsikko: '@?',
+        suunta: '@?',
+        ohje: '@?',
       },
       link: function (scope, element) {
-        var el = element.find('.badge');
+        var el = element.find('.popover-element');
 
-        scope.show = function (visible) {
+        scope.show = function (visible, mouseEnter) {
+          if (mouseEnter && scope.ohje === 'false') {
+            return;
+          }
           var opening = angular.isUndefined(visible) || visible;
           $timeout(function () {
             el.trigger(opening ? 'show' : 'hide');
@@ -55,6 +68,13 @@ angular.module('eperusteApp')
           }
           scope.show(false);
           scope.$apply();
+        });
+
+        scope.$watch('teksti', function () {
+          scope.textObject = scope.$parent.$eval(scope.teksti) || scope.teksti;
+        });
+        scope.$watch('otsikko', function () {
+          scope.title = scope.$parent.$eval(scope.otsikko) || scope.otsikko;
         });
       }
     };

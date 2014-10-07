@@ -37,10 +37,11 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('OppiaineController', function ($scope, PerusopetusService) {
+  .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna) {
     $scope.editableModel = angular.copy($scope.model);
     $scope.editEnabled = false;
     $scope.mappedVuosiluokat = [];
+    $scope.yleisetosat = ['tehtava', 'osaalue'];
 
     var callbacks = {
       edit: function () {},
@@ -116,9 +117,14 @@ angular.module('eperusteApp')
 
 
     $scope.$watch('model.vuosiluokkakokonaisuudet', function () {
-      $scope.mappedVuosiluokat = _.map($scope.model.vuosiluokkakokonaisuudet, function (item) {
-        return $scope.getVuosiluokkakokonaisuus(item);
-      });
+
+      $scope.mappedVuosiluokat = _($scope.model.vuosiluokkakokonaisuudet).map(function (item) {
+        var thisItem = $scope.getVuosiluokkakokonaisuus(item);
+        thisItem.$sisalto = item;
+        return thisItem;
+      }).sortBy(function (item) {
+        return Kaanna.kaanna(item.nimi);
+      }).value();
     }, true);
 
     $scope.vuosiluokkakokonaisuudet = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT);

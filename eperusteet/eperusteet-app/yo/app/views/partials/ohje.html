@@ -1,5 +1,7 @@
 <span class="ohje">
-  <span class="badge" popover-title="{{'Ohje'|kaanna}}" popover="{{teksti|kaanna}}"
+  <span class="popover-element" popover-title="{{title || 'Ohje' |kaanna}}" popover="{{textObject|kaanna}}"
         popover-trigger="show" popover-placement="{{suunta || 'right'}}"
-        ng-mouseenter="show()" ng-click="show(!tt_isOpen)" ng-class="{open: tt_isOpen}">?</span>
+        ng-mouseenter="show(true, true)" ng-click="show(!tt_isOpen)" ng-class="{open: tt_isOpen, badge: ohje !== 'false'}">
+    <span ng-transclude></span><span ng-if="ohje !== 'false'">?</span>
+  </span>
 </span>

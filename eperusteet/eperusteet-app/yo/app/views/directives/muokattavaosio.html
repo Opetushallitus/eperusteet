@@ -1,0 +1,19 @@
+<div ng-if="hasContent" class="panel panel-default panel-clean">
+  <div class="panel-heading">
+    <div class="action-buttons">
+      <button class="btn btn-default" kaanna="muokkaa" icon-role="edit"></button>
+    </div>
+    <h3 class="panel-title osio-otsikko" ng-click="model.$isCollapsed = !model.$isCollapsed">
+      <span class="glyphicon"
+            ng-class="model.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
+      <span ng-if="type === 'tekstikappale'" ng-bind-html="valitseKieli(model.nimi) | unsafe"></span>
+      <span ng-if="type === 'sisaltoalueet'" kaanna="sisaltoalueet"></span>
+      <span ng-if="type === 'tavoitteet'" kaanna="opetuksen-tavoitteet"></span>
+    </h3>
+  </div>
+  <div class="panel-body" collapse="model.$isCollapsed">
+    <div ng-if="type === 'tekstikappale'" ng-bind-html="valitseKieli(model.teksti) | unsafe"></div>
+    <div ng-if="type === 'sisaltoalueet'" sisaltoalueet="model"></div>
+    <div ng-if="type === 'tavoitteet'" tavoitteet="model"></div>
+  </div>
+</div>

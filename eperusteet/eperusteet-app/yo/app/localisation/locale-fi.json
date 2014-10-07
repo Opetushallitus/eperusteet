@@ -690,6 +690,9 @@
     "osaalue": "Osa-alue",
     "oppiaineen-tehtava": "Oppiaineen tehtävä",
     "poista-oppiaine": "Poista oppiaine",
-    "muokkaa-oppiainetta": "Muokkaa oppiainetta"
+    "muokkaa-oppiainetta": "Muokkaa oppiainetta",
+    "sisaltoalueet": "Sisältöalueet",
+    "opetuksen-tavoitteet": "Opetuksen tavoitteet",
+    "ei-kuvausta": "[Ei kuvausta]"
 
 }
