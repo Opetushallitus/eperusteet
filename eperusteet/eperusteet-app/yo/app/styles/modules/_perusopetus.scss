@@ -129,12 +129,15 @@ $tag-color: #FEE7A4;
   .tagcloud {
     list-style-type: none;
     padding-left: 10px;
+    font-size: 0;
     li {
+      font-size: 13px;
       display: inline-block;
       margin-bottom: 8px;
+      height: $tag-height;
     }
-    li + li {
-      margin-left: $tag-height*0.9;
+    li:not(first-child) {
+      margin-right: $tag-height*0.9;
     }
     .tag {
       display: inline-block;
