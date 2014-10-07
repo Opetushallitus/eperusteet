@@ -859,6 +859,9 @@ public class PerusteServiceImpl implements PerusteService {
                 suoritustavat.add(st);
             }
         }
+        else {
+            throw new BusinessRuleViolationException("Koulutustyyppiä ei ole asetettu");
+        }
 
         peruste.setSuoritustavat(suoritustavat);
         perusteet.save(peruste);
