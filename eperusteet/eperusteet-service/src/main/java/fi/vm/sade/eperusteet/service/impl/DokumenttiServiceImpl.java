@@ -40,6 +40,7 @@ import javax.xml.transform.TransformerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -65,6 +66,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Autowired
     DokumenttiBuilderService builder;
+
+    @Value("${fi.vm.sade.eperusteet.fop_directory:}")
+    private String fopDirectory;
 
     @Override
     @Transactional
@@ -170,7 +174,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
         //PDFRenderer r = PDFRenderer.create(xmlpath, style);
         PerustePDFRenderer r = new PerustePDFRenderer().xml(xmlpath).xsl(style);
+        r.setFopDirectory(fopDirectory);
         r.parameter("l10n.gentext.language", kieli.toString());
+
         InputStream is;
         is = r.render();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
