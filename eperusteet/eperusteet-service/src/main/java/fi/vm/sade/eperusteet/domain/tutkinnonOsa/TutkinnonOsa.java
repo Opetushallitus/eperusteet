@@ -69,6 +69,11 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen ammattitaidonOsoittamistavat;
 
+    @ValidHtml
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen kuvaus;
+
     @Column
     private Long opintoluokitus;
 
@@ -138,6 +143,14 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         this.ammattitaidonOsoittamistavat = ammattitaidonOsoittamistavat;
     }
 
+    public TekstiPalanen getKuvaus() {
+        return kuvaus;
+    }
+
+    public void setKuvaus(TekstiPalanen kuvaus) {
+        this.kuvaus = kuvaus;
+    }
+
     public Long getOpintoluokitus() {
         return opintoluokitus;
     }
@@ -185,6 +198,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setKoodiArvo(other.getKoodiArvo());
             this.setOpintoluokitus(other.getOpintoluokitus());
             this.setTyyppi(other.getTyyppi());
+            this.setKuvaus(other.getKuvaus());
             if (other.getOsaAlueet() != null) {
                 this.setOsaAlueet(mergeOsaAlueet(this.getOsaAlueet(), other.getOsaAlueet()));
             }
@@ -200,6 +214,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         this.koodiArvo = other.getKoodiArvo();
         this.opintoluokitus = other.getOpintoluokitus();
         this.tyyppi = other.getTyyppi();
+        this.kuvaus = other.getKuvaus();
         if ( this.tyyppi == TutkinnonOsaTyyppi.TUTKE2 && other.getOsaAlueet() != null) {
             this.osaAlueet = new ArrayList<>();
             for ( OsaAlue o : other.getOsaAlueet() ) {

@@ -139,6 +139,7 @@ angular.module('eperusteApp')
     };
 
     function refreshPromise() {
+      $scope.tutkinnonOsa.kuvaus = $scope.tutkinnonOsa.kuvaus || {};
       $scope.editableTutkinnonOsa = angular.copy($scope.tutkinnonOsa);
       $scope.editableViiteosa = angular.copy($scope.viiteosa);
       var tutkinnonOsaDefer = $q.defer();
