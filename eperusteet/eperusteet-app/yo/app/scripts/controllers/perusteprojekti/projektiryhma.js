@@ -73,13 +73,8 @@ angular.module('eperusteApp')
         if (muokattu) {
           PerusteprojektiTyoryhmat.save({
             id: $stateParams.perusteProjektiId,
-            nimi: ryhma
-          }, _.map(muokattu.jasenet, function(j) {
-            return {
-              kayttajaOid: j,
-              nimi: muokattu.nimi
-            };
-          }), function(lisatyt) {
+            nimi: muokattu.nimi
+          }, muokattu.jasenet, function(lisatyt) {
             delete $scope.tyoryhmat[ryhma];
             $scope.tyyppi = _.first(lisatyt).nimi;
             $scope.tyoryhmat[$scope.tyyppi] = _.zipObject(_.map(lisatyt, 'kayttajaOid'), lisatyt);

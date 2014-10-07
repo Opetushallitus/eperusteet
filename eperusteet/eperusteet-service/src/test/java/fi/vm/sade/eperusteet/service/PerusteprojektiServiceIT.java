@@ -258,4 +258,10 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
             Assert.assertEquals(1, lapset.size());
         }
     }
+
+    @Test
+    @Transactional
+    public void testMisc() {
+        
+    }
 }

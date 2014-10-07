@@ -182,7 +182,7 @@ public class PerusteprojektiController {
     public ResponseEntity<List<TyoryhmaHenkiloDto>> postMultipleTyoryhmaHenkilotToTyoryhma(
             @PathVariable("id") final Long id,
             @PathVariable("nimi") final String nimi,
-            @RequestBody List<TyoryhmaHenkiloDto> tyoryhma
+            @RequestBody List<String> tyoryhma
     ) {
         List<TyoryhmaHenkiloDto> res = service.saveTyoryhma(id, nimi, tyoryhma);
         return new ResponseEntity<>(res, HttpStatus.OK);
