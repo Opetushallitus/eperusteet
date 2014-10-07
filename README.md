@@ -1,4 +1,4 @@
-ePerusteet (prototyyppi)
+ePerusteet
 ======================
 Opetushallituksen ePerusteet-palvelu tutkintojen ja yleissivistävän koulutuksen opetussuunnitelmien perusteiden laadintaan ja julkaisuun.
 
@@ -9,11 +9,17 @@ Palvelukortti
 Kehitysympäristön pystytys
 --------------------------
 
+- JDK 7
+- Maven
 - Nodejs sekä yo front-end-kehitystä varten
   - <http://nodejs.org/download/>
   - (sudo) npm -g install yo
 - PostgreSQL 9.3 (luo tietokanta paikallista kehitystä varten)
-- Tomcat [7.0.42,8) 
+- Tomcat [7.0.42,8)
+
+Riippuvuuksien takia käännösaikana tarvitaan pääsy sisäiseen pakettien hallintaan, koska osa paketeista (lähinnä build-parent) ei ole julkisissa repoissa.
+
+Ajoaikana riippuu mm. keskitetystä autentikaatiosta (CAS), käyttäjähallinnasta, organisaatiopalvelusta ja koodistosta joihin täytyy olla ajoympäristöstä pääsy.
 
 Ajaminen paikallisesti
 ----------------------
