@@ -41,7 +41,8 @@ European Union Public Licence for more details.
           <p ng-show="projektit.length === 0" kaanna="ei-projekteja"></p>
           <ul class="list-unstyled projektit">
             <li class="ellipsis-no-wrap" ng-repeat="projekti in projektit| limitTo:naytto.shown" >
-              <a title="{{projekti.nimi}}" href="{{ projekti.url}}">{{projekti.diaarinumero}}: {{projekti.nimi}}</a>
+              <a ng-show="projekti.diaarinumero" title="{{projekti.nimi}}" href="{{ projekti.url}}">{{ projekti.diaarinumero }}: {{projekti.nimi}}</a>
+              <a ng-hide="projekti.diaarinumero" title="{{projekti.nimi}}" href="{{ projekti.url}}"><b>{{ 'perustepohja' | kaanna }}</b>: {{projekti.nimi}}</a>
             </li>
           </ul>
           <limit-toggler limit="naytto.limit" model="projektit" limiter="naytto.shown"></limit-toggler>
