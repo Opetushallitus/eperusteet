@@ -24,7 +24,9 @@ angular.module('eperusteApp')
     var skratchpadHasContent = false;
     function osienLaajuudenSumma(rakenneOsat) {
       return _(rakenneOsat ? rakenneOsat : [])
-        .map(function(osa) { return osa ? osa.$laajuus : 0; })
+        .map(function(osa) {
+          return osa ? (osa.$vaadittuLaajuus && osa.$laajuus > osa.$vaadittuLaajuus ? osa.$vaadittuLaajuus : osa.$laajuus) : 0;
+        })
         .reduce(function(sum, newval) { return sum + newval; }) || 0;
     }
 
@@ -153,21 +155,23 @@ angular.module('eperusteApp')
       _.forEach(rakenne.osat, function(osa) {
         laskeLaajuudet(osa, viitteet);
       });
+
       rakenne.$laajuus = 0;
 
+      // Osa
       if (rakenne._tutkinnonOsaViite) {
         rakenne.$laajuus = viitteet[rakenne._tutkinnonOsaViite].laajuus;
       }
-      else {
-        if (rakenne.osat && rakenne.muodostumisSaanto) {
+      // Ryhmä
+      else if (rakenne.osat) {
+        if (rakenne.muodostumisSaanto) {
           var msl = rakenne.muodostumisSaanto.laajuus;
           if (msl) {
-            rakenne.$vaadittuLaajuus = msl.maksimi;
+            rakenne.$vaadittuLaajuus = msl.maksimi || msl.minimi;
           }
         }
-        rakenne.$laajuus = osienLaajuudenSumma(rakenne.osat, viitteet);
+        rakenne.$laajuus = rakenne.rooli === 'määritelty' ? osienLaajuudenSumma(rakenne.osat, viitteet) : rakenne.$vaadittuLaajuus;
       }
-      rakenne.$laajuus = rakenne.$laajuus || 0;
     }
 
     function ryhmaModaali(thenCb) {
