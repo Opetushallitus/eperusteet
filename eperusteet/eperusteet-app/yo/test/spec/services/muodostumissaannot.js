@@ -21,6 +21,7 @@ describe('Service: Muodostumissaannot', function() {
   var $q,
       service,
       algo,
+      osat,
       viitteet,
       rakenne;
 
@@ -30,44 +31,19 @@ describe('Service: Muodostumissaannot', function() {
     algo = Algoritmit;
     $q = _$q_;
 
-    rakenne = {
-      rooli: 'määritelty',
-      nimi: 'ROOT',
-      muodostumisSaanto: {
-        laajuus: {
-          minimi: 140,
-          maksimi: 140,
-          yksikko: null
-        },
-      },
-      osaamisala: null,
-      osat: [{
-        nimi: 'X',
-        rooli: 'määrittelemätön',
-        muodostumisSaanto: {
-          laajuus: {
-            minimi: 20,
-            maksimi: 30,
-            yksikko: null
-          },
-        },
-        osaamisala: null,
-        osat: [],
-      }, {
-        pakollinen: false,
-        _tutkinnonOsaViite: '9228'
-      }, {
+    osat = {
+      A: {
         nimi: 'A',
         rooli: 'määritelty',
         muodostumisSaanto: {
           laajuus: {
             minimi: 50,
             maksimi: 60,
-            yksikko: null
           },
         },
-        osaamisala: null,
-        osat: [{ _tutkinnonOsaViite: '9975' }, {
+        osat: [{
+          _tutkinnonOsaViite: '9975'
+        }, {
           _tutkinnonOsaViite: '11299'
         }, {
           _tutkinnonOsaViite: '8690'
@@ -76,20 +52,66 @@ describe('Service: Muodostumissaannot', function() {
         }, {
           _tutkinnonOsaViite: '9502'
         }],
-      }, {
+      },
+      B: {
         nimi: 'B',
         rooli: 'määritelty',
         muodostumisSaanto: {
           laajuus: {
             minimi: 30,
             maksimi: 35,
-            yksikko: null
           },
         },
-        osaamisala: null,
-        osat: [{ _tutkinnonOsaViite: '10596' },
-          { _tutkinnonOsaViite: '8018' },
-          { _tutkinnonOsaViite: '10195' }],
+        osat: [{
+          _tutkinnonOsaViite: '10596'
+        }, {
+          _tutkinnonOsaViite: '8018'
+        }, {
+          _tutkinnonOsaViite: '10195'
+        }],
+      },
+      V: {
+        nimi: 'V',
+        rooli: 'määritelty',
+        muodostumisSaanto: {
+          laajuus: {
+            minimi: 70,
+            maksimi: 70,
+          },
+        },
+        osat: [{
+          _tutkinnonOsaViite: '10596'
+        }, {
+          _tutkinnonOsaViite: '8018'
+        }, {
+          _tutkinnonOsaViite: '10195'
+        }],
+      },
+      X: {
+        nimi: 'X',
+        rooli: 'määrittelemätön',
+        muodostumisSaanto: {
+          laajuus: {
+            minimi: 20,
+            maksimi: 30,
+          },
+        },
+        osat: [],
+      },
+    };
+
+    rakenne = {
+      rooli: 'määritelty',
+      nimi: 'ROOT',
+      muodostumisSaanto: {
+        laajuus: {
+          minimi: 140,
+          maksimi: 140,
+        },
+      },
+      osat: [osat.X, osat.A, osat.B, osat.V, {
+        pakollinen: false,
+        _tutkinnonOsaViite: '9228'
       }],
     };
 
@@ -198,9 +220,35 @@ describe('Service: Muodostumissaannot', function() {
       }
     };
 
+    service.laskeLaajuudet(rakenne, viitteet);
   }));
 
   describe('Muodostumissäännöt', function() {
+
+    it('pystyy validoimaan ryhmän A', function() {
+      expect(service.validoiRyhma(osat.A, viitteet)).toBe(0);
+      expect(osat.A.$virhe).toBeUndefined();
+    });
+
+    it('pystyy validoimaan ryhmän B', function() {
+      expect(service.validoiRyhma(osat.B, viitteet)).toBe(0);
+      expect(osat.B.$virhe).toBeUndefined();
+    });
+
+    it('pystyy validoimaan ryhmän X', function() {
+      expect(service.validoiRyhma(osat.X, viitteet)).toBe(0);
+      expect(osat.X.$virhe).toBeUndefined();
+    });
+
+    it('pystyy validoimaan ryhmän V', function() {
+      expect(service.validoiRyhma(osat.V, viitteet)).toBe(1);
+      expect(osat.V.$virhe.virhe).toBe('muodostumis-rakenne-validointi-laajuus');
+    });
+
+    it('pystyy validoimaan koko puun', function() {
+      expect(service.validoiRyhma(rakenne, viitteet)).toBe(1);
+      expect(rakenne.$virhe).toBeUndefined();
+    });
 
     it('pystyy laskemaan laajuudet ryhmille', function() {
       function testaa(osa, laajuus, vaadittu) {
@@ -208,13 +256,12 @@ describe('Service: Muodostumissaannot', function() {
         expect(osa.$vaadittuLaajuus).toBe(vaadittu);
       }
 
-      service.laskeLaajuudet(rakenne, viitteet);
-      testaa(rakenne, 145, 140);
-
+      testaa(rakenne, 185, 140);
       algo.kaikilleLapsisolmuille(rakenne, 'osat', function(osa) {
         if (osa.osat) {
           if (osa.nimi === 'A') { testaa(osa, 60, 60); }
           else if (osa.nimi === 'B') { testaa(osa, 40, 35); }
+          else if (osa.nimi === 'V') { testaa(osa, 40, 70); }
           else if (osa.nimi === 'X') { testaa(osa, 30, 30); }
         }
       });
@@ -222,34 +269,16 @@ describe('Service: Muodostumissaannot', function() {
 
     it('pystyy kääntämään säännöt selkokieliseksi', function() {
       var muodostumissaannot = [{}, {
-        koko: {
-          minimi: 5,
-          maksimi: 10
-        }
+        koko: { minimi: 5, maksimi: 10 }
       }, {
-        koko: {
-          minimi: 10,
-          maksimi: 10
-        }
+        koko: { minimi: 10, maksimi: 10 }
       }, {
-        laajuus: {
-          minimi: 5,
-          maksimi: 10
-        }
+        laajuus: { minimi: 5, maksimi: 10 }
       }, {
-        laajuus: {
-          minimi: 10,
-          maksimi: 10
-        }
+        laajuus: { minimi: 10, maksimi: 10 }
       }, {
-        laajuus: {
-          minimi: 5,
-          maksimi: 10
-        },
-        koko: {
-          minimi: 5,
-          maksimi: 10
-        }
+        laajuus: { minimi: 5, maksimi: 10 },
+        koko: { minimi: 5, maksimi: 10 }
       }];
 
       var expected = [
@@ -266,6 +295,7 @@ describe('Service: Muodostumissaannot', function() {
         expect(service.kaannaSaanto(ms)).toEqual(expected[index]);
       });
     });
+
   });
 
 });
