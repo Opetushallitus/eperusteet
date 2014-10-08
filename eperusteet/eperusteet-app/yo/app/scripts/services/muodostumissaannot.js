@@ -23,11 +23,11 @@ angular.module('eperusteApp')
   .service('Muodostumissaannot', function($modal) {
     var skratchpadHasContent = false;
     function osienLaajuudenSumma(rakenneOsat) {
-      return _(rakenneOsat ? rakenneOsat : [])
+      return _(rakenneOsat || [])
         .map(function(osa) {
           return osa ? (osa.$vaadittuLaajuus && osa.$laajuus > osa.$vaadittuLaajuus ? osa.$vaadittuLaajuus : osa.$laajuus) : 0;
         })
-        .reduce(function(sum, newval) { return sum + newval; }) || 0;
+        .reduce(function(sum, newval) { return sum + newval; }, 0) || 0;
     }
 
     function kaannaSaanto(ms) {
@@ -107,7 +107,7 @@ angular.module('eperusteApp')
       });
 
       // On rakennemoduuli
-      if (rakenne.muodostumisSaanto && rakenne.rooli !== 'virtuaalinen') {
+      if (rakenne.muodostumisSaanto && rakenne.rooli !== 'määrittelemätön') {
         var ms = rakenne.muodostumisSaanto;
         var msl = ms.laajuus || 0;
         var msk = ms.koko || 0;
@@ -125,7 +125,7 @@ angular.module('eperusteApp')
         } else if (msl) {
           // Validoidaan maksimi
           if (msl.maksimi) {
-            if (osienLaajuudenSumma(rakenne, viitteet) < msl.maksimi) {
+            if (osienLaajuudenSumma(rakenne.osat, viitteet) < msl.maksimi) {
               asetaVirhe('muodostumis-rakenne-validointi-laajuus', ms);
             }
           }
