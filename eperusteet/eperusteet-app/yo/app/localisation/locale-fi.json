@@ -214,6 +214,7 @@
 
     "perusteen-sisalto": "Perusteen sisältö",
 
+    "muodostumissaantoa-ei-maaritelty": "Muodostumissääntöjä ei ole määritelty",
     "muodostumis-rakenne-validointi-laajuus": "Ryhmän osien yhteenlaskettu laajuus ei riitä kattamaan tarvittavaa laajuutta",
     "muodostumis-rakenne-validointi-maara": "Ryhmän osien yhteenlaskettu määrä ei riitä kattamaan tarvittavaa määrää",
     "muodostumis-rakenne-validointi-maksimi": "Ryhmän laskettu minimi on pienempi kuin vaadittu minimi",

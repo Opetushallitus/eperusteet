@@ -40,29 +40,29 @@ angular.module('eperusteApp')
         fraasi.push('osia-valittava-vahintaan');
         fraasi.push(msl.minimi);
         if (msl.minimi !== msl.maksimi) {
-          fraasi.push('ja-enintään');
+          fraasi.push('ja-enintaan');
           fraasi.push(msl.maksimi);
         }
         fraasi.push('$laajuusYksikko');
-        fraasi.push('edestä');
+        fraasi.push('edesta');
       }
 
       if (msk && msk.minimi && msk.maksimi) {
         if (!_.isEmpty(fraasi)) {
-          fraasi.push('ja-myös-valittava');
+          fraasi.push('ja-myos-valittava');
         }
         else {
           fraasi.push('osia-valittava-vahintaan');
         }
         fraasi.push(msk.minimi);
-        if (msk.minimi === msk.maksimi) {
-          fraasi.push('ja-enintään');
+        if (msk.minimi !== msk.maksimi) {
+          fraasi.push('ja-enintaan');
           fraasi.push(msk.maksimi);
         }
         fraasi.push('kappaletta');
       }
 
-      return fraasi;
+      return _.isEmpty(fraasi) ? ['muodostumissaantoa-ei-maaritelty'] : fraasi;
     }
 
     /* TODO (jshint complexity/W074) simplify/split ---> */
