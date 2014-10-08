@@ -122,8 +122,6 @@ public class PerusteprojektiController {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public ResponseEntity<PerusteprojektiDto> add(@RequestBody PerusteprojektiLuontiDto perusteprojektiLuontiDto, UriComponentsBuilder ucb) {
-        service.onkoDiaarinumeroKaytossa(perusteprojektiLuontiDto.getDiaarinumero());
-
         PerusteprojektiDto perusteprojektiDto = service.save(perusteprojektiLuontiDto);
         return new ResponseEntity<>(perusteprojektiDto, buildHeadersFor(perusteprojektiDto.getId(), ucb), HttpStatus.CREATED);
     }
