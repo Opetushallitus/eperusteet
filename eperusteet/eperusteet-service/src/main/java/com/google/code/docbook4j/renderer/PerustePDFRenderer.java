@@ -177,7 +177,7 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer>{
         if (StringUtils.isEmpty(this.fopDirectory)) {
             LOG.warn("Fop directory not set, won't use pdf/a mode");
         } else {
-            agent.getRendererOptions().put("pdf-a-mode", "PDF/A-1a");
+            agent.getRendererOptions().put("pdf-a-mode", "PDF/A-1b");
         }
     }
 
