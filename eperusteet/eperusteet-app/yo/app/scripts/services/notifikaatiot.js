@@ -92,18 +92,17 @@ angular.module('eperusteApp')
       else { viestit.splice(i, 1); }
     }
 
-    function serverCb(response, b, c, d) {
-      console.log(response, b, c, d);
+    function serverCb(response) {
       if (response) {
         if (response.status >= 500) {
-
           fataali(Kaanna.kaanna('järjestelmävirhe-alku') + response.status + Kaanna.kaanna('järjestelmävirhe-loppu'), function() {
             // TODO Ota käyttöön möyhemmin
             // $state.go('root.aloitussivu');
           });
         }
         else if (response.data && response.data.syy) {
-          uusiViesti(2, response.data.syy[0]);
+          var syy = response.data.syy;
+          uusiViesti(2, _.isArray(syy) ? syy[0] : syy);
         }
         else {
           uusiViesti(2, Kaanna.kaanna('odottamaton-virhe'));
