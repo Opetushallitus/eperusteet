@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.dto.peruste;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -36,9 +37,11 @@ public abstract class PerusteenOsaDto {
     private Date luotu;
     private Date muokattu;
     private String muokkaaja;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String muokkaajanNimi;
     private LokalisoituTekstiDto nimi;
     private PerusteTila tila;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private PerusteenOsaTunniste tunniste;
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "osanTyyppi")

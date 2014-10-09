@@ -105,9 +105,9 @@ public class PerusteenOsaController {
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{koodiUri:tutkinnonosat_\\d+}", method = GET)
+    @RequestMapping(method = GET, params = "koodiUri")
     @ResponseBody
-    public List<PerusteenOsaDto.Laaja> get(@PathVariable("koodiUri") final String koodiUri) {
+    public List<PerusteenOsaDto.Laaja> get(@RequestParam("koodiUri") final String koodiUri) {
         List<PerusteenOsaDto.Laaja> t = service.getAllByKoodiUri(koodiUri);
         return PerusteenOsaDtoList.wrap(t);
     }
