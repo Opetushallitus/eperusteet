@@ -23,10 +23,14 @@ $ohje-badge-size: 22px;
     &.open:hover {
       background-color: darken($nappi-vari, 20%);
     }
-
   }
   .popover-title .closer {
+    margin-left: 8px;
+    margin-right: -10px;
     font-size: 130%;
     cursor: pointer;
+  }
+  .popover-extra {
+    padding: 9px;
   }
 }

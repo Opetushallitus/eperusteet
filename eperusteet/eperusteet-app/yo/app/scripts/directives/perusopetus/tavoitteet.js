@@ -27,38 +27,47 @@ angular.module('eperusteApp')
       },
       controller: 'TavoitteetController',
       link: function (scope) {
-        var uniqueId = 0;
-        _.each(scope.model.kohdealueet, function (kohdealue) {
-          kohdealue.$accordionOpen = true;
-          _.each(kohdealue.tavoitteet, function (tavoite) {
-            tavoite.$runningIndex = ++uniqueId;
-            tavoite.$sisaltoalueet = _.map(tavoite.sisaltoalueet, function (sisaltoalueId) {
-              return _.find(scope.model.sisaltoalueet, function(item) {
-                return item.id === sisaltoalueId;
-              });
-            });
-            tavoite.$osaaminen = _.map(tavoite.osaaminen, function (osaamisId) {
-              var osaaminen = _.find(scope.osaamiset, function (item) {
-                return item.perusteenOsa.id === osaamisId;
-              }).perusteenOsa;
-              var vuosiluokkakuvaus = _.find(scope.vuosiluokka.osaamisenkuvaukset, function (item) {
-                return item.osaaminen === osaamisId;
-              });
-              return {
-                nimi: osaaminen.nimi,
-                teksti: vuosiluokkakuvaus ? vuosiluokkakuvaus.teksti : 'ei-kuvausta'
-              };
-            });
-          });
-        });
+        // TODO call on model update
+        scope.mapModel();
       }
     };
   })
-  .controller('TavoitteetController', function ($scope, YleinenData, PerusopetusService) {
+  .controller('TavoitteetController', function ($scope, YleinenData, PerusopetusService, $state) {
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
     // TODO don't fetch here, from parent maybe?
     $scope.osaamiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN);
     $scope.vuosiluokka = _.find(PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT), {id: $scope.model._id});
+
+    $scope.mapModel = function () {
+      var uniqueId = 0;
+      _.each($scope.model.kohdealueet, function (kohdealue) {
+        kohdealue.$accordionOpen = true;
+        _.each(kohdealue.tavoitteet, function (tavoite) {
+          tavoite.$runningIndex = ++uniqueId;
+          tavoite.$sisaltoalueet = _.map(tavoite.sisaltoalueet, function (sisaltoalueId) {
+            return _.find($scope.model.sisaltoalueet, function(item) {
+              return item.id === sisaltoalueId;
+            });
+          });
+          tavoite.$osaaminen = _.map(tavoite.osaaminen, function (osaamisId) {
+            var osaaminen = _.find($scope.osaamiset, function (item) {
+              return item.perusteenOsa.id === osaamisId;
+            }).perusteenOsa;
+            var vuosiluokkakuvaus = _.find($scope.vuosiluokka.osaamisenkuvaukset, function (item) {
+              return item.osaaminen === osaamisId;
+            });
+            return {
+              nimi: osaaminen.nimi,
+              teksti: vuosiluokkakuvaus ? vuosiluokkakuvaus.teksti : 'ei-kuvausta',
+              /* TODO vuosiluokkakokonaisuuden id */
+              extra: '<div class="clearfix"><a class="pull-right" href="' +
+                $state.href('root.perusteprojekti.osaalue', {osanTyyppi: PerusopetusService.VUOSILUOKAT, osanId: ''}) +
+                '" kaanna="vuosiluokkakokonaisuuden-osaamisalueet"></a></div>'
+            };
+          });
+        });
+      });
+    };
 
     function setAccordion(mode) {
       var obj = $scope.model.kohdealueet;

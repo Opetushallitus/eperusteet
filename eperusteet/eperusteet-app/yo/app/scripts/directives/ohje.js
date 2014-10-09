@@ -28,7 +28,7 @@
  *   kiinnittää popoverin olemassaolevaan sisältöön, avautuu klikillä
  *
  * suunta: left|right(default)|top|bottom
- * otsikko: optional 
+ * otsikko: optional
  */
 angular.module('eperusteApp')
   .directive('ohje', function ($timeout, $compile, $document) {
@@ -41,8 +41,14 @@ angular.module('eperusteApp')
         otsikko: '@?',
         suunta: '@?',
         ohje: '@?',
+        extra: '='
       },
       link: function (scope, element) {
+        function appendExtraContent() {
+          var content = $compile(scope.extra)(scope);
+          element.find('.popover-extra').empty().append(content);
+        }
+
         var el = element.find('.popover-element');
 
         scope.show = function (visible, mouseEnter) {
@@ -58,6 +64,7 @@ angular.module('eperusteApp')
                 '<span class="closer pull-right" ng-click="show(false)">&#x2715;</span>'))(scope);
               title.append(closer);
             }
+            appendExtraContent();
           });
         };
 
@@ -89,6 +96,7 @@ angular.module('template/popover/popover.html', []).run(['$templateCache', funct
       '  <div class="popover-inner">\n' +
       '      <h3 class="popover-title" ng-bind-html="title | unsafe" ng-show="title"></h3>\n' +
       '      <div class="popover-content" ng-bind-html="content | unsafe"></div>\n' +
+      '      <div class="popover-extra"></div>\n' +
       '  </div>\n' +
       '</div>\n' +
       '');
