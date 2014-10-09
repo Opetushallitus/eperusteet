@@ -71,6 +71,14 @@ angular.module('eperusteApp')
           PerusteProjektiSivunavi.setVisible();
         }]
       })
+      .state('root.perusteprojekti.muokkaus', {
+        url: '/muokkaus/:osanTyyppi/:osanId',
+        templateUrl: 'views/muokkaus.html',
+        controller: 'OsanMuokkausController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(false);
+        }]
+      })
       .state('root.perusteprojekti.suoritustapa', {
         url: '/:suoritustapa',
         template: '<div ui-view></div>',

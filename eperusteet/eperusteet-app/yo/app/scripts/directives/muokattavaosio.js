@@ -29,13 +29,19 @@ angular.module('eperusteApp')
       controller: 'MuokattavaOsioController'
     };
   })
-  .controller('MuokattavaOsioController', function($scope, YleinenData, Utils) {
+  .controller('MuokattavaOsioController', function($scope, YleinenData, Utils, $state, OsanMuokkausHelper) {
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
 
     $scope.hasContent = false;
     $scope.$watch('model', function () {
       $scope.hasContent = $scope.type !== 'tekstikappale' || Utils.hasLocalizedText($scope.model.nimi);
     }, true);
+
+    $scope.edit = function () {
+      OsanMuokkausHelper.setBackState();
+      // TODO osan id
+      $state.go('root.perusteprojekti.muokkaus', {osanTyyppi: $scope.type, osanId: ''});
+    };
   })
 
   .directive('tagCloud', function () {
