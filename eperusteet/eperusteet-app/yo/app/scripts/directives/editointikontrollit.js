@@ -40,13 +40,13 @@ angular.module('eperusteApp')
             container.css('width', '100%');
           }
         };
-
-        window.on('scroll resize', function() {
-          if (scope.editStarted) {
-            scope.updatePosition();
-          }
+        var updatepos = function() {
+          scope.updatePosition();
+        };
+        window.on('scroll resize', updatepos);
+        scope.$on('$destroy', function() {
+          window.off('scroll resize', updatepos);
         });
-
         scope.updatePosition();
 
         scope.setMargins = function () {

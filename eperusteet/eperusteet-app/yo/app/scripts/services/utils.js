@@ -64,20 +64,24 @@ angular.module('eperusteApp')
         scope.hidden = true;
         var window = angular.element($window);
         var document = angular.element($document);
-        window.on('scroll', function () {
+        var scroll = function () {
           var fitsOnScreen = document.height() <= window.height()*1.5;
           var scrollDistance = document.height() - window.height();
           var inTopArea = window.scrollTop() < scrollDistance * CUTOFF_PERCENTAGE / 100;
           scope.$apply(function () {
             scope.hidden = !active || fitsOnScreen || inTopArea;
           });
-        });
+        };
+        window.on('scroll', scroll);
         // Disable when in edit mode
         scope.$on('enableEditing', function () {
           active = false;
         });
         scope.$on('disableEditing', function () {
           active = true;
+        });
+        scope.$on('$destroy', function() {
+          window.off('scroll', scroll);
         });
       }
     };
