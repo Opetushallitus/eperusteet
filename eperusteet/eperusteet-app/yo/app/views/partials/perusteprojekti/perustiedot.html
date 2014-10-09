@@ -20,11 +20,13 @@ European Union Public Licence for more details.
 
     <div class="form-group">
       <label class="col-sm-3 control-label" kaanna>projektin-oid-label</label>
-      <div class="col-sm-9 input-group">
-        <input ng-model="projekti.$ryhmaNimi[lang]" type="" class="form-control" disabled>
-        <span class="input-group-btn">
-          <button class="btn btn-default" ng-click="haeRyhma()" kaanna>hae-ryhma</button>
-        </span>
+      <div class="col-sm-9">
+        <div class="input-group">
+          <input ng-model="projekti.$ryhmaNimi[lang]" type="" class="form-control" disabled>
+          <span class="input-group-btn">
+            <button class="btn btn-default" ng-click="haeRyhma()" kaanna>hae-ryhma</button>
+          </span>
+        </div>
       </div>
     </div>
 
@@ -45,7 +47,7 @@ European Union Public Licence for more details.
   <div ng-if="!$parent.editEnabled && !$parent.wizardissa()">
     <table class="perustiedot">
       <tr ng-repeat="item in fields">
-        <th>{{item.label | kaanna}}</th>
+        <th>{{item.label| kaanna}}</th>
         <td ng-if="item.type !== 'date'" ng-bind="{{item.model}}"></td>
         <td ng-if="item.type === 'date'" pvm="{{item.model}}"></td>
       </tr>
