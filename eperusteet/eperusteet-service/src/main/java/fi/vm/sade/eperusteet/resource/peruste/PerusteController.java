@@ -129,7 +129,7 @@ public class PerusteController {
         @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
         @RequestHeader(value = "If-None-Match", required = false) Integer eTag, HttpServletResponse response) {
         LukkoDto lock = service.getLock(id, Suoritustapakoodi.of(suoritustapakoodi));
-        return new ResponseEntity<>(lock, HttpStatus.OK);
+        return new ResponseEntity<>(lock, lock == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}/lukko", method = {POST, PUT})
