@@ -77,8 +77,8 @@ angular.module('eperusteApp')
       '    <h3>' +
       '      {{ viesti.nimi || viesti.muokkaaja }}' +
       '      <span class="pull-right">' +
-      '        <a class="action-link" ng-click="startEditing(viesti)" icon-role="edit"></a>' +
-      '        <a class="action-link" ng-click="poistaKommentti(viesti)" icon-role="remove"></a>' +
+      '        <a class="action-link" ng-click="startEditing(viesti)" icon-role="edit" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }"></a>' +
+      '        <a class="action-link" ng-click="poistaKommentti(viesti)" icon-role="remove" oikeustarkastelu="{ target: \'peruste\', permission: \'poisto\' }"></a>' +
       '      </span>' +
       '    </h3>' +
       '    <div ng-hide="editoi === viesti.id"><p ng-repeat="p in viesti.sisalto|paragraphsplit track by $index">{{p}}</p></div>' +
@@ -92,7 +92,7 @@ angular.module('eperusteApp')
       '    <div class="kommentti-footer">' +
       '      <span ng-show="viesti.muokattu"><i><b>Muokattu </b>{{ viesti.muokattu | aikaleima }}</i></span>' +
       '      <span ng-hide="viesti.muokattu"><i>{{ viesti.luotu | aikaleima }}</i></span>' +
-      '      <a href="" ng-click="viesti.$lisaa = true" kaanna>vastaa</a>' +
+      '      <a href="" ng-click="viesti.$lisaa = true" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }" kaanna>vastaa</a>' +
       '      <span ng-show="viesti.viestit.length > 0">' +
       '        <a ng-show="viesti.$piilotaAliviestit" href="" ng-click="viesti.$piilotaAliviestit = false" kaanna>nayta-aliviestit</a>' +
       '        <a ng-hide="viesti.$piilotaAliviestit" href="" ng-click="viesti.$piilotaAliviestit = true" kaanna>piilota-aliviestit</a>' +

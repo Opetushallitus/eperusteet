@@ -39,8 +39,9 @@ angular.module('eperusteApp')
     function kaikilleLapsisolmuille(objekti, lapsienAvain, cb, depth) {
       depth = depth || 0;
       _.forEach(objekti[lapsienAvain], function(solmu) {
-        cb(solmu, depth);
-        kaikilleLapsisolmuille(solmu, lapsienAvain, cb, depth + 1);
+        if (!cb(solmu, depth)) {
+          kaikilleLapsisolmuille(solmu, lapsienAvain, cb, depth + 1);
+        }
       });
     }
 
@@ -70,6 +71,14 @@ angular.module('eperusteApp')
       return st.laajuusYksikko;
     }
 
+    function kaikilleTutkintokohtaisilleOsille(juuri, cb) {
+      var lapsellaOn = false;
+      _.forEach(juuri.lapset, function(osa) {
+        lapsellaOn = kaikilleTutkintokohtaisilleOsille(osa, cb) || lapsellaOn;
+      });
+      return cb(juuri, lapsellaOn) || lapsellaOn;
+    }
+
     return {
       rajausVertailu: rajausVertailu,
       mapLapsisolmut: mapLapsisolmut,
@@ -78,6 +87,7 @@ angular.module('eperusteApp')
       match: match,
       access: access,
       perusteenSuoritustavanYksikko: perusteenSuoritustavanYksikko,
+      kaikilleTutkintokohtaisilleOsille: kaikilleTutkintokohtaisilleOsille
     };
   });
 

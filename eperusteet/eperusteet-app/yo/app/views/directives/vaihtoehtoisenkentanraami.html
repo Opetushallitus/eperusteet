@@ -1,0 +1,9 @@
+<div ng-transclude></div>
+<div class="field-buttons pull-right">
+<a icon-role="edit" ng-if="editEnabled && field.isolateEdit" ng-hide="field.$editing"
+   class="action-link" ng-click="callFn($event, 'editOsio')" ng-attr-title="{{'muokkaa'|kaanna}}"></a>
+<button ng-if="field.isolateEdit && field.$editing" class="btn btn-default btn-xs" kaanna="peruuta" ng-click="callFn($event, 'cancelEdit')"></button>
+<button ng-if="field.isolateEdit && field.$editing" class="btn btn-primary btn-xs" kaanna="ok" ng-click="callFn($event, 'okEdit')"></button>
+<a icon-role="remove" ng-if="editEnabled" ng-hide="field.$editing"
+   class="action-link" ng-click="callFn($event, 'suljeOsio')" ng-attr-title="{{'poista-osio'|kaanna}}"></a>
+</div>

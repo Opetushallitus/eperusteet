@@ -15,16 +15,19 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.Osaamisala;
@@ -52,11 +55,13 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.RakenneRepository;
 import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
+import fi.vm.sade.eperusteet.repository.TekstiPalanenRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
+import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
@@ -122,6 +127,9 @@ public class PerusteServiceImpl implements PerusteService {
     private SuoritustapaService suoritustapaService;
 
     @Autowired
+    private PerusteenOsaViiteService perusteenOsaViiteService;
+
+    @Autowired
     PerusteenOsaViiteRepository perusteenOsaViiteRepo;
 
     @Autowired
@@ -146,6 +154,9 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Autowired
     private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
+
+    @Autowired
+    private TekstiPalanenRepository tekstiPalanenRepository;
 
     @Autowired
     private LockManager lockManager;
@@ -575,7 +586,12 @@ public class PerusteServiceImpl implements PerusteService {
         suoritustapaRepository.lock(suoritustapa);
         final PerusteenOsaViite sisalto = suoritustapa.getSisalto();
         uusiViite.setVanhempi(sisalto);
-        sisalto.getLapset().add(uusiViite);
+        List<PerusteenOsaViite> lapset = sisalto.getLapset();
+        if (lapset == null) {
+            lapset = new ArrayList<>();
+            sisalto.setLapset(lapset);
+        }
+        lapset.add(uusiViite);
         uusiViite = perusteenOsaViiteRepo.save(uusiViite);
         return mapper.map(uusiViite, PerusteenOsaViiteDto.Matala.class);
     }
@@ -791,6 +807,25 @@ public class PerusteServiceImpl implements PerusteService {
         return suoritustavat;
     }
 
+    private void lisaaTutkinnonMuodostuminen(Peruste peruste) {
+        PerusteenOsaViiteDto.Matala viite;
+
+        for (Suoritustapa st : peruste.getSuoritustavat()) {
+            PerusteenOsaViite sisalto = st.getSisalto();
+            List<PerusteenOsaViite> lapset = new ArrayList<>();
+            TekstiKappale tk = new TekstiKappale();
+            HashMap<Kieli, String> hm = new HashMap<>();
+            hm.put(Kieli.FI, "Tutkinnon muodostuminen");
+            tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
+            tk.setTunniste(PerusteenOsaTunniste.RAKENNE);
+            PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
+            pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
+            pov.setVanhempi(sisalto);
+            lapset.add(pov);
+            sisalto.setLapset(lapset);
+        }
+    }
+
     /**
      * Luo uuden perusteen perusrakenteella.
      *
@@ -807,18 +842,30 @@ public class PerusteServiceImpl implements PerusteService {
         peruste.setTila(tila);
         peruste.setTyyppi(tyyppi);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
+
         if (Arrays.asList(AMMATILLISET_KOULUTUSTYYPPI_URIT).indexOf(koulutustyyppi) != -1) {
             suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO, null));
         }
+
         if (koulutustyyppi != null) {
+            Suoritustapa st = null;
             if (koulutustyyppi.equals(AMMATILLISET_KOULUTUSTYYPPI_URIT[0])) {
-                suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko != null ? yksikko
-                                                                                                   : LaajuusYksikko.OSAAMISPISTE));
+                st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko != null ? yksikko : LaajuusYksikko.OSAAMISPISTE);
             } else if (koulutustyyppi.equals(PERUSOPETUKSEN_KOULUTUSTYYPPI)) {
-                suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, null));
+                st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, null);
+            }
+
+            if (st != null) {
+                suoritustavat.add(st);
             }
         }
+        else {
+            throw new BusinessRuleViolationException("Koulutustyyppiä ei ole asetettu");
+        }
+
         peruste.setSuoritustavat(suoritustavat);
+        perusteet.save(peruste);
+        lisaaTutkinnonMuodostuminen(peruste);
         return peruste;
     }
 
@@ -834,10 +881,13 @@ public class PerusteServiceImpl implements PerusteService {
 
         Set<Koulutus> vanhatKoulutukset = vanha.getKoulutukset();
         Set<Koulutus> koulutukset = new HashSet<>();
-        for (Koulutus vanhaKoulutus : vanhatKoulutukset) {
-            koulutukset.add(vanhaKoulutus);
+
+        if (vanhatKoulutukset != null) {
+            for (Koulutus vanhaKoulutus : vanhatKoulutukset) {
+                koulutukset.add(vanhaKoulutus);
+            }
+            peruste.setKoulutukset(koulutukset);
         }
-        peruste.setKoulutukset(koulutukset);
 
         Set<Suoritustapa> suoritustavat = vanha.getSuoritustavat();
         Set<Suoritustapa> uudetSuoritustavat = new HashSet<>();
@@ -849,6 +899,7 @@ public class PerusteServiceImpl implements PerusteService {
         peruste.setSuoritustavat(uudetSuoritustavat);
 
         peruste = perusteet.save(peruste);
+        lisaaTutkinnonMuodostuminen(peruste);
         return peruste;
     }
 

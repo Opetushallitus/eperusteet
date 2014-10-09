@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service.security;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
@@ -36,12 +35,12 @@ public class PermissionHelper {
     @Autowired
     private EntityManager em;
 
-    @Cacheable(value = "tila",unless = "#result != T(fi.vm.sade.eperusteet.domain.PerusteTila).VALMIS")
-    public PerusteTila findPerusteTilaFor(PermissionEvaluator.Target targetType, Serializable id) {
+    @Cacheable(value = "tila", unless = "#result != T(fi.vm.sade.eperusteet.domain.PerusteTila).VALMIS")
+    public PerusteTila findPerusteTilaFor(PermissionManager.Target targetType, Serializable id) {
         switch (targetType) {
-            case PERUSTEENOSA :
+            case PERUSTEENOSA:
                 return findPerusteTilaFor(PerusteenOsa.class, id);
-            case PERUSTE :
+            case PERUSTE:
                 return findPerusteTilaFor(Peruste.class, id);
             default:
                 return null;
@@ -49,7 +48,9 @@ public class PermissionHelper {
     }
 
     private PerusteTila findPerusteTilaFor(Class<? extends WithPerusteTila> entity, Serializable id) {
-        if ( id == null ) return null;
+        if (id == null) {
+            return null;
+        }
         WithPerusteTila e = em.find(entity, id);
         return e == null ? null : e.getTila();
     }

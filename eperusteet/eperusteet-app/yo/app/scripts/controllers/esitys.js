@@ -46,7 +46,16 @@ angular.module('eperusteApp')
       .state('root.esitys.peruste.rakenne', {
         url: '/rakenne',
         templateUrl: 'views/partials/esitys/rakenne.html',
-        controller: 'EsitysRakenneCtrl'
+        controller: 'EsitysRakenneCtrl',
+        resolve: {
+          // FIXME: ui-router bug or some '$on'-callback manipulating $stateParams?
+          // $stateParams changes between config and controller
+          //
+          // Got to live third-party libs
+          realParams: function($stateParams) {
+            return _.clone($stateParams);
+          },
+        }
       })
       .state('root.esitys.peruste.tutkinnonosat', {
         url: '/tutkinnonosat',
@@ -64,11 +73,11 @@ angular.module('eperusteApp')
         controller: 'EsitysSisaltoCtrl'
       });
   })
-  .controller('EsitysRakenneCtrl', function($scope, $state, $stateParams, PerusteenRakenne) {
+  .controller('EsitysRakenneCtrl', function($scope, $state, $stateParams, PerusteenRakenne, realParams) {
     $scope.$parent.valittu.sisalto = 'rakenne';
-    PerusteenRakenne.hae($stateParams.perusteId, $stateParams.suoritustapa, function(rakenne) {
+    PerusteenRakenne.hae(realParams.perusteId, realParams.suoritustapa, function(rakenne) {
       $scope.rakenne = rakenne;
-      $scope.rakenne.$suoritustapa = $stateParams.suoritustapa;
+      $scope.rakenne.$suoritustapa = realParams.suoritustapa;
       $scope.rakenne.$resolved = true;
     });
 
@@ -100,11 +109,11 @@ angular.module('eperusteApp')
   .controller('EsitysCtrl', function($scope, $stateParams, sisalto, peruste,
       YleinenData, $state, Algoritmit, tutkinnonOsat, Kaanna, arviointiasteikot,
       Profiili, PdfCreation) {
+
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
     $scope.navi = {
       items: [
-        {label: 'tutkinnonosat', link: ['root.esitys.peruste.tutkinnonosat', {}]},
-        {label: 'tutkinnon-rakenne', link: ['root.esitys.peruste.rakenne', {}]},
+        {label: 'tutkinnonosat', link: ['root.esitys.peruste.tutkinnonosat', $stateParams]}
       ],
       header: 'perusteen-sisalto'
     };
@@ -116,7 +125,7 @@ angular.module('eperusteApp')
         flattened[lapsi.id] = _.clone(lapsi.perusteenOsa);
         $scope.navi.items.push({
           label: lapsi.perusteenOsa.nimi,
-          link: ['root.esitys.peruste.tekstikappale', { osanId: ''+lapsi.id }],
+          link: lapsi.perusteenOsa.tunniste === 'rakenne' ? ['root.esitys.peruste.rakenne', { suoritustapa: $stateParams.suoritustapa }] : ['root.esitys.peruste.tekstikappale', { osanId: ''+lapsi.id }],
           depth: depth
         });
       });
@@ -143,7 +152,7 @@ angular.module('eperusteApp')
     $scope.yksikko = Algoritmit.perusteenSuoritustavanYksikko(peruste, $scope.suoritustapa);
 
     $scope.vaihdaSuoritustapa = function(suoritustapa) {
-      $state.go('root.esitys.peruste', {suoritustapa: suoritustapa});
+      $state.go('root.esitys.peruste', _.merge(_.clone($stateParams), { suoritustapa: suoritustapa }), { reload: true });
     };
 
     if ($state.current.name === 'root.esitys.peruste') {
@@ -153,7 +162,7 @@ angular.module('eperusteApp')
       });
       var params = _.isEmpty(links) ? {} : { osanId: _.first(links).link[1].osanId };
       if (!_.isEmpty(params)) {
-        $state.go('root.esitys.peruste.tekstikappale', params);
+        $state.go('root.esitys.peruste.tekstikappale', _.merge(_.clone($stateParams), params));
       }
     }
 
@@ -193,5 +202,19 @@ angular.module('eperusteApp')
     $scope.luoPdf = function () {
       PdfCreation.setPerusteId($scope.peruste.id);
       PdfCreation.openModal();
+    };
+
+     $scope.getBackLink = function (peruste) {
+       switch (peruste.koulutustyyppi) {
+         case 'koulutustyyppi_1':
+           return $state.href('root.selaus.ammatillinenperuskoulutus');
+         case 'koulutustyyppi_11':
+         case 'koulutustyyppi_12':
+           return $state.href('root.selaus.ammatillinenaikuiskoulutus');
+         case 'koulutustyyppi_9999':
+           return $state.href('root.selaus.perusopetus');
+         default:
+           return $state.href('root.selaus.ammatillinenperuskoulutus');
+       }
     };
   });

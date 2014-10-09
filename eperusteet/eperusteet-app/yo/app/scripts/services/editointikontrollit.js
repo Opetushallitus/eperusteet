@@ -41,6 +41,7 @@ angular.module('eperusteApp')
 
     this.lastModified = null;
     var cbListener = null;
+    var editmodeListener = null;
 
     function setEditMode(mode) {
       scope.editMode = mode;
@@ -48,6 +49,9 @@ angular.module('eperusteApp')
       scope.editModeDefer.resolve(scope.editMode);
       if (scope.editingCallback) {
         scope.editingCallback.notify(mode);
+      }
+      if (editmodeListener) {
+        editmodeListener(mode);
       }
     }
 
@@ -77,7 +81,7 @@ angular.module('eperusteApp')
 
         $rootScope.$broadcast('notifyCKEditor');
       },
-      cancelEditing: function() {
+      cancelEditing: function(tilanvaihto) {
         function doCancel() {
           setEditMode(false);
           if (scope.editingCallback) {
@@ -87,7 +91,7 @@ angular.module('eperusteApp')
           $rootScope.$broadcast('notifyCKEditor');
         }
         if (scope.editingCallback) {
-          if (_.isFunction(scope.editingCallback.canCancel)) {
+          if (_.isFunction(scope.editingCallback.canCancel) && !tilanvaihto) {
             scope.editingCallback.canCancel().then(function () {
               doCancel();
             });
@@ -107,6 +111,7 @@ angular.module('eperusteApp')
         if (!angular.isFunction(callback.notify)) {
           callback.notify = angular.noop;
         }
+        editmodeListener = null;
         $timeout(function() {
           scope.editingCallback = callback;
           scope.editModeDefer.resolve(scope.editMode);
@@ -127,6 +132,9 @@ angular.module('eperusteApp')
       },
       registerCallbackListener: function(callbackListener) {
         cbListener = callbackListener;
+      },
+      registerEditModeListener: function (listener) {
+        editmodeListener = listener;
       },
       getEditModePromise: function() {
         return scope.editModeDefer.promise;

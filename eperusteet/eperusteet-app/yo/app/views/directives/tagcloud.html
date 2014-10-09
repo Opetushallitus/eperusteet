@@ -1,0 +1,9 @@
+<ul class="tagcloud">
+  <li ng-repeat="tag in model">
+    <span ng-if="openable === 'true'" ohje="false" teksti="tag.teksti" otsikko="tag.nimi" suunta="bottom"
+          extra="tag.extra">
+      <span class="tag" kaanna="$parent.tag.nimi"></span>
+    </span>
+    <span ng-if="openable !== 'true'" class="tag" kaanna="tag.nimi" ></span>
+  </li>
+</ul>

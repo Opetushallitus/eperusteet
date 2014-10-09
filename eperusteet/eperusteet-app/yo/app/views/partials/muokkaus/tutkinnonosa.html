@@ -3,10 +3,12 @@
   <div class="action-buttons">
     <div class="floater" ng-attr-title="{{lockNotification}}">
       <button ng-disabled="isLocked" ng-if="tekstikappale.tila !== 'julkaistu'" icon-role="edit"
-              ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="btn btn-default" kaanna="'muokkaa'"></button>
+              ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="btn btn-default" kaanna="'muokkaa'"
+              oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
     </div>
     <button ng-show="tutkinnonOsa.tila === 'julkaistu' && !editEnabled" ng-click="kopioiMuokattavaksi()"
-            class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"></button>
+            class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"
+            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
     <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
 
     <div ng-if="editEnabled">
@@ -46,26 +48,31 @@
   <form name="tutkinnonOsaHeaderForm" role="form">
     <div class="non-collapsibles" ng-if="editEnabled">
       <div ng-show="isNew">
-        <label>{{'Tyyppi'|kaanna}} <ohje teksti="ohje-tutkinnonosa-tyyppi"></ohje></label>
+        <label class="header">{{'Tyyppi'|kaanna}} <ohje teksti="ohje-tutkinnonosa-tyyppi"></ohje></label>
         <div class="btn-group">
           <label class="btn btn-default" ng-model="editableTutkinnonOsa.tyyppi" btn-radio="'normaali'">{{'Tutkintokohtainen'|kaanna}}</label>
           <label class="btn btn-default" ng-model="editableTutkinnonOsa.tyyppi" btn-radio="'tutke2'">{{'Yhteinen'|kaanna}}</label>
         </div>
         <div class="clearfix"></div>
       </div>
-      <label for="nimi-input">{{'muokkaus-tutkinnon-osan-nimi-header'|kaanna}}*</label>
+      <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header'|kaanna}}*</label>
       <input id="nimi-input" class="form-control" ng-model="editableTutkinnonOsa.nimi" localized required ng-change="nimiValidationError = false">
       <p class="alert alert-error" ng-show="(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError"
          kaanna>Nimi on pakollinen tieto</p>
       <div ng-if="suoritustapa !== 'naytto'">
-        <label for="laajuus-input" kaanna>tutkinnonosa-laajuus</label>
+        <label for="laajuus-input" class="header" kaanna>tutkinnonosa-laajuus</label>
         <div class="fixed-group">
           <numberinput label-id="laajuus-input" luokka="form-control" model="editableViiteosa.laajuus" min="0" max="999"
                      type="float" step="0.5" form="tutkinnonOsaHeaderForm"></numberinput>
           <div class="addon"><p kaanna>osp</p></div>
         </div>
       </div>
-      <label for="koodi-input" kaanna>muokkaus-tutkinnon-osan-koodi-header</label>
+      <label for="jarjestys-input" class="header" kaanna>tutkinnonosa-jarjestysnumero</label>
+      <div class="fixed-group">
+        <numberinput label-id="jarjestys-input" luokka="form-control" model="editableViiteosa.jarjestys" min="0" max="9999"
+                     type="integer" form="tutkinnonOsaHeaderForm"></numberinput>
+      </div>
+      <label for="koodi-input" class="header" kaanna>muokkaus-tutkinnon-osan-koodi-header</label>
       <div class="fixed-group">
         <input id="koodi-input" class="form-control" type="text" ng-model="editableTutkinnonOsa.koodiArvo" editointi-kontrolli>
         <div class="addon"><button class="btn btn-default" ng-click="koodistoClick()" kaanna>hae-koodistosta</button></div>
@@ -74,12 +81,19 @@
   </form>
 
   <div class="non-collapsibles" ng-if="!editEnabled">
-    <label kaanna>muokkaus-tutkinnon-osan-koodi-header</label>:<span> {{ tutkinnonOsa.koodiArvo }}</span>
+    <label class="header" kaanna>muokkaus-tutkinnon-osan-koodi-header</label>:<span> {{ tutkinnonOsa.koodiArvo }}</span>
   </div>
 
   <div class="tutkinnonosa-sisalto" ng-if="editableTutkinnonOsa.tyyppi === 'normaali'">
     <kenttalistaus edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields"></kenttalistaus>
   </div>
+  
+  <div class="non-collapsibles" ng-if="editableTutkinnonOsa.tyyppi === 'tutke2'">
+    <label class="header" kaanna>kuvaus</label>
+    <ml-input ng-show="editEnabled" ml-data="editableTutkinnonOsa.kuvaus" type="textarea"></ml-input>
+    <p ng-show="!editEnabled">{{tutkinnonOsa.kuvaus | kaanna}}</p>
+  </div>
+    
   <div class="tutkinnonosa-sisalto" ng-if="editableTutkinnonOsa.tyyppi === 'tutke2'">
     <tutke2kentat edit-enabled="editEnabled" tutkinnonosa="tutkinnonOsaPromise" kontrollit="editointikontrollit"></tutke2kentat>
   </div>

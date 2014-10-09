@@ -28,32 +28,24 @@ angular.module('eperusteApp')
       return { value: rooli, label: rooli };
     });
 
-    var msl = ryhma && ryhma.muodostumisSaanto && ryhma.muodostumisSaanto.laajuus ? ryhma.muodostumisSaanto.laajuus : null;
-    var msk = ryhma && ryhma.muodostumisSaanto && ryhma.muodostumisSaanto.koko ? ryhma.muodostumisSaanto.koko : null;
-
-    $scope.ms = {
-      laajuus: msl ? true : false,
-      koko: msk ? true : false
-    };
-
     $scope.luonti = !_.isObject(ryhma);
 
-    var setupRyhma = function (ryhma) {
+    (function setupRyhma() {
       $scope.ryhma = ryhma ? angular.copy(ryhma) : {};
       $scope.osaamisala = ryhma && ryhma.osaamisala ? angular.copy(ryhma.osaamisala) : {};
       $scope.ryhma.rooli = $scope.ryhma.rooli || YleinenData.rakenneRyhmaRoolit[0];
+      $scope.ryhma.muodostumisSaanto = $scope.ryhma.muodostumisSaanto || {};
+
       if (!$scope.ryhma.muodostumisSaanto) {
         $scope.ryhma.muodostumisSaanto = {};
       }
       if (!$scope.ryhma.nimi) {
         $scope.ryhma.nimi = {};
       }
-      if (!$scope.ryhma.kuvaus) {
-        $scope.ryhma.kuvaus = {};
-      }
-    };
-    setupRyhma(ryhma);
-
+      // if (!$scope.ryhma.kuvaus) {
+      //   $scope.ryhma.kuvaus = {};
+      // }
+    })();
 
     var koodistoHaku = function (koodisto) {
       $scope.osaamisala = {};
@@ -83,20 +75,13 @@ angular.module('eperusteApp')
         if (uusiryhma.osat === undefined) {
           uusiryhma.osat = [];
         }
-        if (!$scope.ms.laajuus) {
-          delete uusiryhma.muodostumisSaanto.laajuus;
-        }
-        else {
+        if (uusiryhma.muodostumisSaanto.laajuus) {
           var ml = uusiryhma.muodostumisSaanto.laajuus;
           ml.maksimi = ml.minimi && (!ml.maksimi || ml.minimi > ml.maksimi) ? ml.minimi : ml.maksimi;
-        }
-        if (!$scope.ms.koko) {
-          delete uusiryhma.muodostumisSaanto.koko;
         }
         if (!_.isEmpty($scope.osaamisala)) {
           uusiryhma.rooli = YleinenData.osaamisalaRooli;
           uusiryhma.osaamisala = $scope.osaamisala;
-
         }
       }
       $modalInstance.close(uusiryhma);

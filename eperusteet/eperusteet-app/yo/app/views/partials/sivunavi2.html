@@ -17,7 +17,7 @@
         <div class="sivunavi-tc-item">
           <div id="sivunavi-tc" ng-transclude></div>
         </div>
-          <rajaus ng-if="!sections" size="small" model="search.term" placeholder="etsi-sisallosta"></rajaus>
+        <rajaus ng-if="!sections" size="small" model="search.term" placeholder="etsi-sisallosta"></rajaus>
       </div>
 
       <div ng-if="sections">
@@ -40,7 +40,7 @@
       </div>
 
       <a class="list-group-item item" ng-repeat="item in items" ng-class="itemClasses(item)" ng-href="{{item.href}}"
-        ng-hide="!item.$matched || item.root || (!search.term && (item.$hidden || item.$impHidden))">
+         ng-hide="!item.$matched || item.root || (!search.term && (item.$hidden || item.$impHidden))">
         <div class="toggler">
           <span ng-show="!item.$leaf" ng-click="toggle(items, item, $event)" class="glyphicon"
                 ng-class="{'glyphicon-chevron-right': item.$collapsed, 'glyphicon-chevron-down': !item.$collapsed}"></span>

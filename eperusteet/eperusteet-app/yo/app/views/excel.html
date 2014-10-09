@@ -23,7 +23,8 @@
   </div>
 
   <div ng-hide="alussa" class="excel-alkuun">
-    <a icon-role="back" class="action-link" ng-click="alussa = true; clearSelect();" kaanna="Alkuun"></a>
+    <a icon-role="back" class="action-link" ng-click="alussa = true;
+      clearSelect();" kaanna="Alkuun"></a>
   </div>
 
   <!-- virheet -->
@@ -36,7 +37,7 @@
         <th kaanna>annettu-arvo</th>
       </tr>
       <tr ng-repeat="error in errors" class="danger">
-        <td>{{ error.cell }}</td>
+        <td>{{ error.cell}}</td>
         <td>{{ error.expected | kaanna }}</td>
         <td>{{ error.actual | kaanna }}</td>
       </tr>
@@ -62,7 +63,7 @@
           <th>Ongelma</th>
         </tr>
         <tr ng-repeat="warning in warnings" class="warning">
-          <td>{{ warning.cell }}</td>
+          <td>{{ warning.cell}}</td>
           <td>{{ warning.name | kaanna }}</td>
           <td>{{ warning.warning | kaanna }}</td>
         </tr>
@@ -80,24 +81,20 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-3" kaanna>projektin-oid-label</label>
-          <div class="col-sm-9 input-group">
-            <input ng-model="projekti.$ryhmaNimi[lang]" type="" class="form-control" disabled>
-            <span class="input-group-btn">
-              <button class="btn btn-default" ng-click="haeRyhma()" kaanna>hae-ryhma</button>
-            </span>
-          </div>
-        </div>
-        <div class="form-group">
           <label class="col-sm-3">{{ 'projektin-oid-label' | kaanna }}<span>*</span></label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="projekti.oid" placeholder="Kirjoita oid"/>
+            <div class="input-group">
+              <input ng-model="projekti.$ryhmaNimi[lang]" type="" class="form-control" disabled>
+              <span class="input-group-btn">
+                <button class="btn btn-default" ng-click="haeRyhma()" kaanna>hae-ryhma</button>
+              </span>
+            </div>
           </div>
         </div>
         <div class="form-group">
           <label class="col-sm-3">{{ 'diaarinumero-label' | kaanna }}<span>*</span></label>
           <div class="col-sm-9">
-            <input name="diaarinumero" type="text" class="form-control" ng-model="projekti.diaarinumero" placeholder="{{'valitse-diaarinumero' | kaanna}}" diaarinumerouniikki></input>
+            <input name="diaarinumero" type="text" class="form-control" ng-model="projekti.diaarinumero" placeholder="{{'valitse-diaarinumero'| kaanna}}" diaarinumerouniikki></input>
           </div>
         </div>
         <p class="alert alert-error" ng-show="perusteprojektiForm.diaarinumero.$error.diaarinumerouniikki" kaanna>diaarinumero-kaytossa</p>
@@ -106,7 +103,7 @@
           <label for="koulutustyyppi" class="col-sm-3">{{ 'laajuuden-yksikkö' | kaanna }}<span>*</span></label>
           <div class="col-md-9">
             <select id="koulutustyyppi" ng-model="projekti.laajuusYksikko" class="form-control" ng-required="projekti.koulutustyyppi === 'koulutustyyppi_1'">
-              <option ng-repeat="yk in yksikot" value="{{ yk }}" ng-selected="projekti.laajuusYksikko === yk">{{ yk | kaanna }}</option>
+              <option ng-repeat="yk in yksikot" value="{{ yk}}" ng-selected="projekti.laajuusYksikko === yk">{{ yk | kaanna }}</option>
             </select>
           </div>
         </div>
@@ -114,7 +111,7 @@
           <label for="koulutustyyppi" class="col-sm-3">{{ 'liitä-suoritustapaan' | kaanna }}<span>*</span></label>
           <div class="col-md-9">
             <select id="koulutustyyppi" ng-model="suoritustapa" class="form-control" ng-required="projekti.koulutustyyppi === 'koulutustyyppi_1'">
-              <option ng-repeat="st in suoritustavat" value="{{ st }}" ng-selected="suoritustapa === st">{{ st | kaanna }}</option>
+              <option ng-repeat="st in suoritustavat" value="{{ st}}" ng-selected="suoritustapa === st">{{ st | kaanna }}</option>
             </select>
           </div>
         </div>
@@ -141,7 +138,7 @@
       {{ 'et-ole-vielä-tallentanut-tutkinnonosia' | kaanna }}
     </div>
 
-    <h2>{{ projekti.nimi | kaanna }} ({{ projekti.diaarinumero }})</h2>
+    <h2>{{ projekti.nimi | kaanna }} ({{ projekti.diaarinumero}})</h2>
 
     <tabset justified="true">
       <tab heading="{{ 'tekstikappaleet' | kaanna }}">

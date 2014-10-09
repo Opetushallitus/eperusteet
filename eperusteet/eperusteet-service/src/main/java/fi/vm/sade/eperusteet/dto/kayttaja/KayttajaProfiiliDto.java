@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.dto.kayttaja;
 
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,4 +30,5 @@ public class KayttajaProfiiliDto {
     private long id;
     private String oid;
     private List<SuosikkiDto> suosikit;
+    private List<KayttajaprofiiliPreferenssiDto> preferenssit;
 }

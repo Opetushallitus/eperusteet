@@ -20,12 +20,15 @@ European Union Public Licence for more details.
   <div class="action-buttons">
     <div class="floater" ng-attr-title="{{lockNotification}}">
       <button ng-disabled="isLocked" ng-hide="editableTekstikappale.tila !== 'luonnos' || editEnabled || !versiot.latest"
-              ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"></button>
+              ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
+              oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
     </div>
     <button ng-disabled="!canAddLapsi() && tekstikappale.tila !== 'valmis'" ng-hide="editEnabled || !versiot.latest"
-            ng-click="addLapsi()" class="floater btn btn-default" icon-role="add" kaanna="lisaa-aliotsikko"></button>
+            ng-click="addLapsi()" class="floater btn btn-default" icon-role="add" kaanna="lisaa-aliotsikko"
+            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
     <button ng-show="!editEnabled && tekstikappale.tila === 'valmis'" ng-click="kopioiMuokattavaksi()"
-            class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"></button>
+            class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"
+            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
 
     <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
     <button ng-if="editEnabled && !isNew" class="btn btn-danger floater" ng-click="poista()" icon-role="remove" kaanna="'poista'"></button>
@@ -50,14 +53,16 @@ European Union Public Licence for more details.
       <versiotiedot ng-hide="editEnabled"></versiotiedot>
       <div class="tyoryhma-rivi">
         <span class="tyoryhma" ng-repeat="tr in tyoryhmat">
-          <a ng-click="poistaTyoryhma(tr)" href="" icon-role="remove"></a>
+          <a ng-click="poistaTyoryhma(tr)" href="" icon-role="remove" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></a>
           {{ tr }}
         </span>
-        <button ng-disabled="kaikkiTyoryhmat.length === 0 || kaikkiTyoryhmat.length === tyoryhmat.length" ng-click="lisaaTyoryhma()" icon-role="plus" class="btn btn-default" kaanna="lisaa-tyoryhma"></button>
+        <button ng-disabled="kaikkiTyoryhmat.length === 0 || kaikkiTyoryhmat.length === tyoryhmat.length"
+                ng-click="lisaaTyoryhma()" icon-role="plus" class="btn btn-default"
+                oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }" kaanna="lisaa-tyoryhma"></button>
       </div>
       <div ng-bind-html="valitseKieli(tekstikappale.teksti) | unsafe"></div>
     </div>
-    <div ng-if="editEnabled" ng-repeat="field in fields | orderBy:'order'" otsikko="{{field.localeKey}}"
+    <div ng-if="editEnabled" ng-repeat="field in fields | orderBy:'order'" model="field.localeKey"
          kiinni-oletuksena="{{field.defaultClosed}}" piilota-otsikko="{{field.hideHeader}}" muokkauskentta-raamit>
       <muokattava-kentta field-info="field" object-promise="tekstikappalePromise"></muokattava-kentta>
     </div>

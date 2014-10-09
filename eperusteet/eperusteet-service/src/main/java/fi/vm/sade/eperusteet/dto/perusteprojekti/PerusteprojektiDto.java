@@ -34,7 +34,6 @@ import lombok.Setter;
 public class PerusteprojektiDto implements Serializable {
     private Long id;
     private String nimi;
-    private String koulutustyyppi;
     private EntityReference peruste;
     private String diaarinumero;
     private Date paatosPvm;
@@ -45,4 +44,21 @@ public class PerusteprojektiDto implements Serializable {
     private String yhteistyotaho;
     private ProjektiTila tila;
     private String ryhmaOid;
+
+    public PerusteprojektiDto(String nimi, EntityReference peruste, String diaarinumero, Date paatosPvm, Date toimikausiAlku, Date toimikausiLoppu, String tehtavaluokka, String tehtava, String yhteistyotaho, ProjektiTila tila, String ryhmaOid) {
+        this.nimi = nimi;
+        this.peruste = peruste;
+        this.diaarinumero = diaarinumero;
+        this.paatosPvm = paatosPvm;
+        this.toimikausiAlku = toimikausiAlku;
+        this.toimikausiLoppu = toimikausiLoppu;
+        this.tehtavaluokka = tehtavaluokka;
+        this.tehtava = tehtava;
+        this.yhteistyotaho = yhteistyotaho;
+        this.tila = tila;
+        this.ryhmaOid = ryhmaOid;
+    }
+
+    public PerusteprojektiDto() {
+    }
 }

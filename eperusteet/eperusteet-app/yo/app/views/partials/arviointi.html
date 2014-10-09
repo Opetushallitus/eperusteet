@@ -1,21 +1,6 @@
-<!--
-Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
-
-This program is free software: Licensed under the EUPL, Version 1.1 or - as
-soon as they will be approved by the European Commission - subsequent versions
-of the EUPL (the "Licence");
-
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-European Union Public Licence for more details.
--->
 <div>
   <div class="panel panel-default panel-small arviointi-kohdealueet">
-    <span class="toggler" ng-show="arviointi.length"><a href="" class="action-link" kaanna ng-click="toggleAll()">avaa-sulje-kaikki</a></span>
+    <span class="toggler" ng-show="arviointi.length"><a class="action-link" kaanna ng-click="toggleAll()">avaa-sulje-kaikki</a></span>
     <div class="panel-body">
       <accordion close-others="false">
       <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi">
@@ -62,11 +47,9 @@ European Union Public Licence for more details.
                   <tr class="row-adder"><td></td><td></td><td class="toiminnot"><a href="" ng-click="rivi.uusi(osaamistasonKriteeri, $event)" icon-role="add" title="{{'arviointi-uusi-kriteeri' | kaanna}}"></a></td></tr>
                   </tbody>
                 </table>
-                <table ng-if="arvioinninkohde !== originalKohde" ng-repeat="osaamistasonKriteeri in arvioinninkohde.osaamistasonKriteerit | filter:{_osaamistaso: taso.id}">
-                  <tr ng-repeat="kriteeri in osaamistasonKriteeri.kriteerit">
-                    <td class="rivi"><p>{{kriteeri | kaanna}}</p></td><td></td>
-                  </tr>
-                </table>
+                <ul ng-if="arvioinninkohde !== originalKohde" ng-repeat="osaamistasonKriteeri in arvioinninkohde.osaamistasonKriteerit | filter:{_osaamistaso: taso.id}">
+                  <li ng-repeat="kriteeri in osaamistasonKriteeri.kriteerit">{{kriteeri | kaanna}}</li>
+                </ul>
               </td>
             </tr>
           </table>
@@ -77,21 +60,21 @@ European Union Public Licence for more details.
         <!-- Kohteen lisäys -->
         <div class="panel panel-default muokkaus-lisays" ng-if="editAllowed && editEnabled">
           <div class="panel-body">
-            <div ng-show="uudenKohteenTiedot.showInputArea">
-              <input focus-me="uudenKohteenTiedot.showInputArea" class="form-control" type="text" ng-model="uudenKohteenTiedot.nimi" placeholder="{{'arviointi-uusi-kohde-placeholder' | kaanna}}"/><br/>
+            <div ng-show="kohde.isAdding(kohdealue)">
+              <input focus-me="kohdealue.$newkohde.showInputArea" class="form-control" type="text" ng-model="kohdealue.$newkohde.nimi" placeholder="{{'arviointi-uusi-kohde-placeholder' | kaanna}}"/><br/>
               <h4 kaanna>arviointi-asteikon-valinta</h4>
               <label ng-repeat="arviointiasteikko in arviointiasteikot">
-                <input type="radio" ng-model="uudenKohteenTiedot.arviointiasteikko" ng-value="arviointiasteikko"
-                       name="{{arviointiasteikko}}" ng-change="arviointiasteikkoChanged(arviointiasteikko)">
+                <input type="radio" ng-model="kohdealue.$newkohde.arviointiasteikko" ng-value="arviointiasteikko"
+                       name="asteikonvalinta" ng-change="arviointiasteikkoChanged(kohdealue)">
                 <span ng-repeat="osaamistaso in arviointiasteikko.osaamistasot">{{osaamistaso.otsikko | kaanna}}{{$index + 1 !== arviointiasteikko.osaamistasot.length ? '&nbsp;/&nbsp;': ''}}</span>
               </label>
               <div class="muokkaus-napit">
-                <button class="btn btn-default btn-xs" ng-click="kohde.cancel(uudenKohteenTiedot)" kaanna>peru</button>
-                <button class="btn btn-primary btn-xs" ng-disabled="!(uudenKohteenTiedot.nimi && uudenKohteenTiedot.arviointiasteikko)" ng-click="kohde.uusi($parent.kohdealue, uudenKohteenTiedot);" kaanna>lisaa</button>
+                <button class="btn btn-default btn-xs" ng-click="kohde.cancel(kohdealue)" kaanna>peru</button>
+                <button class="btn btn-primary btn-xs" ng-disabled="!(kohdealue.$newkohde.nimi && kohdealue.$newkohde.arviointiasteikko)" ng-click="kohde.uusi(kohdealue);" kaanna>lisaa</button>
               </div>
             </div>
-            <button type="button" class="btn btn-default btn-xs" ng-show="!uudenKohteenTiedot.showInputArea"
-              ng-click="kohde.uusiWizard()" icon-role="add" kaanna="arviointi-uusi-kohde"></button>
+            <button type="button" class="btn btn-default btn-xs" ng-show="!kohde.isAdding(kohdealue)"
+              ng-click="kohde.uusiWizard(kohdealue)" icon-role="add" kaanna="arviointi-uusi-kohde"></button>
           </div>
         </div>
 

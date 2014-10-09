@@ -17,7 +17,7 @@ European Union Public Licence for more details.
     <div class="row tutkinto-sisalto">
 
         <div ng-show="peruste.suoritustavat.length > 1 && !muokkausTutkintokohtaisetOsat">
-            <ul style="margin-bottom: 5px" class="nav nav-tabs nav-justified">
+            <ul class="nav nav-tabs nav-justified suoritustapa-valinta">
                 <li ng-class="{ active: valittuSuoritustapa === st.suoritustapakoodi }" ng-repeat="st in peruste.suoritustavat | orderBy:'suoritustapakoodi'"
                     ng-click="vaihdaSuoritustapa(st.suoritustapakoodi)">
                     <a class="action-link suoritustapa">{{ st.suoritustapakoodi | kaanna }}</a>
@@ -33,33 +33,16 @@ European Union Public Licence for more details.
 
             <div class="clearfix"></div>
 
-            <div style="margin-bottom: 40px" ng-hide="muokkausTutkintokohtaisetOsat || peruste.koulutustyyppi === 'koulutustyyppi_9999'">
-                <h2 ng-show="naytaTutkinnonOsat || naytaRakenne">Tutkinnon muodostuminen</h2>
-                <div ng-show="naytaTutkinnonOsat" class="sisalto-list-element striped">
-                  <a class="otsikko" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat">
-                    <h3 kaanna>tutkinnonosat</h3>
-                  </a>
-                </div>
-                <div ng-show="naytaRakenne" class="sisalto-list-element striped">
-                  <a class="otsikko" ui-sref="root.perusteprojekti.suoritustapa.muodostumissaannot({ versio: '' })">
-                    <h3 kaanna>tutkinnon-rakenne</h3>
-                    <div class="list-element-info">
-                        <!-- TODO oikea aikaleima/muokkaaja, myös tutkinnon osat -laatikkoon -->
-                      <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ 1 | aikaleima }}</div>
-                    </div>
-                  </a>
-                </div>
-            </div>
-
             <h2 ng-hide="muokkausTutkintokohtaisetOsat">
                 {{ 'tekstikappaleet' | kaanna }} ({{ peruste.sisalto.lapset.length }})
                 <a style="margin-left: 10px" ng-click="avaaSuljeKaikki()" class="action-link"><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
                 <div class="pull-right buttons">
-                    <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="cloud-download" kaanna="tuo-tutkintokohtainen-osa"></button>
-                    <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="add" kaanna="lisaa-tutkintokohtainen-osa"></button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="cloud-download" kaanna="tuo-tutkintokohtainen-osa" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="add" kaanna="lisaa-tutkintokohtainen-osa" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
                     <button class="btn btn-default btn-sm"
                             ng-class="{ 'btn-primary': muokkausTutkintokohtaisetOsat }" ng-click="aloitaMuokkaus()"
-                            ng-show="valittuSuoritustapa !== ''" icon-role="edit" kaanna="muokkaa-rakennetta">
+                            ng-show="valittuSuoritustapa !== ''" icon-role="edit" kaanna="muokkaa-rakennetta"
+                            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }">
                     </button>
                 </div>
             </h2>
@@ -72,6 +55,15 @@ European Union Public Licence for more details.
             <div class="info-box" ng-show="peruste.sisalto.lapset.length === 0">
                 {{ 'suoritustavalle-ei-ole-vielä-sisältöä' | kaanna }}.
             </div>
+
+            <div style="margin-bottom: 40px" ng-hide="muokkausTutkintokohtaisetOsat || peruste.koulutustyyppi === 'koulutustyyppi_9999'">
+                <div ng-show="naytaTutkinnonOsat" class="sisalto-list-element striped">
+                  <a class="otsikko" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat">
+                    <h3 kaanna>tutkinnonosat</h3>
+                  </a>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

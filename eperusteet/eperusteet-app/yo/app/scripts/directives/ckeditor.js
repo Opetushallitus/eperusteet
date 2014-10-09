@@ -45,7 +45,7 @@ angular.module('eperusteApp')
         { name: 'tools', items : [ 'About' ] }
       ]
   })
-  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts) {
+  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts, $timeout) {
     return {
       priority: 10,
       restrict: 'A',
@@ -94,7 +94,7 @@ angular.module('eperusteApp')
           toolbar: toolbarLayout,
           removePlugins: 'resize,elementspath,scayt,wsc',
           extraPlugins: 'divarea,sharedspace',
-          extraAllowedContent: '*[contenteditable]',
+          disallowedContent: 'br',
           language: 'fi',
           'entities_latin': false,
           sharedSpaces: {
@@ -139,9 +139,12 @@ angular.module('eperusteApp')
         });
 
         scope.$on('$destroy', function() {
-          if (editor) {
-            editor.destroy(false);
-          }
+          $timeout(function () {
+            if (editor && editor.status !== 'destroyed') {
+              editor.destroy(false);
+            }
+          });
+
         });
 
         editor.on('focus', function() {
@@ -164,11 +167,7 @@ angular.module('eperusteApp')
           $('#toolbar').hide();
         });
 
-        editor.on('blur', function() {
-          if (dataSavedOnNotification) {
-            dataSavedOnNotification = false;
-            return;
-          }
+        function updateModel () {
           if (editor.checkDirty()) {
             var data = editor.getData();
             scope.$apply(function() {
@@ -180,6 +179,15 @@ angular.module('eperusteApp')
               editor.setData(placeholderText);
             }
           }
+
+        }
+
+        editor.on('blur', function() {
+          if (dataSavedOnNotification) {
+            dataSavedOnNotification = false;
+            return;
+          }
+          updateModel();
           $('#toolbar').hide();
         });
 

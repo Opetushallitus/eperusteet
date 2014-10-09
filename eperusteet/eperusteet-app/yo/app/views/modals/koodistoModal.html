@@ -3,7 +3,7 @@
 </div>
 
 <div class="modal-body">
-  <input ng-change="haku(syote, kieli)" type="text" ng-model="syote" class="form-control"
+  <input id="koodisto_modal_autofocus" ng-change="haku(syote, kieli)" type="text" ng-model="syote" class="form-control"
          placeholder="{{ 'rajaa-tuloksia' | kaanna }}" ng-disabled="lataa">
   <p class="results-amount">
       <span ng-show="!!syote">{{totalItems}} {{'hakutulosta' | kaanna}}</span>

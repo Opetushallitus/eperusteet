@@ -29,7 +29,7 @@ angular.module('eperusteApp')
 
     paivitaSuosikit();
 
-    $scope.$on('suosikitMuuttuivat', paivitaSuosikit);
+    $scope.$on('kayttajaProfiiliPaivittyi', paivitaSuosikit);
 
     $scope.edit = function () {
       $modal.open({
@@ -62,7 +62,7 @@ angular.module('eperusteApp')
     }
     refresh();
 
-    $scope.$on('suosikitMuuttuivat', refresh);
+    $scope.$on('kayttajaProfiiliPaivittyi', refresh);
 
     $scope.edit = function (suosikki) {
       $scope.editing = angular.copy(suosikki);

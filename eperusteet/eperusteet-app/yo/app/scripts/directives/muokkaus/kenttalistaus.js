@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .directive('kenttalistaus', function($q, MuokkausUtils, $timeout) {
+  .directive('kenttalistaus', function($q, MuokkausUtils, $timeout, FieldSplitter) {
     return {
       templateUrl: 'views/partials/muokkaus/kenttalistaus.html',
       restrict: 'E',
@@ -26,45 +26,155 @@ angular.module('eperusteApp')
       scope: {
         fields: '=',
         objectPromise: '=',
-        editEnabled: '='
+        editEnabled: '=',
+        mode: '@?',
+        hideEmptyPlaceholder: '@?'
       },
       link: function(scope, element) {
-        scope.noContent = false;
-
         scope.updateContentTip = function () {
-          scope.noContent = element.find('ul.muokkaus').children().length === 0;
-        };
-        $timeout(function () {
-          scope.updateContentTip();
-        }, 3000);
-
-        scope.innerObjectPromise = scope.objectPromise.then(function() {
-          setInnerObjectPromise();
-        });
-
-        scope.$watch('objectPromise', function() {
-          setInnerObjectPromise();
-        });
-
-        scope.removeField = function(fieldToRemove) {
-          fieldToRemove.visible = false;
-        };
-
-        function splitFields(object) {
-          _.each(scope.fields, function (field) {
-            field.inMenu = field.path !== 'nimi' && field.path !== 'koodiUri';
-            field.visible = field.mandatory || MuokkausUtils.hasValue(object, field.path);
+          $timeout(function () {
+            scope.noContent = element.find('ul.muokkaus').children().length === 0;
           });
+        };
+        scope.updateContentTip();
+        scope.$watch('editEnabled', function () {
           scope.updateContentTip();
-        }
+        });
+        scope.$watch('fields', function () {
+          scope.updateContentTip();
+        }, true);
+      },
+      controller: function ($scope) {
+        var model;
+        $scope.noContent = false;
+        $scope.expandedFields = $scope.fields;
+
+        $scope.removeField = function(fieldToRemove) {
+          var splitfield = FieldSplitter.process(fieldToRemove);
+          if (splitfield.isMulti()) {
+            splitfield.remove(model);
+          } else {
+            fieldToRemove.visible = false;
+            fieldToRemove.$added = false;
+          }
+          setInnerObjectPromise();
+        };
+
+        $scope.getClass = FieldSplitter.getClass;
+
+        $scope.hasEditableTitle = function (field) {
+          return _.has(field, 'titleplaceholder');
+        };
 
         function setInnerObjectPromise() {
-          scope.innerObjectPromise = scope.objectPromise.then(function(object) {
+          $scope.innerObjectPromise = $scope.objectPromise.then(function(object) {
             splitFields(object);
+            model = object;
             return object;
           });
         }
+
+        $scope.$watch('objectPromise', setInnerObjectPromise);
+        $scope.$on('osafield:update', setInnerObjectPromise);
+
+        $scope.innerObjectPromise = $scope.objectPromise.then(function() {
+          setInnerObjectPromise();
+        });
+
+        function splitFields(object) {
+          $scope.expandedFields = [];
+          _.each($scope.fields, function (field) {
+            var splitfield = FieldSplitter.process(field);
+            if (splitfield.isMulti() && splitfield.needsSplit()) {
+              // Expand array to individual fields
+              splitfield.each(object, function (item, index) {
+                var newfield = angular.copy(field);
+                newfield.path = splitfield.getPath(index);
+                newfield.localeKey = item[field.localeKey];
+                newfield.originalLocaleKey = field.localeKey;
+                newfield.visible = true;
+                if (field.isolateEdit && index === field.$setEditable) {
+                  newfield.$editing = true;
+                  delete field.$setEditable;
+                }
+                $scope.expandedFields.push(newfield);
+              });
+            } else {
+              field.inMenu = field.path !== 'nimi' && field.path !== 'koodiUri';
+              field.visible = field.divider ? false :
+                (field.$added || field.mandatory || MuokkausUtils.hasValue(object, field.path));
+              $scope.expandedFields.push(field);
+            }
+          });
+          $scope.updateContentTip();
+        }
       }
+    };
+  })
+
+  .service('FieldSplitter', function () {
+    function getCssClass(path) {
+      return path.replace(/\[/, '').replace(/\]/, '').replace(/\./, '');
+    }
+
+    function SplitField(data) {
+      this.original = data;
+      this.parts = [];
+    }
+
+    SplitField.prototype.split = function () {
+      if (!this.original.path) {
+        return;
+      }
+      this.parts = this.original.path.split('[');
+      var index = this.original.path.match(/\[(\d+)\]/);
+      this.index = index ? index[1] : null;
+    };
+
+    SplitField.prototype.isMulti = function () {
+      return this.parts.length === 2;
+    };
+
+    SplitField.prototype.needsSplit = function () {
+      return this.index === null;
+    };
+
+    SplitField.prototype.each = function (obj, cb) {
+      return _.each(this.getObject(obj), cb);
+    };
+
+    SplitField.prototype.getPath = function (index) {
+      return this.parts[0] + '[' + index + this.parts[1];
+    };
+
+    SplitField.prototype.getObject = function (obj) {
+      return obj[this.parts[0]];
+    };
+
+    SplitField.prototype.addArrayItem = function (obj) {
+      // TODO oletettu tekstikappale
+      var object = this.getObject(obj);
+      object.push({nimi: {}, teksti: {}});
+      return object.length - 1;
+    };
+
+    SplitField.prototype.remove = function (obj) {
+      var index = parseInt(this.parts[1], 10);
+      obj[this.parts[0]].splice(index, 1);
+    };
+
+    SplitField.prototype.getClass = function (index) {
+      return getCssClass(this.getPath(index));
+    };
+
+    this.process = function (field) {
+      var obj = new SplitField(field);
+      obj.split();
+      return obj;
+    };
+
+    this.getClass = function (field) {
+      return getCssClass(field.path);
     };
   })
 

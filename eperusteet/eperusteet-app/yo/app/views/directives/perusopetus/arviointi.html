@@ -1,0 +1,10 @@
+<table class="table table-bordered perusopetuksen-arviointi ">
+  <thead>
+    <tr><th kaanna="arvioinnin-kohde"></th><th kaanna="arvion-hyva-osaaminen"></th></tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="arviointi in model">
+      <td>{{arviointi.kohde | kaanna}}</td><td>{{arviointi.kuvaus | kaanna}}</td>
+    </tr>
+  </tbody>
+</table>

@@ -38,6 +38,7 @@
     "haluatko-jatkaa": "Haluatko jatkaa?",
     "tuo-valitut": "Tuo valitut",
     "sulje": "Sulje",
+    "tyhjenna-rajaus-tooltip": "Tyhjennä rajaus (Esc)",
 
     "ops-ja-tutkintojen-perusteet": "Opetussuunnitelmien ja tutkintojen perusteet",
 
@@ -196,6 +197,7 @@
     "rakenne-validointi-uniikit": "Ryhmässä on samoja tutkinnon osia",
     "luo-uusi-ryhma": "Luo uusi ryhmä",
     "muokkaa-ryhmaa": "Muokkaa ryhmää",
+    "muokkaa-tutkinnon-osaa": "Muokkaa tutkinnon osaa",
     "perustiedot": "Perustiedot",
     "kuvaus": "Kuvaus",
     "minimi": "Minimi",
@@ -212,6 +214,7 @@
 
     "perusteen-sisalto": "Perusteen sisältö",
 
+    "muodostumissaantoa-ei-maaritelty": "Muodostumissääntöjä ei ole määritelty",
     "muodostumis-rakenne-validointi-laajuus": "Ryhmän osien yhteenlaskettu laajuus ei riitä kattamaan tarvittavaa laajuutta",
     "muodostumis-rakenne-validointi-maara": "Ryhmän osien yhteenlaskettu määrä ei riitä kattamaan tarvittavaa määrää",
     "muodostumis-rakenne-validointi-maksimi": "Ryhmän laskettu minimi on pienempi kuin vaadittu minimi",
@@ -239,6 +242,7 @@
     "tutkinnonosa-ammattitaidonOsoittamistavat": "Ammattitaidon osoittamistavat",
     "tutkinnonosa-tavoitteet": "Tavoitteet",
     "tutkinnonosa-osaamisala": "Osaamisala",
+    "tutkinnonosa-jarjestysnumero": "Järjestysnumero",
 
     "osaamisala": "Osaamisala",
     "ammattitaidonOsoittamistavat": "Ammattitaidon osoittamistavat",
@@ -316,6 +320,7 @@
     "ruotsi": "Svenska",
 
     "tutkinnon-rakenne": "Tutkinnon rakenne",
+    "tutkinnon-rakenteen-kuvaus": "Tutkinnon rakenteen kuvaus",
     "tutkinnonosa-nimi": "Nimi",
     "tutkinnonosa-laajuus": "Laajuus",
     "tutkinnonosa-koko": "Koko",
@@ -439,7 +444,7 @@
 
     "tekstisisällön-tuonti": "Tekstisisällön tuonti",
 
-    "perusteella-ei-vielä-tutkinnonosia": "Perusteella ei ole vielä tutkinnon osia",
+    "perusteella-ei-viela-tutkinnonosia": "Perusteella ei ole vielä tutkinnon osia",
     "editoimasi-sisältö-on-muuttunut": "Muokkaamasi sisältö on muuttunut",
     "ylikirjoita-uusi-sisältö": "Jatka muokkaamista",
     "peru-omat-muutokset": "Peru omat muutokset",
@@ -471,9 +476,10 @@
     "toiminto": "Toiminto",
 
     "tuo-peruste": "Tuo peruste",
+    "perustepohja": "Pohja",
     "tuo-perustepohja": "Tuo perustepohja",
     "projektin-nimi-label": "Projektin nimi",
-    "projektin-oid-label": "Projektiryhmän tunnus",
+    "projektin-oid-label": "Projektiryhmä",
     "anna-projektin-nimi-placeholder": "Syötä projektin nimi",
     "diaarinumero-label": "Diaarinumero",
     "anna-diaarinumero-placeholder": "Syötä diaarinumero",
@@ -648,5 +654,50 @@
     "poista-tyoryhma-perusteenosasta": "Poista työryhmä perusteenosasta",
     "valitse-tyoryhmat": "Valitse tyoryhmat",
     "haetaan-ryhmia": "Haetaan ryhmiä",
-    "poista-tyoryhma-teksti": "Työryhmä \"{{nimi}}\" poistetaan. Oletko varma?"
+    "poista-tyoryhma-teksti": "Työryhmä \"{{nimi}}\" poistetaan. Oletko varma?",
+
+    "opetuksen-sisallot": "Opetuksen sisällöt",
+    "laaja-alainen-osaaminen": "Laaja-alainen osaaminen",
+
+    "muokkaus-laaja-alainen-osaaminen-header": "Laaja-alainen osaaminen",
+    "vuosiluokkakokonaisuudet": "Vuosiluokkakokonaisuudet",
+    "vuosiluokkakokonaisuus": "Vuosiluokkakokonaisuus",
+    "oppiaineet": "Oppiaineet",
+    "tyhja-placeholder-osaaminen": "Osaamiskokonaisuuksia ei ole lisätty.",
+    "tyhja-placeholder-vuosiluokat": "Vuosiluokkakokonaisuuksia ei ole lisätty.",
+    "tyhja-placeholder-oppiaineet": "Oppiaineita ei ole lisätty.",
+    "lisaa-osaamiskokonaisuus": "Lisää osaamiskokonaisuus",
+    "lisaa-vuosiluokkakokonaisuus": "Lisää vuosiluokkakokonaisuus",
+    "poista-vuosiluokkakokonaisuus": "Poista vuosiluokkakokonaisuus",
+    "muokkaa-vuosiluokkakokonaisuutta": "Muokkaa vuosiluokkakokonaisuutta",
+    "uusi-vuosiluokkakokonaisuus": "Uusi vuosiluokkakokonaisuus",
+    "poistetaanko-vuosiluokkakokonaisuus": "Poistetaanko vuosiluokkakokonaisuus?",
+    "lisaa-oppiaine": "Lisää oppiaine",
+    "vuosiluokat": "Vuosiluokat",
+    "vuosiluokka": "Vuosiluokka",
+    "nayta-osaamiskokonaisuuden-kuvaus": "Näytä osaamiskokonaisuuden yleiskuvaus",
+    "piilota-osaamiskokonaisuuden-kuvaus": "Piilota osaamiskokonaisuuden yleiskuvaus",
+    "tekstikappale": "Tekstikappale",
+
+    "tyhja-placeholder-osaalueet": "Osa-alueita ei ole vielä lisätty.",
+
+    "poista-osa-alue": "Poista osa-alue",
+    "poista-osaamistavoite": "Poista osaamistavoite",
+
+    "ei-osa-alueita": "Ei osa-alueita.",
+    "osa-alueet": "Osa-alueet:",
+
+    "nimi-on-pakollinen": "Otsikko on pakollinen.",
+
+    "osaalue": "Osa-alue",
+    "oppiaineen-tehtava": "Oppiaineen tehtävä",
+    "poista-oppiaine": "Poista oppiaine",
+    "muokkaa-oppiainetta": "Muokkaa oppiainetta",
+    "sisaltoalueet": "Sisältöalueet",
+    "opetuksen-tavoitteet": "Opetuksen tavoitteet",
+    "ei-kuvausta": "[Ei kuvausta]",
+    "arvioinnin-kohde": "Arvioinnin kohde",
+    "arvion-hyva-osaaminen": "Arvion \"hyvä\" osaaminen",
+    "vuosiluokkakokonaisuuden-osaamisalueet": "Vuosiluokkakokonaisuuden osaamisalueet"
+
 }

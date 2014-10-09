@@ -1,0 +1,18 @@
+<div class="oppiaine-view">
+<osallinen-osa model="model" editable-model="editableModel" config="data.options" versiot="versiot">
+  <div ng-if="!editEnabled">
+    <div ng-repeat="osamodel in yleisetosat" muokattava-osio="model[osamodel]" type="tekstikappale"></div>
+
+    <tabset justified="true">
+      <tab heading="{{vuosiluokat.nimi|kaanna}}" ng-repeat="vuosiluokat in mappedVuosiluokat">
+        <div ng-repeat="tekstikappale in vuosiluokat.$sisalto.tekstikappaleet" muokattava-osio="tekstikappale"
+             type="tekstikappale">
+        </div>
+        <div muokattava-osio="vuosiluokat.$sisalto.sisaltoalueet" type="sisaltoalueet"></div>
+        <div muokattava-osio="vuosiluokat.$sisalto" type="tavoitteet"></div>
+      </tab>
+    </tabset>
+
+  </div>
+</osallinen-osa>
+</div>

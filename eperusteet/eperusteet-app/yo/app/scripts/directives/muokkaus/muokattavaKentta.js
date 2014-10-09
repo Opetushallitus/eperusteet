@@ -18,27 +18,37 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .directive('muokkauskenttaRaamit', function() {
+  .directive('muokkauskenttaRaamit', function(Utils) {
     return {
       templateUrl: 'views/partials/muokkaus/muokattavaKentta.html',
       restrict: 'A',
       transclude: true,
       scope: {
-        localeKey: '@otsikko',
-        piilotaOtsikko: '@?'
+        model: '=',
+        piilotaOtsikko: '@?',
+        field: '='
       },
       link: function(scope, element, attrs) {
-        scope.otsikko = 'muokkaus-' + scope.localeKey + '-header';
+        scope.otsikko = _.isString(scope.model) ? 'muokkaus-' + scope.model + '-header' : scope.model;
+        scope.hasModel = !_.isString(scope.model);
         element.addClass('list-group-item ');
         element.attr('ng-class', '');
 
         scope.canCollapse = attrs.collapsible || false;
         scope.collapsed = false;
+        scope.isEmpty = function (model) {
+          return !Utils.hasLocalizedText(model);
+        };
+        scope.$watch('field.$editing', function (value) {
+          if (value) {
+            scope.collapsed = false;
+          }
+        });
       }
     };
   })
-  .directive('muokattavaKentta', function($compile, $rootScope, MuokkausUtils,
-    YleinenData, Editointikontrollit, $q, Varmistusdialogi) {
+  .directive('muokattavaKentta', function($compile, $rootScope,
+    Editointikontrollit, $q, $timeout) {
     return {
       restrict: 'E',
       replace: true,
@@ -48,30 +58,29 @@ angular.module('eperusteApp')
         removeField: '&?',
         editEnabled: '='
       },
-      link: function(scope, element) {
+      controller: function ($scope, YleinenData, MuokkausUtils, Varmistusdialogi, Utils) {
+        $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
 
-        scope.$watch('objectReady', function(newObjectReadyPromise) {
+        $scope.$watch('objectReady', function(newObjectReadyPromise) {
           newObjectReadyPromise.then(function(newObject) {
-            scope.object = newObject;
+            $scope.object = newObject;
           });
         });
 
-        var typeParams = scope.field.type.split('.');
-
         function poistaOsio(value) {
           if(angular.isString(value)) {
-            MuokkausUtils.nestedSet(scope.object, scope.field.path, '.', '');
+            MuokkausUtils.nestedSet($scope.object, $scope.field.path, '.', '');
           } else {
-            MuokkausUtils.nestedSet(scope.object, scope.field.path, '.', undefined);
+            MuokkausUtils.nestedSet($scope.object, $scope.field.path, '.', undefined);
           }
-          if(!scope.mandatory) {
-            scope.removeField({fieldToRemove: scope.field});
+          if(!$scope.mandatory) {
+            $scope.removeField({fieldToRemove: $scope.field});
           }
         }
 
-        scope.suljeOsio = function() {
+        $scope.suljeOsio = function() {
           // Jos kentässä on dataa, kysytään varmistus.
-          var getValue = MuokkausUtils.nestedGet(scope.object, scope.field.path, '.');
+          var getValue = MuokkausUtils.nestedGet($scope.object, $scope.field.path, '.');
           if (!_.isEmpty(getValue)) {
             Varmistusdialogi.dialogi({
               otsikko: 'varmista-osion-poisto-otsikko',
@@ -87,16 +96,54 @@ angular.module('eperusteApp')
           }
         };
 
+        function getTitlePath() {
+          return _.initial($scope.field.path.split('.'), 1).join('.') + '.' + $scope.field.originalLocaleKey;
+        }
+
+        $scope.editOsio = function () {
+          // Assumed that field has a title at upper level in hierarchy
+          $scope.titlePath = getTitlePath();
+          $scope.originalContent = angular.copy(MuokkausUtils.nestedGet($scope.object, $scope.field.path, '.'));
+          $scope.originalTitle = angular.copy(MuokkausUtils.nestedGet($scope.object, $scope.titlePath, '.'));
+          $scope.field.$editing = true;
+        };
+
+        $scope.okEdit = function () {
+          $scope.titlePath = $scope.titlePath || getTitlePath();
+          var title = MuokkausUtils.nestedGet($scope.object, $scope.titlePath, '.');
+          if (Utils.hasLocalizedText(title)) {
+            // Force model update
+            $rootScope.$broadcast('notifyCKEditor');
+
+            $scope.originalContent = null;
+            $scope.originalTitle = null;
+            $scope.field.$editing = false;
+          }
+        };
+
+
+        $scope.cancelEdit = function () {
+          if (!$scope.originalContent) {
+            // New, can delete
+            poistaOsio(MuokkausUtils.nestedGet($scope.object, $scope.field.path, '.'));
+          } else {
+            MuokkausUtils.nestedSet($scope.object, $scope.field.path, '.', $scope.originalContent, true);
+            MuokkausUtils.nestedSet($scope.object, $scope.titlePath, '.', $scope.originalTitle, true);
+            $scope.field.$editing = false;
+          }
+        };
+
+      },
+      link: function(scope, element) {
+        var typeParams = scope.field.type.split('.');
+
         $q.all({object: scope.objectReady, editMode: Editointikontrollit.getEditModePromise()}).then(function(values) {
           scope.object = values.object;
           scope.editMode = values.editMode;
 
           if(!scope.field.mandatory) {
             var contentFrame = angular.element('<vaihtoehtoisen-kentan-raami></vaihtoehtoisen-kentan-raami>')
-            .attr('osion-nimi', scope.field.header)
-            .append(getElementContent(typeParams[0]));
-
-            contentFrame.attr('sulje-osio', 'suljeOsio()');
+              .append(getElementContent(typeParams[0]));
 
             populateElementContent(contentFrame);
           } else {
@@ -104,89 +151,104 @@ angular.module('eperusteApp')
           }
         });
 
-        function getElementContent(elementType) {
-          function addEditorAttributesFor(element) {
-            return element
+        var ELEMENT_MAP = {
+          'editor-header': ['addEditorAttributesFor', '<h3>'],
+          'text-input': ['addInputAttributesFor', '<input>', {'editointi-kontrolli': ''}],
+          'input-area': ['addInputAttributesFor', '<textarea>', {'editointi-kontrolli': ''}],
+          'editor-text': ['addEditorAttributesFor', '<p>'],
+          'editor-area': ['addEditorAttributesFor', '<div>'],
+          'arviointi': ['', '<arviointi>', {
+            'editointi-sallittu': 'true',
+            'arviointi': 'object.' + scope.field.path,
+            'edit-enabled': 'editEnabled'
+          }],
+          'osaaminen': ['', '<div>', {
+            'editointi-sallittu': 'true',
+            'osaaminen': 'object.' + scope.field.path,
+            'edit-enabled': 'editEnabled'
+          }]
+        };
+
+        var mapperFns = {
+          addEditorAttributesFor: function (element) {
+            element
             .addClass('list-group-item-text')
             .attr('ng-model', 'object.' + scope.field.path)
             .attr('ckeditor', '')
-            .attr('editing-enabled', '{{editMode}}')
-            .attr('editor-placeholder', 'muokkaus-' + scope.field.localeKey + '-placeholder');
-          }
-
-          function addInputAttributesFor(element) {
+            .attr('editing-enabled', '{{editMode}}');
+            var placeholder = scope.field.placeholder ? scope.field.placeholder :
+              'muokkaus-' + scope.field.localeKey + '-placeholder';
+            element.attr('editor-placeholder', placeholder);
+            return element;
+          },
+          addInputAttributesFor: function (element) {
             return element
             .addClass('form-control')
             .attr('ng-model', 'object.' + scope.field.path)
             .attr('placeholder','{{ \'muokkaus-' + scope.field.localeKey + '-placeholder\' | kaanna }}');
           }
+        };
 
+        function wrapEditor(element) {
+          var editWrapper = angular.element('<div ng-if="field.$editing"></div>');
+          editWrapper.append(element);
+          var viewWrapper = angular.element('<div ng-if="!field.$editing" ng-bind-html="valitseKieli(object.' +
+                                            scope.field.path + ') | unsafe"></div>');
+          var wrapper = angular.element('<div>');
+          wrapper.append(editWrapper, viewWrapper);
+          return wrapper;
+        }
+
+        function getElementContent(elementType) {
           var element = null;
-          if(elementType === 'editor-header') {
-            element = addEditorAttributesFor(angular.element('<h3></h3>'));
+          var mapped = ELEMENT_MAP[elementType];
+          if (!mapped) {
+            return null;
           }
-
-          else if(elementType === 'text-input') {
-            element = addInputAttributesFor(angular.element('<input></input>').attr('editointi-kontrolli', ''));
-          }
-
-          else if(elementType === 'input-area') {
-            element = addInputAttributesFor(angular.element('<textarea></textarea>').attr('editointi-kontrolli', ''));
-          }
-
-          else if(elementType === 'editor-text') {
-            element = addEditorAttributesFor(angular.element('<p></p>'));
-          }
-
-          else if(elementType === 'editor-area') {
-            element = addEditorAttributesFor(angular.element('<div></div>'));
-          }
-
-          else if(elementType === 'arviointi') {
-            element =
-            angular.element('<arviointi></arviointi>')
-            .attr('arviointi', 'object.' + scope.field.path)
-            .attr('editointi-sallittu', 'true')
-            .attr('edit-enabled', 'editEnabled');
-          }
+          element = (mapped[0] ? mapperFns[mapped[0]] : _.identity )(angular.element(mapped[1]));
+          _.each(mapped[2], function (value, key) {
+            element.attr(key, value);
+          });
 
           if(element !== null && scope.field.localized) {
             element.attr('localized', '');
           }
+          if (scope.field.isolateEdit) {
+            element = wrapEditor(element);
+          }
           return element;
         }
 
-        // function replaceElementContent(content) {
-        //   element.empty();
-        //   populateElementContent(content);
-        // }
-
         function populateElementContent(content) {
           element.append(content);
-          $compile(element.contents())(scope);
+          $timeout(function () {
+            $compile(element.contents())(scope);
+          });
+
         }
       }
     };
   })
   .directive('vaihtoehtoisenKentanRaami', function() {
     return {
-      template:
-        '<div ng-transclude></div>' +
-        '<button icon-role="remove" ng-if="$parent.editEnabled" editointi-kontrolli type="button"' +
-        ' class="pull-right poista-osio btn btn-default btn-xs" ng-click="suljeOsio($event)">' +
-        '{{ \'poista-osio\' | kaanna }}</button>',
+      templateUrl: 'views/directives/vaihtoehtoisenkentanraami.html',
       restrict: 'E',
       transclude: true,
-      scope: {
-        osionNimi: '@',
-        suljeOsio: '&'
-      },
       link: function (scope, element) {
-        scope.$watch('$parent.editEnabled', function () {
-          var button = element.find('button.poista-osio');
-          var header = angular.element('li[otsikko='+scope.$parent.field.localeKey+'] .osio-otsikko');
-          button.detach().appendTo(header);
+        scope.$watch('editEnabled', function () {
+          var buttons = element.find('.field-buttons');
+          var header = element.closest('li.kentta').find('.osio-otsikko');
+          buttons.detach().appendTo(header);
         });
+      },
+      controller: function ($scope) {
+        $scope.callFn = function ($event, fn) {
+          if ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+          }
+          $scope[fn]();
+        };
       }
     };
   })

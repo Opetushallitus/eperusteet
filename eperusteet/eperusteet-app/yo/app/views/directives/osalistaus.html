@@ -1,0 +1,81 @@
+<div>
+
+<div class="tutkinnonosa-lista-toolbar">
+  <div class="toolbar-input">
+    <rajaus model="search.term" callback="searchChanged(value)" placeholder="{{search.placeholder}}"></rajaus>
+    <div class="pull-left" id="osalistausextrafilter"></div>
+    <div class="pull-right">
+      <div class="btn-group">
+        <label class="btn" ng-model="preferenssit.nakymatyyli" btn-radio="'palikka'" icon-role="th" title="{{'Ruudukko'|kaanna}}"></label>
+        <label class="btn" ng-model="preferenssit.nakymatyyli" btn-radio="'lista'" icon-role="list" title="{{'Lista'|kaanna}}"></label>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+</div>
+
+<div>
+  <div ng-show="preferenssit.nakymatyyli === 'palikka'" class="tosat-sort-selector">
+    <select class="jarjestys-select form-control" ng-model="jarjestysTapa" ng-options="opt.value as opt.label|kaanna for opt in jarjestysOptions"></select>
+    <div class="lista-linkit">
+      <a class="action-link" ng-click="jarjestysOrder = !jarjestysOrder">
+        <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
+      </a>
+    </div>
+  </div>
+
+  <table ng-show="preferenssit.nakymatyyli === 'lista'" class="table table-striped" style="margin-top: 0px">
+    <tr>
+      <th width="50%">
+        <a class="action-link" ng-click="asetaJarjestys('nimi')">{{'nimi' | kaanna}}
+          <span ng-show="jarjestysTapa === 'nimi'">
+            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
+          </span>
+        </a>
+      </th>
+      <th width="10%" ng-if="hasLaajuus">
+        <a class="action-link" ng-click="asetaJarjestys('laajuus')">{{'laajuus' | kaanna}}
+          <span ng-show="jarjestysTapa === 'laajuus'">
+            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
+          </span>
+        </a>
+      </th>
+      <th width="30%">
+        <a class="action-link" ng-click="asetaJarjestys('muokattu')">{{'muokattu-viimeksi' | kaanna}}
+          <span ng-show="jarjestysTapa === 'muokattu'">
+            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
+          </span>
+        </a>
+      </th>
+    </tr>
+    <tr ng-repeat="v in model | orderBy:jarjestys:jarjestysOrder | mapFilter:comparisonFn">
+      <td>
+        <a ng-href="{{urlGenerator({value: v})}}">{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</a>
+      </td>
+      <td ng-if="hasLaajuus">
+        <span ng-show="v.laajuus">{{ v.laajuus }} {{ unit || '' | kaanna }}</span>
+      </td>
+      <td>
+        {{ v.muokattu || 0 | aikaleima }}
+      </td>
+    </tr>
+  </table>
+
+  <ul ng-if="preferenssit.nakymatyyli === 'palikka'" class="tutkinnonosat">
+    <a ng-href="{{urlGenerator({value: v})}}" class="tutkinnonosa-laatikko list-group-item"
+       ng-repeat="v in model | orderBy:jarjestys:jarjestysOrder | mapFilter:comparisonFn">
+      <div ng-hide="editoi" class="muokkaus" icon-role="forward"></div>
+      <div class="otsikko">
+        <h3>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</h3>
+        <div class="pienet-tiedot">
+            <div class="osan-laajuus" ng-if="hasLaajuus && v.laajuus">{{ v.laajuus }} {{ unit || '' | kaanna }}</div>
+            <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ v.muokattu | aikaleima:'ago' }}</div>
+        </div>
+      </div>
+    </a>
+  </ul>
+
+  <div class="info-box" ng-show="model.length === 0 && emptyPlaceholder" kaanna="emptyPlaceholder"></div>
+</div>
+
+</div>

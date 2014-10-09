@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource.peruste;
 
-import com.wordnik.swagger.annotations.Api;
+import com.mangofactory.swagger.annotations.ApiIgnore;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
@@ -51,7 +51,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
  */
 @RestController
 @RequestMapping("/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}")
-@Api(value = "Perusteet", description = "Tutkinnon rakenteen hallintaan liittyvät operaatiot")
+@ApiIgnore
 public class TutkinnonRakenneController {
 
     @Autowired

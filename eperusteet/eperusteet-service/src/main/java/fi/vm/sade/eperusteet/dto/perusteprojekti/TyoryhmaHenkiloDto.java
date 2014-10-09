@@ -30,4 +30,12 @@ public class TyoryhmaHenkiloDto implements Serializable {
     private Long id;
     private String kayttajaOid;
     private String nimi;
+
+    public TyoryhmaHenkiloDto(String nimi, String kayttajaOid) {
+        this.kayttajaOid = kayttajaOid;
+        this.nimi = nimi;
+    }
+
+    public TyoryhmaHenkiloDto() {
+    }
 }

@@ -1,0 +1,31 @@
+<div class="opetuksen-tavoitteet">
+  <div class="panel panel-default panel-small arviointi-kohdealueet">
+    <span class="toggler" ng-show="model.kohdealueet.length"><a class="action-link" kaanna ng-click="toggleAll()">avaa-sulje-kaikki</a></span>
+    <div class="panel-body">
+      <accordion close-others="false">
+      <div>
+        <accordion-group class="arvioinnin-kohdealue" heading="{{kohdealue.nimi | kaanna}}" ng-repeat="kohdealue in model.kohdealueet" is-open="kohdealue.$accordionOpen">
+
+          <div class="panel panel-default tavoite" ng-repeat="tavoite in kohdealue.tavoitteet">
+            <div class="panel-body">
+              <div class="indexnumber">{{tavoite.$runningIndex}}</div>
+              <h4 kaanna="kuvaus"></h4>
+              <div ng-bind-html="valitseKieli(tavoite.kuvaus) | unsafe"></div>
+              <h4 kaanna="laaja-alainen-osaaminen"></h4>
+              <div tag-cloud="tavoite.$osaaminen" openable="true"></div>
+              <h4 kaanna="sisaltoalueet"></h4>
+              <div tag-cloud="tavoite.$sisaltoalueet"></div>
+              <div ng-if="tavoite.arviointi.length > 0">
+                <h4 kaanna="arviointi"></h4>
+                <div perusopetuksen-arviointi="tavoite.arviointi"></div>
+              </div>
+            </div>
+          </div>
+
+        </accordion-group>
+      </div>
+      </accordion>
+
+    </div>
+  </div>
+</div>

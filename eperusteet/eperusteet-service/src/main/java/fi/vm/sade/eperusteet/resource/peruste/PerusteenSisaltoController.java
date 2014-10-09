@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource.peruste;
 
-import com.wordnik.swagger.annotations.Api;
+import com.mangofactory.swagger.annotations.ApiIgnore;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -42,7 +42,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
  */
 @RestController
 @RequestMapping("/perusteet/{perusteId}/suoritustavat/{suoritustapa}")
-@Api(value = "Perusteet", description = "Perusteiden suoritustavan hallintaan liittyvät operaatiot")
+@ApiIgnore
 public class PerusteenSisaltoController {
 
     @Autowired
@@ -140,6 +140,7 @@ public class PerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/sisalto/{id}", method = POST)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateSisaltoViite(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa,

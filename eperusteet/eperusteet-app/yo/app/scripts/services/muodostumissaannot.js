@@ -23,9 +23,11 @@ angular.module('eperusteApp')
   .service('Muodostumissaannot', function($modal) {
     var skratchpadHasContent = false;
     function osienLaajuudenSumma(rakenneOsat) {
-      return _(rakenneOsat ? rakenneOsat : [])
-        .map(function(osa) { return osa ? osa.$laajuus : 0; })
-        .reduce(function(sum, newval) { return sum + newval; }) || 0;
+      return _(rakenneOsat || [])
+        .map(function(osa) {
+          return osa ? (osa.$vaadittuLaajuus && osa.$laajuus > osa.$vaadittuLaajuus ? osa.$vaadittuLaajuus : osa.$laajuus) : 0;
+        })
+        .reduce(function(sum, newval) { return sum + newval; }, 0) || 0;
     }
 
     function kaannaSaanto(ms) {
@@ -38,29 +40,29 @@ angular.module('eperusteApp')
         fraasi.push('osia-valittava-vahintaan');
         fraasi.push(msl.minimi);
         if (msl.minimi !== msl.maksimi) {
-          fraasi.push('ja-enintään');
+          fraasi.push('ja-enintaan');
           fraasi.push(msl.maksimi);
         }
         fraasi.push('$laajuusYksikko');
-        fraasi.push('edestä');
+        fraasi.push('edesta');
       }
 
       if (msk && msk.minimi && msk.maksimi) {
         if (!_.isEmpty(fraasi)) {
-          fraasi.push('ja-myös-valittava');
+          fraasi.push('ja-myos-valittava');
         }
         else {
           fraasi.push('osia-valittava-vahintaan');
         }
         fraasi.push(msk.minimi);
-        if (msk.minimi === msk.maksimi) {
-          fraasi.push('ja-enintään');
+        if (msk.minimi !== msk.maksimi) {
+          fraasi.push('ja-enintaan');
           fraasi.push(msk.maksimi);
         }
         fraasi.push('kappaletta');
       }
 
-      return fraasi;
+      return _.isEmpty(fraasi) ? ['muodostumissaantoa-ei-maaritelty'] : fraasi;
     }
 
     /* TODO (jshint complexity/W074) simplify/split ---> */
@@ -105,7 +107,7 @@ angular.module('eperusteApp')
       });
 
       // On rakennemoduuli
-      if (rakenne.muodostumisSaanto && rakenne.rooli !== 'virtuaalinen') {
+      if (rakenne.muodostumisSaanto && rakenne.rooli !== 'määrittelemätön') {
         var ms = rakenne.muodostumisSaanto;
         var msl = ms.laajuus || 0;
         var msk = ms.koko || 0;
@@ -123,7 +125,7 @@ angular.module('eperusteApp')
         } else if (msl) {
           // Validoidaan maksimi
           if (msl.maksimi) {
-            if (osienLaajuudenSumma(rakenne, viitteet) < msl.maksimi) {
+            if (osienLaajuudenSumma(rakenne.osat, viitteet) < msl.maksimi) {
               asetaVirhe('muodostumis-rakenne-validointi-laajuus', ms);
             }
           }
@@ -153,21 +155,23 @@ angular.module('eperusteApp')
       _.forEach(rakenne.osat, function(osa) {
         laskeLaajuudet(osa, viitteet);
       });
+
       rakenne.$laajuus = 0;
 
+      // Osa
       if (rakenne._tutkinnonOsaViite) {
         rakenne.$laajuus = viitteet[rakenne._tutkinnonOsaViite].laajuus;
       }
-      else {
-        if (rakenne.osat && rakenne.muodostumisSaanto) {
+      // Ryhmä
+      else if (rakenne.osat) {
+        if (rakenne.muodostumisSaanto) {
           var msl = rakenne.muodostumisSaanto.laajuus;
           if (msl) {
-            rakenne.$vaadittuLaajuus = msl.maksimi;
+            rakenne.$vaadittuLaajuus = msl.maksimi || msl.minimi;
           }
         }
-        rakenne.$laajuus = osienLaajuudenSumma(rakenne.osat, viitteet);
+        rakenne.$laajuus = rakenne.rooli === 'määritelty' ? osienLaajuudenSumma(rakenne.osat, viitteet) : rakenne.$vaadittuLaajuus;
       }
-      rakenne.$laajuus = rakenne.$laajuus || 0;
     }
 
     function ryhmaModaali(thenCb) {
@@ -188,10 +192,26 @@ angular.module('eperusteApp')
       };
     }
 
+    function rakenneosaModaali(thenCb) {
+      return function(rakenneosa) {
+        $modal.open({
+          templateUrl: 'views/modals/rakenneosaModal.html',
+          controller: 'RakenneosaModalCtrl',
+          resolve: {
+            rakenneosa: function() { return rakenneosa; }
+          }
+        })
+        .result.then(function(res) {
+          thenCb(res);
+        });
+      };
+    }
+
     return {
       validoiRyhma: validoiRyhma,
       laskeLaajuudet: laskeLaajuudet,
       ryhmaModaali: ryhmaModaali,
+      rakenneosaModaali: rakenneosaModaali,
       kaannaSaanto: kaannaSaanto,
       skratchpadNotEmpty: function (value) {
         if (arguments.length > 0) {

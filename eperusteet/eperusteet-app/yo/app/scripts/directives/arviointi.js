@@ -22,8 +22,8 @@ angular.module('eperusteApp')
     Utils, ArviointiPreferences) {
     $scope.showNewKohdealueInput = false;
 
-    $scope.arviointiasteikkoChanged = function (value) {
-      ArviointiPreferences.setting('asteikko', value);
+    $scope.arviointiasteikkoChanged = function (kohdealue) {
+      ArviointiPreferences.setting('asteikko', kohdealue.$newkohde.arviointiasteikko);
     };
 
     $scope.kohdealue = {
@@ -90,40 +90,38 @@ angular.module('eperusteApp')
           }
         })();
       },
-      uusiWizard: function () {
-        $scope.uudenKohteenTiedot = {
+      uusiWizard: function (kohdealue) {
+        kohdealue.$newkohde = {
           showInputArea: true,
           arviointiasteikko: ArviointiPreferences.setting('asteikko')
         };
       },
-      uusi: function(kohdealue, uudenKohteenTiedot) {
+      isAdding: function (kohdealue) {
+        return !_.isEmpty(kohdealue.$newkohde);
+      },
+      uusi: function(kohdealue) {
         if(angular.isUndefined(kohdealue.arvioinninKohteet) || kohdealue.arvioinninKohteet === null) {
           kohdealue.arvioinninKohteet = [];
         }
 
         var kohde = {
             otsikko: {},
-            _arviointiAsteikko: uudenKohteenTiedot.arviointiasteikko.id,
+            _arviointiAsteikko: kohdealue.$newkohde.arviointiasteikko.id,
             osaamistasonKriteerit: [],
             $accordionOpen: true
         };
-        kohde.otsikko[YleinenData.kieli] = uudenKohteenTiedot.nimi;
+        kohde.otsikko[YleinenData.kieli] = kohdealue.$newkohde.nimi;
 
-        valmisteleKriteerit(kohde.osaamistasonKriteerit, uudenKohteenTiedot.arviointiasteikko.osaamistasot);
+        valmisteleKriteerit(kohde.osaamistasonKriteerit, kohdealue.$newkohde.arviointiasteikko.osaamistasot);
 
         kohdealue.arvioinninKohteet.push(kohde);
-        uudenKohteenTiedot.nimi = null;
-        uudenKohteenTiedot.arviointiasteikko = null;
-
-        uudenKohteenTiedot.showInputArea = false;
+        kohdealue.$newkohde = {};
         $timeout(function () {
           $scope.kohde.muokkaa(kohde);
         });
       },
-      cancel: function(uudenKohteenTiedot) {
-        uudenKohteenTiedot.nimi = null;
-        uudenKohteenTiedot.arviointiasteikko = null;
-        uudenKohteenTiedot.showInputArea = false;
+      cancel: function(kohdealue) {
+        kohdealue.$newkohde = null;
       },
       poistuMuokkauksesta: function (list, index) {
         delete $scope.editableKohde.$editointi;

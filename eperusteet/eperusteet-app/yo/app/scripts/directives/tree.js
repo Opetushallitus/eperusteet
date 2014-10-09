@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .directive('tree', function($compile, $state, Muodostumissaannot, Kaanna, TreeDragAndDrop, $translate) {
+  .directive('tree', function($compile, $state, Muodostumissaannot, Kaanna, TreeDragAndDrop, $translate, Algoritmit) {
     function generoiOtsikko() {
       var tosa = '{{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].nimi || "nimetön" | kaanna }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">, <b>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</b>{{ apumuuttujat.laajuusYksikko | kaanna }}</span>';
       var editointiIkoni =
@@ -33,6 +33,7 @@ angular.module('eperusteApp')
         '  <a ng-if="!esitystilassa" href="" ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite]._tutkinnonOsa, suoritustapa: apumuuttujat.suoritustapa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a>' +
         '</span>' +
         '<span class="pull-right" ng-if="rakenne._tutkinnonOsaViite && muokkaus"><a class="action-link" icon-role="remove" ng-click="poista(rakenne, vanhempi)"></a></span>' +
+        '<span class="pull-right" ng-if="rakenne._tutkinnonOsaViite && muokkaus"><a class="action-link" icon-role="edit" ng-click="rakenneosaModaali(rakenne)"></a></span>' +
         '<span ng-if="!rakenne._tutkinnonOsaViite && rakenne.nimi">' +
         '  <b>{{ rakenne.nimi || "nimetön" | kaanna }}</b>' +
         '</span>';
@@ -51,18 +52,25 @@ angular.module('eperusteApp')
         muokkaus: '=',
         poistoTehtyCb: '='
       },
+      controller: function($scope) {
+        $scope.lisaaUusi = 0;
+        $scope.lisataanUuttaPerusteenOsaa = false;
+        $scope.scratchpad = [];
+        $scope.roskakori = [];
+        $scope.esitystilassa = $state.includes('**.esitys.**');
+        $scope.lang = $translate.use() || $translate.preferredLanguage();
+      },
       link: function(scope, el) {
-        scope.lisaaUusi = 0;
-        scope.lisataanUuttaPerusteenOsaa = false;
-        scope.scratchpad = [];
-        scope.roskakori = [];
-        scope.esitystilassa = $state.includes('**.esitys.**');
-        scope.lang = $translate.use() || $translate.preferredLanguage();
-
         scope.poista = function(i, a) {
           _.remove(a.osat, i);
           scope.poistoTehtyCb();
         };
+
+        scope.rakenneosaModaali = Muodostumissaannot.rakenneosaModaali(function(rakenneosa) {
+          if (rakenneosa) {
+            scope.rakenne = rakenneosa;
+          }
+        });
 
         scope.togglaaPakollisuus = function(rakenne) {
           if (scope.muokkaus) {
@@ -80,21 +88,28 @@ angular.module('eperusteApp')
           }
         });
 
-        function genericToggle(field) {
-          return function() {
-            var avaamattomat = _(scope.rakenne.osat).reject(function(osa) {
-              return osa._tutkinnonOsaViite || osa[field] || osa.osat.length === 0;
-            }).size();
+        scope.togglaaKuvaukset = function() {
+          var jokuAuki = false;
+          Algoritmit.kaikilleLapsisolmuille(scope.rakenne, 'osat', function(osa) {
+            if (osa.$showKuvaus) {
+              jokuAuki = true;
+              return true;
+            }
+          });
+          Algoritmit.kaikilleLapsisolmuille(scope.rakenne, 'osat', function(osa) { osa.$showKuvaus = !jokuAuki; });
+        };
 
-            _.forEach(scope.rakenne.osat, function(r) {
-              if (r.osat && _.size(r.osat) > 0) {
-                r[field] = avaamattomat !== 0;
-              }
-            });
-          };
-        }
-        scope.togglaaKuvaukset = genericToggle('$showKuvaus');
-        scope.togglaaPolut = genericToggle('$collapsed');
+        scope.togglaaPolut = function() {
+          var avaamattomat = _(scope.rakenne.osat).reject(function(osa) {
+            return osa._tutkinnonOsaViite || osa.$collapsed || osa.osat.length === 0;
+          }).size();
+
+          _.forEach(scope.rakenne.osat, function(r) {
+            if (r.osat && _.size(r.osat) > 0) {
+              r.$collapsed = avaamattomat !== 0;
+            }
+          });
+        };
 
         scope.tkaanna = function(input) {
           return _.reduce(_.map(input, function(str) {
@@ -197,7 +212,7 @@ angular.module('eperusteApp')
                          '    <span ng-show="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "nayta-virheet" | kaanna }}</span>' +
                          '  </a>' +
                          '  <a href="" ng-click="togglaaKuvaukset()" class="group-toggler">' +
-                         '    <span><span class="kuvaus-box" kaanna></span><span class="avaa-sulje" kaanna>nayta-kuvaukset</span></span>' +
+                         '    <span><span icon-role="book"></span>{{ "nayta-kuvaukset" | kaanna }}</span>' +
                          '    ' +
                          '  </a>' +
                          '  <a href="" ng-click="togglaaPolut()" class="group-toggler">' +
@@ -205,7 +220,8 @@ angular.module('eperusteApp')
                          '  </a>' +
                          '</div>';
 
-        var template =
+        var template = '' +
+          // generoiKuvauksetAsetin() +
           '<div ng-if="!vanhempi">' +
           '  <div class="ylapainikkeet">' +
           '    <span class="rakenne-nimi">{{ apumuuttujat.peruste.nimi | kaanna }}' +
@@ -259,23 +275,25 @@ angular.module('eperusteApp')
         muokkaus: '=',
         esitys: '=?'
       },
-      link: function(scope) {
-        scope.suljettuViimeksi = true;
-        scope.lisataanUuttaOsaa = false;
-        scope.uusiOsa = null;
-        scope.skratchpad = [];
-        scope.uniikit = [];
-        scope.kaytetytUniikit = {};
-        scope.kaikkiUniikit = [];
-        scope.topredicate = 'nimi.fi';
-        scope.tosarajaus = '';
-        scope.tutkinnonOsat = {
+      controller: function($scope) {
+        $scope.suljettuViimeksi = true;
+        $scope.lisataanUuttaOsaa = false;
+        $scope.uusiOsa = null;
+        $scope.skratchpad = [];
+        $scope.uniikit = [];
+        $scope.kaytetytUniikit = {};
+        $scope.kaikkiUniikit = [];
+        $scope.topredicate = 'nimi.fi';
+        $scope.tosarajaus = '';
+
+        $scope.tutkinnonOsat = {
           perSivu: 8,
           rajaus: '',
           multiPage: false,
           sivu: 1
         };
-
+      },
+      link: function(scope) {
         scope.paivitaTekstiRajaus = function (value) {
           if (!_.isEmpty(value)) {
             PerusteenRakenne.kaikilleRakenteille(scope.rakenne.rakenne, function(item) {
@@ -312,7 +330,7 @@ angular.module('eperusteApp')
           scope.tosarajaus = input;
           var filtered = !_.isEmpty(input);
           scope.uniikit = _.reject(scope.kaikkiUniikit, function(yksi) {
-            var nimi = Kaanna.kaanna(scope.rakenne.tutkinnonOsaViitteet[yksi._tutkinnonOsaViite].nimi).toLowerCase();
+            var nimi = (Kaanna.kaanna(scope.rakenne.tutkinnonOsaViitteet[yksi._tutkinnonOsaViite].nimi) || '').toLowerCase();
             return (filtered && nimi.indexOf(input.toLowerCase()) === -1) ||
                    (scope.piilotaKaikki && scope.kaytetytUniikit[yksi._tutkinnonOsaViite]);
           });
@@ -338,7 +356,7 @@ angular.module('eperusteApp')
             .value();
           scope.tutkinnonOsat.multiPage = _.size(scope.uniikit) > scope.tutkinnonOsat.perSivu;
           scope.kaikkiUniikit = _.sortBy(scope.uniikit, function(osa) {
-            return Kaanna.kaanna(scope.rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi).toLowerCase();
+            return (Kaanna.kaanna(scope.rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi) || '').toLowerCase();
           });
           scope.uniikit = scope.kaikkiUniikit;
           scope.paivitaRajaus();

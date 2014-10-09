@@ -55,7 +55,6 @@ angular.module('eperusteApp')
       haeVersiot(true, function() {
         var revNumber = VersionHelper.select($scope.versiot, versio);
         if (versio && !$scope.versiot.latest) {
-
           if (!revNumber) {
             errorCb();
           } else {

@@ -1,7 +1,7 @@
 <div>
   <div ng-if="versiot.list.$resolved && !versiot.latest" class="version-warning">
     <div class="note"></div>
-    <button ng-click="version.revert()" class="btn btn-default btn-sm" kaanna>ota-versio-kayttoon</button>
+    <button ng-click="version.revert()" class="btn btn-default btn-sm" oikeustarkastelu="{target: 'peruste', permission: 'muokkaus'}"  kaanna>ota-versio-kayttoon</button>
     <div class="content">
       <p>{{'katselet-vanhaa-versiota'|kaanna}}</p>
       <p><a href="" ng-click="version.goToLatest()" kaanna>katso-uusin-versio</a></p>

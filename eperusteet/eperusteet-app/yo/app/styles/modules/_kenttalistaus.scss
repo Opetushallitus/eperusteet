@@ -1,0 +1,46 @@
+.angular-ui-tree-placeholder {
+  border: 2px dashed #888;
+  background-color: #ddd;
+}
+
+$sortable-box-height: 48px;
+#muokattavat-kentat {
+  .muokkaus {
+    list-style-type: none;
+  }
+}
+
+.sortable-box {
+  background: white;
+  position: relative;
+  width: 500px;
+  height: $sortable-box-height;
+  overflow: hidden;
+  border: 2px solid #aaa;
+  margin-bottom: 5px;
+  .draghandle {
+    font-size: $sortable-box-height*0.5;
+    height: 100%;
+    line-height: $sortable-box-height*0.9;
+    width: $sortable-box-height*0.6;
+  }
+  .closer {
+    position: absolute;
+    right: 0px;
+    font-size: $sortable-box-height*0.5;
+    line-height: $sortable-box-height*0.9;
+    width: $sortable-box-height*0.6;
+    height: 100%;
+  }
+  .content {
+    padding: 5px 0px;
+    font-size: 120%;
+    .input-wrapper {
+      float: left;
+      .form-control {
+        display: inline-block;
+      }
+      width: 80%;
+    }
+  }
+}

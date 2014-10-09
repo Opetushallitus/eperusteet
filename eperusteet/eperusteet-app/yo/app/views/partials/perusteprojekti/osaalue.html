@@ -1,0 +1,17 @@
+<div id="toolbar" class="navbar-fixed-top" style="display: none">
+  <div id="ck-toolbar-top"></div>
+  <div id="ck-toolbar-bottom"></div>
+</div>
+<div class="row">
+  <div class="col-md-12 ep-sisalto-inner">
+    <div ng-if="isVuosiluokka">
+      <muokkaus-vuosiluokka model="dataObject" versiot="versiot"></muokkaus-vuosiluokka>
+    </div>
+    <div ng-if="isOppiaine">
+      <muokkaus-oppiaine model="dataObject" versiot="versiot"></muokkaus-oppiaine>
+    </div>
+    <div ng-if="!isVuosiluokka && !isOppiaine">
+      <muokkaus-tekstikappale tekstikappale="dataObject" versiot="versiot"></muokkaus-tekstikappale>
+    </div>
+  </div>
+</div>

@@ -94,4 +94,14 @@ public class Suoritustapa implements Serializable {
         tutkinnonOsat.addAll(osat);
     }
 
+    public Suoritustapa() {
+    }
+
+    public Suoritustapa(Suoritustapakoodi suoritustapakoodi, PerusteenOsaViite sisalto, RakenneModuuli rakenne, LaajuusYksikko laajuusYksikko) {
+        this.suoritustapakoodi = suoritustapakoodi;
+        this.sisalto = sisalto;
+        this.rakenne = rakenne;
+        this.laajuusYksikko = laajuusYksikko;
+    }
+
 }

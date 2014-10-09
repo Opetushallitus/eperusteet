@@ -55,7 +55,7 @@ angular.module('eperusteApp')
         /**
          * All this just to get a divider line to expand to the bottom of the page
          */
-        scope.refreshView = function () {
+        var refreshView = function () {
           var el = angular.element('.sivunavi-navigaatio');
           if (el.length === 0) {
             return;
@@ -65,6 +65,7 @@ angular.module('eperusteApp')
           if (hiddenOrCollapsed) {
             el.height('auto').css('border-right', '0');
             sisalto.hide().show(0); // Webkit bug: force redraw
+            el.hide().show(0);
           } else {
             var sisaltoHeight = sisalto.outerHeight();
             var naviElement = angular.element('.sivunavi-box');
@@ -83,32 +84,28 @@ angular.module('eperusteApp')
             el.css('border-right', '1px solid #ddd');
           }
         };
+        scope.refreshView = refreshView;
 
-        $timeout(function () {
-          scope.refreshView();
-        });
-
-        window.on('scroll resize', function() {
-          scope.refreshView();
-        });
-
+        window.on('scroll resize', refreshView);
         scope.$on('update:kommentit', function () {
-          $timeout(function () {
-            scope.refreshView();
-          }, 1500);
+          $timeout(refreshView(), 1500);
         });
+        scope.$on('$destroy', function () {
+          window.off('scroll resize', refreshView);
+        });
+        $timeout(refreshView);
       }
     };
   })
 
-  .controller('SivuNaviController', function ($scope, $state, Algoritmit, Utils, $timeout) {
+  .controller('SivuNaviController', function ($scope, $state, Algoritmit, Utils, $timeout, $stateParams) {
     $scope.menuCollapsed = true;
 
     $scope.search = {
       term: '',
-      update: function() {
+      update: function () {
         var matchCount = 0;
-        _.each($scope.items, function(item) {
+        _.each($scope.items, function (item) {
           item.$matched = _.isEmpty($scope.search.term) || _.isEmpty(item.label) ? true :
             Algoritmit.match($scope.search.term, item.label);
           if (item.$matched) {
@@ -150,7 +147,7 @@ angular.module('eperusteApp')
         return item.isActive(item);
       }
       return (!_.isEmpty(item.link) && _.isArray(item.link) &&
-        $state.is(item.link[0], _.extend(_.clone($state.params), item.link[1])));
+        $state.is(item.link[0], _.extend(_.clone($stateParams), item.link[1])));
     }
 
     $scope.itemClasses = function (item) {
@@ -181,7 +178,7 @@ angular.module('eperusteApp')
             });
           }
         }
-        item.$parent = levels[item.depth-1] || null;
+        item.$parent = levels[item.depth - 1] || null;
         item.$hidden = item.depth > 0;
         item.$matched = true;
       });
@@ -240,7 +237,7 @@ angular.module('eperusteApp')
       // If the parent is hidden, then the child is implicitly hidden
       var item = items[index];
       for (index++; index < items.length &&
-           items[index].depth > item.depth; ++index) {
+        items[index].depth > item.depth; ++index) {
         if (!items[index].$hidden) {
           items[index].$impHidden = true;
         }
@@ -280,8 +277,8 @@ angular.module('eperusteApp')
       state = _.isUndefined(state) ? !item.$collapsed : state;
       if (index >= 0 && index < (items.length - 1)) {
         index = index + 1;
-        while(index < items.length &&
-              items[index].depth > item.depth) {
+        while (index < items.length &&
+          items[index].depth > item.depth) {
           if (items[index].depth === item.depth + 1) {
             items[index].$hidden = state;
           }
@@ -295,7 +292,7 @@ angular.module('eperusteApp')
       $scope.menuCollapsed = !$scope.menuCollapsed;
     };
 
-    $scope.$on('$stateChangeStart', function() {
+    $scope.$on('$stateChangeStart', function () {
       $scope.menuCollapsed = true;
     });
 
@@ -305,7 +302,7 @@ angular.module('eperusteApp')
       });
     }
 
-    $scope.$on('$stateChangeSuccess', function() {
+    $scope.$on('$stateChangeSuccess', function () {
       Utils.scrollTo('#ylasivuankkuri');
       updateModel($scope.items);
       doRefreshView();
@@ -331,7 +328,7 @@ angular.module('eperusteApp')
       restrict: 'A',
       link: function (scope, element) {
         scope.$watch('epHighlight', function (value) {
-          matcher = new RegExp('('+value+')', 'i');
+          matcher = new RegExp('(' + value + ')', 'i');
           var text = element.text();
           element.html(text.replace(matcher, '<strong>$1</strong>'));
         });

@@ -93,7 +93,7 @@ $tree-group-width: 480px;
   background: #0b4057;
   height: 3px;
   min-width: 800px;
-  top: 5px;
+  top: 4px;
   position: relative;
 }
 
@@ -325,30 +325,34 @@ $sp-badge-size: 16px;
       width: 0px;
     }
 }
-.tree li {
-    list-style-type: none;
-    margin: 0px;
-    padding: 10px 5px 0 5px;
-    position: relative;
-    &::before, &::after {
-      content: '';
-      left: -30px;
-      position: absolute;
-      right: auto;
+.tree {
+  .tree-group {
+    li {
+      list-style-type: none;
+      margin: 0px;
+      padding: 10px 5px 0 5px;
+      position: relative;
+      &::before, &::after {
+        content: '';
+        left: -30px;
+        position: absolute;
+        right: auto;
+      }
+      &::before {
+        border-left: 1px solid $puuviiva-vari;
+        bottom: 50px;
+        height: 100%;
+        top: 0;
+        width: 1px;
+      }
+      &::after {
+        border-top: 1px solid $puuviiva-vari;
+        height: 20px;
+        top: 25px;
+        width: 35px;
+      }
     }
-    &::before {
-      border-left: 1px solid $puuviiva-vari;
-      bottom: 50px;
-      height: 100%;
-      top: 0;
-      width: 1px;
-    }
-    &::after {
-      border-top: 1px solid $puuviiva-vari;
-      height: 20px;
-      top: 25px;
-      width: 35px;
-    }
+  }
 }
 
 .tree ul:empty {

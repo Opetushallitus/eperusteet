@@ -54,6 +54,11 @@ public class Kayttajaprofiili implements Serializable {
     @Setter
     private List<Suosikki> suosikit;
 
+    @OneToMany(mappedBy = "kayttajaprofiili", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Getter
+    @Setter
+    private List<KayttajaprofiiliPreferenssi> preferenssit;
+
     public Kayttajaprofiili() {
     }
 

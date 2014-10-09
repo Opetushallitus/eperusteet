@@ -27,7 +27,7 @@ angular.module('eperusteApp')
       });
   })
   .controller('AdminCtrl', function($rootScope, $scope, PerusteProjektit, Algoritmit, PerusteprojektiTila, Notifikaatiot,
-                                    Kaanna, YleinenData, Varmistusdialogi) {
+                                    Kaanna, YleinenData, Varmistusdialogi, PerusteProjektiService) {
     $scope.jarjestysTapa = 'nimi';
     $scope.jarjestysOrder = false;
     $scope.tilaRajain = null;
@@ -70,6 +70,7 @@ angular.module('eperusteApp')
     PerusteProjektit.hae({}, function(res) {
       angular.forEach(res, function(projekti) {
         projekti.suoritustapa = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
+        projekti.$url = PerusteProjektiService.getUrl(projekti);
       });
       $scope.perusteprojektit = res;
     });

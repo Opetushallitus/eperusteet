@@ -9,6 +9,11 @@
   </div>
   <div ng-if="!lisataanUuttaOsaa" class="tree col-lg-6 col-md-8 col-xs-12">
     <div class="tree-con" ng-show="muokkaus || rakenne.rakenne.osat.length > 0">
+      <div ng-show="muokkaus && !vanhempi">
+        <h2 kaanna="tutkinnon-rakenteen-kuvaus"></h2>
+        <ml-input ng-if="rakenne.rakenne.kuvaus" ml-data="rakenne.rakenne.kuvaus" type="textarea"></ml-input>
+        <h2 kaanna="tutkinnon-rakenne"></h2>
+      </div>
       <rajaus size="small" classes="puun-rajaus" model="apumuuttujat.haku" placeholder="Etsi rakenteesta..."></rajaus>
       <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" ng-if="rakenne.$resolved" rakenne="rakenne.rakenne" tutkinnon-osa-viitteet="rakenne.tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" poisto-tehty-cb="poistoTehtyCb"></tree>
     </div>
@@ -66,7 +71,7 @@
             <div class="sp-badge">
               <span class="skratchpad-badge" ng-class="{'ei-kaytetty': !kaytetytUniikit[osa._tutkinnonOsaViite], 'kaytetty': kaytetytUniikit[osa._tutkinnonOsaViite]}"></span>
             </div>
-            <div class="sp-name">
+            <div class="sp-name ellipsis-no-wrap" title="{{rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna:true}}">
               {{ rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== 'naytto' && rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus">, {{ + rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus || 0 }}{{ apumuuttujat.laajuusYksikko | kaanna }}</span>
             </div>
           </li>
@@ -78,5 +83,4 @@
       </div>
     </div>
   </div>
-
 </div>

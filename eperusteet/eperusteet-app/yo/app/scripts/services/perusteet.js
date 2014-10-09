@@ -107,8 +107,19 @@ angular.module('eperusteApp')
       });
     }
 
-    function hae(perusteId, suoritustapa, success) {
+    function rakennaPalaute(rakenne, peruste, tutkinnonOsat) {
       var response = {};
+      rakenne.kuvaus = rakenne.kuvaus || {};
+      response.rakenne = rakenne;
+      response.$peruste = peruste;
+      response.tutkinnonOsaViitteet = _(tutkinnonOsat).pluck('id')
+                                                      .zipObject(tutkinnonOsat)
+                                                      .value();
+      response.tutkinnonOsat = _.zipObject(_.map(tutkinnonOsat, '_tutkinnonOsa'), tutkinnonOsat);
+      return response;
+    }
+
+    function hae(perusteId, suoritustapa, success) {
       Perusteet.get({
         perusteId: perusteId
       }, function(peruste) {
@@ -121,13 +132,7 @@ angular.module('eperusteApp')
             perusteId: peruste.id,
             suoritustapa: suoritustapa
           }, function(tosat) {
-            response.rakenne = rakenne;
-            response.$peruste = peruste;
-            response.tutkinnonOsaViitteet = _(tosat).pluck('id')
-                                                    .zipObject(tosat)
-                                                    .value();
-            response.tutkinnonOsat = _.zipObject(_.map(tosat, '_tutkinnonOsa'), tosat);
-            success(pilkoTutkinnonOsat(tosat, response));
+            success(pilkoTutkinnonOsat(tosat, rakennaPalaute(rakenne, peruste, tosat)));
           });
         });
       });

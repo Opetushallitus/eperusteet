@@ -46,8 +46,12 @@ angular.module('eperusteApp')
           }
         };
 
-        window.on('scroll resize', function() {
+        var updatepos = function() {
           scope.updatePosition();
+        };
+        window.on('scroll resize', updatepos);
+        scope.$on('$destroy', function() {
+          window.off('scroll resize', updatepos);
         });
       }
     };

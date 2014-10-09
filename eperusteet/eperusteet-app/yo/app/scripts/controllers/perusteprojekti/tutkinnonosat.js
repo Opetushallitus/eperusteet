@@ -26,47 +26,15 @@ angular.module('eperusteApp')
   })
   .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $state, $stateParams,
     perusteprojektiTiedot, PerusteProjektiService, PerusteenRakenne, Notifikaatiot,
-    Kaanna, PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode, Algoritmit,
-    Preferenssit) {
+    PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode) {
 
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
-    $scope.jarjestysOptions = [
-      {value: 'nimi', label: 'nimi'},
-      {value: 'muokattu', label: 'muokattu-viimeksi'},
-      {value: 'laajuus', label: 'laajuus'}
-    ];
     $scope.tutkinnonOsat = [];
-    $scope.tosarajaus = '';
     $scope.editoi = false;
-    $scope.preferenssit = Preferenssit.data;
-    $scope.jarjestysTapa = 'nimi';
-    $scope.jarjestysOrder = false;
     $scope.naytaToisestaSuoritustavastaTuonti = perusteprojektiTiedot.getPeruste().suoritustavat.length > 1;
     $scope.yksikko = _.zipObject(_.map($scope.peruste.suoritustavat, 'suoritustapakoodi'),
-                                  _.map($scope.peruste.suoritustavat, 'laajuusYksikko'))
-                                  [$scope.suoritustapa];
-
-    $scope.paivitaRajaus = function(rajaus) { $scope.tosarajaus = rajaus; };
-    $scope.asetaJarjestys = function(tyyppi, suunta) {
-      if ($scope.jarjestysTapa === tyyppi) {
-        $scope.jarjestysOrder = !$scope.jarjestysOrder;
-        suunta = $scope.jarjestysOrder;
-      }
-      else {
-        $scope.jarjestysOrder = false;
-        $scope.jarjestysTapa = tyyppi;
-      }
-    };
-    $scope.jarjestys = function(data) {
-      switch($scope.jarjestysTapa) {
-        case 'nimi': return Kaanna.kaanna(data.nimi);
-        case 'laajuus': return data.laajuus;
-        case 'muokattu': return data.muokattu;
-        default:
-          break;
-      }
-    };
+                                  _.map($scope.peruste.suoritustavat, 'laajuusYksikko'));
 
     function haeTutkinnonosat() {
       PerusteenRakenne.haeTutkinnonosat($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
@@ -74,10 +42,6 @@ angular.module('eperusteApp')
       });
     }
     haeTutkinnonosat();
-
-    $scope.rajaaTutkinnonOsia = function(haku) {
-      return Algoritmit.rajausVertailu($scope.tosarajaus, haku, 'nimi');
-    };
 
     $scope.tuoSuoritustavasta = TutkinnonOsanTuonti.suoritustavoista(perusteprojektiTiedot.getPeruste(), $scope.suoritustapa, function(osat) {
       _.forEach(osat, function(osa) { $scope.lisaaTutkinnonOsaSuoraan(osa); });

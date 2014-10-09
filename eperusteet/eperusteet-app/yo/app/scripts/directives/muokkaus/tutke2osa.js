@@ -44,6 +44,7 @@ angular.module('eperusteApp')
   .controller('Tutke2KentatController', function ($scope, Tutke2Osa, Tutke2OsaData,
     TutkinnonOsanOsaAlue, Osaamistavoite, Varmistusdialogi, $rootScope, $timeout,
     Utils, Notifikaatiot, Lukitus, $q, YleinenData) {
+
     var Editointikontrollit = $scope.kontrollit;
     var tutke2osaDefer = $q.defer();
 
@@ -142,10 +143,12 @@ angular.module('eperusteApp')
         stopEvent($event);
         verifyRemove(function () {
           if (alue.id) {
-            alue.$delete($scope.tutke2osa.params);
+            alue.$delete($scope.tutke2osa.params,  function() {
+              $scope.tutke2osa.fetch();
+              Editointikontrollit.cancelEditing();
+            }, Notifikaatiot.serverCb);
           }
-          $scope.tutke2osa.fetch();
-          Editointikontrollit.cancelEditing();
+
         });
       },
       save: function (alue, $event, kommentti) {
@@ -164,9 +167,9 @@ angular.module('eperusteApp')
         if (alue.id) {
           TutkinnonOsanOsaAlue.save(_.extend({
             osaalueenId: alue.id
-          }, $scope.tutke2osa.params), stripped, saveCb, Notifikaatiot.fataali);
+          }, $scope.tutke2osa.params), stripped, saveCb, Notifikaatiot.serverCb);
         } else {
-          TutkinnonOsanOsaAlue.save($scope.tutke2osa.params, stripped, saveCb, Notifikaatiot.fataali);
+          TutkinnonOsanOsaAlue.save($scope.tutke2osa.params, stripped, saveCb, Notifikaatiot.serverCb);
         }
 
       },
@@ -235,9 +238,11 @@ angular.module('eperusteApp')
         verifyRemove(function () {
           if (tavoite.id) {
             var params = _.extend({osaalueenId: alue.id}, $scope.tutke2osa.params);
-            tavoite.$delete(params);
+            tavoite.$delete(params, function() {
+              $scope.tutke2osa.getTavoitteet(alue, alue);
+              Editointikontrollit.cancelEditing();
+            }, Notifikaatiot.serverCb);
           }
-          $scope.tutke2osa.getTavoitteet(alue, alue);
         });
       },
       save: function () {
@@ -257,11 +262,11 @@ angular.module('eperusteApp')
         if (tavoite.id) {
           tavoite.$save(params, function () {
             $scope.tutke2osa.getTavoitteet(alue, alue);
-          }, Notifikaatiot.fataali);
+          }, Notifikaatiot.serverCb);
         } else {
           Osaamistavoite.save(params, payload, function () {
             $scope.tutke2osa.getTavoitteet(alue, alue);
-          }, Notifikaatiot.fataali);
+          }, Notifikaatiot.serverCb);
         }
       },
       callbacks: {

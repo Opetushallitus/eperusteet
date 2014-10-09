@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.resource;
 import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteLaajaDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
@@ -60,23 +61,16 @@ public class PerusteenOsaController {
     @Autowired
     private KayttajanTietoService kayttajanTietoService;
 
-
-    @RequestMapping(method = GET)
-    @ResponseBody
-    public List<fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Suppea> getAll() {
-        return service.getAll();
-    }
-
     @RequestMapping(method = GET, params = "nimi")
     @ResponseBody
-    public List<fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Suppea> getAllWithName(@RequestParam("nimi") final String name) {
+    public List<PerusteenOsaDto.Suppea> getAllWithName(@RequestParam("nimi") final String name) {
         return service.getAllWithName(name);
     }
 
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
-    public ResponseEntity<fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja> get(@PathVariable("id") final Long id) {
-        fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja t = service.get(id);
+    public ResponseEntity<PerusteenOsaDto.Laaja> get(@PathVariable("id") final Long id) {
+        PerusteenOsaDto.Laaja t = service.get(id);
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -96,8 +90,8 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/{id}/versio/{versioId}", method = GET)
     @ResponseBody
-    public ResponseEntity<fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja> getVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
-        fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja t = service.getVersio(id, versioId);
+    public ResponseEntity<PerusteenOsaDto.Laaja> getVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
+        PerusteenOsaDto.Laaja t = service.getVersio(id, versioId);
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -106,29 +100,29 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/{id}/palauta/{versioId}", method = POST)
     @ResponseBody
-    public ResponseEntity<fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja> revertToVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
-        fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja t = service.revertToVersio(id, versioId);
+    public ResponseEntity<PerusteenOsaDto.Laaja> revertToVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
+        PerusteenOsaDto.Laaja t = service.revertToVersio(id, versioId);
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{koodiUri}", method = GET, params = "koodi=true")
+    @RequestMapping(method = GET, params = "koodiUri")
     @ResponseBody
-    public List<fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja> get(@PathVariable("koodiUri") final String koodiUri) {
-        List<fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja> t = service.getAllByKoodiUri(koodiUri);
+    public List<PerusteenOsaDto.Laaja> get(@RequestParam("koodiUri") final String koodiUri) {
+        List<PerusteenOsaDto.Laaja> t = service.getAllByKoodiUri(koodiUri);
         return PerusteenOsaDtoList.wrap(t);
     }
 
     @RequestMapping(method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public ResponseEntity<fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja> add(@RequestBody fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja perusteenOsaDto, UriComponentsBuilder ucb) {
-        fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja dto = service.add(perusteenOsaDto);
+    public ResponseEntity<PerusteenOsaDto.Laaja> add(@RequestBody PerusteenOsaDto.Laaja perusteenOsaDto, UriComponentsBuilder ucb) {
+        PerusteenOsaDto.Laaja dto = service.add(perusteenOsaDto);
         return new ResponseEntity<>(dto, buildHeadersFor(dto.getId(), ucb), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = POST)
     @ResponseBody
-    public fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja update(@PathVariable("id") final Long id, @RequestBody PerusteenOsaUpdateDto dto) {
+    public PerusteenOsaDto.Laaja update(@PathVariable("id") final Long id, @RequestBody PerusteenOsaUpdateDto dto) {
         return service.update(dto);
     }
 
@@ -295,8 +289,8 @@ public class PerusteenOsaController {
     }
 
     //apuluokka listan tyyppi-informaation säilyttämiseen.
-    private static class PerusteenOsaDtoList extends WrappedList<fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja> {
-        public PerusteenOsaDtoList(List<fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja> c) {
+    private static class PerusteenOsaDtoList extends WrappedList<PerusteenOsaDto.Laaja> {
+        public PerusteenOsaDtoList(List<PerusteenOsaDto.Laaja> c) {
             super(c);
         }
     };

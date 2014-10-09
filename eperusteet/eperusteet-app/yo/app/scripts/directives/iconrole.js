@@ -51,6 +51,7 @@ angular.module('eperusteApp')
       add: 'plus',
       back: 'chevron-left',
       download: 'download-alt',
+      drag: 'resize-vertical',
       edit: 'pencil',
       first: 'fast-backward',
       forward: 'chevron-right',

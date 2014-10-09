@@ -76,7 +76,7 @@ public interface PerusteprojektiService {
     List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(@P("id") Long perusteProjektiId, String nimi);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
-    List<TyoryhmaHenkiloDto> saveTyoryhma(@P("id") Long perusteProjektiId, String tyoryhma, List<TyoryhmaHenkiloDto> henkilot);
+    List<TyoryhmaHenkiloDto> saveTyoryhma(@P("id") Long perusteProjektiId, String tyoryhma, List<String> henkilot);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
     TyoryhmaHenkiloDto saveTyoryhma(@P("id") Long id, TyoryhmaHenkiloDto tyoryhma);

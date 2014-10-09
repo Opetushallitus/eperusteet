@@ -17,14 +17,16 @@
 package fi.vm.sade.eperusteet.resource;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.wordnik.swagger.annotations.Api;
+import com.mangofactory.swagger.annotations.ApiIgnore;
 import fi.vm.sade.eperusteet.service.UlkopuolisetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -33,7 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("/ulkopuoliset")
-@Api(value = "ulkopuoliset", description = "Ulkopuolisten palveluiden käyttö")
+@ApiIgnore
 public class UlkopuolisetController {
     @Autowired
     private UlkopuolisetService service;

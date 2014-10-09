@@ -48,6 +48,11 @@ angular.module('eperusteApp')
           if (attrs.iconRole) {
             IconMapping.addIcon(attrs.iconRole, el);
           }
+          scope.$watch(function () {
+            return getAttr(attrs.kaanna, scope);
+          }, function (value) {
+            el.text(Kaanna.kaanna(value));
+          });
         } else {
           var textEl = angular.element('<span>').attr('translate', original);
           if (attrs.kaannaValues) {

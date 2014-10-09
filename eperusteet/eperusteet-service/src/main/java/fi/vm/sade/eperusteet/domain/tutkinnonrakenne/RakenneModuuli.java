@@ -48,12 +48,6 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
     @Audited(targetAuditMode = NOT_AUDITED)
     private TekstiPalanen nimi;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @Getter
-    @Setter
-    @Audited(targetAuditMode = NOT_AUDITED)
-    private TekstiPalanen kuvaus;
-
     @Getter
     @Setter
     private MuodostumisSaanto muodostumisSaanto;
@@ -93,7 +87,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             this.setOsat(moduuli.osat);
             this.nimi = moduuli.nimi;
             this.rooli = moduuli.rooli;
-            this.kuvaus = moduuli.kuvaus;
+            this.setKuvaus(moduuli.getKuvaus());
             if (this.muodostumisSaanto != null) {
                 this.muodostumisSaanto.mergeState(moduuli.getMuodostumisSaanto());
             } else {

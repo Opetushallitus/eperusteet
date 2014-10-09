@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import fi.vm.sade.eperusteet.service.UlkopuolisetService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
@@ -52,7 +54,18 @@ public class UlkopuolisetServiceImpl implements UlkopuolisetService {
         try {
             String url = serviceUrl + OMAT_TIEDOT_API;
             JsonNode tree = mapper.readTree(crc.getAsString(url));
-            return tree;
+            ArrayNode response = JsonNodeFactory.instance.arrayNode();
+
+            for (JsonNode ryhma : tree) {
+                JsonNode kayttoryhmat = ryhma.get("kayttoryhmat");
+                for (JsonNode kayttoryhma : kayttoryhmat) {
+                    if ("perusteiden_laadinta".equals(kayttoryhma.asText())) {
+                        response.add(ryhma);
+                        break;
+                    }
+                }
+            }
+            return response;
         } catch (IOException ex) {
             throw new BusinessRuleViolationException("Työryhmätietojen hakeminen epäonnistui", ex);
         }

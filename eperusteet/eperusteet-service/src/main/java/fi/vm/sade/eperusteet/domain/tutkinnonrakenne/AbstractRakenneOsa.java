@@ -15,7 +15,9 @@
  */
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,10 +25,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
 @Table(name = "tutkinnon_rakenne")
@@ -40,5 +44,11 @@ public abstract class AbstractRakenneOsa implements Serializable {
     @Getter
     @Setter
     private Long id;
+
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = NOT_AUDITED)
+    private TekstiPalanen kuvaus;
 
 }

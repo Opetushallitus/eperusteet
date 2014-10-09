@@ -29,7 +29,7 @@
                     <th kaanna>toiminto</th>
                 </tr>
                 <tr ng-show="$index >= alaraja && $index < ylaraja" ng-repeat="pp in filteredPp = (perusteprojektit | orderBy:jarjestys:jarjestysOrder | filter:rajaaSisaltoa)">
-                    <td><a ui-sref="root.perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: pp.id, suoritustapa: pp.suoritustapa })">{{ pp.nimi | kaanna }}</a></td>
+                    <td><a ng-href="{{pp.$url}}">{{ pp.nimi | kaanna }}</a></td>
                     <td>{{ pp.diaarinumero }}</td>
                     <td>
                         {{ 'tila-' + pp.tila | kaanna }}

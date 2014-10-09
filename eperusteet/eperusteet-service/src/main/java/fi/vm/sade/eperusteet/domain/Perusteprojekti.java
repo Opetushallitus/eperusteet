@@ -103,4 +103,20 @@ public class Perusteprojekti extends AbstractAuditedEntity {
     @Enumerated(EnumType.STRING)
     @NotNull
     private ProjektiTila tila = ProjektiTila.LAADINTA;
+
+    public Perusteprojekti() {
+    }
+
+    public Perusteprojekti(String nimi, Peruste peruste, String diaarinumero, Date paatosPvm, Date toimikausiAlku, Date toimikausiLoppu, String tehtavaluokka, String ryhmaOid, String tehtava, String yhteistyotaho) {
+        this.nimi = nimi;
+        this.peruste = peruste;
+        this.diaarinumero = diaarinumero;
+        this.paatosPvm = paatosPvm;
+        this.toimikausiAlku = toimikausiAlku;
+        this.toimikausiLoppu = toimikausiLoppu;
+        this.tehtavaluokka = tehtavaluokka;
+        this.ryhmaOid = ryhmaOid;
+        this.tehtava = tehtava;
+        this.yhteistyotaho = yhteistyotaho;
+    }
 }

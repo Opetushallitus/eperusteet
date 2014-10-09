@@ -33,6 +33,11 @@ angular.module('eperusteApp')
       update: {method: 'POST', isArray: false}
     });
   })
+  .factory('PerusteprojektiOikeudet', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteprojektit/:id/oikeudet', {
+      id: '@id'
+    });
+  })
   .factory('DiaarinumeroUniqueResource', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteprojektit/diaarinumero/uniikki/:diaarinumero');
   })
@@ -49,7 +54,7 @@ angular.module('eperusteApp')
       hae: hae
     };
   })
-  .service('PerusteProjektiService', function($rootScope) {
+  .service('PerusteProjektiService', function($rootScope, $state, YleinenData) {
     var pp = {};
     var suoritustapa = '';
 
@@ -88,6 +93,28 @@ angular.module('eperusteApp')
       suoritustapa = '';
     }
 
+    /**
+     * Luo oikea url perusteprojektille
+     * @param peruste optional
+     */
+    function urlFn(method, projekti, peruste) {
+      projekti = _.clone(projekti) || get();
+        if (peruste && !projekti.koulutustyyppi) {
+          projekti.koulutustyyppi = peruste.koulutustyyppi;
+        }
+        if (YleinenData.isPerusopetus(projekti)) {
+          return $state[method]('root.perusteprojekti.perusopetus', {
+            perusteProjektiId: projekti.id
+          });
+        } else {
+          // TODO: Omat perusteprojektit linkin suoritustapa pitäisi varmaankin olla jotain muuta kuin kovakoodattu 'naytto'
+          return $state[method]('root.perusteprojekti.suoritustapa.sisalto', {
+            perusteProjektiId: projekti.id,
+            suoritustapa: YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi)
+          });
+        }
+    }
+
     return {
       save: save,
       get: get,
@@ -96,7 +123,9 @@ angular.module('eperusteApp')
       update: update,
       getSuoritustapa: getSuoritustapa,
       setSuoritustapa: setSuoritustapa,
-      cleanSuoritustapa: cleanSuoritustapa
+      cleanSuoritustapa: cleanSuoritustapa,
+      getUrl: _.partial(urlFn, 'href'),
+      goToProjektiState: _.partial(urlFn, 'go')
     };
   })
   .service('TutkinnonOsaEditMode', function () {
@@ -110,7 +139,8 @@ angular.module('eperusteApp')
       return ret;
     };
   })
-  .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet, SuoritustapaSisalto, PerusteProjektiService, Notifikaatiot) {
+  .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet,
+      SuoritustapaSisalto, PerusteProjektiService, Notifikaatiot, YleinenData) {
 
     var deferred = $q.defer();
     var projekti = {};
@@ -164,7 +194,6 @@ angular.module('eperusteApp')
             peruste.suoritustavat = _.sortBy(peruste.suoritustavat, 'suoritustapakoodi');
           }
           projektinTiedotDeferred.resolve();
-
         }, function(virhe) {
           projektinTiedotDeferred.reject();
           Notifikaatiot.serverCb(virhe);
@@ -181,10 +210,12 @@ angular.module('eperusteApp')
 
       // NOTE: Jos ei löydy suoritustapaa stateParams:ista niin käytetään suoritustapaa 'naytto'.
       //       Tämä toimii ammatillisen puolen projekteissa, mutta ei yleissivistävän puolella.
-      //       Korjataan kun keksitään parempi suoritustavan valinta-algoritmi.
+      // TODO: Korjataan kun keksitään parempi suoritustavan valinta-algoritmi.
       if (angular.isUndefined(stateParams.suoritustapa) || stateParams.suoritustapa === null || stateParams.suoritustapa === '') {
-        stateParams.suoritustapa = 'naytto';
-        $state.reload();
+        stateParams.suoritustapa = YleinenData.valitseSuoritustapaKoulutustyypille(peruste.koulutustyyppi);
+        if (!YleinenData.isPerusopetus(peruste)) {
+          $state.reload();
+        }
       }
       PerusteProjektiService.setSuoritustapa(stateParams.suoritustapa);
       var perusteenSisaltoDeferred = $q.defer();
@@ -204,4 +235,41 @@ angular.module('eperusteApp')
 
     deferred.resolve(this);
     return deferred.promise;
+  })
+  .service('PerusteprojektiOikeudetService', function (PerusteprojektiOikeudet) {
+
+    var oikeudet;
+
+    function noudaOikeudet(stateParams) {
+      var vastaus = PerusteprojektiOikeudet.get({id: stateParams.perusteProjektiId}, function(vastaus) {
+        oikeudet = vastaus;
+      });
+
+      return vastaus.$promise;
+    }
+
+    function getOikeudet() {
+      return _.clone(oikeudet);
+    }
+
+    function onkoOikeudet(target, permission) {
+      if (oikeudet) {
+       if (_.contains(oikeudet[target], permission)) {
+         return true;
+       } else {
+         return false;
+       }
+     } else {
+       console.log('virhe oikeuksien haussa');
+       return false;
+     }
+    }
+
+
+    return {
+      noudaOikeudet: noudaOikeudet,
+      getOikeudet: getOikeudet,
+      onkoOikeudet: onkoOikeudet
+    };
+
   });

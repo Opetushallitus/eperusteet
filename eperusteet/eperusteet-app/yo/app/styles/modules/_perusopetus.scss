@@ -1,3 +1,38 @@
+.osaaminen {
+  .editing {
+    .panel-body {
+      border: 1px solid #ccc;
+      border-top: none !important;
+    }
+    .panel-heading {
+      border: 1px solid #ccc !important;
+    }
+  }
+  .yleiskuvaus-toggle {
+    margin: 15px 0 10px;
+    display: block;
+  }
+
+  .yleiskuvaus {
+    padding: 10px;
+    border: 1px solid #ccc;
+    //background-color: #f6f6f6;
+  }
+  .panel + .panel {
+    margin-top: 15px;
+  }
+}
+
+ul.vuosiluokat {
+  list-style-type: none;
+  @include content-columns(3, 20px);
+  li input {
+    top: 0;
+  }
+}
+
+/* PROTO --> */
+
 .tag-action-buttons {
   position: relative;
 }
@@ -49,5 +84,105 @@
   }
   .moodit {
     margin-top: -40px;
+  }
+}
+
+.oppiaine-view {
+  .panel-heading {
+    padding-bottom: 0;
+  }
+  .action-buttons {
+    margin-top: 10px;
+  }
+  .tab-content .panel {
+    padding-left: 20px;
+  }
+  h4 {
+    font-weight: 700;
+  }
+}
+
+$index-bubble-size: 24px;
+$tag-height: 28px;
+$tag-color: #FEE7A4;
+.opetuksen-tavoitteet {
+  .tavoite .panel-body {
+    border-top: 0 !important;
+  }
+  .indexnumber + h4 {
+    margin-top: 0;
+  }
+  .indexnumber {
+    border: 1px solid $tag-color;
+    background-color: $tag-color;
+    color: #444;
+    border-radius: $index-bubble-size / 2;
+    width: $index-bubble-size;
+    height: $index-bubble-size * 1.2;
+    text-align: center;
+    position: absolute;
+    margin-left: -$index-bubble-size * 1.2;
+    margin-top: -6px;
+    font-size: $index-bubble-size * 0.8;
+    font-weight: 700;
+  }
+  .tagcloud {
+    list-style-type: none;
+    padding-left: 10px;
+    font-size: 0;
+    li {
+      font-size: 13px;
+      display: inline-block;
+      margin-bottom: 8px;
+      height: $tag-height;
+    }
+    li:not(first-child) {
+      margin-right: $tag-height*0.9;
+    }
+    .tag {
+      display: inline-block;
+      color: #333;
+      background-color: $tag-color;
+      border: none;
+      font-weight: normal;
+      padding: 5px;
+      position: relative;
+      height: $tag-height;
+      &:after{
+        content: "";
+        float: right;
+        position: absolute;
+        top: 0;
+        right: -$tag-height / 2;
+        width: 0;
+        height: 0;
+        border-color: transparent;
+        border-left-color: $tag-color;
+        border-style: solid;
+        border-width: $tag-height/2 0px $tag-height/2 $tag-height/2;
+      }
+    }
+  }
+}
+
+.popover-element .tag {
+  cursor: pointer;
+}
+
+.popover {
+  max-width: 400px;
+}
+
+.perusopetuksen-arviointi {
+  border-top-color: #ddd;
+  tbody tr td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+  thead tr th {
+    text-transform: none;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    background-color: #eee;
   }
 }

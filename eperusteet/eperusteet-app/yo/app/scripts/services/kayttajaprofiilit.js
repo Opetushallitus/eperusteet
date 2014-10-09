@@ -26,11 +26,15 @@ angular.module('eperusteApp')
   .factory('Kayttajaprofiilit', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/kayttajaprofiili/:id', {
       id: '@id'
+    }, {
+      lisaaPreferenssi: { method: 'POST', url: SERVICE_LOC + '/kayttajaprofiili/preferenssi' }
     });
   })
   .service('Profiili', function($state, $rootScope, Suosikit, Notifikaatiot, Kayttajaprofiilit) {
     var info = {
-      suosikit: []
+      resolved: false,
+      suosikit: [],
+      preferenssit: {}
     };
 
     function isSame(paramsA, paramsB) {
@@ -39,7 +43,7 @@ angular.module('eperusteApp')
       });
     }
 
-    function transform(uudetSuosikit) {
+    function transformSuosikit(uudetSuosikit) {
       return _.map(uudetSuosikit, function(s) {
         s.sisalto = JSON.parse(s.sisalto);
         if (s.sisalto.tyyppi === 'linkki') {
@@ -49,23 +53,49 @@ angular.module('eperusteApp')
       });
     }
 
+    function transformPreferenssit(preferenssit) {
+      return _.zipObject(_.map(preferenssit, 'avain'), _.map(preferenssit, 'arvo'));
+    }
+
     function parseResponse(res, cb) {
-      info.suosikit = transform(res.suosikit);
+      info.suosikit = transformSuosikit(res.suosikit);
+      info.preferenssit = transformPreferenssit(res.preferenssit);
       (cb || angular.noop)();
-      $rootScope.$broadcast('suosikitMuuttuivat');
+      $rootScope.$broadcast('kayttajaProfiiliPaivittyi');
     }
 
     Kayttajaprofiilit.get({}, function(res) {
       info = res;
       info.oid = res.oid;
-      info.suosikit = transform(res.suosikit);
-      $rootScope.$broadcast('suosikitMuuttuivat');
+      info.suosikit = transformSuosikit(res.suosikit);
+      info.preferenssit = transformPreferenssit(res.preferenssit);
+      info.resolved = true;
+      $rootScope.$broadcast('kayttajaProfiiliPaivittyi');
     });
 
     return {
       // Perustiedot
-      oid: function() {
-        return info.oid;
+      oid: function() { return info.oid; },
+      profiili: function() { return info; },
+      isResolved: function() { return info.resolved; },
+
+      setPreferenssi: function(avain, arvo, successCb, failureCb) {
+        successCb = successCb || angular.noop;
+        failureCb = failureCb || angular.noop;
+
+        if (arvo !== info.preferenssit[avain]) {
+          Kayttajaprofiilit.lisaaPreferenssi({
+            avain: avain,
+            arvo: arvo
+          }, function() {
+            info.preferenssit[avain] = arvo;
+            $rootScope.$broadcast('kayttajaProfiiliPaivittyi');
+            successCb();
+          }, function(err) {
+            failureCb();
+            Notifikaatiot.serverCb(err);
+          });
+        }
       },
 
       // Suosikit
@@ -81,7 +111,7 @@ angular.module('eperusteApp')
           _.remove(info.suosikit, vanha);
           Suosikit.delete({ suosikkiId: vanha.id }, function() {
             success(_.clone(info.suosikit));
-            $rootScope.$broadcast('suosikitMuuttuivat');
+            $rootScope.$broadcast('kayttajaProfiiliPaivittyi');
           }, Notifikaatiot.serverCb);
         }
         else {

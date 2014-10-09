@@ -92,6 +92,10 @@ angular.module('eperusteApp')
     this.dateFormatDatepicker = 'd.M.yyyy';
     this.dateFormatMomentJS = 'D.M.YYYY';
 
+    this.isPerusopetus = function (peruste) {
+      return peruste.koulutustyyppi === 'koulutustyyppi_9999';
+    };
+
     this.valitseSuoritustapaKoulutustyypille = function(koulutustyyppi) {
       if (koulutustyyppi === 'koulutustyyppi_9999') {
         return 'ops';
@@ -116,15 +120,15 @@ angular.module('eperusteApp')
     };
 
     this.vaihdaKieli = function(kielikoodi) {
-      var löytyi = false;
+      var loytyi = false;
       for (var avain in this.kielet) {
         if (this.kielet.hasOwnProperty(avain) && this.kielet[avain] === kielikoodi) {
-          löytyi = true;
+          loytyi = true;
           break;
         }
       }
       // Jos kielikoodi ei löydy listalta niin käytetään suomea.
-      if (!löytyi) {
+      if (!loytyi) {
         kielikoodi = 'fi';
       }
       if (this.kielikoodi !== kielikoodi) {
@@ -136,12 +140,7 @@ angular.module('eperusteApp')
     };
 
     this.valitseKieli = function(teksti) {
-      if (teksti && teksti.hasOwnProperty(this.kieli)) {
-        return teksti[this.kieli];
-      } else {
-        return '';
-      }
-
+      return teksti && teksti.hasOwnProperty(this.kieli) ? teksti[this.kieli] : '';
     };
 
   });

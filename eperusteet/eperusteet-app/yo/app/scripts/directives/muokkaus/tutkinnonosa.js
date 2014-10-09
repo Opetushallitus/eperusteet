@@ -35,7 +35,7 @@ angular.module('eperusteApp')
     PerusteTutkinnonosa, TutkinnonOsaEditMode, $timeout, Varmistusdialogi,
     VersionHelper, Lukitus, MuokkausUtils, PerusteenOsaViitteet,
     Utils, ArviointiHelper, PerusteProjektiSivunavi, Notifikaatiot, Koodisto,
-    Tutke2OsaData, Kommentit, KommentitByPerusteenOsa) {
+    Tutke2OsaData, Kommentit, KommentitByPerusteenOsa, FieldSplitter) {
 
     Utils.scrollTo('#ylasivuankkuri');
 
@@ -139,6 +139,7 @@ angular.module('eperusteApp')
     };
 
     function refreshPromise() {
+      $scope.tutkinnonOsa.kuvaus = $scope.tutkinnonOsa.kuvaus || {};
       $scope.editableTutkinnonOsa = angular.copy($scope.tutkinnonOsa);
       $scope.editableViiteosa = angular.copy($scope.viiteosa);
       var tutkinnonOsaDefer = $q.defer();
@@ -211,8 +212,7 @@ angular.module('eperusteApp')
             var tutkinnonOsaDefer = $q.defer();
             $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
             tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
-          },
-                                                        Notifikaatiot.serverCb);
+          }, Notifikaatiot.serverCb);
 
           // Viiteosa (laajuus) tallennetaan erikseen
           PerusteTutkinnonosa.save({
@@ -339,7 +339,9 @@ angular.module('eperusteApp')
       // Varmista että menu sulkeutuu klikin jälkeen
       $timeout(function () {
         angular.element('h1').click();
-        Utils.scrollTo('li[otsikko='+field.localeKey+']');
+        // TODO ei toimi koska localeKey voi olla muu kuin string,
+        //     joku muu tapa yksilöidä/löytää juuri lisätty kenttä?
+        Utils.scrollTo('li.' + FieldSplitter.getClass(field));
       });
     };
 

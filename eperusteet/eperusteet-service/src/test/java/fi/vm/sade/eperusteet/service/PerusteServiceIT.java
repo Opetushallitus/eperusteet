@@ -89,7 +89,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         Koulutus koulutus = new Koulutus(tekstiPalanenOf(Kieli.FI,"Koulutus"), "koulutuskoodiArvo", "koulutuskoodiUri","koulutusalakoodi","opintoalakoodi");
         koulutus = koulutusRepository.save(koulutus);
 
-        Peruste p = TestUtils.createPeruste();
+        Peruste p = TestUtils.teePeruste();
         p.setSiirtymaAlkaa(new GregorianCalendar(2000, Calendar.MARCH, 12).getTime());
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
         p.setTila(PerusteTila.VALMIS);
@@ -99,17 +99,17 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         p.setKoulutukset(Sets.newHashSet(koulutus));
         peruste = repo.save(p);
 
-        p = TestUtils.createPeruste();
+        p = TestUtils.teePeruste();
         p.setSiirtymaAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 4, Calendar.MARCH, 12).getTime());
         p.setTila(PerusteTila.VALMIS);
         repo.save(p);
 
-        p = TestUtils.createPeruste();
+        p = TestUtils.teePeruste();
         p.setTila(PerusteTila.VALMIS);
         repo.save(p);
 
-        p = TestUtils.createPeruste();
+        p = TestUtils.teePeruste();
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
         p.setTila(PerusteTila.VALMIS);
         repo.save(p);
