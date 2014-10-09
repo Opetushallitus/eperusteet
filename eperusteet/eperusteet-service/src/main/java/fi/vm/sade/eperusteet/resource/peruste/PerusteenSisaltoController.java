@@ -140,6 +140,7 @@ public class PerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/sisalto/{id}", method = POST)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateSisaltoViite(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa,
