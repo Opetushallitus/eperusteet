@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.dto.peruste;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.Date;
@@ -38,7 +39,7 @@ public abstract class PerusteenOsaDto {
     private String muokkaajanNimi;
     private LokalisoituTekstiDto nimi;
     private PerusteTila tila;
-    private String tunniste;
+    private PerusteenOsaTunniste tunniste;
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "osanTyyppi")
     @JsonSubTypes(value = {
