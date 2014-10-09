@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
-import com.wordnik.swagger.annotations.Api;
+import com.mangofactory.swagger.annotations.ApiIgnore;
 import com.wordnik.swagger.annotations.ApiOperation;
 import fi.vm.sade.eperusteet.domain.DokumenttiTila;
 import fi.vm.sade.eperusteet.domain.Kieli;
@@ -42,7 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/dokumentit")
-@Api(value = "Dokumentit", description = "Perustedokumentin luonti")
+@ApiIgnore
 public class DokumenttiController {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiController.class);

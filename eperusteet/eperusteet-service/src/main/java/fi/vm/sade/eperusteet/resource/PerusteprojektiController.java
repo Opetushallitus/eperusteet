@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
-import com.wordnik.swagger.annotations.Api;
+import com.mangofactory.swagger.annotations.ApiIgnore;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
@@ -54,7 +54,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 @Controller
 @RequestMapping("/perusteprojektit")
-@Api(value = "perusteprojektit", description = "Perusteprojektien hallinta")
+@ApiIgnore
 public class PerusteprojektiController {
 
     @Autowired

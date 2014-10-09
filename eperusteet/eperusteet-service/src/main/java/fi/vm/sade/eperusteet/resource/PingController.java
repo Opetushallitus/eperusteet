@@ -16,11 +16,14 @@
 
 package fi.vm.sade.eperusteet.resource;
 
+import com.mangofactory.swagger.annotations.ApiIgnore;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -29,10 +32,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("/ping")
+@ApiIgnore
 public class PingController {
     @RequestMapping(method = GET)
     @ResponseBody
-    public ResponseEntity isAlive() {
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<?> isAlive() {
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

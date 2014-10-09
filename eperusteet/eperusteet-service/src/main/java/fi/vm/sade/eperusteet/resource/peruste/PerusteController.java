@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.resource.peruste;
 
-import com.mangofactory.swagger.annotations.ApiIgnore;
 import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
@@ -168,12 +167,4 @@ public class PerusteController {
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
-
-    @ApiIgnore
-    @RequestMapping(value = "/lammitys", method = GET)
-    @ResponseBody
-    public ResponseEntity<String> lammitys() {
-        return new ResponseEntity<>(service.lammitys(), HttpStatus.OK);
-    }
-
 }
