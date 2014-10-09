@@ -15,7 +15,6 @@
  */
 
 'use strict';
-/* global _ */
 
 angular.module('eperusteApp')
   .directive('perusopetuksenArviointi', function() {
