@@ -695,6 +695,8 @@
     "muokkaa-oppiainetta": "Muokkaa oppiainetta",
     "sisaltoalueet": "Sisältöalueet",
     "opetuksen-tavoitteet": "Opetuksen tavoitteet",
-    "ei-kuvausta": "[Ei kuvausta]"
+    "ei-kuvausta": "[Ei kuvausta]",
+    "arvioinnin-kohde": "Arvioinnin kohde",
+    "arvion-hyva-osaaminen": "Arvion \"hyvä\" osaaminen"
 
 }

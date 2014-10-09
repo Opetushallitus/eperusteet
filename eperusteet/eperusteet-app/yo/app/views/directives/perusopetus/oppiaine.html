@@ -5,10 +5,10 @@
 
     <tabset justified="true">
       <tab heading="{{vuosiluokat.nimi|kaanna}}" ng-repeat="vuosiluokat in mappedVuosiluokat">
-        <div ng-repeat="tekstikappale in vuosiluokat.$sisalto.tekstikappaleet" muokattava-osio="tekstikappale"
+        <!-- <div ng-repeat="tekstikappale in vuosiluokat.$sisalto.tekstikappaleet" muokattava-osio="tekstikappale"
              type="tekstikappale">
         </div>
-        <div muokattava-osio="vuosiluokat.$sisalto.sisaltoalueet" type="sisaltoalueet"></div>
+        <div muokattava-osio="vuosiluokat.$sisalto.sisaltoalueet" type="sisaltoalueet"></div> -->
         <div muokattava-osio="vuosiluokat.$sisalto" type="tavoitteet"></div>
       </tab>
     </tabset>

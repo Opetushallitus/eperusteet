@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .directive('muokkausOppiaine', function() {
     return {
-      templateUrl: 'views/directives/oppiaine.html',
+      templateUrl: 'views/directives/perusopetus/oppiaine.html',
       restrict: 'E',
       scope: {
         model: '=',

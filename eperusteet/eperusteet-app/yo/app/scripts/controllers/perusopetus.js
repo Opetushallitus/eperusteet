@@ -129,7 +129,11 @@ angular.module('eperusteApp')
                         {
                           kuvaus: {fi: 'Tukea oppilaan innostusta ja kiinnostusta matematiikkaa kohtaan sekä positiivisen minäkuvan ja itseluottamuksen kehittymistä'},
                           sisaltoalueet: [2000, 2001, 2002],
-                          osaaminen: [1, 2, 3]
+                          osaaminen: [1, 2, 3],
+                          arviointi: [
+                            {kohde: {fi: 'Ensimmäinen kohde'}, kuvaus: {fi: 'Oppilas tekee asian A ja asian B.'}},
+                            {kohde: {fi: 'Arvioinnin kohde 2'}, kuvaus: {fi: 'Oppilas tekee asian C ja hoitaa D:n ilman ohjausta.'}}
+                          ]
                         }
                       ]
                     },

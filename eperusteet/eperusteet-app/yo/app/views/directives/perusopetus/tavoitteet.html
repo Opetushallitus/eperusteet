@@ -15,8 +15,10 @@
               <div tag-cloud="tavoite.$osaaminen" openable="true"></div>
               <h4 kaanna="sisaltoalueet"></h4>
               <div tag-cloud="tavoite.$sisaltoalueet"></div>
-              <h4 kaanna="arviointi"></h4>
-
+              <div ng-if="tavoite.arviointi.length > 0">
+                <h4 kaanna="arviointi"></h4>
+                <div perusopetuksen-arviointi="tavoite.arviointi"></div>
+              </div>
             </div>
           </div>
 
