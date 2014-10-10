@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
@@ -28,7 +29,10 @@ import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.OsaAlue;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
@@ -40,7 +44,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -71,6 +78,7 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.ProcessingInstruction;
 
 /**
  *
@@ -406,10 +414,18 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
             element.appendChild(titleElement);
 
-            addTavoitteet(doc, element, osa, kieli);
-            addAmmattitaitovaatimukset(doc, element, osa, kieli);
-            addAmmattitaidonOsoittamistavat(doc, element, osa, kieli);
-            addArviointi(doc, element, osa, kieli);
+            if (osa.getTyyppi() == TutkinnonOsaTyyppi.NORMAALI) {
+                LOG.debug("TUTKINONOSATYYPPI NORMAALI");
+                addTavoitteet(doc, element, osa, kieli);
+                addAmmattitaitovaatimukset(doc, element, osa, kieli);
+                addAmmattitaidonOsoittamistavat(doc, element, osa, kieli);
+                addArviointi(doc, element, osa.getArviointi(), kieli);
+            } else if (osa.getTyyppi() == TutkinnonOsaTyyppi.TUTKE2) {
+                LOG.debug("TUTKINNONOSATYYPPI TUTKE2");
+                addTutke2Osat(doc, element, osa, kieli);
+            }
+
+
 
             doc.getDocumentElement().appendChild(element);
         }
@@ -470,8 +486,13 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         parent.appendChild(section);
     }
 
-    private void addArviointi(Document doc, Element parent, TutkinnonOsa tutkinnonOsa, Kieli kieli) {
 
+    private void addArviointi(Document doc, Element parent, Arviointi arviointi, Kieli kieli) {
+
+        if (arviointi == null) {
+            LOG.debug("Null arviointi, returning");
+            return;
+        }
         Element arviointiSection = doc.createElement("section");
         Element arviointiSectionTitle = doc.createElement("title");
 
@@ -479,13 +500,6 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 messages.translate("docgen.arviointi.title", kieli)));
 
         arviointiSection.appendChild(arviointiSectionTitle);
-
-        Arviointi arviointi = tutkinnonOsa.getArviointi();
-
-        if (arviointi == null) {
-            return;
-        }
-
         parent.appendChild(arviointiSection);
 
         TekstiPalanen lisatiedot = arviointi.getLisatiedot();
@@ -505,6 +519,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 LOG.warn("Arvioinninkohteet was null");
                 continue;
             }
+            if (ka.getArvioinninKohteet().isEmpty()) {
+                LOG.warn("Arvioinninkohteet was empty");
+                continue;
+            }
 
             String otsikkoTeksti = getTextString(ka.getOtsikko(), kieli);
             Element kaSection = doc.createElement("section");
@@ -513,47 +531,56 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             kaSection.appendChild(kaSectionTitle);
             arviointiSection.appendChild(kaSection);
 
+            // bundle each kohde into same kohdealue table, each kohde will
+            // have their title on one spanned row.
+            Element kaTable = doc.createElement("informaltable");
+            arviointiSection.appendChild(kaTable);
+
             // initial implementation:
             // lets have each kohde as a table of their own, like in
             // website so that each osaamistaso with its kiteerit is on
             //its own row
             List<ArvioinninKohde> arvioinninKohteet = ka.getArvioinninKohteet();
             for (ArvioinninKohde kohde : arvioinninKohteet) {
-                Element tableElement = doc.createElement("table");
-                Element tableTitleElement = doc.createElement("title");
                 String kohdeTeksti = getTextString(kohde.getOtsikko(), kieli);
-                tableTitleElement.appendChild(doc.createTextNode(kohdeTeksti));
-                tableElement.appendChild(tableTitleElement);
 
                 Element groupElement = doc.createElement("tgroup");
                 groupElement.setAttribute("cols", "2");
                 Element colspecTaso = doc.createElement("colspec");
+                colspecTaso.setAttribute("colname", "taso");
                 colspecTaso.setAttribute("colwidth", "1*");
                 groupElement.appendChild(colspecTaso);
                 Element colspecKriteeri = doc.createElement("colspec");
-                colspecKriteeri.setAttribute("colwidth", "3*");
+                colspecKriteeri.setAttribute("colname", "kriteeri");
+                colspecKriteeri.setAttribute("colwidth", "4*");
                 groupElement.appendChild(colspecKriteeri);
 
                 Element headerElement = doc.createElement("thead");
-                Element rowElement = doc.createElement("row");
+                Element headerRowElement = doc.createElement("row");
 
-                addTableCell(
-                        doc,
-                        rowElement,
-                        messages.translate("docgen.osaamistaso.title", kieli));
-                addTableCell(
-                        doc,
-                        rowElement,
-                        messages.translate("docgen.osaamistason_kriteeri.title", kieli));
-                headerElement.appendChild(rowElement);
+                Element headerEntry = doc.createElement("entry");
+                headerEntry.appendChild(doc.createTextNode(kohdeTeksti));
+                headerEntry.setAttribute("namest", "taso");
+                headerEntry.setAttribute("nameend", "kriteeri");
+
+                ProcessingInstruction pi = doc.createProcessingInstruction("dbfo", null);
+                pi.setData("bgcolor=\"#EEEEEE\"");
+                headerRowElement.appendChild(pi);
+
+                headerRowElement.appendChild(headerEntry);
+
+                headerElement.appendChild(headerRowElement);
                 groupElement.appendChild(headerElement);
 
                 Element bodyElement = doc.createElement("tbody");
-                // TODO asteikko may be needed for proper ordering,
-                // we'll see...
-                //ArviointiAsteikko arviointiAsteikko = kohde.getArviointiAsteikko();
-                Set<OsaamistasonKriteeri> osaamistasonKriteerit = kohde.getOsaamistasonKriteerit();
+                // TODO: proper ordering,
+                List<Osaamistaso> osaamistasot = kohde.getArviointiAsteikko().getOsaamistasot();
+                LOG.info("\\nOSAAMISTASOT kohteelle {}", kohdeTeksti);
+                for (Osaamistaso taso: osaamistasot) {
+                    LOG.info("OSAAMISTASO: {}", getTextString(taso.getOtsikko(), kieli));
+                }
 
+                Set<OsaamistasonKriteeri> osaamistasonKriteerit = kohde.getOsaamistasonKriteerit();
                 for (OsaamistasonKriteeri krit : osaamistasonKriteerit) {
                     String taso = getTextString(krit.getOsaamistaso().getOtsikko(), kieli);
                     List<String> kriteerit = asStringList(krit.getKriteerit(), kieli);
@@ -572,8 +599,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 }
 
                 groupElement.appendChild(bodyElement);
-                tableElement.appendChild(groupElement);
-                kaSection.appendChild(tableElement);
+                kaTable.appendChild(groupElement);
             }
         }
 
@@ -617,5 +643,90 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             return "";
         }
         return teksti.getTeksti().get(kieli);
+    }
+
+    private void addMarkupToElement(Document doc, Element element, String markup) {
+        org.jsoup.nodes.Document fragment = Jsoup.parseBodyFragment(markup);
+        jsoupIntoDOMNode(doc, element, fragment.body());
+    }
+
+    private void addTutke2Osat(Document doc, Element element, TutkinnonOsa osa, Kieli kieli) {
+        LOG.debug("> addTutke2Osat");
+        List<OsaAlue> osaAlueet = osa.getOsaAlueet();
+
+        for (OsaAlue osaAlue: osaAlueet) {
+            String nimi = getTextString(osaAlue.getNimi(), kieli);
+            Element sectionElement = doc.createElement("section");
+            Element titleElement = doc.createElement("title");
+            titleElement.appendChild(doc.createTextNode(nimi));
+            sectionElement.appendChild(titleElement);
+            element.appendChild(sectionElement);
+
+            List<Osaamistavoite> osaamistavoitteet = osaAlue.getOsaamistavoitteet();
+            for (Osaamistavoite tavoite : osaamistavoitteet) {
+                String tavoitteenNimi = getTextString(tavoite.getNimi(), kieli);
+
+                BigDecimal laajuus = tavoite.getLaajuus();
+                Osaamistavoite esitieto = tavoite.getEsitieto();
+
+                if (laajuus != null || esitieto != null) {
+                    Element infotable = doc.createElement("informaltable");
+                    sectionElement.appendChild(infotable);
+                    if (laajuus != null) {
+
+                        Element infotr = doc.createElement("tr");
+                        infotable.appendChild(infotr);
+                        Element td1 = doc.createElement("td");
+                        td1.appendChild(
+                                doc.createTextNode(
+                                messages.translate("docgen.tutke2.tavoite.laajuus", kieli)));
+                        Element td2 = doc.createElement("td");
+                        td2.appendChild(doc.createTextNode(laajuus.toString()));
+                        infotr.appendChild(td1);
+                        infotr.appendChild(td2);
+                    }
+
+                    Element esitietotr = doc.createElement("tr");
+                    infotable.appendChild(esitietotr);
+                    Element td3 = doc.createElement("td");
+                    td3.appendChild(
+                            doc.createTextNode(
+                                messages.translate("docgen.tutke2.tavoite.esitieto", kieli)));
+                    esitietotr.appendChild(td3);
+
+                    Element td4 = doc.createElement("td");
+                    esitietotr.appendChild(td4);
+
+                    if (esitieto != null) {
+                        td4.appendChild(doc.createTextNode(getTextString(esitieto.getNimi(), kieli)));
+                    } else {
+                        td4.appendChild(doc.createTextNode("-"));
+                    }
+                }
+
+                Element tavoiteSectionElement = doc.createElement("section");
+                Element tavoiteTitleElement = doc.createElement("title");
+                tavoiteTitleElement.appendChild(doc.createTextNode(tavoitteenNimi));
+                tavoiteSectionElement.appendChild(tavoiteTitleElement);
+
+                String tavoitteet = getTextString(tavoite.getTavoitteet(), kieli);
+                addMarkupToElement(doc, tavoiteSectionElement, tavoitteet);
+
+                Arviointi arviointi = tavoite.getArviointi();
+                addArviointi(doc, tavoiteSectionElement, arviointi, kieli);
+
+                TekstiPalanen tunnustaminen = tavoite.getTunnustaminen();
+                if (tunnustaminen != null) {
+                    addTekstiSectionGeneric(
+                            doc,
+                            tavoiteSectionElement,
+                            getTextString(tunnustaminen, kieli),
+                            messages.translate("docgen.tutke2.tunnustaminen", kieli));
+                }
+
+                sectionElement.appendChild(tavoiteSectionElement);
+            }
+
+        }
     }
 }
