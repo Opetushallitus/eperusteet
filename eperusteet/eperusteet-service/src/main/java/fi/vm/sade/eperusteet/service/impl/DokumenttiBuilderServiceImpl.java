@@ -46,8 +46,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -698,7 +696,12 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                     esitietotr.appendChild(td4);
 
                     if (esitieto != null) {
-                        td4.appendChild(doc.createTextNode(getTextString(esitieto.getNimi(), kieli)));
+                        String refid = "tavoite_" + esitieto.getId();
+                        Element link = doc.createElement("link");
+                        link.setAttribute("linkend", refid);
+                        link.appendChild(doc.createTextNode(getTextString(esitieto.getNimi(), kieli)));
+                        td4.appendChild(link);
+
                     } else {
                         td4.appendChild(doc.createTextNode("-"));
                     }
@@ -708,6 +711,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 Element tavoiteTitleElement = doc.createElement("title");
                 tavoiteTitleElement.appendChild(doc.createTextNode(tavoitteenNimi));
                 tavoiteSectionElement.appendChild(tavoiteTitleElement);
+                String refid = "tavoite_" + tavoite.getId();
+                tavoiteSectionElement.setAttribute("id", refid);
 
                 String tavoitteet = getTextString(tavoite.getTavoitteet(), kieli);
                 addMarkupToElement(doc, tavoiteSectionElement, tavoitteet);
