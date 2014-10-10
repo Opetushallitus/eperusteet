@@ -67,8 +67,11 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Autowired
     DokumenttiBuilderService builder;
 
-    @Value("${fi.vm.sade.eperusteet.fop_directory:}")
-    private String fopDirectory;
+    @Value("${fi.vm.sade.eperusteet.base_font_directory:}")
+    private String baseFontDirectory;
+
+    @Value("${fi.vm.sade.eperusteet.fop_config:}")
+    private String fopConfig;
 
     @Override
     @Transactional
@@ -174,7 +177,8 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
         //PDFRenderer r = PDFRenderer.create(xmlpath, style);
         PerustePDFRenderer r = new PerustePDFRenderer().xml(xmlpath).xsl(style);
-        r.setFopDirectory(fopDirectory);
+        r.setBaseFontDirectory(baseFontDirectory);
+        r.setFopConfig(fopConfig);
         r.parameter("l10n.gentext.language", kieli.toString());
 
         InputStream is;

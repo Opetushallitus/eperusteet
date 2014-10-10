@@ -54,7 +54,8 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer>{
 
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(PerustePDFRenderer.class);
 
-    private String fopDirectory = "";
+    private String fopConfig = "";
+    private String baseFontDirectory = "";
 
     @Override
     protected String getMimeType() {
@@ -152,15 +153,9 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer>{
     @Override
     protected Configuration createFOPConfig() {
 
-        if (StringUtils.isEmpty(this.fopDirectory)) {
-            LOG.warn("Fop directory not set, won't set configuration");
-            return null;
-        }
-
         DefaultConfigurationBuilder builder = new DefaultConfigurationBuilder();
         try {
-            File fopconfDir = new File(this.fopDirectory);
-            File fopconf = new File(fopconfDir, "fop.xconf");
+            File fopconf = new File(this.fopConfig);
             LOG.info("Using fop conf file: {}", fopconf.getAbsolutePath());
 
             Configuration conf = builder.buildFromFile(fopconf.getAbsolutePath());
@@ -174,8 +169,9 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer>{
 
     @Override
     protected void enhanceFOUserAgent(FOUserAgent agent) {
-        if (StringUtils.isEmpty(this.fopDirectory)) {
-            LOG.warn("Fop directory not set, won't use pdf/a mode");
+        if (StringUtils.isEmpty(this.baseFontDirectory) ||
+                StringUtils.isEmpty(this.fopConfig)) {
+            LOG.warn("Base font directory or fopconfig not set, won't use pdf/a mode");
         } else {
             agent.getRendererOptions().put("pdf-a-mode", "PDF/A-1b");
         }
@@ -183,8 +179,8 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer>{
 
     protected void enhanceFopFactory(FopFactory factory) {
         try {
-            if (StringUtils.isNotEmpty(this.fopDirectory)) {
-                factory.getFontManager().setFontBaseURL(this.fopDirectory);
+            if (StringUtils.isNotEmpty(this.baseFontDirectory)) {
+                factory.getFontManager().setFontBaseURL(this.baseFontDirectory);
             } else {
                 LOG.warn("Fop directory not set, won't set font base url");
             }
@@ -193,7 +189,19 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer>{
         }
     }
 
-    public void setFopDirectory(String fopDirectory) {
-        this.fopDirectory = fopDirectory;
+    public void setFopConfig(String fopConfig) {
+        this.fopConfig = fopConfig;
+    }
+
+    public String getFopConfig() {
+        return this.fopConfig;
+    }
+
+    public void setBaseFontDirectory(String fontDirectory) {
+        this.baseFontDirectory = fontDirectory;
+    }
+
+    public String getBaseFontDirectory() {
+        return this.baseFontDirectory;
     }
 }
