@@ -50,10 +50,17 @@ angular.module('eperusteApp')
       restrict: 'A',
       scope: {
         model: '=tagCloud',
-        openable: '@'
+        openable: '@',
+        tagCloser: '=?'
       },
       controller: 'TagCloudController'
     };
   })
-  .controller('TagCloudController', function (/*$scope*/) {
+  .controller('TagCloudController', function ($scope) {
+    $scope.notHidden = function (item) {
+      return !item.$hidden;
+    };
+    $scope.remove = function (tag) {
+      tag.$hidden = true;
+    };
   });

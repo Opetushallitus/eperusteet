@@ -54,6 +54,8 @@ angular.module('eperusteApp')
       var osa = kokonaisuus.tekstikappaleet[0];
       if ($stateParams.osanTyyppi === 'sisaltoalueet') {
         osa = kokonaisuus.sisaltoalueet;
+      } else if ($stateParams.osanTyyppi === 'tavoitteet') {
+        osa = kokonaisuus;
       }
       var vuosiluokat = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT);
       this.vuosiluokka = _.find(vuosiluokat, function (item) {
@@ -168,68 +170,6 @@ angular.module('eperusteApp')
       scope: {
         model: '=',
         config: '='
-      }
-    };
-  })
-
-  .directive('osanmuokkausSisaltoalueet', function () {
-    return {
-      templateUrl: 'views/directives/perusopetus/osanmuokkaussisaltoalueet.html',
-      restrict: 'E',
-      scope: {
-        model: '=',
-        config: '='
-      },
-      controller: function ($scope, YleinenData, $rootScope, Utils) {
-        $scope.editables = angular.copy($scope.model);
-        $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
-        $scope.isEditing = false;
-
-        var originals = null;
-        $scope.edit = function (alue) {
-          alue.$editing = true;
-          $scope.isEditing = true;
-          originals = _.cloneDeep(_.pick(alue, ['nimi', 'teksti']));
-        };
-        $scope.remove = function (alue) {
-          var index = _.findIndex($scope.editables, function (item) {
-            return item === alue;
-          });
-          if (index > -1) {
-            $scope.editables.splice(index, 1);
-          }
-        };
-        $scope.cancel = function (alue) {
-          alue.$editing = false;
-          $scope.isEditing = false;
-          if (alue.$new) {
-            $scope.remove(alue);
-          } else {
-            alue.nimi = _.cloneDeep(originals.nimi);
-            alue.teksti = _.cloneDeep(originals.teksti);
-            originals = null;
-          }
-        };
-        $scope.ok = function (alue) {
-          $rootScope.$broadcast('notifyCKEditor');
-          if (!$scope.hasTitle(alue)) {
-            return;
-          }
-          alue.$editing = false;
-          $scope.isEditing = false;
-        };
-        $scope.add = function () {
-          $scope.isEditing = true;
-          $scope.editables.push({
-            $editing: true,
-            $new: true,
-            nimi: {},
-            teksti: {}
-          });
-        };
-        $scope.hasTitle = function (alue) {
-          return Utils.hasLocalizedText(alue.nimi);
-        };
       }
     };
   })

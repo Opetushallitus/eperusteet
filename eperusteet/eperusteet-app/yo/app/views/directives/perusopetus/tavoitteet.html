@@ -9,12 +9,29 @@
           <div class="panel panel-default tavoite" ng-repeat="tavoite in kohdealue.tavoitteet">
             <div class="panel-body">
               <div class="indexnumber fix-position">{{tavoite.$runningIndex}}</div>
+
               <h4 kaanna="kuvaus"></h4>
               <div ng-bind-html="valitseKieli(tavoite.kuvaus) | unsafe"></div>
+
               <h4 kaanna="laaja-alainen-osaaminen"></h4>
               <div tag-cloud="tavoite.$osaaminen" openable="true"></div>
+
               <h4 kaanna="sisaltoalueet"></h4>
-              <div tag-cloud="tavoite.$sisaltoalueet"></div>
+              <div tag-cloud="tavoite.$sisaltoalueet" tag-closer="editMode"></div>
+              <div ng-if="editMode">
+                <div class="btn-group" dropdown is-open="status.isopen">
+                  <button class="btn btn-default dropdown-toggle" icon-role="add">{{'lisaa-sisaltoalue' | kaanna}} <span class="caret"></span></button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a ng-click="addAllSisaltoalueet(tavoite)" kaanna="kaikki"></a></li>
+                    <li ng-repeat="sisaltoalue in tavoite.$sisaltoalueet">
+                      <a ng-class="{added: !sisaltoalue.$hidden}" ng-click="addSisaltoalue(sisaltoalue)">
+                        <span class="tc-tag" kaanna="sisaltoalue.nimi"></span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
               <div ng-if="tavoite.arviointi.length > 0">
                 <h4 kaanna="arviointi"></h4>
                 <div perusopetuksen-arviointi="tavoite.arviointi"></div>

@@ -23,7 +23,8 @@ angular.module('eperusteApp')
       templateUrl: 'views/directives/perusopetus/tavoitteet.html',
       restrict: 'A',
       scope: {
-        model: '=tavoitteet'
+        model: '=tavoitteet',
+        editable: '@?'
       },
       controller: 'TavoitteetController',
       link: function (scope) {
@@ -37,6 +38,10 @@ angular.module('eperusteApp')
     // TODO don't fetch here, from parent maybe?
     $scope.osaamiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN);
     $scope.vuosiluokka = _.find(PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT), {id: $scope.model._id});
+    $scope.editMode = false;
+    $scope.$watch('editable', function (value) {
+      $scope.editMode = !!value;
+    });
 
     $scope.mapModel = function () {
       var uniqueId = 0;
@@ -44,10 +49,13 @@ angular.module('eperusteApp')
         kohdealue.$accordionOpen = true;
         _.each(kohdealue.tavoitteet, function (tavoite) {
           tavoite.$runningIndex = ++uniqueId;
-          tavoite.$sisaltoalueet = _.map(tavoite.sisaltoalueet, function (sisaltoalueId) {
-            return _.find($scope.model.sisaltoalueet, function(item) {
-              return item.id === sisaltoalueId;
+          tavoite.$sisaltoalueet = _.map($scope.model.sisaltoalueet, function (item) {
+            var found = _.find(tavoite.sisaltoalueet, function (alueId) {
+              return alueId === item.id;
             });
+            item = _.clone(item);
+            item.$hidden = !found;
+            return item;
           });
           tavoite.$osaaminen = _.map(tavoite.osaaminen, function (osaamisId) {
             var osaaminen = _.find($scope.osaamiset, function (item) {
@@ -84,18 +92,15 @@ angular.module('eperusteApp')
     $scope.toggleAll = function () {
       setAccordion(!accordionState());
     };
-  })
 
-  .directive('sisaltoalueet', function () {
-    return {
-      templateUrl: 'views/directives/perusopetus/sisaltoalueet.html',
-      restrict: 'A',
-      scope: {
-        model: '=sisaltoalueet'
-      },
-      controller: 'SisaltoalueetController'
+    $scope.addSisaltoalue = function (alue) {
+      alue.$hidden = false;
     };
-  })
-  .controller('SisaltoalueetController', function ($scope, YleinenData) {
-    $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
+
+    $scope.addAllSisaltoalueet = function (tavoite) {
+      _.each(tavoite.$sisaltoalueet, function (alue) {
+        $scope.addSisaltoalue(alue);
+      });
+    };
+
   });

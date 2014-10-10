@@ -38,9 +38,6 @@ ul.vuosiluokat {
   .action-buttons {
     margin-top: 10px;
   }
-  .tab-content .panel {
-    padding-left: 20px;
-  }
   h4 {
     font-weight: 700;
   }
@@ -50,8 +47,14 @@ $index-bubble-size: 24px;
 $tag-height: 28px;
 $tag-color: #FEE7A4;
 .opetuksen-tavoitteet {
-  .tavoite .panel-body {
-    border-top: 0 !important;
+  .panel-heading {
+    padding-left: 20px;
+  }
+  .tavoite {
+    padding-left: 20px;
+    .panel-body {
+      border-top: 0 !important;
+    }
   }
   .tagcloud {
     list-style-type: none;
@@ -62,33 +65,41 @@ $tag-color: #FEE7A4;
       display: inline-block;
       margin-bottom: 8px;
       height: $tag-height;
+      a {
+        color: #333;
+      }
     }
     li:not(first-child) {
       margin-right: $tag-height*0.9;
     }
-    .tag {
-      display: inline-block;
-      color: #333;
-      background-color: $tag-color;
-      border: none;
-      font-weight: normal;
-      padding: 5px;
-      position: relative;
-      height: $tag-height;
-      &:after{
-        content: "";
-        float: right;
-        position: absolute;
-        top: 0;
-        right: -$tag-height / 2;
-        width: 0;
-        height: 0;
-        border-color: transparent;
-        border-left-color: $tag-color;
-        border-style: solid;
-        border-width: $tag-height/2 0px $tag-height/2 $tag-height/2;
-      }
-    }
+  }
+  .added {
+    opacity: 0.3;
+    cursor: default;
+  }
+}
+
+.tc-tag {
+  display: inline-block;
+  color: #333;
+  background-color: $tag-color;
+  border: none;
+  font-weight: normal;
+  padding: 5px;
+  position: relative;
+  height: $tag-height;
+  &:after{
+    content: "";
+    float: right;
+    position: absolute;
+    top: 0;
+    right: -$tag-height / 2;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-left-color: $tag-color;
+    border-style: solid;
+    border-width: $tag-height/2 0px $tag-height/2 $tag-height/2;
   }
 }
 

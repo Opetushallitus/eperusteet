@@ -1,9 +1,13 @@
 <ul class="tagcloud">
-  <li ng-repeat="tag in model">
+  <li ng-repeat="tag in model | filter:notHidden">
     <span ng-if="openable === 'true'" ohje="false" teksti="tag.teksti" otsikko="tag.nimi" suunta="bottom"
           extra="tag.extra">
-      <span class="tag" kaanna="$parent.tag.nimi"></span>
+      <span class="tc-tag">{{$parent.tag.nimi | kaanna}}</span>
     </span>
-    <span ng-if="openable !== 'true'" class="tag" kaanna="tag.nimi" ></span>
+    <span ng-if="openable !== 'true'" class="tc-tag">
+      <a class="action-link" ng-if="tagCloser" icon-role="remove"
+         title="{{'poista' | kaanna}}" ng-click="remove(tag)"></a>
+      {{tag.nimi | kaanna}}
+    </span>
   </li>
 </ul>
