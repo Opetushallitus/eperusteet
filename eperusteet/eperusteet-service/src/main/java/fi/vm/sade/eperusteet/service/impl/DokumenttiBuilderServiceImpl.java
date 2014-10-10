@@ -571,20 +571,22 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 groupElement.appendChild(headerElement);
 
                 Element bodyElement = doc.createElement("tbody");
-                // TODO: proper ordering,
-                List<Osaamistaso> osaamistasot = kohde.getArviointiAsteikko().getOsaamistasot();
-                LOG.info("\\nOSAAMISTASOT kohteelle {}", kohdeTeksti);
-                for (Osaamistaso taso: osaamistasot) {
-                    LOG.info("OSAAMISTASO: {}", getTextString(taso.getOtsikko(), kieli));
-                }
 
                 Set<OsaamistasonKriteeri> osaamistasonKriteerit = kohde.getOsaamistasonKriteerit();
-                for (OsaamistasonKriteeri krit : osaamistasonKriteerit) {
-                    String taso = getTextString(krit.getOsaamistaso().getOtsikko(), kieli);
+                List<OsaamistasonKriteeri> kriteerilista = new ArrayList(osaamistasonKriteerit);
+                java.util.Collections.sort(kriteerilista, new java.util.Comparator<OsaamistasonKriteeri>() {
+                    @Override
+                    public int compare(OsaamistasonKriteeri o1, OsaamistasonKriteeri o2) {
+                        return (int) (o1.getOsaamistaso().getId() - o2.getOsaamistaso().getId());
+                    }
+                });
+
+                for (OsaamistasonKriteeri krit : kriteerilista) {
+                    String ktaso = getTextString(krit.getOsaamistaso().getOtsikko(), kieli);
                     List<String> kriteerit = asStringList(krit.getKriteerit(), kieli);
 
                     Element bodyRowElement = doc.createElement("row");
-                    addTableCell(doc, bodyRowElement, taso);
+                    addTableCell(doc, bodyRowElement, ktaso);
                     addTableCell(doc, bodyRowElement, kriteerit);
                     bodyElement.appendChild(bodyRowElement);
                 }
@@ -600,7 +602,6 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 kaTable.appendChild(groupElement);
             }
         }
-
     }
 
     private void addTableCell(Document doc, Element row, String text) {
