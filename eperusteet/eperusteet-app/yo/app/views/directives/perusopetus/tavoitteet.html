@@ -8,7 +8,7 @@
 
           <div class="panel panel-default tavoite" ng-repeat="tavoite in kohdealue.tavoitteet">
             <div class="panel-body">
-              <div class="indexnumber">{{tavoite.$runningIndex}}</div>
+              <div class="indexnumber fix-position">{{tavoite.$runningIndex}}</div>
               <h4 kaanna="kuvaus"></h4>
               <div ng-bind-html="valitseKieli(tavoite.kuvaus) | unsafe"></div>
               <h4 kaanna="laaja-alainen-osaaminen"></h4>

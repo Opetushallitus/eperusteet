@@ -21,6 +21,7 @@ angular.module('eperusteApp')
   .service('OsanMuokkausHelper', function ($stateParams, PerusopetusService, $state) {
     this.model = null;
     this.backState = null;
+    this.vuosiluokka = null;
 
     this.setModel = function (data) {
       this.model = data;
@@ -35,6 +36,7 @@ angular.module('eperusteApp')
 
     this.setBackState = function () {
       this.backState = [$state.current.name, _.clone($stateParams)];
+      this.model = null;
     };
 
     this.goBack = function () {
@@ -48,8 +50,29 @@ angular.module('eperusteApp')
 
     this.fetch = function () {
       // TODO dummy data
-      var osa = PerusopetusService.getOsat(PerusopetusService.OPPIAINEET)[0].vuosiluokkakokonaisuudet[1].tekstikappaleet[0];
+      var kokonaisuus = PerusopetusService.getOsat(PerusopetusService.OPPIAINEET)[0].vuosiluokkakokonaisuudet[1];
+      var osa = kokonaisuus.tekstikappaleet[0];
+      if ($stateParams.osanTyyppi === 'sisaltoalueet') {
+        osa = kokonaisuus.sisaltoalueet;
+      }
+      var vuosiluokat = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT);
+      this.vuosiluokka = _.find(vuosiluokat, function (item) {
+        return kokonaisuus._id === item.id;
+      });
       return osa;
+    };
+
+    this.isVuosiluokkakokonaisuudenOsa = function () {
+      return !!this.vuosiluokka;
+    };
+
+    this.getOppiaine = function () {
+      // TODO dummy
+      return PerusopetusService.getOsat(PerusopetusService.OPPIAINEET)[0];
+    };
+
+    this.getVuosiluokkakokonaisuus = function () {
+      return this.vuosiluokka;
     };
   })
 
@@ -63,7 +86,6 @@ angular.module('eperusteApp')
         attrs: {
           model: 'objekti',
         },
-        title: 'muokkaus-tekstikappale',
         callbacks: {
           save: function () {
             OsanMuokkausHelper.goBack();
@@ -76,8 +98,9 @@ angular.module('eperusteApp')
       },
       sisaltoalueet: {
         directive: 'osanmuokkaus-sisaltoalueet',
-        attrs: {},
-        title: 'muokkaus-sisaltoalueet',
+        attrs: {
+          model: 'objekti',
+        },
         callbacks: {
           save: function () {
             OsanMuokkausHelper.goBack();
@@ -90,8 +113,9 @@ angular.module('eperusteApp')
       },
       tavoitteet: {
         directive: 'osanmuokkaus-tavoitteet',
-        attrs: {},
-        title: 'muokkaus-tavoitteet',
+        attrs: {
+          model: 'objekti',
+        },
         callbacks: {
           save: function () {
             OsanMuokkausHelper.goBack();
@@ -120,12 +144,20 @@ angular.module('eperusteApp')
 
   .directive('osanmuokkausTekstikappale', function () {
     return {
-      templateUrl: 'views/directives/osanmuokkaustekstikappale.html',
+      templateUrl: 'views/directives/perusopetus/osanmuokkaustekstikappale.html',
       restrict: 'E',
       scope: {
         model: '=',
-        config: '='
-      }
+        config: '=',
+      },
+      controller: 'OsanmuokkausTekstikappaleController'
+    };
+  })
+
+  .controller('OsanmuokkausTekstikappaleController', function ($scope, OsanMuokkausHelper) {
+    $scope.getTitle = function () {
+      return OsanMuokkausHelper.isVuosiluokkakokonaisuudenOsa() ?
+        'muokkaus-vuosiluokkakokonaisuuden-osa' : 'muokkaus-tekstikappale';
     };
   })
 
@@ -147,6 +179,77 @@ angular.module('eperusteApp')
       scope: {
         model: '=',
         config: '='
+      },
+      controller: function ($scope, YleinenData, $rootScope, Utils) {
+        $scope.editables = angular.copy($scope.model);
+        $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
+        $scope.isEditing = false;
+
+        var originals = null;
+        $scope.edit = function (alue) {
+          alue.$editing = true;
+          $scope.isEditing = true;
+          originals = _.cloneDeep(_.pick(alue, ['nimi', 'teksti']));
+        };
+        $scope.remove = function (alue) {
+          var index = _.findIndex($scope.editables, function (item) {
+            return item === alue;
+          });
+          if (index > -1) {
+            $scope.editables.splice(index, 1);
+          }
+        };
+        $scope.cancel = function (alue) {
+          alue.$editing = false;
+          $scope.isEditing = false;
+          if (alue.$new) {
+            $scope.remove(alue);
+          } else {
+            alue.nimi = _.cloneDeep(originals.nimi);
+            alue.teksti = _.cloneDeep(originals.teksti);
+            originals = null;
+          }
+        };
+        $scope.ok = function (alue) {
+          $rootScope.$broadcast('notifyCKEditor');
+          if (!$scope.hasTitle(alue)) {
+            return;
+          }
+          alue.$editing = false;
+          $scope.isEditing = false;
+        };
+        $scope.add = function () {
+          $scope.isEditing = true;
+          $scope.editables.push({
+            $editing: true,
+            $new: true,
+            nimi: {},
+            teksti: {}
+          });
+        };
+        $scope.hasTitle = function (alue) {
+          return Utils.hasLocalizedText(alue.nimi);
+        };
+      }
+    };
+  })
+
+  .directive('perusopetusMuokkausInfo', function (OsanMuokkausHelper) {
+    return {
+      templateUrl: 'views/directives/perusopetus/muokkausinfo.html',
+      restrict: 'AE',
+      link: function (scope, element, attrs) {
+        scope.muokkausinfoOsa = attrs.osa || '';
+      },
+      controller: function ($scope) {
+        $scope.getOppiaine = function () {
+          var oppiaine = OsanMuokkausHelper.getOppiaine();
+          return oppiaine ? oppiaine.nimi : '';
+        };
+        $scope.getVuosiluokkakokonaisuus = function () {
+          var vlk = OsanMuokkausHelper.getVuosiluokkakokonaisuus();
+          return vlk ? vlk.nimi : '';
+        };
       }
     };
   });

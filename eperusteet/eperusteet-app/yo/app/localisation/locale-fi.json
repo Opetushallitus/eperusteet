@@ -699,7 +699,10 @@
     "arvioinnin-kohde": "Arvioinnin kohde",
     "arvion-hyva-osaaminen": "Arvion \"hyvä\" osaaminen",
     "vuosiluokkakokonaisuuden-osaamisalueet": "Vuosiluokkakokonaisuuden osaamisalueet",
-    "muokkaus-tavoitteet": "Muokkaa tavoitteita",
-    "muokkaus-sisaltoalueet": "Muokkaa sisältöalueita"
+    "muokkaus-vuosiluokkakokonaisuuden-osa": "Muokkaa vuosiluokkakokonaisuuden osaa",
+    "osa": "Osa",
+    "oppiaine": "Oppiaine",
+    "lisaa-sisaltoalue": "Lisää sisältöalue",
+    "sisaltoalueen-nimi": "Sisältöalueen nimi"
 
 }
