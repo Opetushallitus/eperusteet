@@ -33,6 +33,7 @@ angular.module('eperusteApp')
       }
       $http.get(SERVICE_LOC + '/koodisto/' + koodisto).then(function(re) {
         taydennykset = koodistoMapping(re.data);
+        nykyinenKoodisto = koodisto;
         taydennykset = _.sortBy(taydennykset, function(t) { return Kaanna.kaanna(t.nimi).toLowerCase(); });
         cb();
       }, Notifikaatiot.serverCb);
@@ -47,11 +48,16 @@ angular.module('eperusteApp')
     }
 
     function haeYlarelaatiot(koodi, tyyppi, cb) {
+      if (!_.isEmpty(taydennykset) && koodi === nykyinenKoodisto) {
+        cb();
+        return;
+      }
       var resource = $resource(SERVICE_LOC + '/koodisto/relaatio/sisaltyy-ylakoodit/:koodi');
       resource.query({koodi: koodi}, function(re) {
         taydennykset = suodataTyypinMukaan(re, tyyppi);
         taydennykset = koodistoMapping(taydennykset);
         taydennykset = _.sortBy(taydennykset, function(t) { return Kaanna.kaanna(t.nimi).toLowerCase(); });
+        nykyinenKoodisto = koodi;
         cb();
       });
     }
