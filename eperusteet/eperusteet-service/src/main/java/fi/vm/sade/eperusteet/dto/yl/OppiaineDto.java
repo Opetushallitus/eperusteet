@@ -15,9 +15,8 @@
  */
 package fi.vm.sade.eperusteet.dto.yl;
 
-import com.google.common.base.Optional;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,10 +27,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class OppiaineDto {
-    private Long id;
-    private Optional<LokalisoituTekstiDto> nimi;
-    private Optional<TekstiOsaDto> tehtava;
-    private Set<OppiaineenVuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet;
+public class OppiaineDto extends OppiaineSuppeaDto {
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Set<EntityReference> oppimaarat;
+    private Set<OppiaineenVuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet;
+
 }

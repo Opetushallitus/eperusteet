@@ -46,11 +46,11 @@ public class OpetuksenTavoite extends AbstractAuditedReferenceableEntity {
     private TekstiPalanen tavoite;
     @Getter
     @Setter
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = CascadeType.PERSIST)
     private Set<KeskeinenSisaltoalue> sisaltoalueet = new HashSet<>();
     @Getter
     @Setter
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany
     private Set<LaajaalainenOsaaminen> laajattavoitteet = new HashSet<>();
     @Getter
     @Setter

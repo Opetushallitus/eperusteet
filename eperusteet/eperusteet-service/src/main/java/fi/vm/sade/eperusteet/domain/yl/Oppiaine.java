@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -55,31 +56,82 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true, fetch = FetchType.LAZY)
     private TekstiOsa tehtava;
 
-    @Getter
-    @Setter
     @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @NotNull(groups = Strict.class)
     @Size(min = 1, groups = Strict.class)
     @Valid
-    private Set<OppiaineenVuosiluokkaKokonaisuus> vuosiluokkakokonaisuudet = new HashSet<>();
+    private Set<OppiaineenVuosiluokkaKokonaisuus> vuosiluokkakokonaisuudet;
 
     @Getter
     @Setter
     @ManyToOne(optional = true)
     private Oppiaine oppiaine;
 
-    @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    /**
+     * kertoo koostuuko oppiaine oppimääristä (esim. äidinkieli ja kirjallisuus) vai onko se "yksinkertainen" kuten matematiikka.
+     */
     @Getter
     @Setter
+    private boolean koosteinen = false;
+
+    @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Set<Oppiaine> oppimaarat;
 
+    /**
+     * Palauttaa oppimäärät
+     * @see #isKoosteinen()
+     * @return oppimäärät (joukkoa ei voi muokata) tai null jos oppiaine ei ole koosteinen
+     */
+    public Set<Oppiaine> getOppimaarat() {
+        if (koosteinen == false) {
+            return null;
+        }
+        return oppimaarat == null ? Collections.<Oppiaine>emptySet() : Collections.unmodifiableSet(oppimaarat);
+    }
+
+    public Set<OppiaineenVuosiluokkaKokonaisuus> getVuosiluokkakokonaisuudet() {
+        return vuosiluokkakokonaisuudet == null ? Collections.<OppiaineenVuosiluokkaKokonaisuus>emptySet()
+            : Collections.unmodifiableSet(vuosiluokkakokonaisuudet);
+    }
+
+    public void addVuosiluokkaKokonaisuus(OppiaineenVuosiluokkaKokonaisuus ovk) {
+        if (vuosiluokkakokonaisuudet == null) {
+            vuosiluokkakokonaisuudet = new HashSet<>();
+        }
+        ovk.setOppiaine(this);
+        vuosiluokkakokonaisuudet.add(ovk);
+    }
+
+    public void removeVuosiluokkaKokonaisuus(OppiaineenVuosiluokkaKokonaisuus ovk) {
+        if (!ovk.getOppiaine().equals(this)) {
+            throw new IllegalArgumentException("Vuosiluokkakokonaisuus ei kuulu tähän oppiaineeseen");
+        }
+        vuosiluokkakokonaisuudet.remove(ovk);
+        ovk.setOppiaine(null);
+    }
+
     public void addOppimaara(Oppiaine oppimaara) {
-        if ( oppimaarat == null ) {
+        if (koosteinen == false) {
+            throw new IllegalStateException("Oppiaine ei ole koosteinen eikä tue oppimääriä");
+        }
+        if (oppimaarat == null) {
             oppimaarat = new HashSet<>();
         }
         oppimaara.setOppiaine(this);
         oppimaarat.add(oppimaara);
     }
 
-    public interface Strict {};
+    public void removeOppimaara(Oppiaine aine) {
+        if (koosteinen == false) {
+            throw new IllegalStateException("Oppiaine ei ole koosteinen eikä tue oppimääriä");
+        }
+        if (aine.getOppiaine().equals(this) && oppimaarat.remove(aine)) {
+            aine.setOppiaine(null);
+        } else {
+            throw new IllegalArgumentException("Oppimäärä ei kuulu tähän oppiaineeseen");
+        }
+    }
+
+    public interface Strict {
+    };
 }

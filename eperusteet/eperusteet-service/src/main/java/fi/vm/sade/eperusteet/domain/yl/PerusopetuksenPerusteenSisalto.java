@@ -16,8 +16,11 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -25,6 +28,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -35,29 +39,86 @@ import org.hibernate.envers.Audited;
  */
 @Entity
 @Audited
-@Table(name = "yl_perusopetuksen_perusteen_sisalto")
+@Table(name = "yl_perusop_perusteen_sisalto")
 public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceableEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @Getter
+    @Setter
+    @NotNull
+    @JoinColumn(nullable = false, updatable = false)
+    private Peruste peruste;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @Getter
     @Setter
     @JoinColumn
-    private PerusteenOsaViite sisalto;
+    private PerusteenOsaViite sisalto = new PerusteenOsaViite();
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable
-    @Getter
-    @Setter
-    private Set<LaajaalainenOsaaminen> laajaAlalaisetOsaamiset;
+    private Set<LaajaalainenOsaaminen> laajaAlalaisetOsaamiset = new HashSet<>();
+
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable
-    @Getter
-    @Setter
-    private Set<Oppiaine> oppiaineet;
+    private Set<Oppiaine> oppiaineet = new HashSet<>();
+
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable
-    @Getter
-    @Setter
-    private Set<VuosiluokkaKokonaisuus> vuosiluokkakokonaisuudet;
+    private Set<VuosiluokkaKokonaisuus> vuosiluokkakokonaisuudet = new HashSet<>();
+
+    public void addOppiaine(Oppiaine oppiaine) {
+        oppiaineet.add(oppiaine);
+    }
+
+    public void addVuosiluokkakokonaisuus(VuosiluokkaKokonaisuus kokonaisuus) {
+        vuosiluokkakokonaisuudet.add(kokonaisuus);
+    }
+
+    public boolean containsOppiaine(Oppiaine aine) {
+        return aine != null && oppiaineet.contains(aine);
+    }
+
+    public boolean containsVuosiluokkakokonaisuus(VuosiluokkaKokonaisuus kokonaisuus) {
+        return kokonaisuus != null && vuosiluokkakokonaisuudet.contains(kokonaisuus);
+    }
+
+    //kopion palauttaminen on tarkoituksellista!
+    public Set<LaajaalainenOsaaminen> getLaajaAlalaisetOsaamiset() {
+        return new HashSet<>(laajaAlalaisetOsaamiset);
+    }
+
+    public void setLaajaAlalaisetOsaamiset(Set<LaajaalainenOsaaminen> laajaAlalaisetOsaamiset) {
+        if (laajaAlalaisetOsaamiset == null) {
+            this.laajaAlalaisetOsaamiset.clear();
+        }
+        this.laajaAlalaisetOsaamiset.retainAll(laajaAlalaisetOsaamiset);
+        this.laajaAlalaisetOsaamiset.addAll(laajaAlalaisetOsaamiset);
+    }
+
+    public Set<Oppiaine> getOppiaineet() {
+        return new HashSet<>(oppiaineet);
+    }
+
+    public void setOppiaineet(Set<Oppiaine> oppiaineet) {
+        if (oppiaineet == null) {
+            this.oppiaineet.clear();
+        }
+        this.oppiaineet.retainAll(oppiaineet);
+        this.oppiaineet.addAll(oppiaineet);
+    }
+
+    public Set<VuosiluokkaKokonaisuus> getVuosiluokkakokonaisuudet() {
+        return new HashSet<>(vuosiluokkakokonaisuudet);
+    }
+
+    public void setVuosiluokkakokonaisuudet(Set<VuosiluokkaKokonaisuus> vuosiluokkakokonaisuudet) {
+        if (vuosiluokkakokonaisuudet == null) {
+            this.vuosiluokkakokonaisuudet.clear();
+            return;
+        }
+        this.vuosiluokkakokonaisuudet.retainAll(vuosiluokkakokonaisuudet);
+        this.vuosiluokkakokonaisuudet.addAll(vuosiluokkakokonaisuudet);
+    }
 
 }

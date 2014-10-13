@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.Set;
@@ -28,7 +29,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class OpetuksenTavoiteDto {
+public class OpetuksenTavoiteDto implements ReferenceableDto {
     private Long id;
     private Optional<LokalisoituTekstiDto> tavoite;
     private Set<EntityReference> sisaltoalueet;

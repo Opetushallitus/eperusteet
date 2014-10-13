@@ -16,25 +16,69 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
  *
  * @author jhyoty
  */
 @Entity
-@Table(name="yl_vuosiluokkakokonaisuus")
+@Table(name = "yl_vlkokonaisuus")
 @Audited
 public class VuosiluokkaKokonaisuus extends AbstractAuditedReferenceableEntity {
 
-    @OneToMany(mappedBy = "vuosiluokkaKokonaisuus")
-    private Set<OppiaineenVuosiluokkaKokonaisuus> oppiaineet;
+    @Getter
+    @Setter
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen nimi;
 
+    @Getter
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true, fetch = FetchType.LAZY)
+    private TekstiOsa tehtava;
+
+    //TODO: siirtymä (kumpaankin suuntaan -- jaettu vuosiluokkakokonaisuuksien välillä (paitsi ensimmäinen ja viimeinen)
+    //TODO: vuosiluokat josta kokonaisuus koostuu.
     @OneToMany(mappedBy = "vuosiluokkaKokonaisuus")
-    private Set<VuosiluokkaKokonaisuudenLaajaalainenOsaaminen> laajaalaisetOsaamiset;
+    private Set<OppiaineenVuosiluokkaKokonaisuus> oppiaineet = new HashSet<>();
+
+    @OneToMany(mappedBy = "vuosiluokkaKokonaisuus", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<VuosiluokkaKokonaisuudenLaajaalainenOsaaminen> laajaalaisetOsaamiset = new HashSet<>();
+
+    public Set<VuosiluokkaKokonaisuudenLaajaalainenOsaaminen> getLaajaalaisetOsaamiset() {
+        return new HashSet<>(laajaalaisetOsaamiset);
+    }
+
+    public Set<OppiaineenVuosiluokkaKokonaisuus> getOppiaineet() {
+        return new HashSet<>(oppiaineet);
+    }
+
+    public void setLaajaalaisetOsaamiset(Set<VuosiluokkaKokonaisuudenLaajaalainenOsaaminen> laajaalainenOsaamiset) {
+
+        if (laajaalainenOsaamiset == null) {
+            this.laajaalaisetOsaamiset.clear();
+            return;
+        }
+
+        this.laajaalaisetOsaamiset.retainAll(laajaalainenOsaamiset);
+        this.laajaalaisetOsaamiset.addAll(laajaalainenOsaamiset);
+        for (VuosiluokkaKokonaisuudenLaajaalainenOsaaminen v : laajaalainenOsaamiset) {
+            v.setVuosiluokkaKokonaisuus(this);
+        }
+    }
 
 }

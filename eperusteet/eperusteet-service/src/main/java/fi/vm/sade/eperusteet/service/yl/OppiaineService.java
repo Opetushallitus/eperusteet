@@ -13,12 +13,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.service;
+package fi.vm.sade.eperusteet.service.yl;
 
-import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
-import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import java.util.List;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +26,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
  *
  * @author jhyoty
  */
-public interface PerusopetuksenPerusteenSisaltoService {
+public interface OppiaineService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     OppiaineDto addOppiaine(@P("perusteId") Long perusteId, OppiaineDto dto);
@@ -36,10 +35,7 @@ public interface PerusopetuksenPerusteenSisaltoService {
     OppiaineDto addOppimaara(@P("perusteId") Long perusteId, Long oppiaineId, OppiaineDto dto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<OppiaineDto> getOppiaineet(@P("perusteId") Long perusteId);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<OppiaineDto> getOppimaarat(@P("perusteId") Long perusteId, Long oppiaineId);
+    List<OppiaineSuppeaDto> getOppimaarat(@P("perusteId") Long perusteId, Long oppiaineId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     OppiaineDto getOppiaine(@P("perusteId") Long perusteId, Long oppiaineId);
@@ -62,26 +58,4 @@ public interface PerusopetuksenPerusteenSisaltoService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     OppiaineenVuosiluokkaKokonaisuusDto deleteOppiaineenVuosiluokkaKokonaisuus(@P("perusteId") Long perusteId, Long oppiaineId, Long vuosiluokkaKokonaisuusId);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    VuosiluokkaKokonaisuusDto addVuosiluokkaKokonaisuus(@P("perusteId") Long perusteId, VuosiluokkaKokonaisuusDto dto);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<VuosiluokkaKokonaisuusDto> getVuosiluokkaKokonaisuudet(@P("perusteId") Long perusteId);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    VuosiluokkaKokonaisuusDto getVuosiluokkaKokonaisuus(@P("perusteId") Long perusteId, Long VuosiluokkaKokonaisuusId);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    VuosiluokkaKokonaisuusDto updateVuosiluokkaKokonaisuus(@P("perusteId") Long perusteId, VuosiluokkaKokonaisuusDto dto);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void deleteVuosiluokkaKokonaisuus(@P("perusteId") Long perusteId, Long VuosiluokkaKokonaisuusId);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    List<LaajaalainenOsaaminenDto> updateLaajaAlainenOsaaminen(@P("perusteId") Long perusteId, List<LaajaalainenOsaaminenDto> dtos);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<LaajaalainenOsaaminenDto> getLaajaAlainenOsaaminen(@P("perusteId") Long perusteId);
-
-    //TBD: lukitus
 }

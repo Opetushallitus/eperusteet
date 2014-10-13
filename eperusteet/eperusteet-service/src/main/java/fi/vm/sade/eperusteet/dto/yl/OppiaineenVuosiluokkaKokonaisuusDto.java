@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.util.List;
 import lombok.Getter;
@@ -27,13 +28,13 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class OppiaineenVuosiluokkaKokonaisuusDto {
+public class OppiaineenVuosiluokkaKokonaisuusDto implements ReferenceableDto {
     private Long id;
-    private Optional<EntityReference> vuosiluokkaKokonaisuus;
+    private EntityReference vuosiluokkaKokonaisuus;
     private Optional<TekstiOsaDto> tehtava;
     private Optional<TekstiOsaDto> tyotavat;
     private Optional<TekstiOsaDto> ohjaus;
     private Optional<TekstiOsaDto> arviointi;
     private List<OpetuksenTavoiteDto> tavoitteet;
-    private List<KeskeinenSisaltoAlueDto> sisaltoAlueet;
+    private List<KeskeinenSisaltoalueDto> sisaltoAlueet;
 }

@@ -28,6 +28,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -39,11 +40,11 @@ import org.hibernate.envers.Audited;
  */
 @Entity
 @Audited
-@Table(name = "yl_oppiainn_vuosiluokkakokonaisuus")
+@Table(name = "yl_oppiaineen_vlkok")
 public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceableEntity {
 
     @Getter
-    @Setter
+    @Setter(AccessLevel.PACKAGE)
     @ManyToOne(optional = false)
     @NotNull
     private Oppiaine oppiaine;
@@ -77,14 +78,33 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable
     @OrderColumn
-    @Getter
-    @Setter
     private List<OpetuksenTavoite> tavoitteet = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable
     @OrderColumn
-    @Getter
-    @Setter
     private List<KeskeinenSisaltoalue> sisaltoAlueet = new ArrayList<>();
+
+    public List<OpetuksenTavoite> getTavoitteet() {
+        return new ArrayList<>(tavoitteet);
+    }
+
+    public void setTavoitteet(List<OpetuksenTavoite> tavoitteet) {
+        this.tavoitteet.clear();
+        if (tavoitteet != null) {
+            this.tavoitteet.addAll(tavoitteet);
+        }
+    }
+
+    public List<KeskeinenSisaltoalue> getSisaltoAlueet() {
+        return new ArrayList<>(sisaltoAlueet);
+    }
+
+    public void setSisaltoAlueet(List<KeskeinenSisaltoalue> sisaltoAlueet) {
+        this.sisaltoAlueet.clear();
+        if (sisaltoAlueet != null) {
+            this.sisaltoAlueet.addAll(sisaltoAlueet);
+        }
+    }
+
 }

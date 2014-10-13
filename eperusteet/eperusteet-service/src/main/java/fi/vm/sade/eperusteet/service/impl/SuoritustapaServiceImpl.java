@@ -21,7 +21,6 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -35,7 +34,6 @@ import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,7 +77,7 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
         suoritustapa.setSisalto(perusteenOsaViite);
         suoritustapa.setRakenne(rakenne);
 
-        return suoritustapa;
+        return suoritustapaRepository.save(suoritustapa);
     }
 
     @Transactional

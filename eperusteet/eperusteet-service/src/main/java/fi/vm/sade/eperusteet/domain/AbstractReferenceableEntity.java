@@ -21,8 +21,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  *
@@ -33,13 +31,20 @@ public abstract class AbstractReferenceableEntity implements ReferenceableEntity
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Getter
-    @Setter
-    private Long id;
+    protected Long id;
 
     @Override
     public EntityReference getReference() {
         return new EntityReference(id);
+    }
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 }

@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.dto.yl;
 
 import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
+import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +27,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class LaajaalainenOsaaminenDto {
+public class LaajaalainenOsaaminenDto implements ReferenceableDto {
     private Long id;
     private Optional<LokalisoituTeksti> nimi;
     private Optional<LokalisoituTeksti> kuvaus;

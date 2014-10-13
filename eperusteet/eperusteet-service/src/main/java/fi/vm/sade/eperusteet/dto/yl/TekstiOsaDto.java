@@ -15,6 +15,8 @@
  */
 package fi.vm.sade.eperusteet.dto.yl;
 
+import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,8 +27,17 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class TekstiOsaDto {
+public class TekstiOsaDto implements ReferenceableDto {
     private Long id;
-    private LokalisoituTekstiDto otsikko;
-    private LokalisoituTekstiDto teksti;
+    private Optional<LokalisoituTekstiDto> otsikko;
+    private Optional<LokalisoituTekstiDto> teksti;
+
+    public TekstiOsaDto() {
+    }
+
+    public TekstiOsaDto(Optional<LokalisoituTekstiDto> otsikko, Optional<LokalisoituTekstiDto> teksti) {
+        this.otsikko = otsikko;
+        this.teksti = teksti;
+    }
+
 }

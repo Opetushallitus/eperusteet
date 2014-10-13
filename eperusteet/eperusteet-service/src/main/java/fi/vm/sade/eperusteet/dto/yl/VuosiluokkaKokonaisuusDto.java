@@ -15,7 +15,9 @@
  */
 package fi.vm.sade.eperusteet.dto.yl;
 
+import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,8 +28,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class VuosiluokkaKokonaisuusDto {
+public class VuosiluokkaKokonaisuusDto implements ReferenceableDto {
     private Long id;
+    private LokalisoituTekstiDto nimi;
+    private TekstiOsaDto tehtava;
     private Set<EntityReference> oppiaineet;
     private Set<VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto> laajaalaisetOsaamiset;
 }

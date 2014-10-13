@@ -13,22 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.dto.yl;
+package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
-import fi.vm.sade.eperusteet.dto.ReferenceableDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import lombok.Getter;
-import lombok.Setter;
+import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 
 /**
  *
  * @author jhyoty
  */
-@Getter
-@Setter
-public class VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto implements ReferenceableDto {
-    private Long id;
-    private EntityReference laajaalainenOsaaminen;
-    private LokalisoituTeksti kuvaus;
+public interface PerusopetuksenPerusteenSisaltoRepository extends JpaWithVersioningRepository<PerusopetuksenPerusteenSisalto, Long> {
+    PerusopetuksenPerusteenSisalto findByPerusteId(Long perusteId);
 }

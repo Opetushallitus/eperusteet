@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.util.Date;
@@ -35,6 +36,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -118,6 +120,10 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     private Set<Suoritustapa> suoritustavat;
 
     @Getter
+    @OneToOne(mappedBy = "peruste", optional = true, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private PerusopetuksenPerusteenSisalto perusopetuksenPerusteenSisalto;
+
+    @Getter
     @Setter
     @Enumerated(EnumType.STRING)
     @NotNull
@@ -141,6 +147,11 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Override
     public EntityReference getReference() {
         return new EntityReference(id);
+    }
+
+    public void setPerusopetuksenPerusteenSisalto(PerusopetuksenPerusteenSisalto perusopetuksenPerusteenSisalto) {
+        this.perusopetuksenPerusteenSisalto = perusopetuksenPerusteenSisalto;
+        this.perusopetuksenPerusteenSisalto.setPeruste(this);
     }
 
 }

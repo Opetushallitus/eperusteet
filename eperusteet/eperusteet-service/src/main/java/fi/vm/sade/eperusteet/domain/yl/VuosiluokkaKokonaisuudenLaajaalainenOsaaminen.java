@@ -19,8 +19,10 @@ import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -32,16 +34,19 @@ import org.hibernate.envers.RelationTargetAuditMode;
  */
 @Entity
 @Audited
-@Table(name="yl_vuosiluokkakokonaisuuden_laajaalainen_osaaminen")
+@Table(name="yl_vlkok_laaja_osaaminen")
 public class VuosiluokkaKokonaisuudenLaajaalainenOsaaminen extends AbstractReferenceableEntity {
 
     @Getter
     @Setter
     @ManyToOne
+    @NotNull
+    @JoinColumn(nullable = false)
     private LaajaalainenOsaaminen laajaalainenOsaaminen;
     @ManyToOne
     @Getter
-    @Setter
+    @NotNull
+    @JoinColumn(updatable = false, nullable = false)
     private VuosiluokkaKokonaisuus vuosiluokkaKokonaisuus;
 
     @Getter
@@ -49,4 +54,14 @@ public class VuosiluokkaKokonaisuudenLaajaalainenOsaaminen extends AbstractRefer
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
+
+    public void setVuosiluokkaKokonaisuus(VuosiluokkaKokonaisuus vuosiluokkaKokonaisuus) {
+        if ( this.vuosiluokkaKokonaisuus == null && this.id == null ) {
+            this.vuosiluokkaKokonaisuus = vuosiluokkaKokonaisuus;
+        } else {
+            throw new IllegalStateException("Vuosiluokkakokonaisuuteen kuulumista ei voi muuttaa");
+        }
+    }
+
+
 }

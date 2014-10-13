@@ -13,22 +13,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.dto.yl;
-
-import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
-import fi.vm.sade.eperusteet.dto.ReferenceableDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import lombok.Getter;
-import lombok.Setter;
+package fi.vm.sade.eperusteet.dto;
 
 /**
  *
  * @author jhyoty
  */
-@Getter
-@Setter
-public class VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto implements ReferenceableDto {
-    private Long id;
-    private EntityReference laajaalainenOsaaminen;
-    private LokalisoituTeksti kuvaus;
+public interface ReferenceableDto {
+    Long getId();
 }
