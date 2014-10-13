@@ -1,10 +1,27 @@
 <table class="table table-bordered perusopetuksen-arviointi ">
   <thead>
-    <tr><th kaanna="arvioinnin-kohde"></th><th kaanna="arvion-hyva-osaaminen"></th></tr>
+    <tr><th kaanna="arvioinnin-kohde"></th><th kaanna="arvion-hyva-osaaminen"></th><th ng-if="editMode"></th></tr>
   </thead>
   <tbody>
     <tr ng-repeat="arviointi in model">
-      <td>{{arviointi.kohde | kaanna}}</td><td>{{arviointi.kuvaus | kaanna}}</td>
+      <td>
+        <span ng-if="!editMode">{{arviointi.kohde | kaanna}}</span>
+        <span ng-if="editMode">
+          <input ng-model="arviointi.kohde" localized class="form-control">
+        </span>
+      </td>
+      <td>
+        <span ng-if="!editMode">{{arviointi.kuvaus | kaanna}}</span>
+        <span ng-if="editMode">
+          <textarea ng-model="arviointi.kuvaus" localized class="form-control msd-elastic"></textarea>
+        </span>
+      </td>
+      <td ng-if="editMode">
+        <a icon-role="remove" ng-click="removeKohde($index)" title="{{'poista'|kaanna}}"></a>
+      </td>
     </tr>
   </tbody>
 </table>
+<div ng-if="editMode">
+  <button icon-role="add" class="btn btn-default" kaanna="arviointi-uusi-kriteeri" ng-click="addKohde()"></button>
+</div>

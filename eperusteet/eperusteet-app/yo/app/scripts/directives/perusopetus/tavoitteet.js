@@ -33,20 +33,35 @@ angular.module('eperusteApp')
       }
     };
   })
-  .controller('TavoitteetController', function ($scope, YleinenData, PerusopetusService, $state) {
+  .controller('TavoitteetController', function ($scope, YleinenData, PerusopetusService, $state, $rootScope) {
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
     // TODO don't fetch here, from parent maybe?
     $scope.osaamiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN);
     $scope.vuosiluokka = _.find(PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT), {id: $scope.model._id});
     $scope.editMode = false;
+    $scope.original = {};
+    $scope.currentEditable = null;
     $scope.$watch('editable', function (value) {
       $scope.editMode = !!value;
     });
 
-    $scope.mapModel = function () {
+    $scope.treeOptions = {
+      accept: function(sourceNodeScope, destNodesScope) {
+        var draggingTavoite = _.has(sourceNodeScope, 'tavoite');
+        var droppingTavoite = destNodesScope.depth() === 1;
+        return draggingTavoite ? droppingTavoite : !droppingTavoite;
+      },
+      dropped: function () {
+        $scope.mapModel(true);
+      }
+    };
+
+    $scope.mapModel = function (update) {
       var uniqueId = 0;
       _.each($scope.model.kohdealueet, function (kohdealue) {
-        kohdealue.$accordionOpen = true;
+        if (!update) {
+          kohdealue.$accordionOpen = true;
+        }
         _.each(kohdealue.tavoitteet, function (tavoite) {
           tavoite.$runningIndex = ++uniqueId;
           tavoite.$sisaltoalueet = _.map($scope.model.sisaltoalueet, function (item) {
@@ -93,14 +108,79 @@ angular.module('eperusteApp')
       setAccordion(!accordionState());
     };
 
-    $scope.addSisaltoalue = function (alue) {
-      alue.$hidden = false;
+    $scope.hasArviointi = function (tavoite) {
+      return !!tavoite.arviointi && tavoite.arviointi.length > 0;
     };
 
-    $scope.addAllSisaltoalueet = function (tavoite) {
-      _.each(tavoite.$sisaltoalueet, function (alue) {
-        $scope.addSisaltoalue(alue);
-      });
+    $scope.addArviointi = function (tavoite) {
+      tavoite.arviointi = [{kohde: {}, kuvaus: {}}];
     };
 
+    $scope.kohdealueFn = {
+      edit: function (kohdealue) {
+        kohdealue.$editing = true;
+        $scope.currentEditable = kohdealue;
+        $scope.original.kohdealueNimi = _.clone(kohdealue.nimi);
+      },
+      remove: function ($index) {
+        $scope.model.kohdealueet.splice($index, 1);
+      },
+      add: function () {
+        var newAlue = {$editing: true, $accordionOpen: true, $new: true, tavoitteet: []};
+        $scope.currentEditable = newAlue;
+        $scope.model.kohdealueet.push(newAlue);
+      },
+      ok: function () {
+        $scope.currentEditable.$editing = false;
+        $scope.currentEditable.$new = false;
+        $scope.currentEditable = null;
+      },
+      cancel: function () {
+        if ($scope.currentEditable.$new) {
+          $scope.kohdealueFn.remove($scope.model.kohdealueet.length - 1);
+        } else {
+          $scope.currentEditable.$editing = false;
+          $scope.currentEditable.nimi = _.clone($scope.original.kohdealueNimi);
+        }
+        $scope.currentEditable = null;
+        $scope.original = {};
+      }
+    };
+
+    $scope.tavoiteFn = {
+      edit: function (tavoite) {
+        tavoite.$editing = true;
+        $scope.currentEditable = tavoite;
+        $scope.original.tavoite = _.cloneDeep(tavoite);
+      },
+      remove: function (kohdealue, $index) {
+        kohdealue.tavoitteet.splice($index, 1);
+        $scope.mapModel(true);
+      },
+      ok: function () {
+        $rootScope.$broadcast('notifyCKEditor');
+        $scope.currentEditable.$editing = false;
+        $scope.currentEditable.$new = false;
+        $scope.currentEditable = null;
+      },
+      cancel: function () {
+        if (!$scope.currentEditable.$new) {
+          _.each($scope.currentEditable, function (value, key) {
+            $scope.currentEditable[key] = _.cloneDeep($scope.original.tavoite[key]);
+          });
+        } else {
+          $scope.tavoiteFn.remove($scope.original.kohdealue, $scope.original.kohdealue.tavoitteet.length - 1);
+        }
+        $scope.currentEditable.$editing = false;
+        $scope.original = {};
+        $scope.currentEditable = null;
+      },
+      add: function (kohdealue) {
+        var newTavoite = {$editing: true, kuvaus: {}, $new: true};
+        $scope.currentEditable = newTavoite;
+        kohdealue.tavoitteet.push(newTavoite);
+        $scope.original.kohdealue = kohdealue;
+        $scope.mapModel(true);
+      }
+    };
   });

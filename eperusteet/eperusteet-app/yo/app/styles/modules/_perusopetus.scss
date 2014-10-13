@@ -16,7 +16,6 @@
   .yleiskuvaus {
     padding: 10px;
     border: 1px solid #ccc;
-    //background-color: #f6f6f6;
   }
   .panel + .panel {
     margin-top: 15px;
@@ -50,32 +49,70 @@ $tag-color: #FEE7A4;
   .panel-heading {
     padding-left: 20px;
   }
-  .tavoite {
-    padding-left: 20px;
-    .panel-body {
-      border-top: 0 !important;
+  .arvioinnin-kohdealue > .panel-heading {
+    min-height: 48px;
+    h4 {
+      font-size: 16px;
+      padding-left: 10px;
     }
   }
-  .tagcloud {
-    list-style-type: none;
-    padding-left: 10px;
-    font-size: 0;
-    li {
-      font-size: 13px;
-      display: inline-block;
-      margin-bottom: 8px;
-      height: $tag-height;
-      a {
-        color: #333;
-      }
-    }
-    li:not(first-child) {
-      margin-right: $tag-height*0.9;
+  .tavoite {
+    .panel-body {
+      border-top: 0 !important;
+      padding-left: 0;
+      padding-top: 5px;
     }
   }
   .added {
     opacity: 0.3;
     cursor: default;
+  }
+}
+
+.tagcloud {
+  list-style-type: none;
+  padding-left: 10px;
+  font-size: 0;
+  li {
+    font-size: 13px;
+    display: inline-block;
+    margin-bottom: 8px;
+    height: $tag-height;
+    a.closer {
+      color: #333;
+    }
+  }
+  li:not(first-child) {
+    margin-right: $tag-height*0.9;
+  }
+}
+
+.tavoite-sisalto {
+  margin-left: 40px;
+}
+
+.tag-modal {
+  .chosen .panel-heading {
+    background-color: #c5ffc5;
+  }
+}
+
+.tag-indicator {
+  cursor: pointer;
+  &:hover, & *:hover {
+    text-decoration: none;
+  }
+  margin-top: -5px;
+  font-size: 24px;
+  position: absolute;
+  right: 24px;
+  width: 24px;
+  height: 24px;
+  &.checked {
+    color: green;
+  }
+  &.unchecked {
+
   }
 }
 
@@ -103,6 +140,27 @@ $tag-color: #FEE7A4;
   }
 }
 
+h4 .drag-handle {
+  float: left;
+  font-size: 135%;
+  margin-left: -22px;
+}
+
+.heading-input {
+  margin-left: 15px;
+  width: 80%;
+  label {
+    input {
+      margin-top: 5px;
+    }
+    width: 100%;
+  }
+}
+
+.tavoitteet-wrapper {
+  margin-bottom: 10px;
+}
+
 .indexnumber + h4 {
   margin-top: 0;
 }
@@ -119,9 +177,8 @@ $tag-color: #FEE7A4;
   font-weight: 700;
   padding-top: $index-bubble-size * 0.13;
   &.fix-position {
-    margin-left: -$index-bubble-size * 1.2;
-    margin-top: -6px;
-    padding-top: 0;
+    margin-top: -12px;
+    padding-top: 3px;
   }
 }
 
@@ -182,19 +239,6 @@ $tag-color: #FEE7A4;
     right: 10px;
     top: 5px;
   }
-  .handle {
-    padding: 5px;
-    padding-top: 15px;
-    position: relative;
-    width: 40px;
-    min-height: 110px;
-    cursor: move;
-    .icon {
-      font-size: 24px;
-      position: absolute;
-      top: 55%;
-    }
-  }
   .edit-buttons {
     margin-top: 10px;
     margin-bottom: 5px;
@@ -203,6 +247,20 @@ $tag-color: #FEE7A4;
     margin-left: 40px;
     padding-bottom: 10px;
     padding-right: 10px;
+  }
+}
+
+.sorter-handle {
+  padding: 5px;
+  padding-top: 15px;
+  position: relative;
+  width: 40px;
+  min-height: 110px;
+  cursor: move;
+  .icon {
+    font-size: 24px;
+    position: absolute;
+    top: 55%;
   }
 }
 

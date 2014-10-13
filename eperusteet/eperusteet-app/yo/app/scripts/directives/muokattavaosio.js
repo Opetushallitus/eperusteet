@@ -42,25 +42,4 @@ angular.module('eperusteApp')
       // TODO osan id
       $state.go('root.perusteprojekti.muokkaus', {osanTyyppi: $scope.type, osanId: ''});
     };
-  })
-
-  .directive('tagCloud', function () {
-    return {
-      templateUrl: 'views/directives/tagcloud.html',
-      restrict: 'A',
-      scope: {
-        model: '=tagCloud',
-        openable: '@',
-        tagCloser: '=?'
-      },
-      controller: 'TagCloudController'
-    };
-  })
-  .controller('TagCloudController', function ($scope) {
-    $scope.notHidden = function (item) {
-      return !item.$hidden;
-    };
-    $scope.remove = function (tag) {
-      tag.$hidden = true;
-    };
   });

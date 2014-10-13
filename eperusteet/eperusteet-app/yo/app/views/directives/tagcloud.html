@@ -2,12 +2,20 @@
   <li ng-repeat="tag in model | filter:notHidden">
     <span ng-if="openable === 'true'" ohje="false" teksti="tag.teksti" otsikko="tag.nimi" suunta="bottom"
           extra="tag.extra">
-      <span class="tc-tag">{{$parent.tag.nimi | kaanna}}</span>
+      <span class="tc-tag">
+        <a class="action-link closer" ng-if="editMode" icon-role="remove"
+           title="{{'poista' | kaanna}}" ng-click="remove(tag)"></a>
+        <span class="clickable">{{tag.nimi | kaanna}}</span>
+      </span>
     </span>
     <span ng-if="openable !== 'true'" class="tc-tag">
-      <a class="action-link" ng-if="tagCloser" icon-role="remove"
+      <a class="action-link closer" ng-if="editMode" icon-role="remove"
          title="{{'poista' | kaanna}}" ng-click="remove(tag)"></a>
       {{tag.nimi | kaanna}}
     </span>
+  </li>
+  <li ng-if="editMode">
+    <button class="btn btn-default" icon-role="add" kaanna="addLabel"
+            ng-click="openDialog()"></button>
   </li>
 </ul>

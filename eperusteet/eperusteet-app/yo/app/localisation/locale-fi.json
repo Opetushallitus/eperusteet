@@ -703,6 +703,10 @@
     "osa": "Osa",
     "oppiaine": "Oppiaine",
     "lisaa-sisaltoalue": "Lisää sisältöalue",
-    "sisaltoalueen-nimi": "Sisältöalueen nimi"
+    "sisaltoalueen-nimi": "Sisältöalueen nimi",
+    "tavoitteen-kuvaus-placeholder": "Lisää tavoitteen kuvaus",
+    "lisaa-arviointi": "Lisää arviointi",
+    "lisaa-laaja-alainen-osaaminen": "Lisää laaja-alainen osaaminen",
+    "lisaa-opetuksen-tavoite": "Lisää opetuksen tavoite"
 
 }
