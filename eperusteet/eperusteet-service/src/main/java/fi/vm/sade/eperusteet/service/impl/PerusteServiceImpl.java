@@ -812,7 +812,7 @@ public class PerusteServiceImpl implements PerusteService {
 
         for (Suoritustapa st : peruste.getSuoritustavat()) {
             PerusteenOsaViite sisalto = st.getSisalto();
-            List<PerusteenOsaViite> lapset = new ArrayList<>();
+            List<PerusteenOsaViite> lapset = sisalto.getLapset();
             TekstiKappale tk = new TekstiKappale();
             HashMap<Kieli, String> hm = new HashMap<>();
             hm.put(Kieli.FI, "Tutkinnon muodostuminen");
@@ -822,7 +822,6 @@ public class PerusteServiceImpl implements PerusteService {
             pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
             pov.setVanhempi(sisalto);
             lapset.add(pov);
-            sisalto.setLapset(lapset);
         }
     }
 

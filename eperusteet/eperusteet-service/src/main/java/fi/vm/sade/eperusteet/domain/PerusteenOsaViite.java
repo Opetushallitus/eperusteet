@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.util.List;
+import javax.persistence.CascadeType;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -59,7 +60,7 @@ public class PerusteenOsaViite implements ReferenceableEntity{
     @Setter
     private PerusteenOsa perusteenOsa;
 
-    @OneToMany(mappedBy = "vanhempi", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "vanhempi", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderColumn
     @Getter
     @Setter
