@@ -20,7 +20,7 @@
       </table>
       <pagination ng-model="nykyinen" ng-change="valitseSivu(nykyinen)" total-items="totalItems" items-per-page="itemsPerPage"></pagination>
     </div>
-    <div class="alarm alarm-info" ng-hide="projektit.length > 0" kaanna>rajauksellasi-ei-löytynyt-vaihtoehtoa</div>
+    <div class="alarm alarm-info" ng-show="perusteet && perusteet.length == 0" kaanna>rajauksellasi-ei-löytynyt-vaihtoehtoa</div>
   </div>
 </div>
 
