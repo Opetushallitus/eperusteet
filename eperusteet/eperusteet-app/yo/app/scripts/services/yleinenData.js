@@ -79,9 +79,9 @@ angular.module('eperusteApp')
     ];
 
     this.koulutustyypitMap = {
-      'koulutustyyppi_1': 'ammattitutkinto',
-      'koulutustyyppi_11': 'erikoisammattitutkinto',
-      'koulutustyyppi_12': 'perustutkinto',
+      'koulutustyyppi_1': 'perustutkinto',
+      'koulutustyyppi_11': 'ammattitutkinto',
+      'koulutustyyppi_12': 'erikoisammattitutkinto',
       'koulutustyyppi_9999': '',
     };
 

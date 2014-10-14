@@ -26,7 +26,7 @@ import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -79,6 +79,8 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
             ppldto.setTehtava(tehtava);
         } else if (tyyppi == PerusteTyyppi.POHJA) {
             ppldto = new PerusteprojektiLuontiDto(koulutustyyppi, null, null, null, tyyppi, ryhmaId);
+            ppldto.setYhteistyotaho(yhteistyotaho);
+            ppldto.setTehtava(tehtava);
         }
 
         Assert.assertNotNull(ppldto);
@@ -87,11 +89,8 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         return service.save(ppldto);
     }
 
-    @Test
     @Transactional
-    public void testPerustprojektiluonti() {
-        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
-        Perusteprojekti pp = repository.findOne(ppdto.getId());
+    public void perusteprojektiLuontiCommonAsserts(PerusteprojektiDto ppdto, Perusteprojekti pp) {
         Assert.assertNotNull(pp);
         Assert.assertEquals(pp.getNimi(), ppdto.getNimi());
         Assert.assertEquals(pp.getDiaarinumero(), ppdto.getDiaarinumero());
@@ -99,20 +98,78 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertEquals(pp.getTila(), ProjektiTila.LAADINTA);
         Assert.assertEquals(pp.getYhteistyotaho(), yhteistyotaho);
         Assert.assertEquals(pp.getTehtava(), tehtava);
+        Assert.assertNotNull(pp.getPeruste());
+        Assert.assertNotNull(pp.getPeruste().getSuoritustavat());
+    }
+
+    @Transactional
+    public void perusteprojektiLuontiCommonSuoritustavat(Perusteprojekti pp, long expectedSize) {
+        for (Suoritustapa st : pp.getPeruste().getSuoritustavat()) {
+            Assert.assertNotNull(st.getSisalto());
+            Assert.assertNotNull(st.getSisalto().getLapset());
+            Assert.assertEquals(expectedSize, st.getSisalto().getLapset().size());
+        }
+    }
+
+    @Test
+    @Transactional
+    public void testPerustprojektiluonti12() {
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
+        Perusteprojekti pp = repository.findOne(ppdto.getId());
+        perusteprojektiLuontiCommonAsserts(ppdto, pp);
+        Assert.assertEquals("koulutustyyppi_12", pp.getPeruste().getKoulutustyyppi());
+        Assert.assertEquals(1, pp.getPeruste().getSuoritustavat().size());
+        perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
+        perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
+        perusteprojektiLuontiCommonSuoritustavat(pp, 3);
+    }
+
+    @Test
+    @Transactional
+    public void testPerustprojektiluonti9999() {
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_9999");
+        Perusteprojekti pp = repository.findOne(ppdto.getId());
+        perusteprojektiLuontiCommonAsserts(ppdto, pp);
+        Assert.assertEquals("koulutustyyppi_9999", pp.getPeruste().getKoulutustyyppi());
+        Assert.assertEquals(1, pp.getPeruste().getSuoritustavat().size());
+        perusteprojektiLuontiCommonSuoritustavat(pp, 0);
     }
 
     @Test
     @Transactional
     public void testPerustpohjaluonti() {
-        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_12");
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_1");
         Perusteprojekti pp = repository.findOne(ppdto.getId());
-        Assert.assertNotNull(pp);
-        Assert.assertEquals(pp.getNimi(), ppdto.getNimi());
-        Assert.assertNull(pp.getDiaarinumero());
-        Assert.assertEquals(ryhmaId, pp.getRyhmaOid());
-        Assert.assertEquals(pp.getTila(), ProjektiTila.LAADINTA);
-        Assert.assertEquals(pp.getYhteistyotaho(), null);
-        Assert.assertEquals(pp.getTehtava(), null);
+        perusteprojektiLuontiCommonAsserts(ppdto, pp);
+        Assert.assertEquals("koulutustyyppi_1", pp.getPeruste().getKoulutustyyppi());
+        Assert.assertEquals(2, pp.getPeruste().getSuoritustavat().size());
+        perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.OPS, null);
+        perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
+        perusteprojektiLuontiCommonSuoritustavat(pp, 2);
+    }
+
+    @Test
+    @Transactional
+    public void testPerusteprojektiLuontiPohjasta() {
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_1");
+        Perusteprojekti pp = repository.findOne(ppdto.getId());
+        perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
+        perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
+        perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.OPS, null);
+        perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.OPS, null);
+        perusteprojektiLuontiCommonSuoritustavat(pp, 3);
+
+        PerusteprojektiLuontiDto luontiDto = new PerusteprojektiLuontiDto("koulutustyyppi_12", LaajuusYksikko.OPINTOVIIKKO, null, null, PerusteTyyppi.NORMAALI, ryhmaId);
+        luontiDto.setPerusteId(pp.getPeruste().getId());
+        luontiDto.setDiaarinumero(TestUtils.uniikkiString());
+        luontiDto.setNimi(TestUtils.uniikkiString());
+        PerusteprojektiDto uusiDto = service.save(luontiDto);
+
+        repository.flush();
+        Perusteprojekti uusi = repository.findOne(uusiDto.getId());
+        Assert.assertEquals(LaajuusYksikko.OPINTOVIIKKO, uusi.getPeruste().getSuoritustapa(Suoritustapakoodi.OPS).getLaajuusYksikko());
+        Assert.assertEquals(2, uusi.getPeruste().getSuoritustavat().size());
+        perusteprojektiLuontiCommonSuoritustavat(uusi, 3);
     }
 
     public void lazyAssertTyoryhma(TyoryhmaHenkiloDto trh, String ryhma, String henkilo) {
@@ -199,69 +256,6 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Test
     @Transactional
     public void testPerusteprojektiKopiointiToisestaProjektista() {
-    }
-
-    @Test
-    @Transactional
-    public void testPerusteprojektiKopiointiPerustepohjasta() {
-        String ldiaarinumero = TestUtils.uniikkiString();
-        String lnimi = TestUtils.uniikkiString();
-
-        PerusteprojektiDto pohja = teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_1");
-        pohja.setTehtava(TestUtils.uniikkiString());
-        pohja.setTehtavaluokka(TestUtils.uniikkiString());
-        pohja.setYhteistyotaho(TestUtils.uniikkiString());
-        Peruste pohjaperuste = perusteRepository.findOne(Long.parseLong(pohja.getPeruste().getId()));
-        Set<Koulutus> koulutukset = new HashSet<>();
-        koulutukset.add(new Koulutus(null, TestUtils.uniikkiString(), TestUtils.uniikkiString(), TestUtils.uniikkiString(), TestUtils.uniikkiString()));
-        pohjaperuste.setKoulutukset(koulutukset);
-
-        PerusteprojektiLuontiDto ppldto = new PerusteprojektiLuontiDto(null, yksikko, Long.parseLong(pohja.getPeruste().getId()), null, PerusteTyyppi.NORMAALI, ryhmaId);
-        ppldto.setDiaarinumero(ldiaarinumero);
-        ppldto.setNimi(lnimi);
-
-        // Projektin tiedot
-        PerusteprojektiDto pp = service.save(ppldto);
-        Assert.assertNotNull(pp);
-        Assert.assertEquals(ProjektiTila.LAADINTA, pp.getTila());
-        Assert.assertEquals(ldiaarinumero, pp.getDiaarinumero());
-        Assert.assertEquals(lnimi, pp.getNimi());
-        Assert.assertEquals(pohja.getRyhmaOid(), pp.getRyhmaOid());
-        Assert.assertEquals(null, pp.getTehtava());
-        Assert.assertEquals(null, pp.getTehtavaluokka());
-        Assert.assertEquals(null, pp.getYhteistyotaho());
-
-        Peruste uusiperuste = perusteRepository.findOne(Long.parseLong(pp.getPeruste().getId()));
-
-        // Perusteen tiedot
-        Assert.assertNotNull(pohjaperuste);
-        Assert.assertNotNull(uusiperuste);
-        Assert.assertNotEquals(pohjaperuste.getId(), uusiperuste.getId());
-        Assert.assertEquals(pohjaperuste.getKoulutustyyppi(), uusiperuste.getKoulutustyyppi());
-        Assert.assertNotNull(pohjaperuste.getKoulutukset());
-        Assert.assertNotNull(uusiperuste.getKoulutukset());
-        Assert.assertEquals(pohjaperuste.getKoulutukset().size(), uusiperuste.getKoulutukset().size());
-        Assert.assertEquals(PerusteTila.LUONNOS, uusiperuste.getTila());
-        Assert.assertEquals(PerusteTyyppi.NORMAALI, uusiperuste.getTyyppi());
-
-        // Perusteen osat
-        Set<Suoritustapa> pohjast = pohjaperuste.getSuoritustavat();
-        Set<Suoritustapa> uusist = uusiperuste.getSuoritustavat();
-        Assert.assertEquals(pohjast.size(), uusist.size());
-
-        Map<Suoritustapakoodi, Suoritustapa> pohjastMap = new HashMap<>();
-        for (Suoritustapa st : pohjast) {
-            pohjastMap.put(st.getSuoritustapakoodi(), st);
-        }
-        for (Suoritustapa ust : uusist) {
-            Suoritustapa pst = pohjastMap.get(ust.getSuoritustapakoodi());
-            Assert.assertNotNull(pst);
-            Assert.assertNotEquals(pst.getId(), ust.getId());
-            Assert.assertEquals(pst.getLaajuusYksikko(), ust.getLaajuusYksikko());
-            Assert.assertEquals(pst.getTutkinnonOsat().size(), ust.getTutkinnonOsat().size());
-            Assert.assertNotEquals(pst.getSisalto().getId(), ust.getSisalto().getId());
-            Assert.assertNotEquals(pst.getRakenne().getId(), ust.getRakenne().getId());
-        }
     }
 
     @Test

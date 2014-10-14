@@ -42,6 +42,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
@@ -811,7 +812,7 @@ public class PerusteServiceImpl implements PerusteService {
         if ("koulutustyyppi_9999".equals(peruste.getKoulutustyyppi())) {
             return;
         }
-        
+
         PerusteenOsaViiteDto.Matala viite;
 
         for (Suoritustapa st : peruste.getSuoritustavat()) {
@@ -873,8 +874,8 @@ public class PerusteServiceImpl implements PerusteService {
     }
 
     @Override
-    public Peruste luoPerusteRunkoToisestaPerusteesta(Long perusteId, PerusteTyyppi tyyppi) {
-        Peruste vanha = perusteet.getOne(perusteId);
+    public Peruste luoPerusteRunkoToisestaPerusteesta(PerusteprojektiLuontiDto luontiDto, PerusteTyyppi tyyppi) {
+        Peruste vanha = perusteet.getOne(luontiDto.getPerusteId());
         Peruste peruste = new Peruste();
         peruste.setTila(PerusteTila.LUONNOS);
         peruste.setTyyppi(tyyppi);
@@ -897,6 +898,10 @@ public class PerusteServiceImpl implements PerusteService {
 
         for (Suoritustapa st : suoritustavat) {
             uudetSuoritustavat.add(suoritustapaService.createFromOther(st.getId()));
+        }
+
+        for (Suoritustapa st : uudetSuoritustavat) {
+            st.setLaajuusYksikko(luontiDto.getLaajuusYksikko());
         }
 
         peruste.setSuoritustavat(uudetSuoritustavat);

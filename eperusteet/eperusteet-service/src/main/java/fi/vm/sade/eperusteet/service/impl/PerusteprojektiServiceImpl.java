@@ -42,6 +42,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaTyoryhmaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
@@ -87,6 +88,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private PerusteprojektiRepository repository;
+
+    @Autowired
+    private PerusteRepository perusteRepository;
 
     @Autowired
     private PerusteService perusteService;
@@ -210,7 +214,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             peruste = perusteService.luoPerusteRunko(koulutustyyppi, yksikko, PerusteTila.LUONNOS, tyyppi);
         }
         else {
-            peruste = perusteService.luoPerusteRunkoToisestaPerusteesta(perusteprojektiDto.getPerusteId(), tyyppi);
+            Peruste pohjaPeruste = perusteRepository.findOne(perusteprojektiDto.getPerusteId());
+            perusteprojektiDto.setKoulutustyyppi(pohjaPeruste.getKoulutustyyppi());
+            peruste = perusteService.luoPerusteRunkoToisestaPerusteesta(perusteprojektiDto, tyyppi);
         }
 
         perusteprojekti.setPeruste(peruste);

@@ -86,7 +86,7 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
         List<PerusteenOsaViite> vanhaLapset = vanha.getLapset();
         if (vanhaLapset != null) {
             for (PerusteenOsaViite vanhaPov : vanhaLapset) {
-                if (vanhaPov.getPerusteenOsa().getTunniste() != PerusteenOsaTunniste.RAKENNE) {
+                if (vanhaPov.getPerusteenOsa() != null && vanhaPov.getPerusteenOsa().getTunniste() != PerusteenOsaTunniste.RAKENNE) {
                     PerusteenOsaViite pov = perusteenOsaViiteRepository.save(new PerusteenOsaViite());
                     pov.setLapset(new ArrayList<PerusteenOsaViite>());
                     pov.setVanhempi(parent);
