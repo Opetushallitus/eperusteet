@@ -124,7 +124,8 @@ describe('Service: Algoritmit', function() {
       expect(service.normalizeTeksti({
         fi: ' Lorem &nbsp;  ipsum',
         sv: 'toinen     teksti '
-      })).toEqual({
+      }))
+      .toEqual({
         fi: 'Lorem ipsum',
         sv: 'toinen teksti'
       });

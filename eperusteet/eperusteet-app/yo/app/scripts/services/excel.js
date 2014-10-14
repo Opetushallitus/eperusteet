@@ -19,7 +19,7 @@
 /* global XLSX */
 
 angular.module('eperusteApp')
-  .service('ExcelService', function($q) {
+  .service('ExcelService', function($q, Algoritmit) {
 
     var notifier = angular.noop;
 
@@ -268,23 +268,7 @@ angular.module('eperusteApp')
     }
 
     function suodataTekstipala(teksti) {
-      if (!teksti) {
-        return '';
-      }
-      else if (!_.isString(teksti)) {
-        return teksti;
-      }
-
-      var suodatettu = teksti;
-      suodatettu = suodatettu.replace(/&.{0,5};/g, ' ');
-      for (var i = 0; i < suodatettu.length; ++i) {
-        var c = suodatettu[i];
-        var ci = c.charCodeAt(0);
-        if (ci < 32 && ci > 255) {
-          suodatettu[i] = ' ';
-        }
-      }
-      return suodatettu;
+      return Algoritmit.normalizeTeksti(teksti);
     }
 
     function fify(obj, ids, kentat) {
@@ -359,7 +343,7 @@ angular.module('eperusteApp')
 
       function filtteroituKentta(id, index) {
         var cell = data[kentat[id] + index];
-        return cell ? suodataTekstipala(cell.v) : '';
+        return cell ? Algoritmit.normalizeTeksti(suodataTekstipala(cell.v)) : '';
       }
 
       function lisaaOsaamistasonKriteeri(kohde) {
