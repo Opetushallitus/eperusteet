@@ -93,7 +93,7 @@ angular.module('eperusteApp')
 
         window.on('scroll resize', refreshView);
         scope.$on('update:kommentit', function () {
-          $timeout(refreshView(), 1500);
+          $timeout(refreshView, 1500);
         });
         scope.$on('$destroy', function () {
           window.off('scroll resize', refreshView);
