@@ -300,11 +300,7 @@ angular.module('eperusteApp')
         label: 'tutkinnonosat',
         link: [STATE_OSAT, {}],
         isActive: isTutkinnonosatActive
-      },
-      {
-        label: 'tutkinnon-rakenne',
-        link: ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: ''}]
-      },
+      }
     ];
     var YL_ITEMS = {
       'laaja-alainen-osaaminen': PerusopetusService.OSAAMINEN,
@@ -329,6 +325,19 @@ angular.module('eperusteApp')
       typeChanged: angular.noop
     };
 
+    function getLink(lapsi) {
+      return lapsi.perusteenOsa.tunniste && lapsi.perusteenOsa.tunniste === 'rakenne' ?
+        ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: ''}] :
+        [
+          STATE_OSA,
+          {
+            perusteenOsanTyyppi: 'tekstikappale',
+            perusteenOsaId: lapsi.perusteenOsa.id,
+            versio: null
+          }
+        ];
+    }
+
     var processNode = function (node, level) {
       level = level || 0;
       _.each(node.lapset, function (lapsi) {
@@ -336,14 +345,7 @@ angular.module('eperusteApp')
           label: lapsi.perusteenOsa.nimi,
           id: lapsi.perusteenOsa.id,
           depth: level,
-          link: [
-            STATE_OSA,
-            {
-              perusteenOsanTyyppi: 'tekstikappale',
-              perusteenOsaId: lapsi.perusteenOsa.id,
-              versio: null
-            }
-          ],
+          link: getLink(lapsi),
           isActive: isRouteActive,
         });
         nameMap[lapsi.perusteenOsa.id] = lapsi.perusteenOsa.nimi;
@@ -355,7 +357,8 @@ angular.module('eperusteApp')
       // ui-sref-active doesn't work directly in ui-router 0.2.*
       // with optional parameters.
       // Versionless url should be considered same as specific version url.
-      var url = $state.href(STATE_OSA, {
+      var url = item.href && item.href.indexOf('/rakenne') > -1 ?
+        item.href.substr(1) : $state.href(STATE_OSA, {
         perusteenOsaId: item.id,
         versio: null
       }, {inherit:true}).replace(/#/g, '');
