@@ -54,7 +54,7 @@ angular.module('eperusteApp')
       hae: hae
     };
   })
-  .service('PerusteProjektiService', function($rootScope, $state, YleinenData) {
+  .service('PerusteProjektiService', function($rootScope, $state, $q, $modal, YleinenData) {
     var pp = {};
     var suoritustapa = '';
 
@@ -115,7 +115,34 @@ angular.module('eperusteApp')
         }
     }
 
+    function mergeProjekti(projekti, tuoPohja) {
+      var deferred = $q.defer();
+      $modal.open({
+        templateUrl: 'views/modals/projektiSisaltoTuonti.html',
+        controller: 'ProjektiTiedotSisaltoModalCtrl',
+        resolve: {
+          pohja: function() { return !!tuoPohja; },
+        }
+      })
+      .result.then(function(peruste) {
+        peruste.tila = 'laadinta';
+        peruste.tyyppi = 'normaali';
+        var onOps = false;
+        projekti.perusteId = peruste.id;
+        projekti.koulutustyyppi = peruste.koulutustyyppi;
+        _.forEach(peruste.suoritustavat, function(st) {
+          if (st.suoritustapakoodi === 'ops') {
+            onOps = true;
+            projekti.laajuusYksikko = st.laajuusYksikko;
+          }
+        });
+        deferred.resolve(peruste, projekti);
+      }, deferred.reject);
+      return deferred.promise;
+    }
+
     return {
+      mergeProjekti: mergeProjekti,
       save: save,
       get: get,
       watcher: watcher,
