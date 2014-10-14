@@ -37,7 +37,8 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna) {
+  .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna,
+      PerusteProjektiSivunavi) {
     $scope.editableModel = angular.copy($scope.model);
     $scope.editEnabled = false;
     $scope.mappedVuosiluokat = [];
@@ -49,6 +50,7 @@ angular.module('eperusteApp')
       cancel: function () {},
       notify: function (value) {
         $scope.editEnabled = value;
+        PerusteProjektiSivunavi.setVisible(!value);
       },
       validate: function () { return true; }
     };

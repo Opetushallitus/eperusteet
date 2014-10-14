@@ -46,11 +46,16 @@ angular.module('eperusteApp')
         var window = angular.element($window);
         var transcluded = element.find('#sivunavi-tc').contents();
         scope.hasTransclude = transcluded.length > 0;
-        scope.oneAtATime = true;
-        scope.footerContent = scope.footer ? $compile(scope.footer)(scope) : '';
-        if (scope.footer) {
-          element.find('#sivunavi-footer-content').append(scope.footerContent).addClass('has-content');
+
+        function updateFooter() {
+          scope.footerContent = scope.footer ? $compile(scope.footer)(scope) : '';
+          var el = element.find('#sivunavi-footer-content');
+          el.empty().removeClass('has-content');
+          if (scope.footer) {
+            el.append(scope.footerContent).addClass('has-content');
+          }
         }
+        scope.$watch('footer', updateFooter);
 
         /**
          * All this just to get a divider line to expand to the bottom of the page
@@ -186,7 +191,7 @@ angular.module('eperusteApp')
     };
 
     $scope.refresh = function () {
-      if (!_.isUndefined($scope.items)) {
+      if (_.isArray($scope.items)) {
         doRefresh($scope.items);
       } else {
         _.each($scope.sections, function (section) {

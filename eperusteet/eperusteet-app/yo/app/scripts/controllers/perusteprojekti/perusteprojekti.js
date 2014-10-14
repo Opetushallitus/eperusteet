@@ -185,22 +185,36 @@ angular.module('eperusteApp')
     function init() {
       $scope.projekti = perusteprojektiTiedot.getProjekti();
       $scope.peruste = perusteprojektiTiedot.getPeruste();
-      // TODO poista kun tilasiirtymät tuettuina
-      //$scope.projekti.tila = 'luonnos';
     }
     init();
 
+    var amFooter = '<button class="btn btn-default" kaanna="lisaa-tutkintokohtainen-osa" icon-role="add" ng-click="$parent.lisaaTekstikappale()" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }"></button>';
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
     $scope.sivunavi = {
       suoritustapa: PerusteProjektiService.getSuoritustapa(),
       items: [],
-      footer: '<button class="btn btn-default" kaanna="lisaa-tutkintokohtainen-osa" icon-role="add" ng-click="$parent.lisaaTekstikappale()" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }"></button>'
+      footer: amFooter,
+      type: 'AM'
     };
     var sivunaviItemsChanged = function (items) {
       $scope.sivunavi.items = items;
     };
-    PerusteProjektiSivunavi.register(sivunaviItemsChanged);
+    var sivunaviTypeChanged = function (type) {
+      $scope.sivunavi.type = type;
+      switch (type) {
+        case 'YL':
+          $scope.sivunavi.suoritustapa = '';
+          $scope.sivunavi.footer = '';
+          break;
+        default:
+          $scope.sivunavi.footer = amFooter;
+          $scope.sivunavi.suoritustapa = PerusteProjektiService.getSuoritustapa();
+          break;
+      }
+    };
+    PerusteProjektiSivunavi.register('itemsChanged', sivunaviItemsChanged);
+    PerusteProjektiSivunavi.register('typeChanged', sivunaviTypeChanged);
     PerusteProjektiSivunavi.refresh(true);
 
     $scope.$on('$stateChangeSuccess', function() {
@@ -208,7 +222,7 @@ angular.module('eperusteApp')
       if (newSuoritustapa !== $scope.sivunavi.suoritustapa) {
         PerusteProjektiSivunavi.refresh(true);
       }
-      $scope.sivunavi.suoritustapa = newSuoritustapa;
+      $scope.sivunavi.suoritustapa = $scope.sivunavi.type === 'AM' ? newSuoritustapa : '';
     });
 
     Navigaatiopolku.asetaElementit({
@@ -223,9 +237,7 @@ angular.module('eperusteApp')
     };
 
     $scope.canChangePerusteprojektiStatus = function() {
-      // TODO vain omistaja voi vaihtaa tilaa
       return perusteprojektiOikeudet.onkoOikeudet('perusteprojekti', 'tilanvaihto');
-      //return true;
     };
 
     $scope.showBackLink = function () {
@@ -274,14 +286,36 @@ angular.module('eperusteApp')
     });
   })
   .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams,
-                                                $state, $location) {
+                                                $state, $location, YleinenData, PerusopetusService) {
     var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
     var STATE_OSA = 'root.perusteprojekti.suoritustapa.perusteenosa';
-
+    var STATE_OSALISTAUS = 'root.perusteprojekti.osalistaus';
+    var STATE_OSAALUE = 'root.perusteprojekti.osaalue';
+    var isTutkinnonosatActive = function () {
+      return $state.is(STATE_OSAT) || ($state.is(STATE_OSA) &&
+        $stateParams.perusteenOsanTyyppi === 'tutkinnonosa');
+    };
+    var AM_ITEMS = [
+      {
+        label: 'tutkinnonosat',
+        link: [STATE_OSAT, {}],
+        isActive: isTutkinnonosatActive
+      },
+      {
+        label: 'tutkinnon-rakenne',
+        link: ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: ''}]
+      },
+    ];
+    var YL_ITEMS = {
+      'laaja-alainen-osaaminen': PerusopetusService.OSAAMINEN,
+      'vuosiluokkakokonaisuudet': PerusopetusService.VUOSILUOKAT,
+      'oppiaineet': PerusopetusService.OPPIAINEET
+    };
     var service = null;
     var _isVisible = false;
     var items = [];
     var nameMap = {};
+    var perusteenTyyppi = 'AM';
     var data = {
       projekti: {
         peruste: {
@@ -291,7 +325,8 @@ angular.module('eperusteApp')
       }
     };
     var callbacks = {
-      changed: angular.noop
+      itemsChanged: angular.noop,
+      typeChanged: angular.noop
     };
 
     var processNode = function (node, level) {
@@ -327,36 +362,44 @@ angular.module('eperusteApp')
       return $location.url().indexOf(url) > -1;
     };
 
-    var isTutkinnonosatActive = function () {
-      return $state.is(STATE_OSAT) || ($state.is(STATE_OSA) &&
-        $stateParams.perusteenOsanTyyppi === 'tutkinnonosa');
-    };
-
     var buildTree = function () {
-      items = [
-        {
-          label: 'tutkinnonosat',
-          link: [STATE_OSAT, {}],
-          isActive: isTutkinnonosatActive
-        },
-        {
-          label: 'tutkinnon-rakenne',
-          link: ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: ''}]
-        },
-      ];
+      if (perusteenTyyppi === 'YL') {
+        items = [];
+        _.each(YL_ITEMS, function (key, label) {
+          items.push({
+            label: label,
+            link: [STATE_OSALISTAUS, {osanTyyppi: key}]
+          });
+          var osat = PerusopetusService.getOsat(key);
+          _.each(osat, function (osa) {
+            items.push({
+              depth: 1,
+              label: osa.nimi ? osa.nimi : osa.perusteenOsa.nimi,
+              link: [STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id}]
+            });
+          });
+        });
+      } else {
+        items = _.clone(AM_ITEMS);
+      }
       processNode(data.projekti.peruste.sisalto);
-      callbacks.changed(items);
+      callbacks.itemsChanged(items);
     };
 
     var load = function () {
       data.projekti = service.getProjekti();
       data.projekti.peruste = service.getPeruste();
       data.projekti.peruste.sisalto = service.getSisalto();
+      var oldTyyppi = perusteenTyyppi;
+      perusteenTyyppi = YleinenData.isPerusopetus(data.projekti.peruste) ? 'YL' : 'AM';
+      if (oldTyyppi !== perusteenTyyppi) {
+        callbacks.typeChanged(perusteenTyyppi);
+      }
       buildTree();
     };
 
-    this.register = function (cb) {
-      callbacks.changed = cb;
+    this.register = function (key, cb) {
+      callbacks[key] = cb;
     };
 
     this.refresh = function (light) {
