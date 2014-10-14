@@ -15,7 +15,7 @@
  */
 
 'use strict';
-/* global _ */
+/* global _, document */
 
 angular.module('eperusteApp')
   .service('Algoritmit', function(Kaanna) {
@@ -79,7 +79,39 @@ angular.module('eperusteApp')
       return cb(juuri, lapsellaOn) || lapsellaOn;
     }
 
+    function normalizeTeksti(teksti) {
+      function poistaTurhat(t) {
+        t = t || '';
+        var txt = document.createElement('textarea');
+        txt.innerHTML = t;
+        t = txt.value;
+        t = t.replace(/[\u00A0|\u0000-\u001F]/g, ' ');
+
+        var last;
+        do {
+          last = t;
+          t = last.replace(/  /g, ' ');
+        } while (_.size(last) !== _.size(t));
+        return t.trim();
+      }
+
+      if (_.isString(teksti)) {
+        return poistaTurhat(teksti);
+      }
+      else if (_.isPlainObject(teksti)) {
+        var uusiTeksti = _.clone(teksti);
+        _.forEach(uusiTeksti, function(v) {
+          v = poistaTurhat(v);
+        });
+        return uusiTeksti;
+      }
+      else {
+        return teksti;
+      }
+    }
+
     return {
+      normalizeTeksti: normalizeTeksti,
       rajausVertailu: rajausVertailu,
       mapLapsisolmut: mapLapsisolmut,
       kaikilleLapsisolmuille: kaikilleLapsisolmuille,
@@ -87,7 +119,7 @@ angular.module('eperusteApp')
       match: match,
       access: access,
       perusteenSuoritustavanYksikko: perusteenSuoritustavanYksikko,
-      kaikilleTutkintokohtaisilleOsille: kaikilleTutkintokohtaisilleOsille
+      kaikilleTutkintokohtaisilleOsille: kaikilleTutkintokohtaisilleOsille,
     };
   });
 
