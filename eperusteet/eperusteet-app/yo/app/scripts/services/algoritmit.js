@@ -99,11 +99,7 @@ angular.module('eperusteApp')
         return poistaTurhat(teksti);
       }
       else if (_.isPlainObject(teksti)) {
-        var uusiTeksti = _.clone(teksti);
-        _.forEach(uusiTeksti, function(v) {
-          v = poistaTurhat(v);
-        });
-        return uusiTeksti;
+        return _.zipObject(_.keys(teksti), _.map(_.values(teksti), poistaTurhat));
       }
       else {
         return teksti;
