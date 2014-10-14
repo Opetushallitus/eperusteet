@@ -7,13 +7,10 @@
         <h3 ng-if="vanhempi || luonti || leikelauta" kaanna>perustiedot</h3>
         <formfield ng-if="vanhempi || luonti || leikelauta" model="ryhma" model-var="nimi" label="nimi" type="text" required></formfield>
         <formfield ng-if="vanhempi || luonti || leikelauta" model="ryhma" model-var="kuvaus" label="kuvaus" type="text"></formfield>
-        <formfield ng-if="luonti" model="ryhma" model-var="rooli" label="rooli" options="roolit"></formfield>
-        <div class="row" ng-if="luonti">
-            <div class="col-sm-offset-3 alert alert-info">
-                <span ng-show="ryhma.rooli === 'määritelty'" kaanna>ryhma-rooli-selite-maaritelty</span>
-                <span ng-show="ryhma.rooli === 'määrittelemätön'" kaanna>ryhma-rooli-selite-maarittelematon</span>
-            </div>
+        <div ng-if="luonti">
+          <formfield model="ryhma" model-var="rooli" label="rooli" options="roolit"><ohje teksti="ohje-ryhma-rooli"></ohje></formfield>
         </div>
+
         <div ng-if="ryhma.rooli === 'määritelty' && luonti">
             <h3  kaanna>osaamisala</h3>
             <div class="col-sm-offset-3" >
@@ -25,12 +22,12 @@
         </div>
         <div ng-class="(suoritustapa !== 'naytto') ? 'row' : ''">
             <div class="col-sm-6" ng-if="suoritustapa !== 'naytto'">
-                <h3 kaanna>tutkinnonosa-laajuus</h3>
+                <h3>{{'tutkinnonosa-laajuus'|kaanna}} <ohje teksti="ohje-ryhma-laajuus"></ohje></h3>
                 <formfield model="ryhma" model-var="muodostumisSaanto.laajuus.minimi" label="minimi" type="float" name="laajuusMin" min="0" max="999" step="0.5" form="ryhmaForm"></formfield>
                 <formfield model="ryhma" model-var="muodostumisSaanto.laajuus.maksimi" label="maksimi" type="float" name="laajuusMax" min="0" max="999" step="0.5" form="ryhmaForm"></formfield>
             </div>
             <div ng-class="(suoritustapa !== 'naytto') ? 'col-sm-6' : ''">
-                <h3 kaanna>tutkinnonosa-koko</h3>
+                <h3>{{'tutkinnonosa-koko'|kaanna}} <ohje teksti="ohje-ryhma-koko"></ohje></h3>
                 <formfield model="ryhma" model-var="muodostumisSaanto.koko.minimi" label="minimi" type="integer" name="kokoMin" min="0" max="999" form="ryhmaForm"></formfield>
                 <formfield model="ryhma" model-var="muodostumisSaanto.koko.maksimi" label="maksimi" type="integer" name="kokoMax" min="0" max="999" form="ryhmaForm"></formfield>
             </div>
