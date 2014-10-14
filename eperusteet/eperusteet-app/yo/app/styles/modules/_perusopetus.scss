@@ -40,6 +40,36 @@ ul.vuosiluokat {
   h4 {
     font-weight: 700;
   }
+  .osioheader {
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+  .inputwrapper {
+    width: 100%;
+    input {
+      float: left;
+    }
+  }
+  .oppiaine-header {
+    table {
+      tbody {
+        th, td {
+          padding-bottom: 10px;
+          vertical-align: top;
+        }
+        th {
+          padding-right: 20px;
+        }
+        td {
+          ul {
+            list-style-type: none;
+            padding-left: 0;
+          }
+        }
+      }
+    }
+
+  }
 }
 
 $index-bubble-size: 24px;

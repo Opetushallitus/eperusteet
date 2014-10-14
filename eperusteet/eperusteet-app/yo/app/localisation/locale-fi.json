@@ -707,6 +707,11 @@
     "tavoitteen-kuvaus-placeholder": "Lisää tavoitteen kuvaus",
     "lisaa-arviointi": "Lisää arviointi",
     "lisaa-laaja-alainen-osaaminen": "Lisää laaja-alainen osaaminen",
-    "lisaa-opetuksen-tavoite": "Lisää opetuksen tavoite"
+    "lisaa-opetuksen-tavoite": "Lisää opetuksen tavoite",
+    "oppimaarat": "Oppimäärät",
+    "yksi-oppimaara": "Yksi oppimäärä",
+    "useita-oppimaaria": "Useita oppimääriä",
+    "oppimaara": "Oppimäärä",
+    "lisaa-oppimaara": "Lisää oppimäärä"
 
 }

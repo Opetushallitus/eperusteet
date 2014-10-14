@@ -118,5 +118,19 @@ angular.module('eperusteApp')
       })();
     };
 
+    $scope.actionButtonFn = function (button) {
+      (button.callback || angular.noop)();
+    };
+
+    $scope.shouldHide = function (button) {
+      var custom = button.hide ? button.hide : '';
+      var defaults = $scope.editEnabled || !$scope.versiot.latest;
+      if (!custom) {
+        return defaults;
+      }
+      var parsed = $scope.$eval(custom);
+      return defaults || parsed;
+    };
+
     $scope.$watch('editableModel', refreshPromise);
  });

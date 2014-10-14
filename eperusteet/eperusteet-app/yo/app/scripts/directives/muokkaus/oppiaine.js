@@ -65,6 +65,15 @@ angular.module('eperusteApp')
         removeWholeFn: function () {
           // TODO delete
         },
+        actionButtons: [
+          {
+            label: 'lisaa-oppimaara',
+            role: 'add',
+            callback: function () {
+            },
+            hide: '!model.koosteinen'
+          }
+        ],
         addFieldCb: function (/*field*/) {
 
         },
