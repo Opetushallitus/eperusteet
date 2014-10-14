@@ -497,8 +497,8 @@
     "aloitus-ennen-lopetusta": "Toimikauden aloituspäivämäärän täytyy olla ennen päättymisajankohtaa.",
     "lopetus-aloituksen-jälkeen": "Toimikauden päättymispäivämäärä täytyy olla aloitusajankohdan jälkeen.",
     "kelvoton-pvm": "Kelvoton päivämäärä",
-    "yhteistyotaho-label": "Yhteistyötaho",
-    "anna-yhteistyotaho-placeholder": "Syötä yhteistyötaho",
+    "yhteistyotaho-label": "Sopimusosapuoli",
+    "anna-yhteistyotaho-placeholder": "Syötä sopimusosapuoli",
     "valitse-koulutustyyppi": "Valitse koulutustyyppi",
     "koulutustyyppi-label": "Koulutustyyppi",
     "perusteprojektin-pohjaksi-otetaan-peruste": "Perusteprojektin pohjaksi otetaan peruste",
@@ -527,7 +527,7 @@
     "hallinta": "Hallinta",
     "hallintapaneeli": "Hallintapaneeli",
 
-    "ops": "Opetussuunnitelma",
+    "ops": "Peruskoulutus",
     "naytto": "Näyttötutkinto",
 
     "ePerusteet-koti": "ePerusteet",
@@ -551,9 +551,6 @@
     "lisaa-tutkintokohtainen-osa": "Lisää tekstikappale",
     "tuo-tutkintokohtainen-osa": "Tuo tekstikappale",
     "uusi-tutkinnon-osa": "<Uusi sisältö>",
-
-    "sisältö-selite-ops": "Opetussuunnitelman mukaisen suoritustavan sisältö",
-    "sisältö-selite-naytto": "Näyttötutkinnon mukaisen suoritustavan sisältö",
 
     "lukko-käyttäjällä": "Lukko on varattu käyttäjälle",
 
