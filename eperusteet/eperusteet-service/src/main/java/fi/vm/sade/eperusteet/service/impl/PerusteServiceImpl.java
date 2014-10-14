@@ -808,6 +808,10 @@ public class PerusteServiceImpl implements PerusteService {
     }
 
     private void lisaaTutkinnonMuodostuminen(Peruste peruste) {
+        if ("koulutustyyppi_9999".equals(peruste.getKoulutustyyppi())) {
+            return;
+        }
+        
         PerusteenOsaViiteDto.Matala viite;
 
         for (Suoritustapa st : peruste.getSuoritustavat()) {
