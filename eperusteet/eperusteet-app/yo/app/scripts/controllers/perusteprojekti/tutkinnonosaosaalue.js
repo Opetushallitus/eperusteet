@@ -1,0 +1,158 @@
+'use strict';
+/* global _ */
+
+angular.module('eperusteApp')
+  .controller('TutkinnonOsaOsaAlueCtrl', function ($scope, $state, $stateParams, Editointikontrollit,
+    Tutke2OsaData, PerusteProjektiSivunavi, tutkinnonosanTiedot, TutkinnonOsanOsaAlue, Lukitus, Notifikaatiot) {
+
+    $scope.osaamistavoitepuu = [];
+    var tempId = 0;
+
+    PerusteProjektiSivunavi.setVisible(false);
+    $scope.tabs = [
+      {
+        id: 0,
+        nimi: 'sisalto'
+      },
+      {
+        id: 1,
+        nimi: 'rakenne'
+      }
+    ];
+    $scope.selectedTab = $scope.tabs[0];
+
+    $scope.tutkinnonOsa = {};
+    $scope.osaAlue = {
+      nimi:{}
+    };
+
+    function luoOsaamistavoitepuu() {
+      if ($scope.osaAlue && $scope.osaAlue.osaamistavoitteet) {
+        $scope.osaamistavoitepuu = _($scope.osaAlue.osaamistavoitteet).filter('pakollinen')
+          .each(function(o){
+            o.$poistettu = false;
+        }).value();
+        _($scope.osaAlue.osaamistavoitteet).filter({pakollinen: false})
+          .each(function (r) {
+            r.$poistettu = false;
+            if (r._esitieto) {
+              lisaaOsaamistavoitteelleLapsi(r);
+            } else {
+              $scope.osaamistavoitepuu.push(r);
+            }
+          })
+          .value();
+      }
+    }
+
+    function lisaaOsaamistavoitteelleLapsi(lapsi) {
+      _.each($scope.osaamistavoitepuu, function (osaamistavoite) {
+        if (osaamistavoite.id === parseInt(lapsi._esitieto)) {
+          osaamistavoite.lapsi = lapsi;
+        }
+      });
+    }
+
+    $scope.lisaaOsaamistavoite = function () {
+      var osaamistavoitePakollinen = {
+        pakollinen: true,
+        nimi: {},
+        $open: true,
+        $poistettu: false
+      };
+      var osaamistavoiteValinnainen = {
+        pakollinen: false,
+        $poistettu: false
+      };
+      osaamistavoitePakollinen.lapsi = osaamistavoiteValinnainen;
+      $scope.osaamistavoitepuu.push(osaamistavoitePakollinen);
+    };
+
+    $scope.poistaTavoite = function(tavoite) {
+      if (tavoite.pakollinen === true) {
+        if (_.isObject(tavoite.lapsi)) {
+          tavoite.lapsi.nimi = tavoite.nimi;
+          tavoite.lapsi.$open = tavoite.$open;
+          tavoite.lapsi._esitieto = null;
+          $scope.osaamistavoitepuu.push(tavoite.lapsi);
+        }
+        tavoite.$poistettu = true;
+      } else {
+        tavoite.$poistettu = true;
+      }
+    };
+
+
+    var osaAlueCallbacks = {
+      edit: function () {
+        console.log('edit');
+        TutkinnonOsanOsaAlue.get({osanId: $stateParams.perusteenOsaId, osaalueenId: $stateParams.osaAlueId}, function(vastaus) {
+          $scope.osaAlue = vastaus;
+          luoOsaamistavoitepuu();
+        }, function (virhe){
+          Notifikaatiot.serverCb(virhe);
+          $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {}, {reload: true});
+        });
+      },
+      cancel: function () {
+        console.log('cancel');
+        $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {}, {reload: true});
+      },
+      save: function () {
+        console.log('save');
+        $scope.osaAlue.osaamistavoitteet = kokoaOsaamistavoitteet();
+        TutkinnonOsanOsaAlue.save({osanId: $stateParams.perusteenOsaId, osaalueenId: $stateParams.osaAlueId}, $scope.osaAlue, function (vastaus) {
+          $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {}, {reload: true});
+          console.log('vastaus',vastaus);
+        }, function(virhe) {
+          Notifikaatiot.serverCb(virhe);
+          $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {}, {reload: true});
+        });
+      }
+    };
+
+    var kokoaOsaamistavoitteet = function() {
+      var osaamistavoitteet = [];
+      _.each($scope.osaamistavoitepuu, function(osaamistavoite) {
+        if (osaamistavoite.pakollinen && !osaamistavoite.$poistettu) {
+          if (!osaamistavoite.id) {
+            tempId = (tempId - 1);
+            osaamistavoite.id = tempId;
+          }
+          osaamistavoitteet.push(osaamistavoite);
+          if (osaamistavoite.lapsi && !osaamistavoite.lapsi.$poistettu) {
+            osaamistavoite.lapsi._esitieto = osaamistavoite.id;
+            osaamistavoite.lapsi.nimi = osaamistavoite.nimi;
+            if (!osaamistavoite.lapsi.id) {
+              tempId = (tempId - 1);
+              osaamistavoite.lapsi.id = tempId;
+            }
+            osaamistavoitteet.push(osaamistavoite.lapsi);
+          }
+        }
+        else if (!osaamistavoite.pakollinen && !osaamistavoite.$poistettu) {
+          if (!osaamistavoite.id) {
+            tempId = (tempId - 1);
+            osaamistavoite.id = tempId;
+          }
+          osaamistavoitteet.push(osaamistavoite);
+        }
+
+      });
+      return osaamistavoitteet;
+    };
+
+    function lukitse(cb) {
+      Lukitus.lukitsePerusteenosa($stateParams.perusteenOsaId, cb);
+    }
+
+    Editointikontrollit.registerCallback(osaAlueCallbacks);
+    lukitse(function () {
+      Editointikontrollit.startEditing();
+    });
+
+    $scope.changeTab = function (tab) {
+      $scope.selectedTab = tab;
+    };
+
+  });

@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueKokonaanDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteLaajaDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
@@ -84,7 +85,10 @@ public interface PerusteenOsaService {
     OsaAlueLaajaDto addTutkinnonOsaOsaAlue(@P("id") final Long id, OsaAlueLaajaDto osaAlueDto);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
-    OsaAlueLaajaDto updateTutkinnonOsaOsaAlue(@P("id") final Long id, final Long osaAlueId, OsaAlueLaajaDto osaAlue);
+    OsaAlueKokonaanDto updateTutkinnonOsaOsaAlue(@P("id") final Long id, final Long osaAlueId, OsaAlueKokonaanDto osaAlue);
+
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
+    OsaAlueKokonaanDto getTutkinnonOsaOsaAlue(@P("id") final Long id, final Long osaAlueId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
     List<OsaAlueLaajaDto> getTutkinnonOsaOsaAlueet(@P("id") final Long id);

@@ -41,9 +41,12 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('Tutke2KentatController', function ($scope, Tutke2Osa, Tutke2OsaData,
+  .controller('Tutke2KentatController', function ($scope, $state, Tutke2Osa, Tutke2OsaData,
     TutkinnonOsanOsaAlue, Osaamistavoite, Varmistusdialogi, $rootScope, $timeout,
-    Utils, Notifikaatiot, Lukitus, $q, YleinenData) {
+    Utils, Notifikaatiot, Lukitus, $q, YleinenData, TutkinnonosanTiedotService) {
+
+
+      console.log('tutke2 tutkinnonosa', TutkinnonosanTiedotService.getTutkinnonOsa());
 
     var Editointikontrollit = $scope.kontrollit;
     var tutke2osaDefer = $q.defer();
@@ -111,24 +114,27 @@ angular.module('eperusteApp')
         };
       $scope.tutke2osa.$editing.push(newAlue);
       },
-      edit: function (alue, $event, state) {
+      edit: function (alue, $event) {
         stopEvent($event);
-        state = _.isUndefined(state) || state;
-        if (state) {
-          Editointikontrollit.registerCallback($scope.osaAlue.callbacks);
-          lukitse(function () {
-            Editointikontrollit.startEditing();
-          });
-          alue.$open = true;
-          alue.$editing = true;
-          $scope.osaAlue.$editing = angular.copy(alue);
-          $scope.original = alue;
-        } else {
-          if ($scope.original) {
-            $scope.original.$editing = false;
-          }
-          $scope.osaAlue.$editing = null;
-        }
+        console.log('osa-alue', alue);
+        console.log('state', $state);
+        $state.go('root.perusteprojekti.suoritustapa.perusteenosa.osaalue', {osaAlueId: alue.id});
+//        state = _.isUndefined(state) || state;
+//        if (state) {
+//          Editointikontrollit.registerCallback($scope.osaAlue.callbacks);
+//          lukitse(function () {
+//            Editointikontrollit.startEditing();
+//          });
+//          alue.$open = true;
+//          alue.$editing = true;
+//          $scope.osaAlue.$editing = angular.copy(alue);
+//          $scope.original = alue;
+//        } else {
+//          if ($scope.original) {
+//            $scope.original.$editing = false;
+//          }
+//          $scope.osaAlue.$editing = null;
+//        }
       },
       remove: function (alue) {
         if (alue.id) {

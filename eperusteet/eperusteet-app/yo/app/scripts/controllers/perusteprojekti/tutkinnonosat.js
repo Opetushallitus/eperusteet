@@ -24,7 +24,7 @@ angular.module('eperusteApp')
       nakymatyyli: 'palikka'
     };
   })
-  .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $state, $stateParams,
+  .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $state, $stateParams, $rootScope,
     perusteprojektiTiedot, PerusteProjektiService, PerusteenRakenne, Notifikaatiot,
     PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode) {
 
@@ -88,4 +88,7 @@ angular.module('eperusteApp')
     $scope.getHref = function(valittu) {
       return $state.href('root.perusteprojekti.suoritustapa.perusteenosa', { perusteenOsaId: valittu._tutkinnonOsa, perusteenOsanTyyppi: 'tutkinnonosa', versio: '' });
     };
+
+
+
   });
