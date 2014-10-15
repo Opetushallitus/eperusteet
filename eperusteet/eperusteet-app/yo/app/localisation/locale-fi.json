@@ -476,6 +476,8 @@
 
     "toiminto": "Toiminto",
 
+    "mandatory-odottamaton-virhe": "Kaikkia pakollisia kenttiä ei ole täytetty",
+    "mandatory-otsikkoa-ei-asetettu": "Otsikko on pakollinen",
     "tuo-peruste": "Tuo peruste",
     "perustepohja": "Pohja",
     "tuo-perustepohja": "Tuo perustepohja",

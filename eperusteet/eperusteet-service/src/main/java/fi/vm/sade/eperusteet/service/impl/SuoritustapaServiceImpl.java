@@ -71,6 +71,7 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
         suoritustapa.setSuoritustapakoodi(suoritustapakoodi);
         suoritustapa.setLaajuusYksikko(yksikko);
 
+
         PerusteenOsaViite perusteenOsaViite = perusteenOsaViiteRepository.save(new PerusteenOsaViite());
         perusteenOsaViite.setLapset(new ArrayList<PerusteenOsaViite>());
         RakenneModuuli rakenne = rakenneRepository.save(new RakenneModuuli());
