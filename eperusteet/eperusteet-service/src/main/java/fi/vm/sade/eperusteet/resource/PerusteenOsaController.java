@@ -19,6 +19,7 @@ import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueKokonaanDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteLaajaDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
@@ -150,7 +151,7 @@ public class PerusteenOsaController {
      */
     @RequestMapping(value = "{id}/osaalue/{osaAlueId}", method = POST)
     @ResponseBody
-    public ResponseEntity<OsaAlueLaajaDto> updateTutkinnonOsaOsaAlue(@PathVariable("id") final Long id, @PathVariable("osaAlueId") final Long osaAlueId, @RequestBody OsaAlueLaajaDto osaAlue) {
+    public ResponseEntity<OsaAlueKokonaanDto> updateTutkinnonOsaOsaAlue(@PathVariable("id") final Long id, @PathVariable("osaAlueId") final Long osaAlueId, @RequestBody OsaAlueKokonaanDto osaAlue) {
         return new ResponseEntity<>(service.updateTutkinnonOsaOsaAlue(id, osaAlueId, osaAlue), HttpStatus.OK);
     }
 
@@ -158,6 +159,20 @@ public class PerusteenOsaController {
     @ResponseBody
     public ResponseEntity<List<OsaAlueLaajaDto>> getTutkinnonOsaOsaAlueet(@PathVariable("id") final Long id) {
         return new ResponseEntity<>(service.getTutkinnonOsaOsaAlueet(id), HttpStatus.OK);
+    }
+
+
+    /**
+     * Hakee tutkinnon osan osa-alueen.
+     *
+     * @param id
+     * @param osaAlueId
+     * @return Tutkinnon osan osa-alue
+     */
+    @RequestMapping(value = "{id}/osaalue/{osaAlueId}", method = GET)
+    @ResponseBody
+    public ResponseEntity<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlue(@PathVariable("id") final Long id, @PathVariable("osaAlueId") final Long osaAlueId) {
+        return new ResponseEntity<>(service.getTutkinnonOsaOsaAlue(id, osaAlueId), HttpStatus.OK);
     }
 
     /**

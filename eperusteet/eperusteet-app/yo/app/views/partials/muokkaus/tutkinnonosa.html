@@ -1,4 +1,5 @@
-<div>
+<div ng-show="osaAlueAlitila" ui-view></div>
+<div ng-show="!osaAlueAlitila">
   <revert-note object="tutkinnonOsa" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
   <div class="action-buttons">
     <div class="floater" ng-attr-title="{{lockNotification}}">

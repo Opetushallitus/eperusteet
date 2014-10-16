@@ -114,8 +114,20 @@ angular.module('eperusteApp')
         url: '/perusteenosa/{perusteenOsanTyyppi}/{perusteenOsaId}{versio:(?:/[^/]+)?}',
         templateUrl: 'views/muokkaus.html',
         controller: 'MuokkausCtrl',
+        resolve: {'tutkinnonosanTiedot': 'TutkinnonosanTiedotService',
+          'perusteprojektiOikeudetNouto': ['tutkinnonosanTiedot', '$stateParams', function (tutkinnonosanTiedot, $stateParams) {
+              tutkinnonosanTiedot.noudaTutkinnonOsa($stateParams);
+            }]},
         onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
           PerusteProjektiSivunavi.setVisible();
+        }]
+      })
+      .state('root.perusteprojekti.suoritustapa.perusteenosa.osaalue', {
+        url: '/osaalue/{osaAlueId}',
+        templateUrl: 'views/partials/muokkaus/tutkinnonOsaOsaAlue.html',
+        controller: 'TutkinnonOsaOsaAlueCtrl',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(false);
         }]
       })
       .state('root.perusteprojekti.suoritustapa.sisalto', {

@@ -244,6 +244,7 @@
     "tutkinnonosa-tavoitteet": "Tavoitteet",
     "tutkinnonosa-osaamisala": "Osaamisala",
     "tutkinnonosa-jarjestysnumero": "Järjestysnumero",
+    "tutkinnonosa-tunnustaminen": "Tunnustaminen",
 
     "osaamisala": "Osaamisala",
     "ammattitaidonOsoittamistavat": "Ammattitaidon osoittamistavat",
@@ -378,6 +379,7 @@
     "varmista-osion-poisto-teksti": "Haluatko poistaa osion? Kaikki osion sisältö menetetään.",
     "lisaa-osa-alue": "Lisää osa-alue",
     "lisaa-osaamistavoite": "Lisää osaamistavoite",
+    "tuo-osaamistavoite": "Tuo osaamistavoite",
 
     "ota-versio-kayttoon": "Ota tämä versio käyttöön",
     "katso-uusin-versio": "Katso uusin versio",
