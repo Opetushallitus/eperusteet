@@ -29,7 +29,7 @@
         <ul ui-sortable="sortableOptions" class="tree-group skratchpad" ng-model="skratchpad">
 
           <li class="skratchpad-item" ng-class="{ 'skratchpad-item-ryhma': !osa._tutkinnonOsaViite, 'skratchpad-item-virhe': osa.$virhe }"
-              ng-repeat="osa in skratchpad">
+              ng-repeat="osa in skratchpad|orderBy:[ryhmaSorter, jarjestysSorter, nimiSorter]">
             <div class="sp-action-icon">
               <a ng-if="osa._tutkinnonOsaViite" class="action-link" ng-click="poista(skratchpad, osa)" icon-role="remove"></a>
               <a ng-if="osa.osat !== undefined" class="action-link" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, osa, null, true)" icon-role="edit"></a>
@@ -61,7 +61,8 @@
           <a class="action-link" ng-click="toggleNotUsed()">{{ piilotaKaikki ? 'näytä-kaikki' : 'vain-käyttämättömät' | kaanna }}</a>
         </div>
         <ul ui-sortable="sortableOptionsUnique" ng-model="uniikit" class="uniikit placeholder-hide">
-          <li ng-model="osa" class="skratchpad-item" ng-repeat="osa in uniikit | startFrom:(tutkinnonOsat.sivu-1)*tutkinnonOsat.perSivu | limitTo:tutkinnonOsat.perSivu">
+          <li ng-model="osa" class="skratchpad-item"
+              ng-repeat="osa in uniikit | orderBy:[jarjestysSorter, nimiSorter] | startFrom:(tutkinnonOsat.sivu-1)*tutkinnonOsat.perSivu | limitTo:tutkinnonOsat.perSivu">
             <div class="sp-action-icon">
               <a class="action-link" ng-click="rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate = !rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate"
                  ng-show="kaytetytUniikit[osa._tutkinnonOsaViite]" ng-attr-title="{{rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate && ('poista-korostus'|kaanna) || ('korosta'|kaanna)}}">

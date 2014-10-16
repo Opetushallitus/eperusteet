@@ -15,12 +15,14 @@
  */
 package fi.vm.sade.eperusteet.service.mapping;
 
+import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;
 import fi.vm.sade.eperusteet.domain.yl.OppiaineenVuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.TekstiOsa;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
+import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
 import java.util.List;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
@@ -55,11 +57,12 @@ public class MappingTest {
         ovk.setTavoitteet(tavoitteet);
 
         OppiaineenVuosiluokkaKokonaisuusDto dto = mapper.map(ovk, OppiaineenVuosiluokkaKokonaisuusDto.class);
+        dto.setOhjaus(Optional.<TekstiOsaDto>absent());
         dto.getTavoitteet().get(0).setTavoite(olt("Tavoite"));
         mapper.map(dto, ovk);
 
         assertTrue(ovk.getTavoitteet().get(0) == ot);
         assertEquals("Tavoite", ovk.getTavoitteet().get(0).getTavoite().getTeksti().get(Kieli.FI));
     }
-    
+
 }

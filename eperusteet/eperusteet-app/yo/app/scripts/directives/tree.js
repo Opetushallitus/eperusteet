@@ -275,9 +275,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .directive('treeWrapper', function($stateParams, $state, Editointikontrollit, TutkinnonOsanTuonti, Kaanna,
-                                     PerusteTutkinnonosa, Notifikaatiot, PerusteenRakenne, Muodostumissaannot,
-                                     Algoritmit, TreeDragAndDrop) {
+  .directive('treeWrapper', function() {
     return {
       restrict: 'AE',
       transclude: true,
@@ -290,194 +288,237 @@ angular.module('eperusteApp')
         muokkaus: '=',
         esitys: '=?'
       },
-      controller: function($scope) {
-        $scope.suljettuViimeksi = true;
-        $scope.lisataanUuttaOsaa = false;
-        $scope.uusiOsa = null;
-        $scope.skratchpad = [];
-        $scope.uniikit = [];
-        $scope.kaytetytUniikit = {};
-        $scope.kaikkiUniikit = [];
-        $scope.topredicate = 'nimi.fi';
-        $scope.tosarajaus = '';
+      controller: 'TreeWrapperController'
+    };
+  })
 
-        $scope.tutkinnonOsat = {
-          perSivu: 8,
-          rajaus: '',
-          multiPage: false,
-          sivu: 1
-        };
-      },
-      link: function(scope) {
-        scope.paivitaTekstiRajaus = function (value) {
-          if (!_.isEmpty(value)) {
-            PerusteenRakenne.kaikilleRakenteille(scope.rakenne.rakenne, function(item) {
-              // 1. Find matches
-              item.$collapsed = true;
-              var osa = scope.rakenne.tutkinnonOsaViitteet[item._tutkinnonOsaViite];
-              if (osa) {
-                osa.$matched = Algoritmit.rajausVertailu(value, osa, 'nimi');
-              }
-            });
-            PerusteenRakenne.kaikilleRakenteille(scope.rakenne.rakenne, function(item) {
-              // 2. Uncollapse parents of matched
-              var osa = scope.rakenne.tutkinnonOsaViitteet[item._tutkinnonOsaViite];
-              if (osa && osa.$matched) {
-                var parent = item.$parent;
-                while (parent) {
-                  if (parent.$parent) {
-                    parent.$collapsed = false;
-                  }
-                  parent = parent.$parent;
-                }
-              }
-            });
-          } else {
-            // Uncollapse all when search is cleared
-            PerusteenRakenne.kaikilleRakenteille(scope.rakenne.rakenne, function(item) {
-              item.$collapsed = false;
-            });
+  .controller('TreeWrapperController', function ($scope, Kaanna, PerusteenRakenne, Muodostumissaannot,
+      Algoritmit, TreeDragAndDrop, $filter) {
+    $scope.suljettuViimeksi = true;
+    $scope.lisataanUuttaOsaa = false;
+    $scope.uusiOsa = null;
+    $scope.skratchpad = [];
+    $scope.uniikit = [];
+    $scope.kaytetytUniikit = {};
+    $scope.kaikkiUniikit = [];
+    $scope.topredicate = 'nimi.fi';
+    $scope.tosarajaus = '';
+
+    $scope.tutkinnonOsat = {
+      perSivu: 8,
+      rajaus: '',
+      multiPage: false,
+      sivu: 1
+    };
+
+    $scope.paivitaTekstiRajaus = function (value) {
+      if (!_.isEmpty(value)) {
+        PerusteenRakenne.kaikilleRakenteille($scope.rakenne.rakenne, function(item) {
+          // 1. Find matches
+          item.$collapsed = true;
+          var osa = $scope.rakenne.tutkinnonOsaViitteet[item._tutkinnonOsaViite];
+          if (osa) {
+            osa.$matched = Algoritmit.rajausVertailu(value, osa, 'nimi');
           }
-        };
-
-        scope.paivitaRajaus = function(input) {
-          input = input === undefined ? scope.tosarajaus : input;
-          scope.tosarajaus = input;
-          var filtered = !_.isEmpty(input);
-          scope.uniikit = _.reject(scope.kaikkiUniikit, function(yksi) {
-            var nimi = (Kaanna.kaanna(scope.rakenne.tutkinnonOsaViitteet[yksi._tutkinnonOsaViite].nimi) || '').toLowerCase();
-            return (filtered && nimi.indexOf(input.toLowerCase()) === -1) ||
-                   (scope.piilotaKaikki && scope.kaytetytUniikit[yksi._tutkinnonOsaViite]);
-          });
-        };
-
-        scope.toggleNotUsed = function () {
-          scope.piilotaKaikki = !scope.piilotaKaikki;
-          scope.paivitaRajaus();
-        };
-
-        function paivitaUniikit() {
-          scope.uniikit = [];
-          _(scope.rakenne.tutkinnonOsaViitteet)
-            .reject(function(osa) { return osa.poistettu; })
-            .each(function (osa) {
-              var match = scope.tutkinnonOsat.rajaus &&
-                _.contains(Kaanna.kaanna(osa.nimi).toLowerCase(),
-                scope.tutkinnonOsat.rajaus.toLowerCase());
-              if (!scope.tutkinnonOsat.rajaus || match) {
-                scope.uniikit.push({_tutkinnonOsaViite: osa.id});
+        });
+        PerusteenRakenne.kaikilleRakenteille($scope.rakenne.rakenne, function(item) {
+          // 2. Uncollapse parents of matched
+          var osa = $scope.rakenne.tutkinnonOsaViitteet[item._tutkinnonOsaViite];
+          if (osa && osa.$matched) {
+            var parent = item.$parent;
+            while (parent) {
+              if (parent.$parent) {
+                parent.$collapsed = false;
               }
-            })
-            .value();
-          scope.tutkinnonOsat.multiPage = _.size(scope.uniikit) > scope.tutkinnonOsat.perSivu;
-          scope.kaikkiUniikit = _.sortBy(scope.uniikit, function(osa) {
-            return (Kaanna.kaanna(scope.rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi) || '').toLowerCase();
-          });
-          scope.uniikit = scope.kaikkiUniikit;
-          scope.paivitaRajaus();
-          scope.kaytetytUniikit = PerusteenRakenne.puustaLoytyy(scope.rakenne.rakenne);
-        }
-        paivitaUniikit();
-
-        // Drag & drop: Leikelauta <-> puu
-        scope.sortableOptions = {
-          connectWith: '.tree-group',
-          cursor: 'move',
-          cursorAt: { top : 2, left: 2 },
-          delay: 100,
-          disabled: !scope.muokkaus,
-          placeholder: 'placeholder',
-          tolerance: 'pointer',
-          stop: function() {
-            PerusteenRakenne.kaikilleRakenteille(scope.rakenne.rakenne, function(r) {
-              delete r.$uusi;
-            });
-          },
-          start: function(e, ui) {
-            ui.placeholder.html('<div class="group-placeholder"></div>');
-          },
-          update: TreeDragAndDrop.update
-        };
-
-        // Drag & drop: Tutkinnon osat <-> puu
-        scope.sortableOptionsUnique = {
-          connectWith: '.tree-group',
-          cursor: 'move',
-          cursorAt: { top : 2, left: 2 },
-          delay: 100,
-          disabled: !scope.muokkaus,
-          placeholder: 'placeholder',
-          tolerance: 'pointer',
-          stop: function() {
-            paivitaUniikit();
-          },
-          start: function(e, ui) {
-            ui.placeholder.html('<div class="group-placeholder"></div>');
-            // Adjust index according to pagination
-            ui.item.sortable.index += (scope.tutkinnonOsat.sivu - 1) * scope.tutkinnonOsat.perSivu;
-          }
-        };
-
-        scope.ryhmaModaali = Muodostumissaannot.ryhmaModaali(function(ryhma, vanhempi, uusiryhma) {
-          if (uusiryhma) {
-            if (ryhma === undefined) {
-              uusiryhma.$uusi = true;
-              scope.skratchpad.push(uusiryhma);
-            }
-            else {
-              ryhma = _.merge(ryhma, uusiryhma);
+              parent = parent.$parent;
             }
           }
-          else { _.remove(scope.skratchpad, ryhma); }
         });
-
-        scope.$watch('skratchpad.length', function (value) {
-          Muodostumissaannot.skratchpadNotEmpty(value > 0);
-        });
-
-        scope.poista = function(i, a) {
-          _.remove(i, a);
-          scope.kaytetytUniikit = PerusteenRakenne.puustaLoytyy(scope.rakenne.rakenne);
-        };
-
-        scope.poistoTehtyCb = function() {
-          scope.kaytetytUniikit = PerusteenRakenne.puustaLoytyy(scope.rakenne.rakenne);
-        };
-
-        scope.uusiTutkinnonOsa = function(cb) {
-          scope.lisataanUuttaOsaa = true;
-          cb();
-        };
-
-        scope.$watch('rakenne.$suoritustapa', function() {
-          var sts = null;
-          if (scope.rakenne.$peruste) {
-            sts = _(scope.rakenne.$peruste.suoritustavat).filter(function(st) { return st.laajuusYksikko; }).value();
-            sts = _.zipObject(_.map(sts, 'suoritustapakoodi'), sts)[scope.rakenne.$suoritustapa];
-          }
-
-          scope.apumuuttujat = {
-            suoritustapa: scope.rakenne.$suoritustapa,
-            laajuusYksikko: sts ? sts.laajuusYksikko : null,
-            vanhin: scope.rakenne,
-            piilotaVirheet: true,
-            peruste: scope.rakenne.$peruste
-          };
-        });
-
-        scope.$watch('muokkaus', function() {
-          scope.sortableOptions.disabled = !scope.muokkaus;
-          scope.sortableOptionsUnique.disabled = !scope.muokkaus;
-          if (!scope.muokkaus) {
-            scope.skratchpad = [];
-          }
-        });
-
-        scope.$watch('apumuuttujat.haku', function (value) {
-          scope.paivitaTekstiRajaus(value);
+      } else {
+        // Uncollapse all when search is cleared
+        PerusteenRakenne.kaikilleRakenteille($scope.rakenne.rakenne, function(item) {
+          item.$collapsed = false;
         });
       }
     };
+
+    $scope.paivitaRajaus = function(input) {
+      input = input === undefined ? $scope.tosarajaus : input;
+      $scope.tosarajaus = input;
+      var filtered = !_.isEmpty(input);
+      $scope.uniikit = _.reject($scope.kaikkiUniikit, function(yksi) {
+        var nimi = (Kaanna.kaanna($scope.rakenne.tutkinnonOsaViitteet[yksi._tutkinnonOsaViite].nimi) || '').toLowerCase();
+        return (filtered && nimi.indexOf(input.toLowerCase()) === -1) ||
+               ($scope.piilotaKaikki && $scope.kaytetytUniikit[yksi._tutkinnonOsaViite]);
+      });
+    };
+
+    $scope.toggleNotUsed = function () {
+      $scope.piilotaKaikki = !$scope.piilotaKaikki;
+      $scope.paivitaRajaus();
+    };
+
+    $scope.jarjestysSorter = function (item) {
+      if (item._tutkinnonOsaViite) {
+        var osa = $scope.rakenne.tutkinnonOsaViitteet[item._tutkinnonOsaViite];
+        if (osa && _.isNumber(osa.jarjestys)) {
+          return osa.jarjestys;
+        }
+      }
+      return Number.MAX_SAFE_INTEGER;
+    };
+
+    $scope.nimiSorter = function (item) {
+      if (item._tutkinnonOsaViite) {
+        var osa = $scope.rakenne.tutkinnonOsaViitteet[item._tutkinnonOsaViite];
+        return Kaanna.kaanna(osa.nimi).toLowerCase();
+      }
+    };
+
+    $scope.ryhmaSorter = function (item) {
+      if (!item._tutkinnonOsaViite) {
+        return Kaanna.kaanna(item.nimi).toLowerCase();
+      }
+    };
+
+    function paivitaUniikit() {
+      $scope.uniikit = [];
+      _($scope.rakenne.tutkinnonOsaViitteet)
+        .reject(function(osa) { return osa.poistettu; })
+        .each(function (osa) {
+          var match = $scope.tutkinnonOsat.rajaus &&
+            _.contains(Kaanna.kaanna(osa.nimi).toLowerCase(),
+            $scope.tutkinnonOsat.rajaus.toLowerCase());
+          if (!$scope.tutkinnonOsat.rajaus || match) {
+            $scope.uniikit.push({_tutkinnonOsaViite: osa.id});
+          }
+        })
+        .value();
+      $scope.tutkinnonOsat.multiPage = _.size($scope.uniikit) > $scope.tutkinnonOsat.perSivu;
+      $scope.kaikkiUniikit = _.sortBy($scope.uniikit, function(osa) {
+        return (Kaanna.kaanna($scope.rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi) || '').toLowerCase();
+      });
+      $scope.uniikit = $scope.kaikkiUniikit;
+      $scope.paivitaRajaus();
+      $scope.kaytetytUniikit = PerusteenRakenne.puustaLoytyy($scope.rakenne.rakenne);
+    }
+    paivitaUniikit();
+
+    function adjustIndex(arr, sorters, originalIndex, paginationOffset) {
+      paginationOffset = paginationOffset || 0;
+      var sortedList = $filter('orderBy')(arr, sorters);
+      var newIndex = _.findIndex(arr, function (item) {
+        return item === sortedList[originalIndex + paginationOffset];
+      });
+      return newIndex;
+    }
+
+    // Drag & drop: Leikelauta <-> puu
+    $scope.sortableOptions = {
+      connectWith: '.tree-group',
+      cursor: 'move',
+      cursorAt: { top : 2, left: 2 },
+      delay: 100,
+      disabled: !$scope.muokkaus,
+      placeholder: 'placeholder',
+      tolerance: 'pointer',
+      stop: function() {
+        PerusteenRakenne.kaikilleRakenteille($scope.rakenne.rakenne, function(r) {
+          delete r.$uusi;
+        });
+      },
+      start: function(e, ui) {
+        ui.placeholder.html('<div class="group-placeholder"></div>');
+        // Use same sorting as in ng-repeat template
+        var sortedIndex = adjustIndex($scope.skratchpad,
+          [$scope.ryhmaSorter, $scope.jarjestysSorter, $scope.nimiSorter],
+          ui.item.sortable.index);
+        ui.item.sortable.index = sortedIndex;
+      },
+      update: TreeDragAndDrop.update
+    };
+
+    // Drag & drop: Tutkinnon osat <-> puu
+    $scope.sortableOptionsUnique = {
+      connectWith: '.tree-group',
+      cursor: 'move',
+      cursorAt: { top : 2, left: 2 },
+      delay: 100,
+      disabled: !$scope.muokkaus,
+      placeholder: 'placeholder',
+      tolerance: 'pointer',
+      stop: function() {
+        paivitaUniikit();
+      },
+      start: function(e, ui) {
+        ui.placeholder.html('<div class="group-placeholder"></div>');
+        // Use same sorting as in ng-repeat template
+        var sortedIndex = adjustIndex($scope.uniikit,
+          [$scope.jarjestysSorter, $scope.nimiSorter],
+          ui.item.sortable.index,
+          ($scope.tutkinnonOsat.sivu - 1) * $scope.tutkinnonOsat.perSivu);
+        ui.item.sortable.index = sortedIndex;
+      }
+    };
+
+    $scope.ryhmaModaali = Muodostumissaannot.ryhmaModaali(function(ryhma, vanhempi, uusiryhma) {
+      if (uusiryhma) {
+        if (ryhma === undefined) {
+          uusiryhma.$uusi = true;
+          $scope.skratchpad.push(uusiryhma);
+        }
+        else {
+          ryhma = _.merge(ryhma, uusiryhma);
+        }
+      }
+      else { _.remove($scope.skratchpad, ryhma); }
+    });
+
+    $scope.$watch('skratchpad.length', function (value) {
+      Muodostumissaannot.skratchpadNotEmpty(value > 0);
+    });
+
+    $scope.poista = function(i, a) {
+      _.remove(i, a);
+      $scope.kaytetytUniikit = PerusteenRakenne.puustaLoytyy($scope.rakenne.rakenne);
+    };
+
+    $scope.poistoTehtyCb = function() {
+      $scope.kaytetytUniikit = PerusteenRakenne.puustaLoytyy($scope.rakenne.rakenne);
+    };
+
+    $scope.uusiTutkinnonOsa = function(cb) {
+      $scope.lisataanUuttaOsaa = true;
+      cb();
+    };
+
+    $scope.$watch('rakenne.$suoritustapa', function() {
+      var sts = null;
+      if ($scope.rakenne.$peruste) {
+        sts = _($scope.rakenne.$peruste.suoritustavat).filter(function(st) { return st.laajuusYksikko; }).value();
+        sts = _.zipObject(_.map(sts, 'suoritustapakoodi'), sts)[$scope.rakenne.$suoritustapa];
+      }
+
+      $scope.apumuuttujat = {
+        suoritustapa: $scope.rakenne.$suoritustapa,
+        laajuusYksikko: sts ? sts.laajuusYksikko : null,
+        vanhin: $scope.rakenne,
+        piilotaVirheet: true,
+        peruste: $scope.rakenne.$peruste
+      };
+    });
+
+    $scope.$watch('muokkaus', function() {
+      $scope.sortableOptions.disabled = !$scope.muokkaus;
+      $scope.sortableOptionsUnique.disabled = !$scope.muokkaus;
+      if (!$scope.muokkaus) {
+        $scope.skratchpad = [];
+      }
+    });
+
+    $scope.$watch('apumuuttujat.haku', function (value) {
+      $scope.paivitaTekstiRajaus(value);
+    });
   })
 
   .config(function ($tooltipProvider) {
@@ -490,7 +531,7 @@ angular.module('eperusteApp')
     });
   })
 
-  .service('TreeDragAndDrop', function (Notifikaatiot, $timeout) {
+  .service('TreeDragAndDrop', function ($timeout) {
     var NODESELECTOR = '.tree-list-item';
     /*
      * Aito osaamisalaryhmä: ryhmä, joka on itse tyyppiä osaamisala

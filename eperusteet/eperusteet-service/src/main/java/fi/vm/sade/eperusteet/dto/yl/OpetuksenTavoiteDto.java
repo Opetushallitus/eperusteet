@@ -30,6 +30,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OpetuksenTavoiteDto implements ReferenceableDto {
+
     private Long id;
     private Optional<LokalisoituTekstiDto> tavoite;
     private Set<EntityReference> sisaltoalueet;
