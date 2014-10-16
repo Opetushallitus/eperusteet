@@ -38,7 +38,8 @@
                   <tr ng-repeat="kriteeri in osaamistasonKriteeri.kriteerit">
                     <td class="dragger" ng-class="{'drag-enable': osaamistasonKriteeri.kriteerit.length > 1}"><span class="glyphicon glyphicon-resize-vertical"></span></td>
                     <td class="rivi">
-                      <input class="form-control" ng-model="kriteeri" localized ui-keydown="{'enter':'!$last || rivi.uusi(osaamistasonKriteeri, $event)'}" placeholder="{{'arviointi-uusi-kriteeri-placeholder' | kaanna}}">
+                      <textarea class="form-control msd-elastic" ng-model="kriteeri" localized
+                                placeholder="{{'arviointi-uusi-kriteeri-placeholder' | kaanna}}"></textarea>
                     </td>
                     <td class="toiminnot">
                       <a href="" ng-click="rivi.poista(osaamistasonKriteeri.kriteerit, $index)" icon-role="minus" title="{{'arviointi-poista-kriteeri' | kaanna}}"></a>
