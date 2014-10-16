@@ -15,40 +15,36 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import java.io.Serializable;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 /**
  *
  * @author jhyoty
  */
-public enum Kieli {
-    // käytetään ISO-639-1 kielikoodistoa
+@MappedSuperclass
+public abstract class AbstractReferenceableEntity implements ReferenceableEntity, Serializable {
 
-    FI("fi"), // suomi
-    SV("sv"), // svenska
-    SE("se"), // davvisámegiella (sámi), pohjoissaame (saame)
-    RU("ru"), // русский язык, venäjä
-    EN("en"); // english
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    protected Long id;
 
-    private final String koodi;
-
-    private Kieli(String koodi) {
-        this.koodi = koodi;
+    @Override
+    public EntityReference getReference() {
+        return new EntityReference(id);
     }
 
     @Override
-    public String toString() {
-        return koodi;
+    public Long getId() {
+        return id;
     }
 
-    @JsonCreator
-    public static Kieli of(String koodi) {
-        for (Kieli k : values()) {
-            if (k.koodi.equalsIgnoreCase(koodi)) {
-                return k;
-            }
-        }
-        throw new IllegalArgumentException(koodi + " ei ole kelvollinen kielikoodi");
+    public void setId(Long id) {
+        this.id = id;
     }
 
 }

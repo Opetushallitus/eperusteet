@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -107,6 +108,10 @@ public class TekstiPalanen implements Serializable {
             return null;
         }
         return new TekstiPalanen(tmp);
+    }
+
+    public static TekstiPalanen of(Kieli kieli, String teksti) {
+        return of(Collections.singletonMap(kieli, teksti));
     }
 
 }

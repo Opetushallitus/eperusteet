@@ -16,17 +16,13 @@
 
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -37,10 +33,7 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
@@ -131,8 +124,8 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Perusteprojekti pp = repository.findOne(ppdto.getId());
         perusteprojektiLuontiCommonAsserts(ppdto, pp);
         Assert.assertEquals("koulutustyyppi_9999", pp.getPeruste().getKoulutustyyppi());
-        Assert.assertEquals(1, pp.getPeruste().getSuoritustavat().size());
-        perusteprojektiLuontiCommonSuoritustavat(pp, 0);
+        Assert.assertEquals(0, pp.getPeruste().getSuoritustavat().size());
+        Assert.assertNotNull(pp.getPeruste().getPerusopetuksenPerusteenSisalto());
     }
 
     @Test
