@@ -59,6 +59,11 @@ angular.module('eperusteApp')
       info: { method: 'GET', url: SERVICE_LOC + '/perusteet/info' }
     });
   })
+  .factory('Vuosiluokkakokonaisuudet', function ($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/vuosiluokkakokonaisuudet/:vuosiluokkaId', {
+      vuosiluokkaId: '@id'
+    });
+  })
   .factory('Suoritustapa', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa');
   })

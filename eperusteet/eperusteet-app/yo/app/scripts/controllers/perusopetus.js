@@ -18,10 +18,19 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .service('PerusopetusService', function () {
+  .service('PerusopetusService', function (Vuosiluokkakokonaisuudet) {
     this.OSAAMINEN = 'osaaminen';
     this.VUOSILUOKAT = 'vuosiluokat';
     this.OPPIAINEET = 'oppiaineet';
+    var tiedot = null;
+    this.setTiedot = function (value) {
+      console.log("setTiedot");
+      tiedot = value;
+    };
+    this.getPerusteId = function () {
+      return tiedot.getProjekti()._peruste;
+    };
+
     this.sisallot = [
       {
         tyyppi: this.OSAAMINEN,
@@ -64,6 +73,7 @@ angular.module('eperusteApp')
     };
 
     this.getOsat = function (tyyppi) {
+      console.log("getOsat", tyyppi);
       // TODO oikea data
       switch(tyyppi) {
         case this.OSAAMINEN:
@@ -73,6 +83,7 @@ angular.module('eperusteApp')
             {perusteenOsa: {id: 3, nimi: {fi: 'Itsestä huolehtiminen ja arjenhallinta'}, teksti: {fi: 'Yleinen kuvaus itsestä huolehtimiselle.'}}},
           ];
         case this.VUOSILUOKAT:
+          Vuosiluokkakokonaisuudet.query({perusteId: tiedot.getProjekti()._peruste});
           return [
             {
               id: 1001,
@@ -210,6 +221,7 @@ angular.module('eperusteApp')
       opetus: {lapset: []},
       sisalto: {lapset: PerusopetusService.getTekstikappaleet()}
     };
+    console.log("sisalto ctrl");
     _.each(PerusopetusService.sisallot, function (item) {
       var data = {
         perusteenOsa: {nimi: item.label},
@@ -246,17 +258,24 @@ angular.module('eperusteApp')
   })
 
   .controller('OsalistausController', function ($scope, $state, $stateParams, PerusopetusService,
-      virheService) {
+      virheService, PerusteprojektiTiedotService) {
     $scope.sisaltoState = _.find(PerusopetusService.sisallot, {tyyppi: $stateParams.osanTyyppi});
     if (!$scope.sisaltoState) {
       virheService.virhe('virhe-sivua-ei-löytynyt');
       return;
     }
     // TODO real data
-    $scope.osaAlueet = _.map(PerusopetusService.getOsat($stateParams.osanTyyppi), function (osa) {
-      return $stateParams.osanTyyppi === PerusopetusService.OSAAMINEN ? osa.perusteenOsa : osa;
+    $scope.osaAlueet = [];
+    var vuosiluokkakokonaisuudet = [];
+    PerusteprojektiTiedotService.then(function (value) {
+      PerusopetusService.setTiedot(value);
+      $scope.osaAlueet = _.map(PerusopetusService.getOsat($stateParams.osanTyyppi), function (osa) {
+        return $stateParams.osanTyyppi === PerusopetusService.OSAAMINEN ? osa.perusteenOsa : osa;
+      });
+      if ($stateParams.osanTyyppi === PerusopetusService.OPPIAINEET) {
+        vuosiluokkakokonaisuudet = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT);
+      }
     });
-    var vuosiluokkakokonaisuudet = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT);
 
     var oppiaineFilter = {
       template: '<label>{{\'vuosiluokkakokonaisuus\'|kaanna}}' +
@@ -283,7 +302,8 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('OsaAlueController', function ($scope, $q, $stateParams, PerusopetusService) {
+  .controller('OsaAlueController', function ($scope, $q, $stateParams, PerusopetusService,
+      PerusteprojektiTiedotService) {
     $scope.isVuosiluokka = $stateParams.osanTyyppi === PerusopetusService.VUOSILUOKAT;
     $scope.isOppiaine = $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET;
     // TODO real data
@@ -293,10 +313,15 @@ angular.module('eperusteApp')
       teksti: {fi: '<p>Tekstikappaleen tekstiä lorem ipsum.</p>'}
     };
     $scope.dataObject = $q.defer();
-    var data = ($scope.isVuosiluokka || $scope.isOppiaine) ?
-      PerusopetusService.getOsat($stateParams.osanTyyppi)[0] : tekstikappale;
-    _.extend($scope.dataObject, data);
-    $scope.dataObject.resolve(data);
+    console.log("osaalue ctrl");
+    var data = {};
+    PerusteprojektiTiedotService.then(function (value) {
+      PerusopetusService.setTiedot(value);
+      data = ($scope.isVuosiluokka || $scope.isOppiaine) ?
+        PerusopetusService.getOsat($stateParams.osanTyyppi)[0] : tekstikappale;
+      _.extend($scope.dataObject, data);
+      $scope.dataObject.resolve(data);
+    });
   })
 
   /* protokoodia --> */

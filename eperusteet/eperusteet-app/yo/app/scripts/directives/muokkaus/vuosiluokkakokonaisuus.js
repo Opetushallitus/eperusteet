@@ -31,7 +31,7 @@ angular.module('eperusteApp')
   })
 
   .controller('VuosiluokkakokonaisuusController', function ($scope, PerusopetusService,
-      Editointikontrollit, Kaanna, PerusteProjektiSivunavi) {
+      Editointikontrollit, Kaanna, PerusteProjektiSivunavi, Vuosiluokkakokonaisuudet) {
     $scope.editEnabled = false;
     $scope.editableModel = angular.copy($scope.model);
     $scope.vuosiluokkaOptions = _.map(_.range(1, 10), function (item) {
@@ -60,6 +60,12 @@ angular.module('eperusteApp')
       },
       save: function(/*kommentti*/) {
         // TODO set metadata, save
+        Vuosiluokkakokonaisuudet.save({
+          perusteId: PerusopetusService.getPerusteId()
+        }, {
+          nimi: $scope.editableModel.nimi,
+          tehtava: {fi: 'joku teksti'}
+        });
       },
       cancel: function() {
         // TODO delete lock

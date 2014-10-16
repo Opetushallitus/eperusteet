@@ -41,7 +41,7 @@ angular.module('eperusteApp')
       .state('root.perusteprojekti.perusopetus', {
         url: '/perusopetus',
         templateUrl: 'views/partials/perusteprojekti/perusopetus.html',
-        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
+        /*resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
           'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
             return perusteprojektiTiedot.projektinTiedotAlustettu();
           }],
@@ -49,7 +49,7 @@ angular.module('eperusteApp')
             function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
               return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
             }]
-        },
+        },*/
         controller: 'PerusopetusSisaltoController',
         onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
           PerusteProjektiSivunavi.setVisible(false);
@@ -381,6 +381,7 @@ angular.module('eperusteApp')
             label: label,
             link: [STATE_OSALISTAUS, {osanTyyppi: key}]
           });
+          // TODO better way to fetch all YL data
           var osat = PerusopetusService.getOsat(key);
           _.each(osat, function (osa) {
             items.push({
@@ -416,6 +417,7 @@ angular.module('eperusteApp')
     this.refresh = function (light) {
       if (!service) {
         PerusteprojektiTiedotService.then(function(res) {
+          PerusopetusService.setTiedot(res);
           service = res;
           load();
         });
