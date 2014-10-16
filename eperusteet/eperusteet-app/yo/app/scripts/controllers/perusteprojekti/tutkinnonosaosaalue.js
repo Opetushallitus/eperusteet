@@ -85,7 +85,6 @@ angular.module('eperusteApp')
 
     var osaAlueCallbacks = {
       edit: function () {
-        console.log('edit');
         TutkinnonOsanOsaAlue.get({osanId: $stateParams.perusteenOsaId, osaalueenId: $stateParams.osaAlueId}, function(vastaus) {
           $scope.osaAlue = vastaus;
           luoOsaamistavoitepuu();
@@ -95,15 +94,12 @@ angular.module('eperusteApp')
         });
       },
       cancel: function () {
-        console.log('cancel');
         $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {}, {reload: true});
       },
       save: function () {
-        console.log('save');
         $scope.osaAlue.osaamistavoitteet = kokoaOsaamistavoitteet();
-        TutkinnonOsanOsaAlue.save({osanId: $stateParams.perusteenOsaId, osaalueenId: $stateParams.osaAlueId}, $scope.osaAlue, function (vastaus) {
+        TutkinnonOsanOsaAlue.save({osanId: $stateParams.perusteenOsaId, osaalueenId: $stateParams.osaAlueId}, $scope.osaAlue, function () {
           $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {}, {reload: true});
-          console.log('vastaus',vastaus);
         }, function(virhe) {
           Notifikaatiot.serverCb(virhe);
           $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {}, {reload: true});

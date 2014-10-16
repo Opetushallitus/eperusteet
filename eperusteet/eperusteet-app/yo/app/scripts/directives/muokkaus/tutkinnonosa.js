@@ -224,7 +224,9 @@ angular.module('eperusteApp')
     var tutke2 = {
       fetch: function () {
         if ($scope.editableTutkinnonOsa.tyyppi === 'tutke2') {
-          Tutke2OsaData.get().fetch();
+          if (Tutke2OsaData.get()) {
+            Tutke2OsaData.get().fetch();
+        }
         }
       },
       mergeOsaAlueet: function (tutkinnonOsa) {
@@ -308,16 +310,16 @@ angular.module('eperusteApp')
         if (!Utils.hasLocalizedText($scope.editableTutkinnonOsa.nimi)) {
           $scope.nimiValidationError = true;
         }
-        console.log('Tutki miksi tutkinnonOsaHeaderForm on undefined!!!!');
-        return /*$scope.tutkinnonOsaHeaderForm.$valid &&*/ tutke2.validate();
+        return $scope.tutkinnonOsaHeaderForm.$valid && tutke2.validate();
       }
     };
 
     function setupTutkinnonOsa(osa) {
       $scope.editableTutkinnonOsa = angular.copy(osa);
       $scope.isNew = !$scope.editableTutkinnonOsa.id;
-
-      Editointikontrollit.registerCallback(normalCallbacks);
+      if ($state.current.name === 'root.perusteprojekti.suoritustapa.perusteenosa') {
+        Editointikontrollit.registerCallback(normalCallbacks);
+      }
       $scope.haeVersiot();
       Lukitus.tarkista($scope.tutkinnonOsa.id, $scope);
     }
