@@ -173,6 +173,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         if (aine == null) {
             throw new BusinessRuleViolationException("Oppiainetta ei ole");
         }
+        mapper.map(dto, aine);
         final Set<OppiaineenVuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet = dto.getVuosiluokkakokonaisuudet();
         if (vuosiluokkakokonaisuudet != null) {
             for (OppiaineenVuosiluokkaKokonaisuusDto v : vuosiluokkakokonaisuudet) {
