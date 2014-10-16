@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h1 ng-if="uusi" kaanna>luo-tyoryhma</h1>
+  <h1 ng-if="uusi">{{'luo-tyoryhma'|kaanna}} <ohje teksti="ohje-tyoryhma-luonti"></ohje></h1>
   <h1 ng-if="!uusi" kaanna>muokkaa-tyoryhmaa</h1>
 </div>
 
@@ -36,8 +36,8 @@
   <div class="pull-left" ng-if="!uusi">
     <button class="btn btn-danger" ng-click="poista()" kaanna>poista</button>
   </div>
-  <button class="btn btn-danger" ng-click="peruuta()" kaanna>peru</button>
-  <button class="btn btn-danger" ng-disabled="virheellinenNimi || ryhma.jasenet.length === 0 || ryhma.nimi.length < 1" ng-click="ok()">
+  <button class="btn btn-default" ng-click="peruuta()" kaanna>peru</button>
+  <button class="btn btn-primary" ng-disabled="virheellinenNimi || ryhma.jasenet.length === 0 || ryhma.nimi.length < 1" ng-click="ok()">
     <span ng-if="!uusi" kaanna>tallenna-tyoryhma</span>
     <span ng-if="uusi" kaanna>tallenna-muutokset</span>
   </button>

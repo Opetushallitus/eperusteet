@@ -655,6 +655,7 @@
     "valitse-tyoryhmat": "Valitse tyoryhmat",
     "haetaan-ryhmia": "Haetaan ryhmiä",
     "poista-tyoryhma-teksti": "Työryhmä \"{{nimi}}\" poistetaan. Oletko varma?",
+    "ohje-tyoryhma-luonti": "<p>Projektin perustetyöryhmä voidaan jakaa työryhmiin. Perusteen sisältö voidaan merkata luoduille työryhmille.</p><p>Kun työryhmä on luotu, perusteen sisältö voidaan merkata luodulle työryhmälle sisällön yhteydessä.</p>",
 
     "opetuksen-sisallot": "Opetuksen sisällöt",
     "laaja-alainen-osaaminen": "Laaja-alainen osaaminen",
