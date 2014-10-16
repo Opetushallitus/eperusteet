@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .directive('tree', function($compile, $state, Muodostumissaannot, Kaanna, TreeDragAndDrop, $translate, Algoritmit) {
+  .directive('tree', function($compile) {
     function generoiOtsikko() {
       var tosa = '{{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].nimi || "nimetön" | kaanna }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">, <b>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</b>{{ apumuuttujat.laajuusYksikko | kaanna }}</span>';
       var editointiIkoni =
@@ -52,104 +52,8 @@ angular.module('eperusteApp')
         muokkaus: '=',
         poistoTehtyCb: '='
       },
-      controller: function($scope) {
-        $scope.lisaaUusi = 0;
-        $scope.lisataanUuttaPerusteenOsaa = false;
-        $scope.scratchpad = [];
-        $scope.roskakori = [];
-        $scope.esitystilassa = $state.includes('**.esitys.**');
-        $scope.lang = $translate.use() || $translate.preferredLanguage();
-      },
+      controller: 'treeController',
       link: function(scope, el) {
-        scope.poista = function(i, a) {
-          _.remove(a.osat, i);
-          scope.poistoTehtyCb();
-        };
-
-        scope.rakenneosaModaali = Muodostumissaannot.rakenneosaModaali(function(rakenneosa) {
-          if (rakenneosa) {
-            scope.rakenne = rakenneosa;
-          }
-        });
-
-        scope.togglaaPakollisuus = function(rakenne) {
-          if (scope.muokkaus) {
-            rakenne.pakollinen = !rakenne.pakollinen;
-          }
-        };
-
-        scope.ryhmaModaali = Muodostumissaannot.ryhmaModaali(function(ryhma, vanhempi, uusiryhma) {
-          if (!scope.vanhempi) {
-            scope.rakenne = uusiryhma;
-          } else {
-            var indeksi = scope.vanhempi.osat.indexOf(ryhma);
-            if (!uusiryhma) { _.remove(scope.vanhempi.osat, ryhma); }
-            else if (indeksi !== -1) { scope.vanhempi.osat[indeksi] = uusiryhma; }
-          }
-        });
-
-        scope.togglaaKuvaukset = function() {
-          var jokuAuki = false;
-          Algoritmit.kaikilleLapsisolmuille(scope.rakenne, 'osat', function(osa) {
-            if (osa.$showKuvaus) {
-              jokuAuki = true;
-              return true;
-            }
-          });
-          Algoritmit.kaikilleLapsisolmuille(scope.rakenne, 'osat', function(osa) { osa.$showKuvaus = !jokuAuki; });
-        };
-
-        scope.togglaaPolut = function() {
-          var avaamattomat = _(scope.rakenne.osat).reject(function(osa) {
-            return osa._tutkinnonOsaViite || osa.$collapsed || osa.osat.length === 0;
-          }).size();
-
-          _.forEach(scope.rakenne.osat, function(r) {
-            if (r.osat && _.size(r.osat) > 0) {
-              r.$collapsed = avaamattomat !== 0;
-            }
-          });
-        };
-
-        scope.tkaanna = function(input) {
-          return _.reduce(_.map(input, function(str) {
-            switch (str) {
-              case '$laajuusYksikko':
-                str = scope.apumuuttujat.laajuusYksikko;
-                break;
-              default:
-                break;
-            }
-            return Kaanna.kaanna(str);
-          }), function(str, next) {
-            return str + ' ' + next;
-          });
-        };
-
-        // Drag & drop: puun sisällä
-        scope.sortableOptions = {
-          connectWith: '.tree-group',
-          cursor: 'move',
-          cursorAt: { top : 2, left: 2 },
-          delay: 100,
-          disabled: !scope.muokkaus,
-          placeholder: 'placeholder',
-          tolerance: 'pointer',
-          start: function(e, ui) {
-            ui.placeholder.html('<div class="group-placeholder"></div>');
-          },
-          cancel: '.ui-state-disabled',
-          update: TreeDragAndDrop.update
-        };
-
-        scope.$watch('muokkaus', function() {
-          scope.sortableOptions.disabled = !scope.muokkaus;
-        });
-
-        scope.piilotaVirheet = function() {
-          scope.apumuuttujat.piilotaVirheet = !scope.apumuuttujat.piilotaVirheet;
-        };
-
         var varivalinta = 'ng-class="{maarittelematon: rakenne.rooli === \'määrittelemätön\', tyhja: rakenne.osat.length === 0, ' +
             'suljettu: rakenne.$collapsed, osaamisala: rakenne.rooli === \'osaamisala\'}"';
 
@@ -211,8 +115,8 @@ angular.module('eperusteApp')
                          '    <span ng-hide="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "piilota-virheet" | kaanna }}</span>' +
                          '    <span ng-show="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "nayta-virheet" | kaanna }}</span>' +
                          '  </a>' +
-                         '  <a href="" ng-click="togglaaKuvaukset()" class="group-toggler">' +
-                         '    <span><span icon-role="book"></span>{{ "nayta-kuvaukset" | kaanna }}</span>' +
+                         '  <a ng-click="togglaaKuvaukset()" class="group-toggler action-link" ng-show="scanKuvaukset()">' +
+                         '    <span icon-role="book">{{kuvauksetOpen && "piilota-kuvaukset" || "nayta-kuvaukset" | kaanna }}</span>' +
                          '    ' +
                          '  </a>' +
                          '  <a href="" ng-click="togglaaPolut()" class="group-toggler">' +
@@ -260,6 +164,117 @@ angular.module('eperusteApp')
       }
     };
   })
+
+  .controller('treeController', function ($scope, $translate, $state, Muodostumissaannot, Algoritmit,
+      Kaanna, TreeDragAndDrop, Utils) {
+    $scope.lisaaUusi = 0;
+    $scope.lisataanUuttaPerusteenOsaa = false;
+    $scope.scratchpad = [];
+    $scope.roskakori = [];
+    $scope.kuvauksetOpen = false;
+    $scope.esitystilassa = $state.includes('**.esitys.**');
+    $scope.lang = $translate.use() || $translate.preferredLanguage();
+
+    $scope.poista = function(i, a) {
+      _.remove(a.osat, i);
+      $scope.poistoTehtyCb();
+    };
+
+    $scope.rakenneosaModaali = Muodostumissaannot.rakenneosaModaali(function(rakenneosa) {
+      if (rakenneosa) {
+        $scope.rakenne = rakenneosa;
+      }
+    });
+
+    $scope.togglaaPakollisuus = function(rakenne) {
+      if ($scope.muokkaus) {
+        rakenne.pakollinen = !rakenne.pakollinen;
+      }
+    };
+
+    $scope.ryhmaModaali = Muodostumissaannot.ryhmaModaali(function(ryhma, vanhempi, uusiryhma) {
+      if (!$scope.vanhempi) {
+        $scope.rakenne = uusiryhma;
+      } else {
+        var indeksi = $scope.vanhempi.osat.indexOf(ryhma);
+        if (!uusiryhma) { _.remove($scope.vanhempi.osat, ryhma); }
+        else if (indeksi !== -1) { $scope.vanhempi.osat[indeksi] = uusiryhma; }
+      }
+    });
+
+    $scope.scanKuvaukset = function () {
+      var hasKuvaukset = false;
+      $scope.kuvauksetOpen = false;
+      Algoritmit.kaikilleLapsisolmuille($scope.rakenne, 'osat', function(osa) {
+        if (!$scope.kuvauksetOpen && osa.$showKuvaus) {
+          $scope.kuvauksetOpen = true;
+        }
+        if (!hasKuvaukset && Utils.hasLocalizedText(osa.kuvaus)) {
+          hasKuvaukset = true;
+        }
+      });
+      return hasKuvaukset;
+    };
+
+    $scope.togglaaKuvaukset = function() {
+      Algoritmit.kaikilleLapsisolmuille($scope.rakenne, 'osat', function(osa) {
+        osa.$showKuvaus = !$scope.kuvauksetOpen;
+      });
+      $scope.kuvauksetOpen = !$scope.kuvauksetOpen;
+    };
+
+    $scope.togglaaPolut = function() {
+      var avaamattomat = _($scope.rakenne.osat).reject(function(osa) {
+        return osa._tutkinnonOsaViite || osa.$collapsed || osa.osat.length === 0;
+      }).size();
+
+      _.forEach($scope.rakenne.osat, function(r) {
+        if (r.osat && _.size(r.osat) > 0) {
+          r.$collapsed = avaamattomat !== 0;
+        }
+      });
+    };
+
+    $scope.tkaanna = function(input) {
+      return _.reduce(_.map(input, function(str) {
+        switch (str) {
+          case '$laajuusYksikko':
+            str = $scope.apumuuttujat.laajuusYksikko;
+            break;
+          default:
+            break;
+        }
+        return Kaanna.kaanna(str);
+      }), function(str, next) {
+        return str + ' ' + next;
+      });
+    };
+
+    // Drag & drop: puun sisällä
+    $scope.sortableOptions = {
+      connectWith: '.tree-group',
+      cursor: 'move',
+      cursorAt: { top : 2, left: 2 },
+      delay: 100,
+      disabled: !$scope.muokkaus,
+      placeholder: 'placeholder',
+      tolerance: 'pointer',
+      start: function(e, ui) {
+        ui.placeholder.html('<div class="group-placeholder"></div>');
+      },
+      cancel: '.ui-state-disabled',
+      update: TreeDragAndDrop.update
+    };
+
+    $scope.$watch('muokkaus', function() {
+      $scope.sortableOptions.disabled = !$scope.muokkaus;
+    });
+
+    $scope.piilotaVirheet = function() {
+      $scope.apumuuttujat.piilotaVirheet = !$scope.apumuuttujat.piilotaVirheet;
+    };
+  })
+
   .directive('treeWrapper', function($stateParams, $state, Editointikontrollit, TutkinnonOsanTuonti, Kaanna,
                                      PerusteTutkinnonosa, Notifikaatiot, PerusteenRakenne, Muodostumissaannot,
                                      Algoritmit, TreeDragAndDrop) {
