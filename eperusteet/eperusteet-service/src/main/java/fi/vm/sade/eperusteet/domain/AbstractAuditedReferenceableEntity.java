@@ -15,40 +15,30 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author jhyoty
  */
-public enum Kieli {
-    // käytetään ISO-639-1 kielikoodistoa
+@MappedSuperclass
+public abstract class AbstractAuditedReferenceableEntity extends AbstractAuditedEntity implements ReferenceableEntity {
 
-    FI("fi"), // suomi
-    SV("sv"), // svenska
-    SE("se"), // davvisámegiella (sámi), pohjoissaame (saame)
-    RU("ru"), // русский язык, venäjä
-    EN("en"); // english
-
-    private final String koodi;
-
-    private Kieli(String koodi) {
-        this.koodi = koodi;
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
+    @Setter
+    private Long id;
 
     @Override
-    public String toString() {
-        return koodi;
-    }
-
-    @JsonCreator
-    public static Kieli of(String koodi) {
-        for (Kieli k : values()) {
-            if (k.koodi.equalsIgnoreCase(koodi)) {
-                return k;
-            }
-        }
-        throw new IllegalArgumentException(koodi + " ei ole kelvollinen kielikoodi");
+    public EntityReference getReference() {
+        return new EntityReference(id);
     }
 
 }

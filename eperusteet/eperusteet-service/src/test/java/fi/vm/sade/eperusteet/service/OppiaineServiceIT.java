@@ -1,0 +1,99 @@
+/*
+ * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+ *
+ * This program is free software: Licensed under the EUPL, Version 1.1 or - as
+ * soon as they will be approved by the European Commission - subsequent versions
+ * of the EUPL (the "Licence");
+ *
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * European Union Public Licence for more details.
+ */
+package fi.vm.sade.eperusteet.service;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
+import fi.vm.sade.eperusteet.dto.yl.KeskeinenSisaltoalueDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
+import fi.vm.sade.eperusteet.repository.OppiaineRepository;
+import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
+import fi.vm.sade.eperusteet.repository.VuosiluokkaKokonaisuusRepository;
+import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import fi.vm.sade.eperusteet.service.yl.OppiaineService;
+import java.io.IOException;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.olt;
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.to;
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
+import static junit.framework.Assert.assertEquals;
+
+/**
+ *
+ * @author jhyoty
+ */
+@DirtiesContext
+public class OppiaineServiceIT extends AbstractIntegrationTest {
+
+    @Autowired
+    private OppiaineRepository repo;
+    @Autowired
+    private VuosiluokkaKokonaisuusRepository vkrepo;
+    @Autowired
+    private OppiaineService service;
+    @Autowired
+    private PerusteService perusteService;
+    @Autowired
+    private PerusopetuksenPerusteenSisaltoRepository sisaltoRepository;
+
+    private Long perusteId;
+    @Before
+    public void setup() {
+        Peruste peruste = perusteService.luoPerusteRunko("koulutustyyppi_9999", LaajuusYksikko.OPINTOVIIKKO, PerusteTila.LUONNOS, PerusteTyyppi.NORMAALI);
+        perusteId = peruste.getId();
+    }
+
+    @Test
+    public void testAddAndUpdate() throws IOException {
+        VuosiluokkaKokonaisuus vk = new VuosiluokkaKokonaisuus();
+        vk = vkrepo.save(vk);
+
+        OppiaineDto oppiaineDto = new OppiaineDto();
+        oppiaineDto.setNimi(Optional.of(lt("Oppiaine")));
+        OppiaineenVuosiluokkaKokonaisuusDto vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
+        vkDto.setTehtava(Optional.of(to("Tehtävä", "")));
+        vkDto.setVuosiluokkaKokonaisuus(vk.getReference());
+        oppiaineDto.setVuosiluokkakokonaisuudet(Sets.newHashSet(vkDto));
+        KeskeinenSisaltoalueDto ks = new KeskeinenSisaltoalueDto();
+        ks.setNimi(Optional.of(lt("Nimi")));
+        vkDto.setSisaltoAlueet(Lists.newArrayList(ks));
+        OppiaineDto oa = service.addOppiaine(perusteId, oppiaineDto);
+        assertEquals("Nimi", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoAlueet().get(0).getNimi().get().getTekstit().get(Kieli.FI));
+        ks.setNimi(olt("Nimi2"));
+        oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoAlueet().add(0, ks);
+        oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoAlueet().get(1).setNimi(null);
+        oa = service.updateOppiaine(perusteId, oa);
+        assertEquals("Nimi2", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoAlueet().get(0).getNimi().get().getTekstit().get(Kieli.FI));
+        assertEquals("Nimi", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoAlueet().get(1).getNimi().get().getTekstit().get(Kieli.FI));
+    }
+
+
+    private static final Logger LOG = LoggerFactory.getLogger(OppiaineServiceIT.class);
+}

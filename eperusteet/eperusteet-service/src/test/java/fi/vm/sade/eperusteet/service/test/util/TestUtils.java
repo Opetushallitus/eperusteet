@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.test.util;
 
+import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
@@ -25,11 +26,6 @@ import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import fi.vm.sade.eperusteet.domain.Perusteprojekti_;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.domain.Suoritustapa;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
@@ -38,18 +34,14 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.service.PerusteService;
-import fi.vm.sade.eperusteet.service.PerusteenOsaService;
-import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -108,7 +100,8 @@ public abstract class TestUtils {
     static public RakenneModuuli teeRyhma(Integer laajuusMinimi, Integer laajuusMaksimi, Integer kokoMinimi, Integer kokoMaksimi, AbstractRakenneOsa... osat) {
         RakenneModuuli rakenne = new RakenneModuuli();
 
-        MuodostumisSaanto.Laajuus msl = laajuusMinimi != null && laajuusMinimi != -1 ? new MuodostumisSaanto.Laajuus(laajuusMinimi, laajuusMaksimi, LaajuusYksikko.OPINTOVIIKKO) : null;
+        MuodostumisSaanto.Laajuus msl = laajuusMinimi != null && laajuusMinimi != -1
+            ? new MuodostumisSaanto.Laajuus(laajuusMinimi, laajuusMaksimi, LaajuusYksikko.OPINTOVIIKKO) : null;
         MuodostumisSaanto.Koko msk = kokoMinimi != null && kokoMinimi != -1 ? new MuodostumisSaanto.Koko(kokoMinimi, kokoMaksimi) : null;
         MuodostumisSaanto ms = (msl != null || msk != null) ? new MuodostumisSaanto(msl, msk) : null;
 
@@ -123,7 +116,8 @@ public abstract class TestUtils {
     static public RakenneModuuli teeOsaamisalaRyhma(Integer laajuusMinimi, Integer laajuusMaksimi, Integer kokoMinimi, Integer kokoMaksimi, AbstractRakenneOsa... osat) {
         RakenneModuuli rakenne = new RakenneModuuli();
 
-        MuodostumisSaanto.Laajuus msl = laajuusMinimi != null && laajuusMinimi != -1 ? new MuodostumisSaanto.Laajuus(laajuusMinimi, laajuusMaksimi, LaajuusYksikko.OPINTOVIIKKO) : null;
+        MuodostumisSaanto.Laajuus msl = laajuusMinimi != null && laajuusMinimi != -1
+            ? new MuodostumisSaanto.Laajuus(laajuusMinimi, laajuusMaksimi, LaajuusYksikko.OPINTOVIIKKO) : null;
         MuodostumisSaanto.Koko msk = kokoMinimi != null && kokoMinimi != -1 ? new MuodostumisSaanto.Koko(kokoMinimi, kokoMaksimi) : null;
         MuodostumisSaanto ms = (msl != null || msk != null) ? new MuodostumisSaanto(msl, msk) : null;
 
@@ -140,7 +134,8 @@ public abstract class TestUtils {
         return pov;
     }
 
-    static Long uniikki = (long)0;
+    static Long uniikki = (long) 0;
+
     static public String uniikkiString() {
         return "uniikki" + (++uniikki).toString();
     }
@@ -148,4 +143,17 @@ public abstract class TestUtils {
     static public Long uniikkiId() {
         return ++uniikki;
     }
+
+    public static LokalisoituTekstiDto lt(String teksti) {
+        return new LokalisoituTekstiDto(null, Collections.singletonMap(Kieli.FI, teksti));
+    }
+
+    public static Optional<LokalisoituTekstiDto> olt(String teksti) {
+        return Optional.of(lt(teksti));
+    }
+
+    public static TekstiOsaDto to(String otsikko, String teksti) {
+        return new TekstiOsaDto(olt(otsikko), olt(teksti));
+    }
+
 }

@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
@@ -118,6 +119,7 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
             }
         });
         converter.getObjectMapper().registerModule(new JodaModule());
+        converter.getObjectMapper().registerModule(new GuavaModule());
         EPerusteetMappingModule module = new EPerusteetMappingModule();
         module
             .addDeserializer(AbstractRakenneOsaDto.class, new AbstractRakenneOsaDeserializer())

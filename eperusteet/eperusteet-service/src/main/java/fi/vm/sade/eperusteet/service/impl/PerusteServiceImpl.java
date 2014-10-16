@@ -34,6 +34,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.Osaamisala;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
@@ -51,6 +52,7 @@ import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.OsaamisalaRepository;
+import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
@@ -164,6 +166,9 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Autowired
     private RakenneRepository rakenneRepository;
+
+    @Autowired
+    private PerusopetuksenPerusteenSisaltoRepository perusopetuksenPerusteenSisaltoRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -856,7 +861,7 @@ public class PerusteServiceImpl implements PerusteService {
             if (koulutustyyppi.equals(AMMATILLISET_KOULUTUSTYYPPI_URIT[0])) {
                 st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko != null ? yksikko : LaajuusYksikko.OSAAMISPISTE);
             } else if (koulutustyyppi.equals(PERUSOPETUKSEN_KOULUTUSTYYPPI)) {
-                st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, null);
+                peruste.setPerusopetuksenPerusteenSisalto(new PerusopetuksenPerusteenSisalto());
             }
 
             if (st != null) {
