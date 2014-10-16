@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -48,7 +47,7 @@ public class VuosiluokkaKokonaisuus extends AbstractAuditedReferenceableEntity {
 
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
     private TekstiOsa tehtava;
 
     //TODO: siirtymä (kumpaankin suuntaan -- jaettu vuosiluokkakokonaisuuksien välillä (paitsi ensimmäinen ja viimeinen)

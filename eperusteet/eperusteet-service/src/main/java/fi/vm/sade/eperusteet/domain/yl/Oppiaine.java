@@ -53,7 +53,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
 
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa tehtava;
 
     @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)

@@ -21,8 +21,10 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;
 import fi.vm.sade.eperusteet.domain.yl.OppiaineenVuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.TekstiOsa;
+import fi.vm.sade.eperusteet.dto.yl.OpetuksenTavoiteDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
+import java.util.Collections;
 import java.util.List;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
@@ -30,6 +32,8 @@ import org.junit.Test;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.olt;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -39,13 +43,13 @@ import static org.junit.Assert.assertTrue;
 public class MappingTest {
 
     @Test
-    public void testCollectionMapping() {
+    public void testOptionalMapping() {
+
         DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
             .build();
         factory.registerMapper(new DtoMapperConfig.OpetuksenTavoiteCollectionMapper());
         factory.getConverterFactory().registerConverter(new TekstiPalanenConverter());
-        factory.getConverterFactory().registerConverter(new OptionalConverter());
-        factory.getConverterFactory().registerConverter(new ToOptionalConverter());
+        OptionalSupport.register(factory);
         MapperFacade mapper = factory.getMapperFacade();
 
         OpetuksenTavoite ot = new OpetuksenTavoite();
@@ -55,14 +59,27 @@ public class MappingTest {
         tavoitteet.add(ot);
         ovk.setTehtava(new TekstiOsa(TekstiPalanen.of(Kieli.FI, "Otsikko"), null));
         ovk.setTavoitteet(tavoitteet);
+        ovk.setOhjaus(new TekstiOsa());
+        ovk.setArviointi(new TekstiOsa());
 
         OppiaineenVuosiluokkaKokonaisuusDto dto = mapper.map(ovk, OppiaineenVuosiluokkaKokonaisuusDto.class);
+        dto.setArviointi(null);
         dto.setOhjaus(Optional.<TekstiOsaDto>absent());
         dto.getTavoitteet().get(0).setTavoite(olt("Tavoite"));
         mapper.map(dto, ovk);
 
+        assertNull(ovk.getOhjaus());
+        assertNotNull(ovk.getArviointi());
         assertTrue(ovk.getTavoitteet().get(0) == ot);
         assertEquals("Tavoite", ovk.getTavoitteet().get(0).getTavoite().getTeksti().get(Kieli.FI));
+
+        dto.setTavoitteet(null);
+        mapper.map(dto, ovk);
+        assertTrue(ovk.getTavoitteet().get(0) == ot);
+
+        dto.setTavoitteet(Collections.<OpetuksenTavoiteDto>emptyList());
+        mapper.map(dto, ovk);
+        assertTrue(ovk.getTavoitteet().isEmpty());
     }
 
 }

@@ -28,14 +28,10 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.yl.KeskeinenSisaltoalue;
-import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine_;
-import fi.vm.sade.eperusteet.domain.yl.OppiaineenVuosiluokkaKokonaisuus;
-import fi.vm.sade.eperusteet.domain.yl.TekstiOsa;
 import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuudenLaajaalainenOsaaminen;
-import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
@@ -49,13 +45,9 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.yl.KeskeinenSisaltoalueDto;
-import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenTavoiteDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
-import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
-import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto;
-import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import java.util.Collection;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFacade;
@@ -85,11 +77,11 @@ public class DtoMapperConfig {
         factory.getConverterFactory().registerConverter("koodistokoodiConverter", koodistokoodiConverter);
         factory.getConverterFactory().registerConverter(new PassThroughConverter(TekstiPalanen.class));
         factory.getConverterFactory().registerConverter(new TypeNameConverter());
-        factory.getConverterFactory().registerConverter(new OptionalConverter());
-        factory.getConverterFactory().registerConverter(new ToOptionalConverter());
+
+        OptionalSupport.register(factory);
 
         //erikoiskäsittely määritellyille säiliöille koska halutaan säilyttää "PATCH" -ominaisuus
-        //TODO: geneerinen ratkaisu kaikille mapattaville säiliöille (mahdollista, mutta pitää miettiä onko liian "maagista").
+        //TODO: geneerinen ratkaisu kaikille mapattaville säiliöille (pitäisi olla mahdollista, mutta pitää miettiä onko liian "maagista").
         factory.registerMapper(new OpetuksenTavoiteCollectionMapper());
         factory.registerMapper(new KeskeinenSisaltoAlueCollectionMapper());
         factory.registerMapper(new VuosiluokkaKokonaisuudenLaajaalainenOsaaminenCollectionMapper());
@@ -143,34 +135,6 @@ public class DtoMapperConfig {
         factory.classMap(OppiaineDto.class, Oppiaine.class)
             .mapNulls(false)
             .fieldBToA(Oppiaine_.vuosiluokkakokonaisuudet.getName(), Oppiaine_.vuosiluokkakokonaisuudet.getName())
-            .byDefault()
-            .register();
-        factory.classMap(OppiaineenVuosiluokkaKokonaisuusDto.class, OppiaineenVuosiluokkaKokonaisuus.class)
-            .mapNulls(false)
-            .byDefault()
-            .register();
-        factory.classMap(KeskeinenSisaltoalueDto.class, KeskeinenSisaltoalue.class)
-            .mapNulls(false)
-            .byDefault()
-            .register();
-        factory.classMap(OpetuksenTavoiteDto.class, OpetuksenTavoite.class)
-            .mapNulls(false)
-            .byDefault()
-            .register();
-        factory.classMap(TekstiOsaDto.class, TekstiOsa.class)
-            .mapNulls(false)
-            .byDefault()
-            .register();
-        factory.classMap(VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto.class, VuosiluokkaKokonaisuudenLaajaalainenOsaaminen.class)
-            .mapNulls(false)
-            .byDefault()
-            .register();
-        factory.classMap(VuosiluokkaKokonaisuusDto.class, VuosiluokkaKokonaisuus.class)
-            .mapNulls(false)
-            .byDefault()
-            .register();
-        factory.classMap(LaajaalainenOsaaminenDto.class, LaajaalainenOsaaminen.class)
-            .mapNulls(false)
             .byDefault()
             .register();
 

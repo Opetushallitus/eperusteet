@@ -39,6 +39,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -72,8 +73,9 @@ public class ArvioinninKohde implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private ArviointiAsteikko arviointiAsteikko;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     @Getter
+    @BatchSize(size = 10)
     private Set<OsaamistasonKriteeri> osaamistasonKriteerit = new HashSet<>();
 
     public ArvioinninKohde() {

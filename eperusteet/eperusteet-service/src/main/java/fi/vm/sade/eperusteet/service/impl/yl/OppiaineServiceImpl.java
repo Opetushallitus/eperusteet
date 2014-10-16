@@ -185,6 +185,7 @@ public class OppiaineServiceImpl implements OppiaineService {
                 //TODO poisto -- vai pitäikö jättää "ominaisuudeksi" että vuosiluokkakokonaisuuksia ei voi poistaa tätä kautta.
             }
         }
+        aine = oppiaineRepository.save(aine);
         return mapper.map(aine, OppiaineDto.class);
     }
 
