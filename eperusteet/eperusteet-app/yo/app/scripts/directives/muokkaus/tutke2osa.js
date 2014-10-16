@@ -100,9 +100,24 @@ angular.module('eperusteApp')
       jumpTo: function (alue) {
         Utils.scrollTo('#' + alue.$uniqueId);
       },
+      add: function () {
+        var newAlue = {
+          nimi: {}
+        };
+      $scope.tutke2osa.$editing.push(newAlue);
+      },
       edit: function (alue, $event) {
         stopEvent($event);
         $state.go('root.perusteprojekti.suoritustapa.perusteenosa.osaalue', {osaAlueId: alue.id});
+      },
+      remove: function (alue) {
+        if (alue.id) {
+          verifyRemove(function () {
+            _.remove($scope.tutke2osa.$editing, alue);
+          });
+        } else {
+          _.remove($scope.tutke2osa.$editing, alue);
+        }
       }
     };
 
