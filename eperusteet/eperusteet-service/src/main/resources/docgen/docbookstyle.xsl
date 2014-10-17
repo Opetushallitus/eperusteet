@@ -44,6 +44,9 @@
     <!-- only numbrer header titles up to level 2 (eg. 1.2.3.) -->
     <xsl:param name="section.autolabel.max.depth" select="2"></xsl:param>
 
+    <!-- Header center position gets all the width it possibly can get -->
+    <xsl:param name="header.column.widths">0 1 0</xsl:param>
+
     <xsl:attribute-set name="section.title.level1.properties">
         <xsl:attribute name="font-size">
             <!--<xsl:value-of select="$body.font.master * 2.0736"></xsl:value-of>-->
