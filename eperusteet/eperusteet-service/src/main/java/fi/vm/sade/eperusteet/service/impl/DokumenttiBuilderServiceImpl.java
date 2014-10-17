@@ -19,7 +19,7 @@ import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Osaamistaso;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
@@ -34,6 +34,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonOsa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
@@ -95,8 +96,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             TransformerConfigurationException,
             IOException,
             TransformerException,
-            ParserConfigurationException
-    {
+            ParserConfigurationException {
 
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -113,7 +113,6 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         rootElement.appendChild(titleElement);
 
         //rootElement.appendChild(doc.createElement("info"));
-
         // TODO: should we process suoritustavat in some specific order?
         for (Suoritustapa st : peruste.getSuoritustavat()) {
             PerusteenOsaViite sisalto = peruste.getSuoritustapa(st.getSuoritustapakoodi()).getSisalto();
@@ -261,7 +260,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                             peruste,
                             // TODO: jostain muualta???
                             messages.translate("docgen.tutkinnon_muodostuminen.title", kieli)
-                             + tapa.getSuoritustapakoodi(),
+                            + tapa.getSuoritustapakoodi(),
                             depth,
                             tapa.getSuoritustapakoodi(),
                             kieli));
@@ -273,8 +272,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     private Element getTutkinnonMuodostuminenGeneric(
             Document doc, Peruste peruste, String title, int depth,
             Suoritustapakoodi suoritustapakoodi,
-            Kieli kieli)
-    {
+            Kieli kieli) {
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         RakenneModuuli rakenne = suoritustapa.getRakenne();
 
@@ -289,55 +287,198 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         titleElement.appendChild(doc.createTextNode(title));
         returnElement.appendChild(titleElement);
 
-        List<AbstractRakenneOsa> osat = rakenne.getOsat();
-        addRakenneOsatRec(returnElement, osat, doc, kieli);
+        addRakenneOsaRec(returnElement, rakenne, doc, kieli, 0);
 
         return returnElement;
     }
 
-    private void addRakenneOsatRec(Element parent,
-            List<AbstractRakenneOsa> osat, Document doc, Kieli kieli) {
-        if (!osat.isEmpty()) {
-            Element modlist = doc.createElement("itemizedlist");
-            for (AbstractRakenneOsa osa : osat) {
-                try {
-                    if (osa instanceof RakenneModuuli) {
-                        RakenneModuuli moduuli = (RakenneModuuli) osa;
 
-                        Element modListItem = doc.createElement("listitem");
-                        String modnimi = getTextString(moduuli.getNimi(), kieli);
-                        modListItem.appendChild(doc.createTextNode(modnimi));
+    private void addRakenneOsaRec(Element parent,
+            AbstractRakenneOsa osa, Document doc, Kieli kieli, int depth) {
 
-                        // dwell deeper
-                        addRakenneOsatRec(modListItem, moduuli.getOsat(), doc, kieli);
+        if (osa instanceof RakenneModuuli) {
+            RakenneModuuli rakenneModuuli = (RakenneModuuli) osa;
 
-                        modlist.appendChild(modListItem);
+            String nimi = getTextString(rakenneModuuli.getNimi(), kieli);
+            MuodostumisSaanto muodostumisSaanto = rakenneModuuli.getMuodostumisSaanto();
+            String kokoTeksti = getKokoTeksti(muodostumisSaanto, kieli);
+            String laajuusTeksti = getLaajuusTeksti(muodostumisSaanto, kieli);
 
-                    } else if (osa instanceof RakenneOsa) {
-                        RakenneOsa rakenneOsa = (RakenneOsa) osa;
-                        String modnimi = getTextString(rakenneOsa.getTutkinnonOsaViite().getTutkinnonOsa().getNimi(), kieli);
-                        String refid = "tutkinnonosa" + rakenneOsa.getTutkinnonOsaViite().getTutkinnonOsa().getId();
-                        Element modListItem = doc.createElement("listitem");
-                        modListItem.appendChild(doc.createTextNode(modnimi));
+            // TODO: yksiköt, kappaleet
+            if (kokoTeksti != null) {
+                nimi += " | " + kokoTeksti;
+            }
+            if (laajuusTeksti != null) {
+                nimi += " | " + laajuusTeksti;
+            }
 
-                        Element linkElement = doc.createElement("link");
-                        linkElement.setAttribute("linkend", refid);
-                        linkElement.appendChild(doc.createTextNode(" (Seuraa -> " + refid + ")"));
-                        modListItem.appendChild(linkElement);
+            Element element;
+            if (depth == 0) {
+                // root, kaikki liitetään parenttiin
+                element = parent; //doc.createElement("informaltable");
+                // TODO: jonkilainen hieno ylätason title?
 
-                        modlist.appendChild(modListItem);
-                    }
+            } else if (depth == 1) {
+                // eka taso, table, tgroup ja body elementiks table
+                Element table = doc.createElement("informaltable");
+                parent.appendChild(table);
 
-                } catch (ClassCastException cce) {
-                    LOG.info("Oops, class cast exception");
+                // ensin koko taulukolle "otsikkorivi"
+                Element tgroup = doc.createElement("tgroup");
+                tgroup.setAttribute("cols", "1");
+                table.appendChild(tgroup);
+                Element tbody = doc.createElement("tbody");
+                tgroup.appendChild(tbody);
+                Element row = doc.createElement("row");
+                ProcessingInstruction pi = doc.createProcessingInstruction("dbfo", null);
+                pi.setData("bgcolor=\"#AAAAAA\"");
+                row.appendChild(pi);
+                tbody.appendChild(row);
+                Element entry = doc.createElement("entry");
+                entry.setAttribute("align", "center");
+                Element emphasis = doc.createElement("emphasis");
+                emphasis.setAttribute("role", "bold");
+                emphasis.appendChild(doc.createTextNode(nimi.toUpperCase()));
+                entry.appendChild(emphasis);
+                row.appendChild(entry);
+
+                element = table;
+
+            } else if (depth == 2) {
+
+                Element tgroup = doc.createElement("tgroup");
+                tgroup.setAttribute("cols", "1");
+                parent.appendChild(tgroup);
+                Element thead = doc.createElement("thead");
+                tgroup.appendChild(thead);
+                Element hrow = doc.createElement("row");
+                ProcessingInstruction pi = doc.createProcessingInstruction("dbfo", null);
+                pi.setData("bgcolor=\"#EEEEEE\"");
+                hrow.appendChild(pi);
+                thead.appendChild(hrow);
+                Element hentry = doc.createElement("entry");
+                hentry.appendChild(doc.createTextNode(nimi));
+                hrow.appendChild(hentry);
+
+                Element tbody = doc.createElement("tbody");
+                tgroup.appendChild(tbody);
+                element = tbody;
+
+                // sanity check: tbody on oltava ja se ei saa olla tyhjä
+                // normistihan tilannetta, jossa on tyhjä osalista ei pitäisi
+                // tulla, mutta joku voi haluta luoda pdf:n ennen kuin rakenne-
+                // puu on kunnossa eikä haluta, että luonti räjähtää
+                if (rakenneModuuli.getOsat().isEmpty()) {
+                    Element emptyRow = doc.createElement("row");
+                    tbody.appendChild(emptyRow);
+                    Element emptyEntry = doc.createElement("entry");
+                    emptyRow.appendChild(emptyEntry);
+                }
+
+            } else if (depth == 3) {
+                // toka taso row ja entry, elementiks entry
+                Element row = doc.createElement("row");
+                parent.appendChild(row);
+
+                Element entry = doc.createElement("entry");
+                entry.appendChild(doc.createTextNode(nimi));
+                row.appendChild(entry);
+
+                element = doc.createElement("itemizedlist");
+                if (!rakenneModuuli.getOsat().isEmpty()) {
+                    entry.appendChild(element);
+                }
+            } else {
+                // moduulin nimi:
+                Element nimiListItem = doc.createElement("listitem");
+                nimiListItem.appendChild(doc.createTextNode(nimi));
+                parent.appendChild(nimiListItem);
+
+                element = doc.createElement("itemizedlist");
+
+                if (!rakenneModuuli.getOsat().isEmpty()) {
+                    nimiListItem.appendChild(element);
                 }
             }
-            if (modlist.getChildNodes().getLength() > 0) {
-                parent.appendChild(modlist);
-            } else {
-                LOG.debug("Not adding empty itemizedlist");
+
+            for (AbstractRakenneOsa lapsi : rakenneModuuli.getOsat()) {
+                addRakenneOsaRec(element, lapsi, doc, kieli, depth + 1);
             }
 
+        } else if (osa instanceof RakenneOsa) {
+            RakenneOsa rakenneOsa = (RakenneOsa) osa;
+
+            BigDecimal laajuus = rakenneOsa.getTutkinnonOsaViite().getLaajuus();
+            LaajuusYksikko laajuusYksikko = rakenneOsa.getTutkinnonOsaViite().getSuoritustapa().getLaajuusYksikko();
+            String laajuusStr = "";
+            String yks = "";
+            if (laajuus != null) {
+                laajuusStr = laajuus.stripTrailingZeros().toPlainString();
+                if (laajuusYksikko == LaajuusYksikko.OSAAMISPISTE) {
+                    yks = messages.translate("laajuus.osp", kieli);
+                } else {
+                    yks = messages.translate("laajuus.ov", kieli);
+                }
+            }
+            String nimi = getTextString(rakenneOsa.getTutkinnonOsaViite().getTutkinnonOsa().getNimi(), kieli);
+
+            String refid = "tutkinnonosa" + rakenneOsa.getTutkinnonOsaViite().getTutkinnonOsa().getId();
+            Element xref = doc.createElement("xref");
+            xref.setAttribute("linkend", refid);
+            xref.setAttribute("xrefstyle", "select: labelnumber");
+            Element linkElement = doc.createElement("link");
+            linkElement.setAttribute("linkend", refid);
+
+            StringBuilder nimiBldr = new StringBuilder();
+            nimiBldr.append(" ").append(nimi);
+            if (!laajuusStr.isEmpty()) {
+                nimiBldr.append(", ").append(laajuusStr).append(" ").append(yks);
+            }
+            linkElement.appendChild(doc.createTextNode(nimiBldr.toString()));
+
+            // voi veljet...
+            if (depth == 1) {
+                // parent on tällä syvyydellä section, chapter tms.
+                // tänne pitäisi joutua vain vähän oudossa tilanteessa, jossa
+                // ylimmälle tasolle on pistetty tutkinnonosa ryhmä-elementin
+                // sijasta
+                // tehdään siis vain esim tylsästi para-elementti
+                Element para = doc.createElement("para");
+                para.appendChild(xref);
+                para.appendChild(linkElement);
+                parent.appendChild(para);
+
+            } else if (depth == 2) {
+                // parent on tällä syvyydellä aina informaltable
+                Element tgroup = doc.createElement("tgroup");
+                tgroup.setAttribute("cols", "1");
+                Element tbody = doc.createElement("tbody");
+                Element row = doc.createElement("row");
+                Element entry = doc.createElement("entry");
+
+                parent.appendChild(tgroup);
+                tgroup.appendChild(tbody);
+                tbody.appendChild(row);
+                row.appendChild(entry);
+                entry.appendChild(xref);
+                entry.appendChild(linkElement);
+            } else if (depth == 3) {
+                // parent on tällä syvyydellä aina tbody
+                Element row = doc.createElement("row");
+                Element entry = doc.createElement("entry");
+                parent.appendChild(row);
+                row.appendChild(entry);
+                entry.appendChild(xref);
+                entry.appendChild(linkElement);
+            } else if (depth >= 4) {
+                // parent on tällä syvyydellä itemizedlist
+                Element listitem = doc.createElement("listitem");
+                parent.appendChild(listitem);
+                listitem.appendChild(xref);
+                listitem.appendChild(linkElement);
+            } else {
+                LOG.error("RakenneOsa tuntemattomalla syvyydellä {}", depth);
+            }
         }
     }
 
@@ -350,8 +491,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
             PerusteenOsa po = lapsi.getPerusteenOsa();
             TekstiKappale tk = null;
-            if ( po instanceof TekstiKappale ){
-                tk = (TekstiKappale)po;
+            if (po instanceof TekstiKappale) {
+                tk = (TekstiKappale) po;
             }
 
             if (tk == null) {
@@ -423,8 +564,6 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 addTutke2Osat(doc, element, osa, kieli);
             }
 
-
-
             doc.getDocumentElement().appendChild(element);
         }
     }
@@ -483,7 +622,6 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
         parent.appendChild(section);
     }
-
 
     private void addArviointi(Document doc, Element parent, Arviointi arviointi, Kieli kieli) {
 
@@ -653,7 +791,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         LOG.debug("> addTutke2Osat");
         List<OsaAlue> osaAlueet = osa.getOsaAlueet();
 
-        for (OsaAlue osaAlue: osaAlueet) {
+        for (OsaAlue osaAlue : osaAlueet) {
             String nimi = getTextString(osaAlue.getNimi(), kieli);
             Element sectionElement = doc.createElement("section");
             Element titleElement = doc.createElement("title");
@@ -678,7 +816,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                         Element td1 = doc.createElement("td");
                         td1.appendChild(
                                 doc.createTextNode(
-                                messages.translate("docgen.tutke2.tavoite.laajuus", kieli)));
+                                        messages.translate("docgen.tutke2.tavoite.laajuus", kieli)));
                         Element td2 = doc.createElement("td");
                         td2.appendChild(doc.createTextNode(laajuus.toString()));
                         infotr.appendChild(td1);
@@ -690,7 +828,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                     Element td3 = doc.createElement("td");
                     td3.appendChild(
                             doc.createTextNode(
-                                messages.translate("docgen.tutke2.tavoite.esitieto", kieli)));
+                                    messages.translate("docgen.tutke2.tavoite.esitieto", kieli)));
                     esitietotr.appendChild(td3);
 
                     Element td4 = doc.createElement("td");
@@ -732,7 +870,61 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
                 sectionElement.appendChild(tavoiteSectionElement);
             }
-
         }
     }
+
+    private String getKokoTeksti(MuodostumisSaanto saanto, Kieli kieli) {
+        if (saanto == null || saanto.getKoko() == null) {
+            return null;
+        }
+
+        MuodostumisSaanto.Koko koko = saanto.getKoko();
+        Integer min = koko.getMinimi();
+        Integer max = koko.getMaksimi();
+        StringBuilder kokoBuilder = new StringBuilder("");
+        if (min != null)  {
+            kokoBuilder.append(min.toString());
+        }
+        if (min != null && max != null && !min.equals(max)) {
+            kokoBuilder.append("-");
+        }
+        if (max != null && !max.equals(min)) {
+            kokoBuilder.append(max.toString());
+        }
+
+        String yks = messages.translate("koko.kpl", kieli);
+        kokoBuilder.append(" ");
+        kokoBuilder.append(yks);
+        return kokoBuilder.toString();
+    }
+
+    private String getLaajuusTeksti(MuodostumisSaanto saanto, Kieli kieli) {
+        if (saanto == null || saanto.getLaajuus() == null) {
+            return null;
+        }
+
+        MuodostumisSaanto.Laajuus laajuus = saanto.getLaajuus();
+        Integer min = laajuus.getMinimi();
+        Integer max = laajuus.getMaksimi();
+        StringBuilder laajuusBuilder = new StringBuilder("");
+        if (min != null)  {
+            laajuusBuilder.append(min.toString());
+        }
+        if (min != null && max != null && !min.equals(max)) {
+            laajuusBuilder.append("-");
+        }
+        if (max != null && !max.equals(min)) {
+            laajuusBuilder.append(max.toString());
+        }
+
+        String yks = messages.translate("laajuus.ov", kieli);
+        if (laajuus.getYksikko() == LaajuusYksikko.OSAAMISPISTE) {
+            yks = messages.translate("laajuus.osp", kieli);
+        }
+
+        laajuusBuilder.append(" ");
+        laajuusBuilder.append(yks);
+        return laajuusBuilder.toString();
+    }
+
 }
