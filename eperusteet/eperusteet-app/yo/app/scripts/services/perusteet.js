@@ -64,6 +64,11 @@ angular.module('eperusteApp')
       vuosiluokkaId: '@id'
     });
   })
+  .factory('Oppiaineet', function ($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:oppiaineId', {
+      oppiaineId: '@id'
+    });
+  })
   .factory('Suoritustapa', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa');
   })

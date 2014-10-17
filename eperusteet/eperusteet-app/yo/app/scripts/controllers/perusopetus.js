@@ -18,10 +18,15 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .service('PerusopetusService', function (Vuosiluokkakokonaisuudet) {
+  .service('PerusopetusService', function (Vuosiluokkakokonaisuudet, Oppiaineet, $q) {
     this.OSAAMINEN = 'osaaminen';
     this.VUOSILUOKAT = 'vuosiluokat';
     this.OPPIAINEET = 'oppiaineet';
+    this.LABELS = {
+      'laaja-alainen-osaaminen': this.OSAAMINEN,
+      'vuosiluokkakokonaisuudet': this.VUOSILUOKAT,
+      'oppiaineet': this.OPPIAINEET
+    };
     var tiedot = null;
     this.setTiedot = function (value) {
       console.log("setTiedot");
@@ -51,6 +56,30 @@ angular.module('eperusteApp')
         addLabel: 'lisaa-oppiaine'
       },
     ];
+
+    function promisify(data) {
+      var deferred = $q.defer();
+      _.extend(deferred, data);
+      deferred.resolve(data);
+      return deferred.promise;
+    }
+
+    this.getPart = function (params) {
+      switch (params.osanTyyppi) {
+        case this.VUOSILUOKAT:
+          return Vuosiluokkakokonaisuudet.get({
+            perusteId: tiedot.getProjekti()._peruste,
+            vuosiluokkaId: params.osanId
+          }).$promise;
+        case this.OPPIAINEET:
+          return promisify(this.getOsat(params.osanTyyppi)[0]);
+        default:
+          return promisify({
+            nimi: {fi: 'Tekstikappaleen otsikko'},
+            teksti: {fi: '<p>Tekstikappaleen tekstiä lorem ipsum.</p>'}
+          });
+      }
+    };
 
     this.getTekstikappaleet = function () {
       // TODO oikea data
@@ -83,8 +112,8 @@ angular.module('eperusteApp')
             {perusteenOsa: {id: 3, nimi: {fi: 'Itsestä huolehtiminen ja arjenhallinta'}, teksti: {fi: 'Yleinen kuvaus itsestä huolehtimiselle.'}}},
           ];
         case this.VUOSILUOKAT:
-          Vuosiluokkakokonaisuudet.query({perusteId: tiedot.getProjekti()._peruste});
-          return [
+          return Vuosiluokkakokonaisuudet.query({perusteId: tiedot.getProjekti()._peruste});
+          /*return [
             {
               id: 1001,
               nimi: {fi: 'Vuosiluokat 1-2'},
@@ -117,9 +146,10 @@ angular.module('eperusteApp')
               tekstikappaleet: []
             },
 
-          ];
+          ];*/
         case this.OPPIAINEET:
-          return [
+          return Oppiaineet.query({perusteId: tiedot.getProjekti()._peruste});
+          /*return [
             {
               nimi: {fi: 'Matematiikka'},
               vuosiluokkakokonaisuudet: [
@@ -203,7 +233,7 @@ angular.module('eperusteApp')
               tehtava: {},
               osaalue: {},
             }
-          ];
+          ];*/
         default:
           return [];
       }
@@ -258,24 +288,26 @@ angular.module('eperusteApp')
   })
 
   .controller('OsalistausController', function ($scope, $state, $stateParams, PerusopetusService,
-      virheService, PerusteprojektiTiedotService) {
+      virheService) {
     $scope.sisaltoState = _.find(PerusopetusService.sisallot, {tyyppi: $stateParams.osanTyyppi});
     if (!$scope.sisaltoState) {
       virheService.virhe('virhe-sivua-ei-löytynyt');
       return;
     }
     // TODO real data
-    $scope.osaAlueet = [];
+    $scope.osaAlueet = null;
     var vuosiluokkakokonaisuudet = [];
-    PerusteprojektiTiedotService.then(function (value) {
-      PerusopetusService.setTiedot(value);
-      $scope.osaAlueet = _.map(PerusopetusService.getOsat($stateParams.osanTyyppi), function (osa) {
+    var query = PerusopetusService.getOsat($stateParams.osanTyyppi);
+    if (query.$promise) {
+      $scope.osaAlueet = query;
+    } else {
+      $scope.osaAlueet = _.map(query, function (osa) {
         return $stateParams.osanTyyppi === PerusopetusService.OSAAMINEN ? osa.perusteenOsa : osa;
       });
-      if ($stateParams.osanTyyppi === PerusopetusService.OPPIAINEET) {
-        vuosiluokkakokonaisuudet = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT);
-      }
-    });
+    }
+    if ($stateParams.osanTyyppi === PerusopetusService.OPPIAINEET) {
+      vuosiluokkakokonaisuudet = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT);
+    }
 
     var oppiaineFilter = {
       template: '<label>{{\'vuosiluokkakokonaisuus\'|kaanna}}' +
@@ -302,26 +334,11 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('OsaAlueController', function ($scope, $q, $stateParams, PerusopetusService,
-      PerusteprojektiTiedotService) {
+  .controller('OsaAlueController', function ($scope, $q, $stateParams, PerusopetusService) {
     $scope.isVuosiluokka = $stateParams.osanTyyppi === PerusopetusService.VUOSILUOKAT;
     $scope.isOppiaine = $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET;
-    // TODO real data
     $scope.versiot = {latest: true};
-    var tekstikappale = {
-      nimi: {fi: 'Tekstikappaleen otsikko'},
-      teksti: {fi: '<p>Tekstikappaleen tekstiä lorem ipsum.</p>'}
-    };
-    $scope.dataObject = $q.defer();
-    console.log("osaalue ctrl");
-    var data = {};
-    PerusteprojektiTiedotService.then(function (value) {
-      PerusopetusService.setTiedot(value);
-      data = ($scope.isVuosiluokka || $scope.isOppiaine) ?
-        PerusopetusService.getOsat($stateParams.osanTyyppi)[0] : tekstikappale;
-      _.extend($scope.dataObject, data);
-      $scope.dataObject.resolve(data);
-    });
+    $scope.dataObject = PerusopetusService.getPart($stateParams);
   })
 
   /* protokoodia --> */

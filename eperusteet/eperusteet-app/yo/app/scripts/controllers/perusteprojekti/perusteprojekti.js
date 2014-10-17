@@ -41,7 +41,7 @@ angular.module('eperusteApp')
       .state('root.perusteprojekti.perusopetus', {
         url: '/perusopetus',
         templateUrl: 'views/partials/perusteprojekti/perusopetus.html',
-        /*resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
+        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
           'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
             return perusteprojektiTiedot.projektinTiedotAlustettu();
           }],
@@ -49,7 +49,7 @@ angular.module('eperusteApp')
             function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
               return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
             }]
-        },*/
+        },
         controller: 'PerusopetusSisaltoController',
         onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
           PerusteProjektiSivunavi.setVisible(false);
@@ -58,6 +58,15 @@ angular.module('eperusteApp')
       .state('root.perusteprojekti.osalistaus', {
         url: '/osat/:osanTyyppi',
         templateUrl: 'views/partials/perusteprojekti/osalistaus.html',
+        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
+          'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
+            return perusteprojektiTiedot.projektinTiedotAlustettu();
+          }],
+          'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
+            function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
+              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams, true);
+            }]
+        },
         controller: 'OsalistausController',
         onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
           PerusteProjektiSivunavi.setVisible();
@@ -206,6 +215,7 @@ angular.module('eperusteApp')
       type: 'AM'
     };
     var sivunaviItemsChanged = function (items) {
+      console.log("items changed", items.length);
       $scope.sivunavi.items = items;
     };
     var sivunaviTypeChanged = function (type) {
@@ -293,7 +303,7 @@ angular.module('eperusteApp')
       $scope.muokkausEnabled = false;
     });
   })
-  .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams,
+  .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q,
                                                 $state, $location, YleinenData, PerusopetusService) {
     var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
     var STATE_OSA = 'root.perusteprojekti.suoritustapa.perusteenosa';
@@ -310,11 +320,6 @@ angular.module('eperusteApp')
         isActive: isTutkinnonosatActive
       }
     ];
-    var YL_ITEMS = {
-      'laaja-alainen-osaaminen': PerusopetusService.OSAAMINEN,
-      'vuosiluokkakokonaisuudet': PerusopetusService.VUOSILUOKAT,
-      'oppiaineet': PerusopetusService.OPPIAINEET
-    };
     var service = null;
     var _isVisible = false;
     var items = [];
@@ -373,28 +378,31 @@ angular.module('eperusteApp')
       return $location.url().indexOf(url) > -1;
     };
 
+    function mapYL(osat, key) {
+      _.each(osat, function (osa) {
+        items.push({
+          depth: 1,
+          label: osa.nimi ? osa.nimi : osa.perusteenOsa.nimi,
+          link: [STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id}]
+        });
+      });
+    }
+
     var buildTree = function () {
+      items = [];
       if (perusteenTyyppi === 'YL') {
-        items = [];
-        _.each(YL_ITEMS, function (key, label) {
+        var tiedot = service.getYlTiedot();
+        _.each(PerusopetusService.LABELS, function (key, label) {
           items.push({
             label: label,
             link: [STATE_OSALISTAUS, {osanTyyppi: key}]
           });
-          // TODO better way to fetch all YL data
-          var osat = PerusopetusService.getOsat(key);
-          _.each(osat, function (osa) {
-            items.push({
-              depth: 1,
-              label: osa.nimi ? osa.nimi : osa.perusteenOsa.nimi,
-              link: [STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id}]
-            });
-          });
+          mapYL(tiedot[key], key);
         });
       } else {
         items = _.clone(AM_ITEMS);
+        processNode(data.projekti.peruste.sisalto);
       }
-      processNode(data.projekti.peruste.sisalto);
       callbacks.itemsChanged(items);
     };
 
@@ -417,7 +425,6 @@ angular.module('eperusteApp')
     this.refresh = function (light) {
       if (!service) {
         PerusteprojektiTiedotService.then(function(res) {
-          PerusopetusService.setTiedot(res);
           service = res;
           load();
         });
@@ -426,8 +433,8 @@ angular.module('eperusteApp')
           load();
         } else {
           service.alustaPerusteenSisalto($stateParams, true).then(function () {
-          load();
-        });
+            load();
+          });
         }
       }
     };
