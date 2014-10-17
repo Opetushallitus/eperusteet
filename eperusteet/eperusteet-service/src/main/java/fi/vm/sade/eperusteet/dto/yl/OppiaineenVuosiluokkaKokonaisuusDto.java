@@ -30,11 +30,11 @@ import lombok.Setter;
 @Setter
 public class OppiaineenVuosiluokkaKokonaisuusDto implements ReferenceableDto {
     private Long id;
-    private EntityReference vuosiluokkaKokonaisuus;
+    private Optional<EntityReference> vuosiluokkaKokonaisuus;
     private Optional<TekstiOsaDto> tehtava;
     private Optional<TekstiOsaDto> tyotavat;
     private Optional<TekstiOsaDto> ohjaus;
     private Optional<TekstiOsaDto> arviointi;
     private List<OpetuksenTavoiteDto> tavoitteet;
-    private List<KeskeinenSisaltoalueDto> sisaltoAlueet;
+    private List<KeskeinenSisaltoalueDto> sisaltoalueet;
 }

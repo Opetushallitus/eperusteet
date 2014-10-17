@@ -79,19 +79,19 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         oppiaineDto.setNimi(Optional.of(lt("Oppiaine")));
         OppiaineenVuosiluokkaKokonaisuusDto vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
         vkDto.setTehtava(Optional.of(to("Tehtävä", "")));
-        vkDto.setVuosiluokkaKokonaisuus(vk.getReference());
+        vkDto.setVuosiluokkaKokonaisuus(Optional.of(vk.getReference()));
         oppiaineDto.setVuosiluokkakokonaisuudet(Sets.newHashSet(vkDto));
         KeskeinenSisaltoalueDto ks = new KeskeinenSisaltoalueDto();
         ks.setNimi(Optional.of(lt("Nimi")));
-        vkDto.setSisaltoAlueet(Lists.newArrayList(ks));
+        vkDto.setSisaltoalueet(Lists.newArrayList(ks));
         OppiaineDto oa = service.addOppiaine(perusteId, oppiaineDto);
-        assertEquals("Nimi", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoAlueet().get(0).getNimi().get().getTekstit().get(Kieli.FI));
+        assertEquals("Nimi", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(0).getNimi().get().getTekstit().get(Kieli.FI));
         ks.setNimi(olt("Nimi2"));
-        oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoAlueet().add(0, ks);
-        oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoAlueet().get(1).setNimi(null);
+        oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().add(0, ks);
+        oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(1).setNimi(null);
         oa = service.updateOppiaine(perusteId, oa);
-        assertEquals("Nimi2", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoAlueet().get(0).getNimi().get().getTekstit().get(Kieli.FI));
-        assertEquals("Nimi", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoAlueet().get(1).getNimi().get().getTekstit().get(Kieli.FI));
+        assertEquals("Nimi2", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(0).getNimi().get().getTekstit().get(Kieli.FI));
+        assertEquals("Nimi", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(1).getNimi().get().getTekstit().get(Kieli.FI));
     }
 
 

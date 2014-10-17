@@ -82,7 +82,7 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable
     @OrderColumn
-    private List<KeskeinenSisaltoalue> sisaltoAlueet = new ArrayList<>();
+    private List<KeskeinenSisaltoalue> sisaltoalueet = new ArrayList<>();
 
     public List<OpetuksenTavoite> getTavoitteet() {
         return new ArrayList<>(tavoitteet);
@@ -95,14 +95,14 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
         }
     }
 
-    public List<KeskeinenSisaltoalue> getSisaltoAlueet() {
-        return new ArrayList<>(sisaltoAlueet);
+    public List<KeskeinenSisaltoalue> getSisaltoalueet() {
+        return new ArrayList<>(sisaltoalueet);
     }
 
-    public void setSisaltoAlueet(List<KeskeinenSisaltoalue> sisaltoAlueet) {
-        this.sisaltoAlueet.clear();
-        if (sisaltoAlueet != null) {
-            this.sisaltoAlueet.addAll(sisaltoAlueet);
+    public void setSisaltoalueet(List<KeskeinenSisaltoalue> sisaltoalueet) {
+        this.sisaltoalueet.clear();
+        if (sisaltoalueet != null) {
+            this.sisaltoalueet.addAll(sisaltoalueet);
         }
     }
 

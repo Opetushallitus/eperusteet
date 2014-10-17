@@ -16,8 +16,9 @@
 package fi.vm.sade.eperusteet.service.mapping;
 
 import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.util.Collection;
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.CustomMapper;
@@ -28,16 +29,27 @@ import ma.glasnost.orika.NullFilter;
 import ma.glasnost.orika.metadata.Type;
 
 /**
+ * Tuki Guavan Optional-luokalle Orika mapperin yhteydessä.
  *
+ * Tarkoitettu Dto->Entiteetti->Dto mappaukseen.
+ *
+ * Mahdollistaa mappauksen siten, että DTO-luokissa voi määritellä attribuuttela Optional<Attr> a ja mappaus entiteetteihin toimii seuraavasti:
+ * null: pidetään kohdearvo
+ * Present: mapätään rekursiivisesti kohdearvoon
+ * Absent: asetetaan kohdearvo NULL-arvoksi
+ *
+ * TODO: Kohdearvo ei voi olla itse Optional (ainakaan kaikissa tapauksissa).
  * @author jhyoty
  */
 public final class OptionalSupport {
 
-    private OptionalSupport() {};
+    private OptionalSupport() {
+    }
 
     public static void register(MapperFactory factory) {
-        factory.getConverterFactory().registerConverter(new TekstiConverter());
         factory.getConverterFactory().registerConverter(new ToOptionalConverter());
+        factory.getConverterFactory().registerConverter(new OptionalImmutableConverter());
+        factory.getConverterFactory().registerConverter(new OptionalEntitityReferenceConverter());
         factory.registerFilter(new Filter());
         factory.registerFilter(new CollectionFilter());
         factory.registerMapper(new Mapper());
@@ -62,6 +74,7 @@ public final class OptionalSupport {
 
     }
 
+    //Optional.absent --> null
     static final class Filter extends NullFilter<Optional<?>, Object> {
 
         @Override
@@ -93,18 +106,6 @@ public final class OptionalSupport {
 
     }
 
-    static final class TekstiConverter extends CustomConverter<Optional<LokalisoituTekstiDto>, TekstiPalanen> {
-
-        @Override
-        public TekstiPalanen convert(Optional<LokalisoituTekstiDto> source, Type<? extends TekstiPalanen> destinationType) {
-            if (source != null && source.isPresent()) {
-                return mapperFacade.map(source.get(), TekstiPalanen.class);
-            }
-            return null;
-        }
-
-    }
-
     static final class ToOptionalConverter extends CustomConverter<Object, Optional<?>> {
 
         @Override
@@ -119,5 +120,49 @@ public final class OptionalSupport {
             }
             return null;
         }
+    }
+
+    static final class OptionalEntitityReferenceConverter extends CustomConverter<Optional<EntityReference>, ReferenceableEntity> {
+
+        @Override
+        public boolean canConvert(Type<?> sourceType, Type<?> destinationType) {
+            return this.sourceType.isAssignableFrom(sourceType) && this.destinationType.isAssignableFrom(destinationType);
+
+        }
+
+        @Override
+        public ReferenceableEntity convert(Optional<EntityReference> source, Type<? extends ReferenceableEntity> destinationType) {
+            if (source != null && source.isPresent()) {
+                return mapperFacade.map(source.get(), destinationType.getRawType());
+            }
+            return null;
+        }
+
+    }
+
+    static final class OptionalImmutableConverter extends CustomConverter<Optional<?>, Object> {
+
+        @Override
+        public boolean canConvert(Type<?> sourceType, Type<?> destinationType) {
+            return this.sourceType.isAssignableFrom(sourceType) && isImmutable(destinationType);
+        }
+
+        @Override
+        public Object convert(Optional<?> source, Type<? extends Object> destinationType) {
+            if (source != null && source.isPresent()) {
+                return mapperFacade.map(source.get(), destinationType.getRawType());
+            }
+            return null;
+        }
+
+        private static boolean isImmutable(Type<?> type) {
+            return
+                TekstiPalanen.class.isAssignableFrom(type.getRawType())
+                || type.isPrimitiveWrapper()
+                || type.isEnum()
+                || type.isPrimitive()
+                || type.isString();
+        }
+
     }
 }

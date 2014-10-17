@@ -21,11 +21,16 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;
 import fi.vm.sade.eperusteet.domain.yl.OppiaineenVuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.TekstiOsa;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenTavoiteDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
 import java.util.Collections;
 import java.util.List;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.junit.Test;
@@ -64,6 +69,7 @@ public class MappingTest {
 
         OppiaineenVuosiluokkaKokonaisuusDto dto = mapper.map(ovk, OppiaineenVuosiluokkaKokonaisuusDto.class);
         dto.setArviointi(null);
+        dto.setVuosiluokkaKokonaisuus(Optional.of(new EntityReference(0L)));
         dto.setOhjaus(Optional.<TekstiOsaDto>absent());
         dto.getTavoitteet().get(0).setTavoite(olt("Tavoite"));
         mapper.map(dto, ovk);
@@ -80,6 +86,40 @@ public class MappingTest {
         dto.setTavoitteet(Collections.<OpetuksenTavoiteDto>emptyList());
         mapper.map(dto, ovk);
         assertTrue(ovk.getTavoitteet().isEmpty());
+    }
+
+    @Test
+    public void testOptionalImmutableMapping() {
+
+        DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
+            .build();
+        OptionalSupport.register(factory);
+        MapperFacade mapper = factory.getMapperFacade();
+        B b = mapper.map(new A(), B.class);
+        A a = mapper.map(b, A.class);
+        assertEquals(new A(), a);
+        a.setL(null);
+        mapper.map(a, b);
+        assertEquals(Long.valueOf(42L), b.getL());
+        a.setL(Optional.<Long>absent());
+        mapper.map(a, b);
+        assertNull(b.getL());
+    }
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode
+    @ToString
+    static public class A {
+        Optional<Long> l = Optional.of(42L);
+        Optional<String> t = Optional.of("Bar");
+    }
+
+    @Getter
+    @Setter
+    static public class B {
+        Long l;
+        String t;
     }
 
 }
