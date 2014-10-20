@@ -148,7 +148,7 @@ angular.module('eperusteApp')
     };
 
     SplitField.prototype.getObject = function (obj) {
-      return obj[this.parts[0]];
+      return !obj ? null : obj[this.parts[0]];
     };
 
     SplitField.prototype.addArrayItem = function (obj) {

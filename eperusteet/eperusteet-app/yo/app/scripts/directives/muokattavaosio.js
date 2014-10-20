@@ -24,7 +24,8 @@ angular.module('eperusteApp')
       restrict: 'A',
       scope: {
         model: '=muokattavaOsio',
-        type: '@'
+        type: '@',
+        path: '@?'
       },
       controller: 'MuokattavaOsioController'
     };
@@ -34,12 +35,13 @@ angular.module('eperusteApp')
 
     $scope.hasContent = false;
     $scope.$watch('model', function () {
-      $scope.hasContent = $scope.type !== 'tekstikappale' || Utils.hasLocalizedText($scope.model.nimi);
+      $scope.realModel = $scope.type === 'tekstikappale' ?
+        ($scope.model ? $scope.model[$scope.path] : null) : $scope.model;
+      $scope.hasContent = $scope.type !== 'tekstikappale' || ($scope.realModel && _.has($scope.realModel, 'otsikko'));
     }, true);
 
     $scope.edit = function () {
-      OsanMuokkausHelper.setBackState();
-      // TODO osan id
-      $state.go('root.perusteprojekti.muokkaus', {osanTyyppi: $scope.type, osanId: ''});
+      OsanMuokkausHelper.setup($scope.model, $scope.path);
+      $state.go('root.perusteprojekti.muokkaus', {osanTyyppi: $scope.type, osanId: $scope.realModel.id});
     };
   });

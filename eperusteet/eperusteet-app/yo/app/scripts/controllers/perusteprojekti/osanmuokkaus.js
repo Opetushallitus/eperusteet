@@ -22,21 +22,29 @@ angular.module('eperusteApp')
     this.model = null;
     this.backState = null;
     this.vuosiluokka = null;
-
-    this.setModel = function (data) {
-      this.model = data;
-    };
+    this.path = null;
+    this.oppiaine = null;
 
     this.getModel = function () {
       if (!this.model) {
-        this.model = this.fetch();
+        //this.model = this.fetch();
       }
-      return this.model;
+      return this.path ? this.model[this.path] : this.model;
     };
 
-    this.setBackState = function () {
+    this.setup = function (model, path) {
+      this.oppiaine = $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET ? model : null;
+      this.model = model;
+      this.path = path;
       this.backState = [$state.current.name, _.clone($stateParams)];
-      this.model = null;
+    };
+
+    this.save = function () {
+      if (this.path) {
+        var payload = _.pick(this.model, ['id', this.path]);
+        PerusopetusService.saveOsa(payload, this.backState[1]);
+      }
+      console.log(this.model, this.path, this.backState);
     };
 
     this.goBack = function () {
@@ -69,8 +77,7 @@ angular.module('eperusteApp')
     };
 
     this.getOppiaine = function () {
-      // TODO dummy
-      return PerusopetusService.getOsat(PerusopetusService.OPPIAINEET)[0];
+      return this.oppiaine;
     };
 
     this.getVuosiluokkakokonaisuus = function () {
@@ -81,6 +88,9 @@ angular.module('eperusteApp')
   .controller('OsanMuokkausController', function($scope, $stateParams, $compile, OsanMuokkausHelper,
       Editointikontrollit) {
     $scope.objekti = OsanMuokkausHelper.getModel();
+    if (!$scope.objekti) {
+      return;
+    }
 
     var MAPPING = {
       tekstikappale: {
@@ -90,6 +100,7 @@ angular.module('eperusteApp')
         },
         callbacks: {
           save: function () {
+            OsanMuokkausHelper.save();
             OsanMuokkausHelper.goBack();
           },
           edit: function () {},
@@ -156,11 +167,18 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('OsanmuokkausTekstikappaleController', function ($scope, OsanMuokkausHelper) {
+  .controller('OsanmuokkausTekstikappaleController', function ($scope, OsanMuokkausHelper, $rootScope) {
     $scope.getTitle = function () {
       return OsanMuokkausHelper.isVuosiluokkakokonaisuudenOsa() ?
         'muokkaus-vuosiluokkakokonaisuuden-osa' : 'muokkaus-tekstikappale';
     };
+    // Odota tekstikenttien alustus ja päivitä editointipalkin sijainti
+    var received = 0;
+    $scope.$on('ckEditorInstanceReady', function() {
+      if (++received === 2) {
+        $rootScope.$broadcast('editointikontrollitRefresh');
+      }
+    });
   })
 
   .directive('osanmuokkausTavoitteet', function () {

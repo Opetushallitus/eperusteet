@@ -72,12 +72,28 @@ angular.module('eperusteApp')
             vuosiluokkaId: params.osanId
           }).$promise;
         case this.OPPIAINEET:
-          return promisify(this.getOsat(params.osanTyyppi)[0]);
+          return Oppiaineet.get({
+            perusteId: tiedot.getProjekti()._peruste,
+            oppiaineId: params.osanId
+          }).$promise;
+          //return promisify(this.getOsat(params.osanTyyppi)[0]);
         default:
           return promisify({
             nimi: {fi: 'Tekstikappaleen otsikko'},
             teksti: {fi: '<p>Tekstikappaleen tekstiä lorem ipsum.</p>'}
           });
+      }
+    };
+
+    this.saveOsa = function (data, config) {
+      switch (config.osanTyyppi) {
+        case this.OPPIAINEET:
+          Oppiaineet.save({
+            perusteId: tiedot.getProjekti()._peruste,
+          }, data);
+          break;
+        default:
+          break;
       }
     };
 
@@ -328,9 +344,8 @@ angular.module('eperusteApp')
       extrafilter: $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET ? oppiaineFilter : null,
     };
 
-    $scope.createUrl = function (/*value*/) {
-      // TODO proper parameters
-      return $state.href('root.perusteprojekti.osaalue', {osanTyyppi: $stateParams.osanTyyppi, osanId: ''});
+    $scope.createUrl = function (value) {
+      return $state.href('root.perusteprojekti.osaalue', {osanTyyppi: $stateParams.osanTyyppi, osanId: value.id});
     };
   })
 
@@ -339,6 +354,7 @@ angular.module('eperusteApp')
     $scope.isOppiaine = $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET;
     $scope.versiot = {latest: true};
     $scope.dataObject = PerusopetusService.getPart($stateParams);
+    console.log($scope.dataObject);
   })
 
   /* protokoodia --> */

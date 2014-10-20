@@ -75,6 +75,15 @@ angular.module('eperusteApp')
       .state('root.perusteprojekti.osaalue', {
         url: '/osat/:osanTyyppi/:osanId',
         templateUrl: 'views/partials/perusteprojekti/osaalue.html',
+        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
+          'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
+            return perusteprojektiTiedot.projektinTiedotAlustettu();
+          }],
+          'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
+            function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
+              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams, true);
+            }]
+        },
         controller: 'OsaAlueController',
         onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
           PerusteProjektiSivunavi.setVisible();
@@ -382,7 +391,7 @@ angular.module('eperusteApp')
       _.each(osat, function (osa) {
         items.push({
           depth: 1,
-          label: osa.nimi ? osa.nimi : osa.perusteenOsa.nimi,
+          label: _.has(osa, 'nimi') ? osa.nimi : osa.perusteenOsa.nimi,
           link: [STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id}]
         });
       });

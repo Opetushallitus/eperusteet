@@ -38,15 +38,31 @@ angular.module('eperusteApp')
   })
 
   .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna,
-      PerusteProjektiSivunavi) {
-    $scope.editableModel = angular.copy($scope.model);
+      PerusteProjektiSivunavi, Oppiaineet) {
+    $scope.editableModel = {};
+    $scope.model.then(function (data) {
+      $scope.editableModel = angular.copy(data);
+    });
     $scope.editEnabled = false;
     $scope.mappedVuosiluokat = [];
     $scope.yleisetosat = ['tehtava', 'osaalue'];
 
     var callbacks = {
       edit: function () {},
-      save: function () {},
+      save: function () {
+        if (!$scope.editableModel.id) {
+          // TODO
+          Oppiaineet.save({
+            perusteId: PerusopetusService.getPerusteId()
+          }, {
+            nimi: $scope.editableModel.nimi
+          });
+        } else {
+          $scope.editableModel.$save({
+            perusteId: PerusopetusService.getPerusteId()
+          });
+        }
+      },
       cancel: function () {},
       notify: function (value) {
         $scope.editEnabled = value;
@@ -57,7 +73,7 @@ angular.module('eperusteApp')
 
     $scope.data = {
       options: {
-        title: $scope.model.nimi,
+        title: function () { return $scope.editableModel.nimi; },
         editTitle: 'muokkaa-oppiainetta',
         newTitle: 'uusi-oppiaine',
         backLabel: 'oppiaineet',
@@ -76,8 +92,13 @@ angular.module('eperusteApp')
             hide: '!model.koosteinen'
           }
         ],
-        addFieldCb: function (/*field*/) {
-
+        addFieldCb: function (field) {
+          if (field.path === 'tehtava') {
+            $scope.editableModel.tehtava = {
+              otsikko: {fi: 'Oppiaineen tehtävä'},
+              teksti: {fi: ''}
+            };
+          }
         },
         fieldRenderer: '<kenttalistaus mode="sortable" edit-enabled="editEnabled" ' +
           'object-promise="modelPromise" fields="config.fields" hide-empty-placeholder="true"></kenttalistaus>',
@@ -129,7 +150,7 @@ angular.module('eperusteApp')
 
     $scope.$watch('model.vuosiluokkakokonaisuudet', function () {
 
-      $scope.mappedVuosiluokat = _($scope.model.vuosiluokkakokonaisuudet).map(function (item) {
+      $scope.mappedVuosiluokat = _($scope.editableModel.vuosiluokkakokonaisuudet).map(function (item) {
         var thisItem = $scope.getVuosiluokkakokonaisuus(item);
         thisItem.$sisalto = item;
         return thisItem;
@@ -138,15 +159,17 @@ angular.module('eperusteApp')
       }).value();
     }, true);
 
-    $scope.vuosiluokkakokonaisuudet = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT);
-    if (_.size($scope.vuosiluokkakokonaisuudet) > 0) {
-      $scope.data.options.fields.push({divider: true, order: 99});
-    }
-    _.each($scope.vuosiluokkakokonaisuudet, function (item, index) {
-      $scope.data.options.fields.unshift({
-        path: 'vuosiluokkakokonaisuudet['+index+']',
-        localeKey: item.nimi,
-        order: 10
+    PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT).$promise.then(function (data) {
+      $scope.vuosiluokkakokonaisuudet = data;
+      if (_.size($scope.vuosiluokkakokonaisuudet) > 0) {
+        $scope.data.options.fields.push({divider: true, order: 99});
+      }
+      _.each($scope.vuosiluokkakokonaisuudet, function (item, index) {
+        $scope.data.options.fields.unshift({
+          path: 'vuosiluokkakokonaisuudet['+index+']',
+          localeKey: item.nimi,
+          order: 10
+        });
       });
     });
   });

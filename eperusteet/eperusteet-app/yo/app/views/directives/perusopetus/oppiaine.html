@@ -4,18 +4,18 @@
   <div ng-if="editEnabled">
     <div class="non-collapsibles">
       <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header'|kaanna}}*</label>
-      <input id="nimi-input" class="form-control" ng-model="model.nimi" localized required ng-change="nimiValidationError = false">
+      <input id="nimi-input" class="form-control" ng-model="editableModel.nimi" localized required ng-change="nimiValidationError = false">
       <p class="alert alert-error" ng-show="(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError"
          kaanna>Nimi on pakollinen tieto</p>
       <label for="koodi-input" class="header" kaanna="muokkaus-tutkinnon-osan-koodi-header"></label>
       <div class="fixed-group">
-        <input id="koodi-input" class="form-control" type="text" ng-model="model.koodiArvo" editointi-kontrolli>
+        <input id="koodi-input" class="form-control" type="text" ng-model="editableModel.koodiArvo" editointi-kontrolli>
         <div class="addon"><button class="btn btn-default" ng-click="haeKoodistosta()" kaanna="hae-koodistosta"></button></div>
       </div>
       <label class="header" kaanna="oppimaarat"></label>
-      <label class="inputwrapper"><input class="form-control" type="radio" ng-model="model.koosteinen" ng-value="false">
+      <label class="inputwrapper"><input class="form-control" type="radio" ng-model="editableModel.koosteinen" ng-value="false">
         {{'yksi-oppimaara'|kaanna}}</label>
-      <label class="inputwrapper"><input class="form-control" type="radio" ng-model="model.koosteinen" ng-value="true">
+      <label class="inputwrapper"><input class="form-control" type="radio" ng-model="editableModel.koosteinen" ng-value="true">
         {{'useita-oppimaaria'|kaanna}}</label>
     </div>
     <h3 kaanna="Osiot" class="osioheader"></h3>
@@ -26,23 +26,23 @@
       <table>
         <tbody>
           <!-- TODO: miten tunnistetaan oppiaine/oppimäärä, linkit -->
-          <tr ng-show="model.$ischild">
+          <tr ng-show="editableModel.$ischild">
             <th kaanna="oppiaine"></th>
-            <td><a href="" kaanna="model.oppiaine.nimi"></a></td>
+            <td><a href="" kaanna="editableModel.oppiaine.nimi"></a></td>
           </tr>
-          <tr ng-show="model.$ischild">
+          <tr ng-show="editableModel.$ischild">
             <th kaanna="oppimaara"></th>
-            <td kaanna="model.nimi"></td>
+            <td kaanna="editableModel.nimi"></td>
           </tr>
           <tr>
             <th kaanna="muokkaus-tutkinnon-osan-koodi-header"></th>
             <td>{{model.koodiArvo | koodisto}}</td>
           </tr>
-          <tr ng-show="model.koosteinen">
+          <tr ng-show="editableModel.koosteinen">
             <th kaanna="oppimaarat"></th>
             <td>
               <ul>
-                <li ng-repeat="oppimaara in model.oppimaarat">
+                <li ng-repeat="oppimaara in editableModel.oppimaarat">
                   <a href="" kaanna="oppimaara.nimi"></a>
                 </li>
               </ul>
@@ -52,7 +52,8 @@
       </table>
     </div>
 
-    <div ng-repeat="osamodel in yleisetosat" muokattava-osio="model[osamodel]" type="tekstikappale"></div>
+    <div ng-repeat="osamodel in yleisetosat" muokattava-osio="editableModel" type="tekstikappale"
+         path="{{osamodel}}"></div>
 
     <tabset justified="true">
       <tab heading="{{vuosiluokat.nimi|kaanna}}" ng-repeat="vuosiluokat in mappedVuosiluokat">
