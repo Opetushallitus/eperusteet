@@ -44,6 +44,7 @@ angular.module('eperusteApp')
         extra: '='
       },
       link: function (scope, element) {
+        var DELAY = 500;
         function appendExtraContent() {
           var content = $compile(scope.extra)(scope);
           element.find('.popover-extra').empty().append(content);
@@ -52,6 +53,7 @@ angular.module('eperusteApp')
         var el = element.find('.popover-element');
 
         scope.show = function (visible, mouseEnter) {
+          var popupDelay = mouseEnter ? DELAY : 0;
           if (mouseEnter && scope.ohje === 'false') {
             return;
           }
@@ -65,7 +67,7 @@ angular.module('eperusteApp')
               title.append(closer);
             }
             appendExtraContent();
-          });
+          }, popupDelay);
         };
 
         // Click anywhere to close
