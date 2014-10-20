@@ -24,7 +24,7 @@
       {{ tavoite.nimi | kaanna }}
     </accordion-heading>
     
-      <label kaanna>nimi</label>
+    <label>{{'nimi'| kaanna}}*</label>
       <ml-input ml-data="tavoite.nimi" type="text"></ml-input>
 
     <h3 ng-show="tavoite.pakollinen === true">
