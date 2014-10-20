@@ -20,11 +20,16 @@
 angular.module('eperusteApp')
   .controller('arviointiCtrl', function ($scope, YleinenData, Varmistusdialogi, $timeout,
     Utils, ArviointiPreferences) {
+
+    $scope.kohdealueetTyyli = 'panel panel-default panel-small arviointi-kohdealueet';
+    $scope.eiKohdealueitaTyyli = 'arviointi-ei-kohdealueita';
+
     $scope.showNewKohdealueInput = false;
 
     $scope.arviointiasteikkoChanged = function (kohdealue) {
       ArviointiPreferences.setting('asteikko', kohdealue.$newkohde.arviointiasteikko);
     };
+
 
     $scope.kohdealue = {
       uusi: function () {
@@ -161,6 +166,16 @@ angular.module('eperusteApp')
         }, 100);
       }
     };
+
+    if ($scope.eiKohdealueita && (angular.isUndefined($scope.arviointi) || $scope.arviointi === null)) {
+      $scope.uudenKohdealueenNimi = 'automaattinen';
+      $scope.kohdealue.uusi();
+    }
+
+    /*if ($scope.eiKohdealueita && (angular.isUndefined($scope.arviointi.kohdealue) || $scope.arviointi.kohdealue === null)) {
+      $scope.uudenKohdealueenNimi = 'automaattinen';
+      $scope.kohdealue.uusi();
+    }*/
   })
   .directive('arviointi', function(YleinenData, $timeout) {
     return {

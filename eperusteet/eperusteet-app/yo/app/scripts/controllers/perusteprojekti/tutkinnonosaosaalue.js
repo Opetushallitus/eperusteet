@@ -3,7 +3,7 @@
 
 angular.module('eperusteApp')
   .controller('TutkinnonOsaOsaAlueCtrl', function ($scope, $state, $stateParams, Editointikontrollit,
-    Tutke2OsaData, PerusteProjektiSivunavi, tutkinnonosanTiedot, TutkinnonOsanOsaAlue, Lukitus, Notifikaatiot) {
+    Tutke2OsaData, PerusteProjektiSivunavi, tutkinnonosanTiedot, TutkinnonOsanOsaAlue, Lukitus, Notifikaatiot, Utils) {
 
     $scope.osaamistavoitepuu = [];
     var tempId = 0;
@@ -94,16 +94,32 @@ angular.module('eperusteApp')
         });
       },
       cancel: function () {
+        Lukitus.vapautaPerusteenosa($stateParams.perusteenOsaId);
         $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {}, {reload: true});
       },
       save: function () {
         $scope.osaAlue.osaamistavoitteet = kokoaOsaamistavoitteet();
         TutkinnonOsanOsaAlue.save({osanId: $stateParams.perusteenOsaId, osaalueenId: $stateParams.osaAlueId}, $scope.osaAlue, function () {
+          Lukitus.vapautaPerusteenosa($stateParams.perusteenOsaId);
           $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {}, {reload: true});
         }, function(virhe) {
           Notifikaatiot.serverCb(virhe);
           $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {}, {reload: true});
         });
+      },
+      validate: function () {
+        var valid = true;
+        if (Utils.hasLocalizedText($scope.osaAlue.nimi)) {
+          valid = true;
+        } else {
+          return false;
+        }
+        _.each($scope.osaamistavoitepuu, function(osaamistavoite) {
+          if (!Utils.hasLocalizedText(osaamistavoite.nimi)) {
+            valid = false;
+          }
+        });
+        return valid;
       }
     };
 

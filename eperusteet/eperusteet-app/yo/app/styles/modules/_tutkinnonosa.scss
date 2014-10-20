@@ -461,3 +461,49 @@ $sisalto-min-height: 450px;
   border: 1px solid #24A4CC;
   box-shadow: inset 0 0 5px #24A4CC;
 }
+
+.arviointi-ei-kohdealueita {
+    border: none;
+    box-shadow: none;
+    .panel {
+        border: none;
+        box-shadow: none;
+    }
+    .panel-body {
+        border: none;
+    }
+    .panel-group {
+        border: none;
+    }
+    
+    
+}
+
+.arvioinnin-kohdealue-ei-kohdealueita {
+    .panel {
+         box-shadow: none;
+    }
+    .panel-default {
+        border: none;
+    }
+
+} 
+
+
+
+.arviointi {
+    .panel-group .panel-heading + .panel-collapse .panel-body {
+        border-top: none;
+        padding-bottom: 0px;
+        padding-top: 0px;
+    }
+}
+
+.osa-alue {
+    .accordion-toggle {
+        cursor:pointer;
+    }
+    
+    
+
+}
