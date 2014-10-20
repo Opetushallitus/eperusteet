@@ -23,52 +23,42 @@ import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MappingContext;
 
 /**
- * Kuvaa joukon A-alkioita joukoksi B-alkioita.
- * Jos A:ta vastaava B on jo kohdejoukossa olemassa, mappaa alkion olemassa olevaan alkioon, muussa tapauksessa
+ * Kuvaa joukon A-alkioita joukoksi B-alkioita. Jos A:ta vastaava B on jo kohdejoukossa olemassa, mappaa alkion olemassa olevaan alkioon, muussa tapauksessa
  * lisää uuden alkion. Jos joukot tukevat järjestämistä, järjestys säilytetään. Kohdejoukosta poistetaan alkiot joita ei ole lähdejoukossa.
  *
  * @author jhyoty
  */
-public class CollectionMergeMapper<A extends ReferenceableDto, B extends ReferenceableEntity>  {
+public class CollectionMergeMapper extends CustomMapper<Collection<ReferenceableDto>, Collection<ReferenceableEntity>> {
 
-    private final Class<A> typeA;
-    private final Class<B> typeB;
-    private MapperFacade mapperFacade;
-
-    public CollectionMergeMapper(Class<A> typeA, Class<B> typeB) {
-        this.typeA = typeA;
-        this.typeB = typeB;
+    @Override
+    public void mapBtoA(Collection<ReferenceableEntity> b, Collection<ReferenceableDto> a, MappingContext context) {
+        a.clear();
+        Class<? extends ReferenceableDto> typeA = context.getResolvedDestinationType().getComponentType().getRawType().asSubclass(ReferenceableDto.class);
+        map(b, a, typeA, context);
     }
 
-    public void setMapperFacade(MapperFacade mapperFacede) {
-        this.mapperFacade = mapperFacede;
-    }
-
-    @SuppressWarnings("unchecked")
-    public void mapAtoB(Collection<A> a, Collection<B> b, MappingContext context) {
-
+    @Override
+    public void mapAtoB(Collection<ReferenceableDto> a, Collection<ReferenceableEntity> b, MappingContext context) {
         if (b.isEmpty()) {
+            Class<? extends ReferenceableEntity> typeB = context.getResolvedDestinationType().getComponentType().getRawType().asSubclass(ReferenceableEntity.class);
             map(a, b, typeB, context);
         } else {
             mergeMap(a, b, context);
         }
     }
 
-    public void mapBtoA(Collection<B> b, Collection<A> a, MappingContext context) {
-        a.clear();
-        map(b, a, typeA, context);
-    }
+    private void mergeMap(Collection<ReferenceableDto> a, Collection<ReferenceableEntity> b, MappingContext context) {
+        ImmutableMap<Long, ReferenceableEntity> indx = Maps.uniqueIndex(b, indexFunction);
 
-    private void mergeMap(Collection<A> a, Collection<B> b, MappingContext context) {
-        ImmutableMap<Long, B> indx = Maps.uniqueIndex(b, indexFunction);
+        Class<? extends ReferenceableEntity> typeB = context.getResolvedDestinationType().getComponentType().getRawType().asSubclass(ReferenceableEntity.class);
 
-        List<B> tmp = new ArrayList<>();
-        for (A f : a) {
-            B item = indx.get(f.getId());
+        List<ReferenceableEntity> tmp = new ArrayList<>();
+        for (ReferenceableDto f : a) {
+            ReferenceableEntity item = indx.get(f.getId());
             if (item != null) {
                 mapperFacade.map(f, item, context);
             } else {
@@ -80,14 +70,14 @@ public class CollectionMergeMapper<A extends ReferenceableDto, B extends Referen
         b.addAll(tmp);
     }
 
-    private <S, D> void map(Collection<S> s, Collection<D> d, Class<D> destElemType, MappingContext context) {
-        List<D> list = mapperFacade.mapAsList(s, destElemType, context);
+    private <S, D> void map(Collection<S> s, Collection<D> d, Class<? extends D> destElemType, MappingContext context) {
+        List<? extends D> list = mapperFacade.mapAsList(s, destElemType, context);
         d.addAll(list);
     }
 
-    private final Function<B, Long> indexFunction = new Function<B, Long>() {
+    private final Function<ReferenceableEntity, Long> indexFunction = new Function<ReferenceableEntity, Long>() {
         @Override
-        public Long apply(B input) {
+        public Long apply(ReferenceableEntity input) {
             return input.getId();
         }
 
