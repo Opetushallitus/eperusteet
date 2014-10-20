@@ -47,7 +47,7 @@ angular.module('eperusteApp')
 
     function lisaaOsaamistavoitteelleLapsi(lapsi) {
       _.each($scope.osaamistavoitepuu, function (osaamistavoite) {
-        if (osaamistavoite.id === parseInt(lapsi._esitieto)) {
+        if (osaamistavoite.id === parseInt(lapsi._esitieto, 10)) {
           osaamistavoite.lapsi = lapsi;
         }
       });
