@@ -65,6 +65,9 @@ angular.module('eperusteApp')
     }
 
     this.getPart = function (params) {
+      if (params.osanId === 'uusi') {
+        return promisify({});
+      }
       switch (params.osanTyyppi) {
         case this.VUOSILUOKAT:
           return Vuosiluokkakokonaisuudet.get({
@@ -346,6 +349,10 @@ angular.module('eperusteApp')
 
     $scope.createUrl = function (value) {
       return $state.href('root.perusteprojekti.osaalue', {osanTyyppi: $stateParams.osanTyyppi, osanId: value.id});
+    };
+
+    $scope.add = function () {
+      $state.go('root.perusteprojekti.osaalue', {osanTyyppi: $stateParams.osanTyyppi, osanId: 'uusi'});
     };
   })
 

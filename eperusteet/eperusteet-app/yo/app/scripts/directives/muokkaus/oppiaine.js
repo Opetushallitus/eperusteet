@@ -38,7 +38,7 @@ angular.module('eperusteApp')
   })
 
   .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna,
-      PerusteProjektiSivunavi, Oppiaineet) {
+      PerusteProjektiSivunavi, Oppiaineet, $timeout, $state) {
     $scope.editableModel = {};
     $scope.model.then(function (data) {
       $scope.editableModel = angular.copy(data);
@@ -63,7 +63,13 @@ angular.module('eperusteApp')
           });
         }
       },
-      cancel: function () {},
+      cancel: function () {
+        if ($scope.editableModel.$isNew) {
+          $timeout(function () {
+            $state.go.apply($state, $scope.data.options.backState);
+          });
+        }
+      },
       notify: function (value) {
         $scope.editEnabled = value;
         PerusteProjektiSivunavi.setVisible(!value);
@@ -143,23 +149,11 @@ angular.module('eperusteApp')
 
     $scope.getVuosiluokkakokonaisuus = function (oppiaineenVuosiluokkakokonaisuus) {
       return _.find($scope.vuosiluokkakokonaisuudet, function (item) {
-        return item.id === oppiaineenVuosiluokkakokonaisuus._id;
+        return item.id === parseInt(oppiaineenVuosiluokkakokonaisuus.vuosiluokkaKokonaisuus, 10);
       });
     };
 
-
-    $scope.$watch('model.vuosiluokkakokonaisuudet', function () {
-
-      $scope.mappedVuosiluokat = _($scope.editableModel.vuosiluokkakokonaisuudet).map(function (item) {
-        var thisItem = $scope.getVuosiluokkakokonaisuus(item);
-        thisItem.$sisalto = item;
-        return thisItem;
-      }).sortBy(function (item) {
-        return Kaanna.kaanna(item.nimi);
-      }).value();
-    }, true);
-
-    PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT).$promise.then(function (data) {
+    var vuosiluokatPromise = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT).$promise.then(function (data) {
       $scope.vuosiluokkakokonaisuudet = data;
       if (_.size($scope.vuosiluokkakokonaisuudet) > 0) {
         $scope.data.options.fields.push({divider: true, order: 99});
@@ -168,8 +162,28 @@ angular.module('eperusteApp')
         $scope.data.options.fields.unshift({
           path: 'vuosiluokkakokonaisuudet['+index+']',
           localeKey: item.nimi,
+          empty: function () {
+            return {
+              vuosiluokkaKokonaisuus: item.id,
+              sisaltoAlueet: [],
+              tavoitteet: []
+            };
+          },
           order: 10
         });
       });
+    });
+
+    vuosiluokatPromise.then(function () {
+      $scope.$watch('model.vuosiluokkakokonaisuudet', function () {
+
+        $scope.mappedVuosiluokat = _($scope.editableModel.vuosiluokkakokonaisuudet).map(function (item) {
+          var thisItem = $scope.getVuosiluokkakokonaisuus(item);
+          thisItem.$sisalto = item;
+          return thisItem;
+        }).sortBy(function (item) {
+          return Kaanna.kaanna(item.nimi);
+        }).value();
+      }, true);
     });
   });

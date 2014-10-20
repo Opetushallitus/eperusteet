@@ -37,14 +37,22 @@ angular.module('eperusteApp')
   })
 
   .controller('OsallinenOsaController', function ($scope, $state, VersionHelper, $q,
-      Editointikontrollit, FieldSplitter, Varmistusdialogi, $rootScope, Utils, $timeout) {
+      Editointikontrollit, FieldSplitter, Varmistusdialogi, $rootScope, Utils, $timeout,
+      $stateParams) {
     $scope.isLocked = false;
-    $scope.isNew = false;
+    $scope.isNew = $stateParams.osanId === 'uusi';
+    console.log("isNew", $scope.isNew);
     $scope.editEnabled = false;
+    if ($scope.isNew) {
+      $timeout(function () {
+        $scope.muokkaa();
+      }, 200);
+    }
 
     function refreshPromise() {
       var deferred = $q.defer();
       $scope.modelPromise = deferred.promise;
+      $scope.editableModel.$isNew = $scope.isNew;
       deferred.resolve($scope.editableModel);
     }
     refreshPromise();

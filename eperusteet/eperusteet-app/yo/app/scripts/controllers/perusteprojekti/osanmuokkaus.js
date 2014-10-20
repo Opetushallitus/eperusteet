@@ -53,7 +53,7 @@ angular.module('eperusteApp')
       }
       var params = _.clone(this.backState);
       this.backState = null;
-      $state.go.apply($state, params);
+      $state.go.apply($state, params, {reload: true});
     };
 
     this.fetch = function () {

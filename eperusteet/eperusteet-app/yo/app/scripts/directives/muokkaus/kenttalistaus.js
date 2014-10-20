@@ -54,6 +54,7 @@ angular.module('eperusteApp')
           if (splitfield.isMulti()) {
             splitfield.remove(model);
           } else {
+            MuokkausUtils.nestedSet(model, fieldToRemove.path, '.', null);
             fieldToRemove.visible = false;
             fieldToRemove.$added = false;
           }
@@ -82,6 +83,7 @@ angular.module('eperusteApp')
         });
 
         function splitFields(object) {
+          console.log("splitFields");
           $scope.expandedFields = [];
           _.each($scope.fields, function (field) {
             var splitfield = FieldSplitter.process(field);
@@ -92,7 +94,7 @@ angular.module('eperusteApp')
                 newfield.path = splitfield.getPath(index);
                 newfield.localeKey = item[field.localeKey];
                 newfield.originalLocaleKey = field.localeKey;
-                newfield.visible = true;
+                newfield.visible = MuokkausUtils.hasValue(object, newfield.path);
                 if (field.isolateEdit && index === field.$setEditable) {
                   newfield.$editing = true;
                   delete field.$setEditable;
@@ -152,9 +154,9 @@ angular.module('eperusteApp')
     };
 
     SplitField.prototype.addArrayItem = function (obj) {
-      // TODO oletettu tekstikappale
+      var newItem = _.isFunction(this.original.empty) ? this.original.empty() : {otsikko: {}, teksti: {}};
       var object = this.getObject(obj);
-      object.push({nimi: {}, teksti: {}});
+      object.push(newItem);
       return object.length - 1;
     };
 
