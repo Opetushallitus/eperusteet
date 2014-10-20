@@ -18,10 +18,12 @@ package fi.vm.sade.eperusteet.resource.peruste;
 import com.mangofactory.swagger.annotations.ApiIgnore;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkakokonaisuusService;
+import java.util.Collection;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -80,6 +82,40 @@ public class PerusopetuksenPerusteenSisaltoController {
         @RequestBody OppiaineDto dto) {
         dto.setId(id);
         return oppiaineService.updateOppiaine(perusteId, dto);
+    }
+
+    @RequestMapping(value = "/oppiaineet/{id}/vuosiluokkakokonaisuudet", method = GET)
+    public Collection<OppiaineenVuosiluokkaKokonaisuusDto> getOppiaineenVuosiluokkaKokonaisuudet(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long oppiaineId) {
+        return oppiaineService.getOppiaine(perusteId, oppiaineId).getVuosiluokkakokonaisuudet();
+    }
+
+    @RequestMapping(value = "/oppiaineet/{id}/vuosiluokkakokonaisuudet", method = POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public OppiaineenVuosiluokkaKokonaisuusDto addOppiaineenVuosiluokkakokonaisuus(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long oppiaineId,
+        @RequestBody OppiaineenVuosiluokkaKokonaisuusDto dto) {
+        return oppiaineService.addOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, dto);
+    }
+
+    @RequestMapping(value = "/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{id}", method = GET)
+    public OppiaineenVuosiluokkaKokonaisuusDto getOppiaineenVuosiluokkakokonaisuus(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("oppiaineId") final Long oppiaineId,
+        @PathVariable("id") final Long id) {
+        return oppiaineService.getOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, id);
+    }
+
+    @RequestMapping(value = "/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{id}", method = POST)
+    public OppiaineenVuosiluokkaKokonaisuusDto updateOppiaineenVuosiluokkakokonaisuus(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("oppiaineId") final Long oppiaineId,
+        @PathVariable("id") final Long id,
+        @RequestBody OppiaineenVuosiluokkaKokonaisuusDto dto) {
+        dto.setId(id);
+        return oppiaineService.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, dto);
     }
 
     @RequestMapping(value = "/vuosiluokkakokonaisuudet", method = GET)

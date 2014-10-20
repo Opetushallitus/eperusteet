@@ -52,7 +52,7 @@ public class MappingTest {
 
         DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
             .build();
-        factory.registerMapper(new CollectionMergeMapper());
+        factory.registerMapper(new ReferenceableCollectionMergeMapper());
         factory.getConverterFactory().registerConverter(new TekstiPalanenConverter());
         OptionalSupport.register(factory);
         MapperFacade mapper = factory.getMapperFacade();

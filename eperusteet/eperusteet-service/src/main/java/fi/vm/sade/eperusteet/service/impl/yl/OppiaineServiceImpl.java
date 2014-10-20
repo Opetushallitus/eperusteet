@@ -148,9 +148,9 @@ public class OppiaineServiceImpl implements OppiaineService {
     @Override
     public OppiaineenVuosiluokkaKokonaisuusDto getOppiaineenVuosiluokkaKokonaisuus(Long perusteId, Long oppiaineId, Long vuosiluokkaKokonaisuusId) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        OppiaineenVuosiluokkaKokonaisuus vk = vuosiluokkakokonaisuusRepository.findByIdAndOppiaineId(vuosiluokkaKokonaisuusId, oppiaineId);
+        OppiaineenVuosiluokkaKokonaisuus vk = sisalto == null ? null : vuosiluokkakokonaisuusRepository.findByIdAndOppiaineId(vuosiluokkaKokonaisuusId, oppiaineId);
         if (sisalto != null && vk != null && sisalto.containsOppiaine(vk.getOppiaine())) {
-            return mapper.map(vuosiluokkakokonaisuusRepository.findOne(oppiaineId), OppiaineenVuosiluokkaKokonaisuusDto.class);
+            return mapper.map(vk, OppiaineenVuosiluokkaKokonaisuusDto.class);
         } else {
             throw new BusinessRuleViolationException("Pyydettyä vuosiluokkakokonaisuutta ei ole");
         }
@@ -198,6 +198,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         }
         mapper.map(dto, ovk);
         ovk = vuosiluokkakokonaisuusRepository.save(ovk);
+        ovk.getOppiaine().muokattu();
         return mapper.map(ovk, OppiaineenVuosiluokkaKokonaisuusDto.class);
     }
 

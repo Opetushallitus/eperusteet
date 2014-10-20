@@ -99,7 +99,10 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
             vuosiluokkakokonaisuudet = new HashSet<>();
         }
         ovk.setOppiaine(this);
-        vuosiluokkakokonaisuudet.add(ovk);
+        if ( vuosiluokkakokonaisuudet.add(ovk) ) {
+            this.muokattu();
+        }
+
     }
 
     public void removeVuosiluokkaKokonaisuus(OppiaineenVuosiluokkaKokonaisuus ovk) {
@@ -118,7 +121,9 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
             oppimaarat = new HashSet<>();
         }
         oppimaara.setOppiaine(this);
-        oppimaarat.add(oppimaara);
+        if ( oppimaarat.add(oppimaara) ) {
+            this.muokattu();
+        }
     }
 
     public void removeOppimaara(Oppiaine aine) {

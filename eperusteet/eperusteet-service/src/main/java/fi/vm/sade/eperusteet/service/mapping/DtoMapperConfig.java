@@ -60,8 +60,10 @@ public class DtoMapperConfig {
         TekstiPalanenConverter tekstiPalanenConverter,
         ReferenceableEntityConverter cachedEntityConverter,
         KoodistokoodiConverter koodistokoodiConverter) {
-        DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
+        DefaultMapperFactory factory
+            = new DefaultMapperFactory.Builder()
             .build();
+
         factory.getConverterFactory().registerConverter(tekstiPalanenConverter);
         factory.getConverterFactory().registerConverter(cachedEntityConverter);
         factory.getConverterFactory().registerConverter("koodistokoodiConverter", koodistokoodiConverter);
@@ -69,9 +71,8 @@ public class DtoMapperConfig {
         factory.getConverterFactory().registerConverter(new TypeNameConverter());
 
         OptionalSupport.register(factory);
-
         //erikoiskäsittely säiliöille koska halutaan säilyttää "PATCH" -ominaisuus
-        factory.registerMapper(new CollectionMergeMapper());
+        factory.registerMapper(new ReferenceableCollectionMergeMapper());
 
         factory.classMap(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
             .fieldBToA("class", "osanTyyppi")

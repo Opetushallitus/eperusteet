@@ -32,7 +32,7 @@ import ma.glasnost.orika.MappingContext;
  *
  * @author jhyoty
  */
-public class CollectionMergeMapper extends CustomMapper<Collection<ReferenceableDto>, Collection<ReferenceableEntity>> {
+public class ReferenceableCollectionMergeMapper extends CustomMapper<Collection<ReferenceableDto>, Collection<ReferenceableEntity>> {
 
     @Override
     public void mapBtoA(Collection<ReferenceableEntity> b, Collection<ReferenceableDto> a, MappingContext context) {
