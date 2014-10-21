@@ -114,6 +114,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         rootElement.appendChild(titleElement);
 
         //rootElement.appendChild(doc.createElement("info"));
+        // tähän vois lisätä esim jonkun info-elementin alkusivuja varten?
+
         for (Suoritustapa st : peruste.getSuoritustavat()) {
             if (st.getSuoritustapakoodi().equals(suoritustapakoodi)) {
                 PerusteenOsaViite sisalto = peruste.getSuoritustapa(st.getSuoritustapakoodi()).getSisalto();
@@ -121,7 +123,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             }
         }
 
-        // add tutkinnonosat as distinct chapters
+        // pudotellaan tutkinnonosat paikalleen
         addTutkinnonosat(doc, peruste, kieli, suoritustapakoodi);
 
         // sanity check, ei feilata dokkariluontia, vaikka syntynyt dokkari
@@ -132,18 +134,18 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             rootElement.appendChild(fakeChapter);
         }
 
-        // For dev/debugging love
+        // helpottaa devaus-debugausta, voi olla vähän turha tuotannossa
         printDocument(doc, System.out);
 
-        // so far doc contains mixed content from docbook and xhtml namespaces
-        // lets transform xhtml bits onto docbook-format
+        // rusikoidaan dokkarissa sekaisin olevat docbook- ja xhtml-osat
+        // xsl-muunnoksena docbook-formaattiin
         DOMSource source = new DOMSource(doc);
         SAXTransformerFactory stf = (SAXTransformerFactory) TransformerFactory.newInstance();
 
         File resultFile;
         try (InputStream xslresource = getClass().getClassLoader().getResourceAsStream("docgen/epdoc-markup.xsl")) {
             Templates templates = stf.newTemplates(new StreamSource(xslresource));
-            // or
+            // tai
             //Templates templates = stf.newTemplates(new StreamSource(new File("/full/path/to/epdoc-markup.xsl")));
             TransformerHandler th = stf.newTransformerHandler(templates);
             resultFile = File.createTempFile("peruste_" + UUID.randomUUID().toString(), ".xml");
@@ -517,10 +519,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             }
 
             if (po.getTunniste() == PerusteenOsaTunniste.RAKENNE) {
-                // special case, render TutkinnonRakenne here and continue with
-                // rest of the sibligs
+                // poikkeustapauksena perusteen rakennepuun rendaus
                 addTutkinnonMuodostuminen(doc, parentElement, peruste, depth, tapa, kieli);
             } else {
+                // normikeississä sukelletaan syvemmälle puuhun
                 String nimi = getTextString(tk.getNimi(), kieli);
                 Element titleElement = doc.createElement("title");
                 titleElement.appendChild(doc.createTextNode(nimi));
@@ -541,8 +543,9 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     private void addTutkinnonosat(Document doc, Peruste peruste, final Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
 
-        // only distinct TutkinnonOsa
         Set<Suoritustapa> suoritustavat = peruste.getSuoritustavat();
+        // tree setistä saadaan tutkinnonosaviitteet ulos halutussa,
+        // comparatorin avulla järkättävässä järjestyksessä
         Set<TutkinnonOsaViite> osat = new TreeSet<>(
                 new java.util.Comparator<TutkinnonOsaViite>() {
                     @Override
@@ -774,7 +777,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                     bodyElement.appendChild(bodyRowElement);
                 }
 
-                // dirty fix: a tbody must have a row which must have an entry
+                // dirty fix: varmistetaan ettei feilata, jos osaamistason
+                // kriteerejä ei ole (tbodyllä pitää olla row, jolla on entry)
                 if (osaamistasonKriteerit.isEmpty()) {
                     Element bodyRowElement = doc.createElement("row");
                     addTableCell(doc, bodyRowElement, "");
