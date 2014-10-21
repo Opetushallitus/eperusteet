@@ -140,6 +140,13 @@ public class PerusopetuksenPerusteenSisaltoController {
         return kokonaisuusService.getVuosiluokkaKokonaisuus(perusteId, id);
     }
 
+    @RequestMapping(value = "/vuosiluokkakokonaisuudet/{id}/oppiaineet", method = GET)
+    public List<OppiaineSuppeaDto> getVuosiluokkaKokonaisuudenOppiaineet(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long id) {
+        return kokonaisuusService.getOppiaineet(perusteId, id);
+    }
+
     @RequestMapping(value = "/vuosiluokkakokonaisuudet/{id}", method = POST)
     public VuosiluokkaKokonaisuusDto updateVuosiluokkaKokonaisuus(
         @PathVariable("perusteId") final Long perusteId,
