@@ -83,7 +83,18 @@ angular.module('eperusteApp', [
           'response': function(response) {
             // var uudelleenohjausStatuskoodit = [401, 403, 412, 500];
             var uudelleenohjausStatuskoodit = [412, 500];
-            if (_.indexOf(uudelleenohjausStatuskoodit, response.status) !== -1) {
+            var fail = _.indexOf(uudelleenohjausStatuskoodit, response.status) !== -1;
+
+            // FIXME Saattaa hajoittaa itestin
+            if (response.headers()['Set-Cookie'] &&
+                response.headers()['content-type'] === 'application/html; charset=utf-8' &&
+                response.config.url.match(/.*\/cas\/login.*/)) {
+              fail = true;
+              response.status = 401;
+            }
+            // FIXME ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+            if (fail) {
               $rootScope.$emit('event:uudelleenohjattava', response.status);
             }
             return response || $q.when(response);
@@ -153,7 +164,6 @@ angular.module('eperusteApp', [
 
       var casurl = getCasURL();
 
-
       var uudelleenohjausModaali = $modal.open({
         templateUrl: 'views/modals/uudelleenohjaus.html',
         controller: 'UudelleenohjausModalCtrl',
@@ -173,6 +183,7 @@ angular.module('eperusteApp', [
           case 500:
             $location.path('/');
             break;
+          case 401:
           case 412:
             $window.location.href = casurl;
             break;
