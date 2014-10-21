@@ -100,6 +100,7 @@ angular.module('eperusteApp', [
             return response || $q.when(response);
           },
           'responseError': function(err) {
+            console.log(err);
             return $q.reject(err);
           }
         };
