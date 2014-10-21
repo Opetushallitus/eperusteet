@@ -1,6 +1,6 @@
 <div class="tutke2">
   <div class="osa-alue-navi" ng-show="!mainLevelEditing && tutke2osa.osaAlueet.length > 1"><span kaanna>osa-alueet</span>
-    <ul><li ng-repeat="alue in tutke2osa.osaAlueet"><a class="action-link" ng-click="osaAlue.jumpTo(alue)">{{alue.nimi| kaanna}}</a></li></ul>
+    <ul><li ng-repeat="alue in tutke2osa.osaAlueet"><a class="action-link" ng-click="osaAlue.jumpTo(alue)">{{alue.nimi | kaanna}}</a></li></ul>
   </div>
   <div ng-if="tutke2osa.$fetching">{{'Ladataan tutkinnon osaa...'|kaanna}} <small-spinner></small-spinner></div>
   <p class="info-placeholder" ng-show="!tutke2osa.$fetching && (!tutke2osa.osaAlueet || tutke2osa.osaAlueet.length === 0) && !mainLevelEditing" kaanna>ei-osa-alueita</p>
@@ -63,7 +63,7 @@
             <div ng-if="!tavoite.$editing">
               <div class="panel-heading">
                 <h3>
-                  {{pakollisuus && ('Pakolliset osaamistavoitteet' | kaanna) || ('Valinnaiset osaamistavoitteet' | kaanna)}}, {{tavoite.laajuus}} {{'osp'| kaanna}}
+                  {{pakollisuus && ('Pakolliset osaamistavoitteet' | kaanna) || ('Valinnaiset osaamistavoitteet' | kaanna)}}, {{tavoite.laajuus}} {{ yksikko | kaanna }}
                 </h3>
               </div>
               <div class="panel-body non-collapsibles">
@@ -73,6 +73,29 @@
                 <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet" mainLevelEditing="tavoite.$editing" ei-kohdealueita="true"></arviointi>
                 <label class="header" kaanna>tutkinnonosa-tunnustaminen</label>
                 <p ng-bind-html="valitseKieli(tavoite.tunnustaminen) | unsafe"></p>
+              <h3 kaanna>Muokkaa osaamistavoitetta</h3>
+            </div>
+            <div class="panel-body">
+            <formfield model="osaamistavoite.$editing" model-var="nimi" label="nimi"></formfield>
+            <formfield model="osaamistavoite.$editing" model-var="pakollinen" label="pakollisuus" options="pakollisuusoptions"></formfield>
+            <formfield model="osaamistavoite.$editing" model-var="_esitieto" label="esitieto" options="alue.$esitietoOptions" ng-if="!osaamistavoite.$editing.pakollinen"></formfield>
+            <formfield model="osaamistavoite.$editing" model-var="laajuus" label="laajuus" type="float" step="0.5"></formfield>
+            <label kaanna>tavoitteet</label>
+            <div ng-model="osaamistavoite.$editing.tavoitteet" localized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
+            <h4 kaanna>arviointi</h4>
+            <arviointi arviointi="osaamistavoite.$editing.arviointi.arvioinninKohdealueet" ei-kohdealueita="true"
+                       edit-enabled="tavoite.$editing" editointi-sallittu="true"></arviointi>
+            <label kaanna>Tunnustaminen</label>
+            <div ng-model="osaamistavoite.$editing.tunnustaminen" localized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tunnustaminen"></div>
+            </div>
+          </div>
+          <div ng-if="!tavoite.$editing">
+            <div class="panel-heading">
+              <h3>
+              {{pakollisuus && ('Pakolliset osaamistavoitteet' | kaanna) || ('Valinnaiset osaamistavoitteet' | kaanna)}}, {{tavoite.laajuus}} {{ yksikko | kaanna}}
+              <div class="muokkaus-napit pull-right" ng-hide="tavoite.$editing || isEditingInProgress()">
+                <button class="btn btn-default" ng-click="osaamistavoite.edit(alue, tavoite, $event)" kaanna="'muokkaa'" icon-role="edit"
+                        oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
               </div>
             </div>
 
@@ -89,7 +112,7 @@
               <td><input class="form-control" ng-model="tavoite.nimi" localized></td>
               <td><select class="form-control" ng-options="obj.value as obj.label for obj in pakollisuusoptions" ng-model="tavoite.pakollinen"></select></td>
               <td><numberinput luokka="form-control" type="float" model="tavoite.laajuus" min="0" max="9999" step="0.5"></numberinput></td>
-            <td kaanna>OSAAMISPISTE</td>
+              <td>{{ yksikko | kaanna }}</td>
             <td><a class="action-link" icon-role="remove" ng-click="osaamistavoite.remove(tavoite)"></a></td>
             </tr>
           </table>
