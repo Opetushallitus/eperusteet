@@ -29,7 +29,7 @@ import lombok.Setter;
 @Setter
 public abstract class OppiaineSuppeaDto implements ReferenceableDto {
     private Long id;
-    private boolean koosteinen;
+    private Optional<Boolean> koosteinen;
     private Optional<LokalisoituTekstiDto> nimi;
     private Optional<TekstiOsaDto> tehtava;
 }

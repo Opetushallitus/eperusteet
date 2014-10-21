@@ -156,4 +156,8 @@ public abstract class TestUtils {
         return new TekstiOsaDto(olt(otsikko), olt(teksti));
     }
 
+    public static Optional<TekstiOsaDto> oto(String otsikko, String teksti) {
+        return Optional.of(new TekstiOsaDto(olt(otsikko), olt(teksti)));
+    }
+
 }

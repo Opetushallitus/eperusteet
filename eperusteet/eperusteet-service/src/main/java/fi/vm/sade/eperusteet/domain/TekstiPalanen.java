@@ -98,6 +98,9 @@ public class TekstiPalanen implements Serializable {
     }
 
     public static TekstiPalanen of(Map<Kieli, String> tekstit) {
+        if ( tekstit == null ) {
+            return null;
+        }
         HashSet<LokalisoituTeksti> tmp = new HashSet<>(tekstit.size());
         for (Map.Entry<Kieli, String> e : tekstit.entrySet()) {
             if (e.getValue() != null && !e.getValue().isEmpty()) {
