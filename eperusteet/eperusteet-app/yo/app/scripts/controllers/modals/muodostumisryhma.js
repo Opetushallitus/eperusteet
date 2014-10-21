@@ -36,15 +36,9 @@ angular.module('eperusteApp')
       $scope.ryhma.rooli = $scope.ryhma.rooli || YleinenData.rakenneRyhmaRoolit[0];
       $scope.ryhma.muodostumisSaanto = $scope.ryhma.muodostumisSaanto || {};
 
-      if (!$scope.ryhma.muodostumisSaanto) {
-        $scope.ryhma.muodostumisSaanto = {};
-      }
-      if (!$scope.ryhma.nimi) {
-        $scope.ryhma.nimi = {};
-      }
-      // if (!$scope.ryhma.kuvaus) {
-      //   $scope.ryhma.kuvaus = {};
-      // }
+      if (!$scope.ryhma.muodostumisSaanto) { $scope.ryhma.muodostumisSaanto = {}; }
+      if (!$scope.ryhma.nimi) { $scope.ryhma.nimi = {}; }
+      if (!$scope.ryhma.kuvaus) { $scope.ryhma.kuvaus = {}; }
     })();
 
     var koodistoHaku = function (koodisto) {
