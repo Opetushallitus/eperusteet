@@ -147,6 +147,8 @@ angular.module('eperusteApp', [
       }
       onAvattuna = true;
 
+      console.log('uudelleenohjaus', event, status);
+
       function getCasURL() {
         var host = $location.host();
         var port = $location.port();
@@ -164,6 +166,8 @@ angular.module('eperusteApp', [
       }
 
       var casurl = getCasURL();
+
+      console.log('uudelleenohjataan ->', casurl);
 
       if (status === 401) {
         $window.location.href = casurl;
