@@ -15,12 +15,14 @@
  */
 package fi.vm.sade.eperusteet.domain.yl;
 
-import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Getter;
@@ -35,8 +37,13 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Audited
 @Table(name = "yl_tekstiosa")
 @Entity
-public class TekstiOsa extends AbstractReferenceableEntity implements Serializable {
-
+public class TekstiOsa implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
+    @Setter
+    private Long id;
+    
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @Getter

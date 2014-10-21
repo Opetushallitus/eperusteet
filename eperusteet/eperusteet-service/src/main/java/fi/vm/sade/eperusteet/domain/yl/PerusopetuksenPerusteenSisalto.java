@@ -55,7 +55,7 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
     @JoinColumn
     private PerusteenOsaViite sisalto = new PerusteenOsaViite();
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JoinTable
     private Set<LaajaalainenOsaaminen> laajaAlalaisetOsaamiset = new HashSet<>();
 
@@ -84,16 +84,16 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
     }
 
     //kopion palauttaminen on tarkoituksellista!
-    public Set<LaajaalainenOsaaminen> getLaajaAlalaisetOsaamiset() {
+    public Set<LaajaalainenOsaaminen> getLaajaalaisetOsaamiset() {
         return new HashSet<>(laajaAlalaisetOsaamiset);
     }
 
-    public void setLaajaAlalaisetOsaamiset(Set<LaajaalainenOsaaminen> laajaAlalaisetOsaamiset) {
-        if (laajaAlalaisetOsaamiset == null) {
+    public void setLaajaalaisetOsaamiset(Set<LaajaalainenOsaaminen> laajaalaisetOsaamiset) {
+        if (laajaalaisetOsaamiset == null) {
             this.laajaAlalaisetOsaamiset.clear();
         }
-        this.laajaAlalaisetOsaamiset.retainAll(laajaAlalaisetOsaamiset);
-        this.laajaAlalaisetOsaamiset.addAll(laajaAlalaisetOsaamiset);
+        this.laajaAlalaisetOsaamiset.retainAll(laajaalaisetOsaamiset);
+        this.laajaAlalaisetOsaamiset.addAll(laajaalaisetOsaamiset);
     }
 
     public Set<Oppiaine> getOppiaineet() {

@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.mapping;
 
+import java.util.Collection;
 import java.util.List;
 import ma.glasnost.orika.MapperFacade;
 
@@ -43,6 +44,11 @@ public class DtoMapperImpl implements DtoMapper {
     @Override
     public <S, D> List<D> mapAsList(Iterable<S> source, Class<D> destinationClass) {
         return mapper.mapAsList(source, destinationClass);
+    }
+
+    @Override
+    public <S, D> void mapToCollection(Iterable<S> source, Collection<D> dest, Class<D> elemType) {
+        mapper.mapAsCollection(source, dest, elemType);
     }
 
     @Override

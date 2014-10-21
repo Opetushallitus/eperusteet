@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
+import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
@@ -25,6 +26,9 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
 import java.util.List;
+import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,18 +44,34 @@ public class PerusopetuksenPerusteenSisaltoServiceImpl implements Perusopetuksen
     private DtoMapper mapper;
 
     @Override
-    public List<LaajaalainenOsaaminenDto> getLaajaAlainenOsaaminen(Long perusteId) {
+    public List<LaajaalainenOsaaminenDto> getLaajaalaisetOsaamiset(Long perusteId) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         assertExists(sisalto, "Pyydettyä perustetta ei ole olemassa");
-        return mapper.mapAsList(sisalto.getLaajaAlalaisetOsaamiset(), LaajaalainenOsaaminenDto.class);
+        return mapper.mapAsList(sisalto.getLaajaalaisetOsaamiset(), LaajaalainenOsaaminenDto.class);
     }
 
     @Override
-    public List<LaajaalainenOsaaminenDto> updateLaajaAlainenOsaaminen(Long perusteId, List<LaajaalainenOsaaminenDto> dtos) {
+    public List<LaajaalainenOsaaminenDto> updateLaajaalaisetOsaamiset(Long perusteId, List<LaajaalainenOsaaminenDto> dtos) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         assertExists(sisalto, "Päivitettävää tietoa ei ole olemassa");
-        //TODO implement
-        return mapper.mapAsList(sisalto.getLaajaAlalaisetOsaamiset(), LaajaalainenOsaaminenDto.class);
+
+        Set<LaajaalainenOsaaminen> laajaalaisetOsaamiset = sisalto.getLaajaalaisetOsaamiset();
+        mapper.mapToCollection(dtos, laajaalaisetOsaamiset, LaajaalainenOsaaminen.class);
+        sisalto.setLaajaalaisetOsaamiset(laajaalaisetOsaamiset);
+        
+        sisaltoRepository.save(sisalto);
+        return mapper.mapAsList(sisalto.getLaajaalaisetOsaamiset(), LaajaalainenOsaaminenDto.class);
+    }
+
+    @Getter
+    @Setter
+    public static class WrapperDto {
+
+        public WrapperDto(List<LaajaalainenOsaaminenDto> laajaalaisetOsaamiset) {
+            this.laajaalaisetOsaamiset = laajaalaisetOsaamiset;
+        }
+
+        List<LaajaalainenOsaaminenDto> laajaalaisetOsaamiset;
     }
 
 
@@ -61,7 +81,7 @@ public class PerusopetuksenPerusteenSisaltoServiceImpl implements Perusopetuksen
         return mapper.mapAsList(sisalto.getOppiaineet(), OppiaineSuppeaDto.class);
     }
 
-    
+
     @Override
     public List<VuosiluokkaKokonaisuusDto> getVuosiluokkaKokonaisuudet(Long perusteId) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);

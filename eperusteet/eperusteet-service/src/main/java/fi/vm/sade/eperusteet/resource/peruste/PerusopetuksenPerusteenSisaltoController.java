@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
 import com.mangofactory.swagger.annotations.ApiIgnore;
+import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
@@ -147,4 +148,19 @@ public class PerusopetuksenPerusteenSisaltoController {
         dto.setId(id);
         return kokonaisuusService.updateVuosiluokkaKokonaisuus(perusteId, dto);
     }
+
+    @RequestMapping(value = "/laajaalaisetosaamiset", method = GET)
+    public List<LaajaalainenOsaaminenDto> getOsaamiset(
+        @PathVariable("perusteId") final Long perusteId) {
+        return sisaltoService.getLaajaalaisetOsaamiset(perusteId);
+    }
+
+    @RequestMapping(value = "/laajaalaisetosaamiset", method = POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<LaajaalainenOsaaminenDto> updateOsaamiset(
+        @PathVariable("perusteId") final Long perusteId,
+        @RequestBody List<LaajaalainenOsaaminenDto> dto) {
+        return sisaltoService.updateLaajaalaisetOsaamiset(perusteId, dto);
+    }
+
 }
