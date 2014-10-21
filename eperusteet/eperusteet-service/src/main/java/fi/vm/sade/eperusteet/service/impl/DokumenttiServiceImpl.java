@@ -23,6 +23,7 @@ import com.google.code.docbook4j.renderer.PerustePDFRenderer;
 import fi.vm.sade.eperusteet.domain.Dokumentti;
 import fi.vm.sade.eperusteet.domain.DokumenttiTila;
 import fi.vm.sade.eperusteet.domain.DokumenttiVirhe;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -76,7 +77,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    public DokumenttiDto createDtoFor(long id, Kieli kieli) {
+    public DokumenttiDto createDtoFor(long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
 
         String name = SecurityUtil.getAuthenticatedPrincipal().getName();
         Dokumentti dokumentti = new Dokumentti();
@@ -85,6 +86,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         dokumentti.setAloitusaika(new Date());
         dokumentti.setLuoja(name);
         dokumentti.setPerusteId(id);
+        dokumentti.setSuoritustapakoodi(suoritustapakoodi);
 
         Peruste peruste = perusteRepository.findOne(id);
         if (peruste != null) {
@@ -168,8 +170,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
         Peruste peruste = perusteRepository.findOne(dto.getPerusteId());
         Kieli kieli = dto.getKieli();
+        Suoritustapakoodi suoritustapakoodi = dto.getSuoritustapakoodi();
 
-        String xmlpath = builder.generateXML(peruste, kieli);
+        String xmlpath = builder.generateXML(peruste, kieli, suoritustapakoodi);
         LOG.debug("Temporary xml file: \n{}", xmlpath);
         // we could also use
         //String style = "file:///full/path/to/docbookstyle.xsl";
