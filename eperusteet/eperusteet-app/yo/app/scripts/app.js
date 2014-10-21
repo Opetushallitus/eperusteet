@@ -81,18 +81,8 @@ angular.module('eperusteApp', [
     $httpProvider.interceptors.push(['$rootScope', '$q', function($rootScope, $q) {
         return {
           'response': function(response) {
-            console.log(response);
             var uudelleenohjausStatuskoodit = [401, 412, 500];
             var fail = _.indexOf(uudelleenohjausStatuskoodit, response.status) !== -1;
-
-            // FIXME Saattaa hajoittaa itestin
-            if (response.headers()['Set-Cookie'] &&
-                response.headers()['content-type'] === 'application/html; charset=utf-8' &&
-                response.config.url.match(/.*\/cas\/login.*/)) {
-              fail = true;
-              response.status = 401;
-            }
-            // FIXME ^^^^^^^^^^^^^^^^^^^^^^^^^
 
             if (fail) {
               $rootScope.$emit('event:uudelleenohjattava', response.status);
@@ -100,7 +90,6 @@ angular.module('eperusteApp', [
             return response || $q.when(response);
           },
           'responseError': function(err) {
-            console.log(err);
             return $q.reject(err);
           }
         };
@@ -130,7 +119,7 @@ angular.module('eperusteApp', [
     });
     angular.element(window).on('mousemove', f);
   })
-  .run(function($rootScope, $modal, $location, $window, $state, paginationConfig, Editointikontrollit,
+  .run(function($rootScope, $modal, $location, $window, $state, $http, paginationConfig, Editointikontrollit,
                 Varmistusdialogi, Kaanna, virheService) {
     paginationConfig.firstText = '';
     paginationConfig.previousText = '';
@@ -146,8 +135,6 @@ angular.module('eperusteApp', [
         return;
       }
       onAvattuna = true;
-
-      console.log('uudelleenohjaus', event, status);
 
       function getCasURL() {
         var host = $location.host();
@@ -166,8 +153,6 @@ angular.module('eperusteApp', [
       }
 
       var casurl = getCasURL();
-
-      console.log('uudelleenohjataan ->', casurl);
 
       if (status === 401) {
         $window.location.href = casurl;
