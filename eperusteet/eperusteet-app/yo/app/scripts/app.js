@@ -81,8 +81,8 @@ angular.module('eperusteApp', [
     $httpProvider.interceptors.push(['$rootScope', '$q', function($rootScope, $q) {
         return {
           'response': function(response) {
-            // var uudelleenohjausStatuskoodit = [401, 403, 412, 500];
-            var uudelleenohjausStatuskoodit = [412, 500];
+            console.log(response);
+            var uudelleenohjausStatuskoodit = [401, 412, 500];
             var fail = _.indexOf(uudelleenohjausStatuskoodit, response.status) !== -1;
 
             // FIXME Saattaa hajoittaa itestin
