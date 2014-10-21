@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.DokumenttiTila;
 import fi.vm.sade.eperusteet.domain.DokumenttiVirhe;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,4 +41,5 @@ public class DokumenttiDto {
     private Date valmistumisaika;
     private DokumenttiTila tila = DokumenttiTila.EI_OLE;
     private DokumenttiVirhe virhekoodi = DokumenttiVirhe.EI_VIRHETTA;
+    private Suoritustapakoodi suoritustapakoodi;
 }

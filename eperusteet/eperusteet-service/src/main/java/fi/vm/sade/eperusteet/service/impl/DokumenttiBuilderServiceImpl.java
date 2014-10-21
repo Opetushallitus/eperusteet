@@ -92,7 +92,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     private LocalizedMessagesService messages;
 
     @Override
-    public String generateXML(Peruste peruste, Kieli kieli) throws
+    public String generateXML(Peruste peruste, Kieli kieli, Suoritustapakoodi suoritustapakoodi) throws
             TransformerConfigurationException,
             IOException,
             TransformerException,
@@ -113,15 +113,16 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         rootElement.appendChild(titleElement);
 
         //rootElement.appendChild(doc.createElement("info"));
-        // TODO: should we process suoritustavat in some specific order?
         for (Suoritustapa st : peruste.getSuoritustavat()) {
-            PerusteenOsaViite sisalto = peruste.getSuoritustapa(st.getSuoritustapakoodi()).getSisalto();
-            addSisaltoElement(doc, peruste, rootElement, sisalto, 0, st, kieli);
+            if (st.getSuoritustapakoodi().equals(suoritustapakoodi)) {
+                PerusteenOsaViite sisalto = peruste.getSuoritustapa(st.getSuoritustapakoodi()).getSisalto();
+                addSisaltoElement(doc, peruste, rootElement, sisalto, 0, st, kieli);
+            }
         }
 
         // add tutkinnonosat as distinct chapters
         // TODO: Ordering?
-        addTutkinnonosat(doc, peruste, kieli);
+        addTutkinnonosat(doc, peruste, kieli, suoritustapakoodi);
 
         // For dev/debugging love
         printDocument(doc, System.out);
@@ -530,14 +531,16 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         }
     }
 
-    private void addTutkinnonosat(Document doc, Peruste peruste, Kieli kieli) {
+    private void addTutkinnonosat(Document doc, Peruste peruste, Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
 
         // only distinct TutkinnonOsa
         Set<Suoritustapa> suoritustavat = peruste.getSuoritustavat();
         Set<TutkinnonOsa> osat = new HashSet<>();
         for (Suoritustapa suoritustapa : suoritustavat) {
-            for (TutkinnonOsaViite viite : suoritustapa.getTutkinnonOsat()) {
-                osat.add(viite.getTutkinnonOsa());
+            if (suoritustapa.getSuoritustapakoodi().equals(suoritustapakoodi)) {
+                for (TutkinnonOsaViite viite : suoritustapa.getTutkinnonOsat()) {
+                    osat.add(viite.getTutkinnonOsa());
+                }
             }
         }
 
