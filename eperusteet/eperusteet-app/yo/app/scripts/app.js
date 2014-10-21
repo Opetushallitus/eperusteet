@@ -164,16 +164,17 @@ angular.module('eperusteApp', [
 
       var casurl = getCasURL();
 
+      if (status === 401) {
+        $window.location.href = casurl;
+        return;
+      }
+
       var uudelleenohjausModaali = $modal.open({
         templateUrl: 'views/modals/uudelleenohjaus.html',
         controller: 'UudelleenohjausModalCtrl',
         resolve: {
-          status: function() {
-            return status;
-          },
-          redirect: function() {
-            return casurl;
-          }
+          status: function() { return status; },
+          redirect: function() { return casurl; }
         }
       });
 
@@ -183,7 +184,6 @@ angular.module('eperusteApp', [
           case 500:
             $location.path('/');
             break;
-          case 401:
           case 412:
             $window.location.href = casurl;
             break;
