@@ -693,8 +693,12 @@
 
     "nimi-on-pakollinen": "Otsikko on pakollinen.",
 
-    "osaalue": "Osa-alue",
-    "oppiaineen-tehtava": "Oppiaineen tehtävä",
+    "oppiaine-osio-tehtava": "Oppiaineen tehtävä",
+    "oppiaine-osio-osaalue": "Osa-alue",
+    "oppiaine-osio-tyotavat": "Oppimisympäristöt ja työtavat",
+    "oppiaine-osio-ohjaus": "Ohjaus ja tuki",
+    "oppiaine-osio-arviointi": "Oppilaan oppimisen arviointi",
+
     "poista-oppiaine": "Poista oppiaine",
     "muokkaa-oppiainetta": "Muokkaa oppiainetta",
     "uusi-oppiaine": "Uusi oppiaine",

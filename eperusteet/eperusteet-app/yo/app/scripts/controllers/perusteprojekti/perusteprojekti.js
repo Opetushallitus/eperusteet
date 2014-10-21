@@ -313,7 +313,7 @@ angular.module('eperusteApp')
     });
   })
   .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q,
-                                                $state, $location, YleinenData, PerusopetusService) {
+      $state, $location, YleinenData, PerusopetusService, Kaanna) {
     var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
     var STATE_OSA = 'root.perusteprojekti.suoritustapa.perusteenosa';
     var STATE_OSALISTAUS = 'root.perusteprojekti.osalistaus';
@@ -388,7 +388,9 @@ angular.module('eperusteApp')
     };
 
     function mapYL(osat, key) {
-      _.each(osat, function (osa) {
+      _(osat).sortBy(function (osa) {
+        return Kaanna.kaanna(osa.nimi);
+      }).each(function (osa) {
         items.push({
           depth: 1,
           label: _.has(osa, 'nimi') ? osa.nimi : osa.perusteenOsa.nimi,

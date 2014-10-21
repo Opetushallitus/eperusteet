@@ -32,13 +32,16 @@ angular.module('eperusteApp')
 
   .controller('VuosiluokkakokonaisuusController', function ($scope, PerusopetusService,
       Editointikontrollit, Kaanna, PerusteProjektiSivunavi, Vuosiluokkakokonaisuudet) {
+    $scope.editableModel = {};
+    $scope.model.then(function (data) {
+      $scope.editableModel = angular.copy(data);
+    });
     $scope.editEnabled = false;
-    $scope.editableModel = angular.copy($scope.model);
     $scope.vuosiluokkaOptions = _.map(_.range(1, 10), function (item) {
       return {
         value: item,
         label: Kaanna.kaanna('vuosiluokka') + ' ' + item,
-        selected: $scope.editableModel.vuosiluokat.indexOf(item) > -1
+        selected: /*$scope.editableModel.vuosiluokat.indexOf(item) > -1*/ false
       };
     });
 
@@ -92,15 +95,15 @@ angular.module('eperusteApp')
           // TODO delete
         },
         addFieldCb: function (field) {
-          if (field.path === 'osaamisenkuvaukset') {
-            if (!$scope.editableModel.osaamisenkuvaukset) {
-              $scope.editableModel.osaamisenkuvaukset = [];
+          if (field.path === 'laajaalaisetOsaamiset') {
+            if (!$scope.editableModel.laajaalaisetOsaamiset) {
+              $scope.editableModel.laajaalaisetOsaamiset = [];
             }
             // TODO don't fetch the real data here
             var yleiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN);
             _.each(yleiset, function (yleinen) {
-              $scope.editableModel.osaamisenkuvaukset.push({
-                osaaminen: yleinen.perusteenOsa.id, teksti: {}
+              $scope.editableModel.laajaalaisetOsaamiset.push({
+                laajaalainenOsaaminen: yleinen.id, kuvaus: {}
               });
             });
           }
@@ -108,7 +111,7 @@ angular.module('eperusteApp')
         fieldRenderer: '<kenttalistaus edit-enabled="editEnabled" object-promise="modelPromise" fields="config.fields"></kenttalistaus>',
         fields: [
           {
-            path: 'osaamisenkuvaukset',
+            path: 'laajaalaisetOsaamiset',
             localeKey: 'laaja-alainen-osaaminen',
             type: 'osaaminen',
             collapsible: true,
@@ -136,7 +139,7 @@ angular.module('eperusteApp')
     }
 
     function refetch() {
-      $scope.editableModel = angular.copy($scope.model);
+      //$scope.editableModel = angular.copy($scope.model);
     }
 
   })

@@ -28,6 +28,7 @@ angular.module('eperusteApp')
       'oppiaineet': this.OPPIAINEET
     };
     var tiedot = null;
+    var cached = {};
     this.setTiedot = function (value) {
       console.log("setTiedot");
       tiedot = value;
@@ -120,7 +121,7 @@ angular.module('eperusteApp')
       ];
     };
 
-    this.getOsat = function (tyyppi) {
+    this.getOsat = function (tyyppi, useCache) {
       console.log("getOsat", tyyppi);
       // TODO oikea data
       switch(tyyppi) {
@@ -131,7 +132,13 @@ angular.module('eperusteApp')
             {perusteenOsa: {id: 3, nimi: {fi: 'Itsestä huolehtiminen ja arjenhallinta'}, teksti: {fi: 'Yleinen kuvaus itsestä huolehtimiselle.'}}},
           ];
         case this.VUOSILUOKAT:
-          return Vuosiluokkakokonaisuudet.query({perusteId: tiedot.getProjekti()._peruste});
+          if (useCache) {
+            return cached[this.VUOSILUOKAT];
+          }
+          var self = this;
+          return Vuosiluokkakokonaisuudet.query({perusteId: tiedot.getProjekti()._peruste}, function (data) {
+            cached[self.VUOSILUOKAT] = data;
+          });
           /*return [
             {
               id: 1001,

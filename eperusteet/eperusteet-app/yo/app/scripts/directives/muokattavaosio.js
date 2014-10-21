@@ -25,7 +25,8 @@ angular.module('eperusteApp')
       scope: {
         model: '=muokattavaOsio',
         type: '@',
-        path: '@?'
+        path: '@?',
+        oppiaine: '=?'
       },
       controller: 'MuokattavaOsioController'
     };
@@ -41,7 +42,7 @@ angular.module('eperusteApp')
     }, true);
 
     $scope.edit = function () {
-      OsanMuokkausHelper.setup($scope.model, $scope.path);
+      OsanMuokkausHelper.setup($scope.model, $scope.path, $scope.oppiaine);
       $state.go('root.perusteprojekti.muokkaus', {osanTyyppi: $scope.type, osanId: $scope.realModel.id});
     };
   });

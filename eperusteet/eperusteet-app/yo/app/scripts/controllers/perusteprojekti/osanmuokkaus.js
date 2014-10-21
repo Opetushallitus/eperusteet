@@ -24,6 +24,7 @@ angular.module('eperusteApp')
     this.vuosiluokka = null;
     this.path = null;
     this.oppiaine = null;
+    this.vuosiluokat = [];
 
     this.getModel = function () {
       if (!this.model) {
@@ -32,15 +33,29 @@ angular.module('eperusteApp')
       return this.path ? this.model[this.path] : this.model;
     };
 
-    this.setup = function (model, path) {
+    this.setup = function (model, path, oppiaine) {
       this.oppiaine = $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET ? model : null;
+      if (oppiaine) {
+        this.oppiaine = oppiaine;
+      }
       this.model = model;
       this.path = path;
       this.backState = [$state.current.name, _.clone($stateParams)];
+      // TODO
+      this.vuosiluokat = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT, true);
+      if (model.vuosiluokkaKokonaisuus) {
+        this.vuosiluokka = _.find(this.vuosiluokat, function (vl) {
+          return vl.id === parseInt(model.vuosiluokkaKokonaisuus, 10);
+        });
+      } else {
+        this.vuosiluokka = null;
+      }
     };
 
     this.save = function () {
-      if (this.path) {
+      if (this.isVuosiluokkakokonaisuudenOsa()) {
+        console.log("save vuosiluokkakokonaisuuden osa");
+      } else if (this.path) {
         var payload = _.pick(this.model, ['id', this.path]);
         PerusopetusService.saveOsa(payload, this.backState[1]);
       }
@@ -86,7 +101,7 @@ angular.module('eperusteApp')
   })
 
   .controller('OsanMuokkausController', function($scope, $stateParams, $compile, OsanMuokkausHelper,
-      Editointikontrollit) {
+      Editointikontrollit, $rootScope) {
     $scope.objekti = OsanMuokkausHelper.getModel();
     if (!$scope.objekti) {
       return;
@@ -100,6 +115,7 @@ angular.module('eperusteApp')
         },
         callbacks: {
           save: function () {
+            $rootScope.$broadcast('notifyCKEditor');
             OsanMuokkausHelper.save();
             OsanMuokkausHelper.goBack();
           },

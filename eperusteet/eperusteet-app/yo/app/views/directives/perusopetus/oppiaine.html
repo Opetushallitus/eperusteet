@@ -57,11 +57,12 @@
 
     <tabset justified="true">
       <tab heading="{{vuosiluokat.nimi|kaanna}}" ng-repeat="vuosiluokat in mappedVuosiluokat">
-        <div ng-repeat="tekstikappale in vuosiluokat.$sisalto.tekstikappaleet" muokattava-osio="tekstikappale"
-             type="tekstikappale">
-        </div>
-        <div muokattava-osio="vuosiluokat.$sisalto.sisaltoalueet" type="sisaltoalueet"></div>
-        <div muokattava-osio="vuosiluokat.$sisalto" type="tavoitteet"></div>
+        <div muokattava-osio="vuosiluokat.$sisalto" type="tekstikappale" path="tehtava" oppiaine="editableModel"></div>
+        <div muokattava-osio="vuosiluokat.$sisalto.sisaltoalueet" type="sisaltoalueet" oppiaine="editableModel"></div>
+        <div muokattava-osio="vuosiluokat.$sisalto" type="tavoitteet" oppiaine="editableModel"></div>
+        <div muokattava-osio="vuosiluokat.$sisalto" type="tekstikappale" path="ohjaus" oppiaine="editableModel"></div>
+        <div muokattava-osio="vuosiluokat.$sisalto" type="tekstikappale" path="tyotavat" oppiaine="editableModel"></div>
+        <div muokattava-osio="vuosiluokat.$sisalto" type="tekstikappale" path="arviointi" oppiaine="editableModel"></div>
       </tab>
     </tabset>
 

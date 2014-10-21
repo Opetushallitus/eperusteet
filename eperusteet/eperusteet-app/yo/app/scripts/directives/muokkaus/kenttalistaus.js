@@ -50,11 +50,16 @@ angular.module('eperusteApp')
         $scope.expandedFields = $scope.fields;
 
         $scope.removeField = function(fieldToRemove) {
+          console.log("removeField", fieldToRemove);
           var splitfield = FieldSplitter.process(fieldToRemove);
           if (splitfield.isMulti()) {
             splitfield.remove(model);
           } else {
-            MuokkausUtils.nestedSet(model, fieldToRemove.path, '.', null);
+            if (_.isFunction(fieldToRemove.remove)) {
+              fieldToRemove.remove();
+            } else {
+              MuokkausUtils.nestedSet(model, fieldToRemove.path, '.', null);
+            }
             fieldToRemove.visible = false;
             fieldToRemove.$added = false;
           }
@@ -103,8 +108,12 @@ angular.module('eperusteApp')
               });
             } else {
               field.inMenu = field.path !== 'nimi' && field.path !== 'koodiUri';
-              field.visible = field.divider ? false :
-                (field.$added || field.mandatory || MuokkausUtils.hasValue(object, field.path));
+              if (field.visibleFn) {
+                field.visible = field.visibleFn();
+              } else {
+                field.visible = field.divider ? false :
+                  (field.$added || field.mandatory || MuokkausUtils.hasValue(object, field.path));
+              }
               $scope.expandedFields.push(field);
             }
           });
@@ -149,13 +158,17 @@ angular.module('eperusteApp')
       return this.parts[0] + '[' + index + this.parts[1];
     };
 
-    SplitField.prototype.getObject = function (obj) {
+    SplitField.prototype.getObject = function (obj, create) {
+      if (create && !obj[this.parts[0]]) {
+        obj[this.parts[0]] = [];
+      }
       return !obj ? null : obj[this.parts[0]];
     };
 
     SplitField.prototype.addArrayItem = function (obj) {
       var newItem = _.isFunction(this.original.empty) ? this.original.empty() : {otsikko: {}, teksti: {}};
-      var object = this.getObject(obj);
+      console.log("addArrayItem", newItem);
+      var object = this.getObject(obj, true);
       object.push(newItem);
       return object.length - 1;
     };
