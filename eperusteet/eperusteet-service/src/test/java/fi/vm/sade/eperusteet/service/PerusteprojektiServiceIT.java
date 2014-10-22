@@ -18,11 +18,14 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaTyoryhma;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -34,6 +37,7 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
@@ -54,6 +58,9 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteService perusteService;
+
+    @Autowired
+    private PerusteenOsaService perusteenOsaService;
 
     @Autowired
     private PerusteprojektiService service;
@@ -221,6 +228,32 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertEquals(0, tyoryhma.size());
         tyoryhma = service.getTyoryhmaHenkilot(pp.getId(), ryhmaB);
         Assert.assertEquals(1, tyoryhma.size());
+    }
+
+    @Test
+    @Transactional
+    public void testPerusteprojektiTyoryhmat() {
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
+        Perusteprojekti pp = repository.findOne(ppdto.getId());
+
+        List<String> henkilot = new ArrayList<>();
+        henkilot.add("a");
+        service.saveTyoryhma(pp.getId(), "a", henkilot);
+        service.saveTyoryhma(pp.getId(), "b", henkilot);
+        service.saveTyoryhma(pp.getId(), "c", henkilot);
+
+        List<String> nimet = new ArrayList<>();
+        nimet.add("a");
+        nimet.add("b");
+        nimet.add("c");
+
+        PerusteenOsaViiteDto.Matala poA = perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
+        PerusteenOsaViiteDto.Matala poB = perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
+
+        service.setPerusteenOsaViiteTyoryhmat(pp.getId(), poA.getId(), nimet);
+        service.setPerusteenOsaViiteTyoryhmat(pp.getId(), poB.getId(), nimet);
+        List<PerusteenOsaTyoryhmaDto> st = service.getSisallonTyoryhmat(pp.getId());
+        Assert.assertEquals(6, st.size());
     }
 
     @Test

@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +54,9 @@ public class PerusteenSisaltoController {
 
     @Autowired
     private PerusteenOsaService perusteenOsaService;
+
+    @Autowired
+    private PerusteprojektiService perusteprojektiService;
 
     /**
      * Luo perusteeseen suoritustavan alle uuden perusteenosan
@@ -118,12 +122,12 @@ public class PerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/sisalto", method = GET)
-    public ResponseEntity<PerusteenOsaViiteDto.Suppea> getSuoritustapaSisalto(
+    public ResponseEntity<PerusteenOsaViiteDto> getSuoritustapaSisalto(
         @RequestParam(value = "muoto", required = false, defaultValue = "suppea") String view,
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapakoodi) {
 
-        PerusteenOsaViiteDto.Suppea dto = service.getSuoritustapaSisalto(perusteId, Suoritustapakoodi.of(suoritustapakoodi), PerusteenOsaViiteDto.Suppea.class);
+        PerusteenOsaViiteDto dto = service.getSuoritustapaSisalto(perusteId, Suoritustapakoodi.of(suoritustapakoodi), "suppea".equals(view) ? PerusteenOsaViiteDto.Suppea.class : PerusteenOsaViiteDto.Laaja.class);
         if (dto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
