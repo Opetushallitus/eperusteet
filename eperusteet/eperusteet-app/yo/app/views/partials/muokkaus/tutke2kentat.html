@@ -73,30 +73,7 @@
                 <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet" mainLevelEditing="tavoite.$editing" ei-kohdealueita="true"></arviointi>
                 <label class="header" kaanna>tutkinnonosa-tunnustaminen</label>
                 <p ng-bind-html="valitseKieli(tavoite.tunnustaminen) | unsafe"></p>
-              <h3 kaanna>Muokkaa osaamistavoitetta</h3>
             </div>
-            <div class="panel-body">
-            <formfield model="osaamistavoite.$editing" model-var="nimi" label="nimi"></formfield>
-            <formfield model="osaamistavoite.$editing" model-var="pakollinen" label="pakollisuus" options="pakollisuusoptions"></formfield>
-            <formfield model="osaamistavoite.$editing" model-var="_esitieto" label="esitieto" options="alue.$esitietoOptions" ng-if="!osaamistavoite.$editing.pakollinen"></formfield>
-            <formfield model="osaamistavoite.$editing" model-var="laajuus" label="laajuus" type="float" step="0.5"></formfield>
-            <label kaanna>tavoitteet</label>
-            <div ng-model="osaamistavoite.$editing.tavoitteet" localized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
-            <h4 kaanna>arviointi</h4>
-            <arviointi arviointi="osaamistavoite.$editing.arviointi.arvioinninKohdealueet" ei-kohdealueita="true"
-                       edit-enabled="tavoite.$editing" editointi-sallittu="true"></arviointi>
-            <label kaanna>Tunnustaminen</label>
-            <div ng-model="osaamistavoite.$editing.tunnustaminen" localized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tunnustaminen"></div>
-            </div>
-          </div>
-          <div ng-if="!tavoite.$editing">
-            <div class="panel-heading">
-              <h3>
-              {{pakollisuus && ('Pakolliset osaamistavoitteet' | kaanna) || ('Valinnaiset osaamistavoitteet' | kaanna)}}, {{tavoite.laajuus}} {{ yksikko | kaanna}}
-              <div class="muokkaus-napit pull-right" ng-hide="tavoite.$editing || isEditingInProgress()">
-                <button class="btn btn-default" ng-click="osaamistavoite.edit(alue, tavoite, $event)" kaanna="'muokkaa'" icon-role="edit"
-                        oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-              </div>
             </div>
 
           </div>
