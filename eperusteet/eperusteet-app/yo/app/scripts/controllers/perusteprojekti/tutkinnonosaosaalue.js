@@ -68,6 +68,10 @@ angular.module('eperusteApp')
       $scope.osaamistavoitepuu.push(osaamistavoitePakollinen);
     };
 
+    $scope.tuoOsaamistavoite = function () {
+      console.log('Toteuta osaamistavoitteen tuonti!');
+    };
+
     $scope.poistaTavoite = function(tavoite) {
       if (tavoite.pakollinen === true) {
         if (_.isObject(tavoite.lapsi)) {
