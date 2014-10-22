@@ -77,6 +77,10 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
         dto = service.addVuosiluokkaKokonaisuus(perusteId, dto);
         assertEquals(1, dto.getLaajaalaisetOsaamiset().size());
         assertEquals(osaaminen, dto.getLaajaalaisetOsaamiset().iterator().next().getLaajaalainenOsaaminen().get());
+        dto.setNimi(olt("Nimi2"));
+        dto.getLaajaalaisetOsaamiset().add(vlo);
+        service.updateVuosiluokkaKokonaisuus(perusteId, dto);
+        assertEquals(2, dto.getLaajaalaisetOsaamiset().size());
 
     }
 

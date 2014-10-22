@@ -58,6 +58,10 @@ public class VuosiluokkaKokonaisuudenLaajaalainenOsaaminen extends AbstractRefer
     private TekstiPalanen kuvaus;
 
     public void setVuosiluokkaKokonaisuus(VuosiluokkaKokonaisuus vuosiluokkaKokonaisuus) {
+        if ( this.vuosiluokkaKokonaisuus == vuosiluokkaKokonaisuus ) {
+            return;
+        }
+        
         if ( this.vuosiluokkaKokonaisuus == null && this.id == null ) {
             this.vuosiluokkaKokonaisuus = vuosiluokkaKokonaisuus;
         } else {
