@@ -21,9 +21,6 @@ angular.module('eperusteApp')
   .controller('arviointiCtrl', function ($scope, YleinenData, Varmistusdialogi, $timeout,
     Utils, ArviointiPreferences) {
 
-    $scope.kohdealueetTyyli = 'panel panel-default panel-small arviointi-kohdealueet';
-    $scope.eiKohdealueitaTyyli = 'arviointi-ei-kohdealueita';
-
     $scope.showNewKohdealueInput = false;
 
     $scope.arviointiasteikkoChanged = function (kohdealue) {
