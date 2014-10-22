@@ -42,7 +42,7 @@ angular.module('eperusteApp')
   })
 
   .controller('Tutke2KentatController', function ($scope, $state, Tutke2Osa, Tutke2OsaData,
-    TutkinnonOsanOsaAlue, Osaamistavoite, Varmistusdialogi, $rootScope, $timeout,
+    Osaamistavoite, Varmistusdialogi, $rootScope, $timeout,
     Utils, Notifikaatiot, Lukitus, $q, YleinenData) {
 
     var Editointikontrollit = $scope.kontrollit;

@@ -3,7 +3,7 @@
 
 angular.module('eperusteApp')
   .controller('TutkinnonOsaOsaAlueCtrl', function ($scope, $state, $stateParams, Editointikontrollit,
-    Tutke2OsaData, PerusteProjektiSivunavi, tutkinnonosanTiedot, TutkinnonOsanOsaAlue, Lukitus, Notifikaatiot, Utils) {
+    Tutke2OsaData, PerusteProjektiSivunavi, TutkinnonOsanOsaAlue, Lukitus, Notifikaatiot, Utils) {
 
     $scope.osaamistavoitepuu = [];
     var tempId = 0;
