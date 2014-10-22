@@ -47,11 +47,12 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -92,7 +93,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     private LocalizedMessagesService messages;
 
     @Override
-    public String generateXML(Peruste peruste, Kieli kieli) throws
+    public String generateXML(Peruste peruste, Kieli kieli, Suoritustapakoodi suoritustapakoodi) throws
             TransformerConfigurationException,
             IOException,
             TransformerException,
@@ -113,28 +114,38 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         rootElement.appendChild(titleElement);
 
         //rootElement.appendChild(doc.createElement("info"));
-        // TODO: should we process suoritustavat in some specific order?
+        // tähän vois lisätä esim jonkun info-elementin alkusivuja varten?
+
         for (Suoritustapa st : peruste.getSuoritustavat()) {
-            PerusteenOsaViite sisalto = peruste.getSuoritustapa(st.getSuoritustapakoodi()).getSisalto();
-            addSisaltoElement(doc, peruste, rootElement, sisalto, 0, st, kieli);
+            if (st.getSuoritustapakoodi().equals(suoritustapakoodi)) {
+                PerusteenOsaViite sisalto = peruste.getSuoritustapa(st.getSuoritustapakoodi()).getSisalto();
+                addSisaltoElement(doc, peruste, rootElement, sisalto, 0, st, kieli);
+            }
         }
 
-        // add tutkinnonosat as distinct chapters
-        // TODO: Ordering?
-        addTutkinnonosat(doc, peruste, kieli);
+        // pudotellaan tutkinnonosat paikalleen
+        addTutkinnonosat(doc, peruste, kieli, suoritustapakoodi);
 
-        // For dev/debugging love
+        // sanity check, ei feilata dokkariluontia, vaikka syntynyt dokkari
+        // olisikin vähän pöljä
+        if (rootElement.getChildNodes().getLength() <= 1) {
+            Element fakeChapter = doc.createElement("chapter");
+            fakeChapter.appendChild(doc.createElement("title"));
+            rootElement.appendChild(fakeChapter);
+        }
+
+        // helpottaa devaus-debugausta, voi olla vähän turha tuotannossa
         printDocument(doc, System.out);
 
-        // so far doc contains mixed content from docbook and xhtml namespaces
-        // lets transform xhtml bits onto docbook-format
+        // rusikoidaan dokkarissa sekaisin olevat docbook- ja xhtml-osat
+        // xsl-muunnoksena docbook-formaattiin
         DOMSource source = new DOMSource(doc);
         SAXTransformerFactory stf = (SAXTransformerFactory) TransformerFactory.newInstance();
 
         File resultFile;
         try (InputStream xslresource = getClass().getClassLoader().getResourceAsStream("docgen/epdoc-markup.xsl")) {
             Templates templates = stf.newTemplates(new StreamSource(xslresource));
-            // or
+            // tai
             //Templates templates = stf.newTemplates(new StreamSource(new File("/full/path/to/epdoc-markup.xsl")));
             TransformerHandler th = stf.newTransformerHandler(templates);
             resultFile = File.createTempFile("peruste_" + UUID.randomUUID().toString(), ".xml");
@@ -508,10 +519,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             }
 
             if (po.getTunniste() == PerusteenOsaTunniste.RAKENNE) {
-                // special case, render TutkinnonRakenne here and continue with
-                // rest of the sibligs
+                // poikkeustapauksena perusteen rakennepuun rendaus
                 addTutkinnonMuodostuminen(doc, parentElement, peruste, depth, tapa, kieli);
             } else {
+                // normikeississä sukelletaan syvemmälle puuhun
                 String nimi = getTextString(tk.getNimi(), kieli);
                 Element titleElement = doc.createElement("title");
                 titleElement.appendChild(doc.createTextNode(nimi));
@@ -530,20 +541,59 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         }
     }
 
-    private void addTutkinnonosat(Document doc, Peruste peruste, Kieli kieli) {
+    private void addTutkinnonosat(Document doc, Peruste peruste, final Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
 
-        // only distinct TutkinnonOsa
         Set<Suoritustapa> suoritustavat = peruste.getSuoritustavat();
-        Set<TutkinnonOsa> osat = new HashSet<>();
+        // tree setistä saadaan tutkinnonosaviitteet ulos halutussa,
+        // comparatorin avulla järkättävässä järjestyksessä
+        Set<TutkinnonOsaViite> osat = new TreeSet<>(
+                new java.util.Comparator<TutkinnonOsaViite>() {
+                    @Override
+                    public int compare(TutkinnonOsaViite o1, TutkinnonOsaViite o2) {
+                        String nimi1 = getTextString(o1.getTutkinnonOsa().getNimi(),kieli);
+                        String nimi2 = getTextString(o2.getTutkinnonOsa().getNimi(),kieli);
+
+                        // ensisijaisesti järjestysnumeron mukaan
+                        int o1i = o1.getJarjestys() != null ? o1.getJarjestys() : Integer.MAX_VALUE;
+                        int o2i = o2.getJarjestys() != null ? o2.getJarjestys() : Integer.MAX_VALUE;
+                        if (o1i < o2i) {
+                            return -1;
+                        } else if (o1i > o2i) {
+                            return 1;
+                        }
+
+                        // toissijaisesti aakkosjärjestyksessä
+                        if (!nimi1.equals(nimi2)) {
+                            return nimi1.compareTo(nimi2);
+                        }
+
+                        // viimekädessä kanta-avaimen mukaan
+                        Long id1 = o1.getTutkinnonOsa().getId();
+                        Long id2 = o2.getTutkinnonOsa().getId();
+                        if (id1 < id2) {
+                            return -1;
+                        } else if (id1 > id2) {
+                            return 1;
+                        }
+
+                        // On ne sitten samat
+                        return 0;
+                    }
+                });
+
         for (Suoritustapa suoritustapa : suoritustavat) {
-            for (TutkinnonOsaViite viite : suoritustapa.getTutkinnonOsat()) {
-                osat.add(viite.getTutkinnonOsa());
+            if (suoritustapa.getSuoritustapakoodi().equals(suoritustapakoodi)) {
+                for (TutkinnonOsaViite viite : suoritustapa.getTutkinnonOsat()) {
+                    if (viite.getPoistettu() == null || !viite.getPoistettu()) {
+                        osat.add(viite);
+                    }
+                }
             }
         }
 
-        for (TutkinnonOsa osa : osat) {
+        for (TutkinnonOsaViite viite : osat) {
+            TutkinnonOsa osa = viite.getTutkinnonOsa();
             String osanNimi = getTextString(osa.getNimi(), kieli);
-            LOG.debug("handling {} - {}", osa.getId(), osanNimi);
             Element element = doc.createElement("chapter");
             String refid = "tutkinnonosa" + osa.getId();
             element.setAttribute("id", refid);
@@ -554,13 +604,11 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             element.appendChild(titleElement);
 
             if (osa.getTyyppi() == TutkinnonOsaTyyppi.NORMAALI) {
-                LOG.debug("TUTKINONOSATYYPPI NORMAALI");
                 addTavoitteet(doc, element, osa, kieli);
                 addAmmattitaitovaatimukset(doc, element, osa, kieli);
                 addAmmattitaidonOsoittamistavat(doc, element, osa, kieli);
                 addArviointi(doc, element, osa.getArviointi(), kieli);
             } else if (osa.getTyyppi() == TutkinnonOsaTyyppi.TUTKE2) {
-                LOG.debug("TUTKINNONOSATYYPPI TUTKE2");
                 addTutke2Osat(doc, element, osa, kieli);
             }
 
@@ -729,7 +777,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                     bodyElement.appendChild(bodyRowElement);
                 }
 
-                // dirty fix: a tbody must have a row which must have an entry
+                // dirty fix: varmistetaan ettei feilata, jos osaamistason
+                // kriteerejä ei ole (tbodyllä pitää olla row, jolla on entry)
                 if (osaamistasonKriteerit.isEmpty()) {
                     Element bodyRowElement = doc.createElement("row");
                     addTableCell(doc, bodyRowElement, "");

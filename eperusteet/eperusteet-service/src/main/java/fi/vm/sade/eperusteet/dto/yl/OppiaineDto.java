@@ -27,7 +27,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class OppiaineDto extends OppiaineSuppeaDto {
+public class OppiaineDto extends OppiaineBaseDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Set<EntityReference> oppimaarat;

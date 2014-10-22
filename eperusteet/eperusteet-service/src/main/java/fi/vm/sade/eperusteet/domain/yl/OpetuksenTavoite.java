@@ -57,4 +57,15 @@ public class OpetuksenTavoite extends AbstractAuditedReferenceableEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TavoitteenArviointi> arvioinninkohteet = new HashSet<>();
 
+    public Set<TavoitteenArviointi> getArvioinninkohteet() {
+        return new HashSet<>(arvioinninkohteet);
+    }
+
+    public void setArvioinninkohteet(Set<TavoitteenArviointi> kohteet) {
+        this.arvioinninkohteet.clear();
+        if (kohteet != null) {
+            this.arvioinninkohteet.addAll(kohteet);
+        }
+    }
+
 }

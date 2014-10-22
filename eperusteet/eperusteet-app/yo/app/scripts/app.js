@@ -57,22 +57,6 @@ angular.module('eperusteApp', [
     $translateProvider.preferredLanguage(preferred);
     moment.lang(preferred);
   })
-  // .config(function($httpProvider) {
-  //   $httpProvider.interceptors.push(['$rootScope', 'REQUEST_TIMEOUT', 'Kaanna', '$q', function($rootScope, REQUEST_TIMEOUT, Kaanna, $q) {
-  //     return {
-  //       request: function(request) {
-  //         // request.timeout = REQUEST_TIMEOUT;
-  //         return request;
-  //       },
-  //       responseError: function(error) {
-  //         if (error.status === 0) {
-  //           // alert(Kaanna.kaanna('yhteys-palvelimeen-timeout'));
-  //         }
-  //         return $q.reject(error);
-  //       }
-  //     };
-  //   }]);
-  // })
   .config(function($httpProvider) {
     $httpProvider.interceptors.push(['$rootScope', '$q', 'SpinnerService', function($rootScope, $q, Spinner) {
         return {
@@ -97,9 +81,10 @@ angular.module('eperusteApp', [
     $httpProvider.interceptors.push(['$rootScope', '$q', function($rootScope, $q) {
         return {
           'response': function(response) {
-            // var uudelleenohjausStatuskoodit = [401, 403, 412, 500];
-            var uudelleenohjausStatuskoodit = [412, 500];
-            if (_.indexOf(uudelleenohjausStatuskoodit, response.status) !== -1) {
+            var uudelleenohjausStatuskoodit = [401, 412, 500];
+            var fail = _.indexOf(uudelleenohjausStatuskoodit, response.status) !== -1;
+
+            if (fail) {
               $rootScope.$emit('event:uudelleenohjattava', response.status);
             }
             return response || $q.when(response);
@@ -134,7 +119,7 @@ angular.module('eperusteApp', [
     });
     angular.element(window).on('mousemove', f);
   })
-  .run(function($rootScope, $modal, $location, $window, $state, paginationConfig, Editointikontrollit,
+  .run(function($rootScope, $modal, $location, $window, $state, $http, paginationConfig, Editointikontrollit,
                 Varmistusdialogi, Kaanna, virheService) {
     paginationConfig.firstText = '';
     paginationConfig.previousText = '';
@@ -169,23 +154,21 @@ angular.module('eperusteApp', [
 
       var casurl = getCasURL();
 
+      if (status === 401) {
+        $window.location.href = casurl;
+        return;
+      }
 
       var uudelleenohjausModaali = $modal.open({
         templateUrl: 'views/modals/uudelleenohjaus.html',
         controller: 'UudelleenohjausModalCtrl',
         resolve: {
-          status: function() {
-            return status;
-          },
-          redirect: function() {
-            return casurl;
-          }
+          status: function() { return status; },
+          redirect: function() { return casurl; }
         }
       });
 
-      uudelleenohjausModaali.result.then(function() {
-      }, function() {
-      }).finally(function() {
+      uudelleenohjausModaali.result.then(angular.noop, angular.noop).finally(function() {
         onAvattuna = false;
         switch (status) {
           case 500:

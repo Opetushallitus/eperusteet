@@ -81,4 +81,8 @@ public class Dokumentti implements Serializable {
     @NotNull
     private DokumenttiVirhe virhekoodi = DokumenttiVirhe.EI_VIRHETTA;
 
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private Suoritustapakoodi suoritustapakoodi;
+
 }

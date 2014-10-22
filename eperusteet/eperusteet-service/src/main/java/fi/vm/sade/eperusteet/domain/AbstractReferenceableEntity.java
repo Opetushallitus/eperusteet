@@ -44,7 +44,10 @@ public abstract class AbstractReferenceableEntity implements ReferenceableEntity
     }
 
     public void setId(Long id) {
-        this.id = id;
+        if (this.id == null) {
+            this.id = id;
+        }
+        
     }
 
 }

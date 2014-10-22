@@ -15,7 +15,9 @@
  */
 package fi.vm.sade.eperusteet.service.yl;
 
+import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
+import java.util.List;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,9 @@ public interface VuosiluokkakokonaisuusService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     VuosiluokkaKokonaisuusDto updateVuosiluokkaKokonaisuus(@P("perusteId") Long perusteId, VuosiluokkaKokonaisuusDto dto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<OppiaineSuppeaDto> getOppiaineet(Long perusteId, Long kokonaisuusId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void deleteVuosiluokkaKokonaisuus(@P("perusteId") Long perusteId, Long VuosiluokkaKokonaisuusId);

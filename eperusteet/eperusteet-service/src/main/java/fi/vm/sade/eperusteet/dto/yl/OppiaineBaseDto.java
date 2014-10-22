@@ -13,33 +13,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+package fi.vm.sade.eperusteet.dto.yl;
 
-package fi.vm.sade.eperusteet.dto;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import fi.vm.sade.eperusteet.domain.DokumenttiTila;
-import fi.vm.sade.eperusteet.domain.DokumenttiVirhe;
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import java.util.Date;
+import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.dto.ReferenceableDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author jussi
+ * @author jhyoty
  */
 @Getter
 @Setter
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class DokumenttiDto {
+public abstract class OppiaineBaseDto implements ReferenceableDto {
     private Long id;
-    private Long perusteId;
-    private String luoja;
-    private Kieli kieli;
-    private Date aloitusaika;
-    private Date valmistumisaika;
-    private DokumenttiTila tila = DokumenttiTila.EI_OLE;
-    private DokumenttiVirhe virhekoodi = DokumenttiVirhe.EI_VIRHETTA;
-    private Suoritustapakoodi suoritustapakoodi;
+    private Optional<Boolean> koosteinen;
+    private Optional<LokalisoituTekstiDto> nimi;
+    private Optional<TekstiOsaDto> tehtava;
 }

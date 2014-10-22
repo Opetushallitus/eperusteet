@@ -15,14 +15,20 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
+import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
+import fi.vm.sade.eperusteet.domain.yl.OppiaineenVuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.VuosiluokkaKokonaisuusRepository;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkakokonaisuusService;
+import java.util.HashSet;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,13 +66,42 @@ public class VuosiluokkaKokonaisuusServiceImpl implements Vuosiluokkakokonaisuus
     }
 
     @Override
-    public VuosiluokkaKokonaisuusDto getVuosiluokkaKokonaisuus(Long perusteId, Long VuosiluokkaKokonaisuusId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public VuosiluokkaKokonaisuusDto getVuosiluokkaKokonaisuus(Long perusteId, Long kokonaisuusId) {
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(kokonaisuusId);
+        if (sisalto != null && vk != null && sisalto.containsVuosiluokkakokonaisuus(vk)) {
+            return mapper.map(vk, VuosiluokkaKokonaisuusDto.class);
+        }
+        throw new BusinessRuleViolationException("Haettu vuosiluokkakokonaisuus ei kuulu tähän perusteeseen");
+    }
+
+    @Override
+    public List<OppiaineSuppeaDto> getOppiaineet(Long perusteId, Long kokonaisuusId) {
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(kokonaisuusId);
+        if (sisalto != null && vk != null && sisalto.containsVuosiluokkakokonaisuus(vk)) {
+            HashSet<Oppiaine> aineet = new HashSet<>();
+            for (OppiaineenVuosiluokkaKokonaisuus o : vk.getOppiaineet()) {
+                Oppiaine a = o.getOppiaine();
+                while (a.getOppiaine() != null) {
+                    a = a.getOppiaine();
+                }
+                aineet.add(a);
+            }
+            return mapper.mapAsList(aineet, OppiaineSuppeaDto.class);
+        }
+        throw new BusinessRuleViolationException("Haettu vuosiluokkakokonaisuus ei kuulu tähän perusteeseen");
     }
 
     @Override
     public VuosiluokkaKokonaisuusDto updateVuosiluokkaKokonaisuus(Long perusteId, VuosiluokkaKokonaisuusDto dto) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(dto.getId());
+        if (sisalto != null && vk != null && sisalto.containsVuosiluokkakokonaisuus(vk)) {
+            mapper.map(dto, vk);
+            kokonaisuusRepository.save(vk);
+            return mapper.map(vk, VuosiluokkaKokonaisuusDto.class);
+        }
+        throw new BusinessRuleViolationException("Vuosiluokkakokonaisuus ei kuulu tähän perusteeseen");
     }
-
 }

@@ -15,21 +15,10 @@
  */
 package fi.vm.sade.eperusteet.dto.yl;
 
-import com.google.common.base.Optional;
-import fi.vm.sade.eperusteet.dto.ReferenceableDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  *
  * @author jhyoty
  */
-@Getter
-@Setter
-public abstract class OppiaineSuppeaDto implements ReferenceableDto {
-    private Long id;
-    private boolean koosteinen;
-    private Optional<LokalisoituTekstiDto> nimi;
-    private Optional<TekstiOsaDto> tehtava;
+public class OppiaineSuppeaDto extends OppiaineBaseDto {
+    //olemassa mappauksen takia...
 }

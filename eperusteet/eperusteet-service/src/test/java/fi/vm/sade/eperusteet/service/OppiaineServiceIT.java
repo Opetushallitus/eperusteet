@@ -24,7 +24,10 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.KeskeinenSisaltoalueDto;
+import fi.vm.sade.eperusteet.dto.yl.OpetuksenTavoiteDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.repository.OppiaineRepository;
@@ -33,6 +36,7 @@ import fi.vm.sade.eperusteet.repository.VuosiluokkaKokonaisuusRepository;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import java.io.IOException;
+import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -44,6 +48,7 @@ import static fi.vm.sade.eperusteet.service.test.util.TestUtils.olt;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.to;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  *
@@ -77,21 +82,40 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
         OppiaineDto oppiaineDto = new OppiaineDto();
         oppiaineDto.setNimi(Optional.of(lt("Oppiaine")));
+        oppiaineDto.setTehtava(Optional.of(to("TehtävänOtsikko","Tehtava")));
+        oppiaineDto.setKoosteinen(Optional.of(false));
+
         OppiaineenVuosiluokkaKokonaisuusDto vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
         vkDto.setTehtava(Optional.of(to("Tehtävä", "")));
         vkDto.setVuosiluokkaKokonaisuus(Optional.of(vk.getReference()));
+
         oppiaineDto.setVuosiluokkakokonaisuudet(Sets.newHashSet(vkDto));
         KeskeinenSisaltoalueDto ks = new KeskeinenSisaltoalueDto();
         ks.setNimi(Optional.of(lt("Nimi")));
         vkDto.setSisaltoalueet(Lists.newArrayList(ks));
         OppiaineDto oa = service.addOppiaine(perusteId, oppiaineDto);
-        assertEquals("Nimi", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(0).getNimi().get().getTekstit().get(Kieli.FI));
+
+        assertEquals("Nimi", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(0).getNimi().get().get(Kieli.FI));
         ks.setNimi(olt("Nimi2"));
+        oa.getTehtava().get().setOtsikko(Optional.of(new LokalisoituTekstiDto(null)));
+        oa.getTehtava().get().setTeksti(Optional.<LokalisoituTekstiDto>absent());
         oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().add(0, ks);
         oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(1).setNimi(null);
         oa = service.updateOppiaine(perusteId, oa);
-        assertEquals("Nimi2", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(0).getNimi().get().getTekstit().get(Kieli.FI));
-        assertEquals("Nimi", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(1).getNimi().get().getTekstit().get(Kieli.FI));
+
+        assertNull(oa.getTehtava().get().getOtsikko());
+        assertNull(oa.getTehtava().get().getTeksti());
+        assertEquals("Nimi2", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(0).getNimi().get().get(Kieli.FI));
+        assertEquals("Nimi", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(1).getNimi().get().get(Kieli.FI));
+
+        vkDto = oa.getVuosiluokkakokonaisuudet().iterator().next();
+        OpetuksenTavoiteDto tavoiteDto = new OpetuksenTavoiteDto();
+        tavoiteDto.setSisaltoalueet(Collections.singleton(new EntityReference(vkDto.getSisaltoalueet().get(0).getId())));
+        tavoiteDto.setTavoite(olt("Tässäpä jokin kiva tavoite"));
+        vkDto.getTavoitteet().add(tavoiteDto);
+
+        vkDto = service.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oa.getId(), vkDto);
+
     }
 
 

@@ -29,10 +29,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public interface PerusopetuksenPerusteenSisaltoService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    List<LaajaalainenOsaaminenDto> updateLaajaAlainenOsaaminen(@P("perusteId") Long perusteId, List<LaajaalainenOsaaminenDto> dtos);
+    List<LaajaalainenOsaaminenDto> updateLaajaalaisetOsaamiset(@P("perusteId") Long perusteId, List<LaajaalainenOsaaminenDto> dtos);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<LaajaalainenOsaaminenDto> getLaajaAlainenOsaaminen(@P("perusteId") Long perusteId);
+    List<LaajaalainenOsaaminenDto> getLaajaalaisetOsaamiset(@P("perusteId") Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<OppiaineSuppeaDto> getOppiaineet(Long perusteId);
