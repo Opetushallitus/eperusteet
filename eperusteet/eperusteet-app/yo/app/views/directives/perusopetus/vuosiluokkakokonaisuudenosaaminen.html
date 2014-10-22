@@ -1,0 +1,17 @@
+<div class="osaaminen">
+  <accordion close-others="oneAtATime">
+    <accordion-group ng-repeat="osa in yleiset" is-open="osa.$isOpen" ng-class="{editing: osa.$editing}">
+      <accordion-heading>
+        <span kaanna="osa.nimi"></span>
+      </accordion-heading>
+      <div ng-if="!editEnabled" ng-bind-html="valitseKieli(osa.$model.kuvaus) | unsafe"></div>
+      <div ng-if="editEnabled">
+        <div ckeditor ng-model="osa.$model.kuvaus" localized editor-placeholder="muokkaus-tekstikappaleen-teksti-placeholder"></div>
+        <a class="action-link yleiskuvaus-toggle" ng-click="osa.$showkuvaus = !osa.$showkuvaus">
+          {{osa.$showkuvaus ? 'piilota-osaamiskokonaisuuden-kuvaus' : 'nayta-osaamiskokonaisuuden-kuvaus' | kaanna}}
+        </a>
+        <div class="yleiskuvaus" collapse="!osa.$showkuvaus" kaanna="osa.kuvaus"></div>
+      </div>
+    </accordion-group>
+  </accordion>
+</div>

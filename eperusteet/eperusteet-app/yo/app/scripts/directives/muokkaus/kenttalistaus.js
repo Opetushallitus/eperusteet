@@ -107,6 +107,10 @@ angular.module('eperusteApp')
                 $scope.expandedFields.push(newfield);
               });
             } else {
+              /*if (_.isString(field.localeKey) && field.originalLocaleKey) {
+                field.localeKey = MuokkausUtils.nestedGet(object,
+                  _.initial(field.path.split('.'), 1).join('.') + field.originalLocaleKey, '.');
+              }*/
               field.inMenu = field.path !== 'nimi' && field.path !== 'koodiUri';
               if (field.visibleFn) {
                 field.visible = field.visibleFn();

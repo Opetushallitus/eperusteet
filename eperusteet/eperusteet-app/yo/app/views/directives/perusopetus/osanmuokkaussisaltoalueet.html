@@ -17,14 +17,14 @@
       <div class="content">
         <div ng-if="!sisaltoalue.$editing">
           <h4 class="header">{{sisaltoalue.nimi | kaanna}}</h4>
-          <div ng-bind-html="valitseKieli(sisaltoalue.teksti) | unsafe"></div>
+          <div ng-bind-html="valitseKieli(sisaltoalue.kuvaus) | unsafe"></div>
         </div>
         <div ng-if="sisaltoalue.$editing">
           <h5>{{'sisaltoalueen-nimi' | kaanna}}</h5>
           <h4 class="list-group-item-text" ng-model="sisaltoalue.nimi" ckeditor editing-enabled="true"
               localized></h4>
           <h5 kaanna="kuvaus"></h5>
-          <div class="list-group-item-text" ng-model="sisaltoalue.teksti" ckeditor editing-enabled="true"
+          <div class="list-group-item-text" ng-model="sisaltoalue.kuvaus" ckeditor editing-enabled="true"
                localized></div>
           <div class="pull-right edit-buttons">
             <button class="btn btn-default" ng-click="cancel(sisaltoalue)" kaanna="peruuta"></button>

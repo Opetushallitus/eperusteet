@@ -18,6 +18,18 @@
 /* global _ */
 
 angular.module('eperusteApp')
+  .factory('debounce', function($timeout) {
+    return function(callback, interval) {
+      console.log("debounce factory");
+      var timeout = null;
+      return function() {
+        $timeout.cancel(timeout);
+        console.log("setting $timeout");
+        timeout = $timeout(callback, interval);
+      };
+    };
+  })
+
   .directive('muokkausOppiaine', function() {
     return {
       templateUrl: 'views/directives/perusopetus/oppiaine.html',
@@ -38,11 +50,12 @@ angular.module('eperusteApp')
   })
 
   .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna,
-      PerusteProjektiSivunavi, Oppiaineet, $timeout, $state, $stateParams, $q, YleinenData) {
+      PerusteProjektiSivunavi, Oppiaineet, $timeout, $state, $stateParams, $q, YleinenData, debounce) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.mappedVuosiluokat = [];
     $scope.yleisetosat = ['tehtava', 'osaalue'];
+    $scope.activeTab = parseInt($stateParams.tabId, 10);
 
     var callbacks = {
       edit: function () {},
@@ -154,6 +167,26 @@ angular.module('eperusteApp')
       }
     };
 
+    $scope.tabChosen = function (index) {
+      if ($scope.activeTab === index) {
+        return;
+      }
+      $scope.activeTab = index;
+      var params = _.extend(_.clone($stateParams), {tabId: index});
+      //console.log($state.$current.name, JSON.stringify(params));
+      // TODO change tab AND change URL without reloading everything?
+      debounce(function () {
+        //console.log("apply");
+        $state.transitionTo($state.$current.name, params, {
+          location: true,
+          reload: false,
+          //inherit: true,
+          //relative: $state.$current,
+          notify: true
+        });
+      }, 100)();
+    };
+
     $scope.getVuosiluokkakokonaisuus = function (oppiaineenVuosiluokkakokonaisuus) {
       return _.find($scope.vuosiluokkakokonaisuudet, function (item) {
         return item.id === parseInt(oppiaineenVuosiluokkakokonaisuus.vuosiluokkaKokonaisuus, 10);
@@ -231,6 +264,9 @@ angular.module('eperusteApp')
         }).sortBy(function (item) {
           return Kaanna.kaanna(item.nimi);
         }).value();
+        _.each($scope.mappedVuosiluokat, function (item, index) {
+          item.$tabActive = index === $scope.activeTab;
+        });
       }, true);
     });
   });

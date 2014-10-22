@@ -56,9 +56,10 @@
          path="{{osamodel}}"></div>
 
     <tabset justified="true">
-      <tab heading="{{vuosiluokat.nimi|kaanna}}" ng-repeat="vuosiluokat in mappedVuosiluokat">
+      <tab heading="{{vuosiluokat.nimi|kaanna}}" ng-repeat="vuosiluokat in mappedVuosiluokat"
+        select="tabChosen($index)" active="vuosiluokat.$tabActive">
         <div muokattava-osio="vuosiluokat.$sisalto" type="tekstikappale" path="tehtava" oppiaine="editableModel"></div>
-        <div muokattava-osio="vuosiluokat.$sisalto.sisaltoalueet" type="sisaltoalueet" oppiaine="editableModel"></div>
+        <div muokattava-osio="vuosiluokat.$sisalto" type="sisaltoalueet" path="sisaltoalueet" oppiaine="editableModel"></div>
         <div muokattava-osio="vuosiluokat.$sisalto" type="tavoitteet" oppiaine="editableModel"></div>
         <div muokattava-osio="vuosiluokat.$sisalto" type="tekstikappale" path="ohjaus" oppiaine="editableModel"></div>
         <div muokattava-osio="vuosiluokat.$sisalto" type="tekstikappale" path="tyotavat" oppiaine="editableModel"></div>

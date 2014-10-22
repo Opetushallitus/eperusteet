@@ -69,6 +69,16 @@ angular.module('eperusteApp')
       oppiaineId: '@id'
     });
   })
+  .factory('OppiaineenVuosiluokkakokonaisuudet', function ($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:oppiaineId/vuosiluokkakokonaisuudet/:vuosiluokkaId', {
+      vuosiluokkaId: '@id'
+    });
+  })
+  .factory('LaajaalaisetOsaamiset', function ($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/laajaalaisetosaamiset/:osaaminenId', {
+      osaaminenId: '@id'
+    });
+  })
   .factory('Suoritustapa', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa');
   })

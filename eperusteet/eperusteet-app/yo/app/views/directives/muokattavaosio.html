@@ -13,7 +13,7 @@
   </div>
   <div class="panel-body" collapse="model.$isCollapsed">
     <div ng-if="type === 'tekstikappale'" ng-bind-html="valitseKieli(model[path].teksti) | unsafe"></div>
-    <div ng-if="type === 'sisaltoalueet'" sisaltoalueet="model"></div>
+    <div ng-if="type === 'sisaltoalueet'" sisaltoalueet="model[path]"></div>
     <div ng-if="type === 'tavoitteet'" tavoitteet="model"></div>
   </div>
 </div>

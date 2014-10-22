@@ -54,12 +54,13 @@ angular.module('eperusteApp')
 
     this.save = function () {
       if (this.isVuosiluokkakokonaisuudenOsa()) {
-        console.log("save vuosiluokkakokonaisuuden osa");
+        console.log("save vuosiluokkakokonaisuuden osa", this.model, this.vuosiluokka, this.oppiaine);
+        PerusopetusService.saveVuosiluokkakokonaisuudenOsa(this.model, this.oppiaine);
       } else if (this.path) {
         var payload = _.pick(this.model, ['id', this.path]);
         PerusopetusService.saveOsa(payload, this.backState[1]);
       }
-      console.log(this.model, this.path, this.backState);
+      //console.log(this.model, this.path, this.backState);
     };
 
     this.goBack = function () {
@@ -132,6 +133,9 @@ angular.module('eperusteApp')
         },
         callbacks: {
           save: function () {
+            console.log("save");
+            $rootScope.$broadcast('notifyCKEditor');
+            OsanMuokkausHelper.save();
             OsanMuokkausHelper.goBack();
           },
           edit: function () {},

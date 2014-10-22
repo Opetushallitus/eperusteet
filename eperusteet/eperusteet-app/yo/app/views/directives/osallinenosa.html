@@ -22,6 +22,7 @@
       <div class="floater">
         <div class="dropdown">
           <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!canAdd()"
+                  ng-show="config.fields.length > 0"
                   icon-role="add">{{config.addPartLabel || 'muokkaus-lisaa-osio' | kaanna}}</button>
           <ul class="pull-right dropdown-menu">
             <li ng-repeat="field in config.fields | orderBy:'order'" ng-class="{divider: field.divider}">

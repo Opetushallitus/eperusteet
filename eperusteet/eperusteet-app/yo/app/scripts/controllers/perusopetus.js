@@ -18,7 +18,8 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .service('PerusopetusService', function (Vuosiluokkakokonaisuudet, Oppiaineet, $q) {
+  .service('PerusopetusService', function (Vuosiluokkakokonaisuudet, Oppiaineet, $q,
+      OppiaineenVuosiluokkakokonaisuudet, LaajaalaisetOsaamiset) {
     this.OSAAMINEN = 'osaaminen';
     this.VUOSILUOKAT = 'vuosiluokat';
     this.OPPIAINEET = 'oppiaineet';
@@ -80,12 +81,19 @@ angular.module('eperusteApp')
             perusteId: tiedot.getProjekti()._peruste,
             oppiaineId: params.osanId
           }).$promise;
-          //return promisify(this.getOsat(params.osanTyyppi)[0]);
-        default:
-          return promisify({
-            nimi: {fi: 'Tekstikappaleen otsikko'},
-            teksti: {fi: '<p>Tekstikappaleen tekstiä lorem ipsum.</p>'}
+        case this.OSAAMINEN:
+          // TODO replace with single get
+          var result = $q.defer();
+          LaajaalaisetOsaamiset.query({
+            perusteId: tiedot.getProjekti()._peruste
+          }).$promise.then(function (data) {
+            result.resolve(_.find(data, function (item) {
+              return item.id === parseInt(params.osanId, 10);
+            }));
           });
+          return result.promise;
+        default:
+          break;
       }
     };
 
@@ -96,9 +104,27 @@ angular.module('eperusteApp')
             perusteId: tiedot.getProjekti()._peruste,
           }, data);
           break;
+        case this.OSAAMINEN:
+          /*LaajaalaisetOsaamiset.save({
+            perusteId: tiedot.getProjekti()._peruste,
+          }, [
+            {nimi: {fi: 'Laaja-alainen osaaminen 1'}, kuvaus: {fi: 'Laaja-alaisen osaamisen 1 kuvaus.'}},
+            {nimi: {fi: 'Laaja-alainen osaaminen 2'}, kuvaus: {fi: 'Laaja-alaisen osaamisen 2 kuvaus.'}},
+            {nimi: {fi: 'Laaja-alainen osaaminen 3'}, kuvaus: {fi: 'Laaja-alaisen osaamisen 3 kuvaus.'}},
+          ]);*/
+          break;
         default:
           break;
       }
+    };
+
+    this.saveVuosiluokkakokonaisuudenOsa = function (vuosiluokkakokonaisuus, oppiaine) {
+      OppiaineenVuosiluokkakokonaisuudet.save({
+        perusteId: tiedot.getProjekti()._peruste,
+        oppiaineId: oppiaine.id
+      }, vuosiluokkakokonaisuus, function (res) {
+        vuosiluokkakokonaisuus = res;
+      });
     };
 
     this.getTekstikappaleet = function () {
@@ -122,22 +148,23 @@ angular.module('eperusteApp')
     };
 
     this.getOsat = function (tyyppi, useCache) {
-      console.log("getOsat", tyyppi);
-      // TODO oikea data
+      console.log("getOsat", tyyppi, useCache);
+      if (useCache) {
+        return cached[tyyppi];
+      }
       switch(tyyppi) {
         case this.OSAAMINEN:
-          return [
+          return LaajaalaisetOsaamiset.query({perusteId: tiedot.getProjekti()._peruste}, function (data) {
+            cached[tyyppi] = data;
+          });
+          /*return [
             {perusteenOsa: {id: 1, nimi: {fi: 'Ajattelu ja oppimaan oppiminen'}, teksti: {fi: 'Yleinen kuvaus ajattelulle.'}}},
             {perusteenOsa: {id: 2, nimi: {fi: 'Kulttuurinen osaaminen, vuorovaikutus ja ilmaisu'}, teksti: {fi: 'Yleinen kuvaus kulttuuriselle osaamiselle.'}}},
             {perusteenOsa: {id: 3, nimi: {fi: 'Itsestä huolehtiminen ja arjenhallinta'}, teksti: {fi: 'Yleinen kuvaus itsestä huolehtimiselle.'}}},
-          ];
+          ];*/
         case this.VUOSILUOKAT:
-          if (useCache) {
-            return cached[this.VUOSILUOKAT];
-          }
-          var self = this;
           return Vuosiluokkakokonaisuudet.query({perusteId: tiedot.getProjekti()._peruste}, function (data) {
-            cached[self.VUOSILUOKAT] = data;
+            cached[tyyppi] = data;
           });
           /*return [
             {
@@ -344,6 +371,7 @@ angular.module('eperusteApp')
       model : null,
       options: vuosiluokkakokonaisuudet,
       fn: function (query, value) {
+        // TODO make this work
         return !!_.find(value.vuosiluokkakokonaisuudet, function (item) {
           return item._id === query.id;
         });
@@ -355,11 +383,19 @@ angular.module('eperusteApp')
     };
 
     $scope.createUrl = function (value) {
-      return $state.href('root.perusteprojekti.osaalue', {osanTyyppi: $stateParams.osanTyyppi, osanId: value.id});
+      return $state.href('root.perusteprojekti.osaalue', {
+        osanTyyppi: $stateParams.osanTyyppi,
+        osanId: value.id,
+        tabId: 0
+      });
     };
 
     $scope.add = function () {
-      $state.go('root.perusteprojekti.osaalue', {osanTyyppi: $stateParams.osanTyyppi, osanId: 'uusi'});
+      $state.go('root.perusteprojekti.osaalue', {
+        osanTyyppi: $stateParams.osanTyyppi,
+        osanId: 'uusi',
+        tabId: 0
+      });
     };
   })
 

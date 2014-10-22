@@ -73,7 +73,7 @@ angular.module('eperusteApp')
         }]
       })
       .state('root.perusteprojekti.osaalue', {
-        url: '/osat/:osanTyyppi/:osanId',
+        url: '/osat/:osanTyyppi/:osanId/:tabId',
         templateUrl: 'views/partials/perusteprojekti/osaalue.html',
         resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
           'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
@@ -394,7 +394,7 @@ angular.module('eperusteApp')
         items.push({
           depth: 1,
           label: _.has(osa, 'nimi') ? osa.nimi : osa.perusteenOsa.nimi,
-          link: [STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id}]
+          link: [STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id, tabId: 0}]
         });
       });
     }

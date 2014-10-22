@@ -84,7 +84,11 @@ angular.module('eperusteApp')
               teksti: vuosiluokkakuvaus ? vuosiluokkakuvaus.teksti : 'ei-kuvausta',
               /* TODO vuosiluokkakokonaisuuden id */
               extra: '<div class="clearfix"><a class="pull-right" href="' +
-                $state.href('root.perusteprojekti.osaalue', {osanTyyppi: PerusopetusService.VUOSILUOKAT, osanId: ''}) +
+                $state.href('root.perusteprojekti.osaalue', {
+                  osanTyyppi: PerusopetusService.VUOSILUOKAT,
+                  osanId: '',
+                  tabId: 0
+                }) +
                 '" kaanna="vuosiluokkakokonaisuuden-osaamisalueet"></a></div>'
             };
           });

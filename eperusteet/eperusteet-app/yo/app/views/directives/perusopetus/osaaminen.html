@@ -1,17 +1,24 @@
-<div class="osaaminen">
-  <accordion close-others="oneAtATime">
-    <accordion-group ng-repeat="osa in yleiset" is-open="osa.$isOpen" ng-class="{editing: osa.$editing}">
-      <accordion-heading>
-        <span kaanna="osa.perusteenOsa.nimi"></span>
-      </accordion-heading>
-      <div ng-if="!editEnabled" ng-bind-html="valitseKieli(osa.$model.teksti) | unsafe"></div>
-      <div ng-if="editEnabled">
-        <div ckeditor ng-model="osa.$model.teksti" localized editor-placeholder="muokkaus-tekstikappaleen-teksti-placeholder"></div>
-        <a class="action-link yleiskuvaus-toggle" ng-click="osa.$showkuvaus = !osa.$showkuvaus">
-          {{osa.$showkuvaus ? 'piilota-osaamiskokonaisuuden-kuvaus' : 'nayta-osaamiskokonaisuuden-kuvaus' | kaanna}}
-        </a>
-        <div class="yleiskuvaus" collapse="!osa.$showkuvaus" kaanna="osa.perusteenOsa.teksti"></div>
+<div class="osaaminen-view">
+<osallinen-osa model="model" editable-model="editableModel" config="data.options" versiot="versiot">
+
+  <div ng-if="!editEnabled">
+    <div ng-bind-html="valitseKieli(editableModel.kuvaus) | unsafe"></div>
+  </div>
+
+  <div ng-if="editEnabled">
+    <div class="tekstikappale edit-tekstikappale">
+      <div class="list-group-item">
+        <h3 kaanna="muokkaus-teksikappaleen-nimi-header"></h3>
+        <h3 class="list-group-item-text" ng-model="editableModel.nimi" ckeditor editing-enabled="true"
+            editor-placeholder="muokkaus-teksikappaleen-nimi-placeholder" localized></h3>
       </div>
-    </accordion-group>
-  </accordion>
+      <div class="list-group-item">
+        <h3 kaanna="muokkaus-tekstikappaleen-teksti-header"></h3>
+        <div class="list-group-item-text" ng-model="editableModel.kuvaus" ckeditor editing-enabled="true"
+            editor-placeholder="muokkaus-tekstikappaleen-teksti-placeholder" localized></div>
+      </div>
+    </div>
+  </div>
+
+</osallinen-osa>
 </div>

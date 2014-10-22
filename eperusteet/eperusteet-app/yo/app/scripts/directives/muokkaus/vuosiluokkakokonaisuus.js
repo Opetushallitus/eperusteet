@@ -33,9 +33,6 @@ angular.module('eperusteApp')
   .controller('VuosiluokkakokonaisuusController', function ($scope, PerusopetusService,
       Editointikontrollit, Kaanna, PerusteProjektiSivunavi, Vuosiluokkakokonaisuudet) {
     $scope.editableModel = {};
-    $scope.model.then(function (data) {
-      $scope.editableModel = angular.copy(data);
-    });
     $scope.editEnabled = false;
     $scope.vuosiluokkaOptions = _.map(_.range(1, 10), function (item) {
       return {
@@ -62,13 +59,19 @@ angular.module('eperusteApp')
         lukitse(function() { cb(); });
       },
       save: function(/*kommentti*/) {
-        // TODO set metadata, save
-        Vuosiluokkakokonaisuudet.save({
-          perusteId: PerusopetusService.getPerusteId()
-        }, {
-          nimi: $scope.editableModel.nimi,
-          tehtava: {fi: 'joku teksti'}
-        });
+        if ($scope.editableModel.id) {
+          $scope.editableModel.$save({
+            perusteId: PerusopetusService.getPerusteId()
+          }, function (res) {
+            $scope.editableModel = res;
+          });
+        } else {
+          Vuosiluokkakokonaisuudet.save({
+            perusteId: PerusopetusService.getPerusteId()
+          }, $scope.editableModel, function (res) {
+            $scope.editableModel = res;
+          });
+        }
       },
       cancel: function() {
         // TODO delete lock
@@ -84,7 +87,7 @@ angular.module('eperusteApp')
 
     $scope.data = {
       options: {
-        title: $scope.model.nimi,
+        title: function () { return $scope.editableModel.nimi; },
         editTitle: 'muokkaa-vuosiluokkakokonaisuutta',
         newTitle: 'uusi-vuosiluokkakokonaisuus',
         backLabel: 'vuosiluokkakokonaisuudet',
@@ -99,13 +102,14 @@ angular.module('eperusteApp')
             if (!$scope.editableModel.laajaalaisetOsaamiset) {
               $scope.editableModel.laajaalaisetOsaamiset = [];
             }
-            // TODO don't fetch the real data here
-            var yleiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN);
+            var yleiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true);
             _.each(yleiset, function (yleinen) {
               $scope.editableModel.laajaalaisetOsaamiset.push({
                 laajaalainenOsaaminen: yleinen.id, kuvaus: {}
               });
             });
+          } else if (field.path === 'tehtava') {
+            $scope.editableModel.tehtava = {};
           }
         },
         fieldRenderer: '<kenttalistaus edit-enabled="editEnabled" object-promise="modelPromise" fields="config.fields"></kenttalistaus>',
@@ -113,11 +117,11 @@ angular.module('eperusteApp')
           {
             path: 'laajaalaisetOsaamiset',
             localeKey: 'laaja-alainen-osaaminen',
-            type: 'osaaminen',
+            type: 'vuosiluokkakokonaisuuden-osaaminen',
             collapsible: true,
             order: 1
           },
-          {
+          /*{
             path: 'tekstikappaleet[].teksti',
             menuLabel: 'tekstikappale',
             localeKey: 'nimi',
@@ -128,6 +132,16 @@ angular.module('eperusteApp')
             collapsible: true,
             isolateEdit: true,
             order: 2
+          },*/
+          {
+            path: 'tehtava.teksti',
+            localeKey: 'tehtava',
+            originalLocaleKey: 'otsikko',
+            type: 'editor-area',
+            collapsible: true,
+            isolateEdit: true,
+            localized: true,
+            order: 3,
           }
         ],
         editingCallbacks: editingCallbacks
@@ -142,14 +156,17 @@ angular.module('eperusteApp')
       //$scope.editableModel = angular.copy($scope.model);
     }
 
+    $scope.model.then(function (data) {
+      $scope.editableModel = angular.copy(data);
+    });
   })
 
-  .directive('osaaminen', function () {
+  .directive('vuosiluokkakokonaisuudenOsaaminen', function () {
     return {
-      templateUrl: 'views/directives/perusopetus/osaaminen.html',
+      templateUrl: 'views/directives/perusopetus/vuosiluokkakokonaisuudenosaaminen.html',
       restrict: 'A',
       scope: {
-        object: '=osaaminen',
+        object: '=vuosiluokkakokonaisuudenOsaaminen',
         editEnabled: '='
       },
       controller: 'LaajaAlainenOsaaminenController'
@@ -159,11 +176,11 @@ angular.module('eperusteApp')
   .controller('LaajaAlainenOsaaminenController', function ($scope, PerusopetusService, YleinenData) {
     $scope.oneAtATime = false;
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
-    $scope.yleiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN);
+    $scope.yleiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true);
 
     function getModel(object, item) {
       return _.find(object, function (obj) {
-        return obj.osaaminen === item.perusteenOsa.id;
+        return parseInt(obj.laajaalainenOsaaminen, 10) === item.id;
       });
     }
 

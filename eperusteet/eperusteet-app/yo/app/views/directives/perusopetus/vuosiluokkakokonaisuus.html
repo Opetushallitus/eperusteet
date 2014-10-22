@@ -1,7 +1,11 @@
 <osallinen-osa model="model" editable-model="editableModel" config="data.options" versiot="versiot">
   <div ng-if="!editEnabled">
     <label kaanna="vuosiluokat" class="header">
-    </label>: <span ng-repeat="vuosiluokka in editableModel.vuosiluokat">{{vuosiluokka}}<span ng-if="!$last">, </span></span>
+    </label>: <span ng-show="!editableModel.vuosiluokat || editableModel.vuosiluokat.length === 0" kaanna="ei-asetettu"></span>
+    <span ng-repeat="vuosiluokka in editableModel.vuosiluokat">{{vuosiluokka}}<span ng-if="!$last">, </span></span>
+
+    <!-- <div muokattava-osio="editableModel" type="tekstikappale" path="tehtava"></div> -->
+
   </div>
   <div class="non-collapsibles" ng-if="editEnabled">
     <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header'|kaanna}}*</label>
@@ -17,5 +21,18 @@
         </label>
       </li>
     </ul>
+
+        <!-- <div class="list-group-item">
+          <h3 kaanna="muokkaus-teksikappaleen-nimi-header"></h3>
+          <h3 class="list-group-item-text" ng-model="editableModel.otsikko" ckeditor editing-enabled="true"
+              editor-placeholder="muokkaus-teksikappaleen-nimi-placeholder" localized></h3>
+        </div>
+        <div class="list-group-item">
+          <h3 kaanna="muokkaus-tekstikappaleen-teksti-header"></h3>
+          <div class="list-group-item-text" ng-model="editableModel.teksti" ckeditor editing-enabled="true"
+              editor-placeholder="muokkaus-tekstikappaleen-teksti-placeholder" localized></div>
+        </div> -->
+
   </div>
+
 </osallinen-osa>

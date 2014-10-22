@@ -111,6 +111,7 @@ angular.module('eperusteApp')
         $scope.okEdit = function () {
           $scope.titlePath = $scope.titlePath || getTitlePath();
           var title = MuokkausUtils.nestedGet($scope.object, $scope.titlePath, '.');
+          console.log($scope.object, $scope.titlePath, title, Utils.hasLocalizedText(title));
           if (Utils.hasLocalizedText(title)) {
             // Force model update
             $rootScope.$broadcast('notifyCKEditor');
@@ -162,9 +163,9 @@ angular.module('eperusteApp')
             'arviointi': 'object.' + scope.field.path,
             'edit-enabled': 'editEnabled'
           }],
-          'osaaminen': ['', '<div>', {
+          'vuosiluokkakokonaisuuden-osaaminen': ['', '<div>', {
             'editointi-sallittu': 'true',
-            'osaaminen': 'object.' + scope.field.path,
+            'vuosiluokkakokonaisuuden-osaaminen': 'object.' + scope.field.path,
             'edit-enabled': 'editEnabled'
           }]
         };
