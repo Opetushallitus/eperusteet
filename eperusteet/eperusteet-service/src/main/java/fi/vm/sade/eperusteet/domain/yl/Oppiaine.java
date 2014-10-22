@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -49,6 +50,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     @Getter
     @Setter
     @NotNull(groups = Strict.class)
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     private TekstiPalanen nimi;
 
     @Getter

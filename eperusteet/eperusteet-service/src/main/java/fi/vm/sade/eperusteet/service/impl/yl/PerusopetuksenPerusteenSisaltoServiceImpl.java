@@ -15,18 +15,18 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
+import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
+import fi.vm.sade.eperusteet.repository.LaajaalainenOsaaminenRepository;
 import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +37,8 @@ public class PerusopetuksenPerusteenSisaltoServiceImpl implements Perusopetuksen
 
     @Autowired
     private PerusopetuksenPerusteenSisaltoRepository sisaltoRepository;
+    @Autowired
+    private LaajaalainenOsaaminenRepository osaaminenRepository;
     @Autowired
     @Dto
     private DtoMapper mapper;
@@ -49,17 +51,43 @@ public class PerusopetuksenPerusteenSisaltoServiceImpl implements Perusopetuksen
     }
 
     @Override
-    public List<LaajaalainenOsaaminenDto> updateLaajaalaisetOsaamiset(Long perusteId, List<LaajaalainenOsaaminenDto> dtos) {
+    public LaajaalainenOsaaminenDto addLaajaalainenOsaaminen(Long perusteId, LaajaalainenOsaaminenDto dto) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         assertExists(sisalto, "Päivitettävää tietoa ei ole olemassa");
-        /*
-         * TODO päivitys voi poistaa osaamisia; tarvitaan tarkistus onko laaja-alainen sisältö "käytössä" eli viittaako siihen jokin tavoite ja/tai
-         * vuosiluokkakokonaisuus.
-         * (DB refint kyllä hoitaa tarkistuksen rumalla poikkeuksella)
-         */
-        mapper.map(new WrapperDto(dtos), sisalto);
+        LaajaalainenOsaaminen tmp = mapper.map(dto, LaajaalainenOsaaminen.class);
+        tmp = osaaminenRepository.save(tmp);
+        sisalto.addLaajaalainenOsaaminen(tmp);
+        return mapper.map(tmp, LaajaalainenOsaaminenDto.class);
+    }
+
+    @Override
+    public LaajaalainenOsaaminenDto updateLaajaalainenOsaaminen(Long perusteId, LaajaalainenOsaaminenDto dto) {
+
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        assertExists(sisalto, "Päivitettävää tietoa ei ole olemassa");
+        LaajaalainenOsaaminen current = sisalto.getLaajaalainenOsaaminen(dto.getId());
+        assertExists(current, "Päivitettävää tietoa ei ole olemassa");
+        mapper.map(dto, current);
         sisaltoRepository.save(sisalto);
-        return mapper.mapAsList(sisalto.getLaajaalaisetOsaamiset(), LaajaalainenOsaaminenDto.class);
+        return mapper.map(current, LaajaalainenOsaaminenDto.class);
+    }
+
+    @Override
+    public LaajaalainenOsaaminenDto getLaajaalainenOsaaminen(Long perusteId, Long id) {
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        assertExists(sisalto, "Perustetta ei ole olemassa");
+        return mapper.map(sisalto.getLaajaalainenOsaaminen(id), LaajaalainenOsaaminenDto.class);
+    }
+
+    @Override
+    public void deleteLaajaalainenOsaaminen(Long perusteId, Long id) {
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        assertExists(sisalto, "Perustetta ei ole olemassa");
+        LaajaalainenOsaaminen lo = sisalto.getLaajaalainenOsaaminen(id);
+        assertExists(lo, "Laaja-alaista osaamista ei ole olemassa");
+
+        //TODO. tarkista että ei ole käytössä ja/tai poista viitteet?
+        osaaminenRepository.delete(lo);
     }
 
     @Override
@@ -78,19 +106,6 @@ public class PerusopetuksenPerusteenSisaltoServiceImpl implements Perusopetuksen
         if (o == null) {
             throw new BusinessRuleViolationException(msg);
         }
-    }
-
-    @Getter
-    @Setter
-    public static class WrapperDto {
-
-        public WrapperDto(List<LaajaalainenOsaaminenDto> laajaalaisetOsaamiset) {
-            this.laajaalaisetOsaamiset = laajaalaisetOsaamiset;
-        }
-
-        @Getter
-        @Setter
-        List<LaajaalainenOsaaminenDto> laajaalaisetOsaamiset;
     }
 
 }

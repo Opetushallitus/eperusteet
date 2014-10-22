@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -164,10 +165,35 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/laajaalaisetosaamiset", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public List<LaajaalainenOsaaminenDto> updateOsaamiset(
+    public LaajaalainenOsaaminenDto addOsaaminen(
         @PathVariable("perusteId") final Long perusteId,
-        @RequestBody List<LaajaalainenOsaaminenDto> dto) {
-        return sisaltoService.updateLaajaalaisetOsaamiset(perusteId, dto);
+        @RequestBody LaajaalainenOsaaminenDto dto) {
+        dto.setId(null);
+        return sisaltoService.addLaajaalainenOsaaminen(perusteId, dto);
+    }
+
+    @RequestMapping(value = "/laajaalaisetosaamiset/{id}", method = POST)
+    public LaajaalainenOsaaminenDto updateOsaaminen(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long id,
+        @RequestBody LaajaalainenOsaaminenDto dto) {
+        dto.setId(id);
+        return sisaltoService.updateLaajaalainenOsaaminen(perusteId, dto);
+    }
+
+    @RequestMapping(value = "/laajaalaisetosaamiset/{id}", method = GET)
+    public LaajaalainenOsaaminenDto getOsaaminen(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long id) {
+        return sisaltoService.getLaajaalainenOsaaminen(perusteId, id);
+    }
+
+    @RequestMapping(value = "/laajaalaisetosaamiset/{id}", method = DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOsaaminen(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long id) {
+        sisaltoService.deleteLaajaalainenOsaaminen(perusteId, id);
     }
 
 }

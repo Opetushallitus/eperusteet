@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.domain;
 
 import java.io.Serializable;
+import java.text.Normalizer;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -98,16 +99,19 @@ public class TekstiPalanen implements Serializable {
     }
 
     public static TekstiPalanen of(Map<Kieli, String> tekstit) {
-        if ( tekstit == null ) {
+        if (tekstit == null) {
             return null;
         }
         HashSet<LokalisoituTeksti> tmp = new HashSet<>(tekstit.size());
         for (Map.Entry<Kieli, String> e : tekstit.entrySet()) {
-            if (e.getValue() != null && !e.getValue().isEmpty()) {
-                tmp.add(new LokalisoituTeksti(e.getKey(), e.getValue()));
+            if (e.getValue() != null) {
+                String v = Normalizer.normalize(e.getValue().trim(),Normalizer.Form.NFC);
+                if (!v.isEmpty()) {
+                    tmp.add(new LokalisoituTeksti(e.getKey(), e.getValue()));
+                }
             }
         }
-        if ( tmp.isEmpty() ) {
+        if (tmp.isEmpty()) {
             return null;
         }
         return new TekstiPalanen(tmp);

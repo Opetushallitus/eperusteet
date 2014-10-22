@@ -67,6 +67,10 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
     @JoinTable
     private Set<VuosiluokkaKokonaisuus> vuosiluokkakokonaisuudet = new HashSet<>();
 
+    public void addLaajaalainenOsaaminen(LaajaalainenOsaaminen osaaminen) {
+        laajaAlalaisetOsaamiset.add(osaaminen);
+    }
+
     public void addOppiaine(Oppiaine oppiaine) {
         oppiaineet.add(oppiaine);
     }
@@ -81,6 +85,15 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
 
     public boolean containsVuosiluokkakokonaisuus(VuosiluokkaKokonaisuus kokonaisuus) {
         return kokonaisuus != null && vuosiluokkakokonaisuudet.contains(kokonaisuus);
+    }
+
+    public LaajaalainenOsaaminen getLaajaalainenOsaaminen(long id) {
+        for (LaajaalainenOsaaminen l : laajaAlalaisetOsaamiset) {
+            if (id == l.getId()) {
+                return l;
+            }
+        }
+        return null;
     }
 
     //kopion palauttaminen on tarkoituksellista!

@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -24,7 +25,6 @@ import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
 import java.io.IOException;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,12 +57,15 @@ public class PerusopetuksenSisaltoServiceIT extends AbstractIntegrationTest {
     @Test
     public void testUpdateLaajaalaiset() throws IOException {
 
-        List<LaajaalainenOsaaminenDto> lot = service.getLaajaalaisetOsaamiset(perusteId);
         LaajaalainenOsaaminenDto lo = new LaajaalainenOsaaminenDto();
         lo.setNimi(olt("Nimi"));
-        lot.add(lo);
-        lot = service.updateLaajaalaisetOsaamiset(perusteId, lot);
-        assertEquals(1, lot.size());
+        lo = service.addLaajaalainenOsaaminen(perusteId, lo);
+        assertEquals(1, service.getLaajaalaisetOsaamiset(perusteId).size());
+        lo.setNimi(null);
+        lo.setKuvaus(olt("Kuvaus"));
+        lo = service.updateLaajaalainenOsaaminen(perusteId, lo);
+        assertEquals("Kuvaus", lo.getKuvaus().get().get(Kieli.FI));
+        assertEquals("Nimi", lo.getNimi().get().get(Kieli.FI));
     }
 
 }
