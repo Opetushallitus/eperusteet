@@ -107,10 +107,10 @@ angular.module('eperusteApp')
             perusteProjektiId: projekti.id
           });
         } else {
-          // TODO: Omat perusteprojektit linkin suoritustapa pitäisi varmaankin olla jotain muuta kuin kovakoodattu 'naytto'
+          var suoritustapa = (getSuoritustapa() !== '' && !_.isUndefined(peruste)) ? getSuoritustapa() : YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
           return $state[method]('root.perusteprojekti.suoritustapa.sisalto', {
             perusteProjektiId: projekti.id,
-            suoritustapa: YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi)
+            suoritustapa: suoritustapa
           });
         }
     }
