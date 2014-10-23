@@ -107,7 +107,7 @@ public class TekstiPalanen implements Serializable {
             if (e.getValue() != null) {
                 String v = Normalizer.normalize(e.getValue().trim(),Normalizer.Form.NFC);
                 if (!v.isEmpty()) {
-                    tmp.add(new LokalisoituTeksti(e.getKey(), e.getValue()));
+                    tmp.add(new LokalisoituTeksti(e.getKey(), v));
                 }
             }
         }
