@@ -111,7 +111,6 @@ angular.module('eperusteApp')
         $scope.okEdit = function () {
           $scope.titlePath = $scope.titlePath || getTitlePath();
           var title = MuokkausUtils.nestedGet($scope.object, $scope.titlePath, '.');
-          console.log($scope.object, $scope.titlePath, title, Utils.hasLocalizedText(title));
           if (Utils.hasLocalizedText(title)) {
             // Force model update
             $rootScope.$broadcast('notifyCKEditor');
@@ -140,6 +139,7 @@ angular.module('eperusteApp')
 
         $q.all({object: scope.objectReady, editMode: Editointikontrollit.getEditModePromise()}).then(function(values) {
           scope.object = values.object;
+          // TODO fix bug, vuosiluokkakokonaisuus: editMode is false on first edit
           scope.editMode = values.editMode;
 
           if(!scope.field.mandatory) {

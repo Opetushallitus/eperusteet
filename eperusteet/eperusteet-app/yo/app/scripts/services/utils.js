@@ -46,6 +46,28 @@ angular.module('eperusteApp')
     };
   })
 
+  /* Easily clone/restore object with specific keys. */
+  .service('CloneHelper', function () {
+    function CloneHelperImpl(keys) {
+      this.keys = keys;
+      this.stash = {};
+    }
+    CloneHelperImpl.prototype.clone = function (source, destination) {
+      var dest = destination || this.stash;
+      var src = source || this.stash;
+      _.each(this.keys, function (key) {
+        dest[key] = _.cloneDeep(src[key]);
+      });
+    };
+    CloneHelperImpl.prototype.restore = function (destination) {
+      this.clone(null, destination);
+      this.stash = {};
+    };
+    this.init = function (keys) {
+      return new CloneHelperImpl(keys);
+    };
+  })
+
   /* Shows "back to top" link when scrolled beyond cutoff point */
   .directive('backtotop', function ($window, $document, Utils) {
     var CUTOFF_PERCENTAGE = 33;

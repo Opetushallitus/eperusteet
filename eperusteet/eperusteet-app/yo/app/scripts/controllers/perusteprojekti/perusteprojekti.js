@@ -224,7 +224,6 @@ angular.module('eperusteApp')
       type: 'AM'
     };
     var sivunaviItemsChanged = function (items) {
-      console.log("items changed", items.length);
       $scope.sivunavi.items = items;
     };
     var sivunaviTypeChanged = function (type) {

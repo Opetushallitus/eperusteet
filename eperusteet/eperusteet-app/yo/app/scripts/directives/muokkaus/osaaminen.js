@@ -31,19 +31,27 @@ angular.module('eperusteApp')
   })
 
   .controller('MuokkausOsaaminenController', function ($scope, PerusopetusService,
-      PerusteProjektiSivunavi, YleinenData, $stateParams) {
+      PerusteProjektiSivunavi, YleinenData, $stateParams, CloneHelper, $timeout, $state) {
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
     $scope.editableModel = {};
     $scope.editEnabled = false;
 
+    var cloner = CloneHelper.init(['nimi', 'kuvaus']);
+
     var callbacks = {
-      edit: function () {},
+      edit: function () {
+        cloner.clone($scope.editableModel);
+      },
       save: function () {
-        // TODO
-        PerusopetusService.saveOsa({}, $stateParams);
+        PerusopetusService.saveOsa($scope.editableModel, $stateParams);
       },
       cancel: function () {
-
+        cloner.restore($scope.editableModel);
+        if ($scope.editableModel.$isNew) {
+          $timeout(function () {
+            $state.go.apply($state, $scope.data.options.backState);
+          });
+        }
       },
       notify: function (value) {
         $scope.editEnabled = value;
@@ -62,7 +70,7 @@ angular.module('eperusteApp')
         removeWholeLabel: 'poista-osaamiskokonaisuus',
         removeWholeConfirmationText: 'poistetaanko-osaamiskokonaisuus',
         removeWholeFn: function () {
-          // TODO delete
+          PerusopetusService.deleteOsa($scope.editableModel);
         },
         fields: [],
         editingCallbacks: callbacks
@@ -70,11 +78,8 @@ angular.module('eperusteApp')
     };
 
 
-    var modelPromise = $scope.model.then(function (data) {
+    $scope.model.then(function (data) {
       $scope.editableModel = angular.copy(data);
     });
 
-    modelPromise.then(function (data) {
-
-    });
   });

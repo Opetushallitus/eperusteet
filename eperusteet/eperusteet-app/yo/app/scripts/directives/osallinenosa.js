@@ -41,7 +41,6 @@ angular.module('eperusteApp')
       $stateParams) {
     $scope.isLocked = false;
     $scope.isNew = $stateParams.osanId === 'uusi';
-    console.log("isNew", $scope.isNew);
     $scope.editEnabled = false;
     if ($scope.isNew) {
       $timeout(function () {
@@ -100,7 +99,7 @@ angular.module('eperusteApp')
       var cssClass;
       if (splitfield.isMulti()) {
         var index = splitfield.addArrayItem($scope.editableModel);
-        $rootScope.$broadcast('osafield:update');
+        //$rootScope.$broadcast('osafield:update');
         cssClass = splitfield.getClass(index);
         field.$setEditable = index;
       } else {
@@ -109,6 +108,7 @@ angular.module('eperusteApp')
         cssClass = FieldSplitter.getClass(field);
       }
       ($scope.config.addFieldCb || angular.noop)(field);
+      $rootScope.$broadcast('osafield:update');
       $timeout(function () {
         Utils.scrollTo('li.' + cssClass);
       }, 200);
@@ -122,6 +122,7 @@ angular.module('eperusteApp')
         successCb: function () {
           Editointikontrollit.cancelEditing();
           $scope.config.removeWholeFn();
+          $state.go.apply($state, $scope.config.backState);
         }
       })();
     };

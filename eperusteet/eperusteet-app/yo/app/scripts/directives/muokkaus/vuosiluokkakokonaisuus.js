@@ -31,7 +31,8 @@ angular.module('eperusteApp')
   })
 
   .controller('VuosiluokkakokonaisuusController', function ($scope, PerusopetusService,
-      Editointikontrollit, Kaanna, PerusteProjektiSivunavi, Vuosiluokkakokonaisuudet) {
+      Editointikontrollit, Kaanna, PerusteProjektiSivunavi, Vuosiluokkakokonaisuudet,
+      CloneHelper, $timeout, $state) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.vuosiluokkaOptions = _.map(_.range(1, 10), function (item) {
@@ -51,31 +52,43 @@ angular.module('eperusteApp')
       PerusteProjektiSivunavi.setVisible(!editEnabled);
     });
 
+    var successCb = function (res) {
+      $scope.editableModel = res;
+      mapModel();
+    };
+
+    var cloner = CloneHelper.init(['nimi', 'tehtava', 'tekstikappaleet', 'laajaalaisetOsaamiset']);
+
     var editingCallbacks = {
       edit: function() {
-        refetch();
+        mapModel();
+        cloner.clone($scope.editableModel);
       },
       asyncValidate: function(cb) {
         lukitse(function() { cb(); });
       },
       save: function(/*kommentti*/) {
+        // hax until backend support
+        if ($scope.editableModel.tekstikappaleet && $scope.editableModel.tekstikappaleet.length > 0) {
+          $scope.editableModel.tehtava = _.cloneDeep($scope.editableModel.tekstikappaleet[0]);
+        }
         if ($scope.editableModel.id) {
           $scope.editableModel.$save({
             perusteId: PerusopetusService.getPerusteId()
-          }, function (res) {
-            $scope.editableModel = res;
-          });
+          }, successCb);
         } else {
           Vuosiluokkakokonaisuudet.save({
             perusteId: PerusopetusService.getPerusteId()
-          }, $scope.editableModel, function (res) {
-            $scope.editableModel = res;
-          });
+          }, $scope.editableModel, successCb);
         }
       },
       cancel: function() {
-        // TODO delete lock
-        refetch();
+        cloner.restore($scope.editableModel);
+        if ($scope.editableModel.$isNew) {
+          $timeout(function () {
+            $state.go.apply($state, $scope.data.options.backState);
+          });
+        }
       },
       notify: function(mode) {
         $scope.editEnabled = mode;
@@ -95,7 +108,7 @@ angular.module('eperusteApp')
         removeWholeLabel: 'poista-vuosiluokkakokonaisuus',
         removeWholeConfirmationText: 'poistetaanko-vuosiluokkakokonaisuus',
         removeWholeFn: function () {
-          // TODO delete
+          PerusopetusService.deleteOsa($scope.editableModel);
         },
         addFieldCb: function (field) {
           if (field.path === 'laajaalaisetOsaamiset') {
@@ -108,8 +121,14 @@ angular.module('eperusteApp')
                 laajaalainenOsaaminen: yleinen.id, kuvaus: {}
               });
             });
-          } else if (field.path === 'tehtava') {
+          /* } else if (field.path === 'tehtava') {
             $scope.editableModel.tehtava = {};
+          } */
+          } else {
+            /*if (!$scope.editableModel.tekstikappaleet) {
+              $scope.editableModel.tekstikappaleet = [];
+              $scope.editableModel.tekstikappaleet.push({otsikko: {}, teksti: {}});
+            }*/
           }
         },
         fieldRenderer: '<kenttalistaus edit-enabled="editEnabled" object-promise="modelPromise" fields="config.fields"></kenttalistaus>',
@@ -121,10 +140,10 @@ angular.module('eperusteApp')
             collapsible: true,
             order: 1
           },
-          /*{
+          {
             path: 'tekstikappaleet[].teksti',
             menuLabel: 'tekstikappale',
-            localeKey: 'nimi',
+            localeKey: 'otsikko',
             type: 'editor-area',
             placeholder: 'muokkaus-tekstikappaleen-teksti-placeholder',
             titleplaceholder: 'muokkaus-teksikappaleen-nimi-placeholder',
@@ -132,7 +151,7 @@ angular.module('eperusteApp')
             collapsible: true,
             isolateEdit: true,
             order: 2
-          },*/
+          }/*,
           {
             path: 'tehtava.teksti',
             localeKey: 'tehtava',
@@ -142,7 +161,7 @@ angular.module('eperusteApp')
             isolateEdit: true,
             localized: true,
             order: 3,
-          }
+          }*/
         ],
         editingCallbacks: editingCallbacks
       }
@@ -152,12 +171,17 @@ angular.module('eperusteApp')
       cb();
     }
 
-    function refetch() {
-      //$scope.editableModel = angular.copy($scope.model);
+    function mapModel() {
+      // hax until backend support
+      if (!$scope.editableModel.tekstikappaleet) {
+        $scope.editableModel.tekstikappaleet = [{}];
+      }
+      $scope.editableModel.tekstikappaleet[0] = _.cloneDeep($scope.editableModel.tehtava);
     }
 
     $scope.model.then(function (data) {
       $scope.editableModel = angular.copy(data);
+      mapModel();
     });
   })
 

@@ -26,16 +26,17 @@ angular.module('eperusteApp')
         model: '=',
         config: '='
       },
-      controller: function ($scope, YleinenData, $rootScope, Utils) {
+      controller: function ($scope, YleinenData, $rootScope, Utils, CloneHelper) {
         $scope.editables = $scope.model;
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
         $scope.isEditing = false;
 
-        var originals = null;
+        var cloner = CloneHelper.init(['nimi', 'kuvaus']);
+
         $scope.edit = function (alue) {
           alue.$editing = true;
           $scope.isEditing = true;
-          originals = _.cloneDeep(_.pick(alue, ['nimi', 'kuvaus']));
+          cloner.clone(alue);
         };
         $scope.remove = function (alue) {
           var index = _.findIndex($scope.editables, function (item) {
@@ -51,9 +52,7 @@ angular.module('eperusteApp')
           if (alue.$new) {
             $scope.remove(alue);
           } else {
-            alue.nimi = _.cloneDeep(originals.nimi);
-            alue.kuvaus = _.cloneDeep(originals.kuvaus);
-            originals = null;
+            cloner.restore(alue);
           }
         };
         $scope.ok = function (alue) {

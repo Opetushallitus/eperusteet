@@ -27,9 +27,6 @@ angular.module('eperusteApp')
     this.vuosiluokat = [];
 
     this.getModel = function () {
-      if (!this.model) {
-        //this.model = this.fetch();
-      }
       return this.path ? this.model[this.path] : this.model;
     };
 
@@ -41,7 +38,6 @@ angular.module('eperusteApp')
       this.model = model;
       this.path = path;
       this.backState = [$state.current.name, _.clone($stateParams)];
-      // TODO
       this.vuosiluokat = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT, true);
       if (model.vuosiluokkaKokonaisuus) {
         this.vuosiluokka = _.find(this.vuosiluokat, function (vl) {
@@ -54,13 +50,11 @@ angular.module('eperusteApp')
 
     this.save = function () {
       if (this.isVuosiluokkakokonaisuudenOsa()) {
-        console.log("save vuosiluokkakokonaisuuden osa", this.model, this.vuosiluokka, this.oppiaine);
         PerusopetusService.saveVuosiluokkakokonaisuudenOsa(this.model, this.oppiaine);
       } else if (this.path) {
         var payload = _.pick(this.model, ['id', this.path]);
         PerusopetusService.saveOsa(payload, this.backState[1]);
       }
-      //console.log(this.model, this.path, this.backState);
     };
 
     this.goBack = function () {
@@ -70,22 +64,6 @@ angular.module('eperusteApp')
       var params = _.clone(this.backState);
       this.backState = null;
       $state.go.apply($state, params, {reload: true});
-    };
-
-    this.fetch = function () {
-      // TODO dummy data
-      var kokonaisuus = PerusopetusService.getOsat(PerusopetusService.OPPIAINEET)[0].vuosiluokkakokonaisuudet[1];
-      var osa = kokonaisuus.tekstikappaleet[0];
-      if ($stateParams.osanTyyppi === 'sisaltoalueet') {
-        osa = kokonaisuus.sisaltoalueet;
-      } else if ($stateParams.osanTyyppi === 'tavoitteet') {
-        osa = kokonaisuus;
-      }
-      var vuosiluokat = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT);
-      this.vuosiluokka = _.find(vuosiluokat, function (item) {
-        return kokonaisuus._id === item.id;
-      });
-      return osa;
     };
 
     this.isVuosiluokkakokonaisuudenOsa = function () {
@@ -133,7 +111,6 @@ angular.module('eperusteApp')
         },
         callbacks: {
           save: function () {
-            console.log("save");
             $rootScope.$broadcast('notifyCKEditor');
             OsanMuokkausHelper.save();
             OsanMuokkausHelper.goBack();

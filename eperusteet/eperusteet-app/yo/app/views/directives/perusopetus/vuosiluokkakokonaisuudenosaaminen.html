@@ -10,7 +10,7 @@
         <a class="action-link yleiskuvaus-toggle" ng-click="osa.$showkuvaus = !osa.$showkuvaus">
           {{osa.$showkuvaus ? 'piilota-osaamiskokonaisuuden-kuvaus' : 'nayta-osaamiskokonaisuuden-kuvaus' | kaanna}}
         </a>
-        <div class="yleiskuvaus" collapse="!osa.$showkuvaus" kaanna="osa.kuvaus"></div>
+        <div class="yleiskuvaus" collapse="!osa.$showkuvaus" ng-bind-html="valitseKieli(osa.kuvaus) | unsafe"></div>
       </div>
     </accordion-group>
   </accordion>

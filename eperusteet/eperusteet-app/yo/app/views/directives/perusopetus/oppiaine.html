@@ -55,17 +55,20 @@
     <div ng-repeat="osamodel in yleisetosat" muokattava-osio="editableModel" type="tekstikappale"
          path="{{osamodel}}"></div>
 
-    <tabset justified="true">
-      <tab heading="{{vuosiluokat.nimi|kaanna}}" ng-repeat="vuosiluokat in mappedVuosiluokat"
-        select="tabChosen($index)" active="vuosiluokat.$tabActive">
-        <div muokattava-osio="vuosiluokat.$sisalto" type="tekstikappale" path="tehtava" oppiaine="editableModel"></div>
-        <div muokattava-osio="vuosiluokat.$sisalto" type="sisaltoalueet" path="sisaltoalueet" oppiaine="editableModel"></div>
-        <div muokattava-osio="vuosiluokat.$sisalto" type="tavoitteet" oppiaine="editableModel"></div>
-        <div muokattava-osio="vuosiluokat.$sisalto" type="tekstikappale" path="ohjaus" oppiaine="editableModel"></div>
-        <div muokattava-osio="vuosiluokat.$sisalto" type="tekstikappale" path="tyotavat" oppiaine="editableModel"></div>
-        <div muokattava-osio="vuosiluokat.$sisalto" type="tekstikappale" path="arviointi" oppiaine="editableModel"></div>
-      </tab>
-    </tabset>
+    <ul class="nav nav-tabs nav-justified">
+      <li ng-class="{active: vuosiluokat.$tabActive}" ng-repeat="vuosiluokat in mappedVuosiluokat">
+        <a kaanna="vuosiluokat.nimi" ng-click="chooseTab($index)"></a>
+      </li>
+    </ul>
+
+    <div ng-if="vuosiluokka">
+      <div muokattava-osio="vuosiluokka.$sisalto" type="tekstikappale" path="tehtava" oppiaine="editableModel"></div>
+      <div muokattava-osio="vuosiluokka.$sisalto" type="sisaltoalueet" path="sisaltoalueet" oppiaine="editableModel"></div>
+      <div muokattava-osio="vuosiluokka.$sisalto" type="tavoitteet" oppiaine="editableModel"></div>
+      <div muokattava-osio="vuosiluokka.$sisalto" type="tekstikappale" path="ohjaus" oppiaine="editableModel"></div>
+      <div muokattava-osio="vuosiluokka.$sisalto" type="tekstikappale" path="tyotavat" oppiaine="editableModel"></div>
+      <div muokattava-osio="vuosiluokka.$sisalto" type="tekstikappale" path="arviointi" oppiaine="editableModel"></div>
+    </div>
 
   </div>
 

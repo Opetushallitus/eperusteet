@@ -36,8 +36,7 @@ angular.module('eperusteApp')
 
     $scope.hasContent = false;
     $scope.$watch('model', function () {
-      $scope.realModel = $scope.type === 'tekstikappale' ?
-        ($scope.model ? $scope.model[$scope.path] : null) : $scope.model;
+      $scope.realModel = $scope.path ? $scope.model[$scope.path] : $scope.model;
       $scope.hasContent = $scope.type !== 'tekstikappale' || ($scope.realModel && _.has($scope.realModel, 'otsikko'));
     }, true);
 

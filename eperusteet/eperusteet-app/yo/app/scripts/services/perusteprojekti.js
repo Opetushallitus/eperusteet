@@ -271,7 +271,6 @@ angular.module('eperusteApp')
 
     this.alustaPerusteenSisalto = function (stateParams, forced) {
 
-      console.log("alusta", forced);
       // NOTE: Jos ei löydy suoritustapaa stateParams:ista niin käytetään suoritustapaa 'naytto'.
       //       Tämä toimii ammatillisen puolen projekteissa, mutta ei yleissivistävän puolella.
       // TODO: Korjataan kun keksitään parempi suoritustavan valinta-algoritmi.

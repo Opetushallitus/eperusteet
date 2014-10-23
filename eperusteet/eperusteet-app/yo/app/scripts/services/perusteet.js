@@ -60,23 +60,23 @@ angular.module('eperusteApp')
     });
   })
   .factory('Vuosiluokkakokonaisuudet', function ($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/vuosiluokkakokonaisuudet/:vuosiluokkaId', {
-      vuosiluokkaId: '@id'
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/vuosiluokkakokonaisuudet/:osanId', {
+      osanId: '@id'
     });
   })
   .factory('Oppiaineet', function ($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:oppiaineId', {
-      oppiaineId: '@id'
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:osanId', {
+      osanId: '@id'
     });
   })
   .factory('OppiaineenVuosiluokkakokonaisuudet', function ($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:oppiaineId/vuosiluokkakokonaisuudet/:vuosiluokkaId', {
-      vuosiluokkaId: '@id'
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:oppiaineId/vuosiluokkakokonaisuudet/:osanId', {
+      osanId: '@id'
     });
   })
   .factory('LaajaalaisetOsaamiset', function ($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/laajaalaisetosaamiset/:osaaminenId', {
-      osaaminenId: '@id'
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/laajaalaisetosaamiset/:osanId', {
+      osanId: '@id'
     });
   })
   .factory('Suoritustapa', function($resource, SERVICE_LOC) {

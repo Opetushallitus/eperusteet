@@ -50,7 +50,6 @@ angular.module('eperusteApp')
         $scope.expandedFields = $scope.fields;
 
         $scope.removeField = function(fieldToRemove) {
-          console.log("removeField", fieldToRemove);
           var splitfield = FieldSplitter.process(fieldToRemove);
           if (splitfield.isMulti()) {
             splitfield.remove(model);
@@ -88,13 +87,15 @@ angular.module('eperusteApp')
         });
 
         function splitFields(object) {
-          console.log("splitFields");
           $scope.expandedFields = [];
           _.each($scope.fields, function (field) {
             var splitfield = FieldSplitter.process(field);
             if (splitfield.isMulti() && splitfield.needsSplit()) {
               // Expand array to individual fields
               splitfield.each(object, function (item, index) {
+                if (!item) {
+                  return;
+                }
                 var newfield = angular.copy(field);
                 newfield.path = splitfield.getPath(index);
                 newfield.localeKey = item[field.localeKey];
@@ -107,10 +108,6 @@ angular.module('eperusteApp')
                 $scope.expandedFields.push(newfield);
               });
             } else {
-              /*if (_.isString(field.localeKey) && field.originalLocaleKey) {
-                field.localeKey = MuokkausUtils.nestedGet(object,
-                  _.initial(field.path.split('.'), 1).join('.') + field.originalLocaleKey, '.');
-              }*/
               field.inMenu = field.path !== 'nimi' && field.path !== 'koodiUri';
               if (field.visibleFn) {
                 field.visible = field.visibleFn();
@@ -170,8 +167,8 @@ angular.module('eperusteApp')
     };
 
     SplitField.prototype.addArrayItem = function (obj) {
-      var newItem = _.isFunction(this.original.empty) ? this.original.empty() : {otsikko: {}, teksti: {}};
-      console.log("addArrayItem", newItem);
+      var newItem = _.isFunction(this.original.empty) ? this.original.empty() :
+        {otsikko: {fi: ''}, teksti: {fi: ''}};
       var object = this.getObject(obj, true);
       object.push(newItem);
       return object.length - 1;
