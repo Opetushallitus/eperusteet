@@ -68,7 +68,6 @@ public class OsaamistasonKriteeri implements Serializable {
     @JoinTable(name = "osaamistasonkriteeri_tekstipalanen",
                joinColumns = @JoinColumn(name = "osaamistasonkriteeri_id"),
                inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))
-    @Getter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @BatchSize(size = 25)
     private List<TekstiPalanen> kriteerit = new ArrayList<>();
@@ -78,13 +77,21 @@ public class OsaamistasonKriteeri implements Serializable {
 
     public OsaamistasonKriteeri(OsaamistasonKriteeri other) {
         this.osaamistaso = other.osaamistaso;
-        this.kriteerit.addAll(other.getKriteerit());
+        this.kriteerit.addAll(other.kriteerit);
+    }
+
+    public List<TekstiPalanen> getKriteerit() {
+        return new ArrayList<>(kriteerit);
     }
 
     public void setKriteerit(List<TekstiPalanen> kriteerit) {
         this.kriteerit.clear();
         if (kriteerit != null) {
-            this.kriteerit.addAll(kriteerit);
+            for (TekstiPalanen t : kriteerit) {
+                if (t != null) {
+                    this.kriteerit.add(t);
+                }
+            }
         }
     }
 
