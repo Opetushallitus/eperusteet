@@ -68,6 +68,15 @@ angular.module('eperusteApp')
 
     $scope.aakkosJarjestys = function(data) { return Kaanna.kaanna(data.perusteenOsa.nimi); };
 
+    $scope.filterJasen = function(jasen) { return $scope.tyyppi === 'kaikki' || $scope.tyoryhmat[$scope.tyyppi][jasen.oidHenkilo]; };
+    $scope.filterRyhma = function(ryhma) { return _.some(ryhma, $scope.filterJasen); };
+    $scope.naytaRyhmanHenkilot = function() {
+      console.log('');
+      console.log($scope.tyoryhmaMap);
+      console.log($scope.jasenet);
+      console.log($scope.tyoryhmat);
+    };
+
     $scope.rajaaSisaltoa = function(value, tyyppi) {
       if (_.isUndefined(value)) { return; }
       $scope.tyyppi = tyyppi;

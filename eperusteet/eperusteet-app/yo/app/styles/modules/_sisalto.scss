@@ -101,6 +101,11 @@ $sisalto-hover-bg: #eee;
   }
 
   .tutkinto {
+    .usericon {
+      position: relative;
+      top: 4px;
+    }
+
     .toolbar-input {
       margin-top: 40px;
       margin-left: auto;
