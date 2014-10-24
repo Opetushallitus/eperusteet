@@ -70,7 +70,7 @@
 
     "ammattitutkinto": "Ammattitutkinto",
     "erikoisammattitutkinto": "Erikoisammattitutkinto",
-    "perustutkinto": "Perustutkinto",
+    "perustutkinto": "Ammatillinen perustutkinto",
 
     "tiedot": "Tiedot",
     "projektiryhma": "Projektiryhmä",
@@ -271,7 +271,7 @@
     "koulutusalakoodi-7": "Sosiaali-, terveys- ja liikunta-ala",
     "koulutusalakoodi-8": "Luonnontieteiden ala",
 
-    "koulutustyyppi_1": "Perustutkinto",
+    "koulutustyyppi_1": "Ammatillinen perustutkinto",
     "koulutustyyppi_11": "Ammattitutkinto",
     "koulutustyyppi_12": "Erikoisammattitutkinto",
     "koulutustyyppi_9999": "Perusopetuksen opetussuunnitelma",
@@ -551,7 +551,7 @@
     "perusteprojekti-koulutustyyppi-placeholder": "<Aseta perusteen koulutus/tutkintotyyppi>",
     "projekti-header-peruste": "Peruste",
     "projekti-header-koulutusala": "Koulutusala",
-    "projekti-header-paatosPvm": "Päätöspäivämäärä",
+    "projekti-header-paatosPvm": "Työryhmän asettamispäivämäärä",
     "projekti-header-koulutustyyppi": "Koulutus/tutkintotyyppi",
 
     "tutkintokohtaiset-osat": "Tutkintokohtaiset osat",
