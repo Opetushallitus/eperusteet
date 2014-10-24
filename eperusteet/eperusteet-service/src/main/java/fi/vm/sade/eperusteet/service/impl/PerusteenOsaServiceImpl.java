@@ -15,10 +15,12 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.AbstractAuditedEntity;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueKokonaanDto;
@@ -198,6 +200,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         osaAlueEntity.mergeState(osaAlueTmp);
         osaAlueEntity.getOsaamistavoitteet().addAll(uudetTavoitteet);
         osaAlueRepository.save(osaAlueEntity);
+        aiheutaUusiTutkinnonOsaRevisio(id);
 
         return mapper.map(osaAlueEntity, OsaAlueKokonaanDto.class);
     }
@@ -265,13 +268,23 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OsaAlueLaajaDto> getTutkinnonOsaOsaAlueet(Long id) {
+    public List<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlueet(Long id) {
         TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
         if (tutkinnonOsa == null) {
             throw new EntityNotFoundException("Tutkinnon osaa ei löytynyt id:llä: " + id);
         }
 
-        return mapper.mapAsList(tutkinnonOsa.getOsaAlueet(), OsaAlueLaajaDto.class);
+        return mapper.mapAsList(tutkinnonOsa.getOsaAlueet(), OsaAlueKokonaanDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlueetVersio(Long id, Integer versioId) {
+        TutkinnonOsa t = tutkinnonOsaRepo.findRevision(id, versioId);
+        if (t == null) {
+            throw new EntityNotFoundException("Tutkinnon osa (id: " + id+ ") versiota ei löytynyt versioId:llä " + versioId);
+        }
+        return mapper.mapAsList(t.getOsaAlueet(), OsaAlueKokonaanDto.class);
     }
 
     @Override
@@ -424,7 +437,12 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         }
     }
 
-
-
+    private void aiheutaUusiTutkinnonOsaRevisio(Long id) {
+        TutkinnonOsa osa = tutkinnonOsaRepo.findOne(id);
+        if (osa != null) {
+            osa.muokattu();
+            tutkinnonOsaRepo.save(osa);
+        }
+    }
 
 }

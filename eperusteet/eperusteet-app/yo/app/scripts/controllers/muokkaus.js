@@ -60,9 +60,6 @@ angular.module('eperusteApp')
     else if ($stateParams.perusteenOsanTyyppi === 'tutkinnonosa') {
       muokkausDirective = angular.element('<muokkaus-tutkinnonosa ng-if="objekti.$resolved" tutkinnon-osa="objekti" versiot="versiot"></muokkaus-tutkinnonosa>');
     }
-    else if ($stateParams.perusteenOsanTyyppi === 'tutkinnonosa2') {
-      muokkausDirective = angular.element('<muokkaus-tutkinnonosa2 ng-if="objekti.$resolved" tutkinnon-osa="objekti" versiot="versiot"></muokkaus-tutkinnonosa2>');
-    }
     else {
       virheService.virhe('virhe-perusteenosaa-ei-löytynyt');
     }

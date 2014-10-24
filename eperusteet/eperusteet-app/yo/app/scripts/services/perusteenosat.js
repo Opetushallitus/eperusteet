@@ -59,7 +59,8 @@ angular.module('eperusteApp')
     return $resource(SERVICE_LOC + '/perusteenosat/:osanId/osaalue/:osaalueenId', {
       osaalueenId: '@id'
     }, {
-      list: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/osaalueet'}
+      list: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/osaalueet'},
+      versioList: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/osaalueet/versio/:versioId'}
     });
   })
   .factory('PerusteenOsanTyoryhmat', function($resource, SERVICE_LOC) {
