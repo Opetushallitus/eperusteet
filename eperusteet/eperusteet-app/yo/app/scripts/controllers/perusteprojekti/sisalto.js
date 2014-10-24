@@ -70,11 +70,28 @@ angular.module('eperusteApp')
 
     $scope.filterJasen = function(jasen) { return $scope.tyyppi === 'kaikki' || $scope.tyoryhmat[$scope.tyyppi][jasen.oidHenkilo]; };
     $scope.filterRyhma = function(ryhma) { return _.some(ryhma, $scope.filterJasen); };
-    $scope.naytaRyhmanHenkilot = function() {
-      console.log('');
-      console.log($scope.tyoryhmaMap);
-      console.log($scope.jasenet);
-      console.log($scope.tyoryhmat);
+    $scope.naytaRyhmanHenkilot = function(tyyppi, tyoryhmat, ryhma) {
+      $modal.open({
+        template: '' +
+          '<div class="modal-header"><h2 kaanna>tyoryhma</h2></div>' +
+          '<div class="modal-body">' +
+          '  <projektiryhma-henkilot tyoryhmat="tyoryhmat" ryhma="ryhma" tyyppi="tyyppi" ng-if="!lataa && !error"></projektiryhma-henkilot>' +
+          '</div>' +
+          '<div class="modal-footer">' +
+          '  <button class="btn btn-primary" ng-click="ok()" kaanna>sulje</button>' +
+          '</div>',
+        controller: function($scope, $modalInstance, tyoryhmat, ryhma) {
+          $scope.tyyppi = tyyppi;
+          $scope.tyoryhmat = tyoryhmat;
+          $scope.ryhma = ryhma;
+          $scope.ok = $modalInstance.dismiss;
+        },
+        resolve: {
+          tyyppi: function() { return tyyppi; },
+          tyoryhmat: function() { return tyoryhmat; },
+          ryhma: function() { return ryhma; },
+        }
+      });
     };
 
     $scope.rajaaSisaltoa = function(value, tyyppi) {
@@ -92,6 +109,7 @@ angular.module('eperusteApp')
 
     Projektiryhma.jasenetJaTyoryhmat($stateParams.perusteProjektiId, function(re) {
       $scope.jasenet = _.zipObject(_.map(re.jasenet, 'oidHenkilo'), re.jasenet);
+      $scope.ryhma = re.ryhma;
       $scope.tyoryhmat = re.tyoryhmat;
       $scope.lataa = false;
     });

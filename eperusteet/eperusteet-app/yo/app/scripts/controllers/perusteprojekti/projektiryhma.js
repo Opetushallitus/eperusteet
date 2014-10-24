@@ -25,8 +25,7 @@ angular.module('eperusteApp')
       scope: {
         tyyppi: '=',
         tyoryhmat: '=',
-        ryhma: '=',
-        jasenet: '=',
+        ryhma: '='
       },
       controller: function($scope, ColorCalculator, kayttajaToiminnot) {
         $scope.nimikirjaimet = kayttajaToiminnot.nimikirjaimet;
@@ -40,6 +39,10 @@ angular.module('eperusteApp')
         };
       }
     };
+  })
+  .controller('ProjektiryhmaModalCtrl', function($scope, $modalInstance) {
+    $scope.ok = function() { $modalInstance.close(); };
+    $scope.peruuta = function() { $modalInstance.dismiss(); };
   })
   .controller('ProjektiryhmaCtrl', function($scope, $modal, $stateParams, PerusteprojektiJasenet, Notifikaatiot,
     Projektiryhma, PerusteProjektiService, kayttajaToiminnot, PerusteprojektiTyoryhmat) {

@@ -40,6 +40,7 @@
     "sulje": "Sulje",
     "tyhjenna-rajaus-tooltip": "Tyhjennä rajaus (Esc)",
     "tyhjenna": "Tyhjennä",
+    "poistu": "Poistu",
 
     "ops-ja-tutkintojen-perusteet": "Opetussuunnitelmien ja tutkintojen perusteet",
 
@@ -646,6 +647,7 @@
     "luo-uusi": "Luo uusi",
     "luo-tyoryhma": "Luo työryhmä",
     "tyoryhman-nimi": "Työryhmän nimi",
+    "tyoryhma": "Työryhmä",
     "valitse-jasenet": "Valitse jäsenet",
     "muokkaa-tyoryhmaa": "Muokkaa työryhmää",
     "tallenna-tyoryhma": "Tallenna työryhmä",
