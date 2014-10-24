@@ -43,6 +43,7 @@ angular.module('eperusteApp')
     $scope.muokkausTutkintokohtaisetOsat = false;
     $scope.tyyppi = 'kaikki';
     $scope.tyoryhmaMap = {};
+    $scope.tiivistelma = Kaanna.kaanna($scope.peruste.kuvaus);
 
     PerusteprojektiTyoryhmat.getAll({ id: $stateParams.perusteProjektiId }, function(res) {
       var tyoryhmaMap = {};
