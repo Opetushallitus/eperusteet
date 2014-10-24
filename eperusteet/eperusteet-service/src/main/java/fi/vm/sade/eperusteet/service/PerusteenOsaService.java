@@ -92,7 +92,10 @@ public interface PerusteenOsaService {
     OsaAlueKokonaanDto getTutkinnonOsaOsaAlue(@P("id") final Long id, final Long osaAlueId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
-    List<OsaAlueLaajaDto> getTutkinnonOsaOsaAlueet(@P("id") final Long id);
+    List<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlueet(@P("id") final Long id);
+
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
+    List<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlueetVersio(Long id, Integer versioId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
     public OsaamistavoiteLaajaDto addOsaamistavoite(@P("id") final Long id, final Long osaAlueId, OsaamistavoiteLaajaDto osaamistavoiteDto);

@@ -157,8 +157,19 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/{id}/osaalueet", method = GET)
     @ResponseBody
-    public ResponseEntity<List<OsaAlueLaajaDto>> getTutkinnonOsaOsaAlueet(@PathVariable("id") final Long id) {
+    public ResponseEntity<List<OsaAlueKokonaanDto>> getTutkinnonOsaOsaAlueet(@PathVariable("id") final Long id) {
         return new ResponseEntity<>(service.getTutkinnonOsaOsaAlueet(id), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/osaalueet/versio/{versioId}", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<OsaAlueKokonaanDto>> getTutkinnonOsaOsaAlueetVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
+        List<OsaAlueKokonaanDto> t = service.getTutkinnonOsaOsaAlueetVersio(id, versioId);
+        if (t == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
 
