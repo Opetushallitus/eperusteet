@@ -30,6 +30,7 @@ import fi.vm.sade.eperusteet.dto.yl.KeskeinenSisaltoalueDto;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenTavoiteDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
+import fi.vm.sade.eperusteet.dto.yl.TavoitteenArviointiDto;
 import fi.vm.sade.eperusteet.repository.OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.VuosiluokkaKokonaisuusRepository;
@@ -37,6 +38,7 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -112,9 +114,15 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         OpetuksenTavoiteDto tavoiteDto = new OpetuksenTavoiteDto();
         tavoiteDto.setSisaltoalueet(Collections.singleton(new EntityReference(vkDto.getSisaltoalueet().get(0).getId())));
         tavoiteDto.setTavoite(olt("Tässäpä jokin kiva tavoite"));
+        TavoitteenArviointiDto arvio = new TavoitteenArviointiDto();
+        arvio.setArvioinninKohde(olt("Kohde"));
+        arvio.setHyvanOsaamisenKuvaus(olt("Kuvaus"));
+        tavoiteDto.setArvioinninkohteet(new HashSet<TavoitteenArviointiDto>());
+        tavoiteDto.getArvioinninkohteet().add(arvio);
         vkDto.getTavoitteet().add(tavoiteDto);
-
         vkDto = service.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oa.getId(), vkDto);
+        assertEquals("Kohde", vkDto.getTavoitteet().get(0).getArvioinninkohteet().iterator().next().getArvioinninKohde().get().get(Kieli.FI));
+
 
     }
 
