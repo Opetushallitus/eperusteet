@@ -38,8 +38,7 @@ angular.module('eperusteApp')
     $scope.$on('$stateChangeSuccess', function() { $scope.peruuta(); });
   })
   .service('Lukitus', function($rootScope, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, Profiili,
-    LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
-    PerusteprojektiOikeudetService) {
+    LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit, Kaanna) {
     var lukitsin = null;
     var etag = null;
 
