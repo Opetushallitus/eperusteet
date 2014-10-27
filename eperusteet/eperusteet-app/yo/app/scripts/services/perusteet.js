@@ -65,8 +65,9 @@ angular.module('eperusteApp')
     });
   })
   .factory('Oppiaineet', function ($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:osanId', {
-      osanId: '@id'
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:osanId';
+    return $resource(baseUrl, { osanId: '@id' }, {
+      oppimaarat: { method: 'GET', isArray: true, url: baseUrl + '/oppimaarat'}
     });
   })
   .factory('OppiaineenVuosiluokkakokonaisuudet', function ($resource, SERVICE_LOC) {

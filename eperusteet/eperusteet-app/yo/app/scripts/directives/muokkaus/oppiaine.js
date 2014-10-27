@@ -23,6 +23,43 @@ angular.module('eperusteApp')
     this.changeInited = false;
   })
 
+  .service('OppimaaraHelper', function (PerusopetusService) {
+    var instance = null;
+    var params = {};
+    function OppimaaraHelperImpl(oppiaine) {
+      this.oppiaine = oppiaine;
+    }
+
+    this.init = function (oppiaine, stateParams) {
+      instance = new OppimaaraHelperImpl(oppiaine);
+      params = _.clone(stateParams);
+      return instance;
+    };
+
+    this.reset = function () {
+      instance = null;
+      params = {};
+    };
+
+    this.instance = function() {
+      return instance;
+    };
+
+    this.getBackState = function () {
+      return instance ? ['root.perusteprojekti.osaalue', params] :
+      ['root.perusteprojekti.osalistaus', {osanTyyppi: PerusopetusService.OPPIAINEET}];
+    };
+
+    this.presave = function (model) {
+      if (!instance) {
+        return false;
+      }
+      model.$isNew = false;
+      model.oppiaine = instance.oppiaine.id;
+      return model;
+    };
+  })
+
   .directive('muokkausOppiaine', function() {
     return {
       templateUrl: 'views/directives/perusopetus/oppiaine.html',
@@ -44,12 +81,21 @@ angular.module('eperusteApp')
 
   .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna,
       PerusteProjektiSivunavi, Oppiaineet, $timeout, $state, $stateParams, $q, YleinenData, tabHelper,
-      CloneHelper) {
+      CloneHelper, OppimaaraHelper, Utils) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.mappedVuosiluokat = [];
+    $scope.nameSort = Utils.nameSort;
     $scope.yleisetosat = ['tehtava', 'osaalue'];
     $scope.activeTab =  parseInt($stateParams.tabId, 10);
+    var creatingNewOppimaara = !!OppimaaraHelper.instance();
+    $scope.oppimaaraRequested = false;
+    $scope.oppiaineet = PerusopetusService.getOsat(PerusopetusService.OPPIAINEET, true);
+    $scope.oppiaineet.$promise.then(function (data) {
+      $scope.oppiaineMap = _.zipObject(_.map(data, function (oppiaine) {
+        return [''+oppiaine.id, oppiaine];
+      }));
+    });
     if (_.isNumber(tabHelper.changeInited)) {
       $scope.activeTab = tabHelper.changeInited;
       tabHelper.changeInited = false;
@@ -62,6 +108,10 @@ angular.module('eperusteApp')
         cloner.clone($scope.editableModel);
       },
       save: function () {
+        var oppimaara = OppimaaraHelper.presave($scope.editableModel);
+        if (oppimaara) {
+          $scope.editableModel = oppimaara;
+        }
         if (!$scope.editableModel.id) {
           Oppiaineet.save({
             perusteId: PerusopetusService.getPerusteId()
@@ -82,6 +132,7 @@ angular.module('eperusteApp')
       cancel: function () {
         cloner.restore($scope.editableModel);
         if ($scope.editableModel.$isNew) {
+          $scope.editableModel.$isNew = false;
           $timeout(function () {
             $state.go.apply($state, $scope.data.options.backState);
           });
@@ -94,15 +145,27 @@ angular.module('eperusteApp')
       validate: function () { return true; }
     };
 
+    $scope.$on('$destroy', function () {
+      if (!$scope.oppimaaraRequested) {
+        OppimaaraHelper.reset();
+      }
+    });
+
+    function updateTypeInfo () {
+      var isOppimaara = (creatingNewOppimaara || $scope.editableModel.oppiaine);
+      _.extend($scope.data.options, {
+        editTitle: isOppimaara ? 'muokkaa-oppimaaraa' : 'muokkaa-oppiainetta',
+        newTitle: isOppimaara ? 'uusi-oppimaara' : 'uusi-oppiaine',
+        removeWholeLabel: isOppimaara ? 'poista-oppimaara' : 'poista-oppiaine',
+        removeWholeConfirmationText: isOppimaara ? 'poistetaanko-oppimaara' : 'poistetaanko-oppiaine',
+      });
+    }
+
     $scope.data = {
       options: {
         title: function () { return $scope.editableModel.nimi; },
-        editTitle: 'muokkaa-oppiainetta',
-        newTitle: 'uusi-oppiaine',
         backLabel: 'oppiaineet',
-        backState: ['root.perusteprojekti.osalistaus', {osanTyyppi: PerusopetusService.OPPIAINEET}],
-        removeWholeLabel: 'poista-oppiaine',
-        removeWholeConfirmationText: 'poistetaanko-oppiaine',
+        backState: OppimaaraHelper.getBackState(),
         removeWholeFn: function () {
           PerusopetusService.deleteOsa($scope.editableModel);
         },
@@ -111,8 +174,15 @@ angular.module('eperusteApp')
             label: 'lisaa-oppimaara',
             role: 'add',
             callback: function () {
+              OppimaaraHelper.init($scope.editableModel, $stateParams);
+              $scope.oppimaaraRequested = true;
+              $state.go('root.perusteprojekti.osaalue', {
+                osanTyyppi: PerusopetusService.OPPIAINEET,
+                osanId: 'uusi',
+                tabId: 0
+              });
             },
-            hide: '!model.koosteinen'
+            hide: '!editableModel.koosteinen'
           }
         ],
         addFieldCb: function (field) {
@@ -168,6 +238,7 @@ angular.module('eperusteApp')
         editingCallbacks: callbacks
       }
     };
+    updateTypeInfo();
 
     $scope.chooseTab = function (chosenIndex, noStateChange) {
       _.each($scope.mappedVuosiluokat, function (item, index) {
@@ -191,8 +262,18 @@ angular.module('eperusteApp')
       });
     };
 
+    $scope.$watch('editableModel.oppimaarat', function () {
+      PerusopetusService.getOppimaarat($scope.editableModel).then(function (data) {
+        $scope.editableModel.$oppimaarat = data;
+      });
+    });
+
     var modelPromise = $scope.model.then(function (data) {
       $scope.editableModel = angular.copy(data);
+      if (creatingNewOppimaara && !$scope.editableModel.oppiaine) {
+        $scope.editableModel.oppiaine = 'placeholder';
+      }
+      updateTypeInfo();
     });
     var vuosiluokatPromise = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT).$promise;
 
@@ -209,6 +290,13 @@ angular.module('eperusteApp')
         return parseInt(item.vuosiluokkaKokonaisuus, 10);
       });
     }
+
+    $scope.generateLink = function (model) {
+      return $state.href('root.perusteprojekti.osaalue', _.extend(_.clone($stateParams), {
+        osanId: _.isObject(model) ? model.id : model,
+        tabId: 0
+      }));
+    };
 
     $q.all([modelPromise, vuosiluokatPromise]).then(function (data) {
       // Add addable items to menu
@@ -257,9 +345,7 @@ angular.module('eperusteApp')
           var thisItem = $scope.getVuosiluokkakokonaisuus(item);
           thisItem.$sisalto = item;
           return thisItem;
-        }).sortBy(function (item) {
-          return Kaanna.kaanna(item.nimi);
-        }).value();
+        }).sortBy(Utils.nameSort).value();
         $scope.chooseTab($scope.activeTab, true);
       }, true);
     });

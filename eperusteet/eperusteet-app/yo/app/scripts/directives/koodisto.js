@@ -18,7 +18,7 @@
 /* global _, $ */
 
 angular.module('eperusteApp')
-  .service('Koodisto', function($http, $modal, SERVICE_LOC, $resource, Kaanna, Notifikaatiot) {
+  .service('Koodisto', function($http, $modal, SERVICE_LOC, $resource, Kaanna, Notifikaatiot, Utils) {
     var taydennykset = [];
     var koodistoVaihtoehdot = ['tutkinnonosat', 'koulutus', 'osaamisala'];
     var nykyinenKoodisto = _.first(koodistoVaihtoehdot);
@@ -34,7 +34,7 @@ angular.module('eperusteApp')
       $http.get(SERVICE_LOC + '/koodisto/' + koodisto).then(function(re) {
         taydennykset = koodistoMapping(re.data);
         nykyinenKoodisto = koodisto;
-        taydennykset = _.sortBy(taydennykset, function(t) { return Kaanna.kaanna(t.nimi).toLowerCase(); });
+        taydennykset = _.sortBy(taydennykset, Utils.nameSort);
         cb();
       }, Notifikaatiot.serverCb);
     }
@@ -56,7 +56,7 @@ angular.module('eperusteApp')
       resource.query({koodi: koodi}, function(re) {
         taydennykset = suodataTyypinMukaan(re, tyyppi);
         taydennykset = koodistoMapping(taydennykset);
-        taydennykset = _.sortBy(taydennykset, function(t) { return Kaanna.kaanna(t.nimi).toLowerCase(); });
+        taydennykset = _.sortBy(taydennykset, Utils.nameSort);
         nykyinenKoodisto = koodi;
         cb();
       });

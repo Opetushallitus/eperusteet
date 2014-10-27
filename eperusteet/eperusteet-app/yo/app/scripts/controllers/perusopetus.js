@@ -133,6 +133,13 @@ angular.module('eperusteApp')
       return [];
     };
 
+    this.getOppimaarat = function (oppiaine) {
+      if (!oppiaine.koosteinen) {
+        return promisify([]);
+      }
+      return Oppiaineet.oppimaarat(commonParams({osanId: oppiaine.id})).$promise;
+    };
+
     this.getOsat = function (tyyppi, useCache) {
       if (useCache && cached[tyyppi]) {
         return cached[tyyppi];

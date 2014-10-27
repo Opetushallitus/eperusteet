@@ -38,8 +38,8 @@
   <a ng-if="config.backLabel" ng-show="!editEnabled" icon-role="back" ng-href="{{generateBackHref()}}">{{config.backLabel | kaanna}}</a>
   <h1 ng-show="!editEnabled">{{config.title() | kaanna}}</h1>
   <h1 ng-show="editEnabled">
-    <span ng-show="!isNew" kaanna="config.editTitle"></span>
-    <span ng-show="isNew" kaanna="config.newTitle"></span>
+    <span ng-show="!isNew">{{config.editTitle | kaanna}}</span>
+    <span ng-show="isNew">{{config.newTitle | kaanna}}</span>
   </h1>
 
   <!-- TODO: pikamenu -->

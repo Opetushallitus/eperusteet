@@ -12,11 +12,13 @@
         <input id="koodi-input" class="form-control" type="text" ng-model="editableModel.koodiArvo" editointi-kontrolli>
         <div class="addon"><button class="btn btn-default" ng-click="haeKoodistosta()" kaanna="hae-koodistosta"></button></div>
       </div>
-      <label class="header" kaanna="oppimaarat"></label>
-      <label class="inputwrapper"><input class="form-control" type="radio" ng-model="editableModel.koosteinen" ng-value="false">
-        {{'yksi-oppimaara'|kaanna}}</label>
-      <label class="inputwrapper"><input class="form-control" type="radio" ng-model="editableModel.koosteinen" ng-value="true">
-        {{'useita-oppimaaria'|kaanna}}</label>
+      <div ng-show="!editableModel.oppiaine">
+        <label class="header" kaanna="oppimaarat"></label>
+        <label class="inputwrapper"><input class="form-control" type="radio" ng-model="editableModel.koosteinen" ng-value="false">
+          {{'yksi-oppimaara'|kaanna}}</label>
+        <label class="inputwrapper"><input class="form-control" type="radio" ng-model="editableModel.koosteinen" ng-value="true">
+          {{'useita-oppimaaria'|kaanna}}</label>
+      </div>
     </div>
     <h3 kaanna="Osiot" class="osioheader"></h3>
   </div>
@@ -25,14 +27,15 @@
     <div class="oppiaine-header">
       <table>
         <tbody>
-          <!-- TODO: miten tunnistetaan oppiaine/oppimäärä, linkit -->
-          <tr ng-show="editableModel.$ischild">
+          <tr ng-show="editableModel.oppiaine">
             <th kaanna="oppiaine"></th>
-            <td><a href="" kaanna="editableModel.oppiaine.nimi"></a></td>
+            <td>
+              <a ng-href="{{generateLink(editableModel.oppiaine)}}">{{oppiaineMap[editableModel.oppiaine].nimi | kaanna}}</a>
+            </td>
           </tr>
-          <tr ng-show="editableModel.$ischild">
+          <tr ng-show="editableModel.oppiaine">
             <th kaanna="oppimaara"></th>
-            <td kaanna="editableModel.nimi"></td>
+            <td>{{editableModel.nimi | kaanna}}</td>
           </tr>
           <tr>
             <th kaanna="muokkaus-tutkinnon-osan-koodi-header"></th>
@@ -42,8 +45,9 @@
             <th kaanna="oppimaarat"></th>
             <td>
               <ul>
-                <li ng-repeat="oppimaara in editableModel.oppimaarat">
-                  <a href="" kaanna="oppimaara.nimi"></a>
+                <li ng-show="editableModel.$oppimaarat.length === 0" kaanna="ei-oppimaaria"></li>
+                <li ng-repeat="oppimaara in editableModel.$oppimaarat | orderBy:nameSort">
+                  <a ng-href="{{generateLink(oppimaara)}}">{{oppimaara.nimi | kaanna}}</a>
                 </li>
               </ul>
             </td>
