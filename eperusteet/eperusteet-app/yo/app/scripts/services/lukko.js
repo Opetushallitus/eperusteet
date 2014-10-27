@@ -38,7 +38,8 @@ angular.module('eperusteApp')
     $scope.$on('$stateChangeSuccess', function() { $scope.peruuta(); });
   })
   .service('Lukitus', function($rootScope, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, Profiili,
-    LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit, Kaanna) {
+    LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
+    PerusteprojektiOikeudetService) {
     var lukitsin = null;
     var etag = null;
 
@@ -120,7 +121,7 @@ angular.module('eperusteApp')
 
     function tarkistaLukitus(id, scope, suoritustapa) {
       var okCb = function(res) {
-        if (res.haltijaOid && new Date() <= new Date(res.vanhentuu) && Profiili.oid() !== res.haltijaOid) {
+        if (res.haltijaOid && new Date() <= new Date(res.vanhentuu) && !res.oma) {
           scope.isLocked = true;
           scope.lockNotification = Kaanna.kaanna('lukitus-kayttajalla', {
             user: res.data ? res.data.haltijaOid : ''

@@ -644,7 +644,7 @@ public class PerusteServiceImpl implements PerusteService {
     @Override
     public LukkoDto lock(Long id, Suoritustapakoodi suoritustapakoodi) {
         Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
-        return LukkoDto.of(lockManager.lock(suoritustapa.getId()));
+        return LukkoDto.of(lockManager.lock(suoritustapa.getId()), lockManager.isLockedByAuthenticatedUser(id));
     }
 
     @Override
@@ -656,7 +656,7 @@ public class PerusteServiceImpl implements PerusteService {
     @Override
     public LukkoDto getLock(Long id, Suoritustapakoodi suoritustapakoodi) {
         Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
-        return LukkoDto.of(lockManager.getLock(suoritustapa.getId()));
+        return LukkoDto.of(lockManager.getLock(suoritustapa.getId()), lockManager.isLockedByAuthenticatedUser(id));
     }
 
     private void getLocksPerusteenOsat(PerusteenOsaViite sisalto, Map<Long, LukkoDto> map) {
