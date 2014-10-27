@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaTyoryhma;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
@@ -37,17 +36,21 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author nkala
  */
+
+@Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
     @Autowired
@@ -89,8 +92,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         return service.save(ppldto);
     }
 
-    @Transactional
-    public void perusteprojektiLuontiCommonAsserts(PerusteprojektiDto ppdto, Perusteprojekti pp) {
+    private void perusteprojektiLuontiCommonAsserts(PerusteprojektiDto ppdto, Perusteprojekti pp) {
         Assert.assertNotNull(pp);
         Assert.assertEquals(pp.getNimi(), ppdto.getNimi());
         Assert.assertEquals(pp.getDiaarinumero(), ppdto.getDiaarinumero());
@@ -102,8 +104,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertNotNull(pp.getPeruste().getSuoritustavat());
     }
 
-    @Transactional
-    public void perusteprojektiLuontiCommonSuoritustavat(Perusteprojekti pp, long expectedSize) {
+    private void perusteprojektiLuontiCommonSuoritustavat(Perusteprojekti pp, long expectedSize) {
         for (Suoritustapa st : pp.getPeruste().getSuoritustavat()) {
             Assert.assertNotNull(st.getSisalto());
             Assert.assertNotNull(st.getSisalto().getLapset());
@@ -112,7 +113,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testPerustprojektiluonti12() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
         Perusteprojekti pp = repository.findOne(ppdto.getId());
@@ -125,7 +126,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testPerustprojektiluonti9999() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_9999");
         Perusteprojekti pp = repository.findOne(ppdto.getId());
@@ -136,7 +137,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testPerustpohjaluonti() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_1");
         Perusteprojekti pp = repository.findOne(ppdto.getId());
@@ -149,7 +150,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testPerusteprojektiLuontiPohjasta() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_1");
         Perusteprojekti pp = repository.findOne(ppdto.getId());
@@ -172,14 +173,14 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         perusteprojektiLuontiCommonSuoritustavat(uusi, 3);
     }
 
-    public void lazyAssertTyoryhma(TyoryhmaHenkiloDto trh, String ryhma, String henkilo) {
+    private void lazyAssertTyoryhma(TyoryhmaHenkiloDto trh, String ryhma, String henkilo) {
         Assert.assertEquals(trh.getKayttajaOid(), henkilo);
         Assert.assertEquals(trh.getNimi(), ryhma);
         Assert.assertNotNull(trh.getId());
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testTyoryhmat() {
         // Lisääminen
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
@@ -231,7 +232,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testPerusteprojektiTyoryhmat() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
         Perusteprojekti pp = repository.findOne(ppdto.getId());
@@ -257,7 +258,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testPerusteenOsaViiteTyoryhmat() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_1");
         Perusteprojekti pp = repository.findOne(ppdto.getId());
@@ -280,12 +281,12 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testPerusteprojektiKopiointiToisestaProjektista() {
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testPerusteprojektiSisaltaaMuodostumiset() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_1");
         repository.flush();
@@ -303,7 +304,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testMisc() {
         PerusteprojektiDto tpp = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_1");
         teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
@@ -320,14 +321,14 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test(expected = BusinessRuleViolationException.class)
-    @Transactional
+    @Rollback(true)
     public void testOnkoDiaarinumeroKaytossa() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
         service.onkoDiaarinumeroKaytossa(ppdto.getDiaarinumero());
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testUpdate() {
         PerusteprojektiDto vanhaDto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_1");
         PerusteprojektiDto update = new PerusteprojektiDto(

@@ -40,6 +40,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +49,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author teele1
  */
 @Transactional
+@DirtiesContext
 public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
 
     @Autowired
@@ -94,7 +96,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         PerusteenOsaDto.Laaja dto = perusteenOsaService.get(tutkinnonOsa.getId());
 
         Assert.assertNotNull(dto);
-        
+
         Assert.assertTrue(TutkinnonOsaDto.class.isInstance(dto));
         TutkinnonOsaDto to = (TutkinnonOsaDto) dto;
         to.getArviointi();
