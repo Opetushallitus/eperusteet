@@ -107,7 +107,7 @@ angular.module('eperusteApp')
         case 'nimi': return Kaanna.kaanna(data.nimi);
         case 'laajuus': return data.laajuus;
         case 'muokattu': return data.muokattu;
-        case 'jarjestys': return data.muokattu;
+        case 'jarjestys': return data.jarjestys;
         default:
           break;
       }
