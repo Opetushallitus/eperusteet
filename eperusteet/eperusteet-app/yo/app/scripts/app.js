@@ -97,6 +97,14 @@ angular.module('eperusteApp', [
   })
   // Lodash mixins and other stuff
   .run(function() {
+    _.mixin({ arraySwap: function(array, a, b) {
+      if (_.isArray(array) && _.size(array) > a && _.size(array) > b) {
+        var temp = array[a];
+        array[a] = array[b];
+        array[b] = temp;
+      }
+      return array;
+    }});
     _.mixin({ set: function(obj, field) {
       return function(value) {
         obj[field] = value;

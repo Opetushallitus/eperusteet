@@ -45,6 +45,10 @@ angular.module('eperusteApp')
     $scope.tyoryhmaMap = {};
     $scope.tiivistelma = Kaanna.kaanna($scope.peruste.kuvaus);
 
+    if (_.size($scope.peruste.sisalto) > 1 && _.first($scope.peruste.suoritustavat).suoritustapakoodi !== 'ops') {
+      $scope.peruste.suoritustavat = _.arraySwap($scope.peruste.suoritustavat, 0, 1);
+    }
+
     PerusteprojektiTyoryhmat.getAll({ id: $stateParams.perusteProjektiId }, function(res) {
       var tyoryhmaMap = {};
       _.each(_.sortBy(res, 'nimi'), function(tr) {
