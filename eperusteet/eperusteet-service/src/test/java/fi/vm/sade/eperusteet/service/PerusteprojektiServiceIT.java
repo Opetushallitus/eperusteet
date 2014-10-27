@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
@@ -356,5 +357,17 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertEquals("uusiyhteistyotaho", updated.getYhteistyotaho());
         Assert.assertEquals(vanhaDto.getTila(), updated.getTila());
         Assert.assertEquals("uusioid", updated.getRyhmaOid());
+    }
+
+    @Test
+    @Rollback(true)
+    public void testPerustepohjaTila() {
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_1");
+        TilaUpdateStatus status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS);
+        Assert.assertTrue(status.isVaihtoOk());
+        Perusteprojekti pp = repository.findOne(ppdto.getId());
+        Assert.assertEquals(ProjektiTila.VALMIS, pp.getTila());
+        status = service.updateTila(ppdto.getId(), ProjektiTila.LAADINTA);
+        Assert.assertFalse(status.isVaihtoOk());
     }
 }

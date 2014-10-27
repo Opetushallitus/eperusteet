@@ -69,6 +69,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     private PerusteprojektiService service;
 
     private Perusteprojekti projekti;
+    private Perusteprojekti projektiPohja;
     private Peruste peruste;
     private TekstiKappale tekstikappale;
     private TutkinnonOsa osa;
