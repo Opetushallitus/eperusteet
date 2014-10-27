@@ -18,10 +18,11 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams,
+  .controller('PerusteprojektisisaltoCtrl', function($scope, $state, $stateParams, $timeout,
     $modal, PerusteenOsat, PerusteenOsaViitteet, SuoritustapaSisalto, PerusteProjektiService,
     perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit,
-    Editointikontrollit, TEXT_HIERARCHY_MAX_DEPTH, PerusteProjektiSivunavi) {
+    Editointikontrollit, TEXT_HIERARCHY_MAX_DEPTH, PerusteProjektiSivunavi, Projektiryhma,
+    PerusteprojektiTyoryhmat) {
     $scope.textMaxDepth = TEXT_HIERARCHY_MAX_DEPTH;
 
     function lisaaSisalto(method, sisalto, cb) {
@@ -40,6 +41,21 @@ angular.module('eperusteApp')
     $scope.naytaTutkinnonOsat = true;
     $scope.naytaRakenne = true;
     $scope.muokkausTutkintokohtaisetOsat = false;
+    $scope.tyyppi = 'kaikki';
+    $scope.tyoryhmaMap = {};
+    $scope.tiivistelma = Kaanna.kaanna($scope.peruste.kuvaus);
+
+    PerusteprojektiTyoryhmat.getAll({ id: $stateParams.perusteProjektiId }, function(res) {
+      var tyoryhmaMap = {};
+      _.each(_.sortBy(res, 'nimi'), function(tr) {
+        if (!_.isArray(tyoryhmaMap[tr._perusteenosa])) {
+          tyoryhmaMap[tr._perusteenosa] = [];
+        }
+        tyoryhmaMap[tr._perusteenosa].push(tr.nimi);
+      });
+      tyoryhmaMap.$resolved = true;
+      $scope.tyoryhmaMap = tyoryhmaMap;
+    });
 
     Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) {
       switch (lapsi.perusteenOsa.tunniste) {
@@ -53,15 +69,51 @@ angular.module('eperusteApp')
 
     $scope.aakkosJarjestys = function(data) { return Kaanna.kaanna(data.perusteenOsa.nimi); };
 
-    $scope.rajaaSisaltoa = function(value) {
+    $scope.filterJasen = function(jasen) { return $scope.tyyppi === 'kaikki' || $scope.tyoryhmat[$scope.tyyppi][jasen.oidHenkilo]; };
+    $scope.filterRyhma = function(ryhma) { return _.some(ryhma, $scope.filterJasen); };
+    $scope.naytaRyhmanHenkilot = function(tyyppi, tyoryhmat, ryhma) {
+      $modal.open({
+        template: '' +
+          '<div class="modal-header"><h2 kaanna>tyoryhma</h2></div>' +
+          '<div class="modal-body">' +
+          '  <projektiryhma-henkilot tyoryhmat="tyoryhmat" ryhma="ryhma" tyyppi="tyyppi" ng-if="!lataa && !error"></projektiryhma-henkilot>' +
+          '</div>' +
+          '<div class="modal-footer">' +
+          '  <button class="btn btn-primary" ng-click="ok()" kaanna>sulje</button>' +
+          '</div>',
+        controller: function($scope, $modalInstance, tyoryhmat, ryhma) {
+          $scope.tyyppi = tyyppi;
+          $scope.tyoryhmat = tyoryhmat;
+          $scope.ryhma = ryhma;
+          $scope.ok = $modalInstance.dismiss;
+        },
+        resolve: {
+          tyyppi: function() { return tyyppi; },
+          tyoryhmat: function() { return tyoryhmat; },
+          ryhma: function() { return ryhma; },
+        }
+      });
+    };
+
+    $scope.rajaaSisaltoa = function(value, tyyppi) {
       if (_.isUndefined(value)) { return; }
+      $scope.tyyppi = tyyppi;
       Algoritmit.kaikilleTutkintokohtaisilleOsille($scope.peruste.sisalto, function(osa, lapsellaOn) {
-        osa.$filtered = lapsellaOn || Algoritmit.rajausVertailu(value, osa, 'perusteenOsa', 'nimi');
+        var tyoryhmat = osa.perusteenOsa ? $scope.tyoryhmaMap[osa.perusteenOsa.id] || [] : [];
+        var omistaaTyoryhman = tyyppi === 'kaikki' || tyoryhmat.indexOf(tyyppi) !== -1;
+        osa.$filtered = (lapsellaOn || Algoritmit.rajausVertailu(value, osa, 'perusteenOsa', 'nimi')) && omistaaTyoryhman;
         return osa.$filtered;
       });
       $scope.naytaTutkinnonOsat = Kaanna.kaanna('tutkinnonosat').toLowerCase().indexOf(value.toLowerCase()) !== -1;
       $scope.naytaRakenne = Kaanna.kaanna('tutkinnon-rakenne').toLowerCase().indexOf(value.toLowerCase()) !== -1;
     };
+
+    Projektiryhma.jasenetJaTyoryhmat($stateParams.perusteProjektiId, function(re) {
+      $scope.jasenet = _.zipObject(_.map(re.jasenet, 'oidHenkilo'), re.jasenet);
+      $scope.ryhma = re.ryhma;
+      $scope.tyoryhmat = re.tyoryhmat;
+      $scope.lataa = false;
+    });
 
     $scope.tuoSisalto = function() {
       function lisaaLapset(parent, lapset, cb) {

@@ -21,6 +21,7 @@ angular.module('eperusteApp')
   .service('OrderHelper', function () {
     this.ORDER_OPTIONS = [
       {value: 'nimi', label: 'nimi'},
+      {value: 'jarjestys', label: 'tutkinnonosa-jarjestysnumero'},
       {value: 'muokattu', label: 'muokattu-viimeksi'}
     ];
     this.ORDER_LAAJUUS = [{value: 'laajuus', label: 'laajuus'}];
@@ -101,6 +102,7 @@ angular.module('eperusteApp')
         case 'nimi': return Kaanna.kaanna(data.nimi);
         case 'laajuus': return data.laajuus;
         case 'muokattu': return data.muokattu;
+        case 'jarjestys': return data.muokattu;
         default:
           break;
       }

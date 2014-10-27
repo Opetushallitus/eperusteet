@@ -30,5 +30,5 @@ public interface PerusteprojektiTyoryhmaRepository extends JpaRepository<Peruste
 
     List<PerusteprojektiTyoryhma> deleteAllByPerusteprojektiAndNimi(Perusteprojekti perusteprojekti, String nimi);
 
-    List<PerusteprojektiTyoryhma> findByPerusteprojekti(Perusteprojekti perusteprojekti);
+    List<PerusteprojektiTyoryhma> findAllByPerusteprojekti(Perusteprojekti perusteprojekti);
 }

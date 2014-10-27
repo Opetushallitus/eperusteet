@@ -19,24 +19,18 @@
 
 angular.module('eperusteApp')
   .factory('PerusteprojektiTila', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteprojektit/:id/tila/:tila', {
-      id: '@id'
-    });
+    return $resource(SERVICE_LOC + '/perusteprojektit/:id/tila/:tila', { id: '@id' });
   })
   .factory('OmatPerusteprojektit', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteprojektit/omat');
   })
   .factory('PerusteprojektiResource', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteprojektit/:id', {
-      id: '@id'
-    }, {
+    return $resource(SERVICE_LOC + '/perusteprojektit/:id', { id: '@id' }, {
       update: {method: 'POST', isArray: false}
     });
   })
   .factory('PerusteprojektiOikeudet', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteprojektit/:id/oikeudet', {
-      id: '@id'
-    });
+    return $resource(SERVICE_LOC + '/perusteprojektit/:id/oikeudet', { id: '@id' });
   })
   .factory('DiaarinumeroUniqueResource', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteprojektit/diaarinumero/uniikki/:diaarinumero');

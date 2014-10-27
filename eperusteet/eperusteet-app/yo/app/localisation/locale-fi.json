@@ -40,6 +40,7 @@
     "sulje": "Sulje",
     "tyhjenna-rajaus-tooltip": "Tyhjennä rajaus (Esc)",
     "tyhjenna": "Tyhjennä",
+    "poistu": "Poistu",
 
     "ops-ja-tutkintojen-perusteet": "Opetussuunnitelmien ja tutkintojen perusteet",
 
@@ -69,7 +70,7 @@
 
     "ammattitutkinto": "Ammattitutkinto",
     "erikoisammattitutkinto": "Erikoisammattitutkinto",
-    "perustutkinto": "Perustutkinto",
+    "perustutkinto": "Ammatillinen perustutkinto",
 
     "tiedot": "Tiedot",
     "projektiryhma": "Projektiryhmä",
@@ -102,6 +103,7 @@
     "virhe-muu": "Virhe",
     "virhe-etusivulle": "Etusivulle",
     "tallentaminen-epäonnistui": "Tallentaminen epäonnistui",
+    "perusteen-tiivistelma": "Perusteen tiivistelmä",
 
     "suoritustavalle-ei-ole-vielä-sisältöä": "Perusteelle ei ole luotu vielä tähän suoritustapaan liittyvää sisältöä",
     "rajauksellasi-ei-löytynyt-vaihtoehtoa": "Rajaus ei tuottanut tuloksia",
@@ -270,7 +272,7 @@
     "koulutusalakoodi-7": "Sosiaali-, terveys- ja liikunta-ala",
     "koulutusalakoodi-8": "Luonnontieteiden ala",
 
-    "koulutustyyppi_1": "Perustutkinto",
+    "koulutustyyppi_1": "Ammatillinen perustutkinto",
     "koulutustyyppi_11": "Ammattitutkinto",
     "koulutustyyppi_12": "Erikoisammattitutkinto",
     "koulutustyyppi_9999": "Perusopetuksen opetussuunnitelma",
@@ -360,6 +362,7 @@
     "luonti-tutkinnon-osa": "Uusi tutkinnon osa",
     "luonti-tekstikappale": "Uusi tekstikappale",
 
+    "muokkaus-tutkinnon-jarjestysnumero": "Järjestysnumero",
     "muokkaus-tutkinnon-osan-nimi-header": "Nimi",
     "muokkaus-tutkinnon-osan-nimi-placeholder": "Kirjoita tähän otsikko",
     "muokkaus-tutkinnon-osan-koodi-header": "Koodi",
@@ -550,7 +553,7 @@
     "perusteprojekti-koulutustyyppi-placeholder": "<Aseta perusteen koulutus/tutkintotyyppi>",
     "projekti-header-peruste": "Peruste",
     "projekti-header-koulutusala": "Koulutusala",
-    "projekti-header-paatosPvm": "Päätöspäivämäärä",
+    "projekti-header-paatosPvm": "Työryhmän asettamispäivämäärä",
     "projekti-header-koulutustyyppi": "Koulutus/tutkintotyyppi",
 
     "tutkintokohtaiset-osat": "Tutkintokohtaiset osat",
@@ -646,6 +649,7 @@
     "luo-uusi": "Luo uusi",
     "luo-tyoryhma": "Luo työryhmä",
     "tyoryhman-nimi": "Työryhmän nimi",
+    "tyoryhma": "Työryhmä",
     "valitse-jasenet": "Valitse jäsenet",
     "muokkaa-tyoryhmaa": "Muokkaa työryhmää",
     "tallenna-tyoryhma": "Tallenna työryhmä",

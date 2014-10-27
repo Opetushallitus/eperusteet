@@ -82,7 +82,12 @@
   </form>
 
   <div class="non-collapsibles" ng-if="!editEnabled">
-    <label class="header" kaanna>muokkaus-tutkinnon-osan-koodi-header</label>:<span> {{ tutkinnonOsa.koodiArvo }}</span>
+    <div>
+      <label class="header" kaanna>muokkaus-tutkinnon-jarjestysnumero</label>:<span> {{ viiteosa.jarjestys || '-' }}</span>
+    </div>
+    <div>
+      <label class="header" kaanna>muokkaus-tutkinnon-osan-koodi-header</label>:<span> {{ tutkinnonOsa.koodiArvo || '-' }}</span>
+    </div>
   </div>
 
   <div class="tutkinnonosa-sisalto" ng-if="editableTutkinnonOsa.tyyppi === 'normaali'">

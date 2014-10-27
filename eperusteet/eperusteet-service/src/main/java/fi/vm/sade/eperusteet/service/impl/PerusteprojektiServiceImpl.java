@@ -36,6 +36,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -436,7 +437,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     public List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(Long perusteProjektiId) {
         Perusteprojekti pp = repository.findOne(perusteProjektiId);
-        List<PerusteprojektiTyoryhma> tr = perusteprojektiTyoryhmaRepository.findByPerusteprojekti(pp);
+        List<PerusteprojektiTyoryhma> tr = perusteprojektiTyoryhmaRepository.findAllByPerusteprojekti(pp);
         return mapper.mapAsList(tr, TyoryhmaHenkiloDto.class);
     }
 
@@ -489,6 +490,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             res.add(s.getNimi());
         }
         return res;
+    }
+
+    @Transactional
+    @Override
+    public List<PerusteenOsaTyoryhmaDto> getSisallonTyoryhmat(Long perusteProjektiId) {
+        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        List<PerusteenOsaTyoryhma> tyoryhmat = perusteenOsaTyoryhmaRepository.findAllByPerusteprojekti(pp);
+        return mapper.mapAsList(tyoryhmat, PerusteenOsaTyoryhmaDto.class);
     }
 
 }
