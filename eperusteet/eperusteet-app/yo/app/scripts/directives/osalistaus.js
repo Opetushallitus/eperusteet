@@ -21,12 +21,15 @@ angular.module('eperusteApp')
   .service('OrderHelper', function () {
     this.ORDER_OPTIONS = [
       {value: 'nimi', label: 'nimi'},
-      {value: 'jarjestys', label: 'tutkinnonosa-jarjestysnumero'},
       {value: 'muokattu', label: 'muokattu-viimeksi'}
     ];
     this.ORDER_LAAJUUS = [{value: 'laajuus', label: 'laajuus'}];
-    this.get = function (withLaajuus) {
+    this.ORDER_JARJESTYS = [{value: 'jarjestys', label: 'tutkinnonosa-jarjestysnumero'}];
+    this.get = function (withLaajuus, koulutustyyppi) {
       var ret = withLaajuus ? this.ORDER_OPTIONS.concat(this.ORDER_LAAJUUS) : this.ORDER_OPTIONS;
+      if (koulutustyyppi) {
+        ret = ret.concat(this.ORDER_JARJESTYS);
+      }
       return ret;
     };
   })
@@ -51,7 +54,7 @@ angular.module('eperusteApp')
         }
         attrs.$observe('showLaajuus', function (value) {
           scope.hasLaajuus = value === 'true';
-          scope.jarjestysOptions = OrderHelper.get(scope.hasLaajuus);
+          scope.jarjestysOptions = OrderHelper.get(scope.hasLaajuus, scope.koulutustyyppi);
         });
         attrs.$observe('yksikko', function (value) {
           scope.unit = value;
@@ -83,7 +86,7 @@ angular.module('eperusteApp')
       term: '',
       placeholder: $scope.searchPlaceholder || ''
     };
-    $scope.jarjestysOptions = OrderHelper.get();
+    $scope.jarjestysOptions = OrderHelper.get(null, $scope.koulutustyyppi);
 
     $scope.searchChanged = function(term) {
       $scope.search.term = term;
