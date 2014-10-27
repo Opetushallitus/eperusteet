@@ -25,8 +25,8 @@
 
     <table ng-show="preferenssit.nakymatyyli === 'lista'" class="table table-striped" style="margin-top: 0px">
       <tr>
-        <th ng-if="kaytaJarjestysnumeroa" width="3%">
-          <a class="action-link" ng-click="asetaJarjestys('jarjestys')">
+        <th ng-if="kaytaJarjestysnumeroa" width="6%">
+          <a class="action-link" ng-click="asetaJarjestys('jarjestys')">{{ 'lajittelu-jarjestysnumero' | kaanna }}
             <span ng-show="jarjestysTapa === 'jarjestys'">
               <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
             </span>
