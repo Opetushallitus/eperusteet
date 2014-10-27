@@ -81,10 +81,6 @@ $tag-color: #FEE7A4;
   }
   .arvioinnin-kohdealue > .panel-heading {
     min-height: 48px;
-    h4 {
-      font-size: 16px;
-      padding-left: 10px;
-    }
   }
   .tavoite {
     .panel-body {
@@ -104,6 +100,7 @@ $tag-color: #FEE7A4;
   padding-left: 10px;
   font-size: 0;
   li {
+    vertical-align: top;
     font-size: 13px;
     display: inline-block;
     margin-bottom: 8px;
@@ -115,10 +112,33 @@ $tag-color: #FEE7A4;
   li:not(first-child) {
     margin-right: $tag-height*0.9;
   }
+  .tc-add-button {
+    margin: 0;
+  }
 }
 
 .tavoite-sisalto {
   margin-left: 40px;
+  .tavoite-collapser {
+    margin-bottom: -10px;
+    margin-top: 0;
+  }
+  h4 {
+    padding-top: 5px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .tavoite-otsikko {
+    font-weight: 700;
+    font-size: 15px;
+    border-bottom: 1px solid lighten($brand-primary, 50%);
+  }
+  h3 {
+    font-size: 110%;
+    font-weight: 700;
+    padding-top: 5px;
+    padding-bottom: 2px;
+  }
 }
 
 .tag-modal {

@@ -128,6 +128,13 @@ angular.module('eperusteApp')
         },
         callbacks: {
           save: function () {
+            var idFn = function (item) { return item.id; };
+            var filterFn = function (item) { return !item.$hidden; };
+            _.each(OsanMuokkausHelper.model.tavoitteet, function (tavoite) {
+              tavoite.sisaltoalueet = _(tavoite.$sisaltoalueet).filter(filterFn).map(idFn).value();
+              tavoite.laajattavoitteet = _(tavoite.$osaaminen).filter(filterFn).map(idFn).value();
+            });
+            OsanMuokkausHelper.save();
             OsanMuokkausHelper.goBack();
           },
           edit: function () {},

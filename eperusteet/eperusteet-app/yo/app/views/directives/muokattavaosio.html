@@ -14,6 +14,6 @@
   <div class="panel-body" collapse="realModel.$isCollapsed">
     <div ng-if="type === 'tekstikappale'" ng-bind-html="valitseKieli(model[path].teksti) | unsafe"></div>
     <div ng-if="type === 'sisaltoalueet'" sisaltoalueet="model[path]"></div>
-    <div ng-if="type === 'tavoitteet'" tavoitteet="model"></div>
+    <div ng-if="type === 'tavoitteet'" tavoitteet="model" vuosiluokka="vuosiluokka"></div>
   </div>
 </div>

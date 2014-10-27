@@ -5,15 +5,15 @@
   <tbody>
     <tr ng-repeat="arviointi in model">
       <td>
-        <span ng-if="!editMode">{{arviointi.kohde | kaanna}}</span>
+        <span ng-if="!editMode">{{arviointi.arvioinninKohde | kaanna}}</span>
         <span ng-if="editMode">
-          <input ng-model="arviointi.kohde" localized class="form-control">
+          <input ng-model="arviointi.arvioinninKohde" localized class="form-control">
         </span>
       </td>
       <td>
-        <span ng-if="!editMode">{{arviointi.kuvaus | kaanna}}</span>
+        <span ng-if="!editMode">{{arviointi.hyvanOsaamisenKuvaus | kaanna}}</span>
         <span ng-if="editMode">
-          <textarea ng-model="arviointi.kuvaus" localized class="form-control msd-elastic"></textarea>
+          <textarea ng-model="arviointi.hyvanOsaamisenKuvaus" localized class="form-control msd-elastic"></textarea>
         </span>
       </td>
       <td ng-if="editMode">

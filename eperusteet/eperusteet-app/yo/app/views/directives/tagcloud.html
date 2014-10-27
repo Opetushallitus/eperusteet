@@ -1,3 +1,4 @@
+<p ng-show="showEmptyPlaceholder()" kaanna="ei-asetettu"></p>
 <ul class="tagcloud">
   <li ng-repeat="tag in model | filter:notHidden">
     <span ng-if="openable === 'true'" ohje="false" teksti="tag.teksti" otsikko="tag.nimi" suunta="bottom"
@@ -14,7 +15,7 @@
       {{tag.nimi | kaanna}}
     </span>
   </li>
-  <li ng-if="editMode">
+  <li ng-if="editMode" class="tc-add-button">
     <button class="btn btn-default" icon-role="add" kaanna="addLabel"
             ng-click="openDialog()"></button>
   </li>
