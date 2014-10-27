@@ -8,7 +8,7 @@
         </div>
         <h1>{{'tutkinnonosat'| kaanna}} ({{ tutkinnonOsat.length}} {{ 'kpl' | kaanna }})</h1>
         <div osalistaus="tutkinnonOsat" search-placeholder="tutkinnon-osa-haku-placeholder"
-             empty-placeholder="perusteella-ei-viela-tutkinnonosia"
+             empty-placeholder="perusteella-ei-viela-tutkinnonosia" koulutustyyppi="peruste.koulutustyyppi"
              show-laajuus="{{suoritustapa !== 'naytto'}}" url-generator="getHref(value)" yksikko="{{yksikko[suoritustapa]}}">
         </div>
     </div>

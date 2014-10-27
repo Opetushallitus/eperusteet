@@ -40,7 +40,8 @@ angular.module('eperusteApp')
         emptyPlaceholder: '@?',
         showLaajuus: '@?',
         urlGenerator: '&',
-        options: '='
+        options: '=',
+        koulutustyyppi: '='
       },
       controller: 'OsalistausDirectiveController',
       link: function (scope, element, attrs) {
@@ -66,6 +67,7 @@ angular.module('eperusteApp')
     $scope.jarjestysTapa = 'nimi';
     $scope.jarjestysOrder = false;
     $scope.preferenssit = Profiili.profiili().resolved ? _.merge(defaultPreferences, Profiili.profiili().preferenssit) : defaultPreferences;
+    $scope.kaytaJarjestysnumeroa = $scope.koulutustyyppi ? true : false;
 
     $scope.$on('kayttajaProfiiliPaivittyi', function() {
       $scope.preferenssit = _.merge($scope.preferenssit, Profiili.profiili().preferenssit);

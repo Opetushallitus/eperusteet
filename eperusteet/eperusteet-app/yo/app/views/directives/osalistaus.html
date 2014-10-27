@@ -25,7 +25,7 @@
 
     <table ng-show="preferenssit.nakymatyyli === 'lista'" class="table table-striped" style="margin-top: 0px">
       <tr>
-        <th width="3%">
+        <th ng-if="kaytaJarjestysnumeroa" width="3%">
           <a class="action-link" ng-click="asetaJarjestys('jarjestys')">
             <span ng-show="jarjestysTapa === 'jarjestys'">
               <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
@@ -55,7 +55,7 @@
         </th>
       </tr>
       <tr ng-repeat="v in model | orderBy:jarjestys:jarjestysOrder | mapFilter:comparisonFn">
-        <td>{{ v.jarjestys || '-' }}</td>
+        <td ng-if="kaytaJarjestysnumeroa">{{ v.jarjestys || '-' }}</td>
         <td>
           <a ng-href="{{urlGenerator({value: v})}}">{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</a>
         </td>
@@ -73,8 +73,8 @@
         ng-repeat="v in model | orderBy:jarjestys:jarjestysOrder | mapFilter:comparisonFn">
         <div ng-hide="editoi" class="muokkaus" icon-role="forward"></div>
         <div class="otsikko">
-          <h3><span class="badge jarjestysnumero">{{ v.jarjestys || '-' }} </span>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</h3>
-          <div class="pienet-tiedot">
+          <h3><span class="badge jarjestysnumero" ng-if="kaytaJarjestysnumeroa">{{ v.jarjestys || '-' }} </span>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</h3>
+          <div class="pienet-tiedot" ng-class="{ 'jarjestysnumerollinen': kaytaJarjestysnumeroa }">
               <div class="osan-laajuus" ng-if="hasLaajuus && v.laajuus">{{ v.laajuus }} {{ unit || '' | kaanna }}</div>
               <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ v.muokattu | aikaleima:'ago' }}</div>
           </div>
