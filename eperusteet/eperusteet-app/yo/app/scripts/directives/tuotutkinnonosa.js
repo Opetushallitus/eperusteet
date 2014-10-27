@@ -57,6 +57,7 @@ angular.module('eperusteApp')
     $scope.tulokset = [];
     $scope.valitut = 0;
     $scope.peruste = peruste;
+    $scope.kaikkiValittu = false;
     $scope.suoritustavat = _(peruste.suoritustavat).map('suoritustapakoodi')
                                                    .reject(function(st) { return st === suoritustapa; })
                                                    .value();
@@ -64,6 +65,11 @@ angular.module('eperusteApp')
 
     $scope.valinta = function(tulos) {
       $scope.valitut += tulos.$valitse ? -1 : 1;
+    };
+
+    $scope.valitseKaikki = function(valinta) {
+      _.each($scope.tulokset, function(tulos) { tulos.$valitse = valinta; });
+      $scope.valitut = valinta ? _.size($scope.tulokset) : 0;
     };
 
     $scope.vaihdaValinta = function(tulos) {

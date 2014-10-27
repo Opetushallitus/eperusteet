@@ -128,7 +128,6 @@
 
     "uusi-tutkinnonosa": "<Uusi tutkinnon osa>",
     "tuo-tutkinnonosa": "Tuo tutkinnon osa",
-    "tuo-toisesta-suoritustavasta": "Tuo suoritustavasta",
     "tutkinnon-osia-ei-ole": "Tutkinnon osia ei ole",
     "avaa-kaikki": "Avaa kaikki",
     "sulje-kaikki": "Sulje kaikki",
@@ -433,6 +432,7 @@
     "anna-voimaantulo-loppu-pvm": "Anna voimassaolon päättymispäivämäärä",
 
     "tuo-toisesta-projektista": "Tuo sisältöä toisesta projektista",
+    "tuo-toisesta-suoritustavasta": "Tuo toisesta suoritustavasta",
     "hae-perusteprojekteja": "Hae perusteprojekteja",
 
     "toiminto": "Toiminto",

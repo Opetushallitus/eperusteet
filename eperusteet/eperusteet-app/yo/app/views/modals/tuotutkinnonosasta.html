@@ -9,7 +9,7 @@
     </select>
     <table class="table table-striped" ng-show="tulokset.length > 0">
       <tr>
-        <th></th>
+        <th class="has-checkbox"><input ng-change="valitseKaikki(kaikkiValittu)" ng-model="kaikkiValittu" type="checkbox" class="form-control"></th>
         <th kaanna>nimi</th>
       </tr>
       <tr ng-repeat="tulos in tulokset">
