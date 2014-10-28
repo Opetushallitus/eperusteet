@@ -114,6 +114,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         peruste.getSuoritustavat().add(naytto);
         peruste.setTila(PerusteTila.LUONNOS);
         peruste.setTyyppi(PerusteTyyppi.NORMAALI);
+        peruste.setNimi(TekstiPalanen.of(Kieli.FI, "Nimi"));
 
         projekti.setPeruste(peruste);
         em.persist(peruste);
