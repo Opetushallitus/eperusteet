@@ -65,7 +65,6 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     private Set<OppiaineenVuosiluokkaKokonaisuus> vuosiluokkakokonaisuudet;
 
     @Getter
-    @Setter
     @ManyToOne(optional = true)
     private Oppiaine oppiaine;
 
@@ -81,6 +80,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
 
     /**
      * Palauttaa oppimäärät
+     *
      * @see #isKoosteinen()
      * @return oppimäärät (joukkoa ei voi muokata) tai null jos oppiaine ei ole koosteinen
      */
@@ -101,7 +101,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
             vuosiluokkakokonaisuudet = new HashSet<>();
         }
         ovk.setOppiaine(this);
-        if ( vuosiluokkakokonaisuudet.add(ovk) ) {
+        if (vuosiluokkakokonaisuudet.add(ovk)) {
             this.muokattu();
         }
 
@@ -123,7 +123,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
             oppimaarat = new HashSet<>();
         }
         oppimaara.setOppiaine(this);
-        if ( oppimaarat.add(oppimaara) ) {
+        if (oppimaarat.add(oppimaara)) {
             this.muokattu();
         }
     }
@@ -133,10 +133,30 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
             throw new IllegalStateException("Oppiaine ei ole koosteinen eikä tue oppimääriä");
         }
         if (aine.getOppiaine().equals(this) && oppimaarat.remove(aine)) {
-            aine.setOppiaine(null);
+            aine.oppiaine = null;
         } else {
             throw new IllegalArgumentException("Oppimäärä ei kuulu tähän oppiaineeseen");
         }
+    }
+
+    public void setOppiaine(Oppiaine oppiaine) {
+        if (this.oppiaine == null || this.oppiaine.equals(oppiaine)) {
+            this.oppiaine = oppiaine;
+        } else {
+            throw new IllegalStateException("Oppiaineviittausta ei voi muuttaa");
+        }
+    }
+
+    //hiberate javaassist proxy "workaround"
+    //ilman equals-metodia objectX.equals(proxy-objectX) on aina false
+    @Override
+    public boolean equals(Object other) {
+        return this == other;
+    }
+
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
     }
 
     public interface Strict {

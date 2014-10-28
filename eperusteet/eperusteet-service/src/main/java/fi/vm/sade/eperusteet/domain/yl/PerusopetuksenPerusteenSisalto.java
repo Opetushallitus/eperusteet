@@ -72,7 +72,16 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
     }
 
     public void addOppiaine(Oppiaine oppiaine) {
-        oppiaineet.add(oppiaine);
+        if (oppiaine.getOppiaine() != null) {
+            if (containsOppiaine(oppiaine.getOppiaine())) {
+                oppiaine.getOppiaine().addOppimaara(oppiaine);
+            } else {
+                throw new IllegalArgumentException("Ei voida lisätä oppimäärää jonka oppiaine ei kuulu sisältöön");
+            }
+
+        } else {
+            oppiaineet.add(oppiaine);
+        }
     }
 
     public void addVuosiluokkakokonaisuus(VuosiluokkaKokonaisuus kokonaisuus) {
@@ -80,7 +89,13 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
     }
 
     public boolean containsOppiaine(Oppiaine aine) {
-        return aine != null && oppiaineet.contains(aine);
+        if (aine == null) {
+            return false;
+        }
+        if (aine.getOppiaine() != null) {
+            return containsOppiaine(aine.getOppiaine());
+        }
+        return oppiaineet.contains(aine);
     }
 
     public boolean containsVuosiluokkakokonaisuus(VuosiluokkaKokonaisuus kokonaisuus) {

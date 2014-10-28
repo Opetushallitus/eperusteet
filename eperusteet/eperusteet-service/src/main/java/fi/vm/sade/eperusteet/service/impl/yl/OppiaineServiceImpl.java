@@ -64,19 +64,16 @@ public class OppiaineServiceImpl implements OppiaineService {
     public OppiaineDto addOppiaine(Long perusteId, OppiaineDto dto) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         if (sisalto != null) {
-            Oppiaine oppiaine = addOppiaine(dto, null);
+            Oppiaine oppiaine = saveOppiaine(dto);
             sisalto.addOppiaine(oppiaine);
             return mapper.map(oppiaine, OppiaineDto.class);
         }
         throw new BusinessRuleViolationException("Perustetta ei ole");
     }
 
-    private Oppiaine addOppiaine(OppiaineDto dto, Oppiaine parent) {
+    private Oppiaine saveOppiaine(OppiaineDto dto) {
         Oppiaine oppiaine = mapper.map(dto, Oppiaine.class);
         oppiaine = oppiaineRepository.save(oppiaine);
-        if (parent != null) {
-            parent.addOppimaara(oppiaine);
-        }
         final Set<OppiaineenVuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet = dto.getVuosiluokkakokonaisuudet();
         if (vuosiluokkakokonaisuudet != null) {
             for (OppiaineenVuosiluokkaKokonaisuusDto v : vuosiluokkakokonaisuudet) {
@@ -104,22 +101,6 @@ public class OppiaineServiceImpl implements OppiaineService {
         aine.addVuosiluokkaKokonaisuus(ovk);
         ovk = vuosiluokkakokonaisuusRepository.save(ovk);
         return ovk;
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public OppiaineDto addOppimaara(Long perusteId, Long oppiaineId, OppiaineDto dto) {
-        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        Oppiaine aine = oppiaineRepository.findOne(oppiaineId);
-        if (sisalto == null || aine == null) {
-            throw new BusinessRuleViolationException("Oppiainetta ei ole");
-        } else {
-            if (sisalto.containsOppiaine(aine)) {
-                return mapper.map(addOppiaine(dto, aine), OppiaineDto.class);
-            } else {
-                throw new BusinessRuleViolationException("Oppiaine ei kuulu tähän sisältöön");
-            }
-        }
     }
 
     @Override

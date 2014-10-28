@@ -18,10 +18,16 @@ package fi.vm.sade.eperusteet.domain.yl;
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -39,6 +45,14 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Table(name = "yl_vlkokonaisuus")
 @Audited
 public class VuosiluokkaKokonaisuus extends AbstractAuditedReferenceableEntity {
+
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    @Getter
+    @Setter
+    @CollectionTable(name = "yl_vlkok_vuosiluokat")
+    @Column(name = "vuosiluokka")
+    private Set<Vuosiluokka> vuosiluokat = EnumSet.noneOf(Vuosiluokka.class);
 
     @Getter
     @Setter
@@ -80,6 +94,18 @@ public class VuosiluokkaKokonaisuus extends AbstractAuditedReferenceableEntity {
         for (VuosiluokkaKokonaisuudenLaajaalainenOsaaminen v : laajaalainenOsaamiset) {
             v.setVuosiluokkaKokonaisuus(this);
         }
+    }
+
+    //hiberate javaassist proxy "workaround"
+    //ilman equals-metodia objectX.equals(proxy-objectX) on aina false
+    @Override
+    public boolean equals(Object other) {
+        return this == other;
+    }
+
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
     }
 
 }

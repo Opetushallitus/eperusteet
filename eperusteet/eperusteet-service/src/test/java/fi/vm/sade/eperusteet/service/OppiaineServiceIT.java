@@ -126,6 +126,43 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
     }
 
+    @Test
+    public void testAddAndUpdateOppimaara() throws IOException {
+        VuosiluokkaKokonaisuus vk = new VuosiluokkaKokonaisuus();
+        vk = vkrepo.save(vk);
+
+        OppiaineDto oppiaineDto = new OppiaineDto();
+        oppiaineDto.setNimi(Optional.of(lt("Oppiaine")));
+        oppiaineDto.setTehtava(Optional.of(to("TehtävänOtsikko","Tehtava")));
+        oppiaineDto.setKoosteinen(Optional.of(true));
+
+        OppiaineenVuosiluokkaKokonaisuusDto vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
+        vkDto.setTehtava(Optional.of(to("Tehtävä", "")));
+        vkDto.setVuosiluokkaKokonaisuus(Optional.of(vk.getReference()));
+
+        oppiaineDto.setVuosiluokkakokonaisuudet(Sets.newHashSet(vkDto));
+        KeskeinenSisaltoalueDto ks = new KeskeinenSisaltoalueDto();
+        ks.setNimi(Optional.of(lt("Nimi")));
+        vkDto.setSisaltoalueet(Lists.newArrayList(ks));
+        OppiaineDto oa1 = service.addOppiaine(perusteId, oppiaineDto);
+        assertEquals(0, oa1.getOppimaarat().size());
+
+        OppiaineDto oppimaara = new OppiaineDto();
+        oppimaara.setNimi(olt("OppimaaranNimi"));
+        oppimaara.setOppiaine(Optional.of(new EntityReference(oa1.getId())));
+        vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
+        vkDto.setTehtava(Optional.of(to("Tehtävä", "")));
+        vkDto.setVuosiluokkaKokonaisuus(Optional.of(vk.getReference()));
+        oppimaara.setVuosiluokkakokonaisuudet(Sets.newHashSet(vkDto));
+        oppimaara = service.addOppiaine(perusteId, oppimaara);
+        oa1 = service.getOppiaine(perusteId, oa1.getId());
+        assertEquals(1, oa1.getOppimaarat().size());
+
+        oppimaara.setTehtava(Optional.of(to("Tehtävä","Tehtävä")));
+        oppimaara = service.updateOppiaine(perusteId, oppimaara);
+        assertEquals("Tehtävä", oppimaara.getTehtava().get().getTeksti().get().get(Kieli.FI));
+    }
+
 
     private static final Logger LOG = LoggerFactory.getLogger(OppiaineServiceIT.class);
 }

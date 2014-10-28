@@ -31,9 +31,6 @@ public interface OppiaineService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     OppiaineDto addOppiaine(@P("perusteId") Long perusteId, OppiaineDto dto);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    OppiaineDto addOppimaara(@P("perusteId") Long perusteId, Long oppiaineId, OppiaineDto dto);
-
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<OppiaineSuppeaDto> getOppimaarat(@P("perusteId") Long perusteId, Long oppiaineId);
 

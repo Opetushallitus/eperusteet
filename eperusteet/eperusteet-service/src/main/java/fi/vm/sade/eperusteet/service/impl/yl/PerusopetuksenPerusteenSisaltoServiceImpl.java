@@ -93,12 +93,14 @@ public class PerusopetuksenPerusteenSisaltoServiceImpl implements Perusopetuksen
     @Override
     public List<OppiaineSuppeaDto> getOppiaineet(Long perusteId) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        assertExists(sisalto, "Perustetta ei ole olemassa");
         return mapper.mapAsList(sisalto.getOppiaineet(), OppiaineSuppeaDto.class);
     }
 
     @Override
     public List<VuosiluokkaKokonaisuusDto> getVuosiluokkaKokonaisuudet(Long perusteId) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        assertExists(sisalto, "Perustetta ei ole olemassa");
         return mapper.mapAsList(sisalto.getVuosiluokkakokonaisuudet(), VuosiluokkaKokonaisuusDto.class);
     }
 

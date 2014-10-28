@@ -28,7 +28,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OppiaineDto extends OppiaineBaseDto {
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Set<EntityReference> oppimaarat;
     private Set<OppiaineenVuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet;
