@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -30,6 +31,7 @@ import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.PerusteprojektiTyoryhma;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
@@ -278,9 +280,17 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             return updateStatus;
         }
 
+        TekstiPalanen nimi = projekti.getPeruste().getNimi();
+        if (tila != ProjektiTila.POISTETTU && tila != ProjektiTila.LAADINTA
+            && (nimi == null || !nimi.getTeksti().containsKey(Kieli.FI) || nimi.getTeksti().get(Kieli.FI).isEmpty())) {
+            updateStatus.addStatus("perusteelta-puuttuu-nimi");
+            updateStatus.setVaihtoOk(false);
+        }
+
         if (projekti.getPeruste() != null && projekti.getPeruste().getSuoritustavat() != null
             && tila == ProjektiTila.VIIMEISTELY && projekti.getTila() == ProjektiTila.LAADINTA) {
             Validointi validointi;
+
             for (Suoritustapa suoritustapa : projekti.getPeruste().getSuoritustavat()) {
                 if (suoritustapa.getRakenne() != null) {
                     validointi = PerusteenRakenne.validoiRyhma(suoritustapa.getRakenne());

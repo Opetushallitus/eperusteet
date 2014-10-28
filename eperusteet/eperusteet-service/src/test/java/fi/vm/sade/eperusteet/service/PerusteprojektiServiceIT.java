@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
@@ -23,6 +24,7 @@ import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
@@ -38,6 +40,8 @@ import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +72,9 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteprojektiService service;
+
+    @PersistenceContext
+    private EntityManager em;
 
     private final String ryhmaId = "1.2.246.562.28.11287634288";
     private final LaajuusYksikko yksikko = LaajuusYksikko.OSAAMISPISTE;
@@ -361,12 +368,20 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
     @Test
     @Rollback(true)
-    public void testPerustepohjaTila() {
+    public void testPerustepohjaTilaJaNimi() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_1");
-        TilaUpdateStatus status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS);
-        Assert.assertTrue(status.isVaihtoOk());
         Perusteprojekti pp = repository.findOne(ppdto.getId());
+
+        TilaUpdateStatus status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS);
+        Assert.assertFalse(status.isVaihtoOk());
+
+        pp.getPeruste().setNimi(TekstiPalanen.of(Kieli.FI, "nimi"));
+        repository.save(pp);
+        em.persist(pp);
+        status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS);
+        Assert.assertTrue(status.isVaihtoOk());
         Assert.assertEquals(ProjektiTila.VALMIS, pp.getTila());
+
         status = service.updateTila(ppdto.getId(), ProjektiTila.LAADINTA);
         Assert.assertFalse(status.isVaihtoOk());
     }
