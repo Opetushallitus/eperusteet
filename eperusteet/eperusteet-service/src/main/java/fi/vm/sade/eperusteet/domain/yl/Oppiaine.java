@@ -88,7 +88,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
         if (koosteinen == false) {
             return null;
         }
-        return oppimaarat == null ? Collections.<Oppiaine>emptySet() : Collections.unmodifiableSet(oppimaarat);
+        return oppimaarat == null ? new HashSet<Oppiaine>() : new HashSet<>(oppimaarat);
     }
 
     public Set<OppiaineenVuosiluokkaKokonaisuus> getVuosiluokkakokonaisuudet() {
