@@ -1,5 +1,5 @@
 <div class="arviointi">
- 
+
   <div ng-class="{'panel panel-default panel-small arviointi-kohdealueet': !eiKohdealueita, 'arviointi-ei-kohdealueita': eiKohdealueita}">
     <span class="toggler" ng-show="arviointi.length && !eiKohdealueita"><a class="action-link" kaanna ng-click="toggleAll()">avaa-sulje-kaikki</a></span>
     <span class="toggler" ng-show="arviointi[0].arvioinninKohteet.length && eiKohdealueita"><a class="action-link" kaanna ng-click="toggleAll()">avaa-sulje-kaikki</a></span>
@@ -19,11 +19,11 @@
           <accordion-heading>
             <span ng-show="arvioinninkohde !== originalKohde">
               {{arvioinninkohde.otsikko | kaanna}}
-              <a ng-show="editEnabled" href="" ng-click="kohde.poista(kohdealue.arvioinninKohteet, arvioinninkohde, $event)" class="muokkausnappi" icon-role="remove"></a>
-              <a ng-show="editEnabled" href="" ng-click="kohde.muokkaa(arvioinninkohde, $event)" class="muokkausnappi" icon-role="edit"></a>
+              <a ng-show="editEnabled" ng-click="kohde.poista(kohdealue.arvioinninKohteet, arvioinninkohde, $event)" class="action-link muokkausnappi" icon-role="remove"></a>
+              <a ng-show="editEnabled" ng-click="kohde.muokkaa(arvioinninkohde, $event)" class="muokkausnappi action-link" icon-role="edit"></a>
             </span>
             <span ng-show="arvioinninkohde === originalKohde">
-              <input class="form-control kohdeotsikko" ng-model="editableKohde.otsikko" localized>
+              <input class="form-control kohdeotsikko" ng-model="editableKohde.otsikko" localized placeholder="{{'arviointi-uusi-kohde-placeholder' | kaanna}}">
               <div class="muokkaus-napit pull-right">
                 <button class="btn btn-default btn-xs" ng-click="kohde.peruMuokkaus()" kaanna>peru</button>
                 <button class="btn btn-primary btn-xs" ng-click="kohde.poistuMuokkauksesta(kohdealue.arvioinninKohteet, $index)" kaanna>ok</button>
@@ -33,7 +33,9 @@
 
           <table>
             <tr ng-repeat="taso in arviointiasteikot[arvioinninkohde._arviointiAsteikko].osaamistasot" ng-class-odd="'raita'" ng-class-even="'ei-raitaa'">
-              <td class="otsikko">{{taso.otsikko | kaanna}}</td>
+              <td class="otsikko" ng-class="{redundant: $first && $last && arvioinninkohde !== originalKohde}">
+                <span ng-show="!($first && $last && arvioinninkohde !== originalKohde)">{{taso.otsikko | kaanna}}</span>
+              </td>
               <td>
                 <table ng-if="arvioinninkohde === originalKohde" ng-repeat="osaamistasonKriteeri in editableKohde.osaamistasonKriteerit | filter:{_osaamistaso: taso.id}">
                   <tbody ui-sortable="kriteeriSortableOptions" ng-model="osaamistasonKriteeri.kriteerit">
@@ -44,10 +46,10 @@
                                 placeholder="{{'arviointi-uusi-kriteeri-placeholder' | kaanna}}"></textarea>
                     </td>
                     <td class="toiminnot">
-                      <a href="" ng-click="rivi.poista(osaamistasonKriteeri.kriteerit, $index)" icon-role="minus" title="{{'arviointi-poista-kriteeri' | kaanna}}"></a>
+                      <a class="action-link" ng-click="rivi.poista(osaamistasonKriteeri.kriteerit, $index)" icon-role="minus" title="{{'arviointi-poista-kriteeri' | kaanna}}"></a>
                     </td>
                   </tr>
-                  <tr class="row-adder"><td></td><td></td><td class="toiminnot"><a href="" ng-click="rivi.uusi(osaamistasonKriteeri, $event)" icon-role="add" title="{{'arviointi-uusi-kriteeri' | kaanna}}"></a></td></tr>
+                  <tr class="row-adder"><td></td><td></td><td class="toiminnot"><a class="action-link" ng-click="rivi.uusi(osaamistasonKriteeri, $event)" icon-role="add" title="{{'arviointi-uusi-kriteeri' | kaanna}}"></a></td></tr>
                   </tbody>
                 </table>
                 <ul ng-if="arvioinninkohde !== originalKohde" ng-repeat="osaamistasonKriteeri in arvioinninkohde.osaamistasonKriteerit | filter:{_osaamistaso: taso.id}">
@@ -73,7 +75,7 @@
               </label>
               <div class="muokkaus-napit">
                 <button class="btn btn-default btn-xs" ng-click="kohde.cancel(kohdealue)" kaanna>peru</button>
-                <button class="btn btn-primary btn-xs" ng-disabled="!(kohdealue.$newkohde.nimi && kohdealue.$newkohde.arviointiasteikko)" ng-click="kohde.uusi(kohdealue);" kaanna>lisaa</button>
+                <button class="btn btn-primary btn-xs" ng-disabled="!kohdealue.$newkohde.arviointiasteikko" ng-click="kohde.uusi(kohdealue)" kaanna>lisaa</button>
               </div>
             </div>
             <button type="button" class="btn btn-default btn-xs" ng-show="!kohde.isAdding(kohdealue)"
@@ -82,7 +84,7 @@
         </div>
 
       </accordion-group>
-      </div> <!-- sortableKohdealueet--> 
+      </div> <!-- sortableKohdealueet-->
       </accordion>
 
       <!-- Kohdealueen lisäys -->
@@ -103,4 +105,3 @@
   </div>
 
   </div>
-

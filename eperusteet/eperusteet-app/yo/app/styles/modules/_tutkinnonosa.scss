@@ -251,6 +251,11 @@ $pikamenu-size: 22px;
     }
     td.otsikko {
       width: 25%;
+      &.redundant {
+        width: 0 !important;
+        overflow: hidden;
+        padding: 0;
+      }
     }
     td.dragger {
       width: 5%;
