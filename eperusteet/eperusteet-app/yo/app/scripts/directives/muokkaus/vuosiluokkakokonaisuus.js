@@ -35,13 +35,7 @@ angular.module('eperusteApp')
       CloneHelper, $timeout, $state) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
-    $scope.vuosiluokkaOptions = _.map(_.range(1, 10), function (item) {
-      return {
-        value: item,
-        label: Kaanna.kaanna('vuosiluokka') + ' ' + item,
-        selected: /*$scope.editableModel.vuosiluokat.indexOf(item) > -1*/ false
-      };
-    });
+    $scope.vuosiluokkaOptions = {};
 
     $scope.updateVuosiluokatModel = function () {
       $scope.editableModel.vuosiluokat = _($scope.vuosiluokkaOptions)
@@ -171,16 +165,32 @@ angular.module('eperusteApp')
       cb();
     }
 
+    $scope.formatVuosiluokka = function (vlEnumValue) {
+      return parseInt(_.last(vlEnumValue.split('_')), 10);
+    };
+
     function mapModel() {
       // hax until backend support
       if (!$scope.editableModel.tekstikappaleet) {
         $scope.editableModel.tekstikappaleet = [{}];
       }
       $scope.editableModel.tekstikappaleet[0] = _.cloneDeep($scope.editableModel.tehtava);
+
+      $scope.vuosiluokkaOptions = _.map(_.range(1, 11), function (item) {
+        var vlEnum = 'vuosiluokka_' + item;
+        return {
+          value: vlEnum,
+          label: Kaanna.kaanna('vuosiluokka') + ' ' + item,
+          selected: $scope.editableModel.vuosiluokat.indexOf(vlEnum) > -1
+        };
+      });
     }
 
     $scope.model.then(function (data) {
       $scope.editableModel = angular.copy(data);
+      if (!$scope.editableModel.vuosiluokat) {
+        $scope.editableModel.vuosiluokat = [];
+      }
       mapModel();
     });
   })
