@@ -35,8 +35,6 @@ public abstract class OppiaineBaseDto implements ReferenceableDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     //"äitioppiaine" jos kyseessä on oppiaineen oppimäärä
     private Optional<EntityReference> oppiaine;
-
     private Optional<Boolean> koosteinen;
     private Optional<LokalisoituTekstiDto> nimi;
-    private Optional<TekstiOsaDto> tehtava;
 }

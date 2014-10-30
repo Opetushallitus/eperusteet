@@ -16,11 +16,13 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
 import com.mangofactory.swagger.annotations.ApiIgnore;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
+import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkakokonaisuusService;
@@ -55,6 +57,9 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @Autowired
     private VuosiluokkakokonaisuusService kokonaisuusService;
+
+    @Autowired
+    private PerusteenOsaViiteService viiteService;
 
     @RequestMapping(value = "/oppiaineet", method = GET)
     public List<OppiaineSuppeaDto> getOppiaineet(
@@ -201,6 +206,61 @@ public class PerusopetuksenPerusteenSisaltoController {
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
         sisaltoService.deleteLaajaalainenOsaaminen(perusteId, id);
+    }
+
+    @RequestMapping(value = "/sisalto/{id}", method = DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteSisalto(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long id) {
+        sisaltoService.removeSisalto(perusteId, id);
+    }
+
+    @RequestMapping(value = "/sisalto", method = POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public PerusteenOsaViiteDto.Matala addSisalto(
+        @PathVariable("perusteId") final Long perusteId,
+        @RequestBody(required = false) PerusteenOsaViiteDto.Matala dto) {
+        return sisaltoService.addSisalto(perusteId, null, dto);
+    }
+
+    @RequestMapping(value = "/sisalto", method = GET)
+    @ResponseStatus(HttpStatus.CREATED)
+    public PerusteenOsaViiteDto.Suppea getSisalto(
+        @PathVariable("perusteId") final Long perusteId) {
+        return sisaltoService.getSisalto(perusteId, null, PerusteenOsaViiteDto.Suppea.class);
+    }
+
+    @RequestMapping(value = "/sisalto/{id}", method = GET)
+    @ResponseStatus(HttpStatus.CREATED)
+    public PerusteenOsaViiteDto.Matala getSisalto(
+        @PathVariable("perusteId") final Long perusteId, @PathVariable("id") final Long id) {
+        return sisaltoService.getSisalto(perusteId, id, PerusteenOsaViiteDto.Matala.class);
+    }
+
+    @RequestMapping(value = "/sisalto/{id}/lapset", method = POST)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addSisalto(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long id,
+        @RequestBody(required = false) PerusteenOsaViiteDto.Matala dto) {
+        sisaltoService.addSisalto(perusteId, id, dto);
+    }
+
+    @RequestMapping(value = "/sisalto/{id}", method = POST)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateSisaltoViite(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long id,
+        @RequestBody final fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Suppea pov) {
+        viiteService.reorderSubTree(perusteId, id, pov);
+    }
+
+    @RequestMapping(value = "/sisalto/{id}/muokattavakopio", method = POST)
+    public PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long id) {
+        return viiteService.kloonaaTekstiKappale(perusteId, id);
     }
 
 }

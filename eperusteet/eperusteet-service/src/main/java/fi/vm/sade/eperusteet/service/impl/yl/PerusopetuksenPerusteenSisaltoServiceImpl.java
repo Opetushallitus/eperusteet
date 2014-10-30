@@ -17,11 +17,13 @@ package fi.vm.sade.eperusteet.service.impl.yl;
 
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.repository.LaajaalainenOsaaminenRepository;
 import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
+import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -40,8 +42,38 @@ public class PerusopetuksenPerusteenSisaltoServiceImpl implements Perusopetuksen
     @Autowired
     private LaajaalainenOsaaminenRepository osaaminenRepository;
     @Autowired
+    private PerusteenOsaViiteService viiteService;
+
+    @Autowired
     @Dto
     private DtoMapper mapper;
+
+    @Override
+    public <T extends PerusteenOsaViiteDto<?>> T getSisalto(Long perusteId, Long sisaltoId, Class<T> view) {
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        assertExists(sisalto, "Pyydettyä perustetta ei ole olemassa");
+        return viiteService.getSisalto(perusteId, sisaltoId == null ? sisalto.getSisalto().getId() : sisaltoId, view);
+    }
+
+    @Override
+    @Transactional
+    public PerusteenOsaViiteDto.Matala addSisalto(Long perusteId, Long viiteId, PerusteenOsaViiteDto.Matala dto) {
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        assertExists(sisalto, "Pyydettyä perustetta ei ole olemassa");
+        if (viiteId == null) {
+            return viiteService.addSisalto(perusteId, sisalto.getSisalto().getId(), dto);
+        } else {
+            return viiteService.addSisalto(perusteId, viiteId, dto);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void removeSisalto(Long perusteId, Long viiteId) {
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        assertExists(sisalto, "Pyydettyä perustetta ei ole olemassa");
+        viiteService.removeSisalto(perusteId, viiteId);
+    }
 
     @Override
     public List<LaajaalainenOsaaminenDto> getLaajaalaisetOsaamiset(Long perusteId) {

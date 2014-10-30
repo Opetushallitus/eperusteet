@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
@@ -40,7 +39,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-
 
 /**
  *
@@ -83,9 +81,8 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
         peruste.setSuoritustavat(Collections.singleton(suoritustapa));
 
         PerusteenOsaViite juuri = new PerusteenOsaViite();
-        juuri.setLapset(new ArrayList<PerusteenOsaViite>() );
+        juuri.setLapset(new ArrayList<PerusteenOsaViite>());
         juuri.setVanhempi(null);
-
 
         juuri = repo.save(juuri);
         juuriId = juuri.getId();
@@ -124,7 +121,7 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testRemoveSisaltoOK() {
-        service.removeSisalto(perusteId, Suoritustapakoodi.NAYTTO, lapsenlapsiId);
+        service.removeSisalto(perusteId, lapsenlapsiId);
         assertNotEquals(null, repo.findOne(juuriId));
         assertNotEquals(null, repo.findOne(lapsiId));
         assertNotEquals(null, em.find(TekstiKappale.class, tekstikappaleId));
@@ -132,12 +129,10 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
         assertEquals(null, em.find(TekstiKappale.class, tekstikappaleLapsenlapsiId));
     }
 
-    @Test
+    @Test(expected = BusinessRuleViolationException.class)
     @Rollback(true)
     public void testRemoveSisaltoJuuri() throws BusinessRuleViolationException {
-        thrown.expect(BusinessRuleViolationException.class);
-	thrown.expectMessage("Suoritustavan juurielementtiä ei voi poistaa");
-        service.removeSisalto(perusteId, Suoritustapakoodi.NAYTTO, juuriId);
+        service.removeSisalto(perusteId, juuriId);
         assertNotEquals(null, repo.findOne(juuriId));
         assertNotEquals(null, repo.findOne(lapsiId));
         assertNotEquals(null, em.find(TekstiKappale.class, tekstikappaleId));
@@ -145,12 +140,10 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
         assertNotEquals(null, em.find(TekstiKappale.class, tekstikappaleLapsenlapsiId));
     }
 
-    @Test
+    @Test(expected = BusinessRuleViolationException.class)
     @Rollback(true)
     public void testRemoveSisaltoLapsia() throws BusinessRuleViolationException {
-        thrown.expect(BusinessRuleViolationException.class);
-	thrown.expectMessage("Sisällöllä on lapsia, ei voida poistaa");
-        service.removeSisalto(perusteId, Suoritustapakoodi.NAYTTO, lapsiId);
+        service.removeSisalto(perusteId, lapsiId);
         assertNotEquals(null, repo.findOne(juuriId));
         assertNotEquals(null, repo.findOne(lapsiId));
         assertNotEquals(null, em.find(TekstiKappale.class, tekstikappaleId));

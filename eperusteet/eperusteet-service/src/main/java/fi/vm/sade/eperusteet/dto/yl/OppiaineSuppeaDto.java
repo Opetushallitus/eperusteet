@@ -15,10 +15,18 @@
  */
 package fi.vm.sade.eperusteet.dto.yl;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  *
  * @author jhyoty
  */
+@Getter
+@Setter
 public class OppiaineSuppeaDto extends OppiaineBaseDto {
-    //olemassa mappauksen takia...
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Set<OppiaineSuppeaDto> oppimaarat;
 }

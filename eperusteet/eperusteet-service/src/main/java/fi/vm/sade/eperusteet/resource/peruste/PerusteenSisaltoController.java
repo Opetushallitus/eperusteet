@@ -95,15 +95,6 @@ public class PerusteenSisaltoController {
         return new ResponseEntity<>(service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), sisaltoViite), HttpStatus.CREATED);
     }
 
-//    @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{perusteenosaViiteId}/kloonaa", method = POST)
-//    @ResponseBody
-//    public Laaja kloonaa(
-//            @PathVariable("perusteId") final Long perusteId,
-//            @PathVariable("suoritustapa") final String suoritustapa,
-//            @PathVariable("perusteenosaViiteId") final Long id) {
-//        Laaja re = PerusteenOsaViiteService.kloonaa(perusteId, suoritustapa, id);
-//        return re;
-//    }
     @RequestMapping(value = "/sisalto/{perusteenosaViiteId}/lapsi", method = POST)
     public ResponseEntity<PerusteenOsaViiteDto.Matala> addSisaltoLapsi(
         @PathVariable("perusteId") final Long perusteId,
@@ -122,43 +113,41 @@ public class PerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/sisalto", method = GET)
-    public ResponseEntity<PerusteenOsaViiteDto> getSuoritustapaSisalto(
+    public ResponseEntity<PerusteenOsaViiteDto<?>> getSuoritustapaSisalto(
         @RequestParam(value = "muoto", required = false, defaultValue = "suppea") String view,
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapakoodi) {
 
-        PerusteenOsaViiteDto dto = service.getSuoritustapaSisalto(perusteId, Suoritustapakoodi.of(suoritustapakoodi), "suppea".equals(view) ? PerusteenOsaViiteDto.Suppea.class : PerusteenOsaViiteDto.Laaja.class);
+        PerusteenOsaViiteDto<?> dto = service.getSuoritustapaSisalto(perusteId, Suoritustapakoodi.of(suoritustapakoodi), "suppea".equals(view)
+                                                                     ? PerusteenOsaViiteDto.Suppea.class : PerusteenOsaViiteDto.Laaja.class);
         if (dto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        return new ResponseEntity<PerusteenOsaViiteDto<?>>(dto, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/sisalto/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeSisaltoViite(
         @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("suoritustapa") final String suoritustapa,
         @PathVariable("id") final Long id) {
-        perusteenOsaViiteService.removeSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), id);
+        perusteenOsaViiteService.removeSisalto(perusteId, id);
     }
 
     @RequestMapping(value = "/sisalto/{id}", method = POST)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateSisaltoViite(
         @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("suoritustapa") final String suoritustapa,
         @PathVariable("id") final Long id,
         @RequestBody final fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja pov) {
-        perusteenOsaViiteService.reorderSubTree(perusteId, Suoritustapakoodi.of(suoritustapa),id, pov);
+        perusteenOsaViiteService.reorderSubTree(perusteId, id, pov);
     }
 
     @RequestMapping(value = "/sisalto/{id}/muokattavakopio", method = POST)
     public PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(
         @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("suoritustapa") final String suoritustapa,
         @PathVariable("id") final Long id) {
-        return perusteenOsaViiteService.kloonaaTekstiKappale(perusteId, Suoritustapakoodi.of(suoritustapa),id);
+        return perusteenOsaViiteService.kloonaaTekstiKappale(perusteId, id);
     }
 
 }

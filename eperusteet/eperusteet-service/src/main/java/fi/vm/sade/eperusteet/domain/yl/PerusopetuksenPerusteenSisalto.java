@@ -98,6 +98,10 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
         return oppiaineet.contains(aine);
     }
 
+    public boolean containsViite(PerusteenOsaViite viite) {
+        return viite != null && sisalto == viite.getRoot();
+    }
+
     public boolean containsVuosiluokkakokonaisuus(VuosiluokkaKokonaisuus kokonaisuus) {
         return kokonaisuus != null && vuosiluokkakokonaisuudet.contains(kokonaisuus);
     }

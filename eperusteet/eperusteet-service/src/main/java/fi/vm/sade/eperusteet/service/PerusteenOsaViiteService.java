@@ -29,14 +29,19 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public interface PerusteenOsaViiteService {
 
     @PreAuthorize("hasPermission(#peruste,'peruste','MUOKKAUS')")
-    void removeSisalto(@P("peruste") Long perusteId, Suoritustapakoodi tapa, Long id);
-
-    @PreAuthorize("hasPermission(#peruste,'peruste','MUOKKAUS')")
-    PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(@P("peruste") Long perusteId, Suoritustapakoodi tapa, Long id);
+    PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(@P("peruste") Long perusteId, Long id);
 
     @PreAuthorize("hasPermission(#peruste,'peruste','MUOKKAUS')")
     TutkinnonOsaViiteDto kloonaaTutkinnonOsa(@P("peruste") Long perusteId, Suoritustapakoodi tapa,Long id);
 
     @PreAuthorize("hasPermission(#peruste,'peruste','MUOKKAUS')")
-    void reorderSubTree(@P("peruste") Long perusteId, Suoritustapakoodi tapa, Long id, PerusteenOsaViiteDto.Puu<?,?> uusi);
+    void reorderSubTree(@P("peruste") Long perusteId, Long rootViiteId, PerusteenOsaViiteDto.Puu<?,?> uusi);
+
+    <T extends PerusteenOsaViiteDto<?>> T getSisalto(Long perusteId, Long viiteId, Class<T> view);
+
+    @PreAuthorize("hasPermission(#peruste,'peruste','MUOKKAUS')")
+    void removeSisalto(@P("peruste") Long perusteId, Long id);
+
+    @PreAuthorize("hasPermission(#peruste,'peruste','MUOKKAUS')")
+    PerusteenOsaViiteDto.Matala addSisalto(Long perusteId, Long viiteId, PerusteenOsaViiteDto.Matala viiteDto);
 }

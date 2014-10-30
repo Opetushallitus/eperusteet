@@ -42,7 +42,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Audited
 @Table(name = "perusteenosaviite")
-public class PerusteenOsaViite implements ReferenceableEntity{
+public class PerusteenOsaViite implements ReferenceableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -70,5 +70,13 @@ public class PerusteenOsaViite implements ReferenceableEntity{
     @Override
     public EntityReference getReference() {
         return new EntityReference(id);
+    }
+
+    public PerusteenOsaViite getRoot() {
+        PerusteenOsaViite root = this;
+        while (root.getVanhempi() != null) {
+            root = root.getVanhempi();
+        }
+        return root;
     }
 }

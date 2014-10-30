@@ -26,7 +26,6 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.service.PerusteService;
-import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +50,6 @@ public class PerusteController {
 
     @Autowired
     private PerusteService service;
-
-    @Autowired
-    private PerusteenOsaViiteService PerusteenOsaViiteService;
 
     @RequestMapping(value = "/info", method = GET)
     @ResponseBody
