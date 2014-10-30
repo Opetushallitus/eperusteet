@@ -19,7 +19,8 @@
 
 angular.module('eperusteApp')
   .service('PerusopetusService', function (Vuosiluokkakokonaisuudet, Oppiaineet, $q,
-      OppiaineenVuosiluokkakokonaisuudet, LaajaalaisetOsaamiset, Notifikaatiot) {
+      OppiaineenVuosiluokkakokonaisuudet, LaajaalaisetOsaamiset, Notifikaatiot,
+      PerusopetuksenSisalto) {
     this.OSAAMINEN = 'osaaminen';
     this.VUOSILUOKAT = 'vuosiluokat';
     this.OPPIAINEET = 'oppiaineet';
@@ -57,6 +58,9 @@ angular.module('eperusteApp')
         addLabel: 'lisaa-oppiaine'
       },
     ];
+    var errorCb = function (err) {
+      Notifikaatiot.serverCb(err);
+    };
 
     function promisify(data) {
       var deferred = $q.defer();
@@ -88,35 +92,42 @@ angular.module('eperusteApp')
           return getOsaGeneric(Oppiaineet, params);
         case this.OSAAMINEN:
           return getOsaGeneric(LaajaalaisetOsaamiset, params);
+        case 'tekstikappale':
+          return getOsaGeneric(PerusopetuksenSisalto, params);
         default:
           break;
       }
     };
 
-    this.deleteOsa = function (osa) {
-      osa.$delete(commonParams());
+    this.deleteOsa = function (osa, success) {
+      var successCb = success || angular.noop;
+      if (osa.$url) {
+        PerusopetuksenSisalto.delete(commonParams({osanId: osa.id}), successCb, errorCb);
+      } else {
+        osa.$delete(commonParams(), successCb, errorCb);
+      }
     };
 
-    this.saveOsa = function (data, config) {
-      var successCb = angular.noop;
+    this.saveOsa = function (data, config, success) {
+      var successCb = success || angular.noop;
       switch (config.osanTyyppi) {
         case this.OPPIAINEET:
-          Oppiaineet.save({
-            perusteId: tiedot.getProjekti()._peruste,
-          }, data, successCb, function (err) {
-            Notifikaatiot.serverCb(err);
-          });
+          Oppiaineet.save(commonParams(), data, successCb, errorCb);
           break;
         case this.OSAAMINEN:
-          LaajaalaisetOsaamiset.save({
-            perusteId: tiedot.getProjekti()._peruste,
-          }, data, successCb, function (err) {
-            Notifikaatiot.serverCb(err);
-          });
+          LaajaalaisetOsaamiset.save(commonParams(), data, successCb, errorCb);
           break;
         default:
+          // Sisältö
+          PerusopetuksenSisalto.save(commonParams(), data, successCb, errorCb);
           break;
       }
+    };
+
+    this.addSisaltoChild = function (id, success) {
+      console.log('addSisaltoChild', commonParams({osanId: id}), success);
+      // TODO odottaa bäkkäriä
+      //PerusopetuksenSisalto.addChild(commonParams({osanId: id}), {}, success);
     };
 
     this.saveVuosiluokkakokonaisuudenOsa = function (vuosiluokkakokonaisuus, oppiaine) {
@@ -125,7 +136,7 @@ angular.module('eperusteApp')
         oppiaineId: oppiaine.id
       }, vuosiluokkakokonaisuus, function (res) {
         vuosiluokkakokonaisuus = res;
-      });
+      }, errorCb);
     };
 
     this.getTekstikappaleet = function () {
@@ -140,21 +151,25 @@ angular.module('eperusteApp')
       return Oppiaineet.oppimaarat(commonParams({osanId: oppiaine.id})).$promise;
     };
 
+    this.getSisalto = function () {
+      return PerusopetuksenSisalto.root(commonParams());
+    };
+
     this.getOsat = function (tyyppi, useCache) {
       if (useCache && cached[tyyppi]) {
         return cached[tyyppi];
       }
       switch(tyyppi) {
         case this.OSAAMINEN:
-          return LaajaalaisetOsaamiset.query({perusteId: tiedot.getProjekti()._peruste}, function (data) {
+          return LaajaalaisetOsaamiset.query(commonParams(), function (data) {
             cached[tyyppi] = data;
           });
         case this.VUOSILUOKAT:
-          return Vuosiluokkakokonaisuudet.query({perusteId: tiedot.getProjekti()._peruste}, function (data) {
+          return Vuosiluokkakokonaisuudet.query(commonParams(), function (data) {
             cached[tyyppi] = data;
           });
         case this.OPPIAINEET:
-          return Oppiaineet.query({perusteId: tiedot.getProjekti()._peruste}, function (data) {
+          return Oppiaineet.query(commonParams(), function (data) {
             cached[tyyppi] = data;
           });
         default:

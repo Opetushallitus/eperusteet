@@ -32,6 +32,7 @@
                       <a ng-href="{{opetusHref(sisalto)}}" class="otsikko">
                         <div ng-click="$event.preventDefault(); sisalto.$opened = !sisalto.$opened" class="chevron">
                           <span ng-show="sisalto.lapset.length > 0" class="glyphicon" ng-class="sisalto.$opened ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
+                          <span ng-show="sisalto.lapset.length === 0" class="ep-icon" ng-class="sisalto.$type ? sisalto.$type : 'ep-text'"></span>
                         </div>
                         <h3>
                           <span ep-highlight="rajaus">{{ sisalto.nimi | kaanna }}</span>
@@ -48,7 +49,9 @@
                     <div ng-init="indent = 1" ng-repeat="lapsi in sisalto.lapset" style="padding-left: 40px;">
                       <div class="sisalto-list-element">
                         <a ng-href="{{sisaltoHref(sisalto, lapsi)}}" class="otsikko">
-                          <div class="chevron"></div>
+                          <div class="chevron">
+                            <span ng-show="!lapsi.lapset || lapsi.lapset.length === 0" class="ep-icon" ng-class="lapsi.$type ? lapsi.$type : 'ep-text'"></span>
+                          </div>
                           <h3>
                             <span ep-highlight="rajaus">{{ lapsi.nimi | kaanna }}</span>
                           </h3>
@@ -72,7 +75,7 @@
             <h2>
                 {{ 'tekstikappaleet' | kaanna }} ({{ peruste.sisalto.lapset.length }})
                 <div class="pull-right buttons">
-                    <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" icon-role="ep-text-add" kaanna="lisaa-tutkintokohtainen-osa"></button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="addTekstikappale()" icon-role="ep-text-add" kaanna="lisaa-tutkintokohtainen-osa"></button>
                     <button class="btn btn-default btn-sm"
                             ng-class="{ 'btn-primary': muokkausTutkintokohtaisetOsat }" ng-click="aloitaMuokkaus()"
                             ng-show="valittuSuoritustapa !== ''" icon-role="edit" kaanna="muokkaa-rakennetta">

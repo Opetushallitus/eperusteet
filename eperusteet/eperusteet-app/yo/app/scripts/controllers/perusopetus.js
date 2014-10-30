@@ -19,22 +19,39 @@
 
 angular.module('eperusteApp')
   .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state,
-      PerusopetusService) {
+      PerusopetusService, TekstikappaleOperations) {
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
+    TekstikappaleOperations.setPeruste($scope.peruste);
     $scope.rajaus = '';
 
-    //$scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
+    $scope.$watch('peruste.sisalto', function () {
+      Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function (lapsi) {
+        lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', {
+          suoritustapa: 'ops',
+          perusteenOsanTyyppi: 'tekstikappale',
+          perusteenOsaId: lapsi.perusteenOsa ? lapsi.perusteenOsa.id : 0,
+          versio: '' });
+      });
+    }, true);
+
     $scope.datat = {
       opetus: {lapset: []},
-      sisalto: {lapset: PerusopetusService.getTekstikappaleet()}
+      sisalto: perusteprojektiTiedot.getYlTiedot().sisalto
     };
+
+    $scope.$watch('datat.opetus.lapset', function () {
+      _.each($scope.datat.opetus.lapset, function (area) {
+        area.$type = 'ep-parts';
+      });
+    });
+
     // TODO käytä samaa APIa kuin sivunavissa, koko sisältöpuu kerralla
     _.each(PerusopetusService.sisallot, function (item) {
       var data = {
         nimi: item.label,
         tyyppi: item.tyyppi,
-        lapset: PerusopetusService.getOsat(item.tyyppi)
+        lapset: PerusopetusService.getOsat(item.tyyppi, true)
       };
       $scope.datat.opetus.lapset.push(data);
     });
@@ -73,6 +90,10 @@ angular.module('eperusteApp')
       Algoritmit.kaikilleLapsisolmuille($scope.datat.opetus, 'lapset', function(lapsi) {
         lapsi.$opened = !open;
       });
+    };
+
+    $scope.addTekstikappale = function () {
+      TekstikappaleOperations.add();
     };
   })
 
@@ -130,6 +151,7 @@ angular.module('eperusteApp')
   .controller('OsaAlueController', function ($scope, $q, $stateParams, PerusopetusService) {
     $scope.isVuosiluokka = $stateParams.osanTyyppi === PerusopetusService.VUOSILUOKAT;
     $scope.isOppiaine = $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET;
+    $scope.isOsaaminen = $stateParams.osanTyyppi === PerusopetusService.OSAAMINEN;
     $scope.versiot = {latest: true};
     $scope.dataObject = PerusopetusService.getOsa($stateParams);
   })
