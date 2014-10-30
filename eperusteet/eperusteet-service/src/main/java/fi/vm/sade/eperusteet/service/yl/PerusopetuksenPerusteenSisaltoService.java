@@ -33,30 +33,30 @@ public interface PerusopetuksenPerusteenSisaltoService {
     LaajaalainenOsaaminenDto addLaajaalainenOsaaminen(@P("perusteId") Long perusteId, LaajaalainenOsaaminenDto dto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    LaajaalainenOsaaminenDto getLaajaalainenOsaaminen(Long perusteId, Long id);
+    LaajaalainenOsaaminenDto getLaajaalainenOsaaminen(@P("perusteId") Long perusteId, Long id);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     LaajaalainenOsaaminenDto updateLaajaalainenOsaaminen(@P("perusteId") Long perusteId, LaajaalainenOsaaminenDto dto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void deleteLaajaalainenOsaaminen(Long perusteId, Long id);
+    void deleteLaajaalainenOsaaminen(@P("perusteId") Long perusteId, Long id);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<LaajaalainenOsaaminenDto> getLaajaalaisetOsaamiset(@P("perusteId") Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<OppiaineSuppeaDto> getOppiaineet(Long perusteId);
+    List<OppiaineSuppeaDto> getOppiaineet(@P("perusteId") Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<VuosiluokkaKokonaisuusDto> getVuosiluokkaKokonaisuudet(Long perusteId);
+    List<VuosiluokkaKokonaisuusDto> getVuosiluokkaKokonaisuudet(@P("perusteId") Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    <T extends PerusteenOsaViiteDto<?>> T getSisalto(Long perusteId, Long sisaltoId, Class<T> view);
+    <T extends PerusteenOsaViiteDto<?>> T getSisalto(@P("perusteId") Long perusteId, Long sisaltoId, Class<T> view);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    PerusteenOsaViiteDto.Matala addSisalto(Long perusteId, Long viiteId, PerusteenOsaViiteDto.Matala dto);
+    PerusteenOsaViiteDto.Matala addSisalto(@P("perusteId") Long perusteId, Long viiteId, PerusteenOsaViiteDto.Matala dto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void removeSisalto(Long perusteId, Long viiteId);
+    void removeSisalto(@P("perusteId") Long perusteId, Long viiteId);
     //TBD: lukitus
 }

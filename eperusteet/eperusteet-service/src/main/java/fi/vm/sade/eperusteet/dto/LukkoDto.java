@@ -29,11 +29,11 @@ import org.joda.time.DateTime;
 @EqualsAndHashCode
 public class LukkoDto {
 
-    public LukkoDto(Lukko lukko, Boolean oma) {
+    public LukkoDto(Lukko lukko) {
         this.haltijaOid = lukko.getHaltijaOid();
         this.luotu = lukko.getLuotu();
         this.vanhentuu = lukko.getVanhentuu();
-        this.oma = oma;
+        this.oma = lukko.isOma();
     }
 
     final String haltijaOid;
@@ -41,7 +41,7 @@ public class LukkoDto {
     final DateTime vanhentuu;
     final Boolean oma;
 
-    public static LukkoDto of(Lukko lukko, Boolean oma) {
-        return lukko == null ? null : new LukkoDto(lukko, oma);
+    public static LukkoDto of(Lukko lukko) {
+        return lukko == null ? null : new LukkoDto(lukko);
     }
 }

@@ -28,20 +28,21 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public interface PerusteenOsaViiteService {
 
-    @PreAuthorize("hasPermission(#peruste,'peruste','MUOKKAUS')")
-    PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(@P("peruste") Long perusteId, Long id);
+    @PreAuthorize("hasPermission(#perusteId,'peruste','MUOKKAUS')")
+    PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(@P("perusteId") Long perusteId, Long id);
 
-    @PreAuthorize("hasPermission(#peruste,'peruste','MUOKKAUS')")
-    TutkinnonOsaViiteDto kloonaaTutkinnonOsa(@P("peruste") Long perusteId, Suoritustapakoodi tapa,Long id);
+    @PreAuthorize("hasPermission(#perusteId,'peruste','MUOKKAUS')")
+    TutkinnonOsaViiteDto kloonaaTutkinnonOsa(@P("perusteId") Long perusteId, Suoritustapakoodi tapa,Long id);
 
-    @PreAuthorize("hasPermission(#peruste,'peruste','MUOKKAUS')")
-    void reorderSubTree(@P("peruste") Long perusteId, Long rootViiteId, PerusteenOsaViiteDto.Puu<?,?> uusi);
+    @PreAuthorize("hasPermission(#perusteId,'peruste','MUOKKAUS')")
+    void reorderSubTree(@P("perusteId") Long perusteId, Long rootViiteId, PerusteenOsaViiteDto.Puu<?,?> uusi);
 
-    <T extends PerusteenOsaViiteDto<?>> T getSisalto(Long perusteId, Long viiteId, Class<T> view);
+    @PreAuthorize("hasPermission(#perusteId,'peruste','LUKU')")
+    <T extends PerusteenOsaViiteDto<?>> T getSisalto(@P("perusteId") Long perusteId, Long viiteId, Class<T> view);
 
-    @PreAuthorize("hasPermission(#peruste,'peruste','MUOKKAUS')")
-    void removeSisalto(@P("peruste") Long perusteId, Long id);
+    @PreAuthorize("hasPermission(#perusteId,'peruste','MUOKKAUS')")
+    void removeSisalto(@P("perusteId") Long perusteId, Long id);
 
-    @PreAuthorize("hasPermission(#peruste,'peruste','MUOKKAUS')")
-    PerusteenOsaViiteDto.Matala addSisalto(Long perusteId, Long viiteId, PerusteenOsaViiteDto.Matala viiteDto);
+    @PreAuthorize("hasPermission(#perusteId,'peruste','MUOKKAUS')")
+    PerusteenOsaViiteDto.Matala addSisalto(@P("perusteId") Long perusteId, Long viiteId, PerusteenOsaViiteDto.Matala viiteDto);
 }

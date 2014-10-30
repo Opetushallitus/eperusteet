@@ -403,7 +403,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     public LukkoDto lock(Long id) {
         assertExists(id);
-        return LukkoDto.of(lockManager.lock(id), lockManager.isLockedByAuthenticatedUser(id));
+        return LukkoDto.of(lockManager.lock(id));
     }
 
     @Override
@@ -415,7 +415,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     public LukkoDto getLock(Long id) {
         assertExists(id);
-        return LukkoDto.of(lockManager.getLock(id), lockManager.isLockedByAuthenticatedUser(id));
+        return LukkoDto.of(lockManager.getLock(id));
     }
 
     private void assertExists(Long id) {
