@@ -72,7 +72,7 @@
                 {{ 'tekstikappaleet' | kaanna }} ({{ peruste.sisalto.lapset.length }})
                 <a ng-click="avaaSuljeKaikki(peruste.sisalto)" class="action-link"><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
                 <div class="pull-right buttons">
-                    <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" icon-role="add" kaanna="lisaa-tutkintokohtainen-osa"></button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="addTekstikappale()" icon-role="add" kaanna="lisaa-tutkintokohtainen-osa"></button>
                     <button class="btn btn-default btn-sm"
                             ng-class="{ 'btn-primary': muokkausTutkintokohtaisetOsat }" ng-click="aloitaMuokkaus()"
                             ng-show="valittuSuoritustapa !== ''" icon-role="edit" kaanna="muokkaa-rakennetta">

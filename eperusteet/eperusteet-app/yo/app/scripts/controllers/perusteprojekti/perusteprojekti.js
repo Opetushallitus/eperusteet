@@ -63,7 +63,7 @@ angular.module('eperusteApp')
           }],
           'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
             function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
-              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams, true);
+              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
             }]
         },
         controller: 'OsalistausController',
@@ -80,7 +80,7 @@ angular.module('eperusteApp')
           }],
           'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
             function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
-              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams, true);
+              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
             }]
         },
         controller: 'OsaAlueController',

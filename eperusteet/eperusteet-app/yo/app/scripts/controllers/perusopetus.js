@@ -19,22 +19,21 @@
 
 angular.module('eperusteApp')
   .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state,
-      PerusopetusService) {
+      PerusopetusService, OsanMuokkausHelper) {
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.rajaus = '';
 
-    //$scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
     $scope.datat = {
       opetus: {lapset: []},
-      sisalto: {lapset: PerusopetusService.getTekstikappaleet()}
+      sisalto: perusteprojektiTiedot.getYlTiedot().sisalto
     };
     // TODO käytä samaa APIa kuin sivunavissa, koko sisältöpuu kerralla
     _.each(PerusopetusService.sisallot, function (item) {
       var data = {
         nimi: item.label,
         tyyppi: item.tyyppi,
-        lapset: PerusopetusService.getOsat(item.tyyppi)
+        lapset: PerusopetusService.getOsat(item.tyyppi, true)
       };
       $scope.datat.opetus.lapset.push(data);
     });
@@ -66,6 +65,11 @@ angular.module('eperusteApp')
       Algoritmit.kaikilleLapsisolmuille(sisalto, 'lapset', function(lapsi) {
         lapsi.$opened = _.isUndefined(state) ? !open : state;
       });
+    };
+
+    $scope.addTekstikappale = function () {
+      OsanMuokkausHelper.setup({$isNew: true});
+      $state.go('root.perusteprojekti.muokkaus', {osanTyyppi: 'tekstikappale', osanId: 'uusi'});
     };
   })
 

@@ -54,6 +54,9 @@ angular.module('eperusteApp')
       } else if (this.path) {
         var payload = _.pick(this.model, ['id', this.path]);
         PerusopetusService.saveOsa(payload, this.backState[1]);
+      } else {
+        // Sisältö
+        PerusopetusService.saveOsa(this.model, this.backState[1]);
       }
     };
 
@@ -174,7 +177,8 @@ angular.module('eperusteApp')
   .controller('OsanmuokkausTekstikappaleController', function ($scope, OsanMuokkausHelper, $rootScope) {
     $scope.getTitle = function () {
       return OsanMuokkausHelper.isVuosiluokkakokonaisuudenOsa() ?
-        'muokkaus-vuosiluokkakokonaisuuden-osa' : 'muokkaus-tekstikappale';
+        'muokkaus-vuosiluokkakokonaisuuden-osa' :
+        ($scope.model.$isNew ? 'luonti-tekstikappale' : 'muokkaus-tekstikappale');
     };
     // Odota tekstikenttien alustus ja päivitä editointipalkin sijainti
     var received = 0;
