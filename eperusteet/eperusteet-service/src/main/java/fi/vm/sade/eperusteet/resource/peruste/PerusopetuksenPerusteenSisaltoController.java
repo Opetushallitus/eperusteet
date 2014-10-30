@@ -225,14 +225,12 @@ public class PerusopetuksenPerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/sisalto", method = GET)
-    @ResponseStatus(HttpStatus.CREATED)
     public PerusteenOsaViiteDto.Suppea getSisalto(
         @PathVariable("perusteId") final Long perusteId) {
         return sisaltoService.getSisalto(perusteId, null, PerusteenOsaViiteDto.Suppea.class);
     }
 
     @RequestMapping(value = "/sisalto/{id}", method = GET)
-    @ResponseStatus(HttpStatus.CREATED)
     public PerusteenOsaViiteDto.Matala getSisalto(
         @PathVariable("perusteId") final Long perusteId, @PathVariable("id") final Long id) {
         return sisaltoService.getSisalto(perusteId, id, PerusteenOsaViiteDto.Matala.class);
