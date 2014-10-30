@@ -24,6 +24,13 @@ angular.module('eperusteApp')
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.rajaus = '';
 
+    $scope.$watch('peruste.sisalto', function () {
+      Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function (lapsi) {
+        lapsi.$url = $state.href('root.perusteprojekti.osaalue',
+          {osanTyyppi: 'tekstikappale', osanId: lapsi.id, tabId: 0});
+      });
+    }, true);
+
     $scope.datat = {
       opetus: {lapset: []},
       sisalto: perusteprojektiTiedot.getYlTiedot().sisalto
@@ -127,6 +134,8 @@ angular.module('eperusteApp')
   .controller('OsaAlueController', function ($scope, $q, $stateParams, PerusopetusService) {
     $scope.isVuosiluokka = $stateParams.osanTyyppi === PerusopetusService.VUOSILUOKAT;
     $scope.isOppiaine = $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET;
+    $scope.isOsaaminen = $stateParams.osanTyyppi === PerusopetusService.OSAAMINEN;
+    $scope.isTekstikappale = $stateParams.osanTyyppi === 'tekstikappale';
     $scope.versiot = {latest: true};
     $scope.dataObject = PerusopetusService.getOsa($stateParams);
   })

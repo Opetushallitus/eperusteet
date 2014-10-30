@@ -89,6 +89,8 @@ angular.module('eperusteApp')
           return getOsaGeneric(Oppiaineet, params);
         case this.OSAAMINEN:
           return getOsaGeneric(LaajaalaisetOsaamiset, params);
+        case 'tekstikappale':
+          return getOsaGeneric(PerusopetuksenSisalto, params);
         default:
           break;
       }
@@ -105,14 +107,10 @@ angular.module('eperusteApp')
       };
       switch (config.osanTyyppi) {
         case this.OPPIAINEET:
-          Oppiaineet.save({
-            perusteId: tiedot.getProjekti()._peruste,
-          }, data, successCb, errorCb);
+          Oppiaineet.save(commonParams(), data, successCb, errorCb);
           break;
         case this.OSAAMINEN:
-          LaajaalaisetOsaamiset.save({
-            perusteId: tiedot.getProjekti()._peruste,
-          }, data, successCb, errorCb);
+          LaajaalaisetOsaamiset.save(commonParams(), data, successCb, errorCb);
           break;
         default:
           // Sisältö
@@ -120,7 +118,7 @@ angular.module('eperusteApp')
             delete data.$isNew;
             PerusopetuksenSisalto.save(commonParams(), data, successCb, errorCb);
           } else {
-            data.$save(commonParams(), successCb, errorCb);
+            PerusopetuksenSisalto.save(commonParams({osanId: config.osanId}), data, successCb, errorCb);
           }
           break;
       }
