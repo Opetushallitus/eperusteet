@@ -93,6 +93,13 @@ angular.module('eperusteApp')
     return $location.url().indexOf(url) > -1;
   };
 
+  var isYlRouteActive = function (item) {
+    // ignore tabId
+    var tablessUrl = $state.href(item.link[0],
+      _.extend(_.clone(item.link[1]), {tabId: ''})).replace(/#/g, '');
+    return $location.url().indexOf(tablessUrl) > -1;
+  };
+
   function mapYL(osat, key) {
     _(osat).sortBy(function (osa) {
       return Kaanna.kaanna(osa.nimi);
@@ -100,7 +107,8 @@ angular.module('eperusteApp')
       items.push({
         depth: 1,
         label: _.has(osa, 'nimi') ? osa.nimi : osa.perusteenOsa.nimi,
-        link: [STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id, tabId: 0}]
+        link: [STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id, tabId: 0}],
+        isActive: isYlRouteActive
       });
     });
   }
