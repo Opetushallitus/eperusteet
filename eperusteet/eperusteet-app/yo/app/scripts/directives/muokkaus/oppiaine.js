@@ -81,7 +81,7 @@ angular.module('eperusteApp')
 
   .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna,
       PerusteProjektiSivunavi, Oppiaineet, $timeout, $state, $stateParams, $q, YleinenData, tabHelper,
-      CloneHelper, OppimaaraHelper, Utils) {
+      CloneHelper, OppimaaraHelper, Utils, $rootScope) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.mappedVuosiluokat = [];
@@ -253,6 +253,9 @@ angular.module('eperusteApp')
           reload: false,
           notify: false
         });
+        $timeout(function () {
+          $rootScope.$broadcast('oppiaine:tabChanged');
+        });
       }
     };
 
@@ -298,6 +301,14 @@ angular.module('eperusteApp')
       }));
     };
 
+    function mapVuosiluokat() {
+      $scope.mappedVuosiluokat = _($scope.editableModel.vuosiluokkakokonaisuudet).map(function (item) {
+        var thisItem = $scope.getVuosiluokkakokonaisuus(item);
+        thisItem.$sisalto = item;
+        return thisItem;
+      }).sortBy(Utils.nameSort).value();
+    }
+
     $q.all([modelPromise, vuosiluokatPromise]).then(function (data) {
       // Add addable items to menu
       $scope.vuosiluokkakokonaisuudet = data[1];
@@ -341,11 +352,7 @@ angular.module('eperusteApp')
       $scope.data.options.fields = menuItems.concat($scope.data.options.fields);
 
       $scope.$watch('editableModel.vuosiluokkakokonaisuudet', function () {
-        $scope.mappedVuosiluokat = _($scope.editableModel.vuosiluokkakokonaisuudet).map(function (item) {
-          var thisItem = $scope.getVuosiluokkakokonaisuus(item);
-          thisItem.$sisalto = item;
-          return thisItem;
-        }).sortBy(Utils.nameSort).value();
+        mapVuosiluokat();
         $scope.chooseTab($scope.activeTab, true);
       }, true);
     });

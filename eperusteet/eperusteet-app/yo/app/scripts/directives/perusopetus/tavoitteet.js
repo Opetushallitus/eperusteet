@@ -51,6 +51,10 @@ angular.module('eperusteApp')
       }
     };
 
+    $scope.$on('oppiaine:tabChanged', function () {
+      $scope.mapModel();
+    });
+
     $scope.mapModel = function (update) {
       _.each($scope.model.tavoitteet, function (tavoite) {
         if (!update) {
