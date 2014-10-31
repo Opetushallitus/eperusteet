@@ -19,24 +19,18 @@
 
 angular.module('eperusteApp')
   .factory('PerusteprojektiTila', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteprojektit/:id/tila/:tila', {
-      id: '@id'
-    });
+    return $resource(SERVICE_LOC + '/perusteprojektit/:id/tila/:tila', { id: '@id' });
   })
   .factory('OmatPerusteprojektit', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteprojektit/omat');
   })
   .factory('PerusteprojektiResource', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteprojektit/:id', {
-      id: '@id'
-    }, {
+    return $resource(SERVICE_LOC + '/perusteprojektit/:id', { id: '@id' }, {
       update: {method: 'POST', isArray: false}
     });
   })
   .factory('PerusteprojektiOikeudet', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteprojektit/:id/oikeudet', {
-      id: '@id'
-    });
+    return $resource(SERVICE_LOC + '/perusteprojektit/:id/oikeudet', { id: '@id' });
   })
   .factory('DiaarinumeroUniqueResource', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteprojektit/diaarinumero/uniikki/:diaarinumero');
@@ -54,7 +48,7 @@ angular.module('eperusteApp')
       hae: hae
     };
   })
-  .service('PerusteProjektiService', function($rootScope, $state, YleinenData) {
+  .service('PerusteProjektiService', function($rootScope, $state, $q, $modal, YleinenData) {
     var pp = {};
     var suoritustapa = '';
 
@@ -107,15 +101,42 @@ angular.module('eperusteApp')
             perusteProjektiId: projekti.id
           });
         } else {
-          // TODO: Omat perusteprojektit linkin suoritustapa pitäisi varmaankin olla jotain muuta kuin kovakoodattu 'naytto'
+          var suoritustapa = (getSuoritustapa() !== '' && !_.isUndefined(peruste)) ? getSuoritustapa() : YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
           return $state[method]('root.perusteprojekti.suoritustapa.sisalto', {
             perusteProjektiId: projekti.id,
-            suoritustapa: YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi)
+            suoritustapa: suoritustapa
           });
         }
     }
 
+    function mergeProjekti(projekti, tuoPohja) {
+      var deferred = $q.defer();
+      $modal.open({
+        templateUrl: 'views/modals/projektiSisaltoTuonti.html',
+        controller: 'ProjektiTiedotSisaltoModalCtrl',
+        resolve: {
+          pohja: function() { return !!tuoPohja; },
+        }
+      })
+      .result.then(function(peruste) {
+        peruste.tila = 'laadinta';
+        peruste.tyyppi = 'normaali';
+        var onOps = false;
+        projekti.perusteId = peruste.id;
+        projekti.koulutustyyppi = peruste.koulutustyyppi;
+        _.forEach(peruste.suoritustavat, function(st) {
+          if (st.suoritustapakoodi === 'ops') {
+            onOps = true;
+            projekti.laajuusYksikko = st.laajuusYksikko;
+          }
+        });
+        deferred.resolve(peruste, projekti);
+      }, deferred.reject);
+      return deferred.promise;
+    }
+
     return {
+      mergeProjekti: mergeProjekti,
       save: save,
       get: get,
       watcher: watcher,
@@ -140,12 +161,13 @@ angular.module('eperusteApp')
     };
   })
   .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet,
-      SuoritustapaSisalto, PerusteProjektiService, Notifikaatiot, YleinenData) {
+      SuoritustapaSisalto, PerusteProjektiService, Notifikaatiot, YleinenData, PerusopetusService) {
 
     var deferred = $q.defer();
     var projekti = {};
     var peruste = {};
     var sisalto = {};
+    var ylTiedot = {};
     var self = this;
     var projektinTiedotDeferred = $q.defer();
 
@@ -161,21 +183,55 @@ angular.module('eperusteApp')
       return _.clone(sisalto);
     };
 
+    this.getYlTiedot = function () {
+      return _.clone(ylTiedot);
+    };
+
     this.cleanData = function () {
       projekti = {};
       peruste = {};
       sisalto = {};
     };
 
+    function getYlStructure() {
+      // TODO replace with one resource call that fetches the whole structure
+      var promises = [];
+      var promise;
+      _.each(PerusopetusService.LABELS, function (key) {
+        var osat = PerusopetusService.getOsat(key);
+        if (osat.$promise) {
+          promise = osat.$promise;
+        } else {
+          var deferred = $q.defer();
+          deferred.resolve(osat);
+          promise = deferred.promise;
+        }
+        promise.then(function (data) {
+          ylTiedot[key] = data;
+        });
+        promises.push(promise);
+      });
+      return $q.all(promises);
+    }
+
     this.haeSisalto = function(perusteId, suoritustapa) {
       var deferred = $q.defer();
-      SuoritustapaSisalto.get({perusteId: perusteId, suoritustapa: suoritustapa}, function(vastaus) {
-        deferred.resolve(vastaus);
-        sisalto = vastaus;
-      }, function(virhe) {
-        deferred.reject(virhe);
-      });
-      return deferred.promise;
+      var ylDefer = $q.defer();
+      if (!YleinenData.isPerusopetus(peruste)) {
+        SuoritustapaSisalto.get({perusteId: perusteId, suoritustapa: suoritustapa}, function(vastaus) {
+          deferred.resolve(vastaus);
+          sisalto = vastaus;
+        }, function(virhe) {
+          deferred.reject(virhe);
+        });
+        ylDefer.resolve();
+      } else {
+        getYlStructure().then(function () {
+          ylDefer.resolve();
+        });
+        deferred.resolve();
+      }
+      return $q.all([deferred.promise, ylDefer.promise]);
     };
 
     this.projektinTiedotAlustettu = function () {
@@ -184,6 +240,7 @@ angular.module('eperusteApp')
 
 
     this.alustaProjektinTiedot = function (stateParams) {
+      PerusopetusService.setTiedot(this);
       projektinTiedotDeferred = $q.defer();
 
       PerusteprojektiResource.get({id: stateParams.perusteProjektiId}, function(projektiVastaus) {

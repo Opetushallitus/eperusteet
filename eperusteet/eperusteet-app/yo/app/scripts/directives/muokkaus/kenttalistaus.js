@@ -54,6 +54,11 @@ angular.module('eperusteApp')
           if (splitfield.isMulti()) {
             splitfield.remove(model);
           } else {
+            if (_.isFunction(fieldToRemove.remove)) {
+              fieldToRemove.remove();
+            } else {
+              MuokkausUtils.nestedSet(model, fieldToRemove.path, '.', null);
+            }
             fieldToRemove.visible = false;
             fieldToRemove.$added = false;
           }
@@ -88,11 +93,14 @@ angular.module('eperusteApp')
             if (splitfield.isMulti() && splitfield.needsSplit()) {
               // Expand array to individual fields
               splitfield.each(object, function (item, index) {
+                if (!item) {
+                  return;
+                }
                 var newfield = angular.copy(field);
                 newfield.path = splitfield.getPath(index);
                 newfield.localeKey = item[field.localeKey];
                 newfield.originalLocaleKey = field.localeKey;
-                newfield.visible = true;
+                newfield.visible = MuokkausUtils.hasValue(object, newfield.path);
                 if (field.isolateEdit && index === field.$setEditable) {
                   newfield.$editing = true;
                   delete field.$setEditable;
@@ -101,8 +109,12 @@ angular.module('eperusteApp')
               });
             } else {
               field.inMenu = field.path !== 'nimi' && field.path !== 'koodiUri';
-              field.visible = field.divider ? false :
-                (field.$added || field.mandatory || MuokkausUtils.hasValue(object, field.path));
+              if (field.visibleFn) {
+                field.visible = field.visibleFn();
+              } else {
+                field.visible = field.divider ? false :
+                  (field.$added || field.mandatory || MuokkausUtils.hasValue(object, field.path));
+              }
               $scope.expandedFields.push(field);
             }
           });
@@ -147,14 +159,18 @@ angular.module('eperusteApp')
       return this.parts[0] + '[' + index + this.parts[1];
     };
 
-    SplitField.prototype.getObject = function (obj) {
-      return obj[this.parts[0]];
+    SplitField.prototype.getObject = function (obj, create) {
+      if (create && !obj[this.parts[0]]) {
+        obj[this.parts[0]] = [];
+      }
+      return !obj ? null : obj[this.parts[0]];
     };
 
     SplitField.prototype.addArrayItem = function (obj) {
-      // TODO oletettu tekstikappale
-      var object = this.getObject(obj);
-      object.push({nimi: {}, teksti: {}});
+      var newItem = _.isFunction(this.original.empty) ? this.original.empty() :
+        {otsikko: {fi: ''}, teksti: {fi: ''}};
+      var object = this.getObject(obj, true);
+      object.push(newItem);
       return object.length - 1;
     };
 

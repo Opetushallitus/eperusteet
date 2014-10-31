@@ -23,11 +23,16 @@ angular.module('eperusteApp')
       restrict: 'A',
       scope: {
         model: '=perusopetuksenArviointi',
-        type: '@'
+        editMode: '='
       },
       controller: 'PerusopetuksenArviointiController'
     };
   })
-  .controller('PerusopetuksenArviointiController', function(/*$scope*/) {
-
+  .controller('PerusopetuksenArviointiController', function($scope) {
+    $scope.addKohde = function () {
+      $scope.model.push({});
+    };
+    $scope.removeKohde = function (kohde) {
+      $scope.model.splice(kohde, 1);
+    };
   });

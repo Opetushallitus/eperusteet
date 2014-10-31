@@ -61,6 +61,12 @@ $sisalto-hover-bg: #eee;
       text-decoration: none;
     }
 
+    .badge-tyoryhma {
+      background: #feba00;
+      color: #333333;
+      margin-left: 5px;
+    }
+
     .lukko {
       top: -20px;
       position: relative;
@@ -80,6 +86,10 @@ $sisalto-hover-bg: #eee;
 .tutkinto-sisalto {
   margin: -30px auto 100px auto;
 
+  .tiivistelma {
+    margin-bottom: 40px;
+  }
+
   .selite {
     font-size: 18px;
     text-align: center;
@@ -95,6 +105,11 @@ $sisalto-hover-bg: #eee;
   }
 
   .tutkinto {
+    .usericon {
+      position: relative;
+      top: 4px;
+    }
+
     .toolbar-input {
       margin-top: 40px;
       margin-left: auto;

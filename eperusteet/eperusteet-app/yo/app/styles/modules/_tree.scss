@@ -55,6 +55,7 @@ $tree-group-width: 480px;
   top: 0;
   left: 0;
   .empty-bubble {
+    top: -40px;
     color: #777;
     background: #fcfcfc;
     margin: 0;
@@ -70,7 +71,7 @@ $tree-group-width: 480px;
     top: 0px;
   }
   .distance-editing {
-    top: 85px;
+    top: 42px;
   }
 }
 

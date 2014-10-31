@@ -23,7 +23,9 @@ angular.module('eperusteApp')
       templateUrl: 'views/directives/perusopetus/tavoitteet.html',
       restrict: 'A',
       scope: {
-        model: '=tavoitteet'
+        model: '=tavoitteet',
+        editable: '@?',
+        providedVuosiluokka: '=vuosiluokka'
       },
       controller: 'TavoitteetController',
       link: function (scope) {
@@ -32,70 +34,124 @@ angular.module('eperusteApp')
       }
     };
   })
-  .controller('TavoitteetController', function ($scope, YleinenData, PerusopetusService, $state) {
+  .controller('TavoitteetController', function ($scope, YleinenData, PerusopetusService, $state, $rootScope,
+      CloneHelper, OsanMuokkausHelper) {
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
-    // TODO don't fetch here, from parent maybe?
-    $scope.osaamiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN);
-    $scope.vuosiluokka = _.find(PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT), {id: $scope.model._id});
+    $scope.osaamiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true);
+    $scope.vuosiluokka = OsanMuokkausHelper.getVuosiluokkakokonaisuus() || $scope.providedVuosiluokka;
+    $scope.editMode = false;
+    $scope.currentEditable = null;
+    $scope.$watch('editable', function (value) {
+      $scope.editMode = !!value;
+    });
 
-    $scope.mapModel = function () {
-      var uniqueId = 0;
-      _.each($scope.model.kohdealueet, function (kohdealue) {
-        kohdealue.$accordionOpen = true;
-        _.each(kohdealue.tavoitteet, function (tavoite) {
-          tavoite.$runningIndex = ++uniqueId;
-          tavoite.$sisaltoalueet = _.map(tavoite.sisaltoalueet, function (sisaltoalueId) {
-            return _.find($scope.model.sisaltoalueet, function(item) {
-              return item.id === sisaltoalueId;
-            });
+    $scope.treeOptions = {
+      dropped: function () {
+        $scope.mapModel(true);
+      }
+    };
+
+    $scope.$on('oppiaine:tabChanged', function () {
+      $scope.mapModel();
+    });
+
+    $scope.mapModel = function (update) {
+      _.each($scope.model.tavoitteet, function (tavoite) {
+        if (!update) {
+          tavoite.$accordionOpen = true;
+        }
+        // TODO kohdealueet
+        tavoite.$sisaltoalueet = _.map($scope.model.sisaltoalueet, function (item) {
+          var found = _.find(tavoite.sisaltoalueet, function (alueId) {
+            return parseInt(alueId, 10) === item.id;
           });
-          tavoite.$osaaminen = _.map(tavoite.osaaminen, function (osaamisId) {
-            var osaaminen = _.find($scope.osaamiset, function (item) {
-              return item.perusteenOsa.id === osaamisId;
-            }).perusteenOsa;
-            var vuosiluokkakuvaus = _.find($scope.vuosiluokka.osaamisenkuvaukset, function (item) {
-              return item.osaaminen === osaamisId;
-            });
-            return {
-              nimi: osaaminen.nimi,
-              teksti: vuosiluokkakuvaus ? vuosiluokkakuvaus.teksti : 'ei-kuvausta',
-              /* TODO vuosiluokkakokonaisuuden id */
-              extra: '<div class="clearfix"><a class="pull-right" href="' +
-                $state.href('root.perusteprojekti.osaalue', {osanTyyppi: PerusopetusService.VUOSILUOKAT, osanId: ''}) +
-                '" kaanna="vuosiluokkakokonaisuuden-osaamisalueet"></a></div>'
-            };
+          item = _.clone(item);
+          item.$hidden = !found;
+          item.teksti = item.kuvaus;
+          return item;
+        });
+        tavoite.$osaaminen = _.map($scope.osaamiset, function (osaaminen) {
+          var found = _.find(tavoite.laajattavoitteet, function (osaamisId) {
+            return parseInt(osaamisId, 10) === osaaminen.id;
           });
+          osaaminen = _.clone(osaaminen);
+          osaaminen.$hidden = !found;
+          var vuosiluokkakuvaus = _.find($scope.vuosiluokka.laajaalaisetOsaamiset, function (item) {
+            return parseInt(item.laajaalainenOsaaminen, 10) === osaaminen.id;
+          });
+          osaaminen.teksti = vuosiluokkakuvaus ? vuosiluokkakuvaus.kuvaus : 'ei-kuvausta';
+          osaaminen.extra = '<div class="clearfix"><a class="pull-right" href="' +
+            $state.href('root.perusteprojekti.osaalue', {
+              osanTyyppi: PerusopetusService.VUOSILUOKAT,
+              osanId: $scope.vuosiluokka.id,
+              tabId: 0
+            }) +
+            '" kaanna="vuosiluokkakokonaisuuden-osaamisalueet"></a></div>';
+          return osaaminen;
         });
       });
     };
 
     function setAccordion(mode) {
-      var obj = $scope.model.kohdealueet;
-      _.each(obj, function (kohdealue) {
-        kohdealue.$accordionOpen = mode;
+      var obj = $scope.model.tavoitteet;
+      _.each(obj, function (tavoite) {
+        tavoite.$accordionOpen = mode;
       });
     }
 
     function accordionState() {
-      var obj = _.first($scope.model.kohdealueet);
+      var obj = _.first($scope.model.tavoitteet);
       return obj && obj.$accordionOpen;
     }
 
     $scope.toggleAll = function () {
       setAccordion(!accordionState());
     };
-  })
 
-  .directive('sisaltoalueet', function () {
-    return {
-      templateUrl: 'views/directives/perusopetus/sisaltoalueet.html',
-      restrict: 'A',
-      scope: {
-        model: '=sisaltoalueet'
-      },
-      controller: 'SisaltoalueetController'
+    $scope.hasArviointi = function (tavoite) {
+      return !!tavoite.arvioinninkohteet && tavoite.arvioinninkohteet.length > 0;
     };
-  })
-  .controller('SisaltoalueetController', function ($scope, YleinenData) {
-    $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
+
+    $scope.addArviointi = function (tavoite) {
+      tavoite.arvioinninkohteet = [{arvioinninKohde: {}, hyvanOsaamisenKuvaus: {}}];
+    };
+
+    var cloner = CloneHelper.init(['tavoite', 'sisaltoalueet', 'laajattavoitteet', 'arvioinninkohteet']);
+
+    $scope.tavoiteFn = {
+      edit: function (tavoite) {
+        tavoite.$editing = true;
+        tavoite.$accordionOpen = true;
+        $scope.currentEditable = tavoite;
+        cloner.clone(tavoite);
+      },
+      remove: function ($index) {
+        $scope.model.tavoitteet.splice($index, 1);
+        $scope.mapModel(true);
+      },
+      ok: function () {
+        $rootScope.$broadcast('notifyCKEditor');
+        $scope.currentEditable.$editing = false;
+        $scope.currentEditable.$new = false;
+        $scope.currentEditable = null;
+      },
+      cancel: function () {
+        if (!$scope.currentEditable.$new) {
+          cloner.restore($scope.currentEditable);
+        } else {
+          $scope.tavoiteFn.remove($scope.model.tavoitteet.length - 1);
+        }
+        $scope.currentEditable.$editing = false;
+        $scope.currentEditable = null;
+      },
+      add: function () {
+        var newTavoite = {$editing: true, tavoite: {}, $new: true, $accordionOpen: true};
+        $scope.currentEditable = newTavoite;
+        $scope.model.tavoitteet.push(newTavoite);
+        $scope.mapModel(true);
+      },
+      toggle: function (tavoite) {
+        tavoite.$accordionOpen = !tavoite.$accordionOpen;
+      }
+    };
   });

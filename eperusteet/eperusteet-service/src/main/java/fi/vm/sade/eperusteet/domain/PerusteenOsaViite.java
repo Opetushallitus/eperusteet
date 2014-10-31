@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.util.List;
+import javax.persistence.CascadeType;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -41,7 +42,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Audited
 @Table(name = "perusteenosaviite")
-public class PerusteenOsaViite implements ReferenceableEntity{
+public class PerusteenOsaViite implements ReferenceableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -59,7 +60,7 @@ public class PerusteenOsaViite implements ReferenceableEntity{
     @Setter
     private PerusteenOsa perusteenOsa;
 
-    @OneToMany(mappedBy = "vanhempi", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "vanhempi", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderColumn
     @Getter
     @Setter
@@ -69,5 +70,13 @@ public class PerusteenOsaViite implements ReferenceableEntity{
     @Override
     public EntityReference getReference() {
         return new EntityReference(id);
+    }
+
+    public PerusteenOsaViite getRoot() {
+        PerusteenOsaViite root = this;
+        while (root.getVanhempi() != null) {
+            root = root.getVanhempi();
+        }
+        return root;
     }
 }

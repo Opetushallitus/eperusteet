@@ -32,7 +32,7 @@
  *             If promise is resolved, canceling continues.
  */
 angular.module('eperusteApp')
-  .factory('Editointikontrollit', function($rootScope, $q, $timeout) {
+  .factory('Editointikontrollit', function($rootScope, $q, $timeout, Utils, Notifikaatiot) {
     var scope = $rootScope.$new(true);
     scope.editingCallback = null;
     scope.editMode = false;
@@ -64,11 +64,33 @@ angular.module('eperusteApp')
         $rootScope.$broadcast('enableEditing');
       },
       saveEditing: function(kommentti) {
+        var err;
+
+        function mandatoryFieldValidator(fields, target) {
+          err = undefined;
+          var fieldsf = _.filter(fields || [], function(field) { return field.mandatory; });
+
+          if (!target) { return false; }
+          else if (_.isString(target)) { return !_.isEmpty(target); }
+          else if (_.isObject(target) && !_.isEmpty(target) && !_.isEmpty(fieldsf)) {
+            return _.all(fieldsf, function(field) {
+              var valid = Utils.hasLocalizedText(target[field.path]);
+              if (!valid) { err = field.mandatoryMessage; }
+              return valid;
+            });
+          }
+          else { return true; }
+        }
+
         function after() {
-          if (!scope.editingCallback.validate || scope.editingCallback.validate()) {
+          if (!scope.editingCallback.validate || scope.editingCallback.validate(mandatoryFieldValidator)) {
             scope.editingCallback.save(kommentti);
             setEditMode(false);
             $rootScope.$broadcast('disableEditing');
+            return;
+          }
+          else {
+            Notifikaatiot.varoitus(err || 'mandatory-odottamaton-virhe');
           }
         }
 

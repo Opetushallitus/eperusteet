@@ -206,3 +206,9 @@ input.form-control::-ms-clear {
 .nav-tabs li a {
   cursor: pointer;
 }
+
+button.icon-only {
+  .glyphicon {
+    margin: 0;
+  }
+}

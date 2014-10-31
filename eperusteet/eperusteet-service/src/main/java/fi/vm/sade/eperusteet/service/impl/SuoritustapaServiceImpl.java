@@ -17,10 +17,10 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -34,7 +34,6 @@ import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -70,33 +69,32 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
         suoritustapa.setSuoritustapakoodi(suoritustapakoodi);
         suoritustapa.setLaajuusYksikko(yksikko);
 
+
         PerusteenOsaViite perusteenOsaViite = perusteenOsaViiteRepository.save(new PerusteenOsaViite());
+        perusteenOsaViite.setLapset(new ArrayList<PerusteenOsaViite>());
         RakenneModuuli rakenne = rakenneRepository.save(new RakenneModuuli());
 
         suoritustapa.setSisalto(perusteenOsaViite);
         suoritustapa.setRakenne(rakenne);
 
-        return suoritustapa;
+        return suoritustapaRepository.save(suoritustapa);
     }
 
     @Transactional
-    private PerusteenOsaViite kopioiSisalto(PerusteenOsaViite vanha) {
-        PerusteenOsaViite pov = new PerusteenOsaViite();
-        pov.setPerusteenOsa(vanha.getPerusteenOsa());
-
+    private void kopioiSisalto(PerusteenOsaViite vanha, PerusteenOsaViite parent) {
         List<PerusteenOsaViite> vanhaLapset = vanha.getLapset();
-        List<PerusteenOsaViite> lapset = new ArrayList<>();
-
         if (vanhaLapset != null) {
             for (PerusteenOsaViite vanhaPov : vanhaLapset) {
-                PerusteenOsaViite lapsi = kopioiSisalto(vanhaPov);
-                lapsi.setVanhempi(pov);
-                lapsi.setPerusteenOsa(vanhaPov.getPerusteenOsa());
-                lapset.add(lapsi);
+                if (vanhaPov.getPerusteenOsa() != null && vanhaPov.getPerusteenOsa().getTunniste() != PerusteenOsaTunniste.RAKENNE) {
+                    PerusteenOsaViite pov = perusteenOsaViiteRepository.save(new PerusteenOsaViite());
+                    pov.setLapset(new ArrayList<PerusteenOsaViite>());
+                    pov.setVanhempi(parent);
+                    pov.setPerusteenOsa(vanhaPov.getPerusteenOsa());
+                    parent.getLapset().add(pov);
+                    kopioiSisalto(vanhaPov, pov);
+                }
             }
         }
-        pov.setLapset(lapset);
-        return perusteenOsaViiteRepository.save(pov);
     }
 
     @Transactional
@@ -155,7 +153,6 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
     public Suoritustapa createFromOther(final Long suoritustapaId) {
         Suoritustapa vanhaSt = suoritustapaRepository.getOne(suoritustapaId);
         Suoritustapa suoritustapa = createCommon(vanhaSt.getSuoritustapakoodi(), vanhaSt.getLaajuusYksikko());
-        suoritustapa = suoritustapaRepository.save(suoritustapa);
         Set<TutkinnonOsaViite> tosat = suoritustapa.getTutkinnonOsat();
         Set<TutkinnonOsaViite> vanhatTosat = vanhaSt.getTutkinnonOsat();
 
@@ -167,12 +164,14 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
             uusiTov.setTutkinnonOsa(tov.getTutkinnonOsa());
             uusiTov.setJarjestys(tov.getJarjestys());
             uusiTov.setLaajuus(tov.getLaajuus());
+            tutkinnonOsaViiteRepository.save(uusiTov);
             tosat.add(uusiTov);
             viitemap.put(tov, uusiTov);
         }
 
         suoritustapa.setRakenne(kopioiRakenne(vanhaSt.getRakenne(), viitemap));
-        suoritustapa.setSisalto(kopioiSisalto(vanhaSt.getSisalto()));
+        kopioiSisalto(vanhaSt.getSisalto(), suoritustapa.getSisalto());
+        suoritustapa = suoritustapaRepository.save(suoritustapa);
         return suoritustapa;
     }
 }

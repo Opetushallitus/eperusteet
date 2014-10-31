@@ -112,7 +112,6 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
         Map<String, Object> map = new HashMap<>();
         LOG.debug("Virhe", ex);
-        map.put("koodi", status);
 
         if (ex instanceof BindException) {
             describe(map, "server-virhe-datan-kytkemisessä", "Virhe datan kytkemisessä.");
@@ -122,6 +121,9 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             describe(map, "mediatyyppi-ei-ole-hyväksytty", "Mediatyyppi ei ole hyväksytty.");
         } else if (ex instanceof HttpMediaTypeNotSupportedException) {
             describe(map, "mediatyyppi-ei-ole-tuettu", "Mediatyyppi ei ole tuettu.");
+        } else if (ex instanceof HttpMessageNotReadableException) {
+            status = HttpStatus.BAD_REQUEST;
+            describe(map, "http-viestiä-ei-pystytty-lukemaan", "virheellinen pyyntö");
         } else if (ex instanceof HttpMessageNotWritableException) {
             describe(map, "http-viestiä-ei-pystytty-kirjoittamaan", "Http-viestiä ei pystytty kirjoittamaan.");
         } else if (ex instanceof HttpRequestMethodNotSupportedException) {
@@ -165,7 +167,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             map.put("syy", "Sovelluspalvelimessa tapahtui odottamaton virhe");
             map.put("avain", "server-odottamaton-virhe");
         }
-
+        map.put("koodi", status);
         return super.handleExceptionInternal(ex, map, headers, status, request);
     }
 }

@@ -78,6 +78,13 @@ angular.module('eperusteApp')
       'koulutustyyppi_9999'
     ];
 
+    this.koulutustyypitMap = {
+      'koulutustyyppi_1': 'perustutkinto',
+      'koulutustyyppi_11': 'ammattitutkinto',
+      'koulutustyyppi_12': 'erikoisammattitutkinto',
+      'koulutustyyppi_9999': '',
+    };
+
     this.kielet = {
       'suomi': 'fi',
       'ruotsi': 'sv'

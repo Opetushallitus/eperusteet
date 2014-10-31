@@ -127,7 +127,8 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
                     if (osaamistavoiteCurrent.getId().equals(osaamistavoiteUpdate.getId())) {
                         // Jos osa-alueella osaamistavoitelista mergessä, niin kyseessä on kevyempi
                         // osaamistavoite objekteja. Joten käytetään partialMergeStatea.
-                        osaamistavoiteCurrent.partialMergeState(osaamistavoiteUpdate);
+                        //osaamistavoiteCurrent.partialMergeState(osaamistavoiteUpdate);
+                        osaamistavoiteCurrent.mergeState(osaamistavoiteUpdate);
                         tempList.add(osaamistavoiteCurrent);
                         loyty = true;
                     }

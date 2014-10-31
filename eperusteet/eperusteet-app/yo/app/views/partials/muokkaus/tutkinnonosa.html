@@ -1,4 +1,5 @@
-<div>
+<div ng-show="osaAlueAlitila" ui-view></div>
+<div ng-show="!osaAlueAlitila">
   <revert-note object="tutkinnonOsa" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
   <div class="action-buttons">
     <div class="floater" ng-attr-title="{{lockNotification}}">
@@ -45,6 +46,7 @@
   <versiotiedot ng-hide="editEnabled"></versiotiedot>
 
   <hr ng-show="editEnabled">
+
   <form name="tutkinnonOsaHeaderForm" role="form">
     <div class="non-collapsibles" ng-if="editEnabled">
       <div ng-show="isNew">
@@ -56,7 +58,7 @@
         <div class="clearfix"></div>
       </div>
       <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header'|kaanna}}*</label>
-      <input id="nimi-input" class="form-control" ng-model="editableTutkinnonOsa.nimi" localized required ng-change="nimiValidationError = false">
+      <input id="nimi-input" class="form-control" ng-model="editableTutkinnonOsa.nimi" localized required>
       <p class="alert alert-error" ng-show="(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError"
          kaanna>Nimi on pakollinen tieto</p>
       <div ng-if="suoritustapa !== 'naytto'">
@@ -64,7 +66,7 @@
         <div class="fixed-group">
           <numberinput label-id="laajuus-input" luokka="form-control" model="editableViiteosa.laajuus" min="0" max="999"
                      type="float" step="0.5" form="tutkinnonOsaHeaderForm"></numberinput>
-          <div class="addon"><p kaanna>osp</p></div>
+          <div class="addon"><p>{{ yksikko | kaanna }}</p></div>
         </div>
       </div>
       <label for="jarjestys-input" class="header" kaanna>tutkinnonosa-jarjestysnumero</label>
@@ -81,19 +83,23 @@
   </form>
 
   <div class="non-collapsibles" ng-if="!editEnabled">
-    <label class="header" kaanna>muokkaus-tutkinnon-osan-koodi-header</label>:<span> {{ tutkinnonOsa.koodiArvo }}</span>
+    <div>
+      <label class="header" kaanna>muokkaus-tutkinnon-jarjestysnumero</label>:<span> {{ viiteosa.jarjestys || '-' }}</span>
+    </div>
+    <div>
+      <label class="header" kaanna>muokkaus-tutkinnon-osan-koodi-header</label>:<span> {{ tutkinnonOsa.koodiArvo || '-' }}</span>
+    </div>
   </div>
 
   <div class="tutkinnonosa-sisalto" ng-if="editableTutkinnonOsa.tyyppi === 'normaali'">
     <kenttalistaus edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields"></kenttalistaus>
   </div>
-  
   <div class="non-collapsibles" ng-if="editableTutkinnonOsa.tyyppi === 'tutke2'">
     <label class="header" kaanna>kuvaus</label>
     <ml-input ng-show="editEnabled" ml-data="editableTutkinnonOsa.kuvaus" type="textarea"></ml-input>
     <p ng-show="!editEnabled">{{tutkinnonOsa.kuvaus | kaanna}}</p>
   </div>
-    
+
   <div class="tutkinnonosa-sisalto" ng-if="editableTutkinnonOsa.tyyppi === 'tutke2'">
     <tutke2kentat edit-enabled="editEnabled" tutkinnonosa="tutkinnonOsaPromise" kontrollit="editointikontrollit"></tutke2kentat>
   </div>

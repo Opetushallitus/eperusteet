@@ -19,7 +19,55 @@
 /* global XLSX */
 
 angular.module('eperusteApp')
-  .service('ExcelService', function($q) {
+  .service('ExcelSheetService', function() {
+    function generoiSaraketunnisteet(sheet) {
+      var columns = _(sheet).keys()
+                            .map(function(cell) { return cell.replace(/[0-9]/g, ''); })
+                            .unique()
+                            .tail() // poistaa kentän '!ref'
+                            .value();
+      return columns;
+    }
+
+    function sheetHeight(sheet) {
+      return sheet['!ref'].replace(/^.+:/, '').replace(/[^0-9]/g, '');
+    }
+
+    function getOsaAnchors(data, tyyppi, osatutkintoMap) {
+      var height = sheetHeight(data);
+      var anchors = [];
+      for (var i = 2; i < height; i++) {
+        var celldata = data[osatutkintoMap[tyyppi].kentat[1] + i];
+        if (celldata && celldata.v) {
+          anchors.push(i);
+        }
+      }
+      return anchors;
+    }
+
+    function poistaSarake(sheet, sarake) {
+      var height = sheetHeight(sheet);
+      var tunnisteet = generoiSaraketunnisteet(sheet);
+
+      var startIndex = 0;
+      for (startIndex = 0; startIndex < _.size(tunnisteet) && tunnisteet[startIndex] !== sarake; ++startIndex) {}
+
+      _.map(_.range(startIndex + 1, _.size(tunnisteet)), function(col) {
+        _.map(_.range(1, height), function(row) {
+          sheet[tunnisteet[col - 1] + row] = sheet[tunnisteet[col] + row];
+        });
+      });
+
+      return sheet;
+    }
+
+    return {
+      sheetHeight: sheetHeight,
+      poistaSarake: poistaSarake,
+      getOsaAnchors: getOsaAnchors,
+    };
+  })
+  .service('ExcelService', function($q, Algoritmit, ExcelSheetService) {
 
     var notifier = angular.noop;
 
@@ -163,30 +211,30 @@ angular.module('eperusteApp')
         },
         kentat: {
           1: 'AK',
-          2: 'AU',
+          2: 'AT',
           3: 'AJ',
-          4: 'AP',
-          5: 'BA',
-          6: 'AV',
-          7: 'AW',
-          9: 'AX',
-          10: 'AY',
-          11: 'AZ',
+          4: 'AO',
+          5: 'AZ',
+          6: 'AU',
+          7: 'AV',
+          9: 'AW',
+          10: 'AX',
+          11: 'AY',
           13: 'AL',
         },
         otsikot: {
           AJ1: 'Tutkinnon osan opintoluokituskoodi',
           AK1: 'Tutkinnon osan nimi',
           AL1: 'Tutkinnon osan laajuus',
-          AR1: 'Tutkintonimike',
-          AS1: 'Tutkintonimikekoodi',
-          AU1: 'Ammattitaitovaatimus / tavoite',
-          AV1: 'Arvioinnin kohdealue',
-          AW1: 'Arvioinnin kohde',
-          AX1: 'Tyydyttävä T1 ',
-          AY1: 'Hyvä H2',
-          AZ1: 'Kiitettävä K3',
-          BA1: 'Ammattitaidon osoittamistavat',
+          AQ1: 'Tutkintonimike',
+          AR1: 'Tutkintonimikekoodi',
+          AT1: 'Ammattitaitovaatimus / tavoite',
+          AU1: 'Arvioinnin kohdealue',
+          AV1: 'Arvioinnin kohde',
+          AW1: 'Tyydyttävä T1 ',
+          AX1: 'Hyvä H2',
+          AY1: 'Kiitettävä K3',
+          AZ1: 'Ammattitaidon osoittamistavat',
         }
       }
     };
@@ -251,40 +299,8 @@ angular.module('eperusteApp')
       return next();
     }
 
-    function sheetHeight(sheet) {
-      return sheet['!ref'].replace(/^.+:/, '').replace(/[^0-9]/g, '');
-    }
-
-    function getOsaAnchors(data, tyyppi) {
-      var height = sheetHeight(data);
-      var anchors = [];
-      for (var i = 2; i < height; i++) {
-        var celldata = data[osatutkintoMap[tyyppi].kentat[1] + i];
-        if (celldata && celldata.v) {
-          anchors.push(i);
-        }
-      }
-      return anchors;
-    }
-
     function suodataTekstipala(teksti) {
-      if (!teksti) {
-        return '';
-      }
-      else if (!_.isString(teksti)) {
-        return teksti;
-      }
-
-      var suodatettu = teksti;
-      suodatettu = suodatettu.replace(/&.{0,5};/g, ' ');
-      for (var i = 0; i < suodatettu.length; ++i) {
-        var c = suodatettu[i];
-        var ci = c.charCodeAt(0);
-        if (ci < 32 && ci > 255) {
-          suodatettu[i] = ' ';
-        }
-      }
-      return suodatettu;
+      return Algoritmit.normalizeTeksti(teksti);
     }
 
     function fify(obj, ids, kentat) {
@@ -300,7 +316,7 @@ angular.module('eperusteApp')
 
     function readPerusteet(data, tyyppi) {
       notifier('excel-luetaan-tekstikappaleita');
-      var height = sheetHeight(data);
+      var height = ExcelSheetService.sheetHeight(data);
       var kentat = tutkintoMap[tyyppi].kentat;
       var peruste = {};
 
@@ -345,8 +361,8 @@ angular.module('eperusteApp')
 
     function readOsaperusteet(data, tyyppi) {
       notifier('excel-luetaan-tutkinnonosia');
-      var height = sheetHeight(data);
-      var anchors = getOsaAnchors(data, tyyppi);
+      var height = ExcelSheetService.sheetHeight(data);
+      var anchors = ExcelSheetService.getOsaAnchors(data, tyyppi, osatutkintoMap);
       var osaperusteet = [];
       var varoitukset = [];
       var virheet = [];
@@ -359,7 +375,7 @@ angular.module('eperusteApp')
 
       function filtteroituKentta(id, index) {
         var cell = data[kentat[id] + index];
-        return cell ? suodataTekstipala(cell.v) : '';
+        return cell ? Algoritmit.normalizeTeksti(suodataTekstipala(cell.v)) : '';
       }
 
       function lisaaOsaamistasonKriteeri(kohde) {
@@ -529,6 +545,13 @@ angular.module('eperusteApp')
       };
     }
 
+    // Tässä kannattaa tehdä puukotukset
+    function manipuloi(sheet, tyyppi) {
+      if (tyyppi === 'perustutkinto' && sheet.AO1 && sheet.AO1.v !== 'Koulutusohjelma / osaamisala') {
+        ExcelSheetService.poistaSarake(sheet, 'AO');
+      }
+    }
+
     // Konvertoi parsitun XLSX-tiedoston perusteen osiksi.
     // $q:n notifyä käytetään valmistumisen päivittämiseen.
     // Palauttaa lupauksen.
@@ -545,6 +568,8 @@ angular.module('eperusteApp')
         notifier('excel-parsitaan-perustietoja');
         var name = parsedxlsx.SheetNames[0];
         var sheet = parsedxlsx.Sheets[name];
+
+        manipuloi(sheet, tyyppi, tutkintoMap);
         var err = validoi(sheet, validoiOtsikot(sheet, tyyppi), validoiRivit);
 
         if (err.length > 0) {

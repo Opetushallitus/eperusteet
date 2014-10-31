@@ -18,8 +18,34 @@
 /* global _ */
 
 angular.module('eperusteApp')
+  .directive('projektiryhmaHenkilot', function() {
+    return {
+      templateUrl: 'views/partials/projektiTyoryhmanKayttajat.html',
+      restrict: 'E',
+      scope: {
+        tyyppi: '=',
+        tyoryhmat: '=',
+        ryhma: '='
+      },
+      controller: function($scope, ColorCalculator, kayttajaToiminnot) {
+        $scope.nimikirjaimet = kayttajaToiminnot.nimikirjaimet;
+        $scope.filterRyhma = function(ryhma) { return _.some(ryhma, $scope.filterJasen); };
+        $scope.filterJasen = function(jasen) { return $scope.tyyppi === 'kaikki' || $scope.tyoryhmat[$scope.tyyppi][jasen.oidHenkilo]; };
+        $scope.styleFor = function(jasen) {
+          return jasen.color ? {
+            'background-color': '#' + jasen.color,
+            'color': ColorCalculator.readableTextColorForBg(jasen.color)
+          } : {};
+        };
+      }
+    };
+  })
+  .controller('ProjektiryhmaModalCtrl', function($scope, $modalInstance) {
+    $scope.ok = function() { $modalInstance.close(); };
+    $scope.peruuta = function() { $modalInstance.dismiss(); };
+  })
   .controller('ProjektiryhmaCtrl', function($scope, $modal, $stateParams, PerusteprojektiJasenet, Notifikaatiot,
-    Projektiryhma, PerusteProjektiService, ColorCalculator, kayttajaToiminnot, PerusteprojektiTyoryhmat) {
+    Projektiryhma, PerusteProjektiService, kayttajaToiminnot, PerusteprojektiTyoryhmat) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
     $scope.ryhma = {};
@@ -28,14 +54,6 @@ angular.module('eperusteApp')
     $scope.error = false;
 
     $scope.vaihdaTyyppi = function(tyyppi) { $scope.tyyppi = tyyppi; };
-
-    $scope.filterRyhma = function(ryhma) {
-      return _.some(ryhma, $scope.filterJasen);
-    };
-
-    $scope.filterJasen = function(jasen) {
-      return $scope.tyyppi === 'kaikki' || $scope.tyoryhmat[$scope.tyyppi][jasen.oidHenkilo];
-    };
 
     function errorCb(err) {
       Notifikaatiot.serverCb(err);
@@ -49,15 +67,6 @@ angular.module('eperusteApp')
       $scope.ryhma = re.ryhma;
       $scope.lataa = false;
     }, errorCb);
-
-    $scope.nimikirjaimet = kayttajaToiminnot.nimikirjaimet;
-
-    $scope.styleFor = function(jasen) {
-      return jasen.color ? {
-        'background-color': '#' + jasen.color,
-        'color': ColorCalculator.readableTextColorForBg(jasen.color)
-      } : {};
-    };
 
     $scope.muokkaaTyoryhmaa = function(ryhma) {
       $modal.open({

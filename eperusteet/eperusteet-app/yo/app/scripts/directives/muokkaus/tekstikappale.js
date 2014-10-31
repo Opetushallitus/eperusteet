@@ -132,14 +132,14 @@ angular.module('eperusteApp')
           return $scope.viitteet[$scope.tekstikappale.id] ? $scope.viitteet[$scope.tekstikappale.id].viite : null;
         };
 
-        $scope.fields =
-          new Array({
+        $scope.fields = [{
              path: 'nimi',
              hideHeader: false,
              localeKey: 'teksikappaleen-nimi',
              type: 'editor-header',
              localized: true,
              mandatory: true,
+             mandatoryMessage: 'mandatory-otsikkoa-ei-asetettu',
              order: 1
            },{
              path: 'teksti',
@@ -147,9 +147,9 @@ angular.module('eperusteApp')
              localeKey: 'tekstikappaleen-teksti',
              type: 'editor-area',
              localized: true,
-             mandatory: true,
+             mandatory: false,
              order: 2
-           });
+           }];
 
         function refreshPromise() {
           $scope.editableTekstikappale = angular.copy($scope.tekstikappale);
@@ -213,8 +213,8 @@ angular.module('eperusteApp')
             notify: function(mode) {
               $scope.editEnabled = mode;
             },
-            validate: function() {
-              return Utils.hasLocalizedText($scope.editableTekstikappale.nimi);
+            validate: function(mandatoryValidator) {
+              return mandatoryValidator($scope.fields, $scope.editableTekstikappale);
             }
           });
 

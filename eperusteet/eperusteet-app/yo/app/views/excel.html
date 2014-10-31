@@ -8,10 +8,23 @@
       <div class="form-group col-xs-12">
         <label kaanna>tutkinnon-tyyppi</label>
         <div class="clearfix"></div>
-        <div class="btn-group">
-          <button type="button" class="btn btn-default" ng-model="projekti.koulutustyyppi" btn-radio="'koulutustyyppi_11'" kaanna>ammattitutkinto</button>
-          <button type="button" class="btn btn-default" ng-model="projekti.koulutustyyppi" btn-radio="'koulutustyyppi_12'" kaanna>erikoisammattitutkinto</button>
-          <button type="button" class="btn btn-default" ng-model="projekti.koulutustyyppi" btn-radio="'koulutustyyppi_1'" kaanna>perustutkinto</button>
+        <div ng-hide="peruste.id" class="btn-group">
+          <button type="button" class="btn btn-default" ng-model="projekti.koulutustyyppi" btn-radio="'koulutustyyppi_11'" kaanna="ammattitutkinto"></button>
+          <button type="button" class="btn btn-default" ng-model="projekti.koulutustyyppi" btn-radio="'koulutustyyppi_12'" kaanna="erikoisammattitutkinto"></button>
+          <button type="button" class="btn btn-default" ng-model="projekti.koulutustyyppi" btn-radio="'koulutustyyppi_1'" kaanna="perustutkinto"></button>
+        </div>
+        <button ng-hide="peruste.id" ng-click="mergeProjekti(true)" type="button" class="btn btn-default" kaanna="tuo-perustepohja"></button>
+        <div ng-if="peruste.id" class="btn-group">
+          <div class="alert alert-info">
+            {{ 'perusteprojektin-pohjaksi-otetaan-peruste' | kaanna }}: <b>{{ peruste.nimi | kaanna }} ({{ koulutustyypitMap[peruste.koulutustyyppi] | kaanna }})</b>
+            <div ng-show="peruste.tutkintokoodi">{{ 'tutkintokoodi' | kaanna }}: <b>{{ peruste.tutkintokoodi | kaanna }}</b></div>
+            <div ng-show="peruste.voimassaoloAlkaa">{{ 'voimassaoloAlkaa' | kaanna }}: <b>{{ peruste.voimassaoloAlkaa | aikaleima }}</b></div>
+            <div ng-show="peruste.voimassaoloLoppuu">{{ 'voimassaoloLoppuu' | kaanna }}: <b>{{ peruste.voimassaoloLoppuu | aikaleima }}</b></div>
+            <div ng-show="peruste.siirtymaAlkaa">{{ 'siirtymaAlkaa' | kaanna }}: <b>{{ peruste.siirtymaAlkaa | aikaleima }}</b></div>
+            <div style="margin-top: 10px">
+              <button class="btn btn-danger" ng-click="peruutaPohjaValinta()" kaanna>peruuta</button>
+            </div>
+          </div>
         </div>
       </div>
       <div class="form-group col-xs-12">
@@ -23,8 +36,8 @@
   </div>
 
   <div ng-hide="alussa" class="excel-alkuun">
-    <a icon-role="back" class="action-link" ng-click="alussa = true;
-      clearSelect();" kaanna="Alkuun"></a>
+    <a icon-role="back" class="action-link"
+       ng-click="alussa = true; clearSelect();" kaanna="Alkuun"></a>
   </div>
 
   <!-- virheet -->

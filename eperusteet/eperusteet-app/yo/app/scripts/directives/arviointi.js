@@ -20,11 +20,13 @@
 angular.module('eperusteApp')
   .controller('arviointiCtrl', function ($scope, YleinenData, Varmistusdialogi, $timeout,
     Utils, ArviointiPreferences) {
+
     $scope.showNewKohdealueInput = false;
 
     $scope.arviointiasteikkoChanged = function (kohdealue) {
       ArviointiPreferences.setting('asteikko', kohdealue.$newkohde.arviointiasteikko);
     };
+
 
     $scope.kohdealue = {
       uusi: function () {
@@ -154,13 +156,23 @@ angular.module('eperusteApp')
         // Set focus to newly added field
         var parent = angular.element(event.currentTarget).closest('table');
         $timeout(function () {
-          var found = parent.find('input');
-          if (found) {
+          var found = parent.find('.form-control');
+          if (found.length > 0) {
             found[found.length-1].focus();
           }
         }, 100);
       }
     };
+
+    if ($scope.eiKohdealueita && (angular.isUndefined($scope.arviointi) || $scope.arviointi === null)) {
+      $scope.uudenKohdealueenNimi = 'automaattinen';
+      $scope.kohdealue.uusi();
+    }
+
+    /*if ($scope.eiKohdealueita && (angular.isUndefined($scope.arviointi.kohdealue) || $scope.arviointi.kohdealue === null)) {
+      $scope.uudenKohdealueenNimi = 'automaattinen';
+      $scope.kohdealue.uusi();
+    }*/
   })
   .directive('arviointi', function(YleinenData, $timeout) {
     return {

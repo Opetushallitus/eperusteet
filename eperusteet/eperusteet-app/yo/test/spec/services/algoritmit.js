@@ -110,8 +110,26 @@ describe('Service: Algoritmit', function() {
           laajuusYksikko: 'osp'
         }]
       }, 'ops');
-
       expect(yksikko).toBe('osp');
+    });
+  });
+
+  describe('normalizeTeksti', function() {
+    it('poistaa tekstistä ei halutut merkit', function() {
+      expect(service.normalizeTeksti('x&nbsp;y')).toBe('x y');
+      expect(service.normalizeTeksti('\n\r')).toBe('');
+      expect(service.normalizeTeksti('  Hei olen \rtodella    huonosti    formatoitu &plus;teksti.  '))
+                               .toBe('Hei olen todella huonosti formatoitu +teksti.');
+
+      expect(service.normalizeTeksti({
+        fi: ' Lorem &nbsp;  ipsum',
+        sv: 'toinen     teksti '
+      }))
+      .toEqual({
+        fi: 'Lorem ipsum',
+        sv: 'toinen teksti'
+      });
+
     });
   });
 

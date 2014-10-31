@@ -24,30 +24,25 @@ angular.module('eperusteApp')
       restrict: 'A',
       scope: {
         model: '=muokattavaOsio',
-        type: '@'
+        type: '@',
+        path: '@?',
+        oppiaine: '=?',
+        vuosiluokka: '=?'
       },
       controller: 'MuokattavaOsioController'
     };
   })
-  .controller('MuokattavaOsioController', function($scope, YleinenData, Utils) {
+  .controller('MuokattavaOsioController', function($scope, YleinenData, Utils, $state, OsanMuokkausHelper) {
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
 
     $scope.hasContent = false;
     $scope.$watch('model', function () {
-      $scope.hasContent = $scope.type !== 'tekstikappale' || Utils.hasLocalizedText($scope.model.nimi);
+      $scope.realModel = $scope.path ? $scope.model[$scope.path] : $scope.model;
+      $scope.hasContent = $scope.type !== 'tekstikappale' || ($scope.realModel && _.has($scope.realModel, 'otsikko'));
     }, true);
-  })
 
-  .directive('tagCloud', function () {
-    return {
-      templateUrl: 'views/directives/tagcloud.html',
-      restrict: 'A',
-      scope: {
-        model: '=tagCloud',
-        openable: '@'
-      },
-      controller: 'TagCloudController'
+    $scope.edit = function () {
+      OsanMuokkausHelper.setup($scope.model, $scope.path, $scope.oppiaine);
+      $state.go('root.perusteprojekti.muokkaus', {osanTyyppi: $scope.type, osanId: $scope.realModel.id});
     };
-  })
-  .controller('TagCloudController', function (/*$scope*/) {
   });

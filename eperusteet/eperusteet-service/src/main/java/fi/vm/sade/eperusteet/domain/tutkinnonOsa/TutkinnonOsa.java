@@ -83,7 +83,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @Column(name = "koodi_arvo")
     private String koodiArvo;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Arviointi arviointi;
 
     @Getter

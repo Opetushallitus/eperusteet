@@ -2,6 +2,12 @@
   <revert-note object="model" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
   <div class="action-buttons">
     <div class="floater" ng-attr-title="{{lockNotification}}">
+      <button class="btn btn-default" icon-role="{{actionButton.role}}"
+              ng-disabled="isLocked" ng-click="actionButtonFn(actionButton)"
+              ng-repeat="actionButton in config.actionButtons"
+              ng-hide="shouldHide(actionButton)"
+              oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"
+              kaanna="actionButton.label"></button>
       <button ng-disabled="isLocked" ng-if="!isPublished()" icon-role="edit"
               ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="btn btn-default" kaanna="'muokkaa'"
               oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
@@ -16,6 +22,7 @@
       <div class="floater">
         <div class="dropdown">
           <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!canAdd()"
+                  ng-show="config.fields.length > 0"
                   icon-role="add">{{config.addPartLabel || 'muokkaus-lisaa-osio' | kaanna}}</button>
           <ul class="pull-right dropdown-menu">
             <li ng-repeat="field in config.fields | orderBy:'order'" ng-class="{divider: field.divider}">
@@ -29,13 +36,14 @@
   </div>
 
   <a ng-if="config.backLabel" ng-show="!editEnabled" icon-role="back" ng-href="{{generateBackHref()}}">{{config.backLabel | kaanna}}</a>
-  <h1 ng-show="!editEnabled">{{config.title | kaanna}}</h1>
+  <h1 ng-show="!editEnabled">{{config.title() | kaanna}}</h1>
   <h1 ng-show="editEnabled">
-    <span ng-show="!isNew" kaanna="config.editTitle"></span>
-    <span ng-show="isNew" kaanna="config.uusiTitle"></span>
+    <span ng-show="!isNew">{{config.editTitle | kaanna}}</span>
+    <span ng-show="isNew">{{config.newTitle | kaanna}}</span>
   </h1>
 
   <!-- TODO: pikamenu -->
+  <!-- <pre>{{editableModel|json}}</pre> -->
 
   <versiotiedot ng-hide="editEnabled"></versiotiedot>
   <hr ng-show="editEnabled">
