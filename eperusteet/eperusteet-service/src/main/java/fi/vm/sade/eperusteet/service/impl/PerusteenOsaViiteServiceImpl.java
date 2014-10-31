@@ -39,6 +39,7 @@ import fi.vm.sade.eperusteet.service.internal.ArviointiService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.security.PermissionChecker;
+import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -162,23 +163,13 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         Peruste peruste = perusteet.findOne(perusteId);
         PerusteenOsaViite viite = repository.findOne(viiteId);
 
-        if (  peruste == null || !peruste.containsViite(viite) ) {
+        if (peruste == null || !peruste.containsViite(viite)) {
             throw new BusinessRuleViolationException("Sisältö ei kuulu tähän perusteeseen");
         }
 
         PerusteenOsaViite uusiViite = new PerusteenOsaViite();
-        if (viiteDto == null) {
-            TekstiKappale uusiKappale = new TekstiKappale();
-            uusiKappale.setTila(PerusteTila.LUONNOS);
-            uusiKappale = perusteenOsaRepository.save(uusiKappale);
-            uusiViite.setPerusteenOsa(uusiKappale);
-        } else {
-            PerusteenOsaViite viiteEntity = mapper.map(viiteDto, PerusteenOsaViite.class);
-            uusiViite.setLapset(viiteEntity.getLapset());
-            uusiViite.setPerusteenOsa(viiteEntity.getPerusteenOsa());
-        }
-
         repository.lock(viite.getRoot());
+
         uusiViite.setVanhempi(viite);
         List<PerusteenOsaViite> lapset = viite.getLapset();
         if (lapset == null) {
@@ -187,6 +178,24 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         }
         lapset.add(uusiViite);
         uusiViite = repository.save(uusiViite);
+
+        if (viiteDto == null) {
+            TekstiKappale uusiKappale = new TekstiKappale();
+            uusiKappale.setTila(PerusteTila.LUONNOS);
+            uusiKappale = perusteenOsaRepository.save(uusiKappale);
+            uusiViite.setPerusteenOsa(uusiKappale);
+        } else {
+            PerusteenOsaViite viiteEntity = mapper.map(viiteDto, PerusteenOsaViite.class);
+            uusiViite.setLapset(viiteEntity.getLapset());
+
+            if ( viiteDto.getPerusteenOsaRef() != null ) {
+                permissionChecker.checkPermission(viiteEntity.getPerusteenOsa().getId(), PermissionManager.Target.PERUSTEENOSA, PermissionManager.Permission.LUKU);
+                uusiViite.setPerusteenOsa(viiteEntity.getPerusteenOsa());
+            } else if ( viiteDto.getPerusteenOsa() != null ) {
+                perusteenOsaService.add(uusiViite, viiteDto.getPerusteenOsa());
+            }
+        }
+        repository.flush();
         return mapper.map(uusiViite, PerusteenOsaViiteDto.Matala.class);
     }
 

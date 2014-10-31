@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueKokonaanDto;
@@ -51,7 +52,7 @@ public interface PerusteenOsaService {
 
     @PreAuthorize("isAuthenticated()")
     @PostAuthorize("hasPermission(returnObject.id, 'perusteenosa', 'MUOKKAUS')")
-    <T extends PerusteenOsaDto.Laaja> T add(T perusteenOsaDto);
+    <T extends PerusteenOsaDto.Laaja> T add(PerusteenOsaViite viite, T perusteenOsaDto);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'POISTO')")
     void delete(@P("id") final Long id);

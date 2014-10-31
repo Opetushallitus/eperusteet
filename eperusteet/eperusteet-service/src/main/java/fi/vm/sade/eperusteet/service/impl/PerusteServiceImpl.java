@@ -475,10 +475,13 @@ public class PerusteServiceImpl implements PerusteService {
         //workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
         suoritustapaRepository.lock(suoritustapa);
         try {
-            Set<TutkinnonOsaViite> tutkinnonOsat = suoritustapa.getTutkinnonOsat();
             TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osaId);
-            viite.setPoistettu(true);
-//            tutkinnonOsat.remove(viite);
+            if ( suoritustapa.getTutkinnonOsat().contains(viite) ) {
+                //TODO: poistamisen refaktorointi (viitteen poisto oikeasti)
+                viite.setPoistettu(true);
+            } else {
+                throw new BusinessRuleViolationException("Tutkinnonosa ei kuulu tähän suoritustapaan");
+            }
         } finally {
             lockManager.unlock(suoritustapa.getId());
         }
@@ -571,74 +574,16 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional
     public PerusteenOsaViiteDto.Matala addSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, PerusteenOsaViiteDto.Matala viite) {
         Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
-        if (suoritustapa.getSisalto() == null) {
-            throw new BusinessRuleViolationException("Perusteen " + perusteId + " + suoritustavalla "
-                + suoritustapakoodi
-                + " ei ole sisältöä");
+        if (suoritustapa == null) {
+            throw new BusinessRuleViolationException("Suoritustapaa ei ole");
         }
-
-        PerusteenOsaViite uusiViite = new PerusteenOsaViite();
-        if (viite == null) {
-            TekstiKappale uusiKappale = new TekstiKappale();
-            uusiKappale.setTila(PerusteTila.LUONNOS);
-            uusiKappale = perusteenOsaRepository.save(uusiKappale);
-            uusiViite.setPerusteenOsa(uusiKappale);
-        } else {
-            PerusteenOsaViite viiteEntity = mapper.map(viite, PerusteenOsaViite.class);
-            uusiViite.setLapset(viiteEntity.getLapset());
-            uusiViite.setPerusteenOsa(viiteEntity.getPerusteenOsa());
-        }
-
-        suoritustapaRepository.lock(suoritustapa);
-        final PerusteenOsaViite sisalto = suoritustapa.getSisalto();
-        uusiViite.setVanhempi(sisalto);
-        List<PerusteenOsaViite> lapset = sisalto.getLapset();
-        if (lapset == null) {
-            lapset = new ArrayList<>();
-            sisalto.setLapset(lapset);
-        }
-        lapset.add(uusiViite);
-        uusiViite = perusteenOsaViiteRepo.save(uusiViite);
-        return mapper.map(uusiViite, PerusteenOsaViiteDto.Matala.class);
+        return perusteenOsaViiteService.addSisalto(perusteId, suoritustapa.getSisalto().getId(), viite);
     }
 
     @Override
     @Transactional
-    public PerusteenOsaViiteDto.Matala addSisaltoLapsi(Long perusteId, Long perusteenosaViiteId) {
-
-        PerusteenOsaViite viiteEntity = perusteenOsaViiteRepo.findOne(perusteenosaViiteId);
-        if (viiteEntity == null) {
-            throw new BusinessRuleViolationException("Perusteenosaviitettä ei ole olemassa");
-        }
-        perusteenOsaViiteRepo.lock(viiteEntity);
-        PerusteenOsaViite uusiViite = new PerusteenOsaViite();
-        TekstiKappale uusiKappale = new TekstiKappale();
-        uusiKappale.setTila(PerusteTila.LUONNOS);
-        uusiKappale = perusteenOsaRepository.save(uusiKappale);
-        uusiViite.setPerusteenOsa(uusiKappale);
-        uusiViite.setVanhempi(viiteEntity);
-        uusiViite = perusteenOsaViiteRepo.save(uusiViite);
-        viiteEntity.getLapset().add(uusiViite);
-
-        return mapper.map(uusiViite, PerusteenOsaViiteDto.Matala.class);
-    }
-
-    @Override
-    @Transactional
-    public PerusteenOsaViiteDto.Matala attachSisaltoLapsi(Long perusteId, Long parentViiteId, Long tekstikappaleId) {
-        PerusteenOsaViite viiteEntity = perusteenOsaViiteRepo.findOne(parentViiteId);
-        if (viiteEntity == null) {
-            throw new BusinessRuleViolationException("Perusteenosaviitettä ei ole olemassa");
-        }
-        perusteenOsaViiteRepo.lock(viiteEntity);
-        PerusteenOsaViite uusiViite = new PerusteenOsaViite();
-        PerusteenOsa kappale = perusteenOsaRepository.findOne(tekstikappaleId);
-        uusiViite.setPerusteenOsa(kappale);
-        uusiViite.setVanhempi(viiteEntity);
-        uusiViite = perusteenOsaViiteRepo.save(uusiViite);
-        viiteEntity.getLapset().add(uusiViite);
-
-        return mapper.map(uusiViite, PerusteenOsaViiteDto.Matala.class);
+    public PerusteenOsaViiteDto.Matala addSisaltoLapsi(Long perusteId, Long perusteenosaViiteId, PerusteenOsaViiteDto.Matala viite) {
+        return perusteenOsaViiteService.addSisalto(perusteId, perusteenosaViiteId, viite);
     }
 
     @Override

@@ -20,13 +20,11 @@ import fi.vm.sade.eperusteet.domain.Arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
-import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.repository.ArviointiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -56,8 +54,6 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     private PerusteenOsaService perusteenOsaService;
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
-    @Autowired
-    private ArviointiRepository arviointiRepository;
     @Autowired
     private TutkinnonOsaRepository tutkinnonOsaRepository;
     @PersistenceContext
@@ -106,32 +102,32 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testFindTutkinnonOsaByName() {
-    	TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
-    	tutkinnonOsa.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "Nimi"));
+        TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
+        tutkinnonOsa.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "Nimi"));
         tutkinnonOsa.setTila(PerusteTila.LUONNOS);
-    	tutkinnonOsa = tutkinnonOsaRepository.saveAndFlush(tutkinnonOsa);
+        tutkinnonOsa = tutkinnonOsaRepository.saveAndFlush(tutkinnonOsa);
 
-    	tutkinnonOsa = new TutkinnonOsa();
-    	tutkinnonOsa.setNimi(TestUtils.tekstiPalanenOf(Kieli.SV, "Namnet"));
+        tutkinnonOsa = new TutkinnonOsa();
+        tutkinnonOsa.setNimi(TestUtils.tekstiPalanenOf(Kieli.SV, "Namnet"));
         tutkinnonOsa.setTila(PerusteTila.LUONNOS);
-    	tutkinnonOsa = tutkinnonOsaRepository.saveAndFlush(tutkinnonOsa);
+        tutkinnonOsa = tutkinnonOsaRepository.saveAndFlush(tutkinnonOsa);
 
-    	List<TutkinnonOsa> tutkinnonOsat = tutkinnonOsaRepository.findByNimiTekstiTekstiContainingIgnoreCase("nim");
+        List<TutkinnonOsa> tutkinnonOsat = tutkinnonOsaRepository.findByNimiTekstiTekstiContainingIgnoreCase("nim");
 
-    	Assert.assertNotNull(tutkinnonOsat);
-    	Assert.assertEquals(1, tutkinnonOsat.size());
+        Assert.assertNotNull(tutkinnonOsat);
+        Assert.assertEquals(1, tutkinnonOsat.size());
 
-    	tutkinnonOsat = tutkinnonOsaRepository.findByNimiTekstiTekstiContainingIgnoreCase("nAm");
+        tutkinnonOsat = tutkinnonOsaRepository.findByNimiTekstiTekstiContainingIgnoreCase("nAm");
 
-    	Assert.assertNotNull(tutkinnonOsat);
-    	Assert.assertEquals(1, tutkinnonOsat.size());
+        Assert.assertNotNull(tutkinnonOsat);
+        Assert.assertEquals(1, tutkinnonOsat.size());
     }
 
     @Test(expected = ConstraintViolationException.class)
     @Rollback(true)
     public void testWithInvalidHtml() {
-    	TekstiKappaleDto dto = new TekstiKappaleDto();
-    	dto.setNimi(new LokalisoituTekstiDto(Collections.singletonMap("fi", "<i>otsikko</i>")));
-    	perusteenOsaService.add(dto);
+        TekstiKappale tk = new TekstiKappale();
+        tk.setNimi(TekstiPalanen.of(Kieli.FI, "<i>otsikko</i>"));
+        perusteenOsaRepository.save(tk);
     }
 }
