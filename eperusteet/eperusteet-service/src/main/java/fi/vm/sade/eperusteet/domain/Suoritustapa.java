@@ -104,4 +104,8 @@ public class Suoritustapa implements Serializable {
         this.laajuusYksikko = laajuusYksikko;
     }
 
+    boolean containsViite(PerusteenOsaViite viite) {
+        return viite != null && sisalto == viite.getRoot();
+    }
+
 }

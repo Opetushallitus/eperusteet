@@ -60,3 +60,43 @@
       width:90%
   }
 }
+
+.osa-alue-tabs {
+    padding-top: 10px;
+    // margin: 0 auto 100px auto;
+    font-size: 16px;
+
+    .nav {
+        margin-bottom: 22px;
+    }
+
+    .nav-tabs>li>a {
+        cursor: pointer;
+        padding: 10px;
+        background: none;
+        filter: none;
+        background: #fafafa;
+        &:hover {
+            background: #fff;
+        }
+    }
+
+    .nav-tabs>li.active {
+        &>a, &>a:hover, &>a:focus {
+            padding: 10px;
+            background: #fff;
+        }
+    }
+}
+
+hr.mujuviiva {
+    border: 0px none;
+    color: #DDD;
+    height: 1px;
+    background: none repeat scroll 0% 0% #DDD;
+}
+
+.osaamistavoite-box {
+    border: 1px solid #ddd;
+    padding: 10px;
+}

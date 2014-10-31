@@ -161,7 +161,7 @@ angular.module('eperusteApp')
         scope.$on('notifyCKEditor', function() {
           if(editor.checkDirty()) {
             dataSavedOnNotification = true;
-            var data = editor.getData();
+            var data = element.hasClass('has-placeholder') ? '' : editor.getData();
             ctrl.$setViewValue(data);
           }
           $('#toolbar').hide();

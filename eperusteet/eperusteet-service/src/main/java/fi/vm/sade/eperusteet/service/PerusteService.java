@@ -27,6 +27,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
@@ -120,7 +121,7 @@ public interface PerusteService {
     Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, PerusteTila tila, PerusteTyyppi tyyppi);
 
     @PreAuthorize("isAuthenticated()") //XXX ei julkinen rajapinta
-    Peruste luoPerusteRunkoToisestaPerusteesta(Long perusteId, PerusteTyyppi tyyppi);
+    Peruste luoPerusteRunkoToisestaPerusteesta(PerusteprojektiLuontiDto luontiDto, PerusteTyyppi tyyppi);
 
     @PreAuthorize("permitAll()")
     Page<PerusteInfoDto> findByInfo(PageRequest page, PerusteQuery pquery);

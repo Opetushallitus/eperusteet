@@ -33,11 +33,13 @@ public class LukkoDto {
         this.haltijaOid = lukko.getHaltijaOid();
         this.luotu = lukko.getLuotu();
         this.vanhentuu = lukko.getVanhentuu();
+        this.oma = lukko.isOma();
     }
 
     final String haltijaOid;
     final DateTime luotu;
     final DateTime vanhentuu;
+    final Boolean oma;
 
     public static LukkoDto of(Lukko lukko) {
         return lukko == null ? null : new LukkoDto(lukko);

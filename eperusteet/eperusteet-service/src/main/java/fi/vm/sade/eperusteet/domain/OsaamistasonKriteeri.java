@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -62,13 +63,13 @@ public class OsaamistasonKriteeri implements Serializable {
     private Osaamistaso osaamistaso;
 
     @ValidHtml(whitelist = WhitelistType.MINIMAL)
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @OrderColumn
     @JoinTable(name = "osaamistasonkriteeri_tekstipalanen",
                joinColumns = @JoinColumn(name = "osaamistasonkriteeri_id"),
                inverseJoinColumns = @JoinColumn(name = "tekstipalanen_id"))
-    @Getter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @BatchSize(size = 25)
     private List<TekstiPalanen> kriteerit = new ArrayList<>();
 
     public OsaamistasonKriteeri() {
@@ -76,13 +77,21 @@ public class OsaamistasonKriteeri implements Serializable {
 
     public OsaamistasonKriteeri(OsaamistasonKriteeri other) {
         this.osaamistaso = other.osaamistaso;
-        this.kriteerit.addAll(other.getKriteerit());
+        this.kriteerit.addAll(other.kriteerit);
     }
-    
+
+    public List<TekstiPalanen> getKriteerit() {
+        return new ArrayList<>(kriteerit);
+    }
+
     public void setKriteerit(List<TekstiPalanen> kriteerit) {
         this.kriteerit.clear();
         if (kriteerit != null) {
-            this.kriteerit.addAll(kriteerit);
+            for (TekstiPalanen t : kriteerit) {
+                if (t != null) {
+                    this.kriteerit.add(t);
+                }
+            }
         }
     }
 

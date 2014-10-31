@@ -39,6 +39,8 @@
     "tuo-valitut": "Tuo valitut",
     "sulje": "Sulje",
     "tyhjenna-rajaus-tooltip": "Tyhjennä rajaus (Esc)",
+    "tyhjenna": "Tyhjennä",
+    "poistu": "Poistu",
 
     "ops-ja-tutkintojen-perusteet": "Opetussuunnitelmien ja tutkintojen perusteet",
 
@@ -53,6 +55,7 @@
     "fi": "Suomi",
     "sv": "Ruotsi",
     "en": "Englanti",
+    "se": "Saame",
 
     "nimeton": "<Nimetön>",
 
@@ -68,7 +71,7 @@
 
     "ammattitutkinto": "Ammattitutkinto",
     "erikoisammattitutkinto": "Erikoisammattitutkinto",
-    "perustutkinto": "Perustutkinto",
+    "perustutkinto": "Ammatillinen perustutkinto",
 
     "tiedot": "Tiedot",
     "projektiryhma": "Projektiryhmä",
@@ -101,6 +104,7 @@
     "virhe-muu": "Virhe",
     "virhe-etusivulle": "Etusivulle",
     "tallentaminen-epäonnistui": "Tallentaminen epäonnistui",
+    "perusteen-tiivistelma": "Perusteen tiivistelmä",
 
     "suoritustavalle-ei-ole-vielä-sisältöä": "Perusteelle ei ole luotu vielä tähän suoritustapaan liittyvää sisältöä",
     "rajauksellasi-ei-löytynyt-vaihtoehtoa": "Rajaus ei tuottanut tuloksia",
@@ -124,7 +128,6 @@
 
     "uusi-tutkinnonosa": "<Uusi tutkinnon osa>",
     "tuo-tutkinnonosa": "Tuo tutkinnon osa",
-    "tuo-toisesta-suoritustavasta": "Tuo suoritustavasta",
     "tutkinnon-osia-ei-ole": "Tutkinnon osia ei ole",
     "avaa-kaikki": "Avaa kaikki",
     "sulje-kaikki": "Sulje kaikki",
@@ -146,8 +149,9 @@
 
     "lopeta-muokkaus": "Lopeta muokkaus",
 
-    "ryhma-rooli-selite-maaritelty": "Ryhmän sisältö määritellään perustepuun luonnin yhteydessä",
-    "ryhma-rooli-selite-maarittelematon": "Ryhmälle annetaan vain muodostumissäännöt ja sen sisältö määritellään paikallisen laadinnan puolella",
+    "ohje-ryhma-rooli": "<p>Ryhmän rooli määrittelee ryhmän sisällön muodostumisen joko perusteessa tai paikallisessa opetussuunnitelmassa</p><p><strong>Perusteessa määriteltävä:</strong> Ryhmän sisältö määritellään perustepuun luonnin yhteydessä.</p><p><strong>Tutkinnossa määriteltävä:</strong> Ryhmälle annetaan vain muodostumissäännöt ja sen sisältö määritellään paikallisen laadinnan puolella.</p>",
+    "ohje-ryhma-laajuus": "Laajuus määrittää kuinka monen yksikön edestä ryhmä voi sisältää osia",
+    "ohje-ryhma-koko": "Koko määrittää montako osaa ryhmä voi sisältää",
 
     "otsikko": "otsikko",
     "kopioi-muokattavaksi": "Kopioi muokattavaksi",
@@ -243,6 +247,7 @@
     "tutkinnonosa-tavoitteet": "Tavoitteet",
     "tutkinnonosa-osaamisala": "Osaamisala",
     "tutkinnonosa-jarjestysnumero": "Järjestysnumero",
+    "tutkinnonosa-tunnustaminen": "Tunnustaminen",
 
     "osaamisala": "Osaamisala",
     "ammattitaidonOsoittamistavat": "Ammattitaidon osoittamistavat",
@@ -258,62 +263,14 @@
 
     "kommentti": "Kommentti",
 
-    "koulutusalakoodi-1": "Tekniikan ja liikenteen ala",
-    "koulutusalakoodi-2": "Kulttuuriala",
-    "koulutusalakoodi-3": "Luonnonvara- ja ympäristöala",
-    "koulutusalakoodi-4": "Yhteiskuntatieteiden, liiketalouden ja hallinnon ala",
-    "koulutusalakoodi-5": "Humanistinen ja kasvatusala",
-    "koulutusalakoodi-6": "Matkailu-, ravitsemis- ja talousala",
-    "koulutusalakoodi-7": "Sosiaali-, terveys- ja liikunta-ala",
-    "koulutusalakoodi-8": "Luonnontieteiden ala",
-
-    "koulutustyyppi_1": "Perustutkinto",
+    "koulutustyyppi_1": "Ammatillinen perustutkinto",
     "koulutustyyppi_11": "Ammattitutkinto",
     "koulutustyyppi_12": "Erikoisammattitutkinto",
-    "koulutustyyppi_9999": "Perusopetuksen opetussuunnitelma",
+    "koulutustyyppi_9999": "Perusopetus",
 
     "solu": "Solu",
     "annettu-arvo": "Annettu arvo",
     "odotettu-arvo": "Odotettu arvo",
-
-    "opintoalakoodi-1": "Kielitieteet",
-    "opintoalakoodi-2": "Muu humanistinen ja kasvatusala",
-    "opintoalakoodi-3": "Opetus- ja kasvatustyö",
-    "opintoalakoodi-4": "Vapaa-aika ja nuorisotyö",
-    "opintoalakoodi-5": "Käsi- ja taideteollisuus",
-    "opintoalakoodi-6": "Musiikki",
-    "opintoalakoodi-7": "Teatteri ja tanssi",
-    "opintoalakoodi-8": "Viestintä- ja informaatiotieteet",
-    "opintoalakoodi-9": "Kotitalous- ja kuluttajapalvelut",
-    "opintoalakoodi-10": "Majoitus- ja ravitsemisala",
-    "opintoalakoodi-11": "Matkailuala",
-    "opintoalakoodi-12": "Puhdistuspalvelut",
-    "opintoalakoodi-13": "Tietojenkäsittely",
-    "opintoalakoodi-14": "Kalatalous",
-    "opintoalakoodi-15": "Luonto- ja ympäristöala",
-    "opintoalakoodi-16": "Maatilatalous",
-    "opintoalakoodi-17": "Metsätalous",
-    "opintoalakoodi-18": "Muu luonnonvara- ja ympäristöalan koulutus",
-    "opintoalakoodi-19": "Puutarhatalous",
-    "opintoalakoodi-20": "Farmasia ja muu lääkehuolto",
-    "opintoalakoodi-21": "Hammaslääketiede ja muu hammashuolto",
-    "opintoalakoodi-22": "Kauneudenhoitoala",
-    "opintoalakoodi-23": "Kuntoutus ja liikunta",
-    "opintoalakoodi-24": "Sosiaali- ja terveysalojen yhteiset",
-    "opintoalakoodi-25": "Sosiaaliala",
-    "opintoalakoodi-26": "Tekniset terveyspalvelut",
-    "opintoalakoodi-27": "Terveysala",
-    "opintoalakoodi-28": "Ajoneuvo- ja kuljetustekniikka",
-    "opintoalakoodi-29": "Arkkitehtuuri ja rakentaminen",
-    "opintoalakoodi-30": "Elintarvikeala ja biotekniikka",
-    "opintoalakoodi-31": "Graafinen ja viestintätekniikka",
-    "opintoalakoodi-32": "Kone-, metalli- ja energiatekniikka",
-    "opintoalakoodi-33": "Muu tekniikan ja liikenteen alan koulutus",
-    "opintoalakoodi-34": "Prosessi-, kemian- ja materiaalitekniikka",
-    "opintoalakoodi-35": "Sähkö- ja automaatiotekniikka",
-    "opintoalakoodi-36": "Tekstiili- ja vaatetustekniikka",
-    "opintoalakoodi-37": "Tieto- ja tietoliikennetekniikka",
-    "opintoalakoodi-38": "Liiketalous ja kauppa",
 
     "kielen-vaihto": "Vaihda kieli",
     "suomi": "Suomi",
@@ -357,6 +314,9 @@
     "luonti-tutkinnon-osa": "Uusi tutkinnon osa",
     "luonti-tekstikappale": "Uusi tekstikappale",
 
+    "lajittelu-jarjestysnumero": "No.",
+
+    "muokkaus-tutkinnon-jarjestysnumero": "Järjestysnumero",
     "muokkaus-tutkinnon-osan-nimi-header": "Nimi",
     "muokkaus-tutkinnon-osan-nimi-placeholder": "Kirjoita tähän otsikko",
     "muokkaus-tutkinnon-osan-koodi-header": "Koodi",
@@ -377,6 +337,7 @@
     "varmista-osion-poisto-teksti": "Haluatko poistaa osion? Kaikki osion sisältö menetetään.",
     "lisaa-osa-alue": "Lisää osa-alue",
     "lisaa-osaamistavoite": "Lisää osaamistavoite",
+    "tuo-osaamistavoite": "Tuo osaamistavoite",
 
     "ota-versio-kayttoon": "Ota tämä versio käyttöön",
     "katso-uusin-versio": "Katso uusin versio",
@@ -398,7 +359,7 @@
     "arviointi-uusi-kohdealue": "Lisää kohdealue",
     "arviointi-uusi-kohdealue-placeholder": "Kohdealueen nimi",
     "arviointi-uusi-kohde": "Lisää arvioinnin kohde",
-    "arviointi-uusi-kohde-placeholder": "Kohteen nimi",
+    "arviointi-uusi-kohde-placeholder": "Kohteen nimi (ei pakollinen)",
     "arviointi-uusi-kriteeri": "Lisää rivi",
     "arviointi-uusi-kriteeri-placeholder": "Kriteerin teksti",
     "arviointi-poista-kriteeri": "Poista rivi",
@@ -471,15 +432,18 @@
     "anna-voimaantulo-loppu-pvm": "Anna voimassaolon päättymispäivämäärä",
 
     "tuo-toisesta-projektista": "Tuo sisältöä toisesta projektista",
+    "tuo-toisesta-suoritustavasta": "Tuo toisesta suoritustavasta",
     "hae-perusteprojekteja": "Hae perusteprojekteja",
 
     "toiminto": "Toiminto",
 
+    "mandatory-odottamaton-virhe": "Kaikkia pakollisia kenttiä ei ole täytetty",
+    "mandatory-otsikkoa-ei-asetettu": "Otsikko on pakollinen",
     "tuo-peruste": "Tuo peruste",
     "perustepohja": "Pohja",
     "tuo-perustepohja": "Tuo perustepohja",
     "projektin-nimi-label": "Projektin nimi",
-    "projektin-oid-label": "Projektiryhmä",
+    "projektin-oid-label": "Perustetyöryhmä",
     "anna-projektin-nimi-placeholder": "Syötä projektin nimi",
     "diaarinumero-label": "Diaarinumero",
     "anna-diaarinumero-placeholder": "Syötä diaarinumero",
@@ -497,10 +461,10 @@
     "aloitus-ennen-lopetusta": "Toimikauden aloituspäivämäärän täytyy olla ennen päättymisajankohtaa.",
     "lopetus-aloituksen-jälkeen": "Toimikauden päättymispäivämäärä täytyy olla aloitusajankohdan jälkeen.",
     "kelvoton-pvm": "Kelvoton päivämäärä",
-    "yhteistyotaho-label": "Yhteistyötaho",
-    "anna-yhteistyotaho-placeholder": "Syötä yhteistyötaho",
-    "valitse-koulutustyyppi": "Valitse koulutustyyppi",
-    "koulutustyyppi-label": "Koulutustyyppi",
+    "yhteistyotaho-label": "Sopimusosapuoli",
+    "anna-yhteistyotaho-placeholder": "Syötä sopimusosapuoli",
+    "valitse-koulutustyyppi": "Valitse koulutus/tutkintotyyppi",
+    "koulutustyyppi-label": "Koulutus/tutkintotyyppi",
     "perusteprojektin-pohjaksi-otetaan-peruste": "Perusteprojektin pohjaksi otetaan peruste",
 
     "projektipäällikkö": "Projektipäällikkö",
@@ -527,7 +491,7 @@
     "hallinta": "Hallinta",
     "hallintapaneeli": "Hallintapaneeli",
 
-    "ops": "Opetussuunnitelma",
+    "ops": "Peruskoulutus",
     "naytto": "Näyttötutkinto",
 
     "ePerusteet-koti": "ePerusteet",
@@ -541,19 +505,16 @@
     "perusteprojekti-perustenimi-placeholder": "<Anna perusteen nimi>",
     "perusteprojekti-koulutusala-placeholder": "<Anna koulutusala>",
     "perusteprojekti-nimi-placeholder": "<Anna projektin nimi>",
-    "perusteprojekti-koulutustyyppi-placeholder": "<Aseta perusteen koulutustyyppi>",
+    "perusteprojekti-koulutustyyppi-placeholder": "<Aseta perusteen koulutus/tutkintotyyppi>",
     "projekti-header-peruste": "Peruste",
     "projekti-header-koulutusala": "Koulutusala",
-    "projekti-header-paatosPvm": "Päätöspäivämäärä",
-    "projekti-header-koulutustyyppi": "Koulutustyyppi",
+    "projekti-header-paatosPvm": "Työryhmän asettamispäivämäärä",
+    "projekti-header-koulutustyyppi": "Koulutus/tutkintotyyppi",
 
     "tutkintokohtaiset-osat": "Tutkintokohtaiset osat",
     "lisaa-tutkintokohtainen-osa": "Lisää tekstikappale",
     "tuo-tutkintokohtainen-osa": "Tuo tekstikappale",
     "uusi-tutkinnon-osa": "<Uusi sisältö>",
-
-    "sisältö-selite-ops": "Opetussuunnitelman mukaisen suoritustavan sisältö",
-    "sisältö-selite-naytto": "Näyttötutkinnon mukaisen suoritustavan sisältö",
 
     "lukko-käyttäjällä": "Lukko on varattu käyttäjälle",
 
@@ -643,6 +604,7 @@
     "luo-uusi": "Luo uusi",
     "luo-tyoryhma": "Luo työryhmä",
     "tyoryhman-nimi": "Työryhmän nimi",
+    "tyoryhma": "Työryhmä",
     "valitse-jasenet": "Valitse jäsenet",
     "muokkaa-tyoryhmaa": "Muokkaa työryhmää",
     "tallenna-tyoryhma": "Tallenna työryhmä",
@@ -655,11 +617,14 @@
     "valitse-tyoryhmat": "Valitse tyoryhmat",
     "haetaan-ryhmia": "Haetaan ryhmiä",
     "poista-tyoryhma-teksti": "Työryhmä \"{{nimi}}\" poistetaan. Oletko varma?",
+    "ohje-tyoryhma-luonti": "<p>Projektin perustetyöryhmä voidaan jakaa työryhmiin. Perusteen sisältö voidaan merkata luoduille työryhmille.</p><p>Kun työryhmä on luotu, perusteen sisältö voidaan merkata luodulle työryhmälle sisällön yhteydessä.</p>",
 
     "opetuksen-sisallot": "Opetuksen sisällöt",
     "laaja-alainen-osaaminen": "Laaja-alainen osaaminen",
 
     "muokkaus-laaja-alainen-osaaminen-header": "Laaja-alainen osaaminen",
+    "poista-osaamiskokonaisuus": "Poista osaamiskokonaisuus",
+    "poistetaanko-osaamiskokonaisuus": "Poistetaanko osaamiskokonaisuus?",
     "vuosiluokkakokonaisuudet": "Vuosiluokkakokonaisuudet",
     "vuosiluokkakokonaisuus": "Vuosiluokkakokonaisuus",
     "oppiaineet": "Oppiaineet",
@@ -678,6 +643,7 @@
     "nayta-osaamiskokonaisuuden-kuvaus": "Näytä osaamiskokonaisuuden yleiskuvaus",
     "piilota-osaamiskokonaisuuden-kuvaus": "Piilota osaamiskokonaisuuden yleiskuvaus",
     "tekstikappale": "Tekstikappale",
+    "kohdealueet": "Kohdealueet",
 
     "tyhja-placeholder-osaalueet": "Osa-alueita ei ole vielä lisätty.",
 
@@ -689,15 +655,42 @@
 
     "nimi-on-pakollinen": "Otsikko on pakollinen.",
 
-    "osaalue": "Osa-alue",
-    "oppiaineen-tehtava": "Oppiaineen tehtävä",
+    "oppiaine-osio-tehtava": "Oppiaineen tehtävä",
+    "oppiaine-osio-osaalue": "Osa-alue",
+    "oppiaine-osio-tyotavat": "Oppimisympäristöt ja työtavat",
+    "oppiaine-osio-ohjaus": "Ohjaus ja tuki",
+    "oppiaine-osio-arviointi": "Oppilaan oppimisen arviointi",
+    "uusi-osaaminen": "Laaja-alainen osaaminen - uusi osaamiskokonaisuus",
+    "muokkaa-osaaminen": "Laaja-alainen osaaminen - muokkaa osaamiskokonaisuutta",
+
     "poista-oppiaine": "Poista oppiaine",
+    "poistetaanko-oppiaine": "Poistetaanko oppiaine?",
+    "poista-oppimaara": "Poista oppimäärä",
+    "poistetaanko-oppimaara": "Poistetaanko oppimäärä?",
     "muokkaa-oppiainetta": "Muokkaa oppiainetta",
+    "uusi-oppiaine": "Uusi oppiaine",
     "sisaltoalueet": "Sisältöalueet",
     "opetuksen-tavoitteet": "Opetuksen tavoitteet",
     "ei-kuvausta": "[Ei kuvausta]",
     "arvioinnin-kohde": "Arvioinnin kohde",
     "arvion-hyva-osaaminen": "Arvion \"hyvä\" osaaminen",
-    "vuosiluokkakokonaisuuden-osaamisalueet": "Vuosiluokkakokonaisuuden osaamisalueet"
+    "vuosiluokkakokonaisuuden-osaamisalueet": "Vuosiluokkakokonaisuuden osaamisalueet",
+    "muokkaus-vuosiluokkakokonaisuuden-osa": "Muokkaa vuosiluokkakokonaisuuden osaa",
+    "osa": "Osa",
+    "oppiaine": "Oppiaine",
+    "lisaa-sisaltoalue": "Lisää sisältöalue",
+    "sisaltoalueen-nimi": "Sisältöalueen nimi",
+    "tavoitteen-kuvaus-placeholder": "Lisää tavoitteen kuvaus",
+    "lisaa-arviointi": "Lisää arviointi",
+    "lisaa-laaja-alainen-osaaminen": "Lisää laaja-alainen osaaminen",
+    "lisaa-opetuksen-tavoite": "Lisää opetuksen tavoite",
+    "oppimaarat": "Oppimäärät",
+    "muokkaa-oppimaaraa": "Muokkaa oppimäärää",
+    "uusi-oppimaara": "Uusi oppimäärä",
+    "ei-oppimaaria": "Oppimääriä ei ole lisätty",
+    "yksi-oppimaara": "Yksi oppimäärä",
+    "useita-oppimaaria": "Useita oppimääriä",
+    "oppimaara": "Oppimäärä",
+    "lisaa-oppimaara": "Lisää oppimäärä"
 
 }

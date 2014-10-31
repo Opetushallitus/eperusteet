@@ -1,0 +1,77 @@
+<h1>Muokkaa osa-aluetta</h1>
+<p kaanna="tahdella-pakolliset"></p>
+<hr class="versioraja">
+<div class="non-collapsibles">
+  <label class="header" kaanna="tutkinnonosa"></label>
+  <p>{{tutkinnonOsa.nimi| kaanna}}</p>
+  <label class="header">{{'nimi'| kaanna}}*</label>
+  <ml-input ml-data="osaAlue.nimi" type="text"></ml-input>
+
+  <div class="osa-alue-tabs">
+    <ul class="nav nav-tabs nav-justified ">
+      <li ng-class="{ active: selectedTab.id === tab.id }" ng-repeat="tab in tabs| orderBy:'id'"
+          ng-click="changeTab(tab)">
+        <a class="action-link suoritustapa">{{ tab.nimi | kaanna }}</a>
+      </li>
+    </ul>
+  </div>
+  <hr class="mujuviiva">
+
+<accordion close-others="true">
+  <accordion-group ng-repeat="tavoite in osaamistavoitepuu | filter:{$poistettu: false}" class="panel-clean osa-alue" is-open="tavoite.$open">
+    <accordion-heading >
+      <span class="glyphicon" ng-class="tavoite.$open ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
+      {{ tavoite.nimi | kaanna }}
+    </accordion-heading>
+    
+    <label>{{'nimi'| kaanna}}*</label>
+      <ml-input ml-data="tavoite.nimi" type="text"></ml-input>
+
+    <h3 ng-show="tavoite.pakollinen === true">
+      {{('Pakolliset osaamistavoitteet'| kaanna)}}, {{tavoite.laajuus}} {{'osp'| kaanna}}
+      <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite)" kaanna="poista"></button></span>
+    </h3> 
+    <h3 ng-show="tavoite.pakollinen === false">
+      {{('Valinnaiset osaamistavoitteet'| kaanna)}}, {{tavoite.laajuus}} {{'osp'| kaanna}}
+      <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite)" kaanna="poista"></button></span>
+    </h3>
+
+    <div class="non-collapsibles">
+      <label kaanna>laajuus</label>
+      <numberinput model="tavoite.laajuus" type="float" step="0.5"></numberinput>
+      <label kaanna>tavoitteet</label>
+      <div ng-model="tavoite.tavoitteet" localized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
+
+      <h4 kaanna>arviointi</h4>
+      <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet" ei-kohdealueita="true"
+                 edit-enabled="true" editointi-sallittu="true"></arviointi>
+      <label kaanna>tunnustaminen</label>
+      <div ng-model="tavoite.tunnustaminen" localized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tunnustaminen"></div>
+    </div>
+
+    <div ng-show="tavoite.lapsi && tavoite.lapsi.$poistettu === false">
+    <h3>
+      {{('Valinnaiset osaamistavoitteet'| kaanna)}}, {{tavoite.lapsi.laajuus}} {{'osp'| kaanna}}
+      <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite.lapsi)" kaanna="poista"></button></span>
+    </h3>
+    <div class="non-collapsibles">
+      <label kaanna>laajuus</label>
+      <numberinput model="tavoite.lapsi.laajuus" type="float" step="0.5"></numberinput>
+      <label kaanna>tavoitteet</label>
+      <div ng-model="tavoite.lapsi.tavoitteet" localized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
+
+      <h4 kaanna>arviointi</h4>
+      <arviointi arviointi="tavoite.lapsi.arviointi.arvioinninKohdealueet" ei-kohdealueita="true"
+                 edit-enabled="true" editointi-sallittu="true"></arviointi>
+      <label kaanna>Tunnustaminen</label>
+      <div ng-model="tavoite.lapsi.tunnustaminen" localized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tunnustaminen"></div>
+    </div>
+      </div>
+
+  </accordion-group>
+</accordion>
+
+
+<button class="btn btn-default" icon-role="add" ng-click="lisaaOsaamistavoite()" kaanna="lisaa-osaamistavoite"></button>
+<button class="btn btn-default" icon-role="add" ng-click="tuoOsaamistavoite()" kaanna="tuo-osaamistavoite"></button>
+</div>

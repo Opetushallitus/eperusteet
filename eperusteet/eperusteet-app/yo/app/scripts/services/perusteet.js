@@ -59,6 +59,27 @@ angular.module('eperusteApp')
       info: { method: 'GET', url: SERVICE_LOC + '/perusteet/info' }
     });
   })
+  .factory('Vuosiluokkakokonaisuudet', function ($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/vuosiluokkakokonaisuudet/:osanId', {
+      osanId: '@id'
+    });
+  })
+  .factory('Oppiaineet', function ($resource, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:osanId';
+    return $resource(baseUrl, { osanId: '@id' }, {
+      oppimaarat: { method: 'GET', isArray: true, url: baseUrl + '/oppimaarat'}
+    });
+  })
+  .factory('OppiaineenVuosiluokkakokonaisuudet', function ($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:oppiaineId/vuosiluokkakokonaisuudet/:osanId', {
+      osanId: '@id'
+    });
+  })
+  .factory('LaajaalaisetOsaamiset', function ($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/laajaalaisetosaamiset/:osanId', {
+      osanId: '@id'
+    });
+  })
   .factory('Suoritustapa', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa');
   })

@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -69,6 +70,10 @@ public class Lukko {
 
     public DateTime getVanhentuu() {
         return vanhentuu;
+    }
+
+    public boolean isOma() {
+        return haltijaOid.equals(SecurityUtil.getAuthenticatedPrincipal().getName());
     }
 
     public void setVanhentumisAika(int maxLockTime) {

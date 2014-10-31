@@ -51,57 +51,10 @@
     "tutkinnonosa-tavoitteet": "[Tavoitteet]",
     "tutkinnonosa-osaamisala": "[Osaamisala]",
 
-    "koulutusalakoodi-1": "[Tekniikan ja liikenteen ala]",
-    "koulutusalakoodi-2": "[Kulttuuriala]",
-    "koulutusalakoodi-3": "[Luonnonvara- ja ympäristöala]",
-    "koulutusalakoodi-4": "[Yhteiskuntatieteiden, liiketalouden ja hallinnon ala]",
-    "koulutusalakoodi-5": "[Humanistinen ja kasvatusala]",
-    "koulutusalakoodi-6": "[Matkailu-, ravitsemis- ja talousala]",
-    "koulutusalakoodi-7": "[Sosiaali-, terveys- ja liikunta-ala]",
-    "koulutusalakoodi-8": "[Luonnontieteiden ala]",
-
     "koulutustyyppi_1": "[perustutkinto]",
     "koulutustyyppi_11": "[ammattitutkinto]",
     "koulutustyyppi_12": "[erikoisammattitutkinto]",
-
-    "opintoalakoodi-1": "[Kielitieteet]",
-    "opintoalakoodi-2": "[Muu humanistinen ja kasvatusala]",
-    "opintoalakoodi-3": "[Opetus- ja kasvatustyö]",
-    "opintoalakoodi-4": "[Vapaa-aika ja nuorisotyö]",
-    "opintoalakoodi-5": "[Käsi- ja taideteollisuus]",
-    "opintoalakoodi-6": "[Musiikki]",
-    "opintoalakoodi-7": "[Teatteri ja tanssi]",
-    "opintoalakoodi-8": "[Viestintä- ja informaatiotieteet]",
-    "opintoalakoodi-9": "[Kotitalous- ja kuluttajapalvelut]",
-    "opintoalakoodi-10": "[Majoitus- ja ravitsemisala]",
-    "opintoalakoodi-11": "[Matkailuala]",
-    "opintoalakoodi-12": "[Puhdistuspalvelut]",
-    "opintoalakoodi-13": "[Tietojenkäsittely]",
-    "opintoalakoodi-14": "[Kalatalous]",
-    "opintoalakoodi-15": "[Luonto- ja ympäristöala]",
-    "opintoalakoodi-16": "[Maatilatalous]",
-    "opintoalakoodi-17": "[Metsätalous]",
-    "opintoalakoodi-18": "[Muu luonnonvara- ja ympäristöalan koulutus]",
-    "opintoalakoodi-19": "[Puutarhatalous]",
-    "opintoalakoodi-20": "[Farmasia ja muu lääkehuolto]",
-    "opintoalakoodi-21": "[Hammaslääketiede ja muu hammashuolto]",
-    "opintoalakoodi-22": "[Kauneudenhoitoala]",
-    "opintoalakoodi-23": "[Kuntoutus ja liikunta]",
-    "opintoalakoodi-24": "[Sosiaali- ja terveysalojen yhteiset]",
-    "opintoalakoodi-25": "[Sosiaaliala]",
-    "opintoalakoodi-26": "[Tekniset terveyspalvelut]",
-    "opintoalakoodi-27": "[Terveysala]",
-    "opintoalakoodi-28": "[Ajoneuvo- ja kuljetustekniikka]",
-    "opintoalakoodi-29": "[Arkkitehtuuri ja rakentaminen]",
-    "opintoalakoodi-30": "[Elintarvikeala ja biotekniikka]",
-    "opintoalakoodi-31": "[Graafinen ja viestintätekniikka]",
-    "opintoalakoodi-32": "[Kone-, metalli- ja energiatekniikka]",
-    "opintoalakoodi-33": "[Muu tekniikan ja liikenteen alan koulutus]",
-    "opintoalakoodi-34": "[Prosessi-, kemian- ja materiaalitekniikka]",
-    "opintoalakoodi-35": "[Sähkö- ja automaatiotekniikka]",
-    "opintoalakoodi-36": "[Tekstiili- ja vaatetustekniikka]",
-    "opintoalakoodi-37": "[Tieto- ja tietoliikennetekniikka]",
-    "opintoalakoodi-38": "[Liiketalous ja kauppa]",
+    "koulutustyyppi_9999": "[perusopetus]",
 
     "kielen-vaihto": "[Vaihda kieli]",
     "suomi": "Suomi",
@@ -130,7 +83,7 @@
     "muokkaus-tutkinnon-osan-osaamisala-header": "[Osaamisala]",
     "muokkaus-tutkinnon-osan-osaamisala-placeholder": "[Kirjoita tähän tutkinnon osan osaamisala]",
     "muokkaus-tutkinnon-osan-arviointi-header": "[Arviointi]",
-    
+
     "muokkaus-teksikappaleen-nimi-header": "[Nimi]",
     "muokkaus-teksikappaleen-nimi-placeholder": "[Kirjoita tähän otsikko]",
     "muokkaus-tekstikappaleen-teksti-header": "[Teksti]",
@@ -144,13 +97,13 @@
     "arviointi-uusi-kriteeri": "[Uusi kriteeri]",
     "arviointi-uusi-kriteeri-placeholder": "[Kriteerin teksti]",
     "arviointi-asteikon-valinta": "[Valitse arviointiasteikko]",
-    
+
     "arviointi-muokkaa-taulukkona": "[Muokkaa taulukkona]",
 
     "muokkaus-lisaa-osio": "[Lisää osio]",
     "muokkaus-tutkinnon-osa-tallennettu": "[Tutkinnon osa tallennettu onnistuneesti.]",
     "muokkaus-tekstikappale-tallennettu": "[Tekstikappale tallennenttu onnistuneesti.]",
-    
+
     "opintoluokitus": "[Opintoluokitus]",
     "tavoitteet": "[Tavoitteet]",
     "ammattitaitovaatimukset": "[Ammattitaitovaatimukset]",
@@ -173,17 +126,17 @@
     "aloitus-ennen-lopetusta": "[Toimikauden aloituspäivämäärän täytyy olla ennen päättymisajankohtaa.]",
     "lopetus-aloituksen-jälkeen": "[Toimikauden päättymispäivämäärä täytyy olla aloitusajankohdan jälkeen.]",
     "kelvoton-pvm": "[Kelvoton päivämäärä]",
-    "yhteistyotaho-label": "[Yhteistyötaho]",
-    "anna-yhteistyotaho-placeholder": "[Syötä yhteistyötaho]",
+    "yhteistyotaho-label": "[Sopimusosapuoli]",
+    "anna-yhteistyotaho-placeholder": "[Syötä sopimusosapuoli]",
     "valitse-koulutustyyppi": "[Valitse koulutustyyppi]",
     "koulutustyyppi-label": "[Koulutustyyppi]",
-    
+
     "projektipäällikkö": "[Projektipäällikkö]",
-    
+
     "perusteen-nimi": "[Perusteen nimi]",
     "anna-perusteen-nimi": "[Syötä perusteen nimi]",
     "koulutuksen-nimi": "[Koulutuksen nimi]",
-    
+
     "projekti-perustiedot": "[Perustiedot]",
     "projekti-projektiryhmä": "[Projektiryhmä]",
     "projekti-peruste": "[Perusteen tiedot]",
@@ -193,29 +146,28 @@
     "projektin-tiedot": "[Projektin tiedot]",
     "uusi-projekti-otsikko": "[Uusi perusteprojekti]",
     "peruste-koulutukset": "[Koulutukset]",
-    
+
     "ops": "[Opetussuunnitelma]",
     "naytto": "[Näyttötutkinto]",
-    
+
     "ePerusteet-koti": "[ePerusteet]",
-    
+
     "suodattimet": "[Suodattimet]",
     "valitse-suodatin": "Valitse suodatin",
-    
+
     "perusteprojekti-perustenimi-placeholder": "<[Anna perusteen nimi]>",
     "perusteprojekti-koulutusala-placeholder": "<[Anna koulutusala]>",
     "perusteprojekti-nimi-placeholder": "[<Anna projektin nimi>]",
     "projekti-header-peruste": "[Peruste]",
     "projekti-header-paatosPvm": "[Päätöspäivämäärä]",
     "projekti-header-koulutustyyppi": "[Koulutustyyppi]",
-    
+
     "lisaa-tutkintokohtainen-osa": "[Lisää tutkintokohtainen osa]",
     "uusi-tutkinnon-osa": "[<Uusi sisältö>]",
-    
+
     "poista-tekstikappale-otsikko": "[Poista tekstikappale]",
     "poista-tekstikappale-teksti": "[Tekstikappale \"{{nimi}}\" poistetaan. Oletko varma?]",
-    
+
     "lisaa-koulutus": "[Lisää koulutus]",
     "poista-koulutus": "[Poista koulutus]"
 }
-

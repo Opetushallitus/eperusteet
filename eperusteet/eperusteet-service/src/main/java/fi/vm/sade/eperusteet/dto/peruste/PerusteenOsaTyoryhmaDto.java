@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto.peruste;
 
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,6 +28,7 @@ import lombok.Setter;
 @Setter
 public class PerusteenOsaTyoryhmaDto {
     private Long id;
-    private Long perusteprojekti;
+    private EntityReference perusteprojekti;
+    private EntityReference perusteenosa;
     private String nimi;
 }

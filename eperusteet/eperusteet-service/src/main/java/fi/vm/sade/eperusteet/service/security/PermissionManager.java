@@ -113,64 +113,86 @@ public class PermissionManager {
     static {
         Map<Target, Map<ProjektiTila, Map<Permission, Set<String>>>> allowedRolesTmp = new EnumMap<>(Target.class);
 
-        Set<String> r1 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_<oid>");
-        Set<String> r2 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_<oid>", "ROLE_APP_EPERUSTEET_READ_UPDATE_<oid>");
-        Set<String> r3 = Sets.newHashSet("ROLE_APP_EPERUSTEET_READ_<oid>", "ROLE_APP_EPERUSTEET_CRUD_<oid>", "ROLE_APP_EPERUSTEET_READ_UPDATE_<oid>");
+        Set<String> r0 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001");
+        Set<String> r1 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_EPERUSTEET_CRUD_<oid>");
+        Set<String> r2 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_EPERUSTEET_CRUD_<oid>", "ROLE_APP_EPERUSTEET_READ_UPDATE_<oid>");
+        Set<String> r3 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_EPERUSTEET_CRUD_<oid>", "ROLE_APP_EPERUSTEET_READ_UPDATE_<oid>", "ROLE_APP_EPERUSTEET_READ_<oid>");
+        Set<String> r4 = Sets.newHashSet("ROLE_APP_EPERUSTEET");
 
         //perusteenosa, peruste (näiden osalta oletetaan että peruste tai sen osa on tilassa LUONNOS
         {
             EnumMap<ProjektiTila, Map<Permission, Set<String>>> tmp = new EnumMap<>(ProjektiTila.class);
             Map<Permission, Set<String>> perm;
+
             perm = Maps.newHashMap();
             perm.put(LUKU, r3);
             perm.put(MUOKKAUS, r2);
             perm.put(POISTO, r2);
             perm.put(KOMMENTOINTI, r3);
             tmp.put(ProjektiTila.LAADINTA, perm);
+
             perm = Maps.newHashMap();
             perm.put(LUKU, r3);
             perm.put(KOMMENTOINTI, r3);
             tmp.put(ProjektiTila.KOMMENTOINTI, perm);
+
             perm = Maps.newHashMap();
             perm.put(LUKU, r3);
             perm.put(KOMMENTOINTI, r2);
             tmp.put(ProjektiTila.VIIMEISTELY, perm);
+
             perm = Maps.newHashMap();
             perm.put(LUKU, r3);
             tmp.put(ProjektiTila.VALMIS, perm);
+
             perm = Maps.newHashMap();
-            perm.put(LUKU, r3);
+            perm.put(LUKU, r4);
             tmp.put(ProjektiTila.JULKAISTU, perm);
+
             tmp.put(ProjektiTila.POISTETTU, Collections.<Permission, Set<String>>emptyMap());
+
             allowedRolesTmp.put(Target.PERUSTE, tmp);
             allowedRolesTmp.put(Target.PERUSTEENOSA, tmp);
         }
         {
             Map<ProjektiTila, Map<Permission, Set<String>>> tmp = new IdentityHashMap<>();
             Map<Permission, Set<String>> perm = Maps.newHashMap();
-            perm.put(LUONTI, Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD"));
+
+            perm.put(LUONTI, Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001"));
             tmp.put(null, perm);
+
             perm = Maps.newHashMap();
             perm.put(TILANVAIHTO, r1);
             perm.put(LUKU, r3);
             perm.put(MUOKKAUS, r2);
             perm.put(KOMMENTOINTI, r3);
             tmp.put(ProjektiTila.LAADINTA, perm);
+
             perm = Maps.newHashMap();
             perm.put(TILANVAIHTO, r1);
             perm.put(LUKU, r3);
             perm.put(MUOKKAUS, r1);
             perm.put(KOMMENTOINTI, r3);
             tmp.put(ProjektiTila.KOMMENTOINTI, perm);
+
+            perm = Maps.newHashMap();
             perm.put(TILANVAIHTO, r1);
             perm.put(LUKU, r3);
             perm.put(MUOKKAUS, r1);
             perm.put(KOMMENTOINTI, r3);
             tmp.put(ProjektiTila.VIIMEISTELY, perm);
+
+            perm = Maps.newHashMap();
             perm.put(LUKU, r3);
             perm.put(TILANVAIHTO, r1);
             tmp.put(ProjektiTila.VALMIS, perm);
+
+            perm = Maps.newHashMap();
+            perm.put(LUKU, r0);
+            tmp.put(ProjektiTila.JULKAISTU,perm);
+
             tmp.put(ProjektiTila.POISTETTU, Collections.<Permission, Set<String>>emptyMap());
+
             allowedRolesTmp.put(Target.PERUSTEPROJEKTI, tmp);
         }
         {
@@ -180,22 +202,28 @@ public class PermissionManager {
             perm.put(MUOKKAUS, r2);
             perm.put(KOMMENTOINTI, r3);
             tmp.put(ProjektiTila.LAADINTA, perm);
+
             perm = Maps.newHashMap();
             perm.put(LUKU, r3);
             perm.put(MUOKKAUS, r1);
             perm.put(KOMMENTOINTI, r3);
             tmp.put(ProjektiTila.KOMMENTOINTI, perm);
+
+            perm = Maps.newHashMap();
             perm.put(LUKU, r3);
             perm.put(MUOKKAUS, r1);
             perm.put(KOMMENTOINTI, r3);
             tmp.put(ProjektiTila.VIIMEISTELY, perm);
+
+            perm = Maps.newHashMap();
             perm.put(LUKU, r3);
             perm.put(MUOKKAUS, r1);
             tmp.put(ProjektiTila.VALMIS, perm);
+
             perm = Maps.newHashMap();
-            perm.put(LUKU, Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD"));
-            perm.put(MUOKKAUS, Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD"));
-            tmp.put(null, perm);
+            perm.put(LUKU, r4);
+            perm.put(MUOKKAUS, r1);
+            tmp.put(ProjektiTila.JULKAISTU, perm);
             allowedRolesTmp.put(Target.PERUSTEENMETATIEDOT, tmp);
         }
         //XXX:debug
@@ -238,14 +266,16 @@ public class PermissionManager {
             }
         }
 
-        //tarkistataan ensin "any" oikeudet.
-        boolean allowed = hasAnyRole(authentication, null, getAllowedRoles(targetType, null, permission));
-        if (!allowed && targetId != null) {
+        if ( targetId == null ) {
+            return hasAnyRole(authentication, null, getAllowedRoles(targetType, null, permission));
+        } else {
+            boolean allowed = false;
             for (Pair<String, ProjektiTila> ppt : findPerusteProjektiTila(targetType, targetId)) {
                 allowed = allowed | hasAnyRole(authentication, ppt.getFirst(), getAllowedRoles(targetType, ppt.getSecond(), permission));
             }
+            return allowed;
         }
-        return allowed;
+
     }
 
     private boolean hasAnyRole(Authentication authentication, String perusteProjektiRyhmaOid, Collection<String> roles) {

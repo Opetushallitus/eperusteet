@@ -178,9 +178,13 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         if (!Strings.isNullOrEmpty(tilaStr)) {
             pred = cb.and(pred, cb.equal(root.get(Peruste_.tila), PerusteTila.of(tilaStr)));
         }
-        
+
         if (!Strings.isNullOrEmpty(perusteTyyppiStr)) {
             pred = cb.and(pred, cb.equal(root.get(Peruste_.tyyppi), PerusteTyyppi.of(perusteTyyppiStr)));
+        }
+
+        if ( pquery.getMuokattu() != null ) {
+            pred = cb.and(pred, cb.greaterThan(root.get(Peruste_.muokattu), cb.literal(new Date(pquery.getMuokattu()))));
         }
 
         return pred;

@@ -16,10 +16,12 @@
 package fi.vm.sade.eperusteet.resource;
 
 import com.mangofactory.swagger.annotations.ApiIgnore;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaTyoryhma;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -156,8 +158,7 @@ public class PerusteprojektiController {
     @ResponseBody
     public ResponseEntity<List<TyoryhmaHenkiloDto>> getTyoryhmaByNimi(
             @PathVariable("nimi") final String nimi,
-            @PathVariable("id") final Long id
-    ) {
+            @PathVariable("id") final Long id) {
         List<TyoryhmaHenkiloDto> tyoryhmat = service.getTyoryhmaHenkilot(id, nimi);
         return new ResponseEntity<>(tyoryhmat, HttpStatus.OK);
     }
@@ -166,8 +167,7 @@ public class PerusteprojektiController {
     @ResponseBody
     public ResponseEntity<List<TyoryhmaHenkiloDto>> postMultipleTyoryhmaHenkilot(
             @PathVariable("id") final Long id,
-            @RequestBody List<TyoryhmaHenkiloDto> tyoryhma
-    ) {
+            @RequestBody List<TyoryhmaHenkiloDto> tyoryhma) {
         List<TyoryhmaHenkiloDto> res = new ArrayList<>();
         for (TyoryhmaHenkiloDto thd : tyoryhma) {
             res.add(service.saveTyoryhma(id, thd));
@@ -180,8 +180,7 @@ public class PerusteprojektiController {
     public ResponseEntity<List<TyoryhmaHenkiloDto>> postMultipleTyoryhmaHenkilotToTyoryhma(
             @PathVariable("id") final Long id,
             @PathVariable("nimi") final String nimi,
-            @RequestBody List<String> tyoryhma
-    ) {
+            @RequestBody List<String> tyoryhma) {
         List<TyoryhmaHenkiloDto> res = service.saveTyoryhma(id, nimi, tyoryhma);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
@@ -189,8 +188,7 @@ public class PerusteprojektiController {
     @RequestMapping(value = "/{id}/tyoryhma/{nimi}", method = DELETE)
     public ResponseEntity<TyoryhmaHenkiloDto> removeTyoryhmat(
             @PathVariable("id") final Long id,
-            @PathVariable("nimi") final String nimi
-    ) {
+            @PathVariable("nimi") final String nimi) {
         service.removeTyoryhma(id, nimi);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -200,23 +198,27 @@ public class PerusteprojektiController {
     public ResponseEntity<List<String>> postPerusteenOsaTyoryhma(
             @PathVariable("id") final Long id,
             @PathVariable("pid") final Long pid,
-            @RequestBody List<String> tyoryhmat
-    ) {
+            @RequestBody List<String> tyoryhmat) {
         return new ResponseEntity<>(service.setPerusteenOsaViiteTyoryhmat(id, pid, tyoryhmat), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/perusteenosat/{pid}/tyoryhmat", method = GET)
     public ResponseEntity<List<String>> getPerusteenOsaTyoryhma(
             @PathVariable("id") final Long id,
-            @PathVariable("pid") final Long pid
-    ) {
+            @PathVariable("pid") final Long pid) {
         return new ResponseEntity<>(service.getPerusteenOsaViiteTyoryhmat(id, pid), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/perusteenosientyoryhmat", method = GET)
+    public ResponseEntity<List<PerusteenOsaTyoryhmaDto>> getPerusteenOsaTyoryhma(
+            @PathVariable("id") final Long id) {
+        List<PerusteenOsaTyoryhmaDto> sisallonTyoryhmat = service.getSisallonTyoryhmat(id);
+        return new ResponseEntity<>(sisallonTyoryhmat, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/oikeudet", method = GET)
     public ResponseEntity<Map<PermissionManager.Target,Set<PermissionManager.Permission>>> getOikeudet(
-            @PathVariable("id") final Long id
-    ) {
+            @PathVariable("id") final Long id) {
         return new ResponseEntity<>(permission.getProjectPermissions(id), HttpStatus.OK);
     }
 }

@@ -36,6 +36,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import java.util.ArrayList;
 import java.util.Objects;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -57,11 +58,12 @@ public class ArvioinninKohdealue implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen otsikko;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinTable(name = "arvioinninkohdealue_arvioinninkohde",
                joinColumns = @JoinColumn(name = "arvioinninkohdealue_id"),
                inverseJoinColumns = @JoinColumn(name = "arvioinninkohde_id"))
     @OrderColumn
+    @BatchSize(size = 10)
     private List<ArvioinninKohde> arvioinninKohteet = new ArrayList<>();
 
     public ArvioinninKohdealue() {

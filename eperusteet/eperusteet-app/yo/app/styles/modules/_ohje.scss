@@ -34,3 +34,12 @@ $ohje-badge-size: 22px;
     padding: 9px;
   }
 }
+
+.popover-element .tag {
+  cursor: pointer;
+}
+
+.popover {
+  min-width: 300px;
+  max-width: 400px;
+}

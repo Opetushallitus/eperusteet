@@ -28,6 +28,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface PerusteenOsaTyoryhmaRepository extends JpaRepository<PerusteenOsaTyoryhma, Long> {
     List<PerusteenOsaTyoryhma> findAllByPerusteenosaAndPerusteprojekti(PerusteenOsa perusteenosa, Perusteprojekti perusteprojekti);
+    List<PerusteenOsaTyoryhma> findAllByPerusteprojekti(Perusteprojekti perusteprojekti);
 
     void deleteAllByPerusteenosaAndPerusteprojekti(PerusteenOsa perusteenosa, Perusteprojekti perusteprojekti);
 }

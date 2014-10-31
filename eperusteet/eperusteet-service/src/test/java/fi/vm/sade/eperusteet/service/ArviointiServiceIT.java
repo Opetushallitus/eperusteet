@@ -52,12 +52,14 @@ import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.resource.config.EPerusteetMappingModule;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 /**
  *
  * @author teele1
  */
 @Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ArviointiServiceIT extends AbstractIntegrationTest {
 
     @Autowired

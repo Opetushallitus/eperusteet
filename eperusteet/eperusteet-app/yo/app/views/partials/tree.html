@@ -1,12 +1,5 @@
 <div>
   <div id="osaamisala-varoitus" tooltip="{{'Osaamisalaryhmän alla ei voi olla toista osaamisalaryhmää.' | kaanna}}" tooltip-trigger="show"></div>
-  <div ng-show="rakenne.$resolved && rakenne.rakenne.osat.length === 0" class="tree-con-empty">
-    <span ng-if="!esitys">
-      <div ng-show="muokkaus" class="empty-bubble distance-editing" kaanna>aloita-raahaamalla-puuhun</div>
-      <div ng-hide="muokkaus" class="empty-bubble distance" kaanna>rakennetta-ei-vielä-muodostettu</div>
-    </span>
-    <div ng-show="esitys" class="empty-bubble distance" kaanna>rakennetta-ei-ole</div>
-  </div>
   <div ng-if="!lisataanUuttaOsaa" class="tree col-lg-6 col-md-8 col-xs-12">
     <div class="tree-con" ng-show="muokkaus || rakenne.rakenne.osat.length > 0">
       <div ng-show="muokkaus && !vanhempi">
@@ -15,6 +8,13 @@
         <h2 kaanna="tutkinnon-rakenne"></h2>
       </div>
       <rajaus size="small" classes="puun-rajaus" model="apumuuttujat.haku" placeholder="Etsi rakenteesta..."></rajaus>
+      <div ng-show="rakenne.$resolved && rakenne.rakenne.osat.length === 0" class="tree-con-empty">
+        <span ng-if="!esitys">
+          <div ng-show="muokkaus" class="empty-bubble distance-editing" kaanna>aloita-raahaamalla-puuhun</div>
+          <div ng-hide="muokkaus" class="empty-bubble distance" kaanna>rakennetta-ei-vielä-muodostettu</div>
+        </span>
+        <div ng-show="esitys" class="empty-bubble distance" kaanna>rakennetta-ei-ole</div>
+      </div>
       <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" ng-if="rakenne.$resolved" rakenne="rakenne.rakenne" tutkinnon-osa-viitteet="rakenne.tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" poisto-tehty-cb="poistoTehtyCb"></tree>
     </div>
   </div>
@@ -29,7 +29,7 @@
         <ul ui-sortable="sortableOptions" class="tree-group skratchpad" ng-model="skratchpad">
 
           <li class="skratchpad-item" ng-class="{ 'skratchpad-item-ryhma': !osa._tutkinnonOsaViite, 'skratchpad-item-virhe': osa.$virhe }"
-              ng-repeat="osa in skratchpad">
+              ng-repeat="osa in skratchpad|orderBy:[ryhmaSorter, jarjestysSorter, nimiSorter]">
             <div class="sp-action-icon">
               <a ng-if="osa._tutkinnonOsaViite" class="action-link" ng-click="poista(skratchpad, osa)" icon-role="remove"></a>
               <a ng-if="osa.osat !== undefined" class="action-link" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, osa, null, true)" icon-role="edit"></a>
@@ -61,7 +61,8 @@
           <a class="action-link" ng-click="toggleNotUsed()">{{ piilotaKaikki ? 'näytä-kaikki' : 'vain-käyttämättömät' | kaanna }}</a>
         </div>
         <ul ui-sortable="sortableOptionsUnique" ng-model="uniikit" class="uniikit placeholder-hide">
-          <li ng-model="osa" class="skratchpad-item" ng-repeat="osa in uniikit | startFrom:(tutkinnonOsat.sivu-1)*tutkinnonOsat.perSivu | limitTo:tutkinnonOsat.perSivu">
+          <li ng-model="osa" class="skratchpad-item"
+              ng-repeat="osa in uniikit | orderBy:[jarjestysSorter, nimiSorter] | startFrom:(tutkinnonOsat.sivu-1)*tutkinnonOsat.perSivu | limitTo:tutkinnonOsat.perSivu">
             <div class="sp-action-icon">
               <a class="action-link" ng-click="rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate = !rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate"
                  ng-show="kaytetytUniikit[osa._tutkinnonOsaViite]" ng-attr-title="{{rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate && ('poista-korostus'|kaanna) || ('korosta'|kaanna)}}">

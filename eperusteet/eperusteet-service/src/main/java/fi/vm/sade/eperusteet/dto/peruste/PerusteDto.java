@@ -44,4 +44,5 @@ public class PerusteDto implements Serializable {
     private Set<SuoritustapaDto> suoritustavat;
     private PerusteTila tila;
     private PerusteTyyppi tyyppi;
+    private Date muokattu;
 }

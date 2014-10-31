@@ -139,6 +139,7 @@ angular.module('eperusteApp')
 
         $q.all({object: scope.objectReady, editMode: Editointikontrollit.getEditModePromise()}).then(function(values) {
           scope.object = values.object;
+          // TODO fix bug, vuosiluokkakokonaisuus: editMode is false on first edit
           scope.editMode = values.editMode;
 
           if(!scope.field.mandatory) {
@@ -162,9 +163,9 @@ angular.module('eperusteApp')
             'arviointi': 'object.' + scope.field.path,
             'edit-enabled': 'editEnabled'
           }],
-          'osaaminen': ['', '<div>', {
+          'vuosiluokkakokonaisuuden-osaaminen': ['', '<div>', {
             'editointi-sallittu': 'true',
-            'osaaminen': 'object.' + scope.field.path,
+            'vuosiluokkakokonaisuuden-osaaminen': 'object.' + scope.field.path,
             'edit-enabled': 'editEnabled'
           }]
         };

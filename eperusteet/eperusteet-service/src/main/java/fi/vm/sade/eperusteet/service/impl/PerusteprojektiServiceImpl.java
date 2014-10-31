@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -30,18 +31,21 @@ import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.PerusteprojektiTyoryhma;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaTyoryhmaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
@@ -87,6 +91,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private PerusteprojektiRepository repository;
+
+    @Autowired
+    private PerusteRepository perusteRepository;
 
     @Autowired
     private PerusteService perusteService;
@@ -210,7 +217,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             peruste = perusteService.luoPerusteRunko(koulutustyyppi, yksikko, PerusteTila.LUONNOS, tyyppi);
         }
         else {
-            peruste = perusteService.luoPerusteRunkoToisestaPerusteesta(perusteprojektiDto.getPerusteId(), tyyppi);
+            Peruste pohjaPeruste = perusteRepository.findOne(perusteprojektiDto.getPerusteId());
+            perusteprojektiDto.setKoulutustyyppi(pohjaPeruste.getKoulutustyyppi());
+            peruste = perusteService.luoPerusteRunkoToisestaPerusteesta(perusteprojektiDto, tyyppi);
         }
 
         perusteprojekti.setPeruste(peruste);
@@ -271,9 +280,17 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             return updateStatus;
         }
 
+        TekstiPalanen nimi = projekti.getPeruste().getNimi();
+        if (tila != ProjektiTila.POISTETTU && tila != ProjektiTila.LAADINTA
+            && (nimi == null || !nimi.getTeksti().containsKey(Kieli.FI) || nimi.getTeksti().get(Kieli.FI).isEmpty())) {
+            updateStatus.addStatus("perusteelta-puuttuu-nimi");
+            updateStatus.setVaihtoOk(false);
+        }
+
         if (projekti.getPeruste() != null && projekti.getPeruste().getSuoritustavat() != null
             && tila == ProjektiTila.VIIMEISTELY && projekti.getTila() == ProjektiTila.LAADINTA) {
             Validointi validointi;
+
             for (Suoritustapa suoritustapa : projekti.getPeruste().getSuoritustavat()) {
                 if (suoritustapa.getRakenne() != null) {
                     validointi = PerusteenRakenne.validoiRyhma(suoritustapa.getRakenne());
@@ -430,7 +447,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     public List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(Long perusteProjektiId) {
         Perusteprojekti pp = repository.findOne(perusteProjektiId);
-        List<PerusteprojektiTyoryhma> tr = perusteprojektiTyoryhmaRepository.findByPerusteprojekti(pp);
+        List<PerusteprojektiTyoryhma> tr = perusteprojektiTyoryhmaRepository.findAllByPerusteprojekti(pp);
         return mapper.mapAsList(tr, TyoryhmaHenkiloDto.class);
     }
 
@@ -483,6 +500,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             res.add(s.getNimi());
         }
         return res;
+    }
+
+    @Transactional
+    @Override
+    public List<PerusteenOsaTyoryhmaDto> getSisallonTyoryhmat(Long perusteProjektiId) {
+        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        List<PerusteenOsaTyoryhma> tyoryhmat = perusteenOsaTyoryhmaRepository.findAllByPerusteprojekti(pp);
+        return mapper.mapAsList(tyoryhmat, PerusteenOsaTyoryhmaDto.class);
     }
 
 }

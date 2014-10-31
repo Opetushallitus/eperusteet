@@ -34,6 +34,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.Osaamisala;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
@@ -42,6 +43,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
@@ -50,6 +52,7 @@ import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.OsaamisalaRepository;
+import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
@@ -163,6 +166,9 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Autowired
     private RakenneRepository rakenneRepository;
+
+    @Autowired
+    private PerusopetuksenPerusteenSisaltoRepository perusopetuksenPerusteenSisaltoRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -808,11 +814,15 @@ public class PerusteServiceImpl implements PerusteService {
     }
 
     private void lisaaTutkinnonMuodostuminen(Peruste peruste) {
+        if ("koulutustyyppi_9999".equals(peruste.getKoulutustyyppi())) {
+            return;
+        }
+
         PerusteenOsaViiteDto.Matala viite;
 
         for (Suoritustapa st : peruste.getSuoritustavat()) {
             PerusteenOsaViite sisalto = st.getSisalto();
-            List<PerusteenOsaViite> lapset = new ArrayList<>();
+            List<PerusteenOsaViite> lapset = sisalto.getLapset();
             TekstiKappale tk = new TekstiKappale();
             HashMap<Kieli, String> hm = new HashMap<>();
             hm.put(Kieli.FI, "Tutkinnon muodostuminen");
@@ -822,7 +832,6 @@ public class PerusteServiceImpl implements PerusteService {
             pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
             pov.setVanhempi(sisalto);
             lapset.add(pov);
-            sisalto.setLapset(lapset);
         }
     }
 
@@ -852,7 +861,7 @@ public class PerusteServiceImpl implements PerusteService {
             if (koulutustyyppi.equals(AMMATILLISET_KOULUTUSTYYPPI_URIT[0])) {
                 st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko != null ? yksikko : LaajuusYksikko.OSAAMISPISTE);
             } else if (koulutustyyppi.equals(PERUSOPETUKSEN_KOULUTUSTYYPPI)) {
-                st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, null);
+                peruste.setPerusopetuksenPerusteenSisalto(new PerusopetuksenPerusteenSisalto());
             }
 
             if (st != null) {
@@ -870,8 +879,8 @@ public class PerusteServiceImpl implements PerusteService {
     }
 
     @Override
-    public Peruste luoPerusteRunkoToisestaPerusteesta(Long perusteId, PerusteTyyppi tyyppi) {
-        Peruste vanha = perusteet.getOne(perusteId);
+    public Peruste luoPerusteRunkoToisestaPerusteesta(PerusteprojektiLuontiDto luontiDto, PerusteTyyppi tyyppi) {
+        Peruste vanha = perusteet.getOne(luontiDto.getPerusteId());
         Peruste peruste = new Peruste();
         peruste.setTila(PerusteTila.LUONNOS);
         peruste.setTyyppi(tyyppi);
@@ -894,6 +903,10 @@ public class PerusteServiceImpl implements PerusteService {
 
         for (Suoritustapa st : suoritustavat) {
             uudetSuoritustavat.add(suoritustapaService.createFromOther(st.getId()));
+        }
+
+        for (Suoritustapa st : uudetSuoritustavat) {
+            st.setLaajuusYksikko(luontiDto.getLaajuusYksikko());
         }
 
         peruste.setSuoritustavat(uudetSuoritustavat);

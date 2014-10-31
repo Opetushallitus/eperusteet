@@ -37,14 +37,21 @@ angular.module('eperusteApp')
   })
 
   .controller('OsallinenOsaController', function ($scope, $state, VersionHelper, $q,
-      Editointikontrollit, FieldSplitter, Varmistusdialogi, $rootScope, Utils, $timeout) {
+      Editointikontrollit, FieldSplitter, Varmistusdialogi, $rootScope, Utils, $timeout,
+      $stateParams) {
     $scope.isLocked = false;
-    $scope.isNew = false;
+    $scope.isNew = $stateParams.osanId === 'uusi';
     $scope.editEnabled = false;
+    if ($scope.isNew) {
+      $timeout(function () {
+        $scope.muokkaa();
+      }, 200);
+    }
 
     function refreshPromise() {
       var deferred = $q.defer();
       $scope.modelPromise = deferred.promise;
+      $scope.editableModel.$isNew = $scope.isNew;
       deferred.resolve($scope.editableModel);
     }
     refreshPromise();
@@ -92,7 +99,7 @@ angular.module('eperusteApp')
       var cssClass;
       if (splitfield.isMulti()) {
         var index = splitfield.addArrayItem($scope.editableModel);
-        $rootScope.$broadcast('osafield:update');
+        //$rootScope.$broadcast('osafield:update');
         cssClass = splitfield.getClass(index);
         field.$setEditable = index;
       } else {
@@ -101,6 +108,7 @@ angular.module('eperusteApp')
         cssClass = FieldSplitter.getClass(field);
       }
       ($scope.config.addFieldCb || angular.noop)(field);
+      $rootScope.$broadcast('osafield:update');
       $timeout(function () {
         Utils.scrollTo('li.' + cssClass);
       }, 200);
@@ -114,8 +122,23 @@ angular.module('eperusteApp')
         successCb: function () {
           Editointikontrollit.cancelEditing();
           $scope.config.removeWholeFn();
+          $state.go.apply($state, $scope.config.backState);
         }
       })();
+    };
+
+    $scope.actionButtonFn = function (button) {
+      (button.callback || angular.noop)();
+    };
+
+    $scope.shouldHide = function (button) {
+      var custom = button.hide ? button.hide : '';
+      var defaults = $scope.editEnabled || !$scope.versiot.latest;
+      if (!custom) {
+        return defaults;
+      }
+      var parsed = $scope.$eval(custom);
+      return defaults || parsed;
     };
 
     $scope.$watch('editableModel', refreshPromise);

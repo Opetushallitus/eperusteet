@@ -127,31 +127,11 @@ angular.module('eperusteApp')
     };
 
     $scope.mergeProjekti = function(tuoPohja) {
-      $modal.open({
-        templateUrl: 'views/modals/projektiSisaltoTuonti.html',
-        controller: 'ProjektiTiedotSisaltoModalCtrl',
-        resolve: {
-          pohja: function() { return !!tuoPohja; },
-        }
-      })
-      .result.then(function(peruste) {
-        peruste.tila = 'laadinta';
-        peruste.tyyppi = 'normaali';
+      PerusteProjektiService.mergeProjekti($scope.projekti, tuoPohja).then(function(peruste, projekti) {
+        _.merge($scope.projekti, projekti);
         $scope.peruste = peruste;
-        var onOps = false;
-        $scope.projekti.perusteId = peruste.id;
-        $scope.projekti.koulutustyyppi = peruste.koulutustyyppi;
-
-        _.forEach(peruste.suoritustavat, function(st) {
-          if (st.suoritustapakoodi === 'ops') {
-            onOps = true;
-            $scope.projekti.laajuusYksikko = st.laajuusYksikko;
-          }
-        });
-      },
-      angular.noop);
+      });
     };
-
 
     $scope.tallennaPerusteprojekti = function() {
       var projekti = PerusteProjektiService.get();

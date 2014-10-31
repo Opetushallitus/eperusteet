@@ -1,5 +1,5 @@
 <div class="form-group">
-  <label class="col-sm-3 control-label">{{label | kaanna}}{{ postfix }}</label>
+  <label class="col-sm-3 control-label">{{label | kaanna}}{{ postfix }}<span ng-transclude></span></label>
   <div class="col-sm-9" ng-if="!isDate">
     <numberinput luokka="form-control" ng-if="isNumber" type="{{type}}" model="input.model" min="{{min}}" max="{{max}}" form="form" step="{{step}}"></numberinput>
     <input id="{{inputElId}}" ng-if="isText && type !== 'diaari'" ng-class="inputClasses()" ng-model="input.model" type="{{type}}" placeholder="{{placeholder | kaanna}}" ng-required="!!postfix">

@@ -28,7 +28,12 @@ angular.module('eperusteApp')
   })
   .controller('ExcelCtrl', function($scope, $modal, ExcelService, PerusteenOsat, TutkinnonOsanValidointi,
     Koodisto, PerusteprojektiResource, PerusteTutkinnonosat, $translate,
-    SuoritustapaSisalto, Perusteet, Notifikaatiot, YleinenData, Utils) {
+    SuoritustapaSisalto, Perusteet, Notifikaatiot, YleinenData, Utils, PerusteProjektiService) {
+    $scope.koulutustyypit = YleinenData.koulutustyypit;
+    $scope.koulutustyypitMap = YleinenData.koulutustyypitMap;
+    $scope.yksikot = YleinenData.yksikot;
+    $scope.suoritustavat = YleinenData.suoritustavat;
+
     $scope.alussa = true;
     $scope.filename = '';
     $scope.naytaVirheet = false;
@@ -39,9 +44,6 @@ angular.module('eperusteApp')
     $scope.peruste = {};
     $scope.haettuPeruste = {};
     $scope.peruste.$perusteTallennettu = false;
-    $scope.koulutustyypit = YleinenData.koulutustyypit;
-    $scope.yksikot = YleinenData.yksikot;
-    $scope.suoritustavat = YleinenData.suoritustavat;
     $scope.suoritustapa = 'naytto';
 
     $scope.supportsFileReader = Utils.supportsFileReader();
@@ -60,6 +62,20 @@ angular.module('eperusteApp')
     $scope.clearSelect();
 
     $scope.editoiOsatutkintoa = function() {
+    };
+
+    $scope.mergeProjekti = function(tuoPohja) {
+      PerusteProjektiService.mergeProjekti($scope.projekti, tuoPohja).then(function(peruste, projekti) {
+        _.merge($scope.projekti, projekti);
+        $scope.peruste = peruste;
+      });
+    };
+
+    $scope.peruutaPohjaValinta = function() {
+      $scope.peruste = {};
+      $scope.projekti = {};
+      $scope.projekti.koulutustyyppi = 'koulutustyyppi_1';
+      $scope.projekti.laajuusYksikko = 'OSAAMISPISTE';
     };
 
     $scope.poistaOsatutkinto = function(ot) {

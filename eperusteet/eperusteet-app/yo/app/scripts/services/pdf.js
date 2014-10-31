@@ -39,13 +39,14 @@ angular.module('eperusteApp')
   })
   .service('Pdf', function(Dokumentti, SERVICE_LOC) {
 
-    function generoiPdf(perusteId, kieli, success, failure) {
+    function generoiPdf(perusteId, kieli, suoritustapa, success, failure) {
       success = success || angular.noop;
       failure = failure || angular.noop;
 
       Dokumentti.save({
         'perusteId': perusteId,
-        'kieli': kieli
+        'kieli': kieli,
+        'suoritustapakoodi': suoritustapa
       }, null, success, failure);
     }
 
@@ -121,10 +122,11 @@ angular.module('eperusteApp')
     return service;
   })
   .controller('PdfCreationController', function($scope, kielet, Pdf, perusteId,
-    $timeout, Notifikaatiot, Kaanna) {
+    $timeout, Notifikaatiot, Kaanna, PerusteProjektiService) {
     $scope.kielet = kielet;
     $scope.docs = {};
     var pdfToken = null;
+    var suoritustapa = PerusteProjektiService.getSuoritustapa();
 
     $scope.hasPdf = function() {
       return !!$scope.docs[$scope.kielet.valittu];
@@ -191,7 +193,8 @@ angular.module('eperusteApp')
       enableActions(false);
       $scope.docs[$scope.kielet.valittu] = null;
       $scope.tila = 'luodaan';
-      Pdf.generoiPdf(perusteId, $scope.kielet.valittu, function(res) {
+      Pdf.generoiPdf(perusteId, $scope.kielet.valittu, suoritustapa,
+      function(res) {
         if (res.id !== null) {
           pdfToken = res.id;
           startPolling(res.id);

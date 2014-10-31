@@ -23,14 +23,13 @@ angular.module('eperusteApp')
       id: '@id',
       nimi: '@nimi'
     }, {
+      getAll: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteprojektit/:id/perusteenosientyoryhmat' },
       get: {method: 'GET', isArray: true},
       save: {method: 'POST', isArray: true}
     });
   })
   .factory('PerusteprojektiJasenet', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteprojektit/:id/jasenet/tiedot', {
-      id: '@id'
-    }, {
+    return $resource(SERVICE_LOC + '/perusteprojektit/:id/jasenet/tiedot', { id: '@id' }, {
       get: {method: 'GET', isArray: true}
     });
   })

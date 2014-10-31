@@ -21,9 +21,11 @@ import fi.vm.sade.eperusteet.domain.tutkinnonOsa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueKokonaanDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.OsaAlueRepository;
 import fi.vm.sade.eperusteet.repository.OsaamistavoiteRepository;
@@ -37,6 +39,7 @@ import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -171,38 +174,94 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         return mapper.map(osaAlue, OsaAlueLaajaDto.class);
     }
 
+
     @Override
     @Transactional(readOnly = false)
-    public OsaAlueLaajaDto updateTutkinnonOsaOsaAlue(Long id, Long osaAlueId, OsaAlueLaajaDto osaAlue) {
+    public OsaAlueKokonaanDto getTutkinnonOsaOsaAlue(Long id, Long osaAlueId) {
+        assertExists(id);
+        return mapper.map(osaAlueRepository.findOne(osaAlueId), OsaAlueKokonaanDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public OsaAlueKokonaanDto updateTutkinnonOsaOsaAlue(Long id, Long osaAlueId, OsaAlueKokonaanDto osaAlue) {
         assertExists(id);
         lockManager.ensureLockedByAuthenticatedUser(id);
         OsaAlue osaAlueEntity = osaAlueRepository.findOne(osaAlueId);
         if (osaAlueEntity == null) {
             throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
         }
+        List<Osaamistavoite> uudetTavoitteet = tallennaUudetOsaamistavoitteet(osaAlue.getOsaamistavoitteet());
+
         OsaAlue osaAlueTmp = mapper.map(osaAlue, OsaAlue.class);
-        osaAlueTmp.setOsaamistavoitteet(createOsaamistavoiteIfNotExist(osaAlueTmp.getOsaamistavoitteet()));
+        //osaAlueTmp.setOsaamistavoitteet(createOsaamistavoiteIfNotExist(osaAlueTmp.getOsaamistavoitteet()));
         osaAlueEntity.mergeState(osaAlueTmp);
+        osaAlueEntity.getOsaamistavoitteet().addAll(uudetTavoitteet);
         osaAlueRepository.save(osaAlueEntity);
 
-        return mapper.map(osaAlueEntity, OsaAlueLaajaDto.class);
+        return mapper.map(osaAlueEntity, OsaAlueKokonaanDto.class);
     }
 
+    @Transactional(readOnly = false)
+    private List<Osaamistavoite> tallennaUudetOsaamistavoitteet(List<OsaamistavoiteLaajaDto> osaamistavoitteet) {
+        List<Osaamistavoite> uudet = new ArrayList<>();
 
-    private List<Osaamistavoite> createOsaamistavoiteIfNotExist(List<Osaamistavoite> osaamistavoitteet) {
+        Long tempId;
+        Osaamistavoite tallennettuPakollinenTavoite;
+        Iterator<OsaamistavoiteLaajaDto> osaamistavoiteDtoItr = osaamistavoitteet.iterator();
+        // Tallennetaan uudet pakolliset osaamistavoitteet ja asetetaan valinnaisten osaamistavoitteiden esitietoid:t oikeiksi kantaId:ksi
+        while(osaamistavoiteDtoItr.hasNext()) {
+            OsaamistavoiteLaajaDto osaamistavoiteDto = osaamistavoiteDtoItr.next();
+            // Jos id >= 0, niin kyseessä oikea tietokanta id. Id:t < 0 ovat generoitu UI päässä.
+            if (osaamistavoiteDto.isPakollinen() && (osaamistavoiteDto.getId() == null || osaamistavoiteDto.getId() < 0)) {
+                tempId = osaamistavoiteDto.getId();
+                osaamistavoiteDto.setId(null);
+                tallennettuPakollinenTavoite = osaamistavoiteRepository.save(mapper.map(osaamistavoiteDto, Osaamistavoite.class));
+                uudet.add(tallennettuPakollinenTavoite);
 
-        List<Osaamistavoite> osaamistavoiteTemp = new ArrayList<>();
-        if (osaamistavoitteet != null) {
-            for (Osaamistavoite osaamistavoite : osaamistavoitteet) {
-                if (osaamistavoite.getId() == null) {
-                    osaamistavoiteTemp.add(osaamistavoiteRepository.save(osaamistavoite));
-                } else {
-                    osaamistavoiteTemp.add(osaamistavoite);
+                // käydään läpi valinnaiset ja asetetaan esitieto id kohdalleen.
+                for (OsaamistavoiteLaajaDto osaamistavoiteValinnainenDto : osaamistavoitteet) {
+                    if (!osaamistavoiteValinnainenDto.isPakollinen() && osaamistavoiteValinnainenDto.getEsitieto() != null) {
+                        if (osaamistavoiteValinnainenDto.getEsitieto().getId().equals(tempId.toString())) {
+                            osaamistavoiteValinnainenDto.setEsitieto(new EntityReference(tallennettuPakollinenTavoite.getId()));
+                        }
+                    }
                 }
+                osaamistavoiteDtoItr.remove();
             }
         }
-        return osaamistavoiteTemp;
+
+        // Käydään vielä läpi valinnaiset osaamistavoitteet ja tallennetaan uudet.
+        osaamistavoiteDtoItr = osaamistavoitteet.iterator();
+        while(osaamistavoiteDtoItr.hasNext()) {
+            OsaamistavoiteLaajaDto osaamistavoiteDto = osaamistavoiteDtoItr.next();
+            // Jos id >= 0, niin kyseessä oikea tietokanta id. Id:t < 0 ovat generoitu UI päässä.
+            if (!osaamistavoiteDto.isPakollinen() && (osaamistavoiteDto.getId() == null || osaamistavoiteDto.getId() < 0)) {
+                osaamistavoiteDto.setId(null);
+                tallennettuPakollinenTavoite = osaamistavoiteRepository.save(mapper.map(osaamistavoiteDto, Osaamistavoite.class));
+                uudet.add(tallennettuPakollinenTavoite);
+                osaamistavoiteDtoItr.remove();
+            }
+        }
+
+        return uudet;
     }
+
+
+//    private List<Osaamistavoite> createOsaamistavoiteIfNotExist(List<Osaamistavoite> osaamistavoitteet) {
+//
+//        List<Osaamistavoite> osaamistavoiteTemp = new ArrayList<>();
+//        if (osaamistavoitteet != null) {
+//            for (Osaamistavoite osaamistavoite : osaamistavoitteet) {
+//                if (osaamistavoite.getId() == null) {
+//                    osaamistavoiteTemp.add(osaamistavoiteRepository.save(osaamistavoite));
+//                } else {
+//                    osaamistavoiteTemp.add(osaamistavoite);
+//                }
+//            }
+//        }
+//        return osaamistavoiteTemp;
+//    }
 
     @Override
     @Transactional(readOnly = true)
@@ -364,5 +423,8 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             throw new BusinessRuleViolationException("Pyydettyä perusteen osaa ei ole olemassa");
         }
     }
+
+
+
 
 }

@@ -35,10 +35,10 @@
 
                       <a ng-href="{{opetusHref(sisalto)}}" class="otsikko">
                         <h3>
-                          <span ng-class="{ 'otsikko-pieni': indent !== 0 }" ep-highlight="rajaus">{{ sisalto.perusteenOsa.nimi | kaanna }}</span>
+                          <span ng-class="{ 'otsikko-pieni': indent !== 0 }" ep-highlight="rajaus">{{ sisalto.nimi | kaanna }}</span>
                         </h3>
                         <div ng-show="!muokkausTutkintokohtaisetOsat" class="list-element-info">
-                          <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ sisalto.perusteenOsa.muokattu | aikaleima }}</div>
+                          <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ sisalto.muokattu | aikaleima }}</div>
                         </div>
                       </a>
                   </div>
@@ -47,12 +47,12 @@
                   <div class="sisalto-group">
                     <div ng-init="indent = 1" ng-repeat="lapsi in sisalto.lapset">
                       <div class="sisalto-list-element">
-                        <a ng-href="" class="otsikko">
+                        <a ng-href="{{sisaltoHref(sisalto, lapsi)}}" class="otsikko">
                           <h3>
-                            <span class="otsikko-pieni" ep-highlight="rajaus">{{ lapsi.perusteenOsa.nimi | kaanna }}</span>
+                            <span class="otsikko-pieni" ep-highlight="rajaus">{{ lapsi.nimi | kaanna }}</span>
                           </h3>
                           <div ng-show="!muokkausTutkintokohtaisetOsat" class="list-element-info">
-                            <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ lapsi.perusteenOsa.muokattu | aikaleima }}</div>
+                            <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ lapsi.muokattu | aikaleima }}</div>
                           </div>
                         </a>
                       </div>

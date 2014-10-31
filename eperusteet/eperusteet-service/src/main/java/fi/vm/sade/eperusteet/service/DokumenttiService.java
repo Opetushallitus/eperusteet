@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.method.P;
@@ -35,7 +36,7 @@ public interface DokumenttiService {
     public void generateWithDto(@P("dto") DokumenttiDto dto);
 
     @PreAuthorize("hasPermission(#id, 'peruste', 'LUKU')")
-    public DokumenttiDto createDtoFor(@P("id") final long id, Kieli kieli);
+    public DokumenttiDto createDtoFor(@P("id") final long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi);
 
     @PreAuthorize("isAuthenticated()")
     public byte[] get(Long id);

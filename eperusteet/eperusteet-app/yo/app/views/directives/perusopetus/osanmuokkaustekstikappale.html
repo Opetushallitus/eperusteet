@@ -1,0 +1,16 @@
+<div>
+  <h1>{{getTitle() | kaanna}}</h1>
+  <div class="tekstikappale edit-tekstikappale">
+    <div perusopetus-muokkaus-info></div>
+    <div class="list-group-item">
+      <h3 kaanna="muokkaus-teksikappaleen-nimi-header"></h3>
+      <h3 class="list-group-item-text" ng-model="model.otsikko" ckeditor editing-enabled="true"
+          editor-placeholder="muokkaus-teksikappaleen-nimi-placeholder" localized></h3>
+    </div>
+    <div class="list-group-item">
+      <h3 kaanna="muokkaus-tekstikappaleen-teksti-header"></h3>
+      <div class="list-group-item-text" ng-model="model.teksti" ckeditor editing-enabled="true"
+          editor-placeholder="muokkaus-tekstikappaleen-teksti-placeholder" localized></div>
+    </div>
+  </div>
+</div>

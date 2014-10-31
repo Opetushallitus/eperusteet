@@ -39,4 +39,5 @@ public class PerusteQuery {
     private String tila;
     private String koodiArvo;
     private String perusteTyyppi;
+    private Long muokattu;
 }

@@ -12,7 +12,7 @@
     </div>
 
     <div class="list-group">
-      <div class="list-group-item header" ng-show="header">{{header | kaanna}}</div>
+      <div class="list-group-item header" ng-class="{'empty-header': !header}">{{header | kaanna}}</div>
       <div class="list-group-item" ng-show="hasTransclude">
         <div class="sivunavi-tc-item">
           <div id="sivunavi-tc" ng-transclude></div>

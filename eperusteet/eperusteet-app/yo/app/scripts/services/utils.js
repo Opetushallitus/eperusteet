@@ -19,7 +19,7 @@
 
 
 angular.module('eperusteApp')
-  .service('Utils', function($window, YleinenData) {
+  .service('Utils', function($window, YleinenData, Kaanna) {
     this.scrollTo = function (selector) {
       var element = angular.element(selector);
       if (element.length) {
@@ -43,6 +43,32 @@ angular.module('eperusteApp')
 
     this.supportsFileReader = function () {
       return !_.isUndefined($window.FormData);
+    };
+
+    this.nameSort = function (item) {
+      return Kaanna.kaanna(item.nimi).toLowerCase();
+    };
+  })
+
+  /* Easily clone/restore object with specific keys. */
+  .service('CloneHelper', function () {
+    function CloneHelperImpl(keys) {
+      this.keys = keys;
+      this.stash = {};
+    }
+    CloneHelperImpl.prototype.clone = function (source, destination) {
+      var dest = destination || this.stash;
+      var src = source || this.stash;
+      _.each(this.keys, function (key) {
+        dest[key] = _.cloneDeep(src[key]);
+      });
+    };
+    CloneHelperImpl.prototype.restore = function (destination) {
+      this.clone(null, destination);
+      this.stash = {};
+    };
+    this.init = function (keys) {
+      return new CloneHelperImpl(keys);
     };
   })
 

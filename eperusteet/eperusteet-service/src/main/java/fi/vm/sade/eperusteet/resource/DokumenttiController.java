@@ -19,6 +19,7 @@ import com.mangofactory.swagger.annotations.ApiIgnore;
 import com.wordnik.swagger.annotations.ApiOperation;
 import fi.vm.sade.eperusteet.domain.DokumenttiTila;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.DokumenttiService;
@@ -57,10 +58,14 @@ public class DokumenttiController {
     @ApiOperation("luo dokumentti")
     public ResponseEntity<DokumenttiDto> create(
         @RequestParam("perusteId") final long perusteId,
-        @RequestParam(value = "kieli", defaultValue = "fi") final String kieli) {
+        @RequestParam(value = "kieli", defaultValue = "fi") final String kieli,
+        @RequestParam(value = "suoritustapakoodi") final String suoritustapakoodi) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
-        final DokumenttiDto createDtoFor = service.createDtoFor(perusteId, Kieli.of(kieli));
+        final DokumenttiDto createDtoFor = service.createDtoFor(
+                perusteId,
+                Kieli.of(kieli),
+                Suoritustapakoodi.of(suoritustapakoodi));
         if (createDtoFor.getTila() != DokumenttiTila.EPAONNISTUI) {
             service.setStarted(createDtoFor);
             service.generateWithDto(createDtoFor);

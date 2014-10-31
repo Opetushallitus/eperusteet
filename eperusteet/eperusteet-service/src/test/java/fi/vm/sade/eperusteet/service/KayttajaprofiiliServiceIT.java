@@ -24,11 +24,13 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 
 /**
  *
  * @author nkala
  */
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class KayttajaprofiiliServiceIT extends AbstractIntegrationTest {
     @Autowired
     KayttajaprofiiliService service;

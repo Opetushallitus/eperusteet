@@ -17,12 +17,13 @@ European Union Public Licence for more details.
   <div ng-form="perustiedotForm" name="perustiedotForm" class="form-group-wrapper" ng-if="$parent.wizardissa() || $parent.editEnabled">
     <formfield label="projektin-nimi-label" model="projekti" model-var="nimi" form="form"
                name="projektinNimi" required="required" placeholder="anna-projektin-nimi-placeholder" max="255"></formfield>
-
     <div class="form-group">
       <label class="col-sm-3 control-label" kaanna>projektin-oid-label</label>
       <div class="col-sm-9">
         <div class="input-group">
-          <input ng-model="projekti.$ryhmaNimi[lang]" type="" class="form-control" disabled>
+          <!-- FIXME: Organisaatioryhmiä ei ole mahdollista hakea yksi kerrallaan, joten on pakko näyttää oid nimen sijaan -->
+          <input ng-if="projekti.$ryhmaNimi" ng-model="projekti.$ryhmaNimi[lang]" type="" class="form-control" disabled>
+          <input ng-if="!projekti.$ryhmaNimi" ng-model="projekti.ryhmaOid" type="" class="form-control" disabled>
           <span class="input-group-btn">
             <button class="btn btn-default" ng-click="haeRyhma()" kaanna>hae-ryhma</button>
           </span>

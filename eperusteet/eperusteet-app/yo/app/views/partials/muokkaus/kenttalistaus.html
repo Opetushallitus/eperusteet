@@ -1,5 +1,6 @@
 <div id="muokattavat-kentat">
   <div class="panel panel-default">
+    <!-- <pre>{{expandedFields|json}}</pre> -->
     <ul ng-if="mode !== 'sortable'" class="list-group muokkaus">
       <li class="kentta" ng-class="getClass(field)"
           ng-repeat="field in expandedFields | filter:{'visible':true}:true | orderBy:'order'"
@@ -11,6 +12,7 @@
       </li>
     </ul>
     <div ng-if="mode === 'sortable' && editEnabled" ui-tree>
+      <!-- <pre>{{expandedFields|json}}</pre> -->
     <ul class="list-group muokkaus" ui-tree-nodes ng-model="expandedFields">
       <li class="sortable-box" ui-tree-node
           ng-repeat="field in expandedFields | filter:{'visible':true}:true">

@@ -121,6 +121,11 @@ $pikamenu-size: 22px;
     font-size: 120%;
     color: $brand-primary;
   }
+  .mujuviiva {
+    border: 0px none;
+    height: 1px;
+    background: none repeat scroll 0% 0% #DDD;
+  }
 }
 
 .info-placeholder {
@@ -246,6 +251,11 @@ $pikamenu-size: 22px;
     }
     td.otsikko {
       width: 25%;
+      &.redundant {
+        width: 0 !important;
+        overflow: hidden;
+        padding: 0;
+      }
     }
     td.dragger {
       width: 5%;
@@ -262,6 +272,9 @@ $pikamenu-size: 22px;
         margin-top: 5px;
         display: list-item;
         list-style: disc;
+      }
+      .msd-elastic {
+        resize: none !important;
       }
     }
     td.toiminnot {
@@ -455,4 +468,30 @@ $sisalto-min-height: 450px;
   font-weight: bold;
   border: 1px solid #24A4CC;
   box-shadow: inset 0 0 5px #24A4CC;
+}
+
+.arviointi-ei-kohdealueita {
+
+    .panel-body {
+        padding: 0px;
+    }
+
+    .panel {
+        box-shadow: none;
+
+    }
+    .panel-default {
+        border: none;
+    }
+    .panel-group .panel-heading + .panel-collapse .panel-body {
+        border-top: none;
+        padding-bottom: 0px;
+        padding-top: 0px;
+    }
+}
+
+.osa-alue {
+    .accordion-toggle {
+        cursor:pointer;
+    }
 }

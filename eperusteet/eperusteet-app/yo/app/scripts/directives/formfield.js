@@ -58,6 +58,7 @@ angular.module('eperusteApp')
     };
     return {
       templateUrl: 'views/partials/formfield.html',
+      transclude: true,
       restrict: 'E',
       scope: {
         model: '=',

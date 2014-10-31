@@ -27,6 +27,8 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
+import fi.vm.sade.eperusteet.domain.yl.Oppiaine_;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
@@ -39,6 +41,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.context.annotation.Bean;
@@ -57,13 +60,19 @@ public class DtoMapperConfig {
         TekstiPalanenConverter tekstiPalanenConverter,
         ReferenceableEntityConverter cachedEntityConverter,
         KoodistokoodiConverter koodistokoodiConverter) {
-        DefaultMapperFactory factory = new DefaultMapperFactory.Builder()
+        DefaultMapperFactory factory
+            = new DefaultMapperFactory.Builder()
             .build();
+
         factory.getConverterFactory().registerConverter(tekstiPalanenConverter);
         factory.getConverterFactory().registerConverter(cachedEntityConverter);
         factory.getConverterFactory().registerConverter("koodistokoodiConverter", koodistokoodiConverter);
         factory.getConverterFactory().registerConverter(new PassThroughConverter(TekstiPalanen.class));
         factory.getConverterFactory().registerConverter(new TypeNameConverter());
+
+        OptionalSupport.register(factory);
+        //erikoiskäsittely säiliöille koska halutaan säilyttää "PATCH" -ominaisuus
+        factory.registerMapper(new ReferenceableCollectionMergeMapper());
 
         factory.classMap(PerusteenOsaDto.Suppea.class, PerusteenOsa.class)
             .fieldBToA("class", "osanTyyppi")
@@ -87,9 +96,9 @@ public class DtoMapperConfig {
             .byDefault()
             .register();
         factory.classMap(PerusteprojektiInfoDto.class, Perusteprojekti.class)
-                .fieldBToA("peruste.koulutustyyppi", "koulutustyyppi")
-                .byDefault()
-                .register();
+            .fieldBToA("peruste.koulutustyyppi", "koulutustyyppi")
+            .byDefault()
+            .register();
         factory.classMap(AbstractRakenneOsaDto.class, AbstractRakenneOsa.class)
             .byDefault()
             .register();
@@ -107,6 +116,13 @@ public class DtoMapperConfig {
             .byDefault()
             .register();
         factory.classMap(SuoritustapaDto.class, Suoritustapa.class)
+            .byDefault()
+            .register();
+
+        //YL
+        factory.classMap(OppiaineDto.class, Oppiaine.class)
+            .mapNulls(false)
+            .fieldBToA(Oppiaine_.vuosiluokkakokonaisuudet.getName(), Oppiaine_.vuosiluokkakokonaisuudet.getName())
             .byDefault()
             .register();
 
