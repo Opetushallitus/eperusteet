@@ -71,12 +71,8 @@ European Union Public Licence for more details.
                 <a ng-click="avaaSuljeKaikki()" class="action-link"><span class="avaa-sulje" icon-role="ep-open-close">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
             </div>
             <div class="clearfix"></div>
-            <div ng-include="'views/partials/perusteprojekti/sisaltoOsa.html'"></div>
-            <div class="info-box" ng-show="peruste.sisalto.lapset.length === 0">
-                {{ 'suoritustavalle-ei-ole-vielä-sisältöä' | kaanna }}.
-            </div>
 
-            <div style="margin-bottom: 40px" ng-hide="muokkausTutkintokohtaisetOsat || peruste.koulutustyyppi === 'koulutustyyppi_9999'">
+            <div ng-hide="muokkausTutkintokohtaisetOsat || peruste.koulutustyyppi === 'koulutustyyppi_9999'">
                 <div ng-show="naytaTutkinnonOsat" class="sisalto-list-element">
                   <a class="otsikko" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat">
                     <div class="chevron" icon-role="ep-parts"></div>
@@ -84,6 +80,12 @@ European Union Public Licence for more details.
                   </a>
                 </div>
             </div>
+
+            <div ng-include="'views/partials/perusteprojekti/sisaltoOsa.html'"></div>
+            <div class="info-box" ng-show="peruste.sisalto.lapset.length === 0">
+                {{ 'suoritustavalle-ei-ole-vielä-sisältöä' | kaanna }}.
+            </div>
+
         </div>
     </div>
 </div>
