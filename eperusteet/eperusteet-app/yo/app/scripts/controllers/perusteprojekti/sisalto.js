@@ -65,6 +65,7 @@ angular.module('eperusteApp')
       switch (lapsi.perusteenOsa.tunniste) {
         case 'rakenne':
           lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.muodostumissaannot');
+          lapsi.$type = 'ep-tree';
           break;
         default:
           lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', { perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: lapsi.perusteenOsa.id, versio: '' });

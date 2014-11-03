@@ -120,7 +120,7 @@ angular.module('eperusteApp')
                          '    ' +
                          '  </a>' +
                          '  <a href="" ng-click="togglaaPolut()" class="group-toggler">' +
-                         '    <span class="avaa-sulje"><img src="images/expander.png" alt="">{{ "avaa-sulje-kaikki" | kaanna }}</span>' +
+                         '    <span class="avaa-sulje" icon-role="ep-open-close">{{ "avaa-sulje-kaikki" | kaanna }}</span>' +
                          '  </a>' +
                          '</div>';
 

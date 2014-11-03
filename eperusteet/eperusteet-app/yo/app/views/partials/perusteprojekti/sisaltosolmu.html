@@ -4,6 +4,7 @@
       <div ng-show="muokkausTutkintokohtaisetOsat" icon-role="resize-vertical" class="draghandle" ui-tree-handle></div>
       <div ng-click="$event.preventDefault(); sisalto.$opened = !sisalto.$opened" class="chevron">
         <span ng-show="sisalto.lapset.length > 0" class="glyphicon" ng-class="sisalto.$opened ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
+        <span ng-show="sisalto.lapset.length === 0" class="ep-icon" ng-class="sisalto.$type ? sisalto.$type : 'ep-text'"></span>
       </div>
       <h3>
         <span ep-highlight="rajaus">{{ sisalto.perusteenOsa.nimi | kaanna }}</span>

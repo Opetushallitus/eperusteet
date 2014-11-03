@@ -6,7 +6,7 @@
                 <div class="toolbar-input pull-left">
                     <rajaus model="rajaus" placeholder="etsi-sisallosta" callback="rajaaSisaltoa(value)"></rajaus>
                 </div>
-                <a ng-click="avaaSuljeKaikki()" class="open-close action-link"><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
+                <a ng-click="avaaSuljeKaikki()" class="open-close action-link"><span class="avaa-sulje" icon-role="ep-open-close">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -72,7 +72,7 @@
             <h2>
                 {{ 'tekstikappaleet' | kaanna }} ({{ peruste.sisalto.lapset.length }})
                 <div class="pull-right buttons">
-                    <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" icon-role="add" kaanna="lisaa-tutkintokohtainen-osa"></button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" icon-role="ep-text-add" kaanna="lisaa-tutkintokohtainen-osa"></button>
                     <button class="btn btn-default btn-sm"
                             ng-class="{ 'btn-primary': muokkausTutkintokohtaisetOsat }" ng-click="aloitaMuokkaus()"
                             ng-show="valittuSuoritustapa !== ''" icon-role="edit" kaanna="muokkaa-rakennetta">
