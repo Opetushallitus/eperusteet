@@ -32,7 +32,8 @@ angular.module('eperusteApp')
     {
       label: 'tutkinnonosat',
       link: [STATE_OSAT, {}],
-      isActive: isTutkinnonosatActive
+      isActive: isTutkinnonosatActive,
+      $type: 'ep-parts'
     }
   ];
   var service = null;
@@ -75,6 +76,7 @@ angular.module('eperusteApp')
         depth: level,
         link: getLink(lapsi),
         isActive: isRouteActive,
+        $type: (lapsi.perusteenOsa && lapsi.perusteenOsa.tunniste === 'rakenne') ? 'ep-tree' : 'ep-text'
       });
       nameMap[lapsi.perusteenOsa.id] = lapsi.perusteenOsa.nimi;
       processNode(lapsi, level + 1);
