@@ -29,8 +29,18 @@ European Union Public Licence for more details.
         </div>
         <div class="tutkinto">
             <div ng-hide="muokkausTutkintokohtaisetOsat">
-                <div class="toolbar-input">
+                <div class="toolbar-input pull-left">
                     <rajaus model="rajaus" placeholder="etsi-sisallosta" callback="rajaaSisaltoa(value, tyyppi)"></rajaus>
+                </div>
+                <!-- Lisäyspainikkeet -->
+                <div class="pull-right buttons">
+                    <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="cloud-download" kaanna="tuo-tutkintokohtainen-osa" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="add" kaanna="lisaa-tutkintokohtainen-osa" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                    <button class="btn btn-default btn-sm"
+                            ng-class="{ 'btn-primary': muokkausTutkintokohtaisetOsat }" ng-click="aloitaMuokkaus()"
+                            ng-show="valittuSuoritustapa !== ''" icon-role="edit" kaanna="muokkaa-rakennetta"
+                            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }">
+                    </button>
                 </div>
             </div>
 
@@ -38,7 +48,7 @@ European Union Public Licence for more details.
 
             <h2 ng-hide="muokkausTutkintokohtaisetOsat">
                 {{ 'tekstikappaleet' | kaanna }} ({{ peruste.sisalto.lapset.length }})
-                <a style="margin-left: 10px" ng-click="avaaSuljeKaikki()" class="action-link"><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
+                <a ng-click="avaaSuljeKaikki()" class="action-link open-close"><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
                 <!-- Työryhmävalitsin -->
                 <span class="dropdown">
                     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
@@ -52,22 +62,13 @@ European Union Public Licence for more details.
                         </li>
                     </ul>
                 </span>
-                <a href="" ng-click="naytaRyhmanHenkilot(tyyppi, tyoryhmat, ryhma)" class="usericon" icon-role="user"></a>
-                <!-- Lisäyspainikkeet -->
-                <div class="pull-right buttons">
-                    <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="cloud-download" kaanna="tuo-tutkintokohtainen-osa" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-                    <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="add" kaanna="lisaa-tutkintokohtainen-osa" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-                    <button class="btn btn-default btn-sm"
-                            ng-class="{ 'btn-primary': muokkausTutkintokohtaisetOsat }" ng-click="aloitaMuokkaus()"
-                            ng-show="valittuSuoritustapa !== ''" icon-role="edit" kaanna="muokkaa-rakennetta"
-                            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }">
-                    </button>
-                </div>
+                <a ng-click="naytaRyhmanHenkilot(tyyppi, tyoryhmat, ryhma)" class="usericon action-link" icon-role="user"></a>
+
             </h2>
 
             <div ng-show="muokkausTutkintokohtaisetOsat" class="rakenteen-muokkaus">
                 <h2 kaanna>Muokkaa tekstikappaleiden rakennetta</h2>
-                <a ng-click="avaaSuljeKaikki(peruste.sisalto)" class="action-link"><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
+                <a ng-click="avaaSuljeKaikki()" class="action-link"><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
             </div>
             <div class="clearfix"></div>
             <div ng-include="'views/partials/perusteprojekti/sisaltoOsa.html'"></div>
@@ -76,8 +77,9 @@ European Union Public Licence for more details.
             </div>
 
             <div style="margin-bottom: 40px" ng-hide="muokkausTutkintokohtaisetOsat || peruste.koulutustyyppi === 'koulutustyyppi_9999'">
-                <div ng-show="naytaTutkinnonOsat" class="sisalto-list-element striped">
+                <div ng-show="naytaTutkinnonOsat" class="sisalto-list-element">
                   <a class="otsikko" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat">
+                    <div class="chevron"></div>
                     <h3 kaanna>tutkinnonosat</h3>
                   </a>
                 </div>

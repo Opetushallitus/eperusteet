@@ -3,9 +3,10 @@
 
         <div class="tutkinto">
             <div ng-hide="muokkausTutkintokohtaisetOsat">
-                <div class="toolbar-input">
+                <div class="toolbar-input pull-left">
                     <rajaus model="rajaus" placeholder="etsi-sisallosta" callback="rajaaSisaltoa(value)"></rajaus>
                 </div>
+                <a ng-click="avaaSuljeKaikki()" class="open-close action-link"><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -28,31 +29,31 @@
                 <div ng-init="indent = 0" ng-repeat="sisalto in datat.opetus.lapset">
                   <div ng-show="sisalto.$filtered || rajaus.length === 0">
                     <div class="sisalto-list-element" ng-class="{ 'striped': indent === 0 }" >
-                      <div ng-show="muokkausTutkintokohtaisetOsat" icon-role="resize-vertical" class="draghandle"></div>
-                      <div ng-show="sisalto.lapset.length > 0" ng-click="sisalto.$opened = !sisalto.$opened" class="chevron">
-                        <span class="glyphicon" ng-class="sisalto.$opened ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
-                      </div>
-
                       <a ng-href="{{opetusHref(sisalto)}}" class="otsikko">
+                        <div ng-click="$event.preventDefault(); sisalto.$opened = !sisalto.$opened" class="chevron">
+                          <span ng-show="sisalto.lapset.length > 0" class="glyphicon" ng-class="sisalto.$opened ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
+                        </div>
                         <h3>
-                          <span ng-class="{ 'otsikko-pieni': indent !== 0 }" ep-highlight="rajaus">{{ sisalto.nimi | kaanna }}</span>
+                          <span ep-highlight="rajaus">{{ sisalto.nimi | kaanna }}</span>
                         </h3>
-                        <div ng-show="!muokkausTutkintokohtaisetOsat" class="list-element-info">
-                          <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ sisalto.muokattu | aikaleima }}</div>
+                        <div class="muokattu-info">
+                          <span ng-attr-title="{{ 'muokattu-viimeksi' | kaanna }}">{{ sisalto.muokattu | aikaleima }}</span>
                         </div>
                       </a>
                   </div>
                 </div>
                 <div ng-show="sisalto.lapset.length === 0 || sisalto.$opened || (sisalto.$filtered && rajaus.length !== 0)">
                   <div class="sisalto-group">
-                    <div ng-init="indent = 1" ng-repeat="lapsi in sisalto.lapset">
+                    <!-- TODO tuki useammalle tasolle (oppimäärät oppiaineessa) -->
+                    <div ng-init="indent = 1" ng-repeat="lapsi in sisalto.lapset" style="padding-left: 40px;">
                       <div class="sisalto-list-element">
                         <a ng-href="{{sisaltoHref(sisalto, lapsi)}}" class="otsikko">
+                          <div class="chevron"></div>
                           <h3>
-                            <span class="otsikko-pieni" ep-highlight="rajaus">{{ lapsi.nimi | kaanna }}</span>
+                            <span ep-highlight="rajaus">{{ lapsi.nimi | kaanna }}</span>
                           </h3>
-                          <div ng-show="!muokkausTutkintokohtaisetOsat" class="list-element-info">
-                            <div>{{ 'muokattu-viimeksi' | kaanna }}: {{ lapsi.muokattu | aikaleima }}</div>
+                          <div class="muokattu-info">
+                            <span ng-attr-title="{{ 'muokattu-viimeksi' | kaanna }}">{{ lapsi.muokattu | aikaleima }}</span>
                           </div>
                         </a>
                       </div>
@@ -70,7 +71,6 @@
 
             <h2>
                 {{ 'tekstikappaleet' | kaanna }} ({{ peruste.sisalto.lapset.length }})
-                <a ng-click="avaaSuljeKaikki(peruste.sisalto)" class="action-link"><span class="avaa-sulje"><img src="images/expander.png" alt="">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
                 <div class="pull-right buttons">
                     <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" icon-role="add" kaanna="lisaa-tutkintokohtainen-osa"></button>
                     <button class="btn btn-default btn-sm"

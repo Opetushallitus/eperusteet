@@ -50,21 +50,28 @@ angular.module('eperusteApp')
 
     $scope.rajaaSisaltoa = function(value) {
       if (_.isUndefined(value)) { return; }
-      var filterer = function(osa, lapsellaOn) {
+      var sisaltoFilterer = function(osa, lapsellaOn) {
         osa.$filtered = lapsellaOn || Algoritmit.rajausVertailu(value, osa, 'perusteenOsa', 'nimi');
         return osa.$filtered;
       };
+      var filterer = function(osa, lapsellaOn) {
+        osa.$filtered = lapsellaOn || Algoritmit.rajausVertailu(value, osa, 'nimi');
+        return osa.$filtered;
+      };
       Algoritmit.kaikilleTutkintokohtaisilleOsille($scope.datat.opetus, filterer);
-      Algoritmit.kaikilleTutkintokohtaisilleOsille($scope.datat.sisalto, filterer);
+      Algoritmit.kaikilleTutkintokohtaisilleOsille($scope.datat.sisalto, sisaltoFilterer);
     };
 
-    $scope.avaaSuljeKaikki = function(sisalto, state) {
+    $scope.avaaSuljeKaikki = function() {
       var open = false;
-      Algoritmit.kaikilleLapsisolmuille(sisalto, 'lapset', function(lapsi) {
+      Algoritmit.kaikilleLapsisolmuille($scope.datat.opetus, 'lapset', function(lapsi) {
         open = open || lapsi.$opened;
       });
-      Algoritmit.kaikilleLapsisolmuille(sisalto, 'lapset', function(lapsi) {
-        lapsi.$opened = _.isUndefined(state) ? !open : state;
+      Algoritmit.kaikilleLapsisolmuille($scope.datat.sisalto, 'lapset', function(lapsi) {
+        lapsi.$opened = !open;
+      });
+      Algoritmit.kaikilleLapsisolmuille($scope.datat.opetus, 'lapset', function(lapsi) {
+        lapsi.$opened = !open;
       });
     };
   })
