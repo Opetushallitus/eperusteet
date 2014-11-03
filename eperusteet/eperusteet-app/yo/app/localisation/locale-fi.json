@@ -691,6 +691,10 @@
     "yksi-oppimaara": "Yksi oppimäärä",
     "useita-oppimaaria": "Useita oppimääriä",
     "oppimaara": "Oppimäärä",
-    "lisaa-oppimaara": "Lisää oppimäärä"
+    "lisaa-oppimaara": "Lisää oppimäärä",
+
+    "luonti-projektin-nimi-ohje": "Anna projektin nimi muodossa '[Nimi] tutkinnon perusteprojekti' (esim. 'Rakennustuotannon ammattitutkinnon perusteprojekti').",
+    "luonti-paatospaivamaara-ohje": "Lisää perustetyöryhmän asettamisen päätöspäivämäärä.",
+    "luonti-diaarinumero-ohje": "Lisää perustetyöryhmän asettamispäätöksen diaarinumero."
 
 }
