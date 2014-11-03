@@ -24,8 +24,10 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.service.PerusteService;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +77,31 @@ public class PerusteController {
     public PerusteDto update(@PathVariable("perusteId") final long id, @RequestBody PerusteDto perusteDto) {
         perusteDto = service.update(id, perusteDto);
         return perusteDto;
+    }
+
+    @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit/{tutkintonimikeKoodiId}", method = DELETE)
+    @ResponseBody
+    public ResponseEntity<TutkintonimikeKoodiDto> addTutkintonimikekoodi(
+            @PathVariable("perusteId") final long id,
+            @PathVariable("tutkintonimikeKoodiId") final Long tnkId) {
+        service.removeTutkintonimikeKoodi(id, tnkId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit", method = { POST, PUT })
+    @ResponseBody
+    public ResponseEntity<TutkintonimikeKoodiDto> addTutkintonimikekoodi(
+            @PathVariable("perusteId") final long id,
+            @RequestBody final TutkintonimikeKoodiDto tnk) {
+        TutkintonimikeKoodiDto tutkintonimikeKoodi = service.addTutkintonimikeKoodi(id, tnk);
+        return new ResponseEntity<>(tutkintonimikeKoodi, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<TutkintonimikeKoodiDto>> getTutkintonimikekoodit(@PathVariable("perusteId") final long id) {
+        List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = service.getTutkintonimikeKoodit(id);
+        return new ResponseEntity<>(tutkintonimikeKoodit, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{perusteId}", method = GET)

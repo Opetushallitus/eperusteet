@@ -16,11 +16,15 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author nkala
  */
+@Getter
+@Setter
 public class TutkintonimikeKoodiDto {
     private Long id;
     private EntityReference peruste;
@@ -30,4 +34,19 @@ public class TutkintonimikeKoodiDto {
     private String osaamisalaArvo;
     private String tutkintonimikeUri;
     private String tutkintonimikeArvo;
+
+    public TutkintonimikeKoodiDto() {
+    }
+
+    public TutkintonimikeKoodiDto(EntityReference peruste, String tutkinnonOsaArvo, String osaamisalaArvo, String tutkintonimikeArvo) {
+        this.peruste = peruste;
+        this.tutkinnonOsaArvo = tutkinnonOsaArvo;
+        this.tutkinnonOsaUri = "tutkinnonosat_" + tutkinnonOsaArvo;
+        this.osaamisalaArvo = osaamisalaArvo;
+        this.osaamisalaUri = "osaamisala_" + osaamisalaArvo;
+        this.tutkintonimikeArvo = tutkintonimikeArvo;
+        this.tutkintonimikeUri = "tutkintonimikkeet_" + tutkintonimikeArvo;
+    }
+
+
 }

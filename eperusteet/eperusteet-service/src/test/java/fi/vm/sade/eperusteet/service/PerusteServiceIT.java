@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
@@ -53,7 +54,10 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
+import java.util.List;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Integraatiotesti muistinvaraista kantaa vasten.
@@ -147,6 +151,20 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Rollback(true)
+    public void testTutkintonimikkeenLisays() {
+        List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = perusteService.getTutkintonimikeKoodit(peruste.getId());
+        assertTrue(tutkintonimikeKoodit.isEmpty());
+
+        TutkintonimikeKoodiDto tutkintonimikeKoodiDto = new TutkintonimikeKoodiDto(peruste.getReference(), "102047", "1632", "10003");
+        TutkintonimikeKoodiDto koodi = perusteService.addTutkintonimikeKoodi(peruste.getId(), tutkintonimikeKoodiDto);
+        assertEquals("osaamisala_1632", koodi.getOsaamisalaUri());
+        assertEquals("tutkinnonosat_102047", koodi.getTutkinnonOsaUri());
+        assertEquals("tutkintonimikkeet_10003", koodi.getTutkintonimikeUri());
+    }
+
+    @Test
+    @Rollback(true)
     public void testAddTutkinnonRakenne() {
 
         TutkinnonOsaViiteDto v1 = perusteService.addTutkinnonOsa(peruste.getId(), Suoritustapakoodi.OPS, new TutkinnonOsaViiteDto());
