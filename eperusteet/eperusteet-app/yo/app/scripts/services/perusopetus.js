@@ -130,12 +130,13 @@ angular.module('eperusteApp')
       //PerusopetuksenSisalto.addChild(commonParams({osanId: id}), {}, success);
     };
 
-    this.saveVuosiluokkakokonaisuudenOsa = function (vuosiluokkakokonaisuus, oppiaine) {
+    this.saveVuosiluokkakokonaisuudenOsa = function (vuosiluokkakokonaisuus, oppiaine, cb) {
       OppiaineenVuosiluokkakokonaisuudet.save({
         perusteId: tiedot.getProjekti()._peruste,
         oppiaineId: oppiaine.id
       }, vuosiluokkakokonaisuus, function (res) {
         vuosiluokkakokonaisuus = res;
+        (cb || angular.noop)();
       }, errorCb);
     };
 

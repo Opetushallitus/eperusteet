@@ -32,13 +32,27 @@ angular.module('eperusteApp')
       osanId: '@osanId'
     });
   })
+  .factory('LukkoOppiaine', function (SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:osanId/lukko', {
+      osanId: '@osanId',
+      perusteId: '@perusteId'
+    });
+  })
+  .factory('LukkoOppiaineenVuosiluokkakokonaisuus', function (SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:oppiaineId/vuosiluokkakokonaisuudet/:vuosiluokkaId/lukko', {
+      oppiaineId: '@oppiaineId',
+      perusteId: '@perusteId',
+      vuosiluokkaId: '@vuosiluokkaId',
+    });
+  })
   .controller('LukittuSisaltoMuuttunutModalCtrl', function($scope, $modalInstance) {
     $scope.ok = function() { $modalInstance.close(); };
     $scope.peruuta = function() { $modalInstance.dismiss(); };
     $scope.$on('$stateChangeSuccess', function() { $scope.peruuta(); });
   })
   .service('Lukitus', function($rootScope, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, Profiili,
-    LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit, Kaanna) {
+    LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
+    LukkoOppiaine, PerusopetusService, LukkoOppiaineenVuosiluokkakokonaisuus) {
     var lukitsin = null;
     var etag = null;
 
@@ -164,6 +178,26 @@ angular.module('eperusteApp')
       lukitseSisalto: lukitseSisalto,
       vapautaSisalto: vapautaSisalto,
       lukitsePerusteenosa: lukitsePerusteenosa,
-      vapautaPerusteenosa: vapautaPerusteenosa
+      vapautaPerusteenosa: vapautaPerusteenosa,
+      lukitseOppiaine: function (id, cb) {
+        lukitse(LukkoOppiaine, {perusteId: PerusopetusService.getPerusteId(), osanId: id}, cb);
+      },
+      vapautaOppiaine: function (id, cb) {
+        vapauta(LukkoOppiaine, {perusteId: PerusopetusService.getPerusteId(), osanId: id}, cb);
+      },
+      lukitseOppiaineenVuosiluokkakokonaisuus: function (oppiaineId, vuosiluokkaId, cb) {
+        lukitse(LukkoOppiaineenVuosiluokkakokonaisuus, {
+          perusteId: PerusopetusService.getPerusteId(),
+          oppiaineId: oppiaineId,
+          vuosiluokkaId: vuosiluokkaId
+        }, cb);
+      },
+      vapautaOppiaineenVuosiluokkakokonaisuus: function (oppiaineId, vuosiluokkaId, cb) {
+        vapauta(LukkoOppiaineenVuosiluokkakokonaisuus, {
+          perusteId: PerusopetusService.getPerusteId(),
+          oppiaineId: oppiaineId,
+          vuosiluokkaId: vuosiluokkaId
+        }, cb);
+      }
     };
   });

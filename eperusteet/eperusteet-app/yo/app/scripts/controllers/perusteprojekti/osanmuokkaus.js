@@ -18,9 +18,10 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('OsanMuokkausHelper', function ($stateParams, PerusopetusService, $state) {
+  .service('OsanMuokkausHelper', function ($stateParams, PerusopetusService, $state, Lukitus) {
     this.vuosiluokat = [];
     this.model = null;
+    this.isLocked = false;
     var self = this;
     var reset = function () {
       self.backState = null;
@@ -35,13 +36,14 @@ angular.module('eperusteApp')
       return this.path ? this.model[this.path] : this.model;
     };
 
-    this.setup = function (model, path, oppiaine) {
+    this.setup = function (model, path, oppiaine, cb) {
       this.oppiaine = $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET ? model : null;
       if (oppiaine) {
         this.oppiaine = oppiaine;
       }
       this.model = model;
       this.path = path;
+      this.isLocked = false;
       this.backState = [$state.current.name, _.clone($stateParams)];
       this.vuosiluokat = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT, true);
       if (model.vuosiluokkaKokonaisuus) {
@@ -51,14 +53,37 @@ angular.module('eperusteApp')
       } else {
         this.vuosiluokka = null;
       }
+      var self = this;
+      if (this.isVuosiluokkakokonaisuudenOsa()) {
+        Lukitus.lukitseOppiaineenVuosiluokkakokonaisuus(this.oppiaine.id, this.vuosiluokka.$sisalto.id, function () {
+          self.isLocked = true;
+          (cb || angular.noop)();
+        });
+      } else if (this.oppiaine) {
+        Lukitus.lukitseOppiaine(this.oppiaine.id, function () {
+          self.isLocked = true;
+          (cb || angular.noop)();
+        });
+      }
     };
 
     this.save = function () {
+      var self = this;
       if (this.isVuosiluokkakokonaisuudenOsa()) {
-        PerusopetusService.saveVuosiluokkakokonaisuudenOsa(this.model, this.oppiaine);
+        PerusopetusService.saveVuosiluokkakokonaisuudenOsa(this.model, this.oppiaine, function () {
+          Lukitus.vapautaOppiaineenVuosiluokkakokonaisuus(this.oppiaine.id, this.vuosiluokka.$sisalto.id, function () {
+            self.isLocked = false;
+          });
+        });
       } else if (this.path) {
         var payload = _.pick(this.model, ['id', this.path]);
-        PerusopetusService.saveOsa(payload, this.backState[1]);
+        PerusopetusService.saveOsa(payload, this.backState[1], function () {
+          if (self.isLocked && self.oppiaine) {
+            Lukitus.vapautaOppiaine(self.oppiaine.id, function () {
+              self.isLocked = false;
+            });
+          }
+        });
       } else {
         // Sisältö
         PerusopetusService.saveOsa(this.model, this.backState[1]);
@@ -68,6 +93,18 @@ angular.module('eperusteApp')
     this.goBack = function () {
       if (!this.backState) {
         return;
+      }
+      var self = this;
+      if (this.isLocked) {
+        if (this.isVuosiluokkakokonaisuudenOsa()) {
+          Lukitus.vapautaOppiaineenVuosiluokkakokonaisuus(this.oppiaine.id, this.vuosiluokka.$sisalto.id, function () {
+            self.isLocked = false;
+          });
+        } else if (this.oppiaine) {
+          Lukitus.vapautaOppiaine(self.oppiaine.id, function () {
+            self.isLocked = false;
+          });
+        }
       }
       var params = _.clone(this.backState);
       this.reset();

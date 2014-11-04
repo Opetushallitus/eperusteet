@@ -81,7 +81,7 @@ angular.module('eperusteApp')
 
   .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna,
       PerusteProjektiSivunavi, Oppiaineet, $timeout, $state, $stateParams, $q, YleinenData, tabHelper,
-      CloneHelper, OppimaaraHelper, Utils, $rootScope) {
+      CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.mappedVuosiluokat = [];
@@ -105,7 +105,13 @@ angular.module('eperusteApp')
 
     var callbacks = {
       edit: function () {
-        cloner.clone($scope.editableModel);
+        if ($scope.editableModel.id) {
+          Lukitus.lukitseOppiaine($scope.editableModel.id, function () {
+            cloner.clone($scope.editableModel);
+          });
+        } else {
+          cloner.clone($scope.editableModel);
+        }
       },
       save: function () {
         var oppimaara = OppimaaraHelper.presave($scope.editableModel);
@@ -126,15 +132,25 @@ angular.module('eperusteApp')
             perusteId: PerusopetusService.getPerusteId()
           }, function (res) {
             $scope.editableModel = res;
+            Lukitus.vapautaOppiaine($scope.editableModel.id);
           });
         }
       },
       cancel: function () {
-        cloner.restore($scope.editableModel);
+        function cancelActions() {
+          cloner.restore($scope.editableModel);
+          if ($scope.editableModel.$isNew) {
+            $scope.editableModel.$isNew = false;
+            $timeout(function () {
+              $state.go.apply($state, $scope.data.options.backState);
+            });
+          }
+        }
         if ($scope.editableModel.$isNew) {
-          $scope.editableModel.$isNew = false;
-          $timeout(function () {
-            $state.go.apply($state, $scope.data.options.backState);
+          cancelActions();
+        } else {
+          Lukitus.vapautaOppiaine($scope.editableModel.id, function () {
+            cancelActions();
           });
         }
       },
