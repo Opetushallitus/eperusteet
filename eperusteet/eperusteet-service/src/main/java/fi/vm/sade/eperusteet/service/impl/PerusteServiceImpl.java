@@ -50,6 +50,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
+import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.OsaamisalaRepository;
@@ -386,7 +387,6 @@ public class PerusteServiceImpl implements PerusteService {
     public List<TutkinnonOsaViiteDto> getTutkinnonOsat(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
         Peruste peruste = perusteet.findOne(perusteid);
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
-        Set<TutkinnonOsaViite> tutkinnonOsat = suoritustapa.getTutkinnonOsat();
         return mapper.mapAsList(suoritustapa.getTutkinnonOsat(), TutkinnonOsaViiteDto.class);
     }
 
@@ -531,12 +531,47 @@ public class PerusteServiceImpl implements PerusteService {
             || !viite.getTutkinnonOsa().getReference().equals(osa.getTutkinnonOsa())) {
             throw new BusinessRuleViolationException("Virheellinen viite");
         }
+
         tutkinnonOsaViiteRepository.lock(viite);
         viite.setJarjestys(osa.getJarjestys());
         viite.setLaajuus(osa.getLaajuus());
         viite.setMuokattu(new Date());
         viite = tutkinnonOsaViiteRepository.save(viite);
-        return mapper.map(viite, TutkinnonOsaViiteDto.class);
+        TutkinnonOsaViiteDto viiteDto = mapper.map(viite, TutkinnonOsaViiteDto.class);
+        if(osa.getTutkinnonOsaDto() != null) {
+            viiteDto.setTutkinnonOsaDto(perusteenOsaService.update(osa.getTutkinnonOsaDto()));
+        }
+
+        return viiteDto;
+    }
+
+    @Override
+    @Transactional
+    public TutkinnonOsaViiteDto updateTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi, TutkinnonOsaViiteUpdateDto osa) {
+        TutkinnonOsaViiteDto updated = updateTutkinnonOsa(id, suoritustapakoodi, osa.getDto());
+
+        if (osa.getMetadata() != null) {
+            tutkinnonOsaViiteRepository.setRevisioKommentti(osa.getMetadata().getKommentti());
+        }
+        return updated;
+
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TutkinnonOsaViiteDto getTutkinnonOsaViite(Long perusteId, Suoritustapakoodi suoritustapakoodi, Long viiteId) {
+        final Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
+        TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteId);
+
+        if (viite == null || !viite.getSuoritustapa().equals(suoritustapa)) {
+            throw new BusinessRuleViolationException("Virheellinen viiteId");
+        }
+
+        TutkinnonOsaViiteDto viiteDto = mapper.map(viite, TutkinnonOsaViiteDto.class);
+        TutkinnonOsaDto tutkinnonOsaDto = mapper.map(viite.getTutkinnonOsa(), TutkinnonOsaDto.class);
+        viiteDto.setTutkinnonOsaDto(tutkinnonOsaDto);
+
+        return viiteDto;
     }
 
     private Suoritustapa getSuoritustapaEntity(Long perusteid, Suoritustapakoodi suoritustapakoodi) {

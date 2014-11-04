@@ -22,13 +22,14 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueKokonaanDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteLaajaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.PerusteenOsaUpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
 import fi.vm.sade.eperusteet.resource.util.WrappedList;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
+import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
@@ -58,6 +59,10 @@ public class PerusteenOsaController {
 
     @Autowired
     private PerusteenOsaService service;
+
+    @Autowired
+    private TutkinnonOsaViiteService tutkinnonOsaViiteService;
+
 
     @Autowired
     private KayttajanTietoService kayttajanTietoService;
@@ -106,6 +111,27 @@ public class PerusteenOsaController {
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/viite/{id}/versiot", method = GET)
+    @ResponseBody
+    public List<CombinedDto<Revision, HenkiloTietoDto>> getViiteVersiot(@PathVariable("id") final Long id) {
+        List<Revision> versiot = tutkinnonOsaViiteService.getVersiot(id);
+        List<CombinedDto<Revision, HenkiloTietoDto>> laajennetut = new ArrayList<>();
+        for (Revision r : versiot) {
+            laajennetut.add(new CombinedDto<>(r, new HenkiloTietoDto(kayttajanTietoService.hae(r.getMuokkaajaOid()))));
+        }
+        return laajennetut;
+    }
+
+    @RequestMapping(value = "/viite/{id}/versio/{versioId}", method = GET)
+    @ResponseBody
+    public ResponseEntity<TutkinnonOsaViiteDto> getViiteVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
+        TutkinnonOsaViiteDto t = tutkinnonOsaViiteService.getVersio(id, versioId);
+        if (t == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+
     @RequestMapping(method = GET, params = "koodiUri")
     @ResponseBody
     public List<PerusteenOsaDto.Laaja> get(@RequestParam("koodiUri") final String koodiUri) {
@@ -141,18 +167,32 @@ public class PerusteenOsaController {
         return service.addTutkinnonOsaOsaAlue(id, osaAlueDto);
     }
 
+
+    /**
+     * Hakee tutkinnon osan osa-alueen.
+     *
+     * @param viiteId
+     * @param osaAlueId
+     * @return Tutkinnon osan osa-alue
+     */
+    @RequestMapping(value = "{viiteId}/osaalue/{osaAlueId}", method = GET)
+    @ResponseBody
+    public ResponseEntity<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlue(@PathVariable("viiteId") final Long viiteId, @PathVariable("osaAlueId") final Long osaAlueId) {
+        return new ResponseEntity<>(service.getTutkinnonOsaOsaAlue(viiteId, osaAlueId), HttpStatus.OK);
+    }
+
     /**
      * Päivittää tutkinnon osan osa-alueen tietoja.
      *
-     * @param id
+     * @param viiteId
      * @param osaAlueId
      * @param osaAlue
      * @return Päivitetty tutkinnon osan osa-alue
      */
-    @RequestMapping(value = "{id}/osaalue/{osaAlueId}", method = POST)
+    @RequestMapping(value = "{viiteId}/osaalue/{osaAlueId}", method = POST)
     @ResponseBody
-    public ResponseEntity<OsaAlueKokonaanDto> updateTutkinnonOsaOsaAlue(@PathVariable("id") final Long id, @PathVariable("osaAlueId") final Long osaAlueId, @RequestBody OsaAlueKokonaanDto osaAlue) {
-        return new ResponseEntity<>(service.updateTutkinnonOsaOsaAlue(id, osaAlueId, osaAlue), HttpStatus.OK);
+    public ResponseEntity<OsaAlueKokonaanDto> updateTutkinnonOsaOsaAlue(@PathVariable("viiteId") final Long viiteId, @PathVariable("osaAlueId") final Long osaAlueId, @RequestBody OsaAlueKokonaanDto osaAlue) {
+        return new ResponseEntity<>(service.updateTutkinnonOsaOsaAlue(viiteId, osaAlueId, osaAlue), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/osaalueet", method = GET)
@@ -173,18 +213,7 @@ public class PerusteenOsaController {
     }
 
 
-    /**
-     * Hakee tutkinnon osan osa-alueen.
-     *
-     * @param id
-     * @param osaAlueId
-     * @return Tutkinnon osan osa-alue
-     */
-    @RequestMapping(value = "{id}/osaalue/{osaAlueId}", method = GET)
-    @ResponseBody
-    public ResponseEntity<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlue(@PathVariable("id") final Long id, @PathVariable("osaAlueId") final Long osaAlueId) {
-        return new ResponseEntity<>(service.getTutkinnonOsaOsaAlue(id, osaAlueId), HttpStatus.OK);
-    }
+
 
     /**
      * Poistaa tutkinnon osan osa-alueen
@@ -295,17 +324,38 @@ public class PerusteenOsaController {
         service.unlock(id);
     }
 
+    @RequestMapping(value = "/tutkinnonosaviite/{viiteId}/lukko", method = GET)
+    @ResponseBody
+    public ResponseEntity<LukkoDto> checkLockByTutkinnonOsaViite(@PathVariable("viiteId") final Long viiteId,
+        @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
+        HttpServletResponse response) {
+        LukkoDto lock = tutkinnonOsaViiteService.getPerusteenOsaLock(viiteId);
+        response.addHeader("ETag", String.valueOf(tutkinnonOsaViiteService.getLatestRevision(viiteId)));
+        return new ResponseEntity<>(lock, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/tutkinnonosaviite/{viiteId}/lukko", method = {POST, PUT})
+    @ResponseBody
+    public ResponseEntity<LukkoDto> lockByTutkinnonOsaViite(@PathVariable("viiteId") final Long viiteId,
+        @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
+        HttpServletResponse response) {
+        LukkoDto lock = tutkinnonOsaViiteService.lockPerusteenOsa(viiteId);
+        response.addHeader("ETag", String.valueOf(tutkinnonOsaViiteService.getLatestRevision(viiteId)));
+        return new ResponseEntity<>(lock, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/tutkinnonosaviite/{viiteId}/lukko", method = DELETE)
+    @ResponseBody
+    public void unlockByTutkinnonOsaViite(@PathVariable("viiteId") final Long viiteId) {
+        tutkinnonOsaViiteService.unlockPerusteenOsa(viiteId);
+    }
+
+
     @RequestMapping(value = "/{id}", method = DELETE, consumes = "*/*")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void delete(@PathVariable final Long id) {
         service.delete(id);
-    }
-
-    @RequestMapping(value = "/tyypit", method = GET)
-    @ResponseBody
-    public List<String> getPerusteenOsaTypes() {
-        return PerusteenOsaMappings.getPerusteenOsaTypes();
     }
 
     private HttpHeaders buildHeadersFor(Long id, UriComponentsBuilder ucb) {

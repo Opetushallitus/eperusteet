@@ -24,7 +24,7 @@ angular.module('eperusteApp')
       templateUrl: 'views/partials/muokkaus/tutke2kentat.html',
       scope: {
         mainLevelEditing: '=editEnabled',
-        tutkinnonosa: '=',
+        tutkinnonosaViite: '=',
         kontrollit: '='
       },
       controller: 'Tutke2KentatController'
@@ -52,8 +52,8 @@ angular.module('eperusteApp')
       oneAtATime: false
     };
 
-    $scope.tutkinnonosa.then(function (res) {
-      $scope.tutke2osa = Tutke2Osa.init(res.id);
+    $scope.tutkinnonosaViite.then(function (res) {
+      $scope.tutke2osa = Tutke2Osa.init(res.tutkinnonOsa.id);
       $scope.tutke2osa.fetch().then(function () {
         tutke2osaDefer.resolve();
       });
@@ -138,7 +138,7 @@ angular.module('eperusteApp')
       this.params = { osanId: tutkinnonOsaId };
       this.tavoiteMap = {};
       this.versiot = {};
-      VersionHelper.getPerusteenosaVersions(this.versiot, {id: $stateParams.perusteenOsaId}, true, angular.noop);
+      VersionHelper.getPerusteenosaVersions(this.versiot, {id: tutkinnonOsaId}, true, angular.noop);
     }
 
     Tutke2OsaImpl.prototype.fetch = function () {
@@ -148,7 +148,7 @@ angular.module('eperusteApp')
 
       if (versio) {
         that.versiot = {};
-        VersionHelper.getPerusteenosaVersions(that.versiot, {id: $stateParams.perusteenOsaId}, true, function () {
+        VersionHelper.getTutkinnonOsaViiteVersions(that.versiot, {id: $stateParams.perusteenOsaViiteId}, true, function () {
           var revNumber = VersionHelper.select(that.versiot, versio);
           that.params.versioId = revNumber;
           TutkinnonOsanOsaAlue.versioList(that.params, function (data) {

@@ -42,7 +42,13 @@ angular.module('eperusteApp')
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:oppiaineId/vuosiluokkakokonaisuudet/:vuosiluokkaId/lukko', {
       oppiaineId: '@oppiaineId',
       perusteId: '@perusteId',
-      vuosiluokkaId: '@vuosiluokkaId',
+      vuosiluokkaId: '@vuosiluokkaId'
+    });
+  })
+  .factory('LukkoPerusteenosaByTutkinnonOsaViite', function(SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/perusteenosat/tutkinnonosaviite/:viiteId/lukko', {
+      viiteId: '@viiteId'
+
     });
   })
   .controller('LukittuSisaltoMuuttunutModalCtrl', function($scope, $modalInstance) {
@@ -52,7 +58,8 @@ angular.module('eperusteApp')
   })
   .service('Lukitus', function($rootScope, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, Profiili,
     LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
-    LukkoOppiaine, PerusopetusService, LukkoOppiaineenVuosiluokkakokonaisuus) {
+    LukkoOppiaine, PerusopetusService, LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite) {
+
     var lukitsin = null;
     var etag = null;
 
@@ -132,6 +139,18 @@ angular.module('eperusteApp')
       }, cb);
     }
 
+    function lukitsePerusteenosaByTutkinnonOsaViite(id, cb) {
+      lukitse(LukkoPerusteenosaByTutkinnonOsaViite, {
+        viiteId: id
+      }, cb);
+    }
+
+    function vapautaPerusteenosaByTutkinnonOsaViite(id, cb) {
+      vapauta(LukkoPerusteenosaByTutkinnonOsaViite, {
+        viiteId: id
+      }, cb);
+    }
+
     function tarkistaLukitus(id, scope, suoritustapa) {
       var okCb = function(res) {
         if (res.haltijaOid && new Date() <= new Date(res.vanhentuu) && !res.oma) {
@@ -157,7 +176,7 @@ angular.module('eperusteApp')
       parametrit = _.merge({
         id: 0,
         tyyppi: 'sisalto',
-        suoritustapa: 'naytto',
+        suoritustapa: 'naytto'
       }, parametrit);
 
       switch (parametrit.tyyppi) {
@@ -179,6 +198,7 @@ angular.module('eperusteApp')
       vapautaSisalto: vapautaSisalto,
       lukitsePerusteenosa: lukitsePerusteenosa,
       vapautaPerusteenosa: vapautaPerusteenosa,
+
       lukitseOppiaine: function (id, cb) {
         lukitse(LukkoOppiaine, {perusteId: PerusopetusService.getPerusteId(), osanId: id}, cb);
       },
@@ -198,6 +218,9 @@ angular.module('eperusteApp')
           oppiaineId: oppiaineId,
           vuosiluokkaId: vuosiluokkaId
         }, cb);
-      }
+      },
+      lukitsePerusteenosaByTutkinnonOsaViite: lukitsePerusteenosaByTutkinnonOsaViite,
+      vapautaPerusteenosaByTutkinnonOsaViite: vapautaPerusteenosaByTutkinnonOsaViite
+
     };
   });

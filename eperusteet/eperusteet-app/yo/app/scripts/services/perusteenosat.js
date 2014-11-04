@@ -55,8 +55,16 @@ angular.module('eperusteApp')
       update: {method: 'POST'}
     });
   })
+  .factory('TutkinnonOsaViitteet', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC,{},
+    {
+      versiot: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/viite/:viiteId/versiot'},
+      getVersio: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/viite/:viiteId/versio/:versioId'}
+    }
+    );
+  })
   .factory('TutkinnonOsanOsaAlue', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteenosat/:osanId/osaalue/:osaalueenId', {
+    return $resource(SERVICE_LOC + '/perusteenosat/:viiteId/osaalue/:osaalueenId', {
       osaalueenId: '@id'
     }, {
       list: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/osaalueet'},

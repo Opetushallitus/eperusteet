@@ -19,11 +19,13 @@
 
 angular.module('eperusteApp')
   .controller('MuokkausCtrl', function($scope, $stateParams, $compile, Navigaatiopolku, PerusteenOsat,
-                                       virheService, VersionHelper) {
+                                       virheService, VersionHelper, perusteprojektiTiedot, PerusteenOsaViite, TutkinnonOsaViitteet) {
     $scope.tyyppi = $stateParams.perusteenOsanTyyppi;
     $scope.objekti = null;
     $scope.versiot = {};
     $scope.isLocked = false;
+
+    $scope.peruste = perusteprojektiTiedot.getPeruste();
 
     if ($stateParams.perusteenOsaId !== 'uusi') {
       var successCb = function(re) {
@@ -34,19 +36,30 @@ angular.module('eperusteApp')
       };
       var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, '') : null;
       if (versio) {
-        VersionHelper.getPerusteenosaVersions($scope.versiot, {id: $stateParams.perusteenOsaId}, true, function () {
+        VersionHelper.getTutkinnonOsaViiteVersions($scope.versiot, {id: $stateParams.perusteenOsaViiteId}, true, function () {
           var revNumber = VersionHelper.select($scope.versiot, versio);
           if (!revNumber) {
             errorCb();
           } else {
-            $scope.objekti = PerusteenOsat.getVersio({
-              osanId: $stateParams.perusteenOsaId,
-              versioId: revNumber
-            }, successCb, errorCb);
+            if ($stateParams.perusteenOsanTyyppi === 'tutkinnonosa') {
+              $scope.objekti = TutkinnonOsaViitteet.getVersio({
+                viiteId: $stateParams.perusteenOsaViiteId,
+                versioId: revNumber
+              }, successCb, errorCb);
+            } else {
+              $scope.objekti = PerusteenOsat.getVersio({
+                osanId: $stateParams.perusteenOsaId,
+                versioId: revNumber
+              }, successCb, errorCb);
+            }
           }
         });
       } else {
-        $scope.objekti = PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, successCb, errorCb);
+        if ($stateParams.perusteenOsanTyyppi === 'tutkinnonosa') {
+          $scope.objekti = PerusteenOsaViite.get({ perusteId: $scope.peruste.id, suoritustapa: $stateParams.suoritustapa, viiteId: $stateParams.perusteenOsaViiteId }, successCb, errorCb);
+        } else {
+          $scope.objekti = PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, successCb, errorCb);
+        }
       }
     }
     else {
@@ -58,7 +71,7 @@ angular.module('eperusteApp')
       muokkausDirective = angular.element('<muokkaus-tekstikappale ng-if="objekti.$resolved" tekstikappale="objekti" versiot="versiot"></muokkaus-tekstikappale>');
     }
     else if ($stateParams.perusteenOsanTyyppi === 'tutkinnonosa') {
-      muokkausDirective = angular.element('<muokkaus-tutkinnonosa ng-if="objekti.$resolved" tutkinnon-osa="objekti" versiot="versiot"></muokkaus-tutkinnonosa>');
+      muokkausDirective = angular.element('<muokkaus-tutkinnonosa ng-if="objekti.$resolved" tutkinnon-osa-viite="objekti" versiot="versiot" peruste="peruste"></muokkaus-tutkinnonosa>');
     }
     else {
       virheService.virhe('virhe-perusteenosaa-ei-löytynyt');
