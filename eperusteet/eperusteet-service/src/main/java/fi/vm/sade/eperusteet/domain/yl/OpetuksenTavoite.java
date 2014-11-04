@@ -46,18 +46,24 @@ public class OpetuksenTavoite extends AbstractAuditedReferenceableEntity {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
     private TekstiPalanen tavoite;
+
     @Getter
     @Setter
     @ManyToMany(cascade = CascadeType.PERSIST)
     private Set<KeskeinenSisaltoalue> sisaltoalueet = new HashSet<>();
+
     @Getter
     @Setter
     @ManyToMany
     private Set<LaajaalainenOsaaminen> laajattavoitteet = new HashSet<>();
-    @Getter
-    @Setter
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TavoitteenArviointi> arvioinninkohteet = new HashSet<>();
+
+    @Getter
+    @Setter
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    private Set<OpetuksenKohdealue> kohdealueet = new HashSet<>();
 
     public Set<TavoitteenArviointi> getArvioinninkohteet() {
         return new HashSet<>(arvioinninkohteet);

@@ -13,13 +13,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.domain;
+package fi.vm.sade.eperusteet.dto.yl;
 
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.dto.ReferenceableDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,18 +25,11 @@ import lombok.Setter;
  *
  * @author jhyoty
  */
-@MappedSuperclass
-public abstract class AbstractAuditedReferenceableEntity extends AbstractAuditedEntity implements ReferenceableEntity {
+@Getter
+@Setter
+public class OpetuksenKohdealueDto implements ReferenceableDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Getter
-    @Setter
-    private Long id;
-
-    @Override
-    public EntityReference getReference() {
-        return new EntityReference(id);
-    }
-
+    public Long id;
+    public Optional<LokalisoituTekstiDto> nimi;
+    public Optional<LokalisoituTekstiDto> kuvaus;
 }

@@ -24,6 +24,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -77,6 +78,10 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
 
     @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Set<Oppiaine> oppimaarat;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable
+    private Set<OpetuksenKohdealue> kohdealueet = new HashSet<>();
 
     /**
      * Palauttaa oppimäärät
@@ -145,6 +150,43 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
         } else {
             throw new IllegalStateException("Oppiaineviittausta ei voi muuttaa");
         }
+    }
+
+    public Set<OpetuksenKohdealue> getKohdealueet() {
+        return new HashSet<>(kohdealueet);
+    }
+
+    public void setKohdealueet(Set<OpetuksenKohdealue> kohdealueet) {
+        if (kohdealueet == null) {
+            this.kohdealueet.clear();
+        } else {
+            Set<OpetuksenKohdealue> added = new HashSet<>(kohdealueet.size());
+            //kohdealueita ei ole paljon (<10), joten O(n^2) OK tässä
+            for ( OpetuksenKohdealue k : kohdealueet ) {
+                added.add(addKohdealue(k));
+            }
+            this.kohdealueet.retainAll(added);
+        }
+    }
+
+    /**
+     * Lisää uuden kohdealueen. Jos samanniminen kohdealue on jo olemassa, palauttaa tämän.
+     *
+     * @param kohdealue
+     * @return Lisätty kohdealue tai samanniminen olemassa oleva.
+     */
+    public OpetuksenKohdealue addKohdealue(OpetuksenKohdealue kohdealue) {
+        for (OpetuksenKohdealue k : kohdealueet) {
+            if (k.getNimi().equals(kohdealue.getNimi())) {
+                return k;
+            }
+        }
+        this.kohdealueet.add(kohdealue);
+        return kohdealue;
+    }
+
+    public void removeKohdealue(OpetuksenKohdealue kohdealue) {
+        this.kohdealueet.remove(kohdealue);
     }
 
     //hiberate javaassist proxy "workaround"

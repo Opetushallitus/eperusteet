@@ -128,6 +128,6 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     public void testWithInvalidHtml() {
         TekstiKappale tk = new TekstiKappale();
         tk.setNimi(TekstiPalanen.of(Kieli.FI, "<i>otsikko</i>"));
-        perusteenOsaRepository.save(tk);
+        perusteenOsaRepository.saveAndFlush(tk);
     }
 }

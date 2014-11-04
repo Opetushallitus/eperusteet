@@ -98,6 +98,14 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
         return oppiaineet.contains(aine);
     }
 
+    public void removeOppiaine(Oppiaine aine) {
+        oppiaineet.remove(aine);
+    }
+
+    public void removeVuosiluokkakokonaisuus(VuosiluokkaKokonaisuus kokonaisuus) {
+        vuosiluokkakokonaisuudet.remove(kokonaisuus);
+    }
+
     public boolean containsViite(PerusteenOsaViite viite) {
         return viite != null && sisalto == viite.getRoot();
     }
@@ -152,5 +160,4 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
         this.vuosiluokkakokonaisuudet.retainAll(vuosiluokkakokonaisuudet);
         this.vuosiluokkakokonaisuudet.addAll(vuosiluokkakokonaisuudet);
     }
-
 }

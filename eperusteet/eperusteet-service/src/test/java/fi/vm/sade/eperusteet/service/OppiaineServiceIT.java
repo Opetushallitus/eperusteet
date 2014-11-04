@@ -27,6 +27,7 @@ import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.KeskeinenSisaltoalueDto;
+import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenTavoiteDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
@@ -90,6 +91,11 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         oppiaineDto.setTehtava(Optional.of(to("TehtävänOtsikko","Tehtava")));
         oppiaineDto.setKoosteinen(Optional.of(false));
 
+        OpetuksenKohdealueDto kohdealueDto = new OpetuksenKohdealueDto();
+        kohdealueDto.setNimi(olt("Kohdealue"));
+        oppiaineDto.setKohdealueet(new HashSet<OpetuksenKohdealueDto>());
+        oppiaineDto.getKohdealueet().add(kohdealueDto);
+
         OppiaineenVuosiluokkaKokonaisuusDto vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
         vkDto.setTehtava(Optional.of(to("Tehtävä", "")));
         vkDto.setVuosiluokkaKokonaisuus(Optional.of(vk.getReference()));
@@ -122,6 +128,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
         vkDto = oa.getVuosiluokkakokonaisuudet().iterator().next();
         OpetuksenTavoiteDto tavoiteDto = new OpetuksenTavoiteDto();
+        tavoiteDto.setKohdealueet(Collections.singleton(new EntityReference(oa.getKohdealueet().iterator().next().getId())));
         tavoiteDto.setSisaltoalueet(Collections.singleton(new EntityReference(vkDto.getSisaltoalueet().get(0).getId())));
         tavoiteDto.setTavoite(olt("Tässäpä jokin kiva tavoite"));
         TavoitteenArviointiDto arvio = new TavoitteenArviointiDto();
@@ -138,6 +145,9 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         assertEquals("Kohde", vkDto.getTavoitteet().get(0).getArvioinninkohteet().iterator().next().getArvioinninKohde().get().get(Kieli.FI));
 
 
+        lc = OppiaineLockContext.of(perusteId, oa.getId(), null);
+        lockService.lock(lc);
+        service.deleteOppiaine(perusteId, oa.getId());
     }
 
     @Test

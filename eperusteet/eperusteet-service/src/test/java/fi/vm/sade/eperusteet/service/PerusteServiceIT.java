@@ -38,8 +38,6 @@ import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,8 +48,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
 import static org.junit.Assert.assertEquals;
@@ -61,16 +60,15 @@ import static org.junit.Assert.assertEquals;
  *
  * @author jhyoty
  */
-@Transactional
-@DirtiesContext
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class PerusteServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteService perusteService;
     @Autowired
     private PerusteRepository repo;
-    @PersistenceContext
-    private EntityManager em;
+    @Autowired
+    private PlatformTransactionManager manager;
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
     @Autowired
@@ -85,6 +83,8 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
     @Before
     public void setUp() {
+
+        TransactionStatus transaction = manager.getTransaction(new DefaultTransactionDefinition());
 
         Koulutus koulutus = new Koulutus(tekstiPalanenOf(Kieli.FI,"Koulutus"), "koulutuskoodiArvo", "koulutuskoodiUri","koulutusalakoodi","opintoalakoodi");
         koulutus = koulutusRepository.save(koulutus);
@@ -114,6 +114,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         p.setTila(PerusteTila.VALMIS);
         repo.save(p);
 
+        manager.commit(transaction);
         perusteService.lock(peruste.getId(), Suoritustapakoodi.OPS);
     }
 
@@ -146,7 +147,6 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Rollback(true)
     public void testAddTutkinnonRakenne() {
 
         TutkinnonOsaViiteDto v1 = perusteService.addTutkinnonOsa(peruste.getId(), Suoritustapakoodi.OPS, new TutkinnonOsaViiteDto());
@@ -175,7 +175,6 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     private int maxDepth;
 
     @Test(expected = BusinessRuleViolationException.class)
-    @Rollback(true)
     public void addiningDeepTutkinnonRakenneShouldFail() {
 
         RakenneModuuliDto rakenne = new RakenneModuuliDto();

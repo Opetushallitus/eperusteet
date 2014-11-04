@@ -40,7 +40,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 public abstract class AbstractRakenneOsa implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
     private Long id;
@@ -51,4 +51,5 @@ public abstract class AbstractRakenneOsa implements Serializable {
     @Audited(targetAuditMode = NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
+    public abstract boolean isSame(AbstractRakenneOsa other);
 }

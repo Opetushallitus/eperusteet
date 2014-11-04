@@ -30,7 +30,7 @@ import javax.persistence.MappedSuperclass;
 public abstract class AbstractReferenceableEntity implements ReferenceableEntity, Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     protected Long id;
 
     @Override

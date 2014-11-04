@@ -16,7 +16,6 @@
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
-import fi.vm.sade.eperusteet.domain.Mergeable;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -30,7 +29,7 @@ import lombok.Setter;
 @Setter
 @Embeddable
 @EqualsAndHashCode
-public class MuodostumisSaanto implements Serializable, Mergeable<MuodostumisSaanto>{
+public class MuodostumisSaanto implements Serializable {
 
     private Laajuus laajuus;
     private Koko koko;
@@ -53,11 +52,10 @@ public class MuodostumisSaanto implements Serializable, Mergeable<MuodostumisSaa
         this.laajuus = laajuus;
     }
 
-    @Override
-    public void mergeState(MuodostumisSaanto updated) {
-        if (updated != null) {
-            this.laajuus = updated.getLaajuus();
-            this.koko = updated.getKoko();
+    public MuodostumisSaanto(MuodostumisSaanto other) {
+        if (other != null) {
+            this.laajuus = new Laajuus(other.getLaajuus());
+            this.koko = new Koko(other.getKoko());
         }
     }
 
@@ -98,6 +96,10 @@ public class MuodostumisSaanto implements Serializable, Mergeable<MuodostumisSaa
             this.yksikko = yksikko;
         }
 
+        public Laajuus(Laajuus copy) {
+            this(copy.minimi, copy.maksimi, copy.yksikko);
+        }
+
         public Laajuus() {
         }
 
@@ -120,6 +122,10 @@ public class MuodostumisSaanto implements Serializable, Mergeable<MuodostumisSaa
         }
 
         public Koko() {
+        }
+
+        public Koko(Koko copy) {
+            this(copy.minimi, copy.maksimi);
         }
 
     }

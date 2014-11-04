@@ -15,15 +15,11 @@
  */
 package fi.vm.sade.eperusteet.domain.yl;
 
+import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Getter;
@@ -35,35 +31,22 @@ import org.hibernate.envers.RelationTargetAuditMode;
  *
  * @author jhyoty
  */
-@Audited
-@Table(name = "yl_tekstiosa")
 @Entity
-public class TekstiOsa implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Getter
-    @Setter
-    private Long id;
+@Audited
+@Table(name="yl_kohdealue")
+public class OpetuksenKohdealue extends AbstractReferenceableEntity {
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @Getter
     @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
-    private TekstiPalanen otsikko;
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    private TekstiPalanen nimi;
+
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @Getter
     @Setter
-    @ValidHtml
-    private TekstiPalanen teksti;
-
-    public TekstiOsa() {
-    }
-
-    public TekstiOsa(TekstiPalanen otsikko, TekstiPalanen teksti) {
-        this.otsikko = otsikko;
-        this.teksti = teksti;
-    }
-
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
+    private TekstiPalanen kuvaus;
 }
