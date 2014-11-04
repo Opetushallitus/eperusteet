@@ -221,7 +221,12 @@ public class PerusopetuksenPerusteenSisaltoController {
     public PerusteenOsaViiteDto.Matala addSisalto(
         @PathVariable("perusteId") final Long perusteId,
         @RequestBody(required = false) PerusteenOsaViiteDto.Matala dto) {
-        return sisaltoService.addSisalto(perusteId, null, dto);
+        if ( dto == null || (dto.getPerusteenOsa() == null && dto.getPerusteenOsaRef() == null)) {
+            return sisaltoService.addSisalto(perusteId, null, null);
+        } else {
+            return sisaltoService.addSisalto(perusteId, null, dto);
+        }
+
     }
 
     @RequestMapping(value = "/sisalto", method = GET)
