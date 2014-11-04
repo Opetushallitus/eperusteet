@@ -151,7 +151,6 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Rollback(true)
     public void testTutkintonimikkeenLisays() {
         List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = perusteService.getTutkintonimikeKoodit(peruste.getId());
         assertTrue(tutkintonimikeKoodit.isEmpty());
@@ -164,7 +163,6 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Rollback(true)
     public void testAddTutkinnonRakenne() {
 
         TutkinnonOsaViiteDto v1 = perusteService.addTutkinnonOsa(peruste.getId(), Suoritustapakoodi.OPS, new TutkinnonOsaViiteDto());
