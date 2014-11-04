@@ -123,9 +123,7 @@ angular.module('eperusteApp')
             perusteId: PerusopetusService.getPerusteId()
           }, $scope.editableModel, function (res) {
             $scope.editableModel = res;
-            $state.transitionTo($state.current, _.extend(_.clone($stateParams), {osanId: res.id}), {
-              reload: true, inherit: false, notify: false
-            });
+            $state.go($state.current, _.extend(_.clone($stateParams), {osanId: res.id}), {reload: true});
           });
         } else {
           $scope.editableModel.$save({
