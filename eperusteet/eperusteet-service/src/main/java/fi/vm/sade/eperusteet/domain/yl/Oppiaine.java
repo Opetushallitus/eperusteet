@@ -165,6 +165,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
             for ( OpetuksenKohdealue k : kohdealueet ) {
                 added.add(addKohdealue(k));
             }
+            //TODO: tarkista onko jokin poistettava kohdealue käytössä
             this.kohdealueet.retainAll(added);
         }
     }

@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.resource.peruste;
 import com.mangofactory.swagger.annotations.ApiIgnore;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
+import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
@@ -28,6 +29,7 @@ import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkakokonaisuusService;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -96,6 +98,21 @@ public class PerusopetuksenPerusteenSisaltoController {
         @RequestBody OppiaineDto dto) {
         dto.setId(id);
         return oppiaineService.updateOppiaine(perusteId, dto);
+    }
+
+    @RequestMapping(value = "/oppiaineet/{id}/kohdealueet", method = GET)
+    public Set<OpetuksenKohdealueDto> getKohdealueet(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long id) {
+        return oppiaineService.getOppiaine(perusteId, id).getKohdealueet();
+    }
+
+    @RequestMapping(value = "/oppiaineet/{id}/kohdealueet", method = POST)
+    public Set<OpetuksenKohdealueDto> updateOppiaine(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long id,
+        @RequestBody Set<OpetuksenKohdealueDto> kohdealueet) {
+        return oppiaineService.updateKohdealueet(perusteId, id, kohdealueet);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/vuosiluokkakokonaisuudet", method = GET)
