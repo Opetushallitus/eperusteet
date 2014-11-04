@@ -19,6 +19,7 @@ import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -26,7 +27,11 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
+import fi.vm.sade.eperusteet.dto.util.CombinedDto;
+import fi.vm.sade.eperusteet.service.KoodistoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
@@ -49,6 +54,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @RequestMapping("/perusteet")
 @Api(value = "Perusteet", description = "Perusteiden hallintaan liittyvät operaatiot")
 public class PerusteController {
+
+    @Autowired
+    private KoodistoService koodistoService;
 
     @Autowired
     private PerusteService service;
@@ -99,9 +107,21 @@ public class PerusteController {
 
     @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit", method = GET)
     @ResponseBody
-    public ResponseEntity<List<TutkintonimikeKoodiDto>> getTutkintonimikekoodit(@PathVariable("perusteId") final long id) {
+    public ResponseEntity<List<CombinedDto<TutkintonimikeKoodiDto, HashMap<String, KoodistoKoodiDto>>>> getTutkintonimikekoodit(@PathVariable("perusteId") final long id) {
         List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = service.getTutkintonimikeKoodit(id);
-        return new ResponseEntity<>(tutkintonimikeKoodit, HttpStatus.OK);
+        List<CombinedDto<TutkintonimikeKoodiDto, HashMap<String, KoodistoKoodiDto>>> response = new ArrayList<>();
+
+        for (TutkintonimikeKoodiDto tkd : tutkintonimikeKoodit) {
+            KoodistoKoodiDto get = koodistoService.get("osaamisala", tkd.getOsaamisalaUri());
+            HashMap<String, KoodistoKoodiDto> nimet = new HashMap<>();
+            nimet.put(tkd.getOsaamisalaArvo(), koodistoService.get("osaamisala", tkd.getOsaamisalaUri()));
+            nimet.put(tkd.getTutkintonimikeArvo(), koodistoService.get("tutkintonimikkeet", tkd.getTutkintonimikeUri()));
+            if (tkd.getTutkinnonOsaUri() != null) {
+                nimet.put(tkd.getTutkinnonOsaArvo(), koodistoService.get("tutkinnonosat", tkd.getTutkinnonOsaUri()));
+            }
+            response.add(new CombinedDto<>(tkd, nimet));
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{perusteId}", method = GET)

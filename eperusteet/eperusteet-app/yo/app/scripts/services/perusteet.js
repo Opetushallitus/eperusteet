@@ -34,6 +34,14 @@ angular.module('eperusteApp')
       update: { method: 'PUT' }
     });
   })
+  .factory('PerusteTutkintonimikekoodit', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/tutkintonimikekoodit/:nimikeId', {
+      perusteId: '@id',
+      nimikeId: '@id',
+    }, {
+      get: { method: 'GET', isArray: true },
+    });
+  })
   .factory('PerusteRakenteet', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/rakenne', {
       perusteId: '@id',

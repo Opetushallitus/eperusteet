@@ -1,0 +1,30 @@
+<div class="modal-header">
+  <h2 kaanna>lisaa-tutkintonimike</h2>
+</div>
+<div class="modal-body">
+  <h3 class="header"><span kaanna="osaamisala"></span>*</h3>
+  <div>
+    <koodisto-select valmis="valmisCb" tyyppi="osaamisala"></koodisto-select>
+    <span ng-if="koodit.osaamisala">
+      <b>{{ koodit.osaamisala.koodiArvo }}</b> ({{ koodit.osaamisala.nimi | kaanna }})
+    </span>
+  </div>
+  <h3 class="header"><span kaanna="tutkintonimike"></span>*</h3>
+  <div>
+    <koodisto-select valmis="valmisCb" tyyppi="tutkintonimikkeet"></koodisto-select>
+    <span ng-if="koodit.tutkintonimikkeet">
+      <b>{{ koodit.tutkintonimikkeet.koodiArvo }}</b> ({{ koodit.tutkintonimikkeet.nimi | kaanna }})
+    </span>
+  </div>
+  <h3 class="header" kaanna>tutkinnonosa</h3>
+  <div>
+    <koodisto-select valmis="valmisCb" tyyppi="tutkinnonosat"></koodisto-select>
+    <span ng-if="koodit.tutkinnonosat">
+      <b>{{ koodit.tutkinnonosat.koodiArvo }}</b> ({{ koodit.tutkinnonosat.nimi | kaanna }})
+    </span>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-disabled="!koodit.tutkintonimikkeet || !koodit.osaamisala" ng-click="ok(koodit)" kaanna>lisaa</button>
+  <button class="btn btn-default" ng-click="peru()" kaanna>sulje</button>
+</div>

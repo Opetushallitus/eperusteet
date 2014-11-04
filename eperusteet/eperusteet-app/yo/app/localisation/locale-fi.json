@@ -103,7 +103,7 @@
     "virhe-tilan-vaihtamisessa": "Virhe tilan vaihtamisessa",
     "virhe-muu": "Virhe",
     "virhe-etusivulle": "Etusivulle",
-    "tallentaminen-epäonnistui": "Tallentaminen epäonnistui",
+    "tallentaminen-epaonnistui": "Tallentaminen epäonnistui",
     "perusteen-tiivistelma": "Perusteen tiivistelmä",
 
     "suoritustavalle-ei-ole-vielä-sisältöä": "Perusteelle ei ole luotu vielä tähän suoritustapaan liittyvää sisältöä",
@@ -132,6 +132,19 @@
     "avaa-kaikki": "Avaa kaikki",
     "sulje-kaikki": "Sulje kaikki",
     "avaa-sulje-kaikki": "Avaa / sulje kaikki",
+
+    "et-ole-lisannyt-viela-tutkintonimikkeita": "Tutkintonimikkeitä ei ole vielä lisätty",
+    "tutkintonimike": "Tutkintonimike",
+    "tutkintonimikkeet": "Tutkintonimikkeet",
+    "lisaa-nimike": "Lisää nimike",
+    "lisaa-tutkintonimike": "Lisää tutkintonimike",
+    "koodisto-haku-epaonnistui": "Haku koodistosta epäonnistui",
+    "koodisto-haku-onnistui": "Haku koodistosta onnistui",
+    "tutkintonimike-poistettu-onnistuneesti": "Tutkintonimike poistettiin onnistuneesti",
+    "tutkintonimikkeen-lisays-onnistui": "Tutkintonimikkeen lisääminen onnistui",
+    "tutkintonimikkeen-lisays-epaonnistui": "Tutkintonimikkeen lisääminen epäonnistui",
+
+    "ladataan-sisaltoa": "Ladataan sisältöä...",
 
     "poista-tutkinnonosa": "Poista tutkinnon osa",
     "lisaa-tutkinnonosa": "Lisää tutkinnon osa",
