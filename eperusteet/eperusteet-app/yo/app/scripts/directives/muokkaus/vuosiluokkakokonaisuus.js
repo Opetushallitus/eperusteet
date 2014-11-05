@@ -61,7 +61,7 @@ angular.module('eperusteApp')
       asyncValidate: function(cb) {
         lukitse(function() { cb(); });
       },
-      save: function(/*kommentti*/) {
+      save: function() {
         // hax until backend support
         if ($scope.editableModel.tekstikappaleet && $scope.editableModel.tekstikappaleet.length > 0) {
           $scope.editableModel.tehtava = _.cloneDeep($scope.editableModel.tekstikappaleet[0]);
@@ -213,9 +213,17 @@ angular.module('eperusteApp')
     $scope.yleiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true);
 
     function getModel(object, item) {
-      return _.find(object, function (obj) {
+      var model = _.find(object, function (obj) {
         return parseInt(obj.laajaalainenOsaaminen, 10) === item.id;
       });
+      if (!model) {
+        model = {
+          laajaalainenOsaaminen: item.id,
+          kuvaus: {}
+        };
+        $scope.$parent.$parent.object.laajaalaisetOsaamiset.push(model);
+      }
+      return model;
     }
 
     function refresh(initial) {
