@@ -15,14 +15,12 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import com.sun.corba.se.impl.ior.ObjectReferenceFactoryImpl;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
@@ -51,12 +49,10 @@ import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.OsaamisalaRepository;
-import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
@@ -66,7 +62,6 @@ import fi.vm.sade.eperusteet.repository.TekstiPalanenRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import fi.vm.sade.eperusteet.service.KoulutusalaService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
@@ -82,6 +77,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -127,12 +123,6 @@ public class PerusteServiceImpl implements PerusteService {
     private KoulutusRepository koulutusRepo;
 
     @Autowired
-    private PerusteenOsaViiteRepository rakenteenOsaRepository;
-
-    @Autowired
-    private KoulutusalaService koulutusalaService;
-
-    @Autowired
     private SuoritustapaService suoritustapaService;
 
     @Autowired
@@ -176,9 +166,6 @@ public class PerusteServiceImpl implements PerusteService {
     @Autowired
     private RakenneRepository rakenneRepository;
 
-    @Autowired
-    private PerusopetuksenPerusteenSisaltoRepository perusopetuksenPerusteenSisaltoRepository;
-
     @Override
     @Transactional(readOnly = true)
     public Page<PerusteDto> getAll(PageRequest page, String kieli) {
@@ -215,34 +202,22 @@ public class PerusteServiceImpl implements PerusteService {
     @Override
     @Transactional(readOnly = true)
     public PerusteKaikkiDto getKokoSisalto(final Long id) {
-        PerusteKaikkiDto peruste = mapper.map(perusteet.findById(id), PerusteKaikkiDto.class);
-        Map<Suoritustapakoodi, RakenneModuuliDto> rakenteet = new HashMap<>();
-        Map<Suoritustapakoodi, List<TutkinnonOsaDto>> tutkinnonOsat = new HashMap<>();
-        Map<Suoritustapakoodi, List<TutkinnonOsaViiteDto>> tutkinnonOsaViitteet = new HashMap<>();
-        Map<Suoritustapakoodi, fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja> sisallot = new HashMap<>();
-
-        for (SuoritustapaDto st : peruste.getSuoritustavat()) {
-            rakenteet.put(st.getSuoritustapakoodi(), getTutkinnonRakenne(id, st.getSuoritustapakoodi(), 0));
-            List<TutkinnonOsaViiteDto> tovat = getTutkinnonOsat(id, st.getSuoritustapakoodi());
-            List<TutkinnonOsaDto> tosat = new ArrayList<>();
-
-            for (TutkinnonOsaViiteDto tova : tovat) {
-                PerusteenOsa tosa = perusteenOsaRepository.findOne(Long.parseLong(tova.getTutkinnonOsa().getId()));
-                if (tosa instanceof TutkinnonOsa) {
-                    tosat.add(mapper.map((TutkinnonOsa) tosa, TutkinnonOsaDto.class));
-                }
-            }
-
-            tutkinnonOsaViitteet.put(st.getSuoritustapakoodi(), tovat);
-            tutkinnonOsat.put(st.getSuoritustapakoodi(), tosat);
-            sisallot.put(st.getSuoritustapakoodi(), getSuoritustapaSisalto(id, st.getSuoritustapakoodi()));
+        Peruste peruste = perusteet.findById(id);
+        if ( peruste == null ) {
+            return null;
         }
 
-        peruste.setRakenteet(rakenteet);
-        peruste.setTutkinnonOsat(tutkinnonOsat);
-        peruste.setTutkinnonOsaViitteet(tutkinnonOsaViitteet);
-        peruste.setSisallot(sisallot);
-        return peruste;
+        PerusteKaikkiDto perusteDto = mapper.map(peruste, PerusteKaikkiDto.class);
+        Set<TutkinnonOsa> tutkinnonOsat = new LinkedHashSet<>();
+
+        for (Suoritustapa st : peruste.getSuoritustavat()) {
+            for (TutkinnonOsaViite t : st.getTutkinnonOsat()) {
+                tutkinnonOsat.add(t.getTutkinnonOsa());
+            }
+        }
+        
+        perusteDto.setTutkinnonOsat(mapper.mapAsList(tutkinnonOsat, TutkinnonOsaDto.class));
+        return perusteDto;
     }
 
     @Override

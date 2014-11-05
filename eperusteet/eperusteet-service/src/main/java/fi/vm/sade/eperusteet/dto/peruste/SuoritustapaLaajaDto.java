@@ -13,14 +13,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 package fi.vm.sade.eperusteet.dto.peruste;
 
-import fi.vm.sade.eperusteet.domain.PerusteTila;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.dto.KoulutusDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.io.Serializable;
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteSuppeaDto;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +32,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class PerusteDto extends PerusteBaseDto {
-    private Set<SuoritustapaDto> suoritustavat;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class SuoritustapaLaajaDto {
+    private Suoritustapakoodi suoritustapakoodi;
+    private LaajuusYksikko laajuusYksikko;
+    private RakenneModuuliDto rakenne;
+    @JsonProperty("tutkinnonOsaViitteet")
+    private Set<TutkinnonOsaViiteSuppeaDto> tutkinnonOsat;
+    private PerusteenOsaViiteDto.Laaja sisalto;
 }

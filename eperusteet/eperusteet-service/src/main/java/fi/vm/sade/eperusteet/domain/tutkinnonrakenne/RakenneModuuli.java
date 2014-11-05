@@ -91,7 +91,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             this.setKuvaus(moduuli.getKuvaus());
             this.muodostumisSaanto = moduuli.getMuodostumisSaanto() == null ? null : new MuodostumisSaanto(moduuli.getMuodostumisSaanto());
             this.osaamisala = moduuli.getOsaamisala();
-            
+
             assert (isSame(moduuli));
         }
 
@@ -108,7 +108,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
 
     public boolean isSame(RakenneModuuli moduuli) {
 
-        if ( moduuli == null ) {
+        if ( !super.isSame(moduuli) ) {
             return false;
         }
 

@@ -31,6 +31,19 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class PerusteDto extends PerusteBaseDto {
-    private Set<SuoritustapaDto> suoritustavat;
+public abstract class PerusteBaseDto implements Serializable {
+    private Long id;
+    private LokalisoituTekstiDto nimi;
+    private String koulutustyyppi;
+    private Set<KoulutusDto> koulutukset;
+    private LokalisoituTekstiDto kuvaus;
+
+    private String diaarinumero;
+    private Date voimassaoloAlkaa;
+    private Date siirtymaAlkaa;
+    private Date voimassaoloLoppuu;
+
+    private Date muokattu;
+    private PerusteTila tila;
+    private PerusteTyyppi tyyppi;
 }

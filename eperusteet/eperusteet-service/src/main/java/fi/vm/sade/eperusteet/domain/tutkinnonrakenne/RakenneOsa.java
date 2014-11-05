@@ -47,9 +47,14 @@ public class RakenneOsa extends AbstractRakenneOsa {
 
     @Override
     public boolean isSame(AbstractRakenneOsa other) {
+
+        if ( !super.isSame(other) ) {
+            return false;
+        }
+
         if ( other instanceof RakenneOsa ) {
             final RakenneOsa ro = (RakenneOsa)other;
-            return Objects.equal(this.tutkinnonOsaViite, ro.tutkinnonOsaViite);
+            return Objects.equal(this.tutkinnonOsaViite, ro.getTutkinnonOsaViite());
         }
         return false;
     }

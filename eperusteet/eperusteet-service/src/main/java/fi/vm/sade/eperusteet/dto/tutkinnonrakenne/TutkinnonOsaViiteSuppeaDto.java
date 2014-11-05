@@ -17,31 +17,17 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.math.BigDecimal;
-import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TutkinnonOsaViiteDto {
-
+public class TutkinnonOsaViiteSuppeaDto {
     private Long id;
     private BigDecimal laajuus;
     private Integer jarjestys;
-    @JsonProperty("_tutkinnonOsa")
     private EntityReference tutkinnonOsa;
-    @JsonProperty("tutkinnonOsa")
-    private TutkinnonOsaDto tutkinnonOsaDto;
-
-    private Date muokattu;
-    private Boolean poistettu;
-    private LokalisoituTekstiDto nimi;
-    private TutkinnonOsaTyyppi tyyppi;
 }
