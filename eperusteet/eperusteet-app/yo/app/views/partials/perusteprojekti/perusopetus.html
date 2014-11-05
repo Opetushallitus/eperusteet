@@ -46,7 +46,7 @@
                 <div ng-show="sisalto.lapset.length === 0 || sisalto.$opened || (sisalto.$filtered && rajaus.length !== 0)">
                   <div class="sisalto-group">
                     <!-- TODO tuki useammalle tasolle (oppimäärät oppiaineessa) -->
-                    <div ng-init="indent = 1" ng-repeat="lapsi in sisalto.lapset" style="padding-left: 40px;">
+                    <div ng-show="lapsi.$filtered || rajaus.length === 0" ng-init="indent = 1" ng-repeat="lapsi in sisalto.lapset" style="padding-left: 40px;">
                       <div class="sisalto-list-element">
                         <a ng-href="{{sisaltoHref(sisalto, lapsi)}}" class="otsikko">
                           <div class="chevron">
