@@ -30,7 +30,7 @@ angular.module('eperusteApp')
         lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', {
           suoritustapa: 'ops',
           perusteenOsanTyyppi: 'tekstikappale',
-          perusteenOsaId: lapsi.perusteenOsa ? lapsi.perusteenOsa.id : 0,
+          perusteenOsaViiteId: lapsi.id,
           versio: '' });
       });
     }, true);
@@ -63,14 +63,6 @@ angular.module('eperusteApp')
       $scope.datat.opetus.lapset.push(data);
     });
     $scope.peruste.sisalto = $scope.datat.sisalto;
-
-    $scope.opetusHref = function (sisalto) {
-      return $state.href('root.perusteprojekti.osalistaus', {osanTyyppi: sisalto.tyyppi});
-    };
-
-    $scope.sisaltoHref = function (sisalto, lapsi) {
-      return $state.href('root.perusteprojekti.osaalue', {osanTyyppi: sisalto.tyyppi, osanId: lapsi.id, tabId: 0});
-    };
 
     $scope.rajaaSisaltoa = function(value) {
       if (_.isUndefined(value)) { return; }
