@@ -72,19 +72,17 @@ European Union Public Licence for more details.
             </div>
             <div class="clearfix"></div>
 
-            <div ng-hide="muokkausTutkintokohtaisetOsat || peruste.koulutustyyppi === 'koulutustyyppi_9999'">
-                <div ng-show="naytaTutkinnonOsat" class="sisalto-list-element">
+            <div ng-hide="muokkausTutkintokohtaisetOsat">
+                <div ng-show="naytaTutkinnonOsat" class="contenttree-list-element">
                   <a class="otsikko" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat">
                     <div class="chevron" icon-role="ep-parts"></div>
                     <h3 kaanna>tutkinnonosat</h3>
                   </a>
                 </div>
             </div>
-
-            <div ng-include="'views/partials/perusteprojekti/sisaltoOsa.html'"></div>
-            <div class="info-box" ng-show="peruste.sisalto.lapset.length === 0">
-                {{ 'suoritustavalle-ei-ole-viela-sisaltoa' | kaanna }}.
-            </div>
+            <div content-tree="peruste.sisalto.lapset" filter-by="rajaus" badges="tyoryhmaMap"
+                 no-content-placeholder="suoritustavalle-ei-ole-viela-sisaltoa"
+                 edit-mode="muokkausTutkintokohtaisetOsat"></div>
 
         </div>
     </div>

@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state,
-      PerusopetusService, TekstikappaleOperations) {
+      PerusopetusService, TekstikappaleOperations, Editointikontrollit, $stateParams) {
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     TekstikappaleOperations.setPeruste($scope.peruste);
@@ -86,11 +86,13 @@ angular.module('eperusteApp')
       Algoritmit.kaikilleTutkintokohtaisilleOsille($scope.datat.sisalto, sisaltoFilterer);
     };
 
-    $scope.avaaSuljeKaikki = function() {
-      var open = false;
-      Algoritmit.kaikilleLapsisolmuille($scope.datat.opetus, 'lapset', function(lapsi) {
-        open = open || lapsi.$opened;
-      });
+    $scope.avaaSuljeKaikki = function(value) {
+      var open = _.isUndefined(value) ? false : !value;
+      if (_.isUndefined(value)) {
+        Algoritmit.kaikilleLapsisolmuille($scope.datat.opetus, 'lapset', function(lapsi) {
+          open = open || lapsi.$opened;
+        });
+      }
       Algoritmit.kaikilleLapsisolmuille($scope.datat.sisalto, 'lapset', function(lapsi) {
         lapsi.$opened = !open;
       });
@@ -102,6 +104,30 @@ angular.module('eperusteApp')
     $scope.addTekstikappale = function () {
       TekstikappaleOperations.add();
     };
+
+    $scope.edit = function () {
+      Editointikontrollit.startEditing();
+    };
+
+    Editointikontrollit.registerCallback({
+      edit: function() {
+        $scope.rajaus = '';
+        $scope.avaaSuljeKaikki(true);
+      },
+      save: function() {
+        // TODO
+      },
+      cancel: function() {
+        $state.go($state.current.name, $stateParams, {
+          reload: true
+        });
+      },
+      validate: function() { return true; },
+      notify: function (value) {
+        $scope.editing = value;
+      }
+    });
+
   })
 
   .controller('OsalistausController', function ($scope, $state, $stateParams, PerusopetusService,

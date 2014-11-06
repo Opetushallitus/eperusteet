@@ -1,8 +1,11 @@
-<div class="contenttree-group">
-  <div ng-repeat="sisalto in model">
-    <div ng-show="sisalto.$filtered || rajaus.length === 0">
-      <div ng-include="'views/directives/contenttreenode.html'"></div>
+<div class="contenttree-root" ui-tree data-drag-enabled="editMode"
+     data-empty-place-holder-enabled="false" data-max-depth="textMaxDepth">
+  <div class="contenttree-group" ui-tree-nodes ng-model="model">
+    <div ng-repeat="sisalto in model" ui-tree-node>
+      <div ng-show="sisalto.$filtered || rajaus.length === 0">
+        <div ng-include="'views/directives/contenttreenode.html'"></div>
+      </div>
     </div>
   </div>
+  <div class="info-box" ng-show="noContentPlaceholder && (!model || model.length === 0)">{{ noContentPlaceholder | kaanna }}</div>
 </div>
-<div class="info-box" ng-show="noContentPlaceholder && (!model || model.length === 0)">{{ noContentPlaceholder | kaanna }}</div>

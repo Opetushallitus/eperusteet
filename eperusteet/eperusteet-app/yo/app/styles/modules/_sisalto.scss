@@ -1,12 +1,9 @@
-$sisalto-chevron-color: $brand-primary;
-$sisalto-chevron-size: 40px;
-$first-level-bg: #f1f1f1;
 $sisalto-hover-bg: #eee;
 .suoritustapa-valinta {
   margin-bottom: 5px;
 }
 .main-content {
-  .sisalto-list-element:hover, .li:hover {
+  .li:hover {
     background: $sisalto-hover-bg;
   }
   .angular-ui-tree-nodes .angular-ui-tree-nodes {
@@ -14,80 +11,6 @@ $sisalto-hover-bg: #eee;
   }
   .angular-ui-tree-node {
     min-height: 0px;
-  }
-}
-
-@mixin tablecell() {
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.sisalto-list-element {
-  min-height: 40px;
-  display: table;
-  width: 100%;
-  border-top: 1px solid #ccc;
-  background-color: white;
-  h3 {
-    margin: 0;
-    font-size: 115%;
-    font-weight: bold;
-    strong {
-      color: lighten($brand-primary, 15%);
-    }
-  }
-  .draghandle {
-    @include tablecell();
-    font-size: $sisalto-chevron-size*0.5;
-    width: $sisalto-chevron-size;
-    height: $sisalto-chevron-size;
-    cursor: move;
-    color: #999;
-  }
-  .otsikko {
-    outline: 0;
-    display: table-row;
-    margin-left: $sisalto-chevron-size * 1.6;
-    color: rgb(51,51,51);
-    &:hover, & *:hover {
-      text-decoration: none;
-    }
-    h3 {
-      @include tablecell();
-    }
-    .ryhma-info {
-      @include tablecell();
-    }
-    .muokattu-info {
-      @include tablecell();
-      text-align: right;
-    }
-
-    .badge-tyoryhma {
-      background: #feba00;
-      color: #333333;
-      margin-left: 5px;
-    }
-
-    .lukko {
-      top: -20px;
-      position: relative;
-      float: right;
-    }
-  }
-  .chevron {
-    .ep-icon {
-      margin-left: 5px;
-      top: -2px;
-    }
-    display: table-cell;
-    vertical-align: middle;
-    font-size: $sisalto-chevron-size*0.5;
-    width: $sisalto-chevron-size;
-    height: $sisalto-chevron-size;
-    padding: 0 0 0 6px;
-    color: $sisalto-chevron-color;
-    cursor: pointer;
   }
 }
 

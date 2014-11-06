@@ -17,14 +17,19 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .directive('contentTree', function () {
+  .directive('contentTree', function (TEXT_HIERARCHY_MAX_DEPTH) {
     return {
       restrict: 'A',
       templateUrl: 'views/directives/contenttree.html',
       scope: {
         model: '=contentTree',
         rajaus: '=filterBy',
-        noContentPlaceholder: '@'
+        noContentPlaceholder: '@?',
+        badges: '=?',
+        editMode: '='
+      },
+      controller: function ($scope) {
+        $scope.textMaxDepth = TEXT_HIERARCHY_MAX_DEPTH;
       }
     };
   });
