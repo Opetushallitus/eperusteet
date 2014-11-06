@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain.yl;
 
-import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.HashSet;
@@ -38,7 +38,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "yl_opetuksen_tavoite")
 @Audited
-public class OpetuksenTavoite extends AbstractAuditedReferenceableEntity {
+public class OpetuksenTavoite extends AbstractReferenceableEntity {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter

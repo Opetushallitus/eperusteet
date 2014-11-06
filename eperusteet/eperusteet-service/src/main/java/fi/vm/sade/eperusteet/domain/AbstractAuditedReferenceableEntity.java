@@ -22,6 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
 
 /**
  *
@@ -34,6 +35,7 @@ public abstract class AbstractAuditedReferenceableEntity extends AbstractAudited
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
+    @Audited
     private Long id;
 
     @Override

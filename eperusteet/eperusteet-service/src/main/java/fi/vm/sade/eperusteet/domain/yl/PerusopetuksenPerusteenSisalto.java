@@ -95,7 +95,19 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
         if (aine.getOppiaine() != null) {
             return containsOppiaine(aine.getOppiaine());
         }
-        return oppiaineet.contains(aine);
+
+        if ( oppiaineet.contains(aine) ) {
+            return true;
+        }
+
+        //revisioissa ei voi verrata object-identityn perusteella vaan täytyy käyttää pääavainta
+        for ( Oppiaine o : oppiaineet ) {
+            if ( o.getId() != null && o.getId().equals(aine.getId()) ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void removeOppiaine(Oppiaine aine) {
@@ -107,7 +119,7 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
     }
 
     public boolean containsViite(PerusteenOsaViite viite) {
-        return viite != null && sisalto == viite.getRoot();
+        return viite != null && sisalto.getId().equals(viite.getRoot().getId());
     }
 
     public boolean containsVuosiluokkakokonaisuus(VuosiluokkaKokonaisuus kokonaisuus) {

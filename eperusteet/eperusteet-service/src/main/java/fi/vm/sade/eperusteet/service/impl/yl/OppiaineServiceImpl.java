@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.repository.OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.OppiaineenVuosiluokkakokonaisuusRepository;
 import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -170,11 +171,54 @@ public class OppiaineServiceImpl implements OppiaineService {
     }
 
     @Override
-    public OppiaineDto getOppiaine(Long perusteId, Long oppiaineId) {
+    public OppiaineDto getOppiaine(long perusteId, long oppiaineId) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        Oppiaine aine = oppiaineRepository.getOne(oppiaineId);
+        Oppiaine aine = oppiaineRepository.findOne(oppiaineId);
+
         if (sisalto != null && sisalto.containsOppiaine(aine)) {
             return mapper.map(aine, OppiaineDto.class);
+        } else {
+            throw new BusinessRuleViolationException("Pyydettyä oppiainetta ei ole");
+        }
+    }
+
+    @Override
+    public OppiaineDto getOppiaine(long perusteId, long oppiaineId, int revisio) {
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        sisalto = sisaltoRepository.findRevision(sisalto.getId(), revisio);
+        Oppiaine aine = oppiaineRepository.findRevision(oppiaineId, revisio);
+        if (sisalto != null && sisalto.containsOppiaine(aine)) {
+            return mapper.map(aine, OppiaineDto.class);
+        } else {
+            throw new BusinessRuleViolationException("Pyydettyä oppiainetta ei ole");
+        }
+    }
+
+    @Override
+    public List<Revision> getOppiaineRevisions(long perusteId, long oppiaineId) {
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        sisalto = sisaltoRepository.findOne(sisalto.getId());
+        Oppiaine aine = oppiaineRepository.findOne(oppiaineId);
+        if (sisalto != null && sisalto.containsOppiaine(aine)) {
+            return oppiaineRepository.getRevisions(oppiaineId);
+        } else {
+            throw new BusinessRuleViolationException("Pyydettyä oppiainetta ei ole");
+        }
+    }
+
+    @Override
+    public OppiaineDto revertOppiaine(long perusteId, long oppiaineId, int revisio) {
+
+        //TODO. ei toimi jos palautettava versio viittaa poistettuihin entiteetteihin
+        //(keskeinensisältöalue, vuosiluokkakokonaisuus, laaja-alainen osaaminen)
+        //sama ongelma on toki updatessakin (ei voi luoda uusia sisältöalueta ja viitata niihin tavoitteista)
+
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        sisalto = sisaltoRepository.findRevision(sisalto.getId(), revisio);
+        Oppiaine aine = oppiaineRepository.findRevision(oppiaineId, revisio);
+        if (sisalto != null && sisalto.containsOppiaine(aine)) {
+            OppiaineDto dto = mapper.map(aine, OppiaineDto.class);
+            return updateOppiaine(perusteId, dto);
         } else {
             throw new BusinessRuleViolationException("Pyydettyä oppiainetta ei ole");
         }

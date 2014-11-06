@@ -47,7 +47,7 @@ public abstract class AbstractReferenceableEntity implements ReferenceableEntity
         if (this.id == null) {
             this.id = id;
         }
-        
+
     }
 
 }

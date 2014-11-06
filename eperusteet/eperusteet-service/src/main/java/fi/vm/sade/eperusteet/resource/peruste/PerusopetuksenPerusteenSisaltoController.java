@@ -84,6 +84,14 @@ public class PerusopetuksenPerusteenSisaltoController {
         return oppiaineService.getOppiaine(perusteId, id);
     }
 
+    @RequestMapping(value = "/oppiaineet/{id}/versiot/{revisio}", method = GET)
+    public OppiaineDto getOppiaine(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long id,
+        @PathVariable("revisio") final Integer revisio) {
+        return oppiaineService.getOppiaine(perusteId, id, revisio);
+    }
+
     @RequestMapping(value = "/oppiaineet/{id}/oppimaarat", method = GET)
     public List<OppiaineSuppeaDto> getOppimaarat(
         @PathVariable("perusteId") final Long perusteId,
