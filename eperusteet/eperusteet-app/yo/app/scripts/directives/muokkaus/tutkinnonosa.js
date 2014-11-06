@@ -88,7 +88,7 @@ angular.module('eperusteApp')
 
     Utils.scrollTo('#ylasivuankkuri');
 
-    Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $scope.tutkinnonOsaViite.tutkinnonOsa.id });
+    Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaViiteId });
 
     $scope.osaAlueAlitila = $state.current.name === 'root.perusteprojekti.suoritustapa.perusteenosa.osaalue' ? true : false;
     $rootScope.$on('$stateChangeStart', function(event, toState){

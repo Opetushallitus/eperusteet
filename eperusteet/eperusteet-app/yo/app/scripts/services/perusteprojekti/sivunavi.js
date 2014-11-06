@@ -61,7 +61,7 @@ angular.module('eperusteApp')
         STATE_OSA,
         {
           perusteenOsanTyyppi: 'tekstikappale',
-          perusteenOsaId: lapsi.perusteenOsa.id,
+          perusteenOsaViiteId: lapsi.id,
           versio: null
         }
       ];
@@ -72,13 +72,13 @@ angular.module('eperusteApp')
     _.each(node.lapset, function (lapsi) {
       items.push({
         label: lapsi.perusteenOsa.nimi,
-        id: lapsi.perusteenOsa.id,
+        id: lapsi.id,
         depth: level,
         link: getLink(lapsi),
         isActive: isRouteActive,
         $type: (lapsi.perusteenOsa && lapsi.perusteenOsa.tunniste === 'rakenne') ? 'ep-tree' : 'ep-text'
       });
-      nameMap[lapsi.perusteenOsa.id] = lapsi.perusteenOsa.nimi;
+      nameMap[lapsi.id] = lapsi.perusteenOsa.nimi;
       processNode(lapsi, level + 1);
     });
   };
@@ -89,7 +89,7 @@ angular.module('eperusteApp')
     // Versionless url should be considered same as specific version url.
     var url = item.href && item.href.indexOf('/rakenne') > -1 ?
       item.href.substr(1) : $state.href(STATE_OSA, {
-      perusteenOsaId: item.id,
+      perusteenOsaViiteId: item.id,
       versio: null
     }, {inherit:true}).replace(/#/g, '');
     return $location.url().indexOf(url) > -1;

@@ -57,8 +57,8 @@ angular.module('eperusteApp')
       } else {
         if ($stateParams.perusteenOsanTyyppi === 'tutkinnonosa') {
           $scope.objekti = PerusteenOsaViite.get({ perusteId: $scope.peruste.id, suoritustapa: $stateParams.suoritustapa, viiteId: $stateParams.perusteenOsaViiteId }, successCb, errorCb);
-        } else {
-          $scope.objekti = PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, successCb, errorCb);
+        } else if ($stateParams.perusteenOsanTyyppi === 'tekstikappale') {
+          $scope.objekti = PerusteenOsat.getByViite({ viiteId: $stateParams.perusteenOsaViiteId }, successCb, errorCb);
         }
       }
     }

@@ -28,6 +28,7 @@ angular.module('eperusteApp')
       versiot: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/versiot'},
       getVersio: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/:osanId/versio/:versioId'},
       palauta: {method: 'POST', url: SERVICE_LOC + '/perusteenosat/:osanId/palauta/:versioId'},
+      getByViite: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/viite/:viiteId'}
     });
   })
   .factory('PerusteenOsaViitteet', function($resource, SERVICE_LOC, $stateParams, PerusteprojektiTiedotService) {

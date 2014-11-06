@@ -68,7 +68,7 @@ angular.module('eperusteApp')
           lapsi.$type = 'ep-tree';
           break;
         default:
-          lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', { perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: lapsi.perusteenOsa.id, versio: '' });
+          lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', { perusteenOsanTyyppi: 'tekstikappale', perusteenOsaViiteId: lapsi.id, versio: '' });
       }
     });
 
@@ -171,7 +171,7 @@ angular.module('eperusteApp')
         TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
         $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
           perusteenOsanTyyppi: 'tekstikappale',
-          perusteenOsaId: response._perusteenOsa,
+          perusteenOsaViiteId: response.id,
           versio: ''
         });
       });

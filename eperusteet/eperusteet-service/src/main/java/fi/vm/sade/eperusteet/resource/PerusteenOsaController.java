@@ -83,6 +83,16 @@ public class PerusteenOsaController {
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/viite/{viiteId}", method = GET)
+    @ResponseBody
+    public ResponseEntity<PerusteenOsaDto.Laaja> getByViite(@PathVariable("viiteId") final Long viiteId) {
+        PerusteenOsaDto.Laaja t = service.getByViite(viiteId);
+        if (t == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{id}/versiot", method = GET)
     @ResponseBody
     public List<CombinedDto<Revision, HenkiloTietoDto>> getVersiot(@PathVariable("id") final Long id) {
@@ -132,12 +142,12 @@ public class PerusteenOsaController {
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
-    @RequestMapping(method = GET, params = "koodiUri")
-    @ResponseBody
-    public List<PerusteenOsaDto.Laaja> get(@RequestParam("koodiUri") final String koodiUri) {
-        List<PerusteenOsaDto.Laaja> t = service.getAllByKoodiUri(koodiUri);
-        return PerusteenOsaDtoList.wrap(t);
-    }
+//    @RequestMapping(method = GET, params = "koodiUri")
+//    @ResponseBody
+//    public List<PerusteenOsaDto.Laaja> get(@RequestParam("koodiUri") final String koodiUri) {
+//        List<PerusteenOsaDto.Laaja> t = service.getAllByKoodiUri(koodiUri);
+//        return PerusteenOsaDtoList.wrap(t);
+//    }
 
 //    @RequestMapping(method = POST)
 //    @ResponseStatus(HttpStatus.CREATED)

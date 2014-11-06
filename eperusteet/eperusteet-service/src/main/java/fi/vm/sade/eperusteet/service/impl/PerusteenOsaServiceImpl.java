@@ -33,6 +33,7 @@ import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.OsaAlueRepository;
 import fi.vm.sade.eperusteet.repository.OsaamistavoiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
@@ -78,6 +79,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
 
     @Autowired
+    private PerusteenOsaViiteRepository perusteenOsaViiteRepository;
+
+    @Autowired
     @Dto
     private DtoMapper mapper;
 
@@ -94,6 +98,16 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Transactional(readOnly = true)
     public PerusteenOsaDto.Laaja get(final Long id) {
         return mapper.map(perusteenOsaRepo.findOne(id), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PerusteenOsaDto.Laaja getByViite(final Long viiteId) {
+        PerusteenOsaViite viite = perusteenOsaViiteRepository.findOne(viiteId);
+        if (viite == null || viite.getPerusteenOsa() == null) {
+            throw new BusinessRuleViolationException("Virheellinen viiteId");
+        }
+        return mapper.map(viite.getPerusteenOsa(), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja.class);
     }
 
     @Override
@@ -467,5 +481,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             tutkinnonOsaViiteRepository.save(viite);
         }
     }
+
+
 
 }

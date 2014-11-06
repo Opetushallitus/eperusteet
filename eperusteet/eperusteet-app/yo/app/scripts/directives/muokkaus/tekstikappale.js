@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .service('TekstikappaleOperations', function (YleinenData, PerusteenOsaViitteet,
       Editointikontrollit, Notifikaatiot, $state, SuoritustapaSisalto, TutkinnonOsaEditMode,
-      PerusopetusService) {
+      PerusopetusService, $stateParams) {
     var peruste = null;
 
     this.setPeruste = function (value) {
@@ -30,13 +30,13 @@ angular.module('eperusteApp')
     function goToView(response, id) {
       var params = {
         perusteenOsanTyyppi: 'tekstikappale',
-        perusteenOsaId: id || response._perusteenOsa,
+        perusteenOsaViiteId: id || response.id,
         versio: ''
       };
       if (YleinenData.isPerusopetus(peruste)) {
         _.extend(params, {suoritustapa: 'ops'});
       }
-      $state.go('root.perusteprojekti.suoritustapa.perusteenosa', params);
+      $state.go('root.perusteprojekti.suoritustapa.perusteenosa', params, {reload: true});
     }
 
     this.add = function () {
@@ -87,11 +87,13 @@ angular.module('eperusteApp')
 
       } else {
         PerusteenOsaViitteet.kloonaaTekstikappale({
+          perusteId: peruste.id,
+          suoritustapa: $stateParams.suoritustapa,
           viiteId: viiteId
         }, function(tk) {
           TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
           Notifikaatiot.onnistui('tekstikappale-kopioitu-onnistuneesti');
-          goToView(tk, tk.perusteenOsa.id);
+          goToView(tk, tk.id);
         });
       }
     };
@@ -113,14 +115,11 @@ angular.module('eperusteApp')
         KommentitByPerusteenOsa, PerusteenOsanTyoryhmat, Tyoryhmat, PerusteprojektiTyoryhmat,
         TEXT_HIERARCHY_MAX_DEPTH, TekstikappaleOperations) {
 
+
+        console.log('tekstikappale', $scope.tekstikappale);
+
         TekstikappaleOperations.setPeruste($scope.$parent.peruste);
         $scope.kaikkiTyoryhmat = [];
-
-        $q.all([PerusteenOsanTyoryhmat.get({ projektiId: $stateParams.perusteProjektiId, osaId: $stateParams.perusteenOsaId }).$promise,
-                PerusteprojektiTyoryhmat.get({ id: $stateParams.perusteProjektiId }).$promise]).then(function(data) {
-          $scope.tyoryhmat = data[0];
-          $scope.kaikkiTyoryhmat = _.unique(_.map(data[1], 'nimi'));
-        }, Notifikaatiot.serverCb);
 
         function paivitaRyhmat(uudet, cb) {
           PerusteenOsanTyoryhmat.save({
@@ -148,7 +147,7 @@ angular.module('eperusteApp')
         };
 
         Utils.scrollTo('#ylasivuankkuri');
-        Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });
+        Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaViiteId });
 
         $scope.sisalto = {};
         $scope.viitteet = {};
@@ -174,7 +173,7 @@ angular.module('eperusteApp')
         }
 
         function fetch(cb) {
-          PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, _.setWithCallback($scope, 'tekstikappale', cb));
+          PerusteenOsat.get({ osanId: $scope.tekstikappale.id }, _.setWithCallback($scope, 'tekstikappale', cb));
         }
 
         function storeTree (sisalto, level) {
@@ -206,10 +205,12 @@ angular.module('eperusteApp')
           get: function() {
             var ids = [];
             var id = $scope.tekstikappale.id;
-            do {
-              ids.push(id);
-              id = $scope.viitteet[id] ? $scope.viitteet[id].parent : null;
-            } while (id);
+            if ($scope.viitteet[id]) {
+              do {
+                ids.push($scope.viitteet[id].viite);
+                id = $scope.viitteet[id] ? $scope.viitteet[id].parent : null;
+              } while (id);
+            }
             return ids;
           }
         };
@@ -260,6 +261,13 @@ angular.module('eperusteApp')
         }
 
         function setupTekstikappale(kappale) {
+
+          $q.all([PerusteenOsanTyoryhmat.get({projektiId: $stateParams.perusteProjektiId, osaId: $scope.tekstikappale.id}).$promise,
+            PerusteprojektiTyoryhmat.get({id: $stateParams.perusteProjektiId}).$promise]).then(function (data) {
+            $scope.tyoryhmat = data[0];
+            $scope.kaikkiTyoryhmat = _.unique(_.map(data[1], 'nimi'));
+          }, Notifikaatiot.serverCb);
+
           $scope.editableTekstikappale = angular.copy(kappale);
 
           Editointikontrollit.registerCallback({

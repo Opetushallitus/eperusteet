@@ -66,6 +66,9 @@ public interface PerusteenOsaService {
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
     PerusteenOsaDto.Laaja get(@P("id") final Long id);
 
+    @PostAuthorize("hasPermission(returnObject.id, 'perusteenosa', 'LUKU')")
+    public PerusteenOsaDto.Laaja getByViite(final Long viiteId);
+
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
     List<Revision> getVersiot(@P("id") Long id);
 
@@ -111,4 +114,5 @@ public interface PerusteenOsaService {
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
     public void removeOsaAlue(@P("id") final Long id, final Long osaAlueId);
+
 }

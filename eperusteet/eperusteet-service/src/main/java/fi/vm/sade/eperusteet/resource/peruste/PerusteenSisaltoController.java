@@ -53,12 +53,6 @@ public class PerusteenSisaltoController {
     @Autowired
     private PerusteenOsaViiteService viiteService;
 
-    @Autowired
-    private PerusteenOsaService perusteenOsaService;
-
-    @Autowired
-    private PerusteprojektiService perusteprojektiService;
-
     /**
      * Luo perusteeseen suoritustavan alle uuden perusteenosan
      *
