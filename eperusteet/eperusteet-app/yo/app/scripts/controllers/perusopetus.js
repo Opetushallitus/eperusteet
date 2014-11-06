@@ -43,8 +43,15 @@ angular.module('eperusteApp')
     $scope.$watch('datat.opetus.lapset', function () {
       _.each($scope.datat.opetus.lapset, function (area) {
         area.$type = 'ep-parts';
+        area.$url = $state.href('root.perusteprojekti.osalistaus', {osanTyyppi: area.tyyppi});
+        Algoritmit.kaikilleLapsisolmuille(area, 'lapset', function (lapsi) {
+          lapsi.$url = $state.href('root.perusteprojekti.osaalue', {osanTyyppi: area.tyyppi, osanId: lapsi.id, tabId: 0});
+          if (lapsi.koosteinen) {
+            lapsi.lapset = lapsi.oppimaarat;
+          }
+        });
       });
-    });
+    }, true);
 
     // TODO käytä samaa APIa kuin sivunavissa, koko sisältöpuu kerralla
     _.each(PerusopetusService.sisallot, function (item) {

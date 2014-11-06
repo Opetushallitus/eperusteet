@@ -1,0 +1,21 @@
+<div ng-show="sisalto.$filtered || sisalto.$filtered === undefined">
+  <div class="contenttree-list-element">
+    <a ng-href="{{sisalto.$url}}" class="otsikko">
+      <div ng-click="$event.preventDefault(); sisalto.$opened = !sisalto.$opened" class="chevron">
+        <span ng-show="sisalto.lapset.length > 0" class="glyphicon" ng-class="sisalto.$opened ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
+        <span ng-show="!sisalto.lapset || sisalto.lapset.length === 0" class="ep-icon" ng-class="sisalto.$type ? sisalto.$type : 'ep-text'"></span>
+      </div>
+      <h3>
+        <span ep-highlight="rajaus">{{ sisalto.nimi | kaanna }}</span>
+      </h3>
+      <div class="muokattu-info">
+        <span ng-attr-title="{{ 'muokattu-viimeksi' | kaanna }}">{{ sisalto.muokattu | aikaleima }}</span>
+      </div>
+    </a>
+  </div>
+</div>
+<div ng-show="sisalto.lapset.length === 0 || sisalto.$opened || (sisalto.$filtered && rajaus.length !== 0)">
+  <div class="contenttree-group" ng-model="sisalto.lapset">
+    <div ng-repeat="sisalto in sisalto.lapset" ng-include="'views/directives/contenttreenode.html'"></div>
+  </div>
+</div>
