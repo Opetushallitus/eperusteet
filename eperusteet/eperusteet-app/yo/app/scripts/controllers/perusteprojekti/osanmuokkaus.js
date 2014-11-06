@@ -71,8 +71,9 @@ angular.module('eperusteApp')
       var self = this;
       if (this.isVuosiluokkakokonaisuudenOsa()) {
         PerusopetusService.saveVuosiluokkakokonaisuudenOsa(this.model, this.oppiaine, function () {
-          Lukitus.vapautaOppiaineenVuosiluokkakokonaisuus(this.oppiaine.id, this.vuosiluokka.$sisalto.id, function () {
+          Lukitus.vapautaOppiaineenVuosiluokkakokonaisuus(self.oppiaine.id, self.vuosiluokka.$sisalto.id, function () {
             self.isLocked = false;
+            self.goBack();
           });
         });
       } else if (this.path) {
@@ -81,12 +82,10 @@ angular.module('eperusteApp')
           if (self.isLocked && self.oppiaine) {
             Lukitus.vapautaOppiaine(self.oppiaine.id, function () {
               self.isLocked = false;
+              self.goBack();
             });
           }
         });
-      } else {
-        // Sisältö
-        PerusopetusService.saveOsa(this.model, this.backState[1]);
       }
     };
 
@@ -141,7 +140,6 @@ angular.module('eperusteApp')
           save: function () {
             $rootScope.$broadcast('notifyCKEditor');
             OsanMuokkausHelper.save();
-            OsanMuokkausHelper.goBack();
           },
           edit: function () {},
           cancel: function () {
@@ -158,7 +156,6 @@ angular.module('eperusteApp')
           save: function () {
             $rootScope.$broadcast('notifyCKEditor');
             OsanMuokkausHelper.save();
-            OsanMuokkausHelper.goBack();
           },
           edit: function () {},
           cancel: function () {
@@ -180,7 +177,6 @@ angular.module('eperusteApp')
               tavoite.laajattavoitteet = _(tavoite.$osaaminen).filter(filterFn).map(idFn).value();
             });
             OsanMuokkausHelper.save();
-            OsanMuokkausHelper.goBack();
           },
           edit: function () {},
           cancel: function () {
