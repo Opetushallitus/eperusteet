@@ -128,7 +128,7 @@ angular.module('eperusteApp')
         }]
       })
       .state('root.perusteprojekti.suoritustapa.perusteenosa', {
-        url: '/perusteenosa/{perusteenOsanTyyppi}/{perusteenOsaId}{versio:(?:/[^/]+)?}',
+        url: '/perusteenosa/{perusteenOsanTyyppi}/{perusteenOsaViiteId}{versio:(?:/[^/]+)?}',
         templateUrl: 'views/muokkaus.html',
         controller: 'MuokkausCtrl',
         onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
@@ -297,7 +297,7 @@ angular.module('eperusteApp')
         TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
         $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
           perusteenOsanTyyppi: 'tekstikappale',
-          perusteenOsaId: response._perusteenOsa,
+          perusteenOsaViiteId: response.id,
           versio: ''
         });
       });

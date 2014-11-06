@@ -15,13 +15,12 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.AbstractAuditedEntity;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
-import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
@@ -34,7 +33,9 @@ import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.OsaAlueRepository;
 import fi.vm.sade.eperusteet.repository.OsaamistavoiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
+import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.KommenttiService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
@@ -43,11 +44,10 @@ import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,8 +73,11 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Autowired
     private OsaamistavoiteRepository osaamistavoiteRepository;
 
-    @PersistenceContext
-    private EntityManager em;
+    @Autowired
+    private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
+
+    @Autowired
+    private PerusteenOsaViiteRepository perusteenOsaViiteRepository;
 
     @Autowired
     @Dto
@@ -97,6 +100,16 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     @Transactional(readOnly = true)
+    public PerusteenOsaDto.Laaja getByViite(final Long viiteId) {
+        PerusteenOsaViite viite = perusteenOsaViiteRepository.findOne(viiteId);
+        if (viite == null || viite.getPerusteenOsa() == null) {
+            throw new BusinessRuleViolationException("Virheellinen viiteId");
+        }
+        return mapper.map(viite.getPerusteenOsa(), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Integer getLatestRevision(final Long id) {
         return perusteenOsaRepo.getLatestRevisionId(id);
     }
@@ -113,7 +126,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         assertExists(perusteenOsaDto.getId());
         lockManager.ensureLockedByAuthenticatedUser(perusteenOsaDto.getId());
         PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
-        PerusteenOsa updated = mapper.map(perusteenOsaDto, current.getClass());
+        PerusteenOsa updated = mapper.map(perusteenOsaDto, current.getType());
         if (perusteenOsaDto.getClass().equals(TutkinnonOsaDto.class)) {
             ((TutkinnonOsa)updated).setOsaAlueet(createOsaAlueIfNotExist(((TutkinnonOsa)updated).getOsaAlueet()));
         }
@@ -182,14 +195,33 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     @Transactional(readOnly = false)
-    public OsaAlueKokonaanDto getTutkinnonOsaOsaAlue(Long id, Long osaAlueId) {
-        assertExists(id);
+    public OsaAlueKokonaanDto getTutkinnonOsaOsaAlue(Long viiteId, Long osaAlueId) {
+        TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteId);
+        if (viite == null || viite.getTutkinnonOsa() == null || viite.getTutkinnonOsa().getOsaAlueet() == null) {
+            throw new BusinessRuleViolationException("Virheellinen viiteId");
+        }
+
+        List<Long> osaAlueIds = new ArrayList<>();
+        for (OsaAlue osaAlue : viite.getTutkinnonOsa().getOsaAlueet()) {
+            osaAlueIds.add(osaAlue.getId());
+        }
+        if (!osaAlueIds.contains(osaAlueId)) {
+            throw new BusinessRuleViolationException("Virheellinen osaAlueId");
+        }
+
         return mapper.map(osaAlueRepository.findOne(osaAlueId), OsaAlueKokonaanDto.class);
     }
 
     @Override
     @Transactional(readOnly = false)
-    public OsaAlueKokonaanDto updateTutkinnonOsaOsaAlue(Long id, Long osaAlueId, OsaAlueKokonaanDto osaAlue) {
+    public OsaAlueKokonaanDto updateTutkinnonOsaOsaAlue(Long viiteId, Long osaAlueId, OsaAlueKokonaanDto osaAlue) {
+
+        TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteId);
+        if (viite == null || viite.getTutkinnonOsa() == null || viite.getTutkinnonOsa().getOsaAlueet() == null) {
+            throw new BusinessRuleViolationException("Virheellinen viiteId");
+        }
+
+        Long id = viite.getTutkinnonOsa().getId();
         assertExists(id);
         lockManager.ensureLockedByAuthenticatedUser(id);
         OsaAlue osaAlueEntity = osaAlueRepository.findOne(osaAlueId);
@@ -203,7 +235,8 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         osaAlueEntity.mergeState(osaAlueTmp);
         osaAlueEntity.getOsaamistavoitteet().addAll(uudetTavoitteet);
         osaAlueRepository.save(osaAlueEntity);
-        aiheutaUusiTutkinnonOsaRevisio(id);
+
+        aiheutaUusiTutkinnonOsaViiteRevisio(viiteId);
 
         return mapper.map(osaAlueEntity, OsaAlueKokonaanDto.class);
     }
@@ -440,12 +473,12 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         }
     }
 
-    private void aiheutaUusiTutkinnonOsaRevisio(Long id) {
-        TutkinnonOsa osa = tutkinnonOsaRepo.findOne(id);
-        if (osa != null) {
-            osa.muokattu();
-            tutkinnonOsaRepo.save(osa);
+    private void aiheutaUusiTutkinnonOsaViiteRevisio(Long id) {
+        TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(id);
+        if (viite != null) {
+            viite.setMuokattu(new Date());
+            tutkinnonOsaViiteRepository.save(viite);
         }
     }
-
+    
 }

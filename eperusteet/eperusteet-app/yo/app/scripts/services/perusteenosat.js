@@ -28,6 +28,7 @@ angular.module('eperusteApp')
       versiot: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/versiot'},
       getVersio: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/:osanId/versio/:versioId'},
       palauta: {method: 'POST', url: SERVICE_LOC + '/perusteenosat/:osanId/palauta/:versioId'},
+      getByViite: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/viite/:viiteId'}
     });
   })
   .factory('PerusteenOsaViitteet', function($resource, SERVICE_LOC, $stateParams, PerusteprojektiTiedotService) {
@@ -55,8 +56,16 @@ angular.module('eperusteApp')
       update: {method: 'POST'}
     });
   })
+  .factory('TutkinnonOsaViitteet', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC,{},
+    {
+      versiot: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/viite/:viiteId/versiot'},
+      getVersio: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/viite/:viiteId/versio/:versioId'}
+    }
+    );
+  })
   .factory('TutkinnonOsanOsaAlue', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteenosat/:osanId/osaalue/:osaalueenId', {
+    return $resource(SERVICE_LOC + '/perusteenosat/:viiteId/osaalue/:osaalueenId', {
       osaalueenId: '@id'
     }, {
       list: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/osaalueet'},

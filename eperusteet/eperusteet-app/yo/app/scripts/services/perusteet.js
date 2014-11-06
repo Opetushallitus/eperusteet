@@ -25,6 +25,9 @@ angular.module('eperusteApp')
       osanId: '@id'
     });
   })
+  .factory('PerusteenOsaViite', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat/:viiteId');
+  })
   .factory('PerusteTutkinnonosat', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat', {
       perusteId: '@id',

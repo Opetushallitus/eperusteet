@@ -19,9 +19,12 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 
@@ -65,6 +68,9 @@ public class PermissionManager {
     @Autowired
     private PerusteprojektiPermissionRepository perusteProjektit;
 
+    @Autowired
+    TutkinnonOsaViiteRepository viiteRepository;
+
     private static final Logger LOG = LoggerFactory.getLogger(PermissionManager.class);
 
     public enum Permission {
@@ -93,7 +99,8 @@ public class PermissionManager {
         PERUSTEPROJEKTI("perusteprojekti"),
         PERUSTE("peruste"),
         PERUSTEENMETATIEDOT("perusteenmetatiedot"),
-        PERUSTEENOSA("perusteenosa");
+        PERUSTEENOSA("perusteenosa"),
+        TUTKINNONOSAVIITE("tutkinnonosaviite");
 
         private final String target;
 
@@ -153,6 +160,7 @@ public class PermissionManager {
 
             allowedRolesTmp.put(Target.PERUSTE, tmp);
             allowedRolesTmp.put(Target.PERUSTEENOSA, tmp);
+            allowedRolesTmp.put(Target.TUTKINNONOSAVIITE, tmp);
         }
         {
             Map<ProjektiTila, Map<Permission, Set<String>>> tmp = new IdentityHashMap<>();
@@ -252,11 +260,22 @@ public class PermissionManager {
     }
 
     @PreAuthorize("isAuthenticated()")
+    @Transactional(readOnly = true)
     public boolean hasPermission(Authentication authentication, Serializable targetId, Target targetType, Permission permission) {
         LOG.warn(String.format("Checking permission %s to %s{id=%s} by %s", permission, targetType, targetId, authentication));
 
         if (!authentication.isAuthenticated()) {
             return false;
+        }
+
+        if (Target.TUTKINNONOSAVIITE.equals(targetType)) {
+            // Haetaan perusteen osa mihin viitataan osaviitteessä ja jatketaan luvan tutkimista perusteen osan tiedoilla.
+            TutkinnonOsaViite t = viiteRepository.findOne((Long)targetId);
+            if (t == null || t.getTutkinnonOsa() == null) {
+                return false;
+            }
+            targetId = t.getTutkinnonOsa().getId();
+            targetType = Target.PERUSTEENOSA;
         }
 
         if (LUKU.equals(permission)) {

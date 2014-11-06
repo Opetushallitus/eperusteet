@@ -107,6 +107,11 @@ public abstract class PerusteenOsa
 
     public abstract PerusteenOsa copy();
 
+    //hibernate proxy korjaussarja
+    public Class<? extends PerusteenOsa> getType() {
+        return this.getClass();
+    }
+
     private void copyState(PerusteenOsa other) {
         this.nimi = other.getNimi();
     }
