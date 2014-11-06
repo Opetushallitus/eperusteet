@@ -72,7 +72,16 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
     }
 
     public void addOppiaine(Oppiaine oppiaine) {
-        oppiaineet.add(oppiaine);
+        if (oppiaine.getOppiaine() != null) {
+            if (containsOppiaine(oppiaine.getOppiaine())) {
+                oppiaine.getOppiaine().addOppimaara(oppiaine);
+            } else {
+                throw new IllegalArgumentException("Ei voida lisätä oppimäärää jonka oppiaine ei kuulu sisältöön");
+            }
+
+        } else {
+            oppiaineet.add(oppiaine);
+        }
     }
 
     public void addVuosiluokkakokonaisuus(VuosiluokkaKokonaisuus kokonaisuus) {
@@ -80,7 +89,37 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
     }
 
     public boolean containsOppiaine(Oppiaine aine) {
-        return aine != null && oppiaineet.contains(aine);
+        if (aine == null) {
+            return false;
+        }
+        if (aine.getOppiaine() != null) {
+            return containsOppiaine(aine.getOppiaine());
+        }
+
+        if ( oppiaineet.contains(aine) ) {
+            return true;
+        }
+
+        //revisioissa ei voi verrata object-identityn perusteella vaan täytyy käyttää pääavainta
+        for ( Oppiaine o : oppiaineet ) {
+            if ( o.getId() != null && o.getId().equals(aine.getId()) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void removeOppiaine(Oppiaine aine) {
+        oppiaineet.remove(aine);
+    }
+
+    public void removeVuosiluokkakokonaisuus(VuosiluokkaKokonaisuus kokonaisuus) {
+        vuosiluokkakokonaisuudet.remove(kokonaisuus);
+    }
+
+    public boolean containsViite(PerusteenOsaViite viite) {
+        return viite != null && sisalto.getId().equals(viite.getRoot().getId());
     }
 
     public boolean containsVuosiluokkakokonaisuus(VuosiluokkaKokonaisuus kokonaisuus) {
@@ -133,5 +172,4 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
         this.vuosiluokkakokonaisuudet.retainAll(vuosiluokkakokonaisuudet);
         this.vuosiluokkakokonaisuudet.addAll(vuosiluokkakokonaisuudet);
     }
-
 }

@@ -106,6 +106,11 @@ angular.module('eperusteApp')
     $scope.editableTutkinnonOsa = {};
     $scope.editEnabled = false;
     $scope.editointikontrollit = Editointikontrollit;
+    $scope.nimiValidationError = false;
+
+    $scope.$watch('editableTutkinnonOsa.nimi', function () {
+      $scope.nimiValidationError = false;
+    }, true);
 
     function getRakenne() {
       // FIXME: Vaihda käyttämään parempaa endpointtia

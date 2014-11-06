@@ -21,13 +21,13 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.Osaamisala;
@@ -43,6 +43,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
@@ -52,7 +53,6 @@ import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.OsaamisalaRepository;
-import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
@@ -60,8 +60,8 @@ import fi.vm.sade.eperusteet.repository.RakenneRepository;
 import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.repository.TekstiPalanenRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
+import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import fi.vm.sade.eperusteet.service.KoulutusalaService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
@@ -77,8 +77,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -121,12 +123,6 @@ public class PerusteServiceImpl implements PerusteService {
     private KoulutusRepository koulutusRepo;
 
     @Autowired
-    private PerusteenOsaViiteRepository rakenteenOsaRepository;
-
-    @Autowired
-    private KoulutusalaService koulutusalaService;
-
-    @Autowired
     private SuoritustapaService suoritustapaService;
 
     @Autowired
@@ -153,6 +149,9 @@ public class PerusteServiceImpl implements PerusteService {
     private PerusteenOsaRepository perusteenOsaRepository;
 
     @Autowired
+    private TutkintonimikeKoodiRepository tutkintonimikeKoodiRepository;
+
+    @Autowired
     private PerusteenOsaService perusteenOsaService;
 
     @Autowired
@@ -166,9 +165,6 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Autowired
     private RakenneRepository rakenneRepository;
-
-    @Autowired
-    private PerusopetuksenPerusteenSisaltoRepository perusopetuksenPerusteenSisaltoRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -206,34 +202,22 @@ public class PerusteServiceImpl implements PerusteService {
     @Override
     @Transactional(readOnly = true)
     public PerusteKaikkiDto getKokoSisalto(final Long id) {
-        PerusteKaikkiDto peruste = mapper.map(perusteet.findById(id), PerusteKaikkiDto.class);
-        Map<Suoritustapakoodi, RakenneModuuliDto> rakenteet = new HashMap<>();
-        Map<Suoritustapakoodi, List<TutkinnonOsaDto>> tutkinnonOsat = new HashMap<>();
-        Map<Suoritustapakoodi, List<TutkinnonOsaViiteDto>> tutkinnonOsaViitteet = new HashMap<>();
-        Map<Suoritustapakoodi, fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja> sisallot = new HashMap<>();
-
-        for (SuoritustapaDto st : peruste.getSuoritustavat()) {
-            rakenteet.put(st.getSuoritustapakoodi(), getTutkinnonRakenne(id, st.getSuoritustapakoodi(), 0));
-            List<TutkinnonOsaViiteDto> tovat = getTutkinnonOsat(id, st.getSuoritustapakoodi());
-            List<TutkinnonOsaDto> tosat = new ArrayList<>();
-
-            for (TutkinnonOsaViiteDto tova : tovat) {
-                PerusteenOsa tosa = perusteenOsaRepository.findOne(Long.parseLong(tova.getTutkinnonOsa().getId()));
-                if (tosa instanceof TutkinnonOsa) {
-                    tosat.add(mapper.map((TutkinnonOsa) tosa, TutkinnonOsaDto.class));
-                }
-            }
-
-            tutkinnonOsaViitteet.put(st.getSuoritustapakoodi(), tovat);
-            tutkinnonOsat.put(st.getSuoritustapakoodi(), tosat);
-            sisallot.put(st.getSuoritustapakoodi(), getSuoritustapaSisalto(id, st.getSuoritustapakoodi()));
+        Peruste peruste = perusteet.findById(id);
+        if ( peruste == null ) {
+            return null;
         }
 
-        peruste.setRakenteet(rakenteet);
-        peruste.setTutkinnonOsat(tutkinnonOsat);
-        peruste.setTutkinnonOsaViitteet(tutkinnonOsaViitteet);
-        peruste.setSisallot(sisallot);
-        return peruste;
+        PerusteKaikkiDto perusteDto = mapper.map(peruste, PerusteKaikkiDto.class);
+        Set<TutkinnonOsa> tutkinnonOsat = new LinkedHashSet<>();
+
+        for (Suoritustapa st : peruste.getSuoritustavat()) {
+            for (TutkinnonOsaViite t : st.getTutkinnonOsat()) {
+                tutkinnonOsat.add(t.getTutkinnonOsa());
+            }
+        }
+        
+        perusteDto.setTutkinnonOsat(mapper.mapAsList(tutkinnonOsat, TutkinnonOsaDto.class));
+        return perusteDto;
     }
 
     @Override
@@ -475,10 +459,13 @@ public class PerusteServiceImpl implements PerusteService {
         //workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
         suoritustapaRepository.lock(suoritustapa);
         try {
-            Set<TutkinnonOsaViite> tutkinnonOsat = suoritustapa.getTutkinnonOsat();
             TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osaId);
-            viite.setPoistettu(true);
-//            tutkinnonOsat.remove(viite);
+            if ( suoritustapa.getTutkinnonOsat().contains(viite) ) {
+                //TODO: poistamisen refaktorointi (viitteen poisto oikeasti)
+                viite.setPoistettu(true);
+            } else {
+                throw new BusinessRuleViolationException("Tutkinnonosa ei kuulu tähän suoritustapaan");
+            }
         } finally {
             lockManager.unlock(suoritustapa.getId());
         }
@@ -571,74 +558,16 @@ public class PerusteServiceImpl implements PerusteService {
     @Transactional
     public PerusteenOsaViiteDto.Matala addSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, PerusteenOsaViiteDto.Matala viite) {
         Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
-        if (suoritustapa.getSisalto() == null) {
-            throw new BusinessRuleViolationException("Perusteen " + perusteId + " + suoritustavalla "
-                + suoritustapakoodi
-                + " ei ole sisältöä");
+        if (suoritustapa == null) {
+            throw new BusinessRuleViolationException("Suoritustapaa ei ole");
         }
-
-        PerusteenOsaViite uusiViite = new PerusteenOsaViite();
-        if (viite == null) {
-            TekstiKappale uusiKappale = new TekstiKappale();
-            uusiKappale.setTila(PerusteTila.LUONNOS);
-            uusiKappale = perusteenOsaRepository.save(uusiKappale);
-            uusiViite.setPerusteenOsa(uusiKappale);
-        } else {
-            PerusteenOsaViite viiteEntity = mapper.map(viite, PerusteenOsaViite.class);
-            uusiViite.setLapset(viiteEntity.getLapset());
-            uusiViite.setPerusteenOsa(viiteEntity.getPerusteenOsa());
-        }
-
-        suoritustapaRepository.lock(suoritustapa);
-        final PerusteenOsaViite sisalto = suoritustapa.getSisalto();
-        uusiViite.setVanhempi(sisalto);
-        List<PerusteenOsaViite> lapset = sisalto.getLapset();
-        if (lapset == null) {
-            lapset = new ArrayList<>();
-            sisalto.setLapset(lapset);
-        }
-        lapset.add(uusiViite);
-        uusiViite = perusteenOsaViiteRepo.save(uusiViite);
-        return mapper.map(uusiViite, PerusteenOsaViiteDto.Matala.class);
+        return perusteenOsaViiteService.addSisalto(perusteId, suoritustapa.getSisalto().getId(), viite);
     }
 
     @Override
     @Transactional
-    public PerusteenOsaViiteDto.Matala addSisaltoLapsi(Long perusteId, Long perusteenosaViiteId) {
-
-        PerusteenOsaViite viiteEntity = perusteenOsaViiteRepo.findOne(perusteenosaViiteId);
-        if (viiteEntity == null) {
-            throw new BusinessRuleViolationException("Perusteenosaviitettä ei ole olemassa");
-        }
-        perusteenOsaViiteRepo.lock(viiteEntity);
-        PerusteenOsaViite uusiViite = new PerusteenOsaViite();
-        TekstiKappale uusiKappale = new TekstiKappale();
-        uusiKappale.setTila(PerusteTila.LUONNOS);
-        uusiKappale = perusteenOsaRepository.save(uusiKappale);
-        uusiViite.setPerusteenOsa(uusiKappale);
-        uusiViite.setVanhempi(viiteEntity);
-        uusiViite = perusteenOsaViiteRepo.save(uusiViite);
-        viiteEntity.getLapset().add(uusiViite);
-
-        return mapper.map(uusiViite, PerusteenOsaViiteDto.Matala.class);
-    }
-
-    @Override
-    @Transactional
-    public PerusteenOsaViiteDto.Matala attachSisaltoLapsi(Long perusteId, Long parentViiteId, Long tekstikappaleId) {
-        PerusteenOsaViite viiteEntity = perusteenOsaViiteRepo.findOne(parentViiteId);
-        if (viiteEntity == null) {
-            throw new BusinessRuleViolationException("Perusteenosaviitettä ei ole olemassa");
-        }
-        perusteenOsaViiteRepo.lock(viiteEntity);
-        PerusteenOsaViite uusiViite = new PerusteenOsaViite();
-        PerusteenOsa kappale = perusteenOsaRepository.findOne(tekstikappaleId);
-        uusiViite.setPerusteenOsa(kappale);
-        uusiViite.setVanhempi(viiteEntity);
-        uusiViite = perusteenOsaViiteRepo.save(uusiViite);
-        viiteEntity.getLapset().add(uusiViite);
-
-        return mapper.map(uusiViite, PerusteenOsaViiteDto.Matala.class);
+    public PerusteenOsaViiteDto.Matala addSisaltoLapsi(Long perusteId, Long perusteenosaViiteId, PerusteenOsaViiteDto.Matala viite) {
+        return perusteenOsaViiteService.addSisalto(perusteId, perusteenosaViiteId, viite);
     }
 
     @Override
@@ -688,6 +617,29 @@ public class PerusteServiceImpl implements PerusteService {
             }
         }
         return locks;
+    }
+
+    @Override
+    public List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(Long perusteId) {
+        List<TutkintonimikeKoodi> koodit = tutkintonimikeKoodiRepository.findByPerusteId(perusteId);
+        return mapper.mapAsList(koodit, TutkintonimikeKoodiDto.class);
+    }
+
+    @Override
+    public TutkintonimikeKoodiDto addTutkintonimikeKoodi(Long perusteId, TutkintonimikeKoodiDto dto) {
+        Peruste peruste = perusteet.findOne(perusteId);
+        dto.setPeruste(peruste.getReference());
+        TutkintonimikeKoodi tnk = mapper.map(dto, TutkintonimikeKoodi.class);
+        TutkintonimikeKoodi saved = tutkintonimikeKoodiRepository.save(tnk);
+        return mapper.map(saved, TutkintonimikeKoodiDto.class);
+    }
+
+    @Override
+    public void removeTutkintonimikeKoodi(Long perusteId, Long tutkintonimikeKoodiId) {
+        TutkintonimikeKoodi tnk = tutkintonimikeKoodiRepository.findOne(tutkintonimikeKoodiId);
+        if (Objects.equals(tnk.getPeruste().getId(), perusteId)) {
+            tutkintonimikeKoodiRepository.delete(tutkintonimikeKoodiId);
+        }
     }
 
     /**

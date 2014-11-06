@@ -26,7 +26,8 @@ angular.module('eperusteApp')
         model: '=muokattavaOsio',
         type: '@',
         path: '@?',
-        oppiaine: '=?'
+        oppiaine: '=?',
+        vuosiluokka: '=?'
       },
       controller: 'MuokattavaOsioController'
     };

@@ -17,12 +17,14 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedEntity;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueKokonaanDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteLaajaDto;
@@ -83,13 +85,13 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Suppea> getAll() {
+    public List<PerusteenOsaDto.Suppea> getAll() {
         return mapper.mapAsList(perusteenOsaRepo.findAll(), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Suppea.class);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja get(final Long id) {
+    public PerusteenOsaDto.Laaja get(final Long id) {
         return mapper.map(perusteenOsaRepo.findOne(id), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja.class);
     }
 
@@ -101,13 +103,13 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja> getAllByKoodiUri(final String koodiUri) {
+    public List<PerusteenOsaDto.Laaja> getAllByKoodiUri(final String koodiUri) {
         return mapper.mapAsList(tutkinnonOsaRepo.findByKoodiUri(koodiUri), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja.class);
     }
 
     @Override
     @Transactional(readOnly = false)
-    public <T extends fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja> T update(T perusteenOsaDto) {
+    public <T extends PerusteenOsaDto.Laaja> T update(T perusteenOsaDto) {
         assertExists(perusteenOsaDto.getId());
         lockManager.ensureLockedByAuthenticatedUser(perusteenOsaDto.getId());
         PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
@@ -124,7 +126,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     @Transactional(readOnly = false)
-    public <T extends fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja> T update(UpdateDto<T> perusteenOsaDto) {
+    public <T extends PerusteenOsaDto.Laaja> T update(UpdateDto<T> perusteenOsaDto) {
         T updated = update(perusteenOsaDto.getDto());
 
         if (perusteenOsaDto.getMetadata() != null) {
@@ -135,9 +137,10 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     @Transactional(readOnly = false)
-    public <T extends fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja> T add(T perusteenOsaDto) {
+    public <T extends PerusteenOsaDto.Laaja> T add(PerusteenOsaViite viite, T perusteenOsaDto) {
         PerusteenOsa perusteenOsa = mapper.map(perusteenOsaDto, PerusteenOsa.class);
-        perusteenOsa = perusteenOsaRepo.save(perusteenOsa);
+        viite.setPerusteenOsa(perusteenOsa);
+        perusteenOsa = perusteenOsaRepo.saveAndFlush(perusteenOsa);
         mapper.map(perusteenOsa, perusteenOsaDto);
         return perusteenOsaDto;
     }

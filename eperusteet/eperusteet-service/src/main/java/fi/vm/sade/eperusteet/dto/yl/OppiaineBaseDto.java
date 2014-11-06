@@ -15,8 +15,10 @@
  */
 package fi.vm.sade.eperusteet.dto.yl;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +31,10 @@ import lombok.Setter;
 @Setter
 public abstract class OppiaineBaseDto implements ReferenceableDto {
     private Long id;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    //"äitioppiaine" jos kyseessä on oppiaineen oppimäärä
+    private Optional<EntityReference> oppiaine;
     private Optional<Boolean> koosteinen;
     private Optional<LokalisoituTekstiDto> nimi;
-    private Optional<TekstiOsaDto> tehtava;
 }

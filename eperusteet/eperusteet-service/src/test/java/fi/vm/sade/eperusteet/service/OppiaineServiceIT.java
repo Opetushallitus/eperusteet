@@ -27,16 +27,22 @@ import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.KeskeinenSisaltoalueDto;
+import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenTavoiteDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
+import fi.vm.sade.eperusteet.dto.yl.TavoitteenArviointiDto;
 import fi.vm.sade.eperusteet.repository.OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.VuosiluokkaKokonaisuusRepository;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -64,11 +70,14 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
     @Autowired
     private OppiaineService service;
     @Autowired
+    private LockService<OppiaineLockContext> lockService;
+    @Autowired
     private PerusteService perusteService;
     @Autowired
     private PerusopetuksenPerusteenSisaltoRepository sisaltoRepository;
 
     private Long perusteId;
+
     @Before
     public void setup() {
         Peruste peruste = perusteService.luoPerusteRunko("koulutustyyppi_9999", LaajuusYksikko.OPINTOVIIKKO, PerusteTila.LUONNOS, PerusteTyyppi.NORMAALI);
@@ -76,14 +85,19 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testAddAndUpdate() throws IOException {
+    public void testCRUD() throws IOException {
         VuosiluokkaKokonaisuus vk = new VuosiluokkaKokonaisuus();
         vk = vkrepo.save(vk);
 
         OppiaineDto oppiaineDto = new OppiaineDto();
         oppiaineDto.setNimi(Optional.of(lt("Oppiaine")));
-        oppiaineDto.setTehtava(Optional.of(to("TehtävänOtsikko","Tehtava")));
+        oppiaineDto.setTehtava(Optional.of(to("TehtävänOtsikko", "Tehtava")));
         oppiaineDto.setKoosteinen(Optional.of(false));
+
+        OpetuksenKohdealueDto kohdealueDto = new OpetuksenKohdealueDto();
+        kohdealueDto.setNimi(olt("Kohdealue"));
+        oppiaineDto.setKohdealueet(new HashSet<OpetuksenKohdealueDto>());
+        oppiaineDto.getKohdealueet().add(kohdealueDto);
 
         OppiaineenVuosiluokkaKokonaisuusDto vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
         vkDto.setTehtava(Optional.of(to("Tehtävä", "")));
@@ -95,6 +109,11 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         vkDto.setSisaltoalueet(Lists.newArrayList(ks));
         OppiaineDto oa = service.addOppiaine(perusteId, oppiaineDto);
 
+        OppiaineLockContext lc = new OppiaineLockContext();
+        lc.setPerusteId(perusteId);
+        lc.setOppiaineId(oa.getId());
+        lockService.lock(lc);
+
         assertEquals("Nimi", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(0).getNimi().get().get(Kieli.FI));
         ks.setNimi(olt("Nimi2"));
         oa.getTehtava().get().setOtsikko(Optional.of(new LokalisoituTekstiDto(null)));
@@ -103,6 +122,8 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(1).setNimi(null);
         oa = service.updateOppiaine(perusteId, oa);
 
+        lockService.unlock(lc);
+
         assertNull(oa.getTehtava().get().getOtsikko());
         assertNull(oa.getTehtava().get().getTeksti());
         assertEquals("Nimi2", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(0).getNimi().get().get(Kieli.FI));
@@ -110,14 +131,74 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
         vkDto = oa.getVuosiluokkakokonaisuudet().iterator().next();
         OpetuksenTavoiteDto tavoiteDto = new OpetuksenTavoiteDto();
+        tavoiteDto.setKohdealueet(Collections.singleton(new EntityReference(oa.getKohdealueet().iterator().next().getId())));
         tavoiteDto.setSisaltoalueet(Collections.singleton(new EntityReference(vkDto.getSisaltoalueet().get(0).getId())));
         tavoiteDto.setTavoite(olt("Tässäpä jokin kiva tavoite"));
+        TavoitteenArviointiDto arvio = new TavoitteenArviointiDto();
+        arvio.setArvioinninKohde(olt("Kohde"));
+        arvio.setHyvanOsaamisenKuvaus(olt("Kuvaus"));
+        tavoiteDto.setArvioinninkohteet(new HashSet<TavoitteenArviointiDto>());
+        tavoiteDto.getArvioinninkohteet().add(arvio);
         vkDto.getTavoitteet().add(tavoiteDto);
 
+        lc = OppiaineLockContext.of(perusteId, oa.getId(), vkDto.getId());
+        lockService.lock(lc);
         vkDto = service.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oa.getId(), vkDto);
 
+        assertEquals("Kohde", vkDto.getTavoitteet().get(0).getArvioinninkohteet().iterator().next().getArvioinninKohde().get().get(Kieli.FI));
+
+        vkDto.getSisaltoalueet().clear();
+        vkDto.getTavoitteet().clear();
+        vkDto = service.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oa.getId(), vkDto);
+
+        lc = OppiaineLockContext.of(perusteId, oa.getId(), null);
+
+        List<Revision> revs = service.getOppiaineRevisions(perusteId, oa.getId());
+        lockService.lock(lc);
+        oa = service.revertOppiaine(perusteId, oa.getId(), revs.get(2).getNumero());
+
+        service.deleteOppiaine(perusteId, oa.getId());
     }
 
+    @Test
+    public void testAddAndUpdateOppimaara() throws IOException {
+        VuosiluokkaKokonaisuus vk = new VuosiluokkaKokonaisuus();
+        vk = vkrepo.save(vk);
+
+        OppiaineDto oppiaineDto = new OppiaineDto();
+        oppiaineDto.setNimi(Optional.of(lt("Oppiaine")));
+        oppiaineDto.setTehtava(Optional.of(to("TehtävänOtsikko", "Tehtava")));
+        oppiaineDto.setKoosteinen(Optional.of(true));
+
+        OppiaineenVuosiluokkaKokonaisuusDto vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
+        vkDto.setTehtava(Optional.of(to("Tehtävä", "")));
+        vkDto.setVuosiluokkaKokonaisuus(Optional.of(vk.getReference()));
+
+        oppiaineDto.setVuosiluokkakokonaisuudet(Sets.newHashSet(vkDto));
+        KeskeinenSisaltoalueDto ks = new KeskeinenSisaltoalueDto();
+        ks.setNimi(Optional.of(lt("Nimi")));
+        vkDto.setSisaltoalueet(Lists.newArrayList(ks));
+        OppiaineDto oa1 = service.addOppiaine(perusteId, oppiaineDto);
+        assertEquals(0, oa1.getOppimaarat().size());
+
+        OppiaineDto oppimaara = new OppiaineDto();
+        oppimaara.setNimi(olt("OppimaaranNimi"));
+        oppimaara.setOppiaine(Optional.of(new EntityReference(oa1.getId())));
+        vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
+        vkDto.setTehtava(Optional.of(to("Tehtävä", "")));
+        vkDto.setVuosiluokkaKokonaisuus(Optional.of(vk.getReference()));
+        oppimaara.setVuosiluokkakokonaisuudet(Sets.newHashSet(vkDto));
+        oppimaara = service.addOppiaine(perusteId, oppimaara);
+        oa1 = service.getOppiaine(perusteId, oa1.getId());
+        assertEquals(1, oa1.getOppimaarat().size());
+
+        OppiaineLockContext lc = OppiaineLockContext.of(perusteId, oppimaara.getId(), null);
+        lockService.lock(lc);
+        oppimaara.setTehtava(Optional.of(to("Tehtävä", "Tehtävä")));
+        oppimaara = service.updateOppiaine(perusteId, oppimaara);
+        lockService.unlock(lc);
+        assertEquals("Tehtävä", oppimaara.getTehtava().get().getTeksti().get().get(Kieli.FI));
+    }
 
     private static final Logger LOG = LoggerFactory.getLogger(OppiaineServiceIT.class);
 }

@@ -31,15 +31,17 @@ import lombok.Setter;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TutkinnonOsaViiteDto {
+
     private Long id;
     private BigDecimal laajuus;
     private Integer jarjestys;
-    private LokalisoituTekstiDto nimi;
-    private Date muokattu;
-    private Boolean poistettu;
     @JsonProperty("_tutkinnonOsa")
     private EntityReference tutkinnonOsa;
-    private TutkinnonOsaTyyppi tyyppi;
     @JsonProperty("tutkinnonOsa")
     private TutkinnonOsaDto tutkinnonOsaDto;
+
+    private Date muokattu;
+    private Boolean poistettu;
+    private LokalisoituTekstiDto nimi;
+    private TutkinnonOsaTyyppi tyyppi;
 }

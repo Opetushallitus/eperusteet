@@ -1,5 +1,7 @@
+<!-- muokkausinfo.html -->
+
 <div>
-  <table class="muokkausinfo">
+  <table class="muokkausinfo" ng-show="getOppiaine()">
     <tr><th kaanna="oppiaine"></th><td>{{getOppiaine() | kaanna}}</td></tr>
     <tr ng-show="getVuosiluokkakokonaisuus()">
       <th kaanna="vuosiluokkakokonaisuus"></th><td>{{getVuosiluokkakokonaisuus() | kaanna}}</td>

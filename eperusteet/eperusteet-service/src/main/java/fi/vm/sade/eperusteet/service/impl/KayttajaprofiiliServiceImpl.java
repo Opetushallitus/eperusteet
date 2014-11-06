@@ -96,9 +96,9 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
         preferenssi = kayttajaprofiiliPreferenssiRepo.findOneByKayttajaprofiiliAndAvain(kayttajaprofiili, uusi.getAvain());
 
         if (preferenssi == null) {
-            kayttajaprofiiliPreferenssiRepo.save(new KayttajaprofiiliPreferenssi(kayttajaprofiili, uusi.getAvain(), uusi.getArvo()));
-        }
-        else {
+            preferenssi = kayttajaprofiiliPreferenssiRepo.save(new KayttajaprofiiliPreferenssi(kayttajaprofiili, uusi.getAvain(), uusi.getArvo()));
+            kayttajaprofiili.getPreferenssit().add(preferenssi);
+        } else {
             preferenssi.setArvo(uusi.getArvo());
             kayttajaprofiiliPreferenssiRepo.save(preferenssi);
         }

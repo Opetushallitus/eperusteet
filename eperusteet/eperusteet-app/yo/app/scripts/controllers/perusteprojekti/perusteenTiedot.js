@@ -21,7 +21,7 @@ angular.module('eperusteApp')
   .controller('PerusteenTiedotCtrl', function($scope, $stateParams, $state,
     Koodisto, Perusteet, YleinenData, PerusteProjektiService,
     perusteprojektiTiedot, Notifikaatiot, Editointikontrollit, Kaanna,
-    Varmistusdialogi, $timeout, $rootScope) {
+    Varmistusdialogi, $timeout, $rootScope, PerusteTutkintonimikekoodit, $modal) {
 
     $scope.editEnabled = false;
     var editingCallbacks = {
@@ -68,6 +68,79 @@ angular.module('eperusteApp')
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa() || 'naytto';
     $scope.kielet = YleinenData.kielet;
     $scope.dokumentit = {};
+    $scope.koodisto = [];
+    $scope.$koodistoResolved = false;
+
+    $scope.lisaaNimike = function() {
+      $modal.open({
+        templateUrl: 'views/modals/lisaaTutkintonimike.html',
+        controller: function($q, $scope, $modalInstance) {
+          $scope.koodit = {};
+          $scope.valmisCb = function(res) {
+            $scope.koodit[res.koodisto.koodistoUri] = res;
+          };
+
+          $scope.ok = $modalInstance.close;
+          $scope.peru = $modalInstance.dismiss;
+        }
+      })
+      .result.then(function(uusi) {
+        var obj = {
+          peruste: $scope.peruste.id,
+          osaamisalaUri: uusi.osaamisala.koodiUri,
+          osaamisalaArvo: uusi.osaamisala.koodiArvo,
+          $osaamisalaNimi: uusi.osaamisala.nimi,
+          tutkintonimikeUri: uusi.tutkintonimikkeet.koodiUri,
+          tutkintonimikeArvo: uusi.tutkintonimikkeet.koodiArvo,
+          $tutkintonimikeNimi: uusi.tutkintonimikkeet.nimi,
+        };
+
+        if (uusi.tutkinnonosat) {
+          obj.tutkinnonOsaUri = uusi.tutkinnonosat.koodiUri;
+          obj.tutkinnonOsaArvo = uusi.tutkinnonosat.koodiArvo;
+          obj.$tutkinnonOsaNimi = uusi.tutkinnonosat.nimi;
+        }
+
+        obj.asd = true;
+
+        $scope.koodisto.push(obj);
+        PerusteTutkintonimikekoodit.save({ perusteId: $scope.peruste.id }, obj, function(res) {
+          obj.id = res.id;
+          Notifikaatiot.onnistui('tutkintonimikkeen-lisays-onnistui');
+        }, function() {
+          _.remove($scope.koodisto, obj);
+          Notifikaatiot.varoitus('tutkintonimikkeen-lisays-epaonnistui');
+        });
+      });
+    };
+
+    PerusteTutkintonimikekoodit.get({ perusteId: $scope.peruste.id }, function(res) {
+      $scope.koodisto = _.map(res, function(osa) {
+        function parsiNimi(kentta) {
+          if (osa[kentta + 'Arvo']) {
+            var nimi = osa.b[osa[kentta + 'Arvo']].metadata;
+            osa['$' + kentta + 'Nimi'] = _.zipObject(_.map(nimi, 'kieli'), _.map(nimi, 'nimi'));
+          }
+        }
+
+        parsiNimi('osaamisala');
+        parsiNimi('tutkintonimike');
+        parsiNimi('tutkinnonOsa');
+        delete osa.b;
+        return osa;
+      });
+      $scope.koodisto.$resolved = true;
+    });
+
+    $scope.poistaTutkintonimike = function(nimike) {
+      PerusteTutkintonimikekoodit.remove({
+        perusteId: $scope.peruste.id,
+        nimikeId: nimike.id
+      }, function() {
+        _.remove($scope.koodisto, nimike);
+        Notifikaatiot.onnistui('tutkintonimike-poistettu-onnistuneesti');
+      }, Notifikaatiot.serverCb);
+    };
 
     function fixTimefield(field) {
       if (typeof $scope.peruste[field] === 'number') {
@@ -124,7 +197,7 @@ angular.module('eperusteApp')
         PerusteProjektiService.update();
         Notifikaatiot.onnistui('tallennettu');
       }, function() {
-        Notifikaatiot.fataali('tallentaminen-epäonnistui');
+        Notifikaatiot.fataali('tallentaminen-epaonnistui');
       });
     };
 

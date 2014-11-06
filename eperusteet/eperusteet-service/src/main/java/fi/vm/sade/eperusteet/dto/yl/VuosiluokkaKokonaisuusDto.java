@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.domain.yl.Vuosiluokka;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.Set;
@@ -30,6 +31,7 @@ import lombok.Setter;
 @Setter
 public class VuosiluokkaKokonaisuusDto implements ReferenceableDto {
     private Long id;
+    private Set<Vuosiluokka> vuosiluokat;
     private Optional<LokalisoituTekstiDto> nimi;
     private Optional<TekstiOsaDto> tehtava;
     private Set<VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto> laajaalaisetOsaamiset;

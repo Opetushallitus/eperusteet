@@ -19,7 +19,7 @@
 
 
 angular.module('eperusteApp')
-  .service('Utils', function($window, YleinenData) {
+  .service('Utils', function($window, YleinenData, Kaanna) {
     this.scrollTo = function (selector) {
       var element = angular.element(selector);
       if (element.length) {
@@ -43,6 +43,10 @@ angular.module('eperusteApp')
 
     this.supportsFileReader = function () {
       return !_.isUndefined($window.FormData);
+    };
+
+    this.nameSort = function (item) {
+      return Kaanna.kaanna(item.nimi).toLowerCase();
     };
   })
 

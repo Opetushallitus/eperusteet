@@ -54,8 +54,9 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Table(name = "peruste")
 @Audited
 public class Peruste extends AbstractAuditedEntity implements Serializable, ReferenceableEntity, WithPerusteTila {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
     private Long id;
@@ -152,6 +153,22 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     public void setPerusopetuksenPerusteenSisalto(PerusopetuksenPerusteenSisalto perusopetuksenPerusteenSisalto) {
         this.perusopetuksenPerusteenSisalto = perusopetuksenPerusteenSisalto;
         this.perusopetuksenPerusteenSisalto.setPeruste(this);
+    }
+
+    public boolean containsViite(PerusteenOsaViite viite) {
+        if (suoritustavat != null) {
+            for (Suoritustapa s : suoritustavat) {
+                if (s.containsViite(viite)) {
+                    return true;
+                }
+            }
+        }
+
+        if (perusopetuksenPerusteenSisalto != null) {
+            return perusopetuksenPerusteenSisalto.containsViite(viite);
+        }
+
+        return false;
     }
 
 }

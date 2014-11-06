@@ -17,6 +17,13 @@
 'use strict';
 
 angular.module('eperusteApp')
+  .factory('KoodistoHaku', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/koodisto/:koodistoUri', {
+      koodistoUri: '@koodistoUri'
+    }, {
+      get: {method: 'GET', isArray: true}
+    });
+  })
   .factory('Organisaatioryhmat', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/ulkopuoliset/organisaatioryhmat/', {}, {
       get: {method: 'GET', isArray: true}

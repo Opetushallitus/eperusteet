@@ -51,7 +51,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistavoite>, ReferenceableEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
     private Long id;

@@ -50,7 +50,7 @@ import org.hibernate.envers.Audited;
 public class Suoritustapa implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
     private Long id;
@@ -102,6 +102,10 @@ public class Suoritustapa implements Serializable {
         this.sisalto = sisalto;
         this.rakenne = rakenne;
         this.laajuusYksikko = laajuusYksikko;
+    }
+
+    boolean containsViite(PerusteenOsaViite viite) {
+        return viite != null && sisalto == viite.getRoot();
     }
 
 }

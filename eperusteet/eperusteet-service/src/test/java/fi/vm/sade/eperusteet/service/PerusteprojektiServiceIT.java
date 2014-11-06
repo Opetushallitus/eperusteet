@@ -16,14 +16,16 @@
 
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaTyoryhma;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
@@ -37,17 +39,23 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author nkala
  */
+
+@Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
     @Autowired
@@ -64,6 +72,9 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteprojektiService service;
+
+    @PersistenceContext
+    private EntityManager em;
 
     private final String ryhmaId = "1.2.246.562.28.11287634288";
     private final LaajuusYksikko yksikko = LaajuusYksikko.OSAAMISPISTE;
@@ -89,8 +100,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         return service.save(ppldto);
     }
 
-    @Transactional
-    public void perusteprojektiLuontiCommonAsserts(PerusteprojektiDto ppdto, Perusteprojekti pp) {
+    private void perusteprojektiLuontiCommonAsserts(PerusteprojektiDto ppdto, Perusteprojekti pp) {
         Assert.assertNotNull(pp);
         Assert.assertEquals(pp.getNimi(), ppdto.getNimi());
         Assert.assertEquals(pp.getDiaarinumero(), ppdto.getDiaarinumero());
@@ -102,8 +112,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertNotNull(pp.getPeruste().getSuoritustavat());
     }
 
-    @Transactional
-    public void perusteprojektiLuontiCommonSuoritustavat(Perusteprojekti pp, long expectedSize) {
+    private void perusteprojektiLuontiCommonSuoritustavat(Perusteprojekti pp, long expectedSize) {
         for (Suoritustapa st : pp.getPeruste().getSuoritustavat()) {
             Assert.assertNotNull(st.getSisalto());
             Assert.assertNotNull(st.getSisalto().getLapset());
@@ -112,7 +121,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testPerustprojektiluonti12() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
         Perusteprojekti pp = repository.findOne(ppdto.getId());
@@ -125,7 +134,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testPerustprojektiluonti9999() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_9999");
         Perusteprojekti pp = repository.findOne(ppdto.getId());
@@ -136,7 +145,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testPerustpohjaluonti() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_1");
         Perusteprojekti pp = repository.findOne(ppdto.getId());
@@ -149,7 +158,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testPerusteprojektiLuontiPohjasta() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_1");
         Perusteprojekti pp = repository.findOne(ppdto.getId());
@@ -172,14 +181,14 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         perusteprojektiLuontiCommonSuoritustavat(uusi, 3);
     }
 
-    public void lazyAssertTyoryhma(TyoryhmaHenkiloDto trh, String ryhma, String henkilo) {
+    private void lazyAssertTyoryhma(TyoryhmaHenkiloDto trh, String ryhma, String henkilo) {
         Assert.assertEquals(trh.getKayttajaOid(), henkilo);
         Assert.assertEquals(trh.getNimi(), ryhma);
         Assert.assertNotNull(trh.getId());
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testTyoryhmat() {
         // Lisääminen
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
@@ -231,7 +240,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testPerusteprojektiTyoryhmat() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
         Perusteprojekti pp = repository.findOne(ppdto.getId());
@@ -253,11 +262,11 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         service.setPerusteenOsaViiteTyoryhmat(pp.getId(), poA.getId(), nimet);
         service.setPerusteenOsaViiteTyoryhmat(pp.getId(), poB.getId(), nimet);
         List<PerusteenOsaTyoryhmaDto> st = service.getSisallonTyoryhmat(pp.getId());
-        Assert.assertEquals(6, st.size());
+        Assert.assertEquals(3, st.size());
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testPerusteenOsaViiteTyoryhmat() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_1");
         Perusteprojekti pp = repository.findOne(ppdto.getId());
@@ -280,12 +289,12 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testPerusteprojektiKopiointiToisestaProjektista() {
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testPerusteprojektiSisaltaaMuodostumiset() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_1");
         repository.flush();
@@ -303,7 +312,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testMisc() {
         PerusteprojektiDto tpp = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_1");
         teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
@@ -320,14 +329,14 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test(expected = BusinessRuleViolationException.class)
-    @Transactional
+    @Rollback(true)
     public void testOnkoDiaarinumeroKaytossa() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
         service.onkoDiaarinumeroKaytossa(ppdto.getDiaarinumero());
     }
 
     @Test
-    @Transactional
+    @Rollback(true)
     public void testUpdate() {
         PerusteprojektiDto vanhaDto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_1");
         PerusteprojektiDto update = new PerusteprojektiDto(
@@ -355,5 +364,25 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertEquals("uusiyhteistyotaho", updated.getYhteistyotaho());
         Assert.assertEquals(vanhaDto.getTila(), updated.getTila());
         Assert.assertEquals("uusioid", updated.getRyhmaOid());
+    }
+
+    @Test
+    @Rollback(true)
+    public void testPerustepohjaTilaJaNimi() {
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_1");
+        Perusteprojekti pp = repository.findOne(ppdto.getId());
+
+        TilaUpdateStatus status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS);
+        Assert.assertFalse(status.isVaihtoOk());
+
+        pp.getPeruste().setNimi(TekstiPalanen.of(Kieli.FI, "nimi"));
+        repository.save(pp);
+        em.persist(pp);
+        status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS);
+        Assert.assertTrue(status.isVaihtoOk());
+        Assert.assertEquals(ProjektiTila.VALMIS, pp.getTila());
+
+        status = service.updateTila(ppdto.getId(), ProjektiTila.LAADINTA);
+        Assert.assertFalse(status.isVaihtoOk());
     }
 }

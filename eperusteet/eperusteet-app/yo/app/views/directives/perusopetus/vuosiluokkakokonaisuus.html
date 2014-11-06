@@ -1,15 +1,17 @@
+<!-- vuosiluokkakokonaisuus.html -->
+
 <osallinen-osa model="model" editable-model="editableModel" config="data.options" versiot="versiot">
   <div ng-if="!editEnabled">
     <label kaanna="vuosiluokat" class="header">
     </label>: <span ng-show="!editableModel.vuosiluokat || editableModel.vuosiluokat.length === 0" kaanna="ei-asetettu"></span>
-    <span ng-repeat="vuosiluokka in editableModel.vuosiluokat">{{vuosiluokka}}<span ng-if="!$last">, </span></span>
+    <span ng-repeat="vuosiluokka in editableModel.vuosiluokat | orderBy:formatVuosiluokka">{{formatVuosiluokka(vuosiluokka)}}<span ng-if="!$last">, </span></span>
 
     <!-- <div muokattava-osio="editableModel" type="tekstikappale" path="tehtava"></div> -->
 
   </div>
   <div class="non-collapsibles" ng-if="editEnabled">
     <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header'|kaanna}}*</label>
-    <input id="nimi-input" class="form-control" ng-model="editableModel.nimi" localized required ng-change="nimiValidationError = false">
+    <input id="nimi-input" class="form-control" ng-model="editableModel.nimi" localized required>
     <p class="alert alert-error" ng-show="(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError"
        kaanna>Nimi on pakollinen tieto</p>
     <label kaanna="vuosiluokat" class="header"></label>

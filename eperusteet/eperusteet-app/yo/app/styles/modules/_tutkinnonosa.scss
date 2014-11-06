@@ -251,6 +251,11 @@ $pikamenu-size: 22px;
     }
     td.otsikko {
       width: 25%;
+      &.redundant {
+        width: 0 !important;
+        overflow: hidden;
+        padding: 0;
+      }
     }
     td.dragger {
       width: 5%;
@@ -267,6 +272,9 @@ $pikamenu-size: 22px;
         margin-top: 5px;
         display: list-item;
         list-style: disc;
+      }
+      .msd-elastic {
+        resize: none !important;
       }
     }
     td.toiminnot {

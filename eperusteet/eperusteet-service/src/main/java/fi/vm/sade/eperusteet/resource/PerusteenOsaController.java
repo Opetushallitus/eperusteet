@@ -113,13 +113,13 @@ public class PerusteenOsaController {
         return PerusteenOsaDtoList.wrap(t);
     }
 
-    @RequestMapping(method = POST)
-    @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
-    public ResponseEntity<PerusteenOsaDto.Laaja> add(@RequestBody PerusteenOsaDto.Laaja perusteenOsaDto, UriComponentsBuilder ucb) {
-        PerusteenOsaDto.Laaja dto = service.add(perusteenOsaDto);
-        return new ResponseEntity<>(dto, buildHeadersFor(dto.getId(), ucb), HttpStatus.CREATED);
-    }
+//    @RequestMapping(method = POST)
+//    @ResponseStatus(HttpStatus.CREATED)
+//    @ResponseBody
+//    public ResponseEntity<PerusteenOsaDto.Laaja> add(@RequestBody PerusteenOsaDto.Laaja perusteenOsaDto, UriComponentsBuilder ucb) {
+//        PerusteenOsaDto.Laaja dto = service.add(perusteenOsaDto);
+//        return new ResponseEntity<>(dto, buildHeadersFor(dto.getId(), ucb), HttpStatus.CREATED);
+//    }
 
     @RequestMapping(value = "/{id}", method = POST)
     @ResponseBody

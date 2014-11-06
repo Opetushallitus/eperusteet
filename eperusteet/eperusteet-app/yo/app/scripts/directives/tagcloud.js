@@ -53,6 +53,11 @@ angular.module('eperusteApp')
       modal.result.then(function() {
       });
     };
+
+    $scope.showEmptyPlaceholder = function () {
+      return !$scope.editMode && (!$scope.model || $scope.model.length === 0  ||
+        !_.some($scope.model, function (item) { return !item.$hidden; }));
+    };
   })
 
   .controller('TagCloudModalController', function ($scope, model, addLabel, YleinenData) {

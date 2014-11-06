@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -71,9 +72,13 @@ public class Lukko {
         return vanhentuu;
     }
 
+    public boolean isOma() {
+        return haltijaOid.equals(SecurityUtil.getAuthenticatedPrincipal().getName());
+    }
+
     public void setVanhentumisAika(int maxLockTime) {
         DateTime t = getLuotu().plusSeconds(maxLockTime);
-        if ( this.vanhentuu == null || t.equals(this.vanhentuu)) {
+        if (this.vanhentuu == null || t.equals(this.vanhentuu)) {
             this.vanhentuu = t;
         } else {
             throw new IllegalStateException("vanhenemisaikaa ei voi muuttaa");

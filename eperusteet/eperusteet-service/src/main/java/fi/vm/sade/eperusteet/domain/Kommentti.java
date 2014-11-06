@@ -33,7 +33,7 @@ import lombok.Setter;
 @Table(name = "kommentti")
 public class Kommentti extends AbstractAuditedEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
     private Long id;

@@ -57,7 +57,7 @@ public enum ProjektiTila {
         @Override
         public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
             if (tyyppi.equals(PerusteTyyppi.POHJA)) {
-                return EnumSet.of(LAADINTA, POISTETTU);
+                return EnumSet.of(POISTETTU);
             } else {
                 return EnumSet.of(VIIMEISTELY, JULKAISTU, POISTETTU);
             }

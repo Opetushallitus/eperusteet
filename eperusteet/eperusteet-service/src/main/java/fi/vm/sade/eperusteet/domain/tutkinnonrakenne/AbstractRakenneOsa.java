@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -30,6 +31,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
@@ -40,7 +42,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 public abstract class AbstractRakenneOsa implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
     private Long id;
@@ -51,4 +53,15 @@ public abstract class AbstractRakenneOsa implements Serializable {
     @Audited(targetAuditMode = NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
+    public boolean isSame(AbstractRakenneOsa other) {
+        if (other == null) {
+            return false;
+        }
+
+        if (this == other) {
+            return true;
+        }
+
+        return Objects.equals(kuvaus, other.getKuvaus());
+    }
 }

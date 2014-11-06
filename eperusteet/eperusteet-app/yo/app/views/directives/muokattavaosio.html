@@ -1,4 +1,5 @@
 <div ng-if="hasContent" class="panel panel-default panel-clean">
+  <!-- muokattavaosio.html -->
   <div class="panel-heading">
     <div class="action-buttons">
       <button class="btn btn-default" kaanna="muokkaa" icon-role="edit" ng-click="edit()"></button>
@@ -14,6 +15,6 @@
   <div class="panel-body" collapse="realModel.$isCollapsed">
     <div ng-if="type === 'tekstikappale'" ng-bind-html="valitseKieli(model[path].teksti) | unsafe"></div>
     <div ng-if="type === 'sisaltoalueet'" sisaltoalueet="model[path]"></div>
-    <div ng-if="type === 'tavoitteet'" tavoitteet="model"></div>
+    <div ng-if="type === 'tavoitteet'" tavoitteet="model" vuosiluokka="vuosiluokka"></div>
   </div>
 </div>

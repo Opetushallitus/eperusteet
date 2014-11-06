@@ -55,6 +55,7 @@
     "fi": "Suomi",
     "sv": "Ruotsi",
     "en": "Englanti",
+    "se": "Saame",
 
     "nimeton": "<Nimetön>",
 
@@ -83,7 +84,7 @@
 
     "perusteprojektit-otsikko": "Omat perusteprojektit",
     "uusi-projekti": "Uusi projekti",
-    "tutkinnon-osia-ei-löytynyt": "Tutkinnon osia ei löytynyt",
+    "tutkinnon-osia-ei-loytynyt": "Tutkinnon osia ei löytynyt.",
     "aloita-raahaamalla-puuhun": "Raahaa ryhmiä tai tutkinnon osia tähän.",
     "rakennetta-ei-vielä-muodostettu": "Tutkinnon rakennetta ei ole vielä muodostettu tai se on tyhjä. Luo uusi rakenne muokkaamalla sivua.",
     "rakennetta-ei-ole": "Suoritustavalle ei ole määritetty rakennetta",
@@ -102,10 +103,10 @@
     "virhe-tilan-vaihtamisessa": "Virhe tilan vaihtamisessa",
     "virhe-muu": "Virhe",
     "virhe-etusivulle": "Etusivulle",
-    "tallentaminen-epäonnistui": "Tallentaminen epäonnistui",
+    "tallentaminen-epaonnistui": "Tallentaminen epäonnistui",
     "perusteen-tiivistelma": "Perusteen tiivistelmä",
 
-    "suoritustavalle-ei-ole-vielä-sisältöä": "Perusteelle ei ole luotu vielä tähän suoritustapaan liittyvää sisältöä",
+    "suoritustavalle-ei-ole-viela-sisaltoa": "Perusteelle ei ole luotu vielä tähän suoritustapaan liittyvää sisältöä",
     "rajauksellasi-ei-löytynyt-vaihtoehtoa": "Rajaus ei tuottanut tuloksia",
 
     "vain-käyttämättömät": "Näytä vain käyttämättömät",
@@ -127,11 +128,23 @@
 
     "uusi-tutkinnonosa": "<Uusi tutkinnon osa>",
     "tuo-tutkinnonosa": "Tuo tutkinnon osa",
-    "tuo-toisesta-suoritustavasta": "Tuo suoritustavasta",
     "tutkinnon-osia-ei-ole": "Tutkinnon osia ei ole",
     "avaa-kaikki": "Avaa kaikki",
     "sulje-kaikki": "Sulje kaikki",
     "avaa-sulje-kaikki": "Avaa / sulje kaikki",
+
+    "et-ole-lisannyt-viela-tutkintonimikkeita": "Tutkintonimikkeitä ei ole vielä lisätty",
+    "tutkintonimike": "Tutkintonimike",
+    "tutkintonimikkeet": "Tutkintonimikkeet",
+    "lisaa-nimike": "Lisää nimike",
+    "lisaa-tutkintonimike": "Lisää tutkintonimike",
+    "koodisto-haku-epaonnistui": "Haku koodistosta epäonnistui",
+    "koodisto-haku-onnistui": "Haku koodistosta onnistui",
+    "tutkintonimike-poistettu-onnistuneesti": "Tutkintonimike poistettiin onnistuneesti",
+    "tutkintonimikkeen-lisays-onnistui": "Tutkintonimikkeen lisääminen onnistui",
+    "tutkintonimikkeen-lisays-epaonnistui": "Tutkintonimikkeen lisääminen epäonnistui",
+
+    "ladataan-sisaltoa": "Ladataan sisältöä...",
 
     "poista-tutkinnonosa": "Poista tutkinnon osa",
     "lisaa-tutkinnonosa": "Lisää tutkinnon osa",
@@ -263,62 +276,14 @@
 
     "kommentti": "Kommentti",
 
-    "koulutusalakoodi-1": "Tekniikan ja liikenteen ala",
-    "koulutusalakoodi-2": "Kulttuuriala",
-    "koulutusalakoodi-3": "Luonnonvara- ja ympäristöala",
-    "koulutusalakoodi-4": "Yhteiskuntatieteiden, liiketalouden ja hallinnon ala",
-    "koulutusalakoodi-5": "Humanistinen ja kasvatusala",
-    "koulutusalakoodi-6": "Matkailu-, ravitsemis- ja talousala",
-    "koulutusalakoodi-7": "Sosiaali-, terveys- ja liikunta-ala",
-    "koulutusalakoodi-8": "Luonnontieteiden ala",
-
     "koulutustyyppi_1": "Ammatillinen perustutkinto",
     "koulutustyyppi_11": "Ammattitutkinto",
     "koulutustyyppi_12": "Erikoisammattitutkinto",
-    "koulutustyyppi_9999": "Perusopetuksen opetussuunnitelma",
+    "koulutustyyppi_9999": "Perusopetus",
 
     "solu": "Solu",
     "annettu-arvo": "Annettu arvo",
     "odotettu-arvo": "Odotettu arvo",
-
-    "opintoalakoodi-1": "Kielitieteet",
-    "opintoalakoodi-2": "Muu humanistinen ja kasvatusala",
-    "opintoalakoodi-3": "Opetus- ja kasvatustyö",
-    "opintoalakoodi-4": "Vapaa-aika ja nuorisotyö",
-    "opintoalakoodi-5": "Käsi- ja taideteollisuus",
-    "opintoalakoodi-6": "Musiikki",
-    "opintoalakoodi-7": "Teatteri ja tanssi",
-    "opintoalakoodi-8": "Viestintä- ja informaatiotieteet",
-    "opintoalakoodi-9": "Kotitalous- ja kuluttajapalvelut",
-    "opintoalakoodi-10": "Majoitus- ja ravitsemisala",
-    "opintoalakoodi-11": "Matkailuala",
-    "opintoalakoodi-12": "Puhdistuspalvelut",
-    "opintoalakoodi-13": "Tietojenkäsittely",
-    "opintoalakoodi-14": "Kalatalous",
-    "opintoalakoodi-15": "Luonto- ja ympäristöala",
-    "opintoalakoodi-16": "Maatilatalous",
-    "opintoalakoodi-17": "Metsätalous",
-    "opintoalakoodi-18": "Muu luonnonvara- ja ympäristöalan koulutus",
-    "opintoalakoodi-19": "Puutarhatalous",
-    "opintoalakoodi-20": "Farmasia ja muu lääkehuolto",
-    "opintoalakoodi-21": "Hammaslääketiede ja muu hammashuolto",
-    "opintoalakoodi-22": "Kauneudenhoitoala",
-    "opintoalakoodi-23": "Kuntoutus ja liikunta",
-    "opintoalakoodi-24": "Sosiaali- ja terveysalojen yhteiset",
-    "opintoalakoodi-25": "Sosiaaliala",
-    "opintoalakoodi-26": "Tekniset terveyspalvelut",
-    "opintoalakoodi-27": "Terveysala",
-    "opintoalakoodi-28": "Ajoneuvo- ja kuljetustekniikka",
-    "opintoalakoodi-29": "Arkkitehtuuri ja rakentaminen",
-    "opintoalakoodi-30": "Elintarvikeala ja biotekniikka",
-    "opintoalakoodi-31": "Graafinen ja viestintätekniikka",
-    "opintoalakoodi-32": "Kone-, metalli- ja energiatekniikka",
-    "opintoalakoodi-33": "Muu tekniikan ja liikenteen alan koulutus",
-    "opintoalakoodi-34": "Prosessi-, kemian- ja materiaalitekniikka",
-    "opintoalakoodi-35": "Sähkö- ja automaatiotekniikka",
-    "opintoalakoodi-36": "Tekstiili- ja vaatetustekniikka",
-    "opintoalakoodi-37": "Tieto- ja tietoliikennetekniikka",
-    "opintoalakoodi-38": "Liiketalous ja kauppa",
 
     "kielen-vaihto": "Vaihda kieli",
     "suomi": "Suomi",
@@ -361,6 +326,8 @@
     "muokkaus-rakenne": "Muokkaa tutkinnon rakennetta",
     "luonti-tutkinnon-osa": "Uusi tutkinnon osa",
     "luonti-tekstikappale": "Uusi tekstikappale",
+
+    "lajittelu-jarjestysnumero": "No.",
 
     "muokkaus-tutkinnon-jarjestysnumero": "Järjestysnumero",
     "muokkaus-tutkinnon-osan-nimi-header": "Nimi",
@@ -405,7 +372,7 @@
     "arviointi-uusi-kohdealue": "Lisää kohdealue",
     "arviointi-uusi-kohdealue-placeholder": "Kohdealueen nimi",
     "arviointi-uusi-kohde": "Lisää arvioinnin kohde",
-    "arviointi-uusi-kohde-placeholder": "Kohteen nimi",
+    "arviointi-uusi-kohde-placeholder": "Kohteen nimi (ei pakollinen)",
     "arviointi-uusi-kriteeri": "Lisää rivi",
     "arviointi-uusi-kriteeri-placeholder": "Kriteerin teksti",
     "arviointi-poista-kriteeri": "Poista rivi",
@@ -478,6 +445,7 @@
     "anna-voimaantulo-loppu-pvm": "Anna voimassaolon päättymispäivämäärä",
 
     "tuo-toisesta-projektista": "Tuo sisältöä toisesta projektista",
+    "tuo-toisesta-suoritustavasta": "Tuo toisesta suoritustavasta",
     "hae-perusteprojekteja": "Hae perusteprojekteja",
 
     "toiminto": "Toiminto",
@@ -688,6 +656,7 @@
     "nayta-osaamiskokonaisuuden-kuvaus": "Näytä osaamiskokonaisuuden yleiskuvaus",
     "piilota-osaamiskokonaisuuden-kuvaus": "Piilota osaamiskokonaisuuden yleiskuvaus",
     "tekstikappale": "Tekstikappale",
+    "kohdealueet": "Kohdealueet",
 
     "tyhja-placeholder-osaalueet": "Osa-alueita ei ole vielä lisätty.",
 
@@ -708,6 +677,9 @@
     "muokkaa-osaaminen": "Laaja-alainen osaaminen - muokkaa osaamiskokonaisuutta",
 
     "poista-oppiaine": "Poista oppiaine",
+    "poistetaanko-oppiaine": "Poistetaanko oppiaine?",
+    "poista-oppimaara": "Poista oppimäärä",
+    "poistetaanko-oppimaara": "Poistetaanko oppimäärä?",
     "muokkaa-oppiainetta": "Muokkaa oppiainetta",
     "uusi-oppiaine": "Uusi oppiaine",
     "sisaltoalueet": "Sisältöalueet",
@@ -726,9 +698,16 @@
     "lisaa-laaja-alainen-osaaminen": "Lisää laaja-alainen osaaminen",
     "lisaa-opetuksen-tavoite": "Lisää opetuksen tavoite",
     "oppimaarat": "Oppimäärät",
+    "muokkaa-oppimaaraa": "Muokkaa oppimäärää",
+    "uusi-oppimaara": "Uusi oppimäärä",
+    "ei-oppimaaria": "Oppimääriä ei ole lisätty",
     "yksi-oppimaara": "Yksi oppimäärä",
     "useita-oppimaaria": "Useita oppimääriä",
     "oppimaara": "Oppimäärä",
-    "lisaa-oppimaara": "Lisää oppimäärä"
+    "lisaa-oppimaara": "Lisää oppimäärä",
+
+    "luonti-projektin-nimi-ohje": "Anna projektin nimi muodossa '[Nimi] tutkinnon perusteprojekti' (esim. 'Rakennustuotannon ammattitutkinnon perusteprojekti').",
+    "luonti-paatospaivamaara-ohje": "Lisää perustetyöryhmän asettamisen päätöspäivämäärä.",
+    "luonti-diaarinumero-ohje": "Lisää perustetyöryhmän asettamispäätöksen diaarinumero."
 
 }

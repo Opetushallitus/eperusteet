@@ -18,161 +18,47 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .service('PerusopetusService', function (Vuosiluokkakokonaisuudet, Oppiaineet, $q,
-      OppiaineenVuosiluokkakokonaisuudet, LaajaalaisetOsaamiset, Notifikaatiot) {
-    this.OSAAMINEN = 'osaaminen';
-    this.VUOSILUOKAT = 'vuosiluokat';
-    this.OPPIAINEET = 'oppiaineet';
-    this.LABELS = {
-      'laaja-alainen-osaaminen': this.OSAAMINEN,
-      'vuosiluokkakokonaisuudet': this.VUOSILUOKAT,
-      'oppiaineet': this.OPPIAINEET
-    };
-    var tiedot = null;
-    var cached = {};
-    this.setTiedot = function (value) {
-      tiedot = value;
-    };
-    this.getPerusteId = function () {
-      return tiedot.getProjekti()._peruste;
-    };
-
-    this.sisallot = [
-      {
-        tyyppi: this.OSAAMINEN,
-        label: 'laaja-alainen-osaaminen',
-        emptyPlaceholder: 'tyhja-placeholder-osaaminen',
-        addLabel: 'lisaa-osaamiskokonaisuus'
-      },
-      {
-        tyyppi: this.VUOSILUOKAT,
-        label: 'vuosiluokkakokonaisuudet',
-        emptyPlaceholder: 'tyhja-placeholder-vuosiluokat',
-        addLabel: 'lisaa-vuosiluokkakokonaisuus'
-      },
-      {
-        tyyppi: this.OPPIAINEET,
-        label: 'oppiaineet',
-        emptyPlaceholder: 'tyhja-placeholder-oppiaineet',
-        addLabel: 'lisaa-oppiaine'
-      },
-    ];
-
-    function promisify(data) {
-      var deferred = $q.defer();
-      _.extend(deferred, data);
-      deferred.resolve(data);
-      return deferred.promise;
-    }
-
-    function commonParams (extra) {
-      var obj = { perusteId: tiedot.getProjekti()._peruste };
-      if (extra) {
-        _.extend(obj, extra);
-      }
-      return obj;
-    }
-
-    function getOsaGeneric(resource, params) {
-      return resource.get(commonParams({osanId: params.osanId})).$promise;
-    }
-
-    this.getOsa = function (params) {
-      if (params.osanId === 'uusi') {
-        return promisify({});
-      }
-      switch (params.osanTyyppi) {
-        case this.VUOSILUOKAT:
-          return getOsaGeneric(Vuosiluokkakokonaisuudet, params);
-        case this.OPPIAINEET:
-          return getOsaGeneric(Oppiaineet, params);
-        case this.OSAAMINEN:
-          return getOsaGeneric(LaajaalaisetOsaamiset, params);
-        default:
-          break;
-      }
-    };
-
-    this.deleteOsa = function (osa) {
-      osa.$delete(commonParams());
-    };
-
-    this.saveOsa = function (data, config) {
-      var successCb = angular.noop;
-      switch (config.osanTyyppi) {
-        case this.OPPIAINEET:
-          Oppiaineet.save({
-            perusteId: tiedot.getProjekti()._peruste,
-          }, data, successCb, function (err) {
-            Notifikaatiot.serverCb(err);
-          });
-          break;
-        case this.OSAAMINEN:
-          LaajaalaisetOsaamiset.save({
-            perusteId: tiedot.getProjekti()._peruste,
-          }, data, successCb, function (err) {
-            Notifikaatiot.serverCb(err);
-          });
-          break;
-        default:
-          break;
-      }
-    };
-
-    this.saveVuosiluokkakokonaisuudenOsa = function (vuosiluokkakokonaisuus, oppiaine) {
-      OppiaineenVuosiluokkakokonaisuudet.save({
-        perusteId: tiedot.getProjekti()._peruste,
-        oppiaineId: oppiaine.id
-      }, vuosiluokkakokonaisuus, function (res) {
-        vuosiluokkakokonaisuus = res;
-      });
-    };
-
-    this.getTekstikappaleet = function () {
-      // TODO oikea data
-      return [];
-    };
-
-    this.getOsat = function (tyyppi, useCache) {
-      if (useCache && cached[tyyppi]) {
-        return cached[tyyppi];
-      }
-      switch(tyyppi) {
-        case this.OSAAMINEN:
-          return LaajaalaisetOsaamiset.query({perusteId: tiedot.getProjekti()._peruste}, function (data) {
-            cached[tyyppi] = data;
-          });
-        case this.VUOSILUOKAT:
-          return Vuosiluokkakokonaisuudet.query({perusteId: tiedot.getProjekti()._peruste}, function (data) {
-            cached[tyyppi] = data;
-          });
-        case this.OPPIAINEET:
-          return Oppiaineet.query({perusteId: tiedot.getProjekti()._peruste}, function (data) {
-            cached[tyyppi] = data;
-          });
-        default:
-          return [];
-      }
-    };
-  })
-
   .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state,
-      PerusopetusService) {
+      PerusopetusService, TekstikappaleOperations) {
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
+    TekstikappaleOperations.setPeruste($scope.peruste);
     $scope.rajaus = '';
 
-    //$scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
+    $scope.$watch('peruste.sisalto', function () {
+      Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function (lapsi) {
+        lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', {
+          suoritustapa: 'ops',
+          perusteenOsanTyyppi: 'tekstikappale',
+          perusteenOsaId: lapsi.perusteenOsa ? lapsi.perusteenOsa.id : 0,
+          versio: '' });
+      });
+    }, true);
+
     $scope.datat = {
       opetus: {lapset: []},
-      sisalto: {lapset: PerusopetusService.getTekstikappaleet()}
+      sisalto: perusteprojektiTiedot.getYlTiedot().sisalto
     };
+
+    $scope.$watch('datat.opetus.lapset', function () {
+      _.each($scope.datat.opetus.lapset, function (area) {
+        area.$type = 'ep-parts';
+        area.$url = $state.href('root.perusteprojekti.osalistaus', {osanTyyppi: area.tyyppi});
+        Algoritmit.kaikilleLapsisolmuille(area, 'lapset', function (lapsi) {
+          lapsi.$url = $state.href('root.perusteprojekti.osaalue', {osanTyyppi: area.tyyppi, osanId: lapsi.id, tabId: 0});
+          if (lapsi.koosteinen) {
+            lapsi.lapset = lapsi.oppimaarat;
+          }
+        });
+      });
+    }, true);
+
     // TODO käytä samaa APIa kuin sivunavissa, koko sisältöpuu kerralla
     _.each(PerusopetusService.sisallot, function (item) {
       var data = {
         nimi: item.label,
         tyyppi: item.tyyppi,
-        lapset: PerusopetusService.getOsat(item.tyyppi)
+        lapset: PerusopetusService.getOsat(item.tyyppi, true)
       };
       $scope.datat.opetus.lapset.push(data);
     });
@@ -188,22 +74,33 @@ angular.module('eperusteApp')
 
     $scope.rajaaSisaltoa = function(value) {
       if (_.isUndefined(value)) { return; }
-      var filterer = function(osa, lapsellaOn) {
+      var sisaltoFilterer = function(osa, lapsellaOn) {
         osa.$filtered = lapsellaOn || Algoritmit.rajausVertailu(value, osa, 'perusteenOsa', 'nimi');
         return osa.$filtered;
       };
+      var filterer = function(osa, lapsellaOn) {
+        osa.$filtered = lapsellaOn || Algoritmit.rajausVertailu(value, osa, 'nimi');
+        return osa.$filtered;
+      };
       Algoritmit.kaikilleTutkintokohtaisilleOsille($scope.datat.opetus, filterer);
-      Algoritmit.kaikilleTutkintokohtaisilleOsille($scope.datat.sisalto, filterer);
+      Algoritmit.kaikilleTutkintokohtaisilleOsille($scope.datat.sisalto, sisaltoFilterer);
     };
 
-    $scope.avaaSuljeKaikki = function(sisalto, state) {
+    $scope.avaaSuljeKaikki = function() {
       var open = false;
-      Algoritmit.kaikilleLapsisolmuille(sisalto, 'lapset', function(lapsi) {
+      Algoritmit.kaikilleLapsisolmuille($scope.datat.opetus, 'lapset', function(lapsi) {
         open = open || lapsi.$opened;
       });
-      Algoritmit.kaikilleLapsisolmuille(sisalto, 'lapset', function(lapsi) {
-        lapsi.$opened = _.isUndefined(state) ? !open : state;
+      Algoritmit.kaikilleLapsisolmuille($scope.datat.sisalto, 'lapset', function(lapsi) {
+        lapsi.$opened = !open;
       });
+      Algoritmit.kaikilleLapsisolmuille($scope.datat.opetus, 'lapset', function(lapsi) {
+        lapsi.$opened = !open;
+      });
+    };
+
+    $scope.addTekstikappale = function () {
+      TekstikappaleOperations.add();
     };
   })
 
@@ -261,6 +158,7 @@ angular.module('eperusteApp')
   .controller('OsaAlueController', function ($scope, $q, $stateParams, PerusopetusService) {
     $scope.isVuosiluokka = $stateParams.osanTyyppi === PerusopetusService.VUOSILUOKAT;
     $scope.isOppiaine = $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET;
+    $scope.isOsaaminen = $stateParams.osanTyyppi === PerusopetusService.OSAAMINEN;
     $scope.versiot = {latest: true};
     $scope.dataObject = PerusopetusService.getOsa($stateParams);
   })

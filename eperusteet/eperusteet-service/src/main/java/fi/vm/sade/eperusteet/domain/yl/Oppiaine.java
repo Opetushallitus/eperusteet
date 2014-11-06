@@ -24,6 +24,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -65,7 +66,6 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     private Set<OppiaineenVuosiluokkaKokonaisuus> vuosiluokkakokonaisuudet;
 
     @Getter
-    @Setter
     @ManyToOne(optional = true)
     private Oppiaine oppiaine;
 
@@ -79,8 +79,13 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Set<Oppiaine> oppimaarat;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable
+    private Set<OpetuksenKohdealue> kohdealueet = new HashSet<>();
+
     /**
      * Palauttaa oppimäärät
+     *
      * @see #isKoosteinen()
      * @return oppimäärät (joukkoa ei voi muokata) tai null jos oppiaine ei ole koosteinen
      */
@@ -88,7 +93,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
         if (koosteinen == false) {
             return null;
         }
-        return oppimaarat == null ? Collections.<Oppiaine>emptySet() : Collections.unmodifiableSet(oppimaarat);
+        return oppimaarat == null ? new HashSet<Oppiaine>() : new HashSet<>(oppimaarat);
     }
 
     public Set<OppiaineenVuosiluokkaKokonaisuus> getVuosiluokkakokonaisuudet() {
@@ -101,7 +106,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
             vuosiluokkakokonaisuudet = new HashSet<>();
         }
         ovk.setOppiaine(this);
-        if ( vuosiluokkakokonaisuudet.add(ovk) ) {
+        if (vuosiluokkakokonaisuudet.add(ovk)) {
             this.muokattu();
         }
 
@@ -123,7 +128,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
             oppimaarat = new HashSet<>();
         }
         oppimaara.setOppiaine(this);
-        if ( oppimaarat.add(oppimaara) ) {
+        if (oppimaarat.add(oppimaara)) {
             this.muokattu();
         }
     }
@@ -133,10 +138,68 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
             throw new IllegalStateException("Oppiaine ei ole koosteinen eikä tue oppimääriä");
         }
         if (aine.getOppiaine().equals(this) && oppimaarat.remove(aine)) {
-            aine.setOppiaine(null);
+            aine.oppiaine = null;
         } else {
             throw new IllegalArgumentException("Oppimäärä ei kuulu tähän oppiaineeseen");
         }
+    }
+
+    public void setOppiaine(Oppiaine oppiaine) {
+        if (this.oppiaine == null || this.oppiaine.equals(oppiaine)) {
+            this.oppiaine = oppiaine;
+        } else {
+            throw new IllegalStateException("Oppiaineviittausta ei voi muuttaa");
+        }
+    }
+
+    public Set<OpetuksenKohdealue> getKohdealueet() {
+        return new HashSet<>(kohdealueet);
+    }
+
+    public void setKohdealueet(Set<OpetuksenKohdealue> kohdealueet) {
+        if (kohdealueet == null) {
+            this.kohdealueet.clear();
+        } else {
+            Set<OpetuksenKohdealue> added = new HashSet<>(kohdealueet.size());
+            //kohdealueita ei ole paljon (<10), joten O(n^2) OK tässä
+            for ( OpetuksenKohdealue k : kohdealueet ) {
+                added.add(addKohdealue(k));
+            }
+            //TODO: tarkista onko jokin poistettava kohdealue käytössä
+            this.kohdealueet.retainAll(added);
+        }
+    }
+
+    /**
+     * Lisää uuden kohdealueen. Jos samanniminen kohdealue on jo olemassa, palauttaa tämän.
+     *
+     * @param kohdealue
+     * @return Lisätty kohdealue tai samanniminen olemassa oleva.
+     */
+    public OpetuksenKohdealue addKohdealue(OpetuksenKohdealue kohdealue) {
+        for (OpetuksenKohdealue k : kohdealueet) {
+            if (k.getNimi().equals(kohdealue.getNimi())) {
+                return k;
+            }
+        }
+        this.kohdealueet.add(kohdealue);
+        return kohdealue;
+    }
+
+    public void removeKohdealue(OpetuksenKohdealue kohdealue) {
+        this.kohdealueet.remove(kohdealue);
+    }
+
+    //hiberate javaassist proxy "workaround"
+    //ilman equals-metodia objectX.equals(proxy-objectX) on aina false
+    @Override
+    public boolean equals(Object other) {
+        return this == other;
+    }
+
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
     }
 
     public interface Strict {

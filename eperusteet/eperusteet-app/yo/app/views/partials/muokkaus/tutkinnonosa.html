@@ -46,6 +46,7 @@
   <versiotiedot ng-hide="editEnabled"></versiotiedot>
 
   <hr ng-show="editEnabled">
+
   <form name="tutkinnonOsaHeaderForm" role="form">
     <div class="non-collapsibles" ng-if="editEnabled">
       <div ng-show="isNew">
@@ -57,7 +58,7 @@
         <div class="clearfix"></div>
       </div>
       <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header'|kaanna}}*</label>
-      <input id="nimi-input" class="form-control" ng-model="editableTutkinnonOsa.nimi" localized required ng-change="nimiValidationError = false">
+      <input id="nimi-input" class="form-control" ng-model="editableTutkinnonOsa.nimi" localized required>
       <p class="alert alert-error" ng-show="(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError"
          kaanna>Nimi on pakollinen tieto</p>
       <div ng-if="suoritustapa !== 'naytto'">

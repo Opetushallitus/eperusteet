@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -30,6 +31,7 @@ import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.PerusteprojektiTyoryhma;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
@@ -37,6 +39,7 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
+import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -271,6 +274,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (projekti == null) {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
         }
+
+        // Tarkistetaan mahdolliset tilat
         updateStatus.setVaihtoOk(projekti.getTila().mahdollisetTilat(projekti.getPeruste().getTyyppi()).contains(tila));
         if ( !updateStatus.isVaihtoOk() ) {
             String viesti = "Tilasiirtymä tilasta '" + projekti.getTila().toString() + "' tilaan '" + tila.toString() + "' ei mahdollinen";
@@ -278,10 +283,23 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             return updateStatus;
         }
 
+        // Tarkistetaan että perusteella on nimi ainakin suomeksi
+        TekstiPalanen nimi = projekti.getPeruste().getNimi();
+        if (tila != ProjektiTila.POISTETTU && tila != ProjektiTila.LAADINTA
+            && (nimi == null || !nimi.getTeksti().containsKey(Kieli.FI) || nimi.getTeksti().get(Kieli.FI).isEmpty())) {
+            updateStatus.addStatus("perusteelta-puuttuu-nimi");
+            updateStatus.setVaihtoOk(false);
+        }
+
+        Set<String> tutkinnonOsienKoodit = new HashSet<>();
+
+        // Perusteen validointi
         if (projekti.getPeruste() != null && projekti.getPeruste().getSuoritustavat() != null
             && tila == ProjektiTila.VIIMEISTELY && projekti.getTila() == ProjektiTila.LAADINTA) {
             Validointi validointi;
+
             for (Suoritustapa suoritustapa : projekti.getPeruste().getSuoritustavat()) {
+                // Rakenteiden validointi
                 if (suoritustapa.getRakenne() != null) {
                     validointi = PerusteenRakenne.validoiRyhma(suoritustapa.getRakenne());
                     if (!validointi.ongelmat.isEmpty()) {
@@ -290,6 +308,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     }
                 }
 
+                // Vapaiden tutkinnon osien tarkistus
                 List<TutkinnonOsaViite> vapaatOsat = vapaatTutkinnonosat(suoritustapa);
                 if (!vapaatOsat.isEmpty()) {
                     List<LokalisoituTekstiDto> nimet = new ArrayList<>();
@@ -302,6 +321,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     updateStatus.setVaihtoOk(false);
                 }
 
+                // Tarkistetaan koodittomat tutkinnon osat
                 List<TutkinnonOsa> koodittomatTutkinnonOsat = koodittomatTutkinnonosat(suoritustapa);
                 if (!koodittomatTutkinnonOsat.isEmpty()) {
                     List<LokalisoituTekstiDto> nimet = new ArrayList<>();
@@ -314,6 +334,23 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     updateStatus.setVaihtoOk(false);
                 }
 
+                // Kerätään tutkinnon osien koodit
+                for (TutkinnonOsaViite tov : suoritustapa.getTutkinnonOsat()) {
+                    tutkinnonOsienKoodit.add(tov.getTutkinnonOsa().getKoodiArvo());
+                }
+            }
+
+            // Tarkistetaan perusteen tutkinnon osien koodien ja tutkintonimikkeiden yhteys
+            List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = perusteService.getTutkintonimikeKoodit(projekti.getPeruste().getId());
+            List<String> koodit = new ArrayList<>();
+            for (TutkintonimikeKoodiDto tnk : tutkintonimikeKoodit) {
+                if (tnk.getTutkinnonOsaArvo() != null) {
+                    koodit.add(tnk.getTutkinnonOsaArvo());
+                }
+            }
+            if (!tutkinnonOsienKoodit.containsAll(koodit)) {
+                updateStatus.addStatus("tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta");
+                updateStatus.setVaihtoOk(false);
             }
         }
 

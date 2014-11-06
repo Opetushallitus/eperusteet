@@ -52,12 +52,14 @@ import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.resource.config.EPerusteetMappingModule;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 /**
  *
  * @author teele1
  */
 @Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ArviointiServiceIT extends AbstractIntegrationTest {
 
     @Autowired
@@ -168,6 +170,7 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
         Resource resource = new ClassPathResource("material/invalid_arviointi.json");
         ArviointiDto dto = objectMapper.readValue(resource.getFile(), ArviointiDto.class);
         arviointiService.add(dto);
+        em.flush();
     }
 
     @Test(expected = ConstraintViolationException.class)
@@ -177,5 +180,6 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
         Resource resource = new ClassPathResource("material/invalid_arviointi2.json");
         ArviointiDto dto = objectMapper.readValue(resource.getFile(), ArviointiDto.class);
         arviointiService.add(dto);
+        em.flush();
     }
 }

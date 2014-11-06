@@ -1,20 +1,13 @@
 $sisalto-chevron-color: $brand-primary;
-$sisalto-chevron-size: 25px;
+$sisalto-chevron-size: 40px;
 $first-level-bg: #f1f1f1;
 $sisalto-hover-bg: #eee;
 .suoritustapa-valinta {
   margin-bottom: 5px;
 }
 .main-content {
-  .list-element-info {
-    margin: 5px 0 0 0;
-    color: #777;
-    font-weight: normal;
-    font-size: 95%;
-  }
   .sisalto-list-element:hover, .li:hover {
     background: $sisalto-hover-bg;
-    border: 1px solid #888;
   }
   .angular-ui-tree-nodes .angular-ui-tree-nodes {
     padding-left: 40px;
@@ -24,41 +17,50 @@ $sisalto-hover-bg: #eee;
   }
 }
 
+@mixin tablecell() {
+  display: table-cell;
+  vertical-align: middle;
+}
+
 .sisalto-list-element {
   min-height: 40px;
-  border: 1px solid #ccc;
-  padding: 4px 10px 4px 0;
-  margin: 0px;
-  margin-top: -1px;
-  -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  display: table;
+  width: 100%;
+  border-top: 1px solid #ccc;
   background-color: white;
-  &.striped {
-    background: $first-level-bg;
-    margin-top: 8px;
-  }
   h3 {
     margin: 0;
-    font-size: 120%;
+    font-size: 115%;
     font-weight: bold;
-    display: inline;
     strong {
       color: lighten($brand-primary, 15%);
     }
   }
   .draghandle {
-    float: left;
-    font-size: $sisalto-chevron-size;
-    width: $sisalto-chevron-size * 1.2;
+    @include tablecell();
+    font-size: $sisalto-chevron-size*0.5;
+    width: $sisalto-chevron-size;
+    height: $sisalto-chevron-size;
     cursor: move;
     color: #999;
   }
   .otsikko {
-    display: block;
+    outline: 0;
+    display: table-row;
     margin-left: $sisalto-chevron-size * 1.6;
     color: rgb(51,51,51);
     &:hover, & *:hover {
       text-decoration: none;
+    }
+    h3 {
+      @include tablecell();
+    }
+    .ryhma-info {
+      @include tablecell();
+    }
+    .muokattu-info {
+      @include tablecell();
+      text-align: right;
     }
 
     .badge-tyoryhma {
@@ -74,9 +76,15 @@ $sisalto-hover-bg: #eee;
     }
   }
   .chevron {
-    font-size: $sisalto-chevron-size;
-    width: $sisalto-chevron-size * 1.6;
-    float: left;
+    .ep-icon {
+      margin-left: 5px;
+      top: -2px;
+    }
+    display: table-cell;
+    vertical-align: middle;
+    font-size: $sisalto-chevron-size*0.5;
+    width: $sisalto-chevron-size;
+    height: $sisalto-chevron-size;
     padding: 0 0 0 6px;
     color: $sisalto-chevron-color;
     cursor: pointer;
@@ -107,24 +115,19 @@ $sisalto-hover-bg: #eee;
   .tutkinto {
     .usericon {
       position: relative;
-      top: 4px;
+      top: 5px;
     }
 
     .toolbar-input {
-      margin-top: 40px;
-      margin-left: auto;
-      margin-right: auto;
-      width: 40%;
+      margin-bottom: 5px;
+      max-width: 24em;
+    }
+    .open-close {
+      margin: 0 10px;
     }
     h2 {
-      border-bottom: 1px solid #ccc;
       padding-bottom: 7px;
       margin-bottom: 20px;
-
-      .buttons {
-        position: relative;
-        top: -8px;
-      }
     }
   }
   .rakenteen-muokkaus {

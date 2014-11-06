@@ -51,7 +51,7 @@ public abstract class PerusteenOsa
     implements Serializable, Mergeable<PerusteenOsa>, WithPerusteTila, ReferenceableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @ValidHtml(whitelist = WhitelistType.MINIMAL)

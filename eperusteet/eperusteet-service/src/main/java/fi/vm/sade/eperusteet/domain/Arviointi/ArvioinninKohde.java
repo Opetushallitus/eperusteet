@@ -54,7 +54,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 public class ArvioinninKohde implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
     private Long id;

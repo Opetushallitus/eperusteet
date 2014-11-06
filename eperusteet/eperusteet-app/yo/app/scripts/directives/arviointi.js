@@ -156,8 +156,8 @@ angular.module('eperusteApp')
         // Set focus to newly added field
         var parent = angular.element(event.currentTarget).closest('table');
         $timeout(function () {
-          var found = parent.find('input');
-          if (found) {
+          var found = parent.find('.form-control');
+          if (found.length > 0) {
             found[found.length-1].focus();
           }
         }, 100);

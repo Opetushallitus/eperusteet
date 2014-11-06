@@ -57,6 +57,10 @@ angular.module('eperusteApp', [
     $translateProvider.preferredLanguage(preferred);
     moment.lang(preferred);
   })
+  .config(function ($rootScopeProvider) {
+    // workaround for infdig with recursive tree structures
+    $rootScopeProvider.digestTtl(20);
+  })
   .config(function($httpProvider) {
     $httpProvider.interceptors.push(['$rootScope', '$q', 'SpinnerService', function($rootScope, $q, Spinner) {
         return {
@@ -97,6 +101,14 @@ angular.module('eperusteApp', [
   })
   // Lodash mixins and other stuff
   .run(function() {
+    _.mixin({ arraySwap: function(array, a, b) {
+      if (_.isArray(array) && _.size(array) > a && _.size(array) > b) {
+        var temp = array[a];
+        array[a] = array[b];
+        array[b] = temp;
+      }
+      return array;
+    }});
     _.mixin({ set: function(obj, field) {
       return function(value) {
         obj[field] = value;

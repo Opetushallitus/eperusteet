@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
+import com.google.common.base.Objects;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -43,4 +44,18 @@ public class RakenneOsa extends AbstractRakenneOsa {
     private TutkinnonOsaViite tutkinnonOsaViite;
 
     private boolean pakollinen;
+
+    @Override
+    public boolean isSame(AbstractRakenneOsa other) {
+
+        if ( !super.isSame(other) ) {
+            return false;
+        }
+
+        if ( other instanceof RakenneOsa ) {
+            final RakenneOsa ro = (RakenneOsa)other;
+            return Objects.equal(this.tutkinnonOsaViite, ro.getTutkinnonOsaViite());
+        }
+        return false;
+    }
 }
