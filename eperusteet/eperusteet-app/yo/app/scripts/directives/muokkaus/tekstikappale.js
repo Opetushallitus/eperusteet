@@ -180,22 +180,28 @@ angular.module('eperusteApp')
         function storeTree (sisalto, level) {
           level = level || 0;
           _.each(sisalto.lapset, function(lapsi) {
-            if (!_.isObject($scope.viitteet[lapsi.perusteenOsa.id])) {
-              $scope.viitteet[lapsi.perusteenOsa.id] = {};
+            if (lapsi.perusteenOsa) {
+              if (!_.isObject($scope.viitteet[lapsi.perusteenOsa.id])) {
+                $scope.viitteet[lapsi.perusteenOsa.id] = {};
+              }
+              $scope.viitteet[lapsi.perusteenOsa.id].viite = lapsi.id;
+              $scope.viitteet[lapsi.perusteenOsa.id].level = level;
+              if (sisalto.perusteenOsa) {
+                $scope.viitteet[lapsi.perusteenOsa.id].parent = sisalto.perusteenOsa.id;
+              }
+              storeTree(lapsi, level + 1);
             }
-            $scope.viitteet[lapsi.perusteenOsa.id].viite = lapsi.id;
-            $scope.viitteet[lapsi.perusteenOsa.id].level = level;
-            if (sisalto.perusteenOsa) {
-              $scope.viitteet[lapsi.perusteenOsa.id].parent = sisalto.perusteenOsa.id;
-            }
-            storeTree(lapsi, level + 1);
           });
+        }
+
+        function updateViitteet() {
+          $scope.viitteet = {};
+          storeTree($scope.sisalto);
         }
 
         $scope.tree = {
           init: function() {
-            $scope.viitteet = {};
-            storeTree($scope.sisalto);
+            updateViitteet();
           },
           get: function() {
             var ids = [];
