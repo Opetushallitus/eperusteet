@@ -74,9 +74,12 @@
       <a ng-href="{{urlGenerator({value: v})}}" class="tutkinnonosa-laatikko list-group-item"
         ng-repeat="v in model | orderBy:jarjestys:jarjestysOrder | mapFilter:comparisonFn">
         <div ng-hide="editoi" class="muokkaus" icon-role="forward"></div>
+        <div class="numero-wrapper" ng-class="{narrow: !kaytaJarjestysnumeroa}">
+          <span class="badge jarjestysnumero" ng-show="kaytaJarjestysnumeroa && v.jarjestys">{{v.jarjestys || '-' }}</span>
+        </div>
         <div class="otsikko">
-          <h3><span class="badge jarjestysnumero" ng-if="kaytaJarjestysnumeroa">{{ v.jarjestys || '-' }} </span>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</h3>
-          <div class="pienet-tiedot" ng-class="{ 'jarjestysnumerollinen': kaytaJarjestysnumeroa }">
+          <h3>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</h3>
+          <div class="pienet-tiedot">
               <div class="osan-laajuus" ng-if="hasLaajuus && v.laajuus">{{ v.laajuus }} {{ unit || '' | kaanna }}</div>
               <div ng-show="v.muokattu">{{ 'muokattu-viimeksi' | kaanna }}: {{ v.muokattu | aikaleima:'ago' }}</div>
           </div>
