@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state,
-      PerusopetusService, TekstikappaleOperations, Editointikontrollit, $stateParams) {
+      PerusopetusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot) {
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     TekstikappaleOperations.setPeruste($scope.peruste);
@@ -107,7 +107,9 @@ angular.module('eperusteApp')
         $scope.avaaSuljeKaikki(true);
       },
       save: function() {
-        // TODO
+        TekstikappaleOperations.updateViitteet($scope.peruste.sisalto, function () {
+          Notifikaatiot.onnistui('osien-rakenteen-päivitys-onnistui');
+        });
       },
       cancel: function() {
         $state.go($state.current.name, $stateParams, {

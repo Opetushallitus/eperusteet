@@ -73,13 +73,15 @@ angular.module('eperusteApp')
   .factory('PerusopetuksenSisalto', function ($resource, SERVICE_LOC) {
     var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/perusopetus/sisalto';
     return $resource(baseUrl + '/:osanId', {
-      osanId: '@id'
+      osanId: '@id',
+      perusteId: '@perusteId'
     }, {
       root: {method: 'GET', isArray: false, url: baseUrl},
       addChild: {
         method: 'POST',
         url: baseUrl + '/:osanId/lapset'
-      }
+      },
+      updateViitteet: {method: 'POST', url: baseUrl + '/:osanId'}
     });
   })
   .factory('Vuosiluokkakokonaisuudet', function ($resource, SERVICE_LOC) {

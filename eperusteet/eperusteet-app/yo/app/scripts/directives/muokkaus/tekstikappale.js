@@ -97,6 +97,27 @@ angular.module('eperusteApp')
         });
       }
     };
+
+    function mapSisalto(root) {
+      return {
+        id: root.id,
+        perusteenOsa: null,
+        lapset: _.map(root.lapset, mapSisalto)
+      };
+    }
+
+    this.updateViitteet = function (sisalto, successCb) {
+      var success = successCb || angular.noop;
+      var mapped = mapSisalto(sisalto);
+
+      if (YleinenData.isPerusopetus(peruste)) {
+        PerusopetusService.updateSisaltoViitteet(sisalto, mapped, successCb);
+      } else {
+        PerusteenOsaViitteet.update({
+          viiteId: sisalto.id
+        }, mapped, success, Notifikaatiot.serverCb);
+      }
+    };
   })
 
   .directive('muokkausTekstikappale', function() {
