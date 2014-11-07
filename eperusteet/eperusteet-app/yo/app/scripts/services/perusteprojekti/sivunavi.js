@@ -102,16 +102,24 @@ angular.module('eperusteApp')
     return $location.url().indexOf(tablessUrl) > -1;
   };
 
+  function ylMapper(osa, key, level) {
+    level = level || 0;
+    items.push({
+      depth: level,
+      label: _.has(osa, 'nimi') ? osa.nimi : osa.perusteenOsa.nimi,
+      link: [STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id, tabId: 0}],
+      isActive: isYlRouteActive
+    });
+    _.each(osa.oppimaarat, function (lapsi) {
+      ylMapper(lapsi, key, level + 1);
+    });
+  }
+
   function mapYL(osat, key) {
     _(osat).sortBy(function (osa) {
       return Kaanna.kaanna(osa.nimi);
     }).each(function (osa) {
-      items.push({
-        depth: 1,
-        label: _.has(osa, 'nimi') ? osa.nimi : osa.perusteenOsa.nimi,
-        link: [STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id, tabId: 0}],
-        isActive: isYlRouteActive
-      });
+      ylMapper(osa, key, 1);
     });
   }
 
