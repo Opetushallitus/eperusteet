@@ -20,6 +20,26 @@
 angular.module('eperusteApp')
   .run(function() {
     CKEDITOR.disableAutoInline = true;
+
+    // get path of directory ckeditor
+    var basePath = CKEDITOR.basePath;
+    basePath = basePath.substr(0, basePath.indexOf('bower_components/'));
+
+    //load external plugin
+    CKEDITOR.plugins.addExternal('abbr', basePath+'ckeditor-plugins/abbr/', 'plugin.js');
+
+    // config for toolbar, extraPlugins,...
+    /*CKEDITOR.editorConfig = function( config )
+    {
+       config.extraPlugins = 'helloworld';
+    //     Can use default toolbar or custom toolbar if you want
+    //   config.toolbar_Basic.push(['helloworld.btn']);
+       config.toolbar_MyToolbarSet =
+       [
+           ['Bold','Italic','-'],['helloworld.btn']
+       ];
+       config.toolbar_MyToolbarSet.push(['helloworld.btn']);
+    };*/
   })
   .constant('editorLayouts', {
     minimal:
@@ -40,7 +60,7 @@ angular.module('eperusteApp')
         { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
         { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
         { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
-        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link' ] },
+        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link','Abbr' ] },
         { name: 'styles', items : [ 'Format' ] },
         { name: 'tools', items : [ 'About' ] }
       ]
@@ -93,7 +113,7 @@ angular.module('eperusteApp')
         editor = CKEDITOR.inline(element[0], {
           toolbar: toolbarLayout,
           removePlugins: 'resize,elementspath,scayt,wsc',
-          extraPlugins: 'divarea,sharedspace',
+          extraPlugins: 'divarea,sharedspace,abbr',
           disallowedContent: 'br',
           language: 'fi',
           'entities_latin': false,
@@ -101,7 +121,8 @@ angular.module('eperusteApp')
             top: 'ck-toolbar-top'
           },
           readOnly: !editingEnabled,
-          title: false
+          title: false,
+          customData: 7033
         });
 
         // poistetaan enterin käyttö, jos kyseessä on yhden rivin syöttö
