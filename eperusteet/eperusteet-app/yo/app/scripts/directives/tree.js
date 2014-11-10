@@ -101,8 +101,11 @@ angular.module('eperusteApp')
             optiot +
           '</div>' +
           '<div ng-if="!rakenne._tutkinnonOsaViite" ng-class="{ \'pointer\': muokkaus }" class="bubble">' + optiot + '</div>' +
-          '<div ng-model="rakenne" ng-show="rakenne.kuvaus && rakenne.kuvaus[lang].length > 0" class="kuvaus">' +
-          '  <div class="kuvausteksti" ng-class="{ \'text-truncated\': !rakenne.$showKuvaus }">{{ rakenne.kuvaus | kaanna }}</div>' +
+          '<div ng-model="rakenne" ng-show="rakenne.osaamisala || (rakenne.kuvaus && rakenne.kuvaus[lang].length > 0)" class="kuvaus">' +
+          '  <div class="kuvausteksti" ng-class="{ \'text-truncated\': !rakenne.$showKuvaus }">' +
+          '    <div class="osaamisala" ng-show="rakenne.osaamisala"><b kaanna="osaamisala"></b>: {{ rakenne.osaamisala.nimi | kaanna }} ({{ rakenne.osaamisala.osaamisalakoodiArvo }})</div>' +
+          '    <p ng-show="rakenne.kuvaus && rakenne.kuvaus[lang].length > 0">{{ rakenne.kuvaus | kaanna }}</p>' +
+          '  </div>' +
           '  <div class="avausnappi" ng-click="rakenne.$showKuvaus = !rakenne.$showKuvaus" ng-attr-title="{{rakenne.$showKuvaus && (\'Piilota ryhmän kuvaus\'|kaanna) || (\'Näytä ryhmän kuvaus\'|kaanna)}}">' +
           '  <div class="avausnappi-painike">&hellip;</div></div>' +
           '</div>' +
