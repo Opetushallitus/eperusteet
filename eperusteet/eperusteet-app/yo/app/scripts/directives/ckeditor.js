@@ -21,25 +21,10 @@ angular.module('eperusteApp')
   .run(function() {
     CKEDITOR.disableAutoInline = true;
 
-    // get path of directory ckeditor
+    // load external plugins
     var basePath = CKEDITOR.basePath;
     basePath = basePath.substr(0, basePath.indexOf('bower_components/'));
-
-    //load external plugin
-    CKEDITOR.plugins.addExternal('abbr', basePath+'ckeditor-plugins/abbr/', 'plugin.js');
-
-    // config for toolbar, extraPlugins,...
-    /*CKEDITOR.editorConfig = function( config )
-    {
-       config.extraPlugins = 'helloworld';
-    //     Can use default toolbar or custom toolbar if you want
-    //   config.toolbar_Basic.push(['helloworld.btn']);
-       config.toolbar_MyToolbarSet =
-       [
-           ['Bold','Italic','-'],['helloworld.btn']
-       ];
-       config.toolbar_MyToolbarSet.push(['helloworld.btn']);
-    };*/
+    CKEDITOR.plugins.addExternal('termi', basePath + 'ckeditor-plugins/termi/', 'plugin.js');
   })
   .constant('editorLayouts', {
     minimal:
@@ -60,12 +45,12 @@ angular.module('eperusteApp')
         { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
         { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
         { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
-        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link','Abbr' ] },
+        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link','Termi' ] },
         { name: 'styles', items : [ 'Format' ] },
         { name: 'tools', items : [ 'About' ] }
       ]
   })
-  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts, $timeout) {
+  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts, $timeout, Kaanna) {
     return {
       priority: 10,
       restrict: 'A',
@@ -113,7 +98,7 @@ angular.module('eperusteApp')
         editor = CKEDITOR.inline(element[0], {
           toolbar: toolbarLayout,
           removePlugins: 'resize,elementspath,scayt,wsc',
-          extraPlugins: 'divarea,sharedspace,abbr',
+          extraPlugins: 'divarea,sharedspace,termi',
           disallowedContent: 'br',
           language: 'fi',
           'entities_latin': false,
@@ -122,7 +107,10 @@ angular.module('eperusteApp')
           },
           readOnly: !editingEnabled,
           title: false,
-          customData: 7033
+          customData: {
+            id: 7033,
+            kaanna: Kaanna.kaanna
+          }
         });
 
         // poistetaan enterin käyttö, jos kyseessä on yhden rivin syöttö

@@ -215,3 +215,9 @@ button.icon-only {
     margin: 0;
   }
 }
+
+.cke_editable {
+  abbr[data-viite] {
+    text-decoration: underline;
+  }
+}
