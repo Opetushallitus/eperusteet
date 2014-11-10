@@ -54,8 +54,8 @@ public class MuodostumisSaanto implements Serializable {
 
     public MuodostumisSaanto(MuodostumisSaanto other) {
         if (other != null) {
-            this.laajuus = new Laajuus(other.getLaajuus());
-            this.koko = new Koko(other.getKoko());
+            this.laajuus = other.getLaajuus() == null ? null : new Laajuus(other.getLaajuus());
+            this.koko = other.getKoko() == null ? null : new Koko(other.getKoko());
         }
     }
 
