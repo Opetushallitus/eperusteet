@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
 .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q,
-    $state, $location, YleinenData, PerusopetusService, Kaanna) {
+    $state, $location, YleinenData, PerusopetusService, Kaanna, $timeout) {
   var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
   var STATE_OSA = 'root.perusteprojekti.suoritustapa.perusteenosa';
   var STATE_OSALISTAUS = 'root.perusteprojekti.osalistaus';
@@ -138,18 +138,17 @@ angular.module('eperusteApp')
       items = _.clone(AM_ITEMS);
       processNode(data.projekti.peruste.sisalto);
     }
-    callbacks.itemsChanged(items);
+    $timeout(function () {
+      callbacks.itemsChanged(items);
+    });
   };
 
   var load = function () {
     data.projekti = service.getProjekti();
     data.projekti.peruste = service.getPeruste();
     data.projekti.peruste.sisalto = service.getSisalto();
-    var oldTyyppi = perusteenTyyppi;
     perusteenTyyppi = YleinenData.isPerusopetus(data.projekti.peruste) ? 'YL' : 'AM';
-    if (oldTyyppi !== perusteenTyyppi) {
-      callbacks.typeChanged(perusteenTyyppi);
-    }
+    callbacks.typeChanged(perusteenTyyppi);
     buildTree();
   };
 
