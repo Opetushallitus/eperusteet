@@ -62,7 +62,7 @@ angular.module('eperusteApp')
       $scope.tyoryhmaMap = tyoryhmaMap;
     });
 
-    Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) {
+    function korjaaLapsi(lapsi) {
       switch (lapsi.perusteenOsa.tunniste) {
         case 'rakenne':
           lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.muodostumissaannot');
@@ -71,7 +71,9 @@ angular.module('eperusteApp')
         default:
           lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', { perusteenOsanTyyppi: 'tekstikappale', perusteenOsaViiteId: lapsi.id, versio: '' });
       }
-    });
+    }
+
+    Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', korjaaLapsi);
 
     $scope.aakkosJarjestys = function(data) { return Kaanna.kaanna(data.perusteenOsa.nimi); };
 
@@ -158,6 +160,7 @@ angular.module('eperusteApp')
             }, function(po) {
               pov.perusteenOsa = po;
               lisaaLapset(pov, lapsi.lapset, function() {
+                korjaaLapsi(pov);
                 $scope.peruste.sisalto.lapset.push(pov);
                 next();
               });

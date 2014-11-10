@@ -42,7 +42,9 @@ angular.module('eperusteApp')
         perusteId: valittuPeruste.id,
         suoritustapa: suoritustapa
       }, function(res) {
-        $scope.sisalto = res.lapset;
+        $scope.sisalto = _.reject(res.lapset, function(lapsi) {
+          return lapsi.perusteenOsa.tunniste === 'rakenne';
+        });
       }, Notifikaatiot.serverCb);
     };
 

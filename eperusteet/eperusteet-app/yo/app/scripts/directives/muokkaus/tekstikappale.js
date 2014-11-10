@@ -136,9 +136,6 @@ angular.module('eperusteApp')
         KommentitByPerusteenOsa, PerusteenOsanTyoryhmat, Tyoryhmat, PerusteprojektiTyoryhmat,
         TEXT_HIERARCHY_MAX_DEPTH, TekstikappaleOperations) {
 
-
-        console.log('tekstikappale', $scope.tekstikappale);
-
         TekstikappaleOperations.setPeruste($scope.$parent.peruste);
         $scope.kaikkiTyoryhmat = [];
 
@@ -406,8 +403,8 @@ angular.module('eperusteApp')
           var nimi = Kaanna.kaanna($scope.tekstikappale.nimi);
 
           Varmistusdialogi.dialogi({
-            successCb: doDelete,
-            otsikko: 'poista-tekstikappale-otsikko',
+          successCb: doDelete,
+          otsikko: 'poista-tekstikappale-otsikko',
             teksti: Kaanna.kaanna('poista-tekstikappale-teksti', {nimi: nimi})
           })();
         };
