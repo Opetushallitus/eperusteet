@@ -144,35 +144,35 @@ angular.module('eperusteApp')
 
     $scope.fields =
       new Array({
-        path: 'tavoitteet',
+        path: 'tutkinnonOsa.tavoitteet',
         localeKey: 'tutkinnon-osan-tavoitteet',
         type: 'editor-area',
         localized: true,
         collapsible: true,
         order: 3
       },{
-        path: 'ammattitaitovaatimukset',
+        path: 'tutkinnonOsa.ammattitaitovaatimukset',
         localeKey: 'tutkinnon-osan-ammattitaitovaatimukset',
         type: 'editor-area',
         localized: true,
         collapsible: true,
         order: 4
       },{
-        path: 'ammattitaidonOsoittamistavat',
+        path: 'tutkinnonOsa.ammattitaidonOsoittamistavat',
         localeKey: 'tutkinnon-osan-ammattitaidon-osoittamistavat',
         type: 'editor-area',
         localized: true,
         collapsible: true,
         order: 7
       },{
-        path: 'arviointi.lisatiedot',
+        path: 'tutkinnonOsa.arviointi.lisatiedot',
         localeKey: 'tutkinnon-osan-arviointi-teksti',
         type: 'editor-text',
         localized: true,
         collapsible: true,
         order: 5
       },{
-        path: 'arviointi.arvioinninKohdealueet',
+        path: 'tutkinnonOsa.arviointi.arvioinninKohdealueet',
         localeKey: 'tutkinnon-osan-arviointi-taulukko',
         type: 'arviointi',
         collapsible: true,
