@@ -2,12 +2,11 @@
   <!-- tree.html -->
   <div id="osaamisala-varoitus" tooltip="{{'Osaamisalaryhmän alla ei voi olla toista osaamisalaryhmää.' | kaanna}}" tooltip-trigger="show"></div>
   <div ng-if="!lisataanUuttaOsaa" class="tree col-lg-6 col-md-8 col-xs-12">
+    <h2 kaanna="tutkinnon-rakenteen-kuvaus"></h2>
     <div ng-show="!muokkaus && !vanhempi">
-      <h2 kaanna="tutkinnon-rakenteen-kuvaus"></h2>
-      <span kaanna="rakenne.rakenne.kuvaus"></span>
+      <span>{{rakenne.rakenne.kuvaus | kaanna}}</span>
     </div>
     <div ng-show="muokkaus && !vanhempi">
-      <h2 kaanna="tutkinnon-rakenteen-kuvaus"></h2>
       <ml-input ng-if="rakenne.rakenne.kuvaus" ml-data="rakenne.rakenne.kuvaus" type="textarea"></ml-input>
     </div>
     <h2 kaanna="tutkinnon-rakenne"></h2>
