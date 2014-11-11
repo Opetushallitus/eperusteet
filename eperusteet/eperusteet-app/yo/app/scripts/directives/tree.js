@@ -29,8 +29,8 @@ angular.module('eperusteApp')
       return '' +
         '<span ng-if="rakenne._tutkinnonOsaViite && muokkaus">' + editointiIkoni + tosa + '</span>' +
         '<span ng-if="rakenne._tutkinnonOsaViite && !muokkaus">' + editointiIkoni +
-        '  <a ng-if="esitystilassa" href="" ui-sref="root.esitys.peruste.tutkinnonosa({ id: rakenne._tutkinnonOsaViite, suoritustapa: apumuuttujat.suoritustapa })">' + tosa + '</a>' +
-        '  <a ng-if="!esitystilassa" href="" ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite]._tutkinnonOsa, suoritustapa: apumuuttujat.suoritustapa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a>' +
+        '  <a ng-if="esitystilassa" ui-sref="root.esitys.peruste.tutkinnonosa({ id: rakenne._tutkinnonOsaViite, suoritustapa: apumuuttujat.suoritustapa })">' + tosa + '</a>' +
+        '  <a ng-if="!esitystilassa" ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaViiteId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].id, suoritustapa: apumuuttujat.suoritustapa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a>' +
         '</span>' +
         '<span class="pull-right" ng-if="rakenne._tutkinnonOsaViite && muokkaus"><a class="action-link" icon-role="remove" ng-click="poista(rakenne, vanhempi)"></a></span>' +
         '<span class="pull-right" ng-if="rakenne._tutkinnonOsaViite && muokkaus"><a class="action-link" icon-role="edit" ng-click="rakenneosaModaali(rakenne)"></a></span>' +
