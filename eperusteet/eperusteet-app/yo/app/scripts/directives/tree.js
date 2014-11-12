@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .directive('tree', function($compile) {
     function generoiOtsikko() {
-      var tosa = '{{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].nimi || "nimetön" | kaanna }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">, <b>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</b>{{ apumuuttujat.laajuusYksikko | kaanna }}</span>';
+      var tosa = '{{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].nimi || "nimetön" | kaanna }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">, <b>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</b> {{ apumuuttujat.laajuusYksikko | kaanna }}</span>';
       var editointiIkoni =
       '<span ng-click="togglaaPakollisuus(rakenne)">' +
         '  <span ng-show="!rakenne.pakollinen"><img src="images/tutkinnonosa.png" alt=""></span> ' +
