@@ -66,6 +66,7 @@ angular.module('eperusteApp')
 
     $scope.ok = function(uusiryhma) {
       if (uusiryhma) {
+        uusiryhma.osaamisala = _.isEmpty(uusiryhma.osaamisala) ? null : uusiryhma.osaamisala;
         if (uusiryhma.osat === undefined) {
           uusiryhma.osat = [];
         }
