@@ -149,5 +149,6 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
     public void removeTutkintonimikeKoodi(Long perusteId, Long tutkintonimikeKoodiId);
 
-
+    @PreAuthorize("isAuthenticated()")
+    public List<PerusteInfoDto> getAllPerusopetusInfo();
 }

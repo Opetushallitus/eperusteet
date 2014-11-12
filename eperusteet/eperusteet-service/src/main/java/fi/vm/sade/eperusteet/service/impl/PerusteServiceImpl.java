@@ -188,6 +188,20 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
+    public List<PerusteInfoDto> getAllPerusopetusInfo() {
+        List<Peruste> res = new ArrayList<>();
+        List<Peruste> perusopetus = perusteet.findAllByKoulutustyyppi("koulutustyyppi_9999");
+        for (Peruste p : perusopetus) {
+            if (p.getTila() == PerusteTila.VALMIS) {
+                res.add(p);
+            }
+        }
+
+        return mapper.mapAsList(res, PerusteInfoDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Page<PerusteDto> findBy(PageRequest page, PerusteQuery pquery) {
         Page<Peruste> result = perusteet.findBy(page, pquery);
         return new PageDto<>(result, PerusteDto.class, page, mapper);

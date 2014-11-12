@@ -71,6 +71,13 @@ public class PerusteController {
         return service.findByInfo(p, pquery);
     }
 
+    @RequestMapping(value = "/perusopetus", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<PerusteInfoDto>> getAllPerusopetus() {
+        List<PerusteInfoDto> poi = service.getAllPerusopetusInfo();
+        return new ResponseEntity<>(poi, HttpStatus.OK);
+    }
+
     @RequestMapping(method = GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseBody
     @ApiOperation(value = "perusteiden haku")

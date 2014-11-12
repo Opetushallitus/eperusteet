@@ -47,7 +47,7 @@ angular.module('eperusteApp')
       },
       {
         'label': 'perusopetus',
-        'state': 'root.selaus.perusopetus',
+        'state': 'root.selaus.perusopetuslista',
         'helper': 'selaa-perusteita'
       },
       {

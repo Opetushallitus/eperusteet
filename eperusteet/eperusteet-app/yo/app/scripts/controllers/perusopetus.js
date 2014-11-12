@@ -192,22 +192,49 @@ angular.module('eperusteApp')
   })
 
   /* protokoodia --> */
-  .controller('PerusopetusController', function($scope, FilterWatcher, PerusOpetusTiedot, $timeout) {
-    $scope.isNaviVisible = function () { return true; };
+  .controller('PerusopetusController', function($q, $scope, FilterWatcher, PerusOpetusTiedot, $timeout, sisalto, OppiaineenVuosiluokkakokonaisuudet) {
+    $scope.isNaviVisible = _.constant(true);
+    $scope.peruste = sisalto[0];
+    $scope.osaamiset = _.zipBy(sisalto[1], 'id');
+    $scope.oppiaineet = _.zipBy(sisalto[2], 'id');
+    $scope.sisallot = _.zipBy(sisalto[3], 'id');
+    console.log($scope.sisallot);
+    $scope.oppiaineenvk = {};
+    $scope.oppiainesisaltoJarjestys = ['tehtava', 'tyotavat', 'ohjaus', 'arviointi'];
+    $scope.vuosiluokkakokonaisuudet = _(sisalto[3]).each(function(s) { s.vuosiluokat.sort(); })
+                                                   .sortBy(function(s) { return _.first(s.vuosiluokat); })
+                                                   .value();
+    $scope.vuosiluokkakokonaisuudetMap = _.zipBy($scope.vuosiluokkakokonaisuudet, 'id');
 
-    var applyFilters = function ($event) {
-      if ($event) {
-        $event.preventDefault();
-        $event.stopPropagation();
-      }
-      _.each($scope.navi.sections, function (mainsection) {
-        if (mainsection.model) {
-          _.each(mainsection.model.sections, function (section) {
-            $scope.filtterit[section.title] = _(section.items).filter('$selected').pluck('value').value();
-          });
-        }
-      });
-      setPage();
+    $scope.opvk = function(oppiaineId, field) {
+      var x = $scope.oppiaineenvk[oppiaineId][$scope.filtterit.valittuKokonaisuus];
+      return field ? x[field] : x;
+    };
+
+    $q.all(_.map(_.keys($scope.oppiaineet), function(oaId) {
+      return OppiaineenVuosiluokkakokonaisuudet.query({
+        perusteId: $scope.peruste.id,
+        oppiaineId: oaId
+      }).$promise;
+    }))
+    .then(function(res) {
+      $scope.oppiaineenvk = _.zipObject(_.map($scope.oppiaineet, 'id'), _.map(res, function(op) {
+        return _.zipBy(op, 'vuosiluokkaKokonaisuus');
+      }));
+      console.log($scope.osaamiset);
+      console.log($scope.oppiaineet);
+      // console.log(PerusOpetusTiedot.oppiaineet);
+      console.log($scope.vuosiluokkakokonaisuudetMap);
+      console.log($scope.oppiaineenvk);
+      $scope.valitseVuosiluokka(_.first($scope.vuosiluokkakokonaisuudet));
+    });
+
+    $scope.filtterit = {
+      moodi: 'sivutus',
+    };
+
+    $scope.valitseVuosiluokka = function(vuosiluokka) {
+      $scope.filtterit.valittuKokonaisuus = vuosiluokka.id;
     };
 
     $scope.navi = {
@@ -227,47 +254,64 @@ angular.module('eperusteApp')
           model: {
             oneAtATime: false,
             sections: [
-              {
-                title: 'Vuosiluokat',
-                apply: applyFilters,
-                $open: true,
-                $condensed: true,
-                items: _.map(PerusOpetusTiedot.luokat, function (luokka) {
-                  return {label: 'Vuosiluokka ' + luokka, value: luokka};
-                })
-              },
-              {
-                title: 'Oppiaineet',
-                items: PerusOpetusTiedot.oppiaineet,
-                $open: true,
-                apply: applyFilters
-              },
-              {
-                title: 'Oppiaineen sisällöt',
-                $open: true,
-                items: PerusOpetusTiedot.oppiaineenSisallot,
-                apply: applyFilters
-              },
-            ]
+            //   {
+            //   title: 'Vuosiluokat',
+            //   apply: applyFilters,
+            //   $open: true,
+            //   $condensed: true,
+            //   items: _.map(PerusOpetusTiedot.luokat, function (luokka) {
+            //     return {label: 'Vuosiluokka ' + luokka, value: luokka};
+            //   })
+            // },
+            {
+              title: 'Oppiaineet',
+              items: _.map(_.values($scope.oppiaineet), function(oa) {
+                return {
+                  depth: 0,
+                  label: oa.nimi,
+                  value: oa.id
+                };
+              }),
+              $open: true,
+              apply: applyFilters
+            }, {
+              title: 'Oppiaineen sisällöt',
+              $open: true,
+              items: PerusOpetusTiedot.oppiaineenSisallot,
+              apply: applyFilters
+            }]
           }
-        },
-        {
+        }, {
           title: 'Liitteet',
           id: 'liitteet'
         },
       ]
     };
 
-    $scope.filtterit = {moodi: 'sivutus', sivu: 1};
+    var applyFilters = function($event) {
+      if ($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+      }
+      _.each($scope.navi.sections, function (mainsection) {
+        if (mainsection.model) {
+          _.each(mainsection.model.sections, function (section) {
+            $scope.filtterit[section.title] = _(section.items).filter('$selected')
+                                                              .pluck('value')
+                                                              .value();
+          });
+        }
+      });
+      setPage();
+    };
+
     var setPage = function () {
       // set page to first valid page
       if ($scope.filtterit.moodi === 'sivutus' && !_.isEmpty($scope.filtterit.Vuosiluokat)) {
         $scope.filtterit.sivu = $scope.filtterit.Vuosiluokat[0];
       }
     };
-    $scope.$watch('filtterit.moodi', function () {
-      setPage();
-    });
+    $scope.$watch('filtterit.moodi', setPage);
 
     // Watch which main section is currently open
     $scope.$watch(function () {
@@ -448,8 +492,9 @@ angular.module('eperusteApp')
       {label: 'Musiikki'},
       {label: 'Liikunta'},
     ];
+
     this.oppiaineet = _.map(oppiainelista, function (oppiaine) {
-      oppiaine.depth = oppiaine.depth || 0;
+      oppiaine.depth = oppiaine.depth || 0;
       oppiaine.value = oppiaine.label;
       return oppiaine;
     });
