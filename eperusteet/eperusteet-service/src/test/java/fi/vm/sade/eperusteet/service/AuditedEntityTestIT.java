@@ -37,6 +37,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import org.junit.Ignore;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -97,8 +98,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         assertEquals(user1, teksti2.getLuoja());
         assertEquals(user2, teksti2.getMuokkaaja());
         assertEquals(luotu, teksti2.getLuotu());
-        assertTrue(teksti2.getMuokattu().after(luotu));
-        assertTrue(teksti2.getMuokattu().after(luotu));
+        assertTrue(teksti2.getMuokattu().compareTo(luotu)>=0);
     }
 
     @Test

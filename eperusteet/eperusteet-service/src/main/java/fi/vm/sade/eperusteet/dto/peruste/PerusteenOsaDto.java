@@ -44,17 +44,37 @@ public abstract class PerusteenOsaDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private PerusteenOsaTunniste tunniste;
 
+    public PerusteenOsaDto() {
+    }
+
+    public PerusteenOsaDto( LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
+        this.nimi = nimi;
+        this.tila = tila;
+        this.tunniste = tunniste;
+    }
+
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "osanTyyppi")
     @JsonSubTypes(value = {
         @JsonSubTypes.Type(value = TekstiKappaleDto.class),
         @JsonSubTypes.Type(value = TutkinnonOsaDto.class)})
     public static abstract class Laaja extends PerusteenOsaDto {
+
+        public Laaja() {
+        }
+        public Laaja(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
+            super(nimi, tila, tunniste);
+        }
     }
 
     @Getter
     @Setter
     public static class Suppea extends PerusteenOsaDto {
         private String osanTyyppi;
+        public Suppea() {
+        }
+        public Suppea(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
+            super(nimi, tila, tunniste);
+        }
     }
 
 }

@@ -412,11 +412,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     private List<TutkinnonOsaViite> vapaatTutkinnonosat(Suoritustapa suoritustapa) {
         List<TutkinnonOsaViite> viiteList = new ArrayList<>();
-
         RakenneModuuli rakenne = suoritustapa.getRakenne();
         if (rakenne != null) {
             for (TutkinnonOsaViite viite : getViitteet(suoritustapa)) {
-                if (!rakenne.isInRakenne(viite, true) && (viite.getPoistettu() == null || !viite.getPoistettu())) {
+                if (!rakenne.isInRakenne(viite, true) && !viite.isPoistettu()) {
                     viiteList.add(viite);
                 }
             }
@@ -442,7 +441,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
             @Override
             public boolean apply(TutkinnonOsaViite input) {
-                return Boolean.FALSE.equals(input.getPoistettu());
+                return Boolean.FALSE.equals(input.isPoistettu());
             }
 
         });

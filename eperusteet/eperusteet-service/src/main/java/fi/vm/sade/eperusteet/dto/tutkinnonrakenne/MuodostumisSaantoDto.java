@@ -39,6 +39,11 @@ public class MuodostumisSaantoDto {
         this.laajuus = null;
     }
 
+    public MuodostumisSaantoDto(MuodostumisSaantoDto.Laajuus laajuus, MuodostumisSaantoDto.Koko koko) {
+        this.koko = koko;
+        this.laajuus = laajuus;
+    }
+
     @Getter
     @Setter
     public static class Laajuus {
