@@ -17,39 +17,41 @@ European Union Public Licence for more details.
 <div>
   <revert-note object="tekstikappale" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
 
-  <div class="action-buttons">
-    <div class="floater" ng-attr-title="{{lockNotification}}">
-      <button ng-disabled="isLocked" ng-hide="editableTekstikappale.tila !== 'luonnos' || editEnabled || !versiot.latest"
-              ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
+  <div class="part-header-wrapper">
+    <div class="action-buttons">
+      <div class="floater" ng-attr-title="{{lockNotification}}">
+        <button ng-disabled="isLocked" ng-hide="editableTekstikappale.tila !== 'luonnos' || editEnabled || !versiot.latest"
+                ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
+                oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+      </div>
+      <button ng-disabled="!canAddLapsi() && tekstikappale.tila !== 'valmis'" ng-hide="editEnabled || !versiot.latest"
+              ng-click="addLapsi()" class="floater btn btn-default" icon-role="add" kaanna="lisaa-aliotsikko"
               oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+      <button ng-show="!editEnabled && tekstikappale.tila === 'valmis'" ng-click="kopioiMuokattavaksi()"
+              class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"
+              oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+
+      <button ng-if="tekstikappale.tila === 'valmis' || (editEnabled && !isNew)" class="btn btn-danger floater" ng-click="poista()" icon-role="remove" kaanna="'poista'"></button>
+      <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
     </div>
-    <button ng-disabled="!canAddLapsi() && tekstikappale.tila !== 'valmis'" ng-hide="editEnabled || !versiot.latest"
-            ng-click="addLapsi()" class="floater btn btn-default" icon-role="add" kaanna="lisaa-aliotsikko"
-            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-    <button ng-show="!editEnabled && tekstikappale.tila === 'valmis'" ng-click="kopioiMuokattavaksi()"
-            class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"
-            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
 
-    <button ng-if="tekstikappale.tila === 'valmis' || (editEnabled && !isNew)" class="btn btn-danger floater" ng-click="poista()" icon-role="remove" kaanna="'poista'"></button>
-    <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
+    <div id="tekstikappale-crumbs" ng-if="!editEnabled">
+      <ol class="breadcrumb" ng-if="crumbs">
+        <li ng-repeat="crumb in crumbs">
+          <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaViiteId: crumb.id})">{{crumb.name | kaanna}}</a>
+        </li>
+      </ol>
+    </div>
+
+    <h1 ng-if="editEnabled">
+      <span ng-show="isNew" kaanna>luonti-tekstikappale</span>
+      <span ng-show="!isNew" kaanna>muokkaus-tekstikappale</span>
+    </h1>
+    <h1 ng-if="!editEnabled">{{tekstikappale.nimi | kaanna}}</h1>
   </div>
-
-  <div id="tekstikappale-crumbs" ng-if="!editEnabled">
-    <ol class="breadcrumb" ng-if="crumbs">
-      <li ng-repeat="crumb in crumbs">
-        <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaViiteId: crumb.id})">{{crumb.name | kaanna}}</a>
-      </li>
-    </ol>
-  </div>
-
-  <h1 ng-if="editEnabled">
-    <span ng-show="isNew" kaanna>luonti-tekstikappale</span>
-    <span ng-show="!isNew" kaanna>muokkaus-tekstikappale</span>
-  </h1>
-
+  
   <div class="tekstikappale" ng-class="{'edit-tekstikappale': editEnabled, 'max-sm-leveys': !editEnabled}">
     <div ng-if="!editEnabled">
-      <h1>{{tekstikappale.nimi | kaanna}}</h1>
       <versiotiedot ng-hide="editEnabled"></versiotiedot>
       <div class="tyoryhma-rivi">
         <span class="tyoryhma" ng-repeat="tr in tyoryhmat">

@@ -219,3 +219,11 @@ button.icon-only {
 abbr[data-viite] {
   border-bottom: 1px dotted #999;
 }
+
+.part-header-wrapper {
+  .action-buttons {
+    margin-left: 5px;
+    position: static;
+    float: right;
+  }
+}
