@@ -227,3 +227,7 @@ abbr[data-viite] {
     float: right;
   }
 }
+
+strong.ep-match {
+  color: lighten($brand-primary, 15%);
+}

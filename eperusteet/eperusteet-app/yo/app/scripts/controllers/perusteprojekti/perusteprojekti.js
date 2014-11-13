@@ -175,6 +175,14 @@ angular.module('eperusteApp')
           PerusteProjektiSivunavi.setVisible(false);
         }]
       })
+      .state('root.perusteprojekti.termisto', {
+        url: '/termisto',
+        templateUrl: 'views/partials/perusteprojekti/termisto.html',
+        controller: 'TermistoController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(false);
+        }]
+      })
       .state('root.perusteprojektiwizard', {
         url: '/perusteprojekti',
         template: '<div ui-view></div>',

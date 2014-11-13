@@ -711,6 +711,16 @@
 
     "luonti-projektin-nimi-ohje": "Anna projektin nimi muodossa '[Nimi] tutkinnon perusteprojekti' (esim. 'Rakennustuotannon ammattitutkinnon perusteprojekti').",
     "luonti-paatospaivamaara-ohje": "Lisää perustetyöryhmän asettamisen päätöspäivämäärä.",
-    "luonti-diaarinumero-ohje": "Lisää perustetyöryhmän asettamispäätöksen diaarinumero."
+    "luonti-diaarinumero-ohje": "Lisää perustetyöryhmän asettamispäätöksen diaarinumero.",
+
+    "perusteen-termisto": "Termistö",
+    "perusteen-termisto-ohje": "Tekstikappaleissa voidaan viitata termiin ja näyttää sen selitys. Termistö on perustekohtainen.",
+    "ei-termeja": "Yhtään termiä ei ole määritelty.",
+    "loydetty-termien-maara": "Löydettyjen termien määrä:",
+    "poistetaanko-termi": "Poistetaanko termi?",
+    "muokkaa-termia": "Muokkaa termiä",
+    "uusi-termi": "Lisää uusi termi",
+    "termi": "Termi",
+    "selitys": "Selitys"
 
 }
