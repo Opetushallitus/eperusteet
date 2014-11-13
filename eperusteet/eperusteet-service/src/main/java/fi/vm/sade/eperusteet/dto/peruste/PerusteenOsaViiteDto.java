@@ -37,10 +37,25 @@ public class PerusteenOsaViiteDto<R extends PerusteenOsaDto> {
     private EntityReference perusteenOsaRef;
     private R perusteenOsa;
 
+    public PerusteenOsaViiteDto() {
+
+    }
+
+    public PerusteenOsaViiteDto(R perusteenOsa) {
+        this.perusteenOsa = perusteenOsa;
+    }
+
     @Getter
     @Setter
     public static class Matala extends PerusteenOsaViiteDto<PerusteenOsaDto.Laaja> {
         private List<EntityReference> lapset;
+
+        public Matala() {
+        }
+
+        public Matala(PerusteenOsaDto.Laaja perusteenOsa) {
+            super(perusteenOsa);
+        }
     }
 
     @Getter
@@ -54,5 +69,5 @@ public class PerusteenOsaViiteDto<R extends PerusteenOsaDto> {
 
     public static class Suppea extends Puu<PerusteenOsaDto.Suppea, Suppea> {
     }
-    
+
 }

@@ -648,7 +648,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         for (Suoritustapa suoritustapa : suoritustavat) {
             if (suoritustapa.getSuoritustapakoodi().equals(suoritustapakoodi)) {
                 for (TutkinnonOsaViite viite : suoritustapa.getTutkinnonOsat()) {
-                    if (viite.getPoistettu() == null || !viite.getPoistettu()) {
+                    if (!viite.isPoistettu()) {
                         osat.add(viite);
                     }
                 }

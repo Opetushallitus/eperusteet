@@ -72,7 +72,7 @@ public class TutkinnonOsaViite implements ReferenceableEntity, Serializable {
 
     @Getter
     @Setter
-    private Boolean poistettu;
+    private boolean poistettu;
 
     @Getter
     @Setter
