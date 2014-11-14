@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 import fi.vm.sade.eperusteet.domain.Mergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -83,64 +84,55 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
     @Override
     public void mergeState(RakenneModuuli moduuli) {
         if (moduuli != null) {
-            // FIXME: Tämä räjähtää jos olioon tulee lisää kenttiä
-            this.setOsat(moduuli.osat);
-            this.nimi = moduuli.nimi;
-            this.rooli = moduuli.rooli;
+            //XXX: mergeState ei ole rekursiivinen?
+            this.setOsat(moduuli.getOsat());
+            this.nimi = moduuli.getNimi();
+            this.rooli = moduuli.getRooli();
             this.setKuvaus(moduuli.getKuvaus());
-            if (this.muodostumisSaanto != null) {
-                this.muodostumisSaanto.mergeState(moduuli.getMuodostumisSaanto());
-            } else {
-                this.muodostumisSaanto = moduuli.getMuodostumisSaanto();
-            }
-            this.osaamisala = moduuli.osaamisala;
+            this.muodostumisSaanto = moduuli.getMuodostumisSaanto() == null ? null : new MuodostumisSaanto(moduuli.getMuodostumisSaanto());
+            this.osaamisala = moduuli.getOsaamisala();
 
             assert (isSame(moduuli));
         }
 
     }
 
+    @Override
+    public boolean isSame(AbstractRakenneOsa moduuli) {
+
+        if ((moduuli instanceof RakenneModuuli)) {
+            return isSame((RakenneModuuli)moduuli);
+        }
+        return false;
+    }
+
     public boolean isSame(RakenneModuuli moduuli) {
 
-        if (moduuli == null) {
+        if ( !super.isSame(moduuli) ) {
             return false;
         }
 
-        TekstiPalanen moduuliNimi = moduuli.getNimi();
-        if (!Objects.equals(this.nimi,moduuliNimi)) {
+        if (!Objects.equals(this.nimi,moduuli.getNimi())) {
             return false;
         }
 
         if ((this.osat == null && moduuli.getOsat() != null) || (this.osat != null && moduuli.getOsat() == null)) {
             return false;
         }
-        if ((this.muodostumisSaanto == null && moduuli.getMuodostumisSaanto() != null) || (this.muodostumisSaanto != null && moduuli.getMuodostumisSaanto()
-            == null)) {
+
+        if ( !Objects.equals(this.muodostumisSaanto, moduuli.getMuodostumisSaanto()) ) {
             return false;
         }
 
-        if (moduuli.osat != null) {
+        if (this.osat != null && moduuli.getOsat() != null) {
             if (this.osat.size() != moduuli.getOsat().size()) {
                 return false;
-            } else {
-                for (int i = 0; i < this.osat.size(); i++) {
-                    if (this.osat.get(i) instanceof RakenneModuuli && moduuli.getOsat().get(i) instanceof RakenneModuuli) {
-                        if (((RakenneModuuli) this.osat.get(i)).isSame((RakenneModuuli) moduuli.getOsat().get(i)) == false) {
-                            return false;
-                        }
-                    } else if (this.osat.get(i) instanceof RakenneOsa && moduuli.getOsat().get(i) instanceof RakenneOsa) {
-                        if (!((RakenneOsa) this.osat.get(i)).getTutkinnonOsaViite().equals(((RakenneOsa) moduuli.getOsat().get(i)).getTutkinnonOsaViite())) {
-                            return false;
-                        }
-                    }
-                }
             }
-        }
 
-        if (this.muodostumisSaanto != null) {
-            if (!this.muodostumisSaanto.equals(moduuli.muodostumisSaanto)) {
-                System.out.println("Muodostumissääntö false");
-                return false;
+            Iterator<AbstractRakenneOsa> l = this.getOsat().iterator();
+            Iterator<AbstractRakenneOsa> r = moduuli.getOsat().iterator();
+            while (l.hasNext() && r.hasNext()) {
+                if ( !l.next().isSame(r.next()) ) return false;
             }
         }
 

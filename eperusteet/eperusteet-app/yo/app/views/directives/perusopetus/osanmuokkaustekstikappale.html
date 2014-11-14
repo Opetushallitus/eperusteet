@@ -1,6 +1,12 @@
+<!-- osanmuokkaustekstikappale.html -->
+
 <div>
-  <h1>{{getTitle() | kaanna}}</h1>
-  <div class="tekstikappale edit-tekstikappale">
+  <div class="action-buttons" ng-show="!editMode">
+    <button class="btn btn-default" ng-click="edit()" icon-role="edit" kaanna="'muokkaa'"></button>
+  </div>
+  <h1 ng-show="editMode">{{getTitle() | kaanna}}</h1>
+  <h1 ng-hide="editMode">{{model.otsikko | kaanna}}</h1>
+  <div ng-if="editMode" class="tekstikappale edit-tekstikappale">
     <div perusopetus-muokkaus-info></div>
     <div class="list-group-item">
       <h3 kaanna="muokkaus-teksikappaleen-nimi-header"></h3>
@@ -12,5 +18,9 @@
       <div class="list-group-item-text" ng-model="model.teksti" ckeditor editing-enabled="true"
           editor-placeholder="muokkaus-tekstikappaleen-teksti-placeholder" localized></div>
     </div>
+  </div>
+  <div ng-if="!editMode" class="tekstikappale">
+    <div perusopetus-muokkaus-info></div>
+    <div ng-bind-html="valitseKieli(model.teksti) | unsafe"></div>
   </div>
 </div>

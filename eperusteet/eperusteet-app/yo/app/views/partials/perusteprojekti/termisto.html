@@ -1,0 +1,35 @@
+<!-- termisto.html -->
+
+<div class="action-buttons">
+  <button class="btn btn-default" icon-role="add" kaanna="lisaa" ng-click="edit()"></button>
+</div>
+
+<h1>{{'perusteen-termisto' | kaanna}} <ohje teksti="perusteen-termisto-ohje"></ohje></h1>
+
+<div class="termisto-rajaus">
+  <rajaus model="search.phrase" callback="search.changed(value)" placeholder="rajaa-tuloksia"></rajaus>
+</div>
+
+<dl class="termisto" ng-if="termisto.length">
+  <dt ng-repeat-start="termi in filtered | startFrom:paginate.perPage*(paginate.current-1) | limitTo:paginate.perPage">
+      <span ep-highlight="search.phrase" kaanna="termi.termi"></span>
+      <span class="actions">
+        <a class="action-link" icon-role="edit" ng-click="edit(termi)" ng-attr-title="{{'muokkaa'|kaanna}}"></a>
+        <a class="action-link" icon-role="remove" ng-click="delete(termi)" ng-attr-title="{{'poista'|kaanna}}"></a>
+      </span>
+  </dt>
+  <dd ng-repeat-end>
+    <div ng-bind-html="valitseKieli(termi.selitys) | unsafe" ep-highlight="search.phrase"></div>
+  </dd>
+</dl>
+
+<p class="termisto-maara">
+  <span ng-show="termisto.length > 0">{{'loydetty-termien-maara'|kaanna}} <strong>{{filtered.length}}</strong></span>
+</p>
+
+<pagination ng-show="termisto.length > 0" ng-model="paginate.current"
+            total-items="filtered.length" items-per-page="paginate.perPage"></pagination>
+
+<p ng-show="termisto.length === 0" kaanna="ei-termeja"></p>
+
+<div class="spacer"></div>

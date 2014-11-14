@@ -25,6 +25,9 @@ angular.module('eperusteApp')
       osanId: '@id'
     });
   })
+  .factory('PerusteenOsaViite', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat/:viiteId');
+  })
   .factory('PerusteTutkinnonosat', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat', {
       perusteId: '@id',
@@ -32,6 +35,14 @@ angular.module('eperusteApp')
     }, {
       get: { method: 'GET', isArray: true },
       update: { method: 'PUT' }
+    });
+  })
+  .factory('PerusteTutkintonimikekoodit', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/tutkintonimikekoodit/:nimikeId', {
+      perusteId: '@id',
+      nimikeId: '@id',
+    }, {
+      get: { method: 'GET', isArray: true },
     });
   })
   .factory('PerusteRakenteet', function($resource, SERVICE_LOC) {
@@ -57,6 +68,20 @@ angular.module('eperusteApp')
       perusteId: '@id'
     }, {
       info: { method: 'GET', url: SERVICE_LOC + '/perusteet/info' }
+    });
+  })
+  .factory('PerusopetuksenSisalto', function ($resource, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/perusopetus/sisalto';
+    return $resource(baseUrl + '/:osanId', {
+      osanId: '@id',
+      perusteId: '@perusteId'
+    }, {
+      root: {method: 'GET', isArray: false, url: baseUrl},
+      addChild: {
+        method: 'POST',
+        url: baseUrl + '/:osanId/lapset'
+      },
+      updateViitteet: {method: 'POST', url: baseUrl + '/:osanId'}
     });
   })
   .factory('Vuosiluokkakokonaisuudet', function ($resource, SERVICE_LOC) {

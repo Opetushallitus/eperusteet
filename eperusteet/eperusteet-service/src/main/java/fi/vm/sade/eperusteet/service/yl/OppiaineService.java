@@ -15,10 +15,13 @@
  */
 package fi.vm.sade.eperusteet.service.yl;
 
+import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import java.util.List;
+import java.util.Set;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -35,13 +38,22 @@ public interface OppiaineService {
     List<OppiaineSuppeaDto> getOppimaarat(@P("perusteId") Long perusteId, Long oppiaineId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    OppiaineDto getOppiaine(@P("perusteId") Long perusteId, Long oppiaineId);
+    OppiaineDto getOppiaine(@P("perusteId") long perusteId, long oppiaineId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    OppiaineDto getOppiaine(@P("perusteId") long perusteId, long oppiaineId, int revisio);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    List<Revision> getOppiaineRevisions(@P("perusteId") long perusteId, long oppiaineId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    OppiaineDto revertOppiaine(@P("perusteId") long perusteId, long oppiaineId, int revisio);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     OppiaineDto updateOppiaine(@P("perusteId") Long perusteId, OppiaineDto dto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    OppiaineDto deleteOppiaine(@P("perusteId") Long perusteId, Long oppiaineId);
+    void deleteOppiaine(@P("perusteId") Long perusteId, Long oppiaineId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     OppiaineenVuosiluokkaKokonaisuusDto addOppiaineenVuosiluokkaKokonaisuus(@P("perusteId") Long perusteId, Long oppiaineId, OppiaineenVuosiluokkaKokonaisuusDto dto);
@@ -53,6 +65,9 @@ public interface OppiaineService {
     OppiaineenVuosiluokkaKokonaisuusDto updateOppiaineenVuosiluokkaKokonaisuus(@P("perusteId") Long perusteId, Long oppiaineId, OppiaineenVuosiluokkaKokonaisuusDto dto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    OppiaineenVuosiluokkaKokonaisuusDto deleteOppiaineenVuosiluokkaKokonaisuus(@P("perusteId") Long perusteId, Long oppiaineId, Long vuosiluokkaKokonaisuusId);
+    void deleteOppiaineenVuosiluokkaKokonaisuus(@P("perusteId") Long perusteId, Long oppiaineId, Long vuosiluokkaKokonaisuusId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    Set<OpetuksenKohdealueDto> updateKohdealueet(@P("perusteId") Long perusteId, Long oppiaineId, Set<OpetuksenKohdealueDto> kohdealueet);
 
 }

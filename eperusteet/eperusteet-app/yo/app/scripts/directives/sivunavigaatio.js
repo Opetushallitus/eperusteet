@@ -335,7 +335,7 @@ angular.module('eperusteApp')
         scope.$watch('epHighlight', function (value) {
           matcher = new RegExp('(' + value + ')', 'i');
           var text = element.text();
-          element.html(text.replace(matcher, '<strong>$1</strong>'));
+          element.html(text.replace(matcher, '<strong class="ep-match">$1</strong>'));
         });
       }
     };

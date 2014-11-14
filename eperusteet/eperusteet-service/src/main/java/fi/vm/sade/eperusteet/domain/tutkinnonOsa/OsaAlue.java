@@ -50,7 +50,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
     private Long id;

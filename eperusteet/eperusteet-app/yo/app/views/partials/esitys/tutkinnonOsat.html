@@ -9,11 +9,11 @@
         <li ui-sref="root.esitys.peruste.tutkinnonosa({ id: v.id })"
             class="tutkinnonosa-laatikko list-group-item" ng-repeat="v in tutkinnonOsat | mapFilter:rajaaTutkinnonOsia">
             <div ng-hide="editoi" class="muokkaus" icon-role="forward"></div>
-            <div class="otsikko">
+            <div class="otsikko otsikko-esitys">
                 <h3>
                     <a href="" ui-sref="root.esitys.peruste.tutkinnonosa({ id: v.id })">{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</a>
                 </h3>
-                <div style="padding-top: 10px;" class="pienet-tiedot">
+                <div class="pienet-tiedot">
                     <div class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && v.laajuus">{{ v.laajuus }} {{ yksikko || '' | kaanna }}</div>
                 </div>
             </div>

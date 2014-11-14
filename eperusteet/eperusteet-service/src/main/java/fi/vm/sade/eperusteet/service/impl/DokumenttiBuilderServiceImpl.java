@@ -47,7 +47,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -270,8 +269,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                             doc,
                             peruste,
                             // TODO: jostain muualta???
-                            messages.translate("docgen.tutkinnon_muodostuminen.title", kieli)
-                            + tapa.getSuoritustapakoodi(),
+                            messages.translate("docgen.tutkinnon_muodostuminen.title", kieli),
                             depth,
                             tapa.getSuoritustapakoodi(),
                             kieli));
@@ -298,6 +296,13 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         titleElement.appendChild(doc.createTextNode(title));
         returnElement.appendChild(titleElement);
 
+        String kuvaus = getTextString(rakenne.getKuvaus(), kieli);
+        if (StringUtils.isNotEmpty(kuvaus)) {
+            Element para = doc.createElement("para");
+            addMarkupToElement(doc, para, kuvaus);
+            returnElement.appendChild(para);
+        }
+
         addRakenneOsaRec(returnElement, rakenne, doc, kieli, 0);
 
         return returnElement;
@@ -314,6 +319,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             MuodostumisSaanto muodostumisSaanto = rakenneModuuli.getMuodostumisSaanto();
             String kokoTeksti = getKokoTeksti(muodostumisSaanto, kieli);
             String laajuusTeksti = getLaajuusTeksti(muodostumisSaanto, kieli);
+
+            String kuvaus = getTextString(rakenneModuuli.getKuvaus(), kieli);
 
             // TODO: yksiköt, kappaleet
             if (kokoTeksti != null) {
@@ -347,12 +354,16 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 tbody.appendChild(row);
                 Element entry = doc.createElement("entry");
                 entry.setAttribute("align", "center");
-                Element emphasis = doc.createElement("emphasis");
-                emphasis.setAttribute("role", "bold");
-                emphasis.appendChild(doc.createTextNode(nimi.toUpperCase()));
+                Element emphasis = newBoldElement(doc, nimi.toUpperCase());
                 entry.appendChild(emphasis);
-                row.appendChild(entry);
 
+                if (StringUtils.isNotEmpty(kuvaus)) {
+                    Element para = doc.createElement("para");
+                    para.appendChild(doc.createTextNode(kuvaus));
+                    entry.appendChild(para);
+                }
+
+                row.appendChild(entry);
                 element = table;
 
             } else if (depth == 2) {
@@ -360,31 +371,27 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 Element tgroup = doc.createElement("tgroup");
                 tgroup.setAttribute("cols", "1");
                 parent.appendChild(tgroup);
-                Element thead = doc.createElement("thead");
-                tgroup.appendChild(thead);
+
+                Element tbody = doc.createElement("tbody");
+                tgroup.appendChild(tbody);
                 Element hrow = doc.createElement("row");
                 ProcessingInstruction pi = doc.createProcessingInstruction("dbfo", null);
                 pi.setData("bgcolor=\"#EEEEEE\"");
                 hrow.appendChild(pi);
-                thead.appendChild(hrow);
+                tbody.appendChild(hrow);
                 Element hentry = doc.createElement("entry");
-                hentry.appendChild(doc.createTextNode(nimi));
+                hentry.setAttribute("align", "center");
+                Element emphasis = newBoldElement(doc, nimi);
+                hentry.appendChild(emphasis);
                 hrow.appendChild(hentry);
 
-                Element tbody = doc.createElement("tbody");
-                tgroup.appendChild(tbody);
-                element = tbody;
-
-                // sanity check: tbody on oltava ja se ei saa olla tyhjä
-                // normistihan tilannetta, jossa on tyhjä osalista ei pitäisi
-                // tulla, mutta joku voi haluta luoda pdf:n ennen kuin rakenne-
-                // puu on kunnossa eikä haluta, että luonti räjähtää
-                if (rakenneModuuli.getOsat().isEmpty()) {
-                    Element emptyRow = doc.createElement("row");
-                    tbody.appendChild(emptyRow);
-                    Element emptyEntry = doc.createElement("entry");
-                    emptyRow.appendChild(emptyEntry);
+                if (StringUtils.isNotEmpty(kuvaus)) {
+                    Element para = doc.createElement("para");
+                    para.appendChild(doc.createTextNode(kuvaus));
+                    hentry.appendChild(para);
                 }
+
+                element = tbody;
 
             } else if (depth == 3) {
                 // toka taso row ja entry, elementiks entry
@@ -392,8 +399,15 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 parent.appendChild(row);
 
                 Element entry = doc.createElement("entry");
-                entry.appendChild(doc.createTextNode(nimi));
+                Element emphasis = newBoldElement(doc, nimi);
+                entry.appendChild(emphasis);
                 row.appendChild(entry);
+
+                if (StringUtils.isNotEmpty(kuvaus)) {
+                    Element para = doc.createElement("para");
+                    para.appendChild(doc.createTextNode(kuvaus));
+                    entry.appendChild(para);
+                }
 
                 element = doc.createElement("itemizedlist");
                 if (!rakenneModuuli.getOsat().isEmpty()) {
@@ -402,7 +416,23 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             } else {
                 // moduulin nimi:
                 Element nimiListItem = doc.createElement("listitem");
-                nimiListItem.appendChild(doc.createTextNode(nimi));
+                Element emphasis = newBoldElement(doc, nimi);
+
+                if (StringUtils.isNotEmpty(kuvaus)) {
+
+                    Element sl = doc.createElement("simplelist");
+                    Element mem1 = doc.createElement("member");
+                    mem1.appendChild(emphasis);
+                    Element mem2 = doc.createElement("member");
+                    mem2.appendChild(doc.createTextNode(kuvaus));
+
+                    sl.appendChild(mem1);
+                    sl.appendChild(mem2);
+                    nimiListItem.appendChild(sl);
+                } else {
+                    nimiListItem.appendChild(emphasis);
+                }
+
                 parent.appendChild(nimiListItem);
 
                 element = doc.createElement("itemizedlist");
@@ -426,12 +456,13 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             if (laajuus != null) {
                 laajuusStr = laajuus.stripTrailingZeros().toPlainString();
                 if (laajuusYksikko == LaajuusYksikko.OSAAMISPISTE) {
-                    yks = messages.translate("laajuus.osp", kieli);
+                    yks = messages.translate("docgen.laajuus.osp", kieli);
                 } else {
-                    yks = messages.translate("laajuus.ov", kieli);
+                    yks = messages.translate("docgen.laajuus.ov", kieli);
                 }
             }
             String nimi = getTextString(rakenneOsa.getTutkinnonOsaViite().getTutkinnonOsa().getNimi(), kieli);
+            String kuvaus = getTextString(rakenneOsa.getKuvaus(), kieli);
 
             String refid = "tutkinnonosa" + rakenneOsa.getTutkinnonOsaViite().getTutkinnonOsa().getId();
             Element xref = doc.createElement("xref");
@@ -442,10 +473,19 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
             StringBuilder nimiBldr = new StringBuilder();
             nimiBldr.append(" ").append(nimi);
-            if (!laajuusStr.isEmpty()) {
+            // TODO: jotain fiksumpaa kuin verrata "0.00":aan?
+            if (!laajuusStr.isEmpty() && !laajuusStr.equals("0.00")) {
                 nimiBldr.append(", ").append(laajuusStr).append(" ").append(yks);
             }
+
             linkElement.appendChild(doc.createTextNode(nimiBldr.toString()));
+
+            if (rakenneOsa.isPakollinen()) {
+                String glyph = messages.translate("docgen.rakenneosa.pakollinen.glyph", kieli);
+                Element em = newBoldElement(doc, glyph);
+                linkElement.appendChild(doc.createTextNode(", "));
+                linkElement.appendChild(em);
+            }
 
             // voi veljet...
             if (depth == 1) {
@@ -453,12 +493,15 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 // tänne pitäisi joutua vain vähän oudossa tilanteessa, jossa
                 // ylimmälle tasolle on pistetty tutkinnonosa ryhmä-elementin
                 // sijasta
-                // tehdään siis vain esim tylsästi para-elementti
+                // tehdään siis vain esim tylsästi para-elementti ja lihavoitu
+                // teksti.
                 Element para = doc.createElement("para");
-                para.appendChild(xref);
-                para.appendChild(linkElement);
+                Element em = newBoldElement(doc);
+                em.appendChild(xref);
+                em.appendChild(linkElement);
+                para.appendChild(em);
                 parent.appendChild(para);
-
+                para.appendChild(doc.createTextNode(kuvaus));
             } else if (depth == 2) {
                 // parent on tällä syvyydellä aina informaltable
                 Element tgroup = doc.createElement("tgroup");
@@ -466,6 +509,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 Element tbody = doc.createElement("tbody");
                 Element row = doc.createElement("row");
                 Element entry = doc.createElement("entry");
+                Element para = doc.createElement("para");
+                para.appendChild(doc.createTextNode(kuvaus));
 
                 parent.appendChild(tgroup);
                 tgroup.appendChild(tbody);
@@ -473,20 +518,39 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 row.appendChild(entry);
                 entry.appendChild(xref);
                 entry.appendChild(linkElement);
+                entry.appendChild(para);
             } else if (depth == 3) {
                 // parent on tällä syvyydellä aina tbody
                 Element row = doc.createElement("row");
                 Element entry = doc.createElement("entry");
+                Element para = doc.createElement("para");
+                para.appendChild(doc.createTextNode(kuvaus));
+
                 parent.appendChild(row);
                 row.appendChild(entry);
                 entry.appendChild(xref);
                 entry.appendChild(linkElement);
+                entry.appendChild(para);
             } else if (depth >= 4) {
                 // parent on tällä syvyydellä itemizedlist
                 Element listitem = doc.createElement("listitem");
                 parent.appendChild(listitem);
-                listitem.appendChild(xref);
-                listitem.appendChild(linkElement);
+
+                if (StringUtils.isEmpty(kuvaus)) {
+                    listitem.appendChild(xref);
+                    listitem.appendChild(linkElement);
+                } else {
+                    Element slist = doc.createElement("simplelist");
+                    Element mem1 = doc.createElement("member");
+                    mem1.appendChild(xref);
+                    mem1.appendChild(linkElement);
+                    Element mem2 = doc.createElement("member");
+                    mem2.appendChild(doc.createTextNode(kuvaus));
+                    slist.appendChild(mem1);
+                    slist.appendChild(mem2);
+                    listitem.appendChild(slist);
+                }
+
             } else {
                 LOG.error("RakenneOsa tuntemattomalla syvyydellä {}", depth);
             }
@@ -584,7 +648,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         for (Suoritustapa suoritustapa : suoritustavat) {
             if (suoritustapa.getSuoritustapakoodi().equals(suoritustapakoodi)) {
                 for (TutkinnonOsaViite viite : suoritustapa.getTutkinnonOsat()) {
-                    if (viite.getPoistettu() == null || !viite.getPoistettu()) {
+                    if (!viite.isPoistettu()) {
                         osat.add(viite);
                     }
                 }
@@ -709,21 +773,34 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             }
 
             String otsikkoTeksti = getTextString(ka.getOtsikko(), kieli);
-            Element kaSection = doc.createElement("section");
-            Element kaSectionTitle = doc.createElement("title");
-            kaSectionTitle.appendChild(doc.createTextNode(otsikkoTeksti));
-            kaSection.appendChild(kaSectionTitle);
-            arviointiSection.appendChild(kaSection);
 
-            // bundle each kohde into same kohdealue table, each kohde will
-            // have their title on one spanned row.
+            // Runnotaan jokainen kohde samaan taulukkoon, kukin kohde omalle
+            // tgroup-ryhmänään ja niiden otsikko spännätyllä rivillä.
+            // Arvioinnin kohteen otsikko taulukon alkuun omalla rivillään,
+            // jotta dokumentin sektiointihierarkiasta ei tule liian syvä
             Element kaTable = doc.createElement("informaltable");
             arviointiSection.appendChild(kaTable);
 
-            // initial implementation:
-            // lets have each kohde as a table of their own, like in
-            // website so that each osaamistaso with its kiteerit is on
-            //its own row
+            // Otsikkorivi arvioinninkohdealuetaulukkoon
+            Element katgroup = doc.createElement("tgroup");
+            katgroup.setAttribute("cols", "1");
+            kaTable.appendChild(katgroup);
+            Element kathead = doc.createElement("tbody");
+            katgroup.appendChild(kathead);
+            Element katheadRow = doc.createElement("row");
+            kathead.appendChild(katheadRow);
+            ProcessingInstruction katheadpi = doc.createProcessingInstruction("dbfo", null);
+            katheadpi.setData("bgcolor=\"#AAAAAA\"");
+            katheadRow.appendChild(katheadpi);
+            Element katheadEntry = doc.createElement("entry");
+            katheadEntry.setAttribute("align", "center");
+            katheadRow.appendChild(katheadEntry);
+            Element bold = newBoldElement(doc);
+            bold.appendChild(doc.createTextNode(otsikkoTeksti.toUpperCase()));
+            katheadEntry.appendChild(bold);
+
+            // kukin arvioinninkohde omaan tgroupiinsa, kukin osaamistaso
+            // omalla rivillään
             List<ArvioinninKohde> arvioinninKohteet = ka.getArvioinninKohteet();
             for (ArvioinninKohde kohde : arvioinninKohteet) {
                 String kohdeTeksti = getTextString(kohde.getOtsikko(), kieli);
@@ -941,7 +1018,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             kokoBuilder.append(max.toString());
         }
 
-        String yks = messages.translate("koko.kpl", kieli);
+        String yks = messages.translate("docgen.koko.kpl", kieli);
         kokoBuilder.append(" ");
         kokoBuilder.append(yks);
         return kokoBuilder.toString();
@@ -966,9 +1043,9 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             laajuusBuilder.append(max.toString());
         }
 
-        String yks = messages.translate("laajuus.ov", kieli);
+        String yks = messages.translate("docgen.laajuus.ov", kieli);
         if (laajuus.getYksikko() == LaajuusYksikko.OSAAMISPISTE) {
-            yks = messages.translate("laajuus.osp", kieli);
+            yks = messages.translate("docgen.laajuus.osp", kieli);
         }
 
         laajuusBuilder.append(" ");
@@ -976,4 +1053,15 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         return laajuusBuilder.toString();
     }
 
+    private Element newBoldElement(Document doc) {
+        Element emphasis = doc.createElement("emphasis");
+        emphasis.setAttribute("role", "strong");
+        return emphasis;
+    }
+
+    private Element newBoldElement(Document doc, String teksti) {
+        Element emphasis = newBoldElement(doc);
+        emphasis.appendChild(doc.createTextNode(teksti));
+        return emphasis;
+    }
 }

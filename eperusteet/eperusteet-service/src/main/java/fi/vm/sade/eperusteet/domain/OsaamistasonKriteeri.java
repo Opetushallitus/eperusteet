@@ -51,7 +51,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 public class OsaamistasonKriteeri implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
     private Long id;

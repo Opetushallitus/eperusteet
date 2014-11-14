@@ -196,21 +196,19 @@ angular.module('eperusteApp')
     function getYlStructure() {
       // TODO replace with one resource call that fetches the whole structure
       var promises = [];
-      var promise;
       _.each(PerusopetusService.LABELS, function (key) {
         var osat = PerusopetusService.getOsat(key);
-        if (osat.$promise) {
-          promise = osat.$promise;
-        } else {
-          var deferred = $q.defer();
-          deferred.resolve(osat);
-          promise = deferred.promise;
-        }
+        var promise = osat.$promise;
         promise.then(function (data) {
           ylTiedot[key] = data;
         });
         promises.push(promise);
       });
+      var sisaltoPromise = PerusopetusService.getSisalto().$promise;
+      sisaltoPromise.then(function (data) {
+        ylTiedot.sisalto = data;
+      });
+      promises.push(sisaltoPromise);
       return $q.all(promises);
     }
 
@@ -228,8 +226,8 @@ angular.module('eperusteApp')
       } else {
         getYlStructure().then(function () {
           ylDefer.resolve();
+          deferred.resolve(ylTiedot.sisalto);
         });
-        deferred.resolve();
       }
       return $q.all([deferred.promise, ylDefer.promise]);
     };
@@ -277,7 +275,8 @@ angular.module('eperusteApp')
       PerusteProjektiService.setSuoritustapa(stateParams.suoritustapa);
       var perusteenSisaltoDeferred = $q.defer();
 
-      if (forced || (peruste.suoritustavat !== null && peruste.suoritustavat.length > 0)) {
+      if (forced || YleinenData.isPerusopetus(peruste) ||
+          (peruste.suoritustavat !== null && peruste.suoritustavat.length > 0)) {
         self.haeSisalto(peruste.id, stateParams.suoritustapa).then(function() {
           perusteenSisaltoDeferred.resolve();
         }, function(virhe) {

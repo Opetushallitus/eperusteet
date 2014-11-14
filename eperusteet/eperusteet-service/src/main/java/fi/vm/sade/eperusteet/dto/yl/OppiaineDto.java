@@ -31,6 +31,7 @@ public class OppiaineDto extends OppiaineBaseDto {
     private Optional<TekstiOsaDto> tehtava;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Set<OppiaineSuppeaDto> oppimaarat;
+    private Set<OpetuksenKohdealueDto> kohdealueet;
     private Set<OppiaineenVuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet;
 
 }

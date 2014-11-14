@@ -354,14 +354,6 @@ hr.versioraja {
   margin-top: 0px;
   margin-bottom: 20px;
 }
-.tekstikappale {
-  h3 {
-    margin-top: 0;
-  }
-  .list-group-item {
-    border: 0;
-  }
-}
 $sisalto-min-height: 450px;
 .tekstikappale, .tutkinnonosa-sisalto {
   min-height: $sisalto-min-height;
@@ -369,24 +361,10 @@ $sisalto-min-height: 450px;
 .tutkinnonosa-sisalto {
   min-height: $sisalto-min-height - 240px;
 }
-.edit-tekstikappale {
-  max-width: 1000px;
-  margin-left: auto;
-  margin-right: auto;
-}
 
 .dropdown-menu {
   .disabled-link, .disabled-link:hover {
     color: #ddd;
-  }
-}
-#tekstikappale-crumbs .breadcrumb {
-  padding-left: 0;
-  li {
-    max-width: 20em;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
   }
 }
 

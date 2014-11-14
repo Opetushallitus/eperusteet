@@ -118,4 +118,3 @@ angular.module('eperusteApp')
       kaikilleTutkintokohtaisilleOsille: kaikilleTutkintokohtaisilleOsille,
     };
   });
-

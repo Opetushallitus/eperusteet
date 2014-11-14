@@ -16,48 +16,77 @@
 
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.TilaUpdateStatus.Status;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.MuodostumisSaantoDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Ongelma;
+import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  *
  * @author harrik
  */
-@Transactional
 @DirtiesContext
 public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
 
@@ -67,15 +96,33 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     private EntityManager em;
     @Autowired
     private PerusteprojektiService service;
+    @Autowired
+    private PerusteService perusteService;
+    @Autowired
+    private PerusteenOsaService perusteenOsaService;
+    @Autowired
+    @Dto
+    private DtoMapper mapper;
 
-    private Perusteprojekti projekti;
-    private Perusteprojekti projektiPohja;
+  /*  private Perusteprojekti projekti;
     private Peruste peruste;
     private TekstiKappale tekstikappale;
     private TutkinnonOsa osa;
-    private Suoritustapa naytto;
+    private Suoritustapa naytto;*/
 
+    private final String ryhmaId = "1.2.246.562.28.11287634288";
+    private final LaajuusYksikko yksikko = LaajuusYksikko.OSAAMISPISTE;
+    private final String yhteistyotaho = TestUtils.uniikkiString();
+    private final String tehtava = TestUtils.uniikkiString();
+    private final PerusteTyyppi tyyppi = PerusteTyyppi.NORMAALI;
+    private final String koulutustyyppi = "koulutustyyppi_12";
+
+    private  TransactionTemplate transactionTemplate;
+
+    @Autowired
+    PlatformTransactionManager transactionManager;
     public PerusteprojektiServiceTilaIT() {
+
     }
 
     @BeforeClass
@@ -88,43 +135,6 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
 
     @Before
     public void setUp() {
-
-        projekti = new Perusteprojekti();
-        projekti.setDiaarinumero("12345");
-        projekti.setNimi("Testi projekti");
-        projekti.setTila(ProjektiTila.LAADINTA);
-
-        naytto = new Suoritustapa();
-        PerusteenOsaViite sisalto = new PerusteenOsaViite();
-        tekstikappale = new TekstiKappale();
-        tekstikappale.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "testi_tekstikappale"));
-        tekstikappale.setTeksti(TestUtils.tekstiPalanenOf(Kieli.FI, "Hodor, hodor - hodor, hodor. Hodor hodor hodor! Hodor, hodor, hodor. Hodor hodor - hodor hodor. Hodor. Hodor. Hodor hodor hodor hodor? Hodor hodor hodor; hodor hodor... Hodor hodor hodor... Hodor hodor hodor. Hodor. "));
-        tekstikappale.setTila(PerusteTila.LUONNOS);
-        em.persist(tekstikappale);
-        sisalto.setPerusteenOsa(tekstikappale);
-        naytto.setSisalto(sisalto);
-        em.persist(sisalto);
-        naytto.setSuoritustapakoodi(Suoritustapakoodi.NAYTTO);
-        naytto.setTutkinnonOsat(new HashSet<TutkinnonOsaViite>());
-        em.persist(naytto);
-        naytto.setRakenne(luoValidiRakenne());
-
-        peruste = new Peruste();
-        peruste.setSuoritustavat(new HashSet<Suoritustapa>());
-        peruste.getSuoritustavat().add(naytto);
-        peruste.setTila(PerusteTila.LUONNOS);
-        peruste.setTyyppi(PerusteTyyppi.NORMAALI);
-        peruste.setNimi(TekstiPalanen.of(Kieli.FI, "Nimi"));
-
-        projekti.setPeruste(peruste);
-        em.persist(peruste);
-
-        //projekti.getPeruste().getSuoritustapa(Suoritustapakoodi.NAYTTO).setRakenne(luoValidiRakenne());
-
-
-        repo.save(projekti);
-        em.flush();
-
     }
 
     @After
@@ -132,214 +142,426 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Rollback(true)
     public void testUpdateTilaLaadintaToKommentointi() {
-        TilaUpdateStatus status = service.updateTila(projekti.getId(), ProjektiTila.KOMMENTOINTI);
-        assertTrue(status.isVaihtoOk());
-        assertNull(status.getInfot());
-        assertTrue(repo.getOne(projekti.getId()).getTila().equals(ProjektiTila.KOMMENTOINTI));
-        assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(PerusteTila.LUONNOS));
-        assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(PerusteTila.LUONNOS));
-        assertTrue(em.find(TutkinnonOsa.class, osa.getId()).getTila().equals(PerusteTila.LUONNOS));
+        final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.LAADINTA, null, PerusteTila.LUONNOS);
+        PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
+        TutkinnonOsaViiteDto osaDto = luoTutkinnonOsa(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+
+        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.KOMMENTOINTI);
+
+        transactionTemplate = new TransactionTemplate(transactionManager);
+        transactionTemplate.execute(new TransactionCallback() {
+            // the code in this method executes in a transactional context
+            @Override
+            public Object doInTransaction(TransactionStatus transactionStatus) {
+                Perusteprojekti pp = repo.findOne(projektiDto.getId());
+                assertTrue(status.isVaihtoOk());
+                assertNull(status.getInfot());
+                assertTrue(pp.getTila().equals(ProjektiTila.KOMMENTOINTI));
+                assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
+                for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
+                    commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.LUONNOS);
+                    commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.LUONNOS);
+                }
+                return null;
+            }
+        });
     }
 
     @Test
-    @Rollback(true)
     public void testUpdateTilaKommentointiToLaadinta() {
-        projekti.setTila(ProjektiTila.KOMMENTOINTI);
-        repo.save(projekti);
-        TilaUpdateStatus status = service.updateTila(projekti.getId(), ProjektiTila.LAADINTA);
-        assertTrue(status.isVaihtoOk());
-        assertNull(status.getInfot());
-        assertTrue(repo.getOne(projekti.getId()).getTila().equals(ProjektiTila.LAADINTA));
-        assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(PerusteTila.LUONNOS));
-        assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(PerusteTila.LUONNOS));
-        assertTrue(em.find(TutkinnonOsa.class, osa.getId()).getTila().equals(PerusteTila.LUONNOS));
+        final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.KOMMENTOINTI, null, PerusteTila.LUONNOS);
+        PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
+        TutkinnonOsaViiteDto osaDto = luoTutkinnonOsa(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+
+        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.LAADINTA);
+
+        transactionTemplate = new TransactionTemplate(transactionManager);
+        transactionTemplate.execute(new TransactionCallback() {
+            // the code in this method executes in a transactional context
+            @Override
+            public Object doInTransaction(TransactionStatus transactionStatus) {
+                Perusteprojekti pp = repo.findOne(projektiDto.getId());
+                assertTrue(status.isVaihtoOk());
+                assertNull(status.getInfot());
+                assertTrue(pp.getTila().equals(ProjektiTila.LAADINTA));
+                assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
+                for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
+                    commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.LUONNOS);
+                    commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.LUONNOS);
+                }
+                return null;
+            }
+        });
+
     }
 
     @Test
-    @Rollback(true)
     public void testUpdateTilaLaadintaToViimeistelyValidiRakenne() {
 
-        /*projekti.getPeruste().getSuoritustapa(Suoritustapakoodi.NAYTTO).setRakenne(luoValidiRakenne());
-        repo.save(projekti);*/
+        final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.LAADINTA, null, PerusteTila.LUONNOS);
+        PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
+        perusteService.lock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        perusteService.updateTutkinnonRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
 
-        TilaUpdateStatus status = service.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY);
-        assertTrue(status.isVaihtoOk());
-        assertNull(status.getInfot());
-        assertTrue(repo.getOne(projekti.getId()).getTila().equals(ProjektiTila.VIIMEISTELY));
-        assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(PerusteTila.LUONNOS));
-        assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(PerusteTila.LUONNOS));
-        assertTrue(em.find(TutkinnonOsa.class, osa.getId()).getTila().equals(PerusteTila.LUONNOS));
+        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.VIIMEISTELY);
+        tulostaInfo(status);
+        transactionTemplate = new TransactionTemplate(transactionManager);
+        Object object = transactionTemplate.execute(new TransactionCallback() {
+            // the code in this method executes in a transactional context
+            @Override
+            public Object doInTransaction(TransactionStatus transactionStatus) {
+                Perusteprojekti pp = repo.findOne(projektiDto.getId());
+                assertTrue(status.isVaihtoOk());
+                assertNull(status.getInfot());
+                assertTrue(pp.getTila().equals(ProjektiTila.VIIMEISTELY));
+                assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
+                for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
+                    commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.LUONNOS);
+                    commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.LUONNOS);
+                }
+                return null;
+            }
+        });
+        perusteService.unlock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
     }
 
 
     @Test
-    @Rollback(true)
     public void testUpdateTilaLaadintaToViimeistelyEpaValidiRakenne() {
 
-        projekti.getPeruste().getSuoritustapa(Suoritustapakoodi.NAYTTO).setRakenne(luoEpaValidiRakenne());
-        repo.save(projekti);
+        final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.LAADINTA, null, PerusteTila.LUONNOS);
+        PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
+        perusteService.lock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        perusteService.updateTutkinnonRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, luoEpaValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
 
-        TilaUpdateStatus status = service.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY);
-        assertFalse(status.isVaihtoOk());
-        assertNotNull(status.getInfot());
-        assertTrue(repo.getOne(projekti.getId()).getTila().equals(ProjektiTila.LAADINTA));
-        assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(PerusteTila.LUONNOS));
-        assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(PerusteTila.LUONNOS));
-        assertTrue(em.find(TutkinnonOsa.class, osa.getId()).getTila().equals(PerusteTila.LUONNOS));
+        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.VIIMEISTELY);
+        tulostaInfo(status);
+        transactionTemplate = new TransactionTemplate(transactionManager);
+        transactionTemplate.execute(new TransactionCallback() {
+            // the code in this method executes in a transactional context
+            @Override
+            public Object doInTransaction(TransactionStatus transactionStatus) {
+                Perusteprojekti pp = repo.findOne(projektiDto.getId());
+                assertFalse(status.isVaihtoOk());
+                assertNotNull(status.getInfot());
+                assertTrue(pp.getTila().equals(ProjektiTila.LAADINTA));
+                assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
+                for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
+                    commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.LUONNOS);
+                    commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.LUONNOS);
+                }
+                return null;
+            }
+        });
+        perusteService.unlock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
     }
 
     @Test
-    @Rollback(true)
     public void testUpdateTilaLaadintaToViimeistelyVapaitaTutkinnonOsia() {
 
+        final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.LAADINTA, null, PerusteTila.LUONNOS);
+        PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
+        TutkinnonOsaViiteDto osaDto = luoTutkinnonOsa(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
 
-        projekti.getPeruste().getSuoritustapa(Suoritustapakoodi.NAYTTO).getTutkinnonOsat().add(luoTutkinnonOsaViite());
-        repo.save(projekti);
+        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.VIIMEISTELY);
 
-        TilaUpdateStatus status = service.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY);
-        assertFalse(status.isVaihtoOk());
-        assertNotNull(status.getInfot());
-        assertTrue(repo.getOne(projekti.getId()).getTila().equals(ProjektiTila.LAADINTA));
-        assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(PerusteTila.LUONNOS));
-        assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(PerusteTila.LUONNOS));
-        assertTrue(em.find(TutkinnonOsa.class, osa.getId()).getTila().equals(PerusteTila.LUONNOS));
+        transactionTemplate = new TransactionTemplate(transactionManager);
+        transactionTemplate.execute(new TransactionCallback() {
+            // the code in this method executes in a transactional context
+            @Override
+            public Object doInTransaction(TransactionStatus transactionStatus) {
+                Perusteprojekti pp = repo.findOne(projektiDto.getId());
+                assertFalse(status.isVaihtoOk());
+                assertNotNull(status.getInfot());
+                assertTrue(pp.getTila().equals(ProjektiTila.LAADINTA));
+                assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
+                for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
+                    commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.LUONNOS);
+                    commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.LUONNOS);
+                }
+                return null;
+            }
+        });
+
     }
 
     @Test
-    @Rollback(true)
     public void testUpdateTilaViimeistelyToLaadinta() {
-        projekti.setTila(ProjektiTila.VIIMEISTELY);
-        repo.save(projekti);
-        TilaUpdateStatus status = service.updateTila(projekti.getId(), ProjektiTila.LAADINTA);
-        assertTrue(status.isVaihtoOk());
-        assertNull(status.getInfot());
-        assertTrue(repo.getOne(projekti.getId()).getTila().equals(ProjektiTila.LAADINTA));
-        assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(PerusteTila.LUONNOS));
-        assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(PerusteTila.LUONNOS));
-        assertTrue(osa.getTila().equals(PerusteTila.LUONNOS));
+
+        final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.VIIMEISTELY, null, PerusteTila.LUONNOS);
+        PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
+        perusteService.lock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        perusteService.updateTutkinnonRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
+
+        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.LAADINTA);
+        tulostaInfo(status);
+        transactionTemplate = new TransactionTemplate(transactionManager);
+        Object object = transactionTemplate.execute(new TransactionCallback() {
+            // the code in this method executes in a transactional context
+            @Override
+            public Object doInTransaction(TransactionStatus transactionStatus) {
+                Perusteprojekti pp = repo.findOne(projektiDto.getId());
+                assertTrue(status.isVaihtoOk());
+                assertNull(status.getInfot());
+                assertTrue(pp.getTila().equals(ProjektiTila.LAADINTA));
+                assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
+                for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
+                    commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.LUONNOS);
+                    commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.LUONNOS);
+                }
+                return null;
+            }
+        });
+        perusteService.unlock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+
     }
 
     @Test
-    @Rollback(true)
     public void testUpdateTilaViimeistelyToValmis() {
-        projekti.setTila(ProjektiTila.VIIMEISTELY);
-        repo.save(projekti);
-        TilaUpdateStatus status = service.updateTila(projekti.getId(), ProjektiTila.VALMIS);
-        assertTrue(status.isVaihtoOk());
-        assertNull(status.getInfot());
-        assertTrue(repo.getOne(projekti.getId()).getTila().equals(ProjektiTila.VALMIS));
-        assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(PerusteTila.LUONNOS));
-        assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(PerusteTila.LUONNOS));
-        assertTrue(em.find(TutkinnonOsa.class, osa.getId()).getTila().equals(PerusteTila.LUONNOS));
+
+        final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.VIIMEISTELY, null, PerusteTila.LUONNOS);
+        PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
+        perusteService.lock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        perusteService.updateTutkinnonRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
+
+        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.VALMIS);
+        tulostaInfo(status);
+        transactionTemplate = new TransactionTemplate(transactionManager);
+        Object object = transactionTemplate.execute(new TransactionCallback() {
+            // the code in this method executes in a transactional context
+            @Override
+            public Object doInTransaction(TransactionStatus transactionStatus) {
+                Perusteprojekti pp = repo.findOne(projektiDto.getId());
+                assertTrue(status.isVaihtoOk());
+                assertNull(status.getInfot());
+                assertTrue(pp.getTila().equals(ProjektiTila.VALMIS));
+                assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
+                for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
+                    commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.LUONNOS);
+                    commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.LUONNOS);
+                }
+                return null;
+            }
+        });
+        perusteService.unlock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+
     }
 
     @Test
-    @Rollback(true)
     public void testUpdateTilaValmisToJulkaistu() {
-        projekti.setTila(ProjektiTila.VALMIS);
-        repo.save(projekti);
-        TilaUpdateStatus status = service.updateTila(projekti.getId(), ProjektiTila.JULKAISTU);
-        assertTrue(status.isVaihtoOk());
-        assertNull(status.getInfot());
-        assertTrue(repo.getOne(projekti.getId()).getTila().equals(ProjektiTila.JULKAISTU));
-        assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(PerusteTila.VALMIS));
-        assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(PerusteTila.VALMIS));
-        assertTrue(em.find(TutkinnonOsa.class, osa.getId()).getTila().equals(PerusteTila.VALMIS));
+
+        final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.VALMIS, null, PerusteTila.LUONNOS);
+        PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
+        perusteService.lock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        perusteService.updateTutkinnonRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
+
+        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.JULKAISTU);
+        tulostaInfo(status);
+        transactionTemplate = new TransactionTemplate(transactionManager);
+        Object object = transactionTemplate.execute(new TransactionCallback() {
+            // the code in this method executes in a transactional context
+            @Override
+            public Object doInTransaction(TransactionStatus transactionStatus) {
+                Perusteprojekti pp = repo.findOne(projektiDto.getId());
+                assertTrue(status.isVaihtoOk());
+                assertNull(status.getInfot());
+                assertTrue(pp.getTila().equals(ProjektiTila.JULKAISTU));
+                assertTrue(pp.getPeruste().getTila().equals(PerusteTila.VALMIS));
+                for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
+                    commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.VALMIS);
+                    commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.VALMIS);
+                }
+                return null;
+            }
+        });
+        perusteService.unlock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+
     }
 
     @Test
-    @Rollback(true)
     public void testUpdateTilaJulkaistuToValmis() {
-        projekti.setTila(ProjektiTila.JULKAISTU);
-        peruste.setTila(PerusteTila.VALMIS);
-        em.persist(peruste);
-        tekstikappale.setTila(PerusteTila.VALMIS);
-        em.persist(tekstikappale);
-        osa.setTila(PerusteTila.VALMIS);
-        em.persist(osa);
-        em.flush();
-        repo.save(projekti);
 
-        TilaUpdateStatus status = service.updateTila(projekti.getId(), ProjektiTila.VALMIS);
-        assertFalse(status.isVaihtoOk());
-        assertNotNull(status.getInfot());
-        assertTrue(repo.getOne(projekti.getId()).getTila().equals(ProjektiTila.JULKAISTU));
-        assertTrue(em.find(Peruste.class, peruste.getId()).getTila().equals(PerusteTila.VALMIS));
-        assertTrue(em.find(TekstiKappale.class, tekstikappale.getId()).getTila().equals(PerusteTila.VALMIS));
-        assertTrue(em.find(TutkinnonOsa.class, osa.getId()).getTila().equals(PerusteTila.VALMIS));
+        final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.JULKAISTU, null, PerusteTila.VALMIS);
+        PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.VALMIS);
+        setPerusteSisaltoTila(perusteService.getSuoritustapaSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO), PerusteTila.VALMIS);
+        perusteService.lock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        perusteService.updateTutkinnonRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.VALMIS));
+
+        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.VALMIS);
+        tulostaInfo(status);
+        transactionTemplate = new TransactionTemplate(transactionManager);
+        Object object = transactionTemplate.execute(new TransactionCallback() {
+            // the code in this method executes in a transactional context
+            @Override
+            public Object doInTransaction(TransactionStatus transactionStatus) {
+                Perusteprojekti pp = repo.findOne(projektiDto.getId());
+                assertFalse(status.isVaihtoOk());
+                assertNotNull(status.getInfot());
+                assertTrue(pp.getTila().equals(ProjektiTila.JULKAISTU));
+                assertTrue(pp.getPeruste().getTila().equals(PerusteTila.VALMIS));
+                for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
+                    commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.VALMIS);
+                    commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.VALMIS);
+                }
+                return null;
+            }
+        });
+        perusteService.unlock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+
+    }
+
+    private void tulostaInfo(TilaUpdateStatus status) {
+        if (status.getInfot() != null) {
+            for (Status info : status.getInfot()) {
+                System.out.println("Info: " + info.getViesti());
+                if (info.getValidointi() != null) {
+                    for (Ongelma ongelma : info.getValidointi().ongelmat) {
+                        System.out.println("Validointi ongelma: " + ongelma.ongelma);
+                    }
+
+                }
+            }
+        }
     }
 
 
-    private RakenneModuuli luoEpaValidiRakenne() {
-        RakenneModuuli rakenne = TestUtils.teeRyhma(
-            100, 240, -1, -1,
-            TestUtils.teeRakenneOsa(1, 10),
-            TestUtils.teeRyhma(
-                10, 90, -1, -1,
-                TestUtils.teeRakenneOsa(1, 10),
-                TestUtils.teeRakenneOsa(2, 20)
+    private void commonAssertTekstikappaleTila(PerusteenOsaViite sisalto, PerusteTila haluttuTila) {
+        if (sisalto.getPerusteenOsa() != null && sisalto.getPerusteenOsa().getTunniste() != PerusteenOsaTunniste.RAKENNE) {
+            assertTrue(sisalto.getPerusteenOsa().getTila().equals(haluttuTila));
+        }
+        if (sisalto.getLapset() != null) {
+            for (PerusteenOsaViite viite : sisalto.getLapset()) {
+                commonAssertTekstikappaleTila(viite, haluttuTila);
+            }
+        }
+    }
+
+    private void commonAssertOsienTila(Set<TutkinnonOsaViite> osat, PerusteTila haluttuTila) {
+        for (TutkinnonOsaViite osa : osat) {
+            assertTrue(osa.getTutkinnonOsa().getTila().equals(haluttuTila));
+        }
+    }
+
+    private PerusteprojektiDto teePerusteprojekti(ProjektiTila tila, Long perusteId, PerusteTila perusteTila) {
+        PerusteprojektiLuontiDto ppldto;
+        ppldto = new PerusteprojektiLuontiDto(koulutustyyppi, yksikko, perusteId, tila, tyyppi, ryhmaId);
+        ppldto.setDiaarinumero(TestUtils.uniikkiString());
+        ppldto.setYhteistyotaho(yhteistyotaho);
+        ppldto.setTehtava(tehtava);
+        Assert.assertNotNull(ppldto);
+        ppldto.setNimi(TestUtils.uniikkiString());
+        PerusteprojektiDto projektiDto = service.save(ppldto);
+
+        Perusteprojekti pp = repo.findOne(projektiDto.getId());
+        pp.setTila(tila);
+        repo.save(pp);
+
+        PerusteDto pDto = perusteService.get(new Long(projektiDto.getPeruste().getId()));
+        pDto.setNimi(TestUtils.lt(TestUtils.uniikkiString()));
+        pDto.setTila(perusteTila);
+        perusteService.update(pDto.getId(), pDto);
+
+        return service.get(projektiDto.getId());
+    }
+
+    private PerusteenOsaViiteDto.Matala luoPerusteenOsaViiteDto(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
+        TekstiKappaleDto kappaleDto = new TekstiKappaleDto( nimi, tila, tunniste);
+        PerusteenOsaViiteDto.Matala matala = new PerusteenOsaViiteDto.Matala(kappaleDto);
+        return matala;
+    }
+
+    private PerusteenOsaViiteDto luoSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, PerusteTila tila) {
+        PerusteenOsaViiteDto sisalto = perusteService.addSisalto(perusteId, suoritustapakoodi, luoPerusteenOsaViiteDto(TestUtils.lt(TestUtils.uniikkiString()), tila, PerusteenOsaTunniste.NORMAALI));
+
+        PerusteenOsaViiteDto lapsi = perusteService.addSisaltoLapsi(perusteId, sisalto.getId(), luoPerusteenOsaViiteDto(TestUtils.lt(TestUtils.uniikkiString()), tila, PerusteenOsaTunniste.NORMAALI));
+        for (int i = 0; i < 2; i++) {
+            lapsi = perusteService.addSisaltoLapsi(perusteId, lapsi.getId(), luoPerusteenOsaViiteDto(TestUtils.lt(TestUtils.uniikkiString()), tila, PerusteenOsaTunniste.NORMAALI));
+        }
+        perusteService.addSisaltoLapsi(perusteId, sisalto.getId(), luoPerusteenOsaViiteDto(TestUtils.lt(TestUtils.uniikkiString()), tila, PerusteenOsaTunniste.NORMAALI));
+
+        return sisalto;
+    }
+
+    private void setPerusteSisaltoTila(PerusteenOsaViiteDto.Laaja viite, PerusteTila tila) {
+
+        if (viite.getPerusteenOsa() != null) {
+            perusteenOsaService.lock(viite.getPerusteenOsa().getId());
+            viite.getPerusteenOsa().setTila(tila);
+            perusteenOsaService.update((PerusteenOsaDto.Laaja) viite.getPerusteenOsa());
+            perusteenOsaService.unlock(viite.getPerusteenOsa().getId());
+        }
+
+        if (viite.getLapset() != null) {
+            for (PerusteenOsaViiteDto.Laaja lapsi : viite.getLapset()) {
+                setPerusteSisaltoTila(lapsi, tila);
+            }
+        }
+    }
+
+    private TutkinnonOsaViiteDto luoTutkinnonOsa(Long id, Suoritustapakoodi suoritustapakoodi) {
+        TutkinnonOsaViiteDto dto = new TutkinnonOsaViiteDto(BigDecimal.ONE, 1, TestUtils.lt(TestUtils.uniikkiString()), TutkinnonOsaTyyppi.NORMAALI);
+        return perusteService.addTutkinnonOsa(id, suoritustapakoodi, dto);
+    }
+
+    private RakenneOsaDto teeRakenneOsaDto(long id, Suoritustapakoodi suoritustapa, PerusteTila tila, Integer laajuus) {
+        TutkinnonOsaDto to = new TutkinnonOsaDto();
+        to.setTila(tila);
+        to.setKoodiArvo(TestUtils.uniikkiString());
+        to.setKoodiUri(TestUtils.uniikkiString());
+
+        TutkinnonOsaViiteDto tov = new TutkinnonOsaViiteDto();
+        tov.setTutkinnonOsaDto(to);
+        tov.setLaajuus(new BigDecimal(laajuus));
+
+        TutkinnonOsaViiteDto luotuDto = perusteService.addTutkinnonOsa(id, suoritustapa, tov);
+
+        RakenneOsaDto ro = new RakenneOsaDto();
+        ro.setTutkinnonOsaViite(new EntityReference(luotuDto.getId()));
+        return ro;
+    }
+
+    private RakenneModuuliDto teeRyhma(Integer laajuusMinimi, Integer laajuusMaksimi, Integer kokoMinimi, Integer kokoMaksimi, AbstractRakenneOsaDto... osat) {
+        RakenneModuuliDto rakenne = new RakenneModuuliDto();
+
+        MuodostumisSaantoDto.Laajuus msl = laajuusMinimi != null && laajuusMinimi != -1
+            ? new MuodostumisSaantoDto.Laajuus(laajuusMinimi, laajuusMaksimi, LaajuusYksikko.OPINTOVIIKKO) : null;
+        MuodostumisSaantoDto.Koko msk = kokoMinimi != null && kokoMinimi != -1 ? new MuodostumisSaantoDto.Koko(kokoMinimi, kokoMaksimi) : null;
+        MuodostumisSaantoDto ms = (msl != null || msk != null) ? new MuodostumisSaantoDto(msl, msk) : null;
+
+        ArrayList<AbstractRakenneOsaDto> aosat = new ArrayList<>();
+        aosat.addAll(Arrays.asList(osat));
+        rakenne.setOsat(aosat);
+        rakenne.setMuodostumisSaanto(ms);
+        rakenne.setRooli(RakenneModuuliRooli.NORMAALI);
+        return rakenne;
+    }
+
+    private RakenneModuuliDto luoValidiRakenne(Long id, Suoritustapakoodi suoritustapa, PerusteTila tila) {
+        RakenneModuuliDto rakenne = teeRyhma(
+            10, 20, 1, 1,
+            teeRakenneOsaDto(id, suoritustapa, tila, 10),
+            teeRyhma(
+                10, 10, 1, 1,
+                teeRakenneOsaDto(id, suoritustapa, tila, 10),
+                teeRakenneOsaDto(id, suoritustapa, tila, 20)
             )
         );
 
         return rakenne;
     }
 
+    private RakenneModuuliDto luoEpaValidiRakenne(Long id, Suoritustapakoodi suoritustapa, PerusteTila tila) {
+        RakenneModuuliDto rakenne = teeRyhma(
+            10, 2000, 1, 1,
+            teeRakenneOsaDto(id, suoritustapa, tila, 10),
+            teeRyhma(
+                10, 10, 1, 1,
+                teeRakenneOsaDto(id, suoritustapa, tila, 10),
+                teeRakenneOsaDto(id, suoritustapa, tila, 20)
+            )
+        );
 
-    private RakenneModuuli luoValidiRakenne() {
-        RakenneModuuli juuri = new RakenneModuuli();
-        em.persist(juuri);
-
-        juuri.getOsat().add(luoRakenneOsa());
-        juuri.getOsat().add(luoRakenneOsa());
-
-        RakenneModuuli ryhmaA = new RakenneModuuli();
-        em.persist(ryhmaA);
-        juuri.getOsat().add(ryhmaA);
-
-        ryhmaA.getOsat().add(luoRakenneOsa());
-
-        return juuri;
+        return rakenne;
     }
-
-    private TutkinnonOsaViite luoTutkinnonOsaViite() {
-        TutkinnonOsaViite osaViite = new TutkinnonOsaViite();
-        TutkinnonOsa tutkinnonosa = new TutkinnonOsa();
-        tutkinnonosa.setTila(PerusteTila.LUONNOS);
-        tutkinnonosa.setKoodiArvo("123456");
-        Map<Kieli,String> tekstiMap = new HashMap<>();
-        tekstiMap.put(Kieli.FI, "Teksti");
-        tutkinnonosa.setNimi(TekstiPalanen.of(tekstiMap));
-        em.persist(tutkinnonosa);
-        osaViite.setSuoritustapa(naytto);
-        osaViite.setTutkinnonOsa(tutkinnonosa);
-        osaViite.setPoistettu(Boolean.FALSE);
-        em.persist(osaViite);
-
-        return osaViite;
-    }
-
-    private RakenneOsa luoRakenneOsa() {
-        RakenneOsa rakenneOsa = TestUtils.teeRakenneOsa(0, 0);
-
-        osa = new TutkinnonOsa();
-        osa.setTila(PerusteTila.LUONNOS);
-        osa.setKoodiArvo("12345");
-        Map<Kieli,String> tekstiMap = new HashMap<>();
-        tekstiMap.put(Kieli.FI, "Teksti");
-        osa.setNimi(TekstiPalanen.of(tekstiMap));
-        em.persist(osa);
-        TutkinnonOsaViite osaViite = new TutkinnonOsaViite();
-        osaViite.setSuoritustapa(naytto);
-        osaViite.setTutkinnonOsa(osa);
-        osaViite.setPoistettu(Boolean.FALSE);
-        em.persist(osaViite);
-        naytto.getTutkinnonOsat().add(osaViite);
-        rakenneOsa.setTutkinnonOsaViite(osaViite);
-        em.persist(rakenneOsa);
-
-        return rakenneOsa;
-    }
-
 }

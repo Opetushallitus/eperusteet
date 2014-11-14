@@ -43,9 +43,13 @@ angular.module('eperusteApp')
       el.prepend(iconEl);
     };
     this.getIconEl = function (key) {
-      var suffix = this.icons[key] || key;
-      return angular.element('<span>')
-            .addClass('glyphicon').addClass('glyphicon-' + suffix);
+      if (key.substr(0, 3) === 'ep-') {
+        return angular.element('<span>').addClass('ep-icon').addClass(key);
+      } else {
+        var suffix = this.icons[key] || key;
+        return angular.element('<span>')
+              .addClass('glyphicon').addClass('glyphicon-' + suffix);
+      }
     };
     this.icons = {
       add: 'plus',
@@ -64,7 +68,6 @@ angular.module('eperusteApp')
       remove: 'remove',
       save: 'save',
       search: 'search',
-      settings: 'cog',
+      settings: 'cog'
     };
   });
-

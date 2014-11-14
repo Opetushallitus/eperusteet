@@ -79,12 +79,28 @@ ul.tutkinnonosat {
         color: black;
       }
     }
+    .numero-wrapper {
+      float: left;
+      width: 32px;
+      height: 60px;
+      &.narrow {
+        width: 10px;
+      }
+      .jarjestysnumero {
+        position: relative;
+        padding: 3px 5px;
+        top: -2px;
+        background: #fff;
+        color: #333;
+        border: 1px solid #999;
+      }
+    }
     .otsikko {
-      margin: 0 0 0 5px;
-      padding: 0;
+      &.otsikko-esitys {
+        margin-left: 10px;
+      }
       float: left;
       width: 80%;
-
       h3 {
         margin: 0px;
         max-width: 420px;
@@ -93,22 +109,9 @@ ul.tutkinnonosat {
         white-space: nowrap;
         color: rgb(51,51,51);
       }
-
-      .jarjestysnumero {
-        position: relative;
-        top: -2px;
-        margin-right: 4px;
-        background: #fff;
-        color: #333;
-        border: 1px solid #333;
-      }
-
       .pienet-tiedot {
         color: #777;
-      }
-
-      .jarjestysnumerollinen {
-        margin-left: 28px;
+        padding-top: 10px;
       }
     }
     .muokkaus {
@@ -118,4 +121,3 @@ ul.tutkinnonosat {
     }
   }
 }
-

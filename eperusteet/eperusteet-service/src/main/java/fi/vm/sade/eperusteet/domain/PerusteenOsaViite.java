@@ -45,7 +45,7 @@ import org.hibernate.envers.Audited;
 public class PerusteenOsaViite implements ReferenceableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
     private Long id;

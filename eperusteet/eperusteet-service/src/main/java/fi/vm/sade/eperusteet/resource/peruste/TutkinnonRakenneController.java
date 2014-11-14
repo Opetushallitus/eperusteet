@@ -20,10 +20,10 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
-import fi.vm.sade.eperusteet.resource.util.PerusteenOsaMappings;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import java.util.List;
@@ -138,7 +138,7 @@ public class TutkinnonRakenneController {
         return perusteService.getTutkinnonOsat(id, Suoritustapakoodi.of(suoritustapakoodi));
     }
 
-    @RequestMapping(value = "/tutkinnonosat/{osanId}/muokattavakopio", method = POST, params = PerusteenOsaMappings.IS_TUTKINNON_OSA_PARAM)
+    @RequestMapping(value = "/tutkinnonosat/{osanId}/muokattavakopio", method = POST)
     public TutkinnonOsaViiteDto kloonaaTutkinnonOsa(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapakoodi") final String suoritustapakoodi,
@@ -175,9 +175,16 @@ public class TutkinnonRakenneController {
     @RequestMapping(value = "/tutkinnonosat/{osanId}", method = POST)
     @ResponseBody
     public TutkinnonOsaViiteDto updateTutkinnonOsa(
-        @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi, @PathVariable("osanId") final Long osanId, @RequestBody TutkinnonOsaViiteDto osa) {
-        osa.setId(osanId);
+        @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi, @PathVariable("osanId") final Long osanId, @RequestBody TutkinnonOsaViiteUpdateDto osa) {
         return perusteService.updateTutkinnonOsa(id, Suoritustapakoodi.of(suoritustapakoodi), osa);
+    }
+
+    @RequestMapping(value = "/tutkinnonosat/{viiteId}", method = GET)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public TutkinnonOsaViiteDto getTutkinnonOsaViite(
+        @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi, @PathVariable("viiteId") final Long viiteId) {
+        return perusteService.getTutkinnonOsaViite(id, Suoritustapakoodi.of(suoritustapakoodi), viiteId);
     }
 
 }

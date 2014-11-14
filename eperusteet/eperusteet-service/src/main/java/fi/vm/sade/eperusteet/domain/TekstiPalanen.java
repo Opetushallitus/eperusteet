@@ -48,7 +48,7 @@ import org.hibernate.annotations.Immutable;
 public class TekstiPalanen implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)

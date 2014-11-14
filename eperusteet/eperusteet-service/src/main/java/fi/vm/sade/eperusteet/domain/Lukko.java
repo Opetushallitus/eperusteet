@@ -78,7 +78,7 @@ public class Lukko {
 
     public void setVanhentumisAika(int maxLockTime) {
         DateTime t = getLuotu().plusSeconds(maxLockTime);
-        if ( this.vanhentuu == null || t.equals(this.vanhentuu)) {
+        if (this.vanhentuu == null || t.equals(this.vanhentuu)) {
             this.vanhentuu = t;
         } else {
             throw new IllegalStateException("vanhenemisaikaa ei voi muuttaa");

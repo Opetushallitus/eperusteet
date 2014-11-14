@@ -39,7 +39,7 @@ public class PerusteenOsaTyoryhma implements Serializable {
     @Id
     @Getter
     @Setter
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Getter

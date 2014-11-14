@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueKokonaanDto;
@@ -51,7 +52,7 @@ public interface PerusteenOsaService {
 
     @PreAuthorize("isAuthenticated()")
     @PostAuthorize("hasPermission(returnObject.id, 'perusteenosa', 'MUOKKAUS')")
-    <T extends PerusteenOsaDto.Laaja> T add(T perusteenOsaDto);
+    <T extends PerusteenOsaDto.Laaja> T add(PerusteenOsaViite viite, T perusteenOsaDto);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'POISTO')")
     void delete(@P("id") final Long id);
@@ -65,11 +66,14 @@ public interface PerusteenOsaService {
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
     PerusteenOsaDto.Laaja get(@P("id") final Long id);
 
+    @PostAuthorize("hasPermission(returnObject.id, 'perusteenosa', 'LUKU')")
+    public PerusteenOsaDto.Laaja getByViite(final Long viiteId);
+
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
     List<Revision> getVersiot(@P("id") Long id);
 
     //TODO: versiotietojen lukuoikeus?
-    @PreAuthorize("returnObject?.tila == T(fi.vm.sade.eperusteet.domain.PerusteTila).VALMIS or hasPermission(#id, 'perusteenosa', 'LUKU')")
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
     PerusteenOsaDto.Laaja getVersio(@P("id") final Long id, final Integer versioId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
@@ -84,14 +88,17 @@ public interface PerusteenOsaService {
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
     OsaAlueLaajaDto addTutkinnonOsaOsaAlue(@P("id") final Long id, OsaAlueLaajaDto osaAlueDto);
 
-    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
-    OsaAlueKokonaanDto updateTutkinnonOsaOsaAlue(@P("id") final Long id, final Long osaAlueId, OsaAlueKokonaanDto osaAlue);
+    @PreAuthorize("hasPermission(#viiteId, 'tutkinnonosaviite', 'MUOKKAUS')")
+    OsaAlueKokonaanDto updateTutkinnonOsaOsaAlue(@P("viiteId") final Long viiteId, final Long osaAlueId, OsaAlueKokonaanDto osaAlue);
+
+    @PreAuthorize("hasPermission(#viiteId, 'tutkinnonosaviite', 'LUKU')")
+    OsaAlueKokonaanDto getTutkinnonOsaOsaAlue(@P("viiteId") final Long viiteId, final Long osaAlueId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
-    OsaAlueKokonaanDto getTutkinnonOsaOsaAlue(@P("id") final Long id, final Long osaAlueId);
+    List<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlueet(@P("id") final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
-    List<OsaAlueLaajaDto> getTutkinnonOsaOsaAlueet(@P("id") final Long id);
+    List<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlueetVersio(Long id, Integer versioId);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
     public OsaamistavoiteLaajaDto addOsaamistavoite(@P("id") final Long id, final Long osaAlueId, OsaamistavoiteLaajaDto osaamistavoiteDto);
@@ -107,4 +114,5 @@ public interface PerusteenOsaService {
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
     public void removeOsaAlue(@P("id") final Long id, final Long osaAlueId);
+
 }

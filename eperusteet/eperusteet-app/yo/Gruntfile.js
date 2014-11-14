@@ -152,7 +152,8 @@ module.exports = function(grunt) {
       },
       all: [
         'Gruntfile.js',
-        '<%= yeoman.app %>/scripts/**/*.js'
+        '<%= yeoman.app %>/scripts/**/*.js',
+        '<%= yeoman.app %>/ckeditor-plugins/**/*.js',
       ]
     },
     // not used since Uglify task does concat,
@@ -278,6 +279,13 @@ module.exports = function(grunt) {
           src: [
             '**',
             '!samples/**',
+          ]
+        }, {
+          expand: true,
+          cwd: '<%= yeoman.app %>/ckeditor-plugins',
+          dest: '<%= yeoman.dist %>/ckeditor-plugins',
+          src: [
+            '**',
           ]
         }, {
           expand: true,

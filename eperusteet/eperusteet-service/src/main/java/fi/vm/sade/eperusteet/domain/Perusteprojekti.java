@@ -44,7 +44,7 @@ import org.hibernate.envers.Audited;
 @Audited
 public class Perusteprojekti extends AbstractAuditedEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
     private Long id;

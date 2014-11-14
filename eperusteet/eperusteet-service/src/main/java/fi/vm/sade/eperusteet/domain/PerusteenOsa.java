@@ -51,7 +51,7 @@ public abstract class PerusteenOsa
     implements Serializable, Mergeable<PerusteenOsa>, WithPerusteTila, ReferenceableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @ValidHtml(whitelist = WhitelistType.MINIMAL)
@@ -106,6 +106,11 @@ public abstract class PerusteenOsa
     }
 
     public abstract PerusteenOsa copy();
+
+    //hibernate proxy korjaussarja
+    public Class<? extends PerusteenOsa> getType() {
+        return this.getClass();
+    }
 
     private void copyState(PerusteenOsa other) {
         this.nimi = other.getNimi();

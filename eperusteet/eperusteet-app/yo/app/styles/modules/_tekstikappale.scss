@@ -1,0 +1,24 @@
+.tekstikappale {
+  h3 {
+    margin-top: 0;
+  }
+  .list-group-item {
+    border: 0;
+  }
+}
+
+.edit-tekstikappale {
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#tekstikappale-crumbs .breadcrumb {
+  padding-left: 0;
+  li {
+    max-width: 20em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}

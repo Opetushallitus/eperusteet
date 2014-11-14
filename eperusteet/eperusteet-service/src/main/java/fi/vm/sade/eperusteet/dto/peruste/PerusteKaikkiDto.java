@@ -16,12 +16,10 @@
 
 package fi.vm.sade.eperusteet.dto.peruste;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,9 +29,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class PerusteKaikkiDto extends PerusteDto {
-    Map<Suoritustapakoodi, RakenneModuuliDto> rakenteet;
-    Map<Suoritustapakoodi, List<TutkinnonOsaDto>> tutkinnonOsat;
-    Map<Suoritustapakoodi, List<TutkinnonOsaViiteDto>> tutkinnonOsaViitteet;
-    Map<Suoritustapakoodi, fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja> sisallot;
+public class PerusteKaikkiDto extends PerusteBaseDto {
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    Set<SuoritustapaLaajaDto> suoritustavat;
+
+    //TODO perusopetuksen perusteen sisältö
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    List<TutkinnonOsaDto> tutkinnonOsat;
 }

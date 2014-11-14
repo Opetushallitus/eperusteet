@@ -57,6 +57,10 @@ angular.module('eperusteApp', [
     $translateProvider.preferredLanguage(preferred);
     moment.lang(preferred);
   })
+  .config(function ($rootScopeProvider) {
+    // workaround for infdig with recursive tree structures
+    $rootScopeProvider.digestTtl(20);
+  })
   .config(function($httpProvider) {
     $httpProvider.interceptors.push(['$rootScope', '$q', 'SpinnerService', function($rootScope, $q, Spinner) {
         return {

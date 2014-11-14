@@ -146,6 +146,7 @@ $sivunavi-level-padding: 20px;
     .linktext {
       display: block;
       margin-left: 22px;
+      overflow-x: hidden;
     }
     &:hover:not(.active) {
       background-color: #f2f2f2;
