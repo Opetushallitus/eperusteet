@@ -1,9 +1,0 @@
-<div class="sisalto" ui-tree data-drag-enabled="muokkausTutkintokohtaisetOsat"
-     data-empty-place-holder-enabled="false" data-max-depth="textMaxDepth">
-  <div ui-tree-nodes class="sisalto-group" ng-model="peruste.sisalto.lapset">
-    <div ui-tree-node ng-init="indent = 0"
-         ng-repeat="sisalto in peruste.sisalto.lapset"
-         ng-include="'views/partials/perusteprojekti/sisaltosolmu.html'">
-    </div>
-  </div>
-</div>

@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .service('Koodisto', function($http, $modal, SERVICE_LOC, $resource, Kaanna, Notifikaatiot, Utils) {
     var taydennykset = [];
-    var koodistoVaihtoehdot = ['tutkinnonosat', 'koulutus', 'osaamisala'];
+    var koodistoVaihtoehdot = ['tutkinnonosat', 'tutkintonimikkeet', 'koulutus', 'osaamisala'];
     var nykyinenKoodisto = _.first(koodistoVaihtoehdot);
     var lisaFiltteri = function() {
       return true;
@@ -176,25 +176,37 @@ angular.module('eperusteApp')
     return {
       template: '<button class="btn btn-default" type="text" ng-click="activate()">{{ "hae-koodistosta" | kaanna }}</button>',
       restrict: 'E',
-      link: function($scope, el, attrs) {
-        var valmis = $scope.$eval(attrs.valmis);
-        var filtteri = $scope.$eval(attrs.filtteri);
-        var tyyppi = attrs.tyyppi || 'tutkinnonosat';
-        var ylarelaatioTyyppi = attrs.ylarelaatiotyyppi || '';
+      scope: {
+        valmis: '=',
+        filtteri: '=',
+        tyyppi: '@',
+        ylarelaatioTyyppi: '=?'
+      },
+      controller: function($scope) {
+        $scope.tyyppi = $scope.tyyppi || 'tutkinnonosat';
+        $scope.ylarelaatioTyyppi = $scope.ylarelaatiotyyppi || '';
 
-        attrs.$observe('ylarelaatiotyyppi', function() {
-                ylarelaatioTyyppi = attrs.ylarelaatiotyyppi || '';
-        });
-
-        if (!valmis) {
+        if (!$scope.valmis) {
           console.log('koodisto-select: valmis-callback puuttuu');
           return;
         }
-        else if (_.indexOf(Koodisto.vaihtoehdot, tyyppi) === -1) {
-          console.log('koodisto-select:', tyyppi, 'ei vastaa mitään mitään vaihtoehtoa:', Koodisto.vaihtoehdot);
+        else if (_.indexOf(Koodisto.vaihtoehdot, $scope.tyyppi) === -1) {
+          console.log('koodisto-select:', $scope.tyyppi, 'ei vastaa mitään mitään vaihtoehtoa:', Koodisto.vaihtoehdot);
           return;
         }
-        $scope.activate = Koodisto.modaali(function(koodi) {valmis(koodi);}, {tyyppi: function() {return tyyppi;}, ylarelaatioTyyppi: function() {return ylarelaatioTyyppi;}}, function() {}, filtteri);
+      },
+      link: function($scope, el, attrs) {
+        attrs.$observe('ylarelaatiotyyppi', function() {
+            $scope.ylarelaatioTyyppi = attrs.ylarelaatiotyyppi || '';
+        });
+
+        $scope.activate = function() {
+          Koodisto.modaali($scope.valmis, {
+            tyyppi: function() { return $scope.tyyppi; },
+            ylarelaatioTyyppi: function() { return $scope.ylarelaatioTyyppi; }
+          },
+          angular.noop, $scope.filtteri)();
+        };
       }
     };
   });

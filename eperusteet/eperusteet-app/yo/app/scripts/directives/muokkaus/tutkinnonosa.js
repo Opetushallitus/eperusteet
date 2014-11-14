@@ -23,8 +23,9 @@ angular.module('eperusteApp')
       templateUrl: 'views/partials/muokkaus/tutkinnonosa.html',
       restrict: 'E',
       scope: {
-        tutkinnonOsa: '=',
-        versiot: '='
+        tutkinnonOsaViite: '=',
+        versiot: '=',
+        peruste: '='
       },
       controller: 'muokkausTutkinnonosaController'
     };
@@ -80,15 +81,14 @@ angular.module('eperusteApp')
 
   })
   .controller('muokkausTutkinnonosaController', function($scope, $state, $stateParams, $rootScope,
-    $q, Editointikontrollit, PerusteenOsat, PerusteenRakenne,
-    PerusteTutkinnonosa, TutkinnonOsaEditMode, $timeout, Varmistusdialogi,
-    VersionHelper, Lukitus, MuokkausUtils, PerusteenOsaViitteet,
-    Utils, ArviointiHelper, PerusteProjektiSivunavi, Notifikaatiot, Koodisto,
-    Tutke2OsaData, Kommentit, KommentitByPerusteenOsa, FieldSplitter) {
+    $q, Editointikontrollit, PerusteenOsat, PerusteenRakenne, PerusteTutkinnonosa,
+    TutkinnonOsaEditMode, $timeout, Varmistusdialogi, VersionHelper, Lukitus,
+    MuokkausUtils, PerusteenOsaViitteet, Utils, ArviointiHelper, PerusteProjektiSivunavi,
+    Notifikaatiot, Koodisto, Tutke2OsaData, Kommentit, KommentitByPerusteenOsa, FieldSplitter) {
 
     Utils.scrollTo('#ylasivuankkuri');
 
-    Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });
+    Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaViiteId });
 
     $scope.osaAlueAlitila = $state.current.name === 'root.perusteprojekti.suoritustapa.perusteenosa.osaalue' ? true : false;
     $rootScope.$on('$stateChangeStart', function(event, toState){
@@ -103,7 +103,7 @@ angular.module('eperusteApp')
     $scope.rakenne = {};
     $scope.test = angular.noop;
     $scope.menuItems = [];
-    $scope.editableTutkinnonOsa = {};
+    $scope.editableTutkinnonOsaViite = {};
     $scope.editEnabled = false;
     $scope.editointikontrollit = Editointikontrollit;
     $scope.nimiValidationError = false;
@@ -112,14 +112,14 @@ angular.module('eperusteApp')
       $scope.nimiValidationError = false;
     }, true);
 
+    // FIXME
+    $scope.yksikko = 'osp';
+
+
     function getRakenne() {
       // FIXME: Vaihda käyttämään parempaa endpointtia
       PerusteenRakenne.haeByPerusteprojekti($stateParams.perusteProjektiId, $stateParams.suoritustapa, function(res) {
         $scope.rakenne = res;
-        $scope.viiteosa = _.find($scope.rakenne.tutkinnonOsat, {'_tutkinnonOsa': $scope.editableTutkinnonOsa.id.toString()}) || {};
-        $scope.viiteosa.laajuus = $scope.viiteosa.laajuus || 0;
-        $scope.yksikko = _.zipObject(_.map(res.$peruste.suoritustavat, 'suoritustapakoodi'),
-                                     _.map(res.$peruste.suoritustavat, 'laajuusYksikko'))[$scope.suoritustapa];
         if (TutkinnonOsaEditMode.getMode()) {
           $scope.isNew = true;
           $timeout(function () {
@@ -131,48 +131,48 @@ angular.module('eperusteApp')
     getRakenne();
 
     function lukitse(cb) {
-      Lukitus.lukitsePerusteenosa($scope.tutkinnonOsa.id, cb);
+      Lukitus.lukitsePerusteenosa($scope.tutkinnonOsaViite.tutkinnonOsa.id, cb);
     }
 
     function fetch(cb) {
       cb = cb || angular.noop;
-      PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, function(res) {
-        $scope.tutkinnonOsa = res;
+      PerusteenOsat.get({ osanId: $scope.tutkinnonOsaViite.tutkinnonOsa.id }, function(res) {
+        $scope.tutkinnonOsaViite.tutkinnonOsa = res;
         cb(res);
       });
     }
 
     $scope.fields =
       new Array({
-        path: 'tavoitteet',
+        path: 'tutkinnonOsa.tavoitteet',
         localeKey: 'tutkinnon-osan-tavoitteet',
         type: 'editor-area',
         localized: true,
         collapsible: true,
         order: 3
       },{
-        path: 'ammattitaitovaatimukset',
+        path: 'tutkinnonOsa.ammattitaitovaatimukset',
         localeKey: 'tutkinnon-osan-ammattitaitovaatimukset',
         type: 'editor-area',
         localized: true,
         collapsible: true,
         order: 4
       },{
-        path: 'ammattitaidonOsoittamistavat',
+        path: 'tutkinnonOsa.ammattitaidonOsoittamistavat',
         localeKey: 'tutkinnon-osan-ammattitaidon-osoittamistavat',
         type: 'editor-area',
         localized: true,
         collapsible: true,
         order: 7
       },{
-        path: 'arviointi.lisatiedot',
+        path: 'tutkinnonOsa.arviointi.lisatiedot',
         localeKey: 'tutkinnon-osan-arviointi-teksti',
         type: 'editor-text',
         localized: true,
         collapsible: true,
         order: 5
       },{
-        path: 'arviointi.arvioinninKohdealueet',
+        path: 'tutkinnonOsa.arviointi.arvioinninKohdealueet',
         localeKey: 'tutkinnon-osan-arviointi-taulukko',
         type: 'arviointi',
         collapsible: true,
@@ -180,34 +180,34 @@ angular.module('eperusteApp')
       });
 
     $scope.koodistoClick = Koodisto.modaali(function(koodisto) {
-      MuokkausUtils.nestedSet($scope.editableTutkinnonOsa, 'koodiUri', ',', koodisto.koodiUri);
-      MuokkausUtils.nestedSet($scope.editableTutkinnonOsa, 'koodiArvo', ',', koodisto.koodiArvo);
+      MuokkausUtils.nestedSet($scope.editableTutkinnonOsaViite.tutkinnonOsa, 'koodiUri', ',', koodisto.koodiUri);
+      MuokkausUtils.nestedSet($scope.editableTutkinnonOsaViite.tutkinnonOsa, 'koodiArvo', ',', koodisto.koodiArvo);
     }, {
       tyyppi: function() { return 'tutkinnonosat'; },
       ylarelaatioTyyppi: function() { return ''; }
     });
 
+
     $scope.kopioiMuokattavaksi = function() {
       PerusteenOsaViitteet.kloonaaTutkinnonOsa({
-        viiteId: $scope.viiteosa.id
+        viiteId: $scope.tutkinnonOsaViite.id
       }, function(tk) {
         TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
         Notifikaatiot.onnistui('tutkinnonosa-kopioitu-onnistuneesti');
         $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
           perusteenOsanTyyppi: 'tutkinnonosa',
-          perusteenOsaId: tk._tutkinnonOsa,
+          perusteenOsaViiteId: tk.id,
           versio: ''
-        });
+        },{reload: true});
       });
     };
 
     function refreshPromise() {
-      $scope.tutkinnonOsa.kuvaus = $scope.tutkinnonOsa.kuvaus || {};
-      $scope.editableTutkinnonOsa = angular.copy($scope.tutkinnonOsa);
-      $scope.editableViiteosa = angular.copy($scope.viiteosa);
+      $scope.tutkinnonOsaViite.tutkinnonOsa.kuvaus = $scope.tutkinnonOsaViite.tutkinnonOsa.kuvaus || {};
+      $scope.editableTutkinnonOsaViite = angular.copy($scope.tutkinnonOsaViite);
       var tutkinnonOsaDefer = $q.defer();
       $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
-      tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
+      tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsaViite);
     }
 
     function saveCb(res) {
@@ -220,7 +220,7 @@ angular.module('eperusteApp')
     }
 
     function doDelete(osaId) {
-      PerusteenRakenne.poistaTutkinnonOsaViite(osaId, $scope.rakenne.$peruste.id, $stateParams.suoritustapa, function() {
+      PerusteenRakenne.poistaTutkinnonOsaViite(osaId, $scope.peruste.id, $stateParams.suoritustapa, function() {
         Notifikaatiot.onnistui('tutkinnon-osa-rakenteesta-poistettu');
         $state.go('root.perusteprojekti.suoritustapa.tutkinnonosat');
       });
@@ -228,14 +228,14 @@ angular.module('eperusteApp')
 
     var tutke2 = {
       fetch: function () {
-        if ($scope.editableTutkinnonOsa.tyyppi === 'tutke2') {
+        if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2') {
           if (Tutke2OsaData.get()) {
             Tutke2OsaData.get().fetch();
         }
         }
       },
       mergeOsaAlueet: function (tutkinnonOsa) {
-        if ($scope.editableTutkinnonOsa.tyyppi === 'tutke2') {
+        if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2') {
           tutkinnonOsa.osaAlueet = _.map(Tutke2OsaData.get().$editing, function (osaAlue) {
             var item = {nimi: osaAlue.nimi};
             if (osaAlue.id) {
@@ -246,7 +246,7 @@ angular.module('eperusteApp')
         }
       },
       validate: function() {
-        if ($scope.editableTutkinnonOsa.tyyppi === 'tutke2') {
+        if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2') {
           return _.all(_.map(Tutke2OsaData.get().$editing, function (item) {
             return Utils.hasLocalizedText(item.nimi);
           }));
@@ -264,30 +264,24 @@ angular.module('eperusteApp')
         lukitse(function() { cb(); });
       },
       save: function(kommentti) {
-        tutke2.mergeOsaAlueet($scope.editableTutkinnonOsa);
-        $scope.editableTutkinnonOsa.metadata = { kommentti: kommentti };
-        if ($scope.editableTutkinnonOsa.id) {
-          $scope.editableTutkinnonOsa.$saveTutkinnonOsa(function(response) {
-            $scope.editableTutkinnonOsa = angular.copy(response);
-            $scope.tutkinnonOsa = angular.copy(response);
+        tutke2.mergeOsaAlueet($scope.editableTutkinnonOsaViite.tutkinnonOsa);
+        $scope.editableTutkinnonOsaViite.metadata = { kommentti: kommentti };
+        if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.id) {
+          PerusteTutkinnonosa.save({perusteId: $scope.peruste.id, suoritustapa: $stateParams.suoritustapa, osanId: $scope.editableTutkinnonOsaViite.tutkinnonOsa.id},
+          $scope.editableTutkinnonOsaViite, function(response){
+            $scope.editableTutkinnonOsaViite = angular.copy(response);
+            $scope.tutkinnonOsaViite = angular.copy(response);
             Editointikontrollit.lastModified = response;
-            saveCb(response);
+            saveCb(response.tutkinnonOsa);
             getRakenne();
 
             var tutkinnonOsaDefer = $q.defer();
             $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
-            tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsa);
+            tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsaViite);
           }, Notifikaatiot.serverCb);
-
-          // Viiteosa (laajuus) tallennetaan erikseen
-          PerusteTutkinnonosa.save({
-            perusteId: $scope.rakenne.$peruste.id,
-            suoritustapa: $stateParams.suoritustapa,
-            osanId: $scope.editableViiteosa.id
-          }, $scope.editableViiteosa, angular.noop, Notifikaatiot.serverCb);
         }
         else {
-          PerusteenOsat.saveTutkinnonOsa($scope.editableTutkinnonOsa, function(response) {
+          PerusteenOsat.saveTutkinnonOsa($scope.editableTutkinnonOsaViite.tutkinnonOsa, function(response) {
             Editointikontrollit.lastModified = response;
             saveCb(response);
             getRakenne();
@@ -297,14 +291,14 @@ angular.module('eperusteApp')
       },
       cancel: function() {
         if ($scope.isNew) {
-          doDelete($scope.rakenne.tutkinnonOsat[$scope.tutkinnonOsa.id].id);
+          doDelete($scope.rakenne.tutkinnonOsat[$scope.tutkinnonOsaViite.tutkinnonOsa.id].id);
           $scope.isNew = false;
         }
         else {
           tutke2.fetch();
           fetch(function() {
             refreshPromise();
-            Lukitus.vapautaPerusteenosa($scope.tutkinnonOsa.id);
+            Lukitus.vapautaPerusteenosa($scope.tutkinnonOsaViite.tutkinnonOsa.id);
           });
         }
       },
@@ -312,7 +306,7 @@ angular.module('eperusteApp')
         $scope.editEnabled = mode;
       },
       validate: function () {
-        if (!Utils.hasLocalizedText($scope.editableTutkinnonOsa.nimi)) {
+        if (!Utils.hasLocalizedText($scope.editableTutkinnonOsaViite.tutkinnonOsa.nimi)) {
           $scope.nimiValidationError = true;
         }
         return $scope.tutkinnonOsaHeaderForm.$valid && tutke2.validate();
@@ -320,26 +314,27 @@ angular.module('eperusteApp')
     };
 
     function setupTutkinnonOsa(osa) {
-      $scope.editableTutkinnonOsa = angular.copy(osa);
-      $scope.isNew = !$scope.editableTutkinnonOsa.id;
+      $scope.tutkinnonOsaViite.tutkinnonOsa = osa;
+      $scope.editableTutkinnonOsaViite.tutkinnonOsa = angular.copy(osa);
+      $scope.isNew = !$scope.editableTutkinnonOsaViite.tutkinnonOsa.id;
       if ($state.current.name === 'root.perusteprojekti.suoritustapa.perusteenosa') {
         Editointikontrollit.registerCallback(normalCallbacks);
       }
       $scope.haeVersiot();
-      Lukitus.tarkista($scope.tutkinnonOsa.id, $scope);
+      Lukitus.tarkista($scope.tutkinnonOsaViite.tutkinnonOsa.id, $scope);
     }
 
-    if($scope.tutkinnonOsa) {
-      $scope.tutkinnonOsaPromise = $scope.tutkinnonOsa.$promise.then(function(response) {
-        setupTutkinnonOsa(response);
-        return $scope.editableTutkinnonOsa;
+    if($scope.tutkinnonOsaViite) {
+      $scope.tutkinnonOsaPromise = $scope.tutkinnonOsaViite.$promise.then(function(response) {
+        setupTutkinnonOsa(response.tutkinnonOsa);
+        return $scope.editableTutkinnonOsaViite;
       });
     } else {
       var objectReadyDefer = $q.defer();
       $scope.tutkinnonOsaPromise = objectReadyDefer.promise;
-      $scope.tutkinnonOsa = {};
-      setupTutkinnonOsa($scope.tutkinnonOsa);
-      objectReadyDefer.resolve($scope.editableTutkinnonOsa);
+      $scope.tutkinnonOsaViite.tutkinnonOsa = {};
+      setupTutkinnonOsa($scope.tutkinnonOsaViite.tutkinnonOsa);
+      objectReadyDefer.resolve($scope.editableTutkinnonOsaViite);
       VersionHelper.setUrl($scope.versiot);
     }
 
@@ -377,11 +372,11 @@ angular.module('eperusteApp')
     });
 
     $scope.haeVersiot = function (force, cb) {
-      VersionHelper.getPerusteenosaVersions($scope.versiot, {id: $scope.tutkinnonOsa.id}, force, cb);
+      VersionHelper.getTutkinnonOsaViiteVersions($scope.versiot, {id: $scope.tutkinnonOsaViite.id}, force, cb);
     };
 
     function responseFn(response) {
-      $scope.tutkinnonOsa = response;
+      $scope.tutkinnonOsaViite.tutkinnonOsa = response;
       setupTutkinnonOsa(response);
       var objDefer = $q.defer();
       $scope.tutkinnonOsaPromise = objDefer.promise;
@@ -392,7 +387,6 @@ angular.module('eperusteApp')
     $scope.vaihdaVersio = function () {
       $scope.versiot.hasChanged = true;
       VersionHelper.setUrl($scope.versiot);
-      //VersionHelper.changePerusteenosa($scope.versiot, {id: $scope.tutkinnonOsa.id}, responseFn);
     };
 
     $scope.revertCb = function (response) {

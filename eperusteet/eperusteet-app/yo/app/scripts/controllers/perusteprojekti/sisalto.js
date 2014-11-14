@@ -22,7 +22,7 @@ angular.module('eperusteApp')
     $modal, PerusteenOsat, PerusteenOsaViitteet, SuoritustapaSisalto, PerusteProjektiService,
     perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit,
     Editointikontrollit, TEXT_HIERARCHY_MAX_DEPTH, PerusteProjektiSivunavi, Projektiryhma,
-    PerusteprojektiTyoryhmat) {
+    PerusteprojektiTyoryhmat, TekstikappaleOperations) {
     $scope.textMaxDepth = TEXT_HIERARCHY_MAX_DEPTH;
 
     function lisaaSisalto(method, sisalto, cb) {
@@ -36,6 +36,7 @@ angular.module('eperusteApp')
     $scope.rajaus = '';
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
+    TekstikappaleOperations.setPeruste($scope.peruste);
     $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
     $scope.valittuSuoritustapa = PerusteProjektiService.getSuoritustapa();
     $scope.naytaTutkinnonOsat = true;
@@ -61,15 +62,18 @@ angular.module('eperusteApp')
       $scope.tyoryhmaMap = tyoryhmaMap;
     });
 
-    Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) {
+    function korjaaLapsi(lapsi) {
       switch (lapsi.perusteenOsa.tunniste) {
         case 'rakenne':
           lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.muodostumissaannot');
+          lapsi.$type = 'ep-tree';
           break;
         default:
-          lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', { perusteenOsanTyyppi: 'tekstikappale', perusteenOsaId: lapsi.perusteenOsa.id, versio: '' });
+          lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', { perusteenOsanTyyppi: 'tekstikappale', perusteenOsaViiteId: lapsi.id, versio: '' });
       }
-    });
+    }
+
+    Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', korjaaLapsi);
 
     $scope.aakkosJarjestys = function(data) { return Kaanna.kaanna(data.perusteenOsa.nimi); };
 
@@ -156,6 +160,7 @@ angular.module('eperusteApp')
             }, function(po) {
               pov.perusteenOsa = po;
               lisaaLapset(pov, lapsi.lapset, function() {
+                korjaaLapsi(pov);
                 $scope.peruste.sisalto.lapset.push(pov);
                 next();
               });
@@ -170,7 +175,7 @@ angular.module('eperusteApp')
         TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
         $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
           perusteenOsanTyyppi: 'tekstikappale',
-          perusteenOsaId: response._perusteenOsa,
+          perusteenOsaViiteId: response.id,
           versio: ''
         });
       });
@@ -210,22 +215,11 @@ angular.module('eperusteApp')
         $scope.avaaSuljeKaikki(true);
       },
       save: function() {
-        function mapSisalto(sisalto) {
-          return {
-            id: sisalto.id,
-            perusteenOsa: null,
-            lapset: _.map(sisalto.lapset, mapSisalto)
-          };
-        }
-        PerusteenOsaViitteet.update({
-          viiteId: $scope.peruste.sisalto.id
-        },
-        mapSisalto($scope.peruste.sisalto),
-        function() {
+        TekstikappaleOperations.updateViitteet($scope.peruste.sisalto, function () {
           $scope.muokkausTutkintokohtaisetOsat = false;
           Notifikaatiot.onnistui('osien-rakenteen-päivitys-onnistui');
           PerusteProjektiSivunavi.refresh(true);
-        }, Notifikaatiot.serverCb);
+        });
       },
       cancel: function() {
         $state.go($state.current.name, $stateParams, {

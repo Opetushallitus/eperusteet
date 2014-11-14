@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
@@ -38,8 +39,6 @@ import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,27 +49,30 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
+import java.util.List;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Integraatiotesti muistinvaraista kantaa vasten.
  *
  * @author jhyoty
  */
-@Transactional
-@DirtiesContext
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class PerusteServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteService perusteService;
     @Autowired
     private PerusteRepository repo;
-    @PersistenceContext
-    private EntityManager em;
+    @Autowired
+    private PlatformTransactionManager manager;
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
     @Autowired
@@ -85,6 +87,8 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
     @Before
     public void setUp() {
+
+        TransactionStatus transaction = manager.getTransaction(new DefaultTransactionDefinition());
 
         Koulutus koulutus = new Koulutus(tekstiPalanenOf(Kieli.FI,"Koulutus"), "koulutuskoodiArvo", "koulutuskoodiUri","koulutusalakoodi","opintoalakoodi");
         koulutus = koulutusRepository.save(koulutus);
@@ -114,6 +118,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         p.setTila(PerusteTila.VALMIS);
         repo.save(p);
 
+        manager.commit(transaction);
         perusteService.lock(peruste.getId(), Suoritustapakoodi.OPS);
     }
 
@@ -146,7 +151,18 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Rollback(true)
+    public void testTutkintonimikkeenLisays() {
+        List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = perusteService.getTutkintonimikeKoodit(peruste.getId());
+        assertTrue(tutkintonimikeKoodit.isEmpty());
+
+        TutkintonimikeKoodiDto tutkintonimikeKoodiDto = new TutkintonimikeKoodiDto(peruste.getReference(), "102047", "1632", "10003");
+        TutkintonimikeKoodiDto koodi = perusteService.addTutkintonimikeKoodi(peruste.getId(), tutkintonimikeKoodiDto);
+        assertEquals("osaamisala_1632", koodi.getOsaamisalaUri());
+        assertEquals("tutkinnonosat_102047", koodi.getTutkinnonOsaUri());
+        assertEquals("tutkintonimikkeet_10003", koodi.getTutkintonimikeUri());
+    }
+
+    @Test
     public void testAddTutkinnonRakenne() {
 
         TutkinnonOsaViiteDto v1 = perusteService.addTutkinnonOsa(peruste.getId(), Suoritustapakoodi.OPS, new TutkinnonOsaViiteDto());
@@ -175,7 +191,6 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     private int maxDepth;
 
     @Test(expected = BusinessRuleViolationException.class)
-    @Rollback(true)
     public void addiningDeepTutkinnonRakenneShouldFail() {
 
         RakenneModuuliDto rakenne = new RakenneModuuliDto();

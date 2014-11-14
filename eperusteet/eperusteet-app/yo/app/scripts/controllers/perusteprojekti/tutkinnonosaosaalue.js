@@ -3,12 +3,11 @@
 
 angular.module('eperusteApp')
   .controller('TutkinnonOsaOsaAlueCtrl', function ($scope, $state, $stateParams, Editointikontrollit,
-    Tutke2OsaData, PerusteProjektiSivunavi, TutkinnonOsanOsaAlue, Lukitus, Notifikaatiot, Utils) {
+    TutkinnonOsanOsaAlue, Lukitus, Notifikaatiot, Utils) {
 
     $scope.osaamistavoitepuu = [];
     var tempId = 0;
 
-    PerusteProjektiSivunavi.setVisible(false);
     $scope.tabs = [
       {
         id: 0,
@@ -89,7 +88,7 @@ angular.module('eperusteApp')
 
     var osaAlueCallbacks = {
       edit: function () {
-        TutkinnonOsanOsaAlue.get({osanId: $stateParams.perusteenOsaId, osaalueenId: $stateParams.osaAlueId}, function(vastaus) {
+        TutkinnonOsanOsaAlue.get({viiteId: $stateParams.perusteenOsaViiteId, osaalueenId: $stateParams.osaAlueId}, function(vastaus) {
           $scope.osaAlue = vastaus;
           luoOsaamistavoitepuu();
         }, function (virhe){
@@ -98,13 +97,13 @@ angular.module('eperusteApp')
         });
       },
       cancel: function () {
-        Lukitus.vapautaPerusteenosa($stateParams.perusteenOsaId);
+        Lukitus.vapautaPerusteenosaByTutkinnonOsaViite($stateParams.perusteenOsaViiteId);
         $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {}, {reload: true});
       },
       save: function () {
         $scope.osaAlue.osaamistavoitteet = kokoaOsaamistavoitteet();
-        TutkinnonOsanOsaAlue.save({osanId: $stateParams.perusteenOsaId, osaalueenId: $stateParams.osaAlueId}, $scope.osaAlue, function () {
-          Lukitus.vapautaPerusteenosa($stateParams.perusteenOsaId);
+        TutkinnonOsanOsaAlue.save({viiteId: $stateParams.perusteenOsaViiteId, osaalueenId: $stateParams.osaAlueId}, $scope.osaAlue, function () {
+          Lukitus.vapautaPerusteenosaByTutkinnonOsaViite($stateParams.perusteenOsaViiteId);
           $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {}, {reload: true});
         }, function(virhe) {
           Notifikaatiot.serverCb(virhe);
@@ -159,7 +158,7 @@ angular.module('eperusteApp')
     };
 
     function lukitse(cb) {
-      Lukitus.lukitsePerusteenosa($stateParams.perusteenOsaId, cb);
+      Lukitus.lukitsePerusteenosaByTutkinnonOsaViite($stateParams.perusteenOsaViiteId, cb);
     }
 
     Editointikontrollit.registerCallback(osaAlueCallbacks);

@@ -1,3 +1,5 @@
+<!-- tuotutkinnonosasta.html -->
+
 <div modal="modalVisible" close="close()" options="{windowClass:'modal-to-haku'}">
   <div class="modal-header">
     <h1 kaanna="tuo-toisesta-suoritustavasta"></h1>
@@ -17,7 +19,7 @@
         <td class="pointer" ng-click="vaihdaValinta(tulos)">{{ tulos.nimi | kaanna }}</td>
       </tr>
     </table>
-    <div class="alert alert-warning" ng-show="tulokset.length === 0 && valittuSuoritustapa" kaanna>tutkinnon-osia-ei-löytynyt</div>.
+    <div class="alert alert-warning" ng-show="tulokset.length === 0 && valittuSuoritustapa" kaanna="tutkinnon-osia-ei-loytynyt"></div>
   </div>
 
   <div class="modal-footer">

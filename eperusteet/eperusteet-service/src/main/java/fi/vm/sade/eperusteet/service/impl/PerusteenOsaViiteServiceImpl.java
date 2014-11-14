@@ -35,15 +35,13 @@ import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
-import fi.vm.sade.eperusteet.service.internal.ArviointiService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.security.PermissionChecker;
+import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,13 +55,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
 
     @Autowired
-    private ArviointiService arviointiService;
-
-    @PersistenceContext
-    private EntityManager em;
-    @Autowired
     @Dto
     private DtoMapper mapper;
+
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
 
@@ -137,11 +131,11 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         if (viite.getPerusteenOsa() != null && viite.getPerusteenOsa().getTila().equals(PerusteTila.LUONNOS)) {
             PerusteenOsa perusteenOsa = viite.getPerusteenOsa();
             perusteenOsaService.delete(perusteenOsa.getId());
-            viite.setPerusteenOsa(null);
-            viite.getVanhempi().getLapset().remove(viite);
-            viite.setVanhempi(null);
-            repository.delete(viite);
         }
+        viite.setPerusteenOsa(null);
+        viite.getVanhempi().getLapset().remove(viite);
+        viite.setVanhempi(null);
+        repository.delete(viite);
     }
 
     @Override
@@ -162,23 +156,13 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         Peruste peruste = perusteet.findOne(perusteId);
         PerusteenOsaViite viite = repository.findOne(viiteId);
 
-        if (  peruste == null || !peruste.containsViite(viite) ) {
+        if (peruste == null || !peruste.containsViite(viite)) {
             throw new BusinessRuleViolationException("Sisältö ei kuulu tähän perusteeseen");
         }
 
         PerusteenOsaViite uusiViite = new PerusteenOsaViite();
-        if (viiteDto == null) {
-            TekstiKappale uusiKappale = new TekstiKappale();
-            uusiKappale.setTila(PerusteTila.LUONNOS);
-            uusiKappale = perusteenOsaRepository.save(uusiKappale);
-            uusiViite.setPerusteenOsa(uusiKappale);
-        } else {
-            PerusteenOsaViite viiteEntity = mapper.map(viiteDto, PerusteenOsaViite.class);
-            uusiViite.setLapset(viiteEntity.getLapset());
-            uusiViite.setPerusteenOsa(viiteEntity.getPerusteenOsa());
-        }
-
         repository.lock(viite.getRoot());
+
         uusiViite.setVanhempi(viite);
         List<PerusteenOsaViite> lapset = viite.getLapset();
         if (lapset == null) {
@@ -187,6 +171,24 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         }
         lapset.add(uusiViite);
         uusiViite = repository.save(uusiViite);
+
+        if (viiteDto == null) {
+            TekstiKappale uusiKappale = new TekstiKappale();
+            uusiKappale.setTila(PerusteTila.LUONNOS);
+            uusiKappale = perusteenOsaRepository.save(uusiKappale);
+            uusiViite.setPerusteenOsa(uusiKappale);
+        } else {
+            PerusteenOsaViite viiteEntity = mapper.map(viiteDto, PerusteenOsaViite.class);
+            uusiViite.setLapset(viiteEntity.getLapset());
+
+            if (viiteDto.getPerusteenOsaRef() != null) {
+                permissionChecker.checkPermission(viiteEntity.getPerusteenOsa().getId(), PermissionManager.Target.PERUSTEENOSA, PermissionManager.Permission.LUKU);
+                uusiViite.setPerusteenOsa(viiteEntity.getPerusteenOsa());
+            } else if (viiteDto.getPerusteenOsa() != null) {
+                perusteenOsaService.add(uusiViite, viiteDto.getPerusteenOsa());
+            }
+        }
+        repository.flush();
         return mapper.map(uusiViite, PerusteenOsaViiteDto.Matala.class);
     }
 
@@ -226,5 +228,8 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         }
         return repository.save(pov);
     }
+
+
+
 
 }

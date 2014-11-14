@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
 .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q,
-    $state, $location, YleinenData, PerusopetusService, Kaanna) {
+    $state, $location, YleinenData, PerusopetusService, Kaanna, $timeout) {
   var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
   var STATE_OSA = 'root.perusteprojekti.suoritustapa.perusteenosa';
   var STATE_OSALISTAUS = 'root.perusteprojekti.osalistaus';
@@ -32,7 +32,8 @@ angular.module('eperusteApp')
     {
       label: 'tutkinnonosat',
       link: [STATE_OSAT, {}],
-      isActive: isTutkinnonosatActive
+      isActive: isTutkinnonosatActive,
+      $type: 'ep-parts'
     }
   ];
   var service = null;
@@ -60,7 +61,7 @@ angular.module('eperusteApp')
         STATE_OSA,
         {
           perusteenOsanTyyppi: 'tekstikappale',
-          perusteenOsaId: lapsi.perusteenOsa.id,
+          perusteenOsaViiteId: lapsi.id,
           versio: null
         }
       ];
@@ -71,12 +72,13 @@ angular.module('eperusteApp')
     _.each(node.lapset, function (lapsi) {
       items.push({
         label: lapsi.perusteenOsa.nimi,
-        id: lapsi.perusteenOsa.id,
+        id: lapsi.id,
         depth: level,
         link: getLink(lapsi),
         isActive: isRouteActive,
+        $type: (lapsi.perusteenOsa && lapsi.perusteenOsa.tunniste === 'rakenne') ? 'ep-tree' : 'ep-text'
       });
-      nameMap[lapsi.perusteenOsa.id] = lapsi.perusteenOsa.nimi;
+      nameMap[lapsi.id] = lapsi.perusteenOsa.nimi;
       processNode(lapsi, level + 1);
     });
   };
@@ -87,7 +89,7 @@ angular.module('eperusteApp')
     // Versionless url should be considered same as specific version url.
     var url = item.href && item.href.indexOf('/rakenne') > -1 ?
       item.href.substr(1) : $state.href(STATE_OSA, {
-      perusteenOsaId: item.id,
+      perusteenOsaViiteId: item.id,
       versio: null
     }, {inherit:true}).replace(/#/g, '');
     return $location.url().indexOf(url) > -1;
@@ -100,16 +102,24 @@ angular.module('eperusteApp')
     return $location.url().indexOf(tablessUrl) > -1;
   };
 
+  function ylMapper(osa, key, level) {
+    level = level || 0;
+    items.push({
+      depth: level,
+      label: _.has(osa, 'nimi') ? osa.nimi : osa.perusteenOsa.nimi,
+      link: [STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id, tabId: 0}],
+      isActive: isYlRouteActive
+    });
+    _.each(osa.oppimaarat, function (lapsi) {
+      ylMapper(lapsi, key, level + 1);
+    });
+  }
+
   function mapYL(osat, key) {
     _(osat).sortBy(function (osa) {
       return Kaanna.kaanna(osa.nimi);
     }).each(function (osa) {
-      items.push({
-        depth: 1,
-        label: _.has(osa, 'nimi') ? osa.nimi : osa.perusteenOsa.nimi,
-        link: [STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id, tabId: 0}],
-        isActive: isYlRouteActive
-      });
+      ylMapper(osa, key, 1);
     });
   }
 
@@ -128,18 +138,17 @@ angular.module('eperusteApp')
       items = _.clone(AM_ITEMS);
       processNode(data.projekti.peruste.sisalto);
     }
-    callbacks.itemsChanged(items);
+    $timeout(function () {
+      callbacks.itemsChanged(items);
+    });
   };
 
   var load = function () {
     data.projekti = service.getProjekti();
     data.projekti.peruste = service.getPeruste();
     data.projekti.peruste.sisalto = service.getSisalto();
-    var oldTyyppi = perusteenTyyppi;
     perusteenTyyppi = YleinenData.isPerusopetus(data.projekti.peruste) ? 'YL' : 'AM';
-    if (oldTyyppi !== perusteenTyyppi) {
-      callbacks.typeChanged(perusteenTyyppi);
-    }
+    callbacks.typeChanged(perusteenTyyppi);
     buildTree();
   };
 

@@ -13,15 +13,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
+import com.google.common.base.Objects;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -35,12 +34,28 @@ import org.hibernate.envers.Audited;
 @Entity
 @DiscriminatorValue("RO")
 @Audited
-@EqualsAndHashCode(callSuper = true)
 public class RakenneOsa extends AbstractRakenneOsa {
+
     @JoinColumn(name = "rakenneosa_tutkinnonosaviite")
     @ManyToOne
     @NotNull
     private TutkinnonOsaViite tutkinnonOsaViite;
 
     private boolean pakollinen;
+
+    @Override
+    public boolean isSame(AbstractRakenneOsa other) {
+
+        if (!super.isSame(other)) {
+            return false;
+        }
+
+        if (other instanceof RakenneOsa) {
+            final RakenneOsa ro = (RakenneOsa) other;
+            return this.pakollinen == ro.isPakollinen()
+                && Objects.equal(this.tutkinnonOsaViite, ro.getTutkinnonOsaViite());
+        }
+
+        return false;
+    }
 }

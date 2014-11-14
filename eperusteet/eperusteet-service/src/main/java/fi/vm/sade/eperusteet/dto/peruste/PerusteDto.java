@@ -15,12 +15,6 @@
  */
 package fi.vm.sade.eperusteet.dto.peruste;
 
-import fi.vm.sade.eperusteet.domain.PerusteTila;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.dto.KoulutusDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.io.Serializable;
-import java.util.Date;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,18 +25,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class PerusteDto implements Serializable {
-    private Long id;
-    private LokalisoituTekstiDto nimi;
-    private LokalisoituTekstiDto kuvaus;
-    private String koulutustyyppi;
-    private Set<KoulutusDto> koulutukset;
-    private Date voimassaoloAlkaa;
-    private Date voimassaoloLoppuu;
-    private Date siirtymaAlkaa;
-    private String diaarinumero;
+public class PerusteDto extends PerusteBaseDto {
     private Set<SuoritustapaDto> suoritustavat;
-    private PerusteTila tila;
-    private PerusteTyyppi tyyppi;
-    private Date muokattu;
 }

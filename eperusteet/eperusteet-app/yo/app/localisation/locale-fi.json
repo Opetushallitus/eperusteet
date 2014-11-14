@@ -84,7 +84,7 @@
 
     "perusteprojektit-otsikko": "Omat perusteprojektit",
     "uusi-projekti": "Uusi projekti",
-    "tutkinnon-osia-ei-löytynyt": "Tutkinnon osia ei löytynyt",
+    "tutkinnon-osia-ei-loytynyt": "Tutkinnon osia ei löytynyt.",
     "aloita-raahaamalla-puuhun": "Raahaa ryhmiä tai tutkinnon osia tähän.",
     "rakennetta-ei-vielä-muodostettu": "Tutkinnon rakennetta ei ole vielä muodostettu tai se on tyhjä. Luo uusi rakenne muokkaamalla sivua.",
     "rakennetta-ei-ole": "Suoritustavalle ei ole määritetty rakennetta",
@@ -103,10 +103,10 @@
     "virhe-tilan-vaihtamisessa": "Virhe tilan vaihtamisessa",
     "virhe-muu": "Virhe",
     "virhe-etusivulle": "Etusivulle",
-    "tallentaminen-epäonnistui": "Tallentaminen epäonnistui",
+    "tallentaminen-epaonnistui": "Tallentaminen epäonnistui",
     "perusteen-tiivistelma": "Perusteen tiivistelmä",
 
-    "suoritustavalle-ei-ole-vielä-sisältöä": "Perusteelle ei ole luotu vielä tähän suoritustapaan liittyvää sisältöä",
+    "suoritustavalle-ei-ole-viela-sisaltoa": "Perusteelle ei ole luotu vielä tähän suoritustapaan liittyvää sisältöä",
     "rajauksellasi-ei-löytynyt-vaihtoehtoa": "Rajaus ei tuottanut tuloksia",
 
     "vain-käyttämättömät": "Näytä vain käyttämättömät",
@@ -132,6 +132,19 @@
     "avaa-kaikki": "Avaa kaikki",
     "sulje-kaikki": "Sulje kaikki",
     "avaa-sulje-kaikki": "Avaa / sulje kaikki",
+
+    "et-ole-lisannyt-viela-tutkintonimikkeita": "Tutkintonimikkeitä ei ole vielä lisätty",
+    "tutkintonimike": "Tutkintonimike",
+    "tutkintonimikkeet": "Tutkintonimikkeet",
+    "lisaa-nimike": "Lisää nimike",
+    "lisaa-tutkintonimike": "Lisää tutkintonimike",
+    "koodisto-haku-epaonnistui": "Haku koodistosta epäonnistui",
+    "koodisto-haku-onnistui": "Haku koodistosta onnistui",
+    "tutkintonimike-poistettu-onnistuneesti": "Tutkintonimike poistettiin onnistuneesti",
+    "tutkintonimikkeen-lisays-onnistui": "Tutkintonimikkeen lisääminen onnistui",
+    "tutkintonimikkeen-lisays-epaonnistui": "Tutkintonimikkeen lisääminen epäonnistui",
+
+    "ladataan-sisaltoa": "Ladataan sisältöä...",
 
     "poista-tutkinnonosa": "Poista tutkinnon osa",
     "lisaa-tutkinnonosa": "Lisää tutkinnon osa",
@@ -277,6 +290,7 @@
     "ruotsi": "Svenska",
 
     "tutkinnon-rakenne": "Tutkinnon rakenne",
+    "tutkinnon-muodostuminen": "Tutkinnon muodostuminen",
     "tutkinnon-rakenteen-kuvaus": "Tutkinnon rakenteen kuvaus",
     "tutkinnonosa-nimi": "Nimi",
     "tutkinnonosa-laajuus": "Laajuus",
@@ -286,6 +300,7 @@
     "tutkinnonosa": "Tutkinnon osa",
     "tutkinnonosat": "Tutkinnon osat",
     "tekstikappaleet": "Tekstikappaleet",
+    "tekstikappaleiden-tuonti-onnistui": "Tekstikappaleiden tuonti onnistui",
     "koulutus": "Koulutus",
 
     "perusteen-tiedot": "Perusteen tiedot",
@@ -385,6 +400,7 @@
     "tuo-excel-tiedostosta": "Tuo Excel-tiedostosta...",
     "tutkinnon-tyyppi": "Tutkinnon tyyppi",
     "excel-tiedostossasi-oli-virheitä": "Excel-tiedostossasi oli virheitä",
+    "excel-ei-kahta-samaa": "Tutkintokoodin täytyy olla uniikki",
     "valitse-nimi": "Valitse nimi",
     "valitse-diaarinumero": "Valitse diaarinumero",
     "määräyksen-diaarinumero": "Määräyksen diaarinumero",
@@ -691,6 +707,20 @@
     "yksi-oppimaara": "Yksi oppimäärä",
     "useita-oppimaaria": "Useita oppimääriä",
     "oppimaara": "Oppimäärä",
-    "lisaa-oppimaara": "Lisää oppimäärä"
+    "lisaa-oppimaara": "Lisää oppimäärä",
+
+    "luonti-projektin-nimi-ohje": "Anna projektin nimi muodossa '[Nimi] tutkinnon perusteprojekti' (esim. 'Rakennustuotannon ammattitutkinnon perusteprojekti').",
+    "luonti-paatospaivamaara-ohje": "Lisää perustetyöryhmän asettamisen päätöspäivämäärä.",
+    "luonti-diaarinumero-ohje": "Lisää perustetyöryhmän asettamispäätöksen diaarinumero.",
+
+    "perusteen-termisto": "Termistö",
+    "perusteen-termisto-ohje": "Tekstikappaleissa voidaan viitata termiin ja näyttää sen selitys. Termistö on perustekohtainen.",
+    "ei-termeja": "Yhtään termiä ei ole määritelty.",
+    "loydetty-termien-maara": "Löydettyjen termien määrä:",
+    "poistetaanko-termi": "Poistetaanko termi?",
+    "muokkaa-termia": "Muokkaa termiä",
+    "uusi-termi": "Lisää uusi termi",
+    "termi": "Termi",
+    "selitys": "Selitys"
 
 }

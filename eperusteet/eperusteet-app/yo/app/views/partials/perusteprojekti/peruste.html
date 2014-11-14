@@ -86,6 +86,38 @@ European Union Public Licence for more details.
 
     <div class="panel panel-default panel-clean">
       <div class="panel-heading">
+        <h3 class="panel-title" kaanna>tutkintonimikkeet</h3>
+      </div>
+      <div class="panel-body">
+        <table ng-show="koodisto.length > 0" class="table table-striped">
+          <thead>
+            <tr>
+              <th kaanna="osaamisala"></th>
+              <th kaanna="tutkintonimike"></th>
+              <th kaanna="tutkinnonosa"></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="koodi in koodisto">
+              <td>{{ koodi.$osaamisalaNimi | kaanna }} ({{ koodi.osaamisalaArvo }})</td>
+              <td>{{ koodi.$tutkintonimikeNimi | kaanna }} ({{ koodi.tutkintonimikeArvo }})</td>
+              <td><span ng-show="koodi.tutkinnonOsaArvo">{{ koodi.$tutkinnonOsaNimi | kaanna }} ({{ koodi.tutkinnonOsaArvo }})</span></td>
+              <td><button class="btn btn-xs btn-default" ng-click="poistaTutkintonimike(koodi)" kaanna="poista"></button></td>
+            </tr>
+          </tbody>
+        </table>
+        <div ng-hide="koodisto.length > 0">
+          <p kaanna="et-ole-lisannyt-viela-tutkintonimikkeita"></p>
+        </div>
+        <div ng-show="editEnabled">
+          <button ng-disabled="!koodisto.$resolved" class="btn btn-default" ng-click="lisaaNimike()" kaanna="lisaa-nimike"></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default panel-clean">
+      <div class="panel-heading">
         <h3 class="panel-title" kaanna>tiivistelmä</h3>
       </div>
       <div class="panel-body">
@@ -113,6 +145,7 @@ European Union Public Licence for more details.
         </table>
       </div>
     </div>
+
   </div>
 </form>
 </div>

@@ -20,6 +20,11 @@
 angular.module('eperusteApp')
   .run(function() {
     CKEDITOR.disableAutoInline = true;
+
+    // load external plugins
+    var basePath = CKEDITOR.basePath;
+    basePath = basePath.substr(0, basePath.indexOf('bower_components/'));
+    CKEDITOR.plugins.addExternal('termi', basePath + 'ckeditor-plugins/termi/', 'plugin.js');
   })
   .constant('editorLayouts', {
     minimal:
@@ -40,12 +45,14 @@ angular.module('eperusteApp')
         { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
         { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
         { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
+        // TODO aktivoi Termi-plugin
+        //{ name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link','Termi' ] },
         { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link' ] },
         { name: 'styles', items : [ 'Format' ] },
         { name: 'tools', items : [ 'About' ] }
       ]
   })
-  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts, $timeout) {
+  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts, $timeout, Kaanna) {
     return {
       priority: 10,
       restrict: 'A',
@@ -93,7 +100,10 @@ angular.module('eperusteApp')
         editor = CKEDITOR.inline(element[0], {
           toolbar: toolbarLayout,
           removePlugins: 'resize,elementspath,scayt,wsc',
+          // TODO aktivoi Termi-plugin
+          //extraPlugins: 'divarea,sharedspace,termi',
           extraPlugins: 'divarea,sharedspace',
+          //extraAllowedContent: 'abbr[data-viite]',
           disallowedContent: 'br',
           language: 'fi',
           'entities_latin': false,
@@ -101,7 +111,11 @@ angular.module('eperusteApp')
             top: 'ck-toolbar-top'
           },
           readOnly: !editingEnabled,
-          title: false
+          title: false,
+          customData: {
+            id: 7033,
+            kaanna: Kaanna.kaanna
+          }
         });
 
         // poistetaan enterin käyttö, jos kyseessä on yhden rivin syöttö

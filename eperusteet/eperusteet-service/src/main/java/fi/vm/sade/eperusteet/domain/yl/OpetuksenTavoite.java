@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain.yl;
 
-import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.HashSet;
@@ -38,7 +38,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "yl_opetuksen_tavoite")
 @Audited
-public class OpetuksenTavoite extends AbstractAuditedReferenceableEntity {
+public class OpetuksenTavoite extends AbstractReferenceableEntity {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter
@@ -46,18 +46,24 @@ public class OpetuksenTavoite extends AbstractAuditedReferenceableEntity {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
     private TekstiPalanen tavoite;
+
     @Getter
     @Setter
     @ManyToMany(cascade = CascadeType.PERSIST)
     private Set<KeskeinenSisaltoalue> sisaltoalueet = new HashSet<>();
+
     @Getter
     @Setter
     @ManyToMany
     private Set<LaajaalainenOsaaminen> laajattavoitteet = new HashSet<>();
-    @Getter
-    @Setter
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TavoitteenArviointi> arvioinninkohteet = new HashSet<>();
+
+    @Getter
+    @Setter
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    private Set<OpetuksenKohdealue> kohdealueet = new HashSet<>();
 
     public Set<TavoitteenArviointi> getArvioinninkohteet() {
         return new HashSet<>(arvioinninkohteet);

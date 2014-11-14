@@ -63,7 +63,7 @@ angular.module('eperusteApp')
           }],
           'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
             function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
-              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams, true);
+              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
             }]
         },
         controller: 'OsalistausController',
@@ -80,7 +80,7 @@ angular.module('eperusteApp')
           }],
           'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
             function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
-              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams, true);
+              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
             }]
         },
         controller: 'OsaAlueController',
@@ -128,7 +128,7 @@ angular.module('eperusteApp')
         }]
       })
       .state('root.perusteprojekti.suoritustapa.perusteenosa', {
-        url: '/perusteenosa/{perusteenOsanTyyppi}/{perusteenOsaId}{versio:(?:/[^/]+)?}',
+        url: '/perusteenosa/{perusteenOsanTyyppi}/{perusteenOsaViiteId}{versio:(?:/[^/]+)?}',
         templateUrl: 'views/muokkaus.html',
         controller: 'MuokkausCtrl',
         onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
@@ -175,6 +175,14 @@ angular.module('eperusteApp')
           PerusteProjektiSivunavi.setVisible(false);
         }]
       })
+      .state('root.perusteprojekti.termisto', {
+        url: '/termisto',
+        templateUrl: 'views/partials/perusteprojekti/termisto.html',
+        controller: 'TermistoController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(false);
+        }]
+      })
       .state('root.perusteprojektiwizard', {
         url: '/perusteprojekti',
         template: '<div ui-view></div>',
@@ -213,7 +221,7 @@ angular.module('eperusteApp')
     }
     init();
 
-    var amFooter = '<button class="btn btn-default" kaanna="lisaa-tutkintokohtainen-osa" icon-role="add" ng-click="$parent.lisaaTekstikappale()" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }"></button>';
+    var amFooter = '<button class="btn btn-default" kaanna="lisaa-tutkintokohtainen-osa" icon-role="ep-text-add" ng-click="$parent.lisaaTekstikappale()" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }"></button>';
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
     $scope.sivunavi = {
@@ -297,7 +305,7 @@ angular.module('eperusteApp')
         TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
         $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
           perusteenOsanTyyppi: 'tekstikappale',
-          perusteenOsaId: response._perusteenOsa,
+          perusteenOsaViiteId: response.id,
           versio: ''
         });
       });

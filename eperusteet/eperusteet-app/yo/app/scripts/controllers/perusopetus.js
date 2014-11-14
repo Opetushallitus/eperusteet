@@ -19,54 +19,109 @@
 
 angular.module('eperusteApp')
   .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state,
-      PerusopetusService) {
+      PerusopetusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot) {
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
+    TekstikappaleOperations.setPeruste($scope.peruste);
     $scope.rajaus = '';
 
-    //$scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
+    $scope.$watch('peruste.sisalto', function () {
+      Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function (lapsi) {
+        lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', {
+          suoritustapa: 'ops',
+          perusteenOsanTyyppi: 'tekstikappale',
+          perusteenOsaViiteId: lapsi.id,
+          versio: '' });
+      });
+    }, true);
+
     $scope.datat = {
       opetus: {lapset: []},
-      sisalto: {lapset: PerusopetusService.getTekstikappaleet()}
+      sisalto: perusteprojektiTiedot.getYlTiedot().sisalto
     };
+
+    $scope.$watch('datat.opetus.lapset', function () {
+      _.each($scope.datat.opetus.lapset, function (area) {
+        area.$type = 'ep-parts';
+        area.$url = $state.href('root.perusteprojekti.osalistaus', {osanTyyppi: area.tyyppi});
+        Algoritmit.kaikilleLapsisolmuille(area, 'lapset', function (lapsi) {
+          lapsi.$url = $state.href('root.perusteprojekti.osaalue', {osanTyyppi: area.tyyppi, osanId: lapsi.id, tabId: 0});
+          if (lapsi.koosteinen) {
+            lapsi.lapset = lapsi.oppimaarat;
+          }
+        });
+      });
+    }, true);
+
     // TODO käytä samaa APIa kuin sivunavissa, koko sisältöpuu kerralla
     _.each(PerusopetusService.sisallot, function (item) {
       var data = {
         nimi: item.label,
         tyyppi: item.tyyppi,
-        lapset: PerusopetusService.getOsat(item.tyyppi)
+        lapset: PerusopetusService.getOsat(item.tyyppi, true)
       };
       $scope.datat.opetus.lapset.push(data);
     });
     $scope.peruste.sisalto = $scope.datat.sisalto;
 
-    $scope.opetusHref = function (sisalto) {
-      return $state.href('root.perusteprojekti.osalistaus', {osanTyyppi: sisalto.tyyppi});
-    };
-
-    $scope.sisaltoHref = function (sisalto, lapsi) {
-      return $state.href('root.perusteprojekti.osaalue', {osanTyyppi: sisalto.tyyppi, osanId: lapsi.id, tabId: 0});
-    };
-
     $scope.rajaaSisaltoa = function(value) {
       if (_.isUndefined(value)) { return; }
-      var filterer = function(osa, lapsellaOn) {
+      var sisaltoFilterer = function(osa, lapsellaOn) {
         osa.$filtered = lapsellaOn || Algoritmit.rajausVertailu(value, osa, 'perusteenOsa', 'nimi');
         return osa.$filtered;
       };
+      var filterer = function(osa, lapsellaOn) {
+        osa.$filtered = lapsellaOn || Algoritmit.rajausVertailu(value, osa, 'nimi');
+        return osa.$filtered;
+      };
       Algoritmit.kaikilleTutkintokohtaisilleOsille($scope.datat.opetus, filterer);
-      Algoritmit.kaikilleTutkintokohtaisilleOsille($scope.datat.sisalto, filterer);
+      Algoritmit.kaikilleTutkintokohtaisilleOsille($scope.datat.sisalto, sisaltoFilterer);
     };
 
-    $scope.avaaSuljeKaikki = function(sisalto, state) {
-      var open = false;
-      Algoritmit.kaikilleLapsisolmuille(sisalto, 'lapset', function(lapsi) {
-        open = open || lapsi.$opened;
+    $scope.avaaSuljeKaikki = function(value) {
+      var open = _.isUndefined(value) ? false : !value;
+      if (_.isUndefined(value)) {
+        Algoritmit.kaikilleLapsisolmuille($scope.datat.opetus, 'lapset', function(lapsi) {
+          open = open || lapsi.$opened;
+        });
+      }
+      Algoritmit.kaikilleLapsisolmuille($scope.datat.sisalto, 'lapset', function(lapsi) {
+        lapsi.$opened = !open;
       });
-      Algoritmit.kaikilleLapsisolmuille(sisalto, 'lapset', function(lapsi) {
-        lapsi.$opened = _.isUndefined(state) ? !open : state;
+      Algoritmit.kaikilleLapsisolmuille($scope.datat.opetus, 'lapset', function(lapsi) {
+        lapsi.$opened = !open;
       });
     };
+
+    $scope.addTekstikappale = function () {
+      TekstikappaleOperations.add();
+    };
+
+    $scope.edit = function () {
+      Editointikontrollit.startEditing();
+    };
+
+    Editointikontrollit.registerCallback({
+      edit: function() {
+        $scope.rajaus = '';
+        $scope.avaaSuljeKaikki(true);
+      },
+      save: function() {
+        TekstikappaleOperations.updateViitteet($scope.peruste.sisalto, function () {
+          Notifikaatiot.onnistui('osien-rakenteen-päivitys-onnistui');
+        });
+      },
+      cancel: function() {
+        $state.go($state.current.name, $stateParams, {
+          reload: true
+        });
+      },
+      validate: function() { return true; },
+      notify: function (value) {
+        $scope.editing = value;
+      }
+    });
+
   })
 
   .controller('OsalistausController', function ($scope, $state, $stateParams, PerusopetusService,
@@ -123,6 +178,7 @@ angular.module('eperusteApp')
   .controller('OsaAlueController', function ($scope, $q, $stateParams, PerusopetusService) {
     $scope.isVuosiluokka = $stateParams.osanTyyppi === PerusopetusService.VUOSILUOKAT;
     $scope.isOppiaine = $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET;
+    $scope.isOsaaminen = $stateParams.osanTyyppi === PerusopetusService.OSAAMINEN;
     $scope.versiot = {latest: true};
     $scope.dataObject = PerusopetusService.getOsa($stateParams);
   })

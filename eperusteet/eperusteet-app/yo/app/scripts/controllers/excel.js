@@ -85,7 +85,7 @@ angular.module('eperusteApp')
     $scope.liitaKoodiOT = function(ot) {
       Koodisto.modaali(function(koodi) {
         ot.koodiUri = koodi.koodiUri;
-        ot.$koodiArvo = koodi.koodiArvo;
+        ot.koodiArvo = koodi.koodiArvo;
       }, {
         tyyppi: function() {
           return 'tutkinnonosat';

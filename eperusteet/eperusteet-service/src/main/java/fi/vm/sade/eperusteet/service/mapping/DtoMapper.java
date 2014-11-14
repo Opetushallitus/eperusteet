@@ -56,14 +56,14 @@ public interface DtoMapper {
 
     /**
      * muutaa iterablen kohdekokoelmaan,
-     * 
+     *
      * @param <S> lähdekokoelman tyyppi
      * @param <D> kohdelistan elementin tyyppi
      * @param source lähdekokoelma
      * @param dest kohdekokoelma
      * @param elemType kohdelistan elementin "type token"
      */
-    <S, D> void mapToCollection(Iterable<S> source, Collection<D> dest, Class<D> elemType);
+    <S, D, T extends Collection<D>> T mapToCollection(Iterable<S> source, T dest, Class<D> elemType);
 
     /**
      * Palauttaa mapper-toteutuksen

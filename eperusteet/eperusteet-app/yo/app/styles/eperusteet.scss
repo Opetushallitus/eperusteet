@@ -7,6 +7,8 @@
 @import "mixins/utils";
 
 @import "modules/yleiset";
+@import "modules/icons";
+@import "modules/contenttree";
 @import "modules/aloitussivu";
 @import "modules/admin";
 @import "modules/main";
@@ -14,6 +16,7 @@
 @import "modules/tree";
 @import "modules/tutkinnonosat";
 @import "modules/tutkinnonosa";
+@import "modules/tekstikappale";
 @import "modules/kenttalistaus";
 @import "modules/perusteprojekti";
 @import "modules/statusbadge";
@@ -30,3 +33,4 @@
 @import "modules/sisalto";
 @import "modules/formfield";
 @import "modules/ohje";
+@import "modules/termisto";

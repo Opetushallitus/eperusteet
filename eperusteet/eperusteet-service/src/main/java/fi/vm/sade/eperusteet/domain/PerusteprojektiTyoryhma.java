@@ -37,7 +37,7 @@ import lombok.Setter;
 @Table(name = "perusteprojekti_tyoryhma")
 public class PerusteprojektiTyoryhma implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
     private Long id;

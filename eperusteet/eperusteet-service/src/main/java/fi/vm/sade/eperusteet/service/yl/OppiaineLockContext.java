@@ -1,36 +1,46 @@
 /*
  * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
+ *
  * This program is free software: Licensed under the EUPL, Version 1.1 or - as
  * soon as they will be approved by the European Commission - subsequent versions
  * of the EUPL (the "Licence");
- * 
+ *
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+package fi.vm.sade.eperusteet.service.yl;
 
-package fi.vm.sade.eperusteet.resource.util;
-
-import java.util.Arrays;
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
- * @author teele1
+ * @author jhyoty
  */
-public class PerusteenOsaMappings {
-    public static final String TUTKINNON_OSA = "perusteen-osat-tutkinnon-osa";
-    public static final String TEKSTIKAPPALE = "perusteen-osat-tekstikappale";
-    
-    public static final String IS_TUTKINNON_OSA_PARAM = "tyyppi=" + TUTKINNON_OSA;
-    public static final String IS_TEKSTIKAPPALE_PARAM = "tyyppi=" + TEKSTIKAPPALE;
-    
-    public static final List<String> getPerusteenOsaTypes() {
-        return Arrays.asList(TUTKINNON_OSA, TEKSTIKAPPALE);
+@Getter
+@Setter
+public class OppiaineLockContext {
+
+    Long perusteId;
+    Long oppiaineId;
+    Long kokonaisuusId;
+
+    public OppiaineLockContext() {
+    }
+
+    public OppiaineLockContext(Long perusteId, Long oppiaineId, Long kokonaisuusId) {
+        this.perusteId = perusteId;
+        this.oppiaineId = oppiaineId;
+        this.kokonaisuusId = kokonaisuusId;
+    }
+
+
+    public static OppiaineLockContext of(Long perusteId, Long oppiaineId, Long kokonaisuusId) {
+        return new OppiaineLockContext(perusteId, oppiaineId, kokonaisuusId);
     }
 }

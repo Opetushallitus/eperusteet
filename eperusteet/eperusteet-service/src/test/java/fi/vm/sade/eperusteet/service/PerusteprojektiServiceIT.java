@@ -262,7 +262,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         service.setPerusteenOsaViiteTyoryhmat(pp.getId(), poA.getId(), nimet);
         service.setPerusteenOsaViiteTyoryhmat(pp.getId(), poB.getId(), nimet);
         List<PerusteenOsaTyoryhmaDto> st = service.getSisallonTyoryhmat(pp.getId());
-        Assert.assertEquals(6, st.size());
+        Assert.assertEquals(3, st.size());
     }
 
     @Test

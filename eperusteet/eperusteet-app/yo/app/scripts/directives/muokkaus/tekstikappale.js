@@ -18,6 +18,108 @@
 'use strict';
 
 angular.module('eperusteApp')
+  .service('TekstikappaleOperations', function (YleinenData, PerusteenOsaViitteet,
+      Editointikontrollit, Notifikaatiot, $state, SuoritustapaSisalto, TutkinnonOsaEditMode,
+      PerusopetusService, $stateParams) {
+    var peruste = null;
+
+    this.setPeruste = function (value) {
+      peruste = value;
+    };
+
+    function goToView(response, id) {
+      var params = {
+        perusteenOsanTyyppi: 'tekstikappale',
+        perusteenOsaViiteId: id || response.id,
+        versio: ''
+      };
+      if (YleinenData.isPerusopetus(peruste)) {
+        _.extend(params, {suoritustapa: 'ops'});
+      }
+      $state.go('root.perusteprojekti.suoritustapa.perusteenosa', params, {reload: true});
+    }
+
+    this.add = function () {
+      if (YleinenData.isPerusopetus(peruste)) {
+        PerusopetusService.saveOsa({}, {osanTyyppi: 'tekstikappale'}, function(response) {
+          TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
+          goToView(response);
+        });
+      }
+    };
+
+    this.delete = function (viiteId) {
+      if (YleinenData.isPerusopetus(peruste)) {
+        PerusopetusService.deleteOsa({$url: 'dummy', id: viiteId}, function () {
+          Editointikontrollit.cancelEditing();
+          Notifikaatiot.onnistui('poisto-onnistui');
+          $state.go('root.perusteprojekti.perusopetus', {}, {reload: true});
+        });
+      } else {
+        PerusteenOsaViitteet.delete({viiteId: viiteId}, {}, function() {
+          Editointikontrollit.cancelEditing();
+          Notifikaatiot.onnistui('poisto-onnistui');
+          $state.go('root.perusteprojekti.suoritustapa.sisalto', {}, {reload: true});
+        }, Notifikaatiot.serverCb);
+      }
+    };
+
+    this.addChild = function (viiteId, suoritustapa) {
+      if (YleinenData.isPerusopetus(peruste)) {
+        PerusopetusService.addSisaltoChild(viiteId, function (response) {
+          TutkinnonOsaEditMode.setMode(true);
+          goToView(response);
+        });
+      } else {
+        SuoritustapaSisalto.addChild({
+          perusteId: peruste.id,
+          suoritustapa: suoritustapa,
+          perusteenosaViiteId: viiteId
+        }, {}, function(response) {
+          TutkinnonOsaEditMode.setMode(true);
+          goToView(response);
+        }, Notifikaatiot.varoitus);
+      }
+    };
+
+    this.clone = function (viiteId) {
+      if (YleinenData.isPerusopetus(peruste)) {
+
+      } else {
+        PerusteenOsaViitteet.kloonaaTekstikappale({
+          perusteId: peruste.id,
+          suoritustapa: $stateParams.suoritustapa,
+          viiteId: viiteId
+        }, function(tk) {
+          TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
+          Notifikaatiot.onnistui('tekstikappale-kopioitu-onnistuneesti');
+          goToView(tk, tk.id);
+        });
+      }
+    };
+
+    function mapSisalto(root) {
+      return {
+        id: root.id,
+        perusteenOsa: null,
+        lapset: _.map(root.lapset, mapSisalto)
+      };
+    }
+
+    this.updateViitteet = function (sisalto, successCb) {
+      var success = successCb || angular.noop;
+      var mapped = mapSisalto(sisalto);
+
+      if (YleinenData.isPerusopetus(peruste)) {
+        PerusopetusService.updateSisaltoViitteet(sisalto, mapped, successCb);
+      } else {
+        PerusteenOsaViitteet.update({
+          viiteId: sisalto.id
+        }, mapped, success, Notifikaatiot.serverCb);
+      }
+    };
+  })
+
   .directive('muokkausTekstikappale', function() {
     return {
       templateUrl: 'views/partials/muokkaus/tekstikappale.html',
@@ -28,19 +130,14 @@ angular.module('eperusteApp')
       },
       controller: function($scope, $q, Editointikontrollit, PerusteenOsat,
         Notifikaatiot, VersionHelper, Lukitus, $state,
-        TutkinnonOsaEditMode, PerusteenOsaViitteet, Varmistusdialogi, $timeout,
-        Kaanna, PerusteprojektiTiedotService, $stateParams, SuoritustapaSisalto,
+        TutkinnonOsaEditMode, Varmistusdialogi, $timeout,
+        Kaanna, PerusteprojektiTiedotService, $stateParams,
         Utils, PerusteProjektiSivunavi, YleinenData, $rootScope, Kommentit,
         KommentitByPerusteenOsa, PerusteenOsanTyoryhmat, Tyoryhmat, PerusteprojektiTyoryhmat,
-        TEXT_HIERARCHY_MAX_DEPTH) {
+        TEXT_HIERARCHY_MAX_DEPTH, TekstikappaleOperations) {
 
+        TekstikappaleOperations.setPeruste($scope.$parent.peruste);
         $scope.kaikkiTyoryhmat = [];
-
-        $q.all([PerusteenOsanTyoryhmat.get({ projektiId: $stateParams.perusteProjektiId, osaId: $stateParams.perusteenOsaId }).$promise,
-                PerusteprojektiTyoryhmat.get({ id: $stateParams.perusteProjektiId }).$promise]).then(function(data) {
-          $scope.tyoryhmat = data[0];
-          $scope.kaikkiTyoryhmat = _.unique(_.map(data[1], 'nimi'));
-        }, Notifikaatiot.serverCb);
 
         function paivitaRyhmat(uudet, cb) {
           PerusteenOsanTyoryhmat.save({
@@ -68,16 +165,16 @@ angular.module('eperusteApp')
         };
 
         Utils.scrollTo('#ylasivuankkuri');
-        Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaId });
+        Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.perusteenOsaViiteId });
 
         $scope.sisalto = {};
         $scope.viitteet = {};
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
 
-        if ($stateParams.suoritustapa) {
+        if ($stateParams.suoritustapa || YleinenData.isPerusopetus($scope.$parent.peruste)) {
           PerusteprojektiTiedotService.then(function(instance) {
             instance.haeSisalto($scope.$parent.peruste.id, $stateParams.suoritustapa).then(function(res) {
-              $scope.sisalto = res;
+              $scope.sisalto = res[0];
               $scope.setNavigation();
             });
           });
@@ -94,36 +191,44 @@ angular.module('eperusteApp')
         }
 
         function fetch(cb) {
-          PerusteenOsat.get({ osanId: $stateParams.perusteenOsaId }, _.setWithCallback($scope, 'tekstikappale', cb));
+          PerusteenOsat.get({ osanId: $scope.tekstikappale.id }, _.setWithCallback($scope, 'tekstikappale', cb));
         }
 
         function storeTree (sisalto, level) {
           level = level || 0;
           _.each(sisalto.lapset, function(lapsi) {
-            if (!_.isObject($scope.viitteet[lapsi.perusteenOsa.id])) {
-              $scope.viitteet[lapsi.perusteenOsa.id] = {};
+            if (lapsi.perusteenOsa) {
+              if (!_.isObject($scope.viitteet[lapsi.perusteenOsa.id])) {
+                $scope.viitteet[lapsi.perusteenOsa.id] = {};
+              }
+              $scope.viitteet[lapsi.perusteenOsa.id].viite = lapsi.id;
+              $scope.viitteet[lapsi.perusteenOsa.id].level = level;
+              if (sisalto.perusteenOsa) {
+                $scope.viitteet[lapsi.perusteenOsa.id].parent = sisalto.perusteenOsa.id;
+              }
+              storeTree(lapsi, level + 1);
             }
-            $scope.viitteet[lapsi.perusteenOsa.id].viite = lapsi.id;
-            $scope.viitteet[lapsi.perusteenOsa.id].level = level;
-            if (sisalto.perusteenOsa) {
-              $scope.viitteet[lapsi.perusteenOsa.id].parent = sisalto.perusteenOsa.id;
-            }
-            storeTree(lapsi, level + 1);
           });
+        }
+
+        function updateViitteet() {
+          $scope.viitteet = {};
+          storeTree($scope.sisalto);
         }
 
         $scope.tree = {
           init: function() {
-            $scope.viitteet = {};
-            storeTree($scope.sisalto);
+            updateViitteet();
           },
           get: function() {
             var ids = [];
             var id = $scope.tekstikappale.id;
-            do {
-              ids.push(id);
-              id = $scope.viitteet[id] ? $scope.viitteet[id].parent : null;
-            } while (id);
+            if ($scope.viitteet[id]) {
+              do {
+                ids.push($scope.viitteet[id].viite);
+                id = $scope.viitteet[id] ? $scope.viitteet[id].parent : null;
+              } while (id);
+            }
             return ids;
           }
         };
@@ -170,14 +275,17 @@ angular.module('eperusteApp')
         }
 
         function doDelete() {
-          PerusteenOsaViitteet.delete({viiteId: $scope.viiteId()}, {}, function() {
-            Editointikontrollit.cancelEditing();
-            Notifikaatiot.onnistui('poisto-onnistui');
-            $state.go('root.perusteprojekti.suoritustapa.sisalto', {}, {reload: true});
-          }, Notifikaatiot.serverCb);
+          TekstikappaleOperations.delete($scope.viiteId());
         }
 
         function setupTekstikappale(kappale) {
+
+          $q.all([PerusteenOsanTyoryhmat.get({projektiId: $stateParams.perusteProjektiId, osaId: $scope.tekstikappale.id}).$promise,
+            PerusteprojektiTyoryhmat.get({id: $stateParams.perusteProjektiId}).$promise]).then(function (data) {
+            $scope.tyoryhmat = data[0];
+            $scope.kaikkiTyoryhmat = _.unique(_.map(data[1], 'nimi'));
+          }, Notifikaatiot.serverCb);
+
           $scope.editableTekstikappale = angular.copy(kappale);
 
           Editointikontrollit.registerCallback({
@@ -240,17 +348,7 @@ angular.module('eperusteApp')
 
 
         $scope.kopioiMuokattavaksi = function() {
-          PerusteenOsaViitteet.kloonaaTekstikappale({
-            viiteId: $scope.viitteet[$scope.tekstikappale.id].viite
-          }, function(tk) {
-            TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
-            Notifikaatiot.onnistui('tekstikappale-kopioitu-onnistuneesti');
-            $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
-              perusteenOsanTyyppi: 'tekstikappale',
-              perusteenOsaId: tk.perusteenOsa.id,
-              versio: ''
-            });
-          });
+          TekstikappaleOperations.clone($scope.viitteet[$scope.tekstikappale.id].viite);
         };
 
         $scope.muokkaa = function() {
@@ -266,18 +364,7 @@ angular.module('eperusteApp')
         };
 
         $scope.addLapsi = function() {
-          SuoritustapaSisalto.addChild({
-            perusteId: $scope.$parent.peruste.id,
-            suoritustapa: $stateParams.suoritustapa,
-            perusteenosaViiteId: $scope.viiteId()
-          }, {}, function(response) {
-            TutkinnonOsaEditMode.setMode(true);
-            $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
-              perusteenOsanTyyppi: 'tekstikappale',
-              perusteenOsaId: response._perusteenOsa,
-              versio: ''
-            });
-          }, Notifikaatiot.varoitus);
+          TekstikappaleOperations.addChild($scope.viiteId(), $stateParams.suoritustapa);
         };
 
         $scope.setCrumbs = function(crumbs) {
@@ -316,8 +403,8 @@ angular.module('eperusteApp')
           var nimi = Kaanna.kaanna($scope.tekstikappale.nimi);
 
           Varmistusdialogi.dialogi({
-            successCb: doDelete,
-            otsikko: 'poista-tekstikappale-otsikko',
+          successCb: doDelete,
+          otsikko: 'poista-tekstikappale-otsikko',
             teksti: Kaanna.kaanna('poista-tekstikappale-teksti', {nimi: nimi})
           })();
         };
@@ -337,5 +424,44 @@ angular.module('eperusteApp')
           }
         });
       }
+    };
+  })
+
+  .directive('termistoViitteet', function (Kaanna) {
+    var TERMI_MATCHER = 'abbr[data-viite]';
+    return {
+      restrict: 'A',
+      scope: {
+        model: '=termistoViitteet'
+      },
+      link: function (scope, element) {
+        function destroy() {
+          element.find(TERMI_MATCHER).each(function () {
+            var jqEl = angular.element(this);
+            if (jqEl.popover) {
+              jqEl.popover('destroy');
+            }
+          });
+        }
+        function setup() {
+          element.find(TERMI_MATCHER).each(function () {
+            var jqEl = angular.element(this);
+            var viiteId = jqEl.attr('data-viite');
+            var popover = jqEl.popover({
+              placement: 'bottom',
+              html: true,
+              title: Kaanna.kaanna('termin-selitys')
+            }).on('show.bs.popover', function () {
+              // TODO integrate with backend
+              popover.attr('data-content', 'Tähän termin selitys viiteId:llä ' + viiteId);
+            });
+          });
+        }
+        scope.$watch('model', function () {
+          destroy();
+          setup();
+        });
+        scope.$on('$destroy', destroy);
+      },
     };
   });

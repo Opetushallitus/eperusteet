@@ -50,7 +50,7 @@ import org.hibernate.envers.Audited;
 public class TutkinnonOsaViite implements ReferenceableEntity, Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
     private Long id;
@@ -72,7 +72,7 @@ public class TutkinnonOsaViite implements ReferenceableEntity, Serializable {
 
     @Getter
     @Setter
-    private Boolean poistettu;
+    private boolean poistettu;
 
     @Getter
     @Setter

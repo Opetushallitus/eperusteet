@@ -1,0 +1,17 @@
+<!-- termisto.html -->
+
+<div class="modal-header">
+  <h2>{{creating ? 'uusi-termi' : 'muokkaa-termia' | kaanna}}</h2>
+</div>
+
+<div class="modal-body termi-muokkaus">
+  <formfield label="termi" model="termimodel" model-var="termi"></formfield>
+  <formfield label="selitys" model="termimodel" model-var="selitys" type="textarea"></formfield>
+  <div class="clearfix"></div>
+</div>
+
+<div class="modal-footer">
+  <button ng-if="!creating" class="btn btn-danger pull-left" ng-click="delete()" kaanna="poista" icon-role="remove"></button>
+  <button class="btn btn-default" ng-click="$dismiss()" kaanna="peruuta"></button>
+  <button class="btn btn-primary" ng-click="$close(termimodel)" kaanna="tallenna"></button>
+</div>

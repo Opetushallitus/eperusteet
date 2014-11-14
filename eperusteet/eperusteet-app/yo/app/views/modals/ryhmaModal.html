@@ -1,3 +1,5 @@
+<!-- ryhmaModal.html -->
+
 <div class="modal-header">
     <h2>{{luonti ? 'luo-uusi-ryhma' : 'muokkaa-ryhmaa'| kaanna}}</h2>
 </div>
@@ -11,7 +13,7 @@
           <formfield model="ryhma" model-var="rooli" label="rooli" options="roolit"><ohje teksti="ohje-ryhma-rooli"></ohje></formfield>
         </div>
 
-        <div ng-if="ryhma.rooli === 'määritelty' && luonti">
+        <div>
             <h3  kaanna>osaamisala</h3>
             <div class="col-sm-offset-3" >
                 <button icon-role="add" class="btn btn-default" type="button" ng-click="avaaKoodistoModaali()" kaanna="hae-koodistosta"></button>

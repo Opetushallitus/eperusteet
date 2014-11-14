@@ -170,6 +170,7 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
         Resource resource = new ClassPathResource("material/invalid_arviointi.json");
         ArviointiDto dto = objectMapper.readValue(resource.getFile(), ArviointiDto.class);
         arviointiService.add(dto);
+        em.flush();
     }
 
     @Test(expected = ConstraintViolationException.class)
@@ -179,5 +180,6 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
         Resource resource = new ClassPathResource("material/invalid_arviointi2.json");
         ArviointiDto dto = objectMapper.readValue(resource.getFile(), ArviointiDto.class);
         arviointiService.add(dto);
+        em.flush();
     }
 }
