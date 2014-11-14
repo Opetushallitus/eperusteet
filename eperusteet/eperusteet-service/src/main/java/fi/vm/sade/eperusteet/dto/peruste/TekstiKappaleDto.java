@@ -33,6 +33,10 @@ import lombok.Setter;
 public class TekstiKappaleDto extends PerusteenOsaDto.Laaja {
     private LokalisoituTekstiDto teksti;
 
+    public TekstiKappaleDto() {
+        
+    }
+
     public TekstiKappaleDto (LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
         super(nimi, tila, tunniste);
     }
