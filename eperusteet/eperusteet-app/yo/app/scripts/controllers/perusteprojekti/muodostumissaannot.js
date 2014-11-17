@@ -15,12 +15,14 @@
  */
 
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .controller('PerusteprojektiMuodostumissaannotCtrl', function($scope, $stateParams,
     PerusteenRakenne, Notifikaatiot, Editointikontrollit, PerusteProjektiService,
     Kommentit, KommentitBySuoritustapa, Lukitus, VersionHelper, Muodostumissaannot,
-    virheService, PerusteProjektiSivunavi, perusteprojektiTiedot, $q, Varmistusdialogi) {
+    virheService, PerusteProjektiSivunavi, perusteprojektiTiedot, $q, Varmistusdialogi, Algoritmit,
+    PerusteenOsat) {
     $scope.editoi = false;
     $scope.suoritustapa = $stateParams.suoritustapa;
     $scope.rakenne = {
@@ -31,6 +33,12 @@ angular.module('eperusteApp')
     $scope.versiot = {};
     $scope.isLocked = false;
     $scope.peruste = perusteprojektiTiedot.getPeruste();
+    $scope.sisalto = perusteprojektiTiedot.getSisalto();
+    var muodostumisOtsikko = null;
+
+    function setOtsikko(value) {
+      $scope.rakenne.muodostumisOtsikko = value ? value : muodostumisOtsikko;
+    }
 
     Kommentit.haeKommentit(KommentitBySuoritustapa, {id: $stateParams.perusteProjektiId, suoritustapa: $scope.suoritustapa});
 
@@ -45,6 +53,7 @@ angular.module('eperusteApp')
       res.$suoritustapa = $scope.suoritustapa;
       res.$resolved = true;
       $scope.rakenne = res;
+      setOtsikko();
       Muodostumissaannot.laskeLaajuudet($scope.rakenne.rakenne, $scope.rakenne.tutkinnonOsaViitteet, $scope.rakenne.tutkinnonOsat);
       haeVersiot();
       Lukitus.tarkista($scope.rakenne.$peruste.id, $scope, $scope.suoritustapa);
@@ -80,13 +89,33 @@ angular.module('eperusteApp')
           });
         }
       });
-
+      Algoritmit.kaikilleLapsisolmuille($scope.sisalto, 'lapset', function (lapsi) {
+        if (lapsi.perusteenOsa && lapsi.perusteenOsa.tunniste === 'rakenne') {
+          muodostumisOtsikko = _.cloneDeep(lapsi.perusteenOsa);
+          setOtsikko();
+          return true;
+        }
+      });
     }
     $scope.haeRakenne = haeRakenne;
     var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, '') : null;
     haeRakenne(angular.noop, versio);
 
     function tallennaRakenne(rakenne) {
+      // TODO Jos tallennettaisiin otsikkotekstikappale viitteen läpi, ei tarvitsisi erillistä perusteenosalukkoa.
+      // TODO optimointi: älä tallenna otsikkoa jos sitä ei muutettu
+      var otsikkoId = $scope.rakenne.muodostumisOtsikko.id;
+      Lukitus.lukitsePerusteenosa(otsikkoId, function () {
+        PerusteenOsat.saveTekstikappale({osanId: otsikkoId},
+          $scope.rakenne.muodostumisOtsikko, function () {
+          PerusteProjektiSivunavi.refresh();
+          Lukitus.vapautaPerusteenosa(otsikkoId);
+        }, function (res) {
+          Lukitus.vapautaPerusteenosa(otsikkoId);
+          Notifikaatiot.serverCb(res);
+        });
+      });
+
       PerusteenRakenne.tallennaRakenne(
         rakenne,
         rakenne.$peruste.id,
@@ -102,6 +131,7 @@ angular.module('eperusteApp')
           Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
         }
       );
+
       $scope.isLocked = false;
     }
 
