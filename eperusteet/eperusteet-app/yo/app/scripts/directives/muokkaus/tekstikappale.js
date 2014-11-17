@@ -142,7 +142,7 @@ angular.module('eperusteApp')
         function paivitaRyhmat(uudet, cb) {
           PerusteenOsanTyoryhmat.save({
             projektiId: $stateParams.perusteProjektiId,
-            osaId: $stateParams.perusteenOsaId
+            osaId: $scope.tekstikappale.id
           }, uudet, cb, Notifikaatiot.serverCb);
         }
 
