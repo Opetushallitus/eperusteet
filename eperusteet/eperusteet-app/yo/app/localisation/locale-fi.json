@@ -631,7 +631,7 @@
     "ryhmien-hakeminen-epaonnistui": "Ryhmien hakeminen epäonnistui.",
     "poista-tyoryhma-perusteenosasta": "Poista työryhmä perusteenosasta",
     "valitse-tyoryhmat": "Valitse tyoryhmat",
-    "haetaan-ryhmia": "Haetaan ryhmiä",
+    "haetaan-ryhmia": "Haetaan ryhmiä...",
     "poista-tyoryhma-teksti": "Työryhmä \"{{nimi}}\" poistetaan. Oletko varma?",
     "ohje-tyoryhma-luonti": "<p>Projektin perustetyöryhmä voidaan jakaa työryhmiin. Perusteen sisältö voidaan merkata luoduille työryhmille.</p><p>Kun työryhmä on luotu, perusteen sisältö voidaan merkata luodulle työryhmälle sisällön yhteydessä.</p>",
 
