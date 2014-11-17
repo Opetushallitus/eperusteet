@@ -412,6 +412,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('test', [
     'clean:server',
+    'copy:fonts', // needed if testing while "grunt dev" is running :)
     'concurrent:test',
     'autoprefixer',
 //  'connect:test',
