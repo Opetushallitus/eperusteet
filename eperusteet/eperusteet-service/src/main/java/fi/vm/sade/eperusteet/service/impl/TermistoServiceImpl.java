@@ -28,12 +28,14 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author apvilkko
  */
 @Service
+@Transactional
 public class TermistoServiceImpl implements TermistoService {
 
     @Autowired
@@ -47,6 +49,7 @@ public class TermistoServiceImpl implements TermistoService {
     PerusteRepository perusteet;
 
     @Override
+    @Transactional(readOnly = true)
     public List<TermiDto> getTermit(Long perusteId) {
         List<Termi> termit = termisto.findByPerusteId(perusteId);
         return mapper.mapAsList(termit, TermiDto.class);
