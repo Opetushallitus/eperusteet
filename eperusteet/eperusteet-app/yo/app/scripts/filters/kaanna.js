@@ -19,12 +19,20 @@
 
 angular.module('eperusteApp')
   .service('Kaanna', function($translate) {
+    function translate (obj, key) {
+      function getTranslation(input, lang) {
+        return input[lang] || input[lang.toUpperCase()] || input['kieli_' + lang + '#1'];
+      }
+      var secondaryKey = key === 'fi' || key === 'FI' ? 'sv' : 'fi';
+      return getTranslation(obj, key) || '[' + getTranslation(obj, secondaryKey) + ']';
+    }
+
     return {
       kaanna: function(input, config) {
         var lang = $translate.use() || $translate.preferredLanguage();
 
         if (_.isObject(input)) {
-          return input[lang] || input[lang.toUpperCase()] || input['kieli_' + lang + '#1'];
+          return translate(input, lang);
         } else if (_.isString(input)) {
           return $translate.instant(input, config);
         }
