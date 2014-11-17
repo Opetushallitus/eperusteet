@@ -105,9 +105,11 @@ angular.module('eperusteApp')
 
     this.valitseSuoritustapaKoulutustyypille = function(koulutustyyppi) {
       if (koulutustyyppi === 'koulutustyyppi_9999') {
+        // Suoritustavalla ei ole käytännön merkitystä perusopetuksen puolella
         return 'ops';
       } else {
-        return 'naytto';
+        // Valitaan oletuksena "Peruskoulutus"-näkymä ammatillisella puolella
+        return 'ops';
       }
     };
 
