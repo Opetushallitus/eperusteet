@@ -18,14 +18,18 @@ package fi.vm.sade.eperusteet.resource.peruste;
 import com.mangofactory.swagger.annotations.ApiIgnore;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
+import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
@@ -58,6 +62,8 @@ public class TutkinnonRakenneController {
     private PerusteenOsaViiteService perusteenOsaViiteService;
     @Autowired
     private PerusteService perusteService;
+    @Autowired
+    private KayttajanTietoService kayttajanTietoService;
 
     /**
      * Luo ja liittää uuden tutkinnon osa perusteeseen.
@@ -126,9 +132,14 @@ public class TutkinnonRakenneController {
 
     @RequestMapping(value = "/rakenne/versiot", method = GET)
     @ResponseBody
-    public List<Revision> getRakenneVersiot(
+    public List<CombinedDto<Revision, HenkiloTietoDto>> getRakenneVersiot(
         @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
-        return perusteService.getRakenneVersiot(id, Suoritustapakoodi.of(suoritustapakoodi));
+        List<Revision> versiot = perusteService.getRakenneVersiot(id, Suoritustapakoodi.of(suoritustapakoodi));
+        List<CombinedDto<Revision, HenkiloTietoDto>> laajennetut = new ArrayList<>();
+        for (Revision r : versiot) {
+            laajennetut.add(new CombinedDto<>(r, new HenkiloTietoDto(kayttajanTietoService.hae(r.getMuokkaajaOid()))));
+        }
+        return laajennetut;
     }
 
     @RequestMapping(value = "/tutkinnonosat", method = GET)
