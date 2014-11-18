@@ -44,8 +44,10 @@
               </span>
             </div>
             <div class="col-sm-3">
-              <div class="muokkaus-napit pull-right" ng-hide="alue.$editing || isEditingInProgress() || !tutke2osa.versiot.latest">
-                <button class="btn btn-default" ng-click="osaAlue.edit(alue, $event)" kaanna="'muokkaa'" icon-role="edit" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+              <div class="muokkaus-napit pull-right"
+                ng-hide="alue.$editing || isEditingInProgress() || !tutke2osa.versiot.latest || originalViite.tutkinnonOsa.tila === 'valmis'">
+                <button class="btn btn-default" ng-click="osaAlue.edit(alue, $event)" kaanna="'muokkaa'" icon-role="edit"
+                  oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
               </div>
               <div class="muokkaus-napit pull-right" ng-show="alue.$editing">
                 <button class="btn btn-default" ng-click="osaAlue.removeDirect(alue, $event)" kaanna="poista-osa-alue" icon-role="remove"></button>
