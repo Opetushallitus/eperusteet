@@ -23,8 +23,16 @@ angular.module('eperusteApp')
       function getTranslation(input, lang) {
         return input[lang] || input[lang.toUpperCase()] || input['kieli_' + lang + '#1'];
       }
+      var primary = getTranslation(obj, key);
+      if (primary) {
+        return primary;
+      }
       var secondaryKey = key === 'fi' || key === 'FI' ? 'sv' : 'fi';
-      return getTranslation(obj, key) || '[' + getTranslation(obj, secondaryKey) + ']';
+      var secondary = getTranslation(obj, secondaryKey);
+      if (secondary) {
+        return '[' + secondary + ']';
+      }
+      return secondary;
     }
 
     return {
