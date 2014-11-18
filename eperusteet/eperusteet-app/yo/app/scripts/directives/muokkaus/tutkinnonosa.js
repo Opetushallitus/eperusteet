@@ -84,7 +84,8 @@ angular.module('eperusteApp')
     $q, Editointikontrollit, PerusteenOsat, PerusteenRakenne, PerusteTutkinnonosa,
     TutkinnonOsaEditMode, $timeout, Varmistusdialogi, VersionHelper, Lukitus,
     MuokkausUtils, PerusteenOsaViitteet, Utils, ArviointiHelper, PerusteProjektiSivunavi,
-    Notifikaatiot, Koodisto, Tutke2OsaData, Kommentit, KommentitByPerusteenOsa, FieldSplitter) {
+    Notifikaatiot, Koodisto, Tutke2OsaData, Kommentit, KommentitByPerusteenOsa, FieldSplitter,
+    Algoritmit) {
 
     Utils.scrollTo('#ylasivuankkuri');
 
@@ -112,9 +113,7 @@ angular.module('eperusteApp')
       $scope.nimiValidationError = false;
     }, true);
 
-    // FIXME
-    $scope.yksikko = 'osp';
-
+    $scope.yksikko = Algoritmit.perusteenSuoritustavanYksikko($scope.peruste, $scope.suoritustapa);
 
     function getRakenne() {
       // FIXME: Vaihda käyttämään parempaa endpointtia
