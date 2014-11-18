@@ -17,9 +17,10 @@ package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.service.LockService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -33,25 +34,39 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  */
 public abstract class AbstractLockController<T> {
 
-    @Autowired
-    private LockService<T> service;
-
     @RequestMapping(method = GET)
     public ResponseEntity<LukkoDto> checkLock(T ctx) {
-        LukkoDto lock = service.getLock(ctx);
-        return lock == null ? new ResponseEntity<LukkoDto>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(lock, HttpStatus.OK);
+        LukkoDto lock = service().getLock(ctx);
+        return lock == null ? new ResponseEntity<LukkoDto>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(lock, eTag(lock.getRevisio()), HttpStatus.OK);
     }
 
     @RequestMapping(method = POST)
-    @ResponseStatus(HttpStatus.CREATED)
-    public LukkoDto lock(T ctx) {
-        return service.lock(ctx);
+    public ResponseEntity<LukkoDto> lock(T ctx,
+        @RequestHeader(value = "If-Match", required = false) String eTag) {
+        LukkoDto lock = service().lock(ctx, version(eTag));
+        if (lock == null) {
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+        } else {
+            return new ResponseEntity<>(lock, eTag(lock.getRevisio()), HttpStatus.CREATED);
+        }
+
     }
 
     @RequestMapping(method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void unlock(T ctx) {
-        service.unlock(ctx);
+        service().unlock(ctx);
     }
 
+    private Integer version(String eTag) {
+        return eTag == null ? null : Integer.parseInt(eTag.substring(3, eTag.length() - 1));
+    }
+
+    private HttpHeaders eTag(int tag) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setETag("W/\""+String.valueOf(tag)+"\"");
+        return headers;
+    }
+
+    protected abstract LockService<T> service();
 }

@@ -70,6 +70,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
     @Autowired
     private OppiaineService service;
     @Autowired
+    @LockCtx(OppiaineLockContext.class)
     private LockService<OppiaineLockContext> lockService;
     @Autowired
     private PerusteService perusteService;

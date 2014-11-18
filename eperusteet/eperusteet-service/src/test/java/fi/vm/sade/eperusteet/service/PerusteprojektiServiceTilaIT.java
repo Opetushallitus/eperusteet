@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
@@ -22,21 +21,17 @@ import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus.Status;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -48,40 +43,33 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
-import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
-import fi.vm.sade.eperusteet.service.mapping.Dto;
-import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Ongelma;
-import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
-
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -101,14 +89,8 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     @Autowired
     private PerusteenOsaService perusteenOsaService;
     @Autowired
-    @Dto
-    private DtoMapper mapper;
-
-  /*  private Perusteprojekti projekti;
-    private Peruste peruste;
-    private TekstiKappale tekstikappale;
-    private TutkinnonOsa osa;
-    private Suoritustapa naytto;*/
+    @LockCtx(SuoritustapaLockContext.class)
+    private LockService<SuoritustapaLockContext> lockService;
 
     private final String ryhmaId = "1.2.246.562.28.11287634288";
     private final LaajuusYksikko yksikko = LaajuusYksikko.OSAAMISPISTE;
@@ -117,10 +99,11 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     private final PerusteTyyppi tyyppi = PerusteTyyppi.NORMAALI;
     private final String koulutustyyppi = "koulutustyyppi_12";
 
-    private  TransactionTemplate transactionTemplate;
+    private TransactionTemplate transactionTemplate;
 
     @Autowired
     PlatformTransactionManager transactionManager;
+
     public PerusteprojektiServiceTilaIT() {
 
     }
@@ -144,8 +127,8 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     @Test
     public void testUpdateTilaLaadintaToKommentointi() {
         final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.LAADINTA, null, PerusteTila.LUONNOS);
-        PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
-        TutkinnonOsaViiteDto osaDto = luoTutkinnonOsa(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
+        luoTutkinnonOsa(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
 
         final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.KOMMENTOINTI);
 
@@ -200,14 +183,14 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     public void testUpdateTilaLaadintaToViimeistelyValidiRakenne() {
 
         final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.LAADINTA, null, PerusteTila.LUONNOS);
-        PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
-        perusteService.lock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
-        perusteService.updateTutkinnonRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
+        final SuoritustapaLockContext ctx = SuoritustapaLockContext.of(Long.valueOf(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        lockService.lock(ctx);
+        perusteService.updateTutkinnonRakenne(ctx.getPerusteId(), ctx.getKoodi(), luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
 
         final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.VIIMEISTELY);
         tulostaInfo(status);
         transactionTemplate = new TransactionTemplate(transactionManager);
-        Object object = transactionTemplate.execute(new TransactionCallback() {
+        transactionTemplate.execute(new TransactionCallback<Object>() {
             // the code in this method executes in a transactional context
             @Override
             public Object doInTransaction(TransactionStatus transactionStatus) {
@@ -223,16 +206,16 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
                 return null;
             }
         });
-        perusteService.unlock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        lockService.unlock(ctx);
     }
-
 
     @Test
     public void testUpdateTilaLaadintaToViimeistelyEpaValidiRakenne() {
 
         final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.LAADINTA, null, PerusteTila.LUONNOS);
         PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
-        perusteService.lock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        final SuoritustapaLockContext ctx = SuoritustapaLockContext.of(Long.valueOf(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        lockService.lock(ctx);
         perusteService.updateTutkinnonRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, luoEpaValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
 
         final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.VIIMEISTELY);
@@ -254,7 +237,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
                 return null;
             }
         });
-        perusteService.unlock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        lockService.unlock(ctx);
     }
 
     @Test
@@ -291,7 +274,8 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
 
         final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.VIIMEISTELY, null, PerusteTila.LUONNOS);
         PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
-        perusteService.lock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        final SuoritustapaLockContext ctx = SuoritustapaLockContext.of(Long.valueOf(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        lockService.lock(ctx);
         perusteService.updateTutkinnonRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
 
         final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.LAADINTA);
@@ -313,8 +297,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
                 return null;
             }
         });
-        perusteService.unlock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
-
+        lockService.unlock(ctx);
     }
 
     @Test
@@ -322,7 +305,8 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
 
         final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.VIIMEISTELY, null, PerusteTila.LUONNOS);
         PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
-        perusteService.lock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        final SuoritustapaLockContext ctx = SuoritustapaLockContext.of(Long.valueOf(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        lockService.lock(ctx);
         perusteService.updateTutkinnonRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
 
         final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.VALMIS);
@@ -344,7 +328,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
                 return null;
             }
         });
-        perusteService.unlock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        lockService.unlock(ctx);
 
     }
 
@@ -353,8 +337,9 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
 
         final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.VALMIS, null, PerusteTila.LUONNOS);
         PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
-        perusteService.lock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
-        perusteService.updateTutkinnonRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
+        final SuoritustapaLockContext ctx = SuoritustapaLockContext.of(Long.valueOf(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        lockService.lock(ctx);
+        perusteService.updateTutkinnonRakenne(ctx.getPerusteId(), ctx.getKoodi(), luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
 
         final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.JULKAISTU);
         tulostaInfo(status);
@@ -375,7 +360,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
                 return null;
             }
         });
-        perusteService.unlock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        lockService.unlock(ctx);
 
     }
 
@@ -385,7 +370,8 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.JULKAISTU, null, PerusteTila.VALMIS);
         PerusteenOsaViiteDto sisaltoViite = luoSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.VALMIS);
         setPerusteSisaltoTila(perusteService.getSuoritustapaSisalto(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO), PerusteTila.VALMIS);
-        perusteService.lock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        final SuoritustapaLockContext ctx = SuoritustapaLockContext.of(Long.valueOf(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        lockService.lock(ctx);
         perusteService.updateTutkinnonRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, luoValidiRakenne(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO, PerusteTila.VALMIS));
 
         final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.VALMIS);
@@ -407,7 +393,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
                 return null;
             }
         });
-        perusteService.unlock(new Long(projektiDto.getPeruste().getId()), Suoritustapakoodi.NAYTTO);
+        lockService.unlock(ctx);
 
     }
 
@@ -424,7 +410,6 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
             }
         }
     }
-
 
     private void commonAssertTekstikappaleTila(PerusteenOsaViite sisalto, PerusteTila haluttuTila) {
         if (sisalto.getPerusteenOsa() != null && sisalto.getPerusteenOsa().getTunniste() != PerusteenOsaTunniste.RAKENNE) {
@@ -466,7 +451,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     }
 
     private PerusteenOsaViiteDto.Matala luoPerusteenOsaViiteDto(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
-        TekstiKappaleDto kappaleDto = new TekstiKappaleDto( nimi, tila, tunniste);
+        TekstiKappaleDto kappaleDto = new TekstiKappaleDto(nimi, tila, tunniste);
         PerusteenOsaViiteDto.Matala matala = new PerusteenOsaViiteDto.Matala(kappaleDto);
         return matala;
     }

@@ -13,26 +13,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.service;
+package fi.vm.sade.eperusteet.resource.config;
 
-import fi.vm.sade.eperusteet.dto.LukkoDto;
-import org.springframework.security.access.prepost.PreAuthorize;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.InitBinder;
 
 /**
  *
  * @author jhyoty
  */
-public interface LockService<T> {
+@ControllerAdvice
+public class InitBinderControllerAdvice {
 
-    @PreAuthorize("isAuthenticated()")
-    LukkoDto getLock(T ctx);
-    @PreAuthorize("isAuthenticated()")
-    LukkoDto lock(T ctx);
-    @PreAuthorize("isAuthenticated()")
-    LukkoDto lock(T ctx, Integer ifMatchRevision);
-    @PreAuthorize("isAuthenticated()")
-    void unlock(T ctx);
-    @PreAuthorize("isAuthenticated()")
-    void assertLock(T ctx);
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Suoritustapakoodi.class, new EnumToUpperCaseEditor<>(Suoritustapakoodi.class));
+    }
 
 }

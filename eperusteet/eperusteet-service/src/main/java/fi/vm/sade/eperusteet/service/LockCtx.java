@@ -15,24 +15,19 @@
  */
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.dto.LukkoDto;
-import org.springframework.security.access.prepost.PreAuthorize;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  *
  * @author jhyoty
  */
-public interface LockService<T> {
-
-    @PreAuthorize("isAuthenticated()")
-    LukkoDto getLock(T ctx);
-    @PreAuthorize("isAuthenticated()")
-    LukkoDto lock(T ctx);
-    @PreAuthorize("isAuthenticated()")
-    LukkoDto lock(T ctx, Integer ifMatchRevision);
-    @PreAuthorize("isAuthenticated()")
-    void unlock(T ctx);
-    @PreAuthorize("isAuthenticated()")
-    void assertLock(T ctx);
-
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Qualifier
+public @interface LockCtx {
+    Class<?> value();
 }
