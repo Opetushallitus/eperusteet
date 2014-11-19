@@ -152,11 +152,12 @@ angular.module('eperusteApp')
     function laskeLaajuudet(rakenne, viitteet) {
       if (!rakenne) { return; }
 
+      rakenne.$laajuus = rakenne.$laajuus || 0;
+      rakenne.$vaadittuLaajuus = rakenne.$vaadittuLaajuus || 0;
+
       _.forEach(rakenne.osat, function(osa) {
         laskeLaajuudet(osa, viitteet);
       });
-
-      rakenne.$laajuus = 0;
 
       // Osa
       if (rakenne._tutkinnonOsaViite) {
