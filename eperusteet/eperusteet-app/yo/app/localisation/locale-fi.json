@@ -221,6 +221,7 @@
     "maksimi": "Maksimi",
     "yksikko": "Yksikkö",
     "pakollisuus": "Pakollinen",
+    "pakollinen": "Pakollinen",
     "poistetaanko-ryhma": "Poistetaanko ryhmä?",
     "leikelauta": "Leikelauta",
     "tutkinnon-osa-haku-placeholder": "Rajaa tutkinnon osia...",
@@ -397,8 +398,12 @@
 
     "tutkinnon-koodi": "Tutkinnon koodi",
 
+    "hae-koodi": "Hae koodi",
+
     "vierastutkinnonosa": "Vieras tutkinnon osa",
     "nimeton-vierastutkinto": "Nimetön vieras tutkinnon osa",
+    "vierastutkinto-pitaa-olla-vierastutkintoryhmassa": "Vieras tutkinnon osa täytyy olla vierastutkintoryhmässä",
+    "vieras": "Vieras",
 
     "et-ole-vielä-tallentanut-tutkinnonosia": "Et ole vielä liittänyt kaikkia tutkinnon osia perusteeseen",
     "et-ole-vielä-tallentanut-tekstikappaleita": "Et ole vielä liittänyt kaikkia tekstikappaleita perusteeseen",
