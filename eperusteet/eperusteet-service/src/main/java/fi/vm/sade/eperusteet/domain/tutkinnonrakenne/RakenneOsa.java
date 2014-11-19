@@ -38,8 +38,9 @@ public class RakenneOsa extends AbstractRakenneOsa {
 
     @JoinColumn(name = "rakenneosa_tutkinnonosaviite")
     @ManyToOne
-    @NotNull
     private TutkinnonOsaViite tutkinnonOsaViite;
+
+    private String erikoisuus;
 
     private boolean pakollinen;
 
@@ -53,7 +54,8 @@ public class RakenneOsa extends AbstractRakenneOsa {
         if (other instanceof RakenneOsa) {
             final RakenneOsa ro = (RakenneOsa) other;
             return this.pakollinen == ro.isPakollinen()
-                && Objects.equal(this.tutkinnonOsaViite, ro.getTutkinnonOsaViite());
+                && Objects.equal(this.tutkinnonOsaViite, ro.getTutkinnonOsaViite())
+                && (erikoisuus == null ? ro.getErikoisuus() == null : erikoisuus.equals(ro.getErikoisuus()));
         }
 
         return false;

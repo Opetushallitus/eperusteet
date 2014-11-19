@@ -395,6 +395,11 @@
 
     "lisaa-kommentti": "Lisää kommentti",
 
+    "tutkinnon-koodi": "Tutkinnon koodi",
+
+    "vierastutkinnonosa": "Vieras tutkinnon osa",
+    "nimeton-vierastutkinto": "Nimetön vieras tutkinnon osa",
+
     "et-ole-vielä-tallentanut-tutkinnonosia": "Et ole vielä liittänyt kaikkia tutkinnon osia perusteeseen",
     "et-ole-vielä-tallentanut-tekstikappaleita": "Et ole vielä liittänyt kaikkia tekstikappaleita perusteeseen",
     "tuo-excel": "Tuo Excel",

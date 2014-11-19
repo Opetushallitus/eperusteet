@@ -19,8 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('MuodostumisryhmaModalCtrl', function($scope, $modalInstance, ryhma,
-    vanhempi, suoritustapa, leikelauta, Varmistusdialogi, YleinenData, Koodisto, Utils) {
-
+    vanhempi, suoritustapa, leikelauta, Varmistusdialogi, YleinenData, Koodisto, Utils, peruste) {
     $scope.vanhempi = vanhempi;
     $scope.leikelauta = leikelauta;
     $scope.suoritustapa = suoritustapa;
@@ -55,7 +54,7 @@ angular.module('eperusteApp')
       Koodisto.modaali(function(koodi) {
         koodistoHaku(koodi);
       }, {
-        tyyppi: function() {return 'osaamisala'; },
+        tyyppi: function() { return 'osaamisala'; },
         ylarelaatioTyyppi: function() { return ''; }
       }, angular.noop, null)();
     };
@@ -63,6 +62,17 @@ angular.module('eperusteApp')
     $scope.tyhjennaOsaamisala = function () {
       $scope.osaamisala = {};
     };
+
+    $scope.lisaaTutkintoKoodi = Koodisto.modaali(function(koodi) {
+      $scope.ryhma.vieras = {
+        nimi: koodi.nimi,
+        arvo: koodi.koodiArvo,
+        uri: koodi.koodiUri,
+      };
+    }, {
+      ylarelaatioTyyppi: _.constant(peruste.koulutustyyppi),
+      tyyppi: _.constant('koulutus'),
+    });
 
     $scope.ok = function(uusiryhma) {
       if (uusiryhma) {

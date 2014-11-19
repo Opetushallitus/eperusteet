@@ -13,62 +13,49 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.io.Serializable;
-import java.util.Objects;
 import javax.persistence.CascadeType;
-import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
-import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
-
+/**
+ *
+ * @author nkala
+ */
 @Entity
-@Table(name = "tutkinnon_rakenne")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "tyyppi")
-@Audited
-public abstract class AbstractRakenneOsa implements Serializable {
-
+@Table(name = "koodi")
+public class Koodi implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter
     @Setter
     private Long id;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter
     @Setter
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private Koodi vieras;
+    private TekstiPalanen nimi;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @Column(name = "arvo")
     @Getter
     @Setter
-    @Audited(targetAuditMode = NOT_AUDITED)
-    private TekstiPalanen kuvaus;
+    private String arvo;
 
-    public boolean isSame(AbstractRakenneOsa other) {
-        if (other == null) {
-            return false;
-        }
-
-        if (this == other) {
-            return true;
-        }
-
-        return Objects.equals(kuvaus, other.getKuvaus());
-    }
+    @Column(name = "uri")
+    @Getter
+    @Setter
+    private String uri;
 }

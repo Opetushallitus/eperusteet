@@ -1,6 +1,7 @@
 <div>
   <!-- tree.html -->
   <div id="osaamisala-varoitus" tooltip="{{'Osaamisalaryhmän alla ei voi olla toista osaamisalaryhmää.' | kaanna}}" tooltip-trigger="show"></div>
+  <div id="vierastutkinto-varoitus" tooltip="{{'vierastutkinto-pitaa-olla-vierastutkintoryhmassa' | kaanna}}" tooltip-trigger="show"></div>
   <div ng-if="!lisataanUuttaOsaa" class="tree col-lg-6 col-md-8 col-xs-12">
     <div ng-show="!muokkaus && !vanhempi">
       <h2 kaanna="tutkinnon-rakenteen-kuvaus"></h2>
@@ -23,37 +24,44 @@
         </span>
         <div ng-show="esitys" class="empty-bubble distance" kaanna>rakennetta-ei-ole</div>
       </div>
-      <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" ng-if="rakenne.$resolved" rakenne="rakenne.rakenne" tutkinnon-osa-viitteet="rakenne.tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" poisto-tehty-cb="poistoTehtyCb"></tree>
+      <tree id="editointiPuuJuuri" apumuuttujat="apumuuttujat" muokkaus="muokkaus" ng-if="rakenne.$resolved" rakenne="rakenne.rakenne" tutkinnon-osa-viitteet="rakenne.tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" poisto-tehty-cb="poistoTehtyCb"></tree>
     </div>
   </div>
 
   <!-- Leikelauta -->
   <div ng-if="muokkaus" class="skratchpad-wrapper pull-right" follow-scroll>
-    <div class="skratchpad-button"><button class="btn btn-default" ng-click="ryhmaModaali(rakenne.$suoritustapa)"><img src="images/ryhma.png" alt=""> {{ 'luo-uusi-ryhma' | kaanna }}</button></div>
+    <div class="skratchpad-button">
+      <button class="btn btn-default" ng-click="ryhmaModaali(rakenne.$suoritustapa)"><img src="images/ryhma.png" alt=""> {{ 'luo-uusi-ryhma' | kaanna }}</button>
+    </div>
     <div class="skratchpad-list">
       <div class="skratchpad-list-header" kaanna>leikelauta</div>
       <div class="skratchpad-list-body">
         <div ng-if="skratchpad.length === 0" class="skratchpad-help"></div>
         <ul ui-sortable="sortableOptions" class="tree-group skratchpad" ng-model="skratchpad">
-
           <li class="skratchpad-item" ng-class="{ 'skratchpad-item-ryhma': !osa._tutkinnonOsaViite, 'skratchpad-item-virhe': osa.$virhe }"
               ng-repeat="osa in skratchpad|orderBy:[ryhmaSorter, jarjestysSorter, nimiSorter]">
-            <div class="sp-action-icon">
-              <a ng-if="osa._tutkinnonOsaViite" class="action-link" ng-click="poista(skratchpad, osa)" icon-role="remove"></a>
-              <a ng-if="osa.osat !== undefined" class="action-link" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, osa, null, true)" icon-role="edit"></a>
-            </div>
-            <div class="sp-badge">
-              <span class="skratchpad-badge" ng-class="{'kaytetty': osa._tutkinnonOsaViite}"></span>
-            </div>
-            <div class="sp-name">
-              <span ng-if="osa._tutkinnonOsaViite">{{ rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna }}</span>
-              <div ng-if="osa.osat !== undefined">
-                <span>{{osa.nimi | kaanna:true}} <span ng-show="osa.osat.length > 0">({{ osa.osat.length }} {{ 'osaa' | kaanna }})</span></span>
-                <span class="pull-right">
-                  <span ng-show="osa.$uusi" class="badge sp-uusi" kaanna>uusi</span>
-                </span>
+              <div class="sp-action-icon">
+                <a ng-if="osa._tutkinnonOsaViite || osa.erikoisuus" class="action-link" ng-click="poista(skratchpad, osa)" icon-role="remove"></a>
+                <a ng-if="osa.osat !== undefined" class="action-link" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, osa, null, true)" icon-role="edit"></a>
               </div>
-            </div>
+              <div class="sp-badge">
+                <span class="skratchpad-badge" ng-class="{'kaytetty': osa._tutkinnonOsaViite}"></span>
+              </div>
+              <div ng-if="!osa.erikoisuus">
+                <div class="sp-name">
+                  <span ng-if="osa._tutkinnonOsaViite">{{ rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna }}</span>
+                  <div ng-if="osa.osat !== undefined">
+                    <span>{{osa.nimi | kaanna:true}} <span ng-show="osa.osat.length > 0">({{ osa.osat.length }} {{ 'osaa' | kaanna }})</span></span>
+                    <span class="pull-right">
+                      <span ng-show="osa.$uusi" class="badge sp-uusi" kaanna>uusi</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div ng-if="osa.erikoisuus === 'vierastutkinto'">
+                <div ng-show="osa.nimi" kaanna="osa.nimi"></div>
+                <div ng-hide="osa.nimi" kaanna="'uusi-vierastutkinto'"></div>
+              </div>
           </li>
 
         </ul>
@@ -71,19 +79,26 @@
         <ul ui-sortable="sortableOptionsUnique" ng-model="uniikit" class="uniikit placeholder-hide">
           <li ng-model="osa" class="skratchpad-item"
               ng-repeat="osa in uniikit | orderBy:[jarjestysSorter, nimiSorter] | startFrom:(tutkinnonOsat.sivu-1)*tutkinnonOsat.perSivu | limitTo:tutkinnonOsat.perSivu">
-            <div class="sp-action-icon">
-              <a class="action-link" ng-click="rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate = !rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate"
-                 ng-show="kaytetytUniikit[osa._tutkinnonOsaViite]" ng-attr-title="{{rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate && ('poista-korostus'|kaanna) || ('korosta'|kaanna)}}">
-                <span class="glyphicon" ng-class="{'glyphicon-eye-open': rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate, 'glyphicon-eye-close': !rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate}"></span>
-              </a>
-            </div>
-            <div class="sp-badge">
-              <span class="skratchpad-badge" ng-class="{'ei-kaytetty': !kaytetytUniikit[osa._tutkinnonOsaViite], 'kaytetty': kaytetytUniikit[osa._tutkinnonOsaViite]}"></span>
-            </div>
-            <div class="sp-name ellipsis-no-wrap" title="{{rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna:true}}">
-              {{ rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== 'naytto' && rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus">, {{ + rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus || 0 }}{{ apumuuttujat.laajuusYksikko | kaanna }}</span>
-            </div>
-          </li>
+              <div ng-if="osa.erikoisuus === 'vieras'">
+                <span icon-role="plus"></span>
+                <span kaanna="'vierastutkinnonosa'"></span>
+              </div>
+              <div ng-if="!osa.erikoisuus">
+                <div class="sp-action-icon">
+                  <a class="action-link" ng-click="rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate = !rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate"
+                    ng-show="kaytetytUniikit[osa._tutkinnonOsaViite]" ng-attr-title="{{rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate && ('poista-korostus'|kaanna) || ('korosta'|kaanna)}}">
+                    <span class="glyphicon" ng-class="{'glyphicon-eye-open': rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate, 'glyphicon-eye-close': !rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].$elevate}"></span>
+                  </a>
+                </div>
+                <div class="sp-badge">
+                  <span class="skratchpad-badge" ng-class="{'ei-kaytetty': !kaytetytUniikit[osa._tutkinnonOsaViite], 'kaytetty': kaytetytUniikit[osa._tutkinnonOsaViite]}"></span>
+                </div>
+                <div class="sp-name ellipsis-no-wrap" title="{{rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna:true}}">
+                  {{ rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi | kaanna:true }}<span ng-if="apumuuttujat.suoritustapa !== 'naytto' && rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus">, {{ + rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].laajuus || 0 }}{{ apumuuttujat.laajuusYksikko | kaanna }}</span>
+                </div>
+              </div>
+            </li>
+          </div>
         </ul>
         <div class="sp-pagination">
           <pagination ng-show="tutkinnonOsat.multiPage" ng-model="tutkinnonOsat.sivu" ng-change="valitseSivu(tutkinnonOsat.sivu)"

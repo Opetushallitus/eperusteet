@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -22,27 +21,24 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  *
  * @author nkala
  */
-public enum RakenneModuuliRooli {
-    NORMAALI("määritelty"),
-    VIRTUAALINEN("määrittelemätön"),
-    OSAAMISALA("osaamisala"),
+public enum RakenneModuuliErikoisuus {
     VIERAS("vieras");
 
-    private final String rooli;
+    private final String erikoisuus;
 
-    private RakenneModuuliRooli(String rooli) {
-        this.rooli = rooli;
+    private RakenneModuuliErikoisuus(String rooli) {
+        this.erikoisuus = rooli;
     }
 
     @Override
     public String toString() {
-        return rooli;
+        return erikoisuus;
     }
 
     @JsonCreator
-    public static RakenneModuuliRooli of(String x) {
-        for (RakenneModuuliRooli r : values()) {
-            if (r.rooli.equalsIgnoreCase(x)) {
+    public static RakenneModuuliErikoisuus of(String x) {
+        for (RakenneModuuliErikoisuus r : values()) {
+            if (r.erikoisuus.equalsIgnoreCase(x)) {
                 return r;
             }
         }

@@ -20,21 +20,26 @@
 angular.module('eperusteApp')
   .directive('tree', function($compile) {
     function generoiOtsikko() {
-      var tosa = '{{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].nimi || "nimetön" | kaanna }}<span ng-if="apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">, <b>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</b> {{ apumuuttujat.laajuusYksikko | kaanna }}</span>';
+      var tosa = '{{ tutkinnonOsaSolmunNimi(rakenne) | kaanna }}<span ng-if="!rakenne.erikoisuus && apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">, <b>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</b> {{ apumuuttujat.laajuusYksikko | kaanna }}</span>';
       var editointiIkoni =
       '<span ng-click="togglaaPakollisuus(rakenne)">' +
         '  <span ng-show="!rakenne.pakollinen"><img src="images/tutkinnonosa.png" alt=""></span> ' +
         '  <span ng-show="rakenne.pakollinen"><img src="images/tutkinnonosa_pakollinen.png" alt=""></span> ' +
         '</span>';
       return '' +
-        '<span ng-if="rakenne._tutkinnonOsaViite && muokkaus">' + editointiIkoni + tosa + '</span>' +
-        '<span ng-if="rakenne._tutkinnonOsaViite && !muokkaus">' + editointiIkoni +
-        '  <a ng-if="esitystilassa" ui-sref="root.esitys.peruste.tutkinnonosa({ id: rakenne._tutkinnonOsaViite, suoritustapa: apumuuttujat.suoritustapa })">' + tosa + '</a>' +
-        '  <a ng-if="!esitystilassa" ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaViiteId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].id, suoritustapa: apumuuttujat.suoritustapa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a>' +
+        '<span ng-if="onOsa(rakenne)">' +
+           editointiIkoni +
+        '  <span ng-if="!muokkaus">' +
+        '    <a ng-if="esitystilassa" ui-sref="root.esitys.peruste.tutkinnonosa({ id: rakenne._tutkinnonOsaViite, suoritustapa: apumuuttujat.suoritustapa })">' + tosa + '</a>' +
+        '    <a ng-if="!esitystilassa" ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaViiteId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].id, suoritustapa: apumuuttujat.suoritustapa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a>' +
+        '  </span>' +
+        '  <span ng-if="muokkaus">' +
+             tosa +
+        '    <a class="pull-right action-link" icon-role="remove" ng-click="poista(rakenne, vanhempi)"></a>' +
+        '    <a class="pull-right action-link" icon-role="edit" ng-click="rakenneosaModaali(rakenne)"></a>' +
+        '  </span>' +
         '</span>' +
-        '<span class="pull-right" ng-if="rakenne._tutkinnonOsaViite && muokkaus"><a class="action-link" icon-role="remove" ng-click="poista(rakenne, vanhempi)"></a></span>' +
-        '<span class="pull-right" ng-if="rakenne._tutkinnonOsaViite && muokkaus"><a class="action-link" icon-role="edit" ng-click="rakenneosaModaali(rakenne)"></a></span>' +
-        '<span ng-if="!rakenne._tutkinnonOsaViite && rakenne.nimi">' +
+        '<span ng-if="!onOsa(rakenne) && rakenne.nimi">' +
         '  <b>{{ rakenne.nimi || "nimetön" | kaanna }}</b>' +
         '</span>';
     }
@@ -54,7 +59,7 @@ angular.module('eperusteApp')
       },
       controller: 'treeController',
       link: function(scope, el) {
-        var varivalinta = 'ng-class="{maarittelematon: rakenne.rooli === \'määrittelemätön\', tyhja: rakenne.osat.length === 0, ' +
+        var varivalinta = 'ng-class="{vieras: rakenne.rooli === \'vieras\', maarittelematon: rakenne.rooli === \'määrittelemätön\', tyhja: rakenne.osat.length === 0, ' +
             'suljettu: rakenne.$collapsed, osaamisala: rakenne.rooli === \'osaamisala\'}"';
 
         var koonIlmaisu = '<span ng-show="rakenne.muodostumisSaanto.koko.minimi === rakenne.muodostumisSaanto.koko.maksimi">' +
@@ -72,17 +77,17 @@ angular.module('eperusteApp')
                                '</span>';
 
         var optiot = '' +
-          '<span ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" ng-if="!rakenne._tutkinnonOsaViite" class="colorbox" ' + varivalinta + '>' +
+          '<span ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" ng-if="!onOsa(rakenne)" class="colorbox" ' + varivalinta + '>' +
           '  <span ng-show="rakenne.rooli !== \'määrittelemätön\'">' +
           '    <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
           '    <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
           '  </span>' +
           '</span>' +
           '<div class="right">' +
-          '  <div ng-if="!rakenne._tutkinnonOsaViite && muokkaus" class="right-item">' +
+          '  <div ng-if="!onOsa(rakenne) && muokkaus" class="right-item">' +
           '    <a class="action-link" icon-role="edit" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)"></a>' +
           '  </div>' +
-          '  <div class="pull-right" ng-if="!rakenne._tutkinnonOsaViite">' +
+          '  <div class="pull-right" ng-if="!onOsa(rakenne)">' +
           '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.muodostumisSaanto.laajuus.minimi">' +
           laajuudenIlmaisu +
           '    </span>' +
@@ -96,11 +101,11 @@ angular.module('eperusteApp')
           '</div>';
 
         var kentta =
-          '<div ng-if="rakenne._tutkinnonOsaViite" ' +
+          '<div ng-if="onOsa(rakenne)" ' +
           '     ng-class="{ \'pointer\': muokkaus, \'huomio\': tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].$elevate || (apumuuttujat.haku && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].$matched) }" class="bubble-osa">' +
             optiot +
           '</div>' +
-          '<div ng-if="!rakenne._tutkinnonOsaViite" ng-class="{ \'pointer\': muokkaus }" class="bubble">' + optiot + '</div>' +
+          '<div ng-if="!onOsa(rakenne)" ng-class="{ \'pointer\': muokkaus }" class="bubble">' + optiot + '</div>' +
           '<div ng-model="rakenne" ng-show="rakenne.osaamisala || (rakenne.kuvaus && rakenne.kuvaus[lang].length > 0)" class="kuvaus">' +
           '  <div class="kuvausteksti" ng-class="{ \'text-truncated\': !rakenne.$showKuvaus }">' +
           '    <div class="osaamisala" ng-show="rakenne.osaamisala"><b kaanna="osaamisala"></b>: {{ rakenne.osaamisala.nimi | kaanna }} ({{ rakenne.osaamisala.osaamisalakoodiArvo }})</div>' +
@@ -183,6 +188,10 @@ angular.module('eperusteApp')
       $scope.poistoTehtyCb();
     };
 
+    $scope.onOsa = function(osa) {
+      return osa._tutkinnonOsaViite || osa.erikoisuus;
+    };
+
     $scope.rakenneosaModaali = Muodostumissaannot.rakenneosaModaali(function(rakenneosa) {
       if (rakenneosa) {
         $scope.rakenne = rakenneosa;
@@ -195,6 +204,18 @@ angular.module('eperusteApp')
       }
     };
 
+    $scope.tutkinnonOsaSolmunNimi = function(solmu) {
+      if (solmu._tutkinnonOsaViite) {
+        return $scope.tutkinnonOsaViitteet[solmu._tutkinnonOsaViite].nimi;
+      }
+      else if (solmu.erikoisuus) {
+        return solmu.vieras && solmu.vieras.nimi || 'nimeton-vierastutkinto';
+      }
+      else {
+        return 'nimetön';
+      }
+    };
+
     $scope.ryhmaModaali = Muodostumissaannot.ryhmaModaali(function(ryhma, vanhempi, uusiryhma) {
       if (!$scope.vanhempi) {
         $scope.rakenne = uusiryhma;
@@ -203,7 +224,7 @@ angular.module('eperusteApp')
         if (!uusiryhma) { _.remove($scope.vanhempi.osat, ryhma); }
         else if (indeksi !== -1) { $scope.vanhempi.osat[indeksi] = uusiryhma; }
       }
-    });
+    }, $scope.apumuuttujat.peruste);
 
     $scope.scanKuvaukset = function () {
       var hasKuvaukset = false;
@@ -362,6 +383,9 @@ angular.module('eperusteApp')
     };
 
     $scope.jarjestysSorter = function (item) {
+      if (item.erikoisuus === 'vieras') {
+        return -1;
+      }
       if (item._tutkinnonOsaViite) {
         var osa = $scope.rakenne.tutkinnonOsaViitteet[item._tutkinnonOsaViite];
         if (osa && _.isNumber(osa.jarjestys)) {
@@ -385,7 +409,7 @@ angular.module('eperusteApp')
     };
 
     function paivitaUniikit() {
-      $scope.uniikit = [];
+      var uudetUniikit = [];
       _($scope.rakenne.tutkinnonOsaViitteet)
         .reject(function(osa) { return osa.poistettu; })
         .each(function (osa) {
@@ -393,17 +417,18 @@ angular.module('eperusteApp')
             _.contains(Kaanna.kaanna(osa.nimi).toLowerCase(),
             $scope.tutkinnonOsat.rajaus.toLowerCase());
           if (!$scope.tutkinnonOsat.rajaus || match) {
-            $scope.uniikit.push({_tutkinnonOsaViite: osa.id});
+            uudetUniikit.push({_tutkinnonOsaViite: osa.id});
           }
         })
         .value();
-      $scope.tutkinnonOsat.multiPage = _.size($scope.uniikit) > $scope.tutkinnonOsat.perSivu;
-      $scope.kaikkiUniikit = _.sortBy($scope.uniikit, function(osa) {
+      $scope.tutkinnonOsat.multiPage = _.size(uudetUniikit) > $scope.tutkinnonOsat.perSivu;
+      $scope.kaikkiUniikit = _.sortBy(uudetUniikit, function(osa) {
         return (Kaanna.kaanna($scope.rakenne.tutkinnonOsaViitteet[osa._tutkinnonOsaViite].nimi) || '').toLowerCase();
       });
       $scope.uniikit = $scope.kaikkiUniikit;
       $scope.paivitaRajaus();
       $scope.kaytetytUniikit = PerusteenRakenne.puustaLoytyy($scope.rakenne.rakenne);
+      $scope.uniikit.unshift({ erikoisuus: 'vieras' });
     }
     paivitaUniikit();
 
@@ -450,9 +475,8 @@ angular.module('eperusteApp')
       disabled: !$scope.muokkaus,
       placeholder: 'placeholder',
       tolerance: 'pointer',
-      stop: function() {
-        paivitaUniikit();
-      },
+      stop: paivitaUniikit,
+      update: TreeDragAndDrop.update,
       start: function(e, ui) {
         ui.placeholder.html('<div class="group-placeholder"></div>');
         // Use same sorting as in ng-repeat template
@@ -475,7 +499,7 @@ angular.module('eperusteApp')
         }
       }
       else { _.remove($scope.skratchpad, ryhma); }
-    });
+    }, $scope.rakenne.$peruste);
 
     $scope.$watch('skratchpad.length', function (value) {
       Muodostumissaannot.skratchpadNotEmpty(value > 0);
@@ -565,24 +589,37 @@ angular.module('eperusteApp')
       return parentsOrSelfHaveOsaamisala(parent, parent ? parent.scope() : null);
     }
 
+      function errorBubble(virheElId, customOffset, listItem, ui) {
+        var parent = listItem.find('.bubble').first();
+        var pos = parent.offset();
+        var el = angular.element('#' + virheElId);
+        el.offset(customOffset || {top: pos.top, left: pos.left + 200});
+        el.trigger('show');
+        $timeout(function () {
+          el.trigger('hide');
+        }, 5000);
+        ui.item.sortable.cancel();
+      }
+
     this.update = function(e, ui) {
       var itemScope = ui.item.scope();
-      var draggedHasOsaamisala = itemScope && itemScope.osa && isOsaamisalaRyhma(itemScope.osa);
-      if (draggedHasOsaamisala) {
-        var target = ui.item.sortable.droptarget;
-        var listItem = target.closest(NODESELECTOR);
-        var parentScope = listItem ? listItem.scope() : null;
-        if (parentsOrSelfHaveOsaamisala(listItem, parentScope)) {
-          var parent = listItem.find('.bubble').first();
-          var el = angular.element('#osaamisala-varoitus');
-          var pos = parent.offset();
-          el.offset({top: pos.top, left: pos.left + 200});
-          el.trigger('show');
-          $timeout(function () {
-           el.trigger('hide');
-          }, 5000);
-          ui.item.sortable.cancel();
-        }
+      var ominaisuudet = {};
+
+      if (itemScope && itemScope.osa) {
+        ominaisuudet.draggedHasOsaamisala = isOsaamisalaRyhma(itemScope.osa);
+        ominaisuudet.draggedHasVierastutkinto = itemScope.osa.erikoisuus === 'vieras';
+      }
+
+      var target = ui.item.sortable.droptarget;
+      var listItem = target.closest(NODESELECTOR);
+      var parentScope = listItem ? listItem.scope() : null;
+
+      if (ominaisuudet.draggedHasOsaamisala && parentsOrSelfHaveOsaamisala(listItem, parentScope)) {
+        errorBubble('osaamisala-varoitus', undefined, listItem, ui);
+      }
+      else if (ominaisuudet.draggedHasVierastutkinto && (!parentScope || !parentScope.osa.rooli || parentScope.osa.rooli !== 'vieras')) {
+        var pos = !parentScope ? listItem.prevObject.offset() : undefined;
+        errorBubble('vierastutkinto-varoitus', pos, listItem, ui);
       }
     };
   });

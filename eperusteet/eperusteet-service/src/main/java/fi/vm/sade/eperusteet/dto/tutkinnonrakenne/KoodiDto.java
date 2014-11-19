@@ -13,26 +13,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author jhyoty
+ * @author nkala
  */
 @Getter
 @Setter
-public class RakenneOsaDto extends AbstractRakenneOsaDto {
-    private boolean pakollinen;
-    private String erikoisuus;
-    private EntityReference tutkinnonOsaViite;
-
-    @Override
-    protected void foreach(final Visitor visitor, final int depth) {
-        visitor.visit(this, depth);
-    }
+public class KoodiDto {
+    private LokalisoituTekstiDto nimi;
+    private String arvo;
+    private String uri;
 }
