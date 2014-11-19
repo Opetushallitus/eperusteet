@@ -23,7 +23,6 @@ import fi.vm.sade.eperusteet.repository.OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.OppiaineenVuosiluokkakokonaisuusRepository;
 import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.service.LockCtx;
-import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.impl.AbstractLockService;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
@@ -37,7 +36,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @LockCtx(OppiaineLockContext.class)
-public class OppiaineLockServiceImpl extends AbstractLockService<OppiaineLockContext> implements LockService<OppiaineLockContext> {
+public class OppiaineLockServiceImpl extends AbstractLockService<OppiaineLockContext> {
 
     @Autowired
     private PerusopetuksenPerusteenSisaltoRepository repository;

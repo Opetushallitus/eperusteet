@@ -20,7 +20,6 @@ import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.service.LockCtx;
-import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.SuoritustapaLockContext;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
@@ -33,7 +32,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @LockCtx(SuoritustapaLockContext.class)
-public class SuoritustapaLockServiceImpl extends AbstractLockService<SuoritustapaLockContext> implements LockService<SuoritustapaLockContext> {
+public class SuoritustapaLockServiceImpl extends AbstractLockService<SuoritustapaLockContext> {
 
     @Autowired
     private PerusteRepository perusteet;

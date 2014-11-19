@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.Lukko;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.security.PermissionChecker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author jhyoty
  */
 
-public abstract class AbstractLockService<T> {
+public abstract class AbstractLockService<T> implements LockService<T> {
 
     @Autowired
     private LockManager manager;
