@@ -443,6 +443,26 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Revision> getVersiotByViite(Long id) {
+        PerusteenOsaViite p = perusteenOsaViiteRepository.findOne(id);
+        if (p == null || p.getPerusteenOsa() == null) {
+            throw new EntityNotFoundException("Perusteen osaa ei löytynyt viite id:llä: " + id);
+        }
+        return getVersiot(p.getPerusteenOsa().getId());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PerusteenOsaDto getVersioByViite(Long id, Integer versioId) {
+        PerusteenOsaViite p = perusteenOsaViiteRepository.findOne(id);
+        if (p == null || p.getPerusteenOsa() == null) {
+            throw new EntityNotFoundException("Perusteen osaa ei löytynyt viite id:llä: " + id);
+        }
+        return getVersio(p.getPerusteenOsa().getId(), versioId);
+    }
+
+    @Override
     @Transactional
     public fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja revertToVersio(Long id, Integer versioId) {
         PerusteenOsa revision = perusteenOsaRepo.findRevision(id, versioId);
@@ -480,5 +500,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             tutkinnonOsaViiteRepository.save(viite);
         }
     }
-    
+
+
+
+
+
 }

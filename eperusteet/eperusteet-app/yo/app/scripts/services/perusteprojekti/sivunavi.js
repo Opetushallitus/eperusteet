@@ -21,12 +21,12 @@ angular.module('eperusteApp')
 .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q,
     $state, $location, YleinenData, PerusopetusService, Kaanna, $timeout) {
   var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
-  var STATE_OSA = 'root.perusteprojekti.suoritustapa.perusteenosa';
+  var STATE_TUTKINNON_OSA = 'root.perusteprojekti.suoritustapa.tutkinnonosa';
+  var STATE_TEKSTIKAPPALE = 'root.perusteprojekti.suoritustapa.tekstikappale';
   var STATE_OSALISTAUS = 'root.perusteprojekti.osalistaus';
   var STATE_OSAALUE = 'root.perusteprojekti.osaalue';
   var isTutkinnonosatActive = function () {
-    return $state.is(STATE_OSAT) || ($state.is(STATE_OSA) &&
-      $stateParams.perusteenOsanTyyppi === 'tutkinnonosa');
+    return $state.is(STATE_OSAT) || $state.is(STATE_TUTKINNON_OSA);
   };
   var AM_ITEMS = [
     {
@@ -58,9 +58,8 @@ angular.module('eperusteApp')
     return lapsi.perusteenOsa.tunniste && lapsi.perusteenOsa.tunniste === 'rakenne' ?
       ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: ''}] :
       [
-        STATE_OSA,
+        STATE_TEKSTIKAPPALE,
         {
-          perusteenOsanTyyppi: 'tekstikappale',
           perusteenOsaViiteId: lapsi.id,
           versio: null
         }
@@ -88,7 +87,7 @@ angular.module('eperusteApp')
     // with optional parameters.
     // Versionless url should be considered same as specific version url.
     var url = item.href && item.href.indexOf('/rakenne') > -1 ?
-      item.href.substr(1) : $state.href(STATE_OSA, {
+      item.href.substr(1) : $state.href(STATE_TEKSTIKAPPALE, {
       perusteenOsaViiteId: item.id,
       versio: null
     }, {inherit:true}).replace(/#/g, '');

@@ -24,7 +24,7 @@ angular.module('eperusteApp')
       templateUrl: 'views/partials/muokkaus/tutke2kentat.html',
       scope: {
         mainLevelEditing: '=editEnabled',
-        tutkinnonosaViite: '=',
+        tutkinnonosa: '=',
         kontrollit: '='
       },
       controller: 'Tutke2KentatController'
@@ -53,10 +53,11 @@ angular.module('eperusteApp')
     };
 
 
-    $scope.originalViite = null;
-    $scope.tutkinnonosaViite.then(function (res) {
-      $scope.originalViite = res;
-      $scope.tutke2osa = Tutke2Osa.init(res.tutkinnonOsa.id);
+    //$scope.originalViite = null;
+
+    $scope.tutkinnonosa.then(function (res) {
+      $scope.tutke2osa = Tutke2Osa.init(res.id);
+
       $scope.tutke2osa.fetch().then(function () {
         tutke2osaDefer.resolve();
       });

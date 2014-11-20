@@ -63,7 +63,6 @@ public class PerusteenOsaController {
     @Autowired
     private TutkinnonOsaViiteService tutkinnonOsaViiteService;
 
-
     @Autowired
     private KayttajanTietoService kayttajanTietoService;
 
@@ -124,7 +123,7 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/viite/{id}/versiot", method = GET)
     @ResponseBody
     public List<CombinedDto<Revision, HenkiloTietoDto>> getViiteVersiot(@PathVariable("id") final Long id) {
-        List<Revision> versiot = tutkinnonOsaViiteService.getVersiot(id);
+        List<Revision> versiot = service.getVersiotByViite(id);
         List<CombinedDto<Revision, HenkiloTietoDto>> laajennetut = new ArrayList<>();
         for (Revision r : versiot) {
             laajennetut.add(new CombinedDto<>(r, new HenkiloTietoDto(kayttajanTietoService.hae(r.getMuokkaajaOid()))));
@@ -134,12 +133,12 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/viite/{id}/versio/{versioId}", method = GET)
     @ResponseBody
-    public ResponseEntity<TutkinnonOsaViiteDto> getViiteVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
-        TutkinnonOsaViiteDto t = tutkinnonOsaViiteService.getVersio(id, versioId);
-        if (t == null) {
+    public ResponseEntity<PerusteenOsaDto> getVersioByViite(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
+        PerusteenOsaDto p = service.getVersioByViite(id, versioId);
+        if (p == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(t, HttpStatus.OK);
+        return new ResponseEntity<>(p, HttpStatus.OK);
     }
 
 //    @RequestMapping(method = GET, params = "koodiUri")

@@ -127,15 +127,31 @@ angular.module('eperusteApp')
           PerusteProjektiSivunavi.setVisible();
         }]
       })
-      .state('root.perusteprojekti.suoritustapa.perusteenosa', {
-        url: '/perusteenosa/{perusteenOsanTyyppi}/{perusteenOsaViiteId}{versio:(?:/[^/]+)?}',
-        templateUrl: 'views/muokkaus.html',
-        controller: 'MuokkausCtrl',
+//      .state('root.perusteprojekti.suoritustapa.perusteenosa', {
+//        url: '/perusteenosa/{perusteenOsanTyyppi}/{perusteenOsaViiteId}{versio:(?:/[^/]+)?}',
+//        templateUrl: 'views/muokkaus.html',
+//        controller: 'MuokkausCtrl',
+//        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+//          PerusteProjektiSivunavi.setVisible();
+//        }]
+//      })
+      .state('root.perusteprojekti.suoritustapa.tutkinnonosa', {
+        url: '/tutkinnonosa/{tutkinnonOsaViiteId}{versio:(?:/[^/]+)?}',
+        templateUrl: 'views/partials/muokkaus/tutkinnonosa.html',
+        controller: 'muokkausTutkinnonosaCtrl',
         onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
           PerusteProjektiSivunavi.setVisible();
         }]
       })
-      .state('root.perusteprojekti.suoritustapa.perusteenosa.osaalue', {
+      .state('root.perusteprojekti.suoritustapa.tekstikappale', {
+        url: '/tekstikappale/{perusteenOsaViiteId}{versio:(?:/[^/]+)?}',
+        templateUrl: 'views/partials/muokkaus/tekstikappale.html',
+        controller: 'muokkausTekstikappaleCtrl',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible();
+        }]
+      })
+      .state('root.perusteprojekti.suoritustapa.tutkinnonosa.osaalue', {
         url: '/osaalue/{osaAlueId}',
         templateUrl: 'views/partials/muokkaus/tutkinnonOsaOsaAlue.html',
         controller: 'TutkinnonOsaOsaAlueCtrl',
