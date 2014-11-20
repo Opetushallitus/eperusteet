@@ -86,6 +86,13 @@ angular.module('eperusteApp')
       'koulutustyyppi_9999': '',
     };
 
+    this.koulutustyypinSuoritustapaOletus = {
+      'koulutustyyppi_1': 'ops',
+      'koulutustyyppi_11': 'ops',
+      'koulutustyyppi_12': 'naytto',
+      'koulutustyyppi_9999': 'ops',
+    };
+
     this.kielet = {
       'suomi': 'fi',
       'ruotsi': 'sv'
@@ -105,13 +112,7 @@ angular.module('eperusteApp')
     };
 
     this.valitseSuoritustapaKoulutustyypille = function(koulutustyyppi) {
-      if (koulutustyyppi === 'koulutustyyppi_9999') {
-        // Suoritustavalla ei ole käytännön merkitystä perusopetuksen puolella
-        return 'ops';
-      } else {
-        // Valitaan oletuksena "Peruskoulutus"-näkymä ammatillisella puolella
-        return 'ops';
-      }
+      return this.koulutustyypinSuoritustapaOletus[koulutustyyppi] || 'ops';
     };
 
     this.haeArviointiasteikot = function() {
