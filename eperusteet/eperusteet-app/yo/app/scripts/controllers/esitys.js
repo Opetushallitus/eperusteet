@@ -175,14 +175,10 @@ angular.module('eperusteApp')
     };
 
     if ($state.current.name === 'root.esitys.peruste') {
-      var links = _.filter($scope.navi.items, function (item) {
-        return item.label !== 'tutkinnonosat' && item.label !== 'tutkinnon-rakenne' &&
-          _.isArray(item.link) && item.link.length > 1;
+      var params = _.extend(_.clone($stateParams), {
+        suoritustapa: YleinenData.validSuoritustapa($scope.peruste, $stateParams.suoritustapa)
       });
-      var params = _.isEmpty(links) ? {} : { osanId: _.first(links).link[1].osanId };
-      if (!_.isEmpty(params)) {
-        $state.go('root.esitys.peruste.tekstikappale', _.merge(_.clone($stateParams), params));
-      }
+      $state.go('root.esitys.peruste.rakenne', params);
     }
 
     $scope.rajaaSisaltoa = function() {
