@@ -88,7 +88,7 @@ angular.module('eperusteApp')
 
     this.koulutustyypinSuoritustapaOletus = {
       'koulutustyyppi_1': 'ops',
-      'koulutustyyppi_11': 'ops',
+      'koulutustyyppi_11': 'naytto',
       'koulutustyyppi_12': 'naytto',
       'koulutustyyppi_9999': 'ops',
     };
