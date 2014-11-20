@@ -38,6 +38,12 @@ angular.module('eperusteApp')
       perusteId: '@perusteId'
     });
   })
+  .factory('LukkoVuosiluokkakokonaisuus', function (SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/vuosiluokkakokonaisuudet/:vuosiluokkaId/lukko', {
+      vuosiluokkaId: '@vuosiluokkaId',
+      perusteId: '@perusteId'
+    });
+  })
   .factory('LukkoOppiaineenVuosiluokkakokonaisuus', function (SERVICE_LOC, $resource) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:oppiaineId/vuosiluokkakokonaisuudet/:vuosiluokkaId/lukko', {
       oppiaineId: '@oppiaineId',
@@ -58,7 +64,7 @@ angular.module('eperusteApp')
   })
   .service('Lukitus', function($rootScope, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, Profiili,
     LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
-    LukkoOppiaine, PerusopetusService, LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite) {
+    LukkoOppiaine, PerusopetusService, LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite, LukkoVuosiluokkakokonaisuus) {
 
     var lukitsin = null;
     var etag = null;
@@ -212,10 +218,21 @@ angular.module('eperusteApp')
           vuosiluokkaId: vuosiluokkaId
         }, cb);
       },
-      vapautaOppiaineenVuosiluokkakokonaisuus: function (oppiaineId, vuosiluokkaId, cb) {
-        vapauta(LukkoOppiaineenVuosiluokkakokonaisuus, {
+      vapautaOppiaineenVuosiluokkakokonaisuus: function (vuosiluokkaId, cb) {
+        vapauta(LukkoVuosiluokkakokonaisuus, {
           perusteId: PerusopetusService.getPerusteId(),
-          oppiaineId: oppiaineId,
+          vuosiluokkaId: vuosiluokkaId
+        }, cb);
+      },
+      lukitseVuosiluokkakokonaisuus: function (vuosiluokkaId, cb) {
+        lukitse(LukkoVuosiluokkakokonaisuus, {
+          perusteId: PerusopetusService.getPerusteId(),
+          vuosiluokkaId: vuosiluokkaId
+        }, cb);
+      },
+      vapautaVuosiluokkakokonaisuus: function (vuosiluokkaId, cb) {
+        vapauta(LukkoVuosiluokkakokonaisuus, {
+          perusteId: PerusopetusService.getPerusteId(),
           vuosiluokkaId: vuosiluokkaId
         }, cb);
       },

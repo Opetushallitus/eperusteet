@@ -35,7 +35,7 @@ public interface VuosiluokkakokonaisuusService {
     VuosiluokkaKokonaisuusDto addVuosiluokkaKokonaisuus(@P("perusteId") Long perusteId, VuosiluokkaKokonaisuusDto dto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    VuosiluokkaKokonaisuusDto getVuosiluokkaKokonaisuus(@P("perusteId") Long perusteId, Long VuosiluokkaKokonaisuusId);
+    VuosiluokkaKokonaisuusDto getVuosiluokkaKokonaisuus(@P("perusteId") Long perusteId, Long kokonaisuusId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     VuosiluokkaKokonaisuusDto updateVuosiluokkaKokonaisuus(@P("perusteId") Long perusteId, VuosiluokkaKokonaisuusDto dto);
@@ -44,6 +44,6 @@ public interface VuosiluokkakokonaisuusService {
     List<OppiaineSuppeaDto> getOppiaineet(Long perusteId, Long kokonaisuusId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void deleteVuosiluokkaKokonaisuus(@P("perusteId") Long perusteId, Long VuosiluokkaKokonaisuusId);
+    void deleteVuosiluokkaKokonaisuus(@P("perusteId") Long perusteId, Long kokonaisuusId);
 
 }

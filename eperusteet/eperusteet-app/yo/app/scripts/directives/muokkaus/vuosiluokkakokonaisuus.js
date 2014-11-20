@@ -1,24 +1,24 @@
 /*
-* Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
-*
-* This program is free software: Licensed under the EUPL, Version 1.1 or - as
-* soon as they will be approved by the European Commission - subsequent versions
-* of the EUPL (the "Licence");
-*
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* European Union Public Licence for more details.
-*/
+ * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+ *
+ * This program is free software: Licensed under the EUPL, Version 1.1 or - as
+ * soon as they will be approved by the European Commission - subsequent versions
+ * of the EUPL (the "Licence");
+ *
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * European Union Public Licence for more details.
+ */
 
 /* global _ */
 'use strict';
 
 angular.module('eperusteApp')
-  .directive('muokkausVuosiluokka', function() {
+  .directive('muokkausVuosiluokka', function () {
     return {
       templateUrl: 'views/directives/perusopetus/vuosiluokkakokonaisuus.html',
       restrict: 'E',
@@ -31,8 +31,8 @@ angular.module('eperusteApp')
   })
 
   .controller('VuosiluokkakokonaisuusController', function ($scope, PerusopetusService,
-      Editointikontrollit, Kaanna, PerusteProjektiSivunavi, Vuosiluokkakokonaisuudet,
-      CloneHelper, $timeout, $state) {
+    Editointikontrollit, Kaanna, PerusteProjektiSivunavi, Vuosiluokkakokonaisuudet,
+    CloneHelper, Lukitus, $timeout, $state) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.vuosiluokkaOptions = {};
@@ -42,26 +42,35 @@ angular.module('eperusteApp')
         .filter('selected').map('value').value();
     };
 
-    $scope.$watch('editEnabled', function(editEnabled) {
+    $scope.$watch('editEnabled', function (editEnabled) {
       PerusteProjektiSivunavi.setVisible(!editEnabled);
     });
 
     var successCb = function (res) {
       $scope.editableModel = res;
+      Lukitus.vapautaVuosiluokkakokonaisuus($scope.editableModel.id);
       mapModel();
     };
 
     var cloner = CloneHelper.init(['nimi', 'tehtava', 'tekstikappaleet', 'laajaalaisetOsaamiset']);
 
     var editingCallbacks = {
-      edit: function() {
+      edit: function () {
         mapModel();
-        cloner.clone($scope.editableModel);
+        if ($scope.editableModel.id) {
+          Lukitus.lukitseVuosiluokkakokonaisuus($scope.editableModel.id, function() {
+            cloner.clone($scope.editableModel);
+          });
+        } else {
+          cloner.clone($scope.editableModel);
+        }
       },
-      asyncValidate: function(cb) {
-        lukitse(function() { cb(); });
+      asyncValidate: function (cb) {
+        lukitse(function () {
+          cb();
+        });
       },
-      save: function() {
+      save: function () {
         // hax until backend support
         if ($scope.editableModel.tekstikappaleet && $scope.editableModel.tekstikappaleet.length > 0) {
           $scope.editableModel.tehtava = _.cloneDeep($scope.editableModel.tekstikappaleet[0]);
@@ -76,25 +85,29 @@ angular.module('eperusteApp')
           }, $scope.editableModel, successCb);
         }
       },
-      cancel: function() {
+      cancel: function () {
         cloner.restore($scope.editableModel);
         if ($scope.editableModel.$isNew) {
           $timeout(function () {
             $state.go.apply($state, $scope.data.options.backState);
           });
+        } else {
+          Lukitus.vapautaVuosiluokkakokonaisuus($scope.editableModel.id);
         }
       },
-      notify: function(mode) {
+      notify: function (mode) {
         $scope.editEnabled = mode;
       },
-      validate: function() {
+      validate: function () {
         return true;
       }
     };
 
     $scope.data = {
       options: {
-        title: function () { return $scope.editableModel.nimi; },
+        title: function () {
+          return $scope.editableModel.nimi;
+        },
         editTitle: 'muokkaa-vuosiluokkakokonaisuutta',
         newTitle: 'uusi-vuosiluokkakokonaisuus',
         backLabel: 'vuosiluokkakokonaisuudet',
@@ -115,14 +128,14 @@ angular.module('eperusteApp')
                 laajaalainenOsaaminen: yleinen.id, kuvaus: {}
               });
             });
-          /* } else if (field.path === 'tehtava') {
-            $scope.editableModel.tehtava = {};
-          } */
+            /* } else if (field.path === 'tehtava') {
+             $scope.editableModel.tehtava = {};
+             } */
           } else {
             /*if (!$scope.editableModel.tekstikappaleet) {
-              $scope.editableModel.tekstikappaleet = [];
-              $scope.editableModel.tekstikappaleet.push({otsikko: {}, teksti: {}});
-            }*/
+             $scope.editableModel.tekstikappaleet = [];
+             $scope.editableModel.tekstikappaleet.push({otsikko: {}, teksti: {}});
+             }*/
           }
         },
         fieldRenderer: '<kenttalistaus edit-enabled="editEnabled" object-promise="modelPromise" fields="config.fields"></kenttalistaus>',
@@ -146,16 +159,16 @@ angular.module('eperusteApp')
             isolateEdit: true,
             order: 2
           }/*,
-          {
-            path: 'tehtava.teksti',
-            localeKey: 'tehtava',
-            originalLocaleKey: 'otsikko',
-            type: 'editor-area',
-            collapsible: true,
-            isolateEdit: true,
-            localized: true,
-            order: 3,
-          }*/
+           {
+           path: 'tehtava.teksti',
+           localeKey: 'tehtava',
+           originalLocaleKey: 'otsikko',
+           type: 'editor-area',
+           collapsible: true,
+           isolateEdit: true,
+           localized: true,
+           order: 3,
+           }*/
         ],
         editingCallbacks: editingCallbacks
       }

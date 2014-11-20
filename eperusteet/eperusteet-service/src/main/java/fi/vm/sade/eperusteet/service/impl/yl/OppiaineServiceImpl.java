@@ -75,6 +75,7 @@ public class OppiaineServiceImpl implements OppiaineService {
     public OppiaineDto addOppiaine(Long perusteId, OppiaineDto dto) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         if (sisalto != null) {
+            sisaltoRepository.lock(sisalto);
             Oppiaine oppiaine = saveOppiaine(dto);
             sisalto.addOppiaine(oppiaine);
             return mapper.map(oppiaine, OppiaineDto.class);
