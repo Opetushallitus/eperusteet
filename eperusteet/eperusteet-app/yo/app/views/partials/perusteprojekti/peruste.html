@@ -121,7 +121,8 @@ European Union Public Licence for more details.
         <h3 class="panel-title" kaanna>tiivistelmä</h3>
       </div>
       <div class="panel-body">
-        <ml-input ng-show="editEnabled" ml-data="editablePeruste.kuvaus" type="textarea"></ml-input>
+        <ml-input ng-if="editEnabled" ml-data="editablePeruste.kuvaus" type="textarea"></ml-input>
+
         <p ng-show="hasContent(peruste.kuvaus) && !editEnabled" kaanna="peruste.kuvaus"></p>
         <p ng-show="!hasContent(peruste.kuvaus) && !editEnabled" kaanna="ei-tiivistelmaa"></p>
       </div>
