@@ -30,7 +30,7 @@ angular.module('eperusteApp')
       lisaaPreferenssi: { method: 'POST', url: SERVICE_LOC + '/kayttajaprofiili/preferenssi' }
     });
   })
-  .service('Profiili', function($state, $rootScope, Suosikit, Notifikaatiot, Kayttajaprofiilit) {
+  .service('Profiili', function($state, $rootScope, Suosikit, Notifikaatiot, Kayttajaprofiilit, $stateParams) {
     var info = {
       resolved: false,
       suosikit: [],
@@ -99,7 +99,8 @@ angular.module('eperusteApp')
       },
 
       // Suosikit
-      asetaSuosikki: function(state, stateParams, nimi, success) {
+      asetaSuosikki: function(state, nimi, success) {
+        var stateParams = $stateParams;
         success = success || angular.noop;
 
         var vanha = _(info.suosikit).filter(function(s) {
@@ -130,7 +131,8 @@ angular.module('eperusteApp')
       listaaSuosikit: function() {
         return _.clone(info.suosikit);
       },
-      haeSuosikki: function(state, stateParams) {
+      haeSuosikki: function(state) {
+        var stateParams = $stateParams;
         var haku = _.filter(info.suosikit, function(s) {
           return state.current.name === s.sisalto.tila && isSame(stateParams, s.sisalto.parametrit);
         });

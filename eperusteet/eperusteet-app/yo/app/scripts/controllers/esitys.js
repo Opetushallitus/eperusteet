@@ -85,7 +85,7 @@ angular.module('eperusteApp')
       $scope.rakenne.$resolved = true;
     });
 
-    $scope.suosikkiHelper($state, $stateParams, 'tutkinnon-rakenne');
+    $scope.suosikkiHelper($state, 'tutkinnon-rakenne');
   })
 
   .controller('EsitysTutkinnonOsaCtrl', function($scope, $state, $stateParams, PerusteenOsat, TutkinnonosanTiedotService) {
@@ -98,7 +98,7 @@ angular.module('eperusteApp')
       $scope.tutkinnonOsa = res;
       $scope.fieldKeys = _.intersection(_.keys($scope.tutkinnonOsa), TutkinnonosanTiedotService.keys());
     });
-    $scope.suosikkiHelper($state, $stateParams, $scope.tutkinnonOsaViite.nimi);
+    $scope.suosikkiHelper($state, $scope.tutkinnonOsaViite.nimi);
     $scope.fieldOrder = function (item) {
       return TutkinnonosanTiedotService.order(item);
     };
@@ -108,7 +108,7 @@ angular.module('eperusteApp')
     $scope.$parent.valittu.sisalto = 'tutkinnonosat';
     $scope.tosarajaus = '';
     $scope.rajaaTutkinnonOsia = function(haku) { return Algoritmit.rajausVertailu($scope.tosarajaus, haku, 'nimi'); };
-    $scope.suosikkiHelper($state, $stateParams, 'tutkinnonosat');
+    $scope.suosikkiHelper($state, 'tutkinnonosat');
   })
 
   .controller('EsitysSisaltoCtrl', function($scope, $state, $stateParams, PerusteenOsat, YleinenData) {
@@ -120,7 +120,7 @@ angular.module('eperusteApp')
       });
       $state.go('root.esitys.peruste.rakenne', params);
     } else {
-      $scope.suosikkiHelper($state, $stateParams, $scope.valittuSisalto.nimi);
+      $scope.suosikkiHelper($state, $scope.valittuSisalto.nimi);
       PerusteenOsat.get({ osanId: $scope.valittuSisalto.id }, _.setWithCallback($scope, 'valittuSisalto'));
     }
   })
@@ -196,11 +196,11 @@ angular.module('eperusteApp')
       $scope.extra.tutkinnonRakenne = !Algoritmit.match($scope.rajaus, Kaanna.kaanna('tutkinnon-rakenne'));
     };
 
-    $scope.suosikkiHelper = function(state, stateParams, nimi) {
-      $scope.onSuosikki = Profiili.haeSuosikki(state, stateParams);
+    $scope.suosikkiHelper = function(state, nimi) {
+      $scope.onSuosikki = Profiili.haeSuosikki(state);
       $scope.asetaSuosikki = function() {
-        Profiili.asetaSuosikki(state, stateParams, Kaanna.kaanna($scope.peruste.nimi) + ': ' + (Kaanna.kaanna(nimi) || '') + ' (' + Kaanna.kaanna($scope.suoritustapa) + ')', function() {
-          $scope.onSuosikki = Profiili.haeSuosikki(state, stateParams);
+        Profiili.asetaSuosikki(state, Kaanna.kaanna($scope.peruste.nimi) + ': ' + (Kaanna.kaanna(nimi) || '') + ' (' + Kaanna.kaanna($scope.suoritustapa) + ')', function() {
+          $scope.onSuosikki = Profiili.haeSuosikki(state);
         });
       };
     };
