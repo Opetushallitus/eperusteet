@@ -23,7 +23,8 @@ European Union Public Licence for more details.
               <a ng-href="{{getBackLink(peruste)}}" icon-role="back" kaanna="takaisin-hakuun"></a>
             </div>
             <sivunavigaatio2 items="navi.items" header="navi.header">
-              <select class="form-control input-sm" ng-model="suoritustapa" ng-change="vaihdaSuoritustapa(suoritustapa)"
+              <select ng-show="suoritustavat.length > 1" class="form-control input-sm"
+                      ng-model="suoritustapa" ng-change="vaihdaSuoritustapa(suoritustapa)"
                       ng-options="kaanna(st) for st in suoritustavat"></select>
             </sivunavigaatio2>
         </div>
@@ -38,18 +39,25 @@ European Union Public Licence for more details.
                 </a>
                 <a class="left-space action-link" ng-click="luoPdf()" icon-role="save" kaanna="lataa-peruste-pdf-muodossa"></a>
             </div>
-            <div ng-show="naytaPerusteenTiedot">
-                <div><span kaanna="tutkintokoodi"></span>: <span kaanna="peruste.tutkintokoodi"></span></div>
-                <div ng-show="peruste.koulutukset.length === 1">
-                    {{ 'koulutusalakoodi' | kaanna }}: {{ peruste.koulutukset[0].koulutusalakoodi }} ({{ peruste.koulutukset[0].nimi | kaanna }})
-                </div>
-                <div ng-show="peruste.koulutukset.length > 1">
-                    {{ 'koulutusalakoodit' | kaanna }}:
-                    <span ng-repeat="koulutus in peruste.koulutukset">
-                        {{ 'koulutusalakoodi' | kaanna }}: {{ koulutus.koulutusalakoodi || '-' }} ({{ peruste.koulutukset[0].nimi | kaanna }})<span ng-hide="$last">, </span>
-                    </span>
-                </div>
-                <div class="kuvaus" kaanna="peruste.kuvaus"></div>
+            <div collapse="!naytaPerusteenTiedot">
+                <table class="esitys-perusteen-tiedot">
+                  <tr>
+                    <th><span kaanna="tutkintokoodi"></span>:</th>
+                    <td>{{peruste.tutkintokoodi | kaanna | tyhja}}</td>
+                  </tr>
+                  <tr>
+                    <th>{{peruste.koulutukset.length > 1 && 'koulutusalakoodit' || 'koulutusalakoodi' | kaanna}}:</th>
+                    <td>
+                      <span ng-repeat="koulutus in peruste.koulutukset">
+                        {{ koulutus.koulutusalakoodi || '-' }} ({{ peruste.koulutukset[0].nimi | kaanna }})<span ng-hide="$last">, </span>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>{{'kuvaus'|kaanna}}:</th>
+                    <td><div ng-bind-html="peruste.kuvaus | kaanna | unsafe"></div></td>
+                  </tr>
+                </table>
             </div>
             <div id="esitysPrintSisalto" ui-view></div>
         </div>

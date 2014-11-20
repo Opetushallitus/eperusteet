@@ -31,6 +31,15 @@ angular.module('eperusteApp')
     };
   })
   .service('TutkinnonosanTiedotService', function(PerusteenOsat, $q, TutkinnonOsanOsaAlue, Osaamistavoite) {
+    var FIELD_ORDER = {
+      tavoitteet: 3,
+      ammattitaitovaatimukset: 4,
+      ammattitaidonOsoittamistavat: 7,
+      arviointi: 5,
+      lisatiedot: 5,
+      arvioinninKohdealueet: 6
+    };
+
     var tutkinnonOsa;
 
     function noudaTutkinnonOsa(stateParams) {
@@ -76,7 +85,13 @@ angular.module('eperusteApp')
 
     return {
       noudaTutkinnonOsa: noudaTutkinnonOsa,
-      getTutkinnonOsa: getTutkinnonOsa
+      getTutkinnonOsa: getTutkinnonOsa,
+      order: function (key) {
+        return FIELD_ORDER[key] || -1;
+      },
+      keys: function () {
+        return _.keys(FIELD_ORDER);
+      }
     };
 
   })
@@ -85,7 +100,7 @@ angular.module('eperusteApp')
     TutkinnonOsaEditMode, $timeout, Varmistusdialogi, VersionHelper, Lukitus,
     MuokkausUtils, PerusteenOsaViitteet, Utils, ArviointiHelper, PerusteProjektiSivunavi,
     Notifikaatiot, Koodisto, Tutke2OsaData, Kommentit, KommentitByPerusteenOsa, FieldSplitter,
-    Algoritmit) {
+    Algoritmit, TutkinnonosanTiedotService) {
 
     Utils.scrollTo('#ylasivuankkuri');
 
@@ -147,36 +162,35 @@ angular.module('eperusteApp')
         localeKey: 'tutkinnon-osan-tavoitteet',
         type: 'editor-area',
         localized: true,
-        collapsible: true,
-        order: 3
+        collapsible: true
       },{
         path: 'tutkinnonOsa.ammattitaitovaatimukset',
         localeKey: 'tutkinnon-osan-ammattitaitovaatimukset',
         type: 'editor-area',
         localized: true,
-        collapsible: true,
-        order: 4
+        collapsible: true
       },{
         path: 'tutkinnonOsa.ammattitaidonOsoittamistavat',
         localeKey: 'tutkinnon-osan-ammattitaidon-osoittamistavat',
         type: 'editor-area',
         localized: true,
-        collapsible: true,
-        order: 7
+        collapsible: true
       },{
         path: 'tutkinnonOsa.arviointi.lisatiedot',
         localeKey: 'tutkinnon-osan-arviointi-teksti',
         type: 'editor-text',
         localized: true,
-        collapsible: true,
-        order: 5
+        collapsible: true
       },{
         path: 'tutkinnonOsa.arviointi.arvioinninKohdealueet',
         localeKey: 'tutkinnon-osan-arviointi-taulukko',
         type: 'arviointi',
-        collapsible: true,
-        order: 6
+        collapsible: true
       });
+
+    _.each($scope.fields, function (field) {
+      field.order = TutkinnonosanTiedotService.order(_.last(field.path.split('.')));
+    });
 
     $scope.koodistoClick = Koodisto.modaali(function(koodisto) {
       MuokkausUtils.nestedSet($scope.editableTutkinnonOsaViite.tutkinnonOsa, 'koodiUri', ',', koodisto.koodiUri);

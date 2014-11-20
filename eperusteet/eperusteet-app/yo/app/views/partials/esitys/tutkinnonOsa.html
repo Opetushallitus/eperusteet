@@ -1,59 +1,56 @@
 <h2>
-    {{ tutkinnonOsa.nimi | kaanna }} <span ng-show="tutkinnonOsaViite.laajuus">{{ tutkinnonOsaViite.laajuus }}{{ yksikko | kaanna }}</span>
+    {{ tutkinnonOsa.nimi | kaanna }} <span ng-show="tutkinnonOsaViite.laajuus">{{ tutkinnonOsaViite.laajuus }} {{ yksikko | kaanna }}</span>
     <div class="painikkeet pull-right">
-        <a href="" ng-click="asetaSuosikki()">
+        <a class="action-link" ng-click="asetaSuosikki()">
             <span class="glyphicon" ng-class="{'glyphicon-star': onSuosikki, 'glyphicon-star-empty': !onSuosikki}"></span>
             {{ onSuosikki ? 'poista-suosikeista' : 'merkitse-suosikiksi' | kaanna }}
         </a>
-        <a class="left-space" on-click="printSisalto()" href="">
-            <span class="glyphicon glyphicon-print"></span>
-            {{ 'tulosta-sivu' | kaanna }}
-        </a>
+        <a class="action-link left-space" ng-click="printSisalto()" icon-role="print" kaanna="'tulosta-sivu'"></a>
     </div>
 </h2>
 
-<div ng-repeat="(k, v) in tutkinnonOsa">
-    <div ng-if="k === 'koodiArvo' && v">
-        <b kaanna>koodi</b>: {{ v }}
-    </div>
-    <div ng-if="k === 'opintoluokitus' && v">
-        <b kaanna>opintoluokitus</b>: {{ v }}
-    </div>
+
+<div ng-if="tutkinnonOsa.koodiArvo">
+  <strong kaanna="'koodi'"></strong>: {{ tutkinnonOsa.koodiArvo }}
+</div>
+<div ng-if="tutkinnonOsa.opintoluokitus">
+  <strong kaanna="'opintoluokitus'"></strong>: {{ tutkinnonOsa.opintoluokitus }}
 </div>
 
-<!-- TODO: kenttien oikea järjestys -->
-<div ng-repeat="(k, v) in tutkinnonOsa">
-    <div ng-if="v && (k === 'tavoitteet' || k === 'ammattitaidonOsoittamistavat' || k === 'ammattitaitovaatimukset')">
-        <h3>{{ k | kaanna }}</h3>
-        <div ng-bind-html="valitseKieli(v) | unsafe"></div>
+<div ng-repeat="k in fieldKeys | orderBy: fieldOrder">
+  <div ng-if="k === 'arviointi'">
+    <div ng-show="tutkinnonOsa.arviointi.arvioinninKohdealueet">
+      <h3 kaanna="'arviointi'"></h3>
+      <div ng-repeat="kohdealue in tutkinnonOsa.arviointi.arvioinninKohdealueet">
+          <div class="arviointi">
+              <div class="arviointi-otsikko">
+                  <h4>{{ kohdealue.otsikko | kaanna }}</h4>
+              </div>
+              <div class="arviointi-sisalto">
+                  <div ng-repeat="kohde in kohdealue.arvioinninKohteet">
+                      <h4>{{ kohde.otsikko | kaanna }}</h4>
+                      <table class="table table-striped">
+                          <tr ng-repeat="okriteeri in kohde.osaamistasonKriteerit">
+                              <td width="15%">{{ arviointiasteikot[kohde._arviointiAsteikko][okriteeri._osaamistaso].otsikko | kaanna }}</td>
+                              <td>
+                                  <ul>
+                                      <li ng-repeat="kriteeri in okriteeri.kriteerit">{{ kriteeri | kaanna }}</li>
+                                  </ul>
+                              </td>
+                          </tr>
+                      </table>
+                  </div>
+              </div>
+          </div>
+      </div>
     </div>
-    <div ng-if="k === 'arviointi' && v">
-        <h3>{{ k | kaanna }}</h3>
-        <div ng-repeat="kohdealue in v.arvioinninKohdealueet">
-            <div class="arviointi">
-                <div class="arviointi-otsikko">
-                    <h4>{{ kohdealue.otsikko | kaanna }}</h4>
-                </div>
-                <div class="arviointi-sisalto">
-                    <div ng-repeat="kohde in kohdealue.arvioinninKohteet">
-                        <h4>{{ kohde.otsikko | kaanna }}</h4>
-                        <table class="table table-striped">
-                            <tr ng-repeat="okriteeri in kohde.osaamistasonKriteerit">
-                                <td width="15%">{{ arviointiasteikot[kohde._arviointiAsteikko][okriteeri._osaamistaso].otsikko | kaanna }}</td>
-                                <td>
-                                    <ul>
-                                        <li ng-repeat="kriteeri in okriteeri.kriteerit">{{ kriteeri | kaanna }}</li>
-                                    </ul>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div ng-if="k.lisatiedot">
-            <h4 kaanna>lisätiedot</h4>
-            {{ k.lisatiedot | kaanna }}
-        </div>
+    <div ng-show="(!tutkinnonOsa.arviointi.arvioinninKohdealueet || tutkinnonOsa.arviointi.arvioinninKohdealueet.length === 0) && tutkinnonOsa.arviointi.lisatiedot">
+      <h3 kaanna="'arviointi'"></h3>
+      <div ng-bind-html="tutkinnonOsa.arviointi.lisatiedot | kaanna | unsafe"></div>
     </div>
+  </div>
+  <div ng-if="k !== 'arviointi' && tutkinnonOsa[k]">
+    <h3>{{ k | kaanna }}</h3>
+    <div ng-bind-html="tutkinnonOsa[k] | kaanna | unsafe"></div>
+  </div>
 </div>
