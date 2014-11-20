@@ -152,6 +152,7 @@ angular.module('eperusteApp')
     Notifikaatiot, Koodisto, Tutke2OsaData, Kommentit, KommentitByPerusteenOsa, FieldSplitter,
     Algoritmit, TutkinnonosanTiedotService, TutkinnonOsaViitteet, PerusteenOsaViite, virheService) {
 
+
     Utils.scrollTo('#ylasivuankkuri');
 
     Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.tutkinnonOsaViiteId });
@@ -159,18 +160,22 @@ angular.module('eperusteApp')
     $scope.tutkinnonOsaViite = {};
     $scope.versiot = {};
 
+    $scope.suoritustapa = $stateParams.suoritustapa;
+    $scope.rakenne = {};
+    $scope.test = angular.noop;
+    $scope.menuItems = [];
+    $scope.editableTutkinnonOsaViite = {};
+    $scope.editEnabled = false;
+    $scope.editointikontrollit = Editointikontrollit;
+    $scope.nimiValidationError = false;
+
     var tutkinnonOsaDefer = $q.defer();
     $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
 
 
-        function successCb(re) {
-      $scope.tutkinnonOsaViite = re;
-      setupTutkinnonOsa($scope.tutkinnonOsaViite.tutkinnonOsa);
-      tutkinnonOsaDefer.resolve($scope.tutkinnonOsaViite.tutkinnonOsa);
-//      if (TutkinnonOsaEditMode.getMode()) {
-//        $scope.isNew = true;
-//        $scope.muokkaa();
-//      }
+    function successCb(re) {
+      setupTutkinnonOsaViite(re);
+      tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsaViite);
     }
 
     function errorCb() {
@@ -203,14 +208,7 @@ angular.module('eperusteApp')
       }
     });
 
-    $scope.suoritustapa = $stateParams.suoritustapa;
-    $scope.rakenne = {};
-    $scope.test = angular.noop;
-    $scope.menuItems = [];
-    $scope.editableTutkinnonOsaViite = {};
-    $scope.editEnabled = false;
-    $scope.editointikontrollit = Editointikontrollit;
-    $scope.nimiValidationError = false;
+
 
     $scope.$watch('editableTutkinnonOsa.nimi', function () {
       $scope.nimiValidationError = false;
@@ -308,7 +306,7 @@ angular.module('eperusteApp')
       $scope.editableTutkinnonOsaViite = angular.copy($scope.tutkinnonOsaViite);
       tutkinnonOsaDefer = $q.defer();
       $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
-      tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsaViite.tutkinnonOsa);
+      tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsaViite);
     }
 
     function saveCb(res) {
@@ -367,6 +365,7 @@ angular.module('eperusteApp')
       save: function(kommentti) {
         tutke2.mergeOsaAlueet($scope.editableTutkinnonOsaViite.tutkinnonOsa);
         $scope.editableTutkinnonOsaViite.metadata = { kommentti: kommentti };
+        console.log('editabletutkinnonosaviite', $scope.editableTutkinnonOsaViite);
         if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.id) {
           PerusteTutkinnonosa.save({perusteId: $scope.peruste.id, suoritustapa: $stateParams.suoritustapa, osanId: $scope.editableTutkinnonOsaViite.tutkinnonOsa.id},
           $scope.editableTutkinnonOsaViite, function(response){
@@ -378,7 +377,7 @@ angular.module('eperusteApp')
 
             tutkinnonOsaDefer = $q.defer();
             $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
-            tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsaViite.tutkinnonOsa);
+            tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsaViite);
           }, Notifikaatiot.serverCb);
         }
         else {
@@ -414,9 +413,10 @@ angular.module('eperusteApp')
       }
     };
 
-    function setupTutkinnonOsa(osa) {
-      $scope.tutkinnonOsaViite.tutkinnonOsa = osa;
-      $scope.editableTutkinnonOsaViite.tutkinnonOsa = angular.copy(osa);
+    function setupTutkinnonOsaViite(viite) {
+      console.log('viite', viite);
+      $scope.tutkinnonOsaViite = viite;
+      $scope.editableTutkinnonOsaViite = angular.copy(viite);
       $scope.isNew = !$scope.editableTutkinnonOsaViite.tutkinnonOsa.id;
       if ($state.current.name === 'root.perusteprojekti.suoritustapa.tutkinnonosa') {
         Editointikontrollit.registerCallback(normalCallbacks);
@@ -478,10 +478,10 @@ angular.module('eperusteApp')
 
     function responseFn(response) {
       $scope.tutkinnonOsaViite.tutkinnonOsa = response;
-      setupTutkinnonOsa(response);
+      setupTutkinnonOsaViite(response);
       var objDefer = $q.defer();
       $scope.tutkinnonOsaPromise = objDefer.promise;
-      objDefer.resolve($scope.editableTutkinnonOsaViite.tutkinnonOsa);
+      objDefer.resolve($scope.editableTutkinnonOsaViite);
       VersionHelper.setUrl($scope.versiot);
     }
 
@@ -491,6 +491,7 @@ angular.module('eperusteApp')
     };
 
     $scope.revertCb = function (response) {
+      console.log('revert response', response);
       responseFn(response);
       saveCb(response);
     };

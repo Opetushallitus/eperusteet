@@ -30,6 +30,7 @@ angular.module('eperusteApp')
         'changeVersion': '&'
       },
       controller: function ($scope, Varmistusdialogi, Lukitus, VersionHelper, $translate) {
+        console.log('revert-note versiot', $scope.versiot);
         $scope.version = {
           revert: function () {
             var isRakenne = _.has($scope.object, 'rakenne') && _.has($scope.object, '$peruste');

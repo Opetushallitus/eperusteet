@@ -62,9 +62,7 @@ angular.module('eperusteApp')
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
 
         $scope.$watch('objectReady', function(newObjectReadyPromise) {
-          console.log('objectReady muuttunut');
           newObjectReadyPromise.then(function(newObject) {
-            console.log('muokattavaKenttä newObject', newObject);
             $scope.object = newObject;
           });
         });

@@ -137,7 +137,6 @@ angular.module('eperusteApp')
       Navigaatiopolku.asetaElementit({perusteenOsaId: re.nimi});
       tekstikappaleDefer.resolve($scope.tekstikappale);
       if (TutkinnonOsaEditMode.getMode()) {
-        console.log('editmode true');
         $scope.isNew = true;
         $scope.muokkaa();
       }
@@ -223,12 +222,10 @@ angular.module('eperusteApp')
     };
 
     function lukitse(cb) {
-      console.log('tekstikappale id', $scope.tekstikappale.id);
       Lukitus.lukitsePerusteenosa($scope.tekstikappale.id, cb);
     }
 
     function fetch(cb) {
-      console.log('fetch');
       PerusteenOsat.get({osanId: $scope.tekstikappale.id}, _.setWithCallback($scope, 'tekstikappale', cb));
     }
 
@@ -296,7 +293,6 @@ angular.module('eperusteApp')
 
 
     function refreshPromise() {
-      console.log('refreshpromise');
       $scope.editableTekstikappale = angular.copy($scope.tekstikappale);
       tekstikappaleDefer = $q.defer();
       $scope.tekstikappalePromise = tekstikappaleDefer.promise;
@@ -330,7 +326,6 @@ angular.module('eperusteApp')
 
       Editointikontrollit.registerCallback({
         edit: function () {
-          console.log('edit');
           fetch(function () {
             refreshPromise();
           });
@@ -395,9 +390,7 @@ angular.module('eperusteApp')
     };
 
     $scope.muokkaa = function () {
-      console.log('muokkaa');
       lukitse(function () {
-        console.log('muokkaa lukitse');
         Editointikontrollit.startEditing();
       });
     };
