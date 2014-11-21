@@ -590,11 +590,11 @@ angular.module('eperusteApp')
       return parentsOrSelfHaveOsaamisala(parent, parent ? parent.scope() : null);
     }
 
-      function errorBubble(virheElId, customOffset, listItem, ui) {
+      function errorBubble(virheElId, listItem, ui) {
         var parent = listItem.find('.bubble').first();
         var pos = parent.offset();
         var el = angular.element('#' + virheElId);
-        el.offset(customOffset || {top: pos.top, left: pos.left + 200});
+        el.offset({top: pos.top, left: pos.left + 200});
         el.trigger('show');
         $timeout(function () {
           el.trigger('hide');
@@ -616,11 +616,11 @@ angular.module('eperusteApp')
       var parentScope = listItem ? listItem.scope() : null;
 
       if (ominaisuudet.draggedHasOsaamisala && parentsOrSelfHaveOsaamisala(listItem, parentScope)) {
-        errorBubble('osaamisala-varoitus', undefined, listItem, ui);
+        errorBubble('osaamisala-varoitus', listItem, ui);
       }
-      else if (ominaisuudet.draggedHasVierastutkinto && (!parentScope || !parentScope.osa.rooli || parentScope.osa.rooli !== 'vieras')) {
-        var pos = !parentScope ? listItem.prevObject.offset() : undefined;
-        errorBubble('vierastutkinto-varoitus', pos, listItem, ui);
+      else if (ominaisuudet.draggedHasVierastutkinto &&
+          (!parentScope || !parentScope.osa.rooli || parentScope.osa.rooli !== 'vieras')) {
+        errorBubble('vierastutkinto-varoitus', listItem, ui);
       }
     };
   });
