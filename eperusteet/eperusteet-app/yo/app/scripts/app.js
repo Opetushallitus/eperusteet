@@ -42,6 +42,7 @@ angular.module('eperusteApp', [
   .constant('LUKITSIN_MINIMI', 5000)
   .constant('LUKITSIN_MAKSIMI', 20000)
   .constant('TEXT_HIERARCHY_MAX_DEPTH', 8)
+  .constant('SHOW_VERSION_FOOTER', true)
   .config(function($urlRouterProvider, $sceProvider) {
     $sceProvider.enabled(true);
     $urlRouterProvider.when('','/');
