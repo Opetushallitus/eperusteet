@@ -36,12 +36,24 @@ angular.module('eperusteApp')
           });
         });
       },
-      controller: function ($scope) {
+      controller: function ($scope, Profiili) {
         $scope.editoi = false;
         $scope.model = {
           editoitava: ''
         };
         $scope.indent = ($scope.depth * 60) + 'px';
+        $scope.oidResolved = false;
+        $scope.selfOid = Profiili.oid();
+        if (!$scope.selfOid) {
+          Profiili.casTiedot().then(function (res) {
+            if (res.oid) {
+              $scope.selfOid = res.oid;
+            }
+            $scope.oidResolved = true;
+          });
+        } else {
+          $scope.oidResolved = true;
+        }
 
         $scope.poistaKommentti = $scope.$parent.poistaKommentti;
         $scope.muokkaaKommenttia = $scope.$parent.muokkaaKommenttia;
@@ -64,8 +76,8 @@ angular.module('eperusteApp')
     };
   })
   .factory('kommenttiViestiTemplate', function () {
-    return '<div ng-repeat="viesti in sisalto.viestit">' +
-      '<div ng-style="{\'margin-left\': indent }" class="kommentti">' +
+    return '<div ng-repeat="viesti in sisalto.viestit" ng-if="oidResolved">' +
+      '<div ng-style="{\'margin-left\': indent }" class="kommentti" ng-class="{\'kommentti-oma\': selfOid === viesti.muokkaaja}">' +
       '<div class="kommentti-poistettu" ng-if="viesti.poistettu">' +
       '  <h3>{{\'viesti-poistettu\' | kaanna }} {{ viesti.muokattu | aikaleima }}</h3>' +
       '</div>' +
@@ -76,7 +88,7 @@ angular.module('eperusteApp')
       '  <div class="kommentti-sisalto">' +
       '    <h3>' +
       '      {{ viesti.nimi || viesti.muokkaaja }}' +
-      '      <span class="pull-right">' +
+      '      <span class="pull-right" ng-if="selfOid === viesti.muokkaaja">' +
       '        <a class="action-link" ng-click="startEditing(viesti)" icon-role="edit" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }"></a>' +
       '        <a class="action-link" ng-click="poistaKommentti(viesti)" icon-role="remove" oikeustarkastelu="{ target: \'peruste\', permission: \'poisto\' }"></a>' +
       '      </span>' +
