@@ -13,7 +13,7 @@
           <formfield model="ryhma" model-var="rooli" label="rooli" options="roolit"><ohje teksti="ohje-ryhma-rooli"></ohje></formfield>
         </div>
 
-        <div ng-if="ryhma.vanhempi && (ryhma.rooli === 'määritelty' || ryhma.rooli === 'osaamisala')">
+        <div ng-if="(ryhma.vanhempi || luonti) && ryhma.rooli === 'määritelty'">
             <h3 kaanna>osaamisala</h3>
             <div class="col-sm-offset-3" >
                 <button icon-role="add" class="btn btn-default" type="button" ng-click="avaaKoodistoModaali()" kaanna="hae-koodistosta"></button>
