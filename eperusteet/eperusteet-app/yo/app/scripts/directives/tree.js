@@ -562,9 +562,13 @@ angular.module('eperusteApp')
   .service('TreeDragAndDrop', function ($timeout) {
     var NODESELECTOR = '.tree-list-item';
     /*
-     * Aito osaamisalaryhmä: ryhmä, joka on itse tyyppiä osaamisala
-     * Osaamisalaryhmä: aito osaamisalaryhmä tai ryhmä, jonka mikä tahansa jälkeläinen on aito osaamisalaryhmä.
-     * Osaamisalaryhmää ei voida asettaa puuhun jos mikä tahansa lisäämiskohdan edeltäjä on aito osaamisalaryhmä
+     * Puun säännöt
+     *
+     * 1. Osaamisalaryhmää ei voida asettaa puuhun jos mikä tahansa lisäämiskohdan edeltäjä on aito osaamisalaryhmä
+     *   - Aito osaamisalaryhmä: ryhmä, joka on itse tyyppiä osaamisala
+     *   - Osaamisalaryhmä: aito osaamisalaryhmä tai ryhmä, jonka mikä tahansa jälkeläinen on aito osaamisalaryhmä.
+     * 2. Vieras tutkinnon osa voi olla vain vieras-ryhmässä
+     * 3. Vieras-ryhmän alla ei voi olla muita ryhmiä
      */
     function hasOsaamisala(item) {
       return !_.isEmpty(item.osaamisala);
@@ -590,17 +594,17 @@ angular.module('eperusteApp')
       return parentsOrSelfHaveOsaamisala(parent, parent ? parent.scope() : null);
     }
 
-      function errorBubble(virheElId, listItem, ui) {
-        var parent = listItem.find('.bubble').first();
-        var pos = parent.offset();
-        var el = angular.element('#' + virheElId);
-        el.offset({top: pos.top, left: pos.left + 200});
-        el.trigger('show');
-        $timeout(function () {
-          el.trigger('hide');
-        }, 5000);
-        ui.item.sortable.cancel();
-      }
+    function showErrorBubble(virheElId, listItem, ui) {
+      var parent = listItem.find('.bubble').first();
+      var pos = parent.offset();
+      var el = angular.element('#' + virheElId);
+      el.offset({top: pos.top, left: pos.left + 200});
+      el.trigger('show');
+      $timeout(function () {
+        el.trigger('hide');
+      }, 5000);
+      ui.item.sortable.cancel();
+    }
 
     this.update = function(e, ui) {
       var itemScope = ui.item.scope();
@@ -608,19 +612,25 @@ angular.module('eperusteApp')
 
       if (itemScope && itemScope.osa) {
         ominaisuudet.draggedHasOsaamisala = isOsaamisalaRyhma(itemScope.osa);
-        ominaisuudet.draggedHasVierastutkinto = itemScope.osa.erikoisuus === 'vieras';
+        ominaisuudet.draggedIsVierastutkinto = itemScope.osa.erikoisuus === 'vieras';
+        ominaisuudet.draggedIsRyhma = _.has(itemScope.osa, 'rooli');
       }
 
       var target = ui.item.sortable.droptarget;
       var listItem = target.closest(NODESELECTOR);
       var parentScope = listItem ? listItem.scope() : null;
+      ominaisuudet.parentIsNotVierasRyhma = (!parentScope || !parentScope.osa.rooli ||
+        parentScope.osa.rooli !== 'vieras');
 
       if (ominaisuudet.draggedHasOsaamisala && parentsOrSelfHaveOsaamisala(listItem, parentScope)) {
-        errorBubble('osaamisala-varoitus', listItem, ui);
-      }
-      else if (ominaisuudet.draggedHasVierastutkinto &&
-          (!parentScope || !parentScope.osa.rooli || parentScope.osa.rooli !== 'vieras')) {
-        errorBubble('vierastutkinto-varoitus', listItem, ui);
+        // 1.
+        showErrorBubble('osaamisala-varoitus', listItem, ui);
+      } else if (ominaisuudet.draggedIsVierastutkinto && ominaisuudet.parentIsNotVierasRyhma) {
+        // 2.
+        showErrorBubble('vierastutkinto-varoitus', listItem, ui);
+      } else if (!ominaisuudet.parentIsNotVierasRyhma && ominaisuudet.draggedIsRyhma) {
+        // 3.
+        showErrorBubble('vierastutkinto-varoitus2', listItem, ui);
       }
     };
   });
