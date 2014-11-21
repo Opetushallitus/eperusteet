@@ -88,10 +88,10 @@ angular.module('eperusteApp')
           '    <a class="action-link" icon-role="edit" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)"></a>' +
           '  </div>' +
           '  <div class="pull-right" ng-if="!onOsa(rakenne)">' +
-          '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\' && rakenne.muodostumisSaanto.laajuus.minimi">' +
+          '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\' && isNumber(rakenne.muodostumisSaanto.laajuus.minimi)">' +
           laajuudenIlmaisu +
           '    </span>' +
-          '    <span class="right-item" ng-if="rakenne.muodostumisSaanto.koko.minimi">' +
+          '    <span class="right-item" ng-if="isNumber(rakenne.muodostumisSaanto.koko.minimi)">' +
           koonIlmaisu +
           '    </span>' +
           '  </div>' +
@@ -139,7 +139,7 @@ angular.module('eperusteApp')
           '    <span class="rakenne-nimi">{{ apumuuttujat.peruste.nimi | kaanna }}' +
           '    <span ng-if="rakenne.muodostumisSaanto && rakenne.muodostumisSaanto.laajuus">' +
           '      <span ng-if="rakenne.$laajuus">{{ rakenne.$laajuus }} / </span>' +
-          '      <span ng-if="rakenne.muodostumisSaanto.laajuus.minimi">' +
+          '      <span ng-if="isNumber(rakenne.muodostumisSaanto.laajuus.minimi)">' +
           '        {{ rakenne.muodostumisSaanto.laajuus.minimi }}' +
           '      </span>' +
           '      <span ng-if="rakenne.muodostumisSaanto.laajuus.maksimi && rakenne.muodostumisSaanto.laajuus.minimi !== rakenne.muodostumisSaanto.laajuus.maksimi">' +
@@ -182,6 +182,7 @@ angular.module('eperusteApp')
     $scope.kuvauksetOpen = false;
     $scope.esitystilassa = $state.includes('**.esitys.**');
     $scope.lang = $translate.use() || $translate.preferredLanguage();
+    $scope.isNumber = _.isNumber;
 
     $scope.poista = function(i, a) {
       _.remove(a.osat, i);
