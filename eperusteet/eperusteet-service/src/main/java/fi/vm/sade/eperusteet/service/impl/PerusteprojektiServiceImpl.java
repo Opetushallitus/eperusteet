@@ -38,6 +38,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
@@ -53,6 +54,7 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiTyoryhmaRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
+import fi.vm.sade.eperusteet.service.KoodistoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -116,6 +118,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
+
+    @Autowired
+    private KoodistoService koodistoService;
 
     @Override
     @Transactional(readOnly = true)
@@ -335,8 +340,29 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 }
 
                 // Kerätään tutkinnon osien koodit
+                List<LokalisoituTekstiDto> virheellisetKoodistonimet = new ArrayList<>();
                 for (TutkinnonOsaViite tov : suoritustapa.getTutkinnonOsat()) {
-                    tutkinnonOsienKoodit.add(tov.getTutkinnonOsa().getKoodiArvo());
+                    TutkinnonOsa tosa = tov.getTutkinnonOsa();
+                    String uri = tosa.getKoodiUri();
+                    String arvo = tosa.getKoodiArvo();
+
+                    if (tosa.getNimi() != null && (uri != null && arvo != null && !uri.isEmpty() && !arvo.isEmpty())) {
+                        KoodistoKoodiDto koodi = null;
+                        try {
+                            koodi = koodistoService.get("tutkinnonosat", uri);
+                        } catch (Exception e) {
+                        }
+                        if (koodi != null && koodi.getKoodiUri().equals(uri)) {
+                            tutkinnonOsienKoodit.add(tov.getTutkinnonOsa().getKoodiArvo());
+                        }
+                        else {
+                            virheellisetKoodistonimet.add(new LokalisoituTekstiDto(tosa.getNimi().getId(), tosa.getNimi().getTeksti()));
+                        }
+                    }
+                }
+                if (!virheellisetKoodistonimet.isEmpty()) {
+                    updateStatus.addStatus("tutkinnon-osan-asetettua-koodia-ei-koodistossa", suoritustapa.getSuoritustapakoodi(), virheellisetKoodistonimet);
+                    updateStatus.setVaihtoOk(false);
                 }
             }
 
@@ -354,6 +380,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             }
         }
 
+        // Perusteen tilan muutos
         if ( !updateStatus.isVaihtoOk() ) {
             return updateStatus;
         }

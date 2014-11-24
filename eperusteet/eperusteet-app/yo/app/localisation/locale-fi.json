@@ -408,6 +408,8 @@
     "vierastutkinto-ei-muita-ryhmia": "Vierastutkintoryhmä ei voi sisältää muita ryhmiä.",
     "vieras": "Vieras",
 
+    "tutkinnon-osan-asetettua-koodia-ei-koodistossa": "Koodistosta ei löytynyt tutkinnon osalle määritettyä koodia",
+
     "et-ole-vielä-tallentanut-tutkinnonosia": "Et ole vielä liittänyt kaikkia tutkinnon osia perusteeseen",
     "et-ole-vielä-tallentanut-tekstikappaleita": "Et ole vielä liittänyt kaikkia tekstikappaleita perusteeseen",
     "tuo-excel": "Tuo Excel",
