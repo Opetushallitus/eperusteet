@@ -83,68 +83,6 @@ angular.module('eperusteApp')
     };
 
   })
-//  .directive('muokkausTutkinnonosa', function() {
-//    return {
-//      templateUrl: 'views/partials/muokkaus/tutkinnonosa.html',
-//      restrict: 'E',
-//      scope: {
-//        tutkinnonOsaViite: '=',
-//        versiot: '=',
-//        peruste: '='
-//      },
-//      controller: 'muokkausTutkinnonosaController'
-//    };
-//  })
-//  .service('TutkinnonosanTiedotService', function(PerusteenOsat, $q, TutkinnonOsanOsaAlue, Osaamistavoite) {
-//    var tutkinnonOsa;
-//
-//    function noudaTutkinnonOsa(stateParams) {
-//
-//      var deferred = $q.defer();
-//
-//      PerusteenOsat.get({osanId: stateParams.perusteenOsaId}, function (vastaus) {
-//        tutkinnonOsa = vastaus;
-//        if (vastaus.tyyppi === 'tutke2') {
-//          TutkinnonOsanOsaAlue.list({osanId: stateParams.perusteenOsaId}, function (osaAlueet) {
-//            tutkinnonOsa.osaAlueet = osaAlueet;
-//
-//            if (osaAlueet && osaAlueet.length > 0) {
-//              var promisesList = [];
-//              _.each(osaAlueet, function (osaAlue) {
-//                var valmis = Osaamistavoite.list({osanId: stateParams.perusteenOsaId, osaalueenId: osaAlue.id}, function (osaamistavoitteet) {
-//                  osaAlue.osaamistavoitteet = osaamistavoitteet;
-//                });
-//                promisesList.push(valmis.promise);
-//              });
-//              $q.all(promisesList).then( function() {
-//                deferred.resolve();
-//              }, function () {
-//                deferred.reject();
-//              });
-//
-//            } else {
-//              deferred.resolve();
-//            }
-//          });
-//        } else {
-//          deferred.resolve();
-//        }
-//
-//      });
-//
-//      return deferred.promise;
-//    }
-//
-//    function getTutkinnonOsa() {
-//      return _.clone(tutkinnonOsa);
-//    }
-//
-//    return {
-//      noudaTutkinnonOsa: noudaTutkinnonOsa,
-//      getTutkinnonOsa: getTutkinnonOsa
-//    };
-//
-//  })
   .controller('muokkausTutkinnonosaCtrl', function($scope, $state, $stateParams, $rootScope,
     $q, Editointikontrollit, PerusteenOsat, PerusteenRakenne, PerusteTutkinnonosa,
     TutkinnonOsaEditMode, $timeout, Varmistusdialogi, VersionHelper, Lukitus,
@@ -422,20 +360,6 @@ angular.module('eperusteApp')
       $scope.haeVersiot();
       Lukitus.tarkista($scope.tutkinnonOsaViite.tutkinnonOsa.id, $scope);
     }
-
-//    if($scope.tutkinnonOsaViite) {
-//      $scope.tutkinnonOsaPromise = $scope.tutkinnonOsaViite.$promise.then(function(response) {
-//        setupTutkinnonOsa(response.tutkinnonOsa);
-//        return $scope.editableTutkinnonOsaViite;
-//      });
-//    } else {
-//      var objectReadyDefer = $q.defer();
-//      $scope.tutkinnonOsaPromise = objectReadyDefer.promise;
-//      $scope.tutkinnonOsaViite.tutkinnonOsa = {};
-//      setupTutkinnonOsa($scope.tutkinnonOsaViite.tutkinnonOsa);
-//      objectReadyDefer.resolve($scope.editableTutkinnonOsaViite);
-//      VersionHelper.setUrl($scope.versiot);
-//    }
 
     $scope.poistaTutkinnonOsa = function(osaId) {
       var onRakenteessa = PerusteenRakenne.validoiRakennetta($scope.rakenne.rakenne, function(osa) {

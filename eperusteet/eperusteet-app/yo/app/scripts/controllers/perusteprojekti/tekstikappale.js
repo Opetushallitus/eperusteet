@@ -369,22 +369,6 @@ angular.module('eperusteApp')
       Lukitus.tarkista($scope.tekstikappale.id, $scope);
     }
 
-//        if ($scope.tekstikappale) {
-//          var promiseVar = $scope.tekstikappale.promise ? 'promise' : '$promise';
-//          $scope.tekstikappalePromise = $scope.tekstikappale[promiseVar].then(function(response) {
-//            setupTekstikappale(response);
-//            return $scope.editableTekstikappale;
-//          });
-//        }
-//        else {
-//          var objectReadyDefer = $q.defer();
-//          $scope.tekstikappalePromise = objectReadyDefer.promise;
-//          $scope.tekstikappale = {};
-//          setupTekstikappale($scope.tekstikappale);
-//          objectReadyDefer.resolve($scope.editableTekstikappale);
-//        }
-
-
     $scope.kopioiMuokattavaksi = function () {
       TekstikappaleOperations.clone($scope.viitteet[$scope.tekstikappale.id].viite);
     };
