@@ -15,7 +15,7 @@
               oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
     </div>
     <button ng-show="isPublished() && !editEnabled" ng-click="kopioiMuokattavaksi()"
-            class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"
+            class="floater btn btn-danger" icon-role="ep-text-clone" kaanna="kopioi-muokattavaksi"
             oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
     <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
 
