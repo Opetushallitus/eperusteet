@@ -45,14 +45,12 @@ angular.module('eperusteApp')
         { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
         { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
         { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
-        // TODO aktivoi Termi-plugin
-        //{ name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link','Termi' ] },
-        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link' ] },
+        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link','Termi' ] },
         { name: 'styles', items : [ 'Format' ] },
         { name: 'tools', items : [ 'About' ] }
       ]
   })
-  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts, $timeout, Kaanna) {
+  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts, $timeout, Kaanna, TermistoService) {
     return {
       priority: 10,
       restrict: 'A',
@@ -100,10 +98,8 @@ angular.module('eperusteApp')
         editor = CKEDITOR.inline(element[0], {
           toolbar: toolbarLayout,
           removePlugins: 'resize,elementspath,scayt,wsc',
-          // TODO aktivoi Termi-plugin
-          //extraPlugins: 'divarea,sharedspace,termi',
-          extraPlugins: 'divarea,sharedspace',
-          //extraAllowedContent: 'abbr[data-viite]',
+          extraPlugins: 'divarea,sharedspace,termi',
+          extraAllowedContent: 'abbr[data-viite]',
           disallowedContent: 'br',
           language: 'fi',
           'entities_latin': false,
@@ -113,7 +109,7 @@ angular.module('eperusteApp')
           readOnly: !editingEnabled,
           title: false,
           customData: {
-            id: 7033,
+            termistoService: TermistoService,
             kaanna: Kaanna.kaanna
           }
         });

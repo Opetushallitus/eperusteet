@@ -6,7 +6,9 @@
 
 <div class="modal-body termi-muokkaus">
   <formfield label="termi" model="termimodel" model-var="termi"></formfield>
-  <formfield label="selitys" model="termimodel" model-var="selitys" type="textarea"></formfield>
+  <h3 kaanna="selitys"></h3>
+  <div ckeditor ng-model="termimodel.selitys" localized></div>
+  <!-- <formfield label="selitys" model="termimodel" model-var="selitys" type="textarea"></formfield> -->
   <div class="clearfix"></div>
 </div>
 

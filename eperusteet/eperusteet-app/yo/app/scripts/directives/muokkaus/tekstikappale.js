@@ -427,7 +427,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .directive('termistoViitteet', function (Kaanna) {
+  .directive('termistoViitteet', function (Kaanna, TermistoService) {
     var TERMI_MATCHER = 'abbr[data-viite]';
     return {
       restrict: 'A',
@@ -447,14 +447,20 @@ angular.module('eperusteApp')
           element.find(TERMI_MATCHER).each(function () {
             var jqEl = angular.element(this);
             var viiteId = jqEl.attr('data-viite');
+            if (viiteId) {
+              TermistoService.preload();
+            }
             var popover = jqEl.popover({
               placement: 'bottom',
               html: true,
               title: Kaanna.kaanna('termin-selitys')
             }).on('show.bs.popover', function () {
-              // TODO integrate with backend
-              popover.attr('data-content', 'Tähän termin selitys viiteId:llä ' + viiteId);
+              var res = TermistoService.getWithAvain(viiteId, true);
+              var content = res ? '<strong>' + Kaanna.kaanna(res.termi) + '</strong>: ' + Kaanna.kaanna(res.selitys) :
+                Kaanna.kaanna('termia-ei-loytynyt');
+              popover.attr('data-content', content);
             });
+
           });
         }
         scope.$watch('model', function () {
