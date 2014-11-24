@@ -328,6 +328,9 @@ angular.module('eperusteApp')
     $scope.kaikkiUniikit = [];
     $scope.topredicate = 'nimi.fi';
     $scope.tosarajaus = '';
+    $scope.naytaKuvaus = function () {
+      return !!Kaanna.kaanna($scope.rakenne.rakenne.kuvaus);
+    };
 
     $scope.tutkinnonOsat = {
       perSivu: 8,
