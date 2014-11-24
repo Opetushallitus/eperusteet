@@ -21,11 +21,14 @@ import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
+import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +48,9 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
 
     @Autowired
     private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
+
+    @Autowired
+    private PerusteenOsaService perusteenOsaService;
 
     @Autowired
     private LockManager lockManager;
@@ -100,6 +106,36 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
             throw new BusinessRuleViolationException("Virheellinen viiteId");
         }
         return LukkoDto.of(lockManager.getLock(viite.getTutkinnonOsa().getId()));
+    }
+
+    @Override
+    @Transactional
+    public TutkinnonOsaViiteDto revertToVersio(Long id, Integer versioId) {
+        TutkinnonOsaViite revision = tutkinnonOsaViiteRepository.findRevision(id, versioId);
+        TutkinnonOsaViiteDto viiteDto = mapper.map(revision, TutkinnonOsaViiteDto.class);
+        TutkinnonOsaDto tutkinnonOsaDto = mapper.map(revision.getTutkinnonOsa(), TutkinnonOsaDto.class);
+        viiteDto.setTutkinnonOsaDto(tutkinnonOsaDto);
+        return update(viiteDto);
+    }
+
+    @Override
+    @Transactional
+    public TutkinnonOsaViiteDto update(TutkinnonOsaViiteDto viiteDto) {
+        assertExists(viiteDto.getId());
+        TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteDto.getId());
+        if (viite == null || viite.getTutkinnonOsa() == null ) {
+            throw new BusinessRuleViolationException("Virheellinen viiteId");
+        }
+        lockManager.ensureLockedByAuthenticatedUser(viite.getTutkinnonOsa().getId());
+        viite.setJarjestys(viiteDto.getJarjestys());
+        viite.setLaajuus(viiteDto.getLaajuus());
+        viite.setMuokattu(new Date());
+        viite = tutkinnonOsaViiteRepository.save(viite);
+        TutkinnonOsaViiteDto uusiViiteDto = mapper.map(viite, TutkinnonOsaViiteDto.class);
+        if(viiteDto.getTutkinnonOsaDto() != null) {
+            uusiViiteDto.setTutkinnonOsaDto(perusteenOsaService.update(viiteDto.getTutkinnonOsaDto()));
+        }
+        return uusiViiteDto;
     }
 
     private void assertExists(Long id) {

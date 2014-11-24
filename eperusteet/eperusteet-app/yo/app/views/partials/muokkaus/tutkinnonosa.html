@@ -6,7 +6,7 @@
   <div class="col-md-12 ep-sisalto-inner">
     <div ng-show="osaAlueAlitila" ui-view></div>
     <div ng-show="!osaAlueAlitila">
-      <revert-note object="tutkinnonOsaViite.tutkinnonOsa" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
+      <revert-note object="tutkinnonOsaViite" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
       <div class="action-buttons">
         <div class="floater" ng-attr-title="{{lockNotification}}">
           <button class="btn btn-default" icon-role="edit" kaanna="'muokkaa'" ng-click="muokkaa()" ng-disabled="isLocked"

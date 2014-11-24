@@ -29,24 +29,40 @@ angular.module('eperusteApp')
         'revertCb': '&',
         'changeVersion': '&'
       },
-      controller: function ($scope, Varmistusdialogi, Lukitus, VersionHelper, $translate) {
-        console.log('revert-note versiot', $scope.versiot);
+      controller: function ($scope, $state, Varmistusdialogi, Lukitus, VersionHelper, $translate) {
         $scope.version = {
           revert: function () {
-            var isRakenne = _.has($scope.object, 'rakenne') && _.has($scope.object, '$peruste');
             var suoritustapa = $scope.$parent.suoritustapa;
             var revCb = function (res) {
               $scope.revertCb({response: res});
             };
-            var cb = isRakenne ? function () {
-              Lukitus.lukitseSisalto($scope.object.$peruste.id, suoritustapa, function() {
-                VersionHelper.revertRakenne($scope.versiot, {id: $scope.object.$peruste.id, suoritustapa: suoritustapa}, revCb);
-              });
-            } : function () {
-              Lukitus.lukitsePerusteenosa($scope.object.id, function() {
-                VersionHelper.revertPerusteenosa($scope.versiot, $scope.object, revCb);
-              });
-            };
+
+            var cb;
+            switch($state.current.name) {
+              case 'root.perusteprojekti.suoritustapa.tutkinnonosa':
+                cb = function () {
+                  Lukitus.lukitsePerusteenosaByTutkinnonOsaViite($scope.object.id, function () {
+                    VersionHelper.revertTutkinnonOsaViite($scope.versiot, $scope.object, revCb);
+                  });
+                };
+                break;
+              case 'root.perusteprojekti.suoritustapa.tekstikappale':
+                cb = function () {
+                  Lukitus.lukitsePerusteenosa($scope.object.id, function () {
+                    VersionHelper.revertPerusteenosa($scope.versiot, $scope.object, revCb);
+                  });
+                };
+                break;
+              case 'root.perusteprojekti.suoritustapa.muodostumissaannot':
+                cb = function () {
+                  Lukitus.lukitseSisalto($scope.object.$peruste.id, suoritustapa, function () {
+                    VersionHelper.revertRakenne($scope.versiot, {id: $scope.object.$peruste.id, suoritustapa: suoritustapa}, revCb);
+                  });
+                };
+                break;
+              default :
+                cb = angular.noop;
+            }
             Varmistusdialogi.dialogi({
               successCb: cb,
               otsikko: 'vahvista-version-palauttaminen',

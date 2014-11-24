@@ -63,7 +63,8 @@ angular.module('eperusteApp')
     return $resource(SERVICE_LOC,{},
     {
       versiot: {method: 'GET', isArray: true, url: SERVICE_LOC + '/tutkinnonosat/viite/:viiteId/versiot'},
-      getVersio: {method: 'GET', url: SERVICE_LOC + '/tutkinnonosat/viite/:viiteId/versio/:versioId'}
+      getVersio: {method: 'GET', url: SERVICE_LOC + '/tutkinnonosat/viite/:viiteId/versio/:versioId'},
+      palauta: {method: 'POST', url: SERVICE_LOC + '/tutkinnonosat/palauta/viite/:viiteId/versio/:versioId'}
     }
     );
   })

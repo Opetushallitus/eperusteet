@@ -365,7 +365,6 @@ angular.module('eperusteApp')
       save: function(kommentti) {
         tutke2.mergeOsaAlueet($scope.editableTutkinnonOsaViite.tutkinnonOsa);
         $scope.editableTutkinnonOsaViite.metadata = { kommentti: kommentti };
-        console.log('editabletutkinnonosaviite', $scope.editableTutkinnonOsaViite);
         if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.id) {
           PerusteTutkinnonosa.save({perusteId: $scope.peruste.id, suoritustapa: $stateParams.suoritustapa, osanId: $scope.editableTutkinnonOsaViite.tutkinnonOsa.id},
           $scope.editableTutkinnonOsaViite, function(response){
@@ -414,7 +413,6 @@ angular.module('eperusteApp')
     };
 
     function setupTutkinnonOsaViite(viite) {
-      console.log('viite', viite);
       $scope.tutkinnonOsaViite = viite;
       $scope.editableTutkinnonOsaViite = angular.copy(viite);
       $scope.isNew = !$scope.editableTutkinnonOsaViite.tutkinnonOsa.id;
@@ -491,7 +489,6 @@ angular.module('eperusteApp')
     };
 
     $scope.revertCb = function (response) {
-      console.log('revert response', response);
       responseFn(response);
       saveCb(response);
     };

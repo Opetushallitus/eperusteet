@@ -98,7 +98,13 @@ angular.module('eperusteApp')
           suoritustapa: tunniste.suoritustapa,
           versioId: data.chosen.numero
         }, {}, cb, Notifikaatiot.serverCb);
+      } else if (tyyppi === 'TutkinnonOsaViite') {
+        TutkinnonOsaViitteet.palauta({
+          viiteId: tunniste.id,
+          versioId: data.chosen.numero
+        }, {}, cb, Notifikaatiot.serverCb);
       }
+
     }
 
     function change(data, tunniste, tyyppi, cb) {
@@ -179,6 +185,10 @@ angular.module('eperusteApp')
 
     this.changeRakenne = function(data, tunniste, cb) {
       change(data, tunniste, 'Rakenne', cb);
+    };
+
+    this.revertTutkinnonOsaViite = function (data, object, cb) {
+      revert(data, {id: object.id}, 'TutkinnonOsaViite', cb);
     };
 
     this.revertPerusteenosa = function (data, object, cb) {

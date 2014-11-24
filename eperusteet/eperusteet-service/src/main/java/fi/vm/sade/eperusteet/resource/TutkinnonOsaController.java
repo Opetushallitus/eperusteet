@@ -31,6 +31,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -66,6 +67,13 @@ public class TutkinnonOsaController {
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+
+        @RequestMapping(value = "/palauta/viite/{id}/versio/{versioId}", method = POST)
+    @ResponseBody
+    public ResponseEntity<TutkinnonOsaViiteDto> revertToVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
+        TutkinnonOsaViiteDto t = tutkinnonOsaViiteService.revertToVersio(id, versioId);
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 }
