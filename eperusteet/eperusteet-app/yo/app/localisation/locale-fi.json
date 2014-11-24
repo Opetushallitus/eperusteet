@@ -409,6 +409,8 @@
     "vieras": "Vieras",
 
     "tutkinnon-osan-asetettua-koodia-ei-koodistossa": "Koodistosta ei löytynyt tutkinnon osalle määritettyä koodia",
+    "tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta": "Tutkintonimikkeen vaatimaa tutkinnonosakoodia ei löytynyt tutkinnon osilta",
+    "tutkinnon-osan-asetettua-koodia-ei-koodistossa": "Tutkinnon osalle asetettua koodia ei löytynyt koodistosta",
 
     "et-ole-vielä-tallentanut-tutkinnonosia": "Et ole vielä liittänyt kaikkia tutkinnon osia perusteeseen",
     "et-ole-vielä-tallentanut-tekstikappaleita": "Et ole vielä liittänyt kaikkia tekstikappaleita perusteeseen",

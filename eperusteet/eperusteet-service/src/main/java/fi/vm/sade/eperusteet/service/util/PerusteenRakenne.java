@@ -72,11 +72,13 @@ public class PerusteenRakenne {
         for (AbstractRakenneOsa x : osat) {
             if (x instanceof RakenneOsa) {
                 RakenneOsa ro = (RakenneOsa)x;
-                BigDecimal laajuus = ro.getTutkinnonOsaViite().getLaajuus();
-                laajuus = laajuus == null ? new BigDecimal(0) : laajuus;
-                laajuusSummaMin = laajuusSummaMin.add(laajuus);
-                laajuusSummaMax = laajuusSummaMax.add(laajuus);
-                uniikit.add(ro.getTutkinnonOsaViite().getTutkinnonOsa().getId());
+                if (ro.getTutkinnonOsaViite() != null) {
+                    BigDecimal laajuus = ro.getTutkinnonOsaViite().getLaajuus();
+                    laajuus = laajuus == null ? new BigDecimal(0) : laajuus;
+                    laajuusSummaMin = laajuusSummaMin.add(laajuus);
+                    laajuusSummaMax = laajuusSummaMax.add(laajuus);
+                    uniikit.add(ro.getTutkinnonOsaViite().getTutkinnonOsa().getId());
+                }
             }
             else if (x instanceof RakenneModuuli) {
                 RakenneModuuli rm = (RakenneModuuli)x;
