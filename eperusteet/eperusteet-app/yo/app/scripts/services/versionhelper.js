@@ -52,6 +52,14 @@ angular.module('eperusteApp')
             cb();
           });
         }
+        else if (tyyppi === 'perusteenOsaViite') {
+          PerusteenOsat.versiotByViite({viiteId: tunniste.id}, function(res) {
+            rakennaNimet(res);
+            data.list = res;
+            versiotListHandler(data);
+            cb();
+          });
+        }
         else if (tyyppi === 'rakenne') {
           RakenneVersiot.query({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa}, function(res) {
             rakennaNimet(res);
@@ -90,7 +98,13 @@ angular.module('eperusteApp')
           suoritustapa: tunniste.suoritustapa,
           versioId: data.chosen.numero
         }, {}, cb, Notifikaatiot.serverCb);
+      } else if (tyyppi === 'TutkinnonOsaViite') {
+        TutkinnonOsaViitteet.palauta({
+          viiteId: tunniste.id,
+          versioId: data.chosen.numero
+        }, {}, cb, Notifikaatiot.serverCb);
       }
+
     }
 
     function change(data, tunniste, tyyppi, cb) {
@@ -153,6 +167,10 @@ angular.module('eperusteApp')
       getVersions(data, tunniste, 'tutkinnonOsaViite', force, cb);
     };
 
+    this.getPerusteenOsaVersionsByViite = function (data, tunniste, force, cb) {
+      getVersions(data, tunniste, 'perusteenOsaViite', force, cb);
+    };
+
     this.getRakenneVersions = function (data, tunniste, force, cb) {
       getVersions(data, tunniste, 'rakenne', force, cb);
     };
@@ -169,6 +187,10 @@ angular.module('eperusteApp')
       change(data, tunniste, 'Rakenne', cb);
     };
 
+    this.revertTutkinnonOsaViite = function (data, object, cb) {
+      revert(data, {id: object.id}, 'TutkinnonOsaViite', cb);
+    };
+
     this.revertPerusteenosa = function (data, object, cb) {
       var isTekstikappale = _.has(object, 'nimi') && _.has(object, 'teksti');
       var type = isTekstikappale ? 'Perusteenosa' : 'Tutkinnonosa';
@@ -179,7 +201,7 @@ angular.module('eperusteApp')
       revert(data, tunniste, 'Rakenne', cb);
     };
 
-    this.setUrl = function (data, isRakenne) {
+    this.setUrl = function (data) {
       // Tricks for ui-router 0.2.*
       // We want to update the url only when user changes the version.
       // If we enter with versionless url don't rewrite it.
@@ -188,14 +210,13 @@ angular.module('eperusteApp')
         return;
       }
       data.latest = data.chosen.index === latest(data.list).index;
-      var state = isRakenne ? 'root.perusteprojekti.suoritustapa.muodostumissaannot' : 'root.perusteprojekti.suoritustapa.perusteenosa';
-      var versionlessUrl = $state.href(state, {versio: null}, {inherit:true}).replace(/#/g, '');
+      var versionlessUrl = $state.href($state.current.name, {versio: null}, {inherit:true}).replace(/#/g, '');
       var currentVersion = this.currentIndex(data);
       var isValid = _.isNumber(currentVersion);
       var urlHasVersion = $location.url() !== versionlessUrl;
       if ((urlHasVersion || data.hasChanged) && isValid && !data.latest) {
         data.hasChanged = false;
-        var versionUrl = $state.href(state, {versio: '/' + currentVersion}, {inherit:true}).replace(/#/g, '');
+        var versionUrl = $state.href($state.current.name, {versio: '/' + currentVersion}, {inherit:true}).replace(/#/g, '');
         $location.url(versionUrl);
       } else {
         $location.url(versionlessUrl);

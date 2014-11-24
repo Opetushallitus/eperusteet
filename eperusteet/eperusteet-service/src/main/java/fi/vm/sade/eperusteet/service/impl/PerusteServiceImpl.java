@@ -65,6 +65,7 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
@@ -125,6 +126,9 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Autowired
     private PerusteenOsaViiteService perusteenOsaViiteService;
+
+    @Autowired
+    private TutkinnonOsaViiteService tutkinnonOsaViiteService;
 
     @Autowired
     PerusteenOsaViiteRepository perusteenOsaViiteRepo;
@@ -529,17 +533,7 @@ public class PerusteServiceImpl implements PerusteService {
             throw new BusinessRuleViolationException("Virheellinen viite");
         }
 
-        tutkinnonOsaViiteRepository.lock(viite);
-        viite.setJarjestys(osa.getJarjestys());
-        viite.setLaajuus(osa.getLaajuus());
-        viite.setMuokattu(new Date());
-        viite = tutkinnonOsaViiteRepository.save(viite);
-        TutkinnonOsaViiteDto viiteDto = mapper.map(viite, TutkinnonOsaViiteDto.class);
-        if(osa.getTutkinnonOsaDto() != null) {
-            viiteDto.setTutkinnonOsaDto(perusteenOsaService.update(osa.getTutkinnonOsaDto()));
-        }
-
-        return viiteDto;
+        return tutkinnonOsaViiteService.update(osa);
     }
 
     @Override

@@ -123,7 +123,7 @@ angular.module('eperusteApp')
         function() {
           Notifikaatiot.onnistui('tallennus-onnistui');
           haeVersiot(true, function() {
-            VersionHelper.setUrl($scope.versiot, true);
+            VersionHelper.setUrl($scope.versiot);
           });
           Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
         },
@@ -143,7 +143,7 @@ angular.module('eperusteApp')
       cb = cb || angular.noop;
       $scope.versiot.hasChanged = true;
       // Ideally we would reload the data and rewrite version to url without changing state
-      VersionHelper.setUrl($scope.versiot, true);
+      VersionHelper.setUrl($scope.versiot);
 //      VersionHelper.changeRakenne($scope.versiot, {id: $scope.peruste.id, suoritustapa: $scope.suoritustapa}, function(response) {
 //        console.log('cb kutsuttu', response);
 //        $scope.rakenne.rakenne = response;

@@ -115,4 +115,10 @@ public interface PerusteenOsaService {
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS')")
     public void removeOsaAlue(@P("id") final Long id, final Long osaAlueId);
 
+    @PreAuthorize("hasPermission(#id, 'perusteenosaviite', 'LUKU')")
+    public List<Revision> getVersiotByViite(final Long id);
+
+    @PreAuthorize("hasPermission(#id, 'perusteenosaviite', 'LUKU')")
+    public PerusteenOsaDto getVersioByViite(Long id, Integer versioId);
+
 }

@@ -44,4 +44,10 @@ public interface TutkinnonOsaViiteService {
 
     @PreAuthorize("hasPermission(#viiteId, 'tutkinnonosaviite', 'LUKU')")
     public LukkoDto getPerusteenOsaLock(@P("viiteId") final Long viiteId);
+
+    @PreAuthorize("hasPermission(#id, 'tutkinnonosaviite', 'MUOKKAUS')")
+    TutkinnonOsaViiteDto revertToVersio(@P("id") Long id, Integer versioId);
+
+    @PreAuthorize("hasPermission(#tov.id, 'tutkinnonosaviite', 'MUOKKAUS')")
+    TutkinnonOsaViiteDto update(@P("tov") TutkinnonOsaViiteDto viiteDto);
 }
