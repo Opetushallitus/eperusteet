@@ -21,6 +21,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
@@ -226,6 +227,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             Peruste pohjaPeruste = perusteRepository.findOne(perusteprojektiDto.getPerusteId());
             perusteprojektiDto.setKoulutustyyppi(pohjaPeruste.getKoulutustyyppi());
             peruste = perusteService.luoPerusteRunkoToisestaPerusteesta(perusteprojektiDto, tyyppi);
+        }
+
+        if (tyyppi == PerusteTyyppi.POHJA) {
+            TekstiPalanen pnimi = TekstiPalanen.of(Kieli.FI, perusteprojektiDto.getNimi());
+            peruste.setNimi(pnimi);
         }
 
         perusteprojekti.setPeruste(peruste);
