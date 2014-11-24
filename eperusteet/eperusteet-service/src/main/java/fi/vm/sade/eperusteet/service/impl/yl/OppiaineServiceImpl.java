@@ -27,6 +27,7 @@ import fi.vm.sade.eperusteet.repository.OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.OppiaineenVuosiluokkakokonaisuusRepository;
 import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
+import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -64,6 +65,7 @@ public class OppiaineServiceImpl implements OppiaineService {
     private PerusopetuksenPerusteenSisaltoRepository sisaltoRepository;
 
     @Autowired
+    @LockCtx(OppiaineLockContext.class)
     private LockService<OppiaineLockContext> lockService;
 
     private static final Logger LOG = LoggerFactory.getLogger(OppiaineServiceImpl.class);
@@ -73,6 +75,7 @@ public class OppiaineServiceImpl implements OppiaineService {
     public OppiaineDto addOppiaine(Long perusteId, OppiaineDto dto) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         if (sisalto != null) {
+            sisaltoRepository.lock(sisalto);
             Oppiaine oppiaine = saveOppiaine(dto);
             sisalto.addOppiaine(oppiaine);
             return mapper.map(oppiaine, OppiaineDto.class);

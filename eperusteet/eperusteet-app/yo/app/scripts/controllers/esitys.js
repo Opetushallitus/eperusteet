@@ -73,39 +73,58 @@ angular.module('eperusteApp')
         controller: 'EsitysSisaltoCtrl'
       });
   })
+
   .controller('EsitysRakenneCtrl', function($scope, $state, $stateParams, PerusteenRakenne, realParams) {
     $scope.$parent.valittu.sisalto = 'rakenne';
+    $scope.muodostumisOtsikko = _.find($scope.$parent.sisalto, function (item) {
+      return item.tunniste === 'rakenne';
+    });
     PerusteenRakenne.hae(realParams.perusteId, realParams.suoritustapa, function(rakenne) {
       $scope.rakenne = rakenne;
       $scope.rakenne.$suoritustapa = realParams.suoritustapa;
       $scope.rakenne.$resolved = true;
     });
 
-    $scope.suosikkiHelper($state, $stateParams, 'tutkinnon-rakenne');
+    $scope.suosikkiHelper($state, 'tutkinnon-rakenne');
   })
-  .controller('EsitysTutkinnonOsaCtrl', function($scope, $state, $stateParams, PerusteenOsat) {
+
+  .controller('EsitysTutkinnonOsaCtrl', function($scope, $state, $stateParams, PerusteenOsat, TutkinnonosanTiedotService) {
     $scope.tutkinnonOsaViite = _.find($scope.$parent.tutkinnonOsat, function(tosa) {
       return tosa.id === parseInt($stateParams.id, 10);
     });
-    PerusteenOsat.get({ osanId: $scope.tutkinnonOsaViite._tutkinnonOsa }, function(res) { $scope.tutkinnonOsa = res; });
-    $scope.suosikkiHelper($state, $stateParams, $scope.tutkinnonOsaViite.nimi);
+    PerusteenOsat.get({
+      osanId: $scope.tutkinnonOsaViite._tutkinnonOsa
+    }, function(res) {
+      $scope.tutkinnonOsa = res;
+      $scope.fieldKeys = _.intersection(_.keys($scope.tutkinnonOsa), TutkinnonosanTiedotService.keys());
+    });
+    $scope.suosikkiHelper($state, $scope.tutkinnonOsaViite.nimi);
+    $scope.fieldOrder = function (item) {
+      return TutkinnonosanTiedotService.order(item);
+    };
   })
+
   .controller('EsitysTutkinnonOsatCtrl', function($scope, $state, $stateParams, PerusteenRakenne, Algoritmit) {
     $scope.$parent.valittu.sisalto = 'tutkinnonosat';
     $scope.tosarajaus = '';
     $scope.rajaaTutkinnonOsia = function(haku) { return Algoritmit.rajausVertailu($scope.tosarajaus, haku, 'nimi'); };
-    $scope.suosikkiHelper($state, $stateParams, 'tutkinnonosat');
+    $scope.suosikkiHelper($state, 'tutkinnonosat');
   })
-  .controller('EsitysSisaltoCtrl', function($scope, $state, $stateParams, PerusteenOsat) {
+
+  .controller('EsitysSisaltoCtrl', function($scope, $state, $stateParams, PerusteenOsat, YleinenData) {
     $scope.$parent.valittu.sisalto = $stateParams.osanId;
     $scope.valittuSisalto = $scope.$parent.sisalto[$stateParams.osanId];
     if (!$scope.valittuSisalto) {
-      $state.go('root.esitys.peruste.rakenne');
+      var params = _.extend(_.clone($stateParams), {
+        suoritustapa: YleinenData.validSuoritustapa($scope.peruste, $stateParams.suoritustapa)
+      });
+      $state.go('root.esitys.peruste.rakenne', params);
     } else {
-      $scope.suosikkiHelper($state, $stateParams, $scope.valittuSisalto.nimi);
+      $scope.suosikkiHelper($state, $scope.valittuSisalto.nimi);
       PerusteenOsat.get({ osanId: $scope.valittuSisalto.id }, _.setWithCallback($scope, 'valittuSisalto'));
     }
   })
+
   .controller('EsitysCtrl', function($scope, $stateParams, sisalto, peruste,
       YleinenData, $state, Algoritmit, tutkinnonOsat, Kaanna, arviointiasteikot,
       Profiili, PdfCreation) {
@@ -156,14 +175,10 @@ angular.module('eperusteApp')
     };
 
     if ($state.current.name === 'root.esitys.peruste') {
-      var links = _.filter($scope.navi.items, function (item) {
-        return item.label !== 'tutkinnonosat' && item.label !== 'tutkinnon-rakenne' &&
-          _.isArray(item.link) && item.link.length > 1;
+      var params = _.extend(_.clone($stateParams), {
+        suoritustapa: YleinenData.validSuoritustapa($scope.peruste, $stateParams.suoritustapa)
       });
-      var params = _.isEmpty(links) ? {} : { osanId: _.first(links).link[1].osanId };
-      if (!_.isEmpty(params)) {
-        $state.go('root.esitys.peruste.tekstikappale', _.merge(_.clone($stateParams), params));
-      }
+      $state.go('root.esitys.peruste.rakenne', params);
     }
 
     $scope.rajaaSisaltoa = function() {
@@ -181,11 +196,11 @@ angular.module('eperusteApp')
       $scope.extra.tutkinnonRakenne = !Algoritmit.match($scope.rajaus, Kaanna.kaanna('tutkinnon-rakenne'));
     };
 
-    $scope.suosikkiHelper = function(state, stateParams, nimi) {
-      $scope.onSuosikki = Profiili.haeSuosikki(state, stateParams);
+    $scope.suosikkiHelper = function(state, nimi) {
+      $scope.onSuosikki = Profiili.haeSuosikki(state);
       $scope.asetaSuosikki = function() {
-        Profiili.asetaSuosikki(state, stateParams, Kaanna.kaanna($scope.peruste.nimi) + ': ' + (Kaanna.kaanna(nimi) || '') + ' (' + Kaanna.kaanna($scope.suoritustapa) + ')', function() {
-          $scope.onSuosikki = Profiili.haeSuosikki(state, stateParams);
+        Profiili.asetaSuosikki(state, Kaanna.kaanna($scope.peruste.nimi) + ': ' + (Kaanna.kaanna(nimi) || '') + ' (' + Kaanna.kaanna($scope.suoritustapa) + ')', function() {
+          $scope.onSuosikki = Profiili.haeSuosikki(state);
         });
       };
     };

@@ -18,7 +18,8 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('TuoTekstikappale', function($scope, $modalInstance, Notifikaatiot, peruste, suoritustapa, PerusteenRakenne, SuoritustapaSisalto) {
+  .controller('TuoTekstikappale', function($scope, $modalInstance, Notifikaatiot, peruste,
+      suoritustapa, PerusteenRakenne, SuoritustapaSisalto, YleinenData, Perusteet) {
     $scope.perusteet = [];
     $scope.sivuja = 0;
     $scope.sivu = 0;
@@ -38,13 +39,15 @@ angular.module('eperusteApp')
 
     $scope.valitse = function(valittuPeruste) {
       $scope.valittuPeruste = valittuPeruste;
-      SuoritustapaSisalto.get({
-        perusteId: valittuPeruste.id,
-        suoritustapa: suoritustapa
-      }, function(res) {
-        $scope.sisalto = _.reject(res.lapset, function(lapsi) {
-          return lapsi.perusteenOsa.tunniste === 'rakenne';
-        });
+      Perusteet.get({perusteId: valittuPeruste.id}, function (res) {
+        SuoritustapaSisalto.get({
+          perusteId: valittuPeruste.id,
+          suoritustapa: YleinenData.validSuoritustapa(res, suoritustapa)
+        }, function(res) {
+          $scope.sisalto = _.reject(res.lapset, function(lapsi) {
+            return lapsi.perusteenOsa.tunniste === 'rakenne';
+          });
+        }, Notifikaatiot.serverCb);
       }, Notifikaatiot.serverCb);
     };
 

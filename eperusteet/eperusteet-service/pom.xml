@@ -259,7 +259,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.178</version>
+            <version>1.4.182</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -275,7 +275,7 @@
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.generic</groupId>
-            <version>9.0-SNAPSHOT</version>
+            <version>9.1-SNAPSHOT</version>
             <artifactId>generic-common</artifactId>
         </dependency>
         <dependency>

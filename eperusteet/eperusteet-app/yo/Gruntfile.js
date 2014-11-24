@@ -381,11 +381,21 @@ module.exports = function(grunt) {
       }
     },
     'regex-check': {
-      files: '<%= yeoman.app %>/scripts/{,*/,*/*/}*.js',
-      options: {
-        /* Check that templateUrls don't start with slash */
-        pattern : /templateUrl:\s*['"]\//m
+      templateurls: {
+        files: [{src: ['<%= yeoman.app %>/scripts/**/*.js']}],
+        options: {
+          /* Check that templateUrls don't start with slash */
+          pattern : /templateUrl:\s*['"]\//m
+        },
       },
+      showhide: {
+        files: [{src: ['<%= yeoman.app %>/{scripts,views}/**/*.{js,html}']}],
+        options: {
+          /* Check that ng-show/ng-hide are not used in same element */
+          pattern : /(ng-show=|ng-hide=)[^>]+(ng-hide=|ng-show=)/m
+        },
+      }
+
     }
   });
 
@@ -412,6 +422,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('test', [
     'clean:server',
+    'copy:fonts', // needed if testing while "grunt dev" is running :)
     'concurrent:test',
     'autoprefixer',
 //  'connect:test',

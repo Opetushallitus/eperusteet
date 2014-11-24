@@ -67,8 +67,10 @@ angular.module('eperusteApp')
     }
 
     function perusteenSuoritustavanYksikko(peruste, suoritustapa) {
-      var st = _.first(_.filter(peruste.suoritustavat, function(st) { return st.suoritustapakoodi === suoritustapa; }));
-      return st.laajuusYksikko;
+      var foundSt = _.find(peruste.suoritustavat, function(st) {
+        return st.suoritustapakoodi === suoritustapa;
+      });
+      return foundSt ? foundSt.laajuusYksikko : 'OPINTOPISTE';
     }
 
     function kaikilleTutkintokohtaisilleOsille(juuri, cb) {

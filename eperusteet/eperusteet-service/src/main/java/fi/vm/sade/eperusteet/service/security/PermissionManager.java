@@ -19,7 +19,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
@@ -29,6 +28,7 @@ import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionR
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 
 import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.*;
+
 import fi.vm.sade.eperusteet.service.util.Pair;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -146,6 +146,7 @@ public class PermissionManager {
             perm = Maps.newHashMap();
             perm.put(LUKU, r3);
             perm.put(KOMMENTOINTI, r2);
+            perm.put(MUOKKAUS, r1);
             tmp.put(ProjektiTila.VIIMEISTELY, perm);
 
             perm = Maps.newHashMap();

@@ -18,12 +18,6 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('Preferenssit', function () {
-    /* TODO: Käyttäjän preferenssit keksiin tai käyttäjäprofiiliin? */
-    this.data = {
-      nakymatyyli: 'palikka'
-    };
-  })
   .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $state, $stateParams, $rootScope,
     perusteprojektiTiedot, PerusteProjektiService, PerusteenRakenne, Notifikaatiot,
     PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode) {

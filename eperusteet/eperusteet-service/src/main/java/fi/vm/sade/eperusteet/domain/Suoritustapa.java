@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -47,7 +48,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Table(name = "suoritustapa")
 @Audited
-public class Suoritustapa implements Serializable {
+public class Suoritustapa implements Serializable, ReferenceableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -83,6 +84,11 @@ public class Suoritustapa implements Serializable {
     @OrderBy("jarjestys,id")
     @BatchSize(size = 10)
     private Set<TutkinnonOsaViite> tutkinnonOsat = new HashSet<>();
+
+    @Override
+    public EntityReference getReference() {
+        return new EntityReference(id);
+    }
 
     public void setTutkinnonOsat(Set<TutkinnonOsaViite> osat) {
 

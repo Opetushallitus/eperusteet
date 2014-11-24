@@ -101,7 +101,8 @@ angular.module('eperusteApp')
             perusteProjektiId: projekti.id
           });
         } else {
-          var suoritustapa = (getSuoritustapa() !== '' && !_.isUndefined(peruste)) ? getSuoritustapa() : YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
+          var suoritustapa = (getSuoritustapa() !== '' && !_.isUndefined(peruste)) ? getSuoritustapa() :
+            YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
           return $state[method]('root.perusteprojekti.suoritustapa.sisalto', {
             perusteProjektiId: projekti.id,
             suoritustapa: suoritustapa
@@ -262,10 +263,6 @@ angular.module('eperusteApp')
     };
 
     this.alustaPerusteenSisalto = function (stateParams, forced) {
-
-      // NOTE: Jos ei löydy suoritustapaa stateParams:ista niin käytetään suoritustapaa 'naytto'.
-      //       Tämä toimii ammatillisen puolen projekteissa, mutta ei yleissivistävän puolella.
-      // TODO: Korjataan kun keksitään parempi suoritustavan valinta-algoritmi.
       if (angular.isUndefined(stateParams.suoritustapa) || stateParams.suoritustapa === null || stateParams.suoritustapa === '') {
         stateParams.suoritustapa = YleinenData.valitseSuoritustapaKoulutustyypille(peruste.koulutustyyppi);
         if (!YleinenData.isPerusopetus(peruste)) {

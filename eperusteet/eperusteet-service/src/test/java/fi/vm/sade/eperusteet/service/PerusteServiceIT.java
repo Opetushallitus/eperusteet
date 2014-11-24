@@ -32,7 +32,6 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
@@ -54,9 +53,10 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
+
 import java.util.List;
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -74,11 +74,10 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     @Autowired
     private PlatformTransactionManager manager;
     @Autowired
-    private PerusteenOsaRepository perusteenOsaRepository;
-    @Autowired
-    private PerusteenOsaService perusteenOsaService;
-    @Autowired
     private KoulutusRepository koulutusRepository;
+    @Autowired
+    @LockCtx(SuoritustapaLockContext.class)
+    private LockService<SuoritustapaLockContext> lockService;
 
     private Peruste peruste;
 
@@ -119,12 +118,12 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         repo.save(p);
 
         manager.commit(transaction);
-        perusteService.lock(peruste.getId(), Suoritustapakoodi.OPS);
+        lockService.lock(SuoritustapaLockContext.of(peruste.getId(), Suoritustapakoodi.OPS));
     }
 
     @After
     public void cleanUp() {
-        perusteService.unlock(peruste.getId(), Suoritustapakoodi.OPS);
+        lockService.unlock(SuoritustapaLockContext.of(peruste.getId(), Suoritustapakoodi.OPS));
     }
 
     @Test

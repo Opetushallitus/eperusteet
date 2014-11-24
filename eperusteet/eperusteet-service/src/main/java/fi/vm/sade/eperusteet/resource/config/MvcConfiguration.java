@@ -36,7 +36,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
@@ -76,17 +75,9 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        //registry.addWebRequestInterceptor(openEntityManagerInViewInterceptor());
         registry.addInterceptor(new LoggingInterceptor());
         registry.addInterceptor(new CacheHeaderInterceptor());
         super.addInterceptors(registry);
-    }
-
-    @Bean
-    OpenEntityManagerInViewInterceptor openEntityManagerInViewInterceptor() {
-        OpenEntityManagerInViewInterceptor i = new OpenEntityManagerInViewInterceptor();
-        i.setEntityManagerFactory(emf);
-        return i;
     }
 
     @Bean

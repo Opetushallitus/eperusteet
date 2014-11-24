@@ -13,14 +13,23 @@
           <formfield model="ryhma" model-var="rooli" label="rooli" options="roolit"><ohje teksti="ohje-ryhma-rooli"></ohje></formfield>
         </div>
 
-        <div>
-            <h3  kaanna>osaamisala</h3>
+        <div ng-if="(ryhma.vanhempi || luonti) && ryhma.rooli === 'määritelty'">
+            <h3 kaanna>osaamisala</h3>
             <div class="col-sm-offset-3" >
                 <button icon-role="add" class="btn btn-default" type="button" ng-click="avaaKoodistoModaali()" kaanna="hae-koodistosta"></button>
                 <button icon-role="remove" class="btn btn-default" type="button" ng-click="tyhjennaOsaamisala()" kaanna="tyhjenna"></button>
             </div>
             <formfield model="osaamisala" model-var="nimi" label="nimi" type="label" placeholder="hae-osaamisala"></formfield>
             <formfield model="osaamisala" model-var="osaamisalakoodiArvo" label="koodi" type="label" placeholder="hae-osaamisala"></formfield>
+        </div>
+        <div ng-if="ryhma.rooli === 'vieras'">
+            <h3 kaanna="'tutkinnon-koodi'"></h3>
+            <div class="input-group">
+                <span ng-if="ryhma.vieras" class="form-control" kaanna="ryhma.vieras.nimi"></span>
+                <span class="input-group-btn">
+                    <button class="btn btn-default" ng-click="lisaaTutkintoKoodi()" kaanna="'hae-koodistosta'"></button>
+                </span>
+            </div>
         </div>
         <div ng-class="(suoritustapa !== 'naytto') ? 'row' : ''">
             <div class="col-sm-6" ng-if="suoritustapa !== 'naytto'">
@@ -39,7 +48,7 @@
 
 <div class="modal-footer">
     <div class="pull-left" ng-if="!luonti">
-        <button class="btn btn-danger" ng-click="poista()" icon-role="remove" kaanna="poista"></button>
+        <button class="btn btn-danger" ng-click="poista()" icon-role="remove" kaanna="'poista'"></button>
     </div>
     <button class="btn btn-danger" ng-click="peruuta()" kaanna>peru</button>
     <button class="btn btn-primary" ng-disabled="ryhmaForm.$invalid" ng-click="ok(ryhma)" kaanna>tallenna</button>

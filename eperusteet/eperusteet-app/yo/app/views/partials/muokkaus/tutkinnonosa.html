@@ -3,8 +3,8 @@
   <revert-note object="tutkinnonOsaViite.tutkinnonOsa" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
   <div class="action-buttons">
     <div class="floater" ng-attr-title="{{lockNotification}}">
-      <button ng-disabled="isLocked" ng-show="tekstikappale.tila !== 'valmis'" icon-role="edit"
-              ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="btn btn-default" kaanna="'muokkaa'"
+      <button class="btn btn-default" icon-role="edit" kaanna="'muokkaa'" ng-click="muokkaa()" ng-disabled="isLocked"
+              ng-hide="editEnabled || !versiot.latest || tutkinnonOsaViite.tutkinnonOsa.tila === 'valmis'"
               oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
     </div>
     <button ng-show="tutkinnonOsaViite.tutkinnonOsa.tila === 'valmis' && !editEnabled" ng-click="kopioiMuokattavaksi()"

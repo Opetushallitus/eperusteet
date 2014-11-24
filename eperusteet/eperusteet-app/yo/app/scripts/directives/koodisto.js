@@ -63,13 +63,9 @@ angular.module('eperusteApp')
     }
 
     function suodataTyypinMukaan(koodistodata, tyyppi) {
-      var tulos = [];
-      angular.forEach(koodistodata, function(data){
-        if (data.koodiUri.substr(0, tyyppi.length) === tyyppi) {
-          this.push(data);
-        }
-      }, tulos);
-      return tulos;
+      return _.filter(koodistodata, function(data) {
+        return data.koodiUri.substr(0, tyyppi.length) === tyyppi;
+      });
     }
 
     function koodistoMapping(koodistoData) {

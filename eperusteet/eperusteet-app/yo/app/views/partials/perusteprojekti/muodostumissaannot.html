@@ -11,7 +11,9 @@
   </div>
 
   <revert-note object="rakenne" revert-cb="revert(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
-  <h1 kaanna="tutkinnon-muodostuminen"></h1>
+  <h1 ng-show="!editoi && rakenne.muodostumisOtsikko">{{rakenne.muodostumisOtsikko.nimi|kaanna}}</h1>
+  <h1 ng-show="!editoi && !rakenne.muodostumisOtsikko" kaanna="tutkinnon-muodostuminen"></h1>
+  <h1 ng-show="editoi" kaanna="tutkinnon-muodostuminen-muokkaus"></h1>
   <div class="max-sm-leveys">
     <versiotiedot ng-hide="editoi"></versiotiedot>
   </div>

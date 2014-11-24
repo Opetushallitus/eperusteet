@@ -28,6 +28,7 @@ import lombok.Setter;
 @Setter
 public class RakenneOsaDto extends AbstractRakenneOsaDto {
     private boolean pakollinen;
+    private String erikoisuus;
     private EntityReference tutkinnonOsaViite;
 
     @Override
