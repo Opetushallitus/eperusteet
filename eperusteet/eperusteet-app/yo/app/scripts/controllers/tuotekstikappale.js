@@ -19,12 +19,49 @@
 
 angular.module('eperusteApp')
   .controller('TuoTekstikappale', function($scope, $modalInstance, Notifikaatiot, peruste,
-      suoritustapa, PerusteenRakenne, SuoritustapaSisalto, YleinenData, Perusteet) {
+      suoritustapa, PerusteenRakenne, SuoritustapaSisalto, YleinenData, Perusteet, Algoritmit, Kaanna) {
     $scope.perusteet = [];
     $scope.sivuja = 0;
     $scope.sivu = 0;
     $scope.valittuPeruste = null;
-    $scope.rajaus = '';
+    $scope.kaikkiValittu = null;
+    $scope.valitut = 0;
+    $scope.search = {
+      term: '',
+      changed: function () {
+        $scope.paginate.current = 1;
+      },
+      filterFn: function (item) {
+        return Algoritmit.match($scope.search.term, item.perusteenOsa.nimi);
+      }
+    };
+
+    $scope.paginate = {
+      perPage: 10,
+      current: 1,
+    };
+
+    $scope.orderFn = function (item) {
+      return Kaanna.kaanna(item.perusteenOsa.nimi).toLowerCase();
+    };
+
+    $scope.updateTotal = function () {
+      $scope.valitut = _.size(_.filter($scope.sisalto, '$valittu'));
+    };
+
+    $scope.toggleKaikki = function(valinta) {
+      _.each($scope.sisalto, function(tulos) {
+        tulos.$valittu = false;
+        if ($scope.search.term) {
+          if ($scope.search.filterFn(tulos)) {
+            tulos.$valittu = valinta;
+          }
+        } else {
+          tulos.$valittu = valinta;
+        }
+      });
+      $scope.updateTotal();
+    };
 
     $scope.haku = function(haku) {
       PerusteenRakenne.haePerusteita(haku, function(res) {
@@ -34,8 +71,6 @@ angular.module('eperusteApp')
       });
     };
     $scope.haku('');
-
-    // $scope.rajaus = Algoritmit.rajausVertailu($scope.rajaus, osa, 'perusteenOsa', 'nimi');
 
     $scope.valitse = function(valittuPeruste) {
       $scope.valittuPeruste = valittuPeruste;
@@ -51,7 +86,12 @@ angular.module('eperusteApp')
       }, Notifikaatiot.serverCb);
     };
 
-    $scope.takaisin = function() { $scope.valittuPeruste = null; };
+    $scope.takaisin = function() {
+      $scope.valittuPeruste = null;
+      $scope.search.term = '';
+      $scope.paginate.current = 1;
+      $scope.valitut = 0;
+    };
     $scope.peru = function() { $modalInstance.dismiss(); };
     $scope.ok = function() {
       $modalInstance.close(_.filter($scope.sisalto, function(s) { return s.$valittu; }));

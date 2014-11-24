@@ -147,6 +147,7 @@ angular.module('eperusteApp')
       $modal.open({
         templateUrl: 'views/modals/tuotekstikappale.html',
         controller: 'TuoTekstikappale',
+        size: 'lg',
         resolve: {
           peruste: function() { return $scope.peruste; },
           suoritustapa: function() { return PerusteProjektiService.getSuoritustapa(); },
