@@ -53,7 +53,8 @@ angular.module('eperusteApp')
       suoritustavoista: suoritustavoista
     };
   })
-  .controller('TuoTutkinnonOsaSuoritustavastaaCtrl', function(PerusteenOsat, $scope, $modalInstance, peruste, PerusteTutkinnonosat, Notifikaatiot, suoritustapa) {
+  .controller('TuoTutkinnonOsaSuoritustavastaaCtrl', function(PerusteenOsat, $scope, $modalInstance, peruste,
+      PerusteTutkinnonosat, Notifikaatiot, suoritustapa, Algoritmit, Kaanna) {
     $scope.tulokset = [];
     $scope.valitut = 0;
     $scope.peruste = peruste;
@@ -63,18 +64,45 @@ angular.module('eperusteApp')
                                                    .value();
     $scope.valittuSuoritustapa = $scope.suoritustavat[0];
 
-    $scope.valinta = function(tulos) {
-      $scope.valitut += tulos.$valitse ? -1 : 1;
+    $scope.paginate = {
+      perPage: 10,
+      current: 1,
+    };
+    $scope.search = {
+      term: '',
+      changed: function () {
+        $scope.paginate.current = 1;
+      },
+      filterFn: function (item) {
+        return Algoritmit.match($scope.search.term, item.nimi);
+      }
+    };
+
+    $scope.orderFn = function (item) {
+      return Kaanna.kaanna(item.nimi).toLowerCase();
+    };
+
+    $scope.updateTotal = function () {
+      $scope.valitut = _.size(_.filter($scope.tulokset, '$valitse'));
     };
 
     $scope.valitseKaikki = function(valinta) {
-      _.each($scope.tulokset, function(tulos) { tulos.$valitse = valinta; });
-      $scope.valitut = valinta ? _.size($scope.tulokset) : 0;
+      _.each($scope.tulokset, function(tulos) {
+        tulos.$valitse = false;
+        if ($scope.search.term) {
+          if ($scope.search.filterFn(tulos)) {
+            tulos.$valitse = valinta;
+          }
+        } else {
+          tulos.$valitse = valinta;
+        }
+      });
+      $scope.updateTotal();
     };
 
     $scope.vaihdaValinta = function(tulos) {
-        tulos.$valitse = !tulos.$valitse;
-        $scope.valinta(tulos);
+      tulos.$valitse = !tulos.$valitse;
+      $scope.updateTotal();
     };
 
     $scope.paivitaTulokset = function(st) {
