@@ -229,4 +229,8 @@ angular.module('eperusteApp')
         $modalInstance.dismiss();
       }
     };
+    $scope.paginate = {
+      current: 1,
+      perPage: 10
+    };
   });

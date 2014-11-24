@@ -10,13 +10,15 @@
       <th class="kommentti" kaanna>kommentti</th>
       <th class="muokattu" kaanna>muokattu</th>
     </tr>
-    <tr ng-repeat="ver in versions.list" ng-click="close(ver)" class="navigoitava" title="{{'Tarkastele versiota' | kaanna}}">
-      <td><a href="" ng-click="$event.stopPropagation(); close(ver);">{{ ver.index }}</a></td>
+    <tr ng-repeat="ver in versions.list | startFrom:paginate.perPage*(paginate.current-1) | limitTo:paginate.perPage"
+        ng-click="close(ver)" class="navigoitava" title="{{'Tarkastele versiota' | kaanna}}">
+      <td><a class="action-link" ng-click="$event.stopPropagation(); close(ver);">{{ ver.index }}</a></td>
       <td>{{ ver.$nimi }}</td>
       <td>{{ ver.kommentti || '-' }}</td>
       <td>{{ ver.pvm | aikaleima:'time' }}</td>
     </tr>
   </table>
+  <pagination ng-model="paginate.current" items-per-page="paginate.perPage" total-items="versions.list.length"></pagination>
 </div>
 
 <div class="modal-footer">
