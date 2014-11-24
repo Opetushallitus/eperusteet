@@ -89,13 +89,10 @@ angular.module('eperusteApp')
 
     function lukitse(Resource, obj, cb) {
       cb = cb || angular.noop;
-      lukitsin = function(isNew) {
-        Resource.save(obj, function(res, headers) {
-          if (isNew) {
-            etag = headers().etag;
-            cb(res);
-          }
+      var uusi = lukitsin ? false : true;
 
+      lukitsin = function() {
+        Resource.save(obj, function(res, headers) {
           if (etag && headers().etag !== etag) {
             $modal.open({
               templateUrl: 'views/modals/sisaltoMuuttunut.html',
@@ -103,14 +100,15 @@ angular.module('eperusteApp')
             })
             .result.then(function() {
               etag = headers().etag;
-            },
-            function() {
-              Editointikontrollit.cancelEditing();
-            });
+            }, Editointikontrollit.cancelEditing);
+          }
+          else {
+            etag = headers().etag;
+            cb(res);
           }
         }, Notifikaatiot.serverLukitus);
       };
-      lukitsin(true);
+      lukitsin();
     }
 
     function vapauta(Resource, obj, cb) {
