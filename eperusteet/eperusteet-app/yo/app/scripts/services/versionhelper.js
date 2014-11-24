@@ -35,41 +35,44 @@ angular.module('eperusteApp')
       if (!_.isObject(data)) {
         throw 'VersionHelper: not an object!';
       }
-      if (force || !data.list) {
-        if (tyyppi === 'perusteenosa') {
-          PerusteenOsat.versiot({osanId: tunniste.id}, function(res) {
-            rakennaNimet(res);
-            data.list = res;
-            versiotListHandler(data);
-            cb();
-          });
-        }
-        else if (tyyppi === 'tutkinnonOsaViite') {
-          TutkinnonOsaViitteet.versiot({viiteId: tunniste.id}, function(res) {
-            rakennaNimet(res);
-            data.list = res;
-            versiotListHandler(data);
-            cb();
-          });
-        }
-        else if (tyyppi === 'perusteenOsaViite') {
-          PerusteenOsat.versiotByViite({viiteId: tunniste.id}, function(res) {
-            rakennaNimet(res);
-            data.list = res;
-            versiotListHandler(data);
-            cb();
-          });
-        }
-        else if (tyyppi === 'rakenne') {
-          RakenneVersiot.query({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa}, function(res) {
-            rakennaNimet(res);
-            data.list = res;
-            versiotListHandler(data);
-            cb();
-          });
-        }
+      if (!force && data.list) {
+        return;
+      }
+
+      if (tyyppi === 'perusteenosa') {
+        PerusteenOsat.versiot({osanId: tunniste.id}, function (res) {
+          rakennaNimet(res);
+          data.list = res;
+          versiotListHandler(data);
+          cb();
+        });
+      }
+      else if (tyyppi === 'tutkinnonOsaViite') {
+        TutkinnonOsaViitteet.versiot({viiteId: tunniste.id}, function (res) {
+          rakennaNimet(res);
+          data.list = res;
+          versiotListHandler(data);
+          cb();
+        });
+      }
+      else if (tyyppi === 'perusteenOsaViite') {
+        PerusteenOsat.versiotByViite({viiteId: tunniste.id}, function (res) {
+          rakennaNimet(res);
+          data.list = res;
+          versiotListHandler(data);
+          cb();
+        });
+      }
+      else if (tyyppi === 'rakenne') {
+        RakenneVersiot.query({perusteId: tunniste.id, suoritustapa: tunniste.suoritustapa}, function (res) {
+          rakennaNimet(res);
+          data.list = res;
+          versiotListHandler(data);
+          cb();
+        });
       }
     }
+
 
     function versiotListHandler(data) {
       data.chosen = latest(data.list);
