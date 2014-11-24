@@ -736,6 +736,18 @@
     "luonti-paatospaivamaara-ohje": "Lisää perustetyöryhmän asettamisen päätöspäivämäärä.",
     "luonti-diaarinumero-ohje": "Lisää perustetyöryhmän asettamispäätöksen diaarinumero.",
 
+    "termi-plugin-select-placeholder": "Valitse termi...",
+    "termi-plugin-title": "Lisää viittaus tai muokkaa viittausta termiin",
+    "termi-plugin-menu-muokkaa": "Muokkaa viittausta termiin",
+    "termi-plugin-button-label": "Viittaus termiin",
+    "termi-plugin-label": "Viittaus termiin",
+    "termi-plugin-label-termi": "Termi johon viitataan",
+    "termi-plugin-label-teksti": "Teksti johon viittaus liitetään",
+    "termi-plugin-virhe-viite-tyhja": "Valitse termi johon viitataan.",
+    "termi-plugin-virhe-teksti-tyhja": "Teksti johon viittaus liitetään ei voi olla tyhjä.",
+    "termin-selitys": "Termin selitys",
+    "termin-selitys-placeholder": "Kirjoita termin selitys",
+
     "perusteen-termisto": "Termistö",
     "perusteen-termisto-ohje": "Tekstikappaleissa voidaan viitata termiin ja näyttää sen selitys. Termistö on perustekohtainen.",
     "ei-termeja": "Yhtään termiä ei ole määritelty.",

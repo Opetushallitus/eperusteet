@@ -85,6 +85,9 @@ angular.module('eperusteApp')
         scope.$watch('otsikko', function () {
           scope.title = scope.$parent.$eval(scope.otsikko) || scope.otsikko;
         });
+        scope.$on('$destroy', function () {
+          $document.off('click');
+        });
       }
     };
   });
