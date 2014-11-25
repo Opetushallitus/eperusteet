@@ -87,7 +87,8 @@ angular.module('eperusteApp')
       Resource.get(obj, cb || angular.noop, errorCb || Notifikaatiot.serverLukitus);
     }
 
-    function lukitse(Resource, obj, cb) {
+    // TODO fix
+    /*function lukitse(Resource, obj, cb) {
       cb = cb || angular.noop;
 
       lukitsin = function() {
@@ -108,6 +109,29 @@ angular.module('eperusteApp')
         }, Notifikaatiot.serverLukitus);
       };
       lukitsin();
+    }*/
+
+    function lukitse(Resource, obj, cb) {
+      cb = cb || angular.noop;
+      lukitsin = function(isNew) {
+        Resource.save(obj, function(res, headers) {
+          if (isNew) {
+            etag = headers().etag;
+            cb(res);
+          }
+          if (etag && headers().etag !== etag) {
+            $modal.open({
+              templateUrl: 'views/modals/sisaltoMuuttunut.html',
+              controller: 'LukittuSisaltoMuuttunutModalCtrl'
+            }).result.then(function() {
+              etag = headers().etag;
+            }, function() {
+              Editointikontrollit.cancelEditing();
+            });
+          }
+        }, Notifikaatiot.serverLukitus);
+      };
+      lukitsin(true);
     }
 
     function vapauta(Resource, obj, cb) {
