@@ -103,7 +103,7 @@ public class PerusteServiceImpl implements PerusteService {
     private static final String KOODISTO_RELAATIO_YLA = "relaatio/sisaltyy-ylakoodit/";
     private static final String KOODISTO_RELAATIO_ALA = "relaatio/sisaltyy-alakoodit/";
     private static final String[] AMMATILLISET_KOULUTUSTYYPPI_URIT = {"koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"};
-    private static final String PERUSOPETUKSEN_KOULUTUSTYYPPI = "koulutustyyppi_9999";
+    private static final String PERUSOPETUKSEN_KOULUTUSTYYPPI = "koulutustyyppi_16";
     private static final String KOULUTUSALALUOKITUS = "koulutusalaoph2002";
     private static final String OPINTOALALUOKITUS = "opintoalaoph2002";
 
@@ -629,7 +629,7 @@ public class PerusteServiceImpl implements PerusteService {
     }
 
     private void lisaaTutkinnonMuodostuminen(Peruste peruste) {
-        if ("koulutustyyppi_9999".equals(peruste.getKoulutustyyppi())) {
+        if ("koulutustyyppi_16".equals(peruste.getKoulutustyyppi())) {
             return;
         }
 
