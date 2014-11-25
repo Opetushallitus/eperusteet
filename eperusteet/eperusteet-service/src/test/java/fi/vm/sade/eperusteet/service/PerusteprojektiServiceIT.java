@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
@@ -370,7 +371,11 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Rollback(true)
     public void testPerustepohjaTilaJaNimi() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_1");
+
         Perusteprojekti pp = repository.findOne(ppdto.getId());
+        pp.getPeruste().setNimi(null);
+        repository.save(pp);
+        em.persist(pp);
 
         TilaUpdateStatus status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS);
         Assert.assertFalse(status.isVaihtoOk());
