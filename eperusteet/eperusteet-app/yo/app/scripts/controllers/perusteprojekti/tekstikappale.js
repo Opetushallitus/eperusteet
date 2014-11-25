@@ -439,42 +439,4 @@ angular.module('eperusteApp')
         $rootScope.$broadcast('editointikontrollitRefresh');
       }
     });
-  })
-  .directive('termistoViitteet', function (Kaanna) {
-    var TERMI_MATCHER = 'abbr[data-viite]';
-    return {
-      restrict: 'A',
-      scope: {
-        model: '=termistoViitteet'
-      },
-      link: function (scope, element) {
-        function destroy() {
-          element.find(TERMI_MATCHER).each(function () {
-            var jqEl = angular.element(this);
-            if (jqEl.popover) {
-              jqEl.popover('destroy');
-            }
-          });
-        }
-        function setup() {
-          element.find(TERMI_MATCHER).each(function () {
-            var jqEl = angular.element(this);
-            var viiteId = jqEl.attr('data-viite');
-            var popover = jqEl.popover({
-              placement: 'bottom',
-              html: true,
-              title: Kaanna.kaanna('termin-selitys')
-            }).on('show.bs.popover', function () {
-              // TODO integrate with backend
-              popover.attr('data-content', 'Tähän termin selitys viiteId:llä ' + viiteId);
-            });
-          });
-        }
-        scope.$watch('model', function () {
-          destroy();
-          setup();
-        });
-        scope.$on('$destroy', destroy);
-      },
-    };
   });
