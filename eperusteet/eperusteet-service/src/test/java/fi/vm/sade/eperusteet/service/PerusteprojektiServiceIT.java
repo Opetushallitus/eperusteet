@@ -136,10 +136,10 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testPerustprojektiluonti9999() {
-        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_9999");
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_16");
         Perusteprojekti pp = repository.findOne(ppdto.getId());
         perusteprojektiLuontiCommonAsserts(ppdto, pp);
-        Assert.assertEquals("koulutustyyppi_9999", pp.getPeruste().getKoulutustyyppi());
+        Assert.assertEquals("koulutustyyppi_16", pp.getPeruste().getKoulutustyyppi());
         Assert.assertEquals(0, pp.getPeruste().getSuoritustavat().size());
         Assert.assertNotNull(pp.getPeruste().getPerusopetuksenPerusteenSisalto());
     }

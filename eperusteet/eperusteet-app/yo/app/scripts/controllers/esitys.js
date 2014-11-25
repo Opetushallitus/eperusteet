@@ -226,7 +226,7 @@ angular.module('eperusteApp')
          case 'koulutustyyppi_11':
          case 'koulutustyyppi_12':
            return $state.href('root.selaus.ammatillinenaikuiskoulutus');
-         case 'koulutustyyppi_9999':
+         case 'koulutustyyppi_16':
            return $state.href('root.selaus.perusopetus');
          default:
            return $state.href('root.selaus.ammatillinenperuskoulutus');
