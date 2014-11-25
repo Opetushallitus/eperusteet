@@ -536,6 +536,11 @@
     "vahvista-palautus": "Vahvista palautus",
     "vahvista-palautus-sisältö": "Haluatko palauttaa perusteprojektin {{ nimi }}? Perusteprojektin sisältö palautetaan ja se asetetaan tilaan: {{ tila }}",
 
+    "osia-valittava-vahintaan-laajuus": "Osia valittava vähintään {{ laajuusMinimi }} {{ laajuusYksikko }} edestä.",
+    "osia-valittava-vahintaan-ja-enintaan-laajuus": "Osia valittava vähintään {{ laajuusMinimi }} ja enintään {{ laajuusMaksimi }} {{ laajuusYksikko }} edestä.",
+    "osia-valittava-vahintaan-koko": "Osia valittava vähintään {{ kokoMinimi }} kappaletta.",
+    "osia-valittava-vahintaan-ja-enintaan-koko": "Osia valittava vähintään {{ kokoMinimi }} ja vähintään {{ kokoMaksimi }} kappaletta.",
+
     "perusteprojekti-perustenimi-placeholder": "<Anna perusteen nimi>",
     "perusteprojekti-koulutusala-placeholder": "<Anna koulutusala>",
     "perusteprojekti-nimi-placeholder": "<Anna projektin nimi>",

@@ -32,37 +32,33 @@ angular.module('eperusteApp')
 
     function kaannaSaanto(ms) {
       if (!ms) { return; }
-      var fraasi = [];
+      var fraasi = {
+        kaannos: '',
+        muuttujat: {}
+      };
+
       var msl = ms.laajuus;
       var msk = ms.koko;
 
       if (msl && msl.minimi && msl.maksimi) {
-        fraasi.push('osia-valittava-vahintaan');
-        fraasi.push(msl.minimi);
+        fraasi.kaannos = 'osia-valittava-vahintaan-laajuus';
+        fraasi.muuttujat.laajuusMinimi = msl.minimi;
+
         if (msl.minimi !== msl.maksimi) {
-          fraasi.push('ja-enintaan');
-          fraasi.push(msl.maksimi);
+          fraasi.kaannos = 'osia-valittava-vahintaan-laajuus-ja-enintaan-laajuus';
+          fraasi.muuttujat.laajuusMaksimi = msl.maksimi;
         }
-        fraasi.push('$laajuusYksikko');
-        fraasi.push('edesta');
       }
-
-      if (msk && msk.minimi && msk.maksimi) {
-        if (!_.isEmpty(fraasi)) {
-          fraasi.push('ja-myos-valittava');
-        }
-        else {
-          fraasi.push('osia-valittava-vahintaan');
-        }
-        fraasi.push(msk.minimi);
+      else if (msk && msk.minimi && msk.maksimi) {
+        fraasi.kaannos = 'osia-valittava-vahintaan-koko';
+        fraasi.muuttujat.kokoMinimi = msk.minimi;
         if (msk.minimi !== msk.maksimi) {
-          fraasi.push('ja-enintaan');
-          fraasi.push(msk.maksimi);
+          fraasi.kaannos = 'osia-valittava-vahintaan-koko-ja-enintaan-koko';
+          fraasi.muuttujat.kokoMaksimi = msk.maksimi;
         }
-        fraasi.push('kappaletta');
       }
 
-      return _.isEmpty(fraasi) ? ['muodostumissaantoa-ei-maaritelty'] : fraasi;
+      return fraasi;
     }
 
     /* TODO (jshint complexity/W074) simplify/split ---> */
@@ -111,7 +107,6 @@ angular.module('eperusteApp')
         var ms = rakenne.muodostumisSaanto;
         var msl = ms.laajuus || 0;
         var msk = ms.koko || 0;
-        kaannaSaanto(rakenne.muodostumisSaanto);
 
         if (msl && msk) {
           var minimi = avaintenSumma(rakenne.osat, msk.minimi, function(lajitellut) { return _.keys(lajitellut); });

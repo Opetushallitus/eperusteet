@@ -115,7 +115,10 @@ angular.module('eperusteApp')
           '  <div class="avausnappi-painike">&hellip;</div></div>' +
           '</div>' +
           '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="virhe">' +
-          '  <span>{{ tkaanna(rakenne.$virhe.selite) }}<span ng-show="rakenne.$virhe.selite.length > 0">. </span>{{ rakenne.$virhe.virhe | kaanna }}.</span>' +
+          '  <span ng-show="rakenne.$virhe.virhe">' +
+          '    <span kaanna="rakenne.$virhe.virhe"></span>. ' +
+          '  </span>' +
+          '  <span kaanna="rakenne.$virhe.selite.kaannos" kaanna-values="lisaaLaajuusYksikko(rakenne.$virhe.selite.muuttujat)"></span>' +
           '</div>';
 
         var avaaKaikki = '<div class="pull-right">' +
@@ -183,6 +186,12 @@ angular.module('eperusteApp')
     $scope.esitystilassa = $state.includes('**.esitys.**');
     $scope.lang = $translate.use() || $translate.preferredLanguage();
     $scope.isNumber = _.isNumber;
+
+    $scope.lisaaLaajuusYksikko = function(obj) {
+      return _.merge(obj, {
+        laajuusYksikko: Kaanna.kaanna($scope.apumuuttujat.laajuusYksikko)
+      });
+    };
 
     $scope.poista = function(i, a) {
       _.remove(a.osat, i);

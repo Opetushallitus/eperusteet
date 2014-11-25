@@ -89,7 +89,6 @@ angular.module('eperusteApp')
 
     function lukitse(Resource, obj, cb) {
       cb = cb || angular.noop;
-      var uusi = lukitsin ? false : true;
 
       lukitsin = function() {
         Resource.save(obj, function(res, headers) {
