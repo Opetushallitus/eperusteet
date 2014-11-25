@@ -106,6 +106,17 @@
     "virhe-etusivulle": "Etusivulle",
     "tallentaminen-epaonnistui": "Tallentaminen epäonnistui",
     "perusteen-tiivistelma": "Perusteen tiivistelmä",
+    "tilanvaihdos-aiheuttaa": "Tämä tilanvaihdos aiheuttaa seuraavaa:",
+
+    "tilakuvaus-kommentointi": "Kuvaus tilalle kommentointi.",
+    "tilakuvaus-viimeistely": "Kuvaus tilalle viimeistely.",
+    "tilakuvaus-poistettu": "Kuvaus tilalle arkistoitu.",
+    "tilakuvaus-laadinta": "Kuvaus tilalle laadinta.",
+    "tilakuvaus-kaannos": "Kuvaus tilalle käännös.",
+    "tilakuvaus-hyvaksytty": "Kuvaus tilalle hyväksytty.",
+    "tilanvaihdos-laadinta-kommentointi": "Kuvaus tilasiirtymälle laadinta-kommentointi.",
+    "tilanvaihdos-laadinta-viimeistely": "Kuvaus tilasiirtymälle laadinta-viimeistely.",
+    "tilanvaihdos-laadinta-poistettu": "Kuvaus tilasiirtymälle laadinta-arkistointi.",
 
     "suoritustavalle-ei-ole-viela-sisaltoa": "Perusteelle ei ole luotu vielä tähän suoritustapaan liittyvää sisältöä",
     "rajauksellasi-ei-löytynyt-vaihtoehtoa": "Rajaus ei tuottanut tuloksia",
