@@ -1,6 +1,10 @@
 dl.termisto {
   dt {
     font-size: 110%;
+    padding: 7px 4px;
+    &:hover {
+      background-color: #eaeaea;
+    }
   }
   .actions {
     margin-left: 5px;
@@ -14,6 +18,7 @@ dl.termisto {
 
 .termisto-rajaus {
   max-width: 30em;
+  margin-bottom: 30px;
 }
 
 .spacer {
@@ -29,4 +34,11 @@ dl.termisto {
   .input-group {
     margin-bottom: 15px;
   }
+  .navbar-fixed-top {
+    position: relative;
+  }
+}
+
+.termisto-wrapper {
+  max-width: 700px;
 }

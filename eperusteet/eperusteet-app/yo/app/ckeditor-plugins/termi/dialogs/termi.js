@@ -15,10 +15,11 @@
  */
 
 'use strict';
-/* global CKEDITOR, $ */
+/* global CKEDITOR, _ */
 
 CKEDITOR.dialog.add('termiDialog', function( editor ) {
   var kaanna = editor.config.customData.kaanna;
+  var service = editor.config.customData.termistoService;
   var PLACEHOLDER = [kaanna('termi-plugin-select-placeholder'), ''];
   return {
     title: kaanna('termi-plugin-title'),
@@ -55,24 +56,19 @@ CKEDITOR.dialog.add('termiDialog', function( editor ) {
             validate: CKEDITOR.dialog.validate.notEmpty(kaanna('termi-plugin-virhe-viite-tyhja')),
             onShow: function () {
               this.clear();
-              this.add('label1', 'value1');
               var self = this;
-              var uniqueId = 1;
               var dialog = this.getDialog();
-              $.ajax({
-                type: 'GET',
-                // TODO replace with proper ajax call
-                url: 'http://localhost:9000/eperusteet-service/api/perusteenosat/' + editor.config.customData.id,
-                dataType: 'json',
-                success: function (data) {
-                  self.clear();
-                  self.add(PLACEHOLDER[0], PLACEHOLDER[1]);
-                  $.each(data, function (key) {
-                    self.add(key, ++uniqueId);
-                  });
-                  if (!dialog.insertMode) {
-                    dialog.setupContent(dialog.element);
-                  }
+              service.getAll().then(function (res) {
+                var items = _.sortBy(res, function (item) {
+                  return kaanna(item.termi).toLowerCase();
+                });
+                self.clear();
+                self.add(PLACEHOLDER[0], PLACEHOLDER[1]);
+                _.each(items, function (item) {
+                  self.add(kaanna(item.termi), item.avain);
+                });
+                if (!dialog.insertMode) {
+                  dialog.setupContent(dialog.element);
                 }
               });
             }
@@ -88,6 +84,7 @@ CKEDITOR.dialog.add('termiDialog', function( editor ) {
       }
       if (!element || element.getName() !== 'abbr') {
         element = editor.document.createElement('abbr');
+        element.appendText(selection.getSelectedText());
         this.insertMode = true;
       } else {
         this.insertMode = false;
