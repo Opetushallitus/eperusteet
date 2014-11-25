@@ -25,7 +25,8 @@ angular.module('eperusteApp')
       scope: {
         mainLevelEditing: '=editEnabled',
         tutkinnonosaViite: '=',
-        kontrollit: '='
+        kontrollit: '=',
+        yksikko: '='
       },
       controller: 'Tutke2KentatController'
     };
@@ -191,7 +192,9 @@ angular.module('eperusteApp')
     function kasitteleTavoitteet (tavoitteet, that, osaAlue, arr) {
       _.each(tavoitteet, function (tavoite) {
           fixTavoite(tavoite);
-          that.tavoiteMap[tavoite.id] = tavoite;
+          if (that.tavoiteMap) {
+            that.tavoiteMap[tavoite.id] = tavoite;
+          }
         });
         arr.osaamistavoitteet = tavoitteet;
         osaAlue.$groups = groupTavoitteet(tavoitteet, that.tavoiteMap);
@@ -240,7 +243,7 @@ angular.module('eperusteApp')
       groups.ungrouped = _.difference(tavoitteet, processed);
       groups.$size = _.size(groups.grouped);
       groups.$options = _.map(_.keys(groups.grouped), function (key) {
-        return {label: tavoiteMap[key].nimi, value: key};
+        return {label: (tavoiteMap && tavoiteMap[key]) ? tavoiteMap[key].nimi : '', value: key};
       });
       return groups;
     }
@@ -249,6 +252,7 @@ angular.module('eperusteApp')
       init: function (tutkinnonOsaId) {
         return new Tutke2OsaImpl(tutkinnonOsaId);
       },
-      fixTavoite: fixTavoite
+      fixTavoite: fixTavoite,
+      kasitteleOsaAlueet: kasitteleOsaAlueet
     };
   });

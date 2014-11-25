@@ -17,7 +17,7 @@
   <strong kaanna="'opintoluokitus'"></strong>: {{ tutkinnonOsa.opintoluokitus }}
 </div>
 
-<div ng-repeat="k in fieldKeys | orderBy: fieldOrder">
+<div ng-if="tutkinnonOsa.tyyppi !== 'tutke2'" ng-repeat="k in fieldKeys | orderBy: fieldOrder">
   <div ng-if="k === 'arviointi'">
     <div ng-show="tutkinnonOsa.arviointi.arvioinninKohdealueet">
       <h3 kaanna="'arviointi'"></h3>
@@ -52,5 +52,16 @@
   <div ng-if="k !== 'arviointi' && tutkinnonOsa[k]">
     <h3>{{ k | kaanna }}</h3>
     <div ng-bind-html="tutkinnonOsa[k] | kaanna | unsafe"></div>
+  </div>
+</div>
+
+<div ng-if="tutkinnonOsa.tyyppi === 'tutke2'">
+  <div ng-bind-html="tutkinnonOsa.kuvaus | kaanna | unsafe"></div>
+  <div ng-repeat="osaalue in tutkinnonOsa.osaAlueet">
+    <h3>{{osaalue.nimi | kaanna}}</h3>
+    <div ng-repeat="osaamistavoitteet in osaalue.$groups.grouped">
+      <div ng-repeat="tavoite in osaamistavoitteet" ng-include="'views/partials/esitys/osaamistavoite.html'"></div>
+    </div>
+    <div ng-repeat="tavoite in osaalue.$groups.ungrouped" ng-include="'views/partials/esitys/osaamistavoite.html'"></div>
   </div>
 </div>

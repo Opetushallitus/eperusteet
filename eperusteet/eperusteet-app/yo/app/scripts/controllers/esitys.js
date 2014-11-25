@@ -88,19 +88,29 @@ angular.module('eperusteApp')
     $scope.suosikkiHelper($state, 'tutkinnon-rakenne');
   })
 
-  .controller('EsitysTutkinnonOsaCtrl', function($scope, $state, $stateParams, PerusteenOsat, TutkinnonosanTiedotService) {
+  .controller('EsitysTutkinnonOsaCtrl', function($scope, $state, $stateParams, PerusteenOsat, TutkinnonosanTiedotService,
+      Tutke2Osa) {
     $scope.tutkinnonOsaViite = _.find($scope.$parent.tutkinnonOsat, function(tosa) {
       return tosa.id === parseInt($stateParams.id, 10);
     });
-    PerusteenOsat.get({
-      osanId: $scope.tutkinnonOsaViite._tutkinnonOsa
-    }, function(res) {
-      $scope.tutkinnonOsa = res;
+    $scope.osaAlueet = {};
+    TutkinnonosanTiedotService.noudaTutkinnonOsa({perusteenOsaId: $scope.tutkinnonOsaViite._tutkinnonOsa}).then(function () {
+      $scope.tutkinnonOsa = TutkinnonosanTiedotService.getTutkinnonOsa();
       $scope.fieldKeys = _.intersection(_.keys($scope.tutkinnonOsa), TutkinnonosanTiedotService.keys());
+      if ($scope.tutkinnonOsa.tyyppi === 'tutke2') {
+        Tutke2Osa.kasitteleOsaAlueet($scope.tutkinnonOsa);
+      }
     });
     $scope.suosikkiHelper($state, $scope.tutkinnonOsaViite.nimi);
     $scope.fieldOrder = function (item) {
       return TutkinnonosanTiedotService.order(item);
+    };
+    $scope.hasArviointi = function (osaamistavoite) {
+      return osaamistavoite.arviointi &&
+        osaamistavoite.arviointi.arvioinninKohdealueet &&
+        osaamistavoite.arviointi.arvioinninKohdealueet.length > 0 &&
+        osaamistavoite.arviointi.arvioinninKohdealueet[0].arvioinninKohteet &&
+        osaamistavoite.arviointi.arvioinninKohdealueet[0].arvioinninKohteet.length > 0;
     };
   })
 
