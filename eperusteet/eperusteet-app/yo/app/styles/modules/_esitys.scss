@@ -1,6 +1,13 @@
 $border-color: #0C566E;
 
+.esitys-print-view {
+  .painikkeet {
+    display: none;
+  }
+}
+
 .esitys {
+
   margin-left: -40px;
 
   .rakenne-sisalto {

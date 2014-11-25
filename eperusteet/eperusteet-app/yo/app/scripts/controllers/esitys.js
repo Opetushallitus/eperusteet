@@ -217,7 +217,7 @@ angular.module('eperusteApp')
 
     $scope.printSisalto = function() {
       var print = window.open('', 'esitysPrintSisalto', 'height=640,width=640');
-      print.document.write('<html><head><link rel="stylesheet" href="styles/eperusteet.css"></head><body>' +
+      print.document.write('<html><head><link rel="stylesheet" href="styles/eperusteet.css"></head><body class="esitys-print-view">' +
                            $('#esitysPrintSisalto').html() +
                            '</body></html>');
       print.print();
