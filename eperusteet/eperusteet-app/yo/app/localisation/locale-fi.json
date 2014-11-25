@@ -747,6 +747,7 @@
     "termi-plugin-virhe-teksti-tyhja": "Teksti johon viittaus liitetään ei voi olla tyhjä.",
     "termin-selitys": "Termin selitys",
     "termin-selitys-placeholder": "Kirjoita termin selitys",
+    "termia-ei-loytynyt": "Viitattua termiä ei löytynyt",
 
     "perusteen-termisto": "Termistö",
     "perusteen-termisto-ohje": "Tekstikappaleissa voidaan viitata termiin ja näyttää sen selitys. Termistö on perustekohtainen.",

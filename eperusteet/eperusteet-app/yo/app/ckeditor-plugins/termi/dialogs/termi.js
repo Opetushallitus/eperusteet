@@ -15,7 +15,7 @@
  */
 
 'use strict';
-/* global CKEDITOR, $ */
+/* global CKEDITOR, _ */
 
 CKEDITOR.dialog.add('termiDialog', function( editor ) {
   var kaanna = editor.config.customData.kaanna;
@@ -56,13 +56,15 @@ CKEDITOR.dialog.add('termiDialog', function( editor ) {
             validate: CKEDITOR.dialog.validate.notEmpty(kaanna('termi-plugin-virhe-viite-tyhja')),
             onShow: function () {
               this.clear();
-              this.add('label1', 'value1');
               var self = this;
               var dialog = this.getDialog();
               service.getAll().then(function (res) {
+                var items = _.sortBy(res, function (item) {
+                  return kaanna(item.termi).toLowerCase();
+                });
                 self.clear();
                 self.add(PLACEHOLDER[0], PLACEHOLDER[1]);
-                $.each(res, function (index, item) {
+                _.each(items, function (item) {
                   self.add(kaanna(item.termi), item.avain);
                 });
                 if (!dialog.insertMode) {
