@@ -29,9 +29,9 @@ European Union Public Licence for more details.
   <div class="part-header-wrapper">
     <div class="action-buttons">
       <div class="floater" ng-attr-title="{{lockNotification}}">
-        <button ng-disabled="isLocked" ng-hide="editableTekstikappale.tila !== 'luonnos' || editEnabled || !versiot.latest"
+        <button ng-disabled="isLocked" ng-hide="editEnabled || !versiot.latest"
                 ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
-                oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                oikeustarkastelu="[{target:'peruste',permission:'muokkaus'},{target:'peruste',permission:'korjaus'}]"></button>
       </div>
       <button ng-disabled="!canAddLapsi() && tekstikappale.tila !== 'valmis'" ng-hide="editEnabled || !versiot.latest"
               ng-click="addLapsi()" class="floater btn btn-default" icon-role="add" kaanna="lisaa-aliotsikko"
@@ -40,7 +40,7 @@ European Union Public Licence for more details.
               class="floater btn btn-danger" icon-role="ep-text-clone" kaanna="kopioi-muokattavaksi"
               oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
 
-      <button ng-if="tekstikappale.tila === 'valmis' || (editEnabled && !isNew)" class="btn btn-danger floater" ng-click="poista()" icon-role="remove" kaanna="'poista'"></button>
+      <button ng-if="tekstikappale.tila === 'valmis' || (editEnabled && !isNew)" class="btn btn-danger floater" ng-click="poista()" icon-role="remove" kaanna="'poista'" oikeustarkastelu="{target:'peruste',permission:'muokkaus'}"></button>
       <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
     </div>
 
@@ -80,6 +80,6 @@ European Union Public Licence for more details.
   </div>
   <kommentit></kommentit>
 </div>
-    
+
       </div>
 </div>

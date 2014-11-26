@@ -10,8 +10,8 @@
       <div class="action-buttons">
         <div class="floater" ng-attr-title="{{lockNotification}}">
           <button class="btn btn-default" icon-role="edit" kaanna="'muokkaa'" ng-click="muokkaa()" ng-disabled="isLocked"
-                  ng-hide="editEnabled || !versiot.latest || tutkinnonOsaViite.tutkinnonOsa.tila === 'valmis'"
-                  oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                  ng-hide="editEnabled || !versiot.latest"
+                  oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' },{ target: 'peruste', permission: 'korjaus' }]"></button>
         </div>
         <button ng-show="tutkinnonOsaViite.tutkinnonOsa.tila === 'valmis' && !editEnabled" ng-click="kopioiMuokattavaksi()"
                 class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"

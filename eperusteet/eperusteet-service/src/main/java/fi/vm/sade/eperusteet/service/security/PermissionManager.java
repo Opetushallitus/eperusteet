@@ -371,10 +371,11 @@ public class PermissionManager {
 
         Map<ProjektiTila, Map<Permission, Set<String>>> tempTargetKohtaiset = allowedRoles.get(targetType);
         Map<Permission, Set<String>> tempProjektitilaKohtaiset = tempTargetKohtaiset.get(tila);
+        final Set<Pair<String, ProjektiTila>> projektitila = findPerusteProjektiTila(targetType, targetId);
 
         for (Map.Entry<Permission, Set<String>> per : tempProjektitilaKohtaiset.entrySet()) {
             boolean hasRole = false;
-            for (Pair<String, ProjektiTila> ppt : findPerusteProjektiTila(targetType, targetId)) {
+            for (Pair<String, ProjektiTila> ppt : projektitila) {
                 hasRole = hasRole | hasAnyRole(authentication, ppt.getFirst(), per.getValue());
             }
             if (hasRole) {
