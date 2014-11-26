@@ -212,6 +212,7 @@ angular.module('eperusteApp')
       if (_.isEmpty(data)) {
         return;
       }
+
       data.latest = data.chosen.index === latest(data.list).index;
       var versionlessUrl = $state.href($state.current.name, {versio: null}, {inherit:true}).replace(/#/g, '');
       var currentVersion = this.currentIndex(data);
@@ -219,7 +220,7 @@ angular.module('eperusteApp')
       var urlHasVersion = $location.url() !== versionlessUrl;
       if ((urlHasVersion || data.hasChanged) && isValid && !data.latest) {
         data.hasChanged = false;
-        var versionUrl = $state.href($state.current.name, {versio: '/' + currentVersion}, {inherit:true}).replace(/#/g, '');
+        var versionUrl = $state.href($state.current.name, {versio: '/' + currentVersion}, {inherit:true}).replace(/#/g, '').replace(/%252F/, '/');
         $location.url(versionUrl);
       } else {
         $location.url(versionlessUrl);
