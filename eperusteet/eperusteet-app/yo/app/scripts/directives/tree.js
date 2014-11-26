@@ -31,7 +31,7 @@ angular.module('eperusteApp')
            editointiIkoni +
         '  <span ng-if="!muokkaus">' +
         '    <a ng-if="esitystilassa" ui-sref="root.esitys.peruste.tutkinnonosa({ id: rakenne._tutkinnonOsaViite, suoritustapa: apumuuttujat.suoritustapa })">' + tosa + '</a>' +
-        '    <a ng-if="!esitystilassa" ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaViiteId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].id, suoritustapa: apumuuttujat.suoritustapa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a>' +
+        '    <a ng-if="!esitystilassa" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosa({ tutkinnonOsaViiteId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].id, suoritustapa: apumuuttujat.suoritustapa })">' + tosa + '</a>' +
         '  </span>' +
         '  <span ng-if="muokkaus">' +
              tosa +

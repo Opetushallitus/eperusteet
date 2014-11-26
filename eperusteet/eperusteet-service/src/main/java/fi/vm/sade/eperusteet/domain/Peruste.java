@@ -125,7 +125,6 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     private PerusopetuksenPerusteenSisalto perusopetuksenPerusteenSisalto;
 
     @Getter
-    @Setter
     @Enumerated(EnumType.STRING)
     @NotNull
     private PerusteTila tila = PerusteTila.LUONNOS;
@@ -143,6 +142,11 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
             }
         }
         throw new IllegalArgumentException("Perusteella ei ole pyydettyä suoritustapaa");
+    }
+
+    @Override
+    public void asetaTila(PerusteTila tila) {
+        this.tila = tila;
     }
 
     @Override
