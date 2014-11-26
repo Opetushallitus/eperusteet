@@ -167,12 +167,19 @@ angular.module('eperusteApp')
           }
         });
 
+        function trim(obj) {
+          if (_.isString(obj)) {
+            obj = obj.replace(/&nbsp;/gi, '').trim();
+          }
+          return obj;
+        }
+
         var dataSavedOnNotification = false;
         scope.$on('notifyCKEditor', function() {
           if(editor.checkDirty()) {
             dataSavedOnNotification = true;
             var data = element.hasClass('has-placeholder') ? '' : editor.getData();
-            ctrl.$setViewValue(data);
+            ctrl.$setViewValue(trim(data));
           }
           $('#toolbar').hide();
         });
@@ -181,8 +188,8 @@ angular.module('eperusteApp')
           if (editor.checkDirty()) {
             var data = editor.getData();
             scope.$apply(function() {
-              ctrl.$setViewValue(data);
-              //scope.$broadcast('edited');
+              ctrl.$setViewValue(trim(data));
+              // scope.$broadcast('edited');
             });
             if(_.isEmpty(data)) {
               element.addClass('has-placeholder');
