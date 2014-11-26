@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.service.impl.AuditRevisionListener;
@@ -35,16 +34,25 @@ import org.hibernate.envers.RevisionEntity;
 @Table(name = "revinfo")
 @RevisionEntity(AuditRevisionListener.class)
 @AttributeOverrides({
-    @AttributeOverride(name="id", column = @Column(name = "rev")),
-    @AttributeOverride(name="timestamp", column=@Column(name="revtstmp"))
+    @AttributeOverride(name = "id", column = @Column(name = "rev")),
+    @AttributeOverride(name = "timestamp", column = @Column(name = "revtstmp"))
 })
 @Getter
 @Setter
 public class RevisionInfo extends DefaultRevisionEntity {
+    private static final int MAX_LEN = 1000;
+
     @Column
     private String muokkaajaOid;
 
-    @Column(length = 1000)
+    @Column(length = MAX_LEN)
     private String kommentti;
 
+    public void addKommentti(String kommentti) {
+        if (this.kommentti == null) {
+            this.kommentti = kommentti;
+        } else if (this.kommentti.length() < (MAX_LEN-2)) {
+            this.kommentti = this.kommentti + ("; " + kommentti).substring(0, Math.min(MAX_LEN - this.kommentti.length() - 2, kommentti.length()));
+        }
+    }
 }

@@ -18,8 +18,8 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .factory('LukkoSisalto', function(SERVICE_LOC, $resource) {
-    return $resource(SERVICE_LOC + '/perusteet/:osanId/suoritustavat/:suoritustapa/lukko/', {
+  .factory('LukkoRakenne', function(SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/perusteet/:osanId/suoritustavat/:suoritustapa/rakenne/lukko/', {
       osanId: '@osanId',
       suoritustapa: '@suoritustapa',
       tyyppi: '@tyyppi'
@@ -63,7 +63,7 @@ angular.module('eperusteApp')
     $scope.$on('$stateChangeSuccess', function() { $scope.peruuta(); });
   })
   .service('Lukitus', function($rootScope, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, Profiili,
-    LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
+    LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
     LukkoOppiaine, PerusopetusService, LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite, LukkoVuosiluokkakokonaisuus) {
 
     var lukitsin = null;
@@ -93,7 +93,7 @@ angular.module('eperusteApp')
 
       lukitsin = function() {
         Resource.save(obj, function(res, headers) {
-          if (etag && headers().etag !== etag) {
+          if (etag && headers().etag !== etag && Editointikontrollit.getEditMode()) {
             $modal.open({
               templateUrl: 'views/modals/sisaltoMuuttunut.html',
               controller: 'LukittuSisaltoMuuttunutModalCtrl'
@@ -138,17 +138,18 @@ angular.module('eperusteApp')
       cb = cb || angular.noop;
       Resource.remove(obj, cb, Notifikaatiot.serverLukitus);
       lukitsin = null;
+      etag = null;
     }
 
     function lukitseSisalto(id, suoritustapa, cb) {
-      lukitse(LukkoSisalto, {
+      lukitse(LukkoRakenne, {
         osanId: id,
         suoritustapa: suoritustapa
       }, cb);
     }
 
     function vapautaSisalto(id, suoritustapa, cb) {
-      vapauta(LukkoSisalto, {
+      vapauta(LukkoRakenne, {
         osanId: id,
         suoritustapa: suoritustapa
       }, cb);
@@ -193,7 +194,7 @@ angular.module('eperusteApp')
       };
 
       if (suoritustapa) {
-        lueLukitus(LukkoSisalto, {osanId: id, suoritustapa: suoritustapa}, okCb);
+        lueLukitus(LukkoRakenne, {osanId: id, suoritustapa: suoritustapa}, okCb);
       } else {
         lueLukitus(LukkoPerusteenosa, {osanId: id}, okCb);
       }
@@ -208,7 +209,7 @@ angular.module('eperusteApp')
 
       switch (parametrit.tyyppi) {
         case 'sisalto':
-          lueLukitus(LukkoSisalto, { osanId: parametrit.id, suoritustapa: parametrit.suoritustapa }, cb);
+          lueLukitus(LukkoRakenne, { osanId: parametrit.id, suoritustapa: parametrit.suoritustapa }, cb);
           break;
         case 'perusteenosa':
           lueLukitus(LukkoPerusteenosa, { osanId: parametrit.id }, cb);

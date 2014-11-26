@@ -29,6 +29,7 @@ import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
+import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -40,6 +41,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,6 +69,9 @@ public class OppiaineServiceImpl implements OppiaineService {
     @Autowired
     @LockCtx(OppiaineLockContext.class)
     private LockService<OppiaineLockContext> lockService;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     private static final Logger LOG = LoggerFactory.getLogger(OppiaineServiceImpl.class);
 
@@ -215,7 +220,6 @@ public class OppiaineServiceImpl implements OppiaineService {
         //TODO. ei toimi jos palautettava versio viittaa poistettuihin entiteetteihin
         //(keskeinensisältöalue, vuosiluokkakokonaisuus, laaja-alainen osaaminen)
         //sama ongelma on toki updatessakin (ei voi luoda uusia sisältöalueta ja viitata niihin tavoitteista)
-
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         sisalto = sisaltoRepository.findRevision(sisalto.getId(), revisio);
         Oppiaine aine = oppiaineRepository.findRevision(oppiaineId, revisio);
@@ -278,6 +282,8 @@ public class OppiaineServiceImpl implements OppiaineService {
             }
         }
         aine = oppiaineRepository.save(aine);
+        oppiaineRepository.setRevisioKommentti("Muokattu oppiainetta " + aine.getNimi().toString());
+        eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, perusteId));
         return mapper.map(aine, OppiaineDto.class);
     }
 
@@ -299,6 +305,8 @@ public class OppiaineServiceImpl implements OppiaineService {
         mapper.map(dto, ovk);
         ovk = vuosiluokkakokonaisuusRepository.save(ovk);
         ovk.getOppiaine().muokattu();
+        oppiaineRepository.setRevisioKommentti("Muokattu oppiaineen vuosiluokkakokonaisuutta");
+        eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, perusteId));
         return ovk;
     }
 

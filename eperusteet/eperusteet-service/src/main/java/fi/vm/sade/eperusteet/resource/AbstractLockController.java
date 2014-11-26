@@ -17,13 +17,14 @@ package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.service.LockService;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
+import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -37,17 +38,17 @@ public abstract class AbstractLockController<T> {
     @RequestMapping(method = GET)
     public ResponseEntity<LukkoDto> checkLock(T ctx) {
         LukkoDto lock = service().getLock(ctx);
-        return lock == null ? new ResponseEntity<LukkoDto>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(lock, eTag(lock.getRevisio()), HttpStatus.OK);
+        return lock == null ? new ResponseEntity<LukkoDto>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(lock, eTagHeader(lock.getRevisio()), HttpStatus.OK);
     }
 
     @RequestMapping(method = POST)
     public ResponseEntity<LukkoDto> lock(T ctx,
         @RequestHeader(value = "If-Match", required = false) String eTag) {
-        LukkoDto lock = service().lock(ctx, version(eTag));
+        LukkoDto lock = service().lock(ctx, revisionOf(eTag));
         if (lock == null) {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         } else {
-            return new ResponseEntity<>(lock, eTag(lock.getRevisio()), HttpStatus.CREATED);
+            return new ResponseEntity<>(lock, eTagHeader(lock.getRevisio()), HttpStatus.CREATED);
         }
 
     }
@@ -56,16 +57,6 @@ public abstract class AbstractLockController<T> {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void unlock(T ctx) {
         service().unlock(ctx);
-    }
-
-    private Integer version(String eTag) {
-        return eTag == null ? null : Integer.parseInt(eTag.substring(3, eTag.length() - 1));
-    }
-
-    private HttpHeaders eTag(int tag) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setETag("W/\""+String.valueOf(tag)+"\"");
-        return headers;
     }
 
     protected abstract LockService<T> service();

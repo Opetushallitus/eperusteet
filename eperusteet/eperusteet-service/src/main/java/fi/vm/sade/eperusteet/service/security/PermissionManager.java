@@ -85,6 +85,7 @@ public class PermissionManager {
         MUOKKAUS("muokkaus"),
         KOMMENTOINTI("kommentointi"),
         LUONTI("luonti"),
+        KORJAUS("korjaus"),
         TILANVAIHTO("tilanvaihto");
 
         private final String permission;
@@ -160,6 +161,7 @@ public class PermissionManager {
             tmp.put(ProjektiTila.VALMIS, perm);
 
             perm = Maps.newHashMap();
+            perm.put(KORJAUS,r0);
             perm.put(LUKU, r4);
             tmp.put(ProjektiTila.JULKAISTU, perm);
 

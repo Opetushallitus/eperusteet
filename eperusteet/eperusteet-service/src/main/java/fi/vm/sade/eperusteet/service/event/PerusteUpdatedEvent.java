@@ -13,33 +13,26 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.service;
+package fi.vm.sade.eperusteet.service.event;
 
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import lombok.Getter;
-import lombok.Setter;
+import org.springframework.context.ApplicationEvent;
 
 /**
  *
  * @author jhyoty
  */
-@Getter
-@Setter
-public class SuoritustapaLockContext {
+public class PerusteUpdatedEvent extends ApplicationEvent {
+    @Getter
+    private final Long perusteId;
 
-    private Long perusteId;
-    private Suoritustapakoodi koodi;
-
-    public SuoritustapaLockContext() {
-    }
-
-    public SuoritustapaLockContext(Long perusteId, Suoritustapakoodi koodi) {
+    public PerusteUpdatedEvent(Object source, Long perusteId) {
+        super(source);
         this.perusteId = perusteId;
-        this.koodi = koodi;
     }
 
-
-    public static SuoritustapaLockContext of(Long perusteId, Suoritustapakoodi koodi) {
-        return new SuoritustapaLockContext(perusteId, koodi);
+    public static PerusteUpdatedEvent of(Object source, Long perusteId) {
+        return new PerusteUpdatedEvent(source, perusteId);
     }
+
 }

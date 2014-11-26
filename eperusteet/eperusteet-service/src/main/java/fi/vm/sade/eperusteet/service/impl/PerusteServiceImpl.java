@@ -66,6 +66,7 @@ import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
+import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
@@ -84,8 +85,11 @@ import java.util.Objects;
 import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -97,7 +101,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public class PerusteServiceImpl implements PerusteService {
+public class PerusteServiceImpl implements PerusteService, ApplicationListener<PerusteUpdatedEvent> {
 
     private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
     private static final String KOODISTO_RELAATIO_YLA = "relaatio/sisaltyy-ylakoodit/";
@@ -234,6 +238,17 @@ public class PerusteServiceImpl implements PerusteService {
     public <T extends PerusteenOsaViiteDto.Puu<?,?>> T getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, Class<T> view) {
         PerusteenOsaViite entity = perusteet.findSisaltoByIdAndSuoritustapakoodi(perusteId, suoritustapakoodi);
         return mapper.map(entity, view);
+    }
+
+    @Override
+    @Transactional
+    public void onApplicationEvent(PerusteUpdatedEvent event) {
+        Peruste peruste = perusteet.findById(event.getPerusteId());
+        if (peruste.getTila() == PerusteTila.VALMIS) {
+            perusteet.setRevisioKommentti("perustetta muokattu");
+            peruste.muokattu();
+        }
+        LOG.debug("EVENT " + event);
     }
 
     @Override
@@ -409,7 +424,7 @@ public class PerusteServiceImpl implements PerusteService {
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, RakenneModuuliDto rakenne) {
 
         Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
-        lockManager.ensureLockedByAuthenticatedUser(suoritustapa.getId());
+        lockManager.ensureLockedByAuthenticatedUser(suoritustapa.getRakenne().getId());
 
         rakenne.foreach(new VisitorImpl(maxRakenneDepth));
         RakenneModuuli moduuli = mapper.map(rakenne, RakenneModuuli.class);
@@ -740,5 +755,7 @@ public class PerusteServiceImpl implements PerusteService {
             }
         }
     }
+
+    private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceImpl.class);
 
 }

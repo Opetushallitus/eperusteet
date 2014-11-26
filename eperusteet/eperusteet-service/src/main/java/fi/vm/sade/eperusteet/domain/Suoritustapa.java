@@ -68,7 +68,7 @@ public class Suoritustapa implements Serializable, ReferenceableEntity {
     @JoinColumn(name = "sisalto_perusteenosaviite_id")
     private PerusteenOsaViite sisalto;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @Getter
     @Setter
     @JoinColumn(name = "tutkinnon_rakenne_id")

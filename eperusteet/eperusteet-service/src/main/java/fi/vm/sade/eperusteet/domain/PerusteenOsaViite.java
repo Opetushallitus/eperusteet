@@ -31,7 +31,6 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 
 /**
@@ -64,7 +63,6 @@ public class PerusteenOsaViite implements ReferenceableEntity {
     @OrderColumn
     @Getter
     @Setter
-    @BatchSize(size = 100)
     private List<PerusteenOsaViite> lapset;
 
     @Override

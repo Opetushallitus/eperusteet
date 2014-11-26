@@ -16,11 +16,13 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
+import fi.vm.sade.eperusteet.repository.RakenneRepository;
 import fi.vm.sade.eperusteet.service.LockCtx;
-import fi.vm.sade.eperusteet.service.SuoritustapaLockContext;
+import fi.vm.sade.eperusteet.service.TutkinnonRakenneLockContext;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,25 +33,32 @@ import org.springframework.stereotype.Service;
  * @author jhyoty
  */
 @Service
-@LockCtx(SuoritustapaLockContext.class)
-public class SuoritustapaLockServiceImpl extends AbstractLockService<SuoritustapaLockContext> {
+@LockCtx(TutkinnonRakenneLockContext.class)
+public class RakenneLockServiceImpl extends AbstractLockService<TutkinnonRakenneLockContext> {
 
     @Autowired
     private PerusteRepository perusteet;
     @Autowired
-    private SuoritustapaRepository suoritustavat;
+    private RakenneRepository rakenteet;
 
     @Override
-    protected int latestRevision(SuoritustapaLockContext ctx) {
-        return suoritustavat.getLatestRevisionId(perusteet.findOne(ctx.getPerusteId()).getSuoritustapa(ctx.getKoodi()).getId());
+    protected int latestRevision(TutkinnonRakenneLockContext ctx) {
+        final RakenneModuuli rakenne = perusteet.findOne(ctx.getPerusteId()).getSuoritustapa(ctx.getKoodi()).getRakenne();
+        return rakenteet.getLatestRevisionId(rakenne.getId());
     }
 
     @Override
-    protected ReferenceableEntity validateCtx(SuoritustapaLockContext ctx) {
-        permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.MUOKKAUS);
+    protected ReferenceableEntity validateCtx(TutkinnonRakenneLockContext ctx, boolean readOnly) {
         Peruste peruste = perusteet.findOne(ctx.getPerusteId());
-        if ( peruste != null) {
-            return peruste.getSuoritustapa(ctx.getKoodi());
+        if (peruste != null) {
+            if (readOnly) {
+                permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.LUKU);
+            } else if (peruste.getTila() == PerusteTila.VALMIS) {
+                permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.KORJAUS);
+            } else {
+                permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.MUOKKAUS);
+            }
+            return peruste.getSuoritustapa(ctx.getKoodi()).getRakenne();
         }
         throw new BusinessRuleViolationException("Perustetta ei ole");
     }

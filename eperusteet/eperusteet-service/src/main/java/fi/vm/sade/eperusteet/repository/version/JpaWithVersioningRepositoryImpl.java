@@ -93,7 +93,7 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
     @Override
     public void setRevisioKommentti(String kommentti) {
         RevisionInfo currentRevision = AuditReaderFactory.get(entityManager).getCurrentRevision(RevisionInfo.class, false);
-        currentRevision.setKommentti(kommentti);
+        currentRevision.addKommentti(kommentti);
     }
 
 }

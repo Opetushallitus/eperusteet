@@ -48,6 +48,6 @@ public interface TutkinnonOsaViiteService {
     @PreAuthorize("hasPermission(#id, 'tutkinnonosaviite', 'MUOKKAUS')")
     TutkinnonOsaViiteDto revertToVersio(@P("id") Long id, Integer versioId);
 
-    @PreAuthorize("hasPermission(#tov.id, 'tutkinnonosaviite', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#tov.id, 'tutkinnonosaviite', 'MUOKKAUS') or hasPermission(#tov.id, 'tutkinnonosaviite', 'KORJAUS')")
     TutkinnonOsaViiteDto update(@P("tov") TutkinnonOsaViiteDto viiteDto);
 }

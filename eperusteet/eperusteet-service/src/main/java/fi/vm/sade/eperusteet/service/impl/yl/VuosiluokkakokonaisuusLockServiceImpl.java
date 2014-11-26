@@ -43,8 +43,9 @@ public class VuosiluokkakokonaisuusLockServiceImpl extends AbstractLockService<V
     private VuosiluokkaKokonaisuusRepository kokonaisuudet;
 
     @Override
-    protected final ReferenceableEntity validateCtx(VuosiluokkaKokonaisuusContext ctx) {
-        permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.MUOKKAUS);
+    protected final ReferenceableEntity validateCtx(VuosiluokkaKokonaisuusContext ctx, boolean readOnly) {
+        final PermissionManager.Permission permission = readOnly ? PermissionManager.Permission.LUKU : PermissionManager.Permission.MUOKKAUS;
+        permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, permission);
 
         PerusopetuksenPerusteenSisalto s = sisallot.findByPerusteId(ctx.getPerusteId());
         VuosiluokkaKokonaisuus kokonaisuus = kokonaisuudet.findOne(ctx.getKokonaisuusId());

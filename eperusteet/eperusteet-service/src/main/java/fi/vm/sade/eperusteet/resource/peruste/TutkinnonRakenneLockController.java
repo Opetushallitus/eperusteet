@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.resource.peruste;
 import fi.vm.sade.eperusteet.resource.AbstractLockController;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
-import fi.vm.sade.eperusteet.service.SuoritustapaLockContext;
+import fi.vm.sade.eperusteet.service.TutkinnonRakenneLockContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,14 +28,14 @@ import org.springframework.web.bind.annotation.RestController;
  * @author jhyoty
  */
 @RestController
-@RequestMapping(value = "/perusteet/{perusteId}/suoritustavat/{koodi}/lukko")
-public class SuoritustapaLockController extends AbstractLockController<SuoritustapaLockContext> {
+@RequestMapping(value = "/perusteet/{perusteId}/suoritustavat/{koodi}/rakenne/lukko")
+public class TutkinnonRakenneLockController extends AbstractLockController<TutkinnonRakenneLockContext> {
     @Autowired
-    @LockCtx(SuoritustapaLockContext.class)
-    private LockService<SuoritustapaLockContext> service;
+    @LockCtx(TutkinnonRakenneLockContext.class)
+    private LockService<TutkinnonRakenneLockContext> service;
 
     @Override
-    protected LockService<SuoritustapaLockContext> service() {
+    protected LockService<TutkinnonRakenneLockContext> service() {
         return service;
     }
 }

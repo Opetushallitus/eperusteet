@@ -25,6 +25,7 @@ import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository
 import fi.vm.sade.eperusteet.repository.VuosiluokkaKokonaisuusRepository;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
+import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -33,6 +34,7 @@ import fi.vm.sade.eperusteet.service.yl.VuosiluokkakokonaisuusService;
 import java.util.HashSet;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,7 +51,8 @@ public class VuosiluokkaKokonaisuusServiceImpl implements Vuosiluokkakokonaisuus
     @Autowired
     @Dto
     private DtoMapper mapper;
-
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
     @Autowired
     private PerusopetuksenPerusteenSisaltoRepository sisaltoRepository;
 
@@ -117,6 +120,7 @@ public class VuosiluokkaKokonaisuusServiceImpl implements Vuosiluokkakokonaisuus
         VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(dto.getId());
         mapper.map(dto, vk);
         kokonaisuusRepository.save(vk);
+        eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, perusteId));
         return mapper.map(vk, VuosiluokkaKokonaisuusDto.class);
     }
 }
