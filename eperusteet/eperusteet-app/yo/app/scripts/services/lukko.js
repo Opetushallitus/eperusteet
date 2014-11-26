@@ -69,15 +69,6 @@ angular.module('eperusteApp')
     var lukitsin = null;
     var etag = null;
 
-    var onevent = _.debounce(function() {
-      if (lukitsin) { lukitsin(); }
-    }, LUKITSIN_MINIMI, {
-      leading: true,
-      trailing: false,
-      maxWait: LUKITSIN_MAKSIMI
-    });
-    angular.element(window).on('click', onevent);
-
     $rootScope.$on('$stateChangeSuccess', function() {
       lukitsin = null;
       etag = null;
@@ -87,8 +78,7 @@ angular.module('eperusteApp')
       Resource.get(obj, cb || angular.noop, errorCb || Notifikaatiot.serverLukitus);
     }
 
-    // TODO fix
-    /*function lukitse(Resource, obj, cb) {
+    function lukitse(Resource, obj, cb) {
       cb = cb || angular.noop;
 
       lukitsin = function() {
@@ -109,29 +99,6 @@ angular.module('eperusteApp')
         }, Notifikaatiot.serverLukitus);
       };
       lukitsin();
-    }*/
-
-    function lukitse(Resource, obj, cb) {
-      cb = cb || angular.noop;
-      lukitsin = function(isNew) {
-        Resource.save(obj, function(res, headers) {
-          if (isNew) {
-            etag = headers().etag;
-            cb(res);
-          }
-          if (etag && headers().etag !== etag) {
-            $modal.open({
-              templateUrl: 'views/modals/sisaltoMuuttunut.html',
-              controller: 'LukittuSisaltoMuuttunutModalCtrl'
-            }).result.then(function() {
-              etag = headers().etag;
-            }, function() {
-              Editointikontrollit.cancelEditing();
-            });
-          }
-        }, Notifikaatiot.serverLukitus);
-      };
-      lukitsin(true);
     }
 
     function vapauta(Resource, obj, cb) {
