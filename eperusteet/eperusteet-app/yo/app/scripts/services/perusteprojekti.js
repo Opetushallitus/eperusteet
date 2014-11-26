@@ -289,9 +289,10 @@ angular.module('eperusteApp')
     deferred.resolve(this);
     return deferred.promise;
   })
-  .service('PerusteprojektiOikeudetService', function (PerusteprojektiOikeudet) {
-
+  .service('PerusteprojektiOikeudetService', function($rootScope, $stateParams, $state, PerusteprojektiOikeudet, PerusteprojektiTiedotService) {
     var oikeudet;
+    var projektiId = null;
+    var projektiTila = null;
 
     function noudaOikeudet(stateParams) {
       var vastaus = PerusteprojektiOikeudet.get({id: stateParams.perusteProjektiId}, function(vastaus) {
@@ -307,17 +308,29 @@ angular.module('eperusteApp')
 
     function onkoOikeudet(target, permission) {
       if (oikeudet) {
-       if (_.contains(oikeudet[target], permission)) {
-         return true;
-       } else {
-         return false;
-       }
-     } else {
-       console.log('virhe oikeuksien haussa');
-       return false;
-     }
+        if (_.contains(oikeudet[target], permission)) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        console.log('virhe oikeuksien haussa');
+        return false;
+      }
     }
 
+    $rootScope.$on('$stateChangeSuccess', function() {
+      PerusteprojektiTiedotService.then(function(res) {
+        var projekti = res.getProjekti();
+        if (projektiId && projektiId === projekti.id && projektiTila !== projekti.tila) {
+          noudaOikeudet($stateParams);
+        }
+        else {
+          projektiId = projekti.id;
+          projektiTila = projekti.tila;
+        }
+      });
+    });
 
     return {
       noudaOikeudet: noudaOikeudet,
