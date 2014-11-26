@@ -35,7 +35,7 @@ public enum ProjektiTila {
         @Override
         public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
             if (tyyppi.equals(PerusteTyyppi.POHJA)) {
-                return EnumSet.of(VALMIS);
+                return EnumSet.of(POISTETTU, VALMIS);
             } else {
                 return EnumSet.of(KOMMENTOINTI, VIIMEISTELY, POISTETTU);
             }
