@@ -45,6 +45,7 @@ angular.module('eperusteApp')
     $scope.tyyppi = 'kaikki';
     $scope.tyoryhmaMap = {};
     $scope.tiivistelma = Kaanna.kaanna($scope.peruste.kuvaus);
+    $scope.muodostumisKompensaattori = $scope.peruste.koulutustyyppi !== 'koulutustyyppi_15' ? 1 : 0;
 
     if (_.size($scope.peruste.sisalto) > 1 && _.first($scope.peruste.suoritustavat).suoritustapakoodi !== 'ops') {
       $scope.peruste.suoritustavat = _.arraySwap($scope.peruste.suoritustavat, 0, 1);

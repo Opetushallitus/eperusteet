@@ -74,6 +74,7 @@ angular.module('eperusteApp')
       'koulutustyyppi_1': 'perustutkinto',
       'koulutustyyppi_11': 'ammattitutkinto',
       'koulutustyyppi_12': 'erikoisammattitutkinto',
+      'koulutustyyppi_15': 'esiopetus',
       'koulutustyyppi_16': 'perusopetus',
     };
 
@@ -81,6 +82,7 @@ angular.module('eperusteApp')
       'koulutustyyppi_1': 'ops',
       'koulutustyyppi_11': 'naytto',
       'koulutustyyppi_12': 'naytto',
+      'koulutustyyppi_15': 'ops',
       'koulutustyyppi_16': 'ops',
     };
 

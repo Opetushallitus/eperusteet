@@ -47,7 +47,7 @@ European Union Public Licence for more details.
             <div class="clearfix"></div>
 
             <h2 ng-hide="muokkausTutkintokohtaisetOsat">
-                {{ 'tekstikappaleet' | kaanna }} ({{ peruste.sisalto.lapset.length }})
+                {{ 'tekstikappaleet' | kaanna }} <span ng-show="peruste.sisalto.lapset.length - muodostumisKompensaattori > 0">({{ peruste.sisalto.lapset.length - muodostumisKompensaattori }})</span>
                 <a ng-click="avaaSuljeKaikki()" class="action-link open-close"><span class="avaa-sulje" icon-role="ep-open-close">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
                 <!-- Työryhmävalitsin -->
                 <span class="dropdown">
