@@ -125,7 +125,7 @@ public interface PerusteService {
     List<TutkinnonOsaViiteDto> getTutkinnonOsat(@P("perusteId") Long perusteid, Suoritustapakoodi suoritustapakoodi);
 
     @PreAuthorize("isAuthenticated()") //XXX ei julkinen rajapinta
-    Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, PerusteTila tila, PerusteTyyppi tyyppi);
+    Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi);
 
     @PreAuthorize("isAuthenticated()") //XXX ei julkinen rajapinta
     Peruste luoPerusteRunkoToisestaPerusteesta(PerusteprojektiLuontiDto luontiDto, PerusteTyyppi tyyppi);

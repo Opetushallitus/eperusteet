@@ -221,7 +221,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         Peruste peruste;
         if (perusteprojektiDto.getPerusteId() == null) {
-            peruste = perusteService.luoPerusteRunko(koulutustyyppi, yksikko, PerusteTila.LUONNOS, tyyppi);
+            peruste = perusteService.luoPerusteRunko(koulutustyyppi, yksikko, tyyppi);
         }
         else {
             Peruste pohjaPeruste = perusteRepository.findOne(perusteprojektiDto.getPerusteId());
@@ -420,12 +420,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 setOsatTila(tutkinnonosaViite, tila);
             }
         }
-        peruste.setTila(tila);
+        peruste.asetaTila(tila);
     }
 
     private PerusteenOsaViite setSisaltoTila(PerusteenOsaViite sisaltoRoot, PerusteTila tila) {
         if (sisaltoRoot.getPerusteenOsa() != null) {
-            sisaltoRoot.getPerusteenOsa().setTila(tila);
+            sisaltoRoot.getPerusteenOsa().asetaTila(tila);
         }
         if (sisaltoRoot.getLapset() != null) {
             for (PerusteenOsaViite lapsi : sisaltoRoot.getLapset()) {
@@ -437,7 +437,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     private TutkinnonOsaViite setOsatTila(TutkinnonOsaViite osa, PerusteTila tila) {
         if (osa.getTutkinnonOsa()!= null) {
-            osa.getTutkinnonOsa().setTila(tila);
+            osa.getTutkinnonOsa().asetaTila(tila);
         }
         return osa;
     }

@@ -127,14 +127,6 @@ angular.module('eperusteApp')
           PerusteProjektiSivunavi.setVisible();
         }]
       })
-//      .state('root.perusteprojekti.suoritustapa.perusteenosa', {
-//        url: '/perusteenosa/{perusteenOsanTyyppi}/{perusteenOsaViiteId}{versio:(?:/[^/]+)?}',
-//        templateUrl: 'views/muokkaus.html',
-//        controller: 'MuokkausCtrl',
-//        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-//          PerusteProjektiSivunavi.setVisible();
-//        }]
-//      })
       .state('root.perusteprojekti.suoritustapa.tutkinnonosa', {
         url: '/tutkinnonosa/{tutkinnonOsaViiteId}{versio:(?:/[^/]+)?}',
         templateUrl: 'views/partials/muokkaus/tutkinnonosa.html',

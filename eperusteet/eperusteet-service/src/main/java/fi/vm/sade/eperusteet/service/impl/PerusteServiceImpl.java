@@ -487,7 +487,6 @@ public class PerusteServiceImpl implements PerusteService {
 
         if (viite.getTutkinnonOsa() == null) {
             TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
-            tutkinnonOsa.setTila(PerusteTila.LUONNOS);
             if (osa.getTyyppi() != null) {
                 tutkinnonOsa.setTyyppi(osa.getTyyppi());
             }
@@ -653,15 +652,13 @@ public class PerusteServiceImpl implements PerusteService {
      *
      * @param koulutustyyppi
      * @param yksikko
-     * @param tila
      * @param tyyppi
      * @return Palauttaa 'tyhjän' perusterungon
      */
     @Override
-    public Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, PerusteTila tila, PerusteTyyppi tyyppi) {
+    public Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi) {
         Peruste peruste = new Peruste();
         peruste.setKoulutustyyppi(koulutustyyppi);
-        peruste.setTila(tila);
         peruste.setTyyppi(tyyppi);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
 
@@ -695,7 +692,6 @@ public class PerusteServiceImpl implements PerusteService {
     public Peruste luoPerusteRunkoToisestaPerusteesta(PerusteprojektiLuontiDto luontiDto, PerusteTyyppi tyyppi) {
         Peruste vanha = perusteet.getOne(luontiDto.getPerusteId());
         Peruste peruste = new Peruste();
-        peruste.setTila(PerusteTila.LUONNOS);
         peruste.setTyyppi(tyyppi);
         peruste.setKuvaus(vanha.getKuvaus());
         peruste.setNimi(vanha.getNimi());

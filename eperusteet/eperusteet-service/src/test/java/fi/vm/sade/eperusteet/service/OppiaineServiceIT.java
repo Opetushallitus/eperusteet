@@ -81,7 +81,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
     @Before
     public void setup() {
-        Peruste peruste = perusteService.luoPerusteRunko("koulutustyyppi_16", LaajuusYksikko.OPINTOVIIKKO, PerusteTila.LUONNOS, PerusteTyyppi.NORMAALI);
+        Peruste peruste = perusteService.luoPerusteRunko("koulutustyyppi_16", LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
         perusteId = peruste.getId();
     }
 

@@ -16,8 +16,10 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
@@ -43,6 +45,8 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
@@ -80,6 +84,10 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteprojektiRepository repo;
+    @Autowired
+    private PerusteRepository perusteRepo;
+    @Autowired
+    private PerusteenOsaRepository perusteenOsaRepo;
     @PersistenceContext
     private EntityManager em;
     @Autowired
@@ -444,8 +452,11 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
 
         PerusteDto pDto = perusteService.get(new Long(projektiDto.getPeruste().getId()));
         pDto.setNimi(TestUtils.lt(TestUtils.uniikkiString()));
-        pDto.setTila(perusteTila);
         perusteService.update(pDto.getId(), pDto);
+
+        Peruste peruste = perusteRepo.findOne(pDto.getId());
+        peruste.asetaTila(perusteTila);
+        perusteRepo.save(peruste);
 
         return service.get(projektiDto.getId());
     }
@@ -456,14 +467,25 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         return matala;
     }
 
+    private void asetaPerusteenOsanTila(Long id, PerusteTila tila) {
+        PerusteenOsa osa = perusteenOsaRepo.findOne(id);
+        osa.asetaTila(tila);
+        perusteenOsaRepo.save(osa);
+    }
+
+
     private PerusteenOsaViiteDto luoSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, PerusteTila tila) {
         PerusteenOsaViiteDto sisalto = perusteService.addSisalto(perusteId, suoritustapakoodi, luoPerusteenOsaViiteDto(TestUtils.lt(TestUtils.uniikkiString()), tila, PerusteenOsaTunniste.NORMAALI));
+        asetaPerusteenOsanTila(sisalto.getPerusteenOsa().getId(), tila);
 
         PerusteenOsaViiteDto lapsi = perusteService.addSisaltoLapsi(perusteId, sisalto.getId(), luoPerusteenOsaViiteDto(TestUtils.lt(TestUtils.uniikkiString()), tila, PerusteenOsaTunniste.NORMAALI));
+        asetaPerusteenOsanTila(lapsi.getPerusteenOsa().getId(), tila);
         for (int i = 0; i < 2; i++) {
             lapsi = perusteService.addSisaltoLapsi(perusteId, lapsi.getId(), luoPerusteenOsaViiteDto(TestUtils.lt(TestUtils.uniikkiString()), tila, PerusteenOsaTunniste.NORMAALI));
+            asetaPerusteenOsanTila(lapsi.getPerusteenOsa().getId(), tila);
         }
-        perusteService.addSisaltoLapsi(perusteId, sisalto.getId(), luoPerusteenOsaViiteDto(TestUtils.lt(TestUtils.uniikkiString()), tila, PerusteenOsaTunniste.NORMAALI));
+        lapsi = perusteService.addSisaltoLapsi(perusteId, sisalto.getId(), luoPerusteenOsaViiteDto(TestUtils.lt(TestUtils.uniikkiString()), tila, PerusteenOsaTunniste.NORMAALI));
+        asetaPerusteenOsanTila(lapsi.getPerusteenOsa().getId(), tila);
 
         return sisalto;
     }
@@ -500,6 +522,8 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         tov.setLaajuus(new BigDecimal(laajuus));
 
         TutkinnonOsaViiteDto luotuDto = perusteService.addTutkinnonOsa(id, suoritustapa, tov);
+
+        asetaPerusteenOsanTila(new Long(luotuDto.getTutkinnonOsa().getId()), tila);
 
         RakenneOsaDto ro = new RakenneOsaDto();
         ro.setTutkinnonOsaViite(new EntityReference(luotuDto.getId()));

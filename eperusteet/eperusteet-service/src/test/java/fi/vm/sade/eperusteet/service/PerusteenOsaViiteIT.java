@@ -71,7 +71,6 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
     @Before
     public void setUp() {
         Peruste peruste = new Peruste();
-        peruste.setTila(PerusteTila.LUONNOS);
         em.persist(peruste);
         perusteId = peruste.getId();
 
@@ -90,7 +89,6 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
 
         PerusteenOsaViite lapsi = new PerusteenOsaViite();
         TekstiKappale tekstikappale = new TekstiKappale();
-        tekstikappale.setTila(PerusteTila.LUONNOS);
         em.persist(tekstikappale);
 
         tekstikappaleId = tekstikappale.getId();
@@ -102,7 +100,6 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
 
         PerusteenOsaViite lapsenlapsi = new PerusteenOsaViite();
         tekstikappale = new TekstiKappale();
-        tekstikappale.setTila(PerusteTila.LUONNOS);
         em.persist(tekstikappale);
 
         tekstikappaleLapsenlapsiId = tekstikappale.getId();

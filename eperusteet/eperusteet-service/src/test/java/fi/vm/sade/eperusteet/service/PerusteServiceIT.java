@@ -95,7 +95,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         Peruste p = TestUtils.teePeruste();
         p.setSiirtymaAlkaa(new GregorianCalendar(2000, Calendar.MARCH, 12).getTime());
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
-        p.setTila(PerusteTila.VALMIS);
+        p.asetaTila(PerusteTila.VALMIS);
         Suoritustapa s = new Suoritustapa();
         s.setSuoritustapakoodi(Suoritustapakoodi.OPS);
         p.setSuoritustavat(Sets.newHashSet(s));
@@ -105,16 +105,16 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         p = TestUtils.teePeruste();
         p.setSiirtymaAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 4, Calendar.MARCH, 12).getTime());
-        p.setTila(PerusteTila.VALMIS);
+        p.asetaTila(PerusteTila.VALMIS);
         repo.save(p);
 
         p = TestUtils.teePeruste();
-        p.setTila(PerusteTila.VALMIS);
+        p.asetaTila(PerusteTila.VALMIS);
         repo.save(p);
 
         p = TestUtils.teePeruste();
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
-        p.setTila(PerusteTila.VALMIS);
+        p.asetaTila(PerusteTila.VALMIS);
         repo.save(p);
 
         manager.commit(transaction);
