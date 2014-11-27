@@ -8,9 +8,13 @@
   <div id="tutkinnonosat-pikamenu" ng-show="pikamenu.opened">
     <div id="tutkinnonosat-pikamenu-list">
       <ul class="list-group">
-        <li class="list-group-item" ng-repeat="(key, value) in rakenne.tutkinnonOsat" ng-hide="value.poistettu">
-          <a ng-show="tutkinnonOsa.id != key" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosa({ tutkinnonOsaViiteId: value.id, versio: '' })">{{value.nimi || 'nimetön' | kaanna}}</a>
-          <span class="active" ng-show="tutkinnonOsa.id == key">{{value.nimi || 'nimetön' | kaanna}}</span>
+        <li class="list-group-item" ng-repeat="key in keys(rakenne.tutkinnonOsat) | filter:pikamenu.filterFn | orderBy:pikamenu.orderFn">
+          <a ng-show="tutkinnonOsaViite.tutkinnonOsa.id != key" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosa({ tutkinnonOsaViiteId: rakenne.tutkinnonOsat[key].id, versio: '' })">
+            {{rakenne.tutkinnonOsat[key].nimi || 'nimetön' | kaanna}}
+          </a>
+          <span class="active" ng-show="tutkinnonOsaViite.tutkinnonOsa.id == key">
+            {{rakenne.tutkinnonOsat[key].nimi || 'nimetön' | kaanna}}
+          </span>
         </li>
       </ul>
     </div>
