@@ -46,9 +46,8 @@ angular.module('eperusteApp')
       // TODO delete
     }
 
-    function doSave(item) {
+    function doSave(/*item*/) {
       // TODO save
-      $scope.tiedotteet.push(item);
     }
 
     $scope.delete = function (model) {
@@ -103,4 +102,18 @@ angular.module('eperusteApp')
         $modalInstance.close(_.extend($scope.model, {$delete: true}));
       });
     };
+  })
+
+  .config(function($stateProvider) {
+    $stateProvider
+      .state('root.tiedote', {
+        url: '/tiedote/:tiedoteId',
+        templateUrl: 'views/tiedote.html',
+        controller: 'TiedoteViewController'
+      });
+  })
+
+  .controller('TiedoteViewController', function ($scope /*, $stateParams*/) {
+    // TODO hae tiedote $stateParams.tiedoteId
+    $scope.tiedote = null;
   });

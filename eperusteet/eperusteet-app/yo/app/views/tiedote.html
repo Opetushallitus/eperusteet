@@ -1,0 +1,8 @@
+<div class="tiedote-view">
+  <h1 kaanna="'tiedote'"></h1>
+  <h2>{{tiedote.otsikko | kaanna}}</h2>
+  <div class="tiedote-tiedot">
+    {{tiedote.muokattu | aikaleima}}
+  </div>
+  <div class="tiedote-leipateksti" ng-bind-html="tiedote.teksti | kaanna | unsafe"></div>
+</div>

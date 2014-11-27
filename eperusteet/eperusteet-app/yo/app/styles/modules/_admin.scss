@@ -36,3 +36,18 @@
     }
   }
 }
+
+.tiedote-view {
+  h2 {
+    margin-top: 40px;
+  }
+  .tiedote-tiedot {
+    color: #777;
+  }
+  .tiedote-leipateksti {
+    margin-top: 20px;
+    padding-left: 40px;
+    max-width: 900px;
+    margin-bottom: 100px;
+  }
+}
