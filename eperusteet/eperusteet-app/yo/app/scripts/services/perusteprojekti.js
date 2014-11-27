@@ -227,6 +227,7 @@ angular.module('eperusteApp')
       } else {
         getYlStructure().then(function () {
           ylDefer.resolve();
+          sisalto = ylTiedot.sisalto;
           deferred.resolve(ylTiedot.sisalto);
         });
       }

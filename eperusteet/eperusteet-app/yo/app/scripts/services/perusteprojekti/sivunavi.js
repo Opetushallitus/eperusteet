@@ -55,29 +55,34 @@ angular.module('eperusteApp')
   };
 
   function getLink(lapsi) {
+    if (!lapsi.perusteenOsa) {
+      return '';
+    }
+    var params = {
+      perusteenOsaViiteId: lapsi.id,
+      versio: null
+    };
+    if (perusteenTyyppi === 'YL') {
+      _.extend(params, {suoritustapa: 'ops'});
+    }
     return lapsi.perusteenOsa.tunniste && lapsi.perusteenOsa.tunniste === 'rakenne' ?
       ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: ''}] :
-      [
-        STATE_TEKSTIKAPPALE,
-        {
-          perusteenOsaViiteId: lapsi.id,
-          versio: null
-        }
-      ];
+      [STATE_TEKSTIKAPPALE, params];
   }
 
   var processNode = function (node, level) {
     level = level || 0;
     _.each(node.lapset, function (lapsi) {
+      var label = lapsi.perusteenOsa ? lapsi.perusteenOsa.nimi : '';
       items.push({
-        label: lapsi.perusteenOsa.nimi,
+        label: label,
         id: lapsi.id,
         depth: level,
         link: getLink(lapsi),
         isActive: isRouteActive,
         $type: (lapsi.perusteenOsa && lapsi.perusteenOsa.tunniste === 'rakenne') ? 'ep-tree' : 'ep-text'
       });
-      nameMap[lapsi.id] = lapsi.perusteenOsa.nimi;
+      nameMap[lapsi.id] = label;
       processNode(lapsi, level + 1);
     });
   };
@@ -135,8 +140,8 @@ angular.module('eperusteApp')
       });
     } else {
       items = _.clone(AM_ITEMS);
-      processNode(data.projekti.peruste.sisalto);
     }
+    processNode(data.projekti.peruste.sisalto);
     $timeout(function () {
       callbacks.itemsChanged(items);
     });
