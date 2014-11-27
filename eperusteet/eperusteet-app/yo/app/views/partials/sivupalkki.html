@@ -50,11 +50,13 @@ European Union Public Licence for more details.
       </div>
     </div>
     <div class="panel panel-default" ng-controller="TiedotteetController">
-      <div class="panel-heading">Tiedotteet</div>
+      <div class="panel-heading" kaanna="'tiedotteet'"></div>
       <div class="panel-body">
         <p ng-show="tiedotteet.length === 0" kaanna="ei-tiedotteita"></p>
         <ul class="list-unstyled">
-          <li ng-repeat="tiedote in tiedotteet|limitTo:naytto.shown">Tiedote: Jotain muuttui<!-- TODO: tiedotteet--></li>
+          <li ng-repeat="tiedote in tiedotteet|limitTo:naytto.shown">
+            <a>{{tiedote.muokattu || tiedote.luotu | aikaleima:'time':'date'}}: {{tiedote.otsikko | kaanna}}</a>
+          </li>
         </ul>
         <limit-toggler limit="naytto.limit" model="tiedotteet" limiter="naytto.shown"></limit-toggler>
       </div>

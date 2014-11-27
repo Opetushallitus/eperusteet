@@ -88,10 +88,4 @@ angular.module('eperusteApp')
         }
       })();
     };
-  })
-
-  .controller('TiedotteetController', function ($scope) {
-    // TODO tiedotteet toteutus
-    $scope.tiedotteet = [];
-    $scope.naytto = {limit: 5, shown: 5};
   });

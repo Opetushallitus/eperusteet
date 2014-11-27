@@ -1,0 +1,30 @@
+<!-- admin/tiedotteet.html -->
+<div class="admin-tiedotteet">
+  <h2 kaanna="'tiedotteet'"></h2>
+
+  <div class="hallintapainikkeet">
+    <button class="btn btn-default" icon-role="add" kaanna="uusi-tiedote" ng-click="edit()"></button>
+  </div>
+
+  <rajaus model="search.term" placeholder="etsi-tiedotteista" callback="search.changed(value)"></rajaus>
+
+  <p ng-show="!tiedotteet || tiedotteet.length === 0" kaanna="ei-tiedotteita"></p>
+  <table ng-show="tiedotteet.length > 0" class="table table-striped">
+    <tr>
+      <th kaanna="muokattu" width="25%"></th>
+      <th kaanna="'otsikko'"></th>
+      <th kaanna="'toiminto'" width="20%"></th>
+    </tr>
+    <tr ng-repeat="tiedote in filtered = (tiedotteet | filter:search.filterFn) | orderBy:orderFn | startFrom:(paginate.current-1)*paginate.perPage | limitTo: paginate.perPage">
+      <td>{{tiedote.muokattu || tiedote.luotu | aikaleima:'time':'date'}}</td>
+      <td ep-highlight="search.term">{{tiedote.otsikko | kaanna}}</td>
+      <td>
+        <button class="btn btn-default rivinappi" icon-role="edit" kaanna="'muokkaa'" ng-click="edit(tiedote)"></button>
+        <button class="btn btn-default rivinappi" icon-role="remove" kaanna="'poista'" ng-click="delete(tiedote)"></button>
+      </td>
+    </tr>
+  </table>
+
+  <pagination ng-model="paginate.current" total-items="filtered.length" items-per-page="paginate.perPage"></pagination>
+
+</div>

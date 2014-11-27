@@ -45,6 +45,7 @@ angular.module('eperusteApp')
    * default: time (ago)
    * parametrit:
    * 'time' pelkkä päiväys ja kellonaika
+   * 'date' pelkkä päiväys
    * 'ago' pelkkä ihmisluettava esim. '4 tuntia sitten'
    */
   .filter('aikaleima', function ($filter) {

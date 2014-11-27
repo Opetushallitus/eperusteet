@@ -23,3 +23,16 @@
 .excel-alkuun {
   padding: 10px 0px;
 }
+
+.rivinappi {
+  padding: 2px 5px;
+  margin-top: -3px;
+}
+
+.admin-tiedotteet {
+  table {
+    tr:hover {
+      background-color: #eee;
+    }
+  }
+}

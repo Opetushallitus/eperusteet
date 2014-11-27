@@ -13,7 +13,6 @@
     "poista": "Poista",
     "rajaa-tuloksia": "Rajaa...",
     "ei-projekteja": "Sinulla ei ole käynnissä olevia perusteprojekteja.",
-    "ei-tiedotteita": "Ei tiedotteita.",
     "takaisin": "Takaisin",
     "tallennettu": "Tallennettu",
     "tallennus-epaonnistui": "Tallennus epäonnistui",
@@ -41,6 +40,15 @@
     "tyhjenna-rajaus-tooltip": "Tyhjennä rajaus (Esc)",
     "tyhjenna": "Tyhjennä",
     "poistu": "Poistu",
+
+    "tiedotteet": "Tiedotteet",
+    "ei-tiedotteita": "Ei tiedotteita.",
+    "uusi-tiedote": "Lisää tiedote",
+    "etsi-tiedotteista": "Etsi tiedotteista",
+    "tiedote-teksti-placeholder": "Kirjoita tiedotteen teksti",
+    "poistetaanko-tiedote": "Poistetaanko tiedote?",
+    "muokkaa-tiedotetta": "Muokkaa tiedotetta",
+    "tiedoteteksti": "Tiedoteteksti",
 
     "ops-ja-tutkintojen-perusteet": "Opetussuunnitelmien ja tutkintojen perusteet",
 
@@ -179,7 +187,7 @@
     "ohje-ryhma-laajuus": "Laajuus määrittää kuinka monen yksikön edestä ryhmä voi sisältää osia",
     "ohje-ryhma-koko": "Koko määrittää montako osaa ryhmä voi sisältää",
 
-    "otsikko": "otsikko",
+    "otsikko": "Otsikko",
     "kopioi-muokattavaksi": "Kopioi muokattavaksi",
     "tutkinnonosa-kopioitu-onnistuneesti": "Tutkinnon osa kopioitu onnistuneesti",
     "tekstikappale-kopioitu-onnistuneesti": "Tekstikappale kopioitu onnistuneesti",
