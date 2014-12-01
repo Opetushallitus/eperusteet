@@ -17,7 +17,7 @@
     </div>
     <h2 kaanna="tutkinnon-rakenne"></h2>
     <div class="tree-con" ng-show="muokkaus || rakenne.rakenne.osat.length > 0">
-      <rajaus size="small" classes="puun-rajaus" model="apumuuttujat.haku" placeholder="Etsi rakenteesta..."></rajaus>
+      <rajaus size="small" classes="puun-rajaus" model="apumuuttujat.haku" placeholder="{{ 'etsi-rakenteesta' || kaanna }}"></rajaus>
       <div ng-show="rakenne.$resolved && rakenne.rakenne.osat.length === 0" class="tree-con-empty">
         <span ng-if="!esitys">
           <div ng-show="muokkaus" class="empty-bubble distance-editing" kaanna>aloita-raahaamalla-puuhun</div>
