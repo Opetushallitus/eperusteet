@@ -52,8 +52,8 @@ angular.module('eperusteApp')
     };
 
     this.getBackState = function () {
-      return instance ? ['root.perusteprojekti.osaalue', params] :
-      ['root.perusteprojekti.osalistaus', {osanTyyppi: PerusopetusService.OPPIAINEET}];
+      return instance ? ['root.perusteprojekti.suoritustapa.osaalue', params] :
+      ['root.perusteprojekti.osalistaus', {suoritustapa: 'perusopetus', osanTyyppi: PerusopetusService.OPPIAINEET}];
     };
 
     this.presave = function (model) {
@@ -238,7 +238,8 @@ angular.module('eperusteApp')
             callback: function () {
               OppimaaraHelper.init($scope.editableModel, $stateParams);
               $scope.oppimaaraRequested = true;
-              $state.go('root.perusteprojekti.osaalue', {
+              $state.go('root.perusteprojekti.suoritustapa.osaalue', {
+                suoritustapa: $stateParams.suoritustapa,
                 osanTyyppi: PerusopetusService.OPPIAINEET,
                 osanId: 'uusi',
                 tabId: 0
@@ -356,7 +357,7 @@ angular.module('eperusteApp')
     }
 
     $scope.generateLink = function (model) {
-      return $state.href('root.perusteprojekti.osaalue', _.extend(_.clone($stateParams), {
+      return $state.href('root.perusteprojekti.suoritustapa.osaalue', _.extend(_.clone($stateParams), {
         osanId: _.isObject(model) ? model.id : model,
         tabId: 0
       }));

@@ -82,8 +82,8 @@ angular.module('eperusteApp')
       'koulutustyyppi_1': 'ops',
       'koulutustyyppi_11': 'naytto',
       'koulutustyyppi_12': 'naytto',
-      'koulutustyyppi_15': 'ops',
-      'koulutustyyppi_16': 'ops',
+      'koulutustyyppi_16': 'perusopetus',
+
     };
 
     this.kielet = {
@@ -102,6 +102,10 @@ angular.module('eperusteApp')
 
     this.isPerusopetus = function (peruste) {
       return peruste.koulutustyyppi === 'koulutustyyppi_16';
+    };
+
+    this.isEsiopetus = function (peruste) {
+      return peruste.koulutustyyppi === 'koulutustyyppi_15';
     };
 
     this.validSuoritustapa = function (peruste, suoritustapa) {

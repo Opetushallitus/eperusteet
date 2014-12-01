@@ -32,9 +32,9 @@ angular.module('eperusteApp')
         perusteenOsaViiteId: id || response.id,
         versio: ''
       };
-      if (YleinenData.isPerusopetus(peruste)) {
+      /*if (YleinenData.isPerusopetus(peruste)) {
         _.extend(params, {suoritustapa: 'ops'});
-      }
+      }*/
       $state.go('root.perusteprojekti.suoritustapa.tekstikappale', params, {reload: true});
     }
 
@@ -52,7 +52,7 @@ angular.module('eperusteApp')
         PerusopetusService.deleteOsa({$url: 'dummy', id: viiteId}, function () {
           Editointikontrollit.cancelEditing();
           Notifikaatiot.onnistui('poisto-onnistui');
-          $state.go('root.perusteprojekti.perusopetus', {}, {reload: true});
+          $state.go('root.perusteprojekti.suoritustapa.posisalto', {}, {reload: true});
         });
       } else {
         PerusteenOsaViitteet.delete({viiteId: viiteId}, {}, function () {

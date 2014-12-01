@@ -23,8 +23,8 @@ angular.module('eperusteApp')
   var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
   var STATE_TUTKINNON_OSA = 'root.perusteprojekti.suoritustapa.tutkinnonosa';
   var STATE_TEKSTIKAPPALE = 'root.perusteprojekti.suoritustapa.tekstikappale';
-  var STATE_OSALISTAUS = 'root.perusteprojekti.osalistaus';
-  var STATE_OSAALUE = 'root.perusteprojekti.osaalue';
+  var STATE_OSALISTAUS = 'root.perusteprojekti.suoritustapa.osalistaus';
+  var STATE_OSAALUE = 'root.perusteprojekti.suoritustapa.osaalue';
   var isTutkinnonosatActive = function () {
     return $state.is(STATE_OSAT) || $state.is(STATE_TUTKINNON_OSA);
   };
@@ -132,7 +132,7 @@ angular.module('eperusteApp')
       _.each(PerusopetusService.LABELS, function (key, label) {
         items.push({
           label: label,
-          link: [STATE_OSALISTAUS, {osanTyyppi: key}]
+          link: [STATE_OSALISTAUS, {suoritustapa: 'perusopetus', osanTyyppi: key}]
         });
         mapYL(tiedot[key], key);
       });

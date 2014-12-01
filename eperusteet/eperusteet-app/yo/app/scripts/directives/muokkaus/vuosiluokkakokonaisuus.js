@@ -115,7 +115,7 @@ angular.module('eperusteApp')
         editTitle: 'muokkaa-vuosiluokkakokonaisuutta',
         newTitle: 'uusi-vuosiluokkakokonaisuus',
         backLabel: 'vuosiluokkakokonaisuudet',
-        backState: ['root.perusteprojekti.osalistaus', {osanTyyppi: PerusopetusService.VUOSILUOKAT}],
+        backState: ['root.perusteprojekti.suoritustapa.osalistaus', {suoritustapa: $stateParams.suoritustapa, osanTyyppi: PerusopetusService.VUOSILUOKAT}],
         removeWholeLabel: 'poista-vuosiluokkakokonaisuus',
         removeWholeConfirmationText: 'poistetaanko-vuosiluokkakokonaisuus',
         removeWholeFn: function () {

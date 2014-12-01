@@ -72,7 +72,7 @@ angular.module('eperusteApp')
         editTitle: 'muokkaa-osaaminen',
         newTitle: 'uusi-osaaminen',
         backLabel: 'laaja-alainen-osaaminen',
-        backState: ['root.perusteprojekti.osalistaus', {osanTyyppi: PerusopetusService.OSAAMINEN}],
+        backState: ['root.perusteprojekti.suoritustapa.osalistaus', {suoritustapa: $stateParams.suoritustapa ,osanTyyppi: PerusopetusService.OSAAMINEN}],
         removeWholeLabel: 'poista-osaamiskokonaisuus',
         removeWholeConfirmationText: 'poistetaanko-osaamiskokonaisuus',
         removeWholeFn: function () {

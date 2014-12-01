@@ -97,8 +97,9 @@ angular.module('eperusteApp')
           projekti.koulutustyyppi = peruste.koulutustyyppi;
         }
         if (YleinenData.isPerusopetus(projekti)) {
-          return $state[method]('root.perusteprojekti.perusopetus', {
-            perusteProjektiId: projekti.id
+          return $state[method]('root.perusteprojekti.suoritustapa.posisalto', {
+            perusteProjektiId: projekti.id,
+            suoritustapa: 'perusopetus'
           });
         } else {
           var suoritustapa = (getSuoritustapa() !== '' && !_.isUndefined(peruste)) ? getSuoritustapa() :

@@ -1,0 +1,39 @@
+<div class="main-content" id="main">
+  <div class="row tutkinto-sisalto">
+    <div class="tutkinto">
+      <div ng-hide="editing">
+        <div class="toolbar-input pull-left">
+          <rajaus model="rajaus" placeholder="etsi-sisallosta" callback="rajaaSisaltoa(value)"></rajaus>
+        </div>
+        <a ng-click="avaaSuljeKaikki()" class="open-close action-link"><span class="avaa-sulje" icon-role="ep-open-close">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
+      </div>
+
+      <div class="clearfix"></div>
+<!--
+      <div ng-hide="editing">
+        <h2>{{'opetuksen-sisallot' | kaanna}}</h2>
+        <div content-tree="datat.opetus.lapset" filter-by="rajaus" no-content-placeholder="suoritustavalle-ei-ole-viela-sisaltoa"></div>
+      </div>-->
+
+      <h2 ng-hide="editing">
+        {{ 'tekstikappaleet' | kaanna }} ({{ peruste.sisalto.lapset.length }})
+        <div class="pull-right buttons">
+          <button type="button" class="btn btn-default btn-sm" ng-click="addTekstikappale()" icon-role="ep-text-add" kaanna="lisaa-tutkintokohtainen-osa"></button>
+          <button class="btn btn-default btn-sm" ng-click="edit()" icon-role="edit" kaanna="muokkaa-rakennetta">
+          </button>
+        </div>
+      </h2>
+      <div ng-show="editing">
+        <h2>
+          {{'Muokkaa tekstikappaleiden rakennetta' | kaanna}}
+          <a ng-click="avaaSuljeKaikki()" class="open-close action-link"><span class="avaa-sulje" icon-role="ep-open-close">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
+        </h2>
+      </div>
+      <div class="clearfix"></div>
+
+      <div content-tree="peruste.sisalto.lapset" filter-by="rajaus" no-content-placeholder="suoritustavalle-ei-ole-viela-sisaltoa"
+           edit-mode="editing"></div>
+
+    </div>
+  </div>
+</div>
