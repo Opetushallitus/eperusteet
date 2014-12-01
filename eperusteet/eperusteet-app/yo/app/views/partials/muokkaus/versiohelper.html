@@ -11,7 +11,7 @@
       <th class="muokattu" kaanna>muokattu</th>
     </tr>
     <tr ng-repeat="ver in versions.list | startFrom:paginate.perPage*(paginate.current-1) | limitTo:paginate.perPage"
-        ng-click="close(ver)" class="navigoitava" title="{{'Tarkastele versiota' | kaanna}}">
+        ng-click="close(ver)" class="navigoitava" title="{{'tarkastele-versiota' | kaanna}}">
       <td><a class="action-link" ng-click="$event.stopPropagation(); close(ver);">{{ ver.index }}</a></td>
       <td>{{ ver.$nimi }}</td>
       <td>{{ ver.kommentti || '-' }}</td>

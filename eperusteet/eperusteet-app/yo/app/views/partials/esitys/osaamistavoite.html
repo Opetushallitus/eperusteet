@@ -1,5 +1,5 @@
 <h4 ng-show="$first">{{tavoite.nimi | kaanna}}</h4>
-<h4>{{tavoite.pakollinen && 'Pakolliset osaamistavoitteet' || 'Valinnaiset osaamistavoitteet' | kaanna}}, {{tavoite.laajuus}} {{yksikko|kaanna}}</h4>
+<h4>{{tavoite.pakollinen && 'pakolliset-osaamistavoitteet' || 'valinnaiset-osaamistavoitteet' | kaanna}}, {{tavoite.laajuus}} {{yksikko|kaanna}}</h4>
 <div class="leipateksti" ng-bind-html="tavoite.tavoitteet | kaanna | unsafe"></div>
 
 <div ng-if="hasArviointi(tavoite)">

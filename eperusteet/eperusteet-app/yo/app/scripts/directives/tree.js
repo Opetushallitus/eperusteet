@@ -111,7 +111,7 @@ angular.module('eperusteApp')
           '    <div class="osaamisala" ng-show="rakenne.osaamisala"><b kaanna="osaamisala"></b>: {{ rakenne.osaamisala.nimi | kaanna }} ({{ rakenne.osaamisala.osaamisalakoodiArvo }})</div>' +
           '    <p ng-show="rakenne.kuvaus && rakenne.kuvaus[lang].length > 0">{{ rakenne.kuvaus | kaanna }}</p>' +
           '  </div>' +
-          '  <div class="avausnappi" ng-click="rakenne.$showKuvaus = !rakenne.$showKuvaus" ng-attr-title="{{rakenne.$showKuvaus && (\'Piilota ryhmän kuvaus\'|kaanna) || (\'Näytä ryhmän kuvaus\'|kaanna)}}">' +
+          '  <div class="avausnappi" ng-click="rakenne.$showKuvaus = !rakenne.$showKuvaus" ng-attr-title="{{rakenne.$showKuvaus && (\'piilota-ryhman-kuvaus\'|kaanna) || (\'nayta-ryhman-kuvaus\'|kaanna)}}">' +
           '  <div class="avausnappi-painike">&hellip;</div></div>' +
           '</div>' +
           '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="virhe">' +

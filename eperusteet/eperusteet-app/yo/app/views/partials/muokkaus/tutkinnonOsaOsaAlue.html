@@ -23,16 +23,16 @@
       <span class="glyphicon" ng-class="tavoite.$open ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
       {{ tavoite.nimi | kaanna }}
     </accordion-heading>
-    
+
     <label>{{'nimi'| kaanna}}*</label>
       <ml-input ml-data="tavoite.nimi" type="text"></ml-input>
 
     <h3 ng-show="tavoite.pakollinen === true">
-      {{('Pakolliset osaamistavoitteet'| kaanna)}}, {{tavoite.laajuus}} {{'osp'| kaanna}}
+      {{('pakolliset-osaamistavoitteet'| kaanna)}}, {{tavoite.laajuus}} {{'osp'| kaanna}}
       <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite)" kaanna="poista"></button></span>
-    </h3> 
+    </h3>
     <h3 ng-show="tavoite.pakollinen === false">
-      {{('Valinnaiset osaamistavoitteet'| kaanna)}}, {{tavoite.laajuus}} {{'osp'| kaanna}}
+      {{('valinnaiset-osaamistavoitteet'| kaanna)}}, {{tavoite.laajuus}} {{'osp'| kaanna}}
       <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite)" kaanna="poista"></button></span>
     </h3>
 
@@ -51,7 +51,7 @@
 
     <div ng-show="tavoite.lapsi && tavoite.lapsi.$poistettu === false">
     <h3>
-      {{('Valinnaiset osaamistavoitteet'| kaanna)}}, {{tavoite.lapsi.laajuus}} {{'osp'| kaanna}}
+      {{('valinnaiset-osaamistavoitteet'| kaanna)}}, {{tavoite.lapsi.laajuus}} {{'osp'| kaanna}}
       <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite.lapsi)" kaanna="poista"></button></span>
     </h3>
     <div class="non-collapsibles">
