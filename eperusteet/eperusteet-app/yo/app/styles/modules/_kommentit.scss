@@ -15,6 +15,9 @@ $kommentti-avatar-margin: 10px;
   h3 {
     padding-top: 8px;
   }
+  hr {
+    margin-top: 10px;
+  }
 }
 
 .kommentti-avatar {
@@ -22,6 +25,18 @@ $kommentti-avatar-margin: 10px;
 }
 
 .kommentti-footer {
+  margin-top: 15px;
+  .aikaleima {
+    color: #888;
+    margin-right: 10px;
+  }
+  .muokattu {
+    font-weight: 700;
+    margin-right: 0.5em;
+  }
+  .action-link {
+    margin-right: 10px;
+  }
 }
 
 .kommentti-poistettu {

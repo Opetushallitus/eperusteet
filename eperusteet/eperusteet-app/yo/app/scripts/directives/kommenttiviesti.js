@@ -120,12 +120,12 @@ angular.module('eperusteApp')
       '      </div>' +
       '    </div>' +
       '    <div class="kommentti-footer">' +
-      '      <span ng-if="viesti.muokattu"><i><b>Muokattu </b>{{ viesti.muokattu | aikaleima }}</i></span>' +
-      '      <span ng-if="!viesti.muokattu"><i>{{ viesti.luotu | aikaleima }}</i></span>' +
-      '      <a href="" ng-click="viesti.$lisaa = true" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }" kaanna>vastaa</a>' +
+      '      <span ng-if="viesti.muokattu" class="aikaleima"><span class="muokattu" kaanna="\'muokattu\'"></span>{{ viesti.muokattu | aikaleima }}</span>' +
+      '      <span ng-if="!viesti.muokattu" class="aikaleima">{{ viesti.luotu | aikaleima }}</span>' +
+      '      <a class="action-link" ng-click="viesti.$lisaa = true" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }" kaanna>vastaa</a>' +
       '      <span ng-show="viesti.viestit.length > 0">' +
-      '        <a ng-show="viesti.$piilotaAliviestit" href="" ng-click="viesti.$piilotaAliviestit = false" kaanna>nayta-aliviestit</a>' +
-      '        <a ng-hide="viesti.$piilotaAliviestit" href="" ng-click="viesti.$piilotaAliviestit = true" kaanna>piilota-aliviestit</a>' +
+      '        <a class="action-link" ng-show="viesti.$piilotaAliviestit" ng-click="viesti.$piilotaAliviestit = false" kaanna>nayta-aliviestit</a>' +
+      '        <a class="action-link" ng-hide="viesti.$piilotaAliviestit" ng-click="viesti.$piilotaAliviestit = true" kaanna>piilota-aliviestit</a>' +
       '      </span>' +
       '    </div>' +
       '  </div>' +
