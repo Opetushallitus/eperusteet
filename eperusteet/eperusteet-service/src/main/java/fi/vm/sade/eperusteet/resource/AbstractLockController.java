@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
 import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
+import fi.vm.sade.eperusteet.service.internal.LockManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -32,12 +34,17 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 /**
  *
  * @author jhyoty
+ * @param <T>
  */
 public abstract class AbstractLockController<T> {
+
+    @Autowired
+    private LockManager lukkomanageri;
 
     @RequestMapping(method = GET)
     public ResponseEntity<LukkoDto> checkLock(T ctx) {
         LukkoDto lock = service().getLock(ctx);
+        lukkomanageri.lisaaNimiLukkoon(lock);
         return lock == null ? new ResponseEntity<LukkoDto>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(lock, eTagHeader(lock.getRevisio()), HttpStatus.OK);
     }
 

@@ -19,6 +19,7 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import java.util.List;
+import java.util.concurrent.Future;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -29,6 +30,9 @@ public interface KayttajanTietoService {
 
     @PreAuthorize("isAuthenticated()")
     KayttajanTietoDto hae(String oid);
+
+    @PreAuthorize("isAuthenticated()")
+    Future<KayttajanTietoDto> haeAsync(String oid);
 
     @PreAuthorize("isAuthenticated()")
     List<KayttajanProjektitiedotDto> haePerusteprojektit(String oid);

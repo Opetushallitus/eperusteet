@@ -38,6 +38,7 @@ import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.KommenttiService;
+import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
@@ -484,7 +485,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     public LukkoDto getLock(Long id) {
         assertExists(id);
-        return LukkoDto.of(lockManager.getLock(id));
+        LukkoDto lukko = LukkoDto.of(lockManager.getLock(id));
+        lockManager.lisaaNimiLukkoon(lukko);
+        return lukko;
     }
 
     private void assertExists(Long id) {

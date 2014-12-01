@@ -35,6 +35,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import static fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser.parsiKayttaja;
+import java.util.concurrent.Future;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 
 /**
  *
@@ -56,6 +59,12 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
 
     @Autowired
     RestClientFactory restClientFactory;
+
+    @Override
+    @Async
+    public Future<KayttajanTietoDto> haeAsync(String oid) {
+        return new AsyncResult<>(hae(oid));
+    }
 
     @Override
     @Cacheable("kayttajat")

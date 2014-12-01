@@ -151,7 +151,7 @@ angular.module('eperusteApp')
         if (res.haltijaOid && new Date() <= new Date(res.vanhentuu) && !res.oma) {
           scope.isLocked = true;
           scope.lockNotification = Kaanna.kaanna('lukitus-kayttajalla', {
-            user: res.data ? res.data.haltijaOid : ''
+            user: res.haltijaNimi || res.haltijaOid
           });
         }
         else {
