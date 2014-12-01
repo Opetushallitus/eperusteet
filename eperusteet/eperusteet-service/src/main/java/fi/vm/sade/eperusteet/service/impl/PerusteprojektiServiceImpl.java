@@ -314,7 +314,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 if (suoritustapa.getRakenne() != null) {
                     validointi = PerusteenRakenne.validoiRyhma(suoritustapa.getRakenne());
                     if (!validointi.ongelmat.isEmpty()) {
-                        updateStatus.addStatus("Rakenteen validointi virhe", suoritustapa.getSuoritustapakoodi(), validointi);
+                        updateStatus.addStatus("rakenteen-validointi-virhe", suoritustapa.getSuoritustapakoodi(), validointi);
                         updateStatus.setVaihtoOk(false);
                     }
                 }

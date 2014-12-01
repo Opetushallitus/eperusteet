@@ -797,6 +797,12 @@
     "muokkaa-termia": "Muokkaa termiä",
     "uusi-termi": "Lisää uusi termi",
     "termi": "Termi",
-    "selitys": "Selitys"
+    "selitys": "Selitys",
 
+    "perusteelta-puuttuu-nimi": "Perusteelta puuttuu nimi",
+    "rakenteen-validointi-virhe": "Rakenteessa validointivirhe",
+    "liittamattomia-tutkinnon-osia": "Liittämättömiä tutkinnon osia",
+    "koodittomia-tutkinnon-osia": "Kaikilla tutkinnon osilla ei koodia",
+    "tutkinnon-osan-asetettua-koodia-ei-koodistossa": "Tutkinnon osan koodia ei koodistossa",
+    "tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta": "Tutkintonimikkeen vaatimaa tutkinnon osan koodia ei löytynyt miltään tutkinnon osalta"
 }
