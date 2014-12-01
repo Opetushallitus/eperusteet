@@ -15,7 +15,7 @@
               oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
     </div>
     <button ng-show="isPublished() && !editEnabled" ng-click="kopioiMuokattavaksi()"
-            class="floater btn btn-danger" icon-role="ep-text-clone" kaanna="kopioi-muokattavaksi"
+            class="floater btn btn-danger" icon-role="ep-text-clone" kaanna="'kopioi-muokattavaksi'"
             oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
     <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
 
@@ -38,10 +38,9 @@
   </div>
 
   <a ng-if="config.backLabel" ng-show="!editEnabled" icon-role="back" ng-href="{{generateBackHref()}}">{{config.backLabel | kaanna}}</a>
-  <h1 ng-show="!editEnabled">{{config.title() | kaanna}}</h1>
+  <h1 ng-show="!editEnabled" ng-bind-html="config.title() | kaanna"></h1>
   <h1 ng-show="editEnabled">
-    <span ng-show="!isNew">{{config.editTitle | kaanna}}</span>
-    <span ng-show="isNew">{{config.newTitle | kaanna}}</span>
+    <span>{{ isNew ? config.newTitle : config.editTitle | kaanna}}</span>
   </h1>
 
   <!-- TODO: pikamenu -->
