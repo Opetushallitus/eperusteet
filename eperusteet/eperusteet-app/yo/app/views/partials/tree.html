@@ -72,7 +72,7 @@
       <div class="skratchpad-list-header" kaanna>tutkinnonosat</div>
       <div class="skratchpad-list-body">
         <div ng-show="tutkinnonOsat.rajaus || tutkinnonOsat.multiPage" class="tutkinnonosa-rajaus">
-          <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia...">
+          <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="{{ 'rajaa-tutkinnonosia' | kaanna }}">
         </div>
         <div class="optiolaatikko">
           <a class="action-link" ng-click="toggleNotUsed()">{{ piilotaKaikki ? 'näytä-kaikki' : 'vain-käyttämättömät' | kaanna }}</a>
