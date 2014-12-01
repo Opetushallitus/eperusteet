@@ -29,7 +29,7 @@ European Union Public Licence for more details.
   <div class="part-header-wrapper">
     <div class="action-buttons">
       <div class="floater" ng-attr-title="{{lockNotification}}">
-        <button ng-disabled="isLocked" ng-hide="editEnabled || !versiot.latest"
+        <button ng-disabled="isLocked" ng-hide="tekstikappale.tila === 'valmis' || editEnabled || !versiot.latest"
                 ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
                 oikeustarkastelu="[{target:'peruste',permission:'muokkaus'},{target:'peruste',permission:'korjaus'}]"></button>
       </div>
