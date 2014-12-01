@@ -138,13 +138,14 @@ angular.module('eperusteApp')
       Notifikaatiot.serverCb);
     }
 
-    function muokkaaKommenttia(viesti, uusiviesti) {
+    function muokkaaKommenttia(viesti, uusiviesti, cb) {
       KommentitCRUD.update({
         id: viesti.id
       }, { sisalto: uusiviesti },
       function(res) {
         viesti.sisalto = res.sisalto;
         viesti.muokattu = res.muokattu;
+        (cb || angular.noop)(res);
       },
       Notifikaatiot.serverCb);
     }

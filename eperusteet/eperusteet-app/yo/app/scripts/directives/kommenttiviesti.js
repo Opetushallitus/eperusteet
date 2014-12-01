@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('eperusteApp')
-  .directive('kommenttiViesti', function ($timeout, $compile, kommenttiViestiTemplate) {
+  .directive('kommenttiViesti', function ($timeout, $compile, kommenttiViestiTemplate, Algoritmit) {
     return {
       restrict: 'AE',
       template: '',
@@ -28,6 +28,7 @@ angular.module('eperusteApp')
       },
       link: function (scope, element) {
         scope.$watch('sisalto.$resolved', function () {
+          scope.processMessages();
           $timeout(function () {
             element.html('');
             $compile(kommenttiViestiTemplate)(scope, function (clone) {
@@ -55,6 +56,14 @@ angular.module('eperusteApp')
           $scope.oidResolved = true;
         }
 
+        $scope.processMessage = function (item) {
+          item.$nimikirjaimet = $scope.nimikirjaimet(item.nimi || item.muokkaaja);
+        };
+
+        $scope.processMessages = function () {
+          Algoritmit.kaikilleLapsisolmuille($scope.sisalto, 'viestit', $scope.processMessage);
+        };
+
         $scope.poistaKommentti = $scope.$parent.poistaKommentti;
         $scope.muokkaaKommenttia = $scope.$parent.muokkaaKommenttia;
         $scope.lisaaKommentti = $scope.$parent.lisaaKommentti;
@@ -69,8 +78,17 @@ angular.module('eperusteApp')
         };
         $scope.saveEditing = function (viesti) {
           $scope.editoi = false;
-          $scope.muokkaaKommenttia(viesti, angular.copy($scope.model.editoitava));
+          $scope.muokkaaKommenttia(viesti, angular.copy($scope.model.editoitava), function () {
+            $scope.processMessage(viesti);
+          });
           $scope.model.editoitava = '';
+        };
+        $scope.saveNew = function (viesti, editoitava) {
+          $scope.lisaaKommentti(viesti, editoitava, function () {
+            $scope.processMessages();
+          });
+          editoitava = '';
+          viesti.$lisaa = false;
         };
       }
     };
@@ -83,7 +101,7 @@ angular.module('eperusteApp')
       '</div>' +
       '<div ng-if="!viesti.poistettu">' +
       '  <div class="pull-left ryhma-jasen-avatar kommentti-avatar">' +
-      '    <div class="nimikirjain-avatar">{{ nimikirjaimet(viesti.nimi || viesti.muokkaaja) }}</div>' +
+      '    <div class="nimikirjain-avatar">{{viesti.$nimikirjaimet}}</div>' +
       '  </div>' +
       '  <div class="kommentti-sisalto">' +
       '    <h3>' +
@@ -102,8 +120,8 @@ angular.module('eperusteApp')
       '      </div>' +
       '    </div>' +
       '    <div class="kommentti-footer">' +
-      '      <span ng-show="viesti.muokattu"><i><b>Muokattu </b>{{ viesti.muokattu | aikaleima }}</i></span>' +
-      '      <span ng-hide="viesti.muokattu"><i>{{ viesti.luotu | aikaleima }}</i></span>' +
+      '      <span ng-if="viesti.muokattu"><i><b>Muokattu </b>{{ viesti.muokattu | aikaleima }}</i></span>' +
+      '      <span ng-if="!viesti.muokattu"><i>{{ viesti.luotu | aikaleima }}</i></span>' +
       '      <a href="" ng-click="viesti.$lisaa = true" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }" kaanna>vastaa</a>' +
       '      <span ng-show="viesti.viestit.length > 0">' +
       '        <a ng-show="viesti.$piilotaAliviestit" href="" ng-click="viesti.$piilotaAliviestit = false" kaanna>nayta-aliviestit</a>' +
@@ -118,7 +136,7 @@ angular.module('eperusteApp')
       '    <textarea class="form-control msd-elastic" ng-model="editoitava"></textarea>' +
       '    <div class="kommentti-painikkeet">' +
       '      <button class="btn" ng-click="viesti.$lisaa = false" kaanna>peruuta</button>' +
-      '      <button class="btn btn-primary" ng-click="lisaaKommentti(viesti, editoitava); editoitava = \'\'; viesti.$lisaa = false" kaanna>tallenna</button>' +
+      '      <button class="btn btn-primary" ng-click="saveNew(viesti, editoitava)" kaanna>tallenna</button>' +
       '    </div>' +
       '    <div class="clearfix"></div>' +
       '  </div>' +

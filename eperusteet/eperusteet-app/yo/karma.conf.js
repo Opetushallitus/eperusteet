@@ -35,6 +35,7 @@ module.exports = function(config) {
       'app/bower_components/ckeditor/ckeditor.js',
       'app/bower_components/lodash/dist/lodash.js',
       'app/bower_components/momentjs/moment.js',
+      'app/bower_components/angular-cache/dist/angular-cache.min.js',
       'app/scripts/*.js',
       'app/scripts/**/*.js',
       'test/mock/**/*.js',
