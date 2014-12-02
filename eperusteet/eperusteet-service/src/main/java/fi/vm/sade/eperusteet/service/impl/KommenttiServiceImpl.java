@@ -17,7 +17,9 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Kommentti;
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.repository.KommenttiRepository;
+import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KommenttiService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -25,6 +27,12 @@ import fi.vm.sade.eperusteet.service.security.PermissionChecker;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,6 +58,9 @@ public class KommenttiServiceImpl implements KommenttiService {
     @Dto
     private DtoMapper mapper;
 
+    @Autowired
+    private KayttajanTietoService kayttajat;
+
     @Override
     @Transactional(readOnly = true)
     public KommenttiDto get(Long kommenttiId) {
@@ -59,7 +70,6 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("isAuthenticated()")
     public List<KommenttiDto> getAllByPerusteenOsa(Long perusteenOsaId) {
         List<Kommentti> re = kommentit.findAllByPerusteenOsa(perusteenOsaId);
         return mapper.mapAsList(re, KommenttiDto.class);
@@ -100,6 +110,15 @@ public class KommenttiServiceImpl implements KommenttiService {
         return mapper.mapAsList(re, KommenttiDto.class);
     }
 
+    @Transactional
+    private void addName(Kommentti k) {
+        try {
+            KayttajanTietoDto ktd = kayttajat.haeAsync(k.getLuoja()).get(5000, TimeUnit.SECONDS);
+            k.setNimi(ktd.getKutsumanimi() + " " + ktd.getSukunimi());
+        } catch (InterruptedException | ExecutionException | TimeoutException ex) {
+        }
+    }
+
     @Override
     @Transactional
     public KommenttiDto add(final KommenttiDto kommenttidto) {
@@ -115,6 +134,7 @@ public class KommenttiServiceImpl implements KommenttiService {
             kommentti.setParentId(parent.getId());
             kommentti.setYlinId(parent.getYlinId() == null ? parent.getId() : parent.getYlinId());
         }
+        addName(kommentti);
         return mapper.map(kommentit.save(kommentti), KommenttiDto.class);
     }
 

@@ -1,0 +1,1 @@
+ALTER TABLE kommentti ADD COLUMN nimi VARCHAR(255);
