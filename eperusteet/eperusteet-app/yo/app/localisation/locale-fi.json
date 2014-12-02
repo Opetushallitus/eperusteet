@@ -789,6 +789,8 @@
     "termin-selitys-placeholder": "Kirjoita termin selitys",
     "termia-ei-loytynyt": "Viitattua termiä ei löytynyt",
 
+    "projektin-ryhma": "Projektin työryhmä",
+
     "perusteen-termisto": "Termistö",
     "perusteen-termisto-ohje": "Tekstikappaleissa voidaan viitata termiin ja näyttää sen selitys. Termistö on perustekohtainen.",
     "ei-termeja": "Yhtään termiä ei ole määritelty.",

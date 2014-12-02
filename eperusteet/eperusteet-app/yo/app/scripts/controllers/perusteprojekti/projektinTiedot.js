@@ -62,7 +62,7 @@ angular.module('eperusteApp')
   })
   .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams, $modal, $timeout, $translate,
     PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, perusteprojektiTiedot, Notifikaatiot,
-    Perusteet, Editointikontrollit) {
+    Perusteet, Editointikontrollit, Organisaatioryhmat) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
     $scope.lang = $translate.use() || $translate.preferredLanguage();
@@ -115,16 +115,19 @@ angular.module('eperusteApp')
       $scope.tabs.push({otsikko: 'projekti-toimikausi', url: 'views/partials/perusteprojekti/toimikausi.html'});
     }
 
-    $scope.haeRyhma = function() {
-      $modal.open({
-        templateUrl: 'views/modals/tuotyoryhma.html',
-        controller: 'TyoryhmanTuontiModalCtrl'
-      })
-      .result.then(function(ryhma) {
-        $scope.projekti.ryhmaOid = ryhma.oid;
-        $scope.projekti.$ryhmaNimi = ryhma.nimi;
-      });
-    };
+    Organisaatioryhmat.yksi({ oid: $scope.projekti.ryhmaOid }, function(res) {
+      $scope.$ryhmaNimi = res.nimi;
+      $scope.haeRyhma = function() {
+        $modal.open({
+          templateUrl: 'views/modals/tuotyoryhma.html',
+          controller: 'TyoryhmanTuontiModalCtrl'
+        })
+        .result.then(function(ryhma) {
+          $scope.projekti.ryhmaOid = ryhma.oid;
+          $scope.$ryhmaNimi = ryhma.nimi;
+        });
+      };
+    });
 
     $scope.mergeProjekti = function(tuoPohja) {
       PerusteProjektiService.mergeProjekti($scope.projekti, tuoPohja).then(function(peruste, projekti) {
