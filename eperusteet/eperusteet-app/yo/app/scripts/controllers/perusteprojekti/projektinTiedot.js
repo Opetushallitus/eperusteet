@@ -151,7 +151,6 @@ angular.module('eperusteApp')
       }
 
       PerusteprojektiResource.update(projekti, function(vastaus) {
-        $scope.puhdistaValinta();
         if ($scope.wizardissa()) {
           PerusteProjektiService.goToProjektiState(vastaus, projekti);
         }
@@ -163,7 +162,6 @@ angular.module('eperusteApp')
   })
   .controller('TyoryhmanTuontiModalCtrl', function($scope, $modalInstance, $translate, Organisaatioryhmat, Algoritmit) {
     $scope.haetaan = true;
-    $scope.moro = 'moro';
     $scope.error = false;
     $scope.rajaus = '';
     $scope.lang = 'nimi.' + $translate.use() || $translate.preferredLanguage();
