@@ -126,8 +126,11 @@ angular.module('eperusteApp')
       '        <span kaanna>vastaa</span>' +
       '      </a>' +
       '      <span ng-show="viesti.viestit.length > 0">' +
-      '        <a class="action-link" ng-show="viesti.$piilotaAliviestit" ng-click="viesti.$piilotaAliviestit = false" kaanna>nayta-aliviestit</a>' +
-      '        <a class="action-link" ng-hide="viesti.$piilotaAliviestit" ng-click="viesti.$piilotaAliviestit = true" kaanna>piilota-aliviestit</a>' +
+      '        <a class="action-link" ng-click="viesti.$piilotaAliviestit = !viesti.$piilotaAliviestit">' +
+      '          <span ng-show="viesti.$piilotaAliviestit" kaanna>nayta-aliviestit</span>' +
+      '          <span ng-hide="viesti.$piilotaAliviestit" kaanna>piilota-aliviestit</span>' +
+      '          (<span ng-bind="viesti.viestit.length"></span>)' +
+      '        </a>' +
       '      </span>' +
       '    </div>' +
       '  </div>' +
