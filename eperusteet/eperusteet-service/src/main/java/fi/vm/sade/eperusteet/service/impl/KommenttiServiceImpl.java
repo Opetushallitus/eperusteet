@@ -28,14 +28,10 @@ import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -112,10 +108,9 @@ public class KommenttiServiceImpl implements KommenttiService {
 
     @Transactional
     private void addName(Kommentti k) {
-        try {
-            KayttajanTietoDto ktd = kayttajat.haeAsync(k.getLuoja()).get(5000, TimeUnit.SECONDS);
+        KayttajanTietoDto ktd = kayttajat.hae(k.getLuoja());
+        if (ktd != null) {
             k.setNimi(ktd.getKutsumanimi() + " " + ktd.getSukunimi());
-        } catch (InterruptedException | ExecutionException | TimeoutException ex) {
         }
     }
 
@@ -134,8 +129,9 @@ public class KommenttiServiceImpl implements KommenttiService {
             kommentti.setParentId(parent.getId());
             kommentti.setYlinId(parent.getYlinId() == null ? parent.getId() : parent.getYlinId());
         }
+        kommentti = kommentit.save(kommentti);
         addName(kommentti);
-        return mapper.map(kommentit.save(kommentti), KommenttiDto.class);
+        return mapper.map(kommentti, KommenttiDto.class);
     }
 
     @Override

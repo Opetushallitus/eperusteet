@@ -122,7 +122,9 @@ angular.module('eperusteApp')
       '    <div class="kommentti-footer">' +
       '      <span ng-if="viesti.muokattu" class="aikaleima"><span class="muokattu" kaanna="\'muokattu\'"></span>{{ viesti.muokattu | aikaleima }}</span>' +
       '      <span ng-if="!viesti.muokattu" class="aikaleima">{{ viesti.luotu | aikaleima }}</span>' +
-      '      <a class="action-link" ng-click="viesti.$lisaa = true" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }" kaanna>vastaa</a>' +
+      '      <a class="action-link" ng-click="viesti.$lisaa = true" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }">' +
+      '        <span kaanna>vastaa</span>' +
+      '      </a>' +
       '      <span ng-show="viesti.viestit.length > 0">' +
       '        <a class="action-link" ng-show="viesti.$piilotaAliviestit" ng-click="viesti.$piilotaAliviestit = false" kaanna>nayta-aliviestit</a>' +
       '        <a class="action-link" ng-hide="viesti.$piilotaAliviestit" ng-click="viesti.$piilotaAliviestit = true" kaanna>piilota-aliviestit</a>' +
