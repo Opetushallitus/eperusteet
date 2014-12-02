@@ -67,6 +67,7 @@ angular.module('eperusteApp')
 
     $scope.lang = $translate.use() || $translate.preferredLanguage();
     $scope.editEnabled = false;
+    $scope.$ryhmaNimi = '';
     var originalProjekti = null;
 
     var editingCallbacks = {
@@ -117,17 +118,18 @@ angular.module('eperusteApp')
 
     Organisaatioryhmat.yksi({ oid: $scope.projekti.ryhmaOid }, function(res) {
       $scope.$ryhmaNimi = res.nimi;
-      $scope.haeRyhma = function() {
-        $modal.open({
-          templateUrl: 'views/modals/tuotyoryhma.html',
-          controller: 'TyoryhmanTuontiModalCtrl'
-        })
-        .result.then(function(ryhma) {
-          $scope.projekti.ryhmaOid = ryhma.oid;
-          $scope.$ryhmaNimi = ryhma.nimi;
-        });
-      };
     });
+
+    $scope.haeRyhma = function() {
+      $modal.open({
+        templateUrl: 'views/modals/tuotyoryhma.html',
+        controller: 'TyoryhmanTuontiModalCtrl'
+      })
+      .result.then(function(ryhma) {
+        $scope.projekti.ryhmaOid = ryhma.oid;
+        $scope.$ryhmaNimi = ryhma.nimi;
+      });
+    };
 
     $scope.mergeProjekti = function(tuoPohja) {
       PerusteProjektiService.mergeProjekti($scope.projekti, tuoPohja).then(function(peruste, projekti) {
