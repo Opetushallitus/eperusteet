@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -105,7 +106,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     private final String yhteistyotaho = TestUtils.uniikkiString();
     private final String tehtava = TestUtils.uniikkiString();
     private final PerusteTyyppi tyyppi = PerusteTyyppi.NORMAALI;
-    private final String koulutustyyppi = "koulutustyyppi_12";
+    private final String koulutustyyppi = KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString();
 
     private TransactionTemplate transactionTemplate;
 

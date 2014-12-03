@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutus;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -190,7 +191,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional(readOnly = true)
     public List<PerusteInfoDto> getAllPerusopetusInfo() {
         List<Peruste> res = new ArrayList<>();
-        List<Peruste> perusopetus = perusteet.findAllByKoulutustyyppi("koulutustyyppi_9999");
+        List<Peruste> perusopetus = perusteet.findAllByKoulutustyyppi(KoulutusTyyppi.PERUSOPETUS.toString());
         for (Peruste p : perusopetus) {
             if (p.getTila() == PerusteTila.VALMIS) {
                 res.add(p);
@@ -684,7 +685,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private void lisaaTutkinnonMuodostuminen(Peruste peruste) {
-        if ("koulutustyyppi_16".equals(peruste.getKoulutustyyppi())) {
+        if (KoulutusTyyppi.PERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
             return;
         }
 

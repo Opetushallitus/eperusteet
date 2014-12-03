@@ -19,6 +19,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -81,7 +82,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
     @Before
     public void setup() {
-        Peruste peruste = perusteService.luoPerusteRunko("koulutustyyppi_16", LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
+        Peruste peruste = perusteService.luoPerusteRunko(KoulutusTyyppi.PERUSOPETUS.toString(), LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
         perusteId = peruste.getId();
     }
 

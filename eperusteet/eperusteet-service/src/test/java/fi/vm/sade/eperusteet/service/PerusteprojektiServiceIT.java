@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
@@ -124,10 +125,10 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testPerustprojektiluonti12() {
-        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString());
         Perusteprojekti pp = repository.findOne(ppdto.getId());
         perusteprojektiLuontiCommonAsserts(ppdto, pp);
-        Assert.assertEquals("koulutustyyppi_12", pp.getPeruste().getKoulutustyyppi());
+        Assert.assertEquals(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString(), pp.getPeruste().getKoulutustyyppi());
         Assert.assertEquals(1, pp.getPeruste().getSuoritustavat().size());
         perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
         perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
@@ -137,10 +138,10 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testPerustprojektiluonti9999() {
-        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_16");
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.PERUSOPETUS.toString());
         Perusteprojekti pp = repository.findOne(ppdto.getId());
         perusteprojektiLuontiCommonAsserts(ppdto, pp);
-        Assert.assertEquals("koulutustyyppi_16", pp.getPeruste().getKoulutustyyppi());
+        Assert.assertEquals(KoulutusTyyppi.PERUSOPETUS.toString(), pp.getPeruste().getKoulutustyyppi());
         Assert.assertEquals(0, pp.getPeruste().getSuoritustavat().size());
         Assert.assertNotNull(pp.getPeruste().getPerusopetuksenPerusteenSisalto());
     }
@@ -148,10 +149,10 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testPerustpohjaluonti() {
-        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_1");
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, KoulutusTyyppi.PERUSTUTKINTO.toString());
         Perusteprojekti pp = repository.findOne(ppdto.getId());
         perusteprojektiLuontiCommonAsserts(ppdto, pp);
-        Assert.assertEquals("koulutustyyppi_1", pp.getPeruste().getKoulutustyyppi());
+        Assert.assertEquals(KoulutusTyyppi.PERUSTUTKINTO.toString(), pp.getPeruste().getKoulutustyyppi());
         Assert.assertEquals(2, pp.getPeruste().getSuoritustavat().size());
         perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.OPS, null);
         perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
@@ -161,7 +162,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testPerusteprojektiLuontiPohjasta() {
-        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_1");
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, KoulutusTyyppi.PERUSTUTKINTO.toString());
         Perusteprojekti pp = repository.findOne(ppdto.getId());
         perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
         perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
@@ -169,7 +170,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.OPS, null);
         perusteprojektiLuontiCommonSuoritustavat(pp, 3);
 
-        PerusteprojektiLuontiDto luontiDto = new PerusteprojektiLuontiDto("koulutustyyppi_12", LaajuusYksikko.OPINTOVIIKKO, null, null, PerusteTyyppi.NORMAALI, ryhmaId);
+        PerusteprojektiLuontiDto luontiDto = new PerusteprojektiLuontiDto(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString(), LaajuusYksikko.OPINTOVIIKKO, null, null, PerusteTyyppi.NORMAALI, ryhmaId);
         luontiDto.setPerusteId(pp.getPeruste().getId());
         luontiDto.setDiaarinumero(TestUtils.uniikkiString());
         luontiDto.setNimi(TestUtils.uniikkiString());
@@ -192,7 +193,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Rollback(true)
     public void testTyoryhmat() {
         // Lisääminen
-        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString());
         Perusteprojekti pp = repository.findOne(ppdto.getId());
 
         String ryhmaA = TestUtils.uniikkiString();
@@ -243,7 +244,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testPerusteprojektiTyoryhmat() {
-        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString());
         Perusteprojekti pp = repository.findOne(ppdto.getId());
 
         List<String> henkilot = new ArrayList<>();
@@ -269,7 +270,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testPerusteenOsaViiteTyoryhmat() {
-        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_1");
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.PERUSTUTKINTO.toString());
         Perusteprojekti pp = repository.findOne(ppdto.getId());
         Suoritustapa st = pp.getPeruste().getSuoritustapa(Suoritustapakoodi.OPS);
         Long perusteenOsaId = st.getSisalto().getLapset().get(0).getPerusteenOsa().getId();
@@ -297,7 +298,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testPerusteprojektiSisaltaaMuodostumiset() {
-        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_1");
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.PERUSTUTKINTO.toString());
         repository.flush();
         Perusteprojekti pp = repository.findOne(ppdto.getId());
         Set<Suoritustapa> suoritustavat = pp.getPeruste().getSuoritustavat();
@@ -315,9 +316,9 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testMisc() {
-        PerusteprojektiDto tpp = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_1");
-        teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
-        teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_11");
+        PerusteprojektiDto tpp = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.PERUSTUTKINTO.toString());
+        teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString());
+        teePerusteprojekti(PerusteTyyppi.POHJA, KoulutusTyyppi.AMMATTITUTKINTO.toString());
 
         List<PerusteprojektiInfoDto> info = service.getBasicInfo();
         Assert.assertEquals(3, info.size());
@@ -332,14 +333,14 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Test(expected = BusinessRuleViolationException.class)
     @Rollback(true)
     public void testOnkoDiaarinumeroKaytossa() {
-        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_12");
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString());
         service.onkoDiaarinumeroKaytossa(ppdto.getDiaarinumero());
     }
 
     @Test
     @Rollback(true)
     public void testUpdate() {
-        PerusteprojektiDto vanhaDto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_1");
+        PerusteprojektiDto vanhaDto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.PERUSTUTKINTO.toString());
         PerusteprojektiDto update = new PerusteprojektiDto(
                 "uusinimi",
                 vanhaDto.getPeruste(),
@@ -370,7 +371,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testPerustepohjaTilaJaNimi() {
-        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_1");
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, KoulutusTyyppi.PERUSTUTKINTO.toString());
 
         Perusteprojekti pp = repository.findOne(ppdto.getId());
         pp.getPeruste().setNimi(null);
