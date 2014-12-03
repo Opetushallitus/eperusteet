@@ -13,25 +13,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.dto.yl;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.common.base.Optional;
-import fi.vm.sade.eperusteet.dto.ReferenceableDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import lombok.Getter;
-import lombok.Setter;
+package fi.vm.sade.eperusteet.repository;
+
+import fi.vm.sade.eperusteet.domain.yl.OpetuksenKohdealue;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author jhyoty
  */
-@Getter
-@Setter
-public class OpetuksenKohdealueDto implements ReferenceableDto {
+@Repository
+public interface OpetuksenKohdeAlueRepository extends JpaRepository<OpetuksenKohdealue, Long> {
 
-    public Long id;
-    public Optional<LokalisoituTekstiDto> nimi;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public Optional<LokalisoituTekstiDto> kuvaus;
 }

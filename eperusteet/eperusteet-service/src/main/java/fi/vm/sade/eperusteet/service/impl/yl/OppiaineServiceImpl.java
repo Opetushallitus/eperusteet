@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
+import fi.vm.sade.eperusteet.domain.yl.OpetuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.OppiaineenVuosiluokkaKokonaisuus;
@@ -23,6 +24,7 @@ import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
+import fi.vm.sade.eperusteet.repository.OpetuksenKohdeAlueRepository;
 import fi.vm.sade.eperusteet.repository.OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.OppiaineenVuosiluokkakokonaisuusRepository;
 import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
@@ -35,7 +37,6 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -65,6 +66,9 @@ public class OppiaineServiceImpl implements OppiaineService {
 
     @Autowired
     private PerusopetuksenPerusteenSisaltoRepository sisaltoRepository;
+
+    @Autowired
+    private OpetuksenKohdeAlueRepository kohdeAlueRepository;
 
     @Autowired
     @LockCtx(OppiaineLockContext.class)
@@ -312,7 +316,7 @@ public class OppiaineServiceImpl implements OppiaineService {
 
     @Override
     @Transactional(readOnly = false)
-    public Set<OpetuksenKohdealueDto> updateKohdealueet(Long perusteId, Long oppiaineId, Set<OpetuksenKohdealueDto> kohdealueet) {
+    public OpetuksenKohdealueDto addKohdealue(Long perusteId, Long oppiaineId, OpetuksenKohdealueDto kohdealue) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         Oppiaine aine = oppiaineRepository.findOne(oppiaineId);
         if (sisalto == null || !sisalto.containsOppiaine(aine)) {
@@ -320,14 +324,17 @@ public class OppiaineServiceImpl implements OppiaineService {
         }
         oppiaineRepository.lock(aine);
 
-        OppiaineDto tmp = new OppiaineDto();
-        tmp.setId(oppiaineId);
-        tmp.setKohdealueet(kohdealueet);
-        mapper.map(tmp, aine);
-        aine = oppiaineRepository.save(aine);
-
-        return mapper.mapToCollection(aine.getKohdealueet(), new HashSet<OpetuksenKohdealueDto>(), OpetuksenKohdealueDto.class);
+        OpetuksenKohdealue kohde = mapper.map(kohdealue, OpetuksenKohdealue.class);
+        kohde = aine.addKohdealue(kohde);
+        kohdeAlueRepository.save(kohde);
+        return mapper.map(kohde, OpetuksenKohdealueDto.class);
 
     }
+
+    @Override
+    public void deleteKohdealue(Long perusteId, Long id, Long kohdealueId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 
 }
