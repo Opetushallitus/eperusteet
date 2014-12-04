@@ -42,3 +42,41 @@ dl.termisto {
 .termisto-wrapper {
   max-width: 700px;
 }
+
+// restore styles that are reset by ckeditor
+.ckeplugin-ui-select {
+  box-sizing: border-box !important;
+  & * {
+    box-sizing: border-box !important;
+  }
+  .ui-select-bootstrap {
+    .form-control {
+      border: 1px solid rgb(146, 204, 224);
+      width: 100%;
+      height: 34px;
+      padding: 6px 12px;
+    }
+    .caret {
+      position: absolute;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 4px solid;
+    }
+    &.dropdown {
+      position: relative;
+    }
+    .ui-select-choices-row.active > a * {
+      color: #fff;
+    }
+    .dropdown-menu {
+      position: absolute;
+      float: left;
+      background-clip: padding-box;
+      background-color: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.15)
+    }
+    .ui-select-highlight {
+      font-weight: 700;
+    }
+  }
+}

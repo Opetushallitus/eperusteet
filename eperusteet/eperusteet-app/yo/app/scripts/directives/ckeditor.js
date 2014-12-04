@@ -50,7 +50,72 @@ angular.module('eperusteApp')
         { name: 'tools', items : [ 'About' ] }
       ]
   })
-  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts, $timeout, Kaanna, TermistoService) {
+
+  .config(function(uiSelectConfig) {
+    uiSelectConfig.theme = 'bootstrap';
+  })
+
+  .controller('TermiPluginController', function ($scope, TermistoService, Kaanna, Algoritmit) {
+    $scope.service = TermistoService;
+    $scope.filtered = [];
+    $scope.termit = [];
+    $scope.model = {
+      chosen: null
+    };
+    var callback = angular.noop;
+    var setDeferred = null;
+
+    function setChosenValue (value) {
+      var found = _.find($scope.termit, function (termi) {
+        return termi.avain === value;
+      });
+      $scope.model.chosen = found || null;
+    }
+
+    function doSort(items) {
+      return _.sortBy(items, function (item) {
+        return Kaanna.kaanna(item.termi).toLowerCase();
+      });
+    }
+
+    $scope.init = function () {
+      $scope.service.getAll().then(function (res) {
+        $scope.termit = res;
+        $scope.filtered = doSort(res);
+        if (setDeferred) {
+          setChosenValue(_.cloneDeep(setDeferred));
+          setDeferred = null;
+        }
+      });
+    };
+
+    $scope.filterTermit = function (value) {
+      $scope.filtered = _.filter(doSort($scope.termit), function (item) {
+        return Algoritmit.match(value, item.termi);
+      });
+    };
+
+    // data from angular model to plugin
+    $scope.registerListener = function (cb) {
+      callback = cb;
+    };
+    $scope.$watch('model.chosen', function (value) {
+      callback(value);
+    });
+
+    // data from plugin to angular model
+    $scope.setValue = function (value) {
+      $scope.$apply(function () {
+        if (_.isEmpty($scope.termit)) {
+          setDeferred = value;
+        } else {
+          setChosenValue(value);
+        }
+      });
+    };
+  })
+
+  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts, $timeout, Kaanna) {
     return {
       priority: 10,
       restrict: 'A',
@@ -61,7 +126,6 @@ angular.module('eperusteApp')
       },
       link: function(scope, element, attrs, ctrl) {
         var placeholderText = null;
-
         var editingEnabled = (scope.editMode || 'true') === 'true';
 
         if(editingEnabled) {
@@ -109,8 +173,7 @@ angular.module('eperusteApp')
           readOnly: !editingEnabled,
           title: false,
           customData: {
-            termistoService: TermistoService,
-            kaanna: Kaanna.kaanna
+            kaanna: Kaanna.kaanna,
           }
         });
 

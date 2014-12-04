@@ -306,6 +306,9 @@ module.exports = function(grunt) {
           cwd: '<%= yeoman.app %>/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap',
           dest: '<%= yeoman.dist %>/styles/fonts',
           src: '*.{eot,svg,ttf,woff}'
+        }, {
+          src: '<%= yeoman.app %>/bower_components/angular-ui-select/dist/select.min.css',
+          dest: '<%= yeoman.dist %>/styles/select.min.css'
         }]
       },
       fonts: {

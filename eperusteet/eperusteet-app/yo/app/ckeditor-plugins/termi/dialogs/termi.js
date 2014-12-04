@@ -15,12 +15,11 @@
  */
 
 'use strict';
-/* global CKEDITOR, _ */
+/* global CKEDITOR */
 
 CKEDITOR.dialog.add('termiDialog', function( editor ) {
   var kaanna = editor.config.customData.kaanna;
-  var service = editor.config.customData.termistoService;
-  var PLACEHOLDER = [kaanna('termi-plugin-select-placeholder'), ''];
+  var controllerScope = null;
   return {
     title: kaanna('termi-plugin-title'),
     minWidth: 400,
@@ -43,34 +42,47 @@ CKEDITOR.dialog.add('termiDialog', function( editor ) {
             }
           },
           {
-            type: 'select',
-            id: 'termi-viite',
-            label: kaanna('termi-plugin-label-termi'),
-            items: [PLACEHOLDER],
-            setup: function(element) {
-              this.setValue(element.getAttribute('data-viite'));
+            type: 'html',
+            id: 'termi-html',
+            validate: function() {
+              return !this.getValue() ? kaanna('termi-plugin-virhe-viite-tyhja') : true;
             },
-            commit: function(element) {
-              element.setAttribute('data-viite', this.getValue());
-            },
-            validate: CKEDITOR.dialog.validate.notEmpty(kaanna('termi-plugin-virhe-viite-tyhja')),
-            onShow: function () {
-              this.clear();
+            html: '<div ng-controller="TermiPluginController" class="ckeplugin-ui-select">' +
+            '<label>{{\'termi-plugin-label-termi\'|kaanna}}</label>' +
+            '<ui-select ng-model="model.chosen">' +
+            '<ui-select-match placeholder="{{\'termi-plugin-select-placeholder\'|kaanna}}">{{$select.selected.termi|kaanna}}</ui-select-match>' +
+            '<ui-select-choices repeat="termi in filtered track by $index" refresh="filterTermit($select.search)" refresh-delay="0">' +
+            '<span ng-bind-html="termi.termi|kaanna|highlight:$select.search"></span></ui-select-choices>' +
+            '</ui-select>' +
+            '</div>',
+            onLoad: function () {
               var self = this;
-              var dialog = this.getDialog();
-              service.getAll().then(function (res) {
-                var items = _.sortBy(res, function (item) {
-                  return kaanna(item.termi).toLowerCase();
+              var el = this.getElement().$;
+              angular.element('body').injector().invoke(function($compile) {
+                var scope = angular.element(el).scope();
+                $compile(el)(scope);
+                controllerScope = angular.element(el).scope();
+                controllerScope.init();
+                controllerScope.registerListener(function onChange(value) {
+                  if (value && value.avain) {
+                    self.setValue(value.avain);
+                  }
                 });
-                self.clear();
-                self.add(PLACEHOLDER[0], PLACEHOLDER[1]);
-                _.each(items, function (item) {
-                  self.add(kaanna(item.termi), item.avain);
-                });
-                if (!dialog.insertMode) {
-                  dialog.setupContent(dialog.element);
-                }
               });
+            },
+            onShow: function () {
+              var dialog = this.getDialog();
+              if (!dialog.insertMode) {
+                dialog.setupContent(dialog.element);
+              }
+            },
+            setup: function (element) {
+              var value = element.getAttribute('data-viite');
+              controllerScope.setValue(value);
+              this.setValue(value);
+            },
+            commit: function (element) {
+              element.setAttribute('data-viite', this.getValue());
             }
           }
         ]
