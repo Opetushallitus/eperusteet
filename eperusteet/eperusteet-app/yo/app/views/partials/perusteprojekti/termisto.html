@@ -21,7 +21,9 @@
         </span>
     </dt>
     <dd ng-repeat-end>
-      <div ng-bind-html="termi.selitys | kaanna | unsafe" termisto-viitteet="termi.selitys"></div>
+      <readmore maxheight="90">
+        <div ng-bind-html="termi.selitys | kaanna | unsafe" termisto-viitteet="termi.selitys"></div>
+      </readmore>
     </dd>
   </dl>
 
