@@ -18,24 +18,73 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('TermistoService', function ($q) {
-    // TODO backend
-    var dummydata = [];
+  .factory('TermistoCRUD', function ($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/termisto/:id', {
+      id: '@id',
+      perusteId: '@perusteId'
+    });
+  })
+
+  .service('TermistoService', function (TermistoCRUD, Notifikaatiot, $q, $timeout) {
     var peruste = null;
+    var cached = {};
+    var loading = false;
+    this.preload = function () {
+      if (!cached[peruste.id] && !loading) {
+        loading = true;
+        var self = this;
+        $timeout(function () {
+          self.getAll().then(function () {
+            loading = false;
+          });
+        });
+      }
+    };
     this.getAll = function () {
-      var deferred = $q.defer();
-      deferred.resolve(dummydata);
-      return deferred.promise;
+      return TermistoCRUD.query({perusteId: peruste.id}, function (res) {
+        cached[peruste.id] = res;
+      }).$promise;
+    };
+    this.delete = function (item) {
+      return TermistoCRUD.delete({perusteId: peruste.id, id: item.id}, {}, angular.noop, Notifikaatiot.serverCb).$promise;
+    };
+    function makeKey(item) {
+      var termi = _.first(_.compact(_.values(item.termi))) || '';
+      return termi.replace(/[^a-zA-Z0-9]/g, '') + (new Date()).getTime();
+    }
+    this.save = function (item) {
+      if (!item.avain) {
+        item.avain = makeKey(item);
+      }
+      return TermistoCRUD.save({perusteId: peruste.id}, item, angular.noop, Notifikaatiot.serverCb).$promise;
     };
     this.setPeruste = function (value) {
       peruste = value;
     };
+    function findTermi(avain) {
+      return _.find(cached[peruste.id], function (item) {
+        return item.avain === avain;
+      });
+    }
+    this.getWithAvain = function (avain, cached) {
+      if (cached) {
+        return findTermi(avain);
+      }
+      var deferred = $q.defer();
+      if (cached[peruste.id]) {
+        deferred.resolve(findTermi(avain));
+      } else {
+        this.getAll().then(function () {
+          deferred.resolve(findTermi(avain));
+        });
+      }
+      return deferred.promise;
+    };
   })
 
   .controller('TermistoController', function($scope, TermistoService, YleinenData, Algoritmit, Kaanna,
-      $modal, Varmistusdialogi) {
+      $modal, Varmistusdialogi, $rootScope) {
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
-    TermistoService.setPeruste($scope.peruste);
     $scope.termisto = [];
     $scope.filtered = [];
 
@@ -63,9 +112,30 @@ angular.module('eperusteApp')
       return !item.$hidden;
     };
 
+    function refresh() {
+      TermistoService.getAll().then(function (data) {
+        $scope.termisto = data;
+        $scope.filtered = _(data).sortBy(sorter).value();
+      });
+    }
+
     function doDelete(item) {
-      var index = _.findIndex($scope.termisto, {avain: item.avain});
-      $scope.termisto.splice(index, 1);
+      TermistoService.delete(item).then(function () {
+        refresh();
+      });
+    }
+
+    function doSave(item) {
+      TermistoService.save(item).then(function (res) {
+        var index = _.findIndex($scope.termisto, {avain: res.avain});
+        if (index >= 0) {
+          $scope.termisto[index] = res;
+        } else {
+          $scope.termisto.push(res);
+        }
+        $scope.search.changed($scope.search.phrase);
+        $rootScope.$broadcast('update:termistoviitteet');
+      });
     }
 
     $scope.delete = function (item) {
@@ -89,39 +159,33 @@ angular.module('eperusteApp')
           }
         }
       }).result.then(function (data) {
-        // TODO save to backend / delete from backend
         if (data.$delete) {
           doDelete(data);
-        } else if (data.$new) {
-          delete data.$new;
-          _.extend(data, {avain: (new Date()).getTime()});
-          $scope.termisto.push(data);
         } else {
-          var index = _.findIndex($scope.termisto, {avain: data.avain});
-          _.each(['termi', 'selitys'], function (key) {
-            $scope.termisto[index][key] = _.clone(data[key]);
-          });
+          doSave(data);
         }
-        $scope.search.changed($scope.search.phrase);
       });
     };
 
-    TermistoService.getAll().then(function (data) {
-      $scope.termisto = data;
-      $scope.filtered = _(data).sortBy(sorter).value();
-    });
+    refresh();
   })
 
-  .controller('TermistoMuokkausController', function ($scope, termimodel, Varmistusdialogi, $modalInstance) {
+  .controller('TermistoMuokkausController', function ($scope, termimodel, Varmistusdialogi,
+      $modalInstance, $rootScope) {
     $scope.termimodel = termimodel;
     $scope.creating = !termimodel;
     if ($scope.creating) {
       $scope.termimodel = {
         termi: {},
         selitys: {},
-        $new: true
+        id: null
       };
     }
+
+    $scope.ok = function () {
+      $rootScope.$broadcast('notifyCKEditor');
+      $modalInstance.close($scope.termimodel);
+    };
 
     $scope.delete = function () {
       Varmistusdialogi.dialogi({

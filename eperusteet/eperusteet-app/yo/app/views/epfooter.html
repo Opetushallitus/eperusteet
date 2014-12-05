@@ -1,0 +1,10 @@
+<div class="row ep-footer">
+  <div class="col-md-12">
+    <div ng-if="active" class="version-info">
+      <span ng-show="!data">build version not found</span>
+      <span ng-show="data">build {{data.buildNumber}} ({{data.buildTtime}})
+        {{data.branchName}} {{data.vcsRevision}}
+      </span>
+    </div>
+  </div>
+</div>

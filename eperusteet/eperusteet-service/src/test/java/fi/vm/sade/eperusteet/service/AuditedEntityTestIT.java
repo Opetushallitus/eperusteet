@@ -71,7 +71,6 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         TekstiKappale teksti = new TekstiKappale();
         teksti.setNimi(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi")));
         teksti.setTeksti(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi")));
-        teksti.setTila(PerusteTila.LUONNOS);
         teksti = perusteenOsaRepository.save(teksti);
 
         assertEquals(user1, teksti.getLuoja());
@@ -90,7 +89,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         teksti2.setId(teksti.getId());
         teksti2.setNimi(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi2")));
         teksti2.setTeksti(teksti.getTeksti());
-        teksti2.setTila(teksti.getTila());
+        teksti2.asetaTila(teksti.getTila());
 
         teksti2 = perusteenOsaRepository.save(teksti2);
         teksti2 = (TekstiKappale)perusteenOsaRepository.findOne(teksti.getId());
@@ -107,7 +106,6 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         TekstiKappale teksti = new TekstiKappale();
         teksti.setNimi(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi")));
         teksti.setTeksti(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Teksti")));
-        teksti.setTila(PerusteTila.LUONNOS);
         teksti = perusteenOsaRepository.save(teksti);
 
         teksti.getNimi().getTeksti().put(Kieli.FI, "nimi, muokattu");
@@ -124,7 +122,6 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
     public void testTutkinnonOsaRevisions() {
     	TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
     	tutkinnonOsa.setNimi(TekstiPalanen.of(Kieli.FI,"Nimi"));
-        tutkinnonOsa.setTila(PerusteTila.LUONNOS);
         tutkinnonOsa.setTyyppi(TutkinnonOsaTyyppi.NORMAALI);
     	tutkinnonOsa = perusteenOsaRepository.save(tutkinnonOsa);;
 

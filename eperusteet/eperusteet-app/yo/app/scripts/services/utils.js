@@ -79,7 +79,7 @@ angular.module('eperusteApp')
     return {
       restrict: 'AE',
       scope: {},
-      template: '<div id="backtotop" ng-hide="hidden" title="{{\'Takaisin ylös\' | kaanna}}">' +
+      template: '<div id="backtotop" ng-hide="hidden" title="{{\'takaisin-ylos\' | kaanna}}">' +
         '<a class="action-link" icon-role="arrow-up" ng-click="backToTop()"></a></div>',
       link: function (scope) {
         var active = true;

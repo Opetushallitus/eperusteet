@@ -42,10 +42,14 @@ public class AbstractRakenneOsaDeserializer extends StdDeserializer<AbstractRake
         JsonProcessingException {
         final TreeNode tree = jp.readValueAsTree();
         final ObjectCodec codec = jp.getCodec();
-        if (tree.get("_tutkinnonOsaViite") != null) {
+        TreeNode erikoisuus = tree.get("erikoisuus");
+        TreeNode tosaviite = tree.get("_tutkinnonOsaViite");
+        TreeNode osat = tree.get("osat");
+
+        if (tosaviite != null || erikoisuus != null) {
             return codec.treeToValue(tree, RakenneOsaDto.class);
         }
-        if (tree.get("osat") != null) {
+        if (osat != null) {
             return codec.treeToValue(tree, RakenneModuuliDto.class);
         }
         throw new JsonMappingException("Tuntematon rakenneosan", jp.getCurrentLocation());

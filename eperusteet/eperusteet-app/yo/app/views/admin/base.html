@@ -1,0 +1,14 @@
+<!-- admin/base.html -->
+<div class="admin">
+
+    <h1 kaanna="hallintapaneeli"></h1>
+
+    <div role="navigation">
+      <ul class="nav nav-tabs nav-justified">
+        <li ng-class="{active: tab.$tabActive}" ng-repeat="tab in tabs">
+          <a kaanna="tab.label" ng-click="chooseTab($index)"></a>
+        </li>
+      </ul>
+    </div>
+    <div ui-view></div>
+</div>

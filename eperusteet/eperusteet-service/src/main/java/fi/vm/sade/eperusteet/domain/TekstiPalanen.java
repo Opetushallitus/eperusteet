@@ -105,7 +105,7 @@ public class TekstiPalanen implements Serializable {
         HashSet<LokalisoituTeksti> tmp = new HashSet<>(tekstit.size());
         for (Map.Entry<Kieli, String> e : tekstit.entrySet()) {
             if (e.getValue() != null) {
-                String v = Normalizer.normalize(e.getValue().trim(),Normalizer.Form.NFC);
+                String v = Normalizer.normalize(e.getValue().trim(), Normalizer.Form.NFC);
                 if (!v.isEmpty()) {
                     tmp.add(new LokalisoituTeksti(e.getKey(), v));
                 }
@@ -119,6 +119,19 @@ public class TekstiPalanen implements Serializable {
 
     public static TekstiPalanen of(Kieli kieli, String teksti) {
         return of(Collections.singletonMap(kieli, teksti));
+    }
+
+    @Override
+    public String toString() {
+        Map<Kieli, String> tekstit = getTeksti();
+        if (tekstit.isEmpty()) {
+            return "";
+        }
+        String fi = tekstit.get(Kieli.FI);
+        if (fi != null) {
+            return fi;
+        }
+        return tekstit.entrySet().iterator().next().getValue();
     }
 
 }

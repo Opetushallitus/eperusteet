@@ -126,7 +126,7 @@ angular.module('eperusteApp')
 
   .service('FieldSplitter', function () {
     function getCssClass(path) {
-      return path.replace(/\[/, '').replace(/\]/, '').replace(/\./, '');
+      return path.replace(/\[/g, '').replace(/\]/g, '').replace(/\./g, '');
     }
 
     function SplitField(data) {

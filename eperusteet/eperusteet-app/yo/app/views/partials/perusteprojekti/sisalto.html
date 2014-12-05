@@ -47,18 +47,20 @@ European Union Public Licence for more details.
             <div class="clearfix"></div>
 
             <h2 ng-hide="muokkausTutkintokohtaisetOsat">
-                {{ 'tekstikappaleet' | kaanna }} ({{ peruste.sisalto.lapset.length }})
-                <a ng-click="avaaSuljeKaikki()" class="action-link open-close"><span class="avaa-sulje" icon-role="ep-open-close">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
+                <span kaanna="'tekstikappaleet'"></span>
+                <span ng-show="peruste.sisalto.lapset.length - muodostumisKompensaattori > 0">(<span ng-bind="peruste.sisalto.lapset.length - muodostumisKompensaattori"></span>)</span>
+                <a ng-click="avaaSuljeKaikki()" class="action-link open-close"><span class="avaa-sulje" icon-role="ep-open-close" kaanna="'avaa-sulje-kaikki'"></span></a>
                 <!-- Työryhmävalitsin -->
                 <span class="dropdown">
                     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-                        {{ tyyppi | kaanna }}
-                        <span class="caret"></span>
+                      <span kaanna="'tyyppi'"></span><span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                        <li role="presentation"><a ng-click="rajaaSisaltoa(rajaus, 'kaikki')" role="menuitem" tabindex="-1" href="" kaanna>kaikki</a></li>
+                        <li role="presentation">
+                          <a class="action-link" ng-click="rajaaSisaltoa(rajaus, 'kaikki')" role="menuitem" tabindex="-1" kaanna>kaikki</a>
+                        </li>
                         <li ng-repeat="(k, v) in tyoryhmat" role="presentation">
-                            <a ng-click="rajaaSisaltoa(rajaus, k)" role="menuitem" tabindex="-1" href="">{{ k }}</a>
+                          <a class="action-link" ng-click="rajaaSisaltoa(rajaus, k)" role="menuitem" tabindex="-1">{{ k }}</a>
                         </li>
                     </ul>
                 </span>
@@ -68,7 +70,7 @@ European Union Public Licence for more details.
 
             <div ng-show="muokkausTutkintokohtaisetOsat" class="rakenteen-muokkaus">
                 <h2 kaanna>Muokkaa tekstikappaleiden rakennetta</h2>
-                <a ng-click="avaaSuljeKaikki()" class="action-link"><span class="avaa-sulje" icon-role="ep-open-close">{{ 'avaa-sulje-kaikki' | kaanna }}</span></a>
+                <a ng-click="avaaSuljeKaikki()" class="action-link"><span class="avaa-sulje" icon-role="ep-open-close" kaanna="'avaa-sulje-kaikki'"></span></a>
             </div>
             <div class="clearfix"></div>
 

@@ -24,14 +24,6 @@ angular.module('eperusteApp')
        $scope.projekti.paatosPvm = new Date($scope.projekti.paatosPvm);
     }
 
-    $scope.fields = [
-      {label: 'projektin-nimi-label', model: 'projekti.nimi'},
-      {label: 'diaarinumero-label', model: 'projekti.diaarinumero'},
-      {label: 'päätöspvm-label', model: 'projekti.paatosPvm', type: 'date'},
-      {label: 'tehtäväluokka-label', model: 'projekti.tehtavaluokka'},
-      {label: 'yhteistyotaho-label', model: 'projekti.yhteistyotaho'}
-    ];
-
     $scope.yksikot = YleinenData.yksikot;
 
     $scope.tehtavaluokat = [

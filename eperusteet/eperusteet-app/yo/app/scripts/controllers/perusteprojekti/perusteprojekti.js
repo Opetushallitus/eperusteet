@@ -127,15 +127,23 @@ angular.module('eperusteApp')
           PerusteProjektiSivunavi.setVisible();
         }]
       })
-      .state('root.perusteprojekti.suoritustapa.perusteenosa', {
-        url: '/perusteenosa/{perusteenOsanTyyppi}/{perusteenOsaViiteId}{versio:(?:/[^/]+)?}',
-        templateUrl: 'views/muokkaus.html',
-        controller: 'MuokkausCtrl',
+      .state('root.perusteprojekti.suoritustapa.tutkinnonosa', {
+        url: '/tutkinnonosa/{tutkinnonOsaViiteId}{versio:(?:/[^/]+)?}',
+        templateUrl: 'views/partials/muokkaus/tutkinnonosa.html',
+        controller: 'muokkausTutkinnonosaCtrl',
         onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
           PerusteProjektiSivunavi.setVisible();
         }]
       })
-      .state('root.perusteprojekti.suoritustapa.perusteenosa.osaalue', {
+      .state('root.perusteprojekti.suoritustapa.tekstikappale', {
+        url: '/tekstikappale/{perusteenOsaViiteId}{versio:(?:/[^/]+)?}',
+        templateUrl: 'views/partials/muokkaus/tekstikappale.html',
+        controller: 'muokkausTekstikappaleCtrl',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible();
+        }]
+      })
+      .state('root.perusteprojekti.suoritustapa.tutkinnonosa.osaalue', {
         url: '/osaalue/{osaAlueId}',
         templateUrl: 'views/partials/muokkaus/tutkinnonOsaOsaAlue.html',
         controller: 'TutkinnonOsaOsaAlueCtrl',
@@ -204,7 +212,7 @@ angular.module('eperusteApp')
   .controller('PerusteprojektiCtrl', function($scope, $state, $stateParams,
     Navigaatiopolku, koulutusalaService, opintoalaService,
     PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation,
-    SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet) {
+    SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet, TermistoService) {
 
     $scope.muokkausEnabled = false;
 
@@ -218,6 +226,7 @@ angular.module('eperusteApp')
     function init() {
       $scope.projekti = perusteprojektiTiedot.getProjekti();
       $scope.peruste = perusteprojektiTiedot.getPeruste();
+      TermistoService.setPeruste($scope.peruste);
     }
     init();
 
@@ -303,8 +312,7 @@ angular.module('eperusteApp')
       }
       lisaaSisalto('save', {}, function(response) {
         TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
-        $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
-          perusteenOsanTyyppi: 'tekstikappale',
+        $state.go('root.perusteprojekti.suoritustapa.tekstikappale', {
           perusteenOsaViiteId: response.id,
           versio: ''
         });

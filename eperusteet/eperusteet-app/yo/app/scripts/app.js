@@ -28,7 +28,9 @@ angular.module('eperusteApp', [
   'ui.utils',
   'ui.sortable',
   'monospaced.elastic',
-  'ui.tree'
+  'ui.tree',
+  'angular-data.DSCacheFactory',
+  'ui.select'
 ])
   .constant('SERVICE_LOC', '/eperusteet-service/api')
   // .constant('ORGANISATION_SERVICE_LOC', '/organisaatio-service/rest')
@@ -42,6 +44,7 @@ angular.module('eperusteApp', [
   .constant('LUKITSIN_MINIMI', 5000)
   .constant('LUKITSIN_MAKSIMI', 20000)
   .constant('TEXT_HIERARCHY_MAX_DEPTH', 8)
+  .constant('SHOW_VERSION_FOOTER', true)
   .config(function($urlRouterProvider, $sceProvider) {
     $sceProvider.enabled(true);
     $urlRouterProvider.when('','/');

@@ -118,9 +118,7 @@ angular.module('eperusteApp')
     };
 
     $scope.tallennaTekstikappaleet = function(tekstikentat) {
-      var filtered = _.filter(tekstikentat, function(tk) {
-        return tk.$ladattu !== 0;
-      });
+      var filtered = _.reject(tekstikentat, function(tk) { return tk.$ladattu === true; });
       var doneSuccess = _.after(_.size(filtered), function() {
         Notifikaatiot.onnistui('tallennus-onnistui');
         $scope.uploadSuccessTekstikappaleet = true;
@@ -140,7 +138,6 @@ angular.module('eperusteApp')
         }, function(err) {
           tk.$syy = err.data.syy;
         });
-
       });
     };
 

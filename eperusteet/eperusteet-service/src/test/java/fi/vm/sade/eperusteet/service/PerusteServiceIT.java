@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
@@ -32,7 +33,6 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
@@ -54,9 +54,10 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
+
 import java.util.List;
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -74,11 +75,10 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     @Autowired
     private PlatformTransactionManager manager;
     @Autowired
-    private PerusteenOsaRepository perusteenOsaRepository;
-    @Autowired
-    private PerusteenOsaService perusteenOsaService;
-    @Autowired
     private KoulutusRepository koulutusRepository;
+    @Autowired
+    @LockCtx(TutkinnonRakenneLockContext.class)
+    private LockService<TutkinnonRakenneLockContext> lockService;
 
     private Peruste peruste;
 
@@ -96,35 +96,37 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         Peruste p = TestUtils.teePeruste();
         p.setSiirtymaAlkaa(new GregorianCalendar(2000, Calendar.MARCH, 12).getTime());
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
-        p.setTila(PerusteTila.VALMIS);
+        p.asetaTila(PerusteTila.VALMIS);
         Suoritustapa s = new Suoritustapa();
+        s.setRakenne(new RakenneModuuli());
         s.setSuoritustapakoodi(Suoritustapakoodi.OPS);
         p.setSuoritustavat(Sets.newHashSet(s));
         p.setKoulutukset(Sets.newHashSet(koulutus));
+
         peruste = repo.save(p);
 
         p = TestUtils.teePeruste();
         p.setSiirtymaAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 4, Calendar.MARCH, 12).getTime());
-        p.setTila(PerusteTila.VALMIS);
+        p.asetaTila(PerusteTila.VALMIS);
         repo.save(p);
 
         p = TestUtils.teePeruste();
-        p.setTila(PerusteTila.VALMIS);
+        p.asetaTila(PerusteTila.VALMIS);
         repo.save(p);
 
         p = TestUtils.teePeruste();
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
-        p.setTila(PerusteTila.VALMIS);
+        p.asetaTila(PerusteTila.VALMIS);
         repo.save(p);
 
         manager.commit(transaction);
-        perusteService.lock(peruste.getId(), Suoritustapakoodi.OPS);
+        lockService.lock(TutkinnonRakenneLockContext.of(peruste.getId(), Suoritustapakoodi.OPS));
     }
 
     @After
     public void cleanUp() {
-        perusteService.unlock(peruste.getId(), Suoritustapakoodi.OPS);
+        lockService.unlock(TutkinnonRakenneLockContext.of(peruste.getId(), Suoritustapakoodi.OPS));
     }
 
     @Test

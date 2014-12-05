@@ -306,6 +306,9 @@ module.exports = function(grunt) {
           cwd: '<%= yeoman.app %>/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap',
           dest: '<%= yeoman.dist %>/styles/fonts',
           src: '*.{eot,svg,ttf,woff}'
+        }, {
+          src: '<%= yeoman.app %>/bower_components/angular-ui-select/dist/select.min.css',
+          dest: '<%= yeoman.dist %>/styles/select.min.css'
         }]
       },
       fonts: {
@@ -381,11 +384,21 @@ module.exports = function(grunt) {
       }
     },
     'regex-check': {
-      files: '<%= yeoman.app %>/scripts/{,*/,*/*/}*.js',
-      options: {
-        /* Check that templateUrls don't start with slash */
-        pattern : /templateUrl:\s*['"]\//m
+      templateurls: {
+        files: [{src: ['<%= yeoman.app %>/scripts/**/*.js']}],
+        options: {
+          /* Check that templateUrls don't start with slash */
+          pattern : /templateUrl:\s*['"]\//m
+        },
       },
+      showhide: {
+        files: [{src: ['<%= yeoman.app %>/{scripts,views}/**/*.{js,html}']}],
+        options: {
+          /* Check that ng-show/ng-hide are not used in same element */
+          pattern : /(ng-show=|ng-hide=)[^>]+(ng-hide=|ng-show=)/m
+        },
+      }
+
     }
   });
 
@@ -412,6 +425,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('test', [
     'clean:server',
+    'copy:fonts', // needed if testing while "grunt dev" is running :)
     'concurrent:test',
     'autoprefixer',
 //  'connect:test',

@@ -24,6 +24,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
  * @author nkala
  */
 public interface UlkopuolisetService {
+
+    @PreAuthorize("isAuthenticated()")
+    JsonNode getRyhma(String organisaatioOid);
+
     @PreAuthorize("isAuthenticated()")
     JsonNode getRyhmat();
 }

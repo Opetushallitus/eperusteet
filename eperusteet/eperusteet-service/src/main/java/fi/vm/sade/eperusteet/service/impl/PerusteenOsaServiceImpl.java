@@ -38,6 +38,7 @@ import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.KommenttiService;
+import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
@@ -443,6 +444,26 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Revision> getVersiotByViite(Long id) {
+        PerusteenOsaViite p = perusteenOsaViiteRepository.findOne(id);
+        if (p == null || p.getPerusteenOsa() == null) {
+            throw new EntityNotFoundException("Perusteen osaa ei löytynyt viite id:llä: " + id);
+        }
+        return getVersiot(p.getPerusteenOsa().getId());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PerusteenOsaDto getVersioByViite(Long id, Integer versioId) {
+        PerusteenOsaViite p = perusteenOsaViiteRepository.findOne(id);
+        if (p == null || p.getPerusteenOsa() == null) {
+            throw new EntityNotFoundException("Perusteen osaa ei löytynyt viite id:llä: " + id);
+        }
+        return getVersio(p.getPerusteenOsa().getId(), versioId);
+    }
+
+    @Override
     @Transactional
     public fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja revertToVersio(Long id, Integer versioId) {
         PerusteenOsa revision = perusteenOsaRepo.findRevision(id, versioId);
@@ -464,7 +485,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     public LukkoDto getLock(Long id) {
         assertExists(id);
-        return LukkoDto.of(lockManager.getLock(id));
+        LukkoDto lukko = LukkoDto.of(lockManager.getLock(id));
+        lockManager.lisaaNimiLukkoon(lukko);
+        return lukko;
     }
 
     private void assertExists(Long id) {
@@ -480,5 +503,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             tutkinnonOsaViiteRepository.save(viite);
         }
     }
-    
+
+
+
+
+
 }

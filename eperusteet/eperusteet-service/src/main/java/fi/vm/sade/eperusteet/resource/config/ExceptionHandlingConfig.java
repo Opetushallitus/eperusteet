@@ -16,8 +16,10 @@
 package fi.vm.sade.eperusteet.resource.config;
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.service.exception.LockingException;
 import fi.vm.sade.eperusteet.service.exception.ServiceException;
+import fi.vm.sade.eperusteet.service.internal.LockManager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.NestedCheckedException;
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.http.HttpHeaders;
@@ -61,6 +64,9 @@ import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMeth
 //TODO: vaatii refaktorointia
 @ControllerAdvice
 public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
+
+    @Autowired
+    private LockManager lukkomanageri;
 
     private static final Logger LOG = LoggerFactory.getLogger(ExceptionHandlingConfig.class);
 
@@ -158,7 +164,9 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             map.put("syy", builder.toString());
         } else if (ex instanceof LockingException ) {
             LockingException le = (LockingException)ex;
-            return super.handleExceptionInternal(ex, le.getLukko(), headers, status, request);
+            LukkoDto lukko = le.getLukko();
+            lukkomanageri.lisaaNimiLukkoon(lukko);
+            return super.handleExceptionInternal(ex, lukko, headers, status, request);
         } else if (ex instanceof ServiceException) {
             map.put("syy", ex.getLocalizedMessage());
         } else {

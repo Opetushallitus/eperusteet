@@ -111,8 +111,8 @@ angular.module('eperusteApp')
     }
 
     function serverLukitus(response) {
-      if (response && response.status === 409) {
-        uusiViesti(2, Kaanna.kaanna('lukitus-kayttajalla', { user: response.data.haltijaOid }));
+      if (response && response.data && response.status === 409) {
+        uusiViesti(2, Kaanna.kaanna('lukitus-kayttajalla', { user: response.data.haltijaNimi || response.data.haltijaOid }));
       }
     }
 

@@ -32,7 +32,7 @@ CKEDITOR.plugins.add('termi', {
       editor.addMenuGroup('termiGroup');
       editor.addMenuItem('termiItem', {
         label: kaanna('termi-plugin-menu-muokkaa'),
-        icon: /*this.path + 'icons/abbr.png'*/ '',
+        icon: this.path + 'icons/termi.png',
         command: 'termi',
         group: 'termiGroup'
       });

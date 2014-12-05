@@ -4,7 +4,7 @@
   <accordion close-others="oneAtATime">
     <accordion-group ng-repeat="osa in yleiset" is-open="osa.$isOpen" ng-class="{editing: osa.$editing}">
       <accordion-heading>
-        <span kaanna="osa.nimi"></span>
+        <span ng-bind-html="osa.nimi | kaanna"></span>
       </accordion-heading>
       <div ng-if="!editEnabled" ng-bind-html="valitseKieli(osa.$model.kuvaus) | unsafe"></div>
       <div ng-if="editEnabled">

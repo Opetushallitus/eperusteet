@@ -1,0 +1,23 @@
+<!-- tiedotteenmuokkaus.html -->
+
+<div class="modal-header">
+  <h2>{{creating ? 'uusi-tiedote' : 'muokkaa-tiedotetta' | kaanna}}</h2>
+</div>
+
+<div class="modal-body termi-muokkaus">
+  <h3 kaanna="'otsikko'"></h3>
+  <ml-input ml-data="model.otsikko" type="text" required="true"></ml-input>
+  <h3 kaanna="'tiedoteteksti'"></h3>
+  <div id="toolbar" style="display: none">
+    <div id="ck-toolbar-top"></div>
+    <div id="ck-toolbar-bottom"></div>
+  </div>
+  <div ckeditor ng-model="model.teksti" localized editor-placeholder="tiedote-teksti-placeholder"></div>
+  <div class="clearfix"></div>
+</div>
+
+<div class="modal-footer">
+  <button ng-if="!creating" class="btn btn-danger pull-left" ng-click="delete()" kaanna="poista" icon-role="remove"></button>
+  <button class="btn btn-default" ng-click="$dismiss()" kaanna="peruuta"></button>
+  <button class="btn btn-primary" ng-click="ok()" kaanna="tallenna"></button>
+</div>

@@ -66,7 +66,9 @@ angular.module('eperusteApp')
         });
 
         $scope.naytaKommentit = function() { lataaKommentit($location.url()); };
-        $scope.muokkaaKommenttia = function(kommentti, uusikommentti) { Kommentit.muokkaaKommenttia(kommentti, uusikommentti); };
+        $scope.muokkaaKommenttia = function(kommentti, uusikommentti, cb) {
+          Kommentit.muokkaaKommenttia(kommentti, uusikommentti, cb);
+        };
         $scope.poistaKommentti = function(kommentti) {
           Varmistusdialogi.dialogi({
             otsikko: 'vahvista-poisto',
@@ -77,9 +79,10 @@ angular.module('eperusteApp')
             }
           })();
         };
-        $scope.lisaaKommentti = function(parent, kommentti) {
+        $scope.lisaaKommentti = function(parent, kommentti, cb) {
           Kommentit.lisaaKommentti(parent, kommentti, function() {
             $scope.sisalto.$yhteensa += 1;
+            (cb || angular.noop)();
           });
         };
 

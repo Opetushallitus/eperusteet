@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -45,5 +46,12 @@ public class UlkopuolisetController {
     public ResponseEntity<JsonNode> getOrganisaatioRyhmat() {
         JsonNode ryhmat = service.getRyhmat();
         return new ResponseEntity<>(ryhmat, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/organisaatioryhmat/{oid}", method = GET)
+    @ResponseBody
+    public ResponseEntity<JsonNode> getOrganisaatioRyhmat(@PathVariable(value = "oid") final String oid) {
+        JsonNode ryhma = service.getRyhma(oid);
+        return new ResponseEntity<>(ryhma, HttpStatus.OK);
     }
 }

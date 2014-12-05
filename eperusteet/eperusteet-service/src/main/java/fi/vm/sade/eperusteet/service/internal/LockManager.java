@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.service.internal;
 
 import fi.vm.sade.eperusteet.domain.Lukko;
+import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.service.exception.LockingException;
 
 /**
@@ -25,6 +26,7 @@ import fi.vm.sade.eperusteet.service.exception.LockingException;
  */
 public interface LockManager {
     Lukko lock(Long id);
+    void lisaaNimiLukkoon(LukkoDto lock);
     boolean isLockedByAuthenticatedUser(Long id);
     /**
      * Varmistaa että tunnistettu käyttäjä omistaa lukon,

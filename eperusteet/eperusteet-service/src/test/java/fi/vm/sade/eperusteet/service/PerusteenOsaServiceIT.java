@@ -86,7 +86,6 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     public void testSaveWithArviointi() {
         TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
         tutkinnonOsa.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "Nimi"));
-        tutkinnonOsa.setTila(PerusteTila.LUONNOS);
         tutkinnonOsa.setArviointi(TestUtils.teeArviointi(arviointiasteikko));
         tutkinnonOsa = (TutkinnonOsa) perusteenOsaRepository.saveAndFlush(tutkinnonOsa);
         PerusteenOsaDto.Laaja dto = perusteenOsaService.get(tutkinnonOsa.getId());
@@ -104,12 +103,10 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     public void testFindTutkinnonOsaByName() {
         TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
         tutkinnonOsa.setNimi(TestUtils.tekstiPalanenOf(Kieli.FI, "Nimi"));
-        tutkinnonOsa.setTila(PerusteTila.LUONNOS);
         tutkinnonOsa = tutkinnonOsaRepository.saveAndFlush(tutkinnonOsa);
 
         tutkinnonOsa = new TutkinnonOsa();
         tutkinnonOsa.setNimi(TestUtils.tekstiPalanenOf(Kieli.SV, "Namnet"));
-        tutkinnonOsa.setTila(PerusteTila.LUONNOS);
         tutkinnonOsa = tutkinnonOsaRepository.saveAndFlush(tutkinnonOsa);
 
         List<TutkinnonOsa> tutkinnonOsat = tutkinnonOsaRepository.findByNimiTekstiTekstiContainingIgnoreCase("nim");

@@ -33,8 +33,6 @@
                     http://www.springframework.org/schema/security
                     http://www.springframework.org/schema/security/spring-security.xsd">
 
-    <global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
-    </global-method-security>
 
     <!-- /buildversion.txt?auth forced to require authentication (needed for auth health checking purposes) -->
     <http entry-point-ref="casEntryPoint" use-expressions="true" request-matcher="regex" pattern="/buildversion.txt.auth|/healthcheck.auth|/healthcheck.userinfo">

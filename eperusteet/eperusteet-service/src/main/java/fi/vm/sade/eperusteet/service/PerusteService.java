@@ -20,7 +20,6 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -35,7 +34,6 @@ import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import java.util.List;
-import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
@@ -52,10 +50,10 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void removeTutkinnonOsa(@P("perusteId") Long perusteId, Suoritustapakoodi of, Long osaId);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     TutkinnonOsaViiteDto updateTutkinnonOsa(@P("perusteId") Long perusteId, Suoritustapakoodi of, TutkinnonOsaViiteUpdateDto osa);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     TutkinnonOsaViiteDto updateTutkinnonOsa(@P("perusteId") Long perusteId, Suoritustapakoodi of, TutkinnonOsaViiteDto osa);
 
     @PreAuthorize("isAuthenticated()")
@@ -107,10 +105,10 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     RakenneModuuliDto getTutkinnonRakenne(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapa, Integer eTag);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     RakenneModuuliDto updateTutkinnonRakenne(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapa, final UpdateDto<RakenneModuuliDto> rakenne);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     RakenneModuuliDto updateTutkinnonRakenne(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapa, final RakenneModuuliDto rakenne);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
@@ -127,7 +125,7 @@ public interface PerusteService {
     List<TutkinnonOsaViiteDto> getTutkinnonOsat(@P("perusteId") Long perusteid, Suoritustapakoodi suoritustapakoodi);
 
     @PreAuthorize("isAuthenticated()") //XXX ei julkinen rajapinta
-    Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, PerusteTila tila, PerusteTyyppi tyyppi);
+    Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi);
 
     @PreAuthorize("isAuthenticated()") //XXX ei julkinen rajapinta
     Peruste luoPerusteRunkoToisestaPerusteesta(PerusteprojektiLuontiDto luontiDto, PerusteTyyppi tyyppi);
@@ -135,30 +133,12 @@ public interface PerusteService {
     @PreAuthorize("permitAll()")
     Page<PerusteInfoDto> findByInfo(PageRequest page, PerusteQuery pquery);
 
-    @PreAuthorize("isAuthenticated()")
-    String lammitys();
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    LukkoDto lock(@P("perusteId") final Long id, Suoritustapakoodi suoritustapakoodi);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
-    void unlock(@P("perusteId") final Long id, Suoritustapakoodi suoritustapakoodi);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    LukkoDto getLock(@P("perusteId") final Long id, Suoritustapakoodi suoritustapakoodi);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    public Map<Long, LukkoDto> getLocksTutkinnonOsat(@P("perusteId") Long id, Suoritustapakoodi suoritustapakoodi);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    public Map<Long, LukkoDto> getLocksPerusteenOsat(@P("perusteId") Long id, Suoritustapakoodi suoritustapakoodi);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'LUKU')")
     public List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(Long perusteId);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
     public TutkintonimikeKoodiDto addTutkintonimikeKoodi(Long perusteId, TutkintonimikeKoodiDto dto);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
     public void removeTutkintonimikeKoodi(Long perusteId, Long tutkintonimikeKoodiId);
 }

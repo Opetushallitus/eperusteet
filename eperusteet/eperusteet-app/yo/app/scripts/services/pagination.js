@@ -35,6 +35,9 @@ angular.module('template/pagination/pagination.html', []).run(['$templateCache',
 // startFrom filter for easy pagination
 angular.module('eperusteApp').filter('startFrom', function() {
   return function(input, start) {
+    if (!input) {
+      return input;
+    }
     return input.slice(start);
   };
 });

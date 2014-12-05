@@ -45,6 +45,7 @@ angular.module('eperusteApp')
     $scope.tyyppi = 'kaikki';
     $scope.tyoryhmaMap = {};
     $scope.tiivistelma = Kaanna.kaanna($scope.peruste.kuvaus);
+    $scope.muodostumisKompensaattori = $scope.peruste.koulutustyyppi !== 'koulutustyyppi_15' ? 1 : 0;
 
     if (_.size($scope.peruste.sisalto) > 1 && _.first($scope.peruste.suoritustavat).suoritustapakoodi !== 'ops') {
       $scope.peruste.suoritustavat = _.arraySwap($scope.peruste.suoritustavat, 0, 1);
@@ -69,7 +70,7 @@ angular.module('eperusteApp')
           lapsi.$type = 'ep-tree';
           break;
         default:
-          lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', { perusteenOsanTyyppi: 'tekstikappale', perusteenOsaViiteId: lapsi.id, versio: '' });
+          lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.tekstikappale', { perusteenOsaViiteId: lapsi.id, versio: '' });
       }
     }
 
@@ -147,6 +148,7 @@ angular.module('eperusteApp')
       $modal.open({
         templateUrl: 'views/modals/tuotekstikappale.html',
         controller: 'TuoTekstikappale',
+        size: 'lg',
         resolve: {
           peruste: function() { return $scope.peruste; },
           suoritustapa: function() { return PerusteProjektiService.getSuoritustapa(); },
@@ -173,8 +175,7 @@ angular.module('eperusteApp')
     $scope.createSisalto = function() {
       lisaaSisalto('save', {}, function(response) {
         TutkinnonOsaEditMode.setMode(true); // Uusi luotu, siirry suoraan muokkaustilaan
-        $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
-          perusteenOsanTyyppi: 'tekstikappale',
+        $state.go('root.perusteprojekti.suoritustapa.tekstikappale', {
           perusteenOsaViiteId: response.id,
           versio: ''
         });

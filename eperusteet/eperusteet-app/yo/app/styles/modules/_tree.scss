@@ -3,6 +3,7 @@ $colorbox-open-vari: #29ABE2;
 $colorbox-empty-vari: #FDBB07;
 $colorbox-osaamisala-vari: #6d9aa8;
 $colorbox-maarittelematon-vari: #93278F;
+$colorbox-vieras-vari: #64a31d;
 $sp-uusi-vari: #feba00;
 $reunus-vari: #ccc;
 $kuvaus-vari: #fff;
@@ -503,6 +504,9 @@ $sp-badge-size: 16px;
       &.osaamisala.suljettu {
         background: darken($colorbox-osaamisala-vari, 10%);
       }
+      &.vieras {
+        background: $colorbox-vieras-vari;
+      }
       &.maarittelematon {
         background: $colorbox-maarittelematon-vari;
       }
@@ -583,7 +587,9 @@ $sp-badge-size: 16px;
   width: 900px;
 }
 
-#osaamisala-varoitus {
+#osaamisala-varoitus,
+#vierastutkinto-varoitus,
+#vierastutkinto-varoitus2 {
   position: absolute;
 }
 

@@ -25,7 +25,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 public enum RakenneModuuliRooli {
     NORMAALI("määritelty"),
     VIRTUAALINEN("määrittelemätön"),
-    OSAAMISALA("osaamisala");
+    OSAAMISALA("osaamisala"),
+    VIERAS("vieras");
 
     private final String rooli;
 

@@ -17,10 +17,16 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Lukko;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.exception.LockingException;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
@@ -45,6 +51,9 @@ import org.springframework.transaction.support.TransactionTemplate;
 public class LockManagerImpl implements LockManager {
 
     private final TransactionTemplate transaction;
+
+    @Autowired
+    private KayttajanTietoService kayttajat;
 
     @Autowired
     private EntityManager em;
@@ -103,6 +112,30 @@ public class LockManagerImpl implements LockManager {
         }
 
         return lukko;
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @Override
+    @Transactional(readOnly = true)
+    public void lisaaNimiLukkoon(LukkoDto lock) {
+        if (lock != null && lock.getHaltijaOid() != null) {
+            Future<KayttajanTietoDto> fktd = kayttajat.haeAsync(lock.getHaltijaOid());
+            try {
+                KayttajanTietoDto ktd = fktd.get(6000, TimeUnit.SECONDS);
+                if (ktd != null) {
+                    String kutsumanimi = ktd.getKutsumanimi();
+                    String sukunimi = ktd.getSukunimi();
+                    String username = ktd.getUsername();
+                    if (username != null && sukunimi != null && kutsumanimi != null) {
+                        lock.setHaltijaNimi(kutsumanimi + " " + sukunimi + " (" + username + ")");
+                    }
+                    else if (username != null) {
+                        lock.setHaltijaNimi(username);
+                    }
+                }
+            } catch (InterruptedException | ExecutionException | TimeoutException ex) {
+            }
+        }
     }
 
     @PreAuthorize("isAuthenticated()")

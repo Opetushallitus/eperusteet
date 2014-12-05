@@ -56,6 +56,11 @@
 
     <bean id="eperusteetPermissionEvaluator" class="fi.vm.sade.eperusteet.service.security.PermissionEvaluator"/>
 
+    <security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled" >
+        <security:expression-handler ref="expressionHandler"/>
+        <!--protect-pointcut expression="execution(* fi.vm.sade.eperusteet.service.*.*(..))" access="ROLE_DENY_ALL"/-->
+    </security:global-method-security>
+
     <import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/>
 
     <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>

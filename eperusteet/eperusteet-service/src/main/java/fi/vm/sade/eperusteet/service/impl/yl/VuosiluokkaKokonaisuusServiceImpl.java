@@ -23,13 +23,18 @@ import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.VuosiluokkaKokonaisuusRepository;
+import fi.vm.sade.eperusteet.service.LockCtx;
+import fi.vm.sade.eperusteet.service.LockService;
+import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusContext;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkakokonaisuusService;
 import java.util.HashSet;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,23 +51,39 @@ public class VuosiluokkaKokonaisuusServiceImpl implements Vuosiluokkakokonaisuus
     @Autowired
     @Dto
     private DtoMapper mapper;
-
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
     @Autowired
     private PerusopetuksenPerusteenSisaltoRepository sisaltoRepository;
+
+    @Autowired
+    @LockCtx(VuosiluokkaKokonaisuusContext.class)
+    private LockService<VuosiluokkaKokonaisuusContext> lockService;
 
     @Override
     @Transactional
     public VuosiluokkaKokonaisuusDto addVuosiluokkaKokonaisuus(Long perusteId, VuosiluokkaKokonaisuusDto dto) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         VuosiluokkaKokonaisuus vk = mapper.map(dto, VuosiluokkaKokonaisuus.class);
+        sisaltoRepository.lock(sisalto);
         vk = kokonaisuusRepository.save(vk);
         sisalto.addVuosiluokkakokonaisuus(vk);
         return mapper.map(vk, VuosiluokkaKokonaisuusDto.class);
     }
 
     @Override
-    public void deleteVuosiluokkaKokonaisuus(Long perusteId, Long VuosiluokkaKokonaisuusId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void deleteVuosiluokkaKokonaisuus(Long perusteId, Long kokonaisuusId) {
+        lockService.lock(VuosiluokkaKokonaisuusContext.of(perusteId, kokonaisuusId));
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(kokonaisuusId);
+        if ( vk.getOppiaineet().isEmpty() ) {
+            sisaltoRepository.lock(sisalto);
+            sisalto.removeVuosiluokkakokonaisuus(vk);
+            kokonaisuusRepository.delete(vk);
+        } else {
+            throw new BusinessRuleViolationException("Vuosiluokkakokonaisuutta ei voi poistaa koska siihen liittyy oppiaineita");
+        }
+
     }
 
     @Override
@@ -95,13 +116,11 @@ public class VuosiluokkaKokonaisuusServiceImpl implements Vuosiluokkakokonaisuus
 
     @Override
     public VuosiluokkaKokonaisuusDto updateVuosiluokkaKokonaisuus(Long perusteId, VuosiluokkaKokonaisuusDto dto) {
-        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        lockService.assertLock(VuosiluokkaKokonaisuusContext.of(perusteId, dto.getId()));
         VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(dto.getId());
-        if (sisalto != null && vk != null && sisalto.containsVuosiluokkakokonaisuus(vk)) {
-            mapper.map(dto, vk);
-            kokonaisuusRepository.save(vk);
-            return mapper.map(vk, VuosiluokkaKokonaisuusDto.class);
-        }
-        throw new BusinessRuleViolationException("Vuosiluokkakokonaisuus ei kuulu tähän perusteeseen");
+        mapper.map(dto, vk);
+        kokonaisuusRepository.save(vk);
+        eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, perusteId));
+        return mapper.map(vk, VuosiluokkaKokonaisuusDto.class);
     }
 }

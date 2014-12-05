@@ -18,8 +18,8 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .factory('LukkoSisalto', function(SERVICE_LOC, $resource) {
-    return $resource(SERVICE_LOC + '/perusteet/:osanId/suoritustavat/:suoritustapa/lukko/', {
+  .factory('LukkoRakenne', function(SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/perusteet/:osanId/suoritustavat/:suoritustapa/rakenne/lukko/', {
       osanId: '@osanId',
       suoritustapa: '@suoritustapa',
       tyyppi: '@tyyppi'
@@ -35,6 +35,12 @@ angular.module('eperusteApp')
   .factory('LukkoOppiaine', function (SERVICE_LOC, $resource) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:osanId/lukko', {
       osanId: '@osanId',
+      perusteId: '@perusteId'
+    });
+  })
+  .factory('LukkoVuosiluokkakokonaisuus', function (SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/vuosiluokkakokonaisuudet/:vuosiluokkaId/lukko', {
+      vuosiluokkaId: '@vuosiluokkaId',
       perusteId: '@perusteId'
     });
   })
@@ -57,20 +63,11 @@ angular.module('eperusteApp')
     $scope.$on('$stateChangeSuccess', function() { $scope.peruuta(); });
   })
   .service('Lukitus', function($rootScope, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, Profiili,
-    LukkoPerusteenosa, LukkoSisalto, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
-    LukkoOppiaine, PerusopetusService, LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite) {
+    LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
+    LukkoOppiaine, PerusopetusService, LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite, LukkoVuosiluokkakokonaisuus) {
 
     var lukitsin = null;
     var etag = null;
-
-    var onevent = _.debounce(function() {
-      if (lukitsin) { lukitsin(); }
-    }, LUKITSIN_MINIMI, {
-      leading: true,
-      trailing: false,
-      maxWait: LUKITSIN_MAKSIMI
-    });
-    angular.element(window).on('click', onevent);
 
     $rootScope.$on('$stateChangeSuccess', function() {
       lukitsin = null;
@@ -83,45 +80,43 @@ angular.module('eperusteApp')
 
     function lukitse(Resource, obj, cb) {
       cb = cb || angular.noop;
-      lukitsin = function(isNew) {
-        Resource.save(obj, function(res, headers) {
-          if (isNew) {
-            etag = headers().etag;
-            cb(res);
-          }
 
-          if (etag && headers().etag !== etag) {
+      lukitsin = function() {
+        Resource.save(obj, function(res, headers) {
+          if (etag && headers().etag !== etag && Editointikontrollit.getEditMode()) {
             $modal.open({
               templateUrl: 'views/modals/sisaltoMuuttunut.html',
               controller: 'LukittuSisaltoMuuttunutModalCtrl'
             })
             .result.then(function() {
               etag = headers().etag;
-            },
-            function() {
-              Editointikontrollit.cancelEditing();
-            });
+            }, Editointikontrollit.cancelEditing);
+          }
+          else {
+            etag = headers().etag;
+            cb(res);
           }
         }, Notifikaatiot.serverLukitus);
       };
-      lukitsin(true);
+      lukitsin();
     }
 
     function vapauta(Resource, obj, cb) {
       cb = cb || angular.noop;
       Resource.remove(obj, cb, Notifikaatiot.serverLukitus);
       lukitsin = null;
+      etag = null;
     }
 
     function lukitseSisalto(id, suoritustapa, cb) {
-      lukitse(LukkoSisalto, {
+      lukitse(LukkoRakenne, {
         osanId: id,
         suoritustapa: suoritustapa
       }, cb);
     }
 
     function vapautaSisalto(id, suoritustapa, cb) {
-      vapauta(LukkoSisalto, {
+      vapauta(LukkoRakenne, {
         osanId: id,
         suoritustapa: suoritustapa
       }, cb);
@@ -156,7 +151,7 @@ angular.module('eperusteApp')
         if (res.haltijaOid && new Date() <= new Date(res.vanhentuu) && !res.oma) {
           scope.isLocked = true;
           scope.lockNotification = Kaanna.kaanna('lukitus-kayttajalla', {
-            user: res.data ? res.data.haltijaOid : ''
+            user: res.haltijaNimi || res.haltijaOid
           });
         }
         else {
@@ -166,7 +161,7 @@ angular.module('eperusteApp')
       };
 
       if (suoritustapa) {
-        lueLukitus(LukkoSisalto, {osanId: id, suoritustapa: suoritustapa}, okCb);
+        lueLukitus(LukkoRakenne, {osanId: id, suoritustapa: suoritustapa}, okCb);
       } else {
         lueLukitus(LukkoPerusteenosa, {osanId: id}, okCb);
       }
@@ -181,7 +176,7 @@ angular.module('eperusteApp')
 
       switch (parametrit.tyyppi) {
         case 'sisalto':
-          lueLukitus(LukkoSisalto, { osanId: parametrit.id, suoritustapa: parametrit.suoritustapa }, cb);
+          lueLukitus(LukkoRakenne, { osanId: parametrit.id, suoritustapa: parametrit.suoritustapa }, cb);
           break;
         case 'perusteenosa':
           lueLukitus(LukkoPerusteenosa, { osanId: parametrit.id }, cb);
@@ -212,10 +207,21 @@ angular.module('eperusteApp')
           vuosiluokkaId: vuosiluokkaId
         }, cb);
       },
-      vapautaOppiaineenVuosiluokkakokonaisuus: function (oppiaineId, vuosiluokkaId, cb) {
-        vapauta(LukkoOppiaineenVuosiluokkakokonaisuus, {
+      vapautaOppiaineenVuosiluokkakokonaisuus: function (vuosiluokkaId, cb) {
+        vapauta(LukkoVuosiluokkakokonaisuus, {
           perusteId: PerusopetusService.getPerusteId(),
-          oppiaineId: oppiaineId,
+          vuosiluokkaId: vuosiluokkaId
+        }, cb);
+      },
+      lukitseVuosiluokkakokonaisuus: function (vuosiluokkaId, cb) {
+        lukitse(LukkoVuosiluokkakokonaisuus, {
+          perusteId: PerusopetusService.getPerusteId(),
+          vuosiluokkaId: vuosiluokkaId
+        }, cb);
+      },
+      vapautaVuosiluokkakokonaisuus: function (vuosiluokkaId, cb) {
+        vapauta(LukkoVuosiluokkakokonaisuus, {
+          perusteId: PerusopetusService.getPerusteId(),
           vuosiluokkaId: vuosiluokkaId
         }, cb);
       },

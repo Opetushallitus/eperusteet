@@ -30,7 +30,7 @@ angular.module('eperusteApp')
       lisaaPreferenssi: { method: 'POST', url: SERVICE_LOC + '/kayttajaprofiili/preferenssi' }
     });
   })
-  .service('Profiili', function($state, $rootScope, Suosikit, Notifikaatiot, Kayttajaprofiilit) {
+  .service('Profiili', function($state, $rootScope, Suosikit, Notifikaatiot, Kayttajaprofiilit, $stateParams, $http, $q) {
     var info = {
       resolved: false,
       suosikit: [],
@@ -78,6 +78,25 @@ angular.module('eperusteApp')
       oid: function() { return info.oid; },
       profiili: function() { return info; },
       isResolved: function() { return info.resolved; },
+      casTiedot: function () {
+        // TODO Käyttäjätiedot voisi hakea ensisijaisesti CAS:sta eikä fallbackina
+        // käyttäjäprofiilille. CAS:ssa on kuitenkin aina kirjaantuneen käyttäjän tiedot.
+        var deferred = $q.defer();
+        if (!info.$casFetched) {
+          info.$casFetched = true;
+          $http.get('/cas/me').success(function (res) {
+            if (res.oid) {
+              info.oid = res.oid;
+            }
+            deferred.resolve(res);
+          }).error(function () {
+            deferred.resolve({});
+          });
+        } else {
+          deferred.resolve(info);
+        }
+        return deferred.promise;
+      },
 
       setPreferenssi: function(avain, arvo, successCb, failureCb) {
         successCb = successCb || angular.noop;
@@ -99,7 +118,8 @@ angular.module('eperusteApp')
       },
 
       // Suosikit
-      asetaSuosikki: function(state, stateParams, nimi, success) {
+      asetaSuosikki: function(state, nimi, success) {
+        var stateParams = $stateParams;
         success = success || angular.noop;
 
         var vanha = _(info.suosikit).filter(function(s) {
@@ -130,7 +150,8 @@ angular.module('eperusteApp')
       listaaSuosikit: function() {
         return _.clone(info.suosikit);
       },
-      haeSuosikki: function(state, stateParams) {
+      haeSuosikki: function(state) {
+        var stateParams = $stateParams;
         var haku = _.filter(info.suosikit, function(s) {
           return state.current.name === s.sisalto.tila && isSame(stateParams, s.sisalto.parametrit);
         });

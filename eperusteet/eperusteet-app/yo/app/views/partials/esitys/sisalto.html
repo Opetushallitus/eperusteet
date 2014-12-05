@@ -1,14 +1,11 @@
 <h2>
     <span ng-bind="valittuSisalto.nimi | kaanna"></span>
     <div class="painikkeet pull-right">
-        <a href="" ng-click="asetaSuosikki()">
+        <a class="action-link" ng-click="asetaSuosikki()">
             <span class="glyphicon" ng-class="{'glyphicon-star': onSuosikki, 'glyphicon-star-empty': !onSuosikki}"></span>
             {{ onSuosikki ? 'poista-suosikeista' : 'merkitse-suosikiksi' | kaanna }}
         </a>
-        <a class="left-space" ng-click="printSisalto()" href="">
-            <span class="glyphicon glyphicon-print"></span>
-            {{ 'tulosta-sivu' | kaanna }}
-        </a>
+        <a class="action-link left-space" ng-click="printSisalto()" icon-role="print" kaanna="'tulosta-sivu'"></a>
     </div>
 </h2>
 <div class="sisalto max-sm-leveys" ng-bind-html="valitseKieli(valittuSisalto.teksti) | unsafe"></div>

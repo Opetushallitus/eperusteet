@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuudenLaajaalainenOsaamine
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
+import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusContext;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkakokonaisuusService;
 import java.io.IOException;
 import java.util.Collections;
@@ -50,6 +51,9 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
     private PerusopetuksenPerusteenSisaltoService sisaltoService;
     @Autowired
     private VuosiluokkakokonaisuusService service;
+    @Autowired
+    @LockCtx(VuosiluokkaKokonaisuusContext.class)
+    private LockService<VuosiluokkaKokonaisuusContext> lockService;
 
 
     private Long perusteId;
@@ -57,7 +61,7 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
 
     @Before
     public void setup() {
-        Peruste peruste = perusteService.luoPerusteRunko("koulutustyyppi_9999", LaajuusYksikko.OPINTOVIIKKO, PerusteTila.LUONNOS, PerusteTyyppi.NORMAALI);
+        Peruste peruste = perusteService.luoPerusteRunko("koulutustyyppi_16", LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
         perusteId = peruste.getId();
         LaajaalainenOsaaminenDto lo = new LaajaalainenOsaaminenDto();
         lo.setNimi(olt("Nimi"));
@@ -75,12 +79,18 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
         vlo.setLaajaalainenOsaaminen(Optional.of(osaaminen));
         dto.setLaajaalaisetOsaamiset(Collections.singleton(vlo));
         dto = service.addVuosiluokkaKokonaisuus(perusteId, dto);
+
         assertEquals(1, dto.getLaajaalaisetOsaamiset().size());
         assertEquals(osaaminen, dto.getLaajaalaisetOsaamiset().iterator().next().getLaajaalainenOsaaminen().get());
         dto.setNimi(olt("Nimi2"));
         dto.getLaajaalaisetOsaamiset().add(vlo);
+        final VuosiluokkaKokonaisuusContext ctx = VuosiluokkaKokonaisuusContext.of(perusteId, dto.getId());
+
+        lockService.lock(ctx);
         service.updateVuosiluokkaKokonaisuus(perusteId, dto);
+        lockService.unlock(ctx);
         assertEquals(2, dto.getLaajaalaisetOsaamiset().size());
+        service.deleteVuosiluokkaKokonaisuus(ctx.getPerusteId(), ctx.getKokonaisuusId());
 
     }
 

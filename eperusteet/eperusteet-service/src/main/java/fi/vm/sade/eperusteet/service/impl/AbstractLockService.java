@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.Lukko;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.service.LockService;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author jhyoty
  */
+
 public abstract class AbstractLockService<T> implements LockService<T> {
 
     @Autowired
@@ -35,28 +37,35 @@ public abstract class AbstractLockService<T> implements LockService<T> {
     @Autowired
     protected PermissionChecker permissionChecker;
 
-    @Override
     @Transactional(readOnly = true)
     public LukkoDto getLock(T ctx) {
-        return LukkoDto.of(manager.getLock(validateCtx(ctx).getId()));
+        Lukko lock = manager.getLock(validateCtx(ctx, true).getId());
+        return lock == null ? null : LukkoDto.of(lock, latestRevision(ctx));
     }
 
-    @Override
     @Transactional
     public LukkoDto lock(T ctx) {
-        return LukkoDto.of(manager.lock(validateCtx(ctx).getId()));
+        return lock(ctx,null);
     }
 
-    @Override
+    @Transactional
+    public LukkoDto lock(T ctx, Integer ifMatchRevision) {
+        ReferenceableEntity re = validateCtx(ctx, false);
+        final int latestRevision = latestRevision(ctx);
+        if ( ifMatchRevision == null || latestRevision == ifMatchRevision ) {
+            return LukkoDto.of(manager.lock(re.getId()), latestRevision);
+        }
+        return null;
+    }
+
     @Transactional
     public void unlock(T ctx) {
-        manager.unlock(validateCtx(ctx).getId());
+        manager.unlock(validateCtx(ctx, false).getId());
     }
 
-    @Override
     @Transactional(readOnly = true)
     public void assertLock(T ctx) {
-        manager.ensureLockedByAuthenticatedUser(validateCtx(ctx).getId());
+        manager.ensureLockedByAuthenticatedUser(validateCtx(ctx, true).getId());
     }
 
     /**
@@ -64,6 +73,13 @@ public abstract class AbstractLockService<T> implements LockService<T> {
      * @param ctx
      * @return kontekstia vastaavan lukittavan entiteetin
      */
-    protected abstract ReferenceableEntity validateCtx(T ctx);
+    protected abstract ReferenceableEntity validateCtx(T ctx, boolean readOnly);
+
+    /**
+     * Varmistaa että lukituskonteksti on validi
+     * @param ctx
+     * @return kontekstia vastaavan lukittavan entiteetin
+     */
+    protected abstract int latestRevision(T ctx);
 
 }

@@ -5,13 +5,19 @@
 </div>
 
 <div class="modal-body termi-muokkaus">
-  <formfield label="termi" model="termimodel" model-var="termi"></formfield>
-  <formfield label="selitys" model="termimodel" model-var="selitys" type="textarea"></formfield>
+  <h3 kaanna="termi"></h3>
+  <ml-input ml-data="termimodel.termi" type="text" required="true"></ml-input>
+  <h3 kaanna="selitys"></h3>
+  <div id="toolbar" style="display: none">
+    <div id="ck-toolbar-top"></div>
+    <div id="ck-toolbar-bottom"></div>
+  </div>
+  <div ckeditor ng-model="termimodel.selitys" localized editor-placeholder="termin-selitys-placeholder"></div>
   <div class="clearfix"></div>
 </div>
 
 <div class="modal-footer">
   <button ng-if="!creating" class="btn btn-danger pull-left" ng-click="delete()" kaanna="poista" icon-role="remove"></button>
   <button class="btn btn-default" ng-click="$dismiss()" kaanna="peruuta"></button>
-  <button class="btn btn-primary" ng-click="$close(termimodel)" kaanna="tallenna"></button>
+  <button class="btn btn-primary" ng-click="ok()" kaanna="tallenna"></button>
 </div>

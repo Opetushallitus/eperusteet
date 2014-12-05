@@ -14,6 +14,9 @@ Kehitysympäristön pystytys
 - Nodejs sekä yo front-end-kehitystä varten
   - <http://nodejs.org/download/>
   - (sudo) npm -g install yo
+  - Jos bower ja/tai grunt puuttuvat niin aja myös
+    (sudo) npm -g install bower
+    (sudo) npm -g install grunt-cli
 - PostgreSQL 9.3 (luo tietokanta paikallista kehitystä varten)
 - Tomcat [7.0.42,8)
 

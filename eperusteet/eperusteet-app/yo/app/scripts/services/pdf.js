@@ -122,11 +122,11 @@ angular.module('eperusteApp')
     return service;
   })
   .controller('PdfCreationController', function($scope, kielet, Pdf, perusteId,
-    $timeout, Notifikaatiot, Kaanna, PerusteProjektiService) {
+    $timeout, Notifikaatiot, Kaanna, PerusteProjektiService, $stateParams) {
     $scope.kielet = kielet;
     $scope.docs = {};
     var pdfToken = null;
-    var suoritustapa = PerusteProjektiService.getSuoritustapa();
+    var suoritustapa = PerusteProjektiService.getSuoritustapa() || $stateParams.suoritustapa;
 
     $scope.hasPdf = function() {
       return !!$scope.docs[$scope.kielet.valittu];

@@ -6,8 +6,22 @@
 
 <div class="modal-body">
     <form class="form-horizontal" name="ryhmaForm">
-        <formfield model="rakenneosa" model-var="kuvaus" label="kuvaus" type="text"></formfield>
-        <formfield model="rakenneosa" model-var="pakollinen" label="pakollinen" type="checkbox"></formfield>
+        <div>
+            <h3 kaanna="'perustiedot'"></h3>
+            <formfield model="rakenneosa" model-var="kuvaus" label="kuvaus" type="text"></formfield>
+            <formfield model="rakenneosa" model-var="pakollinen" label="pakollinen" type="checkbox"></formfield>
+        </div>
+        <div>
+            <h3 kaanna="'tutkintokoodi'"></h3>
+            <div ng-if="rakenneosa.erikoisuus === 'vieras'">
+                <div class="input-group">
+                    <span ng-if="rakenneosa.vieras" class="form-control" kaanna="rakenneosa.vieras.nimi"></span>
+                    <span class="input-group-btn">
+                        <button ng-click="vieraskoodiModaali()" class="btn btn-default" kaanna="'hae-koodi'"></button>
+                    </span>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 

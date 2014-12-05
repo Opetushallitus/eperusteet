@@ -5,7 +5,7 @@
 </div>
 
 <div class="modal-body">
-  <rajaus ng-hide="valittuPeruste || lataa" model="syote" placeholder="hae-perusteita" callback="haku(value)"></rajaus>
+  <rajaus ng-if="!valittuPeruste && !lataa" model="syote" placeholder="hae-perusteita" callback="haku(value)"></rajaus>
   <div ng-show="!valittuPeruste" style="margin-top: 8px" class="results">
     <table class="table table-striped">
       <tr>
@@ -23,26 +23,28 @@
       </tr>
     </table>
   </div>
-  <div ng-show="valittuPeruste" style="margin-top: 8px">
-    <input ng-hide="lataa" type="text" ng-model="rajaus" class="form-control" placeholder="{{ 'hae-perusteita' | kaanna }}..." />
+  <div ng-if="valittuPeruste" style="margin-top: 8px">
+    <rajaus model="search.term" placeholder="etsi-sisallosta" callback="search.changed(value)"></rajaus>
     <h3>{{ valittuPeruste.nimi | kaanna }}</h3>
-    <table class="table table-striped">
+    <div class="alert alert-warning" ng-show="filtered.length === 0" kaanna="ei-tekstikappaleita"></div>
+    <table ng-show="filtered.length > 0" class="table table-striped">
       <tr>
-        <th></th>
+        <th class="has-checkbox"><input class="form-control" ng-change="toggleKaikki(kaikkiValittu)" ng-model="kaikkiValittu" type="checkbox"></th>
         <th width="50%" kaanna>otsikko</th>
         <th kaanna>muokattu-viimeksi</th>
       </tr>
-      <tr ng-repeat="s in sisalto">
-        <td><input ng-model="s.$valittu" type="checkbox"></td>
-        <td>{{ s.perusteenOsa.nimi | kaanna }}</td>
+      <tr ng-repeat="s in filtered = (sisalto | filter:search.filterFn) | orderBy:orderFn | startFrom:paginate.perPage*(paginate.current-1) | limitTo:paginate.perPage">
+        <td><input ng-change="updateTotal()" ng-model="s.$valittu" type="checkbox" class="form-control"></td>
+        <td ng-click="s.$valittu = !s.$valittu; updateTotal()">{{ s.perusteenOsa.nimi | kaanna }}</td>
         <td>{{ s.perusteenOsa.muokattu | aikaleima }}</td>
       </tr>
     </table>
+    <pagination ng-model="paginate.current" total-items="filtered.length" items-per-page="paginate.perPage"></pagination>
   </div>
 </div>
 
 <div class="modal-footer">
   <button ng-show="valittuPeruste" class="btn" ng-click="takaisin()" kaanna>takaisin</button>
   <button class="btn btn-danger" ng-click="peru()" kaanna>peru</button>
-  <button ng-show="valittuPeruste" class="btn btn-primary" ng-click="ok()" kaanna>valitse</button>
+  <button ng-disabled="valitut === 0" ng-show="valittuPeruste" class="btn btn-primary" ng-click="ok()">{{'tuo-valitut'|kaanna}} ({{valitut}})</button>
 </div>

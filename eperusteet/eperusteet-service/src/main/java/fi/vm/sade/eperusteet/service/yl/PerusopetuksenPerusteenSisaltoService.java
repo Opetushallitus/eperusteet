@@ -35,7 +35,7 @@ public interface PerusopetuksenPerusteenSisaltoService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     LaajaalainenOsaaminenDto getLaajaalainenOsaaminen(@P("perusteId") Long perusteId, Long id);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     LaajaalainenOsaaminenDto updateLaajaalainenOsaaminen(@P("perusteId") Long perusteId, LaajaalainenOsaaminenDto dto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")

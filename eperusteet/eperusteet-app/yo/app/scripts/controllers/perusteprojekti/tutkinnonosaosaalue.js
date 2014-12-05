@@ -88,26 +88,26 @@ angular.module('eperusteApp')
 
     var osaAlueCallbacks = {
       edit: function () {
-        TutkinnonOsanOsaAlue.get({viiteId: $stateParams.perusteenOsaViiteId, osaalueenId: $stateParams.osaAlueId}, function(vastaus) {
+        TutkinnonOsanOsaAlue.get({viiteId: $stateParams.tutkinnonOsaViiteId, osaalueenId: $stateParams.osaAlueId}, function(vastaus) {
           $scope.osaAlue = vastaus;
           luoOsaamistavoitepuu();
         }, function (virhe){
           Notifikaatiot.serverCb(virhe);
-          $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {}, {reload: true});
+          $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {}, {reload: true});
         });
       },
       cancel: function () {
-        Lukitus.vapautaPerusteenosaByTutkinnonOsaViite($stateParams.perusteenOsaViiteId);
-        $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {}, {reload: true});
+        Lukitus.vapautaPerusteenosaByTutkinnonOsaViite($stateParams.tutkinnonOsaViiteId);
+        $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {}, {reload: true});
       },
       save: function () {
         $scope.osaAlue.osaamistavoitteet = kokoaOsaamistavoitteet();
-        TutkinnonOsanOsaAlue.save({viiteId: $stateParams.perusteenOsaViiteId, osaalueenId: $stateParams.osaAlueId}, $scope.osaAlue, function () {
-          Lukitus.vapautaPerusteenosaByTutkinnonOsaViite($stateParams.perusteenOsaViiteId);
-          $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {}, {reload: true});
+        TutkinnonOsanOsaAlue.save({viiteId: $stateParams.tutkinnonOsaViiteId, osaalueenId: $stateParams.osaAlueId}, $scope.osaAlue, function () {
+          Lukitus.vapautaPerusteenosaByTutkinnonOsaViite($stateParams.tutkinnonOsaViiteId);
+          $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {}, {reload: true});
         }, function(virhe) {
           Notifikaatiot.serverCb(virhe);
-          $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {}, {reload: true});
+          $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {}, {reload: true});
         });
       },
       validate: function () {
@@ -158,7 +158,7 @@ angular.module('eperusteApp')
     };
 
     function lukitse(cb) {
-      Lukitus.lukitsePerusteenosaByTutkinnonOsaViite($stateParams.perusteenOsaViiteId, cb);
+      Lukitus.lukitsePerusteenosaByTutkinnonOsaViite($stateParams.tutkinnonOsaViiteId, cb);
     }
 
     Editointikontrollit.registerCallback(osaAlueCallbacks);

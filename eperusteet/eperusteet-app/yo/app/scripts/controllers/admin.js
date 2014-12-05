@@ -22,12 +22,49 @@ angular.module('eperusteApp')
     $stateProvider
       .state('root.admin', {
         url: '/admin',
-        templateUrl: 'views/admin.html',
-        controller: 'AdminCtrl',
+        templateUrl: 'views/admin/base.html',
+        controller: 'AdminBaseController',
+      })
+      .state('root.admin.perusteprojektit', {
+        url: '/perusteprojektit',
+        templateUrl: 'views/admin/perusteprojektit.html',
+        controller: 'AdminPerusteprojektitController'
+      })
+      .state('root.admin.tiedotteet', {
+        url: '/tiedotteet',
+        templateUrl: 'views/admin/tiedotteet.html',
+        controller: 'TiedotteetController'
       });
   })
-  .controller('AdminCtrl', function($rootScope, $scope, PerusteProjektit, Algoritmit, PerusteprojektiTila, Notifikaatiot,
-                                    Kaanna, YleinenData, Varmistusdialogi, PerusteProjektiService) {
+
+  .controller('AdminBaseController', function ($scope, $state) {
+    $scope.tabs = [
+      {label: 'perusteprojektit', state: 'root.admin.perusteprojektit'},
+      {label: 'tiedotteet', state: 'root.admin.tiedotteet'}
+    ];
+
+    $scope.chooseTab = function ($index) {
+      _.each($scope.tabs, function (item, index) {
+        item.$tabActive = index === $index;
+      });
+      var state = $scope.tabs[$index];
+      if (state) {
+        $state.go(state.state);
+      }
+    };
+
+    if ($state.current.name === 'root.admin') {
+      $scope.chooseTab(0);
+    } else {
+      _.each($scope.tabs, function (item) {
+        item.$tabActive = item.state === $state.current.name;
+      });
+    }
+  })
+
+  .controller('AdminPerusteprojektitController', function($rootScope, $scope, PerusteProjektit,
+      Algoritmit, PerusteprojektiTila, Notifikaatiot, Kaanna, YleinenData, Varmistusdialogi,
+      PerusteProjektiService) {
     $scope.jarjestysTapa = 'nimi';
     $scope.jarjestysOrder = false;
     $scope.tilaRajain = null;

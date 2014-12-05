@@ -45,6 +45,11 @@ public class Kommentti extends AbstractAuditedEntity {
 
     @Getter
     @Setter
+    @Column(name="nimi")
+    private String nimi;
+
+    @Getter
+    @Setter
     @Column(name="ylin_id")
     private Long ylinId;
 

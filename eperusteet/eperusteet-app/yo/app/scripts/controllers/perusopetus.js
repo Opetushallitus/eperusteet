@@ -27,9 +27,8 @@ angular.module('eperusteApp')
 
     $scope.$watch('peruste.sisalto', function () {
       Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function (lapsi) {
-        lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.perusteenosa', {
+        lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.tekstikappale', {
           suoritustapa: 'ops',
-          perusteenOsanTyyppi: 'tekstikappale',
           perusteenOsaViiteId: lapsi.id,
           versio: '' });
       });

@@ -14,6 +14,7 @@
  * European Union Public Licence for more details.
  */
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .directive('pikamenu', function ($document, $window) {
@@ -34,6 +35,9 @@ angular.module('eperusteApp')
           }
           scope.pikamenu.opened = false;
           scope.$apply();
+        });
+        scope.$on('$destroy', function () {
+          $document.off('click');
         });
 
         function updatePosition () {
@@ -68,6 +72,15 @@ angular.module('eperusteApp')
       controller: 'TutkinnonOsatPikamenu'
     };
   })
-  .controller('TutkinnonOsatPikamenu', function($scope) {
-    $scope.pikamenu = { opened: false };
+  .controller('TutkinnonOsatPikamenu', function($scope, Kaanna) {
+    $scope.pikamenu = {
+      opened: false,
+      orderFn: function (key) {
+        return Kaanna.kaanna($scope.rakenne.tutkinnonOsat[key].nimi).toLowerCase();
+      },
+      filterFn: function (key) {
+        return !$scope.rakenne.tutkinnonOsat[key].poistettu;
+      }
+    };
+    $scope.keys = _.keys;
   });

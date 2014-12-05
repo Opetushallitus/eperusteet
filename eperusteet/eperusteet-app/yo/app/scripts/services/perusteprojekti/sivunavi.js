@@ -21,12 +21,12 @@ angular.module('eperusteApp')
 .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q,
     $state, $location, YleinenData, PerusopetusService, Kaanna, $timeout) {
   var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
-  var STATE_OSA = 'root.perusteprojekti.suoritustapa.perusteenosa';
+  var STATE_TUTKINNON_OSA = 'root.perusteprojekti.suoritustapa.tutkinnonosa';
+  var STATE_TEKSTIKAPPALE = 'root.perusteprojekti.suoritustapa.tekstikappale';
   var STATE_OSALISTAUS = 'root.perusteprojekti.osalistaus';
   var STATE_OSAALUE = 'root.perusteprojekti.osaalue';
   var isTutkinnonosatActive = function () {
-    return $state.is(STATE_OSAT) || ($state.is(STATE_OSA) &&
-      $stateParams.perusteenOsanTyyppi === 'tutkinnonosa');
+    return $state.is(STATE_OSAT) || $state.is(STATE_TUTKINNON_OSA);
   };
   var AM_ITEMS = [
     {
@@ -55,30 +55,34 @@ angular.module('eperusteApp')
   };
 
   function getLink(lapsi) {
+    if (!lapsi.perusteenOsa) {
+      return '';
+    }
+    var params = {
+      perusteenOsaViiteId: lapsi.id,
+      versio: null
+    };
+    if (perusteenTyyppi === 'YL') {
+      _.extend(params, {suoritustapa: 'ops'});
+    }
     return lapsi.perusteenOsa.tunniste && lapsi.perusteenOsa.tunniste === 'rakenne' ?
       ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: ''}] :
-      [
-        STATE_OSA,
-        {
-          perusteenOsanTyyppi: 'tekstikappale',
-          perusteenOsaViiteId: lapsi.id,
-          versio: null
-        }
-      ];
+      [STATE_TEKSTIKAPPALE, params];
   }
 
   var processNode = function (node, level) {
     level = level || 0;
     _.each(node.lapset, function (lapsi) {
+      var label = lapsi.perusteenOsa ? lapsi.perusteenOsa.nimi : '';
       items.push({
-        label: lapsi.perusteenOsa.nimi,
+        label: label,
         id: lapsi.id,
         depth: level,
         link: getLink(lapsi),
         isActive: isRouteActive,
         $type: (lapsi.perusteenOsa && lapsi.perusteenOsa.tunniste === 'rakenne') ? 'ep-tree' : 'ep-text'
       });
-      nameMap[lapsi.id] = lapsi.perusteenOsa.nimi;
+      nameMap[lapsi.id] = label;
       processNode(lapsi, level + 1);
     });
   };
@@ -88,7 +92,7 @@ angular.module('eperusteApp')
     // with optional parameters.
     // Versionless url should be considered same as specific version url.
     var url = item.href && item.href.indexOf('/rakenne') > -1 ?
-      item.href.substr(1) : $state.href(STATE_OSA, {
+      item.href.substr(1) : $state.href(STATE_TEKSTIKAPPALE, {
       perusteenOsaViiteId: item.id,
       versio: null
     }, {inherit:true}).replace(/#/g, '');
@@ -136,8 +140,8 @@ angular.module('eperusteApp')
       });
     } else {
       items = _.clone(AM_ITEMS);
-      processNode(data.projekti.peruste.sisalto);
     }
+    processNode(data.projekti.peruste.sisalto);
     $timeout(function () {
       callbacks.itemsChanged(items);
     });

@@ -23,12 +23,14 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 
 import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.*;
+
 import fi.vm.sade.eperusteet.service.util.Pair;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -71,6 +73,9 @@ public class PermissionManager {
     @Autowired
     TutkinnonOsaViiteRepository viiteRepository;
 
+    @Autowired
+    PerusteenOsaViiteRepository perusteenOsaViiteRepository;
+
     private static final Logger LOG = LoggerFactory.getLogger(PermissionManager.class);
 
     public enum Permission {
@@ -80,6 +85,7 @@ public class PermissionManager {
         MUOKKAUS("muokkaus"),
         KOMMENTOINTI("kommentointi"),
         LUONTI("luonti"),
+        KORJAUS("korjaus"),
         TILANVAIHTO("tilanvaihto");
 
         private final String permission;
@@ -100,7 +106,8 @@ public class PermissionManager {
         PERUSTE("peruste"),
         PERUSTEENMETATIEDOT("perusteenmetatiedot"),
         PERUSTEENOSA("perusteenosa"),
-        TUTKINNONOSAVIITE("tutkinnonosaviite");
+        TUTKINNONOSAVIITE("tutkinnonosaviite"),
+        PERUSTEENOSAVIITE("perusteenosaviite");
 
         private final String target;
 
@@ -146,6 +153,7 @@ public class PermissionManager {
             perm = Maps.newHashMap();
             perm.put(LUKU, r3);
             perm.put(KOMMENTOINTI, r2);
+            perm.put(MUOKKAUS, r1);
             tmp.put(ProjektiTila.VIIMEISTELY, perm);
 
             perm = Maps.newHashMap();
@@ -153,6 +161,7 @@ public class PermissionManager {
             tmp.put(ProjektiTila.VALMIS, perm);
 
             perm = Maps.newHashMap();
+            perm.put(KORJAUS,r0);
             perm.put(LUKU, r4);
             tmp.put(ProjektiTila.JULKAISTU, perm);
 
@@ -161,6 +170,7 @@ public class PermissionManager {
             allowedRolesTmp.put(Target.PERUSTE, tmp);
             allowedRolesTmp.put(Target.PERUSTEENOSA, tmp);
             allowedRolesTmp.put(Target.TUTKINNONOSAVIITE, tmp);
+            allowedRolesTmp.put(Target.PERUSTEENOSAVIITE, tmp);
         }
         {
             Map<ProjektiTila, Map<Permission, Set<String>>> tmp = new IdentityHashMap<>();
@@ -278,6 +288,16 @@ public class PermissionManager {
             targetType = Target.PERUSTEENOSA;
         }
 
+        if (Target.PERUSTEENOSAVIITE.equals(targetType)) {
+            // Haetaan perusteen osa mihin viitataan osaviitteessä ja jatketaan luvan tutkimista perusteen osan tiedoilla.
+            PerusteenOsaViite p = perusteenOsaViiteRepository.findOne((Long)targetId);
+            if (p == null || p.getPerusteenOsa()== null) {
+                return false;
+            }
+            targetId = p.getPerusteenOsa().getId();
+            targetType = Target.PERUSTEENOSA;
+        }
+
         if (LUKU.equals(permission)) {
             //tarkistetaan onko lukuoikeus suoraan julkaistu -statuksen perusteella
             if (PerusteTila.VALMIS == helper.findPerusteTilaFor(targetType, targetId)) {
@@ -351,10 +371,11 @@ public class PermissionManager {
 
         Map<ProjektiTila, Map<Permission, Set<String>>> tempTargetKohtaiset = allowedRoles.get(targetType);
         Map<Permission, Set<String>> tempProjektitilaKohtaiset = tempTargetKohtaiset.get(tila);
+        final Set<Pair<String, ProjektiTila>> projektitila = findPerusteProjektiTila(targetType, targetId);
 
         for (Map.Entry<Permission, Set<String>> per : tempProjektitilaKohtaiset.entrySet()) {
             boolean hasRole = false;
-            for (Pair<String, ProjektiTila> ppt : findPerusteProjektiTila(targetType, targetId)) {
+            for (Pair<String, ProjektiTila> ppt : projektitila) {
                 hasRole = hasRole | hasAnyRole(authentication, ppt.getFirst(), per.getValue());
             }
             if (hasRole) {

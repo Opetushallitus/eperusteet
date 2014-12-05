@@ -26,6 +26,7 @@ import lombok.Setter;
 public abstract class AbstractRakenneOsaDto {
 
     private LokalisoituTekstiDto kuvaus;
+    private KoodiDto vieras;
 
     public final void foreach(final Visitor visitor) {
         foreach(visitor, 0);

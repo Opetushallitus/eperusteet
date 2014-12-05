@@ -15,7 +15,9 @@
  */
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
+import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -31,6 +33,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
@@ -39,7 +42,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tyyppi")
 @Audited
-public abstract class AbstractRakenneOsa implements Serializable {
+public abstract class AbstractRakenneOsa implements Serializable, ReferenceableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -50,8 +53,19 @@ public abstract class AbstractRakenneOsa implements Serializable {
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter
     @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private Koodi vieras;
+
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @Getter
+    @Setter
     @Audited(targetAuditMode = NOT_AUDITED)
     private TekstiPalanen kuvaus;
+
+    @Override
+    public EntityReference getReference() {
+        return new EntityReference(id);
+    }
 
     public boolean isSame(AbstractRakenneOsa other) {
         if (other == null) {

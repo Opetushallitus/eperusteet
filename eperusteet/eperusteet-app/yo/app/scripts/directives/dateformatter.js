@@ -53,7 +53,7 @@ angular.module('eperusteApp')
             return;
           }
           var date = new Date(value);
-          element.text(moment(date).format('l'));
+          element.text(moment(date).format('D.M.YYYY'));
         });
       }
     };

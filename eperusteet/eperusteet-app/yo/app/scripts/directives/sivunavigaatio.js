@@ -160,7 +160,7 @@ angular.module('eperusteApp')
       if (item.$matched && $scope.search.term) {
         classes.push('matched');
       }
-      if (isActive(item)) {
+      if (item.$active) {
         classes.push('active');
       }
       return classes;
@@ -229,6 +229,7 @@ angular.module('eperusteApp')
       }
       item.$leaf = hidden.length === 0;
       item.$collapsed = _.all(hidden);
+      item.$active = isActive(item);
       if (!item.$collapsed) {
         // Reveal all children of uncollapsed node
         for (i = 0; i < children.length; ++i) {

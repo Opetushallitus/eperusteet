@@ -25,7 +25,10 @@ angular.module('eperusteApp')
     });
   })
   .factory('Organisaatioryhmat', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/ulkopuoliset/organisaatioryhmat/', {}, {
-      get: {method: 'GET', isArray: true}
+    return $resource(SERVICE_LOC + '/ulkopuoliset/organisaatioryhmat/', {
+      oid: '@oid'
+    }, {
+      get: {method: 'GET', isArray: true},
+      yksi: {method: 'GET', isArray: false, url: SERVICE_LOC + '/ulkopuoliset/organisaatioryhmat/:oid'}
     });
   });

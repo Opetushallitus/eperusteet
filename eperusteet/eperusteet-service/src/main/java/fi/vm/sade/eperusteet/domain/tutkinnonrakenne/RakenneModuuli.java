@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -57,6 +58,11 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
     @Setter
     @Enumerated(EnumType.STRING)
     private RakenneModuuliRooli rooli;
+
+    @Getter
+    @Setter
+    @Enumerated(EnumType.STRING)
+    private RakenneModuuliErikoisuus erikoisuus;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter

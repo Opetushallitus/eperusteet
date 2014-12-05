@@ -62,7 +62,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .controller('OsalistausDirectiveController', function($scope, Preferenssit, Kaanna, Algoritmit, OrderHelper, Profiili) {
+  .controller('OsalistausDirectiveController', function($scope, Kaanna, Algoritmit, OrderHelper, Profiili) {
     var defaultPreferences = {
       nakymatyyli: 'palikka'
     };

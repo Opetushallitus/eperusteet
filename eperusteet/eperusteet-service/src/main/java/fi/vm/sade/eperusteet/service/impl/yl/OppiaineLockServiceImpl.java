@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.repository.OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.OppiaineenVuosiluokkakokonaisuusRepository;
 import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
+import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.impl.AbstractLockService;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Service;
  * @author jhyoty
  */
 @Service
+@LockCtx(OppiaineLockContext.class)
 public class OppiaineLockServiceImpl extends AbstractLockService<OppiaineLockContext> {
 
     @Autowired
@@ -46,8 +48,9 @@ public class OppiaineLockServiceImpl extends AbstractLockService<OppiaineLockCon
     private OppiaineenVuosiluokkakokonaisuusRepository vuosiluokkakokonaisuusRepository;
 
     @Override
-    protected final ReferenceableEntity validateCtx(OppiaineLockContext ctx) {
-        permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.MUOKKAUS);
+    protected final ReferenceableEntity validateCtx(OppiaineLockContext ctx, boolean readOnly) {
+        final PermissionManager.Permission permission = readOnly ? PermissionManager.Permission.LUKU : PermissionManager.Permission.MUOKKAUS;
+        permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, permission);
 
         PerusopetuksenPerusteenSisalto s = repository.findByPerusteId(ctx.getPerusteId());
         Oppiaine aine = oppiaineRepository.findOne(ctx.getOppiaineId());
@@ -63,6 +66,16 @@ public class OppiaineLockServiceImpl extends AbstractLockService<OppiaineLockCon
             return ovk;
         }
         return aine;
+    }
+
+    @Override
+    protected final int latestRevision(OppiaineLockContext ctx) {
+        //olettaa että lockcontext on validi (ei tarkisteta erikseen)
+        if ( ctx.getKokonaisuusId() != null ) {
+            return vuosiluokkakokonaisuusRepository.getLatestRevisionId(ctx.getKokonaisuusId());
+        }
+
+        return oppiaineRepository.getLatestRevisionId(ctx.getOppiaineId());
     }
 
 }

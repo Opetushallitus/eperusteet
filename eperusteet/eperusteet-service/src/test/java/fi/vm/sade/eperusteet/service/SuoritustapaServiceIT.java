@@ -58,7 +58,6 @@ public class SuoritustapaServiceIT extends AbstractIntegrationTest {
 
     private TutkinnonOsaViite uusiTutkinnonOsaViite(Suoritustapa st) {
         TutkinnonOsa tosa = new TutkinnonOsa();
-        tosa.setTila(PerusteTila.LUONNOS);
         tosa = tutkinnonOsaRepository.save(tosa);
         TutkinnonOsaViite tov = new TutkinnonOsaViite();
         tov.setTutkinnonOsa(tosa);

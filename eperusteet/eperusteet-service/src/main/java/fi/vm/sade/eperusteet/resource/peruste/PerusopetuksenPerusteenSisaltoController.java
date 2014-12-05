@@ -116,11 +116,20 @@ public class PerusopetuksenPerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/kohdealueet", method = POST)
-    public Set<OpetuksenKohdealueDto> updateOppiaine(
+    public OpetuksenKohdealueDto addOppiaineenKohdealue(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id,
-        @RequestBody Set<OpetuksenKohdealueDto> kohdealueet) {
-        return oppiaineService.updateKohdealueet(perusteId, id, kohdealueet);
+        @RequestBody OpetuksenKohdealueDto kohdealue) {
+        return oppiaineService.addKohdealue(perusteId, id, kohdealue);
+    }
+
+    @RequestMapping(value = "/oppiaineet/{id}/kohdealueet/{kohdealueId}", method = DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOppiaineenKohdealue(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long id,
+        @PathVariable("kohdealueId") final Long kohdealueId) {
+        oppiaineService.deleteKohdealue(perusteId, id, kohdealueId);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/vuosiluokkakokonaisuudet", method = GET)

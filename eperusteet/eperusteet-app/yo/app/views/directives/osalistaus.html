@@ -7,8 +7,8 @@
       <div class="pull-left" id="osalistausextrafilter"></div>
       <div class="pull-right">
         <div class="btn-group">
-          <label class="btn" ng-model="preferenssit.nakymatyyli" btn-radio="'palikka'" icon-role="th" title="{{'Ruudukko'|kaanna}}"></label>
-          <label class="btn" ng-model="preferenssit.nakymatyyli" btn-radio="'lista'" icon-role="list" title="{{'Lista'|kaanna}}"></label>
+          <label class="btn" ng-model="preferenssit.nakymatyyli" btn-radio="'palikka'" icon-role="th" title="{{'ruudukko'|kaanna}}"></label>
+          <label class="btn" ng-model="preferenssit.nakymatyyli" btn-radio="'lista'" icon-role="list" title="{{'lista'|kaanna}}"></label>
         </div>
       </div>
       <div class="clearfix"></div>
@@ -78,7 +78,7 @@
           <span class="badge jarjestysnumero" ng-show="kaytaJarjestysnumeroa && v.jarjestys">{{v.jarjestys || '-' }}</span>
         </div>
         <div class="otsikko">
-          <h3>{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</h3>
+          <h3 ng-bind-html="v.nimi || 'uusi-tutkinnonosa' | kaanna"></h3>
           <div class="pienet-tiedot">
               <div class="osan-laajuus" ng-if="hasLaajuus && v.laajuus">{{ v.laajuus }} {{ unit || '' | kaanna }}</div>
               <div ng-show="v.muokattu">{{ 'muokattu-viimeksi' | kaanna }}: {{ v.muokattu | aikaleima:'ago' }}</div>
