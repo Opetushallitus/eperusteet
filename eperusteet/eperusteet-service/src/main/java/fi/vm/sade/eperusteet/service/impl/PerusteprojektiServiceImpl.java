@@ -21,6 +21,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
@@ -38,6 +39,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
@@ -53,6 +55,7 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiTyoryhmaRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
+import fi.vm.sade.eperusteet.service.KoodistoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -116,6 +119,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private PerusteenOsaRepository perusteenOsaRepository;
+
+    @Autowired
+    private KoodistoService koodistoService;
 
     @Override
     @Transactional(readOnly = true)
@@ -215,12 +221,17 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         Peruste peruste;
         if (perusteprojektiDto.getPerusteId() == null) {
-            peruste = perusteService.luoPerusteRunko(koulutustyyppi, yksikko, PerusteTila.LUONNOS, tyyppi);
+            peruste = perusteService.luoPerusteRunko(koulutustyyppi, yksikko, tyyppi);
         }
         else {
             Peruste pohjaPeruste = perusteRepository.findOne(perusteprojektiDto.getPerusteId());
             perusteprojektiDto.setKoulutustyyppi(pohjaPeruste.getKoulutustyyppi());
             peruste = perusteService.luoPerusteRunkoToisestaPerusteesta(perusteprojektiDto, tyyppi);
+        }
+
+        if (tyyppi == PerusteTyyppi.POHJA) {
+            TekstiPalanen pnimi = TekstiPalanen.of(Kieli.FI, perusteprojektiDto.getNimi());
+            peruste.setNimi(pnimi);
         }
 
         perusteprojekti.setPeruste(peruste);
@@ -303,7 +314,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 if (suoritustapa.getRakenne() != null) {
                     validointi = PerusteenRakenne.validoiRyhma(suoritustapa.getRakenne());
                     if (!validointi.ongelmat.isEmpty()) {
-                        updateStatus.addStatus("Rakenteen validointi virhe", suoritustapa.getSuoritustapakoodi(), validointi);
+                        updateStatus.addStatus("rakenteen-validointi-virhe", suoritustapa.getSuoritustapakoodi(), validointi);
                         updateStatus.setVaihtoOk(false);
                     }
                 }
@@ -335,8 +346,29 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 }
 
                 // Kerätään tutkinnon osien koodit
+                List<LokalisoituTekstiDto> virheellisetKoodistonimet = new ArrayList<>();
                 for (TutkinnonOsaViite tov : suoritustapa.getTutkinnonOsat()) {
-                    tutkinnonOsienKoodit.add(tov.getTutkinnonOsa().getKoodiArvo());
+                    TutkinnonOsa tosa = tov.getTutkinnonOsa();
+                    String uri = tosa.getKoodiUri();
+                    String arvo = tosa.getKoodiArvo();
+
+                    if (tosa.getNimi() != null && (uri != null && arvo != null && !uri.isEmpty() && !arvo.isEmpty())) {
+                        KoodistoKoodiDto koodi = null;
+                        try {
+                            koodi = koodistoService.get("tutkinnonosat", uri);
+                        } catch (Exception e) {
+                        }
+                        if (koodi != null && koodi.getKoodiUri().equals(uri)) {
+                            tutkinnonOsienKoodit.add(tov.getTutkinnonOsa().getKoodiArvo());
+                        }
+                        else {
+                            virheellisetKoodistonimet.add(new LokalisoituTekstiDto(tosa.getNimi().getId(), tosa.getNimi().getTeksti()));
+                        }
+                    }
+                }
+                if (!virheellisetKoodistonimet.isEmpty()) {
+                    updateStatus.addStatus("tutkinnon-osan-asetettua-koodia-ei-koodistossa", suoritustapa.getSuoritustapakoodi(), virheellisetKoodistonimet);
+                    updateStatus.setVaihtoOk(false);
                 }
             }
 
@@ -354,6 +386,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             }
         }
 
+        // Perusteen tilan muutos
         if ( !updateStatus.isVaihtoOk() ) {
             return updateStatus;
         }
@@ -387,12 +420,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 setOsatTila(tutkinnonosaViite, tila);
             }
         }
-        peruste.setTila(tila);
+        peruste.asetaTila(tila);
     }
 
     private PerusteenOsaViite setSisaltoTila(PerusteenOsaViite sisaltoRoot, PerusteTila tila) {
         if (sisaltoRoot.getPerusteenOsa() != null) {
-            sisaltoRoot.getPerusteenOsa().setTila(tila);
+            sisaltoRoot.getPerusteenOsa().asetaTila(tila);
         }
         if (sisaltoRoot.getLapset() != null) {
             for (PerusteenOsaViite lapsi : sisaltoRoot.getLapset()) {
@@ -404,7 +437,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     private TutkinnonOsaViite setOsatTila(TutkinnonOsaViite osa, PerusteTila tila) {
         if (osa.getTutkinnonOsa()!= null) {
-            osa.getTutkinnonOsa().setTila(tila);
+            osa.getTutkinnonOsa().asetaTila(tila);
         }
         return osa;
     }

@@ -50,8 +50,8 @@ public class PerusteServiceETagIT extends AbstractIntegrationTest {
     @Autowired
     private PerusteService perusteService;
     @Autowired
-    @LockCtx(SuoritustapaLockContext.class)
-    private LockService<SuoritustapaLockContext> lockService;
+    @LockCtx(TutkinnonRakenneLockContext.class)
+    private LockService<TutkinnonRakenneLockContext> lockService;
     @Autowired
     private PerusteRepository repo;
     @Autowired
@@ -64,21 +64,20 @@ public class PerusteServiceETagIT extends AbstractIntegrationTest {
         Peruste p = TestUtils.teePeruste();
         p.setSiirtymaAlkaa(new GregorianCalendar(2000, Calendar.MARCH, 12).getTime());
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
-        p.setTila(PerusteTila.VALMIS);
+        p.asetaTila(PerusteTila.VALMIS);
         Suoritustapa s = new Suoritustapa();
         s.setSuoritustapakoodi(Suoritustapakoodi.OPS);
         p.setSuoritustavat(Sets.newHashSet(s));
         RakenneModuuli rakenne = new RakenneModuuli();
         s.setRakenne(rakenne);
-        rakenneRepository.save(rakenne);
         peruste = repo.save(p);
 
-        lockService.lock(SuoritustapaLockContext.of(peruste.getId(), Suoritustapakoodi.OPS));
+        lockService.lock(TutkinnonRakenneLockContext.of(peruste.getId(), Suoritustapakoodi.OPS));
     }
 
     @After
     public void cleanUp() {
-        lockService.unlock(SuoritustapaLockContext.of(peruste.getId(), Suoritustapakoodi.OPS));
+        lockService.unlock(TutkinnonRakenneLockContext.of(peruste.getId(), Suoritustapakoodi.OPS));
     }
 
     @Test

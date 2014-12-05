@@ -23,3 +23,31 @@
 .excel-alkuun {
   padding: 10px 0px;
 }
+
+.rivinappi {
+  padding: 2px 5px;
+  margin-top: -3px;
+}
+
+.admin-tiedotteet {
+  table {
+    tr:hover {
+      background-color: #eee;
+    }
+  }
+}
+
+.tiedote-view {
+  h2 {
+    margin-top: 40px;
+  }
+  .tiedote-tiedot {
+    color: #777;
+  }
+  .tiedote-leipateksti {
+    margin-top: 20px;
+    padding-left: 40px;
+    max-width: 900px;
+    margin-bottom: 100px;
+  }
+}

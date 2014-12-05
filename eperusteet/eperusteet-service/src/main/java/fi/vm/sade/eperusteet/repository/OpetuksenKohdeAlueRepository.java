@@ -13,33 +13,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import lombok.Getter;
-import lombok.Setter;
+package fi.vm.sade.eperusteet.repository;
+
+import fi.vm.sade.eperusteet.domain.yl.OpetuksenKohdealue;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author jhyoty
  */
-@Getter
-@Setter
-public class SuoritustapaLockContext {
+@Repository
+public interface OpetuksenKohdeAlueRepository extends JpaRepository<OpetuksenKohdealue, Long> {
 
-    private Long perusteId;
-    private Suoritustapakoodi koodi;
-
-    public SuoritustapaLockContext() {
-    }
-
-    public SuoritustapaLockContext(Long perusteId, Suoritustapakoodi koodi) {
-        this.perusteId = perusteId;
-        this.koodi = koodi;
-    }
-
-
-    public static SuoritustapaLockContext of(Long perusteId, Suoritustapakoodi koodi) {
-        return new SuoritustapaLockContext(perusteId, koodi);
-    }
 }

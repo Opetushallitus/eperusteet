@@ -84,7 +84,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         permissionChecker.checkPermission(from, "LUKU");
         if (from instanceof TekstiKappale) {
             PerusteenOsa uusi = from.copy();
-            uusi.setTila(PerusteTila.LUONNOS);
+            uusi.asetaTila(PerusteTila.LUONNOS);
             pov.setPerusteenOsa(perusteenOsaRepository.save(uusi));
         }
         return mapper.map(pov, fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja.class);
@@ -99,7 +99,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
             if (suoritustapa.getTutkinnonOsat().contains(tov)) {
                 TutkinnonOsa to = tov.getTutkinnonOsa();
                 TutkinnonOsa uusi = new TutkinnonOsa(to);
-                uusi.setTila(PerusteTila.LUONNOS);
+                uusi.asetaTila(PerusteTila.LUONNOS);
                 tov.setTutkinnonOsa(tutkinnonOsaRepository.save(uusi));
                 return mapper.map(tov, TutkinnonOsaViiteDto.class);
             }
@@ -174,7 +174,6 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
 
         if (viiteDto == null) {
             TekstiKappale uusiKappale = new TekstiKappale();
-            uusiKappale.setTila(PerusteTila.LUONNOS);
             uusiKappale = perusteenOsaRepository.save(uusiKappale);
             uusiViite.setPerusteenOsa(uusiKappale);
         } else {

@@ -2,7 +2,6 @@
   <div class="osa-alue-navi" ng-show="!mainLevelEditing && tutke2osa.osaAlueet.length > 1"><span kaanna>osa-alueet</span>
     <ul><li ng-repeat="alue in tutke2osa.osaAlueet"><a class="action-link" ng-click="osaAlue.jumpTo(alue)">{{alue.nimi | kaanna}}</a></li></ul>
   </div>
-  <div ng-if="tutke2osa.$fetching">{{'Ladataan tutkinnon osaa...'|kaanna}} <small-spinner></small-spinner></div>
   <p class="info-placeholder" ng-show="!tutke2osa.$fetching && (!tutke2osa.osaAlueet || tutke2osa.osaAlueet.length === 0) && !mainLevelEditing" kaanna>ei-osa-alueita</p>
   <div class="non-collapsibles" ng-if="mainLevelEditing">
     <label class="header" kaanna>osa-alueet</label>
@@ -65,7 +64,7 @@
             <div ng-if="!tavoite.$editing">
               <div class="panel-heading">
                 <h3>
-                  {{pakollisuus && ('Pakolliset osaamistavoitteet' | kaanna) || ('Valinnaiset osaamistavoitteet' | kaanna)}}, {{tavoite.laajuus}} {{ yksikko | kaanna }}
+                  {{pakollisuus && 'pakolliset-osaamistavoitteet' || 'valinnaiset-osaamistavoitteet' | kaanna}}, {{tavoite.laajuus}} {{ yksikko | kaanna }}
                 </h3>
               </div>
               <div class="panel-body non-collapsibles">

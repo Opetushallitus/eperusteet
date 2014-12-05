@@ -28,9 +28,6 @@ angular.module('eperusteApp')
 
     this.naviOmit = ['root', 'editoi', 'suoritustapa', 'sisalto', 'aloitussivu', 'selaus', 'esitys'];
 
-    // TODO: poista joskus
-    this.loremIpsum = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
-
     this.kontekstit = ['ammatillinenperuskoulutus',
       'ammatillinenaikuiskoulutus'];
 
@@ -51,21 +48,15 @@ angular.module('eperusteApp')
       ov: 'OPINTOVIIKKO',
     };
 
-    $rootScope.
-      this.kontekstit = [
-        'ammatillinenperuskoulutus',
-        'ammatillinenaikuiskoulutus'
-      ];
-
-      this.tilakuvaukset = [
-        'poistettu',
-        //'pohja',
-        'laadinta',
-        'kommentointi',
-        'viimeistely',
-        'kaannos',
-        'hyvaksytty'
-      ];
+    this.tilakuvaukset = [
+      'poistettu',
+      //'pohja',
+      'laadinta',
+      'kommentointi',
+      'viimeistely',
+      'kaannos',
+      'hyvaksytty'
+    ];
 
     this.suoritustavat = [
       'ops',
@@ -76,21 +67,23 @@ angular.module('eperusteApp')
       'koulutustyyppi_1',
       'koulutustyyppi_11',
       'koulutustyyppi_12',
-      'koulutustyyppi_9999'
+      'koulutustyyppi_16'
     ];
 
     this.koulutustyypitMap = {
       'koulutustyyppi_1': 'perustutkinto',
       'koulutustyyppi_11': 'ammattitutkinto',
       'koulutustyyppi_12': 'erikoisammattitutkinto',
-      'koulutustyyppi_9999': '',
+      'koulutustyyppi_15': 'esiopetus',
+      'koulutustyyppi_16': 'perusopetus',
     };
 
     this.koulutustyypinSuoritustapaOletus = {
       'koulutustyyppi_1': 'ops',
       'koulutustyyppi_11': 'naytto',
       'koulutustyyppi_12': 'naytto',
-      'koulutustyyppi_9999': 'ops',
+      'koulutustyyppi_15': 'ops',
+      'koulutustyyppi_16': 'ops',
     };
 
     this.kielet = {
@@ -108,7 +101,7 @@ angular.module('eperusteApp')
     this.dateFormatMomentJS = 'D.M.YYYY';
 
     this.isPerusopetus = function (peruste) {
-      return peruste.koulutustyyppi === 'koulutustyyppi_9999';
+      return peruste.koulutustyyppi === 'koulutustyyppi_16';
     };
 
     this.validSuoritustapa = function (peruste, suoritustapa) {

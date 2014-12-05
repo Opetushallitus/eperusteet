@@ -48,8 +48,9 @@ public class OppiaineLockServiceImpl extends AbstractLockService<OppiaineLockCon
     private OppiaineenVuosiluokkakokonaisuusRepository vuosiluokkakokonaisuusRepository;
 
     @Override
-    protected final ReferenceableEntity validateCtx(OppiaineLockContext ctx) {
-        permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.MUOKKAUS);
+    protected final ReferenceableEntity validateCtx(OppiaineLockContext ctx, boolean readOnly) {
+        final PermissionManager.Permission permission = readOnly ? PermissionManager.Permission.LUKU : PermissionManager.Permission.MUOKKAUS;
+        permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, permission);
 
         PerusopetuksenPerusteenSisalto s = repository.findByPerusteId(ctx.getPerusteId());
         Oppiaine aine = oppiaineRepository.findOne(ctx.getOppiaineId());

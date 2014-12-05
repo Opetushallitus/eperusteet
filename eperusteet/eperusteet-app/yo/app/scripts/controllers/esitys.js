@@ -88,19 +88,29 @@ angular.module('eperusteApp')
     $scope.suosikkiHelper($state, 'tutkinnon-rakenne');
   })
 
-  .controller('EsitysTutkinnonOsaCtrl', function($scope, $state, $stateParams, PerusteenOsat, TutkinnonosanTiedotService) {
+  .controller('EsitysTutkinnonOsaCtrl', function($scope, $state, $stateParams, PerusteenOsat, TutkinnonosanTiedotService,
+      Tutke2Osa) {
     $scope.tutkinnonOsaViite = _.find($scope.$parent.tutkinnonOsat, function(tosa) {
       return tosa.id === parseInt($stateParams.id, 10);
     });
-    PerusteenOsat.get({
-      osanId: $scope.tutkinnonOsaViite._tutkinnonOsa
-    }, function(res) {
-      $scope.tutkinnonOsa = res;
+    $scope.osaAlueet = {};
+    TutkinnonosanTiedotService.noudaTutkinnonOsa({perusteenOsaId: $scope.tutkinnonOsaViite._tutkinnonOsa}).then(function () {
+      $scope.tutkinnonOsa = TutkinnonosanTiedotService.getTutkinnonOsa();
       $scope.fieldKeys = _.intersection(_.keys($scope.tutkinnonOsa), TutkinnonosanTiedotService.keys());
+      if ($scope.tutkinnonOsa.tyyppi === 'tutke2') {
+        Tutke2Osa.kasitteleOsaAlueet($scope.tutkinnonOsa);
+      }
     });
     $scope.suosikkiHelper($state, $scope.tutkinnonOsaViite.nimi);
     $scope.fieldOrder = function (item) {
       return TutkinnonosanTiedotService.order(item);
+    };
+    $scope.hasArviointi = function (osaamistavoite) {
+      return osaamistavoite.arviointi &&
+        osaamistavoite.arviointi.arvioinninKohdealueet &&
+        osaamistavoite.arviointi.arvioinninKohdealueet.length > 0 &&
+        osaamistavoite.arviointi.arvioinninKohdealueet[0].arvioinninKohteet &&
+        osaamistavoite.arviointi.arvioinninKohdealueet[0].arvioinninKohteet.length > 0;
     };
   })
 
@@ -207,7 +217,7 @@ angular.module('eperusteApp')
 
     $scope.printSisalto = function() {
       var print = window.open('', 'esitysPrintSisalto', 'height=640,width=640');
-      print.document.write('<html><head><link rel="stylesheet" href="styles/eperusteet.css"></head><body>' +
+      print.document.write('<html><head><link rel="stylesheet" href="styles/eperusteet.css"></head><body class="esitys-print-view">' +
                            $('#esitysPrintSisalto').html() +
                            '</body></html>');
       print.print();
@@ -226,7 +236,7 @@ angular.module('eperusteApp')
          case 'koulutustyyppi_11':
          case 'koulutustyyppi_12':
            return $state.href('root.selaus.ammatillinenaikuiskoulutus');
-         case 'koulutustyyppi_9999':
+         case 'koulutustyyppi_16':
            return $state.href('root.selaus.perusopetus');
          default:
            return $state.href('root.selaus.ammatillinenperuskoulutus');

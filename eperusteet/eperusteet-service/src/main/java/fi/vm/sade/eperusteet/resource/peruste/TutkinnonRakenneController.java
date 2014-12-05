@@ -30,7 +30,6 @@ import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +41,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import static fi.vm.sade.eperusteet.resource.util.Etags.eTagHeader;
+import static fi.vm.sade.eperusteet.resource.util.Etags.revisionOf;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -51,8 +52,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
  *
  * @author jhyoty
  */
-
-
 @RestController
 @RequestMapping("/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}")
 @ApiIgnore
@@ -101,15 +100,14 @@ public class TutkinnonRakenneController {
     @RequestMapping(value = "/rakenne", method = GET)
     @ResponseBody
     public ResponseEntity<RakenneModuuliDto> getRakenne(
-        @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi, @RequestHeader(value = "If-None-Match", required = false) Integer eTag, HttpServletResponse response) {
-        RakenneModuuliDto rakenne = perusteService.getTutkinnonRakenne(id, suoritustapakoodi, eTag);
+        @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi, @RequestHeader(value = "If-None-Match", required = false) String eTag) {
+        Integer revisio = revisionOf(eTag);
+        RakenneModuuliDto rakenne = perusteService.getTutkinnonRakenne(id, suoritustapakoodi, revisio);
 
         if (rakenne == null) {
-            response.addHeader("ETag", eTag.toString());
-            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+            return new ResponseEntity<>(eTagHeader(revisio), HttpStatus.NOT_MODIFIED);
         }
-        response.addHeader("ETag", rakenne.getVersioId().toString());
-        return new ResponseEntity<>(rakenne, HttpStatus.OK);
+        return new ResponseEntity<>(rakenne, eTagHeader(rakenne.getVersioId()), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/rakenne/versio/{versioId}", method = GET)

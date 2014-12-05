@@ -1,6 +1,13 @@
 $border-color: #0C566E;
 
+.esitys-print-view {
+  .painikkeet {
+    display: none;
+  }
+}
+
 .esitys {
+
   margin-left: -40px;
 
   .rakenne-sisalto {
@@ -30,6 +37,10 @@ $border-color: #0C566E;
       margin-top: 30px;
     }
 
+    h4 {
+      margin-top: 20px;
+    }
+
     .tiedot {
       padding: 5px;
     }
@@ -38,6 +49,10 @@ $border-color: #0C566E;
       padding-top: 8px;
       font-size: small;
       margin-bottom: 12px;
+    }
+
+    .leipateksti {
+      padding-left: 30px;
     }
 
     .left-space {

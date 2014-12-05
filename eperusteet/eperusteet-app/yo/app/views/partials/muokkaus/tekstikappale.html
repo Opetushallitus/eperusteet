@@ -14,31 +14,40 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 European Union Public Licence for more details.
 -->
 
+<div id="toolbar" class="navbar-fixed-top" style="display: none">
+  <div id="ck-toolbar-top"></div>
+  <div id="ck-toolbar-bottom"></div>
+</div>
+<div class="row">
+  <div class="col-md-12 ep-sisalto-inner">
+    <!--<div id="muokkaus-elementti-placeholder">placeholder</div>-->
+
+
 <div>
   <revert-note object="tekstikappale" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
 
   <div class="part-header-wrapper">
     <div class="action-buttons">
       <div class="floater" ng-attr-title="{{lockNotification}}">
-        <button ng-disabled="isLocked" ng-hide="editableTekstikappale.tila !== 'luonnos' || editEnabled || !versiot.latest"
+        <button ng-disabled="isLocked" ng-hide="tekstikappale.tila === 'valmis' || editEnabled || !versiot.latest"
                 ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
-                oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                oikeustarkastelu="[{target:'peruste',permission:'muokkaus'},{target:'peruste',permission:'korjaus'}]"></button>
       </div>
       <button ng-disabled="!canAddLapsi() && tekstikappale.tila !== 'valmis'" ng-hide="editEnabled || !versiot.latest"
               ng-click="addLapsi()" class="floater btn btn-default" icon-role="add" kaanna="lisaa-aliotsikko"
               oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
       <button ng-show="!editEnabled && tekstikappale.tila === 'valmis'" ng-click="kopioiMuokattavaksi()"
-              class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"
+              class="floater btn btn-danger" icon-role="ep-text-clone" kaanna="kopioi-muokattavaksi"
               oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
 
-      <button ng-if="tekstikappale.tila === 'valmis' || (editEnabled && !isNew)" class="btn btn-danger floater" ng-click="poista()" icon-role="remove" kaanna="'poista'"></button>
+      <button ng-if="tekstikappale.tila === 'valmis' || (editEnabled && !isNew)" class="btn btn-danger floater" ng-click="poista()" icon-role="remove" kaanna="'poista'" oikeustarkastelu="{target:'peruste',permission:'muokkaus'}"></button>
       <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
     </div>
 
     <div id="tekstikappale-crumbs" ng-if="!editEnabled">
       <ol class="breadcrumb" ng-if="crumbs">
         <li ng-repeat="crumb in crumbs">
-          <a ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsanTyyppi: 'tekstikappale', perusteenOsaViiteId: crumb.id})">{{crumb.name | kaanna}}</a>
+          <a ui-sref="root.perusteprojekti.suoritustapa.tekstikappale({ perusteenOsaViiteId: crumb.id})">{{crumb.name | kaanna}}</a>
         </li>
       </ol>
     </div>
@@ -47,9 +56,9 @@ European Union Public Licence for more details.
       <span ng-show="isNew" kaanna>luonti-tekstikappale</span>
       <span ng-show="!isNew" kaanna>muokkaus-tekstikappale</span>
     </h1>
-    <h1 ng-if="!editEnabled">{{tekstikappale.nimi | kaanna}}</h1>
+    <h1 ng-if="!editEnabled" ng-bind-html="tekstikappale.nimi | kaanna"></h1>
   </div>
-  
+
   <div class="tekstikappale" ng-class="{'edit-tekstikappale': editEnabled, 'max-sm-leveys': !editEnabled}">
     <div ng-if="!editEnabled">
       <versiotiedot ng-hide="editEnabled"></versiotiedot>
@@ -70,4 +79,7 @@ European Union Public Licence for more details.
     </div>
   </div>
   <kommentit></kommentit>
+</div>
+
+      </div>
 </div>

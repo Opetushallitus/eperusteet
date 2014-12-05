@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
@@ -76,8 +77,8 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     @Autowired
     private KoulutusRepository koulutusRepository;
     @Autowired
-    @LockCtx(SuoritustapaLockContext.class)
-    private LockService<SuoritustapaLockContext> lockService;
+    @LockCtx(TutkinnonRakenneLockContext.class)
+    private LockService<TutkinnonRakenneLockContext> lockService;
 
     private Peruste peruste;
 
@@ -95,35 +96,37 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         Peruste p = TestUtils.teePeruste();
         p.setSiirtymaAlkaa(new GregorianCalendar(2000, Calendar.MARCH, 12).getTime());
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
-        p.setTila(PerusteTila.VALMIS);
+        p.asetaTila(PerusteTila.VALMIS);
         Suoritustapa s = new Suoritustapa();
+        s.setRakenne(new RakenneModuuli());
         s.setSuoritustapakoodi(Suoritustapakoodi.OPS);
         p.setSuoritustavat(Sets.newHashSet(s));
         p.setKoulutukset(Sets.newHashSet(koulutus));
+
         peruste = repo.save(p);
 
         p = TestUtils.teePeruste();
         p.setSiirtymaAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 4, Calendar.MARCH, 12).getTime());
-        p.setTila(PerusteTila.VALMIS);
+        p.asetaTila(PerusteTila.VALMIS);
         repo.save(p);
 
         p = TestUtils.teePeruste();
-        p.setTila(PerusteTila.VALMIS);
+        p.asetaTila(PerusteTila.VALMIS);
         repo.save(p);
 
         p = TestUtils.teePeruste();
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
-        p.setTila(PerusteTila.VALMIS);
+        p.asetaTila(PerusteTila.VALMIS);
         repo.save(p);
 
         manager.commit(transaction);
-        lockService.lock(SuoritustapaLockContext.of(peruste.getId(), Suoritustapakoodi.OPS));
+        lockService.lock(TutkinnonRakenneLockContext.of(peruste.getId(), Suoritustapakoodi.OPS));
     }
 
     @After
     public void cleanUp() {
-        lockService.unlock(SuoritustapaLockContext.of(peruste.getId(), Suoritustapakoodi.OPS));
+        lockService.unlock(TutkinnonRakenneLockContext.of(peruste.getId(), Suoritustapakoodi.OPS));
     }
 
     @Test

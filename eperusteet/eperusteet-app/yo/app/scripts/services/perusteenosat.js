@@ -28,7 +28,9 @@ angular.module('eperusteApp')
       versiot: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/:osanId/versiot'},
       getVersio: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/:osanId/versio/:versioId'},
       palauta: {method: 'POST', url: SERVICE_LOC + '/perusteenosat/:osanId/palauta/:versioId'},
-      getByViite: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/viite/:viiteId'}
+      getByViite: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/viite/:viiteId'},
+      versiotByViite: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/viite/:viiteId/versiot'},
+      getVersioByViite: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/viite/:viiteId/versio/:versioId'}
     });
   })
   .factory('PerusteenOsaViitteet', function($resource, SERVICE_LOC, $stateParams, PerusteprojektiTiedotService) {
@@ -47,7 +49,8 @@ angular.module('eperusteApp')
       suoritustapa: function() {
         return $stateParams.suoritustapa;
       }
-    }, {
+    },
+    {
       kloonaaTekstikappale: {
         method: 'POST',
         url: baseUrl + '/muokattavakopio'
@@ -59,8 +62,9 @@ angular.module('eperusteApp')
   .factory('TutkinnonOsaViitteet', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC,{},
     {
-      versiot: {method: 'GET', isArray: true, url: SERVICE_LOC + '/perusteenosat/viite/:viiteId/versiot'},
-      getVersio: {method: 'GET', url: SERVICE_LOC + '/perusteenosat/viite/:viiteId/versio/:versioId'}
+      versiot: {method: 'GET', isArray: true, url: SERVICE_LOC + '/tutkinnonosat/viite/:viiteId/versiot'},
+      getVersio: {method: 'GET', url: SERVICE_LOC + '/tutkinnonosat/viite/:viiteId/versio/:versioId'},
+      palauta: {method: 'POST', url: SERVICE_LOC + '/tutkinnonosat/palauta/viite/:viiteId/versio/:versioId'}
     }
     );
   })

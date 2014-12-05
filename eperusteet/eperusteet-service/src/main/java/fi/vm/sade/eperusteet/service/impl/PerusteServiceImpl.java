@@ -65,6 +65,8 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
+import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
@@ -83,8 +85,11 @@ import java.util.Objects;
 import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -96,13 +101,13 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public class PerusteServiceImpl implements PerusteService {
+public class PerusteServiceImpl implements PerusteService, ApplicationListener<PerusteUpdatedEvent> {
 
     private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
     private static final String KOODISTO_RELAATIO_YLA = "relaatio/sisaltyy-ylakoodit/";
     private static final String KOODISTO_RELAATIO_ALA = "relaatio/sisaltyy-alakoodit/";
     private static final String[] AMMATILLISET_KOULUTUSTYYPPI_URIT = {"koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"};
-    private static final String PERUSOPETUKSEN_KOULUTUSTYYPPI = "koulutustyyppi_9999";
+    private static final String PERUSOPETUKSEN_KOULUTUSTYYPPI = "koulutustyyppi_16";
     private static final String KOULUTUSALALUOKITUS = "koulutusalaoph2002";
     private static final String OPINTOALALUOKITUS = "opintoalaoph2002";
 
@@ -125,6 +130,9 @@ public class PerusteServiceImpl implements PerusteService {
 
     @Autowired
     private PerusteenOsaViiteService perusteenOsaViiteService;
+
+    @Autowired
+    private TutkinnonOsaViiteService tutkinnonOsaViiteService;
 
     @Autowired
     PerusteenOsaViiteRepository perusteenOsaViiteRepo;
@@ -230,6 +238,17 @@ public class PerusteServiceImpl implements PerusteService {
     public <T extends PerusteenOsaViiteDto.Puu<?,?>> T getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, Class<T> view) {
         PerusteenOsaViite entity = perusteet.findSisaltoByIdAndSuoritustapakoodi(perusteId, suoritustapakoodi);
         return mapper.map(entity, view);
+    }
+
+    @Override
+    @Transactional
+    public void onApplicationEvent(PerusteUpdatedEvent event) {
+        Peruste peruste = perusteet.findById(event.getPerusteId());
+        if (peruste.getTila() == PerusteTila.VALMIS) {
+            perusteet.setRevisioKommentti("perustetta muokattu");
+            peruste.muokattu();
+        }
+        LOG.debug("EVENT " + event);
     }
 
     @Override
@@ -405,7 +424,7 @@ public class PerusteServiceImpl implements PerusteService {
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, RakenneModuuliDto rakenne) {
 
         Suoritustapa suoritustapa = getSuoritustapaEntity(perusteId, suoritustapakoodi);
-        lockManager.ensureLockedByAuthenticatedUser(suoritustapa.getId());
+        lockManager.ensureLockedByAuthenticatedUser(suoritustapa.getRakenne().getId());
 
         rakenne.foreach(new VisitorImpl(maxRakenneDepth));
         RakenneModuuli moduuli = mapper.map(rakenne, RakenneModuuli.class);
@@ -483,7 +502,6 @@ public class PerusteServiceImpl implements PerusteService {
 
         if (viite.getTutkinnonOsa() == null) {
             TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
-            tutkinnonOsa.setTila(PerusteTila.LUONNOS);
             if (osa.getTyyppi() != null) {
                 tutkinnonOsa.setTyyppi(osa.getTyyppi());
             }
@@ -529,17 +547,7 @@ public class PerusteServiceImpl implements PerusteService {
             throw new BusinessRuleViolationException("Virheellinen viite");
         }
 
-        tutkinnonOsaViiteRepository.lock(viite);
-        viite.setJarjestys(osa.getJarjestys());
-        viite.setLaajuus(osa.getLaajuus());
-        viite.setMuokattu(new Date());
-        viite = tutkinnonOsaViiteRepository.save(viite);
-        TutkinnonOsaViiteDto viiteDto = mapper.map(viite, TutkinnonOsaViiteDto.class);
-        if(osa.getTutkinnonOsaDto() != null) {
-            viiteDto.setTutkinnonOsaDto(perusteenOsaService.update(osa.getTutkinnonOsaDto()));
-        }
-
-        return viiteDto;
+        return tutkinnonOsaViiteService.update(osa);
     }
 
     @Override
@@ -635,7 +643,7 @@ public class PerusteServiceImpl implements PerusteService {
     }
 
     private void lisaaTutkinnonMuodostuminen(Peruste peruste) {
-        if ("koulutustyyppi_9999".equals(peruste.getKoulutustyyppi())) {
+        if ("koulutustyyppi_16".equals(peruste.getKoulutustyyppi())) {
             return;
         }
 
@@ -659,15 +667,13 @@ public class PerusteServiceImpl implements PerusteService {
      *
      * @param koulutustyyppi
      * @param yksikko
-     * @param tila
      * @param tyyppi
      * @return Palauttaa 'tyhjän' perusterungon
      */
     @Override
-    public Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, PerusteTila tila, PerusteTyyppi tyyppi) {
+    public Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi) {
         Peruste peruste = new Peruste();
         peruste.setKoulutustyyppi(koulutustyyppi);
-        peruste.setTila(tila);
         peruste.setTyyppi(tyyppi);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
 
@@ -701,7 +707,6 @@ public class PerusteServiceImpl implements PerusteService {
     public Peruste luoPerusteRunkoToisestaPerusteesta(PerusteprojektiLuontiDto luontiDto, PerusteTyyppi tyyppi) {
         Peruste vanha = perusteet.getOne(luontiDto.getPerusteId());
         Peruste peruste = new Peruste();
-        peruste.setTila(PerusteTila.LUONNOS);
         peruste.setTyyppi(tyyppi);
         peruste.setKuvaus(vanha.getKuvaus());
         peruste.setNimi(vanha.getNimi());
@@ -750,5 +755,7 @@ public class PerusteServiceImpl implements PerusteService {
             }
         }
     }
+
+    private static final Logger LOG = LoggerFactory.getLogger(PerusteServiceImpl.class);
 
 }

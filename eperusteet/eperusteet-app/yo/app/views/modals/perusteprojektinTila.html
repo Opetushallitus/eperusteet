@@ -11,9 +11,7 @@
         ng-click="data.selected = tila.key"
         ng-dblclick="data.selected = tila.key; (data.selected !== data.oldStatus) && valitse();">
       <statusbadge editable="data.editable" status="tila.key"></statusbadge>
-      <p class="description">
-        {{tila.description | kaanna}}
-      </p>
+      <div class="description" ng-bind-html="tila.description | kaanna | unsafe"></div>
       <div class="clearfix"></div>
     </li>
   </ul>

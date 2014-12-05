@@ -60,7 +60,6 @@ public abstract class PerusteenOsa
     private TekstiPalanen nimi;
 
     @Getter
-    @Setter
     @Enumerated(value = EnumType.STRING)
     @NotNull
     private PerusteTila tila = PerusteTila.LUONNOS;
@@ -95,6 +94,11 @@ public abstract class PerusteenOsa
 
     public void setNimi(TekstiPalanen nimi) {
         this.nimi = nimi;
+    }
+
+    @Override
+    public void asetaTila(PerusteTila tila) {
+        this.tila = tila;
     }
 
     @Override

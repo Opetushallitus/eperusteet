@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
@@ -136,10 +137,10 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Test
     @Rollback(true)
     public void testPerustprojektiluonti9999() {
-        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_9999");
+        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, "koulutustyyppi_16");
         Perusteprojekti pp = repository.findOne(ppdto.getId());
         perusteprojektiLuontiCommonAsserts(ppdto, pp);
-        Assert.assertEquals("koulutustyyppi_9999", pp.getPeruste().getKoulutustyyppi());
+        Assert.assertEquals("koulutustyyppi_16", pp.getPeruste().getKoulutustyyppi());
         Assert.assertEquals(0, pp.getPeruste().getSuoritustavat().size());
         Assert.assertNotNull(pp.getPeruste().getPerusopetuksenPerusteenSisalto());
     }
@@ -370,7 +371,11 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Rollback(true)
     public void testPerustepohjaTilaJaNimi() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, "koulutustyyppi_1");
+
         Perusteprojekti pp = repository.findOne(ppdto.getId());
+        pp.getPeruste().setNimi(null);
+        repository.save(pp);
+        em.persist(pp);
 
         TilaUpdateStatus status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS);
         Assert.assertFalse(status.isVaihtoOk());

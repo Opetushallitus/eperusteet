@@ -39,7 +39,7 @@ public abstract class AbstractLockService<T> implements LockService<T> {
 
     @Transactional(readOnly = true)
     public LukkoDto getLock(T ctx) {
-        Lukko lock = manager.getLock(validateCtx(ctx).getId());
+        Lukko lock = manager.getLock(validateCtx(ctx, true).getId());
         return lock == null ? null : LukkoDto.of(lock, latestRevision(ctx));
     }
 
@@ -50,7 +50,7 @@ public abstract class AbstractLockService<T> implements LockService<T> {
 
     @Transactional
     public LukkoDto lock(T ctx, Integer ifMatchRevision) {
-        ReferenceableEntity re = validateCtx(ctx);
+        ReferenceableEntity re = validateCtx(ctx, false);
         final int latestRevision = latestRevision(ctx);
         if ( ifMatchRevision == null || latestRevision == ifMatchRevision ) {
             return LukkoDto.of(manager.lock(re.getId()), latestRevision);
@@ -60,12 +60,12 @@ public abstract class AbstractLockService<T> implements LockService<T> {
 
     @Transactional
     public void unlock(T ctx) {
-        manager.unlock(validateCtx(ctx).getId());
+        manager.unlock(validateCtx(ctx, false).getId());
     }
 
     @Transactional(readOnly = true)
     public void assertLock(T ctx) {
-        manager.ensureLockedByAuthenticatedUser(validateCtx(ctx).getId());
+        manager.ensureLockedByAuthenticatedUser(validateCtx(ctx, true).getId());
     }
 
     /**
@@ -73,7 +73,7 @@ public abstract class AbstractLockService<T> implements LockService<T> {
      * @param ctx
      * @return kontekstia vastaavan lukittavan entiteetin
      */
-    protected abstract ReferenceableEntity validateCtx(T ctx);
+    protected abstract ReferenceableEntity validateCtx(T ctx, boolean readOnly);
 
     /**
      * Varmistaa että lukituskonteksti on validi

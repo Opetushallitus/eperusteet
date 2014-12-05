@@ -15,7 +15,6 @@
  */
 
 'use strict';
-/* global _ */
 
 describe('Service: Muodostumissaannot', function() {
   var $q,
@@ -264,35 +263,6 @@ describe('Service: Muodostumissaannot', function() {
           else if (osa.nimi === 'V') { testaa(osa, 40, 70); }
           else if (osa.nimi === 'X') { testaa(osa, 30, 30); }
         }
-      });
-    });
-
-    it('pystyy kääntämään säännöt selkokieliseksi', function() {
-      var muodostumissaannot = [{}, {
-        koko: { minimi: 5, maksimi: 10 }
-      }, {
-        koko: { minimi: 10, maksimi: 10 }
-      }, {
-        laajuus: { minimi: 5, maksimi: 10 }
-      }, {
-        laajuus: { minimi: 10, maksimi: 10 }
-      }, {
-        laajuus: { minimi: 5, maksimi: 10 },
-        koko: { minimi: 5, maksimi: 10 }
-      }];
-
-      var expected = [
-        ['muodostumissaantoa-ei-maaritelty'],
-        ['osia-valittava-vahintaan', 5, 'ja-enintaan', 10, 'kappaletta'],
-        ['osia-valittava-vahintaan', 10, 'kappaletta'],
-        ['osia-valittava-vahintaan', 5, 'ja-enintaan', 10, '$laajuusYksikko', 'edesta'],
-        ['osia-valittava-vahintaan', 10, '$laajuusYksikko', 'edesta'],
-        ['osia-valittava-vahintaan', 5, 'ja-enintaan', 10, '$laajuusYksikko', 'edesta', 'ja-myos-valittava', 5, 'ja-enintaan', 10, 'kappaletta'],
-      ];
-
-      // Helpompi nähdä yksittäiset virheet
-      _.forEach(muodostumissaannot, function(ms, index) {
-        expect(service.kaannaSaanto(ms)).toEqual(expected[index]);
       });
     });
 

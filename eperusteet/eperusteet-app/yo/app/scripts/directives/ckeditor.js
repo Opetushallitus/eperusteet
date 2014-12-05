@@ -45,13 +45,76 @@ angular.module('eperusteApp')
         { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
         { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
         { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
-        // TODO aktivoi Termi-plugin
-        //{ name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link','Termi' ] },
-        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link' ] },
+        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link','Termi' ] },
         { name: 'styles', items : [ 'Format' ] },
         { name: 'tools', items : [ 'About' ] }
       ]
   })
+
+  .config(function(uiSelectConfig) {
+    uiSelectConfig.theme = 'bootstrap';
+  })
+
+  .controller('TermiPluginController', function ($scope, TermistoService, Kaanna, Algoritmit) {
+    $scope.service = TermistoService;
+    $scope.filtered = [];
+    $scope.termit = [];
+    $scope.model = {
+      chosen: null
+    };
+    var callback = angular.noop;
+    var setDeferred = null;
+
+    function setChosenValue (value) {
+      var found = _.find($scope.termit, function (termi) {
+        return termi.avain === value;
+      });
+      $scope.model.chosen = found || null;
+    }
+
+    function doSort(items) {
+      return _.sortBy(items, function (item) {
+        return Kaanna.kaanna(item.termi).toLowerCase();
+      });
+    }
+
+    $scope.init = function () {
+      $scope.service.getAll().then(function (res) {
+        $scope.termit = res;
+        $scope.filtered = doSort(res);
+        if (setDeferred) {
+          setChosenValue(_.cloneDeep(setDeferred));
+          setDeferred = null;
+        }
+      });
+    };
+
+    $scope.filterTermit = function (value) {
+      $scope.filtered = _.filter(doSort($scope.termit), function (item) {
+        return Algoritmit.match(value, item.termi);
+      });
+    };
+
+    // data from angular model to plugin
+    $scope.registerListener = function (cb) {
+      callback = cb;
+    };
+    $scope.$watch('model.chosen', function (value) {
+      callback(value);
+    });
+
+    // data from plugin to angular model
+    $scope.setValue = function (value) {
+      $scope.$apply(function () {
+        if (_.isEmpty($scope.termit)) {
+          setDeferred = value;
+        } else {
+          setChosenValue(value);
+        }
+      });
+    };
+  })
+
   .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts, $timeout, Kaanna) {
     return {
       priority: 10,
@@ -63,7 +126,6 @@ angular.module('eperusteApp')
       },
       link: function(scope, element, attrs, ctrl) {
         var placeholderText = null;
-
         var editingEnabled = (scope.editMode || 'true') === 'true';
 
         if(editingEnabled) {
@@ -100,10 +162,8 @@ angular.module('eperusteApp')
         editor = CKEDITOR.inline(element[0], {
           toolbar: toolbarLayout,
           removePlugins: 'resize,elementspath,scayt,wsc',
-          // TODO aktivoi Termi-plugin
-          //extraPlugins: 'divarea,sharedspace,termi',
-          extraPlugins: 'divarea,sharedspace',
-          //extraAllowedContent: 'abbr[data-viite]',
+          extraPlugins: 'divarea,sharedspace,termi',
+          extraAllowedContent: 'abbr[data-viite]',
           disallowedContent: 'br',
           language: 'fi',
           'entities_latin': false,
@@ -113,8 +173,7 @@ angular.module('eperusteApp')
           readOnly: !editingEnabled,
           title: false,
           customData: {
-            id: 7033,
-            kaanna: Kaanna.kaanna
+            kaanna: Kaanna.kaanna,
           }
         });
 
@@ -171,12 +230,19 @@ angular.module('eperusteApp')
           }
         });
 
+        function trim(obj) {
+          if (_.isString(obj)) {
+            obj = obj.replace(/&nbsp;/gi, '').trim();
+          }
+          return obj;
+        }
+
         var dataSavedOnNotification = false;
         scope.$on('notifyCKEditor', function() {
           if(editor.checkDirty()) {
             dataSavedOnNotification = true;
             var data = element.hasClass('has-placeholder') ? '' : editor.getData();
-            ctrl.$setViewValue(data);
+            ctrl.$setViewValue(trim(data));
           }
           $('#toolbar').hide();
         });
@@ -185,8 +251,8 @@ angular.module('eperusteApp')
           if (editor.checkDirty()) {
             var data = editor.getData();
             scope.$apply(function() {
-              ctrl.$setViewValue(data);
-              //scope.$broadcast('edited');
+              ctrl.$setViewValue(trim(data));
+              // scope.$broadcast('edited');
             });
             if(_.isEmpty(data)) {
               element.addClass('has-placeholder');

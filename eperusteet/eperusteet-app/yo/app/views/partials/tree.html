@@ -1,10 +1,10 @@
 <div>
   <!-- tree.html -->
-  <div id="osaamisala-varoitus" tooltip="{{'Osaamisalaryhmän alla ei voi olla toista osaamisalaryhmää.' | kaanna}}" tooltip-trigger="show"></div>
+  <div id="osaamisala-varoitus" tooltip="{{'osaamisalaryhma-varoitus' | kaanna}}" tooltip-trigger="show"></div>
   <div id="vierastutkinto-varoitus" tooltip="{{'vierastutkinto-pitaa-olla-vierastutkintoryhmassa' | kaanna}}" tooltip-trigger="show"></div>
   <div id="vierastutkinto-varoitus2" tooltip="{{'vierastutkinto-ei-muita-ryhmia' | kaanna}}" tooltip-trigger="show"></div>
   <div ng-if="!lisataanUuttaOsaa" class="tree col-lg-6 col-md-8 col-xs-12">
-    <div ng-show="!muokkaus && !vanhempi">
+    <div ng-show="!muokkaus && !vanhempi && naytaKuvaus()">
       <h2 kaanna="tutkinnon-rakenteen-kuvaus"></h2>
       <div ng-bind-html="rakenne.rakenne.kuvaus | kaanna | unsafe"></div>
     </div>
@@ -17,7 +17,7 @@
     </div>
     <h2 kaanna="tutkinnon-rakenne"></h2>
     <div class="tree-con" ng-show="muokkaus || rakenne.rakenne.osat.length > 0">
-      <rajaus size="small" classes="puun-rajaus" model="apumuuttujat.haku" placeholder="Etsi rakenteesta..."></rajaus>
+      <rajaus size="small" classes="puun-rajaus" model="apumuuttujat.haku" placeholder="{{ 'etsi-rakenteesta' || kaanna }}"></rajaus>
       <div ng-show="rakenne.$resolved && rakenne.rakenne.osat.length === 0" class="tree-con-empty">
         <span ng-if="!esitys">
           <div ng-show="muokkaus" class="empty-bubble distance-editing" kaanna>aloita-raahaamalla-puuhun</div>
@@ -72,7 +72,7 @@
       <div class="skratchpad-list-header" kaanna>tutkinnonosat</div>
       <div class="skratchpad-list-body">
         <div ng-show="tutkinnonOsat.rajaus || tutkinnonOsat.multiPage" class="tutkinnonosa-rajaus">
-          <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="Rajaa tutkinnon osia...">
+          <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="{{ 'rajaa-tutkinnonosia' | kaanna }}">
         </div>
         <div class="optiolaatikko">
           <a class="action-link" ng-click="toggleNotUsed()">{{ piilotaKaikki ? 'näytä-kaikki' : 'vain-käyttämättömät' | kaanna }}</a>

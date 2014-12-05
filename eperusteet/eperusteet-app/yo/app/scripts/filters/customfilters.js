@@ -45,22 +45,34 @@ angular.module('eperusteApp')
    * default: time (ago)
    * parametrit:
    * 'time' pelkkä päiväys ja kellonaika
+   * 'date' pelkkä päiväys
    * 'ago' pelkkä ihmisluettava esim. '4 tuntia sitten'
    */
-  .filter('aikaleima', function ($filter) {
+  .filter('aikaleima', function ($filter, DSCacheFactory) {
+    var dateFilter = $filter('date');
+    var momentCache = DSCacheFactory.createCache('momentCache', {
+      capacity: 1024,
+      maxAge: 60000,
+      deleteOnExpire: 'aggressive'
+    });
     return function (input, options, format) {
       var date = null;
       if (!input) {
         return '';
       }
       if (format === 'date') {
-        date = $filter('date')(input, 'd.M.yyyy');
+        date = dateFilter(input, 'd.M.yyyy');
       }
       else {
-        date = $filter('date')(input, 'd.M.yyyy H:mm');
+        date = dateFilter(input, 'd.M.yyyy H:mm');
       }
 
-      var ago = moment(input).fromNow();
+      var ago = momentCache.get(input);
+      if (!ago) {
+        ago = moment(input).fromNow();
+        momentCache.put(input, ago);
+      }
+
       if (options === 'ago') {
         return ago;
       }

@@ -68,9 +68,8 @@ angular.module('eperusteApp')
       function(res) {
         $scope.tutkinnonOsat.unshift(res);
         TutkinnonOsaEditMode.setMode(true);
-        $state.go('root.perusteprojekti.suoritustapa.perusteenosa', {
-          perusteenOsaViiteId: res.id,
-          perusteenOsanTyyppi: 'tutkinnonosa',
+        $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {
+          tutkinnonOsaViiteId: res.id,
           versio: ''
         });
       },
@@ -80,6 +79,6 @@ angular.module('eperusteApp')
     };
 
     $scope.getHref = function(valittu) {
-      return $state.href('root.perusteprojekti.suoritustapa.perusteenosa', { perusteenOsaViiteId: valittu.id, perusteenOsanTyyppi: 'tutkinnonosa', versio: '' });
+      return $state.href('root.perusteprojekti.suoritustapa.tutkinnonosa', { tutkinnonOsaViiteId: valittu.id, versio: '' });
     };
   });

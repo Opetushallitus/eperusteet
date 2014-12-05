@@ -15,6 +15,9 @@
     <!-- build:css(.tmp) styles/eperusteet.css -->
     <link rel="stylesheet" href="styles/eperusteet.css">
     <!-- endbuild -->
+    <!-- build:css(.tmp) styles/select.min.css -->
+    <link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.min.css">
+    <!-- endbuild -->
   </head>
   <body ng-app="eperusteApp" style="height:100%; background-color: white">
     <!-- build:js scripts/ieshims.js -->
@@ -86,6 +89,8 @@
     <script src="bower_components/momentjs/min/moment.min.js"></script>
     <script src="bower_components/momentjs/lang/fi.js"></script>
     <script src="bower_components/momentjs/lang/sv.js"></script>
+    <script src="bower_components/angular-cache/dist/angular-cache.min.js"></script>
+    <script src="bower_components/angular-ui-select/dist/select.min.js"></script>
     <!-- endbuild -->
 
     <script src="bower_components/ckeditor/ckeditor.js?v=4.4.5"></script>
@@ -127,6 +132,7 @@
     <script src="scripts/directives/muokkaus/oppiaine.js"></script>
     <script src="scripts/directives/muokkaus/osaaminen.js"></script>
     <script src="scripts/controllers/excel.js"></script>
+    <script src="scripts/controllers/tiedotteet.js"></script>
     <script src="scripts/directives/spinner.js"></script>
     <script src="scripts/controllers/modals/uudelleenohjaus.js"></script>
     <script src="scripts/controllers/modals/muodostumisryhma.js"></script>
@@ -170,10 +176,11 @@
     <script src="scripts/controllers/muokkaus.js"></script>
     <script src="scripts/directives/muokkaus/lukko.js"></script>
     <script src="scripts/directives/muokkaus/revertnote.js"></script>
-    <script src="scripts/directives/muokkaus/tutkinnonosa.js"></script>
-    <script src="scripts/directives/muokkaus/tekstikappale.js"></script>
+    <script src="scripts/controllers/perusteprojekti/tutkinnonosa.js"></script>
+    <script src="scripts/controllers/perusteprojekti/tekstikappale.js"></script>
     <script src="scripts/directives/pikamenu.js"></script>
     <script src="scripts/directives/editinplace.js"></script>
+    <script src="scripts/directives/termistoviitteet.js"></script>
     <script src="scripts/services/perusteprojekti.js"></script>
     <script src="scripts/controllers/perusteprojekti/projektinTiedot.js"></script>
     <script src="scripts/controllers/perusteprojekti/muodostumissaannot.js"></script>

@@ -25,6 +25,7 @@ angular.module('eperusteApp')
     var paivitaOmatProjektit = function() {
       OmatPerusteprojektit.query({}, function(vastaus) {
         $scope.projektit = _(vastaus)
+          .filter(function(pp) { return pp.diaarinumero; })
           .forEach(function(pp) {
             pp.url = PerusteProjektiService.getUrl(pp);
           })

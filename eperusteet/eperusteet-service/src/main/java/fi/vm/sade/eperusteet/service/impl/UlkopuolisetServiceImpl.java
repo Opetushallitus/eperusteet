@@ -40,7 +40,8 @@ public class UlkopuolisetServiceImpl implements UlkopuolisetService {
     @Value("${cas.service.organisaatio-service:''}")
     private String serviceUrl;
 
-    private static final String OMAT_TIEDOT_API = "/rest/organisaatio/1.2.246.562.10.00000000001/ryhmat";
+    private static final String ORGANISAATIOT = "/rest/organisaatio/";
+    private static final String ORGANISAATIORYHMAT = ORGANISAATIOT + "1.2.246.562.10.00000000001/ryhmat";
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -49,10 +50,23 @@ public class UlkopuolisetServiceImpl implements UlkopuolisetService {
 
     @Override
     @Transactional
+    public JsonNode getRyhma(String organisaatioOid) {
+        CachingRestClient crc = restClientFactory.get(serviceUrl);
+        try {
+            String url = serviceUrl + ORGANISAATIOT + organisaatioOid;
+            JsonNode response = mapper.readTree(crc.getAsString(url));
+            return response;
+        } catch (IOException ex) {
+            throw new BusinessRuleViolationException("Työryhmän tietojen hakeminen epäonnistui", ex);
+        }
+    }
+
+    @Override
+    @Transactional
     public JsonNode getRyhmat() {
         CachingRestClient crc = restClientFactory.get(serviceUrl);
         try {
-            String url = serviceUrl + OMAT_TIEDOT_API;
+            String url = serviceUrl + ORGANISAATIORYHMAT;
             JsonNode tree = mapper.readTree(crc.getAsString(url));
             ArrayNode response = JsonNodeFactory.instance.arrayNode();
 

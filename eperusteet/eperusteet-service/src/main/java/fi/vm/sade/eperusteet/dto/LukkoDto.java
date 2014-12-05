@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.domain.Lukko;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import org.joda.time.DateTime;
 
 /**
@@ -36,6 +37,7 @@ public class LukkoDto {
 
     public LukkoDto(Lukko lukko, Integer revisio) {
         this.haltijaOid = lukko.getHaltijaOid();
+        this.haltijaNimi = "";
         this.luotu = lukko.getLuotu();
         this.vanhentuu = lukko.getVanhentuu();
         this.oma = lukko.isOma();
@@ -43,6 +45,9 @@ public class LukkoDto {
     }
 
     final String haltijaOid;
+
+    @Setter
+    String haltijaNimi;
     final DateTime luotu;
     final DateTime vanhentuu;
     final Boolean oma;

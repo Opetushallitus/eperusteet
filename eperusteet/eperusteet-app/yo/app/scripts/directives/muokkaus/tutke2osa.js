@@ -25,7 +25,8 @@ angular.module('eperusteApp')
       scope: {
         mainLevelEditing: '=editEnabled',
         tutkinnonosaViite: '=',
-        kontrollit: '='
+        kontrollit: '=',
+        yksikko: '='
       },
       controller: 'Tutke2KentatController'
     };
@@ -53,10 +54,11 @@ angular.module('eperusteApp')
     };
 
 
-    $scope.originalViite = null;
+    //$scope.originalViite = null;
+
     $scope.tutkinnonosaViite.then(function (res) {
-      $scope.originalViite = res;
       $scope.tutke2osa = Tutke2Osa.init(res.tutkinnonOsa.id);
+
       $scope.tutke2osa.fetch().then(function () {
         tutke2osaDefer.resolve();
       });
@@ -96,7 +98,7 @@ angular.module('eperusteApp')
       },
       edit: function (alue, $event) {
         stopEvent($event);
-        $state.go('root.perusteprojekti.suoritustapa.perusteenosa.osaalue', {osaAlueId: alue.id});
+        $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa.osaalue', {osaAlueId: alue.id});
       },
       remove: function (alue) {
         if (alue.id) {
@@ -152,7 +154,7 @@ angular.module('eperusteApp')
 
       if (versio) {
         that.versiot = {};
-        VersionHelper.getTutkinnonOsaViiteVersions(that.versiot, {id: $stateParams.perusteenOsaViiteId}, true, function () {
+        VersionHelper.getTutkinnonOsaViiteVersions(that.versiot, {id: $stateParams.tutkinnonOsaViiteId}, true, function () {
           var revNumber = VersionHelper.select(that.versiot, versio);
           that.params.versioId = revNumber;
           TutkinnonOsanOsaAlue.versioList(that.params, function (data) {
@@ -190,7 +192,9 @@ angular.module('eperusteApp')
     function kasitteleTavoitteet (tavoitteet, that, osaAlue, arr) {
       _.each(tavoitteet, function (tavoite) {
           fixTavoite(tavoite);
-          that.tavoiteMap[tavoite.id] = tavoite;
+          if (that.tavoiteMap) {
+            that.tavoiteMap[tavoite.id] = tavoite;
+          }
         });
         arr.osaamistavoitteet = tavoitteet;
         osaAlue.$groups = groupTavoitteet(tavoitteet, that.tavoiteMap);
@@ -239,7 +243,7 @@ angular.module('eperusteApp')
       groups.ungrouped = _.difference(tavoitteet, processed);
       groups.$size = _.size(groups.grouped);
       groups.$options = _.map(_.keys(groups.grouped), function (key) {
-        return {label: tavoiteMap[key].nimi, value: key};
+        return {label: (tavoiteMap && tavoiteMap[key]) ? tavoiteMap[key].nimi : '', value: key};
       });
       return groups;
     }
@@ -248,6 +252,7 @@ angular.module('eperusteApp')
       init: function (tutkinnonOsaId) {
         return new Tutke2OsaImpl(tutkinnonOsaId);
       },
-      fixTavoite: fixTavoite
+      fixTavoite: fixTavoite,
+      kasitteleOsaAlueet: kasitteleOsaAlueet
     };
   });

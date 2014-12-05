@@ -31,7 +31,7 @@ angular.module('eperusteApp')
            editointiIkoni +
         '  <span ng-if="!muokkaus">' +
         '    <a ng-if="esitystilassa" ui-sref="root.esitys.peruste.tutkinnonosa({ id: rakenne._tutkinnonOsaViite, suoritustapa: apumuuttujat.suoritustapa })">' + tosa + '</a>' +
-        '    <a ng-if="!esitystilassa" ui-sref="root.perusteprojekti.suoritustapa.perusteenosa({ perusteenOsaViiteId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].id, suoritustapa: apumuuttujat.suoritustapa, perusteenOsanTyyppi: \'tutkinnonosa\' })">' + tosa + '</a>' +
+        '    <a ng-if="!esitystilassa" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosa({ tutkinnonOsaViiteId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].id, suoritustapa: apumuuttujat.suoritustapa })">' + tosa + '</a>' +
         '  </span>' +
         '  <span ng-if="muokkaus">' +
              tosa +
@@ -111,11 +111,14 @@ angular.module('eperusteApp')
           '    <div class="osaamisala" ng-show="rakenne.osaamisala"><b kaanna="osaamisala"></b>: {{ rakenne.osaamisala.nimi | kaanna }} ({{ rakenne.osaamisala.osaamisalakoodiArvo }})</div>' +
           '    <p ng-show="rakenne.kuvaus && rakenne.kuvaus[lang].length > 0">{{ rakenne.kuvaus | kaanna }}</p>' +
           '  </div>' +
-          '  <div class="avausnappi" ng-click="rakenne.$showKuvaus = !rakenne.$showKuvaus" ng-attr-title="{{rakenne.$showKuvaus && (\'Piilota ryhmän kuvaus\'|kaanna) || (\'Näytä ryhmän kuvaus\'|kaanna)}}">' +
+          '  <div class="avausnappi" ng-click="rakenne.$showKuvaus = !rakenne.$showKuvaus" ng-attr-title="{{rakenne.$showKuvaus && (\'piilota-ryhman-kuvaus\'|kaanna) || (\'nayta-ryhman-kuvaus\'|kaanna)}}">' +
           '  <div class="avausnappi-painike">&hellip;</div></div>' +
           '</div>' +
           '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="virhe">' +
-          '  <span>{{ tkaanna(rakenne.$virhe.selite) }}<span ng-show="rakenne.$virhe.selite.length > 0">. </span>{{ rakenne.$virhe.virhe | kaanna }}.</span>' +
+          '  <span ng-show="rakenne.$virhe.virhe">' +
+          '    <span kaanna="rakenne.$virhe.virhe"></span>. ' +
+          '  </span>' +
+          '  <span kaanna="rakenne.$virhe.selite.kaannos" kaanna-values="lisaaLaajuusYksikko(rakenne.$virhe.selite.muuttujat)"></span>' +
           '</div>';
 
         var avaaKaikki = '<div class="pull-right">' +
@@ -183,6 +186,12 @@ angular.module('eperusteApp')
     $scope.esitystilassa = $state.includes('**.esitys.**');
     $scope.lang = $translate.use() || $translate.preferredLanguage();
     $scope.isNumber = _.isNumber;
+
+    $scope.lisaaLaajuusYksikko = function(obj) {
+      return _.merge(obj, {
+        laajuusYksikko: Kaanna.kaanna($scope.apumuuttujat.laajuusYksikko)
+      });
+    };
 
     $scope.poista = function(i, a) {
       _.remove(a.osat, i);
@@ -328,6 +337,9 @@ angular.module('eperusteApp')
     $scope.kaikkiUniikit = [];
     $scope.topredicate = 'nimi.fi';
     $scope.tosarajaus = '';
+    $scope.naytaKuvaus = function () {
+      return !!Kaanna.kaanna($scope.rakenne.rakenne.kuvaus);
+    };
 
     $scope.tutkinnonOsat = {
       perSivu: 8,

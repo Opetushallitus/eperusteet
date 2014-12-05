@@ -62,11 +62,12 @@ angular.module('eperusteApp')
   })
   .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams, $modal, $timeout, $translate,
     PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, perusteprojektiTiedot, Notifikaatiot,
-    Perusteet, Editointikontrollit) {
+    Perusteet, Editointikontrollit, Organisaatioryhmat) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
     $scope.lang = $translate.use() || $translate.preferredLanguage();
     $scope.editEnabled = false;
+    $scope.$ryhmaNimi = '';
     var originalProjekti = null;
 
     var editingCallbacks = {
@@ -115,6 +116,10 @@ angular.module('eperusteApp')
       $scope.tabs.push({otsikko: 'projekti-toimikausi', url: 'views/partials/perusteprojekti/toimikausi.html'});
     }
 
+    Organisaatioryhmat.yksi({ oid: $scope.projekti.ryhmaOid }, function(res) {
+      $scope.$ryhmaNimi = res.nimi;
+    });
+
     $scope.haeRyhma = function() {
       $modal.open({
         templateUrl: 'views/modals/tuotyoryhma.html',
@@ -122,7 +127,7 @@ angular.module('eperusteApp')
       })
       .result.then(function(ryhma) {
         $scope.projekti.ryhmaOid = ryhma.oid;
-        $scope.projekti.$ryhmaNimi = ryhma.nimi;
+        $scope.$ryhmaNimi = ryhma.nimi;
       });
     };
 
@@ -148,7 +153,6 @@ angular.module('eperusteApp')
       }
 
       PerusteprojektiResource.update(projekti, function(vastaus) {
-        $scope.puhdistaValinta();
         if ($scope.wizardissa()) {
           PerusteProjektiService.goToProjektiState(vastaus, projekti);
         }
@@ -160,7 +164,6 @@ angular.module('eperusteApp')
   })
   .controller('TyoryhmanTuontiModalCtrl', function($scope, $modalInstance, $translate, Organisaatioryhmat, Algoritmit) {
     $scope.haetaan = true;
-    $scope.moro = 'moro';
     $scope.error = false;
     $scope.rajaus = '';
     $scope.lang = 'nimi.' + $translate.use() || $translate.preferredLanguage();

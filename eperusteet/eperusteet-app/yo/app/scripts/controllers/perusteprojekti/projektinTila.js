@@ -22,7 +22,6 @@ angular.module('eperusteApp')
     var that = this;
     this.start = function(currentStatus, mahdollisetTilat, setFn, successCb) {
       successCb = successCb || angular.noop;
-      var dummyDescription = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.';
       if (_.isFunction(setFn)) {
         that.setFn = setFn;
       }
@@ -35,7 +34,7 @@ angular.module('eperusteApp')
               oldStatus: currentStatus,
               mahdollisetTilat: mahdollisetTilat,
               statuses: _.map(mahdollisetTilat, function (item) {
-                return {'key': item, 'description': {'fi': dummyDescription}};
+                return {key: item, description: 'tilakuvaus-' + item};
               })
             };
           }
