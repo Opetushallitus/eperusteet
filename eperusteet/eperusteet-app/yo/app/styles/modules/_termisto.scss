@@ -59,17 +59,12 @@ dl.termisto {
 
 // restore styles that are reset by ckeditor
 .ckeplugin-ui-select {
+
   box-sizing: border-box !important;
   & * {
     box-sizing: border-box !important;
   }
   .ui-select-bootstrap {
-    .form-control {
-      border: 1px solid rgb(146, 204, 224);
-      width: 100%;
-      height: 34px;
-      padding: 6px 12px;
-    }
     .caret {
       position: absolute;
       border-left: 4px solid transparent;
@@ -92,5 +87,39 @@ dl.termisto {
     .ui-select-highlight {
       font-weight: 700;
     }
+  }
+}
+
+.termi-plugin-add {
+  margin-top: 20px !important;
+  a {
+    cursor: pointer;
+  }
+  .success-message {
+    padding: 5px;
+    background-color: #e3f4e5;
+    color: #4b8947;
+  }
+}
+
+.termi-plugin-add, .ckeplugin-ui-select {
+  .form-control {
+    border: 1px solid rgb(146, 204, 224);
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+  }
+  .btn {
+    padding: 6.5px;
+    font-size: 13px;
+    color: #333333;
+  }
+  .btn-primary {
+    background-color: #feba00;
+    border: 1px solid #dea300;
+  }
+  .btn-default {
+    background-color: #d2ecf5;
+    border: 1px solid #92cce0;
   }
 }
