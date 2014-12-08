@@ -11,6 +11,8 @@
                            remove-field="removeField(fieldToRemove)"></muokattava-kentta>
       </li>
     </ul>
+
+    <!-- TODO: poista kun oppiaineen muokkaus valmis -->
     <div ng-if="mode === 'sortable' && editEnabled" ui-tree>
       <!-- <pre>{{expandedFields|json}}</pre> -->
     <ul class="list-group muokkaus" ui-tree-nodes ng-model="expandedFields">
@@ -29,6 +31,7 @@
       </li>
     </ul>
     </div>
+
     <p class="info-placeholder" ng-show="!hideEmptyPlaceholder && noContent" id="tutkinnon-osa-ei-sisaltoa">{{'tutkinnon-osa-ei-sisaltoa'|kaanna}}
     <span ng-show="editEnabled" kaanna>tutkinnon-osa-ei-sisaltoa-ohje</span>
     </p>

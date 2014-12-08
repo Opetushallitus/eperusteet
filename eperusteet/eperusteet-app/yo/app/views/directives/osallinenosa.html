@@ -28,7 +28,7 @@
                   icon-role="add">{{config.addPartLabel || 'muokkaus-lisaa-osio' | kaanna}}</button>
           <ul class="pull-right dropdown-menu">
             <li ng-repeat="field in config.fields | orderBy:'order'" ng-class="{divider: field.divider}">
-              <a ng-if="!field.divider" ng-class="{'disabled-link': field.visible}"
+              <a class="action-link" ng-if="!field.divider" ng-class="{'disabled-link': field.visible}"
                  ng-click="field.visible ? void(0) : addField(field)">{{field.menuLabel || field.localeKey | kaanna}}</a>
             </li>
           </ul>

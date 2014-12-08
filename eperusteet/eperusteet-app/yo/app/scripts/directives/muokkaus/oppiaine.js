@@ -230,9 +230,9 @@ angular.module('eperusteApp')
           }
         ],
         addFieldCb: function (field) {
-          if (field.path === 'tehtava') {
-            $scope.editableModel.tehtava = {
-              otsikko: {fi: 'Oppiaineen tehtävä'},
+          if (field.path === 'tehtava' || field.path === 'osaalue') {
+            $scope.editableModel[field.path] = {
+              otsikko: field.path === 'tehtava' ? {fi: 'Oppiaineen tehtävä'} : {fi: 'Osa-alue'},
               teksti: {fi: ''}
             };
           } else if (field.path === 'vuosiluokkakokonaisuudet') {
@@ -242,10 +242,10 @@ angular.module('eperusteApp')
             $scope.editableModel.vuosiluokkakokonaisuudet.push(field.empty());
           }
         },
-        fieldRenderer: '<kenttalistaus mode="sortable" edit-enabled="editEnabled" ' +
-          'object-promise="modelPromise" fields="config.fields" hide-empty-placeholder="true"></kenttalistaus>',
+        fieldRenderer: '<div ng-show="editEnabled" oppiaineen-osiot="editableModel" fields="config.fields" ' +
+          'vuosiluokkakokonaisuudet="$parent.vuosiluokkakokonaisuudet"></div>',
         fields: [
-          {
+          /*{
             path: 'tekstikappaleet[].teksti',
             menuLabel: 'tekstikappale',
             localeKey: 'nimi',
@@ -256,7 +256,7 @@ angular.module('eperusteApp')
             collapsible: true,
             isolateEdit: true,
             order: 300
-          },
+          },*/
           {
             path: 'tehtava',
             localeKey: 'oppiaine-osio-tehtava',
@@ -267,7 +267,7 @@ angular.module('eperusteApp')
             isolateEdit: true,
             order: 100
           },
-          {
+          /*{
             path: 'osaalue',
             localeKey: 'oppiaine-osio-osaalue',
             type: 'editor-area',
@@ -276,8 +276,7 @@ angular.module('eperusteApp')
             collapsible: true,
             isolateEdit: true,
             order: 200
-          },
-
+          },*/
         ],
         editingCallbacks: callbacks
       }
@@ -364,6 +363,7 @@ angular.module('eperusteApp')
         menuItems.push({
           path: 'vuosiluokkakokonaisuudet',
           localeKey: item.nimi,
+          id: item.id,
           empty: function () {
             var vlk = {
               vuosiluokkaKokonaisuus: item.id,
@@ -400,4 +400,92 @@ angular.module('eperusteApp')
         $scope.chooseTab($scope.activeTab, true);
       }, true);
     });
+  })
+
+  .directive('oppiaineenOsiot', function () {
+    return {
+      restrict: 'AE',
+      scope: {
+        model: '=oppiaineenOsiot',
+        fields: '=',
+        vuosiluokkakokonaisuudet: '='
+      },
+      controller: 'OppiaineenOsiotController',
+      templateUrl: 'views/directives/perusopetus/oppiaineenosiot.html'
+    };
+  })
+
+  .controller('OppiaineenOsiotController', function ($scope, MuokkausUtils, Varmistusdialogi) {
+    $scope.activeVuosiluokat = [];
+    $scope.activeOsiot = [];
+
+    function verifyRemove(cb) {
+      Varmistusdialogi.dialogi({
+        otsikko: 'vahvista-poisto',
+        teksti: 'poistetaanko-oppiaineen-osio',
+        primaryBtn: 'poista',
+        successCb: cb
+      })();
+    }
+
+    $scope.removeVlk = function (vlk) {
+      verifyRemove(function () {
+        var field = _.find($scope.fields, function (field) {
+          return field.id === vlk.id;
+        });
+        if (field) {
+          field.remove();
+          field.visible = false;
+          field.$added = false;
+        }
+      });
+    };
+
+    $scope.removeOsio = function (osio) {
+      verifyRemove(function () {
+        osio.field.visible = false;
+        osio.field.$added = false;
+        MuokkausUtils.nestedSet($scope.model, osio.field.path, '.', null);
+      });
+    };
+
+    $scope.vlkOrderFn = function (vlk) {
+      return _.first(vlk.vuosiluokat.slice().sort());
+    };
+
+    function getField(value) {
+      return _.find($scope.fields, function (field) {
+        return field.path === value;
+      });
+    }
+
+    function setOsio(key) {
+      if (MuokkausUtils.hasValue($scope.model, key)) {
+        var field = getField(key);
+        if (field) {
+          $scope.activeOsiot.push({model: $scope.model[key], field: field});
+          field.visible = true;
+        }
+      }
+    }
+
+    function mapModel() {
+      $scope.activeVuosiluokat = [];
+      $scope.activeOsiot = [];
+      var current = _($scope.model.vuosiluokkakokonaisuudet).pluck('vuosiluokkaKokonaisuus').map(String).value();
+      _.each($scope.vuosiluokkakokonaisuudet, function (vlk) {
+        if (_.indexOf(current, '' + vlk.id) > -1) {
+          $scope.activeVuosiluokat.push(vlk);
+        }
+      });
+      setOsio('tehtava');
+      setOsio('osaalue');
+    }
+
+    $scope.$watch('model', function () {
+      mapModel();
+    }, true);
+    $scope.$watch('vuosiluokkakokonaisuudet', function () {
+      mapModel();
+    }, true);
   });
