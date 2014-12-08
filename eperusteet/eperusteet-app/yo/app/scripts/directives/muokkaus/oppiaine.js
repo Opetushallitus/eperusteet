@@ -23,6 +23,12 @@ angular.module('eperusteApp')
     this.changeInited = false;
   })
 
+  .service('VlkUtils', function () {
+    this.orderFn = function (vlk) {
+      return _.first(vlk.vuosiluokat.slice().sort());
+    };
+  })
+
   .service('OppimaaraHelper', function (PerusopetusService) {
     var instance = null;
     var params = {};
@@ -81,7 +87,7 @@ angular.module('eperusteApp')
 
   .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna,
       PerusteProjektiSivunavi, Oppiaineet, $timeout, $state, $stateParams, $q, YleinenData, tabHelper,
-      CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus) {
+      CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus, VlkUtils) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.mappedVuosiluokat = [];
@@ -349,12 +355,13 @@ angular.module('eperusteApp')
         var thisItem = $scope.getVuosiluokkakokonaisuus(item);
         thisItem.$sisalto = item;
         return thisItem;
-      }).sortBy(Utils.nameSort).value();
+      }).sortBy(VlkUtils.orderFn).value();
     }
 
     $q.all([modelPromise, vuosiluokatPromise]).then(function (data) {
       // Add addable items to menu
       $scope.vuosiluokkakokonaisuudet = data[1];
+      $scope.vuosiluokkakokonaisuudet = _.sortBy($scope.vuosiluokkakokonaisuudet, VlkUtils.orderFn);
       if (_.size($scope.vuosiluokkakokonaisuudet) > 0) {
         $scope.data.options.fields.push({divider: true, order: 99});
       }
@@ -388,9 +395,7 @@ angular.module('eperusteApp')
           }
         });
       });
-      _(menuItems).sortBy(function (item) {
-        return Kaanna.kaanna(item.localeKey);
-      }).each(function (item, index) {
+      _(menuItems).each(function (item, index) {
         item.order += index;
       });
       $scope.data.options.fields = menuItems.concat($scope.data.options.fields);
@@ -415,7 +420,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('OppiaineenOsiotController', function ($scope, MuokkausUtils, Varmistusdialogi) {
+  .controller('OppiaineenOsiotController', function ($scope, MuokkausUtils, Varmistusdialogi, VlkUtils) {
     $scope.activeVuosiluokat = [];
     $scope.activeOsiot = [];
 
@@ -428,11 +433,15 @@ angular.module('eperusteApp')
       })();
     }
 
+    function getVlkField(vlk) {
+      return _.find($scope.fields, function (field) {
+        return field.id === vlk.id;
+      });
+    }
+
     $scope.removeVlk = function (vlk) {
       verifyRemove(function () {
-        var field = _.find($scope.fields, function (field) {
-          return field.id === vlk.id;
-        });
+        var field = getVlkField(vlk);
         if (field) {
           field.remove();
           field.visible = false;
@@ -449,9 +458,7 @@ angular.module('eperusteApp')
       });
     };
 
-    $scope.vlkOrderFn = function (vlk) {
-      return _.first(vlk.vuosiluokat.slice().sort());
-    };
+    $scope.vlkOrderFn = VlkUtils.orderFn;
 
     function getField(value) {
       return _.find($scope.fields, function (field) {
@@ -476,6 +483,10 @@ angular.module('eperusteApp')
       _.each($scope.vuosiluokkakokonaisuudet, function (vlk) {
         if (_.indexOf(current, '' + vlk.id) > -1) {
           $scope.activeVuosiluokat.push(vlk);
+          var field = getVlkField(vlk);
+          if (field) {
+            field.visible = true;
+          }
         }
       });
       setOsio('tehtava');
