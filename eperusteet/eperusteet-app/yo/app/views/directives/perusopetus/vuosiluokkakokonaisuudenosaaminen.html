@@ -2,7 +2,7 @@
 
 <div class="osaaminen">
   <accordion close-others="oneAtATime">
-    <accordion-group ng-repeat="osa in yleiset" is-open="osa.$isOpen" ng-class="{editing: osa.$editing}">
+    <accordion-group ng-repeat="osa in yleiset | orderBy:orderFn" is-open="osa.$isOpen" ng-class="{editing: osa.$editing}">
       <accordion-heading>
         <span ng-bind-html="osa.nimi | kaanna"></span>
       </accordion-heading>

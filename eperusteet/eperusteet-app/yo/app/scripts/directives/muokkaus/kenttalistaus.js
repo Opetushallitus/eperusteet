@@ -28,7 +28,9 @@ angular.module('eperusteApp')
         objectPromise: '=',
         editEnabled: '=',
         mode: '@?',
-        hideEmptyPlaceholder: '@?'
+        hideEmptyPlaceholder: '@?',
+        emptyplaceholder: '@',
+        emptyplaceholderedit: '@',
       },
       link: function(scope, element) {
         scope.updateContentTip = function () {

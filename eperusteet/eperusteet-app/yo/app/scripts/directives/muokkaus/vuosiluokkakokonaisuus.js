@@ -93,6 +93,7 @@ angular.module('eperusteApp')
           });
         } else {
           Lukitus.vapautaVuosiluokkakokonaisuus($scope.editableModel.id);
+          $state.go($state.current.name, {}, {reload: true});
         }
       },
       notify: function (mode) {
@@ -138,7 +139,8 @@ angular.module('eperusteApp')
              }*/
           }
         },
-        fieldRenderer: '<kenttalistaus edit-enabled="editEnabled" object-promise="modelPromise" fields="config.fields"></kenttalistaus>',
+        fieldRenderer: '<kenttalistaus edit-enabled="editEnabled" object-promise="modelPromise" ' +
+          'fields="config.fields" emptyplaceholder="vuosiluokat-ei-sisaltoa"></kenttalistaus>',
         fields: [
           {
             path: 'laajaalaisetOsaamiset',
@@ -220,10 +222,11 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('LaajaAlainenOsaaminenController', function ($scope, PerusopetusService, YleinenData) {
+  .controller('LaajaAlainenOsaaminenController', function ($scope, PerusopetusService, YleinenData, Utils) {
     $scope.oneAtATime = false;
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
     $scope.yleiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true);
+    $scope.orderFn = Utils.nameSort;
 
     function getModel(object, item) {
       var model = _.find(object, function (obj) {
