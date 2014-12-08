@@ -138,7 +138,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         lockService.lock(ctx);
         try {
             for (OppiaineenVuosiluokkaKokonaisuus k : aine.getVuosiluokkakokonaisuudet()) {
-                deleteOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, k.getId());
+                deleteOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, k.getId(), false);
             }
 
             if (aine.isKoosteinen()) {
@@ -162,13 +162,21 @@ public class OppiaineServiceImpl implements OppiaineService {
     @Override
     @Transactional(readOnly = false)
     public void deleteOppiaineenVuosiluokkaKokonaisuus(Long perusteId, Long oppiaineId, Long vuosiluokkaKokonaisuusId) {
+        deleteOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, vuosiluokkaKokonaisuusId, true);
+    }
+
+    private void deleteOppiaineenVuosiluokkaKokonaisuus(Long perusteId, Long oppiaineId, Long vuosiluokkaKokonaisuusId, boolean lockOppiaine) {
         OppiaineenVuosiluokkaKokonaisuus vk = vuosiluokkakokonaisuusRepository.findOne(vuosiluokkaKokonaisuusId);
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         if (sisalto == null || vk == null || !sisalto.containsOppiaine(vk.getOppiaine())) {
             throw new BusinessRuleViolationException("Virheellinen vuosiluokkakokonaisuus");
         }
         OppiaineLockContext ctx = OppiaineLockContext.of(perusteId, oppiaineId, vk.getId());
+
         lockService.lock(ctx);
+        if (lockOppiaine) {
+            oppiaineRepository.lock(vk.getOppiaine());
+        }
         try {
             for (OpetuksenTavoite t : vk.getTavoitteet()) {
                 t.setSisaltoalueet(null);
@@ -335,6 +343,5 @@ public class OppiaineServiceImpl implements OppiaineService {
     public void deleteKohdealue(Long perusteId, Long id, Long kohdealueId) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 
 }
