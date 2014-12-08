@@ -37,7 +37,7 @@ public class PerusteQuery {
     private List<String> opintoala;
     private String suoritustapa;
     private String tila;
-    private String koodiArvo;
+    private String koulutuskoodi;
     private String perusteTyyppi;
     private Long muokattu;
 }
