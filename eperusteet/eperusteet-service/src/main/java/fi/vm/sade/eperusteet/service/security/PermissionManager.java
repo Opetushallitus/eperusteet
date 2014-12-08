@@ -210,7 +210,9 @@ public class PermissionManager {
             perm.put(LUKU, r0);
             tmp.put(ProjektiTila.JULKAISTU, perm);
 
-            tmp.put(ProjektiTila.POISTETTU, Collections.<Permission, Set<String>>emptyMap());
+            perm = Maps.newHashMap();
+            perm.put(TILANVAIHTO, r1);
+            tmp.put(ProjektiTila.POISTETTU, perm);
 
             allowedRolesTmp.put(Target.PERUSTEPROJEKTI, tmp);
         }
@@ -288,7 +290,10 @@ public class PermissionManager {
     @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public boolean hasPermission(Authentication authentication, Serializable targetId, Target targetType, Permission permission) {
-        LOG.warn(String.format("Checking permission %s to %s{id=%s} by %s", permission, targetType, targetId, authentication));
+
+        if (LOG.isTraceEnabled()) {
+            LOG.trace(String.format("Checking permission %s to %s{id=%s} by %s", permission, targetType, targetId, authentication));
+        }
 
         if (!authentication.isAuthenticated()) {
             return false;
