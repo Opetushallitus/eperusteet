@@ -207,9 +207,10 @@ angular.module('eperusteApp')
           vuosiluokkaId: vuosiluokkaId
         }, cb);
       },
-      vapautaOppiaineenVuosiluokkakokonaisuus: function (vuosiluokkaId, cb) {
-        vapauta(LukkoVuosiluokkakokonaisuus, {
+      vapautaOppiaineenVuosiluokkakokonaisuus: function (oppiaineId, vuosiluokkaId, cb) {
+        vapauta(LukkoOppiaineenVuosiluokkakokonaisuus, {
           perusteId: PerusopetusService.getPerusteId(),
+          oppiaineId: oppiaineId,
           vuosiluokkaId: vuosiluokkaId
         }, cb);
       },
