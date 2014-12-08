@@ -145,6 +145,14 @@ angular.module('eperusteApp')
       }, errorCb);
     };
 
+    this.deleteOppiaineenVuosiluokkakokonaisuus = function (vlk, oppiaineId) {
+      return OppiaineenVuosiluokkakokonaisuudet.delete({
+        perusteId: tiedot.getProjekti()._peruste,
+        oppiaineId: oppiaineId,
+        osanId: vlk.id
+      }, angular.noop, errorCb);
+    };
+
     this.getTekstikappaleet = function () {
       // TODO oikea data
       return [];

@@ -67,6 +67,9 @@ angular.module('eperusteApp')
       this.clone(null, destination);
       this.stash = {};
     };
+    CloneHelperImpl.prototype.get = function () {
+      return this.stash;
+    };
     this.init = function (keys) {
       return new CloneHelperImpl(keys);
     };

@@ -62,7 +62,7 @@
          path="{{osamodel}}"></div>
 
     <ul class="nav nav-tabs nav-justified">
-      <li ng-class="{active: vuosiluokat.$tabActive}" ng-repeat="vuosiluokat in mappedVuosiluokat">
+      <li ng-class="{active: vuosiluokat.$tabActive}" ng-repeat="vuosiluokat in mappedVuosiluokat track by $index">
         <a kaanna="vuosiluokat.nimi" ng-click="chooseTab($index)"></a>
       </li>
     </ul>

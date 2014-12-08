@@ -103,6 +103,39 @@ angular.module('eperusteApp')
 
     var cloner = CloneHelper.init(['koosteinen', 'nimi', 'tehtava', 'vuosiluokkakokonaisuudet']);
 
+    function saveOppiaine() {
+      $scope.editableModel.$save({
+        perusteId: PerusopetusService.getPerusteId()
+      }, function (res) {
+        $scope.editableModel = res;
+        Lukitus.vapautaOppiaine($scope.editableModel.id);
+      });
+    }
+
+    function processVuosiluokkakokonaisuudet() {
+      // Jos oppiaineen vuosiluokkakokonaisuuksia on poistettu, poistetaan ne eksplisiittisesti
+      var promises = [];
+      var original = _.cloneDeep(cloner.get());
+      function getVlkSet(model) {
+        return _(model.vuosiluokkakokonaisuudet).pluck('vuosiluokkaKokonaisuus').map(String).value();
+      }
+      var originalVlkSet = getVlkSet(original),
+          newVlkSet = getVlkSet($scope.editableModel),
+          removedVlkSet = _.difference(originalVlkSet, newVlkSet);
+      if (_.isEmpty(removedVlkSet)) {
+        var deferred = $q.defer();
+        deferred.resolve();
+        promises.push(deferred.promise);
+      } else {
+        _.each(original.vuosiluokkakokonaisuudet, function (vlk) {
+          if (_.indexOf(removedVlkSet, '' + vlk.vuosiluokkaKokonaisuus) > -1) {
+            promises.push(PerusopetusService.deleteOppiaineenVuosiluokkakokonaisuus(vlk, $scope.editableModel.id).$promise);
+          }
+        });
+      }
+      return $q.all(promises);
+    }
+
     var callbacks = {
       edit: function () {
         if ($scope.editableModel.id) {
@@ -126,11 +159,8 @@ angular.module('eperusteApp')
             $state.go($state.current, _.extend(_.clone($stateParams), {osanId: res.id}), {reload: true});
           });
         } else {
-          $scope.editableModel.$save({
-            perusteId: PerusopetusService.getPerusteId()
-          }, function (res) {
-            $scope.editableModel = res;
-            Lukitus.vapautaOppiaine($scope.editableModel.id);
+          processVuosiluokkakokonaisuudet().then(function () {
+            saveOppiaine();
           });
         }
       },
