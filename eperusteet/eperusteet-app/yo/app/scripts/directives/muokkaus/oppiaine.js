@@ -115,6 +115,7 @@ angular.module('eperusteApp')
       }, function (res) {
         $scope.editableModel = res;
         Lukitus.vapautaOppiaine($scope.editableModel.id);
+        $state.go($state.current, _.extend(_.clone($stateParams), {tabId: 0}), {reload: true});
       });
     }
 
@@ -127,7 +128,8 @@ angular.module('eperusteApp')
       }
       var originalVlkSet = getVlkSet(original),
           newVlkSet = getVlkSet($scope.editableModel),
-          removedVlkSet = _.difference(originalVlkSet, newVlkSet);
+          removedVlkSet = _.difference(originalVlkSet, newVlkSet),
+          originalIds = _.zipObject(originalVlkSet, _.pluck(original.vuosiluokkakokonaisuudet, 'id'));
       if (_.isEmpty(removedVlkSet)) {
         var deferred = $q.defer();
         deferred.resolve();
@@ -139,6 +141,13 @@ angular.module('eperusteApp')
           }
         });
       }
+      // Jos vlk on poistettu ja lisätty takaisin, lisätään uudestaan vanha id, jotta ei synny duplikaatteja.
+      _.each($scope.editableModel.vuosiluokkakokonaisuudet, function (vlk) {
+        var originalId = originalIds['' + vlk.vuosiluokkaKokonaisuus];
+        if (originalId && !vlk.id) {
+          vlk.id = originalId;
+        }
+      });
       return $q.all(promises);
     }
 
