@@ -51,11 +51,9 @@ public class TutkintonimikeKoodi implements Serializable {
     @Column(name = "tutkinnon_osa_koodi_arvo")
     private String tutkinnonOsaArvo;
 
-    @NotNull
     @Column(name = "osaamisala_koodi_uri")
     private String osaamisalaUri;
 
-    @NotNull
     @Column(name = "osaamisala_koodi_arvo")
     private String osaamisalaArvo;
 

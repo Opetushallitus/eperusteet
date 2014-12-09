@@ -127,9 +127,10 @@ public class PerusteController {
         List<CombinedDto<TutkintonimikeKoodiDto, HashMap<String, KoodistoKoodiDto>>> response = new ArrayList<>();
 
         for (TutkintonimikeKoodiDto tkd : tutkintonimikeKoodit) {
-            KoodistoKoodiDto get = koodistoService.get("osaamisala", tkd.getOsaamisalaUri());
             HashMap<String, KoodistoKoodiDto> nimet = new HashMap<>();
-            nimet.put(tkd.getOsaamisalaArvo(), koodistoService.get("osaamisala", tkd.getOsaamisalaUri()));
+            if (tkd.getOsaamisalaUri() != null) {
+                nimet.put(tkd.getOsaamisalaArvo(), koodistoService.get("osaamisala", tkd.getOsaamisalaUri()));
+            }
             nimet.put(tkd.getTutkintonimikeArvo(), koodistoService.get("tutkintonimikkeet", tkd.getTutkintonimikeUri()));
             if (tkd.getTutkinnonOsaUri() != null) {
                 nimet.put(tkd.getTutkinnonOsaArvo(), koodistoService.get("tutkinnonosat", tkd.getTutkinnonOsaUri()));
