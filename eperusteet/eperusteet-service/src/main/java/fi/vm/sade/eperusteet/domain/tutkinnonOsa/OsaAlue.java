@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.domain.tutkinnonOsa;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PartialMergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -25,6 +26,8 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -70,6 +73,14 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
                inverseJoinColumns = @JoinColumn(name = "osaamistavoite_id"))
     @OrderColumn
     private List<Osaamistavoite> osaamistavoitteet;
+
+    @Getter
+    @Setter
+    @Enumerated(EnumType.STRING)
+    /**
+     * Jos osa-alueesta on vain yksi kieliversio, määritellään se tässä.
+     */
+    private Kieli kieli;
 
     public OsaAlue() {
     }

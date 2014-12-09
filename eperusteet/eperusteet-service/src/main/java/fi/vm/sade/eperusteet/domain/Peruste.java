@@ -21,9 +21,12 @@ import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -134,6 +137,17 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Enumerated(EnumType.STRING)
     @NotNull
     private PerusteTyyppi tyyppi = PerusteTyyppi.NORMAALI;
+
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    @Getter
+    @Setter
+    @CollectionTable(name = "peruste_kieli")
+    @Column(name = "kieli")
+    /**
+     * Kielet jolla peruste tarjotaan. Oletuksena suomi ja ruotsi.
+     */
+    private Set<Kieli> kielet = EnumSet.of(Kieli.FI, Kieli.SV);
 
     public Suoritustapa getSuoritustapa(Suoritustapakoodi koodi) {
         for (Suoritustapa s : suoritustavat) {

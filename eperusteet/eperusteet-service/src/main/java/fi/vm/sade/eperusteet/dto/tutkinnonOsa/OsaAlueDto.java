@@ -16,6 +16,8 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonOsa;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,4 +31,6 @@ import lombok.Setter;
 public class OsaAlueDto {
     private Long id;
     private LokalisoituTekstiDto nimi;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Kieli kieli;
 }
