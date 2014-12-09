@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state,
-      PerusopetusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot) {
+      PerusopetusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot, Utils, VlkUtils) {
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     TekstikappaleOperations.setPeruste($scope.peruste);
@@ -43,6 +43,7 @@ angular.module('eperusteApp')
       _.each($scope.datat.opetus.lapset, function (area) {
         area.$type = 'ep-parts';
         area.$url = $state.href('root.perusteprojekti.osalistaus', {osanTyyppi: area.tyyppi});
+        area.$orderFn = area.tyyppi === PerusopetusService.VUOSILUOKAT ? VlkUtils.orderFn : Utils.nameSort;
         Algoritmit.kaikilleLapsisolmuille(area, 'lapset', function (lapsi) {
           lapsi.$url = $state.href('root.perusteprojekti.osaalue', {osanTyyppi: area.tyyppi, osanId: lapsi.id, tabId: 0});
           if (lapsi.koosteinen) {
