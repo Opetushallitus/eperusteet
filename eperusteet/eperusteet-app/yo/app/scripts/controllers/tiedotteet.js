@@ -56,7 +56,7 @@ angular.module('eperusteApp')
     };
 
     function doDelete(item) {
-      item.$delete({}, fetch, Notifikaatiot.serverCb);
+      TiedotteetCRUD.delete({}, item, fetch, Notifikaatiot.serverCb);
     }
 
     function doSave(item) {
