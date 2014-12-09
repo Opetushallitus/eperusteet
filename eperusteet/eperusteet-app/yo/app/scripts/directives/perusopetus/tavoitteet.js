@@ -34,9 +34,8 @@ angular.module('eperusteApp')
       }
     };
   })
-  .controller('TavoitteetController', function ($scope, YleinenData, PerusopetusService, $state, $rootScope,
+  .controller('TavoitteetController', function ($scope, PerusopetusService, $state, $rootScope,
       CloneHelper, OsanMuokkausHelper) {
-    $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
     $scope.osaamiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true);
     $scope.vuosiluokka = OsanMuokkausHelper.getVuosiluokkakokonaisuus() || $scope.providedVuosiluokka;
     $scope.editMode = false;
@@ -117,6 +116,8 @@ angular.module('eperusteApp')
     };
 
     var cloner = CloneHelper.init(['tavoite', 'sisaltoalueet', 'laajattavoitteet', 'arvioinninkohteet']);
+    var idFn = function (item) { return item.id; };
+    var filterFn = function (item) { return !item.$hidden; };
 
     $scope.tavoiteFn = {
       edit: function (tavoite) {
@@ -134,6 +135,10 @@ angular.module('eperusteApp')
         $scope.currentEditable.$editing = false;
         $scope.currentEditable.$new = false;
         $scope.currentEditable = null;
+        _.each($scope.model.tavoitteet, function (tavoite) {
+          tavoite.sisaltoalueet = _(tavoite.$sisaltoalueet).filter(filterFn).map(idFn).value();
+          tavoite.laajattavoitteet = _(tavoite.$osaaminen).filter(filterFn).map(idFn).value();
+        });
       },
       cancel: function () {
         if (!$scope.currentEditable.$new) {

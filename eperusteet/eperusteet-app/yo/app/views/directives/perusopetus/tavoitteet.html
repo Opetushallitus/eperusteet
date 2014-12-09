@@ -26,7 +26,7 @@
 
                 <h4 ng-show="tavoite.$editing" kaanna="nimi"></h4>
                 <h4 class="tavoite-otsikko action-link" ng-show="!tavoite.$editing" ng-click="tavoiteFn.toggle(tavoite)"
-                  ng-bind-html="valitseKieli(tavoite.tavoite) | unsafe"></h4>
+                  ng-bind-html="tavoite.tavoite | kaanna | unsafe"></h4>
                 <div ng-if="tavoite.$editing" ckeditor ng-model="tavoite.tavoite" localized editor-placeholder="tavoitteen-kuvaus-placeholder"></div>
 
                 <h4 kaanna="kohdealueet"></h4>
