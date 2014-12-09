@@ -32,7 +32,7 @@ angular.module('eperusteApp')
 
   .controller('VuosiluokkakokonaisuusController', function ($scope, PerusopetusService,
     Editointikontrollit, Kaanna, PerusteProjektiSivunavi, Vuosiluokkakokonaisuudet,
-    CloneHelper, Lukitus, $timeout, $state) {
+    CloneHelper, Lukitus, $timeout, $state, $stateParams) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.vuosiluokkaOptions = {};
@@ -82,7 +82,10 @@ angular.module('eperusteApp')
         } else {
           Vuosiluokkakokonaisuudet.save({
             perusteId: PerusopetusService.getPerusteId()
-          }, $scope.editableModel, successCb);
+          }, $scope.editableModel, function (res) {
+            successCb(res);
+            $state.go($state.current, _.extend(_.clone($stateParams), {osanId: res.id}), {reload: true});
+          });
         }
       },
       cancel: function () {

@@ -43,8 +43,12 @@ angular.module('eperusteApp')
         cloner.clone($scope.editableModel);
       },
       save: function () {
+        var isNew = !$scope.editableModel.id;
         PerusopetusService.saveOsa($scope.editableModel, $stateParams, function(tallennettu) {
           $scope.editableModel = tallennettu;
+          if (isNew) {
+            $state.go($state.current, _.extend(_.clone($stateParams), {osanId: tallennettu.id}), {reload: true});
+          }
         });
       },
       cancel: function () {
