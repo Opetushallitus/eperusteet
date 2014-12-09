@@ -66,7 +66,7 @@ angular.module('eperusteApp')
     $scope.delete = function (model) {
       Varmistusdialogi.dialogi({
         otsikko: 'vahvista-poisto',
-        sisalto: 'poistetaanko-tiedote',
+        teksti: 'poistetaanko-tiedote',
       })(function() {
         doDelete(model);
       });
