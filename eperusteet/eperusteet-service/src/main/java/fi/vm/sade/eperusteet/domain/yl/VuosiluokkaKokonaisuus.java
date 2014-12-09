@@ -63,11 +63,29 @@ public class VuosiluokkaKokonaisuus extends AbstractAuditedReferenceableEntity {
 
     @Getter
     @Setter
+    @ManyToOne(cascade = CascadeType.ALL, optional = true)
+    private TekstiOsa siirtymaEdellisesta;
+
+    @Getter
+    @Setter
     @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
     private TekstiOsa tehtava;
 
-    //TODO: siirtymä (kumpaankin suuntaan -- jaettu vuosiluokkakokonaisuuksien välillä (paitsi ensimmäinen ja viimeinen)
-    //TODO: vuosiluokat josta kokonaisuus koostuu.
+    @Getter
+    @Setter
+    @ManyToOne(cascade = CascadeType.ALL, optional = true)
+    private TekstiOsa siirtymaSeuraavaan;
+
+    @Getter
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
+    private TekstiOsa paikallisestiPaatettavatAsiat;
+
+    @Getter
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL, optional = true, orphanRemoval = true)
+    private TekstiOsa laajaalainenOsaaminen;
+
     @OneToMany(mappedBy = "vuosiluokkaKokonaisuus")
     private Set<OppiaineenVuosiluokkaKokonaisuus> oppiaineet = new HashSet<>();
 

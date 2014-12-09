@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.service;
 import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
@@ -36,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.olt;
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.oto;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -74,6 +74,10 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
 
         VuosiluokkaKokonaisuusDto dto = new VuosiluokkaKokonaisuusDto();
         dto.setNimi(olt("Nimi"));
+        dto.setTehtava(oto("Otsikko","Nimi"));
+        dto.setSiirtymaEdellisesta(oto("Otsikko","Nimi"));
+        dto.setSiirtymaSeuraavaan(oto("Otsikko","Nimi"));
+        dto.setLaajaalainenOsaaminen(oto("Otsikko","Nimi"));
         VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto vlo = new VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto();
         vlo.setKuvaus(olt("KUVAAUS"));
         vlo.setLaajaalainenOsaaminen(Optional.of(osaaminen));
