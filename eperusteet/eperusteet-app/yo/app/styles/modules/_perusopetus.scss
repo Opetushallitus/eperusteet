@@ -374,6 +374,19 @@ h4 .drag-handle {
   .panel-heading .badge {
     margin-right: -15px;
   }
+
+  .oppiaine {
+    margin-bottom: 5px;
+    padding: 3px;
+    cursor: pointer;
+  }
+
+  .oppiaine-selected {
+    border-radius: 3px;
+    background-color: #0C566E;
+    font-weight: bold;
+    color: #eee;
+  }
 }
 
 .oppiaine {
@@ -382,10 +395,23 @@ h4 .drag-handle {
 }
 
 .perusopetus {
-  .nav-pills {
-    margin-bottom: 15px;
+  .oppiaine-nimi {
+    border-bottom: 1px solid #aaa;
+  }
+  .vuosiluokkavalitsin {
+    float: right;
+    position: relative;
+    top: -69px;
+    margin-bottom: -80px;
+
+    .nav-pills {
+      .fixme {
+        border-radius: 0px;
+      }
+    }
   }
   .moodit {
     margin-top: -40px;
   }
 }
+

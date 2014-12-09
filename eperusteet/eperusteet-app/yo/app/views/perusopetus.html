@@ -13,36 +13,45 @@
         <div class="col-md-12">
 
           <div ng-if="activeSection === 'suunnitelma'">
-            <h2 kaanna>Opetussuunnitelma</h2>
+            <h1 kaanna>Opetussuunnitelma</h1>
           </div>
 
-          <div ng-if="activeSection === 'sisalto'">
-            <div class="action-buttons">
-              <ul class="nav nav-pills moodit">
-                <li ng-class="{active: filtterit.moodi === 'allekkain'}"><a class="action-link" icon-role="align-justify" ng-click="filtterit.moodi = 'allekkain';"></a></li>
-                <li ng-class="{active: filtterit.moodi === 'sivutus'}"><a class="action-link" icon-role="pause" ng-click="filtterit.moodi = 'sivutus';"></a></li>
-              </ul>
-            </div>
-            <div ng-if="filtterit.moodi === 'sivutus'">
+          <div ng-if="valittuOppiaine && valittuOppiaine.oppiaine && activeSection === 'sisalto'">
+            <h1 class="oppiaine-nimi" kaanna="valittuOppiaine.oppiaine.nimi"></h1>
+            <!-- <div class="action&#45;buttons"> -->
+            <!--   <ul class="nav nav&#45;pills moodit"> -->
+            <!--     <li ng&#45;class="{active: filtterit.moodi === 'allekkain'}"><a class="action&#45;link" icon&#45;role="align&#45;justify" ng&#45;click="filtterit.moodi = 'allekkain';"></a></li> -->
+            <!--     <li ng&#45;class="{active: filtterit.moodi === 'sivutus'}"><a class="action&#45;link" icon&#45;role="pause" ng&#45;click="filtterit.moodi = 'sivutus';"></a></li> -->
+            <!--   </ul> -->
+            <!-- </div> -->
+            <div class="vuosiluokkavalitsin">
               <ul class="nav nav-pills">
                 <li ng-repeat="vuosiluokka in vuosiluokkakokonaisuudet" ng-class="{ active: filtterit.valittuKokonaisuus === vuosiluokka.id }">
-                  <a class="action-link" ng-click="valitseVuosiluokka(vuosiluokka)">{{ vuosiluokka.nimi | kaanna }}</a>
+                  <a class="fixme action-link" ng-click="valitseVuosiluokka(vuosiluokka)">{{ vuosiluokka.nimi | kaanna }}</a>
                 </li>
               </ul>
             </div>
 
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h3 class="panel-title">{{ vuosiluokkakokonaisuudetMap[filtterit.valittuKokonaisuus].nimi | kaanna }}</h3>
+            <div class="clearfix"></div>
+
+            <div ng-if="valittuOppiaine.vlks">
+              <div ng-hide="filterSisalto.tehtava">
+                <h3>{{ valittuOppiaine.vlks.tehtava.otsikko | kaanna }}</h3>
+                <p ng-bind-html="valittuOppiaine.vlks.tehtava.teksti || '-' | kaanna"></p>
               </div>
-              <div class="panel-body">
-                <div ng-if="opvk(oaId)" ng-repeat="(oaId, kokonaisuus) in oppiaineenvk">
-                  <h3 class="oppiaine">{{ oppiaineet[oaId].nimi | kaanna}} {{ aineId }}</h3>
-                  <div ng-if="opvk(oaId, sisaltoTyyppi)" ng-repeat="sisaltoTyyppi in oppiainesisaltoJarjestys">
-                    <h4>{{ opvk(oaId, sisaltoTyyppi).otsikko | kaanna }}</h4>
-                    <p>{{ opvk(oaId, sisaltoTyyppi).teksti || '-' | kaanna }}</p>
-                  </div>
-                </div>
+
+              <div ng-hide="filterSisalto.ohjaus">
+                <h3>{{ valittuOppiaine.vlks.ohjaus.otsikko | kaanna }}</h3>
+                <p ng-bind-html="valittuOppiaine.vlks.ohjaus.teksti || '-' | kaanna"></p>
+              </div>
+
+              <div ng-hide="filterSisalto.tyotavat">
+                <h3>{{ valittuOppiaine.vlks.tyotavat.otsikko | kaanna }}</h3>
+                <p ng-bind-html="valittuOppiaine.vlks.tyotavat.teksti || '-' | kaanna"></p>
+              </div>
+              <div ng-hide="filterSisalto.tavoitteet" ng-if="valittuOppiaine.vlks.vuosiluokkaKokonaisuus">
+                <h3 kaanna="'perusopetus-tavoitteet'"></h3>
+                <div tavoitteet="valittuOppiaine.vlks" osaamiset="osaamiset" vuosiluokka="sisallot[valittuOppiaine.vlks.vuosiluokkaKokonaisuus]"></div>
               </div>
             </div>
           </div>

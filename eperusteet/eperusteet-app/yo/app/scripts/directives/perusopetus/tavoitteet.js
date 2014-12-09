@@ -25,7 +25,8 @@ angular.module('eperusteApp')
       scope: {
         model: '=tavoitteet',
         editable: '@?',
-        providedVuosiluokka: '=vuosiluokka'
+        providedVuosiluokka: '=?vuosiluokka',
+        providedOsaamiset: '=?osaamiset'
       },
       controller: 'TavoitteetController',
       link: function (scope) {
@@ -35,9 +36,9 @@ angular.module('eperusteApp')
     };
   })
   .controller('TavoitteetController', function ($scope, PerusopetusService, $state, $rootScope,
-      CloneHelper, OsanMuokkausHelper, $stateParams) {
-    $scope.osaamiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true);
-    $scope.vuosiluokka = OsanMuokkausHelper.getVuosiluokkakokonaisuus() || $scope.providedVuosiluokka;
+    CloneHelper, OsanMuokkausHelper, $stateParams) {
+    $scope.osaamiset = $scope.providedOsaamiset || PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true);
+    $scope.vuosiluokka = $scope.providedVuosiluokka || OsanMuokkausHelper.getVuosiluokkakokonaisuus();
     $scope.editMode = false;
     $scope.currentEditable = null;
     $scope.$watch('editable', function (value) {

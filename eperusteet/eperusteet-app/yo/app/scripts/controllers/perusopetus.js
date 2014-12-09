@@ -107,7 +107,7 @@ angular.module('eperusteApp')
         $scope.avaaSuljeKaikki(true);
       },
       save: function() {
-        TekstikappaleOperations.updateViitteet($scope.peruste.sisalto, function () {
+        TekstikappaleOperations.updateViitteet(peruste.sisalto, function () {
           Notifikaatiot.onnistui('osien-rakenteen-päivitys-onnistui');
         });
       },
@@ -191,43 +191,42 @@ angular.module('eperusteApp')
     });
   })
 
-  /* protokoodia --> */
-  .controller('PerusopetusController', function($q, $scope, FilterWatcher, PerusOpetusTiedot, $timeout, sisalto, OppiaineenVuosiluokkakokonaisuudet) {
+  .controller('PerusopetusController', function($q, $scope, PerusOpetusTiedot, $timeout, sisalto, OppiaineenVuosiluokkakokonaisuudet, Algoritmit) {
     $scope.isNaviVisible = _.constant(true);
-    $scope.peruste = sisalto[0];
+    var peruste = sisalto[0];
+    var oppiaineet = _.zipBy(sisalto[2], 'id');
+    var oppiaineenvk = {};
     $scope.osaamiset = _.zipBy(sisalto[1], 'id');
-    $scope.oppiaineet = _.zipBy(sisalto[2], 'id');
     $scope.sisallot = _.zipBy(sisalto[3], 'id');
-    console.log($scope.sisallot);
-    $scope.oppiaineenvk = {};
-    $scope.oppiainesisaltoJarjestys = ['tehtava', 'tyotavat', 'ohjaus', 'arviointi'];
+    // $scope.oppiainesisaltoJarjestys = ['tehtava', 'tyotavat', 'ohjaus', 'arviointi'];
     $scope.vuosiluokkakokonaisuudet = _(sisalto[3]).each(function(s) { s.vuosiluokat.sort(); })
                                                    .sortBy(function(s) { return _.first(s.vuosiluokat); })
                                                    .value();
     $scope.vuosiluokkakokonaisuudetMap = _.zipBy($scope.vuosiluokkakokonaisuudet, 'id');
+    $scope.valittuOppiaine = {};
+    $scope.filterSisalto = {};
+    $scope.tekstisisalto = sisalto[4];
+    console.log(sisalto);
 
-    $scope.opvk = function(oppiaineId, field) {
-      var x = $scope.oppiaineenvk[oppiaineId][$scope.filtterit.valittuKokonaisuus];
-      return field ? x[field] : x;
-    };
-
-    $q.all(_.map(_.keys($scope.oppiaineet), function(oaId) {
+    $q.all(_.map(_.keys(oppiaineet), function(oaId) {
       return OppiaineenVuosiluokkakokonaisuudet.query({
-        perusteId: $scope.peruste.id,
+        perusteId: peruste.id,
         oppiaineId: oaId
       }).$promise;
     }))
     .then(function(res) {
-      $scope.oppiaineenvk = _.zipObject(_.map($scope.oppiaineet, 'id'), _.map(res, function(op) {
+      oppiaineenvk = _.zipObject(_.map(oppiaineet, 'id'), _.map(res, function(op) {
         return _.zipBy(op, 'vuosiluokkaKokonaisuus');
       }));
-      console.log($scope.osaamiset);
-      console.log($scope.oppiaineet);
-      // console.log(PerusOpetusTiedot.oppiaineet);
-      console.log($scope.vuosiluokkakokonaisuudetMap);
-      console.log($scope.oppiaineenvk);
       $scope.valitseVuosiluokka(_.first($scope.vuosiluokkakokonaisuudet));
+      valitseOppiaine(_.first(_.keys(oppiaineet)));
     });
+
+    function haeVuosiluokkakokonaisuudenSisalto(oppiaineId) {
+      var ovk = oppiaineenvk[oppiaineId];
+      var vlkoppiaine = ovk && ovk[$scope.filtterit.valittuKokonaisuus];
+      return vlkoppiaine || {};
+    }
 
     $scope.filtterit = {
       moodi: 'sivutus',
@@ -235,7 +234,27 @@ angular.module('eperusteApp')
 
     $scope.valitseVuosiluokka = function(vuosiluokka) {
       $scope.filtterit.valittuKokonaisuus = vuosiluokka.id;
+      if ($scope.valittuOppiaine && $scope.valittuOppiaine.oppiaine) {
+        $scope.valittuOppiaine.vlks = haeVuosiluokkakokonaisuudenSisalto($scope.valittuOppiaine.oppiaine.id);
+      }
     };
+
+    function valitseOppiaine(oppiaine) {
+      $scope.valittuOppiaine = {};
+      $scope.valittuOppiaine.oppiaine = oppiaineet[_.isObject(oppiaine) ? oppiaine.value : oppiaine];
+      $scope.valittuOppiaine.vlks = haeVuosiluokkakokonaisuudenSisalto(oppiaine.value);
+    }
+
+    function rakennaTekstisisalto() {
+      var suunnitelma = [];
+      Algoritmit.kaikilleLapsisolmuille($scope.tekstisisalto, 'lapset', function(osa, depth) {
+        suunnitelma.push({
+          label: osa.perusteenOsa.nimi,
+          depth: depth,
+        });
+      });
+      return suunnitelma;
+    }
 
     $scope.navi = {
       header: 'perusteen-sisalto',
@@ -244,15 +263,14 @@ angular.module('eperusteApp')
         {
           title: 'Opetussuunnitelma',
           id: 'suunnitelma',
-          items: PerusOpetusTiedot.yleiset
-        },
-        {
+          items: rakennaTekstisisalto()
+        }, {
           title: 'Opetuksen sisällöt',
           id: 'sisalto',
           include: 'views/partials/navifilters.html',
           $open: true,
+          oneAtATime: true,
           model: {
-            oneAtATime: false,
             sections: [
             //   {
             //   title: 'Vuosiluokat',
@@ -265,20 +283,33 @@ angular.module('eperusteApp')
             // },
             {
               title: 'Oppiaineet',
-              items: _.map(_.values($scope.oppiaineet), function(oa) {
-                return {
-                  depth: 0,
-                  label: oa.nimi,
-                  value: oa.id
-                };
-              }),
+              id: 'oppiaineet',
+              items: [],
               $open: true,
-              apply: applyFilters
+              include: 'views/partials/perusopetusoppiaineetsivunavi.html',
+              apply: angular.noop,
+              selectOppiaine: valitseOppiaine,
+              isCurrentOppiaine: function(item) {
+                return $scope.valittuOppiaine && $scope.valittuOppiaine.oppiaine && $scope.valittuOppiaine.oppiaine.id === item.value;
+              }
             }, {
+              id: 'sisallot',
               title: 'Oppiaineen sisällöt',
+              $all: true,
               $open: true,
-              items: PerusOpetusTiedot.oppiaineenSisallot,
-              apply: applyFilters
+              items: _.map(['tehtava', 'ohjaus', 'tyotavat', 'tavoitteet'], function(item) {
+                return { label: 'perusopetus-' + item, value: item, depth: 0, $selected: true };
+              }),
+              toggleAll: function(section) {
+                section.$all = section.$all;
+                _.each(section.items, function(item) {
+                  item.$selected = section.$all;
+                  $scope.filterSisalto[item.value] = !item.$selected;
+                });
+              },
+              updateSisallot: function(item, section) {
+                $scope.filterSisalto[item.value] = !item.$selected;
+              }
             }]
           }
         }, {
@@ -288,22 +319,23 @@ angular.module('eperusteApp')
       ]
     };
 
-    var applyFilters = function($event) {
-      if ($event) {
-        $event.preventDefault();
-        $event.stopPropagation();
-      }
-      _.each($scope.navi.sections, function (mainsection) {
-        if (mainsection.model) {
-          _.each(mainsection.model.sections, function (section) {
-            $scope.filtterit[section.title] = _(section.items).filter('$selected')
-                                                              .pluck('value')
-                                                              .value();
-          });
+    function paivitaSivunavi() {
+      var navi = {};
+      navi.oppiaineet = _.map(_.values(oppiaineet), function(oa) {
+        return {
+          depth: 0,
+          label: oa.nimi,
+          value: oa.id
+        };
+      });
+
+      _.each($scope.navi.sections[1].model.sections, function(v) {
+        if (navi[v.id]) {
+          v.items = navi[v.id];
         }
       });
-      setPage();
-    };
+    }
+    paivitaSivunavi();
 
     var setPage = function () {
       // set page to first valid page
@@ -319,81 +351,8 @@ angular.module('eperusteApp')
     }, function () {
       var active = _.find($scope.navi.sections, '$open');
       $scope.activeSection = active ? active.id : null;
-      if ($scope.activeSection === 'sisalto') {
-        $timeout(function () {
-          applyFilters();
-        });
-      }
     });
-
-    FilterWatcher.register(applyFilters);
   })
-  .service('FilterWatcher', function () {
-    var cb = angular.noop;
-    this.register = function (callback) {
-      cb = callback;
-    };
-    this.notify = function () {
-      cb();
-    };
-  })
-
-  .directive('multichoice', function (FilterWatcher) {
-    return {
-      restrict: 'AE',
-      templateUrl: 'views/partials/multichoice.html',
-      scope: {
-        items: '=',
-        condensed: '='
-      },
-      link: function (scope) {
-        _.each(scope.items, function (item) {
-          item.$selected = true;
-        });
-        // activate initial choices when choices have been rendered
-        FilterWatcher.notify();
-      },
-      controller: function ($scope) {
-        $scope.model = {
-          all: true
-        };
-        $scope.toggle = function () {
-          _.each($scope.items, function (item) {
-            item.$selected = $scope.model.all;
-          });
-        };
-        $scope.update = function () {
-          var all = _.filter($scope.items, '$selected').length === $scope.items.length;
-          if (all && !$scope.model.all) {
-            $scope.model.all = true;
-          }
-          if (!all && $scope.model.all) {
-            $scope.model.all = false;
-          }
-        };
-      }
-    };
-  })
-
-  /*.controller('TagFilterController', function ($scope) {
-    $scope.model = {
-      tags: {
-        items: [],
-        clear: function () {
-          $scope.model.tags.items = [];
-        }
-      },
-      dialog: {
-        isOpen: false,
-        addButtonPressed: function () {
-          $scope.model.dialog.isOpen = !$scope.model.dialog.isOpen;
-        },
-        close: function () {
-          $scope.model.dialog.isOpen = false;
-        }
-      }
-    };
-  })*/
 
   .service('PerusOpetusTiedot', function () {
     this.yleiset = [

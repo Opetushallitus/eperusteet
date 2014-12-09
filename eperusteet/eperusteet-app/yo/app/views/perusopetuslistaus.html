@@ -10,7 +10,7 @@
         <tbody>
             <tr ng-repeat="po in lista">
                 <td><a href="{{ po.$url }}" kaanna="po.nimi"></a></td>
-                <td kaanna="po.diaarinumero"></td>
+                <td ng-bind="po.diaarinumero"></td>
                 <td ng-if="po.voimassaoloLoppuu">{{ po.voimassaoloLoppuu | aikaleima }}</td>
                 <td ng-if="!po.voimassaoloLoppuu" kaanna="'paattymisaikaa-ei-ole-maaritetty'"></td>
             </tr>
