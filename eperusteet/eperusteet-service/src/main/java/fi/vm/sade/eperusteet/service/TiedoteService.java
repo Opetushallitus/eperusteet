@@ -5,8 +5,6 @@ import java.util.List;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-//TODO: Lisää 'tiedote'-permission security-konfiguraatioon
-
 /**
  * @author mikkom
  */
