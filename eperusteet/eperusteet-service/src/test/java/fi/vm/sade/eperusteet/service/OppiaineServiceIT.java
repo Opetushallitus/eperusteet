@@ -53,7 +53,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.olt;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.to;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 /**
