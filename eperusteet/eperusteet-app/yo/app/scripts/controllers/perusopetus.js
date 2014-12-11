@@ -177,12 +177,18 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('OsaAlueController', function ($scope, $q, $stateParams, PerusopetusService) {
+  .controller('OsaAlueController', function ($scope, $q, $stateParams, PerusopetusService,
+    ProjektinMurupolkuService) {
     $scope.isVuosiluokka = $stateParams.osanTyyppi === PerusopetusService.VUOSILUOKAT;
     $scope.isOppiaine = $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET;
     $scope.isOsaaminen = $stateParams.osanTyyppi === PerusopetusService.OSAAMINEN;
     $scope.versiot = {latest: true};
     $scope.dataObject = PerusopetusService.getOsa($stateParams);
+    var labels = _.invert(PerusopetusService.LABELS);
+    ProjektinMurupolkuService.set('osanTyyppi', $stateParams.osanTyyppi, labels[$stateParams.osanTyyppi]);
+    $scope.dataObject.then(function (res) {
+      ProjektinMurupolkuService.set('osanId', $stateParams.osanId, res.nimi);
+    });
   })
 
   /* protokoodia --> */

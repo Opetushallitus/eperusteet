@@ -24,7 +24,7 @@ European Union Public Licence for more details.
           <p ng-show="suosikit.length === 0" kaanna="ei-suosikkeja"></p>
           <ul class="list-unstyled">
             <li class="ellipsis-no-wrap" ng-repeat="suosikki in suosikit|limitTo:naytto.shown">
-              <a ng-click="resetNavi()" ng-href="{{ suosikki.$url }}" ng-attr-title="{{ suosikki.nimi || 'nimetön' | kaanna }}">
+              <a ng-href="{{ suosikki.$url }}" ng-attr-title="{{ suosikki.nimi || 'nimetön' | kaanna }}">
                 {{ suosikki.nimi || 'nimetön' | kaanna }}
               </a>
             </li>

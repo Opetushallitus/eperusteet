@@ -88,7 +88,8 @@ angular.module('eperusteApp')
     TutkinnonOsaEditMode, $timeout, Varmistusdialogi, VersionHelper, Lukitus,
     MuokkausUtils, PerusteenOsaViitteet, Utils, ArviointiHelper, PerusteProjektiSivunavi,
     Notifikaatiot, Koodisto, Tutke2OsaData, Kommentit, KommentitByPerusteenOsa, FieldSplitter,
-    Algoritmit, TutkinnonosanTiedotService, TutkinnonOsaViitteet, PerusteenOsaViite, virheService) {
+    Algoritmit, TutkinnonosanTiedotService, TutkinnonOsaViitteet, PerusteenOsaViite, virheService,
+    ProjektinMurupolkuService) {
 
 
     Utils.scrollTo('#ylasivuankkuri');
@@ -352,6 +353,7 @@ angular.module('eperusteApp')
 
     function setupTutkinnonOsaViite(viite) {
       $scope.tutkinnonOsaViite = viite;
+      ProjektinMurupolkuService.set('tutkinnonOsaViiteId', $scope.tutkinnonOsaViite.id, $scope.tutkinnonOsaViite.tutkinnonOsa.nimi);
       $scope.editableTutkinnonOsaViite = angular.copy(viite);
       $scope.isNew = !$scope.editableTutkinnonOsaViite.tutkinnonOsa.id;
       if ($state.current.name === 'root.perusteprojekti.suoritustapa.tutkinnonosa') {

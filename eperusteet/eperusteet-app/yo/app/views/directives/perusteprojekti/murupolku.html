@@ -1,0 +1,6 @@
+<ol class="breadcrumb projektin-murupolku" ng-show="isActive && items.length">
+  <li ng-repeat="crumb in items">
+    <a ng-show="crumb.url" ng-href="{{crumb.url}}">{{crumb.label | kaanna}}</a>
+    <span ng-show="!crumb.url">{{crumb.label | kaanna}}</span>
+  </li>
+</ol>

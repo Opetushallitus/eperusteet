@@ -87,7 +87,7 @@ angular.module('eperusteApp')
 
   .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna,
       PerusteProjektiSivunavi, Oppiaineet, $timeout, $state, $stateParams, $q, YleinenData, tabHelper,
-      CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus, VlkUtils) {
+      CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus, VlkUtils, ProjektinMurupolkuService) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.mappedVuosiluokat = [];
@@ -221,6 +221,19 @@ angular.module('eperusteApp')
         removeWholeLabel: isOppimaara ? 'poista-oppimaara' : 'poista-oppiaine',
         removeWholeConfirmationText: isOppimaara ? 'poistetaanko-oppimaara' : 'poistetaanko-oppiaine',
       });
+      var oppiaineLink = [];
+      if ($scope.editableModel.oppiaine && $scope.oppiaineMap) {
+        var oppiaine = $scope.oppiaineMap[$scope.editableModel.oppiaine];
+        oppiaineLink =  [{
+          url: $state.href('root.perusteprojekti.osaalue', {
+            osanTyyppi: PerusopetusService.OPPIAINEET,
+            osanId: oppiaine.id,
+            tabId: 0
+          }),
+          label: oppiaine.nimi
+        }];
+      }
+      ProjektinMurupolkuService.setCustom(oppiaineLink);
     }
 
     $scope.data = {

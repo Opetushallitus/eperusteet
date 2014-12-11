@@ -7,46 +7,50 @@
     <div ng-show="osaAlueAlitila" ui-view></div>
     <div ng-show="!osaAlueAlitila">
       <revert-note object="tutkinnonOsaViite" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
-      <div class="action-buttons">
-        <div class="floater" ng-attr-title="{{lockNotification}}">
-          <button class="btn btn-default" icon-role="edit" kaanna="'muokkaa'" ng-click="muokkaa()" ng-disabled="isLocked"
-                  ng-hide="editEnabled || !versiot.latest"
-                  oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' },{ target: 'peruste', permission: 'korjaus' }]"></button>
-        </div>
-        <button ng-show="tutkinnonOsaViite.tutkinnonOsa.tila === 'valmis' && !editEnabled" ng-click="kopioiMuokattavaksi()"
-                class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"
-                oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-        <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
-        <div ng-if="editEnabled">
-          <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id].id)" kaanna="poista-tutkinnonosa"></button>
-          <div class="floater" ng-show="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'normaali'">
-            <div class="dropdown">
-              <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add" kaanna="muokkaus-lisaa-osio"></button>
-              <ul class="pull-right dropdown-menu">
-                <li ng-repeat="field in menuItems| orderBy:'order'">
-                  <a ng-show="field.visible" class="disabled-link">{{'muokkaus-' + field.localeKey + '-header'| kaanna}}</a>
-                  <a href="" ng-show="!field.visible" ng-click="addFieldToVisible(field)">{{'muokkaus-' + field.localeKey + '-header'| kaanna}}</a>
-                </li>
-              </ul>
+
+      <div class="part-header-wrapper">
+        <div class="action-buttons">
+          <div class="floater" ng-attr-title="{{lockNotification}}">
+            <button class="btn btn-default" icon-role="edit" kaanna="'muokkaa'" ng-click="muokkaa()" ng-disabled="isLocked"
+                    ng-hide="editEnabled || !versiot.latest"
+                    oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' },{ target: 'peruste', permission: 'korjaus' }]"></button>
+          </div>
+          <button ng-show="tutkinnonOsaViite.tutkinnonOsa.tila === 'valmis' && !editEnabled" ng-click="kopioiMuokattavaksi()"
+                  class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"
+                  oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+          <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
+          <div ng-if="editEnabled">
+            <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id].id)" kaanna="poista-tutkinnonosa"></button>
+            <div class="floater" ng-show="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'normaali'">
+              <div class="dropdown">
+                <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add" kaanna="muokkaus-lisaa-osio"></button>
+                <ul class="pull-right dropdown-menu">
+                  <li ng-repeat="field in menuItems| orderBy:'order'">
+                    <a ng-show="field.visible" class="disabled-link">{{'muokkaus-' + field.localeKey + '-header'| kaanna}}</a>
+                    <a href="" ng-show="!field.visible" ng-click="addFieldToVisible(field)">{{'muokkaus-' + field.localeKey + '-header'| kaanna}}</a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <a ng-show="!editEnabled" icon-role="back" href="" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosat" kaanna="tutkinnonosat"></a>
-      <h1 ng-show="editEnabled">
-        <span ng-show="!isNew" kaanna>muokkaus-tutkinnon-osa</span>
-        <span ng-show="isNew" kaanna>luonti-tutkinnon-osa</span>
-      </h1>
-      <pikamenu ng-if="tutkinnonOsaViite.$resolved">
-        <!-- <span ng-if="editEnabled" edit-in-place="editableTutkinnonOsa.nimi"></span> -->
-        <span ng-if="!editEnabled">
-          {{tutkinnonOsaViite.tutkinnonOsa.nimi| kaanna:true}}
-          <span class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id] && rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id].laajuus">
-            {{rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id].laajuus}} {{ yksikko | kaanna }}
+        <projektin-murupolku></projektin-murupolku>
+
+        <h1 ng-show="editEnabled">
+          <span ng-show="!isNew" kaanna>muokkaus-tutkinnon-osa</span>
+          <span ng-show="isNew" kaanna>luonti-tutkinnon-osa</span>
+        </h1>
+        <pikamenu ng-if="tutkinnonOsaViite.$resolved">
+          <!-- <span ng-if="editEnabled" edit-in-place="editableTutkinnonOsa.nimi"></span> -->
+          <span ng-if="!editEnabled">
+            {{tutkinnonOsaViite.tutkinnonOsa.nimi| kaanna:true}}
+            <span class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id] && rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id].laajuus">
+              {{rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id].laajuus}} {{ yksikko | kaanna }}
+            </span>
           </span>
-        </span>
-      </pikamenu>
+        </pikamenu>
+      </div>
 
       <versiotiedot ng-hide="editEnabled"></versiotiedot>
 

@@ -44,13 +44,7 @@ European Union Public Licence for more details.
       <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
     </div>
 
-    <div id="tekstikappale-crumbs" ng-if="!editEnabled">
-      <ol class="breadcrumb" ng-if="crumbs">
-        <li ng-repeat="crumb in crumbs">
-          <a ui-sref="root.perusteprojekti.suoritustapa.tekstikappale({ perusteenOsaViiteId: crumb.id})">{{crumb.name | kaanna}}</a>
-        </li>
-      </ol>
-    </div>
+    <projektin-murupolku></projektin-murupolku>
 
     <h1 ng-if="editEnabled">
       <span ng-show="isNew" kaanna>luonti-tekstikappale</span>

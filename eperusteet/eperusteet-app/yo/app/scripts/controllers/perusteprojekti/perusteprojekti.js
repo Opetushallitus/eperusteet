@@ -209,7 +209,7 @@ angular.module('eperusteApp')
       });
   })
   .controller('PerusteprojektiCtrl', function($scope, $state, $stateParams,
-    Navigaatiopolku, koulutusalaService, opintoalaService,
+    koulutusalaService, opintoalaService, Navigaatiopolku,
     PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation,
     SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet, TermistoService) {
 
@@ -266,12 +266,7 @@ angular.module('eperusteApp')
       $scope.sivunavi.suoritustapa = $scope.sivunavi.type === 'AM' ? newSuoritustapa : '';
     });
 
-    Navigaatiopolku.asetaElementit({
-      perusteprojekti: {
-        nimi: $scope.projekti.nimi,
-        url: 'root.perusteprojekti.suoritustapa.sisalto'
-      }
-    });
+    Navigaatiopolku.setProject($scope.projekti, $scope.peruste);
 
     $scope.koulutusalaNimi = function(koodi) {
       return koulutusalaService.haeKoulutusalaNimi(koodi);

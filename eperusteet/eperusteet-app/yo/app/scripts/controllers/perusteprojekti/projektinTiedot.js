@@ -61,7 +61,7 @@ angular.module('eperusteApp')
     $scope.peruuta = function() { $modalInstance.dismiss(); };
   })
   .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams, $modal, $timeout, $translate,
-    PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, perusteprojektiTiedot, Notifikaatiot,
+    PerusteprojektiResource, PerusteProjektiService, perusteprojektiTiedot, Notifikaatiot,
     Perusteet, Editointikontrollit, Organisaatioryhmat) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
@@ -108,8 +108,6 @@ angular.module('eperusteApp')
 
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.projekti.laajuusYksikko = $scope.projekti.laajuusYksikko || 'OSAAMISPISTE';
-
-    Navigaatiopolku.asetaElementit({ perusteProjektiId: $scope.projekti.nimi });
 
     $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojekti/perustiedot.html'}];
     if (!$scope.pohja()) {
