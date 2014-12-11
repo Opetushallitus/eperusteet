@@ -122,7 +122,7 @@ angular.module('eperusteApp')
         successCb: function () {
           Editointikontrollit.cancelEditing();
           $scope.config.removeWholeFn();
-          $state.go.apply($state, $scope.config.backState);
+          $state.go($scope.config.backState[0], $scope.config.backState[1], { reload: true })
         }
       })();
     };
