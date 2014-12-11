@@ -158,6 +158,9 @@ angular.module('eperusteApp')
             cloner.clone($scope.editableModel);
           });
         } else {
+          if (!$scope.editableModel.koosteinen) {
+            $scope.editableModel.koosteinen = false;
+          }
           cloner.clone($scope.editableModel);
         }
       },

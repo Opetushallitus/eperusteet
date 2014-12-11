@@ -4,6 +4,35 @@
 <osallinen-osa model="model" editable-model="editableModel" config="data.options" versiot="versiot">
 
   <div ng-if="editEnabled">
+    <div class="oppiaine-header">
+      <table>
+        <tbody>
+          <tr ng-show="editableModel.oppiaine">
+            <th kaanna="oppiaine"></th>
+            <td>{{oppiaineMap[editableModel.oppiaine].nimi | kaanna}}</td>
+          </tr>
+          <tr ng-show="editableModel.koosteinen">
+            <th kaanna="oppiaine"></th>
+            <td>{{editableModel.nimi | kaanna}}</td>
+          </tr>
+          <tr ng-show="editableModel.oppiaine">
+            <th kaanna="oppimaara"></th>
+            <td>{{editableModel.nimi | kaanna}}</td>
+          </tr>
+          <tr ng-show="editableModel.koosteinen">
+            <th kaanna="oppimaarat"></th>
+            <td>
+              <ul>
+                <li ng-show="editableModel.$oppimaarat.length === 0" kaanna="ei-oppimaaria"></li>
+                <li ng-repeat="oppimaara in editableModel.$oppimaarat | orderBy:nameSort">{{oppimaara.nimi | kaanna}}</li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <hr ng-show="editableModel.koosteinen || editableModel.oppiaine">
+
     <div class="non-collapsibles">
       <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header'|kaanna}}*</label>
       <input id="nimi-input" class="form-control" ng-model="editableModel.nimi" localized required>
