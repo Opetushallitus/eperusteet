@@ -230,7 +230,7 @@ angular.module('eperusteApp')
 
     $scope.edit = function () {
       OsanMuokkausHelper.setup($scope.model);
-      $state.go('root.perusteprojekti.muokkaus', $stateParams);
+      $state.go('root.perusteprojekti.suoritustapa.muokkaus', $stateParams);
     };
   })
 

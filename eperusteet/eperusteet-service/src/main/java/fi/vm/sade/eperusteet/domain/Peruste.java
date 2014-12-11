@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
@@ -128,6 +129,10 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     private PerusopetuksenPerusteenSisalto perusopetuksenPerusteenSisalto;
 
     @Getter
+    @OneToOne(mappedBy = "peruste", optional = true, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private EsiopetuksenPerusteenSisalto esiopetuksenPerusteenSisalto;
+
+    @Getter
     @Enumerated(EnumType.STRING)
     @NotNull
     private PerusteTila tila = PerusteTila.LUONNOS;
@@ -168,9 +173,33 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
         return new EntityReference(id);
     }
 
+    /*
+    Palauttaa suoritustavan mukaisen sisällön.
+    */
+    public PerusteenOsaViite getSisalto(Suoritustapakoodi suoritustapakoodi) {
+        PerusteenOsaViite viite = null;
+        if (suoritustapakoodi.equals(Suoritustapakoodi.OPS) || suoritustapakoodi.equals(Suoritustapakoodi.NAYTTO)) {
+            for(Suoritustapa suoritustapa : this.getSuoritustavat()) {
+                if (suoritustapa.getSuoritustapakoodi().equals(suoritustapakoodi)) {
+                    viite = suoritustapa.getSisalto();
+                }
+            }
+        } else if (suoritustapakoodi.equals(Suoritustapakoodi.ESIOPETUS)) {
+            viite = this.getEsiopetuksenPerusteenSisalto().getSisalto();
+        } else if (suoritustapakoodi.equals(Suoritustapakoodi.PERUSOPETUS)) {
+            viite = this.getPerusopetuksenPerusteenSisalto().getSisalto();
+        }
+        return viite;
+    }
+
     public void setPerusopetuksenPerusteenSisalto(PerusopetuksenPerusteenSisalto perusopetuksenPerusteenSisalto) {
         this.perusopetuksenPerusteenSisalto = perusopetuksenPerusteenSisalto;
         this.perusopetuksenPerusteenSisalto.setPeruste(this);
+    }
+
+    public void setEsiopetuksenPerusteenSisalto(EsiopetuksenPerusteenSisalto esiopetuksenPerusteenSisalto) {
+        this.esiopetuksenPerusteenSisalto = esiopetuksenPerusteenSisalto;
+        this.esiopetuksenPerusteenSisalto.setPeruste(this);
     }
 
     public boolean containsViite(PerusteenOsaViite viite) {
@@ -184,6 +213,10 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
 
         if (perusopetuksenPerusteenSisalto != null) {
             return perusopetuksenPerusteenSisalto.containsViite(viite);
+        }
+
+        if (esiopetuksenPerusteenSisalto != null) {
+            return esiopetuksenPerusteenSisalto.containsViite(viite);
         }
 
         return false;

@@ -37,24 +37,7 @@ angular.module('eperusteApp')
         },
         abstract: true
       })
-      .state('root.perusteprojekti.perusopetus', {
-        url: '/perusopetus',
-        templateUrl: 'views/partials/perusteprojekti/perusopetus.html',
-        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
-          'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
-            return perusteprojektiTiedot.projektinTiedotAlustettu();
-          }],
-          'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
-            function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
-              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
-            }]
-        },
-        controller: 'PerusopetusSisaltoController',
-        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-          PerusteProjektiSivunavi.setVisible(false);
-        }]
-      })
-      .state('root.perusteprojekti.osalistaus', {
+      .state('root.perusteprojekti.suoritustapa.osalistaus', {
         url: '/osat/:osanTyyppi',
         templateUrl: 'views/partials/perusteprojekti/osalistaus.html',
         resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
@@ -71,7 +54,7 @@ angular.module('eperusteApp')
           PerusteProjektiSivunavi.setVisible();
         }]
       })
-      .state('root.perusteprojekti.osaalue', {
+      .state('root.perusteprojekti.suoritustapa.osaalue', {
         url: '/osat/:osanTyyppi/:osanId/:tabId',
         templateUrl: 'views/partials/perusteprojekti/osaalue.html',
         resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
@@ -88,7 +71,7 @@ angular.module('eperusteApp')
           PerusteProjektiSivunavi.setVisible();
         }]
       })
-      .state('root.perusteprojekti.muokkaus', {
+      .state('root.perusteprojekti.suoritustapa.muokkaus', {
         url: '/muokkaus/:osanTyyppi/:osanId',
         templateUrl: 'views/muokkaus.html',
         controller: 'OsanMuokkausController',
@@ -155,6 +138,22 @@ angular.module('eperusteApp')
         url: '/sisalto',
         templateUrl: 'views/partials/perusteprojekti/sisalto.html',
         controller: 'PerusteprojektisisaltoCtrl',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(false);
+        }]
+      })
+      .state('root.perusteprojekti.suoritustapa.posisalto', {
+        url: '/posisalto',
+        templateUrl: 'views/partials/perusteprojekti/perusopetus.html',
+        controller: 'PerusopetusSisaltoController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(false);
+        }]
+      })
+      .state('root.perusteprojekti.suoritustapa.eosisalto', {
+        url: '/eosisalto',
+        templateUrl: 'views/partials/perusteprojekti/esiopetus.html',
+        controller: 'EsiopetusSisaltoController',
         onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
           PerusteProjektiSivunavi.setVisible(false);
         }]
@@ -284,7 +283,8 @@ angular.module('eperusteApp')
 
     $scope.showBackLink = function () {
       return !($state.is('root.perusteprojekti.suoritustapa.sisalto') ||
-               $state.is('root.perusteprojekti.perusopetus'));
+               $state.is('root.perusteprojekti.suoritustapa.posisalto') ||
+               $state.is('root.perusteprojekti.suoritustapa.eosisalto'));
     };
 
     $scope.getBackLink = function () {

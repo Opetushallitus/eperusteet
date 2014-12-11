@@ -35,7 +35,7 @@ angular.module('eperusteApp')
     };
   })
   .controller('TavoitteetController', function ($scope, PerusopetusService, $state, $rootScope,
-      CloneHelper, OsanMuokkausHelper) {
+      CloneHelper, OsanMuokkausHelper, $stateParams) {
     $scope.osaamiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true);
     $scope.vuosiluokka = OsanMuokkausHelper.getVuosiluokkakokonaisuus() || $scope.providedVuosiluokka;
     $scope.editMode = false;
@@ -80,7 +80,8 @@ angular.module('eperusteApp')
           });
           osaaminen.teksti = vuosiluokkakuvaus ? vuosiluokkakuvaus.kuvaus : 'ei-kuvausta';
           osaaminen.extra = '<div class="clearfix"><a class="pull-right" href="' +
-            $state.href('root.perusteprojekti.osaalue', {
+            $state.href('root.perusteprojekti.suoritustapa.osaalue', {
+              suoritustapa: $stateParams.suoritustapa,
               osanTyyppi: PerusopetusService.VUOSILUOKAT,
               osanId: $scope.vuosiluokka.id,
               tabId: 0
