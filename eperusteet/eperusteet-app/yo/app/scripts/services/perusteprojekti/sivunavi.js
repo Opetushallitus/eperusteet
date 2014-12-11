@@ -136,7 +136,8 @@ angular.module('eperusteApp')
         });
         mapYL(tiedot[key], key);
       });
-    } else {
+    }
+    else if (perusteenTyyppi === 'AM'){
       items = _.clone(AM_ITEMS);
     }
     processNode(data.projekti.peruste.sisalto);
@@ -149,7 +150,7 @@ angular.module('eperusteApp')
     data.projekti = service.getProjekti();
     data.projekti.peruste = service.getPeruste();
     data.projekti.peruste.sisalto = service.getSisalto();
-    perusteenTyyppi = YleinenData.isPerusopetus(data.projekti.peruste) ? 'YL' : 'AM';
+    perusteenTyyppi = YleinenData.isPerusopetus(data.projekti.peruste) ? 'YL' : YleinenData.isEsiopetus(data.projekti.peruste) ? 'ESI' : 'AM';
     callbacks.typeChanged(perusteenTyyppi);
     buildTree();
   };
