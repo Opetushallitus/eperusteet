@@ -50,7 +50,7 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
         TiedoteDto tiedote2 = tiedotteet.get(1);
 
         // Tarkista että lista on järjestetty luotu-päivämäärän mukaan, uusin ensin
-        Assert.assertTrue(tiedote1.getLuotu().after(tiedote2.getLuotu()));
+        Assert.assertTrue(tiedote1.getLuotu().compareTo(tiedote2.getLuotu()) >= 0);
     }
 
     @Test
