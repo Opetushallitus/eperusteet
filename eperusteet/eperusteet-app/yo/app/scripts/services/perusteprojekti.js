@@ -281,13 +281,17 @@ angular.module('eperusteApp')
       return projektinTiedotDeferred.promise;
     };
 
-    this.alustaPerusteenSisalto = function (stateParams, forced) {
+    var asetaSuoritustapa = function(stateParams) {
       if (angular.isUndefined(stateParams.suoritustapa) || stateParams.suoritustapa === null || stateParams.suoritustapa === '') {
         stateParams.suoritustapa = YleinenData.valitseSuoritustapaKoulutustyypille(peruste.koulutustyyppi);
-        if (!YleinenData.isPerusopetus(peruste)) {
+        if (!YleinenData.isPerusopetus(peruste) || !YleinenData.isEsiopetus(peruste)) {
           $state.reload();
         }
       }
+    };
+
+    this.alustaPerusteenSisalto = function (stateParams, forced) {
+      asetaSuoritustapa(stateParams);
       PerusteProjektiService.setSuoritustapa(stateParams.suoritustapa);
       var perusteenSisaltoDeferred = $q.defer();
 

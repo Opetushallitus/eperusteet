@@ -35,7 +35,7 @@ angular.module('eperusteApp')
     };
   })
   .controller('TavoitteetController', function ($scope, PerusopetusService, $state, $rootScope,
-      CloneHelper, OsanMuokkausHelper) {
+      CloneHelper, OsanMuokkausHelper, $stateParams) {
     $scope.osaamiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true);
     $scope.vuosiluokka = OsanMuokkausHelper.getVuosiluokkakokonaisuus() || $scope.providedVuosiluokka;
     $scope.editMode = false;
