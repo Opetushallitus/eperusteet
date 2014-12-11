@@ -283,7 +283,8 @@ angular.module('eperusteApp')
 
     $scope.showBackLink = function () {
       return !($state.is('root.perusteprojekti.suoritustapa.sisalto') ||
-               $state.is('root.perusteprojekti.suoritustapa.posisalto'));
+               $state.is('root.perusteprojekti.suoritustapa.posisalto') ||
+               $state.is('root.perusteprojekti.suoritustapa.eosisalto'));
     };
 
     $scope.getBackLink = function () {

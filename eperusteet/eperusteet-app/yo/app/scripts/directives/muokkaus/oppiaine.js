@@ -53,7 +53,7 @@ angular.module('eperusteApp')
 
     this.getBackState = function () {
       return instance ? ['root.perusteprojekti.suoritustapa.osaalue', params] :
-      ['root.perusteprojekti.osalistaus', {suoritustapa: 'perusopetus', osanTyyppi: PerusopetusService.OPPIAINEET}];
+      ['root.perusteprojekti.suoritustapa.osalistaus', {suoritustapa: 'perusopetus', osanTyyppi: PerusopetusService.OPPIAINEET}];
     };
 
     this.presave = function (model) {

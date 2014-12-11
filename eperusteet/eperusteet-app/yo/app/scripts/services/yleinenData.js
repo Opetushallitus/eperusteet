@@ -67,6 +67,7 @@ angular.module('eperusteApp')
       'koulutustyyppi_1',
       'koulutustyyppi_11',
       'koulutustyyppi_12',
+      'koulutustyyppi_15',
       'koulutustyyppi_16'
     ];
 
@@ -82,6 +83,7 @@ angular.module('eperusteApp')
       'koulutustyyppi_1': 'ops',
       'koulutustyyppi_11': 'naytto',
       'koulutustyyppi_12': 'naytto',
+      'koulutustyyppi_15': 'esiopetus',
       'koulutustyyppi_16': 'perusopetus',
 
     };
