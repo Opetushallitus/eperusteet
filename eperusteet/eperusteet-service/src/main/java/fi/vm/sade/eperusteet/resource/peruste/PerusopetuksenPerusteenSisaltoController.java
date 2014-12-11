@@ -220,6 +220,14 @@ public class PerusopetuksenPerusteenSisaltoController {
         return kokonaisuusService.updateVuosiluokkaKokonaisuus(perusteId, dto);
     }
 
+    @RequestMapping(value = "/vuosiluokkakokonaisuudet/{id}", method = DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteVuosiluokkaKokonaisuus(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long id) {
+        kokonaisuusService.deleteVuosiluokkaKokonaisuus(perusteId, id);
+    }
+
     @RequestMapping(value = "/laajaalaisetosaamiset", method = GET)
     public List<LaajaalainenOsaaminenDto> getOsaamiset(
         @PathVariable("perusteId") final Long perusteId) {
