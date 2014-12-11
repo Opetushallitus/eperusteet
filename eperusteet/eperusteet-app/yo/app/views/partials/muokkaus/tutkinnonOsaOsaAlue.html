@@ -7,14 +7,6 @@
   <label class="header">{{'nimi'| kaanna}}*</label>
   <ml-input ml-data="osaAlue.nimi" type="text"></ml-input>
 
-  <div class="osa-alue-tabs">
-    <ul class="nav nav-tabs nav-justified ">
-      <li ng-class="{ active: selectedTab.id === tab.id }" ng-repeat="tab in tabs| orderBy:'id'"
-          ng-click="changeTab(tab)">
-        <a class="action-link suoritustapa">{{ tab.nimi | kaanna }}</a>
-      </li>
-    </ul>
-  </div>
   <hr class="mujuviiva">
 
 <accordion close-others="true">
