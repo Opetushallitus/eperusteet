@@ -28,6 +28,13 @@ angular.module('eperusteApp')
         'revertCb': '&',
         'changeVersion': '&'
       },
+      link: function (scope, element) {
+        var anchorPos = angular.element('#projekti-sisalto-anchor');
+        element.detach().appendTo(anchorPos);
+        scope.$on('$destroy', function () {
+          anchorPos.empty();
+        });
+      },
       controller: function ($scope, $state, Varmistusdialogi, Lukitus, VersionHelper, $translate) {
         $scope.version = {
           revert: function () {

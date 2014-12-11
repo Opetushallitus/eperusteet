@@ -123,7 +123,8 @@ angular.module('eperusteApp')
     Varmistusdialogi, Kaanna, PerusteprojektiTiedotService, $stateParams,
     Utils, PerusteProjektiSivunavi, YleinenData, $rootScope, Kommentit,
     KommentitByPerusteenOsa, PerusteenOsanTyoryhmat, Tyoryhmat, PerusteprojektiTyoryhmat,
-    TEXT_HIERARCHY_MAX_DEPTH, TekstikappaleOperations, virheService, Navigaatiopolku) {
+    TEXT_HIERARCHY_MAX_DEPTH, TekstikappaleOperations, virheService, Navigaatiopolku, ProjektinMurupolkuService,
+    $state) {
 
     $scope.tekstikappale = {};
     $scope.versiot = {};
@@ -217,7 +218,7 @@ angular.module('eperusteApp')
 
     $scope.setNavigation = function () {
       $scope.tree.init();
-      PerusteProjektiSivunavi.setCrumb($scope.tree.get());
+      ProjektinMurupolkuService.setCustom($scope.tree.get());
       VersionHelper.setUrl($scope.versiot);
     };
 
@@ -238,6 +239,7 @@ angular.module('eperusteApp')
           }
           $scope.viitteet[lapsi.perusteenOsa.id].viite = lapsi.id;
           $scope.viitteet[lapsi.perusteenOsa.id].level = level;
+          $scope.viitteet[lapsi.perusteenOsa.id].nimi = lapsi.perusteenOsa.nimi;
           if (sisalto.perusteenOsa) {
             $scope.viitteet[lapsi.perusteenOsa.id].parent = sisalto.perusteenOsa.id;
           }
@@ -256,15 +258,22 @@ angular.module('eperusteApp')
         updateViitteet();
       },
       get: function () {
-        var ids = [];
+        var items = [];
         var id = $scope.tekstikappale.id;
         if ($scope.viitteet[id]) {
           do {
-            ids.push($scope.viitteet[id].viite);
+            items.push({
+              label : $scope.viitteet[id].nimi,
+              url: $scope.tekstikappale.id === id ? null : $state.href('root.perusteprojekti.suoritustapa.tekstikappale', {
+                perusteenOsaViiteId: $scope.viitteet[id].viite,
+                versio: ''
+              })
+            });
             id = $scope.viitteet[id] ? $scope.viitteet[id].parent : null;
           } while (id);
         }
-        return ids;
+        items.reverse();
+        return items.length > 1 ? items : [];
       }
     };
 
@@ -387,10 +396,6 @@ angular.module('eperusteApp')
 
     $scope.addLapsi = function () {
       TekstikappaleOperations.addChild($scope.viiteId(), $stateParams.suoritustapa);
-    };
-
-    $scope.setCrumbs = function (crumbs) {
-      $scope.crumbs = crumbs;
     };
 
     $scope.$watch('editEnabled', function (editEnabled) {
