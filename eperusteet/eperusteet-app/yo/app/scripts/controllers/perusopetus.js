@@ -47,7 +47,7 @@ angular.module('eperusteApp')
         Algoritmit.kaikilleLapsisolmuille(area, 'lapset', function (lapsi) {
           lapsi.$url = $state.href('root.perusteprojekti.osaalue', {osanTyyppi: area.tyyppi, osanId: lapsi.id, tabId: 0});
           if (lapsi.koosteinen) {
-            lapsi.lapset = lapsi.oppimaarat;
+            lapsi.lapset = _.sortBy(lapsi.oppimaarat, Utils.nameSort);
           }
         });
       });

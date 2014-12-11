@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
 .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q,
-    $state, $location, YleinenData, PerusopetusService, Kaanna, $timeout) {
+    $state, $location, YleinenData, PerusopetusService, Kaanna, $timeout, Utils) {
   var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
   var STATE_TUTKINNON_OSA = 'root.perusteprojekti.suoritustapa.tutkinnonosa';
   var STATE_TEKSTIKAPPALE = 'root.perusteprojekti.suoritustapa.tekstikappale';
@@ -114,15 +114,13 @@ angular.module('eperusteApp')
       link: [STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id, tabId: 0}],
       isActive: isYlRouteActive
     });
-    _.each(osa.oppimaarat, function (lapsi) {
+    _(osa.oppimaarat).sortBy(Utils.nameSort).each(function (lapsi) {
       ylMapper(lapsi, key, level + 1);
     });
   }
 
   function mapYL(osat, key) {
-    _(osat).sortBy(function (osa) {
-      return Kaanna.kaanna(osa.nimi);
-    }).each(function (osa) {
+    _(osat).sortBy(Utils.nameSort).each(function (osa) {
       ylMapper(osa, key, 1);
     });
   }
