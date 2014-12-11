@@ -222,7 +222,6 @@ angular.module('eperusteApp')
 
 // TODO vaihda sisällönhaku käyttämään geneeristä sisältöhaku rajapintaa
     this.haeSisalto = function(perusteId, suoritustapa) {
-      console.log('sisältö haku');
       var deferred = $q.defer();
       var ylDefer = $q.defer();
       if (!YleinenData.isPerusopetus(peruste) && !YleinenData.isEsiopetus(peruste)) {
@@ -234,7 +233,6 @@ angular.module('eperusteApp')
         });
         ylDefer.resolve();
       } else if ( YleinenData.isEsiopetus(peruste)){
-        console.log('esiopetus sisältö haku');
         SuoritustapaSisaltoUUSI.get({perusteId: perusteId, suoritustapa: suoritustapa}, function(vastaus) {
           deferred.resolve(vastaus);
           sisalto = vastaus;
