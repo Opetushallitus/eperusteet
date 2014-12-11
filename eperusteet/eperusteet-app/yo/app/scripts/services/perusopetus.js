@@ -112,6 +112,7 @@ angular.module('eperusteApp')
       var successCb = success || angular.noop;
       switch (config.osanTyyppi) {
         case this.OPPIAINEET:
+          console.log("saveOsa called")
           Oppiaineet.save(commonParams(), data, successCb, errorCb);
           break;
         case this.OSAAMINEN:

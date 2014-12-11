@@ -108,6 +108,14 @@ public class PerusopetuksenPerusteenSisaltoController {
         return oppiaineService.updateOppiaine(perusteId, dto);
     }
 
+    @RequestMapping(value = "/oppiaineet/{id}", method = DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOppiaine(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long id) {
+        oppiaineService.deleteOppiaine(perusteId, id);
+    }
+
     @RequestMapping(value = "/oppiaineet/{id}/kohdealueet", method = GET)
     public Set<OpetuksenKohdealueDto> getKohdealueet(
         @PathVariable("perusteId") final Long perusteId,
