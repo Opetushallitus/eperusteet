@@ -122,7 +122,7 @@ angular.module('eperusteApp')
           '</div>';
 
         var avaaKaikki = '<div class="pull-right">' +
-                         '  <a ng-show="muokkaus && rakenne.$virheetMaara > 0" style="margin-right: 10px;" href="" ng-click="piilotaVirheet()" class="group-toggler">' +
+                         '  <a ng-show="muokkaus && rakenne.$virheetMaara > 0" style="margin-right: 10px;" ng-click="piilotaVirheet()" class="group-toggler action-link">' +
                          '    <span ng-hide="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "piilota-virheet" | kaanna }}</span>' +
                          '    <span ng-show="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "nayta-virheet" | kaanna }}</span>' +
                          '  </a>' +
@@ -130,7 +130,7 @@ angular.module('eperusteApp')
                          '    <span icon-role="book">{{kuvauksetOpen && "piilota-kuvaukset" || "nayta-kuvaukset" | kaanna }}</span>' +
                          '    ' +
                          '  </a>' +
-                         '  <a href="" ng-click="togglaaPolut()" class="group-toggler">' +
+                         '  <a ng-click="togglaaPolut()" class="group-toggler action-link">' +
                          '    <span class="avaa-sulje" icon-role="ep-open-close">{{ "avaa-sulje-kaikki" | kaanna }}</span>' +
                          '  </a>' +
                          '</div>';
@@ -150,8 +150,8 @@ angular.module('eperusteApp')
           '      </span>' +
           '      {{ apumuuttujat.laajuusYksikko | kaanna }}' +
           '    </span></span>' +
-          '    <a href="" ng-show="muokkaus" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)" kaanna>muokkaa-muodostumissääntöjä</button>' +
-          '    <a ng-if="zoomaus" icon-role="back" class="back" href=""></a>' +
+          '    <a class="action-link" ng-show="muokkaus" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)" kaanna>muokkaa-muodostumissääntöjä</button>' +
+          '    <a ng-if="zoomaus" icon-role="back" class="back action-link"></a>' +
           avaaKaikki +
           '  </div>' +
           '  <div><div class="tree-yliviiva"></div></div>' +

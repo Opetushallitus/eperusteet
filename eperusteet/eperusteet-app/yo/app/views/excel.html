@@ -62,7 +62,7 @@
   <div ng-show="warnings.length > 0">
     <div class="alert alert-warning">
       Tiedostossa oli huomion arvoisia ongelmia, mutta voit halutessasi yrittää jatkaa.
-      <a href="" ng-click="naytaVirheet = !naytaVirheet">
+      <a ng-click="naytaVirheet = !naytaVirheet" class="action-link">
         <h3>Varoitukset
           <span ng-show="!naytaVirheet" class="glyphicon glyphicon-chevron-down"></span>
           <span ng-show="naytaVirheet" class="glyphicon glyphicon-chevron-up"></span>
@@ -137,7 +137,7 @@
   <div ng-show="peruste.$perusteTallennettu">
     <div class="alert alert-success">
       {{ 'perusteprojekti' | kaanna }}
-      <a href="" ui-sref="root.perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: haettuProjekti.id, suoritustapa: haettuPeruste.suoritustavat[0].suoritustapakoodi })">
+      <a ui-sref="root.perusteprojekti.suoritustapa.sisalto({ perusteProjektiId: haettuProjekti.id, suoritustapa: haettuPeruste.suoritustavat[0].suoritustapakoodi })">
         <b>{{ haettuProjekti.nimi | kaanna }}</b>
       </a>
       {{ 'tallennettiin-onnistuneesti' | kaanna }}

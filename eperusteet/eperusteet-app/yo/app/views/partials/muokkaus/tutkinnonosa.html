@@ -27,7 +27,7 @@
                 <ul class="pull-right dropdown-menu">
                   <li ng-repeat="field in menuItems| orderBy:'order'">
                     <a ng-show="field.visible" class="disabled-link">{{'muokkaus-' + field.localeKey + '-header'| kaanna}}</a>
-                    <a href="" ng-show="!field.visible" ng-click="addFieldToVisible(field)">{{'muokkaus-' + field.localeKey + '-header'| kaanna}}</a>
+                    <a class="action-link" ng-show="!field.visible" ng-click="addFieldToVisible(field)">{{'muokkaus-' + field.localeKey + '-header'| kaanna}}</a>
                   </li>
                 </ul>
               </div>

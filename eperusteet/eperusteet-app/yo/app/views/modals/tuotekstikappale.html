@@ -14,7 +14,7 @@
       </tr>
       <tr ng-repeat="peruste in perusteet">
         <td>
-          <a ng-click="valitse(peruste)" href="">{{ peruste.nimi | kaanna }}</a>
+          <a ng-click="valitse(peruste)" class="action-link">{{ peruste.nimi | kaanna }}</a>
         </td>
         <td>
           <span ng-show="peruste.voimassaoloLoppuu">{{ peruste.voimassaoloLoppuu | aikaleima }}</span>

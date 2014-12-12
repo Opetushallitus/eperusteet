@@ -58,7 +58,7 @@ European Union Public Licence for more details.
       <versiotiedot ng-hide="editEnabled"></versiotiedot>
       <div class="tyoryhma-rivi">
         <span class="tyoryhma" ng-repeat="tr in tyoryhmat">
-          <a ng-click="poistaTyoryhma(tr)" href="" icon-role="remove" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></a>
+          <a ng-click="poistaTyoryhma(tr)" class="action-link" icon-role="remove" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></a>
           {{ tr }}
         </span>
         <button ng-disabled="kaikkiTyoryhmat.length === 0 || kaikkiTyoryhmat.length === tyoryhmat.length"
