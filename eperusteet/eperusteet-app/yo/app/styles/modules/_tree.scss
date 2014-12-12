@@ -361,6 +361,8 @@ $sp-badge-size: 16px;
     padding-bottom: 16px;
 }
 
+$kuvausnappisize: 18px;
+
 .tree {
   min-height: 20px;
   padding: 0;
@@ -416,7 +418,7 @@ $sp-badge-size: 16px;
       border-top: 1px solid $reunus-vari;
       background-color: #f4f4f4;
       text-align: center;
-      height: 10px;
+      height: $kuvausnappisize;
       position: relative;
       cursor: pointer;
 
@@ -430,12 +432,14 @@ $sp-badge-size: 16px;
       border-top: 0;
     }
     .avausnappi-painike {
-      height: 10px;
+      font-size: $kuvausnappisize*1.1;
+      line-height: $kuvausnappisize*1.2;
+      height: $kuvausnappisize;
       width: $tree-group-width;
       content: "";
       cursor: pointer;
       top: -8px;
-      color: #888;
+      color: #777;
       font-weight: bold;
       position: absolute;
     }
