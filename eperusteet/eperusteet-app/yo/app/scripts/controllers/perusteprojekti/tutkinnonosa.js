@@ -250,6 +250,7 @@ angular.module('eperusteApp')
 
     function saveCb(res) {
       Lukitus.vapautaPerusteenosa(res.id);
+      ProjektinMurupolkuService.set('tutkinnonOsaViiteId', $scope.tutkinnonOsaViite.id, $scope.tutkinnonOsaViite.tutkinnonOsa.nimi);
       Notifikaatiot.onnistui('muokkaus-tutkinnon-osa-tallennettu');
       $scope.haeVersiot(true, function () {
         VersionHelper.setUrl($scope.versiot);
