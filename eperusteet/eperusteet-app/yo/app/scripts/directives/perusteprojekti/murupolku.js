@@ -23,7 +23,7 @@ angular.module('eperusteApp')
     var namecache = {};
     var URLS = {
       tutkinnonosat: ['suoritustapa.tutkinnonosat'],
-      osalistaus: ['osalistaus']
+      osalistaus: ['suoritustapa.osalistaus']
     };
     var custom = [];
 
@@ -42,7 +42,7 @@ angular.module('eperusteApp')
       'suoritustapa.tekstikappale': {
         items: ['custom']
       },
-      'osaalue': {
+      'suoritustapa.osaalue': {
         items: [{url: 'osalistaus', label: {getName: 'osanTyyppi'}}, 'custom', {getName: 'osanId'}]
       }
     };

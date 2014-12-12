@@ -225,7 +225,7 @@ angular.module('eperusteApp')
       if ($scope.editableModel.oppiaine && $scope.oppiaineMap) {
         var oppiaine = $scope.oppiaineMap[$scope.editableModel.oppiaine];
         oppiaineLink =  [{
-          url: $state.href('root.perusteprojekti.osaalue', {
+          url: $state.href('root.perusteprojekti.suoritustapa.osaalue', {
             osanTyyppi: PerusopetusService.OPPIAINEET,
             osanId: oppiaine.id,
             tabId: 0
