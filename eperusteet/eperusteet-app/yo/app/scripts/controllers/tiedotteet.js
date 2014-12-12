@@ -56,11 +56,17 @@ angular.module('eperusteApp')
     };
 
     function doDelete(item) {
-      TiedotteetCRUD.delete({}, item, fetch, Notifikaatiot.serverCb);
+      TiedotteetCRUD.delete({}, item, function () {
+        Notifikaatiot.onnistui('poisto-onnistui');
+        fetch();
+      }, Notifikaatiot.serverCb);
     }
 
     function doSave(item) {
-      TiedotteetCRUD.save({}, item, fetch, Notifikaatiot.serverCb);
+      TiedotteetCRUD.save({}, item, function () {
+        Notifikaatiot.onnistui('tallennus-onnistui');
+        fetch();
+      }, Notifikaatiot.serverCb);
     }
 
     $scope.delete = function (model) {
