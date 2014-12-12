@@ -4,7 +4,7 @@
   <h2 kaanna>lisaa-tutkintonimike</h2>
 </div>
 <div class="modal-body">
-  <h3 class="header"><span kaanna="osaamisala"></span>*</h3>
+  <h3 class="header"><span kaanna="osaamisala"></span></h3>
   <div>
     <koodisto-select valmis="valmisCb" tyyppi="osaamisala"></koodisto-select>
     <span ng-if="koodit.osaamisala">
@@ -27,6 +27,6 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button class="btn btn-primary" ng-disabled="!koodit.tutkintonimikkeet || !koodit.osaamisala" ng-click="ok(koodit)" kaanna>lisaa</button>
+  <button class="btn btn-primary" ng-disabled="!koodit.tutkintonimikkeet" ng-click="ok(koodit)" kaanna>lisaa</button>
   <button class="btn btn-default" ng-click="peru()" kaanna>sulje</button>
 </div>

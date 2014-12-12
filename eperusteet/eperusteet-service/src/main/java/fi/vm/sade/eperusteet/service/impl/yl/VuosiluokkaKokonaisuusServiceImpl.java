@@ -64,6 +64,7 @@ public class VuosiluokkaKokonaisuusServiceImpl implements Vuosiluokkakokonaisuus
     @Transactional
     public VuosiluokkaKokonaisuusDto addVuosiluokkaKokonaisuus(Long perusteId, VuosiluokkaKokonaisuusDto dto) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        //TODO -- salli siirtymän "kytkeminen" toisesta jo tallennetusta vuosiluokkakokonaisuudesta
         VuosiluokkaKokonaisuus vk = mapper.map(dto, VuosiluokkaKokonaisuus.class);
         sisaltoRepository.lock(sisalto);
         vk = kokonaisuusRepository.save(vk);

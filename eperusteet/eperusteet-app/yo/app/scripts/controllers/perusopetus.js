@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state,
-      PerusopetusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot) {
+      PerusopetusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot, Utils, VlkUtils) {
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     TekstikappaleOperations.setPeruste($scope.peruste);
@@ -28,7 +28,7 @@ angular.module('eperusteApp')
     $scope.$watch('peruste.sisalto', function () {
       Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function (lapsi) {
         lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.tekstikappale', {
-          suoritustapa: 'ops',
+          suoritustapa: 'perusopetus',
           perusteenOsaViiteId: lapsi.id,
           versio: '' });
       });
@@ -42,11 +42,12 @@ angular.module('eperusteApp')
     $scope.$watch('datat.opetus.lapset', function () {
       _.each($scope.datat.opetus.lapset, function (area) {
         area.$type = 'ep-parts';
-        area.$url = $state.href('root.perusteprojekti.osalistaus', {osanTyyppi: area.tyyppi});
+        area.$url = $state.href('root.perusteprojekti.suoritustapa.osalistaus', {suoritustapa: $stateParams.suoritustapa, osanTyyppi: area.tyyppi});
+        area.$orderFn = area.tyyppi === PerusopetusService.VUOSILUOKAT ? VlkUtils.orderFn : Utils.nameSort;
         Algoritmit.kaikilleLapsisolmuille(area, 'lapset', function (lapsi) {
-          lapsi.$url = $state.href('root.perusteprojekti.osaalue', {osanTyyppi: area.tyyppi, osanId: lapsi.id, tabId: 0});
+          lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.osaalue', {suoritustapa: $stateParams.suoritustapa, osanTyyppi: area.tyyppi, osanId: lapsi.id, tabId: 0});
           if (lapsi.koosteinen) {
-            lapsi.lapset = lapsi.oppimaarat;
+            lapsi.lapset = _.sortBy(lapsi.oppimaarat, Utils.nameSort);
           }
         });
       });
@@ -158,7 +159,8 @@ angular.module('eperusteApp')
     };
 
     $scope.createUrl = function (value) {
-      return $state.href('root.perusteprojekti.osaalue', {
+      return $state.href('root.perusteprojekti.suoritustapa.osaalue', {
+        suoritustapa: $stateParams.suoritustapa,
         osanTyyppi: $stateParams.osanTyyppi,
         osanId: value.id,
         tabId: 0
@@ -166,7 +168,8 @@ angular.module('eperusteApp')
     };
 
     $scope.add = function () {
-      $state.go('root.perusteprojekti.osaalue', {
+      $state.go('root.perusteprojekti.suoritustapa.osaalue', {
+        suoritustapa: $stateParams.suoritustapa,
         osanTyyppi: $stateParams.osanTyyppi,
         osanId: 'uusi',
         tabId: 0

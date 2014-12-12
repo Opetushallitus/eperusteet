@@ -25,7 +25,7 @@
         <jsoup.version>1.8.1</jsoup.version>
         <ehcache.version>2.5.1</ehcache.version>
         <slf4j.version>1.7.7</slf4j.version>
-        <swagger.version>0.8.8</swagger.version>
+        <swagger.version>0.9.3</swagger.version>
         <schema.file>${project.basedir}/target/schema.ddl</schema.file>
     </properties>
 
@@ -167,6 +167,10 @@
                     <artifactId>commons-logging</artifactId>
                     <groupId>commons-logging</groupId>
                 </exclusion>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -188,6 +192,12 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -304,6 +314,20 @@
             <artifactId>swagger-springmvc</artifactId>
             <version>${swagger.version}</version>
         </dependency>
+        <!--swagger scala deps -->
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.11.4</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-xml</artifactId>
+            <version>2.11.0-M4</version>
+            <scope>runtime</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjtools</artifactId>
@@ -324,6 +348,17 @@
             <groupId>net.javaforge.docbook4j</groupId>
             <artifactId>docbook4j</artifactId>
             <version>1.0.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.4.01</version>
         </dependency>
     </dependencies>
     <build>

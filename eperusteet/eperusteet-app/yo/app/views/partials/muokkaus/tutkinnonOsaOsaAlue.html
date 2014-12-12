@@ -1,4 +1,4 @@
-<h1>Muokkaa osa-aluetta</h1>
+<h1 kaanna="'muokkaa-osa-aluetta'"></h1>
 <p kaanna="tahdella-pakolliset"></p>
 <hr class="versioraja">
 <div class="non-collapsibles">
@@ -7,14 +7,6 @@
   <label class="header">{{'nimi'| kaanna}}*</label>
   <ml-input ml-data="osaAlue.nimi" type="text"></ml-input>
 
-  <div class="osa-alue-tabs">
-    <ul class="nav nav-tabs nav-justified ">
-      <li ng-class="{ active: selectedTab.id === tab.id }" ng-repeat="tab in tabs| orderBy:'id'"
-          ng-click="changeTab(tab)">
-        <a class="action-link suoritustapa">{{ tab.nimi | kaanna }}</a>
-      </li>
-    </ul>
-  </div>
   <hr class="mujuviiva">
 
 <accordion close-others="true">
@@ -45,7 +37,7 @@
       <h4 kaanna>arviointi</h4>
       <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet" ei-kohdealueita="true"
                  edit-enabled="true" editointi-sallittu="true"></arviointi>
-      <label kaanna>tunnustaminen</label>
+      <label kaanna>tutkinnonosa-tunnustaminen</label>
       <div ng-model="tavoite.tunnustaminen" localized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tunnustaminen"></div>
     </div>
 
@@ -63,7 +55,7 @@
       <h4 kaanna>arviointi</h4>
       <arviointi arviointi="tavoite.lapsi.arviointi.arvioinninKohdealueet" ei-kohdealueita="true"
                  edit-enabled="true" editointi-sallittu="true"></arviointi>
-      <label kaanna>Tunnustaminen</label>
+      <label kaanna>tutkinnonosa-tunnustaminen</label>
       <div ng-model="tavoite.lapsi.tunnustaminen" localized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tunnustaminen"></div>
     </div>
       </div>

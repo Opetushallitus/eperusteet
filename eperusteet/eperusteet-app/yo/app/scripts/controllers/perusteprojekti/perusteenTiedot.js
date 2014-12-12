@@ -87,21 +87,22 @@ angular.module('eperusteApp')
       .result.then(function(uusi) {
         var obj = {
           peruste: $scope.peruste.id,
-          osaamisalaUri: uusi.osaamisala.koodiUri,
-          osaamisalaArvo: uusi.osaamisala.koodiArvo,
-          $osaamisalaNimi: uusi.osaamisala.nimi,
           tutkintonimikeUri: uusi.tutkintonimikkeet.koodiUri,
           tutkintonimikeArvo: uusi.tutkintonimikkeet.koodiArvo,
           $tutkintonimikeNimi: uusi.tutkintonimikkeet.nimi,
         };
+
+        if (uusi.osaamisala) {
+          obj.osaamisalaUri = uusi.osaamisala.koodiUri;
+          obj.osaamisalaArvo = uusi.osaamisala.koodiArvo;
+          obj.$osaamisalaNimi = uusi.osaamisala.nimi;
+        }
 
         if (uusi.tutkinnonosat) {
           obj.tutkinnonOsaUri = uusi.tutkinnonosat.koodiUri;
           obj.tutkinnonOsaArvo = uusi.tutkinnonosat.koodiArvo;
           obj.$tutkinnonOsaNimi = uusi.tutkinnonosat.nimi;
         }
-
-        obj.asd = true;
 
         $scope.koodisto.push(obj);
         PerusteTutkintonimikekoodit.save({ perusteId: $scope.peruste.id }, obj, function(res) {

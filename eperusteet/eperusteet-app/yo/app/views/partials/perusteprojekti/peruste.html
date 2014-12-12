@@ -100,7 +100,7 @@ European Union Public Licence for more details.
           </thead>
           <tbody>
             <tr ng-repeat="koodi in koodisto">
-              <td>{{ koodi.$osaamisalaNimi | kaanna }} ({{ koodi.osaamisalaArvo }})</td>
+              <td><span ng-show="koodi.osaamisalaArvo">{{ koodi.$osaamisalaNimi | kaanna }} ({{ koodi.osaamisalaArvo }})</span></td>
               <td>{{ koodi.$tutkintonimikeNimi | kaanna }} ({{ koodi.tutkintonimikeArvo }})</td>
               <td><span ng-show="koodi.tutkinnonOsaArvo">{{ koodi.$tutkinnonOsaNimi | kaanna }} ({{ koodi.tutkinnonOsaArvo }})</span></td>
               <td><button class="btn btn-xs btn-default" ng-click="poistaTutkintonimike(koodi)" kaanna="poista"></button></td>
@@ -111,7 +111,7 @@ European Union Public Licence for more details.
           <p kaanna="et-ole-lisannyt-viela-tutkintonimikkeita"></p>
         </div>
         <div ng-show="editEnabled">
-          <button ng-disabled="!koodisto.$resolved" class="btn btn-default" ng-click="lisaaNimike()" kaanna="lisaa-nimike"></button>
+          <button ng-disabled="!koodisto.$resolved" class="btn btn-default" ng-click="lisaaNimike()" icon-role="add" kaanna="lisaa-nimike"></button>
         </div>
       </div>
     </div>

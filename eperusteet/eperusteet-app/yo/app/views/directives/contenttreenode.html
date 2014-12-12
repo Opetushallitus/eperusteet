@@ -22,6 +22,6 @@
 </div>
 <div ng-show="sisalto.lapset.length === 0 || sisalto.$opened || (sisalto.$filtered && rajaus.length !== 0)">
   <div class="contenttree-group" ng-model="sisalto.lapset" ui-tree-nodes>
-    <div ng-repeat="sisalto in sisalto.lapset" ng-include="'views/directives/contenttreenode.html'" ui-tree-node></div>
+    <div ng-repeat="sisalto in sisalto.lapset | orderBy:sisalto.$orderFn" ng-include="'views/directives/contenttreenode.html'" ui-tree-node></div>
   </div>
 </div>

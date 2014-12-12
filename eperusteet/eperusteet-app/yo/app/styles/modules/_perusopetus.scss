@@ -72,6 +72,34 @@ ul.vuosiluokat {
   }
 }
 
+$osiot-box-height: 48px;
+.oppiaine-osiot-vlk {
+  margin-top: 40px;
+  padding: 0;
+  list-style-type: none;
+  font-size: 110%;
+  li {
+    display: inline-block;
+    background: white;
+    position: relative;
+    height: $osiot-box-height;
+    overflow: hidden;
+    border: 2px solid #aaa;
+    margin: 0 5px 5px 0;
+    min-width: 250px;
+    padding: 5px $osiot-box-height 5px 5px;
+  }
+  .closer {
+    position: absolute;
+    right: 0px;
+    top: -5px;
+    font-size: $osiot-box-height*0.5;
+    line-height: $osiot-box-height*0.9;
+    width: $osiot-box-height*0.6;
+    height: 100%;
+  }
+}
+
 $index-bubble-size: 24px;
 $tag-height: 28px;
 $tag-color: #FEE7A4;

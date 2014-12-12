@@ -147,7 +147,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     public void testFindByKoulutus() {
         PerusteQuery pquery = new PerusteQuery();
         pquery.setSiirtyma(true);
-        pquery.setKoodiArvo("koulutuskoodiArvo");
+        pquery.setKoulutuskoodi("koulutuskoodiArvo");
         Page<PerusteDto> perusteet = perusteService.findBy(new PageRequest(0, 10), pquery);
         assertEquals(1, perusteet.getTotalElements());
     }

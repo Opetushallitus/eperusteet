@@ -43,8 +43,12 @@ angular.module('eperusteApp')
         cloner.clone($scope.editableModel);
       },
       save: function () {
+        var isNew = !$scope.editableModel.id;
         PerusopetusService.saveOsa($scope.editableModel, $stateParams, function(tallennettu) {
           $scope.editableModel = tallennettu;
+          if (isNew) {
+            $state.go($state.current, _.extend(_.clone($stateParams), {osanId: tallennettu.id}), {reload: true});
+          }
         });
       },
       cancel: function () {
@@ -68,7 +72,7 @@ angular.module('eperusteApp')
         editTitle: 'muokkaa-osaaminen',
         newTitle: 'uusi-osaaminen',
         backLabel: 'laaja-alainen-osaaminen',
-        backState: ['root.perusteprojekti.osalistaus', {osanTyyppi: PerusopetusService.OSAAMINEN}],
+        backState: ['root.perusteprojekti.suoritustapa.osalistaus', {suoritustapa: $stateParams.suoritustapa ,osanTyyppi: PerusopetusService.OSAAMINEN}],
         removeWholeLabel: 'poista-osaamiskokonaisuus',
         removeWholeConfirmationText: 'poistetaanko-osaamiskokonaisuus',
         removeWholeFn: function () {

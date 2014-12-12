@@ -27,6 +27,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TekstiOsaDto {
+    private Optional<Long> id;
     private Optional<LokalisoituTekstiDto> otsikko;
     private Optional<LokalisoituTekstiDto> teksti;
 

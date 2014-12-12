@@ -32,7 +32,7 @@ angular.module('eperusteApp')
 
   .controller('VuosiluokkakokonaisuusController', function ($scope, PerusopetusService,
     Editointikontrollit, Kaanna, PerusteProjektiSivunavi, Vuosiluokkakokonaisuudet,
-    CloneHelper, Lukitus, $timeout, $state) {
+    CloneHelper, Lukitus, $timeout, $state, $stateParams) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.vuosiluokkaOptions = {};
@@ -82,7 +82,10 @@ angular.module('eperusteApp')
         } else {
           Vuosiluokkakokonaisuudet.save({
             perusteId: PerusopetusService.getPerusteId()
-          }, $scope.editableModel, successCb);
+          }, $scope.editableModel, function (res) {
+            successCb(res);
+            $state.go($state.current, _.extend(_.clone($stateParams), {osanId: res.id}), {reload: true});
+          });
         }
       },
       cancel: function () {
@@ -93,6 +96,7 @@ angular.module('eperusteApp')
           });
         } else {
           Lukitus.vapautaVuosiluokkakokonaisuus($scope.editableModel.id);
+          $state.go($state.current.name, {}, {reload: true});
         }
       },
       notify: function (mode) {
@@ -111,7 +115,7 @@ angular.module('eperusteApp')
         editTitle: 'muokkaa-vuosiluokkakokonaisuutta',
         newTitle: 'uusi-vuosiluokkakokonaisuus',
         backLabel: 'vuosiluokkakokonaisuudet',
-        backState: ['root.perusteprojekti.osalistaus', {osanTyyppi: PerusopetusService.VUOSILUOKAT}],
+        backState: ['root.perusteprojekti.suoritustapa.osalistaus', {suoritustapa: $stateParams.suoritustapa, osanTyyppi: PerusopetusService.VUOSILUOKAT}],
         removeWholeLabel: 'poista-vuosiluokkakokonaisuus',
         removeWholeConfirmationText: 'poistetaanko-vuosiluokkakokonaisuus',
         removeWholeFn: function () {
@@ -138,7 +142,8 @@ angular.module('eperusteApp')
              }*/
           }
         },
-        fieldRenderer: '<kenttalistaus edit-enabled="editEnabled" object-promise="modelPromise" fields="config.fields"></kenttalistaus>',
+        fieldRenderer: '<kenttalistaus edit-enabled="editEnabled" object-promise="modelPromise" ' +
+          'fields="config.fields" emptyplaceholder="vuosiluokat-ei-sisaltoa"></kenttalistaus>',
         fields: [
           {
             path: 'laajaalaisetOsaamiset',
@@ -220,10 +225,11 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('LaajaAlainenOsaaminenController', function ($scope, PerusopetusService, YleinenData) {
+  .controller('LaajaAlainenOsaaminenController', function ($scope, PerusopetusService, YleinenData, Utils) {
     $scope.oneAtATime = false;
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
     $scope.yleiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true);
+    $scope.orderFn = Utils.nameSort;
 
     function getModel(object, item) {
       var model = _.find(object, function (obj) {

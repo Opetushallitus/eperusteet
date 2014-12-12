@@ -32,7 +32,7 @@ angular.module('eperusteApp')
       controller: 'MuokattavaOsioController'
     };
   })
-  .controller('MuokattavaOsioController', function($scope, YleinenData, Utils, $state, OsanMuokkausHelper) {
+  .controller('MuokattavaOsioController', function($scope, YleinenData, Utils, $state, OsanMuokkausHelper, $stateParams) {
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
 
     $scope.hasContent = false;
@@ -43,6 +43,6 @@ angular.module('eperusteApp')
 
     $scope.edit = function () {
       OsanMuokkausHelper.setup($scope.model, $scope.path, $scope.oppiaine);
-      $state.go('root.perusteprojekti.muokkaus', {osanTyyppi: $scope.type, osanId: $scope.realModel.id});
+      $state.go('root.perusteprojekti.suoritustapa.muokkaus', {suoritustapa: $stateParams.suoritustapa, osanTyyppi: $scope.type, osanId: $scope.realModel.id});
     };
   });

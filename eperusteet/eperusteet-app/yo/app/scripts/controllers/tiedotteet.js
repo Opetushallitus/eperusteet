@@ -18,8 +18,14 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('TiedotteetController', function ($scope, Algoritmit, $modal, Varmistusdialogi) {
-    // TODO tiedotteet bäkkäriltä
+  .factory('TiedotteetCRUD', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/tiedotteet/:tiedoteId', {
+      tiedoteId: '@id'
+    });
+  })
+
+  .controller('TiedotteetController', function ($scope, Algoritmit, $modal, Varmistusdialogi, TiedotteetCRUD,
+    Notifikaatiot) {
     $scope.tiedotteet = [];
     $scope.naytto = {limit: 5, shown: 5};
 
@@ -27,6 +33,13 @@ angular.module('eperusteApp')
       perPage: 10,
       current: 1
     };
+
+    function fetch() {
+      TiedotteetCRUD.query({}, function (res) {
+        $scope.tiedotteet = res;
+      }, Notifikaatiot.serverCb);
+    }
+    fetch();
 
     $scope.search = {
       term: '',
@@ -42,12 +55,12 @@ angular.module('eperusteApp')
       return -1 * item.muokattu;
     };
 
-    function doDelete(/*item*/) {
-      // TODO delete
+    function doDelete(item) {
+      TiedotteetCRUD.delete({}, item, fetch, Notifikaatiot.serverCb);
     }
 
-    function doSave(/*item*/) {
-      // TODO save
+    function doSave(item) {
+      TiedotteetCRUD.save({}, item, fetch, Notifikaatiot.serverCb);
     }
 
     $scope.delete = function (model) {
@@ -68,7 +81,7 @@ angular.module('eperusteApp')
           model: function () { return _.cloneDeep(tiedote); }
         }
       }).result.then(function (data) {
-        if (data.$delete) {
+        if (data.$dodelete) {
           doDelete(data);
         } else {
           doSave(data);
@@ -84,7 +97,7 @@ angular.module('eperusteApp')
     if ($scope.creating) {
       $scope.model = {
         otsikko: {},
-        teksti: {},
+        sisalto: {},
         id: null
       };
     }
@@ -99,7 +112,7 @@ angular.module('eperusteApp')
         otsikko: 'vahvista-poisto',
         teksti: 'poistetaanko-tiedote',
       })(function() {
-        $modalInstance.close(_.extend($scope.model, {$delete: true}));
+        $modalInstance.close(_.extend($scope.model, {$dodelete: true}));
       });
     };
   })
@@ -113,7 +126,9 @@ angular.module('eperusteApp')
       });
   })
 
-  .controller('TiedoteViewController', function ($scope /*, $stateParams*/) {
-    // TODO hae tiedote $stateParams.tiedoteId
+  .controller('TiedoteViewController', function ($scope, $stateParams, TiedotteetCRUD, Notifikaatiot) {
     $scope.tiedote = null;
+    TiedotteetCRUD.get({tiedoteId: $stateParams.tiedoteId}, function (res) {
+      $scope.tiedote = res;
+    }, Notifikaatiot.serverCb);
   });

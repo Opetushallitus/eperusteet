@@ -108,6 +108,14 @@ public class PerusopetuksenPerusteenSisaltoController {
         return oppiaineService.updateOppiaine(perusteId, dto);
     }
 
+    @RequestMapping(value = "/oppiaineet/{id}", method = DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOppiaine(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long id) {
+        oppiaineService.deleteOppiaine(perusteId, id);
+    }
+
     @RequestMapping(value = "/oppiaineet/{id}/kohdealueet", method = GET)
     public Set<OpetuksenKohdealueDto> getKohdealueet(
         @PathVariable("perusteId") final Long perusteId,
@@ -166,6 +174,15 @@ public class PerusopetuksenPerusteenSisaltoController {
         return oppiaineService.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, dto);
     }
 
+    @RequestMapping(value = "/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{id}", method = DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOppiaineenVuosiluokkakokonaisuus(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("oppiaineId") final Long oppiaineId,
+        @PathVariable("id") final Long id) {
+        oppiaineService.deleteOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, id);
+    }
+
     @RequestMapping(value = "/vuosiluokkakokonaisuudet", method = GET)
     public List<VuosiluokkaKokonaisuusDto> getVuosiluokkaKokonaisuudet(
         @PathVariable("perusteId") final Long perusteId) {
@@ -201,6 +218,14 @@ public class PerusopetuksenPerusteenSisaltoController {
         @RequestBody VuosiluokkaKokonaisuusDto dto) {
         dto.setId(id);
         return kokonaisuusService.updateVuosiluokkaKokonaisuus(perusteId, dto);
+    }
+
+    @RequestMapping(value = "/vuosiluokkakokonaisuudet/{id}", method = DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteVuosiluokkaKokonaisuus(
+        @PathVariable("perusteId") final Long perusteId,
+        @PathVariable("id") final Long id) {
+        kokonaisuusService.deleteVuosiluokkaKokonaisuus(perusteId, id);
     }
 
     @RequestMapping(value = "/laajaalaisetosaamiset", method = GET)

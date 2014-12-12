@@ -55,7 +55,7 @@ angular.module('eperusteApp')
       }
       var self = this;
       if (this.isVuosiluokkakokonaisuudenOsa()) {
-        Lukitus.lukitseOppiaineenVuosiluokkakokonaisuus(this.oppiaine.id, this.vuosiluokka.$sisalto.id, function () {
+        Lukitus.lukitseOppiaineenVuosiluokkakokonaisuus(this.oppiaine.id, this.model.id, function () {
           self.isLocked = true;
           (cb || angular.noop)();
         });
@@ -71,7 +71,7 @@ angular.module('eperusteApp')
       var self = this;
       if (this.isVuosiluokkakokonaisuudenOsa()) {
         PerusopetusService.saveVuosiluokkakokonaisuudenOsa(this.model, this.oppiaine, function () {
-          Lukitus.vapautaOppiaineenVuosiluokkakokonaisuus(self.oppiaine.id, self.vuosiluokka.$sisalto.id, function () {
+          Lukitus.vapautaOppiaineenVuosiluokkakokonaisuus(self.oppiaine.id, self.model.id, function () {
             self.isLocked = false;
             self.goBack();
           });
@@ -96,7 +96,7 @@ angular.module('eperusteApp')
       var self = this;
       if (this.isLocked) {
         if (this.isVuosiluokkakokonaisuudenOsa()) {
-          Lukitus.vapautaOppiaineenVuosiluokkakokonaisuus(this.oppiaine.id, this.vuosiluokka.$sisalto.id, function () {
+          Lukitus.vapautaOppiaineenVuosiluokkakokonaisuus(this.oppiaine.id, this.model.id, function () {
             self.isLocked = false;
           });
         } else if (this.oppiaine) {
@@ -170,12 +170,6 @@ angular.module('eperusteApp')
         },
         callbacks: {
           save: function () {
-            var idFn = function (item) { return item.id; };
-            var filterFn = function (item) { return !item.$hidden; };
-            _.each(OsanMuokkausHelper.model.tavoitteet, function (tavoite) {
-              tavoite.sisaltoalueet = _(tavoite.$sisaltoalueet).filter(filterFn).map(idFn).value();
-              tavoite.laajattavoitteet = _(tavoite.$osaaminen).filter(filterFn).map(idFn).value();
-            });
             OsanMuokkausHelper.save();
           },
           edit: function () {},
@@ -236,7 +230,7 @@ angular.module('eperusteApp')
 
     $scope.edit = function () {
       OsanMuokkausHelper.setup($scope.model);
-      $state.go('root.perusteprojekti.muokkaus', $stateParams);
+      $state.go('root.perusteprojekti.suoritustapa.muokkaus', $stateParams);
     };
   })
 

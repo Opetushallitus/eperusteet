@@ -79,9 +79,11 @@ angular.module('eperusteApp')
         }
 
         el.bind('click', function(e) {
-          if (e.target.id === 'reloadFile') {
+          var target = angular.element(e.target).closest('button');
+          var id = target.attr('id');
+          if (id === 'reloadFile') {
             loadFile($scope.file);
-          } else if (e.target.id === 'addFile') {
+          } else if (id === 'addFile') {
             $('#fileDirectiveSelectInput', el).click();
           }
         });
@@ -92,4 +94,3 @@ angular.module('eperusteApp')
       }
     };
   });
-
