@@ -25,14 +25,16 @@
         </span>
         <div ng-show="esitys" class="empty-bubble distance" kaanna>rakennetta-ei-ole</div>
       </div>
-      <tree id="editointiPuuJuuri" apumuuttujat="apumuuttujat" muokkaus="muokkaus" ng-if="rakenne.$resolved" rakenne="rakenne.rakenne" tutkinnon-osa-viitteet="rakenne.tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" poisto-tehty-cb="poistoTehtyCb"></tree>
+      <tree id="editointiPuuJuuri" apumuuttujat="apumuuttujat" muokkaus="muokkaus" ng-if="rakenne.$resolved"
+            rakenne="rakenne.rakenne" tutkinnon-osa-viitteet="rakenne.tutkinnonOsaViitteet"
+            uusi-tutkinnon-osa="uusiTutkinnonOsa" callbacks="callbacks"></tree>
     </div>
   </div>
 
   <!-- Leikelauta -->
   <div ng-if="muokkaus" class="skratchpad-wrapper pull-right" follow-scroll>
     <div class="skratchpad-button">
-      <button class="btn btn-default" ng-click="ryhmaModaali(rakenne.$suoritustapa)"><img src="images/ryhma.png" alt=""> {{ 'luo-uusi-ryhma' | kaanna }}</button>
+      <button class="btn btn-default" ng-click="ryhmaModaali(rakenne.$suoritustapa)" icon-role="ep-group" kaanna="'luo-uusi-ryhma'"></button>
     </div>
     <div class="skratchpad-list">
       <div class="skratchpad-list-header" kaanna>leikelauta</div>
