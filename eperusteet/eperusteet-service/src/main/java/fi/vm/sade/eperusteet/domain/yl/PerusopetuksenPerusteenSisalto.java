@@ -143,9 +143,10 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
     public void setLaajaalaisetOsaamiset(Set<LaajaalainenOsaaminen> laajaalaisetOsaamiset) {
         if (laajaalaisetOsaamiset == null) {
             this.laajaAlalaisetOsaamiset.clear();
+        } else {
+            this.laajaAlalaisetOsaamiset.retainAll(laajaalaisetOsaamiset);
+            this.laajaAlalaisetOsaamiset.addAll(laajaalaisetOsaamiset);
         }
-        this.laajaAlalaisetOsaamiset.retainAll(laajaalaisetOsaamiset);
-        this.laajaAlalaisetOsaamiset.addAll(laajaalaisetOsaamiset);
     }
 
     public Set<Oppiaine> getOppiaineet() {
