@@ -46,7 +46,7 @@ public class TutkinnonOsaViiteDto {
     private TutkinnonOsaTyyppi tyyppi;
 
     public TutkinnonOsaViiteDto() {
-        
+
     }
 
     public TutkinnonOsaViiteDto (BigDecimal laajuus, Integer jarjestys, LokalisoituTekstiDto nimi, TutkinnonOsaTyyppi tyyppi) {

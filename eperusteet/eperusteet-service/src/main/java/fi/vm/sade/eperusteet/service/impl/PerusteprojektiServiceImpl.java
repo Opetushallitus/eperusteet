@@ -307,7 +307,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         // Perusteen validointi
         if (projekti.getPeruste() != null && projekti.getPeruste().getSuoritustavat() != null
-            && tila == ProjektiTila.VIIMEISTELY && projekti.getTila() == ProjektiTila.LAADINTA) {
+            && tila != ProjektiTila.LAADINTA) {
             Validointi validointi;
 
             for (Suoritustapa suoritustapa : projekti.getPeruste().getSuoritustavat()) {
@@ -352,6 +352,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     TutkinnonOsa tosa = tov.getTutkinnonOsa();
                     String uri = tosa.getKoodiUri();
                     String arvo = tosa.getKoodiArvo();
+
+                    if (arvo != null && uri != null && uri.isEmpty()) {
+                        uri = "tutkinnonosa_" + arvo;
+                        tosa.setKoodiUri(uri);
+                    }
 
                     if (tosa.getNimi() != null && (uri != null && arvo != null && !uri.isEmpty() && !arvo.isEmpty())) {
                         KoodistoKoodiDto koodi = null;
