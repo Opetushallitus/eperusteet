@@ -29,6 +29,10 @@ public class Tiedote extends AbstractAuditedEntity {
 
     @Getter
     @Setter
+    private boolean julkinen;
+
+    @Getter
+    @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
