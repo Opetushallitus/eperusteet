@@ -15,19 +15,17 @@
  */
 package fi.vm.sade.eperusteet.dto.yl;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import java.util.Set;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author jhyoty
+ * @author nkala
  */
 @Getter
 @Setter
-public class OppiaineSuppeaDto extends OppiaineBaseDto {
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Set<OppiaineSuppeaDto> oppimaarat;
-    private Set<OppiaineenVuosiluokkaKokonaisuusSuppeaDto> vuosiluokkakokonaisuudet;
+public class OppiaineenVuosiluokkaKokonaisuusSuppeaDto {
+    private Long id;
+    private EntityReference vuosiluokkaKokonaisuus;
 }

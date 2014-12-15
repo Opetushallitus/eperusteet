@@ -1,5 +1,6 @@
 <div>
-  <div href="" ng-click="section.selectOppiaine(item)" class="oppiaine {{ section.isCurrentOppiaine(item) && 'oppiaine-selected' }}" ng-repeat="item in section.items">
+  <div href="" ng-click="section.selectOppiaine(item)" ng-repeat="item in section.items"
+       class="oppiaine {{ item.depth === 1 && 'oppimaara' }} {{ section.isCurrentOppiaine(item) && 'oppiaine-selected' }}">
     <span kaanna="item.label"></span>
   </div>
 </div>

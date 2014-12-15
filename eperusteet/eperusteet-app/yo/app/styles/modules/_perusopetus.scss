@@ -381,12 +381,17 @@ h4 .drag-handle {
     cursor: pointer;
   }
 
+  .oppimaara {
+    margin-left: 30px;
+  }
+
   .oppiaine-selected {
     border-radius: 3px;
     background-color: #0C566E;
     font-weight: bold;
     color: #eee;
   }
+
 }
 
 .oppiaine {
@@ -395,6 +400,17 @@ h4 .drag-handle {
 }
 
 .perusopetus {
+  .tekstisisalto {
+    margin-bottom: 4px;
+    padding: 3px;
+    cursor: pointer;
+  }
+
+  .tekstisisalto-active {
+    background-color: #0C566E;
+    color: white;
+  }
+
   .oppiaine-nimi {
     border-bottom: 1px solid #aaa;
   }

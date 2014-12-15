@@ -6,12 +6,9 @@
         {{section.title | kaanna}}
       </accordion-heading>
       <div ng-if="!section.include && section.items && section.items.length > 0">
-        <ul class="multichoice">
-          <li class="toggle-all"><label><input type="checkbox" ng-model="section.$all" ng-change="section.toggleAll(section)">{{'valitse-kaikki' | kaanna }}</label></li>
-        </ul>
-        <ul class="multichoice" ng-class="{condensed: condensed}">
-          <li ng-repeat="item in section.items" ng-class="'level' + (item.depth || 0)">
-            <label><input type="checkbox" ng-model="item.$selected" ng-change="section.updateSisallot(item, section)">{{item.label | kaanna}}</label>
+        <ul>
+          <li ng-repeat="item in section.items">
+            <label><input type="checkbox" ng-model="item.$selected" ng-change="section.update(item, section)">{{item.label | kaanna}}</label>
           </li>
         </ul>
       </div>

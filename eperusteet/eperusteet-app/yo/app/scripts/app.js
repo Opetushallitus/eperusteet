@@ -112,9 +112,14 @@ angular.module('eperusteApp', [
       }
       return array;
     }});
-    _.mixin({ zipBy: function(array, field) {
-      if (_.isArray(array) && field) {
-        return _.zipObject(_.map(array, field), array);
+    _.mixin({ zipBy: function(array, kfield, vfield) {
+      if (_.isArray(array) && kfield) {
+        if (vfield) {
+          return _.zipObject(_.map(array, kfield), _.map(array, vfield));
+        }
+        else {
+          return _.zipObject(_.map(array, kfield), array);
+        }
       }
       else {
         return {};

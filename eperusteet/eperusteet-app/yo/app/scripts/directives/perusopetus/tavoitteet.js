@@ -41,6 +41,7 @@ angular.module('eperusteApp')
     $scope.vuosiluokka = $scope.providedVuosiluokka || OsanMuokkausHelper.getVuosiluokkakokonaisuus();
     $scope.editMode = false;
     $scope.currentEditable = null;
+
     $scope.$watch('editable', function (value) {
       $scope.editMode = !!value;
     });

@@ -8,33 +8,35 @@
     </div>
 
     <div class="sivunavi-clear"></div>
-    <div class="sivunavi-sisalto perusopetus">
+    <div ng-if="valittuOppiaine && valittuOppiaine.oppiaine && valittuOppiaine.vuosiluokkakokonaisuudet" class="sivunavi-sisalto perusopetus">
       <div class="row">
         <div class="col-md-12">
 
-          <div ng-if="activeSection === 'suunnitelma'">
-            <h1 kaanna>Opetussuunnitelma</h1>
+          <div ng-if="activeSection === 'suunnitelma' && valittuTekstisisalto">
+            <h1>{{ valittuTekstisisalto.nimi | kaanna }}</h1>
+            <p ng-bind-html="valittuTekstisisalto.teksti | kaanna"></p>
           </div>
 
-          <div ng-if="valittuOppiaine && valittuOppiaine.oppiaine && activeSection === 'sisalto'">
+          <div ng-if="activeSection === 'sisalto'">
             <h1 class="oppiaine-nimi" kaanna="valittuOppiaine.oppiaine.nimi"></h1>
-            <!-- <div class="action&#45;buttons"> -->
-            <!--   <ul class="nav nav&#45;pills moodit"> -->
-            <!--     <li ng&#45;class="{active: filtterit.moodi === 'allekkain'}"><a class="action&#45;link" icon&#45;role="align&#45;justify" ng&#45;click="filtterit.moodi = 'allekkain';"></a></li> -->
-            <!--     <li ng&#45;class="{active: filtterit.moodi === 'sivutus'}"><a class="action&#45;link" icon&#45;role="pause" ng&#45;click="filtterit.moodi = 'sivutus';"></a></li> -->
-            <!--   </ul> -->
-            <!-- </div> -->
             <div class="vuosiluokkavalitsin">
               <ul class="nav nav-pills">
-                <li ng-repeat="vuosiluokka in vuosiluokkakokonaisuudet" ng-class="{ active: filtterit.valittuKokonaisuus === vuosiluokka.id }">
-                  <a class="fixme action-link" ng-click="valitseVuosiluokka(vuosiluokka)">{{ vuosiluokka.nimi | kaanna }}</a>
+                <li ng-repeat="(id, kokonaisuus) in valittuOppiaine.vuosiluokkakokonaisuudet" ng-class="{ active: filtterit.valittuKokonaisuus === kokonaisuus.vuosiluokkaKokonaisuus }">
+                  <a class="fixme action-link" ng-click="valitseVuosiluokka(kokonaisuus.vuosiluokkaKokonaisuus)">
+                    {{ vuosiluokkakokonaisuudetMap[kokonaisuus.vuosiluokkaKokonaisuus].nimi | kaanna }}
+                  </a>
                 </li>
               </ul>
             </div>
 
             <div class="clearfix"></div>
 
-            <div ng-if="valittuOppiaine.vlks">
+            <div>
+              <div>
+                <h3>{{ valittuOppiaine.oppiaine.tehtava.otsikko | kaanna }}</h3>
+                <p ng-bind-html="valittuOppiaine.oppiaine.tehtava.teksti || '-' | kaanna"></p>
+              </div>
+
               <div ng-hide="filterSisalto.tehtava">
                 <h3>{{ valittuOppiaine.vlks.tehtava.otsikko | kaanna }}</h3>
                 <p ng-bind-html="valittuOppiaine.vlks.tehtava.teksti || '-' | kaanna"></p>
@@ -51,7 +53,7 @@
               </div>
               <div ng-hide="filterSisalto.tavoitteet" ng-if="valittuOppiaine.vlks.vuosiluokkaKokonaisuus">
                 <h3 kaanna="'perusopetus-tavoitteet'"></h3>
-                <div tavoitteet="valittuOppiaine.vlks" osaamiset="osaamiset" vuosiluokka="sisallot[valittuOppiaine.vlks.vuosiluokkaKokonaisuus]"></div>
+                <div tavoitteet="valittuOppiaine.vlks" osaamiset="osaamiset" vuosiluokka="valittuOppiaine.sisallot"></div>
               </div>
             </div>
           </div>
