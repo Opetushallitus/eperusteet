@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.resource;
 import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.service.TiedoteService;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,8 +33,10 @@ public class TiedoteController {
 
     @RequestMapping(method = GET)
     @ResponseBody
-    public List<TiedoteDto> getAll() {
-        return tiedoteService.getAll();
+    public List<TiedoteDto> getAll(
+            @RequestParam(value = "vainJulkiset", required = false, defaultValue = "false") boolean vainJulkiset,
+            @RequestParam(value = "alkaen", required = false, defaultValue = "0") Long alkaen) {
+        return tiedoteService.getAll(vainJulkiset, alkaen);
     }
 
     @RequestMapping(value = "/{id}", method = GET)

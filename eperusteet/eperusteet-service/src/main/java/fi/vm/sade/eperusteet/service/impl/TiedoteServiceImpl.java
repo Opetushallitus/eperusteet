@@ -7,9 +7,14 @@ import fi.vm.sade.eperusteet.service.TiedoteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.security.PermissionHelper;
+import fi.vm.sade.eperusteet.service.util.SecurityUtil;
+import java.util.Date;
 import java.util.List;
+import org.opensaml.xml.security.SecurityHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,8 +35,11 @@ public class TiedoteServiceImpl implements TiedoteService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TiedoteDto> getAll() {
-        List<Tiedote> tiedotteet = repository.findAll();
+    public List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen) {
+        if (!SecurityUtil.isAuthenticated()) {
+            vainJulkiset = true;
+        }
+        List<Tiedote> tiedotteet = repository.findAll(vainJulkiset, new Date(alkaen));
         return mapper.mapAsList(tiedotteet, TiedoteDto.class);
     }
 
@@ -40,6 +48,9 @@ public class TiedoteServiceImpl implements TiedoteService {
     public TiedoteDto getTiedote(@P("tiedoteId") Long tiedoteId) {
         Tiedote tiedote = repository.findOne(tiedoteId);
         assertExists(tiedote, "Pyydettyä tiedotetta ei ole olemassa");
+        if (!tiedote.isJulkinen() && !SecurityUtil.isAuthenticated()) {
+            throw new BusinessRuleViolationException("Autentikoimaton käyttäjä voi lukea vain julkisia tiedotteita");
+        }
         return mapper.map(tiedote, TiedoteDto.class);
     }
 

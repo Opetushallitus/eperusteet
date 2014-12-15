@@ -24,7 +24,45 @@ angular.module('eperusteApp')
     });
   })
 
-  .controller('TiedotteetController', function ($scope, Algoritmit, $modal, Varmistusdialogi, TiedotteetCRUD,
+  .controller('SivupalkkiTiedotteetController', function ($scope, Algoritmit, $modal, Varmistusdialogi, TiedotteetCRUD,
+    Notifikaatiot) {
+    $scope.tiedotteet = [];
+    $scope.naytto = {limit: 5, shown: 5};
+
+    $scope.paginate = {
+      perPage: 10,
+      current: 1
+    };
+
+    function fetch() {
+      // Hae tiedotteet viimeisen 6 kuukauden ajalta
+      var MONTH_OFFSET = 6;
+      var tempDate = new Date();
+      tempDate.setMonth(tempDate.getMonth() - MONTH_OFFSET);
+      var alkaen = tempDate.getTime();
+
+      TiedotteetCRUD.query({alkaen: alkaen}, function (res) {
+        $scope.tiedotteet = res;
+      }, Notifikaatiot.serverCb);
+    }
+    fetch();
+
+    $scope.search = {
+      term: '',
+      changed: function () {
+        $scope.paginate.current = 1;
+      },
+      filterFn: function (item) {
+        return $scope.search.term ? Algoritmit.match($scope.search.term, item.otsikko) : true;
+      }
+    };
+
+    $scope.orderFn = function (item) {
+      return -1 * item.muokattu;
+    };
+  })
+
+  .controller('TiedotteidenHallintaController', function ($scope, Algoritmit, $modal, Varmistusdialogi, TiedotteetCRUD,
     Notifikaatiot) {
     $scope.tiedotteet = [];
     $scope.naytto = {limit: 5, shown: 5};

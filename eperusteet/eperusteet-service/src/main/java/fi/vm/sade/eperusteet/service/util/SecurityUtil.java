@@ -41,4 +41,7 @@ public final class SecurityUtil {
         }
     }
 
+    public static boolean isAuthenticated() {
+        return SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
+    }
 }

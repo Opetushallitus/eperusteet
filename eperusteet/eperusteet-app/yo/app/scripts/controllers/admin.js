@@ -33,7 +33,7 @@ angular.module('eperusteApp')
       .state('root.admin.tiedotteet', {
         url: '/tiedotteet',
         templateUrl: 'views/admin/tiedotteet.html',
-        controller: 'TiedotteetController'
+        controller: 'TiedotteidenHallintaController'
       });
   })
 
