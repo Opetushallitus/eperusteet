@@ -118,7 +118,8 @@ public class PerusopetuksenPerusteenSisaltoServiceImpl implements Perusopetuksen
         LaajaalainenOsaaminen lo = sisalto.getLaajaalainenOsaaminen(id);
         assertExists(lo, "Laaja-alaista osaamista ei ole olemassa");
 
-        //TODO. tarkista että ei ole käytössä ja/tai poista viitteet?
+        sisalto.removeLaajaalainenOsaaminen(lo);
+        // Poista laaja-alainen osaamisen jos siihen ei ole enää viittauksia
         osaaminenRepository.delete(lo);
     }
 
