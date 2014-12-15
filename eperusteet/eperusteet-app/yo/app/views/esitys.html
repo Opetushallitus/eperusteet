@@ -17,7 +17,7 @@ European Union Public Licence for more details.
 <div class="main-content" id="main">
 <!-- esitys.html -->
 
-    <div class="row esitys">
+    <div class="esitys">
         <div class="sivunavi-navigaatio">
             <div class="sivunavi-takaisin">
               <a ng-href="{{getBackLink(peruste)}}" icon-role="back" kaanna="takaisin-hakuun"></a>
@@ -30,35 +30,12 @@ European Union Public Licence for more details.
         </div>
         <div class="sivunavi-clear"></div>
         <div class="sivunavi-sisalto" ng-cloak>
-            <h1 kaanna="peruste.nimi"></h1>
-            <div class="tiedot">
-                <a class="action-link" ng-click="naytaPerusteenTiedot = !naytaPerusteenTiedot">
-                    <span ng-show="naytaPerusteenTiedot" class="glyphicon glyphicon-chevron-down"></span>
-                    <span ng-hide="naytaPerusteenTiedot" class="glyphicon glyphicon-chevron-right"></span>
-                    <span kaanna="perusteen-tiedot"></span>
-                </a>
-                <a class="left-space action-link" ng-click="luoPdf()" icon-role="save" kaanna="lataa-peruste-pdf-muodossa"></a>
+            <div class="painikkeet pull-right">
+              <a class="action-link" ng-click="luoPdf()" icon-role="save" kaanna="lataa-peruste-pdf-muodossa"></a>
             </div>
-            <div collapse="!naytaPerusteenTiedot">
-                <table class="esitys-perusteen-tiedot">
-                  <tr>
-                    <th><span kaanna="tutkintokoodi"></span>:</th>
-                    <td>{{peruste.tutkintokoodi | kaanna | tyhja}}</td>
-                  </tr>
-                  <tr>
-                    <th>{{peruste.koulutukset.length > 1 && 'koulutusalakoodit' || 'koulutusalakoodi' | kaanna}}:</th>
-                    <td>
-                      <span ng-repeat="koulutus in peruste.koulutukset">
-                        {{ koulutus.koulutusalakoodi || '-' }} ({{ peruste.koulutukset[0].nimi | kaanna }})<span ng-hide="$last">, </span>
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>{{'kuvaus'|kaanna}}:</th>
-                    <td><div ng-bind-html="peruste.kuvaus | kaanna | unsafe"></div></td>
-                  </tr>
-                </table>
-            </div>
+            <h1>
+              <span kaanna="peruste.nimi"></span>
+            </h1>
             <div id="esitysPrintSisalto" ui-view></div>
         </div>
     </div>

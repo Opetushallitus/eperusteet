@@ -8,14 +8,8 @@ $border-color: #0C566E;
 
 .esitys {
 
-  margin-left: -40px;
-
   .rakenne-sisalto {
     margin: 5px 5px 20px 0px;
-  }
-
-  .sivunavi-takaisin {
-    margin: 10px;
   }
 
   .sivunavi-sisalto {
@@ -89,14 +83,27 @@ $border-color: #0C566E;
 }
 
 .esitys-perusteen-tiedot {
+  font-size: 14px;
   width: 100%;
-  background-color: #fafafa;
   th {
     width: 25%;
-    text-align: right;
   }
   th, td {
-    padding: 2px 10px 2px 0;
-    color: #333;
+    vertical-align: top;
+    padding: 7px 10px 5px 0;
+  }
+  .tutkintonimikkeet {
+    font-size: 13px;
+  }
+  .koulutukset {
+    font-size: 13px;
+  }
+}
+
+.esitys-header-links {
+  margin-top: 10px;
+  text-align: right;
+  a {
+    display: block;
   }
 }

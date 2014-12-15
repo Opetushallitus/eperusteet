@@ -171,6 +171,7 @@
     "tutkintonimike-poistettu-onnistuneesti": "Tutkintonimike poistettiin onnistuneesti",
     "tutkintonimikkeen-lisays-onnistui": "Tutkintonimikkeen lisääminen onnistui",
     "tutkintonimikkeen-lisays-epaonnistui": "Tutkintonimikkeen lisääminen epäonnistui",
+    "ei-tutkintonimikkeita": "Ei tutkintonimikkeitä",
 
     "ladataan-sisaltoa": "Ladataan sisältöä...",
 
@@ -461,7 +462,7 @@
     "excel-ei-kahta-samaa": "Tutkintokoodin täytyy olla uniikki",
     "valitse-nimi": "Valitse nimi",
     "valitse-diaarinumero": "Valitse diaarinumero",
-    "määräyksen-diaarinumero": "Määräyksen diaarinumero",
+    "maarayksen-diaarinumero": "Määräyksen diaarinumero",
     "suoritustapa": "Suoritustapa",
     "liita-perusteeseen": "Liitä perusteeseen",
     "excel-avataan-tiedostoa": "Avataan tiedostoa",
@@ -486,7 +487,7 @@
     "joku-toinen-on-muokannut-dokumenttia": "Joku toinen henkilö on muokannut dokumenttia. Voit joko perua omat muutoksesi tai jatkaa dokumentin editointia ja ylikirjoittaa toisen muutokset.",
     "ylikirjoittaessasi-voit-palauttaa": "Jatkaessasi voit ylikirjoittaa toisten muutokset. Ne säilyvät edelleen muutoshistoriassa ja voit palauttaa ne sieltä",
     "huom": "Huom!",
-    "tiivistelmä": "Tiivistelmä",
+    "tiivistelma": "Tiivistelmä",
 
     "luo-pdf": "Luo PDF",
     "dokumentti-luotu": "PDF-dokumentin luonti onnistui",

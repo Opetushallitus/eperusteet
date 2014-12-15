@@ -44,7 +44,8 @@
         <div class="toggler">
           <span ng-show="!item.$leaf" ng-click="toggle(items, item, $event)" class="glyphicon"
                 ng-class="{'glyphicon-chevron-right': item.$collapsed, 'glyphicon-chevron-down': !item.$collapsed}"></span>
-          <span ng-show="item.$leaf" class="ep-icon" ng-class="item.$type ? item.$type : 'ep-text'"></span>
+          <span ng-show="item.$leaf && !item.$glyph" class="ep-icon" ng-class="item.$type ? item.$type : 'ep-text'"></span>
+          <span ng-show="item.$leaf && item.$glyph" icon-role="{{item.$glyph}}"></span>
         </div>
         <span class="linktext" ng-class="{'action-link': !!item.href}" ep-highlight="search.term">{{item.label|kaanna}}</span>
       </a>
