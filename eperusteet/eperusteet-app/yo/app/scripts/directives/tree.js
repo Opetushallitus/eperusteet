@@ -41,9 +41,12 @@ angular.module('eperusteApp')
       return '' +
         '<span ng-if="onOsa(rakenne)">' +
            editointiIkoni +
-        '  <span ng-if="!muokkaus" class="osa-nimi">' +
-        '    <a ng-if="esitystilassa" ui-sref="root.esitys.peruste.tutkinnonosa({ id: rakenne._tutkinnonOsaViite, suoritustapa: apumuuttujat.suoritustapa })">' + tosa + '</a>' +
-        '    <a ng-if="!esitystilassa" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosa({ tutkinnonOsaViiteId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].id, suoritustapa: apumuuttujat.suoritustapa })">' + tosa + '</a>' +
+        '  <a class="osa-nimi" ng-if="esitystilassa" ui-sref="root.esitys.peruste.tutkinnonosa({ id: rakenne._tutkinnonOsaViite, suoritustapa: apumuuttujat.suoritustapa })">' + tosa + '</a>' +
+        '  <span class="osa-nimi" ng-if="!muokkaus && !esitystilassa">' +
+        '    <a ng-if="rakenne._tutkinnonOsaViite" ui-sref="root.perusteprojekti.suoritustapa.tutkinnonosa({ tutkinnonOsaViiteId: tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].id, suoritustapa: apumuuttujat.suoritustapa })">' +
+               tosa +
+        '    </a>' +
+        '    <span ng-if="!rakenne._tutkinnonOsaViite">' + tosa + '</span>' +
         '  </span>' +
         '  <span class="solmu-osa-muokkaus osa-nimi" ng-if="muokkaus">' +
              tosa +
@@ -101,7 +104,7 @@ angular.module('eperusteApp')
       '  <span ng-class="{ \'pointer\': muokkaus }">' + generoiOtsikko() + '</span>' +
       '</div>';
 
-    var kentta =
+    var kentta = '' +
       '<div ng-class="osaLuokat(rakenne)">' + optiot + '</div>' +
       '<div ng-model="rakenne" ng-show="rakenne.osaamisala || (rakenne.kuvaus && rakenne.kuvaus[lang].length > 0)" class="kuvaus">' +
       '  <div class="kuvausteksti" ng-class="{ \'text-truncated\': !rakenne.$showKuvaus }">' +
@@ -118,21 +121,23 @@ angular.module('eperusteApp')
       '  <span kaanna="rakenne.$virhe.selite.kaannos" kaanna-values="lisaaLaajuusYksikko(rakenne.$virhe.selite.muuttujat)"></span>' +
       '</div>';
 
-    var avaaKaikki = '<div class="pull-right">' +
-                     '  <a ng-show="muokkaus && rakenne.$virheetMaara > 0" style="margin-right: 10px;" ng-click="piilotaVirheet()" class="group-toggler action-link">' +
-                     '    <span ng-hide="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "piilota-virheet" | kaanna }}</span>' +
-                     '    <span ng-show="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "nayta-virheet" | kaanna }}</span>' +
-                     '  </a>' +
-                     '  <a ng-click="togglaaKuvaukset()" class="group-toggler action-link" ng-show="scanKuvaukset()">' +
-                     '    <span icon-role="book">{{kuvauksetOpen && "piilota-kuvaukset" || "nayta-kuvaukset" | kaanna }}</span>' +
-                     '    ' +
-                     '  </a>' +
-                     '  <a ng-click="togglaaPolut()" class="group-toggler action-link">' +
-                     '    <span class="avaa-sulje" icon-role="ep-open-close">{{ "avaa-sulje-kaikki" | kaanna }}</span>' +
-                     '  </a>' +
-                     '</div>';
+    var avaaKaikki = '' +
+      '<div class="pull-right">' +
+      '  <a ng-show="muokkaus && rakenne.$virheetMaara > 0" style="margin-right: 10px;" ng-click="piilotaVirheet()" class="group-toggler action-link">' +
+      '    <span ng-hide="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "piilota-virheet" | kaanna }}</span>' +
+      '    <span ng-show="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "nayta-virheet" | kaanna }}</span>' +
+      '  </a>' +
+      '  <a ng-click="togglaaKuvaukset()" class="group-toggler action-link" ng-show="scanKuvaukset()">' +
+      '    <span icon-role="book">{{kuvauksetOpen && "piilota-kuvaukset" || "nayta-kuvaukset" | kaanna }}</span>' +
+      '    ' +
+      '  </a>' +
+      '  <a ng-click="togglaaPolut()" class="group-toggler action-link">' +
+      '    <span class="avaa-sulje" icon-role="ep-open-close">{{ "avaa-sulje-kaikki" | kaanna }}</span>' +
+      '  </a>' +
+      '</div>';
 
-    return '<div ng-if="!vanhempi">' +
+    return '' +
+      '<div ng-if="!vanhempi">' +
       '  <div class="ylapainikkeet">' +
       '    <span class="rakenne-nimi">{{ apumuuttujat.peruste.nimi | kaanna }}' +
       '    <span ng-if="rakenne.muodostumisSaanto && rakenne.muodostumisSaanto.laajuus">' +
