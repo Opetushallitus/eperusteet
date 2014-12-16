@@ -19,7 +19,7 @@ package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsaTyyppi;
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.math.BigDecimal;

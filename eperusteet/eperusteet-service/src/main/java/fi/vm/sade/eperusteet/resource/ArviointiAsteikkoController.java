@@ -16,7 +16,7 @@
 package fi.vm.sade.eperusteet.resource;
 
 import com.wordnik.swagger.annotations.Api;
-import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiAsteikkoDto;
+import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.service.ArviointiAsteikkoService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

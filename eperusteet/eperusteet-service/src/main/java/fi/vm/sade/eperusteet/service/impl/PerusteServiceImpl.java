@@ -46,7 +46,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
