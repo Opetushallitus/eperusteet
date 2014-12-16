@@ -17,11 +17,13 @@
     <tr>
       <th kaanna="muokattu" width="25%"></th>
       <th kaanna="'otsikko'"></th>
+      <th kaanna="'julkinen-tiedote-header'"></th>
       <th kaanna="'toiminto'" width="20%"></th>
     </tr>
     <tr ng-repeat="tiedote in filtered = (tiedotteet | filter:search.filterFn) | orderBy:orderFn | startFrom:(paginate.current-1)*paginate.perPage | limitTo: paginate.perPage">
       <td>{{tiedote.muokattu | aikaleima}}</td>
       <td><a ui-sref="root.tiedote({tiedoteId: tiedote.id})" ep-highlight="search.term">{{tiedote.otsikko | kaanna}}</a></td>
+      <td class="has-checkbox"><span icon-role="ok" ng-show="tiedote.julkinen"></span></td>
       <td>
         <button class="btn btn-default rivinappi" icon-role="edit" kaanna="'muokkaa'" ng-click="edit(tiedote)"></button>
         <button class="btn btn-default rivinappi" icon-role="remove" kaanna="'poista'" ng-click="delete(tiedote)"></button>
