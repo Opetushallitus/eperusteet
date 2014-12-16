@@ -11,7 +11,7 @@ $yla-reunus-vari: #ddd;
 $placeholder-vari: #777;
 $puuviiva-vari: #ccc;
 $tree-container-width: 800px;
-$tree-group-width: 480px;
+$tree-group-width: 520px;
 $tree-box-size: 31px;
 
 .group-toggler, .group-toggler span {
@@ -528,7 +528,7 @@ $kuvausnappisize: 18px;
     }
   }
   .bubble, .tree-list-item .textbox {
-    min-width: $tree-group-width;
+    width: $tree-group-width;
     min-height: 32px;
     border: 1px solid #ccc;
     background-color: #f2f2f2;
@@ -575,10 +575,30 @@ $kuvausnappisize: 18px;
   background-color: #fff;
   padding: 5px 8px;
   text-decoration: none;
+  position: relative;
+  .right {
+    float: right;
+  }
+  .osa-ikoni {
+    position: absolute;
+  }
+  .osa-nimi {
+    display: block;
+    padding-left: 24px;
+    &.solmu-osa-muokkaus {
+      padding-right: $tree-box-size;
+    }
+  }
+  .valikko {
+    position: absolute;
+    right: 0;
+    top: -1px;
+    border-left: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+  }
 }
 
 .tree-presentation {
-  // border: 1px solid $yla-reunus-vari;
   margin: 0px;
   margin-bottom: 10px;
   min-height: 400px;
@@ -624,14 +644,6 @@ $solmu-caret-size: 16px;
   &.open {
     background-color: darken(#f2f2f2, 5%);
     box-shadow: inset 0px 0px 4px 2px rgba(0,0,0,0.10);
-  }
-}
-.solmu-osa-muokkaus {
-  .valikko {
-    float: right;
-    border-left: 1px solid #ccc;
-    margin-top: -5px;
-    margin-right: -9px;
   }
 }
 
