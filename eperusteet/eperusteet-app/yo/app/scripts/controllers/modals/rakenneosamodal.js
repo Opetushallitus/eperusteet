@@ -4,7 +4,7 @@
 angular.module('eperusteApp')
   .controller('RakenneosaModalCtrl', function ($scope, $modalInstance, rakenneosa, Koodisto) {
     var setupRyhma = function(rakenneosa) {
-      $scope.rakenneosa = rakenneosa;
+      $scope.rakenneosa = _.cloneDeep(rakenneosa);
       if (!$scope.rakenneosa.kuvaus || !_.isObject($scope.rakenneosa.kuvaus)) {
         $scope.rakenneosa.kuvaus = {};
       }
