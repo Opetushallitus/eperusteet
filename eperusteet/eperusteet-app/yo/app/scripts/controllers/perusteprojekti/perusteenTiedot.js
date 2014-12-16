@@ -26,7 +26,7 @@ angular.module('eperusteApp')
       return _.isString(peruste) &&
         peruste !== YleinenData.koulutustyypitNimiMap.esiopetus &&
         peruste !== YleinenData.koulutustyypitNimiMap.perusopetus ? true : false;
-    }
+    };
 
     this.get = function (perusteId, object) {
       PerusteTutkintonimikekoodit.get({ perusteId: perusteId }, function(res) {
