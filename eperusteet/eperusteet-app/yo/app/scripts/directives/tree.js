@@ -104,7 +104,11 @@ angular.module('eperusteApp')
       '  <span ng-class="{ \'pointer\': muokkaus }">' + generoiOtsikko() + '</span>' +
       '</div>';
 
-    var kentta = '' +
+    var virheSnippet = '  <span ng-show="rakenne.$virhe.virhe">' +
+    '    <span>{{rakenne.$virhe.virhe|kaanna}}</span>. ' +
+    '  </span>' +
+    '  <span ng-show="rakenne.$virhe.selite.kaannos" kaanna="{{rakenne.$virhe.selite.kaannos}}" kaanna-values="rakenne.$virhe.selite.muuttujat"></span>';
+    var kentta =
       '<div ng-class="osaLuokat(rakenne)">' + optiot + '</div>' +
       '<div ng-model="rakenne" ng-show="rakenne.osaamisala || (rakenne.kuvaus && rakenne.kuvaus[lang].length > 0)" class="kuvaus">' +
       '  <div class="kuvausteksti" ng-class="{ \'text-truncated\': !rakenne.$showKuvaus }">' +
@@ -115,10 +119,7 @@ angular.module('eperusteApp')
       '  <div class="avausnappi-painike">&hellip;</div></div>' +
       '</div>' +
       '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="virhe">' +
-      '  <span ng-show="rakenne.$virhe.virhe">' +
-      '    <span kaanna="rakenne.$virhe.virhe"></span>. ' +
-      '  </span>' +
-      '  <span kaanna="rakenne.$virhe.selite.kaannos" kaanna-values="lisaaLaajuusYksikko(rakenne.$virhe.selite.muuttujat)"></span>' +
+      virheSnippet +
       '</div>';
 
     var avaaKaikki = '' +
@@ -155,7 +156,9 @@ angular.module('eperusteApp')
       avaaKaikki +
       '  </div>' +
       '  <div><div class="tree-yliviiva"></div></div>' +
-      '  <div ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="isovirhe-otsikko">{{ tkaanna(rakenne.$virhe.selite) }}<span ng-show="rakenne.$virhe.selite.length > 0">. </span>{{ rakenne.$virhe.virhe | kaanna }}</div>' +
+      '  <div ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="isovirhe-otsikko">' +
+      virheSnippet +
+      '  </div>' +
       '</div>' +
       '<div ng-if="vanhempi">' + kentta + '</div>' +
       '<div ng-if="rakenne.rooli !== \'määrittelemätön\'" class="collapser" ng-show="!rakenne.$collapsed">' +
@@ -199,6 +202,12 @@ angular.module('eperusteApp')
     $scope.esitystilassa = $state.includes('**.esitys.**');
     $scope.lang = $translate.use() || $translate.preferredLanguage();
     $scope.isNumber = _.isNumber;
+
+    $scope.$watch('rakenne.$virhe', function () {
+      if ($scope.rakenne.$virhe && $scope.rakenne.$virhe.selite && $scope.rakenne.$virhe.selite.muuttujat) {
+        $scope.lisaaLaajuusYksikko($scope.rakenne.$virhe.selite.muuttujat);
+      }
+    }, true);
 
     $scope.lisaaLaajuusYksikko = function(obj) {
       return _.merge(obj, {
@@ -316,21 +325,6 @@ angular.module('eperusteApp')
         if (r.osat && _.size(r.osat) > 0) {
           r.$collapsed = avaamattomat !== 0;
         }
-      });
-    };
-
-    $scope.tkaanna = function(input) {
-      return _.reduce(_.map(input, function(str) {
-        switch (str) {
-          case '$laajuusYksikko':
-            str = $scope.apumuuttujat.laajuusYksikko;
-            break;
-          default:
-            break;
-        }
-        return Kaanna.kaanna(str);
-      }), function(str, next) {
-        return str + ' ' + next;
       });
     };
 
