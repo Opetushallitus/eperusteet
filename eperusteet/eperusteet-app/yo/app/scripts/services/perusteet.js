@@ -246,13 +246,13 @@ angular.module('eperusteApp')
         return true;
       }
       else if (rakenne.osat) {
-        var löyty = false;
+        var loyty = false;
         _.forEach(rakenne.osat, function(osa) {
           if (validoiRakennetta(osa, testi)) {
-            löyty = true;
+            loyty = true;
           }
         });
-        return löyty;
+        return loyty;
       }
       return false;
     }

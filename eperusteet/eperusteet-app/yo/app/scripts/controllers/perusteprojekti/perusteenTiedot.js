@@ -18,7 +18,16 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('PerusteenTutkintonimikkeet', function (PerusteTutkintonimikekoodit) {
+  .service('PerusteenTutkintonimikkeet', function(PerusteTutkintonimikekoodit, YleinenData) {
+    this.perusteellaTutkintonimikkeet = function(peruste) {
+      if (_.isObject(peruste)) {
+        peruste = peruste.koulutustyyppi;
+      }
+      return _.isString(peruste) &&
+        peruste !== YleinenData.koulutustyypitNimiMap.esiopetus &&
+        peruste !== YleinenData.koulutustyypitNimiMap.perusopetus ? true : false;
+    }
+
     this.get = function (perusteId, object) {
       PerusteTutkintonimikekoodit.get({ perusteId: perusteId }, function(res) {
         object.koodisto = _.map(res, function(osa) {
@@ -45,7 +54,6 @@ angular.module('eperusteApp')
     perusteprojektiTiedot, Notifikaatiot, Editointikontrollit, Kaanna,
     Varmistusdialogi, $timeout, $rootScope, PerusteTutkintonimikekoodit, $modal,
     PerusteenTutkintonimikkeet) {
-
     $scope.showKoulutukset = function () {
       return YleinenData.showKoulutukset($scope.editablePeruste);
     };
@@ -97,6 +105,7 @@ angular.module('eperusteApp')
     $scope.dokumentit = {};
     $scope.koodisto = [];
     $scope.$koodistoResolved = false;
+    $scope.$perusteellaTutkintonimikkeet = PerusteenTutkintonimikkeet.perusteellaTutkintonimikkeet($scope.peruste);
 
     $scope.lisaaNimike = function() {
       $modal.open({
