@@ -48,8 +48,6 @@ angular.module('eperusteApp')
              '<div class="valikko">' +
              toimintoValikko({edit: 'rakenneosaModaali(rakenne)', remove: 'poista(rakenne, vanhempi)'}) +
              '</div>' +
-        //'    <a class="pull-right action-link" icon-role="remove" ng-click="poista(rakenne, vanhempi)"></a>' +
-        //'    <a class="pull-right action-link" icon-role="edit" ng-click="rakenneosaModaali(rakenne)"></a>' +
         '  </span>' +
         '</span>' +
         '<span ng-if="!onOsa(rakenne) && rakenne.nimi">' +

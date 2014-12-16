@@ -637,7 +637,7 @@ $solmu-caret-size: 16px;
 
 .solmu-caret {
   display: inline-block;
-  margin-top: $solmu-caret-size/2;
+  margin-top: $solmu-caret-size/2 + 3px;
   height: 0;
   width: 0;
   border-width: $solmu-caret-size/2;
