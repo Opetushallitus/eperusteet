@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import com.mangofactory.swagger.annotations.ApiIgnore;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
@@ -26,7 +27,7 @@ import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
-import fi.vm.sade.eperusteet.service.yl.VuosiluokkakokonaisuusService;
+import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusService;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -58,7 +59,7 @@ public class PerusopetuksenPerusteenSisaltoController {
     private OppiaineService oppiaineService;
 
     @Autowired
-    private VuosiluokkakokonaisuusService kokonaisuusService;
+    private VuosiluokkaKokonaisuusService kokonaisuusService;
 
     @Autowired
     private PerusteenOsaViiteService viiteService;
@@ -103,8 +104,8 @@ public class PerusopetuksenPerusteenSisaltoController {
     public OppiaineDto updateOppiaine(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id,
-        @RequestBody OppiaineDto dto) {
-        dto.setId(id);
+        @RequestBody UpdateDto<OppiaineDto> dto) {
+        dto.getDto().setId(id);
         return oppiaineService.updateOppiaine(perusteId, dto);
     }
 
@@ -169,8 +170,8 @@ public class PerusopetuksenPerusteenSisaltoController {
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("oppiaineId") final Long oppiaineId,
         @PathVariable("id") final Long id,
-        @RequestBody OppiaineenVuosiluokkaKokonaisuusDto dto) {
-        dto.setId(id);
+        @RequestBody UpdateDto<OppiaineenVuosiluokkaKokonaisuusDto> dto) {
+        dto.getDto().setId(id);
         return oppiaineService.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, dto);
     }
 
@@ -215,8 +216,8 @@ public class PerusopetuksenPerusteenSisaltoController {
     public VuosiluokkaKokonaisuusDto updateVuosiluokkaKokonaisuus(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id,
-        @RequestBody VuosiluokkaKokonaisuusDto dto) {
-        dto.setId(id);
+        @RequestBody UpdateDto<VuosiluokkaKokonaisuusDto> dto) {
+        dto.getDto().setId(id);
         return kokonaisuusService.updateVuosiluokkaKokonaisuus(perusteId, dto);
     }
 

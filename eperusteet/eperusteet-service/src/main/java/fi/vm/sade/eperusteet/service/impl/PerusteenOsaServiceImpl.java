@@ -38,7 +38,6 @@ import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.KommenttiService;
-import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
@@ -59,6 +58,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class PerusteenOsaServiceImpl implements PerusteenOsaService {
+
     @Autowired
     private KommenttiService kommenttiService;
 
@@ -129,7 +129,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         PerusteenOsa current = perusteenOsaRepo.findOne(perusteenOsaDto.getId());
         PerusteenOsa updated = mapper.map(perusteenOsaDto, current.getType());
         if (perusteenOsaDto.getClass().equals(TutkinnonOsaDto.class)) {
-            ((TutkinnonOsa)updated).setOsaAlueet(createOsaAlueIfNotExist(((TutkinnonOsa)updated).getOsaAlueet()));
+            ((TutkinnonOsa) updated).setOsaAlueet(createOsaAlueIfNotExist(((TutkinnonOsa) updated).getOsaAlueet()));
         }
         current.mergeState(updated);
         current = perusteenOsaRepo.save(current);
@@ -142,10 +142,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Transactional(readOnly = false)
     public <T extends PerusteenOsaDto.Laaja> T update(UpdateDto<T> perusteenOsaDto) {
         T updated = update(perusteenOsaDto.getDto());
-
-        if (perusteenOsaDto.getMetadata() != null) {
-            perusteenOsaRepo.setRevisioKommentti(perusteenOsaDto.getMetadata().getKommentti());
-        }
+        perusteenOsaRepo.setRevisioKommentti(perusteenOsaDto.getMetadataOrEmpty().getKommentti());
         return updated;
     }
 
@@ -192,7 +189,6 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
         return mapper.map(osaAlue, OsaAlueLaajaDto.class);
     }
-
 
     @Override
     @Transactional(readOnly = false)
@@ -250,7 +246,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         Osaamistavoite tallennettuPakollinenTavoite;
         Iterator<OsaamistavoiteLaajaDto> osaamistavoiteDtoItr = osaamistavoitteet.iterator();
         // Tallennetaan uudet pakolliset osaamistavoitteet ja asetetaan valinnaisten osaamistavoitteiden esitietoid:t oikeiksi kantaId:ksi
-        while(osaamistavoiteDtoItr.hasNext()) {
+        while (osaamistavoiteDtoItr.hasNext()) {
             OsaamistavoiteLaajaDto osaamistavoiteDto = osaamistavoiteDtoItr.next();
             // Jos id >= 0, niin kyseessä oikea tietokanta id. Id:t < 0 ovat generoitu UI päässä.
             if (osaamistavoiteDto.isPakollinen() && (osaamistavoiteDto.getId() == null || osaamistavoiteDto.getId() < 0)) {
@@ -273,7 +269,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
         // Käydään vielä läpi valinnaiset osaamistavoitteet ja tallennetaan uudet.
         osaamistavoiteDtoItr = osaamistavoitteet.iterator();
-        while(osaamistavoiteDtoItr.hasNext()) {
+        while (osaamistavoiteDtoItr.hasNext()) {
             OsaamistavoiteLaajaDto osaamistavoiteDto = osaamistavoiteDtoItr.next();
             // Jos id >= 0, niin kyseessä oikea tietokanta id. Id:t < 0 ovat generoitu UI päässä.
             if (!osaamistavoiteDto.isPakollinen() && (osaamistavoiteDto.getId() == null || osaamistavoiteDto.getId() < 0)) {
@@ -286,7 +282,6 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
         return uudet;
     }
-
 
 //    private List<Osaamistavoite> createOsaamistavoiteIfNotExist(List<Osaamistavoite> osaamistavoitteet) {
 //
@@ -302,7 +297,6 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 //        }
 //        return osaamistavoiteTemp;
 //    }
-
     @Override
     @Transactional(readOnly = true)
     public List<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlueet(Long id) {
@@ -319,7 +313,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     public List<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlueetVersio(Long id, Integer versioId) {
         TutkinnonOsa t = tutkinnonOsaRepo.findRevision(id, versioId);
         if (t == null) {
-            throw new EntityNotFoundException("Tutkinnon osa (id: " + id+ ") versiota ei löytynyt versioId:llä " + versioId);
+            throw new EntityNotFoundException("Tutkinnon osa (id: " + id + ") versiota ei löytynyt versioId:llä " + versioId);
         }
         return mapper.mapAsList(t.getOsaAlueet(), OsaAlueKokonaanDto.class);
     }
@@ -337,7 +331,6 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         tutkinnonOsa.getOsaAlueet().remove(osaAlue);
         osaAlueRepository.delete(osaAlue);
     }
-
 
     @Override
     @Transactional(readOnly = false)
@@ -408,7 +401,6 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
         return mapper.map(osaamistavoiteEntity, OsaamistavoiteLaajaDto.class);
     }
-
 
     @Override
     public void delete(final Long id) {
@@ -503,9 +495,5 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             tutkinnonOsaViiteRepository.save(viite);
         }
     }
-
-
-
-
 
 }

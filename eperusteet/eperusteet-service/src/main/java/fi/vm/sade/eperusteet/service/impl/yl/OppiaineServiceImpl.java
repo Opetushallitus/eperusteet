@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.OppiaineenVuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
@@ -237,7 +238,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         Oppiaine aine = oppiaineRepository.findRevision(oppiaineId, revisio);
         if (sisalto != null && sisalto.containsOppiaine(aine)) {
             OppiaineDto dto = mapper.map(aine, OppiaineDto.class);
-            return updateOppiaine(perusteId, dto);
+            return updateOppiaine(perusteId, new UpdateDto<>(dto));
         } else {
             throw new BusinessRuleViolationException("Pyydettyä oppiainetta ei ole");
         }
@@ -267,7 +268,8 @@ public class OppiaineServiceImpl implements OppiaineService {
 
     @Override
     @Transactional(readOnly = false)
-    public OppiaineDto updateOppiaine(Long perusteId, OppiaineDto dto) {
+    public OppiaineDto updateOppiaine(Long perusteId, UpdateDto<OppiaineDto> updateDto) {
+        OppiaineDto dto = updateDto.getDto();
         Oppiaine aine = oppiaineRepository.findOne(dto.getId());
         if (aine == null) {
             throw new BusinessRuleViolationException("Oppiainetta ei ole");
@@ -293,6 +295,7 @@ public class OppiaineServiceImpl implements OppiaineService {
                 //TODO poisto -- vai pitäikö jättää "ominaisuudeksi" että vuosiluokkakokonaisuuksia ei voi poistaa tätä kautta.
             }
         }
+        oppiaineRepository.setRevisioKommentti(updateDto.getMetadataOrEmpty().getKommentti());
         aine = oppiaineRepository.save(aine);
         oppiaineRepository.setRevisioKommentti("Muokattu oppiainetta " + aine.getNimi().toString());
         eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, perusteId));
@@ -301,8 +304,11 @@ public class OppiaineServiceImpl implements OppiaineService {
 
     @Override
     @Transactional(readOnly = false)
-    public OppiaineenVuosiluokkaKokonaisuusDto updateOppiaineenVuosiluokkaKokonaisuus(Long perusteId, Long oppiaineId, OppiaineenVuosiluokkaKokonaisuusDto dto) {
-        return mapper.map(doUpdateOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, dto, true), OppiaineenVuosiluokkaKokonaisuusDto.class);
+    public OppiaineenVuosiluokkaKokonaisuusDto updateOppiaineenVuosiluokkaKokonaisuus(Long perusteId, Long oppiaineId, UpdateDto<OppiaineenVuosiluokkaKokonaisuusDto> updateDto) {
+        OppiaineenVuosiluokkaKokonaisuusDto tmp
+            = mapper.map(doUpdateOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, updateDto.getDto(), true), OppiaineenVuosiluokkaKokonaisuusDto.class);
+        vuosiluokkakokonaisuusRepository.setRevisioKommentti(updateDto.getMetadataOrEmpty().getKommentti());
+        return tmp;
     }
 
     private OppiaineenVuosiluokkaKokonaisuus doUpdateOppiaineenVuosiluokkaKokonaisuus(Long perusteId, Long oppiaineId, OppiaineenVuosiluokkaKokonaisuusDto dto, boolean lock) {

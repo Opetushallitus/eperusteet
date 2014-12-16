@@ -21,13 +21,14 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusContext;
-import fi.vm.sade.eperusteet.service.yl.VuosiluokkakokonaisuusService;
+import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusService;
 import java.io.IOException;
 import java.util.Collections;
 import org.junit.Before;
@@ -51,7 +52,7 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
     @Autowired
     private PerusopetuksenPerusteenSisaltoService sisaltoService;
     @Autowired
-    private VuosiluokkakokonaisuusService service;
+    private VuosiluokkaKokonaisuusService service;
     @Autowired
     @LockCtx(VuosiluokkaKokonaisuusContext.class)
     private LockService<VuosiluokkaKokonaisuusContext> lockService;
@@ -92,7 +93,7 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
         final VuosiluokkaKokonaisuusContext ctx = VuosiluokkaKokonaisuusContext.of(perusteId, dto.getId());
 
         lockService.lock(ctx);
-        service.updateVuosiluokkaKokonaisuus(perusteId, dto);
+        service.updateVuosiluokkaKokonaisuus(perusteId, new UpdateDto<>(dto));
         lockService.unlock(ctx);
         assertEquals(2, dto.getLaajaalaisetOsaamiset().size());
         service.deleteVuosiluokkaKokonaisuus(ctx.getPerusteId(), ctx.getKokonaisuusId());
