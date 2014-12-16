@@ -99,6 +99,7 @@ angular.module('eperusteApp')
     $scope.oppiaineet = PerusopetusService.getOsat(PerusopetusService.OPPIAINEET, true);
     $scope.oppiaineet.$promise.then(function (data) {
       $scope.oppiaineMap = _.zipObject(_.map(data, function (oppiaine) {
+        oppiaine.$url = $scope.generateLink(oppiaine);
         return [''+oppiaine.id, oppiaine];
       }));
     });
@@ -343,6 +344,9 @@ angular.module('eperusteApp')
     $scope.$watch('editableModel.oppimaarat', function () {
       PerusopetusService.getOppimaarat($scope.editableModel).then(function (data) {
         $scope.editableModel.$oppimaarat = data;
+        _.each($scope.editableModel.$oppimaarat, function (oppimaara) {
+          oppimaara.$url = $scope.generateLink(oppimaara);
+        });
       });
     });
 

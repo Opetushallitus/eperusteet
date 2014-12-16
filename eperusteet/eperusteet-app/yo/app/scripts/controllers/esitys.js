@@ -191,7 +191,22 @@ angular.module('eperusteApp')
       return Kaanna.kaanna(val);
     };
 
+    function getBackLink(peruste) {
+      switch (peruste.koulutustyyppi) {
+        case 'koulutustyyppi_1':
+          return $state.href('root.selaus.ammatillinenperuskoulutus');
+        case 'koulutustyyppi_11':
+        case 'koulutustyyppi_12':
+          return $state.href('root.selaus.ammatillinenaikuiskoulutus');
+        case 'koulutustyyppi_16':
+          return $state.href('root.selaus.perusopetus');
+        default:
+          return $state.href('root.selaus.ammatillinenperuskoulutus');
+      }
+    }
+
     $scope.peruste = peruste;
+    $scope.backLink = getBackLink($scope.peruste);
     $scope.sisalto = mapSisalto(sisalto);
 
     $scope.arviointiasteikot = _.zipObject(_.map(arviointiasteikot, 'id'), _.map(arviointiasteikot, function(asteikko) {
@@ -254,20 +269,6 @@ angular.module('eperusteApp')
     $scope.luoPdf = function () {
       PdfCreation.setPerusteId($scope.peruste.id);
       PdfCreation.openModal();
-    };
-
-     $scope.getBackLink = function (peruste) {
-       switch (peruste.koulutustyyppi) {
-         case 'koulutustyyppi_1':
-           return $state.href('root.selaus.ammatillinenperuskoulutus');
-         case 'koulutustyyppi_11':
-         case 'koulutustyyppi_12':
-           return $state.href('root.selaus.ammatillinenaikuiskoulutus');
-         case 'koulutustyyppi_16':
-           return $state.href('root.selaus.perusopetus');
-         default:
-           return $state.href('root.selaus.ammatillinenperuskoulutus');
-       }
     };
   })
 

@@ -225,6 +225,7 @@ angular.module('eperusteApp')
     function init() {
       $scope.projekti = perusteprojektiTiedot.getProjekti();
       $scope.peruste = perusteprojektiTiedot.getPeruste();
+      $scope.backLink = PerusteProjektiService.getUrl($scope.projekti, $scope.peruste);
       TermistoService.setPeruste($scope.peruste);
     }
     init();
@@ -280,10 +281,6 @@ angular.module('eperusteApp')
       return !($state.is('root.perusteprojekti.suoritustapa.sisalto') ||
                $state.is('root.perusteprojekti.suoritustapa.posisalto') ||
                $state.is('root.perusteprojekti.suoritustapa.eosisalto'));
-    };
-
-    $scope.getBackLink = function () {
-      return PerusteProjektiService.getUrl($scope.projekti, $scope.peruste);
     };
 
     $scope.isNaviVisible = function () {
