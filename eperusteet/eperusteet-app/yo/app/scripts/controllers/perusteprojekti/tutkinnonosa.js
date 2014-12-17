@@ -18,6 +18,9 @@
 /*global _*/
 
 angular.module('eperusteApp')
+  .factory('TutkinnonOsanKoodiUniqueResource', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/tutkinnonosat/koodi/uniikki/:tutkinnonosakoodi');
+  })
   .service('TutkinnonosanTiedotService', function(PerusteenOsat, $q, TutkinnonOsanOsaAlue, Osaamistavoite) {
     var FIELD_ORDER = {
       tavoitteet: 3,
@@ -223,7 +226,8 @@ angular.module('eperusteApp')
       MuokkausUtils.nestedSet($scope.editableTutkinnonOsaViite.tutkinnonOsa, 'koodiArvo', ',', koodisto.koodiArvo);
     }, {
       tyyppi: function() { return 'tutkinnonosat'; },
-      ylarelaatioTyyppi: function() { return ''; }
+      ylarelaatioTyyppi: function() { return ''; },
+      tarkista: _.constant(true)
     });
 
 

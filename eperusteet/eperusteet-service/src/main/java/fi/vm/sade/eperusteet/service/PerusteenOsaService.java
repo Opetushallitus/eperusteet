@@ -39,6 +39,9 @@ public interface PerusteenOsaService {
     List<PerusteenOsaDto.Laaja> getAllByKoodiUri(final String koodiUri);
 
     @PreAuthorize("permitAll()")
+    void onkoTutkinnonOsanKoodiKaytossa(final String koodiUri);
+
+    @PreAuthorize("permitAll()")
     List<PerusteenOsaDto.Suppea> getAll();
 
     @PreAuthorize("permitAll()")

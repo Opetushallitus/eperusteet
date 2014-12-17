@@ -122,6 +122,14 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public void onkoTutkinnonOsanKoodiKaytossa(final String koodiUri) {
+        if (tutkinnonOsaRepo.findByKoodiUri(koodiUri).size() > 0) {
+            throw new BusinessRuleViolationException("Tutkinnon osan koodi on jo käytössä");
+        }
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public <T extends PerusteenOsaDto.Laaja> T update(T perusteenOsaDto) {
         assertExists(perusteenOsaDto.getId());
