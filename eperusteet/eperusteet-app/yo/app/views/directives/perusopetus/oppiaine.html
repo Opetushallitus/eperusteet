@@ -2,7 +2,7 @@
 
 <div class="oppiaine-view">
 <osallinen-osa model="model" editable-model="editableModel" config="data.options" versiot="versiot">
-
+  <!-- <pre>{{ vuosiluokka.$sisalto | json }}</pre> -->
   <div ng-if="editEnabled">
     <div class="oppiaine-header">
       <table>
@@ -96,13 +96,37 @@
       </li>
     </ul>
 
-    <div ng-if="vuosiluokka">
-      <div muokattava-osio="vuosiluokka.$sisalto" type="tekstikappale" path="tehtava" oppiaine="editableModel"></div>
+    <div ng-if="vuosiluokka" class="vuosiluokkasisalto">
+      <div muokattava-osio="vuosiluokka.$sisalto" poisto-cb="vklOsaPoisto" type="tekstikappale" path="tehtava" oppiaine="editableModel"></div>
+      <div ng-hide="vuosiluokka.$sisalto.tehtava" class="tyhja-sisalto">
+        <h3>{{ getTitle('tehtava') | kaanna }}</h3>
+        <button class="btn btn-danger btn-osiolisays" ng-click="lisaaVlkSisalto('tehtava')" icon-role="add"></button>
+        <div class="clearfix"></div>
+      </div>
+
+      <div muokattava-osio="vuosiluokka.$sisalto" poisto-cb="vklOsaPoisto" type="tekstikappale" path="ohjaus" oppiaine="editableModel"></div>
+      <div ng-hide="vuosiluokka.$sisalto.ohjaus" class="tyhja-sisalto">
+        <h3>{{ getTitle('ohjaus') | kaanna }}</h3>
+        <button class="btn btn-danger btn-osiolisays" ng-click="lisaaVlkSisalto('ohjaus')" icon-role="add"></button>
+        <div class="clearfix"></div>
+      </div>
+
+      <div muokattava-osio="vuosiluokka.$sisalto" poisto-cb="vklOsaPoisto" type="tekstikappale" path="tyotavat" oppiaine="editableModel"></div>
+      <div ng-hide="vuosiluokka.$sisalto.tyotavat" class="tyhja-sisalto">
+        <h3>{{ getTitle('tyotavat') | kaanna }}</h3>
+        <button class="btn btn-danger btn-osiolisays" ng-click="lisaaVlkSisalto('tyotavat')" icon-role="add"></button>
+        <div class="clearfix"></div>
+      </div>
+
+      <div muokattava-osio="vuosiluokka.$sisalto" poisto-cb="vklOsaPoisto" type="tekstikappale" path="arviointi" oppiaine="editableModel"></div>
+      <div ng-hide="vuosiluokka.$sisalto.arviointi" class="tyhja-sisalto">
+        <h3>{{ getTitle('arviointi') | kaanna }}</h3>
+        <button class="btn btn-danger btn-osiolisays" ng-click="lisaaVlkSisalto('arviointi')" icon-role="add"></button>
+        <div class="clearfix"></div>
+      </div>
+
       <div muokattava-osio="vuosiluokka.$sisalto" type="sisaltoalueet" path="sisaltoalueet" oppiaine="editableModel"></div>
-      <div muokattava-osio="vuosiluokka.$sisalto" type="tavoitteet" oppiaine="editableModel" vuosiluokka="vuosiluokka"></div>
-      <div muokattava-osio="vuosiluokka.$sisalto" type="tekstikappale" path="ohjaus" oppiaine="editableModel"></div>
-      <div muokattava-osio="vuosiluokka.$sisalto" type="tekstikappale" path="tyotavat" oppiaine="editableModel"></div>
-      <div muokattava-osio="vuosiluokka.$sisalto" type="tekstikappale" path="arviointi" oppiaine="editableModel"></div>
+      <div muokattava-osio="vuosiluokka.$sisalto" type="tavoitteet" oppiaine="editableModel" path="tavoitteet" vuosiluokka="vuosiluokka"></div>
     </div>
 
   </div>

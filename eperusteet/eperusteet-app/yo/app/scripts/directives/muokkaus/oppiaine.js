@@ -85,9 +85,9 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna,
+  .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna, Notifikaatiot,
       PerusteProjektiSivunavi, Oppiaineet, $timeout, $state, $stateParams, $q, YleinenData, tabHelper,
-      CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus, VlkUtils, ProjektinMurupolkuService) {
+      CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus, VlkUtils, ProjektinMurupolkuService, Varmistusdialogi) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.mappedVuosiluokat = [];
@@ -103,6 +103,7 @@ angular.module('eperusteApp')
         return [''+oppiaine.id, oppiaine];
       }));
     });
+
     if (_.isNumber(tabHelper.changeInited)) {
       $scope.activeTab = tabHelper.changeInited;
       tabHelper.changeInited = false;
@@ -110,10 +111,35 @@ angular.module('eperusteApp')
 
     var cloner = CloneHelper.init(['koosteinen', 'nimi', 'tehtava', 'vuosiluokkakokonaisuudet']);
 
+    $scope.lisaaVlkSisalto = function(osio) {
+      $scope.vuosiluokka.$sisalto[osio] = {otsikko: getTitle(osio), teksti: {}};
+      saveVanhaOppiaine();
+    };
+
+    // TODO: mergeä saveOppiaineen kanssa
+    function saveVanhaOppiaine() {
+      Lukitus.lukitseOppiaine($scope.editableModel.id, function () {
+        Oppiaineet.save({
+          perusteId: PerusopetusService.getPerusteId()
+        }, $scope.editableModel, function() {
+          Lukitus.vapautaOppiaine($scope.editableModel.id);
+        }, Notifikaatiot.serverCb);
+      });
+    }
+
+    $scope.vklOsaPoisto = function(path) {
+      Varmistusdialogi.dialogi({
+        otsikko: 'haluatko-varmasti-poistaa-osion'
+      })(function() {
+        $scope.vuosiluokka.$sisalto[path] = null;
+        saveVanhaOppiaine();
+      });
+    };
+
     function saveOppiaine() {
       $scope.editableModel.$save({
         perusteId: PerusopetusService.getPerusteId()
-      }, function (res) {
+      }, function(res) {
         $scope.editableModel = res;
         Lukitus.vapautaOppiaine($scope.editableModel.id);
         $state.go($state.current, _.extend(_.clone($stateParams), {tabId: 0}), {reload: true});
@@ -144,6 +170,7 @@ angular.module('eperusteApp')
       }
       // Jos vlk on poistettu ja lisätty takaisin, lisätään uudestaan vanha id, jotta ei synny duplikaatteja.
       _.each($scope.editableModel.vuosiluokkakokonaisuudet, function (vlk) {
+        vlk.tehtava = {};
         var originalId = originalIds['' + vlk.vuosiluokkaKokonaisuus];
         if (originalId && !vlk.id) {
           vlk.id = originalId;
@@ -165,7 +192,7 @@ angular.module('eperusteApp')
           cloner.clone($scope.editableModel);
         }
       },
-      save: function () {
+      save: function() {
         var oppimaara = OppimaaraHelper.presave($scope.editableModel);
         if (oppimaara) {
           $scope.editableModel = oppimaara;
@@ -366,6 +393,7 @@ angular.module('eperusteApp')
       });
       return obj;
     }
+    $scope.getTitle = getTitle;
 
     function updateChosen() {
       $scope.chosenVuosiluokat = _.map($scope.editableModel.vuosiluokkakokonaisuudet, function (item) {
@@ -430,9 +458,11 @@ angular.module('eperusteApp')
       });
       $scope.data.options.fields = menuItems.concat($scope.data.options.fields);
 
+      // Jos tätä ei ole tabit vaihtelee satunnaisesti poistoilla ja lisäyksillä
+      var valitseTabi = _.once(_.bind($scope.chooseTab, {}, $scope.activeTab, true));
       $scope.$watch('editableModel.vuosiluokkakokonaisuudet', function () {
         mapVuosiluokat();
-        $scope.chooseTab($scope.activeTab, true);
+        valitseTabi();
       }, true);
     });
   })

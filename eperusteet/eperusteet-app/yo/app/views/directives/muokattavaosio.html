@@ -2,7 +2,8 @@
   <!-- muokattavaosio.html -->
   <div class="panel-heading">
     <div class="action-buttons">
-      <button class="btn btn-default" kaanna="muokkaa" icon-role="edit" ng-click="edit()"></button>
+      <button class="btn btn-default" icon-role="edit" ng-click="edit()"></button>
+      <button ng-if="type === 'tekstikappale'" class="btn btn-default" icon-role="remove" ng-click="poista()"></button>
     </div>
     <h3 class="panel-title osio-otsikko" ng-click="realModel.$isCollapsed = !realModel.$isCollapsed">
       <span class="glyphicon"

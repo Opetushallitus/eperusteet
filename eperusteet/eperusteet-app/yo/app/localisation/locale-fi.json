@@ -194,6 +194,8 @@
     "piilota-aliviestit": "Piilota vastaukset",
     "poistetaanko-kommentti": "Poistetaanko kommentti?",
 
+    "lisaa-sisalto": "Lisää sisältöä",
+
     "perusopetus-tehtava" : "Oppiaineen tehtävä",
     "perusopetus-ohjaus" : "Ohjaus ja tuki",
     "perusopetus-tyotavat" : "Oppimisympäristöt ja työtavat",
@@ -781,6 +783,9 @@
     "sisaltoalueen-nimi": "Sisältöalueen nimi",
     "tavoitteen-kuvaus-placeholder": "Lisää tavoitteen kuvaus",
     "lisaa-arviointi": "Lisää arviointi",
+    "lisaa-tyotavat": "Lisää työtavat",
+    "lisaa-ohjaus": "Lisää ohjaus",
+    "lisaa-tehtava": "Lisää tehtävä",
     "lisaa-laaja-alainen-osaaminen": "Lisää laaja-alainen osaaminen",
     "lisaa-opetuksen-tavoite": "Lisää opetuksen tavoite",
     "oppimaarat": "Oppimäärät",
@@ -791,6 +796,7 @@
     "useita-oppimaaria": "Useita oppimääriä",
     "oppimaara": "Oppimäärä",
     "lisaa-oppimaara": "Lisää oppimäärä",
+    "haluatko-varmasti-poistaa-osion": "Haluatko varmasti poistaa osion?",
 
     "luonti-projektin-nimi-ohje": "Anna projektin nimi muodossa '[Nimi] tutkinnon perusteprojekti' (esim. 'Rakennustuotannon ammattitutkinnon perusteprojekti').",
     "luonti-paatospaivamaara-ohje": "Lisää perustetyöryhmän asettamisen päätöspäivämäärä.",

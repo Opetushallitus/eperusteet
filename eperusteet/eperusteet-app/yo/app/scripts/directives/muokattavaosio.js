@@ -27,22 +27,33 @@ angular.module('eperusteApp')
         type: '@',
         path: '@?',
         oppiaine: '=?',
-        vuosiluokka: '=?'
+        vuosiluokka: '=?',
+        poistoCb: '='
       },
       controller: 'MuokattavaOsioController'
     };
   })
   .controller('MuokattavaOsioController', function($scope, YleinenData, Utils, $state, OsanMuokkausHelper, $stateParams) {
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
-
     $scope.hasContent = false;
-    $scope.$watch('model', function () {
+    $scope.poistoCb = $scope.poistoCb || angular.noop;
+
+    function update() {
       $scope.realModel = $scope.path ? $scope.model[$scope.path] : $scope.model;
-      $scope.hasContent = $scope.type !== 'tekstikappale' || ($scope.realModel && _.has($scope.realModel, 'otsikko'));
-    }, true);
+      $scope.hasContent = _.isArray($scope.realModel) || ($scope.realModel && _.has($scope.realModel, 'otsikko'));
+      if (_.isArray($scope.model[$scope.path]) && _.isEmpty($scope.model[$scope.path])) {
+        $scope.realModel.$isCollapsed = true;
+      }
+    }
+    update();
+    $scope.$watch('model', update, true);
 
     $scope.edit = function () {
       OsanMuokkausHelper.setup($scope.model, $scope.path, $scope.oppiaine);
       $state.go('root.perusteprojekti.suoritustapa.muokkaus', {suoritustapa: $stateParams.suoritustapa, osanTyyppi: $scope.type, osanId: $scope.realModel.id});
+    };
+
+    $scope.poista = function() {
+      $scope.poistoCb($scope.path);
     };
   });
