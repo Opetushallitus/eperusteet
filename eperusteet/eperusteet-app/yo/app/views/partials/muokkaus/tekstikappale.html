@@ -61,7 +61,7 @@ European Union Public Licence for more details.
           <a ng-click="poistaTyoryhma(tr)" class="action-link" icon-role="remove" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></a>
           {{ tr }}
         </span>
-        <button ng-disabled="kaikkiTyoryhmat.length === 0 || kaikkiTyoryhmat.length === tyoryhmat.length"
+        <button ng-hide="kaikkiTyoryhmat.length === 0" ng-disabled="kaikkiTyoryhmat.length === tyoryhmat.length"
                 ng-click="lisaaTyoryhma()" icon-role="plus" class="btn btn-default"
                 oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }" kaanna="lisaa-tyoryhma"></button>
       </div>
