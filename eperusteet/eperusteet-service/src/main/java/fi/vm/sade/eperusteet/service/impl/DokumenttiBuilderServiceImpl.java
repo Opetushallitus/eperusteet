@@ -29,6 +29,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.Termi;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
@@ -38,6 +39,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.repository.TermistoRepository;
 import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.util.Pair;
@@ -94,6 +96,9 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     @Autowired
     private LocalizedMessagesService messages;
 
+    @Autowired
+    private TermistoRepository termistoRepository;
+
     @Override
     public String generateXML(Peruste peruste, Kieli kieli, Suoritustapakoodi suoritustapakoodi) throws
             TransformerConfigurationException,
@@ -135,6 +140,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             fakeChapter.appendChild(doc.createElement("title"));
             rootElement.appendChild(fakeChapter);
         }
+
+        addGlossary(doc, peruste, kieli);
 
         // helpottaa devaus-debugausta, voi olla vähän turha tuotannossa
         printDocument(doc, System.out);
@@ -1038,6 +1045,41 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                     }
                 }
             }
+        }
+    }
+
+    private void addGlossary(Document doc, Peruste peruste, Kieli kieli) {
+        Element appendix = doc.createElement("appendix");
+        Element title = doc.createElement("title");
+        title.appendChild(doc.createTextNode(messages.translate("docgen.termit.kasitteet-otsikko", kieli)));
+        appendix.appendChild(title);
+        Element glossary = doc.createElement("glossary");
+        Element glossaryTitle = doc.createElement("title");
+        glossaryTitle.appendChild(doc.createTextNode("")); // tyhjä
+        glossary.appendChild(glossaryTitle);
+        appendix.appendChild(glossary);
+
+        List<Termi> termit = termistoRepository.findByPerusteId(peruste.getId());
+
+        if (termit == null || termit.size() <= 0) {
+            return;
+        }
+        doc.getDocumentElement().appendChild(appendix);
+
+        for (Termi termi: termit) {
+            String termiTermi = getTextString(termi.getTermi(), kieli);
+            String termiSelitys = getTextString(termi.getSelitys(), kieli);
+
+            Element glossEntry = doc.createElement("glossentry");
+            glossary.appendChild(glossEntry);
+            Element glossTerm = doc.createElement("glossterm");
+            glossTerm.setAttribute("id", termi.getAvain());
+            glossTerm.appendChild(doc.createTextNode(termiTermi));
+            glossEntry.appendChild(glossTerm);
+
+            Element glossDef = doc.createElement("glossdef");
+            addMarkupToElement(doc, glossDef, termiSelitys);
+            glossEntry.appendChild(glossDef);
         }
     }
 
