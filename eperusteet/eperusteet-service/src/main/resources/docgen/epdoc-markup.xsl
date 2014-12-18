@@ -136,5 +136,15 @@
           </doc:para>
       </doc:footnote>
   </xsl:template>
+  
+  <!-- abbr elements become glossterms
+       for example:
+       <abbr data-viite="idf00b4r">abbrtext</abbr> should become
+       <glossterm linkend="idf00b4r">abbrtext</glossterm> -->
+  <xsl:template match="h:abbr">
+      <doc:glossterm linkend="{@data-viite}">
+         <xsl:apply-templates select="node()|@*"/>
+      </doc:glossterm>
+  </xsl:template>
 
 </xsl:stylesheet>
