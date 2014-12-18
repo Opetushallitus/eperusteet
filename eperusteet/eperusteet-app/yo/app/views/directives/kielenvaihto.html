@@ -1,0 +1,25 @@
+<!-- <ul>
+  <li ng-repeat="item in koodit | filter:{koodi: '!'+kieli}" ng-click="vaihdaKieli(item.koodi)">
+    <span ng-if="!$first">|</span>
+    <a class="action-link" ng-click="vaihdaKieli(item.koodi)" kaanna="item.nimi"></a>
+  </li>
+</ul> -->
+{{'ui-kieli'|kaanna}}:
+<span dropdown class="kieli-dropdown">
+  <a class="action-link dropdown-toggle">{{kieli|kaanna}} <span class="caret"></span></a>
+  <ul class="dropdown-menu dropdown-menu-right" role="menu">
+    <li ng-class="{active: koodi.koodi === kieli}" ng-repeat="koodi in koodit">
+      <a ng-click="vaihdaKieli(koodi.koodi)">{{koodi.nimi|kaanna}}</a>
+    </li>
+  </ul>
+</span>
+
+{{'sisallon-kieli'|kaanna}}:
+<span dropdown class="kieli-dropdown">
+  <a class="action-link dropdown-toggle">{{sisaltokieli|kaanna}} <span class="caret"></span></a>
+  <ul class="dropdown-menu dropdown-menu-right" role="menu">
+    <li ng-class="{active: kieli === sisaltokieli}" ng-repeat="kieli in sisaltokielet">
+      <a ng-click="setSisaltokieli(kieli)">{{kieli|kaanna}}</a>
+    </li>
+  </ul>
+</span>
