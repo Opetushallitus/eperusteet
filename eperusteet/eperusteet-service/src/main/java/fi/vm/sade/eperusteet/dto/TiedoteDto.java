@@ -19,6 +19,7 @@ public class TiedoteDto {
     private LokalisoituTekstiDto sisalto;
     private Date luotu;
     private String luoja;
+    private String nimi;
     private Date muokattu;
     private String muokkaaja;
 }

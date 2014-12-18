@@ -2,7 +2,9 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Tiedote;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.repository.TiedoteRepository;
+import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.TiedoteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -33,6 +35,9 @@ public class TiedoteServiceImpl implements TiedoteService {
     @Autowired
     private TiedoteRepository repository;
 
+    @Autowired
+    private KayttajanTietoService kayttajat;
+
     @Override
     @Transactional(readOnly = true)
     public List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen) {
@@ -51,7 +56,12 @@ public class TiedoteServiceImpl implements TiedoteService {
         if (!tiedote.isJulkinen() && !SecurityUtil.isAuthenticated()) {
             throw new BusinessRuleViolationException("Autentikoimaton käyttäjä voi lukea vain julkisia tiedotteita");
         }
-        return mapper.map(tiedote, TiedoteDto.class);
+        KayttajanTietoDto ktd = kayttajat.hae(tiedote.getLuoja());
+        TiedoteDto tdto = mapper.map(tiedote, TiedoteDto.class);
+        if (ktd != null) {
+            tdto.setNimi(ktd.getKutsumanimi() + " " + ktd.getSukunimi());
+        }
+        return tdto;
     }
 
     @Override
