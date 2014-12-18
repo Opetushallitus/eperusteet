@@ -14,6 +14,7 @@
  * European Union Public Licence for more details.
  */
 
+
 'use strict';
 /* global _, moment, window */
 
