@@ -259,8 +259,9 @@ angular.module('eperusteApp')
         });
 
         function trim(obj) {
+          // Replace all nbsps with normal spaces, remove extra spaces and trim ends.
           if (_.isString(obj)) {
-            obj = obj.replace(/&nbsp;/gi, '').trim();
+            obj = obj.replace(/&nbsp;/gi, ' ').replace(/ +/g, ' ').trim();
           }
           return obj;
         }
