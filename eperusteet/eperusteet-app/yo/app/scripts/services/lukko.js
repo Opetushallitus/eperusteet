@@ -38,6 +38,12 @@ angular.module('eperusteApp')
       perusteId: '@perusteId'
     });
   })
+  .factory('LukkoLaajaalainenOsaaminen', function (SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/laajaalaisetosaamiset/:osanId/lukko', {
+      osanId: '@osanId',
+      perusteId: '@perusteId'
+    });
+  })
   .factory('LukkoVuosiluokkakokonaisuus', function (SERVICE_LOC, $resource) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/vuosiluokkakokonaisuudet/:vuosiluokkaId/lukko', {
       vuosiluokkaId: '@vuosiluokkaId',
@@ -64,7 +70,7 @@ angular.module('eperusteApp')
   })
   .service('Lukitus', function($rootScope, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, Profiili,
     LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
-    LukkoOppiaine, PerusopetusService, LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite, LukkoVuosiluokkakokonaisuus) {
+    LukkoOppiaine, PerusopetusService, LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite, LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen) {
 
     var lukitsin = null;
     var etag = null;
@@ -199,6 +205,12 @@ angular.module('eperusteApp')
       },
       vapautaOppiaine: function (id, cb) {
         vapauta(LukkoOppiaine, {perusteId: PerusopetusService.getPerusteId(), osanId: id}, cb);
+      },
+      lukitseLaajaalainenOsaaminen: function (id, cb) {
+        lukitse(LukkoLaajaalainenOsaaminen, {perusteId: PerusopetusService.getPerusteId(), osanId: id}, cb);
+      },
+      vapautaLaajaalainenOsaaminen: function (id, cb) {
+        vapauta(LukkoLaajaalainenOsaaminen, {perusteId: PerusopetusService.getPerusteId(), osanId: id}, cb);
       },
       lukitseOppiaineenVuosiluokkakokonaisuus: function (oppiaineId, vuosiluokkaId, cb) {
         lukitse(LukkoOppiaineenVuosiluokkakokonaisuus, {

@@ -88,6 +88,10 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
         vuosiluokkakokonaisuudet.add(kokonaisuus);
     }
 
+    public boolean containsLaajaalainenOsaaminen(LaajaalainenOsaaminen osaaminen) {
+        return laajaAlalaisetOsaamiset.contains(osaaminen);
+    }
+
     public boolean containsOppiaine(Oppiaine aine) {
         if (aine == null) {
             return false;

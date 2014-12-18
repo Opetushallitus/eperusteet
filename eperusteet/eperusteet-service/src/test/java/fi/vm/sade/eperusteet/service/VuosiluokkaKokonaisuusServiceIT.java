@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import fi.vm.sade.eperusteet.service.yl.LaajaalainenOsaaminenService;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusContext;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusService;
@@ -56,7 +57,8 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
     @Autowired
     @LockCtx(VuosiluokkaKokonaisuusContext.class)
     private LockService<VuosiluokkaKokonaisuusContext> lockService;
-
+    @Autowired
+    private LaajaalainenOsaaminenService osaaminenService;
 
     private Long perusteId;
     private EntityReference osaaminen;
@@ -67,7 +69,7 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
         perusteId = peruste.getId();
         LaajaalainenOsaaminenDto lo = new LaajaalainenOsaaminenDto();
         lo.setNimi(olt("Nimi"));
-        lo = sisaltoService.addLaajaalainenOsaaminen(perusteId, lo);
+        lo = osaaminenService.addLaajaalainenOsaaminen(perusteId, lo);
         osaaminen = new EntityReference(lo.getId());
     }
 

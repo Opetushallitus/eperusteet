@@ -1,24 +1,24 @@
 /*
-* Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
-*
-* This program is free software: Licensed under the EUPL, Version 1.1 or - as
-* soon as they will be approved by the European Commission - subsequent versions
-* of the EUPL (the "Licence");
-*
-* You may not use this work except in compliance with the Licence.
-* You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* European Union Public Licence for more details.
-*/
+ * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+ *
+ * This program is free software: Licensed under the EUPL, Version 1.1 or - as
+ * soon as they will be approved by the European Commission - subsequent versions
+ * of the EUPL (the "Licence");
+ *
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * European Union Public Licence for more details.
+ */
 
 'use strict';
 /* global _ */
 
 angular.module('eperusteApp')
-  .directive('muokkausOsaaminen', function() {
+  .directive('muokkausOsaaminen', function () {
     return {
       templateUrl: 'views/directives/perusopetus/osaaminen.html',
       restrict: 'E',
@@ -31,7 +31,7 @@ angular.module('eperusteApp')
   })
 
   .controller('MuokkausOsaaminenController', function ($scope, PerusopetusService,
-      PerusteProjektiSivunavi, YleinenData, $stateParams, CloneHelper, $timeout, $state) {
+    PerusteProjektiSivunavi, YleinenData, $stateParams, CloneHelper, $timeout, $state, Lukitus) {
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
     $scope.editableModel = {};
     $scope.editEnabled = false;
@@ -40,14 +40,22 @@ angular.module('eperusteApp')
 
     var callbacks = {
       edit: function () {
-        cloner.clone($scope.editableModel);
+        if ($scope.editableModel.id) {
+          Lukitus.lukitseLaajaalainenOsaaminen($scope.editableModel.id, function () {
+            cloner.clone($scope.editableModel);
+          });
+        } else {
+          cloner.clone($scope.editableModel);
+        }
       },
       save: function () {
         var isNew = !$scope.editableModel.id;
-        PerusopetusService.saveOsa($scope.editableModel, $stateParams, function(tallennettu) {
+        PerusopetusService.saveOsa($scope.editableModel, $stateParams, function (tallennettu) {
           $scope.editableModel = tallennettu;
           if (isNew) {
             $state.go($state.current, _.extend(_.clone($stateParams), {osanId: tallennettu.id}), {reload: true});
+          } else {
+            Lukitus.vapautaLaajaalainenOsaaminen($scope.editableModel.id);
           }
         });
       },
@@ -57,22 +65,28 @@ angular.module('eperusteApp')
           $timeout(function () {
             $state.go.apply($state, $scope.data.options.backState);
           });
+        } else {
+          Lukitus.vapautaLaajaalainenOsaaminen($scope.editableModel.id);
         }
       },
       notify: function (value) {
         $scope.editEnabled = value;
         PerusteProjektiSivunavi.setVisible(!value);
       },
-      validate: function () { return true; }
+      validate: function () {
+        return true;
+      }
     };
 
     $scope.data = {
       options: {
-        title: function () { return $scope.editableModel.nimi; },
+        title: function () {
+          return $scope.editableModel.nimi;
+        },
         editTitle: 'muokkaa-osaaminen',
         newTitle: 'uusi-osaaminen',
         backLabel: 'laaja-alainen-osaaminen',
-        backState: ['root.perusteprojekti.suoritustapa.osalistaus', {suoritustapa: $stateParams.suoritustapa ,osanTyyppi: PerusopetusService.OSAAMINEN}],
+        backState: ['root.perusteprojekti.suoritustapa.osalistaus', {suoritustapa: $stateParams.suoritustapa, osanTyyppi: PerusopetusService.OSAAMINEN}],
         removeWholeLabel: 'poista-osaamiskokonaisuus',
         removeWholeConfirmationText: 'poistetaanko-osaamiskokonaisuus',
         removeWholeFn: function () {

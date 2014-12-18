@@ -25,6 +25,7 @@ import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import fi.vm.sade.eperusteet.service.yl.LaajaalainenOsaaminenService;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusService;
@@ -63,6 +64,9 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @Autowired
     private PerusteenOsaViiteService viiteService;
+
+    @Autowired
+    private LaajaalainenOsaaminenService osaaminenService;
 
     @RequestMapping(value = "/oppiaineet", method = GET)
     public List<OppiaineSuppeaDto> getOppiaineet(
@@ -241,7 +245,7 @@ public class PerusopetuksenPerusteenSisaltoController {
         @PathVariable("perusteId") final Long perusteId,
         @RequestBody LaajaalainenOsaaminenDto dto) {
         dto.setId(null);
-        return sisaltoService.addLaajaalainenOsaaminen(perusteId, dto);
+        return osaaminenService.addLaajaalainenOsaaminen(perusteId, dto);
     }
 
     @RequestMapping(value = "/laajaalaisetosaamiset/{id}", method = POST)
@@ -250,14 +254,14 @@ public class PerusopetuksenPerusteenSisaltoController {
         @PathVariable("id") final Long id,
         @RequestBody LaajaalainenOsaaminenDto dto) {
         dto.setId(id);
-        return sisaltoService.updateLaajaalainenOsaaminen(perusteId, dto);
+        return osaaminenService.updateLaajaalainenOsaaminen(perusteId, dto);
     }
 
     @RequestMapping(value = "/laajaalaisetosaamiset/{id}", method = GET)
     public LaajaalainenOsaaminenDto getOsaaminen(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
-        return sisaltoService.getLaajaalainenOsaaminen(perusteId, id);
+        return osaaminenService.getLaajaalainenOsaaminen(perusteId, id);
     }
 
     @RequestMapping(value = "/laajaalaisetosaamiset/{id}", method = DELETE)
@@ -265,7 +269,7 @@ public class PerusopetuksenPerusteenSisaltoController {
     public void deleteOsaaminen(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
-        sisaltoService.deleteLaajaalainenOsaaminen(perusteId, id);
+        osaaminenService.deleteLaajaalainenOsaaminen(perusteId, id);
     }
 
     @RequestMapping(value = "/sisalto/{id}", method = DELETE)

@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
-import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
@@ -80,47 +79,6 @@ public class PerusopetuksenPerusteenSisaltoServiceImpl implements Perusopetuksen
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         assertExists(sisalto, "Pyydettyä perustetta ei ole olemassa");
         return mapper.mapAsList(sisalto.getLaajaalaisetOsaamiset(), LaajaalainenOsaaminenDto.class);
-    }
-
-    @Override
-    public LaajaalainenOsaaminenDto addLaajaalainenOsaaminen(Long perusteId, LaajaalainenOsaaminenDto dto) {
-        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        assertExists(sisalto, "Päivitettävää tietoa ei ole olemassa");
-        LaajaalainenOsaaminen tmp = mapper.map(dto, LaajaalainenOsaaminen.class);
-        tmp = osaaminenRepository.save(tmp);
-        sisalto.addLaajaalainenOsaaminen(tmp);
-        return mapper.map(tmp, LaajaalainenOsaaminenDto.class);
-    }
-
-    @Override
-    public LaajaalainenOsaaminenDto updateLaajaalainenOsaaminen(Long perusteId, LaajaalainenOsaaminenDto dto) {
-
-        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        assertExists(sisalto, "Päivitettävää tietoa ei ole olemassa");
-        LaajaalainenOsaaminen current = sisalto.getLaajaalainenOsaaminen(dto.getId());
-        assertExists(current, "Päivitettävää tietoa ei ole olemassa");
-        mapper.map(dto, current);
-        sisaltoRepository.save(sisalto);
-        return mapper.map(current, LaajaalainenOsaaminenDto.class);
-    }
-
-    @Override
-    public LaajaalainenOsaaminenDto getLaajaalainenOsaaminen(Long perusteId, Long id) {
-        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        assertExists(sisalto, "Perustetta ei ole olemassa");
-        return mapper.map(sisalto.getLaajaalainenOsaaminen(id), LaajaalainenOsaaminenDto.class);
-    }
-
-    @Override
-    public void deleteLaajaalainenOsaaminen(Long perusteId, Long id) {
-        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        assertExists(sisalto, "Perustetta ei ole olemassa");
-        LaajaalainenOsaaminen lo = sisalto.getLaajaalainenOsaaminen(id);
-        assertExists(lo, "Laaja-alaista osaamista ei ole olemassa");
-
-        sisalto.removeLaajaalainenOsaaminen(lo);
-        // Poista laaja-alainen osaamisen jos siihen ei ole enää viittauksia
-        osaaminenRepository.delete(lo);
     }
 
     @Override

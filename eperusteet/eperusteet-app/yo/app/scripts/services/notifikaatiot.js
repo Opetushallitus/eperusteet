@@ -18,24 +18,30 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('JarjestelmaVirheModalCtrl', function($scope, $modalInstance, $state, viesti) {
+  .controller('JarjestelmaVirheModalCtrl', function ($scope, $modalInstance, $state, viesti) {
     $scope.viesti = viesti;
     $scope.ok = $modalInstance.close;
   })
-  .service('Notifikaatiot', function($rootScope, $timeout, NOTIFICATION_DELAY_SUCCESS, NOTIFICATION_DELAY_WARNING, $modal, $state, Kaanna) {
+  .service('Notifikaatiot', function ($rootScope, $timeout, NOTIFICATION_DELAY_SUCCESS, NOTIFICATION_DELAY_WARNING, $modal, $state, Kaanna) {
     var viestit = [];
 
     function refresh() {
-      $timeout(function() {
+      $timeout(function () {
         paivita();
         $rootScope.$broadcast('update:notifikaatiot');
-        if (!_.isEmpty(viestit)) { refresh(); }
+        if (!_.isEmpty(viestit)) {
+          refresh();
+        }
       }, NOTIFICATION_DELAY_SUCCESS);
     }
 
-    var uusiViesti = _.debounce(function(tyyppi, viesti, ilmanKuvaa) {
-      if (_.isObject(viesti) && viesti.data && viesti.data.syy) { viesti = viesti.data.syy; }
-      else if (!viesti) { viesti = ''; }
+    var uusiViesti = _.debounce(function (tyyppi, viesti, ilmanKuvaa) {
+      if (_.isObject(viesti) && viesti.data && viesti.data.syy) {
+        viesti = viesti.data.syy;
+      }
+      else if (!viesti) {
+        viesti = '';
+      }
 
       if (!_.isEmpty(viestit)) {
         var viimeinenViesti = viestit[_.size(viestit) - 1];
@@ -63,8 +69,10 @@ angular.module('eperusteApp')
       $modal.open({
         templateUrl: 'views/modals/jarjestelmavirhe.html',
         controller: 'JarjestelmaVirheModalCtrl',
-        resolve: { viesti: function() { return viesti; } }
-      }).result.then(function() {
+        resolve: {viesti: function () {
+            return viesti;
+          }}
+      }).result.then(function () {
         cb();
       });
     }
@@ -76,10 +84,16 @@ angular.module('eperusteApp')
         return nyt < viesti;
       }
 
-      viestit = _.filter(viestit, function(viesti) {
-        if (viesti.tyyppi === 1) { return comp(viesti.luotu, NOTIFICATION_DELAY_SUCCESS); }
-        else if (viesti.tyyppi === 2) { return comp(viesti.luotu, NOTIFICATION_DELAY_WARNING); }
-        else { return true; }
+      viestit = _.filter(viestit, function (viesti) {
+        if (viesti.tyyppi === 1) {
+          return comp(viesti.luotu, NOTIFICATION_DELAY_SUCCESS);
+        }
+        else if (viesti.tyyppi === 2) {
+          return comp(viesti.luotu, NOTIFICATION_DELAY_WARNING);
+        }
+        else {
+          return true;
+        }
       });
     }
 
@@ -89,13 +103,15 @@ angular.module('eperusteApp')
         paivita();
         $rootScope.$broadcast('update:notifikaatiot');
       }
-      else { viestit.splice(i, 1); }
+      else {
+        viestit.splice(i, 1);
+      }
     }
 
     function serverCb(response) {
       if (response) {
         if (response.status >= 500) {
-          fataali(Kaanna.kaanna('järjestelmävirhe-alku') + response.status + Kaanna.kaanna('järjestelmävirhe-loppu'), function() {
+          fataali(Kaanna.kaanna('järjestelmävirhe-alku') + response.status + Kaanna.kaanna('järjestelmävirhe-loppu'), function () {
             // TODO Ota käyttöön möyhemmin
             // $state.go('root.aloitussivu');
           });
@@ -111,8 +127,10 @@ angular.module('eperusteApp')
     }
 
     function serverLukitus(response) {
-      if (response && response.data && response.status === 409) {
-        uusiViesti(2, Kaanna.kaanna('lukitus-kayttajalla', { user: response.data.haltijaNimi || response.data.haltijaOid }));
+      if (response && response.status === 409 && response.data && response.data.lukko) {
+        uusiViesti(2, Kaanna.kaanna('lukitus-kayttajalla', {user: response.data.lukko.haltijaNimi || response.data.lukko.haltijaOid}));
+      } else {
+        serverCb(response);
       }
     }
 
@@ -123,17 +141,21 @@ angular.module('eperusteApp')
       fataali: fataali,
       serverCb: serverCb,
       serverLukitus: serverLukitus,
-      viestit: function() { return _.clone(viestit); },
+      viestit: function () {
+        return _.clone(viestit);
+      },
       paivita: paivita,
       poista: poista
     };
   })
-  .controller('NotifikaatioCtrl', function($scope, Notifikaatiot) {
+  .controller('NotifikaatioCtrl', function ($scope, Notifikaatiot) {
     $scope.viestit = [];
 
-    $scope.poistaNotifikaatio = function(viesti) {
+    $scope.poistaNotifikaatio = function (viesti) {
       Notifikaatiot.poista(viesti);
     };
 
-    $scope.$on('update:notifikaatiot', function() { $scope.viestit = Notifikaatiot.viestit(); });
+    $scope.$on('update:notifikaatiot', function () {
+      $scope.viestit = Notifikaatiot.viestit();
+    });
   });
