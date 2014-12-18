@@ -595,8 +595,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 titleElement.appendChild(doc.createTextNode(nimi));
                 String teksti = getTextString(tk.getTeksti(), kieli);
 
-                org.jsoup.nodes.Document fragment = Jsoup.parseBodyFragment(teksti);
-                jsoupIntoDOMNode(doc, element, fragment.body());
+                addMarkupToElement(doc, element, teksti);
 
                 element.appendChild(titleElement);
 
@@ -769,8 +768,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         sectionTitle.appendChild(doc.createTextNode(title));
         section.appendChild(sectionTitle);
 
-        org.jsoup.nodes.Document fragment = Jsoup.parseBodyFragment(teksti);
-        jsoupIntoDOMNode(doc, section, fragment.body());
+        addMarkupToElement(doc, section, teksti);
 
         parent.appendChild(section);
     }
@@ -792,8 +790,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         if (lisatiedot != null) {
             Element lisatietoPara = doc.createElement("para");
             String lisatietoteksti = getTextString(lisatiedot, kieli);
-            org.jsoup.nodes.Document fragment = Jsoup.parseBodyFragment(lisatietoteksti);
-            jsoupIntoDOMNode(doc, lisatietoPara, fragment.body());
+            addMarkupToElement(doc, lisatietoPara, lisatietoteksti);
             arviointiSection.appendChild(lisatietoPara);
         } else {
             LOG.info("Lisatiedot was null");
