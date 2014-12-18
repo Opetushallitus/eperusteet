@@ -1,6 +1,7 @@
 {
     "edellinen": "Edellinen",
     "kieli": "Kieli",
+    "sisallon-kieli": "Sisällön kieli",
     "koodi": "Koodi",
     "lisaa": "Lisää",
     "nimi": "Nimi",
@@ -72,6 +73,8 @@
     "sv": "Ruotsi",
     "en": "Englanti",
     "se": "Saame",
+    "ru": "Venäjä",
+    "ui-kieli": "Käyttöliittymäkieli",
 
     "nimeton": "<Nimetön>",
 

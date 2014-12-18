@@ -27,7 +27,7 @@
                 <h4 ng-show="tavoite.$editing" kaanna="nimi"></h4>
                 <h4 class="tavoite-otsikko action-link" ng-show="!tavoite.$editing" ng-click="tavoiteFn.toggle(tavoite)"
                   ng-bind-html="tavoite.tavoite | kaanna | unsafe"></h4>
-                <div ng-if="tavoite.$editing" ckeditor ng-model="tavoite.tavoite" localized editor-placeholder="tavoitteen-kuvaus-placeholder"></div>
+                <div ng-if="tavoite.$editing" ckeditor ng-model="tavoite.tavoite" slocalized editor-placeholder="tavoitteen-kuvaus-placeholder"></div>
 
                 <h4 kaanna="kohdealueet"></h4>
                 <div tag-cloud="tavoite.$kohdealueet" openable="false" edit-mode="tavoite.$editing" add-label="arviointi-uusi-kohdealue"></div>

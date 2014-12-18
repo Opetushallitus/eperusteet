@@ -11,7 +11,7 @@
   </div>
   <div class="non-collapsibles" ng-if="editEnabled">
     <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header'|kaanna}}*</label>
-    <input id="nimi-input" class="form-control" ng-model="editableModel.nimi" localized required>
+    <input id="nimi-input" class="form-control" ng-model="editableModel.nimi" slocalized required>
     <p class="alert alert-error" ng-show="(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError"
        kaanna>Nimi on pakollinen tieto</p>
     <label kaanna="vuosiluokat" class="header"></label>
@@ -27,12 +27,12 @@
         <!-- <div class="list-group-item">
           <h3 kaanna="muokkaus-teksikappaleen-nimi-header"></h3>
           <h3 class="list-group-item-text" ng-model="editableModel.otsikko" ckeditor editing-enabled="true"
-              editor-placeholder="muokkaus-teksikappaleen-nimi-placeholder" localized></h3>
+              editor-placeholder="muokkaus-teksikappaleen-nimi-placeholder" slocalized></h3>
         </div>
         <div class="list-group-item">
           <h3 kaanna="muokkaus-tekstikappaleen-teksti-header"></h3>
           <div class="list-group-item-text" ng-model="editableModel.teksti" ckeditor editing-enabled="true"
-              editor-placeholder="muokkaus-tekstikappaleen-teksti-placeholder" localized></div>
+              editor-placeholder="muokkaus-tekstikappaleen-teksti-placeholder" slocalized></div>
         </div> -->
 
   </div>

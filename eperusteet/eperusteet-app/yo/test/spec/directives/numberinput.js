@@ -13,6 +13,7 @@ describe('Directive: numberinput', function () {
     $httpBackend.when('GET', /localisation.+/).respond({});
     $httpBackend.when('GET', /eperusteet-service\/api.+/).respond({});
     $httpBackend.when('GET', /views\/aloitussivu.+/).respond({});
+    $httpBackend.when('GET', /cas\/me/).respond({});
     scope = $rootScope.$new();
     $compile = _$compile_;
     $timeout = _$timeout_;

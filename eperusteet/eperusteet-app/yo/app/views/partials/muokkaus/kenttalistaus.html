@@ -24,7 +24,7 @@
         <div class="pull-left draghandle" ui-tree-handle icon-role="drag"></div>
         <div class="content">
           <div ng-if="hasEditableTitle(field)" class="input-wrapper">
-            <input class="form-control" ng-model="field.localeKey" localized placeholder="{{field.titleplaceholder|kaanna}}">
+            <input class="form-control" ng-model="field.localeKey" slocalized placeholder="{{field.titleplaceholder|kaanna}}">
           </div>
           <span ng-if="!hasEditableTitle(field)">{{field.localeKey | kaanna}}</span>
         </div>

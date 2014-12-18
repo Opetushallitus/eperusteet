@@ -18,7 +18,7 @@
 /*global _, moment*/
 
 angular.module('eperusteApp')
-  .service('YleinenData', function YleinenData($rootScope, $translate, Arviointiasteikot, Notifikaatiot) {
+  .service('YleinenData', function YleinenData($rootScope, $translate, Arviointiasteikot, Notifikaatiot, Kaanna) {
     this.dateOptions = {
       'year-format': 'yy',
       //'month-format': 'M',
@@ -167,7 +167,7 @@ angular.module('eperusteApp')
     };
 
     this.valitseKieli = function(teksti) {
-      return teksti && teksti.hasOwnProperty(this.kieli) ? teksti[this.kieli] : '';
+      return Kaanna.kaannaSisalto(teksti);
     };
 
   });

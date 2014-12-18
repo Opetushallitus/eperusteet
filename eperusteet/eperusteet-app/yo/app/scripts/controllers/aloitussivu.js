@@ -26,6 +26,9 @@ angular.module('eperusteApp')
         resolve: {
           suosikit: function(Profiili) {
             return Profiili;
+          },
+          casTiedot: function (Profiili) {
+            return Profiili.casTiedot();
           }
         },
         onEnter: ['YleinenData', '$stateParams', function (YleinenData, $stateParams) {

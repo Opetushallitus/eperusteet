@@ -44,7 +44,7 @@ angular.module('eperusteApp')
     $scope.muokkausTutkintokohtaisetOsat = false;
     $scope.tyyppi = 'kaikki';
     $scope.tyoryhmaMap = {};
-    $scope.tiivistelma = Kaanna.kaanna($scope.peruste.kuvaus);
+    $scope.tiivistelma = $scope.peruste.kuvaus;
     $scope.muodostumisKompensaattori = $scope.peruste.koulutustyyppi !== 'koulutustyyppi_15' ? 1 : 0;
 
     $scope.onTyoryhmia = function() {

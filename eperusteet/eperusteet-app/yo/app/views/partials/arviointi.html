@@ -23,7 +23,7 @@
               <a ng-show="editEnabled" ng-click="kohde.muokkaa(arvioinninkohde, $event)" class="muokkausnappi action-link" icon-role="edit"></a>
             </span>
             <span ng-show="arvioinninkohde === originalKohde">
-              <input class="form-control kohdeotsikko" ng-model="editableKohde.otsikko" localized placeholder="{{'arviointi-uusi-kohde-placeholder' | kaanna}}">
+              <input class="form-control kohdeotsikko" ng-model="editableKohde.otsikko" slocalized placeholder="{{'arviointi-uusi-kohde-placeholder' | kaanna}}">
               <div class="muokkaus-napit pull-right">
                 <button class="btn btn-default btn-xs" ng-click="kohde.peruMuokkaus()" kaanna>peru</button>
                 <button class="btn btn-primary btn-xs" ng-click="kohde.poistuMuokkauksesta(kohdealue.arvioinninKohteet, $index)" kaanna>ok</button>
@@ -42,7 +42,7 @@
                   <tr ng-repeat="kriteeri in osaamistasonKriteeri.kriteerit">
                     <td class="dragger" ng-class="{'drag-enable': osaamistasonKriteeri.kriteerit.length > 1}"><span class="glyphicon glyphicon-resize-vertical"></span></td>
                     <td class="rivi">
-                      <textarea class="form-control msd-elastic" ng-model="kriteeri" localized
+                      <textarea class="form-control msd-elastic" ng-model="kriteeri" slocalized
                                 placeholder="{{'arviointi-uusi-kriteeri-placeholder' | kaanna}}"></textarea>
                     </td>
                     <td class="toiminnot">

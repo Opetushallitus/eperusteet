@@ -35,7 +35,7 @@
 
     <div class="non-collapsibles">
       <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header'|kaanna}}*</label>
-      <input id="nimi-input" class="form-control" ng-model="editableModel.nimi" localized required>
+      <input id="nimi-input" class="form-control" ng-model="editableModel.nimi" slocalized required>
       <p class="alert alert-error" ng-show="(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError"
          kaanna>Nimi on pakollinen tieto</p>
       <label for="koodi-input" class="header" kaanna="muokkaus-tutkinnon-osan-koodi-header"></label>

@@ -31,7 +31,7 @@ European Union Public Licence for more details.
         <h3 class="panel-title" kaanna>nimi</h3>
       </div>
       <div class="panel-body">
-        <ml-input ng-show="editEnabled" ml-data="editablePeruste.nimi"></ml-input>
+        <input ng-show="editEnabled" ng-model="editablePeruste.nimi" class="form-control" slocalized></input>
         <p ng-hide="editEnabled">{{ peruste.nimi | kaanna }}</p>
       </div>
     </div>
@@ -121,7 +121,7 @@ European Union Public Licence for more details.
         <h3 class="panel-title" kaanna>tiivistelma</h3>
       </div>
       <div class="panel-body">
-        <ml-input ng-if="editEnabled" ml-data="editablePeruste.kuvaus" type="textarea"></ml-input>
+        <textarea ng-if="editEnabled" class="form-control msd-elastic" ng-model="editablePeruste.kuvaus" slocalized></textarea>
 
         <p ng-show="hasContent(peruste.kuvaus) && !editEnabled" kaanna="peruste.kuvaus"></p>
         <p ng-show="!hasContent(peruste.kuvaus) && !editEnabled" kaanna="ei-tiivistelmaa"></p>

@@ -10,10 +10,10 @@
     </div>
     <div ng-show="muokkaus && !vanhempi">
       <h2 kaanna="nimi"></h2>
-      <input class="form-control" ng-model="rakenne.muodostumisOtsikko.nimi" localized>
+      <input class="form-control" ng-model="rakenne.muodostumisOtsikko.nimi" slocalized>
       <h2 kaanna="tutkinnon-rakenteen-kuvaus"></h2>
       <div ckeditor editing-enabled="true" ng-model="rakenne.rakenne.kuvaus"
-           editor-placeholder="kuvaus" localized></div>
+           editor-placeholder="kuvaus" slocalized></div>
     </div>
     <h2 kaanna="tutkinnon-rakenne"></h2>
     <div class="tree-con" ng-show="muokkaus || rakenne.rakenne.osat.length > 0">

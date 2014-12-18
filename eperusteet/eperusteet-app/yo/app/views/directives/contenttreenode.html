@@ -7,7 +7,7 @@
         <span ng-show="!sisalto.lapset || sisalto.lapset.length === 0" class="ep-icon" ng-class="sisalto.$type ? sisalto.$type : 'ep-text'"></span>
       </div>
       <h3>
-        <span ep-highlight="rajaus">{{ sisalto.perusteenOsa.nimi || sisalto.nimi | kaanna }}</span>
+        <span ep-highlight="rajaus" ng-bind="sisalto.perusteenOsa.nimi || sisalto.nimi | kaanna"></span>
       </h3>
       <div class="ryhma-info">
         <span ng-if="badges.$resolved">

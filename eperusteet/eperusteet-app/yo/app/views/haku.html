@@ -19,14 +19,14 @@
       <label for="haku-ala" kaanna>haku-koulutusala</label>
       <select id="haku-ala" ng-model="hakuparametrit.koulutusala" class="form-control" ng-change="koulutusalaMuuttui()">
         <option value="" kaanna>haku-kaikki-alat</option>
-        <option ng-repeat="ala in koulutusalat" value="{{ala.koodi}}" ng-selected="hakuparametrit.koulutusala === ala.koodi">{{valitseKieli(ala.nimi)}}</option>
+        <option ng-repeat="ala in koulutusalat" value="{{ala.koodi}}" ng-selected="hakuparametrit.koulutusala === ala.koodi">{{ala.nimi|kaanna}}</option>
       </select>
     </div>
     <div class="form-group col-xs-6" ng-show="konteksti !== kontekstit[0] && hakuparametrit.koulutusala !== ''">
       <label for="haku-opintoala" kaanna>haku-opintoala</label>
       <select id="haku-opintoala" ng-model="hakuparametrit.opintoala" class="form-control" ng-change="hakuMuuttui()">
         <option value="" kaanna>haku-kaikki-opintoalat</option>
-        <option ng-repeat="ala in opintoalat" value="{{ala.koodi}}" ng-selected="hakuparametrit.opintoala === ala.koodi">{{valitseKieli(ala.nimi)}}</option>
+        <option ng-repeat="ala in opintoalat" value="{{ala.koodi}}" ng-selected="hakuparametrit.opintoala === ala.koodi">{{ala.nimi|kaanna}}</option>
       </select>
     </div>
     <div class="clearfix"></div>
@@ -56,7 +56,7 @@
         <td><a ui-sref="root.esitys.peruste({ perusteId: peruste.id, suoritustapa:  hakuparametrit.suoritustapa})"><span ng-bind-html="korosta(valitseKieli(peruste.nimi))"></span></a></td>
         <td>
             <ul style="list-style:none; padding-left:0; margin-bottom: 0;" ng-repeat="koulutus in peruste.koulutukset">
-                <li>{{valitseKieli(koulutusalaNimi(koulutus.koulutusalakoodi).nimi)}}</li>
+                <li>{{koulutusalaNimi(koulutus.koulutusalakoodi).nimi|kaanna}}</li>
             </ul>
         </td>
         <td>{{peruste.voimassaoloAlkaa|date:'dd.MM.yyyy'}}</td>

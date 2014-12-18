@@ -212,7 +212,7 @@ angular.module('eperusteApp')
           });
 
           if(element !== null && scope.field.localized) {
-            element.attr('localized', '');
+            element.attr('slocalized', '');
           }
           if (scope.field.isolateEdit) {
             element = wrapEditor(element);
@@ -282,6 +282,43 @@ angular.module('eperusteApp')
         scope.$on('$translateChangeSuccess', function() {
           if(!angular.isUndefined(ngModelCtrl.$modelValue) && !_.isEmpty(ngModelCtrl.$modelValue[YleinenData.kieli])) {
             ngModelCtrl.$setViewValue(ngModelCtrl.$modelValue[YleinenData.kieli]);
+          } else {
+            ngModelCtrl.$setViewValue('');
+          }
+          ngModelCtrl.$render();
+        });
+      }
+    };
+  })
+  .directive('slocalized', function($rootScope, YleinenData, Kieli)  {
+    return {
+      priority: 5,
+      restrict: 'A',
+      require: 'ngModel',
+      link: function(scope, element, attrs, ngModelCtrl) {
+
+        ngModelCtrl.$formatters.push(function(modelValue) {
+          if(angular.isUndefined(modelValue)) { return; }
+          if(modelValue === null) { return; }
+          return modelValue[Kieli.getSisaltokieli()];
+        });
+
+        ngModelCtrl.$parsers.push(function(viewValue) {
+          var localizedModelValue = ngModelCtrl.$modelValue;
+
+          if(angular.isUndefined(localizedModelValue)) {
+            localizedModelValue = {};
+          }
+          if(localizedModelValue === null) {
+            localizedModelValue = {};
+          }
+          localizedModelValue[Kieli.getSisaltokieli()] = viewValue;
+          return localizedModelValue;
+        });
+
+        scope.$on('changed:sisaltokieli', function(event, sisaltokieli) {
+          if(ngModelCtrl.$modelValue !== null && !angular.isUndefined(ngModelCtrl.$modelValue) && !_.isEmpty(ngModelCtrl.$modelValue[sisaltokieli])) {
+            ngModelCtrl.$setViewValue(ngModelCtrl.$modelValue[sisaltokieli]);
           } else {
             ngModelCtrl.$setViewValue('');
           }

@@ -67,7 +67,7 @@
             <div class="clearfix"></div>
           </div>
           <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header'|kaanna}}*</label>
-          <input id="nimi-input" class="form-control" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.nimi" localized required>
+          <input id="nimi-input" class="form-control" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.nimi" slocalized required>
           <p class="alert alert-error" ng-show="(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError"
              kaanna>Nimi on pakollinen tieto</p>
           <div ng-if="suoritustapa !== 'naytto'">
@@ -104,8 +104,9 @@
         <kenttalistaus edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields"></kenttalistaus>
       </div>
       <div class="non-collapsibles" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2'">
-        <label class="header" kaanna>kuvaus</label>
-        <ml-input ng-show="editEnabled" ml-data="editableTutkinnonOsaViite.tutkinnonOsa.kuvaus" type="textarea"></ml-input>
+        <label class="header" for="tutke2-kuvaus" kaanna>kuvaus</label>
+        <textarea id="tutke2-kuvaus" class="form-control msd-elastic" ng-show="editEnabled" slocalized
+          ng-model="editableTutkinnonOsaViite.tutkinnonOsa.kuvaus"></textarea>
         <p ng-show="!editEnabled">{{tutkinnonOsaViite.tutkinnonOsa.kuvaus| kaanna}}</p>
       </div>
 
