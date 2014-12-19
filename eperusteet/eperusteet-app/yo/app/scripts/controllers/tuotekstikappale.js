@@ -18,8 +18,10 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('TuoTekstikappale', function($scope, $modalInstance, Notifikaatiot, peruste,
+  .controller('TuoTekstikappale', function($q, $scope, $modalInstance, Notifikaatiot, peruste,
       suoritustapa, PerusteenRakenne, SuoritustapaSisalto, YleinenData, Perusteet, Algoritmit, Kaanna) {
+    var sisallot = {};
+    $scope.nykyinenPeruste = peruste;
     $scope.perusteet = [];
     $scope.sivuja = 0;
     $scope.sivu = 0;
@@ -28,10 +30,10 @@ angular.module('eperusteApp')
     $scope.valitut = 0;
     $scope.search = {
       term: '',
-      changed: function () {
+      changed: function() {
         $scope.paginate.current = 1;
       },
-      filterFn: function (item) {
+      filterFn: function(item) {
         return Algoritmit.match($scope.search.term, item.perusteenOsa.nimi);
       }
     };
@@ -41,16 +43,16 @@ angular.module('eperusteApp')
       current: 1,
     };
 
-    $scope.orderFn = function (item) {
+    $scope.orderFn = function(item) {
       return Kaanna.kaanna(item.perusteenOsa.nimi).toLowerCase();
     };
 
-    $scope.updateTotal = function () {
-      $scope.valitut = _.size(_.filter($scope.sisalto, '$valittu'));
+    $scope.updateTotal = function() {
+      $scope.valitut = _.size(_.filter($scope.valittuPeruste.$sisalto, '$valittu'));
     };
 
     $scope.toggleKaikki = function(valinta) {
-      _.each($scope.sisalto, function(tulos) {
+      _.each($scope.valittuPeruste.$sisalto, function(tulos) {
         tulos.$valittu = false;
         if ($scope.search.term) {
           if ($scope.search.filterFn(tulos)) {
@@ -72,16 +74,31 @@ angular.module('eperusteApp')
     };
     $scope.haku('');
 
+    $scope.vaihdaSuoritustapa = function(valinta) {
+      $scope.valitut = 0;
+      _.each($scope.valittuPeruste.$sisalto, function(s) { s.$valittu = 0; });
+      $scope.valittuPeruste.$sisalto = sisallot[valinta.suoritustapakoodi];
+    };
+
     $scope.valitse = function(valittuPeruste) {
       $scope.valittuPeruste = valittuPeruste;
-      Perusteet.get({perusteId: valittuPeruste.id}, function (res) {
-        SuoritustapaSisalto.get({
-          perusteId: valittuPeruste.id,
-          suoritustapa: YleinenData.validSuoritustapa(res, suoritustapa)
-        }, function(res) {
-          $scope.sisalto = _.reject(res.lapset, function(lapsi) {
-            return lapsi.perusteenOsa.tunniste === 'rakenne';
-          });
+      $scope.valittuPeruste.$suoritustavat = {};
+
+      Perusteet.get({perusteId: valittuPeruste.id}, function(peruste) {
+        $scope.valittuSuoritustapa = _.first(peruste.suoritustavat).suoritustapakoodi;
+        $q.all(_.map(peruste.suoritustavat, function(st) {
+          return SuoritustapaSisalto.get({
+            perusteId: valittuPeruste.id,
+            suoritustapa: YleinenData.validSuoritustapa(peruste, st.suoritustapakoodi)
+          }).$promise;
+        }))
+        .then(function(res) {
+          sisallot = _.zipObject(_.map(peruste.suoritustavat, 'suoritustapakoodi'), _.map(res, function(hst) {
+            return _.reject(hst.lapset, function(lapsi) {
+              return lapsi.perusteenOsa.tunniste === 'rakenne';
+            });
+          }));
+          $scope.valittuPeruste.$sisalto = sisallot[suoritustapa];
         }, Notifikaatiot.serverCb);
       }, Notifikaatiot.serverCb);
     };
@@ -94,6 +111,6 @@ angular.module('eperusteApp')
     };
     $scope.peru = function() { $modalInstance.dismiss(); };
     $scope.ok = function() {
-      $modalInstance.close(_.filter($scope.sisalto, function(s) { return s.$valittu; }));
+      $modalInstance.close(_.filter($scope.valittuPeruste.$sisalto, function(s) { return s.$valittu; }));
     };
   });
