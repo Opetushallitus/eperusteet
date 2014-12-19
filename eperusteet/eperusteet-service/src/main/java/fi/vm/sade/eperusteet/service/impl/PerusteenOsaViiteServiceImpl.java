@@ -173,7 +173,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         lapset.add(uusiViite);
         uusiViite = repository.save(uusiViite);
 
-        if (viiteDto == null) {
+        if (viiteDto == null || viiteDto.getPerusteenOsaRef() == null) {
             TekstiKappale uusiKappale = new TekstiKappale();
             uusiKappale = perusteenOsaRepository.save(uusiKappale);
             uusiViite.setPerusteenOsa(uusiKappale);

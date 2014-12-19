@@ -334,12 +334,12 @@ public class PerusopetuksenPerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/sisalto/{id}/lapset", method = POST)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void addSisalto(
+    public PerusteenOsaViiteDto.Matala addSisalto(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id,
         @RequestBody(required = false) PerusteenOsaViiteDto.Matala dto) {
-        sisallot.addSisalto(perusteId, id, dto);
+        PerusteenOsaViiteDto.Matala uusiSisalto = sisallot.addSisalto(perusteId, id, dto);
+        return uusiSisalto;
     }
 
     @RequestMapping(value = "/sisalto/{id}", method = POST)

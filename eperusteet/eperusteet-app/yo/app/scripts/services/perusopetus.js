@@ -124,10 +124,8 @@ angular.module('eperusteApp')
       }
     };
 
-    this.addSisaltoChild = function (id, success) {
-      console.log('addSisaltoChild', commonParams({osanId: id}), success);
-      // TODO odottaa bäkkäriä
-      //PerusopetuksenSisalto.addChild(commonParams({osanId: id}), {}, success);
+    this.addSisaltoChild = function(id, success) {
+      PerusopetuksenSisalto.addChild(commonParams({osanId: id}), {}, success);
     };
 
     this.updateSisaltoViitteet = function (sisalto, data, success) {
