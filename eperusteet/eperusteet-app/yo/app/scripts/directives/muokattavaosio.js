@@ -28,7 +28,7 @@ angular.module('eperusteApp')
         path: '@?',
         oppiaine: '=?',
         vuosiluokka: '=?',
-        poistoCb: '='
+        poistoCb: '=?'
       },
       controller: 'MuokattavaOsioController'
     };
@@ -40,7 +40,8 @@ angular.module('eperusteApp')
 
     function update() {
       $scope.realModel = $scope.path ? $scope.model[$scope.path] : $scope.model;
-      $scope.hasContent = _.isArray($scope.realModel) || ($scope.realModel && _.has($scope.realModel, 'otsikko'));
+      $scope.hasContent = _.isArray($scope.realModel) || ($scope.realModel && _.has($scope.realModel, 'otsikko')) ||
+        $scope.type === 'tavoitteet';
       if (_.isArray($scope.model[$scope.path]) && _.isEmpty($scope.model[$scope.path])) {
         $scope.realModel.$isCollapsed = true;
       }
