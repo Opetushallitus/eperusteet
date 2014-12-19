@@ -17,9 +17,7 @@ package fi.vm.sade.eperusteet.service.impl.yl;
 
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
-import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.repository.LaajaalainenOsaaminenRepository;
-import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.impl.AbstractLockService;
@@ -37,19 +35,14 @@ import org.springframework.stereotype.Service;
 public class LaajaalainenOsaaminenLockServiceImpl extends AbstractLockService<LaajaalainenOsaaminenContext> {
 
     @Autowired
-    private PerusopetuksenPerusteenSisaltoRepository repository;
-
-    @Autowired
     private LaajaalainenOsaaminenRepository osaaminenRepository;
 
     @Override
     protected final ReferenceableEntity validateCtx(LaajaalainenOsaaminenContext ctx, boolean readOnly) {
         final PermissionManager.Permission permission = readOnly ? PermissionManager.Permission.LUKU : PermissionManager.Permission.MUOKKAUS;
         permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, permission);
-
-        PerusopetuksenPerusteenSisalto s = repository.findByPerusteId(ctx.getPerusteId());
-        LaajaalainenOsaaminen osaaminen = osaaminenRepository.findOne(ctx.getOsaaminenId());
-        if (s == null || !s.containsLaajaalainenOsaaminen(osaaminen)) {
+        LaajaalainenOsaaminen osaaminen = osaaminenRepository.findBy(ctx.getPerusteId(), ctx.getOsaaminenId());
+        if (osaaminen == null) {
             throw new BusinessRuleViolationException("Virheellinen lukitus");
         }
         return osaaminen;

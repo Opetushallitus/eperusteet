@@ -52,6 +52,7 @@ public class OppiaineLockServiceImpl extends AbstractLockService<OppiaineLockCon
         final PermissionManager.Permission permission = readOnly ? PermissionManager.Permission.LUKU : PermissionManager.Permission.MUOKKAUS;
         permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, permission);
 
+        //TODO: haun optimointi
         PerusopetuksenPerusteenSisalto s = repository.findByPerusteId(ctx.getPerusteId());
         Oppiaine aine = oppiaineRepository.findOne(ctx.getOppiaineId());
         if (s == null || !s.containsOppiaine(aine)) {

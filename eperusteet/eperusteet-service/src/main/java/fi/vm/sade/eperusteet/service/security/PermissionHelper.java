@@ -20,7 +20,11 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.WithPerusteTila;
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -51,7 +55,11 @@ public class PermissionHelper {
         if (id == null) {
             return null;
         }
-        WithPerusteTila e = em.find(entity, id);
-        return e == null ? null : e.getTila();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<PerusteTila> query = cb.createQuery(PerusteTila.class);
+        Root<? extends WithPerusteTila> root = query.from(entity);
+        query.select(root.<PerusteTila>get("tila")).where(cb.equal(root.get("id"), id));
+        List<PerusteTila> result = em.createQuery(query).getResultList();
+        return result.isEmpty() ? null : result.get(0);
     }
 }
