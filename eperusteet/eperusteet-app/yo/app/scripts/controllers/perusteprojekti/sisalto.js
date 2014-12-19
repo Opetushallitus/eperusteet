@@ -175,7 +175,6 @@ angular.module('eperusteApp')
         }, function() { Notifikaatiot.onnistui('tekstikappaleiden-tuonti-onnistui'); });
       });
     };
-    $scope.tuoSisalto(); //FIXME poista
 
     $scope.createSisalto = function() {
       lisaaSisalto('save', {}, function(response) {

@@ -7,7 +7,7 @@
 <div class="modal-body">
   <div ng-show="!valittuPeruste">
     <div class="tuo-nykyisesta-perusteesta">
-      <a href="" icon-role="add" ng-click="valitse(nykyinenPeruste)" kaanna="'tuo-nykyisesta-perusteesta'"></a>
+      <a class="action-link" icon-role="add" ng-click="valitse(nykyinenPeruste)" kaanna="'tuo-nykyisesta-perusteesta'"></a>
     </div>
     <rajaus ng-if="!lataa" model="syote" placeholder="hae-perusteita" callback="haku(value)"></rajaus>
     <div style="margin-top: 8px" class="results">
@@ -33,7 +33,7 @@
     <tabset class="tekstikappale-tuonti-tabs" justified="true">
       <tab ng-click="vaihdaSuoritustapa(st)" ng-repeat="st in valittuPeruste.suoritustavat" heading="{{ st.suoritustapakoodi | kaanna }}"></tab>
     </tabset>
-    <rajaus ng-show="filtered.length > 0" model="search.term" placeholder="etsi-sisallosta" callback="search.changed(value)"></rajaus>
+    <rajaus ng-show="search.term.length !== 0 || filtered.length > 0" model="search.term" placeholder="etsi-sisallosta" callback="search.changed(value)"></rajaus>
     <h3>{{ valittuPeruste.nimi | kaanna }}</h3>
     <div class="alert alert-warning" ng-show="filtered.length === 0" kaanna="ei-tekstikappaleita"></div>
     <table ng-show="filtered.length > 0" class="table table-striped">

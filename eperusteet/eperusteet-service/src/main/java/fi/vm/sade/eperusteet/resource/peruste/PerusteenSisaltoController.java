@@ -66,7 +66,7 @@ public class PerusteenSisaltoController {
         @PathVariable("suoritustapa") final String suoritustapa,
         @RequestBody(required = false) final PerusteenOsaViiteDto.Matala dto
     ) {
-        if ( dto == null || (dto.getPerusteenOsaRef() == null && dto.getPerusteenOsa() == null)) {
+        if (dto == null || (dto.getPerusteenOsaRef() == null && dto.getPerusteenOsa() == null)) {
             return service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), null);
         } else {
             return addSisaltoViite(perusteId, suoritustapa, dto);

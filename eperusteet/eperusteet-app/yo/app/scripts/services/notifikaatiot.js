@@ -129,7 +129,7 @@ angular.module('eperusteApp')
     function serverLukitus(response) {
       if (response && response.status === 409 && response.data && response.data.lukko) {
         uusiViesti(2, Kaanna.kaanna('lukitus-kayttajalla', {user: response.data.lukko.haltijaNimi || response.data.lukko.haltijaOid}));
-      } else {
+      } else if (response && response.status !== 404) {
         serverCb(response);
       }
     }

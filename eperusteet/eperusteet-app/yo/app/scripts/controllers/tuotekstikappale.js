@@ -81,10 +81,8 @@ angular.module('eperusteApp')
     };
 
     $scope.valitse = function(valittuPeruste) {
-      $scope.valittuPeruste = valittuPeruste;
-      $scope.valittuPeruste.$suoritustavat = {};
-
       Perusteet.get({perusteId: valittuPeruste.id}, function(peruste) {
+        $scope.valittuPeruste = peruste;
         $scope.valittuSuoritustapa = _.first(peruste.suoritustavat).suoritustapakoodi;
         $q.all(_.map(peruste.suoritustavat, function(st) {
           return SuoritustapaSisalto.get({
