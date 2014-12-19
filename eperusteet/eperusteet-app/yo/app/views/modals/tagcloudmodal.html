@@ -5,7 +5,7 @@
 </div>
 <div class="modal-body tag-modal">
   <accordion close-others="false">
-    <accordion-group ng-repeat="tag in model" is-open="tag.$isopen" ng-class="{chosen: !tag.$hidden}">
+    <accordion-group ng-repeat="tag in model | orderBy:orderFn" is-open="tag.$isopen" ng-class="{chosen: !tag.$hidden}">
       <accordion-heading>
         <div ng-class="tag.$hidden ? 'unchecked' : 'checked'" class="tag-indicator"
              ng-click="toggle(tag, $event)">
@@ -14,7 +14,7 @@
         <span class="glyphicon" ng-class="tag.$isopen ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
         {{tag.nimi | kaanna}}
       </accordion-heading>
-      <div ng-bind-html="valitseKieli(tag.teksti) | unsafe"></div>
+      <div ng-bind-html="tag.teksti | kaanna | unsafe"></div>
     </accordion-group>
   </accordion>
 </div>
