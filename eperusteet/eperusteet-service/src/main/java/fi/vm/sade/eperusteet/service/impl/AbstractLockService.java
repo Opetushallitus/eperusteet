@@ -16,7 +16,6 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Lukko;
-import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
@@ -37,43 +36,48 @@ public abstract class AbstractLockService<T> implements LockService<T> {
     @Autowired
     protected PermissionChecker permissionChecker;
 
+    @Override
     @Transactional(readOnly = true)
     public LukkoDto getLock(T ctx) {
-        Lukko lock = manager.getLock(validateCtx(ctx, true).getId());
+        Lukko lock = manager.getLock(validateCtx(ctx, true));
         return lock == null ? null : LukkoDto.of(lock, latestRevision(ctx));
     }
 
+    @Override
     @Transactional
     public LukkoDto lock(T ctx) {
         return lock(ctx,null);
     }
 
+    @Override
     @Transactional
     public LukkoDto lock(T ctx, Integer ifMatchRevision) {
-        ReferenceableEntity re = validateCtx(ctx, false);
+        Long key = validateCtx(ctx, false);
         final int latestRevision = latestRevision(ctx);
         if ( ifMatchRevision == null || latestRevision == ifMatchRevision ) {
-            return LukkoDto.of(manager.lock(re.getId()), latestRevision);
+            return LukkoDto.of(manager.lock(key), latestRevision);
         }
         return null;
     }
 
+    @Override
     @Transactional
     public void unlock(T ctx) {
-        manager.unlock(validateCtx(ctx, false).getId());
+        manager.unlock(validateCtx(ctx, false));
     }
 
+    @Override
     @Transactional(readOnly = true)
     public void assertLock(T ctx) {
-        manager.ensureLockedByAuthenticatedUser(validateCtx(ctx, true).getId());
+        manager.ensureLockedByAuthenticatedUser(validateCtx(ctx, true));
     }
 
     /**
      * Varmistaa että lukituskonteksti on validi
      * @param ctx
-     * @return kontekstia vastaavan lukittavan entiteetin
+     * @return kontekstia vastaavan lukittavan entiteetin pääavaimen
      */
-    protected abstract ReferenceableEntity validateCtx(T ctx, boolean readOnly);
+    protected abstract Long validateCtx(T ctx, boolean readOnly);
 
     /**
      * Varmistaa että lukituskonteksti on validi

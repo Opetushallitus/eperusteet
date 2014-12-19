@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
-import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
@@ -43,7 +42,7 @@ public class VuosiluokkakokonaisuusLockServiceImpl extends AbstractLockService<V
     private VuosiluokkaKokonaisuusRepository kokonaisuudet;
 
     @Override
-    protected final ReferenceableEntity validateCtx(VuosiluokkaKokonaisuusContext ctx, boolean readOnly) {
+    protected final Long validateCtx(VuosiluokkaKokonaisuusContext ctx, boolean readOnly) {
         final PermissionManager.Permission permission = readOnly ? PermissionManager.Permission.LUKU : PermissionManager.Permission.MUOKKAUS;
         permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, permission);
 
@@ -52,7 +51,7 @@ public class VuosiluokkakokonaisuusLockServiceImpl extends AbstractLockService<V
         if (s == null || !s.containsVuosiluokkakokonaisuus(kokonaisuus)) {
             throw new BusinessRuleViolationException("Virheellinen lukitus");
         }
-        return kokonaisuus;
+        return kokonaisuus.getId();
 
     }
 

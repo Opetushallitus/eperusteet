@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
-import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.repository.LaajaalainenOsaaminenRepository;
 import fi.vm.sade.eperusteet.service.LockCtx;
@@ -38,14 +37,14 @@ public class LaajaalainenOsaaminenLockServiceImpl extends AbstractLockService<La
     private LaajaalainenOsaaminenRepository osaaminenRepository;
 
     @Override
-    protected final ReferenceableEntity validateCtx(LaajaalainenOsaaminenContext ctx, boolean readOnly) {
+    protected final Long validateCtx(LaajaalainenOsaaminenContext ctx, boolean readOnly) {
         final PermissionManager.Permission permission = readOnly ? PermissionManager.Permission.LUKU : PermissionManager.Permission.MUOKKAUS;
         permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, permission);
         LaajaalainenOsaaminen osaaminen = osaaminenRepository.findBy(ctx.getPerusteId(), ctx.getOsaaminenId());
         if (osaaminen == null) {
             throw new BusinessRuleViolationException("Virheellinen lukitus");
         }
-        return osaaminen;
+        return osaaminen.getId();
     }
 
     @Override
