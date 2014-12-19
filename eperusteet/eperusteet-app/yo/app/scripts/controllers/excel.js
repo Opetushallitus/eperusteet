@@ -155,8 +155,10 @@ angular.module('eperusteApp')
       });
 
       _.forEach(filtered, function(ot) {
+        ot.koodiUri = ot.koodiUri || null;
+        ot.koodiArvo = ot.koodiUri || null;
         var koodiUriKaytossa = _.any($scope.osatutkinnot, function(toinen) {
-          return (ot !== toinen && ot.koodiUri !== '' && toinen.koodiUri === ot.koodiUri);
+          return (ot !== toinen && ot.koodiUri && toinen.koodiUri === ot.koodiUri);
         });
         if (koodiUriKaytossa) {
           ot.$syy = ['excel-ei-kahta-samaa'];
