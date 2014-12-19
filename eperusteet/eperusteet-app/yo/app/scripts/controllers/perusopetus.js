@@ -177,6 +177,7 @@ angular.module('eperusteApp')
     };
   })
 
+  // FIXME: Taitaa olla deprekoitunut
   .controller('OsaAlueController', function ($scope, $q, $stateParams, PerusopetusService,
     ProjektinMurupolkuService) {
     $scope.isVuosiluokka = $stateParams.osanTyyppi === PerusopetusService.VUOSILUOKAT;
@@ -234,10 +235,12 @@ angular.module('eperusteApp')
     }
 
     function valitseAktiivinenTekstisisalto(osaId) {
+      console.log('moro', osaId);
       $scope.valittuTekstisisalto = undefined;
       PerusteenOsat.get({
         osanId: osaId
       }, function(res) {
+        console.log(res);
         $scope.valittuTekstisisalto = res;
       });
     }

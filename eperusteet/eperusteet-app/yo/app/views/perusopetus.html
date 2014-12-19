@@ -8,16 +8,15 @@
     </div>
 
     <div class="sivunavi-clear"></div>
-    <div ng-if="valittuOppiaine && valittuOppiaine.oppiaine && valittuOppiaine.vuosiluokkakokonaisuudet" class="sivunavi-sisalto perusopetus">
+    <div class="sivunavi-sisalto perusopetus">
       <div class="row">
         <div class="col-md-12">
-
           <div ng-if="activeSection === 'suunnitelma' && valittuTekstisisalto">
             <h1>{{ valittuTekstisisalto.nimi | kaanna }}</h1>
             <p ng-bind-html="valittuTekstisisalto.teksti | kaanna"></p>
           </div>
 
-          <div ng-if="activeSection === 'sisalto'">
+          <div ng-if="activeSection === 'sisalto' && valittuOppiaine && valittuOppiaine.oppiaine && valittuOppiaine.vuosiluokkakokonaisuudet">
             <h1 class="oppiaine-nimi" kaanna="valittuOppiaine.oppiaine.nimi"></h1>
             <div class="vuosiluokkavalitsin">
               <ul class="nav nav-pills">

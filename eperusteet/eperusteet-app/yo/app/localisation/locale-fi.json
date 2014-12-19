@@ -213,6 +213,9 @@
     "ohje-ryhma-rooli": "<p><strong>Perusteessa määriteltävä:</strong> Ryhmän sisältö määritellään perustepuun luonnin yhteydessä.</p><p><strong>Tutkinnossa määriteltävä:</strong> Ryhmälle annetaan vain muodostumissäännöt ja sen sisältö määritellään paikallisen laadinnan puolella.</p>",
     "ohje-ryhma-laajuus": "Laajuus määrittää kuinka monen yksikön edestä ryhmä voi sisältää osia",
     "ohje-ryhma-koko": "Koko määrittää montako osaa ryhmä voi sisältää",
+    "ohje-hallintapaneeli": "Hallintapaneeli on tarkoitettu koko palvelun laajuisten toimintojen saavuttamiseksi.",
+    "ohje-tiedotteet": "Tämän näkymän kautta voi hallinnoida tiedotteita.",
+    "ohje-perusteprojekti": "Tämän näkymän kautta voi hallinnoida perusteprojekteja ja pohjia.",
 
     "otsikko": "Otsikko",
     "kopioi-muokattavaksi": "Kopioi muokattavaksi",
