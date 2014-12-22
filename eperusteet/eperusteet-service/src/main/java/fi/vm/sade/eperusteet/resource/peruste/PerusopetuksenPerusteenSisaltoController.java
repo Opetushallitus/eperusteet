@@ -318,19 +318,6 @@ public class PerusopetuksenPerusteenSisaltoController {
         } else {
             return sisallot.addSisalto(perusteId, null, dto);
         }
-
-    }
-
-    @RequestMapping(value = "/sisalto", method = GET)
-    public PerusteenOsaViiteDto.Suppea getSisalto(
-        @PathVariable("perusteId") final Long perusteId) {
-        return sisallot.getSisalto(perusteId, null, PerusteenOsaViiteDto.Suppea.class);
-    }
-
-    @RequestMapping(value = "/sisalto/{id}", method = GET)
-    public PerusteenOsaViiteDto.Matala getSisalto(
-        @PathVariable("perusteId") final Long perusteId, @PathVariable("id") final Long id) {
-        return sisallot.getSisalto(perusteId, id, PerusteenOsaViiteDto.Matala.class);
     }
 
     @RequestMapping(value = "/sisalto/{id}/lapset", method = POST)

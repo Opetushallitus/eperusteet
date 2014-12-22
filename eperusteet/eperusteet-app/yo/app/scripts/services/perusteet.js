@@ -123,19 +123,6 @@ angular.module('eperusteApp')
       }
     });
   })
-  // TODO Poista tämä factory kun suoritustapasisältö toteuttaa geneerisen sisällön haun
-  .factory('SuoritustapaSisaltoUUSI', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/sisalto/UUSI', {
-      perusteId: '@id',
-      suoritustapa: '@suoritustapa'
-    }, {
-      add: {method: 'PUT'},
-      addChild: {
-        method: 'POST',
-        url: SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/sisalto/:perusteenosaViiteId/lapsi/:childId'
-      }
-    });
-  })
   .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet,
     PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {
 

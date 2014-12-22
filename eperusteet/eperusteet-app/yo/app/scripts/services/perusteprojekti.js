@@ -169,7 +169,7 @@ angular.module('eperusteApp')
     };
   })
   .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet,
-      SuoritustapaSisalto, PerusteProjektiService, Notifikaatiot, YleinenData, PerusopetusService, SuoritustapaSisaltoUUSI) {
+      PerusteProjektiService, Notifikaatiot, YleinenData, PerusopetusService, SuoritustapaSisalto) {
 
     var deferred = $q.defer();
     var projekti = {};
@@ -201,7 +201,7 @@ angular.module('eperusteApp')
       sisalto = {};
     };
 
-    function getYlStructure() {
+    function getYlStructure(suoritustapa) {
       // TODO replace with one resource call that fetches the whole structure
       var promises = [];
       _.each(PerusopetusService.LABELS, function (key) {
@@ -212,7 +212,7 @@ angular.module('eperusteApp')
         });
         promises.push(promise);
       });
-      var sisaltoPromise = PerusopetusService.getSisalto().$promise;
+      var sisaltoPromise = PerusopetusService.getSisalto(suoritustapa).$promise;
       sisaltoPromise.then(function (data) {
         ylTiedot.sisalto = data;
       });
@@ -220,11 +220,10 @@ angular.module('eperusteApp')
       return $q.all(promises);
     }
 
-// TODO vaihda sisällönhaku käyttämään geneeristä sisältöhaku rajapintaa
     this.haeSisalto = function(perusteId, suoritustapa) {
       var deferred = $q.defer();
       var ylDefer = $q.defer();
-      if (!YleinenData.isPerusopetus(peruste) && !YleinenData.isEsiopetus(peruste)) {
+      if (!YleinenData.isPerusopetus(peruste)) {
         SuoritustapaSisalto.get({perusteId: perusteId, suoritustapa: suoritustapa}, function(vastaus) {
           deferred.resolve(vastaus);
           sisalto = vastaus;
@@ -232,16 +231,8 @@ angular.module('eperusteApp')
           deferred.reject(virhe);
         });
         ylDefer.resolve();
-      } else if ( YleinenData.isEsiopetus(peruste)){
-        SuoritustapaSisaltoUUSI.get({perusteId: perusteId, suoritustapa: suoritustapa}, function(vastaus) {
-          deferred.resolve(vastaus);
-          sisalto = vastaus;
-        }, function(virhe) {
-          deferred.reject(virhe);
-        });
-        ylDefer.resolve();
       } else {
-        getYlStructure().then(function () {
+        getYlStructure(suoritustapa).then(function () {
           ylDefer.resolve();
           sisalto = ylTiedot.sisalto;
           deferred.resolve(ylTiedot.sisalto);
@@ -282,9 +273,7 @@ angular.module('eperusteApp')
     var asetaSuoritustapa = function(stateParams) {
       if (angular.isUndefined(stateParams.suoritustapa) || stateParams.suoritustapa === null || stateParams.suoritustapa === '') {
         stateParams.suoritustapa = YleinenData.valitseSuoritustapaKoulutustyypille(peruste.koulutustyyppi);
-        if (!YleinenData.isPerusopetus(peruste) || !YleinenData.isEsiopetus(peruste)) {
           $state.reload();
-        }
       }
     };
 

@@ -19,7 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('EsiopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state,
-    TekstikappaleOperations, SuoritustapaSisaltoUUSI, TutkinnonOsaEditMode, Notifikaatiot, $stateParams, Editointikontrollit) {
+    TekstikappaleOperations, SuoritustapaSisalto, TutkinnonOsaEditMode, Notifikaatiot, $stateParams, Editointikontrollit) {
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     TekstikappaleOperations.setPeruste($scope.peruste);
@@ -52,7 +52,7 @@ angular.module('eperusteApp')
     };
 
     $scope.addTekstikappale = function () {
-      SuoritustapaSisaltoUUSI.save({
+      SuoritustapaSisalto.save({
         perusteId: $scope.projekti._peruste,
         suoritustapa:  $stateParams.suoritustapa
       }, {}, function(response) {
