@@ -6,13 +6,13 @@
       <accordion-heading>
         <span ng-bind-html="osa.nimi | kaanna"></span>
       </accordion-heading>
-      <div ng-if="!editEnabled" ng-bind-html="valitseKieli(osa.$model.kuvaus) | unsafe"></div>
+      <div ng-if="!editEnabled" ng-bind-html="osa.$model.kuvaus | kaanna | unsafe"></div>
       <div ng-if="editEnabled">
         <div ckeditor ng-model="osa.$model.kuvaus" slocalized editor-placeholder="muokkaus-tekstikappaleen-teksti-placeholder"></div>
         <a class="action-link yleiskuvaus-toggle" ng-click="osa.$showkuvaus = !osa.$showkuvaus">
           {{osa.$showkuvaus ? 'piilota-osaamiskokonaisuuden-kuvaus' : 'nayta-osaamiskokonaisuuden-kuvaus' | kaanna}}
         </a>
-        <div class="yleiskuvaus" collapse="!osa.$showkuvaus" ng-bind-html="valitseKieli(osa.kuvaus) | unsafe"></div>
+        <div class="yleiskuvaus" collapse="!osa.$showkuvaus" ng-bind-html="osa.kuvaus | kaanna | unsafe"></div>
       </div>
     </accordion-group>
   </accordion>

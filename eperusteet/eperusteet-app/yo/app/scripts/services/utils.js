@@ -20,10 +20,10 @@
 
 angular.module('eperusteApp')
   .service('Utils', function($window, YleinenData, Kaanna) {
-    this.scrollTo = function (selector) {
+    this.scrollTo = function (selector, offset) {
       var element = angular.element(selector);
       if (element.length) {
-        $window.scrollTo(0, element.eq(0).offset().top);
+        $window.scrollTo(0, element.eq(0).offset().top + (offset || 0));
       }
     };
 

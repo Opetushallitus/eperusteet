@@ -1,3 +1,14 @@
+.vuosiluokka-sisalto {
+  &.editing {
+    padding-left: 15px;
+  }
+  max-width: 1000px;
+  .panel-heading.vuosiluokka-osio {
+    position: relative;
+    padding: 10px 15px 0 0;
+  }
+}
+
 .osaaminen {
   .editing {
     .panel-body {
