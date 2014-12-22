@@ -46,14 +46,14 @@ angular.module('eperusteApp')
         templateUrl: 'views/perusopetus.html',
         controller: 'PerusopetusController',
         resolve: {
-          sisalto: function($stateParams, $q, Perusteet, LaajaalaisetOsaamiset, Oppiaineet, Vuosiluokkakokonaisuudet, PerusopetuksenSisalto) {
+          sisalto: function($stateParams, $q, Perusteet, LaajaalaisetOsaamiset, Oppiaineet, Vuosiluokkakokonaisuudet, SuoritustapaSisalto) {
             // TODO lisää uusin peruste jos $stateParams.perusteId on falsey
             return $q.all([
               Perusteet.get({ perusteId: $stateParams.perusteId }).$promise,
               LaajaalaisetOsaamiset.query({ perusteId: $stateParams.perusteId }).$promise,
               Oppiaineet.query({ perusteId: $stateParams.perusteId }).$promise,
               Vuosiluokkakokonaisuudet.query({ perusteId: $stateParams.perusteId }).$promise,
-              PerusopetuksenSisalto.get({ perusteId: $stateParams.perusteId }).$promise,
+              SuoritustapaSisalto.get({ perusteId: $stateParams.perusteId, suoritustapa: 'perusopetus' }).$promise,
             ]);
           }
         }

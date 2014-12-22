@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .service('PerusopetusService', function (Vuosiluokkakokonaisuudet, Oppiaineet, $q,
       OppiaineenVuosiluokkakokonaisuudet, LaajaalaisetOsaamiset, Notifikaatiot,
-      PerusopetuksenSisalto) {
+      PerusopetuksenSisalto, SuoritustapaSisalto) {
     this.OSAAMINEN = 'osaaminen';
     this.VUOSILUOKAT = 'vuosiluokat';
     this.OPPIAINEET = 'oppiaineet';
@@ -163,8 +163,8 @@ angular.module('eperusteApp')
       return Oppiaineet.oppimaarat(commonParams({osanId: oppiaine.id})).$promise;
     };
 
-    this.getSisalto = function () {
-      return PerusopetuksenSisalto.root(commonParams());
+    this.getSisalto = function (suoritustapa) {
+      return SuoritustapaSisalto.get(commonParams({suoritustapa: suoritustapa}));
     };
 
     this.getOsat = function (tyyppi, useCache) {
