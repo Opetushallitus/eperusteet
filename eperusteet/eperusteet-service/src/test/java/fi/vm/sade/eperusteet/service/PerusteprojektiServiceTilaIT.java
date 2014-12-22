@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
@@ -55,6 +56,7 @@ import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Ongelma;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -457,6 +459,8 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         perusteService.update(pDto.getId(), pDto);
 
         Peruste peruste = perusteRepo.findOne(pDto.getId());
+        HashSet<Kieli> kielet = new HashSet<>();
+        peruste.setKielet(kielet);
         peruste.asetaTila(perusteTila);
         perusteRepo.save(peruste);
 
