@@ -74,6 +74,17 @@
 
     "perusteen-kielet": "Perusteen kielet",
     "lisaa-kieli": "Lisää kieli",
+    "peruste-validointi-tekstikappale-nimi": "Perusteen kaikkien tekstikappeleiden nimiä ei ole lokalisoitu",
+    "peruste-validointi-tekstikappale-teksti": "Perusteen kaikkien tekstikappeleiden sisältöjä ei ole lokalisoitu",
+    "peruste-validointi-rakenneosa-kuvaus": "Perusteen muodostumisryhmän kaikkia kuvauksia ei ole lokalisoitu",
+    "peruste-validointi-kuvaus": "Perusteen kuvausta ei ole lokalisoitu",
+    "peruste-validointi-nimi": "Perusteen nimeä ei ole lokalisoitu",
+    "peruste-validointi-koulutus-nimi": "Perusteen koulutuksien nimiä ei ole lokalisoitu",
+    "peruste-validointi-tutkinnonosa-ammattitaidon-osoittamistavat": "Perusteen tutkinnon osien ammattitaitojen osoittamistapoja ei ole lokalisoitu",
+    "peruste-validointi-tutkinnonosa-ammattitaitovaatimukset": "Perusteen tutkinnon osien kaikkia ammattitaitovaatimuksia ei ole lokalisoitu",
+    "peruste-validointi-tutkinnonosa-kuvaus": "Kaikkien tutkinn onosien kuvauksia ei ole lokalisoitu",
+    "peruste-validointi-tutkinnonosa-nimi": "Kaikkien tutkinnon osien nimiä ei ole lokalisoitu",
+    "peruste-validointi-tutkinnonosa-tavoitteet": "Kaikkien tutkinnon osien tavoitteita ei ole lokalisoitu",
 
     "fi": "Suomi",
     "sv": "Ruotsi",
