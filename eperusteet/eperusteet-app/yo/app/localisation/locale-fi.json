@@ -753,6 +753,18 @@
     "piilota-osaamiskokonaisuuden-kuvaus": "Piilota osaamiskokonaisuuden yleiskuvaus",
     "tekstikappale": "Tekstikappale",
     "kohdealueet": "Kohdealueet",
+    "siirtyma-edellisesta": "Siirtymä edellisestä vaiheesta",
+    "muokkaus-siirtyma-edellisesta-header": "Siirtymä edellisestä vaiheesta",
+    "muokkaus-siirtyma-edellisesta-placeholder": "Kirjoita tähän siirtymän sisältö",
+    "siirtyma-seuraavaan": "Siirtymä seuraavaan vaiheeseen",
+    "muokkaus-siirtyma-seuraavaan-header": "Siirtymä seuraavaan vaiheeseen",
+    "muokkaus-siirtyma-seuraavaan-placeholder": "Kirjoita tähän siirtymän sisältö",
+    "paikallisesti-paatettavat-asiat": "Paikallisesti päätettävät asiat",
+    "muokkaus-paikallisesti-paatettavat-asiat-header": "Paikallisesti päätettävät asiat",
+    "muokkaus-paikallisesti-paatettavat-asiat-placeholder": "Kirjoita tähän paikallisesti päätettävät asiat",
+    "vuosiluokkakokonaisuuden-tehtava": "Vuosiluokkakokonaisuuden tehtävä",
+    "muokkaus-vuosiluokkakokonaisuuden-tehtava-header": "Vuosiluokkakokonaisuuden tehtävä",
+    "muokkaus-vuosiluokkakokonaisuuden-tehtava-placeholder": "Kirjoita tähän vuosiluokkakokonaisuuden tehtävä",
 
     "tyhja-placeholder-osaalueet": "Osa-alueita ei ole vielä lisätty.",
 

@@ -52,7 +52,8 @@ angular.module('eperusteApp')
       mapModel();
     };
 
-    var cloner = CloneHelper.init(['nimi', 'tehtava', 'tekstikappaleet', 'laajaalaisetOsaamiset']);
+    var cloner = CloneHelper.init(['nimi', 'siirtymaEdellisesta', 'tehtava', 'siirtymaSeuraavaan',
+                                   'laajaalaisetOsaamiset', 'paikallisestiPaatettavatAsiat']);
 
     var editingCallbacks = {
       edit: function () {
@@ -71,10 +72,6 @@ angular.module('eperusteApp')
         });
       },
       save: function () {
-        // hax until backend support
-        if ($scope.editableModel.tekstikappaleet && $scope.editableModel.tekstikappaleet.length > 0) {
-          $scope.editableModel.tehtava = _.cloneDeep($scope.editableModel.tekstikappaleet[0]);
-        }
         if ($scope.editableModel.id) {
           $scope.editableModel.$save({
             perusteId: PerusopetusService.getPerusteId()
@@ -132,48 +129,50 @@ angular.module('eperusteApp')
                 laajaalainenOsaaminen: yleinen.id, kuvaus: {}
               });
             });
-            /* } else if (field.path === 'tehtava') {
-             $scope.editableModel.tehtava = {};
-             } */
-          } else {
-            /*if (!$scope.editableModel.tekstikappaleet) {
-             $scope.editableModel.tekstikappaleet = [];
-             $scope.editableModel.tekstikappaleet.push({otsikko: {}, teksti: {}});
-             }*/
           }
         },
         fieldRenderer: '<kenttalistaus edit-enabled="editEnabled" object-promise="modelPromise" ' +
           'fields="config.fields" emptyplaceholder="vuosiluokat-ei-sisaltoa"></kenttalistaus>',
         fields: [
           {
+            path: 'siirtymaEdellisesta.teksti',
+            localeKey: 'siirtyma-edellisesta',
+            type: 'editor-area',
+            collapsible: true,
+            localized: true,
+            order: 1
+          },
+          {
+            path: 'tehtava.teksti',
+            localeKey: 'vuosiluokkakokonaisuuden-tehtava',
+            type: 'editor-area',
+            collapsible: true,
+            localized: true,
+            order: 2
+          },
+          {
+            path: 'siirtymaSeuraavaan.teksti',
+            localeKey: 'siirtyma-seuraavaan',
+            type: 'editor-area',
+            collapsible: true,
+            localized: true,
+            order: 3
+          },
+          {
             path: 'laajaalaisetOsaamiset',
             localeKey: 'laaja-alainen-osaaminen',
             type: 'vuosiluokkakokonaisuuden-osaaminen',
             collapsible: true,
-            order: 1
+            order: 4
           },
           {
-            path: 'tekstikappaleet[].teksti',
-            menuLabel: 'tekstikappale',
-            localeKey: 'otsikko',
+            path: 'paikallisestiPaatettavatAsiat.teksti',
+            localeKey: 'paikallisesti-paatettavat-asiat',
             type: 'editor-area',
-            placeholder: 'muokkaus-tekstikappaleen-teksti-placeholder',
-            titleplaceholder: 'muokkaus-teksikappaleen-nimi-placeholder',
-            localized: true,
             collapsible: true,
-            isolateEdit: true,
-            order: 2
-          }/*,
-           {
-           path: 'tehtava.teksti',
-           localeKey: 'tehtava',
-           originalLocaleKey: 'otsikko',
-           type: 'editor-area',
-           collapsible: true,
-           isolateEdit: true,
-           localized: true,
-           order: 3,
-           }*/
+            localized: true,
+            order: 5
+          }
         ],
         editingCallbacks: editingCallbacks
       }
@@ -188,12 +187,6 @@ angular.module('eperusteApp')
     };
 
     function mapModel() {
-      // hax until backend support
-      if (!$scope.editableModel.tekstikappaleet) {
-        $scope.editableModel.tekstikappaleet = [{}];
-      }
-      $scope.editableModel.tekstikappaleet[0] = _.cloneDeep($scope.editableModel.tehtava);
-
       $scope.vuosiluokkaOptions = _.map(_.range(1, 11), function (item) {
         var vlEnum = 'vuosiluokka_' + item;
         return {
