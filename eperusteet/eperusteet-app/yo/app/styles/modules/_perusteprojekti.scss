@@ -304,3 +304,14 @@ $napin-leveys: 250px;
 #projekti-sisalto-anchor {
   position: relative;
 }
+
+.perusteen-kieli {
+  padding: 8px 8px 8px 8px;
+  margin-right: 5px;
+  background: #9FDBF0;
+
+  .perusteen-kieli-poisto {
+    padding: 0px;
+    margin-left: 4px;
+  }
+}

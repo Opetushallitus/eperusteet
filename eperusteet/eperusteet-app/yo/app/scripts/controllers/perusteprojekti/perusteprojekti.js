@@ -172,7 +172,12 @@ angular.module('eperusteApp')
         controller: 'PerusteenTiedotCtrl',
         onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
           PerusteProjektiSivunavi.setVisible(false);
-        }]
+        }],
+        resolve: {
+          valittavatKielet: function(Perusteet) {
+            return Perusteet.valittavatKielet().$promise;
+          }
+        }
       })
       .state('root.perusteprojekti.projektiryhma', {
         url: '/projektiryhma',

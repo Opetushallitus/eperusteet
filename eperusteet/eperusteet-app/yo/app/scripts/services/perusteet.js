@@ -70,7 +70,8 @@ angular.module('eperusteApp')
     return $resource(SERVICE_LOC + '/perusteet/:perusteId', {
       perusteId: '@id'
     }, {
-      info: { method: 'GET', url: SERVICE_LOC + '/perusteet/info' }
+      info: { method: 'GET', url: SERVICE_LOC + '/perusteet/info' },
+      valittavatKielet: { method: 'GET', url: SERVICE_LOC + '/perusteet/valittavatkielet', isArray: true },
     });
   })
   .factory('PerusopetuksenSisalto', function ($resource, SERVICE_LOC) {

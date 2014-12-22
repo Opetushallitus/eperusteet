@@ -53,7 +53,7 @@ angular.module('eperusteApp')
     Koodisto, Perusteet, YleinenData, PerusteProjektiService,
     perusteprojektiTiedot, Notifikaatiot, Editointikontrollit, Kaanna,
     Varmistusdialogi, $timeout, $rootScope, PerusteTutkintonimikekoodit, $modal,
-    PerusteenTutkintonimikkeet) {
+    PerusteenTutkintonimikkeet, valittavatKielet) {
     $scope.showKoulutukset = function () {
       return YleinenData.showKoulutukset($scope.editablePeruste);
     };
@@ -106,6 +106,29 @@ angular.module('eperusteApp')
     $scope.koodisto = [];
     $scope.$koodistoResolved = false;
     $scope.$perusteellaTutkintonimikkeet = PerusteenTutkintonimikkeet.perusteellaTutkintonimikkeet($scope.peruste);
+
+    function valitseValittavatKielet(kielet) {
+      $scope.valittavatKielet = _.zipObject(valittavatKielet, _.map(valittavatKielet, _.constant(true)));
+      _.each(kielet || $scope.editablePeruste.kielet, function(kieli) {
+        $scope.valittavatKielet[kieli] = false;
+      });
+    }
+    valitseValittavatKielet($scope.peruste.kielet);
+
+    $scope.lisaaKieli = function(kieli) {
+      $scope.editablePeruste.kielet.push(kieli);
+      $scope.editablePeruste.kielet = _.unique($scope.editablePeruste.kielet);
+      valitseValittavatKielet();
+    };
+
+    $scope.poistaKieli = function(kieli) {
+      _.remove($scope.editablePeruste.kielet, function(v) { return v === kieli; });
+      valitseValittavatKielet();
+    };
+
+    $scope.kaikkiKieletValittu = function() {
+      return _.size($scope.editablePeruste.kielet) === _.size(valittavatKielet);
+    };
 
     $scope.lisaaNimike = function() {
       $modal.open({

@@ -20,6 +20,7 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiImplicitParam;
 import com.wordnik.swagger.annotations.ApiImplicitParams;
 import com.wordnik.swagger.annotations.ApiOperation;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
@@ -69,6 +70,12 @@ public class PerusteController {
         pquery.setTila(PerusteTila.VALMIS.toString());
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findByInfo(p, pquery);
+    }
+
+    @RequestMapping(value = "/valittavatkielet", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<String>> getValittavatKielet() {
+        return new ResponseEntity<>(Kieli.vaihtoehdot(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/perusopetus", method = GET)
