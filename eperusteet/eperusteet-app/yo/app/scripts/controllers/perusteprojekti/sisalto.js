@@ -51,7 +51,7 @@ angular.module('eperusteApp')
       return !_.isEmpty($scope.tyoryhmat);
     };
 
-    if (_.size($scope.peruste.sisalto) > 1 && _.first($scope.peruste.suoritustavat).suoritustapakoodi !== 'ops') {
+    if (_.size($scope.peruste.suoritustavat) > 1 && _.first($scope.peruste.suoritustavat).suoritustapakoodi !== 'ops') {
       $scope.peruste.suoritustavat = _.arraySwap($scope.peruste.suoritustavat, 0, 1);
     }
 
