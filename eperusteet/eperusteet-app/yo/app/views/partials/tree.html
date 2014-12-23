@@ -35,9 +35,10 @@
   <div ng-if="muokkaus" class="skratchpad-wrapper pull-right" follow-scroll>
     <div class="skratchpad-button">
       <button class="btn btn-default" ng-click="ryhmaModaali(rakenne.$suoritustapa)" icon-role="ep-group" kaanna="'luo-uusi-ryhma'"></button>
+      <ohje teksti="ohje-muodostuminen-ryhma" suunta="left"></ohje>
     </div>
     <div class="skratchpad-list">
-      <div class="skratchpad-list-header" kaanna>leikelauta</div>
+      <div class="skratchpad-list-header" kaanna="'leikelauta'"></div>
       <div class="skratchpad-list-body">
         <div ng-if="skratchpad.length === 0" class="skratchpad-help"></div>
         <ul ui-sortable="sortableOptions" class="tree-group skratchpad" ng-model="skratchpad">
@@ -71,7 +72,7 @@
       </div>
     </div>
     <div class="skratchpad-list">
-      <div class="skratchpad-list-header" kaanna>tutkinnonosat</div>
+      <div class="skratchpad-list-header"><span kaanna="'tutkinnonosat'"></span><ohje teksti="ohje-muodostuminen-tutkinnonosat" suunta="left"></ohje></div>
       <div class="skratchpad-list-body">
         <div ng-show="tutkinnonOsat.rajaus || tutkinnonOsat.multiPage" class="tutkinnonosa-rajaus">
           <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="{{ 'rajaa-tutkinnonosia' | kaanna }}">
