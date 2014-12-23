@@ -88,11 +88,17 @@ dl.termisto {
       font-weight: 700;
     }
   }
+  .empty-termit {
+    font-weight: 700;
+    padding: 10px;
+    background-color: #f2f2f2;
+  }
 }
 
 .termi-plugin-add {
   margin-top: 20px !important;
   a {
+    color: $brand-primary;
     cursor: pointer;
   }
   .success-message {

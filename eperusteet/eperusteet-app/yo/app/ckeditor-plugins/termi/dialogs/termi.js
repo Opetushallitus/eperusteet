@@ -49,11 +49,12 @@ CKEDITOR.dialog.add('termiDialog', function( editor ) {
             },
             html: '<div ng-controller="TermiPluginController" class="ckeplugin-ui-select">' +
             '<label>{{\'termi-plugin-label-termi\'|kaanna}}</label>' +
-            '<ui-select ng-model="model.chosen">' +
+            '<ui-select ng-model="model.chosen" ng-if="termit.length > 0">' +
             '  <ui-select-match placeholder="{{\'termi-plugin-select-placeholder\'|kaanna}}">{{$select.selected.termi|kaanna}}</ui-select-match>' +
             '  <ui-select-choices repeat="termi in filtered track by $index" refresh="filterTermit($select.search)" refresh-delay="0">' +
             '  <span ng-bind-html="termi.termi|kaanna|highlight:$select.search"></span></ui-select-choices>' +
             '</ui-select>' +
+            '<p class="empty-termit" ng-if="termit.length === 0" kaanna="\'ei-termeja\'"></p>' +
             '<div class="termi-plugin-add">' +
             '  <a ng-click="!adding && addNew()">{{\'termi-plugin-lisaa-uusi\'|kaanna}}</a>'+
             '  <div ng-if="adding"><input class="form-control" ng-model="model.newTermi">' +

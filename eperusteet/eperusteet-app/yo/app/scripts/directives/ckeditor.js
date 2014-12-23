@@ -134,6 +134,7 @@ angular.module('eperusteApp')
           $scope.closeMessage();
         }, 8000);
         $scope.adding = false;
+        setDeferred = _.clone(termi.avain);
         $scope.init();
       });
     };
