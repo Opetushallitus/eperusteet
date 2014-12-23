@@ -220,8 +220,6 @@ angular.module('eperusteApp')
 
     $scope.muokkausEnabled = false;
 
-
-
     $scope.luoPdf = function () {
       PdfCreation.setPerusteId($scope.projekti._peruste);
       PdfCreation.openModal();
@@ -234,6 +232,13 @@ angular.module('eperusteApp')
       TermistoService.setPeruste($scope.peruste);
     }
     init();
+
+    // Generoi uudestaan "Projektin päänäkymä"-linkki kun suoritustapa vaihtuu
+    $scope.$watch(function () {
+      return PerusteProjektiService.getSuoritustapa();
+    }, function () {
+      $scope.backLink = PerusteProjektiService.getUrl($scope.projekti, $scope.peruste);
+    });
 
     var amFooter = '<button class="btn btn-default" kaanna="lisaa-tutkintokohtainen-osa" icon-role="ep-text-add" ng-click="$parent.lisaaTekstikappale()" oikeustarkastelu="{ target: \'peruste\', permission: \'muokkaus\' }"></button>';
     $scope.Koulutusalat = koulutusalaService;
