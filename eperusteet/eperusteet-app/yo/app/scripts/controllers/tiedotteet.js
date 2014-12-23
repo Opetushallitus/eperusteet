@@ -29,11 +29,6 @@ angular.module('eperusteApp')
     $scope.tiedotteet = [];
     $scope.naytto = {limit: 5, shown: 5};
 
-    $scope.paginate = {
-      perPage: 10,
-      current: 1
-    };
-
     function fetch() {
       // Hae tiedotteet viimeisen 6 kuukauden ajalta
       var MONTH_OFFSET = 6;
@@ -47,25 +42,16 @@ angular.module('eperusteApp')
     }
     fetch();
 
-    $scope.search = {
-      term: '',
-      changed: function () {
-        $scope.paginate.current = 1;
-      },
-      filterFn: function (item) {
-        return $scope.search.term ? Algoritmit.match($scope.search.term, item.otsikko) : true;
-      }
-    };
-
     $scope.orderFn = function (item) {
       return -1 * item.muokattu;
     };
   })
 
   .controller('TiedotteidenHallintaController', function ($scope, Algoritmit, $modal, Varmistusdialogi, TiedotteetCRUD,
-    Notifikaatiot) {
+    Notifikaatiot, Utils) {
     $scope.tiedotteet = [];
-    $scope.naytto = {limit: 5, shown: 5};
+    $scope.jarjestysTapa = 'muokattu';
+    $scope.jarjestysOrder = false;
 
     $scope.paginate = {
       perPage: 10,
@@ -89,8 +75,23 @@ angular.module('eperusteApp')
       }
     };
 
+    $scope.setOrderBy = function (key) {
+      if ($scope.jarjestysTapa === key) {
+        $scope.jarjestysOrder = !$scope.jarjestysOrder;
+      } else {
+        $scope.jarjestysOrder = false;
+        $scope.jarjestysTapa = key;
+      }
+    };
+
     $scope.orderFn = function (item) {
-      return -1 * item.muokattu;
+      switch($scope.jarjestysTapa) {
+        case 'nimi': return Utils.nameSort(item, 'otsikko');
+        case 'muokattu': return -1 * item.muokattu;
+        case 'julkinen': return '' + item.julkinen;
+        default:
+          break;
+      }
     };
 
     function doDelete(item) {

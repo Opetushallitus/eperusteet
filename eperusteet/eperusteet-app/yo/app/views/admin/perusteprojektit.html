@@ -26,9 +26,30 @@
 
     <table class="table table-striped admin-table">
         <tr>
-            <th><a class="action-link" ng-click="asetaJarjestys('nimi')" kaanna>nimi</a></th>
-            <th><a class="action-link" ng-click="asetaJarjestys('diaarinumero')" kaanna>diaarinumero-label</a></th>
-            <th><a class="action-link" ng-click="asetaJarjestys('tila')" kaanna>tila</a></th>
+            <th width="50%">
+              <a class="action-link" ng-click="asetaJarjestys('nimi')">
+                <span kaanna="'nimi'"></span>
+                <span ng-show="jarjestysTapa === 'nimi'">
+                  <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
+                </span>
+              </a>
+            </th>
+            <th>
+              <a class="action-link" ng-click="asetaJarjestys('diaarinumero')">
+                <span kaanna="'diaarinumero-label'"></span>
+                <span ng-show="jarjestysTapa === 'diaarinumero'">
+                  <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-order-alt' : 'glyphicon-sort-by-order'"></span>
+                </span>
+              </a>
+            </th>
+            <th>
+              <a class="action-link" ng-click="asetaJarjestys('tila')">
+                <span kaanna="'tila'"></span>
+                <span ng-show="jarjestysTapa === 'tila'">
+                  <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
+                </span>
+              </a>
+            </th>
             <th kaanna>toiminto</th>
         </tr>
         <tr ng-show="$index >= alaraja && $index < ylaraja" ng-repeat="pp in filteredPp = (perusteprojektit | orderBy:jarjestys:jarjestysOrder | filter:rajaaSisaltoa)">
@@ -38,7 +59,8 @@
                 {{ 'tila-' + pp.tila | kaanna }}
             </td>
             <td>
-                <button type="button" class="btn btn-primary" ng-click="palauta(pp)" ng-if="pp.tila === 'poistettu'"><span kaanna>palauta</span></button>
+                <button type="button" class="btn btn-default rivinappi" ng-click="palauta(pp)"
+                        icon-role="open" ng-if="pp.tila === 'poistettu'" kaanna="'palauta'"></button>
             </td>
         </tr>
     </table>

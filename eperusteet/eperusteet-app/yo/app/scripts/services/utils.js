@@ -45,8 +45,8 @@ angular.module('eperusteApp')
       return !_.isUndefined($window.FormData);
     };
 
-    this.nameSort = function (item) {
-      return Kaanna.kaanna(item.nimi).toLowerCase();
+    this.nameSort = function (item, key) {
+      return Kaanna.kaanna(key ? item[key] : item.nimi).toLowerCase();
     };
   })
 

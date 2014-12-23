@@ -15,12 +15,33 @@
   <p ng-show="!tiedotteet || tiedotteet.length === 0" kaanna="ei-tiedotteita"></p>
   <table ng-show="tiedotteet.length > 0" class="table table-striped admin-table">
     <tr>
-      <th kaanna="muokattu" width="25%"></th>
-      <th kaanna="'otsikko'"></th>
-      <th kaanna="'julkinen-tiedote-header'"></th>
+      <th width="25%">
+        <a class="action-link" ng-click="setOrderBy('muokattu')">
+          <span kaanna="'muokattu'"></span>
+          <span ng-show="jarjestysTapa === 'muokattu'">
+            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
+          </span>
+        </a>
+      </th>
+      <th>
+        <a class="action-link" ng-click="setOrderBy('nimi')">
+          <span kaanna="'otsikko'"></span>
+          <span ng-show="jarjestysTapa === 'nimi'">
+            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet'"></span>
+          </span>
+        </a>
+      </th>
+      <th width="10%">
+        <a class="action-link" ng-click="setOrderBy('julkinen')">
+          <span kaanna="'julkinen-tiedote-header'"></span>
+          <span ng-show="jarjestysTapa === 'julkinen'">
+            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
+          </span>
+        </a>
+      </th>
       <th kaanna="'toiminto'" width="20%"></th>
     </tr>
-    <tr ng-repeat="tiedote in filtered = (tiedotteet | filter:search.filterFn) | orderBy:orderFn | startFrom:(paginate.current-1)*paginate.perPage | limitTo: paginate.perPage">
+    <tr ng-repeat="tiedote in filtered = (tiedotteet | filter:search.filterFn) | orderBy:orderFn:jarjestysOrder | startFrom:(paginate.current-1)*paginate.perPage | limitTo: paginate.perPage">
       <td>{{tiedote.muokattu | aikaleima}}</td>
       <td><a ui-sref="root.tiedote({tiedoteId: tiedote.id})" ep-highlight="search.term" ng-bind="tiedote.otsikko | kaanna"></a></td>
       <td class="has-checkbox"><span icon-role="ok" ng-show="tiedote.julkinen"></span></td>

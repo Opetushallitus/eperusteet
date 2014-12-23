@@ -64,7 +64,7 @@ angular.module('eperusteApp')
 
   .controller('AdminPerusteprojektitController', function($rootScope, $scope, PerusteProjektit,
       Algoritmit, PerusteprojektiTila, Notifikaatiot, Kaanna, YleinenData, Varmistusdialogi,
-      PerusteProjektiService) {
+      PerusteProjektiService, Utils) {
     $scope.jarjestysTapa = 'nimi';
     $scope.jarjestysOrder = false;
     $scope.tilaRajain = null;
@@ -87,7 +87,7 @@ angular.module('eperusteApp')
     };
     $scope.jarjestys = function(data) {
       switch($scope.jarjestysTapa) {
-        case 'nimi': return Kaanna.kaanna(data.nimi);
+        case 'nimi': return Utils.nameSort(data);
         case 'haltija': return data.haltija;
         case 'diaarinumero': return data.diaarinumero;
         case 'tila': return data.tila;
