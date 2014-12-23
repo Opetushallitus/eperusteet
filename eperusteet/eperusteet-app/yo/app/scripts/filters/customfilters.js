@@ -40,6 +40,26 @@ angular.module('eperusteApp')
     };
   })
 
+  .service('AikaleimaCache', function ($rootScope, DSCacheFactory) {
+    var cache = null;
+    this.create = function () {
+      cache = DSCacheFactory.createCache('momentCache', {
+        capacity: 1024,
+        maxAge: 60000,
+        deleteOnExpire: 'aggressive'
+      });
+    };
+    this.get = function (key) {
+      return cache.get(key);
+    };
+    this.put = function (key, value) {
+      return cache.put(key, value);
+    };
+    $rootScope.$on('changed:uikieli', function () {
+      cache.removeAll();
+    });
+  })
+
   /**
    * Muotoilee timestampit
    * default: time (ago)
@@ -48,13 +68,9 @@ angular.module('eperusteApp')
    * 'date' pelkkä päiväys
    * 'ago' pelkkä ihmisluettava esim. '4 tuntia sitten'
    */
-  .filter('aikaleima', function ($filter, DSCacheFactory) {
+  .filter('aikaleima', function ($filter, AikaleimaCache) {
     var dateFilter = $filter('date');
-    var momentCache = DSCacheFactory.createCache('momentCache', {
-      capacity: 1024,
-      maxAge: 60000,
-      deleteOnExpire: 'aggressive'
-    });
+    AikaleimaCache.create();
     return function (input, options, format) {
       var date = null;
       if (!input) {
@@ -67,10 +83,10 @@ angular.module('eperusteApp')
         date = dateFilter(input, 'd.M.yyyy H:mm');
       }
 
-      var ago = momentCache.get(input);
+      var ago = AikaleimaCache.get(input);
       if (!ago) {
         ago = moment(input).fromNow();
-        momentCache.put(input, ago);
+        AikaleimaCache.put(input, ago);
       }
 
       if (options === 'ago') {

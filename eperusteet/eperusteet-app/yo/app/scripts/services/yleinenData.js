@@ -163,6 +163,7 @@ angular.module('eperusteApp')
         $translate.use(kielikoodi);
         this.kieli = kielikoodi;
         $rootScope.$broadcast('notifyCKEditor');
+        $rootScope.$broadcast('changed:uikieli');
       }
     };
 
