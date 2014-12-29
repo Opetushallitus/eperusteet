@@ -28,8 +28,6 @@ angular.module('eperusteApp')
 
     $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
 
-    console.log($state);
-
     $scope.$watch('peruste.sisalto', function () {
       Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function (lapsi) {
         lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.tekstikappale', {

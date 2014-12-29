@@ -18,12 +18,14 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state,
+  .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state, SuoritustavanSisalto,
       PerusopetusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot, Utils, VlkUtils) {
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     TekstikappaleOperations.setPeruste($scope.peruste);
     $scope.rajaus = '';
+
+    $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
 
     $scope.$watch('peruste.sisalto', function () {
       Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function (lapsi) {
