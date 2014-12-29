@@ -124,6 +124,71 @@ angular.module('eperusteApp')
       }
     });
   })
+  .service('SuoritustavanSisalto', function($modal, Algoritmit, SuoritustapaSisalto, PerusteenOsat, PerusteProjektiService, Notifikaatiot) {
+    function lisaaSisalto(perusteId, method, sisalto, cb) {
+      cb = cb || angular.noop;
+      SuoritustapaSisalto[method]({
+        perusteId: perusteId,
+        suoritustapa: PerusteProjektiService.getSuoritustapa()
+      }, sisalto, cb, Notifikaatiot.serverCb);
+    }
+
+    function tuoSisalto(cb) {
+      cb = cb || angular.noop;
+
+      return function(projekti, peruste) {
+        function lisaaLapset(parent, lapset, cb) {
+          cb = cb || angular.noop;
+          lapset = lapset || [];
+          if (_.isEmpty(lapset)) { cb(); return; }
+
+          var lapsi = _.first(lapset);
+          SuoritustapaSisalto.addChild({
+            perusteId: peruste,
+            suoritustapa: PerusteProjektiService.getSuoritustapa(),
+            perusteenosaViiteId: parent.id,
+            childId: lapsi.perusteenOsa.id
+          }, {}, function(res) {
+            lisaaLapset(res, lapsi.lapset, function() {
+              parent.lapset = parent.lapset || [];
+              parent.lapset.push(lapsi);
+              lisaaLapset(parent, _.rest(lapset), cb);
+            });
+          });
+        }
+
+        $modal.open({
+          templateUrl: 'views/modals/tuotekstikappale.html',
+          controller: 'TuoTekstikappale',
+          size: 'lg',
+          resolve: {
+            peruste: function() { return peruste; },
+            suoritustapa: function() { return PerusteProjektiService.getSuoritustapa(); },
+          }
+        })
+        .result.then(function(lisattavaSisalto) {
+          Algoritmit.asyncTraverse(lisattavaSisalto, function(lapsi, next) {
+            lisaaSisalto(peruste.id, 'add', { _perusteenOsa: lapsi.perusteenOsa.id }, function(pov) {
+              PerusteenOsat.get({
+                osanId: pov._perusteenOsa
+              }, function(po) {
+                pov.perusteenOsa = po;
+                lisaaLapset(pov, lapsi.lapset, function() {
+                  cb(pov);
+                  peruste.sisalto.lapset.push(pov);
+                  next();
+                });
+              });
+            });
+          }, function() { Notifikaatiot.onnistui('tekstikappaleiden-tuonti-onnistui'); });
+        });
+      };
+    }
+
+    return {
+      tuoSisalto: tuoSisalto
+    };
+  })
   .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet,
     PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {
 

@@ -34,7 +34,7 @@ European Union Public Licence for more details.
                 </div>
                 <!-- Lisäyspainikkeet -->
                 <div class="pull-right buttons">
-                    <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="ep-text-import" kaanna="tuo-tutkintokohtainen-osa" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                    <button type="button" class="btn btn-default btn-sm" ng-click="tuoSisalto(projekti, peruste)" ng-show="valittuSuoritustapa !== ''" icon-role="ep-text-import" kaanna="tuo-tutkintokohtainen-osa" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
                     <button type="button" class="btn btn-default btn-sm" ng-click="createSisalto()" ng-show="valittuSuoritustapa !== ''" icon-role="ep-text-add" kaanna="lisaa-tutkintokohtainen-osa" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
                     <button class="btn btn-default btn-sm"
                             ng-class="{ 'btn-primary': muokkausTutkintokohtaisetOsat }" ng-click="aloitaMuokkaus()"

@@ -22,7 +22,7 @@ angular.module('eperusteApp')
     $modal, PerusteenOsat, PerusteenOsaViitteet, SuoritustapaSisalto, PerusteProjektiService,
     perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit,
     Editointikontrollit, TEXT_HIERARCHY_MAX_DEPTH, PerusteProjektiSivunavi, Projektiryhma,
-    PerusteprojektiTyoryhmat, TekstikappaleOperations) {
+    PerusteprojektiTyoryhmat, TekstikappaleOperations, SuoritustavanSisalto) {
     $scope.textMaxDepth = TEXT_HIERARCHY_MAX_DEPTH;
 
     function lisaaSisalto(method, sisalto, cb) {
@@ -128,53 +128,7 @@ angular.module('eperusteApp')
       $scope.lataa = false;
     });
 
-    $scope.tuoSisalto = function() {
-      function lisaaLapset(parent, lapset, cb) {
-        cb = cb || angular.noop;
-        lapset = lapset || [];
-        if (_.isEmpty(lapset)) { cb(); return; }
-
-        var lapsi = _.first(lapset);
-        SuoritustapaSisalto.addChild({
-          perusteId: $scope.projekti._peruste,
-          suoritustapa: PerusteProjektiService.getSuoritustapa(),
-          perusteenosaViiteId: parent.id,
-          childId: lapsi.perusteenOsa.id
-        }, {}, function(res) {
-          lisaaLapset(res, lapsi.lapset, function() {
-            parent.lapset = parent.lapset || [];
-            parent.lapset.push(lapsi);
-            lisaaLapset(parent, _.rest(lapset), cb);
-          });
-        });
-      }
-
-      $modal.open({
-        templateUrl: 'views/modals/tuotekstikappale.html',
-        controller: 'TuoTekstikappale',
-        size: 'lg',
-        resolve: {
-          peruste: function() { return $scope.peruste; },
-          suoritustapa: function() { return PerusteProjektiService.getSuoritustapa(); },
-        }
-      })
-      .result.then(function(lisattavaSisalto) {
-        Algoritmit.asyncTraverse(lisattavaSisalto, function(lapsi, next) {
-          lisaaSisalto('add', { _perusteenOsa: lapsi.perusteenOsa.id }, function(pov) {
-            PerusteenOsat.get({
-              osanId: pov._perusteenOsa
-            }, function(po) {
-              pov.perusteenOsa = po;
-              lisaaLapset(pov, lapsi.lapset, function() {
-                korjaaLapsi(pov);
-                $scope.peruste.sisalto.lapset.push(pov);
-                next();
-              });
-            });
-          });
-        }, function() { Notifikaatiot.onnistui('tekstikappaleiden-tuonti-onnistui'); });
-      });
-    };
+    $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto(korjaaLapsi);
 
     $scope.createSisalto = function() {
       lisaaSisalto('save', {}, function(response) {
