@@ -48,18 +48,22 @@ angular.module('eperusteApp')
     };
 
     this.delete = function (viiteId) {
+      function commonCb(tyyppi) {
+        Editointikontrollit.cancelEditing();
+        Notifikaatiot.onnistui('poisto-onnistui');
+        $state.go('root.perusteprojekti.suoritustapa.' + tyyppi, {}, {reload: true});
+      }
+
       if (YleinenData.isPerusopetus(peruste)) {
-        PerusopetusService.deleteOsa({$url: 'dummy', id: viiteId}, function () {
-          Editointikontrollit.cancelEditing();
-          Notifikaatiot.onnistui('poisto-onnistui');
-          $state.go('root.perusteprojekti.suoritustapa.posisalto', {}, {reload: true});
-        });
-      } else {
-        PerusteenOsaViitteet.delete({viiteId: viiteId}, {}, function () {
-          Editointikontrollit.cancelEditing();
-          Notifikaatiot.onnistui('poisto-onnistui');
-          $state.go('root.perusteprojekti.suoritustapa.sisalto', {}, {reload: true});
+        PerusopetusService.deleteOsa({$url: 'dummy', id: viiteId}, function() {
+          commonCb('posisalto');
         }, Notifikaatiot.serverCb);
+      }
+      else if (YleinenData.isEsiopetus(peruste)) {
+        PerusteenOsaViitteet.delete({viiteId: viiteId}, {}, _.partial(commonCb, 'eosisalto'), Notifikaatiot.serverCb);
+      }
+      else {
+        PerusteenOsaViitteet.delete({viiteId: viiteId}, {}, _.partial(commonCb, 'sisalto'), Notifikaatiot.serverCb);
       }
     };
 

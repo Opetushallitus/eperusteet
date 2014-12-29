@@ -67,18 +67,7 @@ angular.module('eperusteApp')
       $scope.tyoryhmaMap = tyoryhmaMap;
     });
 
-    function korjaaLapsi(lapsi) {
-      switch (lapsi.perusteenOsa.tunniste) {
-        case 'rakenne':
-          lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.muodostumissaannot');
-          lapsi.$type = 'ep-tree';
-          break;
-        default:
-          lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.tekstikappale', { perusteenOsaViiteId: lapsi.id, versio: '' });
-      }
-    }
-
-    Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', korjaaLapsi);
+    Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', SuoritustavanSisalto.asetaUrl);
 
     $scope.aakkosJarjestys = function(data) { return Kaanna.kaanna(data.perusteenOsa.nimi); };
 
@@ -128,7 +117,7 @@ angular.module('eperusteApp')
       $scope.lataa = false;
     });
 
-    $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto(korjaaLapsi);
+    $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
 
     $scope.createSisalto = function() {
       lisaaSisalto('save', {}, function(response) {

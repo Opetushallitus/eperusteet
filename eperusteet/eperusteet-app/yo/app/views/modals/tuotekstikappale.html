@@ -30,7 +30,7 @@
   </div>
 
   <div ng-if="valittuPeruste" style="margin-top: 8px">
-    <tabset class="tekstikappale-tuonti-tabs" justified="true">
+    <tabset ng-if="valittuPeruste.suoritustavat.length > 1" class="tekstikappale-tuonti-tabs" justified="true">
       <tab ng-click="vaihdaSuoritustapa(st)" ng-repeat="st in valittuPeruste.suoritustavat" heading="{{ st.suoritustapakoodi | kaanna }}"></tab>
     </tabset>
     <rajaus ng-show="search.term.length !== 0 || filtered.length > 0" model="search.term" placeholder="etsi-sisallosta" callback="search.changed(value)"></rajaus>

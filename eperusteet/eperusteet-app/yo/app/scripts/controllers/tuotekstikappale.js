@@ -83,11 +83,20 @@ angular.module('eperusteApp')
     $scope.valitse = function(valittuPeruste) {
       Perusteet.get({perusteId: valittuPeruste.id}, function(peruste) {
         $scope.valittuPeruste = peruste;
+
+        if (peruste.koulutustyyppi === YleinenData.koulutustyypitNimiMap['esiopetus']) {
+          $scope.valittuSuoritustapa = 'esiopetus';
+          var suoritustavaton = true;
+          peruste.suoritustavat.push({
+            suoritustapakoodi: $scope.valittuSuoritustapa
+          });
+        }
         $scope.valittuSuoritustapa = _.first(peruste.suoritustavat).suoritustapakoodi;
+
         $q.all(_.map(peruste.suoritustavat, function(st) {
           return SuoritustapaSisalto.get({
             perusteId: valittuPeruste.id,
-            suoritustapa: YleinenData.validSuoritustapa(peruste, st.suoritustapakoodi)
+            suoritustapa: suoritustavaton ? $scope.valittuSuoritustapa : YleinenData.validSuoritustapa(peruste, st.suoritustapakoodi)
           }).$promise;
         }))
         .then(function(res) {

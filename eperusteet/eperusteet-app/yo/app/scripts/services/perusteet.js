@@ -124,7 +124,7 @@ angular.module('eperusteApp')
       }
     });
   })
-  .service('SuoritustavanSisalto', function($modal, Algoritmit, SuoritustapaSisalto, PerusteenOsat, PerusteProjektiService, Notifikaatiot) {
+  .service('SuoritustavanSisalto', function($modal, $state, Algoritmit, SuoritustapaSisalto, PerusteenOsat, PerusteProjektiService, Notifikaatiot) {
     function lisaaSisalto(perusteId, method, sisalto, cb) {
       cb = cb || angular.noop;
       SuoritustapaSisalto[method]({
@@ -133,9 +133,18 @@ angular.module('eperusteApp')
       }, sisalto, cb, Notifikaatiot.serverCb);
     }
 
-    function tuoSisalto(cb) {
-      cb = cb || angular.noop;
+    function asetaUrl(lapsi) {
+      switch (lapsi.perusteenOsa.tunniste) {
+        case 'rakenne':
+          lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.muodostumissaannot');
+          lapsi.$type = 'ep-tree';
+          break;
+        default:
+          lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.tekstikappale', { perusteenOsaViiteId: lapsi.id, versio: '' });
+      }
+    }
 
+    function tuoSisalto() {
       return function(projekti, peruste) {
         function lisaaLapset(parent, lapset, cb) {
           cb = cb || angular.noop;
@@ -174,7 +183,7 @@ angular.module('eperusteApp')
               }, function(po) {
                 pov.perusteenOsa = po;
                 lisaaLapset(pov, lapsi.lapset, function() {
-                  cb(pov);
+                  asetaUrl(pov);
                   peruste.sisalto.lapset.push(pov);
                   next();
                 });
@@ -186,7 +195,8 @@ angular.module('eperusteApp')
     }
 
     return {
-      tuoSisalto: tuoSisalto
+      tuoSisalto: tuoSisalto,
+      asetaUrl: asetaUrl
     };
   })
   .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet,
