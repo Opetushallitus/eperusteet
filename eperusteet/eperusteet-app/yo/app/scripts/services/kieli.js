@@ -18,6 +18,13 @@
 /* global _ */
 
 angular.module('eperusteApp')
+  .service('KielipreferenssiUpdater', function ($rootScope, Profiili) {
+    $rootScope.$on('changed:sisaltokieli', function (event, value) {
+      Profiili.setPreferenssi('sisaltokieli', value);
+    });
+    this.noop = angular.noop;
+  })
+
   .service('Kieli', function ($rootScope, $state, $stateParams) {
     var sisaltokieli = 'fi';
 
@@ -65,7 +72,9 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('KieliCtrl', function($scope, $stateParams, YleinenData, $state, Kieli, Profiili, $q) {
+  .controller('KieliCtrl', function($scope, $stateParams, YleinenData, $state, Kieli, Profiili, $q,
+    KielipreferenssiUpdater) {
+    KielipreferenssiUpdater.noop();
     $scope.isModal = $scope.modal === 'true';
     $scope.sisaltokielet = Kieli.SISALTOKIELET;
     $scope.sisaltokieli = Kieli.getSisaltokieli();
@@ -101,7 +110,6 @@ angular.module('eperusteApp')
 
     $scope.$on('changed:sisaltokieli', function (event, value) {
       $scope.sisaltokieli = value;
-      Profiili.setPreferenssi('sisaltokieli', value);
     });
 
     $scope.setSisaltokieli = function (kieli) {
