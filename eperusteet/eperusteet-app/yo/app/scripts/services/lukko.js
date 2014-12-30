@@ -154,7 +154,7 @@ angular.module('eperusteApp')
       }
     }
 
-    function lukitse(Resource, obj, cb, other) {
+    function lukitse(Resource, obj, cb) {
       cb = cb || angular.noop;
 
       lukitsin = function() {

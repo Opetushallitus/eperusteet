@@ -15,6 +15,7 @@
 */
 
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .directive('osallinenOsa', function ($compile) {
@@ -38,7 +39,7 @@ angular.module('eperusteApp')
 
   .controller('OsallinenOsaController', function ($scope, $state, VersionHelper, $q, Lukitus,
       Editointikontrollit, FieldSplitter, Varmistusdialogi, $rootScope, Utils, $timeout,
-      $stateParams, Notifikaatiot) {
+      $stateParams) {
     $scope.isLocked = false;
     $scope.isNew = $stateParams.osanId === 'uusi';
     $scope.editEnabled = false;
