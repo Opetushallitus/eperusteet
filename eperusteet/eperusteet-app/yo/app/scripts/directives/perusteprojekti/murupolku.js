@@ -85,6 +85,7 @@ angular.module('eperusteApp')
 
   .controller('ProjektinMurupolkuController', function($scope, $state, ProjektinMurupolkuService, $stateParams) {
     $scope.isActive = true;
+    $scope.isTekstikappale = false;
 
     function resolveLabel(item) {
       var fn = _.first(_.keys(item));
@@ -123,14 +124,19 @@ angular.module('eperusteApp')
 
     $scope.$on('$stateChangeSuccess', setCrumb);
     $scope.$on('$stateChangeStart', function () {
+      $scope.isTekstikappale = false;
       ProjektinMurupolkuService.setCustom([], false);
     });
     $scope.$on('update:projektinMurupolku', setCrumb);
     $scope.$on('disableEditing', function () {
       $scope.isActive = true;
+      $scope.isTekstikappale = false;
     });
     $scope.$on('enableEditing', function () {
       $scope.isActive = false;
+      if ($state.current.name === 'root.perusteprojekti.suoritustapa.tekstikappale') {
+        $scope.isTekstikappale = true;
+      }
     });
 
     setCrumb();
