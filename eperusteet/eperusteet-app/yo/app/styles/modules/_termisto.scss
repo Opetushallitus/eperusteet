@@ -65,8 +65,33 @@ dl.termisto {
     box-sizing: border-box !important;
   }
   .ui-select-bootstrap {
+    .ui-select-match {
+      &.btn-block {
+
+        display: block;
+        padding-left: 0;
+        padding-right: 0;
+        width: 100%;
+      }
+      &.btn-group {
+        display: inline-block;
+        position: relative;
+        vertical-align: middle;
+      }
+      .btn {
+        text-align: center;
+        vertical-align: middle;
+        &.col-md-11 {
+          width: 91.6667%;
+        }
+        &.col-md-1 {
+          width: 8.33333%;
+        }
+      }
+    }
     .caret {
-      position: absolute;
+      position: static;
+      vertical-align: middle;
       border-left: 4px solid transparent;
       border-right: 4px solid transparent;
       border-top: 4px solid;
