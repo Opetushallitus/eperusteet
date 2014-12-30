@@ -23,7 +23,7 @@
             <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id].id)" kaanna="poista-tutkinnonosa"></button>
             <div class="floater" ng-show="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'normaali'">
               <div class="dropdown">
-                <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add" kaanna="muokkaus-lisaa-osio"></button>
+                <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add" kaanna="muokkaus-lisaa-sisalto"></button>
                 <ul class="pull-right dropdown-menu">
                   <li ng-repeat="field in menuItems| orderBy:'order'">
                     <a ng-show="field.visible" class="disabled-link">{{'muokkaus-' + field.localeKey + '-header'| kaanna}}</a>

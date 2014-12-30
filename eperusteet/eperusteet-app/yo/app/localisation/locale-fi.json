@@ -121,7 +121,7 @@
     "perusteprojektit-otsikko": "Omat perusteprojektit",
     "uusi-projekti": "Uusi projekti",
     "tutkinnon-osia-ei-loytynyt": "Tutkinnon osia ei löytynyt.",
-    "aloita-raahaamalla-puuhun": "Raahaa ryhmiä tai tutkinnon osia tähän.",
+    "aloita-raahaamalla-puuhun": "Tuo ryhmiä tai tutkinnon osia tähän.",
     "rakennetta-ei-vielä-muodostettu": "Tutkinnon rakennetta ei ole vielä muodostettu tai se on tyhjä. Luo uusi rakenne muokkaamalla sivua.",
     "rakennetta-ei-ole": "Suoritustavalle ei ole määritetty rakennetta",
 
@@ -159,7 +159,7 @@
     "rajauksellasi-ei-löytynyt-vaihtoehtoa": "Rajaus ei tuottanut tuloksia",
     "ei-tekstikappaleita": "Yhtään tekstikappaletta ei löytynyt.",
 
-    "vain-käyttämättömät": "Näytä vain käyttämättömät",
+    "vain-käyttämättömät": "Näytä käyttämättömät",
     "näytä-kaikki": "Näytä kaikki",
 
     "ja-myös-valittava": "ja valittava myös",
@@ -169,7 +169,7 @@
     "kappaletta": "kappaletta",
     "kpl": "kpl",
 
-    "nayta-virheet": "Näytä virheet",
+    "nayta-virheet": "Tarkista rakenne",
     "piilota-virheet": "Piilota virheet",
 
     "laajuuden-yksikkö": "Laajuuden yksikkö",
@@ -182,6 +182,7 @@
     "avaa-kaikki": "Avaa kaikki",
     "sulje-kaikki": "Sulje kaikki",
     "avaa-sulje-kaikki": "Avaa / sulje kaikki",
+    "avaa-sulje-rakenne": "Avaa / sulje rakenne",
 
     "et-ole-lisannyt-viela-tutkintonimikkeita": "Tutkintonimikkeitä ei ole vielä lisätty",
     "tutkintonimike": "Tutkintonimike",
@@ -320,7 +321,7 @@
     "hae-perusteita": "Hae perusteita",
     "hakuehdot": "Hakuehdot",
     "perusteprojekti": "Perusteprojekti",
-    "uusi-perusteprojekti": "Uusi perusteprojekti",
+    "uusi-perusteprojekti": "Luo uusi perusteprojekti",
 
     "muokkaus-uusi-kappale-placeholder": "Uusi kappale",
     "muokkaus-kommentit": "Kommentit",
@@ -467,6 +468,7 @@
     "arviointi-kohdealueet": "Arvioinnin kohdealueet",
 
     "muokkaus-lisaa-osio": "Lisää osio",
+    "muokkaus-lisaa-sisalto": "Lisää sisältö",
     "muokkaus-tutkinnon-osa-tallennettu": "Tutkinnon osa tallennettu onnistuneesti",
     "muokkaus-tekstikappale-tallennettu": "Tekstikappale tallennettu onnistuneesti",
 
@@ -678,6 +680,7 @@
     "tallenna-muutokset": "Tallenna muutokset",
 
     "perusteprojektit": "Perusteprojektit",
+    "luo-uusi-perustepohja": "Luo uusi perustepohja",
     "uusi-perustepohja": "Uusi perustepohja",
 
     "poista-tekstikappale-otsikko": "Poista tekstikappale",

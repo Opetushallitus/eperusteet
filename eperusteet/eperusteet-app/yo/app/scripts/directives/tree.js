@@ -133,7 +133,7 @@ angular.module('eperusteApp')
       '    ' +
       '  </a>' +
       '  <a ng-click="togglaaPolut()" class="group-toggler action-link">' +
-      '    <span class="avaa-sulje" icon-role="ep-open-close">{{ "avaa-sulje-kaikki" | kaanna }}</span>' +
+      '    <span class="avaa-sulje" icon-role="ep-open-close">{{ "avaa-sulje-rakenne" | kaanna }}</span>' +
       '  </a>' +
       '</div>';
 
