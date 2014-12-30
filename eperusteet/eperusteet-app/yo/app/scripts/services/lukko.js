@@ -101,11 +101,8 @@ angular.module('eperusteApp')
 
     function tilaToLukkoParams() {
       // TODO: Lisää muille tiloille vastaavat
-      if ($state.current.name === 'root.perusteprojekti.suoritustapa.osaalue' && $stateParams.osanTyyppi) {
+      if ($state.current.name === 'root.perusteprojekti.suoritustapa.osaalue' && $stateParams.osanTyyppi && $stateParams.osanId !== 'uusi') {
         return { perusteId: PerusopetusService.getPerusteId(), osanId: $stateParams.osanId };
-      }
-      else {
-        return {};
       }
     }
 
@@ -125,7 +122,12 @@ angular.module('eperusteApp')
       var lukkotyyppi = tilaToLukkoResource($state.current.name);
       if (lukkotyyppi) {
         var params = tilaToLukkoParams();
-        lukitse(lukkotyyppi, params, cb);
+        if (params) {
+          lukitse(lukkotyyppi, params, cb);
+        }
+        else { // Lukkoa ei tarvita koska kyseessä uusi
+          cb();
+        }
       }
       else {
         console.log('Tilalle "' + $state.current.name + '" ei ole määritetty lukkotyyppiä');
