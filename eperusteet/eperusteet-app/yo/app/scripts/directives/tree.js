@@ -129,7 +129,7 @@ angular.module('eperusteApp')
       '    <span ng-show="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "nayta-virheet" | kaanna }}</span>' +
       '  </a>' +
       '  <a ng-click="togglaaKuvaukset()" class="group-toggler action-link" ng-show="scanKuvaukset()">' +
-      '    <span icon-role="book">{{kuvauksetOpen && "piilota-kuvaukset" || "nayta-kuvaukset" | kaanna }}</span>' +
+      '    <span icon-role="ep-part">{{kuvauksetOpen && "piilota-kuvaukset" || "nayta-kuvaukset" | kaanna }}</span>' +
       '    ' +
       '  </a>' +
       '  <a ng-click="togglaaPolut()" class="group-toggler action-link">' +
