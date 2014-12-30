@@ -111,6 +111,13 @@ angular.module('eperusteApp')
 
     var cloner = CloneHelper.init(['koosteinen', 'nimi', 'tehtava', 'vuosiluokkakokonaisuudet']);
 
+    $scope.generateLink = function(model) {
+      return $state.href('root.perusteprojekti.suoritustapa.osaalue', _.extend(_.clone($stateParams), {
+        osanId: _.isObject(model) ? model.id : model,
+        tabId: 0
+      }));
+    };
+
     $scope.lisaaVlkSisalto = function(osio) {
       $scope.vuosiluokka.$sisalto[osio] = {otsikko: getTitle(osio), teksti: {}};
       saveVanhaOppiaine();
@@ -118,11 +125,12 @@ angular.module('eperusteApp')
 
     // TODO: mergeä saveOppiaineen kanssa
     function saveVanhaOppiaine() {
-      Lukitus.lukitseOppiaine($scope.editableModel.id, function () {
+      Lukitus.lukitse(function() {
         Oppiaineet.save({
           perusteId: PerusopetusService.getPerusteId()
         }, $scope.editableModel, function() {
-          Lukitus.vapautaOppiaine($scope.editableModel.id);
+          Lukitus.vapauta();
+          Notifikaatiot.onnistui('tallennus-onnistui');
         }, Notifikaatiot.serverCb);
       });
     }
@@ -141,7 +149,8 @@ angular.module('eperusteApp')
         perusteId: PerusopetusService.getPerusteId()
       }, function(res) {
         $scope.editableModel = res;
-        Lukitus.vapautaOppiaine($scope.editableModel.id);
+        Lukitus.vapauta();
+        Notifikaatiot.onnistui('tallennus-onnistui');
         $state.go($state.current, _.extend(_.clone($stateParams), {tabId: 0}), {reload: true});
       });
     }
@@ -180,9 +189,9 @@ angular.module('eperusteApp')
     }
 
     var callbacks = {
-      edit: function () {
+      edit: function() {
         if ($scope.editableModel.id) {
-          Lukitus.lukitseOppiaine($scope.editableModel.id, function () {
+          Lukitus.lukitse(function() {
             cloner.clone($scope.editableModel);
           });
         } else {
@@ -197,16 +206,16 @@ angular.module('eperusteApp')
         if (oppimaara) {
           $scope.editableModel = oppimaara;
         }
-        if (!$scope.editableModel.id) {
-          Oppiaineet.save({
-            perusteId: PerusopetusService.getPerusteId()
-          }, $scope.editableModel, function (res) {
-            $scope.editableModel = res;
-            $state.go($state.current, _.extend(_.clone($stateParams), {osanId: res.id}), {reload: true});
-          });
-        } else {
+        if ($scope.editableModel.id) {
           processVuosiluokkakokonaisuudet().then(function () {
             saveOppiaine();
+          });
+        } else {
+          Oppiaineet.save({
+            perusteId: PerusopetusService.getPerusteId()
+          }, $scope.editableModel, function(res) {
+            $scope.editableModel = res;
+            $state.go($state.current, _.extend(_.clone($stateParams), {osanId: res.id}), {reload: true});
           });
         }
       },
@@ -220,12 +229,11 @@ angular.module('eperusteApp')
             });
           }
         }
+
         if ($scope.editableModel.$isNew) {
           cancelActions();
         } else {
-          Lukitus.vapautaOppiaine($scope.editableModel.id, function () {
-            cancelActions();
-          });
+          Lukitus.vapauta(cancelActions);
         }
       },
       notify: function (value) {
@@ -400,13 +408,6 @@ angular.module('eperusteApp')
         return parseInt(item.vuosiluokkaKokonaisuus, 10);
       });
     }
-
-    $scope.generateLink = function (model) {
-      return $state.href('root.perusteprojekti.suoritustapa.osaalue', _.extend(_.clone($stateParams), {
-        osanId: _.isObject(model) ? model.id : model,
-        tabId: 0
-      }));
-    };
 
     function mapVuosiluokat() {
       $scope.mappedVuosiluokat = _($scope.editableModel.vuosiluokkakokonaisuudet).map(function (item) {

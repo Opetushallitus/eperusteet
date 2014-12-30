@@ -30,7 +30,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('MuokkausOsaaminenController', function ($scope, PerusopetusService,
+  .controller('MuokkausOsaaminenController', function ($scope, PerusopetusService, Notifikaatiot,
     PerusteProjektiSivunavi, YleinenData, $stateParams, CloneHelper, $timeout, $state, Lukitus) {
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
     $scope.editableModel = {};
@@ -40,13 +40,7 @@ angular.module('eperusteApp')
 
     var callbacks = {
       edit: function () {
-        if ($scope.editableModel.id) {
-          Lukitus.lukitseLaajaalainenOsaaminen($scope.editableModel.id, function () {
-            cloner.clone($scope.editableModel);
-          });
-        } else {
-          cloner.clone($scope.editableModel);
-        }
+        cloner.clone($scope.editableModel);
       },
       save: function () {
         var isNew = !$scope.editableModel.id;
@@ -55,8 +49,9 @@ angular.module('eperusteApp')
           if (isNew) {
             $state.go($state.current, _.extend(_.clone($stateParams), {osanId: tallennettu.id}), {reload: true});
           } else {
-            Lukitus.vapautaLaajaalainenOsaaminen($scope.editableModel.id);
+            Lukitus.vapauta();
           }
+          Notifikaatiot.onnistui('tallennus-onnistui');
         });
       },
       cancel: function () {
@@ -66,7 +61,7 @@ angular.module('eperusteApp')
             $state.go.apply($state, $scope.data.options.backState);
           });
         } else {
-          Lukitus.vapautaLaajaalainenOsaaminen($scope.editableModel.id);
+          Lukitus.vapauta();
         }
       },
       notify: function (value) {

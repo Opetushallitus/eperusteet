@@ -60,7 +60,7 @@ angular.module('eperusteApp')
           (cb || angular.noop)();
         });
       } else if (this.oppiaine) {
-        Lukitus.lukitseOppiaine(this.oppiaine.id, function () {
+        Lukitus.lukitseOppiaine(this.oppiaine.id, function() {
           self.isLocked = true;
           (cb || angular.noop)();
         });

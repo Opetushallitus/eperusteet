@@ -35,14 +35,25 @@ angular.module('eperusteApp')
     CloneHelper, Lukitus, $timeout, $state, $stateParams, Varmistusdialogi, Utils,
     Notifikaatiot, Kieli, $rootScope) {
     $scope.editableModel = {};
+    $scope.isLocked = false;
     $scope.isNew = $stateParams.osanId === 'uusi';
     $scope.editEnabled = false;
     $scope.loaded = false;
+
     if ($scope.isNew) {
       $timeout(function () {
         $scope.muokkaa();
       }, 200);
     }
+    else {
+      Lukitus.genericTarkista(function() {
+        $scope.isLocked = false;
+      }, function(lukitsija) {
+        $scope.isLocked = true;
+        $scope.lockNotification = lukitsija;
+      });
+    }
+
     $scope.vuosiluokkaOptions = {};
 
     $scope.isPublished = function () {
@@ -55,7 +66,7 @@ angular.module('eperusteApp')
 
     var successCb = function (res) {
       $scope.editableModel = res;
-      Lukitus.vapautaVuosiluokkakokonaisuus($scope.editableModel.id);
+      Lukitus.vapauta();
       mapModel();
       Notifikaatiot.onnistui('tallennus-onnistui');
     };
@@ -71,28 +82,14 @@ angular.module('eperusteApp')
       'paikallisestiPaatettavatAsiat'
     ]);
 
-    function lukitse(cb) {
-      Lukitus.lukitseVuosiluokkakokonaisuus($scope.editableModel.id, function() {
-        cb();
-      });
-    }
-
     var editingCallbacks = {
-      edit: function () {
+      edit: function() {
         mapModel();
-        if ($scope.editableModel.id) {
-          lukitse(function () {
-            cloner.clone($scope.editableModel);
-          });
-        } else {
-          cloner.clone($scope.editableModel);
-        }
+        cloner.clone($scope.editableModel);
       },
       asyncValidate: function (cb) {
         if ($scope.editableModel.id) {
-          lukitse(function () {
-            cb();
-          });
+          Lukitus.lukitse(cb);
         } else {
           cb();
         }
@@ -118,7 +115,7 @@ angular.module('eperusteApp')
             $scope.goToListView();
           });
         } else {
-          Lukitus.vapautaVuosiluokkakokonaisuus($scope.editableModel.id);
+          Lukitus.vapauta();
           $state.go($state.current.name, {}, {reload: true});
         }
       },
@@ -232,7 +229,9 @@ angular.module('eperusteApp')
     });
 
     $scope.muokkaa = function () {
-      Editointikontrollit.startEditing();
+      Lukitus.lukitse(function() {
+        Editointikontrollit.startEditing();
+      });
     };
 
     var fieldBackups = {};

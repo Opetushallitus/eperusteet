@@ -36,9 +36,9 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('OsallinenOsaController', function ($scope, $state, VersionHelper, $q,
+  .controller('OsallinenOsaController', function ($scope, $state, VersionHelper, $q, Lukitus,
       Editointikontrollit, FieldSplitter, Varmistusdialogi, $rootScope, Utils, $timeout,
-      $stateParams) {
+      $stateParams, Notifikaatiot) {
     $scope.isLocked = false;
     $scope.isNew = $stateParams.osanId === 'uusi';
     $scope.editEnabled = false;
@@ -47,6 +47,15 @@ angular.module('eperusteApp')
         $scope.muokkaa();
       }, 200);
     }
+    else {
+      Lukitus.genericTarkista(function() {
+        $scope.isLocked = false;
+      }, function(lukonOmistaja) {
+        $scope.isLocked = true;
+        $scope.lockNotification = lukonOmistaja;
+      });
+    }
+
 
     function refreshPromise() {
       var deferred = $q.defer();
@@ -89,10 +98,7 @@ angular.module('eperusteApp')
       });
     }
 
-    $scope.muokkaa = function () {
-      // TODO lukitus
-      Editointikontrollit.startEditing();
-    };
+    $scope.muokkaa = _.bind(Lukitus.lukitse, {}, Editointikontrollit.startEditing);
 
     $scope.addField = function (field) {
       var splitfield = FieldSplitter.process(field);
