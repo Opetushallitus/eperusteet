@@ -62,9 +62,6 @@ angular.module('eperusteApp')
       perusteenOsaViiteId: lapsi.id,
       versio: null
     };
-    if (perusteenTyyppi === 'YL') {
-      _.extend(params, {suoritustapa: 'ops'});
-    }
     return lapsi.perusteenOsa.tunniste && lapsi.perusteenOsa.tunniste === 'rakenne' ?
       ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: ''}] :
       [STATE_TEKSTIKAPPALE, params];
