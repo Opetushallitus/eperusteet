@@ -85,17 +85,10 @@ angular.module('eperusteApp')
         $scope.valittuPeruste = peruste;
         var suoritustavaton = false;
 
-        if (YleinenData.isEsiopetus(peruste)) {
-          $scope.valittuSuoritustapa = 'esiopetus';
+        var oletusSuoritustapa = YleinenData.koulutustyyppiInfo[peruste.koulutustyyppi].oletusSuoritustapa;
+        if (oletusSuoritustapa !== 'ops' && oletusSuoritustapa !== 'naytto') {
           suoritustavaton = true;
-        }
-        else if (YleinenData.isPerusopetus(peruste)) {
-          $scope.valittuSuoritustapa = 'perusopetus';
-          suoritustavaton = true;
-        }
-
-        if (suoritustavaton) {
-          peruste.suoritustavat.push({ suoritustapakoodi: $scope.valittuSuoritustapa });
+          peruste.suoritustavat.push({ suoritustapakoodi: oletusSuoritustapa });
         }
 
         $scope.valittuSuoritustapa = _.first(peruste.suoritustavat).suoritustapakoodi;
@@ -103,7 +96,7 @@ angular.module('eperusteApp')
         $q.all(_.map(peruste.suoritustavat, function(st) {
           return SuoritustapaSisalto.get({
             perusteId: valittuPeruste.id,
-            suoritustapa: suoritustavaton ? $scope.valittuSuoritustapa : YleinenData.validSuoritustapa(peruste, st.suoritustapakoodi)
+            suoritustapa: st.suoritustapakoodi
           }).$promise;
         }))
         .then(function(res) {
@@ -112,6 +105,9 @@ angular.module('eperusteApp')
               return lapsi.perusteenOsa.tunniste === 'rakenne';
             });
           }));
+          if (_.indexOf(peruste.suoritustavat, suoritustapa) === -1) {
+            suoritustapa = oletusSuoritustapa;
+          }
           $scope.valittuPeruste.$sisalto = sisallot[suoritustapa];
         }, Notifikaatiot.serverCb);
       }, Notifikaatiot.serverCb);

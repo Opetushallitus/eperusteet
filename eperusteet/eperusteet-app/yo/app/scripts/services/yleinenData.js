@@ -121,6 +121,7 @@ angular.module('eperusteApp')
     };
 
     this.validSuoritustapa = function (peruste, suoritustapa) {
+      // Deprecated, TODO: poista, käytä koulutustyyppiInfoa
       return peruste.koulutustyyppi === 'koulutustyyppi_12' ? 'naytto' : suoritustapa;
     };
 

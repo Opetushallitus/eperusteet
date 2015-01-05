@@ -150,6 +150,7 @@ angular.module('eperusteApp')
     $scope.valittuSisalto = $scope.$parent.sisalto[$stateParams.osanId];
     if (!$scope.valittuSisalto) {
       var params = _.extend(_.clone($stateParams), {
+        // TODO siirry käyttämään YleinenData.koulutustyyppiInfo:a
         suoritustapa: YleinenData.validSuoritustapa($scope.peruste, $stateParams.suoritustapa)
       });
       $state.go('root.esitys.peruste.rakenne', params);
@@ -217,6 +218,7 @@ angular.module('eperusteApp')
 
     if ($state.current.name === 'root.esitys.peruste') {
       var params = _.extend(_.clone($stateParams), {
+        // TODO siirry käyttämään YleinenData.koulutustyyppiInfo:a
         suoritustapa: YleinenData.validSuoritustapa($scope.peruste, $stateParams.suoritustapa)
       });
       $state.go('root.esitys.peruste.rakenne', params);
