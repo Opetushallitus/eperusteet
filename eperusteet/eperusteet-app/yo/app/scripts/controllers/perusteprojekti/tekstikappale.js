@@ -51,16 +51,11 @@ angular.module('eperusteApp')
         $state.go('root.perusteprojekti.suoritustapa.' + tyyppi, {}, {reload: true});
       }
 
+      var successCb = _.partial(commonCb, YleinenData.koulutustyyppiInfo[peruste.koulutustyyppi].sisaltoTunniste);
       if (YleinenData.isPerusopetus(peruste)) {
-        PerusopetusService.deleteOsa({$url: 'dummy', id: viiteId}, function() {
-          commonCb('posisalto');
-        }, Notifikaatiot.serverCb);
-      }
-      else if (YleinenData.isEsiopetus(peruste)) {
-        PerusteenOsaViitteet.delete({viiteId: viiteId}, {}, _.partial(commonCb, 'eosisalto'), Notifikaatiot.serverCb);
-      }
-      else {
-        PerusteenOsaViitteet.delete({viiteId: viiteId}, {}, _.partial(commonCb, 'sisalto'), Notifikaatiot.serverCb);
+        PerusopetusService.deleteOsa({$url: 'dummy', id: viiteId}, successCb, Notifikaatiot.serverCb);
+      } else {
+        PerusteenOsaViitteet.delete({viiteId: viiteId}, {}, successCb, Notifikaatiot.serverCb);
       }
     };
 

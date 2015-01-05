@@ -93,28 +93,18 @@ angular.module('eperusteApp')
      */
     function urlFn(method, projekti, peruste) {
       projekti = _.clone(projekti) || get();
-        if (peruste && !projekti.koulutustyyppi) {
-          projekti.koulutustyyppi = peruste.koulutustyyppi;
-        }
-        if (YleinenData.isPerusopetus(projekti)) {
-          return $state[method]('root.perusteprojekti.suoritustapa.posisalto', {
-            perusteProjektiId: projekti.id,
-            suoritustapa: 'perusopetus'
-          });
-        } else if (YleinenData.isEsiopetus(projekti)) {
-          return $state[method]('root.perusteprojekti.suoritustapa.eosisalto', {
-            perusteProjektiId: projekti.id,
-            suoritustapa: 'esiopetus'
-          });
-        }
-        else {
-          var suoritustapa = (getSuoritustapa() !== '' && !_.isUndefined(peruste)) ? getSuoritustapa() :
-            YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
-          return $state[method]('root.perusteprojekti.suoritustapa.sisalto', {
-            perusteProjektiId: projekti.id,
-            suoritustapa: suoritustapa
-          });
-        }
+      if (peruste && !projekti.koulutustyyppi) {
+        projekti.koulutustyyppi = peruste.koulutustyyppi;
+      }
+      var oletus = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
+      var suoritustapa = getSuoritustapa();
+      suoritustapa = (oletus !== 'ops' && oletus !== 'naytto') ? oletus : (suoritustapa || oletus);
+      var sisaltoTunniste = YleinenData.koulutustyyppiInfo[projekti.koulutustyyppi] ?
+        YleinenData.koulutustyyppiInfo[projekti.koulutustyyppi].sisaltoTunniste : 'sisalto';
+      return $state[method]('root.perusteprojekti.suoritustapa.' + sisaltoTunniste, {
+        perusteProjektiId: projekti.id,
+        suoritustapa: suoritustapa
+      });
     }
 
     function mergeProjekti(projekti, tuoPohja) {

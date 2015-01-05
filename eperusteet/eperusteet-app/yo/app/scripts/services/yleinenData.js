@@ -68,31 +68,36 @@ angular.module('eperusteApp')
         nimi: 'perustutkinto',
         oletusSuoritustapa: 'ops',
         hasTutkintonimikkeet: true,
-        hakuState: 'root.selaus.ammatillinenperuskoulutus'
+        hakuState: 'root.selaus.ammatillinenperuskoulutus',
+        sisaltoTunniste: 'sisalto'
       },
       'koulutustyyppi_11': {
         nimi: 'ammattitutkinto',
         oletusSuoritustapa: 'naytto',
         hasTutkintonimikkeet: true,
-        hakuState: 'root.selaus.ammatillinenaikuiskoulutus'
+        hakuState: 'root.selaus.ammatillinenaikuiskoulutus',
+        sisaltoTunniste: 'sisalto'
       },
       'koulutustyyppi_12': {
         nimi: 'erikoisammattitutkinto',
         oletusSuoritustapa: 'naytto',
         hasTutkintonimikkeet: true,
-        hakuState: 'root.selaus.ammatillinenaikuiskoulutus'
+        hakuState: 'root.selaus.ammatillinenaikuiskoulutus',
+        sisaltoTunniste: 'sisalto'
       },
       'koulutustyyppi_15': {
         nimi: 'esiopetus',
         oletusSuoritustapa: 'esiopetus',
         hasTutkintonimikkeet: false,
-        hakuState: ''
+        hakuState: '',
+        sisaltoTunniste: 'eosisalto'
       },
       'koulutustyyppi_16': {
         nimi: 'perusopetus',
         oletusSuoritustapa: 'perusopetus',
         hasTutkintonimikkeet: false,
-        hakuState: 'root.selaus.perusopetuslista'
+        hakuState: 'root.selaus.perusopetuslista',
+        sisaltoTunniste: 'posisalto'
       }
     };
 
