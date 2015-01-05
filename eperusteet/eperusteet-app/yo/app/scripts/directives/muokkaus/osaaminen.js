@@ -46,6 +46,7 @@ angular.module('eperusteApp')
         var isNew = !$scope.editableModel.id;
         PerusopetusService.saveOsa($scope.editableModel, $stateParams, function (tallennettu) {
           $scope.editableModel = tallennettu;
+          PerusopetusService.clearCache();
           if (isNew) {
             $state.go($state.current, _.extend(_.clone($stateParams), {osanId: tallennettu.id}), {reload: true});
           } else {
@@ -85,6 +86,7 @@ angular.module('eperusteApp')
         removeWholeLabel: 'poista-osaamiskokonaisuus',
         removeWholeConfirmationText: 'poistetaanko-osaamiskokonaisuus',
         removeWholeFn: function () {
+          PerusopetusService.clearCache();
           PerusopetusService.deleteOsa($scope.editableModel);
         },
         fields: [],

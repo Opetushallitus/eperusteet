@@ -65,6 +65,7 @@ angular.module('eperusteApp')
     };
 
     var successCb = function (res) {
+      PerusopetusService.clearCache();
       $scope.editableModel = res;
       Lukitus.vapauta();
       mapModel();
@@ -151,6 +152,7 @@ angular.module('eperusteApp')
           primaryBtn: 'poista',
           successCb: function () {
             Editointikontrollit.cancelEditing();
+            PerusopetusService.clearCache();
             PerusopetusService.deleteOsa($scope.editableModel);
             $scope.goToListView();
           }

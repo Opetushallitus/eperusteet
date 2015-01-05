@@ -151,6 +151,7 @@ angular.module('eperusteApp')
         $scope.editableModel = res;
         Lukitus.vapauta();
         Notifikaatiot.onnistui('tallennus-onnistui');
+        PerusopetusService.clearCache();
         $state.go($state.current, _.extend(_.clone($stateParams), {tabId: 0}), {reload: true});
       });
     }
@@ -215,6 +216,7 @@ angular.module('eperusteApp')
             perusteId: PerusopetusService.getPerusteId()
           }, $scope.editableModel, function(res) {
             $scope.editableModel = res;
+            PerusopetusService.clearCache();
             $state.go($state.current, _.extend(_.clone($stateParams), {osanId: res.id}), {reload: true});
           });
         }
@@ -278,6 +280,7 @@ angular.module('eperusteApp')
         backLabel: 'oppiaineet',
         backState: OppimaaraHelper.getBackState(),
         removeWholeFn: function () {
+          PerusopetusService.clearCache();
           PerusopetusService.deleteOsa($scope.editableModel);
         },
         actionButtons: [

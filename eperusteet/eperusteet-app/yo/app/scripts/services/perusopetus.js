@@ -167,6 +167,10 @@ angular.module('eperusteApp')
       return SuoritustapaSisalto.get(commonParams({suoritustapa: suoritustapa}));
     };
 
+    this.clearCache = function () {
+      cached = {};
+    };
+
     this.getOsat = function (tyyppi, useCache) {
       if (useCache && cached[tyyppi]) {
         return cached[tyyppi];

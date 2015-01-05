@@ -175,6 +175,9 @@ angular.module('eperusteApp')
 
   this.setVisible = function (visible) {
     _isVisible = _.isUndefined(visible) ? true : visible;
+    if (!_isVisible) {
+      PerusopetusService.clearCache();
+    }
   };
 
   this.isVisible = function () {
