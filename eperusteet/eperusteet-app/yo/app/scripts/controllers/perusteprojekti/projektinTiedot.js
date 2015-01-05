@@ -114,9 +114,11 @@ angular.module('eperusteApp')
       $scope.tabs.push({otsikko: 'projekti-toimikausi', url: 'views/partials/perusteprojekti/toimikausi.html'});
     }
 
-    Organisaatioryhmat.yksi({ oid: $scope.projekti.ryhmaOid }, function(res) {
-      $scope.$ryhmaNimi = res.nimi;
-    });
+    if ($scope.projekti.ryhmaOid) {
+      Organisaatioryhmat.yksi({ oid: $scope.projekti.ryhmaOid }, function(res) {
+        $scope.$ryhmaNimi = res.nimi;
+      });
+    }
 
     $scope.haeRyhma = function() {
       $modal.open({
