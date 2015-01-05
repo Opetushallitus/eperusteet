@@ -18,7 +18,7 @@
         <button ng-hide="peruste.id" ng-click="mergeProjekti(true)" type="button" class="btn btn-default" kaanna="tuo-perustepohja"></button>
         <div ng-if="peruste.id" class="btn-group">
           <div class="alert alert-info">
-            {{ 'perusteprojektin-pohjaksi-otetaan-peruste' | kaanna }}: <b>{{ peruste.nimi | kaanna }} ({{ koulutustyypitMap[peruste.koulutustyyppi] | kaanna }})</b>
+            {{ 'perusteprojektin-pohjaksi-otetaan-peruste' | kaanna }}: <b>{{ peruste.nimi | kaanna }} ({{ koulutustyypitMap[peruste.koulutustyyppi].nimi | kaanna }})</b>
             <div ng-show="peruste.tutkintokoodi">{{ 'tutkintokoodi' | kaanna }}: <b>{{ peruste.tutkintokoodi | kaanna }}</b></div>
             <div ng-show="peruste.voimassaoloAlkaa">{{ 'voimassaoloAlkaa' | kaanna }}: <b>{{ peruste.voimassaoloAlkaa | aikaleima }}</b></div>
             <div ng-show="peruste.voimassaoloLoppuu">{{ 'voimassaoloLoppuu' | kaanna }}: <b>{{ peruste.voimassaoloLoppuu | aikaleima }}</b></div>

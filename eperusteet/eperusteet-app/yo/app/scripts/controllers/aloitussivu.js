@@ -15,6 +15,7 @@
  */
 
 'use strict';
+/* global _ */
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {
@@ -41,33 +42,34 @@ angular.module('eperusteApp')
         controller: 'AloitusSivuController'
       });
   })
-  .controller('AloitusSivuController', function ($scope, $state) {
+  .controller('AloitusSivuController', function ($scope, $state, YleinenData) {
     $scope.valinnat = [
       {
-        'label': 'esiopetus',
-        'state': '',
-        'helper': 'selaa-perustetta'
+        koodi: 'koulutustyyppi_15',
+        helper: 'selaa-perustetta'
       },
       {
-        'label': 'perusopetus',
-        'state': 'root.selaus.perusopetuslista',
-        'helper': 'selaa-perusteita'
+        koodi: 'koulutustyyppi_16',
+        helper: 'selaa-perusteita'
       },
       {
-        'label': 'lukiokoulutus',
-        'state': '',
-        'helper': 'selaa-perusteita'
+        label: 'lukiokoulutus',
+        helper: 'selaa-perusteita'
       },
       {
-        'label': 'ammatillinen-peruskoulutus',
-        'state': 'root.selaus.ammatillinenperuskoulutus',
-        'helper': 'hae-perusteita'
+        label: 'ammatillinen-peruskoulutus',
+        koodi: 'koulutustyyppi_1',
+        helper: 'hae-perusteita'
       },
       {
-        'label': 'ammatillinen-aikuiskoulutus',
-        'state': 'root.selaus.ammatillinenaikuiskoulutus',
-        'helper': 'hae-perusteita'
+        label: 'ammatillinen-aikuiskoulutus',
+        koodi: 'koulutustyyppi_11',
+        helper: 'hae-perusteita'
       },
     ];
-    $scope.getHref = function(valinta) { return $state.href(valinta.state); };
+    _.each($scope.valinnat, function (item) {
+      var info = YleinenData.koulutustyyppiInfo[item.koodi] || {};
+      item.label = item.label || info.nimi;
+      item.url = $state.href(info.hakuState);
+    });
   });

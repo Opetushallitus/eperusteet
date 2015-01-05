@@ -63,38 +63,40 @@ angular.module('eperusteApp')
       'naytto'
     ];
 
-    this.koulutustyypit = [
-      'koulutustyyppi_1',
-      'koulutustyyppi_11',
-      'koulutustyyppi_12',
-      'koulutustyyppi_15',
-      'koulutustyyppi_16'
-    ];
-
-    this.koulutustyypitNimiMap = {
-      'perustutkinto' : 'koulutustyyppi_1',
-      'ammattitutkinto' : 'koulutustyyppi_11',
-      'erikoisammattitutkinto' : 'koulutustyyppi_12',
-      'esiopetus' : 'koulutustyyppi_15',
-      'perusopetus' : 'koulutustyyppi_16',
+    this.koulutustyyppiInfo = {
+      'koulutustyyppi_1': {
+        nimi: 'perustutkinto',
+        oletusSuoritustapa: 'ops',
+        hasTutkintonimikkeet: true,
+        hakuState: 'root.selaus.ammatillinenperuskoulutus'
+      },
+      'koulutustyyppi_11': {
+        nimi: 'ammattitutkinto',
+        oletusSuoritustapa: 'naytto',
+        hasTutkintonimikkeet: true,
+        hakuState: 'root.selaus.ammatillinenaikuiskoulutus'
+      },
+      'koulutustyyppi_12': {
+        nimi: 'erikoisammattitutkinto',
+        oletusSuoritustapa: 'naytto',
+        hasTutkintonimikkeet: true,
+        hakuState: 'root.selaus.ammatillinenaikuiskoulutus'
+      },
+      'koulutustyyppi_15': {
+        nimi: 'esiopetus',
+        oletusSuoritustapa: 'esiopetus',
+        hasTutkintonimikkeet: false,
+        hakuState: ''
+      },
+      'koulutustyyppi_16': {
+        nimi: 'perusopetus',
+        oletusSuoritustapa: 'perusopetus',
+        hasTutkintonimikkeet: false,
+        hakuState: 'root.selaus.perusopetuslista'
+      }
     };
 
-    this.koulutustyypitMap = {
-      'koulutustyyppi_1': 'perustutkinto',
-      'koulutustyyppi_11': 'ammattitutkinto',
-      'koulutustyyppi_12': 'erikoisammattitutkinto',
-      'koulutustyyppi_15': 'esiopetus',
-      'koulutustyyppi_16': 'perusopetus',
-    };
-
-    this.koulutustyypinSuoritustapaOletus = {
-      'koulutustyyppi_1': 'ops',
-      'koulutustyyppi_11': 'naytto',
-      'koulutustyyppi_12': 'naytto',
-      'koulutustyyppi_15': 'esiopetus',
-      'koulutustyyppi_16': 'perusopetus',
-
-    };
+    this.koulutustyypit = _.keys(this.koulutustyyppiInfo);
 
     this.kielet = {
       'suomi': 'fi',
@@ -123,7 +125,10 @@ angular.module('eperusteApp')
     };
 
     this.valitseSuoritustapaKoulutustyypille = function(koulutustyyppi) {
-      return this.koulutustyypinSuoritustapaOletus[koulutustyyppi] || 'ops';
+      if (this.koulutustyyppiInfo[koulutustyyppi]) {
+        return this.koulutustyyppiInfo[koulutustyyppi].oletusSuoritustapa;
+      }
+      return 'ops';
     };
 
     this.showKoulutukset = function (peruste) {

@@ -30,7 +30,7 @@ angular.module('eperusteApp')
     Koodisto, PerusteprojektiResource, PerusteTutkinnonosat, $translate,
     SuoritustapaSisalto, Perusteet, Notifikaatiot, YleinenData, Utils, PerusteProjektiService) {
     $scope.koulutustyypit = YleinenData.koulutustyypit;
-    $scope.koulutustyypitMap = YleinenData.koulutustyypitMap;
+    $scope.koulutustyypitMap = YleinenData.koulutustyyppiInfo;
     $scope.yksikot = YleinenData.yksikot;
     $scope.suoritustavat = YleinenData.suoritustavat;
 

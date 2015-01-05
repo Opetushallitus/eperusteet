@@ -24,8 +24,7 @@ angular.module('eperusteApp')
         peruste = peruste.koulutustyyppi;
       }
       return _.isString(peruste) &&
-        peruste !== YleinenData.koulutustyypitNimiMap.esiopetus &&
-        peruste !== YleinenData.koulutustyypitNimiMap.perusopetus ? true : false;
+        YleinenData.koulutustyyppiInfo[peruste] && YleinenData.koulutustyyppiInfo[peruste].hasTutkintonimikkeet;
     };
 
     this.get = function (perusteId, object) {

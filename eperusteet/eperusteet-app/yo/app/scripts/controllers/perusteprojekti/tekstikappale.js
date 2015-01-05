@@ -32,9 +32,6 @@ angular.module('eperusteApp')
         perusteenOsaViiteId: id || response.id,
         versio: ''
       };
-      /*if (YleinenData.isPerusopetus(peruste)) {
-        _.extend(params, {suoritustapa: 'ops'});
-      }*/
       $state.go('root.perusteprojekti.suoritustapa.tekstikappale', params, {reload: true});
     }
 
