@@ -98,7 +98,11 @@ angular.module('eperusteApp')
       }
       var oletus = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
       var suoritustapa = getSuoritustapa();
-      suoritustapa = (oletus !== 'ops' && oletus !== 'naytto') ? oletus : (suoritustapa || oletus);
+      var suoritustavaton = (oletus !== 'ops' && oletus !== 'naytto') || !suoritustapa;
+      var eiValidiSuoritustapa = (oletus === 'ops' || oletus === 'naytto') && suoritustapa !== 'ops' && suoritustapa !== 'naytto';
+      if (suoritustavaton || eiValidiSuoritustapa) {
+        suoritustapa = oletus;
+      }
       var sisaltoTunniste = YleinenData.koulutustyyppiInfo[projekti.koulutustyyppi] ?
         YleinenData.koulutustyyppiInfo[projekti.koulutustyyppi].sisaltoTunniste : 'sisalto';
       return $state[method]('root.perusteprojekti.suoritustapa.' + sisaltoTunniste, {
