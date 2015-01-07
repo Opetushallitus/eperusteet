@@ -163,6 +163,21 @@ angular.module('eperusteApp')
           },
         }
       },
+      kohdealueet: {
+        directive: 'osanmuokkaus-kohdealueet',
+        attrs: {
+          model: 'objekti',
+        },
+        callbacks: {
+          save: function () {
+            OsanMuokkausHelper.save();
+          },
+          edit: function () {},
+          cancel: function () {
+            OsanMuokkausHelper.goBack();
+          },
+        }
+      },
       tavoitteet: {
         directive: 'osanmuokkaus-tavoitteet',
         attrs: {
@@ -179,6 +194,7 @@ angular.module('eperusteApp')
         }
       }
     };
+
     var config = MAPPING[$stateParams.osanTyyppi];
     $scope.config = config;
     var muokkausDirective = angular.element('<' + config.directive + '>').attr('config', 'config');
@@ -231,6 +247,27 @@ angular.module('eperusteApp')
     $scope.edit = function () {
       OsanMuokkausHelper.setup($scope.model);
       $state.go('root.perusteprojekti.suoritustapa.muokkaus', $stateParams);
+    };
+  })
+
+  .directive('osanmuokkausKohdealueet', function () {
+    return {
+      templateUrl: 'views/directives/perusopetus/osanmuokkauskohdealueet.html',
+      restrict: 'E',
+      scope: {
+        model: '=',
+        config: '='
+      },
+      controller: function($scope) {
+        $scope.model = $scope.model || [];
+
+        $scope.lisaaKohdealue = function(uusiKohdealue) {
+          $scope.model.push({ nimi: _.clone(uusiKohdealue) });
+          $scope.uusiKohdealue = {};
+        };
+
+        $scope.poistaKohdealue = _.partial(_.remove, $scope.model);
+      }
     };
   })
 

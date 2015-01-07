@@ -2,7 +2,6 @@
 
 <div class="oppiaine-view">
 <osallinen-osa model="model" editable-model="editableModel" config="data.options" versiot="versiot">
-  <!-- <pre>{{ vuosiluokka.$sisalto | json }}</pre> -->
   <div ng-if="editEnabled">
     <div class="oppiaine-header">
       <table>
@@ -89,6 +88,8 @@
 
     <div ng-repeat="osamodel in yleisetosat" muokattava-osio="editableModel" type="tekstikappale"
          path="{{osamodel}}"></div>
+
+    <div muokattava-osio="editableModel" type="kohdealueet" path="kohdealueet"></div>
 
     <ul class="nav nav-tabs nav-justified">
       <li ng-class="{active: vuosiluokat.$tabActive}" ng-repeat="vuosiluokat in mappedVuosiluokat track by $index">

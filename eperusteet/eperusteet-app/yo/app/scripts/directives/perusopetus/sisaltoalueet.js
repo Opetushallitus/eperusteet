@@ -78,7 +78,21 @@ angular.module('eperusteApp')
       }
     };
   })
-
+  .directive('kohdealueet', function () {
+    return {
+      templateUrl: 'views/directives/perusopetus/kohdealueet.html',
+      restrict: 'A',
+      scope: {
+        model: '=kohdealueet'
+      },
+      controller: function($scope) {
+        console.log($scope);
+      }
+    };
+  })
+  .controller('SisaltoalueetController', function ($scope, YleinenData) {
+    $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
+  })
   .directive('sisaltoalueet', function () {
     return {
       templateUrl: 'views/directives/perusopetus/sisaltoalueet.html',

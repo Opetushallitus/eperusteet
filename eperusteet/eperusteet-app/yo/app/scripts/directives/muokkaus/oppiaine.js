@@ -93,7 +93,7 @@ angular.module('eperusteApp')
     $scope.mappedVuosiluokat = [];
     $scope.nameSort = Utils.nameSort;
     $scope.yleisetosat = ['tehtava', 'osaalue'];
-    $scope.activeTab =  parseInt($stateParams.tabId, 10);
+    $scope.activeTab = parseInt($stateParams.tabId, 10);
     var creatingNewOppimaara = !!OppimaaraHelper.instance();
     $scope.oppimaaraRequested = false;
     $scope.oppiaineet = PerusopetusService.getOsat(PerusopetusService.OPPIAINEET, true);

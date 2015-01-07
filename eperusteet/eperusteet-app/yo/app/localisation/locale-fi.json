@@ -412,6 +412,9 @@
 
     "lajittelu-jarjestysnumero": "No.",
 
+    "poista-kohdealue": "Poista",
+    "lisaa-kohdealue": "Lisaa kohdealue",
+    "muokkaus-kohdealueet": "Muokkaa kohdealueita",
     "muokkaus-tutkinnon-jarjestysnumero": "Järjestysnumero",
     "muokkaus-tutkinnon-osan-nimi-header": "Nimi",
     "muokkaus-tutkinnon-osan-nimi-placeholder": "Kirjoita tähän otsikko",
@@ -749,6 +752,7 @@
     "ohje-tyoryhma-luonti": "<p>Projektin perustetyöryhmä voidaan jakaa työryhmiin. Perusteen sisältö voidaan merkata luoduille työryhmille.</p><p>Kun työryhmä on luotu, perusteen sisältö voidaan merkata luodulle työryhmälle sisällön yhteydessä.</p>",
 
     "opetuksen-sisallot": "Opetuksen sisällöt",
+    "opetuksen-kohdealueet": "Opetuksen kohdealueet",
     "laaja-alainen-osaaminen": "Laaja-alainen osaaminen",
     "laaja-alainen-osaaminen-kuvaus": "Laaja-alaisen osaamisen kuvaus",
     "laaja-alaiset-osaamiset": "Laaja-alaiset osaamiset",

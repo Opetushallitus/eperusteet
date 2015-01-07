@@ -49,7 +49,7 @@ angular.module('eperusteApp')
     update();
     $scope.$watch('model', update, true);
 
-    $scope.edit = function () {
+    $scope.edit = function() {
       OsanMuokkausHelper.setup($scope.model, $scope.path, $scope.oppiaine, function() {
         $state.go('root.perusteprojekti.suoritustapa.muokkaus', {suoritustapa: $stateParams.suoritustapa, osanTyyppi: $scope.type, osanId: $scope.realModel.id});
       });
