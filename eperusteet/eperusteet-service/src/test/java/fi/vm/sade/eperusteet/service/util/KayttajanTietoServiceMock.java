@@ -15,43 +15,41 @@
  */
 package fi.vm.sade.eperusteet.service.util;
 
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.service.KoodistoService;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Future;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 /**
  *
- * @author nkala
+ * @author jhyoty
  */
 @Service
-@Profile(value = "test")
-public class KoodistoServiceMock implements KoodistoService {
+@Profile("test")
+public class KayttajanTietoServiceMock implements KayttajanTietoService {
 
     @Override
-    public List<KoodistoKoodiDto> getAll(String koodisto) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public KoodistoKoodiDto get(String koodisto, String koodi) {
+    public KayttajanTietoDto hae(String oid) {
         return null;
     }
 
     @Override
-    public List<KoodistoKoodiDto> filterBy(String koodisto, String haku) {
-        return Collections.emptyList();
+    public Future<KayttajanTietoDto> haeAsync(String oid) {
+        return new AsyncResult<>(null);
     }
 
     @Override
-    public List<KoodistoKoodiDto> getAlarelaatio(String koodi) {
-        return Collections.emptyList();
+    public KayttajanProjektitiedotDto haePerusteprojekti(String oid, Long projektiId) {
+        return null;
     }
 
     @Override
-    public List<KoodistoKoodiDto> getYlarelaatio(String koodi) {
+    public List<KayttajanProjektitiedotDto> haePerusteprojektit(String oid) {
         return Collections.emptyList();
     }
 
