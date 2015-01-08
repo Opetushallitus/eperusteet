@@ -22,6 +22,7 @@ angular.module('eperusteApp')
     Editointikontrollit, Notifikaatiot, $state, SuoritustapaSisalto, TutkinnonOsaEditMode,
     PerusopetusService, $stateParams) {
     var peruste = null;
+    var deleteDone = false;
 
     this.setPeruste = function (value) {
       peruste = value;
@@ -44,10 +45,19 @@ angular.module('eperusteApp')
       }
     };
 
-    this.delete = function (viiteId) {
+    this.wasDeleted = function () {
+      var ret = deleteDone;
+      deleteDone = false;
+      return ret;
+    };
+
+    this.delete = function (viiteId, isNew) {
       function commonCb(tyyppi) {
-        Editointikontrollit.cancelEditing();
-        Notifikaatiot.onnistui('poisto-onnistui');
+        deleteDone = true;
+        if (isNew !== true) {
+          Editointikontrollit.cancelEditing();
+          Notifikaatiot.onnistui('poisto-onnistui');
+        }
         $state.go('root.perusteprojekti.suoritustapa.' + tyyppi, {}, {reload: true});
       }
 
@@ -322,8 +332,8 @@ angular.module('eperusteApp')
       haeSisalto();
     }
 
-    function doDelete() {
-      TekstikappaleOperations.delete($scope.viiteId());
+    function doDelete(isNew) {
+      TekstikappaleOperations.delete($scope.viiteId(), isNew);
     }
 
     function setupTekstikappale(kappale) {
@@ -356,17 +366,19 @@ angular.module('eperusteApp')
           $scope.isNew = false;
         },
         cancel: function () {
-          Lukitus.vapautaPerusteenosa($scope.tekstikappale.id, function () {
-            if ($scope.isNew) {
-              doDelete();
-            }
-            else {
-              fetch(function () {
-                refreshPromise();
-              });
-            }
-            $scope.isNew = false;
-          });
+          if (!TekstikappaleOperations.wasDeleted()) {
+            Lukitus.vapautaPerusteenosa($scope.tekstikappale.id, function () {
+              if ($scope.isNew) {
+                doDelete(true);
+              }
+              else {
+                fetch(function () {
+                  refreshPromise();
+                });
+              }
+              $scope.isNew = false;
+            });
+          }
         },
         notify: function (mode) {
           $scope.editEnabled = mode;
