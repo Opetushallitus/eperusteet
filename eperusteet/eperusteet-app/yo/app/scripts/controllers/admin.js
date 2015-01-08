@@ -85,6 +85,7 @@ angular.module('eperusteApp')
         $scope.jarjestysTapa = tyyppi;
       }
     };
+
     $scope.jarjestys = function(data) {
       switch($scope.jarjestysTapa) {
         case 'nimi': return Utils.nameSort(data);
@@ -132,6 +133,7 @@ angular.module('eperusteApp')
       return (!$scope.tilaRajain || $scope.tilaRajain === pp.tila) && (_.isEmpty($scope.rajaus) ||
               Algoritmit.match($scope.rajaus, pp.nimi) ||
               Algoritmit.match($scope.rajaus, 'tila-' + pp.tila) ||
+              Algoritmit.match($scope.rajaus, pp.peruste.diaarinumero) ||
               Algoritmit.match($scope.rajaus, pp.diaarinumero));
     };
   });
