@@ -51,7 +51,11 @@ angular.module('eperusteApp')
 
     $scope.edit = function() {
       OsanMuokkausHelper.setup($scope.model, $scope.path, $scope.oppiaine, function() {
-        $state.go('root.perusteprojekti.suoritustapa.muokkaus', {suoritustapa: $stateParams.suoritustapa, osanTyyppi: $scope.type, osanId: $scope.realModel.id});
+        $state.go('root.perusteprojekti.suoritustapa.muokkaus', {
+          suoritustapa: $stateParams.suoritustapa,
+          osanTyyppi: $scope.type,
+          osanId: $scope.realModel.id
+        });
       });
     };
 

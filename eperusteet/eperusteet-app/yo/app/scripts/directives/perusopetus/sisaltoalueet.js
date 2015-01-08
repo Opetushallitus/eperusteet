@@ -80,13 +80,12 @@ angular.module('eperusteApp')
   })
   .directive('kohdealueet', function () {
     return {
-      templateUrl: 'views/directives/perusopetus/kohdealueet.html',
+      templateUrl: 'views/directives/perusopetus/sisaltoalueet.html',
       restrict: 'A',
       scope: {
         model: '=kohdealueet'
       },
-      controller: function($scope) {
-        console.log($scope);
+      controller: function() {
       }
     };
   })

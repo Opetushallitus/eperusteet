@@ -18,108 +18,129 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('OsanMuokkausHelper', function ($stateParams, PerusopetusService, $state, Lukitus) {
-    this.vuosiluokat = [];
-    this.model = null;
-    this.isLocked = false;
-    var self = this;
-    var reset = function () {
-      self.backState = null;
-      self.vuosiluokka = null;
-      self.path = null;
-      self.oppiaine = null;
-    };
-    reset();
-    this.reset = reset;
+  .service('OsanMuokkausHelper', function ($q, $stateParams, PerusopetusService, $state, Lukitus) {
+    var vuosiluokat = [];
+    var model = null;
+    var isLocked = false;
+    var backState = null;
+    var vuosiluokka = null;
+    var path = null;
+    var oppiaine = null;
+    var osaamiset = null;
 
-    this.getModel = function () {
-      return this.path ? this.model[this.path] : this.model;
+    function reset() {
+      backState = null;
+      vuosiluokka = null;
+      osaamiset = null;
+      path = null;
+      oppiaine = null;
     };
 
-    this.setup = function (model, path, oppiaine, cb) {
-      this.oppiaine = $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET ? model : null;
-      if (oppiaine) {
-        this.oppiaine = oppiaine;
+    function getModel() {
+      return path ? model[path] : model;
+    };
+
+    function setup(uusiModel, uusiPath, uusiOppiaine, cb) {
+      cb = cb || angular.noop;
+      oppiaine = $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET ? uusiModel : null;
+      if (uusiOppiaine) {
+        oppiaine = uusiOppiaine;
       }
-      this.model = model;
-      this.path = path;
-      this.isLocked = false;
-      this.backState = [$state.current.name, _.clone($stateParams)];
-      this.vuosiluokat = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT, true);
-      if (model.vuosiluokkaKokonaisuus) {
-        this.vuosiluokka = _.find(this.vuosiluokat, function (vl) {
+      model = uusiModel;
+      path = uusiPath;
+      isLocked = false;
+      backState = [$state.current.name, _.clone($stateParams)];
+
+      $q.all([
+        PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT, true).$promise,
+        PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true).$promise
+      ]).then(function(res) {
+        vuosiluokat = res[0];
+        osaamiset = res[1];
+        vuosiluokka = uusiModel.vuosiluokkaKokonaisuus ? _.find(vuosiluokat, function(vl) {
           return vl.id === parseInt(model.vuosiluokkaKokonaisuus, 10);
-        });
-      } else {
-        this.vuosiluokka = null;
-      }
-      var self = this;
-      if (this.isVuosiluokkakokonaisuudenOsa()) {
-        Lukitus.lukitseOppiaineenVuosiluokkakokonaisuus(this.oppiaine.id, this.model.id, function () {
-          self.isLocked = true;
-          (cb || angular.noop)();
-        });
-      } else if (this.oppiaine) {
-        Lukitus.lukitseOppiaine(this.oppiaine.id, function() {
-          self.isLocked = true;
-          (cb || angular.noop)();
-        });
-      }
+        }) : null;
+        if (isVuosiluokkakokonaisuudenOsa()) {
+          Lukitus.lukitseOppiaineenVuosiluokkakokonaisuus(oppiaine.id, model.id, function () {
+            isLocked = true;
+            cb();
+          });
+        } else if (oppiaine) {
+          Lukitus.lukitseOppiaine(oppiaine.id, function() {
+            isLocked = true;
+            cb();
+          });
+        }
+      });
     };
 
-    this.save = function () {
-      var self = this;
-      if (this.isVuosiluokkakokonaisuudenOsa()) {
-        PerusopetusService.saveVuosiluokkakokonaisuudenOsa(this.model, this.oppiaine, function () {
-          Lukitus.vapautaOppiaineenVuosiluokkakokonaisuus(self.oppiaine.id, self.model.id, function () {
-            self.isLocked = false;
-            self.goBack();
+    function save() {
+      if (isVuosiluokkakokonaisuudenOsa()) {
+        PerusopetusService.saveVuosiluokkakokonaisuudenOsa(model, oppiaine, function () {
+          Lukitus.vapautaOppiaineenVuosiluokkakokonaisuus(oppiaine.id, model.id, function () {
+            isLocked = false;
+            goBack();
           });
         });
-      } else if (this.path) {
-        var payload = _.pick(this.model, ['id', this.path]);
-        PerusopetusService.saveOsa(payload, this.backState[1], function () {
-          if (self.isLocked && self.oppiaine) {
-            Lukitus.vapautaOppiaine(self.oppiaine.id, function () {
-              self.isLocked = false;
-              self.goBack();
+      } else if (path) {
+        var payload = _.pick(model, ['id', path]);
+        PerusopetusService.saveOsa(payload, backState[1], function () {
+          if (isLocked && oppiaine) {
+            Lukitus.vapautaOppiaine(oppiaine.id, function () {
+              isLocked = false;
+              goBack();
             });
           }
         });
       }
     };
 
-    this.goBack = function () {
-      if (!this.backState) {
+    function goBack() {
+      if (!backState) {
         return;
       }
-      var self = this;
-      if (this.isLocked) {
-        if (this.isVuosiluokkakokonaisuudenOsa()) {
-          Lukitus.vapautaOppiaineenVuosiluokkakokonaisuus(this.oppiaine.id, this.model.id, function () {
-            self.isLocked = false;
+
+      if (isLocked) {
+        if (isVuosiluokkakokonaisuudenOsa()) {
+          Lukitus.vapautaOppiaineenVuosiluokkakokonaisuus(oppiaine.id, model.id, function () {
+            isLocked = false;
           });
-        } else if (this.oppiaine) {
-          Lukitus.vapautaOppiaine(self.oppiaine.id, function () {
-            self.isLocked = false;
+        } else if (oppiaine) {
+          Lukitus.vapautaOppiaine(oppiaine.id, function () {
+            isLocked = false;
           });
         }
       }
-      var params = _.clone(this.backState);
-      this.reset();
+      var params = _.clone(backState);
+      reset();
       $state.go.apply($state, params, {reload: true});
     };
 
-    this.isVuosiluokkakokonaisuudenOsa = function () {
-      return !!this.vuosiluokka;
+    function isVuosiluokkakokonaisuudenOsa() {
+      return !!vuosiluokka;
     };
 
-    this.getOppiaine = function () {
-      return this.oppiaine;
+    function getOsaamiset() {
+      return osaamiset;
     };
 
-    this.getVuosiluokkakokonaisuus = function () {
-      return this.vuosiluokka;
+    function getOppiaine() {
+      return oppiaine;
+    };
+
+    function getVuosiluokkakokonaisuus() {
+      return vuosiluokka;
+    };
+
+    return {
+      reset: reset,
+      getModel: getModel,
+      setup: setup,
+      save: save,
+      goBack: goBack,
+      getOppiaine: getOppiaine,
+      getOsaamiset: getOsaamiset,
+      getVuosiluokkakokonaisuus: getVuosiluokkakokonaisuus,
     };
   })
 
