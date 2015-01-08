@@ -177,6 +177,10 @@ angular.module('eperusteApp')
       return _.clone(projekti);
     };
 
+    this.setProjekti = function (obj) {
+      projekti = _.clone(obj);
+    };
+
     this.getPeruste = function () {
       return _.clone(peruste);
     };

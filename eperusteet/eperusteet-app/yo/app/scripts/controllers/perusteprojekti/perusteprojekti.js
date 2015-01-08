@@ -233,6 +233,10 @@ angular.module('eperusteApp')
     }
     init();
 
+    $scope.$on('update:perusteprojekti', function () {
+      $scope.projekti = perusteprojektiTiedot.getProjekti();
+    });
+
     // Generoi uudestaan "Projektin päänäkymä"-linkki kun suoritustapa vaihtuu
     $scope.$watch(function () {
       return PerusteProjektiService.getSuoritustapa();

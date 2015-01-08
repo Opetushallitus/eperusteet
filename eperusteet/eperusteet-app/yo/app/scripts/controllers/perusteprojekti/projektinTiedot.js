@@ -105,7 +105,6 @@ angular.module('eperusteApp')
     };
     $scope.puhdistaValinta();
 
-
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.projekti.laajuusYksikko = $scope.projekti.laajuusYksikko || 'OSAAMISPISTE';
 
@@ -158,6 +157,9 @@ angular.module('eperusteApp')
         }
         else {
           Notifikaatiot.onnistui('tallennettu');
+          $scope.projekti = vastaus;
+          perusteprojektiTiedot.setProjekti(vastaus);
+          PerusteProjektiService.update();
         }
       }, Notifikaatiot.serverCb);
     };
