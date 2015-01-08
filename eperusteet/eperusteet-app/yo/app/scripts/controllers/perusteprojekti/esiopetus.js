@@ -47,9 +47,12 @@ angular.module('eperusteApp')
     };
 
     $scope.avaaSuljeKaikki = function(value) {
-      var open = _.isUndefined(value) ? false : !value;
+      var open = false;
       Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) {
-        lapsi.$opened = !open;
+        open = open || lapsi.$opened;
+      });
+      Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) {
+        lapsi.$opened = _.isUndefined(value) ? !open : value;
       });
     };
 
