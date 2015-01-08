@@ -52,7 +52,7 @@ angular.module('eperusteApp')
     Koodisto, Perusteet, YleinenData, PerusteProjektiService,
     perusteprojektiTiedot, Notifikaatiot, Editointikontrollit, Kaanna,
     Varmistusdialogi, $timeout, $rootScope, PerusteTutkintonimikekoodit, $modal,
-    PerusteenTutkintonimikkeet, valittavatKielet) {
+    PerusteenTutkintonimikkeet, valittavatKielet, Kieli) {
     $scope.showKoulutukset = function () {
       return YleinenData.showKoulutukset($scope.editablePeruste);
     };
@@ -105,12 +105,13 @@ angular.module('eperusteApp')
     $scope.koodisto = [];
     $scope.$koodistoResolved = false;
     $scope.$perusteellaTutkintonimikkeet = PerusteenTutkintonimikkeet.perusteellaTutkintonimikkeet($scope.peruste);
+    $scope.kieliOrder = Kieli.kieliOrder;
 
     function valitseValittavatKielet(kielet) {
-      $scope.valittavatKielet = _.zipObject(valittavatKielet, _.map(valittavatKielet, _.constant(true)));
-      _.each(kielet || $scope.editablePeruste.kielet, function(kieli) {
-        $scope.valittavatKielet[kieli] = false;
-      });
+      var current = (kielet || $scope.editablePeruste.kielet);
+      $scope.valittavatKielet = _(valittavatKielet).sortBy($scope.kieliOrder).map(function (kielikoodi) {
+        return {available: _.indexOf(current, kielikoodi) === -1, koodi: kielikoodi};
+      }).value();
     }
     valitseValittavatKielet($scope.peruste.kielet);
 

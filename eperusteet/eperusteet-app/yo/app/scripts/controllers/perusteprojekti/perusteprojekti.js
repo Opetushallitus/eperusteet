@@ -216,7 +216,7 @@ angular.module('eperusteApp')
   .controller('PerusteprojektiCtrl', function($scope, $state, $stateParams,
     koulutusalaService, opintoalaService, Navigaatiopolku,
     PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation,
-    SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet, TermistoService) {
+    SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet, TermistoService, Kieli) {
 
     $scope.muokkausEnabled = false;
 
@@ -228,6 +228,7 @@ angular.module('eperusteApp')
     function init() {
       $scope.projekti = perusteprojektiTiedot.getProjekti();
       $scope.peruste = perusteprojektiTiedot.getPeruste();
+      Kieli.setAvailableSisaltokielet($scope.peruste.kielet);
       $scope.backLink = PerusteProjektiService.getUrl($scope.projekti, $scope.peruste);
       TermistoService.setPeruste($scope.peruste);
     }
@@ -330,5 +331,9 @@ angular.module('eperusteApp')
     });
     $scope.$on('disableEditing', function() {
       $scope.muokkausEnabled = false;
+    });
+
+    $scope.$on('$destroy', function () {
+      Kieli.resetSisaltokielet();
     });
   });

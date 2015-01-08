@@ -28,7 +28,7 @@ angular.module('eperusteApp')
   .service('Kieli', function ($rootScope, $state, $stateParams) {
     var sisaltokieli = 'fi';
 
-    this.SISALTOKIELET = [
+    var SISALTOKIELET = [
       'fi',
       'sv',
       'se',
@@ -36,8 +36,33 @@ angular.module('eperusteApp')
       'en'
     ];
 
+    this.kieliOrder = function (kielikoodi) {
+      return _.indexOf(SISALTOKIELET, kielikoodi);
+    };
+
+    this.availableSisaltokielet = _.clone(SISALTOKIELET);
+
+    var isValidKielikoodi = function (kielikoodi) {
+      return _.indexOf(SISALTOKIELET, kielikoodi) > -1;
+    };
+
+    this.setAvailableSisaltokielet = function (kielet) {
+      if (_.isArray(kielet) && !_.isEmpty(kielet)) {
+        var isValid = _.all(_.map(kielet, isValidKielikoodi));
+        if (isValid) {
+          this.availableSisaltokielet = kielet;
+          $rootScope.$broadcast('update:sisaltokielet', kielet);
+        }
+      }
+    };
+
+    this.resetSisaltokielet = function () {
+      this.availableSisaltokielet = SISALTOKIELET;
+      $rootScope.$broadcast('update:sisaltokielet', SISALTOKIELET);
+    };
+
     this.setSisaltokieli = function (kielikoodi) {
-      if (_.indexOf(this.SISALTOKIELET, kielikoodi) > -1) {
+      if (_.indexOf(this.availableSisaltokielet, kielikoodi) > -1) {
         var old = sisaltokieli;
         sisaltokieli = kielikoodi;
         if (old !== kielikoodi) {
@@ -51,14 +76,13 @@ angular.module('eperusteApp')
     };
 
     this.setUiKieli = function (kielikoodi) {
-      if (this.isValidKielikoodi(kielikoodi)) {
+      if (isValidKielikoodi(kielikoodi)) {
         $state.go($state.current.name, _.merge($stateParams, {lang: kielikoodi}), {reload: true});
       }
     };
 
-    this.isValidKielikoodi = function (kielikoodi) {
-      return _.indexOf(this.SISALTOKIELET, kielikoodi) > -1;
-    };
+    this.isValidKielikoodi = isValidKielikoodi;
+    this.SISALTOKIELET = SISALTOKIELET;
   })
 
   .directive('kielenvaihto', function () {
@@ -76,8 +100,9 @@ angular.module('eperusteApp')
     KielipreferenssiUpdater) {
     KielipreferenssiUpdater.noop();
     $scope.isModal = $scope.modal === 'true';
-    $scope.sisaltokielet = Kieli.SISALTOKIELET;
+    $scope.sisaltokielet = Kieli.availableSisaltokielet;
     $scope.sisaltokieli = Kieli.getSisaltokieli();
+    $scope.kieliOrder = Kieli.kieliOrder;
     $scope.uiLangChangeAllowed = true;
     var stateInit = $q.defer();
     var casFetched = $q.defer();
@@ -105,6 +130,13 @@ angular.module('eperusteApp')
       var profiili = Profiili.profiili();
       if (profiili.preferenssit.sisaltokieli) {
         Kieli.setSisaltokieli(profiili.preferenssit.sisaltokieli);
+      }
+    });
+
+    $scope.$on('update:sisaltokielet', function (event, value) {
+      $scope.sisaltokielet = value;
+      if (_.indexOf($scope.sisaltokielet, $scope.sisaltokieli) === -1) {
+        $scope.setSisaltokieli(_.first($scope.sisaltokielet));
       }
     });
 

@@ -162,7 +162,7 @@ angular.module('eperusteApp')
 
   .controller('EsitysCtrl', function($scope, $stateParams, sisalto, peruste,
       YleinenData, $state, Algoritmit, tutkinnonOsat, Kaanna, arviointiasteikot,
-      Profiili, PdfCreation, koulutusalaService, opintoalaService) {
+      Profiili, PdfCreation, koulutusalaService, opintoalaService, Kieli) {
 
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
@@ -196,6 +196,10 @@ angular.module('eperusteApp')
     };
 
     $scope.peruste = peruste;
+    Kieli.setAvailableSisaltokielet($scope.peruste.kielet);
+    $scope.$on('$destroy', function () {
+      Kieli.resetSisaltokielet();
+    });
     $scope.backLink = $state.href(YleinenData.koulutustyyppiInfo[$scope.peruste.koulutustyyppi].hakuState);
     $scope.sisalto = mapSisalto(sisalto);
 
