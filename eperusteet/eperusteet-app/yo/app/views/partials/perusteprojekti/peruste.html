@@ -51,16 +51,14 @@ European Union Public Licence for more details.
         <h3 class="panel-title" kaanna="'perusteen-kielet'"></h3>
       </div>
       <div class="panel-body">
+        <span class="inline-alert" ng-show="editEnabled && editablePeruste.kielet.length === 0" kaanna="'lisaa-ainakin-yksi-kieli'"></span>
         <span class="perusteen-kieli" ng-repeat="kieli in editablePeruste.kielet">
           <span kaanna="kieli"></span>
           <a ng-click="poistaKieli(kieli)" class="action-link perusteen-kieli-poisto" ng-if="editEnabled" icon-role="remove"></a>
         </span>
         <span ng-if="editEnabled && !kaikkiKieletValittu()">
           <span class="dropdown">
-              <a class="dropdown-toggle action-link" ng-if="editEnabled" data-toggle="dropdown">
-                <span kaanna="'lisaa-kieli'"></span>
-                <span class="caret"></span>
-              </a>
+              <a class="dropdown-toggle action-link" ng-if="editEnabled" data-toggle="dropdown"><span kaanna="'lisaa-kieli'"></span><span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
                   <li ng-if="v" ng-repeat="(k, v) in valittavatKielet" role="presentation">
                       <a class="action-link" ng-click="lisaaKieli(k)" role="menuitem" tabindex="-1" kaanna="k"></a>
@@ -68,6 +66,7 @@ European Union Public Licence for more details.
               </ul>
           </span>
         </span>
+
       </div>
     </div>
 

@@ -68,7 +68,7 @@ angular.module('eperusteApp')
         $scope.tallennaPeruste();
       },
       validate: function () {
-        return $scope.projektinPerusteForm.$valid;
+        return $scope.projektinPerusteForm.$valid && !_.isEmpty($scope.editablePeruste.kielet);
       },
       cancel: function () {
         $scope.editablePeruste = $scope.peruste;
