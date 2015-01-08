@@ -28,6 +28,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RestClientFactory {
+    private final int TIMEOUT = 60000;
+
     @Value("${fi.vm.sade.eperusteet.oph_username:''}")
     private String username;
 
@@ -44,7 +46,7 @@ public class RestClientFactory {
             return cache.get(service);
         }
         else {
-            CachingRestClient crc = new CachingRestClient();
+            CachingRestClient crc = new CachingRestClient(TIMEOUT);
             crc.setUsername(username);
             crc.setPassword(password);
             crc.setWebCasUrl(casUrl);
