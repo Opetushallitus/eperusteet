@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RestClientFactory {
-    private final int TIMEOUT = 60000;
+    private static final int TIMEOUT = 60000;
 
     @Value("${fi.vm.sade.eperusteet.oph_username:''}")
     private String username;
