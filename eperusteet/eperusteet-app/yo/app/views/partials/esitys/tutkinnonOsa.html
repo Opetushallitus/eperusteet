@@ -23,7 +23,7 @@
                   <div ng-repeat="kohde in kohdealue.arvioinninKohteet">
                       <h4>{{ kohde.otsikko | kaanna }}</h4>
                       <table class="table table-striped">
-                          <tr ng-repeat="okriteeri in kohde.osaamistasonKriteerit">
+                          <tr ng-repeat="okriteeri in kohde.osaamistasonKriteerit | orderBy: '_osaamistaso'">
                               <td width="15%">{{ arviointiasteikot[kohde._arviointiAsteikko][okriteeri._osaamistaso].otsikko | kaanna }}</td>
                               <td>
                                   <ul>
