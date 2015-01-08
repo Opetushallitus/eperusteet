@@ -34,11 +34,11 @@ angular.module('eperusteApp')
       osaamiset = null;
       path = null;
       oppiaine = null;
-    };
+    }
 
     function getModel() {
       return path ? model[path] : model;
-    };
+    }
 
     function setup(uusiModel, uusiPath, uusiOppiaine, cb) {
       cb = cb || angular.noop;
@@ -72,7 +72,7 @@ angular.module('eperusteApp')
           });
         }
       });
-    };
+    }
 
     function save() {
       if (isVuosiluokkakokonaisuudenOsa()) {
@@ -93,7 +93,7 @@ angular.module('eperusteApp')
           }
         });
       }
-    };
+    }
 
     function goBack() {
       if (!backState) {
@@ -114,23 +114,23 @@ angular.module('eperusteApp')
       var params = _.clone(backState);
       reset();
       $state.go.apply($state, params, {reload: true});
-    };
+    }
 
     function isVuosiluokkakokonaisuudenOsa() {
       return !!vuosiluokka;
-    };
+    }
 
     function getOsaamiset() {
       return osaamiset;
-    };
+    }
 
     function getOppiaine() {
       return oppiaine;
-    };
+    }
 
     function getVuosiluokkakokonaisuus() {
       return vuosiluokka;
-    };
+    }
 
     return {
       reset: reset,
