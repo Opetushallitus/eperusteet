@@ -107,7 +107,8 @@ public class PermissionManager {
         PERUSTEENMETATIEDOT("perusteenmetatiedot"),
         PERUSTEENOSA("perusteenosa"),
         TUTKINNONOSAVIITE("tutkinnonosaviite"),
-        PERUSTEENOSAVIITE("perusteenosaviite");
+        PERUSTEENOSAVIITE("perusteenosaviite"),
+        TIEDOTE("tiedote");
 
         private final String target;
 
@@ -161,7 +162,7 @@ public class PermissionManager {
             tmp.put(ProjektiTila.VALMIS, perm);
 
             perm = Maps.newHashMap();
-            perm.put(KORJAUS,r0);
+            perm.put(KORJAUS, r0);
             perm.put(LUKU, r4);
             tmp.put(ProjektiTila.JULKAISTU, perm);
 
@@ -207,9 +208,11 @@ public class PermissionManager {
 
             perm = Maps.newHashMap();
             perm.put(LUKU, r0);
-            tmp.put(ProjektiTila.JULKAISTU,perm);
+            tmp.put(ProjektiTila.JULKAISTU, perm);
 
-            tmp.put(ProjektiTila.POISTETTU, Collections.<Permission, Set<String>>emptyMap());
+            perm = Maps.newHashMap();
+            perm.put(TILANVAIHTO, r1);
+            tmp.put(ProjektiTila.POISTETTU, perm);
 
             allowedRolesTmp.put(Target.PERUSTEPROJEKTI, tmp);
         }
@@ -244,6 +247,17 @@ public class PermissionManager {
             tmp.put(ProjektiTila.JULKAISTU, perm);
             allowedRolesTmp.put(Target.PERUSTEENMETATIEDOT, tmp);
         }
+        {
+            Map<ProjektiTila, Map<Permission, Set<String>>> tmp = new IdentityHashMap<>();
+            Map<Permission, Set<String>> perm = Maps.newHashMap();
+            perm.put(LUONTI, r0);
+            perm.put(LUKU, r4);
+            perm.put(MUOKKAUS, r0);
+            perm.put(POISTO, r0);
+            tmp.put(null, perm);
+            allowedRolesTmp.put(Target.TIEDOTE, tmp);
+        }
+
         //XXX:debug
         LOG.debug("Oikeusmappaukset:");
         assert (allowedRolesTmp.keySet().containsAll(EnumSet.allOf(Target.class)));
@@ -256,6 +270,10 @@ public class PermissionManager {
         }
 
         allowedRoles = Collections.unmodifiableMap(allowedRolesTmp);
+    }
+
+    private static Set<String> getAllowedRoles(Target target, Permission permission) {
+        return getAllowedRoles(target, null, permission);
     }
 
     private static Set<String> getAllowedRoles(Target target, ProjektiTila tila, Permission permission) {
@@ -272,15 +290,22 @@ public class PermissionManager {
     @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public boolean hasPermission(Authentication authentication, Serializable targetId, Target targetType, Permission permission) {
-        LOG.warn(String.format("Checking permission %s to %s{id=%s} by %s", permission, targetType, targetId, authentication));
+
+        if (LOG.isTraceEnabled()) {
+            LOG.trace(String.format("Checking permission %s to %s{id=%s} by %s", permission, targetType, targetId, authentication));
+        }
 
         if (!authentication.isAuthenticated()) {
             return false;
         }
 
+        if (Target.TIEDOTE == targetType) {
+            return hasAnyRole(authentication, getAllowedRoles(targetType, permission));
+        }
+
         if (Target.TUTKINNONOSAVIITE.equals(targetType)) {
             // Haetaan perusteen osa mihin viitataan osaviitteessä ja jatketaan luvan tutkimista perusteen osan tiedoilla.
-            TutkinnonOsaViite t = viiteRepository.findOne((Long)targetId);
+            TutkinnonOsaViite t = viiteRepository.findOne((Long) targetId);
             if (t == null || t.getTutkinnonOsa() == null) {
                 return false;
             }
@@ -290,8 +315,8 @@ public class PermissionManager {
 
         if (Target.PERUSTEENOSAVIITE.equals(targetType)) {
             // Haetaan perusteen osa mihin viitataan osaviitteessä ja jatketaan luvan tutkimista perusteen osan tiedoilla.
-            PerusteenOsaViite p = perusteenOsaViiteRepository.findOne((Long)targetId);
-            if (p == null || p.getPerusteenOsa()== null) {
+            PerusteenOsaViite p = perusteenOsaViiteRepository.findOne((Long) targetId);
+            if (p == null || p.getPerusteenOsa() == null) {
                 return false;
             }
             targetId = p.getPerusteenOsa().getId();
@@ -305,8 +330,8 @@ public class PermissionManager {
             }
         }
 
-        if ( targetId == null ) {
-            return hasAnyRole(authentication, null, getAllowedRoles(targetType, null, permission));
+        if (targetId == null) {
+            return hasAnyRole(authentication, getAllowedRoles(targetType, permission));
         } else {
             boolean allowed = false;
             for (Pair<String, ProjektiTila> ppt : findPerusteProjektiTila(targetType, targetId)) {
@@ -315,6 +340,10 @@ public class PermissionManager {
             return allowed;
         }
 
+    }
+
+    private boolean hasAnyRole(Authentication authentication, Collection<String> roles) {
+        return hasAnyRole(authentication, null, roles);
     }
 
     private boolean hasAnyRole(Authentication authentication, String perusteProjektiRyhmaOid, Collection<String> roles) {

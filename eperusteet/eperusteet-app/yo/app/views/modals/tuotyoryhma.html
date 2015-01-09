@@ -14,7 +14,7 @@
         </div>
         <div class="projektiryhma-haku-rivi" ng-repeat="r in fryhmat = (ryhmat | filter:rajaa) | orderBy:lang | startFrom:itemsPerPage*(nykyinen-1) | limitTo:itemsPerPage">
             <span class="block"></span>
-            <a href="" ng-click="valitse(r)" title="{{ r.kuvaus2 | kaanna }}">
+            <a class="action-link" ng-click="valitse(r)" title="{{ r.kuvaus2 | kaanna }}">
                 {{ r.nimi | kaanna }}
             </a>
         </div>

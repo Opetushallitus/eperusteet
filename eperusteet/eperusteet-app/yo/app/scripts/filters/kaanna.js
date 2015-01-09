@@ -18,7 +18,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .service('Kaanna', function($translate) {
+  .service('Kaanna', function($translate, Kieli) {
     function translate (obj, key) {
       function getTranslation(input, lang) {
         return input[lang] || input[lang.toUpperCase()] || input['kieli_' + lang + '#1'];
@@ -35,17 +35,24 @@ angular.module('eperusteApp')
       return secondary;
     }
 
+    function kaannaSisalto(input) {
+      if (_.isEmpty(input)) {
+        return '';
+      }
+      var sisaltokieli = Kieli.getSisaltokieli();
+      return translate(input, sisaltokieli);
+    }
+
     return {
       kaanna: function(input, config) {
-        var lang = $translate.use() || $translate.preferredLanguage();
-
         if (_.isObject(input)) {
-          return translate(input, lang);
+          return kaannaSisalto(input);
         } else if (_.isString(input)) {
           return $translate.instant(input, config);
         }
         return '';
-      }
+      },
+      kaannaSisalto: kaannaSisalto
     };
   })
   .directive('kaanna', function(Kaanna, $compile, IconMapping) {
@@ -58,16 +65,22 @@ angular.module('eperusteApp')
     return {
       restrict: 'A',
       link: function (scope, el, attrs) {
+        function kaannaValue(value) {
+          return _.isObject(value) ? Kaanna.kaannaSisalto(value) : Kaanna.kaanna(value);
+        }
         var original = getAttr(attrs.kaanna, scope) || el.text();
         if (_.isObject(original)) {
-          el.text(Kaanna.kaanna(original));
+          el.text(Kaanna.kaannaSisalto(original));
           if (attrs.iconRole) {
             IconMapping.addIcon(attrs.iconRole, el);
           }
           scope.$watch(function () {
             return getAttr(attrs.kaanna, scope);
           }, function (value) {
-            el.text(Kaanna.kaanna(value));
+            el.text(kaannaValue(value));
+          });
+          scope.$on('changed:sisaltokieli', function () {
+            el.text(kaannaValue(getAttr(attrs.kaanna, scope)));
           });
         } else {
           var textEl = angular.element('<span>').attr('translate', original);

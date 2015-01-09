@@ -1,18 +1,19 @@
 <!-- termisto.html -->
 
 <div class="modal-header">
+  <kielenvaihto modal="true"></kielenvaihto>
   <h2>{{creating ? 'uusi-termi' : 'muokkaa-termia' | kaanna}}</h2>
 </div>
 
 <div class="modal-body termi-muokkaus">
   <h3 kaanna="termi"></h3>
-  <ml-input ml-data="termimodel.termi" type="text" required="true"></ml-input>
+  <input class="form-control" slocalized ng-model="termimodel.termi" type="text" required="true"></input>
   <h3 kaanna="selitys"></h3>
   <div id="toolbar" style="display: none">
     <div id="ck-toolbar-top"></div>
     <div id="ck-toolbar-bottom"></div>
   </div>
-  <div ckeditor ng-model="termimodel.selitys" localized editor-placeholder="termin-selitys-placeholder"></div>
+  <div ckeditor ng-model="termimodel.selitys" slocalized editor-placeholder="termin-selitys-placeholder"></div>
   <div class="clearfix"></div>
 </div>
 

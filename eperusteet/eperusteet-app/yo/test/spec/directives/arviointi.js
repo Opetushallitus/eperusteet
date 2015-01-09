@@ -30,6 +30,7 @@ describe('Directive: arviointi', function () {
 
   beforeEach(inject(function ($rootScope, _$compile_, $httpBackend) {
     $http = $httpBackend;
+    $httpBackend.when('GET', /cas\/me/).respond({});
     $httpBackend.when('GET', /localisation.+/).respond({});
     $httpBackend.when('GET', /eperusteet-service\/api.+/).respond({});
     scope = $rootScope.$new();
@@ -40,7 +41,7 @@ describe('Directive: arviointi', function () {
     element = angular.element('<arviointi arviointi="arviointi.arvioinninKohdealueet"></arviointi>');
     $compile(element)(scope);
     scope.$digest();
-  };
+  }
 
   it('näyttää kohdealueet ja kriteerit', function () {
     scope.arviointi = {
@@ -54,9 +55,9 @@ describe('Directive: arviointi', function () {
           osaamistasonKriteerit: [{
             _osaamistaso: '2',
             kriteerit: [
-              {fi: "kriteeri 1"},
-              {fi: "kriteeri 2"},
-              {fi: "kriteeri 3"}
+              {fi: 'kriteeri 1'},
+              {fi: 'kriteeri 2'},
+              {fi: 'kriteeri 3'}
             ]
           }]
         }]

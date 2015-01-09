@@ -11,6 +11,8 @@
                            remove-field="removeField(fieldToRemove)"></muokattava-kentta>
       </li>
     </ul>
+
+    <!-- TODO: poista kun oppiaineen muokkaus valmis -->
     <div ng-if="mode === 'sortable' && editEnabled" ui-tree>
       <!-- <pre>{{expandedFields|json}}</pre> -->
     <ul class="list-group muokkaus" ui-tree-nodes ng-model="expandedFields">
@@ -22,15 +24,17 @@
         <div class="pull-left draghandle" ui-tree-handle icon-role="drag"></div>
         <div class="content">
           <div ng-if="hasEditableTitle(field)" class="input-wrapper">
-            <input class="form-control" ng-model="field.localeKey" localized placeholder="{{field.titleplaceholder|kaanna}}">
+            <input class="form-control" ng-model="field.localeKey" slocalized placeholder="{{field.titleplaceholder|kaanna}}">
           </div>
           <span ng-if="!hasEditableTitle(field)">{{field.localeKey | kaanna}}</span>
         </div>
       </li>
     </ul>
     </div>
-    <p class="info-placeholder" ng-show="!hideEmptyPlaceholder && noContent" id="tutkinnon-osa-ei-sisaltoa">{{'tutkinnon-osa-ei-sisaltoa'|kaanna}}
-    <span ng-show="editEnabled" kaanna>tutkinnon-osa-ei-sisaltoa-ohje</span>
+
+    <p class="info-placeholder" ng-show="!hideEmptyPlaceholder && noContent" id="tutkinnon-osa-ei-sisaltoa">
+      {{emptyplaceholder || 'tutkinnon-osa-ei-sisaltoa' | kaanna}}
+    <span ng-show="editEnabled">{{emptyplaceholderedit || 'tutkinnon-osa-ei-sisaltoa-ohje' | kaanna}}</span>
     </p>
   </div>
 </div>

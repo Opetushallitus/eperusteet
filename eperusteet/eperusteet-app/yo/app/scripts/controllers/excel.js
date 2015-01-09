@@ -30,7 +30,7 @@ angular.module('eperusteApp')
     Koodisto, PerusteprojektiResource, PerusteTutkinnonosat, $translate,
     SuoritustapaSisalto, Perusteet, Notifikaatiot, YleinenData, Utils, PerusteProjektiService) {
     $scope.koulutustyypit = YleinenData.koulutustyypit;
-    $scope.koulutustyypitMap = YleinenData.koulutustyypitMap;
+    $scope.koulutustyypitMap = YleinenData.koulutustyyppiInfo;
     $scope.yksikot = YleinenData.yksikot;
     $scope.suoritustavat = YleinenData.suoritustavat;
 
@@ -155,8 +155,10 @@ angular.module('eperusteApp')
       });
 
       _.forEach(filtered, function(ot) {
+        ot.koodiUri = ot.koodiUri || null;
+        ot.koodiArvo = ot.koodiUri || null;
         var koodiUriKaytossa = _.any($scope.osatutkinnot, function(toinen) {
-          return (ot !== toinen && ot.koodiUri !== '' && toinen.koodiUri === ot.koodiUri);
+          return (ot !== toinen && ot.koodiUri && toinen.koodiUri === ot.koodiUri);
         });
         if (koodiUriKaytossa) {
           ot.$syy = ['excel-ei-kahta-samaa'];

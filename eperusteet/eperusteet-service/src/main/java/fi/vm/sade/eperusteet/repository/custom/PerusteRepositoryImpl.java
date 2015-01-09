@@ -163,9 +163,9 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             pred = cb.and(pred, koulutukset.get(Koulutus_.opintoalakoodi).in(opintoala));
         }
 
-        if (!Strings.isNullOrEmpty(pquery.getKoodiArvo())) {
+        if (!Strings.isNullOrEmpty(pquery.getKoulutuskoodi())) {
             koulutukset = (koulutukset == null ) ? root.join(Peruste_.koulutukset) : koulutukset;
-            pred = cb.and(pred, cb.equal(koulutukset.get(Koulutus_.koulutuskoodiArvo), pquery.getKoodiArvo()));
+            pred = cb.and(pred, cb.equal(koulutukset.get(Koulutus_.koulutuskoodiArvo), pquery.getKoulutuskoodi()));
         }
 
         if (siirtyma) {

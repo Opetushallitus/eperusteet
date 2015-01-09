@@ -137,15 +137,19 @@ $lukko-inner: 1.4em;
   }
 }
 
-#kielen-vaihto {
-  ul {
-    margin: 0;
-    padding: 8px 15px;
-    list-style-type: none;
-    li {
-      display: inline;
-    }
+.kielenvaihto {
+  margin-right: 5px;
+  list-style-type: none;
+  li {
+    display: inline;
   }
+}
+
+.modalkielenvaihto {
+  font-size: 110%;
+  float: right;
+  margin-top: 10px;
+  margin-right: 10px;
 }
 
 .versiohistoria {

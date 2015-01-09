@@ -9,7 +9,7 @@
           <span kaanna>versio</span>: <select ng-model="versiot.chosen" ng-options="ver.index for ver in versiot.list" ng-change="vaihdaVersio()"></select>
         </li>
         <li ng-show="versiot.list.length === 1"><span kaanna>versio</span>: 1</li>
-        <li ng-show="versiot.list.length > 1"><a href="" kaanna ng-click="history()">nayta-versiohistoria</a></li>
+        <li ng-show="versiot.list.length > 1"><a class="action-link" kaanna ng-click="history()">nayta-versiohistoria</a></li>
       </ul>
     </div>
     <div class="muokkaaja">

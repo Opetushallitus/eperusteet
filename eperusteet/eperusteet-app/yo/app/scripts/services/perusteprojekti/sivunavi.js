@@ -19,12 +19,12 @@
 
 angular.module('eperusteApp')
 .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q,
-    $state, $location, YleinenData, PerusopetusService, Kaanna, $timeout) {
+    $state, $location, YleinenData, PerusopetusService, Kaanna, $timeout, Utils) {
   var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
   var STATE_TUTKINNON_OSA = 'root.perusteprojekti.suoritustapa.tutkinnonosa';
   var STATE_TEKSTIKAPPALE = 'root.perusteprojekti.suoritustapa.tekstikappale';
-  var STATE_OSALISTAUS = 'root.perusteprojekti.osalistaus';
-  var STATE_OSAALUE = 'root.perusteprojekti.osaalue';
+  var STATE_OSALISTAUS = 'root.perusteprojekti.suoritustapa.osalistaus';
+  var STATE_OSAALUE = 'root.perusteprojekti.suoritustapa.osaalue';
   var isTutkinnonosatActive = function () {
     return $state.is(STATE_OSAT) || $state.is(STATE_TUTKINNON_OSA);
   };
@@ -62,9 +62,6 @@ angular.module('eperusteApp')
       perusteenOsaViiteId: lapsi.id,
       versio: null
     };
-    if (perusteenTyyppi === 'YL') {
-      _.extend(params, {suoritustapa: 'ops'});
-    }
     return lapsi.perusteenOsa.tunniste && lapsi.perusteenOsa.tunniste === 'rakenne' ?
       ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: ''}] :
       [STATE_TEKSTIKAPPALE, params];
@@ -114,15 +111,13 @@ angular.module('eperusteApp')
       link: [STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id, tabId: 0}],
       isActive: isYlRouteActive
     });
-    _.each(osa.oppimaarat, function (lapsi) {
+    _(osa.oppimaarat).sortBy(Utils.nameSort).each(function (lapsi) {
       ylMapper(lapsi, key, level + 1);
     });
   }
 
   function mapYL(osat, key) {
-    _(osat).sortBy(function (osa) {
-      return Kaanna.kaanna(osa.nimi);
-    }).each(function (osa) {
+    _(osat).sortBy(Utils.nameSort).each(function (osa) {
       ylMapper(osa, key, 1);
     });
   }
@@ -134,11 +129,12 @@ angular.module('eperusteApp')
       _.each(PerusopetusService.LABELS, function (key, label) {
         items.push({
           label: label,
-          link: [STATE_OSALISTAUS, {osanTyyppi: key}]
+          link: [STATE_OSALISTAUS, {suoritustapa: 'perusopetus', osanTyyppi: key}]
         });
         mapYL(tiedot[key], key);
       });
-    } else {
+    }
+    else if (perusteenTyyppi === 'AM'){
       items = _.clone(AM_ITEMS);
     }
     processNode(data.projekti.peruste.sisalto);
@@ -151,7 +147,7 @@ angular.module('eperusteApp')
     data.projekti = service.getProjekti();
     data.projekti.peruste = service.getPeruste();
     data.projekti.peruste.sisalto = service.getSisalto();
-    perusteenTyyppi = YleinenData.isPerusopetus(data.projekti.peruste) ? 'YL' : 'AM';
+    perusteenTyyppi = YleinenData.isPerusopetus(data.projekti.peruste) ? 'YL' : YleinenData.isEsiopetus(data.projekti.peruste) ? 'ESI' : 'AM';
     callbacks.typeChanged(perusteenTyyppi);
     buildTree();
   };
@@ -179,22 +175,12 @@ angular.module('eperusteApp')
 
   this.setVisible = function (visible) {
     _isVisible = _.isUndefined(visible) ? true : visible;
+    if (!_isVisible) {
+      PerusopetusService.clearCache();
+    }
   };
 
   this.isVisible = function () {
     return _isVisible;
-  };
-
-  this.setCrumb = function (ids) {
-    var crumbEl = angular.element('#tekstikappale-crumbs');
-    ids.splice(0, 1);
-    ids.reverse();
-    var crumbs = _.map(ids, function (id) {
-      return {name: nameMap[id], id: id};
-    });
-    var scope = crumbEl.scope();
-    if (scope) {
-      scope.setCrumbs(crumbs);
-    }
   };
 });

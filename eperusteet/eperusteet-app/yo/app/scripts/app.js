@@ -14,6 +14,7 @@
  * European Union Public Licence for more details.
  */
 
+
 'use strict';
 /* global _, moment, window */
 
@@ -111,6 +112,19 @@ angular.module('eperusteApp', [
         array[b] = temp;
       }
       return array;
+    }});
+    _.mixin({ zipBy: function(array, kfield, vfield) {
+      if (_.isArray(array) && kfield) {
+        if (vfield) {
+          return _.zipObject(_.map(array, kfield), _.map(array, vfield));
+        }
+        else {
+          return _.zipObject(_.map(array, kfield), array);
+        }
+      }
+      else {
+        return {};
+      }
     }});
     _.mixin({ set: function(obj, field) {
       return function(value) {

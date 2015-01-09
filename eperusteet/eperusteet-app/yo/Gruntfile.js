@@ -397,8 +397,14 @@ module.exports = function(grunt) {
           /* Check that ng-show/ng-hide are not used in same element */
           pattern : /(ng-show=|ng-hide=)[^>]+(ng-hide=|ng-show=)/m
         },
+      },
+      emptyHrefs: {
+        files: [{src: ['<%= yeoman.app %>/{scripts,views}/**/*.{js,html}']}],
+        options: {
+          /* Check that empty href="" are not used */
+          pattern : /\s+href=""/m
+        },
       }
-
     }
   });
 

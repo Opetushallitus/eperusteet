@@ -27,7 +27,6 @@ angular.module('eperusteApp')
       ArviointiPreferences.setting('asteikko', kohdealue.$newkohde.arviointiasteikko);
     };
 
-
     $scope.kohdealue = {
       uusi: function () {
         if(angular.isUndefined($scope.uudenKohdealueenNimi) ||
@@ -315,7 +314,7 @@ angular.module('eperusteApp')
         otsikko: 'varmista-osion-poisto-otsikko',
         teksti: 'varmista-osion-poisto-teksti',
         primaryBtn: 'poista',
-        successCb: function () {
+        successCb: function() {
           _.remove(list, item);
         }
       })();

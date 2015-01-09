@@ -45,7 +45,7 @@ angular.module('eperusteApp')
         fraasi.muuttujat.laajuusMinimi = msl.minimi;
 
         if (msl.minimi !== msl.maksimi) {
-          fraasi.kaannos = 'osia-valittava-vahintaan-laajuus-ja-enintaan-laajuus';
+          fraasi.kaannos = 'osia-valittava-vahintaan-ja-enintaan-laajuus';
           fraasi.muuttujat.laajuusMaksimi = msl.maksimi;
         }
       }
@@ -53,7 +53,7 @@ angular.module('eperusteApp')
         fraasi.kaannos = 'osia-valittava-vahintaan-koko';
         fraasi.muuttujat.kokoMinimi = msk.minimi;
         if (msk.minimi !== msk.maksimi) {
-          fraasi.kaannos = 'osia-valittava-vahintaan-koko-ja-enintaan-koko';
+          fraasi.kaannos = 'osia-valittava-vahintaan-ja-enintaan-koko';
           fraasi.muuttujat.kokoMaksimi = msk.maksimi;
         }
       }

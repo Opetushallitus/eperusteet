@@ -63,7 +63,7 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
 
         List<Revision> revisions = new ArrayList<>();
         for (Object[] result : results) {
-            revisions.add(new Revision((Integer) result[0], (Long) result[1], (String)result[2], (String)result[3]));
+            revisions.add(new Revision((Integer) result[0], (Long) result[1], (String) result[2], (String) result[3]));
         }
 
         return revisions;
@@ -86,7 +86,16 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
 
     @Override
     public T lock(T entity) {
-        entityManager.refresh(entity, LockModeType.PESSIMISTIC_WRITE);
+        return lock(entity, true);
+    }
+
+    @Override
+    public T lock(T entity, boolean refresh) {
+        if (refresh) {
+            entityManager.refresh(entity, LockModeType.PESSIMISTIC_WRITE);
+        } else {
+            entityManager.lock(entity, LockModeType.PESSIMISTIC_WRITE);
+        }
         return entity;
     }
 

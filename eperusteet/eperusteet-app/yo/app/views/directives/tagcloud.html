@@ -2,7 +2,7 @@
 
 <p ng-show="showEmptyPlaceholder()" kaanna="ei-asetettu"></p>
 <ul class="tagcloud">
-  <li ng-repeat="tag in model | filter:notHidden">
+  <li ng-repeat="tag in model | filter:notHidden | orderBy:orderFn">
     <span ng-if="openable === 'true'" ohje="false" teksti="tag.teksti" otsikko="tag.nimi" suunta="bottom"
           extra="tag.extra">
       <span class="tc-tag">

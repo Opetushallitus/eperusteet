@@ -128,7 +128,8 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
             throw new BusinessRuleViolationException("Sisällöllä on lapsia, ei voida poistaa");
         }
 
-        if (viite.getPerusteenOsa() != null && viite.getPerusteenOsa().getTila().equals(PerusteTila.LUONNOS)) {
+        if (viite.getPerusteenOsa() != null && viite.getPerusteenOsa().getTila().equals(PerusteTila.LUONNOS)
+                && findViitteet(perusteId, id).size() == 1) {
             PerusteenOsa perusteenOsa = viite.getPerusteenOsa();
             perusteenOsaService.delete(perusteenOsa.getId());
         }
@@ -172,7 +173,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         lapset.add(uusiViite);
         uusiViite = repository.save(uusiViite);
 
-        if (viiteDto == null) {
+        if (viiteDto == null || (viiteDto.getPerusteenOsaRef() == null && viiteDto.getPerusteenOsa() == null)) {
             TekstiKappale uusiKappale = new TekstiKappale();
             uusiKappale = perusteenOsaRepository.save(uusiKappale);
             uusiViite.setPerusteenOsa(uusiKappale);
@@ -193,6 +194,12 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
 
     @Autowired
     private PerusteRepository perusteet;
+
+    private List<PerusteenOsaViite> findViitteet(Long perusteId, Long viiteId) {
+        PerusteenOsaViite viite = findViite(perusteId, viiteId);
+        List<PerusteenOsaViite> viitteet = repository.findAllByPerusteenOsa(viite.getPerusteenOsa());
+        return viitteet;
+    }
 
     private PerusteenOsaViite findViite(Long perusteId, Long viiteId) {
         Peruste peruste = perusteet.findOne(perusteId);

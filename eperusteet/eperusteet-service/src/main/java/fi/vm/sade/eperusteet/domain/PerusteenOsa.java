@@ -78,7 +78,6 @@ public abstract class PerusteenOsa
         copyState(other);
     }
 
-
     @Override
     public Long getId() {
         return id;
@@ -98,7 +97,9 @@ public abstract class PerusteenOsa
 
     @Override
     public void asetaTila(PerusteTila tila) {
-        this.tila = tila;
+        if (this.tila == PerusteTila.LUONNOS) {
+            this.tila = tila;
+        }
     }
 
     @Override

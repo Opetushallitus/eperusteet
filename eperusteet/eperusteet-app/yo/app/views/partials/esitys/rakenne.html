@@ -1,13 +1,4 @@
-<h2>
-    {{muodostumisOtsikko.nimi || 'tutkinnon-muodostuminen' |kaanna}}
-    <div class="painikkeet pull-right">
-        <a class="action-link" ng-click="asetaSuosikki()">
-            <span class="glyphicon" ng-class="{'glyphicon-star': onSuosikki, 'glyphicon-star-empty': !onSuosikki}"></span>
-            {{ onSuosikki ? 'poista-suosikeista' : 'merkitse-suosikiksi' | kaanna }}
-        </a>
-        <a class="action-link left-space" ng-click="printSisalto()" icon-role="print" kaanna="'tulosta-sivu'"></a>
-    </div>
-</h2>
+<h2 esitys-sivu-otsikko>{{muodostumisOtsikko.nimi || 'tutkinnon-muodostuminen' |kaanna}}</h2>
 
 <div ng-if="rakenne.$resolved" class="tree-presentation">
     <tree-wrapper esitys="true" muokkaus="false" rakenne="rakenne"></tree-wrapper>

@@ -18,7 +18,8 @@ European Union Public Licence for more details.
 
 <div class="project-header">
   <div class="row">
-    <button class="btn btn-primary btn-header-pdf" ng-hide="muokkausEnabled" ng-click="luoPdf()" oikeustarkastelu="{ target: 'peruste', permission: 'luku' }">
+    <button class="btn btn-primary btn-header-pdf" ng-hide="muokkausEnabled" ng-click="luoPdf()"
+            oikeustarkastelu="{ target: 'peruste', permission: 'luku' }" ng-if="pdfEnabled">
         <img src="images/pdf-file-24.png" alt="">{{'luo-pdf' | kaanna}}
     </button>
     <div class="project-otsikkotiedot">
@@ -66,7 +67,7 @@ European Union Public Licence for more details.
 <div id="sivunavi-sisalto-wrapper" ng-class="{'sivunavi-hidden': !isNaviVisible(), 'show-back': showBackLink()}">
   <div class="sivunavi-navigaatio">
     <div class="sivunavi-takaisin" ng-if="showBackLink()">
-      <a ng-href="{{getBackLink()}}" icon-role="back" kaanna="takaisin-paanakymaan"></a>
+      <a ng-href="{{backLink}}" icon-role="back" kaanna="takaisin-paanakymaan"></a>
     </div>
     <sivunavigaatio2 items="sivunavi.items" header="sivunavi.suoritustapa" footer="sivunavi.footer">
     </sivunavigaatio2>

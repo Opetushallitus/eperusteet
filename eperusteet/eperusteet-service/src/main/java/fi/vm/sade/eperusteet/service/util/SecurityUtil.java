@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.service.util;
 
 import java.security.Principal;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
@@ -41,4 +43,10 @@ public final class SecurityUtil {
         }
     }
 
+    public static boolean isAuthenticated() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null
+            && !(authentication instanceof AnonymousAuthenticationToken)
+            && authentication.isAuthenticated();
+    }
 }

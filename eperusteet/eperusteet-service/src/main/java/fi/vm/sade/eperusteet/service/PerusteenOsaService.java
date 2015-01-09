@@ -18,9 +18,9 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueKokonaanDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaAlueLaajaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.OsaamistavoiteLaajaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKokonaanDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueLaajaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaamistavoiteLaajaDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import java.util.List;
@@ -37,6 +37,9 @@ public interface PerusteenOsaService {
     //yleiset haut sallittu kaikille -- palauttaa vain julkaistuja osia
     @PreAuthorize("permitAll()")
     List<PerusteenOsaDto.Laaja> getAllByKoodiUri(final String koodiUri);
+
+    @PreAuthorize("permitAll()")
+    void onkoTutkinnonOsanKoodiKaytossa(final String koodiUri);
 
     @PreAuthorize("permitAll()")
     List<PerusteenOsaDto.Suppea> getAll();

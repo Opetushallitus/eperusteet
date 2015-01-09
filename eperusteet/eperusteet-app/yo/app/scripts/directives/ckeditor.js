@@ -37,7 +37,6 @@ angular.module('eperusteApp')
         { name: 'clipboard', items : [ 'Cut','Copy','Paste','-','Undo','Redo' ] },
         { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
         { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent'] },
-        { name: 'styles', items : [ 'Format' ] },
         { name: 'tools', items : [ 'About' ] }
       ],
     normal:
@@ -46,7 +45,6 @@ angular.module('eperusteApp')
         { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
         { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
         { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link','Termi' ] },
-        { name: 'styles', items : [ 'Format' ] },
         { name: 'tools', items : [ 'About' ] }
       ]
   })
@@ -55,12 +53,13 @@ angular.module('eperusteApp')
     uiSelectConfig.theme = 'bootstrap';
   })
 
-  .controller('TermiPluginController', function ($scope, TermistoService, Kaanna, Algoritmit) {
+  .controller('TermiPluginController', function ($scope, TermistoService, Kaanna, Algoritmit, $timeout) {
     $scope.service = TermistoService;
     $scope.filtered = [];
     $scope.termit = [];
     $scope.model = {
-      chosen: null
+      chosen: null,
+      newTermi: ''
     };
     var callback = angular.noop;
     var setDeferred = null;
@@ -112,6 +111,34 @@ angular.module('eperusteApp')
           setChosenValue(value);
         }
       });
+    };
+
+    $scope.addNew = function () {
+      $scope.adding = !$scope.adding;
+      if ($scope.adding) {
+        $scope.model.newTermi = null;
+      }
+    };
+
+    $scope.closeMessage = function () {
+      $scope.message = null;
+    };
+
+    $scope.saveNew = function () {
+      var termi = $scope.service.newTermi($scope.model.newTermi);
+      $scope.service.save(termi).then(function () {
+        $scope.message = 'termi-plugin-tallennettu';
+        $timeout(function () {
+          $scope.closeMessage();
+        }, 8000);
+        $scope.adding = false;
+        setDeferred = _.clone(termi.avain);
+        $scope.init();
+      });
+    };
+
+    $scope.cancelNew = function () {
+      $scope.adding = false;
     };
   })
 
@@ -231,8 +258,9 @@ angular.module('eperusteApp')
         });
 
         function trim(obj) {
+          // Replace all nbsps with normal spaces, remove extra spaces and trim ends.
           if (_.isString(obj)) {
-            obj = obj.replace(/&nbsp;/gi, '').trim();
+            obj = obj.replace(/&nbsp;/gi, ' ').replace(/ +/g, ' ').trim();
           }
           return obj;
         }

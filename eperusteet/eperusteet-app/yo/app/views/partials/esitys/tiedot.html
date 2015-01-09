@@ -1,0 +1,78 @@
+<h2 esitys-sivu-otsikko>{{'perusteen-tiedot' | kaanna}}</h2>
+
+<table class="esitys-perusteen-tiedot">
+  <tr>
+    <th kaanna="'perusteen-nimi'"></th>
+    <td kaanna="peruste.nimi"></td>
+  </tr>
+  <tr>
+    <th kaanna="'maarayksen-diaarinumero'"></th>
+    <td ng-bind="peruste.diaarinumero"></td>
+  </tr>
+  <tr ng-show="showKoulutukset()">
+    <th kaanna="'peruste-koulutukset'"></th>
+    <td>
+
+      <span ng-if="peruste.koulutukset.length === 0" kaanna="'ei-koulutuksia'"></span>
+      <div class="koulutukset" ng-if="peruste.koulutukset.length > 0">
+        <div class="koulutus" ng-repeat="koulutus in peruste.koulutukset">
+          <table class="aligned">
+            <tr>
+              <th>{{'koulutuksen-nimi' | kaanna}}</th>
+              <td>{{koulutus.nimi| kaanna}}</td>
+            </tr>
+            <tr>
+              <th>{{'perusteen-koodi' | kaanna}}</th>
+              <td>{{koulutus.koulutuskoodiArvo}}</td>
+            </tr>
+            <tr>
+              <th>{{'haku-koulutusala' | kaanna}}</th>
+              <td>{{koulutusalaNimi(koulutus.koulutusalakoodi).nimi | kaanna}}</td>
+            </tr>
+            <tr>
+              <th>{{'haku-opintoala' | kaanna}}</th>
+              <td>{{opintoalaNimi(koulutus.opintoalakoodi).nimi | kaanna}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+    </td>
+  </tr>
+  <tr>
+    <th kaanna="'tutkintonimikkeet'"></th>
+    <td>
+
+    <table ng-if="koodisto.length > 0" class="table table-striped tutkintonimikkeet">
+      <thead>
+        <tr>
+          <th kaanna="osaamisala"></th>
+          <th kaanna="tutkintonimike"></th>
+          <th kaanna="tutkinnonosa"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="koodi in koodisto">
+          <td><span ng-show="koodi.osaamisalaArvo">{{ koodi.$osaamisalaNimi | kaanna }} ({{ koodi.osaamisalaArvo }})</span></td>
+          <td>{{ koodi.$tutkintonimikeNimi | kaanna }} ({{ koodi.tutkintonimikeArvo }})</td>
+          <td><span ng-show="koodi.tutkinnonOsaArvo">{{ koodi.$tutkinnonOsaNimi | kaanna }} ({{ koodi.tutkinnonOsaArvo }})</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div ng-if="koodisto.length === 0" kaanna="'ei-tutkintonimikkeita'"></div>
+
+    </td>
+  </tr>
+  <tr>
+    <th kaanna="'tiivistelma'"></th>
+    <td ng-bind-html="peruste.kuvaus | kaanna | unsafe"></td>
+  </tr>
+  <tr>
+    <th kaanna="'voimaantulo-pvm'"></th>
+    <td pvm="peruste.voimassaoloAlkaa"></td>
+  </tr>
+  <tr>
+    <th kaanna="'voimassaolo-paattymispvm'"></th>
+    <td pvm="peruste.voimassaoloLoppuu"></td>
+  </tr>
+</table>

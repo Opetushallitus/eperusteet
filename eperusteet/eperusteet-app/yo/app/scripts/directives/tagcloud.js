@@ -31,7 +31,7 @@ angular.module('eperusteApp')
       controller: 'TagCloudController'
     };
   })
-  .controller('TagCloudController', function ($scope, $modal) {
+  .controller('TagCloudController', function ($scope, $modal, Utils) {
     $scope.notHidden = function (item) {
       return !item.$hidden;
     };
@@ -39,6 +39,8 @@ angular.module('eperusteApp')
     $scope.remove = function (tag) {
       tag.$hidden = true;
     };
+
+    $scope.orderFn = Utils.nameSort;
 
     $scope.openDialog = function () {
       var modal = $modal.open({
@@ -60,10 +62,11 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('TagCloudModalController', function ($scope, model, addLabel, YleinenData) {
-    $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
+  .controller('TagCloudModalController', function ($scope, model, addLabel, Utils) {
     $scope.model = model;
     $scope.addLabel = addLabel;
+    $scope.orderFn = Utils.nameSort;
+
     $scope.toggle = function (tag, $event) {
       $event.preventDefault();
       $event.stopPropagation();

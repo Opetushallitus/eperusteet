@@ -32,7 +32,7 @@ angular.module('eperusteApp')
         var inputEl = angular.element('<input>');
         inputEl.attr('ng-show', 'editing')
           .attr('ng-model', 'editInPlace')
-          .attr('localized', '')
+          .attr('slocalized', '')
           .css({
             'font-size': element.css('font-size'),
             'display': 'inline-block',

@@ -20,10 +20,10 @@
 
 angular.module('eperusteApp')
   .service('Utils', function($window, YleinenData, Kaanna) {
-    this.scrollTo = function (selector) {
+    this.scrollTo = function (selector, offset) {
       var element = angular.element(selector);
       if (element.length) {
-        $window.scrollTo(0, element.eq(0).offset().top);
+        $window.scrollTo(0, element.eq(0).offset().top + (offset || 0));
       }
     };
 
@@ -45,8 +45,8 @@ angular.module('eperusteApp')
       return !_.isUndefined($window.FormData);
     };
 
-    this.nameSort = function (item) {
-      return Kaanna.kaanna(item.nimi).toLowerCase();
+    this.nameSort = function (item, key) {
+      return Kaanna.kaanna(_.isString(key) ? item[key] : item.nimi).toLowerCase();
     };
   })
 
@@ -66,6 +66,9 @@ angular.module('eperusteApp')
     CloneHelperImpl.prototype.restore = function (destination) {
       this.clone(null, destination);
       this.stash = {};
+    };
+    CloneHelperImpl.prototype.get = function () {
+      return this.stash;
     };
     this.init = function (keys) {
       return new CloneHelperImpl(keys);

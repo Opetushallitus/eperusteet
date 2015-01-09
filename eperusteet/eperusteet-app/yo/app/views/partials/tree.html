@@ -10,10 +10,10 @@
     </div>
     <div ng-show="muokkaus && !vanhempi">
       <h2 kaanna="nimi"></h2>
-      <input class="form-control" ng-model="rakenne.muodostumisOtsikko.nimi" localized>
+      <input class="form-control" ng-model="rakenne.muodostumisOtsikko.nimi" slocalized>
       <h2 kaanna="tutkinnon-rakenteen-kuvaus"></h2>
       <div ckeditor editing-enabled="true" ng-model="rakenne.rakenne.kuvaus"
-           editor-placeholder="kuvaus" localized></div>
+           editor-placeholder="kuvaus" slocalized></div>
     </div>
     <h2 kaanna="tutkinnon-rakenne"></h2>
     <div class="tree-con" ng-show="muokkaus || rakenne.rakenne.osat.length > 0">
@@ -25,17 +25,20 @@
         </span>
         <div ng-show="esitys" class="empty-bubble distance" kaanna>rakennetta-ei-ole</div>
       </div>
-      <tree id="editointiPuuJuuri" apumuuttujat="apumuuttujat" muokkaus="muokkaus" ng-if="rakenne.$resolved" rakenne="rakenne.rakenne" tutkinnon-osa-viitteet="rakenne.tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" poisto-tehty-cb="poistoTehtyCb"></tree>
+      <tree id="editointiPuuJuuri" apumuuttujat="apumuuttujat" muokkaus="muokkaus" ng-if="rakenne.$resolved"
+            rakenne="rakenne.rakenne" tutkinnon-osa-viitteet="rakenne.tutkinnonOsaViitteet"
+            uusi-tutkinnon-osa="uusiTutkinnonOsa" callbacks="callbacks"></tree>
     </div>
   </div>
 
   <!-- Leikelauta -->
   <div ng-if="muokkaus" class="skratchpad-wrapper pull-right" follow-scroll>
     <div class="skratchpad-button">
-      <button class="btn btn-default" ng-click="ryhmaModaali(rakenne.$suoritustapa)"><img src="images/ryhma.png" alt=""> {{ 'luo-uusi-ryhma' | kaanna }}</button>
+      <button class="btn btn-default" ng-click="ryhmaModaali(rakenne.$suoritustapa)" icon-role="ep-group" kaanna="'luo-uusi-ryhma'"></button>
+      <ohje teksti="ohje-muodostuminen-ryhma" suunta="left"></ohje>
     </div>
     <div class="skratchpad-list">
-      <div class="skratchpad-list-header" kaanna>leikelauta</div>
+      <div class="skratchpad-list-header" kaanna="'leikelauta'"></div>
       <div class="skratchpad-list-body">
         <div ng-if="skratchpad.length === 0" class="skratchpad-help"></div>
         <ul ui-sortable="sortableOptions" class="tree-group skratchpad" ng-model="skratchpad">
@@ -69,7 +72,7 @@
       </div>
     </div>
     <div class="skratchpad-list">
-      <div class="skratchpad-list-header" kaanna>tutkinnonosat</div>
+      <div class="skratchpad-list-header"><span kaanna="'tutkinnonosat'"></span><ohje teksti="ohje-muodostuminen-tutkinnonosat" suunta="left"></ohje></div>
       <div class="skratchpad-list-body">
         <div ng-show="tutkinnonOsat.rajaus || tutkinnonOsat.multiPage" class="tutkinnonosa-rajaus">
           <input ng-change="paivitaRajaus(tosarajaus)" ng-model="tosarajaus" type="input" class="form-control" placeholder="{{ 'rajaa-tutkinnonosia' | kaanna }}">
@@ -81,8 +84,12 @@
           <li ng-model="osa" class="skratchpad-item"
               ng-repeat="osa in uniikit | orderBy:[jarjestysSorter, nimiSorter] | startFrom:(tutkinnonOsat.sivu-1)*tutkinnonOsat.perSivu | limitTo:tutkinnonOsat.perSivu">
               <div ng-if="osa.erikoisuus === 'vieras'">
-                <span icon-role="plus"></span>
-                <span kaanna="'vierastutkinnonosa'"></span>
+                <div class="sp-badge">
+                  <span icon-role="plus"></span>
+                </div>
+                <div class="sp-name">
+                  <span kaanna="'vierastutkinnonosa'"></span>
+                </div>
               </div>
               <div ng-if="!osa.erikoisuus">
                 <div class="sp-action-icon">

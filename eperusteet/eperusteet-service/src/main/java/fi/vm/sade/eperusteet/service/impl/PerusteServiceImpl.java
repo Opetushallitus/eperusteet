@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutus;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -34,6 +35,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.Osaamisala;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
@@ -44,7 +46,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
@@ -108,6 +110,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private static final String KOODISTO_RELAATIO_ALA = "relaatio/sisaltyy-alakoodit/";
     private static final String[] AMMATILLISET_KOULUTUSTYYPPI_URIT = {"koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"};
     private static final String PERUSOPETUKSEN_KOULUTUSTYYPPI = "koulutustyyppi_16";
+    private static final String ESIOPETUKSEN_KOULUTUSTYYPPI = "koulutustyyppi_15";
     private static final String KOULUTUSALALUOKITUS = "koulutusalaoph2002";
     private static final String OPINTOALALUOKITUS = "opintoalaoph2002";
 
@@ -186,6 +189,20 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
+    public List<PerusteInfoDto> getAllPerusopetusInfo() {
+        List<Peruste> res = new ArrayList<>();
+        List<Peruste> perusopetus = perusteet.findAllByKoulutustyyppi(KoulutusTyyppi.PERUSOPETUS.toString());
+        for (Peruste p : perusopetus) {
+            if (p.getTila() == PerusteTila.VALMIS) {
+                res.add(p);
+            }
+        }
+
+        return mapper.mapAsList(res, PerusteInfoDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Page<PerusteDto> findBy(PageRequest page, PerusteQuery pquery) {
         Page<Peruste> result = perusteet.findBy(page, pquery);
         return new PageDto<>(result, PerusteDto.class, page, mapper);
@@ -238,6 +255,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public <T extends PerusteenOsaViiteDto.Puu<?,?>> T getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, Class<T> view) {
         PerusteenOsaViite entity = perusteet.findSisaltoByIdAndSuoritustapakoodi(perusteId, suoritustapakoodi);
         return mapper.map(entity, view);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public <T extends PerusteenOsaViiteDto.Puu<?,?>> T getSuoritustapaSisaltoUUSI(Long perusteId, Suoritustapakoodi suoritustapakoodi, Class<T> view) {
+
+        Peruste peruste = perusteet.findOne(perusteId);
+        if (peruste == null) {
+            throw new BusinessRuleViolationException("Perustetta ei ole olemassa");
+        }
+        return mapper.map(peruste.getSisalto(suoritustapakoodi), view);
     }
 
     @Override
@@ -606,6 +634,20 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional
+    public PerusteenOsaViiteDto.Matala addSisaltoUUSI(Long perusteId, Suoritustapakoodi suoritustapakoodi, PerusteenOsaViiteDto.Matala viite) {
+        Peruste peruste = perusteet.findOne(perusteId);
+        if (peruste == null) {
+            throw new BusinessRuleViolationException("Perustetta ei ole olemassa");
+        }
+        PerusteenOsaViite sisalto = peruste.getSisalto(suoritustapakoodi);
+        if (sisalto == null) {
+            throw new BusinessRuleViolationException("Perusteen sisältörakennetta ei ole olemassa");
+        }
+        return perusteenOsaViiteService.addSisalto(perusteId, sisalto.getId(), viite);
+    }
+
+    @Override
+    @Transactional
     public PerusteenOsaViiteDto.Matala addSisaltoLapsi(Long perusteId, Long perusteenosaViiteId, PerusteenOsaViiteDto.Matala viite) {
         return perusteenOsaViiteService.addSisalto(perusteId, perusteenosaViiteId, viite);
     }
@@ -643,7 +685,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private void lisaaTutkinnonMuodostuminen(Peruste peruste) {
-        if ("koulutustyyppi_16".equals(peruste.getKoulutustyyppi())) {
+        if (KoulutusTyyppi.PERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
             return;
         }
 
@@ -687,6 +729,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko != null ? yksikko : LaajuusYksikko.OSAAMISPISTE);
             } else if (koulutustyyppi.equals(PERUSOPETUKSEN_KOULUTUSTYYPPI)) {
                 peruste.setPerusopetuksenPerusteenSisalto(new PerusopetuksenPerusteenSisalto());
+            } else if (koulutustyyppi.equals(ESIOPETUKSEN_KOULUTUSTYYPPI)) {
+                peruste.setEsiopetuksenPerusteenSisalto(new EsiopetuksenPerusteenSisalto());
             }
 
             if (st != null) {

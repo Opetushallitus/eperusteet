@@ -61,26 +61,22 @@ public class PerusteenSisaltoController {
      */
     @RequestMapping(value = "/sisalto", method = POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public PerusteenOsaViiteDto.Matala addSisalto(
+    public PerusteenOsaViiteDto.Matala addSisaltoUUSI(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa,
-        @RequestBody(required = false) final PerusteenOsaViiteDto.Matala dto
-    ) {
-        if ( dto == null || (dto.getPerusteenOsaRef() == null && dto.getPerusteenOsa() == null)) {
-            return service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), null);
-        } else {
-            return addSisaltoViite(perusteId, suoritustapa, dto);
-        }
+        @RequestBody(required = false) final PerusteenOsaViiteDto.Matala dto)
+    {
+        return service.addSisaltoUUSI(perusteId, Suoritustapakoodi.of(suoritustapa), dto);
     }
 
     @RequestMapping(value = "/sisalto", method = PUT)
     @ResponseStatus(HttpStatus.CREATED)
-    public PerusteenOsaViiteDto.Matala addSisaltoViite(
+    public PerusteenOsaViiteDto.Matala addSisaltoViiteUUSI(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final String suoritustapa,
         @RequestBody final PerusteenOsaViiteDto.Matala dto
     ) {
-        return service.addSisalto(perusteId, Suoritustapakoodi.of(suoritustapa), dto);
+        return service.addSisaltoUUSI(perusteId, Suoritustapakoodi.of(suoritustapa), dto);
     }
 
     @RequestMapping(value = "/sisalto/{perusteenosaViiteId}/lapsi", method = POST)
@@ -104,18 +100,19 @@ public class PerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/sisalto", method = GET)
-    public ResponseEntity<PerusteenOsaViiteDto<?>> getSuoritustapaSisalto(
+    public ResponseEntity<PerusteenOsaViiteDto<?>> getSuoritustapaSisaltoUUSI(
         @RequestParam(value = "muoto", required = false, defaultValue = "suppea") String view,
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final Suoritustapakoodi suoritustapakoodi) {
 
-        PerusteenOsaViiteDto<?> dto = service.getSuoritustapaSisalto(perusteId, suoritustapakoodi, "suppea".equals(view)
+        PerusteenOsaViiteDto<?> dto = service.getSuoritustapaSisaltoUUSI(perusteId, suoritustapakoodi, "suppea".equals(view)
                                                                      ? PerusteenOsaViiteDto.Suppea.class : PerusteenOsaViiteDto.Laaja.class);
         if (dto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<PerusteenOsaViiteDto<?>>(dto, HttpStatus.OK);
     }
+
 
     @RequestMapping(value = "/sisalto/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)

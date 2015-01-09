@@ -85,7 +85,7 @@ angular.module('eperusteApp')
         }
 
         scope.$watch('model', refresh);
-        scope.$on('update:termistoviitteet', refresh);
+        scope.$on('termisto:update', refresh);
         scope.$on('$destroy', function () {
           $document.off('click');
           destroy();

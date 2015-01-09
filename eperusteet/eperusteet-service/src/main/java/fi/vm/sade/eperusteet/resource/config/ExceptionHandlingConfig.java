@@ -148,7 +148,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             describe(map, "datan-käsittelyssä-odottamaton-virhe", "Datan käsittelyssä tapahtui odottamaton virhe.");
         } else if (ex instanceof UnrecognizedPropertyException) {
             describe(map, "datassa-tuntematon-kenttä", "Dataa ei pystytty käsittelemään. Lähetetyssä datassa esiintyi tuntematon kenttä \""
-                    + ((UnrecognizedPropertyException) ex).getPropertyName() + "\"");
+                     + ((UnrecognizedPropertyException) ex).getPropertyName() + "\"");
         } else if (ex instanceof ConstraintViolationException) {
             List<String> reasons = new ArrayList<>();
             for (ConstraintViolation<?> constraintViolation : ((ConstraintViolationException) ex).getConstraintViolations()) {
@@ -162,11 +162,15 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             }
             builder.append("\"");
             map.put("syy", builder.toString());
-        } else if (ex instanceof LockingException ) {
-            LockingException le = (LockingException)ex;
+        } else if (ex instanceof LockingException) {
+            LockingException le = (LockingException) ex;
+            map.put("syy", ex.getLocalizedMessage());
+            map.put("avain", "server-lukitus");
             LukkoDto lukko = le.getLukko();
-            lukkomanageri.lisaaNimiLukkoon(lukko);
-            return super.handleExceptionInternal(ex, lukko, headers, status, request);
+            if (lukko != null) {
+                lukkomanageri.lisaaNimiLukkoon(lukko);
+                map.put("lukko", lukko);
+            } 
         } else if (ex instanceof ServiceException) {
             map.put("syy", ex.getLocalizedMessage());
         } else {

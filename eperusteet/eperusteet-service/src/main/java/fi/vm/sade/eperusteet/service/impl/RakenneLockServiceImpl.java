@@ -17,7 +17,6 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
-import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.RakenneRepository;
@@ -48,7 +47,7 @@ public class RakenneLockServiceImpl extends AbstractLockService<TutkinnonRakenne
     }
 
     @Override
-    protected ReferenceableEntity validateCtx(TutkinnonRakenneLockContext ctx, boolean readOnly) {
+    protected Long validateCtx(TutkinnonRakenneLockContext ctx, boolean readOnly) {
         Peruste peruste = perusteet.findOne(ctx.getPerusteId());
         if (peruste != null) {
             if (readOnly) {
@@ -58,7 +57,7 @@ public class RakenneLockServiceImpl extends AbstractLockService<TutkinnonRakenne
             } else {
                 permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.MUOKKAUS);
             }
-            return peruste.getSuoritustapa(ctx.getKoodi()).getRakenne();
+            return peruste.getSuoritustapa(ctx.getKoodi()).getRakenne().getId();
         }
         throw new BusinessRuleViolationException("Perustetta ei ole");
     }

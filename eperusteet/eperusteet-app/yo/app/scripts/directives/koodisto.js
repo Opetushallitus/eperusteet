@@ -104,7 +104,9 @@ angular.module('eperusteApp')
         lisaFiltteri = lisaf;
       }
       return function() {
-        resolve = resolve || {};
+        resolve = _.merge({
+          tarkista: _.constant(false)
+        }, resolve || {});
         failureCb = failureCb || angular.noop;
         $modal.open({
           templateUrl: 'views/modals/koodistoModal.html',
@@ -123,7 +125,8 @@ angular.module('eperusteApp')
       haeYlarelaatiot: haeYlarelaatiot
     };
   })
-  .controller('KoodistoModalCtrl', function($scope, $modalInstance, $timeout, Koodisto, tyyppi, ylarelaatioTyyppi) {
+  .controller('KoodistoModalCtrl', function($scope, $modalInstance, $timeout, Koodisto, tyyppi, ylarelaatioTyyppi,
+                                            TutkinnonOsanKoodiUniqueResource, Notifikaatiot, tarkista) {
     $scope.koodistoVaihtoehdot = Koodisto.vaihtoehdot;
     $scope.tyyppi = tyyppi;
     $scope.ylarelaatioTyyppi = ylarelaatioTyyppi;
@@ -162,7 +165,18 @@ angular.module('eperusteApp')
     }
 
     $scope.ok = function(koodi) {
-      $modalInstance.close(koodi);
+      if (tarkista) {
+        TutkinnonOsanKoodiUniqueResource.get({tutkinnonosakoodi: koodi.koodiUri},
+          function (res) {
+            if (res.vastaus) {
+              $modalInstance.close(koodi);
+            } else {
+              Notifikaatiot.varoitus('tutkinnon-osan-koodi-kaytossa');
+            }
+          });
+      } else {
+        $modalInstance.close(koodi);
+      }
     };
     $scope.peruuta = function() {
       $modalInstance.dismiss();

@@ -1,22 +1,33 @@
 .admin {
+  h2 {
+    margin-bottom: 20px;
+  }
   .hallintapainikkeet {
     a {
       padding: 10px;
     }
-    position: relative;
     float: right;
-    top: -32px;
   }
 
   .tilarajaus {
-    float: left;
-    margin-right: 8px;
+    display: table-row;
+    .tilarajaus-item, .tilarajaus-divider {
+      display: table-cell;
+      vertical-align: bottom;
+      padding-right: 20px;
+    }
+    padding-bottom: 10px;
   }
 
   .rajauslaatikko {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    width: 40%
+    width: 30em;
+  }
+}
+
+.admin-table {
+  margin-top: 20px;
+  tr:hover {
+    background-color: #eee;
   }
 }
 
@@ -27,14 +38,6 @@
 .rivinappi {
   padding: 2px 5px;
   margin-top: -3px;
-}
-
-.admin-tiedotteet {
-  table {
-    tr:hover {
-      background-color: #eee;
-    }
-  }
 }
 
 .tiedote-view {

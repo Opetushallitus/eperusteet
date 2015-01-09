@@ -16,10 +16,12 @@
 
 package fi.vm.sade.eperusteet.repository;
 
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import org.springframework.stereotype.Repository;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
+import java.util.List;
 
 /**
  *
@@ -27,5 +29,5 @@ import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
  */
 @Repository
 public interface PerusteenOsaViiteRepository extends JpaWithVersioningRepository<PerusteenOsaViite, Long> {
-
+    List<PerusteenOsaViite> findAllByPerusteenOsa(PerusteenOsa perusteenOsa);
 }

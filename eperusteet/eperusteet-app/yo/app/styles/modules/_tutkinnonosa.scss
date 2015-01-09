@@ -12,7 +12,6 @@
 
 #pikamenu-header {
   margin-bottom: 15px;
-  margin-top: 15px;
 }
 
 $pikamenu-max-height: 400px;
@@ -75,7 +74,7 @@ $pikamenu-size: 22px;
   font-size: 120%;
   font-weight: 700;
   color: $brand-primary;
-  border-top: 2px solid #ddd;
+
   .field-buttons {
     button {
       margin-left: 5px;
@@ -370,7 +369,7 @@ $sisalto-min-height: 450px;
 
 .version-warning {
   position: absolute;
-  top: -65px;
+  top: -63px;
   border: 1px solid #ddd;
   background-color: #f2f2f2;
   width: 70%;
@@ -472,4 +471,20 @@ $sisalto-min-height: 450px;
     .accordion-toggle {
         cursor:pointer;
     }
+}
+
+.vuosiluokkasisalto {
+  .tyhja-sisalto {
+    padding: 5px 0 5px 0;
+    margin-bottom: -35px;
+
+    h3 {
+      color: #777;
+    }
+    .btn-osiolisays {
+      position: relative;
+      top: -35px;
+      float: right;
+    }
+  }
 }

@@ -25,12 +25,12 @@ European Union Public Licence for more details.
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-            <li role="presentation"><a ng-click="vaihdaTyyppi('kaikki')" role="menuitem" tabindex="-1" href="" kaanna>kaikki</a></li>
+            <li role="presentation"><a ng-click="vaihdaTyyppi('kaikki')" role="menuitem" tabindex="-1" class="action-link" kaanna>kaikki</a></li>
             <li ng-repeat="(k, v) in tyoryhmat" role="presentation">
-              <a ng-click="vaihdaTyyppi(k)" role="menuitem" tabindex="-1" href="">{{ k }}</a>
+              <a ng-click="vaihdaTyyppi(k)" role="menuitem" tabindex="-1" class="action-link">{{ k }}</a>
             </li>
             <li role="presentation" class="divider"></li>
-            <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="muokkaaTyoryhmaa()" href="" kaanna>luo-uusi</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="muokkaaTyoryhmaa()" class="action-link" kaanna>luo-uusi</a></li>
           </ul>
         </span>
         <button ng-click="muokkaaTyoryhmaa(tyyppi)" ng-show="tyyppi !== 'kaikki'" class="btn btn-default" icon-role="edit" kaanna="muokkaa-ryhmaa"></button>

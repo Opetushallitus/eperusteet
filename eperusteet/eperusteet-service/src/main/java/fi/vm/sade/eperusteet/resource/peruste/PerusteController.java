@@ -15,7 +15,12 @@
  */
 package fi.vm.sade.eperusteet.resource.peruste;
 
+import com.mangofactory.swagger.annotations.ApiIgnore;
 import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiImplicitParam;
+import com.wordnik.swagger.annotations.ApiImplicitParams;
+import com.wordnik.swagger.annotations.ApiOperation;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
@@ -35,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,9 +71,36 @@ public class PerusteController {
         return service.findByInfo(p, pquery);
     }
 
-    @RequestMapping(method = GET)
+    @RequestMapping(value = "/valittavatkielet", method = GET)
     @ResponseBody
-    public Page<PerusteDto> getAll(PerusteQuery pquery) {
+    public ResponseEntity<List<String>> getValittavatKielet() {
+        return new ResponseEntity<>(Kieli.vaihtoehdot(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/perusopetus", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<PerusteInfoDto>> getAllPerusopetus() {
+        List<PerusteInfoDto> poi = service.getAllPerusopetusInfo();
+        return new ResponseEntity<>(poi, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @ResponseBody
+    @ApiOperation(value = "perusteiden haku")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "sivu", dataType = "integer", paramType = "query"),
+        @ApiImplicitParam(name = "sivukoko", dataType = "integer", paramType = "query"),
+        @ApiImplicitParam(name = "siirtyma", dataType = "boolean", paramType = "query", defaultValue = "false", value = "hae myös siirtymäajalla olevat perusteet" ),
+        @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
+        @ApiImplicitParam(name = "koulutusala", dataType = "string", paramType = "query", allowMultiple = true),
+        @ApiImplicitParam(name = "tyyppi", dataType = "string", paramType = "query", allowMultiple = true),
+        @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query", defaultValue = "fi", value = "perusteen nimen kieli"),
+        @ApiImplicitParam(name = "opintoala", dataType = "string", paramType = "query", allowMultiple = true, value = "opintoalakoodi"),
+        @ApiImplicitParam(name = "suoritustapa", dataType = "string", paramType = "query", value = "AM-perusteet; naytto tai ops"),
+        @ApiImplicitParam(name = "koulutuskoodi", dataType = "string", paramType = "query"),
+        @ApiImplicitParam(name = "muokattu", dataType = "integer", paramType = "query",value="aikaleima; muokattu jälkeen")
+    })
+    public Page<PerusteDto> getAll(@ApiIgnore PerusteQuery pquery) {
         // Vain valmiita perusteita voi hakea tämän rajapinnan avulla
         pquery.setTila(PerusteTila.VALMIS.toString());
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
@@ -107,9 +140,10 @@ public class PerusteController {
         List<CombinedDto<TutkintonimikeKoodiDto, HashMap<String, KoodistoKoodiDto>>> response = new ArrayList<>();
 
         for (TutkintonimikeKoodiDto tkd : tutkintonimikeKoodit) {
-            KoodistoKoodiDto get = koodistoService.get("osaamisala", tkd.getOsaamisalaUri());
             HashMap<String, KoodistoKoodiDto> nimet = new HashMap<>();
-            nimet.put(tkd.getOsaamisalaArvo(), koodistoService.get("osaamisala", tkd.getOsaamisalaUri()));
+            if (tkd.getOsaamisalaUri() != null) {
+                nimet.put(tkd.getOsaamisalaArvo(), koodistoService.get("osaamisala", tkd.getOsaamisalaUri()));
+            }
             nimet.put(tkd.getTutkintonimikeArvo(), koodistoService.get("tutkintonimikkeet", tkd.getTutkintonimikeUri()));
             if (tkd.getTutkinnonOsaUri() != null) {
                 nimet.put(tkd.getTutkinnonOsaArvo(), koodistoService.get("tutkinnonosat", tkd.getTutkinnonOsaUri()));

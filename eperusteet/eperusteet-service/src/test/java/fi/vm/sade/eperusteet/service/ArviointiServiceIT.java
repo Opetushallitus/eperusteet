@@ -48,7 +48,7 @@ import fi.vm.sade.eperusteet.domain.Arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.dto.Arviointi.ArviointiDto;
+import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.resource.config.EPerusteetMappingModule;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;

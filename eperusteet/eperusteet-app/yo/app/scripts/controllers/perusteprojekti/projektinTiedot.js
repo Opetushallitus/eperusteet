@@ -61,7 +61,7 @@ angular.module('eperusteApp')
     $scope.peruuta = function() { $modalInstance.dismiss(); };
   })
   .controller('ProjektinTiedotCtrl', function($scope, $state, $stateParams, $modal, $timeout, $translate,
-    PerusteprojektiResource, PerusteProjektiService, Navigaatiopolku, perusteprojektiTiedot, Notifikaatiot,
+    PerusteprojektiResource, PerusteProjektiService, perusteprojektiTiedot, Notifikaatiot,
     Perusteet, Editointikontrollit, Organisaatioryhmat) {
     PerusteProjektiService.watcher($scope, 'projekti');
 
@@ -105,20 +105,19 @@ angular.module('eperusteApp')
     };
     $scope.puhdistaValinta();
 
-
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.projekti.laajuusYksikko = $scope.projekti.laajuusYksikko || 'OSAAMISPISTE';
-
-    Navigaatiopolku.asetaElementit({ perusteProjektiId: $scope.projekti.nimi });
 
     $scope.tabs = [{otsikko: 'projekti-perustiedot', url: 'views/partials/perusteprojekti/perustiedot.html'}];
     if (!$scope.pohja()) {
       $scope.tabs.push({otsikko: 'projekti-toimikausi', url: 'views/partials/perusteprojekti/toimikausi.html'});
     }
 
-    Organisaatioryhmat.yksi({ oid: $scope.projekti.ryhmaOid }, function(res) {
-      $scope.$ryhmaNimi = res.nimi;
-    });
+    if ($scope.projekti.ryhmaOid) {
+      Organisaatioryhmat.yksi({ oid: $scope.projekti.ryhmaOid }, function(res) {
+        $scope.$ryhmaNimi = res.nimi;
+      });
+    }
 
     $scope.haeRyhma = function() {
       $modal.open({
@@ -158,6 +157,9 @@ angular.module('eperusteApp')
         }
         else {
           Notifikaatiot.onnistui('tallennettu');
+          $scope.projekti = vastaus;
+          perusteprojektiTiedot.setProjekti(vastaus);
+          PerusteProjektiService.update();
         }
       }, Notifikaatiot.serverCb);
     };

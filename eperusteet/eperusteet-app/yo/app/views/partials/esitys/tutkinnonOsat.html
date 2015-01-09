@@ -11,7 +11,7 @@
             <div ng-hide="editoi" class="muokkaus" icon-role="forward"></div>
             <div class="otsikko otsikko-esitys">
                 <h3>
-                    <a href="" ui-sref="root.esitys.peruste.tutkinnonosa({ id: v.id })">{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</a>
+                    <a ui-sref="root.esitys.peruste.tutkinnonosa({ id: v.id })">{{ v.nimi || 'uusi-tutkinnonosa' | kaanna }}</a>
                 </h3>
                 <div class="pienet-tiedot">
                     <div class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && v.laajuus">{{ v.laajuus }} {{ yksikko || '' | kaanna }}</div>

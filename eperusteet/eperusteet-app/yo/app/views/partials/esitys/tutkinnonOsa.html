@@ -1,12 +1,5 @@
-<h2>
-    {{ tutkinnonOsa.nimi | kaanna }} <span ng-show="tutkinnonOsaViite.laajuus">{{ tutkinnonOsaViite.laajuus }} {{ yksikko | kaanna }}</span>
-    <div class="painikkeet pull-right">
-        <a class="action-link" ng-click="asetaSuosikki()">
-            <span class="glyphicon" ng-class="{'glyphicon-star': onSuosikki, 'glyphicon-star-empty': !onSuosikki}"></span>
-            {{ onSuosikki ? 'poista-suosikeista' : 'merkitse-suosikiksi' | kaanna }}
-        </a>
-        <a class="action-link left-space" ng-click="printSisalto()" icon-role="print" kaanna="'tulosta-sivu'"></a>
-    </div>
+<h2 esitys-sivu-otsikko>
+  {{ tutkinnonOsa.nimi | kaanna }} <span ng-show="tutkinnonOsaViite.laajuus">{{ tutkinnonOsaViite.laajuus }} {{ yksikko | kaanna }}</span>
 </h2>
 
 
@@ -30,7 +23,7 @@
                   <div ng-repeat="kohde in kohdealue.arvioinninKohteet">
                       <h4>{{ kohde.otsikko | kaanna }}</h4>
                       <table class="table table-striped">
-                          <tr ng-repeat="okriteeri in kohde.osaamistasonKriteerit">
+                          <tr ng-repeat="okriteeri in kohde.osaamistasonKriteerit | orderBy: '_osaamistaso'">
                               <td width="15%">{{ arviointiasteikot[kohde._arviointiAsteikko][okriteeri._osaamistaso].otsikko | kaanna }}</td>
                               <td>
                                   <ul>

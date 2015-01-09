@@ -18,10 +18,13 @@ package fi.vm.sade.eperusteet.resource;
 import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.BooleanDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
+import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
@@ -48,6 +52,22 @@ public class TutkinnonOsaController {
 
     @Autowired
     private KayttajanTietoService kayttajanTietoService;
+
+    @Autowired
+    private PerusteenOsaService perusteenOsaService;
+
+    @RequestMapping(value = "/koodi/uniikki/{koodiUri}", method = GET)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ResponseEntity<BooleanDto> get(@PathVariable("koodiUri") final String koodiUri) {
+        try {
+            perusteenOsaService.onkoTutkinnonOsanKoodiKaytossa(koodiUri);
+        } catch (BusinessRuleViolationException ex) {
+            return new ResponseEntity<>(new BooleanDto(false), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(new BooleanDto(true), HttpStatus.OK);
+    }
 
     @RequestMapping(value = "/viite/{id}/versiot", method = GET)
     @ResponseBody

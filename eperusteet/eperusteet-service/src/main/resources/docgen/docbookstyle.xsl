@@ -47,7 +47,8 @@
     <!-- Header center position gets all the width it possibly can get -->
     <xsl:param name="header.column.widths">0 1 0</xsl:param>
 
-    <xsl:attribute-set name="section.title.level1.properties">
+    <!-- Chapter title properties -->
+    <xsl:attribute-set name="component.title.properties">
         <xsl:attribute name="font-size">
             <!--<xsl:value-of select="$body.font.master * 2.0736"></xsl:value-of>-->
             <xsl:value-of select="21"></xsl:value-of>            
@@ -55,9 +56,17 @@
         </xsl:attribute>
     </xsl:attribute-set>
 
+    <xsl:attribute-set name="section.title.level1.properties">
+        <xsl:attribute name="font-size">
+            <!--<xsl:value-of select="$body.font.master * 2.0736"></xsl:value-of>-->
+            <xsl:value-of select="18"></xsl:value-of>            
+            <xsl:text>pt</xsl:text>
+        </xsl:attribute>
+    </xsl:attribute-set>
+
     <xsl:attribute-set name="section.title.level2.properties">
         <xsl:attribute name="font-size">
-            <xsl:value-of select="18"></xsl:value-of>
+            <xsl:value-of select="16"></xsl:value-of>
             <!--<xsl:value-of select="$body.font.master * 1.728"></xsl:value-of>-->
             <xsl:text>pt</xsl:text>
         </xsl:attribute>
@@ -67,14 +76,14 @@
     <xsl:attribute-set name="section.title.level3.properties">
         <xsl:attribute name="font-size">
             <!--<xsl:value-of select="$body.font.master * 1.44"></xsl:value-of>-->
-            <xsl:value-of select="16"></xsl:value-of>
+            <xsl:value-of select="14"></xsl:value-of>
             <xsl:text>pt</xsl:text>
         </xsl:attribute>
     </xsl:attribute-set>
 
     <xsl:attribute-set name="section.title.level4.properties">
         <xsl:attribute name="font-size">
-            <xsl:value-of select="14"></xsl:value-of>
+            <xsl:value-of select="$body.font.master"></xsl:value-of>
             <!--<xsl:value-of select="$body.font.master * 1.2"></xsl:value-of>-->
             <xsl:text>pt</xsl:text>
         </xsl:attribute>

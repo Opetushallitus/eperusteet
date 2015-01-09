@@ -25,10 +25,23 @@ angular.module('eperusteApp')
     });
   })
 
-  .service('TermistoService', function (TermistoCRUD, Notifikaatiot, $q, $timeout) {
+  .service('TermistoService', function (TermistoCRUD, Notifikaatiot, $q, $timeout, YleinenData, $rootScope) {
     var peruste = null;
     var cached = {};
     var loading = false;
+    this.newTermi = function (termi) {
+      var newtermi = {
+        termi: {},
+        selitys: {},
+        id: null
+      };
+      if (termi) {
+        _.each(_.values(YleinenData.kielet), function (lang) {
+          newtermi.termi[lang] = termi;
+        });
+      }
+      return newtermi;
+    };
     this.preload = function () {
       if (!cached[peruste.id] && !loading) {
         loading = true;
@@ -46,7 +59,10 @@ angular.module('eperusteApp')
       }).$promise;
     };
     this.delete = function (item) {
-      return TermistoCRUD.delete({perusteId: peruste.id, id: item.id}, {}, angular.noop, Notifikaatiot.serverCb).$promise;
+      return TermistoCRUD.delete({perusteId: peruste.id, id: item.id}, {}, function () {
+        cached[peruste.id] = null;
+        $rootScope.$broadcast('termisto:update');
+      }, Notifikaatiot.serverCb).$promise;
     };
     function makeKey(item) {
       var termi = _.first(_.compact(_.values(item.termi))) || '';
@@ -56,7 +72,10 @@ angular.module('eperusteApp')
       if (!item.avain) {
         item.avain = makeKey(item);
       }
-      return TermistoCRUD.save({perusteId: peruste.id}, item, angular.noop, Notifikaatiot.serverCb).$promise;
+      return TermistoCRUD.save({perusteId: peruste.id}, item, function () {
+        cached[peruste.id] = null;
+        $rootScope.$broadcast('termisto:update');
+      }, Notifikaatiot.serverCb).$promise;
     };
     this.setPeruste = function (value) {
       peruste = value;
@@ -83,7 +102,7 @@ angular.module('eperusteApp')
   })
 
   .controller('TermistoController', function($scope, TermistoService, YleinenData, Algoritmit, Kaanna,
-      $modal, Varmistusdialogi, $rootScope) {
+      $modal, Varmistusdialogi) {
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
     $scope.termisto = [];
     $scope.filtered = [];
@@ -121,6 +140,7 @@ angular.module('eperusteApp')
 
     function doDelete(item) {
       TermistoService.delete(item).then(function () {
+        $scope.search.phrase = '';
         refresh();
       });
     }
@@ -134,7 +154,6 @@ angular.module('eperusteApp')
           $scope.termisto.push(res);
         }
         $scope.search.changed($scope.search.phrase);
-        $rootScope.$broadcast('update:termistoviitteet');
       });
     }
 
@@ -171,15 +190,11 @@ angular.module('eperusteApp')
   })
 
   .controller('TermistoMuokkausController', function ($scope, termimodel, Varmistusdialogi,
-      $modalInstance, $rootScope) {
+      $modalInstance, $rootScope, TermistoService) {
     $scope.termimodel = termimodel;
     $scope.creating = !termimodel;
     if ($scope.creating) {
-      $scope.termimodel = {
-        termi: {},
-        selitys: {},
-        id: null
-      };
+      $scope.termimodel = TermistoService.newTermi();
     }
 
     $scope.ok = function () {

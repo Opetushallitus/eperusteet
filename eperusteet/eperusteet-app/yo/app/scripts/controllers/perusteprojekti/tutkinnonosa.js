@@ -18,6 +18,9 @@
 /*global _*/
 
 angular.module('eperusteApp')
+  .factory('TutkinnonOsanKoodiUniqueResource', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/tutkinnonosat/koodi/uniikki/:tutkinnonosakoodi');
+  })
   .service('TutkinnonosanTiedotService', function(PerusteenOsat, $q, TutkinnonOsanOsaAlue, Osaamistavoite) {
     var FIELD_ORDER = {
       tavoitteet: 3,
@@ -88,7 +91,8 @@ angular.module('eperusteApp')
     TutkinnonOsaEditMode, $timeout, Varmistusdialogi, VersionHelper, Lukitus,
     MuokkausUtils, PerusteenOsaViitteet, Utils, ArviointiHelper, PerusteProjektiSivunavi,
     Notifikaatiot, Koodisto, Tutke2OsaData, Kommentit, KommentitByPerusteenOsa, FieldSplitter,
-    Algoritmit, TutkinnonosanTiedotService, TutkinnonOsaViitteet, PerusteenOsaViite, virheService) {
+    Algoritmit, TutkinnonosanTiedotService, TutkinnonOsaViitteet, PerusteenOsaViite, virheService,
+    ProjektinMurupolkuService) {
 
 
     Utils.scrollTo('#ylasivuankkuri');
@@ -222,7 +226,8 @@ angular.module('eperusteApp')
       MuokkausUtils.nestedSet($scope.editableTutkinnonOsaViite.tutkinnonOsa, 'koodiArvo', ',', koodisto.koodiArvo);
     }, {
       tyyppi: function() { return 'tutkinnonosat'; },
-      ylarelaatioTyyppi: function() { return ''; }
+      ylarelaatioTyyppi: function() { return ''; },
+      tarkista: _.constant(true)
     });
 
 
@@ -249,6 +254,7 @@ angular.module('eperusteApp')
 
     function saveCb(res) {
       Lukitus.vapautaPerusteenosa(res.id);
+      ProjektinMurupolkuService.set('tutkinnonOsaViiteId', $scope.tutkinnonOsaViite.id, $scope.tutkinnonOsaViite.tutkinnonOsa.nimi);
       Notifikaatiot.onnistui('muokkaus-tutkinnon-osa-tallennettu');
       $scope.haeVersiot(true, function () {
         VersionHelper.setUrl($scope.versiot);
@@ -352,6 +358,7 @@ angular.module('eperusteApp')
 
     function setupTutkinnonOsaViite(viite) {
       $scope.tutkinnonOsaViite = viite;
+      ProjektinMurupolkuService.set('tutkinnonOsaViiteId', $scope.tutkinnonOsaViite.id, $scope.tutkinnonOsaViite.tutkinnonOsa.nimi);
       $scope.editableTutkinnonOsaViite = angular.copy(viite);
       $scope.isNew = !$scope.editableTutkinnonOsaViite.tutkinnonOsa.id;
       if ($state.current.name === 'root.perusteprojekti.suoritustapa.tutkinnonosa') {

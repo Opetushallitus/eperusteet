@@ -18,15 +18,52 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .controller('TiedotteetController', function ($scope, Algoritmit, $modal, Varmistusdialogi) {
-    // TODO tiedotteet bäkkäriltä
+  .factory('TiedotteetCRUD', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/tiedotteet/:tiedoteId', {
+      tiedoteId: '@id'
+    });
+  })
+
+  .controller('SivupalkkiTiedotteetController', function ($scope, Algoritmit, $modal, Varmistusdialogi, TiedotteetCRUD,
+    Notifikaatiot) {
     $scope.tiedotteet = [];
     $scope.naytto = {limit: 5, shown: 5};
+
+    function fetch() {
+      // Hae tiedotteet viimeisen 6 kuukauden ajalta
+      var MONTH_OFFSET = 6;
+      var tempDate = new Date();
+      tempDate.setMonth(tempDate.getMonth() - MONTH_OFFSET);
+      var alkaen = tempDate.getTime();
+
+      TiedotteetCRUD.query({alkaen: alkaen}, function (res) {
+        $scope.tiedotteet = res;
+      }, Notifikaatiot.serverCb);
+    }
+    fetch();
+
+    $scope.orderFn = function (item) {
+      return -1 * item.muokattu;
+    };
+  })
+
+  .controller('TiedotteidenHallintaController', function ($scope, Algoritmit, $modal, Varmistusdialogi, TiedotteetCRUD,
+    Notifikaatiot, Utils) {
+    $scope.tiedotteet = [];
+    $scope.jarjestysTapa = 'muokattu';
+    $scope.jarjestysOrder = false;
 
     $scope.paginate = {
       perPage: 10,
       current: 1
     };
+
+    function fetch() {
+      TiedotteetCRUD.query({}, function (res) {
+        $scope.tiedotteet = res;
+      }, Notifikaatiot.serverCb);
+    }
+    fetch();
 
     $scope.search = {
       term: '',
@@ -38,16 +75,37 @@ angular.module('eperusteApp')
       }
     };
 
-    $scope.orderFn = function (item) {
-      return -1 * item.muokattu;
+    $scope.setOrderBy = function (key) {
+      if ($scope.jarjestysTapa === key) {
+        $scope.jarjestysOrder = !$scope.jarjestysOrder;
+      } else {
+        $scope.jarjestysOrder = false;
+        $scope.jarjestysTapa = key;
+      }
     };
 
-    function doDelete(/*item*/) {
-      // TODO delete
+    $scope.orderFn = function (item) {
+      switch($scope.jarjestysTapa) {
+        case 'nimi': return Utils.nameSort(item, 'otsikko');
+        case 'muokattu': return -1 * item.muokattu;
+        case 'julkinen': return '' + item.julkinen;
+        default:
+          break;
+      }
+    };
+
+    function doDelete(item) {
+      TiedotteetCRUD.delete({}, item, function () {
+        Notifikaatiot.onnistui('poisto-onnistui');
+        fetch();
+      }, Notifikaatiot.serverCb);
     }
 
-    function doSave(/*item*/) {
-      // TODO save
+    function doSave(item) {
+      TiedotteetCRUD.save({}, item, function () {
+        Notifikaatiot.onnistui('tallennus-onnistui');
+        fetch();
+      }, Notifikaatiot.serverCb);
     }
 
     $scope.delete = function (model) {
@@ -68,7 +126,7 @@ angular.module('eperusteApp')
           model: function () { return _.cloneDeep(tiedote); }
         }
       }).result.then(function (data) {
-        if (data.$delete) {
+        if (data.$dodelete) {
           doDelete(data);
         } else {
           doSave(data);
@@ -84,7 +142,7 @@ angular.module('eperusteApp')
     if ($scope.creating) {
       $scope.model = {
         otsikko: {},
-        teksti: {},
+        sisalto: {},
         id: null
       };
     }
@@ -99,7 +157,7 @@ angular.module('eperusteApp')
         otsikko: 'vahvista-poisto',
         teksti: 'poistetaanko-tiedote',
       })(function() {
-        $modalInstance.close(_.extend($scope.model, {$delete: true}));
+        $modalInstance.close(_.extend($scope.model, {$dodelete: true}));
       });
     };
   })
@@ -113,7 +171,9 @@ angular.module('eperusteApp')
       });
   })
 
-  .controller('TiedoteViewController', function ($scope /*, $stateParams*/) {
-    // TODO hae tiedote $stateParams.tiedoteId
+  .controller('TiedoteViewController', function ($scope, $stateParams, TiedotteetCRUD, Notifikaatiot) {
     $scope.tiedote = null;
+    TiedotteetCRUD.get({tiedoteId: $stateParams.tiedoteId}, function (res) {
+      $scope.tiedote = res;
+    }, Notifikaatiot.serverCb);
   });

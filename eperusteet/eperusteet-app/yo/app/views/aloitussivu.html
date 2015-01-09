@@ -2,7 +2,7 @@
 <!-- aloitussivu.html -->
 
   <div class="col-md-8 aloitusvalinnat">
-      <a ng-href="{{getHref(valinta)}}" class="iso-valinta clearfix" ng-repeat="valinta in valinnat">
+      <a ng-href="{{valinta.url}}" class="iso-valinta clearfix" ng-repeat="valinta in valinnat">
           <h2 kaanna="valinta.label"></h2>
           <div class="navigointiteksti">{{valinta.helper | kaanna}}
             <span class="glyphicon glyphicon-chevron-right"></span>

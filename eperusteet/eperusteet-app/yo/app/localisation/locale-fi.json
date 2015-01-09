@@ -1,6 +1,7 @@
 {
     "edellinen": "Edellinen",
     "kieli": "Kieli",
+    "sisallon-kieli": "Sisällön kieli",
     "koodi": "Koodi",
     "lisaa": "Lisää",
     "nimi": "Nimi",
@@ -46,6 +47,9 @@
     "alkuun": "Alkuun",
     "osiot": "Osiot",
 
+    "toisesta-perusteesta": "Toisesta perusteesta",
+    "toisesta-suoritustavasta": "Toisesta suoritustavasta",
+    "tuo-nykyisesta-perusteesta": "Tuo nykyisestä perusteesta",
     "tiedotteet": "Tiedotteet",
     "tiedote": "Tiedote",
     "ei-tiedotteita": "Ei tiedotteita.",
@@ -55,6 +59,8 @@
     "poistetaanko-tiedote": "Poistetaanko tiedote?",
     "muokkaa-tiedotetta": "Muokkaa tiedotetta",
     "tiedoteteksti": "Tiedoteteksti",
+    "julkinen-tiedote": "Julkinen tiedote",
+    "julkinen-tiedote-header": "Julkinen",
 
     "ops-ja-tutkintojen-perusteet": "Opetussuunnitelmien ja tutkintojen perusteet",
 
@@ -66,10 +72,26 @@
     "varmista-poisto": "Varmista poisto",
     "varmista-poisto-suosikki-teksti": "Haluatko varmasti poistaa suosikin?",
 
+    "perusteen-kielet": "Perusteen kielet",
+    "lisaa-kieli": "Lisää kieli",
+    "peruste-validointi-tekstikappale-nimi": "Perusteen kaikkien tekstikappeleiden nimiä ei ole lokalisoitu",
+    "peruste-validointi-tekstikappale-teksti": "Perusteen kaikkien tekstikappeleiden sisältöjä ei ole lokalisoitu",
+    "peruste-validointi-rakenneosa-kuvaus": "Perusteen muodostumisryhmän kaikkia kuvauksia ei ole lokalisoitu",
+    "peruste-validointi-kuvaus": "Perusteen kuvausta ei ole lokalisoitu",
+    "peruste-validointi-nimi": "Perusteen nimeä ei ole lokalisoitu",
+    "peruste-validointi-koulutus-nimi": "Perusteen koulutuksien nimiä ei ole lokalisoitu",
+    "peruste-validointi-tutkinnonosa-ammattitaidon-osoittamistavat": "Perusteen tutkinnon osien ammattitaitojen osoittamistapoja ei ole lokalisoitu",
+    "peruste-validointi-tutkinnonosa-ammattitaitovaatimukset": "Perusteen tutkinnon osien kaikkia ammattitaitovaatimuksia ei ole lokalisoitu",
+    "peruste-validointi-tutkinnonosa-kuvaus": "Kaikkien tutkinn onosien kuvauksia ei ole lokalisoitu",
+    "peruste-validointi-tutkinnonosa-nimi": "Kaikkien tutkinnon osien nimiä ei ole lokalisoitu",
+    "peruste-validointi-tutkinnonosa-tavoitteet": "Kaikkien tutkinnon osien tavoitteita ei ole lokalisoitu",
+
     "fi": "Suomi",
     "sv": "Ruotsi",
     "en": "Englanti",
     "se": "Saame",
+    "ru": "Venäjä",
+    "ui-kieli": "Käyttöliittymäkieli",
 
     "nimeton": "<Nimetön>",
 
@@ -99,7 +121,7 @@
     "perusteprojektit-otsikko": "Omat perusteprojektit",
     "uusi-projekti": "Uusi projekti",
     "tutkinnon-osia-ei-loytynyt": "Tutkinnon osia ei löytynyt.",
-    "aloita-raahaamalla-puuhun": "Raahaa ryhmiä tai tutkinnon osia tähän.",
+    "aloita-raahaamalla-puuhun": "Tuo ryhmiä tai tutkinnon osia tähän.",
     "rakennetta-ei-vielä-muodostettu": "Tutkinnon rakennetta ei ole vielä muodostettu tai se on tyhjä. Luo uusi rakenne muokkaamalla sivua.",
     "rakennetta-ei-ole": "Suoritustavalle ei ole määritetty rakennetta",
 
@@ -133,10 +155,11 @@
     "tilanvaihdos-laadinta-poistettu": "Kuvaus tilasiirtymälle laadinta-arkistointi.",
 
     "suoritustavalle-ei-ole-viela-sisaltoa": "Perusteelle ei ole luotu vielä tähän suoritustapaan liittyvää sisältöä",
+    "peruste-ei-sisaltoa": "Perusteeseen ei ole vielä luotu sisältöä.",
     "rajauksellasi-ei-löytynyt-vaihtoehtoa": "Rajaus ei tuottanut tuloksia",
     "ei-tekstikappaleita": "Yhtään tekstikappaletta ei löytynyt.",
 
-    "vain-käyttämättömät": "Näytä vain käyttämättömät",
+    "vain-käyttämättömät": "Näytä käyttämättömät",
     "näytä-kaikki": "Näytä kaikki",
 
     "ja-myös-valittava": "ja valittava myös",
@@ -146,7 +169,7 @@
     "kappaletta": "kappaletta",
     "kpl": "kpl",
 
-    "nayta-virheet": "Näytä virheet",
+    "nayta-virheet": "Tarkista rakenne",
     "piilota-virheet": "Piilota virheet",
 
     "laajuuden-yksikkö": "Laajuuden yksikkö",
@@ -159,6 +182,7 @@
     "avaa-kaikki": "Avaa kaikki",
     "sulje-kaikki": "Sulje kaikki",
     "avaa-sulje-kaikki": "Avaa / sulje kaikki",
+    "avaa-sulje-rakenne": "Avaa / sulje rakenne",
 
     "et-ole-lisannyt-viela-tutkintonimikkeita": "Tutkintonimikkeitä ei ole vielä lisätty",
     "tutkintonimike": "Tutkintonimike",
@@ -170,6 +194,7 @@
     "tutkintonimike-poistettu-onnistuneesti": "Tutkintonimike poistettiin onnistuneesti",
     "tutkintonimikkeen-lisays-onnistui": "Tutkintonimikkeen lisääminen onnistui",
     "tutkintonimikkeen-lisays-epaonnistui": "Tutkintonimikkeen lisääminen epäonnistui",
+    "ei-tutkintonimikkeita": "Ei tutkintonimikkeitä",
 
     "ladataan-sisaltoa": "Ladataan sisältöä...",
 
@@ -179,6 +204,7 @@
     "tutkinnon-osa-rakenteessa-ei-voi-poistaa": "Tutkinnon osaa ei voi poistaa, koska se on käytössä tutkinnon rakenteessa. Poista viite puusta ensin.",
     "tutkinnon-osa-rakenteesta-poistettu": "Tutkinnon osa poistettu onnistuneesti.",
     "tutkinnon-osa-ei-sisaltoa": "Tutkinnon osalla ei ole sisältöä.",
+    "vuosiluokat-ei-sisaltoa": "Vuosiluokkakokonaisuudella ei ole sisältöä.",
     "tutkinnon-osa-ei-sisaltoa-ohje": "Lisää osioita valitsemalla \"Lisää osio\".",
     "tyyppi-yhteinen": "Yhteinen",
     "tyyppi-tutkintokohtainen": "Tutkintokohtainen",
@@ -189,12 +215,24 @@
     "piilota-aliviestit": "Piilota vastaukset",
     "poistetaanko-kommentti": "Poistetaanko kommentti?",
 
+    "lisaa-sisalto": "Lisää sisältöä",
+
+    "perusopetus-tehtava" : "Oppiaineen tehtävä",
+    "perusopetus-ohjaus" : "Ohjaus ja tuki",
+    "perusopetus-tyotavat" : "Oppimisympäristöt ja työtavat",
+    "perusopetus-tavoitteet" : "Oppiaineen tavoitteet",
+
     "lopeta-muokkaus": "Lopeta muokkaus",
 
     "ohje": "Ohje",
-    "ohje-ryhma-rooli": "<p>Ryhmän rooli määrittelee ryhmän sisällön muodostumisen joko perusteessa tai paikallisessa opetussuunnitelmassa</p><p><strong>Perusteessa määriteltävä:</strong> Ryhmän sisältö määritellään perustepuun luonnin yhteydessä.</p><p><strong>Tutkinnossa määriteltävä:</strong> Ryhmälle annetaan vain muodostumissäännöt ja sen sisältö määritellään paikallisen laadinnan puolella.</p>",
+    "ohje-ryhma-rooli": "<p><strong>Perusteessa määriteltävä:</strong> Ryhmän sisältö määritellään perustepuun luonnin yhteydessä.</p><p><strong>Tutkinnossa määriteltävä:</strong> Ryhmälle annetaan vain muodostumissäännöt ja sen sisältö määritellään paikallisen laadinnan puolella.</p>",
     "ohje-ryhma-laajuus": "Laajuus määrittää kuinka monen yksikön edestä ryhmä voi sisältää osia",
     "ohje-ryhma-koko": "Koko määrittää montako osaa ryhmä voi sisältää",
+    "ohje-hallintapaneeli": "Hallintapaneeli on tarkoitettu koko palvelun laajuisten toimintojen saavuttamiseksi.",
+    "ohje-tiedotteet": "Tämän näkymän kautta voi hallinnoida tiedotteita.",
+    "ohje-perusteprojekti": "Tämän näkymän kautta voi hallinnoida perusteprojekteja ja pohjia.",
+    "ohje-muodostuminen-ryhma": "Luo ryhmä ja vie haluttuun kohtaan rakenteessa.",
+    "ohje-muodostuminen-tutkinnonosat": "Valitse tutkinnon osa ja vie haluttuun kohtaan rakenteessa.",
 
     "otsikko": "Otsikko",
     "kopioi-muokattavaksi": "Kopioi muokattavaksi",
@@ -258,6 +296,9 @@
     "tutkinnon-osa-haku-placeholder": "Rajaa tutkinnon osia...",
     "etsi-sisallosta": "Rajaa sisältöä...",
     "etsi-perusteprojekteista": "Etsi perusteprojekteista...",
+    "kopioi-leikelaudalle": "Kopioi leikelaudalle",
+    "korosta": "Korosta",
+    "poista-korostus": "Poista korostus",
 
     "haltija": "Haltija",
 
@@ -280,7 +321,7 @@
     "hae-perusteita": "Hae perusteita",
     "hakuehdot": "Hakuehdot",
     "perusteprojekti": "Perusteprojekti",
-    "uusi-perusteprojekti": "Uusi perusteprojekti",
+    "uusi-perusteprojekti": "Luo uusi perusteprojekti",
 
     "muokkaus-uusi-kappale-placeholder": "Uusi kappale",
     "muokkaus-kommentit": "Kommentit",
@@ -313,6 +354,7 @@
     "koulutustyyppi_1": "Ammatillinen perustutkinto",
     "koulutustyyppi_11": "Ammattitutkinto",
     "koulutustyyppi_12": "Erikoisammattitutkinto",
+    "koulutustyyppi_15": "Esiopetus",
     "koulutustyyppi_16": "Perusopetus",
 
     "solu": "Solu",
@@ -339,6 +381,8 @@
     "tekstikappaleet": "Tekstikappaleet",
     "tekstikappaleiden-tuonti-onnistui": "Tekstikappaleiden tuonti onnistui",
     "koulutus": "Koulutus",
+
+    "paattymisaikaa-ei-ole-maaritetty": "Määrittelemätön",
 
     "perusteen-tiedot": "Perusteen tiedot",
     "tuo": "Tuo",
@@ -368,6 +412,9 @@
 
     "lajittelu-jarjestysnumero": "No.",
 
+    "poista-kohdealue": "Poista",
+    "lisaa-kohdealue": "Lisaa kohdealue",
+    "muokkaus-kohdealueet": "Muokkaa kohdealueita",
     "muokkaus-tutkinnon-jarjestysnumero": "Järjestysnumero",
     "muokkaus-tutkinnon-osan-nimi-header": "Nimi",
     "muokkaus-tutkinnon-osan-nimi-placeholder": "Kirjoita tähän otsikko",
@@ -392,6 +439,7 @@
     "tuo-osaamistavoite": "Tuo osaamistavoite",
     "pakolliset-osaamistavoitteet": "Pakolliset osaamistavoitteet",
     "valinnaiset-osaamistavoitteet": "Valinnaiset osaamistavoitteet",
+    "muokkaa-osa-aluetta": "Muokkaa osa-aluetta",
 
     "ota-versio-kayttoon": "Ota tämä versio käyttöön",
     "katso-uusin-versio": "Katso uusin versio",
@@ -423,6 +471,7 @@
     "arviointi-kohdealueet": "Arvioinnin kohdealueet",
 
     "muokkaus-lisaa-osio": "Lisää osio",
+    "muokkaus-lisaa-sisalto": "Lisää sisältö",
     "muokkaus-tutkinnon-osa-tallennettu": "Tutkinnon osa tallennettu onnistuneesti",
     "muokkaus-tekstikappale-tallennettu": "Tekstikappale tallennettu onnistuneesti",
 
@@ -457,7 +506,7 @@
     "excel-ei-kahta-samaa": "Tutkintokoodin täytyy olla uniikki",
     "valitse-nimi": "Valitse nimi",
     "valitse-diaarinumero": "Valitse diaarinumero",
-    "määräyksen-diaarinumero": "Määräyksen diaarinumero",
+    "maarayksen-diaarinumero": "Määräyksen diaarinumero",
     "suoritustapa": "Suoritustapa",
     "liita-perusteeseen": "Liitä perusteeseen",
     "excel-avataan-tiedostoa": "Avataan tiedostoa",
@@ -482,7 +531,7 @@
     "joku-toinen-on-muokannut-dokumenttia": "Joku toinen henkilö on muokannut dokumenttia. Voit joko perua omat muutoksesi tai jatkaa dokumentin editointia ja ylikirjoittaa toisen muutokset.",
     "ylikirjoittaessasi-voit-palauttaa": "Jatkaessasi voit ylikirjoittaa toisten muutokset. Ne säilyvät edelleen muutoshistoriassa ja voit palauttaa ne sieltä",
     "huom": "Huom!",
-    "tiivistelmä": "Tiivistelmä",
+    "tiivistelma": "Tiivistelmä",
 
     "luo-pdf": "Luo PDF",
     "dokumentti-luotu": "PDF-dokumentin luonti onnistui",
@@ -536,6 +585,7 @@
     "valitse-koulutustyyppi": "Valitse koulutus/tutkintotyyppi",
     "koulutustyyppi-label": "Koulutus/tutkintotyyppi",
     "perusteprojektin-pohjaksi-otetaan-peruste": "Perusteprojektin pohjaksi otetaan peruste",
+    "lisaa-ainakin-yksi-kieli": "Perusteella on oltava vähintään yksi kieli.",
 
     "projektipäällikkö": "Projektipäällikkö",
 
@@ -563,6 +613,7 @@
 
     "hallinta": "Hallinta",
     "hallintapaneeli": "Hallintapaneeli",
+    "rajaa-tila": "Rajaa tila:",
 
     "ops": "Peruskoulutus",
     "naytto": "Näyttötutkinto",
@@ -633,6 +684,7 @@
     "tallenna-muutokset": "Tallenna muutokset",
 
     "perusteprojektit": "Perusteprojektit",
+    "luo-uusi-perustepohja": "Luo uusi perustepohja",
     "uusi-perustepohja": "Uusi perustepohja",
 
     "poista-tekstikappale-otsikko": "Poista tekstikappale",
@@ -668,6 +720,7 @@
     "lisatieto": "Lisätieto",
 
     "diaarinumero-kaytossa": "Diaarinumero on jo käytössä",
+    "tutkinnon-osan-koodi-kaytossa": "Valittu tutkinnon osan koodi on jo käytössä",
 
     "hae-osaamisala": "Hae osaamisala",
 
@@ -699,7 +752,10 @@
     "ohje-tyoryhma-luonti": "<p>Projektin perustetyöryhmä voidaan jakaa työryhmiin. Perusteen sisältö voidaan merkata luoduille työryhmille.</p><p>Kun työryhmä on luotu, perusteen sisältö voidaan merkata luodulle työryhmälle sisällön yhteydessä.</p>",
 
     "opetuksen-sisallot": "Opetuksen sisällöt",
+    "opetuksen-kohdealueet": "Opetuksen kohdealueet",
     "laaja-alainen-osaaminen": "Laaja-alainen osaaminen",
+    "laaja-alainen-osaaminen-kuvaus": "Laaja-alaisen osaamisen kuvaus",
+    "laaja-alaiset-osaamiset": "Laaja-alaiset osaamiset",
 
     "muokkaus-laaja-alainen-osaaminen-header": "Laaja-alainen osaaminen",
     "poista-osaamiskokonaisuus": "Poista osaamiskokonaisuus",
@@ -723,6 +779,18 @@
     "piilota-osaamiskokonaisuuden-kuvaus": "Piilota osaamiskokonaisuuden yleiskuvaus",
     "tekstikappale": "Tekstikappale",
     "kohdealueet": "Kohdealueet",
+    "siirtyma-edellisesta": "Siirtymä edellisestä vaiheesta",
+    "muokkaus-siirtyma-edellisesta-header": "Siirtymä edellisestä vaiheesta",
+    "muokkaus-siirtyma-edellisesta-placeholder": "Kirjoita tähän siirtymän sisältö",
+    "siirtyma-seuraavaan": "Siirtymä seuraavaan vaiheeseen",
+    "muokkaus-siirtyma-seuraavaan-header": "Siirtymä seuraavaan vaiheeseen",
+    "muokkaus-siirtyma-seuraavaan-placeholder": "Kirjoita tähän siirtymän sisältö",
+    "paikallisesti-paatettavat-asiat": "Paikallisesti päätettävät asiat",
+    "muokkaus-paikallisesti-paatettavat-asiat-header": "Paikallisesti päätettävät asiat",
+    "muokkaus-paikallisesti-paatettavat-asiat-placeholder": "Kirjoita tähän paikallisesti päätettävät asiat",
+    "vuosiluokkakokonaisuuden-tehtava": "Vuosiluokkakokonaisuuden tehtävä",
+    "muokkaus-vuosiluokkakokonaisuuden-tehtava-header": "Vuosiluokkakokonaisuuden tehtävä",
+    "muokkaus-vuosiluokkakokonaisuuden-tehtava-placeholder": "Kirjoita tähän vuosiluokkakokonaisuuden tehtävä",
 
     "tyhja-placeholder-osaalueet": "Osa-alueita ei ole vielä lisätty.",
 
@@ -741,6 +809,8 @@
     "oppiaine-osio-arviointi": "Oppilaan oppimisen arviointi",
     "uusi-osaaminen": "Laaja-alainen osaaminen - uusi osaamiskokonaisuus",
     "muokkaa-osaaminen": "Laaja-alainen osaaminen - muokkaa osaamiskokonaisuutta",
+    "poistetaanko-oppiaineen-osio": "Poistetaanko osio? Kaikki osion sisältö poistetaan.",
+    "poistetaanko-osio": "Poistetaanko osio?",
 
     "poista-oppiaine": "Poista oppiaine",
     "poistetaanko-oppiaine": "Poistetaanko oppiaine?",
@@ -761,6 +831,9 @@
     "sisaltoalueen-nimi": "Sisältöalueen nimi",
     "tavoitteen-kuvaus-placeholder": "Lisää tavoitteen kuvaus",
     "lisaa-arviointi": "Lisää arviointi",
+    "lisaa-tyotavat": "Lisää työtavat",
+    "lisaa-ohjaus": "Lisää ohjaus",
+    "lisaa-tehtava": "Lisää tehtävä",
     "lisaa-laaja-alainen-osaaminen": "Lisää laaja-alainen osaaminen",
     "lisaa-opetuksen-tavoite": "Lisää opetuksen tavoite",
     "oppimaarat": "Oppimäärät",
@@ -771,34 +844,39 @@
     "useita-oppimaaria": "Useita oppimääriä",
     "oppimaara": "Oppimäärä",
     "lisaa-oppimaara": "Lisää oppimäärä",
+    "haluatko-varmasti-poistaa-osion": "Haluatko varmasti poistaa osion?",
 
     "luonti-projektin-nimi-ohje": "Anna projektin nimi muodossa '[Nimi] tutkinnon perusteprojekti' (esim. 'Rakennustuotannon ammattitutkinnon perusteprojekti').",
     "luonti-paatospaivamaara-ohje": "Lisää perustetyöryhmän asettamisen päätöspäivämäärä.",
     "luonti-diaarinumero-ohje": "Lisää perustetyöryhmän asettamispäätöksen diaarinumero.",
 
-    "termi-plugin-select-placeholder": "Valitse termi...",
-    "termi-plugin-title": "Lisää viittaus tai muokkaa viittausta termiin",
-    "termi-plugin-menu-muokkaa": "Muokkaa viittausta termiin",
-    "termi-plugin-button-label": "Viittaus termiin",
-    "termi-plugin-label": "Viittaus termiin",
-    "termi-plugin-label-termi": "Termi johon viitataan",
+    "termi-plugin-select-placeholder": "Valitse käsite...",
+    "termi-plugin-title": "Lisää viittaus tai muokkaa viittausta käsitteeseen",
+    "termi-plugin-menu-muokkaa": "Muokkaa viittausta käsitteeseen",
+    "termi-plugin-button-label": "Viittaus käsitteeseen",
+    "termi-plugin-label": "Viittaus käsitteeseen",
+    "termi-plugin-label-termi": "Käsite johon viitataan",
     "termi-plugin-label-teksti": "Teksti johon viittaus liitetään",
-    "termi-plugin-virhe-viite-tyhja": "Valitse termi johon viitataan.",
+    "termi-plugin-virhe-viite-tyhja": "Valitse käsite johon viitataan.",
     "termi-plugin-virhe-teksti-tyhja": "Teksti johon viittaus liitetään ei voi olla tyhjä.",
-    "termin-selitys": "Termin selitys",
-    "termin-selitys-placeholder": "Kirjoita termin selitys",
-    "termia-ei-loytynyt": "Viitattua termiä ei löytynyt",
+    "termin-selitys": "Käsitteen selitys",
+    "termin-selitys-placeholder": "Kirjoita käsitteen selitys",
+    "termia-ei-loytynyt": "Viitattua käsitettä ei löytynyt",
+    "lue-lisaa": "Näytä lisää...",
+    "piilota": "Piilota",
+    "termi-plugin-lisaa-uusi": "Lisää uusi käsite",
+    "termi-plugin-tallennettu": "Käsite tallennettu. Voit muokata sitä Käsitteet-näkymässä.",
 
     "projektin-ryhma": "Projektin työryhmä",
 
-    "perusteen-termisto": "Termistö",
-    "perusteen-termisto-ohje": "Tekstikappaleissa voidaan viitata termiin ja näyttää sen selitys. Termistö on perustekohtainen.",
-    "ei-termeja": "Yhtään termiä ei ole määritelty.",
-    "loydetty-termien-maara": "Löydettyjen termien määrä:",
-    "poistetaanko-termi": "Poistetaanko termi?",
-    "muokkaa-termia": "Muokkaa termiä",
-    "uusi-termi": "Lisää uusi termi",
-    "termi": "Termi",
+    "perusteen-termisto": "Käsitteet",
+    "perusteen-termisto-ohje": "Tekstikappaleissa voidaan viitata käsitteeseen ja näyttää sen selitys. Käsitteet ovat perustekohtaisia.",
+    "ei-termeja": "Yhtään käsitettä ei ole määritelty.",
+    "loydetty-termien-maara": "Löydettyjen käsitteiden määrä:",
+    "poistetaanko-termi": "Poistetaanko käsite?",
+    "muokkaa-termia": "Muokkaa käsitettä",
+    "uusi-termi": "Lisää uusi käsite",
+    "termi": "Käsite",
     "selitys": "Selitys",
 
     "perusteelta-puuttuu-nimi": "Perusteelta puuttuu nimi",

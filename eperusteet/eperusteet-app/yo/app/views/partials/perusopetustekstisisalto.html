@@ -1,0 +1,6 @@
+<div class="perusopetus">
+  <div ng-if="item.depth >= 0" ng-click="section.update(item, section)" ng-repeat="item in section.items"
+       class="tekstisisalto {{ item.$selected && 'tekstisisalto-active' }}">
+    <span>{{ item.label | kaanna }}</span>
+  </div>
+</div>

@@ -33,6 +33,10 @@ public class VuosiluokkaKokonaisuusDto implements ReferenceableDto {
     private Long id;
     private Set<Vuosiluokka> vuosiluokat;
     private Optional<LokalisoituTekstiDto> nimi;
+    private Optional<TekstiOsaDto> siirtymaEdellisesta;
     private Optional<TekstiOsaDto> tehtava;
+    private Optional<TekstiOsaDto> siirtymaSeuraavaan;
+    private Optional<TekstiOsaDto> laajaalainenOsaaminen;
     private Set<VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto> laajaalaisetOsaamiset;
+    private Optional<TekstiOsaDto> paikallisestiPaatettavatAsiat;
 }

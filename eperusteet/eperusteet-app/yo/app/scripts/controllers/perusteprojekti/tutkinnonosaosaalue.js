@@ -8,18 +8,6 @@ angular.module('eperusteApp')
     $scope.osaamistavoitepuu = [];
     var tempId = 0;
 
-    $scope.tabs = [
-      {
-        id: 0,
-        nimi: 'sisalto'
-      },
-      {
-        id: 1,
-        nimi: 'rakenne'
-      }
-    ];
-    $scope.selectedTab = $scope.tabs[0];
-
     $scope.tutkinnonOsa = {};
     $scope.osaAlue = {
       nimi:{}
@@ -165,9 +153,5 @@ angular.module('eperusteApp')
     lukitse(function () {
       Editointikontrollit.startEditing();
     });
-
-    $scope.changeTab = function (tab) {
-      $scope.selectedTab = tab;
-    };
 
   });

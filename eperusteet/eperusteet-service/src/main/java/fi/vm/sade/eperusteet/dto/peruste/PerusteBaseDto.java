@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.dto.peruste;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.dto.KoulutusDto;
@@ -36,6 +37,7 @@ public abstract class PerusteBaseDto implements Serializable {
     private LokalisoituTekstiDto nimi;
     private String koulutustyyppi;
     private Set<KoulutusDto> koulutukset;
+    private Set<Kieli> kielet;
     private LokalisoituTekstiDto kuvaus;
 
     private String diaarinumero;

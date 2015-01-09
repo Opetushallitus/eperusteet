@@ -88,6 +88,10 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
         vuosiluokkakokonaisuudet.add(kokonaisuus);
     }
 
+    public boolean containsLaajaalainenOsaaminen(LaajaalainenOsaaminen osaaminen) {
+        return laajaAlalaisetOsaamiset.contains(osaaminen);
+    }
+
     public boolean containsOppiaine(Oppiaine aine) {
         if (aine == null) {
             return false;
@@ -118,6 +122,10 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
         vuosiluokkakokonaisuudet.remove(kokonaisuus);
     }
 
+    public void removeLaajaalainenOsaaminen(LaajaalainenOsaaminen osaaminen) {
+        laajaAlalaisetOsaamiset.remove(osaaminen);
+    }
+
     public boolean containsViite(PerusteenOsaViite viite) {
         return viite != null && sisalto.getId().equals(viite.getRoot().getId());
     }
@@ -143,9 +151,10 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
     public void setLaajaalaisetOsaamiset(Set<LaajaalainenOsaaminen> laajaalaisetOsaamiset) {
         if (laajaalaisetOsaamiset == null) {
             this.laajaAlalaisetOsaamiset.clear();
+        } else {
+            this.laajaAlalaisetOsaamiset.retainAll(laajaalaisetOsaamiset);
+            this.laajaAlalaisetOsaamiset.addAll(laajaalaisetOsaamiset);
         }
-        this.laajaAlalaisetOsaamiset.retainAll(laajaalaisetOsaamiset);
-        this.laajaAlalaisetOsaamiset.addAll(laajaalaisetOsaamiset);
     }
 
     public Set<Oppiaine> getOppiaineet() {

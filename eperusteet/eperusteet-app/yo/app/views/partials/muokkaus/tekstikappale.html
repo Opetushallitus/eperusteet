@@ -44,13 +44,7 @@ European Union Public Licence for more details.
       <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
     </div>
 
-    <div id="tekstikappale-crumbs" ng-if="!editEnabled">
-      <ol class="breadcrumb" ng-if="crumbs">
-        <li ng-repeat="crumb in crumbs">
-          <a ui-sref="root.perusteprojekti.suoritustapa.tekstikappale({ perusteenOsaViiteId: crumb.id})">{{crumb.name | kaanna}}</a>
-        </li>
-      </ol>
-    </div>
+    <projektin-murupolku></projektin-murupolku>
 
     <h1 ng-if="editEnabled">
       <span ng-show="isNew" kaanna>luonti-tekstikappale</span>
@@ -64,10 +58,10 @@ European Union Public Licence for more details.
       <versiotiedot ng-hide="editEnabled"></versiotiedot>
       <div class="tyoryhma-rivi">
         <span class="tyoryhma" ng-repeat="tr in tyoryhmat">
-          <a ng-click="poistaTyoryhma(tr)" href="" icon-role="remove" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></a>
+          <a ng-click="poistaTyoryhma(tr)" class="action-link" icon-role="remove" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></a>
           {{ tr }}
         </span>
-        <button ng-disabled="kaikkiTyoryhmat.length === 0 || kaikkiTyoryhmat.length === tyoryhmat.length"
+        <button ng-hide="kaikkiTyoryhmat.length === 0" ng-disabled="kaikkiTyoryhmat.length === tyoryhmat.length"
                 ng-click="lisaaTyoryhma()" icon-role="plus" class="btn btn-default"
                 oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }" kaanna="lisaa-tyoryhma"></button>
       </div>

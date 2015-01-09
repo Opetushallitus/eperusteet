@@ -65,8 +65,7 @@ angular.module('eperusteApp')
     }
 
     Kayttajaprofiilit.get({}, function(res) {
-      info = res;
-      info.oid = res.oid;
+      _.extend(info, res);
       info.suosikit = transformSuosikit(res.suosikit);
       info.preferenssit = transformPreferenssit(res.preferenssit);
       info.resolved = true;
@@ -76,6 +75,7 @@ angular.module('eperusteApp')
     return {
       // Perustiedot
       oid: function() { return info.oid; },
+      lang: function() { return info.lang; },
       profiili: function() { return info; },
       isResolved: function() { return info.resolved; },
       casTiedot: function () {
@@ -85,11 +85,14 @@ angular.module('eperusteApp')
         if (!info.$casFetched) {
           info.$casFetched = true;
           $http.get('/cas/me').success(function (res) {
+            $rootScope.$broadcast('fetched:casTiedot');
             if (res.oid) {
               info.oid = res.oid;
+              info.lang = res.lang;
             }
             deferred.resolve(res);
           }).error(function () {
+            $rootScope.$broadcast('fetched:casTiedot');
             deferred.resolve({});
           });
         } else {

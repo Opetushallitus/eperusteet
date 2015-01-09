@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .service('PerusopetusService', function (Vuosiluokkakokonaisuudet, Oppiaineet, $q,
       OppiaineenVuosiluokkakokonaisuudet, LaajaalaisetOsaamiset, Notifikaatiot,
-      PerusopetuksenSisalto) {
+      PerusopetuksenSisalto, SuoritustapaSisalto) {
     this.OSAAMINEN = 'osaaminen';
     this.VUOSILUOKAT = 'vuosiluokat';
     this.OPPIAINEET = 'oppiaineet';
@@ -124,10 +124,8 @@ angular.module('eperusteApp')
       }
     };
 
-    this.addSisaltoChild = function (id, success) {
-      console.log('addSisaltoChild', commonParams({osanId: id}), success);
-      // TODO odottaa bäkkäriä
-      //PerusopetuksenSisalto.addChild(commonParams({osanId: id}), {}, success);
+    this.addSisaltoChild = function(id, success) {
+      PerusopetuksenSisalto.addChild(commonParams({osanId: id}), {}, success);
     };
 
     this.updateSisaltoViitteet = function (sisalto, data, success) {
@@ -145,6 +143,14 @@ angular.module('eperusteApp')
       }, errorCb);
     };
 
+    this.deleteOppiaineenVuosiluokkakokonaisuus = function (vlk, oppiaineId) {
+      return OppiaineenVuosiluokkakokonaisuudet.delete({
+        perusteId: tiedot.getProjekti()._peruste,
+        oppiaineId: oppiaineId,
+        osanId: vlk.id
+      }, angular.noop, errorCb);
+    };
+
     this.getTekstikappaleet = function () {
       // TODO oikea data
       return [];
@@ -157,8 +163,12 @@ angular.module('eperusteApp')
       return Oppiaineet.oppimaarat(commonParams({osanId: oppiaine.id})).$promise;
     };
 
-    this.getSisalto = function () {
-      return PerusopetuksenSisalto.root(commonParams());
+    this.getSisalto = function (suoritustapa) {
+      return SuoritustapaSisalto.get(commonParams({suoritustapa: suoritustapa}));
+    };
+
+    this.clearCache = function () {
+      cached = {};
     };
 
     this.getOsat = function (tyyppi, useCache) {

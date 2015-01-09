@@ -5,26 +5,35 @@
 </div>
 
 <div class="modal-body">
-  <rajaus ng-if="!valittuPeruste && !lataa" model="syote" placeholder="hae-perusteita" callback="haku(value)"></rajaus>
-  <div ng-show="!valittuPeruste" style="margin-top: 8px" class="results">
-    <table class="table table-striped">
-      <tr>
-        <th kaanna>nimi</th>
-        <th kaanna>voimassaoloLoppuu</th>
-      </tr>
-      <tr ng-repeat="peruste in perusteet">
-        <td>
-          <a ng-click="valitse(peruste)" href="">{{ peruste.nimi | kaanna }}</a>
-        </td>
-        <td>
-          <span ng-show="peruste.voimassaoloLoppuu">{{ peruste.voimassaoloLoppuu | aikaleima }}</span>
-          <span ng-hide="peruste.voimassaoloLoppuu" kaanna>ei-päättymis-päivämäärää</span>
-        </td>
-      </tr>
-    </table>
+  <div ng-show="!valittuPeruste">
+    <div class="tuo-nykyisesta-perusteesta">
+      <a class="action-link" icon-role="add" ng-click="valitse(nykyinenPeruste)" kaanna="'tuo-nykyisesta-perusteesta'"></a>
+    </div>
+    <rajaus ng-if="!lataa" model="syote" placeholder="hae-perusteita" callback="haku(value)"></rajaus>
+    <div style="margin-top: 8px" class="results">
+      <table class="table table-striped">
+        <tr>
+          <th kaanna>nimi</th>
+          <th kaanna>voimassaoloLoppuu</th>
+        </tr>
+        <tr ng-repeat="peruste in perusteet">
+          <td>
+            <a ng-click="valitse(peruste)" class="action-link">{{ peruste.nimi | kaanna }}</a>
+          </td>
+          <td>
+            <span ng-show="peruste.voimassaoloLoppuu">{{ peruste.voimassaoloLoppuu | aikaleima }}</span>
+            <span ng-hide="peruste.voimassaoloLoppuu" kaanna>ei-päättymis-päivämäärää</span>
+          </td>
+        </tr>
+      </table>
+    </div>
   </div>
+
   <div ng-if="valittuPeruste" style="margin-top: 8px">
-    <rajaus model="search.term" placeholder="etsi-sisallosta" callback="search.changed(value)"></rajaus>
+    <tabset ng-if="valittuPeruste.suoritustavat.length > 1" class="tekstikappale-tuonti-tabs" justified="true">
+      <tab ng-click="vaihdaSuoritustapa(st)" ng-repeat="st in valittuPeruste.suoritustavat | orderBy:'-suoritustapakoodi'" heading="{{ st.suoritustapakoodi | kaanna }}"></tab>
+    </tabset>
+    <rajaus ng-show="search.term.length !== 0 || filtered.length > 0" model="search.term" placeholder="etsi-sisallosta" callback="search.changed(value)"></rajaus>
     <h3>{{ valittuPeruste.nimi | kaanna }}</h3>
     <div class="alert alert-warning" ng-show="filtered.length === 0" kaanna="ei-tekstikappaleita"></div>
     <table ng-show="filtered.length > 0" class="table table-striped">
@@ -33,13 +42,13 @@
         <th width="50%" kaanna>otsikko</th>
         <th kaanna>muokattu-viimeksi</th>
       </tr>
-      <tr ng-repeat="s in filtered = (sisalto | filter:search.filterFn) | orderBy:orderFn | startFrom:paginate.perPage*(paginate.current-1) | limitTo:paginate.perPage">
+      <tr ng-repeat="s in filtered = (valittuPeruste.$sisalto | filter:search.filterFn) | orderBy:orderFn | startFrom:paginate.perPage*(paginate.current-1) | limitTo:paginate.perPage">
         <td><input ng-change="updateTotal()" ng-model="s.$valittu" type="checkbox" class="form-control"></td>
         <td ng-click="s.$valittu = !s.$valittu; updateTotal()">{{ s.perusteenOsa.nimi | kaanna }}</td>
         <td>{{ s.perusteenOsa.muokattu | aikaleima }}</td>
       </tr>
     </table>
-    <pagination ng-model="paginate.current" total-items="filtered.length" items-per-page="paginate.perPage"></pagination>
+    <pagination ng-show="filtered.length > 0" ng-model="paginate.current" total-items="filtered.length" items-per-page="paginate.perPage"></pagination>
   </div>
 </div>
 

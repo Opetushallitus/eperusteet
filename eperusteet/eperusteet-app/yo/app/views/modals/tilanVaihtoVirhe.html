@@ -29,15 +29,13 @@ European Union Public Licence for more details.
         <tr ng-repeat="info in infot">
             <td>{{info.viesti | kaanna}}</td>
             <td>{{info.suoritustapa | kaanna}}</td>
-            <td ng-if="info.nimet">
-                <ul class="list-unstyled">
+            <td>
+                <ul ng-if="info.nimet" class="list-unstyled">
                     <li ng-repeat="nimi in info.nimet">
                         {{nimi| kaanna}}
                     </li>
                 </ul>
-            </td>
-            <td ng-if="info.validointi">
-                <ul class="list-unstyled">
+                <ul ng-if="info.validointi" class="list-unstyled">
                     <li ng-repeat="ongelma in info.validointi.ongelmat">
                         <b>{{ongelma.ryhma.teksti | kaanna}}</b>: {{ongelma.ongelma}}
                     </li>
