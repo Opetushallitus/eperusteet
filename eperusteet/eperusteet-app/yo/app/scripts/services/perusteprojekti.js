@@ -148,7 +148,10 @@ angular.module('eperusteApp')
       setSuoritustapa: setSuoritustapa,
       cleanSuoritustapa: cleanSuoritustapa,
       getUrl: _.partial(urlFn, 'href'),
-      goToProjektiState: _.partial(urlFn, 'go')
+      goToProjektiState: _.partial(urlFn, 'go'),
+      isPdfEnabled: function (peruste) {
+        return YleinenData.koulutustyyppiInfo[peruste.koulutustyyppi] && YleinenData.koulutustyyppiInfo[peruste.koulutustyyppi].hasPdfCreation;
+      }
     };
   })
   .service('TutkinnonOsaEditMode', function () {

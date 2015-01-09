@@ -219,6 +219,7 @@ angular.module('eperusteApp')
     SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet, TermistoService, Kieli) {
 
     $scope.muokkausEnabled = false;
+    $scope.pdfEnabled = false;
 
     $scope.luoPdf = function () {
       PdfCreation.setPerusteId($scope.projekti._peruste);
@@ -230,6 +231,7 @@ angular.module('eperusteApp')
       $scope.peruste = perusteprojektiTiedot.getPeruste();
       Kieli.setAvailableSisaltokielet($scope.peruste.kielet);
       $scope.backLink = PerusteProjektiService.getUrl($scope.projekti, $scope.peruste);
+      $scope.pdfEnabled = PerusteProjektiService.isPdfEnabled($scope.peruste);
       TermistoService.setPeruste($scope.peruste);
     }
     init();

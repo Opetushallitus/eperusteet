@@ -18,7 +18,8 @@ European Union Public Licence for more details.
 
 <div class="project-header">
   <div class="row">
-    <button class="btn btn-primary btn-header-pdf" ng-hide="muokkausEnabled" ng-click="luoPdf()" oikeustarkastelu="{ target: 'peruste', permission: 'luku' }">
+    <button class="btn btn-primary btn-header-pdf" ng-hide="muokkausEnabled" ng-click="luoPdf()"
+            oikeustarkastelu="{ target: 'peruste', permission: 'luku' }" ng-if="pdfEnabled">
         <img src="images/pdf-file-24.png" alt="">{{'luo-pdf' | kaanna}}
     </button>
     <div class="project-otsikkotiedot">
