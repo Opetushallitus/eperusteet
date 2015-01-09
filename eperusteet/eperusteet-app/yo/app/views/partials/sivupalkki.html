@@ -57,6 +57,7 @@ European Union Public Licence for more details.
             <a ui-sref="root.tiedote({tiedoteId: tiedote.id})">
               {{tiedote.muokattu || tiedote.luotu | aikaleima:'time':'date'}}: {{tiedote.otsikko | kaanna}}
             </a>
+            <span class="badge pull-right" ng-if="tiedote.julkinen">{{'tiedote-julkinen' | kaanna}}</span>
           </li>
         </ul>
         <limit-toggler limit="naytto.limit" model="tiedotteet" limiter="naytto.shown"></limit-toggler>
