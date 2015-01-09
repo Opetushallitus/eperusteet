@@ -13,20 +13,33 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
+package fi.vm.sade.eperusteet.service.yl;
 
-'use strict';
+import lombok.Getter;
+import lombok.Setter;
 
-angular.module('eperusteApp')
-  .directive('eperusteNavi', function() {
-    return {
-      templateUrl: 'views/partials/navi.html',
-      restrict: 'E',
-      transclude: false
-    };
-  })
-  .controller('NaviCtrl', function($rootScope, $scope, $location, Navigaatiopolku) {
-    $scope.navigaatiopolku = [];
-    $scope.$on('update:navipolku', function() {
-      $scope.navigaatiopolku = Navigaatiopolku.hae();
-    });
-  });
+/**
+ *
+ * @author jhyoty
+ */
+@Getter
+@Setter
+public class LaajaalainenOsaaminenContext {
+
+    Long perusteId;
+    Long osaaminenId;
+
+    public LaajaalainenOsaaminenContext() {
+    }
+
+    public LaajaalainenOsaaminenContext(Long perusteId, Long osaaminenId) {
+        this.perusteId = perusteId;
+        this.osaaminenId = osaaminenId;
+    }
+
+    public static LaajaalainenOsaaminenContext of(Long perusteId, Long osaaminenId) {
+        return new LaajaalainenOsaaminenContext(perusteId, osaaminenId);
+    }
+
+
+}

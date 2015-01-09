@@ -6,7 +6,8 @@
     <input id="{{inputElId}}" ng-if="isText && type === 'diaari'" name="diaari"  ng-class="inputClasses()" ng-model="input.model"
            type="{{type}}" placeholder="{{placeholder | kaanna}}"  ng-required="!!postfix" diaarinumerouniikki>
     <p class="alert alert-error" ng-show="form.diaari.$error.diaarinumerouniikki" kaanna>diaarinumero-kaytossa</p>
-    <ml-input ng-if="isMultiText" ml-data="input.model" ng-model="input.model" type="{{type}}" required="!!postfix"></ml-input>
+    <input ng-if="isMultiText && type === 'text'" id="{{inputElId}}" class="form-control" ng-model="input.model" type="{{type}}" slocalized ng-required="!!postfix"></input>
+    <textarea id="{{inputElId}}" ng-if="isMultiText && type === 'textarea'" class="form-control msd-elastic" ng-model="input.model" slocalized ng-required="!!postfix"></textarea>
     <select id="{{inputElId}}" ng-if="options && !flatOptions" class="form-control" ng-model="input.model" ng-required="!!postfix"
       ng-options="obj.value as obj.label for obj in options">
       <option value="" ng-if="placeholder">{{placeholder | kaanna}}</option>

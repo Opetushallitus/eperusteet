@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
-import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.OppiaineenVuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
@@ -48,10 +47,11 @@ public class OppiaineLockServiceImpl extends AbstractLockService<OppiaineLockCon
     private OppiaineenVuosiluokkakokonaisuusRepository vuosiluokkakokonaisuusRepository;
 
     @Override
-    protected final ReferenceableEntity validateCtx(OppiaineLockContext ctx, boolean readOnly) {
+    protected final Long validateCtx(OppiaineLockContext ctx, boolean readOnly) {
         final PermissionManager.Permission permission = readOnly ? PermissionManager.Permission.LUKU : PermissionManager.Permission.MUOKKAUS;
         permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, permission);
 
+        //TODO: haun optimointi
         PerusopetuksenPerusteenSisalto s = repository.findByPerusteId(ctx.getPerusteId());
         Oppiaine aine = oppiaineRepository.findOne(ctx.getOppiaineId());
         if (s == null || !s.containsOppiaine(aine)) {
@@ -63,9 +63,9 @@ public class OppiaineLockServiceImpl extends AbstractLockService<OppiaineLockCon
             if (ovk == null) {
                 throw new BusinessRuleViolationException("Virheellinen lukitus");
             }
-            return ovk;
+            return ovk.getId();
         }
-        return aine;
+        return aine.getId();
     }
 
     @Override

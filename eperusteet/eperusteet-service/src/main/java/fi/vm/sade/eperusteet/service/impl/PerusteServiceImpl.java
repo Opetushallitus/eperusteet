@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutus;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -45,7 +46,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonOsa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
@@ -184,6 +185,20 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional(readOnly = true)
     public List<PerusteInfoDto> getAllInfo() {
         return mapper.mapAsList(perusteet.findAll(), PerusteInfoDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PerusteInfoDto> getAllPerusopetusInfo() {
+        List<Peruste> res = new ArrayList<>();
+        List<Peruste> perusopetus = perusteet.findAllByKoulutustyyppi(KoulutusTyyppi.PERUSOPETUS.toString());
+        for (Peruste p : perusopetus) {
+            if (p.getTila() == PerusteTila.VALMIS) {
+                res.add(p);
+            }
+        }
+
+        return mapper.mapAsList(res, PerusteInfoDto.class);
     }
 
     @Override
@@ -670,7 +685,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private void lisaaTutkinnonMuodostuminen(Peruste peruste) {
-        if ("koulutustyyppi_16".equals(peruste.getKoulutustyyppi())) {
+        if (KoulutusTyyppi.PERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
             return;
         }
 

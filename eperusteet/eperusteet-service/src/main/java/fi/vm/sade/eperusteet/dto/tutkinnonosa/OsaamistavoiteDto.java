@@ -13,9 +13,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.dto.tutkinnonOsa;
 
-import java.util.List;
+package fi.vm.sade.eperusteet.dto.tutkinnonosa;
+
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,6 +27,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class OsaAlueKokonaanDto extends OsaAlueDto {
-   private List<OsaamistavoiteLaajaDto> osaamistavoitteet;
+public class OsaamistavoiteDto {
+    private Long id;
+    private LokalisoituTekstiDto nimi;
+    private boolean pakollinen;
+    private BigDecimal laajuus;
 }

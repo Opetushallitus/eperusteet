@@ -18,7 +18,7 @@
 /*global _, moment*/
 
 angular.module('eperusteApp')
-  .service('YleinenData', function YleinenData($rootScope, $translate, Arviointiasteikot, Notifikaatiot) {
+  .service('YleinenData', function YleinenData($rootScope, $translate, Arviointiasteikot, Notifikaatiot, Kaanna) {
     this.dateOptions = {
       'year-format': 'yy',
       //'month-format': 'M',
@@ -63,30 +63,50 @@ angular.module('eperusteApp')
       'naytto'
     ];
 
-    this.koulutustyypit = [
-      'koulutustyyppi_1',
-      'koulutustyyppi_11',
-      'koulutustyyppi_12',
-      'koulutustyyppi_15',
-      'koulutustyyppi_16'
-    ];
-
-    this.koulutustyypitMap = {
-      'koulutustyyppi_1': 'perustutkinto',
-      'koulutustyyppi_11': 'ammattitutkinto',
-      'koulutustyyppi_12': 'erikoisammattitutkinto',
-      'koulutustyyppi_15': 'esiopetus',
-      'koulutustyyppi_16': 'perusopetus',
+    this.koulutustyyppiInfo = {
+      'koulutustyyppi_1': {
+        nimi: 'perustutkinto',
+        oletusSuoritustapa: 'ops',
+        hasTutkintonimikkeet: true,
+        hakuState: 'root.selaus.ammatillinenperuskoulutus',
+        sisaltoTunniste: 'sisalto',
+        hasPdfCreation: true
+      },
+      'koulutustyyppi_11': {
+        nimi: 'ammattitutkinto',
+        oletusSuoritustapa: 'naytto',
+        hasTutkintonimikkeet: true,
+        hakuState: 'root.selaus.ammatillinenaikuiskoulutus',
+        sisaltoTunniste: 'sisalto',
+        hasPdfCreation: true
+      },
+      'koulutustyyppi_12': {
+        nimi: 'erikoisammattitutkinto',
+        oletusSuoritustapa: 'naytto',
+        hasTutkintonimikkeet: true,
+        hakuState: 'root.selaus.ammatillinenaikuiskoulutus',
+        sisaltoTunniste: 'sisalto',
+        hasPdfCreation: true
+      },
+      'koulutustyyppi_15': {
+        nimi: 'esiopetus',
+        oletusSuoritustapa: 'esiopetus',
+        hasTutkintonimikkeet: false,
+        hakuState: '',
+        sisaltoTunniste: 'eosisalto',
+        hasPdfCreation: false
+      },
+      'koulutustyyppi_16': {
+        nimi: 'perusopetus',
+        oletusSuoritustapa: 'perusopetus',
+        hasTutkintonimikkeet: false,
+        hakuState: 'root.selaus.perusopetuslista',
+        sisaltoTunniste: 'posisalto',
+        hasPdfCreation: false
+      }
     };
 
-    this.koulutustyypinSuoritustapaOletus = {
-      'koulutustyyppi_1': 'ops',
-      'koulutustyyppi_11': 'naytto',
-      'koulutustyyppi_12': 'naytto',
-      'koulutustyyppi_15': 'esiopetus',
-      'koulutustyyppi_16': 'perusopetus',
-
-    };
+    this.koulutustyypit = _.keys(this.koulutustyyppiInfo);
 
     this.kielet = {
       'suomi': 'fi',
@@ -111,11 +131,20 @@ angular.module('eperusteApp')
     };
 
     this.validSuoritustapa = function (peruste, suoritustapa) {
+      // Deprecated, TODO: poista, käytä koulutustyyppiInfoa
       return peruste.koulutustyyppi === 'koulutustyyppi_12' ? 'naytto' : suoritustapa;
     };
 
     this.valitseSuoritustapaKoulutustyypille = function(koulutustyyppi) {
-      return this.koulutustyypinSuoritustapaOletus[koulutustyyppi] || 'ops';
+      if (this.koulutustyyppiInfo[koulutustyyppi]) {
+        return this.koulutustyyppiInfo[koulutustyyppi].oletusSuoritustapa;
+      }
+      return 'ops';
+    };
+
+    this.showKoulutukset = function (peruste) {
+      // Näytetäänkö perusteelle koulutukset (koulutuskoodit) perusteen tiedoissa
+      return peruste.koulutustyyppi !== 'koulutustyyppi_16';
     };
 
     this.haeArviointiasteikot = function() {
@@ -150,11 +179,12 @@ angular.module('eperusteApp')
         $translate.use(kielikoodi);
         this.kieli = kielikoodi;
         $rootScope.$broadcast('notifyCKEditor');
+        $rootScope.$broadcast('changed:uikieli');
       }
     };
 
     this.valitseKieli = function(teksti) {
-      return teksti && teksti.hasOwnProperty(this.kieli) ? teksti[this.kieli] : '';
+      return Kaanna.kaannaSisalto(teksti);
     };
 
   });

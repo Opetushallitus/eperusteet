@@ -40,6 +40,7 @@ import org.hibernate.envers.RevisionEntity;
 @Getter
 @Setter
 public class RevisionInfo extends DefaultRevisionEntity {
+
     private static final int MAX_LEN = 1000;
 
     @Column
@@ -49,9 +50,12 @@ public class RevisionInfo extends DefaultRevisionEntity {
     private String kommentti;
 
     public void addKommentti(String kommentti) {
+        if (kommentti == null) {
+            return;
+        }
         if (this.kommentti == null) {
             this.kommentti = kommentti;
-        } else if (this.kommentti.length() < (MAX_LEN-2)) {
+        } else if (this.kommentti.length() < (MAX_LEN - 2)) {
             this.kommentti = this.kommentti + ("; " + kommentti).substring(0, Math.min(MAX_LEN - this.kommentti.length() - 2, kommentti.length()));
         }
     }

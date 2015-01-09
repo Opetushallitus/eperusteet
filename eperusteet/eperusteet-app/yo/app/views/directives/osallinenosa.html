@@ -2,49 +2,51 @@
 <!-- osallinenosa.html -->
 
   <revert-note object="model" revert-cb="revertCb(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
-  <div class="action-buttons">
-    <div class="floater" ng-attr-title="{{lockNotification}}">
-      <button class="btn btn-default" icon-role="{{actionButton.role}}"
-              ng-disabled="isLocked" ng-click="actionButtonFn(actionButton)"
-              ng-repeat="actionButton in config.actionButtons"
-              ng-hide="shouldHide(actionButton)"
-              oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"
-              kaanna="actionButton.label"></button>
-      <button ng-disabled="isLocked" ng-if="!isPublished()" icon-role="edit"
-              ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="btn btn-default" kaanna="'muokkaa'"
-              oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-    </div>
-    <button ng-show="isPublished() && !editEnabled" ng-click="kopioiMuokattavaksi()"
-            class="floater btn btn-danger" icon-role="ep-text-clone" kaanna="'kopioi-muokattavaksi'"
-            oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-    <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
 
-    <div ng-if="editEnabled">
-      <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="removeWhole()">{{config.removeWholeLabel || 'poista' | kaanna}}</button>
-      <div class="floater">
-        <div class="dropdown">
-          <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!canAdd()"
-                  ng-show="config.fields.length > 0"
-                  icon-role="add">{{config.addPartLabel || 'muokkaus-lisaa-osio' | kaanna}}</button>
-          <ul class="pull-right dropdown-menu">
-            <li ng-repeat="field in config.fields | orderBy:'order'" ng-class="{divider: field.divider}">
-              <a class="action-link" ng-if="!field.divider" ng-class="{'disabled-link': field.visible}"
-                 ng-click="field.visible ? void(0) : addField(field)">{{field.menuLabel || field.localeKey | kaanna}}</a>
-            </li>
-          </ul>
+  <div class="part-header-wrapper">
+    <div class="action-buttons">
+      <div class="floater" ng-attr-title="{{lockNotification}}">
+        <button class="btn btn-default" icon-role="{{actionButton.role}}"
+                ng-disabled="isLocked" ng-click="actionButtonFn(actionButton)"
+                ng-repeat="actionButton in config.actionButtons"
+                ng-hide="shouldHide(actionButton)"
+                oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"
+                kaanna="actionButton.label"></button>
+        <button ng-disabled="isLocked" ng-if="!isPublished()" icon-role="edit"
+                ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="btn btn-default" kaanna="'muokkaa'"
+                oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+      </div>
+      <button ng-show="isPublished() && !editEnabled" ng-click="kopioiMuokattavaksi()"
+              class="floater btn btn-danger" icon-role="ep-text-clone" kaanna="'kopioi-muokattavaksi'"
+              oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+      <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
+
+      <div ng-if="editEnabled">
+        <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="removeWhole()">{{config.removeWholeLabel || 'poista' | kaanna}}</button>
+        <div class="floater">
+          <div class="dropdown">
+            <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!canAdd()"
+                    ng-show="config.fields.length > 0"
+                    icon-role="add">{{config.addPartLabel || 'muokkaus-lisaa-osio' | kaanna}}</button>
+            <ul class="pull-right dropdown-menu">
+              <li ng-repeat="field in config.fields | orderBy:'order'" ng-class="{divider: field.divider}">
+                <a class="action-link" ng-if="!field.divider" ng-class="{'disabled-link': field.visible}"
+                   ng-click="field.visible ? void(0) : addField(field)">{{field.menuLabel || field.localeKey | kaanna}}</a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
+
+    <projektin-murupolku></projektin-murupolku>
+    <h1 ng-show="!editEnabled" ng-bind-html="config.title() | kaanna"></h1>
+    <h1 ng-show="editEnabled">
+      <span>{{ isNew ? config.newTitle : config.editTitle | kaanna}}</span>
+    </h1>
+
+    <!-- TODO: pikamenu -->
   </div>
-
-  <a ng-if="config.backLabel" ng-show="!editEnabled" icon-role="back" ng-href="{{generateBackHref()}}">{{config.backLabel | kaanna}}</a>
-  <h1 ng-show="!editEnabled" ng-bind-html="config.title() | kaanna"></h1>
-  <h1 ng-show="editEnabled">
-    <span>{{ isNew ? config.newTitle : config.editTitle | kaanna}}</span>
-  </h1>
-
-  <!-- TODO: pikamenu -->
-  <!-- <pre>{{editableModel|json}}</pre> -->
 
   <versiotiedot ng-hide="editEnabled"></versiotiedot>
   <hr ng-show="editEnabled">

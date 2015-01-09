@@ -22,6 +22,7 @@ angular.module('eperusteApp')
     Editointikontrollit, Notifikaatiot, $state, SuoritustapaSisalto, TutkinnonOsaEditMode,
     PerusopetusService, $stateParams) {
     var peruste = null;
+    var deleteDone = false;
 
     this.setPeruste = function (value) {
       peruste = value;
@@ -32,9 +33,6 @@ angular.module('eperusteApp')
         perusteenOsaViiteId: id || response.id,
         versio: ''
       };
-      /*if (YleinenData.isPerusopetus(peruste)) {
-        _.extend(params, {suoritustapa: 'ops'});
-      }*/
       $state.go('root.perusteprojekti.suoritustapa.tekstikappale', params, {reload: true});
     }
 
@@ -47,19 +45,27 @@ angular.module('eperusteApp')
       }
     };
 
-    this.delete = function (viiteId) {
+    this.wasDeleted = function () {
+      var ret = deleteDone;
+      deleteDone = false;
+      return ret;
+    };
+
+    this.delete = function (viiteId, isNew) {
+      function commonCb(tyyppi) {
+        deleteDone = true;
+        if (isNew !== true) {
+          Editointikontrollit.cancelEditing();
+          Notifikaatiot.onnistui('poisto-onnistui');
+        }
+        $state.go('root.perusteprojekti.suoritustapa.' + tyyppi, {}, {reload: true});
+      }
+
+      var successCb = _.partial(commonCb, YleinenData.koulutustyyppiInfo[peruste.koulutustyyppi].sisaltoTunniste);
       if (YleinenData.isPerusopetus(peruste)) {
-        PerusopetusService.deleteOsa({$url: 'dummy', id: viiteId}, function () {
-          Editointikontrollit.cancelEditing();
-          Notifikaatiot.onnistui('poisto-onnistui');
-          $state.go('root.perusteprojekti.suoritustapa.posisalto', {}, {reload: true});
-        });
+        PerusopetusService.deleteOsa({$url: 'dummy', id: viiteId}, successCb, Notifikaatiot.serverCb);
       } else {
-        PerusteenOsaViitteet.delete({viiteId: viiteId}, {}, function () {
-          Editointikontrollit.cancelEditing();
-          Notifikaatiot.onnistui('poisto-onnistui');
-          $state.go('root.perusteprojekti.suoritustapa.sisalto', {}, {reload: true});
-        }, Notifikaatiot.serverCb);
+        PerusteenOsaViitteet.delete({viiteId: viiteId}, {}, successCb, Notifikaatiot.serverCb);
       }
     };
 
@@ -123,7 +129,8 @@ angular.module('eperusteApp')
     Varmistusdialogi, Kaanna, PerusteprojektiTiedotService, $stateParams,
     Utils, PerusteProjektiSivunavi, YleinenData, $rootScope, Kommentit,
     KommentitByPerusteenOsa, PerusteenOsanTyoryhmat, Tyoryhmat, PerusteprojektiTyoryhmat,
-    TEXT_HIERARCHY_MAX_DEPTH, TekstikappaleOperations, virheService, Navigaatiopolku) {
+    TEXT_HIERARCHY_MAX_DEPTH, TekstikappaleOperations, virheService, ProjektinMurupolkuService,
+    $state) {
 
     $scope.tekstikappale = {};
     $scope.versiot = {};
@@ -134,7 +141,6 @@ angular.module('eperusteApp')
     function successCb (re) {
       $scope.tekstikappale = re;
       setupTekstikappale($scope.tekstikappale);
-      Navigaatiopolku.asetaElementit({perusteenOsaId: re.nimi});
       tekstikappaleDefer.resolve($scope.tekstikappale);
       if (TutkinnonOsaEditMode.getMode()) {
         $scope.isNew = true;
@@ -171,7 +177,7 @@ angular.module('eperusteApp')
     function paivitaRyhmat(uudet, cb) {
       PerusteenOsanTyoryhmat.save({
         projektiId: $stateParams.perusteProjektiId,
-        osaId: $stateParams.perusteenOsaId
+        osaId: $scope.tekstikappale.id
       }, uudet, cb, Notifikaatiot.serverCb);
     }
 
@@ -206,18 +212,26 @@ angular.module('eperusteApp')
     $scope.viitteet = {};
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
 
-    if ($stateParams.suoritustapa || YleinenData.isPerusopetus($scope.$parent.peruste)) {
-      PerusteprojektiTiedotService.then(function (instance) {
-        instance.haeSisalto($scope.$parent.peruste.id, $stateParams.suoritustapa).then(function (res) {
+    function haeSisalto(cb) {
+      if ($scope.tiedotService) {
+        $scope.tiedotService.haeSisalto($scope.$parent.peruste.id, $stateParams.suoritustapa).then(function (res) {
           $scope.sisalto = res[0];
           $scope.setNavigation();
+          (cb || angular.noop)();
         });
+      }
+    }
+
+    if ($stateParams.suoritustapa || YleinenData.isPerusopetus($scope.$parent.peruste)) {
+      PerusteprojektiTiedotService.then(function (instance) {
+        $scope.tiedotService = instance;
+        haeSisalto();
       });
     }
 
     $scope.setNavigation = function () {
       $scope.tree.init();
-      PerusteProjektiSivunavi.setCrumb($scope.tree.get());
+      ProjektinMurupolkuService.setCustom($scope.tree.get());
       VersionHelper.setUrl($scope.versiot);
     };
 
@@ -238,6 +252,7 @@ angular.module('eperusteApp')
           }
           $scope.viitteet[lapsi.perusteenOsa.id].viite = lapsi.id;
           $scope.viitteet[lapsi.perusteenOsa.id].level = level;
+          $scope.viitteet[lapsi.perusteenOsa.id].nimi = lapsi.perusteenOsa.nimi;
           if (sisalto.perusteenOsa) {
             $scope.viitteet[lapsi.perusteenOsa.id].parent = sisalto.perusteenOsa.id;
           }
@@ -256,15 +271,22 @@ angular.module('eperusteApp')
         updateViitteet();
       },
       get: function () {
-        var ids = [];
+        var items = [];
         var id = $scope.tekstikappale.id;
         if ($scope.viitteet[id]) {
           do {
-            ids.push($scope.viitteet[id].viite);
+            items.push({
+              label : $scope.viitteet[id].nimi,
+              url: $scope.tekstikappale.id === id ? null : $state.href('root.perusteprojekti.suoritustapa.tekstikappale', {
+                perusteenOsaViiteId: $scope.viitteet[id].viite,
+                versio: ''
+              })
+            });
             id = $scope.viitteet[id] ? $scope.viitteet[id].parent : null;
           } while (id);
         }
-        return ids;
+        items.reverse();
+        return items.length > 1 ? items : [];
       }
     };
 
@@ -307,11 +329,11 @@ angular.module('eperusteApp')
       PerusteProjektiSivunavi.refresh();
       Lukitus.vapautaPerusteenosa(res.id);
       Notifikaatiot.onnistui('muokkaus-tekstikappale-tallennettu');
-      $scope.setNavigation();
+      haeSisalto();
     }
 
-    function doDelete() {
-      TekstikappaleOperations.delete($scope.viiteId());
+    function doDelete(isNew) {
+      TekstikappaleOperations.delete($scope.viiteId(), isNew);
     }
 
     function setupTekstikappale(kappale) {
@@ -344,17 +366,19 @@ angular.module('eperusteApp')
           $scope.isNew = false;
         },
         cancel: function () {
-          Lukitus.vapautaPerusteenosa($scope.tekstikappale.id, function () {
-            if ($scope.isNew) {
-              doDelete();
-            }
-            else {
-              fetch(function () {
-                refreshPromise();
-              });
-            }
-            $scope.isNew = false;
-          });
+          if (!TekstikappaleOperations.wasDeleted()) {
+            Lukitus.vapautaPerusteenosa($scope.tekstikappale.id, function () {
+              if ($scope.isNew) {
+                doDelete(true);
+              }
+              else {
+                fetch(function () {
+                  refreshPromise();
+                });
+              }
+              $scope.isNew = false;
+            });
+          }
         },
         notify: function (mode) {
           $scope.editEnabled = mode;
@@ -387,10 +411,6 @@ angular.module('eperusteApp')
 
     $scope.addLapsi = function () {
       TekstikappaleOperations.addChild($scope.viiteId(), $stateParams.suoritustapa);
-    };
-
-    $scope.setCrumbs = function (crumbs) {
-      $scope.crumbs = crumbs;
     };
 
     $scope.$watch('editEnabled', function (editEnabled) {

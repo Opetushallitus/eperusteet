@@ -24,10 +24,34 @@ angular.module('eperusteApp')
     });
   })
 
-  .controller('TiedotteetController', function ($scope, Algoritmit, $modal, Varmistusdialogi, TiedotteetCRUD,
+  .controller('SivupalkkiTiedotteetController', function ($scope, Algoritmit, $modal, Varmistusdialogi, TiedotteetCRUD,
     Notifikaatiot) {
     $scope.tiedotteet = [];
     $scope.naytto = {limit: 5, shown: 5};
+
+    function fetch() {
+      // Hae tiedotteet viimeisen 6 kuukauden ajalta
+      var MONTH_OFFSET = 6;
+      var tempDate = new Date();
+      tempDate.setMonth(tempDate.getMonth() - MONTH_OFFSET);
+      var alkaen = tempDate.getTime();
+
+      TiedotteetCRUD.query({alkaen: alkaen}, function (res) {
+        $scope.tiedotteet = res;
+      }, Notifikaatiot.serverCb);
+    }
+    fetch();
+
+    $scope.orderFn = function (item) {
+      return -1 * item.muokattu;
+    };
+  })
+
+  .controller('TiedotteidenHallintaController', function ($scope, Algoritmit, $modal, Varmistusdialogi, TiedotteetCRUD,
+    Notifikaatiot, Utils) {
+    $scope.tiedotteet = [];
+    $scope.jarjestysTapa = 'muokattu';
+    $scope.jarjestysOrder = false;
 
     $scope.paginate = {
       perPage: 10,
@@ -51,16 +75,37 @@ angular.module('eperusteApp')
       }
     };
 
+    $scope.setOrderBy = function (key) {
+      if ($scope.jarjestysTapa === key) {
+        $scope.jarjestysOrder = !$scope.jarjestysOrder;
+      } else {
+        $scope.jarjestysOrder = false;
+        $scope.jarjestysTapa = key;
+      }
+    };
+
     $scope.orderFn = function (item) {
-      return -1 * item.muokattu;
+      switch($scope.jarjestysTapa) {
+        case 'nimi': return Utils.nameSort(item, 'otsikko');
+        case 'muokattu': return -1 * item.muokattu;
+        case 'julkinen': return '' + item.julkinen;
+        default:
+          break;
+      }
     };
 
     function doDelete(item) {
-      TiedotteetCRUD.delete({}, item, fetch, Notifikaatiot.serverCb);
+      TiedotteetCRUD.delete({}, item, function () {
+        Notifikaatiot.onnistui('poisto-onnistui');
+        fetch();
+      }, Notifikaatiot.serverCb);
     }
 
     function doSave(item) {
-      TiedotteetCRUD.save({}, item, fetch, Notifikaatiot.serverCb);
+      TiedotteetCRUD.save({}, item, function () {
+        Notifikaatiot.onnistui('tallennus-onnistui');
+        fetch();
+      }, Notifikaatiot.serverCb);
     }
 
     $scope.delete = function (model) {

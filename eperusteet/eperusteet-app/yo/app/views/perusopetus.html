@@ -1,52 +1,59 @@
 <div>
-<!-- perusopetus.html -->
-
-
+  <!-- perusopetus.html -->
   <h1 kaanna>Perusopetuksen opetussuunnitelman perusteet</h1>
 
-<div id="sivunavi-sisalto-wrapper" ng-class="{'sivunavi-hidden': !isNaviVisible()}">
-  <div class="sivunavi-navigaatio">
-    <sivunavigaatio2 sections="navi.sections" header="navi.header"></sivunavigaatio2>
-  </div>
-  <div class="sivunavi-clear"></div>
-  <div class="sivunavi-sisalto perusopetus">
-    <div class="row">
-      <div class="col-md-12">
+  <div id="sivunavi-sisalto-wrapper" ng-class="{'sivunavi-hidden': !isNaviVisible()}">
+    <div class="sivunavi-navigaatio">
+      <sivunavigaatio2 sections="navi.sections" header="navi.header"></sivunavigaatio2>
+    </div>
 
-        <div ng-if="activeSection === 'suunnitelma'">
-          <h2 kaanna>Opetussuunnitelma</h2>
-        </div>
-
-        <div ng-if="activeSection === 'sisalto'">
-          <div class="action-buttons">
-            <ul class="nav nav-pills moodit">
-              <li ng-class="{active: filtterit.moodi === 'allekkain'}"><a class="action-link" icon-role="align-justify" ng-click="filtterit.moodi = 'allekkain';"></a></li>
-              <li ng-class="{active: filtterit.moodi === 'sivutus'}"><a class="action-link" icon-role="pause" ng-click="filtterit.moodi = 'sivutus';"></a></li>
-            </ul>
-          </div>
-          <div ng-if="filtterit.moodi === 'sivutus'">
-            <ul class="nav nav-pills">
-              <li ng-repeat="vuosiluokka in filtterit.Vuosiluokat" ng-class="{active: filtterit.sivu === vuosiluokka}">
-                  <a class="action-link" ng-click="filtterit.sivu = vuosiluokka;">{{vuosiluokka}}</a>
-              </li>
-            </ul>
+    <div class="sivunavi-clear"></div>
+    <div class="sivunavi-sisalto perusopetus">
+      <div class="row">
+        <div class="col-md-12">
+          <div ng-if="activeSection === 'suunnitelma' && valittuTekstisisalto">
+            <h1>{{ valittuTekstisisalto.nimi | kaanna }}</h1>
+            <p ng-bind-html="valittuTekstisisalto.teksti | kaanna"></p>
           </div>
 
-          <div ng-repeat="vuosiluokka in filtterit.Vuosiluokat">
-            <div class="panel panel-default" ng-show="filtterit.moodi === 'allekkain' || filtterit.sivu === vuosiluokka">
-            <div class="panel-heading">
-              <h3 class="panel-title">{{'Vuosiluokka' | kaanna}} {{vuosiluokka}}</h3>
+          <div ng-if="activeSection === 'sisalto' && valittuOppiaine && valittuOppiaine.oppiaine && valittuOppiaine.vuosiluokkakokonaisuudet">
+            <h1 class="oppiaine-nimi" kaanna="valittuOppiaine.oppiaine.nimi"></h1>
+            <div class="vuosiluokkavalitsin">
+              <ul class="nav nav-pills">
+                <li ng-repeat="(id, kokonaisuus) in valittuOppiaine.vuosiluokkakokonaisuudet" ng-class="{ active: filtterit.valittuKokonaisuus === kokonaisuus.vuosiluokkaKokonaisuus }">
+                  <a class="fixme action-link" ng-click="valitseVuosiluokka(kokonaisuus.vuosiluokkaKokonaisuus)">
+                    {{ vuosiluokkakokonaisuudetMap[kokonaisuus.vuosiluokkaKokonaisuus].nimi | kaanna }}
+                  </a>
+                </li>
+              </ul>
             </div>
-            <div class="panel-body">
 
-              <div ng-repeat="oppiaine in filtterit.Oppiaineet">
-                <h3 class="oppiaine">{{oppiaine | kaanna}}</h3>
-                <div ng-repeat="sisaltoOtsikko in filtterit['Oppiaineen sisällöt']">
-                  <h4>{{sisaltoOtsikko | kaanna}}</h4>
-                  <p>Sisältö otsikolle {{sisaltoOtsikko | kaanna}}. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                </div>
+            <div class="clearfix"></div>
+
+            <div>
+              <div>
+                <h3>{{ valittuOppiaine.oppiaine.tehtava.otsikko | kaanna }}</h3>
+                <p ng-bind-html="valittuOppiaine.oppiaine.tehtava.teksti || '-' | kaanna"></p>
               </div>
-            </div>
+
+              <div ng-hide="filterSisalto.tehtava">
+                <h3>{{ valittuOppiaine.vlks.tehtava.otsikko | kaanna }}</h3>
+                <p ng-bind-html="valittuOppiaine.vlks.tehtava.teksti || '-' | kaanna"></p>
+              </div>
+
+              <div ng-hide="filterSisalto.ohjaus">
+                <h3>{{ valittuOppiaine.vlks.ohjaus.otsikko | kaanna }}</h3>
+                <p ng-bind-html="valittuOppiaine.vlks.ohjaus.teksti || '-' | kaanna"></p>
+              </div>
+
+              <div ng-hide="filterSisalto.tyotavat">
+                <h3>{{ valittuOppiaine.vlks.tyotavat.otsikko | kaanna }}</h3>
+                <p ng-bind-html="valittuOppiaine.vlks.tyotavat.teksti || '-' | kaanna"></p>
+              </div>
+              <div ng-hide="filterSisalto.tavoitteet" ng-if="valittuOppiaine.vlks.vuosiluokkaKokonaisuus">
+                <h3 kaanna="'perusopetus-tavoitteet'"></h3>
+                <div tavoitteet="valittuOppiaine.vlks" osaamiset="osaamiset" vuosiluokka="valittuOppiaine.sisallot"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -58,6 +65,4 @@
       </div>
     </div>
   </div>
-</div>
-
 </div>

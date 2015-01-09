@@ -18,7 +18,7 @@
             <th kaanna>haku-voimaantulopvm</th>
           </tr>
           <tr ng-repeat="peruste in perusteet.data">
-            <td><a href=""ng-click="jatka(peruste)">{{ peruste.nimi | kaanna }}</a></td>
+            <td><a class="action-link" ng-click="jatka(peruste)">{{ peruste.nimi | kaanna }}</a></td>
             <td>{{peruste.voimassaoloAlkaa|date:'dd.MM.yyyy'}}</td>
           </tr>
         </table>

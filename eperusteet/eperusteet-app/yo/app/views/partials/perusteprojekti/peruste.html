@@ -31,26 +31,51 @@ European Union Public Licence for more details.
         <h3 class="panel-title" kaanna>nimi</h3>
       </div>
       <div class="panel-body">
-        <ml-input ng-show="editEnabled" ml-data="editablePeruste.nimi"></ml-input>
+        <input ng-show="editEnabled" ng-model="editablePeruste.nimi" class="form-control" slocalized></input>
         <p ng-hide="editEnabled">{{ peruste.nimi | kaanna }}</p>
       </div>
     </div>
 
     <div class="panel panel-default panel-clean">
       <div class="panel-heading">
-        <h3 class="panel-title" kaanna>määräyksen-diaarinumero</h3>
+        <h3 class="panel-title" kaanna="'maarayksen-diaarinumero'"></h3>
       </div>
       <div class="panel-body">
         <input class="form-control" ng-show="editEnabled" ng-model="editablePeruste.diaarinumero"></input>
         <p ng-hide="editEnabled">{{ editablePeruste.diaarinumero | kaanna }}</p>
       </div>
     </div>
-    <div class="panel panel-default panel-clean" ng-hide="editablePeruste.koulutustyyppi === 'koulutustyyppi_16'">
+
+    <div class="panel panel-default panel-clean">
       <div class="panel-heading">
-        <h3 class="panel-title" kaanna>peruste-koulutukset</h3>
+        <h3 class="panel-title" kaanna="'perusteen-kielet'"></h3>
       </div>
       <div class="panel-body">
-        <p ng-show="editablePeruste.koulutukset.length === 0 && !editEnabled" translate>ei-koulutuksia</p>
+        <span class="inline-alert" ng-show="editEnabled && editablePeruste.kielet.length === 0" kaanna="'lisaa-ainakin-yksi-kieli'"></span>
+        <span class="perusteen-kieli" ng-repeat="kieli in editablePeruste.kielet | orderBy:kieliOrder">
+          <span kaanna="kieli"></span>
+          <a ng-click="poistaKieli(kieli)" class="action-link perusteen-kieli-poisto" ng-if="editEnabled" icon-role="remove"></a>
+        </span>
+        <span ng-if="editEnabled && !kaikkiKieletValittu()">
+          <span class="dropdown">
+              <a class="dropdown-toggle action-link" ng-if="editEnabled" data-toggle="dropdown"><span kaanna="'lisaa-kieli'"></span><span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                  <li ng-if="kieli.available" ng-repeat="kieli in valittavatKielet" role="presentation">
+                      <a class="action-link" ng-click="lisaaKieli(kieli.koodi)" role="menuitem" tabindex="-1" ng-bind="kieli.koodi | kaanna"></a>
+                  </li>
+              </ul>
+          </span>
+        </span>
+
+      </div>
+    </div>
+
+    <div class="panel panel-default panel-clean" ng-show="showKoulutukset()">
+      <div class="panel-heading">
+        <h3 class="panel-title" kaanna="'peruste-koulutukset'"></h3>
+      </div>
+      <div class="panel-body">
+        <p ng-show="editablePeruste.koulutukset.length === 0 && !editEnabled" kaanna="'ei-koulutuksia'"></p>
         <div class="koulutukset" ng-show="editablePeruste.koulutukset.length > 0">
           <div class="koulutus" ng-repeat="koulutus in editablePeruste.koulutukset">
             <div class="poisto" ng-if="editEnabled">
@@ -84,7 +109,7 @@ European Union Public Licence for more details.
       </div>
     </div>
 
-    <div class="panel panel-default panel-clean">
+    <div ng-if="$perusteellaTutkintonimikkeet" class="panel panel-default panel-clean">
       <div class="panel-heading">
         <h3 class="panel-title" kaanna>tutkintonimikkeet</h3>
       </div>
@@ -118,10 +143,10 @@ European Union Public Licence for more details.
 
     <div class="panel panel-default panel-clean">
       <div class="panel-heading">
-        <h3 class="panel-title" kaanna>tiivistelmä</h3>
+        <h3 class="panel-title" kaanna>tiivistelma</h3>
       </div>
       <div class="panel-body">
-        <ml-input ng-if="editEnabled" ml-data="editablePeruste.kuvaus" type="textarea"></ml-input>
+        <textarea ng-if="editEnabled" class="form-control msd-elastic" ng-model="editablePeruste.kuvaus" slocalized></textarea>
 
         <p ng-show="hasContent(peruste.kuvaus) && !editEnabled" kaanna="peruste.kuvaus"></p>
         <p ng-show="!hasContent(peruste.kuvaus) && !editEnabled" kaanna="ei-tiivistelmaa"></p>
@@ -139,7 +164,6 @@ European Union Public Licence for more details.
           <formfield model="editablePeruste" model-var="voimassaoloLoppuu" label="voimassaolo-paattymispvm" type="date"
           placeholder="anna-voimaantulo-loppu-pvm"></formfield>
         </div>
-
         <table class="aligned" ng-show="!editEnabled">
           <tr><th kaanna>voimaantulo-pvm</th><td pvm="peruste.voimassaoloAlkaa"></td></tr>
           <tr><th kaanna>voimassaolo-paattymispvm</th><td pvm="peruste.voimassaoloLoppuu"></td></tr>

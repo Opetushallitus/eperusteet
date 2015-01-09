@@ -19,10 +19,12 @@ import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.OppiaineenVuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
+import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.VuosiluokkaKokonaisuusRepository;
+import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
@@ -30,7 +32,7 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusContext;
-import fi.vm.sade.eperusteet.service.yl.VuosiluokkakokonaisuusService;
+import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusService;
 import java.util.HashSet;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +46,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(readOnly = false)
-public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkakokonaisuusService {
+public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuusService {
 
     @Autowired
     private VuosiluokkaKokonaisuusRepository kokonaisuusRepository;
@@ -77,7 +79,7 @@ public class VuosiluokkaKokonaisuusServiceImpl implements Vuosiluokkakokonaisuus
         lockService.lock(VuosiluokkaKokonaisuusContext.of(perusteId, kokonaisuusId));
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(kokonaisuusId);
-        if ( vk.getOppiaineet().isEmpty() ) {
+        if (vk.getOppiaineet().isEmpty()) {
             sisaltoRepository.lock(sisalto);
             sisalto.removeVuosiluokkakokonaisuus(vk);
             kokonaisuusRepository.delete(vk);
@@ -93,6 +95,27 @@ public class VuosiluokkaKokonaisuusServiceImpl implements Vuosiluokkakokonaisuus
         VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(kokonaisuusId);
         if (sisalto != null && vk != null && sisalto.containsVuosiluokkakokonaisuus(vk)) {
             return mapper.map(vk, VuosiluokkaKokonaisuusDto.class);
+        }
+        throw new BusinessRuleViolationException("Haettu vuosiluokkakokonaisuus ei kuulu tähän perusteeseen");
+    }
+
+    @Override
+    public VuosiluokkaKokonaisuusDto getVuosiluokkaKokonaisuus(Long perusteId, Long kokonaisuusId, int revisio) {
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(kokonaisuusId);
+        if (sisalto != null && vk != null && sisalto.containsVuosiluokkakokonaisuus(vk)) {
+            return mapper.map(kokonaisuusRepository.findRevision(kokonaisuusId, revisio), VuosiluokkaKokonaisuusDto.class);
+        }
+        throw new BusinessRuleViolationException("Haettu vuosiluokkakokonaisuus ei kuulu tähän perusteeseen");
+
+    }
+
+    @Override
+    public List<Revision> getVuosiluokkaKokonaisuusRevisions(long perusteId, long kokonaisuusId) {
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(kokonaisuusId);
+        if (sisalto != null && vk != null && sisalto.containsVuosiluokkakokonaisuus(vk)) {
+            return kokonaisuusRepository.getRevisions(kokonaisuusId);
         }
         throw new BusinessRuleViolationException("Haettu vuosiluokkakokonaisuus ei kuulu tähän perusteeseen");
     }
@@ -116,10 +139,12 @@ public class VuosiluokkaKokonaisuusServiceImpl implements Vuosiluokkakokonaisuus
     }
 
     @Override
-    public VuosiluokkaKokonaisuusDto updateVuosiluokkaKokonaisuus(Long perusteId, VuosiluokkaKokonaisuusDto dto) {
+    public VuosiluokkaKokonaisuusDto updateVuosiluokkaKokonaisuus(Long perusteId, UpdateDto<VuosiluokkaKokonaisuusDto> updateDto) {
+        VuosiluokkaKokonaisuusDto dto = updateDto.getDto();
         lockService.assertLock(VuosiluokkaKokonaisuusContext.of(perusteId, dto.getId()));
         VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(dto.getId());
         mapper.map(dto, vk);
+        kokonaisuusRepository.setRevisioKommentti(updateDto.getMetadataOrEmpty().getKommentti());
         kokonaisuusRepository.save(vk);
         eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, perusteId));
         return mapper.map(vk, VuosiluokkaKokonaisuusDto.class);

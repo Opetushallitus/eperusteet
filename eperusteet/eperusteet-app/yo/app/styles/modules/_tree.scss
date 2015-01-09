@@ -11,7 +11,8 @@ $yla-reunus-vari: #ddd;
 $placeholder-vari: #777;
 $puuviiva-vari: #ccc;
 $tree-container-width: 800px;
-$tree-group-width: 480px;
+$tree-group-width: 520px;
+$tree-box-size: 31px;
 
 .group-toggler, .group-toggler span {
   margin-left: 10px;
@@ -309,27 +310,9 @@ $sp-badge-size: 16px;
   border: 1px dotted #bcbcbc;
 }
 
-.tree li.ui-sortable-helper {
-    list-style-type: none;
-    margin: 0px;
-    padding: 0;
-    position: relative;
-    &::before, &::after {
-      content: none;
-      left: 0;
-      position: inherit;
-      right: auto;
-      border: none;
-    }
-    &::after {
-      height: 0px;
-      top: 0px;
-      width: 0px;
-    }
-}
 .tree {
   .tree-group {
-    li {
+    .tree-list-item {
       list-style-type: none;
       margin: 0px;
       padding: 10px 5px 0 5px;
@@ -357,9 +340,30 @@ $sp-badge-size: 16px;
   }
 }
 
-.tree ul:empty {
-    padding-bottom: 16px;
+.tree .tree-list-item.ui-sortable-helper {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0;
+    position: relative;
+    &::before, &::after {
+      content: none;
+      left: 0;
+      position: inherit;
+      right: auto;
+      border: none;
+    }
+    &::after {
+      height: 0px;
+      top: 0px;
+      width: 0px;
+    }
 }
+
+.tree .tree-group:empty {
+  padding-bottom: 16px;
+}
+
+$kuvausnappisize: 18px;
 
 .tree {
   min-height: 20px;
@@ -416,7 +420,7 @@ $sp-badge-size: 16px;
       border-top: 1px solid $reunus-vari;
       background-color: #f4f4f4;
       text-align: center;
-      height: 10px;
+      height: $kuvausnappisize;
       position: relative;
       cursor: pointer;
 
@@ -430,12 +434,14 @@ $sp-badge-size: 16px;
       border-top: 0;
     }
     .avausnappi-painike {
-      height: 10px;
+      font-size: $kuvausnappisize*1.1;
+      line-height: $kuvausnappisize*1.2;
+      height: $kuvausnappisize;
       width: $tree-group-width;
       content: "";
       cursor: pointer;
       top: -8px;
-      color: #888;
+      color: #777;
       font-weight: bold;
       position: absolute;
     }
@@ -481,7 +487,7 @@ $sp-badge-size: 16px;
     }
     .colorbox {
       height: 30px;
-      width: 31px;
+      width: $tree-box-size;
       padding: 6px 9px;
       display: inline-block;
       margin-right: 10px;
@@ -512,29 +518,32 @@ $sp-badge-size: 16px;
       }
     }
     .right-item {
-      min-height: 31px;
+      min-height: $tree-box-size;
       float: right;
       border-left: 1px solid #cccccc;
       padding: 6px 8px;
+      &.valikko {
+        padding: 0;
+      }
     }
   }
-  .bubble, li .textbox {
-    min-width: $tree-group-width;
+  .bubble, .tree-list-item .textbox {
+    width: $tree-group-width;
     min-height: 32px;
     border: 1px solid #ccc;
     background-color: #f2f2f2;
     text-decoration: none;
   }
-  li span.glyphicon {
+  .tree-list-item span.glyphicon {
     border: medium none;
   }
   li.parent_li>span {
     cursor: pointer;
   }
-  &>ul>li::before, &>ul>li::after {
+  &>ul>.tree-list-item::before, &>ul>.tree-list-item::after {
     border: 0;
   }
-  li:last-child::before {
+  .tree-list-item:last-child::before {
     height: 25px;
   }
   li.parent_li>span:hover, li.parent_li>span:hover+ul li span {
@@ -548,7 +557,7 @@ $sp-badge-size: 16px;
   border-right: 1px solid #cccccc;
   padding: 0;
   margin: 0;
-  min-height: 31px;
+  min-height: $tree-box-size;
 }
 
 .form-row {
@@ -566,10 +575,30 @@ $sp-badge-size: 16px;
   background-color: #fff;
   padding: 5px 8px;
   text-decoration: none;
+  position: relative;
+  .right {
+    float: right;
+  }
+  .osa-ikoni {
+    position: absolute;
+  }
+  .osa-nimi {
+    display: block;
+    padding-left: 24px;
+    &.solmu-osa-muokkaus {
+      padding-right: $tree-box-size;
+    }
+  }
+  .valikko {
+    position: absolute;
+    right: 0;
+    top: -1px;
+    border-left: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+  }
 }
 
 .tree-presentation {
-  // border: 1px solid $yla-reunus-vari;
   margin: 0px;
   margin-bottom: 10px;
   min-height: 400px;
@@ -591,6 +620,41 @@ $sp-badge-size: 16px;
 #vierastutkinto-varoitus,
 #vierastutkinto-varoitus2 {
   position: absolute;
+}
+
+$solmu-caret-size: 16px;
+.solmu-valikko, .solmu-valikko-toggle {
+  display: inline-block;
+  height: $tree-box-size;
+  width: $tree-box-size;
+  text-align: center;
+}
+
+.solmu-valikko {
+  position: relative;
+  .dropdown-menu {
+    margin-top: 0;
+    a {
+      color: $brand-primary;
+    }
+  }
+  .dropdown-menu-right {
+    right: -1px;
+  }
+  &.open {
+    background-color: darken(#f2f2f2, 5%);
+    box-shadow: inset 0px 0px 4px 2px rgba(0,0,0,0.10);
+  }
+}
+
+.solmu-caret {
+  display: inline-block;
+  margin-top: $solmu-caret-size/2 + 3px;
+  height: 0;
+  width: 0;
+  border-width: $solmu-caret-size/2;
+  border-style: solid solid none solid;
+  border-color: $brand-primary transparent transparent transparent;
 }
 
 // hack for IE10+

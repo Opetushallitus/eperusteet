@@ -33,7 +33,7 @@ angular.module('eperusteApp')
       .state('root.admin.tiedotteet', {
         url: '/tiedotteet',
         templateUrl: 'views/admin/tiedotteet.html',
-        controller: 'TiedotteetController'
+        controller: 'TiedotteidenHallintaController'
       });
   })
 
@@ -64,7 +64,7 @@ angular.module('eperusteApp')
 
   .controller('AdminPerusteprojektitController', function($rootScope, $scope, PerusteProjektit,
       Algoritmit, PerusteprojektiTila, Notifikaatiot, Kaanna, YleinenData, Varmistusdialogi,
-      PerusteProjektiService) {
+      PerusteProjektiService, Utils) {
     $scope.jarjestysTapa = 'nimi';
     $scope.jarjestysOrder = false;
     $scope.tilaRajain = null;
@@ -85,9 +85,10 @@ angular.module('eperusteApp')
         $scope.jarjestysTapa = tyyppi;
       }
     };
+
     $scope.jarjestys = function(data) {
       switch($scope.jarjestysTapa) {
-        case 'nimi': return Kaanna.kaanna(data.nimi);
+        case 'nimi': return Utils.nameSort(data);
         case 'haltija': return data.haltija;
         case 'diaarinumero': return data.diaarinumero;
         case 'tila': return data.tila;
@@ -132,6 +133,7 @@ angular.module('eperusteApp')
       return (!$scope.tilaRajain || $scope.tilaRajain === pp.tila) && (_.isEmpty($scope.rajaus) ||
               Algoritmit.match($scope.rajaus, pp.nimi) ||
               Algoritmit.match($scope.rajaus, 'tila-' + pp.tila) ||
+              Algoritmit.match($scope.rajaus, pp.peruste.diaarinumero) ||
               Algoritmit.match($scope.rajaus, pp.diaarinumero));
     };
   });

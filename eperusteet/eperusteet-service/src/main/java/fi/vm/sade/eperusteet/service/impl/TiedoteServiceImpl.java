@@ -2,14 +2,21 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Tiedote;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.repository.TiedoteRepository;
+import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.TiedoteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.security.PermissionHelper;
+import fi.vm.sade.eperusteet.service.util.SecurityUtil;
+import java.util.Date;
 import java.util.List;
+import org.opensaml.xml.security.SecurityHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,10 +35,16 @@ public class TiedoteServiceImpl implements TiedoteService {
     @Autowired
     private TiedoteRepository repository;
 
+    @Autowired
+    private KayttajanTietoService kayttajat;
+
     @Override
     @Transactional(readOnly = true)
-    public List<TiedoteDto> getAll() {
-        List<Tiedote> tiedotteet = repository.findAll();
+    public List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen) {
+        if (!SecurityUtil.isAuthenticated()) {
+            vainJulkiset = true;
+        }
+        List<Tiedote> tiedotteet = repository.findAll(vainJulkiset, new Date(alkaen));
         return mapper.mapAsList(tiedotteet, TiedoteDto.class);
     }
 
@@ -40,7 +53,15 @@ public class TiedoteServiceImpl implements TiedoteService {
     public TiedoteDto getTiedote(@P("tiedoteId") Long tiedoteId) {
         Tiedote tiedote = repository.findOne(tiedoteId);
         assertExists(tiedote, "Pyydettyä tiedotetta ei ole olemassa");
-        return mapper.map(tiedote, TiedoteDto.class);
+        if (!tiedote.isJulkinen() && !SecurityUtil.isAuthenticated()) {
+            throw new BusinessRuleViolationException("Autentikoimaton käyttäjä voi lukea vain julkisia tiedotteita");
+        }
+        KayttajanTietoDto ktd = kayttajat.hae(tiedote.getLuoja());
+        TiedoteDto tdto = mapper.map(tiedote, TiedoteDto.class);
+        if (ktd != null) {
+            tdto.setNimi(ktd.getKutsumanimi() + " " + ktd.getSukunimi());
+        }
+        return tdto;
     }
 
     @Override

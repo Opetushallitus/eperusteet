@@ -2,7 +2,7 @@
   <h1 kaanna="'tiedote'"></h1>
   <h2>{{tiedote.otsikko | kaanna}}</h2>
   <div class="tiedote-tiedot">
-    {{tiedote.muokkaaja}}, {{tiedote.muokattu | aikaleima}}
+    {{ tiedote.nimi || tiedote.muokkaaja }}, {{tiedote.muokattu | aikaleima}}
   </div>
   <div class="tiedote-leipateksti" ng-bind-html="tiedote.sisalto | kaanna | unsafe"></div>
 </div>

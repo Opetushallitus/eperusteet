@@ -18,10 +18,44 @@
 /* global _ */
 
 angular.module('eperusteApp')
+  .service('PerusteenTutkintonimikkeet', function(PerusteTutkintonimikekoodit, YleinenData) {
+    this.perusteellaTutkintonimikkeet = function(peruste) {
+      if (_.isObject(peruste)) {
+        peruste = peruste.koulutustyyppi;
+      }
+      return _.isString(peruste) &&
+        YleinenData.koulutustyyppiInfo[peruste] && YleinenData.koulutustyyppiInfo[peruste].hasTutkintonimikkeet;
+    };
+
+    this.get = function (perusteId, object) {
+      PerusteTutkintonimikekoodit.get({ perusteId: perusteId }, function(res) {
+        object.koodisto = _.map(res, function(osa) {
+          function parsiNimi(kentta) {
+            if (osa[kentta + 'Arvo']) {
+              var nimi = osa.b[osa[kentta + 'Arvo']].metadata;
+              osa['$' + kentta + 'Nimi'] = _.zipObject(_.map(nimi, 'kieli'), _.map(nimi, 'nimi'));
+            }
+          }
+
+          parsiNimi('osaamisala');
+          parsiNimi('tutkintonimike');
+          parsiNimi('tutkinnonOsa');
+          delete osa.b;
+          return osa;
+        });
+        object.koodisto.$resolved = true;
+      });
+    };
+  })
+
   .controller('PerusteenTiedotCtrl', function($scope, $stateParams, $state,
     Koodisto, Perusteet, YleinenData, PerusteProjektiService,
     perusteprojektiTiedot, Notifikaatiot, Editointikontrollit, Kaanna,
-    Varmistusdialogi, $timeout, $rootScope, PerusteTutkintonimikekoodit, $modal) {
+    Varmistusdialogi, $timeout, $rootScope, PerusteTutkintonimikekoodit, $modal,
+    PerusteenTutkintonimikkeet, valittavatKielet, Kieli) {
+    $scope.showKoulutukset = function () {
+      return YleinenData.showKoulutukset($scope.editablePeruste);
+    };
 
     $scope.editEnabled = false;
     var editingCallbacks = {
@@ -34,7 +68,7 @@ angular.module('eperusteApp')
         $scope.tallennaPeruste();
       },
       validate: function () {
-        return $scope.projektinPerusteForm.$valid;
+        return $scope.projektinPerusteForm.$valid && !_.isEmpty($scope.editablePeruste.kielet);
       },
       cancel: function () {
         $scope.editablePeruste = $scope.peruste;
@@ -70,6 +104,31 @@ angular.module('eperusteApp')
     $scope.dokumentit = {};
     $scope.koodisto = [];
     $scope.$koodistoResolved = false;
+    $scope.$perusteellaTutkintonimikkeet = PerusteenTutkintonimikkeet.perusteellaTutkintonimikkeet($scope.peruste);
+    $scope.kieliOrder = Kieli.kieliOrder;
+
+    function valitseValittavatKielet(kielet) {
+      var current = (kielet || $scope.editablePeruste.kielet);
+      $scope.valittavatKielet = _(valittavatKielet).sortBy($scope.kieliOrder).map(function (kielikoodi) {
+        return {available: _.indexOf(current, kielikoodi) === -1, koodi: kielikoodi};
+      }).value();
+    }
+    valitseValittavatKielet($scope.peruste.kielet);
+
+    $scope.lisaaKieli = function(kieli) {
+      $scope.editablePeruste.kielet.push(kieli);
+      $scope.editablePeruste.kielet = _.unique($scope.editablePeruste.kielet);
+      valitseValittavatKielet();
+    };
+
+    $scope.poistaKieli = function(kieli) {
+      _.remove($scope.editablePeruste.kielet, function(v) { return v === kieli; });
+      valitseValittavatKielet();
+    };
+
+    $scope.kaikkiKieletValittu = function() {
+      return _.size($scope.editablePeruste.kielet) === _.size(valittavatKielet);
+    };
 
     $scope.lisaaNimike = function() {
       $modal.open({
@@ -115,23 +174,7 @@ angular.module('eperusteApp')
       });
     };
 
-    PerusteTutkintonimikekoodit.get({ perusteId: $scope.peruste.id }, function(res) {
-      $scope.koodisto = _.map(res, function(osa) {
-        function parsiNimi(kentta) {
-          if (osa[kentta + 'Arvo']) {
-            var nimi = osa.b[osa[kentta + 'Arvo']].metadata;
-            osa['$' + kentta + 'Nimi'] = _.zipObject(_.map(nimi, 'kieli'), _.map(nimi, 'nimi'));
-          }
-        }
-
-        parsiNimi('osaamisala');
-        parsiNimi('tutkintonimike');
-        parsiNimi('tutkinnonOsa');
-        delete osa.b;
-        return osa;
-      });
-      $scope.koodisto.$resolved = true;
-    });
+    PerusteenTutkintonimikkeet.get($scope.peruste.id, $scope);
 
     $scope.poistaTutkintonimike = function(nimike) {
       PerusteTutkintonimikekoodit.remove({

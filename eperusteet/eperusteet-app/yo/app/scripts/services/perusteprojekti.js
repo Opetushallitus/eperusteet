@@ -93,28 +93,22 @@ angular.module('eperusteApp')
      */
     function urlFn(method, projekti, peruste) {
       projekti = _.clone(projekti) || get();
-        if (peruste && !projekti.koulutustyyppi) {
-          projekti.koulutustyyppi = peruste.koulutustyyppi;
-        }
-        if (YleinenData.isPerusopetus(projekti)) {
-          return $state[method]('root.perusteprojekti.suoritustapa.posisalto', {
-            perusteProjektiId: projekti.id,
-            suoritustapa: 'perusopetus'
-          });
-        } else if (YleinenData.isEsiopetus(projekti)) {
-          return $state[method]('root.perusteprojekti.suoritustapa.eosisalto', {
-            perusteProjektiId: projekti.id,
-            suoritustapa: 'esiopetus'
-          });
-        }
-        else {
-          var suoritustapa = (getSuoritustapa() !== '' && !_.isUndefined(peruste)) ? getSuoritustapa() :
-            YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
-          return $state[method]('root.perusteprojekti.suoritustapa.sisalto', {
-            perusteProjektiId: projekti.id,
-            suoritustapa: suoritustapa
-          });
-        }
+      if (peruste && !projekti.koulutustyyppi) {
+        projekti.koulutustyyppi = peruste.koulutustyyppi;
+      }
+      var oletus = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
+      var suoritustapa = getSuoritustapa();
+      var suoritustavaton = (oletus !== 'ops' && oletus !== 'naytto') || !suoritustapa;
+      var eiValidiSuoritustapa = (oletus === 'ops' || oletus === 'naytto') && suoritustapa !== 'ops' && suoritustapa !== 'naytto';
+      if (suoritustavaton || eiValidiSuoritustapa) {
+        suoritustapa = oletus;
+      }
+      var sisaltoTunniste = YleinenData.koulutustyyppiInfo[projekti.koulutustyyppi] ?
+        YleinenData.koulutustyyppiInfo[projekti.koulutustyyppi].sisaltoTunniste : 'sisalto';
+      return $state[method]('root.perusteprojekti.suoritustapa.' + sisaltoTunniste, {
+        perusteProjektiId: projekti.id,
+        suoritustapa: suoritustapa
+      });
     }
 
     function mergeProjekti(projekti, tuoPohja) {
@@ -154,7 +148,10 @@ angular.module('eperusteApp')
       setSuoritustapa: setSuoritustapa,
       cleanSuoritustapa: cleanSuoritustapa,
       getUrl: _.partial(urlFn, 'href'),
-      goToProjektiState: _.partial(urlFn, 'go')
+      goToProjektiState: _.partial(urlFn, 'go'),
+      isPdfEnabled: function (peruste) {
+        return YleinenData.koulutustyyppiInfo[peruste.koulutustyyppi] && YleinenData.koulutustyyppiInfo[peruste.koulutustyyppi].hasPdfCreation;
+      }
     };
   })
   .service('TutkinnonOsaEditMode', function () {
@@ -169,7 +166,7 @@ angular.module('eperusteApp')
     };
   })
   .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet,
-      SuoritustapaSisalto, PerusteProjektiService, Notifikaatiot, YleinenData, PerusopetusService, SuoritustapaSisaltoUUSI) {
+      PerusteProjektiService, Notifikaatiot, YleinenData, PerusopetusService, SuoritustapaSisalto) {
 
     var deferred = $q.defer();
     var projekti = {};
@@ -181,6 +178,10 @@ angular.module('eperusteApp')
 
     this.getProjekti = function () {
       return _.clone(projekti);
+    };
+
+    this.setProjekti = function (obj) {
+      projekti = _.clone(obj);
     };
 
     this.getPeruste = function () {
@@ -201,18 +202,18 @@ angular.module('eperusteApp')
       sisalto = {};
     };
 
-    function getYlStructure() {
+    function getYlStructure(suoritustapa) {
       // TODO replace with one resource call that fetches the whole structure
       var promises = [];
       _.each(PerusopetusService.LABELS, function (key) {
-        var osat = PerusopetusService.getOsat(key);
+        var osat = PerusopetusService.getOsat(key, true);
         var promise = osat.$promise;
         promise.then(function (data) {
           ylTiedot[key] = data;
         });
         promises.push(promise);
       });
-      var sisaltoPromise = PerusopetusService.getSisalto().$promise;
+      var sisaltoPromise = PerusopetusService.getSisalto(suoritustapa).$promise;
       sisaltoPromise.then(function (data) {
         ylTiedot.sisalto = data;
       });
@@ -220,11 +221,10 @@ angular.module('eperusteApp')
       return $q.all(promises);
     }
 
-// TODO vaihda sisällönhaku käyttämään geneeristä sisältöhaku rajapintaa
     this.haeSisalto = function(perusteId, suoritustapa) {
       var deferred = $q.defer();
       var ylDefer = $q.defer();
-      if (!YleinenData.isPerusopetus(peruste) && !YleinenData.isEsiopetus(peruste)) {
+      if (!YleinenData.isPerusopetus(peruste)) {
         SuoritustapaSisalto.get({perusteId: perusteId, suoritustapa: suoritustapa}, function(vastaus) {
           deferred.resolve(vastaus);
           sisalto = vastaus;
@@ -232,16 +232,8 @@ angular.module('eperusteApp')
           deferred.reject(virhe);
         });
         ylDefer.resolve();
-      } else if ( YleinenData.isEsiopetus(peruste)){
-        SuoritustapaSisaltoUUSI.get({perusteId: perusteId, suoritustapa: suoritustapa}, function(vastaus) {
-          deferred.resolve(vastaus);
-          sisalto = vastaus;
-        }, function(virhe) {
-          deferred.reject(virhe);
-        });
-        ylDefer.resolve();
       } else {
-        getYlStructure().then(function () {
+        getYlStructure(suoritustapa).then(function () {
           ylDefer.resolve();
           sisalto = ylTiedot.sisalto;
           deferred.resolve(ylTiedot.sisalto);
@@ -282,9 +274,7 @@ angular.module('eperusteApp')
     var asetaSuoritustapa = function(stateParams) {
       if (angular.isUndefined(stateParams.suoritustapa) || stateParams.suoritustapa === null || stateParams.suoritustapa === '') {
         stateParams.suoritustapa = YleinenData.valitseSuoritustapaKoulutustyypille(peruste.koulutustyyppi);
-        if (!YleinenData.isPerusopetus(peruste) || !YleinenData.isEsiopetus(peruste)) {
           $state.reload();
-        }
       }
     };
 

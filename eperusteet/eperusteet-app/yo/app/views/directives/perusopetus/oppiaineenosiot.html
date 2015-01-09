@@ -8,7 +8,7 @@
         <div class="pull-left draghandle" ui-tree-handle ><!-- icon-role="drag" --></div>
         <div class="content">
           <div ng-if="hasEditableTitle(osio)" class="input-wrapper">
-            <input class="form-control" ng-model="osio.model.otsikko" localized placeholder="{{'muokkaus-teksikappaleen-nimi-placeholder'|kaanna}}">
+            <input class="form-control" ng-model="osio.model.otsikko" slocalized placeholder="{{'muokkaus-teksikappaleen-nimi-placeholder'|kaanna}}">
           </div>
           <span ng-if="!hasEditableTitle(osio)">{{osio.model.otsikko | kaanna}}</span>
         </div>

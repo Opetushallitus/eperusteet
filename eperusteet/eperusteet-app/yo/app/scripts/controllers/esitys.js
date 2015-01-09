@@ -40,7 +40,9 @@ angular.module('eperusteApp')
           },
           tutkinnonOsat: function($stateParams, PerusteTutkinnonosat) {
             return PerusteTutkinnonosat.query({ perusteId: $stateParams.perusteId, suoritustapa: $stateParams.suoritustapa }).$promise;
-          }
+          },
+          koulutusalaService: 'Koulutusalat',
+          opintoalaService: 'Opintoalat'
         }
       })
       .state('root.esitys.peruste.rakenne', {
@@ -71,6 +73,11 @@ angular.module('eperusteApp')
         url: '/sisalto/:osanId',
         templateUrl: 'views/partials/esitys/sisalto.html',
         controller: 'EsitysSisaltoCtrl'
+      })
+      .state('root.esitys.peruste.tiedot', {
+        url: '/tiedot',
+        templateUrl: 'views/partials/esitys/tiedot.html',
+        controller: 'EsitysTiedotCtrl'
       });
   })
 
@@ -121,11 +128,29 @@ angular.module('eperusteApp')
     $scope.suosikkiHelper($state, 'tutkinnonosat');
   })
 
+  .controller('EsitysTiedotCtrl', function($scope, YleinenData, PerusteenTutkintonimikkeet, $state) {
+    $scope.showKoulutukset = function () {
+      return YleinenData.showKoulutukset($scope.peruste);
+    };
+
+    $scope.koulutusalaNimi = function(koodi) {
+      return $scope.Koulutusalat.haeKoulutusalaNimi(koodi);
+    };
+
+    $scope.opintoalaNimi = function(koodi) {
+      return $scope.Opintoalat.haeOpintoalaNimi(koodi);
+    };
+
+    PerusteenTutkintonimikkeet.get($scope.peruste.id, $scope);
+    $scope.suosikkiHelper($state, 'perusteen-tiedot');
+  })
+
   .controller('EsitysSisaltoCtrl', function($scope, $state, $stateParams, PerusteenOsat, YleinenData) {
     $scope.$parent.valittu.sisalto = $stateParams.osanId;
     $scope.valittuSisalto = $scope.$parent.sisalto[$stateParams.osanId];
     if (!$scope.valittuSisalto) {
       var params = _.extend(_.clone($stateParams), {
+        // TODO siirry käyttämään YleinenData.koulutustyyppiInfo:a
         suoritustapa: YleinenData.validSuoritustapa($scope.peruste, $stateParams.suoritustapa)
       });
       $state.go('root.esitys.peruste.rakenne', params);
@@ -137,12 +162,18 @@ angular.module('eperusteApp')
 
   .controller('EsitysCtrl', function($scope, $stateParams, sisalto, peruste,
       YleinenData, $state, Algoritmit, tutkinnonOsat, Kaanna, arviointiasteikot,
-      Profiili, PdfCreation) {
+      Profiili, PdfCreation, koulutusalaService, opintoalaService, Kieli) {
 
+    $scope.Koulutusalat = koulutusalaService;
+    $scope.Opintoalat = opintoalaService;
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
+    var isTutkinnonosatActive = function () {
+      return $state.is('root.esitys.peruste.tutkinnonosat') || $state.is('root.esitys.peruste.tutkinnonosa');
+    };
     $scope.navi = {
       items: [
-        {label: 'tutkinnonosat', link: ['root.esitys.peruste.tutkinnonosat', $stateParams]}
+        {label: 'perusteen-tiedot', link: ['root.esitys.peruste.tiedot'], $glyph: 'list-alt'},
+        {label: 'tutkinnonosat', link: ['root.esitys.peruste.tutkinnonosat'], isActive: isTutkinnonosatActive}
       ],
       header: 'perusteen-sisalto'
     };
@@ -165,6 +196,11 @@ angular.module('eperusteApp')
     };
 
     $scope.peruste = peruste;
+    Kieli.setAvailableSisaltokielet($scope.peruste.kielet);
+    $scope.$on('$destroy', function () {
+      Kieli.resetSisaltokielet();
+    });
+    $scope.backLink = $state.href(YleinenData.koulutustyyppiInfo[$scope.peruste.koulutustyyppi].hakuState);
     $scope.sisalto = mapSisalto(sisalto);
 
     $scope.arviointiasteikot = _.zipObject(_.map(arviointiasteikot, 'id'), _.map(arviointiasteikot, function(asteikko) {
@@ -186,6 +222,7 @@ angular.module('eperusteApp')
 
     if ($state.current.name === 'root.esitys.peruste') {
       var params = _.extend(_.clone($stateParams), {
+        // TODO siirry käyttämään YleinenData.koulutustyyppiInfo:a
         suoritustapa: YleinenData.validSuoritustapa($scope.peruste, $stateParams.suoritustapa)
       });
       $state.go('root.esitys.peruste.rakenne', params);
@@ -228,18 +265,21 @@ angular.module('eperusteApp')
       PdfCreation.setPerusteId($scope.peruste.id);
       PdfCreation.openModal();
     };
+  })
 
-     $scope.getBackLink = function (peruste) {
-       switch (peruste.koulutustyyppi) {
-         case 'koulutustyyppi_1':
-           return $state.href('root.selaus.ammatillinenperuskoulutus');
-         case 'koulutustyyppi_11':
-         case 'koulutustyyppi_12':
-           return $state.href('root.selaus.ammatillinenaikuiskoulutus');
-         case 'koulutustyyppi_16':
-           return $state.href('root.selaus.perusopetus');
-         default:
-           return $state.href('root.selaus.ammatillinenperuskoulutus');
-       }
+  .directive('esitysSivuOtsikko', function ($compile) {
+    var TEMPLATE = '<div class="painikkeet pull-right">' +
+      '<a class="action-link" ng-click="asetaSuosikki()">' +
+      '<span class="glyphicon" ng-class="{\'glyphicon-star\': onSuosikki, \'glyphicon-star-empty\': !onSuosikki}"></span>' +
+      '{{ onSuosikki ? \'poista-suosikeista\' : \'merkitse-suosikiksi\' | kaanna }}' +
+      '</a>' +
+      '<a class="action-link left-space" ng-click="printSisalto()" icon-role="print" kaanna="\'tulosta-sivu\'"></a>' +
+      '</div>';
+    return {
+      restrict: 'AE',
+      link: function (scope, element) {
+        var compiled = $compile(TEMPLATE)(scope);
+        element.append(compiled);
+      }
     };
   });

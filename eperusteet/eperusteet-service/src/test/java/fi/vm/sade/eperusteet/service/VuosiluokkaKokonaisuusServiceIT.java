@@ -16,17 +16,20 @@
 package fi.vm.sade.eperusteet.service;
 
 import com.google.common.base.Optional;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
+import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import fi.vm.sade.eperusteet.service.yl.LaajaalainenOsaaminenService;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusContext;
-import fi.vm.sade.eperusteet.service.yl.VuosiluokkakokonaisuusService;
+import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusService;
 import java.io.IOException;
 import java.util.Collections;
 import org.junit.Before;
@@ -50,22 +53,23 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
     @Autowired
     private PerusopetuksenPerusteenSisaltoService sisaltoService;
     @Autowired
-    private VuosiluokkakokonaisuusService service;
+    private VuosiluokkaKokonaisuusService service;
     @Autowired
     @LockCtx(VuosiluokkaKokonaisuusContext.class)
     private LockService<VuosiluokkaKokonaisuusContext> lockService;
-
+    @Autowired
+    private LaajaalainenOsaaminenService osaaminenService;
 
     private Long perusteId;
     private EntityReference osaaminen;
 
     @Before
     public void setup() {
-        Peruste peruste = perusteService.luoPerusteRunko("koulutustyyppi_16", LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
+        Peruste peruste = perusteService.luoPerusteRunko(KoulutusTyyppi.PERUSOPETUS.toString(), LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
         perusteId = peruste.getId();
         LaajaalainenOsaaminenDto lo = new LaajaalainenOsaaminenDto();
         lo.setNimi(olt("Nimi"));
-        lo = sisaltoService.addLaajaalainenOsaaminen(perusteId, lo);
+        lo = osaaminenService.addLaajaalainenOsaaminen(perusteId, lo);
         osaaminen = new EntityReference(lo.getId());
     }
 
@@ -91,7 +95,7 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
         final VuosiluokkaKokonaisuusContext ctx = VuosiluokkaKokonaisuusContext.of(perusteId, dto.getId());
 
         lockService.lock(ctx);
-        service.updateVuosiluokkaKokonaisuus(perusteId, dto);
+        service.updateVuosiluokkaKokonaisuus(perusteId, new UpdateDto<>(dto));
         lockService.unlock(ctx);
         assertEquals(2, dto.getLaajaalaisetOsaamiset().size());
         service.deleteVuosiluokkaKokonaisuus(ctx.getPerusteId(), ctx.getKokonaisuusId());

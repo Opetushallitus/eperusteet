@@ -24,10 +24,10 @@
         <div ng-if="sisaltoalue.$editing">
           <h5>{{'sisaltoalueen-nimi' | kaanna}}</h5>
           <h4 class="list-group-item-text" ng-model="sisaltoalue.nimi" ckeditor editing-enabled="true"
-              localized></h4>
+              slocalized></h4>
           <h5 kaanna="kuvaus"></h5>
           <div class="list-group-item-text" ng-model="sisaltoalue.kuvaus" ckeditor editing-enabled="true"
-               localized></div>
+               slocalized></div>
           <div class="pull-right edit-buttons">
             <button class="btn btn-default" ng-click="cancel(sisaltoalue)" kaanna="peruuta"></button>
             <button class="btn btn-primary" ng-click="ok(sisaltoalue)"

@@ -9,7 +9,7 @@
       <div class="panel-group">
 
         <div ng-model="model.tavoitteet" ui-tree-nodes>
-          <div class="panel panel-default tavoite" ng-repeat="tavoite in model.tavoitteet" ui-tree-node
+          <div ng-hide="tavoite.$rejected || tavoite.$hide" class="panel panel-default tavoite" ng-repeat="tavoite in model.tavoitteet" ui-tree-node
                ng-class="{'kohde-edit': tavoite.$editing}">
             <div class="panel-body">
               <div ng-if="editMode" ng-show="!currentEditable" class="muokkausnappi">
@@ -27,7 +27,7 @@
                 <h4 ng-show="tavoite.$editing" kaanna="nimi"></h4>
                 <h4 class="tavoite-otsikko action-link" ng-show="!tavoite.$editing" ng-click="tavoiteFn.toggle(tavoite)"
                   ng-bind-html="tavoite.tavoite | kaanna | unsafe"></h4>
-                <div ng-if="tavoite.$editing" ckeditor ng-model="tavoite.tavoite" localized editor-placeholder="tavoitteen-kuvaus-placeholder"></div>
+                <div ng-if="tavoite.$editing" ckeditor ng-model="tavoite.tavoite" slocalized editor-placeholder="tavoitteen-kuvaus-placeholder"></div>
 
                 <h4 kaanna="kohdealueet"></h4>
                 <div tag-cloud="tavoite.$kohdealueet" openable="false" edit-mode="tavoite.$editing" add-label="arviointi-uusi-kohdealue"></div>
@@ -53,7 +53,7 @@
               </div>
               <div class="muokkausnappi" ng-if="editMode" ng-show="tavoite.$editing">
                 <button class="btn btn-default" kaanna="peruuta" ng-click="tavoiteFn.cancel()"></button>
-                <button class="btn btn-primary" ng-click="tavoiteFn.ok()">{{tavoite.$new && 'lisaa' || 'ok' | kaanna}}</button>
+                <button class="btn btn-primary" ng-click="tavoiteFn.ok()">{{tavoite.$new ? 'lisaa' : 'ok' | kaanna}}</button>
               </div>
             </div>
           </div>

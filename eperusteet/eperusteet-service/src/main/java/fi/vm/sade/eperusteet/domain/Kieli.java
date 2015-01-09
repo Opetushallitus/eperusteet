@@ -16,6 +16,8 @@
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -51,4 +53,11 @@ public enum Kieli {
         throw new IllegalArgumentException(koodi + " ei ole kelvollinen kielikoodi");
     }
 
+    public static List<String> vaihtoehdot() {
+        List<String> kielet = new ArrayList<>();
+        for (Kieli value : Kieli.values()) {
+            kielet.add(value.koodi);
+        }
+        return kielet;
+    }
 }

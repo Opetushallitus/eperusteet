@@ -19,13 +19,14 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.KeskeinenSisaltoalueDto;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenTavoiteDto;
@@ -81,7 +82,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
     @Before
     public void setup() {
-        Peruste peruste = perusteService.luoPerusteRunko("koulutustyyppi_16", LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
+        Peruste peruste = perusteService.luoPerusteRunko(KoulutusTyyppi.PERUSOPETUS.toString(), LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
         perusteId = peruste.getId();
     }
 
@@ -121,7 +122,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         oa.getTehtava().get().setTeksti(Optional.<LokalisoituTekstiDto>absent());
         oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().add(0, ks);
         oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(1).setNimi(null);
-        oa = service.updateOppiaine(perusteId, oa);
+        oa = service.updateOppiaine(perusteId, new UpdateDto<>(oa));
 
         lockService.unlock(lc);
 
@@ -144,13 +145,13 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
         lc = OppiaineLockContext.of(perusteId, oa.getId(), vkDto.getId());
         lockService.lock(lc);
-        vkDto = service.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oa.getId(), vkDto);
+        vkDto = service.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oa.getId(), new UpdateDto<>(vkDto));
 
         assertEquals("Kohde", vkDto.getTavoitteet().get(0).getArvioinninkohteet().iterator().next().getArvioinninKohde().get().get(Kieli.FI));
 
         vkDto.getSisaltoalueet().clear();
         vkDto.getTavoitteet().clear();
-        vkDto = service.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oa.getId(), vkDto);
+        vkDto = service.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oa.getId(), new UpdateDto<>(vkDto));
 
         lc = OppiaineLockContext.of(perusteId, oa.getId(), null);
 
@@ -196,7 +197,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         OppiaineLockContext lc = OppiaineLockContext.of(perusteId, oppimaara.getId(), null);
         lockService.lock(lc);
         oppimaara.setTehtava(Optional.of(to("Tehtävä", "Tehtävä")));
-        oppimaara = service.updateOppiaine(perusteId, oppimaara);
+        oppimaara = service.updateOppiaine(perusteId, new UpdateDto<>(oppimaara));
         lockService.unlock(lc);
         assertEquals("Tehtävä", oppimaara.getTehtava().get().getTeksti().get().get(Kieli.FI));
     }

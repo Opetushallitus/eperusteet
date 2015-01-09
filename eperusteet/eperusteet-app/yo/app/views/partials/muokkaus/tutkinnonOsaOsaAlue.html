@@ -5,7 +5,7 @@
   <label class="header" kaanna="tutkinnonosa"></label>
   <p>{{tutkinnonOsa.nimi| kaanna}}</p>
   <label class="header">{{'nimi'| kaanna}}*</label>
-  <ml-input ml-data="osaAlue.nimi" type="text"></ml-input>
+  <input class="form-control" slocalized ng-model="osaAlue.nimi" type="text"></input>
 
   <hr class="mujuviiva">
 
@@ -17,7 +17,7 @@
     </accordion-heading>
 
     <label>{{'nimi'| kaanna}}*</label>
-      <ml-input ml-data="tavoite.nimi" type="text"></ml-input>
+      <input class="form-control" slocalized ng-model="tavoite.nimi" type="text"></input>
 
     <h3 ng-show="tavoite.pakollinen === true">
       {{('pakolliset-osaamistavoitteet'| kaanna)}}, {{tavoite.laajuus}} {{'osp'| kaanna}}
@@ -32,13 +32,13 @@
       <label kaanna>laajuus</label>
       <numberinput model="tavoite.laajuus" type="float" step="0.5"></numberinput>
       <label kaanna>tavoitteet</label>
-      <div ng-model="tavoite.tavoitteet" localized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
+      <div ng-model="tavoite.tavoitteet" slocalized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
 
       <h4 kaanna>arviointi</h4>
       <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet" ei-kohdealueita="true"
                  edit-enabled="true" editointi-sallittu="true"></arviointi>
       <label kaanna>tutkinnonosa-tunnustaminen</label>
-      <div ng-model="tavoite.tunnustaminen" localized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tunnustaminen"></div>
+      <div ng-model="tavoite.tunnustaminen" slocalized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tunnustaminen"></div>
     </div>
 
     <div ng-show="tavoite.lapsi && tavoite.lapsi.$poistettu === false">
@@ -50,13 +50,13 @@
       <label kaanna>laajuus</label>
       <numberinput model="tavoite.lapsi.laajuus" type="float" step="0.5"></numberinput>
       <label kaanna>tavoitteet</label>
-      <div ng-model="tavoite.lapsi.tavoitteet" localized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
+      <div ng-model="tavoite.lapsi.tavoitteet" slocalized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tavoitteet"></div>
 
       <h4 kaanna>arviointi</h4>
       <arviointi arviointi="tavoite.lapsi.arviointi.arvioinninKohdealueet" ei-kohdealueita="true"
                  edit-enabled="true" editointi-sallittu="true"></arviointi>
       <label kaanna>tutkinnonosa-tunnustaminen</label>
-      <div ng-model="tavoite.lapsi.tunnustaminen" localized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tunnustaminen"></div>
+      <div ng-model="tavoite.lapsi.tunnustaminen" slocalized ckeditor editing-enabled="true" editor-placeholder="Kirjoita tunnustaminen"></div>
     </div>
       </div>
 

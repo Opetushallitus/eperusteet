@@ -13,7 +13,7 @@
           <li ng-repeat="alue in tutke2osa.$editing" ui-tree-node>
             <div class="input-group" >
               <span class="input-group-addon"><div icon-role="resize-vertical" class="draghandle" ui-tree-handle></div></span>
-              <input type="text" ng-model="alue.nimi" class="form-control" localized>
+              <input type="text" ng-model="alue.nimi" class="form-control" slocalized>
               <span class="input-group-btn">
                 <button class="btn btn-default" icon-role="remove" type="button" ng-click="osaAlue.remove(alue)" kaanna="'poista'"></button>
               </span>
@@ -36,7 +36,7 @@
             <div class="col-sm-9">
               <span class="glyphicon" ng-class="alue.$open ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right'"></span>
               <span ng-show="!alue.$editing" class="otsikko">{{alue.nimi| kaanna}}</span>
-              <input ng-show="alue.$editing" class="osa-alue-nimi" ng-model="osaAlue.$editing.nimi" localized ng-click="$event.stopPropagation()">
+              <input ng-show="alue.$editing" class="osa-alue-nimi" ng-model="osaAlue.$editing.nimi" slocalized ng-click="$event.stopPropagation()">
               <span ng-hide="isEditingInProgress()">
                 <select ng-if="alue.$groups.$size > 1" ng-options="item.value as item.label|kaanna for item in alue.$groups.$options"
                         ng-model="alue.$chosen" ng-click="$event.stopPropagation()"></select>
@@ -69,11 +69,11 @@
               </div>
               <div class="panel-body non-collapsibles">
                 <label class="header" kaanna>tavoitteet</label>
-                <p ng-bind-html="valitseKieli(tavoite.tavoitteet) | unsafe"></p>
+                <p ng-bind-html="tavoite.tavoitteet | kaanna | unsafe"></p>
                 <label class="header" kaanna>arviointi</label>
                 <arviointi arviointi="tavoite.arviointi.arvioinninKohdealueet" mainLevelEditing="tavoite.$editing" ei-kohdealueita="true"></arviointi>
                 <label class="header" kaanna>tutkinnonosa-tunnustaminen</label>
-                <p ng-bind-html="valitseKieli(tavoite.tunnustaminen) | unsafe"></p>
+                <p ng-bind-html="tavoite.tunnustaminen | kaanna | unsafe"></p>
             </div>
             </div>
 

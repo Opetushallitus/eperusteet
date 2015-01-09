@@ -29,4 +29,5 @@ import lombok.Setter;
 public class OppiaineSuppeaDto extends OppiaineBaseDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Set<OppiaineSuppeaDto> oppimaarat;
+    private Set<OppiaineenVuosiluokkaKokonaisuusSuppeaDto> vuosiluokkakokonaisuudet;
 }

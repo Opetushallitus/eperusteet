@@ -14,10 +14,12 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TiedoteDto {
     private Long id;
+    private boolean julkinen;
     private LokalisoituTekstiDto otsikko;
     private LokalisoituTekstiDto sisalto;
     private Date luotu;
     private String luoja;
+    private String nimi;
     private Date muokattu;
     private String muokkaaja;
 }

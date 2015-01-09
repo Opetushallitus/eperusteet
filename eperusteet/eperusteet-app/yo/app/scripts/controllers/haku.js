@@ -36,12 +36,39 @@ angular.module('eperusteApp')
         controller: 'HakuCtrl',
         resolve: {'koulutusalaService': 'Koulutusalat'}
       })
-      .state('root.selaus.perusopetus', {
+      .state('root.selaus.perusopetuslista', {
         url: '/perusopetus',
+        templateUrl: 'views/perusopetuslistaus.html',
+        controller: 'PerusopetusListaController',
+      })
+      .state('root.selaus.perusopetus', {
+        url: '/perusopetus/:perusteId',
         templateUrl: 'views/perusopetus.html',
         controller: 'PerusopetusController',
-        //resolve: {'koulutusalaService': 'Koulutusalat'}
+        resolve: {
+          sisalto: function($stateParams, $q, Perusteet, LaajaalaisetOsaamiset, Oppiaineet, Vuosiluokkakokonaisuudet, SuoritustapaSisalto) {
+            // TODO lisää uusin peruste jos $stateParams.perusteId on falsey
+            return $q.all([
+              Perusteet.get({ perusteId: $stateParams.perusteId }).$promise,
+              LaajaalaisetOsaamiset.query({ perusteId: $stateParams.perusteId }).$promise,
+              Oppiaineet.query({ perusteId: $stateParams.perusteId }).$promise,
+              Vuosiluokkakokonaisuudet.query({ perusteId: $stateParams.perusteId }).$promise,
+              SuoritustapaSisalto.get({ perusteId: $stateParams.perusteId, suoritustapa: 'perusopetus' }).$promise,
+            ]);
+          }
+        }
       });
+  })
+  .controller('PerusopetusListaController', function($scope, $state, PerusopetusPerusteet, Notifikaatiot) {
+    $scope.lista = [];
+    PerusopetusPerusteet.query(function(res) {
+      $scope.lista = _(res).sortBy('voimassaoloLoppuu')
+                           .reverse()
+                           .each(function(po) {
+                             po.$url = $state.href('root.selaus.perusopetus', { perusteId: po.id });
+                           })
+                           .value();
+    }, Notifikaatiot.serverCb);
   })
   .controller('HakuCtrl', function($scope, $rootScope, $state, Perusteet, Haku,
     YleinenData, koulutusalaService) {

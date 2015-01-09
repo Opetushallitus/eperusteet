@@ -35,7 +35,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import static fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser.parsiKayttaja;
+
 import java.util.concurrent.Future;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 
@@ -44,6 +46,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
  * @author nkala
  */
 @Service
+@Profile("default")
 public class KayttajanTietoServiceImpl implements KayttajanTietoService {
 
     @Value("${cas.service.authentication-service:''}")

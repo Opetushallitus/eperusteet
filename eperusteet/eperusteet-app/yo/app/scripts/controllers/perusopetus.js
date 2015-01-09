@@ -18,12 +18,14 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state,
+  .controller('PerusopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state, SuoritustavanSisalto,
       PerusopetusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot, Utils, VlkUtils) {
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     TekstikappaleOperations.setPeruste($scope.peruste);
     $scope.rajaus = '';
+
+    $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
 
     $scope.$watch('peruste.sisalto', function () {
       Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function (lapsi) {
@@ -177,91 +179,220 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('OsaAlueController', function ($scope, $q, $stateParams, PerusopetusService) {
+  // FIXME: Taitaa olla deprekoitunut
+  .controller('OsaAlueController', function ($scope, $q, $stateParams, PerusopetusService,
+    ProjektinMurupolkuService) {
     $scope.isVuosiluokka = $stateParams.osanTyyppi === PerusopetusService.VUOSILUOKAT;
     $scope.isOppiaine = $stateParams.osanTyyppi === PerusopetusService.OPPIAINEET;
     $scope.isOsaaminen = $stateParams.osanTyyppi === PerusopetusService.OSAAMINEN;
     $scope.versiot = {latest: true};
     $scope.dataObject = PerusopetusService.getOsa($stateParams);
+    var labels = _.invert(PerusopetusService.LABELS);
+    ProjektinMurupolkuService.set('osanTyyppi', $stateParams.osanTyyppi, labels[$stateParams.osanTyyppi]);
+    $scope.dataObject.then(function (res) {
+      ProjektinMurupolkuService.set('osanId', $stateParams.osanId, res.nimi);
+    });
   })
 
-  /* protokoodia --> */
-  .controller('PerusopetusController', function($scope, FilterWatcher, PerusOpetusTiedot, $timeout) {
-    $scope.isNaviVisible = function () { return true; };
+  .controller('PerusopetusController', function($q, $scope, $timeout, sisalto, PerusteenOsat, OppiaineenVuosiluokkakokonaisuudet, Algoritmit, Notifikaatiot, Oppiaineet) {
+    $scope.isNaviVisible = _.constant(true);
+    var peruste = sisalto[0];
+    var oppiaineet = _.zipBy(sisalto[2], 'id');
+    $scope.osaamiset = _.zipBy(sisalto[1], 'id');
+    $scope.sisallot = _.zipBy(sisalto[3], 'id');
+    $scope.vuosiluokkakokonaisuudet = _(sisalto[3]).each(function(s) { s.vuosiluokat.sort(); })
+                                                   .sortBy(function(s) { return _.first(s.vuosiluokat); })
+                                                   .value();
+    $scope.vuosiluokkakokonaisuudetMap = _.zipBy($scope.vuosiluokkakokonaisuudet, 'id');
+    $scope.valittuOppiaine = {};
+    $scope.filterSisalto = {};
+    $scope.filterOsaamiset = {};
+    $scope.tekstisisalto = sisalto[4];
 
-    var applyFilters = function ($event) {
-      if ($event) {
-        $event.preventDefault();
-        $event.stopPropagation();
-      }
-      _.each($scope.navi.sections, function (mainsection) {
-        if (mainsection.model) {
-          _.each(mainsection.model.sections, function (section) {
-            $scope.filtterit[section.title] = _(section.items).filter('$selected').pluck('value').value();
-          });
-        }
-      });
-      setPage();
+    $scope.filtterit = {
+      moodi: 'sivutus',
     };
+
+    $scope.valitseVuosiluokka = function(vuosiluokka) {
+      $scope.valittuOppiaine.vlks = undefined;
+      $timeout(function() {
+        $scope.filtterit.valittuKokonaisuus = vuosiluokka;
+        $scope.valittuOppiaine.vlks = $scope.valittuOppiaine.vuosiluokkakokonaisuudet[vuosiluokka];
+        $scope.valittuOppiaine.sisallot = $scope.sisallot[$scope.valittuOppiaine.vlks.vuosiluokkaKokonaisuus];
+        paivitaTavoitteet();
+      });
+    };
+
+    function valitseOppiaine(oppiaine) {
+      oppiaine = _.isObject(oppiaine) ? oppiaine.value : oppiaine;
+      Oppiaineet.get({ perusteId: peruste.id, osanId: oppiaine }, function(res) {
+        var valittuOppiaine = {};
+        valittuOppiaine.oppiaine = res;
+        valittuOppiaine.vuosiluokkakokonaisuudet = _.zipBy(res.vuosiluokkakokonaisuudet, 'vuosiluokkaKokonaisuus');
+        $scope.valittuOppiaine = valittuOppiaine;
+        $scope.valitseVuosiluokka($scope.valittuOppiaine.vuosiluokkakokonaisuudet[$scope.filtterit.valittuKokonaisuus] ?
+                                  $scope.filtterit.valittuKokonaisuus :
+                                  _.first(_.keys($scope.valittuOppiaine.vuosiluokkakokonaisuudet)));
+      }, Notifikaatiot.serverCb);
+    }
+
+    function valitseAktiivinenTekstisisalto(osaId) {
+      $scope.valittuTekstisisalto = undefined;
+      PerusteenOsat.get({
+        osanId: osaId
+      }, function(res) {
+        $scope.valittuTekstisisalto = res;
+      });
+    }
+
+    function rakennaTekstisisalto() {
+      var suunnitelma = [];
+      Algoritmit.kaikilleLapsisolmuille($scope.tekstisisalto, 'lapset', function(osa, depth) {
+        suunnitelma.push({
+          $osa: osa,
+          label: osa.perusteenOsa.nimi,
+          depth: depth,
+        });
+      });
+      if ($scope.tekstisisalto && $scope.tekstisisalto.lapset) {
+        valitseAktiivinenTekstisisalto($scope.tekstisisalto.lapset[0]._perusteenOsa);
+        _.first(suunnitelma).$selected = true;
+      }
+      return suunnitelma;
+    }
 
     $scope.navi = {
       header: 'perusteen-sisalto',
       oneAtATime: true,
-      sections: [
-        {
+      sections: [{
+          include: 'views/partials/perusopetustekstisisalto.html',
           title: 'Opetussuunnitelma',
+          $open: false,
           id: 'suunnitelma',
-          items: PerusOpetusTiedot.yleiset
-        },
-        {
+          items: rakennaTekstisisalto(),
+          update: function(item, section) {
+            valitseAktiivinenTekstisisalto(item.$osa._perusteenOsa);
+            _.each(section.items, function(osa) { osa.$selected = false; });
+            item.$selected = true;
+          }
+        }, {
           title: 'Opetuksen sisällöt',
           id: 'sisalto',
           include: 'views/partials/navifilters.html',
           $open: true,
+          oneAtATime: true,
           model: {
-            oneAtATime: false,
-            sections: [
-              {
-                title: 'Vuosiluokat',
-                apply: applyFilters,
-                $open: true,
-                $condensed: true,
-                items: _.map(PerusOpetusTiedot.luokat, function (luokka) {
-                  return {label: 'Vuosiluokka ' + luokka, value: luokka};
-                })
-              },
-              {
-                title: 'Oppiaineet',
-                items: PerusOpetusTiedot.oppiaineet,
-                $open: true,
-                apply: applyFilters
-              },
-              {
-                title: 'Oppiaineen sisällöt',
-                $open: true,
-                items: PerusOpetusTiedot.oppiaineenSisallot,
-                apply: applyFilters
-              },
-            ]
+            sections: [{
+              title: 'Vuosiluokat',
+              apply: angular.noop,
+              $open: false,
+              $condensed: true,
+              items: _.map($scope.vuosiluokkakokonaisuudet, function(kokonaisuus) {
+                return { label: kokonaisuus.nimi, value: kokonaisuus.id, $selected: true };
+              }),
+              update: function(item, section) {
+                paivitaSivunavi(section);
+              }
+            }, {
+              title: 'Oppiaineet',
+              id: 'oppiaineet',
+              items: [],
+              $open: true,
+              include: 'views/partials/perusopetusoppiaineetsivunavi.html',
+              apply: angular.noop,
+              selectOppiaine: valitseOppiaine,
+              isCurrentOppiaine: function(item) {
+                return $scope.valittuOppiaine && $scope.valittuOppiaine.oppiaine && $scope.valittuOppiaine.oppiaine.id === item.value;
+              }
+            }, {
+              id: 'sisallot',
+              title: 'Oppiaineen sisällöt',
+              $all: true,
+              $open: false,
+              items: _.map(['tehtava', 'ohjaus', 'tyotavat', 'tavoitteet'], function(item) {
+                return { label: 'perusopetus-' + item, value: item, depth: 0, $selected: true };
+              }),
+              update: function(item) {
+                $scope.filterSisalto[item.value] = !item.$selected;
+              }
+            }, {
+              id: 'osaamiset',
+              title: 'Laaja-alaiset osaamiset',
+              $all: true,
+              $open: false,
+              items: _.map($scope.osaamiset, function(item) {
+                return { label: item.nimi, value: item.id, depth: 0, $selected: false };
+              }),
+              update: function(item) {
+                $scope.filterOsaamiset[item.value] = !item.$selected;
+                paivitaTavoitteet();
+              }
+            }]
           }
-        },
-        {
+        }, {
           title: 'Liitteet',
           id: 'liitteet'
         },
       ]
     };
 
-    $scope.filtterit = {moodi: 'sivutus', sivu: 1};
-    var setPage = function () {
-      // set page to first valid page
-      if ($scope.filtterit.moodi === 'sivutus' && !_.isEmpty($scope.filtterit.Vuosiluokat)) {
-        $scope.filtterit.sivu = $scope.filtterit.Vuosiluokat[0];
+    function paivitaTavoitteet() {
+      if ($scope.valittuOppiaine.vlks) {
+        var filteritTyhjat = _.all($scope.filterOsaamiset, function(v) {
+          return v === true;
+        });
+        _.each($scope.valittuOppiaine.vlks.tavoitteet, function(tavoite) {
+          if (filteritTyhjat || !_.isEmpty(tavoite.laajattavoitteet)) {
+            tavoite.$rejected = false;
+          }
+          else {
+            tavoite.$rejected = !_.any(tavoite.laajattavoitteet, function(lt) {
+              return $scope.filterOsaamiset[lt] === false;
+            });
+          }
+        });
       }
-    };
-    $scope.$watch('filtterit.moodi', function () {
-      setPage();
-    });
+    }
+
+    function paivitaSivunavi(vlfiltteri) {
+      var navi = {};
+      var vlfiltteriMap = _.zipBy(vlfiltteri ? vlfiltteri.items : [], 'value', '$selected');
+      navi.oppiaineet = [];
+      _.forEach(_.values(oppiaineet), function(oa) {
+        function vuosiluokkaFiltteri(item) {
+          return !_.isEmpty(item.vuosiluokkakokonaisuudet) && (!vlfiltteri || _.any(item.vuosiluokkakokonaisuudet, function(vlk) {
+            return vlfiltteriMap[vlk._vuosiluokkaKokonaisuus];
+          }));
+        }
+
+        if (vuosiluokkaFiltteri(oa)) {
+          navi.oppiaineet.push({
+            depth: 0,
+            label: oa.nimi,
+            value: oa.id
+          });
+
+          if (oa.koosteinen && oa.oppimaarat && oa.oppimaarat.length > 0) {
+            _.each(oa.oppimaarat, function(om) {
+              if (vuosiluokkaFiltteri(om)) {
+                navi.oppiaineet.push({
+                  label: om.nimi,
+                  value: om.id,
+                  depth: 1
+                });
+              }
+            });
+          }
+        }
+      });
+
+      _.each($scope.navi.sections[1].model.sections, function(v) {
+        if (navi[v.id]) {
+          v.items = navi[v.id];
+        }
+      });
+    }
+    paivitaSivunavi();
 
     // Watch which main section is currently open
     $scope.$watch(function () {
@@ -269,193 +400,7 @@ angular.module('eperusteApp')
     }, function () {
       var active = _.find($scope.navi.sections, '$open');
       $scope.activeSection = active ? active.id : null;
-      if ($scope.activeSection === 'sisalto') {
-        $timeout(function () {
-          applyFilters();
-        });
-      }
     });
 
-    FilterWatcher.register(applyFilters);
-  })
-  .service('FilterWatcher', function () {
-    var cb = angular.noop;
-    this.register = function (callback) {
-      cb = callback;
-    };
-    this.notify = function () {
-      cb();
-    };
-  })
-
-  .directive('multichoice', function (FilterWatcher) {
-    return {
-      restrict: 'AE',
-      templateUrl: 'views/partials/multichoice.html',
-      scope: {
-        items: '=',
-        condensed: '='
-      },
-      link: function (scope) {
-        _.each(scope.items, function (item) {
-          item.$selected = true;
-        });
-        // activate initial choices when choices have been rendered
-        FilterWatcher.notify();
-      },
-      controller: function ($scope) {
-        $scope.model = {
-          all: true
-        };
-        $scope.toggle = function () {
-          _.each($scope.items, function (item) {
-            item.$selected = $scope.model.all;
-          });
-        };
-        $scope.update = function () {
-          var all = _.filter($scope.items, '$selected').length === $scope.items.length;
-          if (all && !$scope.model.all) {
-            $scope.model.all = true;
-          }
-          if (!all && $scope.model.all) {
-            $scope.model.all = false;
-          }
-        };
-      }
-    };
-  })
-
-  /*.controller('TagFilterController', function ($scope) {
-    $scope.model = {
-      tags: {
-        items: [],
-        clear: function () {
-          $scope.model.tags.items = [];
-        }
-      },
-      dialog: {
-        isOpen: false,
-        addButtonPressed: function () {
-          $scope.model.dialog.isOpen = !$scope.model.dialog.isOpen;
-        },
-        close: function () {
-          $scope.model.dialog.isOpen = false;
-        }
-      }
-    };
-  })*/
-
-  .service('PerusOpetusTiedot', function () {
-    this.yleiset = [
-      {label: '1 PAIKALLISEN OPETUSSUUNNITELMAN MERKITYS JA LAADINTA', depth: 0},
-      {label: '1.1 Opetussuunnitelman perusteet ja paikallinen opetussuunnitelma', depth: 1},
-      {label: '1.2 Opetussuunnitelman laatimista ohjaavat periaatteet', depth: 1},
-      {label: '1.3 Opetussuunnitelman arviointi ja kehittäminen 6', depth: 1},
-      {label: '1.4 Paikallisen opetussuunnitelman laadinta ja keskeiset opetusta ohjaavat ratkaisut', depth: 1},
-      {label: '2 PERUSOPETUS YLEISSIVISTYKSEN PERUSTANA', depth: 0},
-      {label: '2.1 Opetuksen järjestämistä ohjaavat velvoitteet', depth: 1},
-      {label: '2.2 Perusopetuksen arvoperusta', depth: 1},
-      {label: '2.3 Oppimiskäsitys', depth: 1},
-      {label: '2.4 Paikallisesti päätettävät asiat', depth: 1},
-      {label: '3 PERUSOPETUKSEN TEHTÄVÄ JA TAVOITTEET', depth: 0},
-      {label: '3.1 Perusopetuksen tehtävä', depth: 1},
-      {label: '3.2 Opetuksen ja kasvatuksen valtakunnalliset tavoitteet', depth: 1},
-      {label: '3.3 Laaja-alainen osaaminen', depth: 1},
-      {label: '3.4 Paikallisesti päätettävät asiat', depth: 1},
-      {label: '4 YHTENÄISEN PERUSOPETUKSEN TOIMINTAKULTTUURI', depth: 0},
-      {label: '4.1 Toimintakulttuurin merkitys ja kehittäminen', depth: 1},
-      {label: '4.2 Toimintakulttuurin kehittämistä ohjaavat periaatteet', depth: 1},
-      {label: '4.3 Oppimisympäristöt ja työtavat', depth: 1},
-      {label: '4.4 Opetuksen eheyttäminen ja monialaiset oppimiskokonaisuudet', depth: 1},
-      {label: '4.5 Paikallisesti päätettävät asiat', depth: 1},
-      {label: '5 OPPIMISEN JA HYVINVOINNIN EDISTÄMINEN KOULUTYÖN JÄRJESTÄMISESSÄ', depth: 0},
-      {label: '5.1 Yhteinen vastuu koulupäivästä', depth: 1},
-      {label: '5.2 Yhteistyö', depth: 1},
-      {label: '5.3 Opetuksen järjestäminen eri tilanteissa', depth: 1},
-      {label: '5.4 Perusopetusta tukeva muu toiminta', depth: 1},
-      {label: '5.5 Paikallisesti päätettävät asiat', depth: 1},
-      {label: '6 OPPIMISEN ARVIOINTI', depth: 0},
-      {label: '6.1 Arvioinnin tehtävät ja oppimista tukeva arviointikulttuuri', depth: 1},
-      {label: '6.2 Arvioinnin luonne ja yleiset periaatteet', depth: 1},
-      {label: '6.3 Arvioinnin kohteet', depth: 1},
-      {label: '6.4 Opintojen aikainen arviointi', depth: 1},
-      {label: '6.4.1 Arviointi lukuvuoden aikana', depth: 2},
-      {label: '6.4.2 Arviointi lukuvuoden päättyessä', depth: 2},
-      {label: '6.4.3 Opinnoissa eteneminen perusopetuksen aikana', depth: 2},
-      {label: '6.4.4 Arviointi nivelvaiheissa', depth: 2},
-      {label: '6.5 Perusopetuksen päättöarviointi', depth: 1},
-      {label: '6.5.1 Päättöarvosanan muodostaminen', depth: 2},
-      {label: '6.5.2 Johonkin oppiaineeseen tai erityiseen tehtävään painottuva opetus ja päättöarviointi', depth: 2},
-      {label: '6.6 Perusopetuksessa käytettävät todistukset ja todistusmerkinnät', depth: 1},
-      {label: '6.7 Paikallisesti päätettävät asiat', depth: 1},
-      {label: '7 OPPIMISEN JA KOULUNKÄYNNIN TUKI', depth: 0},
-      {label: '7.1 Tuen järjestämistä ohjaavat periaatteet', depth: 1},
-      {label: '7.1.1 Ohjaus tuen aikana', depth: 2},
-      {label: '7.1.2 Kodin ja koulun yhteistyö tuen aikana', depth: 2},
-      {label: '7.2 Yleinen tuki', depth: 1},
-      {label: '7.3 Tehostettu tuki', depth: 1},
-      {label: '7.3.1 Pedagoginen arvio', depth: 2},
-      {label: '7.3.2 Oppimissuunnitelma tehostetun tuen aikana', depth: 2},
-      {label: '7.4 Erityinen tuki', depth: 1},
-      {label: '7.4.1 Pedagoginen selvitys', depth: 2},
-      {label: '7.4.2 Erityisen tuen päätös', depth: 2},
-      {label: '7.4.3 Henkilökohtainen opetuksen järjestämistä koskeva suunnitelma', depth: 2},
-      {label: '7.4.4 Oppiaineen oppimäärän yksilöllistäminen ja opetuksesta vapauttaminen', depth: 2},
-      {label: '7.4.5 Pidennetty oppivelvollisuus', depth: 2},
-      {label: '7.4.6 Toiminta-alueittain järjestettävä opetus', depth: 2},
-      {label: '7.5 Perusopetuslaissa säädetyt tukimuodot', depth: 1},
-      {label: '7.5.1 Tukiopetus', depth: 2},
-      {label: '7.5.2 Osa-aikainen erityisopetus', depth: 2},
-      {label: '7.5.3 Opetukseen osallistumisen edellyttämät palvelut ja apuvälineet', depth: 2},
-      {label: '7.6 Paikallisesti päätettävät asiat', depth: 1},
-      {label: '8 OPPILASHUOLTO', depth: 0},
-      {label: '9 KIELI- JA KULTTUURIRYHMIEN OPETUS', depth: 0},
-      {label: '9.1 Saamelaiset ja saamenkieliset', depth: 1},
-      {label: '9.2 Romanit', depth: 1},
-      {label: '9.3 Viittomakieliset', depth: 1},
-      {label: '9.4 Muutoin monikieliset oppilaat', depth: 1},
-      {label: '9.5 Paikallisesti päätettävät asiat', depth: 1},
-      {label: '10 KAKSIKIELINEN OPETUS', depth: 0},
-      {label: '10.1 Kaksikielisen opetuksen tavoitteet ja opetuksen järjestämisen lähtökohtia', depth: 1},
-      {label: '10.2 Laajamittainen kaksikielinen opetus', depth: 1},
-      {label: '10.3 Suppeampi kaksikielinen opetus', depth: 1},
-      {label: '10.4 Paikallisesti päätettävät asiat', depth: 1},
-      {label: '11 ERITYISEEN MAAILMANKATSOMUKSEEN TAI KASVATUSOPILLISEEN JÄRJESTELMÄÄN PERUSTUVA PERUSOPETUS', depth: 0},
-      {label: '11.1 Opetuksen järjestämisen periaatteet', depth: 1},
-      {label: '11.2 Paikallisesti päätettävät asiat', depth: 1},
-      {label: '12 VALINNAISET OPINNOT', depth: 0},
-    ];
-
-    this.luokat = _.range(1,10);
-
-    var oppiainelista = [
-      {label: 'Äidinkieli ja kirjallisuus'},
-      {label: 'Suomenkieli ja kirjallisuus', depth: 1},
-      {label: 'Saamenkieli ja kirjallisuus', depth: 1},
-      {label: 'Romanikieli ja kirjallisuus', depth: 1},
-      {label: 'Toinen kotimainen kieli'},
-      {label: 'Ruotsi, A-oppimäärä', depth: 1},
-      {label: 'Ruotsi, B1-oppimäärä', depth: 1},
-      {label: 'Matematiikka'},
-      {label: 'Fysiikka'},
-      {label: 'Kemia'},
-      {label: 'Musiikki'},
-      {label: 'Liikunta'},
-    ];
-    this.oppiaineet = _.map(oppiainelista, function (oppiaine) {
-      oppiaine.depth = oppiaine.depth || 0;
-      oppiaine.value = oppiaine.label;
-      return oppiaine;
-    });
-
-    this.oppiaineenSisallot = _.map([
-      'Oppiaineen tehtävä',
-      'Opetuksen tavoitteet',
-      'Tavoitteisiin liittyvät keskeiset sisältöalueet',
-      'Oppimisympäristöihin ja työtapoihin liittyvät tavoitteet',
-      'Ohjaus ja tuki oppiaineessa',
-      'Oppilaan oppimisen arviointi'
-    ], function (sisalto) {
-      return {label: sisalto, value: sisalto, depth: 0};
-    });
+    valitseOppiaine(_.first(_.keys(oppiaineet)));
   });

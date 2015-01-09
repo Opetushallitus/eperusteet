@@ -37,7 +37,6 @@ angular.module('eperusteApp')
         { name: 'clipboard', items : [ 'Cut','Copy','Paste','-','Undo','Redo' ] },
         { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
         { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent'] },
-        { name: 'styles', items : [ 'Format' ] },
         { name: 'tools', items : [ 'About' ] }
       ],
     normal:
@@ -46,7 +45,6 @@ angular.module('eperusteApp')
         { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
         { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
         { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link','Termi' ] },
-        { name: 'styles', items : [ 'Format' ] },
         { name: 'tools', items : [ 'About' ] }
       ]
   })
@@ -134,6 +132,7 @@ angular.module('eperusteApp')
           $scope.closeMessage();
         }, 8000);
         $scope.adding = false;
+        setDeferred = _.clone(termi.avain);
         $scope.init();
       });
     };
@@ -259,8 +258,9 @@ angular.module('eperusteApp')
         });
 
         function trim(obj) {
+          // Replace all nbsps with normal spaces, remove extra spaces and trim ends.
           if (_.isString(obj)) {
-            obj = obj.replace(/&nbsp;/gi, '').trim();
+            obj = obj.replace(/&nbsp;/gi, ' ').replace(/ +/g, ' ').trim();
           }
           return obj;
         }

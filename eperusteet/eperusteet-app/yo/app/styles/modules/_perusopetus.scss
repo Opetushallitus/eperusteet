@@ -1,3 +1,14 @@
+.vuosiluokka-sisalto {
+  &.editing {
+    padding-left: 15px;
+  }
+  max-width: 1000px;
+  .panel-heading.vuosiluokka-osio {
+    position: relative;
+    padding: 10px 15px 0 0;
+  }
+}
+
 .osaaminen {
   .editing {
     .panel-body {
@@ -374,6 +385,24 @@ h4 .drag-handle {
   .panel-heading .badge {
     margin-right: -15px;
   }
+
+  .oppiaine {
+    margin-bottom: 5px;
+    padding: 3px;
+    cursor: pointer;
+  }
+
+  .oppimaara {
+    margin-left: 30px;
+  }
+
+  .oppiaine-selected {
+    border-radius: 3px;
+    background-color: #0C566E;
+    font-weight: bold;
+    color: #eee;
+  }
+
 }
 
 .oppiaine {
@@ -382,8 +411,31 @@ h4 .drag-handle {
 }
 
 .perusopetus {
-  .nav-pills {
-    margin-bottom: 15px;
+  .tekstisisalto {
+    margin-bottom: 4px;
+    padding: 3px;
+    cursor: pointer;
+  }
+
+  .tekstisisalto-active {
+    background-color: #0C566E;
+    color: white;
+  }
+
+  .oppiaine-nimi {
+    border-bottom: 1px solid #aaa;
+  }
+  .vuosiluokkavalitsin {
+    float: right;
+    position: relative;
+    top: -69px;
+    margin-bottom: -80px;
+
+    .nav-pills {
+      .fixme {
+        border-radius: 0px;
+      }
+    }
   }
   .moodit {
     margin-top: -40px;

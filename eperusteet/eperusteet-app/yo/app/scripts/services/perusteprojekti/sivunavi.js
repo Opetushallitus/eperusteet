@@ -62,9 +62,6 @@ angular.module('eperusteApp')
       perusteenOsaViiteId: lapsi.id,
       versio: null
     };
-    if (perusteenTyyppi === 'YL') {
-      _.extend(params, {suoritustapa: 'ops'});
-    }
     return lapsi.perusteenOsa.tunniste && lapsi.perusteenOsa.tunniste === 'rakenne' ?
       ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: ''}] :
       [STATE_TEKSTIKAPPALE, params];
@@ -178,22 +175,12 @@ angular.module('eperusteApp')
 
   this.setVisible = function (visible) {
     _isVisible = _.isUndefined(visible) ? true : visible;
+    if (!_isVisible) {
+      PerusopetusService.clearCache();
+    }
   };
 
   this.isVisible = function () {
     return _isVisible;
-  };
-
-  this.setCrumb = function (ids) {
-    var crumbEl = angular.element('#tekstikappale-crumbs');
-    ids.splice(0, 1);
-    ids.reverse();
-    var crumbs = _.map(ids, function (id) {
-      return {name: nameMap[id], id: id};
-    });
-    var scope = crumbEl.scope();
-    if (scope) {
-      scope.setCrumbs(crumbs);
-    }
   };
 });

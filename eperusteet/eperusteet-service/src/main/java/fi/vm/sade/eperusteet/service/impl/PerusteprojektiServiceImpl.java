@@ -20,21 +20,27 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Koulutus;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTyoryhma;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.PerusteprojektiTyoryhma;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
@@ -69,8 +75,11 @@ import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -206,7 +215,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         perusteprojekti.setRyhmaOid(perusteprojektiDto.getRyhmaOid());
 
         if (tyyppi != PerusteTyyppi.POHJA) {
-            if (koulutustyyppi != null && koulutustyyppi.equals("koulutustyyppi_1") && yksikko == null) {
+            if (koulutustyyppi != null && koulutustyyppi.equals(KoulutusTyyppi.PERUSTUTKINTO.toString()) && yksikko == null) {
                 throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
             }
             if (perusteprojektiDto.getDiaarinumero() == null) {
@@ -274,6 +283,103 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         return p.getTila().mahdollisetTilat(p.getPeruste().getTyyppi());
     }
 
+    @Transactional(readOnly = true)
+    public void tarkistaTekstipalanen(final String nimi, final TekstiPalanen palanen, final Set<Kieli> pakolliset, Map<String, String> virheellisetKielet) {
+        tarkistaTekstipalanen(nimi, palanen, pakolliset, virheellisetKielet, false);
+    }
+
+    @Transactional(readOnly = true)
+    public void tarkistaTekstipalanen(final String nimi, final TekstiPalanen palanen, final Set<Kieli> pakolliset, Map<String, String> virheellisetKielet, boolean pakollinen) {
+        if (palanen == null || palanen.getTeksti() == null) {
+            return;
+        }
+
+        // Oispa lambdat
+        boolean onJollainVaditullaKielella = false;
+        if (!pakollinen) {
+            for (Kieli kieli : pakolliset) {
+                if (onJollainVaditullaKielella) {
+                    break;
+                }
+                for (Entry<Kieli, String> osa : palanen.getTeksti().entrySet()) {
+                    if (osa.getValue() != null && !osa.getValue().isEmpty()) {
+                        onJollainVaditullaKielella = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (pakollinen || onJollainVaditullaKielella) {
+            for (Kieli kieli : pakolliset) {
+                Map<Kieli, String> teksti = palanen.getTeksti();
+                if (!teksti.containsKey(kieli) || teksti.get(kieli) == null || teksti.get(kieli).isEmpty()) {
+                    virheellisetKielet.put(nimi, kieli.name());
+                }
+            }
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public void tarkistaSisalto(final PerusteenOsaViite viite, final Set<Kieli> pakolliset, Map<String, String> virheellisetKielet) {
+        PerusteenOsa perusteenOsa = viite.getPerusteenOsa();
+        if (perusteenOsa instanceof TekstiKappale && (perusteenOsa.getTunniste() == PerusteenOsaTunniste.NORMAALI || perusteenOsa.getTunniste() == null)) {
+            TekstiKappale tekstikappale = (TekstiKappale)perusteenOsa;
+            tarkistaTekstipalanen("peruste-validointi-tekstikappale-nimi", tekstikappale.getNimi(), pakolliset, virheellisetKielet, true);
+            tarkistaTekstipalanen("peruste-validointi-tekstikappale-teksti", tekstikappale.getTeksti(), pakolliset, virheellisetKielet);
+        }
+        for (PerusteenOsaViite lapsi : viite.getLapset()) {
+            tarkistaSisalto(lapsi, pakolliset, virheellisetKielet);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public void tarkistaRakenne(final AbstractRakenneOsa aosa, final Set<Kieli> pakolliset, Map<String, String> virheellisetKielet) {
+        tarkistaTekstipalanen("peruste-validointi-rakenneosa-kuvaus", aosa.getKuvaus(), pakolliset, virheellisetKielet);
+        if (aosa instanceof RakenneModuuli) {
+            RakenneModuuli osa = (RakenneModuuli)aosa;
+            for (AbstractRakenneOsa lapsi : osa.getOsat()) {
+                tarkistaRakenne(lapsi, pakolliset, virheellisetKielet);
+            }
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public Map<String, String> tarkistaPerusteenTekstipalaset(Peruste peruste) {
+        if (peruste.getTyyppi() == PerusteTyyppi.POHJA) {
+            return new HashMap<>();
+        }
+
+        Set<Kieli> vaaditutKielet = peruste.getKielet();
+        Map<String, String> virheellisetKielet = new HashMap<>();
+        tarkistaTekstipalanen("peruste-validointi-kuvaus", peruste.getKuvaus(), vaaditutKielet, virheellisetKielet);
+        tarkistaTekstipalanen("peruste-validointi-nimi", peruste.getNimi(), vaaditutKielet, virheellisetKielet);
+
+        for (Koulutus koulutus : peruste.getKoulutukset()) {
+            tarkistaTekstipalanen("peruste-validointi-koulutus-nimi", koulutus.getNimi(), vaaditutKielet, virheellisetKielet);
+        }
+
+        for (Suoritustapa st : peruste.getSuoritustavat()) {
+            PerusteenOsaViite sisalto = st.getSisalto();
+            for (PerusteenOsaViite lapsi : sisalto.getLapset()) {
+                tarkistaSisalto(lapsi, vaaditutKielet, virheellisetKielet);
+            }
+
+            tarkistaRakenne(st.getRakenne(), vaaditutKielet, virheellisetKielet);
+
+            for (TutkinnonOsaViite tov : st.getTutkinnonOsat()) {
+                TutkinnonOsa tosa = tov.getTutkinnonOsa();
+                tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-ammattitaidon-osoittamistavat", tosa.getAmmattitaidonOsoittamistavat(), vaaditutKielet, virheellisetKielet);
+                tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-ammattitaitovaatimukset", tosa.getAmmattitaitovaatimukset(), vaaditutKielet, virheellisetKielet);
+                tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-kuvaus", tosa.getKuvaus(), vaaditutKielet, virheellisetKielet);
+                tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-nimi", tosa.getNimi(), vaaditutKielet, virheellisetKielet, true);
+                tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-tavoitteet", tosa.getTavoitteet(), vaaditutKielet, virheellisetKielet);
+            }
+        }
+
+        return virheellisetKielet;
+    }
+
     @Override
     @Transactional(readOnly = false)
     public TilaUpdateStatus updateTila(Long id, ProjektiTila tila) {
@@ -306,7 +412,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         // Perusteen validointi
         if (projekti.getPeruste() != null && projekti.getPeruste().getSuoritustavat() != null
-            && tila == ProjektiTila.VIIMEISTELY && projekti.getTila() == ProjektiTila.LAADINTA) {
+            && tila != ProjektiTila.LAADINTA) {
             Validointi validointi;
 
             for (Suoritustapa suoritustapa : projekti.getPeruste().getSuoritustavat()) {
@@ -352,6 +458,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     String uri = tosa.getKoodiUri();
                     String arvo = tosa.getKoodiArvo();
 
+                    if (arvo != null && uri != null && uri.isEmpty()) {
+                        uri = "tutkinnonosa_" + arvo;
+                        tosa.setKoodiUri(uri);
+                    }
+
                     if (tosa.getNimi() != null && (uri != null && arvo != null && !uri.isEmpty() && !arvo.isEmpty())) {
                         KoodistoKoodiDto koodi = null;
                         try {
@@ -383,6 +494,13 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             if (!tutkinnonOsienKoodit.containsAll(koodit)) {
                 updateStatus.addStatus("tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta");
                 updateStatus.setVaihtoOk(false);
+            }
+
+            // Tarkista että kaikki vaadittu kielisisältö on asetettu
+            Map<String, String> lokalisointivirheet = tarkistaPerusteenTekstipalaset(projekti.getPeruste());
+            for (Entry<String, String> entry : lokalisointivirheet.entrySet()) {
+                updateStatus.setVaihtoOk(false);
+                updateStatus.addStatus(entry.getKey());
             }
         }
 

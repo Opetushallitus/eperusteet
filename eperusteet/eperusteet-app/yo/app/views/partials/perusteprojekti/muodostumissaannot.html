@@ -5,27 +5,31 @@
 <div class="row">
   <div class="col-md-12 ep-sisalto-inner">
 
-  <div class="action-buttons">
-    <div class="floater" ng-attr-title="{{lockNotification}}">
-      <button ng-disabled="isLocked" ng-hide="editoi || !versiot.latest" ng-click="muokkaa()"
-              class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
-              oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
-    </div>
-    <div class="floater" ng-if="!editoi && isLocked"><lukko tip="lockNotification"></lukko></div>
-  </div>
+    <revert-note object="rakenne" revert-cb="revert(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
 
-  <revert-note object="rakenne" revert-cb="revert(response)" versions="versiot" change-version="vaihdaVersio()"></revert-note>
-  <h1 ng-show="!editoi && rakenne.muodostumisOtsikko">{{rakenne.muodostumisOtsikko.nimi|kaanna}}</h1>
-  <h1 ng-show="!editoi && !rakenne.muodostumisOtsikko" kaanna="tutkinnon-muodostuminen"></h1>
-  <h1 ng-show="editoi" kaanna="tutkinnon-muodostuminen-muokkaus"></h1>
-  <div class="max-sm-leveys">
-    <versiotiedot ng-hide="editoi"></versiotiedot>
-  </div>
-  <div class="tree-presentation">
-    <tree-wrapper muokkaus="editoi" ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
-  </div>
-  <div class="clearfix"></div>
-  <kommentit></kommentit>
+    <div class="part-header-wrapper">
+      <div class="action-buttons">
+        <div class="floater" ng-attr-title="{{lockNotification}}">
+          <button ng-disabled="isLocked" ng-hide="editoi || !versiot.latest" ng-click="muokkaa()"
+                  class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
+                  oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+        </div>
+        <div class="floater" ng-if="!editoi && isLocked"><lukko tip="lockNotification"></lukko></div>
+      </div>
+
+      <h1 ng-show="!editoi && rakenne.muodostumisOtsikko">{{rakenne.muodostumisOtsikko.nimi|kaanna}}</h1>
+      <h1 ng-show="!editoi && !rakenne.muodostumisOtsikko" kaanna="tutkinnon-muodostuminen"></h1>
+      <h1 ng-show="editoi" kaanna="tutkinnon-muodostuminen-muokkaus"></h1>
+    </div>
+
+    <div class="max-sm-leveys">
+      <versiotiedot ng-hide="editoi"></versiotiedot>
+    </div>
+    <div class="tree-presentation">
+      <tree-wrapper muokkaus="editoi" ng-if="rakenne.$resolved" rakenne="rakenne"></tree-wrapper>
+    </div>
+    <div class="clearfix"></div>
+    <kommentit></kommentit>
 
   </div>
 </div>

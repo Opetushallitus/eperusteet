@@ -18,13 +18,15 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('EsiopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state,
-    TekstikappaleOperations, SuoritustapaSisaltoUUSI, TutkinnonOsaEditMode, Notifikaatiot, $stateParams, Editointikontrollit) {
+  .controller('EsiopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state, SuoritustavanSisalto,
+    TekstikappaleOperations, SuoritustapaSisalto, TutkinnonOsaEditMode, Notifikaatiot, $stateParams, Editointikontrollit) {
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     TekstikappaleOperations.setPeruste($scope.peruste);
     $scope.rajaus = '';
     $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
+
+    $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
 
     $scope.$watch('peruste.sisalto', function () {
       Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function (lapsi) {
@@ -45,14 +47,17 @@ angular.module('eperusteApp')
     };
 
     $scope.avaaSuljeKaikki = function(value) {
-      var open = _.isUndefined(value) ? false : !value;
+      var open = false;
       Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) {
-        lapsi.$opened = !open;
+        open = open || lapsi.$opened;
+      });
+      Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function(lapsi) {
+        lapsi.$opened = _.isUndefined(value) ? !open : value;
       });
     };
 
     $scope.addTekstikappale = function () {
-      SuoritustapaSisaltoUUSI.save({
+      SuoritustapaSisalto.save({
         perusteId: $scope.projekti._peruste,
         suoritustapa:  $stateParams.suoritustapa
       }, {}, function(response) {

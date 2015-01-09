@@ -30,18 +30,13 @@
     <div class="container-fluid" id="ylasivuankkuri">
       <div class="row">
         <div class="col-md-12">
-          <div class="pull-right admin-cog">
+          <div class="pull-right top-action">
             <a ng-cloak ui-sref="root.admin" icon-role="settings" kaanna="hallinta"></a>
           </div>
-          <div ng-controller="KieliCtrl" id="kielen-vaihto" class="pull-right ng-cloak">
-            <ul>
-              <li ng-repeat="item in koodit | filter:{koodi: '!'+kieli}" ng-click="vaihdaKieli(item.koodi)">
-                <span ng-if="!$first">|</span>
-                <a class="action-link" ng-click="vaihdaKieli(item.koodi)" kaanna="item.nimi"></a>
-              </li>
-            </ul>
+          <div class="pull-right top-action">
+            <kielenvaihto></kielenvaihto>
           </div>
-          <eperuste-navi ng-controller="NaviCtrl"></eperuste-navi>
+          <eperuste-navi></eperuste-navi>
           <div class="col-md-12" ui-view></div>
           <div class="col-md-12 editointi-wrapper"><editointikontrollit ng-controller="EditointiCtrl"></editointikontrollit></div>
         </div>
@@ -103,7 +98,9 @@
     <script src="scripts/directives/muokkaus/tutke2osa.js"></script>
     <script src="scripts/directives/readmore.js"></script>
     <script src="scripts/directives/contenttree.js"></script>
+    <script src="scripts/directives/perusteprojekti/murupolku.js"></script>
     <script src="scripts/services/utils.js"></script>
+    <script src="scripts/services/kieli.js"></script>
     <script src="scripts/services/ulkopuoliset.js"></script>
     <script src="scripts/services/algoritmit.js"></script>
     <script src="scripts/services/tyoryhmat.js"></script>
@@ -155,7 +152,6 @@
     <script src="scripts/controllers/esitys.js"></script>
     <script src="scripts/directives/esitysOtsikko.js"></script>
     <script src="scripts/directives/koodisto.js"></script>
-    <script src="scripts/directives/navi.js"></script>
     <script src="scripts/directives/tree.js"></script>
     <script src="scripts/controllers/modals/aikakatko.js"></script>
     <script src="scripts/directives/sivunavigaatio.js"></script>
@@ -207,7 +203,6 @@
     <script src="scripts/controllers/perusteprojekti/sisalto.js"></script>
     <script src="scripts/controllers/perusteprojekti/toimikausi.js"></script>
     <script src="scripts/services/varmistusdialogi.js"></script>
-    <script src="scripts/controllers/kieli.js"></script>
     <script src="scripts/controllers/admin.js"></script>
     <script src="scripts/directives/numberinput.js"></script>
     <script src="scripts/directives/dateformatter.js"></script>

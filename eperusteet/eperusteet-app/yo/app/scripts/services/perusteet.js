@@ -25,6 +25,9 @@ angular.module('eperusteApp')
       osanId: '@id'
     });
   })
+  .factory('PerusopetusPerusteet', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/perusopetus');
+  })
   .factory('PerusteenOsaViite', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat/:viiteId');
   })
@@ -67,7 +70,8 @@ angular.module('eperusteApp')
     return $resource(SERVICE_LOC + '/perusteet/:perusteId', {
       perusteId: '@id'
     }, {
-      info: { method: 'GET', url: SERVICE_LOC + '/perusteet/info' }
+      info: { method: 'GET', url: SERVICE_LOC + '/perusteet/info' },
+      valittavatKielet: { method: 'GET', url: SERVICE_LOC + '/perusteet/valittavatkielet', isArray: true },
     });
   })
   .factory('PerusopetuksenSisalto', function ($resource, SERVICE_LOC) {
@@ -120,18 +124,80 @@ angular.module('eperusteApp')
       }
     });
   })
-  // TODO Poista tämä factory kun suoritustapasisältö toteuttaa geneerisen sisällön haun
-  .factory('SuoritustapaSisaltoUUSI', function($resource, SERVICE_LOC) {
-    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/sisalto/UUSI', {
-      perusteId: '@id',
-      suoritustapa: '@suoritustapa'
-    }, {
-      add: {method: 'PUT'},
-      addChild: {
-        method: 'POST',
-        url: SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/sisalto/:perusteenosaViiteId/lapsi/:childId'
+  .service('SuoritustavanSisalto', function($modal, $state, Algoritmit, SuoritustapaSisalto, PerusteenOsat, PerusteProjektiService, Notifikaatiot) {
+    function lisaaSisalto(perusteId, method, sisalto, cb) {
+      cb = cb || angular.noop;
+      SuoritustapaSisalto[method]({
+        perusteId: perusteId,
+        suoritustapa: PerusteProjektiService.getSuoritustapa()
+      }, sisalto, cb, Notifikaatiot.serverCb);
+    }
+
+    function asetaUrl(lapsi) {
+      switch (lapsi.perusteenOsa.tunniste) {
+        case 'rakenne':
+          lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.muodostumissaannot');
+          lapsi.$type = 'ep-tree';
+          break;
+        default:
+          lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.tekstikappale', { perusteenOsaViiteId: lapsi.id, versio: '' });
       }
-    });
+    }
+
+    function tuoSisalto() {
+      return function(projekti, peruste) {
+        function lisaaLapset(parent, lapset, cb) {
+          cb = cb || angular.noop;
+          lapset = lapset || [];
+          if (_.isEmpty(lapset)) { cb(); return; }
+
+          var lapsi = _.first(lapset);
+          SuoritustapaSisalto.addChild({
+            perusteId: peruste,
+            suoritustapa: PerusteProjektiService.getSuoritustapa(),
+            perusteenosaViiteId: parent.id,
+            childId: lapsi.perusteenOsa.id
+          }, {}, function(res) {
+            lisaaLapset(res, lapsi.lapset, function() {
+              parent.lapset = parent.lapset || [];
+              parent.lapset.push(lapsi);
+              lisaaLapset(parent, _.rest(lapset), cb);
+            });
+          });
+        }
+
+        $modal.open({
+          templateUrl: 'views/modals/tuotekstikappale.html',
+          controller: 'TuoTekstikappale',
+          size: 'lg',
+          resolve: {
+            peruste: function() { return peruste; },
+            suoritustapa: function() { return PerusteProjektiService.getSuoritustapa(); },
+          }
+        })
+        .result.then(function(lisattavaSisalto) {
+          Algoritmit.asyncTraverse(lisattavaSisalto, function(lapsi, next) {
+            lisaaSisalto(peruste.id, 'add', { _perusteenOsa: lapsi.perusteenOsa.id }, function(pov) {
+              PerusteenOsat.get({
+                osanId: pov._perusteenOsa
+              }, function(po) {
+                pov.perusteenOsa = po;
+                lisaaLapset(pov, lapsi.lapset, function() {
+                  asetaUrl(pov);
+                  peruste.sisalto.lapset.push(pov);
+                  next();
+                });
+              });
+            });
+          }, function() { Notifikaatiot.onnistui('tekstikappaleiden-tuonti-onnistui'); });
+        });
+      };
+    }
+
+    return {
+      tuoSisalto: tuoSisalto,
+      asetaUrl: asetaUrl
+    };
   })
   .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet,
     PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {
@@ -243,13 +309,13 @@ angular.module('eperusteApp')
         return true;
       }
       else if (rakenne.osat) {
-        var löyty = false;
+        var loyty = false;
         _.forEach(rakenne.osat, function(osa) {
           if (validoiRakennetta(osa, testi)) {
-            löyty = true;
+            loyty = true;
           }
         });
-        return löyty;
+        return loyty;
       }
       return false;
     }

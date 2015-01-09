@@ -13,6 +13,7 @@ describe('Directive: formfield', function () {
 
   beforeEach(inject(function ($rootScope, _$compile_, _$httpBackend_, _$timeout_) {
     $httpBackend = _$httpBackend_;
+    $httpBackend.when('GET', /cas\/me/).respond({});
     $httpBackend.when('GET', /localisation.+/).respond({});
     $httpBackend.when('GET', /eperusteet-service\/api.+/).respond({});
     $httpBackend.when('GET', /views\/aloitussivu.+/).respond({});
@@ -58,6 +59,19 @@ describe('Directive: formfield', function () {
       input.scope().input.model = 'value';
       scope.$digest();
       expect(scope.data.deeper.anddeeper.text).toBe('value');
+    });
+  });
+
+  describe('formfield of type textarea', function () {
+    it('should render itself as textarea element', function () {
+      scope.data = {
+        model: {
+          fi: 'moi'
+        }
+      };
+      kaanna('<formfield label="teksti" model="data" model-var="model" type="textarea"></formfield>');
+      var input = element.find('textarea');
+      expect(input.length).toBe(1);
     });
   });
 
