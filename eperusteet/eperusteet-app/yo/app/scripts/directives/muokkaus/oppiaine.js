@@ -87,7 +87,8 @@ angular.module('eperusteApp')
 
   .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna, Notifikaatiot,
       PerusteProjektiSivunavi, Oppiaineet, $timeout, $state, $stateParams, $q, YleinenData, tabHelper,
-      CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus, VlkUtils, ProjektinMurupolkuService, Varmistusdialogi) {
+      CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus, VlkUtils, ProjektinMurupolkuService, Varmistusdialogi,
+      Koodisto, MuokkausUtils) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.mappedVuosiluokat = [];
@@ -110,6 +111,15 @@ angular.module('eperusteApp')
     }
 
     var cloner = CloneHelper.init(['koosteinen', 'nimi', 'tehtava', 'vuosiluokkakokonaisuudet']);
+
+    $scope.openKoodisto = Koodisto.modaali(function(koodisto) {
+      MuokkausUtils.nestedSet($scope.editableModel, 'koodiUri', ',', koodisto.koodiUri);
+      MuokkausUtils.nestedSet($scope.editableModel, 'koodiArvo', ',', koodisto.koodiArvo);
+    }, {
+      tyyppi: function() { return 'oppiaineetyleissivistava'; },
+      ylarelaatioTyyppi: function() { return ''; },
+      tarkista: _.constant(true)
+    });
 
     $scope.generateLink = function(model) {
       return $state.href('root.perusteprojekti.suoritustapa.osaalue', _.extend(_.clone($stateParams), {

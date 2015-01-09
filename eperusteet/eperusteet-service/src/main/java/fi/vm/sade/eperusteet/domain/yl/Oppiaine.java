@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
@@ -68,6 +69,16 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     @Getter
     @ManyToOne(optional = true)
     private Oppiaine oppiaine;
+
+    @Getter
+    @Setter
+    @Column(name = "koodi_uri")
+    private String koodiUri;
+
+    @Getter
+    @Setter
+    @Column(name = "koodi_arvo")
+    private String koodiArvo;
 
     /**
      * kertoo koostuuko oppiaine oppimääristä (esim. äidinkieli ja kirjallisuus) vai onko se "yksinkertainen" kuten matematiikka.
