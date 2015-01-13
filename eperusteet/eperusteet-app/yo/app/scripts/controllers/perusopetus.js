@@ -26,6 +26,9 @@ angular.module('eperusteApp')
     $scope.rajaus = '';
 
     $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
+    $scope.$esitysurl = $state.href('root.selaus.perusopetus', {
+      perusteId: $scope.peruste.id
+    });
 
     $scope.$watch('peruste.sisalto', function () {
       Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function (lapsi) {

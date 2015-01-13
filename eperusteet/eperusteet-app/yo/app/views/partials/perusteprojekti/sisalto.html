@@ -19,6 +19,11 @@ European Union Public Licence for more details.
             <h3 kaanna="perusteen-tiivistelma"></h3>
             <p ng-bind="tiivistelma|kaanna"></p>
         </div>
+
+        <div class="esityksen-tarkastelu">
+            <a class="url" href="{{ $esitysurl }}" kaanna="'tarkastele-esitysta'"></a>
+        </div>
+
         <div ng-show="peruste.suoritustavat.length > 1 && !muokkausTutkintokohtaisetOsat">
             <ul class="nav nav-tabs nav-justified suoritustapa-valinta">
                 <li ng-class="{ active: valittuSuoritustapa === st.suoritustapakoodi }" ng-repeat="st in peruste.suoritustavat"
@@ -27,6 +32,7 @@ European Union Public Licence for more details.
                 </li>
             </ul>
         </div>
+
         <div class="tutkinto">
             <div ng-hide="muokkausTutkintokohtaisetOsat">
                 <div class="toolbar-input pull-left">

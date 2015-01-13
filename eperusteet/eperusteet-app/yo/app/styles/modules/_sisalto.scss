@@ -17,6 +17,13 @@ $sisalto-hover-bg: #eee;
 .tutkinto-sisalto {
   margin: -30px auto 100px auto;
 
+  .esityksen-tarkastelu {
+    margin-bottom: 10px;
+    .url {
+      font-size: large
+    }
+  }
+
   .tiivistelma {
     margin-bottom: 40px;
   }
