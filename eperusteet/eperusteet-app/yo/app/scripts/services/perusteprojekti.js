@@ -206,8 +206,7 @@ angular.module('eperusteApp')
       // TODO replace with one resource call that fetches the whole structure
       var promises = [];
       _.each(PerusopetusService.LABELS, function (key) {
-        var osat = PerusopetusService.getOsat(key, true);
-        var promise = osat.$promise;
+        var promise = PerusopetusService.getOsat(key, true);
         promise.then(function (data) {
           ylTiedot[key] = data;
         });

@@ -59,9 +59,11 @@ angular.module('eperusteApp')
     _.each(PerusopetusService.sisallot, function (item) {
       var data = {
         nimi: item.label,
-        tyyppi: item.tyyppi,
-        lapset: PerusopetusService.getOsat(item.tyyppi, true)
+        tyyppi: item.tyyppi
       };
+      PerusopetusService.getOsat(item.tyyppi, true).then(function (res) {
+        data.lapset = res;
+      });
       $scope.datat.opetus.lapset.push(data);
     });
     $scope.peruste.sisalto = $scope.datat.sisalto;
@@ -134,9 +136,14 @@ angular.module('eperusteApp')
       return;
     }
     var vuosiluokkakokonaisuudet = [];
-    $scope.osaAlueet = PerusopetusService.getOsat($stateParams.osanTyyppi);
+    $scope.osaAlueet = [];
+    PerusopetusService.getOsat($stateParams.osanTyyppi).then(function (res) {
+      $scope.osaAlueet = res;
+    });
     if ($stateParams.osanTyyppi === PerusopetusService.OPPIAINEET) {
-      vuosiluokkakokonaisuudet = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT, true);
+      PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT, true).then(function (res) {
+        vuosiluokkakokonaisuudet = res;
+      });
     }
 
     var oppiaineFilter = {

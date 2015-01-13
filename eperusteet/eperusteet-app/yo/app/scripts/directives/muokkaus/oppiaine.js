@@ -97,8 +97,9 @@ angular.module('eperusteApp')
     $scope.activeTab = parseInt($stateParams.tabId, 10);
     var creatingNewOppimaara = !!OppimaaraHelper.instance();
     $scope.oppimaaraRequested = false;
-    $scope.oppiaineet = PerusopetusService.getOsat(PerusopetusService.OPPIAINEET, true);
-    $scope.oppiaineet.$promise.then(function (data) {
+    $scope.oppiaineet = [];
+    PerusopetusService.getOsat(PerusopetusService.OPPIAINEET, true).then(function (data) {
+      $scope.oppiaineet = data;
       $scope.oppiaineMap = _.zipObject(_.map(data, function (oppiaine) {
         oppiaine.$url = $scope.generateLink(oppiaine);
         return [''+oppiaine.id, oppiaine];
@@ -405,7 +406,7 @@ angular.module('eperusteApp')
       }
       updateTypeInfo();
     });
-    var vuosiluokatPromise = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT).$promise;
+    var vuosiluokatPromise = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT);
 
     function getTitle(key) {
       var obj = {};
