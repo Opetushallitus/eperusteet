@@ -270,11 +270,11 @@ angular.module('eperusteApp')
 
     $scope.navi = {
       header: 'perusteen-sisalto',
-      oneAtATime: true,
+      showOne: true,
       sections: [{
           include: 'views/partials/perusopetustekstisisalto.html',
           title: 'Opetussuunnitelma',
-          $open: false,
+          $open: true,
           id: 'suunnitelma',
           items: rakennaTekstisisalto(),
           update: function(item, section) {
@@ -286,8 +286,7 @@ angular.module('eperusteApp')
           title: 'Opetuksen sisällöt',
           id: 'sisalto',
           include: 'views/partials/navifilters.html',
-          $open: true,
-          oneAtATime: true,
+          $open: false,
           model: {
             sections: [{
               title: 'Vuosiluokat',
