@@ -36,6 +36,9 @@
                 <p ng-bind-html="valittuOppiaine.oppiaine.tehtava.teksti || '-' | kaanna"></p>
               </div>
 
+              <h2>{{ vuosiluokkakokonaisuudetMap[valittuOppiaine.vlks.vuosiluokkaKokonaisuus].nimi | kaanna }}</h2>
+              <hr>
+
               <div ng-hide="filterSisalto.tehtava">
                 <h3>{{ valittuOppiaine.vlks.tehtava.otsikko | kaanna }}</h3>
                 <p ng-bind-html="valittuOppiaine.vlks.tehtava.teksti || '-' | kaanna"></p>
@@ -52,7 +55,7 @@
               </div>
               <div ng-hide="filterSisalto.tavoitteet" ng-if="valittuOppiaine.vlks.vuosiluokkaKokonaisuus">
                 <h3 kaanna="'perusopetus-tavoitteet'"></h3>
-                <div tavoitteet="valittuOppiaine.vlks" osaamiset="osaamiset" vuosiluokka="valittuOppiaine.sisallot"></div>
+                <div tavoitteet="valittuOppiaine.vlks" oppiaine="valittuOppiaine" osaamiset="osaamiset" vuosiluokka="valittuOppiaine.sisallot"></div>
               </div>
             </div>
           </div>
