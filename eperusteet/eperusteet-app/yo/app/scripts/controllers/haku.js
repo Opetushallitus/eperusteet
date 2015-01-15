@@ -78,7 +78,7 @@ angular.module('eperusteApp')
         }
       });
   })
-  .controller('EsiopetusListaController', function($scope, Perusteet, Notifikaatiot) {
+  .controller('EsiopetusListaController', function($scope, $state, Perusteet, Notifikaatiot) {
     $scope.lista = [];
     Perusteet.query({
       tyyppi: 'koulutustyyppi_15'
