@@ -92,7 +92,7 @@ angular.module('eperusteApp')
         nimi: 'esiopetus',
         oletusSuoritustapa: 'esiopetus',
         hasTutkintonimikkeet: false,
-        hakuState: '',
+        hakuState: 'root.selaus.esiopetuslista',
         sisaltoTunniste: 'eosisalto',
         hasPdfCreation: false
       },

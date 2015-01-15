@@ -36,10 +36,29 @@ angular.module('eperusteApp')
         controller: 'HakuCtrl',
         resolve: {'koulutusalaService': 'Koulutusalat'}
       })
+      .state('root.selaus.esiopetuslista', {
+        url: '/esiopetus',
+        templateUrl: 'views/perusopetuslistaus.html',
+        controller: 'EsiopetusListaController',
+      })
       .state('root.selaus.perusopetuslista', {
         url: '/perusopetus',
         templateUrl: 'views/perusopetuslistaus.html',
         controller: 'PerusopetusListaController',
+      })
+      .state('root.selaus.esiopetus', {
+        url: '/esiopetus/:perusteId',
+        templateUrl: 'views/esiopetus.html',
+        controller: 'EsiopetusController',
+        resolve: {
+          sisalto: function($stateParams, $q, Perusteet, SuoritustapaSisalto) {
+            // TODO lisää uusin peruste jos $stateParams.perusteId on falsey
+            return $q.all([
+              Perusteet.get({ perusteId: $stateParams.perusteId }).$promise,
+              SuoritustapaSisalto.get({ perusteId: $stateParams.perusteId, suoritustapa: 'esiopetus' }).$promise,
+            ]);
+          }
+        }
       })
       .state('root.selaus.perusopetus', {
         url: '/perusopetus/:perusteId',
@@ -58,6 +77,19 @@ angular.module('eperusteApp')
           }
         }
       });
+  })
+  .controller('EsiopetusListaController', function($scope, Perusteet, Notifikaatiot) {
+    $scope.lista = [];
+    Perusteet.query({
+      tyyppi: 'koulutustyyppi_15'
+    }, function(res) {
+      $scope.lista = _(res).sortBy('voimassaoloLoppuu')
+                           .reverse()
+                           .each(function(eo) {
+                             eo.$url = $state.href('root.selaus.esiopetus', { perusteId: eo.id });
+                           })
+                           .value();
+    }, Notifikaatiot.serverCb);
   })
   .controller('PerusopetusListaController', function($scope, $state, PerusopetusPerusteet, Notifikaatiot) {
     $scope.lista = [];
