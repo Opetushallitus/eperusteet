@@ -287,14 +287,14 @@ angular.module('eperusteApp')
     }
 
     $scope.navi = {
-      header: 'perusteen-sisalto',
+      header: 'perusteiden-sisalto',
       showOne: true,
       sections: [{
           $open: false,
           id: 'suunnitelma',
           include: 'views/partials/perusopetustekstisisalto.html',
           items: rakennaTekstisisalto(),
-          title: 'Opetussuunnitelma',
+          title: 'yhteiset-osuudet',
           update: function(item, section) {
             valitseAktiivinenTekstisisalto(item.$osa._perusteenOsa);
             _.each(section.items, function(osa) { osa.$selected = false; });
