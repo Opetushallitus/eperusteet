@@ -16,6 +16,33 @@
             <p ng-bind-html="valittuTekstisisalto.teksti | kaanna"></p>
           </div>
 
+          <div ng-if="activeSection === 'vlk' && valittuVuosiluokkakokonaisuus">
+            <h1>{{ valittuVuosiluokkakokonaisuus.nimi | kaanna }}</h1>
+            <div ng-if="valittuVuosiluokkakokonaisuus.siirtymaEdellisesta">
+              <h2>{{ valittuVuosiluokkakokonaisuus.siirtymaEdellisesta.otsikko | kaanna  }}</h2>
+              <p ng-bind-html="valittuVuosiluokkakokonaisuus.siirtymaEdellisesta.teksti | kaanna"></p>
+            </div>
+            <div ng-if="valittuVuosiluokkakokonaisuus.siirtymaSeuraavaan">
+              <h2>{{ valittuVuosiluokkakokonaisuus.siirtymaSeuraavaan.otsikko | kaanna  }}</h2>
+              <p ng-bind-html="valittuVuosiluokkakokonaisuus.siirtymaSeuraavaan.teksti | kaanna"></p>
+            </div>
+            <div ng-if="valittuVuosiluokkakokonaisuus.laajaalainenOsaaminen">
+              <h2>{{ valittuVuosiluokkakokonaisuus.laajaalainenOsaaminen.otsikko | kaanna  }}</h2>
+              <p ng-bind-html="valittuVuosiluokkakokonaisuus.laajaalainenOsaaminen.teksti | kaanna"></p>
+            </div>
+            <div ng-if="valittuVuosiluokkakokonaisuus.laajaalaisetOsaamiset">
+              <h2 kaanna="'laaja-alaiset-osaamiset'"></h2>
+              <div ng-repeat="osaaminen in valittuVuosiluokkakokonaisuus.laajaalaisetOsaamiset ">
+                <h4>{{ osaamiset[osaaminen.laajaalainenOsaaminen].nimi | kaanna }}</h4>
+                <p ng-bind-html="osaaminen.kuvaus | kaanna"></p>
+              </div>
+            </div>
+            <div ng-if="valittuVuosiluokkakokonaisuus.paikallisestiPaatettavatAsiat">
+              <h2>{{ valittuVuosiluokkakokonaisuus.paikallisestiPaatettavatAsiat.otsikko | kaanna  }}</h2>
+              <p ng-bind-html="valittuVuosiluokkakokonaisuus.paikallisestiPaatettavatAsiat.teksti | kaanna"></p>
+            </div>
+          </div>
+
           <div ng-if="activeSection === 'sisalto' && valittuOppiaine && valittuOppiaine.oppiaine && valittuOppiaine.vuosiluokkakokonaisuudet">
             <h1 class="oppiaine-nimi" kaanna="valittuOppiaine.oppiaine.nimi"></h1>
             <div class="vuosiluokkavalitsin">
