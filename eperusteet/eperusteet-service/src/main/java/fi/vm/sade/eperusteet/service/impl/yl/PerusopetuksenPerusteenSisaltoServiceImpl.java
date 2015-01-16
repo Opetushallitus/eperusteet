@@ -16,8 +16,10 @@
 package fi.vm.sade.eperusteet.service.impl.yl;
 
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusopetusKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineBaseDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.repository.LaajaalainenOsaaminenRepository;
@@ -82,10 +84,10 @@ public class PerusopetuksenPerusteenSisaltoServiceImpl implements Perusopetuksen
     }
 
     @Override
-    public List<OppiaineSuppeaDto> getOppiaineet(Long perusteId) {
+    public <T extends OppiaineBaseDto> List<T> getOppiaineet(Long perusteId, Class<T> view) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         assertExists(sisalto, "Perustetta ei ole olemassa");
-        return mapper.mapAsList(sisalto.getOppiaineet(), OppiaineSuppeaDto.class);
+        return mapper.mapAsList(sisalto.getOppiaineet(), view);
     }
 
     @Override

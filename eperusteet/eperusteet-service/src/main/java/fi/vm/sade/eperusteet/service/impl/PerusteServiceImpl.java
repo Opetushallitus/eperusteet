@@ -39,6 +39,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusopetusKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -54,6 +55,10 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.OsaamisalaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -76,6 +81,7 @@ import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
+import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -175,6 +181,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private RakenneRepository rakenneRepository;
+
+    @Autowired
+    private PerusopetuksenPerusteenSisaltoService perusopetuksenSisaltoService;
 
     @Override
     @Transactional(readOnly = true)
@@ -410,6 +419,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             TutkinnonOsaViite viite = ((RakenneOsa) rakenne).getTutkinnonOsaViite();
             tovat.add(viite);
         }
+    }
+
+    @Override
+    public PerusopetusKaikkiDto getPerusopetusKokoSisalto(long id) {
+        PerusopetusKaikkiDto dto = new PerusopetusKaikkiDto();
+        dto.setPeruste(get(id));
+        dto.setLaajaalaisetOsaamiset(perusopetuksenSisaltoService.getLaajaalaisetOsaamiset(id));
+        dto.setOppiaineet(perusopetuksenSisaltoService.getOppiaineet(id, OppiaineDto.class));
+        dto.setVuosiluokkaKokonaisuudet(perusopetuksenSisaltoService.getVuosiluokkaKokonaisuudet(id));
+        dto.setSisalto(perusopetuksenSisaltoService.getSisalto(id, null, PerusteenOsaViiteDto.Laaja.class));
+        return dto;
     }
 
     @Override
