@@ -31,6 +31,7 @@ import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -115,8 +116,8 @@ public class PerusteprojektiController {
     @RequestMapping(value = "/{id}/tila/{tila}", method = POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public TilaUpdateStatus updateTila(@PathVariable("id") final long id, @PathVariable("tila") final String tila) {
-        return service.updateTila(id, ProjektiTila.of(tila));
+    public TilaUpdateStatus updateTila(@PathVariable("id") final long id, @PathVariable("tila") final String tila, final Long siirtymaPaattyy) {
+        return service.updateTila(id, ProjektiTila.of(tila), siirtymaPaattyy != null ? new Date(siirtymaPaattyy) : null);
     }
 
     @RequestMapping(method = POST)

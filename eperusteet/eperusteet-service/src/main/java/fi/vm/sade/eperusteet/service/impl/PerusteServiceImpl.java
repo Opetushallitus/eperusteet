@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
@@ -220,6 +221,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public PerusteDto get(final Long id) {
         Peruste p = perusteet.findById(id);
         return mapper.map(p, PerusteDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero) {
+        Peruste p = perusteet.findByDiaarinumero(diaarinumero);
+        return mapper.map(p, PerusteInfoDto.class);
     }
 
     @Override

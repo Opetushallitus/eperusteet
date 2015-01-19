@@ -72,6 +72,7 @@ angular.module('eperusteApp')
     }, {
       info: { method: 'GET', url: SERVICE_LOC + '/perusteet/info' },
       valittavatKielet: { method: 'GET', url: SERVICE_LOC + '/perusteet/valittavatkielet', isArray: true },
+      diaari: {method: 'GET', url: SERVICE_LOC + '/perusteet/diaari'}
     });
   })
   .factory('PerusopetuksenSisalto', function ($resource, SERVICE_LOC) {

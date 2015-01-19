@@ -892,5 +892,14 @@
     "liittamattomia-tutkinnon-osia": "Liittämättömiä tutkinnon osia",
     "koodittomia-tutkinnon-osia": "Kaikilla tutkinnon osilla ei koodia",
     "tutkinnon-osan-asetettua-koodia-ei-koodistossa": "Tutkinnon osan koodia ei koodistossa",
-    "tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta": "Tutkintonimikkeen vaatimaa tutkinnon osan koodia ei löytynyt miltään tutkinnon osalta"
+    "tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta": "Tutkintonimikkeen vaatimaa tutkinnon osan koodia ei löytynyt miltään tutkinnon osalta",
+    
+    "korvattavaa-ei-loydy-jarjestelmasta": "Korvattavaa perustetta ei löydy järjestelmästä.",
+    "ei-korvattavia-perusteita": "Yhtään korvattavaa perustetta ei ole valittu",
+    "korvattavat-perusteet": "Korvattavat perusteet",
+    "diaari-jo-listalla": "Diaarinumero on jo valittu",
+    "oma-diaarinumero": "Peruste ei voi korvata itseään",
+    "lisaa-diaari": "Lisää diaarinumero",
+    "korvattavien-siirtymä-loppuu": "Korvattavien perusteiden siirtymäajan päättyminen",
+    "julkaisu-korvaa-perusteet": "Peruste korvaa seuraavat käytössä olevat perusteet:"
 }

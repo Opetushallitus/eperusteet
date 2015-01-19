@@ -20,6 +20,7 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiImplicitParam;
 import com.wordnik.swagger.annotations.ApiImplicitParams;
 import com.wordnik.swagger.annotations.ApiOperation;
+import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
@@ -157,6 +158,16 @@ public class PerusteController {
     @ResponseBody
     public ResponseEntity<PerusteDto> get(@PathVariable("perusteId") final long id) {
         PerusteDto t = service.get(id);
+        if (t == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/diaari", method = GET)
+    @ResponseBody
+    public ResponseEntity<PerusteInfoDto> getByDiaari(final Diaarinumero diaarinumero) {
+        PerusteInfoDto t = service.getByDiaari(diaarinumero);
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
