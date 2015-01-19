@@ -13,22 +13,35 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.repository;
+package fi.vm.sade.eperusteet.domain;
 
-import fi.vm.sade.eperusteet.domain.Diaarinumero;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.repository.NoRepositoryBean;
-
+import java.io.Serializable;
+import javax.persistence.Embeddable;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 /**
  *
- * @author jhyoty
+ * @author harrik
  */
-@NoRepositoryBean
-public interface PerusteRepositoryCustom {
+@Embeddable
+@EqualsAndHashCode
+public class Diaarinumero implements Serializable {
 
-    Page<Peruste> findBy(PageRequest page, PerusteQuery pquery);
-    Peruste findById(Long id);
+    public Diaarinumero() {
+        
+    }
+
+    public Diaarinumero(String diaarinumero) {
+        this.diaarinumero = diaarinumero;
+    }
+
+    @Getter
+    private String diaarinumero;
+
+    @Override
+    public String toString() {
+        return diaarinumero;
+    }
+
+
 }

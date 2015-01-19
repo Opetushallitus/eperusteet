@@ -18,8 +18,35 @@
   </div>
   <div>
     <p kaanna="'tilanvaihdos-aiheuttaa'"></p>
-    <div ng-bind-html="'tilanvaihdos-' + data.oldStatus + '-' + data.selected | kaanna | unsafe"></div>
+    
+    <p ng-bind-html="'tilanvaihdos-' + data.oldStatus + '-' + data.selected | kaanna | unsafe"></p>
   </div>
+  <div ng-show="data.selected === 'julkaistu' && data.korvattavatDiaarinumerot.length > 0">
+    <p kaanna="'julkaisu-korvaa-perusteet'"></p>
+
+    <small-spinner ng-show="ladataanDiaareja"></small-spinner>
+    <table class="table" ng-hide="ladataanDiaareja">
+      <tr ng-class="{warning: korvattavatNimiMap[korvattava] === 'korvattavaa-ei-loydy-jarjestelmasta'}" ng-repeat="korvattava in data.korvattavatDiaarinumerot">
+        <td>
+          {{korvattava}}
+        </td>
+        <td>
+          {{korvattavatNimiMap[korvattava] | kaanna}}
+        </td>
+      </tr>
+    </table>
+
+    <div class="input-group">
+      <input type="text" class="form-control" datepicker-popup="{{datePicker.format}}" ng-model="data.siirtymaPaattyy"
+             placeholder="{{'valitse siirtymän päättymis pvm' | kaanna}}" is-open="datePicker.state" datepicker-options="datePicker.options"
+             show-button-bar="false" dateformatvalidator>
+      <span class="input-group-btn">
+        <button class="btn btn-default" ng-click="datePicker.open($event)" icon-role="calendar"></button>
+      </span>
+    </div>
+
+  </div>
+  
   <p class="confirmation" kaanna="'haluatko-jatkaa'"></p>
 </div>
 

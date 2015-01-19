@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.repository;
 
+import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
@@ -25,6 +26,8 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     Peruste findPerusteByIdAndSuoritustapakoodi(Long id, Suoritustapakoodi suoritustapakoodi);
 
     List<Peruste> findAllByKoulutustyyppi(String koulutustyyppi);
+
+    Peruste findByDiaarinumero(Diaarinumero diaarinumero);
 
 
 //        select * from peruste

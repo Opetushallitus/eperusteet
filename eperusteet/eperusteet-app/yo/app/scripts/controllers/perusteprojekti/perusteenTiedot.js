@@ -92,8 +92,48 @@ angular.module('eperusteApp')
       Editointikontrollit.startEditing();
     };
 
+    function noudaKorvattavienDiaarienNimet(korvattavatDiaarinumerot) {
+      if (korvattavatDiaarinumerot !== null && angular.isDefined(korvattavatDiaarinumerot)) {
+        angular.forEach(korvattavatDiaarinumerot, function(value) {
+          noudaDiaarilleNimi(value);
+        });
+      }
+      $scope.ladataanKorvattavia = false;
+    }
+
+    function noudaDiaarilleNimi(diaari) {
+      Perusteet.diaari({diaarinumero: diaari}, function(vastaus) {
+        $scope.korvattavaDiaariNimiMap[diaari] = vastaus.nimi;
+      }, function () {
+        $scope.korvattavaDiaariNimiMap[diaari] = 'korvattavaa-ei-loydy-jarjestelmasta';
+      });
+    }
+
+    $scope.lisaaKorvattavaDiaari = function(uusiKorvattavaDiaari) {
+      if (_.indexOf($scope.editablePeruste.korvattavatDiaarinumerot, uusiKorvattavaDiaari) !== -1) {
+        Notifikaatiot.varoitus('diaari-jo-listalla');
+      }
+      if (uusiKorvattavaDiaari !== $scope.editablePeruste.diaarinumero) {
+        $scope.editablePeruste.korvattavatDiaarinumerot.push(uusiKorvattavaDiaari);
+        noudaDiaarilleNimi(uusiKorvattavaDiaari);
+        $scope.uusiKorvattavaDiaari = '';
+      } else {
+        Notifikaatiot.varoitus('oma-diaarinumero');
+      }
+    };
+
+    $scope.poistaKorvattavaDiaari = function(diaarinumero) {
+      var index = _.indexOf($scope.editablePeruste.korvattavatDiaarinumerot, diaarinumero);
+      if (index >= 0) {
+         $scope.editablePeruste.korvattavatDiaarinumerot.splice(index, 1);
+      }
+    };
+
+    $scope.ladataanKorvattavia = true;
+    $scope.korvattavaDiaariNimiMap = {};
     $scope.hakemassa = false;
     $scope.peruste = perusteprojektiTiedot.getPeruste();
+    noudaKorvattavienDiaarienNimet($scope.peruste.korvattavatDiaarinumerot);
     $scope.editablePeruste = $scope.peruste;
     $scope.peruste.nimi = $scope.peruste.nimi || {};
     $scope.peruste.kuvaus = $scope.peruste.kuvaus || {};
@@ -106,6 +146,8 @@ angular.module('eperusteApp')
     $scope.$koodistoResolved = false;
     $scope.$perusteellaTutkintonimikkeet = PerusteenTutkintonimikkeet.perusteellaTutkintonimikkeet($scope.peruste);
     $scope.kieliOrder = Kieli.kieliOrder;
+
+
 
     function valitseValittavatKielet(kielet) {
       var current = (kielet || $scope.editablePeruste.kielet);

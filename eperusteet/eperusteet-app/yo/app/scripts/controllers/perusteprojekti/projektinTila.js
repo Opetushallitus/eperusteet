@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .service('PerusteprojektinTilanvaihto', function ($modal) {
     var that = this;
-    this.start = function(currentStatus, mahdollisetTilat, setFn, successCb) {
+    this.start = function(parametrit, setFn, successCb) {
       successCb = successCb || angular.noop;
       if (_.isFunction(setFn)) {
         that.setFn = setFn;
@@ -31,9 +31,10 @@ angular.module('eperusteApp')
         resolve: {
           data: function () {
             return {
-              oldStatus: currentStatus,
-              mahdollisetTilat: mahdollisetTilat,
-              statuses: _.map(mahdollisetTilat, function (item) {
+              oldStatus: parametrit.currentStatus,
+              mahdollisetTilat: parametrit.mahdollisetTilat,
+              korvattavatDiaarinumerot: parametrit.korvattavatDiaarinumerot,
+              statuses: _.map(parametrit.mahdollisetTilat, function (item) {
                 return {key: item, description: 'tilakuvaus-' + item};
               })
             };
@@ -42,8 +43,8 @@ angular.module('eperusteApp')
       })
       .result.then(successCb);
     };
-    this.set = function(status, successCb) {
-      that.setFn(status, successCb);
+    this.set = function(status, siirtymaPaattyy, successCb) {
+      that.setFn(status, siirtymaPaattyy, successCb);
     };
   })
   .controller('PerusteprojektinTilaModal', function ($scope, $modal, $modalInstance, $state, data) {
@@ -67,15 +68,44 @@ angular.module('eperusteApp')
     };
   })
   .controller('PerusteprojektinTilaVarmistusModal', function ($scope,
-      $modalInstance, data, PerusteprojektinTilanvaihto) {
+      $modalInstance, data, PerusteprojektinTilanvaihto, Perusteet, YleinenData) {
     $scope.data = data;
+
+    $scope.datePicker = {
+          options: YleinenData.dateOptions,
+          format: YleinenData.dateFormatDatepicker,
+          state: false,
+          open: function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.datePicker.state = !$scope.datePicker.state;
+          }
+        };
+
+    $scope.korvattavatNimiMap = {};
+    $scope.ladataanDiaareja = false;
+    if (data.korvattavatDiaarinumerot !== null && data.korvattavatDiaarinumerot !== undefined && data.korvattavatDiaarinumerot.length > 0) {
+      $scope.ladataanDiaareja = true;
+      angular.forEach(data.korvattavatDiaarinumerot, function(diaari) {
+        Perusteet.diaari({diaarinumero: diaari}, function (vastaus) {
+          $scope.korvattavatNimiMap[diaari] = vastaus.nimi;
+        }, function() {
+        $scope.korvattavatNimiMap[diaari] = 'korvattavaa-ei-loydy-jarjestelmasta';
+      });
+      });
+      $scope.ladataanDiaareja = false;
+    }
+
     $scope.edellinen = function () {
       $modalInstance.dismiss();
-      PerusteprojektinTilanvaihto.start(data.oldStatus, data.mahdollisetTilat);
+      PerusteprojektinTilanvaihto.start({currentStatus: data.oldStatus, mahdollisetTilat: data.mahdollisetTilat});
     };
 
     $scope.ok = function () {
-      PerusteprojektinTilanvaihto.set(data.selected);
+      if ($scope.data.siirtymaPaattyy !== null && $scope.data.siirtymaPaattyy !== undefined && typeof $scope.data.siirtymaPaattyy === 'object') {
+        $scope.data.siirtymaPaattyy = $scope.data.siirtymaPaattyy.valueOf();
+      }
+      PerusteprojektinTilanvaihto.set(data.selected, $scope.data.siirtymaPaattyy);
       $modalInstance.close();
     };
 

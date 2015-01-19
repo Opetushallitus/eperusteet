@@ -377,17 +377,17 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         repository.save(pp);
         em.persist(pp);
 
-        TilaUpdateStatus status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS);
+        TilaUpdateStatus status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS, null);
         Assert.assertFalse(status.isVaihtoOk());
 
         pp.getPeruste().setNimi(TekstiPalanen.of(Kieli.FI, "nimi"));
         repository.save(pp);
         em.persist(pp);
-        status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS);
+        status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS, null);
         Assert.assertTrue(status.isVaihtoOk());
         Assert.assertEquals(ProjektiTila.VALMIS, pp.getTila());
 
-        status = service.updateTila(ppdto.getId(), ProjektiTila.LAADINTA);
+        status = service.updateTila(ppdto.getId(), ProjektiTila.LAADINTA, null);
         Assert.assertFalse(status.isVaihtoOk());
     }
 }
