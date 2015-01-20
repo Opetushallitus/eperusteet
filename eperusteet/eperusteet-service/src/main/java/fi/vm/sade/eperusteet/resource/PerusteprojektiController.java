@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.resource;
 
 import com.mangofactory.swagger.annotations.ApiIgnore;
+import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
@@ -137,7 +138,7 @@ public class PerusteprojektiController {
     @RequestMapping(value = "/diaarinumero/uniikki/{diaarinumero}", method = GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ResponseEntity<BooleanDto> get(@PathVariable("diaarinumero") final String diaarinumero) {
+    public ResponseEntity<BooleanDto> get(@PathVariable("diaarinumero") final Diaarinumero diaarinumero) {
         try {
             service.onkoDiaarinumeroKaytossa(diaarinumero);
         } catch (BusinessRuleViolationException ex) {
