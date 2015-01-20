@@ -93,6 +93,15 @@ angular.module('eperusteApp')
       });
     }
 
+    function getRightSuoritustapa(peruste, projekti) {
+      return hasSuoritustapa(peruste, getSuoritustapa()) ? getSuoritustapa() : projekti.suoritustapa;
+    }
+
+    function getSisaltoTunniste(projekti) {
+      return YleinenData.koulutustyyppiInfo[projekti.koulutustyyppi] ?
+        YleinenData.koulutustyyppiInfo[projekti.koulutustyyppi].sisaltoTunniste : 'sisalto';
+    }
+
     /**
      * Luo oikea url perusteprojektille
      * @param peruste optional
@@ -104,14 +113,14 @@ angular.module('eperusteApp')
         projekti.koulutustyyppi = peruste.koulutustyyppi;
       }
       var oletus = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
-      var suoritustapa = hasSuoritustapa(peruste, getSuoritustapa()) ? getSuoritustapa() : projekti.suoritustapa;
+      var suoritustapa = getRightSuoritustapa(peruste, projekti);
       var suoritustavaton = (oletus !== 'ops' && oletus !== 'naytto') || !suoritustapa;
       var eiValidiSuoritustapa = (oletus === 'ops' || oletus === 'naytto') && suoritustapa !== 'ops' && suoritustapa !== 'naytto';
       if (suoritustavaton || eiValidiSuoritustapa) {
         suoritustapa = oletus;
       }
-      var sisaltoTunniste = YleinenData.koulutustyyppiInfo[projekti.koulutustyyppi] ?
-        YleinenData.koulutustyyppiInfo[projekti.koulutustyyppi].sisaltoTunniste : 'sisalto';
+
+      var sisaltoTunniste = getSisaltoTunniste(projekti);
       return $state[method]('root.perusteprojekti.suoritustapa.' + sisaltoTunniste, {
         perusteProjektiId: projekti.id,
         suoritustapa: suoritustapa
