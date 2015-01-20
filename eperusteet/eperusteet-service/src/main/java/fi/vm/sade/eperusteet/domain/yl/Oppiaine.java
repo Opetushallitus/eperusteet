@@ -87,6 +87,10 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     @Setter
     private boolean koosteinen = false;
 
+    @Getter
+    @Setter
+    private Boolean abstrakti;
+
     @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Set<Oppiaine> oppimaarat;
 
