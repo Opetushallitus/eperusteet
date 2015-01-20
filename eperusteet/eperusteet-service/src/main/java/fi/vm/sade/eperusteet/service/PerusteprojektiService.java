@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
@@ -65,7 +66,7 @@ public interface PerusteprojektiService {
     TilaUpdateStatus updateTila(@P("id") final Long id, ProjektiTila tila, Date siirtymaPaattyy);
 
     @PreAuthorize("isAuthenticated()")
-    void onkoDiaarinumeroKaytossa(String diaarinumero);
+    void onkoDiaarinumeroKaytossa(Diaarinumero diaarinumero);
 
     @PreAuthorize("isAuthenticated()")
     @PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")

@@ -222,7 +222,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             if (perusteprojektiDto.getDiaarinumero() == null) {
                 throw new BusinessRuleViolationException("Diaarinumeroa ei ole asetettu");
             }
-            onkoDiaarinumeroKaytossa(perusteprojektiDto.getDiaarinumero());
+            onkoDiaarinumeroKaytossa(new Diaarinumero(perusteprojektiDto.getDiaarinumero()));
         }
 
         if (perusteprojektiDto.getRyhmaOid() == null) {
@@ -252,7 +252,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @Transactional(readOnly = true)
-    public void onkoDiaarinumeroKaytossa(String diaarinumero) {
+    public void onkoDiaarinumeroKaytossa(Diaarinumero diaarinumero) {
         if (repository.findOneByDiaarinumero(diaarinumero) != null) {
             throw new BusinessRuleViolationException("Diaarinumero on jo käytössä");
         }

@@ -901,5 +901,8 @@
     "oma-diaarinumero": "Peruste ei voi korvata itseään",
     "lisaa-diaari": "Lisää diaarinumero",
     "korvattavien-siirtymä-loppuu": "Korvattavien perusteiden siirtymäajan päättyminen",
-    "julkaisu-korvaa-perusteet": "Peruste korvaa seuraavat käytössä olevat perusteet:"
+    "julkaisu-korvaa-perusteet": "Peruste korvaa seuraavat käytössä olevat perusteet:",
+    "peruste-ei-voimassaolon-alkamisaikaa": "Perusteelle ei ole annettu voimassaolon alkamisaikaa",
+    "korvattava-diaari-on-oma-diaari": "Korvattavien perusteiden listalla oma diaarinumero",
+    "korvattava-peruste-on-eri-koulutustyyppia": "Korvattava peruste on eri koulutustyyppiä"
 }
