@@ -43,11 +43,13 @@
         <div class="addon"><button class="btn btn-default" ng-click="openKoodisto()" kaanna="hae-koodistosta"></button></div>
       </div>
       <div ng-show="!editableModel.oppiaine">
-        <label class="header" kaanna="oppimaarat"></label>
+        <label class="header" kaanna="'oppimaarat'"></label>
         <label class="inputwrapper"><input class="form-control" type="radio" ng-model="editableModel.koosteinen" ng-value="false">
           {{'yksi-oppimaara'|kaanna}}</label>
-        <label class="inputwrapper"><input class="form-control" type="radio" ng-model="editableModel.koosteinen" ng-value="true">
+        <label class="inputwrapper"><input class="form-control" ng-click="editableModel.abstrakti = false" type="radio" ng-model="editableModel.koosteinen" ng-value="true">
           {{'useita-oppimaaria'|kaanna}}</label>
+        <label ng-show="editableModel.koosteinen === false" class="inputwrapper"><input class="form-control" type="checkbox" ng-model="editableModel.abstrakti">
+          {{'paikallisessa-laadinnassa-maariteltava'|kaanna}}</label>
       </div>
     </div>
     <h3 kaanna="'osiot'" class="osioheader"></h3>
