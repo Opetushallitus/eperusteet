@@ -163,6 +163,7 @@
 
     "vain-käyttämättömät": "Näytä käyttämättömät",
     "näytä-kaikki": "Näytä kaikki",
+    "nayta": "Näytä",
 
     "ja-myös-valittava": "ja valittava myös",
     "osia-valittava-vahintaan": "Valittava vähintään",
@@ -309,6 +310,7 @@
     "perusteiden-sisalto": "Perusteiden sisältö",
     "yhteiset-osuudet": "Yhteiset osuudet",
     "paikallisessa-laadinnassa-maariteltava": "Paikallisessa laadinnassa määriteltävä",
+    "merkkia-jaljella": "Merkkiä jäljellä",
 
     "muodostumissaantoa-ei-maaritelty": "Muodostumissääntöjä ei ole määritelty",
     "muodostumis-rakenne-validointi-laajuus": "Ryhmän osien yhteenlaskettu laajuus ei riitä kattamaan tarvittavaa laajuutta",
@@ -453,6 +455,7 @@
     "katselet-vanhaa-versiota": "Tarkastelet vanhaa versiota sivusta.",
     "vahvista-version-palauttaminen": "Vahvista version palauttaminen",
     "vahvista-version-palauttaminen-teksti": "Haluatko ottaa tämän version ({{versio}}) käyttöön? Versiosta luodaan kopio ja siitä luodaan uusi versio.",
+    "kommentti-ei-saa-ylittaa": "Kommentti ei saa olla yli {{ maara }} merkkiä pitkä.",
 
     "puu-tyyppi-yksi": "Valitse yksi seuraavista",
 

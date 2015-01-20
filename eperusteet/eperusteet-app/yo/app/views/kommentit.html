@@ -14,10 +14,13 @@
                 <h3 icon-role="add" kaanna="lisaa-kommentti"></h3>
             </a>
             <div ng-show="editoi" class="kommentti-uusi">
-                <textarea class="form-control msd-elastic" ng-model="editoitava"></textarea>
+                <textarea maxlength="{{ $kommenttiMaxLength.maara }}" class="form-control msd-elastic" ng-model="editoitava"></textarea>
+                <div class="alert alert-danger" role="alert" ng-show="editoitava && editoitava.length >= $kommenttiMaxLength.maara">
+                    {{ "kommentti-ei-saa-ylittaa" | kaanna:$kommenttiMaxLength }}
+                </div>
                 <div class="kommentti-painikkeet">
                     <button class="btn" ng-click="editoi = false"  kaanna>peruuta</button>
-                    <button class="btn btn-primary" ng-click="lisaaKommentti(sisalto, editoitava); editoi = false; editoitava = ''" kaanna>tallenna</button>
+                    <button class="btn btn-primary" ng-click="lisaaKommentti(sisalto, editoitava); editoi = false; editoitava = ''" ng-disabled="editoitava && editoitava.length >= $kommenttiMaxLength.maara" kaanna>tallenna</button>
                 </div>
                 <div class="clearfix"></div>
             </div>

@@ -28,6 +28,8 @@ angular.module('eperusteApp')
 
     this.naviOmit = ['root', 'editoi', 'suoritustapa', 'sisalto', 'aloitussivu', 'selaus', 'esitys'];
 
+    this.kommenttiMaxLength = 1024;
+
     this.kontekstit = ['ammatillinenperuskoulutus',
       'ammatillinenaikuiskoulutus'];
 
