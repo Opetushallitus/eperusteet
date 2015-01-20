@@ -20,7 +20,7 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.dto.peruste.PerusopetusKaikkiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusopetusPerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -58,9 +58,6 @@ public interface PerusteService {
     TutkinnonOsaViiteDto updateTutkinnonOsa(@P("perusteId") Long perusteId, Suoritustapakoodi of, TutkinnonOsaViiteDto osa);
 
     @PreAuthorize("isAuthenticated()")
-    PerusopetusKaikkiDto getPerusopetusKokoSisalto(long id);
-
-    @PreAuthorize("isAuthenticated()")
     @PostAuthorize("hasPermission(returnObject.tutkinnonOsaDto.id, 'perusteenosa', 'LUKU')")
     TutkinnonOsaViiteDto getTutkinnonOsaViite(Long perusteId, Suoritustapakoodi suoritustapakoodi, Long viiteId);
 
@@ -90,6 +87,12 @@ public interface PerusteService {
 
     @PreAuthorize("permitAll()")
     Page<PerusteDto> findBy(PageRequest page, PerusteQuery pquery);
+
+    @PreAuthorize("permitAll()")
+    PerusopetusPerusteKaikkiDto getPerusopetusKokoSisalto(Long id);
+
+    @PreAuthorize("permitAll()")
+    public List<PerusteInfoDto> getAllPerusopetusInfo();
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     PerusteenOsaViiteDto.Matala addSisalto(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapakoodi, PerusteenOsaViiteDto.Matala viite);
@@ -151,9 +154,6 @@ public interface PerusteService {
 
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
     public void removeTutkintonimikeKoodi(Long perusteId, Long tutkintonimikeKoodiId);
-
-    @PreAuthorize("isAuthenticated()")
-    public List<PerusteInfoDto> getAllPerusopetusInfo();
 
     @PreAuthorize("isAuthenticated()")
     public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero);

@@ -87,17 +87,24 @@ angular.module('eperusteApp')
       suoritustapa = '';
     }
 
+    function hasSuoritustapa(peruste, suoritustapakoodi) {
+      return peruste && _.find(peruste.suoritustavat, function(st) {
+        return st.suoritustapakoodi === suoritustapakoodi;
+      });
+    }
+
     /**
      * Luo oikea url perusteprojektille
      * @param peruste optional
      */
     function urlFn(method, projekti, peruste) {
+      peruste = peruste || projekti.peruste;
       projekti = _.clone(projekti) || get();
       if (peruste && !projekti.koulutustyyppi) {
         projekti.koulutustyyppi = peruste.koulutustyyppi;
       }
       var oletus = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
-      var suoritustapa = getSuoritustapa();
+      var suoritustapa = hasSuoritustapa(peruste, getSuoritustapa()) ? getSuoritustapa() : projekti.suoritustapa;
       var suoritustavaton = (oletus !== 'ops' && oletus !== 'naytto') || !suoritustapa;
       var eiValidiSuoritustapa = (oletus === 'ops' || oletus === 'naytto') && suoritustapa !== 'ops' && suoritustapa !== 'naytto';
       if (suoritustavaton || eiValidiSuoritustapa) {

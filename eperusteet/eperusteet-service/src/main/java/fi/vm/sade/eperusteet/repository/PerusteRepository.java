@@ -29,7 +29,6 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
 
     Peruste findByDiaarinumero(Diaarinumero diaarinumero);
 
-
 //        select * from peruste
 //        inner join (select peruste_id
 //                    from peruste_koulutus

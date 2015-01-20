@@ -39,7 +39,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusopetusKaikkiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusopetusPerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -422,14 +422,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    public PerusopetusKaikkiDto getPerusopetusKokoSisalto(long id) {
-        PerusopetusKaikkiDto dto = new PerusopetusKaikkiDto();
-        dto.setPeruste(get(id));
-        dto.setLaajaalaisetOsaamiset(perusopetuksenSisaltoService.getLaajaalaisetOsaamiset(id));
-        dto.setOppiaineet(perusopetuksenSisaltoService.getOppiaineet(id, OppiaineDto.class));
-        dto.setVuosiluokkaKokonaisuudet(perusopetuksenSisaltoService.getVuosiluokkaKokonaisuudet(id));
-        dto.setSisalto(perusopetuksenSisaltoService.getSisalto(id, null, PerusteenOsaViiteDto.Laaja.class));
-        return dto;
+    @Transactional(readOnly = true)
+    public PerusopetusPerusteKaikkiDto getPerusopetusKokoSisalto(Long id) {
+        Peruste peruste = perusteet.findById(id);
+        PerusopetusPerusteKaikkiDto pdto = mapper.map(peruste, PerusopetusPerusteKaikkiDto.class);
+        return pdto;
     }
 
     @Override

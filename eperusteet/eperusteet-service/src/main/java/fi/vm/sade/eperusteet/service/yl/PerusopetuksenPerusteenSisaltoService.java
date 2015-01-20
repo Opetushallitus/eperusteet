@@ -15,11 +15,9 @@
  */
 package fi.vm.sade.eperusteet.service.yl;
 
-import fi.vm.sade.eperusteet.dto.peruste.PerusopetusKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineBaseDto;
-import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import java.util.List;
 import org.springframework.security.access.method.P;
