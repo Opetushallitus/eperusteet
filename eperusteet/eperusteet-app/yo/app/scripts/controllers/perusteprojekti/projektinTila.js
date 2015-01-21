@@ -98,7 +98,7 @@ angular.module('eperusteApp')
 
     $scope.edellinen = function () {
       $modalInstance.dismiss();
-      PerusteprojektinTilanvaihto.start({currentStatus: data.oldStatus, mahdollisetTilat: data.mahdollisetTilat});
+      PerusteprojektinTilanvaihto.start({currentStatus: data.oldStatus, mahdollisetTilat: data.mahdollisetTilat, korvattavatDiaarinumerot: data.korvattavatDiaarinumerot});
     };
 
     $scope.ok = function () {
