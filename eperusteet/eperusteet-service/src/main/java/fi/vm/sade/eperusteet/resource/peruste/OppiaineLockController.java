@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource.peruste;
 
-import com.mangofactory.swagger.annotations.ApiIgnore;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.AbstractLockController;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
@@ -31,7 +31,7 @@ import static fi.vm.sade.eperusteet.resource.peruste.OppiaineLockController.BASE
  * @author jhyoty
  */
 @RestController
-@ApiIgnore
+@InternalApi
 @RequestMapping(value = {
     BASE + "/lukko",
     BASE + "/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko"

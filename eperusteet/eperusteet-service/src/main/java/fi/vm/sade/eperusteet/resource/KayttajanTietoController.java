@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.resource;
 
-import com.mangofactory.swagger.annotations.ApiIgnore;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("/kayttajatieto")
-@ApiIgnore
+@InternalApi
 public class KayttajanTietoController {
     @Autowired
     KayttajanTietoService service;

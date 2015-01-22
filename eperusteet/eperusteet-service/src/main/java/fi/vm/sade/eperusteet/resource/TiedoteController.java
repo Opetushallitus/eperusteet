@@ -2,8 +2,8 @@ package fi.vm.sade.eperusteet.resource;
 
 import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.TiedoteService;
-import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,6 +47,7 @@ public class TiedoteController {
 
     @RequestMapping(method = POST)
     @ResponseBody
+    @InternalApi
     public ResponseEntity<TiedoteDto> addTiedote(@RequestBody TiedoteDto tiedoteDto)
     {
         return new ResponseEntity<>(tiedoteService.addTiedote(tiedoteDto), HttpStatus.OK);
@@ -54,6 +55,7 @@ public class TiedoteController {
 
     @RequestMapping(value = "/{id}", method = POST)
     @ResponseBody
+    @InternalApi
     public ResponseEntity<TiedoteDto> updateTiedote(
             @PathVariable("id") final Long id,
             @RequestBody TiedoteDto tiedoteDto) {
@@ -63,6 +65,7 @@ public class TiedoteController {
 
     @RequestMapping(value = "/{id}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @InternalApi
     public void deleteTiedote(@PathVariable("id") final Long id) {
         tiedoteService.removeTiedote(id);
     }

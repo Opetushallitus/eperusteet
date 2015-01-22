@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
-import com.mangofactory.swagger.annotations.ApiIgnore;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajaProfiiliDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajaprofiiliPreferenssiDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.SuosikkiDto;
@@ -42,7 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/kayttajaprofiili")
-@ApiIgnore
+@InternalApi
 public class KayttajaprofiiliController {
 
     @Autowired

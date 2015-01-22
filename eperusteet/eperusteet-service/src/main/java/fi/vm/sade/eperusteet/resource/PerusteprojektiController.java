@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
-import com.mangofactory.swagger.annotations.ApiIgnore;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
@@ -28,6 +27,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.util.BooleanDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
@@ -44,12 +44,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import static org.springframework.web.bind.annotation.RequestMethod.*;
-
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
  *
@@ -57,7 +58,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 @Controller
 @RequestMapping("/perusteprojektit")
-@ApiIgnore
+@InternalApi
 public class PerusteprojektiController {
 
     @Autowired

@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource.peruste;
 
-import com.mangofactory.swagger.annotations.ApiIgnore;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
@@ -54,7 +54,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
  */
 @RestController
 @RequestMapping("/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}")
-@ApiIgnore
+@InternalApi
 public class TutkinnonRakenneController {
 
     @Autowired

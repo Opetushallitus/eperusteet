@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.resource;
 
-import com.mangofactory.swagger.annotations.ApiIgnore;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.KoulutusalaDto;
 import fi.vm.sade.eperusteet.service.KoulutusalaService;
 import java.util.List;
@@ -33,7 +33,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  */
 @Controller
 @RequestMapping("/koulutusalat")
-@ApiIgnore
+@InternalApi
 public class KoulutusalaController {
 
     @Autowired

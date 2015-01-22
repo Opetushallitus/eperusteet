@@ -33,6 +33,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.KoodistoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
@@ -52,7 +53,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import static org.springframework.web.bind.annotation.RequestMethod.*;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @Controller
 @RequestMapping("/perusteet")
@@ -67,6 +71,7 @@ public class PerusteController {
 
     @RequestMapping(value = "/info", method = GET)
     @ResponseBody
+    @InternalApi
     public Page<PerusteInfoDto> getAllInfo(PerusteQuery pquery) {
         // Vain valmiita perusteita voi hakea tämän rajapinnan avulla
         pquery.setTila(PerusteTila.VALMIS.toString());
@@ -76,6 +81,7 @@ public class PerusteController {
 
     @RequestMapping(value = "/valittavatkielet", method = GET)
     @ResponseBody
+    @InternalApi
     public ResponseEntity<List<String>> getValittavatKielet() {
         return new ResponseEntity<>(Kieli.vaihtoehdot(), HttpStatus.OK);
     }
@@ -113,6 +119,7 @@ public class PerusteController {
     @RequestMapping(value = "/{perusteId}", method = POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
+    @InternalApi
     public PerusteDto update(@PathVariable("perusteId") final long id, @RequestBody PerusteDto perusteDto) {
         perusteDto = service.update(id, perusteDto);
         return perusteDto;
@@ -120,6 +127,7 @@ public class PerusteController {
 
     @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit/{tutkintonimikeKoodiId}", method = DELETE)
     @ResponseBody
+    @InternalApi
     public ResponseEntity<TutkintonimikeKoodiDto> addTutkintonimikekoodi(
             @PathVariable("perusteId") final long id,
             @PathVariable("tutkintonimikeKoodiId") final Long tnkId) {
@@ -129,6 +137,7 @@ public class PerusteController {
 
     @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit", method = { POST, PUT })
     @ResponseBody
+    @InternalApi
     public ResponseEntity<TutkintonimikeKoodiDto> addTutkintonimikekoodi(
             @PathVariable("perusteId") final long id,
             @RequestBody final TutkintonimikeKoodiDto tnk) {
@@ -138,6 +147,7 @@ public class PerusteController {
 
     @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit", method = GET)
     @ResponseBody
+    @InternalApi
     public ResponseEntity<List<CombinedDto<TutkintonimikeKoodiDto, HashMap<String, KoodistoKoodiDto>>>> getTutkintonimikekoodit(@PathVariable("perusteId") final long id) {
         List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = service.getTutkintonimikeKoodit(id);
         List<CombinedDto<TutkintonimikeKoodiDto, HashMap<String, KoodistoKoodiDto>>> response = new ArrayList<>();
@@ -192,6 +202,7 @@ public class PerusteController {
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)
     @ResponseBody
+    @InternalApi
     public ResponseEntity<SuoritustapaDto> getSuoritustapa(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
