@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
@@ -104,7 +105,9 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     private void perusteprojektiLuontiCommonAsserts(PerusteprojektiDto ppdto, Perusteprojekti pp) {
         Assert.assertNotNull(pp);
         Assert.assertEquals(pp.getNimi(), ppdto.getNimi());
-        Assert.assertEquals(pp.getDiaarinumero(), ppdto.getDiaarinumero());
+        if (pp.getPeruste().getTyyppi().equals(PerusteTyyppi.NORMAALI)) {
+            Assert.assertEquals(pp.getDiaarinumero(), new Diaarinumero(ppdto.getDiaarinumero()));
+        }
         Assert.assertEquals(ryhmaId, pp.getRyhmaOid());
         Assert.assertEquals(pp.getTila(), ProjektiTila.LAADINTA);
         Assert.assertEquals(pp.getYhteistyotaho(), yhteistyotaho);
@@ -333,7 +336,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     @Rollback(true)
     public void testOnkoDiaarinumeroKaytossa() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString());
-        service.onkoDiaarinumeroKaytossa(ppdto.getDiaarinumero());
+        service.onkoDiaarinumeroKaytossa(new Diaarinumero(ppdto.getDiaarinumero()));
     }
 
     @Test
@@ -377,17 +380,17 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         repository.save(pp);
         em.persist(pp);
 
-        TilaUpdateStatus status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS);
+        TilaUpdateStatus status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS, null);
         Assert.assertFalse(status.isVaihtoOk());
 
         pp.getPeruste().setNimi(TekstiPalanen.of(Kieli.FI, "nimi"));
         repository.save(pp);
         em.persist(pp);
-        status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS);
+        status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS, null);
         Assert.assertTrue(status.isVaihtoOk());
         Assert.assertEquals(ProjektiTila.VALMIS, pp.getTila());
 
-        status = service.updateTila(ppdto.getId(), ProjektiTila.LAADINTA);
+        status = service.updateTila(ppdto.getId(), ProjektiTila.LAADINTA, null);
         Assert.assertFalse(status.isVaihtoOk());
     }
 }

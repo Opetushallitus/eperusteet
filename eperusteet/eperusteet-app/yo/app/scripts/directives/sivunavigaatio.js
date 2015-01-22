@@ -38,7 +38,8 @@ angular.module('eperusteApp')
         items: '=',
         header: '=',
         sections: '=',
-        footer: '='
+        footer: '=',
+        showOne: '='
       },
       controller: 'SivuNaviController',
       transclude: true,

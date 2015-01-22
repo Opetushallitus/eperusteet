@@ -3,6 +3,7 @@
   <h2>{{tiedote.otsikko | kaanna}}</h2>
   <div class="tiedote-tiedot">
     {{ tiedote.nimi || tiedote.muokkaaja }}, {{tiedote.muokattu | aikaleima}}
+    <span class="badge" ng-if="tiedote.julkinen">{{'tiedote-julkinen' | kaanna}}</span>
   </div>
   <div class="tiedote-leipateksti" ng-bind-html="tiedote.sisalto | kaanna | unsafe"></div>
 </div>

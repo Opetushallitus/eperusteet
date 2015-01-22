@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
@@ -26,6 +27,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import org.springframework.security.access.method.P;
@@ -61,10 +63,10 @@ public interface PerusteprojektiService {
     Set<ProjektiTila> getTilat(@P("id") final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'TILANVAIHTO')")
-    TilaUpdateStatus updateTila(@P("id") final Long id, ProjektiTila tila);
+    TilaUpdateStatus updateTila(@P("id") final Long id, ProjektiTila tila, Date siirtymaPaattyy);
 
     @PreAuthorize("isAuthenticated()")
-    void onkoDiaarinumeroKaytossa(String diaarinumero);
+    void onkoDiaarinumeroKaytossa(Diaarinumero diaarinumero);
 
     @PreAuthorize("isAuthenticated()")
     @PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")

@@ -19,11 +19,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
-import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
@@ -40,7 +40,6 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
@@ -74,7 +73,9 @@ import fi.vm.sade.eperusteet.service.util.RestClientFactory;
 import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -221,7 +222,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             if (perusteprojektiDto.getDiaarinumero() == null) {
                 throw new BusinessRuleViolationException("Diaarinumeroa ei ole asetettu");
             }
-            onkoDiaarinumeroKaytossa(perusteprojektiDto.getDiaarinumero());
+            onkoDiaarinumeroKaytossa(new Diaarinumero(perusteprojektiDto.getDiaarinumero()));
         }
 
         if (perusteprojektiDto.getRyhmaOid() == null) {
@@ -251,7 +252,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @Transactional(readOnly = true)
-    public void onkoDiaarinumeroKaytossa(String diaarinumero) {
+    public void onkoDiaarinumeroKaytossa(Diaarinumero diaarinumero) {
         if (repository.findOneByDiaarinumero(diaarinumero) != null) {
             throw new BusinessRuleViolationException("Diaarinumero on jo käytössä");
         }
@@ -382,7 +383,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @Transactional(readOnly = false)
-    public TilaUpdateStatus updateTila(Long id, ProjektiTila tila) {
+    public TilaUpdateStatus updateTila(Long id, ProjektiTila tila, Date siirtymaPaattyy) {
+
         TilaUpdateStatus updateStatus = new TilaUpdateStatus();
         updateStatus.setVaihtoOk(true);
 
@@ -502,6 +504,16 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 updateStatus.setVaihtoOk(false);
                 updateStatus.addStatus(entry.getKey());
             }
+
+            if (tila == ProjektiTila.JULKAISTU) {
+                if (projekti.getPeruste().getVoimassaoloAlkaa() == null) {
+                    updateStatus.addStatus("peruste-ei-voimassaolon-alkamisaikaa");
+                    updateStatus.setVaihtoOk(false);
+                } else {
+                    updateStatus = korvaaPerusteet(projekti.getPeruste(), siirtymaPaattyy, updateStatus);
+                }
+            }
+
         }
 
         // Perusteen tilan muutos
@@ -685,6 +697,47 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         Perusteprojekti pp = repository.findOne(perusteProjektiId);
         List<PerusteenOsaTyoryhma> tyoryhmat = perusteenOsaTyoryhmaRepository.findAllByPerusteprojekti(pp);
         return mapper.mapAsList(tyoryhmat, PerusteenOsaTyoryhmaDto.class);
+    }
+
+    private TilaUpdateStatus korvaaPerusteet(Peruste peruste, Date siirtymaPaattyy, TilaUpdateStatus updateStatus) {
+
+        if (peruste != null && peruste.getKorvattavatDiaarinumerot() != null) {
+
+            // tarkastetaan ettei oma diaari ole korvattavien listalla
+            if (peruste.getKorvattavatDiaarinumerot().contains(peruste.getDiaarinumero())) {
+                updateStatus.addStatus("korvattava-diaari-on-oma-diaari");
+                updateStatus.setVaihtoOk(false);
+            }
+
+            Peruste korvattavaPeruste;
+            for (Diaarinumero diaari : peruste.getKorvattavatDiaarinumerot()) {
+                    korvattavaPeruste = perusteRepository.findByDiaarinumero(diaari);
+                    if (korvattavaPeruste != null) {
+                        if (!peruste.getKoulutustyyppi().equals(korvattavaPeruste.getKoulutustyyppi())) {
+                            Arrays.asList(mapper.map(korvattavaPeruste.getNimi(), LokalisoituTekstiDto.class));
+                            updateStatus.addStatus("korvattava-peruste-on-eri-koulutustyyppia", null, Arrays.asList(mapper.map(korvattavaPeruste.getNimi(), LokalisoituTekstiDto.class)));
+                            updateStatus.setVaihtoOk(false);
+                        }
+                    }
+                }
+
+            if (updateStatus.isVaihtoOk()) {
+                for (Diaarinumero diaari : peruste.getKorvattavatDiaarinumerot()) {
+                    korvattavaPeruste = perusteRepository.findByDiaarinumero(diaari);
+                    if (korvattavaPeruste != null) {
+                        if (siirtymaPaattyy != null) {
+                            korvattavaPeruste.setSiirtymaPaattyy(siirtymaPaattyy);
+                        } else {
+                            korvattavaPeruste.setSiirtymaPaattyy(peruste.getVoimassaoloAlkaa());
+                        }
+                        korvattavaPeruste.setVoimassaoloLoppuu(peruste.getVoimassaoloAlkaa());
+                    }
+                }
+            }
+
+        }
+
+        return updateStatus;
     }
 
 }

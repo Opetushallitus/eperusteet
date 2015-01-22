@@ -64,7 +64,9 @@ angular.module('eperusteApp')
 
     function promisify(data) {
       var deferred = $q.defer();
-      _.extend(deferred, data);
+      if (!_.isArray(data)) {
+        _.extend(deferred, data);
+      }
       deferred.resolve(data);
       return deferred.promise;
     }
@@ -173,21 +175,21 @@ angular.module('eperusteApp')
 
     this.getOsat = function (tyyppi, useCache) {
       if (useCache && cached[tyyppi]) {
-        return cached[tyyppi];
+        return promisify(cached[tyyppi]);
       }
       switch(tyyppi) {
         case this.OSAAMINEN:
           return LaajaalaisetOsaamiset.query(commonParams(), function (data) {
             cached[tyyppi] = data;
-          });
+          }).$promise;
         case this.VUOSILUOKAT:
           return Vuosiluokkakokonaisuudet.query(commonParams(), function (data) {
             cached[tyyppi] = data;
-          });
+          }).$promise;
         case this.OPPIAINEET:
           return Oppiaineet.query(commonParams(), function (data) {
             cached[tyyppi] = data;
-          });
+          }).$promise;
         default:
           return [];
       }

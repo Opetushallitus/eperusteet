@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource.peruste;
 
-import com.mangofactory.swagger.annotations.ApiIgnore;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
@@ -55,7 +55,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  */
 @RestController
 @RequestMapping("/perusteet/{perusteId}/perusopetus")
-@ApiIgnore
+@InternalApi
 public class PerusopetuksenPerusteenSisaltoController {
 
     @Autowired
@@ -79,7 +79,7 @@ public class PerusopetuksenPerusteenSisaltoController {
     @RequestMapping(value = "/oppiaineet", method = GET)
     public List<OppiaineSuppeaDto> getOppiaineet(
         @PathVariable("perusteId") final Long perusteId) {
-        return sisallot.getOppiaineet(perusteId);
+        return sisallot.getOppiaineet(perusteId, OppiaineSuppeaDto.class);
     }
 
     @RequestMapping(value = "/oppiaineet", method = POST)

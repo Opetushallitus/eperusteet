@@ -87,24 +87,40 @@ angular.module('eperusteApp')
       suoritustapa = '';
     }
 
+    function hasSuoritustapa(peruste, suoritustapakoodi) {
+      return peruste && _.find(peruste.suoritustavat, function(st) {
+        return st.suoritustapakoodi === suoritustapakoodi;
+      });
+    }
+
+    function getRightSuoritustapa(peruste, projekti) {
+      return hasSuoritustapa(peruste, getSuoritustapa()) ? getSuoritustapa() : projekti.suoritustapa;
+    }
+
+    function getSisaltoTunniste(projekti) {
+      return YleinenData.koulutustyyppiInfo[projekti.koulutustyyppi] ?
+        YleinenData.koulutustyyppiInfo[projekti.koulutustyyppi].sisaltoTunniste : 'sisalto';
+    }
+
     /**
      * Luo oikea url perusteprojektille
      * @param peruste optional
      */
     function urlFn(method, projekti, peruste) {
+      peruste = peruste || projekti.peruste;
       projekti = _.clone(projekti) || get();
       if (peruste && !projekti.koulutustyyppi) {
         projekti.koulutustyyppi = peruste.koulutustyyppi;
       }
       var oletus = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
-      var suoritustapa = getSuoritustapa();
+      var suoritustapa = getRightSuoritustapa(peruste, projekti);
       var suoritustavaton = (oletus !== 'ops' && oletus !== 'naytto') || !suoritustapa;
       var eiValidiSuoritustapa = (oletus === 'ops' || oletus === 'naytto') && suoritustapa !== 'ops' && suoritustapa !== 'naytto';
       if (suoritustavaton || eiValidiSuoritustapa) {
         suoritustapa = oletus;
       }
-      var sisaltoTunniste = YleinenData.koulutustyyppiInfo[projekti.koulutustyyppi] ?
-        YleinenData.koulutustyyppiInfo[projekti.koulutustyyppi].sisaltoTunniste : 'sisalto';
+
+      var sisaltoTunniste = getSisaltoTunniste(projekti);
       return $state[method]('root.perusteprojekti.suoritustapa.' + sisaltoTunniste, {
         perusteProjektiId: projekti.id,
         suoritustapa: suoritustapa
@@ -206,8 +222,7 @@ angular.module('eperusteApp')
       // TODO replace with one resource call that fetches the whole structure
       var promises = [];
       _.each(PerusopetusService.LABELS, function (key) {
-        var osat = PerusopetusService.getOsat(key, true);
-        var promise = osat.$promise;
+        var promise = PerusopetusService.getOsat(key, true);
         promise.then(function (data) {
           ylTiedot[key] = data;
         });

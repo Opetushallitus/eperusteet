@@ -28,9 +28,6 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
-
-import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.*;
-
 import fi.vm.sade.eperusteet.service.util.Pair;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -53,6 +50,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.KOMMENTOINTI;
+import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.KORJAUS;
+import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.LUKU;
+import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.LUONTI;
+import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.MUOKKAUS;
+import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.POISTO;
+import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.TILANVAIHTO;
 
 /**
  *
@@ -132,7 +137,8 @@ public class PermissionManager {
         Set<String> r1 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_EPERUSTEET_CRUD_<oid>");
         Set<String> r2 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_EPERUSTEET_CRUD_<oid>", "ROLE_APP_EPERUSTEET_READ_UPDATE_<oid>");
         Set<String> r3 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_EPERUSTEET_CRUD_<oid>", "ROLE_APP_EPERUSTEET_READ_UPDATE_<oid>", "ROLE_APP_EPERUSTEET_READ_<oid>");
-        Set<String> r4 = Sets.newHashSet("ROLE_APP_EPERUSTEET");
+        Set<String> r4 = Sets.newHashSet("ROLE_VIRKAILIJA");
+        Set<String> r5 = Sets.newHashSet("ROLE_VIRKAILIJA,ROLE_ANONYMOUS");
 
         //perusteenosa, peruste (näiden osalta oletetaan että peruste tai sen osa on tilassa LUONNOS
         {
@@ -163,7 +169,7 @@ public class PermissionManager {
 
             perm = Maps.newHashMap();
             perm.put(KORJAUS, r0);
-            perm.put(LUKU, r4);
+            perm.put(LUKU, r5);
             tmp.put(ProjektiTila.JULKAISTU, perm);
 
             tmp.put(ProjektiTila.POISTETTU, Collections.<Permission, Set<String>>emptyMap());
@@ -242,7 +248,7 @@ public class PermissionManager {
             tmp.put(ProjektiTila.VALMIS, perm);
 
             perm = Maps.newHashMap();
-            perm.put(LUKU, r4);
+            perm.put(LUKU, r5);
             perm.put(MUOKKAUS, r1);
             tmp.put(ProjektiTila.JULKAISTU, perm);
             allowedRolesTmp.put(Target.PERUSTEENMETATIEDOT, tmp);
@@ -287,16 +293,11 @@ public class PermissionManager {
         return Collections.emptySet();
     }
 
-    @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public boolean hasPermission(Authentication authentication, Serializable targetId, Target targetType, Permission permission) {
 
         if (LOG.isTraceEnabled()) {
             LOG.trace(String.format("Checking permission %s to %s{id=%s} by %s", permission, targetType, targetId, authentication));
-        }
-
-        if (!authentication.isAuthenticated()) {
-            return false;
         }
 
         if (Target.TIEDOTE == targetType) {
@@ -347,7 +348,7 @@ public class PermissionManager {
     }
 
     private boolean hasAnyRole(Authentication authentication, String perusteProjektiRyhmaOid, Collection<String> roles) {
-        Object principal = authentication.getPrincipal();
+        Object principal = authentication == null ? null : authentication.getPrincipal();
         if (principal instanceof UserDetails) {
             UserDetails user = (UserDetails) principal;
             for (String role : roles) {
@@ -427,17 +428,26 @@ public class PermissionManager {
 
             case PERUSTEENMETATIEDOT:
             case PERUSTE: {
-                return Sets.newHashSet(perusteProjektit.findByPeruste(id));
+                return setOf(perusteProjektit.findByPeruste(id));
             }
             case PERUSTEPROJEKTI: {
-                Perusteprojekti pp = perusteProjektit.findOne(id);
-                return pp == null ? empty : Collections.singleton(Pair.of(pp.getRyhmaOid(), pp.getTila()));
+                return setOf(perusteProjektit.findById(id));
             }
             case PERUSTEENOSA: {
-                return Sets.newHashSet(perusteProjektit.findTilaByPerusteenOsaId(id));
+                return setOf(perusteProjektit.findTilaByPerusteenOsaId(id));
             }
             default:
                 throw new IllegalArgumentException(targetType.toString());
         }
+    }
+
+    private static <T> Set<T> setOf(Collection<T> c) {
+        if (c == null || c.isEmpty()) {
+            return Collections.emptySet();
+        }
+        if (c.size() == 1) {
+            return Collections.singleton(c.iterator().next());
+        }
+        return new HashSet<>(c);
     }
 }

@@ -81,8 +81,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
 
     @Getter
     @Setter
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private String diaarinumero;
+    private Diaarinumero diaarinumero;
 
     @Getter
     @Setter
@@ -96,6 +95,12 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Set<Koulutus> koulutukset;
+
+    @ElementCollection
+    @Getter
+    @Setter
+    @CollectionTable(name = "korvattavat_diaarinumerot")
+    private Set<Diaarinumero> korvattavatDiaarinumerot;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Getter
@@ -112,8 +117,8 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
-    @Column(name = "siirtyma_alkaa")
-    private Date siirtymaAlkaa;
+    @Column(name = "siirtyma_paattyy")
+    private Date siirtymaPaattyy;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @MapKey(name = "suoritustapakoodi")

@@ -26,6 +26,9 @@ angular.module('eperusteApp')
     $scope.rajaus = '';
 
     $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
+    $scope.$esitysurl = $state.href('root.selaus.perusopetus', {
+      perusteId: $scope.peruste.id
+    });
 
     $scope.$watch('peruste.sisalto', function () {
       Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function (lapsi) {
@@ -59,9 +62,11 @@ angular.module('eperusteApp')
     _.each(PerusopetusService.sisallot, function (item) {
       var data = {
         nimi: item.label,
-        tyyppi: item.tyyppi,
-        lapset: PerusopetusService.getOsat(item.tyyppi, true)
+        tyyppi: item.tyyppi
       };
+      PerusopetusService.getOsat(item.tyyppi, true).then(function (res) {
+        data.lapset = res;
+      });
       $scope.datat.opetus.lapset.push(data);
     });
     $scope.peruste.sisalto = $scope.datat.sisalto;
@@ -134,9 +139,14 @@ angular.module('eperusteApp')
       return;
     }
     var vuosiluokkakokonaisuudet = [];
-    $scope.osaAlueet = PerusopetusService.getOsat($stateParams.osanTyyppi);
+    $scope.osaAlueet = [];
+    PerusopetusService.getOsat($stateParams.osanTyyppi).then(function (res) {
+      $scope.osaAlueet = res;
+    });
     if ($stateParams.osanTyyppi === PerusopetusService.OPPIAINEET) {
-      vuosiluokkakokonaisuudet = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT, true);
+      PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT, true).then(function (res) {
+        vuosiluokkakokonaisuudet = res;
+      });
     }
 
     var oppiaineFilter = {
@@ -245,6 +255,21 @@ angular.module('eperusteApp')
       });
     }
 
+    function rakennaVuosiluokkakokonaisuuksienSisalto() {
+      var sisalto = _.map($scope.vuosiluokkakokonaisuudet, function(vkl) {
+        return {
+          $vkl: vkl,
+          label: vkl.nimi,
+          depth: 0,
+        };
+      });
+      if (!_.isEmpty(sisalto)) {
+        _.first(sisalto).$selected = true;
+        $scope.valittuVuosiluokkakokonaisuus = _.first(sisalto).$vkl;
+      }
+      return sisalto;
+    }
+
     function rakennaTekstisisalto() {
       var suunnitelma = [];
       Algoritmit.kaikilleLapsisolmuille($scope.tekstisisalto, 'lapset', function(osa, depth) {
@@ -262,14 +287,14 @@ angular.module('eperusteApp')
     }
 
     $scope.navi = {
-      header: 'perusteen-sisalto',
-      oneAtATime: true,
+      header: 'perusteiden-sisalto',
+      showOne: true,
       sections: [{
-          include: 'views/partials/perusopetustekstisisalto.html',
-          title: 'Opetussuunnitelma',
           $open: false,
           id: 'suunnitelma',
+          include: 'views/partials/perusopetustekstisisalto.html',
           items: rakennaTekstisisalto(),
+          title: 'yhteiset-osuudet',
           update: function(item, section) {
             valitseAktiivinenTekstisisalto(item.$osa._perusteenOsa);
             _.each(section.items, function(osa) { osa.$selected = false; });
@@ -279,13 +304,10 @@ angular.module('eperusteApp')
           title: 'Opetuksen sisällöt',
           id: 'sisalto',
           include: 'views/partials/navifilters.html',
-          $open: true,
-          oneAtATime: true,
           model: {
             sections: [{
               title: 'Vuosiluokat',
               apply: angular.noop,
-              $open: false,
               $condensed: true,
               items: _.map($scope.vuosiluokkakokonaisuudet, function(kokonaisuus) {
                 return { label: kokonaisuus.nimi, value: kokonaisuus.id, $selected: true };
@@ -308,7 +330,6 @@ angular.module('eperusteApp')
               id: 'sisallot',
               title: 'Oppiaineen sisällöt',
               $all: true,
-              $open: false,
               items: _.map(['tehtava', 'ohjaus', 'tyotavat', 'tavoitteet'], function(item) {
                 return { label: 'perusopetus-' + item, value: item, depth: 0, $selected: true };
               }),
@@ -319,7 +340,6 @@ angular.module('eperusteApp')
               id: 'osaamiset',
               title: 'Laaja-alaiset osaamiset',
               $all: true,
-              $open: false,
               items: _.map($scope.osaamiset, function(item) {
                 return { label: item.nimi, value: item.id, depth: 0, $selected: false };
               }),
@@ -328,6 +348,17 @@ angular.module('eperusteApp')
                 paivitaTavoitteet();
               }
             }]
+          }
+        }, {
+          title: 'Vuosiluokkakokonaisuudet',
+          id: 'vlk',
+          $open: true,
+          items: rakennaVuosiluokkakokonaisuuksienSisalto(),
+          include: 'views/partials/perusopetuksenvuosiluokkakokonaisuus.html',
+          update: function(item, section) {
+            _.each(section.items, function(osa) { osa.$selected = false; });
+            item.$selected = true;
+            $scope.valittuVuosiluokkakokonaisuus = item.$vkl;
           }
         }, {
           title: 'Liitteet',

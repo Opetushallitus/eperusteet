@@ -33,7 +33,8 @@ angular.module('eperusteApp')
       scope: {
         status: '=',
         editable: '=?',
-        projektiId: '='
+        projektiId: '=',
+        korvattavatDiaarinumerot: '=',
       },
       controller: 'StatusbadgeCtrl',
       link: function (scope, element) {
@@ -81,9 +82,9 @@ angular.module('eperusteApp')
           vastaus.data.push('poistettu');
         }
         if (vastaus.data.length !== 0) {
-          PerusteprojektinTilanvaihto.start($scope.status, vastaus.data, function(newStatus) {
+          PerusteprojektinTilanvaihto.start({currentStatus: $scope.status, mahdollisetTilat: vastaus.data, korvattavatDiaarinumerot: $scope.korvattavatDiaarinumerot}, function(newStatus, siirtymaPaattyy) {
             // TODO tilan tallennus, tämä asettaa uuden tilan parent scopen projektiobjektiin.
-            PerusteprojektiTila.save({id: $scope.projektiId, tila: newStatus}, {}, function(vastaus) {
+            PerusteprojektiTila.save({id: $scope.projektiId, tila: newStatus, siirtymaPaattyy: siirtymaPaattyy}, {}, function(vastaus) {
               if (vastaus.vaihtoOk) {
                 $scope.status = newStatus;
               } else {

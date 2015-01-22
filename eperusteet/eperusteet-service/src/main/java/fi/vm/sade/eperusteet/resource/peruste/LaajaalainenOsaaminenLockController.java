@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource.peruste;
 
-import com.mangofactory.swagger.annotations.ApiIgnore;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.AbstractLockController;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author jhyoty
  */
 @RestController
-@ApiIgnore
+@InternalApi
 @RequestMapping("/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset/{osaaminenId}/lukko")
 public class LaajaalainenOsaaminenLockController extends AbstractLockController<LaajaalainenOsaaminenContext>{
     @Autowired
