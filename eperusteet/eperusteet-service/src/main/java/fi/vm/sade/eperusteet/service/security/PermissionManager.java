@@ -137,8 +137,8 @@ public class PermissionManager {
         Set<String> r1 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_EPERUSTEET_CRUD_<oid>");
         Set<String> r2 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_EPERUSTEET_CRUD_<oid>", "ROLE_APP_EPERUSTEET_READ_UPDATE_<oid>");
         Set<String> r3 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_EPERUSTEET_CRUD_<oid>", "ROLE_APP_EPERUSTEET_READ_UPDATE_<oid>", "ROLE_APP_EPERUSTEET_READ_<oid>");
-        Set<String> r4 = Sets.newHashSet("ROLE_VIRKAILIJA");
-        Set<String> r5 = Sets.newHashSet("ROLE_VIRKAILIJA,ROLE_ANONYMOUS");
+        Set<String> r4 = Sets.newHashSet("ROLE_VIRKAILIJA,ROLE_APP_EPERUSTEET");
+        Set<String> r5 = Sets.newHashSet("ROLE_VIRKAILIJA,ROLE_APP_EPERUSTEET,ROLE_ANONYMOUS");
 
         //perusteenosa, peruste (näiden osalta oletetaan että peruste tai sen osa on tilassa LUONNOS
         {
@@ -264,17 +264,16 @@ public class PermissionManager {
             allowedRolesTmp.put(Target.TIEDOTE, tmp);
         }
 
-        //XXX:debug
-        LOG.debug("Oikeusmappaukset:");
-        assert (allowedRolesTmp.keySet().containsAll(EnumSet.allOf(Target.class)));
-        for (Map.Entry<Target, Map<ProjektiTila, Map<Permission, Set<String>>>> t : allowedRolesTmp.entrySet()) {
-            for (Map.Entry<ProjektiTila, Map<Permission, Set<String>>> p : t.getValue().entrySet()) {
-                for (Map.Entry<Permission, Set<String>> per : p.getValue().entrySet()) {
-                    LOG.debug(t.getKey() + ":" + p.getKey() + ":" + per.getKey() + ":" + Arrays.toString(per.getValue().toArray()));
+        if (LOG.isTraceEnabled()) {
+            assert (allowedRolesTmp.keySet().containsAll(EnumSet.allOf(Target.class)));
+            for (Map.Entry<Target, Map<ProjektiTila, Map<Permission, Set<String>>>> t : allowedRolesTmp.entrySet()) {
+                for (Map.Entry<ProjektiTila, Map<Permission, Set<String>>> p : t.getValue().entrySet()) {
+                    for (Map.Entry<Permission, Set<String>> per : p.getValue().entrySet()) {
+                        LOG.trace(t.getKey() + ":" + p.getKey() + ":" + per.getKey() + ":" + Arrays.toString(per.getValue().toArray()));
+                    }
                 }
             }
         }
-
         allowedRoles = Collections.unmodifiableMap(allowedRolesTmp);
     }
 
@@ -395,8 +394,6 @@ public class PermissionManager {
      */
     // TODO: tila parametrin voisi varmaan karsia pois
     private Set<Permission> getPermissions(Authentication authentication, Serializable targetId, Target targetType, ProjektiTila tila) {
-        LOG.warn(String.format("Getting permissions for %s{id=%s} in state %s by %s", targetType, targetId, tila.toString(), authentication));
-
         Set<Permission> permission = new HashSet<>();
 
         Map<ProjektiTila, Map<Permission, Set<String>>> tempTargetKohtaiset = allowedRoles.get(targetType);
