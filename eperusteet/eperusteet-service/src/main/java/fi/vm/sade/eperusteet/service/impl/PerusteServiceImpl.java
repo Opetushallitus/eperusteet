@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
@@ -38,6 +39,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusopetusPerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -53,6 +55,10 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.OsaamisalaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -75,6 +81,7 @@ import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
+import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -175,6 +182,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Autowired
     private RakenneRepository rakenneRepository;
 
+    @Autowired
+    private PerusopetuksenPerusteenSisaltoService perusopetuksenSisaltoService;
+
     @Override
     @Transactional(readOnly = true)
     public Page<PerusteDto> getAll(PageRequest page, String kieli) {
@@ -220,6 +230,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public PerusteDto get(final Long id) {
         Peruste p = perusteet.findById(id);
         return mapper.map(p, PerusteDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero) {
+        Peruste p = perusteet.findByDiaarinumero(diaarinumero);
+        return mapper.map(p, PerusteInfoDto.class);
     }
 
     @Override
@@ -402,6 +419,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             TutkinnonOsaViite viite = ((RakenneOsa) rakenne).getTutkinnonOsaViite();
             tovat.add(viite);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PerusopetusPerusteKaikkiDto getPerusopetusKokoSisalto(Long id) {
+        Peruste peruste = perusteet.findById(id);
+        PerusopetusPerusteKaikkiDto pdto = mapper.map(peruste, PerusopetusPerusteKaikkiDto.class);
+        return pdto;
     }
 
     @Override

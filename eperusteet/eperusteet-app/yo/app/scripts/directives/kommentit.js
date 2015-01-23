@@ -19,7 +19,7 @@
 /* global _ */
 
 angular.module('eperusteApp')
-  .directive('kommentit', function (Kommentit, $timeout, $location, kayttajaToiminnot, Varmistusdialogi) {
+  .directive('kommentit', function (Kommentit, $timeout, $location, kayttajaToiminnot, Varmistusdialogi, YleinenData) {
     return {
       restrict: 'AE',
       templateUrl: 'views/kommentit.html',
@@ -33,6 +33,10 @@ angular.module('eperusteApp')
         $scope.onLataaja = false;
         $scope.urlit = {};
         $scope.nimikirjaimet = kayttajaToiminnot.nimikirjaimet;
+
+        $scope.$kommenttiMaxLength = {
+          maara: YleinenData.kommenttiMaxLength
+        };
 
         function lataaKommentit(url) {
           var lataaja = $scope.urlit[url];

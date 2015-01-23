@@ -62,7 +62,7 @@ public class Perusteprojekti extends AbstractAuditedEntity {
     @Getter
     @Setter
     @Column(unique = true)
-    private String diaarinumero;
+    private Diaarinumero diaarinumero;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Getter
@@ -107,7 +107,7 @@ public class Perusteprojekti extends AbstractAuditedEntity {
     public Perusteprojekti() {
     }
 
-    public Perusteprojekti(String nimi, Peruste peruste, String diaarinumero, Date paatosPvm, Date toimikausiAlku, Date toimikausiLoppu, String tehtavaluokka, String ryhmaOid, String tehtava, String yhteistyotaho) {
+    public Perusteprojekti(String nimi, Peruste peruste, Diaarinumero diaarinumero, Date paatosPvm, Date toimikausiAlku, Date toimikausiLoppu, String tehtavaluokka, String ryhmaOid, String tehtava, String yhteistyotaho) {
         this.nimi = nimi;
         this.peruste = peruste;
         this.diaarinumero = diaarinumero;

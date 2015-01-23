@@ -16,8 +16,10 @@
 
 'use strict';
 
+/* global $ */
+
 angular.module('eperusteApp')
-  .directive('kommenttiViesti', function ($timeout, $compile, kommenttiViestiTemplate, Algoritmit) {
+  .directive('kommenttiViesti', function ($timeout, $compile, kommenttiViestiTemplate, Algoritmit, YleinenData) {
     return {
       restrict: 'AE',
       template: '',
@@ -55,6 +57,16 @@ angular.module('eperusteApp')
         } else {
           $scope.oidResolved = true;
         }
+
+        $scope.$kommenttiMaxLength = {
+          maara: YleinenData.kommenttiMaxLength
+        };
+
+        // TODO: Selvitä miksi ng-show kutsuu tätä tuhottoman paljon
+        $scope.$checkOverflow = function(viesti) {
+          var elem = $('#kommenttiviesti-' + viesti.id)[0];
+          return elem && (viesti.$nayta || (elem.offsetHeight < elem.scrollHeight || elem.offsetWidth < elem.scrollWidth));
+        };
 
         $scope.processMessage = function (item) {
           item.$nimikirjaimet = $scope.nimikirjaimet(item.nimi || item.muokkaaja);
@@ -111,12 +123,22 @@ angular.module('eperusteApp')
       '        <a class="action-link" ng-click="poistaKommentti(viesti)" icon-role="remove" oikeustarkastelu="{ target: \'peruste\', permission: \'poisto\' }"></a>' +
       '      </span>' +
       '    </h3>' +
-      '    <div ng-hide="editoi === viesti.id"><p ng-repeat="p in viesti.sisalto|paragraphsplit track by $index">{{p}}</p></div>' +
+      '    <div ng-hide="editoi === viesti.id">' +
+      '      <p id="kommenttiviesti-{{ viesti.id }}" class="rajattu-viesti" ng-hide="viesti.$nayta">{{ viesti.sisalto }}</p>' +
+      '      <p class="avattu-viesti" ng-show="viesti.$nayta">{{ viesti.sisalto }}</p>' +
+      '      <a ng-show="$checkOverflow(viesti)" class="action-link" ng-click="viesti.$nayta = !viesti.$nayta">' +
+      '         <span ng-hide="viesti.$nayta" kaanna="\'nayta\'"></span>' +
+      '         <span ng-show="viesti.$nayta" kaanna="\'piilota\'"></span>' +
+      '      </a>' +
+      '    </div>' +
       '    <div ng-show="editoi === viesti.id" class="kommentti-muokkaus">' +
-      '      <textarea class="form-control msd-elastic" ng-model="model.editoitava"></textarea>' +
+      '      <textarea maxlength="{{ $kommenttiMaxLength.maara }}" class="form-control msd-elastic" ng-model="model.editoitava"></textarea>' +
+      '      <div class="alert alert-danger" role="alert" ng-show="model.editoitava && model.editoitava.length >= $kommenttiMaxLength.maara">' +
+      '        {{ "kommentti-ei-saa-ylittaa" | kaanna:$kommenttiMaxLength }}' +
+      '      </div>' +
       '      <div>' +
       '        <button class="btn" ng-click="cancelEditing()" kaanna>peruuta</button>' +
-      '        <button class="btn btn-primary" ng-click="saveEditing(viesti)" kaanna>tallenna</button>' +
+      '        <button class="btn btn-primary" ng-click="saveEditing(viesti)" ng-disabled="model.editoitava && model.editoitava.length >= $kommenttiMaxLength.maara" kaanna>tallenna</button>' +
       '      </div>' +
       '    </div>' +
       '    <div class="kommentti-footer">' +
@@ -138,10 +160,13 @@ angular.module('eperusteApp')
       '<hr>' +
       '<div ng-show="viesti.$lisaa">' +
       '  <div class="kommentti-uusi">' +
-      '    <textarea class="form-control msd-elastic" ng-model="editoitava"></textarea>' +
+      '    <textarea maxlength="{{ $kommenttiMaxLength.maara }}" class="form-control msd-elastic" ng-model="editoitava"></textarea>' +
+      '    <div class="alert alert-danger" role="alert" ng-show="editoitava && editoitava.length >= $kommenttiMaxLength.maara">' +
+      '      {{ "kommentti-ei-saa-ylittaa" | kaanna:$kommenttiMaxLength }}' +
+      '    </div>' +
       '    <div class="kommentti-painikkeet">' +
       '      <button class="btn" ng-click="viesti.$lisaa = false" kaanna>peruuta</button>' +
-      '      <button class="btn btn-primary" ng-click="saveNew(viesti, editoitava)" kaanna>tallenna</button>' +
+      '      <button class="btn btn-primary" ng-click="saveNew(viesti, editoitava)" ng-disabled="editoitava && editoitava.length >= $kommenttiMaxLength.maara" kaanna>tallenna</button>' +
       '    </div>' +
       '    <div class="clearfix"></div>' +
       '  </div>' +

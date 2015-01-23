@@ -46,6 +46,10 @@ angular.module('eperusteApp')
     $scope.tyoryhmaMap = {};
     $scope.tiivistelma = $scope.peruste.kuvaus;
     $scope.muodostumisKompensaattori = $scope.peruste.koulutustyyppi !== 'koulutustyyppi_15' ? 1 : 0;
+    $scope.$esitysurl = $state.href('root.esitys.peruste', {
+      perusteId: $scope.peruste.id,
+      suoritustapa: $stateParams.suoritustapa
+    });
 
     $scope.onTyoryhmia = function() {
       return !_.isEmpty($scope.tyoryhmat);

@@ -114,12 +114,22 @@ public class KommenttiServiceImpl implements KommenttiService {
         }
     }
 
+    private String clip(String kommentti) {
+        if (kommentti != null) {
+            int length = kommentti.length();
+            return kommentti.substring(0, length < 1024 ? length : 1024);
+        }
+        else {
+            return "";
+        }
+    }
+
     @Override
     @Transactional
     public KommenttiDto add(final KommenttiDto kommenttidto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Kommentti kommentti = new Kommentti();
-        kommentti.setSisalto(kommenttidto.getSisalto());
+        kommentti.setSisalto(clip(kommenttidto.getSisalto()));
         kommentti.setPerusteprojektiId(kommenttidto.getPerusteprojektiId());
         kommentti.setSuoritustapa(kommenttidto.getSuoritustapa());
         kommentti.setPerusteenOsaId(kommenttidto.getPerusteenOsaId());
@@ -140,7 +150,7 @@ public class KommenttiServiceImpl implements KommenttiService {
         Kommentti kommentti = kommentit.findOne(kommenttiId);
         SecurityUtil.allow(kommentti.getLuoja());
         permissionChecker.checkPermission(kommentti.getPerusteprojektiId(), PermissionManager.Target.PERUSTEPROJEKTI, PermissionManager.Permission.KOMMENTOINTI);
-        kommentti.setSisalto(kommenttidto.getSisalto());
+        kommentti.setSisalto(clip(kommenttidto.getSisalto()));
         return mapper.map(kommentit.save(kommentti), KommenttiDto.class);
     }
 

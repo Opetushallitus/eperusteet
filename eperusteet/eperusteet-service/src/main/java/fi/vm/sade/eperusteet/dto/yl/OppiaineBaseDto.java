@@ -36,5 +36,6 @@ public abstract class OppiaineBaseDto implements ReferenceableDto {
     //"äitioppiaine" jos kyseessä on oppiaineen oppimäärä
     private Optional<EntityReference> oppiaine;
     private Optional<Boolean> koosteinen;
+    private Optional<Boolean> abstrakti;
     private Optional<LokalisoituTekstiDto> nimi;
 }

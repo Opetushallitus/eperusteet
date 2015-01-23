@@ -87,7 +87,8 @@ angular.module('eperusteApp')
 
   .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna, Notifikaatiot,
       PerusteProjektiSivunavi, Oppiaineet, $timeout, $state, $stateParams, $q, YleinenData, tabHelper,
-      CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus, VlkUtils, ProjektinMurupolkuService, Varmistusdialogi) {
+      CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus, VlkUtils, ProjektinMurupolkuService, Varmistusdialogi,
+      Koodisto, MuokkausUtils) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.mappedVuosiluokat = [];
@@ -96,8 +97,9 @@ angular.module('eperusteApp')
     $scope.activeTab = parseInt($stateParams.tabId, 10);
     var creatingNewOppimaara = !!OppimaaraHelper.instance();
     $scope.oppimaaraRequested = false;
-    $scope.oppiaineet = PerusopetusService.getOsat(PerusopetusService.OPPIAINEET, true);
-    $scope.oppiaineet.$promise.then(function (data) {
+    $scope.oppiaineet = [];
+    PerusopetusService.getOsat(PerusopetusService.OPPIAINEET, true).then(function (data) {
+      $scope.oppiaineet = data;
       $scope.oppiaineMap = _.zipObject(_.map(data, function (oppiaine) {
         oppiaine.$url = $scope.generateLink(oppiaine);
         return [''+oppiaine.id, oppiaine];
@@ -110,6 +112,15 @@ angular.module('eperusteApp')
     }
 
     var cloner = CloneHelper.init(['koosteinen', 'nimi', 'tehtava', 'vuosiluokkakokonaisuudet']);
+
+    $scope.openKoodisto = Koodisto.modaali(function(koodisto) {
+      MuokkausUtils.nestedSet($scope.editableModel, 'koodiUri', ',', koodisto.koodiUri);
+      MuokkausUtils.nestedSet($scope.editableModel, 'koodiArvo', ',', koodisto.koodiArvo);
+    }, {
+      tyyppi: function() { return 'oppiaineetyleissivistava'; },
+      ylarelaatioTyyppi: function() { return ''; },
+      tarkista: _.constant(true)
+    });
 
     $scope.generateLink = function(model) {
       return $state.href('root.perusteprojekti.suoritustapa.osaalue', _.extend(_.clone($stateParams), {
@@ -395,7 +406,7 @@ angular.module('eperusteApp')
       }
       updateTypeInfo();
     });
-    var vuosiluokatPromise = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT).$promise;
+    var vuosiluokatPromise = PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT);
 
     function getTitle(key) {
       var obj = {};

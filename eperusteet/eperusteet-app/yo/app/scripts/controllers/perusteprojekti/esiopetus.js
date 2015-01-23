@@ -25,6 +25,10 @@ angular.module('eperusteApp')
     TekstikappaleOperations.setPeruste($scope.peruste);
     $scope.rajaus = '';
     $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
+    $scope.$esitysurl = $state.href('root.selaus.esiopetus', {
+      perusteId: $scope.peruste.id,
+      suoritustapa: $stateParams.suoritustapa
+    });
 
     $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
 

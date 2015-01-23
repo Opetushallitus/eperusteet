@@ -15,16 +15,16 @@
  */
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.peruste.PerusopetusPerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
@@ -38,8 +38,8 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
-import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -87,6 +87,12 @@ public interface PerusteService {
 
     @PreAuthorize("permitAll()")
     Page<PerusteDto> findBy(PageRequest page, PerusteQuery pquery);
+
+    @PreAuthorize("permitAll()")
+    PerusopetusPerusteKaikkiDto getPerusopetusKokoSisalto(Long id);
+
+    @PreAuthorize("permitAll()")
+    public List<PerusteInfoDto> getAllPerusopetusInfo();
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     PerusteenOsaViiteDto.Matala addSisalto(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapakoodi, PerusteenOsaViiteDto.Matala viite);
@@ -150,5 +156,5 @@ public interface PerusteService {
     public void removeTutkintonimikeKoodi(Long perusteId, Long tutkintonimikeKoodiId);
 
     @PreAuthorize("isAuthenticated()")
-    public List<PerusteInfoDto> getAllPerusopetusInfo();
+    public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero);
 }

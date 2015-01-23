@@ -4,7 +4,7 @@
 
     <div class="sivunavi-toggler-wrapper">
       <div class="sivunavi-toggler" ng-click="toggleSideMenu()"
-           ng-attr-title="{{menuCollapsed && ('sivunavigointi-avaa-menu'|kaanna) || ('sivunavigointi-sulje-menu'|kaanna)}}">
+        ng-attr-title="{{menuCollapsed && ('sivunavigointi-avaa-menu'|kaanna) || ('sivunavigointi-sulje-menu'|kaanna)}}">
         <div class="sivunavi-valinta">
           <span class="glyphicon glyphicon-align-justify"></span>
         </div>
@@ -21,29 +21,29 @@
       </div>
 
       <div ng-if="sections">
-        <accordion close-others="oneAtATime">
-        <accordion-group ng-repeat="section in sections" is-open="section.$open" ng-class="{'panel-chosen': section.$open, 'menu': !section.include}">
-        <accordion-heading>{{section.title | kaanna}}</accordion-heading>
-        <div ng-if="section.include" ng-include="section.include"></div>
-        <div ng-if="!section.include" class="list-group">
-          <a class="list-group-item item" ng-repeat="item in section.items" ng-class="itemClasses(item)" ng-href="{{item.href}}"
-             ng-hide="!item.$matched || item.root || (!search.term && (item.$hidden || item.$impHidden))">
-            <div class="toggler">
-              <span ng-show="!item.$leaf" ng-click="toggle(section.items, item, $event)" class="glyphicon"
+        <accordion close-others="showOne">
+          <accordion-group ng-repeat="section in sections" is-open="section.$open" ng-class="{'panel-chosen': section.$open, 'menu': !section.include}">
+            <accordion-heading>{{section.title | kaanna}}</accordion-heading>
+            <div ng-if="section.include" ng-include="section.include"></div>
+            <div ng-if="!section.include" class="list-group">
+              <a class="list-group-item item" ng-repeat="item in section.items" ng-class="itemClasses(item)" ng-href="{{item.href}}"
+                ng-hide="!item.$matched || item.root || (!search.term && (item.$hidden || item.$impHidden))">
+                <div class="toggler">
+                  <span ng-show="!item.$leaf" ng-click="toggle(section.items, item, $event)" class="glyphicon"
                     ng-class="{'glyphicon-chevron-right': item.$collapsed, 'glyphicon-chevron-down': !item.$collapsed}"></span>
+                </div>
+                <span class="linktext" ng-class="{'action-link': !!item.href}" ep-highlight="search.term" ng-bind="item.label|kaanna"></span>
+              </a>
             </div>
-            <span class="linktext" ng-class="{'action-link': !!item.href}" ep-highlight="search.term" ng-bind="item.label|kaanna"></span>
-          </a>
-        </div>
-        </accordion-group>
+          </accordion-group>
         </accordion>
       </div>
 
       <a class="list-group-item item" ng-repeat="item in items" ng-class="itemClasses(item)" ng-href="{{item.href}}"
-         ng-hide="!item.$matched || item.root || (!search.term && (item.$hidden || item.$impHidden))">
+        ng-hide="!item.$matched || item.root || (!search.term && (item.$hidden || item.$impHidden))">
         <div class="toggler">
           <span ng-show="!item.$leaf" ng-click="toggle(items, item, $event)" class="glyphicon"
-                ng-class="{'glyphicon-chevron-right': item.$collapsed, 'glyphicon-chevron-down': !item.$collapsed}"></span>
+            ng-class="{'glyphicon-chevron-right': item.$collapsed, 'glyphicon-chevron-down': !item.$collapsed}"></span>
           <span ng-show="item.$leaf && !item.$glyph" class="ep-icon" ng-class="item.$type ? item.$type : 'ep-text'"></span>
           <span ng-show="item.$leaf && item.$glyph" icon-role="{{item.$glyph}}"></span>
         </div>

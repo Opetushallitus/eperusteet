@@ -55,12 +55,14 @@
     "ei-tiedotteita": "Ei tiedotteita.",
     "uusi-tiedote": "Lisää tiedote",
     "etsi-tiedotteista": "Etsi tiedotteista",
+    "tiedote-otsikko-placeholder": "Kirjoita tiedotteen otsikko",
     "tiedote-teksti-placeholder": "Kirjoita tiedotteen teksti",
     "poistetaanko-tiedote": "Poistetaanko tiedote?",
     "muokkaa-tiedotetta": "Muokkaa tiedotetta",
     "tiedoteteksti": "Tiedoteteksti",
     "julkinen-tiedote": "Julkinen tiedote",
     "julkinen-tiedote-header": "Julkinen",
+    "tiedote-julkinen": "julkinen",
 
     "ops-ja-tutkintojen-perusteet": "Opetussuunnitelmien ja tutkintojen perusteet",
 
@@ -161,6 +163,7 @@
 
     "vain-käyttämättömät": "Näytä käyttämättömät",
     "näytä-kaikki": "Näytä kaikki",
+    "nayta": "Näytä",
 
     "ja-myös-valittava": "ja valittava myös",
     "osia-valittava-vahintaan": "Valittava vähintään",
@@ -221,6 +224,7 @@
     "perusopetus-ohjaus" : "Ohjaus ja tuki",
     "perusopetus-tyotavat" : "Oppimisympäristöt ja työtavat",
     "perusopetus-tavoitteet" : "Oppiaineen tavoitteet",
+    "oppiaineetyleissivistava": "Oppiaineet, yleissivistävä",
 
     "lopeta-muokkaus": "Lopeta muokkaus",
 
@@ -303,6 +307,10 @@
     "haltija": "Haltija",
 
     "perusteen-sisalto": "Perusteen sisältö",
+    "perusteiden-sisalto": "Perusteiden sisältö",
+    "yhteiset-osuudet": "Yhteiset osuudet",
+    "paikallisessa-laadinnassa-maariteltava": "Paikallisessa laadinnassa määriteltävä",
+    "merkkia-jaljella": "Merkkiä jäljellä",
 
     "muodostumissaantoa-ei-maaritelty": "Muodostumissääntöjä ei ole määritelty",
     "muodostumis-rakenne-validointi-laajuus": "Ryhmän osien yhteenlaskettu laajuus ei riitä kattamaan tarvittavaa laajuutta",
@@ -412,8 +420,9 @@
 
     "lajittelu-jarjestysnumero": "No.",
 
+    "tarkastele-esitysta": "Tarkastele esitystilassa",
     "poista-kohdealue": "Poista",
-    "lisaa-kohdealue": "Lisaa kohdealue",
+    "lisaa-kohdealue": "Lisää kohdealue",
     "muokkaus-kohdealueet": "Muokkaa kohdealueita",
     "muokkaus-tutkinnon-jarjestysnumero": "Järjestysnumero",
     "muokkaus-tutkinnon-osan-nimi-header": "Nimi",
@@ -446,6 +455,7 @@
     "katselet-vanhaa-versiota": "Tarkastelet vanhaa versiota sivusta.",
     "vahvista-version-palauttaminen": "Vahvista version palauttaminen",
     "vahvista-version-palauttaminen-teksti": "Haluatko ottaa tämän version ({{versio}}) käyttöön? Versiosta luodaan kopio ja siitä luodaan uusi versio.",
+    "kommentti-ei-saa-ylittaa": "Kommentti ei saa olla yli {{ maara }} merkkiä pitkä.",
 
     "puu-tyyppi-yksi": "Valitse yksi seuraavista",
 
@@ -756,6 +766,8 @@
     "laaja-alainen-osaaminen": "Laaja-alainen osaaminen",
     "laaja-alainen-osaaminen-kuvaus": "Laaja-alaisen osaamisen kuvaus",
     "laaja-alaiset-osaamiset": "Laaja-alaiset osaamiset",
+    "tekstisisalto": "Sisaltö",
+    "pohja": "Pohja",
 
     "muokkaus-laaja-alainen-osaaminen-header": "Laaja-alainen osaaminen",
     "poista-osaamiskokonaisuus": "Poista osaamiskokonaisuus",
@@ -884,5 +896,17 @@
     "liittamattomia-tutkinnon-osia": "Liittämättömiä tutkinnon osia",
     "koodittomia-tutkinnon-osia": "Kaikilla tutkinnon osilla ei koodia",
     "tutkinnon-osan-asetettua-koodia-ei-koodistossa": "Tutkinnon osan koodia ei koodistossa",
-    "tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta": "Tutkintonimikkeen vaatimaa tutkinnon osan koodia ei löytynyt miltään tutkinnon osalta"
+    "tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta": "Tutkintonimikkeen vaatimaa tutkinnon osan koodia ei löytynyt miltään tutkinnon osalta",
+    
+    "korvattavaa-ei-loydy-jarjestelmasta": "Korvattavaa perustetta ei löydy järjestelmästä.",
+    "ei-korvattavia-perusteita": "Yhtään korvattavaa perustetta ei ole valittu",
+    "korvattavat-perusteet": "Korvattavat perusteet",
+    "diaari-jo-listalla": "Diaarinumero on jo valittu",
+    "oma-diaarinumero": "Peruste ei voi korvata itseään",
+    "lisaa-diaari": "Lisää diaarinumero",
+    "korvattavien-siirtymä-loppuu": "Korvattavien perusteiden siirtymäajan päättyminen",
+    "julkaisu-korvaa-perusteet": "Peruste korvaa seuraavat käytössä olevat perusteet:",
+    "peruste-ei-voimassaolon-alkamisaikaa": "Perusteelle ei ole annettu voimassaolon alkamisaikaa",
+    "korvattava-diaari-on-oma-diaari": "Korvattavien perusteiden listalla oma diaarinumero",
+    "korvattava-peruste-on-eri-koulutustyyppia": "Korvattava peruste on eri koulutustyyppiä"
 }

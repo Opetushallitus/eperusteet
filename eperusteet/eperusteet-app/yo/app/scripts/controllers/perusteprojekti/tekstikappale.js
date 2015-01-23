@@ -70,12 +70,6 @@ angular.module('eperusteApp')
     };
 
     this.addChild = function (viiteId, suoritustapa) {
-      if (YleinenData.isPerusopetus(peruste)) {
-        PerusopetusService.addSisaltoChild(viiteId, function (response) {
-          TutkinnonOsaEditMode.setMode(true);
-          goToView(response);
-        });
-      } else {
         SuoritustapaSisalto.addChild({
           perusteId: peruste.id,
           suoritustapa: suoritustapa,
@@ -84,7 +78,6 @@ angular.module('eperusteApp')
           TutkinnonOsaEditMode.setMode(true);
           goToView(response);
         }, Notifikaatiot.varoitus);
-      }
     };
 
     this.clone = function (viiteId) {

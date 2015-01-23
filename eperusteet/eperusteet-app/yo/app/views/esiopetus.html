@@ -1,0 +1,20 @@
+<div>
+  <!-- esiopetus.html -->
+  <h1 kaanna>esiopetus</h1>
+
+  <div id="sivunavi-sisalto-wrapper">
+    <div class="sivunavi-navigaatio">
+      <sivunavigaatio2 header="navi.header" sections="navi.sections" show-one="navi.showOne"></sivunavigaatio2>
+    </div>
+
+    <div class="sivunavi-clear"></div>
+    <div class="sivunavi-sisalto perusopetus">
+      <div class="row">
+        <div class="col-md-12">
+          <h1>{{ valittuTekstisisalto.perusteenOsa.nimi | kaanna }}</h1>
+          <p ng-bind-html="valittuTekstisisalto.teksti | kaanna"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

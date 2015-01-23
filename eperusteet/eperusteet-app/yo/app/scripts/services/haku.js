@@ -30,6 +30,7 @@ angular.module('eperusteApp')
         sivu: 0,
         sivukoko: 20,
         suoritustapa: 'ops',
+        perusteTyyppi: 'normaali',
         // FIXME Ota pois kommenteista
         // tila: 'valmis'
       },
@@ -43,6 +44,7 @@ angular.module('eperusteApp')
         sivu: 0,
         sivukoko: 20,
         suoritustapa: 'naytto',
+        perusteTyyppi: 'normaali',
         // FIXME Ota pois kommenteista
         // tila: 'valmis'
       }

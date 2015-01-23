@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.resource;
 
-import com.mangofactory.swagger.annotations.ApiIgnore;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.OpintoalaDto;
 import fi.vm.sade.eperusteet.service.OpintoalaService;
 import java.util.List;
@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("/opintoalat")
-@ApiIgnore
+@InternalApi
 public class OpintoalaController {
     @Autowired
     private OpintoalaService service;

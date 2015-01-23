@@ -52,8 +52,8 @@ angular.module('eperusteApp')
       backState = [$state.current.name, _.clone($stateParams)];
 
       $q.all([
-        PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT, true).$promise,
-        PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true).$promise
+        PerusopetusService.getOsat(PerusopetusService.VUOSILUOKAT, true),
+        PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true)
       ]).then(function(res) {
         vuosiluokat = res[0];
         osaamiset = res[1];

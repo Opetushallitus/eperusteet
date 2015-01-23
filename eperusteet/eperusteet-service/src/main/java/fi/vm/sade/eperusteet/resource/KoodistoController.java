@@ -16,7 +16,7 @@
 
 package fi.vm.sade.eperusteet.resource;
 
-import com.mangofactory.swagger.annotations.ApiIgnore;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.service.KoodistoService;
 import java.util.List;
@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("/koodisto")
-@ApiIgnore
+@InternalApi
 public class KoodistoController {
     @Autowired
     KoodistoService service;

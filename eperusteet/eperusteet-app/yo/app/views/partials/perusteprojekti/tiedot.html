@@ -22,9 +22,9 @@ European Union Public Licence for more details.
 </div>
 
 <div class="uusi-projekti-content">
-  <div ng-if="!pohja() && wizardissa() && !peruste" class="pull-right">
+  <div ng-if="wizardissa() && !peruste" class="pull-right">
     <button ng-click="mergeProjekti(true)" class="btn" kaanna>tuo-perustepohja</button>
-    <button ng-click="mergeProjekti(false)" class="btn" kaanna>tuo-peruste</button>
+    <button ng-if="!pohja()" ng-click="mergeProjekti(false)" class="btn" kaanna>tuo-peruste</button>
   </div>
   <div ng-if="wizardissa() && peruste">
     <div class="alert alert-info">

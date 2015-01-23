@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
-import com.mangofactory.swagger.annotations.ApiIgnore;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.service.LockService;
 import org.springframework.http.HttpStatus;
@@ -39,7 +39,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  * @author jhyoty
  * @param <T>
  */
-@ApiIgnore
+@InternalApi
 public abstract class AbstractLockController<T> {
 
     @Autowired

@@ -31,7 +31,10 @@ import org.springframework.stereotype.Repository;
 public interface PerusteprojektiPermissionRepository extends JpaRepository<Perusteprojekti, Long> {
 
     @Query("SELECT DISTINCT NEW fi.vm.sade.eperusteet.service.util.Pair(pp.ryhmaOid, pp.tila) FROM Perusteprojekti pp WHERE pp.peruste.id = ?1")
-    List<Pair<String,ProjektiTila>> findByPeruste(Long id);
+    List<Pair<String, ProjektiTila>> findByPeruste(Long perusteId);
+
+    @Query("SELECT DISTINCT NEW fi.vm.sade.eperusteet.service.util.Pair(pp.ryhmaOid, pp.tila) FROM Perusteprojekti pp WHERE pp.id = ?1")
+    List<Pair<String, ProjektiTila>> findById(Long perusteProjektiId);
 
     /**
      * Etsii perusteprojektit joihin annettu perusteen osa kuuluu ja palauttaa niiden tilan.

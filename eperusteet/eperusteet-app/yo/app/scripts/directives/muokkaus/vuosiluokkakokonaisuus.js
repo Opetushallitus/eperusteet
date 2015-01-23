@@ -237,6 +237,13 @@ angular.module('eperusteApp')
     };
 
     var fieldBackups = {};
+    function mapLaajaAlaiset(arr) {
+      _.each(arr, function (yleinen) {
+        $scope.editableModel.laajaalaisetOsaamiset.push({
+          laajaalainenOsaaminen: yleinen.id, kuvaus: {}
+        });
+      });
+    }
 
     $scope.fieldOps = {
       hasContent: function (field) {
@@ -292,13 +299,10 @@ angular.module('eperusteApp')
           if (!$scope.editableModel.laajaalaisetOsaamiset) {
             $scope.editableModel.laajaalaisetOsaamiset = [];
           }
-          var yleiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true);
-          _.each(yleiset, function (yleinen) {
-            $scope.editableModel.laajaalaisetOsaamiset.push({
-              laajaalainenOsaaminen: yleinen.id, kuvaus: {}
-            });
+          PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true).then(function (res) {
+            mapLaajaAlaiset(res);
           });
-        } else {
+       } else {
           if (!$scope.editableModel[field.path]) {
             $scope.editableModel[field.path] = {
               otsikko: {},
@@ -334,7 +338,10 @@ angular.module('eperusteApp')
 
   .controller('LaajaAlainenOsaaminenController', function ($scope, PerusopetusService, Utils) {
     $scope.oneAtATime = false;
-    $scope.yleiset = PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true);
+    $scope.yleiset = [];
+    PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true).then(function (res) {
+      $scope.yleiset = res;
+    });
     $scope.orderFn = Utils.nameSort;
 
     function getModel(object, item) {
@@ -359,5 +366,6 @@ angular.module('eperusteApp')
       });
     }
     $scope.$watch('object', refresh);
+    $scope.$watch('yleiset', _.partial(refresh, true), true);
     refresh(true);
   });

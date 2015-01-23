@@ -133,7 +133,7 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         final boolean siirtyma = pquery.isSiirtyma();
         final String tilaStr = pquery.getTila();
         final String perusteTyyppiStr = pquery.getPerusteTyyppi();
-        final Expression<Date> siirtymaAlkaa = root.get(Peruste_.siirtymaAlkaa);
+        final Expression<Date> siirtymaPaattyy = root.get(Peruste_.siirtymaPaattyy);
         final Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
 
         Predicate pred = cb.equal(teksti.get(LokalisoituTeksti_.kieli), kieli);
@@ -169,10 +169,9 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         }
 
         if (siirtyma) {
-            pred = cb.and(pred, cb.or(cb.isNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate())));
+            pred = cb.and(pred, cb.or(cb.isNull(siirtymaPaattyy), cb.greaterThan(siirtymaPaattyy, cb.currentDate())));
         } else {
-            pred = cb.and(pred, cb.and(cb.or(cb.isNull(siirtymaAlkaa), cb.greaterThan(siirtymaAlkaa, cb.currentDate())),
-                                       cb.or(cb.isNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate()))));
+            pred = cb.and(pred, cb.or(cb.isNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate())));
         }
 
         if (!Strings.isNullOrEmpty(tilaStr)) {

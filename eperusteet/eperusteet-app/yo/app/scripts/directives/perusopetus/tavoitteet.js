@@ -38,8 +38,14 @@ angular.module('eperusteApp')
   })
   .controller('TavoitteetController', function($scope, PerusopetusService, $state, $rootScope, $timeout,
     CloneHelper, OsanMuokkausHelper, $stateParams) {
-    // Jälkimmäistä käytetään vain lukutilan kanssa
-    $scope.osaamiset = OsanMuokkausHelper.getOsaamiset() || PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true);
+    $scope.osaamiset = $scope.providedOsaamiset || OsanMuokkausHelper.getOsaamiset();
+    if (_.isEmpty($scope.osaamiset)) {
+      // käytetään vain lukutilan kanssa
+      PerusopetusService.getOsat(PerusopetusService.OSAAMINEN, true).then(function (res) {
+        $scope.osaamiset = res;
+        $scope.mapModel();
+      });
+    }
     $scope.vuosiluokka = $scope.providedVuosiluokka || OsanMuokkausHelper.getVuosiluokkakokonaisuus();
     $scope.oppiaine = $scope.providedOppiaine || OsanMuokkausHelper.getOppiaine();
     $scope.editMode = false;
@@ -77,7 +83,7 @@ angular.module('eperusteApp')
         }
 
         tavoite.$sisaltoalueet = _.map($scope.model.sisaltoalueet, generateArraySetter(tavoite.sisaltoalueet));
-        tavoite.$kohdealueet = _.map($scope.oppiaine.kohdealueet, generateArraySetter(tavoite.kohdealueet));
+        tavoite.$kohdealueet = _.map($scope.oppiaine.oppiaine ? $scope.oppiaine.oppiaine.kohdealueet : $scope.oppiaine.kohdealueet, generateArraySetter(tavoite.kohdealueet));
         tavoite.$osaaminen = _.map($scope.osaamiset, generateArraySetter(tavoite.laajattavoitteet, function(osaaminen) {
           var vuosiluokkakuvaus = _.find($scope.vuosiluokka.laajaalaisetOsaamiset, function(item) {
             return parseInt(item.laajaalainenOsaaminen, 10) === osaaminen.id;
