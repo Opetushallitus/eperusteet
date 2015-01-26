@@ -512,6 +512,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 } else {
                     updateStatus = korvaaPerusteet(projekti.getPeruste(), siirtymaPaattyy, updateStatus);
                 }
+
+                if (projekti.getPeruste().getDiaarinumero() == null) {
+                    updateStatus.addStatus("peruste-ei-diaarinumeroa");
+                    updateStatus.setVaihtoOk(false);
+                }
             }
 
         }
