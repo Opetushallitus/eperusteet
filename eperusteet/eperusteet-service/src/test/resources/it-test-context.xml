@@ -70,6 +70,11 @@
                 <entry key="javax.persistence.validation.factory" value-ref="validator"/>
             </map>
         </property>
+        <property name="mappingResources">
+            <list>
+                <value>typedefs-h2.xml</value>
+            </list>
+        </property>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
