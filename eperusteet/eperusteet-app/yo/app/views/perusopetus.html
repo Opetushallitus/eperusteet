@@ -4,14 +4,14 @@
 
   <div id="sivunavi-sisalto-wrapper" ng-class="{'sivunavi-hidden': !isNaviVisible()}">
     <div class="sivunavi-navigaatio">
-      <sivunavigaatio2 header="navi.header" sections="navi.sections" show-one="navi.showOne"></sivunavigaatio2>
+      <sivunavigaatio2 on-section-change="onSectionChange" header="navi.header" sections="navi.sections" show-one="navi.showOne"></sivunavigaatio2>
     </div>
 
     <div class="sivunavi-clear"></div>
     <div class="sivunavi-sisalto perusopetus">
       <div class="row">
         <div class="col-md-12">
-          <div ng-if="activeSection === 'suunnitelma' && valittuTekstisisalto">
+          <div ng-if="currentSection === 'suunnitelma' && valittuTekstisisalto">
             <h1>{{ valittuTekstisisalto.nimi | kaanna }}</h1>
             <p ng-bind-html="valittuTekstisisalto.teksti | kaanna"></p>
           </div>
@@ -45,10 +45,10 @@
 
           <div ng-if="activeSection === 'sisalto' && valittuOppiaine && valittuOppiaine.oppiaine && valittuOppiaine.vuosiluokkakokonaisuudet">
             <h1 class="oppiaine-nimi" kaanna="valittuOppiaine.oppiaine.nimi"></h1>
-            <div class="vuosiluokkavalitsin">
+            <div ng-show="currentSection === 'sisalto'" class="vuosiluokkavalitsin">
               <ul class="nav nav-pills">
                 <li ng-repeat="(id, kokonaisuus) in valittuOppiaine.vuosiluokkakokonaisuudet" ng-class="{ active: filtterit.valittuKokonaisuus === kokonaisuus.vuosiluokkaKokonaisuus }">
-                  <a class="fixme action-link" ng-click="valitseVuosiluokka(kokonaisuus.vuosiluokkaKokonaisuus)">
+                  <a class="fixme action-link" ng-click="valitseOppiaineenVuosiluokka(kokonaisuus.vuosiluokkaKokonaisuus)">
                     {{ vuosiluokkakokonaisuudetMap[kokonaisuus.vuosiluokkaKokonaisuus].nimi | kaanna }}
                   </a>
                 </li>
@@ -87,11 +87,6 @@
             </div>
           </div>
         </div>
-
-        <div ng-if="activeSection === 'liitteet'">
-          <h2 kaanna>Liitteet</h2>
-        </div>
-
       </div>
     </div>
   </div>
