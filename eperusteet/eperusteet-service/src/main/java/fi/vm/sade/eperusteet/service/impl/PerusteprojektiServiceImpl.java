@@ -549,12 +549,22 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     private void setPerusteTila(Peruste peruste, PerusteTila tila) {
+
         for (Suoritustapa suoritustapa : peruste.getSuoritustavat()) {
             setSisaltoTila(suoritustapa.getSisalto(), tila);
             for (TutkinnonOsaViite tutkinnonosaViite : suoritustapa.getTutkinnonOsat()) {
                 setOsatTila(tutkinnonosaViite, tila);
             }
         }
+
+        if (peruste.getPerusopetuksenPerusteenSisalto() != null) {
+            setSisaltoTila(peruste.getPerusopetuksenPerusteenSisalto().getSisalto(), tila);
+        }
+
+        if (peruste.getEsiopetuksenPerusteenSisalto() != null) {
+            setSisaltoTila(peruste.getEsiopetuksenPerusteenSisalto().getSisalto(), tila);
+        }
+
         peruste.asetaTila(tila);
     }
 
