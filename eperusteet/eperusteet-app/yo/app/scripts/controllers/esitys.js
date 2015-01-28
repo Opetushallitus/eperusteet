@@ -162,8 +162,9 @@ angular.module('eperusteApp')
 
   .controller('EsitysCtrl', function($scope, $stateParams, sisalto, peruste,
       YleinenData, $state, Algoritmit, tutkinnonOsat, Kaanna, arviointiasteikot,
-      Profiili, PdfCreation, koulutusalaService, opintoalaService, Kieli) {
+      Profiili, PdfCreation, koulutusalaService, opintoalaService, Kieli, TermistoService) {
 
+    TermistoService.setPeruste(peruste);
     $scope.Koulutusalat = koulutusalaService;
     $scope.Opintoalat = opintoalaService;
     $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);

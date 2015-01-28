@@ -44,12 +44,12 @@
   </div>
   <div ng-if="k !== 'arviointi' && tutkinnonOsa[k]">
     <h3>{{ k | kaanna }}</h3>
-    <div ng-bind-html="tutkinnonOsa[k] | kaanna | unsafe"></div>
+    <termisto-tekstikentta tekstikentta="tutkinnonOsa[k]"></termisto-tekstikentta>
   </div>
 </div>
 
 <div ng-if="tutkinnonOsa.tyyppi === 'tutke2'">
-  <div ng-bind-html="tutkinnonOsa.kuvaus | kaanna | unsafe"></div>
+  <termisto-tekstikentta tekstikentta="tutkinnonOsa.kuvaus"></termisto-tekstikentta>
   <div ng-repeat="osaalue in tutkinnonOsa.osaAlueet">
     <h3>{{osaalue.nimi | kaanna}}</h3>
     <div ng-repeat="osaamistavoitteet in osaalue.$groups.grouped">
