@@ -50,16 +50,6 @@ angular.module('eperusteApp')
       ov: 'OPINTOVIIKKO',
     };
 
-    this.tilakuvaukset = [
-      'poistettu',
-      //'pohja',
-      'laadinta',
-      'kommentointi',
-      'viimeistely',
-      'kaannos',
-      'hyvaksytty'
-    ];
-
     this.suoritustavat = [
       'ops',
       'naytto'

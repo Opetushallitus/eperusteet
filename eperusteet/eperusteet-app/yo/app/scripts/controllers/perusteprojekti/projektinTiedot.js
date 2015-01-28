@@ -64,7 +64,6 @@ angular.module('eperusteApp')
     PerusteprojektiResource, PerusteProjektiService, perusteprojektiTiedot, Notifikaatiot,
     Perusteet, Editointikontrollit, Organisaatioryhmat) {
     PerusteProjektiService.watcher($scope, 'projekti');
-
     $scope.lang = $translate.use() || $translate.preferredLanguage();
     $scope.editEnabled = false;
     $scope.$ryhmaNimi = '';
@@ -139,6 +138,7 @@ angular.module('eperusteApp')
 
     $scope.tallennaPerusteprojekti = function() {
       var projekti = PerusteProjektiService.get();
+
       if (projekti.id) {
         delete projekti.koulutustyyppi;
         delete projekti.laajuusYksikko;
@@ -146,7 +146,7 @@ angular.module('eperusteApp')
       else { projekti.id = null; }
 
       if ($scope.pohja()) {
-        projekti = _.merge(_.pick(projekti, 'id', 'nimi', 'koulutustyyppi', 'ryhmaOid'), {
+        projekti = _.merge(_.pick(projekti, 'id', 'nimi', 'koulutustyyppi', 'ryhmaOid', 'perusteId'), {
           tyyppi: 'pohja'
         });
       }

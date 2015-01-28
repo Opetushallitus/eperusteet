@@ -43,7 +43,7 @@
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 
     <bean id="dataSource"
-        class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" destroy-method="close">
+          class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.postgresql.Driver"/>
         <property name="url" value="${eperusteet.ittestdb.jdbcurl}"/>
         <property name="username" value="${eperusteet.ittestdb.user}"/>
@@ -66,11 +66,16 @@
                 <entry key="javax.persistence.validation.factory" value-ref="validator" />
             </map>
         </property>
+        <property name="mappingResources">
+            <list>
+                <value>typedefs-pg.xml</value>
+            </list>
+        </property>
     </bean>
 
     <bean id="flyway"
-        class="com.googlecode.flyway.core.Flyway"
-        depends-on="dataSource">
+          class="com.googlecode.flyway.core.Flyway"
+          depends-on="dataSource">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 

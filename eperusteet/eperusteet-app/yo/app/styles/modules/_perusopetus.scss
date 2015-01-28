@@ -395,14 +395,6 @@ h4 .drag-handle {
   .oppimaara {
     margin-left: 30px;
   }
-
-  .oppiaine-selected {
-    border-radius: 3px;
-    background-color: #0C566E;
-    font-weight: bold;
-    color: #eee;
-  }
-
 }
 
 .oppiaine {
@@ -415,6 +407,30 @@ h4 .drag-handle {
     margin-bottom: 4px;
     padding: 3px;
     cursor: pointer;
+    color: $brand-primary;
+    font-weight: 700;
+  }
+
+  .oppiaine {
+    margin-bottom: 5px;
+    padding: 3px;
+    cursor: pointer;
+  }
+
+  .oppimaara {
+    margin-left: 30px;
+  }
+
+  .oppiaine-selected {
+    border-radius: 3px;
+    background-color: #0C566E;
+    font-weight: bold;
+    color: #eee;
+  }
+
+  .tekstisisalto-active-header {
+    background-color: #888888;
+    color: white;
   }
 
   .tekstisisalto-active {

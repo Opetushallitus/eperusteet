@@ -114,9 +114,7 @@ angular.module('eperusteApp')
         }
         if (scope.editingCallback) {
           if (_.isFunction(scope.editingCallback.canCancel) && !tilanvaihto) {
-            scope.editingCallback.canCancel().then(function () {
-              doCancel();
-            });
+            scope.editingCallback.canCancel().then(doCancel);
           } else {
             doCancel();
           }

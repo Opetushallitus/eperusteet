@@ -154,7 +154,7 @@ angular.module('eperusteApp')
 
           var lapsi = _.first(lapset);
           SuoritustapaSisalto.addChild({
-            perusteId: peruste,
+            perusteId: peruste.id,
             suoritustapa: PerusteProjektiService.getSuoritustapa(),
             perusteenosaViiteId: parent.id,
             childId: lapsi.perusteenOsa.id

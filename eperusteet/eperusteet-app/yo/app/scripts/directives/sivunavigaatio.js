@@ -39,7 +39,8 @@ angular.module('eperusteApp')
         header: '=',
         sections: '=',
         footer: '=',
-        showOne: '='
+        showOne: '=',
+        onSectionChange: '=?'
       },
       controller: 'SivuNaviController',
       transclude: true,
@@ -106,6 +107,7 @@ angular.module('eperusteApp')
 
   .controller('SivuNaviController', function ($scope, $state, Algoritmit, Utils, $timeout, $stateParams) {
     $scope.menuCollapsed = true;
+    $scope.onSectionChange = _.isFunction($scope.onSectionChange) ? $scope.onSectionChange : angular.noop;
 
     $scope.search = {
       term: '',

@@ -269,6 +269,7 @@ angular.module('eperusteApp')
         scope.$on('notifyCKEditor', function() {
           if(editor.checkDirty()) {
             dataSavedOnNotification = true;
+            editor.getSelection().unlock();
             var data = element.hasClass('has-placeholder') ? '' : editor.getData();
             ctrl.$setViewValue(trim(data));
           }
@@ -277,6 +278,7 @@ angular.module('eperusteApp')
 
         function updateModel () {
           if (editor.checkDirty()) {
+            editor.getSelection().unlock();
             var data = editor.getData();
             scope.$apply(function() {
               ctrl.$setViewValue(trim(data));

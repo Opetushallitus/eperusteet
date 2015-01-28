@@ -98,7 +98,7 @@ public class PerusteenRakenneTest {
         );
 
         PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(rakenne);
-        assertTrue(validoitu.ongelmat.size() == 2);
+        assertTrue(validoitu.ongelmat.size() == 1);
     }
 
     @Test

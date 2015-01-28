@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.Set;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,6 +33,7 @@ import lombok.Setter;
 public class OpetuksenTavoiteDto implements ReferenceableDto {
 
     private Long id;
+    private UUID tunniste;
     private Optional<LokalisoituTekstiDto> tavoite;
     private Set<EntityReference> sisaltoalueet;
     private Set<EntityReference> laajattavoitteet;

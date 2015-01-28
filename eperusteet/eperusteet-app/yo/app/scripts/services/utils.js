@@ -19,7 +19,7 @@
 
 
 angular.module('eperusteApp')
-  .service('Utils', function($window, YleinenData, Kaanna) {
+  .service('Utils', function ($window, YleinenData, Kaanna) {
     this.scrollTo = function (selector, offset) {
       var element = angular.element(selector);
       if (element.length) {
@@ -94,12 +94,15 @@ angular.module('eperusteApp')
         var window = angular.element($window);
         var document = angular.element($document);
         var scroll = function () {
-          var fitsOnScreen = document.height() <= window.height()*1.5;
+          var fitsOnScreen = document.height() <= window.height() * 1.5;
           var scrollDistance = document.height() - window.height();
           var inTopArea = window.scrollTop() < scrollDistance * CUTOFF_PERCENTAGE / 100;
-          scope.$apply(function () {
-            scope.hidden = !active || fitsOnScreen || inTopArea;
-          });
+          var hidden = !active || fitsOnScreen || inTopArea;
+          if (hidden !== scope.hidden) {
+            scope.$apply(function () {
+              scope.hidden = hidden;
+            });
+          }
         };
         window.on('scroll', scroll);
         // Disable when in edit mode
@@ -109,7 +112,7 @@ angular.module('eperusteApp')
         scope.$on('disableEditing', function () {
           active = true;
         });
-        scope.$on('$destroy', function() {
+        scope.$on('$destroy', function () {
           window.off('scroll', scroll);
         });
       }

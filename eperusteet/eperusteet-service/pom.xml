@@ -457,7 +457,8 @@
                         <url></url>
                         <username></username>
                         <password></password>
-                        <hibernateProperties>src/test/config/hibernate.properties</hibernateProperties>
+                        <hibernateProperties>${project.basedir}/src/test/config/hibernate.properties</hibernateProperties>
+                        <hibernateMapping>${project.basedir}/src/main/resources/hibernate-typedefs.hbm.xml</hibernateMapping>
                         <outputFile>${schema.file}</outputFile>
                         <scanDependencies>NONE</scanDependencies>
                     </configuration>

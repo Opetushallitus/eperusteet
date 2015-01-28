@@ -35,7 +35,7 @@ angular.module('eperusteApp')
       }, NOTIFICATION_DELAY_SUCCESS);
     }
 
-    var uusiViesti = _.debounce(function (tyyppi, viesti, ilmanKuvaa) {
+    var uusiViesti = function (tyyppi, viesti, ilmanKuvaa) {
       if (_.isObject(viesti) && viesti.data && viesti.data.syy) {
         viesti = viesti.data.syy;
       }
@@ -43,9 +43,10 @@ angular.module('eperusteApp')
         viesti = '';
       }
 
+
       if (!_.isEmpty(viestit)) {
         var viimeinenViesti = viestit[_.size(viestit) - 1];
-        if (viimeinenViesti.tyyppi === tyyppi && viesti === viesti) {
+        if (viimeinenViesti.tyyppi === tyyppi && viimeinenViesti.viesti === viesti) {
           return;
         }
       }
@@ -59,10 +60,7 @@ angular.module('eperusteApp')
 
       $rootScope.$broadcast('update:notifikaatiot');
       refresh();
-    }, 100, {
-      leading: true,
-      trailing: false,
-    });
+    };
 
     function fataali(viesti, cb) {
       cb = _.isFunction(cb) ? cb : angular.noop;

@@ -45,9 +45,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -137,8 +137,8 @@ public class PermissionManager {
         Set<String> r1 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_EPERUSTEET_CRUD_<oid>");
         Set<String> r2 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_EPERUSTEET_CRUD_<oid>", "ROLE_APP_EPERUSTEET_READ_UPDATE_<oid>");
         Set<String> r3 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_EPERUSTEET_CRUD_<oid>", "ROLE_APP_EPERUSTEET_READ_UPDATE_<oid>", "ROLE_APP_EPERUSTEET_READ_<oid>");
-        Set<String> r4 = Sets.newHashSet("ROLE_VIRKAILIJA,ROLE_APP_EPERUSTEET");
-        Set<String> r5 = Sets.newHashSet("ROLE_VIRKAILIJA,ROLE_APP_EPERUSTEET,ROLE_ANONYMOUS");
+        Set<String> r4 = Sets.newHashSet("ROLE_VIRKAILIJA", "ROLE_APP_EPERUSTEET");
+        Set<String> r5 = Sets.newHashSet("ROLE_VIRKAILIJA", "ROLE_APP_EPERUSTEET", "ROLE_ANONYMOUS");
 
         //perusteenosa, peruste (näiden osalta oletetaan että peruste tai sen osa on tilassa LUONNOS
         {
@@ -347,12 +347,10 @@ public class PermissionManager {
     }
 
     private boolean hasAnyRole(Authentication authentication, String perusteProjektiRyhmaOid, Collection<String> roles) {
-        Object principal = authentication == null ? null : authentication.getPrincipal();
-        if (principal instanceof UserDetails) {
-            UserDetails user = (UserDetails) principal;
+        if (authentication != null && authentication.isAuthenticated()) {
             for (String role : roles) {
-                SimpleGrantedAuthority auth = new SimpleGrantedAuthority(perusteProjektiRyhmaOid == null ? role : role.replace("<oid>", perusteProjektiRyhmaOid));
-                if (user.getAuthorities().contains(auth)) {
+                GrantedAuthority auth = new SimpleGrantedAuthority(perusteProjektiRyhmaOid == null ? role : role.replace("<oid>", perusteProjektiRyhmaOid));
+                if (authentication.getAuthorities().contains(auth)) {
                     return true;
                 }
             }

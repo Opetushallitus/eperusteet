@@ -126,10 +126,11 @@ angular.module('eperusteApp')
         otsikko: 'varmista-poisto',
         teksti: $scope.config.removeWholeConfirmationText || '',
         primaryBtn: 'poista',
-        successCb: function () {
-          Editointikontrollit.cancelEditing();
-          $scope.config.removeWholeFn();
-          $state.go($scope.config.backState[0], $scope.config.backState[1], { reload: true });
+        successCb: function() {
+          $scope.config.removeWholeFn(function() {
+            Editointikontrollit.unregisterCallback();
+            $state.go($scope.config.backState[0], $scope.config.backState[1], { reload: true });
+          });
         }
       })();
     };

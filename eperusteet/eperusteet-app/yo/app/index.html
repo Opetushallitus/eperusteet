@@ -46,7 +46,9 @@
       <backtotop></backtotop>
       <div class="notification-wrapper" ng-cloak>
         <div class="notifications" ng-model="viestit" ng-controller="NotifikaatioCtrl">
-          <div ng-if="viestit" ng-click="poistaNotifikaatio(viesti)" ng-model="viestit" ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }" ng-repeat="viesti in viestit">
+          <div ng-if="viestit" ng-click="poistaNotifikaatio(viesti)" ng-model="viestit"
+               ng-class="{ 'notification-normal': viesti.tyyppi === 0, 'notification-success': viesti.tyyppi === 1, 'notification-warning': viesti.tyyppi === 2, 'notification-danger': viesti.tyyppi === 3 }"
+               ng-repeat="viesti in viestit">
             <div class="notification-body">
               <span class="close">×</span>
               <span class="notification-message" kaanna="viesti.viesti"></span>
@@ -77,7 +79,7 @@
     <script src="bower_components/angular-ui-sortable/sortable.min.js"></script>
     <script src="bower_components/angular-ui-tree/dist/angular-ui-tree.min.js"></script>
     <script src="bower_components/angular-elastic/elastic.js"></script>
-    <script src="bower_components/lodash/dist/lodash.min.js"></script>
+    <script src="bower_components/lodash/lodash.min.js"></script>
     <script src="bower_components/js-xlsx/jszip.js"></script>
     <script src="bower_components/js-xlsx/dist/xlsx.min.js"></script>
     <script src="bower_components/angular-i18n/angular-locale_fi-fi.js"></script>
@@ -88,7 +90,7 @@
     <script src="bower_components/angular-ui-select/dist/select.min.js"></script>
     <!-- endbuild -->
 
-    <script src="bower_components/ckeditor/ckeditor.js?v=4.4.5"></script>
+    <script src="bower_components/ckeditor/ckeditor.js?v=4.4.7"></script>
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>

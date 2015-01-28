@@ -1,2 +1,2 @@
-<h2 esitys-sivu-otsikko><span ng-bind="valittuSisalto.nimi | kaanna"></span></h2>
-<div class="sisalto max-sm-leveys" ng-bind-html="valitseKieli(valittuSisalto.teksti) | unsafe"></div>
+<h2 esitys-sivu-otsikko><span ng-bind-html="valittuSisalto.nimi | kaanna | unsafe"></span></h2>
+<termisto-tekstikentta tekstikentta="valittuSisalto.teksti"></termisto-tekstikentta>

@@ -18,10 +18,13 @@ package fi.vm.sade.eperusteet.domain.yl;
 import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import java.util.UUID;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -35,6 +38,11 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Audited
 @Table(name="yl_keskeinen_sisaltoalue")
 public class KeskeinenSisaltoalue extends AbstractReferenceableEntity {
+
+    @NotNull
+    @Column(updatable = false)
+    @Getter
+    private UUID tunniste = UUID.randomUUID();
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter

@@ -18,6 +18,13 @@
 /* global _ */
 
 angular.module('eperusteApp')
+  .directive('termistoTekstikentta', function() {
+    return {
+      restrict: 'E',
+      scope: { model: '=tekstikentta' },
+      template: '<p ng-bind-html="model | kaanna | unsafe" termisto-viitteet="model"></p>'
+    };
+  })
   .directive('termistoViitteet', function (Kaanna, TermistoService, $document, $timeout) {
     var TERMI_MATCHER = 'abbr[data-viite]';
     return {

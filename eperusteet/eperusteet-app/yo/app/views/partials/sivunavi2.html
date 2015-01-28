@@ -23,7 +23,7 @@
       <div ng-if="sections">
         <accordion close-others="showOne">
           <accordion-group ng-repeat="section in sections" is-open="section.$open" ng-class="{'panel-chosen': section.$open, 'menu': !section.include}">
-            <accordion-heading>{{section.title | kaanna}}</accordion-heading>
+            <accordion-heading><span ng-click="onSectionChange(section)">{{section.title | kaanna}}</span></accordion-heading>
             <div ng-if="section.include" ng-include="section.include"></div>
             <div ng-if="!section.include" class="list-group">
               <a class="list-group-item item" ng-repeat="item in section.items" ng-class="itemClasses(item)" ng-href="{{item.href}}"
