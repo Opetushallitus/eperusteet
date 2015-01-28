@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -32,6 +33,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -45,6 +47,11 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Table(name = "yl_vlkokonaisuus")
 @Audited
 public class VuosiluokkaKokonaisuus extends AbstractAuditedReferenceableEntity {
+
+    @NotNull
+    @Column(updatable = false)
+    @Getter
+    private UUID tunniste = UUID.randomUUID();
 
     @ElementCollection
     @Enumerated(EnumType.STRING)

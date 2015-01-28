@@ -204,7 +204,8 @@ angular.module('eperusteApp')
     });
   })
 
-  .controller('PerusopetusController', function($q, $scope, $timeout, sisalto, PerusteenOsat, OppiaineenVuosiluokkakokonaisuudet, Algoritmit, Notifikaatiot, Oppiaineet) {
+  .controller('PerusopetusController', function($q, $scope, $timeout, sisalto, PerusteenOsat, OppiaineenVuosiluokkakokonaisuudet,
+                                                Algoritmit, Notifikaatiot, Oppiaineet, TermistoService) {
     $scope.isNaviVisible = _.constant(true);
     var peruste = sisalto[0];
     var oppiaineet = _.zipBy(sisalto[2], 'id');
@@ -218,46 +219,72 @@ angular.module('eperusteApp')
     $scope.filterSisalto = {};
     $scope.filterOsaamiset = {};
     $scope.tekstisisalto = sisalto[4];
+    $scope.currentSection = 'suunnitelma';
+    $scope.activeSection = 'suunnitelma';
+
+    TermistoService.setPeruste(peruste);
 
     $scope.filtterit = {
       moodi: 'sivutus',
     };
 
-    $scope.valitseVuosiluokka = function(vuosiluokka) {
-      $scope.valittuOppiaine.vlks = undefined;
-      $timeout(function() {
-        $scope.filtterit.valittuKokonaisuus = vuosiluokka;
-        $scope.valittuOppiaine.vlks = $scope.valittuOppiaine.vuosiluokkakokonaisuudet[vuosiluokka];
-        $scope.valittuOppiaine.sisallot = $scope.sisallot[$scope.valittuOppiaine.vlks.vuosiluokkaKokonaisuus];
-        paivitaTavoitteet();
-      });
+    $scope.onSectionChange = function(section) {
+      $scope.currentSection = section.id;
+      $scope.activeSection = section.id;
+
+      if (_.isEmpty($scope.valittuOppiaine) && section.id === 'sisalto') {
+        selectOppiaine(_.first(_.keys(oppiaineet)));
+      }
     };
 
-    function valitseOppiaine(oppiaine) {
-      oppiaine = _.isObject(oppiaine) ? oppiaine.value : oppiaine;
-      Oppiaineet.get({ perusteId: peruste.id, osanId: oppiaine }, function(res) {
+    $scope.valitseOppiaineenVuosiluokka = function(vuosiluokka) {
+      $scope.valittuOppiaine.vlks = undefined;
+      $scope.filtterit.valittuKokonaisuus = vuosiluokka;
+      $scope.valittuOppiaine.vlks = $scope.valittuOppiaine.vuosiluokkakokonaisuudet[vuosiluokka];
+      $scope.valittuOppiaine.sisallot = $scope.sisallot[$scope.valittuOppiaine.vlks.vuosiluokkaKokonaisuus];
+      paivitaTavoitteet();
+    };
+
+    function activeSection() {
+      return $scope.activeSection;
+    }
+
+    function isCurrentOppiaine(item) {
+      var id = _.isObject(item) ? item.value : item;
+      return $scope.valittuOppiaine && $scope.valittuOppiaine.oppiaine && $scope.valittuOppiaine.oppiaine.id === id;
+    }
+
+    function selectOppiaine(oppiaine) {
+      var id = _.isObject(oppiaine) ? oppiaine.value : oppiaine;
+      Oppiaineet.get({ perusteId: peruste.id, osanId: id }, function(res) {
         var valittuOppiaine = {};
         valittuOppiaine.oppiaine = res;
         valittuOppiaine.vuosiluokkakokonaisuudet = _.zipBy(res.vuosiluokkakokonaisuudet, 'vuosiluokkaKokonaisuus');
         $scope.valittuOppiaine = valittuOppiaine;
-        $scope.valitseVuosiluokka($scope.valittuOppiaine.vuosiluokkakokonaisuudet[$scope.filtterit.valittuKokonaisuus] ?
-                                  $scope.filtterit.valittuKokonaisuus :
-                                  _.first(_.keys($scope.valittuOppiaine.vuosiluokkakokonaisuudet)));
+        $scope.valitseOppiaineenVuosiluokka($scope.valittuOppiaine.vuosiluokkakokonaisuudet[$scope.filtterit.valittuKokonaisuus] ?
+                                    $scope.filtterit.valittuKokonaisuus :
+                                    _.first(_.keys($scope.valittuOppiaine.vuosiluokkakokonaisuudet)), true);
+        $scope.activeSection = 'sisalto';
       }, Notifikaatiot.serverCb);
     }
 
     function valitseAktiivinenTekstisisalto(osaId) {
-      $scope.valittuTekstisisalto = undefined;
       PerusteenOsat.get({
         osanId: osaId
       }, function(res) {
         $scope.valittuTekstisisalto = res;
+        $scope.activeSection = 'suunnitelma';
       });
     }
 
     function rakennaVuosiluokkakokonaisuuksienSisalto() {
       var sisalto = _.map($scope.vuosiluokkakokonaisuudet, function(vkl) {
         return {
+          $oppiaineet: _(oppiaineet).filter(function(oa) {
+              return _.some(oa.vuosiluokkakokonaisuudet, function(oavkl) {
+                return _.parseInt(oavkl._vuosiluokkaKokonaisuus) === vkl.id;
+              });
+            }).value(),
           $vkl: vkl,
           label: vkl.nimi,
           depth: 0,
@@ -290,7 +317,7 @@ angular.module('eperusteApp')
       header: 'perusteiden-sisalto',
       showOne: true,
       sections: [{
-          $open: false,
+          $open: true,
           id: 'suunnitelma',
           include: 'views/partials/perusopetustekstisisalto.html',
           items: rakennaTekstisisalto(),
@@ -301,13 +328,26 @@ angular.module('eperusteApp')
             item.$selected = true;
           }
         }, {
+          title: 'Vuosiluokkakokonaisuudet',
+          id: 'vlk',
+          items: rakennaVuosiluokkakokonaisuuksienSisalto(),
+          include: 'views/partials/perusopetuksenvuosiluokkakokonaisuus.html',
+          update: function(item, section) {
+            _.each(section.items, function(osa) { osa.$selected = false; });
+            item.$selected = true;
+            $scope.valittuVuosiluokkakokonaisuus = item.$vkl;
+            $scope.activeSection = 'vlk';
+          },
+          selectOppiaine: selectOppiaine,
+          isCurrentOppiaine: isCurrentOppiaine,
+          activeSection: activeSection,
+          currentSection: function() { return $scope.currentSection; },
+        }, {
           title: 'Opetuksen sisällöt',
           id: 'sisalto',
           include: 'views/partials/navifilters.html',
           model: {
             sections: [{
-              title: 'Vuosiluokat',
-              apply: angular.noop,
               $condensed: true,
               items: _.map($scope.vuosiluokkakokonaisuudet, function(kokonaisuus) {
                 return { label: kokonaisuus.nimi, value: kokonaisuus.id, $selected: true };
@@ -321,11 +361,9 @@ angular.module('eperusteApp')
               items: [],
               $open: true,
               include: 'views/partials/perusopetusoppiaineetsivunavi.html',
-              apply: angular.noop,
-              selectOppiaine: valitseOppiaine,
-              isCurrentOppiaine: function(item) {
-                return $scope.valittuOppiaine && $scope.valittuOppiaine.oppiaine && $scope.valittuOppiaine.oppiaine.id === item.value;
-              }
+              selectOppiaine: selectOppiaine,
+              isCurrentOppiaine: isCurrentOppiaine,
+              activeSection: activeSection
             }, {
               id: 'sisallot',
               title: 'Oppiaineen sisällöt',
@@ -349,21 +387,7 @@ angular.module('eperusteApp')
               }
             }]
           }
-        }, {
-          title: 'Vuosiluokkakokonaisuudet',
-          id: 'vlk',
-          $open: true,
-          items: rakennaVuosiluokkakokonaisuuksienSisalto(),
-          include: 'views/partials/perusopetuksenvuosiluokkakokonaisuus.html',
-          update: function(item, section) {
-            _.each(section.items, function(osa) { osa.$selected = false; });
-            item.$selected = true;
-            $scope.valittuVuosiluokkakokonaisuus = item.$vkl;
-          }
-        }, {
-          title: 'Liitteet',
-          id: 'liitteet'
-        },
+        }
       ]
     };
 
@@ -417,21 +441,11 @@ angular.module('eperusteApp')
         }
       });
 
-      _.each($scope.navi.sections[1].model.sections, function(v) {
+      _.each($scope.navi.sections[2].model.sections, function(v) {
         if (navi[v.id]) {
           v.items = navi[v.id];
         }
       });
     }
     paivitaSivunavi();
-
-    // Watch which main section is currently open
-    $scope.$watch(function () {
-      return '' + $scope.navi.sections[0].$open + $scope.navi.sections[1].$open + $scope.navi.sections[2].$open;
-    }, function () {
-      var active = _.find($scope.navi.sections, '$open');
-      $scope.activeSection = active ? active.id : null;
-    });
-
-    valitseOppiaine(_.first(_.keys(oppiaineet)));
   });

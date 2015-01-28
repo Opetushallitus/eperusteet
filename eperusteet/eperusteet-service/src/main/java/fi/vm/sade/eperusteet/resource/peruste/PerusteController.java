@@ -36,7 +36,6 @@ import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.KoodistoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
-import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +43,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -93,7 +91,7 @@ public class PerusteController {
         return new ResponseEntity<>(poi, HttpStatus.OK);
     }
 
-    @RequestMapping(method = GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(method = GET, produces = "application/json;charset=UTF-8")
     @ResponseBody
     @ApiOperation(value = "perusteiden haku")
     @ApiImplicitParams({

@@ -104,7 +104,7 @@ public class PerusteenRakenne {
             validointi.ongelmat.add(new Ongelma("Ryhmässä on samoja tutkinnon osia (" + uniikit.size() + " uniikkia).", nimi, syvyys));
         }
 
-        if (ms != null && rooli == RakenneModuuliRooli.NORMAALI) {
+        if (ms != null) {
             final Integer kokoMin = ms.kokoMinimi();
             final Integer kokoMax = ms.kokoMaksimi();
             final BigDecimal laajuusMin = new BigDecimal(ms.laajuusMinimi());
@@ -124,8 +124,11 @@ public class PerusteenRakenne {
                 else if (osat.size() < kokoMax) {
                     validointi.ongelmat.add(new Ongelma("Laskettu koko on pienempi kuin ryhmän vaadittu maksimi (" + osat.size() + " < " + kokoMax + ").", nimi, syvyys));
                 }
+                validointi.laskettuLaajuus = ms.laajuusMaksimi() != null && ms.laajuusMaksimi() > 0 ? laajuusMax : laajuusSummaMax;
             }
-            validointi.laskettuLaajuus = laajuusSummaMax;
+            else if (rooli == RakenneModuuliRooli.VIERAS || rooli == RakenneModuuliRooli.VIRTUAALINEN) {
+                validointi.laskettuLaajuus = laajuusMax;
+            }
         }
         return validointi;
     }
