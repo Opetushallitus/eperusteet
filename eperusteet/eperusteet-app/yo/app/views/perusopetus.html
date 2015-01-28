@@ -11,35 +11,35 @@
     <div class="sivunavi-sisalto perusopetus">
       <div class="row">
         <div class="col-md-12">
-          <div ng-if="currentSection === 'suunnitelma' && valittuTekstisisalto">
+          <div ng-if="activeSection === 'suunnitelma' && valittuTekstisisalto">
             <h1>{{ valittuTekstisisalto.nimi | kaanna }}</h1>
-            <p ng-bind-html="valittuTekstisisalto.teksti | kaanna"></p>
+            <termisto-tekstikentta tekstikentta="valittuTekstisisalto.teksti"></termisto-tekstikentta>
           </div>
 
           <div ng-if="activeSection === 'vlk' && valittuVuosiluokkakokonaisuus">
             <h1>{{ valittuVuosiluokkakokonaisuus.nimi | kaanna }}</h1>
             <div ng-if="valittuVuosiluokkakokonaisuus.siirtymaEdellisesta">
               <h2>{{ valittuVuosiluokkakokonaisuus.siirtymaEdellisesta.otsikko | kaanna  }}</h2>
-              <p ng-bind-html="valittuVuosiluokkakokonaisuus.siirtymaEdellisesta.teksti | kaanna"></p>
+              <termisto-tekstikentta tekstikentta="valittuVuosiluokkakokonaisuus.siirtymaEdellisesta.teksti"></termisto-tekstikentta>
             </div>
             <div ng-if="valittuVuosiluokkakokonaisuus.siirtymaSeuraavaan">
               <h2>{{ valittuVuosiluokkakokonaisuus.siirtymaSeuraavaan.otsikko | kaanna  }}</h2>
-              <p ng-bind-html="valittuVuosiluokkakokonaisuus.siirtymaSeuraavaan.teksti | kaanna"></p>
+              <termisto-tekstikentta tekstikentta="valittuVuosiluokkakokonaisuus.siirtymaSeuraavaan.teksti"></termisto-tekstikentta>
             </div>
             <div ng-if="valittuVuosiluokkakokonaisuus.laajaalainenOsaaminen">
               <h2>{{ valittuVuosiluokkakokonaisuus.laajaalainenOsaaminen.otsikko | kaanna  }}</h2>
-              <p ng-bind-html="valittuVuosiluokkakokonaisuus.laajaalainenOsaaminen.teksti | kaanna"></p>
+              <termisto-tekstikentta tekstikentta="valittuVuosiluokkakokonaisuus.laajaalainenOsaaminen.teksti"></termisto-tekstikentta>
             </div>
             <div ng-if="valittuVuosiluokkakokonaisuus.laajaalaisetOsaamiset">
               <h2 kaanna="'laaja-alaiset-osaamiset'"></h2>
               <div ng-repeat="osaaminen in valittuVuosiluokkakokonaisuus.laajaalaisetOsaamiset ">
                 <h4>{{ osaamiset[osaaminen.laajaalainenOsaaminen].nimi | kaanna }}</h4>
-                <p ng-bind-html="osaaminen.kuvaus | kaanna"></p>
+                <termisto-tekstikentta tekstikentta="osaaminen.kuvaus"></termisto-tekstikentta>
               </div>
             </div>
             <div ng-if="valittuVuosiluokkakokonaisuus.paikallisestiPaatettavatAsiat">
               <h2>{{ valittuVuosiluokkakokonaisuus.paikallisestiPaatettavatAsiat.otsikko | kaanna  }}</h2>
-              <p ng-bind-html="valittuVuosiluokkakokonaisuus.paikallisestiPaatettavatAsiat.teksti | kaanna"></p>
+              <termisto-tekstikentta tekstikentta="valittuVuosiluokkakokonaisuus.paikallisestiPaatettavatAsiat.teksti"></termisto-tekstikentta>
             </div>
           </div>
 
@@ -60,7 +60,7 @@
             <div>
               <div>
                 <h3>{{ valittuOppiaine.oppiaine.tehtava.otsikko | kaanna }}</h3>
-                <p ng-bind-html="valittuOppiaine.oppiaine.tehtava.teksti || '-' | kaanna"></p>
+                <termisto-tekstikentta tekstikentta="valittuOppiaine.oppiaine.tehtava.teksti || '-'"></termisto-tekstikentta>
               </div>
 
               <h2>{{ vuosiluokkakokonaisuudetMap[valittuOppiaine.vlks.vuosiluokkaKokonaisuus].nimi | kaanna }}</h2>
@@ -68,17 +68,17 @@
 
               <div ng-hide="filterSisalto.tehtava">
                 <h3>{{ valittuOppiaine.vlks.tehtava.otsikko | kaanna }}</h3>
-                <p ng-bind-html="valittuOppiaine.vlks.tehtava.teksti || '-' | kaanna"></p>
+                <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.tehtava.teksti || '-'"></termisto-tekstikentta>
               </div>
 
               <div ng-hide="filterSisalto.ohjaus">
                 <h3>{{ valittuOppiaine.vlks.ohjaus.otsikko | kaanna }}</h3>
-                <p ng-bind-html="valittuOppiaine.vlks.ohjaus.teksti || '-' | kaanna"></p>
+                <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.ohjaus.teksti || '-'"></termisto-tekstikentta>
               </div>
 
               <div ng-hide="filterSisalto.tyotavat">
                 <h3>{{ valittuOppiaine.vlks.tyotavat.otsikko | kaanna }}</h3>
-                <p ng-bind-html="valittuOppiaine.vlks.tyotavat.teksti || '-' | kaanna"></p>
+                <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.tyotavat.teksti || '-'"></termisto-tekstikentta>
               </div>
               <div ng-hide="filterSisalto.tavoitteet" ng-if="valittuOppiaine.vlks.vuosiluokkaKokonaisuus">
                 <h3 kaanna="'perusopetus-tavoitteet'"></h3>
