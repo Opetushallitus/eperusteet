@@ -19,7 +19,7 @@
     "jquery": "~1.11.0",
     "js-xlsx": "SheetJS/js-xlsx#~0.7.11",
     "json3": "~3.2.4",
-    "lodash": "~2.4.0",
+    "lodash": "~3.0.0",
     "momentjs": "~2.5.1",
     "angular-ui-router": "0.2.13",
     "ng-file-upload": "~1.2.6",
