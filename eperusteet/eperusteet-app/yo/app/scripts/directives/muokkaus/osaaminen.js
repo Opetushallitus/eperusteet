@@ -37,6 +37,7 @@ angular.module('eperusteApp')
     $scope.editEnabled = false;
 
     var cloner = CloneHelper.init(['nimi', 'kuvaus']);
+    var poistettu = undefined;
 
     var callbacks = {
       edit: function () {
@@ -85,9 +86,11 @@ angular.module('eperusteApp')
         backState: ['root.perusteprojekti.suoritustapa.osalistaus', {suoritustapa: $stateParams.suoritustapa, osanTyyppi: PerusopetusService.OSAAMINEN}],
         removeWholeLabel: 'poista-osaamiskokonaisuus',
         removeWholeConfirmationText: 'poistetaanko-osaamiskokonaisuus',
-        removeWholeFn: function () {
-          PerusopetusService.clearCache();
-          PerusopetusService.deleteOsa($scope.editableModel);
+        removeWholeFn: function(then) {
+          PerusopetusService.deleteOsa($scope.editableModel, function() {
+            PerusopetusService.clearCache();
+            then();
+          });
         },
         fields: [],
         editingCallbacks: callbacks

@@ -145,12 +145,12 @@ angular.module('eperusteApp')
       editTitle: 'muokkaa-vuosiluokkakokonaisuutta',
       newTitle: 'uusi-vuosiluokkakokonaisuus',
       removeWholeLabel: 'poista-vuosiluokkakokonaisuus',
-      removeWholeFn: function () {
+      removeWholeFn: function() {
         Varmistusdialogi.dialogi({
           otsikko: 'varmista-poisto',
           teksti: 'poistetaanko-vuosiluokkakokonaisuus',
           primaryBtn: 'poista',
-          successCb: function () {
+          successCb: function() {
             Editointikontrollit.cancelEditing();
             PerusopetusService.clearCache();
             PerusopetusService.deleteOsa($scope.editableModel);
