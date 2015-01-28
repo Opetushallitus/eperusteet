@@ -33,7 +33,7 @@ module.exports = function(config) {
       'app/bower_components/angular-ui-router/release/angular-ui-router.js',
       'app/bower_components/angular-ui-tree/dist/angular-ui-tree.min.js',
       'app/bower_components/ckeditor/ckeditor.js',
-      'app/bower_components/lodash/dist/lodash.js',
+      'app/bower_components/lodash/lodash.js',
       'app/bower_components/momentjs/moment.js',
       'app/bower_components/angular-cache/dist/angular-cache.min.js',
       'app/bower_components/angular-ui-select/dist/select.min.js',
