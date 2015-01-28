@@ -68,7 +68,7 @@ angular.module('eperusteApp')
     $scope.jarjestysTapa = 'nimi';
     $scope.jarjestysOrder = false;
     $scope.tilaRajain = null;
-    $scope.tilat = YleinenData.tilakuvaukset;
+    $scope.tilat = [];
     $scope.filteredPp = [];
     $scope.itemsPerPage = 10;
     $scope.nykyinen = 1;
@@ -106,10 +106,13 @@ angular.module('eperusteApp')
     };
 
     PerusteProjektit.hae({}, function(res) {
+      var mahdollisetTilat = {};
       angular.forEach(res, function(projekti) {
         projekti.suoritustapa = YleinenData.valitseSuoritustapaKoulutustyypille(projekti.koulutustyyppi);
         projekti.$url = PerusteProjektiService.getUrl(projekti);
+        mahdollisetTilat[projekti.tila] = true;
       });
+      $scope.tilat = _.keys(mahdollisetTilat);
       $scope.perusteprojektit = res;
     });
 
