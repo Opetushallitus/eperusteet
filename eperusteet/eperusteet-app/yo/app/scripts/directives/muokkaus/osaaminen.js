@@ -37,7 +37,6 @@ angular.module('eperusteApp')
     $scope.editEnabled = false;
 
     var cloner = CloneHelper.init(['nimi', 'kuvaus']);
-    var poistettu = undefined;
 
     var callbacks = {
       edit: function () {

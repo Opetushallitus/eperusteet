@@ -237,7 +237,7 @@ angular.module('eperusteApp')
       }
     };
 
-    $scope.valitseOppiaineenVuosiluokka = function(vuosiluokka, dontChange) {
+    $scope.valitseOppiaineenVuosiluokka = function(vuosiluokka) {
       $scope.valittuOppiaine.vlks = undefined;
       $scope.filtterit.valittuKokonaisuus = vuosiluokka;
       $scope.valittuOppiaine.vlks = $scope.valittuOppiaine.vuosiluokkakokonaisuudet[vuosiluokka];
@@ -279,8 +279,6 @@ angular.module('eperusteApp')
 
     function rakennaVuosiluokkakokonaisuuksienSisalto() {
       var sisalto = _.map($scope.vuosiluokkakokonaisuudet, function(vkl) {
-        var soppiaineet = [];
-
         return {
           $oppiaineet: _(oppiaineet).filter(function(oa) {
               return _.some(oa.vuosiluokkakokonaisuudet, function(oavkl) {
@@ -343,7 +341,7 @@ angular.module('eperusteApp')
           selectOppiaine: selectOppiaine,
           isCurrentOppiaine: isCurrentOppiaine,
           activeSection: activeSection,
-          currentSection: function() { return $scope.currentSection },
+          currentSection: function() { return $scope.currentSection; },
         }, {
           title: 'Opetuksen sisällöt',
           id: 'sisalto',
