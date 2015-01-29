@@ -27,7 +27,7 @@ angular.module('eperusteApp')
     return $resource(SERVICE_LOC + '/kayttajaprofiili/:id', {
       id: '@id'
     }, {
-      lisaaPreferenssi: { method: 'POST', url: SERVICE_LOC + '/kayttajaprofiili/preferenssi' }
+      lisaaPreferenssi: {method: 'POST', url: SERVICE_LOC + '/kayttajaprofiili/preferenssi'}
     });
   })
   .service('Profiili', function($state, $rootScope, Suosikit, Notifikaatiot, Kayttajaprofiilit, $stateParams, $http, $q) {
@@ -36,6 +36,12 @@ angular.module('eperusteApp')
       suosikit: [],
       preferenssit: {}
     };
+
+    var infoQ = $q.defer();
+    info.$resolved = infoQ.promise;
+    info.$resolved.then(function(value) {
+      info.resolved = value;
+    });
 
     function isSame(paramsA, paramsB) {
       return _.size(paramsA) === _.size(paramsB) && _.all(paramsA, function(v, k) {
@@ -68,8 +74,10 @@ angular.module('eperusteApp')
       _.extend(info, res);
       info.suosikit = transformSuosikit(res.suosikit);
       info.preferenssit = transformPreferenssit(res.preferenssit);
-      info.resolved = true;
+      infoQ.resolve(true);
       $rootScope.$broadcast('kayttajaProfiiliPaivittyi');
+    }, function() {
+      infoQ.resolve(false);
     });
 
     return {
@@ -77,21 +85,22 @@ angular.module('eperusteApp')
       oid: function() { return info.oid; },
       lang: function() { return info.lang; },
       profiili: function() { return info; },
+      resolvedPromise: function() { return info.$resolved; },
       isResolved: function() { return info.resolved; },
-      casTiedot: function () {
+      casTiedot: function() {
         // TODO Käyttäjätiedot voisi hakea ensisijaisesti CAS:sta eikä fallbackina
         // käyttäjäprofiilille. CAS:ssa on kuitenkin aina kirjaantuneen käyttäjän tiedot.
         var deferred = $q.defer();
         if (!info.$casFetched) {
           info.$casFetched = true;
-          $http.get('/cas/me').success(function (res) {
+          $http.get('/cas/me').success(function(res) {
             $rootScope.$broadcast('fetched:casTiedot');
             if (res.oid) {
               info.oid = res.oid;
               info.lang = res.lang;
             }
             deferred.resolve(res);
-          }).error(function () {
+          }).error(function() {
             $rootScope.$broadcast('fetched:casTiedot');
             deferred.resolve({});
           });
@@ -100,7 +109,6 @@ angular.module('eperusteApp')
         }
         return deferred.promise;
       },
-
       setPreferenssi: function(avain, arvo, successCb, failureCb) {
         successCb = successCb || angular.noop;
         failureCb = failureCb || angular.noop;
@@ -119,7 +127,6 @@ angular.module('eperusteApp')
           });
         }
       },
-
       // Suosikit
       asetaSuosikki: function(state, nimi, success) {
         var stateParams = $stateParams;
@@ -127,12 +134,11 @@ angular.module('eperusteApp')
 
         var vanha = _(info.suosikit).filter(function(s) {
           return state.current.name === s.sisalto.tila && isSame(stateParams, s.sisalto.parametrit);
-        })
-        .first();
+        }).first();
 
         if (!_.isEmpty(vanha)) {
           _.remove(info.suosikit, vanha);
-          Suosikit.delete({ suosikkiId: vanha.id }, function() {
+          Suosikit.delete({suosikkiId: vanha.id}, function() {
             success(_.clone(info.suosikit));
             $rootScope.$broadcast('kayttajaProfiiliPaivittyi');
           }, Notifikaatiot.serverCb);
@@ -166,12 +172,12 @@ angular.module('eperusteApp')
       paivitaSuosikki: function(suosikki) {
         var payload = _.clone(suosikki);
         payload.sisalto = JSON.stringify(payload.sisalto);
-        return Suosikit.update({suosikkiId: payload.id}, payload).$promise.then(function (res) {
+        return Suosikit.update({suosikkiId: payload.id}, payload).$promise.then(function(res) {
           parseResponse(res);
         });
       },
       poistaSuosikki: function(suosikki) {
-        return Suosikit.delete({suosikkiId: suosikki.id}).$promise.then(function (res) {
+        return Suosikit.delete({suosikkiId: suosikki.id}).$promise.then(function(res) {
           parseResponse(res);
         });
       }
