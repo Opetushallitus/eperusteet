@@ -25,9 +25,10 @@ angular.module('eperusteApp')
     var paivitaOmatProjektit = function() {
       OmatPerusteprojektit.query({}, function(vastaus) {
         $scope.projektit = _(vastaus)
-          .filter(function(pp) { return pp.diaarinumero; })
-          .forEach(function(pp) {
+          .filter(function(pp) { return pp.diaarinumero; /*ei ole pohja*/ })
+          .map(function(pp) {
             pp.url = PerusteProjektiService.getUrl(pp);
+            return pp;
           })
           .reverse()
           .value();

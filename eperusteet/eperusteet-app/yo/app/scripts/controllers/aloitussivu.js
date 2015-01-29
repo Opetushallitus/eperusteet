@@ -25,6 +25,9 @@ angular.module('eperusteApp')
         template: '<div ui-view></div>',
         abstract: true,
         resolve: {
+          resolved: function(Profiili) {
+            return Profiili.resolvedPromise();
+          },
           suosikit: function(Profiili) {
             return Profiili;
           },
