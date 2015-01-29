@@ -50,6 +50,7 @@ customAttribute.webservice.url.backend=https://${host.virkailija}/authentication
 flyway.initOnMigrate=true
 koodi.public.webservice.url.backend=https://${host.virkailija}/koodisto-service/services/koodiService
 koodisto.public.webservice.url.backend=https://${host.virkailija}/koodisto-service/services/koodistoService
+koodisto.service.url=https://${host.virkailija}/koodisto-service
 jpa.schemaUpdate=validate
 jpa.showSql=false
 ldap.cache.size=10000
