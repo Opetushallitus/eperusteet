@@ -48,7 +48,7 @@ angular.module('eperusteApp', [
   .constant('SHOW_VERSION_FOOTER', true)
   .config(function($urlRouterProvider, $sceProvider) {
     $sceProvider.enabled(true);
-    $urlRouterProvider.when('','/');
+    $urlRouterProvider.when('', '/');
     $urlRouterProvider.otherwise(function($injector, $location) {
       $injector.get('virheService').setData({path: $location.path()});
       $injector.get('$state').go('root.virhe');
@@ -61,7 +61,7 @@ angular.module('eperusteApp', [
     $translateProvider.preferredLanguage(preferred);
     moment.lang(preferred);
   })
-  .config(function ($rootScopeProvider) {
+  .config(function($rootScopeProvider) {
     // workaround for infdig with recursive tree structures
     $rootScopeProvider.digestTtl(20);
   })
@@ -105,39 +105,39 @@ angular.module('eperusteApp', [
   })
   // Lodash mixins and other stuff
   .run(function() {
-    _.mixin({ arraySwap: function(array, a, b) {
-      if (_.isArray(array) && _.size(array) > a && _.size(array) > b) {
-        var temp = array[a];
-        array[a] = array[b];
-        array[b] = temp;
-      }
-      return array;
-    }});
-    _.mixin({ zipBy: function(array, kfield, vfield) {
-      if (_.isArray(array) && kfield) {
-        if (vfield) {
-          return _.zipObject(_.map(array, kfield), _.map(array, vfield));
+    _.mixin({arraySwap: function(array, a, b) {
+        if (_.isArray(array) && _.size(array) > a && _.size(array) > b) {
+          var temp = array[a];
+          array[a] = array[b];
+          array[b] = temp;
+        }
+        return array;
+      }});
+    _.mixin({zipBy: function(array, kfield, vfield) {
+        if (_.isArray(array) && kfield) {
+          if (vfield) {
+            return _.zipObject(_.map(array, kfield), _.map(array, vfield));
+          }
+          else {
+            return _.zipObject(_.map(array, kfield), array);
+          }
         }
         else {
-          return _.zipObject(_.map(array, kfield), array);
+          return {};
         }
-      }
-      else {
-        return {};
-      }
-    }});
-    _.mixin({ set: function(obj, field) {
-      return function(value) {
-        obj[field] = value;
-      };
-    }});
-    _.mixin({ setWithCallback: function(obj, field, cb) {
-      return function(value) {
-        cb = cb || angular.noop;
-        obj[field] = value;
-        cb(value);
-      };
-    }});
+      }});
+    _.mixin({set: function(obj, field) {
+        return function(value) {
+          obj[field] = value;
+        };
+      }});
+    _.mixin({setWithCallback: function(obj, field, cb) {
+        return function(value) {
+          cb = cb || angular.noop;
+          obj[field] = value;
+          cb(value);
+        };
+      }});
   })
   .run(function($rootScope) {
     var f = _.debounce(function() {
@@ -149,7 +149,7 @@ angular.module('eperusteApp', [
     angular.element(window).on('mousemove', f);
   })
   .run(function($rootScope, $modal, $location, $window, $state, $http, paginationConfig, Editointikontrollit,
-                Varmistusdialogi, Kaanna, virheService) {
+    Varmistusdialogi, Kaanna, virheService) {
     paginationConfig.firstText = '';
     paginationConfig.previousText = '';
     paginationConfig.nextText = '';
@@ -192,8 +192,12 @@ angular.module('eperusteApp', [
         templateUrl: 'views/modals/uudelleenohjaus.html',
         controller: 'UudelleenohjausModalCtrl',
         resolve: {
-          status: function() { return status; },
-          redirect: function() { return casurl; }
+          status: function() {
+            return status;
+          },
+          redirect: function() {
+            return casurl;
+          }
         }
       });
 
@@ -242,4 +246,13 @@ angular.module('eperusteApp', [
         return confirmationMessage;
       }
     });
+  })
+  .run(function($templateCache) {
+    //angular-ui-select korjaus (IE9)
+    var expected = '<ul class=\"ui-select-choices ui-select-choices-content dropdown-menu\" role=\"menu\" aria-labelledby=\"dLabel\" ng-show=\"$select.items.length > 0\"><li class=\"ui-select-choices-group\"><div class=\"divider\" ng-show=\"$select.isGrouped && $index > 0\"></div><div ng-show=\"$select.isGrouped\" class=\"ui-select-choices-group-label dropdown-header\" ng-bind-html=\"$group.name\"></div><div class=\"ui-select-choices-row\" ng-class=\"{active: $select.isActive(this), disabled: $select.isDisabled(this)}\"><a href=\"javascript:void(0)\" class=\"ui-select-choices-row-inner\"></a></div></li></ul>';
+    var fix      = '<ul class=\"ui-select-choices ui-select-choices-content dropdown-menu\" role=\"menu\" aria-labelledby=\"dLabel\" ng-show=\"$select.items.length > 0\"><li class=\"ui-select-choices-group\"><div class=\"divider\" ng-show=\"$select.isGrouped && $index > 0\"></div><div ng-show=\"$select.isGrouped\" class=\"ui-select-choices-group-label dropdown-header\" ng-bind-html=\"$group.name\"></div><div class=\"ui-select-choices-row\" ng-class=\"{active: $select.isActive(this), disabled: $select.isDisabled(this)}\"><a href=\"javascript:void(0)\" onclick=\"return false;\" class=\"ui-select-choices-row-inner\"></a></div></li></ul>';
+    if ( $templateCache.get('bootstrap/choices.tpl.html') !== expected ) {
+      console.warn('angular-ui-select korjaus (IE9), bootstrap/choices.tpl.html on muuttunut');
+    }
+    $templateCache.put('bootstrap/choices.tpl.html', fix);
   });
