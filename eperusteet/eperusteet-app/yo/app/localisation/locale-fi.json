@@ -865,6 +865,7 @@
     "termi-plugin-select-placeholder": "Valitse käsite...",
     "termi-plugin-title": "Lisää viittaus tai muokkaa viittausta käsitteeseen",
     "termi-plugin-menu-muokkaa": "Muokkaa viittausta käsitteeseen",
+    "termi-plugin-menu-poista": "Poista viittaus käsitteeseen",
     "termi-plugin-button-label": "Viittaus käsitteeseen",
     "termi-plugin-label": "Viittaus käsitteeseen",
     "termi-plugin-label-termi": "Käsite johon viitataan",
@@ -897,7 +898,7 @@
     "koodittomia-tutkinnon-osia": "Kaikilla tutkinnon osilla ei koodia",
     "tutkinnon-osan-asetettua-koodia-ei-koodistossa": "Tutkinnon osan koodia ei koodistossa",
     "tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta": "Tutkintonimikkeen vaatimaa tutkinnon osan koodia ei löytynyt miltään tutkinnon osalta",
-    
+
     "korvattavaa-ei-loydy-jarjestelmasta": "Korvattavaa perustetta ei löydy järjestelmästä.",
     "ei-korvattavia-perusteita": "Yhtään korvattavaa perustetta ei ole valittu",
     "korvattavat-perusteet": "Korvattavat perusteet",
@@ -909,6 +910,6 @@
     "peruste-ei-voimassaolon-alkamisaikaa": "Perusteelle ei ole annettu voimassaolon alkamisaikaa",
     "korvattava-diaari-on-oma-diaari": "Korvattavien perusteiden listalla oma diaarinumero",
     "korvattava-peruste-on-eri-koulutustyyppia": "Korvattava peruste on eri koulutustyyppiä",
-    
+
     "peruste-ei-diaarinumeroa": "Perusteelta puuttuu määräyksen diaarinumero"
 }
