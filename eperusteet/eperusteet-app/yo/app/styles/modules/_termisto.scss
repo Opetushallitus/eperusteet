@@ -65,12 +65,11 @@ dl.termisto {
     box-sizing: border-box !important;
   }
   .ui-select-bootstrap {
-    .ui-select-match {
+    .ui-select-toggle {
       &.btn-block {
-
         display: block;
-        padding-left: 0;
-        padding-right: 0;
+        padding-left: 10px;
+        padding-right: 10px;
         width: 100%;
       }
       &.btn-group {

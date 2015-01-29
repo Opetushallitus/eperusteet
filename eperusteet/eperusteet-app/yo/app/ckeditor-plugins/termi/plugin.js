@@ -21,24 +21,46 @@ CKEDITOR.plugins.add('termi', {
   icons: 'termi',
   init: function( editor ) {
     var kaanna = editor.config.customData.kaanna;
-    editor.addCommand('termi', new CKEDITOR.dialogCommand('termiDialog'));
+    editor.addCommand('termiEdit', new CKEDITOR.dialogCommand('termiDialog'));
+
+    editor.addCommand('termiDelete', {
+      exec: function (editor) {
+        var selection = editor.getSelection();
+        if (selection) {
+          var element = selection.getStartElement();
+          if (element) {
+            element = element.getAscendant('abbr', true);
+          }
+          if (element && element.is('abbr')) {
+            element.remove(1);
+          }
+        }
+      }
+    });
+
     editor.ui.addButton('Termi', {
       label: kaanna('termi-plugin-button-label'),
-      command: 'termi',
+      command: 'termiEdit',
       toolbar: 'insert'
     });
 
     if (editor.contextMenu) {
       editor.addMenuGroup('termiGroup');
-      editor.addMenuItem('termiItem', {
+      editor.addMenuItem('termiEditItem', {
         label: kaanna('termi-plugin-menu-muokkaa'),
         icon: this.path + 'icons/termi.png',
-        command: 'termi',
+        command: 'termiEdit',
+        group: 'termiGroup'
+      });
+      editor.addMenuItem('termiDeleteItem', {
+        label: kaanna('termi-plugin-menu-poista'),
+        icon: this.path + 'icons/termi.png',
+        command: 'termiDelete',
         group: 'termiGroup'
       });
       editor.contextMenu.addListener(function(element) {
         if (element.getAscendant('abbr', true)) {
-          return {termiItem: CKEDITOR.TRISTATE_OFF};
+          return {termiEditItem: CKEDITOR.TRISTATE_OFF, termiDeleteItem: CKEDITOR.TRISTATE_OFF};
         }
       });
     }
