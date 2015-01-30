@@ -308,7 +308,7 @@ angular.module('eperusteApp')
           depth: depth,
         });
       });
-      if ($scope.tekstisisalto && $scope.tekstisisalto.lapset) {
+      if ($scope.tekstisisalto && $scope.tekstisisalto.lapset && !_.isEmpty($scope.tekstisisalto.lapset)) {
         valitseAktiivinenTekstisisalto($scope.tekstisisalto.lapset[0]._perusteenOsa);
         _.first(suunnitelma).$selected = true;
       }
@@ -420,24 +420,33 @@ angular.module('eperusteApp')
           }));
         }
 
-        if (vuosiluokkaFiltteri(oa)) {
-          navi.oppiaineet.push({
-            depth: 0,
-            label: oa.nimi,
-            value: oa.id
-          });
-
-          if (oa.koosteinen && oa.oppimaarat && oa.oppimaarat.length > 0) {
-            _.each(oa.oppimaarat, function(om) {
-              if (vuosiluokkaFiltteri(om)) {
-                navi.oppiaineet.push({
-                  label: om.nimi,
-                  value: om.id,
-                  depth: 1
-                });
-              }
+        var oaLisatty = false;
+        function naviLisaaOppiaine(oa) {
+          if (!oaLisatty) {
+            navi.oppiaineet.push({
+              depth: 0,
+              label: oa.nimi,
+              value: oa.id
             });
+            oaLisatty = true;
           }
+        }
+
+        if (vuosiluokkaFiltteri(oa)) {
+          naviLisaaOppiaine(oa);
+        }
+
+        if (oa.koosteinen && oa.oppimaarat && oa.oppimaarat.length > 0) {
+          _.each(oa.oppimaarat, function(om) {
+            if (vuosiluokkaFiltteri(om)) {
+              naviLisaaOppiaine(oa);
+              navi.oppiaineet.push({
+                label: om.nimi,
+                value: om.id,
+                depth: 1
+              });
+            }
+          });
         }
       });
 
