@@ -281,13 +281,10 @@ angular.module('eperusteApp')
       },
       controller: function($scope) {
         $scope.model = $scope.model || [];
-
-        $scope.lisaaKohdealue = function(uusiKohdealue) {
-          $scope.model.push({ nimi: _.clone(uusiKohdealue) });
-          $scope.uusiKohdealue = {};
-        };
-
         $scope.poistaKohdealue = _.partial(_.remove, $scope.model);
+        $scope.lisaaKohdealue = function() {
+          $scope.model.push({ nimi: { fi: '' } });
+        };
       }
     };
   })
