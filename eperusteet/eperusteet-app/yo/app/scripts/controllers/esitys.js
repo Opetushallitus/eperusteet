@@ -128,21 +128,19 @@ angular.module('eperusteApp')
     $scope.suosikkiHelper($state, 'tutkinnonosat');
   })
 
-  .controller('EsitysTiedotCtrl', function($scope, YleinenData, PerusteenTutkintonimikkeet, $state) {
-    $scope.showKoulutukset = function () {
-      return YleinenData.showKoulutukset($scope.peruste);
-    };
-
-    $scope.koulutusalaNimi = function(koodi) {
-      return $scope.Koulutusalat.haeKoulutusalaNimi(koodi);
-    };
-
-    $scope.opintoalaNimi = function(koodi) {
-      return $scope.Opintoalat.haeOpintoalaNimi(koodi);
-    };
+  .controller('EsitysTiedotCtrl', function($scope, $q, $state, YleinenData, PerusteenTutkintonimikkeet, Perusteet) {
+    $scope.showKoulutukset = _.constant(YleinenData.showKoulutukset($scope.peruste));
+    $scope.koulutusalaNimi = $scope.Koulutusalat.haeKoulutusalaNimi;
+    $scope.opintoalaNimi = $scope.Opintoalat.haeOpintoalaNimi;
+    $scope.suosikkiHelper($state, 'perusteen-tiedot');
 
     PerusteenTutkintonimikkeet.get($scope.peruste.id, $scope);
-    $scope.suosikkiHelper($state, 'perusteen-tiedot');
+
+    $q.all(_.map($scope.peruste.korvattavatDiaarinumerot, function(diaari) {
+      return Perusteet.diaari({ diaarinumero: diaari }).$promise;
+    })).then(function(korvattavatPerusteet) {
+      $scope.korvattavatPerusteet = korvattavatPerusteet;
+    });
   })
 
   .controller('EsitysSisaltoCtrl', function($scope, $state, $stateParams, PerusteenOsat, YleinenData) {

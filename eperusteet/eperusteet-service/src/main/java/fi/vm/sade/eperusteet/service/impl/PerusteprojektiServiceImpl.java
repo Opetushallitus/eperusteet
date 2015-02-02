@@ -35,6 +35,7 @@ import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.PerusteprojektiTyoryhma;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
@@ -455,10 +456,20 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
                 // Kerätään tutkinnon osien koodit
                 List<LokalisoituTekstiDto> virheellisetKoodistonimet = new ArrayList<>();
+                List<LokalisoituTekstiDto> uniikitKooditTosat = new ArrayList<>();
+                Set<String> uniikitKoodit = new HashSet<>();
                 for (TutkinnonOsaViite tov : suoritustapa.getTutkinnonOsat()) {
                     TutkinnonOsa tosa = tov.getTutkinnonOsa();
                     String uri = tosa.getKoodiUri();
                     String arvo = tosa.getKoodiArvo();
+
+                    // Tarkistetaan onko sama koodi useammassa tutkinnon osassa
+                    if (uniikitKoodit.contains(uri)) {
+                        uniikitKooditTosat.add(new LokalisoituTekstiDto(tosa.getNimi().getId(), tosa.getNimi().getTeksti()));
+                    }
+                    else {
+                        uniikitKoodit.add(uri);
+                    }
 
                     if (arvo != null && uri != null && uri.isEmpty()) {
                         uri = "tutkinnonosa_" + arvo;
@@ -479,8 +490,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                         }
                     }
                 }
+
                 if (!virheellisetKoodistonimet.isEmpty()) {
                     updateStatus.addStatus("tutkinnon-osan-asetettua-koodia-ei-koodistossa", suoritustapa.getSuoritustapakoodi(), virheellisetKoodistonimet);
+                    updateStatus.setVaihtoOk(false);
+                }
+
+                if (!uniikitKooditTosat.isEmpty()) {
+                    updateStatus.addStatus("tutkinnon-osien-koodit-kaytossa-muissa-tutkinnon-osissa", suoritustapa.getSuoritustapakoodi(), uniikitKooditTosat);
                     updateStatus.setVaihtoOk(false);
                 }
             }

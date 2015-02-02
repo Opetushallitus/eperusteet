@@ -251,8 +251,11 @@ angular.module('eperusteApp', [
     //angular-ui-select korjaus (IE9)
     var expected = '<ul class=\"ui-select-choices ui-select-choices-content dropdown-menu\" role=\"menu\" aria-labelledby=\"dLabel\" ng-show=\"$select.items.length > 0\"><li class=\"ui-select-choices-group\"><div class=\"divider\" ng-show=\"$select.isGrouped && $index > 0\"></div><div ng-show=\"$select.isGrouped\" class=\"ui-select-choices-group-label dropdown-header\" ng-bind-html=\"$group.name\"></div><div class=\"ui-select-choices-row\" ng-class=\"{active: $select.isActive(this), disabled: $select.isDisabled(this)}\"><a href=\"javascript:void(0)\" class=\"ui-select-choices-row-inner\"></a></div></li></ul>';
     var fix      = '<ul class=\"ui-select-choices ui-select-choices-content dropdown-menu\" role=\"menu\" aria-labelledby=\"dLabel\" ng-show=\"$select.items.length > 0\"><li class=\"ui-select-choices-group\"><div class=\"divider\" ng-show=\"$select.isGrouped && $index > 0\"></div><div ng-show=\"$select.isGrouped\" class=\"ui-select-choices-group-label dropdown-header\" ng-bind-html=\"$group.name\"></div><div class=\"ui-select-choices-row\" ng-class=\"{active: $select.isActive(this), disabled: $select.isDisabled(this)}\"><a href=\"javascript:void(0)\" onclick=\"return false;\" class=\"ui-select-choices-row-inner\"></a></div></li></ul>';
-    if ( $templateCache.get('bootstrap/choices.tpl.html') !== expected ) {
+    $templateCache.put('eperusteet/ui-select-choices-fix.html', fix);
+
+    if ( $templateCache.get('bootstrap/choices.tpl.html') === expected ) {
+      $templateCache.put('bootstrap/choices.tpl.html', fix);
+    } else {
       console.warn('angular-ui-select korjaus (IE9), bootstrap/choices.tpl.html on muuttunut');
     }
-    $templateCache.put('bootstrap/choices.tpl.html', fix);
   });
