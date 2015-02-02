@@ -113,7 +113,7 @@ angular.module('eperusteApp')
     });
     _(osa.oppimaarat).sortBy(Utils.nameSort).each(function (lapsi) {
       ylMapper(lapsi, key, level + 1);
-    });
+    }).value();
   }
 
   function mapYL(osat, key) {
