@@ -72,6 +72,7 @@ angular.module('eperusteApp')
     }
 
     function commonParams (extra) {
+      if (!tiedot) { return {}; }
       var obj = { perusteId: tiedot.getProjekti()._peruste };
       if (extra) {
         _.extend(obj, extra);

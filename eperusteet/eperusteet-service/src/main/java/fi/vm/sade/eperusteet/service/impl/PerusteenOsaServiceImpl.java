@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.OsaAlue;
@@ -124,8 +125,11 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     @Transactional(readOnly = true)
     public void onkoTutkinnonOsanKoodiKaytossa(final String koodiUri) {
-        if (tutkinnonOsaRepo.findByKoodiUri(koodiUri).size() > 0) {
-            throw new BusinessRuleViolationException("Tutkinnon osan koodi on jo käytössä");
+        List<TutkinnonOsa> tosatByKoodi = tutkinnonOsaRepo.findByKoodiUri(koodiUri);
+        for (TutkinnonOsa tosa : tosatByKoodi) {
+            if (tosa.getTila() == PerusteTila.VALMIS) {
+                throw new BusinessRuleViolationException("Tutkinnon osan koodi on jo käytössä");
+            }
         }
     }
 

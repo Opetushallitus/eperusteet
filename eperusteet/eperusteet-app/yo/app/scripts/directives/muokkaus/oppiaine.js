@@ -273,14 +273,16 @@ angular.module('eperusteApp')
       var oppiaineLink = [];
       if ($scope.editableModel.oppiaine && $scope.oppiaineMap) {
         var oppiaine = $scope.oppiaineMap[$scope.editableModel.oppiaine];
-        oppiaineLink =  [{
-          url: $state.href('root.perusteprojekti.suoritustapa.osaalue', {
-            osanTyyppi: PerusopetusService.OPPIAINEET,
-            osanId: oppiaine.id,
-            tabId: 0
-          }),
-          label: oppiaine.nimi
-        }];
+        if (oppiaine) {
+          oppiaineLink =  [{
+            url: $state.href('root.perusteprojekti.suoritustapa.osaalue', {
+              osanTyyppi: PerusopetusService.OPPIAINEET,
+              osanId: oppiaine.id,
+              tabId: 0
+            }),
+            label: oppiaine.nimi
+          }];
+        }
       }
       ProjektinMurupolkuService.setCustom(oppiaineLink);
     }

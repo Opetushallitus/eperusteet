@@ -238,11 +238,13 @@ angular.module('eperusteApp')
     };
 
     $scope.valitseOppiaineenVuosiluokka = function(vuosiluokka) {
-      $scope.valittuOppiaine.vlks = undefined;
-      $scope.filtterit.valittuKokonaisuus = vuosiluokka;
-      $scope.valittuOppiaine.vlks = $scope.valittuOppiaine.vuosiluokkakokonaisuudet[vuosiluokka];
-      $scope.valittuOppiaine.sisallot = $scope.sisallot[$scope.valittuOppiaine.vlks.vuosiluokkaKokonaisuus];
-      paivitaTavoitteet();
+      $timeout(function() {
+        $scope.valittuOppiaine.vlks = undefined;
+        $scope.filtterit.valittuKokonaisuus = vuosiluokka;
+        $scope.valittuOppiaine.vlks = $scope.valittuOppiaine.vuosiluokkakokonaisuudet[vuosiluokka];
+        $scope.valittuOppiaine.sisallot = $scope.sisallot[$scope.valittuOppiaine.vlks.vuosiluokkaKokonaisuus];
+        paivitaTavoitteet();
+      });
     };
 
     function activeSection() {
@@ -306,7 +308,7 @@ angular.module('eperusteApp')
           depth: depth,
         });
       });
-      if ($scope.tekstisisalto && $scope.tekstisisalto.lapset) {
+      if ($scope.tekstisisalto && $scope.tekstisisalto.lapset && !_.isEmpty($scope.tekstisisalto.lapset)) {
         valitseAktiivinenTekstisisalto($scope.tekstisisalto.lapset[0]._perusteenOsa);
         _.first(suunnitelma).$selected = true;
       }
@@ -328,7 +330,7 @@ angular.module('eperusteApp')
             item.$selected = true;
           }
         }, {
-          title: 'Vuosiluokkakokonaisuudet',
+          title: 'vuosiluokkakokonaisuudet',
           id: 'vlk',
           items: rakennaVuosiluokkakokonaisuuksienSisalto(),
           include: 'views/partials/perusopetuksenvuosiluokkakokonaisuus.html',
@@ -343,7 +345,7 @@ angular.module('eperusteApp')
           activeSection: activeSection,
           currentSection: function() { return $scope.currentSection; },
         }, {
-          title: 'Opetuksen sisällöt',
+          title: 'opetuksen-sisallot',
           id: 'sisalto',
           include: 'views/partials/navifilters.html',
           model: {
@@ -356,7 +358,7 @@ angular.module('eperusteApp')
                 paivitaSivunavi(section);
               }
             }, {
-              title: 'Oppiaineet',
+              title: 'oppiaineet',
               id: 'oppiaineet',
               items: [],
               $open: true,
@@ -366,7 +368,7 @@ angular.module('eperusteApp')
               activeSection: activeSection
             }, {
               id: 'sisallot',
-              title: 'Oppiaineen sisällöt',
+              title: 'oppiaineen-sisallot',
               $all: true,
               items: _.map(['tehtava', 'ohjaus', 'tyotavat', 'tavoitteet'], function(item) {
                 return { label: 'perusopetus-' + item, value: item, depth: 0, $selected: true };
@@ -376,10 +378,10 @@ angular.module('eperusteApp')
               }
             }, {
               id: 'osaamiset',
-              title: 'Laaja-alaiset osaamiset',
+              title: 'tavoitteiden-osaamiset',
               $all: true,
               items: _.map($scope.osaamiset, function(item) {
-                return { label: item.nimi, value: item.id, depth: 0, $selected: false };
+                return { label: item.nimi, value: item.id, depth: 0, $selected: true };
               }),
               update: function(item) {
                 $scope.filterOsaamiset[item.value] = !item.$selected;
@@ -393,16 +395,14 @@ angular.module('eperusteApp')
 
     function paivitaTavoitteet() {
       if ($scope.valittuOppiaine.vlks) {
-        var filteritTyhjat = _.all($scope.filterOsaamiset, function(v) {
-          return v === true;
-        });
+        var filteritTyhjat = _.all($scope.filterOsaamiset, function(v) { return v; });
         _.each($scope.valittuOppiaine.vlks.tavoitteet, function(tavoite) {
-          if (filteritTyhjat || !_.isEmpty(tavoite.laajattavoitteet)) {
+          if (filteritTyhjat || _.isEmpty(tavoite.laajattavoitteet)) {
             tavoite.$rejected = false;
           }
           else {
-            tavoite.$rejected = !_.any(tavoite.laajattavoitteet, function(lt) {
-              return $scope.filterOsaamiset[lt] === false;
+            tavoite.$rejected = _.all(tavoite.laajattavoitteet, function(lt) {
+              return $scope.filterOsaamiset[lt];
             });
           }
         });
@@ -420,24 +420,33 @@ angular.module('eperusteApp')
           }));
         }
 
-        if (vuosiluokkaFiltteri(oa)) {
-          navi.oppiaineet.push({
-            depth: 0,
-            label: oa.nimi,
-            value: oa.id
-          });
-
-          if (oa.koosteinen && oa.oppimaarat && oa.oppimaarat.length > 0) {
-            _.each(oa.oppimaarat, function(om) {
-              if (vuosiluokkaFiltteri(om)) {
-                navi.oppiaineet.push({
-                  label: om.nimi,
-                  value: om.id,
-                  depth: 1
-                });
-              }
+        var oaLisatty = false;
+        function naviLisaaOppiaine(oa) {
+          if (!oaLisatty) {
+            navi.oppiaineet.push({
+              depth: 0,
+              label: oa.nimi,
+              value: oa.id
             });
+            oaLisatty = true;
           }
+        }
+
+        if (vuosiluokkaFiltteri(oa)) {
+          naviLisaaOppiaine(oa);
+        }
+
+        if (oa.koosteinen && oa.oppimaarat && oa.oppimaarat.length > 0) {
+          _.each(oa.oppimaarat, function(om) {
+            if (vuosiluokkaFiltteri(om)) {
+              naviLisaaOppiaine(oa);
+              navi.oppiaineet.push({
+                label: om.nimi,
+                value: om.id,
+                depth: 1
+              });
+            }
+          });
         }
       });
 

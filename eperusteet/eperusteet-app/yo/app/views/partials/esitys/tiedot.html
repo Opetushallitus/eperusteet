@@ -76,3 +76,21 @@
     <td pvm="peruste.voimassaoloLoppuu"></td>
   </tr>
 </table>
+
+<div ng-if="korvattavatPerusteet && korvattavatPerusteet.length > 0">
+  <h3 kaanna="'korvattavat-perusteet'"></h3>
+
+  <th kaanna="'korvattavat-perusteet'"></th>
+  <td>
+    <table class="table table-striped">
+      <tr>
+        <th kaanna="'nimi'"></th>
+        <th kaanna="'diaarinumero-label'"></th>
+      </tr>
+      <tr ng-repeat="kp in korvattavatPerusteet">
+        <td kaanna="kp.nimi"></td>
+        <td ng-bind="kp.diaarinumero"></td>
+      </tr>
+    </table>
+  </td>
+</div>

@@ -2,6 +2,11 @@ $edit-control-header-width: 200px;
 $edit-control-buttons-width: 180px;
 $edit-control-height: 60px;
 
+/* ckeditorin toolbar notifikaatiowrapperin yläpuolelle */
+#toolbar.ck-toolbar {
+    z-index: $z-index-notification + 1;
+}
+
 /* changed in code */
 .editointi-wrapper {
   margin-top: 20px;
