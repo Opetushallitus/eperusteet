@@ -13,10 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.dto.peruste;
+package fi.vm.sade.eperusteet.dto.yl;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +25,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class PerusopetusPerusteKaikkiDto extends PerusteBaseDto {
-    @JsonInclude(JsonInclude.Include.ALWAYS)
-    private PerusopetuksenPerusteenSisaltoDto perusopetuksenPerusteenSisalto;
+public class EsiopetuksenPerusteenSisaltoDto {
+    private PerusteenOsaViiteDto.Laaja sisalto;
 }

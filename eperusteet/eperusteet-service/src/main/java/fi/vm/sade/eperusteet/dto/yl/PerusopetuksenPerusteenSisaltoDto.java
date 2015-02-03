@@ -16,7 +16,9 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import java.io.Serializable;
+import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
+import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,8 +29,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class PerusopetuksenPerusteenSisaltoDto implements Serializable {
-    private PerusteenOsaViiteDto sisalto;
+public class PerusopetuksenPerusteenSisaltoDto {
+    private PerusteenOsaViiteDto.Laaja sisalto;
     private Set<LaajaalainenOsaaminenDto> laajaAlalaisetOsaamiset;
     private Set<OppiaineDto> oppiaineet;
     private Set<VuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet;

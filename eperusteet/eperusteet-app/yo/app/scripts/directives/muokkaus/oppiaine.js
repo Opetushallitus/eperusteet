@@ -475,7 +475,7 @@ angular.module('eperusteApp')
       });
       _(menuItems).each(function (item, index) {
         item.order += index;
-      });
+      }).value();
       $scope.data.options.fields = menuItems.concat($scope.data.options.fields);
 
       // Jos tätä ei ole tabit vaihtelee satunnaisesti poistoilla ja lisäyksillä
