@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.dto.peruste;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,5 +27,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PerusteDto extends PerusteBaseDto {
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<SuoritustapaDto> suoritustavat;
 }

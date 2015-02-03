@@ -20,7 +20,6 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.dto.peruste.PerusopetusPerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -87,9 +86,6 @@ public interface PerusteService {
 
     @PreAuthorize("permitAll()")
     Page<PerusteDto> findBy(PageRequest page, PerusteQuery pquery);
-
-    @PreAuthorize("permitAll()")
-    PerusopetusPerusteKaikkiDto getPerusopetusKokoSisalto(Long id);
 
     @PreAuthorize("permitAll()")
     public List<PerusteInfoDto> getAllPerusopetusInfo();
