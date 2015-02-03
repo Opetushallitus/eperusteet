@@ -37,7 +37,8 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @Profile(value = "default")
 public class KoodistoServiceImpl implements KoodistoService {
-    @Value("https://virkailija.opintopolku.fi/koodisto-service")
+
+    @Value("${koodisto.service.url:https://virkailija.opintopolku.fi/koodisto-service}")
     private String koodistoServiceUrl;
 
     private static final String KOODISTO_API = "/rest/json/";
