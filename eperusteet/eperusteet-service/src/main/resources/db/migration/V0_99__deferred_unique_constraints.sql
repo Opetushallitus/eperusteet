@@ -1,0 +1,36 @@
+alter table yl_opetuksen_tavoite_yl_tavoitteen_arviointi
+drop constraint UK_937uk98kimlo06kxeqw5tlh5g;
+
+alter table yl_oppiaineen_vlkok_yl_keskeinen_sisaltoalue
+drop constraint UK_amphrb2ih4iu3e6qeg1qh2c47;
+
+alter table yl_oppiaineen_vlkok_yl_opetuksen_tavoite
+drop constraint UK_d7wmimjt50pfqhy7yutn9fpeo;
+
+alter table yl_perusop_perusteen_sisalto_yl_laajaalainen_osaaminen
+drop constraint UK_cajr740x8h476iwyek65f497p;
+
+alter table yl_perusop_perusteen_sisalto_yl_oppiaine
+drop constraint UK_1sq9h0pw3u8a22tflfwpb11h8;
+
+alter table yl_perusop_perusteen_sisalto_yl_vlkokonaisuus
+drop constraint UK_c0a0qxisymqr50ljrtplld672;
+
+
+alter table yl_opetuksen_tavoite_yl_tavoitteen_arviointi
+add constraint UK_937uk98kimlo06kxeqw5tlh5g  unique (arvioinninKohteet_id) deferrable initially deferred;
+
+alter table yl_oppiaineen_vlkok_yl_keskeinen_sisaltoalue
+add constraint UK_amphrb2ih4iu3e6qeg1qh2c47  unique (sisaltoAlueet_id) deferrable initially deferred;
+
+alter table yl_oppiaineen_vlkok_yl_opetuksen_tavoite
+add constraint UK_d7wmimjt50pfqhy7yutn9fpeo  unique (tavoitteet_id) deferrable initially deferred;
+
+alter table yl_perusop_perusteen_sisalto_yl_laajaalainen_osaaminen
+add constraint UK_cajr740x8h476iwyek65f497p  unique (laajaAlalaisetOsaamiset_id) deferrable initially deferred;
+
+alter table yl_perusop_perusteen_sisalto_yl_oppiaine
+add constraint UK_1sq9h0pw3u8a22tflfwpb11h8  unique (oppiaineet_id) deferrable initially deferred;
+
+alter table yl_perusop_perusteen_sisalto_yl_vlkokonaisuus
+add constraint UK_c0a0qxisymqr50ljrtplld672  unique (vuosiluokkakokonaisuudet_id) deferrable initially deferred;
