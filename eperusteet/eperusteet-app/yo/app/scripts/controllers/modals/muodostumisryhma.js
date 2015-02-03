@@ -51,9 +51,7 @@ angular.module('eperusteApp')
     };
 
     $scope.avaaKoodistoModaali = function() {
-      Koodisto.modaali(function(koodi) {
-        koodistoHaku(koodi);
-      }, {
+      Koodisto.modaali(koodistoHaku, {
         tyyppi: function() { return 'osaamisala'; },
         ylarelaatioTyyppi: function() { return ''; }
       }, angular.noop, null)();
