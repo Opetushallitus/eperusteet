@@ -25,7 +25,6 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusopetusPerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -189,13 +188,6 @@ public class PerusteController {
     public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(@PathVariable("perusteId") final long id) {
         PerusteKaikkiDto kokoSisalto = service.getKokoSisalto(id);
         return new ResponseEntity<>(kokoSisalto, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/perusopetus/{perusteId}/kaikki", method = GET)
-    @ResponseBody
-    public ResponseEntity<PerusopetusPerusteKaikkiDto> getPerusopetusKokoSisalto(@PathVariable("perusteId") final long id) {
-        PerusopetusPerusteKaikkiDto perusopetusPeruste = service.getPerusopetusKokoSisalto(id);
-        return new ResponseEntity<>(perusopetusPeruste, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)
