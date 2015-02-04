@@ -85,10 +85,9 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
         return new TekstiKappale(this);
     }
 
-
-
     private void copyState(TekstiKappale other) {
         this.setTeksti(other.getTeksti());
+        this.setOsaamisala(other.getOsaamisala());
     }
 
 }

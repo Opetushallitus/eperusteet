@@ -89,6 +89,8 @@
     "peruste-validointi-tutkinnonosa-nimi": "Kaikkien tutkinnon osien nimiä ei ole lokalisoitu",
     "peruste-validointi-tutkinnonosa-tavoitteet": "Kaikkien tutkinnon osien tavoitteita ei ole lokalisoitu",
     "ryhman-osaamisalaa-ei-perusteella": "Ryhmän osaamisalaa ei ole määritelty perusteelle",
+    "ei-osaamisalan-kuvausta": "Ei osaamisalan kuvausta",
+    "osaamisalan-kuvaus": "Osaamisalan kuvaus",
 
     "fi": "Suomi",
     "sv": "Ruotsi",

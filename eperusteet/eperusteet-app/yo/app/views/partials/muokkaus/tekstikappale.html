@@ -38,6 +38,24 @@ European Union Public Licence for more details.
             oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
 
           <button ng-if="tekstikappale.tila === 'valmis' || (editEnabled && !isNew)" class="btn btn-danger floater" ng-click="poista()" icon-role="remove" kaanna="'poista'" oikeustarkastelu="{target:'peruste',permission:'muokkaus'}"></button>
+          <div class="floater" ng-if="editEnabled && peruste && peruste.osaamisalat && peruste.osaamisalat.length > 0">
+            <span class="dropdown">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+                <span ng-hide="editableTekstikappale.osaamisala" kaanna="'ei-osaamisalan-kuvausta'"></span>
+                <span ng-show="editableTekstikappale.osaamisala">{{ editableTekstikappale.osaamisala.nimi | kaanna }} ({{ editableTekstikappale.osaamisala.arvo }})</span>
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                <li role="presentation">
+                  <a class="action-link" ng-click="valitseOsaamisala(null)" role="menuitem" tabindex="-1" kaanna="'ei-osaamisalan-kuvausta'"></a>
+                </li>
+                <li ng-repeat="oa in peruste.osaamisalat" role="presentation">
+                  <a class="action-link" ng-click="valitseOsaamisala(oa)" role="menuitem" tabindex="-1">{{ oa.nimi | kaanna }} ({{ oa.arvo }})</a>
+                </li>
+              </ul>
+            </span>
+          </div>
+
           <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
         </div>
 
@@ -48,11 +66,16 @@ European Union Public Licence for more details.
           <span ng-show="!isNew" kaanna>muokkaus-tekstikappale</span>
         </h1>
         <h1 ng-if="!editEnabled" ng-bind-html="tekstikappale.nimi | kaanna"></h1>
+        <h5 ng-if="!editEnabled && tekstikappale.osaamisala">
+          <b>{{ 'osaamisalan-kuvaus' | kaanna }}</b>:
+          {{ tekstikappale.osaamisala.nimi | kaanna }} ({{ tekstikappale.osaamisala.arvo }})
+        </h5>
       </div>
 
       <div class="tekstikappale" ng-class="{'edit-tekstikappale': editEnabled, 'max-sm-leveys': !editEnabled}">
         <div ng-if="!editEnabled">
           <versiotiedot ng-hide="editEnabled"></versiotiedot>
+
           <div class="tyoryhma-rivi">
             <span class="tyoryhma" ng-repeat="tr in tyoryhmat">
               <a ng-click="poistaTyoryhma(tr)" class="action-link" icon-role="remove" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></a>
@@ -62,6 +85,7 @@ European Union Public Licence for more details.
               ng-click="lisaaTyoryhma()" icon-role="plus" class="btn btn-default"
               oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }" kaanna="lisaa-tyoryhma"></button>
           </div>
+
           <div ng-bind-html="valitseKieli(tekstikappale.teksti) | unsafe" termisto-viitteet="tekstikappale.teksti"></div>
         </div>
         <div ng-if="editEnabled" ng-repeat="field in fields | orderBy:'order'" model="field.localeKey"
