@@ -251,7 +251,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                     tutkinnonOsat.add(t.getTutkinnonOsa());
                 }
             }
-            perusteDto.setTutkinnonOsat(mapper.mapAsList(tutkinnonOsat, TutkinnonOsaDto.class));
+            perusteDto.setTutkinnonOsat(mapper.mapAsList(tutkinnonOsat, TutkinnonOsaDto.Laaja.class));
         }
 
         return perusteDto;
