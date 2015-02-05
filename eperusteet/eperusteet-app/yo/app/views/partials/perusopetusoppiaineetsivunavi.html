@@ -1,5 +1,5 @@
 <div class="perusopetus">
-  <div ng-click="section.selectOppiaine(item)" ng-repeat="item in section.items"
+  <div ng-click="section.selectOppiaine(item)" ng-repeat="item in section.items | orderBy:orderFn"
        class="oppiaine {{ item.depth === 1 && 'oppimaara' }} {{ section.isCurrentOppiaine(item) && 'oppiaine-selected' }}">
     <span kaanna="item.label"></span>
   </div>

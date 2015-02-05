@@ -245,7 +245,7 @@ angular.module('eperusteApp')
         $scope.valittuOppiaine.vlks = undefined;
         $scope.filtterit.valittuKokonaisuus = vuosiluokka;
         $scope.valittuOppiaine.vlks = $scope.valittuOppiaine.vuosiluokkakokonaisuudet[vuosiluokka];
-        $scope.valittuOppiaine.sisallot = $scope.sisallot[$scope.valittuOppiaine.vlks.vuosiluokkaKokonaisuus];
+        $scope.valittuOppiaine.sisallot = $scope.sisallot[$scope.valittuOppiaine.vlks._vuosiluokkaKokonaisuus];
         paivitaTavoitteet();
       });
     };
@@ -373,8 +373,8 @@ angular.module('eperusteApp')
               id: 'sisallot',
               title: 'oppiaineen-sisallot',
               $all: true,
-              items: _.map(['tehtava', 'ohjaus', 'tyotavat', 'tavoitteet'], function(item) {
-                return { label: 'perusopetus-' + item, value: item, depth: 0, $selected: true };
+              items: _.map(['tehtava', 'ohjaus', 'tyotavat', 'tavoitteet'], function(item, index) {
+                return { label: 'perusopetus-' + item, value: item, depth: 0, $selected: true, order: index };
               }),
               update: function(item) {
                 $scope.filterSisalto[item.value] = !item.$selected;

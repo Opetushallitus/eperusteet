@@ -51,9 +51,9 @@
             <h1 class="oppiaine-nimi" kaanna="valittuOppiaine.oppiaine.nimi"></h1>
             <div ng-show="currentSection === 'sisalto'" class="vuosiluokkavalitsin">
               <ul class="nav nav-pills">
-                <li ng-repeat="(id, kokonaisuus) in valittuOppiaine.vuosiluokkakokonaisuudet" ng-class="{ active: filtterit.valittuKokonaisuus === kokonaisuus.vuosiluokkaKokonaisuus }">
-                  <a class="fixme action-link" ng-click="valitseOppiaineenVuosiluokka(kokonaisuus.vuosiluokkaKokonaisuus)">
-                    {{ vuosiluokkakokonaisuudetMap[kokonaisuus.vuosiluokkaKokonaisuus].nimi | kaanna }}
+                <li ng-repeat="(id, kokonaisuus) in valittuOppiaine.vuosiluokkakokonaisuudet" ng-class="{ active: filtterit.valittuKokonaisuus === kokonaisuus._vuosiluokkaKokonaisuus }">
+                  <a class="fixme action-link" ng-click="valitseOppiaineenVuosiluokka(kokonaisuus._vuosiluokkaKokonaisuus)">
+                    {{ vuosiluokkakokonaisuudetMap[kokonaisuus._vuosiluokkaKokonaisuus].nimi | kaanna }}
                   </a>
                 </li>
               </ul>
@@ -67,7 +67,7 @@
                 <termisto-tekstikentta tekstikentta="valittuOppiaine.oppiaine.tehtava.teksti || '-'"></termisto-tekstikentta>
               </div>
 
-              <h2>{{ vuosiluokkakokonaisuudetMap[valittuOppiaine.vlks.vuosiluokkaKokonaisuus].nimi | kaanna }}</h2>
+              <h2>{{ vuosiluokkakokonaisuudetMap[valittuOppiaine.vlks._vuosiluokkaKokonaisuus].nimi | kaanna }}</h2>
               <hr>
 
               <div ng-hide="filterSisalto.tehtava || !hasContent(valittuOppiaine.vlks.tehtava)">
@@ -84,7 +84,7 @@
                 <h3>{{ valittuOppiaine.vlks.tyotavat.otsikko | kaanna }}</h3>
                 <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.tyotavat.teksti || '-'"></termisto-tekstikentta>
               </div>
-              <div ng-hide="filterSisalto.tavoitteet" ng-if="valittuOppiaine.vlks.vuosiluokkaKokonaisuus">
+              <div ng-hide="filterSisalto.tavoitteet" ng-if="valittuOppiaine.vlks._vuosiluokkaKokonaisuus">
                 <h3 kaanna="'perusopetus-tavoitteet'"></h3>
                 <div tavoitteet="valittuOppiaine.vlks" oppiaine="valittuOppiaine" osaamiset="osaamiset" vuosiluokka="valittuOppiaine.sisallot"></div>
               </div>
