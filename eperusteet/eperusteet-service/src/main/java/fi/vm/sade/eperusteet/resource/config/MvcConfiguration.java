@@ -16,17 +16,20 @@
 package fi.vm.sade.eperusteet.resource.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.PerusteenOsaUpdateDto;
 import fi.vm.sade.eperusteet.resource.util.CacheHeaderInterceptor;
 import fi.vm.sade.eperusteet.resource.util.LoggingInterceptor;
+import java.lang.reflect.Type;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,21 +95,24 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
             @Override
             public String nameForGetterMethod(MapperConfig<?> config, AnnotatedMethod method,
                 String defaultName) {
-                return tryToconvertFromMethodName(method, defaultName);
+                return getName(config, method.getGenericReturnType(), defaultName);
             }
 
             @Override
             public String nameForSetterMethod(MapperConfig<?> config, AnnotatedMethod method,
                 String defaultName) {
-                return tryToconvertFromMethodName(method, defaultName);
+                return getName(config, method.getParameter(0).getGenericType(), defaultName);
             }
 
-            private String tryToconvertFromMethodName(AnnotatedMethod annotatedMethod, String defaultName) {
-                if ((annotatedMethod.getParameterCount() == 1
-                    && EntityReference.class.isAssignableFrom(annotatedMethod.getParameter(0).getRawType()))
-                    || EntityReference.class.isAssignableFrom(annotatedMethod.getRawReturnType())) {
-                    defaultName = '_' + defaultName;
+            private String getName(MapperConfig<?> config, Type type, String defaultName) {
+                final JavaType ot = config.getTypeFactory().constructParametricType(Optional.class, EntityReference.class);
+                final JavaType et = config.getTypeFactory().constructType(EntityReference.class);
+                final JavaType t = config.getTypeFactory().constructType(type);
+
+                if (et.equals(t) || ot.equals(t)) {
+                    return "_" + defaultName;
                 }
+
                 return defaultName;
             }
         });

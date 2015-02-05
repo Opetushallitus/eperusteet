@@ -61,7 +61,8 @@ angular.module('eperusteApp')
       }
     };
 
-    $scope.$on('oppiaine:tabChanged', function() {
+    $scope.$watch('providedVuosiluokka', function () {
+      $scope.vuosiluokka = $scope.providedVuosiluokka || OsanMuokkausHelper.getVuosiluokkakokonaisuus();
       $scope.mapModel();
     });
 
