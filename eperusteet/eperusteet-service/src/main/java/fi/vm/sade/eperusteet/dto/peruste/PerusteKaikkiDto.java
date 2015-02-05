@@ -37,7 +37,7 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
     Set<SuoritustapaLaajaDto> suoritustavat;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    List<TutkinnonOsaDto> tutkinnonOsat;
+    List<TutkinnonOsaDto.Laaja> tutkinnonOsat;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("perusopetus")
