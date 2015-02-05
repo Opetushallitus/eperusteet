@@ -57,8 +57,8 @@ angular.module('eperusteApp')
       ]).then(function(res) {
         vuosiluokat = res[0];
         osaamiset = res[1];
-        vuosiluokka = uusiModel.vuosiluokkaKokonaisuus ? _.find(vuosiluokat, function(vl) {
-          return vl.id === parseInt(model.vuosiluokkaKokonaisuus, 10);
+        vuosiluokka = uusiModel._vuosiluokkaKokonaisuus ? _.find(vuosiluokat, function(vl) {
+          return vl.id === parseInt(model._vuosiluokkaKokonaisuus, 10);
         }) : null;
         if (isVuosiluokkakokonaisuudenOsa()) {
           Lukitus.lukitseOppiaineenVuosiluokkakokonaisuus(oppiaine.id, model.id, function () {

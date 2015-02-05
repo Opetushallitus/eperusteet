@@ -261,7 +261,7 @@ angular.module('eperusteApp')
       Oppiaineet.get({ perusteId: peruste.id, osanId: id }, function(res) {
         var valittuOppiaine = {};
         valittuOppiaine.oppiaine = res;
-        valittuOppiaine.vuosiluokkakokonaisuudet = _.zipBy(res.vuosiluokkakokonaisuudet, 'vuosiluokkaKokonaisuus');
+        valittuOppiaine.vuosiluokkakokonaisuudet = _.zipBy(res.vuosiluokkakokonaisuudet, '_vuosiluokkaKokonaisuus');
         $scope.valittuOppiaine = valittuOppiaine;
         $scope.valitseOppiaineenVuosiluokka($scope.valittuOppiaine.vuosiluokkakokonaisuudet[$scope.filtterit.valittuKokonaisuus] ?
                                     $scope.filtterit.valittuKokonaisuus :
