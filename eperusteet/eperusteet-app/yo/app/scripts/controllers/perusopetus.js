@@ -205,8 +205,11 @@ angular.module('eperusteApp')
   })
 
   .controller('PerusopetusController', function($q, $scope, $timeout, sisalto, PerusteenOsat, OppiaineenVuosiluokkakokonaisuudet,
-                                                Algoritmit, Notifikaatiot, Oppiaineet, TermistoService) {
+                                                Algoritmit, Notifikaatiot, Oppiaineet, TermistoService, Kieli) {
     $scope.isNaviVisible = _.constant(true);
+    $scope.hasContent = function (obj) {
+      return _.isObject(obj) && obj.teksti && obj.teksti[Kieli.getSisaltokieli()];
+    };
     var peruste = sisalto[0];
     var oppiaineet = _.zipBy(sisalto[2], 'id');
     $scope.osaamiset = _.zipBy(sisalto[1], 'id');

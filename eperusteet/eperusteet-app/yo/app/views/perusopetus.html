@@ -18,15 +18,19 @@
 
           <div ng-if="activeSection === 'vlk' && valittuVuosiluokkakokonaisuus">
             <h1>{{ valittuVuosiluokkakokonaisuus.nimi | kaanna }}</h1>
-            <div ng-if="valittuVuosiluokkakokonaisuus.siirtymaEdellisesta">
+            <div ng-if="hasContent(valittuVuosiluokkakokonaisuus.tehtava)">
+              <h2>{{ valittuVuosiluokkakokonaisuus.tehtava.otsikko | kaanna  }}</h2>
+              <termisto-tekstikentta tekstikentta="valittuVuosiluokkakokonaisuus.tehtava.teksti"></termisto-tekstikentta>
+            </div>
+            <div ng-if="hasContent(valittuVuosiluokkakokonaisuus.siirtymaEdellisesta)">
               <h2>{{ valittuVuosiluokkakokonaisuus.siirtymaEdellisesta.otsikko | kaanna  }}</h2>
               <termisto-tekstikentta tekstikentta="valittuVuosiluokkakokonaisuus.siirtymaEdellisesta.teksti"></termisto-tekstikentta>
             </div>
-            <div ng-if="valittuVuosiluokkakokonaisuus.siirtymaSeuraavaan">
+            <div ng-if="hasContent(valittuVuosiluokkakokonaisuus.siirtymaSeuraavaan)">
               <h2>{{ valittuVuosiluokkakokonaisuus.siirtymaSeuraavaan.otsikko | kaanna  }}</h2>
               <termisto-tekstikentta tekstikentta="valittuVuosiluokkakokonaisuus.siirtymaSeuraavaan.teksti"></termisto-tekstikentta>
             </div>
-            <div ng-if="valittuVuosiluokkakokonaisuus.laajaalainenOsaaminen">
+            <div ng-if="hasContent(valittuVuosiluokkakokonaisuus.laajaalainenOsaaminen)">
               <h2>{{ valittuVuosiluokkakokonaisuus.laajaalainenOsaaminen.otsikko | kaanna  }}</h2>
               <termisto-tekstikentta tekstikentta="valittuVuosiluokkakokonaisuus.laajaalainenOsaaminen.teksti"></termisto-tekstikentta>
             </div>
@@ -37,7 +41,7 @@
                 <termisto-tekstikentta tekstikentta="osaaminen.kuvaus"></termisto-tekstikentta>
               </div>
             </div>
-            <div ng-if="valittuVuosiluokkakokonaisuus.paikallisestiPaatettavatAsiat">
+            <div ng-if="hasContent(valittuVuosiluokkakokonaisuus.paikallisestiPaatettavatAsiat)">
               <h2>{{ valittuVuosiluokkakokonaisuus.paikallisestiPaatettavatAsiat.otsikko | kaanna  }}</h2>
               <termisto-tekstikentta tekstikentta="valittuVuosiluokkakokonaisuus.paikallisestiPaatettavatAsiat.teksti"></termisto-tekstikentta>
             </div>
@@ -58,7 +62,7 @@
             <div class="clearfix"></div>
 
             <div>
-              <div>
+              <div ng-if="hasContent(valittuOppiaine.oppiaine.tehtava)">
                 <h3>{{ valittuOppiaine.oppiaine.tehtava.otsikko | kaanna }}</h3>
                 <termisto-tekstikentta tekstikentta="valittuOppiaine.oppiaine.tehtava.teksti || '-'"></termisto-tekstikentta>
               </div>
@@ -66,17 +70,17 @@
               <h2>{{ vuosiluokkakokonaisuudetMap[valittuOppiaine.vlks.vuosiluokkaKokonaisuus].nimi | kaanna }}</h2>
               <hr>
 
-              <div ng-hide="filterSisalto.tehtava">
+              <div ng-hide="filterSisalto.tehtava || !hasContent(valittuOppiaine.vlks.tehtava)">
                 <h3>{{ valittuOppiaine.vlks.tehtava.otsikko | kaanna }}</h3>
                 <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.tehtava.teksti || '-'"></termisto-tekstikentta>
               </div>
 
-              <div ng-hide="filterSisalto.ohjaus">
+              <div ng-hide="filterSisalto.ohjaus || !hasContent(valittuOppiaine.vlks.ohjaus)">
                 <h3>{{ valittuOppiaine.vlks.ohjaus.otsikko | kaanna }}</h3>
                 <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.ohjaus.teksti || '-'"></termisto-tekstikentta>
               </div>
 
-              <div ng-hide="filterSisalto.tyotavat">
+              <div ng-hide="filterSisalto.tyotavat || !hasContent(valittuOppiaine.vlks.tyotavat)">
                 <h3>{{ valittuOppiaine.vlks.tyotavat.otsikko | kaanna }}</h3>
                 <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.tyotavat.teksti || '-'"></termisto-tekstikentta>
               </div>
