@@ -304,7 +304,7 @@ angular.module('eperusteApp')
       Algoritmit.kaikilleLapsisolmuille($scope.tekstisisalto, 'lapset', function(osa, depth) {
         suunnitelma.push({
           $osa: osa,
-          label: osa.perusteenOsa.nimi,
+          label: osa.perusteenOsa ? osa.perusteenOsa.nimi : '',
           depth: depth,
         });
       });
