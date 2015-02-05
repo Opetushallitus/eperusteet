@@ -36,8 +36,8 @@ angular.module('eperusteApp')
       }
     };
   })
-  .controller('TavoitteetController', function($scope, PerusopetusService, $state, $rootScope, $timeout,
-    CloneHelper, OsanMuokkausHelper, $stateParams) {
+  .controller('TavoitteetController', function($scope, $modal, PerusopetusService, $state, $rootScope, $timeout,
+    CloneHelper, OsanMuokkausHelper, $stateParams, ProxyService, Oppiaineet) {
     $scope.osaamiset = $scope.providedOsaamiset || OsanMuokkausHelper.getOsaamiset();
     if (_.isEmpty($scope.osaamiset)) {
       // käytetään vain lukutilan kanssa
@@ -48,6 +48,7 @@ angular.module('eperusteApp')
     }
     $scope.vuosiluokka = $scope.providedVuosiluokka || OsanMuokkausHelper.getVuosiluokkakokonaisuus();
     $scope.oppiaine = $scope.providedOppiaine || OsanMuokkausHelper.getOppiaine();
+    var oppiaineId = $scope.oppiaine.id;
     $scope.editMode = false;
     $scope.currentEditable = null;
 
@@ -65,6 +66,39 @@ angular.module('eperusteApp')
       $scope.vuosiluokka = $scope.providedVuosiluokka || OsanMuokkausHelper.getVuosiluokkakokonaisuus();
       $scope.mapModel();
     });
+
+    $scope.lisaaUusiKohdealue = function(next) {
+      $modal.open({
+        template: '' +
+          '<div class="modal-header">' +
+            '<h3 kaanna="lisaa-kohdealue"></h3>' +
+          '</div>' +
+          '' +
+          '<div class="modal-body tag-modal">' +
+            '<input class="form-control" type="text" ng-model="uusiOppiaine" slocalized></input>' +
+          '</div>' +
+          '' +
+          '<div class="modal-footer">' +
+            '<button class="btn btn-default" ng-click="ok(uusiOppiaine)" kaanna="\'lisaa\'"></button>' +
+            '<button class="btn btn-default" ng-click="$close()" kaanna="\'sulje\'"></button>' +
+          '</div>',
+        resolve: {},
+        controller: function($scope, $modalInstance) {
+          $scope.ok = function(item) {
+            $modalInstance.close({
+              nimi: item
+            });
+          };
+        }
+      }).result.then(function(ka) {
+        Oppiaineet.lisaaKohdealue({
+          perusteId: ProxyService.get('perusteId'),
+          osanId: oppiaineId,
+        }, ka, function(res) {
+          next(res);
+        });
+      });
+    };
 
     function generateArraySetter(findFrom, manipulator) {
       manipulator = manipulator || angular.noop;
