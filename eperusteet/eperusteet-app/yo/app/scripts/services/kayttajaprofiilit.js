@@ -84,6 +84,7 @@ angular.module('eperusteApp')
       // Perustiedot
       oid: function() { return info.oid; },
       lang: function() { return info.lang; },
+      groups: function() { return info.groups; },
       profiili: function() { return info; },
       resolvedPromise: function() { return info.$resolved; },
       isResolved: function() { return info.resolved; },
@@ -98,6 +99,7 @@ angular.module('eperusteApp')
             if (res.oid) {
               info.oid = res.oid;
               info.lang = res.lang;
+              info.groups = res.groups;
             }
             deferred.resolve(res);
           }).error(function() {

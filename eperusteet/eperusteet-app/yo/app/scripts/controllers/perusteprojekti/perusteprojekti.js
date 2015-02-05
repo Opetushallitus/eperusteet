@@ -29,11 +29,11 @@ angular.module('eperusteApp')
           'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
           'perusteprojektiAlustus': ['perusteprojektiTiedot', '$stateParams', function(perusteprojektiTiedot, $stateParams) {
               return perusteprojektiTiedot.alustaProjektinTiedot($stateParams);
-            }],
+            }]/*,
           'perusteprojektiOikeudet': 'PerusteprojektiOikeudetService',
           'perusteprojektiOikeudetNouto': ['perusteprojektiOikeudet', '$stateParams', function(perusteprojektiOikeudet, $stateParams) {
               perusteprojektiOikeudet.noudaOikeudet($stateParams);
-          }]
+          }]*/
         },
         abstract: true
       })
