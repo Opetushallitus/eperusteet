@@ -141,6 +141,7 @@ angular.module('eperusteApp')
       getOppiaine: getOppiaine,
       getOsaamiset: getOsaamiset,
       getVuosiluokkakokonaisuus: getVuosiluokkakokonaisuus,
+      isVuosiluokkakokonaisuudenOsa: isVuosiluokkakokonaisuudenOsa
     };
   })
 

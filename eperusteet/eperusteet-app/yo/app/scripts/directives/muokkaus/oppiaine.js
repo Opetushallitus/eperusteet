@@ -191,7 +191,6 @@ angular.module('eperusteApp')
       }
       // Jos vlk on poistettu ja lisätty takaisin, lisätään uudestaan vanha id, jotta ei synny duplikaatteja.
       _.each($scope.editableModel.vuosiluokkakokonaisuudet, function (vlk) {
-        vlk.tehtava = {};
         var originalId = originalIds['' + vlk.vuosiluokkaKokonaisuus];
         if (originalId && !vlk.id) {
           vlk.id = originalId;
