@@ -57,9 +57,11 @@ angular.module('eperusteApp')
               trigger: 'click'
             }).on('show.bs.popover', function () {
               var res = TermistoService.getWithAvain(viiteId, true);
-              var content = res ? '<strong>' + Kaanna.kaanna(res.termi) + '</strong>: ' + Kaanna.kaanna(res.selitys) :
-                Kaanna.kaanna('termia-ei-loytynyt');
+              var content = res ? Kaanna.kaanna(res.selitys) : Kaanna.kaanna('termia-ei-loytynyt');
               popover.attr('data-content', content);
+              if (res) {
+                popover.attr('data-original-title', Kaanna.kaanna(res.termi));
+              }
               $timeout(function () {
                 var title = element.find('.popover-title');
                 var closer = angular.element(

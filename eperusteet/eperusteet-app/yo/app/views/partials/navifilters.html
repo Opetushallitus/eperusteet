@@ -7,7 +7,7 @@
       </accordion-heading>
       <div ng-if="!section.include && section.items && section.items.length > 0">
         <ul>
-          <li ng-repeat="item in section.items">
+          <li ng-repeat="item in section.items | orderBy:orderFn">
             <label><input type="checkbox" ng-model="item.$selected" ng-change="section.update(item, section)">{{item.label | kaanna}}</label>
           </li>
         </ul>
@@ -18,7 +18,7 @@
   <div ng-if="!section.title">
     <div ng-if="!section.include && section.items && section.items.length > 0">
       <ul>
-        <li ng-repeat="item in section.items">
+        <li ng-repeat="item in section.items | orderBy:orderFn">
           <label><input type="checkbox" ng-model="item.$selected" ng-change="section.update(item, section)">{{item.label | kaanna}}</label>
         </li>
       </ul>

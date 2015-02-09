@@ -315,7 +315,8 @@ angular.module('eperusteApp')
     deferred.resolve(this);
     return deferred.promise;
   })
-  .service('PerusteprojektiOikeudetService', function($rootScope, $stateParams, $state, PerusteprojektiOikeudet, PerusteprojektiTiedotService) {
+  .service('PerusteprojektiOikeudetService', function($rootScope, $stateParams,
+    PerusteprojektiOikeudet, PerusteprojektiTiedotService) {
     var oikeudet;
     var projektiId = null;
     var projektiTila = null;
@@ -336,13 +337,9 @@ angular.module('eperusteApp')
       if (oikeudet) {
         if (_.contains(oikeudet[target], permission)) {
           return true;
-        } else {
-          return false;
         }
-      } else {
-        console.log('virhe oikeuksien haussa');
-        return false;
       }
+      return false;
     }
 
     $rootScope.$on('$stateChangeSuccess', function() {

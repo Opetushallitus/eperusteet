@@ -240,7 +240,7 @@ angular.module('eperusteApp')
     function mapLaajaAlaiset(arr) {
       _.each(arr, function (yleinen) {
         $scope.editableModel.laajaalaisetOsaamiset.push({
-          laajaalainenOsaaminen: yleinen.id, kuvaus: {}
+          '_laajaalainenOsaaminen': yleinen.id, 'kuvaus': {}
         });
       });
     }
@@ -346,12 +346,12 @@ angular.module('eperusteApp')
 
     function getModel(object, item) {
       var model = _.find(object, function (obj) {
-        return parseInt(obj.laajaalainenOsaaminen, 10) === item.id;
+        return parseInt(obj._laajaalainenOsaaminen, 10) === item.id;
       });
       if (!model) {
         model = {
-          laajaalainenOsaaminen: item.id,
-          kuvaus: {}
+          '_laajaalainenOsaaminen': item.id,
+          'kuvaus': {}
         };
       }
       return model;

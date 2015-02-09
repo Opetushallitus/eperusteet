@@ -205,8 +205,11 @@ angular.module('eperusteApp')
   })
 
   .controller('PerusopetusController', function($q, $scope, $timeout, sisalto, PerusteenOsat, OppiaineenVuosiluokkakokonaisuudet,
-                                                Algoritmit, Notifikaatiot, Oppiaineet, TermistoService) {
+                                                Algoritmit, Notifikaatiot, Oppiaineet, TermistoService, Kieli) {
     $scope.isNaviVisible = _.constant(true);
+    $scope.hasContent = function (obj) {
+      return _.isObject(obj) && obj.teksti && obj.teksti[Kieli.getSisaltokieli()];
+    };
     var peruste = sisalto[0];
     var oppiaineet = _.zipBy(sisalto[2], 'id');
     $scope.osaamiset = _.zipBy(sisalto[1], 'id');
@@ -242,7 +245,7 @@ angular.module('eperusteApp')
         $scope.valittuOppiaine.vlks = undefined;
         $scope.filtterit.valittuKokonaisuus = vuosiluokka;
         $scope.valittuOppiaine.vlks = $scope.valittuOppiaine.vuosiluokkakokonaisuudet[vuosiluokka];
-        $scope.valittuOppiaine.sisallot = $scope.sisallot[$scope.valittuOppiaine.vlks.vuosiluokkaKokonaisuus];
+        $scope.valittuOppiaine.sisallot = $scope.sisallot[$scope.valittuOppiaine.vlks._vuosiluokkaKokonaisuus];
         paivitaTavoitteet();
       });
     };
@@ -261,7 +264,7 @@ angular.module('eperusteApp')
       Oppiaineet.get({ perusteId: peruste.id, osanId: id }, function(res) {
         var valittuOppiaine = {};
         valittuOppiaine.oppiaine = res;
-        valittuOppiaine.vuosiluokkakokonaisuudet = _.zipBy(res.vuosiluokkakokonaisuudet, 'vuosiluokkaKokonaisuus');
+        valittuOppiaine.vuosiluokkakokonaisuudet = _.zipBy(res.vuosiluokkakokonaisuudet, '_vuosiluokkaKokonaisuus');
         $scope.valittuOppiaine = valittuOppiaine;
         $scope.valitseOppiaineenVuosiluokka($scope.valittuOppiaine.vuosiluokkakokonaisuudet[$scope.filtterit.valittuKokonaisuus] ?
                                     $scope.filtterit.valittuKokonaisuus :
@@ -304,7 +307,7 @@ angular.module('eperusteApp')
       Algoritmit.kaikilleLapsisolmuille($scope.tekstisisalto, 'lapset', function(osa, depth) {
         suunnitelma.push({
           $osa: osa,
-          label: osa.perusteenOsa.nimi,
+          label: osa.perusteenOsa ? osa.perusteenOsa.nimi : '',
           depth: depth,
         });
       });
@@ -370,8 +373,8 @@ angular.module('eperusteApp')
               id: 'sisallot',
               title: 'oppiaineen-sisallot',
               $all: true,
-              items: _.map(['tehtava', 'ohjaus', 'tyotavat', 'tavoitteet'], function(item) {
-                return { label: 'perusopetus-' + item, value: item, depth: 0, $selected: true };
+              items: _.map(['tehtava', 'ohjaus', 'tyotavat', 'tavoitteet'], function(item, index) {
+                return { label: 'perusopetus-' + item, value: item, depth: 0, $selected: true, order: index };
               }),
               update: function(item) {
                 $scope.filterSisalto[item.value] = !item.$selected;
