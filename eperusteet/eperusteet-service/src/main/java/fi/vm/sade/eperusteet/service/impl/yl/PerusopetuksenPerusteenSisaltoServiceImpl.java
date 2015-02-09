@@ -80,7 +80,7 @@ public class PerusopetuksenPerusteenSisaltoServiceImpl implements Perusopetuksen
     public List<LaajaalainenOsaaminenDto> getLaajaalaisetOsaamiset(Long perusteId) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         assertExists(sisalto, "Pyydettyä perustetta ei ole olemassa");
-        return mapper.mapAsList(sisalto.getLaajaalaisetOsaamiset(), LaajaalainenOsaaminenDto.class);
+        return mapper.mapAsList(sisalto.getLaajaalaisetosaamiset(), LaajaalainenOsaaminenDto.class);
     }
 
     @Override

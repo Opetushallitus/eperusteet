@@ -61,7 +61,7 @@ public class LaajaalainenOsaaminenServiceImpl implements LaajaalainenOsaaminenSe
         LaajaalainenOsaaminen tmp = mapper.map(dto, LaajaalainenOsaaminen.class);
         sisaltoRepository.lock(sisalto);
         tmp = osaaminenRepository.save(tmp);
-        sisalto.addLaajaalainenOsaaminen(tmp);
+        sisalto.addLaajaalainenosaaminen(tmp);
         return mapper.map(tmp, LaajaalainenOsaaminenDto.class);
     }
 
@@ -89,20 +89,20 @@ public class LaajaalainenOsaaminenServiceImpl implements LaajaalainenOsaaminenSe
     public LaajaalainenOsaaminenDto getLaajaalainenOsaaminen(Long perusteId, Long id, int revisio) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findRevision(id, revisio);
         notNull(sisalto, "Perustetta ei ole olemassa");
-        return mapper.map(sisalto.getLaajaalainenOsaaminen(id), LaajaalainenOsaaminenDto.class);
+        return mapper.map(sisalto.getLaajaalainenosaaminen(id), LaajaalainenOsaaminenDto.class);
     }
 
     @Override
     public List<Revision> getLaajaalainenOsaaminenVersiot(Long perusteId, Long id) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        notNull(notNull(sisalto, "Perustetta ei ole olemassa").getLaajaalainenOsaaminen(id), "Laaja-alaista osaamista ei ole olemassa");
+        notNull(notNull(sisalto, "Perustetta ei ole olemassa").getLaajaalainenosaaminen(id), "Laaja-alaista osaamista ei ole olemassa");
         return osaaminenRepository.getRevisions(id);
     }
 
     @Override
     public void deleteLaajaalainenOsaaminen(Long perusteId, Long id) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        LaajaalainenOsaaminen lo = notNull(sisalto, "Perustetta ei ole olemassa").getLaajaalainenOsaaminen(id);
+        LaajaalainenOsaaminen lo = notNull(sisalto, "Perustetta ei ole olemassa").getLaajaalainenosaaminen(id);
         notNull(lo, "Laaja-alaista osaamista ei ole olemassa");
         final LaajaalainenOsaaminenContext ctx = LaajaalainenOsaaminenContext.of(perusteId, id);
         lockService.assertLock(ctx);
@@ -110,7 +110,7 @@ public class LaajaalainenOsaaminenServiceImpl implements LaajaalainenOsaaminenSe
         lockService.unlock(ctx);
         //lukitus tarvitaan koska sisällön versio muuttuu ja yhtäaikainen versioiden teko rikkoo enversin auditoinnin
         sisaltoRepository.lock(sisalto, false);
-        sisalto.removeLaajaalainenOsaaminen(lo);
+        sisalto.removeLaajaalainenosaaminen(lo);
         // Poista laaja-alainen osaamisen jos siihen ei ole enää viittauksia
         osaaminenRepository.delete(lo);
     }

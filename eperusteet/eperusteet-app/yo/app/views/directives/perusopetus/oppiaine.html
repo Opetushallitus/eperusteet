@@ -6,15 +6,16 @@
     <div class="oppiaine-header">
       <table>
         <tbody>
-          <tr ng-show="editableModel.oppiaine">
+
+          <tr ng-show="editableModel._oppiaine">
             <th kaanna="oppiaine"></th>
-            <td>{{oppiaineMap[editableModel.oppiaine].nimi | kaanna}}</td>
+            <td>{{oppiaineMap[editableModel._oppiaine].nimi | kaanna}}</td>
           </tr>
           <tr ng-show="editableModel.koosteinen">
             <th kaanna="oppiaine"></th>
             <td>{{editableModel.nimi | kaanna}}</td>
           </tr>
-          <tr ng-show="editableModel.oppiaine">
+          <tr ng-show="editableModel._oppiaine">
             <th kaanna="oppimaara"></th>
             <td>{{editableModel.nimi | kaanna}}</td>
           </tr>
@@ -30,7 +31,7 @@
         </tbody>
       </table>
     </div>
-    <hr ng-show="editableModel.koosteinen || editableModel.oppiaine">
+    <hr ng-show="editableModel.koosteinen || editableModel._oppiaine">
 
     <div class="non-collapsibles">
       <label for="nimi-input" class="header">{{'muokkaus-tutkinnon-osan-nimi-header'|kaanna}}*</label>
@@ -42,7 +43,7 @@
         <input id="koodi-input" class="form-control" type="text" ng-model="editableModel.koodiArvo" editointi-kontrolli disabled="disabled">
         <div class="addon"><button class="btn btn-default" ng-click="openKoodisto()" kaanna="hae-koodistosta"></button></div>
       </div>
-      <div ng-show="!editableModel.oppiaine">
+      <div ng-show="!editableModel._oppiaine">
         <label class="header" kaanna="'oppimaarat'"></label>
         <label class="inputwrapper"><input class="form-control" type="radio" ng-model="editableModel.koosteinen" ng-value="false">
           {{'yksi-oppimaara'|kaanna}}</label>
@@ -59,13 +60,13 @@
     <div class="oppiaine-header">
       <table>
         <tbody>
-          <tr ng-show="editableModel.oppiaine">
+          <tr ng-show="editableModel._oppiaine">
             <th kaanna="oppiaine"></th>
             <td>
-              <a ng-href="{{oppiaineMap[editableModel.oppiaine].$url}}">{{oppiaineMap[editableModel.oppiaine].nimi | kaanna}}</a>
+              <a ng-href="{{oppiaineMap[editableModel._oppiaine].$url}}">{{oppiaineMap[editableModel._oppiaine].nimi | kaanna}}</a>
             </td>
           </tr>
-          <tr ng-show="editableModel.oppiaine">
+          <tr ng-show="editableModel._oppiaine">
             <th kaanna="oppimaara"></th>
             <td>{{editableModel.nimi | kaanna}}</td>
           </tr>

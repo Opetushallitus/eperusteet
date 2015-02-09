@@ -57,7 +57,7 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JoinTable
-    private Set<LaajaalainenOsaaminen> laajaAlalaisetOsaamiset = new HashSet<>();
+    private Set<LaajaalainenOsaaminen> laajaalaisetosaamiset = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable
@@ -67,8 +67,8 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
     @JoinTable
     private Set<VuosiluokkaKokonaisuus> vuosiluokkakokonaisuudet = new HashSet<>();
 
-    public void addLaajaalainenOsaaminen(LaajaalainenOsaaminen osaaminen) {
-        laajaAlalaisetOsaamiset.add(osaaminen);
+    public void addLaajaalainenosaaminen(LaajaalainenOsaaminen osaaminen) {
+        laajaalaisetosaamiset.add(osaaminen);
     }
 
     public void addOppiaine(Oppiaine oppiaine) {
@@ -88,8 +88,8 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
         vuosiluokkakokonaisuudet.add(kokonaisuus);
     }
 
-    public boolean containsLaajaalainenOsaaminen(LaajaalainenOsaaminen osaaminen) {
-        return laajaAlalaisetOsaamiset.contains(osaaminen);
+    public boolean containsLaajaalainenosaaminen(LaajaalainenOsaaminen osaaminen) {
+        return laajaalaisetosaamiset.contains(osaaminen);
     }
 
     public boolean containsOppiaine(Oppiaine aine) {
@@ -122,8 +122,8 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
         vuosiluokkakokonaisuudet.remove(kokonaisuus);
     }
 
-    public void removeLaajaalainenOsaaminen(LaajaalainenOsaaminen osaaminen) {
-        laajaAlalaisetOsaamiset.remove(osaaminen);
+    public void removeLaajaalainenosaaminen(LaajaalainenOsaaminen osaaminen) {
+        laajaalaisetosaamiset.remove(osaaminen);
     }
 
     public boolean containsViite(PerusteenOsaViite viite) {
@@ -134,8 +134,8 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
         return kokonaisuus != null && vuosiluokkakokonaisuudet.contains(kokonaisuus);
     }
 
-    public LaajaalainenOsaaminen getLaajaalainenOsaaminen(long id) {
-        for (LaajaalainenOsaaminen l : laajaAlalaisetOsaamiset) {
+    public LaajaalainenOsaaminen getLaajaalainenosaaminen(long id) {
+        for (LaajaalainenOsaaminen l : laajaalaisetosaamiset) {
             if (id == l.getId()) {
                 return l;
             }
@@ -144,16 +144,16 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
     }
 
     //kopion palauttaminen on tarkoituksellista!
-    public Set<LaajaalainenOsaaminen> getLaajaalaisetOsaamiset() {
-        return new HashSet<>(laajaAlalaisetOsaamiset);
+    public Set<LaajaalainenOsaaminen> getLaajaalaisetosaamiset() {
+        return new HashSet<>(laajaalaisetosaamiset);
     }
 
-    public void setLaajaalaisetOsaamiset(Set<LaajaalainenOsaaminen> laajaalaisetOsaamiset) {
+    public void setLaajaalaisetosaamiset(Set<LaajaalainenOsaaminen> laajaalaisetOsaamiset) {
         if (laajaalaisetOsaamiset == null) {
-            this.laajaAlalaisetOsaamiset.clear();
+            this.laajaalaisetosaamiset.clear();
         } else {
-            this.laajaAlalaisetOsaamiset.retainAll(laajaalaisetOsaamiset);
-            this.laajaAlalaisetOsaamiset.addAll(laajaalaisetOsaamiset);
+            this.laajaalaisetosaamiset.retainAll(laajaalaisetOsaamiset);
+            this.laajaalaisetosaamiset.addAll(laajaalaisetOsaamiset);
         }
     }
 

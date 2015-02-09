@@ -28,7 +28,7 @@ import lombok.Setter;
 @Setter
 public class PerusopetuksenPerusteenSisaltoDto {
     private PerusteenOsaViiteDto.Laaja sisalto;
-    private Set<LaajaalainenOsaaminenDto> laajaAlalaisetOsaamiset;
+    private Set<LaajaalainenOsaaminenDto> laajaalaisetosaamiset;
     private Set<OppiaineLaajaDto> oppiaineet;
     private Set<VuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet;
 }

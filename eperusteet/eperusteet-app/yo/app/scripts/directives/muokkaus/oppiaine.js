@@ -61,7 +61,7 @@ angular.module('eperusteApp')
         return false;
       }
       model.$isNew = false;
-      model.oppiaine = instance.oppiaine.id;
+      model._oppiaine = instance.oppiaine.id;
       return model;
     };
   })
@@ -262,7 +262,7 @@ angular.module('eperusteApp')
     });
 
     function updateTypeInfo () {
-      var isOppimaara = (creatingNewOppimaara || $scope.editableModel.oppiaine);
+      var isOppimaara = (creatingNewOppimaara || $scope.editableModel._oppiaine);
       _.extend($scope.data.options, {
         editTitle: isOppimaara ? 'muokkaa-oppimaaraa' : 'muokkaa-oppiainetta',
         newTitle: isOppimaara ? 'uusi-oppimaara' : 'uusi-oppiaine',
@@ -270,8 +270,8 @@ angular.module('eperusteApp')
         removeWholeConfirmationText: isOppimaara ? 'poistetaanko-oppimaara' : 'poistetaanko-oppiaine',
       });
       var oppiaineLink = [];
-      if ($scope.editableModel.oppiaine && $scope.oppiaineMap) {
-        var oppiaine = $scope.oppiaineMap[$scope.editableModel.oppiaine];
+      if ($scope.editableModel._oppiaine && $scope.oppiaineMap) {
+        var oppiaine = $scope.oppiaineMap[$scope.editableModel._oppiaine];
         if (oppiaine) {
           oppiaineLink =  [{
             url: $state.href('root.perusteprojekti.suoritustapa.osaalue', {
@@ -405,8 +405,8 @@ angular.module('eperusteApp')
 
     var modelPromise = $scope.model.then(function (data) {
       $scope.editableModel = angular.copy(data);
-      if (creatingNewOppimaara && !$scope.editableModel.oppiaine) {
-        $scope.editableModel.oppiaine = 'placeholder';
+      if (creatingNewOppimaara && !$scope.editableModel._oppiaine) {
+        $scope.editableModel._oppiaine = 'placeholder';
       }
       updateTypeInfo();
     });
