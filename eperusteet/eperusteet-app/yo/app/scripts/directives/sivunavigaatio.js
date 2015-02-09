@@ -301,6 +301,10 @@ angular.module('eperusteApp')
       $scope.menuCollapsed = !$scope.menuCollapsed;
     };
 
+    $scope.orderFn = function (item) {
+      return _.isNumber(item.order) ? item.order : Utils.nameSort(item, 'label');
+    };
+
     $scope.$on('$stateChangeStart', function () {
       $scope.menuCollapsed = true;
     });

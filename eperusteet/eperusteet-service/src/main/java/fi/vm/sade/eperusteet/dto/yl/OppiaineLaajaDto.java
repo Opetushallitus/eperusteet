@@ -15,20 +15,25 @@
  */
 package fi.vm.sade.eperusteet.dto.yl;
 
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.google.common.base.Optional;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Set;
+
 /**
  *
- * @author nkala
+ * @author mikkom
  */
 @Getter
 @Setter
-public class PerusopetuksenPerusteenSisaltoDto {
-    private PerusteenOsaViiteDto.Laaja sisalto;
-    private Set<LaajaalainenOsaaminenDto> laajaAlalaisetOsaamiset;
-    private Set<OppiaineLaajaDto> oppiaineet;
-    private Set<VuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet;
+public class OppiaineLaajaDto extends OppiaineBaseDto {
+    private Optional<TekstiOsaDto> tehtava;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Set<OppiaineDto> oppimaarat;
+    private Set<OpetuksenKohdealueDto> kohdealueet;
+    private Set<OppiaineenVuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet;
+    private String koodiUri;
+    private String koodiArvo;
 }

@@ -172,7 +172,7 @@ angular.module('eperusteApp')
       var promises = [];
       var original = _.cloneDeep(cloner.get());
       function getVlkSet(model) {
-        return _(model.vuosiluokkakokonaisuudet).pluck('vuosiluokkaKokonaisuus').map(String).value();
+        return _(model.vuosiluokkakokonaisuudet).pluck('_vuosiluokkaKokonaisuus').map(String).value();
       }
       var originalVlkSet = getVlkSet(original),
           newVlkSet = getVlkSet($scope.editableModel),
@@ -184,15 +184,14 @@ angular.module('eperusteApp')
         promises.push(deferred.promise);
       } else {
         _.each(original.vuosiluokkakokonaisuudet, function (vlk) {
-          if (_.indexOf(removedVlkSet, '' + vlk.vuosiluokkaKokonaisuus) > -1) {
+          if (_.indexOf(removedVlkSet, '' + vlk._vuosiluokkaKokonaisuus) > -1) {
             promises.push(PerusopetusService.deleteOppiaineenVuosiluokkakokonaisuus(vlk, $scope.editableModel.id).$promise);
           }
         });
       }
       // Jos vlk on poistettu ja lisätty takaisin, lisätään uudestaan vanha id, jotta ei synny duplikaatteja.
       _.each($scope.editableModel.vuosiluokkakokonaisuudet, function (vlk) {
-        vlk.tehtava = {};
-        var originalId = originalIds['' + vlk.vuosiluokkaKokonaisuus];
+        var originalId = originalIds['' + vlk._vuosiluokkaKokonaisuus];
         if (originalId && !vlk.id) {
           vlk.id = originalId;
         }
@@ -391,7 +390,7 @@ angular.module('eperusteApp')
 
     $scope.getVuosiluokkakokonaisuus = function (oppiaineenVuosiluokkakokonaisuus) {
       return _.find($scope.vuosiluokkakokonaisuudet, function (item) {
-        return item.id === parseInt(oppiaineenVuosiluokkakokonaisuus.vuosiluokkaKokonaisuus, 10);
+        return item.id === parseInt(oppiaineenVuosiluokkakokonaisuus._vuosiluokkaKokonaisuus, 10);
       });
     };
 
@@ -424,7 +423,7 @@ angular.module('eperusteApp')
 
     function updateChosen() {
       $scope.chosenVuosiluokat = _.map($scope.editableModel.vuosiluokkakokonaisuudet, function (item) {
-        return parseInt(item.vuosiluokkaKokonaisuus, 10);
+        return parseInt(item._vuosiluokkaKokonaisuus, 10);
       });
     }
 
@@ -451,7 +450,7 @@ angular.module('eperusteApp')
           id: item.id,
           empty: function () {
             var vlk = {
-              vuosiluokkaKokonaisuus: item.id,
+              _vuosiluokkaKokonaisuus: item.id,
               sisaltoAlueet: [],
               tavoitteet: []
             };
@@ -467,7 +466,7 @@ angular.module('eperusteApp')
           },
           remove: function () {
             var index = _.findIndex($scope.editableModel.vuosiluokkakokonaisuudet, function (vlk) {
-              return parseInt(vlk.vuosiluokkaKokonaisuus, 10) === item.id;
+              return parseInt(vlk._vuosiluokkaKokonaisuus, 10) === item.id;
             });
             $scope.editableModel.vuosiluokkakokonaisuudet.splice(index, 1);
           }
@@ -559,7 +558,7 @@ angular.module('eperusteApp')
     function mapModel() {
       $scope.activeVuosiluokat = [];
       $scope.activeOsiot = [];
-      var current = _($scope.model.vuosiluokkakokonaisuudet).pluck('vuosiluokkaKokonaisuus').map(String).value();
+      var current = _($scope.model.vuosiluokkakokonaisuudet).pluck('_vuosiluokkaKokonaisuus').map(String).value();
       _.each($scope.vuosiluokkakokonaisuudet, function (vlk) {
         if (_.indexOf(current, '' + vlk.id) > -1) {
           $scope.activeVuosiluokat.push(vlk);

@@ -633,6 +633,7 @@ $solmu-caret-size: 16px;
 .solmu-valikko {
   position: relative;
   .dropdown-menu {
+    z-index: 1041; // editointikontrollin päälle
     margin-top: 0;
     a {
       color: $brand-primary;
