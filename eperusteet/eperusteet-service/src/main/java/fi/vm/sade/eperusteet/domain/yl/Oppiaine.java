@@ -112,8 +112,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     }
 
     public Set<OppiaineenVuosiluokkaKokonaisuus> getVuosiluokkakokonaisuudet() {
-        return vuosiluokkakokonaisuudet == null ? Collections.<OppiaineenVuosiluokkaKokonaisuus>emptySet()
-            : Collections.unmodifiableSet(vuosiluokkakokonaisuudet);
+        return vuosiluokkakokonaisuudet == null ? Collections.<OppiaineenVuosiluokkaKokonaisuus>emptySet() : new HashSet<>(vuosiluokkakokonaisuudet);
     }
 
     public void addVuosiluokkaKokonaisuus(OppiaineenVuosiluokkaKokonaisuus ovk) {
@@ -177,7 +176,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
         } else {
             Set<OpetuksenKohdealue> added = new HashSet<>(kohdealueet.size());
             //kohdealueita ei ole paljon (<10), joten O(n^2) OK tässä
-            for ( OpetuksenKohdealue k : kohdealueet ) {
+            for (OpetuksenKohdealue k : kohdealueet) {
                 added.add(addKohdealue(k));
             }
             //TODO: tarkista onko jokin poistettava kohdealue käytössä
