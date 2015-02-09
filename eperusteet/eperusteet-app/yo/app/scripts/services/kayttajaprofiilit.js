@@ -75,6 +75,7 @@ angular.module('eperusteApp')
       info.suosikit = transformSuosikit(res.suosikit);
       info.preferenssit = transformPreferenssit(res.preferenssit);
       infoQ.resolve(true);
+      console.log('kayttajaProfiiliPaivittyi');
       $rootScope.$broadcast('kayttajaProfiiliPaivittyi');
     }, function() {
       infoQ.resolve(false);
@@ -96,6 +97,7 @@ angular.module('eperusteApp')
           info.$casFetched = true;
           $http.get('/cas/me').success(function(res) {
             $rootScope.$broadcast('fetched:casTiedot');
+            console.log('fetched:casTiedot', res);
             if (res.oid) {
               info.oid = res.oid;
               info.lang = res.lang;
