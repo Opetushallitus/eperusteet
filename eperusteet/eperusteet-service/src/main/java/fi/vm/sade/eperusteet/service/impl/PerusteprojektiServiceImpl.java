@@ -403,12 +403,16 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             return updateStatus;
         }
 
-        // Tarkistetaan että perusteella on nimi ainakin suomeksi
-        TekstiPalanen nimi = projekti.getPeruste().getNimi();
-        if (tila != ProjektiTila.POISTETTU && tila != ProjektiTila.LAADINTA
-            && (nimi == null || !nimi.getTeksti().containsKey(Kieli.FI) || nimi.getTeksti().get(Kieli.FI).isEmpty())) {
-            updateStatus.addStatus("perusteelta-puuttuu-nimi");
-            updateStatus.setVaihtoOk(false);
+        // Tarkistetaan että perusteelle on asetettu nimi perusteeseen asetetuilla kielillä
+        if (tila != ProjektiTila.POISTETTU && tila != ProjektiTila.LAADINTA) {
+            TekstiPalanen nimi = projekti.getPeruste().getNimi();
+            for (Kieli kieli : projekti.getPeruste().getKielet()) {
+                if (nimi == null || !nimi.getTeksti().containsKey(kieli) || nimi.getTeksti().get(kieli).isEmpty()) {
+                    updateStatus.addStatus("perusteen-nimea-ei-ole-kaikilla-kielilla");
+                    updateStatus.setVaihtoOk(false);
+                    break;
+                }
+            }
         }
 
         Set<String> tutkinnonOsienKoodit = new HashSet<>();
