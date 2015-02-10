@@ -15,7 +15,6 @@
  */
 
 'use strict';
-/* global _ */
 
 // Älä käytä tätä ellei ole kiire
 angular.module('eperusteApp')
