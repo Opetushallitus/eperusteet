@@ -412,16 +412,17 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         Set<String> tutkinnonOsienKoodit = new HashSet<>();
+        Peruste peruste = projekti.getPeruste();
 
         // Perusteen validointi
-        if (projekti.getPeruste() != null && projekti.getPeruste().getSuoritustavat() != null
+        if (peruste != null && peruste.getSuoritustavat() != null
             && tila != ProjektiTila.LAADINTA) {
             Validointi validointi;
 
-            for (Suoritustapa suoritustapa : projekti.getPeruste().getSuoritustavat()) {
+            for (Suoritustapa suoritustapa : peruste.getSuoritustavat()) {
                 // Rakenteiden validointi
                 if (suoritustapa.getRakenne() != null) {
-                    validointi = PerusteenRakenne.validoiRyhma(suoritustapa.getRakenne());
+                    validointi = PerusteenRakenne.validoiRyhma(peruste.getOsaamisalat(), suoritustapa.getRakenne());
                     if (!validointi.ongelmat.isEmpty()) {
                         updateStatus.addStatus("rakenteen-validointi-virhe", suoritustapa.getSuoritustapakoodi(), validointi);
                         updateStatus.setVaihtoOk(false);

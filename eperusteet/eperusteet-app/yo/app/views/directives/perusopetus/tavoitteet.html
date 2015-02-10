@@ -30,7 +30,7 @@
                 <div ng-if="tavoite.$editing" ckeditor ng-model="tavoite.tavoite" slocalized editor-placeholder="tavoitteen-kuvaus-placeholder"></div>
 
                 <h4 kaanna="kohdealueet"></h4>
-                <div tag-cloud="tavoite.$kohdealueet" openable="false" edit-mode="tavoite.$editing" add-label="arviointi-uusi-kohdealue"></div>
+                <div tag-cloud="tavoite.$kohdealueet" lisaa-uusi-vaihtoehto="lisaaUusiKohdealue" openable="false" edit-mode="tavoite.$editing" add-label="arviointi-uusi-kohdealue"></div>
 
                 <div class="tavoite-collapser action-link" ng-show="!tavoite.$accordionOpen" ng-click="tavoite.$accordionOpen = true">…</div>
                 <div class="collapsible" collapse="!tavoite.$accordionOpen">

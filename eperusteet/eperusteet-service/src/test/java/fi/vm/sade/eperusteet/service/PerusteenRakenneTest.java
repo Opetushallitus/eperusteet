@@ -72,7 +72,7 @@ public class PerusteenRakenneTest {
             )
         );
 
-        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(rakenne);
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
         assertTrue(validoitu.ongelmat.isEmpty());
     }
 
@@ -97,7 +97,7 @@ public class PerusteenRakenneTest {
             )
         );
 
-        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(rakenne);
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
         assertTrue(validoitu.ongelmat.size() == 1);
     }
 
@@ -105,7 +105,7 @@ public class PerusteenRakenneTest {
     public void testValidoiRyhmaTyhja() {
         RakenneModuuli rakenne = TestUtils.teeRyhma(0, 0, -1, -1);
 
-        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(rakenne);
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
         assertTrue(validoitu.ongelmat.isEmpty());
     }
 
@@ -123,7 +123,7 @@ public class PerusteenRakenneTest {
                 TestUtils.teeRakenneOsa(1, 20)
             )
         );
-        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(rakenne);
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
         assertTrue(validoitu.ongelmat.size() == 2);
     }
 
@@ -141,7 +141,7 @@ public class PerusteenRakenneTest {
                 TestUtils.teeRakenneOsa(1, 20)
             )
         );
-        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(rakenne);
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
         assertTrue(validoitu.ongelmat.size() == 2);
     }
 
@@ -159,7 +159,7 @@ public class PerusteenRakenneTest {
                 TestUtils.teeRakenneOsa(2, 20)
             )
         );
-        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(rakenne);
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
         assertTrue(validoitu.ongelmat.isEmpty());
     }
 
@@ -178,7 +178,7 @@ public class PerusteenRakenneTest {
                 )
             )
         );
-        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(rakenne);
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
         assertTrue(validoitu.ongelmat.size() == 2);
     }
 
@@ -197,7 +197,7 @@ public class PerusteenRakenneTest {
             TestUtils.teeRyhma(-1, -1, -1, -1)
         );
 
-        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(rakenne);
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, rakenne);
         assertTrue(validoitu.ongelmat.size() == 1);
     }
 }
