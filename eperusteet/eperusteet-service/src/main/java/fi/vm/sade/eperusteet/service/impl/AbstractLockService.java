@@ -63,7 +63,10 @@ public abstract class AbstractLockService<T> implements LockService<T> {
     @Override
     @Transactional
     public void unlock(T ctx) {
-        manager.unlock(validateCtx(ctx, false));
+        Long lockId = getLockId(ctx);
+        if (lockId != null) {
+            manager.unlock(lockId);
+        }
     }
 
     @Override
@@ -73,9 +76,18 @@ public abstract class AbstractLockService<T> implements LockService<T> {
     }
 
     /**
-     * Varmistaa että lukituskonteksti on validi
+     * Palauttaa kontekstia vastaavan lukittavan entiteetin pääavaimen tai null jos tätä ei voi selvittää (entiteetti on poistettu tms.).
+     *
      * @param ctx
      * @return kontekstia vastaavan lukittavan entiteetin pääavaimen
+     */
+    protected abstract Long getLockId(T ctx);
+
+    /**
+     * Varmistaa että lukituskonteksti on validi ja käyttäjällä on oikeudet lukitukseen tai sen kyselyyn.
+     *
+     * @param ctx
+     * @return kontekstia vastaavan lukittavan entiteetin pääavaimen (Mahdollistaa optimoinnin jos getLockId joutuu tekemään tietokantahakuja).
      */
     protected abstract Long validateCtx(T ctx, boolean readOnly);
 
