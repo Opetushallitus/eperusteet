@@ -292,7 +292,6 @@ angular.module('eperusteApp')
         backLabel: 'oppiaineet',
         backState: OppimaaraHelper.getBackState(),
         removeWholeFn: function(then) {
-          PerusopetusService.deleteOsa($scope.editableModel);
           PerusopetusService.deleteOsa($scope.editableModel, function() {
             PerusopetusService.clearCache();
             then();
