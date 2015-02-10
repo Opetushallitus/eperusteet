@@ -102,11 +102,9 @@ angular.module('eperusteApp')
               info.groups = res.groups;
             }
             deferred.resolve(res);
-            console.log('fetched:casTiedot', res);
             $rootScope.$broadcast('fetched:casTiedot');
           }).error(function() {
             deferred.resolve({});
-            console.log('fetched:casTiedot error');
             $rootScope.$broadcast('fetched:casTiedot');
           });
         } else {
