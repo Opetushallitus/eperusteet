@@ -20,6 +20,7 @@ import com.google.common.base.Optional;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,6 +32,7 @@ import lombok.Setter;
 @Setter
 public abstract class OppiaineBaseDto implements ReferenceableDto {
     private Long id;
+    private UUID tunniste;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     //"äitioppiaine" jos kyseessä on oppiaineen oppimäärä
