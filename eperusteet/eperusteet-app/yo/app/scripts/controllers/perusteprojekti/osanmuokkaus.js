@@ -319,8 +319,8 @@ angular.module('eperusteApp')
                   kohdealueId: ka.id
                 }, function() {
                   _.remove($scope.kohdealueet, ka);
-                }, Notifikaatiot.serverCb)
-              }
+                }, Notifikaatiot.serverCb);
+              };
               $scope.lisaaKohdealue = function() {
                 Oppiaineet.lisaaKohdealue({
                   perusteId: ProxyService.get('perusteId'),
@@ -344,7 +344,7 @@ angular.module('eperusteApp')
                       perusteId: ProxyService.get('perusteId'),
                       osanId: OsanMuokkausHelper.getOppiaine().id
                   }, $modalInstance.close)
-                )
+                );
               };
             }
           }).result.then(uudetKohdealueetCb);
