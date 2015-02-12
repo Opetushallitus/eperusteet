@@ -42,6 +42,10 @@ import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
+import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
+import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
@@ -347,6 +351,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Transactional(readOnly = true)
+    public void tarkistaPerusopetuksenPeruste(Peruste peruste, TilaUpdateStatus status) {
+        PerusopetuksenPerusteenSisalto sisalto = peruste.getPerusopetuksenPerusteenSisalto();
+        Set<LaajaalainenOsaaminen> osaamiset = sisalto.getLaajaalaisetosaamiset();
+        Set<Oppiaine> oppiaineet = sisalto.getOppiaineet();
+        Set<VuosiluokkaKokonaisuus> vlks = sisalto.getVuosiluokkakokonaisuudet();
+    }
+
+    @Transactional(readOnly = true)
     public Map<String, String> tarkistaPerusteenTekstipalaset(Peruste peruste) {
         if (peruste.getTyyppi() == PerusteTyyppi.POHJA) {
             return new HashMap<>();
@@ -361,6 +373,21 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             tarkistaTekstipalanen("peruste-validointi-koulutus-nimi", koulutus.getNimi(), vaaditutKielet, virheellisetKielet);
         }
 
+        // Esiopetus
+        if (peruste.getEsiopetuksenPerusteenSisalto() != null) {
+            for (PerusteenOsaViite lapsi : peruste.getEsiopetuksenPerusteenSisalto().getSisalto().getLapset()) {
+                tarkistaSisalto(lapsi, vaaditutKielet, virheellisetKielet);
+            }
+        }
+
+        // Perusopetus
+        if (peruste.getPerusopetuksenPerusteenSisalto() != null) {
+            for (PerusteenOsaViite lapsi : peruste.getPerusopetuksenPerusteenSisalto().getSisalto().getLapset()) {
+                tarkistaSisalto(lapsi, vaaditutKielet, virheellisetKielet);
+            }
+        }
+
+        // Muut
         for (Suoritustapa st : peruste.getSuoritustavat()) {
             PerusteenOsaViite sisalto = st.getSisalto();
             for (PerusteenOsaViite lapsi : sisalto.getLapset()) {
