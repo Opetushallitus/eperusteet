@@ -77,8 +77,8 @@
 
     "perusteen-kielet": "Perusteen kielet",
     "lisaa-kieli": "Lisää kieli",
-    "peruste-validointi-tekstikappale-nimi": "Perusteen kaikkien tekstikappeleiden nimiä ei ole lokalisoitu",
-    "peruste-validointi-tekstikappale-teksti": "Perusteen kaikkien tekstikappeleiden sisältöjä ei ole lokalisoitu",
+    "peruste-validointi-tekstikappale-nimi": "Perusteen kaikkien tekstikappaleiden nimiä ei ole lokalisoitu",
+    "peruste-validointi-tekstikappale-teksti": "Perusteen kaikkien tekstikappaleiden sisältöjä ei ole lokalisoitu",
     "peruste-validointi-rakenneosa-kuvaus": "Perusteen muodostumisryhmän kaikkia kuvauksia ei ole lokalisoitu",
     "peruste-validointi-kuvaus": "Perusteen kuvausta ei ole lokalisoitu",
     "peruste-validointi-nimi": "Perusteen nimeä ei ole lokalisoitu",
