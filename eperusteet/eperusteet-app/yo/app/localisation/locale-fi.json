@@ -92,6 +92,8 @@
     "ei-osaamisalan-kuvausta": "Ei osaamisalan kuvausta",
     "osaamisalan-kuvaus": "Osaamisalan kuvaus",
 
+    "muokkaa-kohdealueita": "Muokkaa kohdealueita",
+
     "fi": "Suomi",
     "sv": "Ruotsi",
     "en": "Englanti",
@@ -801,6 +803,7 @@
     "piilota-osaamiskokonaisuuden-kuvaus": "Piilota osaamiskokonaisuuden yleiskuvaus",
     "tekstikappale": "Tekstikappale",
     "kohdealueet": "Kohdealueet",
+    "kohdealue": "Kohdealue",
     "siirtyma-edellisesta": "Siirtymä edellisestä vaiheesta",
     "muokkaus-siirtyma-edellisesta-header": "Siirtymä edellisestä vaiheesta",
     "muokkaus-siirtyma-edellisesta-placeholder": "Kirjoita tähän siirtymän sisältö",

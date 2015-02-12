@@ -37,7 +37,7 @@ angular.module('eperusteApp')
     };
   })
   .controller('TavoitteetController', function($scope, $modal, PerusopetusService, $state, $rootScope, $timeout,
-    CloneHelper, OsanMuokkausHelper, $stateParams, ProxyService, Oppiaineet) {
+    CloneHelper, OsanMuokkausHelper, $stateParams, ProxyService, Oppiaineet, Kaanna) {
     $scope.osaamiset = $scope.providedOsaamiset || OsanMuokkausHelper.getOsaamiset();
     if (_.isEmpty($scope.osaamiset)) {
       // käytetään vain lukutilan kanssa
@@ -51,6 +51,21 @@ angular.module('eperusteApp')
     var oppiaineId = $scope.oppiaine.id;
     $scope.editMode = false;
     $scope.currentEditable = null;
+
+    $scope.kohdealueet = $scope.oppiaine.oppiaine ? $scope.oppiaine.oppiaine.kohdealueet : $scope.oppiaine.kohdealueet;
+
+    $scope.$on('update:oppiaineenkohdealueet', function() {
+      $scope.oppiaine = OsanMuokkausHelper.getOppiaine();
+      oppiaineId = $scope.oppiaine.id;
+      $scope.kohdealueet = $scope.oppiaine.kohdealueet;
+      var kohdealueetMap = _.zipBy($scope.kohdealueet, 'id');
+      angular.forEach($scope.model.tavoitteet, function(tavoite) {
+        if (!_.isEmpty(tavoite.kohdealueet) && !kohdealueetMap[parseInt(_.first(tavoite.kohdealueet), 10)]) {
+          tavoite.kohdealueet.length = 0;
+          $scope.poistaValittuKohdealue(tavoite);
+        }
+      });
+    });
 
     $scope.$watch('editable', function(value) {
       $scope.editMode = !!value;
@@ -67,39 +82,6 @@ angular.module('eperusteApp')
       $scope.mapModel();
     });
 
-    $scope.lisaaUusiKohdealue = function(next) {
-      $modal.open({
-        template: '' +
-          '<div class="modal-header">' +
-            '<h3 kaanna="lisaa-kohdealue"></h3>' +
-          '</div>' +
-          '' +
-          '<div class="modal-body tag-modal">' +
-            '<input class="form-control" type="text" ng-model="uusiOppiaine" slocalized></input>' +
-          '</div>' +
-          '' +
-          '<div class="modal-footer">' +
-            '<button class="btn btn-default" ng-click="ok(uusiOppiaine)" kaanna="\'lisaa\'"></button>' +
-            '<button class="btn btn-default" ng-click="$close()" kaanna="\'sulje\'"></button>' +
-          '</div>',
-        resolve: {},
-        controller: function($scope, $modalInstance) {
-          $scope.ok = function(item) {
-            $modalInstance.close({
-              nimi: item
-            });
-          };
-        }
-      }).result.then(function(ka) {
-        Oppiaineet.lisaaKohdealue({
-          perusteId: ProxyService.get('perusteId'),
-          osanId: oppiaineId,
-        }, ka, function(res) {
-          next(res);
-        });
-      });
-    };
-
     function generateArraySetter(findFrom, manipulator) {
       manipulator = manipulator || angular.noop;
       return function(item) {
@@ -111,15 +93,33 @@ angular.module('eperusteApp')
       };
     }
 
+    $scope.kaannaKohdealue = function(ka) {
+      return Kaanna.kaanna(ka.nimi);
+    };
+
+    $scope.poistaValittuKohdealue = function(tavoite) {
+      tavoite.$valittuKohdealue = undefined;
+    };
+
+    $scope.asetaKohdealue = function(tavoite) {
+      tavoite.$kohdealueet = tavoite.$valittuKohdealue ? [tavoite.$valittuKohdealue] : [];
+    };
+
     $scope.mapModel = function(update) {
       _.each($scope.model.tavoitteet, function(tavoite) {
         if (!update) {
           tavoite.$accordionOpen = true;
         }
 
+        var kohdealueId = !_.isEmpty(tavoite.kohdealueet) ? _.first(tavoite.kohdealueet) : null;
+        if (kohdealueId) {
+          tavoite.$valittuKohdealue = _.find($scope.kohdealueet, function(ka) {
+            return ka.id === parseInt(kohdealueId, 10);
+          });
+        }
+
         tavoite.$sisaltoalueet = _.map($scope.model.sisaltoalueet, generateArraySetter(tavoite.sisaltoalueet));
-        tavoite.$kohdealueet = _.map($scope.oppiaine.oppiaine ? $scope.oppiaine.oppiaine.kohdealueet : $scope.oppiaine.kohdealueet, generateArraySetter(tavoite.kohdealueet));
-        tavoite.$osaaminen = _.map($scope.osaamiset, generateArraySetter(tavoite.laajattavoitteet, function(osaaminen) {
+        tavoite.$osaaminen = _.map($scope.kohdealueet, generateArraySetter(tavoite.laajattavoitteet, function(osaaminen) {
           var vuosiluokkakuvaus = _.find($scope.vuosiluokka.laajaalaisetOsaamiset, function(item) {
             return parseInt(item.laajaalainenOsaaminen, 10) === osaaminen.id;
           });
@@ -183,6 +183,7 @@ angular.module('eperusteApp')
           tavoite.sisaltoalueet = _(tavoite.$sisaltoalueet).filter(filterFn).map(idFn).value();
           tavoite.laajattavoitteet = _(tavoite.$osaaminen).filter(filterFn).map(idFn).value();
           tavoite.kohdealueet = _(tavoite.$kohdealueet).filter(filterFn).map(idFn).value();
+          tavoite.kohdealueet = tavoite.$valittuKohdealue ? [tavoite.$valittuKohdealue.id] : [];
         });
       },
       cancel: function() {

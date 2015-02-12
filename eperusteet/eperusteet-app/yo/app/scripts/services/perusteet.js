@@ -99,6 +99,8 @@ angular.module('eperusteApp')
     return $resource(baseUrl, { osanId: '@id' }, {
       oppimaarat: { method: 'GET', isArray: true, url: baseUrl + '/oppimaarat'},
       lisaaKohdealue: { method: 'POST', isArray: false, url: baseUrl + '/kohdealueet'},
+      poistaKohdealue: { method: 'DELETE', isArray: false, url: baseUrl + '/kohdealueet/:kohdealueId'},
+      kohdealueet: { method: 'GET', isArray: true, url: baseUrl + '/kohdealueet'}
     });
   })
   .factory('OppiaineenVuosiluokkakokonaisuudet', function ($resource, SERVICE_LOC) {

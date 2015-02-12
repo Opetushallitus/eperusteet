@@ -23,14 +23,24 @@
                 <div ng-show="editMode && !currentEditable" class="icon" icon-role="drag"></div>
               </div>
               <div class="tavoite-sisalto" ng-class="{collapsed: !tavoite.$accordionOpen}">
-
                 <h4 ng-show="tavoite.$editing" kaanna="nimi"></h4>
                 <h4 class="tavoite-otsikko action-link" ng-show="!tavoite.$editing" ng-click="tavoiteFn.toggle(tavoite)"
                   ng-bind-html="tavoite.tavoite | kaanna | unsafe"></h4>
                 <div ng-if="tavoite.$editing" ckeditor ng-model="tavoite.tavoite" slocalized editor-placeholder="tavoitteen-kuvaus-placeholder"></div>
 
-                <h4 kaanna="kohdealueet"></h4>
-                <div tag-cloud="tavoite.$kohdealueet" lisaa-uusi-vaihtoehto="lisaaUusiKohdealue" openable="false" edit-mode="tavoite.$editing" add-label="arviointi-uusi-kohdealue"></div>
+                <h4 ng-show="tavoite.$valittuKohdealue || tavoite.$editing" kaanna="'kohdealue'"></h4>
+                <!-- <div ng&#45;hide="tavoite.$editing" tag&#45;cloud="tavoite.$kohdealueet" openable="false" edit&#45;mode="false"></div> -->
+                <p ng-if="tavoite.$valittuKohdealue && !tavoite.$editing">{{ tavoite.$valittuKohdealue ? tavoite.$valittuKohdealue.nimi : '' | kaanna }}</p>
+                <div ng-if="tavoite.$editing">
+                  <div class="input-group">
+                    <select class="form-control"
+                            ng-model="tavoite.$valittuKohdealue" ng-change="asetaKohdealue(tavoite)"
+                            ng-options="kaannaKohdealue(ka) for ka in kohdealueet"></select>
+                    <span class="input-group-btn">
+                      <button ng-click="poistaValittuKohdealue(tavoite)" icon-role="remove" kaanna="'poista'" class="btn btn-default" type="button"></button>
+                    </span>
+                  </div>
+                </div>
 
                 <div class="tavoite-collapser action-link" ng-show="!tavoite.$accordionOpen" ng-click="tavoite.$accordionOpen = true">…</div>
                 <div class="collapsible" collapse="!tavoite.$accordionOpen">

@@ -290,13 +290,13 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('slocalized', function($rootScope, YleinenData, Kieli)  {
+  .directive('slocalized', function($parse, $rootScope, YleinenData, Kieli)  {
     return {
       priority: 5,
       restrict: 'A',
       require: 'ngModel',
+      scope: false,
       link: function(scope, element, attrs, ngModelCtrl) {
-
         ngModelCtrl.$formatters.push(function(modelValue) {
           if(angular.isUndefined(modelValue)) { return; }
           if(modelValue === null) { return; }

@@ -328,26 +328,46 @@ public class OppiaineServiceImpl implements OppiaineService {
         return ovk;
     }
 
-    @Override
     @Transactional(readOnly = false)
-    public OpetuksenKohdealueDto addKohdealue(Long perusteId, Long oppiaineId, OpetuksenKohdealueDto kohdealue) {
+    private Oppiaine getAndLockOppiaine(Long perusteId, Long oppiaineId) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         Oppiaine aine = oppiaineRepository.findOne(oppiaineId);
         if (sisalto == null || !sisalto.containsOppiaine(aine)) {
             throw new BusinessRuleViolationException("oppiaine ei kuulu tähän perusteeseen");
         }
         oppiaineRepository.lock(aine);
+        return aine;
+    }
 
-        OpetuksenKohdealue kohde = mapper.map(kohdealue, OpetuksenKohdealue.class);
-        kohde = aine.addKohdealue(kohde);
-        kohdeAlueRepository.save(kohde);
+    @Override
+    @Transactional(readOnly = false)
+    public OpetuksenKohdealueDto addKohdealue(Long perusteId, Long oppiaineId, OpetuksenKohdealueDto kohdealue) {
+        Oppiaine aine = getAndLockOppiaine(perusteId, oppiaineId);
+        OpetuksenKohdealue kohde = null;
+        if (kohdealue.getId() != null) {
+            OpetuksenKohdealue vanhaKohde = kohdeAlueRepository.findOne(kohdealue.getId());
+            mapper.map(kohdealue, vanhaKohde);
+        }
+        else {
+            kohde = mapper.map(kohdealue, OpetuksenKohdealue.class);
+            kohde = aine.addKohdealue(kohde);
+            kohdeAlueRepository.save(kohde);
+        }
+
         return mapper.map(kohde, OpetuksenKohdealueDto.class);
 
     }
 
     @Override
     public void deleteKohdealue(Long perusteId, Long id, Long kohdealueId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        getAndLockOppiaine(perusteId, id);
+        OpetuksenKohdealue kohdealue = kohdeAlueRepository.getOne(kohdealueId);
+        List<OpetuksenTavoite> tavoitteet = oppiaineRepository.findAllTavoitteetByKohdealue(kohdealue);
+        for (OpetuksenTavoite t : tavoitteet) {
+            t.getKohdealueet().remove(kohdealue);
+        }
+        Oppiaine oppiaine = oppiaineRepository.findOne(id);
+        oppiaine.removeKohdealue(kohdealue);
     }
 
 }
