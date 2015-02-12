@@ -40,6 +40,7 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.EntityManager;
@@ -376,16 +377,20 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, KoulutusTyyppi.PERUSTUTKINTO.toString());
 
         Perusteprojekti pp = repository.findOne(ppdto.getId());
-        pp.getPeruste().setNimi(null);
         repository.save(pp);
         em.persist(pp);
 
         TilaUpdateStatus status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS, null);
         Assert.assertFalse(status.isVaihtoOk());
 
+        HashSet<Kieli> kielet = new HashSet<>();
+        kielet.add(Kieli.FI);
+        pp.getPeruste().setKielet(kielet);
         pp.getPeruste().setNimi(TekstiPalanen.of(Kieli.FI, "nimi"));
+
         repository.save(pp);
         em.persist(pp);
+
         status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS, null);
         Assert.assertTrue(status.isVaihtoOk());
         Assert.assertEquals(ProjektiTila.VALMIS, pp.getTila());
