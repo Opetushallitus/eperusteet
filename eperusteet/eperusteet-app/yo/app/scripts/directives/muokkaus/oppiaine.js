@@ -98,13 +98,19 @@ angular.module('eperusteApp')
     var creatingNewOppimaara = !!OppimaaraHelper.instance();
     $scope.oppimaaraRequested = false;
     $scope.oppiaineet = [];
+    $scope.$oppiaineenNimi = {};
+
     PerusopetusService.getOsat(PerusopetusService.OPPIAINEET, true).then(function (data) {
       $scope.oppiaineet = data;
-      $scope.oppiaineMap = _.zipObject(_.map(data, function (oppiaine) {
+      $scope.oppiaineMap = _.zipObject(_.map(data, function(oppiaine) {
         oppiaine.$url = $scope.generateLink(oppiaine);
         return [''+oppiaine.id, oppiaine];
       }));
     });
+
+    if (creatingNewOppimaara) {
+      $scope.$oppiaineenNimi = OppimaaraHelper.instance().oppiaine.nimi;
+    }
 
     if (_.isNumber(tabHelper.changeInited)) {
       $scope.activeTab = tabHelper.changeInited;
@@ -404,8 +410,12 @@ angular.module('eperusteApp')
 
     var modelPromise = $scope.model.then(function (data) {
       $scope.editableModel = angular.copy(data);
-      if (creatingNewOppimaara && !$scope.editableModel._oppiaine) {
+      if (!_.isObject($scope.editableModel._oppiaine) && $scope.oppiaineMap && $scope.oppiaineMap[$scope.editableModel._oppiaine]) {
+         $scope.$oppiaineenNimi = $scope.oppiaineMap[$scope.editableModel._oppiaine].nimi;
+      }
+      else if (creatingNewOppimaara && !$scope.editableModel._oppiaine) {
         $scope.editableModel._oppiaine = 'placeholder';
+        // TODO: redirect
       }
       updateTypeInfo();
     });

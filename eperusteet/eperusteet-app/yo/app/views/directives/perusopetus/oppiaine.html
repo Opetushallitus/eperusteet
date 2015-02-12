@@ -6,24 +6,23 @@
     <div class="oppiaine-header">
       <table>
         <tbody>
-
           <tr ng-show="editableModel._oppiaine">
-            <th kaanna="oppiaine"></th>
-            <td>{{oppiaineMap[editableModel._oppiaine].nimi | kaanna}}</td>
+            <th kaanna="'oppiaine'"></th>
+            <td>{{ $oppiaineenNimi | kaanna}}</td>
           </tr>
           <tr ng-show="editableModel.koosteinen">
-            <th kaanna="oppiaine"></th>
+            <th kaanna="'oppiaine'"></th>
             <td>{{editableModel.nimi | kaanna}}</td>
           </tr>
           <tr ng-show="editableModel._oppiaine">
-            <th kaanna="oppimaara"></th>
+            <th kaanna="'oppimaara'"></th>
             <td>{{editableModel.nimi | kaanna}}</td>
           </tr>
           <tr ng-show="editableModel.koosteinen">
-            <th kaanna="oppimaarat"></th>
+            <th kaanna="'oppimaarat'"></th>
             <td>
               <ul>
-                <li ng-show="editableModel.$oppimaarat.length === 0" kaanna="ei-oppimaaria"></li>
+                <li ng-show="editableModel.$oppimaarat.length === 0" kaanna="'ei-oppimaaria'"></li>
                 <li ng-repeat="oppimaara in editableModel.$oppimaarat | orderBy:nameSort">{{oppimaara.nimi | kaanna}}</li>
               </ul>
             </td>
