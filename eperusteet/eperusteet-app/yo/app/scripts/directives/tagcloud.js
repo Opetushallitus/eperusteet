@@ -65,6 +65,7 @@ angular.module('eperusteApp')
     $scope.model = model;
     $scope.addLabel = addLabel;
     $scope.orderFn = Utils.nameSort;
+    $scope.hasLisaaUusi = !!lisaaUusiVaihtoehto;
     $scope.lisaaUusiVaihtoehto = function() {
       lisaaUusiVaihtoehto(function(res) {
         $scope.model.push(res);
