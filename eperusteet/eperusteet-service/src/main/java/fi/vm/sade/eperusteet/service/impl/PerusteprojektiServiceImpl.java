@@ -42,9 +42,15 @@ import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.yl.KeskeinenSisaltoalue;
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
+import fi.vm.sade.eperusteet.domain.yl.OpetuksenKohdealue;
+import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
+import fi.vm.sade.eperusteet.domain.yl.OppiaineenVuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.TekstiOsa;
+import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuudenLaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
@@ -77,6 +83,7 @@ import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
 import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -351,11 +358,130 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Transactional(readOnly = true)
-    public void tarkistaPerusopetuksenPeruste(Peruste peruste, TilaUpdateStatus status) {
+    private void tarkistaPerusopetuksenOppiaine(Oppiaine oa, TilaUpdateStatus status, final Set<Kieli> vaaditutKielet, Map<String, String> virheellisetKielet) {
+        tarkistaTekstipalanen("peruste-validointi-oppiaine-nimi", oa.getNimi(), vaaditutKielet, virheellisetKielet);
+
+        if (oa.getTehtava() != null) {
+            tarkistaTekstipalanen("peruste-validointi-oppiaine-sisalto", oa.getTehtava().getOtsikko(), vaaditutKielet, virheellisetKielet);
+            tarkistaTekstipalanen("peruste-validointi-oppiaine-sisalto", oa.getTehtava().getTeksti(), vaaditutKielet, virheellisetKielet);
+        }
+
+        Set<OpetuksenKohdealue> kohdealueet = oa.getKohdealueet();
+        for (OpetuksenKohdealue ka : kohdealueet) {
+            tarkistaTekstipalanen("peruste-validointi-oppiaine-kohdealue", ka.getNimi(), vaaditutKielet, virheellisetKielet);
+        }
+
+        Set<OppiaineenVuosiluokkaKokonaisuus> oavlks = oa.getVuosiluokkakokonaisuudet();
+        for (OppiaineenVuosiluokkaKokonaisuus oavlk : oavlks) {
+            TekstiOsa arviointi = oavlk.getArviointi();
+            if (arviointi != null) {
+                tarkistaTekstipalanen("peruste-validointi-oppiaine-vlk-sisalto", arviointi.getOtsikko(), vaaditutKielet, virheellisetKielet);
+                tarkistaTekstipalanen("peruste-validointi-oppiaine-vlk-sisalto", arviointi.getTeksti(), vaaditutKielet, virheellisetKielet);
+            }
+
+            TekstiOsa ohjaus = oavlk.getOhjaus();
+            if (ohjaus != null) {
+                tarkistaTekstipalanen("peruste-validointi-oppiaine-vlk-sisalto", ohjaus.getOtsikko(), vaaditutKielet, virheellisetKielet);
+                tarkistaTekstipalanen("peruste-validointi-oppiaine-vlk-sisalto", ohjaus.getTeksti(), vaaditutKielet, virheellisetKielet);
+            }
+
+            TekstiOsa tehtava = oavlk.getTehtava();
+            if (tehtava != null) {
+                tarkistaTekstipalanen("peruste-validointi-oppiaine-vlk-sisalto", tehtava.getOtsikko(), vaaditutKielet, virheellisetKielet);
+                tarkistaTekstipalanen("peruste-validointi-oppiaine-vlk-sisalto", tehtava.getTeksti(), vaaditutKielet, virheellisetKielet);
+            }
+
+            TekstiOsa tyotavat = oavlk.getTyotavat();
+            if (tyotavat != null) {
+                tarkistaTekstipalanen("peruste-validointi-oppiaine-vlk-sisalto", tyotavat.getOtsikko(), vaaditutKielet, virheellisetKielet);
+                tarkistaTekstipalanen("peruste-validointi-oppiaine-vlk-sisalto", tyotavat.getTeksti(), vaaditutKielet, virheellisetKielet);
+            }
+
+            List<KeskeinenSisaltoalue> sisaltoalueet = oavlk.getSisaltoalueet();
+            for (KeskeinenSisaltoalue sa : sisaltoalueet) {
+                tarkistaTekstipalanen("peruste-validointi-oppiaine-sisaltoalue", sa.getNimi(), vaaditutKielet, virheellisetKielet);
+                tarkistaTekstipalanen("peruste-validointi-oppiaine-sisaltoalue", sa.getKuvaus(), vaaditutKielet, virheellisetKielet);
+            }
+
+            List<OpetuksenTavoite> tavoitteet = oavlk.getTavoitteet();
+            for (OpetuksenTavoite tavoite : tavoitteet) {
+                tarkistaTekstipalanen("peruste-validointi-oppiaine-vlk-tavoite-tavoite-teksti", tavoite.getTavoite(), vaaditutKielet, virheellisetKielet);
+            }
+        }
+
+        if (oa.getOppimaarat() != null) {
+            for (Oppiaine oppimaara : oa.getOppimaarat()) {
+                tarkistaPerusopetuksenOppiaine(oppimaara, status, vaaditutKielet, virheellisetKielet);
+            }
+        }
+    }
+
+    @Transactional(readOnly = true)
+    private void tarkistaPerusopetuksenPeruste(Peruste peruste, TilaUpdateStatus status) {
+        if (peruste == null) {
+            return;
+        }
+
         PerusopetuksenPerusteenSisalto sisalto = peruste.getPerusopetuksenPerusteenSisalto();
         Set<LaajaalainenOsaaminen> osaamiset = sisalto.getLaajaalaisetosaamiset();
-        Set<Oppiaine> oppiaineet = sisalto.getOppiaineet();
         Set<VuosiluokkaKokonaisuus> vlks = sisalto.getVuosiluokkakokonaisuudet();
+        Set<Oppiaine> oppiaineet = sisalto.getOppiaineet();
+        Set<Kieli> vaaditutKielet = peruste.getKielet();
+        Map<String, String> virheellisetKielet = new HashMap<>();
+
+        // Laajaalaiset osaamiset
+        for (LaajaalainenOsaaminen osaaminen : osaamiset) {
+            tarkistaTekstipalanen("peruste-validointi-laajaalainen-osaaminen-nimi", osaaminen.getNimi(), vaaditutKielet, virheellisetKielet);
+            tarkistaTekstipalanen("peruste-validointi-laajaalainen-osaaminen-kuvaus", osaaminen.getKuvaus(), vaaditutKielet, virheellisetKielet);
+        }
+
+        // Vuosiluokkakokonaisuudet
+        for (VuosiluokkaKokonaisuus vlk : vlks) {
+            tarkistaTekstipalanen("peruste-validointi-vlk-nimi", vlk.getNimi(), vaaditutKielet, virheellisetKielet);
+
+            if (vlk.getTehtava() != null) {
+                tarkistaTekstipalanen("peruste-validointi-vlk-tehtava-otsikko", vlk.getTehtava().getOtsikko(), vaaditutKielet, virheellisetKielet);
+                tarkistaTekstipalanen("peruste-validointi-vlk-tehtava-teksti", vlk.getTehtava().getTeksti(), vaaditutKielet, virheellisetKielet);
+            }
+
+            Set<VuosiluokkaKokonaisuudenLaajaalainenOsaaminen> vlklos = vlk.getLaajaalaisetOsaamiset();
+            for (VuosiluokkaKokonaisuudenLaajaalainenOsaaminen vlklo : vlklos) {
+                tarkistaTekstipalanen("peruste-validointi-vlk-lo", vlklo.getKuvaus(), vaaditutKielet, virheellisetKielet);
+            }
+
+            TekstiOsa paikallisestiPaatettavatAsiat = vlk.getPaikallisestiPaatettavatAsiat();
+            if (paikallisestiPaatettavatAsiat != null) {
+                tarkistaTekstipalanen("peruste-validointi-vlk-sisalto", paikallisestiPaatettavatAsiat.getOtsikko(), vaaditutKielet, virheellisetKielet);
+                tarkistaTekstipalanen("peruste-validointi-vlk-sisalto", paikallisestiPaatettavatAsiat.getTeksti(), vaaditutKielet, virheellisetKielet);
+            }
+
+            TekstiOsa siirtymaEdellisesta = vlk.getSiirtymaEdellisesta();
+            if (siirtymaEdellisesta != null) {
+                tarkistaTekstipalanen("peruste-validointi-vlk-sisalto", siirtymaEdellisesta.getOtsikko(), vaaditutKielet, virheellisetKielet);
+                tarkistaTekstipalanen("peruste-validointi-vlk-sisalto", siirtymaEdellisesta.getTeksti(), vaaditutKielet, virheellisetKielet);
+            }
+
+            TekstiOsa siirtymaSeuraavaan = vlk.getSiirtymaSeuraavaan();
+            if (siirtymaSeuraavaan != null) {
+                tarkistaTekstipalanen("peruste-validointi-vlk-sisalto", siirtymaSeuraavaan.getOtsikko(), vaaditutKielet, virheellisetKielet);
+                tarkistaTekstipalanen("peruste-validointi-vlk-sisalto", siirtymaSeuraavaan.getTeksti(), vaaditutKielet, virheellisetKielet);
+            }
+
+            TekstiOsa laajaalainenOsaaminen = vlk.getLaajaalainenOsaaminen();
+            if (laajaalainenOsaaminen != null) {
+                tarkistaTekstipalanen("peruste-validointi-vlk-sisalto", laajaalainenOsaaminen.getOtsikko(), vaaditutKielet, virheellisetKielet);
+                tarkistaTekstipalanen("peruste-validointi-vlk-sisalto", laajaalainenOsaaminen.getTeksti(), vaaditutKielet, virheellisetKielet);
+            }
+        }
+
+        for (Oppiaine oa : oppiaineet) {
+            tarkistaPerusopetuksenOppiaine(oa, status, vaaditutKielet, virheellisetKielet);
+        }
+
+        for (Entry<String, String> entry : virheellisetKielet.entrySet()) {
+            status.setVaihtoOk(false);
+            status.addStatus(entry.getKey());
+        }
     }
 
     @Transactional(readOnly = true)
@@ -547,14 +673,19 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 updateStatus.setVaihtoOk(false);
             }
 
-            // Tarkista että kaikki vaadittu kielisisältö on asetettu
-            Map<String, String> lokalisointivirheet = tarkistaPerusteenTekstipalaset(projekti.getPeruste());
-            for (Entry<String, String> entry : lokalisointivirheet.entrySet()) {
-                updateStatus.setVaihtoOk(false);
-                updateStatus.addStatus(entry.getKey());
+
+            if (tila == ProjektiTila.JULKAISTU || tila == ProjektiTila.VALMIS) {
+                tarkistaPerusopetuksenPeruste(peruste, updateStatus);
+                // Tarkista että kaikki vaadittu kielisisältö on asetettu
+                Map<String, String> lokalisointivirheet = tarkistaPerusteenTekstipalaset(projekti.getPeruste());
+                for (Entry<String, String> entry : lokalisointivirheet.entrySet()) {
+                    updateStatus.setVaihtoOk(false);
+                    updateStatus.addStatus(entry.getKey());
+                }
             }
 
             if (tila == ProjektiTila.JULKAISTU) {
+
                 if (projekti.getPeruste().getVoimassaoloAlkaa() == null) {
                     updateStatus.addStatus("peruste-ei-voimassaolon-alkamisaikaa");
                     updateStatus.setVaihtoOk(false);

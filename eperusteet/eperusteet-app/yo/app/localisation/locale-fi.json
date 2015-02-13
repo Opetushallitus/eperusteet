@@ -92,6 +92,20 @@
     "ei-osaamisalan-kuvausta": "Ei osaamisalan kuvausta",
     "osaamisalan-kuvaus": "Osaamisalan kuvaus",
 
+    "peruste-validointi-laajaalainen-osaaminen-nimi": "Kaikkien laaja-alaisten osaamisten nimiä ei ole lokalisoituKaikkien ei ole lokalisoitu",
+    "peruste-validointi-laajaalainen-osaaminen-kuvaus": "Kaikkien laaja-alaisten osaamisten kuvauksia ei ole lokalisoitu",
+    "peruste-validointi-vlk-nimi": "Kaikkien vuosiluokkakokonaisuuksien nimiä ei ole lokalisoitu",
+    "peruste-validointi-vlk-tehtava-otsikko": "Kaikkien vuosiluokkakokonaisuuksien tehtävien otsikoita ei ole lokalisoitu",
+    "peruste-validointi-vlk-tehtava-teksti": "Kaikkien vuosiluokkakokonaisuuksien tehtävien sisältötekstejä ei ole lokalisoitu",
+    "peruste-validointi-vlk-lo": "Kaikkien vuosiluokkakokonaisuuksien laaja-alaisien osaamisien kuvauksia ei ole lokalisoitu",
+    "peruste-validointi-vlk-sisalto": "Kaikkien vuosiluokkakokonaisuuksien sisältöjä ei ole lokalisoitu",
+    "peruste-validointi-oppiaine-nimi": "Kaikkien oppiaineiden nimiä ei ole lokalisoitu",
+    "peruste-validointi-oppiaine-sisalto": "Kaikkien oppiaineiden sisältöä ei ole lokalisoitu",
+    "peruste-validointi-oppiaine-kohdealue": "Kaikkien oppiaineiden kohdealueideita ei ole lokalisoitu",
+    "peruste-validointi-oppiaine-vlk-sisalto": "Kaikkien oppiaineiden vuosiluokkakokonaisuuksien sisältöjä ei ole lokalisoitu",
+    "peruste-validointi-oppiaine-sisaltoalue": "Kaikkien oppiaineiden sisältöalueita ei ole lokalisoitu",
+    "peruste-validointi-oppiaine-vlk-tavoite-tavoite-teksti": "Kaikkia tavoitteita ei ole lokalisoitu",
+
     "muokkaa-kohdealueita": "Muokkaa kohdealueita",
 
     "fi": "Suomi",
