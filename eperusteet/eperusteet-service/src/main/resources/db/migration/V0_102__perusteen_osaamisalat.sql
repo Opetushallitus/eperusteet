@@ -11,3 +11,4 @@ CREATE TABLE peruste_osaamisala_aud(
     revend integer,
     revtype smallint
 );
+
