@@ -19,8 +19,8 @@ import fi.vm.sade.eperusteet.domain.Lukko;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
-import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.exception.LockingException;
+import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -121,7 +121,7 @@ public class LockManagerImpl implements LockManager {
         if (lock != null && lock.getHaltijaOid() != null) {
             Future<KayttajanTietoDto> fktd = kayttajat.haeAsync(lock.getHaltijaOid());
             try {
-                KayttajanTietoDto ktd = fktd.get(6000, TimeUnit.SECONDS);
+                KayttajanTietoDto ktd = fktd.get(1, TimeUnit.SECONDS);
                 if (ktd != null) {
                     String kutsumanimi = ktd.getKutsumanimi();
                     String sukunimi = ktd.getSukunimi();
@@ -168,12 +168,14 @@ public class LockManagerImpl implements LockManager {
     @Transactional(readOnly = false)
     public boolean unlock(Long id) {
         final Lukko lukko = em.find(Lukko.class, id, LockModeType.PESSIMISTIC_WRITE);
+        if (lukko == null) {
+            return false;
+        }
         if (isLockedByAuthenticatedUser(lukko)) {
             em.remove(lukko);
             return true;
-        } else {
-            return false;
         }
+        throw new LockingException("Käyttäjä ei omista lukkoa", LukkoDto.of(lukko));
     }
 
     @Override

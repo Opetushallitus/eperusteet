@@ -214,7 +214,7 @@ angular.module('eperusteApp')
       });
   })
   .controller('PerusteprojektiCtrl', function($scope, $state, $stateParams,
-    koulutusalaService, opintoalaService, Navigaatiopolku,
+    koulutusalaService, opintoalaService, Navigaatiopolku, ProxyService,
     PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation,
     SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet, TermistoService, Kieli) {
 
@@ -233,6 +233,7 @@ angular.module('eperusteApp')
       $scope.backLink = PerusteProjektiService.getUrl($scope.projekti, $scope.peruste);
       $scope.pdfEnabled = PerusteProjektiService.isPdfEnabled($scope.peruste);
       TermistoService.setPeruste($scope.peruste);
+      ProxyService.set('perusteId', $scope.peruste.id);
     }
     init();
 

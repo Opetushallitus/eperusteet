@@ -21,8 +21,10 @@ import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -40,6 +42,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -101,6 +104,16 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Setter
     @CollectionTable(name = "korvattavat_diaarinumerot")
     private Set<Diaarinumero> korvattavatDiaarinumerot;
+
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "peruste_osaamisala",
+               joinColumns = @JoinColumn(name = "peruste_id"),
+               inverseJoinColumns = @JoinColumn(name = "osaamisala_id"))
+    @Column(name = "osaamisala_id")
+    private List<Koodi> osaamisalat = new ArrayList<>();
 
     @Temporal(TemporalType.TIMESTAMP)
     @Getter

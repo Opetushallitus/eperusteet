@@ -37,6 +37,11 @@ public class LaajaalainenOsaaminenLockServiceImpl extends AbstractLockService<La
     private LaajaalainenOsaaminenRepository osaaminenRepository;
 
     @Override
+    protected Long getLockId(LaajaalainenOsaaminenContext ctx) {
+        return ctx.getOsaaminenId();
+    }
+
+    @Override
     protected final Long validateCtx(LaajaalainenOsaaminenContext ctx, boolean readOnly) {
         final PermissionManager.Permission permission = readOnly ? PermissionManager.Permission.LUKU : PermissionManager.Permission.MUOKKAUS;
         permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, permission);

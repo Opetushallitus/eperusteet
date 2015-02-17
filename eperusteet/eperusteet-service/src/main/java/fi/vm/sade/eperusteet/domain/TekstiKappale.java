@@ -28,6 +28,8 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import javax.persistence.FetchType;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -42,6 +44,12 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen teksti;
+
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private Koodi osaamisala;
 
     public TekstiKappale() {
     }
@@ -77,10 +85,9 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
         return new TekstiKappale(this);
     }
 
-
-
     private void copyState(TekstiKappale other) {
         this.setTeksti(other.getTeksti());
+        this.setOsaamisala(other.getOsaamisala());
     }
 
 }

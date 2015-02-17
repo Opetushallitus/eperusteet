@@ -16,9 +16,11 @@
 
 package fi.vm.sade.eperusteet.service.util;
 
+import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.Osaamisala;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
@@ -51,11 +53,11 @@ public class PerusteenRakenne {
         public Integer sisakkaisiaOsaamisalaryhmia = 0;
     }
 
-    static public Validointi validoiRyhma(RakenneModuuli rakenne) {
-        return validoiRyhma(rakenne, 0);
+    static public Validointi validoiRyhma(List<Koodi> osaamisalat, RakenneModuuli rakenne) {
+        return validoiRyhma(osaamisalat, rakenne, 0);
     }
 
-    static private Validointi validoiRyhma(RakenneModuuli rakenne, final Integer syvyys) {
+    static private Validointi validoiRyhma(List<Koodi> osaamisalat, RakenneModuuli rakenne, final Integer syvyys) {
         final TekstiPalanen nimi = rakenne.getNimi();
         final RakenneModuuliRooli rooli = rakenne.getRooli();
         List<AbstractRakenneOsa> osat = rakenne.getOsat();
@@ -67,7 +69,6 @@ public class PerusteenRakenne {
         BigDecimal laajuusSummaMax = new BigDecimal(0);
         Integer ryhmienMäärä = 0;
         Set<Long> uniikit = new HashSet<>();
-
 
         for (AbstractRakenneOsa x : osat) {
             if (x instanceof RakenneOsa) {
@@ -83,7 +84,7 @@ public class PerusteenRakenne {
             else if (x instanceof RakenneModuuli) {
                 RakenneModuuli rm = (RakenneModuuli)x;
                 ++ryhmienMäärä;
-                Validointi validoitu = validoiRyhma(rm, syvyys + 1);
+                Validointi validoitu = validoiRyhma(osaamisalat, rm, syvyys + 1);
                 validointi.ongelmat.addAll(validoitu.ongelmat);
                 validointi.laskettuLaajuus = validointi.laskettuLaajuus.add(validoitu.laskettuLaajuus);
                 validointi.sisakkaisiaOsaamisalaryhmia = validoitu.sisakkaisiaOsaamisalaryhmia;
@@ -94,6 +95,20 @@ public class PerusteenRakenne {
 
         if (rooli != null && rooli.equals(RakenneModuuliRooli.OSAAMISALA)) {
             validointi.sisakkaisiaOsaamisalaryhmia = validointi.sisakkaisiaOsaamisalaryhmia + 1;
+            // Tarkista löytyykö perusteesta valittua osaamisalaa
+            Osaamisala roa = rakenne.getOsaamisala();
+            if (roa != null) {
+                boolean osaamisalaaEiPerusteella = true;
+                for (Koodi oa : osaamisalat) {
+                    if (roa.getOsaamisalakoodiArvo().equals(oa.getArvo()) && roa.getOsaamisalakoodiUri().equals(oa.getUri())) {
+                        osaamisalaaEiPerusteella = false;
+                        break;
+                    }
+                }
+                if (osaamisalaaEiPerusteella) {
+                    validointi.ongelmat.add(new Ongelma("ryhman-osaamisalaa-ei-perusteella", nimi, syvyys));
+                }
+            }
         }
         if (validointi.sisakkaisiaOsaamisalaryhmia > 1) {
             validointi.sisakkaisiaOsaamisalaryhmia = 1;

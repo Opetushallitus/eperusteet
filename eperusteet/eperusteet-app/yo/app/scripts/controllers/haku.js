@@ -103,7 +103,7 @@ angular.module('eperusteApp')
     }, Notifikaatiot.serverCb);
   })
   .controller('HakuCtrl', function($scope, $rootScope, $state, Perusteet, Haku,
-    YleinenData, koulutusalaService) {
+    YleinenData, koulutusalaService, Kieli) {
     var pat = '';
     // Viive, joka odotetaan, ennen kuin haku nimi muutoksesta lähtee serverille.
     var hakuViive = 300; //ms
@@ -112,13 +112,20 @@ angular.module('eperusteApp')
     $scope.sivuja = 1;
     $scope.kokonaismaara = 0;
     $scope.koulutusalat = koulutusalaService.haeKoulutusalat();
-    $scope.hakuparametrit = Haku.getHakuparametrit($state.current.name);
+
+    function setHakuparametrit() {
+      $scope.hakuparametrit = _.merge(Haku.getHakuparametrit($state.current.name), {
+        kieli: Kieli.getSisaltokieli()
+      });
+    }
+    setHakuparametrit();
 
     $scope.koulutustyypit = YleinenData.koulutustyypit;
 
     $scope.tyhjenna = function() {
       $scope.nykyinenSivu = 1;
       $scope.hakuparametrit = Haku.resetHakuparametrit($state.current.name);
+      setHakuparametrit();
       $scope.haePerusteet($scope.nykyinenSivu);
     };
 
@@ -143,7 +150,7 @@ angular.module('eperusteApp')
     $scope.haePerusteet = function(sivu) {
       $scope.hakuparametrit.sivu = sivu - 1;
       Haku.setHakuparametrit($state.current.name, $scope.hakuparametrit);
-      Perusteet.get(Haku.getHakuparametrit($state.current.name), hakuVastaus, function(virhe) {
+      Perusteet.get($scope.hakuparametrit, hakuVastaus, function(virhe) {
         if (virhe.status === 404) {
           hakuVastaus(virhe.data);
         }
@@ -184,4 +191,6 @@ angular.module('eperusteApp')
     $scope.piilotaKoulutustyyppi = function() {
       return $state.current.name === 'root.selaus.ammatillinenperuskoulutus';
     };
+
+    $scope.$on('changed:sisaltokieli', $scope.tyhjenna);
   });

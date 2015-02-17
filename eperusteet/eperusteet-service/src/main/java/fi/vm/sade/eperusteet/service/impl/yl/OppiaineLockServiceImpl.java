@@ -47,6 +47,11 @@ public class OppiaineLockServiceImpl extends AbstractLockService<OppiaineLockCon
     private OppiaineenVuosiluokkakokonaisuusRepository vuosiluokkakokonaisuusRepository;
 
     @Override
+    protected Long getLockId(OppiaineLockContext ctx) {
+        return ctx.getKokonaisuusId() == null ? ctx.getOppiaineId() : ctx.getKokonaisuusId();
+    }
+
+    @Override
     protected final Long validateCtx(OppiaineLockContext ctx, boolean readOnly) {
         final PermissionManager.Permission permission = readOnly ? PermissionManager.Permission.LUKU : PermissionManager.Permission.MUOKKAUS;
         permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, permission);

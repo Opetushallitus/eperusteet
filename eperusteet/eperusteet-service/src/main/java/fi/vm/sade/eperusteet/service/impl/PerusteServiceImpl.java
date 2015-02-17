@@ -331,7 +331,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
-    public fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi) {
+    public PerusteenOsaViiteDto.Laaja getSuoritustapaSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi) {
         return getSuoritustapaSisalto(perusteId, suoritustapakoodi, PerusteenOsaViiteDto.Laaja.class);
     }
 

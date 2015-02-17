@@ -1,0 +1,28 @@
+<!-- tagcloudkohdealuemodal.html -->
+
+<div class="modal-header">
+  <h3 kaanna="'hallitse-tavoitteen-kohdealueita'"></h3>
+</div>
+
+<div class="modal-body tag-modal">
+  <pre>{{ kohdealueet | json }}</pre>
+  <div ng-repeat="ka in kohdealueet">
+    <div class="row">
+      <div class="col-xs-9">
+        <p ng-hide="ka.$editing" ng-model="ka.nimi" ng-bind="ka.nimi | kaanna"></p>
+        <span ng-show="ka.$editing"><input class="form-control" slocalized type="text" ng-model="ka.nimi"></input></span>
+      </div>
+      <div class="col-xs-3">
+        <button ng-click="poista(ka)" class="pull-right btn btn-danger" icon-role="remove"></button>
+        <button ng-hide="ka.$editing" ng-click="muokkaa(ka)" style="margin-right: 8px" class="pull-right btn btn-default" icon-role="edit"></button>
+        <button ng-show="ka.$editing" ng-click="tallenna(ka)" style="margin-right: 8px" class="pull-right btn btn-default" icon-role="ok"></button>
+      </div>
+    </div>
+  </div>
+  <button ng-click="lisaaUusi()" class="btn btn-default" icon-role="add" kaanna="'lisaa-kohdealue'"></button>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-default" ng-click="close(kohdealueet)" kaanna="'ok'"></button>
+  <button class="btn btn-default" ng-click="dismiss(kohdealueet)" kaanna="'peruuta'"></button>
+</div>

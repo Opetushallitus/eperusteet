@@ -42,6 +42,11 @@ public class VuosiluokkakokonaisuusLockServiceImpl extends AbstractLockService<V
     private VuosiluokkaKokonaisuusRepository kokonaisuudet;
 
     @Override
+    protected Long getLockId(VuosiluokkaKokonaisuusContext ctx) {
+        return ctx.getKokonaisuusId();
+    }
+
+    @Override
     protected final Long validateCtx(VuosiluokkaKokonaisuusContext ctx, boolean readOnly) {
         final PermissionManager.Permission permission = readOnly ? PermissionManager.Permission.LUKU : PermissionManager.Permission.MUOKKAUS;
         permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, permission);

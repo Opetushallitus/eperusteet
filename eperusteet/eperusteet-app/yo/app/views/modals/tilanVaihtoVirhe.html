@@ -37,7 +37,7 @@ European Union Public Licence for more details.
                 </ul>
                 <ul ng-if="info.validointi" class="list-unstyled">
                     <li ng-repeat="ongelma in info.validointi.ongelmat">
-                        <b>{{ongelma.ryhma.teksti | kaanna}}</b>: {{ongelma.ongelma}}
+                        <b>{{ongelma.ryhma.teksti | kaanna}}</b>: {{ongelma.ongelma | kaanna}}
                     </li>
                 </ul>
             </td>

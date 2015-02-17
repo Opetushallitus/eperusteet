@@ -57,6 +57,8 @@ angular.module('eperusteApp')
       return YleinenData.showKoulutukset($scope.editablePeruste);
     };
 
+
+
     $scope.editEnabled = false;
     var editingCallbacks = {
       edit: function () {
@@ -147,7 +149,23 @@ angular.module('eperusteApp')
     $scope.$perusteellaTutkintonimikkeet = PerusteenTutkintonimikkeet.perusteellaTutkintonimikkeet($scope.peruste);
     $scope.kieliOrder = Kieli.kieliOrder;
 
-
+    $scope.Osaamisala = {
+      poista: function(oa) {
+        _.remove($scope.editablePeruste.osaamisalat, oa);
+      },
+      lisaa: function() {
+        Koodisto.modaali(function(koodi) {
+          $scope.editablePeruste.osaamisalat.push({
+            nimi: koodi.nimi,
+            arvo: koodi.koodiArvo,
+            uri: koodi.koodiUri
+          });
+        }, {
+          tyyppi: function() { return 'osaamisala'; },
+          ylarelaatioTyyppi: function() { return ''; }
+        }, angular.noop, null)();
+      }
+    };
 
     function valitseValittavatKielet(kielet) {
       var current = (kielet || $scope.editablePeruste.kielet);

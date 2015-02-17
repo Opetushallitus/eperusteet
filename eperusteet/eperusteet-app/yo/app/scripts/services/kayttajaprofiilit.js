@@ -96,17 +96,16 @@ angular.module('eperusteApp')
         if (!info.$casFetched) {
           info.$casFetched = true;
           $http.get('/cas/me').success(function(res) {
-            $rootScope.$broadcast('fetched:casTiedot');
-            console.log('fetched:casTiedot', res);
             if (res.oid) {
               info.oid = res.oid;
               info.lang = res.lang;
               info.groups = res.groups;
             }
             deferred.resolve(res);
-          }).error(function() {
             $rootScope.$broadcast('fetched:casTiedot');
+          }).error(function() {
             deferred.resolve({});
+            $rootScope.$broadcast('fetched:casTiedot');
           });
         } else {
           deferred.resolve(info);
