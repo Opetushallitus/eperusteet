@@ -19,9 +19,11 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.dto.KoulutusDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,4 +52,5 @@ public abstract class PerusteBaseDto implements Serializable {
     private PerusteTyyppi tyyppi;
 
     private Set<String> korvattavatDiaarinumerot;
+    private List<KoodiDto> osaamisalat;
 }

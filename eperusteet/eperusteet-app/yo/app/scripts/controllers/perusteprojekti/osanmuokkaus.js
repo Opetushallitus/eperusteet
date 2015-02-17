@@ -290,13 +290,65 @@ angular.module('eperusteApp')
     };
   })
 
-  .directive('osanmuokkausTavoitteet', function () {
+  .directive('osanmuokkausTavoitteet', function() {
     return {
       templateUrl: 'views/directives/perusopetus/osanmuokkaustavoitteet.html',
       restrict: 'E',
       scope: {
         model: '=',
         config: '='
+      },
+      controller: function($rootScope, $scope, $modal, ProxyService, $q, Notifikaatiot, OsanMuokkausHelper) {
+        function uudetKohdealueetCb(kohdealueet) {
+          OsanMuokkausHelper.getOppiaine().kohdealueet = kohdealueet;
+          $rootScope.$broadcast('update:oppiaineenkohdealueet');
+        }
+
+        $scope.muokkaaKohdealueita = function() {
+          $modal.open({
+            templateUrl: 'views/directives/perusopetus/osanmuokkauskohdealueet.html',
+            controller: function($scope, $modalInstance, Oppiaineet, OsanMuokkausHelper) {
+              $scope.kohdealueet = _.map(_.clone(OsanMuokkausHelper.getOppiaine().kohdealueet) || [], function(ka) {
+                ka.$vanhaNimi = _.clone(ka.nimi);
+                return ka;
+              });
+              $scope.poistaKohdealue = function(ka) {
+                Oppiaineet.poistaKohdealue({
+                  perusteId: ProxyService.get('perusteId'),
+                  osanId: OsanMuokkausHelper.getOppiaine().id,
+                  kohdealueId: ka.id
+                }, function() {
+                  _.remove($scope.kohdealueet, ka);
+                }, Notifikaatiot.serverCb);
+              };
+              $scope.lisaaKohdealue = function() {
+                Oppiaineet.lisaaKohdealue({
+                  perusteId: ProxyService.get('perusteId'),
+                  osanId: OsanMuokkausHelper.getOppiaine().id
+                }, {}, function(res) {
+                  $scope.kohdealueet.push(res);
+                });
+              };
+              $scope.ok = function(kohdealueet) {
+                $q.all(_(kohdealueet).reject(function(ka) {
+                    return _.isEqual(ka.nimi, ka.$vanhaNimi);
+                  })
+                  .map(function(ka) {
+                    return Oppiaineet.lisaaKohdealue({
+                      perusteId: ProxyService.get('perusteId'),
+                      osanId: OsanMuokkausHelper.getOppiaine().id
+                    }, ka).$promise;
+                  })
+                  .value())
+                .then(Oppiaineet.kohdealueet({
+                      perusteId: ProxyService.get('perusteId'),
+                      osanId: OsanMuokkausHelper.getOppiaine().id
+                  }, $modalInstance.close)
+                );
+              };
+            }
+          }).result.then(uudetKohdealueetCb);
+        };
       }
     };
   })

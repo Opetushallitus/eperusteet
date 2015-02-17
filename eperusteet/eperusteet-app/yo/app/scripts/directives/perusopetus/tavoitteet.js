@@ -36,8 +36,8 @@ angular.module('eperusteApp')
       }
     };
   })
-  .controller('TavoitteetController', function($scope, PerusopetusService, $state, $rootScope, $timeout,
-    CloneHelper, OsanMuokkausHelper, $stateParams) {
+  .controller('TavoitteetController', function($scope, $modal, PerusopetusService, $state, $rootScope, $timeout,
+    CloneHelper, OsanMuokkausHelper, $stateParams, ProxyService, Oppiaineet, Kaanna) {
     $scope.osaamiset = $scope.providedOsaamiset || OsanMuokkausHelper.getOsaamiset();
     if (_.isEmpty($scope.osaamiset)) {
       // käytetään vain lukutilan kanssa
@@ -48,8 +48,24 @@ angular.module('eperusteApp')
     }
     $scope.vuosiluokka = $scope.providedVuosiluokka || OsanMuokkausHelper.getVuosiluokkakokonaisuus();
     $scope.oppiaine = $scope.providedOppiaine || OsanMuokkausHelper.getOppiaine();
+    var oppiaineId = $scope.oppiaine.id;
     $scope.editMode = false;
     $scope.currentEditable = null;
+
+    $scope.kohdealueet = $scope.oppiaine.oppiaine ? $scope.oppiaine.oppiaine.kohdealueet : $scope.oppiaine.kohdealueet;
+
+    $scope.$on('update:oppiaineenkohdealueet', function() {
+      $scope.oppiaine = OsanMuokkausHelper.getOppiaine();
+      oppiaineId = $scope.oppiaine.id;
+      $scope.kohdealueet = $scope.oppiaine.kohdealueet;
+      var kohdealueetMap = _.zipBy($scope.kohdealueet, 'id');
+      angular.forEach($scope.model.tavoitteet, function(tavoite) {
+        if (!_.isEmpty(tavoite.kohdealueet) && !kohdealueetMap[parseInt(_.first(tavoite.kohdealueet), 10)]) {
+          tavoite.kohdealueet.length = 0;
+          $scope.poistaValittuKohdealue(tavoite);
+        }
+      });
+    });
 
     $scope.$watch('editable', function(value) {
       $scope.editMode = !!value;
@@ -77,14 +93,32 @@ angular.module('eperusteApp')
       };
     }
 
+    $scope.kaannaKohdealue = function(ka) {
+      return Kaanna.kaanna(ka.nimi);
+    };
+
+    $scope.poistaValittuKohdealue = function(tavoite) {
+      tavoite.$valittuKohdealue = undefined;
+    };
+
+    $scope.asetaKohdealue = function(tavoite) {
+      tavoite.$kohdealueet = tavoite.$valittuKohdealue ? [tavoite.$valittuKohdealue] : [];
+    };
+
     $scope.mapModel = function(update) {
       _.each($scope.model.tavoitteet, function(tavoite) {
         if (!update) {
           tavoite.$accordionOpen = true;
         }
 
+        var kohdealueId = !_.isEmpty(tavoite.kohdealueet) ? _.first(tavoite.kohdealueet) : null;
+        if (kohdealueId) {
+          tavoite.$valittuKohdealue = _.find($scope.kohdealueet, function(ka) {
+            return ka.id === parseInt(kohdealueId, 10);
+          });
+        }
+
         tavoite.$sisaltoalueet = _.map($scope.model.sisaltoalueet, generateArraySetter(tavoite.sisaltoalueet));
-        tavoite.$kohdealueet = _.map($scope.oppiaine.oppiaine ? $scope.oppiaine.oppiaine.kohdealueet : $scope.oppiaine.kohdealueet, generateArraySetter(tavoite.kohdealueet));
         tavoite.$osaaminen = _.map($scope.osaamiset, generateArraySetter(tavoite.laajattavoitteet, function(osaaminen) {
           var vuosiluokkakuvaus = _.find($scope.vuosiluokka.laajaalaisetOsaamiset, function(item) {
             return parseInt(item.laajaalainenOsaaminen, 10) === osaaminen.id;
@@ -149,6 +183,7 @@ angular.module('eperusteApp')
           tavoite.sisaltoalueet = _(tavoite.$sisaltoalueet).filter(filterFn).map(idFn).value();
           tavoite.laajattavoitteet = _(tavoite.$osaaminen).filter(filterFn).map(idFn).value();
           tavoite.kohdealueet = _(tavoite.$kohdealueet).filter(filterFn).map(idFn).value();
+          tavoite.kohdealueet = tavoite.$valittuKohdealue ? [tavoite.$valittuKohdealue.id] : [];
         });
       },
       cancel: function() {

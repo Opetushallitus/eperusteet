@@ -84,6 +84,12 @@
                 <h3>{{ valittuOppiaine.vlks.tyotavat.otsikko | kaanna }}</h3>
                 <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.tyotavat.teksti || '-'"></termisto-tekstikentta>
               </div>
+
+              <div ng-repeat="sa in valittuOppiaine.vlks.sisaltoalueet">
+                <h3>{{ sa.nimi | kaanna }}</h3>
+                <termisto-tekstikentta tekstikentta="sa.kuvaus || '-'"></termisto-tekstikentta>
+              </div>
+
               <div ng-hide="filterSisalto.tavoitteet" ng-if="valittuOppiaine.vlks._vuosiluokkaKokonaisuus">
                 <h3 kaanna="'perusopetus-tavoitteet'"></h3>
                 <div tavoitteet="valittuOppiaine.vlks" oppiaine="valittuOppiaine" osaamiset="osaamiset" vuosiluokka="valittuOppiaine.sisallot"></div>

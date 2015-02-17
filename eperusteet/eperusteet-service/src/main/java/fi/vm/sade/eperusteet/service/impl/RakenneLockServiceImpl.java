@@ -41,6 +41,15 @@ public class RakenneLockServiceImpl extends AbstractLockService<TutkinnonRakenne
     private RakenneRepository rakenteet;
 
     @Override
+    protected Long getLockId(TutkinnonRakenneLockContext ctx) {
+        Peruste peruste = perusteet.findOne(ctx.getPerusteId());
+        if (peruste != null) {
+            return peruste.getSuoritustapa(ctx.getKoodi()).getRakenne().getId();
+        }
+        return null;
+    }
+
+    @Override
     protected int latestRevision(TutkinnonRakenneLockContext ctx) {
         final RakenneModuuli rakenne = perusteet.findOne(ctx.getPerusteId()).getSuoritustapa(ctx.getKoodi()).getRakenne();
         return rakenteet.getLatestRevisionId(rakenne.getId());

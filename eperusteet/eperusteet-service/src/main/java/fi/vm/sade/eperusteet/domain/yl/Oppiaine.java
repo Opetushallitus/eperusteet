@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,6 +47,11 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Audited
 @Table(name = "yl_oppiaine")
 public class Oppiaine extends AbstractAuditedReferenceableEntity {
+
+    @NotNull
+    @Column(updatable = false)
+    @Getter
+    private UUID tunniste = UUID.randomUUID();
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -191,9 +197,11 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
      * @return Lisätty kohdealue tai samanniminen olemassa oleva.
      */
     public OpetuksenKohdealue addKohdealue(OpetuksenKohdealue kohdealue) {
-        for (OpetuksenKohdealue k : kohdealueet) {
-            if (k.getNimi().equals(kohdealue.getNimi())) {
-                return k;
+        if (kohdealue.getNimi() != null) {
+            for (OpetuksenKohdealue k : kohdealueet) {
+                if (k.getNimi().equals(kohdealue.getNimi())) {
+                    return k;
+                }
             }
         }
         this.kohdealueet.add(kohdealue);

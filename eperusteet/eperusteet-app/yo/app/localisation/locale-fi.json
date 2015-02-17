@@ -47,6 +47,7 @@
     "alkuun": "Alkuun",
     "osiot": "Osiot",
 
+    "ei-valintaa": "Ei valintaa",
     "toisesta-perusteesta": "Toisesta perusteesta",
     "toisesta-suoritustavasta": "Toisesta suoritustavasta",
     "tuo-nykyisesta-perusteesta": "Tuo nykyisestä perusteesta",
@@ -87,6 +88,11 @@
     "peruste-validointi-tutkinnonosa-kuvaus": "Kaikkien tutkinn onosien kuvauksia ei ole lokalisoitu",
     "peruste-validointi-tutkinnonosa-nimi": "Kaikkien tutkinnon osien nimiä ei ole lokalisoitu",
     "peruste-validointi-tutkinnonosa-tavoitteet": "Kaikkien tutkinnon osien tavoitteita ei ole lokalisoitu",
+    "ryhman-osaamisalaa-ei-perusteella": "Ryhmän osaamisalaa ei ole määritelty perusteelle",
+    "ei-osaamisalan-kuvausta": "Ei osaamisalan kuvausta",
+    "osaamisalan-kuvaus": "Osaamisalan kuvaus",
+
+    "muokkaa-kohdealueita": "Muokkaa kohdealueita",
 
     "fi": "Suomi",
     "sv": "Ruotsi",
@@ -738,6 +744,7 @@
     "tutkinnon-osan-koodi-kaytossa": "Valittu tutkinnon osan koodi on jo käytössä",
 
     "hae-osaamisala": "Hae osaamisala",
+    "osaamisalat": "Osaamisalat",
 
     "nayta-kuvaukset": "Näytä kuvaukset",
     "piilota-kuvaukset": "Piilota kuvaukset",
@@ -796,6 +803,7 @@
     "piilota-osaamiskokonaisuuden-kuvaus": "Piilota osaamiskokonaisuuden yleiskuvaus",
     "tekstikappale": "Tekstikappale",
     "kohdealueet": "Kohdealueet",
+    "kohdealue": "Kohdealue",
     "siirtyma-edellisesta": "Siirtymä edellisestä vaiheesta",
     "muokkaus-siirtyma-edellisesta-header": "Siirtymä edellisestä vaiheesta",
     "muokkaus-siirtyma-edellisesta-placeholder": "Kirjoita tähän siirtymän sisältö",

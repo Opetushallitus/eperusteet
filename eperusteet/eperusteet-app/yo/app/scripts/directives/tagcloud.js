@@ -26,7 +26,8 @@ angular.module('eperusteApp')
         model: '=tagCloud',
         openable: '@',
         editMode: '=',
-        addLabel: '@'
+        addLabel: '@',
+        lisaaUusiVaihtoehto: '=?'
       },
       controller: 'TagCloudController'
     };
@@ -43,17 +44,15 @@ angular.module('eperusteApp')
     $scope.orderFn = Utils.nameSort;
 
     $scope.openDialog = function () {
-      var modal = $modal.open({
+      $modal.open({
         templateUrl: 'views/modals/tagcloudmodal.html',
         controller: 'TagCloudModalController',
         resolve: {
-          model: function() { return $scope.model; },
-          addLabel: function () { return $scope.addLabel; }
+          model: _.constant($scope.model),
+          addLabel: _.constant($scope.addLabel),
+          lisaaUusiVaihtoehto: _.constant($scope.lisaaUusiVaihtoehto),
         }
-      });
-
-      modal.result.then(function() {
-      });
+      }).result.then(angular.noop);
     };
 
     $scope.showEmptyPlaceholder = function () {
@@ -62,10 +61,17 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('TagCloudModalController', function ($scope, model, addLabel, Utils) {
+  .controller('TagCloudModalController', function ($scope, model, addLabel, Utils, lisaaUusiVaihtoehto) {
     $scope.model = model;
+    console.log($scope.model);
     $scope.addLabel = addLabel;
     $scope.orderFn = Utils.nameSort;
+    $scope.hasLisaaUusi = !!lisaaUusiVaihtoehto;
+    $scope.lisaaUusiVaihtoehto = function() {
+      lisaaUusiVaihtoehto(function(res) {
+        $scope.model.push(res);
+      });
+    };
 
     $scope.toggle = function (tag, $event) {
       $event.preventDefault();

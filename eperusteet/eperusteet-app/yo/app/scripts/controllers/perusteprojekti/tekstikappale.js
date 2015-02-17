@@ -127,9 +127,14 @@ angular.module('eperusteApp')
 
     $scope.tekstikappale = {};
     $scope.versiot = {};
+    PerusteprojektiTiedotService.then(function(pts) { $scope.peruste = pts.getPeruste(); });
 
     var tekstikappaleDefer = $q.defer();
     $scope.tekstikappalePromise = tekstikappaleDefer.promise;
+
+    $scope.valitseOsaamisala = function(oa) {
+      $scope.editableTekstikappale.osaamisala = oa;
+    };
 
     function successCb (re) {
       $scope.tekstikappale = re;
