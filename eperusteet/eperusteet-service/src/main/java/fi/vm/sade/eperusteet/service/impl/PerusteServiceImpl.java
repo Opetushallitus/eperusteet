@@ -306,6 +306,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Peruste peruste = mapper.map(perusteDto, Peruste.class);
         peruste = checkIfKoulutuksetAlreadyExists(peruste);
         peruste.setSuoritustavat(perusteVanha.getSuoritustavat());
+        peruste.asetaTila(perusteVanha.getTila());
 
         peruste = perusteet.save(peruste);
         return mapper.map(peruste, PerusteDto.class);

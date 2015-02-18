@@ -675,7 +675,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
 
             if (tila == ProjektiTila.JULKAISTU || tila == ProjektiTila.VALMIS) {
-                tarkistaPerusopetuksenPeruste(peruste, updateStatus);
+//                tarkistaPerusopetuksenPeruste(peruste, updateStatus);
                 // Tarkista että kaikki vaadittu kielisisältö on asetettu
                 Map<String, String> lokalisointivirheet = tarkistaPerusteenTekstipalaset(projekti.getPeruste());
                 for (Entry<String, String> entry : lokalisointivirheet.entrySet()) {
