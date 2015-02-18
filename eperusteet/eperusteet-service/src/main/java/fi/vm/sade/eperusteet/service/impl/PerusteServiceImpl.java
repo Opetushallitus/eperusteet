@@ -295,17 +295,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     public PerusteDto update(long id, PerusteDto perusteDto) {
-        Peruste peruste = perusteet.findById(id);
-        if (peruste == null) {
+        Peruste perusteVanha = perusteet.findById(id);
+        if (perusteVanha == null) {
             throw new BusinessRuleViolationException("Päivitettävää perustetta ei ole olemassa");
         }
 
-        perusteet.lock(peruste);
+        perusteet.lock(perusteVanha);
         perusteDto.setId(id);
 
-        mapper.map(perusteDto, peruste);
+        Peruste peruste = mapper.map(perusteDto, Peruste.class);
         peruste = checkIfKoulutuksetAlreadyExists(peruste);
-        peruste.setSuoritustavat(peruste.getSuoritustavat());
+        peruste.setSuoritustavat(perusteVanha.getSuoritustavat());
 
         peruste = perusteet.save(peruste);
         return mapper.map(peruste, PerusteDto.class);
