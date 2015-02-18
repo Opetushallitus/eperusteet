@@ -84,7 +84,7 @@ angular.module('eperusteApp')
       tyyppi: 'koulutustyyppi_15'
     }, function(res) {
       if (res.sivuja > 1) {
-        console.warn("sivutusta ei ole toteutettu, tuloksia yli " + res.sivukoko);
+        console.warn('sivutusta ei ole toteutettu, tuloksia yli ' + res.sivukoko);
       }
       $scope.lista = _(res.data).sortBy('voimassaoloLoppuu')
         .reverse()
@@ -100,7 +100,7 @@ angular.module('eperusteApp')
       tyyppi: 'koulutustyyppi_16'
     }, function(res) {
       if (res.sivuja > 1) {
-        console.warn("sivutusta ei ole toteutettu, tuloksia yli " + res.sivukoko);
+        console.warn('sivutusta ei ole toteutettu, tuloksia yli ' + res.sivukoko);
       }
       $scope.lista = _(res.data).sortBy('voimassaoloLoppuu')
         .reverse()
