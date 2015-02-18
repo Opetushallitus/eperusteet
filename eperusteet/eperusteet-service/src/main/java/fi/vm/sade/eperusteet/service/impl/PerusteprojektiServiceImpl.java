@@ -423,6 +423,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         PerusopetuksenPerusteenSisalto sisalto = peruste.getPerusopetuksenPerusteenSisalto();
+        if (sisalto == null) {
+            return;
+        }
+
         Set<LaajaalainenOsaaminen> osaamiset = sisalto.getLaajaalaisetosaamiset();
         Set<VuosiluokkaKokonaisuus> vlks = sisalto.getVuosiluokkakokonaisuudet();
         Set<Oppiaine> oppiaineet = sisalto.getOppiaineet();
@@ -675,7 +679,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
 
             if (tila == ProjektiTila.JULKAISTU || tila == ProjektiTila.VALMIS) {
-//                tarkistaPerusopetuksenPeruste(peruste, updateStatus);
+                tarkistaPerusopetuksenPeruste(peruste, updateStatus);
                 // Tarkista että kaikki vaadittu kielisisältö on asetettu
                 Map<String, String> lokalisointivirheet = tarkistaPerusteenTekstipalaset(projekti.getPeruste());
                 for (Entry<String, String> entry : lokalisointivirheet.entrySet()) {
