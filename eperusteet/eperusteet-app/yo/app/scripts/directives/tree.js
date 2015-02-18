@@ -226,7 +226,7 @@ angular.module('eperusteApp')
 
     $scope.rakenneosaModaali = Muodostumissaannot.rakenneosaModaali(function(rakenneosa) {
       if (rakenneosa) {
-        $scope.rakenne = rakenneosa;
+        _.merge($scope.rakenne, rakenneosa);
       }
     });
 
@@ -720,7 +720,7 @@ angular.module('eperusteApp')
       }
     }
 
-    this.clone = function (ryhma) {
+    this.clone = function(ryhma) {
       var clone = angular.copy(ryhma);
       traverse(clone);
       return clone;

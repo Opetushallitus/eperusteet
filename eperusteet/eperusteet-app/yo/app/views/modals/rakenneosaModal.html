@@ -13,8 +13,8 @@
             <formfield model="rakenneosa" model-var="pakollinen" label="pakollinen" type="checkbox"></formfield>
         </div>
         <div>
-            <h3 kaanna="'tutkintokoodi'"></h3>
             <div ng-if="rakenneosa.erikoisuus === 'vieras'">
+                <h3 kaanna="'tutkintokoodi'"></h3>
                 <div class="input-group">
                     <span ng-if="rakenneosa.vieras" class="form-control" kaanna="rakenneosa.vieras.nimi"></span>
                     <span class="input-group-btn">
