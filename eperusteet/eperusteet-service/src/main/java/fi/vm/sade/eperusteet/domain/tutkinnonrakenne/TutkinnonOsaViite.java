@@ -72,10 +72,6 @@ public class TutkinnonOsaViite implements ReferenceableEntity, Serializable {
 
     @Getter
     @Setter
-    private boolean poistettu;
-
-    @Getter
-    @Setter
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @NotNull
     private TutkinnonOsa tutkinnonOsa;

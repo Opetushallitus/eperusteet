@@ -469,7 +469,6 @@ angular.module('eperusteApp')
     function paivitaUniikit() {
       var uudetUniikit = [];
       _($scope.rakenne.tutkinnonOsaViitteet)
-        .reject(function(osa) { return osa.poistettu; })
         .each(function (osa) {
           var match = $scope.tutkinnonOsat.rajaus &&
             _.contains(Kaanna.kaanna(osa.nimi).toLowerCase(),

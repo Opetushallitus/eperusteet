@@ -38,7 +38,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -130,8 +129,10 @@ public interface PerusteService {
     RakenneModuuliDto getRakenneVersio(@P("perusteId") Long id, Suoritustapakoodi suoritustapakoodi, Integer versioId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    @PostFilter("filterObject.poistettu != true")
     List<TutkinnonOsaViiteDto> getTutkinnonOsat(@P("perusteId") Long perusteid, Suoritustapakoodi suoritustapakoodi);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<TutkinnonOsaViiteDto> getTutkinnonOsat(@P("perusteId") Long perusteid, Suoritustapakoodi suoritustapakoodi, Integer revisio);
 
     @PreAuthorize("isAuthenticated()") //XXX ei julkinen rajapinta
     Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi);

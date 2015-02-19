@@ -77,9 +77,6 @@ angular.module('eperusteApp')
       opened: false,
       orderFn: function (key) {
         return Kaanna.kaanna($scope.rakenne.tutkinnonOsat[key].nimi).toLowerCase();
-      },
-      filterFn: function (key) {
-        return !$scope.rakenne.tutkinnonOsat[key].poistettu;
       }
     };
     $scope.keys = _.keys;

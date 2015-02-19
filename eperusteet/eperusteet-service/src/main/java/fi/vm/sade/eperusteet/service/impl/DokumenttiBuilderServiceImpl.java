@@ -40,8 +40,8 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.repository.TermistoRepository;
-import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
+import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.util.Pair;
 import java.io.File;
 import java.io.IOException;
@@ -101,10 +101,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     @Override
     public String generateXML(Peruste peruste, Kieli kieli, Suoritustapakoodi suoritustapakoodi) throws
-            TransformerConfigurationException,
-            IOException,
-            TransformerException,
-            ParserConfigurationException {
+        TransformerConfigurationException,
+        IOException,
+        TransformerException,
+        ParserConfigurationException {
 
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -122,7 +122,6 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
         //rootElement.appendChild(doc.createElement("info"));
         // tähän vois lisätä esim jonkun info-elementin alkusivuja varten?
-
         for (Suoritustapa st : peruste.getSuoritustavat()) {
             if (st.getSuoritustapakoodi().equals(suoritustapakoodi)) {
                 PerusteenOsaViite sisalto = peruste.getSuoritustapa(st.getSuoritustapakoodi()).getSisalto();
@@ -167,8 +166,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     }
 
     /**
-     * Copies content from all the children of Jsoup Node on under W3C DOM Node
-     * on given W3C document.
+     * Copies content from all the children of Jsoup Node on under W3C DOM Node on given W3C document.
      *
      */
     private void jsoupIntoDOMNode(Document rootDoc, Node parentNode, org.jsoup.nodes.Node jsoupNode) {
@@ -178,11 +176,9 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     }
 
     /**
-     * The helper that copies content from the specified Jsoup Node into a W3C
-     * Node.
+     * The helper that copies content from the specified Jsoup Node into a W3C Node.
      *
-     * @param node The Jsoup node containing the content to copy to the
-     * specified W3C Node.
+     * @param node The Jsoup node containing the content to copy to the specified W3C Node.
      * @param out The W3C Node that receives the DOM content.
      */
     private void createDOM(org.jsoup.nodes.Node node, Node out, Document doc, Map<String, String> ns) {
@@ -267,7 +263,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 
         transformer.transform(new DOMSource(doc),
-                new StreamResult(new OutputStreamWriter(out, "UTF-8")));
+                              new StreamResult(new OutputStreamWriter(out, "UTF-8")));
     }
 
     private void addTutkinnonMuodostuminen(Document doc, Element parentElement, Peruste peruste, int depth, Suoritustapa tapa, Kieli kieli) {
@@ -275,23 +271,23 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         // ew, dodgy trycatching
         try {
             parentElement.appendChild(
-                    getTutkinnonMuodostuminenGeneric(
-                            doc,
-                            peruste,
-                            // TODO: jostain muualta???
-                            messages.translate("docgen.tutkinnon_muodostuminen.title", kieli),
-                            depth,
-                            tapa.getSuoritustapakoodi(),
-                            kieli));
+                getTutkinnonMuodostuminenGeneric(
+                    doc,
+                    peruste,
+                    // TODO: jostain muualta???
+                    messages.translate("docgen.tutkinnon_muodostuminen.title", kieli),
+                    depth,
+                    tapa.getSuoritustapakoodi(),
+                    kieli));
         } catch (Exception ex) {
             LOG.warn("adding getTutkinnonMuodostuminenGeneric failed miserably:", ex);
         }
     }
 
     private Element getTutkinnonMuodostuminenGeneric(
-            Document doc, Peruste peruste, String title, int depth,
-            Suoritustapakoodi suoritustapakoodi,
-            Kieli kieli) {
+        Document doc, Peruste peruste, String title, int depth,
+        Suoritustapakoodi suoritustapakoodi,
+        Kieli kieli) {
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         RakenneModuuli rakenne = suoritustapa.getRakenne();
 
@@ -318,9 +314,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         return returnElement;
     }
 
-
     private void addRakenneOsaRec(Element parent,
-            AbstractRakenneOsa osa, Document doc, Kieli kieli, int depth) {
+        AbstractRakenneOsa osa, Document doc, Kieli kieli, int depth) {
 
         if (osa instanceof RakenneModuuli) {
             RakenneModuuli rakenneModuuli = (RakenneModuuli) osa;
@@ -639,7 +634,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     private String getOtsikko(final TutkinnonOsaViite viite, final Kieli kieli) {
         TutkinnonOsa osa = viite.getTutkinnonOsa();
         return getTextString(osa.getNimi(), kieli) +
-                getLaajuusSuffiksi(viite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, kieli);
+            getLaajuusSuffiksi(viite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, kieli);
     }
 
     private void addTutkinnonosat(Document doc, Peruste peruste, final Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
@@ -648,46 +643,44 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         // tree setistä saadaan tutkinnonosaviitteet ulos halutussa,
         // comparatorin avulla järkättävässä järjestyksessä
         Set<TutkinnonOsaViite> osat = new TreeSet<>(
-                new java.util.Comparator<TutkinnonOsaViite>() {
-                    @Override
-                    public int compare(TutkinnonOsaViite o1, TutkinnonOsaViite o2) {
-                        String nimi1 = getTextString(o1.getTutkinnonOsa().getNimi(),kieli);
-                        String nimi2 = getTextString(o2.getTutkinnonOsa().getNimi(),kieli);
+            new java.util.Comparator<TutkinnonOsaViite>() {
+                @Override
+                public int compare(TutkinnonOsaViite o1, TutkinnonOsaViite o2) {
+                    String nimi1 = getTextString(o1.getTutkinnonOsa().getNimi(), kieli);
+                    String nimi2 = getTextString(o2.getTutkinnonOsa().getNimi(), kieli);
 
-                        // ensisijaisesti järjestysnumeron mukaan
-                        int o1i = o1.getJarjestys() != null ? o1.getJarjestys() : Integer.MAX_VALUE;
-                        int o2i = o2.getJarjestys() != null ? o2.getJarjestys() : Integer.MAX_VALUE;
-                        if (o1i < o2i) {
-                            return -1;
-                        } else if (o1i > o2i) {
-                            return 1;
-                        }
-
-                        // toissijaisesti aakkosjärjestyksessä
-                        if (!nimi1.equals(nimi2)) {
-                            return nimi1.compareTo(nimi2);
-                        }
-
-                        // viimekädessä kanta-avaimen mukaan
-                        Long id1 = o1.getTutkinnonOsa().getId();
-                        Long id2 = o2.getTutkinnonOsa().getId();
-                        if (id1 < id2) {
-                            return -1;
-                        } else if (id1 > id2) {
-                            return 1;
-                        }
-
-                        // On ne sitten samat
-                        return 0;
+                    // ensisijaisesti järjestysnumeron mukaan
+                    int o1i = o1.getJarjestys() != null ? o1.getJarjestys() : Integer.MAX_VALUE;
+                    int o2i = o2.getJarjestys() != null ? o2.getJarjestys() : Integer.MAX_VALUE;
+                    if (o1i < o2i) {
+                        return -1;
+                    } else if (o1i > o2i) {
+                        return 1;
                     }
-                });
+
+                    // toissijaisesti aakkosjärjestyksessä
+                    if (!nimi1.equals(nimi2)) {
+                        return nimi1.compareTo(nimi2);
+                    }
+
+                    // viimekädessä kanta-avaimen mukaan
+                    Long id1 = o1.getTutkinnonOsa().getId();
+                    Long id2 = o2.getTutkinnonOsa().getId();
+                    if (id1 < id2) {
+                        return -1;
+                    } else if (id1 > id2) {
+                        return 1;
+                    }
+
+                    // On ne sitten samat
+                    return 0;
+                }
+            });
 
         for (Suoritustapa suoritustapa : suoritustavat) {
             if (suoritustapa.getSuoritustapakoodi().equals(suoritustapakoodi)) {
                 for (TutkinnonOsaViite viite : suoritustapa.getTutkinnonOsat()) {
-                    if (!viite.isPoistettu()) {
-                        osat.add(viite);
-                    }
+                    osat.add(viite);
                 }
             }
         }
@@ -711,7 +704,6 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 element.appendChild(para);
             }
 
-
             TutkinnonOsaTyyppi tyyppi = osa.getTyyppi();
             if (tyyppi == TutkinnonOsaTyyppi.NORMAALI) {
                 addTavoitteet(doc, element, osa, kieli);
@@ -734,10 +726,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         }
 
         addTekstiSectionGeneric(
-                doc,
-                parent,
-                TavoitteetText,
-                messages.translate("docgen.tavoitteet.title", kieli));
+            doc,
+            parent,
+            TavoitteetText,
+            messages.translate("docgen.tavoitteet.title", kieli));
     }
 
     private void addAmmattitaitovaatimukset(Document doc, Element parent, TutkinnonOsa tutkinnonOsa, Kieli kieli) {
@@ -748,10 +740,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         }
 
         addTekstiSectionGeneric(
-                doc,
-                parent,
-                ammattitaitovaatimuksetText,
-                messages.translate("docgen.ammattitaitovaatimukset.title", kieli));
+            doc,
+            parent,
+            ammattitaitovaatimuksetText,
+            messages.translate("docgen.ammattitaitovaatimukset.title", kieli));
     }
 
     private void addAmmattitaidonOsoittamistavat(Document doc, Element parent, TutkinnonOsa tutkinnonOsa, Kieli kieli) {
@@ -762,10 +754,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         }
 
         addTekstiSectionGeneric(
-                doc,
-                parent,
-                ammattitaidonOsoittamistavatText,
-                messages.translate("docgen.ammattitaidon_osoittamistavat.title", kieli));
+            doc,
+            parent,
+            ammattitaidonOsoittamistavatText,
+            messages.translate("docgen.ammattitaidon_osoittamistavat.title", kieli));
     }
 
     private void addTekstiSectionGeneric(Document doc, Element parent, String teksti, String title) {
@@ -789,7 +781,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         Element arviointiSection = doc.createElement("section");
         Element arviointiSectionTitle = doc.createElement("title");
         arviointiSectionTitle.appendChild(doc.createTextNode(
-                messages.translate("docgen.arviointi.title", kieli)));
+            messages.translate("docgen.arviointi.title", kieli)));
         arviointiSection.appendChild(arviointiSectionTitle);
         parent.appendChild(arviointiSection);
 
@@ -814,9 +806,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 continue;
             }
 
-            String otsikkoTeksti = tyyppi == TutkinnonOsaTyyppi.NORMAALI ?
-                    getTextString(ka.getOtsikko(), kieli) :
-                    messages.translate("docgen.tutke2.arvioinnin_kohteet.title", kieli);
+            String otsikkoTeksti = tyyppi == TutkinnonOsaTyyppi.NORMAALI ? getTextString(ka.getOtsikko(), kieli) : messages
+                .translate("docgen.tutke2.arvioinnin_kohteet.title", kieli);
 
             // Runnotaan jokainen kohde samaan taulukkoon, kukin kohde omalle
             // tgroup-ryhmänään ja niiden otsikko spännätyllä rivillä.
@@ -944,9 +935,9 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     }
 
     private String getTextString(TekstiPalanen teksti, Kieli kieli) {
-        if (teksti == null
-                || teksti.getTeksti() == null
-                || teksti.getTeksti().get(kieli) == null) {
+        if (teksti == null ||
+             teksti.getTeksti() == null ||
+             teksti.getTeksti().get(kieli) == null) {
             return "";
         }
         return teksti.getTeksti().get(kieli);
@@ -974,20 +965,15 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             // Parita pakollinen ja valinnainen osaamistavoite
             Map<Long, Pair<Osaamistavoite, Osaamistavoite>> tavoiteParit = new LinkedHashMap<>();
             for (Osaamistavoite tavoite : osaamistavoitteet) {
-                Long key = tavoite.isPakollinen() ?
-                        tavoite.getId() :
-                        (tavoite.getEsitieto() != null ? tavoite.getEsitieto().getId() : tavoite.getId());
+                Long key = tavoite.isPakollinen() ? tavoite.getId() : (tavoite.getEsitieto() != null ? tavoite.getEsitieto().getId() : tavoite.getId());
 
                 if (tavoiteParit.containsKey(key)) {
                     Pair<Osaamistavoite, Osaamistavoite> pari = tavoiteParit.get(key);
-                    pari = tavoite.isPakollinen() ?
-                            Pair.of(tavoite, pari.getSecond()) :
-                            Pair.of(pari.getFirst(), tavoite);
+                    pari = tavoite.isPakollinen() ? Pair.of(tavoite, pari.getSecond()) : Pair.of(pari.getFirst(), tavoite);
                     tavoiteParit.put(key, pari);
                 } else {
-                    Pair<Osaamistavoite, Osaamistavoite> pari = tavoite.isPakollinen() ?
-                            Pair.of(tavoite, (Osaamistavoite)null) :
-                            Pair.of((Osaamistavoite)null, tavoite);
+                    Pair<Osaamistavoite, Osaamistavoite> pari = tavoite.isPakollinen() ? Pair.of(tavoite, (Osaamistavoite) null) : Pair
+                        .of((Osaamistavoite) null, tavoite);
                     tavoiteParit.put(key, pari);
                 }
             }
@@ -1012,19 +998,18 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 tavoiteSectionElement.setAttribute("id", refid);
                 sectionElement.appendChild(tavoiteSectionElement);
 
-                Osaamistavoite[] tavoiteLista = new Osaamistavoite[] { pakollinen, valinnainen };
+                Osaamistavoite[] tavoiteLista = new Osaamistavoite[]{pakollinen, valinnainen};
                 for (Osaamistavoite tavoite : tavoiteLista) {
                     if (tavoite == null) {
                         continue;
                     }
 
-                    String otsikkoAvain = tavoite.isPakollinen() ?
-                            "docgen.tutke2.pakolliset_osaamistavoitteet.title" :
-                            "docgen.tutke2.valinnaiset_osaamistavoitteet.title";
+                    String otsikkoAvain = tavoite.isPakollinen() ? "docgen.tutke2.pakolliset_osaamistavoitteet.title"
+                        : "docgen.tutke2.valinnaiset_osaamistavoitteet.title";
                     Element aliTavoiteSectionElement = doc.createElement("section");
                     Element aliTavoiteTitleElement = doc.createElement("title");
                     String otsikko = messages.translate(otsikkoAvain, kieli) +
-                            getLaajuusSuffiksi(tavoite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, kieli);
+                        getLaajuusSuffiksi(tavoite.getLaajuus(), LaajuusYksikko.OSAAMISPISTE, kieli);
                     aliTavoiteTitleElement.appendChild(doc.createTextNode(otsikko));
                     aliTavoiteSectionElement.appendChild(aliTavoiteTitleElement);
                     tavoiteSectionElement.appendChild(aliTavoiteSectionElement);
@@ -1038,10 +1023,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                     TekstiPalanen tunnustaminen = tavoite.getTunnustaminen();
                     if (tunnustaminen != null) {
                         addTekstiSectionGeneric(
-                                doc,
-                                aliTavoiteSectionElement,
-                                getTextString(tunnustaminen, kieli),
-                                messages.translate("docgen.tutke2.tunnustaminen.title", kieli));
+                            doc,
+                            aliTavoiteSectionElement,
+                            getTextString(tunnustaminen, kieli),
+                            messages.translate("docgen.tutke2.tunnustaminen.title", kieli));
                     }
                 }
             }
@@ -1066,7 +1051,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         }
         doc.getDocumentElement().appendChild(appendix);
 
-        for (Termi termi: termit) {
+        for (Termi termi : termit) {
             String termiTermi = getTextString(termi.getTermi(), kieli);
             String termiSelitys = getTextString(termi.getSelitys(), kieli);
 
@@ -1092,7 +1077,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         Integer min = koko.getMinimi();
         Integer max = koko.getMaksimi();
         StringBuilder kokoBuilder = new StringBuilder("");
-        if (min != null)  {
+        if (min != null) {
             kokoBuilder.append(min.toString());
         }
         if (min != null && max != null && !min.equals(max)) {
@@ -1117,7 +1102,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         Integer min = laajuus.getMinimi();
         Integer max = laajuus.getMaksimi();
         StringBuilder laajuusBuilder = new StringBuilder("");
-        if (min != null)  {
+        if (min != null) {
             laajuusBuilder.append(min.toString());
         }
         if (min != null && max != null && !min.equals(max)) {

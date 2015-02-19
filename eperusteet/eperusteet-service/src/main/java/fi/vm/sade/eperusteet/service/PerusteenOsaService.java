@@ -82,7 +82,7 @@ public interface PerusteenOsaService {
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS') or hasPermission(#id, 'perusteenosa', 'KORJAUS')")
     LukkoDto lock(@P("id") final Long id);
 
-    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'MUOKKAUS') or hasPermission(#id, 'perusteenosa', 'KORJAUS')")
+    @PreAuthorize("isAuthenticated()")
     void unlock(@P("id") final Long id);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")

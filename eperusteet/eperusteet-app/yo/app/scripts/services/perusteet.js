@@ -37,6 +37,12 @@ angular.module('eperusteApp')
       update: {method: 'PUT'}
     });
   })
+  .factory('PerusteTutkinnonosatVersio', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/suoritustavat/:suoritustapa/tutkinnonosat/versiot/:versioId', {
+      perusteId: '@id',
+      suoritustapa: '@suoritustapa'
+    });
+  })
   .factory('PerusteTutkintonimikekoodit', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/tutkintonimikekoodit/:nimikeId', {
       perusteId: '@id',
@@ -209,13 +215,23 @@ angular.module('eperusteApp')
       asetaUrl: asetaUrl
     };
   })
-  .service('PerusteenRakenne', function(PerusteProjektiService, PerusteprojektiResource, PerusteRakenteet,
+  .service('PerusteenRakenne', function(PerusteProjektiService, PerusteTutkinnonosatVersio, PerusteprojektiResource, PerusteRakenteet,
     PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {
 
     function haeTutkinnonosatByPeruste(perusteId, suoritustapa, success) {
       PerusteTutkinnonosat.query({
         perusteId: perusteId,
         suoritustapa: suoritustapa
+      },
+      success,
+        Notifikaatiot.serverCb);
+    }
+
+    function haeTutkinnonosatVersioByPeruste(perusteId, suoritustapa, revisio, success) {
+      PerusteTutkinnonosatVersio.query({
+        perusteId: perusteId,
+        suoritustapa: suoritustapa,
+        versioId: revisio
       },
       success,
         Notifikaatiot.serverCb);
@@ -365,6 +381,7 @@ angular.module('eperusteApp')
       pilkoTutkinnonOsat: pilkoTutkinnonOsat,
       haeTutkinnonosat: haeTutkinnonosat,
       haeTutkinnonosatByPeruste: haeTutkinnonosatByPeruste,
+      haeTutkinnonosatVersioByPeruste: haeTutkinnonosatVersioByPeruste,
       kaikilleRakenteille: kaikilleRakenteille,
       poistaTutkinnonOsaViite: poistaTutkinnonOsaViite,
       puustaLoytyy: puustaLoytyy,
