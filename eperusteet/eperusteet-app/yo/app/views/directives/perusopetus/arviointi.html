@@ -2,7 +2,11 @@
 
 <table class="table table-bordered perusopetuksen-arviointi ">
   <thead>
-    <tr><th kaanna="arvioinnin-kohde"></th><th kaanna="arvion-hyva-osaaminen"></th><th ng-if="editMode"></th></tr>
+    <tr>
+      <th kaanna="atavoite.arvioinninKuvaus || 'arvioinnin-kohde'"></th>
+      <th kaanna="atavoite.arvioinninOsaamisenKuvaus || 'arvion-hyva-osaaminen'"></th>
+      <th ng-if="editMode"></th>
+    </tr>
   </thead>
   <tbody>
     <tr ng-repeat="arviointi in model">

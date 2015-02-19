@@ -54,14 +54,19 @@
                     <div tag-cloud="tavoite.$sisaltoalueet" openable="true" edit-mode="tavoite.$editing" add-label="lisaa-sisaltoalue"></div>
                   </div>
 
-                  <div ng-if="tavoite.$editing && !hasArviointi(tavoite)">
-                    <h4 kaanna="arviointi"></h4>
-                    <button class="btn btn-default" ng-click="addArviointi(tavoite)" icon-role="add"
+                  <div ng-if="tavoite.$editing || hasArviointi(tavoite)">
+                    <h4 ng-if="!tavoite.$editing" kaanna="tavoite.arvioinninOtsikko || 'arviointi'"></h4>
+
+                    <div ng-if="tavoite.$editing">
+                      <h4 kaanna="'arviointi'"></h4>
+                      <input placeholder="{{ 'arvioinnin-otsikko' | kaanna }}" type="text" class="arvioinnin-muokkaus-kentta form-control" slocalized ng-model="tavoite.arvioinninOtsikko"></input>
+                      <input placeholder="{{ 'arvioinnin-kohde' | kaanna }}" type="text" class="arvioinnin-muokkaus-kentta form-control" slocalized ng-model="tavoite.arvioinninKuvaus"></input>
+                      <input placeholder="{{ 'arvion-osaamisen-kuvaus' | kaanna }}" type="text" class="arvioinnin-muokkaus-kentta form-control" slocalized ng-model="tavoite.arvioinninOsaamisenKuvaus"></input>
+                    </div>
+
+                    <button ng-if="!hasArviointi(tavoite)" class="btn btn-default" ng-click="addArviointi(tavoite)" icon-role="add"
                             kaanna="lisaa-arviointi"></button>
-                  </div>
-                  <div ng-if="hasArviointi(tavoite)">
-                    <h4 kaanna="arviointi"></h4>
-                    <div perusopetuksen-arviointi="tavoite.arvioinninkohteet" edit-mode="tavoite.$editing"></div>
+                    <div ng-if="hasArviointi(tavoite)" atavoite="tavoite" perusopetuksen-arviointi="tavoite.arvioinninkohteet" edit-mode="tavoite.$editing"></div>
                   </div>
                 </div>
               </div>
