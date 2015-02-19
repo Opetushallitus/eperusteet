@@ -44,11 +44,15 @@
 
                 <div class="tavoite-collapser action-link" ng-show="!tavoite.$accordionOpen" ng-click="tavoite.$accordionOpen = true">…</div>
                 <div class="collapsible" collapse="!tavoite.$accordionOpen">
-                  <h4 kaanna="laaja-alainen-osaaminen"></h4>
-                  <div tag-cloud="tavoite.$osaaminen" openable="true" edit-mode="tavoite.$editing" add-label="lisaa-laaja-alainen-osaaminen"></div>
+                  <div ng-if="tavoite.$editing || tavoite.laajattavoitteet">
+                    <h4 kaanna="laaja-alainen-osaaminen"></h4>
+                    <div tag-cloud="tavoite.$osaaminen" openable="true" edit-mode="tavoite.$editing" add-label="lisaa-laaja-alainen-osaaminen"></div>
+                  </div>
 
-                  <h4 kaanna="sisaltoalueet"></h4>
-                  <div tag-cloud="tavoite.$sisaltoalueet" openable="true" edit-mode="tavoite.$editing" add-label="lisaa-sisaltoalue"></div>
+                  <div ng-if="tavoite.$editing || tavoite.sisaltoalueet">
+                    <h4 kaanna="sisaltoalueet"></h4>
+                    <div tag-cloud="tavoite.$sisaltoalueet" openable="true" edit-mode="tavoite.$editing" add-label="lisaa-sisaltoalue"></div>
+                  </div>
 
                   <div ng-if="tavoite.$editing && !hasArviointi(tavoite)">
                     <h4 kaanna="arviointi"></h4>
