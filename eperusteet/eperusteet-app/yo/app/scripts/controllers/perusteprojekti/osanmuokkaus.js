@@ -128,6 +128,14 @@ angular.module('eperusteApp')
       return oppiaine;
     }
 
+    function getOppiaineenVuosiluokkakokonaisuus() {
+      if (oppiaine && vuosiluokka) {
+        return _.find(oppiaine.vuosiluokkakokonaisuudet, function(ovlk) {
+          return vuosiluokka.id === _.parseInt(ovlk._vuosiluokkaKokonaisuus);
+        });
+      }
+    }
+
     function getVuosiluokkakokonaisuus() {
       return vuosiluokka;
     }
@@ -141,6 +149,7 @@ angular.module('eperusteApp')
       getOppiaine: getOppiaine,
       getOsaamiset: getOsaamiset,
       getVuosiluokkakokonaisuus: getVuosiluokkakokonaisuus,
+      getOppiaineenVuosiluokkakokonaisuus: getOppiaineenVuosiluokkakokonaisuus,
       isVuosiluokkakokonaisuudenOsa: isVuosiluokkakokonaisuudenOsa
     };
   })
@@ -148,6 +157,7 @@ angular.module('eperusteApp')
   .controller('OsanMuokkausController', function($scope, $stateParams, $compile, OsanMuokkausHelper,
       Editointikontrollit, $rootScope) {
     $scope.objekti = OsanMuokkausHelper.getModel();
+
     if (!$scope.objekti) {
       return;
     }
@@ -172,7 +182,7 @@ angular.module('eperusteApp')
       sisaltoalueet: {
         directive: 'osanmuokkaus-sisaltoalueet',
         attrs: {
-          model: 'objekti',
+          model: 'objekti'
         },
         callbacks: {
           save: function () {
