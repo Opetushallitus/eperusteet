@@ -128,7 +128,7 @@ angular.module('eperusteApp')
     }
     setHakuparametrit();
 
-    $scope.koulutustyypit = YleinenData.koulutustyypit;
+    $scope.koulutustyypit = YleinenData.ammatillisetkoulutustyypit;
 
     $scope.tyhjenna = function() {
       $scope.nykyinenSivu = 1;

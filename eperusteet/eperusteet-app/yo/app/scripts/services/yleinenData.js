@@ -99,6 +99,7 @@ angular.module('eperusteApp')
     };
 
     this.koulutustyypit = _.keys(this.koulutustyyppiInfo);
+    this.ammatillisetkoulutustyypit = ['koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12'];
 
     this.kielet = {
       'suomi': 'fi',
