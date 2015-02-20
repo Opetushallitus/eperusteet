@@ -458,7 +458,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             LaajuusYksikko laajuusYksikko = rakenneOsa.getTutkinnonOsaViite().getSuoritustapa().getLaajuusYksikko();
             String laajuusStr = "";
             String yks = "";
-            if (laajuus != null) {
+            if (laajuus != null && laajuus.compareTo(BigDecimal.ZERO) > 0) {
                 laajuusStr = laajuus.stripTrailingZeros().toPlainString();
                 if (laajuusYksikko == LaajuusYksikko.OSAAMISPISTE) {
                     yks = messages.translate("docgen.laajuus.osp", kieli);
@@ -475,11 +475,9 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             xref.setAttribute("xrefstyle", "select: labelnumber");
             Element linkElement = doc.createElement("link");
             linkElement.setAttribute("linkend", refid);
-
             StringBuilder nimiBldr = new StringBuilder();
             nimiBldr.append(" ").append(nimi);
-            // TODO: jotain fiksumpaa kuin verrata "0.00":aan?
-            if (!laajuusStr.isEmpty() && !laajuusStr.equals("0.00")) {
+            if (!laajuusStr.isEmpty()) {
                 nimiBldr.append(", ").append(laajuusStr).append(" ").append(yks);
             }
 
@@ -502,7 +500,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 // teksti.
                 Element para = doc.createElement("para");
                 Element em = newBoldElement(doc);
-                em.appendChild(xref);
+                //em.appendChild(xref);
                 em.appendChild(linkElement);
                 para.appendChild(em);
                 parent.appendChild(para);
@@ -521,7 +519,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 tgroup.appendChild(tbody);
                 tbody.appendChild(row);
                 row.appendChild(entry);
-                entry.appendChild(xref);
+//                entry.appendChild(xref);
                 entry.appendChild(linkElement);
                 entry.appendChild(para);
             } else if (depth == 3) {
@@ -533,7 +531,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
                 parent.appendChild(row);
                 row.appendChild(entry);
-                entry.appendChild(xref);
+//                entry.appendChild(xref);
                 entry.appendChild(linkElement);
                 entry.appendChild(para);
             } else if (depth >= 4) {
@@ -542,12 +540,12 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 parent.appendChild(listitem);
 
                 if (StringUtils.isEmpty(kuvaus)) {
-                    listitem.appendChild(xref);
+//                    listitem.appendChild(xref);
                     listitem.appendChild(linkElement);
                 } else {
                     Element slist = doc.createElement("simplelist");
                     Element mem1 = doc.createElement("member");
-                    mem1.appendChild(xref);
+//                    mem1.appendChild(xref);
                     mem1.appendChild(linkElement);
                     Element mem2 = doc.createElement("member");
                     mem2.appendChild(doc.createTextNode(kuvaus));
@@ -685,10 +683,17 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             }
         }
 
+        Element tosat = doc.createElement("chapter");
+        {
+            Element titleElement = doc.createElement("title");
+            titleElement.appendChild(doc.createTextNode(messages.translate("docgen.tutkinnon_osat.title", kieli)));
+            tosat.appendChild(titleElement);
+        }
+
         for (TutkinnonOsaViite viite : osat) {
             TutkinnonOsa osa = viite.getTutkinnonOsa();
 
-            Element element = doc.createElement("chapter");
+            Element element = doc.createElement("section");
             String refid = "tutkinnonosa" + osa.getId();
             element.setAttribute("id", refid);
 
@@ -714,8 +719,9 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 addTutke2Osat(doc, element, osa, kieli);
             }
 
-            doc.getDocumentElement().appendChild(element);
+            tosat.appendChild(element);
         }
+        doc.getDocumentElement().appendChild(tosat);
     }
 
     private void addTavoitteet(Document doc, Element parent, TutkinnonOsa tutkinnonOsa, Kieli kieli) {
@@ -871,7 +877,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 Element bodyElement = doc.createElement("tbody");
 
                 Set<OsaamistasonKriteeri> osaamistasonKriteerit = kohde.getOsaamistasonKriteerit();
-                List<OsaamistasonKriteeri> kriteerilista = new ArrayList(osaamistasonKriteerit);
+                List<OsaamistasonKriteeri> kriteerilista = new ArrayList<>(osaamistasonKriteerit);
                 java.util.Collections.sort(kriteerilista, new java.util.Comparator<OsaamistasonKriteeri>() {
                     @Override
                     public int compare(OsaamistasonKriteeri o1, OsaamistasonKriteeri o2) {
@@ -936,8 +942,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     private String getTextString(TekstiPalanen teksti, Kieli kieli) {
         if (teksti == null ||
-             teksti.getTeksti() == null ||
-             teksti.getTeksti().get(kieli) == null) {
+            teksti.getTeksti() == null ||
+            teksti.getTeksti().get(kieli) == null) {
             return "";
         }
         return teksti.getTeksti().get(kieli);
