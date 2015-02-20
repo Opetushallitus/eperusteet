@@ -25,7 +25,7 @@ angular.module('eperusteApp')
         template: '<div ui-view></div>'
       })
       .state('root.esitys.peruste', {
-        url: '/:perusteId/:suoritustapa',
+        url: '/:perusteId/:suoritustapa?prestate&projekti',
         templateUrl: 'views/esitys.html',
         controller: 'EsitysCtrl',
         resolve: {
@@ -161,6 +161,8 @@ angular.module('eperusteApp')
   .controller('EsitysCtrl', function($scope, $stateParams, sisalto, peruste,
       YleinenData, $state, Algoritmit, tutkinnonOsat, Kaanna, arviointiasteikot,
       Profiili, PdfCreation, koulutusalaService, opintoalaService, Kieli, TermistoService) {
+
+    $scope.$prestate = $stateParams.prestate;
 
     TermistoService.setPeruste(peruste);
     $scope.Koulutusalat = koulutusalaService;
