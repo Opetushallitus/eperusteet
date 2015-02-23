@@ -121,7 +121,7 @@ angular.module('eperusteApp')
         tavoite.$sisaltoalueet = _.map($scope.model.sisaltoalueet, generateArraySetter(tavoite.sisaltoalueet));
         tavoite.$osaaminen = _.map($scope.osaamiset, generateArraySetter(tavoite.laajattavoitteet, function(osaaminen) {
           var vuosiluokkakuvaus = _.find($scope.vuosiluokka.laajaalaisetOsaamiset, function(item) {
-            return parseInt(item.laajaalainenOsaaminen, 10) === osaaminen.id;
+            return '' + item._laajaalainenOsaaminen === '' + osaaminen.id;
           });
           osaaminen.teksti = vuosiluokkakuvaus ? vuosiluokkakuvaus.kuvaus : 'ei-kuvausta';
           osaaminen.extra = '<div class="clearfix"><a class="pull-right" href="' +
