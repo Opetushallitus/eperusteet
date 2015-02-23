@@ -241,8 +241,9 @@ angular.module('eperusteApp')
     };
 
     $scope.valitseOppiaineenVuosiluokka = function(vuosiluokka) {
+      console.log('vuosiluokka', vuosiluokka);
       $timeout(function() {
-        $scope.valittuOppiaine.vlks = undefined;
+        // $scope.valittuOppiaine.vlks = undefined;
         $scope.filtterit.valittuKokonaisuus = vuosiluokka;
         $scope.valittuOppiaine.vlks = $scope.valittuOppiaine.vuosiluokkakokonaisuudet[vuosiluokka];
         $scope.valittuOppiaine.sisallot = $scope.sisallot[$scope.valittuOppiaine.vlks._vuosiluokkaKokonaisuus];
@@ -266,9 +267,16 @@ angular.module('eperusteApp')
         valittuOppiaine.oppiaine = res;
         valittuOppiaine.vuosiluokkakokonaisuudet = _.zipBy(res.vuosiluokkakokonaisuudet, '_vuosiluokkaKokonaisuus');
         $scope.valittuOppiaine = valittuOppiaine;
-        $scope.valitseOppiaineenVuosiluokka($scope.valittuOppiaine.vuosiluokkakokonaisuudet[$scope.filtterit.valittuKokonaisuus] ?
-                                    $scope.filtterit.valittuKokonaisuus :
-                                    _.first(_.keys($scope.valittuOppiaine.vuosiluokkakokonaisuudet)), true);
+
+        var valittavaVuosiluokka = $scope.valittuOppiaine.vuosiluokkakokonaisuudet[$scope.filtterit.valittuKokonaisuus] ?
+          $scope.filtterit.valittuKokonaisuus :
+          _.first(_.keys($scope.valittuOppiaine.vuosiluokkakokonaisuudet));
+
+        if ($scope.currentSection === 'vlk') {
+          valittavaVuosiluokka = $scope.valittuVuosiluokkakokonaisuus.id;
+        }
+
+        $scope.valitseOppiaineenVuosiluokka(valittavaVuosiluokka, true);
         $scope.activeSection = 'sisalto';
       }, Notifikaatiot.serverCb);
     }

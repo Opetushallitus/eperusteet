@@ -23,7 +23,8 @@ angular.module('eperusteApp')
       restrict: 'A',
       scope: {
         model: '=perusopetuksenArviointi',
-        editMode: '='
+        editMode: '=',
+        atavoite: '=atavoite'
       },
       controller: 'PerusopetuksenArviointiController'
     };

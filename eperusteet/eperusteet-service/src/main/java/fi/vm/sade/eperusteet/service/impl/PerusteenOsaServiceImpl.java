@@ -482,7 +482,6 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     public void unlock(Long id) {
-        assertExists(id);
         lockManager.unlock(id);
     }
 

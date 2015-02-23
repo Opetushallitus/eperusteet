@@ -4,7 +4,26 @@
   <h1 kaanna="muokkaus-vuosiluokkakokonaisuuden-osa"></h1>
   <div class="tekstikappale edit-tekstikappale" ui-tree-nodes ng-model="editables">
     <div perusopetus-muokkaus-info osa="sisaltoalueet"></div>
-    <div class="sisaltoalue-box" ng-class="{'kohde-edit': sisaltoalue.$editing}"
+
+    <div class="panel panel-default panel-clean">
+      <div class="panel-heading">
+        <h3 kaanna="'otsikko'"></h3>
+        <div class="panel-body">
+          <input type="text" ckeditor slocalized class="form-control" ng-model="ovlk.sisaltoalueinfo.otsikko">
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default panel-clean">
+      <div class="panel-heading">
+        <h3 kaanna="'sisaltoalueiden-kuvaus'"></h3>
+        <div class="panel-body">
+          <div ckeditor slocalized ng-model="ovlk.sisaltoalueinfo.teksti"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sisaltoalueotsikko sisaltoalue-box" ng-class="{'kohde-edit': sisaltoalue.$editing}"
          ng-repeat="sisaltoalue in editables" ui-tree-node>
       <div class="buttons" ng-hide="isEditing">
         <button class="btn btn-default icon-only" icon-role="edit" title="{{'muokkaa' | kaanna}}"

@@ -50,7 +50,7 @@ import org.xml.sax.SAXException;
  *
  * @author jussi
  */
-public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer>{
+public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer> {
 
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(PerustePDFRenderer.class);
 
@@ -64,18 +64,18 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer>{
 
     @Override
     protected Transformer createTransformer(FileObject xmlSource,
-            FileObject xslStylesheet) throws TransformerConfigurationException,
-            IOException {
+        FileObject xslStylesheet) throws TransformerConfigurationException,
+        IOException {
 
         TransformerFactory transformerFactory = createTransformerFactory();
         if (xslStylesheet != null) {
             transformerFactory.setURIResolver(new PerusteXslURIResolver());
         }
         FileObject xsl = xslStylesheet != null ? xslStylesheet
-                : getDefaultXslStylesheet();
+            : getDefaultXslStylesheet();
 
         Source source = new StreamSource(xsl.getContent().getInputStream(), xsl
-                .getURL().toExternalForm());
+                                         .getURL().toExternalForm());
         Transformer transformer = transformerFactory.newTransformer(source);
 
         transformer.setParameter("use.extensions", "1");
@@ -83,7 +83,7 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer>{
         transformer.setParameter("callout.unicode", "1");
         transformer.setParameter("callouts.extension", "1");
         transformer.setParameter("base.dir", xmlSource.getParent().getURL()
-                .toExternalForm());
+                                 .toExternalForm());
 
         for (Map.Entry<String, String> entry : this.params.entrySet()) {
             transformer.setParameter(entry.getKey(), entry.getValue());
@@ -94,8 +94,8 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer>{
 
     @Override
     protected FileObject postProcess(final FileObject xmlSource,
-                                     final FileObject xslSource, final FileObject xsltResult)
-            throws Docbook4JException {
+        final FileObject xslSource, final FileObject xsltResult)
+        throws Docbook4JException {
 
         FileObject target = null;
         try {
@@ -107,7 +107,7 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer>{
 
             final FOUserAgent userAgent = fopFactory.newFOUserAgent();
             userAgent.setBaseURL(xmlSource.getParent().getURL()
-                    .toExternalForm());
+                .toExternalForm());
             userAgent.setURIResolver(new VfsURIResolver());
 
             enhanceFOUserAgent(userAgent);
@@ -122,7 +122,7 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer>{
             }
 
             Fop fop = fopFactory.newFop(getMimeType(), userAgent, target
-                    .getContent().getOutputStream());
+                                        .getContent().getOutputStream());
 
             TransformerFactory factory = TransformerFactory.newInstance();
             Transformer transformer = factory.newTransformer(); // identity
@@ -132,7 +132,7 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer>{
             transformer.setParameter("fop1.extensions", "1");
 
             Source src = new StreamSource(xsltResult.getContent()
-                    .getInputStream());
+                .getInputStream());
             Result res = new SAXResult(fop.getDefaultHandler());
             transformer.transform(src, res);
             return target;
@@ -155,12 +155,12 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer>{
 
         DefaultConfigurationBuilder builder = new DefaultConfigurationBuilder();
         try {
-            File fopconf = new File(this.fopConfig);
-            LOG.info("Using fop conf file: {}", fopconf.getAbsolutePath());
-
-            Configuration conf = builder.buildFromFile(fopconf.getAbsolutePath());
-
-            return conf;
+            if (!this.fopConfig.isEmpty()) {
+                File fopconf = new File(this.fopConfig);
+                LOG.info("Using fop conf file: {}", fopconf.getAbsolutePath());
+                Configuration conf = builder.buildFromFile(fopconf.getAbsolutePath());
+                return conf;
+            }
         } catch (SAXException | IOException | ConfigurationException ex) {
             LOG.error("", ex);
         }
@@ -170,7 +170,7 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer>{
     @Override
     protected void enhanceFOUserAgent(FOUserAgent agent) {
         if (StringUtils.isEmpty(this.baseFontDirectory) ||
-                StringUtils.isEmpty(this.fopConfig)) {
+            StringUtils.isEmpty(this.fopConfig)) {
             LOG.warn("Base font directory or fopconfig not set, won't use pdf/a mode");
         } else {
             agent.getRendererOptions().put("pdf-a-mode", "PDF/A-1b");

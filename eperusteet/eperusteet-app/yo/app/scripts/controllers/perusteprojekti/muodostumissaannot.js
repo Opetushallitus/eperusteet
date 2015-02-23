@@ -67,7 +67,7 @@ angular.module('eperusteApp')
           if (!revNumber) {
             errorCb();
           } else {
-            PerusteenRakenne.haeTutkinnonosatByPeruste($scope.peruste.id, $scope.suoritustapa, function(tutkinnonOsat) {
+            PerusteenRakenne.haeTutkinnonosatVersioByPeruste($scope.peruste.id, $scope.suoritustapa, revNumber, function(tutkinnonOsat) {
               var vastaus = PerusteenRakenne.pilkoTutkinnonOsat(tutkinnonOsat, {});
               $scope.tutkinnonOsat = vastaus.tutkinnonOsat;
               VersionHelper.changeRakenne($scope.versiot, {id: $scope.peruste.id, suoritustapa: $scope.suoritustapa}, function(response) {

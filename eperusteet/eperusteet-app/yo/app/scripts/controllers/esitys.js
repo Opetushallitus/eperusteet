@@ -205,8 +205,7 @@ angular.module('eperusteApp')
     $scope.arviointiasteikot = _.zipObject(_.map(arviointiasteikot, 'id'), _.map(arviointiasteikot, function(asteikko) {
       return _.zipObject(_.map(asteikko.osaamistasot, 'id'), asteikko.osaamistasot);
     }));
-    $scope.tutkinnonOsat = _(tutkinnonOsat).reject(function(r) { return r.poistettu; })
-                                           .sortBy(function(r) { return Kaanna.kaanna(r.nimi); })
+    $scope.tutkinnonOsat = _(tutkinnonOsat).sortBy(function(r) { return Kaanna.kaanna(r.nimi); })
                                            .value();
 
     $scope.valittu = {};

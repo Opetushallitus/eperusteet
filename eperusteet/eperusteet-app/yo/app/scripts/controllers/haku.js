@@ -54,8 +54,8 @@ angular.module('eperusteApp')
           sisalto: function($stateParams, $q, Perusteet, SuoritustapaSisalto) {
             // TODO lisää uusin peruste jos $stateParams.perusteId on falsey
             return $q.all([
-              Perusteet.get({ perusteId: $stateParams.perusteId }).$promise,
-              SuoritustapaSisalto.get({ perusteId: $stateParams.perusteId, suoritustapa: 'esiopetus' }).$promise,
+              Perusteet.get({perusteId: $stateParams.perusteId}).$promise,
+              SuoritustapaSisalto.get({perusteId: $stateParams.perusteId, suoritustapa: 'esiopetus'}).$promise,
             ]);
           }
         }
@@ -68,11 +68,11 @@ angular.module('eperusteApp')
           sisalto: function($stateParams, $q, Perusteet, LaajaalaisetOsaamiset, Oppiaineet, Vuosiluokkakokonaisuudet, SuoritustapaSisalto) {
             // TODO lisää uusin peruste jos $stateParams.perusteId on falsey
             return $q.all([
-              Perusteet.get({ perusteId: $stateParams.perusteId }).$promise,
-              LaajaalaisetOsaamiset.query({ perusteId: $stateParams.perusteId }).$promise,
-              Oppiaineet.query({ perusteId: $stateParams.perusteId }).$promise,
-              Vuosiluokkakokonaisuudet.query({ perusteId: $stateParams.perusteId }).$promise,
-              SuoritustapaSisalto.get({ perusteId: $stateParams.perusteId, suoritustapa: 'perusopetus' }).$promise,
+              Perusteet.get({perusteId: $stateParams.perusteId}).$promise,
+              LaajaalaisetOsaamiset.query({perusteId: $stateParams.perusteId}).$promise,
+              Oppiaineet.query({perusteId: $stateParams.perusteId}).$promise,
+              Vuosiluokkakokonaisuudet.query({perusteId: $stateParams.perusteId}).$promise,
+              SuoritustapaSisalto.get({perusteId: $stateParams.perusteId, suoritustapa: 'perusopetus'}).$promise,
             ]);
           }
         }
@@ -80,26 +80,34 @@ angular.module('eperusteApp')
   })
   .controller('EsiopetusListaController', function($scope, $state, Perusteet, Notifikaatiot) {
     $scope.lista = [];
-    Perusteet.query({
+    Perusteet.get({
       tyyppi: 'koulutustyyppi_15'
     }, function(res) {
-      $scope.lista = _(res).sortBy('voimassaoloLoppuu')
-                           .reverse()
-                           .each(function(eo) {
-                             eo.$url = $state.href('root.selaus.esiopetus', { perusteId: eo.id });
-                           })
-                           .value();
+      if (res.sivuja > 1) {
+        console.warn('sivutusta ei ole toteutettu, tuloksia yli ' + res.sivukoko);
+      }
+      $scope.lista = _(res.data).sortBy('voimassaoloLoppuu')
+        .reverse()
+        .each(function(eo) {
+          eo.$url = $state.href('root.selaus.esiopetus', {perusteId: eo.id});
+        })
+        .value();
     }, Notifikaatiot.serverCb);
   })
-  .controller('PerusopetusListaController', function($scope, $state, PerusopetusPerusteet, Notifikaatiot) {
+  .controller('PerusopetusListaController', function($scope, $state, Perusteet, Notifikaatiot) {
     $scope.lista = [];
-    PerusopetusPerusteet.query(function(res) {
-      $scope.lista = _(res).sortBy('voimassaoloLoppuu')
-                           .reverse()
-                           .each(function(po) {
-                             po.$url = $state.href('root.selaus.perusopetus', { perusteId: po.id });
-                           })
-                           .value();
+    Perusteet.get({
+      tyyppi: 'koulutustyyppi_16'
+    }, function(res) {
+      if (res.sivuja > 1) {
+        console.warn('sivutusta ei ole toteutettu, tuloksia yli ' + res.sivukoko);
+      }
+      $scope.lista = _(res.data).sortBy('voimassaoloLoppuu')
+        .reverse()
+        .each(function(po) {
+          po.$url = $state.href('root.selaus.perusopetus', {perusteId: po.id});
+        })
+        .value();
     }, Notifikaatiot.serverCb);
   })
   .controller('HakuCtrl', function($scope, $rootScope, $state, Perusteet, Haku,
@@ -120,7 +128,7 @@ angular.module('eperusteApp')
     }
     setHakuparametrit();
 
-    $scope.koulutustyypit = YleinenData.koulutustyypit;
+    $scope.koulutustyypit = YleinenData.ammatillisetkoulutustyypit;
 
     $scope.tyhjenna = function() {
       $scope.nykyinenSivu = 1;
@@ -139,7 +147,7 @@ angular.module('eperusteApp')
       pat = new RegExp('(' + $scope.hakuparametrit.nimi + ')', 'i');
     };
 
-    $scope.pageChanged = function () {
+    $scope.pageChanged = function() {
       $scope.haePerusteet($scope.nykyinenSivu);
     };
 

@@ -115,6 +115,11 @@ $index-bubble-size: 24px;
 $tag-height: 28px;
 $tag-color: #FEE7A4;
 .opetuksen-tavoitteet {
+  .arvioinnin-muokkaus-kentta {
+    margin-bottom: 6px;
+    width: 80%;
+  }
+
   .panel-heading {
     padding-left: 20px;
   }
@@ -456,4 +461,8 @@ h4 .drag-handle {
   .moodit {
     margin-top: -40px;
   }
+}
+
+.sisaltoalueotsikko {
+  margin-top: 30px;
 }

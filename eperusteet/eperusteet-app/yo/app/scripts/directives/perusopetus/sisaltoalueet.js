@@ -26,10 +26,20 @@ angular.module('eperusteApp')
         model: '=',
         config: '='
       },
-      controller: function ($scope, YleinenData, $rootScope, Utils, CloneHelper) {
+      controller: function ($scope, YleinenData, $rootScope, Utils, CloneHelper, OsanMuokkausHelper) {
         $scope.editables = $scope.model;
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
         $scope.isEditing = false;
+
+        function getOppiaineenVuosiluokkakokonaisuus() {
+          var ovlk = OsanMuokkausHelper.getOppiaineenVuosiluokkakokonaisuus();
+          ovlk.sisaltoalueinfo = ovlk.sisaltoalueinfo || {
+            otsikko: {},
+            teksti: {}
+          };
+          $scope.ovlk = ovlk;
+        }
+        getOppiaineenVuosiluokkakokonaisuus();
 
         var cloner = CloneHelper.init(['nimi', 'kuvaus']);
 
@@ -88,9 +98,6 @@ angular.module('eperusteApp')
       controller: function() {
       }
     };
-  })
-  .controller('SisaltoalueetController', function ($scope, YleinenData) {
-    $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
   })
   .directive('sisaltoalueet', function () {
     return {

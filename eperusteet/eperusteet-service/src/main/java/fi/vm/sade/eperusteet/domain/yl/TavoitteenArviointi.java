@@ -42,6 +42,7 @@ public class TavoitteenArviointi extends AbstractReferenceableEntity {
     @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     private TekstiPalanen arvioinninKohde;
+    
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @Getter
