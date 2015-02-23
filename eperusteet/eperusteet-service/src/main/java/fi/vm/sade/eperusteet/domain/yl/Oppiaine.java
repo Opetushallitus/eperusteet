@@ -36,6 +36,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -70,6 +71,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     @NotNull(groups = Strict.class)
     @Size(min = 1, groups = Strict.class)
     @Valid
+    @BatchSize(size = 3)
     private Set<OppiaineenVuosiluokkaKokonaisuus> vuosiluokkakokonaisuudet;
 
     @Getter
@@ -98,6 +100,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     private Boolean abstrakti;
 
     @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @BatchSize(size = 10)
     private Set<Oppiaine> oppimaarat;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
