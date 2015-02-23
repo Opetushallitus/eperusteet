@@ -226,7 +226,7 @@ angular.module('eperusteApp')
 
     $scope.rakenneosaModaali = Muodostumissaannot.rakenneosaModaali(function(rakenneosa) {
       if (rakenneosa) {
-        $scope.rakenne = rakenneosa;
+        _.merge($scope.rakenne, rakenneosa);
       }
     });
 
@@ -469,7 +469,6 @@ angular.module('eperusteApp')
     function paivitaUniikit() {
       var uudetUniikit = [];
       _($scope.rakenne.tutkinnonOsaViitteet)
-        .reject(function(osa) { return osa.poistettu; })
         .each(function (osa) {
           var match = $scope.tutkinnonOsat.rajaus &&
             _.contains(Kaanna.kaanna(osa.nimi).toLowerCase(),
@@ -720,7 +719,7 @@ angular.module('eperusteApp')
       }
     }
 
-    this.clone = function (ryhma) {
+    this.clone = function(ryhma) {
       var clone = angular.copy(ryhma);
       traverse(clone);
       return clone;

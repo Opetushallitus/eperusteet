@@ -306,6 +306,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Peruste peruste = mapper.map(perusteDto, Peruste.class);
         peruste = checkIfKoulutuksetAlreadyExists(peruste);
         peruste.setSuoritustavat(perusteVanha.getSuoritustavat());
+        peruste.asetaTila(perusteVanha.getTila());
 
         peruste = perusteet.save(peruste);
         return mapper.map(peruste, PerusteDto.class);
@@ -430,12 +431,20 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         Set<TutkinnonOsaViite> tutkinnonOsat = suoritustapa.getTutkinnonOsat();
         for (TutkinnonOsaViite tov : tutkinnonOsat) {
-            tovat.put(tov.getId(), tov);
+            tovat.put(tov.getTutkinnonOsa().getId(), tov);
         }
 
+        //TODO korjaa palautus
         for (TutkinnonOsaViite tov : rakenneTovat) {
-            TutkinnonOsaViite utov = tovat.get(tov.getId());
-            utov.setPoistettu(false);
+            TutkinnonOsaViite utov = tovat.get(tov.getTutkinnonOsa().getId());
+            if (utov == null) {
+                TutkinnonOsaViiteDto tmp = mapper.map(tov, TutkinnonOsaViiteDto.class);
+                tmp.setId(null);
+                tmp = attachTutkinnonOsa(id, suoritustapakoodi, tmp);
+                tov.setId(tmp.getId());
+            } else if (!utov.getId().equals(tov.getId())) {
+                tov.setId(utov.getId());
+            }
         }
         return updateTutkinnonRakenne(id, suoritustapakoodi, mapper.map(rakenneVersio, RakenneModuuliDto.class));
     }
@@ -445,6 +454,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public List<TutkinnonOsaViiteDto> getTutkinnonOsat(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
         Peruste peruste = perusteet.findOne(perusteid);
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+        return mapper.mapAsList(suoritustapa.getTutkinnonOsat(), TutkinnonOsaViiteDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TutkinnonOsaViiteDto> getTutkinnonOsat(Long perusteid, Suoritustapakoodi suoritustapakoodi, Integer revisio) {
+        Peruste peruste = perusteet.findOne(perusteid);
+        Suoritustapa suoritustapa = suoritustapaRepository.findRevision(peruste.getSuoritustapa(suoritustapakoodi).getId(), revisio);
         return mapper.mapAsList(suoritustapa.getTutkinnonOsat(), TutkinnonOsaViiteDto.class);
     }
 
@@ -519,8 +536,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         try {
             TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osaId);
             if (suoritustapa.getTutkinnonOsat().contains(viite)) {
-                //TODO: poistamisen refaktorointi (viitteen poisto oikeasti)
-                viite.setPoistettu(true);
+                if (tutkinnonOsaViiteRepository.isInUse(viite)) {
+                    throw new BusinessRuleViolationException("Tutkinnonosa on käytössä");
+                }
+                suoritustapa.getTutkinnonOsat().remove(viite);
             } else {
                 throw new BusinessRuleViolationException("Tutkinnonosa ei kuulu tähän suoritustapaan");
             }
@@ -569,7 +588,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         TutkinnonOsaViite viite = mapper.map(osa, TutkinnonOsaViite.class);
         viite.setSuoritustapa(suoritustapa);
         viite.setMuokattu(new Date());
-        viite.setPoistettu(Boolean.FALSE);
         if (suoritustapa.getTutkinnonOsat().add(viite)) {
             viite = tutkinnonOsaViiteRepository.save(viite);
         } else {
@@ -584,8 +602,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         final Suoritustapa suoritustapa = getSuoritustapaEntity(id, suoritustapakoodi);
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osa.getId());
 
-        if (viite == null || !viite.getSuoritustapa().equals(suoritustapa)
-            || !viite.getTutkinnonOsa().getReference().equals(osa.getTutkinnonOsa())) {
+        if (viite == null || !viite.getSuoritustapa().equals(suoritustapa) ||
+            !viite.getTutkinnonOsa().getReference().equals(osa.getTutkinnonOsa())) {
             throw new BusinessRuleViolationException("Virheellinen viite");
         }
 
@@ -627,8 +645,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
         Suoritustapa suoritustapa = suoritustapaRepository.findByPerusteAndKoodi(perusteid, suoritustapakoodi);
         if (suoritustapa == null) {
-            throw new BusinessRuleViolationException("Perusteella " + perusteid + " + ei ole suoritustapaa "
-                + suoritustapa);
+            throw new BusinessRuleViolationException("Perusteella " + perusteid + " + ei ole suoritustapaa " +
+                suoritustapa);
         }
         return suoritustapa;
     }

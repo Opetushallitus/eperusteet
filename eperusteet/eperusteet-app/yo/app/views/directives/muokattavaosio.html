@@ -10,14 +10,17 @@
       <span class="glyphicon"
             ng-class="realModel.$isCollapsed ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down'"></span>
       <span ng-if="type === 'tekstikappale'" ng-bind-html="valitseKieli(model[path].otsikko) | unsafe"></span>
-      <span ng-if="type === 'sisaltoalueet'" kaanna="'sisaltoalueet'"></span>
+      <span ng-if="type === 'sisaltoalueet'">{{ model.sisaltoalueinfo ? model.sisaltoalueinfo.otsikko : 'sisaltoalueet' | kaanna }}</span>
       <span ng-if="type === 'tavoitteet'" kaanna="'opetuksen-tavoitteet'"></span>
       <span ng-if="type === 'kohdealueet'" kaanna="'opetuksen-kohdealueet'"></span>
     </h3>
   </div>
   <div class="panel-body" collapse="realModel.$isCollapsed">
     <div ng-if="type === 'tekstikappale'" ng-bind-html="valitseKieli(model[path].teksti) | unsafe"></div>
-    <div ng-if="type === 'sisaltoalueet'" sisaltoalueet="model[path]"></div>
+    <div ng-if="type === 'sisaltoalueet'">
+      <p ng-if="model.sisaltoalueinfo" ng-bind-html="valitseKieli(model.sisaltoalueinfo.teksti) | unsafe"></p>
+      <div sisaltoalueet="model[path]"></div>
+    </div>
     <div ng-if="type === 'tavoitteet'" tavoitteet="model" oppiaine="oppiaine" vuosiluokka="vuosiluokka"></div>
     <div ng-if="type === 'kohdealueet'" kohdealueet="model[path]"></div>
   </div>

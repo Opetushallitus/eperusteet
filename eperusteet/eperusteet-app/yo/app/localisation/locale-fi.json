@@ -77,8 +77,8 @@
 
     "perusteen-kielet": "Perusteen kielet",
     "lisaa-kieli": "Lisää kieli",
-    "peruste-validointi-tekstikappale-nimi": "Perusteen kaikkien tekstikappeleiden nimiä ei ole lokalisoitu",
-    "peruste-validointi-tekstikappale-teksti": "Perusteen kaikkien tekstikappeleiden sisältöjä ei ole lokalisoitu",
+    "peruste-validointi-tekstikappale-nimi": "Perusteen kaikkien tekstikappaleiden nimiä ei ole lokalisoitu",
+    "peruste-validointi-tekstikappale-teksti": "Perusteen kaikkien tekstikappaleiden sisältöjä ei ole lokalisoitu",
     "peruste-validointi-rakenneosa-kuvaus": "Perusteen muodostumisryhmän kaikkia kuvauksia ei ole lokalisoitu",
     "peruste-validointi-kuvaus": "Perusteen kuvausta ei ole lokalisoitu",
     "peruste-validointi-nimi": "Perusteen nimeä ei ole lokalisoitu",
@@ -91,6 +91,22 @@
     "ryhman-osaamisalaa-ei-perusteella": "Ryhmän osaamisalaa ei ole määritelty perusteelle",
     "ei-osaamisalan-kuvausta": "Ei osaamisalan kuvausta",
     "osaamisalan-kuvaus": "Osaamisalan kuvaus",
+
+    "peruste-validointi-laajaalainen-osaaminen-nimi": "Kaikkien laaja-alaisten osaamisten nimiä ei ole lokalisoituKaikkien ei ole lokalisoitu",
+    "peruste-validointi-laajaalainen-osaaminen-kuvaus": "Kaikkien laaja-alaisten osaamisten kuvauksia ei ole lokalisoitu",
+    "peruste-validointi-vlk-nimi": "Kaikkien vuosiluokkakokonaisuuksien nimiä ei ole lokalisoitu",
+    "peruste-validointi-vlk-tehtava-otsikko": "Kaikkien vuosiluokkakokonaisuuksien tehtävien otsikoita ei ole lokalisoitu",
+    "peruste-validointi-vlk-tehtava-teksti": "Kaikkien vuosiluokkakokonaisuuksien tehtävien sisältötekstejä ei ole lokalisoitu",
+    "peruste-validointi-vlk-lo": "Kaikkien vuosiluokkakokonaisuuksien laaja-alaisien osaamisien kuvauksia ei ole lokalisoitu",
+    "peruste-validointi-vlk-sisalto": "Kaikkien vuosiluokkakokonaisuuksien sisältöjä ei ole lokalisoitu",
+    "peruste-validointi-oppiaine-nimi": "Kaikkien oppiaineiden nimiä ei ole lokalisoitu",
+    "peruste-validointi-oppiaine-sisalto": "Kaikkien oppiaineiden sisältöä ei ole lokalisoitu",
+    "peruste-validointi-oppiaine-kohdealue": "Kaikkien oppiaineiden kohdealueideita ei ole lokalisoitu",
+    "peruste-validointi-oppiaine-vlk-sisalto": "Kaikkien oppiaineiden vuosiluokkakokonaisuuksien sisältöjä ei ole lokalisoitu",
+    "peruste-validointi-oppiaine-sisaltoalue": "Kaikkien oppiaineiden sisältöalueita ei ole lokalisoitu",
+    "peruste-validointi-oppiaine-vlk-tavoite-tavoite-teksti": "Kaikkia tavoitteita ei ole lokalisoitu",
+
+    "sisaltoalueiden-kuvaus": "Sisältöalueiden kuvaus",
 
     "muokkaa-kohdealueita": "Muokkaa kohdealueita",
 
@@ -482,6 +498,8 @@
     "arviointi-uusi-kohdealue": "Lisää kohdealue",
     "arviointi-uusi-kohdealue-placeholder": "Kohdealueen nimi",
     "arviointi-uusi-kohde": "Lisää arvioinnin kohde",
+    "arvioinnin-otsikko": "Arvioinnin otsikko",
+    "arvion-osaamisen-kuvaus": "Arvion osaamisen kuvaus",
     "arviointi-uusi-kohde-placeholder": "Kohteen nimi (ei pakollinen)",
     "arviointi-uusi-kriteeri": "Lisää rivi",
     "arviointi-uusi-kriteeri-placeholder": "Kriteerin teksti",

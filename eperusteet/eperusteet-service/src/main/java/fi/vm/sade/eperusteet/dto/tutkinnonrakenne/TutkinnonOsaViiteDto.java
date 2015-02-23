@@ -41,7 +41,6 @@ public class TutkinnonOsaViiteDto {
     private TutkinnonOsaDto tutkinnonOsaDto;
 
     private Date muokattu;
-    private Boolean poistettu;
     private LokalisoituTekstiDto nimi;
     private TutkinnonOsaTyyppi tyyppi;
 

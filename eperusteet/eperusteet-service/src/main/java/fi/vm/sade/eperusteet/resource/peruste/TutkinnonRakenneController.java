@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.resource.peruste;
 
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
@@ -24,6 +23,7 @@ import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
+import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -139,6 +139,15 @@ public class TutkinnonRakenneController {
     public List<TutkinnonOsaViiteDto> getTutkinnonOsat(
         @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi) {
         return perusteService.getTutkinnonOsat(id, suoritustapakoodi);
+    }
+
+    @RequestMapping(value = "/tutkinnonosat/versiot/{versio}", method = GET)
+    @ResponseBody
+    public List<TutkinnonOsaViiteDto> getTutkinnonOsat(
+        @PathVariable("perusteId") final Long id,
+        @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi,
+        @PathVariable("versio") final Integer versio) {
+        return perusteService.getTutkinnonOsat(id, suoritustapakoodi, versio);
     }
 
     @RequestMapping(value = "/tutkinnonosat/{osanId}/muokattavakopio", method = POST)
