@@ -205,7 +205,7 @@ angular.module('eperusteApp')
   })
 
   .controller('PerusopetusController', function($q, $scope, $timeout, sisalto, PerusteenOsat, OppiaineenVuosiluokkakokonaisuudet,
-                                                Algoritmit, Notifikaatiot, Oppiaineet, TermistoService, Kieli) {
+                                                Algoritmit, Notifikaatiot, Oppiaineet, TermistoService, Kieli, $document, $rootScope) {
     $scope.isNaviVisible = _.constant(true);
     $scope.hasContent = function (obj) {
       return _.isObject(obj) && obj.teksti && obj.teksti[Kieli.getSisaltokieli()];
@@ -227,6 +227,22 @@ angular.module('eperusteApp')
 
     TermistoService.setPeruste(peruste);
 
+    function clickHandler(event) {
+      var ohjeEl = angular.element(event.target).closest('.popover, .popover-element');
+      if (ohjeEl.length === 0) {
+        $rootScope.$broadcast('ohje:closeAll');
+      }
+    }
+    function installClickHandler() {
+      $document.off('click', clickHandler);
+      $timeout(function () {
+        $document.on('click', clickHandler);
+      });
+    }
+    $scope.$on('$destroy', function () {
+      $document.off('click', clickHandler);
+    });
+
     $scope.filtterit = {
       moodi: 'sivutus',
     };
@@ -241,7 +257,6 @@ angular.module('eperusteApp')
     };
 
     $scope.valitseOppiaineenVuosiluokka = function(vuosiluokka) {
-      console.log('vuosiluokka', vuosiluokka);
       $timeout(function() {
         // $scope.valittuOppiaine.vlks = undefined;
         $scope.filtterit.valittuKokonaisuus = vuosiluokka;
@@ -418,6 +433,7 @@ angular.module('eperusteApp')
           }
         });
       }
+      installClickHandler();
     }
 
     function paivitaSivunavi(vlfiltteri) {
