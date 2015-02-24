@@ -1,3 +1,4 @@
+<!-- muokattavaKentta.html -->
 <div ng-show="canCollapse" class="osio-otsikko" ng-click="collapsed = $parent.field.$editing ? false : !collapsed">
   <span class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span>
   <span ng-hide="$parent.field.isolateEdit && $parent.field.$editing">{{(hasModel ? model : otsikko) | kaanna}}</span>

@@ -30,6 +30,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -77,6 +78,10 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     @Getter
     @ManyToOne(optional = true)
     private Oppiaine oppiaine;
+
+    @Getter
+    @Setter
+    private Long jnro;
 
     @Getter
     @Setter

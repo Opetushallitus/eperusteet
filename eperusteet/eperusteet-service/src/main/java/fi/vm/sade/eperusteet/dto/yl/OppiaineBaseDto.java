@@ -40,4 +40,5 @@ public abstract class OppiaineBaseDto implements ReferenceableDto {
     private Optional<Boolean> koosteinen;
     private Optional<Boolean> abstrakti;
     private Optional<LokalisoituTekstiDto> nimi;
+    private Optional<Long> jnro;
 }

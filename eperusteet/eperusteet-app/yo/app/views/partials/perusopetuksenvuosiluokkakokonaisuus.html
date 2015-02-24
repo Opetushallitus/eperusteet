@@ -1,4 +1,5 @@
 <div class="perusopetus">
+  <!-- partials/perusopetuksenvuosiluokkakokonaisuus.html -->
   <div ng-if="item.label" ng-repeat="item in section.items">
     <div ng-click="section.update(item, section)"
          class="tekstisisalto {{ (item.$selected && section.activeSection() === 'vlk') && 'tekstisisalto-active' }} {{ (item.$selected && section.activeSection() !== 'vlk') && 'tekstisisalto-active-header' }}">

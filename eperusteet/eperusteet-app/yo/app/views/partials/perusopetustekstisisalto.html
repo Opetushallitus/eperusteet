@@ -1,3 +1,4 @@
+<!-- perusopetustekstisisalto.html -->
 <div class="perusopetus">
   <div style="margin-left: {{ item.depth * 10 }}px;" ng-if="item.depth >= 0" ng-click="section.update(item, section)" ng-repeat="item in section.items"
        class="tekstisisalto {{ item.$selected && 'tekstisisalto-active' }}">

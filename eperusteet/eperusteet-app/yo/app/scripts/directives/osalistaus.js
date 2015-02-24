@@ -20,6 +20,7 @@
 angular.module('eperusteApp')
   .service('OrderHelper', function () {
     this.ORDER_OPTIONS = [
+      {value: 'oletus', label: 'oletus'},
       {value: 'nimi', label: 'nimi'},
       {value: 'muokattu', label: 'muokattu-viimeksi'}
     ];
@@ -67,7 +68,7 @@ angular.module('eperusteApp')
       nakymatyyli: 'palikka'
     };
 
-    $scope.jarjestysTapa = 'nimi';
+    $scope.jarjestysTapa = _.first(OrderHelper.get(null, $scope.koulutustyyppi)).value;
     $scope.jarjestysOrder = false;
     $scope.preferenssit = Profiili.profiili().resolved ? _.merge(defaultPreferences, Profiili.profiili().preferenssit) : defaultPreferences;
     $scope.kaytaJarjestysnumeroa = $scope.koulutustyyppi ? true : false;
@@ -106,10 +107,10 @@ angular.module('eperusteApp')
       switch($scope.jarjestysTapa) {
         case 'nimi': return Kaanna.kaanna(data.nimi);
         case 'laajuus': return data.laajuus;
+        case 'oletus': return data.jnro;
         case 'muokattu': return data.muokattu;
         case 'jarjestys': return data.jarjestys;
-        default:
-          break;
+        default: break;
       }
     };
 

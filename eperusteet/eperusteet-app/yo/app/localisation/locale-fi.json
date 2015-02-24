@@ -1,5 +1,6 @@
 {
     "edellinen": "Edellinen",
+    "oletus": "Oletus",
     "kieli": "Kieli",
     "sisallon-kieli": "Sisällön kieli",
     "koodi": "Koodi",
@@ -688,6 +689,7 @@
 
     "perusteen-esikatselu": "Perusteen esikatselu",
     "laadinnan-esikatselu-info": "Tämä on kesken olevan perusteprojektin esikatselu. Kaikki sisältö ei välttämättä näy oikein.",
+    "jarjestysnumero": "Järjestysnumero",
 
     "takaisin-laadintaan": "Takaisin laadintaan",
     "takaisin-paanakymaan": "Projektin päänäkymä",
