@@ -50,8 +50,7 @@ angular.module('eperusteApp')
     $scope.$esitysurl = $state.href('root.esitys.peruste', {
       perusteId: $scope.peruste.id,
       suoritustapa: $stateParams.suoritustapa
-    })
-    + '?prestate=' + $location.url();
+    }) + '?prestate=' + $location.url();
 
     $scope.onTyoryhmia = function() {
       return !_.isEmpty($scope.tyoryhmat);
