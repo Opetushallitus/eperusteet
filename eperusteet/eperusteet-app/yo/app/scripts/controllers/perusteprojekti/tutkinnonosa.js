@@ -207,7 +207,7 @@ angular.module('eperusteApp')
       },{
         path: 'tutkinnonOsa.arviointi.lisatiedot',
         localeKey: 'tutkinnon-osan-arviointi-teksti',
-        type: 'editor-text',
+        type: 'editor-area',
         localized: true,
         collapsible: true
       },{
