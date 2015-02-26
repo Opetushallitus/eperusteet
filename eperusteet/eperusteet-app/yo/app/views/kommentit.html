@@ -5,7 +5,7 @@
     <div>
         <div class="kommentti-alue">
             <div>
-                <h2>Keskustelu <span ng-if="sisalto">({{ sisalto.$yhteensa }} {{ 'kommenttia' | kaanna }})</span>
+                <h2><span kaanna="'keskustelu'"></span> <span ng-if="sisalto">({{ sisalto.$yhteensa }} {{ 'kommenttia' | kaanna }})</span>
                 <small-spinner ng-hide="nayta"></small-spinner>
                 </h2>
             </div>
