@@ -102,14 +102,14 @@
     "peruste-validointi-vlk-sisalto": "Kaikkien vuosiluokkakokonaisuuksien sisältöjä ei ole lokalisoitu",
     "peruste-validointi-oppiaine-nimi": "Kaikkien oppiaineiden nimiä ei ole lokalisoitu",
     "peruste-validointi-oppiaine-sisalto": "Kaikkien oppiaineiden sisältöä ei ole lokalisoitu",
-    "peruste-validointi-oppiaine-kohdealue": "Kaikkien oppiaineiden kohdealueideita ei ole lokalisoitu",
+    "peruste-validointi-oppiaine-kohdealue": "Kaikkien oppiaineiden tavoitealuita ei ole lokalisoitu",
     "peruste-validointi-oppiaine-vlk-sisalto": "Kaikkien oppiaineiden vuosiluokkakokonaisuuksien sisältöjä ei ole lokalisoitu",
     "peruste-validointi-oppiaine-sisaltoalue": "Kaikkien oppiaineiden sisältöalueita ei ole lokalisoitu",
     "peruste-validointi-oppiaine-vlk-tavoite-tavoite-teksti": "Kaikkia tavoitteita ei ole lokalisoitu",
 
     "sisaltoalueiden-kuvaus": "Sisältöalueiden kuvaus",
 
-    "muokkaa-kohdealueita": "Muokkaa kohdealueita",
+    "muokkaa-kohdealueita": "Muokkaa tavoitealueita",
 
     "fi": "Suomi",
     "sv": "Ruotsi",
@@ -452,8 +452,8 @@
 
     "tarkastele-esitysta": "Tarkastele esitystilassa",
     "poista-kohdealue": "Poista",
-    "lisaa-kohdealue": "Lisää kohdealue",
-    "muokkaus-kohdealueet": "Muokkaa kohdealueita",
+    "lisaa-kohdealue": "Lisää tavoitealue",
+    "muokkaus-kohdealueet": "Muokkaa tavoitealueita",
     "muokkaus-tutkinnon-jarjestysnumero": "Järjestysnumero",
     "muokkaus-tutkinnon-osan-nimi-header": "Nimi",
     "muokkaus-tutkinnon-osan-nimi-placeholder": "Kirjoita tähän otsikko",
@@ -498,8 +498,8 @@
     "nayta-versiohistoria": "Historia",
 
     "arviointi-lisatiedot-placeholder": "Arvioinnin sanallinen selitys tähän",
-    "arviointi-uusi-kohdealue": "Lisää kohdealue",
-    "arviointi-uusi-kohdealue-placeholder": "Kohdealueen nimi",
+    "arviointi-uusi-kohdealue": "Lisää tavoitealue",
+    "arviointi-uusi-kohdealue-placeholder": "Tavoitealueen nimi",
     "arviointi-uusi-kohde": "Lisää arvioinnin kohde",
     "arvioinnin-otsikko": "Arvioinnin otsikko",
     "arvion-osaamisen-kuvaus": "Arvion osaamisen kuvaus",
@@ -800,7 +800,7 @@
     "ohje-tyoryhma-luonti": "<p>Projektin perustetyöryhmä voidaan jakaa työryhmiin. Perusteen sisältö voidaan merkata luoduille työryhmille.</p><p>Kun työryhmä on luotu, perusteen sisältö voidaan merkata luodulle työryhmälle sisällön yhteydessä.</p>",
 
     "opetuksen-sisallot": "Opetuksen sisällöt",
-    "opetuksen-kohdealueet": "Opetuksen kohdealueet",
+    "opetuksen-kohdealueet": "Opetuksen tavoitealueet",
     "laaja-alainen-osaaminen": "Laaja-alainen osaaminen",
     "laaja-alainen-osaaminen-kuvaus": "Laaja-alaisen osaamisen kuvaus",
     "laaja-alaiset-osaamiset": "Laaja-alaiset osaamiset",
@@ -828,8 +828,8 @@
     "nayta-osaamiskokonaisuuden-kuvaus": "Näytä osaamiskokonaisuuden yleiskuvaus",
     "piilota-osaamiskokonaisuuden-kuvaus": "Piilota osaamiskokonaisuuden yleiskuvaus",
     "tekstikappale": "Tekstikappale",
-    "kohdealueet": "Kohdealueet",
-    "kohdealue": "Kohdealue",
+    "kohdealueet": "Tavoitealueet",
+    "kohdealue": "Tavoitealue",
     "siirtyma-edellisesta": "Siirtymä edellisestä vaiheesta",
     "muokkaus-siirtyma-edellisesta-header": "Siirtymä edellisestä vaiheesta",
     "muokkaus-siirtyma-edellisesta-placeholder": "Kirjoita tähän siirtymän sisältö",
