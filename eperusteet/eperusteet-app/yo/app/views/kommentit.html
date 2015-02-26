@@ -11,7 +11,7 @@
             </div>
             <div ng-show="nayta && sisalto">
             <a ng-model="editoi" ng-hide="editoi" class="action-link" ng-click="editoi = true" oikeustarkastelu="{ target: 'peruste', permission: 'kommentointi' }">
-                <h3 icon-role="add" kaanna="lisaa-kommentti"></h3>
+                <h3 icon-role="add" kaanna="'lisaa-kommentti'"></h3>
             </a>
             <div ng-show="editoi" class="kommentti-uusi">
                 <textarea maxlength="{{ $kommenttiMaxLength.maara }}" class="form-control msd-elastic" ng-model="editoitava"></textarea>
@@ -19,8 +19,8 @@
                     {{ "kommentti-ei-saa-ylittaa" | kaanna:$kommenttiMaxLength }}
                 </div>
                 <div class="kommentti-painikkeet">
-                    <button class="btn" ng-click="editoi = false"  kaanna>peruuta</button>
-                    <button class="btn btn-primary" ng-click="lisaaKommentti(sisalto, editoitava); editoi = false; editoitava = ''" ng-disabled="editoitava && editoitava.length >= $kommenttiMaxLength.maara" kaanna>tallenna</button>
+                    <button class="btn" ng-click="editoi = false" kaanna="'peruuta'"></button>
+                    <button class="btn btn-primary" ng-click="lisaaKommentti(sisalto, editoitava); editoi = false; editoitava = ''" ng-disabled="editoitava && editoitava.length >= $kommenttiMaxLength.maara" kaanna="'tallenna'"></button>
                 </div>
                 <div class="clearfix"></div>
             </div>
