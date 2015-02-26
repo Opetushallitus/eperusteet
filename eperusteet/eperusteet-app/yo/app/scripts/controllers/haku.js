@@ -108,18 +108,24 @@ angular.module('eperusteApp')
         .value();
     }, Notifikaatiot.serverCb);
   })
-  .controller('PerusopetusListaController', function($scope, $state, Perusteet, Notifikaatiot) {
+  .controller('PerusopetusListaController', function($scope, $state, $q, Perusteet, Notifikaatiot, YleinenData) {
     $scope.lista = [];
-    Perusteet.get({
-      tyyppi: 'koulutustyyppi_16'
-    }, function(res) {
-      if (res.sivuja > 1) {
+    $q.all([
+      Perusteet.get({ tyyppi: 'koulutustyyppi_16' }).$promise,
+      Perusteet.get({ tyyppi: 'koulutustyyppi_6' }).$promise
+    ]).then(function(res) {
+      if (res[0].sivuja > 1 || res[1].sivuja > 1) {
         console.warn('sivutusta ei ole toteutettu, tuloksia yli ' + res.sivukoko);
       }
-      $scope.lista = _(res.data).sortBy('voimassaoloLoppuu')
+
+      var cresult = [].concat(res[0].data).concat(res[1].data);
+
+      $scope.lista = _(cresult).sortBy('voimassaoloLoppuu')
         .reverse()
-        .each(function(po) {
-          po.$url = $state.href('root.selaus.perusopetus', {perusteId: po.id});
+        .each(function(peruste) {
+          peruste.$url = $state.href('root.selaus.' + (YleinenData.isLisaopetus(peruste) ? 'lisaopetus' : 'perusopetus'), {
+            perusteId: peruste.id
+          });
         })
         .value();
     }, Notifikaatiot.serverCb);
