@@ -97,7 +97,17 @@ public class PerusopetuksenPerusteenSisaltoServiceImpl implements Perusopetuksen
         Collections.sort(oppiaineet, new Comparator<Oppiaine>() {
             @Override
             public int compare(Oppiaine a, Oppiaine b) {
-                return Long.compare(a.getJnro(), b.getJnro());
+                Long ajnro = a.getJnro();
+                Long bjnro = b.getJnro();
+                if (ajnro == null) {
+                    return 1;
+                }
+                else if (bjnro == null) {
+                    return -1;
+                }
+                else {
+                    return Long.compare(ajnro, bjnro);
+                }
             }
         });
         return mapper.mapAsList(oppiaineet, view);
