@@ -230,11 +230,11 @@ angular.module('eperusteApp', [
       }
     });
 
-    $rootScope.$on('$stateChangeError', function(event, toState/*, toParams, fromState*/) {
+    $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState) {
       virheService.virhe({state: toState.name});
     });
 
-    $rootScope.$on('$stateNotFound', function(event, toState/*, toParams, fromState*/) {
+    $rootScope.$on('$stateNotFound', function(event, toState, toParams, fromState) {
       virheService.virhe({state: toState.to});
     });
 

@@ -147,7 +147,7 @@ angular.module('eperusteApp')
     data.projekti = service.getProjekti();
     data.projekti.peruste = service.getPeruste();
     data.projekti.peruste.sisalto = service.getSisalto();
-    perusteenTyyppi = YleinenData.isPerusopetus(data.projekti.peruste) ? 'YL' : YleinenData.isEsiopetus(data.projekti.peruste) ? 'ESI' : 'AM';
+    perusteenTyyppi = YleinenData.isPerusopetus(data.projekti.peruste) ? 'YL' : YleinenData.isSimple(data.projekti.peruste) ? 'ESI' : 'AM';
     callbacks.typeChanged(perusteenTyyppi);
     buildTree();
   };

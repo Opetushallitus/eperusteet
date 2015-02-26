@@ -19,8 +19,9 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('EsiopetusController', function ($scope, $state, Algoritmit, sisalto, Notifikaatiot, PerusteenOsat) {
+  .controller('EsiopetusController', function ($scope, $state, Algoritmit, sisalto, Notifikaatiot, PerusteenOsat, YleinenData) {
     $scope.peruste = sisalto[0];
+    $scope.otsikko = YleinenData.isEsiopetus($scope.peruste) ? 'esiopetus' : 'lisaopetus';
     var tekstisisalto = sisalto[1];
 
     function valitseTekstisisalto(item, section) {

@@ -46,6 +46,20 @@ angular.module('eperusteApp')
         templateUrl: 'views/perusopetuslistaus.html',
         controller: 'PerusopetusListaController',
       })
+      .state('root.selaus.lisaopetus', {
+        url: '/lisaopetus/:perusteId',
+        templateUrl: 'views/esiopetus.html',
+        controller: 'EsiopetusController',
+        resolve: {
+          sisalto: function($stateParams, $q, Perusteet, SuoritustapaSisalto) {
+            // TODO lisää uusin peruste jos $stateParams.perusteId on falsey
+            return $q.all([
+              Perusteet.get({perusteId: $stateParams.perusteId}).$promise,
+              SuoritustapaSisalto.get({perusteId: $stateParams.perusteId, suoritustapa: 'esiopetus'}).$promise,
+            ]);
+          }
+        }
+      })
       .state('root.selaus.esiopetus', {
         url: '/esiopetus/:perusteId',
         templateUrl: 'views/esiopetus.html',

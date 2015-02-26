@@ -110,9 +110,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
     private static final String KOODISTO_RELAATIO_YLA = "relaatio/sisaltyy-ylakoodit/";
     private static final String KOODISTO_RELAATIO_ALA = "relaatio/sisaltyy-alakoodit/";
-    private static final String[] AMMATILLISET_KOULUTUSTYYPPI_URIT = {"koulutustyyppi_1", "koulutustyyppi_11", "koulutustyyppi_12"};
-    private static final String PERUSOPETUKSEN_KOULUTUSTYYPPI = "koulutustyyppi_16";
-    private static final String ESIOPETUKSEN_KOULUTUSTYYPPI = "koulutustyyppi_15";
     private static final String KOULUTUSALALUOKITUS = "koulutusalaoph2002";
     private static final String OPINTOALALUOKITUS = "opintoalaoph2002";
 
@@ -746,31 +743,33 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
      */
     @Override
     public Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi) {
+        if (koulutustyyppi == null) {
+            throw new BusinessRuleViolationException("Koulutustyyppiä ei ole asetettu");
+        }
+
+        KoulutusTyyppi ekoulutustyyppi = KoulutusTyyppi.of(koulutustyyppi);
+
         Peruste peruste = new Peruste();
         peruste.setKoulutustyyppi(koulutustyyppi);
         peruste.setTyyppi(tyyppi);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
 
-        if (Arrays.asList(AMMATILLISET_KOULUTUSTYYPPI_URIT).indexOf(koulutustyyppi) != -1) {
+        if (ekoulutustyyppi.isAmmatillinen()) {
             suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO, null));
         }
 
-        if (koulutustyyppi != null) {
-            Suoritustapa st = null;
-            if (koulutustyyppi.equals(AMMATILLISET_KOULUTUSTYYPPI_URIT[0])) {
-                st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko != null ? yksikko
-                                                                                      : LaajuusYksikko.OSAAMISPISTE);
-            } else if (koulutustyyppi.equals(PERUSOPETUKSEN_KOULUTUSTYYPPI)) {
-                peruste.setPerusopetuksenPerusteenSisalto(new PerusopetuksenPerusteenSisalto());
-            } else if (koulutustyyppi.equals(ESIOPETUKSEN_KOULUTUSTYYPPI)) {
-                peruste.setEsiopetuksenPerusteenSisalto(new EsiopetuksenPerusteenSisalto());
-            }
+        Suoritustapa st = null;
+        if (ekoulutustyyppi == KoulutusTyyppi.PERUSTUTKINTO) {
+            st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko != null ? yksikko
+                                                                                  : LaajuusYksikko.OSAAMISPISTE);
+        } else if (ekoulutustyyppi == KoulutusTyyppi.PERUSOPETUS) {
+            peruste.setPerusopetuksenPerusteenSisalto(new PerusopetuksenPerusteenSisalto());
+        } else if (ekoulutustyyppi == KoulutusTyyppi.ESIOPETUS || ekoulutustyyppi == KoulutusTyyppi.LISAOPETUS) {
+            peruste.setEsiopetuksenPerusteenSisalto(new EsiopetuksenPerusteenSisalto());
+        }
 
-            if (st != null) {
-                suoritustavat.add(st);
-            }
-        } else {
-            throw new BusinessRuleViolationException("Koulutustyyppiä ei ole asetettu");
+        if (st != null) {
+            suoritustavat.add(st);
         }
 
         peruste.setSuoritustavat(suoritustavat);

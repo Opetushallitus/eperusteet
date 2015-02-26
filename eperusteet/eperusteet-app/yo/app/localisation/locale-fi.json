@@ -349,6 +349,7 @@
 
     "esiopetus": "Esiopetus",
     "perusopetus": "Perusopetus",
+    "lisaopetus": "Lisäopetus",
     "lukiokoulutus": "Lukiokoulutus",
     "ammatillinen-peruskoulutus": "Ammatillinen peruskoulutus",
     "ammatillinen-aikuiskoulutus": "Ammatillinen aikuiskoulutus",
@@ -392,6 +393,7 @@
     "koulutustyyppi_12": "Erikoisammattitutkinto",
     "koulutustyyppi_15": "Esiopetus",
     "koulutustyyppi_16": "Perusopetus",
+    "koulutustyyppi_6": "Lisäopetus",
 
     "solu": "Solu",
     "annettu-arvo": "Annettu arvo",

@@ -25,6 +25,7 @@ public enum KoulutusTyyppi {
     PERUSTUTKINTO("koulutustyyppi_1"),
     AMMATTITUTKINTO("koulutustyyppi_11"),
     ERIKOISAMMATTITUTKINTO("koulutustyyppi_12"),
+    LISAOPETUS("koulutustyyppi_6"),
     ESIOPETUS("koulutustyyppi_15"),
     PERUSOPETUS("koulutustyyppi_16");
 
@@ -47,5 +48,19 @@ public enum KoulutusTyyppi {
             }
         }
         throw new IllegalArgumentException(tila + " ei ole kelvollinen tila");
+    }
+
+    public boolean isOneOf(KoulutusTyyppi[] tyypit) {
+        for (KoulutusTyyppi toinen : tyypit) {
+            if (toinen.toString().equals(this.tyyppi)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public boolean isAmmatillinen() {
+        return tyyppi != null && tyyppi.equals(AMMATTITUTKINTO.name()) || tyyppi.equals(ERIKOISAMMATTITUTKINTO.name()) || tyyppi.equals(PERUSTUTKINTO.name());
     }
 }
