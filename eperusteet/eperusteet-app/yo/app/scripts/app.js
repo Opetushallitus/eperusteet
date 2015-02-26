@@ -214,7 +214,12 @@ angular.module('eperusteApp', [
       });
     });
 
-    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+      $rootScope.lastState = {
+        state: _.clone(fromState),
+        params: _.clone(fromParams)
+      };
+
       if (Editointikontrollit.getEditMode() && fromState.name !== 'root.perusteprojekti.suoritustapa.tutkinnonosat') {
         event.preventDefault();
 
