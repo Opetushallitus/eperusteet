@@ -110,6 +110,7 @@ public class PerusteenRakenne {
                 }
             }
         }
+
         if (validointi.sisakkaisiaOsaamisalaryhmia > 1) {
             validointi.sisakkaisiaOsaamisalaryhmia = 1;
             validointi.ongelmat.add(new Ongelma("Rakenteessa sisäkkäisiä osaamisalaryhmiä", nimi, syvyys));
@@ -141,7 +142,7 @@ public class PerusteenRakenne {
                 }
                 validointi.laskettuLaajuus = ms.laajuusMaksimi() != null && ms.laajuusMaksimi() > 0 ? laajuusMax : laajuusSummaMax;
             }
-            else if (rooli == RakenneModuuliRooli.VIERAS || rooli == RakenneModuuliRooli.VIRTUAALINEN) {
+            else {
                 validointi.laskettuLaajuus = laajuusMax;
             }
         }
