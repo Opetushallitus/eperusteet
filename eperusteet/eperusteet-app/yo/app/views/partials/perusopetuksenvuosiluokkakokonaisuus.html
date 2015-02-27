@@ -5,12 +5,12 @@
          class="tekstisisalto {{ (item.$selected && section.activeSection() === 'vlk') && 'tekstisisalto-active' }} {{ (item.$selected && section.activeSection() !== 'vlk') && 'tekstisisalto-active-header' }}">
          <span>{{ item.label | kaanna }} {{ currentOppiaine() }}</span>
     </div>
-    <div ng-show="item.$selected" ng-repeat="oa in item.$oppiaineet">
+    <div ng-show="item.$selected" ng-repeat="oa in item.$oppiaineet | orderBy:section.$oppiaineOrder">
       <div ng-click="section.selectOppiaine(oa.id)" style="margin-left: 20px"
         class="action-link oppiaine oppimaara {{ section.activeSection() === 'sisalto' && section.isCurrentOppiaine(oa.id) && 'oppiaine-selected' }}">
         <span kaanna="oa.nimi"></span>
       </div>
-      <div ng-repeat="om in oa.oppimaarat">
+      <div ng-repeat="om in oa.oppimaarat | orderBy:section.$oppiaineOrder">
         <div ng-click="section.selectOppiaine(om.id)" style="margin-left: 40px"
           class="action-link oppiaine oppimaara {{ section.activeSection() === 'sisalto' && section.isCurrentOppiaine(om.id) && 'oppiaine-selected' }}">
           <span kaanna="om.nimi"></span>
