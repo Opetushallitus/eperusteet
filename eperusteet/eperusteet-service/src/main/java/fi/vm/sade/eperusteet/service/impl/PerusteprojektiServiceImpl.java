@@ -225,7 +225,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         perusteprojekti.setRyhmaOid(perusteprojektiDto.getRyhmaOid());
 
         if (tyyppi != PerusteTyyppi.POHJA) {
-            if (koulutustyyppi != null && koulutustyyppi.equals(KoulutusTyyppi.PERUSTUTKINTO.toString()) && yksikko == null) {
+            if (koulutustyyppi != null && KoulutusTyyppi.of(koulutustyyppi) == KoulutusTyyppi.PERUSTUTKINTO && yksikko == null) {
                 throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
             }
             if (perusteprojektiDto.getDiaarinumero() == null) {

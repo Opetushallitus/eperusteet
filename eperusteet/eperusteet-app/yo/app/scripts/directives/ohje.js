@@ -43,8 +43,10 @@ angular.module('eperusteApp')
         ohje: '@?',
         extra: '='
       },
-      link: function (scope, element) {
+      link: function (scope, element, attrs) {
+        scope.showing = false;
         var DELAY = 500;
+        var clickAnywhere = attrs.ohjeClickAnywhere !== 'false';
         function appendExtraContent() {
           var content = $compile(scope.extra)(scope);
           element.find('.popover-extra').empty().append(content);
@@ -58,25 +60,40 @@ angular.module('eperusteApp')
             return;
           }
           var opening = angular.isUndefined(visible) || visible;
+          if (!scope.showing && !opening) {
+            return;
+          }
           $timeout(function () {
             el.trigger(opening ? 'show' : 'hide');
+            scope.showing = opening;
             if (opening) {
               var title = element.find('.popover-title');
               var closer = $compile(angular.element(
                 '<span class="closer pull-right" ng-click="show(false)">&#x2715;</span>'))(scope);
               title.append(closer);
+              appendExtraContent();
             }
-            appendExtraContent();
           }, popupDelay);
         };
 
-        // Click anywhere to close
-        $document.on('click', function (event) {
+        var clickHandler = function (event) {
           if (element.find(event.target).length > 0) {
             return;
           }
           scope.show(false);
           scope.$apply();
+        };
+
+        if (clickAnywhere) {
+          // Click anywhere to close
+          $document.on('click', clickHandler);
+          scope.$on('$destroy', function () {
+            $document.off('click', clickHandler);
+          });
+        }
+
+        scope.$on('ohje:closeAll', function () {
+          scope.show(false);
         });
 
         scope.$watch('teksti', function () {
@@ -85,9 +102,7 @@ angular.module('eperusteApp')
         scope.$watch('otsikko', function () {
           scope.title = scope.$parent.$eval(scope.otsikko) || scope.otsikko;
         });
-        scope.$on('$destroy', function () {
-          $document.off('click');
-        });
+
       }
     };
   });

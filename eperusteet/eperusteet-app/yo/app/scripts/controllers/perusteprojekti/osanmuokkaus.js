@@ -308,11 +308,23 @@ angular.module('eperusteApp')
         model: '=',
         config: '='
       },
-      controller: function($rootScope, $scope, $modal, ProxyService, $q, Notifikaatiot, OsanMuokkausHelper) {
+      controller: function($rootScope, $scope, $modal, ProxyService, $q, Notifikaatiot, OsanMuokkausHelper, $document) {
         function uudetKohdealueetCb(kohdealueet) {
           OsanMuokkausHelper.getOppiaine().kohdealueet = kohdealueet;
           $rootScope.$broadcast('update:oppiaineenkohdealueet');
         }
+
+        function clickHandler(event) {
+          var ohjeEl = angular.element(event.target).closest('.popover, .popover-element');
+          if (ohjeEl.length === 0) {
+            $rootScope.$broadcast('ohje:closeAll');
+          }
+        }
+        $document.on('click', clickHandler);
+        $scope.$on('$destroy', function () {
+          $document.off('click', clickHandler);
+        });
+
 
         $scope.muokkaaKohdealueita = function() {
           $modal.open({

@@ -37,11 +37,16 @@
       <input id="nimi-input" class="form-control" ng-model="editableModel.nimi" slocalized required>
       <p class="alert alert-error" ng-show="(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError"
          kaanna>Nimi on pakollinen tieto</p>
+
       <label for="koodi-input" class="header" kaanna="muokkaus-tutkinnon-osan-koodi-header"></label>
       <div class="fixed-group">
         <input id="koodi-input" class="form-control" type="text" ng-model="editableModel.koodiArvo" editointi-kontrolli disabled="disabled">
         <div class="addon"><button class="btn btn-default" ng-click="openKoodisto()" kaanna="hae-koodistosta"></button></div>
       </div>
+
+      <label for="jnro-input" class="header" kaanna="'jarjestysnumero'"></label>
+      <input class="form-control" type="number" id="jnro-input" ng-model="editableModel.jnro">
+
       <div ng-show="!editableModel._oppiaine">
         <label class="header" kaanna="'oppimaarat'"></label>
         <label class="inputwrapper"><input class="form-control" type="radio" ng-model="editableModel.koosteinen" ng-value="false">

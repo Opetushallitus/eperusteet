@@ -1,5 +1,7 @@
+<!-- tiedote.html -->
 <div class="tiedote-view">
   <h1 kaanna="'tiedote'"></h1>
+  <a icon-role="chevron-left" ng-if="$backurl" ng-href="{{ $backurl }}" kaanna="$backurlHeader"></a>
   <h2>{{tiedote.otsikko | kaanna}}</h2>
   <div class="tiedote-tiedot">
     {{ tiedote.nimi || tiedote.muokkaaja }}, {{tiedote.muokattu | aikaleima}}

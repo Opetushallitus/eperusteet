@@ -171,7 +171,12 @@ angular.module('eperusteApp')
       });
   })
 
-  .controller('TiedoteViewController', function ($scope, $stateParams, TiedotteetCRUD, Notifikaatiot) {
+  .controller('TiedoteViewController', function ($rootScope, $state, $scope, $stateParams, TiedotteetCRUD, Notifikaatiot) {
+    if ($rootScope.lastState.state.name === 'root.admin.tiedotteet') {
+      $scope.$backurl = $state.href($rootScope.lastState.state.name, $rootScope.lastState.params);
+      $scope.$backurlHeader = 'takaisin-tiedotteiden-hallintaan';
+    }
+
     $scope.tiedote = null;
     TiedotteetCRUD.get({tiedoteId: $stateParams.tiedoteId}, function (res) {
       $scope.tiedote = res;
