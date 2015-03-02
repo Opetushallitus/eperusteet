@@ -4,7 +4,7 @@
 angular.module('eperusteApp')
   .directive('hallintalinkki',['Profiili', '$window', function (Profiili, $window) {
     return {
-      template: '<a ng-cloak ui-sref="root.admin" icon-role="settings" kaanna="hallinta"></a>',
+      template: '<a ng-cloak ui-sref="root.admin.perusteprojektit" icon-role="settings" kaanna="hallinta"></a>',
       restrict: 'E',
       link: function postLink(scope, element) {
 

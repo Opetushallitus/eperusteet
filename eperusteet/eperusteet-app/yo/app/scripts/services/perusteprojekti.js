@@ -298,7 +298,7 @@ angular.module('eperusteApp')
       PerusteProjektiService.setSuoritustapa(stateParams.suoritustapa);
       var perusteenSisaltoDeferred = $q.defer();
 
-      if (forced || YleinenData.isPerusopetus(peruste) || YleinenData.isEsiopetus(peruste) ||
+      if (forced || YleinenData.isPerusopetus(peruste) || YleinenData.isSimple(peruste) ||
           (peruste.suoritustavat !== null && peruste.suoritustavat.length > 0)) {
         self.haeSisalto(peruste.id, stateParams.suoritustapa).then(function() {
           perusteenSisaltoDeferred.resolve();

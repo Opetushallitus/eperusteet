@@ -95,6 +95,14 @@ angular.module('eperusteApp')
         hakuState: 'root.selaus.perusopetuslista',
         sisaltoTunniste: 'posisalto',
         hasPdfCreation: false
+      },
+      'koulutustyyppi_6': {
+        nimi: 'lisaopetus',
+        oletusSuoritustapa: 'lisaopetus',
+        hasTutkintonimikkeet: false,
+        hakuState: 'root.selaus.lisaopetuslista',
+        sisaltoTunniste: 'losisalto',
+        hasPdfCreation: true
       }
     };
 
@@ -119,8 +127,16 @@ angular.module('eperusteApp')
       return peruste.koulutustyyppi === 'koulutustyyppi_16';
     };
 
+    this.isLisaopetus = function (peruste) {
+      return peruste.koulutustyyppi === 'koulutustyyppi_6';
+    };
+
     this.isEsiopetus = function (peruste) {
       return peruste.koulutustyyppi === 'koulutustyyppi_15';
+    };
+
+    this.isSimple = function (peruste) {
+      return this.isEsiopetus(peruste) || this.isLisaopetus(peruste);
     };
 
     this.validSuoritustapa = function (peruste, suoritustapa) {

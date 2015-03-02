@@ -1,4 +1,5 @@
 <div>
+  <!-- partials/numberinput.html -->
   <div ng-form="innerForm">
     <input ng-if="type !== 'float' && type !== 'integer'" class="{{luokka}}" ng-model="$parent.model" type="number" min="{{min}}" max="{{max}}"
            name="tmpName" step="{{step}}">

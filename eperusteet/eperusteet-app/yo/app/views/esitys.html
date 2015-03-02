@@ -16,11 +16,15 @@ European Union Public Licence for more details.
 
 <div class="main-content" id="main">
 <!-- esitys.html -->
-
+    <div ng-if="$prestate" class="alert alert-info">
+        <h4 kaanna="'perusteen-esikatselu'"></h4>
+        <p kaanna="'laadinnan-esikatselu-info'"></p>
+    </div>
     <div class="esitys">
         <div class="sivunavi-navigaatio">
             <div class="sivunavi-takaisin">
-              <a ng-href="{{backLink}}" icon-role="back" kaanna="takaisin-hakuun"></a>
+                <a ng-if="!$prestate" ng-href="{{backLink}}" icon-role="back" kaanna="takaisin-hakuun"></a>
+                <a ng-if="$prestate" ng-href="{{ '#' + $prestate }}" icon-role="back" kaanna="'takaisin-laadintaan'"></a>
             </div>
             <sivunavigaatio2 items="navi.items" header="navi.header">
               <select ng-show="suoritustavat.length > 1" class="form-control input-sm"

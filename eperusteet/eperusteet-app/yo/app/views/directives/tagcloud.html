@@ -3,7 +3,7 @@
 <p ng-show="showEmptyPlaceholder()" kaanna="ei-asetettu"></p>
 <ul class="tagcloud">
   <li ng-repeat="tag in model | filter:notHidden | orderBy:orderFn">
-    <span ng-if="openable === 'true'" ohje="false" teksti="tag.teksti" otsikko="tag.nimi" suunta="bottom"
+    <span ng-if="openable === 'true'" ohje="false" ohje-click-anywhere="false" teksti="tag.teksti" otsikko="tag.nimi" suunta="bottom"
           extra="tag.extra">
       <span class="tc-tag">
         <a class="action-link closer" ng-if="editMode" icon-role="remove"

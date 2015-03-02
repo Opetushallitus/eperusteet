@@ -29,12 +29,11 @@ public enum Vuosiluokka {
     VUOSILUOKKA_6,
     VUOSILUOKKA_7,
     VUOSILUOKKA_8,
-    VUOSILUOKKA_9,
-    VUOSILUOKKA_10;
+    VUOSILUOKKA_9;
 
     @Override
     public String toString() {
         return name().toLowerCase();
     }
-  
+
 }

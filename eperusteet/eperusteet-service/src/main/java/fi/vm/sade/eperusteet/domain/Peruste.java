@@ -202,7 +202,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
                     viite = suoritustapa.getSisalto();
                 }
             }
-        } else if (suoritustapakoodi.equals(Suoritustapakoodi.ESIOPETUS)) {
+        } else if (suoritustapakoodi.equals(Suoritustapakoodi.ESIOPETUS) || suoritustapakoodi.equals(Suoritustapakoodi.LISAOPETUS)) {
             viite = this.getEsiopetuksenPerusteenSisalto().getSisalto();
         } else if (suoritustapakoodi.equals(Suoritustapakoodi.PERUSOPETUS)) {
             viite = this.getPerusopetuksenPerusteenSisalto().getSisalto();

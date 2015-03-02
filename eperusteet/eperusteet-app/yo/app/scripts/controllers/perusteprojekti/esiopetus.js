@@ -19,13 +19,13 @@
 
 angular.module('eperusteApp')
   .controller('EsiopetusSisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state, SuoritustavanSisalto,
-    TekstikappaleOperations, SuoritustapaSisalto, TutkinnonOsaEditMode, Notifikaatiot, $stateParams, Editointikontrollit) {
+    TekstikappaleOperations, SuoritustapaSisalto, TutkinnonOsaEditMode, Notifikaatiot, $stateParams, Editointikontrollit, YleinenData) {
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     TekstikappaleOperations.setPeruste($scope.peruste);
     $scope.rajaus = '';
     $scope.peruste.sisalto = perusteprojektiTiedot.getSisalto();
-    $scope.$esitysurl = $state.href('root.selaus.esiopetus', {
+    $scope.$esitysurl = $state.href('root.selaus.' + (YleinenData.isEsiopetus($scope.peruste) ? 'esiopetus' : 'lisaopetus') , {
       perusteId: $scope.peruste.id,
       suoritustapa: $stateParams.suoritustapa
     });
@@ -35,9 +35,10 @@ angular.module('eperusteApp')
     $scope.$watch('peruste.sisalto', function () {
       Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function (lapsi) {
         lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.tekstikappale', {
-          suoritustapa: 'esiopetus',
+          suoritustapa: $stateParams.suoritustapa,
           perusteenOsaViiteId: lapsi.id,
-          versio: '' });
+          versio: ''
+        });
       });
     }, true);
 

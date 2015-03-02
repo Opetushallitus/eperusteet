@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +30,6 @@ import lombok.Setter;
 public class PerusopetuksenPerusteenSisaltoDto {
     private PerusteenOsaViiteDto.Laaja sisalto;
     private Set<LaajaalainenOsaaminenDto> laajaalaisetosaamiset;
-    private Set<OppiaineLaajaDto> oppiaineet;
+    private List<OppiaineLaajaDto> oppiaineet;
     private Set<VuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet;
 }

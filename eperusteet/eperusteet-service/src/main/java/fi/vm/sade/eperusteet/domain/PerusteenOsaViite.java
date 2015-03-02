@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.domain;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.util.List;
 import javax.persistence.CascadeType;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -28,9 +27,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 
 /**
@@ -59,10 +58,11 @@ public class PerusteenOsaViite implements ReferenceableEntity {
     @Setter
     private PerusteenOsa perusteenOsa;
 
-    @OneToMany(mappedBy = "vanhempi", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "vanhempi", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @OrderColumn
     @Getter
     @Setter
+    @BatchSize(size = 100)
     private List<PerusteenOsaViite> lapset;
 
     @Override

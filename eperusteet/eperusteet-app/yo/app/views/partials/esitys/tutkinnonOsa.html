@@ -1,7 +1,8 @@
+<!-- partials/esitys/tutkinnonOsa.html -->
+
 <h2 esitys-sivu-otsikko>
   {{ tutkinnonOsa.nimi | kaanna }} <span ng-show="tutkinnonOsaViite.laajuus">{{ tutkinnonOsaViite.laajuus }} {{ yksikko | kaanna }}</span>
 </h2>
-
 
 <div ng-if="tutkinnonOsa.koodiArvo">
   <strong kaanna="'koodi'"></strong>: {{ tutkinnonOsa.koodiArvo }}

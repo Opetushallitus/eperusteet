@@ -63,7 +63,6 @@ angular.module('eperusteApp')
 
   .controller('TagCloudModalController', function ($scope, model, addLabel, Utils, lisaaUusiVaihtoehto) {
     $scope.model = model;
-    console.log($scope.model);
     $scope.addLabel = addLabel;
     $scope.orderFn = Utils.nameSort;
     $scope.hasLisaaUusi = !!lisaaUusiVaihtoehto;

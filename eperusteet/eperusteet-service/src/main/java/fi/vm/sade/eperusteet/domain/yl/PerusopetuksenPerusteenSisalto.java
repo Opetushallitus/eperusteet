@@ -27,10 +27,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 
 /**
@@ -60,6 +62,7 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
     private Set<LaajaalainenOsaaminen> laajaalaisetosaamiset = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY)
+    @BatchSize(size = 25)
     @JoinTable
     private Set<Oppiaine> oppiaineet = new HashSet<>();
 

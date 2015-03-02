@@ -26,6 +26,7 @@ public enum Suoritustapakoodi {
     OPS("ops"),
     NAYTTO("naytto"),
     PERUSOPETUS("perusopetus"),
+    LISAOPETUS("lisaopetus"),
     ESIOPETUS("esiopetus");
 
     private final String koodi;

@@ -211,7 +211,7 @@ angular.module('eperusteApp')
         field.visible = $scope.fieldOps.hasContent(field);
       });
 
-      $scope.vuosiluokkaOptions = _.map(_.range(1, 11), function (item) {
+      $scope.vuosiluokkaOptions = _.map(_.range(1, 10), function (item) {
         var vlEnum = 'vuosiluokka_' + item;
         return {
           value: vlEnum,

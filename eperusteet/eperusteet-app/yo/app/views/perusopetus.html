@@ -67,8 +67,10 @@
                 <termisto-tekstikentta tekstikentta="valittuOppiaine.oppiaine.tehtava.teksti || '-'"></termisto-tekstikentta>
               </div>
 
-              <h2>{{ vuosiluokkakokonaisuudetMap[valittuOppiaine.vlks._vuosiluokkaKokonaisuus].nimi | kaanna }}</h2>
-              <hr>
+              <div ng-show="valittuOppiaine.vlks">
+                <h2>{{ vuosiluokkakokonaisuudetMap[valittuOppiaine.vlks._vuosiluokkaKokonaisuus].nimi | kaanna }}</h2>
+                <hr>
+              </div>
 
               <div ng-hide="filterSisalto.tehtava || !hasContent(valittuOppiaine.vlks.tehtava)">
                 <h3>{{ valittuOppiaine.vlks.tehtava.otsikko | kaanna }}</h3>

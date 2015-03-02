@@ -88,7 +88,7 @@ angular.module('eperusteApp')
   .controller('OppiaineController', function ($scope, PerusopetusService, Kaanna, Notifikaatiot,
       PerusteProjektiSivunavi, Oppiaineet, $timeout, $state, $stateParams, $q, YleinenData, tabHelper,
       CloneHelper, OppimaaraHelper, Utils, $rootScope, Lukitus, VlkUtils, ProjektinMurupolkuService, Varmistusdialogi,
-      Koodisto, MuokkausUtils) {
+      Koodisto, MuokkausUtils, $document) {
     $scope.editableModel = {};
     $scope.editEnabled = false;
     $scope.mappedVuosiluokat = [];
@@ -99,6 +99,17 @@ angular.module('eperusteApp')
     $scope.oppimaaraRequested = false;
     $scope.oppiaineet = [];
     $scope.$oppiaineenNimi = {};
+
+    function clickHandler(event) {
+      var ohjeEl = angular.element(event.target).closest('.popover, .popover-element');
+      if (ohjeEl.length === 0) {
+        $rootScope.$broadcast('ohje:closeAll');
+      }
+    }
+    $document.on('click', clickHandler);
+    $scope.$on('$destroy', function () {
+      $document.off('click', clickHandler);
+    });
 
     PerusopetusService.getOsat(PerusopetusService.OPPIAINEET, true).then(function (data) {
       $scope.oppiaineet = data;

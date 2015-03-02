@@ -1,4 +1,5 @@
 <div class="form-group">
+  <!-- formfield.html -->
   <label class="col-sm-3 control-label">{{label | kaanna}}{{ postfix }}<span ng-transclude></span></label>
   <div class="col-sm-9" ng-if="!isDate">
     <numberinput luokka="form-control" ng-if="isNumber" type="{{type}}" model="input.model" min="{{min}}" max="{{max}}" form="form" step="{{step}}"></numberinput>
