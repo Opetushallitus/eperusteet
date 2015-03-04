@@ -18,11 +18,11 @@
         </init-param>
         <init-param>
             <param-name>cors.allowed.methods</param-name>
-            <param-value>GET,HEAD,OPTIONS</param-value>
+            <param-value>GET,PUT,POST,DELETE,PATCH,HEAD,OPTIONS</param-value>
         </init-param>
         <init-param>
             <param-name>cors.support.credentials</param-name>
-            <param-value>false</param-value>
+            <param-value>true</param-value>
         </init-param>
         <init-param>
             <param-name>cors.preflight.maxage</param-name>
