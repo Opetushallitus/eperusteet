@@ -353,9 +353,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 Element tbody = doc.createElement("tbody");
                 tgroup.appendChild(tbody);
                 Element row = doc.createElement("row");
-                ProcessingInstruction pi = doc.createProcessingInstruction("dbfo", null);
-                pi.setData("bgcolor=\"#AAAAAA\"");
-                row.appendChild(pi);
+                addDBFOInstruction(doc, row, "bgcolor=\"#AAAAAA\"");
                 tbody.appendChild(row);
                 Element entry = doc.createElement("entry");
                 entry.setAttribute("align", "center");
@@ -380,9 +378,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 Element tbody = doc.createElement("tbody");
                 tgroup.appendChild(tbody);
                 Element hrow = doc.createElement("row");
-                ProcessingInstruction pi = doc.createProcessingInstruction("dbfo", null);
-                pi.setData("bgcolor=\"#EEEEEE\"");
-                hrow.appendChild(pi);
+                addDBFOInstruction(doc, hrow, "bgcolor=\"#EEEEEE\"");
                 tbody.appendChild(hrow);
                 Element hentry = doc.createElement("entry");
                 hentry.setAttribute("align", "center");
@@ -865,9 +861,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 headerEntry.setAttribute("namest", "taso");
                 headerEntry.setAttribute("nameend", "kriteeri");
 
-                ProcessingInstruction pi = doc.createProcessingInstruction("dbfo", null);
-                pi.setData("bgcolor=\"#EEEEEE\"");
-                headerRowElement.appendChild(pi);
+                // Otsikkorivin tausta vähän shadetuksi
+                addDBFOInstruction(doc, headerRowElement, "bgcolor=\"#EEEEEE\"");
 
                 headerRowElement.appendChild(headerEntry);
 
@@ -1138,5 +1133,11 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         Element emphasis = newBoldElement(doc);
         emphasis.appendChild(doc.createTextNode(teksti));
         return emphasis;
+    }
+
+    private void addDBFOInstruction(Document doc, Element element, String instruction) {
+        ProcessingInstruction pi = doc.createProcessingInstruction("dbfo", null);
+        pi.setData(instruction);
+        element.appendChild(pi);
     }
 }
