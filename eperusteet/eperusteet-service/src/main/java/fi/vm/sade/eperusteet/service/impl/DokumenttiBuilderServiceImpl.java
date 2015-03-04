@@ -811,37 +811,25 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             String otsikkoTeksti = tyyppi == TutkinnonOsaTyyppi.NORMAALI ? getTextString(ka.getOtsikko(), kieli) : messages
                 .translate("docgen.tutke2.arvioinnin_kohteet.title", kieli);
 
-            // Runnotaan jokainen kohde samaan taulukkoon, kukin kohde omalle
-            // tgroup-ryhmänään ja niiden otsikko spännätyllä rivillä.
-            // Arvioinnin kohteen otsikko taulukon alkuun omalla rivillään,
-            // jotta dokumentin sektiointihierarkiasta ei tule liian syvä
-            Element kaTable = doc.createElement("informaltable");
-            arviointiSection.appendChild(kaTable);
+            // Kukin kohdealue alkaa omalla kappaleellaan
+            Element kaTitlePara = doc.createElement("para");
+            Element kaTitleEmphasis = doc.createElement("emphasis");
+            kaTitleEmphasis.setAttribute("role", "strong");
+            kaTitleEmphasis.appendChild(doc.createTextNode(otsikkoTeksti.toUpperCase()));
+            kaTitlePara.appendChild(kaTitleEmphasis);
+            arviointiSection.appendChild(kaTitlePara);
 
-            // Otsikkorivi arvioinninkohdealuetaulukkoon
-            Element katgroup = doc.createElement("tgroup");
-            katgroup.setAttribute("cols", "1");
-            kaTable.appendChild(katgroup);
-            Element kathead = doc.createElement("tbody");
-            katgroup.appendChild(kathead);
-            Element katheadRow = doc.createElement("row");
-            kathead.appendChild(katheadRow);
-            ProcessingInstruction katheadpi = doc.createProcessingInstruction("dbfo", null);
-            katheadpi.setData("bgcolor=\"#AAAAAA\"");
-            katheadRow.appendChild(katheadpi);
-            Element katheadEntry = doc.createElement("entry");
-            katheadEntry.setAttribute("align", "center");
-            katheadRow.appendChild(katheadEntry);
-            Element bold = newBoldElement(doc);
-            bold.appendChild(doc.createTextNode(otsikkoTeksti.toUpperCase()));
-            katheadEntry.appendChild(bold);
-
-            // kukin arvioinninkohde omaan tgroupiinsa, kukin osaamistaso
-            // omalla rivillään
+            // Jokaiselle kohdealueelle oma taulukkonsa, ja annetaan docbookin
+            // yrittää kovasti, että se pysyy kokonaisena.
             List<ArvioinninKohde> arvioinninKohteet = ka.getArvioinninKohteet();
             for (ArvioinninKohde kohde : arvioinninKohteet) {
                 String kohdeTeksti = getTextString(kohde.getOtsikko(), kieli);
 
+                Element kaTable = doc.createElement("informaltable");
+                addDBFOInstruction(doc, kaTable, "keep-together=\"always\"");
+                arviointiSection.appendChild(kaTable);
+
+                // Kohdealueen otsikkorivi alkaa
                 Element groupElement = doc.createElement("tgroup");
                 groupElement.setAttribute("cols", "2");
                 Element colspecTaso = doc.createElement("colspec");
@@ -860,14 +848,15 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 headerEntry.appendChild(doc.createTextNode(kohdeTeksti));
                 headerEntry.setAttribute("namest", "taso");
                 headerEntry.setAttribute("nameend", "kriteeri");
+                headerEntry.setAttribute("align", "center");
 
                 // Otsikkorivin tausta vähän shadetuksi
                 addDBFOInstruction(doc, headerRowElement, "bgcolor=\"#EEEEEE\"");
 
                 headerRowElement.appendChild(headerEntry);
-
                 headerElement.appendChild(headerRowElement);
                 groupElement.appendChild(headerElement);
+                // Kohdealueen otsikkorivi loppuu
 
                 Element bodyElement = doc.createElement("tbody");
 
