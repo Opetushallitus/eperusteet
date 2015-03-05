@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd" version="2.0">
+    <entity class="fi.vm.sade.eperusteet.domain.PerusteenOsaViite" metadata-complete="false">
+        <named-native-query name="PerusteenOsaViite.findRootsByPerusteenOsaId" result-set-mapping="PerusteenOsaViite.rootId">
+            <query>
+                with recursive vanhemmat(id,vanhempi_id,perusteenosa_id) as
+                (select pv.id, pv.vanhempi_id, pv.perusteenosa_id from perusteenosaviite pv
+                union all
+                select pv.id, pv.vanhempi_id, v.perusteenosa_id
+                from perusteenosaviite pv, vanhemmat v where pv.id = v.vanhempi_id)
+                select CAST(id as BIGINT) AS id
+                from vanhemmat
+                where vanhempi_id is null
+                and CAST(perusteenosa_id as BIGINT) = ?1
+            </query>
+        </named-native-query>
+    </entity>
+</entity-mappings>

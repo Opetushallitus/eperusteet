@@ -13,15 +13,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-import org.springframework.stereotype.Repository;
-
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import java.util.List;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 /**
  *
@@ -29,5 +28,10 @@ import java.util.List;
  */
 @Repository
 public interface PerusteenOsaViiteRepository extends JpaWithVersioningRepository<PerusteenOsaViite, Long> {
+
     List<PerusteenOsaViite> findAllByPerusteenOsa(PerusteenOsa perusteenOsa);
+
+    @Query(name = "PerusteenOsaViite.findRootsByPerusteenOsaId")
+    List<Long> findRootsByPerusteenOsaId(Long perusteenOsaId);
+
 }

@@ -32,8 +32,8 @@ public class PermissionChecker {
         //this function is intentionally left blank
     }
 
-    @PreAuthorize("hasPermission(#tid, #t.toString(), #p.toString())")
-    public void checkPermission(@P("tid") Serializable targetId, @P("t") PermissionManager.Target targetType, @P("p") PermissionManager.Permission perm) {
+    @PreAuthorize("hasPermission(#tid, #t.toString(), #p)")
+    public void checkPermission(@P("tid") Serializable targetId, @P("t") PermissionManager.Target targetType, @P("p") PermissionManager.Permission... perm) {
         //this function is intentionally left blank
     }
 }

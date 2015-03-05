@@ -27,9 +27,12 @@ European Union Public Licence for more details.
       <div class="part-header-wrapper">
         <div class="action-buttons">
           <div class="floater" ng-attr-title="{{lockNotification}}">
+            <button ng-disabled="isLocked" ng-hide="tekstikappale.tila !== 'valmis' || editEnabled || !versiot.latest"
+              ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
+              oikeustarkastelu="[{target:'peruste',permission:'korjaus'}]"></button>
             <button ng-disabled="isLocked" ng-hide="tekstikappale.tila === 'valmis' || editEnabled || !versiot.latest"
               ng-click="muokkaa()" class="btn btn-default" icon-role="edit" kaanna="'muokkaa'"
-              oikeustarkastelu="[{target:'peruste',permission:'muokkaus'},{target:'peruste',permission:'korjaus'}]"></button>
+              oikeustarkastelu="[{target:'peruste',permission:'muokkaus'}]"></button>
           </div>
           <button ng-disabled="!canAddLapsi() && tekstikappale.tila !== 'valmis'" ng-hide="editEnabled || !versiot.latest"
             ng-click="addLapsi()" class="floater btn btn-default" icon-role="add" kaanna="lisaa-aliotsikko"
