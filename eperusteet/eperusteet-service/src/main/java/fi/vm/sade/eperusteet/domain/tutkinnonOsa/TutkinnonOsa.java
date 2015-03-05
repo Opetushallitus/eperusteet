@@ -206,7 +206,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     }
 
     private void copyState(TutkinnonOsa other) {
-        this.arviointi = other.arviointi == null ? null : new Arviointi(other.getArviointi());
+        this.arviointi = other.getArviointi() == null ? null : new Arviointi(other.getArviointi());
         this.ammattitaitovaatimukset = other.getAmmattitaitovaatimukset();
         this.ammattitaidonOsoittamistavat = other.getAmmattitaidonOsoittamistavat();
         this.tavoitteet = other.getTavoitteet();
