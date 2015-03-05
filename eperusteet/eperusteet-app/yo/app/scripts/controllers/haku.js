@@ -19,19 +19,20 @@
 
 angular.module('eperusteApp')
   .config(function($stateProvider) {
+    var paramList = '?nimi&koulutusala&tyyppi&opintoala';
     $stateProvider
       .state('root.selaus', {
         url: '/selaus',
         template: '<div ui-view></div>'
       })
       .state('root.selaus.ammatillinenperuskoulutus', {
-        url: '/ammatillinenperuskoulutus',
+        url: '/ammatillinenperuskoulutus' + paramList,
         templateUrl: 'views/haku.html',
         controller: 'HakuCtrl',
         resolve: {'koulutusalaService': 'Koulutusalat'}
       })
       .state('root.selaus.ammatillinenaikuiskoulutus', {
-        url: '/ammatillinenaikuiskoulutus',
+        url: '/ammatillinenaikuiskoulutus' + paramList,
         templateUrl: 'views/haku.html',
         controller: 'HakuCtrl',
         resolve: {'koulutusalaService': 'Koulutusalat'}
@@ -130,8 +131,8 @@ angular.module('eperusteApp')
         .value();
     }, Notifikaatiot.serverCb);
   })
-  .controller('HakuCtrl', function($scope, $rootScope, $state, Perusteet, Haku,
-    YleinenData, koulutusalaService, Kieli) {
+  .controller('HakuCtrl', function($scope, $rootScope, $state, Perusteet, Haku, $stateParams,
+    YleinenData, koulutusalaService, Kieli, Profiili, Notifikaatiot) {
     var pat = '';
     // Viive, joka odotetaan, ennen kuin haku nimi muutoksesta lähtee serverille.
     var hakuViive = 300; //ms
@@ -140,9 +141,24 @@ angular.module('eperusteApp')
     $scope.sivuja = 1;
     $scope.kokonaismaara = 0;
     $scope.koulutusalat = koulutusalaService.haeKoulutusalat();
+    var parametritMuuttuneet = false;
+    $scope.kirjanmerkinNimi = '';
+
+    $scope.updateUrl = function() {
+      var newParams = _.merge($stateParams, $scope.hakuparametrit);
+      if (!_.isEmpty($scope.kirjanmerkinNimi)) {
+        Profiili.asetaSuosikki($state.current.name, $scope.kirjanmerkinNimi, function() {
+          $scope.kirjanmerkinNimi = '';
+          $state.go($state.current.name, newParams, { reload: false });
+        }, newParams);
+      }
+      else {
+        Notifikaatiot.varoitus('kirjanmerkilla-pitaa-olla-nimi');
+      }
+    };
 
     function setHakuparametrit() {
-      $scope.hakuparametrit = _.merge(Haku.getHakuparametrit($state.current.name), {
+      $scope.hakuparametrit = _.merge(_.merge(Haku.getHakuparametrit($state.current.name), $stateParams), {
         kieli: Kieli.getSisaltokieli()
       });
     }
@@ -221,4 +237,5 @@ angular.module('eperusteApp')
     };
 
     $scope.$on('changed:sisaltokieli', $scope.tyhjenna);
+
   });
