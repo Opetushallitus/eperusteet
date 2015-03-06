@@ -99,7 +99,7 @@ angular.module('eperusteApp')
         otsikko: 'vahvista-poisto',
         teksti: 'poistetaanko-tiedote',
       })(function() {
-        doDelete(model);
+        TiedoteService.delete(model);
       });
     };
 
@@ -148,6 +148,7 @@ angular.module('eperusteApp')
     }
 
     return {
+      delete: doDelete,
       lisaaTiedote: lisaaTiedote
     };
   })

@@ -33,7 +33,7 @@ angular.module('eperusteApp')
           .reverse()
           .value();
       });
-    };
+    }
 
     paivitaOmatProjektit();
 

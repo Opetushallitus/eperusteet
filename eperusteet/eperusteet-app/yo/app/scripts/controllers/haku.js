@@ -141,7 +141,6 @@ angular.module('eperusteApp')
     $scope.sivuja = 1;
     $scope.kokonaismaara = 0;
     $scope.koulutusalat = koulutusalaService.haeKoulutusalat();
-    var parametritMuuttuneet = false;
     $scope.kirjanmerkinNimi = '';
 
     $scope.updateUrl = function() {
