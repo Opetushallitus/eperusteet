@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Peruste;
@@ -30,6 +31,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.Termi;
+import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
@@ -39,7 +41,11 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.repository.TermistoRepository;
+import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
+import fi.vm.sade.eperusteet.service.KoodistoService;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.util.Pair;
@@ -49,6 +55,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -99,6 +106,12 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     @Autowired
     private TermistoRepository termistoRepository;
 
+    @Autowired
+    private TutkintonimikeKoodiRepository tutkintonimikeKoodiRepository;
+
+    @Autowired
+    private KoodistoService koodistoService;
+
     @Override
     public String generateXML(Peruste peruste, Kieli kieli, Suoritustapakoodi suoritustapakoodi) throws
         TransformerConfigurationException,
@@ -120,7 +133,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         titleElement.appendChild(doc.createTextNode(nimi));
         rootElement.appendChild(titleElement);
 
-        //rootElement.appendChild(doc.createElement("info"));
+        addInfoPage(doc, peruste, kieli);
+
         // tähän vois lisätä esim jonkun info-elementin alkusivuja varten?
         for (Suoritustapa st : peruste.getSuoritustavat()) {
             if (st.getSuoritustapakoodi().equals(suoritustapakoodi)) {
@@ -893,9 +907,21 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         }
     }
 
+    private Element addTableRow(Document doc, Element table) {
+        Element row = doc.createElement("row");
+        table.appendChild(row);
+        return row;
+    }
+
     private void addTableCell(Document doc, Element row, String text) {
         Element entry = doc.createElement("entry");
         entry.appendChild(doc.createTextNode(text));
+        row.appendChild(entry);
+    }
+
+    private void addTableCell(Document doc, Element row, Element child) {
+        Element entry = doc.createElement("entry");
+        entry.appendChild(child);
         row.appendChild(entry);
     }
 
@@ -1129,4 +1155,125 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         pi.setData(instruction);
         element.appendChild(pi);
     }
+
+    private void addInfoPage(Document doc, Peruste peruste, Kieli kieli) {
+        Element rootElement = doc.getDocumentElement();
+        Element info = doc.createElement("bookinfo");
+        rootElement.appendChild(info);
+
+
+        // Infosivulle sama tavara, mikä on perusteen esityssivulla perusteen
+        // tiedoissa:
+        // - Perusteen nimi
+        // - Määräyksen diaarinumero
+        // - Koulutuskoodit
+        // - Tutkintonimikkeet
+        // - Tiivistelmä
+        // - Voimaantulo
+        // - Voimassaolon päättyminen
+
+        // Laitetaan alkuun kuvaus (tiivistelmä)
+        String kuvaus = getTextString(peruste.getKuvaus(), kieli);
+        Element abstractPara = doc.createElement("para");
+        abstractPara.appendChild(doc.createTextNode(kuvaus));
+        info.appendChild(abstractPara);
+
+        // Taulukossa loput tiedot
+        Element it = doc.createElement("informaltable");
+        it.setAttribute("frame", "none");
+        it.setAttribute("colsep", "0");
+        it.setAttribute("rowsep", "0");
+        info.appendChild(it);
+        Element tgroup = doc.createElement("tgroup");
+        tgroup.setAttribute("cols", "2");
+        it.appendChild(tgroup);
+        Element colspec1 = doc.createElement("colspec");
+        Element colspec2 = doc.createElement("colspec");
+        colspec1.setAttribute("colwidth", "1*");
+        colspec2.setAttribute("colwidth", "2*");
+        tgroup.appendChild(colspec1);
+        tgroup.appendChild(colspec2);
+        Element tbody = doc.createElement("tbody");
+        tgroup.appendChild(tbody);
+
+        Element itrow = addTableRow(doc, tbody);
+        addTableCell(doc, itrow, newBoldElement(doc, messages.translate("docgen.perusteen-nimi", kieli)));
+        addTableCell(doc, itrow, getTextString(peruste.getNimi(), kieli));
+
+        Element itrow2 = addTableRow(doc, tbody);
+        addTableCell(doc, itrow2, newBoldElement(doc, messages.translate("docgen.maarayksen-diaarinumero", kieli)));
+        if (peruste.getDiaarinumero() != null) {
+            addTableCell(doc, itrow2, peruste.getDiaarinumero().toString());
+        } else {
+            addTableCell(doc, itrow2, messages.translate("docgen.ei-asetettu", kieli));
+        }
+
+
+        Set<Koulutus> koulutukset = peruste.getKoulutukset();
+        Element koulutuslist = doc.createElement("simplelist");
+        for (Koulutus koulutus : koulutukset) {
+            String koulutusNimi = getTextString(koulutus.getNimi(), kieli);
+            if (StringUtils.isNotEmpty(koulutus.getKoulutuskoodiArvo())) {
+                koulutusNimi += " (" + koulutus.getKoulutuskoodiArvo() + ")";
+            }
+            Element member = doc.createElement("member");
+            member.appendChild(doc.createTextNode(koulutusNimi));
+            koulutuslist.appendChild(member);
+        }
+
+        Element itrow3 = addTableRow(doc, tbody);
+        addTableCell(doc, itrow3, newBoldElement(doc, messages.translate("docgen.koulutuskoodit", kieli)));
+        if (koulutuslist.hasChildNodes()) {
+            addTableCell(doc, itrow3, koulutuslist);
+        } else {
+            addTableCell(doc, itrow3, messages.translate("docgen.ei-asetettu", kieli));
+        }
+
+
+        List<TutkintonimikeKoodi> nimikeKoodit = tutkintonimikeKoodiRepository.findByPerusteId(peruste.getId());
+        Element nimikelist = doc.createElement("simplelist");
+        for (TutkintonimikeKoodi tnkoodi : nimikeKoodit) {
+            KoodistoKoodiDto koodiDto = koodistoService.get("tutkintonimikkeet", tnkoodi.getTutkintonimikeUri());
+
+            for (KoodistoMetadataDto meta : koodiDto.getMetadata()) {
+                if (meta.getKieli().toLowerCase().equals(kieli.toString().toLowerCase())) {
+                    Element member = doc.createElement("member");
+                    member.appendChild(doc.createTextNode(meta.getNimi() + " (" + tnkoodi.getTutkintonimikeArvo() + ")"));
+                    nimikelist.appendChild(member);
+                } else {
+                    LOG.debug("{} was no match", meta.getKieli() );
+                }
+            }
+        }
+
+
+        Element itrow4 = addTableRow(doc, tbody);
+        addTableCell(doc, itrow4, newBoldElement(doc, messages.translate("docgen.tutkintonimikkeet", kieli)));
+        if (nimikelist.hasChildNodes()) {
+            addTableCell(doc, itrow4, nimikelist);
+        } else {
+            addTableCell(doc, itrow4, messages.translate("docgen.ei-asetettu", kieli));
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+
+        Element itrow5 = addTableRow(doc, tbody);
+        addTableCell(doc, itrow5, newBoldElement(doc, messages.translate("docgen.voimaantulo", kieli)));
+        if (peruste.getVoimassaoloAlkaa() != null) {
+            addTableCell(doc, itrow5, dateFormat.format(peruste.getVoimassaoloAlkaa()));
+        } else {
+            addTableCell(doc, itrow5, messages.translate("docgen.ei-asetettu", kieli));
+        }
+
+        Element itrow6 = addTableRow(doc, tbody);
+        addTableCell(doc, itrow6, newBoldElement(doc, messages.translate("docgen.voimassaolon-paattyminen", kieli)));
+        if (peruste.getVoimassaoloLoppuu() != null) {
+            addTableCell(doc, itrow6, dateFormat.format(peruste.getVoimassaoloLoppuu()));
+        } else {
+            addTableCell(doc, itrow6, messages.translate("docgen.ei-asetettu", kieli));
+        }
+
+    }
+
+
 }
