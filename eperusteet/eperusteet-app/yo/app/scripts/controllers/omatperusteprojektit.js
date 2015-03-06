@@ -22,7 +22,7 @@ angular.module('eperusteApp')
     $scope.projektit = {};
     $scope.naytto = {limit: 5, shown: 5};
 
-    var paivitaOmatProjektit = function() {
+    function paivitaOmatProjektit() {
       OmatPerusteprojektit.query({}, function(vastaus) {
         $scope.projektit = _(vastaus)
           .filter(function(pp) { return pp.diaarinumero; /*ei ole pohja*/ })
@@ -37,9 +37,7 @@ angular.module('eperusteApp')
 
     paivitaOmatProjektit();
 
-    $scope.$on('update:perusteprojekti', function() {
-      paivitaOmatProjektit();
-    });
+    $scope.$on('update:perusteprojekti', paivitaOmatProjektit);
   })
 .directive('limitToggler', function () {
   return {
