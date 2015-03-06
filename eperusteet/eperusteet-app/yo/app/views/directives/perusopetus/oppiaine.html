@@ -45,7 +45,9 @@
       </div>
 
       <label for="jnro-input" class="header" kaanna="'jarjestysnumero'"></label>
-      <input class="form-control" type="number" id="jnro-input" ng-model="editableModel.jnro">
+      <div class="fixed-group">
+        <input class="form-control" type="number" id="jnro-input" ng-model="editableModel.jnro">
+      </div>
 
       <div ng-show="!editableModel._oppiaine">
         <label class="header" kaanna="'oppimaarat'"></label>
