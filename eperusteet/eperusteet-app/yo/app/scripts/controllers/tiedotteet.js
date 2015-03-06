@@ -195,14 +195,23 @@ angular.module('eperusteApp')
       });
   })
 
-  .controller('TiedoteViewController', function ($rootScope, $state, $scope, $stateParams, TiedotteetCRUD, Notifikaatiot) {
+  .controller('TiedoteViewController', function ($rootScope, $state, $scope, $stateParams, TiedotteetCRUD, Notifikaatiot, PerusteprojektiResource,
+                                                 PerusteProjektiService) {
     if ($rootScope.lastState.state.name === 'root.admin.tiedotteet') {
       $scope.$backurl = $state.href($rootScope.lastState.state.name, $rootScope.lastState.params);
       $scope.$backurlHeader = 'takaisin-tiedotteiden-hallintaan';
     }
 
     $scope.tiedote = null;
-    TiedotteetCRUD.get({tiedoteId: $stateParams.tiedoteId}, function (res) {
-      $scope.tiedote = res;
+    TiedotteetCRUD.get({tiedoteId: $stateParams.tiedoteId}, function (tiedote) {
+      $scope.tiedote = tiedote;
+      if (tiedote._perusteprojekti) {
+        PerusteprojektiResource.get({
+          id: tiedote._perusteprojekti
+        }, function(perusteprojekti) {
+          $scope.perusteprojekti = perusteprojekti;
+          $scope.perusteprojekti.$url = PerusteProjektiService.getUrl(perusteprojekti);
+        });
+      }
     }, Notifikaatiot.serverCb);
   });
