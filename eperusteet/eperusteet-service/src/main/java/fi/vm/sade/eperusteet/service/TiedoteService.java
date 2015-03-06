@@ -1,9 +1,9 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
-import java.util.Date;
 import java.util.List;
 import org.springframework.security.access.method.P;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public interface TiedoteService {
     @PreAuthorize("permitAll()")
+    @PostFilter("filterObject.julkinen or filterObject.perusteprojekti == null or hasPermission(filterObject.perusteprojekti.id, 'perusteprojekti', 'LUKU')")
     List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen);
 
     @PreAuthorize("permitAll()")

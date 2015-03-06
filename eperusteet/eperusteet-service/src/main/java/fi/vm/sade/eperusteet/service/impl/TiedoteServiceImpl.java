@@ -10,13 +10,11 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.security.PermissionEvaluator;
-import fi.vm.sade.eperusteet.service.security.PermissionHelper;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.opensaml.xml.security.SecurityHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,9 +39,6 @@ public class TiedoteServiceImpl implements TiedoteService {
     @Autowired
     private KayttajanTietoService kayttajat;
 
-    @Autowired
-    private PermissionEvaluator permissionEvaluator;
-
     @Override
     @Transactional(readOnly = true)
     public List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen) {
@@ -51,17 +46,7 @@ public class TiedoteServiceImpl implements TiedoteService {
             vainJulkiset = true;
         }
         List<Tiedote> tiedotteet = repository.findAll(vainJulkiset, new Date(alkaen));
-        List<Tiedote> response = new ArrayList<>();
-        for (Tiedote tiedote : tiedotteet) {
-            if (!vainJulkiset && tiedote.getPerusteprojekti() != null) {
-                boolean hasPermission = permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), tiedote.getPerusteprojekti().getId(), PermissionManager.Target.PERUSTEPROJEKTI.toString(), "luku");
-                if (!hasPermission) {
-                    continue;
-                }
-            }
-            response.add(tiedote);
-        }
-        return mapper.mapAsList(response, TiedoteDto.class);
+        return mapper.mapAsList(tiedotteet, TiedoteDto.class);
     }
 
     @Override

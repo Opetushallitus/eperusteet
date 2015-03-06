@@ -64,6 +64,10 @@ public class PermissionEvaluator implements org.springframework.security.access.
             return false;
         }
 
+        if (targetId instanceof String) {
+            targetId = Long.valueOf((String)targetId);
+        }
+
         return manager
             .hasPermission(authentication, targetId, Target.valueOf(targetType.toUpperCase()), Permission.valueOf(permission.toString().toUpperCase()));
     }
