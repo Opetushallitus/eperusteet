@@ -7,8 +7,9 @@
 
     <!-- this will process elements from doc ns to fo... -->
     <xsl:import href="res:xsl/docbook/fo/docbook.xsl" />
-    <xsl:template name="book.titlepage.before.verso"></xsl:template>
-    <xsl:template name="book.titlepage.verso"></xsl:template>
+
+    <!-- customization layer for title page-->
+    <xsl:import href="res:docgen/mytitlepages.xsl"/>
 
     <!-- ...and because there is no hr equivalent in docbook, let's
     convert that from epdoc ns -->
