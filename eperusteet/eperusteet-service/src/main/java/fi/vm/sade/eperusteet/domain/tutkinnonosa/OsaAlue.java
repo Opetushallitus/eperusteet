@@ -14,7 +14,7 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.domain.tutkinnonOsa;
+package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PartialMergeable;
@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -42,6 +43,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -127,6 +130,21 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
         if (updated != null) {
             this.setNimi(updated.getNimi());
         }
+    }
+
+    public boolean structureEquals(OsaAlue other) {
+        boolean result = refXnor(getNimi(), other.getNimi());
+        result &= refXnor(getOsaamistavoitteet(), other.getOsaamistavoitteet());
+        if ( result && getOsaamistavoitteet() != null ) {
+            Iterator<Osaamistavoite> i = getOsaamistavoitteet().iterator();
+            Iterator<Osaamistavoite> j = other.getOsaamistavoitteet().iterator();
+            while (result && i.hasNext() && j.hasNext()) {
+                result &= i.next().structureEquals(j.next());
+            }
+            result &= !i.hasNext();
+            result &= !j.hasNext();
+        }
+        return result;
     }
 
     private List<Osaamistavoite> mergeOsaamistavoitteet(List<Osaamistavoite> current, List<Osaamistavoite> updated) {

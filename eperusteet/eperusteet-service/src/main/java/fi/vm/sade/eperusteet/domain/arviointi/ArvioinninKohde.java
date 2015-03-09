@@ -13,19 +13,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.domain.Arviointi;
+package fi.vm.sade.eperusteet.domain.arviointi;
 
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,12 +34,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -118,6 +117,13 @@ public class ArvioinninKohde implements Serializable {
             return Objects.equals(this.osaamistasonKriteerit, other.osaamistasonKriteerit);
         }
         return false;
+    }
+
+    public boolean structureEquals(ArvioinninKohde other) {
+        boolean result = refXnor(getOtsikko(), other.getOtsikko());
+        result &= Objects.equals(getArviointiAsteikko(), other.getArviointiAsteikko());
+        result &= refXnor(getOsaamistasonKriteerit(), other.getOsaamistasonKriteerit());
+        return result;
     }
 
 }

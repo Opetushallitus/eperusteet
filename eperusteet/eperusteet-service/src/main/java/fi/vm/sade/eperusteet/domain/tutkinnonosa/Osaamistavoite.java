@@ -13,12 +13,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.domain.tutkinnonOsa;
+package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
-import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
+import com.google.common.base.Objects;
 import fi.vm.sade.eperusteet.domain.PartialMergeable;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidOsaamistavoiteEsitieto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
@@ -39,6 +40,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -150,6 +153,18 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
         this.esitieto = esitieto;
     }
 
-
+    public boolean structureEquals(Osaamistavoite other) {
+        boolean result = refXnor(getNimi(), other.getNimi());
+        result &= isPakollinen() == other.isPakollinen();
+        result &= Objects.equal(getLaajuus(), other.getLaajuus());
+        result &= refXnor(getTavoitteet(), other.getTavoitteet());
+        result &= refXnor(getTunnustaminen(), other.getTunnustaminen());
+        result &= refXnor(getEsitieto(), other.getEsitieto());
+        result &= refXnor(getArviointi(), other.getArviointi());
+        if ( getArviointi() != null ) {
+            result &= getArviointi().structureEquals(other.getArviointi());
+        }
+        return result;
+    }
 
 }

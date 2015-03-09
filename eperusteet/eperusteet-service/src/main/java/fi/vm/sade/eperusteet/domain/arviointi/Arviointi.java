@@ -13,13 +13,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.domain.Arviointi;
+package fi.vm.sade.eperusteet.domain.arviointi;
 
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -38,6 +39,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -103,6 +106,18 @@ public class Arviointi implements Serializable {
             return Objects.equals(this.arvioinninKohdealueet, other.arvioinninKohdealueet);
         }
         return false;
+    }
+
+    public boolean structureEquals(Arviointi other) {
+        boolean result = refXnor(getLisatiedot(), other.getLisatiedot());
+        Iterator<ArvioinninKohdealue> i = getArvioinninKohdealueet().iterator();
+        Iterator<ArvioinninKohdealue> j = other.getArvioinninKohdealueet().iterator();
+        while (result && i.hasNext() && j.hasNext()) {
+            result &= i.next().structureEquals(j.next());
+        }
+        result &= !i.hasNext();
+        result &= !j.hasNext();
+        return result;
     }
 
     private void copyState(Arviointi other) {
