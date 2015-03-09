@@ -136,7 +136,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .factory('Tutke2Osa', function ($q, TutkinnonOsanOsaAlue, $stateParams, VersionHelper) {
+  .factory('Tutke2Osa', function ($q, TutkinnonOsanOsaAlue, $stateParams, VersionHelper, Kieli) {
     var unique = 0;
     function Tutke2OsaImpl(tutkinnonOsaId) {
       this.tutkinnonOsaId = tutkinnonOsaId;
@@ -180,12 +180,19 @@ angular.module('eperusteApp')
 
     function kasitteleOsaAlueet (that) {
       _.each(that.osaAlueet, function (alue) {
-            if (alue.nimi === null) {
-              alue.nimi = {};
-            }
-            alue.$open = true;
-            alue.$uniqueId = 'osa-alue-' + unique++;
-            kasitteleTavoitteet(alue.osaamistavoitteet, that, alue, alue);
+        if (alue.nimi === null) {
+          alue.nimi = {};
+        }
+        // Tarkasta onko osa-alue vain yhdellä kielellä kirjoitettu
+        alue.$kielet = [];
+        _.each(alue.nimi, function (value, key) {
+          if (!_.isEmpty(value) && Kieli.isValidKielikoodi(key)) {
+            alue.$kielet.push(key);
+          }
+        });
+        alue.$open = true;
+        alue.$uniqueId = 'osa-alue-' + unique++;
+        kasitteleTavoitteet(alue.osaamistavoitteet, that, alue, alue);
       });
     }
 
