@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
 import com.google.common.base.Objects;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PartialMergeable;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
@@ -29,6 +30,8 @@ import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -98,6 +101,14 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
     @Getter
     private Osaamistavoite esitieto;
 
+    @Getter
+    @Setter
+    @Enumerated(EnumType.STRING)
+    /**
+     * Jos osaamistavoiteesta on vain yksi kieliversio, määritellään se tässä.
+     */
+    private Kieli kieli;
+
     public Osaamistavoite() {
     }
 
@@ -106,6 +117,7 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
         this.pakollinen = ot.isPakollinen();
         this.laajuus = ot.getLaajuus();
         this.tunnustaminen = ot.getTunnustaminen();
+        this.kieli = ot.kieli;
         this.arviointi = ot.getArviointi() == null ? null : new Arviointi(ot.getArviointi());
 
         if ( ot.getEsitieto() != null ) {
@@ -123,6 +135,7 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
         if (updated !=null) {
             this.setNimi(updated.getNimi());
             this.setPakollinen(updated.isPakollinen());
+            this.setKieli(updated.getKieli());
             this.setLaajuus(updated.getLaajuus());
             this.setTavoitteet(updated.getTavoitteet());
             this.setTunnustaminen(updated.getTunnustaminen());
@@ -137,6 +150,7 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
             this.setNimi(updated.getNimi());
             this.setPakollinen(updated.isPakollinen());
             this.setLaajuus(updated.getLaajuus());
+            this.setKieli(updated.getKieli());
         }
     }
 
