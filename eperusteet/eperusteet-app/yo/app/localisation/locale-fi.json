@@ -65,6 +65,7 @@
     "julkinen-tiedote": "Julkinen tiedote",
     "julkinen-tiedote-header": "Julkinen",
     "tiedote-julkinen": "julkinen",
+    "tiedote-liittyy-perusteprojektiin": "Tiedote liittyy perusteprojektiin",
 
     "ops-ja-tutkintojen-perusteet": "Opetussuunnitelmien ja tutkintojen perusteet",
 
@@ -514,6 +515,11 @@
 
     "keskustelu": "Keskustelu",
     "takaisin-tiedotteiden-hallintaan": "Takaisin tiedotteiden hallintaan",
+    "kirjanmerkilla-pitaa-olla-nimi": "Kirjanmerkillä pitää olla nimi",
+    "tallenna-haku": "Tallenna haku",
+
+    "lisaa-tiedote": "Lisää tiedote",
+    "liita-perusteprojekti-tiedotteeseen": "Liitä perusteprojekti tiedotteeseen",
 
     "muokkaus-lisaa-osio": "Lisää osio",
     "muokkaus-lisaa-sisalto": "Lisää sisältö",

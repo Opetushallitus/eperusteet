@@ -14,14 +14,17 @@
         <div class="action-buttons">
           <div class="floater" ng-attr-title="{{lockNotification}}">
             <button class="btn btn-default" icon-role="edit" kaanna="'muokkaa'" ng-click="muokkaa()" ng-disabled="isLocked"
-                    ng-hide="editEnabled || !versiot.latest"
-                    oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' },{ target: 'peruste', permission: 'korjaus' }]"></button>
+                    ng-hide="tutkinnonOsaViite.tutkinnonOsa.tila !== 'valmis' || editEnabled || !versiot.latest"
+                    oikeustarkastelu="[{ target: 'peruste', permission: 'korjaus' }]"></button>
+            <button class="btn btn-default" icon-role="edit" kaanna="'muokkaa'" ng-click="muokkaa()" ng-disabled="isLocked"
+                    ng-hide="tutkinnonOsaViite.tutkinnonOsa.tila === 'valmis' || editEnabled || !versiot.latest"
+                    oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }]"></button>
           </div>
           <button ng-show="tutkinnonOsaViite.tutkinnonOsa.tila === 'valmis' && !editEnabled" ng-click="kopioiMuokattavaksi()"
                   class="floater btn btn-danger" icon-role="fire" kaanna="kopioi-muokattavaksi"
                   oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
           <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
-          <div ng-if="editEnabled">
+          <div ng-if="editEnabled && tutkinnonOsaViite.tutkinnonOsa.tila !== 'valmis'">
             <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id].id)" kaanna="poista-tutkinnonosa"></button>
             <div class="floater" ng-show="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'normaali'">
               <div class="dropdown">

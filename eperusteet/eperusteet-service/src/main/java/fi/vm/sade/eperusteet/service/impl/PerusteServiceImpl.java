@@ -96,6 +96,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.method.P;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -281,13 +283,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional
-    public void onApplicationEvent(PerusteUpdatedEvent event) {
-        Peruste peruste = perusteet.findById(event.getPerusteId());
+    @PreAuthorize("hasPermission(#event.perusteId, 'peruste', 'KORJAUS') or hasPermission(#event.perusteId, 'peruste', 'MUOKKAUS')")
+    public void onApplicationEvent(@P("event") PerusteUpdatedEvent event) {
+        Peruste peruste = perusteet.findOne(event.getPerusteId());
         if (peruste.getTila() == PerusteTila.VALMIS) {
-            perusteet.setRevisioKommentti("perustetta muokattu");
+            perusteet.setRevisioKommentti("Perusteen sisältöä korjattu");
             peruste.muokattu();
         }
-        LOG.debug("EVENT " + event);
     }
 
     @Override
@@ -485,7 +487,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         rakenne.foreach(new VisitorImpl(maxRakenneDepth));
         RakenneModuuli moduuli = mapper.map(rakenne, RakenneModuuli.class);
 
-        if (!moduuli.isSame(suoritustapa.getRakenne())) {
+        if (!moduuli.isSame(suoritustapa.getRakenne(), false)) {
+            if ( perusteet.findOne(perusteId).getTila() == PerusteTila.VALMIS ) {
+                if ( !moduuli.isSame(suoritustapa.getRakenne(), true) ) {
+                    throw new BusinessRuleViolationException("Vain tekstimuutokset rakenteeseen ovat sallittuja");
+                }
+            }
             RakenneModuuli current = suoritustapa.getRakenne();
             moduuli = checkIfOsaamisalatAlreadyExists(moduuli);
             if (current != null) {
@@ -495,6 +502,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 suoritustapa.setRakenne(current);
             }
             rakenneRepository.save(current);
+            onApplicationEvent(PerusteUpdatedEvent.of(this, perusteId));
         }
 
         return mapper.map(moduuli, RakenneModuuliDto.class);
@@ -604,7 +612,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             throw new BusinessRuleViolationException("Virheellinen viite");
         }
 
-        return tutkinnonOsaViiteService.update(osa);
+        TutkinnonOsaViiteDto dto = tutkinnonOsaViiteService.update(osa);
+        onApplicationEvent(PerusteUpdatedEvent.of(this, id));
+        return dto;
     }
 
     @Override

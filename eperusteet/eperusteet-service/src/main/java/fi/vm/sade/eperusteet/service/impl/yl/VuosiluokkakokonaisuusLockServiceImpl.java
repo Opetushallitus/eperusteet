@@ -48,9 +48,11 @@ public class VuosiluokkakokonaisuusLockServiceImpl extends AbstractLockService<V
 
     @Override
     protected final Long validateCtx(VuosiluokkaKokonaisuusContext ctx, boolean readOnly) {
-        final PermissionManager.Permission permission = readOnly ? PermissionManager.Permission.LUKU : PermissionManager.Permission.MUOKKAUS;
-        permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, permission);
-
+        if ( readOnly ) {
+            permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.LUKU);
+        } else {
+            permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.MUOKKAUS, PermissionManager.Permission.KORJAUS);
+        }
         PerusopetuksenPerusteenSisalto s = sisallot.findByPerusteId(ctx.getPerusteId());
         VuosiluokkaKokonaisuus kokonaisuus = kokonaisuudet.findOne(ctx.getKokonaisuusId());
         if (s == null || !s.containsVuosiluokkakokonaisuus(kokonaisuus)) {

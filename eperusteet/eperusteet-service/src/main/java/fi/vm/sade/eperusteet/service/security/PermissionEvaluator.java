@@ -49,6 +49,26 @@ public class PermissionEvaluator implements org.springframework.security.access.
 
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
-        return manager.hasPermission(authentication, targetId, Target.valueOf(targetType.toUpperCase()), Permission.valueOf(permission.toString().toUpperCase()));
+        if (permission instanceof Object[]) {
+            Object[] perms = (Object[]) permission;
+            for (Object p : perms) {
+                final boolean result
+                    = manager.hasPermission(
+                        authentication,
+                        targetId,
+                        Target.valueOf(targetType.toUpperCase()), Permission.valueOf(p.toString().toUpperCase()));
+                if (result == true) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        if (targetId instanceof String) {
+            targetId = Long.valueOf((String)targetId);
+        }
+
+        return manager
+            .hasPermission(authentication, targetId, Target.valueOf(targetType.toUpperCase()), Permission.valueOf(permission.toString().toUpperCase()));
     }
 }

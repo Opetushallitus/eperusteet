@@ -59,14 +59,15 @@
 
                     <div ng-if="tavoite.$editing">
                       <h4 kaanna="'arviointi'"></h4>
-                      <input placeholder="{{ 'arvioinnin-otsikko' | kaanna }}" type="text" class="arvioinnin-muokkaus-kentta form-control" slocalized ng-model="tavoite.arvioinninOtsikko"></input>
-                      <input placeholder="{{ 'arvioinnin-kohde' | kaanna }}" type="text" class="arvioinnin-muokkaus-kentta form-control" slocalized ng-model="tavoite.arvioinninKuvaus"></input>
-                      <input placeholder="{{ 'arvion-osaamisen-kuvaus' | kaanna }}" type="text" class="arvioinnin-muokkaus-kentta form-control" slocalized ng-model="tavoite.arvioinninOsaamisenKuvaus"></input>
+                      <label class="col-sm-2 control-label" kaanna="'arvioinnin-otsikko'"></label>
+                      <div class="col-sm-10">
+                        <input placeholder="{{ 'arvioinnin-otsikko' | kaanna }}" type="text" class="arvioinnin-muokkaus-kentta form-control" slocalized ng-model="tavoite.arvioinninOtsikko"></input>
+                      </div>
                     </div>
 
-                    <button ng-if="!hasArviointi(tavoite)" class="btn btn-default" ng-click="addArviointi(tavoite)" icon-role="add"
+                    <button ng-hide="hasArviointi(tavoite)" class="btn btn-default" ng-click="addArviointi(tavoite)" icon-role="add"
                             kaanna="lisaa-arviointi"></button>
-                    <div ng-if="hasArviointi(tavoite)" atavoite="tavoite" perusopetuksen-arviointi="tavoite.arvioinninkohteet" edit-mode="tavoite.$editing"></div>
+                    <div ng-show="hasArviointi(tavoite)" atavoite="tavoite" perusopetuksen-arviointi="tavoite.arvioinninkohteet" edit-mode="tavoite.$editing"></div>
                   </div>
                 </div>
               </div>
@@ -82,7 +83,6 @@
 
       <button ng-show="editMode && !currentEditable" class="btn btn-default" ng-click="tavoiteFn.add()" icon-role="add"
         kaanna="lisaa-opetuksen-tavoite"></button>
-
     </div>
   </div>
 </div>

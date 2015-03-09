@@ -3,10 +3,12 @@ package fi.vm.sade.eperusteet.domain;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,4 +46,10 @@ public class Tiedote extends AbstractAuditedEntity {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen sisalto;
+
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @OneToOne(fetch = FetchType.LAZY)
+    private Perusteprojekti perusteprojekti;
 }

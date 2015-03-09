@@ -56,7 +56,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @Controller
-@RequestMapping("/perusteet")
+@RequestMapping(value = "/perusteet", produces = "application/json;charset=UTF-8")
 @Api(value = "Perusteet", description = "Perusteiden hallintaan liittyvät operaatiot")
 public class PerusteController {
 
@@ -90,7 +90,7 @@ public class PerusteController {
         return new ResponseEntity<>(poi, HttpStatus.OK);
     }
 
-    @RequestMapping(method = GET, produces = "application/json;charset=UTF-8")
+    @RequestMapping(method = GET)
     @ResponseBody
     @ApiOperation(value = "perusteiden haku")
     @ApiImplicitParams({
