@@ -45,7 +45,9 @@ import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -60,10 +62,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.tekstiPalanenOf;
-
-import java.util.List;
-import org.junit.Assert;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -107,7 +105,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         Peruste p = TestUtils.teePeruste();
         p.setSiirtymaPaattyy(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 4, Calendar.MARCH, 12).getTime());
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
-        p.asetaTila(PerusteTila.VALMIS);
+        p.asetaTila(PerusteTila.LUONNOS);
         Suoritustapa s = new Suoritustapa();
         s.setRakenne(new RakenneModuuli());
         s.setSuoritustapakoodi(Suoritustapakoodi.OPS);

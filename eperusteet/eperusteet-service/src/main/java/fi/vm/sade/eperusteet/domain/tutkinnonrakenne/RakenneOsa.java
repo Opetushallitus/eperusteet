@@ -45,9 +45,9 @@ public class RakenneOsa extends AbstractRakenneOsa {
     private boolean pakollinen;
 
     @Override
-    public boolean isSame(AbstractRakenneOsa other) {
+    public boolean isSame(AbstractRakenneOsa other, boolean excludeText) {
 
-        if (!super.isSame(other)) {
+        if (!super.isSame(other, false)) {
             return false;
         }
 

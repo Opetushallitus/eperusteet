@@ -37,6 +37,18 @@ dl.termisto {
   .navbar-fixed-top {
     position: relative;
   }
+
+  table {
+    tr {
+      td {
+        vertical-align: top;
+        padding: 3px;
+        label {
+          margin-top: 2px;
+        }
+      }
+    }
+  }
 }
 
 .termisto-wrapper {

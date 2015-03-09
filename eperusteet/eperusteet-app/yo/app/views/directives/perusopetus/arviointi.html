@@ -2,10 +2,14 @@
 
 <table class="table table-bordered perusopetuksen-arviointi ">
   <thead>
-    <tr>
-      <th kaanna="atavoite.arvioinninKuvaus || 'arvioinnin-kohde'"></th>
-      <th kaanna="atavoite.arvioinninOsaamisenKuvaus || 'arvion-hyva-osaaminen'"></th>
-      <th ng-if="editMode"></th>
+    <tr ng-show="editMode">
+      <th><input placeholder="{{ 'arvioinnin-kohde' | kaanna }}" slocalized ng-model="atavoite.arvioinninKuvaus"></input></th>
+      <th><input placeholder="{{ 'arvion-hyva-osaaminen' | kaanna }}"slocalized ng-model="atavoite.arvioinninOsaamisenKuvaus"></input></th>
+      <th></th>
+    </tr>
+    <tr ng-hide="editMode">
+      <th ng-bind="atavoite.arvioinninKuvaus || 'arvioinnin-kohde' | kaanna"></th>
+      <th ng-bind="atavoite.arvioinninOsaamisenKuvaus || 'arvion-hyva-osaaminen' | kaanna"></th>
     </tr>
   </thead>
   <tbody>

@@ -32,13 +32,12 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import org.junit.After;
 import org.junit.Assert;
-
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  *
@@ -64,7 +63,7 @@ public class PerusteServiceETagIT extends AbstractIntegrationTest {
         Peruste p = TestUtils.teePeruste();
         p.setSiirtymaPaattyy(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 4, Calendar.MARCH, 12).getTime());
         p.setVoimassaoloLoppuu(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) + 2, Calendar.MARCH, 12).getTime());
-        p.asetaTila(PerusteTila.VALMIS);
+        p.asetaTila(PerusteTila.LUONNOS);
         Suoritustapa s = new Suoritustapa();
         s.setSuoritustapakoodi(Suoritustapakoodi.OPS);
         p.setSuoritustavat(Sets.newHashSet(s));

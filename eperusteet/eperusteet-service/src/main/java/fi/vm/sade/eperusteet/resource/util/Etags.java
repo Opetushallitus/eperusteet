@@ -23,7 +23,7 @@ import org.springframework.http.HttpHeaders;
  */
 public final class Etags {
 
-    private static final String WEAK_ETAG_PREFIX = "\"W/";
+    private static final String WEAK_ETAG_PREFIX = "W/\"";
 
     private Etags() {
         //apuluokka
@@ -45,7 +45,7 @@ public final class Etags {
 
     public static HttpHeaders addETag(HttpHeaders headers, Integer revision) {
         if (revision != null) {
-            headers.setETag(wrap(String.valueOf(revision)));
+            headers.set("ETag",wrap(String.valueOf(revision)));
         }
         return headers;
     }

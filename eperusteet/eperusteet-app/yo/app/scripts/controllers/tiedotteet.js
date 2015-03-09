@@ -48,7 +48,7 @@ angular.module('eperusteApp')
   })
 
   .controller('TiedotteidenHallintaController', function ($scope, Algoritmit, $modal, Varmistusdialogi, TiedotteetCRUD,
-    Notifikaatiot, Utils) {
+    Notifikaatiot, Utils, TiedoteService) {
     $scope.tiedotteet = [];
     $scope.jarjestysTapa = 'muokattu';
     $scope.jarjestysOrder = false;
@@ -94,51 +94,71 @@ angular.module('eperusteApp')
       }
     };
 
-    function doDelete(item) {
-      TiedotteetCRUD.delete({}, item, function () {
-        Notifikaatiot.onnistui('poisto-onnistui');
-        fetch();
-      }, Notifikaatiot.serverCb);
-    }
-
-    function doSave(item) {
-      TiedotteetCRUD.save({}, item, function () {
-        Notifikaatiot.onnistui('tallennus-onnistui');
-        fetch();
-      }, Notifikaatiot.serverCb);
-    }
-
     $scope.delete = function (model) {
       Varmistusdialogi.dialogi({
         otsikko: 'vahvista-poisto',
         teksti: 'poistetaanko-tiedote',
       })(function() {
-        doDelete(model);
+        TiedoteService.delete(model);
       });
     };
 
-    $scope.edit = function (tiedote) {
+    $scope.edit = function(tiedote) {
+      TiedoteService.lisaaTiedote(tiedote, null, fetch, fetch);
+    };
+  })
+
+  .service('TiedoteService', function($modal, TiedotteetCRUD, Notifikaatiot) {
+    function doDelete(item, cb) {
+      cb = cb || _.noop;
+      TiedotteetCRUD.delete({}, item, function () {
+        Notifikaatiot.onnistui('poisto-onnistui');
+        cb();
+      }, Notifikaatiot.serverCb);
+    }
+
+    function doSave(item, cb) {
+      cb = cb || _.noop;
+      TiedotteetCRUD.save({}, item, function () {
+        Notifikaatiot.onnistui('tallennus-onnistui');
+        cb();
+      }, Notifikaatiot.serverCb);
+    }
+
+    function lisaaTiedote(tiedote, perusteprojektiId, saveCb, deleteCb) {
+      saveCb = saveCb || _.noop;
+      deleteCb = deleteCb || _.noop;
+
       $modal.open({
         templateUrl: 'views/modals/tiedotteenmuokkaus.html',
         controller: 'TiedotteenMuokkausController',
         size: 'lg',
         resolve: {
-          model: function () { return _.cloneDeep(tiedote); }
+         model: _.constant(tiedote),
+          perusteprojektiId: _.constant(perusteprojektiId)
         }
-      }).result.then(function (data) {
+      })
+      .result.then(function(data) {
         if (data.$dodelete) {
-          doDelete(data);
+          doDelete(data, deleteCb);
         } else {
-          doSave(data);
+          doSave(data, saveCb);
         }
       });
+    }
+
+    return {
+      delete: doDelete,
+      lisaaTiedote: lisaaTiedote
     };
   })
 
-  .controller('TiedotteenMuokkausController', function ($scope, model, Varmistusdialogi,
+  .controller('TiedotteenMuokkausController', function ($scope, model, perusteprojektiId, Varmistusdialogi,
       $modalInstance, $rootScope) {
     $scope.model = model;
     $scope.creating = !model;
+    $scope.perusteprojektiId = perusteprojektiId;
+
     if ($scope.creating) {
       $scope.model = {
         otsikko: {},
@@ -147,8 +167,13 @@ angular.module('eperusteApp')
       };
     }
 
+    $scope.model.$liitaPerusteprojekti = true;
+
     $scope.ok = function () {
       $rootScope.$broadcast('notifyCKEditor');
+      if ($scope.model.$liitaPerusteprojekti) {
+        $scope.model._perusteprojekti = perusteprojektiId;
+      }
       $modalInstance.close($scope.model);
     };
 
@@ -171,14 +196,23 @@ angular.module('eperusteApp')
       });
   })
 
-  .controller('TiedoteViewController', function ($rootScope, $state, $scope, $stateParams, TiedotteetCRUD, Notifikaatiot) {
+  .controller('TiedoteViewController', function ($rootScope, $state, $scope, $stateParams, TiedotteetCRUD, Notifikaatiot, PerusteprojektiResource,
+                                                 PerusteProjektiService) {
     if ($rootScope.lastState.state.name === 'root.admin.tiedotteet') {
       $scope.$backurl = $state.href($rootScope.lastState.state.name, $rootScope.lastState.params);
       $scope.$backurlHeader = 'takaisin-tiedotteiden-hallintaan';
     }
 
     $scope.tiedote = null;
-    TiedotteetCRUD.get({tiedoteId: $stateParams.tiedoteId}, function (res) {
-      $scope.tiedote = res;
+    TiedotteetCRUD.get({tiedoteId: $stateParams.tiedoteId}, function (tiedote) {
+      $scope.tiedote = tiedote;
+      if (tiedote._perusteprojekti) {
+        PerusteprojektiResource.get({
+          id: tiedote._perusteprojekti
+        }, function(perusteprojekti) {
+          $scope.perusteprojekti = perusteprojekti;
+          $scope.perusteprojekti.$url = PerusteProjektiService.getUrl(perusteprojekti);
+        });
+      }
     }, Notifikaatiot.serverCb);
   });

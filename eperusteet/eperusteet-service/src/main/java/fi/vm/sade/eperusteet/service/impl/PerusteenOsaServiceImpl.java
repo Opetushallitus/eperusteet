@@ -33,6 +33,7 @@ import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.OsaAlueRepository;
 import fi.vm.sade.eperusteet.repository.OsaamistavoiteRepository;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
@@ -40,16 +41,20 @@ import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.KommenttiService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
+import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,6 +85,12 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Autowired
     private PerusteenOsaViiteRepository perusteenOsaViiteRepository;
+
+    @Autowired
+    private PerusteRepository perusteet;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     @Autowired
     @Dto
@@ -145,7 +156,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         }
         current.mergeState(updated);
         current = perusteenOsaRepo.save(current);
-
+        notifyUpdate(current);
         mapper.map(current, perusteenOsaDto);
         return perusteenOsaDto;
     }
@@ -246,8 +257,23 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         osaAlueRepository.save(osaAlueEntity);
 
         aiheutaUusiTutkinnonOsaViiteRevisio(viiteId);
-
+        notifyUpdate(viite.getTutkinnonOsa());
         return mapper.map(osaAlueEntity, OsaAlueKokonaanDto.class);
+    }
+
+    private void notifyUpdate(PerusteenOsa osa) {
+        if (osa.getTila() == PerusteTila.VALMIS) {
+            Set<Long> perusteIds;
+            if ( osa instanceof TutkinnonOsa ) {
+                perusteIds = perusteet.findByTutkinnonosaId(osa.getId());
+            } else {
+                final List<Long> roots = perusteenOsaViiteRepository.findRootsByPerusteenOsaId(osa.getId());
+                perusteIds = roots.isEmpty() ? Collections.<Long>emptySet() : perusteet.findBySisaltoRoots(roots);
+            }
+            for (Long perusteId : perusteIds) {
+                eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, perusteId));
+            }
+        }
     }
 
     @Transactional(readOnly = false)
@@ -410,7 +436,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         }
         Osaamistavoite osaamistavoiteUusi = mapper.map(osaamistavoite, Osaamistavoite.class);
         osaamistavoiteEntity.mergeState(osaamistavoiteUusi);
-
+        notifyUpdate(perusteenOsaRepo.findOne(id));
         return mapper.map(osaamistavoiteEntity, OsaamistavoiteLaajaDto.class);
     }
 
@@ -432,7 +458,8 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     @Transactional(readOnly = true)
     public List<fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Suppea> getAllWithName(String name) {
-        return mapper.mapAsList(tutkinnonOsaRepo.findByNimiTekstiTekstiContainingIgnoreCase(name), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Suppea.class);
+        return mapper
+            .mapAsList(tutkinnonOsaRepo.findByNimiTekstiTekstiContainingIgnoreCase(name), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Suppea.class);
     }
 
     @Override

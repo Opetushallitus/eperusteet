@@ -71,6 +71,7 @@
         <property name="mappingResources">
             <list>
                 <value>typedefs-h2.xml</value>
+                <value>orm-h2.xml</value>
             </list>
         </property>
     </bean>

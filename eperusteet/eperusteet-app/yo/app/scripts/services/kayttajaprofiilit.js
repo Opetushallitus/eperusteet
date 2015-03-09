@@ -131,12 +131,13 @@ angular.module('eperusteApp')
         }
       },
       // Suosikit
-      asetaSuosikki: function(state, nimi, success) {
-        var stateParams = $stateParams;
+      asetaSuosikki: function(state, nimi, success, customParams) {
+        var stateParams = customParams || $stateParams;
         success = success || angular.noop;
+        state = _.isObject(state) ? state.current.name : state;
 
         var vanha = _(info.suosikit).filter(function(s) {
-          return state.current.name === s.sisalto.tila && isSame(stateParams, s.sisalto.parametrit);
+          return state === s.sisalto.tila && isSame(stateParams, s.sisalto.parametrit);
         }).first();
 
         if (!_.isEmpty(vanha)) {
@@ -150,7 +151,7 @@ angular.module('eperusteApp')
           Suosikit.save({
             sisalto: JSON.stringify({
               tyyppi: 'linkki',
-              tila: state.current.name,
+              tila: state,
               parametrit: stateParams,
             }),
             nimi: nimi

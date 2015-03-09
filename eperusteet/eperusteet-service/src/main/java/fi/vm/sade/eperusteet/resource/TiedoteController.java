@@ -59,8 +59,7 @@ public class TiedoteController {
     public ResponseEntity<TiedoteDto> updateTiedote(
             @PathVariable("id") final Long id,
             @RequestBody TiedoteDto tiedoteDto) {
-        tiedoteDto.setId(id);
-        return new ResponseEntity<>(tiedoteService.updateTiedote(tiedoteDto), HttpStatus.OK);
+        tiedoteDto.setId(id);        return new ResponseEntity<>(tiedoteService.updateTiedote(tiedoteDto), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = DELETE)

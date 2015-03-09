@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -98,27 +97,27 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             this.muodostumisSaanto = moduuli.getMuodostumisSaanto() == null ? null : new MuodostumisSaanto(moduuli.getMuodostumisSaanto());
             this.osaamisala = moduuli.getOsaamisala();
 
-            assert (isSame(moduuli));
+            assert (isSame(moduuli, false));
         }
 
     }
 
     @Override
-    public boolean isSame(AbstractRakenneOsa moduuli) {
+    public boolean isSame(AbstractRakenneOsa moduuli, boolean excludeText) {
 
         if ((moduuli instanceof RakenneModuuli)) {
-            return isSame((RakenneModuuli)moduuli);
+            return isSame((RakenneModuuli)moduuli, excludeText);
         }
         return false;
     }
 
-    public boolean isSame(RakenneModuuli moduuli) {
+    public boolean isSame(RakenneModuuli moduuli, boolean excludeText) {
 
-        if ( !super.isSame(moduuli) ) {
+        if ( !super.isSame(moduuli, excludeText) ) {
             return false;
         }
 
-        if (!Objects.equals(this.nimi,moduuli.getNimi())) {
+        if (!excludeText && !Objects.equals(this.nimi,moduuli.getNimi())) {
             return false;
         }
 
@@ -138,7 +137,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             Iterator<AbstractRakenneOsa> l = this.getOsat().iterator();
             Iterator<AbstractRakenneOsa> r = moduuli.getOsat().iterator();
             while (l.hasNext() && r.hasNext()) {
-                if ( !l.next().isSame(r.next()) ) return false;
+                if ( !l.next().isSame(r.next(), excludeText) ) return false;
             }
         }
 

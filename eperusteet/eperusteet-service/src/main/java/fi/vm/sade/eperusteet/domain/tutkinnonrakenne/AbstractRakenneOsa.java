@@ -68,7 +68,7 @@ public abstract class AbstractRakenneOsa implements Serializable, ReferenceableE
         return new EntityReference(id);
     }
 
-    public boolean isSame(AbstractRakenneOsa other) {
+    public boolean isSame(AbstractRakenneOsa other, boolean excludeText) {
         if (other == null) {
             return false;
         }
@@ -77,6 +77,6 @@ public abstract class AbstractRakenneOsa implements Serializable, ReferenceableE
             return true;
         }
 
-        return Objects.equals(kuvaus, other.getKuvaus());
+        return excludeText || Objects.equals(this.kuvaus,other.getKuvaus());
     }
 }

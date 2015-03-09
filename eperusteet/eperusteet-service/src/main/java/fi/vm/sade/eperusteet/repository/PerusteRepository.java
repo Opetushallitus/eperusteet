@@ -7,6 +7,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import java.util.List;
+import java.util.Set;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, Long>, PerusteRepositoryCustom {
+
     @Query("SELECT s.sisalto FROM Suoritustapa s, Peruste p LEFT JOIN p.suoritustavat s WHERE p.id = ?1 AND s.suoritustapakoodi = ?2")
     PerusteenOsaViite findSisaltoByIdAndSuoritustapakoodi(Long id, Suoritustapakoodi suoritustapakoodi);
 
@@ -29,14 +31,14 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
 
     Peruste findByDiaarinumero(Diaarinumero diaarinumero);
 
-//        select * from peruste
-//        inner join (select peruste_id
-//                    from peruste_koulutus
-//                    inner join (select *
-//                                from koulutus
-//                                where koulutus_koodi LIKE '%351%') as foo
-//                    on foo.id = peruste_koulutus.koulutus_id) as bar
-//        on peruste_id = peruste.id;
-//    @Query("SELECT * FROM Peruste p JOIN (SELECT p.id FROM p")
-//    List<Peruste> findByKoodiUri(String koodiUri);
+    @Query("SELECT DISTINCT p.id FROM Peruste p " +
+        "LEFT JOIN p.suoritustavat s " +
+        "LEFT JOIN p.perusopetuksenPerusteenSisalto ps " +
+        "LEFT JOIN p.esiopetuksenPerusteenSisalto eps " +
+        "WHERE s.sisalto.id IN ?1 OR ps.sisalto.id IN ?1 OR eps.sisalto.id IN ?1")
+    Set<Long> findBySisaltoRoots(Iterable<? extends Number> rootIds);
+
+    @Query("SELECT DISTINCT p.id FROM Peruste p JOIN p.suoritustavat s JOIN s.tutkinnonOsat to WHERE to.tutkinnonOsa.id = ?1")
+    Set<Long> findByTutkinnonosaId(Long id);
+
 }

@@ -24,7 +24,6 @@ angular.module('eperusteApp')
     Editointikontrollit, TEXT_HIERARCHY_MAX_DEPTH, PerusteProjektiSivunavi, Projektiryhma,
     PerusteprojektiTyoryhmat, TekstikappaleOperations, SuoritustavanSisalto, $location) {
     $scope.textMaxDepth = TEXT_HIERARCHY_MAX_DEPTH;
-
     function lisaaSisalto(method, sisalto, cb) {
       cb = cb || angular.noop;
       SuoritustapaSisalto[method]({
