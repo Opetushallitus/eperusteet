@@ -45,6 +45,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+import javax.persistence.Column;
 
 /**
  *
@@ -84,6 +85,12 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
      * Jos osa-alueesta on vain yksi kieliversio, määritellään se tässä.
      */
     private Kieli kieli;
+
+    @Column(name = "koodi_uri")
+    private String koodiUri;
+
+    @Column(name = "koodi_arvo")
+    private String koodiArvo;
 
     public OsaAlue() {
     }
