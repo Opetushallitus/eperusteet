@@ -453,7 +453,8 @@
 
     "tarkastele-esitysta": "Tarkastele esitystilassa",
     "poista-kohdealue": "Poista",
-    "lisaa-kohdealue": "Lisää tavoitealue",
+    "lisaa-kohdealue": "Lisää kohdealue",
+    "lisaa-tavoitealue": "Lisää tavoitealue",
     "muokkaus-kohdealueet": "Muokkaa tavoitealueita",
     "muokkaus-tutkinnon-jarjestysnumero": "Järjestysnumero",
     "muokkaus-tutkinnon-osan-nimi-header": "Nimi",
@@ -499,8 +500,8 @@
     "nayta-versiohistoria": "Historia",
 
     "arviointi-lisatiedot-placeholder": "Arvioinnin sanallinen selitys tähän",
-    "arviointi-uusi-kohdealue": "Lisää tavoitealue",
-    "arviointi-uusi-kohdealue-placeholder": "Tavoitealueen nimi",
+    "arviointi-uusi-kohdealue": "Lisää kohdealue",
+    "arviointi-uusi-kohdealue-placeholder": "Kohdealueen nimi",
     "arviointi-uusi-kohde": "Lisää arvioinnin kohde",
     "arvioinnin-otsikko": "Arvioinnin otsikko",
     "arvion-osaamisen-kuvaus": "Arvion osaamisen kuvaus",
