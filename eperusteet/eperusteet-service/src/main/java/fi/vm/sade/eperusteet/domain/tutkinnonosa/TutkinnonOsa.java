@@ -183,8 +183,14 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     }
 
     public void setArviointi(Arviointi arviointi) {
-        if (!Objects.equals(this.arviointi, arviointi)) {
+        if ( Objects.equals(this.arviointi, arviointi) ) {
+            return;
+        }
+        if ( arviointi == null || this.arviointi == null ) {
             this.arviointi = arviointi;
+        } else {
+            this.arviointi.mergeState(arviointi);
+            this.muokattu();
         }
     }
 

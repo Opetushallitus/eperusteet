@@ -70,7 +70,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
 
     @Getter
     //@Setter
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "tutkinnonosa_osaalue_osaamistavoite",
                joinColumns = @JoinColumn(name = "tutkinnonosa_osaalue_id"),
                inverseJoinColumns = @JoinColumn(name = "osaamistavoite_id"))

@@ -114,6 +114,9 @@ public class ArvioinninKohdealue implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
         if (obj instanceof ArvioinninKohdealue) {
             final ArvioinninKohdealue other = (ArvioinninKohdealue) obj;
             if (!Objects.equals(this.otsikko, other.otsikko)) {
@@ -125,10 +128,13 @@ public class ArvioinninKohdealue implements Serializable {
     }
 
     public boolean structureEquals(ArvioinninKohdealue other) {
+        if (this == other) {
+            return true;
+        }
         boolean result = refXnor(getOtsikko(), other.getOtsikko());
         Iterator<ArvioinninKohde> i = getArvioinninKohteet().iterator();
         Iterator<ArvioinninKohde> j = other.getArvioinninKohteet().iterator();
-        while ( result && i.hasNext() && j.hasNext() ) {
+        while (result && i.hasNext() && j.hasNext()) {
             result &= i.next().structureEquals(j.next());
         }
         result &= !i.hasNext();

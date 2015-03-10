@@ -78,10 +78,24 @@ public class Arviointi implements Serializable {
         copyState(other);
     }
 
-    public void setArvioinninKohdealueet(List<ArvioinninKohdealue> arvioinninKohdealueet) {
-        this.arvioinninKohdealueet.clear();
-        if (arvioinninKohdealueet != null) {
-            this.arvioinninKohdealueet.addAll(arvioinninKohdealueet);
+    public void setArvioinninKohdealueet(List<ArvioinninKohdealue> alueet) {
+        if (this.arvioinninKohdealueet == alueet) {
+            return;
+        }
+        if (alueet != null) {
+            ArrayList<ArvioinninKohdealue> tmp = new ArrayList<>(alueet.size());
+            for (ArvioinninKohdealue a : alueet) {
+                int i = this.arvioinninKohdealueet.indexOf(a);
+                if (i >= 0) {
+                    tmp.add(this.arvioinninKohdealueet.get(i));
+                } else {
+                    tmp.add(a);
+                }
+            }
+            this.arvioinninKohdealueet.clear();
+            this.arvioinninKohdealueet.addAll(tmp);
+        } else {
+            this.arvioinninKohdealueet.clear();
         }
     }
 
@@ -108,7 +122,17 @@ public class Arviointi implements Serializable {
         return false;
     }
 
+    public void mergeState(Arviointi other) {
+        if (this != other) {
+            this.setLisatiedot(other.getLisatiedot());
+            this.setArvioinninKohdealueet(other.getArvioinninKohdealueet());
+        }
+    }
+
     public boolean structureEquals(Arviointi other) {
+        if (this == other) {
+            return true;
+        }
         boolean result = refXnor(getLisatiedot(), other.getLisatiedot());
         Iterator<ArvioinninKohdealue> i = getArvioinninKohdealueet().iterator();
         Iterator<ArvioinninKohdealue> j = other.getArvioinninKohdealueet().iterator();

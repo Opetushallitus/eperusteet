@@ -54,7 +54,7 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Table(name = "osaamistavoite")
 @Audited
 @ValidOsaamistavoiteEsitieto
-public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistavoite>, ReferenceableEntity{
+public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistavoite>, ReferenceableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -93,8 +93,7 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
     private TekstiPalanen tunnustaminen;
 
     @Getter
-    @Setter
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Arviointi arviointi;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -120,19 +119,27 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
         this.kieli = ot.kieli;
         this.arviointi = ot.getArviointi() == null ? null : new Arviointi(ot.getArviointi());
 
-        if ( ot.getEsitieto() != null ) {
+        if (ot.getEsitieto() != null) {
             this.esitieto = esitiedot.get(ot.getEsitieto());
-            if ( this.esitieto == null ) {
+            if (this.esitieto == null) {
                 this.esitieto = new Osaamistavoite(ot.getEsitieto(), esitiedot);
                 esitiedot.put(ot.getEsitieto(), this.esitieto);
             }
         }
     }
 
+    public void setArviointi(Arviointi arviointi) {
+        if (this.arviointi == null || arviointi == null || this.arviointi == arviointi) {
+            this.arviointi = arviointi;
+        } else {
+            this.arviointi.mergeState(arviointi);
+        }
+    }
+
     @Override
     public void mergeState(Osaamistavoite updated) {
 
-        if (updated !=null) {
+        if (updated != null) {
             this.setNimi(updated.getNimi());
             this.setPakollinen(updated.isPakollinen());
             this.setKieli(updated.getKieli());
@@ -154,14 +161,13 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
         }
     }
 
-
     @Override
     public EntityReference getReference() {
         return new EntityReference(id);
     }
 
     public void setEsitieto(Osaamistavoite esitieto) {
-        if ( this == esitieto ) {
+        if (this == esitieto) {
             throw new IllegalArgumentException("Osaamistavoite ei voi olla oma esitietonsa");
         }
         this.esitieto = esitieto;
@@ -175,7 +181,7 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
         result &= refXnor(getTunnustaminen(), other.getTunnustaminen());
         result &= refXnor(getEsitieto(), other.getEsitieto());
         result &= refXnor(getArviointi(), other.getArviointi());
-        if ( getArviointi() != null ) {
+        if (getArviointi() != null) {
             result &= getArviointi().structureEquals(other.getArviointi());
         }
         return result;

@@ -83,7 +83,7 @@ public class ArvioinninKohde implements Serializable {
     public ArvioinninKohde(ArvioinninKohde other) {
         this.otsikko = other.getOtsikko();
         this.arviointiAsteikko = other.getArviointiAsteikko();
-        for ( OsaamistasonKriteeri k : other.getOsaamistasonKriteerit() ) {
+        for (OsaamistasonKriteeri k : other.getOsaamistasonKriteerit()) {
             this.osaamistasonKriteerit.add(new OsaamistasonKriteeri(k));
         }
     }
@@ -106,6 +106,9 @@ public class ArvioinninKohde implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
         if (obj instanceof ArvioinninKohde) {
             final ArvioinninKohde other = (ArvioinninKohde) obj;
             if (!Objects.equals(this.otsikko, other.otsikko)) {
@@ -120,6 +123,9 @@ public class ArvioinninKohde implements Serializable {
     }
 
     public boolean structureEquals(ArvioinninKohde other) {
+        if (this == other) {
+            return true;
+        }
         boolean result = refXnor(getOtsikko(), other.getOtsikko());
         result &= Objects.equals(getArviointiAsteikko(), other.getArviointiAsteikko());
         result &= refXnor(getOsaamistasonKriteerit(), other.getOsaamistasonKriteerit());
