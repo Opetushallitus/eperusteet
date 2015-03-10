@@ -16,8 +16,6 @@
 
 package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
-import fi.vm.sade.eperusteet.domain.tutkinnonOsa.OsaAlue;
-import fi.vm.sade.eperusteet.domain.tutkinnonOsa.Osaamistavoite;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;

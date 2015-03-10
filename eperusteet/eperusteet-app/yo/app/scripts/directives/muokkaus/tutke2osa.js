@@ -136,7 +136,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .factory('Tutke2Osa', function ($q, TutkinnonOsanOsaAlue, $stateParams, VersionHelper) {
+  .factory('Tutke2Osa', function ($q, TutkinnonOsanOsaAlue, $stateParams, VersionHelper, Kieli) {
     var unique = 0;
     function Tutke2OsaImpl(tutkinnonOsaId) {
       this.tutkinnonOsaId = tutkinnonOsaId;
@@ -178,32 +178,46 @@ angular.module('eperusteApp')
       return deferred.promise;
     };
 
+    function collectKielet(field, kielet) {
+      _.each(field, function (value, key) {
+        if (!_.isEmpty(value) && Kieli.isValidKielikoodi(key) && !_.contains(kielet, key)) {
+          kielet.push(key);
+        }
+      });
+    }
+
     function kasitteleOsaAlueet (that) {
       _.each(that.osaAlueet, function (alue) {
-            if (alue.nimi === null) {
-              alue.nimi = {};
-            }
-            alue.$open = true;
-            alue.$uniqueId = 'osa-alue-' + unique++;
-            kasitteleTavoitteet(alue.osaamistavoitteet, that, alue, alue);
+        if (alue.nimi === null) {
+          alue.nimi = {};
+        }
+        // Tarkasta onko osa-alue vain yhdellä kielellä kirjoitettu
+        alue.$kielet = [];
+        collectKielet(alue.nimi, alue.$kielet);
+        alue.$open = true;
+        alue.$uniqueId = 'osa-alue-' + unique++;
+        kasitteleTavoitteet(alue.osaamistavoitteet, that, alue, alue);
       });
     }
 
     function kasitteleTavoitteet (tavoitteet, that, osaAlue, arr) {
       _.each(tavoitteet, function (tavoite) {
-          fixTavoite(tavoite);
-          if (that.tavoiteMap) {
-            that.tavoiteMap[tavoite.id] = tavoite;
-          }
-        });
-        arr.osaamistavoitteet = tavoitteet;
-        osaAlue.$groups = groupTavoitteet(tavoitteet, that.tavoiteMap);
-        var pakollinenIds = _.keys(osaAlue.$groups.grouped);
-        osaAlue.$esitietoOptions = _.map(pakollinenIds, function (id) {
-          return {value: id, label: osaAlue.$groups.grouped[id][0].nimi};
-        });
-        osaAlue.$esitietoOptions.unshift({value: null, label: '<ei asetettu>'});
-        osaAlue.$chosen = _.first(pakollinenIds);
+        fixTavoite(tavoite);
+        if (that.tavoiteMap) {
+          that.tavoiteMap[tavoite.id] = tavoite;
+        }
+        tavoite.$kielet = [];
+        collectKielet(tavoite.tavoitteet, tavoite.$kielet);
+        collectKielet(tavoite.tunnustaminen, tavoite.$kielet);
+      });
+      arr.osaamistavoitteet = tavoitteet;
+      osaAlue.$groups = groupTavoitteet(tavoitteet, that.tavoiteMap);
+      var pakollinenIds = _.keys(osaAlue.$groups.grouped);
+      osaAlue.$esitietoOptions = _.map(pakollinenIds, function (id) {
+        return {value: id, label: osaAlue.$groups.grouped[id][0].nimi};
+      });
+      osaAlue.$esitietoOptions.unshift({value: null, label: '<ei asetettu>'});
+      osaAlue.$chosen = _.first(pakollinenIds);
     }
 
     function fixTavoite(tavoite) {
