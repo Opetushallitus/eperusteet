@@ -87,9 +87,13 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     private Kieli kieli;
 
     @Column(name = "koodi_uri")
+    @Getter
+    @Setter
     private String koodiUri;
 
     @Column(name = "koodi_arvo")
+    @Getter
+    @Setter
     private String koodiArvo;
 
     public OsaAlue() {
@@ -124,6 +128,8 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     public void mergeState(OsaAlue updated) {
         if (updated != null) {
             this.setNimi(updated.getNimi());
+            this.setKoodiArvo(updated.getKoodiArvo());
+            this.setKoodiUri(updated.getKoodiUri());
 
             if (updated.getOsaamistavoitteet() != null) {
 
