@@ -134,8 +134,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
 
     public boolean structureEquals(OsaAlue other) {
         boolean result = refXnor(getNimi(), other.getNimi());
-        result &= refXnor(getOsaamistavoitteet(), other.getOsaamistavoitteet());
-        if ( result && getOsaamistavoitteet() != null ) {
+        if ( result && getOsaamistavoitteet() != null && other.getOsaamistavoitteet() != null ) {
             Iterator<Osaamistavoite> i = getOsaamistavoitteet().iterator();
             Iterator<Osaamistavoite> j = other.getOsaamistavoitteet().iterator();
             while (result && i.hasNext() && j.hasNext()) {

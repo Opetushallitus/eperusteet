@@ -265,13 +265,14 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     }
 
     private void notifyUpdate(PerusteenOsa osa) {
+         // Varmistetaan että tutkinnon osan muokkaus muuttaa valmiiden perusteiden viimeksi muokattu -päivämäärää (ja aiheuttaa uuden version).
         if (osa.getTila() == PerusteTila.VALMIS) {
             Set<Long> perusteIds;
             if ( osa instanceof TutkinnonOsa ) {
-                perusteIds = perusteet.findByTutkinnonosaId(osa.getId());
+                perusteIds = perusteet.findByTutkinnonosaId(osa.getId(), PerusteTila.VALMIS);
             } else {
                 final List<Long> roots = perusteenOsaViiteRepository.findRootsByPerusteenOsaId(osa.getId());
-                perusteIds = roots.isEmpty() ? Collections.<Long>emptySet() : perusteet.findBySisaltoRoots(roots);
+                perusteIds = roots.isEmpty() ? Collections.<Long>emptySet() : perusteet.findBySisaltoRoots(roots, PerusteTila.VALMIS);
             }
             for (Long perusteId : perusteIds) {
                 eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, perusteId));
