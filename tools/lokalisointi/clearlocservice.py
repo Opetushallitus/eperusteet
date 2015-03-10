@@ -20,5 +20,5 @@ for loc in response:
         subprocess.call(['curl',
                         '-X', 'DELETE',
                         '-H', 'Content-Type: application/json',
-                        '-b', 'JSESSIONID=CBCE1CF54AC6C4484B653AF95116E542',
+                        '-b', 'JSESSIONID=' + sys.argv[1],
                         'https://' + LOCALIZATION_SERVICE + '/lokalisointi/cxf/rest/v1/localisation/' + id])

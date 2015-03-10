@@ -132,7 +132,6 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
             this.setKoodiUri(updated.getKoodiUri());
 
             if (updated.getOsaamistavoitteet() != null) {
-
                 this.setOsaamistavoitteet(mergeOsaamistavoitteet(this.getOsaamistavoitteet(), updated.getOsaamistavoitteet()));
             }
         }

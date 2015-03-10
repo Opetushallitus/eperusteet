@@ -35,15 +35,14 @@ workbook = openpyxl.load_workbook(sys.argv[2])
 worksheet = workbook.active
 
 # Send into localization service
-idx = 1
-for row in worksheet.rows:
-    if idx > 1:
-        if not row[0].value:
-            break
-        else:
-            send_to_localization_service(row[0].value, {
-                "fi": row[1].value, 
-                "sv": row[2].value, 
-                "en": row[3].value
-            })
+idx = 2
+for row in worksheet.rows[1:]:
+    if not row[0].value:
+        break
+    else:
+        send_to_localization_service(row[0].value, {
+            "fi": row[1].value, 
+            "sv": row[2].value, 
+            "en": row[3].value
+        })
     idx += 1
