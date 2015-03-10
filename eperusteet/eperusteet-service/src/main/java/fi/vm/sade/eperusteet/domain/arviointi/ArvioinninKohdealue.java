@@ -13,12 +13,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.domain.Arviointi;
+package fi.vm.sade.eperusteet.domain.arviointi;
 
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,14 +35,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
-
-import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
-import java.util.ArrayList;
-import java.util.Objects;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -113,6 +114,9 @@ public class ArvioinninKohdealue implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
         if (obj instanceof ArvioinninKohdealue) {
             final ArvioinninKohdealue other = (ArvioinninKohdealue) obj;
             if (!Objects.equals(this.otsikko, other.otsikko)) {
@@ -121,6 +125,21 @@ public class ArvioinninKohdealue implements Serializable {
             return Objects.equals(this.arvioinninKohteet, other.arvioinninKohteet);
         }
         return false;
+    }
+
+    public boolean structureEquals(ArvioinninKohdealue other) {
+        if (this == other) {
+            return true;
+        }
+        boolean result = refXnor(getOtsikko(), other.getOtsikko());
+        Iterator<ArvioinninKohde> i = getArvioinninKohteet().iterator();
+        Iterator<ArvioinninKohde> j = other.getArvioinninKohteet().iterator();
+        while (result && i.hasNext() && j.hasNext()) {
+            result &= i.next().structureEquals(j.next());
+        }
+        result &= !i.hasNext();
+        result &= !j.hasNext();
+        return result;
     }
 
 }

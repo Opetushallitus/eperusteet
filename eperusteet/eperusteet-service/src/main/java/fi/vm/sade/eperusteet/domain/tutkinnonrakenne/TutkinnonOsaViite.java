@@ -17,7 +17,7 @@ package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
-import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.math.BigDecimal;

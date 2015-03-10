@@ -13,16 +13,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.domain.tutkinnonOsa;
+package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -43,6 +44,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -180,9 +183,48 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     }
 
     public void setArviointi(Arviointi arviointi) {
-        if (!Objects.equals(this.arviointi, arviointi)) {
-            this.arviointi = arviointi;
+        if ( Objects.equals(this.arviointi, arviointi) ) {
+            return;
         }
+        if ( arviointi == null || this.arviointi == null ) {
+            this.arviointi = arviointi;
+        } else {
+            this.arviointi.mergeState(arviointi);
+            this.muokattu();
+        }
+    }
+
+    @Override
+    public boolean structureEquals(PerusteenOsa other) {
+        boolean result = false;
+        if (other instanceof TutkinnonOsa) {
+            TutkinnonOsa that = (TutkinnonOsa) other;
+            result = super.structureEquals(that);
+            result &= refXnor(getKuvaus(), that.getKuvaus());
+            result &= Objects.equals(getTyyppi(), that.getTyyppi());
+            result &= Objects.equals(getOpintoluokitus(), that.getOpintoluokitus());
+            result &= Objects.equals(getOpintoluokitus(), that.getOpintoluokitus());
+            result &= Objects.equals(getKoodiArvo(), that.getKoodiArvo());
+            result &= Objects.equals(getKoodiUri(), that.getKoodiUri());
+            result &= refXnor(getTavoitteet(), that.getTavoitteet());
+            result &= refXnor(getAmmattitaidonOsoittamistavat(), that.getAmmattitaidonOsoittamistavat());
+            result &= refXnor(getAmmattitaitovaatimukset(), that.getAmmattitaitovaatimukset());
+            result &= refXnor(getArviointi(), that.getArviointi());
+            if (result && getArviointi() != null) {
+                result &= getArviointi().structureEquals(that.getArviointi());
+            }
+            result &= refXnor(getOsaAlueet(), that.getOsaAlueet());
+            if (result && getOsaAlueet() != null) {
+                Iterator<OsaAlue> i = getOsaAlueet().iterator();
+                Iterator<OsaAlue> j = that.getOsaAlueet().iterator();
+                while (result && i.hasNext() && j.hasNext()) {
+                    result &= i.next().structureEquals(j.next());
+                }
+                result &= !i.hasNext();
+                result &= !j.hasNext();
+            }
+        }
+        return result;
     }
 
     @Override
@@ -215,9 +257,9 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         this.opintoluokitus = other.getOpintoluokitus();
         this.tyyppi = other.getTyyppi();
         this.kuvaus = other.getKuvaus();
-        if ( this.tyyppi == TutkinnonOsaTyyppi.TUTKE2 && other.getOsaAlueet() != null) {
+        if (this.tyyppi == TutkinnonOsaTyyppi.TUTKE2 && other.getOsaAlueet() != null) {
             this.osaAlueet = new ArrayList<>();
-            for ( OsaAlue o : other.getOsaAlueet() ) {
+            for (OsaAlue o : other.getOsaAlueet()) {
                 this.osaAlueet.add(new OsaAlue(o));
             }
         }

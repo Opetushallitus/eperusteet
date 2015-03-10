@@ -15,21 +15,21 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
-
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
-import fi.vm.sade.eperusteet.dto.util.EntityReference;
-import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import javax.persistence.FetchType;
-import lombok.Getter;
-import lombok.Setter;
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -83,6 +83,18 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
     @Override
     public TekstiKappale copy() {
         return new TekstiKappale(this);
+    }
+
+    @Override
+    public boolean structureEquals(PerusteenOsa other) {
+        boolean result = false;
+        if ( other instanceof TekstiKappale ) {
+            TekstiKappale that = (TekstiKappale)other;
+            result = super.structureEquals(that);
+            result &= Objects.equals(getOsaamisala(), that.getOsaamisala());
+            result &= refXnor(getTeksti(), that.getTeksti());
+         }
+        return result;
     }
 
     private void copyState(TekstiKappale other) {

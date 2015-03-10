@@ -35,6 +35,8 @@ import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+
 /**
  *
  * @author jhyoty
@@ -97,6 +99,12 @@ public abstract class PerusteenOsa
         if (this.tila == PerusteTila.LUONNOS) {
             this.tila = tila;
         }
+    }
+
+    public boolean structureEquals(PerusteenOsa other) {
+        boolean result = refXnor(getNimi(), other.getNimi());
+        result &= refXnor(getTunniste(), other.getTunniste());
+        return result;
     }
 
     @Override

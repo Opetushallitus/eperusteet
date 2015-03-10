@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 
 /**

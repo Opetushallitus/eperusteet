@@ -44,7 +44,7 @@ import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
-import fi.vm.sade.eperusteet.domain.Arviointi.ArviointiAsteikko;
+import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
