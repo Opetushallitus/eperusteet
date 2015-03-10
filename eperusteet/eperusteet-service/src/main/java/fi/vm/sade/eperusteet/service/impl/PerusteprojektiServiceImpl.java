@@ -307,15 +307,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         boolean onJollainVaditullaKielella = false;
         if (!pakollinen) {
             for (Kieli kieli : pakolliset) {
-                if (onJollainVaditullaKielella) {
-                    break;
-                }
-                for (Entry<Kieli, String> osa : palanen.getTeksti().entrySet()) {
-                    if (osa.getValue() != null && !osa.getValue().isEmpty()) {
+                String osa = palanen.getTeksti().get(kieli);
+                    if (osa != null && !osa.isEmpty()) {
                         onJollainVaditullaKielella = true;
                         break;
                     }
-                }
             }
         }
 
