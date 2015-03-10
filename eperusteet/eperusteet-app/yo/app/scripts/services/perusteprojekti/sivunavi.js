@@ -126,10 +126,6 @@ angular.module('eperusteApp')
     items = [];
     if (perusteenTyyppi === 'YL') {
       var tiedot = service.getYlTiedot();
-      if (!_.isEmpty(tiedot.oppiaineet)) {
-        _.each(tiedot.oppiaineet, function(x) {
-        });
-      }
       _.each(PerusopetusService.LABELS, function (key, label) {
         items.push({
           label: label,
