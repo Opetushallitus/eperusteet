@@ -51,10 +51,10 @@
 
 <div ng-if="tutkinnonOsa.tyyppi === 'tutke2'">
   <termisto-tekstikentta tekstikentta="tutkinnonOsa.kuvaus"></termisto-tekstikentta>
-  <div ng-repeat="osaalue in tutkinnonOsa.osaAlueet">
+  <div ng-repeat="osaalue in tutkinnonOsa.osaAlueet | filter:osaAlueFilter">
     <h3>{{osaalue.nimi | kaanna}}</h3>
     <div ng-repeat="osaamistavoitteet in osaalue.$groups.grouped">
-      <div ng-repeat="tavoite in osaamistavoitteet" ng-include="'views/partials/esitys/osaamistavoite.html'"></div>
+      <div ng-repeat="tavoite in osaamistavoitteet | filter:osaAlueFilter" ng-include="'views/partials/esitys/osaamistavoite.html'"></div>
     </div>
     <div ng-repeat="tavoite in osaalue.$groups.ungrouped" ng-include="'views/partials/esitys/osaamistavoite.html'"></div>
   </div>

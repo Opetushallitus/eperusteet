@@ -18,9 +18,9 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.tutkinnonOsa.OsaAlue;
-import fi.vm.sade.eperusteet.domain.tutkinnonOsa.Osaamistavoite;
-import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
@@ -154,6 +154,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         if (perusteenOsaDto.getClass().equals(TutkinnonOsaDto.class)) {
             ((TutkinnonOsa) updated).setOsaAlueet(createOsaAlueIfNotExist(((TutkinnonOsa) updated).getOsaAlueet()));
         }
+        if ( current.getTila() == PerusteTila.VALMIS && !current.structureEquals(updated)) {
+            throw new BusinessRuleViolationException("Vain korjaukset sallittu");
+        }
         current.mergeState(updated);
         current = perusteenOsaRepo.save(current);
         notifyUpdate(current);
@@ -262,13 +265,14 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     }
 
     private void notifyUpdate(PerusteenOsa osa) {
+         // Varmistetaan että tutkinnon osan muokkaus muuttaa valmiiden perusteiden viimeksi muokattu -päivämäärää (ja aiheuttaa uuden version).
         if (osa.getTila() == PerusteTila.VALMIS) {
             Set<Long> perusteIds;
             if ( osa instanceof TutkinnonOsa ) {
-                perusteIds = perusteet.findByTutkinnonosaId(osa.getId());
+                perusteIds = perusteet.findByTutkinnonosaId(osa.getId(), PerusteTila.VALMIS);
             } else {
                 final List<Long> roots = perusteenOsaViiteRepository.findRootsByPerusteenOsaId(osa.getId());
-                perusteIds = roots.isEmpty() ? Collections.<Long>emptySet() : perusteet.findBySisaltoRoots(roots);
+                perusteIds = roots.isEmpty() ? Collections.<Long>emptySet() : perusteet.findBySisaltoRoots(roots, PerusteTila.VALMIS);
             }
             for (Long perusteId : perusteIds) {
                 eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, perusteId));

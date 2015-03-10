@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
@@ -35,10 +36,10 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
         "LEFT JOIN p.suoritustavat s " +
         "LEFT JOIN p.perusopetuksenPerusteenSisalto ps " +
         "LEFT JOIN p.esiopetuksenPerusteenSisalto eps " +
-        "WHERE s.sisalto.id IN ?1 OR ps.sisalto.id IN ?1 OR eps.sisalto.id IN ?1")
-    Set<Long> findBySisaltoRoots(Iterable<? extends Number> rootIds);
+        "WHERE p.tila = ?2 AND (s.sisalto.id IN ?1 OR ps.sisalto.id IN ?1 OR eps.sisalto.id IN ?1)")
+    Set<Long> findBySisaltoRoots(Iterable<? extends Number> rootIds, PerusteTila tila);
 
-    @Query("SELECT DISTINCT p.id FROM Peruste p JOIN p.suoritustavat s JOIN s.tutkinnonOsat to WHERE to.tutkinnonOsa.id = ?1")
-    Set<Long> findByTutkinnonosaId(Long id);
+    @Query("SELECT DISTINCT p.id FROM Peruste p JOIN p.suoritustavat s JOIN s.tutkinnonOsat to WHERE p.tila = ?2 AND to.tutkinnonOsa.id = ?1")
+    Set<Long> findByTutkinnonosaId(Long id, PerusteTila tila);
 
 }

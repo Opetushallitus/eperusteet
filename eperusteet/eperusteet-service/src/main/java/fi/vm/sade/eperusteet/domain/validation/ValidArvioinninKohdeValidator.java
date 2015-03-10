@@ -15,8 +15,8 @@
  */
 package fi.vm.sade.eperusteet.domain.validation;
 
-import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohde;
-import fi.vm.sade.eperusteet.domain.Arviointi.ArviointiAsteikko;
+import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
+import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import javax.validation.ConstraintValidator;

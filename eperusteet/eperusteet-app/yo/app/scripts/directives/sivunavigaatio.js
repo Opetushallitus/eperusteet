@@ -29,8 +29,7 @@
  */
 angular.module('eperusteApp')
 
-  .directive('sivunavigaatio2', function ($window, $document, $timeout, $compile) {
-    var SCREEN_MD_MAX = 1200;
+  .directive('sivunavigaatio2', function ($compile) {
     return {
       templateUrl: 'views/partials/sivunavi2.html',
       restrict: 'AE',
@@ -45,7 +44,6 @@ angular.module('eperusteApp')
       controller: 'SivuNaviController',
       transclude: true,
       link: function (scope, element) {
-        var window = angular.element($window);
         var transcluded = element.find('#sivunavi-tc').contents();
         scope.hasTransclude = transcluded.length > 0;
 
@@ -59,48 +57,6 @@ angular.module('eperusteApp')
         }
         scope.$watch('footer', updateFooter);
 
-        /**
-         * All this just to get a divider line to expand to the bottom of the page
-         */
-        var refreshView = function () {
-          var el = angular.element('.sivunavi-navigaatio');
-          if (el.length === 0) {
-            return;
-          }
-          var hiddenOrCollapsed = (angular.element('.sivunavi-hidden').length > 0) || window.width() < SCREEN_MD_MAX;
-          var sisalto = angular.element('.ep-sisalto-inner');
-          if (hiddenOrCollapsed) {
-            el.height('auto').css('border-right', '0');
-            sisalto.hide().show(0); // Webkit bug: force redraw
-            el.hide().show(0);
-          } else {
-            var sisaltoHeight = sisalto.outerHeight();
-            var naviElement = angular.element('.sivunavi-box');
-            var windowHeight = window.innerHeight();
-            var longSisalto = sisaltoHeight > windowHeight;
-            var naviHeight = naviElement.height();
-            // Page height might change dynamically, check if navi is too long
-            var naviOverflow = naviHeight > sisaltoHeight && naviHeight > windowHeight;
-            if (longSisalto && !naviOverflow) {
-              el.height(sisaltoHeight - 20);
-            } else if ((naviHeight > windowHeight) || (longSisalto && naviOverflow)) {
-              el.height('auto');
-            } else {
-              el.height(Math.max(windowHeight - el.offset().top - 20, naviHeight));
-            }
-            el.css('border-right', '1px solid #ddd');
-          }
-        };
-        scope.refreshView = refreshView;
-
-        window.on('scroll resize', refreshView);
-        scope.$on('update:kommentit', function () {
-          $timeout(refreshView, 1500);
-        });
-        scope.$on('$destroy', function () {
-          window.off('scroll resize', refreshView);
-        });
-        $timeout(refreshView);
       }
     };
   })
@@ -309,20 +265,10 @@ angular.module('eperusteApp')
       $scope.menuCollapsed = true;
     });
 
-    function doRefreshView() {
-      $timeout(function () {
-        $scope.refreshView();
-      });
-    }
-
     $scope.$on('$stateChangeSuccess', function () {
       Utils.scrollTo('#ylasivuankkuri');
       updateModel($scope.items);
-      doRefreshView();
     });
-
-    $scope.$on('enableEditing', doRefreshView);
-    $scope.$on('disableEditing', doRefreshView);
 
     $scope.$watch('items', function () {
       $scope.refresh();

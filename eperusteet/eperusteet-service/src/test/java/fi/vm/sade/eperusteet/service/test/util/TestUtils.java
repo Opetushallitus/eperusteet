@@ -16,10 +16,10 @@
 package fi.vm.sade.eperusteet.service.test.util;
 
 import com.google.common.base.Optional;
-import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohde;
-import fi.vm.sade.eperusteet.domain.Arviointi.ArvioinninKohdealue;
-import fi.vm.sade.eperusteet.domain.Arviointi.Arviointi;
-import fi.vm.sade.eperusteet.domain.Arviointi.ArviointiAsteikko;
+import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
+import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
+import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
+import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
@@ -27,7 +27,7 @@ import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;

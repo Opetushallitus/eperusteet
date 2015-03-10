@@ -35,7 +35,7 @@ import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.tutkinnonOsa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
@@ -80,7 +80,6 @@ import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import fi.vm.sade.eperusteet.service.util.RestClientFactory;
 import fi.vm.sade.generic.rest.CachingRestClient;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -307,15 +306,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         boolean onJollainVaditullaKielella = false;
         if (!pakollinen) {
             for (Kieli kieli : pakolliset) {
-                if (onJollainVaditullaKielella) {
-                    break;
-                }
-                for (Entry<Kieli, String> osa : palanen.getTeksti().entrySet()) {
-                    if (osa.getValue() != null && !osa.getValue().isEmpty()) {
+                String osa = palanen.getTeksti().get(kieli);
+                    if (osa != null && !osa.isEmpty()) {
                         onJollainVaditullaKielella = true;
                         break;
                     }
-                }
             }
         }
 

@@ -16,6 +16,8 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.math.BigDecimal;
 import lombok.Getter;
@@ -32,4 +34,6 @@ public class OsaamistavoiteDto {
     private LokalisoituTekstiDto nimi;
     private boolean pakollinen;
     private BigDecimal laajuus;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Kieli kieli;
 }
