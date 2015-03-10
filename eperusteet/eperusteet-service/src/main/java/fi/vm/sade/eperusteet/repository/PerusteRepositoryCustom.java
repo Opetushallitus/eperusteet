@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import org.springframework.data.domain.Page;
@@ -28,7 +27,5 @@ import org.springframework.data.repository.NoRepositoryBean;
  */
 @NoRepositoryBean
 public interface PerusteRepositoryCustom {
-
     Page<Peruste> findBy(PageRequest page, PerusteQuery pquery);
-    Peruste findById(Long id);
 }

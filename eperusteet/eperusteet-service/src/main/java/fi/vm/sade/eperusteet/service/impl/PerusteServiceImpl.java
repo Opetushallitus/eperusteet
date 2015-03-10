@@ -222,8 +222,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteDto get(final Long id) {
-        Peruste p = perusteet.findById(id);
-        return mapper.map(p, PerusteDto.class);
+        Peruste p = perusteet.findOne(id);
+        PerusteDto dto = mapper.map(p, PerusteDto.class);
+        if (dto != null) {
+            dto.setRevision(perusteet.getLatestRevisionId(id));
+        }
+        return dto;
     }
 
     @Override
@@ -235,13 +239,28 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
+    public Integer getLastModifiedRevision(final Long id) {
+        PerusteTila tila = perusteet.getTila(id);
+        if (tila == null) {
+            return null;
+        }
+        if (tila == PerusteTila.LUONNOS) {
+            //luonnos-tilassa olevan perusteen viimeisimmän muokkauksen määrittäminen on epäluotettavaa.
+            return 0;
+        }
+        return perusteet.getLatestRevisionId(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public PerusteKaikkiDto getKokoSisalto(final Long id) {
-        Peruste peruste = perusteet.findById(id);
+        Peruste peruste = perusteet.findOne(id);
         if (peruste == null) {
             return null;
         }
 
         PerusteKaikkiDto perusteDto = mapper.map(peruste, PerusteKaikkiDto.class);
+        perusteDto.setRevision(perusteet.getLatestRevisionId(id));
 
         if (!perusteDto.getSuoritustavat().isEmpty()) {
             Set<TutkinnonOsa> tutkinnonOsat = new LinkedHashSet<>();
@@ -294,7 +313,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     public PerusteDto update(long id, PerusteDto perusteDto) {
-        Peruste perusteVanha = perusteet.findById(id);
+        Peruste perusteVanha = perusteet.findOne(id);
         if (perusteVanha == null) {
             throw new BusinessRuleViolationException("Päivitettävää perustetta ei ole olemassa");
         }
@@ -488,8 +507,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         RakenneModuuli moduuli = mapper.map(rakenne, RakenneModuuli.class);
 
         if (!moduuli.isSame(suoritustapa.getRakenne(), false)) {
-            if ( perusteet.findOne(perusteId).getTila() == PerusteTila.VALMIS ) {
-                if ( !moduuli.isSame(suoritustapa.getRakenne(), true) ) {
+            if (perusteet.findOne(perusteId).getTila() == PerusteTila.VALMIS) {
+                if (!moduuli.isSame(suoritustapa.getRakenne(), true)) {
                     throw new BusinessRuleViolationException("Vain tekstimuutokset rakenteeseen ovat sallittuja");
                 }
             }
