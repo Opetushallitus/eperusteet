@@ -13,22 +13,27 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-
 package fi.vm.sade.eperusteet.service.exception;
 
-import org.springframework.core.NestedRuntimeException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- *  Kantaluokka palvelukerroksen poikkeuksille
+ *
  * @author jhyoty
  */
-public abstract class ServiceException extends NestedRuntimeException {
-    
-    public ServiceException(String message) {
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class NotFoundException extends ServiceException {
+
+    public NotFoundException() {
+        super("Pyydettyä tietoa ei löytynyt");
+    }
+
+    public NotFoundException(String message) {
         super(message);
     }
 
-    public ServiceException(String message, Throwable cause) {
+    public NotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 

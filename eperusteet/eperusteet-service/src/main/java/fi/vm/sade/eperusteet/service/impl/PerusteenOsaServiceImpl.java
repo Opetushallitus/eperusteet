@@ -43,6 +43,7 @@ import fi.vm.sade.eperusteet.service.KommenttiService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.exception.NotFoundException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -526,7 +527,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     private void assertExists(Long id) {
         if (!perusteenOsaRepo.exists(id)) {
-            throw new BusinessRuleViolationException("Pyydettyä perusteen osaa ei ole olemassa");
+            throw new NotFoundException("Pyydettyä perusteen osaa ei ole olemassa");
         }
     }
 
