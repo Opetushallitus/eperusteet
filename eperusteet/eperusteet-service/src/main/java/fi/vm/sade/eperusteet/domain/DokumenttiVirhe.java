@@ -26,7 +26,8 @@ public enum DokumenttiVirhe {
 
     EI_VIRHETTA("ei_virhetta"),
     PERUSTETTA_EI_LOYTYNYT("perustetta_ei_loytynyt"),
-    TUNTEMATON("tuntematon");
+    TUNTEMATON("tuntematon"),
+    TUNTEMATON_LOKALISOINTI("lokalisointiavainta_ei_loytynyt");
 
     private final String virhe;
 

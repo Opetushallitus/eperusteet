@@ -42,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -132,7 +133,14 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             doc.setValmistumisaika(new Date());
             dokumenttiRepository.save(doc);
 
-        } catch (TransformerException | ParserConfigurationException | Docbook4JException | IOException | RuntimeException ex) {
+        }
+        catch (NoSuchMessageException ex) {
+           LOG.error("Exception during document generation:", ex);
+           doc.setTila(DokumenttiTila.EPAONNISTUI);
+           doc.setVirhekoodi(DokumenttiVirhe.TUNTEMATON_LOKALISOINTI);
+           dokumenttiRepository.save(doc);
+        }
+        catch (TransformerException | ParserConfigurationException | Docbook4JException | IOException | RuntimeException ex) {
             LOG.error("Exception during document generation:", ex);
             doc.setTila(DokumenttiTila.EPAONNISTUI);
             doc.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);

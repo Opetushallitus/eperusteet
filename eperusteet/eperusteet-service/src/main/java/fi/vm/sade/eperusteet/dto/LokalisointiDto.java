@@ -13,18 +13,24 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.service;
+package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
-import org.springframework.security.access.prepost.PreAuthorize;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author jussi
  */
-public interface LocalizedMessagesService {
-
-    @PreAuthorize("permitAll()")
-    public String translate(String key, Kieli kieli);
-
+@Getter
+@Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class LokalisointiDto {
+    String value;
+    String key;
+    Long   id;
+    String locale;
+    String description;
+    String category;
 }

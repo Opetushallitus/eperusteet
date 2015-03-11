@@ -14,17 +14,18 @@
  * European Union Public Licence for more details.
  */
 package fi.vm.sade.eperusteet.service;
-
-import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.dto.LokalisointiDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  *
  * @author jussi
  */
-public interface LocalizedMessagesService {
+public interface LokalisointiService {
 
-    @PreAuthorize("permitAll()")
-    public String translate(String key, Kieli kieli);
-
+    @PreAuthorize("isAuthenticated()")
+    LokalisointiDto get(String key, String locale);
 }
+
+
+
