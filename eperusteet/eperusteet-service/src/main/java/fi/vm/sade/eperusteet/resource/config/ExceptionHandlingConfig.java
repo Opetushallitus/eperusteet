@@ -118,7 +118,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
         final Map<String, Object> map = new HashMap<>();
-        boolean suppresslog = false;
+        boolean suppresstrace = false;
 
         if (ex instanceof BindException) {
             describe(map, "server-virhe-datan-kytkemisessä", "Virhe datan kytkemisessä.");
@@ -151,9 +151,10 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             describe(map, "datassa-tuntematon-kenttä", "Dataa ei pystytty käsittelemään. Lähetetyssä datassa esiintyi tuntematon kenttä \"" +
                      ((UnrecognizedPropertyException) ex).getPropertyName() + "\"");
         } else if (ex instanceof ConstraintViolationException) {
+            suppresstrace = true;
             List<String> reasons = new ArrayList<>();
             for (ConstraintViolation<?> constraintViolation : ((ConstraintViolationException) ex).getConstraintViolations()) {
-                reasons.add(constraintViolation.getMessage());
+                reasons.add(constraintViolation.getPropertyPath().toString() + ": " + constraintViolation.getMessage());
             }
             map.put("syy", reasons);
         } else if (ex instanceof UnsatisfiedServletRequestParameterException) {
@@ -164,6 +165,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             builder.append("\"");
             map.put("syy", builder.toString());
         } else if (ex instanceof LockingException) {
+            suppresstrace = true;
             LockingException le = (LockingException) ex;
             map.put("syy", ex.getLocalizedMessage());
             map.put("avain", "server-lukitus");
@@ -173,7 +175,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
                 map.put("lukko", lukko);
             }
         } else if (ex instanceof NotExistsException) {
-            suppresslog = true;
+            suppresstrace = true;
             map.put("syy", ex.getLocalizedMessage());
         } else if (ex instanceof ServiceException) {
             map.put("syy", ex.getLocalizedMessage());
@@ -185,7 +187,9 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
         }
         map.put("koodi", status);
 
-        if (!suppresslog) {
+        if (suppresstrace) {
+            LOG.warn("Virhetilanne: " + ex.getLocalizedMessage());
+        } else {
             LOG.error("Virhetilanne: ", ex);
         }
         return super.handleExceptionInternal(ex, map, headers, status, request);
