@@ -33,6 +33,7 @@ import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.resource.util.Etags;
 import fi.vm.sade.eperusteet.service.KoodistoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import java.util.ArrayList;
@@ -41,11 +42,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -96,7 +99,7 @@ public class PerusteController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "sivu", dataType = "integer", paramType = "query"),
         @ApiImplicitParam(name = "sivukoko", dataType = "integer", paramType = "query"),
-        @ApiImplicitParam(name = "siirtyma", dataType = "boolean", paramType = "query", defaultValue = "false", value = "hae myös siirtymäajalla olevat perusteet" ),
+        @ApiImplicitParam(name = "siirtyma", dataType = "boolean", paramType = "query", defaultValue = "false", value = "hae myös siirtymäajalla olevat perusteet"),
         @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
         @ApiImplicitParam(name = "koulutusala", dataType = "string", paramType = "query", allowMultiple = true),
         @ApiImplicitParam(name = "tyyppi", dataType = "string", paramType = "query", allowMultiple = true),
@@ -104,7 +107,7 @@ public class PerusteController {
         @ApiImplicitParam(name = "opintoala", dataType = "string", paramType = "query", allowMultiple = true, value = "opintoalakoodi"),
         @ApiImplicitParam(name = "suoritustapa", dataType = "string", paramType = "query", value = "AM-perusteet; naytto tai ops"),
         @ApiImplicitParam(name = "koulutuskoodi", dataType = "string", paramType = "query"),
-        @ApiImplicitParam(name = "muokattu", dataType = "integer", paramType = "query",value="aikaleima; muokattu jälkeen")
+        @ApiImplicitParam(name = "muokattu", dataType = "integer", paramType = "query", value = "aikaleima; muokattu jälkeen")
     })
     public Page<PerusteDto> getAll(@ApiIgnore PerusteQuery pquery) {
         // Vain valmiita perusteita voi hakea tämän rajapinnan avulla
@@ -126,18 +129,18 @@ public class PerusteController {
     @ResponseBody
     @InternalApi
     public ResponseEntity<TutkintonimikeKoodiDto> addTutkintonimikekoodi(
-            @PathVariable("perusteId") final long id,
-            @PathVariable("tutkintonimikeKoodiId") final Long tnkId) {
+        @PathVariable("perusteId") final long id,
+        @PathVariable("tutkintonimikeKoodiId") final Long tnkId) {
         service.removeTutkintonimikeKoodi(id, tnkId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit", method = { POST, PUT })
+    @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit", method = {POST, PUT})
     @ResponseBody
     @InternalApi
     public ResponseEntity<TutkintonimikeKoodiDto> addTutkintonimikekoodi(
-            @PathVariable("perusteId") final long id,
-            @RequestBody final TutkintonimikeKoodiDto tnk) {
+        @PathVariable("perusteId") final long id,
+        @RequestBody final TutkintonimikeKoodiDto tnk) {
         TutkintonimikeKoodiDto tutkintonimikeKoodi = service.addTutkintonimikeKoodi(id, tnk);
         return new ResponseEntity<>(tutkintonimikeKoodi, HttpStatus.OK);
     }
@@ -165,12 +168,30 @@ public class PerusteController {
 
     @RequestMapping(value = "/{perusteId}", method = GET)
     @ResponseBody
-    public ResponseEntity<PerusteDto> get(@PathVariable("perusteId") final long id) {
-        PerusteDto t = service.get(id);
-        if (t == null) {
+    public ResponseEntity<PerusteDto> get(@PathVariable("perusteId") final long id,
+        @RequestHeader(value = "If-None-Match", required = false) String etag) {
+
+        if (etag != null) {
+            Integer rev = service.getLastModifiedRevision(id);
+            if (rev != null && rev > 0 && rev.equals(Etags.revisionOf(etag))) {
+                HttpHeaders headers = Etags.eTagHeader(rev);
+                headers.setCacheControl("public");
+                return new ResponseEntity<>(headers, HttpStatus.NOT_MODIFIED);
+            }
+        }
+
+        PerusteDto dto = service.get(id);
+        if (dto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(t, HttpStatus.OK);
+
+        if (dto.getTila() == PerusteTila.VALMIS) {
+            HttpHeaders headers = Etags.eTagHeader(dto.getRevision());
+            headers.setCacheControl("public");
+            return new ResponseEntity<>(dto, headers, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(dto, HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "/diaari", method = GET)
@@ -185,9 +206,31 @@ public class PerusteController {
 
     @RequestMapping(value = "/{perusteId}/kaikki", method = GET)
     @ResponseBody
-    public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(@PathVariable("perusteId") final long id) {
+    public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(
+        @PathVariable("perusteId") final long id,
+        @RequestHeader(value = "If-None-Match", required = false) String etag) {
+
+        if (etag != null) {
+            Integer rev = service.getLastModifiedRevision(id);
+            if (rev != null && rev > 0 && rev.equals(Etags.revisionOf(etag))) {
+                HttpHeaders headers = Etags.eTagHeader(rev);
+                headers.setCacheControl("public");
+                return new ResponseEntity<>(headers, HttpStatus.NOT_MODIFIED);
+            }
+        }
+
         PerusteKaikkiDto kokoSisalto = service.getKokoSisalto(id);
-        return new ResponseEntity<>(kokoSisalto, HttpStatus.OK);
+        if (kokoSisalto == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (kokoSisalto.getTila() == PerusteTila.VALMIS) {
+            HttpHeaders headers = Etags.eTagHeader(kokoSisalto.getRevision());
+            headers.setCacheControl("public");
+            return new ResponseEntity<>(kokoSisalto, headers, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(kokoSisalto, HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)

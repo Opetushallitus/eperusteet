@@ -16,13 +16,13 @@
 
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.dto.peruste.TermiDto;
-import fi.vm.sade.eperusteet.domain.Termi;
 import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.repository.TermistoRepository;
+import fi.vm.sade.eperusteet.domain.Termi;
+import fi.vm.sade.eperusteet.dto.peruste.TermiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.repository.TermistoRepository;
 import fi.vm.sade.eperusteet.service.TermistoService;
-import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.List;
@@ -84,7 +84,7 @@ public class TermistoServiceImpl implements TermistoService {
 
     private static void assertExists(Object o, String msg) {
         if (o == null) {
-            throw new BusinessRuleViolationException(msg);
+            throw new NotExistsException(msg);
         }
     }
 }

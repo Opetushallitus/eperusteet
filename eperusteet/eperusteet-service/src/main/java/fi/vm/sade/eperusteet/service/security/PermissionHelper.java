@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.WithPerusteTila;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -41,14 +42,21 @@ public class PermissionHelper {
 
     @Cacheable(value = "tila", unless = "#result != T(fi.vm.sade.eperusteet.domain.PerusteTila).VALMIS")
     public PerusteTila findPerusteTilaFor(PermissionManager.Target targetType, Serializable id) {
+        PerusteTila tila = null;
         switch (targetType) {
             case PERUSTEENOSA:
-                return findPerusteTilaFor(PerusteenOsa.class, id);
+                tila = findPerusteTilaFor(PerusteenOsa.class, id);
+                break;
             case PERUSTE:
-                return findPerusteTilaFor(Peruste.class, id);
+                tila = findPerusteTilaFor(Peruste.class, id);
+                break;
             default:
                 return null;
         }
+        if ( tila == null ) {
+            throw new NotExistsException();
+        }
+        return tila;
     }
 
     private PerusteTila findPerusteTilaFor(Class<? extends WithPerusteTila> entity, Serializable id) {

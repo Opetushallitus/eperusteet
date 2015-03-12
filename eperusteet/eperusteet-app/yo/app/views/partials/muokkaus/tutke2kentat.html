@@ -57,6 +57,10 @@
           </div>
         </accordion-heading>
 
+        <div ng-if="alue.koodiArvo">
+          <label class="header" kaanna="'koodi'"></label>:<span> {{ alue.koodiArvo || '-' }}</span>
+        </div>
+
         <!-- osaamistavoitteet -->
         <p class="info-placeholder" ng-show="!alue.$editing && (!alue.osaamistavoitteet || alue.osaamistavoitteet.length === 0)"
            kaanna>Ei osaamistavoitteita.</p>

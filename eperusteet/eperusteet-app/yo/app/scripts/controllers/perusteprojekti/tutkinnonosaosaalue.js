@@ -3,14 +3,25 @@
 
 angular.module('eperusteApp')
   .controller('TutkinnonOsaOsaAlueCtrl', function ($scope, $state, $stateParams, Editointikontrollit,
-    TutkinnonOsanOsaAlue, Lukitus, Notifikaatiot, Utils) {
-
+    TutkinnonOsanOsaAlue, Lukitus, Notifikaatiot, Utils, Koodisto) {
     $scope.osaamistavoitepuu = [];
     var tempId = 0;
 
-    $scope.tutkinnonOsa = {};
+    $scope.tutkinnonOsa = $scope.$parent.tutkinnonOsaViite.tutkinnonOsa;
     $scope.osaAlue = {
       nimi:{}
+    };
+
+    if ($scope.tutkinnonOsa) {
+      Koodisto.haeAlarelaatiot($scope.tutkinnonOsa.koodiUri, function(alarelaatiot) {
+        alarelaatiot.unshift({});
+        $scope.$alarelaatiot = alarelaatiot;
+      });
+    }
+
+    $scope.valitseAlarelaatio = function(ar) {
+      $scope.osaAlue.koodiUri = ar ? ar.koodiUri : undefined;
+      $scope.osaAlue.koodiArvo = ar ? ar.koodiArvo : undefined;
     };
 
     function luoOsaamistavoitepuu() {
@@ -90,7 +101,10 @@ angular.module('eperusteApp')
       },
       save: function () {
         $scope.osaAlue.osaamistavoitteet = kokoaOsaamistavoitteet();
-        TutkinnonOsanOsaAlue.save({viiteId: $stateParams.tutkinnonOsaViiteId, osaalueenId: $stateParams.osaAlueId}, $scope.osaAlue, function () {
+        TutkinnonOsanOsaAlue.save({
+          viiteId: $stateParams.tutkinnonOsaViiteId,
+          osaalueenId: $stateParams.osaAlueId
+        }, $scope.osaAlue, function () {
           Lukitus.vapautaPerusteenosaByTutkinnonOsaViite($stateParams.tutkinnonOsaViiteId);
           $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {}, {reload: true});
         }, function(virhe) {

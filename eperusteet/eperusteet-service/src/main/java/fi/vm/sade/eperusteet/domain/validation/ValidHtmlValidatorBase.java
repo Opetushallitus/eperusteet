@@ -15,11 +15,12 @@
  */
 package fi.vm.sade.eperusteet.domain.validation;
 
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
-
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class ValidHtmlValidatorBase {
 
@@ -33,10 +34,13 @@ public abstract class ValidHtmlValidatorBase {
 		if(palanen != null && palanen.getTeksti() != null && !palanen.getTeksti().isEmpty()) {
 			for(Kieli kieli : palanen.getTeksti().keySet()) {
 				if(!Jsoup.isValid(palanen.getTeksti().get(kieli), whitelist)) {
+                    LOG.debug("Tekstipalanen " + palanen.getId() + " not valid");
 					return false;
 				}
 			}
 		}
 		return true;
 	}
+
+    private static final Logger LOG = LoggerFactory.getLogger(ValidHtmlValidatorBase.class);
 }
