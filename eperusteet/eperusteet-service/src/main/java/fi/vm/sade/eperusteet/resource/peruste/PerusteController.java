@@ -175,7 +175,7 @@ public class PerusteController {
             Integer rev = service.getLastModifiedRevision(id);
             if (rev != null && rev > 0 && rev.equals(Etags.revisionOf(etag))) {
                 HttpHeaders headers = Etags.eTagHeader(rev);
-                headers.setCacheControl("public");
+                headers.setCacheControl("public, max-age=1");
                 return new ResponseEntity<>(headers, HttpStatus.NOT_MODIFIED);
             }
         }
@@ -213,9 +213,7 @@ public class PerusteController {
         if (etag != null) {
             Integer rev = service.getLastModifiedRevision(id);
             if (rev != null && rev > 0 && rev.equals(Etags.revisionOf(etag))) {
-                HttpHeaders headers = Etags.eTagHeader(rev);
-                headers.setCacheControl("public");
-                return new ResponseEntity<>(headers, HttpStatus.NOT_MODIFIED);
+                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
             }
         }
 
@@ -226,7 +224,7 @@ public class PerusteController {
 
         if (kokoSisalto.getTila() == PerusteTila.VALMIS) {
             HttpHeaders headers = Etags.eTagHeader(kokoSisalto.getRevision());
-            headers.setCacheControl("public");
+            headers.setCacheControl("public, max-age=1");
             return new ResponseEntity<>(kokoSisalto, headers, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(kokoSisalto, HttpStatus.OK);
