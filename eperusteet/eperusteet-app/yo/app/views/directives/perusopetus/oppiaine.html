@@ -55,9 +55,9 @@
           {{'yksi-oppimaara'|kaanna}}</label>
         <label class="inputwrapper"><input class="form-control" ng-click="editableModel.abstrakti = false" type="radio" ng-model="editableModel.koosteinen" ng-value="true">
           {{'useita-oppimaaria'|kaanna}}</label>
-        <label ng-show="editableModel.koosteinen === false" class="inputwrapper"><input class="form-control" type="checkbox" ng-model="editableModel.abstrakti">
-          {{'paikallisessa-laadinnassa-maariteltava'|kaanna}}</label>
       </div>
+      <label style="margin-top: 10px" ng-show="editableModel.koosteinen === false" class="inputwrapper"><input class="form-control" type="checkbox" ng-model="editableModel.abstrakti">
+        {{'paikallisessa-laadinnassa-maariteltava'|kaanna}}</label>
     </div>
     <h3 kaanna="'osiot'" class="osioheader"></h3>
   </div>
