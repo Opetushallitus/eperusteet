@@ -19,7 +19,7 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.WithPerusteTila;
-import fi.vm.sade.eperusteet.service.exception.NotFoundException;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -54,7 +54,7 @@ public class PermissionHelper {
                 return null;
         }
         if ( tila == null ) {
-            throw new NotFoundException();
+            throw new NotExistsException();
         }
         return tila;
     }

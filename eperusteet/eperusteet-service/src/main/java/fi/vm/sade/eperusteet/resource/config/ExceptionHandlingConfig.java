@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.resource.config;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.service.exception.LockingException;
-import fi.vm.sade.eperusteet.service.exception.NotFoundException;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.exception.ServiceException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import java.io.IOException;
@@ -172,7 +172,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
                 lukkomanageri.lisaaNimiLukkoon(lukko);
                 map.put("lukko", lukko);
             }
-        } else if (ex instanceof NotFoundException) {
+        } else if (ex instanceof NotExistsException) {
             suppresslog = true;
             map.put("syy", ex.getLocalizedMessage());
         } else if (ex instanceof ServiceException) {

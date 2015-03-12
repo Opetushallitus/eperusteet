@@ -22,7 +22,7 @@ import fi.vm.sade.eperusteet.dto.peruste.TermiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.TermistoRepository;
 import fi.vm.sade.eperusteet.service.TermistoService;
-import fi.vm.sade.eperusteet.service.exception.NotFoundException;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.List;
@@ -84,7 +84,7 @@ public class TermistoServiceImpl implements TermistoService {
 
     private static void assertExists(Object o, String msg) {
         if (o == null) {
-            throw new NotFoundException(msg);
+            throw new NotExistsException(msg);
         }
     }
 }

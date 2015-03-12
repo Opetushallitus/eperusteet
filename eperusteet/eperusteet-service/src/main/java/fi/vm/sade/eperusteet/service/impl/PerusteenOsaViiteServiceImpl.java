@@ -35,7 +35,7 @@ import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
-import fi.vm.sade.eperusteet.service.exception.NotFoundException;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.security.PermissionChecker;
@@ -118,7 +118,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     public void removeSisalto(Long perusteId, Long id) {
         PerusteenOsaViite viite = findViite(perusteId, id);
         if (viite == null) {
-            throw new NotFoundException("Perusteenosaviitettä ei ole olemassa");
+            throw new NotExistsException("Perusteenosaviitettä ei ole olemassa");
         }
 
         if (viite.getVanhempi() == null) {

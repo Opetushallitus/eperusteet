@@ -71,7 +71,7 @@ import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
-import fi.vm.sade.eperusteet.service.exception.NotFoundException;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -296,7 +296,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         Peruste peruste = perusteet.findOne(perusteId);
         if (peruste == null) {
-            throw new NotFoundException("Perustetta ei ole olemassa");
+            throw new NotExistsException("Perustetta ei ole olemassa");
         }
         return mapper.map(peruste.getSisalto(suoritustapakoodi), view);
     }
@@ -316,7 +316,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public PerusteDto update(long id, PerusteDto perusteDto) {
         Peruste perusteVanha = perusteet.findOne(id);
         if (perusteVanha == null) {
-            throw new NotFoundException("Päivitettävää perustetta ei ole olemassa");
+            throw new NotExistsException("Päivitettävää perustetta ei ole olemassa");
         }
 
         perusteet.lock(perusteVanha);
@@ -368,7 +368,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         Long rakenneId = rakenneRepository.getRakenneIdWithPerusteAndSuoritustapa(perusteid, suoritustapakoodi);
         if (rakenneId == null) {
-            throw new NotFoundException("Rakennetta ei ole olemassa");
+            throw new NotExistsException("Rakennetta ei ole olemassa");
         }
         Integer rakenneVersioId = rakenneRepository.getLatestRevisionId(rakenneId);
         if (eTag != null && rakenneVersioId != null && rakenneVersioId.equals(eTag)) {
@@ -668,7 +668,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     private Suoritustapa getSuoritustapaEntity(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
         if (!perusteet.exists(perusteid)) {
-            throw new NotFoundException("Perustetta ei ole olemassa");
+            throw new NotExistsException("Perustetta ei ole olemassa");
         }
         Suoritustapa suoritustapa = suoritustapaRepository.findByPerusteAndKoodi(perusteid, suoritustapakoodi);
         if (suoritustapa == null) {
@@ -696,11 +696,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public PerusteenOsaViiteDto.Matala addSisaltoUUSI(Long perusteId, Suoritustapakoodi suoritustapakoodi, PerusteenOsaViiteDto.Matala viite) {
         Peruste peruste = perusteet.findOne(perusteId);
         if (peruste == null) {
-            throw new NotFoundException("Perustetta ei ole olemassa");
+            throw new NotExistsException("Perustetta ei ole olemassa");
         }
         PerusteenOsaViite sisalto = peruste.getSisalto(suoritustapakoodi);
         if (sisalto == null) {
-            throw new NotFoundException("Perusteen sisältörakennetta ei ole olemassa");
+            throw new NotExistsException("Perusteen sisältörakennetta ei ole olemassa");
         }
         return perusteenOsaViiteService.addSisalto(perusteId, sisalto.getId(), viite);
     }

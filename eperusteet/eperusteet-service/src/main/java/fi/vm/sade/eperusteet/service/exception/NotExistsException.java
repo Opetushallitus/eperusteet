@@ -23,17 +23,17 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author jhyoty
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class NotFoundException extends ServiceException {
+public class NotExistsException extends ServiceException {
 
-    public NotFoundException() {
-        super("Pyydettyä tietoa ei löytynyt");
+    public NotExistsException() {
+        super("Ei löytynyt");
     }
 
-    public NotFoundException(String message) {
+    public NotExistsException(String message) {
         super(message);
     }
 
-    public NotFoundException(String message, Throwable cause) {
+    public NotExistsException(String message, Throwable cause) {
         super(message, cause);
     }
 

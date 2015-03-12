@@ -7,7 +7,7 @@ import fi.vm.sade.eperusteet.repository.TiedoteRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.TiedoteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
-import fi.vm.sade.eperusteet.service.exception.NotFoundException;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
@@ -86,7 +86,7 @@ public class TiedoteServiceImpl implements TiedoteService {
 
     private static void assertExists(Object o, String msg) {
         if (o == null) {
-            throw new NotFoundException(msg);
+            throw new NotExistsException(msg);
         }
     }
 }

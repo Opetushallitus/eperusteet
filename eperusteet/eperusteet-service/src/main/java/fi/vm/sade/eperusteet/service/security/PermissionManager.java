@@ -27,7 +27,7 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
-import fi.vm.sade.eperusteet.service.exception.NotFoundException;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.util.Pair;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -309,7 +309,7 @@ public class PermissionManager {
             // Haetaan perusteen osa mihin viitataan osaviitteessä ja jatketaan luvan tutkimista perusteen osan tiedoilla.
             TutkinnonOsaViite t = viiteRepository.findOne((Long) targetId);
             if (t == null || t.getTutkinnonOsa() == null) {
-                throw new NotFoundException();
+                throw new NotExistsException();
             }
             targetId = t.getTutkinnonOsa().getId();
             targetType = Target.PERUSTEENOSA;
@@ -319,7 +319,7 @@ public class PermissionManager {
             // Haetaan perusteen osa mihin viitataan osaviitteessä ja jatketaan luvan tutkimista perusteen osan tiedoilla.
             PerusteenOsaViite p = perusteenOsaViiteRepository.findOne((Long) targetId);
             if (p == null || p.getPerusteenOsa() == null) {
-                throw new NotFoundException();
+                throw new NotExistsException();
             }
             targetId = p.getPerusteenOsa().getId();
             targetType = Target.PERUSTEENOSA;
@@ -369,7 +369,7 @@ public class PermissionManager {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Perusteprojekti projekti = projektiRepository.findOne(id);
         if (projekti == null) {
-            throw new NotFoundException("Perusteprojektia ei ole olemassa");
+            throw new NotExistsException("Perusteprojektia ei ole olemassa");
         }
         permissionMap.put(Target.PERUSTEPROJEKTI, getPermissions(authentication, projekti.getId(), Target.PERUSTEPROJEKTI, projekti.getTila()));
 
@@ -378,7 +378,7 @@ public class PermissionManager {
             permissionMap.put(Target.PERUSTE, getPermissions(authentication, peruste.getId(), Target.PERUSTE, projekti.getTila()));
             permissionMap.put(Target.PERUSTEENMETATIEDOT, getPermissions(authentication, peruste.getId(), Target.PERUSTEENMETATIEDOT, projekti.getTila()));
         } else {
-            throw new NotFoundException("Perustetta ei ole olemassa");
+            throw new NotExistsException("Perustetta ei ole olemassa");
         }
 
         return permissionMap;
@@ -440,7 +440,7 @@ public class PermissionManager {
 
     private static <T> Set<T> setOf(Collection<T> c) {
         if (c == null || c.isEmpty()) {
-            throw new NotFoundException();
+            throw new NotExistsException();
         }
         if (c.size() == 1) {
             return Collections.singleton(c.iterator().next());
