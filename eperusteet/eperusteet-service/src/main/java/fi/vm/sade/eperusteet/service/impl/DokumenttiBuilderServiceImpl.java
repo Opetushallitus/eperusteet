@@ -700,6 +700,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             tosat.appendChild(titleElement);
         }
 
+        // ensimmäinen tutkinnonosa laitetaan suoraan tutkinnonosat-chapterin
+        // perään, sen jälkeen tulee aina sivunvaihto
+        boolean eka = true;
+
         for (TutkinnonOsaViite viite : osat) {
             TutkinnonOsa osa = viite.getTutkinnonOsa();
 
@@ -729,6 +733,11 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 addTutke2Osat(doc, element, osa, kieli);
             }
 
+            if (eka) {
+                eka = false;
+            } else {
+                addHardPageBreak(doc, tosat);
+            }
             tosat.appendChild(element);
         }
         doc.getDocumentElement().appendChild(tosat);
@@ -1275,5 +1284,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     }
 
+    private void addHardPageBreak(Document doc, Element element) {
+        element.appendChild(doc.createProcessingInstruction("hard-pagebreak", ""));
+    }
 
 }
