@@ -100,6 +100,9 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiBuilderServiceImpl.class);
 
+    private static final String KT_ALWAYS="keep-together=\"always\"";
+    private static final String KT_AUTO="keep-together=\"auto\"";
+
     @Autowired
     private LocalizedMessagesService messages;
 
@@ -836,6 +839,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
             // Kukin kohdealue alkaa omalla kappaleellaan
             Element kaTitlePara = doc.createElement("para");
+            addDBFOInstruction(doc, kaTitlePara, KT_ALWAYS);
             Element kaTitleEmphasis = doc.createElement("emphasis");
             kaTitleEmphasis.setAttribute("role", "strong");
             kaTitleEmphasis.appendChild(doc.createTextNode(otsikkoTeksti.toUpperCase()));
@@ -845,12 +849,26 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             // Jokaiselle kohdealueelle oma taulukkonsa, ja annetaan docbookin
             // yrittää kovasti, että se pysyy kokonaisena.
             List<ArvioinninKohde> arvioinninKohteet = ka.getArvioinninKohteet();
+            boolean eka=true;
             for (ArvioinninKohde kohde : arvioinninKohteet) {
                 String kohdeTeksti = getTextString(kohde.getOtsikko(), kieli);
 
                 Element kaTable = doc.createElement("informaltable");
-                addDBFOInstruction(doc, kaTable, "keep-together=\"always\"");
-                arviointiSection.appendChild(kaTable);
+                // ruma häkki, koitetaan pakottaa kohdealueen otsikko ja eka
+                // taulu samalle sivulle.
+                if (eka) {
+                    kaTitlePara.appendChild(kaTable);
+                    eka = false;
+                } else {
+                    // pahin ongelma samalle sivulle pakottamisessa on, että
+                    // fop ei kykene katkaisemaan taulukkoa, jos se mitenkään
+                    // mahdu samalle sivulle, vaan taulukko vuotaan sivurajoista
+                    // yli. Hyödyt kuitenkin voittavat haitat, koska taulukossa
+                    // pitää olla todella paljon sisältöä, jotta se vuotaisi
+                    // yli.
+                    addDBFOInstruction(doc, kaTable, KT_ALWAYS);
+                    arviointiSection.appendChild(kaTable);
+                }
 
                 // Kohdealueen otsikkorivi alkaa
                 Element groupElement = doc.createElement("tgroup");
