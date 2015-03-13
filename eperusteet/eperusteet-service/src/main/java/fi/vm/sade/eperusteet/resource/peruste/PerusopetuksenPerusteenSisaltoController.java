@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -444,8 +445,10 @@ public class PerusopetuksenPerusteenSisaltoController {
         }
 
         if (rev > 0) {
+            int age = 1;
             HttpHeaders headers = Etags.eTagHeader(rev);
-            headers.setCacheControl("public, max-age=1");
+            headers.setCacheControl("public, max-age=" + age);
+            headers.setExpires(DateTime.now().plusSeconds(age).getMillis());
             return new ResponseEntity<>(dto, headers, HttpStatus.OK);
         }
 

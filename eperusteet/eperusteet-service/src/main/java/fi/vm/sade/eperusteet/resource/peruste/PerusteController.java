@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource.peruste;
 
+import com.google.common.base.Supplier;
 import com.mangofactory.swagger.annotations.ApiIgnore;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiImplicitParam;
@@ -39,6 +40,7 @@ import fi.vm.sade.eperusteet.service.PerusteService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -171,27 +173,12 @@ public class PerusteController {
     public ResponseEntity<PerusteDto> get(@PathVariable("perusteId") final long id,
         @RequestHeader(value = "If-None-Match", required = false) String etag) {
 
-        if (etag != null) {
-            Integer rev = service.getLastModifiedRevision(id);
-            if (rev != null && rev > 0 && rev.equals(Etags.revisionOf(etag))) {
-                HttpHeaders headers = Etags.eTagHeader(rev);
-                headers.setCacheControl("public, max-age=1");
-                return new ResponseEntity<>(headers, HttpStatus.NOT_MODIFIED);
+        return handleGet(id, etag, 1, new Supplier<PerusteDto>() {
+            @Override
+            public PerusteDto get() {
+                return service.get(id);
             }
-        }
-
-        PerusteDto dto = service.get(id);
-        if (dto == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        if (dto.getTila() == PerusteTila.VALMIS) {
-            HttpHeaders headers = Etags.eTagHeader(dto.getRevision());
-            headers.setCacheControl("public");
-            return new ResponseEntity<>(dto, headers, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(dto, HttpStatus.OK);
-        }
+        });
     }
 
     @RequestMapping(value = "/diaari", method = GET)
@@ -210,39 +197,56 @@ public class PerusteController {
         @PathVariable("perusteId") final long id,
         @RequestHeader(value = "If-None-Match", required = false) String etag) {
 
-        if (etag != null) {
-            Integer rev = service.getLastModifiedRevision(id);
-            if (rev != null && rev > 0 && rev.equals(Etags.revisionOf(etag))) {
-                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        return handleGet(id, etag, 3600, new Supplier<PerusteKaikkiDto>() {
+            @Override
+            public PerusteKaikkiDto get() {
+                return service.getKokoSisalto(id);
             }
-        }
-
-        PerusteKaikkiDto kokoSisalto = service.getKokoSisalto(id);
-        if (kokoSisalto == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        if (kokoSisalto.getTila() == PerusteTila.VALMIS) {
-            HttpHeaders headers = Etags.eTagHeader(kokoSisalto.getRevision());
-            headers.setCacheControl("public, max-age=1");
-            return new ResponseEntity<>(kokoSisalto, headers, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(kokoSisalto, HttpStatus.OK);
-        }
+        });
     }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)
     @ResponseBody
     @InternalApi
     public ResponseEntity<SuoritustapaDto> getSuoritustapa(
+        @RequestHeader(value = "If-None-Match", required = false) String etag,
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
 
-        SuoritustapaDto dto = service.getSuoritustapa(perusteId, Suoritustapakoodi.of(suoritustapakoodi));
+        return handleGet(perusteId, etag, 1, new Supplier<SuoritustapaDto>() {
+            @Override
+            public SuoritustapaDto get() {
+                return service.getSuoritustapa(perusteId, Suoritustapakoodi.of(suoritustapakoodi));
+            }
+        });
+    }
+
+    private <T> ResponseEntity<T> handleGet(Long perusteId, final String eTag, final int age, Supplier<T> response) {
+        Integer rev = service.getLastModifiedRevision(perusteId);
+        if (rev == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (eTag != null) {
+            if (rev > 0 && rev.equals(Etags.revisionOf(eTag))) {
+                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+            }
+        }
+
+        T dto = response.get();
+
         if (dto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
+        if (rev > 0) {
+            HttpHeaders headers = Etags.eTagHeader(rev);
+            headers.setCacheControl("public, max-age=" + age);
+            headers.setExpires(DateTime.now().plusSeconds(age).getMillis());
+            return new ResponseEntity<>(dto, headers, HttpStatus.OK);
+        }
+
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+
 }
