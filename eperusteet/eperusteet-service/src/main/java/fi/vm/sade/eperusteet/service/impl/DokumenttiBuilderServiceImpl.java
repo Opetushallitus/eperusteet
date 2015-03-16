@@ -100,6 +100,9 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiBuilderServiceImpl.class);
 
+    private static final String KT_ALWAYS="keep-together=\"always\"";
+    private static final String KT_AUTO="keep-together=\"auto\"";
+
     @Autowired
     private LocalizedMessagesService messages;
 
@@ -700,6 +703,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             tosat.appendChild(titleElement);
         }
 
+        // ensimmäinen tutkinnonosa laitetaan suoraan tutkinnonosat-chapterin
+        // perään, sen jälkeen tulee aina sivunvaihto
+        boolean eka = true;
+
         for (TutkinnonOsaViite viite : osat) {
             TutkinnonOsa osa = viite.getTutkinnonOsa();
 
@@ -729,6 +736,11 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 addTutke2Osat(doc, element, osa, kieli);
             }
 
+            if (eka) {
+                eka = false;
+            } else {
+                addHardPageBreak(doc, tosat);
+            }
             tosat.appendChild(element);
         }
         doc.getDocumentElement().appendChild(tosat);
@@ -827,6 +839,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
             // Kukin kohdealue alkaa omalla kappaleellaan
             Element kaTitlePara = doc.createElement("para");
+            addDBFOInstruction(doc, kaTitlePara, KT_ALWAYS);
             Element kaTitleEmphasis = doc.createElement("emphasis");
             kaTitleEmphasis.setAttribute("role", "strong");
             kaTitleEmphasis.appendChild(doc.createTextNode(otsikkoTeksti.toUpperCase()));
@@ -836,12 +849,26 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             // Jokaiselle kohdealueelle oma taulukkonsa, ja annetaan docbookin
             // yrittää kovasti, että se pysyy kokonaisena.
             List<ArvioinninKohde> arvioinninKohteet = ka.getArvioinninKohteet();
+            boolean eka=true;
             for (ArvioinninKohde kohde : arvioinninKohteet) {
                 String kohdeTeksti = getTextString(kohde.getOtsikko(), kieli);
 
                 Element kaTable = doc.createElement("informaltable");
-                addDBFOInstruction(doc, kaTable, "keep-together=\"always\"");
-                arviointiSection.appendChild(kaTable);
+                // ruma häkki, koitetaan pakottaa kohdealueen otsikko ja eka
+                // taulu samalle sivulle.
+                if (eka) {
+                    kaTitlePara.appendChild(kaTable);
+                    eka = false;
+                } else {
+                    // pahin ongelma samalle sivulle pakottamisessa on, että
+                    // fop ei kykene katkaisemaan taulukkoa, jos se mitenkään
+                    // mahdu samalle sivulle, vaan taulukko vuotaan sivurajoista
+                    // yli. Hyödyt kuitenkin voittavat haitat, koska taulukossa
+                    // pitää olla todella paljon sisältöä, jotta se vuotaisi
+                    // yli.
+                    addDBFOInstruction(doc, kaTable, KT_ALWAYS);
+                    arviointiSection.appendChild(kaTable);
+                }
 
                 // Kohdealueen otsikkorivi alkaa
                 Element groupElement = doc.createElement("tgroup");
@@ -1275,5 +1302,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     }
 
+    private void addHardPageBreak(Document doc, Element element) {
+        element.appendChild(doc.createProcessingInstruction("hard-pagebreak", ""));
+    }
 
 }

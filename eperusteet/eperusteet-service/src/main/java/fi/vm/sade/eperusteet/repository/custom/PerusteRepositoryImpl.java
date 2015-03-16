@@ -35,9 +35,7 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen_;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
@@ -48,7 +46,6 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import org.hibernate.annotations.QueryHints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -84,17 +81,6 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             query.setMaxResults(page.getPageSize());
         }
         return new PageImpl<>(Lists.transform(query.getResultList(), EXTRACT_PERUSTE), page, countQuery.getSingleResult());
-    }
-
-    @Override
-    public Peruste findById(Long id) {
-        EntityGraph<Peruste> eg = em.createEntityGraph(Peruste.class);
-        eg.addSubgraph(Peruste_.koulutukset);
-        eg.addSubgraph(Peruste_.suoritustavat);
-        HashMap<String, Object> props = new HashMap<>();
-        props.put(QueryHints.FETCHGRAPH, eg);
-        Peruste p = em.find(Peruste.class, id, props);
-        return p;
     }
 
     private TypedQuery<Tuple> getQuery(PerusteQuery pquery) {

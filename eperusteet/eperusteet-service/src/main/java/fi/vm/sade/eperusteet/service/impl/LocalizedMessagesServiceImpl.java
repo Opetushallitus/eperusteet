@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.dto.LokalisointiDto;
+import fi.vm.sade.eperusteet.service.LokalisointiService;
 import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,23 +40,22 @@ public final class LocalizedMessagesServiceImpl implements LocalizedMessagesServ
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private LokalisointiService lokalisointiService;
+
     @Override
     public String translate(String key, Kieli kieli) {
-        return translate(key, null, Locale.forLanguageTag(kieli.toString()));
-    }
 
-    @Override
-    public String translate(String key, Object[] args, Kieli kieli) {
-        return translate(key, args, Locale.forLanguageTag(kieli.toString()));
-    }
-
-    private String translate(String key, Object[] args, Locale locale) {
-        try {
-            return messageSource.getMessage(key, args, locale);
-        } catch (NoSuchMessageException ex) {
-            LOG.warn(ex.getMessage());
-            return key;
+        // koitetaan ensin lokalisointipalvelusta
+        LokalisointiDto valueDto = lokalisointiService.get(key, kieli.toString());
+        if (valueDto != null) {
+            return valueDto.getValue();
         }
+
+        LOG.warn("Fallback to messageSource for lokalisointi {} ({})", key, kieli.toString());
+        // ja sitten messagesourcesta, heittää NoSuchMessageExceptionin jos
+        // ei löydy
+        return messageSource.getMessage(key, null, Locale.forLanguageTag(kieli.toString()));
     }
 
 }

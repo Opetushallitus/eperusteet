@@ -13,19 +13,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.repository;
-
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.repository.NoRepositoryBean;
+package fi.vm.sade.eperusteet.service;
+import fi.vm.sade.eperusteet.dto.LokalisointiDto;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  *
- * @author jhyoty
+ * @author jussi
  */
-@NoRepositoryBean
-public interface PerusteRepositoryCustom {
-    Page<Peruste> findBy(PageRequest page, PerusteQuery pquery);
+public interface LokalisointiService {
+
+    @PreAuthorize("isAuthenticated()")
+    LokalisointiDto get(String key, String locale);
 }
+
+
+

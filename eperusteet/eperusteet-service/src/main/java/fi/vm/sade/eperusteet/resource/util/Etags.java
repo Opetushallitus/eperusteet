@@ -33,10 +33,14 @@ public final class Etags {
         if (eTag == null) {
             return null;
         }
-        if (eTag.startsWith(WEAK_ETAG_PREFIX)) {
-            return Integer.parseInt(eTag.substring(3, eTag.length() - 1));
+        if (eTag.length() > 4 && eTag.startsWith(WEAK_ETAG_PREFIX)) {
+            try {
+                return Integer.parseInt(eTag.substring(3, eTag.length() - 1));
+            } catch (NumberFormatException nfe) {
+                //Ignore
+            }
         }
-        throw new IllegalArgumentException("virheellinen eTag");
+        return null;
     }
 
     public static HttpHeaders eTagHeader(Integer revision) {
@@ -45,7 +49,7 @@ public final class Etags {
 
     public static HttpHeaders addETag(HttpHeaders headers, Integer revision) {
         if (revision != null) {
-            headers.set("ETag",wrap(String.valueOf(revision)));
+            headers.set("ETag", wrap(String.valueOf(revision)));
         }
         return headers;
     }

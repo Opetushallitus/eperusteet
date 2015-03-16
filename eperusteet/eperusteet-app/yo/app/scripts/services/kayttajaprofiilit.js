@@ -75,7 +75,6 @@ angular.module('eperusteApp')
       info.suosikit = transformSuosikit(res.suosikit);
       info.preferenssit = transformPreferenssit(res.preferenssit);
       infoQ.resolve(true);
-      console.log('kayttajaProfiiliPaivittyi');
       $rootScope.$broadcast('kayttajaProfiiliPaivittyi');
     }, function() {
       infoQ.resolve(false);

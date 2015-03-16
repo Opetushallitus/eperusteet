@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.resource.config;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.service.exception.LockingException;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.exception.ServiceException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import java.io.IOException;
@@ -116,8 +117,8 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        Map<String, Object> map = new HashMap<>();
-        LOG.debug("Virhe", ex);
+        final Map<String, Object> map = new HashMap<>();
+        boolean suppresstrace = false;
 
         if (ex instanceof BindException) {
             describe(map, "server-virhe-datan-kytkemisessä", "Virhe datan kytkemisessä.");
@@ -147,12 +148,13 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
         } else if (ex instanceof TransactionSystemException) {
             describe(map, "datan-käsittelyssä-odottamaton-virhe", "Datan käsittelyssä tapahtui odottamaton virhe.");
         } else if (ex instanceof UnrecognizedPropertyException) {
-            describe(map, "datassa-tuntematon-kenttä", "Dataa ei pystytty käsittelemään. Lähetetyssä datassa esiintyi tuntematon kenttä \""
-                     + ((UnrecognizedPropertyException) ex).getPropertyName() + "\"");
+            describe(map, "datassa-tuntematon-kenttä", "Dataa ei pystytty käsittelemään. Lähetetyssä datassa esiintyi tuntematon kenttä \"" +
+                     ((UnrecognizedPropertyException) ex).getPropertyName() + "\"");
         } else if (ex instanceof ConstraintViolationException) {
+            suppresstrace = true;
             List<String> reasons = new ArrayList<>();
             for (ConstraintViolation<?> constraintViolation : ((ConstraintViolationException) ex).getConstraintViolations()) {
-                reasons.add(constraintViolation.getMessage());
+                reasons.add(constraintViolation.getPropertyPath().toString() + ": " + constraintViolation.getMessage());
             }
             map.put("syy", reasons);
         } else if (ex instanceof UnsatisfiedServletRequestParameterException) {
@@ -163,6 +165,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             builder.append("\"");
             map.put("syy", builder.toString());
         } else if (ex instanceof LockingException) {
+            suppresstrace = true;
             LockingException le = (LockingException) ex;
             map.put("syy", ex.getLocalizedMessage());
             map.put("avain", "server-lukitus");
@@ -170,16 +173,25 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             if (lukko != null) {
                 lukkomanageri.lisaaNimiLukkoon(lukko);
                 map.put("lukko", lukko);
-            } 
+            }
+        } else if (ex instanceof NotExistsException) {
+            suppresstrace = true;
+            map.put("syy", ex.getLocalizedMessage());
         } else if (ex instanceof ServiceException) {
             map.put("syy", ex.getLocalizedMessage());
         } else {
-            LOG.error("Creating common error response for exception", ex);
             status = HttpStatus.INTERNAL_SERVER_ERROR;
             map.put("syy", "Sovelluspalvelimessa tapahtui odottamaton virhe");
             map.put("avain", "server-odottamaton-virhe");
+            map.put("koodi", status);
         }
         map.put("koodi", status);
+
+        if (suppresstrace) {
+            LOG.warn("Virhetilanne: " + ex.getLocalizedMessage());
+        } else {
+            LOG.error("Virhetilanne: ", ex);
+        }
         return super.handleExceptionInternal(ex, map, headers, status, request);
     }
 }
