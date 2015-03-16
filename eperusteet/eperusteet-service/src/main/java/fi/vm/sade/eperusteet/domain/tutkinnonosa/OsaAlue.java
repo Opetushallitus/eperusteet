@@ -45,6 +45,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+import javax.persistence.Column;
 
 /**
  *
@@ -85,6 +86,16 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
      */
     private Kieli kieli;
 
+    @Column(name = "koodi_uri")
+    @Getter
+    @Setter
+    private String koodiUri;
+
+    @Column(name = "koodi_arvo")
+    @Getter
+    @Setter
+    private String koodiArvo;
+
     public OsaAlue() {
     }
 
@@ -117,9 +128,10 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     public void mergeState(OsaAlue updated) {
         if (updated != null) {
             this.setNimi(updated.getNimi());
+            this.setKoodiArvo(updated.getKoodiArvo());
+            this.setKoodiUri(updated.getKoodiUri());
 
             if (updated.getOsaamistavoitteet() != null) {
-
                 this.setOsaamistavoitteet(mergeOsaamistavoitteet(this.getOsaamistavoitteet(), updated.getOsaamistavoitteet()));
             }
         }

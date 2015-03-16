@@ -75,8 +75,12 @@ angular.module('eperusteApp')
           var ml = uusiryhma.muodostumisSaanto.laajuus;
           ml.maksimi = ml.minimi && (!ml.maksimi || ml.minimi > ml.maksimi) ? ml.minimi : ml.maksimi;
         }
-        if (uusiryhma.osaamisala) {
+
+        if (!_.isEmpty(uusiryhma.osaamisala)) {
           uusiryhma.rooli = 'osaamisala';
+        }
+        else if (uusiryhma.rooli === 'osaamisala') {
+          uusiryhma.rooli = 'määritelty';
         }
       }
       $modalInstance.close(uusiryhma);

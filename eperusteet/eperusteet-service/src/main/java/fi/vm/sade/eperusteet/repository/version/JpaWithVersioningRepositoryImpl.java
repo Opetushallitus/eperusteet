@@ -57,7 +57,7 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
             .addProjection(AuditEntity.revisionProperty(RevisionInfo_.timestamp.getName()))
             .addProjection(AuditEntity.revisionProperty(RevisionInfo_.muokkaajaOid.getName()))
             .addProjection(AuditEntity.revisionProperty(RevisionInfo_.kommentti.getName()))
-            .addOrder(AuditEntity.revisionProperty(RevisionInfo_.timestamp.getName()).desc())
+            .addOrder(AuditEntity.revisionNumber().desc())
             .add(AuditEntity.id().eq(id))
             .getResultList();
 
@@ -77,11 +77,15 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
     @Override
     public Integer getLatestRevisionId(ID id) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
-        final List<Number> revisions = auditReader.getRevisions(entityInformation.getJavaType(), id);
-        if (revisions == null || revisions.isEmpty()) {
-            return null;
-        }
-        return revisions.get(revisions.size() - 1).intValue();
+
+        final Object result = auditReader.createQuery()
+            .forRevisionsOfEntity(entityInformation.getJavaType(), false, true)
+            .addProjection(AuditEntity.revisionNumber().max())
+            .add(AuditEntity.id().eq(id))
+            .getSingleResult();
+
+        assert (result instanceof Number );
+        return ((Number) result).intValue();
     }
 
     @Override

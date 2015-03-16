@@ -16,7 +16,6 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
@@ -155,4 +154,7 @@ public interface PerusteService {
 
     @PreAuthorize("isAuthenticated()")
     public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero);
+
+    @PreAuthorize("permitAll()")
+    public Integer getLastModifiedRevision(final Long id);
 }

@@ -19,7 +19,6 @@
         </div>
         <rajaus ng-if="!sections" size="small" model="search.term" placeholder="etsi-sisallosta"></rajaus>
       </div>
-
       <div ng-if="sections">
         <accordion close-others="showOne">
           <accordion-group ng-repeat="section in sections" is-open="section.$open" ng-class="{'panel-chosen': section.$open, 'menu': !section.include}">

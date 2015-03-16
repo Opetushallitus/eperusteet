@@ -42,4 +42,7 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     @Query("SELECT DISTINCT p.id FROM Peruste p JOIN p.suoritustavat s JOIN s.tutkinnonOsat to WHERE p.tila = ?2 AND to.tutkinnonOsa.id = ?1")
     Set<Long> findByTutkinnonosaId(Long id, PerusteTila tila);
 
+    @Query("SELECT p.tila from Peruste p WHERE p.id = ?1")
+    PerusteTila getTila(Long id);
+
 }

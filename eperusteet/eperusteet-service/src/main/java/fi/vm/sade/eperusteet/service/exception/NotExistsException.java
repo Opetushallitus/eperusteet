@@ -13,19 +13,28 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.repository;
+package fi.vm.sade.eperusteet.service.exception;
 
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
  * @author jhyoty
  */
-@NoRepositoryBean
-public interface PerusteRepositoryCustom {
-    Page<Peruste> findBy(PageRequest page, PerusteQuery pquery);
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class NotExistsException extends ServiceException {
+
+    public NotExistsException() {
+        super("Ei löytynyt");
+    }
+
+    public NotExistsException(String message) {
+        super(message);
+    }
+
+    public NotExistsException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

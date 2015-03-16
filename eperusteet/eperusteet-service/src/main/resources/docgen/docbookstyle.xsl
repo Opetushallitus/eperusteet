@@ -17,6 +17,11 @@
         <fo:block border-top-style="solid" text-align="center"></fo:block>
     </xsl:template>
 
+    <!-- enable hard page brakes via processing instruction  -->
+    <xsl:template match="processing-instruction('hard-pagebreak')">
+        <fo:block break-after='page'/>
+    </xsl:template>
+
     <!-- From: http://www.sagehill.net/docbookxsl/CustomGentext.html
     Defines an XSL parameter named local.l10n.xml. The select attribute that
     provides the content of the parameter performs a neat trick. The XSL

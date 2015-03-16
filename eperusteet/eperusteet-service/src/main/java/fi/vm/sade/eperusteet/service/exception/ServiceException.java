@@ -23,7 +23,7 @@ import org.springframework.core.NestedRuntimeException;
  * @author jhyoty
  */
 public abstract class ServiceException extends NestedRuntimeException {
-
+    
     public ServiceException(String message) {
         super(message);
     }

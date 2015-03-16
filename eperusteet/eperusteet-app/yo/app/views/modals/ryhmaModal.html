@@ -35,7 +35,7 @@
             </div>
         </div>
 
-        <div ng-if="osaamisalat.length > 1 && (ryhma.vanhempi || luonti) && ryhma.rooli === 'määritelty'">
+        <div ng-if="osaamisalat.length > 1 && (ryhma.rooli === 'määritelty' || ryhma.osaamisala)">
             <h3 kaanna>osaamisala</h3>
             <div class="modal-body tag-modal">
               <div style="margin-bottom: 6px" ng-repeat="oa in osaamisalat" ng-click="Osaamisala.valitse($index === 0 ? null : oa)">

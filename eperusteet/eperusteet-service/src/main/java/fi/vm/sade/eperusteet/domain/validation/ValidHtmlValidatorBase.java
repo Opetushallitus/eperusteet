@@ -15,11 +15,10 @@
  */
 package fi.vm.sade.eperusteet.domain.validation;
 
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
-
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 
 public abstract class ValidHtmlValidatorBase {
 
@@ -39,4 +38,5 @@ public abstract class ValidHtmlValidatorBase {
 		}
 		return true;
 	}
+
 }

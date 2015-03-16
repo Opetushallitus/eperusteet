@@ -15,8 +15,8 @@
  */
 package fi.vm.sade.eperusteet.dto.peruste;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.dto.KoulutusDto;
@@ -36,7 +36,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class PerusteBaseDto implements Serializable {
+
     private Long id;
+    @JsonIgnore
+    private Integer revision;
+
     private LokalisoituTekstiDto nimi;
     private String koulutustyyppi;
     private Set<KoulutusDto> koulutukset;

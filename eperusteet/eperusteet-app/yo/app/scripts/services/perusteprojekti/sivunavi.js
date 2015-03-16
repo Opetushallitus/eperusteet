@@ -111,13 +111,13 @@ angular.module('eperusteApp')
       link: [STATE_OSAALUE, {osanTyyppi: key, osanId: osa.id, tabId: 0}],
       isActive: isYlRouteActive
     });
-    _(osa.oppimaarat).sortBy(Utils.nameSort).each(function (lapsi) {
+    _(osa.oppimaarat).sortBy('jnro').each(function (lapsi) {
       ylMapper(lapsi, key, level + 1);
     }).value();
   }
 
   function mapYL(osat, key) {
-    _(osat).sortBy(Utils.nameSort).each(function (osa) {
+    _(osat).sortBy(key === 'oppiaineet' ? 'jnro' : Utils.nameSort).each(function (osa) {
       ylMapper(osa, key, 1);
     }).value();
   }

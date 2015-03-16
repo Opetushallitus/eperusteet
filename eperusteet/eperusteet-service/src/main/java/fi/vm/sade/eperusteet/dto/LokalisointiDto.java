@@ -13,19 +13,24 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.repository;
+package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.repository.NoRepositoryBean;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
- * @author jhyoty
+ * @author jussi
  */
-@NoRepositoryBean
-public interface PerusteRepositoryCustom {
-    Page<Peruste> findBy(PageRequest page, PerusteQuery pquery);
+@Getter
+@Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class LokalisointiDto {
+    String value;
+    String key;
+    Long   id;
+    String locale;
+    String description;
+    String category;
 }

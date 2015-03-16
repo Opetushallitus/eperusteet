@@ -23,7 +23,7 @@ import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
-import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.LaajaalainenOsaaminenContext;
@@ -117,7 +117,7 @@ public class LaajaalainenOsaaminenServiceImpl implements LaajaalainenOsaaminenSe
 
     private static <T> T notNull(T o, String msg) {
         if (o == null) {
-            throw new BusinessRuleViolationException(msg);
+            throw new NotExistsException(msg);
         }
         return o;
     }
