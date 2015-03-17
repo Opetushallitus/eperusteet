@@ -62,14 +62,20 @@ angular.module('eperusteApp')
               if (res) {
                 popover.attr('data-original-title', Kaanna.kaanna(res.termi));
               }
+              _.each(scope.popovers, function (po) {
+                if (po !== popover) {
+                  po.popover('hide');
+                }
+              });
               $timeout(function () {
-                var title = element.find('.popover-title');
+                var thisPopover = popover.next('.popover');
+                var title = thisPopover.find('.popover-title');
                 var closer = angular.element(
                   '<span class="closer pull-right">&#x2715;</span>');
+                title.append(closer);
                 closer.on('click', function () {
                   popover.popover('hide');
                 });
-                title.append(closer);
               }, 100);
             });
             scope.popovers.push(popover);
