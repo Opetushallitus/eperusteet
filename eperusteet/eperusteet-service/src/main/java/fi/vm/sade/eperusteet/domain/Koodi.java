@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.domain;
 
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.io.Serializable;
 import javax.persistence.CascadeType;
@@ -27,6 +26,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,6 +36,7 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "koodi")
+@EqualsAndHashCode(of = {"uri","arvo"})
 public class Koodi implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
