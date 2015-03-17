@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
@@ -58,6 +59,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -1300,6 +1302,18 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             addTableCell(doc, itrow6, messages.translate("docgen.ei-asetettu", kieli));
         }
 
+        Element itrow7 = addTableRow(doc, tbody);
+        addTableCell(doc, itrow7, newBoldElement(doc, messages.translate("docgen.korvaa-perusteet", kieli)));
+        if (peruste.getKorvattavatDiaarinumerot() != null && !peruste.getKorvattavatDiaarinumerot().isEmpty())
+        {
+            Set<String> numeroStringit = new HashSet<>();
+            for (Diaarinumero nro : peruste.getKorvattavatDiaarinumerot()) {
+                numeroStringit.add(nro.getDiaarinumero());
+            }
+            addTableCell(doc, itrow7, StringUtils.join(numeroStringit, ", "));
+        } else {
+            addTableCell(doc, itrow7, messages.translate("docgen.ei-asetettu", kieli));
+        }
     }
 
     private void addHardPageBreak(Document doc, Element element) {
