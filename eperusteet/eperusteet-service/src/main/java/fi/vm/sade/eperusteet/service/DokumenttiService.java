@@ -45,5 +45,5 @@ public interface DokumenttiService {
     public DokumenttiDto query(Long id);
 
     @PreAuthorize("isAuthenticated()")
-    public DokumenttiDto findLatest(Long id, Kieli kieli);
+    public DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi);
 }
