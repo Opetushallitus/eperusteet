@@ -19,3 +19,6 @@ npm-debug.log
 
 *.iml
 .idea/
+
+/tools/lokalisointi/*.xlsx
+/tools/lokalisointi/*.txt
