@@ -918,7 +918,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
                     Element bodyRowElement = doc.createElement("row");
                     addTableCell(doc, bodyRowElement, ktaso);
-                    addTableCell(doc, bodyRowElement, kriteerit);
+                    addTableCell(doc, bodyRowElement, getTextsAsList(doc, kriteerit));
                     bodyElement.appendChild(bodyRowElement);
                 }
 
@@ -1318,6 +1318,17 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     private void addHardPageBreak(Document doc, Element element) {
         element.appendChild(doc.createProcessingInstruction("hard-pagebreak", ""));
+    }
+
+    private Element getTextsAsList(Document doc, List<String> texts) {
+        Element list = doc.createElement("itemizedlist");
+        for (String text : texts) {
+            Element item = doc.createElement("listitem");
+            item.appendChild(doc.createTextNode(text));
+            list.appendChild(item);
+        }
+
+        return list;
     }
 
 }
