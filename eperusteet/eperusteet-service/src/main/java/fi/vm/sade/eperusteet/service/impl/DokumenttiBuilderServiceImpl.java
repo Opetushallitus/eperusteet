@@ -1322,6 +1322,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     private Element getTextsAsList(Document doc, List<String> texts) {
         Element list = doc.createElement("itemizedlist");
+        list.setAttribute("spacing", "compact");
         for (String text : texts) {
             Element item = doc.createElement("listitem");
             item.appendChild(doc.createTextNode(text));

@@ -136,11 +136,5 @@
         </l:l10n>
     </l:i18n>
     
-    <!-- list item spacing. Defaults (1em, 0.8em, 1.2em) are bit too spacey -->
-    <xsl:attribute-set name="list.item.spacing">
-        <xsl:attribute name="space-before.optimum">0.3em</xsl:attribute>
-        <xsl:attribute name="space-before.minimum">0.1em</xsl:attribute>
-        <xsl:attribute name="space-before.maximum">0.7em</xsl:attribute>
-    </xsl:attribute-set>
 
 </xsl:stylesheet>
