@@ -133,20 +133,16 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         rootElement.setAttribute("xmlns:h", "http://www.w3.org/1999/xhtml");
         doc.appendChild(rootElement);
 
-        String nimi = getTextString(peruste.getNimi(), kieli);
-        Element titleElement = doc.createElement("title");
-        titleElement.appendChild(doc.createTextNode(nimi));
-        rootElement.appendChild(titleElement);
+        // kansilehti
+        addCoverPage(doc, rootElement, peruste, kieli, suoritustapakoodi);
 
+        // infosivu
         addInfoPage(doc, peruste, kieli);
 
-        // tähän vois lisätä esim jonkun info-elementin alkusivuja varten?
-        for (Suoritustapa st : peruste.getSuoritustavat()) {
-            if (st.getSuoritustapakoodi().equals(suoritustapakoodi)) {
-                PerusteenOsaViite sisalto = peruste.getSuoritustapa(st.getSuoritustapakoodi()).getSisalto();
-                addSisaltoElement(doc, peruste, rootElement, sisalto, 0, st, kieli);
-            }
-        }
+        // sisältöelementit (proosa)
+        Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+        PerusteenOsaViite sisalto = suoritustapa.getSisalto();
+        addSisaltoElement(doc, peruste, rootElement, sisalto, 0, suoritustapa, kieli);
 
         // pudotellaan tutkinnonosat paikalleen
         addTutkinnonosat(doc, peruste, kieli, suoritustapakoodi);
@@ -159,6 +155,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             rootElement.appendChild(fakeChapter);
         }
 
+        // käsitteet
         addGlossary(doc, peruste, kieli);
 
         // helpottaa devaus-debugausta, voi olla vähän turha tuotannossa
@@ -1330,6 +1327,34 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         }
 
         return list;
+    }
+
+    private void addCoverPage(Document doc, Element rootElement, Peruste peruste, Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
+        Element info = doc.createElement("info");
+        rootElement.appendChild(info);
+
+        String nimi = getTextString(peruste.getNimi(), kieli);
+        Element titleElement = doc.createElement("title");
+        titleElement.appendChild(doc.createTextNode(nimi));
+        info.appendChild(titleElement);
+
+        String subtitleText;
+        switch(suoritustapakoodi) {
+            case OPS:
+                subtitleText = messages.translate("docgen.subtitle.ops", kieli);
+                break;
+            case NAYTTO:
+                subtitleText = messages.translate("docgen.subtitle.naytto", kieli);
+                break;
+            default:
+                subtitleText = "";
+
+        }
+
+        Element subtitle = doc.createElement("subtitle");
+        subtitle.appendChild(doc.createTextNode(subtitleText));
+        info.appendChild(subtitle);
+
     }
 
 }
