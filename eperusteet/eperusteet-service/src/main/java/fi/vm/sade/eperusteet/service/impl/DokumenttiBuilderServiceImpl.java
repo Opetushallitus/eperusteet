@@ -1223,15 +1223,15 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         tgroup.appendChild(tbody);
 
         Element itrow = addTableRow(doc, tbody);
-        addTableCell(doc, itrow, newBoldElement(doc, messages.translate("docgen.perusteen-nimi", kieli)));
+        addTableCell(doc, itrow, newBoldElement(doc, messages.translate("docgen.info.perusteen-nimi", kieli)));
         addTableCell(doc, itrow, getTextString(peruste.getNimi(), kieli));
 
         Element itrow2 = addTableRow(doc, tbody);
-        addTableCell(doc, itrow2, newBoldElement(doc, messages.translate("docgen.maarayksen-diaarinumero", kieli)));
+        addTableCell(doc, itrow2, newBoldElement(doc, messages.translate("docgen.info.maarayksen-diaarinumero", kieli)));
         if (peruste.getDiaarinumero() != null) {
             addTableCell(doc, itrow2, peruste.getDiaarinumero().toString());
         } else {
-            addTableCell(doc, itrow2, messages.translate("docgen.ei-asetettu", kieli));
+            addTableCell(doc, itrow2, messages.translate("docgen.info.ei-asetettu", kieli));
         }
 
 
@@ -1248,11 +1248,11 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         }
 
         Element itrow3 = addTableRow(doc, tbody);
-        addTableCell(doc, itrow3, newBoldElement(doc, messages.translate("docgen.koulutuskoodit", kieli)));
+        addTableCell(doc, itrow3, newBoldElement(doc, messages.translate("docgen.info.koulutuskoodit", kieli)));
         if (koulutuslist.hasChildNodes()) {
             addTableCell(doc, itrow3, koulutuslist);
         } else {
-            addTableCell(doc, itrow3, messages.translate("docgen.ei-asetettu", kieli));
+            addTableCell(doc, itrow3, messages.translate("docgen.info.ei-asetettu", kieli));
         }
 
 
@@ -1274,33 +1274,33 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
 
         Element itrow4 = addTableRow(doc, tbody);
-        addTableCell(doc, itrow4, newBoldElement(doc, messages.translate("docgen.tutkintonimikkeet", kieli)));
+        addTableCell(doc, itrow4, newBoldElement(doc, messages.translate("docgen.info.tutkintonimikkeet", kieli)));
         if (nimikelist.hasChildNodes()) {
             addTableCell(doc, itrow4, nimikelist);
         } else {
-            addTableCell(doc, itrow4, messages.translate("docgen.ei-asetettu", kieli));
+            addTableCell(doc, itrow4, messages.translate("docgen.info.ei-asetettu", kieli));
         }
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
         Element itrow5 = addTableRow(doc, tbody);
-        addTableCell(doc, itrow5, newBoldElement(doc, messages.translate("docgen.voimaantulo", kieli)));
+        addTableCell(doc, itrow5, newBoldElement(doc, messages.translate("docgen.info.voimaantulo", kieli)));
         if (peruste.getVoimassaoloAlkaa() != null) {
             addTableCell(doc, itrow5, dateFormat.format(peruste.getVoimassaoloAlkaa()));
         } else {
-            addTableCell(doc, itrow5, messages.translate("docgen.ei-asetettu", kieli));
+            addTableCell(doc, itrow5, messages.translate("docgen.info.ei-asetettu", kieli));
         }
 
         Element itrow6 = addTableRow(doc, tbody);
-        addTableCell(doc, itrow6, newBoldElement(doc, messages.translate("docgen.voimassaolon-paattyminen", kieli)));
+        addTableCell(doc, itrow6, newBoldElement(doc, messages.translate("docgen.info.voimassaolon-paattyminen", kieli)));
         if (peruste.getVoimassaoloLoppuu() != null) {
             addTableCell(doc, itrow6, dateFormat.format(peruste.getVoimassaoloLoppuu()));
         } else {
-            addTableCell(doc, itrow6, messages.translate("docgen.ei-asetettu", kieli));
+            addTableCell(doc, itrow6, messages.translate("docgen.info.ei-asetettu", kieli));
         }
 
         Element itrow7 = addTableRow(doc, tbody);
-        addTableCell(doc, itrow7, newBoldElement(doc, messages.translate("docgen.korvaa-perusteet", kieli)));
+        addTableCell(doc, itrow7, newBoldElement(doc, messages.translate("docgen.info.korvaa-perusteet", kieli)));
         if (peruste.getKorvattavatDiaarinumerot() != null && !peruste.getKorvattavatDiaarinumerot().isEmpty())
         {
             Set<String> numeroStringit = new HashSet<>();
@@ -1309,7 +1309,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             }
             addTableCell(doc, itrow7, StringUtils.join(numeroStringit, ", "));
         } else {
-            addTableCell(doc, itrow7, messages.translate("docgen.ei-asetettu", kieli));
+            addTableCell(doc, itrow7, messages.translate("docgen.info.ei-asetettu", kieli));
         }
     }
 
