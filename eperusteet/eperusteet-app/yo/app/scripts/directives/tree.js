@@ -18,7 +18,7 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .factory('treeTemplate', function () {
+  .service('treeTemplate', function () {
     function toimintoValikko(config) {
       return '<span class="solmu-valikko" dropdown><a class="action-link solmu-valikko-toggle" dropdown-toggle><span class="solmu-caret"></span></a>' +
       '<ul class="dropdown-menu dropdown-menu-right" role="menu">' +
@@ -35,8 +35,8 @@ angular.module('eperusteApp')
       ' <strong>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</strong> {{ apumuuttujat.laajuusYksikko | kaanna }}</span>';
       var editointiIkoni =
       '<div ng-click="togglaaPakollisuus(rakenne)" class="osa-ikoni">' +
-        '  <span ng-show="!rakenne.pakollinen"><img src="images/tutkinnonosa.png" alt=""></span> ' +
-        '  <span ng-show="rakenne.pakollinen"><img src="images/tutkinnonosa_pakollinen.png" alt=""></span> ' +
+        '  <span ng-if="!rakenne.pakollinen"><img src="images/tutkinnonosa.png" alt=""></span> ' +
+        '  <span ng-if="rakenne.pakollinen"><img src="images/tutkinnonosa_pakollinen.png" alt=""></span> ' +
         '</div>';
       return '' +
         '<span ng-if="onOsa(rakenne)">' +
@@ -50,9 +50,6 @@ angular.module('eperusteApp')
         '  </span>' +
         '  <span class="solmu-osa-muokkaus osa-nimi" ng-if="muokkaus">' +
              tosa +
-             /*'<div class="valikko">' +
-             toimintoValikko({edit: 'rakenneosaModaali(rakenne)', remove: 'poista(rakenne, vanhempi)'}) +
-             '</div>' +*/
         '  </span>' +
         '</span>' +
         '<span ng-if="!onOsa(rakenne) && rakenne.nimi">' +
@@ -63,23 +60,74 @@ angular.module('eperusteApp')
     var varivalinta = 'ng-class="{vieras: rakenne.rooli === \'vieras\', maarittelematon: rakenne.rooli === \'määrittelemätön\', tyhja: rakenne.osat.length === 0, ' +
         'suljettu: rakenne.$collapsed, osaamisala: rakenne.rooli === \'osaamisala\'}"';
 
-    var koonIlmaisu = '<span ng-show="rakenne.muodostumisSaanto.koko.minimi === rakenne.muodostumisSaanto.koko.maksimi">' +
+    var koonIlmaisu = '<span ng-if="rakenne.muodostumisSaanto.koko.minimi === rakenne.muodostumisSaanto.koko.maksimi">' +
                       '  {{ rakenne.muodostumisSaanto.koko.minimi || 0 }} {{ \'kpl\' | kaanna }}' +
                       '</span>' +
-                      '<span ng-hide="rakenne.muodostumisSaanto.koko.minimi === rakenne.muodostumisSaanto.koko.maksimi">' +
+                      '<span ng-if="rakenne.muodostumisSaanto.koko.minimi !== rakenne.muodostumisSaanto.koko.maksimi">' +
                       '  {{ rakenne.muodostumisSaanto.koko.minimi || 0 }} - {{ rakenne.muodostumisSaanto.koko.maksimi || 0 }} {{ \'kpl\' | kaanna }}' +
                       '</span>';
 
-    var laajuudenIlmaisu = '<span ng-show="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi">' +
+    var laajuudenIlmaisu = '<span ng-if="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi">' +
                            '  {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }} {{ apumuuttujat.laajuusYksikko | kaanna }}' +
                            '</span>' +
-                           '<span ng-hide="rakenne.muodostumisSaanto.laajuus.minimi === rakenne.muodostumisSaanto.laajuus.maksimi">' +
+                           '<span ng-if="rakenne.muodostumisSaanto.laajuus.minimi !== rakenne.muodostumisSaanto.laajuus.maksimi">' +
                            '  {{ rakenne.muodostumisSaanto.laajuus.minimi || 0 }} - {{ rakenne.muodostumisSaanto.laajuus.maksimi || 0 }} {{ apumuuttujat.laajuusYksikko | kaanna }}' +
                            '</span>';
 
+    var avaaKaikki = '' +
+      '<div class="pull-right">' +
+      '  <a ng-if="muokkaus && rakenne.$virheetMaara > 0" style="margin-right: 10px;" ng-click="piilotaVirheet()" class="group-toggler action-link">' +
+      '    <span ng-if="!apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "piilota-virheet" | kaanna }}</span>' +
+      '    <span ng-if="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "nayta-virheet" | kaanna }}</span>' +
+      '  </a>' +
+      '  <a ng-click="togglaaKuvaukset()" class="group-toggler action-link" ng-if="scanKuvaukset()">' +
+      '    <span icon-role="ep-part">{{kuvauksetOpen && "piilota-kuvaukset" || "nayta-kuvaukset" | kaanna }}</span>' +
+      '    ' +
+      '  </a>' +
+      '  <a ng-click="togglaaPolut()" class="group-toggler action-link">' +
+      '    <span class="avaa-sulje" icon-role="ep-open-close">{{ "avaa-sulje-rakenne" | kaanna }}</span>' +
+      '  </a>' +
+      '</div>';
+
+    this.root = function () {
+      return '' +
+        '<div>' +
+        '  <div class="ylapainikkeet">' +
+        '    <span class="rakenne-nimi">{{ apumuuttujat.peruste.nimi | kaanna }}' +
+        '    <span ng-if="rakenne.muodostumisSaanto && rakenne.muodostumisSaanto.laajuus">' +
+        '      <span ng-if="rakenne.$laajuus">{{ rakenne.$laajuus }} / </span>' +
+        '      <span ng-if="isNumber(rakenne.muodostumisSaanto.laajuus.minimi)">' +
+        '        {{ rakenne.muodostumisSaanto.laajuus.minimi }}' +
+        '      </span>' +
+        '      <span ng-if="rakenne.muodostumisSaanto.laajuus.maksimi && rakenne.muodostumisSaanto.laajuus.minimi !== rakenne.muodostumisSaanto.laajuus.maksimi">' +
+        '        - {{ rakenne.muodostumisSaanto.laajuus.maksimi }}' +
+        '      </span>' +
+        '      {{ apumuuttujat.laajuusYksikko | kaanna }}' +
+        '    </span></span>' +
+        '    <a class="action-link" ng-if="muokkaus" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)" kaanna>muokkaa-muodostumissääntöjä</button>' +
+        '    <a ng-if="zoomaus" icon-role="back" class="back action-link"></a>' +
+        avaaKaikki +
+        '  </div>' +
+        '  <div><div class="tree-yliviiva"></div></div>' +
+        '  <div ng-if="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="isovirhe-otsikko">' +
+        virheSnippet +
+        '  </div>' +
+        '</div>' +
+        '<div ng-if="rakenne.rooli !== \'määrittelemätön\'" class="collapser" ng-show="!rakenne.$collapsed">' +
+        '  <ul ng-if="rakenne.osat !== undefined" ui-sortable="sortableOptions" id="tree-sortable" class="tree-group" ng-model="rakenne.osat">' +
+        '    <li ng-repeat="osa in rakenne.osat" class="tree-list-item">' +
+        '      <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" rakenne="osa" vanhempi="rakenne" tutkinnon-osa-viitteet="tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" ng-init="notfirst = true" callbacks="callbacks"></tree>' +
+        '    </li>' +
+        '    <li class="ui-state-disabled tree-list-item" ng-if="muokkaus && rakenne.osat.length > 0">' +
+        '      <span class="tree-anchor"></span>' +
+        '    </li>' +
+        '  </ul>' +
+        '</div>';
+    };
+
     var optiot = '' +
       '<span ng-click="rakenne.$collapsed = rakenne.osat.length > 0 ? !rakenne.$collapsed : false" ng-if="!onOsa(rakenne)" class="colorbox" ' + varivalinta + '>' +
-      '  <span ng-show="rakenne.rooli !== \'määrittelemätön\'">' +
+      '  <span ng-if="rakenne.rooli !== \'määrittelemätön\'">' +
       '    <span ng-hide="rakenne.$collapsed" class="glyphicon glyphicon-chevron-down"></span>' +
       '    <span ng-show="rakenne.$collapsed" class="glyphicon glyphicon-chevron-right"></span>' +
       '  </span>' +
@@ -92,7 +140,7 @@ angular.module('eperusteApp')
       toimintoValikko({edit: 'rakenneosaModaali(rakenne)', remove: 'poista(rakenne, vanhempi)'}) +
       '  </div>' +
       '  <div class="pull-right" ng-if="!onOsa(rakenne)">' +
-      '    <span class="right-item" ng-show="apumuuttujat.suoritustapa !== \'naytto\' && isNumber(rakenne.muodostumisSaanto.laajuus.minimi)">' +
+      '    <span class="right-item" ng-if="apumuuttujat.suoritustapa !== \'naytto\' && isNumber(rakenne.muodostumisSaanto.laajuus.minimi)">' +
       laajuudenIlmaisu +
       '    </span>' +
       '    <span class="right-item" ng-if="isNumber(rakenne.muodostumisSaanto.koko.minimi)">' +
@@ -104,80 +152,44 @@ angular.module('eperusteApp')
       '  <span ng-class="{ \'pointer\': muokkaus }">' + generoiOtsikko() + '</span>' +
       '</div>';
 
-    var virheSnippet = '  <span ng-show="rakenne.$virhe.virhe">' +
-    '    <span>{{rakenne.$virhe.virhe|kaanna}}</span>. ' +
-    '  </span>' +
-    '  <span ng-show="rakenne.$virhe.selite.kaannos" kaanna="{{rakenne.$virhe.selite.kaannos}}" kaanna-values="rakenne.$virhe.selite.muuttujat"></span>';
+    var virheSnippet = '  <span ng-if="rakenne.$virhe.virhe">' +
+      '    <span>{{rakenne.$virhe.virhe|kaanna}}</span>. ' +
+      '  </span>' +
+      '  <span ng-if="rakenne.$virhe.selite.kaannos" kaanna="{{rakenne.$virhe.selite.kaannos}}" kaanna-values="rakenne.$virhe.selite.muuttujat"></span>';
+
     var kentta =
       '<div ng-class="osaLuokat(rakenne)">' + optiot + '</div>' +
-      '<div ng-model="rakenne" ng-show="rakenne.osaamisala || (rakenne.kuvaus && rakenne.kuvaus[lang].length > 0)" class="kuvaus">' +
+      '<div ng-if="rakenne.osaamisala || (rakenne.kuvaus && rakenne.kuvaus[lang].length > 0)" class="kuvaus">' +
       '  <div class="kuvausteksti" ng-class="{ \'text-truncated\': !rakenne.$showKuvaus }">' +
-      '    <div class="osaamisala" ng-show="rakenne.osaamisala"><b kaanna="osaamisala"></b>: {{ rakenne.osaamisala.nimi | kaanna }} ({{ rakenne.osaamisala.osaamisalakoodiArvo }})</div>' +
-      '    <p ng-show="rakenne.kuvaus && rakenne.kuvaus[lang].length > 0">{{ rakenne.kuvaus | kaanna }}</p>' +
+      '    <div class="osaamisala" ng-if="rakenne.osaamisala"><b kaanna="osaamisala"></b>: {{ rakenne.osaamisala.nimi | kaanna }} ({{ rakenne.osaamisala.osaamisalakoodiArvo }})</div>' +
+      '    <p ng-if="rakenne.kuvaus && rakenne.kuvaus[lang].length > 0">{{ rakenne.kuvaus | kaanna }}</p>' +
       '  </div>' +
       '  <div class="avausnappi" ng-click="rakenne.$showKuvaus = !rakenne.$showKuvaus" ng-attr-title="{{rakenne.$showKuvaus && (\'piilota-ryhman-kuvaus\'|kaanna) || (\'nayta-ryhman-kuvaus\'|kaanna)}}">' +
       '  <div class="avausnappi-painike">&hellip;</div></div>' +
       '</div>' +
-      '<div ng-model="rakenne" ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="virhe">' +
+      '<div ng-if="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="virhe">' +
       virheSnippet +
       '</div>';
 
-    var avaaKaikki = '' +
-      '<div class="pull-right">' +
-      '  <a ng-show="muokkaus && rakenne.$virheetMaara > 0" style="margin-right: 10px;" ng-click="piilotaVirheet()" class="group-toggler action-link">' +
-      '    <span ng-hide="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "piilota-virheet" | kaanna }}</span>' +
-      '    <span ng-show="apumuuttujat.piilotaVirheet" class="avaa-sulje"> {{ "nayta-virheet" | kaanna }}</span>' +
-      '  </a>' +
-      '  <a ng-click="togglaaKuvaukset()" class="group-toggler action-link" ng-show="scanKuvaukset()">' +
-      '    <span icon-role="ep-part">{{kuvauksetOpen && "piilota-kuvaukset" || "nayta-kuvaukset" | kaanna }}</span>' +
-      '    ' +
-      '  </a>' +
-      '  <a ng-click="togglaaPolut()" class="group-toggler action-link">' +
-      '    <span class="avaa-sulje" icon-role="ep-open-close">{{ "avaa-sulje-rakenne" | kaanna }}</span>' +
-      '  </a>' +
-      '</div>';
+    this.leaf = function () {
+      return '<div>' + kentta + '</div>';
+    };
 
-    return '' +
-      '<div ng-if="!vanhempi">' +
-      '  <div class="ylapainikkeet">' +
-      '    <span class="rakenne-nimi">{{ apumuuttujat.peruste.nimi | kaanna }}' +
-      '    <span ng-if="rakenne.muodostumisSaanto && rakenne.muodostumisSaanto.laajuus">' +
-      '      <span ng-if="rakenne.$laajuus">{{ rakenne.$laajuus }} / </span>' +
-      '      <span ng-if="isNumber(rakenne.muodostumisSaanto.laajuus.minimi)">' +
-      '        {{ rakenne.muodostumisSaanto.laajuus.minimi }}' +
-      '      </span>' +
-      '      <span ng-if="rakenne.muodostumisSaanto.laajuus.maksimi && rakenne.muodostumisSaanto.laajuus.minimi !== rakenne.muodostumisSaanto.laajuus.maksimi">' +
-      '        - {{ rakenne.muodostumisSaanto.laajuus.maksimi }}' +
-      '      </span>' +
-      '      {{ apumuuttujat.laajuusYksikko | kaanna }}' +
-      '    </span></span>' +
-      '    <a class="action-link" ng-show="muokkaus" ng-click="ryhmaModaali(apumuuttujat.suoritustapa, rakenne, vanhempi)" kaanna>muokkaa-muodostumissääntöjä</button>' +
-      '    <a ng-if="zoomaus" icon-role="back" class="back action-link"></a>' +
-      avaaKaikki +
-      '  </div>' +
-      '  <div><div class="tree-yliviiva"></div></div>' +
-      '  <div ng-show="muokkaus && rakenne.$virhe && !apumuuttujat.piilotaVirheet" class="isovirhe-otsikko">' +
-      virheSnippet +
-      '  </div>' +
-      '</div>' +
-      '<div ng-if="vanhempi">' + kentta + '</div>' +
-      '<div ng-if="rakenne.rooli !== \'määrittelemätön\'" class="collapser" ng-show="!rakenne.$collapsed">' +
-      '  <ul ng-if="rakenne.osat !== undefined" ui-sortable="sortableOptions" id="tree-sortable" class="tree-group" ng-model="rakenne.osat">' +
-      '    <li ng-repeat="osa in rakenne.osat" class="tree-list-item">' +
+    this.leafChildren = function () {
+      return '<div ng-if="rakenne.rooli !== \'määrittelemätön\'" class="collapser" ng-show="!rakenne.$collapsed">' +
+      '  <ul ng-if="rakenne.osat !== undefined" ui-sortable="sortableOptions" class="tree-group" ng-model="rakenne.osat" id="tree-sortable">' +
+      '    <li ng-repeat="osa in rakenne.osat track by trackingFunction(osa, $index)" class="tree-list-item">' +
       '      <tree apumuuttujat="apumuuttujat" muokkaus="muokkaus" rakenne="osa" vanhempi="rakenne" tutkinnon-osa-viitteet="tutkinnonOsaViitteet" uusi-tutkinnon-osa="uusiTutkinnonOsa" ng-init="notfirst = true" callbacks="callbacks"></tree>' +
-      '    </li>' +
-      '    <li class="ui-state-disabled tree-list-item" ng-if="muokkaus && !vanhempi && rakenne.osat.length > 0">' +
-      '      <span class="tree-anchor"></span>' +
       '    </li>' +
       '  </ul>' +
       '</div>';
+    };
   })
 
-  .directive('tree', function($compile, treeTemplate) {
+  .directive('tree', function($compile, treeTemplate, $timeout, $animate) {
     return {
-      restrict: 'AE',
-      transclude: false,
-      terminal: true,
+      restrict: 'E',
+      template: treeTemplate.leaf(),
       scope: {
         rakenne: '=',
         tutkinnonOsaViitteet: '=',
@@ -189,9 +201,27 @@ angular.module('eperusteApp')
       },
       controller: 'treeController',
       link: function(scope, el) {
-        var templateElement = angular.element(treeTemplate);
-        $compile(templateElement)(scope);
-        el.replaceWith(templateElement);
+        $animate.enabled(false, el);
+        if (!scope.vanhempi) {
+          var templateElement = angular.element(treeTemplate.root());
+          $compile(templateElement)(scope);
+          el.replaceWith(templateElement);
+        }
+        function renderChildren() {
+          $compile(treeTemplate.leafChildren())(scope, function (cloned) {
+            el.append(cloned);
+          });
+        }
+        if (scope.muokkaus || (_.isArray(scope.rakenne.osat) && scope.rakenne.osat.length > 0)) {
+          // Give the browser a breather once in a while to retain responsiveness
+          if (_.random() > 0.8) {
+            $timeout(function () {
+              renderChildren();
+            });
+          } else {
+            renderChildren();
+          }
+        }
       }
     };
   })
@@ -202,6 +232,10 @@ angular.module('eperusteApp')
     $scope.esitystilassa = $state.includes('**.esitys.**');
     $scope.lang = $translate.use() || $translate.preferredLanguage();
     $scope.isNumber = _.isNumber;
+
+    $scope.trackingFunction = function (osa, index) {
+      return osa.nimi && osa.nimi._id ? osa.nimi._id : index;
+    };
 
     $scope.$watch('rakenne.$virhe', function () {
       if ($scope.rakenne.$virhe && $scope.rakenne.$virhe.selite && $scope.rakenne.$virhe.selite.muuttujat) {
