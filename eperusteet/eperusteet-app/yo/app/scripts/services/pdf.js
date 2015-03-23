@@ -74,13 +74,14 @@ angular.module('eperusteApp')
       return SERVICE_LOC + '/dokumentit/' + tokenId;
     }
 
-    function haeUusin(perusteId, kieli, success, failure) {
+    function haeUusin(perusteId, kieli, suoritustapa, success, failure) {
       success = success || angular.noop;
       failure = failure || angular.noop;
 
       return Dokumentti.get({
         perusteId: perusteId,
-        kieli: kieli
+        kieli: kieli,
+        suoritustapa: suoritustapa
       }, success);
 
     }
@@ -140,7 +141,7 @@ angular.module('eperusteApp')
         kielet = kielet.lista;
       }
       _.each(kielet, function(kieli) {
-        Pdf.haeUusin(perusteId, kieli, function(res) {
+        Pdf.haeUusin(perusteId, kieli, suoritustapa, function(res) {
           if (kieli === $scope.kielet.valittu) {
             $scope.tila = res.tila;
           }

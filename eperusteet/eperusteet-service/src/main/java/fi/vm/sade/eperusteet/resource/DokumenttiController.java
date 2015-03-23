@@ -94,10 +94,14 @@ public class DokumenttiController {
     @RequestMapping(method = RequestMethod.GET, params = "perusteId")
     @ResponseBody
     public ResponseEntity<DokumenttiDto> getLatest(
-        @RequestParam("perusteId") final Long perusteId, @RequestParam(value = "kieli", defaultValue = "fi") final String kieli) {
+        @RequestParam("perusteId") final Long perusteId,
+        @RequestParam(value = "kieli", defaultValue = "fi") final String kieli,
+        @RequestParam("suoritustapa") final String suoritustapa)
+    {
         try {
             Kieli k = Kieli.of(kieli);
-            DokumenttiDto dto = service.findLatest(perusteId, k);
+            Suoritustapakoodi s = Suoritustapakoodi.of(suoritustapa);
+            DokumenttiDto dto = service.findLatest(perusteId, k, s);
             return new ResponseEntity<>(dto, HttpStatus.OK);
         } catch (IllegalArgumentException ex) {
             LOG.warn("{}", ex.getMessage());

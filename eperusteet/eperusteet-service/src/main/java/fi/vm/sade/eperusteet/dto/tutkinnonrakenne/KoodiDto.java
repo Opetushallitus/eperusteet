@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,6 +26,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@EqualsAndHashCode(of = {"uri","arvo"})
 public class KoodiDto {
     private LokalisoituTekstiDto nimi;
     private String arvo;

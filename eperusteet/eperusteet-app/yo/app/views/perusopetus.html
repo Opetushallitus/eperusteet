@@ -86,6 +86,11 @@
                 <h3>{{ valittuOppiaine.vlks.tyotavat.otsikko | kaanna }}</h3>
                 <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.tyotavat.teksti || '-'"></termisto-tekstikentta>
               </div>
+              
+              <div ng-hide="!hasContent(valittuOppiaine.vlks.sisaltoalueinfo)">
+                <h3>{{ valittuOppiaine.vlks.sisaltoalueinfo.otsikko | kaanna }}</h3>
+                <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.sisaltoalueinfo.teksti || '-'"></termisto-tekstikentta>
+              </div>
 
               <div ng-repeat="sa in valittuOppiaine.vlks.sisaltoalueet">
                 <h3>{{ sa.nimi | kaanna }}</h3>

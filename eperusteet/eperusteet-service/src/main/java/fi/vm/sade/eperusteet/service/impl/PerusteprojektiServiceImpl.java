@@ -35,7 +35,9 @@ import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
@@ -605,6 +607,24 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     }
                     updateStatus.addStatus("koodittomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);
                     updateStatus.setVaihtoOk(false);
+                }
+
+                // Tarkista tutke2-osien osa-alueiden koodit
+                List<LokalisoituTekstiDto> koodittomatOsaalueet = new ArrayList<>();
+                for (TutkinnonOsaViite tov : suoritustapa.getTutkinnonOsat()) {
+                    TutkinnonOsa tosa = tov.getTutkinnonOsa();
+                    if (tosa.getTyyppi() == TutkinnonOsaTyyppi.TUTKE2) {
+                        for (OsaAlue oa : tosa.getOsaAlueet()) {
+                            if (oa.getKoodiArvo() == null || oa.getKoodiArvo().isEmpty() ||
+                                    oa.getKoodiUri() == null || oa.getKoodiUri().isEmpty()) {
+                                koodittomatOsaalueet.add(new LokalisoituTekstiDto(tosa.getId(), tosa.getNimi().getTeksti()));
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (!koodittomatOsaalueet.isEmpty()) {
+                    updateStatus.addStatus("tutke2-osalta-puuttuu-osa-alue-koodi", suoritustapa.getSuoritustapakoodi(), koodittomatOsaalueet);
                 }
 
                 // Kerätään tutkinnon osien koodit

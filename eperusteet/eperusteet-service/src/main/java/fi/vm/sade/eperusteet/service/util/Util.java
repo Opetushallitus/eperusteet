@@ -15,6 +15,8 @@
  */
 package fi.vm.sade.eperusteet.service.util;
 
+import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
+
 /**
  *
  * @author jhyoty
@@ -30,6 +32,10 @@ public final class Util {
      */
     public static <T> boolean refXnor(T l, T r) {
         return (l == null && r == null) || (l != null && r != null);
+    }
+
+    public static <T extends ReferenceableEntity> boolean identityEquals(T l, T r) {
+        return ( l != null && r != null && l.getId() != null && l.getId().equals(r.getId()));
     }
 
 }

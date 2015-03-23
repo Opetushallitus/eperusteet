@@ -24,7 +24,7 @@
     "angular-ui-router": "0.2.13",
     "ng-file-upload": "~1.2.6",
     "angular-ui-sortable": "~0.12.8",
-    "bootstrap-sass-official": "~3.1.1",
+    "bootstrap-sass-official": "~3.3.3",
     "angular-elastic": "~2.3.3",
     "angular-ui-tree": "~2.1.5",
     "angular-cache": "~3.2.2",

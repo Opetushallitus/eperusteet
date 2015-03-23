@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.OpetuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
@@ -34,6 +35,7 @@ import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
@@ -271,15 +273,23 @@ public class OppiaineServiceImpl implements OppiaineService {
     public OppiaineDto updateOppiaine(Long perusteId, UpdateDto<OppiaineDto> updateDto) {
         OppiaineDto dto = updateDto.getDto();
         Oppiaine aine = oppiaineRepository.findOne(dto.getId());
-        if (aine == null) {
-            throw new BusinessRuleViolationException("Oppiainetta ei ole");
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
+        if (aine == null || sisalto == null || !sisalto.containsOppiaine(aine)) {
+            throw new NotExistsException("Oppiainetta ei ole");
         }
         lockService.assertLock(OppiaineLockContext.of(perusteId, dto.getId(), null));
         oppiaineRepository.lock(aine);
 
+        Integer rev = null;
+        if (sisalto.getPeruste().getTila() == PerusteTila.VALMIS) {
+            rev = oppiaineRepository.getLatestRevisionId(aine.getId());
+        }
         mapper.map(dto, aine);
         final Set<OppiaineenVuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet = dto.getVuosiluokkakokonaisuudet();
         if (vuosiluokkakokonaisuudet != null) {
+            if (sisalto.getPeruste().getTila() == PerusteTila.VALMIS) {
+                throw new BusinessRuleViolationException("Vain korjaukset sallittu");
+            }
             for (OppiaineenVuosiluokkaKokonaisuusDto v : vuosiluokkakokonaisuudet) {
                 if (v.getId() == null) {
                     addOppiaineenVuosiluokkaKokonaisuus(aine, v);
@@ -287,12 +297,18 @@ public class OppiaineServiceImpl implements OppiaineService {
                     final OppiaineLockContext vkctx = OppiaineLockContext.of(perusteId, dto.getId(), v.getId());
                     try {
                         lockService.lock(vkctx);
-                        doUpdateOppiaineenVuosiluokkaKokonaisuus(perusteId, aine.getId(), v, false);
+                        doUpdateOppiaineenVuosiluokkaKokonaisuus(sisalto, aine.getId(), v, false);
                     } finally {
                         lockService.unlock(vkctx);
                     }
                 }
                 //TODO poisto -- vai pitäikö jättää "ominaisuudeksi" että vuosiluokkakokonaisuuksia ei voi poistaa tätä kautta.
+            }
+        }
+        if (rev != null) {
+            Oppiaine latest = oppiaineRepository.findRevision(aine.getId(), rev);
+            if (!latest.structureEquals(aine)) {
+                throw new BusinessRuleViolationException("Vain korjaukset sallittu");
             }
         }
         oppiaineRepository.setRevisioKommentti(updateDto.getMetadataOrEmpty().getKommentti());
@@ -305,30 +321,37 @@ public class OppiaineServiceImpl implements OppiaineService {
     @Override
     @Transactional(readOnly = false)
     public OppiaineenVuosiluokkaKokonaisuusDto updateOppiaineenVuosiluokkaKokonaisuus(Long perusteId, Long oppiaineId, UpdateDto<OppiaineenVuosiluokkaKokonaisuusDto> updateDto) {
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         OppiaineenVuosiluokkaKokonaisuusDto tmp
-            = mapper.map(doUpdateOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, updateDto.getDto(), true), OppiaineenVuosiluokkaKokonaisuusDto.class);
+            = mapper.map(doUpdateOppiaineenVuosiluokkaKokonaisuus(sisalto, oppiaineId, updateDto.getDto(), true), OppiaineenVuosiluokkaKokonaisuusDto.class);
         vuosiluokkakokonaisuusRepository.setRevisioKommentti(updateDto.getMetadataOrEmpty().getKommentti());
         return tmp;
     }
 
-    private OppiaineenVuosiluokkaKokonaisuus doUpdateOppiaineenVuosiluokkaKokonaisuus(Long perusteId, Long oppiaineId, OppiaineenVuosiluokkaKokonaisuusDto dto, boolean lock) {
-        OppiaineenVuosiluokkaKokonaisuus ovk = vuosiluokkakokonaisuusRepository.findOne(dto.getId());
-        if (ovk == null || !ovk.getOppiaine().getId().equals(oppiaineId)) {
+    private OppiaineenVuosiluokkaKokonaisuus doUpdateOppiaineenVuosiluokkaKokonaisuus(PerusopetuksenPerusteenSisalto sisalto, Long oppiaineId, OppiaineenVuosiluokkaKokonaisuusDto dto, boolean lock) {
+        OppiaineenVuosiluokkaKokonaisuus ovk = vuosiluokkakokonaisuusRepository.findByIdAndOppiaineId(dto.getId(), oppiaineId);
+        if (ovk == null) {
             throw new BusinessRuleViolationException("Vuosiluokkakokonaisuus ei kuulu tähän oppiaineeseen");
         }
-        lockService.assertLock(OppiaineLockContext.of(perusteId, oppiaineId, dto.getId()));
+        lockService.assertLock(OppiaineLockContext.of(sisalto.getPeruste().getId(), oppiaineId, dto.getId()));
         if (lock) {
             oppiaineRepository.lock(ovk.getOppiaine());
         }
         mapper.map(dto, ovk);
+        if ( sisalto.getPeruste().getTila() == PerusteTila.VALMIS ) {
+            Integer rev = vuosiluokkakokonaisuusRepository.getLatestRevisionId(ovk.getId());
+            OppiaineenVuosiluokkaKokonaisuus latest = vuosiluokkakokonaisuusRepository.findRevision(ovk.getId(), rev);
+            if ( !latest.structureEquals(ovk) ) {
+                throw new BusinessRuleViolationException("Vain korjaukset sallittu");
+            }
+        }
         ovk = vuosiluokkakokonaisuusRepository.save(ovk);
         ovk.getOppiaine().muokattu();
         oppiaineRepository.setRevisioKommentti("Muokattu oppiaineen vuosiluokkakokonaisuutta");
-        eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, perusteId));
+        eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, sisalto.getPeruste().getId()));
         return ovk;
     }
 
-    @Transactional(readOnly = false)
     private Oppiaine getAndLockOppiaine(Long perusteId, Long oppiaineId) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         Oppiaine aine = oppiaineRepository.findOne(oppiaineId);
@@ -347,8 +370,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         if (kohdealue.getId() != null) {
             OpetuksenKohdealue vanhaKohde = kohdeAlueRepository.findOne(kohdealue.getId());
             mapper.map(kohdealue, vanhaKohde);
-        }
-        else {
+        } else {
             kohde = mapper.map(kohdealue, OpetuksenKohdealue.class);
             kohde = aine.addKohdealue(kohde);
             kohdeAlueRepository.save(kohde);

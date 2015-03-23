@@ -134,7 +134,7 @@ angular.module('eperusteApp')
       MuokkausUtils.nestedSet($scope.editableModel, 'koodiUri', ',', koodisto.koodiUri);
       MuokkausUtils.nestedSet($scope.editableModel, 'koodiArvo', ',', koodisto.koodiArvo);
     }, {
-      tyyppi: function() { return 'oppiaineetyleissivistava'; },
+      tyyppi: function() { return 'oppiaineetyleissivistava2'; },
       ylarelaatioTyyppi: function() { return ''; },
       tarkista: _.constant(true)
     });

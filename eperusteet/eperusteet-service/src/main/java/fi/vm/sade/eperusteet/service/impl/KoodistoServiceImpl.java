@@ -84,8 +84,9 @@ public class KoodistoServiceImpl implements KoodistoService {
                 }
             }
 
-            if (x.getKoodiUri().contains(koodi) || nimessa)
+            if (x.getKoodiUri().contains(koodi) || nimessa) {
                 tulos.add(x);
+            }
         }
         return tulos;
     }

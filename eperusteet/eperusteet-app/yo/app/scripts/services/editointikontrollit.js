@@ -64,6 +64,7 @@ angular.module('eperusteApp')
         $rootScope.$broadcast('enableEditing');
       },
       saveEditing: function(kommentti) {
+        $rootScope.$broadcast('editointikontrollit:preSave');
         var err;
 
         function mandatoryFieldValidator(fields, target) {

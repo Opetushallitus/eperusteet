@@ -3,8 +3,8 @@
 <table class="table table-bordered perusopetuksen-arviointi ">
   <thead>
     <tr ng-show="editMode">
-      <th><input placeholder="{{ 'arvioinnin-kohde' | kaanna }}" slocalized ng-model="atavoite.arvioinninKuvaus"></input></th>
-      <th><input placeholder="{{ 'arvion-hyva-osaaminen' | kaanna }}"slocalized ng-model="atavoite.arvioinninOsaamisenKuvaus"></input></th>
+      <th><input class="form-control" placeholder="{{ 'arvioinnin-kohde' | kaanna }}" slocalized ng-model="atavoite.arvioinninKuvaus"></input></th>
+      <th><input class="form-control" placeholder="{{ 'arvion-hyva-osaaminen' | kaanna }}"slocalized ng-model="atavoite.arvioinninOsaamisenKuvaus"></input></th>
       <th></th>
     </tr>
     <tr ng-hide="editMode">
