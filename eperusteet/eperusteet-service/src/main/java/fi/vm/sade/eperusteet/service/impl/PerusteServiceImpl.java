@@ -232,7 +232,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Peruste p = perusteet.findOne(id);
         PerusteDto dto = mapper.map(p, PerusteDto.class);
         if (dto != null) {
-            dto.setRevision(perusteet.getLatestRevisionId(id));
+            dto.setRevision(perusteet.getLatestRevisionId(id).getNumero());
             if ( dto.getSuoritustavat() != null && !dto.getSuoritustavat().isEmpty() ) {
                 dto.setTutkintonimikkeet(getTutkintonimikeKoodit(id));
             }
@@ -249,14 +249,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
-    public Integer getLastModifiedRevision(final Long id) {
+    public Revision getLastModifiedRevision(final Long id) {
         PerusteTila tila = perusteet.getTila(id);
         if (tila == null) {
             return null;
         }
         if (tila == PerusteTila.LUONNOS) {
             //luonnos-tilassa olevan perusteen viimeisimmän muokkauksen määrittäminen on epäluotettavaa.
-            return 0;
+            return Revision.DRAFT;
         }
         return perusteet.getLatestRevisionId(id);
     }
@@ -270,7 +270,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         PerusteKaikkiDto perusteDto = mapper.map(peruste, PerusteKaikkiDto.class);
-        perusteDto.setRevision(perusteet.getLatestRevisionId(id));
+        perusteDto.setRevision(perusteet.getLatestRevisionId(id).getNumero());
 
         if (!perusteDto.getSuoritustavat().isEmpty()) {
             perusteDto.setTutkintonimikkeet(getTutkintonimikeKoodit(id));
@@ -417,14 +417,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         if (rakenneId == null) {
             throw new NotExistsException("Rakennetta ei ole olemassa");
         }
-        Integer rakenneVersioId = rakenneRepository.getLatestRevisionId(rakenneId);
-        if (eTag != null && rakenneVersioId != null && rakenneVersioId.equals(eTag)) {
+        Revision rev = rakenneRepository.getLatestRevisionId(rakenneId);
+        if (eTag != null && rev != null && rev.getNumero().equals(eTag)) {
             return null;
         }
 
         RakenneModuuli rakenne = rakenneRepository.findOne(rakenneId);
         RakenneModuuliDto rakenneModuuliDto = mapper.map(rakenne, RakenneModuuliDto.class);
-        rakenneModuuliDto.setVersioId(rakenneVersioId);
+        rakenneModuuliDto.setVersioId(rev.getNumero());
         return rakenneModuuliDto;
     }
 

@@ -43,6 +43,10 @@ public final class Etags {
         return null;
     }
 
+    public static String eTagOf(Integer rev) {
+        return wrap(String.valueOf(rev));
+    }
+
     public static HttpHeaders eTagHeader(Integer revision) {
         return addETag(new HttpHeaders(), revision);
     }

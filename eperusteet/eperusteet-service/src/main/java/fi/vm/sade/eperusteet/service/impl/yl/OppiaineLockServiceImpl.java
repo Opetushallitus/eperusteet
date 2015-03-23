@@ -58,7 +58,7 @@ public class OppiaineLockServiceImpl extends AbstractLockService<OppiaineLockCon
         } else {
             permissionChecker.checkPermission(ctx.getPerusteId(), PermissionManager.Target.PERUSTE, PermissionManager.Permission.MUOKKAUS, PermissionManager.Permission.KORJAUS);
         }
-        
+
         //TODO: haun optimointi
         PerusopetuksenPerusteenSisalto s = repository.findByPerusteId(ctx.getPerusteId());
         Oppiaine aine = oppiaineRepository.findOne(ctx.getOppiaineId());
@@ -80,10 +80,10 @@ public class OppiaineLockServiceImpl extends AbstractLockService<OppiaineLockCon
     protected final int latestRevision(OppiaineLockContext ctx) {
         //olettaa että lockcontext on validi (ei tarkisteta erikseen)
         if ( ctx.getKokonaisuusId() != null ) {
-            return vuosiluokkakokonaisuusRepository.getLatestRevisionId(ctx.getKokonaisuusId());
+            return vuosiluokkakokonaisuusRepository.getLatestRevisionId(ctx.getKokonaisuusId()).getNumero();
         }
 
-        return oppiaineRepository.getLatestRevisionId(ctx.getOppiaineId());
+        return oppiaineRepository.getLatestRevisionId(ctx.getOppiaineId()).getNumero();
     }
 
 }

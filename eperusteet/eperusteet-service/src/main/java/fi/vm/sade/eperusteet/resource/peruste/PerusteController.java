@@ -34,17 +34,15 @@ import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
-import fi.vm.sade.eperusteet.resource.util.Etags;
+import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.KoodistoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -173,7 +171,7 @@ public class PerusteController {
     public ResponseEntity<PerusteDto> get(@PathVariable("perusteId") final long id,
         @RequestHeader(value = "If-None-Match", required = false) String etag) {
 
-        return handleGet(id, etag, 1, new Supplier<PerusteDto>() {
+        return handleGet(id, 1, new Supplier<PerusteDto>() {
             @Override
             public PerusteDto get() {
                 return service.get(id);
@@ -194,10 +192,9 @@ public class PerusteController {
     @RequestMapping(value = "/{perusteId}/kaikki", method = GET)
     @ResponseBody
     public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(
-        @PathVariable("perusteId") final long id,
-        @RequestHeader(value = "If-None-Match", required = false) String etag) {
+        @PathVariable("perusteId") final long id) {
 
-        return handleGet(id, etag, 3600, new Supplier<PerusteKaikkiDto>() {
+        return handleGet(id, 3600, new Supplier<PerusteKaikkiDto>() {
             @Override
             public PerusteKaikkiDto get() {
                 return service.getKokoSisalto(id);
@@ -209,11 +206,10 @@ public class PerusteController {
     @ResponseBody
     @InternalApi
     public ResponseEntity<SuoritustapaDto> getSuoritustapa(
-        @RequestHeader(value = "If-None-Match", required = false) String etag,
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapakoodi") final String suoritustapakoodi) {
 
-        return handleGet(perusteId, etag, 1, new Supplier<SuoritustapaDto>() {
+        return handleGet(perusteId, 1, new Supplier<SuoritustapaDto>() {
             @Override
             public SuoritustapaDto get() {
                 return service.getSuoritustapa(perusteId, Suoritustapakoodi.of(suoritustapakoodi));
@@ -221,32 +217,7 @@ public class PerusteController {
         });
     }
 
-    private <T> ResponseEntity<T> handleGet(Long perusteId, final String eTag, final int age, Supplier<T> response) {
-        Integer rev = service.getLastModifiedRevision(perusteId);
-        if (rev == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        if (eTag != null) {
-            if (rev > 0 && rev.equals(Etags.revisionOf(eTag))) {
-                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-            }
-        }
-
-        T dto = response.get();
-
-        if (dto == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        if (rev > 0) {
-            HttpHeaders headers = Etags.eTagHeader(rev);
-            headers.setCacheControl("public, max-age=" + age);
-            headers.setExpires(DateTime.now().plusSeconds(age).getMillis());
-            return new ResponseEntity<>(dto, headers, HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+    private <T> ResponseEntity<T> handleGet(Long perusteId, int age, Supplier<T> response) {
+        return CacheableResponse.create(service.getLastModifiedRevision(perusteId), age, response);
     }
-
 }

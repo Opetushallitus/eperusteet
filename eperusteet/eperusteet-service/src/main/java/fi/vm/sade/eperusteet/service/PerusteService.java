@@ -156,5 +156,5 @@ public interface PerusteService {
     public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero);
 
     @PreAuthorize("permitAll()")
-    public Integer getLastModifiedRevision(final Long id);
+    public Revision getLastModifiedRevision(final Long id);
 }
