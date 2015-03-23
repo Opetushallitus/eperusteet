@@ -163,6 +163,7 @@ angular.module('eperusteApp')
       getSuoritustapa: getSuoritustapa,
       setSuoritustapa: setSuoritustapa,
       cleanSuoritustapa: cleanSuoritustapa,
+      getSisaltoTunniste: getSisaltoTunniste,
       getUrl: _.partial(urlFn, 'href'),
       goToProjektiState: _.partial(urlFn, 'go'),
       isPdfEnabled: function (peruste) {

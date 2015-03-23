@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -31,6 +32,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+
+import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  * Kuvaa oppimäärän yhteen vuosiluokkakokonaisuuteen osalta.
@@ -109,6 +113,36 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
         if (sisaltoalueet != null) {
             this.sisaltoalueet.addAll(sisaltoalueet);
         }
+    }
+
+    public boolean structureEquals(OppiaineenVuosiluokkaKokonaisuus other) {
+        boolean result = identityEquals(this.getOppiaine(), other.getOppiaine());
+        result &= identityEquals(this.getVuosiluokkaKokonaisuus(), other.getVuosiluokkaKokonaisuus());
+        result &= refXnor(this.getArviointi(), other.getArviointi());
+        result &= refXnor(this.getOhjaus(), other.getOhjaus());
+        result &= refXnor(this.getSisaltoalueinfo(), other.getSisaltoalueinfo());
+        result &= refXnor(this.getTehtava(), other.getTehtava());
+        result &= refXnor(this.getTyotavat(), other.getTyotavat());
+        result &= this.getSisaltoalueet().size() == other.getSisaltoalueet().size();
+        result &= this.getTavoitteet().size() == other.getTavoitteet().size();
+
+        if ( result ) {
+            Iterator<KeskeinenSisaltoalue> i = this.getSisaltoalueet().iterator();
+            Iterator<KeskeinenSisaltoalue> j = other.getSisaltoalueet().iterator();
+            while ( result && i.hasNext() && j.hasNext() ) {
+                result &= identityEquals(i.next(), j.next());
+            }
+        }
+
+        if ( result ) {
+            Iterator<OpetuksenTavoite> i = this.getTavoitteet().iterator();
+            Iterator<OpetuksenTavoite> j = other.getTavoitteet().iterator();
+            while ( result && i.hasNext() && j.hasNext() ) {
+                result &= identityEquals(i.next(), j.next());
+            }
+        }
+
+        return result;
     }
 
 }

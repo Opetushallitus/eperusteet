@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
@@ -57,5 +58,8 @@ public abstract class PerusteBaseDto implements Serializable {
     private PerusteTyyppi tyyppi;
 
     private Set<String> korvattavatDiaarinumerot;
-    private List<KoodiDto> osaamisalat;
+    private Set<KoodiDto> osaamisalat;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    List<TutkintonimikeKoodiDto> tutkintonimikkeet;
 }

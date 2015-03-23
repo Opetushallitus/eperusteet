@@ -59,10 +59,13 @@
 
                     <div ng-if="tavoite.$editing">
                       <h4 kaanna="'arviointi'"></h4>
-                      <label class="col-sm-2 control-label" kaanna="'arvioinnin-otsikko'"></label>
-                      <div class="col-sm-10">
-                        <input placeholder="{{ 'arvioinnin-otsikko' | kaanna }}" type="text" class="arvioinnin-muokkaus-kentta form-control" slocalized ng-model="tavoite.arvioinninOtsikko"></input>
+                      <div class="arvioinnin-otsikko">
+                        <label kaanna="'arvioinnin-otsikko'"></label>
+                        <div class="arvioinnin-muokkaus-kentta">
+                          <input placeholder="{{ 'arvioinnin-otsikko' | kaanna }}" type="text" class="form-control" slocalized ng-model="tavoite.arvioinninOtsikko"></input>
+                        </div>
                       </div>
+                      <div class="clearfix"></div>
                     </div>
 
                     <button ng-hide="hasArviointi(tavoite)" class="btn btn-default" ng-click="addArviointi(tavoite)" icon-role="add"

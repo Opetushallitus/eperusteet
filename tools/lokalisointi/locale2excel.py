@@ -10,7 +10,7 @@ if len(sys.argv) < 2:
     sys.exit(2)
 
 # Read json to tuple
-data = open(sys.argv[1])
+data = open(sys.argv[1], encoding="utf8")
 data_json = json.load(data)
 data.close()
 

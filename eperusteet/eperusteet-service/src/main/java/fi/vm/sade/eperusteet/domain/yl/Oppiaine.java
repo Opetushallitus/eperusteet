@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.CascadeType;
@@ -30,7 +31,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -40,6 +40,9 @@ import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  *
@@ -225,6 +228,24 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     @Override
     public boolean equals(Object other) {
         return this == other;
+    }
+
+    public boolean structureEquals(Oppiaine other) {
+        boolean result = Objects.equals(this.getTunniste(), other.getTunniste());
+        result &= refXnor(this.getOppiaine(), other.getOppiaine());
+        result &= this.getOppiaine() == null || identityEquals(this.getOppiaine(), other.getOppiaine());
+        result &= refXnor(this.getNimi(), other.getNimi());
+        result &= refXnor(this.getTehtava(), other.getTehtava());
+        result &= refXnor(this.getKohdealueet(), other.getKohdealueet());
+        result &= this.isKoosteinen() == other.isKoosteinen();
+        if ( this.isKoosteinen() ) {
+            result &= this.getOppimaarat().size() == other.getOppimaarat().size();
+        }
+        result &= this.getVuosiluokkakokonaisuudet().size() == other.getVuosiluokkakokonaisuudet().size();
+
+        //TODO tarkista vuosiluokkakokonaisuudet
+
+        return result;
     }
 
     @Override

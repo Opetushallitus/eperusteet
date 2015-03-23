@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
@@ -58,6 +59,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,20 +133,16 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         rootElement.setAttribute("xmlns:h", "http://www.w3.org/1999/xhtml");
         doc.appendChild(rootElement);
 
-        String nimi = getTextString(peruste.getNimi(), kieli);
-        Element titleElement = doc.createElement("title");
-        titleElement.appendChild(doc.createTextNode(nimi));
-        rootElement.appendChild(titleElement);
+        // kansilehti
+        addCoverPage(doc, rootElement, peruste, kieli, suoritustapakoodi);
 
+        // infosivu
         addInfoPage(doc, peruste, kieli);
 
-        // tähän vois lisätä esim jonkun info-elementin alkusivuja varten?
-        for (Suoritustapa st : peruste.getSuoritustavat()) {
-            if (st.getSuoritustapakoodi().equals(suoritustapakoodi)) {
-                PerusteenOsaViite sisalto = peruste.getSuoritustapa(st.getSuoritustapakoodi()).getSisalto();
-                addSisaltoElement(doc, peruste, rootElement, sisalto, 0, st, kieli);
-            }
-        }
+        // sisältöelementit (proosa)
+        Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+        PerusteenOsaViite sisalto = suoritustapa.getSisalto();
+        addSisaltoElement(doc, peruste, rootElement, sisalto, 0, suoritustapa, kieli);
 
         // pudotellaan tutkinnonosat paikalleen
         addTutkinnonosat(doc, peruste, kieli, suoritustapakoodi);
@@ -157,6 +155,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             rootElement.appendChild(fakeChapter);
         }
 
+        // käsitteet
         addGlossary(doc, peruste, kieli);
 
         // helpottaa devaus-debugausta, voi olla vähän turha tuotannossa
@@ -916,7 +915,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
                     Element bodyRowElement = doc.createElement("row");
                     addTableCell(doc, bodyRowElement, ktaso);
-                    addTableCell(doc, bodyRowElement, kriteerit);
+                    addTableCell(doc, bodyRowElement, getTextsAsList(doc, kriteerit));
                     bodyElement.appendChild(bodyRowElement);
                 }
 
@@ -1224,15 +1223,15 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         tgroup.appendChild(tbody);
 
         Element itrow = addTableRow(doc, tbody);
-        addTableCell(doc, itrow, newBoldElement(doc, messages.translate("docgen.perusteen-nimi", kieli)));
+        addTableCell(doc, itrow, newBoldElement(doc, messages.translate("docgen.info.perusteen-nimi", kieli)));
         addTableCell(doc, itrow, getTextString(peruste.getNimi(), kieli));
 
         Element itrow2 = addTableRow(doc, tbody);
-        addTableCell(doc, itrow2, newBoldElement(doc, messages.translate("docgen.maarayksen-diaarinumero", kieli)));
+        addTableCell(doc, itrow2, newBoldElement(doc, messages.translate("docgen.info.maarayksen-diaarinumero", kieli)));
         if (peruste.getDiaarinumero() != null) {
             addTableCell(doc, itrow2, peruste.getDiaarinumero().toString());
         } else {
-            addTableCell(doc, itrow2, messages.translate("docgen.ei-asetettu", kieli));
+            addTableCell(doc, itrow2, messages.translate("docgen.info.ei-asetettu", kieli));
         }
 
 
@@ -1249,11 +1248,11 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         }
 
         Element itrow3 = addTableRow(doc, tbody);
-        addTableCell(doc, itrow3, newBoldElement(doc, messages.translate("docgen.koulutuskoodit", kieli)));
+        addTableCell(doc, itrow3, newBoldElement(doc, messages.translate("docgen.info.koulutuskoodit", kieli)));
         if (koulutuslist.hasChildNodes()) {
             addTableCell(doc, itrow3, koulutuslist);
         } else {
-            addTableCell(doc, itrow3, messages.translate("docgen.ei-asetettu", kieli));
+            addTableCell(doc, itrow3, messages.translate("docgen.info.ei-asetettu", kieli));
         }
 
 
@@ -1275,35 +1274,87 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
 
         Element itrow4 = addTableRow(doc, tbody);
-        addTableCell(doc, itrow4, newBoldElement(doc, messages.translate("docgen.tutkintonimikkeet", kieli)));
+        addTableCell(doc, itrow4, newBoldElement(doc, messages.translate("docgen.info.tutkintonimikkeet", kieli)));
         if (nimikelist.hasChildNodes()) {
             addTableCell(doc, itrow4, nimikelist);
         } else {
-            addTableCell(doc, itrow4, messages.translate("docgen.ei-asetettu", kieli));
+            addTableCell(doc, itrow4, messages.translate("docgen.info.ei-asetettu", kieli));
         }
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
         Element itrow5 = addTableRow(doc, tbody);
-        addTableCell(doc, itrow5, newBoldElement(doc, messages.translate("docgen.voimaantulo", kieli)));
+        addTableCell(doc, itrow5, newBoldElement(doc, messages.translate("docgen.info.voimaantulo", kieli)));
         if (peruste.getVoimassaoloAlkaa() != null) {
             addTableCell(doc, itrow5, dateFormat.format(peruste.getVoimassaoloAlkaa()));
         } else {
-            addTableCell(doc, itrow5, messages.translate("docgen.ei-asetettu", kieli));
+            addTableCell(doc, itrow5, messages.translate("docgen.info.ei-asetettu", kieli));
         }
 
         Element itrow6 = addTableRow(doc, tbody);
-        addTableCell(doc, itrow6, newBoldElement(doc, messages.translate("docgen.voimassaolon-paattyminen", kieli)));
+        addTableCell(doc, itrow6, newBoldElement(doc, messages.translate("docgen.info.voimassaolon-paattyminen", kieli)));
         if (peruste.getVoimassaoloLoppuu() != null) {
             addTableCell(doc, itrow6, dateFormat.format(peruste.getVoimassaoloLoppuu()));
         } else {
-            addTableCell(doc, itrow6, messages.translate("docgen.ei-asetettu", kieli));
+            addTableCell(doc, itrow6, messages.translate("docgen.info.ei-asetettu", kieli));
         }
 
+        Element itrow7 = addTableRow(doc, tbody);
+        addTableCell(doc, itrow7, newBoldElement(doc, messages.translate("docgen.info.korvaa-perusteet", kieli)));
+        if (peruste.getKorvattavatDiaarinumerot() != null && !peruste.getKorvattavatDiaarinumerot().isEmpty())
+        {
+            Set<String> numeroStringit = new HashSet<>();
+            for (Diaarinumero nro : peruste.getKorvattavatDiaarinumerot()) {
+                numeroStringit.add(nro.getDiaarinumero());
+            }
+            addTableCell(doc, itrow7, StringUtils.join(numeroStringit, ", "));
+        } else {
+            addTableCell(doc, itrow7, messages.translate("docgen.info.ei-asetettu", kieli));
+        }
     }
 
     private void addHardPageBreak(Document doc, Element element) {
         element.appendChild(doc.createProcessingInstruction("hard-pagebreak", ""));
+    }
+
+    private Element getTextsAsList(Document doc, List<String> texts) {
+        Element list = doc.createElement("itemizedlist");
+        list.setAttribute("spacing", "compact");
+        for (String text : texts) {
+            Element item = doc.createElement("listitem");
+            item.appendChild(doc.createTextNode(text));
+            list.appendChild(item);
+        }
+
+        return list;
+    }
+
+    private void addCoverPage(Document doc, Element rootElement, Peruste peruste, Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
+        Element info = doc.createElement("info");
+        rootElement.appendChild(info);
+
+        String nimi = getTextString(peruste.getNimi(), kieli);
+        Element titleElement = doc.createElement("title");
+        titleElement.appendChild(doc.createTextNode(nimi));
+        info.appendChild(titleElement);
+
+        String subtitleText;
+        switch(suoritustapakoodi) {
+            case OPS:
+                subtitleText = messages.translate("docgen.subtitle.ops", kieli);
+                break;
+            case NAYTTO:
+                subtitleText = messages.translate("docgen.subtitle.naytto", kieli);
+                break;
+            default:
+                subtitleText = "";
+
+        }
+
+        Element subtitle = doc.createElement("subtitle");
+        subtitle.appendChild(doc.createTextNode(subtitleText));
+        info.appendChild(subtitle);
+
     }
 
 }

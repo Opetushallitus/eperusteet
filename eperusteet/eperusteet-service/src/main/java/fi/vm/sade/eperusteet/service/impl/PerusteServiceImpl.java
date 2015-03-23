@@ -90,6 +90,9 @@ import java.util.Objects;
 import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -180,6 +183,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Autowired
     private PerusopetuksenPerusteenSisaltoService perusopetuksenSisaltoService;
 
+    @Autowired
+    private Validator validator;
+
     @Override
     @Transactional(readOnly = true)
     public Page<PerusteDto> getAll(PageRequest page, String kieli) {
@@ -227,6 +233,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         PerusteDto dto = mapper.map(p, PerusteDto.class);
         if (dto != null) {
             dto.setRevision(perusteet.getLatestRevisionId(id));
+            if ( dto.getSuoritustavat() != null && !dto.getSuoritustavat().isEmpty() ) {
+                dto.setTutkintonimikkeet(getTutkintonimikeKoodit(id));
+            }
         }
         return dto;
     }
@@ -264,6 +273,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         perusteDto.setRevision(perusteet.getLatestRevisionId(id));
 
         if (!perusteDto.getSuoritustavat().isEmpty()) {
+            perusteDto.setTutkintonimikkeet(getTutkintonimikeKoodit(id));
+
             Set<TutkinnonOsa> tutkinnonOsat = new LinkedHashSet<>();
             for (Suoritustapa st : peruste.getSuoritustavat()) {
                 for (TutkinnonOsaViite t : st.getTutkinnonOsat()) {
@@ -314,39 +325,75 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     public PerusteDto update(long id, PerusteDto perusteDto) {
-        Peruste perusteVanha = perusteet.findOne(id);
-        if (perusteVanha == null) {
-            throw new NotExistsException("Päivitettävää perustetta ei ole olemassa");
+        Peruste current = perusteet.findOne(id);
+        if (current == null || current.getTila() == PerusteTila.POISTETTU) {
+            throw new NotExistsException("Päivitettävää perustetta ei ole olemassa tai se on poistettu");
+        }
+        perusteet.lock(current);
+        Peruste updated = mapper.map(perusteDto, Peruste.class);
+
+        if (!current.getKoulutustyyppi().equals(updated.getKoulutustyyppi())) {
+            throw new BusinessRuleViolationException("Koulutustyyppiä ei voi vaihtaa");
         }
 
-        perusteet.lock(perusteVanha);
-        perusteDto.setId(id);
-
-        Peruste peruste = mapper.map(perusteDto, Peruste.class);
-        peruste = checkIfKoulutuksetAlreadyExists(peruste);
-        peruste.setSuoritustavat(perusteVanha.getSuoritustavat());
-        peruste.asetaTila(perusteVanha.getTila());
-
-        peruste = perusteet.save(peruste);
-        return mapper.map(peruste, PerusteDto.class);
+        if (current.getTila() == PerusteTila.VALMIS) {
+            current = updateValmisPeruste(current, updated);
+        } else {
+            current.setDiaarinumero(updated.getDiaarinumero());
+            current.setKielet(updated.getKielet());
+            current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
+            current.setKoulutukset(checkIfKoulutuksetAlreadyExists(updated.getKoulutukset()));
+            current.setKuvaus(updated.getKuvaus());
+            current.setNimi(updated.getNimi());
+            current.setOsaamisalat(updated.getOsaamisalat());
+            current.setSiirtymaPaattyy(updated.getSiirtymaPaattyy());
+            current.setVoimassaoloAlkaa(updated.getVoimassaoloAlkaa());
+            current.setVoimassaoloLoppuu(updated.getVoimassaoloLoppuu());
+        }
+        perusteet.save(current);
+        return mapper.map(current, PerusteDto.class);
     }
 
-    private Peruste checkIfKoulutuksetAlreadyExists(Peruste peruste) {
-        Set<Koulutus> koulutukset = new HashSet<>();
-        Koulutus koulutusTemp;
+    private Peruste updateValmisPeruste(Peruste current, Peruste updated) {
 
-        if (peruste != null && peruste.getKoulutukset() != null) {
-            for (Koulutus koulutus : peruste.getKoulutukset()) {
-                koulutusTemp = koulutusRepo.findOneByKoulutuskoodiArvo(koulutus.getKoulutuskoodiArvo());
-                if (koulutusTemp != null) {
-                    koulutukset.add(koulutusTemp);
+        if (!current.getDiaarinumero().equals(updated.getDiaarinumero())) {
+            throw new BusinessRuleViolationException("Valmiin perusteen diaarinumeroa ei voi vaihtaa");
+        }
+
+        current.setKielet(updated.getKielet());
+        current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
+        current.setKoulutukset(checkIfKoulutuksetAlreadyExists(updated.getKoulutukset()));
+        current.setKuvaus(updated.getKuvaus());
+        current.setNimi(updated.getNimi());
+
+        if  ( updated.getOsaamisalat() != null && !Objects.deepEquals(current.getOsaamisalat(), updated.getOsaamisalat())) {
+            throw new BusinessRuleViolationException("Valmiin perusteen osaamisaloja ei voi muuttaa");
+        }
+
+        current.setSiirtymaPaattyy(updated.getSiirtymaPaattyy());
+        current.setVoimassaoloAlkaa(updated.getVoimassaoloAlkaa());
+        current.setVoimassaoloLoppuu(updated.getVoimassaoloLoppuu());
+
+        Set<ConstraintViolation<Peruste>> violations = validator.validate(current, Peruste.Valmis.class);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
+        return current;
+    }
+
+    private Set<Koulutus> checkIfKoulutuksetAlreadyExists(Set<Koulutus> koulutukset) {
+        Set<Koulutus> tmp = new HashSet<>();
+        if (koulutukset != null) {
+            for (Koulutus koulutus : koulutukset) {
+                Koulutus k = koulutusRepo.findOneByKoulutuskoodiArvo(koulutus.getKoulutuskoodiArvo());
+                if (k != null) {
+                    tmp.add(k);
                 } else {
-                    koulutukset.add(koulutus);
+                    tmp.add(koulutus);
                 }
             }
-            peruste.setKoulutukset(koulutukset);
         }
-        return peruste;
+        return tmp;
     }
 
     @Override

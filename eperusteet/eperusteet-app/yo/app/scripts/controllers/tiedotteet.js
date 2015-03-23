@@ -197,7 +197,7 @@ angular.module('eperusteApp')
   })
 
   .controller('TiedoteViewController', function ($rootScope, $state, $scope, $stateParams, TiedotteetCRUD, Notifikaatiot, PerusteprojektiResource,
-                                                 PerusteProjektiService) {
+                                                 PerusteProjektiService, Perusteet, YleinenData) {
     if ($rootScope.lastState.state.name === 'root.admin.tiedotteet') {
       $scope.$backurl = $state.href($rootScope.lastState.state.name, $rootScope.lastState.params);
       $scope.$backurlHeader = 'takaisin-tiedotteiden-hallintaan';
@@ -210,8 +210,15 @@ angular.module('eperusteApp')
         PerusteprojektiResource.get({
           id: tiedote._perusteprojekti
         }, function(perusteprojekti) {
-          $scope.perusteprojekti = perusteprojekti;
-          $scope.perusteprojekti.$url = PerusteProjektiService.getUrl(perusteprojekti);
+          Perusteet.get({
+            perusteId: perusteprojekti._peruste
+          }, function(peruste) {
+            $scope.perusteprojekti = perusteprojekti;
+            $scope.perusteprojekti.$url = $state.href('root.perusteprojekti.suoritustapa.' + PerusteProjektiService.getSisaltoTunniste(perusteprojekti), {
+              perusteProjektiId: perusteprojekti.id,
+              suoritustapa: YleinenData.valitseSuoritustapaKoulutustyypille(peruste.koulutustyyppi)
+            });
+          });
         });
       }
     }, Notifikaatiot.serverCb);

@@ -53,11 +53,11 @@ public class PerusteenRakenne {
         public Integer sisakkaisiaOsaamisalaryhmia = 0;
     }
 
-    static public Validointi validoiRyhma(List<Koodi> osaamisalat, RakenneModuuli rakenne) {
+    static public Validointi validoiRyhma(Set<Koodi> osaamisalat, RakenneModuuli rakenne) {
         return validoiRyhma(osaamisalat, rakenne, 0);
     }
 
-    static private Validointi validoiRyhma(List<Koodi> osaamisalat, RakenneModuuli rakenne, final Integer syvyys) {
+    static private Validointi validoiRyhma(Set<Koodi> osaamisalat, RakenneModuuli rakenne, final Integer syvyys) {
         final TekstiPalanen nimi = rakenne.getNimi();
         final RakenneModuuliRooli rooli = rakenne.getRooli();
         List<AbstractRakenneOsa> osat = rakenne.getOsat();

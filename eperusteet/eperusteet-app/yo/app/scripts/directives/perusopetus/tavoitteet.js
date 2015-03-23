@@ -67,6 +67,12 @@ angular.module('eperusteApp')
       });
     });
 
+    $scope.$on('editointikontrollit:preSave', function() {
+      if ($scope.currentEditable.$editing) {
+        $scope.tavoiteFn.ok();
+      }
+    });
+
     $scope.$watch('editable', function(value) {
       $scope.editMode = !!value;
     });

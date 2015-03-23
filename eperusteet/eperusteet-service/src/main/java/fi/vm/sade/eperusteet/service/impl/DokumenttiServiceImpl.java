@@ -103,9 +103,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    public DokumenttiDto findLatest(Long id, Kieli kieli) {
+    public DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
         Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
-        List<Dokumentti> documents = dokumenttiRepository.findByPerusteIdAndKieliAndTila(id, kieli, DokumenttiTila.VALMIS, sort);
+        List<Dokumentti> documents = dokumenttiRepository.findByPerusteIdAndKieliAndTilaAndSuoritustapakoodi(id, kieli, DokumenttiTila.VALMIS, suoritustapakoodi, sort);
         if (documents.size() > 0) {
             return mapper.map(documents.get(0), DokumenttiDto.class);
         } else {

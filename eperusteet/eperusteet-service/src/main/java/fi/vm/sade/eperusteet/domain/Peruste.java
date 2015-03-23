@@ -21,10 +21,9 @@ import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -48,6 +47,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -73,6 +73,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @NotNull(groups = Valmis.class)
     private TekstiPalanen nimi;
 
     @ValidHtml(whitelist = WhitelistType.MINIMAL)
@@ -80,14 +81,17 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @NotNull(groups = Valmis.class)
     private TekstiPalanen kuvaus;
 
     @Getter
     @Setter
+    @NotNull(groups = Valmis.class)
     private Diaarinumero diaarinumero;
 
     @Getter
     @Setter
+    @NotNull(groups = Valmis.class)
     private String koulutustyyppi;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -113,12 +117,13 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
                joinColumns = @JoinColumn(name = "peruste_id"),
                inverseJoinColumns = @JoinColumn(name = "osaamisala_id"))
     @Column(name = "osaamisala_id")
-    private List<Koodi> osaamisalat = new ArrayList<>();
-
+    private Set<Koodi> osaamisalat = new HashSet<>();
+    
     @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
     @Column(name = "voimassaolo_alkaa")
+    @NotNull(groups = Valmis.class)
     private Date voimassaoloAlkaa;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -170,6 +175,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     /**
      * Kielet jolla peruste tarjotaan. Oletuksena suomi ja ruotsi.
      */
+    @Size(min = 1, groups = Valmis.class)
     private Set<Kieli> kielet = EnumSet.of(Kieli.FI, Kieli.SV);
 
     public Suoritustapa getSuoritustapa(Suoritustapakoodi koodi) {
@@ -239,5 +245,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
 
         return false;
     }
+
+    public interface Valmis {};
 
 }
