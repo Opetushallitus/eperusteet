@@ -378,7 +378,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
                 if (StringUtils.isNotEmpty(kuvaus)) {
                     Element para = doc.createElement("para");
-                    para.appendChild(doc.createTextNode(kuvaus));
+                    para.appendChild(newItalicElement(doc, kuvaus));
                     entry.appendChild(para);
                 }
 
@@ -404,7 +404,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
                 if (StringUtils.isNotEmpty(kuvaus)) {
                     Element para = doc.createElement("para");
-                    para.appendChild(doc.createTextNode(kuvaus));
+                    para.appendChild(newItalicElement(doc, kuvaus));
                     hentry.appendChild(para);
                 }
 
@@ -422,7 +422,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
                 if (StringUtils.isNotEmpty(kuvaus)) {
                     Element para = doc.createElement("para");
-                    para.appendChild(doc.createTextNode(kuvaus));
+                    para.appendChild(newItalicElement(doc, kuvaus));
                     entry.appendChild(para);
                 }
 
@@ -441,7 +441,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                     Element mem1 = doc.createElement("member");
                     mem1.appendChild(emphasis);
                     Element mem2 = doc.createElement("member");
-                    mem2.appendChild(doc.createTextNode(kuvaus));
+                    mem2.appendChild(newItalicElement(doc, kuvaus));
 
                     sl.appendChild(mem1);
                     sl.appendChild(mem2);
@@ -516,7 +516,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 em.appendChild(linkElement);
                 para.appendChild(em);
                 parent.appendChild(para);
-                para.appendChild(doc.createTextNode(kuvaus));
+                para.appendChild(newItalicElement(doc, kuvaus));
             } else if (depth == 2) {
                 // parent on tällä syvyydellä aina informaltable
                 Element tgroup = doc.createElement("tgroup");
@@ -525,7 +525,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 Element row = doc.createElement("row");
                 Element entry = doc.createElement("entry");
                 Element para = doc.createElement("para");
-                para.appendChild(doc.createTextNode(kuvaus));
+                para.appendChild(newItalicElement(doc, kuvaus));
 
                 parent.appendChild(tgroup);
                 tgroup.appendChild(tbody);
@@ -539,7 +539,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 Element row = doc.createElement("row");
                 Element entry = doc.createElement("entry");
                 Element para = doc.createElement("para");
-                para.appendChild(doc.createTextNode(kuvaus));
+                para.appendChild(newItalicElement(doc, kuvaus));
 
                 parent.appendChild(row);
                 row.appendChild(entry);
@@ -560,7 +560,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 //                    mem1.appendChild(xref);
                     mem1.appendChild(linkElement);
                     Element mem2 = doc.createElement("member");
-                    mem2.appendChild(doc.createTextNode(kuvaus));
+                    mem2.appendChild(newItalicElement(doc, kuvaus));
                     slist.appendChild(mem1);
                     slist.appendChild(mem2);
                     listitem.appendChild(slist);
@@ -1172,6 +1172,18 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     private Element newBoldElement(Document doc, String teksti) {
         Element emphasis = newBoldElement(doc);
+        emphasis.appendChild(doc.createTextNode(teksti));
+        return emphasis;
+    }
+
+    private Element newItalicElement(Document doc) {
+        Element emphasis = doc.createElement("emphasis");
+        // italic on vain emphasis ilman rolea
+        return emphasis;
+    }
+
+    private Element newItalicElement(Document doc, String teksti) {
+        Element emphasis = newItalicElement(doc);
         emphasis.appendChild(doc.createTextNode(teksti));
         return emphasis;
     }
