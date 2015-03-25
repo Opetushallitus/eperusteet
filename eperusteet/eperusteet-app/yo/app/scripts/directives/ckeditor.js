@@ -193,7 +193,8 @@ angular.module('eperusteApp')
           extraAllowedContent: 'abbr[data-viite]',
           disallowedContent: 'br',
           language: 'fi',
-          'entities_latin': false,
+          entities: false,
+          entities_latin: false,
           sharedSpaces: {
             top: 'ck-toolbar-top'
           },
