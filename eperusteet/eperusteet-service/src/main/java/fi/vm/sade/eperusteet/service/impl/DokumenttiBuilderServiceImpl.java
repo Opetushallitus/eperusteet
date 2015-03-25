@@ -388,8 +388,18 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             } else if (depth == 2) {
 
                 Element tgroup = doc.createElement("tgroup");
-                tgroup.setAttribute("cols", "1");
+                tgroup.setAttribute("cols", "2");
                 parent.appendChild(tgroup);
+
+                Element colspecReuna = doc.createElement("colspec");
+                colspecReuna.setAttribute("colname", "reuna");
+                colspecReuna.setAttribute("colwidth", "1*");
+                colspecReuna.setAttribute("colsep", "0");
+                tgroup.appendChild(colspecReuna);
+                Element colspecPihvi = doc.createElement("colspec");
+                colspecPihvi.setAttribute("colname", "pihvi");
+                colspecPihvi.setAttribute("colwidth", "11*");
+                tgroup.appendChild(colspecPihvi);
 
                 Element tbody = doc.createElement("tbody");
                 tgroup.appendChild(tbody);
@@ -397,7 +407,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 addDBFOInstruction(doc, hrow, "bgcolor=\"#EEEEEE\"");
                 tbody.appendChild(hrow);
                 Element hentry = doc.createElement("entry");
-                hentry.setAttribute("align", "center");
+                hentry.setAttribute("namest", "reuna");
+                hentry.setAttribute("nameend", "pihvi");
                 Element emphasis = newBoldElement(doc, nimi);
                 hentry.appendChild(emphasis);
                 hrow.appendChild(hentry);
@@ -411,9 +422,14 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 element = tbody;
 
             } else if (depth == 3) {
+                // parent on tbody
                 // toka taso row ja entry, elementiks entry
                 Element row = doc.createElement("row");
                 parent.appendChild(row);
+
+                Element reunaEntry = doc.createElement("entry");
+                reunaEntry.appendChild(doc.createTextNode(" "));
+                row.appendChild(reunaEntry);
 
                 Element entry = doc.createElement("entry");
                 Element emphasis = newBoldElement(doc, nimi);
@@ -539,9 +555,12 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 Element row = doc.createElement("row");
                 Element entry = doc.createElement("entry");
                 Element para = doc.createElement("para");
+                Element reunaEntry = doc.createElement("entry");
+                reunaEntry.appendChild(doc.createTextNode(""));
                 para.appendChild(newItalicElement(doc, kuvaus));
 
                 parent.appendChild(row);
+                row.appendChild(reunaEntry);
                 row.appendChild(entry);
 //                entry.appendChild(xref);
                 entry.appendChild(linkElement);
