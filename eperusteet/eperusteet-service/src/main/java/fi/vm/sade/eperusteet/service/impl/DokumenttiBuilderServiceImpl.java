@@ -46,7 +46,7 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.repository.TermistoRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
-import fi.vm.sade.eperusteet.service.KoodistoService;
+import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.util.Pair;
@@ -115,7 +115,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     private TutkintonimikeKoodiRepository tutkintonimikeKoodiRepository;
 
     @Autowired
-    private KoodistoService koodistoService;
+    private KoodistoClient koodistoService;
 
     @Override
     public String generateXML(Peruste peruste, Kieli kieli, Suoritustapakoodi suoritustapakoodi) throws

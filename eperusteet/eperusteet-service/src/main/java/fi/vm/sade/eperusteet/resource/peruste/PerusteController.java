@@ -35,7 +35,7 @@ import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
-import fi.vm.sade.eperusteet.service.KoodistoService;
+import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,7 +64,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 public class PerusteController {
 
     @Autowired
-    private KoodistoService koodistoService;
+    private KoodistoClient koodistoService;
 
     @Autowired
     private PerusteService service;
