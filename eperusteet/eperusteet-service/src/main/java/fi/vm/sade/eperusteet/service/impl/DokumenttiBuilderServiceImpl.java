@@ -354,7 +354,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             Element element;
             if (depth == 0) {
                 // root, kaikki liitetään parenttiin
-                element = parent; //doc.createElement("informaltable");
+                element = parent;
                 // TODO: jonkilainen hieno ylätason title?
 
             } else if (depth == 1) {
@@ -528,7 +528,6 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 // teksti.
                 Element para = doc.createElement("para");
                 Element em = newBoldElement(doc);
-                //em.appendChild(xref);
                 em.appendChild(linkElement);
                 para.appendChild(em);
                 parent.appendChild(para);
@@ -547,7 +546,6 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 tgroup.appendChild(tbody);
                 tbody.appendChild(row);
                 row.appendChild(entry);
-//                entry.appendChild(xref);
                 entry.appendChild(linkElement);
                 entry.appendChild(para);
             } else if (depth == 3) {
@@ -562,7 +560,6 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 parent.appendChild(row);
                 row.appendChild(reunaEntry);
                 row.appendChild(entry);
-//                entry.appendChild(xref);
                 entry.appendChild(linkElement);
                 entry.appendChild(para);
             } else if (depth >= 4) {
@@ -571,12 +568,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 parent.appendChild(listitem);
 
                 if (StringUtils.isEmpty(kuvaus)) {
-//                    listitem.appendChild(xref);
                     listitem.appendChild(linkElement);
                 } else {
                     Element slist = doc.createElement("simplelist");
                     Element mem1 = doc.createElement("member");
-//                    mem1.appendChild(xref);
                     mem1.appendChild(linkElement);
                     Element mem2 = doc.createElement("member");
                     mem2.appendChild(newItalicElement(doc, kuvaus));
