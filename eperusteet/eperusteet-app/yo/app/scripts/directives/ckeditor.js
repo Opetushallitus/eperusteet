@@ -194,7 +194,7 @@ angular.module('eperusteApp')
           disallowedContent: 'br',
           language: 'fi',
           entities: false,
-          entities_latin: false,
+          'entities_latin': false,
           sharedSpaces: {
             top: 'ck-toolbar-top'
           },
