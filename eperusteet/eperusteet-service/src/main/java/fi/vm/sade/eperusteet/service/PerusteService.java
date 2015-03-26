@@ -149,7 +149,7 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
     public void removeTutkintonimikeKoodi(Long perusteId, Long tutkintonimikeKoodiId);
 
-    @PreAuthorize("isAuthenticated()")
+    @PostAuthorize("returnObject == null or hasPermission(returnObject.id, 'peruste', 'LUKU')")
     public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero);
 
     @PreAuthorize("permitAll()")

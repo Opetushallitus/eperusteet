@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.repository.custom;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.Koulutus_;
@@ -34,8 +35,8 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen_;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
@@ -92,7 +93,7 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         Predicate pred = buildPredicate(root, teksti, cb, pquery);
         query.distinct(true);
         final Expression<String> n = cb.lower(teksti.get(LokalisoituTeksti_.teksti));
-        query.multiselect(root, n).where(pred).orderBy(cb.asc(n));
+        query.multiselect(root, n).where(pred).orderBy(cb.asc(n), cb.asc(root.get(Peruste_.id)));
         return em.createQuery(query);
     }
 
@@ -108,71 +109,70 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
     }
 
     private Predicate buildPredicate(
-        Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, PerusteQuery pquery) {
+        Root<Peruste> root, Join<TekstiPalanen, LokalisoituTeksti> teksti, CriteriaBuilder cb, PerusteQuery pq) {
 
-        final Kieli kieli = Kieli.of(pquery.getKieli());
-        final String nimi = pquery.getNimi();
-        final String st = pquery.getSuoritustapa();
-        final List<String> koulutusala = pquery.getKoulutusala();
-        final List<String> tyyppi = pquery.getTyyppi();
-        final List<String> opintoala = pquery.getOpintoala();
-        final boolean siirtyma = pquery.isSiirtyma();
-        final String tilaStr = pquery.getTila();
-        final String perusteTyyppiStr = pquery.getPerusteTyyppi();
         final Expression<Date> siirtymaPaattyy = root.get(Peruste_.siirtymaPaattyy);
         final Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
 
-        Predicate pred = cb.equal(teksti.get(LokalisoituTeksti_.kieli), kieli);
+        Predicate pred = cb.equal(teksti.get(LokalisoituTeksti_.kieli), Kieli.of(pq.getKieli()));
 
-        if (nimi != null) {
-            pred = cb.and(pred, cb.like(cb.lower(teksti.get(LokalisoituTeksti_.teksti)), cb.literal(RepositoryUtil.kuten(nimi))));
+        if (pq.getNimi() != null) {
+            pred = cb.and(pred, cb.like(cb.lower(teksti.get(LokalisoituTeksti_.teksti)), cb.literal(RepositoryUtil.kuten(pq.getNimi()))));
         }
 
-        if (st != null) {
-            Suoritustapakoodi suoritustapakoodi = Suoritustapakoodi.of(st);
+        if (pq.getDiaarinumero() != null ) {
+            pred = cb.and(pred, cb.equal(root.get(Peruste_.diaarinumero), cb.literal(new Diaarinumero(pq.getDiaarinumero()))));
+        }
+
+        if (pq.getSuoritustapa() != null) {
+            Suoritustapakoodi suoritustapakoodi = Suoritustapakoodi.of(pq.getSuoritustapa());
             Join<Peruste, Suoritustapa> suoritustapa = root.join(Peruste_.suoritustavat);
             pred = cb.and(pred, cb.equal(suoritustapa.get(Suoritustapa_.suoritustapakoodi), suoritustapakoodi));
         }
 
-        if (tyyppi != null && !tyyppi.isEmpty()) {
-            pred = cb.and(pred, root.get(Peruste_.koulutustyyppi).in(tyyppi));
+        if (!empty(pq.getKoulutustyyppi())) {
+            pred = cb.and(pred, root.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()));
         }
 
         Join<Peruste, Koulutus> koulutukset = null;
-        if (koulutusala != null && !koulutusala.isEmpty()) {
+        if (!empty(pq.getKoulutusala())) {
             koulutukset = root.join(Peruste_.koulutukset);
-            pred = cb.and(pred, koulutukset.get(Koulutus_.koulutusalakoodi).in(koulutusala));
+            pred = cb.and(pred, koulutukset.get(Koulutus_.koulutusalakoodi).in(pq.getKoulutusala()));
         }
 
-        if (opintoala != null && !opintoala.isEmpty()) {
+        if (!empty(pq.getOpintoala())) {
             koulutukset = (koulutukset == null ) ? root.join(Peruste_.koulutukset) : koulutukset;
-            pred = cb.and(pred, koulutukset.get(Koulutus_.opintoalakoodi).in(opintoala));
+            pred = cb.and(pred, koulutukset.get(Koulutus_.opintoalakoodi).in(pq.getOpintoala()));
         }
 
-        if (!Strings.isNullOrEmpty(pquery.getKoulutuskoodi())) {
+        if (!Strings.isNullOrEmpty(pq.getKoulutuskoodi())) {
             koulutukset = (koulutukset == null ) ? root.join(Peruste_.koulutukset) : koulutukset;
-            pred = cb.and(pred, cb.equal(koulutukset.get(Koulutus_.koulutuskoodiArvo), pquery.getKoulutuskoodi()));
+            pred = cb.and(pred, cb.or(cb.equal(koulutukset.get(Koulutus_.koulutuskoodiUri), pq.getKoulutuskoodi()),cb.equal(koulutukset.get(Koulutus_.koulutuskoodiArvo), pq.getKoulutuskoodi())));
         }
 
-        if (siirtyma) {
+        if (pq.isSiirtyma()) {
             pred = cb.and(pred, cb.or(cb.isNull(siirtymaPaattyy), cb.greaterThan(siirtymaPaattyy, cb.currentDate())));
         } else {
             pred = cb.and(pred, cb.or(cb.isNull(voimassaoloLoppuu), cb.greaterThan(voimassaoloLoppuu, cb.currentDate())));
         }
 
-        if (!Strings.isNullOrEmpty(tilaStr)) {
-            pred = cb.and(pred, cb.equal(root.get(Peruste_.tila), PerusteTila.of(tilaStr)));
+        if (!Strings.isNullOrEmpty(pq.getTila())) {
+            pred = cb.and(pred, cb.equal(root.get(Peruste_.tila), PerusteTila.of(pq.getTila())));
         }
 
-        if (!Strings.isNullOrEmpty(perusteTyyppiStr)) {
-            pred = cb.and(pred, cb.equal(root.get(Peruste_.tyyppi), PerusteTyyppi.of(perusteTyyppiStr)));
+        if (!Strings.isNullOrEmpty(pq.getPerusteTyyppi())) {
+            pred = cb.and(pred, cb.equal(root.get(Peruste_.tyyppi), PerusteTyyppi.of(pq.getPerusteTyyppi())));
         }
 
-        if ( pquery.getMuokattu() != null ) {
-            pred = cb.and(pred, cb.greaterThan(root.get(Peruste_.muokattu), cb.literal(new Date(pquery.getMuokattu()))));
+        if ( pq.getMuokattu() != null ) {
+            pred = cb.and(pred, cb.greaterThan(root.get(Peruste_.muokattu), cb.literal(new Date(pq.getMuokattu()))));
         }
 
         return pred;
+    }
+
+    private static boolean empty(Collection<?> c) {
+        return c == null || c.isEmpty();
     }
 
     private static final Function<Tuple, Peruste> EXTRACT_PERUSTE = new Function<Tuple, Peruste>() {

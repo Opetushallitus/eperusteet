@@ -48,7 +48,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -88,6 +87,7 @@ public class PerusteController {
 
     @RequestMapping(value = "/perusopetus", method = GET)
     @ResponseBody
+    @ApiIgnore
     public ResponseEntity<List<PerusteInfoDto>> getAllPerusopetus() {
         List<PerusteInfoDto> poi = service.getAllPerusopetusInfo();
         return new ResponseEntity<>(poi, HttpStatus.OK);
@@ -102,11 +102,12 @@ public class PerusteController {
         @ApiImplicitParam(name = "siirtyma", dataType = "boolean", paramType = "query", defaultValue = "false", value = "hae myös siirtymäajalla olevat perusteet"),
         @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
         @ApiImplicitParam(name = "koulutusala", dataType = "string", paramType = "query", allowMultiple = true),
-        @ApiImplicitParam(name = "tyyppi", dataType = "string", paramType = "query", allowMultiple = true),
+        @ApiImplicitParam(name = "koulutustyyppi", dataType = "string", paramType = "query", allowMultiple = true, value="koulutustyyppi (koodistokoodi)"),
         @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query", defaultValue = "fi", value = "perusteen nimen kieli"),
         @ApiImplicitParam(name = "opintoala", dataType = "string", paramType = "query", allowMultiple = true, value = "opintoalakoodi"),
         @ApiImplicitParam(name = "suoritustapa", dataType = "string", paramType = "query", value = "AM-perusteet; naytto tai ops"),
         @ApiImplicitParam(name = "koulutuskoodi", dataType = "string", paramType = "query"),
+        @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query"),
         @ApiImplicitParam(name = "muokattu", dataType = "integer", paramType = "query", value = "aikaleima; muokattu jälkeen")
     })
     public Page<PerusteDto> getAll(@ApiIgnore PerusteQuery pquery) {
@@ -168,8 +169,8 @@ public class PerusteController {
 
     @RequestMapping(value = "/{perusteId}", method = GET)
     @ResponseBody
-    public ResponseEntity<PerusteDto> get(@PathVariable("perusteId") final long id,
-        @RequestHeader(value = "If-None-Match", required = false) String etag) {
+    @ApiOperation(value = "perusteen tietojen haku")
+    public ResponseEntity<PerusteDto> get(@PathVariable("perusteId") final long id) {
 
         return handleGet(id, 1, new Supplier<PerusteDto>() {
             @Override
@@ -181,7 +182,11 @@ public class PerusteController {
 
     @RequestMapping(value = "/diaari", method = GET)
     @ResponseBody
-    public ResponseEntity<PerusteInfoDto> getByDiaari(final Diaarinumero diaarinumero) {
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query"),
+    })
+    @ApiOperation(value = "perusteen yksilöintietojen haku diaarinumerolla")
+    public ResponseEntity<PerusteInfoDto> getByDiaari(@ApiIgnore final Diaarinumero diaarinumero) {
         PerusteInfoDto t = service.getByDiaari(diaarinumero);
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -191,6 +196,7 @@ public class PerusteController {
 
     @RequestMapping(value = "/{perusteId}/kaikki", method = GET)
     @ResponseBody
+    @ApiOperation(value = "perusteen kaikkien tietojen haku")
     public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(
         @PathVariable("perusteId") final long id) {
 

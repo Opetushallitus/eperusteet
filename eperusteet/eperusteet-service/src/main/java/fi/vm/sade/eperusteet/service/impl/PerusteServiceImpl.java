@@ -244,7 +244,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional(readOnly = true)
     public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero) {
         Peruste p = perusteet.findByDiaarinumero(diaarinumero);
-        return mapper.map(p, PerusteInfoDto.class);
+        return p == null ? null : mapper.map(p, PerusteInfoDto.class);
     }
 
     @Override
