@@ -928,8 +928,27 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                     List<String> kriteerit = asStringList(krit.getKriteerit(), kieli);
 
                     Element bodyRowElement = doc.createElement("row");
-                    addTableCell(doc, bodyRowElement, ktaso);
-                    addTableCell(doc, bodyRowElement, getTextsAsList(doc, kriteerit));
+
+                    // otsikko vain tason otsikko vain jos on useampi kuin yksi
+                    // taso
+                    if (kriteerilista.size() > 1) {
+                        addTableCell(doc, bodyRowElement, ktaso);
+                    }
+
+                    // jos kriteerit on tyhjä, vältetään tyhjä itemizedlist
+                    Element entry;
+                    if (kriteerit.size() > 0) {
+                        entry = addTableCell(doc, bodyRowElement, getTextsAsList(doc, kriteerit));
+                    } else {
+                        entry = addTableCell(doc, bodyRowElement, "");
+                    }
+
+                    // koska ei ole tason otsikkoa, käytetään koko rivi
+                    if (kriteerilista.size() == 1) {
+                        entry.setAttribute("namest", "taso");
+                        entry.setAttribute("nameend", "kriteeri");
+                    }
+
                     bodyElement.appendChild(bodyRowElement);
                 }
 
@@ -953,19 +972,21 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         return row;
     }
 
-    private void addTableCell(Document doc, Element row, String text) {
+    private Element addTableCell(Document doc, Element row, String text) {
         Element entry = doc.createElement("entry");
         entry.appendChild(doc.createTextNode(text));
         row.appendChild(entry);
+        return entry;
     }
 
-    private void addTableCell(Document doc, Element row, Element child) {
+    private Element addTableCell(Document doc, Element row, Element child) {
         Element entry = doc.createElement("entry");
         entry.appendChild(child);
         row.appendChild(entry);
+        return entry;
     }
 
-    private void addTableCell(Document doc, Element row, List<String> texts) {
+    private Element addTableCell(Document doc, Element row, List<String> texts) {
         Element entry = doc.createElement("entry");
         for (String text : texts) {
             Element para = doc.createElement("para");
@@ -973,6 +994,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             entry.appendChild(para);
         }
         row.appendChild(entry);
+        return entry;
     }
 
     private List<String> asStringList(List<TekstiPalanen> palaset, Kieli kieli) {
