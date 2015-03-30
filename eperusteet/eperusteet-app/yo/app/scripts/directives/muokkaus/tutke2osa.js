@@ -53,10 +53,11 @@ angular.module('eperusteApp')
       oneAtATime: false
     };
 
-
-    //$scope.originalViite = null;
+    $scope.originalViite = null;
 
     $scope.tutkinnonosaViite.then(function (res) {
+      
+      $scope.originalViite = res;
       $scope.tutke2osa = Tutke2Osa.init(res.tutkinnonOsa.id);
 
       $scope.tutke2osa.fetch().then(function () {

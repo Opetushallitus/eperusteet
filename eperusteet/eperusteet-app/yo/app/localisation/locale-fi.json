@@ -17,7 +17,6 @@
     "ei-projekteja": "Sinulla ei ole käynnissä olevia perusteprojekteja.",
     "takaisin": "Takaisin",
     "tallennettu": "Tallennettu",
-    "tallennus-epaonnistui": "Tallennus epäonnistui",
     "tallennus-onnistui": "Tallennus onnistui",
     "tiedosto": "Tiedosto",
     "tila": "Tila",
@@ -49,7 +48,6 @@
     "osiot": "Osiot",
 
     "ei-valintaa": "Ei valintaa",
-    "toisesta-perusteesta": "Toisesta perusteesta",
     "toisesta-suoritustavasta": "Toisesta suoritustavasta",
     "tuo-nykyisesta-perusteesta": "Tuo nykyisestä perusteesta",
     "tiedotteet": "Tiedotteet",
@@ -128,7 +126,6 @@
     "määritelty": "Perusteessa määriteltävä",
     "määrittelemätön": "Tutkinnossa määriteltävä",
 
-    "yhteys-palvelimeen-timeout": "Yhteys palveluun on aikakatkaistu.",
     "yhteys-palvelimeen-poikki": "Yhteys palveluun on katkennut.",
 
     "ammattitutkinto": "Ammattitutkinto",
@@ -141,7 +138,6 @@
     "ammatillinenperuskoulutus": "Ammatillinen peruskoulutus",
     "ammatillinenaikuiskoulutus": "Ammatillinen aikuiskoulutus",
 
-    "lukitus-vaaditaan": "Muokattavaa resurssia ei ole lukittu",
     "lukitus-kayttajalla": "Sivu on lukittu. Käyttäjä {{user}} muokkaa sivua.",
 
     "perusteprojektit-otsikko": "Omat perusteprojektit",
@@ -151,13 +147,7 @@
     "rakennetta-ei-vielä-muodostettu": "Tutkinnon rakennetta ei ole vielä muodostettu tai se on tyhjä. Luo uusi rakenne muokkaamalla sivua.",
     "rakennetta-ei-ole": "Suoritustavalle ei ole määritetty rakennetta",
 
-    "näytä-enemmän": "Lisää",
-    "näytä-vähemmän": "Piilota",
-
-    "virhe-suoritustapasisältöä-ei-löytynyt": "Suoritustavan sisältöä ei löytynyt",
     "virhe-tiedosto-epäonnistui": "Tiedoston avaaminen epäonnistui",
-    "virhe-perustetta-ei-löytynyt": "Hakemaasi perustetta ei löytynyt",
-    "virhe-profiilia-ei-löytynyt": "Hakemaasi profiilia ei löytynyt",
     "virhe-tutkinnonosaa-ei-löytynyt": "Hakemaasi tutkinnon osaa ei löytynyt",
     "virhe-perusteenosaa-ei-löytynyt": "Hakemaasi perusteen osaa ei löytynyt",
     "virhe-tekstikappaletta-ei-löytynyt": "Hakemaasi tekstikappaletta ei löytynyt",
@@ -165,7 +155,6 @@
     "virhe-sivua-ei-löytynyt": "Sivua ei löytynyt",
     "virhe-tilan-vaihtamisessa": "Virhe tilan vaihtamisessa",
     "virhe-muu": "Virhe",
-    "virhe-etusivulle": "Etusivulle",
     "tallentaminen-epaonnistui": "Tallentaminen epäonnistui",
     "perusteen-tiivistelma": "Perusteen tiivistelmä",
     "tilanvaihdos-aiheuttaa": "Tämä tilanvaihdos aiheuttaa seuraavaa:",
@@ -175,10 +164,19 @@
     "tilakuvaus-poistettu": "Kuvaus tilalle arkistoitu.",
     "tilakuvaus-laadinta": "Kuvaus tilalle laadinta.",
     "tilakuvaus-kaannos": "Kuvaus tilalle käännös.",
-    "tilakuvaus-hyvaksytty": "Kuvaus tilalle hyväksytty.",
     "tilanvaihdos-laadinta-kommentointi": "Kuvaus tilasiirtymälle laadinta-kommentointi.",
     "tilanvaihdos-laadinta-viimeistely": "Kuvaus tilasiirtymälle laadinta-viimeistely.",
     "tilanvaihdos-laadinta-poistettu": "Kuvaus tilasiirtymälle laadinta-arkistointi.",
+    "tilanvaihdos-poistettu-laadinta": "Kuvaus tilasiirtymälle poistettu-laadinta.",
+    "tilanvaihdos-kommentointi-laadinta": "Kuvaus tilasiirtymälle kommentointi-laadinta.",
+    "tilanvaihdos-kommentointi-poistettu": "Kuvaus tilasiirtymälle kommentointi-poistettu.",
+    "tilanvaihdos-viimeistely-poistettu": "Kuvaus tilasiirtymälle viimeistely-poistettu.",
+    "tilanvaihdos-viimeistely-laadinta": "Kuvaus tilasiirtymälle viimeistely-laadinta.",
+    "tilanvaihdos-viimeistely-valmis": "Kuvaus tilasiirtymälle viimeistely-valmis.",
+    "tilanvaihdos-valmis-viimeistely": "Kuvaus tilasiirtymälle valmis-viimeistely.",
+    "tilanvaihdos-valmis-julkaistu": "Kuvaus tilasiirtymälle valmis-julkaistu.",
+    "tilanvaihdos-valmis-poistettu": "Kuvaus tilasiirtymälle valmis-poistettu.",
+
 
     "suoritustavalle-ei-ole-viela-sisaltoa": "Perusteelle ei ole luotu vielä tähän suoritustapaan liittyvää sisältöä",
     "peruste-ei-sisaltoa": "Perusteeseen ei ole vielä luotu sisältöä.",
@@ -194,11 +192,7 @@
     "opetuksen-sisallot": "Opetuksen sisällöt",
     "tutkinnon-osien-koodit-kaytossa-muissa-tutkinnon-osissa": "Tutkinnon osan koodit jo käytössä perusteen muissa osissa",
 
-    "ja-myös-valittava": "ja valittava myös",
     "osia-valittava-vahintaan": "Valittava vähintään",
-    "ja-enintään": "ja enintään",
-    "edestä": "edestä",
-    "kappaletta": "kappaletta",
     "kpl": "kpl",
 
     "nayta-virheet": "Tarkista rakenne",
@@ -206,12 +200,8 @@
 
     "laajuuden-yksikkö": "Laajuuden yksikkö",
 
-    "valitse-suoritustapa": "Valitse suoritustapa",
-
     "uusi-tutkinnonosa": "<Uusi tutkinnon osa>",
     "tuo-tutkinnonosa": "Tuo tutkinnon osa",
-    "tutkinnon-osia-ei-ole": "Tutkinnon osia ei ole",
-    "avaa-kaikki": "Avaa kaikki",
     "sulje-kaikki": "Sulje kaikki",
     "avaa-sulje-kaikki": "Avaa / sulje kaikki",
     "avaa-sulje-rakenne": "Avaa / sulje rakenne",
@@ -221,14 +211,10 @@
     "tutkintonimikkeet": "Tutkintonimikkeet",
     "lisaa-nimike": "Lisää nimike",
     "lisaa-tutkintonimike": "Lisää tutkintonimike",
-    "koodisto-haku-epaonnistui": "Haku koodistosta epäonnistui",
-    "koodisto-haku-onnistui": "Haku koodistosta onnistui",
     "tutkintonimike-poistettu-onnistuneesti": "Tutkintonimike poistettiin onnistuneesti",
     "tutkintonimikkeen-lisays-onnistui": "Tutkintonimikkeen lisääminen onnistui",
     "tutkintonimikkeen-lisays-epaonnistui": "Tutkintonimikkeen lisääminen epäonnistui",
     "ei-tutkintonimikkeita": "Ei tutkintonimikkeitä",
-
-    "ladataan-sisaltoa": "Ladataan sisältöä...",
 
     "poista-tutkinnonosa": "Poista tutkinnon osa",
     "lisaa-tutkinnonosa": "Lisää tutkinnon osa",
@@ -236,7 +222,6 @@
     "tutkinnon-osa-rakenteessa-ei-voi-poistaa": "Tutkinnon osaa ei voi poistaa, koska se on käytössä tutkinnon rakenteessa. Poista viite puusta ensin.",
     "tutkinnon-osa-rakenteesta-poistettu": "Tutkinnon osa poistettu onnistuneesti.",
     "tutkinnon-osa-ei-sisaltoa": "Tutkinnon osalla ei ole sisältöä.",
-    "vuosiluokat-ei-sisaltoa": "Vuosiluokkakokonaisuudella ei ole sisältöä.",
     "tutkinnon-osa-ei-sisaltoa-ohje": "Lisää osioita valitsemalla \"Lisää osio\".",
     "tyyppi-yhteinen": "Yhteinen",
     "tyyppi-tutkintokohtainen": "Tutkintokohtainen",
@@ -254,8 +239,6 @@
     "perusopetus-tyotavat" : "Oppimisympäristöt ja työtavat",
     "perusopetus-tavoitteet" : "Oppiaineen tavoitteet",
     "oppiaineetyleissivistava": "Oppiaineet, yleissivistävä",
-
-    "lopeta-muokkaus": "Lopeta muokkaus",
 
     "ohje": "Ohje",
     "ohje-ryhma-rooli": "<p><strong>Perusteessa määriteltävä:</strong> Ryhmän sisältö määritellään perustepuun luonnin yhteydessä.</p><p><strong>Tutkinnossa määriteltävä:</strong> Ryhmälle annetaan vain muodostumissäännöt ja sen sisältö määritellään paikallisen laadinnan puolella.</p>",
@@ -275,23 +258,17 @@
     "tilan-vaihto-epaonnistui": "Tilan vaihto epäonnistui",
 
     "tila-poistettu": "Arkistoitu",
-    "tila-poistettupohja": "Arkistoitu",
-    "tila-luonnos": "Luonnos",
     "tila-laadinta": "Laadinta",
     "tila-kommentointi": "Kommentointi",
     "tila-viimeistely": "Viimeistely",
     "tila-valmis": "Valmis",
     "tila-julkaistu": "Julkaistu",
-    "tila-pohja": "Pohja",
-    "tila-kaannos": "Käännös",
-    "tila-hyvaksytty": "Hyväksytty",
 
     "ei-koulutuksia": "Ei koulutuskoodeja",
 
     "muokkaa-rakennetta": "Muokkaa rakennetta",
     "muokkaa-tekstikappaleiden-rakennetta": "Muokkaa tekstikappaleiden rakennetta",
 
-    "haku-otsikko": "Perusteen haku",
     "haku-koulutusala": "Koulutusala",
     "haku-voimaantulopvm" : "Voimaantulopvm.",
     "haku-tyyppi": "Tyyppi",
@@ -303,8 +280,6 @@
     "haku-tulosten-maara": "Löydettyjen perusteiden määrä:",
     "sivupalkki-näytä-kaikki" : "Näytä kaikki",
     "sivupalkki-piilota" : "Näytä vähemmän",
-    "haku-kieli": "Kieli",
-    "haku-hakuehdot" : "Hakuehdot",
     "haku-opintoala" : "Opintoala",
     "haku-kaikki-opintoalat" : "Kaikki opintoalat",
     "hae-koodistosta": "Hae koodistosta",
@@ -333,19 +308,13 @@
     "korosta": "Korosta",
     "poista-korostus": "Poista korostus",
 
-    "haltija": "Haltija",
-
     "perusteen-sisalto": "Perusteen sisältö",
     "perusteiden-sisalto": "Perusteiden sisältö",
     "yhteiset-osuudet": "Yhteiset osuudet",
     "paikallisessa-laadinnassa-maariteltava": "Paikallisessa laadinnassa määriteltävä",
-    "merkkia-jaljella": "Merkkiä jäljellä",
 
-    "muodostumissaantoa-ei-maaritelty": "Muodostumissääntöjä ei ole määritelty",
     "muodostumis-rakenne-validointi-laajuus": "Ryhmän osien yhteenlaskettu laajuus ei riitä kattamaan tarvittavaa laajuutta",
     "muodostumis-rakenne-validointi-maara": "Ryhmän osien yhteenlaskettu määrä ei riitä kattamaan tarvittavaa määrää",
-    "muodostumis-rakenne-validointi-maksimi": "Ryhmän laskettu minimi on pienempi kuin vaadittu minimi",
-    "muodostumis-rakenne-validointi-minimi": "Ryhmän laskettu maksimi on pienempi kuin vaadittu maksimi",
     "muodostumis-rakenne-validointi-uniikit": "Ryhmä sisältää samoja tutkinnon osia",
 
     "esiopetus": "Esiopetus",
@@ -357,19 +326,11 @@
     "selaa-perustetta": "Selaa perustetta",
     "selaa-perusteita": "Selaa perusteita",
     "hae-perusteita": "Hae perusteita",
-    "hakuehdot": "Hakuehdot",
     "perusteprojekti": "Perusteprojekti",
     "uusi-perusteprojekti": "Luo uusi perusteprojekti",
 
-    "muokkaus-uusi-kappale-placeholder": "Uusi kappale",
-    "muokkaus-kommentit": "Kommentit",
-    "muokkaus-uusi-kommentti-placeholder": "Uusi kommentti",
-
-    "tutkinnonosa-arviointi": "Arviointi",
     "tutkinnonosa-ammattitaitovaatimukset": "Ammattitaitovaatimukset",
-    "tutkinnonosa-ammattitaidonOsoittamistavat": "Ammattitaidon osoittamistavat",
     "tutkinnonosa-tavoitteet": "Tavoitteet",
-    "tutkinnonosa-osaamisala": "Osaamisala",
     "tutkinnonosa-jarjestysnumero": "Järjestysnumero",
     "tutkinnonosa-tunnustaminen": "Tunnustaminen",
 
@@ -400,7 +361,6 @@
     "annettu-arvo": "Annettu arvo",
     "odotettu-arvo": "Odotettu arvo",
 
-    "kielen-vaihto": "Vaihda kieli",
     "suomi": "Suomi",
     "ruotsi": "Svenska",
 
@@ -453,22 +413,17 @@
 
     "tarkastele-esitysta": "Tarkastele esitystilassa",
     "poista-kohdealue": "Poista",
-    "lisaa-kohdealue": "Lisää kohdealue",
     "lisaa-tavoitealue": "Lisää tavoitealue",
     "muokkaus-kohdealueet": "Muokkaa tavoitealueita",
     "muokkaus-tutkinnon-jarjestysnumero": "Järjestysnumero",
     "muokkaus-tutkinnon-osan-nimi-header": "Nimi",
-    "muokkaus-tutkinnon-osan-nimi-placeholder": "Kirjoita tähän otsikko",
     "muokkaus-tutkinnon-osan-koodi-header": "Koodi",
-    "muokkaus-tutkinnon-osan-koodi-placeholder": "Tutkinnon osan koodi",
     "muokkaus-tutkinnon-osan-tavoitteet-header": "Tavoitteet",
     "muokkaus-tutkinnon-osan-tavoitteet-placeholder": "Kirjoita tähän tutkinnon osan tavoitteet",
     "muokkaus-tutkinnon-osan-ammattitaitovaatimukset-header": "Ammattitaitovaatimukset",
     "muokkaus-tutkinnon-osan-ammattitaitovaatimukset-placeholder": "Listaa tähän tutkinnon osan ammattitaitovaatimukset",
     "muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat-header": "Ammattitaidon osoittamistavat",
     "muokkaus-tutkinnon-osan-ammattitaidon-osoittamistavat-placeholder": "Listaa tähän ammattitaidon osoittamistavat",
-    "muokkaus-tutkinnon-osan-osaamisala-header": "Osaamisala",
-    "muokkaus-tutkinnon-osan-osaamisala-placeholder": "Kirjoita tähän tutkinnon osan osaamisala",
     "muokkaus-tutkinnon-osan-arviointi-teksti-header": "Arviointi tekstinä",
     "muokkaus-tutkinnon-osan-arviointi-teksti-placeholder": "Kirjoita tähän arviointikriteerit",
     "muokkaus-tutkinnon-osan-arviointi-taulukko-header": "Arviointi taulukkona",
@@ -489,8 +444,6 @@
     "vahvista-version-palauttaminen-teksti": "Haluatko ottaa tämän version ({{versio}}) käyttöön? Versiosta luodaan kopio ja siitä luodaan uusi versio.",
     "kommentti-ei-saa-ylittaa": "Kommentti ei saa olla yli {{ maara }} merkkiä pitkä.",
 
-    "puu-tyyppi-yksi": "Valitse yksi seuraavista",
-
     "muokkaus-teksikappaleen-nimi-header": "Otsikko",
     "muokkaus-teksikappaleen-nimi-placeholder": "Kirjoita tähän otsikko",
     "muokkaus-tekstikappaleen-teksti-header": "Kappaleen teksti",
@@ -499,12 +452,10 @@
     "versio": "Versio",
     "nayta-versiohistoria": "Historia",
 
-    "arviointi-lisatiedot-placeholder": "Arvioinnin sanallinen selitys tähän",
     "arviointi-uusi-kohdealue": "Lisää kohdealue",
     "arviointi-uusi-kohdealue-placeholder": "Kohdealueen nimi",
     "arviointi-uusi-kohde": "Lisää arvioinnin kohde",
     "arvioinnin-otsikko": "Arvioinnin otsikko",
-    "arvion-osaamisen-kuvaus": "Arvion osaamisen kuvaus",
     "arviointi-uusi-kohde-placeholder": "Kohteen nimi (ei pakollinen)",
     "arviointi-uusi-kriteeri": "Lisää rivi",
     "arviointi-uusi-kriteeri-placeholder": "Kriteerin teksti",
@@ -513,7 +464,6 @@
 
     "tutke2-osalta-puuttuu-osa-alue-koodi": "Tutkinnon osien osa-alueilta puuttuu koodi",
 
-    "arviointi-muokkaa-taulukkona": "Muokkaa taulukkona",
     "arviointi-kohdealueet": "Arvioinnin kohdealueet",
 
     "keskustelu": "Keskustelu",
@@ -532,7 +482,6 @@
     "opintoluokitus": "Opintoluokitus",
     "tavoitteet": "Tavoitteet",
     "ammattitaitovaatimukset": "Ammattitaitovaatimukset",
-    "arvointi": "Arviointi",
 
     "lisaa-kommentti": "Lisää kommentti",
 
@@ -590,7 +539,6 @@
     "luo-pdf": "Luo PDF",
     "dokumentti-luotu": "PDF-dokumentin luonti onnistui",
     "dokumentin-luonti-epaonnistui": "PDF-dokumentin luonti epäonnistui",
-    "generoidaan-dokumenttia": "Luodaan dokumenttia, odota hetki",
     "valitse-kieli": "Valitse kieli",
     "luo-pdf-dokumentti": "Luo PDF-dokumentti",
     "luo-pdf-dokumentti-perusteesta": "Luo PDF-dokumentti perusteesta",
@@ -604,7 +552,6 @@
     "anna-voimaantulo-pvm": "Anna voimaantulopäivämäärä",
     "anna-voimaantulo-loppu-pvm": "Anna voimassaolon päättymispäivämäärä",
 
-    "tuo-toisesta-projektista": "Tuo sisältöä toisesta projektista",
     "tuo-toisesta-suoritustavasta": "Tuo toisesta suoritustavasta",
     "hae-perusteprojekteja": "Hae perusteprojekteja",
 
@@ -641,10 +588,7 @@
     "perusteprojektin-pohjaksi-otetaan-peruste": "Perusteprojektin pohjaksi otetaan peruste",
     "lisaa-ainakin-yksi-kieli": "Perusteella on oltava vähintään yksi kieli.",
 
-    "projektipäällikkö": "Projektipäällikkö",
-
     "perusteen-nimi": "Perusteen nimi",
-    "anna-perusteen-nimi": "Syötä perusteen nimi",
     "koulutuksen-nimi": "Koulutuksen nimi",
     "vahvista-poisto": "Vahvista poisto",
     "poistetaanko-koulutus": "Poistetaanko koulutuskoodi?",
@@ -653,7 +597,6 @@
     "projekti-projektiryhma": "Perustetyöryhmä",
     "projekti-peruste": "Perusteen tiedot",
     "projekti-toimikausi": "Toimikausi",
-    "valitse-peruste": "Valitse peruste",
     "perusteen-koodi": "Tutkinnon koodi",
     "projektin-tiedot": "Projektin tiedot",
     "uusi-projekti-otsikko": "Uusi perusteprojekti",
@@ -672,11 +615,6 @@
     "ops": "Peruskoulutus",
     "naytto": "Näyttötutkinto",
 
-    "ePerusteet-koti": "ePerusteet",
-
-    "suodattimet": "Suodattimet",
-    "valitse-suodatin": "Valitse suodatin",
-
     "vahvista-palautus": "Vahvista palautus",
     "vahvista-palautus-sisältö": "Haluatko palauttaa perusteprojektin {{ nimi }}? Perusteprojektin sisältö palautetaan ja se asetetaan tilaan: {{ tila }}",
 
@@ -685,21 +623,16 @@
     "osia-valittava-vahintaan-koko": "Osia valittava vähintään {{ kokoMinimi }} kappaletta.",
     "osia-valittava-vahintaan-ja-enintaan-koko": "Osia valittava vähintään {{ kokoMinimi }} ja vähintään {{ kokoMaksimi }} kappaletta.",
 
-    "perusteprojekti-perustenimi-placeholder": "<Anna perusteen nimi>",
     "perusteprojekti-koulutusala-placeholder": "<Anna koulutusala>",
     "perusteprojekti-nimi-placeholder": "<Anna projektin nimi>",
     "perusteprojekti-koulutustyyppi-placeholder": "<Aseta perusteen koulutus/tutkintotyyppi>",
-    "projekti-header-peruste": "Peruste",
     "projekti-header-koulutusala": "Koulutusala",
     "projekti-header-paatosPvm": "Työryhmän asettamispäivämäärä",
     "projekti-header-koulutustyyppi": "Koulutus/tutkintotyyppi",
 
-    "tutkintokohtaiset-osat": "Tutkintokohtaiset osat",
     "lisaa-tutkintokohtainen-osa": "Lisää tekstikappale",
     "tuo-tutkintokohtainen-osa": "Tuo tekstikappale",
     "uusi-tutkinnon-osa": "<Uusi sisältö>",
-
-    "lukko-käyttäjällä": "Lukko on varattu käyttäjälle",
 
     "perusteen-esikatselu": "Perusteen esikatselu",
     "laadinnan-esikatselu-info": "Tämä on kesken olevan perusteprojektin esikatselu. Kaikki sisältö ei välttämättä näy oikein.",
@@ -707,25 +640,11 @@
 
     "takaisin-laadintaan": "Takaisin laadintaan",
     "takaisin-paanakymaan": "Projektin päänäkymä",
-    "projektiryhma-otsikko-omistaja": "Perusteprosessin omistaja",
-    "projektiryhma-otsikko-sihteeri": "Sihteeri",
-    "projektiryhma-otsikko-jasen": "Perustetyöryhmän jäsenet",
-    "projektiryhma-otsikko-kommentoija": "Kommentoijat",
-    "erityisasiantuntija": "Erityisasiantuntija",
     "puhelin": "Puh.",
     "email": "Email",
-    "kutsu-uusi": "Kutsu uusi jäsen",
     "muokkaa": "Muokkaa",
     "vastaa": "Vastaa",
-    "jasen-puhelinnumero": "Puhelin",
-    "jasen-nimi": "Nimi",
-    "jasen-email": "Email",
-    "jasen-rooli": "Rooli",
     "poista-projektista": "Poista projektista",
-    "rooli-jasen": "Jäsen",
-    "rooli-sihteeri": "Sihteeri",
-    "rooli-omistaja": "Omistaja",
-    "rooli-kommentoija": "Kommentoija",
 
     "sivunavigointi-avaa-menu": "Avaa navigointimenu",
     "sivunavigointi-sulje-menu": "Sulje navigointimenu",
@@ -733,7 +652,6 @@
 
     "perusteprojekti-tila-aseta": "Aseta perusteprojektin tila",
     "luonnos": "Luonnos",
-    "hyvaksytty": "Hyväksytty",
     "kaannos": "Käännös",
     "kommentointi": "Kommentointi",
 
@@ -769,7 +687,6 @@
     "arvo-ei-kokonaisluku": "Arvon täytyy olla kokonaisluku",
     "arvo-ei-desimaaliluku": "Arvon täytyy olla desimaaliluku",
     "arvo-askelvirhe": "Arvon hyväksytty askelväli on {{step}}",
-    "sivu-virheellisia-arvoja": "Sivulla on virheellisiä arvoja",
 
     "tilanvaihtovirhe-header": "Projektin tilan vaihtaminen ei onnistunut",
     "liittamattomia-tutkinnon-osia": "Projektissa on rakenteeseen liittämättömiä tutkinnon osia.",
@@ -781,14 +698,12 @@
     "diaarinumero-kaytossa": "Diaarinumero on jo käytössä",
     "tutkinnon-osan-koodi-kaytossa": "Valittu tutkinnon osan koodi on jo käytössä",
 
-    "hae-osaamisala": "Hae osaamisala",
     "osaamisalat": "Osaamisalat",
 
     "nayta-kuvaukset": "Näytä kuvaukset",
     "piilota-kuvaukset": "Piilota kuvaukset",
 
     "ohje-tutkinnonosa-tyyppi": "<p>Tutkinnon osan tyyppi määrittää osalle täytettävät sisällöt.</p><p><strong>Tutkintokohtainen</strong>: Tutkinnon osalle määritetään sisältö ja arviointikriteerit.</p><p><strong>Yhteinen</strong>: Tutkinnon osalle määritetään osakohtaiset osa-alueet, joille kullekin määritellään oma sisältö ja arviointikriteerit.</p>",
-    "hae-tyoryhma": "Hae työryhmä",
     "rajaa-ryhmia": "Rajaa ryhmiä",
     "hae-ryhma": "Hae ryhmä",
     "haetaan-tyoryhmia": "Haetaan työryhmiä",
@@ -855,10 +770,7 @@
     "muokkaus-vuosiluokkakokonaisuuden-tehtava-header": "Vuosiluokkakokonaisuuden tehtävä",
     "muokkaus-vuosiluokkakokonaisuuden-tehtava-placeholder": "Kirjoita tähän vuosiluokkakokonaisuuden tehtävä",
 
-    "tyhja-placeholder-osaalueet": "Osa-alueita ei ole vielä lisätty.",
-
     "poista-osa-alue": "Poista osa-alue",
-    "poista-osaamistavoite": "Poista osaamistavoite",
 
     "ei-osa-alueita": "Ei osa-alueita.",
     "osa-alueet": "Osa-alueet:",
@@ -894,9 +806,6 @@
     "sisaltoalueen-nimi": "Sisältöalueen nimi",
     "tavoitteen-kuvaus-placeholder": "Lisää tavoitteen kuvaus",
     "lisaa-arviointi": "Lisää arviointi",
-    "lisaa-tyotavat": "Lisää työtavat",
-    "lisaa-ohjaus": "Lisää ohjaus",
-    "lisaa-tehtava": "Lisää tehtävä",
     "lisaa-laaja-alainen-osaaminen": "Lisää laaja-alainen osaaminen",
     "lisaa-opetuksen-tavoite": "Lisää opetuksen tavoite",
     "oppimaarat": "Oppimäärät",
@@ -943,7 +852,6 @@
     "termi": "Käsite",
     "selitys": "Selitys",
 
-    "perusteelta-puuttuu-nimi": "Perusteelta puuttuu nimi",
     "rakenteen-validointi-virhe": "Rakenteessa validointivirhe",
     "liittamattomia-tutkinnon-osia": "Liittämättömiä tutkinnon osia",
     "koodittomia-tutkinnon-osia": "Kaikilla tutkinnon osilla ei koodia",
@@ -956,7 +864,6 @@
     "diaari-jo-listalla": "Diaarinumero on jo valittu",
     "oma-diaarinumero": "Peruste ei voi korvata itseään",
     "lisaa-diaari": "Lisää diaarinumero",
-    "korvattavien-siirtymä-loppuu": "Korvattavien perusteiden siirtymäajan päättyminen",
     "julkaisu-korvaa-perusteet": "Peruste korvaa seuraavat käytössä olevat perusteet:",
     "peruste-ei-voimassaolon-alkamisaikaa": "Perusteelle ei ole annettu voimassaolon alkamisaikaa",
     "korvattava-diaari-on-oma-diaari": "Korvattavien perusteiden listalla oma diaarinumero",

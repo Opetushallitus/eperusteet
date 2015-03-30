@@ -17,26 +17,20 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import java.util.List;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  *
  * @author nkala
  */
-public interface KoodistoService {
+public interface KoodistoClient {
 
-    @PreAuthorize("isAuthenticated()")
     List<KoodistoKoodiDto> getAll(String koodisto);
 
-    @PreAuthorize("isAuthenticated()")
     KoodistoKoodiDto get(String koodisto, String koodi);
 
-    @PreAuthorize("isAuthenticated()")
     List<KoodistoKoodiDto> filterBy(String koodisto, String haku);
 
-    @PreAuthorize("isAuthenticated()")
     List<KoodistoKoodiDto> getAlarelaatio(String koodi);
 
-    @PreAuthorize("isAuthenticated()")
     List<KoodistoKoodiDto> getYlarelaatio(String koodi);
 }

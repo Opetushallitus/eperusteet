@@ -6,7 +6,6 @@ import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.repository.TiedoteRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.TiedoteService;
-import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -50,14 +49,12 @@ public class TiedoteServiceImpl implements TiedoteService {
     @Transactional(readOnly = true)
     public TiedoteDto getTiedote(@P("tiedoteId") Long tiedoteId) {
         Tiedote tiedote = repository.findOne(tiedoteId);
-        assertExists(tiedote, "Pyydettyä tiedotetta ei ole olemassa");
-        if (!tiedote.isJulkinen() && !SecurityUtil.isAuthenticated()) {
-            throw new BusinessRuleViolationException("Autentikoimaton käyttäjä voi lukea vain julkisia tiedotteita");
-        }
-        KayttajanTietoDto ktd = kayttajat.hae(tiedote.getLuoja());
         TiedoteDto tdto = mapper.map(tiedote, TiedoteDto.class);
-        if (ktd != null) {
-            tdto.setNimi(ktd.getKutsumanimi() + " " + ktd.getSukunimi());
+        if (tdto != null && SecurityUtil.isAuthenticated()) {
+            KayttajanTietoDto ktd = kayttajat.hae(tiedote.getLuoja());
+            if (ktd != null) {
+                tdto.setNimi(ktd.getKutsumanimi() + " " + ktd.getSukunimi());
+            }
         }
         return tdto;
     }

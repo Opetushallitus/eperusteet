@@ -17,7 +17,6 @@ package fi.vm.sade.eperusteet.repository.version;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -73,5 +72,7 @@ public class Revision implements Serializable {
         }
         return true;
     }
+
+    public static final Revision DRAFT = new Revision(0, 0L, null, null);
 
 }

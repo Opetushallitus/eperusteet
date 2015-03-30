@@ -32,12 +32,21 @@ public class PerusteQuery {
     private boolean siirtyma = false;
     private String nimi;
     private List<String> koulutusala;
-    private List<String> tyyppi;
+    private List<String> koulutustyyppi;
     private String kieli = "fi";
     private List<String> opintoala;
     private String suoritustapa;
     private String tila;
     private String koulutuskoodi;
     private String perusteTyyppi;
+    private String diaarinumero;
     private Long muokattu;
+
+    public void setTyyppi(List<String> tyyppi) {
+        this.koulutustyyppi = tyyppi;
+    }
+
+    public List<String> getTyyppi(List<String> tyyppi) {
+        return this.koulutustyyppi;
+    }
 }

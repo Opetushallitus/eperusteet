@@ -29,7 +29,7 @@ import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
-import fi.vm.sade.eperusteet.resource.util.Etags;
+import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
@@ -41,14 +41,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -89,9 +86,8 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/oppiaineet", method = GET)
     public ResponseEntity<List<OppiaineSuppeaDto>> getOppiaineet(
-        @RequestHeader(value = "If-None-Match", required = false) String etag,
         @PathVariable("perusteId") final Long perusteId) {
-        return handleGet(perusteId, etag, new Supplier<List<OppiaineSuppeaDto>>() {
+        return handleGet(perusteId, new Supplier<List<OppiaineSuppeaDto>>() {
             @Override
             public List<OppiaineSuppeaDto> get() {
                 return sisallot.getOppiaineet(perusteId, OppiaineSuppeaDto.class);
@@ -109,11 +105,10 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/oppiaineet/{id}", method = GET)
     public ResponseEntity<OppiaineDto> getOppiaine(
-        @RequestHeader(value = "If-None-Match", required = false) String etag,
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
 
-        return handleGet(perusteId, etag, new Supplier<OppiaineDto>() {
+        return handleGet(perusteId, new Supplier<OppiaineDto>() {
             @Override
             public OppiaineDto get() {
                 return oppiaineet.getOppiaine(perusteId, id);
@@ -132,11 +127,10 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/oppiaineet/{id}/oppimaarat", method = GET)
     public ResponseEntity<List<OppiaineSuppeaDto>> getOppimaarat(
-        @RequestHeader(value = "If-None-Match", required = false) String etag,
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
 
-        return handleGet(perusteId, etag, new Supplier<List<OppiaineSuppeaDto>>() {
+        return handleGet(perusteId, new Supplier<List<OppiaineSuppeaDto>>() {
             @Override
             public List<OppiaineSuppeaDto> get() {
                 return oppiaineet.getOppimaarat(perusteId, id);
@@ -188,10 +182,9 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/oppiaineet/{id}/vuosiluokkakokonaisuudet", method = GET)
     public ResponseEntity<Collection<OppiaineenVuosiluokkaKokonaisuusDto>> getOppiaineenVuosiluokkaKokonaisuudet(
-        @RequestHeader(value = "If-None-Match", required = false) String etag,
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long oppiaineId) {
-        return handleGet(perusteId, etag, new Supplier<Collection<OppiaineenVuosiluokkaKokonaisuusDto>>() {
+        return handleGet(perusteId, new Supplier<Collection<OppiaineenVuosiluokkaKokonaisuusDto>>() {
             @Override
             public Collection<OppiaineenVuosiluokkaKokonaisuusDto> get() {
                 return oppiaineet.getOppiaine(perusteId, oppiaineId).getVuosiluokkakokonaisuudet();
@@ -210,11 +203,10 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{id}", method = GET)
     public ResponseEntity<OppiaineenVuosiluokkaKokonaisuusDto> getOppiaineenVuosiluokkakokonaisuus(
-        @RequestHeader(value = "If-None-Match", required = false) String etag,
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("oppiaineId") final Long oppiaineId,
         @PathVariable("id") final Long id) {
-        return handleGet(perusteId, etag, new Supplier<OppiaineenVuosiluokkaKokonaisuusDto>() {
+        return handleGet(perusteId, new Supplier<OppiaineenVuosiluokkaKokonaisuusDto>() {
 
             @Override
             public OppiaineenVuosiluokkaKokonaisuusDto get() {
@@ -245,9 +237,8 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/vuosiluokkakokonaisuudet", method = GET)
     public ResponseEntity<List<VuosiluokkaKokonaisuusDto>> getVuosiluokkaKokonaisuudet(
-        @RequestHeader(value = "If-None-Match", required = false) String etag,
         @PathVariable("perusteId") final Long perusteId) {
-        return handleGet(perusteId, etag, new Supplier<List<VuosiluokkaKokonaisuusDto>>() {
+        return handleGet(perusteId, new Supplier<List<VuosiluokkaKokonaisuusDto>>() {
 
             @Override
             public List<VuosiluokkaKokonaisuusDto> get() {
@@ -267,10 +258,9 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/vuosiluokkakokonaisuudet/{id}", method = GET)
     public ResponseEntity<VuosiluokkaKokonaisuusDto> getVuosiluokkaKokonaisuus(
-        @RequestHeader(value = "If-None-Match", required = false) String etag,
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
-        return handleGet(perusteId, etag, new Supplier<VuosiluokkaKokonaisuusDto>() {
+        return handleGet(perusteId, new Supplier<VuosiluokkaKokonaisuusDto>() {
 
             @Override
             public VuosiluokkaKokonaisuusDto get() {
@@ -281,10 +271,9 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/vuosiluokkakokonaisuudet/{id}/oppiaineet", method = GET)
     public ResponseEntity<List<OppiaineSuppeaDto>> getVuosiluokkaKokonaisuudenOppiaineet(
-        @RequestHeader(value = "If-None-Match", required = false) String etag,
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
-        return handleGet(perusteId, etag, new Supplier<List<OppiaineSuppeaDto>>() {
+        return handleGet(perusteId, new Supplier<List<OppiaineSuppeaDto>>() {
             @Override
             public List<OppiaineSuppeaDto> get() {
                 return kokonaisuudet.getOppiaineet(perusteId, id);
@@ -311,9 +300,8 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/laajaalaisetosaamiset", method = GET)
     public ResponseEntity<List<LaajaalainenOsaaminenDto>> getOsaamiset(
-        @RequestHeader(value = "If-None-Match", required = false) String etag,
         @PathVariable("perusteId") final Long perusteId) {
-        return handleGet(perusteId, etag, new Supplier<List<LaajaalainenOsaaminenDto>>() {
+        return handleGet(perusteId, new Supplier<List<LaajaalainenOsaaminenDto>>() {
             @Override
             public List<LaajaalainenOsaaminenDto> get() {
                 return sisallot.getLaajaalaisetOsaamiset(perusteId);
@@ -341,10 +329,9 @@ public class PerusopetuksenPerusteenSisaltoController {
 
     @RequestMapping(value = "/laajaalaisetosaamiset/{id}", method = GET)
     public ResponseEntity<LaajaalainenOsaaminenDto> getOsaaminen(
-        @RequestHeader(value = "If-None-Match", required = false) String etag,
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
-        return handleGet(perusteId, etag, new Supplier<LaajaalainenOsaaminenDto>() {
+        return handleGet(perusteId, new Supplier<LaajaalainenOsaaminenDto>() {
             @Override
             public LaajaalainenOsaaminenDto get() {
                 return osaamiset.getLaajaalainenOsaaminen(perusteId, id);
@@ -426,33 +413,8 @@ public class PerusopetuksenPerusteenSisaltoController {
         return viittet.kloonaaTekstiKappale(perusteId, id);
     }
 
-    private <T> ResponseEntity<T> handleGet(Long perusteId, String eTag, Supplier<T> response) {
-        Integer rev = perusteet.getLastModifiedRevision(perusteId);
-        if (rev == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        if (eTag != null) {
-            if (rev > 0 && rev.equals(Etags.revisionOf(eTag))) {
-                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-            }
-        }
-
-        T dto = response.get();
-
-        if (dto == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        if (rev > 0) {
-            int age = 1;
-            HttpHeaders headers = Etags.eTagHeader(rev);
-            headers.setCacheControl("public, max-age=" + age);
-            headers.setExpires(DateTime.now().plusSeconds(age).getMillis());
-            return new ResponseEntity<>(dto, headers, HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+    private <T> ResponseEntity<T> handleGet(Long perusteId, Supplier<T> response) {
+        return CacheableResponse.create(perusteet.getLastModifiedRevision(perusteId), 1, response);
     }
 
 }

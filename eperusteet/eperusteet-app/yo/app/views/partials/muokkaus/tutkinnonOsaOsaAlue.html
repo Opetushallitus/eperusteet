@@ -39,11 +39,11 @@
 
     <h3 ng-show="tavoite.pakollinen === true">
       {{('pakolliset-osaamistavoitteet'| kaanna)}}, {{tavoite.laajuus}} {{'osp'| kaanna}}
-      <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite)" kaanna="poista"></button></span>
+      <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite)" kaanna="poista" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button></span>
     </h3>
     <h3 ng-show="tavoite.pakollinen === false">
       {{('valinnaiset-osaamistavoitteet'| kaanna)}}, {{tavoite.laajuus}} {{'osp'| kaanna}}
-      <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite)" kaanna="poista"></button></span>
+      <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite)" kaanna="poista" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button></span>
     </h3>
 
     <div class="non-collapsibles">
@@ -62,7 +62,7 @@
     <div ng-show="tavoite.lapsi && tavoite.lapsi.$poistettu === false">
     <h3>
       {{('valinnaiset-osaamistavoitteet'| kaanna)}}, {{tavoite.lapsi.laajuus}} {{'osp'| kaanna}}
-      <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite.lapsi)" kaanna="poista"></button></span>
+      <span><button class="btn btn-default pull-right" icon-role="remove" ng-click="poistaTavoite(tavoite.lapsi)" kaanna="poista" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button></span>
     </h3>
     <div class="non-collapsibles">
       <label kaanna>laajuus</label>
@@ -81,7 +81,6 @@
   </accordion-group>
 </accordion>
 
-
-<button class="btn btn-default" icon-role="add" ng-click="lisaaOsaamistavoite()" kaanna="lisaa-osaamistavoite"></button>
-<button class="btn btn-default" icon-role="add" ng-click="tuoOsaamistavoite()" kaanna="tuo-osaamistavoite"></button>
+<button class="btn btn-default" icon-role="add" ng-click="lisaaOsaamistavoite()" kaanna="lisaa-osaamistavoite" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+<button class="btn btn-default" icon-role="add" ng-click="tuoOsaamistavoite()" kaanna="tuo-osaamistavoite" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
 </div>

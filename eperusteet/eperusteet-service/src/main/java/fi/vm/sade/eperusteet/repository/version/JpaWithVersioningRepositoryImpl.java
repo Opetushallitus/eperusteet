@@ -75,7 +75,7 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
     }
 
     @Override
-    public Integer getLatestRevisionId(ID id) {
+    public Revision getLatestRevisionId(ID id) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
         final Object result = auditReader.createQuery()
@@ -85,7 +85,8 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
             .getSingleResult();
 
         assert (result instanceof Number );
-        return ((Number) result).intValue();
+        RevisionInfo rev = auditReader.findRevision(RevisionInfo.class, ((Number) result));
+        return new Revision(rev.getId(), rev.getTimestamp(), rev.getMuokkaajaOid(), rev.getKommentti());
     }
 
     @Override

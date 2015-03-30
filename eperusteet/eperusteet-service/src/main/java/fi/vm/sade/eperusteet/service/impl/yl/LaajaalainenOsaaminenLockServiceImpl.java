@@ -58,6 +58,6 @@ public class LaajaalainenOsaaminenLockServiceImpl extends AbstractLockService<La
     @Override
     protected final int latestRevision(LaajaalainenOsaaminenContext ctx) {
         //olettaa että lockcontext on validi (ei tarkisteta erikseen)
-        return osaaminenRepository.getLatestRevisionId(ctx.getOsaaminenId());
+        return osaaminenRepository.getLatestRevisionId(ctx.getOsaaminenId()).getNumero();
     }
 }

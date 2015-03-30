@@ -105,9 +105,6 @@ public interface PerusteService {
     <T extends PerusteenOsaViiteDto.Puu<?, ?>> T getSuoritustapaSisalto(@P("perusteId") Long perusteId, Suoritustapakoodi suoritustapakoodi, Class<T> view);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    <T extends PerusteenOsaViiteDto.Puu<?, ?>> T getSuoritustapaSisaltoUUSI(@P("perusteId") Long perusteId, Suoritustapakoodi suoritustapakoodi, Class<T> view);
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     SuoritustapaDto getSuoritustapa(@P("perusteId") final Long perusteId, final Suoritustapakoodi suoritustapakoodi);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
@@ -152,9 +149,9 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
     public void removeTutkintonimikeKoodi(Long perusteId, Long tutkintonimikeKoodiId);
 
-    @PreAuthorize("isAuthenticated()")
+    @PostAuthorize("returnObject == null or hasPermission(returnObject.id, 'peruste', 'LUKU')")
     public PerusteInfoDto getByDiaari(Diaarinumero diaarinumero);
 
     @PreAuthorize("permitAll()")
-    public Integer getLastModifiedRevision(final Long id);
+    public Revision getLastModifiedRevision(final Long id);
 }

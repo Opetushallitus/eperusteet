@@ -26,30 +26,31 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  */
 @RestController
 @RequestMapping("/tiedotteet")
-@Api(value="Tiedotteet", description = "Tiedotteiden hallinta")
+@Api(value = "Tiedotteet", description = "Tiedotteiden hallinta")
 public class TiedoteController {
+
     @Autowired
     private TiedoteService tiedoteService;
 
     @RequestMapping(method = GET)
     @ResponseBody
     public List<TiedoteDto> getAll(
-            @RequestParam(value = "vainJulkiset", required = false, defaultValue = "false") boolean vainJulkiset,
-            @RequestParam(value = "alkaen", required = false, defaultValue = "0") Long alkaen) {
+        @RequestParam(value = "vainJulkiset", required = false, defaultValue = "false") boolean vainJulkiset,
+        @RequestParam(value = "alkaen", required = false, defaultValue = "0") Long alkaen) {
         return tiedoteService.getAll(vainJulkiset, alkaen);
     }
 
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
     public ResponseEntity<TiedoteDto> get(@PathVariable("id") final Long id) {
-        return new ResponseEntity<>(tiedoteService.getTiedote(id), HttpStatus.OK);
+        final TiedoteDto tiedote = tiedoteService.getTiedote(id);
+        return new ResponseEntity<>(tiedote, tiedote == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
 
     @RequestMapping(method = POST)
     @ResponseBody
     @InternalApi
-    public ResponseEntity<TiedoteDto> addTiedote(@RequestBody TiedoteDto tiedoteDto)
-    {
+    public ResponseEntity<TiedoteDto> addTiedote(@RequestBody TiedoteDto tiedoteDto) {
         return new ResponseEntity<>(tiedoteService.addTiedote(tiedoteDto), HttpStatus.OK);
     }
 
@@ -57,9 +58,10 @@ public class TiedoteController {
     @ResponseBody
     @InternalApi
     public ResponseEntity<TiedoteDto> updateTiedote(
-            @PathVariable("id") final Long id,
-            @RequestBody TiedoteDto tiedoteDto) {
-        tiedoteDto.setId(id);        return new ResponseEntity<>(tiedoteService.updateTiedote(tiedoteDto), HttpStatus.OK);
+        @PathVariable("id") final Long id,
+        @RequestBody TiedoteDto tiedoteDto) {
+        tiedoteDto.setId(id);
+        return new ResponseEntity<>(tiedoteService.updateTiedote(tiedoteDto), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = DELETE)

@@ -21,7 +21,6 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -75,7 +74,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
 
     @Override
     public Integer getLatestRevision(Long id) {
-        return tutkinnonOsaViiteRepository.getLatestRevisionId(id);
+        return tutkinnonOsaViiteRepository.getLatestRevisionId(id).getNumero();
     }
 
     @Override

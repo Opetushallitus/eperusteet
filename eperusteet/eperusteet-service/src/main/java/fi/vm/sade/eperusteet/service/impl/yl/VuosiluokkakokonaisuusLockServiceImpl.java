@@ -65,7 +65,7 @@ public class VuosiluokkakokonaisuusLockServiceImpl extends AbstractLockService<V
     @Override
     protected final int latestRevision(VuosiluokkaKokonaisuusContext ctx) {
         //olettaa että lockcontext on validi (ei tarkisteta erikseen)
-        return kokonaisuudet.getLatestRevisionId(ctx.getKokonaisuusId());
+        return kokonaisuudet.getLatestRevisionId(ctx.getKokonaisuusId()).getNumero();
     }
 
 }

@@ -280,7 +280,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         lockService.assertLock(OppiaineLockContext.of(perusteId, dto.getId(), null));
         oppiaineRepository.lock(aine);
 
-        Integer rev = null;
+        Revision rev = null;
         if (sisalto.getPeruste().getTila() == PerusteTila.VALMIS) {
             rev = oppiaineRepository.getLatestRevisionId(aine.getId());
         }
@@ -306,7 +306,7 @@ public class OppiaineServiceImpl implements OppiaineService {
             }
         }
         if (rev != null) {
-            Oppiaine latest = oppiaineRepository.findRevision(aine.getId(), rev);
+            Oppiaine latest = oppiaineRepository.findRevision(aine.getId(), rev.getNumero());
             if (!latest.structureEquals(aine)) {
                 throw new BusinessRuleViolationException("Vain korjaukset sallittu");
             }
@@ -339,8 +339,8 @@ public class OppiaineServiceImpl implements OppiaineService {
         }
         mapper.map(dto, ovk);
         if ( sisalto.getPeruste().getTila() == PerusteTila.VALMIS ) {
-            Integer rev = vuosiluokkakokonaisuusRepository.getLatestRevisionId(ovk.getId());
-            OppiaineenVuosiluokkaKokonaisuus latest = vuosiluokkakokonaisuusRepository.findRevision(ovk.getId(), rev);
+            Revision rev = vuosiluokkakokonaisuusRepository.getLatestRevisionId(ovk.getId());
+            OppiaineenVuosiluokkaKokonaisuus latest = vuosiluokkakokonaisuusRepository.findRevision(ovk.getId(), rev.getNumero());
             if ( !latest.structureEquals(ovk) ) {
                 throw new BusinessRuleViolationException("Vain korjaukset sallittu");
             }

@@ -105,7 +105,7 @@ public class PerusteenSisaltoController {
         @PathVariable("suoritustapa") final Suoritustapakoodi suoritustapakoodi) {
 
         PerusteenOsaViiteDto<?> dto
-            = service.getSuoritustapaSisaltoUUSI(perusteId,
+            = service.getSuoritustapaSisalto(perusteId,
                                                  suoritustapakoodi,
                                                  "suppea".equals(view) ? PerusteenOsaViiteDto.Suppea.class : PerusteenOsaViiteDto.Laaja.class);
         if (dto == null) {

@@ -30,7 +30,7 @@ public interface JpaWithVersioningRepository<T, ID extends Serializable> extends
 
     T findRevision(final ID id, final Integer revisionId);
 
-    Integer getLatestRevisionId(final ID id);
+    Revision getLatestRevisionId(final ID id);
 
     public class DomainClassNotAuditedException extends BeanCreationException {
 

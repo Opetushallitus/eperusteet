@@ -16,7 +16,7 @@
                   <h4>{{ kohde.otsikko | kaanna }}</h4>
                   <table class="table table-striped">
                       <tr ng-repeat="okriteeri in kohde.osaamistasonKriteerit | orderBy: '_osaamistaso'">
-                          <td width="15%">{{ arviointiasteikot[kohde._arviointiAsteikko][okriteeri._osaamistaso].otsikko | kaanna }}</td>
+                          <td width="15%" ng-if="!($first && $last)">{{ arviointiasteikot[kohde._arviointiAsteikko][okriteeri._osaamistaso].otsikko | kaanna }}</td>
                           <td>
                               <ul>
                                   <li ng-repeat="kriteeri in okriteeri.kriteerit">{{ kriteeri | kaanna }}</li>

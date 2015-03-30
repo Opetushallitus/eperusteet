@@ -70,7 +70,7 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiTyoryhmaRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
-import fi.vm.sade.eperusteet.service.KoodistoService;
+import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -141,7 +141,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     private PerusteenOsaRepository perusteenOsaRepository;
 
     @Autowired
-    private KoodistoService koodistoService;
+    private KoodistoClient koodistoService;
 
     @Override
     @Transactional(readOnly = true)

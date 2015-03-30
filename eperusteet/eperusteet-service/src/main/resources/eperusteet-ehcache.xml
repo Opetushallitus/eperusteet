@@ -294,8 +294,13 @@
          eternal="false"
          timeToLiveSeconds="600"
          overflowToDisk="false" />
-    <cache name="koodistot"
+    <cache name="koodistokoodit"
          maxElementsInMemory="10000"
+         eternal="false"
+         timeToLiveSeconds="600"
+         overflowToDisk="false" />
+    <cache name="koodistot"
+         maxElementsInMemory="100"
          eternal="false"
          timeToLiveSeconds="600"
          overflowToDisk="false" />
