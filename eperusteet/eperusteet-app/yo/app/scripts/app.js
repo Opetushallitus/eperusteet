@@ -66,6 +66,17 @@ angular.module('eperusteApp', [
     $rootScopeProvider.digestTtl(20);
   })
   .config(function($httpProvider) {
+    $httpProvider.interceptors.push(['UiKieli', function(kieli) {
+      return {
+        request: function(config) {
+          if ( kieli && kieli.kielikoodi ) {
+            config.headers['Accept-Language'] = kieli.kielikoodi;
+          }
+          return config;
+        }
+      };
+    }]);
+
     $httpProvider.interceptors.push(['$rootScope', '$q', 'SpinnerService', function($rootScope, $q, Spinner) {
         return {
           request: function(request) {

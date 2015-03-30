@@ -24,8 +24,8 @@ angular.module('eperusteApp')
     });
     this.noop = angular.noop;
   })
-
-  .service('Kieli', function ($rootScope, $state, $stateParams) {
+  .value('UiKieli',{ kielikoodi: 'fi' })
+  .service('Kieli', function ($rootScope, $state, $stateParams, UiKieli) {
     var sisaltokieli = 'fi';
 
     var SISALTOKIELET = [
@@ -77,8 +77,13 @@ angular.module('eperusteApp')
 
     this.setUiKieli = function (kielikoodi) {
       if (isValidKielikoodi(kielikoodi)) {
+        UiKieli.kielikoodi = kielikoodi;
         $state.go($state.current.name, _.merge($stateParams, {lang: kielikoodi}), {reload: true});
       }
+    };
+
+    this.getUiKieli = function () {
+      return UiKieli.kielikoodi;
     };
 
     this.isValidKielikoodi = isValidKielikoodi;

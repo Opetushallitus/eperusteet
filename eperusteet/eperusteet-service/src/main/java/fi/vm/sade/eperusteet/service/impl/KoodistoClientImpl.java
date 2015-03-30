@@ -17,7 +17,7 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
-import fi.vm.sade.eperusteet.service.KoodistoService;
+import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Service
 @Profile(value = "default")
-public class KoodistoServiceImpl implements KoodistoService {
+public class KoodistoClientImpl implements KoodistoClient {
 
     @Value("${koodisto.service.url:https://virkailija.opintopolku.fi/koodisto-service}")
     private String koodistoServiceUrl;
@@ -60,7 +60,7 @@ public class KoodistoServiceImpl implements KoodistoService {
     }
 
     @Override
-    @Cacheable("koodistot")
+    @Cacheable("koodistokoodit")
     public KoodistoKoodiDto get(String koodisto, String koodi) {
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + KOODISTO_API + koodisto + "/koodi/" + koodi;
@@ -92,7 +92,7 @@ public class KoodistoServiceImpl implements KoodistoService {
     }
 
     @Override
-    @Cacheable("koodistot")
+    @Cacheable(value = "koodistot", key="'alarelaatio:'+#p0")
     public List<KoodistoKoodiDto> getAlarelaatio(String koodi) {
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + KOODISTO_API + ALARELAATIO + koodi;
@@ -102,7 +102,7 @@ public class KoodistoServiceImpl implements KoodistoService {
     }
 
     @Override
-    @Cacheable("koodistot")
+    @Cacheable(value = "koodistot", key="'ylarelaatio:'+#p0")
     public List<KoodistoKoodiDto> getYlarelaatio(String koodi) {
         RestTemplate restTemplate = new RestTemplate();
         String url = koodistoServiceUrl + KOODISTO_API + YLARELAATIO + koodi;

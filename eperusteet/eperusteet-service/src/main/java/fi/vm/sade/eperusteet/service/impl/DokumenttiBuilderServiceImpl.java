@@ -46,7 +46,7 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.repository.TermistoRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
-import fi.vm.sade.eperusteet.service.KoodistoService;
+import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.util.Pair;
@@ -115,7 +115,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
     private TutkintonimikeKoodiRepository tutkintonimikeKoodiRepository;
 
     @Autowired
-    private KoodistoService koodistoService;
+    private KoodistoClient koodistoService;
 
     @Override
     public String generateXML(Peruste peruste, Kieli kieli, Suoritustapakoodi suoritustapakoodi) throws
@@ -354,7 +354,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             Element element;
             if (depth == 0) {
                 // root, kaikki liitetään parenttiin
-                element = parent; //doc.createElement("informaltable");
+                element = parent;
                 // TODO: jonkilainen hieno ylätason title?
 
             } else if (depth == 1) {
@@ -378,7 +378,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
                 if (StringUtils.isNotEmpty(kuvaus)) {
                     Element para = doc.createElement("para");
-                    para.appendChild(doc.createTextNode(kuvaus));
+                    para.appendChild(newItalicElement(doc, kuvaus));
                     entry.appendChild(para);
                 }
 
@@ -388,8 +388,18 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             } else if (depth == 2) {
 
                 Element tgroup = doc.createElement("tgroup");
-                tgroup.setAttribute("cols", "1");
+                tgroup.setAttribute("cols", "2");
                 parent.appendChild(tgroup);
+
+                Element colspecReuna = doc.createElement("colspec");
+                colspecReuna.setAttribute("colname", "reuna");
+                colspecReuna.setAttribute("colwidth", "1*");
+                colspecReuna.setAttribute("colsep", "0");
+                tgroup.appendChild(colspecReuna);
+                Element colspecPihvi = doc.createElement("colspec");
+                colspecPihvi.setAttribute("colname", "pihvi");
+                colspecPihvi.setAttribute("colwidth", "11*");
+                tgroup.appendChild(colspecPihvi);
 
                 Element tbody = doc.createElement("tbody");
                 tgroup.appendChild(tbody);
@@ -397,23 +407,29 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 addDBFOInstruction(doc, hrow, "bgcolor=\"#EEEEEE\"");
                 tbody.appendChild(hrow);
                 Element hentry = doc.createElement("entry");
-                hentry.setAttribute("align", "center");
+                hentry.setAttribute("namest", "reuna");
+                hentry.setAttribute("nameend", "pihvi");
                 Element emphasis = newBoldElement(doc, nimi);
                 hentry.appendChild(emphasis);
                 hrow.appendChild(hentry);
 
                 if (StringUtils.isNotEmpty(kuvaus)) {
                     Element para = doc.createElement("para");
-                    para.appendChild(doc.createTextNode(kuvaus));
+                    para.appendChild(newItalicElement(doc, kuvaus));
                     hentry.appendChild(para);
                 }
 
                 element = tbody;
 
             } else if (depth == 3) {
+                // parent on tbody
                 // toka taso row ja entry, elementiks entry
                 Element row = doc.createElement("row");
                 parent.appendChild(row);
+
+                Element reunaEntry = doc.createElement("entry");
+                reunaEntry.appendChild(doc.createTextNode(" "));
+                row.appendChild(reunaEntry);
 
                 Element entry = doc.createElement("entry");
                 Element emphasis = newBoldElement(doc, nimi);
@@ -422,7 +438,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
                 if (StringUtils.isNotEmpty(kuvaus)) {
                     Element para = doc.createElement("para");
-                    para.appendChild(doc.createTextNode(kuvaus));
+                    para.appendChild(newItalicElement(doc, kuvaus));
                     entry.appendChild(para);
                 }
 
@@ -441,7 +457,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                     Element mem1 = doc.createElement("member");
                     mem1.appendChild(emphasis);
                     Element mem2 = doc.createElement("member");
-                    mem2.appendChild(doc.createTextNode(kuvaus));
+                    mem2.appendChild(newItalicElement(doc, kuvaus));
 
                     sl.appendChild(mem1);
                     sl.appendChild(mem2);
@@ -512,11 +528,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 // teksti.
                 Element para = doc.createElement("para");
                 Element em = newBoldElement(doc);
-                //em.appendChild(xref);
                 em.appendChild(linkElement);
                 para.appendChild(em);
                 parent.appendChild(para);
-                para.appendChild(doc.createTextNode(kuvaus));
+                para.appendChild(newItalicElement(doc, kuvaus));
             } else if (depth == 2) {
                 // parent on tällä syvyydellä aina informaltable
                 Element tgroup = doc.createElement("tgroup");
@@ -525,13 +540,12 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 Element row = doc.createElement("row");
                 Element entry = doc.createElement("entry");
                 Element para = doc.createElement("para");
-                para.appendChild(doc.createTextNode(kuvaus));
+                para.appendChild(newItalicElement(doc, kuvaus));
 
                 parent.appendChild(tgroup);
                 tgroup.appendChild(tbody);
                 tbody.appendChild(row);
                 row.appendChild(entry);
-//                entry.appendChild(xref);
                 entry.appendChild(linkElement);
                 entry.appendChild(para);
             } else if (depth == 3) {
@@ -539,11 +553,13 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 Element row = doc.createElement("row");
                 Element entry = doc.createElement("entry");
                 Element para = doc.createElement("para");
-                para.appendChild(doc.createTextNode(kuvaus));
+                Element reunaEntry = doc.createElement("entry");
+                reunaEntry.appendChild(doc.createTextNode(""));
+                para.appendChild(newItalicElement(doc, kuvaus));
 
                 parent.appendChild(row);
+                row.appendChild(reunaEntry);
                 row.appendChild(entry);
-//                entry.appendChild(xref);
                 entry.appendChild(linkElement);
                 entry.appendChild(para);
             } else if (depth >= 4) {
@@ -552,15 +568,13 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 parent.appendChild(listitem);
 
                 if (StringUtils.isEmpty(kuvaus)) {
-//                    listitem.appendChild(xref);
                     listitem.appendChild(linkElement);
                 } else {
                     Element slist = doc.createElement("simplelist");
                     Element mem1 = doc.createElement("member");
-//                    mem1.appendChild(xref);
                     mem1.appendChild(linkElement);
                     Element mem2 = doc.createElement("member");
-                    mem2.appendChild(doc.createTextNode(kuvaus));
+                    mem2.appendChild(newItalicElement(doc, kuvaus));
                     slist.appendChild(mem1);
                     slist.appendChild(mem2);
                     listitem.appendChild(slist);
@@ -914,8 +928,27 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                     List<String> kriteerit = asStringList(krit.getKriteerit(), kieli);
 
                     Element bodyRowElement = doc.createElement("row");
-                    addTableCell(doc, bodyRowElement, ktaso);
-                    addTableCell(doc, bodyRowElement, getTextsAsList(doc, kriteerit));
+
+                    // otsikko vain tason otsikko vain jos on useampi kuin yksi
+                    // taso
+                    if (kriteerilista.size() > 1) {
+                        addTableCell(doc, bodyRowElement, ktaso);
+                    }
+
+                    // jos kriteerit on tyhjä, vältetään tyhjä itemizedlist
+                    Element entry;
+                    if (kriteerit.size() > 0) {
+                        entry = addTableCell(doc, bodyRowElement, getTextsAsList(doc, kriteerit));
+                    } else {
+                        entry = addTableCell(doc, bodyRowElement, "");
+                    }
+
+                    // koska ei ole tason otsikkoa, käytetään koko rivi
+                    if (kriteerilista.size() == 1) {
+                        entry.setAttribute("namest", "taso");
+                        entry.setAttribute("nameend", "kriteeri");
+                    }
+
                     bodyElement.appendChild(bodyRowElement);
                 }
 
@@ -939,19 +972,21 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         return row;
     }
 
-    private void addTableCell(Document doc, Element row, String text) {
+    private Element addTableCell(Document doc, Element row, String text) {
         Element entry = doc.createElement("entry");
         entry.appendChild(doc.createTextNode(text));
         row.appendChild(entry);
+        return entry;
     }
 
-    private void addTableCell(Document doc, Element row, Element child) {
+    private Element addTableCell(Document doc, Element row, Element child) {
         Element entry = doc.createElement("entry");
         entry.appendChild(child);
         row.appendChild(entry);
+        return entry;
     }
 
-    private void addTableCell(Document doc, Element row, List<String> texts) {
+    private Element addTableCell(Document doc, Element row, List<String> texts) {
         Element entry = doc.createElement("entry");
         for (String text : texts) {
             Element para = doc.createElement("para");
@@ -959,6 +994,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             entry.appendChild(para);
         }
         row.appendChild(entry);
+        return entry;
     }
 
     private List<String> asStringList(List<TekstiPalanen> palaset, Kieli kieli) {
@@ -1172,6 +1208,18 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
     private Element newBoldElement(Document doc, String teksti) {
         Element emphasis = newBoldElement(doc);
+        emphasis.appendChild(doc.createTextNode(teksti));
+        return emphasis;
+    }
+
+    private Element newItalicElement(Document doc) {
+        Element emphasis = doc.createElement("emphasis");
+        // italic on vain emphasis ilman rolea
+        return emphasis;
+    }
+
+    private Element newItalicElement(Document doc, String teksti) {
+        Element emphasis = newItalicElement(doc);
         emphasis.appendChild(doc.createTextNode(teksti));
         return emphasis;
     }

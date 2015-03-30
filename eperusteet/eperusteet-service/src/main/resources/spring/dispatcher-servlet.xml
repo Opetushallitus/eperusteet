@@ -17,4 +17,6 @@
     <context:annotation-config/>
     <context:component-scan base-package="fi.vm.sade.eperusteet.resource"/>
     <aop:aspectj-autoproxy />
+
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver"></bean>
 </beans>

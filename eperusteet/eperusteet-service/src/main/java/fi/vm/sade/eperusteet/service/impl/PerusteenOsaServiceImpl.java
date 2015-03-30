@@ -125,7 +125,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     @Transactional(readOnly = true)
     public Integer getLatestRevision(final Long id) {
-        return perusteenOsaRepo.getLatestRevisionId(id);
+        return perusteenOsaRepo.getLatestRevisionId(id).getNumero();
     }
 
     @Override
