@@ -216,7 +216,7 @@ angular.module('eperusteApp')
     };
   })
   .service('PerusteenRakenne', function(PerusteProjektiService, PerusteTutkinnonosatVersio, PerusteprojektiResource, PerusteRakenteet,
-    PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot) {
+    PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot, Utils) {
 
     function haeTutkinnonosatByPeruste(perusteId, suoritustapa, success) {
       PerusteTutkinnonosat.query({
@@ -306,7 +306,7 @@ angular.module('eperusteApp')
       PerusteRakenteet.save({
         perusteId: id,
         suoritustapa: suoritustapa
-      }, rakenne.rakenne,
+      }, Utils.presaveStrip(rakenne.rakenne),
         function() {
           after();
           success();

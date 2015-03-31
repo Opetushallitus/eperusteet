@@ -110,7 +110,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .service('TiedoteService', function($modal, TiedotteetCRUD, Notifikaatiot) {
+  .service('TiedoteService', function($modal, TiedotteetCRUD, Notifikaatiot, Utils) {
     function doDelete(item, cb) {
       cb = cb || _.noop;
       TiedotteetCRUD.delete({}, item, function () {
@@ -121,7 +121,7 @@ angular.module('eperusteApp')
 
     function doSave(item, cb) {
       cb = cb || _.noop;
-      TiedotteetCRUD.save({}, item, function () {
+      TiedotteetCRUD.save({}, Utils.presaveStrip(item), function () {
         Notifikaatiot.onnistui('tallennus-onnistui');
         cb();
       }, Notifikaatiot.serverCb);
