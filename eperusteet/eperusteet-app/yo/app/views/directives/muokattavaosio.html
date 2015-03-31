@@ -2,8 +2,10 @@
   <!-- muokattavaosio.html -->
   <div class="panel-heading">
     <div class="action-buttons">
-      <button class="btn btn-default" icon-role="edit" ng-click="edit()"></button>
-      <button ng-if="type === 'tekstikappale'" class="btn btn-default" icon-role="remove" ng-click="poista()"></button>
+      <button class="btn btn-default" icon-role="edit" ng-click="edit()"
+              oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+      <button ng-if="type === 'tekstikappale' && !cantremove" class="btn btn-default" icon-role="remove"
+              oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }" ng-click="poista()"></button>
     </div>
 
     <h3 class="panel-title osio-otsikko" ng-click="realModel.$isCollapsed = !realModel.$isCollapsed">

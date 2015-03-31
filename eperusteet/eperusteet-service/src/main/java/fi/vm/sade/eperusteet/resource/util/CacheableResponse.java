@@ -18,7 +18,6 @@ package fi.vm.sade.eperusteet.resource.util;
 import com.google.common.base.Supplier;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import javax.servlet.http.HttpServletRequest;
-import org.joda.time.DateTime;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,12 +38,15 @@ public class CacheableResponse {
         if (!rev.equals(Revision.DRAFT)) {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             String eTag = request.getHeader("If-None-Match");
-            long l = request.getDateHeader("If-Modified-Since") / 1000;
+            long l = request.getDateHeader("If-Modified-Since");
             boolean notmodified = (eTag != null || l > 0);
             notmodified &= eTag == null || eTag.equals(Etags.eTagOf(rev.getNumero()));
-            notmodified &= l == -1 || (rev.getPvm().getTime() / 1000) == l;
+            notmodified &= l == -1 || (rev.getPvm().getTime() / 1000) == (l / 1000);
             if (notmodified) {
-                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+                HttpHeaders headers = Etags.eTagHeader(rev.getNumero());
+                headers.setCacheControl("public, max-age="+age);
+                headers.setLastModified(rev.getPvm().getTime());
+                return new ResponseEntity<>(headers, HttpStatus.NOT_MODIFIED);
             }
         }
 
@@ -57,7 +59,6 @@ public class CacheableResponse {
         if (!rev.equals(Revision.DRAFT)) {
             HttpHeaders headers = Etags.eTagHeader(rev.getNumero());
             headers.setCacheControl("public, max-age=" + age);
-            headers.setExpires(DateTime.now().plusSeconds(age).getMillis());
             headers.setLastModified(rev.getPvm().getTime());
             return new ResponseEntity<>(dto, headers, HttpStatus.OK);
         }
