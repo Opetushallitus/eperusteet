@@ -124,4 +124,7 @@ public interface PerusteenOsaService {
     @PreAuthorize("hasPermission(#id, 'perusteenosaviite', 'LUKU')")
     public PerusteenOsaDto getVersioByViite(Long id, Integer versioId);
 
+    @PreAuthorize("permitAll()")
+    public Revision getLastModifiedRevision(final Long id);
+
 }
