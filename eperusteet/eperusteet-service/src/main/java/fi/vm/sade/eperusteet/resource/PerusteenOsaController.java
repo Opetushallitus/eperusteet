@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource;
 
+import com.google.common.base.Supplier;
 import com.wordnik.swagger.annotations.Api;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
@@ -26,7 +27,8 @@ import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.PerusteenOsaUpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
-import fi.vm.sade.eperusteet.resource.util.WrappedList;
+import fi.vm.sade.eperusteet.resource.util.CacheControl;
+import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
@@ -34,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -45,7 +46,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -76,11 +76,12 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
     public ResponseEntity<PerusteenOsaDto.Laaja> get(@PathVariable("id") final Long id) {
-        PerusteenOsaDto.Laaja t = service.get(id);
-        if (t == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(t, HttpStatus.OK);
+        return CacheableResponse.create(service.getLastModifiedRevision(id), 1, new Supplier<PerusteenOsaDto.Laaja>() {
+            @Override
+            public PerusteenOsaDto.Laaja get() {
+                return service.get(id);
+            }
+        });
     }
 
     @RequestMapping(value = "/viite/{viiteId}", method = GET)
@@ -106,6 +107,7 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/{id}/versio/{versioId}", method = GET)
     @ResponseBody
+    @CacheControl(age = CacheControl.ONE_YEAR)
     public ResponseEntity<PerusteenOsaDto.Laaja> getVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
         PerusteenOsaDto.Laaja t = service.getVersio(id, versioId);
         if (t == null) {
@@ -364,18 +366,5 @@ public class PerusteenOsaController {
     public void delete(@PathVariable final Long id) {
         service.delete(id);
     }
-
-    private HttpHeaders buildHeadersFor(Long id, UriComponentsBuilder ucb) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucb.path("/perusteenosat/{id}").buildAndExpand(id).toUri());
-        return headers;
-    }
-
-    //apuluokka listan tyyppi-informaation säilyttämiseen.
-    private static class PerusteenOsaDtoList extends WrappedList<PerusteenOsaDto.Laaja> {
-        public PerusteenOsaDtoList(List<PerusteenOsaDto.Laaja> c) {
-            super(c);
-        }
-    };
 
 }

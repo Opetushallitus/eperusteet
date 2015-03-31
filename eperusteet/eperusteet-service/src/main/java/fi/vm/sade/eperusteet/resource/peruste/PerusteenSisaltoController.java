@@ -15,10 +15,12 @@
  */
 package fi.vm.sade.eperusteet.resource.peruste;
 
+import com.google.common.base.Supplier;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,18 +102,20 @@ public class PerusteenSisaltoController {
 
     @RequestMapping(value = "/sisalto", method = GET)
     public ResponseEntity<PerusteenOsaViiteDto<?>> getSuoritustapaSisaltoUUSI(
-        @RequestParam(value = "muoto", required = false, defaultValue = "suppea") String view,
+        @RequestParam(value = "muoto", required = false, defaultValue = "suppea") final String view,
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("suoritustapa") final Suoritustapakoodi suoritustapakoodi) {
 
-        PerusteenOsaViiteDto<?> dto
-            = service.getSuoritustapaSisalto(perusteId,
-                                                 suoritustapakoodi,
-                                                 "suppea".equals(view) ? PerusteenOsaViiteDto.Suppea.class : PerusteenOsaViiteDto.Laaja.class);
-        if (dto == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<PerusteenOsaViiteDto<?>>(dto, HttpStatus.OK);
+        return CacheableResponse.create(service.getLastModifiedRevision(perusteId), 1, new Supplier<PerusteenOsaViiteDto<?>>() {
+            @Override
+            public PerusteenOsaViiteDto<?> get() {
+                return service
+                    .getSuoritustapaSisalto(
+                        perusteId,
+                        suoritustapakoodi,
+                        "suppea".equals(view) ? PerusteenOsaViiteDto.Suppea.class : PerusteenOsaViiteDto.Laaja.class);
+            }
+        });
     }
 
     @RequestMapping(value = "/sisalto/{id}", method = DELETE)

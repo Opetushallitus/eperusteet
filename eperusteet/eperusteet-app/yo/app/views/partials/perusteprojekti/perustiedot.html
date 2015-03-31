@@ -45,8 +45,6 @@ European Union Public Licence for more details.
       <formfield label="päätöspvm-label" model="projekti" model-var="paatosPvm" placeholder="anna-päätöspäivämäärä" type="date">
         <ohje teksti="luonti-paatospaivamaara-ohje"></ohje>
       </formfield>
-      <formfield label="tehtäväluokka-label"
-                 model="projekti" model-var="tehtavaluokka" options="tehtavaluokat" placeholder="valitse-tehtäväluokka"></formfield>
       <formfield label="yhteistyotaho-label" model="projekti" model-var="yhteistyotaho" placeholder="anna-yhteistyotaho-placeholder" max="255"></formfield>
     </span>
 
@@ -57,7 +55,6 @@ European Union Public Licence for more details.
       <tr><th kaanna="'projektin-ryhma'"></th><td>{{ $ryhmaNimi | kaanna }}</td></tr>
       <tr><th kaanna="'diaarinumero-label'"></th><td>{{ projekti.diaarinumero }}</td></tr>
       <tr><th kaanna="'päätöspvm-label'"></th><td pvm="{{ projekti.paatosPvm }}"></td></tr>
-      <tr><th kaanna="'tehtäväluokka-label'"></th><td>{{ projekti.tehtavaluokka }}</td></tr>
       <tr><th kaanna="'yhteistyotaho-label'"></th><td>{{ projekti.yhteistyotaho }}</td></tr>
     </table>
   </div>

@@ -132,6 +132,7 @@ angular.module('eperusteApp')
       // Suosikit
       asetaSuosikki: function(state, nimi, success, customParams) {
         var stateParams = customParams || $stateParams;
+        stateParams = _.omit(stateParams, ['prestate', 'projekti']);
         success = success || angular.noop;
         state = _.isObject(state) ? state.current.name : state;
 
@@ -163,7 +164,7 @@ angular.module('eperusteApp')
         return _.clone(info.suosikit);
       },
       haeSuosikki: function(state) {
-        var stateParams = $stateParams;
+        var stateParams = _.omit($stateParams, ['prestate', 'projekti']);
         var haku = _.filter(info.suosikit, function(s) {
           return state.current.name === s.sisalto.tila && isSame(stateParams, s.sisalto.parametrit);
         });

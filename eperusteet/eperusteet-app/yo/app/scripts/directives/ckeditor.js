@@ -191,7 +191,7 @@ angular.module('eperusteApp')
           removePlugins: 'resize,elementspath,scayt,wsc',
           extraPlugins: 'divarea,sharedspace,termi',
           extraAllowedContent: 'abbr[data-viite]',
-          disallowedContent: 'br',
+          disallowedContent: 'br; tr td{width,height};',
           language: 'fi',
           entities: false,
           'entities_latin': false,

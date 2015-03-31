@@ -525,6 +525,21 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         return lukko;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Revision getLastModifiedRevision(final Long id) {
+        PerusteTila tila = perusteenOsaRepo.getTila(id);
+        if (tila == null) {
+            return null;
+        }
+        if (tila == PerusteTila.LUONNOS) {
+            //luonnos-tilassa olevan perusteen viimeisimmän muokkauksen määrittäminen on epäluotettavaa.
+            return Revision.DRAFT;
+        }
+        return perusteenOsaRepo.getLatestRevisionId(id);
+    }
+
+
     private void assertExists(Long id) {
         if (!perusteenOsaRepo.exists(id)) {
             throw new NotExistsException("Pyydettyä perusteen osaa ei ole olemassa");

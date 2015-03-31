@@ -56,8 +56,8 @@
         <label class="inputwrapper"><input class="form-control" ng-click="editableModel.abstrakti = false" type="radio" ng-model="editableModel.koosteinen" ng-value="true">
           {{'useita-oppimaaria'|kaanna}}</label>
       </div>
-      <label style="margin-top: 10px" ng-show="editableModel.koosteinen === false" class="inputwrapper"><input class="form-control" type="checkbox" ng-model="editableModel.abstrakti">
-        {{'paikallisessa-laadinnassa-maariteltava'|kaanna}}</label>
+      <label style="margin-top: 10px" ng-show="editableModel.koosteinen === false" class="inputwrapper">
+        <input class="form-control" type="checkbox" ng-model="editableModel.abstrakti">{{'paikallisessa-laadinnassa-maariteltava'|kaanna}}</label>
     </div>
     <h3 kaanna="'osiot'" class="osioheader"></h3>
   </div>
@@ -95,7 +95,7 @@
       </table>
     </div>
 
-    <div ng-repeat="osamodel in yleisetosat" muokattava-osio="editableModel" type="tekstikappale"
+    <div ng-repeat="osamodel in yleisetosat" muokattava-osio="editableModel" type="tekstikappale" static="true"
          path="{{osamodel}}"></div>
 
     <!-- <div muokattava&#45;osio="editableModel" type="kohdealueet" path="kohdealueet"></div> -->

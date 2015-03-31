@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource.peruste;
 
+import com.google.common.base.Supplier;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
@@ -25,6 +26,7 @@ import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
+import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
@@ -103,7 +105,6 @@ public class TutkinnonRakenneController {
         @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi, @RequestHeader(value = "If-None-Match", required = false) String eTag) {
         Integer revisio = revisionOf(eTag);
         RakenneModuuliDto rakenne = perusteService.getTutkinnonRakenne(id, suoritustapakoodi, revisio);
-
         if (rakenne == null) {
             return new ResponseEntity<>(eTagHeader(revisio), HttpStatus.NOT_MODIFIED);
         }
@@ -136,9 +137,15 @@ public class TutkinnonRakenneController {
 
     @RequestMapping(value = "/tutkinnonosat", method = GET)
     @ResponseBody
-    public List<TutkinnonOsaViiteDto> getTutkinnonOsat(
+    public ResponseEntity<List<TutkinnonOsaViiteDto>> getTutkinnonOsat(
         @PathVariable("perusteId") final Long id, @PathVariable("suoritustapakoodi") final Suoritustapakoodi suoritustapakoodi) {
-        return perusteService.getTutkinnonOsat(id, suoritustapakoodi);
+        return CacheableResponse.create(perusteService.getLastModifiedRevision(id), 1, new Supplier<List<TutkinnonOsaViiteDto>>() {
+            @Override
+            public List<TutkinnonOsaViiteDto> get() {
+                return perusteService.getTutkinnonOsat(id, suoritustapakoodi);
+            }
+
+        });
     }
 
     @RequestMapping(value = "/tutkinnonosat/versiot/{versio}", method = GET)
