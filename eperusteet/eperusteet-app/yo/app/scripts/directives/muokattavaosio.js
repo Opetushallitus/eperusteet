@@ -30,7 +30,10 @@ angular.module('eperusteApp')
         vuosiluokka: '=?',
         poistoCb: '=?'
       },
-      controller: 'MuokattavaOsioController'
+      controller: 'MuokattavaOsioController',
+      link: function (scope, element, attrs) {
+        scope.cantremove = !_.isEmpty(attrs.static);
+      }
     };
   })
   .controller('MuokattavaOsioController', function($scope, YleinenData, Utils, $state, OsanMuokkausHelper, $stateParams) {
