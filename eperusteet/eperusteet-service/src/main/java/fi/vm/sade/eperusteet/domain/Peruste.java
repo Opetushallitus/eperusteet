@@ -81,7 +81,6 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @NotNull(groups = Valmis.class)
     private TekstiPalanen kuvaus;
 
     @Getter
@@ -118,7 +117,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
                inverseJoinColumns = @JoinColumn(name = "osaamisala_id"))
     @Column(name = "osaamisala_id")
     private Set<Koodi> osaamisalat = new HashSet<>();
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
