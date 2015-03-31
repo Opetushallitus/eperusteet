@@ -68,7 +68,7 @@ angular.module('eperusteApp')
     });
 
     $scope.$on('editointikontrollit:preSave', function() {
-      if ($scope.currentEditable.$editing) {
+      if ($scope.currentEditable && $scope.currentEditable.$editing) {
         $scope.tavoiteFn.ok();
       }
     });
