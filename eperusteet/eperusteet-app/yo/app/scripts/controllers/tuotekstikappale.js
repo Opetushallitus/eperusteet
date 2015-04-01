@@ -19,7 +19,8 @@
 
 angular.module('eperusteApp')
   .controller('TuoTekstikappale', function($q, $scope, $modalInstance, Notifikaatiot, peruste,
-      suoritustapa, PerusteenRakenne, SuoritustapaSisalto, YleinenData, Perusteet, Algoritmit, Kaanna) {
+      suoritustapa, PerusteenRakenne, SuoritustapaSisalto, YleinenData, Perusteet, Algoritmit,
+      Kaanna, PerusopetuksenSisalto) {
     var sisallot = {};
     $scope.nykyinenPeruste = peruste;
     $scope.perusteet = [];
@@ -83,16 +84,14 @@ angular.module('eperusteApp')
     $scope.valitse = function(valittuPeruste) {
       Perusteet.get({perusteId: valittuPeruste.id}, function(peruste) {
         $scope.valittuPeruste = peruste;
-        var suoritustavaton = false;
 
         var oletusSuoritustapa = YleinenData.koulutustyyppiInfo[peruste.koulutustyyppi].oletusSuoritustapa;
         if (oletusSuoritustapa !== 'ops' && oletusSuoritustapa !== 'naytto') {
-          suoritustavaton = true;
+          peruste.suoritustavat = peruste.suoritustavat || [];
           peruste.suoritustavat.push({ suoritustapakoodi: oletusSuoritustapa });
         }
 
         $scope.valittuSuoritustapa = _.first(peruste.suoritustavat).suoritustapakoodi;
-
         $q.all(_.map(peruste.suoritustavat, function(st) {
           return SuoritustapaSisalto.get({
             perusteId: valittuPeruste.id,
@@ -121,6 +120,6 @@ angular.module('eperusteApp')
     };
     $scope.peru = function() { $modalInstance.dismiss(); };
     $scope.ok = function() {
-      $modalInstance.close(_.filter($scope.valittuPeruste.$sisalto, function(s) { return s.$valittu; }));
+      $modalInstance.close(_.filter($scope.valittuPeruste.$sisalto, '$valittu'));
     };
   });
