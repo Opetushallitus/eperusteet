@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .controller('TuoTekstikappale', function($q, $scope, $modalInstance, Notifikaatiot, peruste,
       suoritustapa, PerusteenRakenne, SuoritustapaSisalto, YleinenData, Perusteet, Algoritmit,
-      Kaanna, PerusopetuksenSisalto) {
+      Kaanna) {
     var sisallot = {};
     $scope.nykyinenPeruste = peruste;
     $scope.perusteet = [];
