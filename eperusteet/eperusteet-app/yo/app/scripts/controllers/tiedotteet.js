@@ -99,7 +99,9 @@ angular.module('eperusteApp')
         otsikko: 'vahvista-poisto',
         teksti: 'poistetaanko-tiedote',
       })(function() {
-        TiedoteService.delete(model);
+        TiedoteService.delete(model, function() {
+          _.remove($scope.tiedotteet, model);
+        });
       });
     };
 
