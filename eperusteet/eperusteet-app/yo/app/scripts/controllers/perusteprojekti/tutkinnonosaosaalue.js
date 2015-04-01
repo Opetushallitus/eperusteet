@@ -8,7 +8,6 @@ angular.module('eperusteApp')
     var tempId = 0;
 
     $scope.tutkinnonOsa = $scope.$parent.tutkinnonOsaViite.tutkinnonOsa;
-    console.log($scope.tutkinnonOsa = $scope.$parent.tutkinnonOsaViite.tutkinnonOsa);
     $scope.osaAlue = {
       nimi:{}
     };
