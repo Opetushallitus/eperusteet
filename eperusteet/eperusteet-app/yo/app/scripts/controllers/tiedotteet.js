@@ -155,7 +155,7 @@ angular.module('eperusteApp')
 
   .controller('TiedotteenMuokkausController', function ($scope, model, perusteprojektiId, Varmistusdialogi,
       $modalInstance, $rootScope) {
-    $scope.model = model;
+    $scope.model = _.cloneDeep(model);
     $scope.creating = !model;
     $scope.perusteprojektiId = perusteprojektiId;
 
