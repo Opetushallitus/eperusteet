@@ -76,7 +76,7 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @NotNull(groups = Valmis.class)
     private TekstiPalanen nimi;
 
-    @ValidHtml(whitelist = WhitelistType.MINIMAL)
+    @ValidHtml(whitelist = WhitelistType.SIMPLIFIED)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter
     @Setter
