@@ -18,7 +18,7 @@ European Union Public Licence for more details.
     <div class="row tutkinto-sisalto">
         <div ng-if="tiivistelma" class="tiivistelma">
             <h3 kaanna="perusteen-tiivistelma"></h3>
-            <p ng-bind="tiivistelma|kaanna"></p>
+            <p ng-bind-html="tiivistelma|kaanna|unsafe"></p>
         </div>
 
         <div class="esityksen-tarkastelu">
