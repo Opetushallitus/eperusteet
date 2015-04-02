@@ -47,6 +47,7 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.SetJoin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -113,14 +114,15 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
 
         final Expression<Date> siirtymaPaattyy = root.get(Peruste_.siirtymaPaattyy);
         final Expression<Date> voimassaoloLoppuu = root.get(Peruste_.voimassaoloLoppuu);
+        final Kieli kieli = Kieli.of(pq.getKieli());
 
-        Predicate pred = cb.equal(teksti.get(LokalisoituTeksti_.kieli), Kieli.of(pq.getKieli()));
+        Predicate pred = cb.equal(teksti.get(LokalisoituTeksti_.kieli), kieli);
 
         if (pq.getNimi() != null) {
             pred = cb.and(pred, cb.like(cb.lower(teksti.get(LokalisoituTeksti_.teksti)), cb.literal(RepositoryUtil.kuten(pq.getNimi()))));
         }
 
-        if (pq.getDiaarinumero() != null ) {
+        if (pq.getDiaarinumero() != null) {
             pred = cb.and(pred, cb.equal(root.get(Peruste_.diaarinumero), cb.literal(new Diaarinumero(pq.getDiaarinumero()))));
         }
 
@@ -141,13 +143,14 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         }
 
         if (!empty(pq.getOpintoala())) {
-            koulutukset = (koulutukset == null ) ? root.join(Peruste_.koulutukset) : koulutukset;
+            koulutukset = (koulutukset == null) ? root.join(Peruste_.koulutukset) : koulutukset;
             pred = cb.and(pred, koulutukset.get(Koulutus_.opintoalakoodi).in(pq.getOpintoala()));
         }
 
         if (!Strings.isNullOrEmpty(pq.getKoulutuskoodi())) {
-            koulutukset = (koulutukset == null ) ? root.join(Peruste_.koulutukset) : koulutukset;
-            pred = cb.and(pred, cb.or(cb.equal(koulutukset.get(Koulutus_.koulutuskoodiUri), pq.getKoulutuskoodi()),cb.equal(koulutukset.get(Koulutus_.koulutuskoodiArvo), pq.getKoulutuskoodi())));
+            koulutukset = (koulutukset == null) ? root.join(Peruste_.koulutukset) : koulutukset;
+            pred = cb.and(pred, cb.or(cb.equal(koulutukset.get(Koulutus_.koulutuskoodiUri), pq.getKoulutuskoodi()), cb.equal(koulutukset
+                                      .get(Koulutus_.koulutuskoodiArvo), pq.getKoulutuskoodi())));
         }
 
         if (pq.isSiirtyma()) {
@@ -164,8 +167,14 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             pred = cb.and(pred, cb.equal(root.get(Peruste_.tyyppi), PerusteTyyppi.of(pq.getPerusteTyyppi())));
         }
 
-        if ( pq.getMuokattu() != null ) {
+        if (pq.getMuokattu() != null) {
             pred = cb.and(pred, cb.greaterThan(root.get(Peruste_.muokattu), cb.literal(new Date(pq.getMuokattu()))));
+        }
+
+        if (pq.getKieli() != null) {
+            //Hibernate bug (?), isMember ei toimi (bindaus ei mene enumina)
+            SetJoin<Peruste, Kieli> kielet = root.join(Peruste_.kielet);
+            pred = cb.and(pred, cb.equal(kielet, kieli));
         }
 
         return pred;
