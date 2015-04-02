@@ -215,8 +215,8 @@ European Union Public Licence for more details.
             <h3 class="panel-title" kaanna>tiivistelma</h3>
           </div>
           <div class="panel-body">
-            <textarea ng-if="editEnabled" class="form-control msd-elastic" ng-model="editablePeruste.kuvaus" slocalized></textarea>
-
+            <!-- <textarea ng&#45;if="editEnabled" class="form&#45;control msd&#45;elastic" ng&#45;model="editablePeruste.kuvaus" slocalized></textarea> -->
+            <div ckeditor ng-if="editEnabled" slocalized ng-model="editablePeruste.kuvaus"></div>
             <p ng-show="hasContent(peruste.kuvaus) && !editEnabled" kaanna="peruste.kuvaus"></p>
             <p ng-show="!hasContent(peruste.kuvaus) && !editEnabled" kaanna="ei-tiivistelmaa"></p>
           </div>

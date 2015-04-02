@@ -43,9 +43,8 @@ public class CacheableResponse {
             notmodified &= eTag == null || eTag.equals(Etags.eTagOf(rev.getNumero()));
             notmodified &= l == -1 || (rev.getPvm().getTime() / 1000) == (l / 1000);
             if (notmodified) {
-                HttpHeaders headers = Etags.eTagHeader(rev.getNumero());
-                headers.setCacheControl("public, max-age="+age);
-                headers.setLastModified(rev.getPvm().getTime());
+                HttpHeaders headers = new HttpHeaders();
+                headers.setCacheControl("no-cache");
                 return new ResponseEntity<>(headers, HttpStatus.NOT_MODIFIED);
             }
         }
