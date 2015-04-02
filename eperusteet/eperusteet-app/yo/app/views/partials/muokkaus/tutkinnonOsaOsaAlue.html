@@ -10,18 +10,10 @@
 
   <div ng-if="$alarelaatiot && $alarelaatiot.length > 0">
     <label for="koodi-input" class="header" kaanna>muokkaus-tutkinnon-osan-koodi-header</label>
-    <!-- <div class="fixed&#45;group"> -->
-    <!--   <input id="koodi&#45;input" class="form&#45;control" type="text" ng&#45;model="osaAlue.koodiArvo" editointi&#45;kontrolli disabled="disabled"> -->
-    <!--   <div class="addon"><button class="btn btn&#45;default" ng&#45;click="koodistoOsaClick()" kaanna>hae&#45;koodistosta</button></div> -->
-    <!-- </div> -->
-    <div class="modal-body tag-modal">
-      <div style="margin-bottom: 6px" ng-repeat="ar in $alarelaatiot" ng-click="valitseAlarelaatio($index === 0 ? null : ar)">
-        <div class="tag-indicator">
-          <span class="glyphicon" ng-class="osaAlue.koodiUri === ar.koodiUri || (!osaAlue.koodiUri && $index === 0) ? 'glyphicon-check' : 'glyphicon-unchecked'"></span>
-        </div>
-        <span ng-hide="ar.nimi" kaanna="'ei-valintaa'"></span>
-        <span ng-show="ar.nimi">{{ ar.nimi | kaanna }} (<b>{{ ar.koodiArvo }}</b>)</span>
-      </div>
+    <div style="margin-bottom: 6px" ng-repeat="ar in $alarelaatiot" ng-click="valitseAlarelaatio($index === 0 ? null : ar)">
+      <span class="glyphicon" ng-class="osaAlue.koodiUri === ar.koodiUri || (!osaAlue.koodiUri && $index === 0) ? 'glyphicon-check' : 'glyphicon-unchecked'"></span>
+      <span ng-hide="ar.nimi" kaanna="'ei-valintaa'"></span>
+      <span ng-show="ar.nimi">{{ ar.nimi | kaanna }} (<b>{{ ar.koodiArvo }}</b>)</span>
     </div>
   </div>
 

@@ -862,11 +862,11 @@
 
     "korvattavaa-ei-loydy-jarjestelmasta": "Korvattavaa perustetta ei löydy järjestelmästä.",
     "ei-korvattavia-perusteita": "Yhtään korvattavaa perustetta ei ole valittu",
-    "korvattavat-perusteet": "Korvattavat perusteet",
+    "korvattavat-perusteet": "Korvattavat määräykset",
     "diaari-jo-listalla": "Diaarinumero on jo valittu",
     "oma-diaarinumero": "Peruste ei voi korvata itseään",
     "lisaa-diaari": "Lisää diaarinumero",
-    "julkaisu-korvaa-perusteet": "Peruste korvaa seuraavat käytössä olevat perusteet:",
+    "julkaisu-korvaa-perusteet": "Peruste korvaa seuraavat käytössä olevat määräykset:",
     "peruste-ei-voimassaolon-alkamisaikaa": "Perusteelle ei ole annettu voimassaolon alkamisaikaa",
     "korvattava-diaari-on-oma-diaari": "Korvattavien perusteiden listalla oma diaarinumero",
     "korvattava-peruste-on-eri-koulutustyyppia": "Korvattava peruste on eri koulutustyyppiä",
