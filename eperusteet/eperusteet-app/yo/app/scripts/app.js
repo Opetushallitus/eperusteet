@@ -31,7 +31,8 @@ angular.module('eperusteApp', [
   'monospaced.elastic',
   'ui.tree',
   'angular-data.DSCacheFactory',
-  'ui.select'
+  'ui.select',
+  'eperusteet.esitys'
 ])
   .constant('SERVICE_LOC', '/eperusteet-service/api')
   // .constant('ORGANISATION_SERVICE_LOC', '/organisaatio-service/rest')
