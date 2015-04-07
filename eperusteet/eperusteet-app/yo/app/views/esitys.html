@@ -16,6 +16,12 @@ European Union Public Licence for more details.
 
 <div class="main-content" id="main">
 <!-- esitys.html -->
+  <div class="painikkeet pull-right">
+    <a class="action-link" ng-click="luoPdf()" icon-role="save" kaanna="lataa-peruste-pdf-muodossa"></a>
+  </div>
+  <h1>
+    <span kaanna="peruste.nimi || 'nimetön'"></span>
+  </h1>
     <div ng-if="$prestate" class="alert alert-info">
         <h4 kaanna="'perusteen-esikatselu'"></h4>
         <p kaanna="'laadinnan-esikatselu-info'"></p>
@@ -34,12 +40,6 @@ European Union Public Licence for more details.
         </div>
         <div class="sivunavi-clear"></div>
         <div class="sivunavi-sisalto" ng-cloak>
-            <div class="painikkeet pull-right">
-              <a class="action-link" ng-click="luoPdf()" icon-role="save" kaanna="lataa-peruste-pdf-muodossa"></a>
-            </div>
-            <h1>
-              <span kaanna="peruste.nimi || 'nimetön'"></span>
-            </h1>
             <div id="esitysPrintSisalto" ui-view></div>
         </div>
     </div>
