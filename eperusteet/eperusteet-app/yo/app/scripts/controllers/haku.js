@@ -49,8 +49,8 @@ angular.module('eperusteApp')
       })
       .state('root.selaus.lisaopetus', {
         url: '/lisaopetus/:perusteId',
-        templateUrl: 'views/esiopetus.html',
-        controller: 'EsiopetusController',
+        templateUrl: 'eperusteet-esitys/views/yksinkertainen.html',
+        controller: 'epYksinkertainenPerusteController',
         resolve: {
           sisalto: function($stateParams, $q, Perusteet, SuoritustapaSisalto) {
             // TODO lisää uusin peruste jos $stateParams.perusteId on falsey
@@ -61,10 +61,26 @@ angular.module('eperusteApp')
           }
         }
       })
+      .state('root.selaus.lisaopetus.tekstikappale', {
+        url: '/tekstikappale/:tekstikappaleId',
+        templateUrl: 'eperusteet-esitys/views/tekstikappale.html',
+        controller: 'epEsitysSisaltoController',
+        resolve: {
+          tekstikappaleId: function ($stateParams) {
+            return $stateParams.tekstikappaleId;
+          },
+          tekstikappale: function (tekstikappaleId, PerusteenOsat) {
+            return PerusteenOsat.getByViite({viiteId: tekstikappaleId}).$promise;
+          },
+          lapset: function (sisalto, tekstikappaleId, epTekstikappaleChildResolver) {
+            return epTekstikappaleChildResolver.get(sisalto[1], tekstikappaleId);
+          }
+        }
+      })
       .state('root.selaus.esiopetus', {
         url: '/esiopetus/:perusteId',
-        templateUrl: 'views/esiopetus.html',
-        controller: 'EsiopetusController',
+        templateUrl: 'eperusteet-esitys/views/yksinkertainen.html',
+        controller: 'epYksinkertainenPerusteController',
         resolve: {
           sisalto: function($stateParams, $q, Perusteet, SuoritustapaSisalto) {
             // TODO lisää uusin peruste jos $stateParams.perusteId on falsey
@@ -72,6 +88,22 @@ angular.module('eperusteApp')
               Perusteet.get({perusteId: $stateParams.perusteId}).$promise,
               SuoritustapaSisalto.get({perusteId: $stateParams.perusteId, suoritustapa: 'esiopetus'}).$promise,
             ]);
+          }
+        }
+      })
+      .state('root.selaus.esiopetus.tekstikappale', {
+        url: '/tekstikappale/:tekstikappaleId',
+        templateUrl: 'eperusteet-esitys/views/tekstikappale.html',
+        controller: 'epEsitysSisaltoController',
+        resolve: {
+          tekstikappaleId: function ($stateParams) {
+            return $stateParams.tekstikappaleId;
+          },
+          tekstikappale: function (tekstikappaleId, PerusteenOsat) {
+            return PerusteenOsat.getByViite({viiteId: tekstikappaleId}).$promise;
+          },
+          lapset: function (sisalto, tekstikappaleId, epTekstikappaleChildResolver) {
+            return epTekstikappaleChildResolver.get(sisalto[1], tekstikappaleId);
           }
         }
       })

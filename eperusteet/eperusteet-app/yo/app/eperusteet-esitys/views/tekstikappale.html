@@ -1,0 +1,34 @@
+<h1 ng-bind-html="tekstikappale.nimi | kaanna | unsafe"></h1>
+<termisto-tekstikentta tekstikentta="tekstikappale.teksti"></termisto-tekstikentta>
+
+<div ng-repeat="lapsi in lapset">
+  <ep-tekstiotsikko level="2" model="lapsi" link-var="linkVar"></ep-tekstiotsikko>
+  <termisto-tekstikentta tekstikentta="lapsi.$osa.teksti"></termisto-tekstikentta>
+
+  <div ng-repeat="alilapsi in lapsi.lapset">
+    <ep-tekstiotsikko level="3" model="alilapsi" link-var="linkVar"></ep-tekstiotsikko>
+    <termisto-tekstikentta tekstikentta="alilapsi.$osa.teksti"></termisto-tekstikentta>
+
+    <div ng-repeat="alialilapsi in alilapsi.lapset">
+      <ep-tekstiotsikko level="4" model="alialilapsi" link-var="linkVar"></ep-tekstiotsikko>
+      <termisto-tekstikentta tekstikentta="alialilapsi.$osa.teksti"></termisto-tekstikentta>
+    </div>
+  </div>
+</div>
+
+<div class="prevnext-wrapper" ng-if="links.prev || links.next">
+  <div class="prevnext">
+    <a class="prev chevron" ng-if="links.prev" ui-sref="^.tekstikappale({tekstikappaleId: links.prev.$osa.id})">
+      <span class="glyphicon glyphicon-chevron-left"></span>
+    </a>
+    <a class="prev" ng-if="links.prev" ui-sref="^.tekstikappale({tekstikappaleId: links.prev.$osa.id})">
+      <span ng-bind-html="links.prev.label | kaanna | unsafe"></span>
+    </a>
+    <a class="next" ng-if="links.next" ui-sref="^.tekstikappale({tekstikappaleId: links.next.$osa.id})">
+      <span ng-bind-html="links.next.label | kaanna | unsafe"></span>
+    </a>
+    <a class="next chevron" ng-if="links.next" ui-sref="^.tekstikappale({tekstikappaleId: links.next.$osa.id})">
+      <span class="glyphicon glyphicon-chevron-right"></span>
+    </div>
+  </div>
+</div>
