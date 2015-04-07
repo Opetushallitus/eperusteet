@@ -18,7 +18,8 @@
 
 /* Sets sivunavi items active based on current state */
 angular.module('eperusteet.esitys')
-.service('epPerusopetusStateService', function ($state, $stateParams, epSivunaviUtils, $rootScope) {
+.service('epPerusopetusStateService', function ($state, $stateParams, epSivunaviUtils, $rootScope,
+  epEsitysSettings) {
   var state = {};
   var section = null;
 
@@ -63,7 +64,7 @@ angular.module('eperusteet.esitys')
         item.$selected = '' + $stateParams.tekstikappaleId === '' + item.$osa.id;
         item.$hidden = item.depth > 0;
       } else if (item.id === 'laajaalaiset') {
-        item.$selected = $state.is('root.perusopetus.laajaalaiset');
+        item.$selected = $state.is(epEsitysSettings.perusopetusState + '.laajaalaiset');
       }
       if (item.$selected) {
         selected = item;

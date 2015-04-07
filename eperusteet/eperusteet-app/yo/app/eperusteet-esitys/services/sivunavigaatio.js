@@ -309,7 +309,7 @@
     });
 
     $scope.$on('$stateChangeSuccess', function (event, toState) {
-      if (toState.name !== 'root.perusopetus.sisallot') {
+      if (toState.name !== epEsitysSettings.perusopetusState + '.sisallot') {
         Utils.scrollTo('#ylasivuankkuri');
       }
       updateModel($scope.items);

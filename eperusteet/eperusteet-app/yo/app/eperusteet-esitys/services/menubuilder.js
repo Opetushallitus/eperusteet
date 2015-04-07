@@ -17,7 +17,7 @@
 'use strict';
 
 angular.module('eperusteet.esitys')
-.service('epMenuBuilder', function (Algoritmit, $state, Kieli, Utils) {
+.service('epMenuBuilder', function (Algoritmit, $state, Kieli, Utils, epEsitysSettings) {
   function oppiaineSort(aineet) {
     // Handle mixed jnro + no jnro situations
     function jnroSort(item) {
@@ -50,8 +50,8 @@ angular.module('eperusteet.esitys')
       $hidden: depth > 0,
       $oppiaine: oppiaine,
       label: oppiaine.nimi,
-      url: isSisalto ? $state.href('root.perusopetus.sisallot', {oppiaineId: oppiaine.id}) :
-        $state.href('root.perusopetus.vlkoppiaine', {vlkId: vlk[0], oppiaineId: oppiaine.id})
+      url: isSisalto ? $state.href(epEsitysSettings.perusopetusState + '.sisallot', {oppiaineId: oppiaine.id}) :
+        $state.href(epEsitysSettings.perusopetusState + '.vlkoppiaine', {vlkId: vlk[0], oppiaineId: oppiaine.id})
     });
   }
 
@@ -94,11 +94,11 @@ angular.module('eperusteet.esitys')
       levels[item.depth] = index;
       item.$parent = levels[item.depth - 1] || null;
     });
-      if ($state.current.name.indexOf('root.perusopetus') >= 0) {
+      if ($state.current.name.indexOf(epEsitysSettings.perusopetusState) >= 0) {
         suunnitelma.push({
           label: 'laaja-alaisen-osaamisen-alueet',
           id: 'laajaalaiset',
-          link: ['root.perusopetus.laajaalaiset'],
+          link: [epEsitysSettings.perusopetusState + '.laajaalaiset'],
           depth: 0,
           $hidden: false,
           $uppercase: true
@@ -114,7 +114,7 @@ angular.module('eperusteet.esitys')
         $vkl: vlk,
         label: vlk.nimi,
         depth: 0,
-        url: $state.href('root.perusopetus.vuosiluokkakokonaisuus', {vlkId: vlk.id})
+        url: $state.href(epEsitysSettings.perusopetusState + '.vuosiluokkakokonaisuus', {vlkId: vlk.id})
       });
       traverseOppiaineet(aineet, arr, vlk.id, 1);
     });

@@ -1,0 +1,76 @@
+<h1 class="oppiaine-nimi" kaanna="valittuOppiaine.oppiaine.nimi"></h1>
+<div class="vuosiluokkavalitsin" ng-if="valittuOppiaine.oppiaine.vuosiluokkakokonaisuudet.length > 1">
+  <ul class="nav nav-pills">
+    <li ng-repeat="(id, kokonaisuus) in valittuOppiaine.vuosiluokkakokonaisuudet"
+        ng-class="{active: activeVlkId == kokonaisuus._vuosiluokkaKokonaisuus }">
+      <a ng-if="!inSisallot" class="vlktab action-link" ui-sref="^.vlkoppiaine({vlkId: kokonaisuus._vuosiluokkaKokonaisuus})">
+        {{ vuosiluokkakokonaisuudetMap[kokonaisuus._vuosiluokkaKokonaisuus].nimi | kaanna }}
+      </a>
+      <a ng-if="inSisallot" class="vlktab action-link" ui-sref="^.sisallot({valittu: kokonaisuus._vuosiluokkaKokonaisuus})">
+        {{ vuosiluokkakokonaisuudetMap[kokonaisuus._vuosiluokkaKokonaisuus].nimi | kaanna }}
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div class="clearfix"></div>
+
+<div>
+  <div ng-if="oppimaarat.length > 0">
+    <h2 kaanna="'oppimaarat'"></h2>
+    <ul>
+      <li ng-repeat="oppimaara in oppimaarat">
+        <a ng-if="!inSisallot" ui-sref="^.vlkoppiaine({oppiaineId: oppimaara.id})" ng-bind="oppimaara.nimi | kaanna"></a>
+        <a ng-if="inSisallot" ui-sref="^.sisallot({oppiaineId: oppimaara.id})" ng-bind="oppimaara.nimi | kaanna"></a>
+      </li>
+    </ul>
+  </div>
+
+  <div ng-hide="filterSisalto.tehtava || !hasContent(valittuOppiaine.oppiaine.tehtava)">
+    <h2 ng-bind-html="valittuOppiaine.oppiaine.tehtava.otsikko | kaanna | unsafe"></h2>
+    <termisto-tekstikentta tekstikentta="valittuOppiaine.oppiaine.tehtava.teksti || '-'"></termisto-tekstikentta>
+  </div>
+
+  <div ng-show="valittuOppiaine.vlks">
+    <h2>{{ vuosiluokkakokonaisuudetMap[valittuOppiaine.vlks._vuosiluokkaKokonaisuus].nimi | kaanna }}</h2>
+    <hr>
+  </div>
+
+  <div ng-hide="filterSisalto.tehtava || !hasContent(valittuOppiaine.vlks.tehtava)">
+    <h3 ng-bind-html="valittuOppiaine.vlks.tehtava.otsikko | kaanna | unsafe"></h3>
+    <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.tehtava.teksti || '-'"></termisto-tekstikentta>
+  </div>
+
+  <div ng-hide="filterSisalto.tyotavat || !hasContent(valittuOppiaine.vlks.tyotavat)">
+    <h3 ng-bind-html="valittuOppiaine.vlks.tyotavat.otsikko | kaanna | unsafe"></h3>
+    <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.tyotavat.teksti || '-'"></termisto-tekstikentta>
+  </div>
+
+  <div ng-hide="filterSisalto.ohjaus || !hasContent(valittuOppiaine.vlks.ohjaus)">
+    <h3 ng-bind-html="valittuOppiaine.vlks.ohjaus.otsikko | kaanna | unsafe"></h3>
+    <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.ohjaus.teksti || '-'"></termisto-tekstikentta>
+  </div>
+
+  <div ng-hide="filterSisalto.arviointi || !hasContent(valittuOppiaine.vlks.arviointi)">
+    <h3 ng-bind-html="valittuOppiaine.vlks.arviointi.otsikko | kaanna | unsafe"></h3>
+    <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.arviointi.teksti || '-'"></termisto-tekstikentta>
+  </div>
+
+  <div ng-hide="filterSisalto.sisaltoalueet || !valittuOppiaine.vlks.sisaltoalueinfo">
+      <h3>{{ valittuOppiaine.vlks.sisaltoalueinfo.otsikko | kaanna }}</h3>
+      <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.sisaltoalueinfo.teksti || '-'"></termisto-tekstikentta>
+  </div>
+
+  <div ng-hide="filterSisalto.sisaltoalueet || !valittuOppiaine.vlks.sisaltoalueet || valittuOppiaine.vlks.sisaltoalueet.length === 0">
+    <div ng-repeat="sa in valittuOppiaine.vlks.sisaltoalueet">
+      <h4 class="sparse">{{ sa.nimi | kaanna }}</h4>
+      <termisto-tekstikentta tekstikentta="sa.kuvaus || '-'"></termisto-tekstikentta>
+    </div>
+  </div>
+
+  <div ng-hide="filterSisalto.tavoitteet || valittuOppiaine.vlks.tavoitteet.length === 0"
+       ng-if="valittuOppiaine.vlks._vuosiluokkaKokonaisuus">
+    <h3 kaanna="'perusopetus-tavoitteet'"></h3>
+    <div tavoitteet="valittuOppiaine.vlks" oppiaine="valittuOppiaine" osaamiset="osaamiset" vuosiluokka="valittuOppiaine.sisallot"></div>
+  </div>
+</div>

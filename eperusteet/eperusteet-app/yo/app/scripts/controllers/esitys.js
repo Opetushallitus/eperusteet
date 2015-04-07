@@ -47,8 +47,8 @@ angular.module('eperusteApp')
       })
       .state('root.esitys.peruste.rakenne', {
         url: '/rakenne',
-        templateUrl: 'views/partials/esitys/rakenne.html',
-        controller: 'EsitysRakenneCtrl',
+        templateUrl: 'eperusteet-esitys/views/rakenne.html',
+        controller: 'epEsitysRakenneController',
         resolve: {
           // FIXME: ui-router bug or some '$on'-callback manipulating $stateParams?
           // $stateParams changes between config and controller
@@ -61,23 +61,34 @@ angular.module('eperusteApp')
       })
       .state('root.esitys.peruste.tutkinnonosat', {
         url: '/tutkinnonosat',
-        templateUrl: 'views/partials/esitys/tutkinnonOsat.html',
-        controller: 'EsitysTutkinnonOsatCtrl'
+        templateUrl: 'eperusteet-esitys/views/tutkinnonosat.html',
+        controller: 'epEsitysTutkinnonOsatController'
       })
       .state('root.esitys.peruste.tutkinnonosa', {
         url: '/tutkinnonosat/:id',
-        templateUrl: 'views/partials/esitys/tutkinnonOsa.html',
-        controller: 'EsitysTutkinnonOsaCtrl'
+        templateUrl: 'eperusteet-esitys/views/tutkinnonosa.html',
+        controller: 'epEsitysTutkinnonOsaController'
       })
       .state('root.esitys.peruste.tekstikappale', {
         url: '/sisalto/:osanId',
         templateUrl: 'eperusteet-esitys/views/tekstikappale.html',
-        controller: 'epEsitysSisaltoController'
+        controller: 'epEsitysSisaltoController',
+        resolve: {
+          tekstikappaleId: function ($stateParams) {
+            return $stateParams.osanId;
+          },
+          tekstikappale: function (tekstikappaleId, PerusteenOsat) {
+            return PerusteenOsat.getByViite({viiteId: tekstikappaleId}).$promise;
+          },
+          lapset: function (sisalto, tekstikappaleId, epTekstikappaleChildResolver) {
+            return epTekstikappaleChildResolver.get(sisalto, tekstikappaleId);
+          }
+        }
       })
       .state('root.esitys.peruste.tiedot', {
         url: '/tiedot',
-        templateUrl: 'views/partials/esitys/tiedot.html',
-        controller: 'EsitysTiedotCtrl'
+        templateUrl: 'eperusteet-esitys/views/tiedot.html',
+        controller: 'epEsitysTiedotController'
       });
   })
 
@@ -154,7 +165,7 @@ angular.module('eperusteApp')
         // TODO siirry käyttämään YleinenData.koulutustyyppiInfo:a
         suoritustapa: YleinenData.validSuoritustapa($scope.peruste, $stateParams.suoritustapa)
       });
-      $state.go('root.esitys.peruste.rakenne', params);
+      $state.go('root.esitys.peruste.tiedot', params);
     } else {
       $scope.suosikkiHelper($state, $scope.valittuSisalto.nimi);
       PerusteenOsat.get({ osanId: $scope.valittuSisalto.id }, _.setWithCallback($scope, 'valittuSisalto'));
@@ -228,7 +239,7 @@ angular.module('eperusteApp')
         // TODO siirry käyttämään YleinenData.koulutustyyppiInfo:a
         suoritustapa: YleinenData.validSuoritustapa($scope.peruste, $stateParams.suoritustapa)
       });
-      $state.go('root.esitys.peruste.rakenne', params);
+      $state.go('root.esitys.peruste.tiedot', params);
     }
 
     $scope.rajaaSisaltoa = function() {

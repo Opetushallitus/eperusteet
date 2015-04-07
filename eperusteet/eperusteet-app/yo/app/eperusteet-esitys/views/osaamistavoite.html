@@ -1,0 +1,33 @@
+<!-- partials/esitys/osaamistavoite.html -->
+
+<h4 ng-show="$first">{{tavoite.nimi | kaanna}}</h4>
+<h4>{{tavoite.pakollinen && 'pakolliset-osaamistavoitteet' || 'valinnaiset-osaamistavoitteet' | kaanna}}, {{tavoite.laajuus}} {{yksikko|kaanna}}</h4>
+<div class="leipateksti" ng-bind-html="tavoite.tavoitteet | kaanna | unsafe"></div>
+
+<div ng-if="hasArviointi(tavoite)">
+  <h4 kaanna="'osaamisen-arviointi'"></h4>
+  <div ng-repeat="kohdealue in tavoite.arviointi.arvioinninKohdealueet">
+      <div class="arviointi">
+          <div class="arviointi-otsikko" ng-hide="kohdealue.otsikko.fi === 'automaattinen'">
+              <h4>{{ kohdealue.otsikko | kaanna }}</h4>
+          </div>
+          <div class="arviointi-sisalto">
+              <div ng-repeat="kohde in kohdealue.arvioinninKohteet">
+                  <h4>{{ kohde.otsikko | kaanna }}</h4>
+                  <table class="table table-striped">
+                      <tr ng-repeat="okriteeri in kohde.osaamistasonKriteerit | orderBy:'_osaamistaso'">
+                          <td width="15%">{{ arviointiasteikot[kohde._arviointiAsteikko][okriteeri._osaamistaso].otsikko | kaanna }}</td>
+                          <td>
+                              <ul>
+                                  <li ng-repeat="kriteeri in okriteeri.kriteerit">{{ kriteeri | kaanna }}</li>
+                              </ul>
+                          </td>
+                      </tr>
+                  </table>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<div class="leipateksti" ng-bind-html="tavoite.tunnustaminen | kaanna | unsafe"></div>
