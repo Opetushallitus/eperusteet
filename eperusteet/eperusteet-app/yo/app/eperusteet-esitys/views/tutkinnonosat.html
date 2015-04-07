@@ -1,0 +1,24 @@
+<div>
+    <h1 kaanna="'tutkinnonosat'"></h1>
+
+    <div class="tutkinnonosat-rajaus">
+      <rajaus model="tosarajaus" callback="paivitaRajaus(value)" placeholder="{{'rajaa-tutkinnonosia'|kaanna}}"></rajaus>
+    </div>
+
+    <ul class="tutkinnonosat">
+        <li ui-sref="root.esitys.peruste.tutkinnonosa({ id: v.id })"
+            class="tutkinnonosa-laatikko list-group-item" ng-repeat="v in tutkinnonOsat | mapFilter:rajaaTutkinnonOsia">
+            <div ng-hide="editoi" class="muokkaus" icon-role="forward"></div>
+            <div class="otsikko otsikko-esitys">
+                <h3>
+                    <a ui-sref="root.esitys.peruste.tutkinnonosa({ id: v.id })">{{ v.nimi | kaanna }}</a>
+                </h3>
+                <div class="pienet-tiedot">
+                    <div class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && v.laajuus">{{ v.laajuus }} {{ yksikko || '' | kaanna }}</div>
+                </div>
+            </div>
+        </li>
+    </ul>
+
+    <div class="clearfix"></div>
+</div>

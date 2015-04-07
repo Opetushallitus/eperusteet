@@ -55,6 +55,9 @@ angular.module('eperusteApp', [
       $injector.get('$state').go('root.virhe');
     });
   })
+  .config(function (epEsitysSettingsProvider) {
+    epEsitysSettingsProvider.setValue('perusopetusState', 'root.selaus.perusopetus');
+  })
   .config(function($translateProvider, $urlRouterProvider) {
     var preferred = 'fi';
     $urlRouterProvider.when('/', '/' + preferred);
