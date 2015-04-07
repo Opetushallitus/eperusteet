@@ -4,7 +4,7 @@
 
   <div id="sivunavi-sisalto-wrapper" ng-class="{'sivunavi-hidden': !isNaviVisible()}">
     <div class="sivunavi-navigaatio">
-      <sivunavigaatio2 on-section-change="onSectionChange" header="navi.header" sections="navi.sections" show-one="navi.showOne"></sivunavigaatio2>
+      <sivunavigaatio on-section-change="onSectionChange" header="navi.header" sections="navi.sections" show-one="navi.showOne"></sivunavigaatio>
     </div>
 
     <div class="sivunavi-clear"></div>
@@ -86,7 +86,7 @@
                 <h3>{{ valittuOppiaine.vlks.tyotavat.otsikko | kaanna }}</h3>
                 <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.tyotavat.teksti || '-'"></termisto-tekstikentta>
               </div>
-              
+
               <div ng-hide="!hasContent(valittuOppiaine.vlks.sisaltoalueinfo)">
                 <h3>{{ valittuOppiaine.vlks.sisaltoalueinfo.otsikko | kaanna }}</h3>
                 <termisto-tekstikentta tekstikentta="valittuOppiaine.vlks.sisaltoalueinfo.teksti || '-'"></termisto-tekstikentta>

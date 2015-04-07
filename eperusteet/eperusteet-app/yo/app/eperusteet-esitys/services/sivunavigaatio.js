@@ -15,7 +15,6 @@
  */
 
 'use strict';
-/* global _ */
 
 /**
  * Sivunavigaatioelementti
@@ -27,11 +26,10 @@
  * @param footer Sisältö lisätään menun alapuolelle
  * Valinnainen transclude sijoitetaan ensimmäiseksi otsikon alle.
  */
-angular.module('eperusteApp')
-
-  .directive('sivunavigaatio', function ($compile) {
+ angular.module('eperusteet.esitys')
+  .directive('epSivunavigaatio', function ($window, $document, $timeout, $compile) {
     return {
-      templateUrl: 'views/partials/sivunavi2.html',
+      templateUrl: 'eperusteet-esitys/directives/sivunavi.html',
       restrict: 'AE',
       scope: {
         items: '=',
@@ -41,11 +39,12 @@ angular.module('eperusteApp')
         showOne: '=',
         onSectionChange: '=?'
       },
-      controller: 'SivuNaviController',
+      controller: 'epSivuNaviController',
       transclude: true,
-      link: function (scope, element) {
+      link: function (scope, element, attrs) {
         var transcluded = element.find('#sivunavi-tc').contents();
         scope.hasTransclude = transcluded.length > 0;
+        scope.disableRajaus = !_.isEmpty(attrs.disableRajaus);
 
         function updateFooter() {
           scope.footerContent = scope.footer ? $compile(scope.footer)(scope) : '';
@@ -61,32 +60,62 @@ angular.module('eperusteApp')
     };
   })
 
-  .controller('SivuNaviController', function ($scope, $state, Algoritmit, Utils, $timeout, $stateParams) {
-    $scope.menuCollapsed = true;
-    $scope.onSectionChange = _.isFunction($scope.onSectionChange) ? $scope.onSectionChange : angular.noop;
-
-    $scope.search = {
-      term: '',
-      update: function () {
-        var matchCount = 0;
-        _.each($scope.items, function (item) {
-          item.$matched = _.isEmpty($scope.search.term) || _.isEmpty(item.label) ? true :
-            Algoritmit.match($scope.search.term, item.label);
-          if (item.$matched) {
-            matchCount++;
-            var parent = $scope.items[item.$parent];
-            while (parent) {
-              parent.$matched = true;
-              parent = $scope.items[parent.$parent];
-            }
-          }
-        });
-        $scope.hasResults = matchCount > 1; // root matches always
-        updateModel($scope.items);
+  .service('epSivunaviUtils', function ($state, $stateParams) {
+    function getChildren(items, index) {
+      var children = [];
+      var level = items[index].depth;
+      index = index + 1;
+      var depth = level + 1;
+      for (; index < items.length && depth > level; ++index) {
+        depth = items[index].depth;
+        if (depth === level + 1) {
+          children.push(index);
+        }
       }
-    };
+      return children;
+    }
 
-    $scope.$watch('search.term', $scope.search.update);
+    function isActive(item) {
+      if (_.has(item, '$selected')) {
+        return item.$selected;
+      }
+      if (_.isFunction(item.isActive)) {
+        return item.isActive(item);
+      }
+      return (!_.isEmpty(item.link) && _.isArray(item.link) &&
+        $state.is(item.link[0], _.extend(_.clone($stateParams), item.link[1])));
+    }
+
+    function traverse(items, index) {
+      if (index >= items.length) {
+        return;
+      }
+      var item = items[index];
+      var children = getChildren(items, index);
+      var hidden = [];
+      for (var i = 0; i < children.length; ++i) {
+        traverse(items, children[i]);
+        hidden.push(items[children[i]].$hidden);
+      }
+      item.$leaf = hidden.length === 0;
+      item.$collapsed = _.all(hidden);
+      item.$active = isActive(item);
+      if (item.$active) {
+        var parent = items[item.$parent];
+        while (parent) {
+          parent.$header = true;
+          parent = items[parent.$parent];
+        }
+      }
+      if (!item.$collapsed) {
+        // Reveal all children of uncollapsed node
+        for (i = 0; i < children.length; ++i) {
+          items[children[i]].$hidden = false;
+        }
+      }
+      item.$impHidden = false;
+    }
+
 
     function unCollapse(items, item) {
       item.$hidden = false;
@@ -106,13 +135,50 @@ angular.module('eperusteApp')
       }
     }
 
-    function isActive(item) {
-      if (_.isFunction(item.isActive)) {
-        return item.isActive(item);
+    this.unCollapse = unCollapse;
+    this.getChildren = getChildren;
+    this.traverse = traverse;
+    this.isActive = isActive;
+  })
+
+  .controller('epSivuNaviController', function ($scope, $state, Algoritmit, Utils, epSivunaviUtils) {
+    $scope.menuCollapsed = true;
+    $scope.onSectionChange = _.isFunction($scope.onSectionChange) ? $scope.onSectionChange : angular.noop;
+
+    $scope.search = {
+      term: '',
+      update: function () {
+        var matchCount = 0;
+        var items = $scope.items;
+        if (_.isUndefined(items)) {
+          var section = _.find($scope.sections, '$open');
+          if (section) {
+            items = section.items;
+          }
+        }
+        _.each(items, function (item) {
+          item.$matched = _.isEmpty($scope.search.term) || _.isEmpty(item.label) ? true :
+            Algoritmit.match($scope.search.term, item.label);
+          if (item.$matched) {
+            matchCount++;
+            var parent = items[item.$parent];
+            while (parent) {
+              parent.$matched = true;
+              parent = items[parent.$parent];
+            }
+          }
+        });
+        $scope.hasResults = matchCount > 1; // root matches always
+        updateModel(items);
       }
-      return (!_.isEmpty(item.link) && _.isArray(item.link) &&
-        $state.is(item.link[0], _.extend(_.clone($stateParams), item.link[1])));
-    }
+    };
+
+    $scope.$watch('search.term', _.debounce(function () {
+      $scope.$apply(function () {
+        $scope.search.update();
+      });
+    }, 100));
+
 
     $scope.itemClasses = function (item) {
       var classes = ['level' + item.depth];
@@ -121,6 +187,9 @@ angular.module('eperusteApp')
       }
       if (item.$active) {
         classes.push('active');
+      }
+      if (item.$header) {
+        classes.push('tekstisisalto-active-header');
       }
       return classes;
     };
@@ -157,46 +226,13 @@ angular.module('eperusteApp')
           if (section.items) {
             doRefresh(section.items);
           }
+          // hack for perusopetus sisallot
+          if (section.model && _.isArray(section.model.sections) && section.model.sections.length > 1) {
+            doRefresh(section.model.sections[1].items);
+          }
         });
       }
     };
-
-    function getChildren(items, index) {
-      var children = [];
-      var level = items[index].depth;
-      index = index + 1;
-      var depth = level + 1;
-      for (; index < items.length && depth > level; ++index) {
-        depth = items[index].depth;
-        if (depth === level + 1) {
-          children.push(index);
-        }
-      }
-      return children;
-    }
-
-    function traverse(items, index) {
-      if (index >= items.length) {
-        return;
-      }
-      var item = items[index];
-      var children = getChildren(items, index);
-      var hidden = [];
-      for (var i = 0; i < children.length; ++i) {
-        traverse(items, children[i]);
-        hidden.push(items[children[i]].$hidden);
-      }
-      item.$leaf = hidden.length === 0;
-      item.$collapsed = _.all(hidden);
-      item.$active = isActive(item);
-      if (!item.$collapsed) {
-        // Reveal all children of uncollapsed node
-        for (i = 0; i < children.length; ++i) {
-          items[children[i]].$hidden = false;
-        }
-      }
-      item.$impHidden = false;
-    }
 
     function hideNodeOrphans(items, index) {
       // If the parent is hidden, then the child is implicitly hidden
@@ -221,16 +257,23 @@ angular.module('eperusteApp')
       if (!items) {
         return;
       }
+      _.each(items, function (item) {
+        if (item.depth > 0) {
+          item.$hidden = true;
+        }
+        item.$collapsed = true;
+        item.$header = false;
+      });
       doUncollapse = _.isUndefined(doUncollapse) ? true : doUncollapse;
       if (doUncollapse) {
         var active = _.find(items, function (item) {
-          return isActive(item);
+          return epSivunaviUtils.isActive(item);
         });
         if (active) {
-          unCollapse(items, active);
+          epSivunaviUtils.unCollapse(items, active);
         }
       }
-      traverse(items, 0);
+      epSivunaviUtils.traverse(items, 0);
       hideOrphans(items);
     }
 
@@ -265,8 +308,10 @@ angular.module('eperusteApp')
       $scope.menuCollapsed = true;
     });
 
-    $scope.$on('$stateChangeSuccess', function () {
-      Utils.scrollTo('#ylasivuankkuri');
+    $scope.$on('$stateChangeSuccess', function (event, toState) {
+      if (toState.name !== 'root.perusopetus.sisallot') {
+        Utils.scrollTo('#ylasivuankkuri');
+      }
       updateModel($scope.items);
     });
 
@@ -276,21 +321,4 @@ angular.module('eperusteApp')
     $scope.$watch('sections', function () {
       $scope.refresh();
     }, true);
-  })
-
-  .directive('epHighlight', function () {
-    var matcher;
-    return {
-      scope: {
-        epHighlight: '='
-      },
-      restrict: 'A',
-      link: function (scope, element) {
-        scope.$watch('epHighlight', function (value) {
-          matcher = new RegExp('(' + value + ')', 'i');
-          var text = element.text();
-          element.html(text.replace(matcher, '<strong class="ep-match">$1</strong>'));
-        });
-      }
-    };
   });

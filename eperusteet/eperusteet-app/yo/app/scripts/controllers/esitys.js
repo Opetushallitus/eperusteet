@@ -71,8 +71,8 @@ angular.module('eperusteApp')
       })
       .state('root.esitys.peruste.tekstikappale', {
         url: '/sisalto/:osanId',
-        templateUrl: 'views/partials/esitys/sisalto.html',
-        controller: 'EsitysSisaltoCtrl'
+        templateUrl: 'eperusteet-esitys/views/tekstikappale.html',
+        controller: 'epEsitysSisaltoController'
       })
       .state('root.esitys.peruste.tiedot', {
         url: '/tiedot',
