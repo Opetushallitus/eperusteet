@@ -1,4 +1,6 @@
-<h1 ng-bind-html="tekstikappale.nimi | kaanna | unsafe"></h1>
+<h1 esitys-sivu-otsikko="tekstikappale.nimi">
+  <span ng-bind-html="tekstikappale.nimi | kaanna | unsafe"></span>
+</h1>
 <termisto-tekstikentta tekstikentta="tekstikappale.teksti"></termisto-tekstikentta>
 
 <div ng-repeat="lapsi in lapset">

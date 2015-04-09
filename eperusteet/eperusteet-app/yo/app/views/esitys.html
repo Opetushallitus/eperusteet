@@ -27,16 +27,16 @@ European Union Public Licence for more details.
         <p kaanna="'laadinnan-esikatselu-info'"></p>
     </div>
     <div class="esitys">
-        <div class="sivunavi-navigaatio">
+        <div class="sivunavi-navigaatio sivunavi-simple">
             <div class="sivunavi-takaisin">
                 <a ng-if="!$prestate" ng-href="{{backLink}}" icon-role="back" kaanna="takaisin-hakuun"></a>
                 <a ng-if="$prestate" ng-href="{{ '#' + $prestate }}" icon-role="back" kaanna="'takaisin-laadintaan'"></a>
             </div>
-            <sivunavigaatio items="navi.items" header="navi.header">
+            <ep-sivunavigaatio items="navi.items" header="navi.header">
               <select ng-show="suoritustavat.length > 1" class="form-control input-sm"
                       ng-model="suoritustapa" ng-change="vaihdaSuoritustapa(suoritustapa)"
                       ng-options="kaanna(st) for st in suoritustavat"></select>
-            </sivunavigaatio>
+            </ep-sivunavigaatio>
         </div>
         <div class="sivunavi-clear"></div>
         <div class="sivunavi-sisalto" ng-cloak>

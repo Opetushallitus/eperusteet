@@ -141,7 +141,8 @@
     this.isActive = isActive;
   })
 
-  .controller('epSivuNaviController', function ($scope, $state, Algoritmit, Utils, epSivunaviUtils) {
+  .controller('epSivuNaviController', function ($scope, $state, Algoritmit, Utils, epSivunaviUtils,
+    epEsitysSettings) {
     $scope.menuCollapsed = true;
     $scope.onSectionChange = _.isFunction($scope.onSectionChange) ? $scope.onSectionChange : angular.noop;
 

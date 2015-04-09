@@ -43,7 +43,7 @@ module.exports = function(grunt) {
     },
     watch: {
       css: {
-        files: ['<%= yeoman.app %>/styles/{,*/}*.scss'],
+        files: ['<%= yeoman.app %>/styles/{,*/}*.scss', '<%= yeoman.app %>/eperusteet-esitys/styles/{,*/}*.scss'],
         tasks: ['sass', 'copy:fonts', 'autoprefixer'],
       },
       test: {
