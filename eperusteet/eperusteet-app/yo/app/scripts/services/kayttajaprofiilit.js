@@ -43,10 +43,20 @@ angular.module('eperusteApp')
       info.resolved = value;
     });
 
-    function isSame(paramsA, paramsB) {
-      return _.size(paramsA) === _.size(paramsB) && _.all(paramsA, function(v, k) {
-        return paramsB[k] === v;
+    function prepareParams(params) {
+      var processed = _.omit(params, function (value) {
+        return _.isUndefined(value);
       });
+      _.each(processed, function (value) {
+        if (_.isArray(value)) {
+          value.sort();
+        }
+      });
+      return processed;
+    }
+
+    function isSame(paramsA, paramsB) {
+      return _.isEqual(prepareParams(paramsA), prepareParams(paramsB));
     }
 
     function transformSuosikit(uudetSuosikit) {
