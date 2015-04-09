@@ -267,8 +267,8 @@
    });
  })
 
- .controller('epPerusopetusTekstikappaleController', function($scope, tekstikappale, epTekstikappaleChildResolver,
-  /*MurupolkuData,*/ epParentFinder) {
+ .controller('epPerusopetusTekstikappaleController', function($scope, tekstikappale, epTekstikappaleChildResolver
+ /* MurupolkuData, epParentFinder */ ) {
   $scope.tekstikappale = tekstikappale;
   //MurupolkuData.set({tekstikappaleId: tekstikappale.id, tekstikappaleNimi: tekstikappale.nimi});
   $scope.lapset = epTekstikappaleChildResolver.getSisalto();

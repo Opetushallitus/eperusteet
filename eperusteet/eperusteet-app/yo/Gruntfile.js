@@ -153,6 +153,7 @@ module.exports = function(grunt) {
       all: [
         'Gruntfile.js',
         '<%= yeoman.app %>/scripts/**/*.js',
+        '<%= yeoman.app %>/eperusteet-esitys/**/*.js',
         '<%= yeoman.app %>/ckeditor-plugins/**/*.js',
       ]
     },
@@ -193,6 +194,7 @@ module.exports = function(grunt) {
       css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
       js: [
         '<%= yeoman.dist %>/scripts/*.scripts.js',
+        '<%= yeoman.dist %>/scripts/*.esitys.js',
         '<%= yeoman.dist %>/scripts/*.templates.js'
       ],
       options: {
@@ -379,6 +381,17 @@ module.exports = function(grunt) {
         options:    {
           module: 'eperusteApp',
           usemin: 'scripts/scripts.js',
+          htmlmin: { collapseWhitespace: true, removeComments: true }
+        }
+      },
+      esitys: {
+        cwd: '<%= yeoman.app %>/eperusteet-esitys',
+        src: '**/*.html',
+        dest: '<%= yeoman.dist %>/scripts/esitys.js',
+        options:    {
+          module: 'eperusteet.esitys',
+          prefix: 'eperusteet-esitys/',
+          usemin: 'scripts/esitys.js',
           htmlmin: { collapseWhitespace: true, removeComments: true }
         }
       }
