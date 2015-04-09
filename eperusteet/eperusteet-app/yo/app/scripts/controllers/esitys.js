@@ -92,86 +92,6 @@ angular.module('eperusteApp')
       });
   })
 
-  .controller('EsitysRakenneCtrl', function($scope, $state, $stateParams, PerusteenRakenne, realParams) {
-    $scope.$parent.valittu.sisalto = 'rakenne';
-    $scope.muodostumisOtsikko = _.find($scope.$parent.sisalto, function (item) {
-      return item.tunniste === 'rakenne';
-    });
-    PerusteenRakenne.hae(realParams.perusteId, realParams.suoritustapa, function(rakenne) {
-      $scope.rakenne = rakenne;
-      $scope.rakenne.$suoritustapa = realParams.suoritustapa;
-      $scope.rakenne.$resolved = true;
-    });
-
-    $scope.suosikkiHelper($state, 'tutkinnon-rakenne');
-  })
-
-  .controller('EsitysTutkinnonOsaCtrl', function($scope, $state, $stateParams, PerusteenOsat, TutkinnonosanTiedotService,
-      Tutke2Osa, Kieli) {
-    $scope.tutkinnonOsaViite = _.find($scope.$parent.tutkinnonOsat, function(tosa) {
-      return tosa.id === parseInt($stateParams.id, 10);
-    });
-    $scope.osaAlueet = {};
-    TutkinnonosanTiedotService.noudaTutkinnonOsa({perusteenOsaId: $scope.tutkinnonOsaViite._tutkinnonOsa}).then(function () {
-      $scope.tutkinnonOsa = TutkinnonosanTiedotService.getTutkinnonOsa();
-      $scope.fieldKeys = _.intersection(_.keys($scope.tutkinnonOsa), TutkinnonosanTiedotService.keys());
-      if ($scope.tutkinnonOsa.tyyppi === 'tutke2') {
-        Tutke2Osa.kasitteleOsaAlueet($scope.tutkinnonOsa);
-      }
-    });
-    $scope.suosikkiHelper($state, $scope.tutkinnonOsaViite.nimi);
-    $scope.fieldOrder = function (item) {
-      return TutkinnonosanTiedotService.order(item);
-    };
-    $scope.hasArviointi = function (osaamistavoite) {
-      return osaamistavoite.arviointi &&
-        osaamistavoite.arviointi.arvioinninKohdealueet &&
-        osaamistavoite.arviointi.arvioinninKohdealueet.length > 0 &&
-        osaamistavoite.arviointi.arvioinninKohdealueet[0].arvioinninKohteet &&
-        osaamistavoite.arviointi.arvioinninKohdealueet[0].arvioinninKohteet.length > 0;
-    };
-    $scope.osaAlueFilter = function (item) {
-      return _.contains(item.$kielet, Kieli.getSisaltokieli());
-    };
-  })
-
-  .controller('EsitysTutkinnonOsatCtrl', function($scope, $state, $stateParams, PerusteenRakenne, Algoritmit) {
-    $scope.$parent.valittu.sisalto = 'tutkinnonosat';
-    $scope.tosarajaus = '';
-    $scope.rajaaTutkinnonOsia = function(haku) { return Algoritmit.rajausVertailu($scope.tosarajaus, haku, 'nimi'); };
-    $scope.suosikkiHelper($state, 'tutkinnonosat');
-  })
-
-  .controller('EsitysTiedotCtrl', function($scope, $q, $state, YleinenData, PerusteenTutkintonimikkeet, Perusteet) {
-    $scope.showKoulutukset = _.constant(YleinenData.showKoulutukset($scope.peruste));
-    $scope.koulutusalaNimi = $scope.Koulutusalat.haeKoulutusalaNimi;
-    $scope.opintoalaNimi = $scope.Opintoalat.haeOpintoalaNimi;
-    $scope.suosikkiHelper($state, 'perusteen-tiedot');
-
-    PerusteenTutkintonimikkeet.get($scope.peruste.id, $scope);
-
-    $q.all(_.map($scope.peruste.korvattavatDiaarinumerot, function(diaari) {
-      return Perusteet.diaari({ diaarinumero: diaari }).$promise;
-    })).then(function(korvattavatPerusteet) {
-      $scope.korvattavatPerusteet = korvattavatPerusteet;
-    });
-  })
-
-  .controller('EsitysSisaltoCtrl', function($scope, $state, $stateParams, PerusteenOsat, YleinenData) {
-    $scope.$parent.valittu.sisalto = $stateParams.osanId;
-    $scope.valittuSisalto = $scope.$parent.sisalto[$stateParams.osanId];
-    if (!$scope.valittuSisalto) {
-      var params = _.extend(_.clone($stateParams), {
-        // TODO siirry käyttämään YleinenData.koulutustyyppiInfo:a
-        suoritustapa: YleinenData.validSuoritustapa($scope.peruste, $stateParams.suoritustapa)
-      });
-      $state.go('root.esitys.peruste.tiedot', params);
-    } else {
-      $scope.suosikkiHelper($state, $scope.valittuSisalto.nimi);
-      PerusteenOsat.get({ osanId: $scope.valittuSisalto.id }, _.setWithCallback($scope, 'valittuSisalto'));
-    }
-  })
-
   .controller('EsitysCtrl', function($scope, $stateParams, sisalto, peruste,
       YleinenData, $state, Algoritmit, tutkinnonOsat, Kaanna, arviointiasteikot,
       Profiili, PdfCreation, koulutusalaService, opintoalaService, Kieli, TermistoService) {
@@ -313,4 +233,11 @@ angular.module('eperusteApp')
         };
       }
     };
+  })
+
+  .service('MurupolkuData', function () {
+    // dummy service for eperusteet-esitys
+    this.get = angular.noop;
+    this.set = angular.noop;
+    this.setTitle = angular.noop;
   });

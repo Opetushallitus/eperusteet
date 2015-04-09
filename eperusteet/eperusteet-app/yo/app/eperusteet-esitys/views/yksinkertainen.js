@@ -18,7 +18,7 @@
 
 angular.module('eperusteet.esitys')
 .controller('epYksinkertainenPerusteController', function($q, $scope, $timeout, sisalto, PerusteenOsat,
-  $state, $stateParams, epMenuBuilder, Algoritmit, Utils, /*MurupolkuData,*/
+  $state, $stateParams, epMenuBuilder, Algoritmit, Utils, MurupolkuData,
   Oppiaineet, TermistoService, Kieli, $document, $rootScope, epPerusopetusStateService) {
   function getRootState(current) {
     return current.replace(/\.(esiopetus|lisaopetus)(.*)/, '.$1');
@@ -30,7 +30,7 @@ angular.module('eperusteet.esitys')
   };
   var peruste = sisalto[0];
   $scope.peruste = peruste;
-  //MurupolkuData.set({perusteId: peruste.id, perusteNimi: peruste.nimi});
+  MurupolkuData.set({perusteId: peruste.id, perusteNimi: peruste.nimi});
   $scope.sisallot = _.zipBy(sisalto[1], 'id');
   $scope.tekstisisalto = sisalto[1];
   $scope.state = epPerusopetusStateService.getState();
@@ -39,11 +39,6 @@ angular.module('eperusteet.esitys')
     var flattened = {};
     Algoritmit.kaikilleLapsisolmuille(sisalto, 'lapset', function(lapsi) {
       flattened[lapsi.id] = lapsi.perusteenOsa;
-      /*$scope.navi.items.push({
-        label: lapsi.perusteenOsa.nimi,
-        link: lapsi.perusteenOsa.tunniste === 'rakenne' ? ['root.esitys.peruste.rakenne', { suoritustapa: $stateParams.suoritustapa }] : ['root.esitys.peruste.tekstikappale', { osanId: ''+lapsi.id }],
-        depth: depth
-      });*/
     });
     return flattened;
   }

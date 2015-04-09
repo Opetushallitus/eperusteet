@@ -18,17 +18,18 @@
 
  angular.module('eperusteet.esitys')
 .controller('epEsitysSisaltoController', function($scope, $state, $stateParams, PerusteenOsat, YleinenData,
-  /*MurupolkuData,*/ epParentFinder, epTekstikappaleChildResolver) {
+  MurupolkuData, epParentFinder, epTekstikappaleChildResolver) {
   $scope.linkVar = $stateParams.osanId ? 'osanId' : 'tekstikappaleId';
   //$scope.$parent.valittu.sisalto = $stateParams[$scope.linkVar];
   $scope.valittuSisalto = $scope.$parent.sisalto[$stateParams[$scope.linkVar]];
   $scope.tekstikappale = $scope.valittuSisalto;
   $scope.lapset = epTekstikappaleChildResolver.getSisalto();
-  /*MurupolkuData.set({
+  var parentNode = $scope.$parent.originalSisalto ? $scope.$parent.originalSisalto : $scope.tekstisisalto;
+  MurupolkuData.set({
     osanId: $scope.valittuSisalto.id,
     tekstikappaleNimi: $scope.valittuSisalto.nimi,
-    parents: ParentFinder.find($scope.$parent.originalSisalto.lapset, parseInt($stateParams.osanId, 10))
-  });*/
+    parents: epParentFinder.find(parentNode ? parentNode.lapset : null, parseInt($stateParams[$scope.linkVar], 10))
+  });
   if (!$scope.valittuSisalto) {
     var params = _.extend(_.clone($stateParams), {
       suoritustapa: YleinenData.validSuoritustapa($scope.peruste, $stateParams.suoritustapa)
@@ -57,11 +58,11 @@
 })
 
 .controller('epEsitysTutkinnonOsaController', function($scope, $state, $stateParams, PerusteenOsat, TutkinnonosanTiedotService,
-    Tutke2Osa, Kieli/*, MurupolkuData*/) {
+    Tutke2Osa, Kieli, MurupolkuData) {
   $scope.tutkinnonOsaViite = _.find($scope.$parent.tutkinnonOsat, function(tosa) {
     return tosa.id === parseInt($stateParams.id, 10);
   });
-  //MurupolkuData.set({id: $scope.tutkinnonOsaViite.id, tutkinnonosaNimi: $scope.tutkinnonOsaViite.nimi});
+  MurupolkuData.set({id: $scope.tutkinnonOsaViite.id, tutkinnonosaNimi: $scope.tutkinnonOsaViite.nimi});
   $scope.osaAlueet = {};
   TutkinnonosanTiedotService.noudaTutkinnonOsa({perusteenOsaId: $scope.tutkinnonOsaViite._tutkinnonOsa}).then(function () {
     $scope.tutkinnonOsa = TutkinnonosanTiedotService.getTutkinnonOsa();
