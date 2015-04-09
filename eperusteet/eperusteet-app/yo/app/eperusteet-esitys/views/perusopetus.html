@@ -5,16 +5,17 @@
   <div class="clearfix"></div>
 
   <div id="sivunavi-sisalto-wrapper" ng-class="{'sivunavi-hidden': !isNaviVisible()}">
-    <div class="sivunavi-navigaatio">
-      <sivunavigaatio on-section-change="onSectionChange" header="navi.header" sections="navi.sections" show-one="navi.showOne"></sivunavigaatio>
-    </div>
+    <div class="esitys">
+      <div class="sivunavi-navigaatio">
+        <ep-sivunavigaatio on-section-change="onSectionChange" header="navi.header" sections="navi.sections" show-one="navi.showOne"></ep-sivunavigaatio>
+      </div>
 
-    <div class="sivunavi-clear"></div>
-    <div class="sivunavi-sisalto perusopetus">
-      <div class="row">
-        <div class="col-md-12">
-          <div ui-view></div>
-
+      <div class="sivunavi-clear"></div>
+      <div class="sivunavi-sisalto perusopetus">
+        <div class="row">
+          <div class="col-md-12">
+            <div id="esitysPrintSisalto" ui-view></div>
+          </div>
         </div>
       </div>
     </div>

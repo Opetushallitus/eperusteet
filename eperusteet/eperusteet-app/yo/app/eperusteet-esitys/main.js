@@ -16,6 +16,12 @@
 
 'use strict';
 
+/**
+ * Esityspuolen moduuli. Yhteistä koodia eperusteet ja eperusteet-opintopolku
+ * -projektien välillä.
+ * Käyttää joko omia ep-alkuisia komponentteja tai yleisiä komponentteja, jotka täytyy
+ * määritellä moduulin ulkopuolella.
+ */
 angular.module('eperusteet.esitys', [
 ]).provider('epEsitysSettings', function() {
   var settings = {

@@ -127,7 +127,7 @@ angular.module('eperusteApp')
     $scope.kielet = kielet;
     $scope.docs = {};
     var pdfToken = null;
-    var suoritustapa = PerusteProjektiService.getSuoritustapa() || $stateParams.suoritustapa;
+    var suoritustapa = $stateParams.suoritustapa || PerusteProjektiService.getSuoritustapa();
 
     $scope.hasPdf = function() {
       return !!$scope.docs[$scope.kielet.valittu];

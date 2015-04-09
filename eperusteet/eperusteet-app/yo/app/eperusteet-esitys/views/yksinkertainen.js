@@ -94,7 +94,6 @@ angular.module('eperusteet.esitys')
     ]
   };
   _.each($scope.navi.sections[0].items, function (item) {
-    console.log(item, currentRootState + '.tekstikappale');
     item.href = $state.href(currentRootState + '.tekstikappale', {tekstikappaleId: item.$osa.id});
   });
 

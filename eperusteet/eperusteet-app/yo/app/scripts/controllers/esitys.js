@@ -266,14 +266,7 @@ angular.module('eperusteApp')
       };
     };
 
-    $scope.printSisalto = function() {
-      var print = window.open('', 'esitysPrintSisalto', 'height=640,width=640');
-      print.document.write('<html><head><link rel="stylesheet" href="styles/eperusteet.css"></head><body class="esitys-print-view">' +
-                           $('#esitysPrintSisalto').html() +
-                           '</body></html>');
-      print.print();
-      print.close();
-    };
+
 
     $scope.luoPdf = function () {
       PdfCreation.setPerusteId($scope.peruste.id);
@@ -290,10 +283,34 @@ angular.module('eperusteApp')
       '<a class="action-link left-space" ng-click="printSisalto()" icon-role="print" kaanna="\'tulosta-sivu\'"></a>' +
       '</div>';
     return {
-      restrict: 'AE',
+      restrict: 'A',
       link: function (scope, element) {
         var compiled = $compile(TEMPLATE)(scope);
         element.append(compiled);
+      },
+      scope: {
+        nimi: '=esitysSivuOtsikko'
+      },
+      controller: function ($scope, $state, Profiili, Kaanna) {
+        $scope.onSuosikki = Profiili.haeSuosikki($state);
+        $scope.asetaSuosikki = function() {
+          var suosikkiOtsikko = Kaanna.kaanna($scope.$parent.peruste.nimi) + ': ' + (Kaanna.kaanna($scope.nimi) || '');
+          if ($scope.$parent.suoritustapa) {
+            suosikkiOtsikko += (' (' + Kaanna.kaanna($scope.$parent.suoritustapa) + ')');
+          }
+          Profiili.asetaSuosikki($state, suosikkiOtsikko, function() {
+            $scope.onSuosikki = Profiili.haeSuosikki($state);
+          });
+        };
+
+        $scope.printSisalto = function() {
+          var print = window.open('', 'esitysPrintSisalto', 'height=640,width=640');
+          print.document.write('<html><head><link rel="stylesheet" href="styles/eperusteet.css"></head><body class="esitys-print-view">' +
+                               $('#esitysPrintSisalto').html() +
+                               '</body></html>');
+          print.print();
+          print.close();
+        };
       }
     };
   });
