@@ -177,17 +177,6 @@ angular.module('eperusteApp')
       $scope.extra.tutkinnonRakenne = !Algoritmit.match($scope.rajaus, Kaanna.kaanna('tutkinnon-rakenne'));
     };
 
-    $scope.suosikkiHelper = function(state, nimi) {
-      $scope.onSuosikki = Profiili.haeSuosikki(state);
-      $scope.asetaSuosikki = function() {
-        Profiili.asetaSuosikki(state, Kaanna.kaanna($scope.peruste.nimi) + ': ' + (Kaanna.kaanna(nimi) || '') + ' (' + Kaanna.kaanna($scope.suoritustapa) + ')', function() {
-          $scope.onSuosikki = Profiili.haeSuosikki(state);
-        });
-      };
-    };
-
-
-
     $scope.luoPdf = function () {
       PdfCreation.setPerusteId($scope.peruste.id);
       PdfCreation.openModal();
@@ -211,12 +200,15 @@ angular.module('eperusteApp')
       scope: {
         nimi: '=esitysSivuOtsikko'
       },
-      controller: function ($scope, $state, Profiili, Kaanna) {
+      controller: function ($scope, $state, Profiili, Kaanna, $stateParams) {
         $scope.onSuosikki = Profiili.haeSuosikki($state);
         $scope.asetaSuosikki = function() {
           var suosikkiOtsikko = Kaanna.kaanna($scope.$parent.peruste.nimi) + ': ' + (Kaanna.kaanna($scope.nimi) || '');
           if ($scope.$parent.suoritustapa) {
             suosikkiOtsikko += (' (' + Kaanna.kaanna($scope.$parent.suoritustapa) + ')');
+          }
+          if (_.has($stateParams, 'sisalto') && _.has($stateParams, 'vlk')) {
+            suosikkiOtsikko += (' (' + Kaanna.kaanna('opetuksen-sisallot') + ')');
           }
           Profiili.asetaSuosikki($state, suosikkiOtsikko, function() {
             $scope.onSuosikki = Profiili.haeSuosikki($state);
