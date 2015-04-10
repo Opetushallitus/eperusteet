@@ -58,7 +58,9 @@ angular.module('eperusteApp')
               Perusteet.get({perusteId: $stateParams.perusteId}).$promise,
               SuoritustapaSisalto.get({perusteId: $stateParams.perusteId, suoritustapa: 'esiopetus'}).$promise,
             ]);
-          }
+          },
+          koulutusalaService: 'Koulutusalat',
+          opintoalaService: 'Opintoalat'
         }
       })
       .state('root.selaus.lisaopetus.tekstikappale', {
@@ -77,6 +79,11 @@ angular.module('eperusteApp')
           }
         }
       })
+      .state('root.selaus.lisaopetus.tiedot', {
+        url: '/tiedot',
+        templateUrl: 'eperusteet-esitys/views/tiedot.html',
+        controller: 'epEsitysTiedotController'
+      })
       .state('root.selaus.esiopetus', {
         url: '/esiopetus/:perusteId',
         templateUrl: 'eperusteet-esitys/views/yksinkertainen.html',
@@ -88,7 +95,9 @@ angular.module('eperusteApp')
               Perusteet.get({perusteId: $stateParams.perusteId}).$promise,
               SuoritustapaSisalto.get({perusteId: $stateParams.perusteId, suoritustapa: 'esiopetus'}).$promise,
             ]);
-          }
+          },
+          koulutusalaService: 'Koulutusalat',
+          opintoalaService: 'Opintoalat'
         }
       })
       .state('root.selaus.esiopetus.tekstikappale', {
@@ -106,6 +115,11 @@ angular.module('eperusteApp')
             return epTekstikappaleChildResolver.get(sisalto[1], tekstikappaleId);
           }
         }
+      })
+      .state('root.selaus.esiopetus.tiedot', {
+        url: '/tiedot',
+        templateUrl: 'eperusteet-esitys/views/tiedot.html',
+        controller: 'epEsitysTiedotController'
       })
       /*.state('root.selaus.perusopetus', {
         url: '/perusopetus/:perusteId',
