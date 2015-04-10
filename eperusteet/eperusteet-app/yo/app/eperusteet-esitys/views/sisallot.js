@@ -50,10 +50,12 @@
 
   PerusteenTutkintonimikkeet.get($scope.peruste.id, $scope);
 
-  $q.all(_.map($scope.peruste.korvattavatDiaarinumerot, function(diaari) {
-    return Perusteet.diaari({ diaarinumero: diaari }).$promise;
-  })).then(function(korvattavatPerusteet) {
-    $scope.korvattavatPerusteet = korvattavatPerusteet;
+  $scope.korvattavatPerusteet = {};
+  _.each($scope.peruste.korvattavatDiaarinumerot, function (diaari) {
+    $scope.korvattavatPerusteet[diaari] = {diaarinumero: diaari};
+    Perusteet.diaari({diaarinumero: diaari}, function (res) {
+      $scope.korvattavatPerusteet[diaari] = res;
+    });
   });
 })
 

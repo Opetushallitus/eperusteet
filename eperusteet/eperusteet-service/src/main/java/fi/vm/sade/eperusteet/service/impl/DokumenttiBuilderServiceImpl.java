@@ -1282,6 +1282,18 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             addTableCell(doc, itrow2, messages.translate("docgen.info.ei-asetettu", kieli));
         }
 
+        Element itrow7 = addTableRow(doc, tbody);
+        addTableCell(doc, itrow7, newBoldElement(doc, messages.translate("docgen.info.korvaa-perusteet", kieli)));
+        if (peruste.getKorvattavatDiaarinumerot() != null && !peruste.getKorvattavatDiaarinumerot().isEmpty())
+        {
+            Set<String> numeroStringit = new HashSet<>();
+            for (Diaarinumero nro : peruste.getKorvattavatDiaarinumerot()) {
+                numeroStringit.add(nro.getDiaarinumero());
+            }
+            addTableCell(doc, itrow7, StringUtils.join(numeroStringit, ", "));
+        } else {
+            addTableCell(doc, itrow7, messages.translate("docgen.info.ei-asetettu", kieli));
+        }
 
         Set<Koulutus> koulutukset = peruste.getKoulutukset();
         Element koulutuslist = doc.createElement("simplelist");
@@ -1345,19 +1357,6 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             addTableCell(doc, itrow6, dateFormat.format(peruste.getVoimassaoloLoppuu()));
         } else {
             addTableCell(doc, itrow6, messages.translate("docgen.info.ei-asetettu", kieli));
-        }
-
-        Element itrow7 = addTableRow(doc, tbody);
-        addTableCell(doc, itrow7, newBoldElement(doc, messages.translate("docgen.info.korvaa-perusteet", kieli)));
-        if (peruste.getKorvattavatDiaarinumerot() != null && !peruste.getKorvattavatDiaarinumerot().isEmpty())
-        {
-            Set<String> numeroStringit = new HashSet<>();
-            for (Diaarinumero nro : peruste.getKorvattavatDiaarinumerot()) {
-                numeroStringit.add(nro.getDiaarinumero());
-            }
-            addTableCell(doc, itrow7, StringUtils.join(numeroStringit, ", "));
-        } else {
-            addTableCell(doc, itrow7, messages.translate("docgen.info.ei-asetettu", kieli));
         }
     }
 

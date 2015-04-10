@@ -69,7 +69,6 @@ angular.module('eperusteApp')
     }
 
     function haeLinkki(tokenId) {
-      console.log(new Dokumentti({id:tokenId}));
       // dis like, ewwww
       return SERVICE_LOC + '/dokumentit/' + tokenId;
     }
