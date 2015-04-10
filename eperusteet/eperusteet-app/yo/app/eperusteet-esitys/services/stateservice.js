@@ -80,6 +80,12 @@ angular.module('eperusteet.esitys')
         index: 0,
         callback: textCallback
       },
+      tiedot: {
+        index: 0,
+        callback: function (item) {
+          item.$selected = _.isArray(item.link) && item.link.length > 0 && _.last(item.link[0].split('.')) === 'tiedot';
+        }
+      },
       vuosiluokkakokonaisuus: {
         index: 1,
         callback: function (item) {

@@ -19,10 +19,12 @@
 angular.module('eperusteet.esitys')
 .controller('epYksinkertainenPerusteController', function($q, $scope, $timeout, sisalto, PerusteenOsat,
   $state, $stateParams, epMenuBuilder, Algoritmit, Utils, MurupolkuData,
-  Oppiaineet, TermistoService, Kieli, $document, $rootScope, epPerusopetusStateService) {
+  Oppiaineet, TermistoService, Kieli, $document, $rootScope, epPerusopetusStateService, koulutusalaService, opintoalaService) {
   function getRootState(current) {
     return current.replace(/\.(esiopetus|lisaopetus)(.*)/, '.$1');
   }
+  $scope.Koulutusalat = koulutusalaService;
+  $scope.Opintoalat = opintoalaService;
   var currentRootState = getRootState($state.current.name);
   $scope.isNaviVisible = _.constant(true);
   $scope.hasContent = function (obj) {
@@ -88,20 +90,19 @@ angular.module('eperusteet.esitys')
       }
     ]
   };
+  $scope.navi.sections[0].items.unshift({depth: 0, label: 'perusteen-tiedot', link: [currentRootState + '.tiedot']});
+
   _.each($scope.navi.sections[0].items, function (item) {
-    item.href = $state.href(currentRootState + '.tekstikappale', {tekstikappaleId: item.$osa.id});
+    if (item.$osa) {
+      item.href = $state.href(currentRootState + '.tekstikappale', {tekstikappaleId: item.$osa.id});
+    }
   });
 
   installClickHandler();
 
   $timeout(function () {
     if ($state.current.name === currentRootState) {
-      var first = _($scope.navi.sections[0].items).filter(function (item) {
-        return item.depth === 0;
-      }).first();
-      if (first) {
-        $state.go('.tekstikappale', {tekstikappaleId: first.$osa.id, perusteId: $scope.peruste.id});
-      }
+      $state.go('.tiedot');
     }
   });
 });

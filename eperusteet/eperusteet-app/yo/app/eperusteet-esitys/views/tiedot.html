@@ -5,7 +5,7 @@
 <table class="esitys-perusteen-tiedot">
   <tr>
     <th kaanna="'perusteen-nimi'"></th>
-    <td kaanna="peruste.nimi || 'nimetön'">></td>
+    <td kaanna="peruste.nimi || 'nimetön'"></td>
   </tr>
   <tr>
     <th kaanna="'maarayksen-diaarinumero'"></th>
@@ -22,7 +22,7 @@
       </ul>
     </td>
   </tr>
-  <tr ng-show="showKoulutukset()">
+  <tr ng-show="showKoulutukset()" ng-if="peruste.koulutukset.length > 0">
     <th kaanna="'peruste-koulutukset'"></th>
     <td>
 
@@ -52,7 +52,7 @@
 
     </td>
   </tr>
-  <tr>
+  <tr ng-if="koodisto.length > 0">
     <th kaanna="'tutkintonimikkeet'"></th>
     <td>
 
