@@ -129,6 +129,15 @@ $border-color: #0C566E;
     }
   }
 }
+.esitys-korvattavat {
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+    li {
+      margin-bottom: 7px;
+    }
+  }
+}
 
 .esitys-header-links {
   margin-top: 10px;

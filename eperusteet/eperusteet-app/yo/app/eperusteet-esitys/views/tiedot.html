@@ -11,6 +11,17 @@
     <th kaanna="'maarayksen-diaarinumero'"></th>
     <td ng-bind="peruste.diaarinumero"></td>
   </tr>
+  <tr ng-if="peruste.korvattavatDiaarinumerot && peruste.korvattavatDiaarinumerot.length > 0" class="esitys-korvattavat">
+    <th kaanna="'korvattavat-perusteet'"></th>
+    <td>
+      <ul>
+        <li ng-repeat="diaari in peruste.korvattavatDiaarinumerot">
+          <span ng-bind="korvattavatPerusteet[diaari].diaarinumero"></span>&nbsp;<span
+                ng-if="korvattavatPerusteet[diaari].nimi" ng-bind="'(' + (korvattavatPerusteet[diaari].nimi | kaanna) + ')'"></span>
+        </li>
+      </ul>
+    </td>
+  </tr>
   <tr ng-show="showKoulutukset()">
     <th kaanna="'peruste-koulutukset'"></th>
     <td>
@@ -78,21 +89,3 @@
     <td pvm="peruste.voimassaoloLoppuu"></td>
   </tr>
 </table>
-
-<div ng-if="korvattavatPerusteet && korvattavatPerusteet.length > 0" class="esitys-perusteen-tiedot">
-  <h2 kaanna="'korvattavat-perusteet'"></h2>
-
-  <th kaanna="'korvattavat-perusteet'"></th>
-  <td>
-    <table class="aligned korvattavat">
-      <tr>
-        <th kaanna="'nimi'"></th>
-        <th kaanna="'diaarinumero-label'"></th>
-      </tr>
-      <tr ng-repeat="kp in korvattavatPerusteet">
-        <td kaanna="kp.nimi"></td>
-        <td ng-bind="kp.diaarinumero"></td>
-      </tr>
-    </table>
-  </td>
-</div>
