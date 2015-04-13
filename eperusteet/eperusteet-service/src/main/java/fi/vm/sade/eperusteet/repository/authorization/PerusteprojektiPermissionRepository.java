@@ -42,8 +42,6 @@ public interface PerusteprojektiPermissionRepository extends JpaRepository<Perus
      *
      * Varsinainen kysely on monimutkaisuudestaan johtuen piilotettu näkymän "PerusteenosanProjekti" taakse.
      *
-     * @param perusteenOsaId
-     * @return
      */
     @Query("SELECT DISTINCT NEW fi.vm.sade.eperusteet.service.util.Pair(pp.ryhmaOid, pp.tila) FROM PerusteenosanProjekti pp WHERE pp.id = ?1")
     List<Pair<String,ProjektiTila>> findTilaByPerusteenOsaId(Long perusteenOsaId);

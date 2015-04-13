@@ -118,7 +118,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     /**
      * Palauttaa oppimäärät
      *
-     * @see #isKoosteinen()
+     * @see #koosteinen
      * @return oppimäärät (joukkoa ei voi muokata) tai null jos oppiaine ei ole koosteinen
      */
     public Set<Oppiaine> getOppimaarat() {

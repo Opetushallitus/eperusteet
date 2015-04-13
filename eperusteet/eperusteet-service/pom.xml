@@ -434,8 +434,22 @@
                         <version>${postgresql.version}</version>
                     </dependency>
                 </dependencies>
-            </plugin>
-        </plugins>
+              </plugin>
+              <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                  <quiet>true</quiet>
+                  <additionalparam>-Xdoclint:none</additionalparam>
+                  <sourcepath>${project.basedir}/src/main/java;${project.basedir}/target/generated-sources/annotations</sourcepath>
+                  <sourceFileExcludes>
+                    <exclude>db/migration/**</exclude>
+                    <exclude>fi/vm/sade/eperusteet/domain/**/*_.java</exclude>
+                    <exclude>com/google/code/**</exclude>
+                  </sourceFileExcludes>
+                </configuration>
+              </plugin>
+            </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -491,6 +505,9 @@
                                 <phase>process-classes</phase>
                             </execution>
                         </executions>
+			<configuration>
+         			<hibernateMapping>${project.basedir}/src/test/config/hibernate-typedefs.xml</hibernateMapping>
+			</configuration>
                     </plugin>
                 </plugins>
             </build>

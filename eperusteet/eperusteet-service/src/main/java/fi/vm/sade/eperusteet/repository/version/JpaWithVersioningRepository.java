@@ -53,11 +53,9 @@ public interface JpaWithVersioningRepository<T, ID extends Serializable> extends
 
     /**
      * Lukitsee entiteetin muokkausta varten. Lukitus vapautuu automaattisesti transaktion loppuessa.
-     * Sama kuin {@link #lock(entity, true)}.
+     * Sama kuin lock(entity, true).
      *
-     * @param entity
      * @see #lock(java.lang.Object, boolean)
-     * @return
      */
     @Transactional(propagation = Propagation.MANDATORY)
     T lock(T entity);
