@@ -491,6 +491,9 @@
                                 <phase>process-classes</phase>
                             </execution>
                         </executions>
+			<configuration>
+         			<hibernateMapping>${project.basedir}/src/test/config/hibernate-typedefs.xml</hibernateMapping>
+			</configuration>
                     </plugin>
                 </plugins>
             </build>
