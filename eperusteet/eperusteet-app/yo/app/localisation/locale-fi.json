@@ -871,5 +871,10 @@
     "korvattava-diaari-on-oma-diaari": "Korvattavien perusteiden listalla oma diaarinumero",
     "korvattava-peruste-on-eri-koulutustyyppia": "Korvattava peruste on eri koulutustyyppiä",
 
+    "laaja-alaisen-osaamisen-alueet": "Laaja-alaisen osaamisen alueet",
+    "tyhjenna-valinnat": "Palauta valinnat alkutilaan",
+    "perusopetus-arviointi": "Oppimisen arviointi",
+    "perusopetus-sisaltoalueet" : "Sisältöalueet",
+
     "peruste-ei-diaarinumeroa": "Perusteelta puuttuu määräyksen diaarinumero"
 }

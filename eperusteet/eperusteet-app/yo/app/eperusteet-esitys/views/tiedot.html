@@ -1,13 +1,28 @@
 <!-- partials/esitys/tiedot.html -->
 
-<h2 esitys-sivu-otsikko>{{'perusteen-tiedot' | kaanna}}</h2>
+<h1 esitys-sivu-otsikko="'perusteen-tiedot'"><span kaanna="'perusteen-tiedot'"></span></h1>
 
 <table class="esitys-perusteen-tiedot">
+  <tr>
+    <th kaanna="'perusteen-nimi'"></th>
+    <td kaanna="peruste.nimi || 'nimetön'"></td>
+  </tr>
   <tr>
     <th kaanna="'maarayksen-diaarinumero'"></th>
     <td ng-bind="peruste.diaarinumero"></td>
   </tr>
-  <tr ng-show="showKoulutukset()">
+  <tr ng-if="peruste.korvattavatDiaarinumerot && peruste.korvattavatDiaarinumerot.length > 0" class="esitys-korvattavat">
+    <th kaanna="'korvattavat-perusteet'"></th>
+    <td>
+      <ul>
+        <li ng-repeat="diaari in peruste.korvattavatDiaarinumerot">
+          <span ng-bind="korvattavatPerusteet[diaari].diaarinumero"></span>&nbsp;<span
+                ng-if="korvattavatPerusteet[diaari].nimi" ng-bind="'(' + (korvattavatPerusteet[diaari].nimi | kaanna) + ')'"></span>
+        </li>
+      </ul>
+    </td>
+  </tr>
+  <tr ng-show="showKoulutukset()" ng-if="peruste.koulutukset.length > 0">
     <th kaanna="'peruste-koulutukset'"></th>
     <td>
 
@@ -16,19 +31,19 @@
         <div class="koulutus" ng-repeat="koulutus in peruste.koulutukset">
           <table class="aligned">
             <tr>
-              <th>{{'koulutuksen-nimi' | kaanna}}</th>
+              <th kaanna="'koulutuksen-nimi'"></th>
               <td>{{koulutus.nimi| kaanna}}</td>
             </tr>
             <tr>
-              <th>{{'perusteen-koodi' | kaanna}}</th>
+              <th kaanna="'perusteen-koodi'"></th>
               <td>{{koulutus.koulutuskoodiArvo}}</td>
             </tr>
             <tr>
-              <th>{{'haku-koulutusala' | kaanna}}</th>
+              <th kaanna="'haku-koulutusala'"></th>
               <td>{{koulutusalaNimi(koulutus.koulutusalakoodi).nimi | kaanna}}</td>
             </tr>
             <tr>
-              <th>{{'haku-opintoala' | kaanna}}</th>
+              <th kaanna="'haku-opintoala'"></th>
               <td>{{opintoalaNimi(koulutus.opintoalakoodi).nimi | kaanna}}</td>
             </tr>
           </table>
@@ -37,11 +52,11 @@
 
     </td>
   </tr>
-  <tr>
+  <tr ng-if="koodisto.length > 0">
     <th kaanna="'tutkintonimikkeet'"></th>
     <td>
 
-    <table ng-if="koodisto.length > 0" class="table table-striped tutkintonimikkeet">
+    <table ng-if="koodisto.length > 0" class="aligned tutkintonimikkeet">
       <thead>
         <tr>
           <th kaanna="osaamisala"></th>
@@ -74,21 +89,3 @@
     <td pvm="peruste.voimassaoloLoppuu"></td>
   </tr>
 </table>
-
-<div ng-if="korvattavatPerusteet && korvattavatPerusteet.length > 0">
-  <h3 kaanna="'korvattavat-perusteet'"></h3>
-
-  <th kaanna="'korvattavat-perusteet'"></th>
-  <td>
-    <table class="table table-striped">
-      <tr>
-        <th kaanna="'nimi'"></th>
-        <th kaanna="'diaarinumero-label'"></th>
-      </tr>
-      <tr ng-repeat="kp in korvattavatPerusteet">
-        <td kaanna="kp.nimi"></td>
-        <td ng-bind="kp.diaarinumero"></td>
-      </tr>
-    </table>
-  </td>
-</div>

@@ -27,7 +27,7 @@
 @import "modules/koodisto";
 @import "modules/editointikontrollit";
 @import "modules/kommentit";
-@import "modules/esitys";
+//@import "modules/esitys";
 @import "modules/perusopetus";
 @import "modules/tutke2osa";
 @import "modules/multiinput";
@@ -35,3 +35,5 @@
 @import "modules/formfield";
 @import "modules/ohje";
 @import "modules/termisto";
+
+@import "../eperusteet-esitys/styles/esitys";

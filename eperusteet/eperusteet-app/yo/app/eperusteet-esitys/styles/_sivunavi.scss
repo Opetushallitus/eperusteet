@@ -1,0 +1,92 @@
+.sivunavi-simple {
+  .sivunavi-box {
+    .list-group {
+      border-bottom: 2px solid #d2d2d2;
+    }
+  }
+}
+
+.esitys {
+  .sivunavi-sisalto {
+    background-color: white;
+    padding: 10px $sisalto-padding $sisalto-padding $sisalto-padding;
+  }
+
+  .sivunavi-box {
+    .panel-chosen > .panel-heading {
+      background-color: $brand-secondary;
+      color: white;
+      .panel-title {
+        font-weight: 700;
+      }
+    }
+    .list-group-item {
+      border-top: none;
+    }
+    .list-group-item:last-child {
+      border-bottom: 1px solid #ddd;
+    }
+    .level, .level0 {
+      border-top: 1px solid #ddd !important;
+      &.active {
+        border-color: #ddd !important;
+      }
+    }
+
+    .matched:not(.active) {
+      background-color: white;
+    }
+
+    .active, .active a {
+      background-color: $brand-link-active-bg;
+      color: $brand-link-active;
+      font-weight: 700;
+    }
+    .list-group-item {
+      &.active, &.active:focus, &.active:hover {
+        background-color: $brand-link-active-bg;
+        color: $brand-link-active;
+        border-color: #ddd;
+        .action-link:focus, .action-link:active{
+          color: $brand-link-active;
+        }
+      }
+    }
+  }
+
+  .items-item {
+    &.list-group-item {
+      border-top: none !important;
+      border-bottom: none !important;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      &:hover:not(.active) {
+        background-color: white;
+        color: $brand-secondary;
+      }
+      &.active, &.active:hover, &.active:focus {
+        background-color: white;
+      }
+      &.active {
+        .linktext {
+          background-color: $brand-primary;
+        }
+      }
+      &.tekstisisalto-active-header {
+        .linktext {
+          background-color: $brand-link-active-header-bg;
+          color: $brand-link-active-header;
+          font-weight: 700;
+        }
+      }
+    }
+    .toggler {
+      display: none !important;
+    }
+    .linktext {
+      padding: 5px;
+      margin-left: 0 !important;
+    }
+  }
+
+}

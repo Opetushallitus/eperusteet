@@ -256,6 +256,7 @@ angular.module('eperusteApp')
         attrs.$observe('editMode', function (val) {
           scope.editMode = val !== 'false';
         });
+        scope.editMode = attrs.editMode !== 'false';
       }
     };
   })

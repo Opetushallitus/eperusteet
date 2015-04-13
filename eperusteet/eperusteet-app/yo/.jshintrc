@@ -20,7 +20,8 @@
   "trailing": true,
   "smarttabs": true,
   "globals": {
-    "angular": false
+    "angular": false,
+    "_": false
   },
   "maxdepth": 4,
   "maxcomplexity": 8

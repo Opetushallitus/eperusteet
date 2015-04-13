@@ -27,6 +27,23 @@ angular.module('eperusteApp')
       }
     };
 
+    function presaveStrip(obj) {
+      if (_.isArray(obj)) {
+        _.each(obj, presaveStrip);
+      } else if (_.isObject(obj)) {
+        _.each(_.keys(obj), function (key) {
+          if (_.startsWith(key, '$')) {
+            delete obj[key];
+          }
+        });
+        _.each(obj, function (value) {
+          presaveStrip(value);
+        });
+      }
+      return obj;
+    }
+    this.presaveStrip = presaveStrip;
+
     this.hasLocalizedText = function (field) {
       if (!_.isObject(field)) {
         return false;

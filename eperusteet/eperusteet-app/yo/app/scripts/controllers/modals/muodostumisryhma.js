@@ -48,9 +48,7 @@ angular.module('eperusteApp')
     (function setupRyhma() {
       $scope.ryhma = ryhma ? angular.copy(ryhma) : {};
       $scope.ryhma.rooli = $scope.ryhma.rooli || YleinenData.rakenneRyhmaRoolit[0];
-      $scope.ryhma.muodostumisSaanto = $scope.ryhma.muodostumisSaanto || {};
       $scope.ryhma.osaamisala = ryhma && ryhma.osaamisala && ryhma.osaamisala.osaamisalakoodiUri ? ryhma.osaamisala : null;
-      if (!$scope.ryhma.muodostumisSaanto) { $scope.ryhma.muodostumisSaanto = {}; }
       if (!$scope.ryhma.nimi) { $scope.ryhma.nimi = {}; }
       if (!$scope.ryhma.kuvaus) { $scope.ryhma.kuvaus = {}; }
     })();
@@ -71,7 +69,7 @@ angular.module('eperusteApp')
         if (uusiryhma.osat === undefined) {
           uusiryhma.osat = [];
         }
-        if (uusiryhma.muodostumisSaanto.laajuus) {
+        if (uusiryhma.muodostumisSaanto && uusiryhma.muodostumisSaanto.laajuus) {
           var ml = uusiryhma.muodostumisSaanto.laajuus;
           ml.maksimi = ml.minimi && (!ml.maksimi || ml.minimi > ml.maksimi) ? ml.minimi : ml.maksimi;
         }

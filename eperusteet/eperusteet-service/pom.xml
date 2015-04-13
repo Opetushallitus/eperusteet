@@ -13,12 +13,12 @@
     <properties>
         <hibernate.version>4.3.8.Final</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>4.1.5.RELEASE</spring.version>
-        <spring.security.version>3.2.6.RELEASE</spring.security.version>
+        <spring.version>4.1.6.RELEASE</spring.version>
+        <spring.security.version>3.2.7.RELEASE</spring.security.version>
         <spring.data.jpa.version>1.7.2.RELEASE</spring.data.jpa.version>
         <logback.version>1.1.2</logback.version>
         <postgresql.version>9.3-1100-jdbc41</postgresql.version>
-        <jackson.version>2.5.1</jackson.version>
+        <jackson.version>2.5.2</jackson.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
         <buildhelper.skipAttach>true</buildhelper.skipAttach>
@@ -27,6 +27,7 @@
         <slf4j.version>1.7.7</slf4j.version>
         <swagger.version>1.0.1</swagger.version>
         <schema.file>${project.basedir}/target/schema.ddl</schema.file>
+        <hibernate.export.type>CREATE</hibernate.export.type>
     </properties>
 
     <repositories>
@@ -450,7 +451,7 @@
                     </executions>
                     <configuration>
                         <envers>true</envers>
-                        <type>CREATE</type>
+                        <type>${hibernate.export.type}</type>
                         <target>SCRIPT</target>
                         <driverClassName>org.postgresql.Driver</driverClassName>
                         <hibernateDialect>org.hibernate.dialect.PostgreSQL9Dialect</hibernateDialect>

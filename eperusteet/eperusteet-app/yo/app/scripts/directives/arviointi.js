@@ -353,7 +353,8 @@ angular.module('eperusteApp')
         sisaltoalue: '=',
         editAllowed: '=',
         sisaltoteksti: '=',
-        clickable: '@?'
+        clickable: '@?',
+        editmode: '='
       },
       controller: 'arvioinninTekstiKenttaCtrl'
     };

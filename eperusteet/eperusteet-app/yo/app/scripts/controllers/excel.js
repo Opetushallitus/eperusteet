@@ -105,7 +105,7 @@ angular.module('eperusteApp')
       if (perusteprojekti.koulutustyyppi !== 'koulutustyyppi_1') {
         delete perusteprojekti.laajuusYksikko;
       }
-      PerusteprojektiResource.save(perusteprojekti, function(resPerusteprojekti) {
+      PerusteprojektiResource.save(Utils.presaveStrip(perusteprojekti), function(resPerusteprojekti) {
         $scope.haettuProjekti = resPerusteprojekti;
         Perusteet.get({
           perusteId: resPerusteprojekti._peruste

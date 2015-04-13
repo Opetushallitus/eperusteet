@@ -1,8 +1,7 @@
-<!-- partials/esitys/tutkinnonOsa.html -->
-
-<h2 esitys-sivu-otsikko>
+<div class="tutkinnonosa-wrapper">
+<h1 esitys-sivu-otsikko="tutkinnonOsaViite.nimi">
   {{ tutkinnonOsa.nimi | kaanna }} <span ng-show="tutkinnonOsaViite.laajuus">{{ tutkinnonOsaViite.laajuus }} {{ yksikko | kaanna }}</span>
-</h2>
+</h1>
 
 <div ng-if="tutkinnonOsa.koodiArvo">
   <strong kaanna="'koodi'"></strong>: {{ tutkinnonOsa.koodiArvo }}
@@ -24,8 +23,8 @@
                   <div ng-repeat="kohde in kohdealue.arvioinninKohteet">
                       <h4>{{ kohde.otsikko | kaanna }}</h4>
                       <table class="table table-striped">
-                          <tr ng-repeat="okriteeri in kohde.osaamistasonKriteerit | orderBy: '_osaamistaso'">                              
-                              <td width="15%" ng-if="!($first && $last)">{{ arviointiasteikot[kohde._arviointiAsteikko][okriteeri._osaamistaso].otsikko | kaanna }}</td>
+                          <tr ng-repeat="okriteeri in kohde.osaamistasonKriteerit | orderBy: '_osaamistaso'">
+                              <td width="15%">{{ arviointiasteikot[kohde._arviointiAsteikko][okriteeri._osaamistaso].otsikko | kaanna }}</td>
                               <td>
                                   <ul>
                                       <li ng-repeat="kriteeri in okriteeri.kriteerit">{{ kriteeri | kaanna }}</li>
@@ -54,8 +53,9 @@
   <div ng-repeat="osaalue in tutkinnonOsa.osaAlueet | filter:osaAlueFilter">
     <h3>{{osaalue.nimi | kaanna}}</h3>
     <div ng-repeat="osaamistavoitteet in osaalue.$groups.grouped">
-      <div ng-repeat="tavoite in osaamistavoitteet | filter:osaAlueFilter" ng-include="'views/partials/esitys/osaamistavoite.html'"></div>
+      <div ng-repeat="tavoite in osaamistavoitteet | filter:osaAlueFilter" ng-include="'eperusteet-esitys/views/osaamistavoite.html'"></div>
     </div>
-    <div ng-repeat="tavoite in osaalue.$groups.ungrouped" ng-include="'views/partials/esitys/osaamistavoite.html'"></div>
+    <div ng-repeat="tavoite in osaalue.$groups.ungrouped" ng-include="'eperusteet-esitys/views/osaamistavoite.html'"></div>
   </div>
+</div>
 </div>

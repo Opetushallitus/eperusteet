@@ -1,0 +1,23 @@
+<div>
+  <h1 class="peruste-otsikko" ng-bind-html="peruste.nimi | kaanna | unsafe"></h1>
+
+  <murupolku></murupolku>
+  <div class="clearfix"></div>
+
+  <div id="sivunavi-sisalto-wrapper" ng-class="{'sivunavi-hidden': !isNaviVisible()}">
+    <div class="esitys">
+      <div class="sivunavi-navigaatio">
+        <ep-sivunavigaatio on-section-change="onSectionChange" header="navi.header" sections="navi.sections" show-one="navi.showOne"></ep-sivunavigaatio>
+      </div>
+
+      <div class="sivunavi-clear"></div>
+      <div class="sivunavi-sisalto perusopetus">
+        <div class="row">
+          <div class="col-md-12">
+            <div id="esitysPrintSisalto" ui-view></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -21,3 +21,11 @@ $statusbadge-width: 95px;
 
 $placeholder-color: #999999;
 $z-index-notification: 3000;
+$brand-secondary: #149ecb;
+
+$brand-border-color: #ececec;
+$brand-link-active-bg: $brand-primary;
+$brand-link-active: white;
+$brand-link-active-header-bg: lighten(desaturate($brand-link-active-bg, 50%), 60%);
+$brand-link-active-header: $brand-primary;
+$sisalto-padding: 15px;

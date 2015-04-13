@@ -69,7 +69,6 @@ angular.module('eperusteApp')
     }
 
     function haeLinkki(tokenId) {
-      console.log(new Dokumentti({id:tokenId}));
       // dis like, ewwww
       return SERVICE_LOC + '/dokumentit/' + tokenId;
     }
@@ -127,7 +126,7 @@ angular.module('eperusteApp')
     $scope.kielet = kielet;
     $scope.docs = {};
     var pdfToken = null;
-    var suoritustapa = PerusteProjektiService.getSuoritustapa() || $stateParams.suoritustapa;
+    var suoritustapa = $stateParams.suoritustapa || PerusteProjektiService.getSuoritustapa();
 
     $scope.hasPdf = function() {
       return !!$scope.docs[$scope.kielet.valittu];

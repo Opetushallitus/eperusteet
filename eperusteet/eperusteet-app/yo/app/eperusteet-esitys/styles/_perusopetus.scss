@@ -1,0 +1,145 @@
+.esitys {
+
+.perusopetus {
+  h1 {
+    margin: 0 0 20px 0;
+    border-bottom: 1px solid #ccc;
+  }
+  .tekstisisalto {
+    margin-bottom: 4px;
+    padding: 3px;
+    cursor: pointer;
+    color: $brand-primary;
+    a:focus {
+      outline: none;
+    }
+  }
+
+  .oppiaine {
+    display: block;
+    margin-left: 20px;
+    margin-bottom: 5px;
+    padding: 3px;
+    font-weight: 700;
+  }
+
+  .oppimaara {
+    margin-left: 40px;
+  }
+
+  .oppiaine-selected {
+    border-radius: 3px;
+    background-color: #0C566E;
+    font-weight: bold;
+    color: #eee;
+  }
+
+  .tekstisisalto-active-header {
+    background-color: $brand-link-active-header-bg;
+    color: $brand-link-active-header;
+    font-weight: 700;
+    a {
+      color: $brand-link-active-header;
+    }
+  }
+
+  .tekstisisalto-active {
+    font-weight: 700;
+    background-color: $brand-link-active-bg;
+    color: $brand-link-active;
+    a {
+      color: $brand-link-active;
+    }
+  }
+
+  .oppiaine-nimi {
+    margin-bottom: 10px;
+  }
+  .vuosiluokkavalitsin {
+    float: right;
+    position: relative;
+
+    .nav-pills {
+      .vlktab {
+        border-radius: 0px;
+      }
+    }
+  }
+  .moodit {
+    margin-top: -40px;
+  }
+}
+
+.sisaltoalueotsikko {
+  margin-top: 30px;
+}
+
+.prevnext-wrapper {
+  width: 100%;
+  margin-top: 40px;
+  display: table;
+  border: 1px solid #ccc;
+  .prevnext {
+    display: table-row;
+    .prev.chevron, .next.chevron {
+      width: 30px;
+    }
+    .prev, .next {
+      display: table-cell;
+    }
+    .prev {
+      padding: 5px 15px 5px 5px;
+    }
+    .next {
+      padding: 5px 5px 5px 15px;
+      text-align: right;
+    }
+  }
+
+}
+
+.teksti-linkki {
+  margin-left: 5px;
+  font-size: 14px;
+}
+
+.labeled-checkboxes {
+  position: relative;
+  label {
+    margin-bottom: 0;
+  }
+  input[type=checkbox] {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+  }
+  .lc-label {
+    float: left;
+    display: inline-block;
+    padding-left: 26px;
+  }
+}
+
+.reset-filters {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.depth1 {
+  margin-left: 20px;
+}
+.depth2 {
+  margin-left: 40px;
+}
+.depth3 {
+  margin-left: 60px;
+}
+
+.sivunavi-outer {
+  .uppercase {
+    text-transform: uppercase;
+  }
+}
+
+}

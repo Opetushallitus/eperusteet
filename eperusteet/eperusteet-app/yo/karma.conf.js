@@ -37,6 +37,8 @@ module.exports = function(config) {
       'app/bower_components/momentjs/moment.js',
       'app/bower_components/angular-cache/dist/angular-cache.min.js',
       'app/bower_components/angular-ui-select/dist/select.min.js',
+      'app/eperusteet-esitys/**/*.js',
+      'app/eperusteet-esitys/**/*.html',
       'app/scripts/*.js',
       'app/scripts/**/*.js',
       'test/mock/**/*.js',

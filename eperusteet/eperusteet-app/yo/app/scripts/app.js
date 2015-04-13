@@ -31,7 +31,8 @@ angular.module('eperusteApp', [
   'monospaced.elastic',
   'ui.tree',
   'angular-data.DSCacheFactory',
-  'ui.select'
+  'ui.select',
+  'eperusteet.esitys'
 ])
   .constant('SERVICE_LOC', '/eperusteet-service/api')
   // .constant('ORGANISATION_SERVICE_LOC', '/organisaatio-service/rest')
@@ -53,6 +54,9 @@ angular.module('eperusteApp', [
       $injector.get('virheService').setData({path: $location.path()});
       $injector.get('$state').go('root.virhe');
     });
+  })
+  .config(function (epEsitysSettingsProvider) {
+    epEsitysSettingsProvider.setValue('perusopetusState', 'root.selaus.perusopetus');
   })
   .config(function($translateProvider, $urlRouterProvider) {
     var preferred = 'fi';

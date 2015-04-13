@@ -8,7 +8,10 @@
       <div id="sortableKohdealueet" ui-sortable="sortableOptions" ng-model="arviointi">
         <accordion-group class="arvioinnin-kohdealue" heading="{{kohdealue.otsikko | kaanna}}" ng-repeat="kohdealue in arviointi" is-open="kohdealue.$accordionOpen">
         <accordion-heading>
-          <h3 class="panel-title" ng-hide="eiKohdealueita"><arvioinnin-tekstikentta sisalto="kohdealue" sisaltoalue="arviointi" sisaltoteksti="kohdealue.otsikko" sisaltoalue="$parent.arviointi.arvioinninKohdealueet" edit-allowed="editAllowed"/></h3>
+          <h3 class="panel-title" ng-hide="eiKohdealueita">
+            <arvioinnin-tekstikentta sisalto="kohdealue" sisaltoalue="arviointi" sisaltoteksti="kohdealue.otsikko"
+               sisaltoalue="$parent.arviointi.arvioinninKohdealueet" edit-allowed="editAllowed" editmode="editEnabled"></arvioinnin-tekstikentta>
+          </h3>
         </accordion-heading>
 
         <accordion close-others="false">
