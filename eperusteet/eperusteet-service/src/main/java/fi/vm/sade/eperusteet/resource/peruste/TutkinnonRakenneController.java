@@ -90,7 +90,6 @@ public class TutkinnonRakenneController {
      * @param id tutkinnon id
      * @param suoritustapakoodi suoritustapa (naytto,ops)
      * @param osa liitettävä tutkinnon osa
-     * @return
      */
     @RequestMapping(value = "/tutkinnonosat", method = PUT)
     @ResponseBody

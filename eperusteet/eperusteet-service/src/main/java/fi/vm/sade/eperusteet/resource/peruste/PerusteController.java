@@ -108,7 +108,7 @@ public class PerusteController {
         @ApiImplicitParam(name = "suoritustapa", dataType = "string", paramType = "query", value = "AM-perusteet; naytto tai ops"),
         @ApiImplicitParam(name = "koulutuskoodi", dataType = "string", paramType = "query"),
         @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query"),
-        @ApiImplicitParam(name = "muokattu", dataType = "integer", paramType = "query", value = "aikaleima; muokattu jälkeen")
+        @ApiImplicitParam(name = "muokattu", dataType = "integer", paramType = "query", value = "muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC)")
     })
     public Page<PerusteDto> getAll(@ApiIgnore PerusteQuery pquery) {
         // Vain valmiita perusteita voi hakea tämän rajapinnan avulla

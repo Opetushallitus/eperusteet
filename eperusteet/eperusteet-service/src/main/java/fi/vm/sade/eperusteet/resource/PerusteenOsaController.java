@@ -144,21 +144,6 @@ public class PerusteenOsaController {
         return new ResponseEntity<>(p, HttpStatus.OK);
     }
 
-//    @RequestMapping(method = GET, params = "koodiUri")
-//    @ResponseBody
-//    public List<PerusteenOsaDto.Laaja> get(@RequestParam("koodiUri") final String koodiUri) {
-//        List<PerusteenOsaDto.Laaja> t = service.getAllByKoodiUri(koodiUri);
-//        return PerusteenOsaDtoList.wrap(t);
-//    }
-
-//    @RequestMapping(method = POST)
-//    @ResponseStatus(HttpStatus.CREATED)
-//    @ResponseBody
-//    public ResponseEntity<PerusteenOsaDto.Laaja> add(@RequestBody PerusteenOsaDto.Laaja perusteenOsaDto, UriComponentsBuilder ucb) {
-//        PerusteenOsaDto.Laaja dto = service.add(perusteenOsaDto);
-//        return new ResponseEntity<>(dto, buildHeadersFor(dto.getId(), ucb), HttpStatus.CREATED);
-//    }
-
     @RequestMapping(value = "/{id}", method = POST)
     @ResponseBody
     public PerusteenOsaDto.Laaja update(@PathVariable("id") final Long id, @RequestBody PerusteenOsaUpdateDto dto) {
@@ -167,10 +152,6 @@ public class PerusteenOsaController {
 
     /**
      * Luo ja liittää uuden osa-alueen tutkinnon osaan.
-     *
-     * @param id
-     * @param osaAlueDto
-     * @return Uusi tutkinnon osan osa-alue
      */
     @RequestMapping(value = "/{id}/osaalue", method = POST)
     @ResponseBody
@@ -182,10 +163,6 @@ public class PerusteenOsaController {
 
     /**
      * Hakee tutkinnon osan osa-alueen.
-     *
-     * @param viiteId
-     * @param osaAlueId
-     * @return Tutkinnon osan osa-alue
      */
     @RequestMapping(value = "{viiteId}/osaalue/{osaAlueId}", method = GET)
     @ResponseBody
@@ -195,11 +172,6 @@ public class PerusteenOsaController {
 
     /**
      * Päivittää tutkinnon osan osa-alueen tietoja.
-     *
-     * @param viiteId
-     * @param osaAlueId
-     * @param osaAlue
-     * @return Päivitetty tutkinnon osan osa-alue
      */
     @RequestMapping(value = "{viiteId}/osaalue/{osaAlueId}", method = POST)
     @ResponseBody
@@ -226,9 +198,6 @@ public class PerusteenOsaController {
 
     /**
      * Poistaa tutkinnon osan osa-alueen
-     *
-     * @param id
-     * @param osaAlueId
      */
     @RequestMapping(value = "/{id}/osaalue/{osaAlueId}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -240,11 +209,6 @@ public class PerusteenOsaController {
 
     /**
      * Luo ja liittää uuden osaamistavoitteen tutkinnon osa osa-alueeseen.
-     *
-     * @param id
-     * @param osaAlueId
-     * @param osaamistavoiteDto
-     * @return Uusi osaamistavoiteDto
      */
     @RequestMapping(value = "/{id}/osaalue/{osaAlueId}/osaamistavoite", method = POST)
     @ResponseBody
@@ -258,12 +222,6 @@ public class PerusteenOsaController {
 
     /**
      * Päivittää osaamistavoitteen tutkinnon osa osa-alueeseen.
-     *
-     * @param id
-     * @param osaAlueId
-     * @param osaamistavoiteId
-     * @param osaamistavoite requestBody
-     * @return Päivitetty osaamistavoiteDto
      */
     @RequestMapping(value = "/{id}/osaalue/{osaAlueId}/osaamistavoite/{osaamistavoiteId}", method = POST)
     @ResponseBody
@@ -278,10 +236,6 @@ public class PerusteenOsaController {
 
     /**
      * Listaa tutkinnon osa osa-alueen osaamistavoitteet
-     *
-     * @param id
-     * @param osaAlueId
-     * @return
      */
     @RequestMapping(value = "/{id}/osaalue/{osaAlueId}/osaamistavoitteet", method = GET)
     @ResponseBody
@@ -293,10 +247,6 @@ public class PerusteenOsaController {
 
     /**
      * Poistaa tutkinnon osan osa-alueen osaamistavoitteen
-     *
-     * @param id
-     * @param osaAlueId
-     * @param osaamistavoiteId
      */
     @RequestMapping(value = "/{id}/osaalue/{osaAlueId}/osaamistavoite/{osaamistavoiteId}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
