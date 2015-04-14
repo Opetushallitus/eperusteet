@@ -41,6 +41,7 @@ public class PerusteQuery {
     private String perusteTyyppi;
     private String diaarinumero;
     private Long muokattu;
+    private String jarjestys;
 
     public void setTyyppi(List<String> tyyppi) {
         this.koulutustyyppi = tyyppi;

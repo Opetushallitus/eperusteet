@@ -35,8 +35,10 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen_;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.repository.PerusteRepositoryCustom;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
@@ -45,6 +47,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
@@ -94,7 +97,14 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         Predicate pred = buildPredicate(root, teksti, cb, pquery);
         query.distinct(true);
         final Expression<String> n = cb.lower(teksti.get(LokalisoituTeksti_.teksti));
-        query.multiselect(root, n).where(pred).orderBy(cb.asc(n), cb.asc(root.get(Peruste_.id)));
+
+        final List<Order> order = new ArrayList<>();
+        if ( "muokattu".equals(pquery.getJarjestys()) ) {
+            order.add(cb.desc(root.get(Peruste_.muokattu)));
+        }
+        order.add(cb.asc(n));
+        order.add(cb.asc(root.get(Peruste_.id)));
+        query.multiselect(root, n).where(pred).orderBy(order);
         return em.createQuery(query);
     }
 
