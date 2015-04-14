@@ -812,15 +812,15 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
      * @return Palauttaa 'tyhjän' perusterungon
      */
     @Override
-    public Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi) {
+    public Peruste luoPerusteRunko(KoulutusTyyppi koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi) {
         if (koulutustyyppi == null) {
             throw new BusinessRuleViolationException("Koulutustyyppiä ei ole asetettu");
         }
 
-        KoulutusTyyppi ekoulutustyyppi = KoulutusTyyppi.of(koulutustyyppi);
+        KoulutusTyyppi ekoulutustyyppi = koulutustyyppi;
 
         Peruste peruste = new Peruste();
-        peruste.setKoulutustyyppi(koulutustyyppi);
+        peruste.setKoulutustyyppi(koulutustyyppi.name());
         peruste.setTyyppi(tyyppi);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
 
@@ -848,6 +848,28 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return peruste;
     }
 
+    private PerusteenOsaViite kloonaa(PerusteenOsaViite viite) {
+        PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
+        if (viite.getPerusteenOsa() != null) {
+            pov.setPerusteenOsa(perusteenOsaRepository.save(viite.getPerusteenOsa().copy()));
+        }
+
+        List<PerusteenOsaViite> uudet_lapset = new ArrayList<>();
+        for (PerusteenOsaViite lapsi : viite.getLapset()) {
+            PerusteenOsaViite kloonattu = kloonaa(lapsi);
+            kloonattu.setVanhempi(pov);
+            uudet_lapset.add(kloonattu);
+        }
+        pov.setLapset(uudet_lapset);
+        return pov;
+    }
+
+    private EsiopetuksenPerusteenSisalto kloonaaEsiopetuksenPeruste(Peruste vanha) {
+        EsiopetuksenPerusteenSisalto root = new EsiopetuksenPerusteenSisalto();
+        root.setSisalto(kloonaa(vanha.getEsiopetuksenPerusteenSisalto().getSisalto()));
+        return root;
+    }
+
     @Override
     public Peruste luoPerusteRunkoToisestaPerusteesta(PerusteprojektiLuontiDto luontiDto, PerusteTyyppi tyyppi) {
         Peruste vanha = perusteet.getOne(luontiDto.getPerusteId());
@@ -867,21 +889,36 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             peruste.setKoulutukset(koulutukset);
         }
 
-        Set<Suoritustapa> suoritustavat = vanha.getSuoritustavat();
-        Set<Suoritustapa> uudetSuoritustavat = new HashSet<>();
-
-        for (Suoritustapa st : suoritustavat) {
-            uudetSuoritustavat.add(suoritustapaService.createFromOther(st.getId()));
+        if (KoulutusTyyppi.ESIOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
+                || KoulutusTyyppi.LISAOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {
+            EsiopetuksenPerusteenSisalto uusiSisalto = kloonaaEsiopetuksenPeruste(vanha);
+            uusiSisalto.setPeruste(peruste);
+            peruste.setEsiopetuksenPerusteenSisalto(uusiSisalto);
         }
+        else {
+            Set<Suoritustapa> suoritustavat = vanha.getSuoritustavat();
+            Set<Suoritustapa> uudetSuoritustavat = new HashSet<>();
 
-        for (Suoritustapa st : uudetSuoritustavat) {
-            st.setLaajuusYksikko(luontiDto.getLaajuusYksikko());
+            for (Suoritustapa st : suoritustavat) {
+                uudetSuoritustavat.add(suoritustapaService.createFromOther(st.getId()));
+            }
+
+            for (Suoritustapa st : uudetSuoritustavat) {
+                st.setLaajuusYksikko(luontiDto.getLaajuusYksikko());
+            }
+
+            peruste.setSuoritustavat(uudetSuoritustavat);
+
+            if (KoulutusTyyppi.PERUSOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {
+                // FIXME
+//                peruste.setPerusopetuksenPerusteenSisalto(vanha.getPerusopetuksenPerusteenSisalto().clone());
+            }
+            else {
+                lisaaTutkinnonMuodostuminen(peruste);
+            }
         }
-
-        peruste.setSuoritustavat(uudetSuoritustavat);
 
         peruste = perusteet.save(peruste);
-        lisaaTutkinnonMuodostuminen(peruste);
         return peruste;
     }
 

@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.ColumnResult;
@@ -96,4 +97,6 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
         }
         return root;
     }
+
+
 }

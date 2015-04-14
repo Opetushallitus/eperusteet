@@ -47,7 +47,7 @@ public class PerusteQuery {
         this.koulutustyyppi = tyyppi;
     }
 
-    public List<String> getTyyppi(List<String> tyyppi) {
+    public List<String> getTyyppi() {
         return this.koulutustyyppi;
     }
 }

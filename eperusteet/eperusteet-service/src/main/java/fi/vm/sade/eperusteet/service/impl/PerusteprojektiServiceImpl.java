@@ -219,14 +219,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     public PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto) {
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
 
-        String koulutustyyppi = perusteprojektiDto.getKoulutustyyppi();
+        KoulutusTyyppi koulutustyyppi = KoulutusTyyppi.of(perusteprojektiDto.getKoulutustyyppi());
         LaajuusYksikko yksikko = perusteprojektiDto.getLaajuusYksikko();
         PerusteTyyppi tyyppi = perusteprojektiDto.getTyyppi() == null ? PerusteTyyppi.NORMAALI : perusteprojektiDto.getTyyppi();
         perusteprojekti.setTila(ProjektiTila.LAADINTA);
         perusteprojekti.setRyhmaOid(perusteprojektiDto.getRyhmaOid());
 
         if (tyyppi != PerusteTyyppi.POHJA) {
-            if (koulutustyyppi != null && KoulutusTyyppi.of(koulutustyyppi) == KoulutusTyyppi.PERUSTUTKINTO && yksikko == null) {
+            if (koulutustyyppi != null && koulutustyyppi == KoulutusTyyppi.PERUSTUTKINTO && yksikko == null) {
                 throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
             }
             if (perusteprojektiDto.getDiaarinumero() == null) {
