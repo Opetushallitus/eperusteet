@@ -1249,7 +1249,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         // Laitetaan alkuun kuvaus (tiivistelmä)
         String kuvaus = getTextString(peruste.getKuvaus(), kieli);
         Element abstractPara = doc.createElement("para");
-        abstractPara.appendChild(doc.createTextNode(kuvaus));
+        addMarkupToElement(doc, abstractPara, kuvaus);
         info.appendChild(abstractPara);
 
         // Taulukossa loput tiedot
