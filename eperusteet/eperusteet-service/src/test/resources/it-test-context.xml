@@ -40,7 +40,10 @@
     <bean id="cacheManager" class="org.springframework.cache.concurrent.ConcurrentMapCacheManager"/>
 
     <!-- import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/ -->
-    <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>
+    <context:component-scan base-package="fi.vm.sade.eperusteet.service">
+        <context:exclude-filter type="regex" expression="fi.vm.sade.eperusteet.service.impl.DokumenttiServiceImpl"/>
+    </context:component-scan>
+    
     <tx:annotation-driven/>
 
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
