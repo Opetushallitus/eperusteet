@@ -614,6 +614,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             if (po.getTunniste() == PerusteenOsaTunniste.RAKENNE) {
                 // poikkeustapauksena perusteen rakennepuun rendaus
                 addTutkinnonMuodostuminen(doc, parentElement, peruste, depth, tapa, kieli);
+            } else if (po.getTunniste() == PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN) {
+                // TODO FIXME
             } else {
                 // normikeississä sukelletaan syvemmälle puuhun
                 String nimi = getTextString(tk.getNimi(), kieli);

@@ -32,10 +32,16 @@ angular.module('eperusteApp')
 
     $scope.$watch('peruste.sisalto', function () {
       Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function (lapsi) {
-        lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.tekstikappale', {
-          suoritustapa: 'perusopetus',
-          perusteenOsaViiteId: lapsi.id,
-          versio: '' });
+        lapsi.$url = lapsi.perusteenOsa.tunniste === 'laajaalainenosaaminen' ?
+          $state.href('root.perusteprojekti.suoritustapa.osalistaus', {
+            suoritustapa: 'perusopetus',
+            osanTyyppi: 'osaaminen'
+          }) :
+          $state.href('root.perusteprojekti.suoritustapa.tekstikappale', {
+              suoritustapa: 'perusopetus',
+              perusteenOsaViiteId: lapsi.id,
+              versio: ''
+            });
       });
     }, true);
 

@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
  */
 public enum PerusteenOsaTunniste {
     NORMAALI("normaali"),
+    LAAJAALAINENOSAAMINEN("laajaalainenosaaminen"),
     RAKENNE("rakenne");
 
     private final String tunniste;

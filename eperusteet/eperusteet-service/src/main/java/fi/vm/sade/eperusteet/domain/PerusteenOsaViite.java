@@ -85,7 +85,7 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
     @Setter
     @BatchSize(size = 100)
     @ElementCollection
-    private List<PerusteenOsaViite> lapset;
+    private List<PerusteenOsaViite> lapset = new ArrayList<>();
 
     @Override
     public EntityReference getReference() {

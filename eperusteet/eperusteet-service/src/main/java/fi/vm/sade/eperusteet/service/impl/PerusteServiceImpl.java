@@ -797,21 +797,31 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     private void lisaaTutkinnonMuodostuminen(Peruste peruste) {
         if (KoulutusTyyppi.PERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
-            return;
-        }
-
-        for (Suoritustapa st : peruste.getSuoritustavat()) {
-            PerusteenOsaViite sisalto = st.getSisalto();
-            List<PerusteenOsaViite> lapset = sisalto.getLapset();
+            PerusteenOsaViite sisalto = peruste.getPerusopetuksenPerusteenSisalto().getSisalto();
             TekstiKappale tk = new TekstiKappale();
             HashMap<Kieli, String> hm = new HashMap<>();
-            hm.put(Kieli.FI, "Tutkinnon muodostuminen");
+            hm.put(Kieli.FI, "Laaja-alaiset osaamiset");
             tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
-            tk.setTunniste(PerusteenOsaTunniste.RAKENNE);
+            tk.setTunniste(PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN);
             PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
             pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
             pov.setVanhempi(sisalto);
-            lapset.add(pov);
+            sisalto.getLapset().add(pov);
+        }
+        else {
+            for (Suoritustapa st : peruste.getSuoritustavat()) {
+                PerusteenOsaViite sisalto = st.getSisalto();
+                List<PerusteenOsaViite> lapset = sisalto.getLapset();
+                TekstiKappale tk = new TekstiKappale();
+                HashMap<Kieli, String> hm = new HashMap<>();
+                hm.put(Kieli.FI, "Tutkinnon muodostuminen");
+                tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
+                tk.setTunniste(PerusteenOsaTunniste.RAKENNE);
+                PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
+                pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
+                pov.setVanhempi(sisalto);
+                lapset.add(pov);
+            }
         }
     }
 
