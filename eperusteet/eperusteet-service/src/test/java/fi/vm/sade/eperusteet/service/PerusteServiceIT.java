@@ -19,6 +19,7 @@ import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koulutus;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -202,7 +203,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     @Test
     public void testGetByDiaari() {
 
-        Peruste p = perusteService.luoPerusteRunko("koulutustyyppi_1", LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
+        Peruste p = perusteService.luoPerusteRunko(KoulutusTyyppi.PERUSTUTKINTO, LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
         p.setDiaarinumero(new Diaarinumero("123456"));
         perusteService.update(p.getId(), mapper.map(p, PerusteDto.class));
 

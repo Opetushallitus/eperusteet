@@ -57,4 +57,11 @@ public class LaajaalainenOsaaminen extends AbstractReferenceableEntity {
     @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
     private TekstiPalanen kuvaus;
+
+    public LaajaalainenOsaaminen kloonaa() {
+        LaajaalainenOsaaminen uusiLaaja = new LaajaalainenOsaaminen();
+        uusiLaaja.setKuvaus(kuvaus);
+        uusiLaaja.setNimi(nimi);
+        return uusiLaaja;
+    }
 }

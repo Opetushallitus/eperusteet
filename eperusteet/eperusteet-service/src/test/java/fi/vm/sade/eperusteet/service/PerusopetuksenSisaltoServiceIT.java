@@ -54,7 +54,7 @@ public class PerusopetuksenSisaltoServiceIT extends AbstractIntegrationTest {
     private Long perusteId;
     @Before
     public void setup() {
-        Peruste peruste = perusteService.luoPerusteRunko(KoulutusTyyppi.PERUSOPETUS.toString(), LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
+        Peruste peruste = perusteService.luoPerusteRunko(KoulutusTyyppi.PERUSOPETUS, LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
         perusteId = peruste.getId();
     }
 

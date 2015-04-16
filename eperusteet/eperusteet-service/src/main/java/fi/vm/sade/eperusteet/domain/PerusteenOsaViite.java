@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.ColumnResult;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -83,6 +84,7 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
     @Getter
     @Setter
     @BatchSize(size = 100)
+    @ElementCollection
     private List<PerusteenOsaViite> lapset;
 
     @Override
@@ -98,5 +100,19 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
         return root;
     }
 
+    public PerusteenOsaViite kloonaa() {
+        PerusteenOsaViite pov = new PerusteenOsaViite();
+        if (getPerusteenOsa() != null) {
+            pov.setPerusteenOsa(getPerusteenOsa());
+        }
 
+        List<PerusteenOsaViite> uudetLapset = new ArrayList<>();
+        for (PerusteenOsaViite lapsi : lapset) {
+            PerusteenOsaViite kloonattu = lapsi.kloonaa();
+            kloonattu.setVanhempi(pov);
+            uudetLapset.add(kloonattu);
+        }
+        pov.setLapset(uudetLapset);
+        return pov;
+    }
 }
