@@ -24,6 +24,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
@@ -113,6 +114,10 @@ public class PerusteController {
     public Page<PerusteDto> getAll(@ApiIgnore PerusteQuery pquery) {
         // Vain valmiita perusteita voi hakea tämän rajapinnan avulla
         pquery.setTila(PerusteTila.VALMIS.toString());
+        // Oletuksena älä palauta pohjia
+        if ( pquery.getPerusteTyyppi() == null ) {
+            pquery.setPerusteTyyppi(PerusteTyyppi.NORMAALI.toString());
+        }
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findBy(p, pquery);
     }
