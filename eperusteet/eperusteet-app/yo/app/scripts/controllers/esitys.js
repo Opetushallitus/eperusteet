@@ -159,7 +159,7 @@ angular.module('eperusteApp')
         // TODO siirry käyttämään YleinenData.koulutustyyppiInfo:a
         suoritustapa: YleinenData.validSuoritustapa($scope.peruste, $stateParams.suoritustapa)
       });
-      $state.go('root.esitys.peruste.tiedot', params);
+      $state.go('root.esitys.peruste.tiedot', params, {location: 'replace'});
     }
 
     $scope.rajaaSisaltoa = function() {

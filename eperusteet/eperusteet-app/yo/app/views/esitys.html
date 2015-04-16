@@ -22,7 +22,7 @@ European Union Public Licence for more details.
   <h1>
     <span kaanna="peruste.nimi || 'nimetön'"></span>
   </h1>
-    <div ng-if="$prestate" class="alert alert-info">
+    <div ng-if="$prestate || peruste.tila !== 'valmis'" class="alert alert-info">
         <h4 kaanna="'perusteen-esikatselu'"></h4>
         <p kaanna="'laadinnan-esikatselu-info'"></p>
     </div>
