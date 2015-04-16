@@ -57,6 +57,7 @@ angular.module('eperusteApp', [
   })
   .config(function (epEsitysSettingsProvider) {
     epEsitysSettingsProvider.setValue('perusopetusState', 'root.selaus.perusopetus');
+    epEsitysSettingsProvider.setValue('showPreviewNote', true);
   })
   .config(function($translateProvider, $urlRouterProvider) {
     var preferred = 'fi';

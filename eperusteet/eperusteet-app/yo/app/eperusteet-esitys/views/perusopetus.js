@@ -20,6 +20,7 @@
  .controller('epPerusopetusController', function($q, $scope, $timeout, sisalto, PerusteenOsat,
    $state, $stateParams, epMenuBuilder, Utils, MurupolkuData,
    Oppiaineet, TermistoService, Kieli, $document, $rootScope, epPerusopetusStateService, epEsitysSettings) {
+   $scope.showPreviewNote = epEsitysSettings.showPreviewNote;
    $scope.isNaviVisible = _.constant(true);
    $scope.hasContent = function (obj) {
      return _.isObject(obj) && obj.teksti && obj.teksti[Kieli.getSisaltokieli()];
@@ -261,7 +262,7 @@
          return item.depth === 0;
        }).first();
        if (first) {
-         $state.go('.tekstikappale', {tekstikappaleId: first.$osa.id, perusteId: $scope.peruste.id});
+         $state.go('.tekstikappale', {tekstikappaleId: first.$osa.id, perusteId: $scope.peruste.id}, {location: 'replace'});
        }
      }
    });

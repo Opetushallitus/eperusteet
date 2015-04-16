@@ -614,6 +614,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             if (po.getTunniste() == PerusteenOsaTunniste.RAKENNE) {
                 // poikkeustapauksena perusteen rakennepuun rendaus
                 addTutkinnonMuodostuminen(doc, parentElement, peruste, depth, tapa, kieli);
+            } else if (po.getTunniste() == PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN) {
+                // TODO FIXME
             } else {
                 // normikeississä sukelletaan syvemmälle puuhun
                 String nimi = getTextString(tk.getNimi(), kieli);
@@ -1249,7 +1251,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         // Laitetaan alkuun kuvaus (tiivistelmä)
         String kuvaus = getTextString(peruste.getKuvaus(), kieli);
         Element abstractPara = doc.createElement("para");
-        abstractPara.appendChild(doc.createTextNode(kuvaus));
+        addMarkupToElement(doc, abstractPara, kuvaus);
         info.appendChild(abstractPara);
 
         // Taulukossa loput tiedot

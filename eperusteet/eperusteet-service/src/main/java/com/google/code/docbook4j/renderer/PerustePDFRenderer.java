@@ -19,8 +19,8 @@ import com.google.code.docbook4j.Docbook4JException;
 import com.google.code.docbook4j.FileObjectUtils;
 import com.google.code.docbook4j.VfsURIResolver;
 import fi.vm.sade.eperusteet.service.util.PerusteXslURIResolver;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.Map;
 import java.util.UUID;
@@ -156,9 +156,8 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer> {
         DefaultConfigurationBuilder builder = new DefaultConfigurationBuilder();
         try {
             if (!this.fopConfig.isEmpty()) {
-                File fopconf = new File(this.fopConfig);
-                LOG.info("Using fop conf file: {}", fopconf.getAbsolutePath());
-                Configuration conf = builder.buildFromFile(fopconf.getAbsolutePath());
+                InputStream ras = this.getClass().getResourceAsStream(this.fopConfig);
+                Configuration conf = builder.build(ras);
                 return conf;
             }
         } catch (SAXException | IOException | ConfigurationException ex) {
@@ -169,12 +168,7 @@ public class PerustePDFRenderer extends FORenderer<PerustePDFRenderer> {
 
     @Override
     protected void enhanceFOUserAgent(FOUserAgent agent) {
-        if (StringUtils.isEmpty(this.baseFontDirectory) ||
-            StringUtils.isEmpty(this.fopConfig)) {
-            LOG.warn("Base font directory or fopconfig not set, won't use pdf/a mode");
-        } else {
-            agent.getRendererOptions().put("pdf-a-mode", "PDF/A-1b");
-        }
+        agent.getRendererOptions().put("pdf-a-mode", "PDF/A-1b");
     }
 
     protected void enhanceFopFactory(FopFactory factory) {

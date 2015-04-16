@@ -145,4 +145,10 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
         return result;
     }
 
+    public OppiaineenVuosiluokkaKokonaisuus kloonaa(Oppiaine oa) {
+        OppiaineenVuosiluokkaKokonaisuus ovlk = new OppiaineenVuosiluokkaKokonaisuus();
+        ovlk.setOppiaine(oa);
+        return ovlk;
+    }
+
 }

@@ -37,7 +37,10 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
+import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
@@ -54,7 +57,9 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
+import fi.vm.sade.eperusteet.repository.OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.OsaamisalaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
@@ -64,6 +69,7 @@ import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.repository.TekstiPalanenRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
+import fi.vm.sade.eperusteet.repository.VuosiluokkaKokonaisuusRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
@@ -175,10 +181,16 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private TekstiPalanenRepository tekstiPalanenRepository;
 
     @Autowired
+    private VuosiluokkaKokonaisuusRepository vuosiluokkaKokonaisuusRepository;
+
+    @Autowired
     private LockManager lockManager;
 
     @Autowired
     private RakenneRepository rakenneRepository;
+
+    @Autowired
+    private OppiaineRepository oppiaineRepository;
 
     @Autowired
     private PerusopetuksenPerusteenSisaltoService perusopetuksenSisaltoService;
@@ -785,21 +797,31 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     private void lisaaTutkinnonMuodostuminen(Peruste peruste) {
         if (KoulutusTyyppi.PERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
-            return;
-        }
-
-        for (Suoritustapa st : peruste.getSuoritustavat()) {
-            PerusteenOsaViite sisalto = st.getSisalto();
-            List<PerusteenOsaViite> lapset = sisalto.getLapset();
+            PerusteenOsaViite sisalto = peruste.getPerusopetuksenPerusteenSisalto().getSisalto();
             TekstiKappale tk = new TekstiKappale();
             HashMap<Kieli, String> hm = new HashMap<>();
-            hm.put(Kieli.FI, "Tutkinnon muodostuminen");
+            hm.put(Kieli.FI, "Laaja-alaiset osaamiset");
             tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
-            tk.setTunniste(PerusteenOsaTunniste.RAKENNE);
+            tk.setTunniste(PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN);
             PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
             pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
             pov.setVanhempi(sisalto);
-            lapset.add(pov);
+            sisalto.getLapset().add(pov);
+        }
+        else {
+            for (Suoritustapa st : peruste.getSuoritustavat()) {
+                PerusteenOsaViite sisalto = st.getSisalto();
+                List<PerusteenOsaViite> lapset = sisalto.getLapset();
+                TekstiKappale tk = new TekstiKappale();
+                HashMap<Kieli, String> hm = new HashMap<>();
+                hm.put(Kieli.FI, "Tutkinnon muodostuminen");
+                tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
+                tk.setTunniste(PerusteenOsaTunniste.RAKENNE);
+                PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
+                pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
+                pov.setVanhempi(sisalto);
+                lapset.add(pov);
+            }
         }
     }
 
@@ -812,15 +834,15 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
      * @return Palauttaa 'tyhjän' perusterungon
      */
     @Override
-    public Peruste luoPerusteRunko(String koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi) {
+    public Peruste luoPerusteRunko(KoulutusTyyppi koulutustyyppi, LaajuusYksikko yksikko, PerusteTyyppi tyyppi) {
         if (koulutustyyppi == null) {
             throw new BusinessRuleViolationException("Koulutustyyppiä ei ole asetettu");
         }
 
-        KoulutusTyyppi ekoulutustyyppi = KoulutusTyyppi.of(koulutustyyppi);
+        KoulutusTyyppi ekoulutustyyppi = koulutustyyppi;
 
         Peruste peruste = new Peruste();
-        peruste.setKoulutustyyppi(koulutustyyppi);
+        peruste.setKoulutustyyppi(koulutustyyppi.toString());
         peruste.setTyyppi(tyyppi);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
 
@@ -848,6 +870,27 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return peruste;
     }
 
+    private EsiopetuksenPerusteenSisalto kloonaaEsiopetuksenSisalto(Peruste uusi, EsiopetuksenPerusteenSisalto vanha) {
+        return vanha.kloonaa(uusi);
+    }
+
+    private PerusopetuksenPerusteenSisalto kloonaaPerusopetuksenSisalto(Peruste uusi, PerusopetuksenPerusteenSisalto vanha) {
+        PerusopetuksenPerusteenSisalto sisalto = new PerusopetuksenPerusteenSisalto();
+        sisalto.setSisalto(vanha.getSisalto().kloonaa());
+        sisalto.setPeruste(uusi);
+
+        for (LaajaalainenOsaaminen laaja : vanha.getLaajaalaisetosaamiset()) {
+            sisalto.addLaajaalainenosaaminen(laaja.kloonaa());
+        }
+        for (VuosiluokkaKokonaisuus vlk : vanha.getVuosiluokkakokonaisuudet()) {
+            sisalto.addVuosiluokkakokonaisuus(vuosiluokkaKokonaisuusRepository.save(vlk.kloonaa()));
+        }
+        for (Oppiaine oa : vanha.getOppiaineet()) {
+            sisalto.addOppiaine(oppiaineRepository.save(oa.kloonaa()));
+        }
+        return sisalto;
+    }
+
     @Override
     public Peruste luoPerusteRunkoToisestaPerusteesta(PerusteprojektiLuontiDto luontiDto, PerusteTyyppi tyyppi) {
         Peruste vanha = perusteet.getOne(luontiDto.getPerusteId());
@@ -867,21 +910,36 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             peruste.setKoulutukset(koulutukset);
         }
 
-        Set<Suoritustapa> suoritustavat = vanha.getSuoritustavat();
-        Set<Suoritustapa> uudetSuoritustavat = new HashSet<>();
+        if (KoulutusTyyppi.ESIOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
+                || KoulutusTyyppi.LISAOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {
+            EsiopetuksenPerusteenSisalto uusiSisalto = kloonaaEsiopetuksenSisalto(peruste, vanha.getEsiopetuksenPerusteenSisalto());
+            uusiSisalto.setPeruste(peruste);
+            peruste.setEsiopetuksenPerusteenSisalto(uusiSisalto);
+            peruste = perusteet.save(peruste);
+        }
+        else {
+            Set<Suoritustapa> suoritustavat = vanha.getSuoritustavat();
+            Set<Suoritustapa> uudetSuoritustavat = new HashSet<>();
 
-        for (Suoritustapa st : suoritustavat) {
-            uudetSuoritustavat.add(suoritustapaService.createFromOther(st.getId()));
+            for (Suoritustapa st : suoritustavat) {
+                uudetSuoritustavat.add(suoritustapaService.createFromOther(st.getId()));
+            }
+
+            for (Suoritustapa st : uudetSuoritustavat) {
+                st.setLaajuusYksikko(luontiDto.getLaajuusYksikko());
+            }
+
+            peruste.setSuoritustavat(uudetSuoritustavat);
+            peruste = perusteet.save(peruste);
+
+            if (KoulutusTyyppi.PERUSOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {
+                peruste.setPerusopetuksenPerusteenSisalto(kloonaaPerusopetuksenSisalto(peruste, vanha.getPerusopetuksenPerusteenSisalto()));
+            }
+            else {
+                lisaaTutkinnonMuodostuminen(peruste);
+            }
         }
 
-        for (Suoritustapa st : uudetSuoritustavat) {
-            st.setLaajuusYksikko(luontiDto.getLaajuusYksikko());
-        }
-
-        peruste.setSuoritustavat(uudetSuoritustavat);
-
-        peruste = perusteet.save(peruste);
-        lisaaTutkinnonMuodostuminen(peruste);
         return peruste;
     }
 

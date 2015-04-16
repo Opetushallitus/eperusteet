@@ -22,6 +22,9 @@
         <fo:block break-after='page'/>
     </xsl:template>
 
+    <!-- default is USletter -->
+    <xsl:param name="paper.type">A4</xsl:param>
+
     <!-- From: http://www.sagehill.net/docbookxsl/CustomGentext.html
     Defines an XSL parameter named local.l10n.xml. The select attribute that
     provides the content of the parameter performs a neat trick. The XSL

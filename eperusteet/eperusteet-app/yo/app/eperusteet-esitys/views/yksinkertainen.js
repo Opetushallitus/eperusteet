@@ -19,7 +19,9 @@
 angular.module('eperusteet.esitys')
 .controller('epYksinkertainenPerusteController', function($q, $scope, $timeout, sisalto, PerusteenOsat,
   $state, $stateParams, epMenuBuilder, Algoritmit, Utils, MurupolkuData,
-  Oppiaineet, TermistoService, Kieli, $document, $rootScope, epPerusopetusStateService, koulutusalaService, opintoalaService) {
+  Oppiaineet, TermistoService, Kieli, $document, $rootScope, epPerusopetusStateService,
+  koulutusalaService, opintoalaService, epEsitysSettings) {
+  $scope.showPreviewNote = epEsitysSettings.showPreviewNote;
   function getRootState(current) {
     return current.replace(/\.(esiopetus|lisaopetus)(.*)/, '.$1');
   }
@@ -102,7 +104,7 @@ angular.module('eperusteet.esitys')
 
   $timeout(function () {
     if ($state.current.name === currentRootState) {
-      $state.go('.tiedot');
+      $state.go('.tiedot', {}, {location: 'replace'});
     }
   });
 });

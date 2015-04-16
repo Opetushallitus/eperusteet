@@ -253,6 +253,20 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
         return System.identityHashCode(this);
     }
 
+    public Oppiaine kloonaa() {
+        Oppiaine oa = new Oppiaine();
+        oa.setAbstrakti(abstrakti);
+        oa.setJnro(jnro);
+        oa.setKoosteinen(koosteinen);
+        oa.setNimi(nimi);
+        oa.setTehtava(tehtava);
+
+//        for (OppiaineenVuosiluokkaKokonaisuus ovlk : vuosiluokkakokonaisuudet) {
+//            oa.addVuosiluokkaKokonaisuus(ovlk.kloonaa(oa));
+//        }
+        return oa;
+    }
+
     public interface Strict {
     };
 }

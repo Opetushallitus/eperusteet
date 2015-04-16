@@ -17,9 +17,11 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.ColumnResult;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -82,7 +84,8 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
     @Getter
     @Setter
     @BatchSize(size = 100)
-    private List<PerusteenOsaViite> lapset;
+    @ElementCollection
+    private List<PerusteenOsaViite> lapset = new ArrayList<>();
 
     @Override
     public EntityReference getReference() {
@@ -95,5 +98,21 @@ public class PerusteenOsaViite implements ReferenceableEntity, Serializable {
             root = root.getVanhempi();
         }
         return root;
+    }
+
+    public PerusteenOsaViite kloonaa() {
+        PerusteenOsaViite pov = new PerusteenOsaViite();
+        if (getPerusteenOsa() != null) {
+            pov.setPerusteenOsa(getPerusteenOsa());
+        }
+
+        List<PerusteenOsaViite> uudetLapset = new ArrayList<>();
+        for (PerusteenOsaViite lapsi : lapset) {
+            PerusteenOsaViite kloonattu = lapsi.kloonaa();
+            kloonattu.setVanhempi(pov);
+            uudetLapset.add(kloonattu);
+        }
+        pov.setLapset(uudetLapset);
+        return pov;
     }
 }

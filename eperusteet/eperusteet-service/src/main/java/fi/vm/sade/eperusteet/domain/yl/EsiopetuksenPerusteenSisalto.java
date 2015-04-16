@@ -45,11 +45,18 @@ public class EsiopetuksenPerusteenSisalto extends AbstractAuditedReferenceableEn
     @JoinColumn(nullable = false, updatable = false)
     private Peruste peruste;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @Getter
     @Setter
     @JoinColumn
     private PerusteenOsaViite sisalto = new PerusteenOsaViite();
+
+    public EsiopetuksenPerusteenSisalto kloonaa(Peruste peruste) {
+        EsiopetuksenPerusteenSisalto eps = new EsiopetuksenPerusteenSisalto();
+        eps.setPeruste(peruste);
+        eps.setSisalto(sisalto.kloonaa());
+        return eps;
+    }
 
     public boolean containsViite(PerusteenOsaViite viite) {
         return viite != null && sisalto.getId().equals(viite.getRoot().getId());

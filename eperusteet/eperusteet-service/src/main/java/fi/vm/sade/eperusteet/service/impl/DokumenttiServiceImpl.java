@@ -32,10 +32,12 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
+import javax.servlet.ServletContext;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.slf4j.Logger;
@@ -58,6 +60,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiServiceImpl.class);
 
     @Autowired
+    private ServletContext servletContext;
+
+    @Autowired
     private DokumenttiRepository dokumenttiRepository;
 
     @Autowired
@@ -69,10 +74,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Autowired
     DokumenttiBuilderService builder;
 
-    @Value("${fi.vm.sade.eperusteet.base_font_directory:}")
-    private String baseFontDirectory;
-
-    @Value("${fi.vm.sade.eperusteet.fop_config:}")
+    @Value("/docgen/fop.xconf")
     private String fopConfig;
 
     @Override
@@ -188,7 +190,8 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
         //PDFRenderer r = PDFRenderer.create(xmlpath, style);
         PerustePDFRenderer r = new PerustePDFRenderer().xml(xmlpath).xsl(style);
-        r.setBaseFontDirectory(baseFontDirectory);
+        String fontDir = servletContext.getRealPath("WEB-INF/classes/docgen/fonts");
+        r.setBaseFontDirectory(fontDir);
         r.setFopConfig(fopConfig);
         r.parameter("l10n.gentext.language", kieli.toString());
 
