@@ -46,6 +46,7 @@ angular.module('eperusteApp')
       link: function (scope, element, attrs) {
         scope.showing = false;
         var DELAY = 500;
+        var timer = null;
         var clickAnywhere = attrs.ohjeClickAnywhere !== 'false';
         function appendExtraContent() {
           var content = $compile(scope.extra)(scope);
@@ -53,6 +54,10 @@ angular.module('eperusteApp')
         }
 
         var el = element.find('.popover-element');
+
+        scope.mouseleave = function () {
+          $timeout.cancel(timer);
+        };
 
         scope.show = function (visible, mouseEnter) {
           var popupDelay = mouseEnter ? DELAY : 0;
@@ -63,7 +68,7 @@ angular.module('eperusteApp')
           if (!scope.showing && !opening) {
             return;
           }
-          $timeout(function () {
+          timer = $timeout(function () {
             el.trigger(opening ? 'show' : 'hide');
             scope.showing = opening;
             if (opening) {
