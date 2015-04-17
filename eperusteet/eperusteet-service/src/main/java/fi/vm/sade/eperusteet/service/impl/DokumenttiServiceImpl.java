@@ -31,15 +31,39 @@ import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.ServletContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import org.apache.commons.io.IOUtils;
+import org.apache.pdfbox.exceptions.COSVisitorException;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
+import org.apache.pdfbox.pdmodel.common.PDMetadata;
+import org.apache.pdfbox.preflight.PreflightDocument;
+import org.apache.pdfbox.preflight.ValidationResult;
+import org.apache.pdfbox.preflight.ValidationResult.ValidationError;
+import org.apache.pdfbox.preflight.exception.SyntaxValidationException;
+import org.apache.pdfbox.preflight.parser.PreflightParser;
+import org.apache.pdfbox.preflight.utils.ByteArrayDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +73,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -184,31 +210,82 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
         String xmlpath = builder.generateXML(peruste, kieli, suoritustapakoodi);
         LOG.debug("Temporary xml file: \n{}", xmlpath);
-        // we could also use
-        //String style = "file:///full/path/to/docbookstyle.xsl";
         String style = "res:docgen/docbookstyle.xsl";
 
-        //PDFRenderer r = PDFRenderer.create(xmlpath, style);
         PerustePDFRenderer r = new PerustePDFRenderer().xml(xmlpath).xsl(style);
         String fontDir = servletContext.getRealPath("WEB-INF/classes/docgen/fonts");
         r.setBaseFontDirectory(fontDir);
         r.setFopConfig(fopConfig);
         r.parameter("l10n.gentext.language", kieli.toString());
 
-        InputStream is;
-        is = r.render();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-        // TODO, maybe use ioutils as it seems to be project dependency anyways
-        byte[] buf = new byte[2048];
-        int n = -1;
-        while ((n = is.read(buf)) != -1) {
-            baos.write(buf, 0, n);
-        }
-        baos.close();
+        // rendataan data ja otetaan kopio datasta.
+        InputStream is = r.render();
+        byte[] copy = IOUtils.toByteArray(is);
         is.close();
 
-        return baos.toByteArray();
+        // koitetaan puljata date-kenttä kuntoon fopin jäljiltä, mutta jos se
+        // mistään syystä heittää poikkeuksen, palautetaan alkuperäinen data
+        byte [] toReturn;
+       try {
+            byte[] fixedba;
+            try (InputStream fixed = fixMetadata(new ByteArrayInputStream(copy))) {
+                fixedba = IOUtils.toByteArray(fixed);
+            }
+            toReturn = fixedba;
+        } catch (Exception ex) {
+            LOG.warn("Fixing the xmp date field failed, returning nonfixed. Error was: ", ex);
+            toReturn = copy;
+        }
+
+       return toReturn;
     }
 
+    /*
+      XMP-speksin mukaan dc:date arvot on oltava rdf:Seq -elementin sisällä,
+      mutta FOP ei laita Seqiä, mikäli dateja on vain yksi. Tämän takia
+      dokumentti ei läpäise validointia.
+
+      fixMetadata korjaa tämän syötteenä saadusta pdf-dokumentista.
+    */
+    private InputStream fixMetadata(InputStream pdf) throws FileNotFoundException,
+            IOException, ParserConfigurationException, SAXException,
+            TransformerConfigurationException, TransformerException,
+            COSVisitorException
+    {
+        try (InputStream xslresource = getClass().getClassLoader().getResourceAsStream("docgen/fopdate.xsl")) {
+
+            try (PDDocument document = PDDocument.load(pdf)) {
+                PDDocumentCatalog catalog = document.getDocumentCatalog();
+                PDMetadata metadata = catalog.getMetadata();
+
+                // luetaan metadata-xml pdf:stä ja parsitaan se domiin
+                InputStream metadataInputStream = metadata.createInputStream();
+                SAXTransformerFactory stf = (SAXTransformerFactory) TransformerFactory.newInstance();
+                DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
+                fact.setNamespaceAware(true);
+                DocumentBuilder bldr = fact.newDocumentBuilder();
+                Document xml = bldr.parse(metadataInputStream);
+                DOMSource source = new DOMSource(xml);
+
+                // muljataan metadatan date-kentän sisältö xmp-speksin mukaisksi
+                Templates templates = stf.newTemplates(new StreamSource(xslresource));
+                TransformerHandler th = stf.newTransformerHandler(templates);
+                ByteArrayOutputStream transformOut = new ByteArrayOutputStream();
+                th.setResult(new StreamResult(transformOut));
+                Transformer transformer = stf.newTransformer();
+                transformer.transform(source, new SAXResult(th));
+
+                // lopuks pistetään muokattu metadata takaisin pdf:ään
+                InputStream newXMPData = new ByteArrayInputStream(transformOut.toByteArray());
+                PDMetadata newMetadata = new PDMetadata(document, newXMPData, false);
+                catalog.setMetadata(newMetadata);
+
+                // tallennetaan modattu pdf-dokumentti
+                ByteArrayOutputStream saved = new ByteArrayOutputStream();
+                document.save(saved);
+
+                return new ByteArrayInputStream(saved.toByteArray());
+            }
+        }
+    }
 }
