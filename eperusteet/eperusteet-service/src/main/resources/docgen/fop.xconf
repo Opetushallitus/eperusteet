@@ -80,15 +80,23 @@ the location of this file.
         -->
         <font embed-url="Arimo-Bold.ttf" >
           <font-triplet name="sans-serif" style="normal" weight="bold" />
+          <font-triplet name="Symbol" style="normal" weight="bold"/>
+          <font-triplet name="ZapfDingbats" style="normal" weight="bold"/>
         </font>
         <font embed-url="Arimo-BoldItalic.ttf" >
           <font-triplet name="sans-serif" style="italic" weight="bold" />
+          <font-triplet name="Symbol" style="italic" weight="bold" />
+          <font-triplet name="ZapfDingbats" style="italic" weight="bold" />
         </font>
         <font embed-url="Arimo-Italic.ttf" >
           <font-triplet name="sans-serif" style="italic" weight="normal" />
+          <font-triplet name="Symbol" style="italic" weight="normal" />
+          <font-triplet name="ZapfDingbats" style="italic" weight="normal" />
         </font>
         <font embed-url="Arimo-Regular.ttf" >
           <font-triplet name="sans-serif" style="normal" weight="normal" />
+          <font-triplet name="Symbol" style="normal" weight="normal"/>
+          <font-triplet name="ZapfDingbats" style="normal" weight="normal"/>
         </font>
         <font embed-url="Tinos-Bold.ttf" >
           <font-triplet name="serif" style="normal" weight="bold" />
