@@ -33,7 +33,7 @@ angular.module('eperusteApp')
         perusteenOsaViiteId: id || response.id,
         versio: ''
       };
-      $state.go('root.perusteprojekti.suoritustapa.tekstikappale', params, {reload: true});
+      $state.go('root.perusteprojekti.suoritustapa.tekstikappale', params);
     }
 
     this.add = function () {
@@ -408,6 +408,7 @@ angular.module('eperusteApp')
     };
 
     $scope.addLapsi = function () {
+      console.log('moro');
       TekstikappaleOperations.addChild($scope.viiteId(), $stateParams.suoritustapa);
     };
 
