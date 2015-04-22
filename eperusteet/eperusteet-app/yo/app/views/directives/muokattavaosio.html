@@ -3,7 +3,7 @@
   <div class="panel-heading">
     <div class="action-buttons">
       <button class="btn btn-default" icon-role="edit" ng-click="edit()"
-              oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+              oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
       <button ng-if="type === 'tekstikappale' && !cantremove" class="btn btn-default" icon-role="remove"
               oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }" ng-click="poista()"></button>
     </div>
