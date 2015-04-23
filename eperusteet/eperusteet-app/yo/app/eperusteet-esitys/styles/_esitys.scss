@@ -81,6 +81,14 @@ $border-color: #0C566E;
 	        font-weight: bold;
 	      }
       }
+      .arviointi-okriteeri {
+        width: 15%;
+        &.yksiportainen {
+          width: 0 !important;
+          overflow: hidden;
+          padding: 0;
+        }
+      }
     }
   }
 }
