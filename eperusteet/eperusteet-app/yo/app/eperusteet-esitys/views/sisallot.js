@@ -59,6 +59,14 @@
   });
 })
 
+.service('JarjestysService', function () {
+  this.options = [
+    {value: 'jarjestys', label: 'tutkinnonosa-jarjestysnumero'},
+    {value: 'nimi', label: 'nimi'}
+  ];
+  this.selection = {};
+})
+
 .controller('epEsitysTutkinnonOsaController', function($scope, $state, $stateParams, PerusteenOsat, TutkinnonosanTiedotService,
     Tutke2Osa, Kieli, MurupolkuData) {
   $scope.tutkinnonOsaViite = _.find($scope.$parent.tutkinnonOsat, function(tosa) {
@@ -89,7 +97,30 @@
   };
 })
 
-.controller('epEsitysTutkinnonOsatController', function($scope, $state, $stateParams, Algoritmit) {
+.controller('epEsitysTutkinnonOsatController', function($scope, $state, $stateParams, Algoritmit, JarjestysService, Kaanna) {
+  $scope.jarjestysOrder = _.isBoolean(JarjestysService.selection.order) ? JarjestysService.selection.order : false;
+  $scope.jarjestysOptions = JarjestysService.options;
+  $scope.jarjestysTapa = JarjestysService.selection.value || _.first($scope.jarjestysOptions).value;
+
+  $scope.jarjestysFn = function(data) {
+    switch($scope.jarjestysTapa) {
+      case 'jarjestys': return data.jarjestys;
+      default: return Kaanna.kaanna(data.nimi);
+    }
+  };
+
+  $scope.$watch('jarjestysOrder', function (value) {
+    if (_.isBoolean(value)) {
+      JarjestysService.selection.order = value;
+    }
+  });
+
+  $scope.$watch('jarjestysTapa', function (value) {
+    if (value) {
+      JarjestysService.selection.value = value;
+    }
+  });
+
   $scope.$parent.valittu.sisalto = 'tutkinnonosat';
   $scope.tosarajaus = '';
   $scope.rajaaTutkinnonOsia = function(haku) { return Algoritmit.rajausVertailu($scope.tosarajaus, haku, 'nimi'); };

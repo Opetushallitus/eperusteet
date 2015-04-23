@@ -23,6 +23,32 @@ $border-color: #0C566E;
 }
 
 .esitys {
+  .tutkinnonosat-tools {
+    .tutkinnonosat-rajaus {
+      max-width: 450px;
+    }
+
+    .tosat-sort-selector {
+      float: right;
+      clear: none;
+      height: 32px;
+      .jarjestys-select {
+        float: left;
+        width: auto !important;
+        height: 30px;
+      }
+      .lista-linkit {
+        font-size: 130%;
+        float: left;
+        padding: 5px 0 0 5px;
+      }
+    }
+
+  }
+
+  .tutkinnonosat .tutkinnonosa-laatikko .otsikko.otsikko-esitys {
+    margin-left: 0;
+  }
 
   .rakenne-sisalto {
     margin: 5px 5px 20px 0px;
