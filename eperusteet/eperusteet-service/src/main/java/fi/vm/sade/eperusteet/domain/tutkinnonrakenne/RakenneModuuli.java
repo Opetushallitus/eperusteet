@@ -26,6 +26,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
@@ -33,6 +34,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -69,7 +71,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Osaamisala osaamisala;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinTable(name = "rakennemoduuli_rakenneosa",
                joinColumns = {
                    @JoinColumn(name = "rakennemoduuli_id")},
@@ -77,6 +79,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
                    @JoinColumn(name = "rakenneosa_id")})
     @OrderColumn(name = "osat_order")
     @Getter
+    @BatchSize(size = 25)
     private List<AbstractRakenneOsa> osat = new ArrayList<>();
 
     public void setOsat(List<AbstractRakenneOsa> osat) {
@@ -106,18 +109,18 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
     public boolean isSame(AbstractRakenneOsa moduuli, boolean excludeText) {
 
         if ((moduuli instanceof RakenneModuuli)) {
-            return isSame((RakenneModuuli)moduuli, excludeText);
+            return isSame((RakenneModuuli) moduuli, excludeText);
         }
         return false;
     }
 
     public boolean isSame(RakenneModuuli moduuli, boolean excludeText) {
 
-        if ( !super.isSame(moduuli, excludeText) ) {
+        if (!super.isSame(moduuli, excludeText)) {
             return false;
         }
 
-        if (!excludeText && !Objects.equals(this.nimi,moduuli.getNimi())) {
+        if (!excludeText && !Objects.equals(this.nimi, moduuli.getNimi())) {
             return false;
         }
 
@@ -125,7 +128,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             return false;
         }
 
-        if ( !Objects.equals(this.muodostumisSaanto, moduuli.getMuodostumisSaanto()) ) {
+        if (!Objects.equals(this.muodostumisSaanto, moduuli.getMuodostumisSaanto())) {
             return false;
         }
 
@@ -137,7 +140,9 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             Iterator<AbstractRakenneOsa> l = this.getOsat().iterator();
             Iterator<AbstractRakenneOsa> r = moduuli.getOsat().iterator();
             while (l.hasNext() && r.hasNext()) {
-                if ( !l.next().isSame(r.next(), excludeText) ) return false;
+                if (!l.next().isSame(r.next(), excludeText)) {
+                    return false;
+                }
             }
         }
 

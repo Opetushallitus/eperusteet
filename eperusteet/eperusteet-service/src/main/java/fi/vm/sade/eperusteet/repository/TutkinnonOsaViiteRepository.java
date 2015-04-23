@@ -16,8 +16,10 @@
 
 package fi.vm.sade.eperusteet.repository;
 
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
+import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 
 /**
@@ -28,4 +30,7 @@ public interface TutkinnonOsaViiteRepository extends JpaWithVersioningRepository
 
     @Query("SELECT CASE COUNT(*) WHEN 0 THEN false ELSE true END FROM RakenneOsa r WHERE r.tutkinnonOsaViite = ?1")
     public boolean isInUse(TutkinnonOsaViite viite);
+
+    @Query("SELECT v FROM Peruste p JOIN p.suoritustavat s JOIN s.tutkinnonOsat v JOIN FETCH v.tutkinnonOsa WHERE p.id = ?1 AND s.suoritustapakoodi = ?2")
+    public List<TutkinnonOsaViite> findByPeruste(Long perusteId, Suoritustapakoodi st);
 }
