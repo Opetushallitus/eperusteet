@@ -136,6 +136,7 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/viite/{id}/versio/{versioId}", method = GET)
     @ResponseBody
+    @CacheControl(age = CacheControl.ONE_YEAR)
     public ResponseEntity<PerusteenOsaDto> getVersioByViite(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
         PerusteenOsaDto p = service.getVersioByViite(id, versioId);
         if (p == null) {
@@ -187,6 +188,7 @@ public class PerusteenOsaController {
 
     @RequestMapping(value = "/{id}/osaalueet/versio/{versioId}", method = GET)
     @ResponseBody
+    @CacheControl(age = CacheControl.ONE_YEAR)
     public ResponseEntity<List<OsaAlueKokonaanDto>> getTutkinnonOsaOsaAlueetVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
         List<OsaAlueKokonaanDto> t = service.getTutkinnonOsaOsaAlueetVersio(id, versioId);
         if (t == null) {
