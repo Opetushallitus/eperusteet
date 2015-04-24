@@ -7,7 +7,7 @@
     <div class="floater" ng-attr-title="{{lockNotification}}">
       <button ng-disabled="isLocked" ng-if="!isPublished()" icon-role="edit"
               ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="btn btn-default" kaanna="'muokkaa'"
-              oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+              oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
     </div>
     <button ng-show="isPublished() && !editEnabled" ng-click="kopioiMuokattavaksi()"
             class="floater btn btn-danger" icon-role="ep-text-clone" kaanna="'kopioi-muokattavaksi'"
@@ -80,7 +80,7 @@
           </span>
           <span ng-hide="field.$editing">
             <button icon-role="edit" class="btn btn-default" ng-click="fieldOps.edit(field)"></button>
-            <button icon-role="remove" class="btn btn-default" ng-click="fieldOps.remove(field)"></button>
+            <button icon-role="remove" class="btn btn-default" ng-click="fieldOps.remove(field)" oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
           </span>
         </div>
         <h3 class="panel-title osio-otsikko" ng-click="field.$editing ? void(0) : field.$isCollapsed = !field.$isCollapsed">
