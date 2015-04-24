@@ -14,7 +14,7 @@
                 kaanna="actionButton.label"></button>
         <button ng-disabled="isLocked" ng-if="!isPublished()" icon-role="edit"
                 ng-hide="editEnabled || !versiot.latest" ng-click="muokkaa()" class="btn btn-default" kaanna="'muokkaa'"
-                oikeustarkastelu="{ target: 'peruste', permission: 'muokkaus' }"></button>
+                oikeustarkastelu="[{ target: 'peruste', permission: 'muokkaus' }, { target: 'peruste', permission: 'korjaus' }]"></button>
       </div>
       <button ng-show="isPublished() && !editEnabled" ng-click="kopioiMuokattavaksi()"
               class="floater btn btn-danger" icon-role="ep-text-clone" kaanna="'kopioi-muokattavaksi'"

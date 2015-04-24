@@ -201,9 +201,10 @@ public class OppiaineServiceImpl implements OppiaineService {
         if (sisalto != null && sisalto.containsOppiaine(aine)) {
             return mapper.map(aine, OppiaineDto.class);
         } else {
-            throw new BusinessRuleViolationException("Pyydettyä oppiainetta ei ole");
+            throw new BusinessRuleViolationException(OPPIAINETTA_EI_OLE);
         }
     }
+
 
     @Override
     public OppiaineDto getOppiaine(long perusteId, long oppiaineId, int revisio) {
@@ -213,7 +214,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         if (sisalto != null && sisalto.containsOppiaine(aine)) {
             return mapper.map(aine, OppiaineDto.class);
         } else {
-            throw new BusinessRuleViolationException("Pyydettyä oppiainetta ei ole");
+            throw new BusinessRuleViolationException(OPPIAINETTA_EI_OLE);
         }
     }
 
@@ -225,7 +226,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         if (sisalto != null && sisalto.containsOppiaine(aine)) {
             return oppiaineRepository.getRevisions(oppiaineId);
         } else {
-            throw new BusinessRuleViolationException("Pyydettyä oppiainetta ei ole");
+            throw new BusinessRuleViolationException(OPPIAINETTA_EI_OLE);
         }
     }
 
@@ -242,7 +243,7 @@ public class OppiaineServiceImpl implements OppiaineService {
             OppiaineDto dto = mapper.map(aine, OppiaineDto.class);
             return updateOppiaine(perusteId, new UpdateDto<>(dto));
         } else {
-            throw new BusinessRuleViolationException("Pyydettyä oppiainetta ei ole");
+            throw new BusinessRuleViolationException(OPPIAINETTA_EI_OLE);
         }
     }
 
@@ -265,7 +266,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         if (sisalto.containsOppiaine(oa)) {
             return mapper.mapAsList(oa.getOppimaarat(), OppiaineSuppeaDto.class);
         }
-        throw new BusinessRuleViolationException("Pyydettyä oppiainetta ei ole");
+        throw new BusinessRuleViolationException(OPPIAINETTA_EI_OLE);
     }
 
     @Override
@@ -287,11 +288,12 @@ public class OppiaineServiceImpl implements OppiaineService {
         mapper.map(dto, aine);
         final Set<OppiaineenVuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet = dto.getVuosiluokkakokonaisuudet();
         if (vuosiluokkakokonaisuudet != null) {
-            if (sisalto.getPeruste().getTila() == PerusteTila.VALMIS) {
-                throw new BusinessRuleViolationException("Vain korjaukset sallittu");
-            }
+            final boolean valmis = sisalto.getPeruste().getTila() == PerusteTila.VALMIS;
             for (OppiaineenVuosiluokkaKokonaisuusDto v : vuosiluokkakokonaisuudet) {
                 if (v.getId() == null) {
+                    if ( valmis ) {
+                        throw new BusinessRuleViolationException(VAIN_KORJAUKSET_SALLITTU);
+                    }
                     addOppiaineenVuosiluokkaKokonaisuus(aine, v);
                 } else {
                     final OppiaineLockContext vkctx = OppiaineLockContext.of(perusteId, dto.getId(), v.getId());
@@ -302,13 +304,13 @@ public class OppiaineServiceImpl implements OppiaineService {
                         lockService.unlock(vkctx);
                     }
                 }
-                //TODO poisto -- vai pitäikö jättää "ominaisuudeksi" että vuosiluokkakokonaisuuksia ei voi poistaa tätä kautta.
+                //"ominaisuus": vuosiluokkakokonaisuuksia ei voi poistaa tätä kautta.
             }
         }
         if (rev != null) {
             Oppiaine latest = oppiaineRepository.findRevision(aine.getId(), rev.getNumero());
             if (!latest.structureEquals(aine)) {
-                throw new BusinessRuleViolationException("Vain korjaukset sallittu");
+                throw new BusinessRuleViolationException(VAIN_KORJAUKSET_SALLITTU);
             }
         }
         oppiaineRepository.setRevisioKommentti(updateDto.getMetadataOrEmpty().getKommentti());
@@ -342,7 +344,7 @@ public class OppiaineServiceImpl implements OppiaineService {
             Revision rev = vuosiluokkakokonaisuusRepository.getLatestRevisionId(ovk.getId());
             OppiaineenVuosiluokkaKokonaisuus latest = vuosiluokkakokonaisuusRepository.findRevision(ovk.getId(), rev.getNumero());
             if ( !latest.structureEquals(ovk) ) {
-                throw new BusinessRuleViolationException("Vain korjaukset sallittu");
+                throw new BusinessRuleViolationException(VAIN_KORJAUKSET_SALLITTU);
             }
         }
         ovk = vuosiluokkakokonaisuusRepository.save(ovk);
@@ -392,4 +394,6 @@ public class OppiaineServiceImpl implements OppiaineService {
         oppiaine.removeKohdealue(kohdealue);
     }
 
+    private static final String OPPIAINETTA_EI_OLE = "Pyydettyä oppiainetta ei ole";
+    private static final String VAIN_KORJAUKSET_SALLITTU = "Vain korjaukset sallittu";
 }

@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.dto.util.BooleanDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
@@ -85,6 +86,7 @@ public class TutkinnonOsaController {
 
     @RequestMapping(value = "/viite/{id}/versio/{versioId}", method = GET)
     @ResponseBody
+    @CacheControl(age = CacheControl.ONE_YEAR)
     public ResponseEntity<TutkinnonOsaViiteDto> getViiteVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
         TutkinnonOsaViiteDto t = tutkinnonOsaViiteService.getVersio(id, versioId);
         if (t == null) {
@@ -93,7 +95,7 @@ public class TutkinnonOsaController {
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
-        @RequestMapping(value = "/palauta/viite/{id}/versio/{versioId}", method = POST)
+    @RequestMapping(value = "/palauta/viite/{id}/versio/{versioId}", method = POST)
     @ResponseBody
     public ResponseEntity<TutkinnonOsaViiteDto> revertToVersio(@PathVariable("id") final Long id, @PathVariable("versioId") final Integer versioId) {
         TutkinnonOsaViiteDto t = tutkinnonOsaViiteService.revertToVersio(id, versioId);

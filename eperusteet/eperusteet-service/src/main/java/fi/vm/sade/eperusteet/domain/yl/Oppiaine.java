@@ -235,15 +235,37 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
         result &= refXnor(this.getOppiaine(), other.getOppiaine());
         result &= this.getOppiaine() == null || identityEquals(this.getOppiaine(), other.getOppiaine());
         result &= refXnor(this.getNimi(), other.getNimi());
-        result &= refXnor(this.getTehtava(), other.getTehtava());
+        //salli tekstiosan poisto
+        //result &= refXnor(this.getTehtava(), other.getTehtava());
         result &= refXnor(this.getKohdealueet(), other.getKohdealueet());
         result &= this.isKoosteinen() == other.isKoosteinen();
-        if ( this.isKoosteinen() ) {
+        if (this.isKoosteinen()) {
             result &= this.getOppimaarat().size() == other.getOppimaarat().size();
+            for (Oppiaine m : this.getOppimaarat()) {
+                if (!result) {
+                    break;
+                }
+                for (Oppiaine om : other.getOppimaarat()) {
+                    if (identityEquals(m, om)) {
+                        result &= m.structureEquals(om);
+                        break;
+                    }
+                }
+            }
         }
-        result &= this.getVuosiluokkakokonaisuudet().size() == other.getVuosiluokkakokonaisuudet().size();
 
-        //TODO tarkista vuosiluokkakokonaisuudet
+        result &= this.getVuosiluokkakokonaisuudet().size() == other.getVuosiluokkakokonaisuudet().size();
+        for (OppiaineenVuosiluokkaKokonaisuus vk : this.getVuosiluokkakokonaisuudet()) {
+            if (!result) {
+                break;
+            }
+            for (OppiaineenVuosiluokkaKokonaisuus ovk : other.getVuosiluokkakokonaisuudet()) {
+                if (identityEquals(vk, ovk)) {
+                    result &= vk.structureEquals(ovk);
+                    break;
+                }
+            }
+        }
 
         return result;
     }

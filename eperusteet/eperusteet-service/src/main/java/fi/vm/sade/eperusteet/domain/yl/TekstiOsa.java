@@ -66,4 +66,9 @@ public class TekstiOsa implements Serializable {
         this.teksti = teksti;
     }
 
+    public TekstiOsa(TekstiOsa other) {
+        this.otsikko = other.getOtsikko();
+        this.teksti = other.getTeksti();
+    }
+
 }

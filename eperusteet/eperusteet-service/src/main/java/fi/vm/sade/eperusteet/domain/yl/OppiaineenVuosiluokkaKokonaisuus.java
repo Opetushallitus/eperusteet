@@ -34,7 +34,6 @@ import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
  * Kuvaa oppimäärän yhteen vuosiluokkakokonaisuuteen osalta.
@@ -118,11 +117,11 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
     public boolean structureEquals(OppiaineenVuosiluokkaKokonaisuus other) {
         boolean result = identityEquals(this.getOppiaine(), other.getOppiaine());
         result &= identityEquals(this.getVuosiluokkaKokonaisuus(), other.getVuosiluokkaKokonaisuus());
-        result &= refXnor(this.getArviointi(), other.getArviointi());
-        result &= refXnor(this.getOhjaus(), other.getOhjaus());
-        result &= refXnor(this.getSisaltoalueinfo(), other.getSisaltoalueinfo());
-        result &= refXnor(this.getTehtava(), other.getTehtava());
-        result &= refXnor(this.getTyotavat(), other.getTyotavat());
+        //result &= refXnor(this.getArviointi(), other.getArviointi());
+        //result &= refXnor(this.getOhjaus(), other.getOhjaus());
+        //result &= refXnor(this.getSisaltoalueinfo(), other.getSisaltoalueinfo());
+        //result &= refXnor(this.getTehtava(), other.getTehtava());
+        //result &= refXnor(this.getTyotavat(), other.getTyotavat());
         result &= this.getSisaltoalueet().size() == other.getSisaltoalueet().size();
         result &= this.getTavoitteet().size() == other.getTavoitteet().size();
 

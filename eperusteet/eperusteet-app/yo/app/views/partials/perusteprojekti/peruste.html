@@ -24,7 +24,7 @@ European Union Public Licence for more details.
 
     <h1 kaanna>projekti-peruste</h1>
     <div class="clearfix"></div>
-    <form class="form-horizontal" name="perusteForm" role="form" novalidate>
+    <form class="form-horizontal" name="perusteForm" role="form" novalidate ng-submit="void(0)">
       <div ng-form="projektinPerusteForm">
         <div class="panel panel-default panel-clean">
           <div class="panel-heading">
@@ -74,7 +74,7 @@ European Union Public Licence for more details.
                   {{korvattavaDiaariNimiMap[korvattava]| kaanna}}
                 </td>
                 <td ng-show="editEnabled">
-                  <button type=button class="btn btn-default btn-sm" ng-click="poistaKorvattavaDiaari(korvattava)" icon-role="remove">{{'poista'| kaanna}}</button>
+                  <button type="button" class="btn btn-default btn-sm" ng-click="poistaKorvattavaDiaari(korvattava)" icon-role="remove">{{'poista'| kaanna}}</button>
                 </td>
               </tr>
             </table>
@@ -83,7 +83,7 @@ European Union Public Licence for more details.
                 <div class="input-group">
                   <input type="text" class="form-control" ng-model="uusiKorvattavaDiaari">
                   <span class="input-group-btn">
-                    <button ng-disabled="!uusiKorvattavaDiaari" type=button class="btn btn-default btn-sm" ng-click="lisaaKorvattavaDiaari(uusiKorvattavaDiaari)" icon-role="add">{{'ok'| kaanna}}</button>
+                    <button ng-disabled="!uusiKorvattavaDiaari" type="button" class="btn btn-default btn-sm" ng-click="lisaaKorvattavaDiaari(uusiKorvattavaDiaari)" icon-role="add">{{'ok'| kaanna}}</button>
                   </span>
                 </div>
               </div>
@@ -125,7 +125,7 @@ European Union Public Licence for more details.
             <div class="koulutukset" ng-show="editablePeruste.koulutukset.length > 0">
               <div class="koulutus" ng-repeat="koulutus in editablePeruste.koulutukset">
                 <div class="poisto" ng-if="editEnabled">
-                  <button icon-role="remove" class="btn btn-default btn-xs" ng-click="poistaKoulutus(koulutus.koulutuskoodiArvo)" kaanna="poista"></button>
+                  <button type="button" icon-role="remove" class="btn btn-default btn-xs" ng-click="poistaKoulutus(koulutus.koulutuskoodiArvo)" kaanna="poista"></button>
                 </div>
                 <table class="aligned">
                   <tr>
@@ -149,7 +149,7 @@ European Union Public Licence for more details.
             </div>
 
             <div>
-              <button ng-if="editEnabled" icon-role="add" class="btn btn-default" type="button"
+              <button type="button" ng-if="editEnabled" icon-role="add" class="btn btn-default"
                       ng-click="avaaKoodistoModaali()" ng-disabled="hakemassa" kaanna="lisaa-koulutus"></button>
             </div>
           </div>
@@ -170,11 +170,11 @@ European Union Public Licence for more details.
                 <td kaanna="oa.nimi"></td>
                 <td ng-bind="oa.arvo"></td>
                 <td ng-if="editEnabled">
-                  <button icon-role="remove" class="btn btn-danger" type="button" ng-click="Osaamisala.poista(oa)" kaanna="'poista'"></button>
+                  <button type="button" icon-role="remove" class="btn btn-danger" ng-click="Osaamisala.poista(oa)" kaanna="'poista'"></button>
                 </td>
               </tr>
             </table>
-            <button ng-show="editEnabled" icon-role="add" class="btn btn-default" type="button" ng-click="Osaamisala.lisaa()" kaanna="'hae-koodistosta'"></button>
+            <button type="button" ng-show="editEnabled" icon-role="add" class="btn btn-default" ng-click="Osaamisala.lisaa()" kaanna="'hae-koodistosta'"></button>
           </div>
         </div>
 
@@ -197,7 +197,7 @@ European Union Public Licence for more details.
                   <td><span ng-show="koodi.osaamisalaArvo">{{ koodi.$osaamisalaNimi | kaanna }} ({{ koodi.osaamisalaArvo}})</span></td>
                   <td>{{ koodi.$tutkintonimikeNimi | kaanna }} ({{ koodi.tutkintonimikeArvo}})</td>
                   <td><span ng-show="koodi.tutkinnonOsaArvo">{{ koodi.$tutkinnonOsaNimi | kaanna }} ({{ koodi.tutkinnonOsaArvo}})</span></td>
-                  <td><button class="btn btn-xs btn-default" ng-click="poistaTutkintonimike(koodi)" kaanna="poista"></button></td>
+                  <td><button type="button" class="btn btn-xs btn-default" ng-click="poistaTutkintonimike(koodi)" kaanna="poista"></button></td>
                 </tr>
               </tbody>
             </table>
@@ -205,7 +205,7 @@ European Union Public Licence for more details.
               <p kaanna="et-ole-lisannyt-viela-tutkintonimikkeita"></p>
             </div>
             <div ng-show="editEnabled">
-              <button ng-disabled="!koodisto.$resolved" class="btn btn-default" ng-click="lisaaNimike()" icon-role="add" kaanna="lisaa-nimike"></button>
+              <button type="button" ng-disabled="!koodisto.$resolved" class="btn btn-default" ng-click="lisaaNimike()" icon-role="add" kaanna="lisaa-nimike"></button>
             </div>
           </div>
         </div>

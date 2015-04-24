@@ -43,7 +43,7 @@
     <context:component-scan base-package="fi.vm.sade.eperusteet.service">
         <context:exclude-filter type="regex" expression="fi.vm.sade.eperusteet.service.impl.DokumenttiServiceImpl"/>
     </context:component-scan>
-    
+
     <tx:annotation-driven/>
 
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
@@ -66,7 +66,7 @@
                 <entry key="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
                 <entry key="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE"/>
                 <entry key="hibernate.cache.use_second_level_cache" value="false"/>
-                <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.ValidityAuditStrategy"/>
+                <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.DefaultAuditStrategy"/>
                 <entry key="org.hibernate.envers.allow_identifier_reuse" value="true"/>
                 <entry key="javax.persistence.validation.factory" value-ref="validator"/>
             </map>

@@ -135,9 +135,11 @@ public class VuosiluokkaKokonaisuus extends AbstractAuditedReferenceableEntity {
 
     public VuosiluokkaKokonaisuus kloonaa() {
         VuosiluokkaKokonaisuus vlk = new VuosiluokkaKokonaisuus();
-        vlk.setLaajaalainenOsaaminen(laajaalainenOsaaminen);
+        vlk.setLaajaalainenOsaaminen(laajaalainenOsaaminen == null ? null : new TekstiOsa(laajaalainenOsaaminen));
         vlk.setNimi(nimi);
         vlk.setTehtava(tehtava);
+        vlk.setVuosiluokat(new HashSet<>(vuosiluokat));
+        vlk.tunniste = this.tunniste;
         return vlk;
     }
 

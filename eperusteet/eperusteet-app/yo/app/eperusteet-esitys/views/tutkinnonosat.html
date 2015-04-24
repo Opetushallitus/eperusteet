@@ -3,14 +3,27 @@
       <span kaanna="'tutkinnonosat'"></span>
     </h1>
 
-    <div class="tutkinnonosat-rajaus">
-      <rajaus model="tosarajaus" callback="paivitaRajaus(value)" placeholder="{{'rajaa-tutkinnonosia'|kaanna}}"></rajaus>
+    <div class="tutkinnonosat-tools">
+      <div class="tosat-sort-selector">
+        <select class="jarjestys-select form-control" ng-model="jarjestysTapa" ng-options="opt.value as opt.label|kaanna for opt in jarjestysOptions"></select>
+        <div class="lista-linkit">
+          <a class="action-link" ng-click="jarjestysOrder = !jarjestysOrder">
+            <span class="glyphicon" ng-class="jarjestysOrder ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes'"></span>
+          </a>
+        </div>
+      </div>
+      <div class="tutkinnonosat-rajaus">
+        <rajaus model="tosarajaus" callback="paivitaRajaus(value)" placeholder="{{'rajaa-tutkinnonosia'|kaanna}}"></rajaus>
+      </div>
     </div>
 
     <ul class="tutkinnonosat">
         <li ui-sref="root.esitys.peruste.tutkinnonosa({ id: v.id })"
-            class="tutkinnonosa-laatikko list-group-item" ng-repeat="v in tutkinnonOsat | mapFilter:rajaaTutkinnonOsia">
+            class="tutkinnonosa-laatikko list-group-item" ng-repeat="v in tutkinnonOsat | mapFilter:rajaaTutkinnonOsia | orderBy:jarjestysFn:jarjestysOrder">
             <div ng-hide="editoi" class="muokkaus" icon-role="forward"></div>
+            <div class="numero-wrapper">
+              <span class="badge jarjestysnumero" ng-show="v.jarjestys">{{v.jarjestys || '-' }}</span>
+            </div>
             <div class="otsikko otsikko-esitys">
                 <h3>
                     <a ui-sref="root.esitys.peruste.tutkinnonosa({ id: v.id })">{{ v.nimi | kaanna }}</a>

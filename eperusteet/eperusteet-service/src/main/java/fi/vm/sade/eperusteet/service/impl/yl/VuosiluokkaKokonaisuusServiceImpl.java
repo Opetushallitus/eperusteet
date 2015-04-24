@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.OppiaineenVuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
@@ -142,7 +143,13 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
     public VuosiluokkaKokonaisuusDto updateVuosiluokkaKokonaisuus(Long perusteId, UpdateDto<VuosiluokkaKokonaisuusDto> updateDto) {
         VuosiluokkaKokonaisuusDto dto = updateDto.getDto();
         lockService.assertLock(VuosiluokkaKokonaisuusContext.of(perusteId, dto.getId()));
+        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         VuosiluokkaKokonaisuus vk = kokonaisuusRepository.findOne(dto.getId());
+        if ( sisalto.getPeruste().getTila() == PerusteTila.VALMIS ) {
+            if ( !vk.getVuosiluokat().equals(dto.getVuosiluokat()) ) {
+                throw new BusinessRuleViolationException("Vain korjaukset sallittu");
+            }
+        }
         mapper.map(dto, vk);
         kokonaisuusRepository.setRevisioKommentti(updateDto.getMetadataOrEmpty().getKommentti());
         kokonaisuusRepository.save(vk);

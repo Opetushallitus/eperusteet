@@ -84,9 +84,11 @@
                 <entry key="hibernate.cache.use_second_level_cache" value="${hibernate.cache.use_second_level_cache:true}"/>
                 <entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
                 <entry key="net.sf.ehcache.configurationResourceName" value="/eperusteet-hibernate-ehcache.xml"/>
-                <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.ValidityAuditStrategy"/>
+                <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.DefaultAuditStrategy"/>
                 <entry key="javax.persistence.validation.factory" value-ref="validator" />
                 <entry key="org.hibernate.envers.revision_listener" value="fi.vm.sade.eperusteet.service.impl.AuditRevisionListener"/>
+                <entry key="hibernate.jdbc.batch_size" value="20"/>
+                <entry key="hibernate.jdbc.fetch_size" value="20"/>
             </map>
         </property>
         <property name="mappingResources">
