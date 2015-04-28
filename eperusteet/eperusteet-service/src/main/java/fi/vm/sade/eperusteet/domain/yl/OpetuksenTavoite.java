@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.CascadeType;
@@ -103,6 +104,36 @@ public class OpetuksenTavoite extends AbstractReferenceableEntity {
         if (kohteet != null) {
             this.arvioinninkohteet.addAll(kohteet);
         }
+    }
+
+    public OpetuksenTavoite kloonaa(
+            Map<KeskeinenSisaltoalue, KeskeinenSisaltoalue> keskeinenSisaltoalueMapper,
+            Map<LaajaalainenOsaaminen, LaajaalainenOsaaminen> laajainenOsaaminenMapper) {
+        OpetuksenTavoite klooni = new OpetuksenTavoite();
+        klooni.setArvioinninKuvaus(arvioinninKuvaus);
+        klooni.setArvioinninOsaamisenKuvaus(arvioinninOsaamisenKuvaus);
+        klooni.setArvioinninOtsikko(arvioinninOtsikko);
+        klooni.setTavoite(tavoite);
+
+        for (KeskeinenSisaltoalue sisalto : sisaltoalueet) {
+            klooni.getSisaltoalueet().add(keskeinenSisaltoalueMapper.get(sisalto));
+        }
+
+        for (LaajaalainenOsaaminen laaja : laajattavoitteet) {
+            klooni.getLaajattavoitteet().add(laajainenOsaaminenMapper.get(laaja));
+        }
+
+        for (OpetuksenKohdealue kohdealue : kohdealueet) {
+            klooni.getKohdealueet().add(kohdealue.kloonaa());
+        }
+
+        Set<TavoitteenArviointi> kohteet = new HashSet<>();
+        for (TavoitteenArviointi kohde : arvioinninkohteet) {
+            kohteet.add(kohde.kloonaa());
+        }
+        klooni.setArvioinninkohteet(kohteet);
+
+        return klooni;
     }
 
 }

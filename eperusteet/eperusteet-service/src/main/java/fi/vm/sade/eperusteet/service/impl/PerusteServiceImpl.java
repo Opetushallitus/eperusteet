@@ -859,14 +859,22 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         sisalto.setSisalto(vanha.getSisalto().kloonaa());
         sisalto.setPeruste(uusi);
 
+        Map<LaajaalainenOsaaminen, LaajaalainenOsaaminen> laajainenOsaaminenMapper = new HashMap<>();
         for (LaajaalainenOsaaminen laaja : vanha.getLaajaalaisetosaamiset()) {
-            sisalto.addLaajaalainenosaaminen(laaja.kloonaa());
+            LaajaalainenOsaaminen uusilaaja = laaja.kloonaa();
+            laajainenOsaaminenMapper.put(laaja, uusilaaja);
+            sisalto.addLaajaalainenosaaminen(uusilaaja);
         }
+
+        Map<VuosiluokkaKokonaisuus, VuosiluokkaKokonaisuus> vuosiluokkaKokonaisuusMapper = new HashMap<>();
         for (VuosiluokkaKokonaisuus vlk : vanha.getVuosiluokkakokonaisuudet()) {
-            sisalto.addVuosiluokkakokonaisuus(vuosiluokkaKokonaisuusRepository.save(vlk.kloonaa()));
+            VuosiluokkaKokonaisuus uusiVlk = vuosiluokkaKokonaisuusRepository.save(vlk.kloonaa());
+            vuosiluokkaKokonaisuusMapper.put(vlk, uusiVlk);
+            sisalto.addVuosiluokkakokonaisuus(uusiVlk);
         }
+
         for (Oppiaine oa : vanha.getOppiaineet()) {
-            sisalto.addOppiaine(oppiaineRepository.save(oa.kloonaa()));
+            sisalto.addOppiaine(oppiaineRepository.save(oa.kloonaa(laajainenOsaaminenMapper, vuosiluokkaKokonaisuusMapper)));
         }
         return sisalto;
     }

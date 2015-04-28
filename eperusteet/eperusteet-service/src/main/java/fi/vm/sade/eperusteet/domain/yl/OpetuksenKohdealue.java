@@ -49,4 +49,11 @@ public class OpetuksenKohdealue extends AbstractReferenceableEntity {
     @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
     private TekstiPalanen kuvaus;
+
+    public OpetuksenKohdealue kloonaa() {
+        OpetuksenKohdealue klooni = new OpetuksenKohdealue();
+        klooni.setKuvaus(kuvaus);
+        klooni.setNimi(nimi);
+        return klooni;
+    }
 }

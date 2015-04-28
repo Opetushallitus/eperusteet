@@ -43,6 +43,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+import java.util.Map;
 
 /**
  *
@@ -275,7 +276,9 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
         return System.identityHashCode(this);
     }
 
-    public Oppiaine kloonaa() {
+    public Oppiaine kloonaa(
+            Map<LaajaalainenOsaaminen, LaajaalainenOsaaminen> laajainenOsaaminenMapper,
+            Map<VuosiluokkaKokonaisuus, VuosiluokkaKokonaisuus> vuosiluokkaKokonaisuusMapper) {
         Oppiaine oa = new Oppiaine();
         oa.setAbstrakti(abstrakti);
         oa.setJnro(jnro);
@@ -283,9 +286,11 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
         oa.setNimi(nimi);
         oa.setTehtava(tehtava);
 
-//        for (OppiaineenVuosiluokkaKokonaisuus ovlk : vuosiluokkakokonaisuudet) {
-//            oa.addVuosiluokkaKokonaisuus(ovlk.kloonaa(oa));
-//        }
+        for (OppiaineenVuosiluokkaKokonaisuus ovlk : vuosiluokkakokonaisuudet) {
+            OppiaineenVuosiluokkaKokonaisuus uovlk = ovlk.kloonaa(vuosiluokkaKokonaisuusMapper, laajainenOsaaminenMapper);
+            uovlk.setOppiaine(oa);
+            oa.addVuosiluokkaKokonaisuus(uovlk);
+        }
         return oa;
     }
 

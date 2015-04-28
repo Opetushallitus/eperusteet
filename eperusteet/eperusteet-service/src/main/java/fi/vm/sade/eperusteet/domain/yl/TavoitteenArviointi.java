@@ -42,7 +42,7 @@ public class TavoitteenArviointi extends AbstractReferenceableEntity {
     @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     private TekstiPalanen arvioinninKohde;
-    
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @Getter
@@ -50,4 +50,10 @@ public class TavoitteenArviointi extends AbstractReferenceableEntity {
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     private TekstiPalanen hyvanOsaamisenKuvaus;
 
+    public TavoitteenArviointi kloonaa() {
+        TavoitteenArviointi klooni = new TavoitteenArviointi();
+        klooni.setArvioinninKohde(arvioinninKohde);
+        klooni.setHyvanOsaamisenKuvaus(hyvanOsaamisenKuvaus);
+        return klooni;
+    }
 }

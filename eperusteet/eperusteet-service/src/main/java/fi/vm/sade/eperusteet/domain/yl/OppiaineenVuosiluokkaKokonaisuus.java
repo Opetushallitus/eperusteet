@@ -34,6 +34,9 @@ import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Kuvaa oppimäärän yhteen vuosiluokkakokonaisuuteen osalta.
@@ -96,11 +99,19 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
         return new ArrayList<>(tavoitteet);
     }
 
+    public void addOpetuksenTavoite(OpetuksenTavoite tavoite) {
+        tavoitteet.add(tavoite);
+    }
+
     public void setTavoitteet(List<OpetuksenTavoite> tavoitteet) {
         this.tavoitteet.clear();
         if (tavoitteet != null) {
             this.tavoitteet.addAll(tavoitteet);
         }
+    }
+
+    public void addSisaltoalue(KeskeinenSisaltoalue sisalto) {
+        sisaltoalueet.add(sisalto);
     }
 
     public List<KeskeinenSisaltoalue> getSisaltoalueet() {
@@ -144,9 +155,30 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
         return result;
     }
 
-    public OppiaineenVuosiluokkaKokonaisuus kloonaa(Oppiaine oa) {
+    public OppiaineenVuosiluokkaKokonaisuus kloonaa(
+            Map<VuosiluokkaKokonaisuus, VuosiluokkaKokonaisuus> vuosiluokkaKokonaisuusMapper,
+            Map<LaajaalainenOsaaminen, LaajaalainenOsaaminen> laajainenOsaaminenMapper) {
         OppiaineenVuosiluokkaKokonaisuus ovlk = new OppiaineenVuosiluokkaKokonaisuus();
-        ovlk.setOppiaine(oa);
+        ovlk.setArviointi(arviointi);
+        ovlk.setOhjaus(ohjaus);
+        ovlk.setTehtava(tehtava);
+        ovlk.setTyotavat(tyotavat);
+        ovlk.setSisaltoalueinfo(sisaltoalueinfo);
+
+        ovlk.setVuosiluokkaKokonaisuus(vuosiluokkaKokonaisuusMapper.get(vuosiluokkaKokonaisuus));
+
+        Map<KeskeinenSisaltoalue, KeskeinenSisaltoalue> keskeinenSisaltoalueMapper = new HashMap<>();
+        for (KeskeinenSisaltoalue sisalto : sisaltoalueet) {
+            KeskeinenSisaltoalue klooni = sisalto.kloonaa();
+            keskeinenSisaltoalueMapper.put(sisalto, klooni);
+            ovlk.addSisaltoalue(klooni);
+        }
+
+        for (OpetuksenTavoite tavoite : tavoitteet) {
+            OpetuksenTavoite klooni = tavoite.kloonaa(keskeinenSisaltoalueMapper, laajainenOsaaminenMapper);
+            ovlk.addOpetuksenTavoite(klooni);
+        }
+
         return ovlk;
     }
 
