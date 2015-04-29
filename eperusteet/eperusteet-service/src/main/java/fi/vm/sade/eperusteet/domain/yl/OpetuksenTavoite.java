@@ -108,7 +108,8 @@ public class OpetuksenTavoite extends AbstractReferenceableEntity {
 
     public OpetuksenTavoite kloonaa(
             Map<KeskeinenSisaltoalue, KeskeinenSisaltoalue> keskeinenSisaltoalueMapper,
-            Map<LaajaalainenOsaaminen, LaajaalainenOsaaminen> laajainenOsaaminenMapper) {
+            Map<LaajaalainenOsaaminen, LaajaalainenOsaaminen> laajainenOsaaminenMapper,
+            Map<OpetuksenKohdealue, OpetuksenKohdealue> kohdealueMapper) {
         OpetuksenTavoite klooni = new OpetuksenTavoite();
         klooni.setArvioinninKuvaus(arvioinninKuvaus);
         klooni.setArvioinninOsaamisenKuvaus(arvioinninOsaamisenKuvaus);
@@ -124,7 +125,7 @@ public class OpetuksenTavoite extends AbstractReferenceableEntity {
         }
 
         for (OpetuksenKohdealue kohdealue : kohdealueet) {
-            klooni.getKohdealueet().add(kohdealue.kloonaa());
+            klooni.getKohdealueet().add(kohdealueMapper.get(kohdealue));
         }
 
         Set<TavoitteenArviointi> kohteet = new HashSet<>();

@@ -157,7 +157,8 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
 
     public OppiaineenVuosiluokkaKokonaisuus kloonaa(
             Map<VuosiluokkaKokonaisuus, VuosiluokkaKokonaisuus> vuosiluokkaKokonaisuusMapper,
-            Map<LaajaalainenOsaaminen, LaajaalainenOsaaminen> laajainenOsaaminenMapper) {
+            Map<LaajaalainenOsaaminen, LaajaalainenOsaaminen> laajainenOsaaminenMapper,
+            Map<OpetuksenKohdealue, OpetuksenKohdealue> kohdealueMapper) {
         OppiaineenVuosiluokkaKokonaisuus ovlk = new OppiaineenVuosiluokkaKokonaisuus();
         ovlk.setArviointi(arviointi);
         ovlk.setOhjaus(ohjaus);
@@ -175,7 +176,7 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
         }
 
         for (OpetuksenTavoite tavoite : tavoitteet) {
-            OpetuksenTavoite klooni = tavoite.kloonaa(keskeinenSisaltoalueMapper, laajainenOsaaminenMapper);
+            OpetuksenTavoite klooni = tavoite.kloonaa(keskeinenSisaltoalueMapper, laajainenOsaaminenMapper, kohdealueMapper);
             ovlk.addOpetuksenTavoite(klooni);
         }
 
