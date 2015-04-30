@@ -19,7 +19,9 @@ import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -43,8 +45,6 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  *
@@ -205,14 +205,11 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
 
     /**
      * Lisää uuden kohdealueen. Jos samanniminen kohdealue on jo olemassa, palauttaa tämän.
-     *
-     * @param kohdealue
-     * @return Lisätty kohdealue tai samanniminen olemassa oleva.
      */
     public OpetuksenKohdealue addKohdealue(OpetuksenKohdealue kohdealue) {
         if (kohdealue.getNimi() != null) {
             for (OpetuksenKohdealue k : kohdealueet) {
-                if (k.getNimi().equals(kohdealue.getNimi())) {
+                if (kohdealue.getNimi().equals(k.getNimi())) {
                     return k;
                 }
             }
