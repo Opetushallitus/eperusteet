@@ -132,7 +132,7 @@ angular.module('eperusteApp')
       '      </a>' +
       '    </div>' +
       '    <div ng-show="editoi === viesti.id" class="kommentti-muokkaus">' +
-      '      <textarea maxlength="{{ $kommenttiMaxLength.maara }}" class="form-control msd-elastic" ng-model="model.editoitava"></textarea>' +
+      '      <textarea maxlength="{{ $kommenttiMaxLength.maara }}" class="form-control msd-elastic kommentti-textarea" ng-model="model.editoitava"></textarea>' +
       '      <div class="alert alert-danger" role="alert" ng-show="model.editoitava && model.editoitava.length >= $kommenttiMaxLength.maara">' +
       '        {{ "kommentti-ei-saa-ylittaa" | kaanna:$kommenttiMaxLength }}' +
       '      </div>' +
@@ -160,7 +160,7 @@ angular.module('eperusteApp')
       '<hr>' +
       '<div ng-show="viesti.$lisaa">' +
       '  <div class="kommentti-uusi">' +
-      '    <textarea maxlength="{{ $kommenttiMaxLength.maara }}" class="form-control msd-elastic" ng-model="editoitava"></textarea>' +
+      '    <textarea maxlength="{{ $kommenttiMaxLength.maara }}" class="form-control msd-elastic kommentti-textarea" ng-model="editoitava"></textarea>' +
       '    <div class="alert alert-danger" role="alert" ng-show="editoitava && editoitava.length >= $kommenttiMaxLength.maara">' +
       '      {{ "kommentti-ei-saa-ylittaa" | kaanna:$kommenttiMaxLength }}' +
       '    </div>' +

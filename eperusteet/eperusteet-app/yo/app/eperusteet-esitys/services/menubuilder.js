@@ -94,16 +94,6 @@ angular.module('eperusteet.esitys')
       levels[item.depth] = index;
       item.$parent = levels[item.depth - 1] || null;
     });
-      if ($state.current.name.indexOf(epEsitysSettings.perusopetusState) >= 0) {
-        suunnitelma.push({
-          label: 'laaja-alaisen-osaamisen-alueet',
-          id: 'laajaalaiset',
-          link: [epEsitysSettings.perusopetusState + '.laajaalaiset'],
-          depth: 0,
-          $hidden: false,
-          $uppercase: true
-        });
-      }
     return suunnitelma;
   }
 

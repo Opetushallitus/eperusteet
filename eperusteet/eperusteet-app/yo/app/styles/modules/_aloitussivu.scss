@@ -1,3 +1,5 @@
+
+
 .aloitusvalinnat {
   margin-bottom: 20px;
 }
@@ -59,6 +61,22 @@
     margin-top: 15px;
     width: 100%;
     text-align: center;
+  }
+  .etusivu-tiedotteet {
+    padding: 0px;
+
+    .etusivu-tiedote {
+      margin-bottom: 0px;
+      padding: 7px 0px 7px 0px;
+    }
+
+    li {
+      margin-top: 0px;
+      border-bottom: 1px solid $etusivu-tiedoitteet-separator;
+    }
+    li:last-child {
+      border-bottom: 0px;
+    }
   }
 }
 

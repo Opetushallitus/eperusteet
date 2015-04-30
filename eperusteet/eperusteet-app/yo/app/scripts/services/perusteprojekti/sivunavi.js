@@ -62,9 +62,19 @@ angular.module('eperusteApp')
       perusteenOsaViiteId: lapsi.id,
       versio: null
     };
-    return lapsi.perusteenOsa.tunniste && lapsi.perusteenOsa.tunniste === 'rakenne' ?
-      ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: ''}] :
-      [STATE_TEKSTIKAPPALE, params];
+
+    if (lapsi.perusteenOsa.tunniste === 'rakenne') {
+       return ['root.perusteprojekti.suoritustapa.muodostumissaannot', {versio: ''}];
+    }
+    else if (lapsi.perusteenOsa.tunniste === 'laajaalainenosaaminen') {
+       return ['root.perusteprojekti.suoritustapa.osalistaus', {
+         suoritustapa: 'perusopetus',
+         osanTyyppi: 'osaaminen'
+       }];
+    }
+    else {
+      return [STATE_TEKSTIKAPPALE, params];
+    }
   }
 
   var processNode = function (node, level) {

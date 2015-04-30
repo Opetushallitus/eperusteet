@@ -58,4 +58,11 @@ public class KeskeinenSisaltoalue extends AbstractReferenceableEntity {
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
     private TekstiPalanen kuvaus;
 
+    public KeskeinenSisaltoalue kloonaa() {
+        KeskeinenSisaltoalue klooni = new KeskeinenSisaltoalue();
+        klooni.setKuvaus(kuvaus);
+        klooni.setNimi(nimi);
+        return klooni;
+    }
+
 }

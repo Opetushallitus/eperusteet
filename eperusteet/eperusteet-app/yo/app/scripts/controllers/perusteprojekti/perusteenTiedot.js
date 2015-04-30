@@ -53,11 +53,6 @@ angular.module('eperusteApp')
     perusteprojektiTiedot, Notifikaatiot, Editointikontrollit, Kaanna,
     Varmistusdialogi, $timeout, $rootScope, PerusteTutkintonimikekoodit, $modal,
     PerusteenTutkintonimikkeet, valittavatKielet, Kieli) {
-    $scope.showKoulutukset = function () {
-      return YleinenData.showKoulutukset($scope.editablePeruste);
-    };
-
-
 
     $scope.editEnabled = false;
     var editingCallbacks = {

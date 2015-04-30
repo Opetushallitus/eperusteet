@@ -6,6 +6,7 @@
 import json
 import openpyxl
 import sys
+from collections import OrderedDict
 
 if len(sys.argv) < 2:
     print('Usage: ' + sys.argv[0] + '<from.xlsx>')
@@ -27,8 +28,8 @@ def create_key_value_pair_to_json(key, langs):
 workbook = openpyxl.load_workbook(sys.argv[1])
 worksheet = workbook.active
 
-dict_fi = {}
-dict_sv = {}
+dict_fi = OrderedDict()
+dict_sv = OrderedDict()
 
 # create_key_value_pair_to_json
 for row in worksheet.rows[1:]:

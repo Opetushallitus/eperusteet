@@ -22,6 +22,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -41,6 +42,7 @@ public class OpetuksenKohdealue extends AbstractReferenceableEntity {
     @Getter
     @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
+    @NotNull(message = "Tavoitealueella täytyy olla nimi")
     private TekstiPalanen nimi;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
@@ -49,4 +51,11 @@ public class OpetuksenKohdealue extends AbstractReferenceableEntity {
     @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
     private TekstiPalanen kuvaus;
+
+    public OpetuksenKohdealue kloonaa() {
+        OpetuksenKohdealue klooni = new OpetuksenKohdealue();
+        klooni.setKuvaus(kuvaus);
+        klooni.setNimi(nimi);
+        return klooni;
+    }
 }

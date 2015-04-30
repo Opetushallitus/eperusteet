@@ -19,7 +19,9 @@ import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -203,14 +205,11 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
 
     /**
      * Lisää uuden kohdealueen. Jos samanniminen kohdealue on jo olemassa, palauttaa tämän.
-     *
-     * @param kohdealue
-     * @return Lisätty kohdealue tai samanniminen olemassa oleva.
      */
     public OpetuksenKohdealue addKohdealue(OpetuksenKohdealue kohdealue) {
         if (kohdealue.getNimi() != null) {
             for (OpetuksenKohdealue k : kohdealueet) {
-                if (k.getNimi().equals(kohdealue.getNimi())) {
+                if (kohdealue.getNimi().equals(k.getNimi())) {
                     return k;
                 }
             }
@@ -275,7 +274,9 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
         return System.identityHashCode(this);
     }
 
-    public Oppiaine kloonaa() {
+    public Oppiaine kloonaa(
+            Map<LaajaalainenOsaaminen, LaajaalainenOsaaminen> laajainenOsaaminenMapper,
+            Map<VuosiluokkaKokonaisuus, VuosiluokkaKokonaisuus> vuosiluokkaKokonaisuusMapper) {
         Oppiaine oa = new Oppiaine();
         oa.setAbstrakti(abstrakti);
         oa.setJnro(jnro);
@@ -283,9 +284,22 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
         oa.setNimi(nimi);
         oa.setTehtava(tehtava);
 
-//        for (OppiaineenVuosiluokkaKokonaisuus ovlk : vuosiluokkakokonaisuudet) {
-//            oa.addVuosiluokkaKokonaisuus(ovlk.kloonaa(oa));
-//        }
+        Map<OpetuksenKohdealue, OpetuksenKohdealue> kohdealueMapper = new HashMap<>();
+        for (OpetuksenKohdealue kohdealue : kohdealueet) {
+            OpetuksenKohdealue klooni = kohdealue.kloonaa();
+            oa.addKohdealue(klooni);
+            kohdealueMapper.put(kohdealue, klooni);
+        }
+
+        for (OppiaineenVuosiluokkaKokonaisuus ovlk : vuosiluokkakokonaisuudet) {
+            OppiaineenVuosiluokkaKokonaisuus uovlk = ovlk.kloonaa(vuosiluokkaKokonaisuusMapper, laajainenOsaaminenMapper, kohdealueMapper);
+            uovlk.setOppiaine(oa);
+            oa.addVuosiluokkaKokonaisuus(uovlk);
+        }
+
+        for (Oppiaine om : oppimaarat) {
+            oa.addOppimaara(om.kloonaa(laajainenOsaaminenMapper, vuosiluokkaKokonaisuusMapper));
+        }
         return oa;
     }
 

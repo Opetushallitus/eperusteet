@@ -63,12 +63,15 @@ angular.module('eperusteApp')
 
   angular.element($window).bind('keydown', function (event) {
     var editing = Editointikontrollit.getEditMode() || angular.element('.edit-controls .btn-primary').filter(':visible').length === 1;
-
+    var isDialogOpen = angular.element('.modal .modal-dialog').filter(':visible').length > 0;
+    var commenting = angular.element('.kommentti-textarea').filter(':visible').length > 0;
     if (!editing) {
-      handleSingleKeys(event);
+      if (!event.ctrlKey && !event.metaKey && !isDialogOpen && !commenting) {
+        handleSingleKeys(event);
+      }
     } else {
       // Escape while editing => cancel (but ignore when modal open)
-      if (event.which === 27 && angular.element('.modal .modal-dialog').filter(':visible').length === 0) {
+      if (event.which === 27 && !isDialogOpen) {
         angular.element('.edit-controls .btn-default').eq(0).click();
       }
     }
