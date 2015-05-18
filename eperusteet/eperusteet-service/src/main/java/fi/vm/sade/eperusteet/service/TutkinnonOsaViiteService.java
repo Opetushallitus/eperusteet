@@ -36,10 +36,10 @@ public interface TutkinnonOsaViiteService {
     @PreAuthorize("hasPermission(#id, 'tutkinnonosaviite', 'LUKU')")
     public Integer getLatestRevision(@P("id") final Long id);
 
-    @PreAuthorize("hasPermission(#viiteId, 'tutkinnonosaviite', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#viiteId, 'tutkinnonosaviite', 'MUOKKAUS') or hasPermission(#viiteId, 'tutkinnonosaviite', 'KORJAUS')")
     public LukkoDto lockPerusteenOsa(@P("viiteId") final Long viiteId);
 
-    @PreAuthorize("hasPermission(#viiteId, 'tutkinnonosaviite', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#viiteId, 'tutkinnonosaviite', 'MUOKKAUS') or hasPermission(#viiteId, 'tutkinnonosaviite', 'KORJAUS')")
     public void unlockPerusteenOsa(@P("viiteId") final Long viiteId);
 
     @PreAuthorize("hasPermission(#viiteId, 'tutkinnonosaviite', 'LUKU')")
