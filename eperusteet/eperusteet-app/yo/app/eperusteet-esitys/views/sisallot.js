@@ -44,6 +44,7 @@
 })
 
 .controller('epEsitysTiedotController', function($scope, $q, $state, YleinenData, PerusteenTutkintonimikkeet, Perusteet) {
+  console.log('moro');
   $scope.showKoulutukset = _.constant(YleinenData.showKoulutukset($scope.peruste));
   $scope.showOsaamisalat = $scope.showKoulutukset;
   $scope.koulutusalaNimi = $scope.Koulutusalat.haeKoulutusalaNimi;
