@@ -281,9 +281,9 @@ public class OppiaineServiceImpl implements OppiaineService {
         lockService.assertLock(OppiaineLockContext.of(perusteId, dto.getId(), null));
         oppiaineRepository.lock(aine);
 
-        Revision rev = null;
+        Integer rev = null;
         if (sisalto.getPeruste().getTila() == PerusteTila.VALMIS) {
-            rev = oppiaineRepository.getLatestRevisionId(aine.getId());
+            rev = oppiaineRepository.getLatestRevisionId();
         }
         mapper.map(dto, aine);
         final Set<OppiaineenVuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet = dto.getVuosiluokkakokonaisuudet();
@@ -308,7 +308,7 @@ public class OppiaineServiceImpl implements OppiaineService {
             }
         }
         if (rev != null) {
-            Oppiaine latest = oppiaineRepository.findRevision(aine.getId(), rev.getNumero());
+            Oppiaine latest = oppiaineRepository.findRevision(aine.getId(), rev);
             if (!latest.structureEquals(aine)) {
                 throw new BusinessRuleViolationException(VAIN_KORJAUKSET_SALLITTU);
             }

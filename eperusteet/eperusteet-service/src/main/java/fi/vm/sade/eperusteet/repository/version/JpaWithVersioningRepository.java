@@ -70,4 +70,9 @@ public interface JpaWithVersioningRepository<T, ID extends Serializable> extends
      */
     void setRevisioKommentti(String kommentti);
 
+    /**
+     * Palauttaa viimeisimmän tietokannan versionumeron
+     */
+    int getLatestRevisionId();
+
 }

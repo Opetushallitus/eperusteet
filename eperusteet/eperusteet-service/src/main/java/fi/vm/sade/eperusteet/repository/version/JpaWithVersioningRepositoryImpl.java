@@ -26,6 +26,7 @@ import javax.persistence.LockModeType;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
@@ -108,6 +109,15 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
     public void setRevisioKommentti(String kommentti) {
         RevisionInfo currentRevision = AuditReaderFactory.get(entityManager).getCurrentRevision(RevisionInfo.class, false);
         currentRevision.addKommentti(kommentti);
+    }
+
+    /**
+     * Palauttaa viimeisimmän versionumeron
+     */
+    @Override
+    public int getLatestRevisionId() {
+        //enverssissä ei ole suoraan suurimman revisionumeron palautusta, workaround
+        return AuditReaderFactory.get(entityManager).getRevisionNumberForDate(DateTime.now().plusDays(1).toDate()).intValue();
     }
 
 }
