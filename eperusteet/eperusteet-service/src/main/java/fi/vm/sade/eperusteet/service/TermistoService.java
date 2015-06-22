@@ -29,12 +29,12 @@ public interface TermistoService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<TermiDto> getTermit(@P("perusteId") Long perusteId);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     TermiDto addTermi(@P("perusteId") Long perusteId, TermiDto dto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     TermiDto updateTermi(@P("perusteId") Long perusteId, TermiDto dto);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     void deleteTermi(@P("perusteId") Long perusteId, Long id);
 }
