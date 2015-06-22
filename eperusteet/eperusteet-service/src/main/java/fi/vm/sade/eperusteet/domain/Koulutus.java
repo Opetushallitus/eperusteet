@@ -35,7 +35,7 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "koulutus")
-public class Koulutus implements Serializable {
+public class Koulutus implements Serializable, Mergeable<Koulutus>{
 
     public Koulutus() {
     }
@@ -64,7 +64,7 @@ public class Koulutus implements Serializable {
     @Getter
     @Setter
     private String koulutuskoodiArvo;
-    
+
     @Column(name = "koulutuskoodi_uri")
     @Getter
     @Setter
@@ -79,4 +79,13 @@ public class Koulutus implements Serializable {
     @Getter
     @Setter
     private String opintoalakoodi;
+
+    @Override
+    public void mergeState(Koulutus updated) {
+        this.setKoulutuskoodiArvo(updated.getKoulutuskoodiArvo());
+        this.setKoulutuskoodiUri(updated.getKoulutuskoodiUri());
+        this.setKoulutusalakoodi(updated.getKoulutusalakoodi());
+        this.setOpintoalakoodi(updated.getOpintoalakoodi());
+    }
+
 }

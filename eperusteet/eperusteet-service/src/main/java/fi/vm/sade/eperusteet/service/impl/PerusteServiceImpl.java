@@ -396,6 +396,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             for (Koulutus koulutus : koulutukset) {
                 Koulutus k = koulutusRepo.findOneByKoulutuskoodiArvo(koulutus.getKoulutuskoodiArvo());
                 if (k != null) {
+                    k.mergeState(koulutus);
                     tmp.add(k);
                 } else {
                     tmp.add(koulutus);
