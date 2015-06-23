@@ -36,8 +36,8 @@
 
           <table>
             <tr ng-repeat="taso in arviointiasteikot[arvioinninkohde._arviointiAsteikko].osaamistasot" ng-class-odd="'raita'" ng-class-even="'ei-raitaa'">
-              <td class="otsikko" ng-class="{redundant: $first && $last && arvioinninkohde !== originalKohde}">
-                <span ng-show="!($first && $last && arvioinninkohde !== originalKohde)">{{taso.otsikko | kaanna}}</span>
+              <td class="otsikko">
+                <span>{{taso.otsikko | kaanna}}</span>
               </td>
               <td>
                 <table ng-if="arvioinninkohde === originalKohde" ng-repeat="osaamistasonKriteeri in editableKohde.osaamistasonKriteerit | filter:{_osaamistaso: taso.id}">
