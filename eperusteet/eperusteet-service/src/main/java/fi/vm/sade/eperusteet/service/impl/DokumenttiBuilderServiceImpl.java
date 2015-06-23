@@ -933,9 +933,9 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
                     // otsikko vain tason otsikko vain jos on useampi kuin yksi
                     // taso
-                    if (kriteerilista.size() > 1) {
+                    //if (kriteerilista.size() > 1) {
                         addTableCell(doc, bodyRowElement, ktaso);
-                    }
+                    //}
 
                     // jos kriteerit on tyhjä, vältetään tyhjä itemizedlist
                     Element entry;
@@ -946,10 +946,10 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                     }
 
                     // koska ei ole tason otsikkoa, käytetään koko rivi
-                    if (kriteerilista.size() == 1) {
+                    /*if (kriteerilista.size() == 1) {
                         entry.setAttribute("namest", "taso");
                         entry.setAttribute("nameend", "kriteeri");
-                    }
+                    }*/
 
                     bodyElement.appendChild(bodyRowElement);
                 }
