@@ -45,6 +45,7 @@
 
 .controller('epEsitysTiedotController', function($scope, $q, $state, YleinenData, PerusteenTutkintonimikkeet, Perusteet) {
   $scope.showKoulutukset = _.constant(YleinenData.showKoulutukset($scope.peruste));
+  $scope.showOsaamisalat = $scope.showKoulutukset;
   $scope.koulutusalaNimi = $scope.Koulutusalat.haeKoulutusalaNimi;
   $scope.opintoalaNimi = $scope.Opintoalat.haeOpintoalaNimi;
 
