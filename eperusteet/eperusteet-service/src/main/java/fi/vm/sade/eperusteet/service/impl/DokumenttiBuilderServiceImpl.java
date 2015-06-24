@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
@@ -1284,17 +1285,17 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             addTableCell(doc, itrow2, messages.translate("docgen.info.ei-asetettu", kieli));
         }
 
-        Element itrow7 = addTableRow(doc, tbody);
-        addTableCell(doc, itrow7, newBoldElement(doc, messages.translate("docgen.info.korvaa-perusteet", kieli)));
+        Element itrow8 = addTableRow(doc, tbody);
+        addTableCell(doc, itrow8, newBoldElement(doc, messages.translate("docgen.info.korvaa-perusteet", kieli)));
         if (peruste.getKorvattavatDiaarinumerot() != null && !peruste.getKorvattavatDiaarinumerot().isEmpty())
         {
             Set<String> numeroStringit = new HashSet<>();
             for (Diaarinumero nro : peruste.getKorvattavatDiaarinumerot()) {
                 numeroStringit.add(nro.getDiaarinumero());
             }
-            addTableCell(doc, itrow7, StringUtils.join(numeroStringit, ", "));
+            addTableCell(doc, itrow8, StringUtils.join(numeroStringit, ", "));
         } else {
-            addTableCell(doc, itrow7, messages.translate("docgen.info.ei-asetettu", kieli));
+            addTableCell(doc, itrow8, messages.translate("docgen.info.ei-asetettu", kieli));
         }
 
         Set<Koulutus> koulutukset = peruste.getKoulutukset();
@@ -1317,6 +1318,25 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             addTableCell(doc, itrow3, messages.translate("docgen.info.ei-asetettu", kieli));
         }
 
+        Set<Koodi> osaamisalat = peruste.getOsaamisalat();
+        Element osaamisalalist = doc.createElement("simplelist");
+        for (Koodi osaamisala : osaamisalat) {
+            String osaamisalaNimi = getTextString(osaamisala.getNimi(), kieli);
+            if (StringUtils.isNotEmpty(osaamisala.getArvo())) {
+                osaamisalaNimi += " (" + osaamisala.getArvo() + ")";
+            }
+            Element member = doc.createElement("member");
+            member.appendChild(doc.createTextNode(osaamisalaNimi));
+            osaamisalalist.appendChild(member);
+        }
+
+        Element itrow4 = addTableRow(doc, tbody);
+        addTableCell(doc, itrow4, newBoldElement(doc, messages.translate("docgen.info.osaamisalat", kieli)));
+        if (osaamisalalist.hasChildNodes()) {
+            addTableCell(doc, itrow4, osaamisalalist);
+        } else {
+            addTableCell(doc, itrow4, messages.translate("docgen.info.ei-asetettu", kieli));
+        }
 
         List<TutkintonimikeKoodi> nimikeKoodit = tutkintonimikeKoodiRepository.findByPerusteId(peruste.getId());
         Element nimikelist = doc.createElement("simplelist");
@@ -1335,30 +1355,30 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         }
 
 
-        Element itrow4 = addTableRow(doc, tbody);
-        addTableCell(doc, itrow4, newBoldElement(doc, messages.translate("docgen.info.tutkintonimikkeet", kieli)));
-        if (nimikelist.hasChildNodes()) {
-            addTableCell(doc, itrow4, nimikelist);
-        } else {
-            addTableCell(doc, itrow4, messages.translate("docgen.info.ei-asetettu", kieli));
-        }
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-
         Element itrow5 = addTableRow(doc, tbody);
-        addTableCell(doc, itrow5, newBoldElement(doc, messages.translate("docgen.info.voimaantulo", kieli)));
-        if (peruste.getVoimassaoloAlkaa() != null) {
-            addTableCell(doc, itrow5, dateFormat.format(peruste.getVoimassaoloAlkaa()));
+        addTableCell(doc, itrow5, newBoldElement(doc, messages.translate("docgen.info.tutkintonimikkeet", kieli)));
+        if (nimikelist.hasChildNodes()) {
+            addTableCell(doc, itrow5, nimikelist);
         } else {
             addTableCell(doc, itrow5, messages.translate("docgen.info.ei-asetettu", kieli));
         }
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+
         Element itrow6 = addTableRow(doc, tbody);
-        addTableCell(doc, itrow6, newBoldElement(doc, messages.translate("docgen.info.voimassaolon-paattyminen", kieli)));
-        if (peruste.getVoimassaoloLoppuu() != null) {
-            addTableCell(doc, itrow6, dateFormat.format(peruste.getVoimassaoloLoppuu()));
+        addTableCell(doc, itrow6, newBoldElement(doc, messages.translate("docgen.info.voimaantulo", kieli)));
+        if (peruste.getVoimassaoloAlkaa() != null) {
+            addTableCell(doc, itrow6, dateFormat.format(peruste.getVoimassaoloAlkaa()));
         } else {
             addTableCell(doc, itrow6, messages.translate("docgen.info.ei-asetettu", kieli));
+        }
+
+        Element itrow7 = addTableRow(doc, tbody);
+        addTableCell(doc, itrow7, newBoldElement(doc, messages.translate("docgen.info.voimassaolon-paattyminen", kieli)));
+        if (peruste.getVoimassaoloLoppuu() != null) {
+            addTableCell(doc, itrow7, dateFormat.format(peruste.getVoimassaoloLoppuu()));
+        } else {
+            addTableCell(doc, itrow7, messages.translate("docgen.info.ei-asetettu", kieli));
         }
     }
 
