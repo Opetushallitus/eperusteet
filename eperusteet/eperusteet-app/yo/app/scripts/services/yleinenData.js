@@ -152,7 +152,6 @@ angular.module('eperusteApp')
     };
 
     this.showKoulutukset = function (peruste) {
-      // Näytetäänkö perusteelle koulutukset (koulutuskoodit) perusteen tiedoissa
       return peruste.koulutustyyppi !== 'koulutustyyppi_16';
     };
 
