@@ -27,6 +27,7 @@ public enum KoulutusTyyppi {
     ERIKOISAMMATTITUTKINTO("koulutustyyppi_12"),
     LISAOPETUS("koulutustyyppi_6"),
     ESIOPETUS("koulutustyyppi_15"),
+    VARHAISKASVATUS("koulutustyyppi_20"),
     PERUSOPETUS("koulutustyyppi_16");
 
     private final String tyyppi;

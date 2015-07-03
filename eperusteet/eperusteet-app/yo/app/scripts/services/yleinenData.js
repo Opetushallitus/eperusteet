@@ -103,6 +103,14 @@ angular.module('eperusteApp')
         hakuState: 'root.selaus.lisaopetuslista',
         sisaltoTunniste: 'losisalto',
         hasPdfCreation: true
+      },
+      'koulutustyyppi_20': {
+        nimi: 'varhaiskasvatus',
+        oletusSuoritustapa: 'varhaiskasvatus',
+        hasTutkintonimikkeet: false,
+        hakuState: 'root.selaus.varhaisopetuslista',
+        sisaltoTunniste: 'vksisalto',
+        hasPdfCreation: false
       }
     };
 
@@ -131,12 +139,16 @@ angular.module('eperusteApp')
       return peruste.koulutustyyppi === 'koulutustyyppi_6';
     };
 
+    this.isVarhaiskasvatus = function (peruste) {
+      return peruste.koulutustyyppi === 'koulutustyyppi_20';
+    };
+
     this.isEsiopetus = function (peruste) {
       return peruste.koulutustyyppi === 'koulutustyyppi_15';
     };
 
     this.isSimple = function (peruste) {
-      return this.isEsiopetus(peruste) || this.isLisaopetus(peruste);
+      return this.isEsiopetus(peruste) || this.isLisaopetus(peruste) || this.isVarhaiskasvatus(peruste);
     };
 
     this.validSuoritustapa = function (peruste, suoritustapa) {

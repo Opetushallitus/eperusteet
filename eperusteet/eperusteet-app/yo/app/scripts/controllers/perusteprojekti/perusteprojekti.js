@@ -158,6 +158,14 @@ angular.module('eperusteApp')
           PerusteProjektiSivunavi.setVisible(false);
         }]
       })
+      .state('root.perusteprojekti.suoritustapa.vksisalto', {
+        url: '/vksisalto',
+        templateUrl: 'views/partials/perusteprojekti/esiopetus.html',
+        controller: 'EsiopetusSisaltoController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(false);
+        }]
+      })
       .state('root.perusteprojekti.suoritustapa.eosisalto', {
         url: '/eosisalto',
         templateUrl: 'views/partials/perusteprojekti/esiopetus.html',
@@ -309,7 +317,7 @@ angular.module('eperusteApp')
     $scope.showBackLink = function () {
       return !($state.is('root.perusteprojekti.suoritustapa.sisalto') ||
                $state.is('root.perusteprojekti.suoritustapa.posisalto') ||
-               $state.is('root.perusteprojekti.suoritustapa.losisalto') ||
+               $state.is('root.perusteprojekti.suoritustapa.vksisalto') ||
                $state.is('root.perusteprojekti.suoritustapa.eosisalto'));
     };
 
