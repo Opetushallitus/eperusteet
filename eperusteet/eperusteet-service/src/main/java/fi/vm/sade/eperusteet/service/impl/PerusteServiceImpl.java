@@ -837,7 +837,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                                                                                   : LaajuusYksikko.OSAAMISPISTE);
         } else if (ekoulutustyyppi == KoulutusTyyppi.PERUSOPETUS) {
             peruste.setPerusopetuksenPerusteenSisalto(new PerusopetuksenPerusteenSisalto());
-        } else if (ekoulutustyyppi == KoulutusTyyppi.ESIOPETUS || ekoulutustyyppi == KoulutusTyyppi.LISAOPETUS) {
+        } else if (ekoulutustyyppi == KoulutusTyyppi.ESIOPETUS
+                || ekoulutustyyppi == KoulutusTyyppi.LISAOPETUS
+                || ekoulutustyyppi == KoulutusTyyppi.VARHAISKASVATUS) {
             peruste.setEsiopetuksenPerusteenSisalto(new EsiopetuksenPerusteenSisalto());
         }
 
@@ -900,7 +902,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         if (KoulutusTyyppi.ESIOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
-                || KoulutusTyyppi.LISAOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {
+                || KoulutusTyyppi.LISAOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
+                || KoulutusTyyppi.VARHAISKASVATUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {
             EsiopetuksenPerusteenSisalto uusiSisalto = kloonaaEsiopetuksenSisalto(peruste, vanha.getEsiopetuksenPerusteenSisalto());
             uusiSisalto.setPeruste(peruste);
             peruste.setEsiopetuksenPerusteenSisalto(uusiSisalto);

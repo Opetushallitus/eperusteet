@@ -27,6 +27,7 @@ public enum Suoritustapakoodi {
     NAYTTO("naytto"),
     PERUSOPETUS("perusopetus"),
     LISAOPETUS("lisaopetus"),
+    VARHAISKASVATUS("varhaiskasvatus"),
     ESIOPETUS("esiopetus");
 
     private final String koodi;
