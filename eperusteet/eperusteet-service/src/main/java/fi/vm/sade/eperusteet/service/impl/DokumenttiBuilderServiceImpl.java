@@ -917,6 +917,14 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
 
                 Element bodyElement = doc.createElement("tbody");
 
+                // Lisätään otsikon alle selite
+                Element seliteRowElement = doc.createElement("row");
+                Element seliteEntry = doc.createElement("entry");
+                seliteEntry.appendChild(doc.createTextNode(getTextString(kohde.getSelite(), kieli)));
+                seliteEntry.setAttribute("align", "center");
+                seliteRowElement.appendChild(seliteEntry);
+                bodyElement.appendChild(seliteRowElement);
+
                 Set<OsaamistasonKriteeri> osaamistasonKriteerit = kohde.getOsaamistasonKriteerit();
                 List<OsaamistasonKriteeri> kriteerilista = new ArrayList<>(osaamistasonKriteerit);
                 java.util.Collections.sort(kriteerilista, new java.util.Comparator<OsaamistasonKriteeri>() {
