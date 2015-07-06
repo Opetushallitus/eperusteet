@@ -25,6 +25,7 @@
               <div class="arviointi-sisalto">
                   <div ng-repeat="kohde in kohdealue.arvioinninKohteet">
                       <h4>{{ kohde.otsikko | kaanna }}</h4>
+                      <h5>{{ kohde.selite || '' | kaanna }}</h5>
                       <table class="table table-striped">
                           <tr ng-repeat="okriteeri in kohde.osaamistasonKriteerit | orderBy: '_osaamistaso'">
                               <td class="arviointi-okriteeri">
