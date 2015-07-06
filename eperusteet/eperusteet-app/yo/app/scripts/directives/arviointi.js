@@ -125,7 +125,7 @@ angular.module('eperusteApp')
         kohdealue.$newkohde = null;
       },
       poistuMuokkauksesta: function (list, index) {
-        delete $scope.editableKohde.$editointi;
+        $scope.editableKohde.$editointi = false;
         _.each($scope.editableKohde.osaamistasonKriteerit, function (kriteeri) {
           if (kriteeri.kriteerit.length === 1 && !Utils.hasLocalizedText(kriteeri.kriteerit[0])) {
             kriteeri.kriteerit = [];

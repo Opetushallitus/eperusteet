@@ -25,8 +25,7 @@ European Union Public Licence for more details.
     focus-me="muokkaustila"
     slocalized editointi-kontrolli>
   <a ng-click="poistaAlkio(sisalto, sisaltoalue, $event)" ng-show="editmode && !muokkaustila" class="muokkausnappi action-link" icon-role="remove"></a>
-  <a ng-click="asetaMuokkaustila(true, $event)" ng-show="editmode && !muokkaustila" class="muokkausnappi action-link" icon-role="edit">
-  </a>
+  <a ng-click="asetaMuokkaustila(true, $event)" ng-show="editmode && !muokkaustila" class="muokkausnappi action-link" icon-role="edit"></a>
   <div ng-show="muokkaustila" class="muokkaus-napit">
     <button class="btn btn-default btn-xs" ng-click="peruMuutos($event)" kaanna>peru</button>
     <button class="btn btn-primary btn-xs" ng-click="hyvaksyMuutos($event)" kaanna>ok</button>

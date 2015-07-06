@@ -34,6 +34,11 @@
             </span>
           </accordion-heading>
 
+          <div style="margin-bottom: 5px">
+            <div ng-if="arvioinninkohde !== originalKohde" ng-bind="arvioinninkohde.selite | kaanna"></div>
+            <input ng-if="arvioinninkohde === originalKohde" ng-model="editableKohde.selite" type="text" class="form-control" slocalized>
+          </div>
+
           <table>
             <tr ng-repeat="taso in arviointiasteikot[arvioinninkohde._arviointiAsteikko].osaamistasot" ng-class-odd="'raita'" ng-class-even="'ei-raitaa'">
               <td class="otsikko">

@@ -65,6 +65,13 @@ public class ArvioinninKohde implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen otsikko;
 
+    @ValidHtml(whitelist = WhitelistType.MINIMAL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen selite;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @NotNull
     @Getter
