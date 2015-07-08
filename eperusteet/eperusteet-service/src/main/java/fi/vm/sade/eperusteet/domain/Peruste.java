@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
@@ -176,6 +177,19 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
      */
     @Size(min = 1, groups = Valmis.class)
     private Set<Kieli> kielet = EnumSet.of(Kieli.FI, Kieli.SV);
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "peruste_liite", inverseJoinColumns = {@JoinColumn(name="liite_id")}, joinColumns = {@JoinColumn(name="peruste_id")})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private Set<Liite> liitteet = new HashSet<>();
+
+    public void attachLiite(Liite liite) {
+        liitteet.add(liite);
+    }
+
+    public void removeLiite(Liite liite) {
+        liitteet.remove(liite);
+    }
 
     public Suoritustapa getSuoritustapa(Suoritustapakoodi koodi) {
         for (Suoritustapa s : suoritustavat) {

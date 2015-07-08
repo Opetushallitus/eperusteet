@@ -22,7 +22,7 @@
     "lodash": "~3.0.0",
     "momentjs": "~2.5.1",
     "angular-ui-router": "0.2.13",
-    "ng-file-upload": "~1.2.6",
+    "ng-file-upload": "~4.0.4",
     "angular-ui-sortable": "~0.13.0",
     "bootstrap-sass-official": "~3.3.3",
     "angular-elastic": "~2.3.3",
