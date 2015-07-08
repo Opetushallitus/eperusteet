@@ -32,7 +32,8 @@ angular.module('eperusteApp', [
   'ui.tree',
   'angular-data.DSCacheFactory',
   'ui.select',
-  'eperusteet.esitys'
+  'eperusteet.esitys',
+  'ngFileUpload'
 ])
   .constant('SERVICE_LOC', '/eperusteet-service/api')
   // .constant('ORGANISATION_SERVICE_LOC', '/organisaatio-service/rest')

@@ -25,6 +25,7 @@ angular.module('eperusteApp')
     var basePath = CKEDITOR.basePath;
     basePath = basePath.substr(0, basePath.indexOf('bower_components/'));
     CKEDITOR.plugins.addExternal('termi', basePath + 'ckeditor-plugins/termi/', 'plugin.js');
+    CKEDITOR.plugins.addExternal('epimage', basePath + 'ckeditor-plugins/epimage/', 'plugin.js');
   })
   .constant('editorLayouts', {
     minimal:
@@ -44,7 +45,7 @@ angular.module('eperusteApp')
         { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
         { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
         { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
-        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link','Termi' ] },
+        { name: 'insert', items : [ 'Table','HorizontalRule','SpecialChar','Link','Termi', 'epimage' ] },
         { name: 'tools', items : [ 'About' ] }
       ]
   })
@@ -53,7 +54,7 @@ angular.module('eperusteApp')
     uiSelectConfig.theme = 'bootstrap';
   })
 
-  .controller('TermiPluginController', function ($scope, TermistoService, Kaanna, Algoritmit, $timeout) {
+  .controller('TermiPluginController', function ($scope, TermistoService, Kaanna, Algoritmit, $timeout, EpImageService) {
     $scope.service = TermistoService;
     $scope.filtered = [];
     $scope.termit = [];
@@ -142,7 +143,7 @@ angular.module('eperusteApp')
     };
   })
 
-  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts, $timeout, Kaanna) {
+  .directive('ckeditor', function($q, $filter, $rootScope, editorLayouts, $timeout, Kaanna, EpImageService) {
     return {
       priority: 10,
       restrict: 'A',
@@ -189,7 +190,7 @@ angular.module('eperusteApp')
         editor = CKEDITOR.inline(element[0], {
           toolbar: toolbarLayout,
           removePlugins: 'resize,elementspath,scayt,wsc',
-          extraPlugins: 'divarea,sharedspace,termi',
+          extraPlugins: 'divarea,sharedspace,termi,epimage',
           extraAllowedContent: 'abbr[data-viite]',
           disallowedContent: 'br; tr td{width,height};',
           language: 'fi',
@@ -300,6 +301,21 @@ angular.module('eperusteApp')
           }
           updateModel();
           $('#toolbar').hide();
+        });
+
+        editor.on('loaded', function () {
+          editor.filter.addTransformations([[
+              {
+                element: 'img',
+                right: function(el) {
+                  // FIXME
+                  // el.attributes.src = EpImageService.getUrl({id: el.attributes['data-uid']});
+                  // delete el.attributes.height;
+                  // delete el.attributes.width;
+                }
+              }
+          ]]);
+
         });
 
         editor.on('instanceReady', function () {
