@@ -55,9 +55,17 @@
 </div>
 
 <div ng-if="tutkinnonOsa.tyyppi === 'tutke2'">
+  <div>
+    <span kaanna="'osa-alueet'"></span>
+    <span ng-repeat="osaalue in tutkinnonOsa.osaAlueet | filter:osaAlueFilter">
+      <span ng-if="!$first">&nbsp;&#124;&nbsp;</span>
+      <a class="action-link" ng-click="goToAnchor('osaalue', osaalue.id)">{{ osaalue.nimi | kaanna }}</a>
+    </span>
+  </div>
+
   <termisto-tekstikentta tekstikentta="tutkinnonOsa.kuvaus"></termisto-tekstikentta>
   <div ng-repeat="osaalue in tutkinnonOsa.osaAlueet | filter:osaAlueFilter">
-    <h3>{{osaalue.nimi | kaanna}}</h3>
+    <h3 id="osaalue{{ osaalue.id }}">{{osaalue.nimi | kaanna}}</h3>
     <div ng-repeat="osaamistavoitteet in osaalue.$groups.grouped">
       <div ng-repeat="tavoite in osaamistavoitteet | filter:osaAlueFilter" ng-include="'eperusteet-esitys/views/osaamistavoite.html'"></div>
     </div>
