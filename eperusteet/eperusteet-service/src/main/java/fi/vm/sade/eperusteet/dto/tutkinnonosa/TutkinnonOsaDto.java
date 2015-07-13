@@ -38,7 +38,6 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
     private LokalisoituTekstiDto ammattitaitovaatimukset;
     private LokalisoituTekstiDto ammattitaidonOsoittamistavat;
     private LokalisoituTekstiDto kuvaus;
-    private Long opintoluokitus;
     private String koodiUri;
     private String koodiArvo;
     private List<OsaAlueDto> osaAlueet;
