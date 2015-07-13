@@ -77,9 +77,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
-    @Column
-    private Long opintoluokitus;
-
     @Column(name = "koodi_uri")
     private String koodiUri;
 
@@ -154,14 +151,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         this.kuvaus = kuvaus;
     }
 
-    public Long getOpintoluokitus() {
-        return opintoluokitus;
-    }
-
-    public void setOpintoluokitus(Long opintoluokitus) {
-        this.opintoluokitus = opintoluokitus;
-    }
-
     public String getKoodiUri() {
         return koodiUri;
     }
@@ -202,8 +191,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             result = super.structureEquals(that);
             result &= refXnor(getKuvaus(), that.getKuvaus());
             result &= Objects.equals(getTyyppi(), that.getTyyppi());
-            result &= Objects.equals(getOpintoluokitus(), that.getOpintoluokitus());
-            result &= Objects.equals(getOpintoluokitus(), that.getOpintoluokitus());
             result &= Objects.equals(getKoodiArvo(), that.getKoodiArvo());
             result &= Objects.equals(getKoodiUri(), that.getKoodiUri());
             result &= refXnor(getTavoitteet(), that.getTavoitteet());
@@ -238,7 +225,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setTavoitteet(other.getTavoitteet());
             this.setKoodiUri(other.getKoodiUri());
             this.setKoodiArvo(other.getKoodiArvo());
-            this.setOpintoluokitus(other.getOpintoluokitus());
             this.setTyyppi(other.getTyyppi());
             this.setKuvaus(other.getKuvaus());
             if (other.getOsaAlueet() != null) {
@@ -254,7 +240,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         this.tavoitteet = other.getTavoitteet();
         this.koodiUri = other.getKoodiUri();
         this.koodiArvo = other.getKoodiArvo();
-        this.opintoluokitus = other.getOpintoluokitus();
         this.tyyppi = other.getTyyppi();
         this.kuvaus = other.getKuvaus();
         if (this.tyyppi == TutkinnonOsaTyyppi.TUTKE2 && other.getOsaAlueet() != null) {
