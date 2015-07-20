@@ -54,7 +54,7 @@ public class LiiteServiceImpl implements LiiteService {
 
     @Override
     @Transactional(readOnly = true)
-    public void export(Long opsId, UUID id, OutputStream os) {
+    public void export(Long perusteId, UUID id, OutputStream os) {
         Liite liite = liitteet.findOne(id);
         if ( liite == null ) {
             throw new NotExistsException("ei ole");
@@ -69,7 +69,7 @@ public class LiiteServiceImpl implements LiiteService {
 
     @Override
     @Transactional(readOnly = true)
-    public LiiteDto get(Long opsId, UUID id) {
+    public LiiteDto get(Long perusteId, UUID id) {
         Liite liite = liitteet.findOne(id);
         //TODO. tarkasta että liite liittyy pyydettyyn suunnitelmaan tai johonkin sen esivanhempaan
         return mapper.map(liite, LiiteDto.class);
@@ -77,27 +77,28 @@ public class LiiteServiceImpl implements LiiteService {
 
     @Override
     @Transactional
-    public UUID add(Long opsId, String tyyppi, String nimi, long length, InputStream is) {
+    public UUID add(Long perusteId, String tyyppi, String nimi, long length, InputStream is) {
         Liite liite = liitteet.add(tyyppi, nimi, length, is);
-        Peruste peruste = perusteet.findOne(opsId);
+        Peruste peruste = perusteet.findOne(perusteId);
         peruste.attachLiite(liite);
         return liite.getId();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<LiiteDto> getAll(Long opsId) {
-        return mapper.mapAsList(liitteet.findByPerusteId(opsId), LiiteDto.class);
+    public List<LiiteDto> getAll(Long perusteId) {
+        List<Liite> loydetyt = liitteet.findByPerusteId(perusteId);
+        return mapper.mapAsList(loydetyt, LiiteDto.class);
     }
 
     @Override
     @Transactional
-    public void delete(Long opsId, UUID id) {
-        Liite liite = liitteet.findOne(opsId, id);
+    public void delete(Long perusteId, UUID id) {
+        Liite liite = liitteet.findOne(perusteId, id);
         if ( liite == null ) {
             throw new NotExistsException("Liitettä ei ole");
         }
-        perusteet.findOne(opsId).removeLiite(liite);
+        perusteet.findOne(perusteId).removeLiite(liite);
     }
 
 }
