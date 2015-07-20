@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.dto.peruste;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.yl.EsiopetuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
 import java.util.List;
@@ -37,7 +37,7 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
     Set<SuoritustapaLaajaDto> suoritustavat;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    List<TutkinnonOsaDto.Laaja> tutkinnonOsat;
+    List<TutkinnonOsaKaikkiDto> tutkinnonOsat;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("perusopetus")
