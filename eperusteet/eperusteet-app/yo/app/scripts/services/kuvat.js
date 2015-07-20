@@ -18,14 +18,12 @@
 
 // FIXME
 angular.module('eperusteApp')
-  .service('EpImageService', function ($q, Upload, SERVICE_LOC, PerusteprojektiTiedotService) {
+  .service('EpImageService', function ($q, Upload, SERVICE_LOC, PerusteprojektiTiedotService, PerusteenKuvat) {
     var pts = null;
     PerusteprojektiTiedotService.then(function(resolved) { pts = resolved; });
 
     this.getAll = function () {
-      console.log('getting all');
-      return [];
-      // return OpsinKuvat.query({opsId: OpsService.getId()}).$promise;
+      return PerusteenKuvat.query({ perusteId: pts.getPeruste().id }).$promise;
     };
 
     this.save = function (image) {
@@ -46,9 +44,7 @@ angular.module('eperusteApp')
     };
 
     this.getUrl = function (image) {
-      console.log('Getting url');
-      return '';
-      // return (SERVICE + '/kuvat').replace(':opsId', '' + OpsService.getId()) + '/' + image.id;
+      return (SERVICE_LOC + '/perusteet/:perusteId/kuvat').replace(':perusteId', '' + pts.getPeruste().id) + '/' + image.id;
     };
   })
 
