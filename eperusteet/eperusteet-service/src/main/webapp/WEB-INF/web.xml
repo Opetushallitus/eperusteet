@@ -38,6 +38,11 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
         <async-supported>true</async-supported>
+        <multipart-config>
+            <max-file-size>5000000</max-file-size>
+            <max-request-size>5000000</max-request-size>
+            <file-size-threshold>1000000</file-size-threshold>
+        </multipart-config>
     </servlet>
     <servlet>
         <servlet-name>VirheServlet</servlet-name>

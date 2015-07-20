@@ -72,7 +72,7 @@ public class LiitetiedostoController {
 
 
     @RequestMapping(method = RequestMethod.POST)
-//    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     public ResponseEntity<String> upload(
         @PathVariable("perusteId")
         @P("perusteId") Long perusteId,
@@ -80,24 +80,23 @@ public class LiitetiedostoController {
         @RequestParam("file") Part file,
         UriComponentsBuilder ucb)
         throws IOException, HttpMediaTypeNotSupportedException {
-//        final long koko = file.getSize();
-//        try (PushbackInputStream pis = new PushbackInputStream(file.getInputStream(), BUFSIZE)) {
-//            byte[] buf = new byte[koko < BUFSIZE ? (int) koko : BUFSIZE];
-//            int len = pis.read(buf);
-//            if (len < buf.length) {
-//                throw new IOException("luku epäonnistui");
-//            }
-//            pis.unread(buf);
-//            String tyyppi = tika.detect(buf);
-//            if (!SUPPORTED_TYPES.contains(tyyppi)) {
-//                throw new HttpMediaTypeNotSupportedException(tyyppi + "ei ole tuettu");
-//            }
-//            UUID id = liitteet.add(perusteId, tyyppi, nimi, koko, pis);
+        final long koko = file.getSize();
+        try (PushbackInputStream pis = new PushbackInputStream(file.getInputStream(), BUFSIZE)) {
+            byte[] buf = new byte[koko < BUFSIZE ? (int) koko : BUFSIZE];
+            int len = pis.read(buf);
+            if (len < buf.length) {
+                throw new IOException("luku epäonnistui");
+            }
+            pis.unread(buf);
+            String tyyppi = tika.detect(buf);
+            if (!SUPPORTED_TYPES.contains(tyyppi)) {
+                throw new HttpMediaTypeNotSupportedException(tyyppi + "ei ole tuettu");
+            }
+            UUID id = liitteet.add(perusteId, tyyppi, nimi, koko, pis);
             HttpHeaders h = new HttpHeaders();
-//            h.setLocation(ucb.path("/perusteet/{perusteId}/kuvat/{id}").buildAndExpand(perusteId, id.toString()).toUri());
-//            return new ResponseEntity<>(id.toString(), h, HttpStatus.CREATED);
-            return new ResponseEntity<>("asda", h, HttpStatus.CREATED);
-//        }
+            h.setLocation(ucb.path("/perusteet/{perusteId}/kuvat/{id}").buildAndExpand(perusteId, id.toString()).toUri());
+            return new ResponseEntity<>(id.toString(), h, HttpStatus.CREATED);
+        }
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
