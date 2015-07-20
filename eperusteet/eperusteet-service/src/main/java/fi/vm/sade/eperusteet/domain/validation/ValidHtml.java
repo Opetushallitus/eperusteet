@@ -50,6 +50,7 @@ public @interface ValidHtml {
                         .addAttributes("th", "scope", "colspan", "rowspan")
                         .addAttributes("td", "colspan", "rowspan")
                         .addAttributes("a", "href", "target")
+                        .addAttributes("img", "data-uid", "src")
                         .addAttributes("abbr", "data-viite"));
 
     	private Whitelist whitelist;

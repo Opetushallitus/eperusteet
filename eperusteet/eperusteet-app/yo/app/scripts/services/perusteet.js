@@ -131,6 +131,12 @@ angular.module('eperusteApp')
       }
     });
   })
+  .factory('PerusteenKuvat', function($resource, SERVICE_LOC) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/kuvat/:id', {
+      perusteId: '@perusteId',
+      id: '@id'
+    });
+  })
   .service('SuoritustavanSisalto', function($modal, $state, Algoritmit, SuoritustapaSisalto, PerusteenOsat, PerusteProjektiService, Notifikaatiot) {
     function lisaaSisalto(perusteId, method, sisalto, cb) {
       cb = cb || angular.noop;
