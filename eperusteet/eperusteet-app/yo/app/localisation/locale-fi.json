@@ -878,5 +878,20 @@
     "perusopetus-arviointi": "Oppimisen arviointi",
     "perusopetus-sisaltoalueet" : "Sisältöalueet",
 
+    "epimage-plugin-virhe-viite-tyhja": "Lisättävää kuvaa ei ole valittu.",
+    "epimage-plugin-hylatty": "Voit ladata vain jpg- tai png-tyyppisiä kuvia.",
+    "epimage-plugin-select-placeholder": "Valitse kuva...",
+    "epimage-plugin-title": "Lisää kuva",
+    "epimage-plugin-menu-muokkaa": "Muokkaa kuvaa",
+    "epimage-plugin-menu-poista": "Poista kuva",
+    "epimage-plugin-button-label": "Kuva",
+    "epimage-plugin-label": "Kuva",
+    "epimage-plugin-label-epimage": "Kuva",
+    "ei-kuvia": "Ei kuvia",
+    "epimage-plugin-virhe-kuva-tyhja": "Valitse kuva.",
+    "epimage-plugin-lisaa-uusi": "Lataa uusi kuva",
+    "epimage-plugin-valitse": "Valitse tiedosto...",
+    "epimage-plugin-tallennettu": "Kuva tallennettu.",
+
     "peruste-ei-diaarinumeroa": "Perusteelta puuttuu määräyksen diaarinumero"
 }

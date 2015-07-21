@@ -1,0 +1,141 @@
+.edit-mode {
+  background: white;
+  padding: 4px 12px;
+  border-radius: 0;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.edit-mode:focus {
+  border-color: #66AFE9;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(102, 175, 233, 0.6);
+  outline: 0 none;
+}
+
+.cke_editable {
+  min-height: 60px;
+  &.bigger {
+    min-height: 200px;
+  }
+}
+
+img[data-uid] {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 90% !important;
+  height: 100% !important;
+  display: block;
+}
+
+// restore styles that are reset by ckeditor
+.ckeplugin-ui-select {
+
+  box-sizing: border-box !important;
+  & * {
+    box-sizing: border-box !important;
+  }
+  .ui-select-bootstrap {
+    .ui-select-toggle {
+      &.btn-block {
+        display: block;
+        padding-left: 10px;
+        padding-right: 10px;
+        width: 100%;
+      }
+      &.btn-group {
+        display: inline-block;
+        position: relative;
+        vertical-align: middle;
+      }
+      /*&.btn {
+        padding: 6px 12px;
+      }*/
+      .btn {
+        text-align: center;
+        vertical-align: middle;
+        &.col-md-11 {
+          width: 91.6667%;
+        }
+        &.col-md-1 {
+          width: 8.33333%;
+        }
+      }
+    }
+    /*.form-control {
+      width: 100%;
+      height: 34px;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+    }*/
+    .caret {
+      position: static;
+      vertical-align: middle;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 4px solid;
+    }
+    &.dropdown {
+      position: relative;
+    }
+    .ui-select-choices-row.active > a * {
+      color: #fff;
+    }
+    .dropdown-menu {
+      position: absolute;
+      float: left;
+      background-clip: padding-box;
+      background-color: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+    }
+    .ui-select-highlight {
+      font-weight: 700;
+    }
+  }
+  .empty-epimaget {
+    font-weight: 700;
+    padding: 10px;
+    background-color: #f2f2f2;
+  }
+}
+
+.epimage-thumb {
+  margin-top: 5px !important;
+  max-width: 200px;
+  display: block;
+}
+
+.ckeditor-plugin-label {
+  margin-top: 5px !important;
+  font-weight: 700 !important;
+  display: block !important;
+}
+
+.ckeplugin-ui-select {
+  .form-control {
+    border: 1px solid rgb(146, 204, 224);
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+  }
+  .btn {
+    padding: 6.5px;
+    font-size: 13px;
+    color: #333333;
+  }
+  .btn-primary {
+    background-color: #feba00;
+    border: 1px solid #dea300;
+  }
+  .btn-default {
+    background-color: #d2ecf5;
+    border: 1px solid #92cce0;
+  }
+  .success-message, .error-message {
+    margin-top: 10px;
+    font-weight: 700;
+  }
+  .error-message {
+    color: red;
+  }
+}
