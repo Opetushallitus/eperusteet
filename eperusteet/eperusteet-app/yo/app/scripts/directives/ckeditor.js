@@ -54,7 +54,7 @@ angular.module('eperusteApp')
     uiSelectConfig.theme = 'bootstrap';
   })
 
-  .controller('TermiPluginController', function ($scope, TermistoService, Kaanna, Algoritmit, $timeout, EpImageService) {
+  .controller('TermiPluginController', function ($scope, TermistoService, Kaanna, Algoritmit, $timeout) {
     $scope.service = TermistoService;
     $scope.filtered = [];
     $scope.termit = [];
@@ -191,7 +191,7 @@ angular.module('eperusteApp')
           toolbar: toolbarLayout,
           removePlugins: 'resize,elementspath,scayt,wsc',
           extraPlugins: 'divarea,sharedspace,termi,epimage',
-          extraAllowedContent: 'abbr[data-viite]',
+          extraAllowedContent: 'img[!data-uid,src]; abbr[data-viite]',
           disallowedContent: 'br; tr td{width,height};',
           language: 'fi',
           entities: false,
@@ -308,10 +308,9 @@ angular.module('eperusteApp')
               {
                 element: 'img',
                 right: function(el) {
-                  // FIXME
-                  // el.attributes.src = EpImageService.getUrl({id: el.attributes['data-uid']});
-                  // delete el.attributes.height;
-                  // delete el.attributes.width;
+                  el.attributes.src = EpImageService.getUrl({id: el.attributes['data-uid']});
+                  delete el.attributes.height;
+                  delete el.attributes.width;
                 }
               }
           ]]);
