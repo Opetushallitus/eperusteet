@@ -174,7 +174,9 @@ public class PermissionManager {
             perm.put(LUKU, r5);
             tmp.put(ProjektiTila.JULKAISTU, perm);
 
-            tmp.put(ProjektiTila.POISTETTU, Collections.<Permission, Set<String>>emptyMap());
+            perm = Maps.newHashMap();
+            perm.put(LUKU, r5);
+            tmp.put(ProjektiTila.POISTETTU, perm);
 
             allowedRolesTmp.put(Target.PERUSTE, tmp);
             allowedRolesTmp.put(Target.PERUSTEENOSA, tmp);
@@ -220,6 +222,7 @@ public class PermissionManager {
 
             perm = Maps.newHashMap();
             perm.put(TILANVAIHTO, r1);
+            perm.put(LUKU, r1);
             tmp.put(ProjektiTila.POISTETTU, perm);
 
             allowedRolesTmp.put(Target.PERUSTEPROJEKTI, tmp);
