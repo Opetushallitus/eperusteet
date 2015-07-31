@@ -92,10 +92,13 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
     @Override
     public void mergeState(RakenneModuuli moduuli) {
         if (moduuli != null) {
+            if (moduuli.getOsat() != null & !moduuli.getOsat().isEmpty()) {
+                this.rooli = moduuli.getRooli();
+            }
+
             //XXX: mergeState ei ole rekursiivinen?
             this.setOsat(moduuli.getOsat());
             this.nimi = moduuli.getNimi();
-            this.rooli = moduuli.getRooli();
             this.setKuvaus(moduuli.getKuvaus());
             this.muodostumisSaanto = moduuli.getMuodostumisSaanto() == null ? null : new MuodostumisSaanto(moduuli.getMuodostumisSaanto());
             this.osaamisala = moduuli.getOsaamisala();
@@ -125,6 +128,10 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
         }
 
         if ((this.osat == null && moduuli.getOsat() != null) || (this.osat != null && moduuli.getOsat() == null)) {
+            return false;
+        }
+
+        if (this.getRooli() != moduuli.getRooli()) {
             return false;
         }
 
