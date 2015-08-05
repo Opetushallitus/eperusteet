@@ -488,3 +488,18 @@ $sisalto-min-height: 450px;
     }
   }
 }
+
+.to-vapaat-tekstit {
+  margin-top: 50px;
+
+  .tovp-header {
+    margin-bottom: 5px;
+
+    .handle {
+      cursor: move;
+    }
+  }
+
+  .tovp-body {
+  }
+}

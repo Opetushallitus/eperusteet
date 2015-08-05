@@ -894,5 +894,8 @@
     "epimage-plugin-valitse": "Valitse tiedosto...",
     "epimage-plugin-tallennettu": "Kuva tallennettu.",
 
+    "vapaa-tekstisisalto": "Vapaa tekstisisältö",
+    "lisaa-vapaa-teksti": "Lisää vapaa teksti",
+
     "peruste-ei-diaarinumeroa": "Perusteelta puuttuu määräyksen diaarinumero"
 }
