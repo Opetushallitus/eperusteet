@@ -141,13 +141,13 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         // infosivu
         addInfoPage(doc, peruste, kieli);
 
+        // pudotellaan tutkinnonosat paikalleen
+        addTutkinnonosat(doc, peruste, kieli, suoritustapakoodi);
+
         // sisältöelementit (proosa)
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
         PerusteenOsaViite sisalto = suoritustapa.getSisalto();
         addSisaltoElement(doc, peruste, rootElement, sisalto, 0, suoritustapa, kieli);
-
-        // pudotellaan tutkinnonosat paikalleen
-        addTutkinnonosat(doc, peruste, kieli, suoritustapakoodi);
 
         // sanity check, ei feilata dokkariluontia, vaikka syntynyt dokkari
         // olisikin vähän pöljä
