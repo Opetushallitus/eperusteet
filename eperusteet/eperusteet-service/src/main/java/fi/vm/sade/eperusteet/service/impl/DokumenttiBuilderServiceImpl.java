@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
+import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.Koulutus;
@@ -752,6 +753,8 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
                 addTutke2Osat(doc, element, osa, kieli);
             }
 
+            addVapaatTekstikappaleet(doc, element, osa, kieli);
+
             if (eka) {
                 eka = false;
             } else {
@@ -774,6 +777,29 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
             parent,
             TavoitteetText,
             messages.translate("docgen.tavoitteet.title", kieli));
+    }
+
+    private void addVapaatTekstikappaleet(Document doc, Element parent, TutkinnonOsa tutkinnonOsa, Kieli kieli) {
+        if (tutkinnonOsa.getVapaatTekstit() == null || tutkinnonOsa.getVapaatTekstit().isEmpty()) {
+            return;
+        }
+
+        for (KevytTekstiKappale vt : tutkinnonOsa.getVapaatTekstit()) {
+            String otsikko = "";
+            String body = "";
+            if (vt.getNimi().getTeksti() != null) {
+                otsikko = vt.getNimi().getTeksti().get(kieli);
+            }
+            if (vt.getTeksti() != null && vt.getTeksti().getTeksti() != null) {
+                body = vt.getTeksti().getTeksti().get(kieli);
+            }
+
+            addTekstiSectionGeneric(
+                doc,
+                parent,
+                body,
+                otsikko);
+        }
     }
 
     private void addAmmattitaitovaatimukset(Document doc, Element parent, TutkinnonOsa tutkinnonOsa, Kieli kieli) {
