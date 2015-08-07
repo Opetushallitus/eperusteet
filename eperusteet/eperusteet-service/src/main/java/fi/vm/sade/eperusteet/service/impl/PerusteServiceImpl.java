@@ -349,6 +349,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         if (current.getTila() == PerusteTila.VALMIS) {
             current = updateValmisPeruste(current, updated);
         } else {
+            // FIXME: refactor
             current.setDiaarinumero(updated.getDiaarinumero());
             current.setKielet(updated.getKielet());
             current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
@@ -359,6 +360,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             current.setSiirtymaPaattyy(updated.getSiirtymaPaattyy());
             current.setVoimassaoloAlkaa(updated.getVoimassaoloAlkaa());
             current.setVoimassaoloLoppuu(updated.getVoimassaoloLoppuu());
+            current.setPaatospvm(perusteDto.getPaatospvm());
         }
         perusteet.save(current);
         return mapper.map(current, PerusteDto.class);

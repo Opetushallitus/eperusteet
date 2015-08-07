@@ -856,6 +856,11 @@
     "uusi-termi": "Lisää uusi käsite",
     "termi": "Käsite",
     "selitys": "Selitys",
+    "maarayksen-paatospaivamaara": "Määräyksen päätöspäivämäärä",
+    "anna-paatos-pvm": "Anna päätöspäivämäärä",
+
+
+
 
     "rakenteen-validointi-virhe": "Rakenteessa validointivirhe",
     "liittamattomia-tutkinnon-osia": "Liittämättömiä tutkinnon osia",

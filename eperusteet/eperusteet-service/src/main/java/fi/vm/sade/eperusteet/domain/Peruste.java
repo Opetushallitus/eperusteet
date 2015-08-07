@@ -138,6 +138,11 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @Column(name = "siirtyma_paattyy")
     private Date siirtymaPaattyy;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Getter
+    @Setter
+    private Date paatospvm;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @MapKey(name = "suoritustapakoodi")
     @JoinTable(name = "peruste_suoritustapa",

@@ -52,7 +52,7 @@
 
     </td>
   </tr>
-  
+
   <tr ng-show="showOsaamisalat()" ng-if="peruste.osaamisalat.length > 0">
     <th kaanna="'osaamisalat'"></th>
     <td>
@@ -66,13 +66,13 @@
           <tbody>
             <tr ng-repeat="oa in peruste.osaamisalat">
               <td kaanna="oa.nimi"></td>
-              <td ng-bind="oa.arvo"></td>       
+              <td ng-bind="oa.arvo"></td>
             </tr>
           </tbody>
         </table>
     </td>
   </tr>
-    
+
   <tr ng-if="koodisto.length > 0">
     <th kaanna="'tutkintonimikkeet'"></th>
     <td>
