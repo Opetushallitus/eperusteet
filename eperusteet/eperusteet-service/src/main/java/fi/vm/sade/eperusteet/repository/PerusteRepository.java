@@ -32,6 +32,8 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
 
     Peruste findByDiaarinumero(Diaarinumero diaarinumero);
 
+    Peruste findOneByDiaarinumeroAndTila(Diaarinumero diaarinumero, PerusteTila tila);
+
     @Query("SELECT DISTINCT p.id FROM Peruste p " +
         "LEFT JOIN p.suoritustavat s " +
         "LEFT JOIN p.perusopetuksenPerusteenSisalto ps " +
