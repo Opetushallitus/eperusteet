@@ -121,6 +121,9 @@ public class ArvioinninKohde implements Serializable {
             if (!Objects.equals(this.otsikko, other.otsikko)) {
                 return false;
             }
+            if (!Objects.equals(this.selite, other.selite)) {
+                return false;
+            }
             if (!Objects.equals(this.arviointiAsteikko, other.arviointiAsteikko)) {
                 return false;
             }
