@@ -191,6 +191,7 @@ angular.module('eperusteApp')
         nimi: {},
         teksti: {}
       });
+      Utils.scrollTo('#vapaatTekstitAnchor');
     };
 
     $scope.sortableOptions = {
