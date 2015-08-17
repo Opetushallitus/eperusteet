@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $state, $stateParams, $rootScope,
     perusteprojektiTiedot, PerusteProjektiService, PerusteenRakenne, Notifikaatiot,
-    PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode) {
+    PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode, YleinenData) {
 
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
@@ -29,6 +29,7 @@ angular.module('eperusteApp')
     $scope.naytaToisestaSuoritustavastaTuonti = perusteprojektiTiedot.getPeruste().suoritustavat.length > 1;
     $scope.yksikko = _.zipObject(_.map($scope.peruste.suoritustavat, 'suoritustapakoodi'),
                                   _.map($scope.peruste.suoritustavat, 'laajuusYksikko'));
+    $scope.isVaTe = YleinenData.isValmaTelma($scope.peruste);
 
     function haeTutkinnonosat() {
       PerusteenRakenne.haeTutkinnonosat($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {

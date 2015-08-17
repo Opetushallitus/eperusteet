@@ -227,7 +227,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         perusteprojekti.setRyhmaOid(perusteprojektiDto.getRyhmaOid());
 
         if (tyyppi != PerusteTyyppi.POHJA) {
-            if (koulutustyyppi != null && koulutustyyppi == KoulutusTyyppi.PERUSTUTKINTO && yksikko == null) {
+            if (yksikko == null
+                    && koulutustyyppi != null
+                    && koulutustyyppi.isOneOf(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.TELMA, KoulutusTyyppi.VALMA)) {
                 throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
             }
 
@@ -237,7 +239,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
             DiaarinumeroHakuDto diaariHaku = onkoDiaarinumeroKaytossa(new Diaarinumero(perusteprojektiDto.getDiaarinumero()));
             Boolean loytyi = diaariHaku.getLoytyi();
-            Boolean korvaava = diaariHaku.getTila() == ProjektiTila.JULKAISTU && diaariHaku.getDiaarinumero().equals(perusteprojekti.getDiaarinumero().getDiaarinumero());
+            Boolean korvaava = diaariHaku.getTila() == ProjektiTila.JULKAISTU &&
+                    diaariHaku.getDiaarinumero().equals(perusteprojekti.getDiaarinumero().getDiaarinumero());
 
             if (loytyi && !korvaava) {
                 throw new BusinessRuleViolationException("Perusteprojekti kyseisellä diaarinumerolla on jo olemassa");

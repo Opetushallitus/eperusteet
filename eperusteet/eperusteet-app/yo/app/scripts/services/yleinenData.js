@@ -59,6 +59,7 @@ angular.module('eperusteApp')
       'koulutustyyppi_1': {
         nimi: 'perustutkinto',
         oletusSuoritustapa: 'ops',
+        hasLaajuus: true,
         hasTutkintonimikkeet: true,
         hakuState: 'root.selaus.ammatillinenperuskoulutus',
         sisaltoTunniste: 'sisalto',
@@ -67,6 +68,24 @@ angular.module('eperusteApp')
       'koulutustyyppi_11': {
         nimi: 'ammattitutkinto',
         oletusSuoritustapa: 'naytto',
+        hasTutkintonimikkeet: true,
+        hakuState: 'root.selaus.ammatillinenaikuiskoulutus',
+        sisaltoTunniste: 'sisalto',
+        hasPdfCreation: true
+      },
+      'koulutustyyppi_5': {
+        nimi: 'telma',
+        hasLaajuus: true,
+        oletusSuoritustapa: 'ops',
+        hasTutkintonimikkeet: true,
+        hakuState: 'root.selaus.ammatillinenaikuiskoulutus',
+        sisaltoTunniste: 'sisalto',
+        hasPdfCreation: true
+      },
+      'koulutustyyppi_18': {
+        nimi: 'velma',
+        hasLaajuus: true,
+        oletusSuoritustapa: 'ops',
         hasTutkintonimikkeet: true,
         hakuState: 'root.selaus.ammatillinenaikuiskoulutus',
         sisaltoTunniste: 'sisalto',
@@ -116,6 +135,10 @@ angular.module('eperusteApp')
 
     this.koulutustyypit = _.keys(this.koulutustyyppiInfo);
     this.ammatillisetkoulutustyypit = ['koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12'];
+    this.laajuudellisetKoulutustyypit = _(this.koulutustyyppiInfo)
+        .keys()
+        .filter(function(key) { return this.koulutustyyppiInfo[key].hasLaajuus; }.bind(this))
+        .value();
 
     this.kielet = {
       'suomi': 'fi',
@@ -133,6 +156,10 @@ angular.module('eperusteApp')
 
     this.isPerusopetus = function (peruste) {
       return peruste.koulutustyyppi === 'koulutustyyppi_16';
+    };
+
+    this.isValmaTelma = function (peruste) {
+      return peruste.koulutustyyppi === 'koulutustyyppi_18' || peruste.koulutustyyppi === 'koulutustyyppi_5';
     };
 
     this.isLisaopetus = function (peruste) {

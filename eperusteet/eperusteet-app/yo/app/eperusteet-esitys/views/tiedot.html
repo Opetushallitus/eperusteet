@@ -22,10 +22,10 @@
       </ul>
     </td>
   </tr>
+
   <tr ng-show="showKoulutukset()" ng-if="peruste.koulutukset.length > 0">
     <th kaanna="'peruste-koulutukset'"></th>
     <td>
-
       <span ng-if="peruste.koulutukset.length === 0" kaanna="'ei-koulutuksia'"></span>
       <div class="koulutukset" ng-if="peruste.koulutukset.length > 0">
         <div class="koulutus" ng-repeat="koulutus in peruste.koulutukset">
@@ -49,7 +49,6 @@
           </table>
         </div>
       </div>
-
     </td>
   </tr>
 

@@ -22,7 +22,7 @@ angular.module('eperusteApp')
     $modal, PerusteenOsat, PerusteenOsaViitteet, SuoritustapaSisalto, PerusteProjektiService,
     perusteprojektiTiedot, TutkinnonOsaEditMode, Notifikaatiot, Kaanna, Algoritmit,
     Editointikontrollit, TEXT_HIERARCHY_MAX_DEPTH, PerusteProjektiSivunavi, Projektiryhma,
-    PerusteprojektiTyoryhmat, TekstikappaleOperations, SuoritustavanSisalto, $location) {
+    PerusteprojektiTyoryhmat, TekstikappaleOperations, SuoritustavanSisalto, $location, YleinenData) {
     $scope.textMaxDepth = TEXT_HIERARCHY_MAX_DEPTH;
     function lisaaSisalto(method, sisalto, cb) {
       cb = cb || angular.noop;
@@ -45,6 +45,7 @@ angular.module('eperusteApp')
     $scope.tyoryhmaMap = {};
     $scope.tiivistelma = $scope.peruste.kuvaus;
     $scope.muodostumisKompensaattori = $scope.peruste.koulutustyyppi !== 'koulutustyyppi_15' ? 1 : 0;
+    $scope.isVaTe = YleinenData.isValmaTelma($scope.peruste);
 
     $scope.$esitysurl = $state.href('root.esitys.peruste', {
       perusteId: $scope.peruste.id,

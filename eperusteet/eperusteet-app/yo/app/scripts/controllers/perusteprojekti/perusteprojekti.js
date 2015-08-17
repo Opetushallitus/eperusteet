@@ -102,6 +102,22 @@ angular.module('eperusteApp')
           PerusteProjektiSivunavi.setVisible();
         }]
       })
+      .state('root.perusteprojekti.suoritustapa.koulutuksenosat', {
+        url: '/koulutuksenosat',
+        templateUrl: 'views/partials/perusteprojekti/tutkinnonosat.html',
+        controller: 'PerusteprojektiTutkinnonOsatCtrl',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible();
+        }]
+      })
+      // .state('root.perusteprojekti.suoritustapa.tutkinnonosa', {
+      //   url: '/tutkinnonosa/{tutkinnonOsaViiteId}{versio:(?:/[^/]+)?}',
+      //   templateUrl: 'views/partials/muokkaus/tutkinnonosa.html',
+      //   controller: 'muokkausTutkinnonosaCtrl',
+      //   onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+      //     PerusteProjektiSivunavi.setVisible();
+      //   }]
+      // })
       .state('root.perusteprojekti.suoritustapa.tutkinnonosat', {
         url: '/tutkinnonosat',
         templateUrl: 'views/partials/perusteprojekti/tutkinnonosat.html',
