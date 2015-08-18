@@ -15,11 +15,10 @@
  */
 
 'use strict';
-/* global _ */
 
 angular.module('eperusteApp')
   .service('Kielimapper', function() {
-    var cKoulutuksenosat = {
+    var constKoulutuksenosat = {
       'peruste-validointi-tutkinnonosa-ammattitaidon-osoittamistavat': 'peruste-validointi-koulutuksenosa-ammattitaidon-osoittamistavat',
       'peruste-validointi-tutkinnonosa-ammattitaitovaatimukset': 'peruste-validointi-koulutuksenosa-ammattitaitovaatimukset',
       'peruste-validointi-tutkinnonosa-kuvaus': 'peruste-validointi-koulutuksenosa-kuvaus',
@@ -70,7 +69,6 @@ angular.module('eperusteApp')
       'tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-koulutuksen-osilta': 'tutkintonimikkeen-vaatimaa-koulutuksenosakoodia-ei-loytynyt-koulutuksen-osilta',
       'et-ole-vielä-tallentanut-tutkinnonosia': 'et-ole-vielä-tallentanut-koulutuksenosia',
       'tutkinnon-tyyppi': 'koulutuksen-tyyppi',
-      'excel-luetaan-tutkinnonosia': 'excel-luetaan-koulutuksenosia',
       'perusteella-ei-viela-tutkinnonosia': 'perusteella-ei-viela-koulutuksenosia',
       'perusteen-koodi': 'perusteen-koodi',
       'rajaa-tutkinnonosia': 'rajaa-koulutuksenosia',
@@ -82,8 +80,17 @@ angular.module('eperusteApp')
       'luonti-projektin-nimi-ohje': 'luonti-projektin-nimi-ohje'
     };
 
-    function mapTutkinnonosatKoulutuksenosat(key) {
-      return cKoulutuksenosat[key] || key;
+    function mapTutkinnonosatKoulutuksenosat(isValmaTelma) {
+      if (isValmaTelma) {
+        return function(key) {
+          return constKoulutuksenosat[key] || key;
+        };
+      }
+      else {
+        return function(key) {
+          return key;
+        };
+      }
     }
 
     return {

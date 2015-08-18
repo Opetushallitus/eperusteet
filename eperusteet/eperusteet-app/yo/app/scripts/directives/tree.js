@@ -405,7 +405,7 @@ angular.module('eperusteApp')
   })
 
   .controller('TreeWrapperController', function ($scope, Kaanna, PerusteenRakenne, Muodostumissaannot,
-      Algoritmit, TreeDragAndDrop, $filter, RyhmaCloner) {
+      Algoritmit, TreeDragAndDrop, $filter, RyhmaCloner, Kielimapper, YleinenData) {
     $scope.suljettuViimeksi = true;
     $scope.lisataanUuttaOsaa = false;
     $scope.uusiOsa = null;
@@ -418,6 +418,9 @@ angular.module('eperusteApp')
     $scope.naytaKuvaus = function () {
       return !!Kaanna.kaanna($scope.rakenne.rakenne.kuvaus);
     };
+    $scope.isVaTe = YleinenData.isValmaTelma($scope.rakenne.$peruste);
+    $scope.vateConverter = Kielimapper.mapTutkinnonosatKoulutuksenosat($scope.isVaTe);
+
 
     $scope.tutkinnonOsat = {
       perSivu: 8,

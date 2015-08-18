@@ -300,7 +300,7 @@ angular.module('eperusteApp')
       var perusteenSisaltoDeferred = $q.defer();
 
       if (forced || YleinenData.isPerusopetus(peruste) || YleinenData.isSimple(peruste) ||
-          (peruste.suoritustavat !== null && peruste.suoritustavat.length > 0)) {
+          (peruste.suoritustavat && peruste.suoritustavat.length > 0)) {
         self.haeSisalto(peruste.id, stateParams.suoritustapa).then(function() {
           perusteenSisaltoDeferred.resolve();
         }, function(virhe) {

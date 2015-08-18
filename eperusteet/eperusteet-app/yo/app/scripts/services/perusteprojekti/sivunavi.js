@@ -19,23 +19,27 @@
 
 angular.module('eperusteApp')
 .service('PerusteProjektiSivunavi', function (PerusteprojektiTiedotService, $stateParams, $q,
-    $state, $location, YleinenData, PerusopetusService, Kaanna, $timeout, Utils) {
+    $state, $location, YleinenData, PerusopetusService, Kaanna, $timeout, Utils, Kielimapper) {
+  var STATE_OSAT_ALKU = 'root.perusteprojekti.suoritustapa.';
   var STATE_OSAT = 'root.perusteprojekti.suoritustapa.tutkinnonosat';
   var STATE_TUTKINNON_OSA = 'root.perusteprojekti.suoritustapa.tutkinnonosa';
   var STATE_TEKSTIKAPPALE = 'root.perusteprojekti.suoritustapa.tekstikappale';
   var STATE_OSALISTAUS = 'root.perusteprojekti.suoritustapa.osalistaus';
   var STATE_OSAALUE = 'root.perusteprojekti.suoritustapa.osaalue';
+
   var isTutkinnonosatActive = function () {
     return $state.is(STATE_OSAT) || $state.is(STATE_TUTKINNON_OSA);
   };
-  var AM_ITEMS = [
-    {
-      label: 'tutkinnonosat',
-      link: [STATE_OSAT, {}],
+
+  function getAMItems(isVaTe, vateConverter) {
+    return [{
+      label: vateConverter('tutkinnonosat'),
+      link: [STATE_OSAT_ALKU + (isVaTe ? 'koulutuksenosat' : 'tutkinnonosat'), {}],
       isActive: isTutkinnonosatActive,
-      $type: 'ep-parts'
-    }
-  ];
+        $type: 'ep-parts'
+    }];
+  }
+
   var service = null;
   var _isVisible = false;
   var items = [];
@@ -132,7 +136,7 @@ angular.module('eperusteApp')
     }).value();
   }
 
-  var buildTree = function () {
+  function buildTree(isVaTe, vateConverter) {
     items = [];
     if (perusteenTyyppi === 'YL') {
       var tiedot = service.getYlTiedot();
@@ -145,13 +149,13 @@ angular.module('eperusteApp')
       });
     }
     else if (perusteenTyyppi === 'AM'){
-      items = _.clone(AM_ITEMS);
+      items = getAMItems(isVaTe, vateConverter);
     }
     processNode(data.projekti.peruste.sisalto);
     $timeout(function () {
       callbacks.itemsChanged(items);
     });
-  };
+  }
 
   var load = function () {
     data.projekti = service.getProjekti();
@@ -159,7 +163,8 @@ angular.module('eperusteApp')
     data.projekti.peruste.sisalto = service.getSisalto();
     perusteenTyyppi = YleinenData.isPerusopetus(data.projekti.peruste) ? 'YL' : YleinenData.isSimple(data.projekti.peruste) ? 'ESI' : 'AM';
     callbacks.typeChanged(perusteenTyyppi);
-    buildTree();
+    var constIsVaTe = YleinenData.isValmaTelma(data.projekti.peruste);
+    buildTree(constIsVaTe, Kielimapper.mapTutkinnonosatKoulutuksenosat(constIsVaTe));
   };
 
   this.register = function (key, cb) {

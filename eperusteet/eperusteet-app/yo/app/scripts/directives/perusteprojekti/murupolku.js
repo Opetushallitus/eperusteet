@@ -36,6 +36,9 @@ angular.module('eperusteApp')
     };
 
     var STATES = {
+      'suoritustapa.koulutuksenosa': {
+        items: [{url: 'koulutuksenosa'}, {getName: 'tutkinnonOsaViiteId'}]
+      },
       'suoritustapa.tutkinnonosa': {
         items: [{url: 'tutkinnonosat'}, {getName: 'tutkinnonOsaViiteId'}]
       },
@@ -47,7 +50,7 @@ angular.module('eperusteApp')
       }
     };
 
-    this.get = function (stateName) {
+    this.get = function(stateName) {
       if (stateName.indexOf(PREFIX) === 0) {
         stateName = stateName.substring(PREFIX.length);
       }

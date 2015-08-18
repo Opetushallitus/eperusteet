@@ -63,7 +63,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .controller('OsalistausDirectiveController', function($scope, Kaanna, Algoritmit, OrderHelper, Profiili) {
+  .controller('OsalistausDirectiveController', function($scope, Kaanna, Algoritmit, OrderHelper, Profiili, YleinenData, Kielimapper) {
     var defaultPreferences = {
       nakymatyyli: 'palikka'
     };
@@ -72,6 +72,8 @@ angular.module('eperusteApp')
     $scope.jarjestysOrder = false;
     $scope.preferenssit = Profiili.profiili().resolved ? _.merge(defaultPreferences, Profiili.profiili().preferenssit) : defaultPreferences;
     $scope.kaytaJarjestysnumeroa = $scope.koulutustyyppi ? true : false;
+    $scope.isVaTe = YleinenData.isValmaTelma($scope.koulutustyyppi);
+    $scope.vateConverter = Kielimapper.mapTutkinnonosatKoulutuksenosat($scope.isVaTe);
 
     $scope.$on('kayttajaProfiiliPaivittyi', function() {
       $scope.preferenssit = _.merge($scope.preferenssit, Profiili.profiili().preferenssit);

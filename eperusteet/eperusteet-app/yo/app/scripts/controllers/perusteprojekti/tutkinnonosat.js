@@ -20,7 +20,7 @@
 angular.module('eperusteApp')
   .controller('PerusteprojektiTutkinnonOsatCtrl', function($scope, $state, $stateParams, $rootScope,
     perusteprojektiTiedot, PerusteProjektiService, PerusteenRakenne, Notifikaatiot,
-    PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode, YleinenData) {
+    PerusteTutkinnonosa, TutkinnonOsanTuonti, TutkinnonOsaEditMode) {
 
     $scope.peruste = perusteprojektiTiedot.getPeruste();
     $scope.suoritustapa = PerusteProjektiService.getSuoritustapa();
@@ -29,7 +29,6 @@ angular.module('eperusteApp')
     $scope.naytaToisestaSuoritustavastaTuonti = perusteprojektiTiedot.getPeruste().suoritustavat.length > 1;
     $scope.yksikko = _.zipObject(_.map($scope.peruste.suoritustavat, 'suoritustapakoodi'),
                                   _.map($scope.peruste.suoritustavat, 'laajuusYksikko'));
-    $scope.isVaTe = YleinenData.isValmaTelma($scope.peruste);
 
     function haeTutkinnonosat() {
       PerusteenRakenne.haeTutkinnonosat($stateParams.perusteProjektiId, $scope.suoritustapa, function(res) {
@@ -80,6 +79,6 @@ angular.module('eperusteApp')
     };
 
     $scope.getHref = function(valittu) {
-      return $state.href('root.perusteprojekti.suoritustapa.tutkinnonosa', { tutkinnonOsaViiteId: valittu.id, versio: '' });
+      return $state.href('root.perusteprojekti.suoritustapa.' + ($scope.isVaTe ? 'koulutuksenosa' : 'tutkinnonosa'), { tutkinnonOsaViiteId: valittu.id, versio: '' });
     };
   });

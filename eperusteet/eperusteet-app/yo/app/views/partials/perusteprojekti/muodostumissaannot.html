@@ -19,8 +19,8 @@
       </div>
 
       <h1 ng-show="!editoi && rakenne.muodostumisOtsikko">{{rakenne.muodostumisOtsikko.nimi|kaanna}}</h1>
-      <h1 ng-show="!editoi && !rakenne.muodostumisOtsikko" kaanna="tutkinnon-muodostuminen"></h1>
-      <h1 ng-show="editoi" kaanna="tutkinnon-muodostuminen-muokkaus"></h1>
+      <h1 ng-show="!editoi && !rakenne.muodostumisOtsikko" kaanna="vateConverter('tutkinnon-muodostuminen')"></h1>
+      <h1 ng-show="editoi" kaanna="vateConverter('tutkinnon-muodostuminen-muokkaus')"></h1>
     </div>
 
     <div class="max-sm-leveys">

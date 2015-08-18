@@ -281,3 +281,9 @@ angular.module('eperusteApp', [
       console.warn('angular-ui-select korjaus (IE9), bootstrap/choices.tpl.html on muuttunut');
     }
   });
+  // For debugging
+  // .run(function($rootScope) {
+  //   $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
+  //     console.log(event, error);
+  //   });
+  // });

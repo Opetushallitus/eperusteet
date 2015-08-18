@@ -92,6 +92,11 @@ angular.module('eperusteApp')
               return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
             }]
         },
+        controller: function($scope, YleinenData, Kielimapper, perusteprojektiTiedot) {
+          // !!! Alustetaan kaikkia alitiloja varten !!!!
+          $scope.isVaTe = YleinenData.isValmaTelma(perusteprojektiTiedot.getPeruste());
+          $scope.vateConverter = Kielimapper.mapTutkinnonosatKoulutuksenosat($scope.isVaTe);
+        },
         abstract: true
       })
       .state('root.perusteprojekti.suoritustapa.muodostumissaannot', {
@@ -110,14 +115,14 @@ angular.module('eperusteApp')
           PerusteProjektiSivunavi.setVisible();
         }]
       })
-      // .state('root.perusteprojekti.suoritustapa.tutkinnonosa', {
-      //   url: '/tutkinnonosa/{tutkinnonOsaViiteId}{versio:(?:/[^/]+)?}',
-      //   templateUrl: 'views/partials/muokkaus/tutkinnonosa.html',
-      //   controller: 'muokkausTutkinnonosaCtrl',
-      //   onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
-      //     PerusteProjektiSivunavi.setVisible();
-      //   }]
-      // })
+      .state('root.perusteprojekti.suoritustapa.koulutuksenosa', {
+        url: '/koulutuksenosa/{tutkinnonOsaViiteId}{versio:(?:/[^/]+)?}',
+        templateUrl: 'views/partials/muokkaus/tutkinnonosa.html',
+        controller: 'muokkausTutkinnonosaCtrl',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible();
+        }]
+      })
       .state('root.perusteprojekti.suoritustapa.tutkinnonosat', {
         url: '/tutkinnonosat',
         templateUrl: 'views/partials/perusteprojekti/tutkinnonosat.html',
