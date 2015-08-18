@@ -86,13 +86,64 @@ angular.module('eperusteApp')
     };
 
   })
+  .service('MuokkausTutkinnonosaService', function(PerusteprojektiTiedotService, YleinenData, Utils) {
+    return {
+      getLisattavaSisaltoFields: function() {
+        // var constPeruste = PerusteprojektiTiedotService.getPeruste();
+        // var isVaTe = YleinenData.isValmaTelma(constPeruste);
+        var isVaTe = false;
+
+        var fields = [{
+          path: 'tutkinnonOsa.tavoitteet',
+          localeKey: 'tutkinnon-osan-tavoitteet',
+          type: 'editor-area',
+          localized: true,
+          collapsible: true
+        }];
+
+        if (isVaTe) {
+        }
+        else {
+          fields.push({
+            path: 'tutkinnonOsa.ammattitaitovaatimukset',
+            localeKey: 'tutkinnon-osan-ammattitaitovaatimukset',
+            type: 'editor-area',
+            localized: true,
+            collapsible: true
+          });
+          fields.push({
+            path: 'tutkinnonOsa.ammattitaidonOsoittamistavat',
+            localeKey: 'tutkinnon-osan-ammattitaidon-osoittamistavat',
+            type: 'editor-area',
+            localized: true,
+            collapsible: true
+          });
+          fields.push({
+            path: 'tutkinnonOsa.arviointi.lisatiedot',
+            localeKey: 'tutkinnon-osan-arviointi-teksti',
+            type: 'editor-area',
+            localized: true,
+            collapsible: true
+          });
+          fields.push({
+            path: 'tutkinnonOsa.arviointi.arvioinninKohdealueet',
+            localeKey: 'tutkinnon-osan-arviointi-taulukko',
+            type: 'arviointi',
+            collapsible: true
+          });
+        }
+
+        return fields;
+      }
+    };
+  })
   .controller('muokkausTutkinnonosaCtrl', function($scope, $state, $stateParams, $rootScope,
     $q, Editointikontrollit, PerusteenOsat, PerusteenRakenne, PerusteTutkinnonosa,
     TutkinnonOsaEditMode, $timeout, Varmistusdialogi, VersionHelper, Lukitus,
     MuokkausUtils, PerusteenOsaViitteet, Utils, ArviointiHelper, PerusteProjektiSivunavi,
     Notifikaatiot, Koodisto, Tutke2OsaData, Kommentit, KommentitByPerusteenOsa, FieldSplitter,
     Algoritmit, TutkinnonosanTiedotService, TutkinnonOsaViitteet, PerusteenOsaViite, virheService,
-    ProjektinMurupolkuService) {
+    ProjektinMurupolkuService, MuokkausTutkinnonosaService) {
 
     Utils.scrollTo('#ylasivuankkuri');
 
@@ -112,7 +163,6 @@ angular.module('eperusteApp')
 
     var tutkinnonOsaDefer = $q.defer();
     $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
-
 
     function successCb(re) {
       setupTutkinnonOsaViite(re);
@@ -202,36 +252,7 @@ angular.module('eperusteApp')
       tolerance: 'pointer',
     };
 
-    $scope.fields = [{
-        path: 'tutkinnonOsa.tavoitteet',
-        localeKey: 'tutkinnon-osan-tavoitteet',
-        type: 'editor-area',
-        localized: true,
-        collapsible: true
-      },{
-        path: 'tutkinnonOsa.ammattitaitovaatimukset',
-        localeKey: 'tutkinnon-osan-ammattitaitovaatimukset',
-        type: 'editor-area',
-        localized: true,
-        collapsible: true
-      },{
-        path: 'tutkinnonOsa.ammattitaidonOsoittamistavat',
-        localeKey: 'tutkinnon-osan-ammattitaidon-osoittamistavat',
-        type: 'editor-area',
-        localized: true,
-        collapsible: true
-      },{
-        path: 'tutkinnonOsa.arviointi.lisatiedot',
-        localeKey: 'tutkinnon-osan-arviointi-teksti',
-        type: 'editor-area',
-        localized: true,
-        collapsible: true
-      },{
-        path: 'tutkinnonOsa.arviointi.arvioinninKohdealueet',
-        localeKey: 'tutkinnon-osan-arviointi-taulukko',
-        type: 'arviointi',
-        collapsible: true
-      }];
+    $scope.fields = MuokkausTutkinnonosaService.getLisattavaSisaltoFields();
 
     _.each($scope.fields, function (field) {
       field.order = TutkinnonosanTiedotService.order(_.last(field.path.split('.')));

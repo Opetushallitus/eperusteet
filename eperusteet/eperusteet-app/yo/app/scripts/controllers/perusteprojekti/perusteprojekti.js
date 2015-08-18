@@ -83,7 +83,8 @@ angular.module('eperusteApp')
         url: '/:suoritustapa',
         template: '<div ui-view></div>',
         navigaationimi: 'navi-perusteprojekti',
-        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
+        resolve: {
+          'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
           'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
             return perusteprojektiTiedot.projektinTiedotAlustettu();
           }],
