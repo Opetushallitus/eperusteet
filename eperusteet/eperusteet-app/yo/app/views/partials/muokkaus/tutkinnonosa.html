@@ -56,7 +56,7 @@
             {{ tutkinnonOsaViite.tutkinnonOsa.nimi | kaanna:true }}
             <span class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && getTosa() && getTosa().laajuus">
               <span ng-bind="getTosa().laajuus"></span>
-              <span ng-show="getTosa().laajuusMaksimi"> - {{ getTosa().laajuusMaksimi }}</span>
+              <span ng-show="isVaTe && getTosa().laajuusMaksimi"> - {{ getTosa().laajuusMaksimi }}</span>
               <span kaanna="yksikko"></span>
             </span>
           </span>
@@ -86,7 +86,7 @@
               <label for="laajuus-input" class="header" kaanna="vateConverter('tutkinnonosa-laajuus')"></label>
             </div>
 
-            <div ng-click="toggleLaajuusRange()" class="laajuus-tyyppi-valitsin">
+            <div ng-show="isVaTe" ng-click="toggleLaajuusRange()" class="laajuus-tyyppi-valitsin">
               <input ng-model="$laajuusRangena" type="checkbox">
               <span kaanna="'laajuus-maarita-alueella'"></span>
             </div>
@@ -96,7 +96,7 @@
                 <numberinput label-id="laajuus-input" luokka="form-control" model="editableTutkinnonOsaViite.laajuus" min="0" max="999"
                             type="float" step="0.5" form="tutkinnonOsaHeaderForm"></numberinput>
               </div>
-              <div ng-show="$laajuusRangena">
+              <div ng-show="isVaTe && $laajuusRangena">
                 <div class="laajuuserotin"></div>
                 <div class="pull-left">
                   <numberinput label-id="laajuus-input" luokka="form-control" model="editableTutkinnonOsaViite.laajuusMaksimi" min="0" max="999"
