@@ -53,9 +53,11 @@
         <pikamenu ng-if="tutkinnonOsaViite.$resolved">
           <!-- <span ng-if="editEnabled" edit-in-place="editableTutkinnonOsa.nimi"></span> -->
           <span ng-if="!editEnabled">
-            {{tutkinnonOsaViite.tutkinnonOsa.nimi| kaanna:true}}
-            <span class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id] && rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id].laajuus">
-              {{rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id].laajuus}} {{ yksikko | kaanna }}
+            {{ tutkinnonOsaViite.tutkinnonOsa.nimi | kaanna:true }}
+            <span class="osan-laajuus" ng-if="suoritustapa !== 'naytto' && getTosa() && getTosa().laajuus">
+              <span ng-bind="getTosa().laajuus"></span>
+              <span ng-show="getTosa().laajuusMaksimi"> - {{ getTosa().laajuusMaksimi }}</span>
+              <span kaanna="yksikko"></span>
             </span>
           </span>
         </pikamenu>
@@ -80,11 +82,28 @@
           <p class="alert alert-error" ng-show="(tutkinnonOsaHeaderForm.$error.required && tutkinnonOsaHeaderForm.$error.required[0].$dirty) || nimiValidationError"
              kaanna>Nimi on pakollinen tieto</p>
           <div ng-if="suoritustapa !== 'naytto'">
-            <label for="laajuus-input" class="header" kaanna="vateConverter('tutkinnonosa-laajuus')"></label>
+            <div>
+              <label for="laajuus-input" class="header" kaanna="vateConverter('tutkinnonosa-laajuus')"></label>
+            </div>
+
+            <div ng-click="toggleLaajuusRange()" class="laajuus-tyyppi-valitsin">
+              <input ng-model="$laajuusRangena" type="checkbox">
+              <span kaanna="'laajuus-maarita-alueella'"></span>
+            </div>
+
             <div class="fixed-group">
-              <numberinput label-id="laajuus-input" luokka="form-control" model="editableTutkinnonOsaViite.laajuus" min="0" max="999"
-                           type="float" step="0.5" form="tutkinnonOsaHeaderForm"></numberinput>
-              <div class="addon"><p>{{ yksikko | kaanna }}</p></div>
+              <div class="pull-left">
+                <numberinput label-id="laajuus-input" luokka="form-control" model="editableTutkinnonOsaViite.laajuus" min="0" max="999"
+                            type="float" step="0.5" form="tutkinnonOsaHeaderForm"></numberinput>
+              </div>
+              <div ng-show="$laajuusRangena">
+                <div class="laajuuserotin"></div>
+                <div class="pull-left">
+                  <numberinput label-id="laajuus-input" luokka="form-control" model="editableTutkinnonOsaViite.laajuusMaksimi" min="0" max="999"
+                              type="float" step="0.5" form="tutkinnonOsaHeaderForm"></numberinput>
+                </div>
+              </div>
+              <div class="pull-left addon"><p>{{ yksikko | kaanna }}</p></div>
             </div>
           </div>
           <label for="jarjestys-input" class="header" kaanna="vateConverter('tutkinnonosa-jarjestysnumero')"></label>

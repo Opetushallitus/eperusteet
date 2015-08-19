@@ -93,7 +93,6 @@ angular.module('eperusteApp')
     function mapTutkinnonosatKoulutuksenosat(isValmaTelma) {
       if (isValmaTelma) {
         return function(key) {
-          console.log('avain', key);
           return constKoulutuksenosat[key] || key;
         };
       }

@@ -149,6 +149,11 @@ angular.module('eperusteApp')
 
     Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.tutkinnonOsaViiteId });
 
+    $scope.$laajuusRangena = false;
+    $scope.toggleLaajuusRange = function() {
+      $scope.$laajuusRangena = !$scope.$laajuusRangena;
+    };
+
     $scope.tutkinnonOsaViite = {};
     $scope.versiot = {};
 
@@ -161,12 +166,17 @@ angular.module('eperusteApp')
     $scope.editointikontrollit = Editointikontrollit;
     $scope.nimiValidationError = false;
 
+    $scope.getTosa = function() {
+      return !$scope.rakenne.tutkinnonOsat ? undefined : $scope.rakenne.tutkinnonOsat[$scope.tutkinnonOsaViite.tutkinnonOsa.id];
+    };
+
     var tutkinnonOsaDefer = $q.defer();
     $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
 
     function successCb(re) {
       setupTutkinnonOsaViite(re);
       tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsaViite);
+      $scope.$laajuusRangena = $scope.editableTutkinnonOsaViite.laajuusMaksimi > 0;
     }
 
     function errorCb() {
@@ -337,17 +347,32 @@ angular.module('eperusteApp')
     };
 
     var normalCallbacks = {
-      edit: function() {
-        tutke2.fetch();
-      },
-      asyncValidate: function(cb) {
-        lukitse(function() { cb(); });
+      edit: tutke2.fetch,
+      asyncValidate: function(done) {
+        if ($scope.$laajuusRangena &&
+            $scope.editableTutkinnonOsaViite.laajuusMaksimi &&
+            $scope.editableTutkinnonOsaViite.laajuus >= $scope.editableTutkinnonOsaViite.laajuusMaksimi) {
+          Notifikaatiot.varoitus('laajuuden-maksimi-ei-voi-olla-pienempi-tai-sama-kuin-minimi');
+        }
+        else {
+          lukitse(done);
+        }
       },
       save: function(kommentti) {
+        if (!$scope.$laajuusRangena || !$scope.editableTutkinnonOsaViite.laajuusMaksimi) {
+          $scope.editableTutkinnonOsaViite.laajuusMaksimi = undefined;
+          $scope.$laajuusRangena = false;
+        }
+
         tutke2.mergeOsaAlueet($scope.editableTutkinnonOsaViite.tutkinnonOsa);
         $scope.editableTutkinnonOsaViite.metadata = { kommentti: kommentti };
+
         if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.id) {
-          PerusteTutkinnonosa.save({perusteId: $scope.peruste.id, suoritustapa: $stateParams.suoritustapa, osanId: $scope.editableTutkinnonOsaViite.tutkinnonOsa.id},
+          PerusteTutkinnonosa.save({
+            perusteId: $scope.peruste.id,
+            suoritustapa: $stateParams.suoritustapa,
+            osanId: $scope.editableTutkinnonOsaViite.tutkinnonOsa.id
+          },
           $scope.editableTutkinnonOsaViite, function(response){
             $scope.editableTutkinnonOsaViite = angular.copy(response);
             $scope.tutkinnonOsaViite = angular.copy(response);

@@ -122,12 +122,21 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
     public TutkinnonOsaViiteDto update(TutkinnonOsaViiteDto viiteDto) {
         assertExists(viiteDto.getId());
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteDto.getId());
+
         if (viite == null || viite.getTutkinnonOsa() == null ) {
             throw new BusinessRuleViolationException("Virheellinen viiteId");
         }
+
+        if (viiteDto.getLaajuus() != null
+                && viiteDto.getLaajuusMaksimi() != null
+                && viiteDto.getLaajuusMaksimi().compareTo(viiteDto.getLaajuus()) == -1) {
+            throw new BusinessRuleViolationException("Laajuuden maksimin täytyy olla suurempi kuin minimiarvon");
+        }
+
         lockManager.ensureLockedByAuthenticatedUser(viite.getTutkinnonOsa().getId());
         viite.setJarjestys(viiteDto.getJarjestys());
         viite.setLaajuus(viiteDto.getLaajuus());
+        viite.setLaajuusMaksimi(viiteDto.getLaajuusMaksimi());
         viite.setMuokattu(new Date());
         viite = tutkinnonOsaViiteRepository.save(viite);
         TutkinnonOsaViiteDto uusiViiteDto = mapper.map(viite, TutkinnonOsaViiteDto.class);

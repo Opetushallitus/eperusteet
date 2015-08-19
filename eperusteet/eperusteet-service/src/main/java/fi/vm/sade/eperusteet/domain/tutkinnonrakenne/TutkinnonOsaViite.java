@@ -68,6 +68,11 @@ public class TutkinnonOsaViite implements ReferenceableEntity, Serializable {
 
     @Getter
     @Setter
+    @Column(name = "laajuus_maksimi", precision = 10, scale = 2)
+    private BigDecimal laajuusMaksimi;
+
+    @Getter
+    @Setter
     private Integer jarjestys;
 
     @Getter

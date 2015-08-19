@@ -489,6 +489,17 @@ $sisalto-min-height: 450px;
   }
 }
 
+.laajuuserotin {
+  position: relative;
+  top: 12px;
+  right: 7px;
+  float: left;
+  display: inline;
+  padding: 4px;
+  margin: 3px;
+  border-top: 1px solid #111;
+}
+
 .to-vapaat-tekstit {
   margin-top: 50px;
 
@@ -501,5 +512,15 @@ $sisalto-min-height: 450px;
   }
 
   .tovp-body {
+  }
+}
+
+.laajuus-tyyppi-valitsin {
+  margin: -4px 0 8px 0;
+  cursor: pointer;
+
+  input {
+    top: -1px;
+    margin-right: 4px;
   }
 }
