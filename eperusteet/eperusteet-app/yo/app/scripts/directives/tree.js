@@ -32,7 +32,11 @@ angular.module('eperusteApp')
     function generoiOtsikko() {
       var tosa = '{{ tutkinnonOsaSolmunNimi(rakenne) | kaanna }}' +
       '<span ng-if="!rakenne.erikoisuus && apumuuttujat.suoritustapa !== \'naytto\' && tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus">,' +
-      ' <strong>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}</strong> {{ apumuuttujat.laajuusYksikko | kaanna }}</span>';
+      '  <strong>{{ + tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuus || 0 }}' +
+      '    <span ng-if="tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuusMaksimi"> - {{ tutkinnonOsaViitteet[rakenne._tutkinnonOsaViite].laajuusMaksimi }}</span>' +
+      '  </strong>' +
+      '{{ apumuuttujat.laajuusYksikko | kaanna }}' +
+      '</span>';
       var editointiIkoni =
       '<div ng-click="togglaaPakollisuus(rakenne)" class="osa-ikoni">' +
         '  <span ng-if="!rakenne.pakollinen"><img src="images/tutkinnonosa.png" alt=""></span> ' +

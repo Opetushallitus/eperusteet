@@ -148,6 +148,10 @@ angular.module('eperusteApp')
       if (!rakenne) { return; }
 
       rakenne.$laajuus = rakenne.$laajuus || 0;
+      if (rakenne.$laajuusMaksimi > rakenne.$laajuus) {
+        rakenne.$laajuus = rakenne.$laajuusMaksimi;
+      }
+
       rakenne.$vaadittuLaajuus = rakenne.$vaadittuLaajuus || 0;
 
       _.forEach(rakenne.osat, function(osa) {

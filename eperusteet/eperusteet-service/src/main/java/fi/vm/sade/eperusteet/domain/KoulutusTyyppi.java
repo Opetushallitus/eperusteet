@@ -62,6 +62,10 @@ public enum KoulutusTyyppi {
         return false;
     }
 
+    public boolean isValmaTelma() {
+        return isOneOf(VALMA, TELMA);
+    }
+
     public boolean isAmmatillinen() {
         return isOneOf(AMMATTITUTKINTO, ERIKOISAMMATTITUTKINTO, PERUSTUTKINTO);
     }

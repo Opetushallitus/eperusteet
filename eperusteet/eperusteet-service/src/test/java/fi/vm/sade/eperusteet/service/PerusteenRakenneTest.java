@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -49,6 +50,30 @@ public class PerusteenRakenneTest {
 
     @After
     public void tearDown() {
+    }
+
+    @Test
+    public void testValidoiRyhmaMaksimiPelastus() {
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, TestUtils.teeRyhma(
+            100, 120, -1, -1,
+            TestUtils.teeRakenneOsa(1, 10, 70),
+            TestUtils.teeRakenneOsa(2, 20),
+            TestUtils.teeRakenneOsa(3, 30)
+        ), true);
+        assertTrue(validoitu.ongelmat.isEmpty());
+    }
+
+    @Test
+    public void testValidoiRyhmaLiianPieni() {
+
+
+        PerusteenRakenne.Validointi validoitu = PerusteenRakenne.validoiRyhma(null, TestUtils.teeRyhma(
+            100, 100, -1, -1,
+            TestUtils.teeRakenneOsa(1, 10),
+            TestUtils.teeRakenneOsa(2, 20),
+            TestUtils.teeRakenneOsa(3, 30)
+        ));
+        assertFalse(validoitu.ongelmat.isEmpty());
     }
 
     @Test

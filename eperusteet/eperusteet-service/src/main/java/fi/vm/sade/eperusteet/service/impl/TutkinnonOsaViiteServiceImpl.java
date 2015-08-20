@@ -127,6 +127,10 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
             throw new BusinessRuleViolationException("Virheellinen viiteId");
         }
 
+        if (viiteDto.getLaajuus() == null) {
+            viiteDto.setLaajuusMaksimi(null);
+        }
+
         if (viiteDto.getLaajuus() != null
                 && viiteDto.getLaajuusMaksimi() != null
                 && viiteDto.getLaajuusMaksimi().compareTo(viiteDto.getLaajuus()) == -1) {
@@ -140,9 +144,11 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
         viite.setMuokattu(new Date());
         viite = tutkinnonOsaViiteRepository.save(viite);
         TutkinnonOsaViiteDto uusiViiteDto = mapper.map(viite, TutkinnonOsaViiteDto.class);
+
         if(viiteDto.getTutkinnonOsaDto() != null) {
             uusiViiteDto.setTutkinnonOsaDto(perusteenOsaService.update(viiteDto.getTutkinnonOsaDto()));
         }
+
         return uusiViiteDto;
     }
 
