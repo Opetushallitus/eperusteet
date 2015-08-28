@@ -47,8 +47,7 @@ angular.module('eperusteApp')
       }
     };
   })
-  .directive('muokattavaKentta', function($compile, $rootScope,
-    Editointikontrollit, $q, $timeout) {
+  .directive('muokattavaKentta', function($compile, $rootScope, Editointikontrollit, $q, $timeout) {
     return {
       restrict: 'E',
       replace: true,
@@ -60,6 +59,7 @@ angular.module('eperusteApp')
       },
       controller: function ($scope, YleinenData, MuokkausUtils, Varmistusdialogi, Utils) {
         $scope.valitseKieli = _.bind(YleinenData.valitseKieli, YleinenData);
+        console.log($scope);
 
         $scope.$watch('objectReady', function(newObjectReadyPromise) {
           newObjectReadyPromise.then(function(newObject) {
@@ -169,6 +169,9 @@ angular.module('eperusteApp')
             'edit-enabled': 'editEnabled'
           }]
         };
+        ELEMENT_MAP.osaamistavoitteet = _.merge(_.clone(ELEMENT_MAP.arviointi), { tyyppi: 'osaamistavoitteet' });
+        ELEMENT_MAP.osaamistavoitteet = _.merge(_.clone(ELEMENT_MAP.arviointi), { tyyppi: 'osaamisen-arviointi' });
+
 
         var mapperFns = {
           addEditorAttributesFor: function (element) {

@@ -31,6 +31,7 @@ import lombok.Setter;
 public class OsaAlueDto {
     private Long id;
     private LokalisoituTekstiDto nimi;
+    private LokalisoituTekstiDto kuvaus;
     private String koodiUri;
     private String koodiArvo;
     @JsonInclude(JsonInclude.Include.NON_NULL)

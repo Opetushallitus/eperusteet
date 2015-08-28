@@ -68,7 +68,8 @@ angular.module('eperusteApp')
       function(res) {
         $scope.tutkinnonOsat.unshift(res);
         TutkinnonOsaEditMode.setMode(true);
-        $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa', {
+
+        $state.go('root.perusteprojekti.suoritustapa.' + ($scope.isVaTe ? 'koulutuksenosa' : 'tutkinnonosa'), {
           tutkinnonOsaViiteId: res.id,
           versio: ''
         });

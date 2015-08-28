@@ -798,7 +798,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 List<PerusteenOsaViite> lapset = sisalto.getLapset();
                 TekstiKappale tk = new TekstiKappale();
                 HashMap<Kieli, String> hm = new HashMap<>();
-                hm.put(Kieli.FI, "Tutkinnon muodostuminen");
+
+                if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma()) {
+                    hm.put(Kieli.FI, "Koulutuksen muodostuminen");
+                }
+                else {
+                    hm.put(Kieli.FI, "Tutkinnon muodostuminen");
+                }
                 tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
                 tk.setTunniste(PerusteenOsaTunniste.RAKENNE);
                 PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());

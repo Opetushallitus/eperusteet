@@ -70,6 +70,13 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
     private TekstiPalanen nimi;
 
     @Getter
+    @Setter
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen kuvaus;
+
+    @Getter
     //@Setter
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "tutkinnonosa_osaalue_osaamistavoite",

@@ -221,7 +221,7 @@ angular.module('eperusteApp')
       asetaUrl: asetaUrl
     };
   })
-  .service('PerusteenRakenne', function(PerusteProjektiService, PerusteTutkinnonosatVersio, PerusteprojektiResource, PerusteRakenteet,
+  .service('PerusteenRakenne', function($q, PerusteProjektiService, PerusteTutkinnonosatVersio, PerusteprojektiResource, PerusteRakenteet,
     PerusteTutkinnonosat, Perusteet, PerusteTutkinnonosa, Notifikaatiot, Utils) {
 
     function haeTutkinnonosatByPeruste(perusteId, suoritustapa, success) {
@@ -256,6 +256,14 @@ angular.module('eperusteApp')
         .value();
       response.tutkinnonOsat = _.zipObject(_.map(tutkinnonOsat, '_tutkinnonOsa'), tutkinnonOsat);
       return response;
+    }
+
+    function haeByPerusteprojektiP(id, suoritustapa) {
+      var deferred = $q.defer();
+      PerusteprojektiResource.get({id: id}, function(vastaus) {
+        hae(vastaus._peruste, suoritustapa, deferred.resolve, deferred.reject);
+      });
+      return deferred.promise;
     }
 
     function haeByPerusteprojekti(id, suoritustapa, success) {
@@ -383,6 +391,7 @@ angular.module('eperusteApp')
     return {
       hae: hae,
       haeByPerusteprojekti: haeByPerusteprojekti,
+      haeByPerusteprojektiP: haeByPerusteprojektiP,
       haePerusteita: haePerusteita,
       pilkoTutkinnonOsat: pilkoTutkinnonOsat,
       haeTutkinnonosat: haeTutkinnonosat,

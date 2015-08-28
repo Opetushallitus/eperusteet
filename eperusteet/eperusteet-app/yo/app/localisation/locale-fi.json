@@ -443,6 +443,15 @@
     "pakolliset-osaamistavoitteet": "Pakolliset osaamistavoitteet",
     "valinnaiset-osaamistavoitteet": "Valinnaiset osaamistavoitteet",
     "muokkaa-osa-aluetta": "Muokkaa osa-aluetta",
+    "muokkaus-koulutuksen-osan-tavoitteet-header": "Tavoitteet",
+    "muokkaus-koulutuksen-osan-arviointi-teksti-header": "Osaamisen arviointi tekstinä",
+    "koulutuksen-osan-arviointi-teksti": "Osaamisen arviointi tekstinä",
+    "muokkaus-koulutuksen-osan-arviointi-taulukko-header": "Osaamisen arviointi taulukkona",
+    "muokkaus-koulutuksen-osan-ammattitaidon-osoittamistavat-header": "Osaamisen arviointi tekstinä",
+    "osaamistavoitteet": "Osaamistavoitteet",
+    "kohde": "Kohde",
+    "osaamisen-arviointi-tekstina": "Osaamisen arviointi tekstinä",
+    "koulutuksenosa": "Koulutuksenosa",
 
     "ota-versio-kayttoon": "Ota tämä versio käyttöön",
     "katso-uusin-versio": "Katso uusin versio",
@@ -468,6 +477,8 @@
     "arviointi-uusi-kriteeri-placeholder": "Kriteerin teksti",
     "arviointi-poista-kriteeri": "Poista rivi",
     "arviointi-asteikon-valinta": "Valitse arviointiasteikko",
+    "kriteerit": "Kriteerit",
+    "lisaa-kriteeri": "Lisää kriteeri",
 
     "tutke2-osalta-puuttuu-osa-alue-koodi": "Tutkinnon osien osa-alueilta puuttuu koodi",
 

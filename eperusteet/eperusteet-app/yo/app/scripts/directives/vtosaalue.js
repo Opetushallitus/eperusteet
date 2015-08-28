@@ -1,0 +1,58 @@
+/*
+* Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
+*
+* This program is free software: Licensed under the EUPL, Version 1.1 or - as
+* soon as they will be approved by the European Commission - subsequent versions
+* of the EUPL (the "Licence");
+*
+* You may not use this work except in compliance with the Licence.
+* You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* European Union Public Licence for more details.
+*/
+
+'use strict';
+/*global _*/
+
+angular.module('eperusteApp')
+  .directive('vtosaalue', function() {
+    return {
+      templateUrl: 'views/partials/vtosaalue.html',
+      restrict: 'E',
+      scope: {
+        valmaTelmaSisalto: '=',
+        editAllowed: '@?editointiSallittu',
+        editEnabled: '=',
+        hasArviointi: '@?'
+      },
+      controller: function($scope) {
+        $scope.sortableOptions = {
+          handle: '.handle',
+          connectWith: '.container-items',
+          cursor: 'move',
+          cursorAt: {top : 2, left: 2},
+          tolerance: 'pointer',
+        };
+
+        $scope.sortableOptions2 = {
+          handle: '.handle',
+          connectWith: '.container-items-2',
+          cursor: 'move',
+          cursorAt: {top : 2, left: 2},
+          tolerance: 'pointer',
+        };
+
+        $scope.kriteerit = {
+          lisaa: function(kriteerit) {
+            kriteerit.push({});
+          },
+          poista: function(kriteerit, kriteeri) {
+            _.remove(kriteerit, kriteeri);
+          }
+        };
+      }
+    };
+  });

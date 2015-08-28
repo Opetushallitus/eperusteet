@@ -181,7 +181,8 @@ angular.module('eperusteApp')
         arviointi: '=',
         editAllowed: '@?editointiSallittu',
         editEnabled: '=',
-        eiKohdealueita: '@'
+        eiKohdealueita: '@',
+        tyyppi: '@?'
       },
       controller: 'arviointiCtrl',
       link: function(scope) {

@@ -26,7 +26,8 @@ angular.module('eperusteApp')
         mainLevelEditing: '=editEnabled',
         tutkinnonosaViite: '=',
         kontrollit: '=',
-        yksikko: '='
+        yksikko: '=',
+        isKoulutuksenOsa: '='
       },
       controller: 'Tutke2KentatController'
     };
@@ -56,7 +57,7 @@ angular.module('eperusteApp')
     $scope.originalViite = null;
 
     $scope.tutkinnonosaViite.then(function (res) {
-      
+
       $scope.originalViite = res;
       $scope.tutke2osa = Tutke2Osa.init(res.tutkinnonOsa.id);
 
@@ -95,11 +96,13 @@ angular.module('eperusteApp')
         var newAlue = {
           nimi: {}
         };
-      $scope.tutke2osa.$editing.push(newAlue);
+        $scope.tutke2osa.$editing.push(newAlue);
       },
       edit: function (alue, $event) {
         stopEvent($event);
-        $state.go('root.perusteprojekti.suoritustapa.tutkinnonosa.osaalue', {osaAlueId: alue.id});
+        $state.go('root.perusteprojekti.suoritustapa.' +
+            ($scope.isKoulutuksenOsa ? 'koulutuksenosa' : 'tutkinnonosa') + '.osaalue',
+            { osaAlueId: alue.id });
       },
       remove: function (alue) {
         if (alue.id) {

@@ -280,10 +280,16 @@ angular.module('eperusteApp', [
     } else {
       console.warn('angular-ui-select korjaus (IE9), bootstrap/choices.tpl.html on muuttunut');
     }
+  })
+  .run(function($rootScope) {
+    $rootScope.$$isEmpty = _.isEmpty;
   });
   // For debugging
   // .run(function($rootScope) {
+  //   $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams, error) {
+  //     console.log('Success', event, toState, error);
+  //   });
   //   $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
-  //     console.log(event, error);
+  //     console.log('Failure', event, error);
   //   });
   // });

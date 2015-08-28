@@ -74,19 +74,23 @@ angular.module('eperusteApp')
         };
 
         function setInnerObjectPromise() {
-          $scope.innerObjectPromise = $scope.objectPromise.then(function(object) {
-            splitFields(object);
-            model = object;
-            return object;
-          });
+          if ($scope.objectPromise) {
+            $scope.innerObjectPromise = $scope.objectPromise.then(function(object) {
+              splitFields(object);
+              model = object;
+              return object;
+            });
+          }
         }
 
         $scope.$watch('objectPromise', setInnerObjectPromise);
         $scope.$on('osafield:update', setInnerObjectPromise);
 
-        $scope.innerObjectPromise = $scope.objectPromise.then(function() {
-          setInnerObjectPromise();
-        });
+        if ($scope.objectPromise) {
+          $scope.innerObjectPromise = $scope.objectPromise.then(function() {
+            setInnerObjectPromise();
+          });
+        }
 
         function splitFields(object) {
           $scope.expandedFields = [];

@@ -1,0 +1,27 @@
+<!-- koulutuksenOsaOsaAlue.html -->
+<h1 kaanna="'muokkaa-osa-aluetta'"></h1>
+<p kaanna="tahdella-pakolliset"></p>
+<hr class="versioraja">
+
+<div class="non-collapsibles">
+  <label class="header" kaanna="'koulutuksenosa'"></label>
+  <p kaanna="tutkinnonOsa.nimi"></p>
+  <label class="header">{{'nimi'| kaanna}}*</label>
+  <input class="form-control" slocalized ng-model="osaAlue.nimi" type="text"></input>
+
+  <label class="header">{{'kuvaus'| kaanna}}*</label>
+  <div ckeditor class="form-control" slocalized ng-model="osaAlue.kuvaus" type="text"></div>
+
+  <div ng-if="$alarelaatiot && $alarelaatiot.length > 0">
+    <label for="koodi-input" class="header" kaanna>muokkaus-koulutuksen-osan-koodi-header</label>
+    <div style="margin-bottom: 6px" ng-repeat="ar in $alarelaatiot" ng-click="valitseAlarelaatio($index === 0 ? null : ar)">
+      <span class="glyphicon" ng-class="osaAlue.koodiUri === ar.koodiUri || (!osaAlue.koodiUri && $index === 0) ? 'glyphicon-check' : 'glyphicon-unchecked'"></span>
+      <span ng-hide="ar.nimi" kaanna="'ei-valintaa'"></span>
+      <span ng-show="ar.nimi">{{ ar.nimi | kaanna }} (<b>{{ ar.koodiArvo }}</b>)</span>
+    </div>
+  </div>
+
+  <hr class="mujuviiva">
+
+  <vtosaalue valma-telma-sisalto="osaAlue.valmaTelmaSisalto" editEnabled="true" has-arviointi="true"></vtosaalue>
+</div>
