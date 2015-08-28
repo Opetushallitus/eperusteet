@@ -29,7 +29,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public interface LiiteService {
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     public UUID add(@P("perusteId") final Long opsId, String tyyppi, String nimi, long length, InputStream is);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")

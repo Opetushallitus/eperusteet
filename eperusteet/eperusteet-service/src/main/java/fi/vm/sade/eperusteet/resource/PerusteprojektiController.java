@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.DiaarinumeroHakuDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -139,14 +140,8 @@ public class PerusteprojektiController {
     @RequestMapping(value = "/diaarinumero/uniikki/{diaarinumero}", method = GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ResponseEntity<BooleanDto> get(@PathVariable("diaarinumero") final Diaarinumero diaarinumero) {
-        try {
-            service.onkoDiaarinumeroKaytossa(diaarinumero);
-        } catch (BusinessRuleViolationException ex) {
-            return new ResponseEntity<>(new BooleanDto(false), HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(new BooleanDto(true), HttpStatus.OK);
+    public ResponseEntity<DiaarinumeroHakuDto> get(@PathVariable("diaarinumero") final Diaarinumero diaarinumero) {
+        return new ResponseEntity<>(service.onkoDiaarinumeroKaytossa(diaarinumero), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/tyoryhma", method = GET)

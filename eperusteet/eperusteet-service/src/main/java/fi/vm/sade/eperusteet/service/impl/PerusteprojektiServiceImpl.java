@@ -57,6 +57,7 @@ import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.DiaarinumeroHakuDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -229,10 +230,25 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             if (koulutustyyppi != null && koulutustyyppi == KoulutusTyyppi.PERUSTUTKINTO && yksikko == null) {
                 throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
             }
+
             if (perusteprojektiDto.getDiaarinumero() == null) {
                 throw new BusinessRuleViolationException("Diaarinumeroa ei ole asetettu");
             }
-            onkoDiaarinumeroKaytossa(new Diaarinumero(perusteprojektiDto.getDiaarinumero()));
+
+            DiaarinumeroHakuDto diaariHaku = onkoDiaarinumeroKaytossa(new Diaarinumero(perusteprojektiDto.getDiaarinumero()));
+            Boolean loytyi = diaariHaku.getLoytyi();
+            Boolean korvaava = diaariHaku.getTila() == ProjektiTila.JULKAISTU && diaariHaku.getDiaarinumero().equals(perusteprojekti.getDiaarinumero().getDiaarinumero());
+
+            if (loytyi && !korvaava) {
+                throw new BusinessRuleViolationException("Perusteprojekti kyseisellä diaarinumerolla on jo olemassa");
+            }
+
+            if (korvaava) {
+                Perusteprojekti jyrattava = repository.findOne(diaariHaku.getId());
+                perusteprojekti.setPaatosPvm(jyrattava.getPaatosPvm());
+                perusteprojekti.setToimikausiAlku(jyrattava.getToimikausiAlku());
+                perusteprojekti.setToimikausiLoppu(jyrattava.getToimikausiLoppu());
+            }
         }
 
         if (perusteprojektiDto.getRyhmaOid() == null) {
@@ -261,10 +277,32 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @Transactional(readOnly = true)
-    public void onkoDiaarinumeroKaytossa(Diaarinumero diaarinumero) {
-        if (repository.findOneByDiaarinumero(diaarinumero) != null) {
-            throw new BusinessRuleViolationException("Diaarinumero on jo käytössä");
+    public DiaarinumeroHakuDto onkoDiaarinumeroKaytossa(Diaarinumero diaarinumero) {
+        DiaarinumeroHakuDto reply = new DiaarinumeroHakuDto();
+        reply.setLoytyi(false);
+        List<Perusteprojekti> perusteprojektit = repository.findByDiaarinumero(diaarinumero);
+
+        if (perusteprojektit.isEmpty()) {
+            return reply;
         }
+
+        Perusteprojekti pp = perusteprojektit.get(0);
+
+        for (Perusteprojekti p : perusteprojektit) {
+            if (p.getTila() == ProjektiTila.JULKAISTU) {
+                pp = p;
+                break;
+            }
+            if (p.getMuokattu().after(pp.getMuokattu())) {
+                pp = p;
+            }
+        }
+
+        reply.setId(pp.getId());
+        reply.setLoytyi(true);
+        reply.setTila(pp.getTila());
+        reply.setDiaarinumero(pp.getDiaarinumero().getDiaarinumero());
+        return reply;
     }
 
     @Override
@@ -698,17 +736,23 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             }
 
             if (tila == ProjektiTila.JULKAISTU) {
+                if (projekti.getPeruste().getDiaarinumero() == null) {
+                    updateStatus.addStatus("peruste-ei-diaarinumeroa");
+                    updateStatus.setVaihtoOk(false);
+                }
 
                 if (projekti.getPeruste().getVoimassaoloAlkaa() == null) {
                     updateStatus.addStatus("peruste-ei-voimassaolon-alkamisaikaa");
                     updateStatus.setVaihtoOk(false);
                 } else {
-                    updateStatus = korvaaPerusteet(projekti.getPeruste(), siirtymaPaattyy, updateStatus);
-                }
-
-                if (projekti.getPeruste().getDiaarinumero() == null) {
-                    updateStatus.addStatus("peruste-ei-diaarinumeroa");
-                    updateStatus.setVaihtoOk(false);
+                    Perusteprojekti jyrattava = repository.findOneByDiaarinumeroAndTila(projekti.getDiaarinumero(), ProjektiTila.JULKAISTU);
+                    if (jyrattava != null) {
+                        jyrattava.setTila(ProjektiTila.POISTETTU);
+                        jyrattava.getPeruste().asetaTila(PerusteTila.POISTETTU);
+                    }
+                    else {
+                        updateStatus = korvaaPerusteet(projekti.getPeruste(), siirtymaPaattyy, updateStatus);
+                    }
                 }
             }
 

@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
+import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -41,5 +42,6 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
     private String koodiUri;
     private String koodiArvo;
     private List<OsaAlueDto> osaAlueet;
+    private List<KevytTekstiKappaleDto> vapaatTekstit;
     private TutkinnonOsaTyyppi tyyppi;
 }

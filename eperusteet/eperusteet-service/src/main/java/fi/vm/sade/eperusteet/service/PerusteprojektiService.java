@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.DiaarinumeroHakuDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -66,7 +67,7 @@ public interface PerusteprojektiService {
     TilaUpdateStatus updateTila(@P("id") final Long id, ProjektiTila tila, Date siirtymaPaattyy);
 
     @PreAuthorize("isAuthenticated()")
-    void onkoDiaarinumeroKaytossa(Diaarinumero diaarinumero);
+    DiaarinumeroHakuDto onkoDiaarinumeroKaytossa(Diaarinumero diaarinumero);
 
     @PreAuthorize("isAuthenticated()")
     @PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")

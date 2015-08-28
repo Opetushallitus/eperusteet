@@ -94,7 +94,6 @@ angular.module('eperusteApp')
     Algoritmit, TutkinnonosanTiedotService, TutkinnonOsaViitteet, PerusteenOsaViite, virheService,
     ProjektinMurupolkuService) {
 
-
     Utils.scrollTo('#ylasivuankkuri');
 
     Kommentit.haeKommentit(KommentitByPerusteenOsa, { id: $stateParams.perusteProjektiId, perusteenOsaId: $stateParams.tutkinnonOsaViiteId });
@@ -150,8 +149,6 @@ angular.module('eperusteApp')
       }
     });
 
-
-
     $scope.$watch('editableTutkinnonOsa.nimi', function () {
       $scope.nimiValidationError = false;
     }, true);
@@ -185,8 +182,27 @@ angular.module('eperusteApp')
       });
     }
 
-    $scope.fields =
-      new Array({
+    $scope.removeVapaaTeksti = function(vapaatTekstit, sisalto) {
+      _.remove(vapaatTekstit, sisalto);
+    };
+
+    $scope.addVapaaTeksti = function(vapaatTekstit) {
+      vapaatTekstit.push({
+        nimi: {},
+        teksti: {}
+      });
+      Utils.scrollTo('#vapaatTekstitAnchor');
+    };
+
+    $scope.sortableOptions = {
+      handle: '.handle',
+      connectWith: '.container-items',
+      cursor: 'move',
+      cursorAt: {top : 2, left: 2},
+      tolerance: 'pointer',
+    };
+
+    $scope.fields = [{
         path: 'tutkinnonOsa.tavoitteet',
         localeKey: 'tutkinnon-osan-tavoitteet',
         type: 'editor-area',
@@ -215,7 +231,7 @@ angular.module('eperusteApp')
         localeKey: 'tutkinnon-osan-arviointi-taulukko',
         type: 'arviointi',
         collapsible: true
-      });
+      }];
 
     _.each($scope.fields, function (field) {
       field.order = TutkinnonosanTiedotService.order(_.last(field.path.split('.')));

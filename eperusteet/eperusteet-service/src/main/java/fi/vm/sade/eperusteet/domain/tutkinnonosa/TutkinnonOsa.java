@@ -16,7 +16,10 @@
 package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
+import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -85,6 +88,15 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Arviointi arviointi;
+
+    @Getter
+    @Setter
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "tutkinnonosa_tutkinnonosa_kevyttekstikappale",
+               joinColumns = @JoinColumn(name = "tutkinnonosa_id"),
+               inverseJoinColumns = @JoinColumn(name = "kevyttekstikappale_id"))
+    @OrderColumn(name = "kevyttekstikappaleet_order")
+    private List<KevytTekstiKappale> vapaatTekstit;
 
     @Getter
     @Setter
@@ -227,6 +239,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
             this.setKoodiArvo(other.getKoodiArvo());
             this.setTyyppi(other.getTyyppi());
             this.setKuvaus(other.getKuvaus());
+            this.setVapaatTekstit(other.getVapaatTekstit());
             if (other.getOsaAlueet() != null) {
                 this.setOsaAlueet(mergeOsaAlueet(this.getOsaAlueet(), other.getOsaAlueet()));
             }

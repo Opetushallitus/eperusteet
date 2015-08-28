@@ -127,8 +127,7 @@ public class PerusteController {
     @ResponseBody
     @InternalApi
     public PerusteDto update(@PathVariable("perusteId") final long id, @RequestBody PerusteDto perusteDto) {
-        perusteDto = service.update(id, perusteDto);
-        return perusteDto;
+        return service.update(id, perusteDto);
     }
 
     @RequestMapping(value = "/{perusteId}/tutkintonimikekoodit/{tutkintonimikeKoodiId}", method = DELETE)

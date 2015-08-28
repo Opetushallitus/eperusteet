@@ -30,6 +30,7 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.DiaarinumeroHakuDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -333,11 +334,11 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         Assert.assertNotNull(ppdto);
     }
 
-    @Test(expected = BusinessRuleViolationException.class)
     @Rollback(true)
     public void testOnkoDiaarinumeroKaytossa() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString());
-        service.onkoDiaarinumeroKaytossa(new Diaarinumero(ppdto.getDiaarinumero()));
+        DiaarinumeroHakuDto diaariHaku = service.onkoDiaarinumeroKaytossa(new Diaarinumero(ppdto.getDiaarinumero()));
+        Assert.assertTrue(diaariHaku.getLoytyi());
     }
 
     @Test

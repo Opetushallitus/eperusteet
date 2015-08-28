@@ -52,6 +52,7 @@ public abstract class PerusteBaseDto implements Serializable {
     private Date voimassaoloAlkaa;
     private Date siirtymaPaattyy;
     private Date voimassaoloLoppuu;
+    private Date paatospvm;
 
     private Date muokattu;
     private PerusteTila tila;

@@ -225,6 +225,21 @@ European Union Public Licence for more details.
 
         <div class="panel panel-default panel-clean">
           <div class="panel-heading">
+            <h3 class="panel-title" kaanna>maarayksen-paatospaivamaara</h3>
+          </div>
+          <div class="panel-body">
+            <div ng-if="editEnabled">
+              <formfield model="editablePeruste" model-var="paatospvm" label="paatos-pvm" type="date"
+                         placeholder="anna-paatos-pvm"></formfield>
+            </div>
+            <table class="aligned" ng-show="!editEnabled">
+              <tr><th kaanna>paatos-pvm</th><td pvm="peruste.paatospvm"></td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default panel-clean">
+          <div class="panel-heading">
             <h3 class="panel-title" kaanna>voimassaolo</h3>
           </div>
           <div class="panel-body">

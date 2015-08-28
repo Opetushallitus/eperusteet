@@ -72,7 +72,7 @@ public class LiitetiedostoController {
 
 
     @RequestMapping(method = RequestMethod.POST)
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     public ResponseEntity<String> upload(
         @PathVariable("perusteId")
         @P("perusteId") Long perusteId,
