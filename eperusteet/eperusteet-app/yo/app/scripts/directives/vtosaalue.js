@@ -23,7 +23,7 @@ angular.module('eperusteApp')
       templateUrl: 'views/partials/vtosaalue.html',
       restrict: 'E',
       scope: {
-        valmaTelmaSisalto: '=',
+        osaAlue: '=',
         editAllowed: '@?editointiSallittu',
         editEnabled: '=',
         hasArviointi: '@?'

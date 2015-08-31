@@ -27,21 +27,6 @@
           <div class="floater" ng-if="!editEnabled && isLocked"><lukko tip="lockNotification"></lukko></div>
           <div ng-if="editEnabled && tutkinnonOsaViite.tutkinnonOsa.tila !== 'valmis'">
             <button icon-role="remove" ng-if="!isNew" class="floater btn btn-danger" ng-click="poistaTutkinnonOsa(rakenne.tutkinnonOsat[tutkinnonOsaViite.tutkinnonOsa.id].id)" kaanna="vateConverter('poista-tutkinnonosa')"></button>
-            <div class="floater" ng-show="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'normaali'">
-              <div class="dropdown">
-                <button editointi-kontrolli class="btn btn-default btn-sm dropdown-toggle" ng-disabled="allVisible()" icon-role="add" kaanna="'muokkaus-lisaa-sisalto'"></button>
-                <ul class="pull-right dropdown-menu">
-                  <li ng-repeat="field in menuItems | orderBy:'order'">
-                    <a ng-show="field.visible" class="disabled-link">{{'muokkaus-' + field.localeKey + '-header'| kaanna}}</a>
-                    <a class="action-link" ng-show="!field.visible" ng-click="addFieldToVisible(field)">{{ vateConverter('muokkaus-' + field.localeKey + '-header') | kaanna}}</a>
-                  </li>
-                  <li>
-                    <a class="action-link" ng-show="!field.visible" ng-click="addVapaaTeksti(editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit)"
-                       kaanna="'lisaa-vapaa-teksti'"></a>
-                  </li>
-                </ul>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -126,46 +111,6 @@
         </div>
         <div>
           <label class="header" kaanna="vateConverter('muokkaus-tutkinnon-osan-koodi-header')"></label>:<span> {{ tutkinnonOsaViite.tutkinnonOsa.koodiArvo || '-' }}</span>
-        </div>
-      </div>
-
-      <div class="tutkinnonosa-sisalto" ng-if="editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'normaali'">
-        <kenttalistaus hide-empty-placeholder="editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit"
-                       edit-enabled="editEnabled" object-promise="tutkinnonOsaPromise" fields="fields"></kenttalistaus>
-
-        <div class="to-vapaat-tekstit" ng-show="editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit.length > 0">
-          <div ng-hide="editEnabled">
-            <div ng-repeat="vt in editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit">
-              <h3>
-                <a href="" ng-click="vt.$$open = !vt.$$open">
-                  <span ng-hide="vt.$$open" icon-role="chevron-right"></span>
-                  <span ng-show="vt.$$open" icon-role="chevron-down"></span>
-                  <span ng-bind-html="vt.nimi | kaanna"></span>
-                </a>
-              </h3>
-              <div collapse="!vt.$$open" ng-bind-html="vt.teksti | kaanna"></div>
-            </div>
-          </div>
-
-          <div id="vapaatTekstitAnchor" ng-show="editEnabled" class="container-items" ui-sortable="sortableOptions" ng-model="editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit">
-            <div ng-repeat="vt in editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit">
-              <div class="row tovp-header">
-                <div class="col-xs-10">
-                  <div class="input-group">
-                    <span class="input-group-addon handle" icon-role="drag"></span>
-                    <input class="form-control" slocalized ng-model="vt.nimi" placeholder="{{ 'otsikko' | kaanna }}"></input>
-                  </div>
-                </div>
-                <div class="col-xs-2">
-                  <a href="" ng-click="removeVapaaTeksti(editableTutkinnonOsaViite.tutkinnonOsa.vapaatTekstit, vt)" class="pull-right">
-                    <span icon-role="remove"></span>
-                  </a>
-                </div>
-              </div>
-              <div class="tovp-body" ckeditor slocalized layout="normal" ng-model="vt.teksti"></div>
-              <hr ng-if="!$last">
-            </div>
-          </div>
         </div>
       </div>
 

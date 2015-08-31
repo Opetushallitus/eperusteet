@@ -74,7 +74,6 @@ angular.module('eperusteApp')
       $scope.suoritustapa = $stateParams.suoritustapa;
       $scope.rakenne = rakenne;
       $scope.test = angular.noop;
-      $scope.menuItems = [];
       $scope.editableTutkinnonOsaViite = {};
       $scope.editEnabled = false;
       $scope.editointikontrollit = Editointikontrollit;
@@ -95,6 +94,7 @@ angular.module('eperusteApp')
         };
 
         var successCb = function(re) {
+          re.tyyppi = 'tutke2';
           setupTutkinnonOsaViite(re);
           tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsaViite);
           $scope.$laajuusRangena = $scope.editableTutkinnonOsaViite.laajuusMaksimi > 0;
@@ -139,28 +139,10 @@ angular.module('eperusteApp')
       });
     };
 
-    $scope.fields = (function() {
-      return [{
-        path: 'tutkinnonOsa.tavoitteet',
-        localeKey: 'tutkinnon-osan-tavoitteet',
-        type: 'editor-area',
-        localized: true,
-        collapsible: true
-      }, { path: 'tutkinnonOsa.arviointi.lisatiedot',
-        localeKey: 'koulutuksen-osan-arviointi-teksti',
-        type: 'editor-area',
-        localized: true,
-        collapsible: true
-      }, {
-        path: 'tutkinnonOsa.arviointi.arvioinninKohdealueet',
-        localeKey: 'koulutuksen-osan-arviointi-taulukko',
-        type: 'arviointi',
-        collapsible: true
-      }];
-    })();
-
     var editointikontrollit = {
       edit: function() {
+        console.log('editing');
+        console.log(_.clone($scope.editableTutkinnonOsaViite.tutkinnonOsa));
         Tutke2Service.fetch($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi);
       },
       asyncValidate: function(done) {
@@ -226,10 +208,11 @@ angular.module('eperusteApp')
         $scope.editEnabled = mode;
       },
       validate: function() {
-        if (!Utils.hasLocalizedText($scope.editableTutkinnonOsaViite.tutkinnonOsa.nimi)) {
-          $scope.nimiValidationError = true;
-        }
-        return $scope.tutkinnonOsaHeaderForm.$valid && Tutke2Service.validate($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi);
+        return true;
+        // if (!Utils.hasLocalizedText($scope.editableTutkinnonOsaViite.tutkinnonOsa.nimi)) {
+        //   $scope.nimiValidationError = true;
+        // }
+        // return $scope.tutkinnonOsaHeaderForm.$valid && Tutke2Service.validate($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi);
       }
     };
 

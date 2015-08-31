@@ -15,16 +15,17 @@
  */
 package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author harrik
+ * @author nkala
  */
 @Getter
 @Setter
-public class OsaAlueKokonaanDto extends OsaAlueDto {
-    private List<OsaamistavoiteLaajaDto> osaamistavoitteet;
+public class ValmaTelmaSisaltoDto {
+    private Long id;
+    private OsaamisenArviointiDto osaamisenarviointi;
+    private OsaamisenArviointiDto osaamistavoite;
 }

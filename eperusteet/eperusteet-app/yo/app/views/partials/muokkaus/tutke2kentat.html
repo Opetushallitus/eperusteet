@@ -66,6 +66,9 @@
           </div>
         </accordion-heading>
 
+        <label class="header" kaanna="'kuvaus'"></label>
+        <div editMode="false" type="text" ng-bind-html="alue.kuvaus | kaanna | unsafe"></div>
+
         <div ng-if="alue.koodiArvo">
           <label class="header" kaanna="'koodi'"></label>:<span> {{ alue.koodiArvo || '-' }}</span>
         </div>

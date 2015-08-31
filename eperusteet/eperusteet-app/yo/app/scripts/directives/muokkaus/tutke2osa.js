@@ -96,6 +96,7 @@ angular.module('eperusteApp')
         var newAlue = {
           nimi: {}
         };
+        $scope.tutke2osa.$editing = $scope.tutke2osa.$editing || [];
         $scope.tutke2osa.$editing.push(newAlue);
       },
       edit: function (alue, $event) {

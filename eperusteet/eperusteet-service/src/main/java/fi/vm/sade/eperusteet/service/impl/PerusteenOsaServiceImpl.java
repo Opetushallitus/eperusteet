@@ -38,6 +38,7 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
+import fi.vm.sade.eperusteet.repository.ValmaTelmaSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.KommenttiService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
@@ -86,6 +87,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Autowired
     private PerusteenOsaViiteRepository perusteenOsaViiteRepository;
+
+    @Autowired
+    private ValmaTelmaSisaltoRepository valmaTelmaSisaltoRepository;
 
     @Autowired
     private PerusteRepository perusteet;
@@ -255,6 +259,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         List<Osaamistavoite> uudetTavoitteet = tallennaUudetOsaamistavoitteet(osaAlue.getOsaamistavoitteet());
 
         OsaAlue osaAlueTmp = mapper.map(osaAlue, OsaAlue.class);
+        osaAlueTmp.setValmaTelmaSisalto(valmaTelmaSisaltoRepository.save(osaAlueTmp.getValmaTelmaSisalto()));
         //osaAlueTmp.setOsaamistavoitteet(createOsaamistavoiteIfNotExist(osaAlueTmp.getOsaamistavoitteet()));
         osaAlueEntity.mergeState(osaAlueTmp);
         osaAlueEntity.getOsaamistavoitteet().addAll(uudetTavoitteet);

@@ -3,13 +3,15 @@
 <p kaanna="tahdella-pakolliset"></p>
 <hr class="versioraja">
 
+<pre>{{ osaAlue | json }}</pre>
+
 <div class="non-collapsibles">
   <label class="header" kaanna="'koulutuksenosa'"></label>
   <p kaanna="tutkinnonOsa.nimi"></p>
   <label class="header">{{'nimi'| kaanna}}*</label>
   <input class="form-control" slocalized ng-model="osaAlue.nimi" type="text"></input>
 
-  <label class="header">{{'kuvaus'| kaanna}}*</label>
+  <label class="header" kaanna="'kuvaus'"></label>
   <div ckeditor class="form-control" slocalized ng-model="osaAlue.kuvaus" type="text"></div>
 
   <div ng-if="$alarelaatiot && $alarelaatiot.length > 0">
@@ -23,5 +25,5 @@
 
   <hr class="mujuviiva">
 
-  <vtosaalue valma-telma-sisalto="osaAlue.valmaTelmaSisalto" editEnabled="true" has-arviointi="true"></vtosaalue>
+  <vtosaalue osa-alue="osaAlue" editEnabled="true" has-arviointi="true"></vtosaalue>
 </div>

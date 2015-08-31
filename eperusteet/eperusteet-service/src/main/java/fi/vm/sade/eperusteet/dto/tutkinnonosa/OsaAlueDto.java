@@ -36,4 +36,6 @@ public class OsaAlueDto {
     private String koodiArvo;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Kieli kieli;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private ValmaTelmaSisaltoDto valmaTelmaSisalto;
 }

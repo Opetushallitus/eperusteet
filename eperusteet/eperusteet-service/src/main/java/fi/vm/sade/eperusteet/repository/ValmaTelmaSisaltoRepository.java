@@ -13,18 +13,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.dto.tutkinnonosa;
+package fi.vm.sade.eperusteet.repository;
 
-import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.ValmaTelmaSisalto;
+import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 
 /**
  *
- * @author harrik
+ * @author nkala
  */
-@Getter
-@Setter
-public class OsaAlueKokonaanDto extends OsaAlueDto {
-    private List<OsaamistavoiteLaajaDto> osaamistavoitteet;
+public interface ValmaTelmaSisaltoRepository extends JpaWithVersioningRepository<ValmaTelmaSisalto, Long> {
 }
