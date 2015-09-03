@@ -78,6 +78,7 @@ European Union Public Licence for more details.
                 </td>
               </tr>
             </table>
+
             <div ng-show="editEnabled" class="row">
               <div class="col-xs-6">
                 <div class="input-group">
@@ -89,6 +90,18 @@ European Union Public Licence for more details.
               </div>
             </div>
 
+          </div>
+        </div>
+
+        <div class="panel panel-default panel-clean" ng-hide="ladataanKorvattavia || editablePeruste.korvattavatDiaarinumerot.length === 0">
+          <div class="panel-heading">
+            <h3 class="panel-title" kaanna="'siirtyman-paattyminen'"></h3>
+          </div>
+          <div class="panel-body">
+            <div ng-if="editEnabled">
+              <formfield model="editablePeruste" model-var="siirtymaPaattyy" type="date" placeholder="anna-siirtyman-paattymis-pvm"></formfield>
+            </div>
+            <div class="aligned" ng-show="!editEnabled" pvm="peruste.siirtymaPaattyy"></div>
           </div>
         </div>
 
@@ -112,7 +125,6 @@ European Union Public Licence for more details.
                 </ul>
               </span>
             </span>
-
           </div>
         </div>
 
@@ -147,7 +159,6 @@ European Union Public Licence for more details.
                 </table>
               </div>
             </div>
-
             <div>
               <button type="button" ng-if="editEnabled" icon-role="add" class="btn btn-default"
                       ng-click="avaaKoodistoModaali()" ng-disabled="hakemassa" kaanna="lisaa-koulutus"></button>
