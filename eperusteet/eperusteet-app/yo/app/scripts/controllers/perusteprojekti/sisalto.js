@@ -161,22 +161,23 @@ angular.module('eperusteApp')
     }());
 
     Editointikontrollit.registerCallback({
-      edit: function() {
+      edit: function(done) {
         $scope.muokkausTutkintokohtaisetOsat = true;
         $scope.rajaus = '';
         $scope.avaaSuljeKaikki(true);
+        done();
       },
-      save: function() {
-        TekstikappaleOperations.updateViitteet($scope.peruste.sisalto, function () {
+      save: function(kommenti, done) {
+        TekstikappaleOperations.updateViitteet($scope.peruste.sisalto, function() {
           $scope.muokkausTutkintokohtaisetOsat = false;
           Notifikaatiot.onnistui('osien-rakenteen-päivitys-onnistui');
           PerusteProjektiSivunavi.refresh(true);
+          done();
         });
       },
-      cancel: function() {
-        $state.go($state.current.name, $stateParams, {
-          reload: true
-        });
+      cancel: function(done) {
+        done();
+        $state.go($state.current.name, $stateParams, { reload: true });
       },
       validate: function() { return true; },
       notify: angular.noop

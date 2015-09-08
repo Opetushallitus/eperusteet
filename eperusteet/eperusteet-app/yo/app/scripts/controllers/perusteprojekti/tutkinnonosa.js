@@ -278,7 +278,8 @@ angular.module('eperusteApp')
       tutke2.fetch();
     }
 
-    function doDelete(osaId) {
+    function doDelete(osaId, done) {
+      (done || _.noop)();
       PerusteenRakenne.poistaTutkinnonOsaViite(osaId, $scope.peruste.id, $stateParams.suoritustapa, function() {
         Notifikaatiot.onnistui('tutkinnon-osa-rakenteesta-poistettu');
         $state.go('root.perusteprojekti.suoritustapa.tutkinnonosat');
@@ -286,11 +287,12 @@ angular.module('eperusteApp')
     }
 
     var tutke2 = {
-      fetch: function () {
+      fetch: function(cb) {
         if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.tyyppi === 'tutke2') {
+          cb = cb || _.noop;
           if (Tutke2OsaData.get()) {
-            Tutke2OsaData.get().fetch();
-        }
+            Tutke2OsaData.get().fetch(cb);
+          }
         }
       },
       mergeOsaAlueet: function (tutkinnonOsa) {
@@ -316,13 +318,14 @@ angular.module('eperusteApp')
     };
 
     var normalCallbacks = {
-      edit: function() {
+      edit: function(done) {
         tutke2.fetch();
+        done();
       },
       asyncValidate: function(cb) {
-        lukitse(function() { cb(); });
+        lukitse(cb);
       },
-      save: function(kommentti) {
+      save: function(kommentti, done) {
         tutke2.mergeOsaAlueet($scope.editableTutkinnonOsaViite.tutkinnonOsa);
         $scope.editableTutkinnonOsaViite.metadata = { kommentti: kommentti };
         if ($scope.editableTutkinnonOsaViite.tutkinnonOsa.id) {
@@ -337,6 +340,7 @@ angular.module('eperusteApp')
             tutkinnonOsaDefer = $q.defer();
             $scope.tutkinnonOsaPromise = tutkinnonOsaDefer.promise;
             tutkinnonOsaDefer.resolve($scope.editableTutkinnonOsaViite);
+            done();
           }, Notifikaatiot.serverCb);
         }
         else {
@@ -344,13 +348,14 @@ angular.module('eperusteApp')
             Editointikontrollit.lastModified = response;
             saveCb(response);
             getRakenne();
+            done();
           }, Notifikaatiot.serverCb);
         }
         $scope.isNew = false;
       },
-      cancel: function() {
+      cancel: function(done) {
         if ($scope.isNew) {
-          doDelete($scope.rakenne.tutkinnonOsat[$scope.tutkinnonOsaViite.tutkinnonOsa.id].id);
+          doDelete($scope.rakenne.tutkinnonOsat[$scope.tutkinnonOsaViite.tutkinnonOsa.id].id, done);
           $scope.isNew = false;
         }
         else {
@@ -358,6 +363,7 @@ angular.module('eperusteApp')
           fetch(function() {
             refreshPromise();
             Lukitus.vapautaPerusteenosa($scope.tutkinnonOsaViite.tutkinnonOsa.id);
+            done();
           });
         }
       },

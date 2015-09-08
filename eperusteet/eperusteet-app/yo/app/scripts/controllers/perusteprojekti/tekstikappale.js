@@ -319,7 +319,7 @@ angular.module('eperusteApp')
       tekstikappaleDefer.resolve($scope.editableTekstikappale);
     }
 
-    function saveCb(res) {
+    function saveCb(res, done) {
       // Päivitä versiot
       $scope.haeVersiot(true, function () {
         VersionHelper.setUrl($scope.versiot);
@@ -327,7 +327,11 @@ angular.module('eperusteApp')
       PerusteProjektiSivunavi.refresh();
       Lukitus.vapautaPerusteenosa(res.id);
       Notifikaatiot.onnistui('muokkaus-tekstikappale-tallennettu');
-      haeSisalto();
+      haeSisalto(function() {
+        $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
+        $scope.isNew = false;
+        done();
+      });
     }
 
     function doDelete(isNew) {
@@ -345,25 +349,22 @@ angular.module('eperusteApp')
       $scope.editableTekstikappale = angular.copy(kappale);
 
       Editointikontrollit.registerCallback({
-        edit: function () {
-          fetch(function () {
+        edit: function(done) {
+          fetch(function() {
             refreshPromise();
+            done();
           });
         },
         asyncValidate: function (cb) {
-          lukitse(function () {
-            cb();
-          });
+          lukitse(cb);
         },
-        save: function (kommentti) {
+        save: function(kommentti, done) {
           $scope.editableTekstikappale.metadata = {kommentti: kommentti};
           PerusteenOsat.saveTekstikappale({
             osanId: $scope.editableTekstikappale.id
-          }, $scope.editableTekstikappale, saveCb, Notifikaatiot.serverCb);
-          $scope.tekstikappale = angular.copy($scope.editableTekstikappale);
-          $scope.isNew = false;
+          }, $scope.editableTekstikappale, _.partial(saveCb, _, done), Notifikaatiot.serverCb);
         },
-        cancel: function () {
+        cancel: function(done) {
           if (!TekstikappaleOperations.wasDeleted()) {
             Lukitus.vapautaPerusteenosa($scope.tekstikappale.id, function () {
               if ($scope.isNew) {
@@ -375,7 +376,11 @@ angular.module('eperusteApp')
                 });
               }
               $scope.isNew = false;
+              done();
             });
+          }
+          else {
+            done();
           }
         },
         notify: function (mode) {
