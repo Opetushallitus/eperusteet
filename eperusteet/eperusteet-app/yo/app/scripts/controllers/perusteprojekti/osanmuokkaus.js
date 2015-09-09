@@ -349,7 +349,9 @@ angular.module('eperusteApp')
                 Oppiaineet.lisaaKohdealue({
                   perusteId: ProxyService.get('perusteId'),
                   osanId: OsanMuokkausHelper.getOppiaine().id
-                }, {}, function(res) {
+                }, {
+                  nimi: { fi: 'Uusi kohdealue' }
+                }, function(res) {
                   $scope.kohdealueet.push(res);
                 });
               };
