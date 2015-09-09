@@ -26,7 +26,7 @@ import org.hibernate.envers.Audited;
 
 /**
  *
- * @author jhyoty
+ * @author jhyotyzx
  */
 @MappedSuperclass
 public abstract class AbstractAuditedReferenceableEntity extends AbstractAuditedEntity implements ReferenceableEntity {

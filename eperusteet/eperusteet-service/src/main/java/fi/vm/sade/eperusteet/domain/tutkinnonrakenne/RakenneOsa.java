@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 import com.google.common.base.Objects;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.Getter;
@@ -36,7 +37,7 @@ import org.hibernate.envers.Audited;
 public class RakenneOsa extends AbstractRakenneOsa {
 
     @JoinColumn(name = "rakenneosa_tutkinnonosaviite")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private TutkinnonOsaViite tutkinnonOsaViite;
 
     private String erikoisuus;

@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -56,7 +57,7 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
 
     @Getter
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     private VuosiluokkaKokonaisuus vuosiluokkaKokonaisuus;
 

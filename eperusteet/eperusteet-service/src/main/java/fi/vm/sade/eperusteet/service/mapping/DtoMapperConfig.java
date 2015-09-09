@@ -44,6 +44,8 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
+import ma.glasnost.orika.impl.generator.JavassistCompilerStrategy;
+import ma.glasnost.orika.unenhance.HibernateUnenhanceStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -62,6 +64,7 @@ public class DtoMapperConfig {
         KoodistokoodiConverter koodistokoodiConverter) {
         DefaultMapperFactory factory
             = new DefaultMapperFactory.Builder()
+                .unenhanceStrategy(new HibernateUnenhanceStrategy())
             .build();
 
         factory.getConverterFactory().registerConverter(tekstiPalanenConverter);

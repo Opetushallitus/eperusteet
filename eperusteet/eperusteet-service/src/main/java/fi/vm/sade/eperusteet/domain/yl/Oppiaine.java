@@ -25,18 +25,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuus;
+import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
@@ -109,13 +104,24 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     @Setter
     private Boolean abstrakti;
 
-    @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @BatchSize(size = 10)
     private Set<Oppiaine> oppimaarat;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable
     private Set<OpetuksenKohdealue> kohdealueet = new HashSet<>();
+
+    @Getter
+    @ManyToMany
+    @JoinTable(name = "yl_oppiaine_yl_aihekokonaisuus",
+            joinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false),
+            inverseJoinColumns = @JoinColumn(name = "aihekokonaisuus_id", nullable = false, updatable = false))
+    private Set<Aihekokonaisuus> aihekokonaisuudet =new HashSet<>(0);
+
+    @Getter
+    @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<OppiaineLukiokurssi> lukiokurssit = new HashSet<>(0);
 
     /**
      * Palauttaa oppimäärät
@@ -154,7 +160,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     }
 
     public void addOppimaara(Oppiaine oppimaara) {
-        if (koosteinen == false) {
+        if (!koosteinen) {
             throw new IllegalStateException("Oppiaine ei ole koosteinen eikä tue oppimääriä");
         }
         if (oppimaarat == null) {
@@ -167,7 +173,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity {
     }
 
     public void removeOppimaara(Oppiaine aine) {
-        if (koosteinen == false) {
+        if (!koosteinen) {
             throw new IllegalStateException("Oppiaine ei ole koosteinen eikä tue oppimääriä");
         }
         if (aine.getOppiaine().equals(this) && oppimaarat.remove(aine)) {

@@ -344,7 +344,6 @@ public class PermissionManager {
             }
             return allowed;
         }
-
     }
 
     private boolean hasAnyRole(Authentication authentication, Collection<String> roles) {

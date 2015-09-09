@@ -32,7 +32,7 @@ public enum KoulutusTyyppi {
 
     private final String tyyppi;
 
-    private KoulutusTyyppi(String tyyppi) {
+    KoulutusTyyppi(String tyyppi) {
         this.tyyppi = tyyppi;
     }
 
