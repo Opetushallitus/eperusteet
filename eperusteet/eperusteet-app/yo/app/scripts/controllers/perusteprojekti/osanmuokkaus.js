@@ -174,7 +174,8 @@ angular.module('eperusteApp')
             OsanMuokkausHelper.save();
           },
           edit: function () {},
-          cancel: function () {
+          cancel: function (done) {
+            done();
             OsanMuokkausHelper.goBack();
           },
         }
@@ -185,12 +186,14 @@ angular.module('eperusteApp')
           model: 'objekti'
         },
         callbacks: {
-          save: function () {
+          save: function (kommentti, done) {
+            done();
             $rootScope.$broadcast('notifyCKEditor');
             OsanMuokkausHelper.save();
           },
-          edit: function () {},
-          cancel: function () {
+          edit: function (done) { done(); },
+          cancel: function (done) {
+            done();
             OsanMuokkausHelper.goBack();
           },
         }
@@ -201,10 +204,11 @@ angular.module('eperusteApp')
           model: 'objekti',
         },
         callbacks: {
-          save: function () {
+          save: function (done) {
             OsanMuokkausHelper.save();
+            done();
           },
-          edit: function () {},
+          edit: function (done) { done(); },
           cancel: function () {
             OsanMuokkausHelper.goBack();
           },
@@ -216,13 +220,15 @@ angular.module('eperusteApp')
           model: 'objekti',
         },
         callbacks: {
-          save: function () {
+          save: function (done) {
             OsanMuokkausHelper.save();
+            done();
           },
-          edit: function() {
-            console.log('wat');
+          edit: function(done) {
+            done();
           },
-          cancel: function () {
+          cancel: function (done) {
+            done();
             OsanMuokkausHelper.goBack();
           },
         }
