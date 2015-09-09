@@ -219,7 +219,9 @@ angular.module('eperusteApp')
           save: function () {
             OsanMuokkausHelper.save();
           },
-          edit: function () {},
+          edit: function() {
+            console.log('wat');
+          },
           cancel: function () {
             OsanMuokkausHelper.goBack();
           },
@@ -326,7 +328,6 @@ angular.module('eperusteApp')
           $document.off('click', clickHandler);
         });
 
-
         $scope.muokkaaKohdealueita = function() {
           $modal.open({
             templateUrl: 'views/directives/perusopetus/osanmuokkauskohdealueet.html',
@@ -370,7 +371,8 @@ angular.module('eperusteApp')
                 );
               };
             }
-          }).result.then(uudetKohdealueetCb);
+          })
+          .result.then(uudetKohdealueetCb);
         };
       }
     };

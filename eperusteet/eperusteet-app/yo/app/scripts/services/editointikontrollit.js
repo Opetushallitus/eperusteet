@@ -32,7 +32,7 @@
  *             If promise is resolved, canceling continues.
  */
 angular.module('eperusteApp')
-  .factory('Editointikontrollit', function($rootScope, $q, $timeout, Utils, Notifikaatiot) {
+  .factory('Editointikontrollit', function($rootScope, $q, Utils, Notifikaatiot) {
     var scope = $rootScope.$new(true);
     scope.editingCallback = null;
     scope.editMode = false;
@@ -60,15 +60,18 @@ angular.module('eperusteApp')
         if (scope.editingCallback) {
           var len = scope.editingCallback[name].length;
           if (len === argamount) {
-            console.log('You should use the async version with "' + name + '" callback');
+            console.error('You should use the async version with "' + name + '" callback');
             doneFn(scope.editingCallback[name]());
           }
           else if (len === argamount + 1) {
             scope.editingCallback[name](doneFn);
           }
           else {
-            console.log('Using editing callback "' + name + '" wrong with', len, 'arguments when it should be', argamount, 'or', argamount + 1);
+            console.error('Using editing callback "' + name + '" wrong with', len, 'arguments when it should be', argamount, 'or', argamount + 1);
           }
+        }
+        else {
+          console.error('No callbacks registered');
         }
       };
     }
@@ -150,11 +153,9 @@ angular.module('eperusteApp')
         }
 
         editmodeListener = null;
-        $timeout(function() {
-          scope.editingCallback = callbacks;
-          scope.editModeDefer.resolve(scope.editMode);
-          cbListener();
-        }, 0);
+        scope.editingCallback = callbacks;
+        scope.editModeDefer.resolve(scope.editMode);
+        (cbListener || _.noop)();
       },
       unregisterCallback: function() {
         scope.editingCallback = null;
