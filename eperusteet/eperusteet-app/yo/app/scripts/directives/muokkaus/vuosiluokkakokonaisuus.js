@@ -84,10 +84,9 @@ angular.module('eperusteApp')
     ]);
 
     var editingCallbacks = {
-      edit: function(done) {
+      edit: function() {
         mapModel();
         cloner.clone($scope.editableModel);
-        done();
       },
       asyncValidate: function (cb) {
         if ($scope.editableModel.id) {
@@ -96,23 +95,21 @@ angular.module('eperusteApp')
           cb();
         }
       },
-      save: function(_, done) {
+      save: function () {
         if ($scope.editableModel.id) {
           $scope.editableModel.$save({
             perusteId: PerusopetusService.getPerusteId()
           }, successCb, Notifikaatiot.serverCb);
-          done();
         } else {
           Vuosiluokkakokonaisuudet.save({
             perusteId: PerusopetusService.getPerusteId()
           }, $scope.editableModel, function (res) {
             successCb(res);
-            // $state.go($state.current, _.extend(_.clone($stateParams), {osanId: res.id}), {reload: true});
-            done();
+            $state.go($state.current, _.extend(_.clone($stateParams), {osanId: res.id}), {reload: true});
           }, Notifikaatiot.serverCb);
         }
       },
-      cancel: function(done) {
+      cancel: function () {
         cloner.restore($scope.editableModel);
         if ($scope.isNew) {
           $timeout(function () {
@@ -120,8 +117,7 @@ angular.module('eperusteApp')
           });
         } else {
           Lukitus.vapauta();
-          done();
-          // $state.go($state.current.name, {}, {reload: true});
+          $state.go($state.current.name, {}, {reload: true});
         }
       },
       notify: function (mode) {
