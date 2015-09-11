@@ -204,7 +204,7 @@ angular.module('eperusteApp')
           model: 'objekti',
         },
         callbacks: {
-          save: function (kommentti, done) {
+          save: function (done) {
             OsanMuokkausHelper.save();
             done();
           },
@@ -220,7 +220,7 @@ angular.module('eperusteApp')
           model: 'objekti',
         },
         callbacks: {
-          save: function (kommentti, done) {
+          save: function (done) {
             OsanMuokkausHelper.save();
             done();
           },
