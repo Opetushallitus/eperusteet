@@ -43,16 +43,18 @@ angular.module('eperusteApp')
 
     this.yksikot = [
       'OSAAMISPISTE',
-      'OPINTOVIIKKO',
+      'OPINTOVIIKKO'
     ];
     this.yksikotMap = {
       osp: 'OSAAMISPISTE',
       ov: 'OPINTOVIIKKO',
+      kurssi: 'KURSSI'
     };
 
     this.suoritustavat = [
       'ops',
-      'naytto'
+      'naytto',
+      'kurssi'
     ];
 
     this.koulutustyyppiInfo = {
@@ -102,6 +104,14 @@ angular.module('eperusteApp')
         hasTutkintonimikkeet: false,
         hakuState: 'root.selaus.lisaopetuslista',
         sisaltoTunniste: 'losisalto',
+        hasPdfCreation: true
+      },
+      'koulutustyyppi_2': {
+        nimi: 'lukiokoulutus',
+        oletusSuoritustapa: 'kurssi',
+        hasTutkintonimikkeet: false,
+        hakuState: 'root.selaus.lukiokoulutus',
+        sisaltoTunniste: 'lukiosisalto',
         hasPdfCreation: true
       },
       'koulutustyyppi_20': {

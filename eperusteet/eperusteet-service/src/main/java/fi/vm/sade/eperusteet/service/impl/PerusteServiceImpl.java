@@ -42,6 +42,7 @@ import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.LokalisointiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
@@ -884,6 +885,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 || ekoulutustyyppi == KoulutusTyyppi.LISAOPETUS
                 || ekoulutustyyppi == KoulutusTyyppi.VARHAISKASVATUS) {
             peruste.setEsiopetuksenPerusteenSisalto(new EsiopetuksenPerusteenSisalto());
+        } else if (ekoulutustyyppi == KoulutusTyyppi.LUKIOKOULUTUS ) {
+            peruste.setLukioOpetuksenPerusteenSisalto(new LukioOpetuksenPerusteenSisalto());
         }
 
         if (st != null) {

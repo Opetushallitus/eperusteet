@@ -252,7 +252,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         if (perusteprojektiDto.getRyhmaOid() == null) {
-            throw new BusinessRuleViolationException("Organisaatioryhmää ei ole asetettu");
+            throw new BusinessRuleViolationException("Perustetyöryhmä ei ole asetettu");
         }
 
         Peruste peruste;

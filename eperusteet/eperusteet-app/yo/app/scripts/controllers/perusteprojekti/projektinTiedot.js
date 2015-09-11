@@ -139,6 +139,11 @@ angular.module('eperusteApp')
     $scope.tallennaPerusteprojekti = function() {
       var projekti = PerusteProjektiService.get();
 
+      if(projekti.koulutustyyppi === 'koulutustyyppi_2') {
+        //Lukiokoulutus
+        projekti.laajuusYksikko = 'KURSSI';
+      }
+
       if (projekti.id) {
         delete projekti.koulutustyyppi;
         delete projekti.laajuusYksikko;

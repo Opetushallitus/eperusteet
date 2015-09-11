@@ -150,6 +150,11 @@ angular.module('eperusteApp')
           PerusteProjektiSivunavi.setVisible(false);
         }]
       })
+      .state('root.perusteprojekti.suoritustapa.lukiosisalto', {
+        url: '/lukiosisalto',
+        templateUrl: 'views/partials/perusteprojekti/lukiokoulutus.html',
+        controller: 'LukiokoulutussisaltoController'
+      })
       .state('root.perusteprojekti.suoritustapa.losisalto', {
         url: '/losisalto',
         templateUrl: 'views/partials/perusteprojekti/esiopetus.html',
@@ -318,7 +323,8 @@ angular.module('eperusteApp')
       return !($state.is('root.perusteprojekti.suoritustapa.sisalto') ||
                $state.is('root.perusteprojekti.suoritustapa.posisalto') ||
                $state.is('root.perusteprojekti.suoritustapa.vksisalto') ||
-               $state.is('root.perusteprojekti.suoritustapa.eosisalto'));
+               $state.is('root.perusteprojekti.suoritustapa.eosisalto') ||
+               $state.is('root.perusteprojekti.suoritustapa.lukiosisalto'));
     };
 
     $scope.isNaviVisible = function () {

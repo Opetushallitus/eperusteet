@@ -47,6 +47,11 @@ angular.module('eperusteApp')
         templateUrl: 'views/perusopetuslistaus.html',
         controller: 'PerusopetusListaController',
       })
+      .state('root.selaus.lukiokoulutus', {
+        url: '/lukiokoulutus',
+        templateUrl: 'views/lukiokoulutuslistaus.html',
+        controller: 'LukiokoulutusListaController',
+      })
       .state('root.selaus.lisaopetus', {
         url: '/lisaopetus/:perusteId',
         templateUrl: 'eperusteet-esitys/views/yksinkertainen.html',
@@ -121,24 +126,6 @@ angular.module('eperusteApp')
         templateUrl: 'eperusteet-esitys/views/tiedot.html',
         controller: 'epEsitysTiedotController'
       })
-      /*.state('root.selaus.perusopetus', {
-        url: '/perusopetus/:perusteId',
-        templateUrl: 'views/perusopetus.html',
-        controller: 'PerusopetusController',
-        resolve: {
-          sisalto: function($stateParams, $q, Perusteet, LaajaalaisetOsaamiset, Oppiaineet, Vuosiluokkakokonaisuudet, SuoritustapaSisalto) {
-            // TODO lisää uusin peruste jos $stateParams.perusteId on falsey
-            return $q.all([
-              Perusteet.get({perusteId: $stateParams.perusteId}).$promise,
-              LaajaalaisetOsaamiset.query({perusteId: $stateParams.perusteId}).$promise,
-              Oppiaineet.query({perusteId: $stateParams.perusteId}).$promise,
-              Vuosiluokkakokonaisuudet.query({perusteId: $stateParams.perusteId}).$promise,
-              SuoritustapaSisalto.get({perusteId: $stateParams.perusteId, suoritustapa: 'perusopetus'}).$promise,
-            ]);
-          }
-        }
-      })*/
-
     .state('root.selaus.perusopetus', {
     url: '/perusopetus/:perusteId',
     templateUrl: 'eperusteet-esitys/views/perusopetus.html',
@@ -258,6 +245,26 @@ angular.module('eperusteApp')
         .reverse()
         .each(function(peruste) {
           peruste.$url = $state.href('root.selaus.' + (YleinenData.isLisaopetus(peruste) ? 'lisaopetus' : 'perusopetus'), {
+            perusteId: peruste.id
+          });
+        })
+        .value();
+    }, Notifikaatiot.serverCb);
+  })
+  .controller('LukiokoulutusListaController', function($scope, $state, $q, Perusteet, Notifikaatiot, YleinenData) {
+    $scope.lista = [];
+    $q.all([
+      Perusteet.get({ tyyppi: 'koulutustyyppi_2' }).$promise,
+    ]).then(function(res) {
+      if (res.sivuja > 1) {
+        console.warn('sivutusta ei ole toteutettu, tuloksia yli ' + res.sivukoko);
+      }
+
+
+      $scope.lista = _(res.data).sortBy('voimassaoloLoppuu')
+        .reverse()
+        .each(function(peruste) {
+          peruste.$url = $state.href('root.selaus.lukiokoulutus', {
             perusteId: peruste.id
           });
         })

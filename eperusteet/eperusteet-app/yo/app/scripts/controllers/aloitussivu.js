@@ -57,6 +57,7 @@ angular.module('eperusteApp')
       },
       {
         label: 'lukiokoulutus',
+        koodi: 'koulutustyyppi_2',
         helper: 'selaa-perusteita'
       },
       {
