@@ -61,6 +61,7 @@ angular.module('eperusteApp')
     };
   })
   .controller('EditointiCtrl', function($scope, $rootScope, Editointikontrollit, $timeout) {
+
     $scope.kommentti = '';
     $scope.hideControls = true;
     function setEditControls() {
