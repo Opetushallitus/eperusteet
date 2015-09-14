@@ -29,7 +29,7 @@ public enum Suoritustapakoodi {
     LISAOPETUS("lisaopetus"),
     VARHAISKASVATUS("varhaiskasvatus"),
     ESIOPETUS("esiopetus"),
-    KURSSI("kurssi");
+    LUKIO("lukio");
 
     private final String koodi;
 

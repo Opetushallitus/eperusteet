@@ -271,7 +271,7 @@ angular.module('eperusteApp')
         projekti = projektiVastaus;
         Perusteet.get({perusteId: projekti._peruste}, function (perusteVastaus) {
           peruste = perusteVastaus;
-          if (peruste.suoritustavat && !_.isEmpty(peruste.suoritustavat.length)) {
+          if (!_.isEmpty(peruste.suoritustavat)) {
             peruste.suoritustavat = _.sortBy(peruste.suoritustavat, 'suoritustapakoodi');
           }
           projektinTiedotDeferred.resolve();
@@ -300,8 +300,8 @@ angular.module('eperusteApp')
       var perusteenSisaltoDeferred = $q.defer();
 
       if (forced || YleinenData.isPerusopetus(peruste) || YleinenData.isSimple(peruste) ||
-          (peruste.suoritustavat !== null && peruste.suoritustavat.length > 0)) {
-        self.haeSisalto(peruste.id, stateParams.suoritustapa).then(function() {
+          (!peruste.suoritustavat && peruste.suoritustavat.length > 0)) {
+          self.haeSisalto(peruste.id, stateParams.suoritustapa).then(function() {
           perusteenSisaltoDeferred.resolve();
         }, function(virhe) {
           perusteenSisaltoDeferred.reject();

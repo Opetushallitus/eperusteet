@@ -54,7 +54,7 @@ angular.module('eperusteApp')
     this.suoritustavat = [
       'ops',
       'naytto',
-      'kurssi'
+      'lukio'
     ];
 
     this.koulutustyyppiInfo = {
@@ -108,7 +108,7 @@ angular.module('eperusteApp')
       },
       'koulutustyyppi_2': {
         nimi: 'lukiokoulutus',
-        oletusSuoritustapa: 'kurssi',
+        oletusSuoritustapa: 'lukio',
         hasTutkintonimikkeet: false,
         hakuState: 'root.selaus.lukiokoulutus',
         sisaltoTunniste: 'lukiosisalto',
