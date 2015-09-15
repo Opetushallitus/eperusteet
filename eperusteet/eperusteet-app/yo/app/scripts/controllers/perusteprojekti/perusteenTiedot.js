@@ -57,6 +57,7 @@ angular.module('eperusteApp')
     $scope.editEnabled = false;
     var editingCallbacks = {
       edit: function () {
+        fixTimefield('siirtymaPaattyy');
         fixTimefield('voimassaoloAlkaa');
         fixTimefield('voimassaoloLoppuu');
         $scope.editablePeruste = angular.copy($scope.peruste);
@@ -246,6 +247,7 @@ angular.module('eperusteApp')
         $scope.peruste[field] = new Date($scope.peruste[field]);
       }
     }
+    fixTimefield('siirtymaPaattyy');
     fixTimefield('voimassaoloAlkaa');
     fixTimefield('voimassaoloLoppuu');
 

@@ -98,8 +98,10 @@ angular.module('eperusteApp')
         };
 
         function bindLabel() {
-          scope.inputElId = scope.label.replace(/ /g, '-') + '-' + uniqueId++;
-          element.find('label').attr('for', scope.inputElId);
+          if (scope.label) {
+            scope.inputElId = scope.label.replace(/ /g, '-') + '-' + uniqueId++;
+            element.find('label').attr('for', scope.inputElId);
+          }
         }
 
         if ((scope.type === 'text' || scope.type === 'diaari') && attrs.max) {

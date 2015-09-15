@@ -87,6 +87,7 @@ angular.module('eperusteApp')
     $scope.orderFn = function (item) {
       switch($scope.jarjestysTapa) {
         case 'nimi': return Utils.nameSort(item, 'otsikko');
+        case 'luotu': return -1 * item.luotu;
         case 'muokattu': return -1 * item.muokattu;
         case 'julkinen': return '' + item.julkinen;
         default:

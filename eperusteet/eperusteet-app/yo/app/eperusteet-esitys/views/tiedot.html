@@ -22,6 +22,10 @@
       </ul>
     </td>
   </tr>
+  <tr ng-if="peruste.korvattavatDiaarinumerot && peruste.korvattavatDiaarinumerot.length > 0">
+    <th kaanna="'siirtyman-paattyminen'"></th>
+    <td pvm="peruste.siirtymaPaattyy"></td>
+  </tr>
   <tr ng-show="showKoulutukset()" ng-if="peruste.koulutukset.length > 0">
     <th kaanna="'peruste-koulutukset'"></th>
     <td>

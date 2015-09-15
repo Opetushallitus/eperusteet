@@ -8,7 +8,7 @@
       <span kaanna="'tiedote-liittyy-perusteprojektiin'"></span>:
       <a href="{{ perusteprojekti.$url }}" kaanna="perusteprojekti.nimi"></a>
     </div>
-    {{ tiedote.nimi || tiedote.muokkaaja }}, {{tiedote.muokattu | aikaleima}}
+    {{ tiedote.nimi || tiedote.muokkaaja }}, {{tiedote.luotu | aikaleima}}
     <span class="badge" ng-if="tiedote.julkinen">{{'tiedote-julkinen' | kaanna}}</span>
   </div>
   <div class="tiedote-leipateksti" ng-bind-html="tiedote.sisalto | kaanna | unsafe"></div>
