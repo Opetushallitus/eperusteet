@@ -43,7 +43,7 @@ angular.module('eperusteApp')
     fetch();
 
     $scope.orderFn = function (item) {
-      return -1 * item.muokattu;
+      return -1 * item.luotu;
     };
   })
 
