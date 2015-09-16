@@ -29,7 +29,7 @@ angular.module('eperusteApp')
     $scope.rajaus = '';
 
     $scope.tuoSisalto = SuoritustavanSisalto.tuoSisalto();
-    $scope.$esitysurl = $state.href('root.selaus.lukio', {
+    $scope.$esitysurl = $state.href('root.selaus.lukiokoulutus', {
       perusteId: $scope.peruste.id
     });
 
