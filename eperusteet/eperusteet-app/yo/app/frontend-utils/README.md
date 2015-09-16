@@ -1,2 +1,0 @@
-ePerusteet-frontend-utils
-=========================
