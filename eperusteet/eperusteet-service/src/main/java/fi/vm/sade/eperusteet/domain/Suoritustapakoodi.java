@@ -33,7 +33,7 @@ public enum Suoritustapakoodi {
 
     private final String koodi;
 
-    private Suoritustapakoodi(String koodi) {
+    Suoritustapakoodi(String koodi) {
         this.koodi = koodi;
     }
 

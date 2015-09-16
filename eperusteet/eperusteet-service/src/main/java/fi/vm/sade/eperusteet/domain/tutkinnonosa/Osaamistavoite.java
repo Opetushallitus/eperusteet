@@ -93,7 +93,7 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
     private TekstiPalanen tunnustaminen;
 
     @Getter
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Arviointi arviointi;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

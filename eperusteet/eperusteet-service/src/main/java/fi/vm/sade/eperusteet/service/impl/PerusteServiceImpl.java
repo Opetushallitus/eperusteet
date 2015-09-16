@@ -15,67 +15,26 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
-import fi.vm.sade.eperusteet.domain.Diaarinumero;
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Koodi;
-import fi.vm.sade.eperusteet.domain.Koulutus;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
-import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTila;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.Suoritustapa;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.Osaamisala;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
-import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
-import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
-import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
-import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
+import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetuksenPerusteenSisalto;
-import fi.vm.sade.eperusteet.dto.LokalisointiDto;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
-import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
-import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
+import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.OsaamisalaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
-import fi.vm.sade.eperusteet.repository.KoulutusRepository;
-import fi.vm.sade.eperusteet.repository.OppiaineRepository;
-import fi.vm.sade.eperusteet.repository.OsaamisalaRepository;
-import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
-import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
-import fi.vm.sade.eperusteet.repository.RakenneRepository;
-import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
-import fi.vm.sade.eperusteet.repository.TekstiPalanenRepository;
-import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
-import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
-import fi.vm.sade.eperusteet.repository.VuosiluokkaKokonaisuusRepository;
+import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
@@ -89,23 +48,7 @@ import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
-import fi.vm.sade.eperusteet.service.util.Pair;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,6 +60,12 @@ import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import java.util.*;
 
 /**
  *
@@ -156,10 +105,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private TutkinnonOsaViiteService tutkinnonOsaViiteService;
 
     @Autowired
-    PerusteenOsaViiteRepository perusteenOsaViiteRepo;
+    private PerusteenOsaViiteRepository perusteenOsaViiteRepo;
 
     @Autowired
-    OsaamisalaRepository osaamisalaRepo;
+    private OsaamisalaRepository osaamisalaRepo;
 
     @Autowired
     @Dto
@@ -756,9 +705,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return suoritustapa;
     }
 
-    @Autowired
-    EntityManager em;
-
     @Override
     @Transactional
     public PerusteenOsaViiteDto.Matala addSisalto(Long perusteId, Suoritustapakoodi suoritustapakoodi, PerusteenOsaViiteDto.Matala viite) {
@@ -799,6 +745,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(Long perusteId) {
         List<TutkintonimikeKoodi> koodit = tutkintonimikeKoodiRepository.findByPerusteId(perusteId);
         return mapper.mapAsList(koodit, TutkintonimikeKoodiDto.class);

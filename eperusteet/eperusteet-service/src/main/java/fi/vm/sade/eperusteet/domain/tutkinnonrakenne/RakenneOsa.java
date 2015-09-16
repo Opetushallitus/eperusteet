@@ -37,7 +37,7 @@ import org.hibernate.envers.Audited;
 public class RakenneOsa extends AbstractRakenneOsa {
 
     @JoinColumn(name = "rakenneosa_tutkinnonosaviite")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private TutkinnonOsaViite tutkinnonOsaViite;
 
     private String erikoisuus;

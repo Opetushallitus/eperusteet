@@ -65,7 +65,7 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
     @Enumerated(EnumType.STRING)
     private RakenneModuuliErikoisuus erikoisuus;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
