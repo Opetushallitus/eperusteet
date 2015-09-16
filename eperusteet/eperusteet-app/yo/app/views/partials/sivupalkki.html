@@ -54,7 +54,7 @@ European Union Public Licence for more details.
       <div class="panel-body">
         <p ng-show="tiedotteet.length === 0" kaanna="ei-tiedotteita"></p>
         <ul class="list-unstyled etusivu-tiedotteet">
-          <li class="etusivu-tiedote" ng-repeat="tiedote in tiedotteet|limitTo:naytto.shown">
+          <li class="etusivu-tiedote" ng-repeat="tiedote in tiedotteet | orderBy:'luotu':true | limitTo:naytto.shown">
             <a ui-sref="root.tiedote({tiedoteId: tiedote.id})">
               {{tiedote.luotu | aikaleima:'time':'date'}}: {{tiedote.otsikko | kaanna}}
             </a>
