@@ -25,6 +25,8 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -67,4 +69,12 @@ public class Kurssi extends AbstractAuditedReferenceableEntity {
     @Setter
     @Column(name = "koodi_arvo")
     private String koodiArvo;
+
+    @Getter
+    @Audited
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinTable(name = "yl_kurssi_toteuttava_oppiaine",
+            joinColumns = @JoinColumn(name = "kurssi_id", nullable = false, updatable = false),
+            inverseJoinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false))
+    private Set<Oppiaine> toteuttavatOppiaineet = new HashSet<>(0);
 }

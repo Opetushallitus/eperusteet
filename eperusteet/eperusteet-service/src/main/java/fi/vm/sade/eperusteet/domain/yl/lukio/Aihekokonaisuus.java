@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.domain.yl.lukio;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
@@ -61,10 +62,8 @@ public class Aihekokonaisuus extends AbstractAuditedReferenceableEntity {
     private TekstiPalanen yleiskuvaus;
 
     @Getter
-    @ManyToMany
-    @JoinTable(name = "yl_oppiaine_yl_aihekokonaisuus",
-            joinColumns = @JoinColumn(name = "aihekokonaisuus_id", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false))
-    private Set<Oppiaine> oppiaineet = new HashSet<>(0);
-
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
+    @JoinColumn(name = "peruste_id", nullable = false)
+    private Peruste peruste;
 }

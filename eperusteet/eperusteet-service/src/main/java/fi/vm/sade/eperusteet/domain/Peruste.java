@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.util.EntityReference;
 import java.io.Serializable;
@@ -192,6 +193,10 @@ public class Peruste extends AbstractAuditedEntity implements Serializable, Refe
     @JoinTable(name = "peruste_liite", inverseJoinColumns = {@JoinColumn(name="liite_id")}, joinColumns = {@JoinColumn(name="peruste_id")})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Set<Liite> liitteet = new HashSet<>();
+
+    @Getter
+    @OneToMany(mappedBy = "peruste", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<Aihekokonaisuus> aihekokonaisuudet = new HashSet<>(0);
 
     public void attachLiite(Liite liite) {
         liitteet.add(liite);
