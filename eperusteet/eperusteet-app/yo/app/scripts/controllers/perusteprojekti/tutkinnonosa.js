@@ -178,6 +178,7 @@ angular.module('eperusteApp')
       cb = cb || angular.noop;
       PerusteenOsat.get({ osanId: $scope.tutkinnonOsaViite.tutkinnonOsa.id }, function(res) {
         $scope.tutkinnonOsaViite.tutkinnonOsa = res;
+        console.log(res);
         cb(res);
       });
     }
