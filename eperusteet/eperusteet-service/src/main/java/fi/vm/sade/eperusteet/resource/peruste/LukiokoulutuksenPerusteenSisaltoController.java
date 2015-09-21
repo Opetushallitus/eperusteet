@@ -50,22 +50,13 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 public class LukiokoulutuksenPerusteenSisaltoController {
 
     @Autowired
-    private PerusopetuksenPerusteenSisaltoService sisallot;
+    private LukioOpetuksenPerusteenSisaltoService sisallot;
 
     @Autowired
     private OppiaineService oppiaineet;
 
     @Autowired
-    private VuosiluokkaKokonaisuusService kokonaisuudet;
-
-    @Autowired
     private PerusteenOsaViiteService viittet;
-
-    @Autowired
-    private LaajaalainenOsaaminenService osaamiset;
-
-    @Autowired
-    private KayttajanTietoService kayttajat;
 
     @Autowired
     private PerusteService perusteet;

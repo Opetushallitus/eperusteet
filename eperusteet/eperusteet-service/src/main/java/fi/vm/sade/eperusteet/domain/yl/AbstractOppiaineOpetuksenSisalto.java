@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 
 import javax.persistence.MappedSuperclass;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -48,7 +49,6 @@ public abstract class AbstractOppiaineOpetuksenSisalto extends AbstractAuditedRe
             } else {
                 throw new IllegalArgumentException("Ei voida lisätä oppimäärää jonka oppiaine ei kuulu sisältöön");
             }
-
         } else {
             getOppiaineet().add(oppiaine);
         }
@@ -74,6 +74,10 @@ public abstract class AbstractOppiaineOpetuksenSisalto extends AbstractAuditedRe
         }
 
         return false;
+    }
+
+    public Set<Oppiaine> getOppiaineetCopy() {
+        return new HashSet<>(getOppiaineet());
     }
 
     public void removeOppiaine(Oppiaine aine) {

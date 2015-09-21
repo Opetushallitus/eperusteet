@@ -116,10 +116,6 @@ public class PerusopetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSis
         }
     }
 
-    public Set<Oppiaine> getOppiaineetCopy() {
-        return new HashSet<>(oppiaineet);
-    }
-
     public void setOppiaineet(Set<Oppiaine> oppiaineet) {
         if (oppiaineet == null) {
             this.oppiaineet.clear();

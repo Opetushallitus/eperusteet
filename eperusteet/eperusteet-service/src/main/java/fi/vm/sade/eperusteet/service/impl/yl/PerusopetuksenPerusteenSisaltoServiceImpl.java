@@ -15,113 +15,43 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
-import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
+import fi.vm.sade.eperusteet.domain.yl.AbstractOppiaineOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineBaseDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
-import fi.vm.sade.eperusteet.repository.LaajaalainenOsaaminenRepository;
 import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
-import fi.vm.sade.eperusteet.service.exception.NotExistsException;
-import fi.vm.sade.eperusteet.service.mapping.Dto;
-import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
-@Transactional(readOnly = true)
-public class PerusopetuksenPerusteenSisaltoServiceImpl implements PerusopetuksenPerusteenSisaltoService {
-
-    @Autowired
-    private PerusopetuksenPerusteenSisaltoRepository sisaltoRepository;
-
-    @Autowired
-    private LaajaalainenOsaaminenRepository osaaminenRepository;
-
-    @Autowired
-    private PerusteenOsaViiteService viiteService;
-
-    @Autowired
-    @Dto
-    private DtoMapper mapper;
+public class PerusopetuksenPerusteenSisaltoServiceImpl
+        extends AbstractOppiaineOpetuksenSisaltoService<PerusopetuksenPerusteenSisalto>
+        implements PerusopetuksenPerusteenSisaltoService {
 
     @Override
-    public <T extends PerusteenOsaViiteDto<?>> T getSisalto(Long perusteId, Long sisaltoId, Class<T> view) {
-        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        assertExists(sisalto, "Pyydettyä perustetta ei ole olemassa");
-        return viiteService.getSisalto(perusteId, sisaltoId == null ? sisalto.getSisalto().getId() : sisaltoId, view);
-    }
-
-    @Override
-    @Transactional
-    public PerusteenOsaViiteDto.Matala addSisalto(Long perusteId, Long viiteId, PerusteenOsaViiteDto.Matala dto) {
-        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        assertExists(sisalto, "Pyydettyä perustetta ei ole olemassa");
-        if (viiteId == null) {
-            return viiteService.addSisalto(perusteId, sisalto.getSisalto().getId(), dto);
-        } else {
-            return viiteService.addSisalto(perusteId, viiteId, dto);
-        }
-    }
-
-    @Override
-    @Transactional
-    public void removeSisalto(Long perusteId, Long viiteId) {
-        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        assertExists(sisalto, "Pyydettyä perustetta ei ole olemassa");
-        viiteService.removeSisalto(perusteId, viiteId);
-    }
-
-    @Override
+    @Transactional(readOnly = true)
     public List<LaajaalainenOsaaminenDto> getLaajaalaisetOsaamiset(Long perusteId) {
-        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        assertExists(sisalto, "Pyydettyä perustetta ei ole olemassa");
-        return mapper.mapAsList(sisalto.getLaajaalaisetosaamiset(), LaajaalainenOsaaminenDto.class);
+        return mapper.mapAsList(getByPerusteId(perusteId).getLaajaalaisetosaamiset(), LaajaalainenOsaaminenDto.class);
     }
 
     @Override
-    public <T extends OppiaineBaseDto> List<T> getOppiaineet(Long perusteId, Class<T> view) {
-        PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
-        assertExists(sisalto, "Perustetta ei ole olemassa");
-        List<Oppiaine> oppiaineet = new ArrayList<>(sisalto.getOppiaineetCopy());
-        Collections.sort(oppiaineet, new Comparator<Oppiaine>() {
-            @Override
-            public int compare(Oppiaine a, Oppiaine b) {
-                Long ajnro = a.getJnro();
-                Long bjnro = b.getJnro();
-                if (ajnro == null) {
-                    return 1;
-                }
-                else if (bjnro == null) {
-                    return -1;
-                }
-                else {
-                    return Long.compare(ajnro, bjnro);
-                }
-            }
-        });
-        return mapper.mapAsList(oppiaineet, view);
-    }
-
-    @Override
+    @Transactional(readOnly = true)
     public List<VuosiluokkaKokonaisuusDto> getVuosiluokkaKokonaisuudet(Long perusteId) {
+        return mapper.mapAsList(getByPerusteId(perusteId).getVuosiluokkakokonaisuudet(), VuosiluokkaKokonaisuusDto.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    protected PerusopetuksenPerusteenSisalto getByPerusteId(Long perusteId) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         assertExists(sisalto, "Perustetta ei ole olemassa");
-        return mapper.mapAsList(sisalto.getVuosiluokkakokonaisuudet(), VuosiluokkaKokonaisuusDto.class);
+        return sisalto;
     }
-
-    private static void assertExists(Object o, String msg) {
-        if (o == null) {
-            throw new NotExistsException(msg);
-        }
-    }
-
 }
