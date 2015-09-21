@@ -15,7 +15,6 @@
  */
 package fi.vm.sade.eperusteet.domain.yl;
 
-import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import java.util.HashSet;
@@ -27,7 +26,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
@@ -42,7 +40,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Audited
 @Table(name = "yl_perusop_perusteen_sisalto")
-public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceableEntity {
+public class PerusopetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSisalto {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @Getter
@@ -61,6 +59,7 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
     @JoinTable
     private Set<LaajaalainenOsaaminen> laajaalaisetosaamiset = new HashSet<>();
 
+    @Getter
     @OneToMany(fetch = FetchType.LAZY)
     @BatchSize(size = 25)
     @JoinTable
@@ -74,19 +73,6 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
         laajaalaisetosaamiset.add(osaaminen);
     }
 
-    public void addOppiaine(Oppiaine oppiaine) {
-        if (oppiaine.getOppiaine() != null) {
-            if (containsOppiaine(oppiaine.getOppiaine())) {
-                oppiaine.getOppiaine().addOppimaara(oppiaine);
-            } else {
-                throw new IllegalArgumentException("Ei voida lisätä oppimäärää jonka oppiaine ei kuulu sisältöön");
-            }
-
-        } else {
-            oppiaineet.add(oppiaine);
-        }
-    }
-
     public void addVuosiluokkakokonaisuus(VuosiluokkaKokonaisuus kokonaisuus) {
         vuosiluokkakokonaisuudet.add(kokonaisuus);
     }
@@ -95,42 +81,12 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
         return laajaalaisetosaamiset.contains(osaaminen);
     }
 
-    public boolean containsOppiaine(Oppiaine aine) {
-        if (aine == null) {
-            return false;
-        }
-        if (aine.getOppiaine() != null) {
-            return containsOppiaine(aine.getOppiaine());
-        }
-
-        if ( oppiaineet.contains(aine) ) {
-            return true;
-        }
-
-        //revisioissa ei voi verrata object-identityn perusteella vaan täytyy käyttää pääavainta
-        for ( Oppiaine o : oppiaineet ) {
-            if ( o.getId() != null && o.getId().equals(aine.getId()) ) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public void removeOppiaine(Oppiaine aine) {
-        oppiaineet.remove(aine);
-    }
-
     public void removeVuosiluokkakokonaisuus(VuosiluokkaKokonaisuus kokonaisuus) {
         vuosiluokkakokonaisuudet.remove(kokonaisuus);
     }
 
     public void removeLaajaalainenosaaminen(LaajaalainenOsaaminen osaaminen) {
         laajaalaisetosaamiset.remove(osaaminen);
-    }
-
-    public boolean containsViite(PerusteenOsaViite viite) {
-        return viite != null && sisalto.getId().equals(viite.getRoot().getId());
     }
 
     public boolean containsVuosiluokkakokonaisuus(VuosiluokkaKokonaisuus kokonaisuus) {
@@ -160,7 +116,7 @@ public class PerusopetuksenPerusteenSisalto extends AbstractAuditedReferenceable
         }
     }
 
-    public Set<Oppiaine> getOppiaineet() {
+    public Set<Oppiaine> getOppiaineetCopy() {
         return new HashSet<>(oppiaineet);
     }
 

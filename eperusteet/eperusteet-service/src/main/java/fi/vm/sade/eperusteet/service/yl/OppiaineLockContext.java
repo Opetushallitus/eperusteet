@@ -27,20 +27,24 @@ import lombok.Setter;
 public class OppiaineLockContext {
 
     Long perusteId;
+    OppiaineOpetuksenSisaltoTyyppi tyyppi;
     Long oppiaineId;
     Long kokonaisuusId;
 
     public OppiaineLockContext() {
     }
 
-    public OppiaineLockContext(Long perusteId, Long oppiaineId, Long kokonaisuusId) {
+    public OppiaineLockContext(OppiaineOpetuksenSisaltoTyyppi tyyppi, Long perusteId, Long oppiaineId, Long kokonaisuusId) {
+        assert tyyppi != null;
+
+        this.tyyppi = tyyppi;
         this.perusteId = perusteId;
         this.oppiaineId = oppiaineId;
         this.kokonaisuusId = kokonaisuusId;
     }
 
 
-    public static OppiaineLockContext of(Long perusteId, Long oppiaineId, Long kokonaisuusId) {
-        return new OppiaineLockContext(perusteId, oppiaineId, kokonaisuusId);
+    public static OppiaineLockContext of(OppiaineOpetuksenSisaltoTyyppi tyyppi, Long perusteId, Long oppiaineId, Long kokonaisuusId) {
+        return new OppiaineLockContext(tyyppi, perusteId, oppiaineId, kokonaisuusId);
     }
 }

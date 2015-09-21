@@ -870,7 +870,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             sisalto.addVuosiluokkakokonaisuus(uusiVlk);
         }
 
-        for (Oppiaine oa : vanha.getOppiaineet()) {
+        for (Oppiaine oa : vanha.getOppiaineetCopy()) {
             sisalto.addOppiaine(oppiaineRepository.save(oa.kloonaa(laajainenOsaaminenMapper, vuosiluokkaKokonaisuusMapper)));
         }
         return sisalto;

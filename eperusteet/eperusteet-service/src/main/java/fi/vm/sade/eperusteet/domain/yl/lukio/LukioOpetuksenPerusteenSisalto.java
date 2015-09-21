@@ -15,15 +15,18 @@
  */
 package fi.vm.sade.eperusteet.domain.yl.lukio;
 
-import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.yl.AbstractOppiaineOpetuksenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * User: tommiratamaa
@@ -33,7 +36,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Audited
 @Table(name = "yl_lukioopetuksen_perusteen_sisalto", schema = "public")
-public class LukioOpetuksenPerusteenSisalto extends AbstractAuditedReferenceableEntity {
+public class LukioOpetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSisalto {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @Getter
@@ -48,14 +51,16 @@ public class LukioOpetuksenPerusteenSisalto extends AbstractAuditedReferenceable
     @JoinColumn(name="sisalto_id")
     private PerusteenOsaViite sisalto = new PerusteenOsaViite();
 
+    @Getter
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "yl_lukioopetuksen_perusteen_sisalto_yl_oppiaine", joinColumns = @JoinColumn(name = "sisalto_id", nullable = false, updatable = false),
+        inverseJoinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false))
+    private Set<Oppiaine> oppiaineet = new HashSet<>(0);
+
     public LukioOpetuksenPerusteenSisalto kloonaa(Peruste peruste) {
         LukioOpetuksenPerusteenSisalto kopio = new LukioOpetuksenPerusteenSisalto();
         kopio.peruste = peruste;
         kopio.sisalto = this.sisalto.kloonaa();
         return kopio;
-    }
-
-    public boolean containsViite(PerusteenOsaViite viite) {
-        return viite != null && sisalto.getId().equals(viite.getRoot().getId());
     }
 }

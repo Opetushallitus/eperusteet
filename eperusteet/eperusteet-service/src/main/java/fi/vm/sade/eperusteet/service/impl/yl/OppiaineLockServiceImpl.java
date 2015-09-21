@@ -15,9 +15,12 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
+import fi.vm.sade.eperusteet.domain.yl.AbstractOppiaineOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.OppiaineenVuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.repository.LukioOpetuksenPerusteenSisaltoRepository;
 import fi.vm.sade.eperusteet.repository.OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.OppiaineenVuosiluokkakokonaisuusRepository;
 import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository;
@@ -27,6 +30,7 @@ import fi.vm.sade.eperusteet.service.impl.AbstractLockService;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 /**
@@ -38,7 +42,7 @@ import org.springframework.stereotype.Service;
 public class OppiaineLockServiceImpl extends AbstractLockService<OppiaineLockContext> {
 
     @Autowired
-    private PerusopetuksenPerusteenSisaltoRepository repository;
+    private ApplicationContext applicationContext;
 
     @Autowired
     private OppiaineRepository oppiaineRepository;
@@ -60,7 +64,8 @@ public class OppiaineLockServiceImpl extends AbstractLockService<OppiaineLockCon
         }
 
         //TODO: haun optimointi
-        PerusopetuksenPerusteenSisalto s = repository.findByPerusteId(ctx.getPerusteId());
+        AbstractOppiaineOpetuksenSisalto s = ctx.getTyyppi().getRepository(applicationContext).findByPerusteId(ctx.getPerusteId());
+
         Oppiaine aine = oppiaineRepository.findOne(ctx.getOppiaineId());
         if (s == null || !s.containsOppiaine(aine)) {
             throw new BusinessRuleViolationException("Virheellinen lukitus");

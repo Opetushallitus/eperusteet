@@ -460,7 +460,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         Set<LaajaalainenOsaaminen> osaamiset = sisalto.getLaajaalaisetosaamiset();
         Set<VuosiluokkaKokonaisuus> vlks = sisalto.getVuosiluokkakokonaisuudet();
-        Set<Oppiaine> oppiaineet = sisalto.getOppiaineet();
+        Set<Oppiaine> oppiaineet = sisalto.getOppiaineetCopy();
         Set<Kieli> vaaditutKielet = peruste.getKielet();
         Map<String, String> virheellisetKielet = new HashMap<>();
 

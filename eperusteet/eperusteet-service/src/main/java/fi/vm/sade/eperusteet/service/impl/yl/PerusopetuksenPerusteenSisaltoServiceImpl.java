@@ -91,7 +91,7 @@ public class PerusopetuksenPerusteenSisaltoServiceImpl implements Perusopetuksen
     public <T extends OppiaineBaseDto> List<T> getOppiaineet(Long perusteId, Class<T> view) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         assertExists(sisalto, "Perustetta ei ole olemassa");
-        List<Oppiaine> oppiaineet = new ArrayList<>(sisalto.getOppiaineet());
+        List<Oppiaine> oppiaineet = new ArrayList<>(sisalto.getOppiaineetCopy());
         Collections.sort(oppiaineet, new Comparator<Oppiaine>() {
             @Override
             public int compare(Oppiaine a, Oppiaine b) {
