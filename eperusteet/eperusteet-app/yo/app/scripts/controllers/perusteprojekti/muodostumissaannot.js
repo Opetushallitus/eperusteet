@@ -101,15 +101,13 @@ angular.module('eperusteApp')
     var versio = $stateParams.versio ? $stateParams.versio.replace(/\//g, '') : null;
     haeRakenne(angular.noop, versio);
 
-    function tallennaRakenne(rakenne, done) {
-      done = done || _.noop;
+    function tallennaRakenne(rakenne) {
       // TODO Jos tallennettaisiin otsikkotekstikappale viitteen läpi, ei tarvitsisi erillistä perusteenosalukkoa.
       // TODO optimointi: älä tallenna otsikkoa jos sitä ei muutettu
       var otsikkoId = $scope.rakenne.muodostumisOtsikko.id;
       Lukitus.lukitsePerusteenosa(otsikkoId, function () {
-        PerusteenOsat.saveTekstikappale({
-          osanId: otsikkoId
-        }, $scope.rakenne.muodostumisOtsikko, function () {
+        PerusteenOsat.saveTekstikappale({osanId: otsikkoId},
+          $scope.rakenne.muodostumisOtsikko, function () {
           PerusteProjektiSivunavi.refresh();
           Lukitus.vapautaPerusteenosa(otsikkoId);
         }, function (res) {
@@ -128,15 +126,13 @@ angular.module('eperusteApp')
             VersionHelper.setUrl($scope.versiot);
           });
           Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
-          $scope.isLocked = false;
-          $scope.editoi = false;
-          done();
         },
         function() {
           Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
-          done();
         }
       );
+
+      $scope.isLocked = false;
     }
 
     function haeVersiot(force, cb) {
@@ -186,38 +182,41 @@ angular.module('eperusteApp')
     };
 
     Editointikontrollit.registerCallback({
-      edit: function(done) {
+      edit: function() {
         $scope.editoi = true;
-        done();
       },
       asyncValidate: function(cb) {
         lukitse(function() {
           if (Muodostumissaannot.skratchpadNotEmpty()) {
-            console.log('a');
             leikelautaDialogi(cb);
           } else {
             cb();
           }
         });
       },
-      save: function(kommentti, done) {
+      save: function(kommentti) {
         $scope.rakenne.rakenne.metadata = { kommentti: kommentti };
-        done();
         tallennaRakenne($scope.rakenne);
+        $scope.editoi = false;
       },
-      cancel: function(done) {
-        function after() {
-          Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
-          haeRakenne(function() { $scope.editoi = false; });
-          done(true);
-        }
-
+      cancel: function() {
+        Lukitus.vapautaSisalto($scope.rakenne.$peruste.id, $scope.suoritustapa);
+        haeRakenne(function() {
+          $scope.editoi = false;
+        });
+      },
+      canCancel: function () {
+        var deferred = $q.defer();
         if (Muodostumissaannot.skratchpadNotEmpty()) {
-          leikelautaDialogi(after, _.partial(done, false));
+          leikelautaDialogi(function () {
+            deferred.resolve();
+          }, function () {
+            deferred.reject();
+          });
+        } else {
+          deferred.resolve();
         }
-        else {
-          after();
-        }
+        return deferred.promise;
       }
     });
 
