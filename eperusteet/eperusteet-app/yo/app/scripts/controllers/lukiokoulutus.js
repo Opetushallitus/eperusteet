@@ -19,9 +19,7 @@
 
 angular.module('eperusteApp')
   .controller('LukiokoulutussisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state, SuoritustavanSisalto,
-      PerusopetusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot, Utils, VlkUtils) {
-
-    console.log("LukiokoulutussisaltoController TODO!");
+      LukiokoulutusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot, Utils, VlkUtils) {
 
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
@@ -34,17 +32,19 @@ angular.module('eperusteApp')
     });
 
     $scope.$watch('peruste.sisalto', function () {
+      console.log($scope.peruste);
       Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function (lapsi) {
+        console.log(lapsi);
         lapsi.$url = lapsi.perusteenOsa.tunniste === 'laajaalainenosaaminen' ?
           $state.href('root.perusteprojekti.suoritustapa.osalistaus', {
-            suoritustapa: 'perusopetus',
+            suoritustapa: 'lukio',
             osanTyyppi: 'osaaminen'
           }) :
           $state.href('root.perusteprojekti.suoritustapa.tekstikappale', {
-              suoritustapa: 'perusopetus',
-              perusteenOsaViiteId: lapsi.id,
-              versio: ''
-            });
+            suoritustapa: 'lukio',
+            perusteenOsaViiteId: lapsi.id,
+            versio: ''
+          });
       });
     }, true);
 
@@ -57,7 +57,9 @@ angular.module('eperusteApp')
       _.each($scope.datat.opetus.lapset, function (area) {
         area.$type = 'ep-parts';
         area.$url = $state.href('root.perusteprojekti.suoritustapa.osalistaus', {suoritustapa: $stateParams.suoritustapa, osanTyyppi: area.tyyppi});
-        area.$orderFn = area.tyyppi === PerusopetusService.VUOSILUOKAT ? VlkUtils.orderFn : Utils.nameSort;
+
+        area.$orderFn = Utils.nameSort;
+
         Algoritmit.kaikilleLapsisolmuille(area, 'lapset', function (lapsi) {
           lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.osaalue', {suoritustapa: $stateParams.suoritustapa, osanTyyppi: area.tyyppi, osanId: lapsi.id, tabId: 0});
           if (lapsi.koosteinen) {
@@ -68,12 +70,12 @@ angular.module('eperusteApp')
     }, true);
 
     // TODO käytä samaa APIa kuin sivunavissa, koko sisältöpuu kerralla
-    _.each(PerusopetusService.sisallot, function (item) {
+    _.each(LukiokoulutusService.sisallot, function (item) {
       var data = {
         nimi: item.label,
         tyyppi: item.tyyppi
       };
-      PerusopetusService.getOsat(item.tyyppi, true).then(function (res) {
+      LukiokoulutusService.getOsat(item.tyyppi, true).then(function (res) {
         data.lapset = res;
       });
       $scope.datat.opetus.lapset.push(data);
