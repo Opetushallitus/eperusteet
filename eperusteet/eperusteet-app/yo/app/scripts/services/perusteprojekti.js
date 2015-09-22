@@ -258,8 +258,6 @@ angular.module('eperusteApp')
       var deferred = $q.defer();
       var ylDefer = $q.defer();
 
-      console.log(!YleinenData.isPerusopetus(peruste));
-
       if (!YleinenData.isPerusopetus(peruste)) {
         SuoritustapaSisalto.get({perusteId: perusteId, suoritustapa: suoritustapa}, function(vastaus) {
           deferred.resolve(vastaus);
@@ -292,12 +290,6 @@ angular.module('eperusteApp')
 
 
     this.alustaProjektinTiedot = function (stateParams) {
-
-      console.log('alustaProjektinTiedot');
-      console.log(this);
-      console.log(stateParams);
-      console.log(this.getProjekti());
-
       PerusopetusService.setTiedot(this);
       projektinTiedotDeferred = $q.defer();
 
@@ -329,8 +321,6 @@ angular.module('eperusteApp')
     };
 
     this.alustaPerusteenSisalto = function (stateParams, forced) {
-      console.log('alustaPerusteenSisalto');
-      console.log(stateParams);
       asetaSuoritustapa(stateParams);
       PerusteProjektiService.setSuoritustapa(stateParams.suoritustapa);
       var perusteenSisaltoDeferred = $q.defer();

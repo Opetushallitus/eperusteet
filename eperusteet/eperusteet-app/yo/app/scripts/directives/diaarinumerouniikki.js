@@ -21,8 +21,6 @@ angular.module('eperusteApp')
           DiaarinumeroUniqueResource.get({
             diaarinumero: viewValue,
           }, function(vastaus) {
-            console.log(vastaus);
-            console.log(ngModel);
             ngModel.$setValidity('diaarinumerouniikki', !vastaus.loytyi || vastaus.tila === 'julkaistu');
             // ngModel.$setValidity('diaarinumerouniikki', vastaus.loytyi && vastaus.tila === 'julkaistu');
           });

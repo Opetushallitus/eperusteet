@@ -86,9 +86,6 @@ angular.module('eperusteApp')
     }
 
     function getOsaGeneric(resource, params) {
-      console.log('getOsaGenerci, lukiokoulutus');
-      console.log(resource);
-      console.log(params.osanId);
       return resource.get(commonParams({osanId: params.osanId})).$promise;
     }
 
@@ -175,8 +172,6 @@ angular.module('eperusteApp')
     };
 
     this.getSisalto = function (suoritustapa) {
-      console.log('Lukiokoulutus service getSisalto');
-      console.log(suoritustapa);
       return SuoritustapaSisalto.get(commonParams({suoritustapa: suoritustapa}));
     };
 
