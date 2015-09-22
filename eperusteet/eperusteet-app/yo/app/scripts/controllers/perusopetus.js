@@ -136,7 +136,6 @@ angular.module('eperusteApp')
     });
 
   })
-
   .controller('OsalistausController', function ($scope, $state, $stateParams, PerusopetusService,
       virheService) {
     $scope.sisaltoState = _.find(PerusopetusService.sisallot, {tyyppi: $stateParams.osanTyyppi});

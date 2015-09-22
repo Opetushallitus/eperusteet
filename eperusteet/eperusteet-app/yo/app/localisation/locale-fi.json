@@ -904,5 +904,10 @@
     "vapaa-tekstisisalto": "Vapaa tekstisisältö",
     "lisaa-vapaa-teksti": "Lisää tekstikappale",
 
-    "peruste-ei-diaarinumeroa": "Perusteelta puuttuu määräyksen diaarinumero"
+    "peruste-ei-diaarinumeroa": "Perusteelta puuttuu määräyksen diaarinumero",
+
+    "opetuksen-yleiset-tavoitteet": "Opetuksen yleiset tavoitteet",
+    "aihekokonaisuudet": "Aihekokonaisuudet",
+    "oppiaineet-oppimaarat": "Oppiaineet ja oppimäärät"
+
 }

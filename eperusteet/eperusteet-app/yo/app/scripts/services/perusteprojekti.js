@@ -183,7 +183,7 @@ angular.module('eperusteApp')
     };
   })
   .service('PerusteprojektiTiedotService', function ($q, $state, PerusteprojektiResource, Perusteet,
-      PerusteProjektiService, Notifikaatiot, YleinenData, PerusopetusService, SuoritustapaSisalto) {
+      PerusteProjektiService, Notifikaatiot, YleinenData, PerusopetusService, SuoritustapaSisalto, LukiokoulutusService) {
 
     var deferred = $q.defer();
     var projekti = {};
@@ -237,9 +237,29 @@ angular.module('eperusteApp')
       return $q.all(promises);
     }
 
+    function getLukioStructure(suoritustapa) {
+      var promises = [];
+      _.each(LukiokoulutusService.LABELS, function (key) {
+        var promise = LukiokoulutusService.getOsat(key, true);
+        promise.then(function (data) {
+          ylTiedot[key] = data;
+        });
+        promises.push(promise);
+      });
+      var sisaltoPromise = LukiokoulutusService.getSisalto(suoritustapa).$promise;
+      sisaltoPromise.then(function (data) {
+        ylTiedot.sisalto = data;
+      });
+      promises.push(sisaltoPromise);
+      return $q.all(promises);
+    }
+
     this.haeSisalto = function(perusteId, suoritustapa) {
       var deferred = $q.defer();
       var ylDefer = $q.defer();
+
+      console.log(!YleinenData.isPerusopetus(peruste));
+
       if (!YleinenData.isPerusopetus(peruste)) {
         SuoritustapaSisalto.get({perusteId: perusteId, suoritustapa: suoritustapa}, function(vastaus) {
           deferred.resolve(vastaus);
@@ -248,6 +268,14 @@ angular.module('eperusteApp')
           deferred.reject(virhe);
         });
         ylDefer.resolve();
+      } else if(YleinenData.isLukiokoulutus(peruste) ) {
+
+        getLukioStructure(suoritustapa).then(function () {
+          ylDefer.resolve();
+          sisalto = ylTiedot.sisalto;
+          deferred.resolve(ylTiedot.sisalto);
+        });
+
       } else {
         getYlStructure(suoritustapa).then(function () {
           ylDefer.resolve();
@@ -264,6 +292,12 @@ angular.module('eperusteApp')
 
 
     this.alustaProjektinTiedot = function (stateParams) {
+
+      console.log('alustaProjektinTiedot');
+      console.log(this);
+      console.log(stateParams);
+      console.log(this.getProjekti());
+
       PerusopetusService.setTiedot(this);
       projektinTiedotDeferred = $q.defer();
 
@@ -295,6 +329,8 @@ angular.module('eperusteApp')
     };
 
     this.alustaPerusteenSisalto = function (stateParams, forced) {
+      console.log('alustaPerusteenSisalto');
+      console.log(stateParams);
       asetaSuoritustapa(stateParams);
       PerusteProjektiService.setSuoritustapa(stateParams.suoritustapa);
       var perusteenSisaltoDeferred = $q.defer();
@@ -310,6 +346,7 @@ angular.module('eperusteApp')
       } else {
         perusteenSisaltoDeferred.resolve();
       }
+
       return perusteenSisaltoDeferred.promise;
     };
 

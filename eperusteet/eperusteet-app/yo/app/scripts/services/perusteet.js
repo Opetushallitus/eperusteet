@@ -137,6 +137,34 @@ angular.module('eperusteApp')
       id: '@id'
     });
   })
+  .factory('LukiokoulutuksenSisalto', function($resource, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/sisalto';
+    return $resource(baseUrl + '/:osanId', {
+      osanId: '@id',
+      perusteId: '@perusteId'
+    }, {
+      root: {method: 'GET', isArray: false, url: baseUrl},
+      addChild: {
+        method: 'POST',
+        url: baseUrl + '/:osanId/lapset'
+      },
+      updateViitteet: {method: 'POST', url: baseUrl + '/:osanId'}
+    });
+  })
+  .factory('LukiokoulutuksenYleisetTavoitteet', function($resource, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/sisalto';
+    return $resource(baseUrl + '/:osanId', {
+      osanId: '@id',
+      perusteId: '@perusteId'
+    }, {
+      root: {method: 'GET', isArray: false, url: baseUrl},
+      addChild: {
+        method: 'POST',
+        url: baseUrl + '/:osanId/lapset'
+      },
+      updateViitteet: {method: 'POST', url: baseUrl + '/:osanId'}
+    });
+  })
   .service('SuoritustavanSisalto', function($modal, $state, Algoritmit, SuoritustapaSisalto, PerusteenOsat, PerusteProjektiService, Notifikaatiot) {
     function lisaaSisalto(perusteId, method, sisalto, cb) {
       cb = cb || angular.noop;

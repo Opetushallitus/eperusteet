@@ -157,6 +157,10 @@ angular.module('eperusteApp')
       return peruste.koulutustyyppi === 'koulutustyyppi_15';
     };
 
+    this.isLukiokoulutus = function (peruste) {
+      return peruste.koulutustyyppi === 'koulutustyyppi_2';
+    };
+
     this.isSimple = function (peruste) {
       return this.isEsiopetus(peruste) || this.isLisaopetus(peruste) || this.isVarhaiskasvatus(peruste);
     };
