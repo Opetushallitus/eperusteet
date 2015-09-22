@@ -193,7 +193,6 @@ angular.module('eperusteApp')
       asyncValidate: function(cb) {
         lukitse(function() {
           if (Muodostumissaannot.skratchpadNotEmpty()) {
-            console.log('a');
             leikelautaDialogi(cb);
           } else {
             cb();

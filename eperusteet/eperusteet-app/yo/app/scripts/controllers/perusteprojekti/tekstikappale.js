@@ -413,7 +413,6 @@ angular.module('eperusteApp')
     };
 
     $scope.addLapsi = function () {
-      console.log('moro');
       TekstikappaleOperations.addChild($scope.viiteId(), $stateParams.suoritustapa);
     };
 
