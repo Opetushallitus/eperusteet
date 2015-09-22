@@ -85,10 +85,12 @@ angular.module('eperusteApp')
 
     function tilaToLukkoResource() {
       // TODO: Lisää muille tiloille vastaavat
-      if ($state.current.name === 'root.perusteprojekti.suoritustapa.osaalue') {
+      if ($state.current.name === 'root.perusteprojekti.suoritustapa.osaalue'
+          || $state.current.name === 'root.perusteprojekti.suoritustapa.lukioosaalue') {
         switch($stateParams.osanTyyppi) {
           // case '': return LukkoPerusteenosa;
           // case '': return LukkoRakenne;
+          case 'oppiaineet_oppimaarat':return LukkoOppiaine;
           case 'oppiaineet': return LukkoOppiaine;
           // case '': return LukkoOppiaineenVuosiluokkakokonaisuus;
           // case '': return LukkoPerusteenosaByTutkinnonOsaViite;

@@ -166,7 +166,7 @@ angular.module('eperusteApp', [
     angular.element(window).on('mousemove', f);
   })
   .run(function($rootScope, $modal, $location, $window, $state, $http, paginationConfig, Editointikontrollit,
-    Varmistusdialogi, Kaanna, virheService) {
+    Varmistusdialogi, Kaanna, virheService, $log) {
     paginationConfig.firstText = '';
     paginationConfig.previousText = '';
     paginationConfig.nextText = '';
@@ -252,7 +252,8 @@ angular.module('eperusteApp', [
       }
     });
 
-    $rootScope.$on('$stateChangeError', function(event, toState) {
+    $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
+      $log.error(error);
       virheService.virhe({state: toState.name});
     });
 

@@ -18,8 +18,9 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .controller('LukiokoulutussisaltoController', function ($scope, perusteprojektiTiedot, Algoritmit, $state, SuoritustavanSisalto,
-      LukiokoulutusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot, Utils, VlkUtils) {
+  .controller('LukiokoulutussisaltoController',
+  function ($scope, perusteprojektiTiedot, Algoritmit, $state, SuoritustavanSisalto,
+      LukiokoulutusService, TekstikappaleOperations, Editointikontrollit, $stateParams, Notifikaatiot, Utils, $log) {
 
     $scope.projekti = perusteprojektiTiedot.getProjekti();
     $scope.peruste = perusteprojektiTiedot.getPeruste();
@@ -33,16 +34,9 @@ angular.module('eperusteApp')
 
     $scope.$watch('peruste.sisalto', function () {
       Algoritmit.kaikilleLapsisolmuille($scope.peruste.sisalto, 'lapset', function (lapsi) {
-        lapsi.$url = lapsi.perusteenOsa.tunniste === 'laajaalainenosaaminen' ?
-          $state.href('root.perusteprojekti.suoritustapa.osalistaus', {
-            suoritustapa: 'lukio',
-            osanTyyppi: 'osaaminen'
-          }) :
-          $state.href('root.perusteprojekti.suoritustapa.tekstikappale', {
-            suoritustapa: 'lukio',
-            perusteenOsaViiteId: lapsi.id,
-            versio: ''
-          });
+        $state.href('root.perusteprojekti.suoritustapa.lukioosat', {
+          osanTyyppi: 'osaaminen'
+        });
       });
     }, true);
 
@@ -54,12 +48,13 @@ angular.module('eperusteApp')
     $scope.$watch('datat.opetus.lapset', function () {
       _.each($scope.datat.opetus.lapset, function (area) {
         area.$type = 'ep-parts';
-        area.$url = $state.href('root.perusteprojekti.suoritustapa.osalistaus', {suoritustapa: $stateParams.suoritustapa, osanTyyppi: area.tyyppi});
+        area.$url = $state.href('root.perusteprojekti.suoritustapa.lukioosat', {osanTyyppi: area.tyyppi});
+        $log.info("URL: " + area.$url + ", " + area.tyyppi);
 
         area.$orderFn = Utils.nameSort;
 
         Algoritmit.kaikilleLapsisolmuille(area, 'lapset', function (lapsi) {
-          lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.osaalue', {suoritustapa: $stateParams.suoritustapa, osanTyyppi: area.tyyppi, osanId: lapsi.id, tabId: 0});
+          lapsi.$url = $state.href('root.perusteprojekti.suoritustapa.lukioosaalue', {osanTyyppi: area.tyyppi, osanId: lapsi.id, tabId: 0});
           if (lapsi.koosteinen) {
             lapsi.lapset = _.sortBy(lapsi.oppimaarat, Utils.nameSort);
           }
@@ -138,4 +133,59 @@ angular.module('eperusteApp')
       }
     });
 
-  });
+  }
+).controller('LukioOsalistausController', function ($scope, $state, $stateParams, LukiokoulutusService,
+                                                virheService) {
+    $scope.sisaltoState = _.find(LukiokoulutusService.sisallot, {tyyppi: $stateParams.osanTyyppi});
+    if (!$scope.sisaltoState) {
+      $log.error("LukioOsalistausController osaTyyppi: "+ $stateParams.osanTyyppi);
+      virheService.virhe({
+        muu:'virhe-sivua-ei-löytynyt',
+        state: $stateParams.osanTyyppi
+      });
+      return;
+    }
+    var vuosiluokkakokonaisuudet = [];
+    $scope.osaAlueet = [];
+    LukiokoulutusService.getOsat($stateParams.osanTyyppi).then(function (res) {
+      $scope.osaAlueet = res;
+    });
+    //if ($stateParams.osanTyyppi === LukiokoulutusService.OPPIAINEET_OPPIMAARAT) {
+    //  LukiokoulutusService.getOsat(PerusopetusService.OPPIAINEET_OPPIMAARAT, true).then(function (res) {
+    //    vuosiluokkakokonaisuudet = res;
+    //  });
+    //}
+
+    $scope.options = {};
+
+    $scope.createUrl = function (value) {
+      return $state.href('root.perusteprojekti.suoritustapa.lukioosaalue', {
+        suoritustapa: $stateParams.suoritustapa,
+        osanTyyppi: $stateParams.osanTyyppi,
+        osanId: value.id,
+        tabId: 0
+      });
+    };
+
+    $scope.add = function () {
+      $state.go('root.perusteprojekti.suoritustapa.lukioosaalue', {
+        suoritustapa: $stateParams.suoritustapa,
+        osanTyyppi: $stateParams.osanTyyppi,
+        osanId: 'uusi',
+        tabId: 0
+      });
+    };
+  })
+  .controller('LukioOsaAlueController', function ($scope, $q, $stateParams, LukiokoulutusService,
+                                                  ProjektinMurupolkuService) {
+    $scope.isOppiaine = $stateParams.osanTyyppi === LukiokoulutusService.OPPIAINEET_OPPIMAARAT;
+    $scope.isAihekokonaisuus = $stateParams.osanTyyppi === LukiokoulutusService.AIHEKOKONAISUUDET;
+    $scope.versiot = {latest: true};
+    $scope.dataObject = LukiokoulutusService.getOsa($stateParams);
+    var labels = _.invert(LukiokoulutusService.LABELS);
+    ProjektinMurupolkuService.set('osanTyyppi', $stateParams.osanTyyppi, labels[$stateParams.osanTyyppi]);
+    $scope.dataObject.then(function (res) {
+      ProjektinMurupolkuService.set('osanId', $stateParams.osanId, res.nimi);
+    });
+  })
+;

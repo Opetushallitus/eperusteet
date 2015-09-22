@@ -27,7 +27,7 @@ angular.module('eperusteApp')
           'koulutusalaService': 'Koulutusalat',
           'opintoalaService': 'Opintoalat',
           'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
-          'perusteprojektiAlustus': ['perusteprojektiTiedot', '$stateParams', function(perusteprojektiTiedot, $stateParams) {
+          'perusteprojektiAlustus': ['perusteprojektiTiedot', '$stateParams', '$log', function(perusteprojektiTiedot, $stateParams, $log) {
               return perusteprojektiTiedot.alustaProjektinTiedot($stateParams);
             }],
           'perusteprojektiOikeudet': 'PerusteprojektiOikeudetService',
@@ -36,6 +36,40 @@ angular.module('eperusteApp')
           }]
         },
         abstract: true
+      })
+      .state('root.perusteprojekti.suoritustapa.lukioosat', {
+        url: '/lukioosat/:osanTyyppi',
+        templateUrl: 'views/partials/lukio/osat/osalistaus.html',
+        controller: 'LukioOsalistausController',
+        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
+          'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
+            return perusteprojektiTiedot.projektinTiedotAlustettu();
+          }],
+          'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
+            function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
+              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
+            }]
+        },
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible();
+        }]
+      })
+      .state('root.perusteprojekti.suoritustapa.lukioosaalue', {
+        url: '/lukioosat/:osanTyyppi/:osanId/:tabId',
+        templateUrl: 'views/partials/perusteprojekti/osaalue.html',
+        resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
+          'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
+            return perusteprojektiTiedot.projektinTiedotAlustettu();
+          }],
+          'perusteenSisaltoAlustus': ['perusteprojektiTiedot', 'projektinTiedotAlustettu', '$stateParams',
+            function(perusteprojektiTiedot, projektinTiedotAlustettu, $stateParams) {
+              return perusteprojektiTiedot.alustaPerusteenSisalto($stateParams);
+            }]
+        },
+        controller: 'LukioOsaAlueController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible();
+        }]
       })
       .state('root.perusteprojekti.suoritustapa.osalistaus', {
         url: '/osat/:osanTyyppi',
@@ -153,7 +187,10 @@ angular.module('eperusteApp')
       .state('root.perusteprojekti.suoritustapa.lukiosisalto', {
         url: '/lukiosisalto',
         templateUrl: 'views/partials/perusteprojekti/lukiokoulutus.html',
-        controller: 'LukiokoulutussisaltoController'
+        controller: 'LukiokoulutussisaltoController',
+        onEnter: ['PerusteProjektiSivunavi', function(PerusteProjektiSivunavi) {
+          PerusteProjektiSivunavi.setVisible(false);
+        }]
       })
       .state('root.perusteprojekti.suoritustapa.losisalto', {
         url: '/losisalto',
@@ -235,9 +272,9 @@ angular.module('eperusteApp')
       });
   })
   .controller('PerusteprojektiCtrl', function($scope, $state, $stateParams,
-    koulutusalaService, opintoalaService, Navigaatiopolku, ProxyService, TiedoteService,
-    PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation,
-    SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet, TermistoService, Kieli) {
+      koulutusalaService, opintoalaService, Navigaatiopolku, ProxyService, TiedoteService,
+      PerusteProjektiService, perusteprojektiTiedot, PerusteProjektiSivunavi, PdfCreation,
+      SuoritustapaSisalto, Notifikaatiot, TutkinnonOsaEditMode, perusteprojektiOikeudet, TermistoService, Kieli) {
     $scope.muokkausEnabled = false;
     $scope.pdfEnabled = false;
 

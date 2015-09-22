@@ -106,6 +106,12 @@ angular.module('eperusteApp')
       kohdealueet: {method: 'GET', isArray: true, url: baseUrl + '/kohdealueet'}
     });
   })
+  .factory('LukionOppiaineet', function($resource, SERVICE_LOC) {
+    var baseUrl = SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/oppiaineet/:osanId';
+    return $resource(baseUrl, {osanId: '@id'}, {
+      oppimaarat: {method: 'GET', isArray: true, url: baseUrl + '/oppimaarat'}
+    });
+  })
   .factory('OppiaineenVuosiluokkakokonaisuudet', function($resource, SERVICE_LOC) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/oppiaineet/:oppiaineId/vuosiluokkakokonaisuudet/:osanId', {
       osanId: '@id'

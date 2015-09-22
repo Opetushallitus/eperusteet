@@ -219,7 +219,7 @@ angular.module('eperusteApp')
       sisalto = {};
     };
 
-    function getYlStructure(suoritustapa) {
+    function getYlStructure(dataProvider) {
       // TODO replace with one resource call that fetches the whole structure
       var promises = [];
       _.each(PerusopetusService.LABELS, function (key) {
@@ -229,24 +229,7 @@ angular.module('eperusteApp')
         });
         promises.push(promise);
       });
-      var sisaltoPromise = PerusopetusService.getSisalto(suoritustapa).$promise;
-      sisaltoPromise.then(function (data) {
-        ylTiedot.sisalto = data;
-      });
-      promises.push(sisaltoPromise);
-      return $q.all(promises);
-    }
-
-    function getLukioStructure(suoritustapa) {
-      var promises = [];
-      _.each(LukiokoulutusService.LABELS, function (key) {
-        var promise = LukiokoulutusService.getOsat(key, true);
-        promise.then(function (data) {
-          ylTiedot[key] = data;
-        });
-        promises.push(promise);
-      });
-      var sisaltoPromise = LukiokoulutusService.getSisalto(suoritustapa).$promise;
+      var sisaltoPromise = dataProvider().$promise;
       sisaltoPromise.then(function (data) {
         ylTiedot.sisalto = data;
       });
@@ -266,16 +249,18 @@ angular.module('eperusteApp')
           deferred.reject(virhe);
         });
         ylDefer.resolve();
-      } else if(YleinenData.isLukiokoulutus(peruste) ) {
-
-        getLukioStructure(suoritustapa).then(function () {
-          ylDefer.resolve();
-          sisalto = ylTiedot.sisalto;
-          deferred.resolve(ylTiedot.sisalto);
-        });
-
-      } else {
-        getYlStructure(suoritustapa).then(function () {
+      } else  {
+        var dataProvider;
+        if (YleinenData.isLukiokoulutus(peruste)) {
+          dataProvider = function() {
+            return LukiokoulutusService.getSisalto();
+          };
+        } else {
+          dataProvider = function() {
+            return PerusopetusService.getSisalto(suoritustapa)
+          };
+        }
+        getYlStructure(dataProvider).then(function () {
           ylDefer.resolve();
           sisalto = ylTiedot.sisalto;
           deferred.resolve(ylTiedot.sisalto);
@@ -290,6 +275,7 @@ angular.module('eperusteApp')
 
 
     this.alustaProjektinTiedot = function (stateParams) {
+      LukiokoulutusService.setTiedot(this);
       PerusopetusService.setTiedot(this);
       projektinTiedotDeferred = $q.defer();
 

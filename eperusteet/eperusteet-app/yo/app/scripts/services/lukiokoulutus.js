@@ -18,10 +18,8 @@
 /*global _*/
 
 angular.module('eperusteApp')
-  .service('LukiokoulutusService', function (Vuosiluokkakokonaisuudet, Oppiaineet, $q, Notifikaatiot,
-      LukiokoulutuksenSisalto, LukiokoulutuksenYleisetTavoitteet,
-      OppiaineenVuosiluokkakokonaisuudet, LaajaalaisetOsaamiset,
-      PerusopetuksenSisalto, SuoritustapaSisalto) {
+  .service('LukiokoulutusService', function (LukionOppiaineet, $q, Notifikaatiot,
+      LukiokoulutuksenSisalto, LukiokoulutuksenYleisetTavoitteet, $log) {
 
     this.OPETUKSEN_YLEISET_TAVOITTEET = 'opetuksen_yleiset_tavoitteet';
     this.AIHEKOKONAISUUDET = 'aihekokonaisuudet';
@@ -33,12 +31,12 @@ angular.module('eperusteApp')
       'oppiaineet-oppimaarat': this.OPPIAINEET_OPPIMAARAT
     };
 
-
     var tiedot = null;
     var cached = {};
     this.setTiedot = function (value) {
       tiedot = value;
     };
+
     this.getPerusteId = function () {
       return tiedot.getProjekti()._peruste;
     };
@@ -61,8 +59,9 @@ angular.module('eperusteApp')
         label: 'oppiaineet-oppimaarat',
         emptyPlaceholder: 'tyhja-placeholder-oppiaineet-oppimaarat',
         addLabel: 'lisaa-oppiaine'
-      },
+      }
     ];
+
     var errorCb = function (err) {
       Notifikaatiot.serverCb(err);
     };
@@ -97,11 +96,11 @@ angular.module('eperusteApp')
         case this.OPETUKSEN_YLEISET_TAVOITTEET:
           return getOsaGeneric(LukiokoulutuksenYleisetTavoitteet, params);
         case this.AIHEKOKONAISUUDET:
-          return getOsaGeneric(Oppiaineet, params);
+          return getOsaGeneric(LukionOppiaineet, params);
         case this.OPPIAINEET_OPPIMAARAT:
-          return getOsaGeneric(LaajaalaisetOsaamiset, params);
+          return getOsaGeneric(LukionOppiaineet, params);
         case 'tekstikappale':
-          return getOsaGeneric(PerusopetuksenSisalto, params);
+          return getOsaGeneric(LukiokoulutuksenSisalto, params);
         default:
           break;
       }
@@ -120,10 +119,7 @@ angular.module('eperusteApp')
       var successCb = success || angular.noop;
       switch (config.osanTyyppi) {
         case this.OPPIAINEET:
-          Oppiaineet.save(commonParams(), data, successCb, errorCb);
-          break;
-        case this.OSAAMINEN:
-          LaajaalaisetOsaamiset.save(commonParams(), data, successCb, errorCb);
+          LukionOppiaineet.save(commonParams(), data, successCb, errorCb);
           break;
         default:
           // Sisältö
@@ -141,24 +137,6 @@ angular.module('eperusteApp')
       LukiokoulutuksenSisalto.updateViitteet(payload, success, Notifikaatiot.serverCb);
     };
 
-    this.saveVuosiluokkakokonaisuudenOsa = function (vuosiluokkakokonaisuus, oppiaine, cb) {
-      OppiaineenVuosiluokkakokonaisuudet.save({
-        perusteId: tiedot.getProjekti()._peruste,
-        oppiaineId: oppiaine.id
-      }, vuosiluokkakokonaisuus, function (res) {
-        vuosiluokkakokonaisuus = res;
-        (cb || angular.noop)();
-      }, errorCb);
-    };
-
-    this.deleteOppiaineenVuosiluokkakokonaisuus = function (vlk, oppiaineId) {
-      return OppiaineenVuosiluokkakokonaisuudet.delete({
-        perusteId: tiedot.getProjekti()._peruste,
-        oppiaineId: oppiaineId,
-        osanId: vlk.id
-      }, angular.noop, errorCb);
-    };
-
     this.getTekstikappaleet = function () {
       // TODO oikea data
       return [];
@@ -168,10 +146,10 @@ angular.module('eperusteApp')
       if (!oppiaine.koosteinen) {
         return promisify([]);
       }
-      return Oppiaineet.oppimaarat(commonParams({osanId: oppiaine.id})).$promise;
+      return LukionOppiaineet.oppimaarat(commonParams({osanId: oppiaine.id})).$promise;
     };
 
-    this.getSisalto = function (suoritustapa) {
+    this.getSisalto = function () {
       return SuoritustapaSisalto.get(commonParams({suoritustapa: suoritustapa}));
     };
 
@@ -184,20 +162,14 @@ angular.module('eperusteApp')
         return promisify(cached[tyyppi]);
       }
       switch(tyyppi) {
-        case this.OPETUKSEN_YLEISET_TAVOITTEET :
-          return LaajaalaisetOsaamiset.query(commonParams(), function (data) {
-            cached[tyyppi] = data;
-          }).$promise;
+        case this.OPETUKSEN_YLEISET_TAVOITTEET:
         case this.AIHEKOKONAISUUDET:
-          return Vuosiluokkakokonaisuudet.query(commonParams(), function (data) {
-            cached[tyyppi] = data;
-          }).$promise;
         case this.OPPIAINEET_OPPIMAARAT:
-          return Oppiaineet.query(commonParams(), function (data) {
+          return LukionOppiaineet.query(commonParams(), function (data) {
             cached[tyyppi] = data;
           }).$promise;
         default:
-          return [];
+              return {};
       }
     };
   });

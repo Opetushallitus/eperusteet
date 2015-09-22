@@ -192,7 +192,7 @@ public class OppiaineServiceImpl implements OppiaineService {
 
     @Override
     public OppiaineDto getOppiaine(long perusteId, long oppiaineId, OppiaineOpetuksenSisaltoTyyppi tyyppi) {
-        PerusopetuksenPerusteenSisalto sisalto = perusOpetuksenSisaltoRepository.findByPerusteId(perusteId);
+        AbstractOppiaineOpetuksenSisalto sisalto = tyyppi.getRepository(applicationContext).findByPerusteId(perusteId);
         Oppiaine aine = oppiaineRepository.findOne(oppiaineId);
 
         if (sisalto != null && sisalto.containsOppiaine(aine)) {
