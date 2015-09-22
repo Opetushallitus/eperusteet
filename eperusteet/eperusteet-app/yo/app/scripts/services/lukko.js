@@ -38,6 +38,12 @@ angular.module('eperusteApp')
       perusteId: '@perusteId'
     });
   })
+  .factory('LukkoLukioOppiaine', function (SERVICE_LOC, $resource) {
+    return $resource(SERVICE_LOC + '/perusteet/:perusteId/lukiokoulutus/oppiaineet/:osanId/lukko', {
+      osanId: '@osanId',
+      perusteId: '@perusteId'
+    });
+  })
   .factory('LukkoLaajaalainenOsaaminen', function (SERVICE_LOC, $resource) {
     return $resource(SERVICE_LOC + '/perusteet/:perusteId/perusopetus/laajaalaisetosaamiset/:osanId/lukko', {
       osanId: '@osanId',
@@ -69,7 +75,7 @@ angular.module('eperusteApp')
   })
   .service('Lukitus', function($rootScope, $state, $stateParams, LUKITSIN_MINIMI, LUKITSIN_MAKSIMI, $timeout,
     Profiili, LukkoPerusteenosa, LukkoRakenne, Notifikaatiot, $modal, Editointikontrollit, Kaanna,
-    LukkoOppiaine, PerusopetusService, LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite, LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen) {
+    LukkoOppiaine, LukkoLukioOppiaine, PerusopetusService, LukkoOppiaineenVuosiluokkakokonaisuus, LukkoPerusteenosaByTutkinnonOsaViite, LukkoVuosiluokkakokonaisuus, LukkoLaajaalainenOsaaminen) {
 
     var lukitsin = null;
     var etag = null;
@@ -85,12 +91,16 @@ angular.module('eperusteApp')
 
     function tilaToLukkoResource() {
       // TODO: Lisää muille tiloille vastaavat
-      if ($state.current.name === 'root.perusteprojekti.suoritustapa.osaalue'
-          || $state.current.name === 'root.perusteprojekti.suoritustapa.lukioosaalue') {
+      if ($state.current.name === 'root.perusteprojekti.suoritustapa.lukioosaalue') {
+        switch($stateParams.osanTyyppi) {
+          case 'oppiaineet_oppimaarat':return LukkoLukioOppiaine;
+          default: return null;
+        }
+      }
+      if ($state.current.name === 'root.perusteprojekti.suoritustapa.osaalue') {
         switch($stateParams.osanTyyppi) {
           // case '': return LukkoPerusteenosa;
           // case '': return LukkoRakenne;
-          case 'oppiaineet_oppimaarat':return LukkoOppiaine;
           case 'oppiaineet': return LukkoOppiaine;
           // case '': return LukkoOppiaineenVuosiluokkakokonaisuus;
           // case '': return LukkoPerusteenosaByTutkinnonOsaViite;
@@ -104,6 +114,9 @@ angular.module('eperusteApp')
     function tilaToLukkoParams() {
       // TODO: Lisää muille tiloille vastaavat
       if ($state.current.name === 'root.perusteprojekti.suoritustapa.osaalue' && $stateParams.osanTyyppi && $stateParams.osanId !== 'uusi') {
+        return { perusteId: PerusopetusService.getPerusteId(), osanId: $stateParams.osanId };
+      }
+      if ($state.current.name === 'root.perusteprojekti.suoritustapa.lukioosaalue' && $stateParams.osanTyyppi && $stateParams.osanId !== 'uusi') {
         return { perusteId: PerusopetusService.getPerusteId(), osanId: $stateParams.osanId };
       }
     }

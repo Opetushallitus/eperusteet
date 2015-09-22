@@ -118,7 +118,7 @@ angular.module('eperusteApp')
     this.saveOsa = function (data, config, success) {
       var successCb = success || angular.noop;
       switch (config.osanTyyppi) {
-        case this.OPPIAINEET:
+        case this.OPPIAINEET_OPPIMAARAT:
           LukionOppiaineet.save(commonParams(), data, successCb, errorCb);
           break;
         default:

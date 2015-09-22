@@ -47,6 +47,7 @@ public abstract class AbstractLockController<T> {
 
     @RequestMapping(method = GET)
     public ResponseEntity<LukkoDto> checkLock(T ctx) {
+        handleContext(ctx);
         LukkoDto lock = service().getLock(ctx);
         lukkomanageri.lisaaNimiLukkoon(lock);
         return lock == null ? new ResponseEntity<LukkoDto>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(lock, eTagHeader(lock.getRevisio()), HttpStatus.OK);
@@ -54,14 +55,17 @@ public abstract class AbstractLockController<T> {
 
     @RequestMapping(method = POST)
     public ResponseEntity<LukkoDto> lock(T ctx,
-        @RequestHeader(value = "If-Match", required = false) String eTag) {
+            @RequestHeader(value = "If-Match", required = false) String eTag) {
+        handleContext(ctx);
         LukkoDto lock = service().lock(ctx, revisionOf(eTag));
         if (lock == null) {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         } else {
             return new ResponseEntity<>(lock, eTagHeader(lock.getRevisio()), HttpStatus.CREATED);
         }
+    }
 
+    protected void handleContext(T ctx) {
     }
 
     @RequestMapping(method = DELETE)

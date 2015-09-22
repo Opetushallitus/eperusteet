@@ -56,7 +56,7 @@ angular.module('eperusteApp')
       })
       .state('root.perusteprojekti.suoritustapa.lukioosaalue', {
         url: '/lukioosat/:osanTyyppi/:osanId/:tabId',
-        templateUrl: 'views/partials/perusteprojekti/osaalue.html',
+        templateUrl: 'views/partials/lukio/osat/osaalue.html',
         resolve: {'perusteprojektiTiedot': 'PerusteprojektiTiedotService',
           'projektinTiedotAlustettu': ['perusteprojektiTiedot', function(perusteprojektiTiedot) {
             return perusteprojektiTiedot.projektinTiedotAlustettu();

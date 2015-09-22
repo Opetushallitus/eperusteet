@@ -219,17 +219,17 @@ angular.module('eperusteApp')
       sisalto = {};
     };
 
-    function getYlStructure(dataProvider) {
+    function getYlStructure(labels, osatProvider, sisaltoProvider) {
       // TODO replace with one resource call that fetches the whole structure
       var promises = [];
-      _.each(PerusopetusService.LABELS, function (key) {
-        var promise = PerusopetusService.getOsat(key, true);
+      _.each(labels, function (key) {
+        var promise = osatProvider(key);
         promise.then(function (data) {
           ylTiedot[key] = data;
         });
         promises.push(promise);
       });
-      var sisaltoPromise = dataProvider().$promise;
+      var sisaltoPromise = sisaltoProvider();
       sisaltoPromise.then(function (data) {
         ylTiedot.sisalto = data;
       });
@@ -250,17 +250,27 @@ angular.module('eperusteApp')
         });
         ylDefer.resolve();
       } else  {
-        var dataProvider;
+        var labels,
+            osatProvider,
+            sisaltoProvider;
         if (YleinenData.isLukiokoulutus(peruste)) {
-          dataProvider = function() {
-            return LukiokoulutusService.getSisalto();
+          labels = LukiokoulutusService.LABELS;
+          osatProvider = function(key) {
+            return LukiokoulutusService.getOsat(key, true);
+          };
+          sisaltoProvider = function() {
+            return LukiokoulutusService.getSisalto().$promise;
           };
         } else {
-          dataProvider = function() {
-            return PerusopetusService.getSisalto(suoritustapa)
+          labels = PerusopetusService.LABELS;
+          osatProvider = function(key) {
+            return PerusopetusService.getOsat(key, true);
+          };
+          sisaltoProvider = function() {
+            return PerusopetusService.getSisalto(suoritustapa).$promise;
           };
         }
-        getYlStructure(dataProvider).then(function () {
+        getYlStructure(labels, osatProvider, sisaltoProvider).then(function () {
           ylDefer.resolve();
           sisalto = ylTiedot.sisalto;
           deferred.resolve(ylTiedot.sisalto);

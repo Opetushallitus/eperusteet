@@ -134,33 +134,24 @@ angular.module('eperusteApp')
     });
 
   }
-).controller('LukioOsalistausController', function ($scope, $state, $stateParams, LukiokoulutusService,
+)
+.controller('LukioOsalistausController', function ($scope, $state, $stateParams, LukiokoulutusService,
                                                 virheService) {
     $scope.sisaltoState = _.find(LukiokoulutusService.sisallot, {tyyppi: $stateParams.osanTyyppi});
     if (!$scope.sisaltoState) {
       $log.error("LukioOsalistausController osaTyyppi: "+ $stateParams.osanTyyppi);
-      virheService.virhe({
-        muu:'virhe-sivua-ei-löytynyt',
-        state: $stateParams.osanTyyppi
-      });
+      virheService.virhe('virhe-sivua-ei-löytynyt');
       return;
     }
-    var vuosiluokkakokonaisuudet = [];
     $scope.osaAlueet = [];
     LukiokoulutusService.getOsat($stateParams.osanTyyppi).then(function (res) {
       $scope.osaAlueet = res;
     });
-    //if ($stateParams.osanTyyppi === LukiokoulutusService.OPPIAINEET_OPPIMAARAT) {
-    //  LukiokoulutusService.getOsat(PerusopetusService.OPPIAINEET_OPPIMAARAT, true).then(function (res) {
-    //    vuosiluokkakokonaisuudet = res;
-    //  });
-    //}
 
     $scope.options = {};
 
     $scope.createUrl = function (value) {
       return $state.href('root.perusteprojekti.suoritustapa.lukioosaalue', {
-        suoritustapa: $stateParams.suoritustapa,
         osanTyyppi: $stateParams.osanTyyppi,
         osanId: value.id,
         tabId: 0
@@ -169,14 +160,13 @@ angular.module('eperusteApp')
 
     $scope.add = function () {
       $state.go('root.perusteprojekti.suoritustapa.lukioosaalue', {
-        suoritustapa: $stateParams.suoritustapa,
         osanTyyppi: $stateParams.osanTyyppi,
         osanId: 'uusi',
         tabId: 0
       });
     };
   })
-  .controller('LukioOsaAlueController', function ($scope, $q, $stateParams, LukiokoulutusService,
+.controller('LukioOsaAlueController', function ($scope, $q, $stateParams, LukiokoulutusService,
                                                   ProjektinMurupolkuService) {
     $scope.isOppiaine = $stateParams.osanTyyppi === LukiokoulutusService.OPPIAINEET_OPPIMAARAT;
     $scope.isAihekokonaisuus = $stateParams.osanTyyppi === LukiokoulutusService.AIHEKOKONAISUUDET;
@@ -187,5 +177,4 @@ angular.module('eperusteApp')
     $scope.dataObject.then(function (res) {
       ProjektinMurupolkuService.set('osanId', $stateParams.osanId, res.nimi);
     });
-  })
-;
+});

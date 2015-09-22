@@ -272,7 +272,7 @@ public class OppiaineServiceImpl implements OppiaineService {
     public OppiaineDto updateOppiaine(Long perusteId, UpdateDto<OppiaineDto> updateDto, OppiaineOpetuksenSisaltoTyyppi tyyppi) {
         OppiaineDto dto = updateDto.getDto();
         Oppiaine aine = oppiaineRepository.findOne(dto.getId());
-        PerusopetuksenPerusteenSisalto sisalto = perusOpetuksenSisaltoRepository.findByPerusteId(perusteId);
+        AbstractOppiaineOpetuksenSisalto sisalto = tyyppi.getRepository(applicationContext).findByPerusteId(perusteId);
         if (aine == null || sisalto == null || !sisalto.containsOppiaine(aine)) {
             throw new NotExistsException("Oppiainetta ei ole");
         }
@@ -297,7 +297,9 @@ public class OppiaineServiceImpl implements OppiaineService {
                     final OppiaineLockContext vkctx = OppiaineLockContext.of(tyyppi, perusteId, dto.getId(), v.getId());
                     try {
                         lockService.lock(vkctx);
-                        doUpdateOppiaineenVuosiluokkaKokonaisuus(sisalto, aine.getId(), v, false);
+                        if (sisalto instanceof PerusopetuksenPerusteenSisalto) {
+                            doUpdateOppiaineenVuosiluokkaKokonaisuus((PerusopetuksenPerusteenSisalto)sisalto, aine.getId(), v, false);
+                        }
                     } finally {
                         lockService.unlock(vkctx);
                     }
